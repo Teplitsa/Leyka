@@ -1,0 +1,9 @@
+/*
+!.gitignore
+!leyka/
+!leyka-gateway-mobi-money/
+!leyka-gateway-paypal/
+!leyka-gateway-bank-order/
+!leyka-gateway-rbk-money/
+!leyka-gateway-yandex-money/
+!easy-digital-downloads/

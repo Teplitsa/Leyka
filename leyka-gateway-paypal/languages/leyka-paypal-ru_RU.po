@@ -1,0 +1,101 @@
+# Translation of Leyka MOBI.Money gateway in Russian.
+# Copyright (C) 2012-2013 by Teplitsa of Social Technologies (te-st.ru).
+# This file is distributed under the same license as the Leyka plugin package.
+# First Author: Lev Zvjagincev <ahaenor_ET_SIGN_gmail.com>, YEAR 2013.
+# Contributors: 
+# Denis Kulanin <kulandin_ET_SIGN_te-st.ru>;
+msgid ""
+msgstr ""
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2013-02-07 09:50:23+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/0.1\n"
+"Project-Id-Version: Leyka MOBI.Money gateway v1.0\n"
+
+#: leyka-paypal.php:126
+#@ leyka
+msgid "Recall"
+msgstr "Отзывы"
+
+#: leyka-paypal.php:127
+#@ leyka
+msgid "recall"
+msgstr "отзыв"
+
+#: leyka-paypal.php:174
+#@ leyka-paypal
+msgid "PayPal item name"
+msgstr "Номер товара в PayPal"
+
+#: leyka-paypal.php:175
+#@ leyka-paypal
+msgid "Enter your PayPal item name"
+msgstr "Введите ваш номер товара в PayPal"
+
+#: leyka-paypal.php:181
+#@ leyka-paypal
+msgid "PayPal currency ID"
+msgstr "ID валюты в PayPal"
+
+#: leyka-paypal.php:182
+#@ leyka-paypal
+msgid "Enter your PayPal currency ID, if it's different from ED Donates currency setting"
+msgstr "Введите ID валюты в PayPal, если она отличается от основной валюты, используемой на вашем сайте."
+
+#: leyka-paypal.php:188
+#, php-format
+#@ leyka-paypal
+msgid "Donations currency (%s) to USD course"
+msgstr "Курс валюты пожертвования (%s) к курсу USD"
+
+#: leyka-paypal.php:189
+#, php-format
+#@ leyka-paypal
+msgid "Enter the cost of 1 USD in %s (a currency you selected for donations). This cost can be either more or less than 1.0. Default is 1.0."
+msgstr "Введите цену 1 USD в %s (валюта сбора пожертвований). Цена может быть либо больше либо меньше чем 1.0. По умолчанию установлено 1.0."
+
+#: leyka-paypal.php:196
+#@ leyka-paypal
+msgid "PayPal gateway description"
+msgstr "Описание платежной системы PayPal"
+
+#: leyka-paypal.php:61
+#@ leyka-paypal
+msgid "Paypal (donates only!)"
+msgstr "PayPal (только для пожертвований)"
+
+#: leyka-paypal.php:62
+#@ leyka-paypal
+msgid "Paypal Donates"
+msgstr "Пожертвования через PayPal"
+
+#: leyka-paypal.php:90
+#@ leyka-paypal
+msgid "Error: donations receiver's Paypal business ID has not been set. Please, report it to him."
+msgstr "Ошибка: не задан бизнес-ID получателя платежа. Пожалуйста, сообщите об этом службе тех. поддержки сайта."
+
+#: leyka-paypal.php:161
+#@ leyka-paypal
+msgid "Paypal Settings"
+msgstr "Настройки PayPal"
+
+#: leyka-paypal.php:167
+#@ leyka-paypal
+msgid "Paypal business ID"
+msgstr "Ваш бизнес-ID в системе PayPal"
+
+#: leyka-paypal.php:168
+#@ leyka-paypal
+msgid "Enter your Paypal business ID or email"
+msgstr "Введите ваш email или бизнес-ID в системе PayPal"
+
+#: leyka-paypal.php:197
+#@ leyka-paypal
+msgid "Enter PayPal gateway description that will be shown to the donor when this gateway will be selected for use"
+msgstr "Введите описание платёжной системы PayPal. Оно будет показано донору, если он выберет PayPal в качестве способа платежа."
+
