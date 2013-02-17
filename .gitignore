@@ -1,5 +1,6 @@
 /*
 !.gitignore
+!README.md
 !leyka/
 !leyka-gateway-mobi-money/
 !leyka-gateway-paypal/
