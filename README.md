@@ -26,12 +26,13 @@ Leyka plugin been translated into the following languages:
 2. English
 
 # Installation #
-1. Install and activate the plugin.
-2. Go to Donates -> Settings and configure settings.
-3. If no donate page exists create new Donate from Donates -> Add New page.
-4. Install and activate needed Leyka gateways.
-5. Activate and configure gateways on Donates -> Settings page.
-6. For detailed setup instructions, visit the official [Documentation](http://leyka.te-st.ru) page.
+1. Install and activate supported version of Easy Digital Downloads plugin.
+2. Install and activate Leyka plugin.
+3. Go to Donates -> Settings and configure settings.
+4. If no donate page exists create new Donate from Donates -> Add New page.
+5. Install and activate needed Leyka gateways.
+6. Activate and configure gateways on Donates -> Settings page.
+7. For detailed setup instructions, visit the official [Documentation](http://leyka.te-st.ru) page.
 
 # Frequently Asked Questions #
 
