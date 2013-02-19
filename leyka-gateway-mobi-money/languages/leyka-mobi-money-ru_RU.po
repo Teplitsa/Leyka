@@ -1,0 +1,80 @@
+# Translation of Leyka MOBI.Money gateway in Russian.
+# Copyright (C) 2012-2013 by Teplitsa of Social Technologies (te-st.ru).
+# This file is distributed under the same license as the Leyka plugin package.
+# First Author: Lev Zvjagincev <ahaenor_ET_SIGN_gmail.com>, YEAR 2013.
+# Contributors: 
+# Denis Kulanin <kulandin_ET_SIGN_te-st.ru>;
+msgid ""
+msgstr ""
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2013-02-07 09:40:43+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/0.1\n"
+"Project-Id-Version: Leyka MOBI.Money gateway v1.0\n"
+
+#: leyka-mobi-money.php:118
+#@ leyka
+msgid "Recall"
+msgstr "Отзывы"
+
+#: leyka-mobi-money.php:119
+#@ leyka
+msgid "recall"
+msgstr "отзыв"
+
+#: leyka-mobi-money.php:181
+#@ leyka-mobi-money
+msgid "Mobi.Money small (99x35 px)"
+msgstr "MOBI.Деньги, маленький (99x35 px)"
+
+#: leyka-mobi-money.php:182
+#@ leyka-mobi-money
+msgid "Mobi.Money medium (144x51 px) (recommended)"
+msgstr "MOBI.Деньги, средний (144x51 px) - рекомендован"
+
+#: leyka-mobi-money.php:183
+#@ leyka-mobi-money
+msgid "Mobi.Money big (226x80 px)"
+msgstr "MOBI.Деньги, большой (226x80 px)"
+
+#: leyka-mobi-money.php:61
+#: leyka-mobi-money.php:62
+#@ leyka-mobi-money
+msgid "Mobi.Money"
+msgstr "MOBI.Деньги"
+
+#: leyka-mobi-money.php:90
+#@ leyka-mobi-money
+msgid "Error: donations receiver's Mobi.Money shop ID has not been set. Please, report it to him."
+msgstr "Ошибка: ID магазина в системе MOBI.Деньги не указан. Пожалуйста, сообщите об этом в техподдержку этого сайта."
+
+#: leyka-mobi-money.php:153
+#@ leyka-mobi-money
+msgid "Mobi.Money Settings"
+msgstr "Настройки MOBI.Деньги"
+
+#: leyka-mobi-money.php:159
+#@ leyka-mobi-money
+msgid "Mobi.Money shop ID"
+msgstr "ID магазина в системе MOBI.Деньги"
+
+#: leyka-mobi-money.php:160
+#@ leyka-mobi-money
+msgid "Enter your Mobi.Money shop ID"
+msgstr "Введите ID вашего магазина в системе MOBI.Деньги"
+
+#: leyka-mobi-money.php:166
+#@ leyka-mobi-money
+msgid "MOBI.Money gateway description"
+msgstr "Описание платёжной системы MOBI.Деньги"
+
+#: leyka-mobi-money.php:167
+#@ leyka-mobi-money
+msgid "Enter MOBI.Money gateway description that will be shown to the donor when this gateway will be selected for use"
+msgstr "Введите описание платёжной системы MOBI.Деньги, которое будет выведено для донора, если он выберет эту систему для совершения пожертвования."
+
