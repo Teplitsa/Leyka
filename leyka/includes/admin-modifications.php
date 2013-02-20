@@ -52,7 +52,7 @@ function leyka_plugins_loaded(){
     remove_action('admin_menu', 'edd_add_options_link', 10);
     add_action('admin_menu', 'leyka_admin_menu');
 }
-add_action('plugins_loaded', 'leyka_plugins_loaded', 10);
+add_action('plugins_loaded', 'leyka_plugins_loaded');
 
 /** Modify main plugin menu to use the modified History page handling function */
 function leyka_init(){
@@ -938,14 +938,15 @@ function leyka_admin_init(){
     remove_action('edd_reports_tab_export', 'edd_reports_tab_export');
     add_action('edd_reports_tab_export', 'leyka_reports_tab_export');
 
-    // Common log views:
-    function leyka_log_views($views){
-        unset($views['sales']);
-        $views['file_downloads'] = __('Donations', 'leyka');
-
-        return $views;
-    }
-    add_filter('edd_log_views', 'leyka_log_views');
+//    // Common log views:
+//    function leyka_log_views($views){
+//        unset($views['sales']);
+//        echo '<pre>'.print_r('HERE', TRUE).'</pre>';
+//        $views['file_downloads'] = __('Donations', 'leyka');
+//
+//        return $views;
+//    }
+//    add_filter('edd_log_views', 'leyka_log_views');
 
 //    function leyka_logs_view_donations() {
 //        require_once(LEYKA_PLUGIN_DIR.'includes/admin/class-donations-logs-list-table.php' );
@@ -1223,9 +1224,7 @@ function leyka_recall_edit(){
 }
 add_action('wp_ajax_leyka-recall-edit', 'leyka_recall_edit');
 
-/**
- * Process ajax request to get gateway specific fields.
- */
+/** Process ajax request to get gateway specific fields. */
 function leyka_get_gateway_fields(){
     // Verify the nonce for this action:
     if ( !isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'leyka-single-donate-nonce') )
@@ -1287,12 +1286,17 @@ function leyka_get_gateway_fields(){
     die();
 }
 add_action('wp_ajax_leyka-get-gateway-fields', 'leyka_get_gateway_fields');
+add_action('wp_ajax_nopriv_leyka-get-gateway-fields', 'leyka_get_gateway_fields');
 
 /** Process admin placeholders in admin email notification text. */
 function leyka_admin_purchase_notification($admin_message, $payment_id, $payment_data){
     global $edd_options;
     if(empty($payment_data['amount'])) // Some payment metadata is missing, add it to the existing data
         $payment_data = $payment_data + edd_get_payment_meta($payment_id);
+    
+    if(empty($edd_options['admin_donates_email_text'])) // To avoid unneeded php notices about missing var
+        return '';
+
     $admin_message = str_replace(
         array('{donate_id}', '{edit_url}',),
         array(

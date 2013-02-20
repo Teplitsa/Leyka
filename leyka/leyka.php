@@ -59,8 +59,10 @@ if( !defined('LEYKA_PLUGIN_TITLE') ) {
     define('LEYKA_PLUGIN_TITLE', 'Easy Digital Donates');
 }
 
-//error_reporting(E_ALL);
-//ini_set('display_errors', 'stdout');
+if( !empty($edd_options['test_mode']) ) {
+    @error_reporting(E_ALL);
+    @ini_set('display_errors', 'stdout');
+}
 
 require LEYKA_PLUGIN_DIR.'/includes/install.php';
 require LEYKA_PLUGIN_DIR.'/includes/user-recalls-columns.php';

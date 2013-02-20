@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Leyka v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-02-18 07:10:57+0000\n"
+"PO-Revision-Date: 2013-02-20 11:51:51+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -226,129 +226,129 @@ msgstr "Минимальный размер пожертвования, %s"
 msgid "Maximum donation amount, %s"
 msgstr "Максимальный размер пожертвования, %s"
 
-#: includes/admin-modifications.php:970
+#: includes/admin-modifications.php:971
 #@ leyka
 msgid "Default status options"
 msgstr "Опции статуса по умолчанию"
 
-#: includes/admin-modifications.php:971
+#: includes/admin-modifications.php:972
 #@ leyka
 msgid "Configure the default status options"
 msgstr "Настройки статуса по умолчанию"
 
-#: includes/admin-modifications.php:975
+#: includes/admin-modifications.php:976
 #@ leyka
 msgid "Payments default status"
 msgstr "Статус платежа по умолчанию"
 
-#: includes/admin-modifications.php:976
+#: includes/admin-modifications.php:977
 #@ leyka
 msgid "Deafult status for newly created donation payments"
 msgstr "Статус по умолчанию для новых платежей по пожертвованиям"
 
-#: includes/admin-modifications.php:981
+#: includes/admin-modifications.php:982
 #@ leyka
 msgid "Donor's recalls default status"
 msgstr "Статус по умолчанию для новых отзывов"
 
-#: includes/admin-modifications.php:982
+#: includes/admin-modifications.php:983
 #@ leyka
 msgid "Deafult status for newly created donor recalls"
 msgstr "Статус по умолчанию для новых отзывов пользователей"
 
 #: includes/admin/class-payments-table.php:70
-#: includes/admin-modifications.php:985
-#: includes/admin-modifications.php:1153
+#: includes/admin-modifications.php:986
+#: includes/admin-modifications.php:1154
 #@ edd
 #@ default
 msgid "Pending"
 msgstr "Ожидание"
 
-#: includes/admin-modifications.php:986
-#: includes/admin-modifications.php:1152
+#: includes/admin-modifications.php:987
+#: includes/admin-modifications.php:1153
 #@ default
 msgid "Draft"
 msgstr "Черновик"
 
-#: includes/admin-modifications.php:987
-#: includes/admin-modifications.php:1150
+#: includes/admin-modifications.php:988
+#: includes/admin-modifications.php:1151
 #@ default
 msgid "Publish"
 msgstr "Опубликовать"
 
-#: includes/admin-modifications.php:1009
+#: includes/admin-modifications.php:1010
 #@ leyka
 msgid "The name donations thanking emails are said to come from. This should probably be your site or NGO name."
 msgstr "Значение поля «от кого» в письмах благодарности при пожертвованиях. Обычно содержит ваше имя, или название вашего блога, или название вашей организации."
 
-#: includes/admin-modifications.php:1010
+#: includes/admin-modifications.php:1011
 #@ leyka
 msgid "Email to send donations thanking emails from. This will act as the \"from\" and \"reply-to\" address."
 msgstr "Email, от имени которого будут рассылаться благодарственные письма при пожертвованиях. Указанный email будет стоять в полях «from» и «reply-to»."
 
-#: includes/admin-modifications.php:1011
+#: includes/admin-modifications.php:1012
 #@ leyka
 msgid "Donations thanking email subject"
 msgstr "Заголовок благодарственного письма за пожертвование"
 
-#: includes/admin-modifications.php:1012
+#: includes/admin-modifications.php:1013
 #@ leyka
 msgid "Enter the subject line for the donations thanking email"
 msgstr "Введите заголовок благодарственного письма за пожертвование"
 
-#: includes/admin-modifications.php:1013
+#: includes/admin-modifications.php:1014
 #@ leyka
 msgid "Donation thanking email template"
 msgstr "Шаблон благодарственного письма за пожертвование"
 
-#: includes/admin-modifications.php:1014
-#: includes/admin-modifications.php:1042
+#: includes/admin-modifications.php:1015
+#: includes/admin-modifications.php:1043
 #@ leyka
 msgid "Enter the email that is sent to donations managers after completing a purchase. HTML is accepted. Available template tags:"
 msgstr "Шаблон почтового сообщения, которое будет отправляться менеджерам пожертвований при каждом их совершении. Возможные тэги шаблона:"
 
-#: includes/admin-modifications.php:1015
-#: includes/admin-modifications.php:1043
+#: includes/admin-modifications.php:1016
+#: includes/admin-modifications.php:1044
 #@ leyka
 msgid "A list of donates given"
 msgstr "Список сделанных пожертвований"
 
-#: includes/admin-modifications.php:1016
+#: includes/admin-modifications.php:1017
 #@ leyka
 msgid "The donor's name"
 msgstr "Имя донора"
 
-#: includes/admin-modifications.php:1017
-#: includes/admin-modifications.php:1044
+#: includes/admin-modifications.php:1018
+#: includes/admin-modifications.php:1045
 #@ leyka
 msgid "The date of the donation"
 msgstr "Дата пожертвования"
 
-#: includes/admin-modifications.php:1018
-#: includes/admin-modifications.php:1045
+#: includes/admin-modifications.php:1019
+#: includes/admin-modifications.php:1046
 #@ leyka
 msgid "The total amount of the donation"
 msgstr "Общее количество пожертвований"
 
-#: includes/admin-modifications.php:1019
-#: includes/admin-modifications.php:1046
+#: includes/admin-modifications.php:1020
+#: includes/admin-modifications.php:1047
 #@ leyka
 msgid "The unique ID number for this donation"
 msgstr "Уникальный номер (ID) пожертвования"
 
-#: includes/admin-modifications.php:1020
-#: includes/admin-modifications.php:1049
+#: includes/admin-modifications.php:1021
+#: includes/admin-modifications.php:1050
 #@ leyka
 msgid "The method of payment used for this donation"
 msgstr "Платёжная система, использованная при пожертвовании"
 
-#: includes/admin-modifications.php:1021
-#: includes/admin-modifications.php:1050
+#: includes/admin-modifications.php:1022
+#: includes/admin-modifications.php:1051
 #@ edd
 msgid "Your site name"
 msgstr "Название вашего сайта"
 
-#: includes/admin-modifications.php:1022
+#: includes/admin-modifications.php:1023
 #@ leyka
 msgid ""
 "Hello, {name}!<br /><br />\n"
@@ -360,54 +360,54 @@ msgid ""
 "                                                 {sitename}, {date}"
 msgstr "Здравствуйте, {name}!<br /><br />Вы желаете сделать следующие пожертвования:<br />                                                 {download_list}<br />на сумму {price}, с помощью платёжной системы {payment_method}.<br /><br />                                                 Спасибо за ваше неравнодушие,<br />{sitename}, {date}"
 
-#: includes/admin-modifications.php:1029
+#: includes/admin-modifications.php:1030
 #@ leyka
 msgid "Donations manager's emails"
 msgstr "E-mail менеджеров пожертвований"
 
-#: includes/admin-modifications.php:1035
+#: includes/admin-modifications.php:1036
 #@ leyka
 msgid "Donations manager's notification subject"
 msgstr "Тема уведомления для менеджеров пожертвований"
 
-#: includes/admin-modifications.php:1036
+#: includes/admin-modifications.php:1037
 #@ leyka
 msgid "Enter the donations manager's notification email subject"
 msgstr "Введите тему письма-уведомления о новом пожертвовании для менеджеров пожертвований"
 
-#: includes/admin-modifications.php:1041
+#: includes/admin-modifications.php:1042
 #@ leyka
 msgid "Donations manager's notification template"
 msgstr "Шаблон письма-уведомления о новом пожертвовании для менеджеров пожертвований"
 
-#: includes/admin-modifications.php:1047
+#: includes/admin-modifications.php:1048
 #@ leyka
 msgid "The ID number for donation's purpose item"
 msgstr "Уникальный номер (ID) цели пожертвования."
 
-#: includes/admin-modifications.php:1048
+#: includes/admin-modifications.php:1049
 #@ leyka
 msgid "The URL of the admin page where donation status can be changed"
 msgstr "URL страницы админ. панели сайта, на которой можно изменить статус пожертвования"
 
-#: includes/admin-modifications.php:1110
+#: includes/admin-modifications.php:1111
 #@ default
 msgid "Title"
 msgstr "Наименование"
 
-#: includes/admin-modifications.php:1111
-#: includes/admin-modifications.php:1157
+#: includes/admin-modifications.php:1112
+#: includes/admin-modifications.php:1158
 #: includes/user-recalls-columns.php:18
 #@ leyka
 msgid "Recall text"
 msgstr "Текст отзыва"
 
-#: includes/admin-modifications.php:1112
+#: includes/admin-modifications.php:1113
 #@ leyka
 msgid "Recall author (donor)"
 msgstr "Автор отзыва (донор)"
 
-#: includes/admin-modifications.php:1113
+#: includes/admin-modifications.php:1114
 #@ leyka
 msgid "Gateway"
 msgstr "Платёжная система"
@@ -415,7 +415,7 @@ msgstr "Платёжная система"
 #: includes/admin/class-donations-logs-list-table.php:57
 #: includes/admin/class-payments-table.php:84
 #: includes/admin-modifications.php:434
-#: includes/admin-modifications.php:1114
+#: includes/admin-modifications.php:1115
 #: includes/user-recalls-columns.php:19
 #@ edd
 #@ default
@@ -423,65 +423,65 @@ msgstr "Платёжная система"
 msgid "Date"
 msgstr "Дата"
 
-#: includes/admin-modifications.php:1137
+#: includes/admin-modifications.php:1138
 #@ default
 msgid "Quick&nbsp;Edit"
 msgstr "Быстрое&nbsp;Редактирование"
 
-#: includes/admin-modifications.php:1138
+#: includes/admin-modifications.php:1139
 #@ default
 msgid "Move this item to the Trash"
 msgstr "Переместить этот элемент в мусорную корзину"
 
-#: includes/admin-modifications.php:1138
-#: includes/admin-modifications.php:1151
+#: includes/admin-modifications.php:1139
+#: includes/admin-modifications.php:1152
 #@ default
 msgid "Trash"
 msgstr "Мусорная корзина"
 
-#: includes/admin-modifications.php:1144
+#: includes/admin-modifications.php:1145
 #@ leyka
 msgid "Edit user recall #"
 msgstr "Редактировать отзыв пользователя #"
 
 #: includes/admin/class-payments-table.php:86
-#: includes/admin-modifications.php:1148
+#: includes/admin-modifications.php:1149
 #@ edd
 #@ default
 msgid "Status"
 msgstr "Статус"
 
-#: includes/admin-modifications.php:1162
+#: includes/admin-modifications.php:1163
 #@ default
 msgid "Cancel"
 msgstr "Отмена"
 
-#: includes/admin-modifications.php:1202
+#: includes/admin-modifications.php:1203
 #@ leyka
 msgid "Permissions denied!"
 msgstr "В доступе отказано!"
 
-#: includes/admin-modifications.php:1231
+#: includes/admin-modifications.php:1305
 #@ leyka
 msgid "Activate the donation"
 msgstr "Активировать пожертвование"
 
-#: includes/admin-modifications.php:1242
+#: includes/admin-modifications.php:1317
 #@ leyka
 msgid "New donation payment"
 msgstr "Новый платеж по пожертвованию"
 
-#: includes/admin-modifications.php:1268
+#: includes/admin-modifications.php:1343
 #@ leyka
 msgid "Error while editing the recall! Please try again later or e-mail the support team to fix it."
 msgstr "Ошибка при редактировании отзыва. Пожалуйста, попробуйте ещё раз. Если ошибка повторится, обратитесь в службу поддержки сайта."
 
-#: includes/admin-modifications.php:1269
+#: includes/admin-modifications.php:1344
 #@ leyka
 msgid "PENDING"
 msgstr "В ОЖИДАНИИ"
 
-#: includes/admin-modifications.php:1270
+#: includes/admin-modifications.php:1345
 #@ leyka
 msgid "COMPLETE"
 msgstr "ЗАВЕРШЕН"
@@ -558,58 +558,58 @@ msgstr "Дополнительная информация о платеже"
 msgid "Type your comments, if needed"
 msgstr "Введите ваши комментарии, если нужно"
 
-#: includes/frontend-modifications.php:329
+#: includes/frontend-modifications.php:333
 #, php-format
 #@ edd
 msgid "No checkout page has been configured. Visit <a href=\"%s\">Settings</a> to set one."
 msgstr "Страница выбора способа оплаты заказа не была настроена. Перейдите в раздел <a href=\"%s\">Настройки</a>, чтобы её создать."
 
-#: includes/frontend-modifications.php:336
+#: includes/frontend-modifications.php:340
 #@ edd
 msgid "Purchase"
 msgstr "Приобрести"
 
-#: includes/frontend-modifications.php:362
+#: includes/frontend-modifications.php:366
 #@ leyka
 msgid "Make a donation with this sum"
 msgstr "Пожертвовать данную сумму"
 
-#: includes/frontend-modifications.php:363
+#: includes/frontend-modifications.php:367
 #@ edd
 msgid "Checkout"
 msgstr "На кассу"
 
-#: includes/frontend-modifications.php:367
+#: includes/frontend-modifications.php:371
 #@ edd
 msgid "Item successfully added to your cart."
 msgstr "Продукт был успешно добавлен в корзину."
 
-#: includes/frontend-modifications.php:388
+#: includes/frontend-modifications.php:392
 #@ leyka
 msgid "The required parameters are not set"
 msgstr "Не указаны необходимые параметры"
 
-#: includes/frontend-modifications.php:456
+#: includes/frontend-modifications.php:460
 #@ leyka
 msgid "Any sum"
 msgstr "Любая сумма"
 
-#: includes/frontend-modifications.php:464
+#: includes/frontend-modifications.php:468
 #@ leyka
 msgid "Insert the sum of your donation"
 msgstr "Укажите размер вашего пожертвования"
 
-#: includes/frontend-modifications.php:468
+#: includes/frontend-modifications.php:472
 #@ edd
 msgid "Add to cart"
 msgstr "Добавить в корзину"
 
-#: includes/frontend-modifications.php:496
+#: includes/frontend-modifications.php:499
 #@ leyka
 msgid "Sorry, the donation amount is incorrect"
 msgstr "Указанный размер пожертвования некорректен"
 
-#: includes/frontend-modifications.php:497
+#: includes/frontend-modifications.php:500
 #@ leyka
 msgid "Sorry, you must agree to the donation terms first"
 msgstr "Сначала вы должны согласиться с условиями пожертвования"
@@ -1203,11 +1203,6 @@ msgstr "Всего собрано за указанный период:"
 msgid "Total donations maked for period shown:"
 msgstr "Всего сделано пожертвований за указанный период:"
 
-#: includes/admin-modifications.php:944
-#@ leyka
-msgid "Donations"
-msgstr "Пожертвования"
-
 #: includes/admin-modifications.php:44
 #: includes/admin-modifications.php:174
 #@ leyka
@@ -1246,4 +1241,19 @@ msgstr ""
 #@ leyka
 msgid "1.0"
 msgstr ""
+
+#: includes/frontend-modifications.php:295
+#@ leyka
+msgid "Sorry, the amount of your donation is 0 somehow."
+msgstr "Ошибка: размер пожертвований равен нулю."
+
+#: includes/template-tags.php:238
+#@ leyka
+msgid "Recall"
+msgstr "Отзыв"
+
+#: includes/template-tags.php:239
+#@ leyka
+msgid "recall"
+msgstr "отзыв"
 

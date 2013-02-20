@@ -212,7 +212,7 @@ function leyka_insert_payment($payment_data = array(), $settings = array())
 
     // Process the payment on our side:
     // Create the record for pending payment
-    $payment = edd_insert_payment(array(
+    $payment_id = edd_insert_payment(array(
         'price' => $payment_data['price'],
         'date' => $payment_data['date'],
         'user_email' => $payment_data['user_email'],
@@ -224,7 +224,7 @@ function leyka_insert_payment($payment_data = array(), $settings = array())
         'status' => $edd_options['leyka_payments_default_status']
     ));
 
-    if($payment) {
+    if($payment_id) {
         if($payment_data['post_data']['donor_comments'] && !empty($settings['add_recall'])) {
             $recall = leyka_insert_recall(array(
                 'post_content' => $payment_data['post_data']['donor_comments'],
@@ -239,12 +239,14 @@ function leyka_insert_payment($payment_data = array(), $settings = array())
                     'post_name' => __('recall', 'leyka').'-'.$recall,
                 ));
                 // Update recall metadata:
-                update_post_meta($recall, '_leyka_payment_id', $payment);
+                update_post_meta($recall, '_leyka_payment_id', $payment_id);
             }
         }
         if( !empty($payment_data['post_data']['leyka_send_donor_email_conf']) )
-            edd_email_purchase_receipt($payment, FALSE);
-        edd_admin_email_notice($payment, $payment_data);
+            edd_email_purchase_receipt($payment_id, FALSE);
+        if(empty($payment_data['amount']))
+            $payment_data = edd_get_payment_meta($payment_id);
+        edd_admin_email_notice($payment_id, $payment_data);
         edd_empty_cart();
     } else {
         // if errors are present, send the user back to the purchase page so they can be corrected

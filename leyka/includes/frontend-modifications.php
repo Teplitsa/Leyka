@@ -290,8 +290,12 @@ function leyka_process_single_donation(){
     );
 
     // if the total amount in the cart is 0, send to the manual gateway. This emulates a free amount donation:
-    if($donation_data['price'] <= 0)
-        $valid_data['gateway'] = 'manual'; // revert to manual
+    if($donation_data['price'] <= 0) {
+        // Price is zero somehow - error, send back to single donate page:
+        edd_set_error('zero_price', __('Sorry, the amount of your donation is 0 somehow.', 'leyka'));
+        leyka_send_back_to_single_donate((int)$_POST['donate_id'], $valid_data['gateway']);
+        exit;
+    }
 
     // used for showing download links to non logged-in users after purchase,
     // and for other plugins that needs purchase data:
