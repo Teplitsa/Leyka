@@ -107,7 +107,7 @@ function leyka_init(){
         return $wp_plugins_list;
     }
     add_filter('all_plugins', 'leyka_plugins_list');
-    
+
     // Disable auto-updates for original EDD.
     // Mostly to exclude EDD from "plugins-need-to-be-updated" counter and from core updates page.
     function leyka_update_plugins_list($value){
@@ -162,8 +162,7 @@ add_action('init', 'leyka_init', 1);
  */
 function leyka_donations_history_page(){
     global $edd_options;
-//    error_reporting(E_ALL);
-//    ini_set('display_errors', 1);
+
     if(isset($_GET['edd-action']) && $_GET['edd-action'] == 'edit-payment') {
         include_once(LEYKA_PLUGIN_DIR.'/includes/admin/edit-payment.php');
     } else {
@@ -189,24 +188,25 @@ function leyka_donations_history_page(){
     }
 }
 
-function leyka_reports_page() {
+/** Renders the Reports page. */
+function leyka_reports_page(){
     global $edd_options;
 
-    $current_page = admin_url( 'edit.php?post_type=download&page=edd-reports' );
-    $active_tab = isset( $_GET[ 'tab' ] ) ? $_GET[ 'tab' ] : 'reports';
-    ?>
+    $current_page = admin_url('edit.php?post_type=download&page=edd-reports');
+    $active_tab = isset( $_GET[ 'tab' ] ) ? $_GET[ 'tab' ] : 'reports';?>
 <div class="wrap">
     <h2 class="nav-tab-wrapper">
-        <a href="<?php echo add_query_arg( array( 'tab' => 'reports', 'settings-updated' => false ), $current_page ); ?>" class="nav-tab <?php echo $active_tab == 'reports' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Reports', 'edd' ); ?></a>
-        <a href="<?php echo add_query_arg( array( 'tab' => 'export', 'settings-updated' => false ), $current_page ); ?>" class="nav-tab <?php echo $active_tab == 'export' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Export', 'edd' ); ?></a>
-<!--        <a href="--><?php //echo add_query_arg( array( 'tab' => 'logs', 'settings-updated' => false ), $current_page ); ?><!--" class="nav-tab --><?php //echo $active_tab == 'logs' ? 'nav-tab-active' : ''; ?><!--">--><?php //_e( 'Logs', 'edd' ); ?><!--</a>-->
-<!--        --><?php //do_action( 'edd_reports_tabs' ); ?>
+        <a href="<?php echo add_query_arg(array('tab' => 'reports', 'settings-updated' => false), $current_page);?>" class="nav-tab <?php echo $active_tab == 'reports' ? 'nav-tab-active' : '';?>"><?php _e('Reports', 'edd');?></a>
+        <a href="<?php echo add_query_arg(array('tab' => 'export', 'settings-updated' => false), $current_page);?>" class="nav-tab <?php echo $active_tab == 'export' ? 'nav-tab-active' : '';?>"><?php _e('Export', 'edd');?></a>
+        <?php /** @todo Uncomment this logs lab when start the task 415 */ ?>
+<!--        <a href="--><?php //echo add_query_arg(array('tab' => 'logs', 'settings-updated' => false), $current_page);?><!--" class="nav-tab --><?php //echo $active_tab == 'logs' ? 'nav-tab-active' : '';?><!--">--><?php //_e('Logs', 'edd');?><!--</a>-->
+        <?php do_action('edd_reports_tabs');?>
     </h2>
 
     <?php
-    do_action( 'edd_reports_page_top' );
-    do_action( 'edd_reports_tab_' . $active_tab );
-    do_action( 'edd_reports_page_bottom' );
+    do_action('edd_reports_page_top');
+    do_action('edd_reports_tab_'.$active_tab);
+    do_action('edd_reports_page_bottom');
     ?>
 </div><!-- .wrap -->
 <?php
@@ -225,7 +225,7 @@ function leyka_toggle_payment_status(){
 
     $_POST['new_status'] = $_POST['new_status'] === 'publish' ? 'publish' : 'pending';
     global $wpdb;
-    // Not using edd_update_payemnt_status 'cause it unnessesarily triggers EDD hook that sends email to the donor and Payments Admin:
+    // Not using edd_update_payment_status, because it unnessesarily triggers EDD hook that sends email to the donor and Payments Admin:
     $wpdb->update(
         $wpdb->posts,
         array('post_status' => $_POST['new_status']),
@@ -590,7 +590,12 @@ function leyka_admin_init(){
     }
     add_filter('edd_metabox_save_leyka_max_donation_sum', 'leyka_save_metabox_max_sum');
 
-    /** Changes in the Donates -> Statistics page */
+    /**
+     * Changes in the Donates -> Statistics page.
+     */
+    /**
+     * Changes in the Donates -> Statistics -> Stats tab page:
+     */
     // Common stats fields:
     function leyka_stats_views($views){
         $views['earnings'] = __('Incoming funds', 'leyka');
@@ -598,6 +603,7 @@ function leyka_admin_init(){
     }
     add_filter('edd_report_views', 'leyka_stats_views');
 
+    // Stats -> Reports -> Incoming funds report:
     function leyka_reports_earnings(){?>
     <div class="tablenav top">
         <div class="alignleft actions"><?php edd_report_views();?></div>
@@ -608,7 +614,7 @@ function leyka_admin_init(){
     remove_action('edd_reports_view_earnings', 'edd_reports_earnings');
     add_action('edd_reports_view_earnings', 'leyka_reports_earnings');
     
-    // Stats -> Reports -> Incoming funds view:
+    // Render the incoming funds view:
     function leyka_reports_graph(){
         $dates = edd_get_report_dates(); // Retrieve the queried dates
 
@@ -901,7 +907,9 @@ function leyka_admin_init(){
     remove_action('edd_reports_view_customers', 'edd_reports_customers_table');
     add_action('edd_reports_view_customers', 'leyka_reports_donors_table');
     
-    // Stats -> Export:
+    /**
+     * Changes in Stats -> Export.
+     */ 
     function leyka_reports_tab_export(){?>
     <div class="metabox-holder">
         <div id="post-body">
@@ -938,26 +946,20 @@ function leyka_admin_init(){
     remove_action('edd_reports_tab_export', 'edd_reports_tab_export');
     add_action('edd_reports_tab_export', 'leyka_reports_tab_export');
 
-//    // Common log views:
-//    function leyka_log_views($views){
-//        unset($views['sales']);
-//        echo '<pre>'.print_r('HERE', TRUE).'</pre>';
-//        $views['file_downloads'] = __('Donations', 'leyka');
-//
-//        return $views;
-//    }
-//    add_filter('edd_log_views', 'leyka_log_views');
+    /**
+     * Changes in the Stats -> Logs page. 
+     */
+    // Common log views:
+    function leyka_log_views($views){
+        unset($views['sales']); // "Sales" view is almost identical to "file_downloads" view
+        /**
+         * @todo Add to file_downloads view the "donation sum" column. Remove "File" column. Make the table content appear!
+         */
+        $views['file_downloads'] = __('Donations', 'leyka');
 
-//    function leyka_logs_view_donations() {
-//        require_once(LEYKA_PLUGIN_DIR.'includes/admin/class-donations-logs-list-table.php' );
-//
-//        $logs_table = new Leyka_Donations_Log_Table();
-//        $logs_table->prepare_items();
-//        $logs_table->display();
-//    }
-//      // Removing action isn't working for some reason with any of Logs tables hooks
-//    remove_action('edd_logs_view_sales', 'edd_logs_view_sales');
-//    add_action('edd_logs_view_sales', 'leyka_logs_view_donations');
+        return $views;
+    }
+    add_filter('edd_log_views', 'leyka_log_views');
 
     /** Changes in the Donates->Settings sections */
     // Changes in on Settings->General admin section:
