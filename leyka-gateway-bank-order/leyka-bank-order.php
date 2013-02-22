@@ -56,8 +56,7 @@ function leyka_bank_order_plugins_loaded()
     if( !defined('LEYKA_VERSION') ) {
         if( !function_exists('deactivate_plugins') )
             require_once(ABSPATH.'wp-admin/includes/plugin.php');
-        deactivate_plugins(__FILE__);
-        echo __('<div id="message" class="error"><strong>Error:</strong> base donations plugin is missing or inactive. It is required for Bank order gateway module to work. Bank Order gateway will be deactivated.</div>', 'leyka-bank-order');
+        @deactivate_plugins(__FILE__);
     }
 }
 add_action('plugins_loaded', 'leyka_bank_order_plugins_loaded');
@@ -159,6 +158,14 @@ function leyka_bank_order_init(){
 add_action('init', 'leyka_bank_order_init', 1);
 
 function leyka_bank_order_admin_init(){
+    // Base Leyka isn't defined, deactivate this plugin:
+    if( !defined('LEYKA_VERSION') ) {
+        if( !function_exists('deactivate_plugins') )
+            require_once(ABSPATH.'wp-admin/includes/plugin.php');
+        deactivate_plugins(__FILE__);
+        echo __('<div id="message" class="error"><strong>Error:</strong> base donations plugin is missing or inactive. It is required for Bank order gateway module to work. Bank Order gateway will be deactivated.</div>', 'leyka-bank-order');
+    }
+
     // Add settings link on plugin page:
     function leyka_bank_order_plugin_page_links($links){
         array_unshift(

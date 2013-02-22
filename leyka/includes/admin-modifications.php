@@ -1010,7 +1010,14 @@ function leyka_admin_init(){
     // Changes in on Settings->Emails admin section:
     function leyka_emails_settings($settings){
         $settings['from_name']['desc'] = __('The name donations thanking emails are said to come from. This should probably be your site or NGO name.', 'leyka');
+        $from_name = get_bloginfo('name');
+        if( !$from_name )
+            $from_name = trim(str_replace(array('http://', 'https://'), array('', ''), get_bloginfo('wpurl')), '/');
+        $settings['from_name']['std'] = $from_name;
+
         $settings['from_email']['desc'] = __('Email to send donations thanking emails from. This will act as the "from" and "reply-to" address.', 'leyka');
+        $settings['from_email']['std'] = get_bloginfo('admin_email');
+        
         $settings['purchase_subject']['name'] = __('Donations thanking email subject', 'leyka');
         $settings['purchase_subject']['desc'] = __('Enter the subject line for the donations thanking email', 'leyka');
         $settings['purchase_receipt']['name'] = __('Donation thanking email template', 'leyka');
@@ -1037,7 +1044,8 @@ function leyka_admin_init(){
                 'id' => 'admin_notifications_subject',
                 'name' => __("Donations manager's notification subject", 'leyka'),
                 'desc' => __("Enter the donations manager's notification email subject", 'leyka'),
-                'type' => 'text'
+                'type' => 'text',
+                'std' => __('New donation came', 'leyka')
             ),
             array(
                 'id' => 'admin_donates_email_text',
@@ -1071,6 +1079,10 @@ function leyka_admin_init(){
             $settings['download_link_expiration'], $settings['disable_redownload']
         );
 
+        $settings['redirect_on_add']['desc'] = __('Redirect to the checkout after adding the donation to the cart.', 'leyka');
+        $settings['show_agree_to_terms']['desc'] = __('Show agreement to the terms checkbox. It will have to be checked to make a donation.', 'leyka');
+        $settings['agree_label']['std'] = __('I agree to the terms of donation making service.', 'leyka');
+
         $settings['agree_text']['options']['default'] = '
     1. Предмет договора*
     1. Благотворитель безвозмездно передает, а Благополучатель принимает товарно-материальные ценности и денежные средства для Целевого использования.
@@ -1095,6 +1107,14 @@ function leyka_admin_init(){
 4.3. Настоящий Договор составлен в 2-х подлинных экземплярах, имеющих одинаковую юридическую силу.
 
 5. Адреса и реквизиты сторон'; //__('', 'leyka');
+
+        $settings['checkout_label']['name'] = __('A text on a button to complete a donation', 'leyka');
+        $settings['checkout_label']['desc'] = __('A text on a button to complete a donation.', 'leyka');
+        $settings['checkout_label']['std'] = __('Donate', 'leyka');
+
+        $settings['add_to_cart_text']['name'] = __('A text on "add to cart" button', 'leyka');
+        $settings['add_to_cart_text']['std'] = __('Add donation to cart', 'leyka');
+
         return $settings;
     }
     add_filter('edd_settings_misc', 'leyka_misc_settings');

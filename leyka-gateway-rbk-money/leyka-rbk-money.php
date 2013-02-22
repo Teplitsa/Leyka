@@ -55,8 +55,7 @@ function leyka_rbk_money_plugins_loaded(){
     if( !defined('LEYKA_VERSION') ) {
         if( !function_exists('deactivate_plugins') )
             require_once(ABSPATH.'wp-admin/includes/plugin.php');
-        deactivate_plugins(__FILE__);
-        echo __('<div id="message" class="error"><strong>Error:</strong> base donations plugin is missing or inactive. It is required for RBK Money gateway module to work. RBK Money plugin will be deactivated.</div>', 'leyka-rbk-money');
+        @deactivate_plugins(__FILE__);
     }
 }
 add_action('plugins_loaded', 'leyka_rbk_money_plugins_loaded');
@@ -110,6 +109,14 @@ function leyka_rbk_money_init(){
 add_action('init', 'leyka_rbk_money_init', 1);
 
 function leyka_rbk_money_admin_init(){
+    // Base Leyka isn't defined, deactivate this plugin:
+    if( !defined('LEYKA_VERSION') ) {
+        if( !function_exists('deactivate_plugins') )
+            require_once(ABSPATH.'wp-admin/includes/plugin.php');
+        deactivate_plugins(__FILE__);
+        echo __('<div id="message" class="error"><strong>Error:</strong> base donations plugin is missing or inactive. It is required for RBK Money gateway module to work. RBK Money plugin will be deactivated.</div>', 'leyka-rbk-money');
+    }
+    
     // Add settings link on plugin page:
     function leyka_rbk_plugin_page_links($links){
         array_unshift(
