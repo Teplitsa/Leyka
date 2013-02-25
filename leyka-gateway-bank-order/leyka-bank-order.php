@@ -257,6 +257,7 @@ function leyka_bank_order_admin_init(){
                 'name' => __('Manual bank payment description', 'leyka-bank-order'),
                 'desc' => __('Enter your manual payment description that will be shown to the donor when this gateway will be selected for use', 'leyka-bank-order'),
                 'type' => 'rich_editor',
+                'std' => __('Bank payment essential elements', 'leyka'),
             )
         );
         return $options;

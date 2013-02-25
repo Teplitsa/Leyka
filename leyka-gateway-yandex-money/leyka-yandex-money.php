@@ -225,7 +225,7 @@ function leyka_yandex_money_admin_init(){
                 'name' => __('Yandex.Money gateway description', 'leyka-yandex-money'),
                 'desc' => __('Enter Yandex.Money gateway description that will be shown to the donor when this gateway will be selected for use', 'leyka-yandex-money'),
                 'type' => 'rich_editor',
-                'options' => array('default' => 'Яндекс.Деньги — доступный и безопасный способ платить за товары и услуги через интернет. Заполнив форму оплаты на нашем сайте, вы будете перенаправлены на сайт Яндекс.Денег, где сможете завершить платеж. Если у вас нет счета в Яндекс.Деньгах, его нужно открыть на <a href="https://money.yandex.ru/">сайте платежной системы</a>.'),
+                'std' => 'Яндекс.Деньги — доступный и безопасный способ платить за товары и услуги через интернет. Заполнив форму оплаты на нашем сайте, вы будете перенаправлены на сайт Яндекс.Денег, где сможете завершить платеж. Если у вас нет счета в Яндекс.Деньгах, его нужно открыть на <a href="https://money.yandex.ru/">сайте платежной системы</a>.',
             )
         );
         return $options;

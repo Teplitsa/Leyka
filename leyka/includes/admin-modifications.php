@@ -397,7 +397,7 @@ function leyka_admin_init(){
         </tr>
         <?php do_action('edd_stats_meta_box');?>
     </table>
-    <?}
+    <?php }
 
     // Render donations log metabox:
     function leyka_render_donation_log_meta_box(){
@@ -1029,7 +1029,7 @@ function leyka_admin_init(){
             '{receipt_id} - '.__('The unique ID number for this donation', 'leyka').'<br/>'.
             '{payment_method} - '.__('The method of payment used for this donation', 'leyka').'<br/>'.
             '{sitename} - '.__('Your site name', 'edd');
-        $settings['purchase_receipt']['options']['default'] = __('Hello, {name}!<br /><br />
+        $settings['purchase_receipt']['std'] = __('Hello, {name}!<br /><br />
                                                  You have chosed to make the following donations:<br />
                                                  {download_list}<br />
                                                  which totally cost {price}, by the {payment_method} gateway.
@@ -1060,6 +1060,12 @@ function leyka_admin_init(){
                     '{payment_method} - '.__('The method of payment used for this donation', 'leyka').'<br/>'.
                     '{sitename} - '.__('Your site name', 'edd'),
                 'type' => 'rich_editor',
+                'std' => __('Hello!<br /><br />
+                            Recently, there has been a new donation on a {sitename}:<br />
+                            {download_list}<br />
+                            which totally cost {price}, by the {payment_method} gateway.<br /><br />
+                            Donate ID: {donate_id}, donation hashcode: {receipt_id} | {edit_url}<br /><br />
+                            {sitename}, {date}', 'leyka'),
             )
         );
         return $settings;
@@ -1083,7 +1089,7 @@ function leyka_admin_init(){
         $settings['show_agree_to_terms']['desc'] = __('Show agreement to the terms checkbox. It will have to be checked to make a donation.', 'leyka');
         $settings['agree_label']['std'] = __('I agree to the terms of donation making service.', 'leyka');
 
-        $settings['agree_text']['options']['default'] = '
+        $settings['agree_text']['std'] = '
     1. Предмет договора*
     1. Благотворитель безвозмездно передает, а Благополучатель принимает товарно-материальные ценности и денежные средства для Целевого использования.
 

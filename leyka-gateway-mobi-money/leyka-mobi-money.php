@@ -139,13 +139,13 @@ function leyka_mobi_money_admin_init(){
                 'name' => __('MOBI.Money gateway description', 'leyka-mobi-money'),
                 'desc' => __('Enter MOBI.Money gateway description that will be shown to the donor when this gateway will be selected for use', 'leyka-mobi-money'),
                 'type' => 'rich_editor',
-                'std' => '<strong>MOBI.Деньги</strong> — современная система электронных платежей, которая позволяет:
+                'std' => '<strong><a href="https://www.mobi-money.ru/page/help/index">MOBI.Деньги</a></strong> — современная система электронных платежей, которая позволяет:
 <ul>
 	<li>оплачивать со счета мобильного телефона или с банковской карты самые разнообразные товары и услуги;</li>
 	<li>экономить время: не нужно искать платежные терминалы и стоять в очередях;</li>
 	<li>платить так, как вам удобно — с помощью SMS или через интернет.</li>
 </ul>
-Оплату можно произвести непосредственно с лицевого счета Вашего телефона либо отправив SMS: {тэг оплаты} {Сумма} {номер}
+Оплату можно произвести непосредственно с лицевого счета Вашего телефона, либо отправив SMS: {тэг оплаты} {Сумма} {номер}
 Номера:
 <ul>
 	<li>3116 (для оплаты с Билайн),</li>
