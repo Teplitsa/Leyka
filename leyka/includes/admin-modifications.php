@@ -1060,12 +1060,7 @@ function leyka_admin_init(){
                     '{payment_method} - '.__('The method of payment used for this donation', 'leyka').'<br/>'.
                     '{sitename} - '.__('Your site name', 'edd'),
                 'type' => 'rich_editor',
-                'std' => __('Hello!<br /><br />
-                            Recently, there has been a new donation on a {sitename}:<br />
-                            {download_list}<br />
-                            which totally cost {price}, by the {payment_method} gateway.<br /><br />
-                            Donate ID: {donate_id}, donation hashcode: {receipt_id} | {edit_url}<br /><br />
-                            {sitename}, {date}', 'leyka'),
+                'std' => __('Hello!<br /><br />Recently, there has been a new donation on a {sitename}:<br />{download_list}<br />which totally cost {price}, by the {payment_method} gateway.<br /><br />Donate ID: {donate_id}, donation hashcode: {receipt_id} | {edit_url}<br /><br />{sitename}, {date}', 'leyka'),
             )
         );
         return $settings;
