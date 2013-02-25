@@ -1,67 +1,88 @@
-# Translation of Leyka RBK Money gateway in Russian.
-# Copyright (C) 2012-2013 by Teplitsa of Social Technologies (te-st.ru).
-# This file is distributed under the same license as the Leyka RBK Money gateway plugin package.
-# First Author: Lev Zvjagincev <ahaenor_ET_SIGN_gmail.com>, YEAR 2013.
-# Contributors: 
-# Denis Kulanin <kulandin_ET_SIGN_te-st.ru>;
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2013-02-04 18:42:46+0000\n"
+"Project-Id-Version: Leyka RBK Money gateway v1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2013-02-25 13:09:54+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: GlotPress/0.1\n"
-"Project-Id-Version: Leyka RBK Money gateway v1.0\n"
+"X-Poedit-Language: \n"
+"X-Poedit-Country: \n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
+"X-Poedit-Basepath: \n"
+"X-Poedit-Bookmarks: \n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Textdomain-Support: yes"
 
-#: leyka-rbk-money.php:119
-msgid "Recall"
-msgstr "Отзывы"
-
-#: leyka-rbk-money.php:120
-msgid "recall"
-msgstr "отзыв"
-
-#: leyka-rbk-money.php:171
+#: leyka-rbk-money.php:148
+#@ leyka-rbk-money
 msgid "RBK Money gateway description"
 msgstr "Описание шлюза RBK Money"
 
-#: leyka-rbk-money.php:172
+#: leyka-rbk-money.php:149
+#@ leyka-rbk-money
 msgid "Enter RBK Money gateway description that will be shown to the donor when this gateway will be selected for use"
-msgstr "Введите описание шлюза RBK Money которое будет показано жертвователям, когда шлюз будет выбран для оплаты пожертвования."
+msgstr "Введите описание шлюза RBK Money, которое будет показано жертвователям при выборе этой платёжной системы в качестве средства оплаты пожертвования."
 
-#: leyka-rbk-money.php:185
+#: leyka-rbk-money.php:166
+#@ leyka-rbk-money
 msgid "RBK money small (59x35 px)"
 msgstr "RBK Money маленький (59x35 px)"
 
-#: leyka-rbk-money.php:186
+#: leyka-rbk-money.php:167
+#@ leyka-rbk-money
 msgid "RBK money medium (86x51 px) (recommended)"
 msgstr "RBK Money средний  (86x51 px) - рекомендован"
 
-#: leyka-rbk-money.php:187
+#: leyka-rbk-money.php:168
+#@ leyka-rbk-money
 msgid "RBK money big (135x80 px)"
 msgstr "RBK Money большой(135x80 px)"
 
-#: leyka-rbk-money.php:58 leyka-rbk-money.php:59
+#: leyka-rbk-money.php:67
+#: leyka-rbk-money.php:68
+#@ leyka-rbk-money
 msgid "RBK Money"
 msgstr "RBK Money"
 
 #: leyka-rbk-money.php:87
+#@ leyka-rbk-money
 msgid "Error: donations receiver's RBK Money shop ID has not been set. Please, report it to him."
-msgstr "Ошибка: ID магазина в системе RBK Money не указан. Пожалуйста, сообщите об этом в техн. поддержку сайта."
+msgstr "ID магазина в системе RBK Money не указан. Пожалуйста, сообщите об этом администрации сайта."
 
 #: leyka-rbk-money.php:90
+#@ leyka-rbk-money
 msgid "Error: donations receiver's RBK Money shop ID is incorrect. Please, report it to him."
-msgstr "Ошибка: указан некорректный ID магазина в системе RBK Money. Пожалуйста, сообщите об этом в техн. поддержку сайта."
+msgstr "указан некорректный ID магазина в системе RBK Money. Пожалуйста, сообщите об этом администрации сайта."
 
-#: leyka-rbk-money.php:158
+#: leyka-rbk-money.php:135
+#@ leyka-rbk-money
 msgid "RBK Money Settings"
 msgstr "Настройки модуля RBK Money"
 
-#: leyka-rbk-money.php:164
+#: leyka-rbk-money.php:141
+#@ leyka-rbk-money
 msgid "RBK Money shop ID"
 msgstr "ID магазина в системе RBK Money"
 
-#: leyka-rbk-money.php:165
+#: leyka-rbk-money.php:142
+#@ leyka-rbk-money
 msgid "Enter your RBK Money shop ID"
 msgstr "Введите ID магазина, полученный вами при подключении к системе RBK Money"
+
+#: leyka-rbk-money.php:117
+#@ leyka-rbk-money
+msgid "<div id=\"message\" class=\"error\"><strong>Error:</strong> base donations plugin is missing or inactive. It is required for RBK Money gateway module to work. RBK Money plugin will be deactivated.</div>"
+msgstr "<div id=\"message\" class=\"error\"><strong>Ошибка:</strong> базовый плагин пожертвоаний отсутствует или неактивен. Он необходим для работы модуля сбора пожертвований через RBK Money. Модуль RBK Money будет деактивирован.</div>"
+
+#: leyka-rbk-money.php:124
+#@ default
+msgid "Settings"
+msgstr ""
+

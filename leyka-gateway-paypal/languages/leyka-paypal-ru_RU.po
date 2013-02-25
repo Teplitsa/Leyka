@@ -1,13 +1,9 @@
-# Translation of Leyka MOBI.Money gateway in Russian.
-# Copyright (C) 2012-2013 by Teplitsa of Social Technologies (te-st.ru).
-# This file is distributed under the same license as the Leyka plugin package.
-# First Author: Lev Zvjagincev <ahaenor_ET_SIGN_gmail.com>, YEAR 2013.
-# Contributors: 
-# Denis Kulanin <kulandin_ET_SIGN_te-st.ru>;
 msgid ""
 msgstr ""
+"Project-Id-Version: Leyka PayPal gateway v1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2013-02-07 09:50:23+0000\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2013-02-25 13:06:11+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -15,87 +11,94 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: GlotPress/0.1\n"
-"Project-Id-Version: Leyka MOBI.Money gateway v1.0\n"
+"X-Poedit-Language: \n"
+"X-Poedit-Country: \n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
+"X-Poedit-Basepath: \n"
+"X-Poedit-Bookmarks: \n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Textdomain-Support: yes"
 
-#: leyka-paypal.php:126
-#@ leyka
-msgid "Recall"
-msgstr "Отзывы"
-
-#: leyka-paypal.php:127
-#@ leyka
-msgid "recall"
-msgstr "отзыв"
-
-#: leyka-paypal.php:174
+#: leyka-paypal.php:147
 #@ leyka-paypal
 msgid "PayPal item name"
 msgstr "Номер товара в PayPal"
 
-#: leyka-paypal.php:175
+#: leyka-paypal.php:148
 #@ leyka-paypal
 msgid "Enter your PayPal item name"
 msgstr "Введите ваш номер товара в PayPal"
 
-#: leyka-paypal.php:181
+#: leyka-paypal.php:154
 #@ leyka-paypal
 msgid "PayPal currency ID"
 msgstr "ID валюты в PayPal"
 
-#: leyka-paypal.php:182
+#: leyka-paypal.php:155
 #@ leyka-paypal
 msgid "Enter your PayPal currency ID, if it's different from ED Donates currency setting"
 msgstr "Введите ID валюты в PayPal, если она отличается от основной валюты, используемой на вашем сайте."
 
-#: leyka-paypal.php:188
+#: leyka-paypal.php:161
 #, php-format
 #@ leyka-paypal
 msgid "Donations currency (%s) to USD course"
 msgstr "Курс валюты пожертвования (%s) к курсу USD"
 
-#: leyka-paypal.php:189
+#: leyka-paypal.php:162
 #, php-format
 #@ leyka-paypal
 msgid "Enter the cost of 1 USD in %s (a currency you selected for donations). This cost can be either more or less than 1.0. Default is 1.0."
 msgstr "Введите цену 1 USD в %s (валюта сбора пожертвований). Цена может быть либо больше либо меньше чем 1.0. По умолчанию установлено 1.0."
 
-#: leyka-paypal.php:196
+#: leyka-paypal.php:169
 #@ leyka-paypal
 msgid "PayPal gateway description"
 msgstr "Описание платежной системы PayPal"
 
-#: leyka-paypal.php:61
-#@ leyka-paypal
-msgid "Paypal (donates only!)"
-msgstr "PayPal (только для пожертвований)"
-
-#: leyka-paypal.php:62
-#@ leyka-paypal
-msgid "Paypal Donates"
-msgstr "Пожертвования через PayPal"
-
-#: leyka-paypal.php:90
-#@ leyka-paypal
-msgid "Error: donations receiver's Paypal business ID has not been set. Please, report it to him."
-msgstr "Ошибка: не задан бизнес-ID получателя платежа. Пожалуйста, сообщите об этом службе тех. поддержки сайта."
-
-#: leyka-paypal.php:161
-#@ leyka-paypal
-msgid "Paypal Settings"
-msgstr "Настройки PayPal"
-
-#: leyka-paypal.php:167
-#@ leyka-paypal
-msgid "Paypal business ID"
-msgstr "Ваш бизнес-ID в системе PayPal"
-
-#: leyka-paypal.php:168
-#@ leyka-paypal
-msgid "Enter your Paypal business ID or email"
-msgstr "Введите ваш email или бизнес-ID в системе PayPal"
-
-#: leyka-paypal.php:197
+#: leyka-paypal.php:170
 #@ leyka-paypal
 msgid "Enter PayPal gateway description that will be shown to the donor when this gateway will be selected for use"
 msgstr "Введите описание платёжной системы PayPal. Оно будет показано донору, если он выберет PayPal в качестве способа платежа."
+
+#: leyka-paypal.php:59
+#@ leyka-paypal
+msgid "<div id=\"message\" class=\"error\"><strong>Error:</strong> base donations plugin is missing or inactive. It is required for PayPal donations gateway module to work. PayPal donations plugin will be deactivated.</div>"
+msgstr "<div id=\"message\" class=\"error\"><strong>Ошибка:</strong> базовый плагин пожертвований отсутствует или неактивен. Он необходим для работы модуля сбора пожертвований через PayPal. Модуль PayPal будет деактивирован.</div>"
+
+#: leyka-paypal.php:70
+#@ leyka-paypal
+msgid "PayPal (donates only!)"
+msgstr "PayPal (только для сбора пожертвований)"
+
+#: leyka-paypal.php:71
+#@ leyka-paypal
+msgid "PayPal Donates"
+msgstr "Пожертвования через PayPal"
+
+#: leyka-paypal.php:96
+#@ leyka-paypal
+msgid "Error: donations receiver's PayPal business ID has not been set. Please, report it to him."
+msgstr "параметр PayPal business ID не задан. Пожалуйста, сообщите об этом администрации сайта."
+
+#: leyka-paypal.php:122
+#@ default
+msgid "Settings"
+msgstr ""
+
+#: leyka-paypal.php:134
+#@ leyka-paypal
+msgid "PayPal Settings"
+msgstr "Настройки модуля PayPal"
+
+#: leyka-paypal.php:140
+#@ leyka-paypal
+msgid "PayPal business ID"
+msgstr "Ваш business ID"
+
+#: leyka-paypal.php:141
+#@ leyka-paypal
+msgid "Enter your PayPal business ID or email"
+msgstr "Введите ваш business ID или электронную почту."
 
