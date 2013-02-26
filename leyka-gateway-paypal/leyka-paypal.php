@@ -91,23 +91,18 @@ function leyka_paypal_donates_init(){
     function leyka_paypal_donates_processing($payment_data){
         global $edd_options;
 
-        if(empty($edd_options['paypal_donates_business_id'])) {
-            edd_set_error('paypal_donates_business_id_is_missing', __('Error: donations receiver\'s PayPal business ID has not been set. Please, report it to him.', 'leyka-paypal'));
-            edd_send_back_to_checkout('?payment-mode='.$payment_data['post_data']['edd-gateway']);
-        } else { // Success, redirect to PayPal to donate:
+        // Redirect to PayPal to donate:
+        if(empty($edd_options['paypal_donates_currency_to_usd_course'])
+            || (float)$edd_options['paypal_donates_currency_to_usd_course'] <= 0.0)
+            $edd_options['paypal_donates_currency_to_usd_course'] = 1.0;
 
-            if(empty($edd_options['paypal_donates_currency_to_usd_course'])
-                || (float)$edd_options['paypal_donates_currency_to_usd_course'] <= 0.0)
-                $edd_options['paypal_donates_currency_to_usd_course'] = 1.0;
+        // PayPal accepts payments only in USD, so use donations currency rate to convert payment amount to USD: 
+        $payment_data['price'] = round($payment_data['price']/$edd_options['paypal_donates_currency_to_usd_course'], 2);
 
-            // PayPal accepts payments only in USD, so use donations currency rate to convert payment amount to USD: 
-            $payment_data['price'] = round($payment_data['price']/$edd_options['paypal_donates_currency_to_usd_course'], 2);
+        leyka_insert_payment($payment_data); // Process the payment on our side
 
-            leyka_insert_payment($payment_data); // Process the payment on our side
-
-            header('location: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&amount='.$payment_data['price'].'&business='.$edd_options['paypal_donates_business_id'].'&item_name='.$edd_options['paypal_donates_item_name'].'&buyer_credit_promo_code=&buyer_credit_product_category=&buyer_credit_shipping_method=&buyer_credit_user_address_change=&no_shipping=1&currency_code='.$edd_options['paypal_donates_currency_id'].'&tax=0&lc=US&bn=PP-DonationsBF');
-            flush();
-        }
+        header('location: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&amount='.$payment_data['price'].'&business='.$edd_options['paypal_donates_business_id'].'&item_name='.$edd_options['paypal_donates_item_name'].'&buyer_credit_promo_code=&buyer_credit_product_category=&buyer_credit_shipping_method=&buyer_credit_user_address_change=&no_shipping=1&currency_code='.$edd_options['paypal_donates_currency_id'].'&tax=0&lc=US&bn=PP-DonationsBF');
+        flush();
     }
     add_action('edd_gateway_paypal_donates', 'leyka_paypal_donates_processing');
 }
@@ -121,7 +116,7 @@ function leyka_paypal_donates_admin_init(){
         deactivate_plugins(__FILE__);
         echo __('<div id="message" class="error"><strong>Error:</strong> base donations plugin is missing or inactive. It is required for PayPal donations gateway module to work. PayPal donations plugin will be deactivated.</div>', 'leyka-paypal');
     }
-    
+
     // Add settings link on plugin page:
     function leyka_paypal_donates_plugin_page_links($links){
         array_unshift(
@@ -144,7 +139,7 @@ function leyka_paypal_donates_admin_init(){
             ),
             array(
                 'id' => 'paypal_donates_business_id',
-                'name' => __('PayPal business ID', 'leyka-paypal'),
+                'name' => __('PayPal business ID<span class="leyka-setting-required">*</span>', 'leyka-paypal'),
                 'desc' => __('Enter your PayPal business ID or email', 'leyka-paypal'),
                 'type' => 'text',
                 'size' => 'regular'
@@ -176,12 +171,35 @@ function leyka_paypal_donates_admin_init(){
                 'name' => __('PayPal gateway description', 'leyka-paypal'),
                 'desc' => __('Enter PayPal gateway description that will be shown to the donor when this gateway will be selected for use', 'leyka-paypal'),
                 'type' => 'rich_editor',
-                'std' => '<a href="https://www.paypal.com/ru/webapps/mpp/home">PayPal</a> - популярная электронная валюта, способ отправки и получения средств через Интернет физическими лицами и компаниями.'
+                'std' => '<a href="https://www.paypal.com/ru/webapps/mpp/home">PayPal</a> — популярная электронная валюта, способ отправки и получения средств через Интернет физическими лицами и компаниями.'
             )
         );
         return $options;
     }
     add_filter('edd_settings_gateways', 'leyka_paypal_donates_options');
+
+    /**
+     * Check if nessesary plugin's fields are filled.
+     *
+     * @todo Once EDD will have an appropriate API for validation of it's settings, all manual WP options manupulations will have to be removed, in favor of correct setting validation in callbacks.
+     */
+    function leyka_paypal_validate_fields(){
+        global $edd_options;
+
+        if( !empty($edd_options['gateways']['paypal_donates']) && empty($edd_options['paypal_donates_business_id']) ) {
+            // Direct settings manipulation:
+            $gateways_options = get_option('edd_settings_gateways');
+            unset($gateways_options['gateways']['paypal_donates']);
+            update_option('edd_settings_gateways', $gateways_options);
+            unset($edd_options['gateways']['paypal_donates']);
+            // Direct settings manipulation END
+
+            add_settings_error('paypal_donates_business_id', 'paypal-business-id-missing', __('Error: PayPal business ID is required.', 'leyka'));
+        }
+
+        settings_errors('paypal_donates_business_id');
+    }
+    add_action('admin_notices', 'leyka_paypal_validate_fields');
 
     // Enqueue backend javascript:
 //    if(file_exists(dirname(__FILE__).'/scripts/script-admin.js')) {

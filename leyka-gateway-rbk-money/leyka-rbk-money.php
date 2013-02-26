@@ -83,26 +83,18 @@ function leyka_rbk_money_init(){
     function leyka_rbk_money_processing($payment_data){
         global $edd_options;
 
-        if(empty($edd_options['rbk_money_id'])) {
-            edd_set_error('rbk_money_id_is_missing', __('Error: donations receiver\'s RBK Money shop ID has not been set. Please, report it to him.', 'leyka-rbk-money'));
-            edd_send_back_to_checkout('?payment-mode='.$payment_data['post_data']['edd-gateway']);
-        } elseif( !ctype_digit($edd_options['rbk_money_id']) && !filter_var($edd_options['rbk_money_id'], FILTER_VALIDATE_EMAIL) ) {
-            edd_set_error('rbk_id_is_invalid', __('Error: donations receiver\'s RBK Money shop ID is incorrect. Please, report it to him.', 'leyka-rbk-money'));
-            edd_send_back_to_checkout('?payment-mode='.$payment_data['post_data']['edd-gateway']);
-        } else { // Success, redirect to RBK to donate:
-            leyka_insert_payment($payment_data); // Process the payment on our side
+        // Redirect to RBK to donate:
+        leyka_insert_payment($payment_data); // Process the payment on our side
 
-            $currency = $edd_options['currency'];
-            switch(trim($edd_options['currency'], '.')) {
-                case 'руб':
-                case 'р':
-                case 'RU':
-                    $currency = 'RUR';
-            }
-            header('location: https://rbkmoney.ru/acceptpurchase.aspx?eshopId='.$edd_options['rbk_money_id'].'&recipientCurrency='.$currency.'&recipientAmount='.$payment_data['price']);
-            flush();
+        $currency = $edd_options['currency'];
+        switch(trim($edd_options['currency'], '.')) {
+            case 'руб':
+            case 'р':
+            case 'RU':
+                $currency = 'RUR';
         }
-
+        header('location: https://rbkmoney.ru/acceptpurchase.aspx?eshopId='.$edd_options['rbk_money_id'].'&recipientCurrency='.$currency.'&recipientAmount='.$payment_data['price']);
+        flush();
     }
     add_action('edd_gateway_rbk_money', 'leyka_rbk_money_processing');
 }
@@ -138,7 +130,7 @@ function leyka_rbk_money_admin_init(){
             ),
             array(
                 'id' => 'rbk_money_id',
-                'name' => __('RBK Money shop ID', 'leyka-rbk-money'),
+                'name' => __('RBK Money shop ID<span class="leyka-setting-required">*</span>', 'leyka-rbk-money'),
                 'desc' => __('Enter your RBK Money shop ID', 'leyka-rbk-money'),
                 'type' => 'text',
                 'size' => 'regular'
@@ -158,6 +150,29 @@ RBK Money обеспечивает техническую надежность �
         return $options;
     }
     add_filter('edd_settings_gateways', 'leyka_rbk_money_options');
+
+    /**
+     * Check if nessesary plugin's fields are filled.
+     *
+     * @todo Once EDD will have an appropriate API for validation of it's settings, all manual WP options manupulations will have to be removed, in favor of correct setting validation in callbacks.
+     */
+    function leyka_rbk_validate_fields(){
+        global $edd_options;
+
+        if( !empty($edd_options['gateways']['rbk_money']) && empty($edd_options['rbk_money_id']) ) {
+            // Direct settings manipulation:
+            $gateways_options = get_option('edd_settings_gateways');
+            unset($gateways_options['gateways']['rbk_money']);
+            update_option('edd_settings_gateways', $gateways_options);
+            unset($edd_options['gateways']['rbk_money']);
+            // Direct settings manipulation END
+
+            add_settings_error('rbk_money_id', 'rbk-money-id-missing', __('Error: RBK Money ID is required.', 'leyka'));
+        }
+
+        settings_errors('rbk_money_id');
+    }
+    add_action('admin_notices', 'leyka_rbk_validate_fields');
 
     /** Add icons option to the icons list. */
     function leyka_rbk_money_icons($icons){

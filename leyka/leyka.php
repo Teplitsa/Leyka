@@ -56,7 +56,7 @@ if( !defined('LEYKA_PLUGIN_INNER_SHORT_NAME') ) {
 }
 // Plugin official name
 if( !defined('LEYKA_PLUGIN_TITLE') ) {
-    define('LEYKA_PLUGIN_TITLE', 'Easy Digital Donates');
+    define('LEYKA_PLUGIN_TITLE', __('Leyka', 'leyka'));
 }
 
 if( !empty($edd_options['test_mode']) ) {

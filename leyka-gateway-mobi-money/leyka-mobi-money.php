@@ -75,25 +75,18 @@ function leyka_mobi_money_init(){
 //    add_action('edd_mobi_money_cc_form', function(){
 //    });
 
-    /**
-     * Do some validation on our gateway specific fields if needed.
-     */
+    /** Do some validation on our gateway specific fields if needed. */
 //    add_action('edd_checkout_error_checks', function($checkout_form_data){
-//        
 //    });
 
     /** Do the gateway's data processing: redirect, saving data in DB, etc. */
     function leyka_mobi_money_processing($payment_data){
         global $edd_options;
 
-        if(empty($edd_options['mobi_money_shop_id'])) {
-            edd_set_error('mobi_money_shop_id_is_missing', __('Error: donations receiver\'s MOBI.Money shop ID has not been set. Please, report it to him.', 'leyka-mobi-money'));
-            edd_send_back_to_checkout('?payment-mode='.$payment_data['post_data']['edd-gateway']);
-        } else { // Success, redirect to MOBI.Money to donate:
-            leyka_insert_payment($payment_data); // Process the payment on our side
-            header('location: https://pay.mobi-money.ru/'.$edd_options['mobi_money_shop_id'].'?sum='.$payment_data['price'].'&payerPhone='.(empty($payment_data['phone']) ? '' : $payment_data['phone']));
-            flush();
-        }
+        // Redirect to MOBI.Money to donate:
+        leyka_insert_payment($payment_data); // Process the payment on our side
+        header('location: https://pay.mobi-money.ru/'.$edd_options['mobi_money_shop_id'].'?sum='.$payment_data['price'].'&payerPhone='.(empty($payment_data['phone']) ? '' : $payment_data['phone']));
+        flush();
     }
     add_action('edd_gateway_mobi_money', 'leyka_mobi_money_processing');
 }
@@ -129,7 +122,7 @@ function leyka_mobi_money_admin_init(){
             ),
             array(
                 'id' => 'mobi_money_shop_id',
-                'name' => __('MOBI.Money shop ID', 'leyka-mobi-money'),
+                'name' => __('MOBI.Money shop ID<span class="leyka-setting-required">*</span>', 'leyka-mobi-money'),
                 'desc' => __('Enter your MOBI.Money shop ID', 'leyka-mobi-money'),
                 'type' => 'text',
                 'size' => 'regular'
@@ -139,6 +132,7 @@ function leyka_mobi_money_admin_init(){
                 'name' => __('MOBI.Money gateway description', 'leyka-mobi-money'),
                 'desc' => __('Enter MOBI.Money gateway description that will be shown to the donor when this gateway will be selected for use', 'leyka-mobi-money'),
                 'type' => 'rich_editor',
+                /** @todo Add eng translation and corresp. localization of this descr. */
                 'std' => '<strong><a href="https://www.mobi-money.ru/page/help/index">MOBI.Деньги</a></strong> — современная система электронных платежей, которая позволяет:
 <ul>
 	<li>оплачивать со счета мобильного телефона или с банковской карты самые разнообразные товары и услуги;</li>
@@ -159,6 +153,29 @@ function leyka_mobi_money_admin_init(){
         return $options;
     }
     add_filter('edd_settings_gateways', 'leyka_mobi_money_options');
+
+    /**
+     * Check if nessesary plugin's fields are filled.
+     * 
+     * @todo Once EDD will have an appropriate API for validation of it's settings, all manual WP options manupulations will have to be removed, in favor of correct setting validation in callbacks.  
+     */
+    function leyka_mobi_money_admin_messages(){
+        global $edd_options;
+
+        if( !empty($edd_options['gateways']['mobi_money']) && empty($edd_options['mobi_money_shop_id']) ) {
+            // Direct settings manipulation:
+            $gateways_options = get_option('edd_settings_gateways');
+            unset($gateways_options['gateways']['mobi_money']);
+            update_option('edd_settings_gateways', $gateways_options);
+            unset($edd_options['gateways']['mobi_money']);
+            // Direct settings manipulation END
+
+            add_settings_error('mobi_money_shop_id', 'mobi-money-shop-id-missing', __('Error: MOBI.Money shop ID is required.', 'leyka'));
+        }
+
+        settings_errors('mobi_money_shop_id');
+    }
+    add_action('admin_notices', 'leyka_mobi_money_admin_messages');
 
     /** Add icons option to the icons list */
     function leyka_mobi_money_icons($icons){

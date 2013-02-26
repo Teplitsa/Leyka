@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Leyka RBK Money gateway v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-02-25 13:09:54+0000\n"
+"PO-Revision-Date: 2013-02-26 11:29:31+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -20,27 +20,27 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Textdomain-Support: yes"
 
-#: leyka-rbk-money.php:148
+#: leyka-rbk-money.php:140
 #@ leyka-rbk-money
 msgid "RBK Money gateway description"
 msgstr "Описание шлюза RBK Money"
 
-#: leyka-rbk-money.php:149
+#: leyka-rbk-money.php:141
 #@ leyka-rbk-money
 msgid "Enter RBK Money gateway description that will be shown to the donor when this gateway will be selected for use"
 msgstr "Введите описание шлюза RBK Money, которое будет показано жертвователям при выборе этой платёжной системы в качестве средства оплаты пожертвования."
 
-#: leyka-rbk-money.php:166
+#: leyka-rbk-money.php:181
 #@ leyka-rbk-money
 msgid "RBK money small (59x35 px)"
 msgstr "RBK Money маленький (59x35 px)"
 
-#: leyka-rbk-money.php:167
+#: leyka-rbk-money.php:182
 #@ leyka-rbk-money
 msgid "RBK money medium (86x51 px) (recommended)"
 msgstr "RBK Money средний  (86x51 px) - рекомендован"
 
-#: leyka-rbk-money.php:168
+#: leyka-rbk-money.php:183
 #@ leyka-rbk-money
 msgid "RBK money big (135x80 px)"
 msgstr "RBK Money большой(135x80 px)"
@@ -51,38 +51,33 @@ msgstr "RBK Money большой(135x80 px)"
 msgid "RBK Money"
 msgstr "RBK Money"
 
-#: leyka-rbk-money.php:87
-#@ leyka-rbk-money
-msgid "Error: donations receiver's RBK Money shop ID has not been set. Please, report it to him."
-msgstr "ID магазина в системе RBK Money не указан. Пожалуйста, сообщите об этом администрации сайта."
-
-#: leyka-rbk-money.php:90
-#@ leyka-rbk-money
-msgid "Error: donations receiver's RBK Money shop ID is incorrect. Please, report it to him."
-msgstr "указан некорректный ID магазина в системе RBK Money. Пожалуйста, сообщите об этом администрации сайта."
-
-#: leyka-rbk-money.php:135
+#: leyka-rbk-money.php:127
 #@ leyka-rbk-money
 msgid "RBK Money Settings"
 msgstr "Настройки модуля RBK Money"
 
-#: leyka-rbk-money.php:141
-#@ leyka-rbk-money
-msgid "RBK Money shop ID"
-msgstr "ID магазина в системе RBK Money"
-
-#: leyka-rbk-money.php:142
+#: leyka-rbk-money.php:134
 #@ leyka-rbk-money
 msgid "Enter your RBK Money shop ID"
 msgstr "Введите ID магазина, полученный вами при подключении к системе RBK Money"
 
-#: leyka-rbk-money.php:117
+#: leyka-rbk-money.php:109
 #@ leyka-rbk-money
 msgid "<div id=\"message\" class=\"error\"><strong>Error:</strong> base donations plugin is missing or inactive. It is required for RBK Money gateway module to work. RBK Money plugin will be deactivated.</div>"
 msgstr "<div id=\"message\" class=\"error\"><strong>Ошибка:</strong> базовый плагин пожертвоаний отсутствует или неактивен. Он необходим для работы модуля сбора пожертвований через RBK Money. Модуль RBK Money будет деактивирован.</div>"
 
-#: leyka-rbk-money.php:124
+#: leyka-rbk-money.php:116
 #@ default
 msgid "Settings"
+msgstr ""
+
+#: leyka-rbk-money.php:133
+#@ leyka-rbk-money
+msgid "RBK Money shop ID<span class=\"leyka-setting-required\">*</span>"
+msgstr "ID магазина в системе RBK Money<span class=\"leyka-setting-required\">*</span>"
+
+#: leyka-rbk-money.php:170
+#@ leyka
+msgid "Error: RBK Money ID is required."
 msgstr ""
 
