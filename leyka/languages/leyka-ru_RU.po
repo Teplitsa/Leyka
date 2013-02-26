@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Leyka v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-02-25 13:19:30+0000\n"
+"PO-Revision-Date: 2013-02-26 06:49:07+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -258,20 +258,20 @@ msgstr "Статус по умолчанию для новых отзывов п
 
 #: includes/admin/class-payments-table.php:70
 #: includes/admin-modifications.php:988
-#: includes/admin-modifications.php:1176
+#: includes/admin-modifications.php:1177
 #@ edd
 #@ default
 msgid "Pending"
 msgstr "Ожидание"
 
 #: includes/admin-modifications.php:989
-#: includes/admin-modifications.php:1175
+#: includes/admin-modifications.php:1176
 #@ default
 msgid "Draft"
 msgstr "Черновик"
 
 #: includes/admin-modifications.php:990
-#: includes/admin-modifications.php:1173
+#: includes/admin-modifications.php:1174
 #@ default
 msgid "Publish"
 msgstr "Опубликовать"
@@ -390,24 +390,24 @@ msgstr "Уникальный номер (ID) цели пожертвования
 msgid "The URL of the admin page where donation status can be changed"
 msgstr "URL страницы админ. панели сайта, на которой можно изменить статус пожертвования"
 
-#: includes/admin-modifications.php:1133
+#: includes/admin-modifications.php:1134
 #@ default
 msgid "Title"
 msgstr "Наименование"
 
-#: includes/admin-modifications.php:1134
-#: includes/admin-modifications.php:1180
+#: includes/admin-modifications.php:1135
+#: includes/admin-modifications.php:1181
 #: includes/user-recalls-columns.php:18
 #@ leyka
 msgid "Recall text"
 msgstr "Текст отзыва"
 
-#: includes/admin-modifications.php:1135
+#: includes/admin-modifications.php:1136
 #@ leyka
 msgid "Recall author (donor)"
 msgstr "Автор отзыва (донор)"
 
-#: includes/admin-modifications.php:1136
+#: includes/admin-modifications.php:1137
 #@ leyka
 msgid "Gateway"
 msgstr "Платёжная система"
@@ -415,7 +415,7 @@ msgstr "Платёжная система"
 #: includes/admin/class-donations-logs-list-table.php:122
 #: includes/admin/class-payments-table.php:84
 #: includes/admin-modifications.php:434
-#: includes/admin-modifications.php:1137
+#: includes/admin-modifications.php:1138
 #: includes/user-recalls-columns.php:19
 #@ edd
 #@ default
@@ -423,65 +423,65 @@ msgstr "Платёжная система"
 msgid "Date"
 msgstr "Дата"
 
-#: includes/admin-modifications.php:1160
+#: includes/admin-modifications.php:1161
 #@ default
 msgid "Quick&nbsp;Edit"
 msgstr "Быстрое&nbsp;Редактирование"
 
-#: includes/admin-modifications.php:1161
+#: includes/admin-modifications.php:1162
 #@ default
 msgid "Move this item to the Trash"
 msgstr "Переместить этот элемент в мусорную корзину"
 
-#: includes/admin-modifications.php:1161
-#: includes/admin-modifications.php:1174
+#: includes/admin-modifications.php:1162
+#: includes/admin-modifications.php:1175
 #@ default
 msgid "Trash"
 msgstr "Мусорная корзина"
 
-#: includes/admin-modifications.php:1167
+#: includes/admin-modifications.php:1168
 #@ leyka
 msgid "Edit user recall #"
 msgstr "Редактировать отзыв пользователя #"
 
 #: includes/admin/class-payments-table.php:86
-#: includes/admin-modifications.php:1171
+#: includes/admin-modifications.php:1172
 #@ edd
 #@ default
 msgid "Status"
 msgstr "Статус"
 
-#: includes/admin-modifications.php:1185
+#: includes/admin-modifications.php:1186
 #@ default
 msgid "Cancel"
 msgstr "Отмена"
 
-#: includes/admin-modifications.php:1225
+#: includes/admin-modifications.php:1226
 #@ leyka
 msgid "Permissions denied!"
 msgstr "В доступе отказано!"
 
-#: includes/admin-modifications.php:1327
+#: includes/admin-modifications.php:1328
 #@ leyka
 msgid "Activate the donation"
 msgstr "Активировать пожертвование"
 
-#: includes/admin-modifications.php:1339
+#: includes/admin-modifications.php:1340
 #@ leyka
 msgid "New donation payment"
 msgstr "Новый платеж по пожертвованию"
 
-#: includes/admin-modifications.php:1365
+#: includes/admin-modifications.php:1366
 #@ leyka
 msgid "Error while editing the recall! Please try again later or e-mail the support team to fix it."
 msgstr "Ошибка при редактировании отзыва. Пожалуйста, попробуйте ещё раз. Если ошибка повторится, обратитесь в службу поддержки сайта."
 
-#: includes/admin-modifications.php:1366
+#: includes/admin-modifications.php:1367
 #@ leyka
 msgid "PENDING"
 msgstr "В ОЖИДАНИИ"
 
-#: includes/admin-modifications.php:1367
+#: includes/admin-modifications.php:1368
 #@ leyka
 msgid "COMPLETE"
 msgstr "ЗАВЕРШЕН"
@@ -880,7 +880,7 @@ msgid "Donates"
 msgstr "Цели пожертвований"
 
 #: includes/admin-modifications.php:73
-#: includes/admin-modifications.php:1113
+#: includes/admin-modifications.php:1114
 #: includes/frontend-modifications.php:25
 #@ leyka
 msgid "Donate"
@@ -1272,38 +1272,43 @@ msgstr "Пожертвования"
 msgid "New donation came"
 msgstr "Сделано новое пожертвование"
 
-#: includes/admin-modifications.php:1082
+#: includes/admin-modifications.php:1083
 #@ leyka
 msgid "Redirect to the checkout after adding the donation to the cart."
 msgstr "Перенаправлять на страницу оплаты при каждом добавлении пожертвования в корзину."
 
-#: includes/admin-modifications.php:1083
+#: includes/admin-modifications.php:1084
 #@ leyka
 msgid "Show agreement to the terms checkbox. It will have to be checked to make a donation."
 msgstr "Выводить поле согласия с условиями публичной оферты. Если это поле не отмечено, пожертвование не будет разрешено."
 
-#: includes/admin-modifications.php:1084
+#: includes/admin-modifications.php:1085
 #@ leyka
 msgid "I agree to the terms of donation making service."
 msgstr "Я согласен с условиями сервиса пожертвований"
 
-#: includes/admin-modifications.php:1111
+#: includes/admin-modifications.php:1112
 #@ leyka
 msgid "A text on a button to complete a donation"
 msgstr "Текст для кнопки выполнения пожертвования"
 
-#: includes/admin-modifications.php:1112
+#: includes/admin-modifications.php:1113
 #@ leyka
 msgid "A text on a button to complete a donation."
 msgstr "Текст для кнопки выполнения пожертвования на странице оплаты."
 
-#: includes/admin-modifications.php:1115
+#: includes/admin-modifications.php:1116
 #@ leyka
 msgid "A text on \"add to cart\" button"
 msgstr "Текст для кнопки добавления в корзину"
 
-#: includes/admin-modifications.php:1116
+#: includes/admin-modifications.php:1117
 #@ leyka
 msgid "Add donation to cart"
 msgstr "Добавить в корзину"
+
+#: includes/admin-modifications.php:1063
+#@ leyka
+msgid "Hello!<br /><br />Recently, there has been a new donation on a {sitename}:<br />{download_list}<br />which totally cost {price}, by the {payment_method} gateway.<br /><br />Donate ID: {donate_id}, donation hashcode: {receipt_id} | {edit_url}<br /><br />{sitename}, {date}"
+msgstr "Добрый день!<br /><br />На сайте {sitename} было совершено следующее пожертвование:<br />{download_list}<br />на общую сумму {price}, с помощью платёжной системы {payment_method}.<br /><br />ID цели пожертвования: {donate_id}, уникальный код пожертвования: {receipt_id} | {edit_url}<br /><br />{sitename}, {date}"
 
