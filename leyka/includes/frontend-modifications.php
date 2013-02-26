@@ -88,8 +88,7 @@ function leyka_frontend_init(){
     // Show payment gateways icons with correct hrefs: 
     remove_action('edd_payment_mode_top', 'edd_show_payment_icons');
     remove_action('edd_before_purchase_form', 'edd_show_payment_icons');
-    function leyka_show_correct_payment_icons()
-    {
+    function leyka_show_correct_payment_icons(){
         global $edd_options;
 
         if(isset($edd_options['accepted_cards'])) {
@@ -106,8 +105,22 @@ function leyka_frontend_init(){
     }
     add_action('leyka_payment_mode_top', 'leyka_show_correct_payment_icons');
 
-    function leyka_agree_to_terms_js()
-    {
+    /** Sets an error on checkout if no gateways are enabled. */
+    function leyka_no_gateway_error(){
+        $gateways = edd_get_enabled_payment_gateways();
+        if( !$gateways )
+            edd_set_error(
+                'no_gateways',
+                str_replace('%s', LEYKA_PLUGIN_TITLE, __('You must enable a payment gateway to use %s', 'leyka'))
+            );
+        else
+            unset($_SESSION['edd-errors']['no_gateways']);
+    }
+    remove_action('init', 'edd_no_gateway_error');
+    add_action('init', 'leyka_no_gateway_error');
+
+    /** Adds a correct JS for agree to the terms module. */
+    function leyka_agree_to_terms_js(){
         global $edd_options;
 
         if( !empty($edd_options['show_agree_to_terms']) ) {?>

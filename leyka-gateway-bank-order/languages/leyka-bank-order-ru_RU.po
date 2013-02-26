@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Leyka Bank Order gateway v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-02-25 12:55:40+0000\n"
+"PO-Revision-Date: 2013-02-26 11:22:14+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -20,105 +20,90 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Textdomain-Support: yes"
 
-#: leyka-bank-order.php:100
-#@ leyka-bank-order
-msgid "the quittance blank for bank payment has not been set. Please, report it to developer of this site."
-msgstr "Бланк квитанции для банковского платежа не был задан. Пожалуйста, обратитесь к администрации сайта."
-
-#: leyka-bank-order.php:244
-#@ leyka-bank-order
-msgid "Use the following document file instead of configurations above"
-msgstr "Использовать указанный файл с реквизитами вместо формирования квитанции"
-
-#: leyka-bank-order.php:250
+#: leyka-bank-order.php:241
 #@ leyka-bank-order
 msgid "Payment order template file"
 msgstr "Файл с реквизитами оплаты"
 
-#: leyka-bank-order.php:251
+#: leyka-bank-order.php:242
 #@ leyka-bank-order
 msgid "File will be used as a quittance. No requisites' values will be replaced."
 msgstr "Файл с реквизитами оплаты будет использован вместо платёжной квитанции"
 
-#: leyka-bank-order.php:252
+#: leyka-bank-order.php:243
 #@ leyka-bank-order
 msgid "Path to the template file"
 msgstr "Путь к файлу с реквизитами оплаты"
 
-#: leyka-bank-order.php:257
+#: leyka-bank-order.php:248
 #@ leyka-bank-order
 msgid "Manual bank payment description"
 msgstr "Описание платёжной системы «банковский платеж»"
 
-#: leyka-bank-order.php:258
+#: leyka-bank-order.php:249
 #@ leyka-bank-order
 msgid "Enter your manual payment description that will be shown to the donor when this gateway will be selected for use"
 msgstr "Введите описание платёжной системы, которое будет показано донорам, когда для оплаты пожертвования будет выбран «банковский платёж»."
 
-#: leyka-bank-order.php:271
+#: leyka-bank-order.php:289
 #@ leyka-bank-order
 msgid "Sberbank small (169x35 px)"
 msgstr "Сбербанк, маленький (169x35 px)"
 
-#: leyka-bank-order.php:272
+#: leyka-bank-order.php:290
 #@ leyka-bank-order
 msgid "Sberbank medium (246x51 px) (recommended)"
 msgstr "Сбербанк, средний (246x51 px) - рекомендован"
 
-#: leyka-bank-order.php:273
+#: leyka-bank-order.php:291
 #@ leyka-bank-order
 msgid "Sberbank big (386x80 px)"
 msgstr "Сбербанк, большой (386x80 px)"
 
-#: leyka-bank-order.php:190
+#: leyka-bank-order.php:193
 #@ leyka-bank-order
 msgid "Payment receiver's name"
 msgstr "Наименование получателя платежа"
 
-#: leyka-bank-order.php:196
+#: leyka-bank-order.php:199
 #@ leyka-bank-order
 msgid "Payment receiver's INN number"
 msgstr "ИНН получателя платежа"
 
-#: leyka-bank-order.php:202
+#: leyka-bank-order.php:205
 #@ leyka-bank-order
 msgid "Payment receiver's KPP number"
 msgstr "КПП получателя платежа"
 
-#: leyka-bank-order.php:208
+#: leyka-bank-order.php:211
 #@ leyka-bank-order
 msgid "Payment receiver's bank account number"
 msgstr "Номер банковского счёта получателя платежа"
 
-#: leyka-bank-order.php:214
+#: leyka-bank-order.php:217
 #@ leyka-bank-order
 msgid "Payment receiver's bank name"
 msgstr "Банк получателя платежа"
 
-#: leyka-bank-order.php:220
+#: leyka-bank-order.php:223
 #@ leyka-bank-order
 msgid "Payment receiver's BIK code"
 msgstr "БИК банка получателя платежа"
 
-#: leyka-bank-order.php:226
+#: leyka-bank-order.php:229
 #@ leyka-bank-order
 msgid "Payment receiver's correspondent account number"
 msgstr "Номер корр. счёта получателя платежа"
 
-#: leyka-bank-order.php:232
+#: leyka-bank-order.php:235
 #@ leyka-bank-order
 msgid "Bank payment quittance blank (HTML code)"
 msgstr "HTML-код бланка платёжной квитанции"
 
-#: leyka-bank-order.php:233
+#: leyka-bank-order.php:236
 #@ leyka-bank-order
 msgid "Enter bank payment quittance blank HTML code, please. You can easily get it <a href=\"http://quittance.ru/form-pd4.php\">here</a>."
 msgstr "Введите HTML-код бланка платёжной квитанции"
-
-#: leyka-bank-order.php:238
-#@ leyka-bank-order
-msgid "Use standard quittance blank instead of HTML code above"
-msgstr "Использовать стандартный бланк квитанции вместо вышеприведённого кода"
 
 #: leyka-bank-order.php:68
 #@ leyka-bank-order
@@ -130,28 +115,48 @@ msgstr "Банковский платёж по квитанции"
 msgid "Manual (bank order) payment"
 msgstr "Банковский платёж по квитанции"
 
-#: leyka-bank-order.php:166
+#: leyka-bank-order.php:151
 #@ leyka-bank-order
 msgid "<div id=\"message\" class=\"error\"><strong>Error:</strong> base donations plugin is missing or inactive. It is required for Bank order gateway module to work. Bank Order gateway will be deactivated.</div>"
 msgstr "<div id=\"message\" class=\"error\"><strong>Ошибка:</strong> базовый плагин пожертвований отсутствует или неактивен. Он необходим для работы модуля банковских платежей. Модуль будет декативирован.</div>"
 
-#: leyka-bank-order.php:173
+#: leyka-bank-order.php:158
 #@ default
 msgid "Settings"
 msgstr ""
 
-#: leyka-bank-order.php:184
+#: leyka-bank-order.php:169
 #@ leyka-bank-order
 msgid "Bank order gateway settings"
 msgstr "Настройки модуля банковских платежей"
 
-#: leyka-bank-order.php:185
+#: leyka-bank-order.php:170
 #@ leyka-bank-order
 msgid "Configure the bank order gateway settings"
 msgstr "Выполните настройку модуля банковских платежей"
 
-#: leyka-bank-order.php:260
-#@ leyka
+#: leyka-bank-order.php:251
+#@ leyka-bank-order
 msgid "Bank payment essential elements"
+msgstr "Реквизиты банковского платежа"
+
+#: leyka-bank-order.php:175
+#@ leyka-bank-order
+msgid "Use the standard bank order blank"
+msgstr "Использовать стандартный бланк банковского платежа"
+
+#: leyka-bank-order.php:181
+#@ leyka-bank-order
+msgid "Use the following document file as a bank order blank"
+msgstr "Использовать следующий документ в качестве бланка для банковского платежа"
+
+#: leyka-bank-order.php:187
+#@ leyka-bank-order
+msgid "Use manual bank order blank settings"
+msgstr "Использовать нижеследующие настройки для бланка банковского платежа"
+
+#: leyka-bank-order.php:278
+#@ leyka
+msgid "Error: bank order quittance is required."
 msgstr ""
 

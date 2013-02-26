@@ -84,69 +84,15 @@ function leyka_yandex_money_init(){
     /** Do the gateway's data processing: redirect, saving data in DB, etc. */
     function leyka_yandex_processing($payment_data){
         global $edd_options;
-        if(empty($edd_options['yamo_is_physical'])) { // Donations receiver is an NGO
 
-            // Process the payment on our side:
-            // Create the record for pending payment
-            $payment = edd_insert_payment(array(
-                'price' => $payment_data['price'],
-                'date' => $payment_data['date'],
-                'user_email' => $payment_data['user_email'],
-                'purchase_key' => $payment_data['purchase_key'],
-                'currency' => $edd_options['currency'],
-                'downloads' => $payment_data['downloads'],
-                'user_info' => $payment_data['user_info'],
-                'cart_details' => $payment_data['cart_details'],
-                'status' => $edd_options['leyka_payments_default_status']
-            ));
+        leyka_insert_payment($payment_data); // Process the payment on our side
 
-            if($payment) {
-                if($payment_data['post_data']['donor_comments']) {
-                    $recall = leyka_insert_recall(array(
-                        'post_content' => $payment_data['post_data']['donor_comments'],
-                        'post_type' => 'leyka_recall',
-                        'post_status' => $edd_options['leyka_recalls_default_status'],
-                        'post_title' => 'title',
-                    ));
-                    if($recall) {
-                        // Update the title and slug:
-                        leyka_update_recall($recall, array(
-                            'post_title' => __('Recall', 'leyka').' #'.$recall,
-                            'post_name' => __('recall', 'leyka').'-'.$recall,
-                        ));
-                        // Update recall metadata:
-                        update_post_meta($recall, '_leyka_payment_id', $payment);
-                    }
-                }
+        if(empty($edd_options['yamo_is_physical'])) // Donations receiver is an NGO
+            header('location: https://money.yandex.ru/eshop.xml?scid='.$edd_options['yamo_scid'].'&ShopID='.$edd_options['yamo_shopid'].'&sum='.(int)$payment_data['price'].'&OrderDetails='.urlencode($payment_data['post_data']['donor_comments']));    
+        else // Donations receiver is a physical person
+            header('location: https://money.yandex.ru/direct-payment.xml?sum='.(int)$payment_data['price'].'&receiver='.trim($edd_options['yamo_id']).'&destination='.urlencode($payment_data['post_data']['yandex_comments']));
 
-                edd_email_purchase_receipt($payment);
-                edd_empty_cart();
-            } else {
-                // if errors are present, send the user back to the purchase page so they can be corrected:
-                if(empty($payment_data['single_donate_id']))
-                    edd_send_back_to_checkout('?payment-mode='.$payment_data['post_data']['edd-gateway']);
-                else
-                    leyka_send_back_to_single_donate(
-                        $payment_data['single_donate_id'], $payment_data['post_data']['edd-gateway']
-                    );
-            }
-
-            header('location: https://money.yandex.ru/eshop.xml?scid='.$edd_options['yamo_scid'].'&ShopID='.$edd_options['yamo_shopid'].'&sum='.(int)$payment_data['price'].'&OrderDetails='.urlencode($payment_data['post_data']['donor_comments']));
-            flush();
-        } else { // Donations receiver is a physical person
-
-            if(empty($edd_options['yamo_id'])) {
-                edd_set_error('yamo_id_is_missing', __('Error: donations receiver\'s Yandex.Money account number has not been set. Please, report it to him.', 'leyka-yandex-money'));
-            } elseif( !ctype_digit($edd_options['yamo_id']) && !filter_var($edd_options['yamo_id'], FILTER_VALIDATE_EMAIL) ) {
-                edd_set_error('yamo_id_is_invalid', __('Error: donations receiver\'s Yandex.Money account number/email is incorrect. Please, report it to him.', 'leyka-yandex-money'));
-            } else { // Success, redirect to yandex.money to donate:
-                leyka_insert_payment($payment_data); // Process the payment on our side
-
-                header('location: https://money.yandex.ru/direct-payment.xml?sum='.(int)$payment_data['price'].'&receiver='.trim($edd_options['yamo_id']).'&destination='.urlencode($payment_data['post_data']['yandex_comments']));
-                flush();
-            }
-
-        }
+        flush();
     }
     add_action('edd_gateway_yandex', 'leyka_yandex_processing');
 }
@@ -231,6 +177,37 @@ function leyka_yandex_money_admin_init(){
         return $options;
     }
     add_filter('edd_settings_gateways', 'leyka_yandex_options');
+
+    /**
+     * Check if nessesary plugin's fields are filled.
+     *
+     * @todo Once EDD will have an appropriate API for validation of it's settings, all manual WP options manupulations will have to be removed, in favor of correct setting validation in callbacks.
+     */
+    function leyka_yandex_validate_fields(){
+        global $edd_options;
+
+        if(
+            !empty($edd_options['gateways']['yandex']) &&
+            empty($edd_options['yamo_id']) &&
+            (empty($edd_options['yamo_scid']) || empty($edd_options['yamo_shopid']))
+        ) {
+            // Direct settings manipulation:
+            $gateways_options = get_option('edd_settings_gateways');
+            unset($gateways_options['gateways']['yandex']);
+            update_option('edd_settings_gateways', $gateways_options);
+            unset($edd_options['gateways']['yandex']);
+            // Direct settings manipulation END
+
+            if(empty($edd_options['yamo_is_physical'])) {
+                add_settings_error('yamo_scid', 'yandex-scid-missing', __('Error: Yandex scid and shop ID are required.', 'leyka'));
+                settings_errors('yamo_scid');
+            } else {
+                add_settings_error('yamo_id', 'yandex-id-missing', __('Error: Yandex id/email are required.', 'leyka'));
+                settings_errors('yamo_id');
+            }
+        }
+    }
+    add_action('admin_notices', 'leyka_yandex_validate_fields');
 
     /** Add icons option to the icons list. */
     function leyka_yandex_icons($icons){

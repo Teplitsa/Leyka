@@ -62,7 +62,7 @@ function leyka_bank_order_plugins_loaded()
 add_action('plugins_loaded', 'leyka_bank_order_plugins_loaded');
 
 function leyka_bank_order_init(){
-    /** Add Quittance payment to the gateways list by filter hook */
+    /** Add Quittance payment to the gateways list by filter hook. */
     function leyka_bank_order_gateways($options){
         $options['bank_order'] = array(
             'admin_label' => __('Bank order payment', 'leyka-bank-order'),
@@ -72,86 +72,71 @@ function leyka_bank_order_init(){
     }
     add_filter('edd_payment_gateways', 'leyka_bank_order_gateways', 5);
 
-    /**
-     * Quittance checkout form - not needed.
-     */
+    /** Quittance checkout form - not needed. */
 //    add_action('edd_bank_order_cc_form', function(){
 //    });
 
-    /**
-     * Do some validation on our gateway specific fields if needed.
-     */
+    /** Do some validation on our gateway specific fields if needed. */
 //    add_action('edd_checkout_error_checks', function($checkout_form_data){
-//        
 //    });
 
     /** Do the gateway's data processing: redirect, saving data in DB, etc. */
     function leyka_bank_order_processing($payment_data){
         global $edd_options;
 
-        if(
-            (
-                empty($edd_options['bank_order_use_file']) &&
-                empty($edd_options['bank_order_html']) &&
-                empty($edd_options['bank_order_html_default'])
-            )
-            || ($edd_options['bank_order_use_file'] && empty($edd_options['bank_order_file']))
-        ) {
-            edd_set_error('bank_order_is_missing', __('the quittance blank for bank payment has not been set. Please, report it to developer of this site.', 'leyka-bank-order'));
-        } else { // Success, redirect to quittance page to print it out:
-            leyka_insert_payment($payment_data); // Process the payment on our side
+        // Redirect to quittance page to print it out:
+        leyka_insert_payment($payment_data); // Process the payment on our side
 
-            if($edd_options['bank_order_use_file']) {
-                header('location: '.$edd_options['bank_order_file']); // Send a payment quittance to browser
+        if($edd_options['bank_order_use_file']) {
+            header('location: '.$edd_options['bank_order_file']); // Send a payment quittance to browser
 //                header('location: '.home_url());
-                die(); // Just in case
-            }
-
-            header('Content-type: text/html; charset=utf-8');
-
-            $html = $edd_options['bank_order_html_default'] ?
-                file_get_contents(dirname(__FILE__).'/standard_bank_order.php') :
-                $edd_options['bank_order_html'];
-
-            $html = str_replace(array(
-                    '#RECEIVER_NAME#',
-                    '111111111',
-                    '#RECEIVER_BANK_NAME#',
-                    '#SUM#',
-                    '#PAYMENT_COMMENT#',
-                ),
-                array(
-                    $edd_options['bank_order_receiver_name'],
-                    $edd_options['bank_order_receiver_kpp'],
-                    $edd_options['bank_order_receiver_bank_name'],
-                    $payment_data['price'],
-                    $payment_data['post_data']['donor_comments'],
-                ),
-                $html);
-            for($i=0; $i<10; $i++) {
-                $digit = isset($edd_options['bank_order_receiver_inn']) ?
-                    $edd_options['bank_order_receiver_inn'][$i] : ' ';
-                $html = str_replace("#INN_$i#", $digit, $html);
-            }
-            for($i=0; $i<20; $i++) {
-                $digit = isset($edd_options['bank_order_receiver_account'][$i]) ?
-                    $edd_options['bank_order_receiver_account'][$i] : ' ';
-                $html = str_replace("#ACC_$i#", $digit, $html);
-            }
-            for($i=0; $i<10; $i++) {
-                $digit = isset($edd_options['bank_order_receiver_bik'][$i]) ?
-                    $edd_options['bank_order_receiver_bik'][$i] : ' ';
-                $html = str_replace("#BIK_$i#", $digit, $html);
-            }
-            for($i=0; $i<20; $i++) {
-                $digit = isset($edd_options['bank_order_receiver_corr_account'][$i]) ?
-                    $edd_options['bank_order_receiver_corr_account'][$i] : ' ';
-                $html = str_replace("#CORR_$i#", $digit, $html);
-            }
-            echo $html;
-            flush();
-            die();
+            die(); // Just in case
         }
+
+        header('Content-type: text/html; charset=utf-8');
+
+        $html = $edd_options['bank_order_html_default'] ?
+            file_get_contents(dirname(__FILE__).'/standard_bank_order.php') :
+            $edd_options['bank_order_html'];
+
+        $html = str_replace(array(
+                '#RECEIVER_NAME#',
+                '111111111',
+                '#RECEIVER_BANK_NAME#',
+                '#SUM#',
+                '#PAYMENT_COMMENT#',
+            ),
+            array(
+                $edd_options['bank_order_receiver_name'],
+                $edd_options['bank_order_receiver_kpp'],
+                $edd_options['bank_order_receiver_bank_name'],
+                $payment_data['price'],
+                $payment_data['post_data']['donor_comments'],
+            ),
+            $html);
+        for($i=0; $i<10; $i++) {
+            $digit = isset($edd_options['bank_order_receiver_inn']) ?
+                $edd_options['bank_order_receiver_inn'][$i] : ' ';
+            $html = str_replace("#INN_$i#", $digit, $html);
+        }
+        for($i=0; $i<20; $i++) {
+            $digit = isset($edd_options['bank_order_receiver_account'][$i]) ?
+                $edd_options['bank_order_receiver_account'][$i] : ' ';
+            $html = str_replace("#ACC_$i#", $digit, $html);
+        }
+        for($i=0; $i<10; $i++) {
+            $digit = isset($edd_options['bank_order_receiver_bik'][$i]) ?
+                $edd_options['bank_order_receiver_bik'][$i] : ' ';
+            $html = str_replace("#BIK_$i#", $digit, $html);
+        }
+        for($i=0; $i<20; $i++) {
+            $digit = isset($edd_options['bank_order_receiver_corr_account'][$i]) ?
+                $edd_options['bank_order_receiver_corr_account'][$i] : ' ';
+            $html = str_replace("#CORR_$i#", $digit, $html);
+        }
+        echo $html;
+        flush();
+        die();
     }
     add_action('edd_gateway_bank_order', 'leyka_bank_order_processing');
 }
@@ -184,6 +169,24 @@ function leyka_bank_order_admin_init(){
                 'name' => '<h4 id="bank_order_settings">'.__('Bank order gateway settings', 'leyka-bank-order').'</h4>',
                 'desc' => __('Configure the bank order gateway settings', 'leyka-bank-order'),
                 'type' => 'header'
+            ),
+            array(
+                'id' => 'bank_order_html_default',
+                'name' => __('Use the standard bank order blank', 'leyka-bank-order'),
+                'desc' => '',
+                'type' => 'checkbox'
+            ),
+            array(
+                'id' => 'bank_order_use_file',
+                'name' => __('Use the following document file as a bank order blank', 'leyka-bank-order'),
+                'desc' => '',
+                'type' => 'checkbox'
+            ),
+            array(
+                'id' => 'bank_order_use_manual_settings',
+                'name' => __('Use manual bank order blank settings', 'leyka-bank-order'),
+                'desc' => '',
+                'type' => 'checkbox'
             ),
             array(
                 'id' => 'bank_order_receiver_name',
@@ -234,18 +237,6 @@ function leyka_bank_order_admin_init(){
                 'type' => 'rich_editor',
             ),
             array(
-                'id' => 'bank_order_html_default',
-                'name' => __('Use standard quittance blank instead of HTML code above', 'leyka-bank-order'),
-                'desc' => '',
-                'type' => 'checkbox'
-            ),
-            array(
-                'id' => 'bank_order_use_file',
-                'name' => __('Use the following document file instead of configurations above', 'leyka-bank-order'),
-                'desc' => '',
-                'type' => 'checkbox'
-            ),
-            array(
                 'id' => 'bank_order_file',
                 'name' => __('Payment order template file', 'leyka-bank-order'),
                 'desc' => __("File will be used as a quittance. No requisites' values will be replaced.", 'leyka-bank-order'),
@@ -257,12 +248,39 @@ function leyka_bank_order_admin_init(){
                 'name' => __('Manual bank payment description', 'leyka-bank-order'),
                 'desc' => __('Enter your manual payment description that will be shown to the donor when this gateway will be selected for use', 'leyka-bank-order'),
                 'type' => 'rich_editor',
-                'std' => __('Bank payment essential elements', 'leyka'),
+                'std' => __('Bank payment essential elements', 'leyka-bank-order'),
             )
         );
         return $options;
     }
     add_filter('edd_settings_gateways', 'leyka_bank_order_options');
+
+    /**
+     * Check if nessesary plugin's fields are filled.
+     *
+     * @todo Once EDD will have an appropriate API for validation of it's settings, all manual WP options manupulations will have to be removed, in favor of correct setting validation in callbacks.
+     */
+    function leyka_bank_order_validate_fields(){
+        global $edd_options;
+
+        if( !empty($edd_options['gateways']['bank_order']) &&
+            empty($edd_options['bank_order_html_default']) &&
+            empty($edd_options['bank_order_use_file']) &&
+            empty($edd_options['bank_order_use_manual_settings'])
+        ) {
+            // Direct settings manipulation:
+            $gateways_options = get_option('edd_settings_gateways');
+            unset($gateways_options['gateways']['bank_order']);
+            update_option('edd_settings_gateways', $gateways_options);
+            unset($edd_options['gateways']['bank_order']);
+            // Direct settings manipulation END
+
+            add_settings_error('bank_order_html_default', 'bank-order-missing', __('Error: bank order quittance is required.', 'leyka'));
+        }
+
+        settings_errors('bank_order_html_default');
+    }
+    add_action('admin_notices', 'leyka_bank_order_validate_fields');
 
     /** Add icons option to the icons list */
     function leyka_bank_order_icons($icons){

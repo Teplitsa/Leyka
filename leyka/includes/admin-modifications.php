@@ -58,7 +58,7 @@ add_action('plugins_loaded', 'leyka_plugins_loaded');
 function leyka_init(){
     /** Check if base EDD is active at the moment */
     if( !leyka_is_edd_active() ) {
-        echo __('<div id="message" class="error"><strong>Error:</strong> Easy Digital Downloads plugin is missing or inactive. It is required for donates module to work. '.LEYKA_PLUGIN_TITLE.' plugin will be deactivated.</div>', 'leyka');
+        echo __('<div id="message" class="error"><strong>Error:</strong> Easy Digital Downloads plugin is missing or inactive. It is required for donates module to work. Base donations plugin will be deactivated.</div>', 'leyka');
         if( !function_exists('deactivate_plugins') )
             require_once(ABSPATH.'wp-admin/includes/plugin.php');
         deactivate_plugins(LEYKA_PLUGIN_INNER_NAME);
@@ -115,6 +115,9 @@ function leyka_init(){
         return $value;
     }
     add_filter('site_transient_update_plugins', 'leyka_update_plugins_list');
+
+    // Remove EDD upgrade notices:
+    remove_action('admin_notices', 'edd_show_upgrade_notices');
 
     // Check if Leyka custom templates are in place, show a warning if it's not:
     $current_theme_dir = get_template_directory();
@@ -495,8 +498,8 @@ function leyka_admin_init(){
     </p>
 
     <div id="edd_regular_price_field" class="edd_pricing_fields" <?php echo $price_display; ?>>
-        <?php if(!isset( $edd_options['currency_position'] ) || $edd_options['currency_position'] == 'before') : ?>
-        <?php echo edd_currency_filter(''); ?><input type="text" name="edd_price" id="edd_price" value="<?php echo isset( $price ) ? esc_attr( edd_format_amount( $price ) ) : ''; ?>" size="30" style="width:80px;" maxlength="30" placeholder="9.99"/>
+        <?php if( !isset( $edd_options['currency_position'] ) || $edd_options['currency_position'] == 'before' ) : ?>
+        <?php echo edd_currency_filter(''); ?><input type="text" name="edd_price" id="edd_price" value="<?php echo isset( $price ) ? esc_attr( edd_format_amount( $price ) ) : '';?>" size="30" style="width:80px;" maxlength="30" placeholder="9.99"/>
         <?php else : ?>
         <input type="text" name="edd_price" id="edd_price" value="<?php echo isset( $price ) ? esc_attr( edd_format_amount( $price ) ) : ''; ?>" size="30" maxlength="30" style="width:80px;" placeholder="9.99"/><?php echo edd_currency_filter(''); ?>
         <?php endif; ?>
