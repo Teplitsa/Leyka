@@ -5,7 +5,7 @@ Plugin URI: http://easydigitaldownloads.com
 Description: Serve Digital Downloads Through WordPress
 Author: Pippin Williamson
 Author URI: http://pippinsplugins.com
-Version: 1.4.3.1
+Version: 1.4.4.3
 Text Domain: edd
 Domain Path: languages
 
@@ -46,6 +46,13 @@ final class Easy_Digital_Downloads {
 
 
 	/**
+	 * EDD user roles and capabilities object
+	 * @since 1.4.4
+	 */
+	private $roles;
+
+
+	/**
 	 * Main Easy_Digital_Downloads Instance
 	 *
 	 * Insures that only one instance of Easy_Digital_Downloads exists in memory at any one
@@ -65,6 +72,7 @@ final class Easy_Digital_Downloads {
 			self::$instance->setup_constants();
 			self::$instance->includes();
 			self::$instance->load_textdomain();
+			self::$instance->roles = new EDD_Roles();
 		}
 		return self::$instance;
 	}
@@ -82,7 +90,7 @@ final class Easy_Digital_Downloads {
 
 		// Plugin version
 		if( !defined( 'EDD_VERSION' ) )
-			define( 'EDD_VERSION', '1.4.3.1' );
+			define( 'EDD_VERSION', '1.4.4.3' );
 
 		// Plugin Folder URL
 		if( !defined( 'EDD_PLUGIN_URL' ) )
@@ -127,6 +135,7 @@ final class Easy_Digital_Downloads {
 		require_once EDD_PLUGIN_DIR . 'includes/cart/functions.php';
 		require_once EDD_PLUGIN_DIR . 'includes/cart/actions.php';
 		require_once EDD_PLUGIN_DIR . 'includes/class-edd-logging.php';
+		require_once EDD_PLUGIN_DIR . 'includes/class-edd-roles.php';
 		require_once EDD_PLUGIN_DIR . 'includes/formatting.php';
 		require_once EDD_PLUGIN_DIR . 'includes/widgets.php';
 		require_once EDD_PLUGIN_DIR . 'includes/mime-types.php';
