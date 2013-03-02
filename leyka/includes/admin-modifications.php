@@ -1347,6 +1347,7 @@ function leyka_get_gateway_fields(){
 add_action('wp_ajax_leyka-get-gateway-fields', 'leyka_get_gateway_fields');
 add_action('wp_ajax_nopriv_leyka-get-gateway-fields', 'leyka_get_gateway_fields');
 
+/** Change "Purchase" button text. */
 function leyka_donate_submit_button($html){
     global $edd_options;
 
@@ -1397,19 +1398,19 @@ function leyka_admin_donation_notification($admin_message, $payment_id, $payment
     );
     return edd_email_template_tags($admin_message, $payment_data, $payment_id);
 }
-add_filter('edd_admin_purchase_notification', 'leyka_admin_purchase_notification', 1, 3);
+add_filter('edd_admin_purchase_notification', 'leyka_admin_donation_notification', 10, 3);
 
 /** Add admin email notification subject. */
-function leyka_admin_purchase_notification_subject($payment_id, $payment_data){
+function leyka_admin_donation_notification_subject($payment_id, $payment_data){
     global $edd_options;
     return empty($edd_options['admin_notifications_subject']) ?
         __('New donation payment', 'leyka') :
         $edd_options['admin_notifications_subject'];
 }
-add_filter('edd_admin_purchase_notification_subject', 'leyka_admin_purchase_notification_subject', 1, 2);
+add_filter('edd_admin_purchase_notification_subject', 'leyka_admin_donation_notification_subject', 10, 2);
 
 /** Add correct html-friendly headers to admin notification. */
-function leyka_admin_purchase_notification_headers($dummy_arr, $payment_id, $payment_data){
+function leyka_admin_donation_notification_headers($dummy_arr, $payment_id, $payment_data){
     global $edd_options;
 
     $from_name = isset( $edd_options['from_name'] ) ? $edd_options['from_name'] : get_bloginfo('name');
@@ -1420,7 +1421,7 @@ function leyka_admin_purchase_notification_headers($dummy_arr, $payment_id, $pay
         ."Content-Type: text/html; charset=utf-8\r\n";
     return $headers;
 }
-add_filter('edd_admin_purchase_notification_headers', 'leyka_admin_purchase_notification_headers', 1, 3);
+add_filter('edd_admin_purchase_notification_headers', 'leyka_admin_donation_notification_headers', 10, 3);
 
 function leyka_admin_scripts($hook){
 //    if($hook != 'edit.php')
