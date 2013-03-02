@@ -23,17 +23,14 @@ jQuery(document).ready(function ($) {
 
 			clone.removeClass( 'edd_add_blank' );
 
-
 			clone.find( 'td input, td select' ).val( '' );
 			clone.find( 'input, select' ).each(function() {
-					var name 	= $( this ).attr( 'name' );
+				var name 	= $( this ).attr( 'name' );
 
-					name = name.replace( /\[(\d+)\]/, '[' + parseInt( count ) + ']');
+				name = name.replace( /\[(\d+)\]/, '[' + parseInt( count ) + ']');
 
-					$( this )
-						.attr( 'name', name )
-						.attr( 'id', name );
-				});
+				$( this ).attr( 'name', name ).attr( 'id', name );
+			});
 			return clone;
 		},
 
@@ -53,7 +50,8 @@ jQuery(document).ready(function ($) {
 
 				var row   = $(this).parent().parent( 'tr' ),
 					count = row.parent().find( 'tr' ).length - 1,
-					type  = $(this).data('type');
+					type  = $(this).data('type'),
+					repeatable = 'tr.edd_repeatable_' + type + 's';
 
 				if( count > 1 ) {
 					$( 'input, select', row ).val( '' );
@@ -71,6 +69,16 @@ jQuery(document).ready(function ($) {
 							break;
 					}
 				}
+
+				/* re-index after deleting */
+			    $(repeatable).each( function( rowIndex ) {
+			        $(this).find( 'input, select' ).each(function() {
+			        	var name = $( this ).attr( 'name' );
+			        	name = name.replace( /\[(\d+)\]/, '[' + rowIndex+ ']');
+			        	$( this ).attr( 'name', name ).attr( 'id', name );
+			    	});
+			    });
+
 			});
 		},
 
@@ -83,7 +91,7 @@ jQuery(document).ready(function ($) {
 		},
 
 		files : function() {
-			if(typeof wp == "undefined"){
+			if( typeof wp == "undefined" || edd_vars.new_media_ui != '1' ){
 				//Old Thickbox uploader
 				if ( $( '.edd_upload_image_button' ).length > 0 ) {
 					window.formfield = '';
@@ -120,7 +128,11 @@ jQuery(document).ready(function ($) {
 				window.formfield = '';
 
 				$('body').on('click', '.edd_upload_image_button', function(e) {
+
 					e.preventDefault();
+
+					var button = $(this);
+
 					window.formfield = $(this).closest('.edd_repeatable_upload_wrapper');
 
 					// If the media frame already exists, reopen it.
@@ -132,17 +144,33 @@ jQuery(document).ready(function ($) {
 
 					// Create the media frame.
 					file_frame = wp.media.frames.file_frame = wp.media({
-					  title: $( this ).data( 'uploader_title' ),
-					  button: {
-						text: $( this ).data( 'uploader_button_text' ),
-					  },
-					  multiple: true  // Set to true to allow multiple files to be selected
+						frame: 'post',
+						state: 'insert',
+						title: button.data( 'uploader_title' ),
+						button: {
+							text: button.data( 'uploader_button_text' ),
+						},
+						multiple: true  // Set to true to allow multiple files to be selected
 					});
 
-					// When an image is selected, run a callback.
-					file_frame.on( 'select', function() {
+					file_frame.on( 'menu:render:default', function(view) {
+				        // Store our views in an object.
+				        var views = {};
 
-					var selection = file_frame.state().get('selection');
+				        // Unset default menu items
+				        view.unset('library-separator');
+				        view.unset('gallery');
+				        view.unset('featured-image');
+				        view.unset('embed');
+
+				        // Initialize the views in our view object.
+				        view.set(views);
+				    });
+
+					// When an image is selected, run a callback.
+					file_frame.on( 'insert', function() {
+
+						var selection = file_frame.state().get('selection');
 						selection.each( function( attachment, index ) {
 							attachment = attachment.toJSON();
 							if(index == 0){
@@ -167,8 +195,8 @@ jQuery(document).ready(function ($) {
 					// Finally, open the modal
 					file_frame.open();
 				});
-				
-				
+
+
 				// WP 3.5+ uploader
 				var file_frame;
 				window.formfield = '';
@@ -293,4 +321,32 @@ jQuery(document).ready(function ($) {
             tax_opt_in.fadeOut();
         }
     });
+
+    // Bulk edit save
+    $( 'body' ).on( 'click', '#bulk_edit', function() {
+
+		// define the bulk edit row
+		var $bulk_row = $( '#bulk-edit' );
+
+		// get the selected post ids that are being edited
+		var $post_ids = new Array();
+		$bulk_row.find( '#bulk-titles' ).children().each( function() {
+			$post_ids.push( $( this ).attr( 'id' ).replace( /^(ttle)/i, '' ) );
+		});
+
+		// get the stock and price values to save for all the product ID's
+		var $price = $( '#edd-download-data input[name="_edd_regprice"]' ).val();
+
+		var data = {
+			action: 		'edd_save_bulk_edit',
+			edd_bulk_nonce:	$post_ids,
+			post_ids:		$post_ids,
+			price:			$price
+		};
+
+		// save the data
+		$.post( ajaxurl, data );
+
+	});
+
 });

@@ -183,6 +183,13 @@ function leyka_bank_order_admin_init(){
                 'type' => 'checkbox'
             ),
             array(
+                'id' => 'bank_order_file',
+                'name' => __('Payment order template file', 'leyka-bank-order'),
+                'desc' => __("File will be used as a quittance. No requisites' values will be replaced.", 'leyka-bank-order'),
+                'std' => __('Path to the template file', 'leyka-bank-order'),
+                'type' => 'upload'
+            ),
+            array(
                 'id' => 'bank_order_use_manual_settings',
                 'name' => __('Use manual bank order blank settings', 'leyka-bank-order'),
                 'desc' => '',
@@ -235,13 +242,6 @@ function leyka_bank_order_admin_init(){
                 'name' => __('Bank payment quittance blank (HTML code)', 'leyka-bank-order'),
                 'desc' => __('Enter bank payment quittance blank HTML code, please. You can easily get it <a href="http://quittance.ru/form-pd4.php">here</a>.', 'leyka-bank-order'),
                 'type' => 'rich_editor',
-            ),
-            array(
-                'id' => 'bank_order_file',
-                'name' => __('Payment order template file', 'leyka-bank-order'),
-                'desc' => __("File will be used as a quittance. No requisites' values will be replaced.", 'leyka-bank-order'),
-                'std' => __('Path to the template file', 'leyka-bank-order'),
-                'type' => 'upload'
             ),
             array(
                 'id' => 'bank_order_desc',

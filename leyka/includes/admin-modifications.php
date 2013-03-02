@@ -54,7 +54,6 @@ function leyka_plugins_loaded(){
 }
 add_action('plugins_loaded', 'leyka_plugins_loaded');
 
-/** Modify main plugin menu to use the modified History page handling function */
 function leyka_init(){
     /** Check if base EDD is active at the moment */
     if( !leyka_is_edd_active() ) {
@@ -90,6 +89,7 @@ function leyka_init(){
     remove_action('init', 'edd_setup_download_taxonomies');
     remove_action('restrict_manage_posts', 'edd_add_download_filters', 100);
 
+    /** @todo After the 1.0 release, check if code below can be moved to the "admin_init" or "plugins_loaded" hooks. */
     /** Plugins list page */
     // Add settings link on plugin page
     function leyka_plugin_page_links($links){
@@ -143,13 +143,13 @@ function leyka_init(){
         }
 
         if( !$success ) {
-            function leyka_admin_notices(){?>
+            function leyka_templates_admin_notices(){?>
             <div class="error">
                 <p><?php echo __("<b>Warning:</b> there's no edd_templates subdirectory in the current theme folder.                                     <br /><br />
                           To fix this, please copy «edd_templates» directory from Leyka plugin folder to your current theme folder.", 'leyka');?></p>
             </div>
             <?php }
-            add_action('admin_notices', 'leyka_admin_notices');
+            add_action('admin_notices', 'leyka_templates_admin_notices');
         }
     }
 }
@@ -595,8 +595,7 @@ function leyka_admin_init(){
 
     /**
      * Changes in the Donates -> Statistics page.
-     */
-    /**
+     * 
      * Changes in the Donates -> Statistics -> Stats tab page:
      */
     // Common stats fields:
@@ -909,10 +908,8 @@ function leyka_admin_init(){
     }
     remove_action('edd_reports_view_customers', 'edd_reports_customers_table');
     add_action('edd_reports_view_customers', 'leyka_reports_donors_table');
-    
-    /**
-     * Changes in Stats -> Export.
-     */ 
+
+    /** Changes in Stats -> Export. */ 
     function leyka_reports_tab_export(){?>
     <div class="metabox-holder">
         <div id="post-body">
@@ -949,9 +946,7 @@ function leyka_admin_init(){
     remove_action('edd_reports_tab_export', 'edd_reports_tab_export');
     add_action('edd_reports_tab_export', 'leyka_reports_tab_export');
 
-    /**
-     * Changes in the Stats -> Logs page. 
-     */
+    /** Changes in the Stats -> Logs page. */
     // Common log views:
     function leyka_log_views($views){
         unset($views['sales']); // "Sales" view is almost identical to "file_downloads" view
@@ -968,6 +963,14 @@ function leyka_admin_init(){
     // Changes in on Settings->General admin section:
     function leyka_general_settings($settings){
         unset($settings['tracking_settings'], $settings['presstrends']);
+
+        $settings['purchase_page']['name'] = __('Donations checkout page', 'leyka');
+        $settings['purchase_page']['desc'] = __('This is the page where users will select the gateway to make their donations', 'leyka');
+
+        $settings['success_page']['desc'] = __('This is the page where users will be redirected after successful donations', 'leyka');
+
+        $settings['failure_page']['name'] = __('This is the page where users will be redirected after failed donations', 'leyka');
+        $settings['failure_page']['desc'] = __('Donations failure page', 'leyka');
 
         array_push(
             $settings,
@@ -1023,6 +1026,8 @@ function leyka_admin_init(){
         
         $settings['purchase_subject']['name'] = __('Donations thanking email subject', 'leyka');
         $settings['purchase_subject']['desc'] = __('Enter the subject line for the donations thanking email', 'leyka');
+        $settings['purchase_subject']['std'] = __('Thank you for your donation!', 'leyka');
+
         $settings['purchase_receipt']['name'] = __('Donation thanking email template', 'leyka');
         $settings['purchase_receipt']['desc'] = __('Enter the email that is sent to donations managers after completing a purchase. HTML is accepted. Available template tags:', 'leyka').'<br/>'.
             '{download_list} - '.__('A list of donates given', 'leyka').'<br/>'.
@@ -1122,6 +1127,34 @@ function leyka_admin_init(){
         return $settings;
     }
     add_filter('edd_settings_misc', 'leyka_misc_settings');
+
+    /** Common admin notices: */
+    function leyka_admin_messages() {
+        global $typenow, $edd_options;
+
+        if(isset($_GET['edd-message']) && $_GET['edd-message'] == 'payment_deleted' && current_user_can('view_shop_reports')) {
+            add_settings_error('edd-notices', 'leyka-donation-deleted', __('The donations has been deleted.', 'leyka'), 'updated');
+        }
+
+        if(isset($_GET['edd-message']) && $_GET['edd-message'] == 'email_sent' && current_user_can('view_shop_reports')) {
+            add_settings_error('edd-notices', 'leyka-donation-sent', __('The donation notice has been resent.', 'leyka'), 'updated');
+        }
+
+        if(isset($_GET['page']) && $_GET['page'] == 'edd-payment-history' && current_user_can('view_shop_reports') && edd_is_test_mode()) {
+            add_settings_error('edd-notices', 'leyka-donation-sent', sprintf(__('Note: test mode is enabled, only test donation payments are shown below. %sSettings%s.', 'leyka'), '<a href="'.admin_url('edit.php?post_type=download&page=edd-settings').'">', '</a>'), 'updated');
+        }
+
+        if(
+            (empty($edd_options['purchase_page']) || get_post_status($edd_options['purchase_page']) ==  'trash')
+         && current_user_can('edit_pages')
+        ) {
+            add_settings_error('edd-notices', 'set-checkout', sprintf( __('No checkout page has been configured. Visit <a href="%s">Settings</a> to set one.', 'leyka' ), admin_url('edit.php?post_type=download&page=edd-settings')));
+        }
+
+        settings_errors('edd-notices');
+    }
+    remove_action('admin_notices', 'edd_admin_messages');
+    add_action('admin_notices', 'leyka_admin_messages');
 }
 add_action('admin_init', 'leyka_admin_init', 1);
 
