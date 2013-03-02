@@ -167,7 +167,10 @@ remove_action('edd_cc_form', 'edd_get_cc_form');
  * Process single donate page - add donation form fields
  * (this form handles in "edd_single_donate" action hook).
  */
-function leyka_after_download_content($donate_id){?>
+function leyka_after_download_content($donate_id){
+if(edd_item_in_cart($donate_id))
+    edd_remove_from_cart(edd_get_item_position_in_cart($donate_id));
+?>
 <div id="leyka-single-form-wrapper">
     <form id="leyka-single-form" method="post" action="#">
         <?php if(edd_has_variable_prices($donate_id))

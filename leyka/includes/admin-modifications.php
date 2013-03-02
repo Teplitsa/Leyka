@@ -1359,8 +1359,26 @@ function leyka_donate_submit_button($html){
 }
 add_filter('edd_checkout_button_purchase', 'leyka_donate_submit_button');
 
+/** Process donor info placeholders in donor email notification text. */
+function leyka_donor_donation_notification($email_body, $donation_id, $donation_data){
+    global $edd_options;
+
+    $default_email_body = __('Hello, {name}!<br /><br />
+                             You have chosed to make the following donations:<br />
+                             {download_list}<br />
+                             which totally cost {price}, by the {payment_method} gateway.
+                             <br /><br />
+                             Sincerely thank you,
+                             {sitename}, {date}', 'leyka');
+
+    $email = isset($edd_options['purchase_receipt']) ? $edd_options['purchase_receipt'] : $default_email_body;
+
+    return edd_email_template_tags($email, $donation_data, $donation_id);
+}
+add_filter('edd_purchase_receipt', 'leyka_donor_donation_notification', 10, 3);
+
 /** Process admin placeholders in admin email notification text. */
-function leyka_admin_purchase_notification($admin_message, $payment_id, $payment_data){
+function leyka_admin_donation_notification($admin_message, $payment_id, $payment_data){
     global $edd_options;
     if(empty($payment_data['amount'])) // Some payment metadata is missing, add it to the existing data
         $payment_data = $payment_data + edd_get_payment_meta($payment_id);
