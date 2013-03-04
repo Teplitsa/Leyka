@@ -1037,14 +1037,9 @@ function leyka_admin_init(){
             '{receipt_id} - '.__('The unique ID number for this donation', 'leyka').'<br/>'.
             '{payment_method} - '.__('The method of payment used for this donation', 'leyka').'<br/>'.
             '{sitename} - '.__('Your site name', 'edd');
-        $settings['purchase_receipt']['std'] = __('Hello, {name}!<br /><br />
-                                                 You have chosed to make the following donations:<br />
-                                                 {download_list}<br />
-                                                 which totally cost {price}, by the {payment_method} gateway.
-                                                 <br /><br />
-                                                 Sincerely thank you,
-                                                 {sitename}, {date}', 'leyka');
+        $settings['purchase_receipt']['std'] = __('Hello, {name}!<br /><br />You have chosed to make the following donations:<br />{download_list}<br />which totally cost {price}, by the {payment_method} gateway.<br /><br />Sincerely thank you, {sitename}, {date}', 'leyka');
         $settings['admin_notice_emails']['name'] = __("Donations manager's emails", 'leyka');
+        $settings['admin_notice_emails']['std'] = get_bloginfo('admin_email');
 
         array_push(
             $settings,
@@ -1359,24 +1354,6 @@ function leyka_donate_submit_button($html){
     return '<input type="submit" class="edd-submit '.$color.' '.$style.'" id="edd-purchase-button" name="edd-purchase" value="'.$complete_purchase.'"/>';
 }
 add_filter('edd_checkout_button_purchase', 'leyka_donate_submit_button');
-
-/** Process donor info placeholders in donor email notification text. */
-function leyka_donor_donation_notification($email_body, $donation_id, $donation_data){
-    global $edd_options;
-
-    $default_email_body = __('Hello, {name}!<br /><br />
-                             You have chosed to make the following donations:<br />
-                             {download_list}<br />
-                             which totally cost {price}, by the {payment_method} gateway.
-                             <br /><br />
-                             Sincerely thank you,
-                             {sitename}, {date}', 'leyka');
-
-    $email = isset($edd_options['purchase_receipt']) ? $edd_options['purchase_receipt'] : $default_email_body;
-
-    return edd_email_template_tags($email, $donation_data, $donation_id);
-}
-add_filter('edd_purchase_receipt', 'leyka_donor_donation_notification', 10, 3);
 
 /** Process admin placeholders in admin email notification text. */
 function leyka_admin_donation_notification($admin_message, $payment_id, $payment_data){
