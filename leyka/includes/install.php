@@ -8,43 +8,29 @@
  * @since 1.0
  */
 
+if( !defined('ABSPATH') ) exit; // Exit if accessed directly
+
 // Activation routine:
 function leyka_activation()
 {
-    /** Set localization: */
-    // Set filter for plugin's languages directory
-    $plugin_lang_dir = dirname(LEYKA_PLUGIN_INNER_SHORT_NAME).'/languages/';
-    $plugin_lang_dir = apply_filters('leyka_languages_directory', $plugin_lang_dir);
+    // Check if original EDD exists and active:
+    if( !file_exists(WP_PLUGIN_DIR.'/easy-digital-downloads/easy-digital-downloads.php') ) {
+        function leyka_edd_not_found(){
+            echo __('<div id="message" class="error"><p><strong>Original EDD plugin is not found.</strong> Please, try to download and activate it before activating Leyka.</p></div>', 'leyka');
 
-    // Traditional WordPress plugin locale filter
-    $locale = apply_filters('plugin_locale', get_locale(), 'leyka');
-    $mofile = sprintf('%1$s-%2$s.mo', 'leyka', $locale);
+            if( !function_exists('deactivate_plugins') )
+                require_once(ABSPATH.'wp-admin/includes/plugin.php');
+            deactivate_plugins(LEYKA_PLUGIN_INNER_NAME);
+        }
+        add_action('admin_notice', 'leyka_activation_edd_not_found');
 
-    // Setup paths to current locale file
-    $mofile_local = $plugin_lang_dir.$mofile;
-    $mofile_global = WP_LANG_DIR.'/leyka/'.$mofile;
-
-    if(file_exists($mofile_global)) {
-        // Look in global /wp-content/languages/edd folder
-        load_textdomain('leyka', $mofile_global);
-    } elseif(file_exists(WP_PLUGIN_DIR.'/'.$mofile_local)) {
-        // Look in local /wp-content/plugins/easy-digital-donates/languages/ folder
-        load_textdomain('leyka', WP_PLUGIN_DIR.'/'.$mofile_local);
-    } else {
-        // Load the default language files
-        load_plugin_textdomain('leyka', false, $plugin_lang_dir);
-    }
-    /** Localization ended */
-
-    // Check if original EDD exists:
-    if( !file_exists(WP_PLUGIN_DIR.'/easy-digital-downloads/easy-digital-downloads.php') ) { // Base EDD is not found, fatal
-        echo __('<div id="message" class="error"><strong>Original EDD plugin is not found.</strong> Please, try to download and activate it before activating Leyka.</div>', 'leyka');
+        return;
     }
 
     global $edd_options;
 
     /** Set default Email settings. */
-    // Direct settings manipulation:
+    // Direct settings manipulation BEGINS
     $emails_options = get_option('edd_settings_emails');
 
     if(empty($emails_options['purchase_receipt']))
@@ -73,7 +59,7 @@ function leyka_activation()
         $emails_options['admin_donates_email_text'] = __('Hello!<br /><br />Recently, there has been a new donation on a {sitename}:<br />{download_list}<br />which totally cost {price}, by the {payment_method} gateway.<br /><br />Donate ID: {donate_id}, donation hashcode: {receipt_id} | {edit_url}<br /><br />{sitename}, {date}', 'leyka');
     
     update_option('edd_settings_emails', $emails_options);
-    // Direct settings manipulation END
+    // Direct settings manipulation ENDS
 
 
 //    elseif( !is_plugin_active('easy-digital-downloads/easy-digital-downloads.php') ) {

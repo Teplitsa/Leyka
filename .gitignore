@@ -2,9 +2,9 @@
 !.gitignore
 !README.md
 !leyka/
-!leyka-gateway-mobi-money/
-!leyka-gateway-paypal/
-!leyka-gateway-bank-order/
-!leyka-gateway-rbk-money/
-!leyka-gateway-yandex-money/
+!leyka-mobimoney-gateway/
+!leyka-paypal-gateway/
+!leyka-bank-order-gateway/
+!leyka-rbk-money-gateway/
+!leyka-yandexmoney-gateway/
 !easy-digital-downloads/

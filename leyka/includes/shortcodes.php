@@ -8,13 +8,7 @@
  * @since 1.0
  */
 
-/** Register CSS needed for shortcodes, widgets and other visual components */
-function leyka_shortcodes_scripts(){
-    // Respects SSL, Style.css is relative to the current file:
-    wp_register_style('leyka-styles', LEYKA_PLUGIN_BASE_URL.'styles/style.css');
-    wp_enqueue_style('leyka-styles');
-}
-add_action('wp_enqueue_scripts', 'leyka_shortcodes_scripts');
+if( !defined('ABSPATH') ) exit; // Exit if accessed directly
 
 /**
  * Donations total amount counter.

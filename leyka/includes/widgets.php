@@ -8,9 +8,9 @@
  * @since 1.0
  */
 
-/**
- * Donations counter widget.
- */
+if( !defined('ABSPATH') ) exit; // Exit if accessed directly
+
+/** Donations counter widget. */
 class leyka_counter_widget extends WP_Widget {
     function __construct()
     {

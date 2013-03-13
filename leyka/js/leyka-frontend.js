@@ -66,10 +66,10 @@ jQuery(document).ready(function($){
             if(item_val.search('_') != -1) {
                 item_val = item_val.split('_');
                 params.download_id = item_val[0];
-                params.price_id = item_val[1];
+                params.price_ids = [item_val[1]];
             } else {
                 params.download_id = item_val;
-                params.price_id = 'false';
+                params.price_ids = ['false'];
             }
             
             if($form.find('#leyka_quick_add_donate option:selected').hasClass('any-sum')) {
@@ -84,6 +84,8 @@ jQuery(document).ready(function($){
                     params.sum = free_sum_val;
                 }
             }
+
+            $form.find(':submit').attr('disabled', 'disabled');
             $.post(edd_scripts.ajaxurl, params, function(resp){
                 window.location.href = edd_scripts.checkout_page;
             });
