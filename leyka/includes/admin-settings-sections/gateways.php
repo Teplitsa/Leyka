@@ -59,10 +59,12 @@ function leyka_gateways_options($settings){
     global $edd_options;
     if(empty($edd_options['gateways']['paypal'])) {
         unset(
-        $settings['paypal'], $settings['paypal_email'], $settings['paypal_page_style'],
-        $settings['paypal_alternate_verification'], $settings['disable_paypal_verification']
+            $settings['paypal'], $settings['paypal_email'], $settings['paypal_page_style'],
+            $settings['paypal_alternate_verification'], $settings['disable_paypal_verification'],
+            $settings['default_gateway']
         );
     }
+
     return $settings;
 }
 add_filter('edd_settings_gateways', 'leyka_gateways_options');

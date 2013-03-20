@@ -11,13 +11,13 @@
 if( !defined('ABSPATH') ) exit; // Exit if accessed directly
 
 /**
- * Donations total amount counter.
+ * Counter to show total donations number.
  *
- * @param $atts An arguments of shortcode.
+ * @param $atts array Arguments of shortcode.
  * @param null $content A content enclosed in the shortcode.
  * @return string HTML of the shortcode widget.
  */
-function leyka_total_amount_counter($atts, $content = null){
+function leyka_total_donations_number($atts, $content = null){
     global $edd_options;
 
     $atts = shortcode_atts(array(
@@ -25,14 +25,14 @@ function leyka_total_amount_counter($atts, $content = null){
     ), $atts);
 
     $html = '<div class="b-counter">';
-    $donates_quantity = sprintf('%06d', leyka_get_total_payments($atts['status']));
+    $donates_quantity = sprintf('%06d', leyka_get_donations_number($atts['status']));
     $html .= '<div><span class="b-counter-count">'.substr($donates_quantity, 0, -1).'<span style="color: #f7941d;">'
         .substr($donates_quantity, -1)
         .'</span></span><span class="b-counter-text"> '.__('collected', 'leyka').'</span></div></div>';
 
     return $html;
 }
-add_shortcode('total_payments', 'leyka_total_amount_counter');
+add_shortcode('donations_number', 'leyka_total_donations_number');
 
 /** Page to list user recalls that comes with donations. */
 function leyka_user_recalls_list($length = 20){
@@ -67,6 +67,64 @@ function leyka_user_recalls_list($length = 20){
     wp_reset_query();
 }
 add_shortcode('recalls', 'leyka_user_recalls_list');
+
+/**
+ * Counter to show total amount of donations collected.
+ *
+ * @param $atts array Arguments of shortcode.
+ * @param null $content A content enclosed in the shortcode.
+ * @return string HTML of the shortcode widget.
+ */
+function leyka_funds_collected($atts, $content = null){
+    global $edd_options;
+
+    $atts = shortcode_atts(array(
+//        'status' => 'publish',
+//        'post_type' => 'edd_payment',
+        'gateways' => '',
+    ), $atts);
+
+    $gateways_to_select = array();
+    $available_gateways = array_keys(edd_get_enabled_payment_gateways());
+    foreach(explode(',', $atts['gateways']) as $gateway) {
+        if(in_array(trim($gateway), $available_gateways))
+            $gateways_to_select[] = trim($gateway);
+    }
+
+    $atts = array('status' => 'publish', 'post_type' => 'edd_payment');
+    if($gateways_to_select) {
+        $gateway_sums = array();
+        foreach($gateways_to_select as $gateway) {
+            $atts['meta_query'] = array(
+                array(
+                    'key' => '_edd_payment_mode',
+                    'value' => empty($edd_options['test_mode']) ? 'live' : 'test'
+                ),
+                array('key' => '_edd_payment_gateway', 'value' => $gateway,),  
+            );
+
+            // Count sum by current gateway:
+            $gateway_sums[$gateway] = 0.0;
+            foreach(get_posts($atts) as $donation) {
+                $gateway_sums[$gateway] += get_post_meta($donation->ID, '_edd_payment_total', TRUE);
+            }
+        }
+
+        // Count total sum collected:
+        $sum = 0.0;
+        foreach($gateway_sums as $gateway_sum) {
+            $sum += $gateway_sum;
+        }
+    } else {
+        $sum = 0.0;
+        foreach(get_posts($atts) as $donation) {
+            $sum += get_post_meta($donation->ID, '_edd_payment_total', TRUE);
+        }
+    }
+
+    return edd_currency_filter($sum);
+}
+add_shortcode('funds_collected', 'leyka_funds_collected');
 
 /**
  * Page to list all of the donation targets with an option to "quick" (1-click) donate to each.

@@ -12,7 +12,11 @@ if( !defined('ABSPATH') ) exit; // Exit if accessed directly
 
 // Changes in on Settings->General admin section:
 function leyka_general_settings($settings){
-    unset($settings['tracking_settings'], $settings['presstrends']);
+    unset(
+        $settings['tracking_settings'], $settings['presstrends'],
+        /** @todo Check this API options later, maybe they will be usable */
+        $settings['api_settings'], $settings['api_allow_user_keys']
+    );
 
     $settings['purchase_page']['name'] = __('Donations checkout page', 'leyka');
     $settings['purchase_page']['desc'] = __('This is the page where users will select the gateway to make their donations', 'leyka');

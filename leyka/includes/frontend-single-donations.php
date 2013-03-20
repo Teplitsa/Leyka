@@ -15,8 +15,14 @@ if( !defined('ABSPATH') ) exit; // Exit if accessed directly
  * (this form handles in "edd_single_donate" action hook).
  */
 function leyka_after_download_content($donate_id){
-    if(edd_item_in_cart($donate_id))
-        edd_remove_from_cart(edd_get_item_position_in_cart($donate_id));
+    if(edd_item_in_cart($donate_id)) { // Temporarily remove single donation from cart, if needed
+        // Save the cart state before user entered the single donate page:
+        $cart_data = edd_get_cart_contents();
+        edd_empty_cart();
+    }
+
+//    if(edd_item_in_cart($donate_id))
+//        edd_remove_from_cart(edd_get_item_position_in_cart($donate_id));
     ?>
 <div id="leyka-single-form-wrapper">
     <form id="leyka-single-form" method="post" action="#">
@@ -61,7 +67,10 @@ function leyka_after_download_content($donate_id){
         <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('leyka-single-donate-nonce');?>" />
     </form>
 </div>
-<?php }
+<?php
+if( !empty($cart_data) )
+    leyka_restore_cart_state($cart_data);
+}
 add_action('edd_after_download_content', 'leyka_after_download_content', 9);
 
 /** Process the single donate form data */
@@ -70,13 +79,10 @@ function leyka_process_single_donation(){
         return;
 
     // verify the nonce for this action:
-    if( !isset($_POST['nonce'])
-        || !wp_verify_nonce($_POST['nonce'], 'leyka-single-donate-nonce') )
+    if( !isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka-single-donate-nonce') )
         return;
     if( !isset($_POST['donate_id']) )
         return;
-
-//    global $edd_options;
 
     edd_clear_errors();
 
@@ -104,6 +110,7 @@ function leyka_process_single_donation(){
     }
 
     edd_empty_cart();
+
     if(edd_has_variable_prices($_POST['donate_id'])) {
         edd_add_to_cart((int)$_POST['donate_id'], array('price_id' => $_POST['edd_options']['price_id']));
     } elseif(leyka_is_any_sum_allowed($_POST['donate_id'])) {

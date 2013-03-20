@@ -27,13 +27,18 @@ function leyka_plugins_list($wp_plugins_list){
 }
 add_filter('all_plugins', 'leyka_plugins_list');
 
-// Disable auto-updates for original EDD.
-// Mostly to exclude EDD from "plugins-need-to-be-updated" counter and from core updates page.
-function leyka_update_plugins_list($value){
-    unset($value->response['easy-digital-downloads/easy-digital-downloads.php']);
-    return $value;
+/** 
+ * Disable auto-updates for original EDD, if needed.
+ * Mostly to exclude EDD from "plugins-need-to-be-updated" counter and from core updates page.
+ */
+$latest_edd_version = get_latest_edd_version();
+if($latest_edd_version > LATEST_SUPPORTED_EDD_VERSION || $latest_edd_version == (float)EDD_VERSION) {
+    function leyka_update_plugins_list($value){
+        unset($value->response['easy-digital-downloads/easy-digital-downloads.php']);
+        return $value;
+    }
+    add_filter('site_transient_update_plugins', 'leyka_update_plugins_list');
 }
-add_filter('site_transient_update_plugins', 'leyka_update_plugins_list');
 
 // Remove EDD upgrade notices:
 remove_action('admin_notices', 'edd_show_upgrade_notices');

@@ -55,7 +55,7 @@ function leyka_show_correct_payment_icons(){
         echo '<div class="edd-payment-icons">';
         foreach($edd_options['accepted_cards'] as $key => $card) {
             if(edd_string_is_image_url($key)) {
-                echo '<img class="payment-icon" src="'.$key . '"/>';
+                echo '<img class="payment-icon" src="'.$key.'"/>';
             } else {
                 echo '<img class="payment-icon" src="'.EDD_PLUGIN_URL.'includes/images/icons/'.strtolower(str_replace(' ', '', $key)).'.png"/>';
             }
@@ -65,6 +65,37 @@ function leyka_show_correct_payment_icons(){
 }
 add_action('leyka_payment_mode_top', 'leyka_show_correct_payment_icons');
 
+/** Remove EDD's default checkout fields. */
+remove_action('edd_purchase_form_after_user_info', 'edd_user_info_fields');
+function leyka_default_user_info_fields(){
+    if(is_user_logged_in()) {
+        $user_data = get_userdata(get_current_user_id());
+    }?>
+<fieldset id="edd_checkout_user_info">
+    <legend>
+        <?php echo apply_filters('edd_checkout_personal_info_text', __('Personal Info', 'edd'));?>
+    </legend>
+    <?php do_action('edd_purchase_form_before_email');?>
+    <p id="edd-email-wrap">
+        <label class="edd-label" for="edd-email"><?php _e('Email Address', 'edd');?> <span style="color:red;">*</span></label>
+        <span class="edd-description">
+            <?php _e('We will send the purchase receipt to this address.', 'edd');?>
+        </span>
+        <input class="edd-input required" type="email" name="edd_email" placeholder="<?php _e( 'Email address', 'edd');?>" id="edd-email" value="<?php echo is_user_logged_in() ? $user_data->user_email : '';?>"/>
+    </p>
+    <?php do_action('edd_purchase_form_after_email');?>
+    <p id="edd-first-name-wrap">
+        <label class="edd-label" for="edd-first"><?php _e('Your name', 'leyka');?> <span style="color:red;">*</span></label>
+        <span class="edd-description">
+            <?php _e('We will use this to personalize your account experience.', 'leyka');?>
+        </span>
+        <input class="edd-input required" type="text" name="edd_first" placeholder="<?php _e('Your name', 'leyka');?>" id="edd-first" value="<?php echo is_user_logged_in() ? $user_data->first_name : '';?>" />
+    </p>
+    <?php do_action('edd_purchase_form_user_info');?>
+</fieldset>
+<?php }
+add_action('edd_purchase_form_after_user_info', 'leyka_default_user_info_fields');
+
 /** Sets an error on checkout if no gateways are enabled. */
 function leyka_no_gateway_error(){
     $gateways = edd_get_enabled_payment_gateways();
@@ -73,7 +104,7 @@ function leyka_no_gateway_error(){
             'no_gateways',
             str_replace('%s', LEYKA_PLUGIN_TITLE, __('You must enable a payment gateway to use %s', 'leyka'))
         );
-    else
+    elseif( !empty($_SESSION['edd-errors']['no_gateways']) )
         unset($_SESSION['edd-errors']['no_gateways']);
 }
 remove_action('init', 'edd_no_gateway_error');
@@ -87,7 +118,6 @@ function leyka_agree_to_terms_js(){
     <script type="text/javascript">
         jQuery(document).ready(function($){
             $('body').on('click', '.edd_terms_links', function(e) {
-                //e.preventDefault();
                 $('#edd_terms').slideToggle();
                 $('.edd_terms_links').toggle();
                 return false;
@@ -98,6 +128,21 @@ function leyka_agree_to_terms_js(){
     }
 }
 add_action('leyka_payment_mode_top', 'leyka_agree_to_terms_js');
+
+/** Rename the labels in the "final checkout button" fieldset. */
+function leyka_checkout_final_total($is_on_checkout = TRUE) {
+    if( !$is_on_checkout )
+        return;?>
+<fieldset id="edd_purchase_final_total">
+    <p id="edd_final_total_wrap">
+        <strong><?php _e('Total donation:', 'leyka');?></strong>
+        <span class="edd_cart_amount" data-subtotal="<?php echo edd_get_cart_amount(false);?>" data-total="<?php echo edd_get_cart_amount(true, true);?>"><?php edd_cart_total();?></span>
+    </p>
+</fieldset>
+<?php
+}
+remove_action('edd_purchase_form_before_submit', 'edd_checkout_final_total', 999);
+add_action('edd_purchase_form_before_submit', 'leyka_checkout_final_total', 999);
 
 //function leyka_frontend_init(){
 //}
@@ -144,7 +189,7 @@ function leyka_free_amount_field($donate_id){
 }
 add_action('leyka_free_amount_field', 'leyka_free_amount_field');
 
-/** Process free priced donate sums in the donates list ([downloads] shortcode). */
+/** Process donate mini-forms for all donate types in the donates list ([downloads] shortcode). */
 function leyka_donate_payment_form($purchase_form, $args){
     global $edd_options, $post;
 
@@ -165,38 +210,90 @@ function leyka_donate_payment_form($purchase_form, $args){
     $args = wp_parse_args($args, $defaults);
     $args['donate_id'] = $args['download_id'];
     unset($args['download_id']);
-
-    if( !leyka_is_any_sum_allowed($args['donate_id']) )
-        return $purchase_form;
+    
+    $is_any_sum = leyka_is_any_sum_allowed($args['donate_id']);
 
     if(edd_item_in_cart($args['donate_id'])) {
-        $button_display   = 'style="display:none;"';
+        $button_display = 'style="display:none;"';
         $checkout_display = '';
     } else {
-        $button_display   = '';
+        $button_display = '';
         $checkout_display = 'style="display:none;"';
+    }
+
+    if( !$is_any_sum ) {
+        $variable_pricing = edd_has_variable_prices($args['donate_id']);
+        $data_variable = $variable_pricing ? ' data-variable-price=yes' : ' data-variable-price=no';
+        $type = edd_single_price_option_mode( $args['donate_id'] ) ? 'data-price-mode=multi' : 'data-price-mode=single';
+//        if($args['price'] && !$variable_pricing) {
+//            $args['text'] = edd_currency_filter(edd_get_download_price($args['donate_id'])).'&nbsp;&ndash;&nbsp;'.$args['text'];
+//        }
     }
 
     ob_start();?>
 <form id="edd_purchase_<?php echo $args['donate_id']; ?>" class="edd_free_donate_form" method="post" action="#">
-    <?php do_action('leyka_free_amount_field', $args['donate_id']);?>
+    <?php if($is_any_sum) { // Donate is free-sized type
+        do_action('leyka_free_amount_field', $args['donate_id']);?>
 
     <div class="edd_purchase_submit_wrapper">
-        <input type="submit" class="leyka-free-add-to-cart <?php echo implode(' ', array($args['style'], $args['color'], trim( $args['class'])));?>" name="leyka_donate" value="<?php echo __('Make a donation with this sum', 'leyka');?>" <?php echo $button_display;?> />
-        <a href="<?php echo edd_get_checkout_uri();?>" class="<?php echo esc_attr('edd_go_to_checkout');?> <?php echo implode(' ', array( $args['style'], $args['color'], trim($args['class'])));?>" <?php echo $checkout_display;?>><?php echo __('Checkout', 'edd');?></a>
+        <input type="submit" class="leyka-free-add-to-cart <?php echo implode(' ', array($args['style'], $args['color'], trim($args['class'])));?>" name="leyka_donate" value="<?php echo __('Make a donation with this sum', 'leyka');?>" <?php echo $button_display;?> />
+        <a href="<?php echo edd_get_checkout_uri();?>" class="<?php echo esc_attr('edd_go_to_checkout');?> <?php echo implode(' ', array($args['style'], $args['color'], trim($args['class'])));?>" <?php echo $checkout_display;?>><?php echo __('Checkout', 'edd');?></a>
 
         <span class="edd-cart-ajax-alert">
             <img src="<?php echo esc_url(EDD_PLUGIN_URL.'includes/images/loading.gif');?>" class="edd-cart-ajax" style="display:none;" />
-            <span class="edd-cart-added-alert" style="display:none;">&mdash;<?php _e('Item successfully added to your cart.', 'edd');?></span>
+            <span class="edd-cart-added-alert" style="display:none;">
+                <?php printf(
+                __('Donation successfully added to your %scart%s.', 'leyka'),
+                '<a href="'.esc_url(edd_get_checkout_uri()).'" title="'.__('Go to Checkout','edd').'">',
+                '</a>'
+            );?>
+            </span>
         </span>
     </div><!--end .edd_purchase_submit_wrapper-->
-
+    
     <input type="hidden" class="donate_id" value="<?php echo (int)$args['donate_id'];?>" />
     <input type="hidden" class="action" value="leyka-free-donate-add-to-cart" />
+    <?php } else { // Donate is constant- or variable sum type
+        do_action('edd_purchase_link_top', $args['donate_id']);?>
+    <div class="edd_purchase_submit_wrapper">
+        <?php
+        printf(
+            '<input type="submit" class="edd-add-to-cart %1$s" name="edd_purchase_download" value="%2$s" data-action="edd_add_to_cart" data-download-id="%3$s" %4$s %5$s %6$s/>',
+            implode(' ', array($args['style'], $args['color'], trim($args['class']))),
+            esc_attr($args['text']),
+            esc_attr($args['donate_id']),
+            esc_attr($data_variable),
+            esc_attr($type),
+            $button_display
+        );
 
-    <?php do_action('edd_purchase_link_end', $args['donate_id']);?>
+        printf(
+            '<a href="%1$s" class="%2$s %3$s" %4$s>'.__('Checkout', 'edd').'</a>',
+            esc_url(edd_get_checkout_uri()),
+            esc_attr('edd_go_to_checkout'),
+            implode(' ', array($args['style'], $args['color'], trim($args['class']))),
+            $checkout_display
+        );
 
-</form><!--end #edd_purchase_<?php echo esc_attr($args['download_id']);?>-->
+        if(edd_is_ajax_enabled()) {?>
+    <span class="edd-cart-ajax-alert">
+        <img alt="<?php _e('Loading', 'edd');?>" src="<?php echo esc_url(EDD_PLUGIN_URL.'assets/images/loading.gif'); ?>" class="edd-cart-ajax" style="display: none;" />
+        <span class="edd-cart-added-alert" style="display: none;">&mdash;
+            <?php printf(
+                __('Donation successfully added to your %scart%s.', 'leyka'),
+                '<a href="'.esc_url(edd_get_checkout_uri()).'" title="'.__('Go to Checkout','edd').'">',
+                '</a>'
+            );?>
+        </span>
+    </span>
+        <?php }?>
+    </div><!--end .edd_purchase_submit_wrapper-->
+
+    <input type="hidden" name="download_id" value="<?php echo esc_attr($args['donate_id']);?>">
+    <input type="hidden" name="edd_action" value="add_to_cart">
+    <?php }
+    do_action('edd_purchase_link_end', $args['donate_id']);?>
+</form><!--end #edd_purchase_ID-->
 <?php
     return apply_filters('leyka_free_donate_form', ob_get_clean(), $args);
 }
@@ -231,7 +328,7 @@ function leyka_before_gateway($donation_data, $valid_data){
 add_filter('edd_purchase_data_before_gateway', 'leyka_before_gateway', 10, 2);
 
 /** Extend the cart with the field to quickly add the donation. */
-function ed_doanates_before_checkout(){?>
+function leyka_before_checkout(){?>
 <div id="leyka_quick_add_to_cart_wrapper">
     <form id="leyka_quick_add_to_cart_form" method="post" action="#">
         <?php $donates = get_posts(array('post_type' => 'download', 'post_status' => 'publish'));
@@ -267,12 +364,12 @@ function ed_doanates_before_checkout(){?>
                 <?php echo __('Insert the sum of your donation', 'leyka');?>
                 <input type="text" size="4" id="leyka_quick_free_sum" class="edd-input" name="leyka_quick_free_sum" value="" />&nbsp;<?php echo edd_currency_filter('');?>
             </label>
-            <input type="submit" name="leyka_quick_add_donate_submit" value="<?php echo __('Add to cart', 'edd');?>" />
+            <input type="submit" name="leyka_quick_add_donate_submit" value="<?php echo __('Add to cart', 'leyka');?>" />
             <?php }?>
     </form>
 </div>
 <?php }
-add_action('edd_before_checkout_cart', 'ed_doanates_before_checkout');
+add_action('edd_before_checkout_cart', 'leyka_before_checkout');
 
 /** Show "quick add" button on the empty cart. */
 function leyka_empty_cart(){

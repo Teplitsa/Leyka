@@ -51,7 +51,7 @@ function leyka_mobi_money_plugins_loaded(){
         load_plugin_textdomain('leyka-mobi-money', false, $plugin_lang_dir);
     }
 }
-add_action('plugins_loaded', 'leyka_mobi_money_plugins_loaded', 10);
+add_action('plugins_loaded', 'leyka_mobi_money_plugins_loaded');
 
 function leyka_mobi_money_init(){
     /** Add MOBI.Money to the gateways list by filter hook */
@@ -88,12 +88,16 @@ add_action('init', 'leyka_mobi_money_init', 1);
 function leyka_mobi_money_admin_init(){
     // Base Leyka isn't defined, deactivate this plugin:
     if( !defined('LEYKA_VERSION') ) {
-        if( !function_exists('deactivate_plugins') )
-            require_once(ABSPATH.'wp-admin/includes/plugin.php');
-        deactivate_plugins(__FILE__);
-        echo __('<div id="message" class="error"><p><strong>Error:</strong> base donations plugin is missing or inactive. It is required for MOBI.Money gateway module to work. MOBI.Money plugin will be deactivated.</p></div>', 'leyka-mobi-money');
-    }
+        function leyka_mobi_money_leyka_not_found(){
+            echo __('<div id="message" class="error"><p><strong>Error:</strong> base donations plugin is missing or inactive. It is required for MOBI.Money gateway module to work. MOBI.Money plugin will be deactivated.</p></div>', 'leyka-mobi-money');
 
+            if( !function_exists('deactivate_plugins') )
+                require_once(ABSPATH.'wp-admin/includes/plugin.php');
+            deactivate_plugins(__FILE__);
+        }
+        add_action('admin_notices', 'leyka_mobi_money_leyka_not_found');
+    }
+    
     // Add settings link on plugin page:
     function leyka_mobi_money_plugin_page_links($links){
         array_unshift(
