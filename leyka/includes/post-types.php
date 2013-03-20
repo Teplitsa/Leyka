@@ -53,7 +53,7 @@ $recall_args = array(
     'query_var' 		=> false,
     'rewrite' 			=> false,
     'capability_type' 	=> 'post',
-    'supports' 			=> array('title'),
+    'supports' 			=> array('title', /*'editor', 'author'*/),
     'can_export'		=> false,
     'hierarchical'      => false,
 );

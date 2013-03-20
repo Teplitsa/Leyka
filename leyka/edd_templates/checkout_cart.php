@@ -12,9 +12,9 @@ global $post;?>
 	<thead>
 		<tr class="edd_cart_header_row">
 			<?php do_action('edd_checkout_table_header_first'); ?>
-			<th class="edd_cart_item_name"><?php _e('Item Name', 'edd'); ?></th>
-			<th class="edd_cart_item_price"><?php _e('Item Price', 'edd'); ?></th>
-			<th class="edd_cart_actions"><?php _e('Actions', 'edd'); ?></th>
+			<th class="edd_cart_item_name"><?php _e('Donate name', 'leyka'); ?></th>
+			<th class="edd_cart_item_price"><?php _e('Donate size', 'leyka'); ?></th>
+			<th class="edd_cart_actions"><?php _e('Actions', 'edd');?></th>
 			<?php do_action('edd_checkout_table_header_last'); ?>
 		</tr>
 	</thead>
@@ -64,26 +64,26 @@ global $post;?>
 		<?php }?>
 	</tbody>
 	<tfoot>
-		<?php if(edd_use_taxes()) : ?>
-		<tr class="edd_cart_footer_row edd_cart_subtotal_row"<?php if(edd_local_taxes_only()) echo ' style="display:none;"'; ?>>
-			<?php do_action('edd_checkout_table_subtotal_first'); ?>
+		<?php if(edd_use_taxes()) {?>
+		<tr class="edd_cart_footer_row edd_cart_subtotal_row"<?php if(edd_local_taxes_only()) echo ' style="display:none;"';?>>
+			<?php do_action('edd_checkout_table_subtotal_first');?>
 			<th colspan="3" class="edd_cart_subtotal">
-				<?php _e('Subtotal', 'edd'); ?>:&nbsp;<span class="edd_cart_subtotal"><?php echo edd_cart_subtotal(); ?></span>
+				<?php _e('Subtotal donation size', 'leyka');?>:&nbsp;<span class="edd_cart_subtotal"><?php echo edd_cart_subtotal();?></span>
 			</th>
-			<?php do_action('edd_checkout_table_subtotal_last'); ?>
+			<?php do_action('edd_checkout_table_subtotal_last');?>
 		</tr>
-		<tr class="edd_cart_footer_row edd_cart_tax_row"<?php if(edd_local_taxes_only()) echo ' style="display:none;"'; ?>>
-			<?php do_action('edd_checkout_table_tax_first'); ?>
+		<tr class="edd_cart_footer_row edd_cart_tax_row"<?php echo edd_local_taxes_only() ? ' style="display:none;"' : '';?>>
+			<?php do_action('edd_checkout_table_tax_first');?>
 			<th colspan="3" class="edd_cart_tax">
-				<?php _e('Tax', 'edd'); ?>:&nbsp;<span class="edd_cart_tax_amount" data-tax="<?php echo edd_get_cart_tax(); ?>"><?php echo esc_html(edd_cart_tax()); ?></span>
+				<?php _e('Tax', 'edd');?>:&nbsp;<span class="edd_cart_tax_amount" data-tax="<?php echo edd_get_cart_tax();?>"><?php echo esc_html(edd_cart_tax());?></span>
 			</th>
-			<?php do_action('edd_checkout_table_tax_last'); ?>
+			<?php do_action('edd_checkout_table_tax_last');?>
 		</tr>
-		<?php endif; ?>
+		<?php }?>
 		<tr class="edd_cart_footer_row">
 			<?php do_action('edd_checkout_table_footer_first');?>
-			<th colspan="3" class="edd_cart_total"><?php _e('Total', 'edd');?>: <span class="edd_cart_amount" data-subtotal="<?php echo edd_get_cart_amount(false); ?>" data-total="<?php echo edd_get_cart_amount(true, true); ?>"><?php edd_cart_total(); ?></span></th>
-			<?php do_action('edd_checkout_table_footer_last'); ?>
+			<th colspan="3" class="edd_cart_total"><?php _e('Total donation sum', 'leyka');?>: <span class="edd_cart_amount" data-subtotal="<?php echo edd_get_cart_amount(false);?>" data-total="<?php echo edd_get_cart_amount(true, true);?>"><?php edd_cart_total();?></span></th>
+			<?php do_action('edd_checkout_table_footer_last');?>
 		</tr>
 	</tfoot>
 </table>

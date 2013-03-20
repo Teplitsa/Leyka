@@ -22,8 +22,10 @@ jQuery(document).ready(function($){
             $cell = $this.parents('td'),
             $recall_text = $('.recall_text', $cell),
             $actions_area = $('#actions-recall-'+$this.data('recall-id'), $cell),
-            $edit_area = $('#edit-recall-'+$this.data('recall-id'), $cell);
+            $edit_area = $('#edit-recall-'+$this.data('recall-id'), $cell),
+            $buttons = $this.parents('fieldset').find('.submit-recall, .reset-recall');
 
+        $buttons.attr('disabled', 'disabled');
         $.post(ajaxurl, $edit_area.find(':input').serialize())
          .success(function(resp){
             resp = $.parseJSON(resp);

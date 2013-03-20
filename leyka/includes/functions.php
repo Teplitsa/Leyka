@@ -10,6 +10,29 @@
 
 if( !defined('ABSPATH') ) exit; // Exit if accessed directly
 
+/** For compatibility with PHP < 5.3. */
+if( !function_exists('lcfirst') ) {
+    function lcfirst($str)
+    {
+        $str[0] = strtolower($str[0]);
+        return $str;
+    }
+}
+
+/** Get latest EDD version, or FALSE if it's not defined. */
+function get_latest_edd_version()
+{
+    $version = 0;
+    foreach(file('http://plugins.svn.wordpress.org/easy-digital-downloads/trunk/readme.txt') as $line) {
+        if(stripos($line, 'Stable tag:') !== FALSE) {
+            $version = trim(str_replace('Stable Tag:', '', $line));
+            break;
+        }
+    }
+
+    return (float)$version;
+}
+
 /** Insert new payment and correspondent recall, or redirect back if needed. */
 function leyka_insert_payment($payment_data = array(), $settings = array())
 {
@@ -20,6 +43,8 @@ function leyka_insert_payment($payment_data = array(), $settings = array())
     $settings = $settings + array('add_recall' => TRUE,);
 
     global $edd_options;
+
+    unset($payment_data['user_info']['last_name']); // We won't keep the last name for privacy reasons
 
     // Process the payment on our side:
     // Create the record for pending payment
@@ -124,4 +149,17 @@ function leyka_send_back_to_single_donate($donate_id, $gateway_selected = FALSE)
         $permalink.(strpos($permalink, '?') === FALSE ? '?' : '&')
             .($gateway_selected ? 'payment-mode='.trim($gateway_selected) : '')
     );
+}
+
+/**
+ * Wrapper to restore previous cart state that has been saved before.
+ * 
+ * @param $cart_data array Cart state array, a result of the edd_get_cart_contents() function call.
+ * @return bool TRUE if success, FALSE otherwise.
+ */
+function leyka_restore_cart_state($cart_data)
+{
+    if( !is_array($cart_data) )
+        return FALSE;
+    return EDD()->session->set('edd_cart', $cart_data);
 }

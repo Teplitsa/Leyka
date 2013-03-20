@@ -25,7 +25,7 @@ class Leyka_Donations_History_Table extends WP_List_Table {
 
 	function __construct(){
 		global $status, $page;
-			   
+
 		//Set parent defaults
 		parent::__construct( array(
 			'singular'  => edd_get_label_singular(),    // singular name of the listed records
@@ -176,7 +176,7 @@ class Leyka_Donations_History_Table extends WP_List_Table {
                             if(isset($cart_items[$key]['item_number'])) {
                                 $price_options = $cart_items[$key]['item_number']['options'];                   
                                 if(isset($price_options['price_id'])) {
-                                    echo edd_get_price_option_name($id, $price_options['price_id']);
+                                    echo ' - '.edd_get_price_option_name($id, $price_options['price_id']);
                                 } else if( !empty($price_options['is_free_sum']) )
                                     echo ' - '.lcfirst(__('Any price can be donated', 'leyka'));
                                 echo ' - ';

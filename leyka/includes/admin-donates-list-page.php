@@ -71,5 +71,5 @@ function leyka_price_field_quick_edit($column_name, $post_type){
 </fieldset>
 <?php
 }
-add_action('quick_edit_custom_box', 'edd_price_field_quick_edit', 10);
+remove_action('quick_edit_custom_box', 'edd_price_field_quick_edit', 10);
 add_action('quick_edit_custom_box', 'leyka_price_field_quick_edit', 10, 2);

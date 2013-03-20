@@ -45,16 +45,16 @@ function leyka_get_gateway_fields(){
         }
 
         // Remove the default EDD hidden fields:
-        remove_action('edd_purchase_form_after_cc_form', 'edd_checkout_submit', 100);
+        remove_action('edd_purchase_form_after_cc_form', 'edd_checkout_submit', 9999);
 
         do_action('edd_purchase_form_after_cc_form');?>
 
     <fieldset id="edd_purchase_submit">
         <p>
-            <?php do_action('edd_purchase_form_before_submit');
+            <?php do_action('edd_purchase_form_before_submit', edd_is_checkout());
             if(is_user_logged_in()) {?>
                 <input type="hidden" name="edd-user-id" value="<?php echo get_current_user_id();?>"/>
-                <?php }?>
+            <?php }?>
             <input type="hidden" name="edd_action" value="single_donate" />
             <input type="hidden" name="edd-gateway" value="<?php echo edd_get_chosen_gateway();?>" />
             <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('leyka-single-donate-nonce');?>" />

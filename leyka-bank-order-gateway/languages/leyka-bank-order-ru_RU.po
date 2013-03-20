@@ -3,13 +3,13 @@ msgstr ""
 "Project-Id-Version: Leyka Bank Order gateway v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-02-26 11:22:14+0000\n"
+"PO-Revision-Date: 2013-03-18 12:28:21+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"Plural-Forms: nplurals=3; plural=n%100/10==1 ? 2 : n%10==1 ? 0 : (n+9)%10>3 ? 2 : 1;\n"
 "X-Generator: GlotPress/0.1\n"
 "X-Poedit-Language: \n"
 "X-Poedit-Country: \n"
@@ -20,42 +20,42 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Textdomain-Support: yes"
 
-#: leyka-bank-order.php:241
+#: leyka-bank-order.php:180
 #@ leyka-bank-order
 msgid "Payment order template file"
 msgstr "Файл с реквизитами оплаты"
 
-#: leyka-bank-order.php:242
+#: leyka-bank-order.php:181
 #@ leyka-bank-order
 msgid "File will be used as a quittance. No requisites' values will be replaced."
 msgstr "Файл с реквизитами оплаты будет использован вместо платёжной квитанции"
 
-#: leyka-bank-order.php:243
+#: leyka-bank-order.php:182
 #@ leyka-bank-order
 msgid "Path to the template file"
 msgstr "Путь к файлу с реквизитами оплаты"
 
-#: leyka-bank-order.php:248
+#: leyka-bank-order.php:241
 #@ leyka-bank-order
 msgid "Manual bank payment description"
 msgstr "Описание платёжной системы «банковский платеж»"
 
-#: leyka-bank-order.php:249
+#: leyka-bank-order.php:242
 #@ leyka-bank-order
 msgid "Enter your manual payment description that will be shown to the donor when this gateway will be selected for use"
 msgstr "Введите описание платёжной системы, которое будет показано донорам, когда для оплаты пожертвования будет выбран «банковский платёж»."
 
-#: leyka-bank-order.php:289
+#: leyka-bank-order.php:282
 #@ leyka-bank-order
 msgid "Sberbank small (169x35 px)"
 msgstr "Сбербанк, маленький (169x35 px)"
 
-#: leyka-bank-order.php:290
+#: leyka-bank-order.php:283
 #@ leyka-bank-order
 msgid "Sberbank medium (246x51 px) (recommended)"
 msgstr "Сбербанк, средний (246x51 px) - рекомендован"
 
-#: leyka-bank-order.php:291
+#: leyka-bank-order.php:284
 #@ leyka-bank-order
 msgid "Sberbank big (386x80 px)"
 msgstr "Сбербанк, большой (386x80 px)"
@@ -105,47 +105,42 @@ msgstr "HTML-код бланка платёжной квитанции"
 msgid "Enter bank payment quittance blank HTML code, please. You can easily get it <a href=\"http://quittance.ru/form-pd4.php\">here</a>."
 msgstr "Введите HTML-код бланка платёжной квитанции"
 
-#: leyka-bank-order.php:68
+#: leyka-bank-order.php:61
 #@ leyka-bank-order
 msgid "Bank order payment"
 msgstr "Банковский платёж по квитанции"
 
-#: leyka-bank-order.php:69
+#: leyka-bank-order.php:62
 #@ leyka-bank-order
 msgid "Manual (bank order) payment"
 msgstr "Банковский платёж по квитанции"
 
 #: leyka-bank-order.php:151
-#@ leyka-bank-order
-msgid "<div id=\"message\" class=\"error\"><strong>Error:</strong> base donations plugin is missing or inactive. It is required for Bank order gateway module to work. Bank Order gateway will be deactivated.</div>"
-msgstr "<div id=\"message\" class=\"error\"><strong>Ошибка:</strong> базовый плагин пожертвований отсутствует или неактивен. Он необходим для работы модуля банковских платежей. Модуль будет декативирован.</div>"
-
-#: leyka-bank-order.php:158
 #@ default
 msgid "Settings"
 msgstr ""
 
-#: leyka-bank-order.php:169
+#: leyka-bank-order.php:162
 #@ leyka-bank-order
 msgid "Bank order gateway settings"
 msgstr "Настройки модуля банковских платежей"
 
-#: leyka-bank-order.php:170
+#: leyka-bank-order.php:163
 #@ leyka-bank-order
 msgid "Configure the bank order gateway settings"
 msgstr "Выполните настройку модуля банковских платежей"
 
-#: leyka-bank-order.php:251
+#: leyka-bank-order.php:244
 #@ leyka-bank-order
 msgid "Bank payment essential elements"
 msgstr "Реквизиты банковского платежа"
 
-#: leyka-bank-order.php:175
+#: leyka-bank-order.php:168
 #@ leyka-bank-order
 msgid "Use the standard bank order blank"
 msgstr "Использовать стандартный бланк банковского платежа"
 
-#: leyka-bank-order.php:181
+#: leyka-bank-order.php:174
 #@ leyka-bank-order
 msgid "Use the following document file as a bank order blank"
 msgstr "Использовать следующий документ в качестве бланка для банковского платежа"
@@ -155,8 +150,13 @@ msgstr "Использовать следующий документ в каче
 msgid "Use manual bank order blank settings"
 msgstr "Использовать нижеследующие настройки для бланка банковского платежа"
 
-#: leyka-bank-order.php:278
+#: leyka-bank-order.php:271
 #@ leyka
 msgid "Error: bank order quittance is required."
 msgstr ""
+
+#: leyka-bank-order.php:144
+#@ leyka-bank-order
+msgid "<div id=\"message\" class=\"error\"><p><strong>Error:</strong> base donations plugin is missing or inactive. It is required for Bank order gateway module to work. Bank Order gateway will be deactivated.</p></div>"
+msgstr "<div id=\"message\" class=\"error\"><p><strong>Ошибка:</strong> базовый модуль пожертвований отсутствует или не активирован. Он необходим для работы модуля приёма пожертвований с помощью банковских платежей. Плагин банковских платежей будет деактивирован.</p></div>"
 

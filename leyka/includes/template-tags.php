@@ -54,12 +54,12 @@ function leyka_get_total_quantity($status = 'publish')
 }
 
 /**
- * Get total payments amount of donations.
+ * Get total number of donations.
  *
  * @param string $status Can be "publish", "pending", "refunded".
  * @return float
  */
-function leyka_get_total_payments($status = 'publish')
+function leyka_get_donations_number($status = 'publish')
 {
     $mode = edd_is_test_mode() ? 'test' : 'live';
     switch($status) {

@@ -54,9 +54,7 @@ function leyka_paypal_donates_plugins_loaded(){
 add_action('plugins_loaded', 'leyka_paypal_donates_plugins_loaded', 10);
 
 function leyka_paypal_donates_init(){
-    /**
-     * Add paypal to the gateways list by filter hook.
-     */
+    /** Add paypal to the gateways list by filter hook. */
     function leyka_paypal_donates_gateways($options){
         $options['paypal_donates'] = array(
             'admin_label' => __('PayPal (donates only!)', 'leyka-paypal'),
@@ -66,21 +64,15 @@ function leyka_paypal_donates_init(){
     }
     add_filter('edd_payment_gateways', 'leyka_paypal_donates_gateways', 5);
 
-    /**
-     * PayPal checkout form, so user can fill gateway specific fields.
-     */
+    /** PayPal checkout form, so user can fill gateway specific fields. */
 //    add_action('edd_paypal_donates_donates_cc_form', function(){
 //    });
 
-    /**
-     * Do some validation on our gateway specific fields if needed.
-     */
+    /** Do some validation on our gateway specific fields if needed. */
 //    add_action('edd_checkout_error_checks', function($checkout_form_data){ 
 //    });
 
-    /**
-     * Do the gateway's data processing: redirect, saving data in DB, etc.
-     */
+    /** Do the gateway's data processing: redirect, saving data in DB, etc. */
     function leyka_paypal_donates_processing($payment_data){
         global $edd_options;
 
@@ -89,7 +81,7 @@ function leyka_paypal_donates_init(){
             || (float)$edd_options['paypal_donates_currency_to_usd_course'] <= 0.0)
             $edd_options['paypal_donates_currency_to_usd_course'] = 1.0;
 
-        // PayPal accepts payments only in USD, so use donations currency rate to convert payment amount to USD: 
+        // PayPal accepts payments only in USD, use donations currency rate to convert payment sum to USD: 
         $payment_data['price'] = round($payment_data['price']/$edd_options['paypal_donates_currency_to_usd_course'], 2);
 
         leyka_insert_payment($payment_data); // Process the payment on our side

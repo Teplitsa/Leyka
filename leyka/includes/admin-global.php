@@ -70,7 +70,7 @@ function leyka_admin_menu(){
     // Payment history page handling function is changed due to UI reasons.
     // Also, Discounts page is removed:
     $edd_payments_page = add_submenu_page('edit.php?post_type=download', __('Donations history', 'leyka'), __('Donations history', 'leyka'), 'manage_options', 'edd-payment-history', 'leyka_donations_history_page');
-    $edd_recalls_page = add_submenu_page('edit.php?post_type=download', __('Donor recalls', 'leyka'), __('Donor recalls', 'leyka'), 'manage_options', 'edit.php?post_type=leyka_recall');
+    $edd_recalls_page = add_submenu_page('edit.php?post_type=download', __('Donor recalls', 'leyka'), __('Donor recalls', 'leyka'), 'manage_options', 'leyka-recalls', 'leyka_recalls_page');
     $edd_reports_page = add_submenu_page('edit.php?post_type=download', __('Donations reports', 'leyka'), __('Reports', 'leyka'), 'manage_options', 'edd-reports', 'leyka_reports_page');
     $edd_settings_page = add_submenu_page('edit.php?post_type=download', __('Easy Digital Download Settings', 'edd'), __('Settings', 'edd'), 'manage_options', 'edd-settings', 'edd_options_page');
     $edd_system_info_page = add_submenu_page('edit.php?post_type=download', __('Easy Digital Download System Info', 'edd' ), __('System Info', 'edd'), 'manage_options', 'edd-system-info', 'edd_system_info');
