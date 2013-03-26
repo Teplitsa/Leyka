@@ -37,8 +37,7 @@ function leyka_after_download_content($donate_id){
     }?>
         <br /><br />
         <?php edd_print_errors();?>
-        <span class="">
-            <?php do_action('leyka_payment_mode_top');?>
+        <div class="leyka_gateways_">
             <div id="leyka_gateways_list">
                 <?php $gateways = edd_get_enabled_payment_gateways();
                 foreach($gateways as $gateway_id => $gateway) {
@@ -60,6 +59,7 @@ function leyka_after_download_content($donate_id){
                     </div>
                     <?php }?>
             </div>
+            <?php do_action('leyka_payment_mode_top');?>
         </span>
         <span id="leyka_form_resp"></span>
         <span id="leyka_client_errors"></span>

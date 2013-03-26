@@ -77,19 +77,19 @@ function leyka_default_user_info_fields(){
     </legend>
     <?php do_action('edd_purchase_form_before_email');?>
     <p id="edd-email-wrap">
-        <label class="edd-label" for="edd-email"><?php _e('Email Address', 'edd');?> <span style="color:red;">*</span></label>
+        <!-- <label class="edd-label" for="edd-email"><?php // _e('Email Address', 'edd');?> <span style="color:red;">*</span></label> -->
+        <input class="edd-input required" type="email" name="edd_email" placeholder=" <?php _e( 'Email address', 'edd');?> *" id="edd-email" value="<?php echo is_user_logged_in() ? $user_data->user_email : '';?>"/>
         <span class="edd-description">
             <?php _e('We will send the purchase receipt to this address.', 'edd');?>
         </span>
-        <input class="edd-input required" type="email" name="edd_email" placeholder="<?php _e( 'Email address', 'edd');?>" id="edd-email" value="<?php echo is_user_logged_in() ? $user_data->user_email : '';?>"/>
     </p>
     <?php do_action('edd_purchase_form_after_email');?>
     <p id="edd-first-name-wrap">
-        <label class="edd-label" for="edd-first"><?php _e('Your name', 'leyka');?> <span style="color:red;">*</span></label>
+        <!-- <label class="edd-label" for="edd-first"><?php // _e('Your name', 'leyka');?> <span style="color:red;">*</span></label> -->
+        <input class="edd-input required" type="text" name="edd_first" placeholder=" <?php _e('Your name', 'leyka');?> *" id="edd-first" value="<?php echo is_user_logged_in() ? $user_data->first_name : '';?>" />
         <span class="edd-description">
             <?php _e('We will use this to personalize your account experience.', 'leyka');?>
         </span>
-        <input class="edd-input required" type="text" name="edd_first" placeholder="<?php _e('Your name', 'leyka');?>" id="edd-first" value="<?php echo is_user_logged_in() ? $user_data->first_name : '';?>" />
     </p>
     <?php do_action('edd_purchase_form_user_info');?>
 </fieldset>
@@ -152,7 +152,7 @@ add_action('edd_purchase_form_before_submit', 'leyka_checkout_final_total', 999)
 function leyka_after_cc_form(){?>
 <fieldset>
     <legend><?php _e('Payment additional info', 'leyka'); ?></legend>
-    <p>
+    <p  style="text-align:right;">
         <textarea rows="5" cols="20" name="donor_comments" id="leyka-donor-comment" class="edd-input" placeholder="<?php echo __('Type your comments, if needed', 'leyka');?>"></textarea>
         <label class="edd-label leyka-donor-comment-label" for="leyka-donor-comment">
             <?php _e('Your comment', 'leyka');?>
@@ -160,7 +160,7 @@ function leyka_after_cc_form(){?>
         <span id="leyka-comment-symbols-remain">100</span>
     </p>
     <p>
-        <label><input type="checkbox" name="leyka_send_donor_email_conf" value="1" checked="1" />&nbsp;<?php echo __('Send me an email confimation for my donation', 'leyka');?></label>
+        <label id="leyka_send_donor_email_"><input type="checkbox" name="leyka_send_donor_email_conf" value="1" checked="1" />&nbsp;<?php echo __('Send me an email confimation for my donation', 'leyka');?></label>
     </p>
 </fieldset>
 <?php }
@@ -183,7 +183,9 @@ function leyka_free_amount_field($donate_id){
             }
         }
     } else {?>
-    <input type="text" name="leyka_free_donate_amount" id="free_donate_amount_<?php echo $donate_id;?>" value="<?php echo leyka_get_min_free_donation_sum($donate_id);?>" maxlength="30" />&nbsp;<?php echo edd_currency_filter('');?>
+    <div class="leyka_free_donate_amount_">
+        <input type="text" name="leyka_free_donate_amount" id="free_donate_amount_<?php echo $donate_id;?>" value="<?php echo leyka_get_min_free_donation_sum($donate_id);?>" maxlength="30" />&nbsp;<?php echo edd_currency_filter('');?>
+    </div>
     <?php
     }
 }
