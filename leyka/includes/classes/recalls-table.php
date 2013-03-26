@@ -138,18 +138,15 @@ class Leyka_Recalls_Table extends WP_List_Table {
     /** Render recall text column. */
     function column_text($item) {?>
     <div class="recall_text"><?php echo strip_tags($item['text']);?></div>
-    <div id="actions-recall-<?php echo $item['ID'];?>">
-        <a class="inline-edit-recall" data-recall-id="<?php echo $item['ID'];?>" href="#"><?php _e('Quick&nbsp;Edit');?></a> |
-        <a class="submitdelete" title="<?php echo esc_attr(__('Move this item to the Trash'));?>" href="<?php echo get_delete_post_link($item['ID']);?>"><?php _e('Trash');?></a>
-    </div>
+
     <div class="recall_edit_message"></div>
 
-    <div id="edit-recall-<?php echo $item['ID'];?>" style="display:none;">
+    <div id="edit-recall-<?php echo $item['ID'];?>" class="inline-edit-recall" style="display:none;">
         <fieldset>
             <legend><?php echo __('Edit user recall #', 'leyka').$item['ID'];?></legend>
             <input type="hidden" name="leyka_nonce" value="<?php echo wp_create_nonce('leyka-edit-recall');?>" />
             <input type="hidden" name="recall_id" value="<?php echo $item['ID'];?>" />
-            <input type="hidden" name="action" value="leyka-recall-edit" />
+<!--            <input type="hidden" name="action" value="leyka-recall-edit" />-->
             <label><?php _e('Status');?>:
                 <select name="recall_status">
                     <option value="publish" <?php echo ($item['status'] == 'publish' ? 'selected' : '');?>><?php _e('Publish');?></option>
@@ -167,7 +164,14 @@ class Leyka_Recalls_Table extends WP_List_Table {
             <input type="submit" class="submit-recall" data-recall-id="<?php echo $item['ID'];?>" value="OK" /> | <input class="reset-recall" data-recall-id="<?php echo $item['ID'];?>" type="reset" value="<?php _e('Cancel');?>">
         </fieldset>
     </div>
-    <?php }
+    <?php
+        $row_actions = array(
+            'edit' => '<a class="inline-edit-recall-link" data-recall-id="'.$item['ID'].'" href="#">'.__('Edit This').'</a>',
+            'delete' => '<a class="submitdelete" title="'.esc_attr(__('Move this item to the Trash')).'" href="'.get_delete_post_link($item['ID']).'">'.__('Trash').'</a>',
+        );
+
+        echo $this->row_actions(apply_filters('leyka_recall_row_actions', $row_actions, $item));
+    }
 
 	/** Retrieve the bulk actions */
 	function get_bulk_actions() { 
@@ -180,7 +184,8 @@ class Leyka_Recalls_Table extends WP_List_Table {
 
     /** Process the bulk actions */
     function process_bulk_action() {
-        $ids = isset($_GET['recalls']) ? $_GET['recalls'] : false;
+        $ids = isset($_GET['recalls']) ? $_GET['recalls'] : FALSE;
+
         if( !is_array($ids) )
             $ids = array($ids);
 
@@ -235,8 +240,14 @@ class Leyka_Recalls_Table extends WP_List_Table {
         foreach($recalls as $recall) {
             $donation_id = get_post_meta($recall->ID, '_leyka_payment_id', TRUE);
             $donation_data = maybe_unserialize(get_post_meta($donation_id, '_edd_payment_meta', TRUE));
-            $donation_data = empty($donation_data['user_info']) ?
-                                 FALSE : maybe_unserialize($donation_data['user_info']);
+            if(empty($donation_data['user_info']))
+                $donation_data = FALSE;
+            else {
+                
+                $donation_data = unserialize(str_replace(array("'",), array("\'",), $donation_data['user_info']));
+                $donation_data['first_name'] = stripslashes($donation_data['first_name']);
+            }
+
             $gateway = get_post_meta($donation_id, '_edd_payment_gateway', TRUE);
 
             $recalls_data[] = array(

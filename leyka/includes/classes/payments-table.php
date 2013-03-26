@@ -107,7 +107,7 @@ class Leyka_Donations_History_Table extends WP_List_Table {
 			case 'status':
 				$payment = get_post($item['ID']);
 				return
-                   '<input type="checkbox" class="leyka_status_switch" '.($payment->post_status == 'publish' ? 'checked="checked"' : '').' data-action="leyka-toggle-payment-status" data-nonce="'.wp_create_nonce('leyka-toggle-payment-status').'" data-payment-id="'.$item['ID'].'" data-new-status="'.($payment->post_status == 'publish' ? 'pending' : 'publish').'" />';
+                   '<input type="checkbox" class="leyka_status_switch" '.($payment->post_status == 'publish' ? 'checked="checked"' : '').' data-action="leyka-toggle-payment-status" data-nonce="'.wp_create_nonce('leyka-toggle-payment-status').'" data-payment-id="'.$item['ID'].'" data-new-status="'.($payment->post_status == 'publish' ? 'pending' : 'publish').'" /> <img class="loading" src="'.EDD_PLUGIN_URL.'assets/images/loading.gif" style="display:none;" /> <div class="donation_switching_error" style="display:none;">'.__('Error while switching the donation status! Please try again later or e-mail the support team to fix it.', 'leyka').'</div>';
 			default:
 				return $item[$column_name];
 		}
@@ -116,7 +116,7 @@ class Leyka_Donations_History_Table extends WP_List_Table {
 	/** Render the email column */
 	function column_email($item) {
      	$payment = get_post($item['ID']);
-        $base = admin_url('edit.php?post_type=download&page=edd-payment-history&edd-action=edit-payment&purchase_id=' . $item['ID']);
+//        $base = admin_url('edit.php?post_type=download&page=edd-payment-history&edd-action=edit-payment&purchase_id=' . $item['ID']);
 
 		$row_actions = array();
 

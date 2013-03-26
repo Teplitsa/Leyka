@@ -79,7 +79,7 @@ function leyka_default_user_info_fields(){
     <p id="edd-email-wrap">
         <label class="edd-label" for="edd-email"><?php _e('Email Address', 'edd');?> <span style="color:red;">*</span></label>
         <span class="edd-description">
-            <?php _e('We will send the purchase receipt to this address.', 'edd');?>
+            <?php _e('We will send the donation success notice to this address.', 'leyka');?>
         </span>
         <input class="edd-input required" type="email" name="edd_email" placeholder="<?php _e( 'Email address', 'edd');?>" id="edd-email" value="<?php echo is_user_logged_in() ? $user_data->user_email : '';?>"/>
     </p>
@@ -240,7 +240,7 @@ function leyka_donate_payment_form($purchase_form, $args){
         <a href="<?php echo edd_get_checkout_uri();?>" class="<?php echo esc_attr('edd_go_to_checkout');?> <?php echo implode(' ', array($args['style'], $args['color'], trim($args['class'])));?>" <?php echo $checkout_display;?>><?php echo __('Checkout', 'edd');?></a>
 
         <span class="edd-cart-ajax-alert">
-            <img src="<?php echo esc_url(EDD_PLUGIN_URL.'includes/images/loading.gif');?>" class="edd-cart-ajax" style="display:none;" />
+            <img src="<?php echo esc_url(EDD_PLUGIN_URL.'assets/images/loading.gif');?>" class="edd-cart-ajax" style="display:none;" />
             <span class="edd-cart-added-alert" style="display:none;">
                 <?php printf(
                 __('Donation successfully added to your %scart%s.', 'leyka'),

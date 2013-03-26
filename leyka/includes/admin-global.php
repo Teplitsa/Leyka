@@ -75,7 +75,7 @@ function leyka_admin_menu(){
     $edd_settings_page = add_submenu_page('edit.php?post_type=download', __('Easy Digital Download Settings', 'edd'), __('Settings', 'edd'), 'manage_options', 'edd-settings', 'edd_options_page');
     $edd_system_info_page = add_submenu_page('edit.php?post_type=download', __('Easy Digital Download System Info', 'edd' ), __('System Info', 'edd'), 'manage_options', 'edd-system-info', 'edd_system_info');
     // Add-ons page removed until further testing for their compatibility with Leyka:
-//        $edd_add_ons_page = add_submenu_page('edit.php?post_type=download', __('Easy Digital Download Add Ons', 'edd'), __('Add Ons', 'edd'), 'manage_options', 'edd-addons', 'edd_add_ons_page');
+//    $edd_add_ons_page = add_submenu_page('edit.php?post_type=download', __('Easy Digital Download Add Ons', 'edd'), __('Add Ons', 'edd'), 'manage_options', 'edd-addons', 'edd_add_ons_page');
 }
 remove_action('admin_menu', 'edd_add_options_link', 10);
 add_action('admin_menu', 'leyka_admin_menu');

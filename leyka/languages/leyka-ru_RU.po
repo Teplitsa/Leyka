@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Leyka v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-03-18 12:41:13+0000\n"
+"PO-Revision-Date: 2013-03-25 07:29:02+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -65,11 +65,12 @@ msgid "System Info"
 msgstr "Системная информация"
 
 #: includes/admin-donations-history-page.php:30
+#: includes/admin-recalls-page.php:26
 #@ leyka
 msgid "Search"
 msgstr "Поиск"
 
-#: includes/ajax.php:140
+#: includes/ajax.php:139
 #@ leyka
 msgid "Permissions denied"
 msgstr "Доступ запрещён"
@@ -164,7 +165,7 @@ msgstr "PayPal, средний (81x51 px) - рекомендован"
 msgid "Paypal big (127x80 px)"
 msgstr "PayPal, большой (127x80 px)"
 
-#: includes/admin-donates-list-page.php:62
+#: includes/admin-donates-list-page.php:67
 #: includes/admin-edit-donate-page.php:28
 #@ leyka
 msgid "Donate configuration"
@@ -232,22 +233,26 @@ msgstr "Статус по умолчанию для новых отзывов"
 msgid "Deafult status for newly created donor recalls"
 msgstr "Статус по умолчанию для новых отзывов пользователей"
 
-#: includes/admin-recalls-page.php:72
 #: includes/admin-settings-sections/general.php:48
 #: includes/classes/payments-table.php:69
+#: includes/classes/recalls-table.php:80
+#: includes/classes/recalls-table.php:126
+#: includes/classes/recalls-table.php:155
 #@ default
 #@ edd
 msgid "Pending"
 msgstr "Ожидание"
 
-#: includes/admin-recalls-page.php:71
 #: includes/admin-settings-sections/general.php:49
+#: includes/classes/recalls-table.php:122
+#: includes/classes/recalls-table.php:154
 #@ default
 msgid "Draft"
 msgstr "Черновик"
 
-#: includes/admin-recalls-page.php:69
 #: includes/admin-settings-sections/general.php:50
+#: includes/classes/recalls-table.php:121
+#: includes/classes/recalls-table.php:152
 #@ default
 msgid "Publish"
 msgstr "Опубликовать"
@@ -354,70 +359,67 @@ msgstr "Уникальный номер (ID) цели пожертвования
 msgid "The URL of the admin page where donation status can be changed"
 msgstr "URL страницы админ. панели сайта, на которой можно изменить статус пожертвования"
 
-#: includes/admin-recalls-page.php:20
+#: includes/classes/recalls-table.php:90
 #@ default
 msgid "Title"
 msgstr "Наименование"
 
-#: includes/admin-recalls-page.php:21
-#: includes/admin-recalls-page.php:76
+#: includes/classes/recalls-table.php:91
+#: includes/classes/recalls-table.php:159
 #@ leyka
 msgid "Recall text"
 msgstr "Текст отзыва"
 
-#: includes/admin-recalls-page.php:22
+#: includes/classes/recalls-table.php:92
 #@ leyka
 msgid "Recall author (donor)"
 msgstr "Автор отзыва (донор)"
 
-#: includes/admin-recalls-page.php:23
+#: includes/classes/recalls-table.php:93
 #@ leyka
 msgid "Gateway"
 msgstr "Платёжная система"
 
 #: includes/admin-edit-donate-page.php:96
-#: includes/admin-recalls-page.php:24
 #: includes/classes/donations-logs-list-table.php:121
 #: includes/classes/payments-table.php:83
+#: includes/classes/recalls-table.php:94
 #@ default
 #@ edd
 msgid "Date"
 msgstr "Дата"
 
-#: includes/admin-recalls-page.php:56
-#@ default
-msgid "Quick&nbsp;Edit"
-msgstr "Быстрое&nbsp;Редактирование"
-
-#: includes/admin-recalls-page.php:57
+#: includes/classes/recalls-table.php:170
 #@ default
 msgid "Move this item to the Trash"
 msgstr "Переместить этот элемент в мусорную корзину"
 
-#: includes/admin-recalls-page.php:57
-#: includes/admin-recalls-page.php:70
+#: includes/classes/recalls-table.php:123
+#: includes/classes/recalls-table.php:153
+#: includes/classes/recalls-table.php:170
 #@ default
 msgid "Trash"
 msgstr "Мусорная корзина"
 
-#: includes/admin-recalls-page.php:63
+#: includes/classes/recalls-table.php:146
 #@ leyka
 msgid "Edit user recall #"
 msgstr "Редактировать отзыв пользователя #"
 
-#: includes/admin-recalls-page.php:67
 #: includes/classes/payments-table.php:85
-#@ default
+#: includes/classes/recalls-table.php:95
+#: includes/classes/recalls-table.php:150
 #@ edd
+#@ default
 msgid "Status"
 msgstr "Статус"
 
-#: includes/admin-recalls-page.php:81
+#: includes/classes/recalls-table.php:164
 #@ default
 msgid "Cancel"
 msgstr "Отмена"
 
-#: includes/ajax.php:107
+#: includes/ajax.php:106
 #@ leyka
 msgid "Permissions denied!"
 msgstr "В доступе отказано!"
@@ -447,12 +449,14 @@ msgstr "В ОЖИДАНИИ"
 msgid "COMPLETE"
 msgstr "ЗАВЕРШЕН"
 
+#: includes/classes/recalls-table.php:30
 #: includes/post-types.php:35
 #@ leyka
 msgctxt "post type general name"
 msgid "User recalls"
 msgstr "Отзыв пользователя"
 
+#: includes/classes/recalls-table.php:29
 #: includes/post-types.php:36
 #@ leyka
 msgctxt "post type singular name"
@@ -600,11 +604,13 @@ msgstr "Наименование:"
 
 #: includes/classes/donations-logs-list-table.php:292
 #: includes/classes/payments-table.php:67
+#: includes/classes/recalls-table.php:68
 #@ edd
 msgid "All"
 msgstr "Все"
 
 #: includes/classes/payments-table.php:68
+#: includes/classes/recalls-table.php:74
 #@ edd
 msgid "Completed"
 msgstr "Завершенные"
@@ -648,6 +654,7 @@ msgstr "Редактировать"
 
 #: includes/classes/payments-table.php:128
 #: includes/classes/payments-table.php:241
+#: includes/classes/recalls-table.php:179
 #@ edd
 msgid "Delete"
 msgstr "Удалить"
@@ -687,11 +694,13 @@ msgid "Close"
 msgstr "Закрыть"
 
 #: includes/classes/payments-table.php:242
+#: includes/classes/recalls-table.php:180
 #@ leyka
 msgid "Activate"
 msgstr "Активировать"
 
 #: includes/classes/payments-table.php:243
+#: includes/classes/recalls-table.php:181
 #@ leyka
 msgid "Deactivate"
 msgstr "Деактивировать"
@@ -711,7 +720,7 @@ msgstr "Несколько вариантов размера пожертвов�
 msgid "Option Name"
 msgstr "Название варианта"
 
-#: includes/admin-donates-list-page.php:64
+#: includes/admin-donates-list-page.php:69
 #: includes/admin-edit-donate-page.php:177
 #@ leyka
 msgid "Price"
@@ -816,13 +825,14 @@ msgstr "Пожертвования"
 
 #. translators: plugin header field 'Name'
 #: leyka.php:0
-#: leyka.php:105
+#: leyka.php:109
 #@ leyka
 msgid "Leyka"
 msgstr "Лейка"
 
 #: includes/frontend.php:21
 #: includes/post-types.php:16
+#: includes/shortcodes.php:80
 #@ leyka
 msgid "Donates"
 msgstr "Цели пожертвований"
@@ -1159,6 +1169,7 @@ msgid "Export donations history"
 msgstr "Экспорт истории пожертвований"
 
 #: includes/admin-global.php:73
+#: includes/admin-recalls-page.php:23
 #@ leyka
 msgid "Donor recalls"
 msgstr "Отзывы доноров"
@@ -1191,12 +1202,12 @@ msgstr ""
 msgid "Sorry, the amount of your donation is 0 somehow."
 msgstr "размер пожертвований равен нулю."
 
-#: includes/functions.php:51
+#: includes/functions.php:75
 #@ leyka
 msgid "Recall"
 msgstr "Отзыв"
 
-#: includes/functions.php:52
+#: includes/functions.php:76
 #@ leyka
 msgid "recall"
 msgstr "отзыв"
@@ -1380,18 +1391,18 @@ msgstr ""
 msgid "Donation successfully added to your %scart%s."
 msgstr "Пожертвование добавлено в вашу %sкорзину%s."
 
-#: leyka.php:74
+#: leyka.php:78
 #, php-format
 #@ leyka
 msgid "<div id=\"message\" class=\"error\"><p><strong>Error:</strong> Easy Digital Downloads plugin is missing. It is required for donates module to work. Base donations plugin will be deactivated.</p><p><a href=\"%s\">Click here</a> to download and install Easy Digital Downloads plugin.</p></div>"
 msgstr "<div id=\"message\" class=\"error\"><p><strong>Ошибка:</strong> плагин Easy Digital Downloads не найден. Он необходим для работы модуля пожертвований. Плагин Лейка будет деактивирован.</p><p><a href=\"%s\">Загрузить и инсталлировать Easy Digital Downloads</a></p></div>"
 
-#: leyka.php:81
+#: leyka.php:85
 #@ leyka
 msgid "<div id=\"message\" class=\"error\"><p><strong>Error:</strong> Easy Digital Downloads plugin is missing. It is required for donates module to work. Base donations plugin will be deactivated.</p></div>"
 msgstr "<div id=\"message\" class=\"error\"><p><strong>Ошибка:</strong> плагин Easy Digital Downloads не найден. Он необходим для работы модуля пожертвований. Плагин Лейка будет деактивирован.</p></div>"
 
-#: leyka.php:91
+#: leyka.php:95
 #, php-format
 #@ leyka
 msgid "<div id=\"message\" class=\"error\"><p><strong>Error:</strong> Easy Digital Downloads plugin is installed but inactive. It is required for donates module to work. Base donations plugin will be deactivated.</p><p><a href=\"%s\">Click here</a> to activate Easy Digital Downloads plugin.</p></div>"
@@ -1405,11 +1416,6 @@ msgstr ""
 #: includes/frontend.php:80
 #@ edd
 msgid "Email Address"
-msgstr ""
-
-#: includes/frontend.php:82
-#@ edd
-msgid "We will send the purchase receipt to this address."
 msgstr ""
 
 #: includes/frontend.php:84
@@ -1427,4 +1433,14 @@ msgstr "Ваше имя"
 #@ leyka
 msgid "We will use this to personalize your account experience."
 msgstr "Будет использоваться для обращения к вам."
+
+#: includes/classes/recalls-table.php:169
+#@ default
+msgid "Edit This"
+msgstr ""
+
+#: includes/frontend.php:82
+#@ leyka
+msgid "We will send the donation success notice to this address."
+msgstr "На этот адрес будет выслано уведомление об успешном выполнении пожертвования."
 
