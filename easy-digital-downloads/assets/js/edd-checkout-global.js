@@ -55,7 +55,7 @@ jQuery(document).ready(function($) {
             url: edd_global_vars.ajaxurl,
             success: function (tax_response) {
                 $('#edd_checkout_cart').replaceWith(tax_response.html);
-                $('.edd_cart_amount').text(tax_response.total);
+                $('.edd_cart_amount').html(tax_response.total);
             }
         }).fail(function (data) {
             console.log(data);
@@ -74,7 +74,6 @@ jQuery(document).ready(function($) {
     /* Discounts */
     var before_discount = $('.edd_cart_amount').text();
     $('#edd_checkout_form_wrap').on('change', '#edd-email', function (event) {
-        $('.edd_cart_amount').html(before_discount);
         $('#edd-discount').val('');
     });
 

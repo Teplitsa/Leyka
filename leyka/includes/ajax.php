@@ -100,10 +100,9 @@ function leyka_recall_edit(){
     if(empty($_POST['recall_id']) || (int)$_POST['recall_id'] < 0)
         return;
     $_POST['recall_id'] = (int)$_POST['recall_id'];
-    $payment = get_post($_POST['recall_id']);
-    if( $payment->post_type != 'leyka_recall'
+    if(get_post($_POST['recall_id'])->post_type != 'leyka_recall'
         || !current_user_can('edit_post', $_POST['recall_id'])
-        || !wp_verify_nonce($_POST['leyka_nonce'], 'leyka-edit-recall') )
+        || !wp_verify_nonce($_POST['leyka_nonce'], 'leyka-edit-recall'))
         die( json_encode(array('status' => 'error', 'message' => __('Permissions denied!', 'leyka'))) );
 
     global $wpdb;
@@ -120,7 +119,7 @@ function leyka_recall_edit(){
     die( json_encode(array(
         'status' => 'ok',
         'data' => array(
-            'recall_status_text' => __( ucfirst($_POST['recall_status']) ),
+            'recall_status_text' => __(ucfirst($_POST['recall_status'])),
             'recall_status' => $_POST['recall_status'],
             'recall_text' => $_POST['recall_text'],
         ),
@@ -142,11 +141,12 @@ function leyka_toggle_payment_status(){
     $_POST['new_status'] = $_POST['new_status'] === 'publish' ? 'publish' : 'pending';
     global $wpdb;
     // Not using edd_update_payment_status, because it unnessesarily triggers EDD hook that sends email to the donor and Payments Admin:
-    $wpdb->update(
-        $wpdb->posts,
-        array('post_status' => $_POST['new_status']),
-        array('ID' => $_POST['payment_id'])
-    );
+//    $wpdb->update(
+//        $wpdb->posts,
+//        array('post_status' => $_POST['new_status']),
+//        array('ID' => $_POST['payment_id'])
+//    );
+    edd_update_payment_status($_POST['payment_id'], $_POST['new_status']);
     die( json_encode(array(
         'status' => 'ok',
         'payment_status' => $_POST['new_status'],

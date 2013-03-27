@@ -23,7 +23,8 @@ if( !function_exists('lcfirst') ) {
 function get_latest_edd_version()
 {
     $version = 0;
-    foreach(file('http://plugins.svn.wordpress.org/easy-digital-downloads/trunk/readme.txt') as $line) {
+    $lines = @file('http://plugins.svn.wordpress.org/easy-digital-downloads/trunk/readme.txt');
+    foreach((array)$lines as $line) {
         if(stripos($line, 'Stable tag:') !== FALSE) {
             $version = trim(str_replace('Stable Tag:', '', $line));
             break;

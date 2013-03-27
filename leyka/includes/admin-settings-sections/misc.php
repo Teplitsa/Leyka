@@ -13,8 +13,8 @@ if( !defined('ABSPATH') ) exit; // Exit if accessed directly
 // Changes in the Settings->Misc admin section:
 function leyka_misc_settings($settings){
     unset(
-    $settings['live_cc_validation'], $settings['logged_in_only'], $settings['show_register_form'],
-    $settings['download_link_expiration'], $settings['disable_redownload']
+        $settings['live_cc_validation'], $settings['logged_in_only'], $settings['show_register_form'],
+        $settings['download_link_expiration'], $settings['disable_redownload'], $settings['symlink_file_downloads']
     );
 
     $settings['redirect_on_add']['desc'] = __('Redirect to the checkout after adding the donation to the cart.', 'leyka');
