@@ -66,7 +66,6 @@ function leyka_show_correct_payment_icons(){
 add_action('leyka_payment_mode_top', 'leyka_show_correct_payment_icons');
 
 /** Remove EDD's default checkout fields. */
-remove_action('edd_purchase_form_after_user_info', 'edd_user_info_fields');
 function leyka_default_user_info_fields(){
     if(is_user_logged_in()) {
         $user_data = get_userdata(get_current_user_id());
@@ -94,6 +93,7 @@ function leyka_default_user_info_fields(){
     <?php do_action('edd_purchase_form_user_info');?>
 </fieldset>
 <?php }
+remove_action('edd_purchase_form_after_user_info', 'edd_user_info_fields');
 add_action('edd_purchase_form_after_user_info', 'leyka_default_user_info_fields');
 
 /** Sets an error on checkout if no gateways are enabled. */
