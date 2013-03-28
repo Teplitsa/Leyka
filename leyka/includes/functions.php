@@ -44,6 +44,9 @@ function leyka_insert_payment($payment_data = array(), $settings = array())
     $settings = $settings + array('add_recall' => TRUE,);
 
     global $edd_options;
+    
+//    echo '<pre>'.print_r($payment_data['user_info'], TRUE).'</pre>';
+//    die();
 
     unset($payment_data['user_info']['last_name']); // We won't keep the last name for privacy reasons
 
