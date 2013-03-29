@@ -88,12 +88,12 @@ jQuery(document).ready(function($){
             }, function(resp){
                 resp = $.parseJSON(resp);
                 $indicator.hide();
-                if( !resp || !resp.payment_status || resp.status != 'ok' ) {
+                if( !resp.hasOwnProperty('payment_status') || resp.status != 'ok' ) {
                     $message.fadeIn(200);
                     if(is_checked)
                         $this.click();
                 } else {
-                    $message.fadeIn(200);
+                    $message.fadeOut(200);
                     $this.data('new-status', resp.payment_status == 'publish' ? 'pending' : 'publish');
 //                    window.location.href = '';
                 }

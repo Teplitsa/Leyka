@@ -21,7 +21,7 @@ function leyka_reports_page(){
         <a href="<?php echo add_query_arg(array('tab' => 'reports', 'settings-updated' => false), $current_page);?>" class="nav-tab <?php echo $active_tab == 'reports' ? 'nav-tab-active' : '';?>"><?php _e('Reports', 'edd');?></a>
         <a href="<?php echo add_query_arg(array('tab' => 'export', 'settings-updated' => false), $current_page);?>" class="nav-tab <?php echo $active_tab == 'export' ? 'nav-tab-active' : '';?>"><?php _e('Export', 'edd');?></a>
         <?php /** @todo Uncomment this logs lab when start the task 415 */ ?>
-<!--        <a href="--><?php //echo add_query_arg(array('tab' => 'logs', 'settings-updated' => false), $current_page);?><!--" class="nav-tab --><?php //echo $active_tab == 'logs' ? 'nav-tab-active' : '';?><!--">--><?php //_e('Logs', 'edd');?><!--</a>-->
+        <a href="<?php echo add_query_arg(array('tab' => 'logs', 'settings-updated' => false), $current_page);?>" class="nav-tab <?php echo $active_tab == 'logs' ? 'nav-tab-active' : '';?>"><?php _e('Logs', 'edd');?></a>
         <?php do_action('edd_reports_tabs');?>
     </h2>
 
@@ -389,40 +389,38 @@ function leyka_reports_tab_export(){?>
 remove_action('edd_reports_tab_export', 'edd_reports_tab_export');
 add_action('edd_reports_tab_export', 'leyka_reports_tab_export');
 
-/** Changes in the Stats -> Logs page.
- * Uncomment the following code when starting 415 task.
- */
-// Common log views:
-//function leyka_log_views($views){
-//    unset($views['file_downloads']); // Leyka don't have a files to be downloaded by users
-//    /** @todo Add to file_downloads view the "donation sum" column. Remove "File" column. Make the table content appear! */
-//    $views['sales'] = __('Donations', 'leyka');
-//
-//    return $views;
-//}
-//add_filter('edd_log_views', 'leyka_log_views');
-//
-//function leyka_reports_tab_logs() {
-//    require(EDD_PLUGIN_DIR.'includes/admin/reporting/logs.php');
-//
-//    $current_view = 'sales';
-//
-//    if(isset($_GET['view']) && array_key_exists($_GET['view'], edd_log_default_views()))
-//        $current_view = $_GET[ 'view' ];
-//
-//    if($current_view == 'sales') // To replace sales view with a customized one
-//        remove_action('edd_logs_view_'.$current_view, 'edd_logs_view_'.$current_view);
-//    do_action('edd_logs_view_'.$current_view);
-//}
-//remove_action('edd_reports_tab_logs', 'edd_reports_tab_logs');
-//add_action('edd_reports_tab_logs', 'leyka_reports_tab_logs');
-//
-///** Donations log view. */
-//function leyka_logs_view_donations() {
-//    require LEYKA_PLUGIN_DIR.'/includes/classes/donations-logs-list-table.php';
-//
-//    $logs_table = new Leyka_Donations_Log_Table();
-//    $logs_table->prepare_items();
-//    $logs_table->display();
-//}
-//add_action('edd_logs_view_sales', 'leyka_logs_view_donations');
+/** Changes in the Stats -> Logs page. */
+/** Common log views. */
+function leyka_log_views($views){
+    unset($views['file_downloads'], $views['api_requests']); // Remove unneeded views
+    $views['sales'] = __('Donations', 'leyka');
+
+    return $views;
+}
+add_filter('edd_log_views', 'leyka_log_views');
+
+/** Logs tab. */
+function leyka_reports_tab_logs() {
+    require(EDD_PLUGIN_DIR.'includes/admin/reporting/logs.php');
+
+    $current_view = 'sales';
+
+    if(isset($_GET['view']) && array_key_exists($_GET['view'], edd_log_default_views()))
+        $current_view = $_GET['view'];
+
+    if($current_view == 'sales') // To replace sales view with a customized one
+        remove_action('edd_logs_view_'.$current_view, 'edd_logs_view_'.$current_view);
+    do_action('edd_logs_view_'.$current_view);
+}
+remove_action('edd_reports_tab_logs', 'edd_reports_tab_logs');
+add_action('edd_reports_tab_logs', 'leyka_reports_tab_logs');
+
+/** Donations log view. */
+function leyka_logs_view_donations() {
+    require LEYKA_PLUGIN_DIR.'/includes/classes/donations-logs-list-table.php';
+
+    $logs_table = new Leyka_Donations_Log_Table();
+    $logs_table->prepare_items();
+    $logs_table->display();
+}
+add_action('edd_logs_view_sales', 'leyka_logs_view_donations');

@@ -38,7 +38,12 @@ function leyka_general_settings($settings){
             'name' => __('Payments default status', 'leyka'),
             'desc' => __('Deafult status for newly created donation payments', 'leyka'),
             'type' => 'select',
-            'options' => edd_get_payment_statuses()
+            'options' => array(
+                'pending' => __('Pending'),
+                'publish' => __('Publish'),
+                'failed' => __('Failed', 'edd'),
+                'revoked' => __('Revoked', 'edd'),
+            )
         ), array(
             'id' => 'leyka_recalls_default_status',
             'name' => __("Donor's recalls default status", 'leyka'),

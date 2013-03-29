@@ -34,24 +34,19 @@ function get_latest_edd_version()
     return (float)$version;
 }
 
-/** Insert new payment and correspondent recall, or redirect back if needed. */
-function leyka_insert_payment($payment_data = array(), $settings = array())
+/** Wrapper to insert new payment and it's correspondent recall, or redirect back if needed. */
+function leyka_insert_payment($payment_data = array())
 {
     if( !$payment_data )
         return FALSE;
 
-    // Default operation settings:
-    $settings = $settings + array('add_recall' => TRUE,);
-
     global $edd_options;
-    
-//    echo '<pre>'.print_r($payment_data['user_info'], TRUE).'</pre>';
-//    die();
 
     unset($payment_data['user_info']['last_name']); // We won't keep the last name for privacy reasons
 
-    // Process the payment on our side:
-    // Create the record for pending payment
+    // Process the payment on our side. Create the record for payment:
+    $init_status = $edd_options['leyka_payments_default_status'] == 'publish' ?
+                       'pending' : $edd_options['leyka_payments_default_status'];
     $payment_id = edd_insert_payment(array(
         'price' => $payment_data['price'],
         'date' => $payment_data['date'],
@@ -61,51 +56,24 @@ function leyka_insert_payment($payment_data = array(), $settings = array())
         'downloads' => $payment_data['downloads'],
         'user_info' => $payment_data['user_info'],
         'cart_details' => $payment_data['cart_details'],
-        'status' => $edd_options['leyka_payments_default_status']
+        'status' => $init_status
     ));
+    if($payment_id && $edd_options['leyka_payments_default_status'] == 'publish')
+        edd_update_payment_status($payment_id, 'publish');
 
-    if($payment_id) {
-        if($payment_data['post_data']['donor_comments'] && !empty($settings['add_recall'])) {
-            $recall = leyka_insert_recall(array(
-                'post_content' => $payment_data['post_data']['donor_comments'],
-                'post_type' => 'leyka_recall',
-                'post_status' => $edd_options['leyka_recalls_default_status'],
-                'post_title' => 'title',
-            ));
-            if($recall) {
-                // Update the title and slug:
-                leyka_update_recall($recall, array(
-                    'post_title' => __('Recall', 'leyka').' #'.$recall,
-                    'post_name' => __('recall', 'leyka').'-'.$recall,
-                ));
-                // Update recall metadata:
-                update_post_meta($recall, '_leyka_payment_id', $payment_id);
-            }
-        }
-        if( !empty($payment_data['post_data']['leyka_send_donor_email_conf']) )
-            edd_email_purchase_receipt($payment_id, FALSE);
-        if(empty($payment_data['amount']))
-            $payment_data = edd_get_payment_meta($payment_id);
-        edd_admin_email_notice($payment_id, $payment_data);
-        edd_empty_cart();
-    } else {
-        // if errors are present, send the user back to the purchase page so they can be corrected
+    if( !$payment_id ) {
+        // If errors are present, send the user back to the donation page so they can be corrected:
         if(empty($payment_data['single_donate_id']))
             edd_send_back_to_checkout('?payment-mode='.$payment_data['post_data']['edd-gateway']);
         else
             leyka_send_back_to_single_donate(
-                $payment_data['single_donate_id'], $payment_data['post_data']['edd-gateway']
+                $payment_data['single_donate_id'],
+                $payment_data['post_data']['edd-gateway']
             );
     }
 }
 
-/** Add a donor recall. */
-function leyka_insert_recall($recall_data, $return_wp_error = false)
-{
-    return wp_insert_post($recall_data, $return_wp_error);
-}
-
-/**  Update a donor recall. */
+/** Update a donor recall. */
 function leyka_update_recall($recall_id, $recall_data, $return_wp_error = false)
 {
     if((int)$recall_id <= 0)

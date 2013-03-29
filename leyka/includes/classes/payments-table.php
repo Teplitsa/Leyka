@@ -177,16 +177,16 @@ class Leyka_Donations_History_Table extends WP_List_Table {
                                 $price_options = $cart_items[$key]['item_number']['options'];                   
                                 if(isset($price_options['price_id'])) {
                                     echo ' - '.edd_get_price_option_name($id, $price_options['price_id']);
+                                    if(edd_has_variable_prices($id))
+                                        echo ' - ';
                                 } else if( !empty($price_options['is_free_sum']) )
-                                    echo ' - '.lcfirst(__('Any price can be donated', 'leyka'));
-                                echo ' - ';
+                                    echo ' - '.lcfirst(__('Any price can be donated', 'leyka')).' - ';
                             }
                             // show price
                             echo edd_currency_filter(edd_format_amount($price));
 							echo '</li>';
 						}
-					}
-?>
+					}?>
 				</ul>
 				<?php $payment_date = strtotime($item['date']);?>
 				<p><?php echo __('Date and Time:', 'edd').' '.date_i18n(get_option('date_format'), $payment_date).' '. date_i18n(get_option('time_format'), $payment_date);?></p>

@@ -139,7 +139,7 @@ function leyka_toggle_payment_status(){
         die( json_encode(array('status' => 'error', 'message' => __('Permissions denied', 'leyka'))) );
 
     $_POST['new_status'] = $_POST['new_status'] === 'publish' ? 'publish' : 'pending';
-    global $wpdb;
+//    global $wpdb;
     // Not using edd_update_payment_status, because it unnessesarily triggers EDD hook that sends email to the donor and Payments Admin:
 //    $wpdb->update(
 //        $wpdb->posts,
