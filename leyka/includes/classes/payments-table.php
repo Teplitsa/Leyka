@@ -181,6 +181,8 @@ class Leyka_Donations_History_Table extends WP_List_Table {
                                         echo ' - ';
                                 } else if( !empty($price_options['is_free_sum']) )
                                     echo ' - '.lcfirst(__('Any price can be donated', 'leyka')).' - ';
+                                else
+                                    echo ' - ';
                             }
                             // show price
                             echo edd_currency_filter(edd_format_amount($price));

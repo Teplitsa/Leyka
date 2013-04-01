@@ -10,6 +10,12 @@
 
 if( !defined('ABSPATH') ) exit; // Exit if accessed directly
 
+/** Show all available donates list. Replacement for [downloads] EDD shortcode. */
+function leyka_donates(){
+    echo do_shortcode('[downloads]');
+}
+add_shortcode('donates', 'leyka_donates');
+
 /**
  * Counter to show total donations number.
  *
@@ -110,12 +116,12 @@ add_shortcode('recalls', 'leyka_user_recalls_list');
  * @return string HTML of the shortcode widget.
  */
 function leyka_funds_collected($atts, $content = null){
-    global $edd_options;
+    global $edd_options, $edd_logs;
 
     $atts = shortcode_atts(array(
         'gateways' => '',
         'donates' => '',
-        'donates_ex' => '',
+//        'donates_ex' => '',
     ), $atts);
 
     $gateways_to_select = array();
@@ -133,20 +139,29 @@ function leyka_funds_collected($atts, $content = null){
         }
     } 
 
-    $donates_to_exclude = array();
-    if($atts['donates_ex']) {
-        foreach(explode(',', $atts['donates_ex']) as $donate_id) {
-            if(in_array($donate_id, $donates_to_select))
-                unset($donates_to_select[array_search($donate_id, $donates_to_select)]);
-            else
-                $donates_to_exclude[] = $donate_id;
+//    $donates_to_exclude = array();
+//    if($atts['donates_ex']) {
+//        foreach(explode(',', $atts['donates_ex']) as $donate_id) {
+//            if(in_array($donate_id, $donates_to_select))
+//                unset($donates_to_select[array_search($donate_id, $donates_to_select)]);
+//            else
+//                $donates_to_exclude[] = $donate_id;
+//        }
+//    }
+
+    $donations_to_select = array();
+    foreach($donates_to_select as $donate_id) {
+        $donations_entries = $edd_logs->get_connected_logs(array(
+            'post_parent' => $donate_id,
+            'log_type' => 'sale',
+            'posts_per_page' => -1
+        ));
+        foreach($donations_entries as $log_entry) {
+            $donations_to_select[] = get_post_meta($log_entry->ID, '_edd_log_payment_id', TRUE);
         }
     }
 
-//    echo '<pre>'.print_r($donates_to_select, TRUE).'</pre>';
-//    echo '<pre>'.print_r($donates_to_exclude, TRUE).'</pre>';
-
-    $atts = array('status' => 'publish', 'post_type' => 'edd_payment');
+    $atts = array('status' => 'publish', 'post_type' => 'edd_payment', 'post__in' => $donations_to_select); // post__not_in
     if($gateways_to_select) {
         $gateway_sums = array();
         foreach($gateways_to_select as $gateway) {
@@ -181,9 +196,7 @@ function leyka_funds_collected($atts, $content = null){
 }
 add_shortcode('funds_collected', 'leyka_funds_collected');
 
-/**
- * Page to list all of the donation targets with an option to "quick" (1-click) donate to each.
- */
+/** Page to list all of the donation targets with an option to "quick" (1-click) donate to each. */
 //add_shortcode('donates_cart_extra', function($atts, $content = null) {
 //    extract(shortcode_atts(array(
 //            'category'         => '',

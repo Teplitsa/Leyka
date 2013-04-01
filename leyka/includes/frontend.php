@@ -393,6 +393,11 @@ function leyka_scripts(){?>
         'error_single_donate_must_agree_to_terms' => __('Sorry, you must agree to the donation terms first', 'leyka'),
     ));
 
+    global $edd_options;
+
+    if($edd_options['disable_styles'])
+        return;
+
     wp_register_style('leyka-styles', LEYKA_PLUGIN_BASE_URL.'styles/style.css');
     wp_enqueue_style('leyka-styles');
 }
