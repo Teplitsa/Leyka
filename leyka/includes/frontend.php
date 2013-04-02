@@ -117,11 +117,23 @@ function leyka_agree_to_terms_js(){
     if( !empty($edd_options['show_agree_to_terms']) ) {?>
     <script type="text/javascript">
         jQuery(document).ready(function($){
+            var b_close = '<a href="#" class="edd_terms_links" style="display:none;"><?php _e("Hide Terms", "edd"); ?></a>';
             $('body').on('click', '.edd_terms_links', function(e) {
-                $('#edd_terms').slideToggle();
+                // $('#edd_terms').toggle();
+                if($('#edd_terms').hasClass('show')) {
+                    $('#edd_terms').removeClass('show').css('top','-100%');
+                    $(this).remove();
+                } else {
+                    $('#edd_terms').addClass('show').css('top','10%').append(b_close);
+                }
+                    
                 $('.edd_terms_links').toggle();
                 return false;
             });
+            $('.b-close').on("click",function(){
+                $('#edd_terms').removeClass('show').css('top','-100%');
+                $(this).remove();
+            })
         });
     </script>
     <?php
@@ -160,7 +172,7 @@ function leyka_after_cc_form(){?>
         <span id="leyka-comment-symbols-remain">100</span>
     </p>
     <p>
-        <label id="leyka_send_donor_email_"><input type="checkbox" name="leyka_send_donor_email_conf" value="1" checked="1" />&nbsp;<?php echo __('Send me an email confimation for my donation', 'leyka');?></label>
+        <label id="leyka_send_donor_email_"><input type="checkbox" name="leyka_send_donor_email_conf" value="1" checked="1" />&nbsp;<span><?php echo __('Send me an email confimation for my donation', 'leyka');?></span></label>
     </p>
 </fieldset>
 <?php }
@@ -183,7 +195,7 @@ function leyka_free_amount_field($donate_id){
             }
         }
     } else {?>
-    <div class="leyka_free_donate_amount_">
+    <div class="leyka_free_donate_amount_ complete">
         <input type="text" name="leyka_free_donate_amount" id="free_donate_amount_<?php echo $donate_id;?>" value="<?php echo leyka_get_min_free_donation_sum($donate_id);?>" maxlength="30" />&nbsp;<?php echo edd_currency_filter('');?>
     </div>
     <?php

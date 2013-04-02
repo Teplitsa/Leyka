@@ -35,7 +35,6 @@ function leyka_after_download_content($donate_id){
     } else {
         echo apply_filters('leyka_single_static_amount', edd_price($donate_id, FALSE));
     }?>
-        <br /><br />
         <?php edd_print_errors();?>
         <div class="leyka_gateways_">
             <div id="leyka_gateways_list">
@@ -60,8 +59,8 @@ function leyka_after_download_content($donate_id){
                     <?php }?>
             </div>
             <?php do_action('leyka_payment_mode_top');?>
-        </span>
-        <span id="leyka_form_resp"></span>
+        </div>
+        <div id="leyka_form_resp"></div>
         <span id="leyka_client_errors"></span>
         <input type="hidden" id="leyka_donate_id" name="donate_id" value="<?php echo $donate_id;?>" />
         <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('leyka-single-donate-nonce');?>" />
