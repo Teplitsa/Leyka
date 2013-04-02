@@ -190,7 +190,7 @@ h3.popover-title {
 }
 #leyka-single-form-wrapper .edd_price_options:after {
     content: '';
-    border-bottom: 1px dashed #ced2c9;
+    border-bottom: 1px dotted #ced2c9;
     display: block;
     height: 1px;
     width: 90%;
@@ -267,7 +267,7 @@ margin-right: 32px;
 }
 #leyka-single-form-wrapper #leyka_form_resp:after {
     content: '';
-    border-left: 1px dashed #ced2c9;
+    border-left: 1px dotted #ced2c9;
     height: 90%;
     width: 1px;
     position: absolute;
@@ -315,12 +315,12 @@ margin-right: 32px;
 #leyka-single-form-wrapper .leyka_free_donate_amount_ {
     padding: 10px 15px;
     text-align: center;
-    font-size: 20px;
+    font-size: 2.5em;
     position: relative;
 }
 #leyka-single-form-wrapper .leyka_free_donate_amount_:after {
     content: '';
-    border-bottom: 1px dashed #ced2c9;
+    border-bottom: 1px dotted #ced2c9;
     display: block;
     height: 1px;
     width: 90%;
@@ -329,19 +329,19 @@ margin-right: 32px;
     bottom: 0px;
 }
 #leyka-single-form-wrapper .leyka_free_donate_amount_ input {
-    font-size: 20px;
+    font-size: 1em;
     width: 155px;
 }
 #leyka-single-form-wrapper .edd_price {
     display: block;
     text-align: center;
     padding: 10px 15px;
-    font-size: 20px;
+    font-size: 2.5em;
     position: relative;
 }
 #leyka-single-form-wrapper .edd_price:after {
     content: '';
-    border-bottom: 1px dashed #ced2c9;
+    border-bottom: 1px dotted #ced2c9;
     display: block;
     height: 1px;
     width: 90%;

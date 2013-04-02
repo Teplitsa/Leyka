@@ -138,4 +138,8 @@ jQuery(document).ready(function($){
     $('body').on('click.eddAddToCart', '.edd-add-to-cart', function(e){
         $(this).parents('form').find('.edd-simply-donate').hide();
     });
+    $('#leyka_gateways_list input, #leyka_gateways_list label').click(function(){
+        if($('#leyka-single-form').hasClass('complete')) return true;
+        $('#leyka-single-form').addClass('complete');
+    })
 });
