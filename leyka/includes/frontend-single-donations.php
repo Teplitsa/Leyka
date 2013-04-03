@@ -60,7 +60,7 @@ function leyka_after_download_content($donate_id){
                     <?php }?>
             </div>
             <?php do_action('leyka_payment_mode_top');?>
-        </span>
+        </div>
         <span id="leyka_form_resp"></span>
         <span id="leyka_client_errors"></span>
         <input type="hidden" id="leyka_donate_id" name="donate_id" value="<?php echo $donate_id;?>" />

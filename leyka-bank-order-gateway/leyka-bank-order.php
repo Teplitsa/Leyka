@@ -66,7 +66,7 @@ function leyka_bank_order_gateways($options){
 add_filter('edd_payment_gateways', 'leyka_bank_order_gateways', 5);
 
 /** Bank order specific checkout fields. */
-add_action('edd_bank_order_cc_form', function(){?>
+function leyka_bank_order_fields(){?>
     <p id="edd-second-name-wrap">
         <label class="edd-label" for="edd-second"><?php _e('Your second name', 'leyka-bank-order');?></label>
     <span class="edd-description">
@@ -82,7 +82,8 @@ add_action('edd_bank_order_cc_form', function(){?>
     </span>
         <input class="edd-input" type="text" name="edd_last" placeholder="<?php _e('Your last name', 'leyka-bank-order');?>" id="edd-last" value="" />
     </p>
-<?php });
+<?php }
+add_action('edd_bank_order_cc_form', 'leyka_bank_order_fields');
 
 /** Do some validation on our gateway specific fields if needed. */
 //    add_action('edd_checkout_error_checks', function($checkout_form_data){
@@ -305,10 +306,8 @@ function leyka_bank_order_admin_init(){
     /** Add icons option to the icons list */
     function leyka_bank_order_icons($icons){
         $subplugin_url = rtrim(WP_PLUGIN_URL.'/'.basename(dirname(__FILE__)), '/').'/';
-
-        $icons[$subplugin_url.'icons/sber_s.png'] = __('Sberbank small (169x35 px)', 'leyka-bank-order');
-        $icons[$subplugin_url.'icons/sber_m.png'] = __('Sberbank medium (246x51 px) (recommended)', 'leyka-bank-order');
-        $icons[$subplugin_url.'icons/sber_b.png'] = __('Sberbank big (386x80 px)', 'leyka-bank-order');
+        
+        $icons[$subplugin_url.'icons/sber.png'] = __('Sberbank', 'leyka-bank-order');
 
         return $icons;
     }
