@@ -69,6 +69,8 @@ function edd_complete_purchase( $payment_id, $new_status, $old_status ) {
 	if ( isset( $user_info['discount'] ) && $user_info['discount'] != 'none' ) {
 		edd_increase_discount_usage( $user_info['discount'] );
 	}
+    
+//    echo '<pre>'.print_r($payment_id.' - '.$amount, TRUE).'</pre>';
 
 	// Empty the shopping cart
 	edd_empty_cart();

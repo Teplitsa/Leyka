@@ -146,10 +146,17 @@ function leyka_toggle_payment_status(){
 //        array('post_status' => $_POST['new_status']),
 //        array('ID' => $_POST['payment_id'])
 //    );
+
+    // We mustn't send another email notifications:
+    remove_action('edd_update_payment_status', 'edd_trigger_purchase_receipt', 10);
+
     edd_update_payment_status($_POST['payment_id'], $_POST['new_status']);
     die( json_encode(array(
         'status' => 'ok',
         'payment_status' => $_POST['new_status'],
     )) );
+
+    // Return the notifications sending action:
+    add_action('edd_update_payment_status', 'edd_trigger_purchase_receipt', 10, 3);
 }
 add_action('wp_ajax_leyka-toggle-payment-status', 'leyka_toggle_payment_status');

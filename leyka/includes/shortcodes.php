@@ -161,7 +161,13 @@ function leyka_funds_collected($atts, $content = null){
         }
     }
 
-    $atts = array('status' => 'publish', 'post_type' => 'edd_payment', 'post__in' => $donations_to_select); // post__not_in
+    $atts = array(
+        'numberposts' => -1, // Selecting all donation posts, without paging
+        'status' => 'publish',
+        'post_type' => 'edd_payment',
+        'post__in' => $donations_to_select,
+//        'post__not_in' => $donates_to_exclude,
+    );
     if($gateways_to_select) {
         $gateway_sums = array();
         foreach($gateways_to_select as $gateway) {
@@ -170,7 +176,7 @@ function leyka_funds_collected($atts, $content = null){
                     'key' => '_edd_payment_mode',
                     'value' => empty($edd_options['test_mode']) ? 'live' : 'test'
                 ),
-                array('key' => '_edd_payment_gateway', 'value' => $gateway,),  
+                array('key' => '_edd_payment_gateway', 'value' => $gateway,)
             );
 
             // Count sum by current gateway:
@@ -186,6 +192,11 @@ function leyka_funds_collected($atts, $content = null){
             $sum += $gateway_sum;
         }
     } else {
+        $atts['meta_query'] = array(array(
+            'key' => '_edd_payment_mode',
+            'value' => empty($edd_options['test_mode']) ? 'live' : 'test'
+        ));
+
         $sum = 0.0;
         foreach(get_posts($atts) as $donation) {
             $sum += get_post_meta($donation->ID, '_edd_payment_total', TRUE);
