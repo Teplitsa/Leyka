@@ -54,86 +54,114 @@ function leyka_bank_order_plugins_loaded()
 }
 add_action('plugins_loaded', 'leyka_bank_order_plugins_loaded');
 
-function leyka_bank_order_init(){
-    /** Add Quittance payment to the gateways list by filter hook. */
-    function leyka_bank_order_gateways($options){
-        $options['bank_order'] = array(
-            'admin_label' => __('Bank order payment', 'leyka-bank-order'),
-            'checkout_label' => __('Manual (bank order) payment', 'leyka-bank-order')
-        );
-        return $options;
-    }
-    add_filter('edd_payment_gateways', 'leyka_bank_order_gateways', 5);
+//function leyka_bank_order_init(){
+/** Add Quittance payment to the gateways list by filter hook. */
+function leyka_bank_order_gateways($options){
+    $options['bank_order'] = array(
+        'admin_label' => __('Bank order payment', 'leyka-bank-order'),
+        'checkout_label' => __('Manual (bank order) payment', 'leyka-bank-order')
+    );
+    return $options;
+}
+add_filter('edd_payment_gateways', 'leyka_bank_order_gateways', 5);
 
-    /** Quittance checkout form - not needed. */
-//    add_action('edd_bank_order_cc_form', function(){
-//    });
+/** Bank order specific checkout fields. */
+function leyka_bank_order_fields(){?>
+    <p id="edd-second-name-wrap">
+        <label class="edd-label" for="edd-second"><?php _e('Your second name', 'leyka-bank-order');?></label>
+    <span class="edd-description">
+        <?php _e('We will use this only to personalize your account experience. This field is not nessesary.', 'leyka-bank-order');?>
+    </span>
+        <input class="edd-input" type="text" name="edd_second" placeholder="<?php _e('Your second name', 'leyka-bank-order');?>" id="edd-second" value="" />
+    </p>
 
-    /** Do some validation on our gateway specific fields if needed. */
+    <p id="edd-last-name-wrap">
+        <label class="edd-label" for="edd-last"><?php _e('Your last name', 'leyka-bank-order');?></label>
+    <span class="edd-description">
+        <?php _e('We will use this only to personalize your account experience. This field is not nessesary.', 'leyka-bank-order');?>
+    </span>
+        <input class="edd-input" type="text" name="edd_last" placeholder="<?php _e('Your last name', 'leyka-bank-order');?>" id="edd-last" value="" />
+    </p>
+<?php }
+add_action('edd_bank_order_cc_form', 'leyka_bank_order_fields');
+
+/** Do some validation on our gateway specific fields if needed. */
 //    add_action('edd_checkout_error_checks', function($checkout_form_data){
 //    });
 
-    /** Do the gateway's data processing: redirect, saving data in DB, etc. */
-    function leyka_bank_order_processing($payment_data){
-        global $edd_options;
+/** Do the gateway's data processing: redirect, saving data in DB, etc. */
+function leyka_bank_order_processing($payment_data){
+    global $edd_options;
 
-        // Redirect to quittance page to print it out:
-        leyka_insert_payment($payment_data); // Process the payment on our side
+    // Redirect to quittance page to print it out:
+    leyka_insert_payment($payment_data); // Process the payment on our side
 
-        if($edd_options['bank_order_use_file']) {
-            header('location: '.$edd_options['bank_order_file']); // Send a payment quittance to browser
+    if($edd_options['bank_order_use_file']) {
+        header('location: '.$edd_options['bank_order_file']); // Send a payment quittance to browser
 //                header('location: '.home_url());
-            die(); // Just in case
-        }
-
-        header('Content-type: text/html; charset=utf-8');
-
-        $html = $edd_options['bank_order_html_default'] ?
-            file_get_contents(dirname(__FILE__).'/standard_bank_order.php') :
-            $edd_options['bank_order_html'];
-
-        $html = str_replace(array(
-                '#RECEIVER_NAME#',
-                '111111111',
-                '#RECEIVER_BANK_NAME#',
-                '#SUM#',
-                '#PAYMENT_COMMENT#',
-            ),
-            array(
-                $edd_options['bank_order_receiver_name'],
-                $edd_options['bank_order_receiver_kpp'],
-                $edd_options['bank_order_receiver_bank_name'],
-                $payment_data['price'],
-                $payment_data['post_data']['donor_comments'],
-            ),
-            $html);
-        for($i=0; $i<10; $i++) {
-            $digit = isset($edd_options['bank_order_receiver_inn']) ?
-                $edd_options['bank_order_receiver_inn'][$i] : ' ';
-            $html = str_replace("#INN_$i#", $digit, $html);
-        }
-        for($i=0; $i<20; $i++) {
-            $digit = isset($edd_options['bank_order_receiver_account'][$i]) ?
-                $edd_options['bank_order_receiver_account'][$i] : ' ';
-            $html = str_replace("#ACC_$i#", $digit, $html);
-        }
-        for($i=0; $i<10; $i++) {
-            $digit = isset($edd_options['bank_order_receiver_bik'][$i]) ?
-                $edd_options['bank_order_receiver_bik'][$i] : ' ';
-            $html = str_replace("#BIK_$i#", $digit, $html);
-        }
-        for($i=0; $i<20; $i++) {
-            $digit = isset($edd_options['bank_order_receiver_corr_account'][$i]) ?
-                $edd_options['bank_order_receiver_corr_account'][$i] : ' ';
-            $html = str_replace("#CORR_$i#", $digit, $html);
-        }
-        echo $html;
-        flush();
-        die();
+        die(); // Just in case
     }
-    add_action('edd_gateway_bank_order', 'leyka_bank_order_processing');
+
+    header('Content-type: text/html; charset=utf-8');
+
+    $html = $edd_options['bank_order_html_default'] ?
+        file_get_contents(dirname(__FILE__).'/standard_bank_order.php') :
+        $edd_options['bank_order_html'];
+
+    $payer_full_name = '&nbsp;';
+    $last_name = trim($payment_data['user_info']['last_name']); 
+    if($last_name) {
+        $payer_full_name = trim($payment_data['user_info']['first_name']);
+        $second_name = trim($payment_data['post_data']['edd_second']); 
+        if($second_name)
+            $payer_full_name .= '&nbsp;'.$second_name;
+        $payer_full_name .= '&nbsp;'.$last_name;
+    }
+
+    $html = str_replace(array(
+            '#RECEIVER_NAME#',
+            '#PAYER_NAME#',
+            '111111111',
+            '#RECEIVER_BANK_NAME#',
+            '#SUM#',
+            '#PAYMENT_COMMENT#',
+        ),
+        array(
+            $edd_options['bank_order_receiver_name'],
+            $payer_full_name,
+            $edd_options['bank_order_receiver_kpp'],
+            $edd_options['bank_order_receiver_bank_name'],
+            $payment_data['price'],
+            $payment_data['post_data']['donor_comments'],
+        ),
+        $html);
+    for($i=0; $i<10; $i++) {
+        $digit = isset($edd_options['bank_order_receiver_inn']) ?
+            $edd_options['bank_order_receiver_inn'][$i] : ' ';
+        $html = str_replace("#INN_$i#", $digit, $html);
+    }
+    for($i=0; $i<20; $i++) {
+        $digit = isset($edd_options['bank_order_receiver_account'][$i]) ?
+            $edd_options['bank_order_receiver_account'][$i] : ' ';
+        $html = str_replace("#ACC_$i#", $digit, $html);
+    }
+    for($i=0; $i<10; $i++) {
+        $digit = isset($edd_options['bank_order_receiver_bik'][$i]) ?
+            $edd_options['bank_order_receiver_bik'][$i] : ' ';
+        $html = str_replace("#BIK_$i#", $digit, $html);
+    }
+    for($i=0; $i<20; $i++) {
+        $digit = isset($edd_options['bank_order_receiver_corr_account'][$i]) ?
+            $edd_options['bank_order_receiver_corr_account'][$i] : ' ';
+        $html = str_replace("#CORR_$i#", $digit, $html);
+    }
+    echo $html;
+    flush();
+    die();
 }
-add_action('init', 'leyka_bank_order_init', 1);
+add_action('edd_gateway_bank_order', 'leyka_bank_order_processing');
+//}
+//add_action('init', 'leyka_bank_order_init', 1);
 
 function leyka_bank_order_admin_init(){
     // Base Leyka isn't defined, deactivate this plugin:
@@ -278,10 +306,8 @@ function leyka_bank_order_admin_init(){
     /** Add icons option to the icons list */
     function leyka_bank_order_icons($icons){
         $subplugin_url = rtrim(WP_PLUGIN_URL.'/'.basename(dirname(__FILE__)), '/').'/';
-
-        $icons[$subplugin_url.'icons/sber_s.png'] = __('Sberbank small (169x35 px)', 'leyka-bank-order');
-        $icons[$subplugin_url.'icons/sber_m.png'] = __('Sberbank medium (246x51 px) (recommended)', 'leyka-bank-order');
-        $icons[$subplugin_url.'icons/sber_b.png'] = __('Sberbank big (386x80 px)', 'leyka-bank-order');
+        
+        $icons[$subplugin_url.'icons/sber.png'] = __('Sberbank', 'leyka-bank-order');
 
         return $icons;
     }

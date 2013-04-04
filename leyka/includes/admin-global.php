@@ -75,7 +75,7 @@ function leyka_admin_menu(){
     $edd_settings_page = add_submenu_page('edit.php?post_type=download', __('Easy Digital Download Settings', 'edd'), __('Settings', 'edd'), 'manage_options', 'edd-settings', 'edd_options_page');
     $edd_system_info_page = add_submenu_page('edit.php?post_type=download', __('Easy Digital Download System Info', 'edd' ), __('System Info', 'edd'), 'manage_options', 'edd-system-info', 'edd_system_info');
     // Add-ons page removed until further testing for their compatibility with Leyka:
-//        $edd_add_ons_page = add_submenu_page('edit.php?post_type=download', __('Easy Digital Download Add Ons', 'edd'), __('Add Ons', 'edd'), 'manage_options', 'edd-addons', 'edd_add_ons_page');
+//    $edd_add_ons_page = add_submenu_page('edit.php?post_type=download', __('Easy Digital Download Add Ons', 'edd'), __('Add Ons', 'edd'), 'manage_options', 'edd-addons', 'edd_add_ons_page');
 }
 remove_action('admin_menu', 'edd_add_options_link', 10);
 add_action('admin_menu', 'leyka_admin_menu');
@@ -107,6 +107,58 @@ function leyka_admin_messages() {
 }
 remove_action('admin_notices', 'edd_admin_messages');
 add_action('admin_notices', 'leyka_admin_messages');
+
+/** On each new donation payment we'll insert donor recall and send email notices. */
+function leyka_on_donation_insert($payment_id, $payment_data){
+    global $edd_options;
+
+    if($payment_data['post_data']['donor_comments']) { // Insert new donor recall, if needed
+        $recall_id = wp_insert_post(array(
+            'post_content' => $payment_data['post_data']['donor_comments'],
+            'post_type' => 'leyka_recall',
+            'post_status' => $edd_options['leyka_recalls_default_status'],
+            'post_title' => 'title',
+        ));
+        if($recall_id) {
+            leyka_update_recall($recall_id, array( // Update recall's title and slug
+                'post_title' => __('Recall', 'leyka').' #'.$recall_id,
+                'post_name' => __('recall', 'leyka').'-'.$recall_id,
+            ));
+            update_post_meta($recall_id, '_leyka_payment_id', $payment_id); // Update recall metadata
+        }
+    }
+
+    if( !empty($payment_data['post_data']['leyka_send_donor_email_conf']) )
+        edd_email_purchase_receipt($payment_id, FALSE);
+    if(empty($payment_data['amount']))
+        $payment_data = edd_get_payment_meta($payment_id);
+    edd_admin_email_notice($payment_id, $payment_data);
+    edd_empty_cart();
+}
+add_action('edd_insert_payment', 'leyka_on_donation_insert', 10, 2);
+
+/** Updating donations log entries when donation status is set to something else than "publish". */
+function leyka_update_donation_status($donation_id, $new_status, $old_status){
+    if($new_status == $old_status)
+        return;
+    if($new_status == 'publish' || $new_status == 'complete')
+        return;
+
+    $donates = edd_get_payment_meta_downloads($donation_id);
+    if(is_array($donates)) {
+        foreach($donates as $donate) { // Update sale counts and earnings for all purchased products
+            edd_undo_purchase($donate['id'], $donation_id);
+        }
+    }
+
+    global $edd_logs;
+    $edd_logs->delete_logs( // Remove related donation log entries
+        NULL,
+        'sale',
+        array(array('key' => '_edd_log_payment_id', 'value' => $donation_id))
+    );
+}
+add_action('edd_before_payment_status_change', 'leyka_update_donation_status', 10, 3);
 
 // Add JS and CSS to admin area:
 function leyka_admin_scripts($hook){

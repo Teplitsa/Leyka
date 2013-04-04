@@ -2,17 +2,31 @@ jQuery(document).ready(function($){
     // Temp. hide Donates -> Settings -> Taxes tab:
     $('a[href*="page=edd-settings&tab=taxes"]').hide();
 
-    $('body').on('click.inline-edit-recall', '.inline-edit-recall', function(e){
+    // Settings -> User recalls, link to open recall data editing area:
+    $('body').on('click.inline-edit-recall', '.inline-edit-recall-link', function(e){
         e.preventDefault();
         var $this = $(this),
             $cell = $this.parents('td'),
-            $recall_text = $('.recall_text', $cell),
-            $actions_area = $('#actions-recall-'+$this.data('recall-id'), $cell),
-            $edit_area = $('#edit-recall-'+$this.data('recall-id'), $cell);
+            $table = $cell.parents('#leyka-recalls-filter');
 
-        $recall_text.toggle();
-        $actions_area.toggle();
-        $edit_area.toggle();
+        $table.find('.inline-edit-recall').hide();
+        $table.find('.recall_text').show();
+        $table.find('.row-actions').show();
+
+        $('.recall_text', $cell).toggle();
+        $cell.find('.row-actions').toggle();
+        $cell.find('.inline-edit-recall').toggle();
+    });
+
+    // Settings -> User recalls, button to close recall data editing area:
+    $('body').on('click.inline-edit-recall', '.reset-recall', function(e){
+        e.preventDefault();
+        var $this = $(this),
+            $cell = $this.parents('td');
+
+        $('.recall_text', $cell).show();
+        $cell.find('.row-actions').show();
+        $cell.find('.inline-edit-recall').hide();
     });
 
     // Settings -> User recalls, link to save the recall data:
@@ -20,20 +34,28 @@ jQuery(document).ready(function($){
         e.preventDefault();
         var $this = $(this),
             $cell = $this.parents('td'),
-            $recall_text = $('.recall_text', $cell),
-            $actions_area = $('#actions-recall-'+$this.data('recall-id'), $cell),
             $edit_area = $('#edit-recall-'+$this.data('recall-id'), $cell),
+            $params = $edit_area.find(':input').serializeArray(),
             $buttons = $this.parents('fieldset').find('.submit-recall, .reset-recall');
 
         $buttons.attr('disabled', 'disabled');
-        $.post(ajaxurl, $edit_area.find(':input').serialize())
+        $params.push({name: 'action', value: 'leyka-recall-edit'});
+        $.post(ajaxurl, $params)
          .success(function(resp){
             resp = $.parseJSON(resp);
             if(resp.status == 'error') {
                 $cell.find('.recall_edit_message').html( resp.message );
                 return;
             } else if(resp.status == 'ok') {
-                window.location.href = '';
+                var $row = $cell.parents('tr');
+                $row.find('td.column-text').find('.recall_text').html(resp.data.recall_text);
+                $row.find('td.column-text').find('textarea[name="recall_text"]').text(resp.data.recall_text);
+                $row.find('td.column-text').find('select[name="recall_status"]').val(resp.data.recall_status);
+                $row.find('td.column-status').html(resp.data.recall_status_text);
+
+                $buttons.removeAttr('disabled');
+                $this.parents('fieldset').find('.reset-recall').click();
+//                window.location.href = '';
             }
         }).error(function(){
             $('.recall_edit_message', $cell)
@@ -43,18 +65,9 @@ jQuery(document).ready(function($){
         });
     });
 
-    // Settings -> User recalls, link to close the recall data editing area:
-    $('body').on('click.reset-recall', '.reset-recall', function(e){
-        e.preventDefault();
-        var $this = $(this),
-            $cell = $this.parents('td'),
-            $recall_text = $('.recall_text', $cell),
-            $actions_area = $('#actions-recall-'+$this.data('recall-id'), $cell),
-            $edit_area = $('#edit-recall-'+$this.data('recall-id'), $cell);
-
-        $recall_text.toggle();
-        $actions_area.toggle();
-        $edit_area.toggle();
+    // Settings -> User recalls, batch actions preprocessing
+    $('body').on('submit.batch-submit-recalls', '#leyka-recalls-filter', function(e){
+        $(this).find('.inline-edit-recall').find(':input').attr('disabled', 'disabled');
     });
 
     // Settings -> Payment history, divs to quickly toggle the payments statuses:
@@ -62,7 +75,11 @@ jQuery(document).ready(function($){
         checkedLabel: l10n.payment_status_switch_complete,
         uncheckedLabel: l10n.payment_status_switch_pending,
         onChange: function(element, is_checked){
-            var $this = $(element);
+            var $this = $(element),
+                $indicator = $this.parents('td').find('.loading'),
+                $message = $this.parents('td').find('.donation_switching_error');
+            $indicator.show();
+            $message.hide();
             $.post(ajaxurl, {
                 'payment_id': $this.data('payment-id'),
                 'new_status': $this.data('new-status'),
@@ -70,8 +87,15 @@ jQuery(document).ready(function($){
                 'leyka_nonce': $this.data('nonce')
             }, function(resp){
                 resp = $.parseJSON(resp);
-                if(resp.status == 'ok') {
-                    window.location.href = '';
+                $indicator.hide();
+                if( !resp.hasOwnProperty('payment_status') || resp.status != 'ok' ) {
+                    $message.fadeIn(200);
+                    if(is_checked)
+                        $this.click();
+                } else {
+                    $message.fadeOut(200);
+                    $this.data('new-status', resp.payment_status == 'publish' ? 'pending' : 'publish');
+//                    window.location.href = '';
                 }
             });
         }

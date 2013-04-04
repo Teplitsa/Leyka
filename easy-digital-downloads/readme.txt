@@ -7,7 +7,7 @@ Tags: download, downloads, e-store, eshop, digital downloads, e-downloads, ecomm
 Requires at least: 3.3
 Tested up to: 3.6
 
-Stable Tag: 1.5
+Stable Tag: 1.5.1
 License: GNU Version 2 or Any Later Version
 
 
@@ -57,7 +57,7 @@ With add-ons for [Mail Chimp](http://easydigitaldownloads.com/extension/mail-chi
 
 Easy Digital Downloads as been translated into the following languages:
 
-1. English
+1. English (and British English)
 2. German
 3. Spanish
 4. French
@@ -67,6 +67,10 @@ Easy Digital Downloads as been translated into the following languages:
 8. Turkish
 9. Arabic
 10. Polish
+11. Russian
+12. Czech
+13. Japanese
+14. Farsi
 
 Would you like to help translate the plugin into more languages? [Contact Pippin](http://easydigitaldownloads.com/contact-developer/).
 
@@ -170,6 +174,22 @@ Yes, through the addition of one or more of the add-on payment gateways, you can
 
 
 == Changelog ==
+
+= 1.5.1: March 21, 2013 = 
+
+* Fix: Tags / Categories couldn't be assigned by anyone except shop_manager and admins
+* Fix: Improved memory usage by removing file download log meta box
+* Fix: Couldn't change the email associated with purchases
+* Fix: Comment feeds showed payment notes
+* Fix: Corrected some filters for text outputs
+* Fix: Raw HTML displayed on checkout after opting into taxes
+* Fix: Total shown twice on the checkout page
+* New: Added link to File Download Log from Edit download screen
+* New: Made file download symlinks disabled by default
+* New: Added hour::minute::second to payment history export
+* New: Improved CSS for payment method select
+* New: Allowed store vendors to see sales / earnings for their own products
+* New: Added new hooks to the export page
 
 = 1.5: March 13, 2013 =
 

@@ -177,11 +177,8 @@ function leyka_mobi_money_admin_init(){
     /** Add icons option to the icons list */
     function leyka_mobi_money_icons($icons){
         $subplugin_url = rtrim(WP_PLUGIN_URL.'/'.basename(dirname(__FILE__)), '/').'/';
-//        echo '<pre>'.print_r($subplugin_url, TRUE).'</pre>';
 
-        $icons[$subplugin_url.'icons/mobi_money_s.png'] = __('MOBI.Money small (99x35 px)', 'leyka-mobi-money');
-        $icons[$subplugin_url.'icons/mobi_money_m.png'] = __('MOBI.Money medium (144x51 px) (recommended)', 'leyka-mobi-money');
-        $icons[$subplugin_url.'icons/mobi_money_b.png'] = __('MOBI.Money big (226x80 px)', 'leyka-mobi-money');
+        $icons[$subplugin_url.'icons/mobi_money.png'] = __('MOBI.Money', 'leyka-mobi-money');
 
         return $icons;
     }

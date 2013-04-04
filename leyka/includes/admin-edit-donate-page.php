@@ -130,7 +130,7 @@ function leyka_render_donation_log_meta_box(){
             ));?>
         </div>
     </div><!--end .tablenav-->
-    <?php }
+<?php }
 }
 
 // Donate configuration block content:

@@ -171,9 +171,7 @@ RBK Money обеспечивает техническую надежность �
     function leyka_rbk_money_icons($icons){
         $subplugin_url = rtrim(WP_PLUGIN_URL.'/'.basename(dirname(__FILE__)), '/').'/';
 
-        $icons[$subplugin_url.'icons/rbk_s.png'] = __('RBK money small (59x35 px)', 'leyka-rbk-money');
-        $icons[$subplugin_url.'icons/rbk_m.png'] = __('RBK money medium (86x51 px) (recommended)', 'leyka-rbk-money');
-        $icons[$subplugin_url.'icons/rbk_b.png'] = __('RBK money big (135x80 px)', 'leyka-rbk-money');
+        $icons[$subplugin_url.'icons/rbk.png'] = __('RBK money', 'leyka-rbk-money');
 
         return $icons;
     }

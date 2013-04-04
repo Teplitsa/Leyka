@@ -45,10 +45,10 @@ class Leyka_Donate_Reports_Table extends WP_List_Table {
     /** Get the column IDs and names */
     function get_columns() {
         $columns = array(
-            'title'            => edd_get_label_singular(),
-            'sales'            => __('Donations number', 'leyka'),
-            'earnings'         => __('Incoming funds', 'leyka'),
-            'average_sales'    => __('Monthly average donations number', 'leyka'),
+            'title' => edd_get_label_singular(),
+            'sales' => __('Donations number', 'leyka'),
+            'earnings' => __('Incoming funds', 'leyka'),
+            'average_sales' => __('Monthly average donations number', 'leyka'),
             'average_earnings' => __('Monthly average incoming funds', 'leyka')
         );
         return $columns;
@@ -57,8 +57,8 @@ class Leyka_Donate_Reports_Table extends WP_List_Table {
     /** Define the sortable columns */
     function get_sortable_columns() {
         return array(
-            'title'    => array('title', true),
-            'sales'    => array('sales', false),
+            'title' => array('title', true),
+            'sales' => array('sales', false),
             'earnings' => array('earnings', false),
         );
     }
@@ -118,10 +118,10 @@ class Leyka_Donate_Reports_Table extends WP_List_Table {
                 $reports_data[] = array(
                     'ID'               => $download->ID,
                     'title'            => get_the_title( $download->ID ),
-                    'sales'            => edd_get_download_sales_stats( $download->ID ),
-                    'earnings'         => edd_get_download_earnings_stats( $download->ID ),
-                    'average_sales'    => edd_get_average_monthly_download_sales( $download->ID ),
-                    'average_earnings' => edd_get_average_monthly_download_earnings( $download->ID )
+                    'sales'            => edd_get_download_sales_stats($download->ID),
+                    'earnings'         => edd_get_download_earnings_stats($download->ID),
+                    'average_sales'    => edd_get_average_monthly_download_sales($download->ID),
+                    'average_earnings' => edd_get_average_monthly_download_earnings($download->ID)
                 );
             }
         }
@@ -132,21 +132,13 @@ class Leyka_Donate_Reports_Table extends WP_List_Table {
     /** Setup the final data for the table */
     function prepare_items() {
         $columns = $this->get_columns();
-
         $hidden = array(); // No hidden columns
-
         $sortable = $this->get_sortable_columns();
 
-        $this->_column_headers = array( $columns, $hidden, $sortable );
-
-        $data = $this->reports_data();
-
-        $current_page = $this->get_pagenum();
+        $this->_column_headers = array($columns, $hidden, $sortable);
+        $this->items = $this->reports_data();
 
         $total_items = $this->get_total_downloads();
-
-        $this->items = $data;
-
         $this->set_pagination_args(array(
             'total_items' => $total_items,
             'per_page'    => $this->per_page,

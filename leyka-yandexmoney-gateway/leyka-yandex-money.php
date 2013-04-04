@@ -206,9 +206,7 @@ function leyka_yandex_money_admin_init(){
     function leyka_yandex_icons($icons){
         $subplugin_url = rtrim(WP_PLUGIN_URL.'/'.basename(dirname(__FILE__)), '/').'/';
 
-        $icons[$subplugin_url.'icons/yamo_s.png'] = __('Yandex money small (81x35 px)', 'leyka-yandex-money');
-        $icons[$subplugin_url.'icons/yamo_m.png'] = __('Yandex money medium (118x51 px) (recommended)', 'leyka-yandex-money');
-        $icons[$subplugin_url.'icons/yamo_b.png'] = __('Yandex money big (185x80 px)', 'leyka-yandex-money');
+        $icons[$subplugin_url.'icons/yamo_b.png'] = __('Yandex money', 'leyka-yandex-money');
 
         return $icons;
     }

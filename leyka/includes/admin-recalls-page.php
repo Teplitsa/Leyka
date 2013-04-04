@@ -20,19 +20,19 @@ function leyka_recalls_page(){
     $recalls_table->prepare_items();?>
 
 <div class="wrap">
-    <h2><?php _e('Donations history', 'leyka');?></h2>
-    <?php do_action('edd_payments_page_top');?>
-    <form id="edd-payments-filter" method="get" action="<?php echo admin_url('edit.php?post_type=download&page=edd-payment-history');?>">
+    <h2><?php _e('Donor recalls', 'leyka');?></h2>
+    <?php do_action('leyka_recalls_page_top');?>
+    <form id="leyka-recalls-filter" method="get" action="<?php echo admin_url('edit.php?post_type=download&page=leyka-recalls');?>">
         <?php $recalls_table->search_box(__('Search', 'leyka'), 'leyka-recalls');?>
 
-        <input type="hidden" name="post_type" value="leyka_recall" />
+        <input type="hidden" name="post_type" value="download" />
         <input type="hidden" name="page" value="leyka-recalls" />
         <?php
         $recalls_table->views();
         $recalls_table->display();
         ?>
     </form>
-    <?php do_action('edd_payments_page_bottom');?>
+    <?php do_action('leyka_recalls_page_bottom');?>
 </div>
 <?php
 }

@@ -107,7 +107,7 @@ class Leyka_Donations_History_Table extends WP_List_Table {
 			case 'status':
 				$payment = get_post($item['ID']);
 				return
-                   '<input type="checkbox" class="leyka_status_switch" '.($payment->post_status == 'publish' ? 'checked="checked"' : '').' data-action="leyka-toggle-payment-status" data-nonce="'.wp_create_nonce('leyka-toggle-payment-status').'" data-payment-id="'.$item['ID'].'" data-new-status="'.($payment->post_status == 'publish' ? 'pending' : 'publish').'" />';
+                   '<input type="checkbox" class="leyka_status_switch" '.($payment->post_status == 'publish' ? 'checked="checked"' : '').' data-action="leyka-toggle-payment-status" data-nonce="'.wp_create_nonce('leyka-toggle-payment-status').'" data-payment-id="'.$item['ID'].'" data-new-status="'.($payment->post_status == 'publish' ? 'pending' : 'publish').'" /> <img class="loading" src="'.EDD_PLUGIN_URL.'assets/images/loading.gif" style="display:none;" /> <div class="donation_switching_error" style="display:none;">'.__('Error while switching the donation status! Please try again later or e-mail the support team to fix it.', 'leyka').'</div>';
 			default:
 				return $item[$column_name];
 		}
@@ -116,7 +116,7 @@ class Leyka_Donations_History_Table extends WP_List_Table {
 	/** Render the email column */
 	function column_email($item) {
      	$payment = get_post($item['ID']);
-        $base = admin_url('edit.php?post_type=download&page=edd-payment-history&edd-action=edit-payment&purchase_id=' . $item['ID']);
+//        $base = admin_url('edit.php?post_type=download&page=edd-payment-history&edd-action=edit-payment&purchase_id=' . $item['ID']);
 
 		$row_actions = array();
 
@@ -177,16 +177,18 @@ class Leyka_Donations_History_Table extends WP_List_Table {
                                 $price_options = $cart_items[$key]['item_number']['options'];                   
                                 if(isset($price_options['price_id'])) {
                                     echo ' - '.edd_get_price_option_name($id, $price_options['price_id']);
+                                    if(edd_has_variable_prices($id))
+                                        echo ' - ';
                                 } else if( !empty($price_options['is_free_sum']) )
-                                    echo ' - '.lcfirst(__('Any price can be donated', 'leyka'));
-                                echo ' - ';
+                                    echo ' - '.lcfirst(__('Any price can be donated', 'leyka')).' - ';
+                                else
+                                    echo ' - ';
                             }
                             // show price
                             echo edd_currency_filter(edd_format_amount($price));
 							echo '</li>';
 						}
-					}
-?>
+					}?>
 				</ul>
 				<?php $payment_date = strtotime($item['date']);?>
 				<p><?php echo __('Date and Time:', 'edd').' '.date_i18n(get_option('date_format'), $payment_date).' '. date_i18n(get_option('time_format'), $payment_date);?></p>
