@@ -304,6 +304,9 @@ margin-right: 32px;
     bottom: 5%;
     z-index: 1;
 }
+#edd_purchase_submit p {
+    margin-bottom: 20px;
+}
 #leyka-single-form-wrapper #leyka_form_resp p {
     margin: 0 0 0;
     padding-bottom: 10px;
