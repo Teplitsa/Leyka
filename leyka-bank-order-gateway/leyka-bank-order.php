@@ -68,18 +68,10 @@ add_filter('edd_payment_gateways', 'leyka_bank_order_gateways', 5);
 /** Bank order specific checkout fields. */
 function leyka_bank_order_fields(){?>
     <p id="edd-second-name-wrap">
-        <label class="edd-label" for="edd-second"><?php _e('Your second name', 'leyka-bank-order');?></label>
-    <span class="edd-description">
-        <?php _e('We will use this only to personalize your account experience. This field is not nessesary.', 'leyka-bank-order');?>
-    </span>
         <input class="edd-input" type="text" name="edd_second" placeholder="<?php _e('Your second name', 'leyka-bank-order');?>" id="edd-second" value="" />
     </p>
 
     <p id="edd-last-name-wrap">
-        <label class="edd-label" for="edd-last"><?php _e('Your last name', 'leyka-bank-order');?></label>
-    <span class="edd-description">
-        <?php _e('We will use this only to personalize your account experience. This field is not nessesary.', 'leyka-bank-order');?>
-    </span>
         <input class="edd-input" type="text" name="edd_last" placeholder="<?php _e('Your last name', 'leyka-bank-order');?>" id="edd-last" value="" />
     </p>
 <?php }

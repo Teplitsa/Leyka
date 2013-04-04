@@ -111,29 +111,58 @@ remove_action('init', 'edd_no_gateway_error');
 add_action('init', 'leyka_no_gateway_error');
 
 /** Adds a correct JS for agree to the terms module. */
+function leyka_terms_agreement(){
+    global $edd_options;
+    if( !empty($edd_options['show_agree_to_terms']) ) {?>
+        <fieldset id="edd_terms_agreement">
+            <p>
+            <div id="edd_terms" style="display:none;">
+                <?php
+                do_action('edd_before_terms');
+                echo wpautop($edd_options['agree_text']);
+                do_action('edd_after_terms');
+                ?>
+            </div>
+            <input name="edd_agree_to_terms" class="required" type="checkbox" id="edd_agree_to_terms" value="1"/>
+            <label for="edd_agree_to_terms">
+                <?php echo sprintf(__('I agree %s', 'leyka'), '<a href="#" class="edd_terms_links">'.( !empty($edd_options['agree_label']) ? $edd_options['agree_label'] : __('to the terms of donation service', 'leyka')).'</a>');?>
+            </label>
+            </p>
+        </fieldset>
+    <?php
+    }
+}
+remove_action('edd_purchase_form_after_cc_form', 'edd_terms_agreement');
+add_action('edd_purchase_form_after_cc_form', 'leyka_terms_agreement');
+
+function leyka_terms_add_closing_button(){?>
+    <div id="edd_show_terms">
+        <a href="#" class="edd_terms_links"><i class="icon-close">x</i> <?php _e('Hide Terms', 'edd'); ?></a>
+    </div>
+<?php }
+add_action('edd_before_terms', 'leyka_terms_add_closing_button');
+
+/** Adds a correct JS for agree to the terms module. */
 function leyka_agree_to_terms_js(){
     global $edd_options;
 
     if( !empty($edd_options['show_agree_to_terms']) ) {?>
     <script type="text/javascript">
         jQuery(document).ready(function($){
-            var b_close = '<a href="#" class="edd_terms_links" style="display:none;"><i class="icon-close">x</i> <?php _e("Hide Terms", "edd"); ?></a>';
             $('body').on('click', '.edd_terms_links', function(e) {
                 // $('#edd_terms').toggle();
                 if($('#edd_terms').hasClass('show')) {
                     $('#edd_terms').removeClass('show').css('top','-100%');
-                    $(this).remove();
                 } else {
-                    $('#edd_terms').addClass('show').css('top','10%').append(b_close).prepand(b_close);
+                    $('#edd_terms').addClass('show').css('top','10%');
                 }
-                    
-                $('.edd_terms_links').toggle();
+
                 return false;
             });
             $('.b-close').on("click",function(){
                 $('#edd_terms').removeClass('show').css('top','-100%');
                 $(this).remove();
-            })
+            });
         });
     </script>
     <?php
@@ -167,7 +196,7 @@ function leyka_after_cc_form(){?>
     <p  style="text-align:right;">
         <textarea rows="5" cols="20" name="donor_comments" id="leyka-donor-comment" class="edd-input" placeholder="<?php echo __('Type your comments, if needed', 'leyka');?>"></textarea>
         <label class="edd-label leyka-donor-comment-label" for="leyka-donor-comment">
-            <?php _e('Your comment', 'leyka');?>
+            <?php _e('Symbols remain:', 'leyka');?>
         </label>
         <span id="leyka-comment-symbols-remain">100</span>
     </p>
