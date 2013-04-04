@@ -139,7 +139,16 @@ jQuery(document).ready(function($){
         $(this).parents('form').find('.edd-simply-donate').hide();
     });
     $('#leyka_gateways_list input, #leyka_gateways_list label').click(function(){
+        $('.gateways_list_entry.active').removeClass('active');
+        $(this).parents('.gateways_list_entry').addClass('active');
         if($('#leyka-single-form').hasClass('complete')) return true;
         $('#leyka-single-form').addClass('complete');
+    })
+    $('#edd_agree_to_terms').live("change",function(){
+        if(this.checked) {
+            $('#leyka_form_resp').addClass('complete');
+        } else {
+            $('#leyka_form_resp').removeClass('complete');
+        }
     })
 });

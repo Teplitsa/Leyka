@@ -117,14 +117,14 @@ function leyka_agree_to_terms_js(){
     if( !empty($edd_options['show_agree_to_terms']) ) {?>
     <script type="text/javascript">
         jQuery(document).ready(function($){
-            var b_close = '<a href="#" class="edd_terms_links" style="display:none;"><?php _e("Hide Terms", "edd"); ?></a>';
+            var b_close = '<a href="#" class="edd_terms_links" style="display:none;"><i class="icon-close">x</i> <?php _e("Hide Terms", "edd"); ?></a>';
             $('body').on('click', '.edd_terms_links', function(e) {
                 // $('#edd_terms').toggle();
                 if($('#edd_terms').hasClass('show')) {
                     $('#edd_terms').removeClass('show').css('top','-100%');
                     $(this).remove();
                 } else {
-                    $('#edd_terms').addClass('show').css('top','10%').append(b_close);
+                    $('#edd_terms').addClass('show').css('top','10%').append(b_close).prepand(b_close);
                 }
                     
                 $('.edd_terms_links').toggle();

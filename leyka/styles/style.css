@@ -162,6 +162,9 @@ h3.popover-title {
 
 /* ===================== */
 /* polikarpov 25.03.2013 */
+#leyka-single-form {
+    position: relative;
+}
 #leyka-single-form-wrapper {
     /*width: 600px;*/
     border: 1px solid #ced2c9;
@@ -178,6 +181,7 @@ h3.popover-title {
 #leyka-single-form-wrapper .edd_price_options {
     border-radius: 15px 15px 0 0;
     padding: 15px 0;
+    background: #fafff5;
     position: relative;
 }
 #leyka-single-form-wrapper #leyka-single-form:after {
@@ -220,6 +224,7 @@ h3.popover-title {
     resize: none;
     width: 90%;
     border-color: #888;
+    color: #000;
     -webkit-box-sizing: border-box;
        -moz-box-sizing: border-box;
             box-sizing: border-box;
@@ -244,7 +249,11 @@ h3.popover-title {
     cursor: pointer;
 }
 #leyka-single-form-wrapper legend {
-    margin-bottom: 7px;
+    margin: 0 0 0 -12px;
+background: #fff;
+display: block;
+width: 100%;
+padding-left: 12px;
 }
 #leyka-single-form-wrapper  .edd-label.leyka-donor-comment-label {
     font-size: 11px;
@@ -258,12 +267,32 @@ margin-right: 32px;
 #leyka-single-form-wrapper #leyka_form_resp {
     width: 50%;
     float: right;
-    margin-top: 10px;
     position: relative;
-    padding: 0 0 0 12px;
+    border-radius: 0 0 15px;
+    text-align: center;
     -webkit-box-sizing: border-box;
        -moz-box-sizing: border-box;
             box-sizing: border-box;
+}
+#leyka-single-form-wrapper #leyka_form_resp img {
+    display: inline-block;
+    margin: 30px 0;
+}
+#leyka-single-form-wrapper #leyka_form_resp fieldset {
+    padding: 10px 0 0 12px;
+    background: #FFF;
+    margin: 0;
+    text-align: left;
+}
+#leyka-single-form-wrapper #leyka_form_resp.complete fieldset,
+#leyka-single-form-wrapper #leyka_form_resp.complete p,
+#leyka-single-form-wrapper #leyka_form_resp.complete legend {
+    background: transparent;
+}
+#leyka-single-form-wrapper #edd-second-name-wrap,
+#leyka-single-form-wrapper #edd-last-name-wrap {
+    background: #FFF;
+    padding: 10px 0 0 10px;
 }
 #leyka-single-form-wrapper #leyka_form_resp:after {
     content: '';
@@ -276,7 +305,21 @@ margin-right: 32px;
     z-index: 1;
 }
 #leyka-single-form-wrapper #leyka_form_resp p {
-    margin: 0 0 10px;
+    margin: 0 0 0;
+    padding-bottom: 10px;
+    text-align: left;
+}
+.gateways_list_entry.active,
+.gateways_list_entry.active:hover {
+    background: #bdff9f;
+}
+.gateways_list_entry {
+padding: 6px;
+border-radius: 5px;
+margin-right: 14px;
+}
+.gateways_list_entry:hover {
+    background: #E5E5E5;
 }
 #leyka-single-form-wrapper #leyka_send_donor_email_ span {
     font-size: 12px;
@@ -317,6 +360,7 @@ margin-right: 32px;
     text-align: center;
     font-size: 2.5em;
     position: relative;
+    border-radius: 15px 15px 0 0;
 }
 #leyka-single-form-wrapper .leyka_free_donate_amount_:after {
     content: '';
@@ -338,6 +382,9 @@ margin-right: 32px;
     padding: 10px 15px;
     font-size: 2.5em;
     position: relative;
+    background: #fafff5;
+    border-radius: 15px 15px 0 0;
+    
 }
 #leyka-single-form-wrapper .edd_price:after {
     content: '';
@@ -348,4 +395,54 @@ margin-right: 32px;
     left: 5%;
     position: absolute;
     bottom: 0px;
+}
+#edd_agree_to_terms {
+float: left;
+}
+#edd_show_terms {
+font-size: 12px;
+margin-bottom: 10px;
+}
+label[for="edd_agree_to_terms"] {
+    display: inline-block;
+    float: right;
+    width: 93%;
+    font-size: 12px;
+    line-height: 13px;
+}
+.complete {
+    background: #fafff5;
+    border-radius: 15px;
+}
+#edd_terms {
+    /*display: none;*/
+    display: block !important;
+    position: fixed;
+    width: 700px;
+    height: 400px;
+    top: -200%;
+    left: 30%;
+    font-size: 12px;
+    line-height: 7px;
+    background: #fff;
+    padding: 20px 30px;
+    border-radius: 15px;
+    box-shadow: 0 3px 9px rgba(0,0,0,.5);
+    overflow: auto;
+    z-index: 6;
+    -webkit-transition: all .3s;
+       -moz-transition: all .3s;
+        -ms-transition: all .3s;
+         -o-transition: all .3s;
+            transition: all .3s;
+}
+#leyka_client_errors {
+    position: absolute;
+    bottom: 50px;
+    left: 0px;
+    width: 50%;
+    color: #f00;
+    background: rgba(0,0,0,.1);
+    padding: 0px 10px;
+    box-sizing: border-box;
 }
