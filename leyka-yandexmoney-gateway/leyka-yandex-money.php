@@ -206,7 +206,7 @@ function leyka_yandex_money_admin_init(){
     function leyka_yandex_icons($icons){
         $subplugin_url = rtrim(WP_PLUGIN_URL.'/'.basename(dirname(__FILE__)), '/').'/';
 
-        $icons[$subplugin_url.'icons/yamo_b.png'] = __('Yandex money', 'leyka-yandex-money');
+        $icons[$subplugin_url.'icons/yamo.png'] = __('Yandex money', 'leyka-yandex-money');
 
         return $icons;
     }

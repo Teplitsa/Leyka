@@ -47,7 +47,7 @@ remove_action('edd_after_download_content', 'edd_show_has_purchased_item_message
 
 // Show payment gateways icons with correct hrefs: 
 remove_action('edd_payment_mode_top', 'edd_show_payment_icons');
-remove_action('edd_before_purchase_form', 'edd_show_payment_icons');
+remove_action('edd_checkout_form_top', 'edd_show_payment_icons');
 function leyka_show_correct_payment_icons(){
     global $edd_options;
 
@@ -65,6 +65,52 @@ function leyka_show_correct_payment_icons(){
 }
 add_action('leyka_payment_mode_top', 'leyka_show_correct_payment_icons');
 
+/** @todo Will work as gateway select when cart ajax refactoring will start. */
+/*function leyka_payment_mode_select(){
+    do_action('edd_payment_mode_top'); ?>
+    <form id="edd_payment_mode" action="<?php echo edd_get_current_page_url();?>" method="GET">
+        <fieldset id="edd_payment_mode_select">
+            <?php do_action('edd_payment_mode_before_gateways');?>
+            <p id="edd-payment-mode-wrap">
+                <div class="leyka_gateways_">
+                    <div id="leyka_gateways_list">
+                        <?php $gateways = edd_get_enabled_payment_gateways();
+                        foreach($gateways as $gateway_id => $gateway) {
+                            $content = str_replace('"', "'", leyka_get_gateway_description($gateway_id));?>
+                            <div class="gateways_list_entry">
+                                <label id="<?php echo $gateway_id;?>-label">
+                                    <input name="edd-gateway" type="radio" class="gateway-option" value="<?php echo $gateway_id;?>"
+                                        <?php echo (isset($_GET['payment-mode']) && trim($_GET['payment-mode']) == $gateway_id ? 'checked' : '');?> />
+                                    &nbsp;<?php echo $gateway['checkout_label'];?>
+                                </label>
+                                <?php if($content) {?>&nbsp;
+                                    <div class="question-icon"
+                                         data-placement="right"
+                                         data-title="<?php echo $gateway['checkout_label'];?>"
+                                         data-content="<?php echo $content;?>"
+                                         data-html="true"
+                                         data-trigger="hover"></div>
+                                <?php }?>
+                            </div>
+                        <?php }?>
+                    </div>
+                    <?php do_action('leyka_payment_mode_top');?>
+                </div>
+            </p>
+            <?php do_action('edd_payment_mode_after_gateways'); ?>
+        </fieldset>
+        <fieldset id="edd_payment_mode_submit" class="edd-no-js">
+            <p id="edd-next-submit-wrap">
+                <?php echo edd_checkout_button_next(); ?>
+            </p>
+        </fieldset>
+    </form>
+    <div id="edd_purchase_form_wrap"></div><!-- the checkout fields are loaded into this-->
+    <?php do_action('edd_payment_mode_bottom');
+}*/
+//remove_action('edd_payment_payment_mode_select', 'edd_payment_mode_select');
+//add_action('edd_payment_payment_mode_select', 'leyka_payment_mode_select');
+
 /** Remove EDD's default checkout fields. */
 function leyka_default_user_info_fields(){
     if(is_user_logged_in()) {
@@ -78,17 +124,27 @@ function leyka_default_user_info_fields(){
     <p id="edd-email-wrap">
         <!-- <label class="edd-label" for="edd-email"><?php // _e('Email Address', 'edd');?> <span style="color:red;">*</span></label> -->
         <input class="edd-input required" type="email" name="edd_email" placeholder=" <?php _e( 'Email address', 'edd');?> *" id="edd-email" value="<?php echo is_user_logged_in() ? $user_data->user_email : '';?>"/>
-        <span class="edd-description">
-            <?php _e('We will send the donation success notice to this address.', 'leyka');?>
-        </span>
+    <div class="question-icon"
+         data-placement="right"
+         data-content="<?php _e('We will send the donation success notice to this address.', 'leyka');?>"
+         data-html="true"
+         data-trigger="hover"></div>
+<!--        <span class="edd-description">-->
+<!--            --><?php //_e('We will send the donation success notice to this address.', 'leyka');?>
+<!--        </span>-->
     </p>
     <?php do_action('edd_purchase_form_after_email');?>
     <p id="edd-first-name-wrap">
         <!-- <label class="edd-label" for="edd-first"><?php // _e('Your name', 'leyka');?> <span style="color:red;">*</span></label> -->
         <input class="edd-input required" type="text" name="edd_first" placeholder=" <?php _e('Your name', 'leyka');?> *" id="edd-first" value="<?php echo is_user_logged_in() ? $user_data->first_name : '';?>" />
-        <span class="edd-description">
-            <?php _e('We will use this to personalize your account experience.', 'leyka');?>
-        </span>
+    <div class="question-icon"
+         data-placement="right"
+         data-content="<?php _e('We will use this to personalize your account experience.', 'leyka');?>"
+         data-html="true"
+         data-trigger="hover"></div>
+<!--        <span class="edd-description">-->
+<!--            --><?php //_e('We will use this to personalize your account experience.', 'leyka');?>
+<!--        </span>-->
     </p>
     <?php do_action('edd_purchase_form_user_info');?>
 </fieldset>
@@ -117,15 +173,33 @@ function leyka_terms_agreement(){
         <fieldset id="edd_terms_agreement">
             <p>
             <div id="edd_terms" style="display:none;">
-                <?php
-                do_action('edd_before_terms');
-                echo wpautop($edd_options['agree_text']);
-                do_action('edd_after_terms');
-                ?>
+                <?php do_action('edd_before_terms');
+                echo str_replace(array(
+                        '#LEGAL_NAME#',
+                        '#LEGAL_FACE#',
+                        '#LEGAL_FACE_RP#',
+                        '#LEGAL_FACE_POSITION#',
+                        '#LEGAL_STATE_REG_NUMBER#',
+                        '#LEGAL_KPP#',
+                        '#LEGAL_ADDRESS#',
+                        '#LEGAL_BANK_ESSENTIALS#',
+                    ), array(
+                        $edd_options['leyka_receiver_legal_name'],
+                        $edd_options['leyka_receiver_legal_face'],
+                        $edd_options['leyka_receiver_legal_face_rp'],
+                        $edd_options['leyka_receiver_legal_face_position'],
+                        $edd_options['leyka_receiver_legal_state_reg_number'],
+                        $edd_options['leyka_receiver_legal_kpp'],
+                        $edd_options['leyka_receiver_legal_address'],
+                        $edd_options['leyka_receiver_legal_bank_essentials']
+                    ),
+                    wpautop($edd_options['agree_text'])
+                );
+                do_action('edd_after_terms');?>
             </div>
             <input name="edd_agree_to_terms" class="required" type="checkbox" id="edd_agree_to_terms" value="1"/>
             <label for="edd_agree_to_terms">
-                <?php echo sprintf(__('I agree %s', 'leyka'), '<a href="#" class="edd_terms_links">'.( !empty($edd_options['agree_label']) ? $edd_options['agree_label'] : __('to the terms of donation service', 'leyka')).'</a>');?>
+                <?php echo sprintf('<a href="#" class="edd_terms_links">'.( !empty($edd_options['agree_label']) ? $edd_options['agree_label'] : __('I agree to the terms of the donation service', 'leyka') ).'</a>');?>
             </label>
             </p>
         </fieldset>
@@ -150,6 +224,7 @@ function leyka_agree_to_terms_js(){
     <script type="text/javascript">
         jQuery(document).ready(function($){
             $('body').on('click', '.edd_terms_links', function(e) {
+                e.preventDefault();
                 // $('#edd_terms').toggle();
                 if($('#edd_terms').hasClass('show')) {
                     $('#edd_terms').removeClass('show').css('top','-100%');
@@ -159,10 +234,10 @@ function leyka_agree_to_terms_js(){
 
                 return false;
             });
-            $('.b-close').on("click",function(){
-                $('#edd_terms').removeClass('show').css('top','-100%');
-                $(this).remove();
-            });
+//            $('.b-close').on("click",function(){
+//                $('#edd_terms').removeClass('show').css('top','-100%');
+//                $(this).remove();
+//            });
         });
     </script>
     <?php

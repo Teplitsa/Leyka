@@ -118,4 +118,27 @@ jQuery(document).ready(function($){
         }
     });
     $('#leyka_any_sum_allowed').change(); // Initial setup of price fields
+
+    $('body').on('change.leyka_receiver_is_private', ':radio[id*=leyka_receiver_is_private]', function(e){
+        var $this = $(this);
+        if($this.val() == 1) {
+            $('input[name*="leyka_receiver_legal_"]').parents('tr').hide();
+            $('div[id*="leyka_receiver_private_"]').show();
+        } else {
+            $('input[name*="leyka_receiver_legal_"]').parents('tr').show();
+            $('div[id*="leyka_receiver_private_"]').hide();
+        }
+    });
+
+    // Initial fields state:
+    var $receiver_type = $(':radio[id*=leyka_receiver_is_private]:checked');
+    if(typeof($receiver_type) == 'undefined') {
+        $('input[name*="leyka_receiver_legal_"]').parents('tr').hide();
+        $('div[id*="leyka_receiver_private_"]').hide();
+    } else if($receiver_type.val() == 1) {
+        $('input[name*="leyka_receiver_legal_"]').parents('tr').hide();
+        $('div[id*="leyka_receiver_private_"]').show();
+    } else {
+        $('div[id*="leyka_receiver_private_"]').hide();
+    }
 });

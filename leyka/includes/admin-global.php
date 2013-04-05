@@ -81,7 +81,7 @@ remove_action('admin_menu', 'edd_add_options_link', 10);
 add_action('admin_menu', 'leyka_admin_menu');
 
 /** Common admin notices: */
-function leyka_admin_messages() {
+function leyka_admin_messages(){
     global $typenow, $edd_options;
 
     if(isset($_GET['edd-message']) && $_GET['edd-message'] == 'payment_deleted' && current_user_can('view_shop_reports')) {
@@ -101,6 +101,25 @@ function leyka_admin_messages() {
         && current_user_can('edit_pages')
     ) {
         add_settings_error('edd-notices', 'set-checkout', sprintf( __('No checkout page has been configured. Visit <a href="%s">Settings</a> to set one.', 'leyka' ), admin_url('edit.php?post_type=download&page=edd-settings')));
+    }
+
+    if( !isset($edd_options['leyka_receiver_is_private']) ) {
+        add_settings_error('edd-notices', 'set-receiver-type', sprintf( __('You have not set your donations receiver options. Visit <a href="%s">settings</a> to configure them.', 'leyka' ), admin_url('edit.php?post_type=download&page=edd-settings&tab=misc')));
+    } else if(
+        $edd_options['leyka_receiver_is_private'] == 0 &&
+        (
+            empty($edd_options['leyka_receiver_legal_name']) ||
+            empty($edd_options['leyka_receiver_legal_face']) ||
+            empty($edd_options['leyka_receiver_legal_face_rp']) ||
+            empty($edd_options['leyka_receiver_legal_face_position']) ||
+            empty($edd_options['leyka_receiver_legal_donations_purpose']) ||
+            empty($edd_options['leyka_receiver_legal_state_reg_number']) ||
+            empty($edd_options['leyka_receiver_legal_kpp']) ||
+            empty($edd_options['leyka_receiver_legal_address']) ||
+            empty($edd_options['leyka_receiver_legal_bank_essentials'])
+        )
+    ) {
+        add_settings_error('edd-notices', 'set-receiver-type-settings', sprintf( __('Some of your donations receiver options are not set. All of them are required. Visit <a href="%s">settings</a> to configure them.', 'leyka' ), admin_url('edit.php?post_type=download&page=edd-settings&tab=misc')));
     }
 
     settings_errors('edd-notices');

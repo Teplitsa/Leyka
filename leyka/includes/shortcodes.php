@@ -156,6 +156,10 @@ function leyka_funds_collected($atts, $content = null){
             'log_type' => 'sale',
             'posts_per_page' => -1
         ));
+
+        if(empty($donations_entries))
+            continue;
+
         foreach($donations_entries as $log_entry) {
             $donations_to_select[] = get_post_meta($log_entry->ID, '_edd_log_payment_id', TRUE);
         }

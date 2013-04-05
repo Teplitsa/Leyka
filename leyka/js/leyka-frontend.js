@@ -4,6 +4,9 @@ var edd_scripts;
 jQuery(document).ready(function($){
     /** Gateways descriptions in the tooltips */
     $('#leyka_gateways_list').find('.question-icon').popover({delay: {show: 0, hide: 1000}});
+    $(document).ajaxSuccess(function(){
+        $('.question-icon').popover({delay: {show: 0, hide: 1000}}); // Some descriptions in the tooltips
+    });
     
     /** Symbols counter for user comments field */
     $('#leyka_form_resp, #edd_purchase_form_wrap').on('keyup focus', '#leyka-donor-comment', function(){
