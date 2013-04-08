@@ -86,6 +86,8 @@ function leyka_misc_settings($settings){
 
     $settings['redirect_on_add']['desc'] = __('Redirect to the checkout after adding the donation to the cart.', 'leyka');
     $settings['show_agree_to_terms']['desc'] = __('Show agreement to the terms checkbox. It will have to be checked to make a donation.', 'leyka');
+    $settings['agree_label']['name'] = __('Link to the terms of agreement.', 'leyka');
+    $settings['agree_label']['desc'] = __('Text of the link to the terms of agreement.', 'leyka');
     $settings['agree_label']['std'] = __('I agree to the terms of donation making service.', 'leyka');
     
     $settings['agree_text']['std'] = 'Публичная оферта о заключении договора пожертвования
