@@ -122,29 +122,21 @@ function leyka_default_user_info_fields(){
     </legend>
     <?php do_action('edd_purchase_form_before_email');?>
     <p id="edd-email-wrap">
-        <!-- <label class="edd-label" for="edd-email"><?php // _e('Email Address', 'edd');?> <span style="color:red;">*</span></label> -->
         <input class="edd-input required" type="email" name="edd_email" placeholder=" <?php _e( 'Email address', 'edd');?> *" id="edd-email" value="<?php echo is_user_logged_in() ? $user_data->user_email : '';?>"/>
     <div class="question-icon"
          data-placement="right"
          data-content="<?php _e('We will send the donation success notice to this address.', 'leyka');?>"
          data-html="true"
          data-trigger="hover"></div>
-<!--        <span class="edd-description">-->
-<!--            --><?php //_e('We will send the donation success notice to this address.', 'leyka');?>
-<!--        </span>-->
     </p>
     <?php do_action('edd_purchase_form_after_email');?>
     <p id="edd-first-name-wrap">
-        <!-- <label class="edd-label" for="edd-first"><?php // _e('Your name', 'leyka');?> <span style="color:red;">*</span></label> -->
         <input class="edd-input required" type="text" name="edd_first" placeholder=" <?php _e('Your name', 'leyka');?> *" id="edd-first" value="<?php echo is_user_logged_in() ? $user_data->first_name : '';?>" />
     <div class="question-icon"
          data-placement="right"
          data-content="<?php _e('We will use this to personalize your account experience.', 'leyka');?>"
          data-html="true"
          data-trigger="hover"></div>
-<!--        <span class="edd-description">-->
-<!--            --><?php //_e('We will use this to personalize your account experience.', 'leyka');?>
-<!--        </span>-->
     </p>
     <?php do_action('edd_purchase_form_user_info');?>
 </fieldset>
