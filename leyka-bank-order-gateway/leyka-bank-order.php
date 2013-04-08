@@ -175,6 +175,8 @@ function leyka_bank_order_admin_init(){
     add_filter('plugin_action_links_'.plugin_basename(__FILE__), 'leyka_bank_order_plugin_page_links');
 
     function leyka_bank_order_options($options){
+        global $edd_options;
+
         array_push(
             $options,
             array(
@@ -212,7 +214,10 @@ function leyka_bank_order_admin_init(){
                 'id' => 'bank_order_receiver_name',
                 'name' => __('Payment receiver\'s name', 'leyka-bank-order'),
                 'desc' => '',
-                'type' => 'text'
+                'type' => 'text',
+                'std' => ($edd_options['leyka_receiver_is_private'] == 0
+                       && !empty($edd_options['leyka_receiver_legal_name']) ?
+                           $edd_options['leyka_receiver_legal_name'] : ''),
             ),
             array(
                 'id' => 'bank_order_receiver_inn',
@@ -224,7 +229,10 @@ function leyka_bank_order_admin_init(){
                 'id' => 'bank_order_receiver_kpp',
                 'name' => __('Payment receiver\'s KPP number', 'leyka-bank-order'),
                 'desc' => '',
-                'type' => 'text'
+                'type' => 'text',
+                'std' => ($edd_options['leyka_receiver_is_private'] == 0
+                       && !empty($edd_options['leyka_receiver_legal_kpp']) ?
+                           $edd_options['leyka_receiver_legal_kpp'] : ''),
             ),
             array(
                 'id' => 'bank_order_receiver_account',

@@ -112,7 +112,6 @@ function leyka_admin_messages(){
             empty($edd_options['leyka_receiver_legal_face']) ||
             empty($edd_options['leyka_receiver_legal_face_rp']) ||
             empty($edd_options['leyka_receiver_legal_face_position']) ||
-//            empty($edd_options['leyka_receiver_legal_donations_purpose']) ||
             empty($edd_options['leyka_receiver_legal_state_reg_number']) ||
             empty($edd_options['leyka_receiver_legal_kpp']) ||
             empty($edd_options['leyka_receiver_legal_address']) ||
