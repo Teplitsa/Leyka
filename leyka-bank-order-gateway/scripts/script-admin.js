@@ -1,21 +1,39 @@
 jQuery(document).ready(function($){
-    var $use_file_checkbox = $('input:checkbox[id*="bank_order_use_file"]'),
-        $file_field_block = $('input[id*="bank_order_file"]').parents('tr:first');
-
-    $use_file_checkbox.change(function(){
+    $('body').on('change.bankOrderDocument', 'input[name*=bank_order_document]', function(e){
         var $this = $(this);
-        if($this.attr('checked')) {
-            $('[id*="edd_settings_gateways\[bank_order_"]').attr('disabled', 'disabled');
-            $file_field_block.find('[id*="bank_order_file"]').removeAttr('disabled');
-            $use_file_checkbox.removeAttr('disabled');
-            $file_field_block.show();
+
+        if($this.val() == 'default') {
+            $('input[name*=bank_order_file]').parents('tr').hide();
+            $('textarea[name*=bank_order_custom_html]').parents('tr').hide();
+            $('input[name*=bank_order_ess_]').parents('tr').show();
+        } else if($this.val() == 'file') {
+            $('input[name*=bank_order_file]').parents('tr').show();
+            $('textarea[name*=bank_order_custom_html]').parents('tr').hide();
+            $('input[name*=bank_order_ess_]').parents('tr').hide();
         } else {
-            $('[id*="edd_settings_gateways\[bank_order_"]').removeAttr('disabled');
-            $file_field_block.hide();
+            $('input[name*=bank_order_file]').parents('tr').hide();
+            $('textarea[name*=bank_order_custom_html]').parents('tr').show();
+            $('input[name*=bank_order_ess_]').parents('tr').show();
         }
     });
-    if($use_file_checkbox.attr('checked'))
-        $use_file_checkbox.change();
-    else
-        $file_field_block.hide();
+
+    // Init fields state:
+    var $bank_order_source = $(document).find(':radio[name*=bank_order_document]:checked').val();
+    if($bank_order_source == '') {
+        $('input[name*=bank_order_file]').parents('tr').hide();
+        $('textarea[name*=bank_order_custom_html]').parents('tr').hide();
+        $('input[name*=bank_order_ess_]').parents('tr').hide();
+    } else if($bank_order_source == 'default') {
+        $('input[name*=bank_order_file]').parents('tr').hide();
+        $('textarea[name*=bank_order_custom_html]').parents('tr').hide();
+        $('input[name*=bank_order_ess_]').parents('tr').show();
+    } else if($bank_order_source == 'file') {
+        $('input[name*=bank_order_file]').parents('tr').show();
+        $('textarea[name*=bank_order_custom_html]').parents('tr').hide();
+        $('input[name*=bank_order_ess_]').parents('tr').hide();
+    } else {
+        $('input[name*=bank_order_file]').parents('tr').hide();
+        $('textarea[name*=bank_order_custom_html]').parents('tr').show();
+        $('input[name*=bank_order_ess_]').parents('tr').show();
+    }
 });

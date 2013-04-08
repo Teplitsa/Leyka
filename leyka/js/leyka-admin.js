@@ -132,7 +132,7 @@ jQuery(document).ready(function($){
 
     // Initial fields state:
     var $receiver_type = $(':radio[id*=leyka_receiver_is_private]:checked');
-    if(typeof($receiver_type) == 'undefined') {
+    if($receiver_type.length == 0) {
         $('input[name*="leyka_receiver_legal_"]').parents('tr').hide();
         $('div[id*="leyka_receiver_private_"]').hide();
     } else if($receiver_type.val() == 1) {
