@@ -20,7 +20,7 @@ if( !empty($_POST['leyka_action']) ) {
 
 // Add RUR currency support:
 function leyka_add_rur_support($currencies){
-    $currencies['RUR'] = __('Russian rouble (RUR)', 'leyka');
+    $currencies['р.'] = __('Russian rouble (RUR)', 'leyka'); // We have our code in UTF, so we _can_ make it ^^
     return $currencies;
 }
 add_filter('edd_currencies', 'leyka_add_rur_support');

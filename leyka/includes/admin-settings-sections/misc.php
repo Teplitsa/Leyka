@@ -137,14 +137,7 @@ function leyka_misc_settings($settings){
 
 _________________/Инициалы, Фамилия/
         (подпись)';
-    $settings['agree_text']['desc'] = __("#LEGAL_NAME# - official organization title,<br />
-                                         #LEGAL_FACE# - juristic representative of the organization<br />
-                                         #LEGAL_FACE_RP# - juristic representative of the organization (in genitive case)<br />
-                                         #LEGAL_FACE_POSITION# - official position of the juristic representative<br />
-                                         #LEGAL_STATE_REG_NUMBER# - state registration number of your organization<br />
-                                         #LEGAL_KPP# - organization's statement of the account number<br />
-                                         #LEGAL_ADDRESS# - official organization address<br />
-                                         #LEGAL_BANK_ESSENTIALS# - organization's bank account essentials", 'leyka');
+    $settings['agree_text']['desc'] = __('#LEGAL_NAME# - official organization title,<br />#LEGAL_FACE# - juristic representative of the organization<br />#LEGAL_FACE_RP# - juristic representative of the organization (in genitive case)<br />#LEGAL_FACE_POSITION# - official position of the juristic representative<br />#LEGAL_STATE_REG_NUMBER# - state registration number of your organization<br />#LEGAL_KPP# - statement of the account number<br />#LEGAL_ADDRESS# - official organization address<br />#LEGAL_BANK_ESSENTIALS# - organization bank account essentials', 'leyka');
 
     $settings['checkout_label']['name'] = __('A text on a button to complete a donation', 'leyka');
     $settings['checkout_label']['desc'] = __('A text on a button to complete a donation.', 'leyka');

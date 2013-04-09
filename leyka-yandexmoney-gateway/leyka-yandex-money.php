@@ -119,7 +119,7 @@ function leyka_yandex_options($options){
         ),
         array(
             'id' => 'yamo_receiver_is_private',
-            'name' => __('Donations receiver', 'leyka'),
+            'name' => __('Donations receiver', 'leyka'), // We can take this lines from base plugin l10n
             'desc' => '',
             'type' => 'radio',
             'options' => array('1' => __('A private person', 'leyka'), '0' => __('A legal entity', 'leyka'))
@@ -167,17 +167,37 @@ function leyka_yandex_validate_fields(){
 
     $validation_passed = FALSE;
     if( !isset($edd_options['yamo_receiver_is_private']) ) {
-        add_settings_error('yamo_receiver_is_private', 'yandex-receiver-missing', __('Error: selecting the receiver type is required for Yandex.Money gateway.', 'leyka'));
+        add_settings_error(
+            'yamo_receiver_is_private',
+            'yandex-receiver-missing',
+            sprintf(
+                __('Error: selecting the receiver type is required for Yandex.Money gateway. Please, configure it at %s', 'leyka-yandex-money'),
+                '<a href="'.admin_url('edit.php?post_type=download&page=edd-settings&tab=gateways#yandex_settings').'">'.__('Yandex gateway settings', 'leyka-yandex-money').'</a>'
+            )
+        );
         settings_errors('yamo_receiver_is_private');
     } else if($edd_options['yamo_receiver_is_private'] == 1 && empty($edd_options['yamo_private_id'])) {
-        add_settings_error('yamo_private_id', 'yandex-id-missing', __('Error: Yandex id/email are required.', 'leyka'));
+        add_settings_error(
+            'yamo_private_id',
+            'yandex-id-missing',
+            sprintf(
+                __('Error: Yandex id/email are required. Please, configure it at %s', 'leyka-yandex-money'),
+                '<a href="'.admin_url('edit.php?post_type=download&page=edd-settings&tab=gateways#yandex_settings').'">'.__('Yandex gateway settings', 'leyka-yandex-money').'</a>'
+            )
+        );
         settings_errors('yamo_private_id');
     } else if(
-        $edd_options['yamo_receiver_is_private'] == 0 && (
-            empty($edd_options['yamo_legal_scid']) || empty($edd_options['yamo_legal_shopid'])
-        )
+        $edd_options['yamo_receiver_is_private'] == 0 &&
+        (empty($edd_options['yamo_legal_scid']) || empty($edd_options['yamo_legal_shopid']))
     ) {
-        add_settings_error('yamo_legal_scid', 'yandex-scid-missing', __('Error: Yandex scid or shop ID are required.', 'leyka'));
+        add_settings_error(
+            'yamo_legal_scid',
+            'yandex-scid-missing',
+            sprintf(
+                __('Error: both Yandex scid and shop ID are required. Please, configure them at %s', 'leyka-yandex-money'),
+            '<a href="'.admin_url('edit.php?post_type=download&page=edd-settings&tab=gateways#yandex_settings').'">'.__('Yandex gateway settings', 'leyka-yandex-money').'</a>'
+            )
+        );
         settings_errors('yamo_legal_scid');
     } else
         $validation_passed = TRUE;
@@ -185,9 +205,11 @@ function leyka_yandex_validate_fields(){
     if( !$validation_passed ) {
         // Turn off Yandex gateway. Direct settings manipulation:
         $gateways_options = get_option('edd_settings_gateways');
-        unset($gateways_options['gateways']['yandex']);
+        if( !empty($gateways_options['gateways']['yandex']) )
+            unset($gateways_options['gateways']['yandex']);
         update_option('edd_settings_gateways', $gateways_options);
-        unset($edd_options['gateways']['yandex']);
+        if( !empty($edd_options['gateways']['yandex']) )
+            unset($edd_options['gateways']['yandex']);
         // Direct settings manipulation END
     }
 }

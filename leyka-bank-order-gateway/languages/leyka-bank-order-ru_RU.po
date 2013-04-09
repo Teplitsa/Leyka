@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Leyka Bank Order gateway v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-03-28 07:30:22+0000\n"
+"PO-Revision-Date: 2013-04-09 11:13:17+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -20,162 +20,148 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Textdomain-Support: yes"
 
-#: leyka-bank-order.php:195
+#: leyka-bank-order.php:206
 #@ leyka-bank-order
 msgid "Payment order template file"
 msgstr "Файл с реквизитами оплаты"
 
-#: leyka-bank-order.php:196
-#@ leyka-bank-order
-msgid "File will be used as a quittance. No requisites' values will be replaced."
-msgstr "Файл с реквизитами оплаты будет использован вместо платёжной квитанции"
-
-#: leyka-bank-order.php:197
+#: leyka-bank-order.php:208
 #@ leyka-bank-order
 msgid "Path to the template file"
 msgstr "Путь к файлу с реквизитами оплаты"
 
-#: leyka-bank-order.php:256
+#: leyka-bank-order.php:273
 #@ leyka-bank-order
 msgid "Manual bank payment description"
 msgstr "Описание платёжной системы «банковский платеж»"
 
-#: leyka-bank-order.php:257
+#: leyka-bank-order.php:274
 #@ leyka-bank-order
 msgid "Enter your manual payment description that will be shown to the donor when this gateway will be selected for use"
 msgstr "Введите описание платёжной системы, которое будет показано донорам, когда для оплаты пожертвования будет выбран «банковский платёж»."
 
-#: leyka-bank-order.php:297
-#@ leyka-bank-order
-msgid "Sberbank small (169x35 px)"
-msgstr "Сбербанк, маленький (169x35 px)"
-
-#: leyka-bank-order.php:298
-#@ leyka-bank-order
-msgid "Sberbank medium (246x51 px) (recommended)"
-msgstr "Сбербанк, средний (246x51 px) - рекомендован"
-
-#: leyka-bank-order.php:299
-#@ leyka-bank-order
-msgid "Sberbank big (386x80 px)"
-msgstr "Сбербанк, большой (386x80 px)"
-
-#: leyka-bank-order.php:208
+#: leyka-bank-order.php:225
 #@ leyka-bank-order
 msgid "Payment receiver's name"
 msgstr "Наименование получателя платежа"
 
-#: leyka-bank-order.php:214
+#: leyka-bank-order.php:234
 #@ leyka-bank-order
 msgid "Payment receiver's INN number"
 msgstr "ИНН получателя платежа"
 
-#: leyka-bank-order.php:220
+#: leyka-bank-order.php:240
 #@ leyka-bank-order
 msgid "Payment receiver's KPP number"
 msgstr "КПП получателя платежа"
 
-#: leyka-bank-order.php:226
+#: leyka-bank-order.php:249
 #@ leyka-bank-order
 msgid "Payment receiver's bank account number"
 msgstr "Номер банковского счёта получателя платежа"
 
-#: leyka-bank-order.php:232
+#: leyka-bank-order.php:255
 #@ leyka-bank-order
 msgid "Payment receiver's bank name"
 msgstr "Банк получателя платежа"
 
-#: leyka-bank-order.php:238
+#: leyka-bank-order.php:261
 #@ leyka-bank-order
 msgid "Payment receiver's BIK code"
 msgstr "БИК банка получателя платежа"
 
-#: leyka-bank-order.php:244
+#: leyka-bank-order.php:267
 #@ leyka-bank-order
 msgid "Payment receiver's correspondent account number"
 msgstr "Номер корр. счёта получателя платежа"
 
-#: leyka-bank-order.php:250
+#: leyka-bank-order.php:213
 #@ leyka-bank-order
 msgid "Bank payment quittance blank (HTML code)"
 msgstr "HTML-код бланка платёжной квитанции"
 
-#: leyka-bank-order.php:251
+#: leyka-bank-order.php:214
 #@ leyka-bank-order
 msgid "Enter bank payment quittance blank HTML code, please. You can easily get it <a href=\"http://quittance.ru/form-pd4.php\">here</a>."
 msgstr "Введите HTML-код бланка платёжной квитанции"
 
-#: leyka-bank-order.php:61
+#: leyka-bank-order.php:71
 #@ leyka-bank-order
 msgid "Bank order payment"
 msgstr "Банковский платёж по квитанции"
 
-#: leyka-bank-order.php:62
+#: leyka-bank-order.php:72
 #@ leyka-bank-order
 msgid "Manual (bank order) payment"
 msgstr "Банковский платёж по квитанции"
 
-#: leyka-bank-order.php:166
+#: leyka-bank-order.php:170
 #@ default
 msgid "Settings"
 msgstr ""
 
-#: leyka-bank-order.php:177
+#: leyka-bank-order.php:183
 #@ leyka-bank-order
 msgid "Bank order gateway settings"
 msgstr "Настройки модуля банковских платежей"
 
-#: leyka-bank-order.php:178
+#: leyka-bank-order.php:184
 #@ leyka-bank-order
 msgid "Configure the bank order gateway settings"
 msgstr "Выполните настройку модуля банковских платежей"
 
-#: leyka-bank-order.php:259
+#: leyka-bank-order.php:276
 #@ leyka-bank-order
 msgid "Bank payment essential elements"
 msgstr "Реквизиты банковского платежа"
 
-#: leyka-bank-order.php:183
-#@ leyka-bank-order
-msgid "Use the standard bank order blank"
-msgstr "Использовать стандартный бланк банковского платежа"
-
-#: leyka-bank-order.php:189
-#@ leyka-bank-order
-msgid "Use the following document file as a bank order blank"
-msgstr "Использовать следующий документ в качестве бланка для банковского платежа"
-
-#: leyka-bank-order.php:202
-#@ leyka-bank-order
-msgid "Use manual bank order blank settings"
-msgstr "Использовать нижеследующие настройки для бланка банковского платежа"
-
-#: leyka-bank-order.php:286
-#@ leyka
-msgid "Error: bank order quittance is required."
-msgstr ""
-
-#: leyka-bank-order.php:159
+#: leyka-bank-order.php:63
 #@ leyka-bank-order
 msgid "<div id=\"message\" class=\"error\"><p><strong>Error:</strong> base donations plugin is missing or inactive. It is required for Bank order gateway module to work. Bank Order gateway will be deactivated.</p></div>"
 msgstr "<div id=\"message\" class=\"error\"><p><strong>Ошибка:</strong> базовый модуль пожертвований отсутствует или не активирован. Он необходим для работы модуля приёма пожертвований с помощью банковских платежей. Плагин банковских платежей будет деактивирован.</p></div>"
 
-#: leyka-bank-order.php:71
-#: leyka-bank-order.php:75
+#: leyka-bank-order.php:81
 #@ leyka-bank-order
 msgid "Your second name"
 msgstr "Ваше отчество"
 
-#: leyka-bank-order.php:73
-#: leyka-bank-order.php:81
-#@ leyka-bank-order
-msgid "We will use this only to personalize your account experience. This field is not nessesary."
-msgstr "Будет использоваться для обращения к вам. Можно не указывать."
-
-#: leyka-bank-order.php:79
-#: leyka-bank-order.php:83
-#@ leyka
+#: leyka-bank-order.php:85
 #@ leyka-bank-order
 msgid "Your last name"
 msgstr "Ваша фамилия"
+
+#: leyka-bank-order.php:189
+#@ leyka-bank-order
+msgid "What should be used as bank order blank?"
+msgstr "В качестве бланка платёжной квитанции будет использоваться:"
+
+#: leyka-bank-order.php:193
+#@ leyka-bank-order
+msgid "Standard bank order blank"
+msgstr "Стандартный бланк квитанции ПД-4."
+
+#: leyka-bank-order.php:194
+#@ leyka-bank-order
+msgid "Following document file"
+msgstr "Нижеуказанный файл документа."
+
+#: leyka-bank-order.php:195
+#@ leyka-bank-order
+msgid "Manual bank order blank settings"
+msgstr "Бланк квитанции, заданный нижеследующим кодом."
+
+#: leyka-bank-order.php:207
+#@ leyka-bank-order
+msgid "File will be used as a quittance. No bank essentials values will be replaced."
+msgstr "Этот файл будет использован в качестве бланка платёжной квитанции. Автоматическая замена реквизитов не будет выполняться."
+
+#: leyka-bank-order.php:299
+#@ leyka
+msgid "Error: you should set the bank order quittance source to use bank order gateway."
+msgstr ""
+
+#: leyka-bank-order.php:310
+#@ leyka-bank-order
+msgid "Sberbank"
+msgstr "Сбербанк"
 

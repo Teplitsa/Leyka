@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Leyka Yandex.Money gateway v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-03-18 12:27:30+0000\n"
+"PO-Revision-Date: 2013-04-09 11:17:33+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -20,114 +20,110 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Textdomain-Support: yes"
 
-#: leyka-yandex-money.php:120
+#: leyka-yandex-money.php:117
 #@ leyka-yandex-money
 msgid "Configure the Yandex.Money settings"
 msgstr "Выполните настройку системы Яндекс.Деньги"
 
-#: leyka-yandex-money.php:164
+#: leyka-yandex-money.php:150
 #@ leyka-yandex-money
 msgid "Yandex.Money gateway description"
 msgstr "Описание платежной системы Яндекс.Деньги"
 
-#: leyka-yandex-money.php:165
+#: leyka-yandex-money.php:151
 #@ leyka-yandex-money
 msgid "Enter Yandex.Money gateway description that will be shown to the donor when this gateway will be selected for use"
 msgstr "Введите описание платёжной системы Яндекс.Деньги, которое будет показано при выборе этой системы в качестве средства оплаты пожертвования."
 
-#: leyka-yandex-money.php:209
-#@ leyka-yandex-money
-msgid "Yandex money small (81x35 px)"
-msgstr "Яндекс.Деньги, маленький (81x35 px)"
-
-#: leyka-yandex-money.php:210
-#@ leyka-yandex-money
-msgid "Yandex money medium (118x51 px) (recommended)"
-msgstr "Яндекс.Деньги, средний (118x51 px) - рекомендуется"
-
-#: leyka-yandex-money.php:211
-#@ leyka-yandex-money
-msgid "Yandex money big (185x80 px)"
-msgstr "Яндекс.Деньги, большой (185x80 px)"
-
-#: leyka-yandex-money.php:60
-#: leyka-yandex-money.php:61
+#: leyka-yandex-money.php:70
+#: leyka-yandex-money.php:71
+#: leyka-yandex-money.php:222
 #@ leyka-yandex-money
 msgid "Yandex.Money"
 msgstr "Яндекс.Деньги"
 
-#: leyka-yandex-money.php:119
+#: leyka-yandex-money.php:116
 #@ leyka-yandex-money
 msgid "Yandex.Money Settings"
 msgstr "Настройки модуля Яндекс.Денег"
 
-#: leyka-yandex-money.php:125
-#@ leyka-yandex-money
-msgid "I'm a person, not a company"
-msgstr "Я являюсь физическим, а не юридическим лицом"
-
-#: leyka-yandex-money.php:126
-#@ leyka-yandex-money
-msgid "Check is you are a physical person (not company or foundation). Settings for physical person will be used, and for juristical person if unchecked."
-msgstr "Поставьте эту отметку, если вы являетесь физическим лицом, а не юридическим (компанией, фондом и т.д.). Если отметка поставлена, будут использоваться настройки для физического лица; если не указана, то для юридического."
-
-#: leyka-yandex-money.php:131
-#@ leyka-yandex-money
-msgid "Use this settings if you are physical person"
-msgstr "Используйте эти настройки, если вы представляете физическое лицо"
-
-#: leyka-yandex-money.php:137
+#: leyka-yandex-money.php:129
 #@ leyka-yandex-money
 msgid "Yandex.Money ID or email"
 msgstr "Номер Яндекс.Кошелька или адрес Яндекс.почты"
 
-#: leyka-yandex-money.php:138
+#: leyka-yandex-money.php:130
 #@ leyka-yandex-money
 msgid "Enter your Yandex.Money ID or yandex.ru email"
 msgstr "Введите ваш номер Яндекс.кошелька или адрес Яндекс.почты"
 
-#: leyka-yandex-money.php:144
-#@ leyka-yandex-money
-msgid "Use this settings if you are some organization"
-msgstr "Используйте эти настройки, если вы представляете юридическое лицо"
-
-#: leyka-yandex-money.php:150
+#: leyka-yandex-money.php:136
 #@ leyka-yandex-money
 msgid "Yandex.Money SCID"
 msgstr "Параметр SCID (ID витрины в системе Яндекс.Деньги)"
 
-#: leyka-yandex-money.php:151
+#: leyka-yandex-money.php:137
 #@ leyka-yandex-money
 msgid "Enter your Yandex.Money shop showcase ID (can be found in your Yandex contract)"
 msgstr "Введите номер витрины в системе Яндекс.Деньги, полученный вами при заключении партнёрского договора с Яндексом"
 
-#: leyka-yandex-money.php:157
+#: leyka-yandex-money.php:143
 #@ leyka-yandex-money
 msgid "Yandex.Money shop ID"
 msgstr "ID магазина в системе Яндекс.Денег"
 
-#: leyka-yandex-money.php:158
+#: leyka-yandex-money.php:144
 #@ leyka-yandex-money
 msgid "Enter your Yandex.Money shop ID (can be found in your Yandex contract)"
 msgstr "Введите ID магазина в системе Яндекс.Деньги, полученный вами при заключении партнёрского договора с Яндексом"
 
-#: leyka-yandex-money.php:107
+#: leyka-yandex-money.php:104
 #@ default
 msgid "Settings"
 msgstr ""
 
-#: leyka-yandex-money.php:195
-#@ leyka
-msgid "Error: Yandex scid and shop ID are required."
-msgstr ""
-
-#: leyka-yandex-money.php:198
-#@ leyka
-msgid "Error: Yandex id/email are required."
-msgstr ""
-
-#: leyka-yandex-money.php:100
+#: leyka-yandex-money.php:62
 #@ leyka-yandex-money
 msgid "<div id=\"message\" class=\"error\"><p><strong>Error:</strong> base donations plugin is missing or inactive. It is required for Yandex.money gateway module to work. Yandex.money plugin will be deactivated.</p></div>"
 msgstr "<div id=\"message\" class=\"error\"><p><strong>Ошибка:</strong> базовый модуль пожертвований отсутствует или не активирован. Он необходим для работы модуля приёма пожертвований через Яндекс.Деньги. Плагин Яндекс.Деньги будет деактивирован.</p></div>"
+
+#: leyka-yandex-money.php:122
+#@ leyka
+msgid "Donations receiver"
+msgstr ""
+
+#: leyka-yandex-money.php:125
+#@ leyka
+msgid "A private person"
+msgstr ""
+
+#: leyka-yandex-money.php:125
+#@ leyka
+msgid "A legal entity"
+msgstr ""
+
+#: leyka-yandex-money.php:174
+#, php-format
+#@ leyka-yandex-money
+msgid "Error: selecting the receiver type is required for Yandex.Money gateway. Please, configure it at %s"
+msgstr "Ошибка: для работы платёжной системы Яндекс.Деньги необходимо указать тип благоприемника. Пожалуйста, укажите это в %s"
+
+#: leyka-yandex-money.php:175
+#: leyka-yandex-money.php:185
+#: leyka-yandex-money.php:198
+#@ leyka-yandex-money
+msgid "Yandex gateway settings"
+msgstr "настройках модуля Яндекс.Денег"
+
+#: leyka-yandex-money.php:184
+#, php-format
+#@ leyka-yandex-money
+msgid "Error: Yandex id/email are required. Please, configure it at %s"
+msgstr "Ошибка: id/email благоприемника в системе Яндекс.Деньги не указан. Пожалуйста, укажите это в %s"
+
+#: leyka-yandex-money.php:197
+#, php-format
+#@ leyka-yandex-money
+msgid "Error: both Yandex scid and shop ID are required. Please, configure them at %s"
+msgstr "Ошибка: параметры scid и shop ID благополучателя в системе Яндекс.Деньги не указаны. Пожалуйста, укажите их в %s"
 

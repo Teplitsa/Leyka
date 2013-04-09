@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Leyka v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-04-08 07:04:29+0000\n"
+"PO-Revision-Date: 2013-04-09 11:08:02+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -348,17 +348,17 @@ msgstr "Активировать пожертвование"
 msgid "New donation payment"
 msgstr "Новый платеж по пожертвованию"
 
-#: includes/admin-global.php:188
+#: includes/admin-global.php:187
 #@ leyka
 msgid "Error while editing the recall! Please try again later or e-mail the support team to fix it."
 msgstr "Ошибка при редактировании отзыва. Пожалуйста, попробуйте ещё раз. Если ошибка повторится, обратитесь в службу поддержки сайта."
 
-#: includes/admin-global.php:189
+#: includes/admin-global.php:188
 #@ leyka
 msgid "PENDING"
 msgstr "В ОЖИДАНИИ"
 
-#: includes/admin-global.php:190
+#: includes/admin-global.php:189
 #@ leyka
 msgid "COMPLETE"
 msgstr "ЗАВЕРШЕН"
@@ -427,36 +427,36 @@ msgstr "В корзине не найдено отзывов"
 msgid "Recall History"
 msgstr "История отзывов"
 
-#: includes/frontend.php:270
+#: includes/frontend.php:262
 #@ leyka
 msgid "Payment additional info"
 msgstr "Дополнительная информация о платеже"
 
-#: includes/frontend.php:272
+#: includes/frontend.php:264
 #@ leyka
 msgid "Type your comments, if needed"
 msgstr "Введите ваши комментарии, если нужно"
 
 #: includes/admin-global.php:103
-#: includes/frontend.php:315
+#: includes/frontend.php:307
 #, php-format
 #@ leyka
 #@ edd
 msgid "No checkout page has been configured. Visit <a href=\"%s\">Settings</a> to set one."
 msgstr "Страница оплаты пожертвований не указана. Перейдите в раздел <a href=\"%s\">настроек модуля пожертвований</a>, чтобы указать её."
 
-#: includes/frontend.php:322
+#: includes/frontend.php:314
 #@ edd
 msgid "Purchase"
 msgstr "Приобрести"
 
-#: includes/frontend.php:357
+#: includes/frontend.php:349
 #@ leyka
 msgid "Make a donation with this sum"
 msgstr "Пожертвовать данную сумму"
 
-#: includes/frontend.php:358
-#: includes/frontend.php:389
+#: includes/frontend.php:350
+#: includes/frontend.php:381
 #@ edd
 msgid "Checkout"
 msgstr "На кассу"
@@ -466,27 +466,27 @@ msgstr "На кассу"
 msgid "The required parameters are not set"
 msgstr "Не указаны необходимые параметры"
 
-#: includes/frontend.php:474
+#: includes/frontend.php:466
 #@ leyka
 msgid "Any sum"
 msgstr "Любая сумма"
 
-#: includes/frontend.php:482
+#: includes/frontend.php:474
 #@ leyka
 msgid "Insert the sum of your donation"
 msgstr "Укажите размер вашего пожертвования"
 
-#: includes/frontend.php:485
+#: includes/frontend.php:477
 #@ leyka
 msgid "Add to cart"
 msgstr "Добавить в корзину"
 
-#: includes/frontend.php:508
+#: includes/frontend.php:500
 #@ leyka
 msgid "Sorry, the donation amount is incorrect"
 msgstr "Указанный размер пожертвования некорректен"
 
-#: includes/frontend.php:509
+#: includes/frontend.php:501
 #@ leyka
 msgid "Sorry, you must agree to the donation terms first"
 msgstr "Сначала вы должны согласиться с условиями пожертвования"
@@ -649,7 +649,7 @@ msgstr "Добавить новый вариант размера"
 #: includes/admin-global.php:23
 #@ leyka
 msgid "Russian rouble (RUR)"
-msgstr "Рубль РФ (руб.)"
+msgstr "Рубль РФ (р.)"
 
 #: includes/frontend.php:28
 #@ leyka
@@ -666,7 +666,7 @@ msgstr "Лев Звягинцев, Теплица социальных техн�
 #: leyka.php:0
 #@ leyka
 msgid "ahaenor@gmail.com"
-msgstr ""
+msgstr "ahaenor@gmail.com"
 
 #: includes/admin-reports-page.php:38
 #: includes/classes/donor-reports-table.php:27
@@ -1077,7 +1077,7 @@ msgstr "Экспорт истории пожертвований"
 msgid "Donor recalls"
 msgstr "Отзывы доноров"
 
-#: includes/frontend.php:279
+#: includes/frontend.php:271
 #@ leyka
 msgid "Send me an email confimation for my donation"
 msgstr "Отправить мне email с информацией о моём пожертвовании"
@@ -1105,12 +1105,12 @@ msgstr ""
 msgid "Sorry, the amount of your donation is 0 somehow."
 msgstr "размер пожертвований равен нулю."
 
-#: includes/admin-global.php:143
+#: includes/admin-global.php:142
 #@ leyka
 msgid "Recall"
 msgstr "Отзыв"
 
-#: includes/admin-global.php:144
+#: includes/admin-global.php:143
 #@ leyka
 msgid "recall"
 msgstr "отзыв"
@@ -1141,22 +1141,22 @@ msgstr "Выводить поле согласия с условиями пуб�
 msgid "I agree to the terms of donation making service."
 msgstr "Я согласен с условиями сервиса пожертвований"
 
-#: includes/admin-settings-sections/misc.php:149
+#: includes/admin-settings-sections/misc.php:142
 #@ leyka
 msgid "A text on a button to complete a donation"
 msgstr "Текст для кнопки выполнения пожертвования"
 
-#: includes/admin-settings-sections/misc.php:150
+#: includes/admin-settings-sections/misc.php:143
 #@ leyka
 msgid "A text on a button to complete a donation."
 msgstr "Текст для кнопки выполнения пожертвования на странице оплаты."
 
-#: includes/admin-settings-sections/misc.php:153
+#: includes/admin-settings-sections/misc.php:146
 #@ leyka
 msgid "A text on \"add to cart\" button"
 msgstr "Текст для кнопки добавления в корзину"
 
-#: includes/admin-settings-sections/misc.php:154
+#: includes/admin-settings-sections/misc.php:147
 #@ leyka
 msgid "Add donation to cart"
 msgstr "Добавить в корзину"
@@ -1167,7 +1167,7 @@ msgstr "Добавить в корзину"
 msgid "Hello!<br /><br />Recently, there has been a new donation on a {sitename}:<br />{download_list}<br />which totally cost {price}, by the {payment_method} gateway.<br /><br />Donate ID: {donate_id}, donation hashcode: {receipt_id} | {edit_url}<br /><br />{sitename}, {date}"
 msgstr "Добрый день!<br /><br />На сайте {sitename} было совершено следующее пожертвование:<br />{download_list}<br />на общую сумму {price}, с помощью платёжной системы {payment_method}.<br /><br />ID цели пожертвования: {donate_id}, уникальный код пожертвования: {receipt_id} | {edit_url}<br /><br />{sitename}, {date}"
 
-#: includes/frontend.php:161
+#: includes/frontend.php:153
 #, php-format
 #@ leyka
 msgid "You must enable a payment gateway to use %s"
@@ -1220,7 +1220,7 @@ msgstr "Страница ошибки при пожертвании"
 msgid "Thank you for your donation!"
 msgstr "Спасибо за ваше пожертвование!"
 
-#: includes/admin-settings-sections/misc.php:151
+#: includes/admin-settings-sections/misc.php:144
 #@ leyka
 msgid "Make the donations"
 msgstr "Пожертвовать"
@@ -1261,24 +1261,24 @@ msgstr "Размер пожертвования без учёта налогов
 msgid "Total donation sum"
 msgstr "Итоговый размер пожертвования"
 
-#: includes/frontend.php:254
+#: includes/frontend.php:246
 #@ leyka
 msgid "Total donation:"
 msgstr "Размер пожертвования:"
 
-#: includes/frontend.php:398
+#: includes/frontend.php:390
 #@ edd
 msgid "Loading"
 msgstr ""
 
-#: includes/frontend.php:365
-#: includes/frontend.php:402
+#: includes/frontend.php:357
+#: includes/frontend.php:394
 #@ edd
 msgid "Go to Checkout"
 msgstr ""
 
-#: includes/frontend.php:364
-#: includes/frontend.php:401
+#: includes/frontend.php:356
+#: includes/frontend.php:393
 #, php-format
 #@ leyka
 msgid "Donation successfully added to your %scart%s."
@@ -1306,17 +1306,17 @@ msgstr "<div id=\"message\" class=\"error\"><p><strong>Ошибка:</strong> п
 msgid "Personal Info"
 msgstr ""
 
-#: includes/frontend.php:126
+#: includes/frontend.php:125
 #@ edd
 msgid "Email address"
 msgstr ""
 
-#: includes/frontend.php:139
+#: includes/frontend.php:134
 #@ leyka
 msgid "Your name"
 msgstr "Ваше имя"
 
-#: includes/frontend.php:142
+#: includes/frontend.php:137
 #@ leyka
 msgid "We will use this to personalize your account experience."
 msgstr "Будет использоваться для обращения к вам."
@@ -1326,7 +1326,7 @@ msgstr "Будет использоваться для обращения к в�
 msgid "Edit This"
 msgstr ""
 
-#: includes/frontend.php:129
+#: includes/frontend.php:128
 #@ leyka
 msgid "We will send the donation success notice to this address."
 msgstr "На этот адрес будет выслано уведомление об успешном выполнении пожертвования."
@@ -1386,12 +1386,12 @@ msgstr ""
 msgid "Error while switching the donation status! Please try again later or e-mail the support team to fix it."
 msgstr "Ошибка при переключении статуса пожертвования. Пожалуйста, попробуйте ещё раз позже. Если ошибка будет повторяться, сообщите в техническую поддержку плагина Лейка."
 
-#: includes/frontend.php:214
+#: includes/frontend.php:206
 #@ edd
 msgid "Hide Terms"
 msgstr ""
 
-#: includes/frontend.php:274
+#: includes/frontend.php:266
 #@ leyka
 msgid "Symbols remain:"
 msgstr "Осталось символов:"
@@ -1402,7 +1402,7 @@ msgstr "Осталось символов:"
 msgid "You have not set your donations receiver options. Visit <a href=\"%s\">settings</a> to configure them."
 msgstr "Вы не выполнили настроек получателя пожертвований. Все эти опции обязательны для корректной работы модуля пожертвований. Пожалуйста, посетите <a href=\"%s\">страницу настроек модуля</a> и выполните эти настройки."
 
-#: includes/admin-global.php:122
+#: includes/admin-global.php:121
 #, php-format
 #@ leyka
 msgid "Some of your donations receiver options are not set. All of them are required. Visit <a href=\"%s\">settings</a> to configure them."
@@ -1483,28 +1483,7 @@ msgstr "Официальный адрес вашей организации (к�
 msgid "All donations you collected as a private person will be taxed by 13%. Don't forget to pay the taxes! :)"
 msgstr "Все пожертвования, собранные физическими лицами в РФ, облагаются налогом НДФЛ, составляющим 13%. Не забудьте заплатить налоги! :)"
 
-#: includes/admin-settings-sections/misc.php:140
-#@ leyka
-msgid ""
-"#LEGAL_NAME# - official organization title,<br />\n"
-"                                         #LEGAL_FACE# - juristic representative of the organization<br />\n"
-"                                         #LEGAL_FACE_RP# - juristic representative of the organization (in genitive case)<br />\n"
-"                                         #LEGAL_FACE_POSITION# - official position of the juristic representative<br />\n"
-"                                         #LEGAL_STATE_REG_NUMBER# - state registration number of your organization<br />\n"
-"                                         #LEGAL_KPP# - organization's statement of the account number<br />\n"
-"                                         #LEGAL_ADDRESS# - official organization address<br />\n"
-"                                         #LEGAL_BANK_ESSENTIALS# - organization's bank account essentials"
-msgstr ""
-"#LEGAL_NAME# - официальное название организации,<br />\n"
-"                                         #LEGAL_FACE# - лицо, действующее без доверенности от имени организации (в им. падеже)<br />\n"
-"                                         #LEGAL_FACE_RP# - лицо, действующее без доверенности от имени организации (в род. падеже)<br />\n"
-"                                         #LEGAL_FACE_POSITION# - официальная должность лица, действующего без доверенности от имени организации<br />\n"
-"                                         #LEGAL_STATE_REG_NUMBER# - ОГРН организации<br />\n"
-"                                         #LEGAL_KPP# - КПП организации<br />\n"
-"                                         #LEGAL_ADDRESS# - официальный адрес организации<br />\n"
-"                                         #LEGAL_BANK_ESSENTIALS# - банковские реквизиты организации"
-
-#: includes/frontend.php:202
+#: includes/frontend.php:194
 #@ leyka
 msgid "I agree to the terms of the donation service"
 msgstr "Я согласен с условиями сервиса пожертвований"
@@ -1518,4 +1497,9 @@ msgstr "Ссылка на условия сервиса пожертвовани
 #@ leyka
 msgid "Text of the link to the terms of agreement."
 msgstr "Текст ссылки на условия сервиса пожертвований."
+
+#: includes/admin-settings-sections/misc.php:140
+#@ leyka
+msgid "#LEGAL_NAME# - official organization title,<br />#LEGAL_FACE# - juristic representative of the organization<br />#LEGAL_FACE_RP# - juristic representative of the organization (in genitive case)<br />#LEGAL_FACE_POSITION# - official position of the juristic representative<br />#LEGAL_STATE_REG_NUMBER# - state registration number of your organization<br />#LEGAL_KPP# - statement of the account number<br />#LEGAL_ADDRESS# - official organization address<br />#LEGAL_BANK_ESSENTIALS# - organization bank account essentials"
+msgstr "#LEGAL_NAME# - официальное название организации,<br />#LEGAL_FACE# - лицо, действующее без доверенности от имени организации (в им. падеже)<br />#LEGAL_FACE_RP# - лицо, действующее без доверенности от имени организации (в род. падеже)<br />#LEGAL_FACE_POSITION# - официальная должность лица, действующего без доверенности от имени организации<br />#LEGAL_STATE_REG_NUMBER# - ОГРН организации<br />#LEGAL_KPP# - КПП организации<br />#LEGAL_ADDRESS# - официальный адрес организации<br />#LEGAL_BANK_ESSENTIALS# - банковские реквизиты организации"
 
