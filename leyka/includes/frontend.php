@@ -503,7 +503,7 @@ function leyka_scripts(){?>
 
     global $edd_options;
 
-    if(empty($edd_options['disable_styles']))
+    if( !empty($edd_options['disable_styles']) )
         return;
 
     wp_register_style('leyka-styles', LEYKA_PLUGIN_BASE_URL.'styles/style.css');
