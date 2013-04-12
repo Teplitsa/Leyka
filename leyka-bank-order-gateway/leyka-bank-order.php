@@ -98,7 +98,7 @@ function leyka_bank_order_processing($payment_data){
     // Redirect to quittance page to print it out:
     leyka_insert_payment($payment_data); // Process the payment on our side
 
-    if($edd_options['bank_order_use_file']) {
+    if($edd_options['bank_order_document'] == 'file') {
         header('location: '.$edd_options['bank_order_file']); // Send a payment quittance to browser
 //                header('location: '.home_url());
         die(); // Just in case
@@ -106,9 +106,9 @@ function leyka_bank_order_processing($payment_data){
 
     header('Content-type: text/html; charset=utf-8');
 
-    $html = $edd_options['bank_order_html_default'] ?
+    $html = $edd_options['bank_order_document'] == 'default' ?
         file_get_contents(dirname(__FILE__).'/standard_bank_order.php') :
-        $edd_options['bank_order_html'];
+        $edd_options['bank_order_custom_html'];
 
     $payer_full_name = '&nbsp;';
     $last_name = trim($payment_data['user_info']['last_name']); 
@@ -139,22 +139,22 @@ function leyka_bank_order_processing($payment_data){
         $html);
     for($i=0; $i<10; $i++) {
         $digit = isset($edd_options['bank_order_ess_inn']) ?
-            $edd_options['bank_order_receiver_inn'][$i] : ' ';
+            $edd_options['bank_order_ess_inn'][$i] : ' ';
         $html = str_replace("#INN_$i#", $digit, $html);
     }
     for($i=0; $i<20; $i++) {
         $digit = isset($edd_options['bank_order_ess_account'][$i]) ?
-            $edd_options['bank_order_receiver_account'][$i] : ' ';
+            $edd_options['bank_order_ess_account'][$i] : ' ';
         $html = str_replace("#ACC_$i#", $digit, $html);
     }
     for($i=0; $i<10; $i++) {
         $digit = isset($edd_options['bank_order_ess_bik'][$i]) ?
-            $edd_options['bank_order_receiver_bik'][$i] : ' ';
+            $edd_options['bank_order_ess_bik'][$i] : ' ';
         $html = str_replace("#BIK_$i#", $digit, $html);
     }
     for($i=0; $i<20; $i++) {
         $digit = isset($edd_options['bank_order_ess_corr_account'][$i]) ?
-            $edd_options['bank_order_receiver_corr_account'][$i] : ' ';
+            $edd_options['bank_order_ess_corr_account'][$i] : ' ';
         $html = str_replace("#CORR_$i#", $digit, $html);
     }
     echo $html;

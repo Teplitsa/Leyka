@@ -42,12 +42,13 @@ function leyka_insert_payment($payment_data = array())
 
     global $edd_options;
 
-    unset($payment_data['user_info']['last_name']); // We won't keep the last name for privacy reasons
+    $payment_data['user_info']['last_name'] = ''; // We won't store the last name for privacy reasons
 
     // Process the payment on our side. Create the record for payment:
     $init_status = $edd_options['leyka_payments_default_status'] == 'publish' ?
                        'pending' : $edd_options['leyka_payments_default_status'];
     $payment_id = edd_insert_payment(array(
+        'post_data' => $payment_data['post_data'],
         'price' => $payment_data['price'],
         'date' => $payment_data['date'],
         'user_email' => $payment_data['user_email'],
