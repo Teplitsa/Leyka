@@ -119,6 +119,15 @@ function leyka_bank_order_processing($payment_data){
             $payer_full_name .= '&nbsp;'.$second_name;
         $payer_full_name .= '&nbsp;'.$last_name;
     }
+    
+    $payment_purpose = empty($edd_options['bank_order_ess_add_donor_comment']) ?
+        $edd_options['bank_order_ess_donation_purpose'] :
+        (
+            empty($payment_data['post_data']['donor_comments']) ?
+                $edd_options['bank_order_ess_donation_purpose'] :
+                rtrim($edd_options['bank_order_ess_donation_purpose'], '.').': '
+                .mb_strtolower($payment_data['post_data']['donor_comments']) 
+        );
 
     $html = str_replace(array(
             '#RECEIVER_NAME#',
@@ -134,7 +143,7 @@ function leyka_bank_order_processing($payment_data){
             $edd_options['bank_order_ess_kpp'],
             $edd_options['bank_order_ess_bank_name'],
             $payment_data['price'],
-            $payment_data['post_data']['donor_comments'],
+            $payment_purpose
         ),
         $html);
     for($i=0; $i<10; $i++) {
@@ -195,12 +204,6 @@ function leyka_bank_order_options($options){
                 'custom' => __('Manual bank order blank settings', 'leyka-bank-order')
             )
         ),
-//        array(
-//            'id' => 'bank_order_use_file',
-//            'name' => 
-//            'desc' => '',
-//            'type' => 'checkbox'
-//        ),
         array(
             'id' => 'bank_order_file',
             'name' => __('Payment order template file', 'leyka-bank-order'),
@@ -214,12 +217,6 @@ function leyka_bank_order_options($options){
             'desc' => __('Enter bank payment quittance blank HTML code, please. You can easily get it <a href="http://quittance.ru/form-pd4.php">here</a>.', 'leyka-bank-order'),
             'type' => 'rich_editor',
         ),
-//        array(
-//            'id' => 'bank_order_use_manual_settings',
-//            'name' => ,
-//            'desc' => '',
-//            'type' => 'checkbox'
-//        ),
         array(
             'id' => 'bank_order_ess_name',
             'name' => __('Payment receiver\'s name', 'leyka-bank-order'),
@@ -267,6 +264,19 @@ function leyka_bank_order_options($options){
             'name' => __('Payment receiver\'s correspondent account number', 'leyka-bank-order'),
             'desc' => '',
             'type' => 'text'
+        ),
+        array(
+            'id' => 'bank_order_ess_donation_purpose',
+            'name' => __('Payment purpose text in the bank order', 'leyka-bank-order'),
+            'desc' => 'A text for payment purpose field in the bank order',
+            'type' => 'text',
+            'std' => __('Charity donation', 'leyka-bank-order'),
+        ),
+        array(
+            'id' => 'bank_order_ess_add_donor_comment',
+            'name' => __('Add donor comments to bank order', 'leyka-bank-order'),
+            'desc' => __('If checked, the donor comments will be added to bank order blank (in payment purpose field)', 'leyka-bank-order'),
+            'type' => 'checkbox'
         ),
         array(
             'id' => 'bank_order_desc',
