@@ -11,6 +11,10 @@
     vertical-align: middle;
     margin-bottom: 2px;
 }
+.for-inputs {
+    float:right;
+    margin:8px 20px 0px 0px;
+}
 
 #edd_purchase_form label.leyka-donor-comment-label {
     width: 94%!important;
@@ -23,7 +27,7 @@
     left: 0;
     z-index: 1010;
     display: none;
-    width: 600px;
+    width: 350px;
     padding: 1px;
     text-align: left;
     white-space: normal;
@@ -222,7 +226,7 @@ h3.popover-title {
     display: block;
     font-size: 13px;
     resize: none;
-    width: 90%;
+    width: 85%;
     border-color: #888;
     color: #000;
     -webkit-box-sizing: border-box;
@@ -406,7 +410,7 @@ float: left;
 font-size: 12px;
 margin-bottom: 10px;
 }
-label[for="edd_agree_to_terms"] {
+label#edd_agree_to_terms_label {
     display: inline-block;
     float: right;
     width: 93%;

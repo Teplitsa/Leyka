@@ -122,21 +122,21 @@ function leyka_default_user_info_fields(){
     </legend>
     <?php do_action('edd_purchase_form_before_email');?>
     <p id="edd-email-wrap">
-        <input class="edd-input required" type="email" name="edd_email" placeholder=" <?php _e( 'Email address', 'edd');?> *" id="edd-email" value="<?php echo is_user_logged_in() ? $user_data->user_email : '';?>"/>
-    <div class="question-icon"
+    <div class="question-icon for-inputs"
          data-placement="right"
          data-content="<?php _e('We will send the donation success notice to this address.', 'leyka');?>"
          data-html="true"
          data-trigger="hover"></div>
+        <input class="edd-input required" type="email" name="edd_email" placeholder=" <?php _e( 'Email address', 'edd');?> *" id="edd-email" value="<?php echo is_user_logged_in() ? $user_data->user_email : '';?>"/>
     </p>
     <?php do_action('edd_purchase_form_after_email');?>
     <p id="edd-first-name-wrap">
-        <input class="edd-input required" type="text" name="edd_first" placeholder=" <?php _e('Your name', 'leyka');?> *" id="edd-first" value="<?php echo is_user_logged_in() ? $user_data->first_name : '';?>" />
-    <div class="question-icon"
+    <div class="question-icon for-inputs"
          data-placement="right"
          data-content="<?php _e('We will use this to personalize your account experience.', 'leyka');?>"
          data-html="true"
          data-trigger="hover"></div>
+        <input class="edd-input required" type="text" name="edd_first" placeholder=" <?php _e('Your name', 'leyka');?> *" id="edd-first" value="<?php echo is_user_logged_in() ? $user_data->first_name : '';?>" />
     </p>
     <?php do_action('edd_purchase_form_user_info');?>
 </fieldset>
@@ -189,9 +189,11 @@ function leyka_terms_agreement(){
                 );
                 do_action('edd_after_terms');?>
             </div>
-            <input name="edd_agree_to_terms" class="required" type="checkbox" id="edd_agree_to_terms" value="1"/>
-            <label for="edd_agree_to_terms">
-                <?php echo sprintf('<a href="#" class="edd_terms_links">'.( !empty($edd_options['agree_label']) ? $edd_options['agree_label'] : __('I agree to the terms of the donation service', 'leyka') ).'</a>');?>
+            <label id="edd_agree_to_terms_label">
+                <input name="edd_agree_to_terms" class="required" type="checkbox" id="edd_agree_to_terms" value="1"/>
+                <span>
+                    <?php echo sprintf('<a href="#" class="edd_terms_links">'.( !empty($edd_options['agree_label']) ? $edd_options['agree_label'] : __('I agree to the terms of the donation service', 'leyka') ).'</a>');?>
+                </span>
             </label>
             </p>
         </fieldset>
