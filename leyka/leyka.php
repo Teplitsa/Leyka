@@ -39,7 +39,7 @@ if( !defined('LEYKA_VERSION') ) {
 }
 // Latest EDD version supported by Leyka
 if( !defined('LATEST_SUPPORTED_EDD_VERSION') ) {
-    define('LATEST_SUPPORTED_EDD_VERSION', '1.5.1');
+    define('LATEST_SUPPORTED_EDD_VERSION', '1.5.2');
 }
 // Plugin URL
 if( !defined('LEYKA_PLUGIN_BASE_URL') ) {
