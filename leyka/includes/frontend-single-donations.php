@@ -27,7 +27,7 @@ function leyka_after_download_content($donate_id){
 <div id="leyka-single-form-wrapper">
     <form id="leyka-single-form" method="post" action="#">
         <?php if(edd_has_variable_prices($donate_id))
-        edd_purchase_variable_pricing($donate_id);
+        edd_purchase_variable_pricing($donate_id, TRUE);
     elseif(leyka_is_any_sum_allowed($donate_id)) {
         do_action('leyka_single_donate_pre_free_field', $donate_id);
         do_action('leyka_free_amount_field', $donate_id);

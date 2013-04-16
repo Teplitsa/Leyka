@@ -301,6 +301,15 @@ function leyka_free_amount_field($donate_id){
 }
 add_action('leyka_free_amount_field', 'leyka_free_amount_field');
 
+function leyka_constant_amount_field($donate_id) {
+    if(edd_has_variable_prices($donate_id) || leyka_is_any_sum_allowed($donate_id))
+        return;?>
+    <div>
+    <?php echo edd_currency_filter(edd_get_download_price($donate_id));?>
+    </div>
+<?php }
+add_action('edd_purchase_link_top', 'leyka_constant_amount_field');
+
 /** Process donate mini-forms for all donate types in the donates list ([downloads] shortcode). */
 function leyka_donate_payment_form($purchase_form, $args){
     global $edd_options, $post;

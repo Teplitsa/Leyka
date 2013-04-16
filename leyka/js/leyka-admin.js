@@ -117,7 +117,6 @@ jQuery(document).ready(function($){
                 $('#leyka_any_sum_allowed').click();
         }
     });
-    $('#leyka_any_sum_allowed').change(); // Initial setup of price fields
 
     $('body').on('change.leyka_receiver_is_private', ':radio[id*=leyka_receiver_is_private]', function(e){
         var $this = $(this);

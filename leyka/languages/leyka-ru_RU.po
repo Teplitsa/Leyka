@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Leyka v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-04-09 11:08:02+0000\n"
+"PO-Revision-Date: 2013-04-16 04:41:51+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -96,18 +96,18 @@ msgstr "Статистика пожертвования"
 msgid "Donations log"
 msgstr "Журнал пожертвований"
 
-#: includes/admin-edit-donate-page.php:220
+#: includes/admin-edit-donate-page.php:218
 #@ leyka
 msgid "Any price can be donated (free choice of the donor)"
 msgstr "Размер пожертвования определяется донором"
 
-#: includes/admin-edit-donate-page.php:224
+#: includes/admin-edit-donate-page.php:222
 #, php-format
 #@ leyka
 msgid "Minimum donation amount, %s"
 msgstr "Минимальный размер пожертвования, %s"
 
-#: includes/admin-edit-donate-page.php:229
+#: includes/admin-edit-donate-page.php:227
 #, php-format
 #@ leyka
 msgid "Maximum donation amount, %s"
@@ -195,13 +195,13 @@ msgid "Donation thanking email template"
 msgstr "Шаблон благодарственного письма за пожертвование"
 
 #: includes/admin-settings-sections/emails.php:29
-#: includes/admin-settings-sections/emails.php:53
+#: includes/admin-settings-sections/emails.php:57
 #@ leyka
 msgid "Enter the email that is sent to donations managers after completing a purchase. HTML is accepted. Available template tags:"
 msgstr "Шаблон почтового сообщения, которое будет отправляться менеджерам пожертвований при каждом их совершении. Возможные тэги шаблона:"
 
 #: includes/admin-settings-sections/emails.php:30
-#: includes/admin-settings-sections/emails.php:54
+#: includes/admin-settings-sections/emails.php:58
 #@ leyka
 msgid "A list of donates given"
 msgstr "Список сделанных пожертвований"
@@ -212,61 +212,61 @@ msgid "The donor's name"
 msgstr "Имя донора"
 
 #: includes/admin-settings-sections/emails.php:32
-#: includes/admin-settings-sections/emails.php:55
+#: includes/admin-settings-sections/emails.php:59
 #@ leyka
 msgid "The date of the donation"
 msgstr "Дата пожертвования"
 
 #: includes/admin-settings-sections/emails.php:33
-#: includes/admin-settings-sections/emails.php:56
+#: includes/admin-settings-sections/emails.php:60
 #@ leyka
 msgid "The total amount of the donation"
 msgstr "Общее количество пожертвований"
 
 #: includes/admin-settings-sections/emails.php:34
-#: includes/admin-settings-sections/emails.php:57
+#: includes/admin-settings-sections/emails.php:61
 #@ leyka
 msgid "The unique ID number for this donation"
 msgstr "Уникальный номер (ID) пожертвования"
 
 #: includes/admin-settings-sections/emails.php:35
-#: includes/admin-settings-sections/emails.php:60
+#: includes/admin-settings-sections/emails.php:64
 #@ leyka
 msgid "The method of payment used for this donation"
 msgstr "Платёжная система, использованная при пожертвовании"
 
 #: includes/admin-settings-sections/emails.php:36
-#: includes/admin-settings-sections/emails.php:61
+#: includes/admin-settings-sections/emails.php:65
 #@ edd
 msgid "Your site name"
 msgstr "Название вашего сайта"
 
-#: includes/admin-settings-sections/emails.php:38
+#: includes/admin-settings-sections/emails.php:39
 #@ leyka
 msgid "Donations manager's emails"
 msgstr "E-mail менеджеров пожертвований"
 
-#: includes/admin-settings-sections/emails.php:45
+#: includes/admin-settings-sections/emails.php:49
 #@ leyka
 msgid "Donations manager's notification subject"
 msgstr "Тема уведомления для менеджеров пожертвований"
 
-#: includes/admin-settings-sections/emails.php:46
+#: includes/admin-settings-sections/emails.php:50
 #@ leyka
 msgid "Enter the donations manager's notification email subject"
 msgstr "Введите тему письма-уведомления о новом пожертвовании для менеджеров пожертвований"
 
-#: includes/admin-settings-sections/emails.php:52
+#: includes/admin-settings-sections/emails.php:56
 #@ leyka
 msgid "Donations manager's notification template"
 msgstr "Шаблон письма-уведомления о новом пожертвовании для менеджеров пожертвований"
 
-#: includes/admin-settings-sections/emails.php:58
+#: includes/admin-settings-sections/emails.php:62
 #@ leyka
 msgid "The ID number for donation's purpose item"
 msgstr "Уникальный номер (ID) цели пожертвования."
 
-#: includes/admin-settings-sections/emails.php:59
+#: includes/admin-settings-sections/emails.php:63
 #@ leyka
 msgid "The URL of the admin page where donation status can be changed"
 msgstr "URL страницы админ. панели сайта, на которой можно изменить статус пожертвования"
@@ -338,12 +338,12 @@ msgstr "Отмена"
 msgid "Permissions denied!"
 msgstr "В доступе отказано!"
 
-#: includes/admin-settings-sections/emails.php:84
+#: includes/admin-settings-sections/emails.php:88
 #@ leyka
 msgid "Activate the donation"
 msgstr "Активировать пожертвование"
 
-#: includes/admin-settings-sections/emails.php:96
+#: includes/admin-settings-sections/emails.php:100
 #@ leyka
 msgid "New donation payment"
 msgstr "Новый платеж по пожертвованию"
@@ -427,36 +427,36 @@ msgstr "В корзине не найдено отзывов"
 msgid "Recall History"
 msgstr "История отзывов"
 
-#: includes/frontend.php:262
+#: includes/frontend.php:264
 #@ leyka
 msgid "Payment additional info"
 msgstr "Дополнительная информация о платеже"
 
-#: includes/frontend.php:264
+#: includes/frontend.php:266
 #@ leyka
 msgid "Type your comments, if needed"
 msgstr "Введите ваши комментарии, если нужно"
 
 #: includes/admin-global.php:103
-#: includes/frontend.php:307
+#: includes/frontend.php:318
 #, php-format
 #@ leyka
 #@ edd
 msgid "No checkout page has been configured. Visit <a href=\"%s\">Settings</a> to set one."
 msgstr "Страница оплаты пожертвований не указана. Перейдите в раздел <a href=\"%s\">настроек модуля пожертвований</a>, чтобы указать её."
 
-#: includes/frontend.php:314
+#: includes/frontend.php:325
 #@ edd
 msgid "Purchase"
 msgstr "Приобрести"
 
-#: includes/frontend.php:349
+#: includes/frontend.php:360
 #@ leyka
 msgid "Make a donation with this sum"
 msgstr "Пожертвовать данную сумму"
 
-#: includes/frontend.php:350
-#: includes/frontend.php:381
+#: includes/frontend.php:361
+#: includes/frontend.php:392
 #@ edd
 msgid "Checkout"
 msgstr "На кассу"
@@ -466,27 +466,27 @@ msgstr "На кассу"
 msgid "The required parameters are not set"
 msgstr "Не указаны необходимые параметры"
 
-#: includes/frontend.php:466
+#: includes/frontend.php:477
 #@ leyka
 msgid "Any sum"
 msgstr "Любая сумма"
 
-#: includes/frontend.php:474
+#: includes/frontend.php:485
 #@ leyka
 msgid "Insert the sum of your donation"
 msgstr "Укажите размер вашего пожертвования"
 
-#: includes/frontend.php:477
+#: includes/frontend.php:488
 #@ leyka
 msgid "Add to cart"
 msgstr "Добавить в корзину"
 
-#: includes/frontend.php:500
+#: includes/frontend.php:511
 #@ leyka
 msgid "Sorry, the donation amount is incorrect"
 msgstr "Указанный размер пожертвования некорректен"
 
-#: includes/frontend.php:501
+#: includes/frontend.php:512
 #@ leyka
 msgid "Sorry, you must agree to the donation terms first"
 msgstr "Сначала вы должны согласиться с условиями пожертвования"
@@ -620,12 +620,12 @@ msgstr "Активировать"
 msgid "Deactivate"
 msgstr "Деактивировать"
 
-#: includes/admin-edit-donate-page.php:149
+#: includes/admin-edit-donate-page.php:148
 #@ leyka
 msgid "Pricing Options:"
 msgstr "Опции размера пожертвования:"
 
-#: includes/admin-edit-donate-page.php:155
+#: includes/admin-edit-donate-page.php:153
 #@ leyka
 msgid "Enable variable pricing"
 msgstr "Несколько вариантов размера пожертвований"
@@ -1077,7 +1077,7 @@ msgstr "Экспорт истории пожертвований"
 msgid "Donor recalls"
 msgstr "Отзывы доноров"
 
-#: includes/frontend.php:271
+#: includes/frontend.php:273
 #@ leyka
 msgid "Send me an email confimation for my donation"
 msgstr "Отправить мне email с информацией о моём пожертвовании"
@@ -1120,7 +1120,7 @@ msgstr "отзыв"
 msgid "Donations"
 msgstr "Пожертвования"
 
-#: includes/admin-settings-sections/emails.php:48
+#: includes/admin-settings-sections/emails.php:52
 #: includes/install.php:56
 #@ leyka
 msgid "New donation came"
@@ -1161,7 +1161,7 @@ msgstr "Текст для кнопки добавления в корзину"
 msgid "Add donation to cart"
 msgstr "Добавить в корзину"
 
-#: includes/admin-settings-sections/emails.php:63
+#: includes/admin-settings-sections/emails.php:67
 #: includes/install.php:59
 #@ leyka
 msgid "Hello!<br /><br />Recently, there has been a new donation on a {sitename}:<br />{download_list}<br />which totally cost {price}, by the {payment_method} gateway.<br /><br />Donate ID: {donate_id}, donation hashcode: {receipt_id} | {edit_url}<br /><br />{sitename}, {date}"
@@ -1261,24 +1261,24 @@ msgstr "Размер пожертвования без учёта налогов
 msgid "Total donation sum"
 msgstr "Итоговый размер пожертвования"
 
-#: includes/frontend.php:246
+#: includes/frontend.php:248
 #@ leyka
 msgid "Total donation:"
 msgstr "Размер пожертвования:"
 
-#: includes/frontend.php:390
+#: includes/frontend.php:401
 #@ edd
 msgid "Loading"
 msgstr ""
 
-#: includes/frontend.php:357
-#: includes/frontend.php:394
+#: includes/frontend.php:368
+#: includes/frontend.php:405
 #@ edd
 msgid "Go to Checkout"
 msgstr ""
 
-#: includes/frontend.php:356
-#: includes/frontend.php:393
+#: includes/frontend.php:367
+#: includes/frontend.php:404
 #, php-format
 #@ leyka
 msgid "Donation successfully added to your %scart%s."
@@ -1306,17 +1306,17 @@ msgstr "<div id=\"message\" class=\"error\"><p><strong>Ошибка:</strong> п
 msgid "Personal Info"
 msgstr ""
 
-#: includes/frontend.php:125
+#: includes/frontend.php:130
 #@ edd
 msgid "Email address"
 msgstr ""
 
-#: includes/frontend.php:134
+#: includes/frontend.php:139
 #@ leyka
 msgid "Your name"
 msgstr "Ваше имя"
 
-#: includes/frontend.php:137
+#: includes/frontend.php:136
 #@ leyka
 msgid "We will use this to personalize your account experience."
 msgstr "Будет использоваться для обращения к вам."
@@ -1326,7 +1326,7 @@ msgstr "Будет использоваться для обращения к в�
 msgid "Edit This"
 msgstr ""
 
-#: includes/frontend.php:128
+#: includes/frontend.php:127
 #@ leyka
 msgid "We will send the donation success notice to this address."
 msgstr "На этот адрес будет выслано уведомление об успешном выполнении пожертвования."
@@ -1386,12 +1386,12 @@ msgstr ""
 msgid "Error while switching the donation status! Please try again later or e-mail the support team to fix it."
 msgstr "Ошибка при переключении статуса пожертвования. Пожалуйста, попробуйте ещё раз позже. Если ошибка будет повторяться, сообщите в техническую поддержку плагина Лейка."
 
-#: includes/frontend.php:206
+#: includes/frontend.php:208
 #@ edd
 msgid "Hide Terms"
 msgstr ""
 
-#: includes/frontend.php:266
+#: includes/frontend.php:268
 #@ leyka
 msgid "Symbols remain:"
 msgstr "Осталось символов:"
@@ -1483,7 +1483,7 @@ msgstr "Официальный адрес вашей организации (к�
 msgid "All donations you collected as a private person will be taxed by 13%. Don't forget to pay the taxes! :)"
 msgstr "Все пожертвования, собранные физическими лицами в РФ, облагаются налогом НДФЛ, составляющим 13%. Не забудьте заплатить налоги! :)"
 
-#: includes/frontend.php:194
+#: includes/frontend.php:195
 #@ leyka
 msgid "I agree to the terms of the donation service"
 msgstr "Я согласен с условиями сервиса пожертвований"
@@ -1502,4 +1502,14 @@ msgstr "Текст ссылки на условия сервиса пожерт�
 #@ leyka
 msgid "#LEGAL_NAME# - official organization title,<br />#LEGAL_FACE# - juristic representative of the organization<br />#LEGAL_FACE_RP# - juristic representative of the organization (in genitive case)<br />#LEGAL_FACE_POSITION# - official position of the juristic representative<br />#LEGAL_STATE_REG_NUMBER# - state registration number of your organization<br />#LEGAL_KPP# - statement of the account number<br />#LEGAL_ADDRESS# - official organization address<br />#LEGAL_BANK_ESSENTIALS# - organization bank account essentials"
 msgstr "#LEGAL_NAME# - официальное название организации,<br />#LEGAL_FACE# - лицо, действующее без доверенности от имени организации (в им. падеже)<br />#LEGAL_FACE_RP# - лицо, действующее без доверенности от имени организации (в род. падеже)<br />#LEGAL_FACE_POSITION# - официальная должность лица, действующего без доверенности от имени организации<br />#LEGAL_STATE_REG_NUMBER# - ОГРН организации<br />#LEGAL_KPP# - КПП организации<br />#LEGAL_ADDRESS# - официальный адрес организации<br />#LEGAL_BANK_ESSENTIALS# - банковские реквизиты организации"
+
+#: includes/admin-settings-sections/emails.php:42
+#@ leyka
+msgid "Disable donations managers notifications"
+msgstr "Не уведомлять менеджеров пожертвований"
+
+#: includes/admin-settings-sections/emails.php:43
+#@ leyka
+msgid "Check if you do not want to receive emails when no donations are made."
+msgstr "Отметьте, если вы не хотите получать уведомления для менеджеров пожертвований."
 
