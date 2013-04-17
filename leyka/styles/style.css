@@ -412,7 +412,7 @@ margin-bottom: 10px;
 }
 label#edd_agree_to_terms_label {
     display: inline-block;
-    float: right;
+    /*float: right;*/
     width: 93%;
     font-size: 12px;
     line-height: 13px;

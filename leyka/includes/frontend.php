@@ -163,7 +163,6 @@ function leyka_terms_agreement(){
     global $edd_options;
     if( !empty($edd_options['show_agree_to_terms']) ) {?>
         <fieldset id="edd_terms_agreement">
-            <p>
             <div id="edd_terms" style="display:none;">
                 <?php do_action('edd_before_terms');
                 echo str_replace(array(
@@ -189,6 +188,7 @@ function leyka_terms_agreement(){
                 );
                 do_action('edd_after_terms');?>
             </div>
+            <p>
             <label id="edd_agree_to_terms_label">
                 <input name="edd_agree_to_terms" class="required" type="checkbox" id="edd_agree_to_terms" value="1"/>
                 <span>
