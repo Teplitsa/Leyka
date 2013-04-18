@@ -78,8 +78,10 @@ add_action('wp_ajax_nopriv_leyka-get-gateway-fields', 'leyka_get_gateway_fields'
 // Add to cart a free-sized donation:
 function leyka_free_donate_add_to_cart(){
     // verify the nonce for this action:
-    if( !isset($_POST['nonce'])
-        || !wp_verify_nonce($_POST['nonce'], 'leyka-free-add-to-cart-nonce') )
+    if(
+        !isset($_POST['nonce'])
+        || !wp_verify_nonce($_POST['nonce'], 'leyka-free-add-to-cart-nonce')
+    )
         return;
     if( !isset($_POST['donate_id']) || empty($_POST['sum']) || $_POST['sum'] <= 0 )
         die(json_encode(array('status' => 'error', 'message' => __('The required parameters are not set', 'leyka'))));
@@ -88,11 +90,11 @@ function leyka_free_donate_add_to_cart(){
 
     if(edd_item_in_cart($_POST['donate_id']))
         die('incart');
-    $options = array('sum' => (float)$_POST['sum'], 'is_free_sum' => 1);
-    edd_add_to_cart($_POST['donate_id'], $options);
+    edd_add_to_cart($_POST['donate_id'], array('sum' => (float)$_POST['sum'], 'is_free_sum' => 1));
     die('ok');
 }
 add_action('wp_ajax_leyka-free-donate-add-to-cart', 'leyka_free_donate_add_to_cart');
+add_action('wp_ajax_nopriv_leyka-free-donate-add-to-cart', 'leyka_free_donate_add_to_cart');
 
 /** Admin ajax functions. */
 // Update recall text and status when saving it while editing:

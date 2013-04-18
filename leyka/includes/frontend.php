@@ -211,6 +211,7 @@ function leyka_terms_add_closing_button(){?>
 add_action('edd_before_terms', 'leyka_terms_add_closing_button');
 
 /** Adds a correct JS for agree to the terms module. */
+remove_action('edd_checkout_form_top', 'edd_agree_to_terms_js');
 function leyka_agree_to_terms_js(){
     global $edd_options;
 
@@ -221,23 +222,20 @@ function leyka_agree_to_terms_js(){
                 e.preventDefault();
                 // $('#edd_terms').toggle();
                 if($('#edd_terms').hasClass('show')) {
-                    $('#edd_terms').removeClass('show').css('top','-100%');
+                    $('#edd_terms').removeClass('show').css('top', '-100%');
                 } else {
-                    $('#edd_terms').addClass('show').css('top','10%');
+                    $('#edd_terms').addClass('show').css('top', '10%');
                 }
 
                 return false;
             });
-//            $('.b-close').on("click",function(){
-//                $('#edd_terms').removeClass('show').css('top','-100%');
-//                $(this).remove();
-//            });
         });
     </script>
     <?php
     }
 }
-add_action('leyka_payment_mode_top', 'leyka_agree_to_terms_js');
+add_action('edd_checkout_form_top', 'leyka_agree_to_terms_js'); // On checkout form
+add_action('leyka_payment_mode_top', 'leyka_agree_to_terms_js'); // On single donates pages
 
 /** Rename the labels in the "final checkout button" fieldset. */
 function leyka_checkout_final_total($is_on_checkout = TRUE) {
