@@ -1,7 +1,7 @@
 /**
  * Easy Digital Downloads Styles
  *
- * @package     Easy Digital Downloads
+ * @package     EDD
  * @subpackage  CSS
  * @copyright   Copyright (c) 2013, Pippin Williamson
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
@@ -14,7 +14,7 @@
 @font-face {
   font-family: 'padlock';
   src: url("../fonts/padlock.eot?64116112");
-  src: url("../fonts/padlock.eot?64116112#iefix") format('embedded-opentype'), url("../fonts/padlock.svg?64116112#padlock") format('svg');
+  src: url("../fonts/padlock.eot?64116112#iefix") format('embedded-opentype'), url("../assets/fonts/padlock.svg?64116112#padlock") format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -57,10 +57,12 @@
 #edd_purchase_form #edd_tax_opt_in_fields label { display: inline-block;  width: auto; }
 #edd_checkout_form_wrap p { margin: 0 0 10px; }
 #edd_checkout_form_wrap input[type="text"], #edd_checkout_form_wrap input[type="email"], #edd_checkout_form_wrap input[type="password"] { padding: 4px 6px; }
+#edd_checkout_form_wrap input[type="radio"] { border: none; margin-right: 5px; }
 #edd_purchase_form input[type="checkbox"] { float: left; margin: 0 8px 0 0; }
 #edd_checkout_form_wrap .edd-payment-icons { height: 32px; }
 #edd_checkout_form_wrap .edd-payment-icons img.payment-icon{ margin: 0 3px 0 0; float: left; background: none; padding: none; border: none; -webkit-box-shadow: none; -moz-box-shadow: none; box-shadow: none;}
-#edd_checkout_form_wrap #edd-payment-mode-wrap label { display: inline-block; margin: 0 8px 0 0; }
+#edd_checkout_form_wrap #edd-payment-mode-wrap label { display: inline-block; margin: 0 20px 0 0; }
+#edd_checkout_form_wrap #edd-payment-mode-wrap .edd-payment-mode-label { font-weight: bold; display: inline-block; position: relative; margin-bottom: 5px; }
 #edd_checkout_form_wrap fieldset { border: none; padding: 10px 0 0 0; margin: 0 0 10px; }
 #edd_checkout_form_wrap fieldset fieldset { margin: 0; }
 #edd_checkout_form_wrap fieldset#edd_register_account_fields p.edd_register_password,
@@ -91,7 +93,7 @@
 body.edd_receipt_page { background-color: #fff; color: ##141412; margin: 0; font-family: Helvetica, sans-serif; font-size: 12px; }
 body.edd_receipt_page #edd_receipt_wrapper { width: 660px; margin: 0 auto; padding: 50px 0; }
 body.edd_receipt_page table { display: table; width: 100%; border-bottom: 1px solid #ededed; border-collapse: collapse; border-spacing: 0; font-size: 14px; line-height: 2; margin: 0 0 20px; }
-body.edd_receipt_page td, th { display: table-cell; text-align: left; border-top: 1px solid #ededed; padding: 6px 10px 6px 0; font-weight: normal; }
+body.edd_receipt_page td, body.edd_receipt_page th { display: table-cell; text-align: left; border-top: 1px solid #ededed; padding: 6px 10px 6px 0; font-weight: normal; }
 body.edd_receipt_page th { font-weight: bold; text-transform: uppercase; }
 body.edd_receipt_page h3 { font-size: 22px; margin: 40px 0 5px; clear: both; display: block; font-weight: bold; }
 
@@ -182,7 +184,7 @@ input.edd_submit_plain { background: none !important; border: none !important; p
 
 /* =Error styles
 -------------------------------------------------------------- */
-.edd_errors { -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; border: 1px solid #E6DB55; margin: 20px 0; background: #FFFFE0; color: #333; }
+.edd_errors { -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; border: 1px solid #E6DB55; margin: 0; background: #FFFFE0; color: #333; }
 .edd_error { padding:10px; }
 p.edd_error { margin: 0 !important; }
 

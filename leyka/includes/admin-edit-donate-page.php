@@ -130,24 +130,22 @@ function leyka_render_donation_log_meta_box(){
             ));?>
         </div>
     </div><!--end .tablenav-->
-    <?php }
+<?php }
 }
 
 // Donate configuration block content:
 function leyka_meta_box_fields($post_id){
     global $edd_options;
 
-    $price 				= edd_get_download_price( $post_id );
-    $variable_pricing 	= edd_has_variable_prices( $post_id );
-    $prices 			= edd_get_variable_prices( $post_id );
+    $price = edd_get_download_price($post_id);
+    $variable_pricing = edd_has_variable_prices($post_id);
+    $any_sum_allowed = leyka_is_any_sum_allowed($post_id);
+    $prices = edd_get_variable_prices($post_id);
 
-    $price_display    	= $variable_pricing ? ' style="display:none;"' : '';
-    $variable_display 	= $variable_pricing ? '' : ' style="display:none;"';
-    ?>
+    $price_display = $variable_pricing || $any_sum_allowed ? ' style="display:none;"' : '';
+    $variable_display = $variable_pricing ? '' : ' style="display:none;"';?>
 
-<p>
-    <strong><?php _e('Pricing Options:', 'leyka');?></strong>
-</p>
+<p><strong><?php _e('Pricing Options:', 'leyka');?></strong></p>
 
 <p>
     <label for="edd_variable_pricing">
@@ -156,17 +154,19 @@ function leyka_meta_box_fields($post_id){
     </label>
 </p>
 
-<div id="edd_regular_price_field" class="edd_pricing_fields" <?php echo $price_display; ?>>
-    <?php if( !isset( $edd_options['currency_position'] ) || $edd_options['currency_position'] == 'before' ) : ?>
-    <?php echo edd_currency_filter(''); ?><input type="text" name="edd_price" id="edd_price" value="<?php echo isset( $price ) ? esc_attr( edd_format_amount( $price ) ) : '';?>" size="30" style="width:80px;" maxlength="30" placeholder="9.99"/>
-    <?php else : ?>
-    <input type="text" name="edd_price" id="edd_price" value="<?php echo isset( $price ) ? esc_attr( edd_format_amount( $price ) ) : ''; ?>" size="30" maxlength="30" style="width:80px;" placeholder="9.99"/><?php echo edd_currency_filter(''); ?>
-    <?php endif; ?>
+<div id="edd_regular_price_field" class="edd_pricing_fields" <?php echo $price_display;?>>
+<?php if( !isset($edd_options['currency_position']) || $edd_options['currency_position'] == 'before' ) {
+    echo edd_currency_filter('');?>
+    <input type="text" name="edd_price" id="edd_price" value="<?php echo $price ? esc_attr(edd_format_amount($price)) : '';?>" size="30" style="width:80px;" maxlength="30" placeholder="9.99"/>
+<?php } else { ?>
+    <input type="text" name="edd_price" id="edd_price" value="<?php echo $price ? esc_attr(edd_format_amount($price)) : '';?>" size="30" maxlength="30" style="width:80px;" placeholder="9.99"/>
+    <?php echo edd_currency_filter('');
+}
 
-    <?php do_action('edd_price_field', $post_id); ?>
+do_action('edd_price_field', $post_id);?>
 </div>
 
-<div id="edd_variable_price_fields" class="edd_pricing_fields" <?php echo $variable_display; ?>>
+<div id="edd_variable_price_fields" class="edd_pricing_fields" <?php echo $variable_display;?> >
     <input type="hidden" id="edd_variable_prices" class="edd_variable_prices_name_field" value=""/>
 
     <div id="edd_price_fields" class="edd_meta_table_wrap">
@@ -211,9 +211,7 @@ function leyka_meta_box_fields($post_id){
 </div>
 <?php /** Additional fields on the new/edit donate admin form: */
     $max_donation_sum = leyka_get_max_free_donation_sum($post_id);
-    $min_donation_sum = leyka_get_min_free_donation_sum($post_id);
-    $any_sum_allowed = leyka_is_any_sum_allowed($post_id);
-    ?>
+    $min_donation_sum = leyka_get_min_free_donation_sum($post_id);?>
 <p>
     <label>
         <input type="checkbox" name="leyka_any_sum_allowed" id="leyka_any_sum_allowed" value="1" <?php echo ($any_sum_allowed ? 'checked' : '');?> />

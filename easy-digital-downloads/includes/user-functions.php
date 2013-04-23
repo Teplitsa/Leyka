@@ -4,8 +4,8 @@
  *
  * Functions related to users / customers
  *
- * @package     Easy Digital Downloads
- * @subpackage  AJAX
+ * @package     EDD
+ * @subpackage  Functions
  * @copyright   Copyright (c) 2013, Pippin Williamson
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
  * @since       1.0.8.6
@@ -28,9 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 function edd_get_users_purchases( $user = 0, $number = 20, $pagination = false ) {
 	if ( empty( $user ) ) {
-		global $user_ID;
-
-		$user = $user_ID;
+		$user = get_current_user_id();
 	}
 
 	$mode = edd_is_test_mode() ? 'test' : 'live';
@@ -91,14 +89,15 @@ function edd_has_user_purchased( $user_id, $downloads, $variable_price_id = null
 
 	if ( $users_purchases ) {
 		foreach ( $users_purchases as $purchase ) {
-			$purchase_meta = edd_get_payment_meta( $purchase->ID );
-			$purchased_files = maybe_unserialize( $purchase_meta['downloads'] );
+
+			$purchased_files = edd_get_payment_meta_downloads( $purchase->ID );
 
 			if ( is_array( $purchased_files ) ) {
 				foreach ( $purchased_files as $download ) {
 					if ( in_array( $download['id'], $downloads ) ) {
-						if ( !is_null( $variable_price_id ) && $variable_price_id !== false ) {
-							if ( $variable_price_id == $download['options']['price_id'] ) {
+						$variable_prices = edd_has_variable_prices( $download['id'] );
+						if ( $variable_prices && ! is_null( $variable_price_id ) && $variable_price_id !== false ) {
+							if ( isset( $download['options']['price_id'] ) && $variable_price_id == $download['options']['price_id'] ) {
 								return true;
 							} else {
 								$return = false;
@@ -126,9 +125,8 @@ function edd_has_user_purchased( $user_id, $downloads, $variable_price_id = null
  * @return      bool - true if has purchased, false other wise.
  */
 function edd_has_purchases( $user_id = null ) {
-	if ( is_null( $user_id ) ) {
-		global $user_ID;
-		$user_id = $user_ID;
+	if ( empty( $user_id ) ) {
+		$user_id = get_current_user_id();
 	}
 
 	if ( edd_get_users_purchases( $user_id, 1 ) ) {

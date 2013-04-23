@@ -2,8 +2,8 @@
 /**
  * Process Download
  *
- * @package     Easy Digital Downloads
- * @subpackage  Process Download
+ * @package     EDD
+ * @subpackage  Functions
  * @copyright   Copyright (c) 2013, Pippin Williamson
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
  * @since       1.0
@@ -133,7 +133,9 @@ add_action( 'init', 'edd_process_download', 100 );
  */
 function edd_deliver_download( $file = '' ) {
 
-	$symlink = apply_filters( 'edd_symlink_file_downloads', true );
+	global $edd_options;
+
+	$symlink = apply_filters( 'edd_symlink_file_downloads', isset( $edd_options['symlink_file_downloads'] ) );
 
 	/*
 	 * If symlinks are enabled, a link to the file will be created

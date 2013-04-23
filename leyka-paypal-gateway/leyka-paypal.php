@@ -81,10 +81,10 @@ function leyka_paypal_donates_init(){
             || (float)$edd_options['paypal_donates_currency_to_usd_course'] <= 0.0)
             $edd_options['paypal_donates_currency_to_usd_course'] = 1.0;
 
+        leyka_insert_payment($payment_data); // Process the payment on our side
+
         // PayPal accepts payments only in USD, use donations currency rate to convert payment sum to USD: 
         $payment_data['price'] = round($payment_data['price']/$edd_options['paypal_donates_currency_to_usd_course'], 2);
-
-        leyka_insert_payment($payment_data); // Process the payment on our side
 
         header('location: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&amount='.$payment_data['price'].'&business='.$edd_options['paypal_donates_business_id'].'&item_name='.$edd_options['paypal_donates_item_name'].'&buyer_credit_promo_code=&buyer_credit_product_category=&buyer_credit_shipping_method=&buyer_credit_user_address_change=&no_shipping=1&currency_code='.$edd_options['paypal_donates_currency_id'].'&tax=0&lc=US&bn=PP-DonationsBF');
         flush();

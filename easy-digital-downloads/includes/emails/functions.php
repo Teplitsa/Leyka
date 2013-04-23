@@ -2,8 +2,8 @@
 /**
  * Email Functions
  *
- * @package     Easy Digital Downloads
- * @subpackage  Email Functions
+ * @package     EDD
+ * @subpackage  Emails
  * @copyright   Copyright (c) 2013, Pippin Williamson
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
  * @since       1.0
@@ -13,13 +13,13 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
- * Email Download Purchase Receipt
+ * Email the download link(s) and payment confirmation to the buyer in a
+ * customizable Purchase Receipt
  *
- * Email the download link(s) and payment confirmation to the buyer.
- *
- * @access      private
- * @since       1.0
- * @return      void
+ * @since 1.0
+ * @param int $payment_id Payment ID
+ * @param bool $admin_notice Whether to send the admin email notification or not (default: true)
+ * @return void
  */
 function edd_email_purchase_receipt( $payment_id, $admin_notice = true ) {
 	global $edd_options;
@@ -59,19 +59,17 @@ function edd_email_purchase_receipt( $payment_id, $admin_notice = true ) {
 
 	wp_mail( $payment_data['email'], $subject, $message, $headers, $attachments );
 
-	if ( $admin_notice ) {
+	if ( $admin_notice && ! edd_admin_notices_disabled() ) {
 		do_action( 'edd_admin_sale_notice', $payment_id, $payment_data );
 	}
 }
 
 /**
- * Email Test Download Purchase Receipt
- *
  * Email the download link(s) and payment confirmation to the admin accounts for testing.
  *
- * @access      private
- * @since       1.5
- * @return      void
+ * @since 1.5
+ * @global $edd_options Array of all the EDD Options
+ * @return void
  */
 function edd_email_test_purchase_receipt() {
 	global $edd_options;
@@ -103,11 +101,12 @@ function edd_email_test_purchase_receipt() {
 }
 
 /**
- * Sends the admin sale notice
+ * Sends the Admin Sale Notification Email
  *
- * @access      private
- * @since       1.4.2
- * @return      void
+ * @since 1.4.2
+ * @param int $payment_id Payment ID (default: 0)
+ * @param array $payment_data Payment Meta and Data
+ * @return void
  */
 function edd_admin_email_notice( $payment_id = 0, $payment_data = array() ) {
 
@@ -164,13 +163,12 @@ function edd_admin_email_notice( $payment_id = 0, $payment_data = array() ) {
 add_action( 'edd_admin_sale_notice', 'edd_admin_email_notice', 10, 2 );
 
 /**
- * Retrieves the admin notice emails
+ * Retrieves the emails for which admin notifications are sent to (these can be
+ * changed in the EDD Settings)
  *
- * If not emails are set, the WordPress admin email is used instead
- *
- * @access      private
- * @since       1.0
- * @return      void
+ * @since 1.0
+ * @global $edd_options Array of all the EDD Options
+ * @return void
  */
 function edd_get_admin_notice_emails() {
 	global $edd_options;
@@ -179,4 +177,17 @@ function edd_get_admin_notice_emails() {
 	$emails = array_map( 'trim', explode( "\n", $emails ) );
 
 	return apply_filters( 'edd_admin_notice_emails', $emails );
+}
+
+
+/**
+ * Checks whether admin sale notices are disabled
+ *
+ * @since 1.5.2
+ * @return bool
+ */
+function edd_admin_notices_disabled() {
+	global $edd_options;
+	$retval = isset( $edd_options['disable_admin_notices'] );
+	return apply_filters( 'edd_admin_notices_disabled', $retval );
 }

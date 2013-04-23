@@ -7,7 +7,7 @@ Tags: download, downloads, e-store, eshop, digital downloads, e-downloads, ecomm
 Requires at least: 3.3
 Tested up to: 3.6
 
-Stable Tag: 1.5
+Stable Tag: 1.5.2
 License: GNU Version 2 or Any Later Version
 
 
@@ -37,7 +37,7 @@ Features of the plugin include:
 
 More information at [Easy Digital Downloads.com](http://easydigitaldownloads.com/).
 
-[youtube http://www.youtube.com/watch?v=SjOeSZ08_IA]
+[youtube http://www.youtube.com/watch?v=japHPcIFs4I]
 
 **Sell and Track Software License Keys**
 
@@ -57,7 +57,7 @@ With add-ons for [Mail Chimp](http://easydigitaldownloads.com/extension/mail-chi
 
 Easy Digital Downloads as been translated into the following languages:
 
-1. English
+1. English (and British English)
 2. German
 3. Spanish
 4. French
@@ -67,6 +67,10 @@ Easy Digital Downloads as been translated into the following languages:
 8. Turkish
 9. Arabic
 10. Polish
+11. Russian
+12. Czech
+13. Japanese
+14. Farsi
 
 Would you like to help translate the plugin into more languages? [Contact Pippin](http://easydigitaldownloads.com/contact-developer/).
 
@@ -170,6 +174,48 @@ Yes, through the addition of one or more of the add-on payment gateways, you can
 
 
 == Changelog ==
+
+= 1.5.2: April 13, 2013 =
+
+* New: Discount codes now automatically removed from cart when the required cart items are removed
+* New: Added PHP safe_mode indicator to System Info
+* New: The price option purchased is now shown in [edd_receipt]
+* New: Added get_output() method to the EDD_API
+* New: Added new "upgraded from" option to better help with support issues
+* New: Added symlinks on/off to System Info
+* New: Added a link to the EDD iOS sales / earnings tracker
+* New: Added ability to export file download history by date
+* New: Added category filtering to Downloads > Reports > Downloads
+* New: Added option to disable admin sales notices
+* Tweaked: Better options to disable the price in the [purchase_link] short code
+* Tweaked: Improved the checkout error fields
+* Fix: Issue with purchase receipt CSS
+* Fix: SQL error with comments_clauses
+* Fix: EDD_API retrieved pending sales when it shouldn't
+* Fix: Default currency now set
+* Fix: Issue with edd_show_added_to_cart_messages() showing on incorrect pages
+* Fix: Force redirect when adding items to the cart from the checkout page
+* Fix: EDD_API &number=-1 returned null
+* Fix: Product price formatting screws up when saving products without a thousands separator set
+* Fix: Not all products shown in the drop down for Discount Code Requirements
+* Fix: "Total sales for period shown" displayed as $0.00
+* Fix: Issue with cart fees not being taxed
+
+= 1.5.1: March 21, 2013 =
+
+* Fix: Tags / Categories couldn't be assigned by anyone except shop_manager and admins
+* Fix: Improved memory usage by removing file download log meta box
+* Fix: Couldn't change the email associated with purchases
+* Fix: Comment feeds showed payment notes
+* Fix: Corrected some filters for text outputs
+* Fix: Raw HTML displayed on checkout after opting into taxes
+* Fix: Total shown twice on the checkout page
+* New: Added link to File Download Log from Edit download screen
+* New: Made file download symlinks disabled by default
+* New: Added hour::minute::second to payment history export
+* New: Improved CSS for payment method select
+* New: Allowed store vendors to see sales / earnings for their own products
+* New: Added new hooks to the export page
 
 = 1.5: March 13, 2013 =
 

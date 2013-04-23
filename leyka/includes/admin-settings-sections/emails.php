@@ -35,8 +35,12 @@ function leyka_emails_settings($settings){
         '{payment_method} - '.__('The method of payment used for this donation', 'leyka').'<br/>'.
         '{sitename} - '.__('Your site name', 'edd');
     $settings['purchase_receipt']['std'] = __('Hello, {name}!<br /><br />You have chosed to make the following donations:<br />{download_list}<br />which totally cost {price}, by the {payment_method} gateway.<br /><br />Sincerely thank you, {sitename}, {date}', 'leyka');
+
     $settings['admin_notice_emails']['name'] = __("Donations manager's emails", 'leyka');
     $settings['admin_notice_emails']['std'] = get_bloginfo('admin_email');
+
+    $settings['disable_admin_notices']['name'] = __('Disable donations managers notifications', 'leyka');
+    $settings['disable_admin_notices']['desc'] = __('Check if you do not want to receive emails when no donations are made.', 'leyka');
 
     array_push(
         $settings,

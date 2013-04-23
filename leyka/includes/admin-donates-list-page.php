@@ -45,8 +45,13 @@ function leyka_render_donate_columns($column_name, $post_id){
                 else if(edd_has_variable_prices($post_id))
                     echo __('A few variants of possible donation sum', 'leyka');
                 else
-                    echo edd_price($post_id, false)
-                        .'<input type="hidden" class="downloadprice-'.$post_id.'" value="'.edd_get_download_price($post_id).'" />';
+                    echo edd_price($post_id, false).'<input type="hidden" class="downloadprice-'.$post_id.'" value="'.edd_get_download_price($post_id).'" />';
+                break;
+            case 'sales':
+                echo edd_get_download_sales_stats($post_id);
+                break;
+            case 'earnings':
+                echo edd_currency_filter(edd_format_amount(edd_get_download_earnings_stats($post_id)));
                 break;
         }
     }
