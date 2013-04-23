@@ -287,6 +287,7 @@ margin-right: 32px;
     background: #FFF;
     margin: 0;
     text-align: left;
+    border-radius: 0 0 15px;
 }
 #leyka-single-form-wrapper #leyka_form_resp.complete fieldset,
 #leyka-single-form-wrapper #leyka_form_resp.complete p,
@@ -348,6 +349,7 @@ margin-right: 14px;
   margin-bottom: 1px;
   cursor: pointer;
   top: 1px;
+  margin: 15px 0px 5px;
   -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
   -ms-transition: all 0.3s;
@@ -444,12 +446,14 @@ label#edd_agree_to_terms_label {
             transition: all .3s;
 }
 #leyka_client_errors {
-    position: absolute;
-    bottom: 50px;
-    left: 0px;
-    width: 50%;
-    color: #f00;
-    background: rgba(0,0,0,.1);
-    padding: 0px 10px;
-    box-sizing: border-box;
+position: absolute;
+bottom: 56px;
+right: 0px;
+width: 50%;
+color: #f00;
+background: transparent;
+padding: 0px 10px;
+box-sizing: border-box;
+font-size: 12px;
+line-height: 12px;
 }
