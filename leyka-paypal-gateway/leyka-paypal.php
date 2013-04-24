@@ -114,6 +114,8 @@ function leyka_paypal_donates_admin_init(){
 
     function leyka_paypal_donates_options($options){
         global $edd_options;
+
+        $edd_options['currency'] = empty($edd_options['currency']) ? 'USD' : $edd_options['currency'];
         array_push(
             $options,
             array(

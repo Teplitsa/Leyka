@@ -205,10 +205,10 @@ function leyka_yandex_validate_fields(){
     if( !$validation_passed ) {
         // Turn off Yandex gateway. Direct settings manipulation:
         $gateways_options = get_option('edd_settings_gateways');
-        if( !empty($gateways_options['gateways']['yandex']) )
+        if( !empty($gateways_options['gateways']) && !empty($gateways_options['gateways']['yandex']) )
             unset($gateways_options['gateways']['yandex']);
         update_option('edd_settings_gateways', $gateways_options);
-        if( !empty($edd_options['gateways']['yandex']) )
+        if( !empty($edd_options['gateways']) && !empty($edd_options['gateways']['yandex']) )
             unset($edd_options['gateways']['yandex']);
         // Direct settings manipulation END
     }
@@ -226,18 +226,21 @@ function leyka_yandex_icons($icons){
 add_filter('edd_accepted_payment_icons', 'leyka_yandex_icons');
 
 // Enqueue backend javascript:
-if(file_exists(dirname(__FILE__).'/scripts/script-admin.js')) {
-    if(function_exists('plugins_url')) {
-        wp_enqueue_script(
-            'leyka-yamo-script-admin',
-            plugins_url('/scripts/script-admin.js', __FILE__),
-            array('jquery'), '1.0', TRUE
-        );
-    } else {
-        wp_enqueue_script(
-            'leyka-yamo-script-admin',
-            dirname(__FILE__).'/scripts/script-admin.js',
-            array('jquery'), '1.0', TRUE
-        );
+function leyka_yamo_admin_scripts() {
+    if(file_exists(dirname(__FILE__).'/scripts/script-admin.js')) {
+        if(function_exists('plugins_url')) {
+            wp_enqueue_script(
+                'leyka-yamo-script-admin',
+                plugins_url('/scripts/script-admin.js', __FILE__),
+                array('jquery'), '1.0', TRUE
+            );
+        } else {
+            wp_enqueue_script(
+                'leyka-yamo-script-admin',
+                dirname(__FILE__).'/scripts/script-admin.js',
+                array('jquery'), '1.0', TRUE
+            );
+        }
     }
 }
+add_action('admin_enqueue_scripts', 'leyka_yamo_admin_scripts');
