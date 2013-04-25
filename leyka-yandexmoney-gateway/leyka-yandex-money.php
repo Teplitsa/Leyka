@@ -146,7 +146,7 @@ function leyka_yandex_options($options){
             'size' => 'regular'
         ),
         array(
-            'id' => 'yamo_desc',
+            'id' => 'yandex_desc', // Must be as "gatewayID_desc"
             'name' => __('Yandex.Money gateway description', 'leyka-yandex-money'),
             'desc' => __('Enter Yandex.Money gateway description that will be shown to the donor when this gateway will be selected for use', 'leyka-yandex-money'),
             'type' => 'rich_editor',
