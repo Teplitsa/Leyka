@@ -3,7 +3,7 @@
 Plugin Name: Leyka PayPal gateway
 Plugin URI: http://leyka.te-st.ru/
 Description: Gateway for Leyka donations management system which adds option for receiving donates using PayPal payment service. Can only be used for receiving donations!
-Version: 1.0
+Version: 1.1
 Author: Lev Zvyagincev aka Ahaenor
 Author URI: ahaenor@gmail.com
 License: GPLv2 or later
