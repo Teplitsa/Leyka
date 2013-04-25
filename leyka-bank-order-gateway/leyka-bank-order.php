@@ -110,14 +110,13 @@ function leyka_bank_order_processing($payment_data){
         file_get_contents(dirname(__FILE__).'/standard_bank_order.php') :
         $edd_options['bank_order_custom_html'];
 
-    $payer_full_name = '&nbsp;';
+    $payer_full_name = trim($payment_data['user_info']['first_name']);
     $last_name = trim($payment_data['user_info']['last_name']); 
     if($last_name) {
-        $payer_full_name = trim($payment_data['user_info']['first_name']);
-        $second_name = trim($payment_data['post_data']['edd_second']); 
+        $payer_full_name = $last_name.'&nbsp;'.$payer_full_name;
+        $second_name = trim($payment_data['post_data']['edd_second']);
         if($second_name)
             $payer_full_name .= '&nbsp;'.$second_name;
-        $payer_full_name .= '&nbsp;'.$last_name;
     }
     
     $payment_purpose = empty($edd_options['bank_order_ess_add_donor_comment']) ?
