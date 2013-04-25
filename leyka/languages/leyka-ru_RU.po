@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Leyka v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-04-16 04:41:51+0000\n"
+"PO-Revision-Date: 2013-04-25 06:20:23+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -70,7 +70,7 @@ msgstr "Системная информация"
 msgid "Search"
 msgstr "Поиск"
 
-#: includes/ajax.php:139
+#: includes/ajax.php:141
 #@ leyka
 msgid "Permissions denied"
 msgstr "Доступ запрещён"
@@ -333,7 +333,7 @@ msgstr "Статус"
 msgid "Cancel"
 msgstr "Отмена"
 
-#: includes/ajax.php:106
+#: includes/ajax.php:108
 #@ leyka
 msgid "Permissions denied!"
 msgstr "В доступе отказано!"
@@ -427,66 +427,66 @@ msgstr "В корзине не найдено отзывов"
 msgid "Recall History"
 msgstr "История отзывов"
 
-#: includes/frontend.php:264
+#: includes/frontend.php:262
 #@ leyka
 msgid "Payment additional info"
 msgstr "Дополнительная информация о платеже"
 
-#: includes/frontend.php:266
+#: includes/frontend.php:264
 #@ leyka
 msgid "Type your comments, if needed"
 msgstr "Введите ваши комментарии, если нужно"
 
 #: includes/admin-global.php:103
-#: includes/frontend.php:318
+#: includes/frontend.php:316
 #, php-format
 #@ leyka
 #@ edd
 msgid "No checkout page has been configured. Visit <a href=\"%s\">Settings</a> to set one."
 msgstr "Страница оплаты пожертвований не указана. Перейдите в раздел <a href=\"%s\">настроек модуля пожертвований</a>, чтобы указать её."
 
-#: includes/frontend.php:325
+#: includes/frontend.php:323
 #@ edd
 msgid "Purchase"
 msgstr "Приобрести"
 
-#: includes/frontend.php:360
+#: includes/frontend.php:358
 #@ leyka
 msgid "Make a donation with this sum"
 msgstr "Пожертвовать данную сумму"
 
-#: includes/frontend.php:361
-#: includes/frontend.php:392
+#: includes/frontend.php:359
+#: includes/frontend.php:390
 #@ edd
 msgid "Checkout"
 msgstr "На кассу"
 
-#: includes/ajax.php:85
+#: includes/ajax.php:87
 #@ leyka
 msgid "The required parameters are not set"
 msgstr "Не указаны необходимые параметры"
 
-#: includes/frontend.php:477
+#: includes/frontend.php:475
 #@ leyka
 msgid "Any sum"
 msgstr "Любая сумма"
 
-#: includes/frontend.php:485
+#: includes/frontend.php:483
 #@ leyka
 msgid "Insert the sum of your donation"
 msgstr "Укажите размер вашего пожертвования"
 
-#: includes/frontend.php:488
+#: includes/frontend.php:486
 #@ leyka
 msgid "Add to cart"
 msgstr "Добавить в корзину"
 
-#: includes/frontend.php:511
+#: includes/frontend.php:509
 #@ leyka
 msgid "Sorry, the donation amount is incorrect"
 msgstr "Указанный размер пожертвования некорректен"
 
-#: includes/frontend.php:512
+#: includes/frontend.php:510
 #@ leyka
 msgid "Sorry, you must agree to the donation terms first"
 msgstr "Сначала вы должны согласиться с условиями пожертвования"
@@ -1077,7 +1077,7 @@ msgstr "Экспорт истории пожертвований"
 msgid "Donor recalls"
 msgstr "Отзывы доноров"
 
-#: includes/frontend.php:273
+#: includes/frontend.php:271
 #@ leyka
 msgid "Send me an email confimation for my donation"
 msgstr "Отправить мне email с информацией о моём пожертвовании"
@@ -1261,24 +1261,24 @@ msgstr "Размер пожертвования без учёта налогов
 msgid "Total donation sum"
 msgstr "Итоговый размер пожертвования"
 
-#: includes/frontend.php:248
+#: includes/frontend.php:246
 #@ leyka
 msgid "Total donation:"
 msgstr "Размер пожертвования:"
 
-#: includes/frontend.php:401
+#: includes/frontend.php:399
 #@ edd
 msgid "Loading"
 msgstr ""
 
-#: includes/frontend.php:368
-#: includes/frontend.php:405
+#: includes/frontend.php:366
+#: includes/frontend.php:403
 #@ edd
 msgid "Go to Checkout"
 msgstr ""
 
-#: includes/frontend.php:367
-#: includes/frontend.php:404
+#: includes/frontend.php:365
+#: includes/frontend.php:402
 #, php-format
 #@ leyka
 msgid "Donation successfully added to your %scart%s."
@@ -1391,7 +1391,7 @@ msgstr "Ошибка при переключении статуса пожерт
 msgid "Hide Terms"
 msgstr ""
 
-#: includes/frontend.php:268
+#: includes/frontend.php:266
 #@ leyka
 msgid "Symbols remain:"
 msgstr "Осталось символов:"
