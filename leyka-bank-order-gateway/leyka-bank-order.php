@@ -96,7 +96,7 @@ function leyka_bank_order_processing($payment_data){
     global $edd_options;
 
     // Redirect to quittance page to print it out:
-    leyka_insert_payment($payment_data); // Process the payment on our side
+    $donation_id = leyka_insert_payment($payment_data); // Process the payment on our side
 
     if($edd_options['bank_order_document'] == 'file') {
         header('location: '.$edd_options['bank_order_file']); // Send a payment quittance to browser
@@ -118,7 +118,9 @@ function leyka_bank_order_processing($payment_data){
         if($second_name)
             $payer_full_name .= '&nbsp;'.$second_name;
     }
-    
+
+    $edd_options['bank_order_ess_donation_purpose'] = empty($edd_options['bank_order_ess_donation_purpose']) ?
+        '' : str_replace('#DONATION_ID#', $donation_id, $edd_options['bank_order_ess_donation_purpose']);
     $payment_purpose = empty($edd_options['bank_order_ess_add_donor_comment']) ?
         $edd_options['bank_order_ess_donation_purpose'] :
         (
@@ -267,9 +269,9 @@ function leyka_bank_order_options($options){
         array(
             'id' => 'bank_order_ess_donation_purpose',
             'name' => __('Payment purpose text in the bank order', 'leyka-bank-order'),
-            'desc' => 'A text for payment purpose field in the bank order',
+            'desc' => __('A text for payment purpose field in the bank order. If contains #DONATION_ID#, this placeholder will be replaced with numeric donation ID.', 'leyka-bank-order'),
             'type' => 'text',
-            'std' => __('Charity donation', 'leyka-bank-order'),
+            'std' => __('Charity donation №#DONATION_ID#', 'leyka-bank-order'),
         ),
         array(
             'id' => 'bank_order_ess_add_donor_comment',

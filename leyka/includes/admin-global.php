@@ -63,7 +63,7 @@ if( !is_dir($current_theme_dir.'/edd_templates') ) {
 }
 
 function leyka_admin_menu(){
-    global $edd_payments_page, $edd_settings_page, $edd_reports_page, $edd_add_ons_page, $edd_recalls_page, $edd_upgrades_screen, $edd_system_info_page;
+    global $edd_payments_page, $edd_settings_page, $edd_reports_page, $edd_add_ons_page, $edd_recalls_page, $edd_system_info_page;
 
     require_once EDD_PLUGIN_DIR.'includes/admin/system-info.php';
 
@@ -74,8 +74,7 @@ function leyka_admin_menu(){
     $edd_reports_page = add_submenu_page('edit.php?post_type=download', __('Donations reports', 'leyka'), __('Reports', 'leyka'), 'manage_options', 'edd-reports', 'leyka_reports_page');
     $edd_settings_page = add_submenu_page('edit.php?post_type=download', __('Easy Digital Download Settings', 'edd'), __('Settings', 'edd'), 'manage_options', 'edd-settings', 'edd_options_page');
     $edd_system_info_page = add_submenu_page('edit.php?post_type=download', __('Easy Digital Download System Info', 'edd' ), __('System Info', 'edd'), 'manage_options', 'edd-system-info', 'edd_system_info');
-    // Add-ons page removed until further testing for their compatibility with Leyka:
-//    $edd_add_ons_page = add_submenu_page('edit.php?post_type=download', __('Easy Digital Download Add Ons', 'edd'), __('Add Ons', 'edd'), 'manage_options', 'edd-addons', 'edd_add_ons_page');
+//    $edd_add_ons_page = add_submenu_page('edit.php?post_type=download', __('Leyka add ons', 'leyka'), __('Add ons', 'leyka'), 'manage_options', 'edd-addons', 'leyka_add_ons_page');
 }
 remove_action('admin_menu', 'edd_add_options_link', 10);
 add_action('admin_menu', 'leyka_admin_menu');
