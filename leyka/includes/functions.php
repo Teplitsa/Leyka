@@ -71,8 +71,7 @@ function leyka_insert_payment($payment_data = array())
                 $payment_data['single_donate_id'],
                 $payment_data['post_data']['edd-gateway']
             );
-    } else
-        return $payment_id;
+    }
 }
 
 /** Update a donor recall. */

@@ -29,10 +29,10 @@ class EDD_Logging {
 	 */
 	public function __construct() {
 		// Create the log post type
-		add_action( 'init', array( $this, 'register_post_type' ), -1 );
+		add_action( 'init', array( $this, 'register_post_type' ), 1 );
 
 		// Create types taxonomy and default types
-		add_action( 'init', array( $this, 'register_taxonomy' ), -1 );
+		add_action( 'init', array( $this, 'register_taxonomy' ), 1 );
 
 	}
 
@@ -46,13 +46,16 @@ class EDD_Logging {
 	public function register_post_type() {
 		/* Logs post type */
 		$log_args = array(
-			'labels'			=> array( 'name' => __( 'Logs', 'edd' ) ),
-			'public'			=> false,
-			'query_var'			=> false,
-			'rewrite'			=> false,
-			'capability_type'	=> 'post',
-			'supports'			=> array( 'title', 'editor' ),
-			'can_export'		=> true
+			'labels'			  => array( 'name' => __( 'Logs', 'edd' ) ),
+			'public'			  => false,
+			'exclude_from_search' => true,
+			'publicly_queryable'  => false,
+			'show_ui'             => false,
+			'query_var'			  => false,
+			'rewrite'			  => false,
+			'capability_type'	  => 'post',
+			'supports'			  => array( 'title', 'editor' ),
+			'can_export'		  => true
 		);
 
 		register_post_type( 'edd_log', $log_args );
@@ -173,7 +176,7 @@ class EDD_Logging {
 
 		$args = wp_parse_args( $log_data, $defaults );
 
-		do_action( 'edd_pre_insert_log' );
+		do_action( 'edd_pre_insert_log', $log_data, $log_meta );
 
 		// Store the log entry
 		$log_id = wp_insert_post( $args );
@@ -190,7 +193,7 @@ class EDD_Logging {
 			}
 		}
 
-		do_action( 'edd_post_insert_log', $log_id );
+		do_action( 'edd_post_insert_log', $log_id, $log_data, $log_meta );
 
 		return $log_id;
 	}
@@ -205,7 +208,7 @@ class EDD_Logging {
 	 * @return bool True if successful, false otherwise
 	 */
 	public function update_log( $log_data = array(), $log_meta = array() ) {
-		do_action( 'edd_pre_update_log', $log_id );
+		do_action( 'edd_pre_update_log', $log_id, $log_data, $log_meta );
 
 		$defaults = array(
 			'post_type' 	=> 'edd_log',
@@ -225,7 +228,7 @@ class EDD_Logging {
 			}
 		}
 
-		do_action( 'edd_post_update_log', $log_id );
+		do_action( 'edd_post_update_log', $log_id, $log_data, $log_meta );
 	}
 
 	/**

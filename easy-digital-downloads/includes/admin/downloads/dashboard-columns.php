@@ -40,7 +40,7 @@ function edd_download_columns( $download_columns ) {
 		unset( $download_columns['earnings'] );
 	}
 
-	return $download_columns;
+	return apply_filters( 'edd_download_columns', $download_columns );
 }
 add_filter( 'manage_edit-download_columns', 'edd_download_columns' );
 
@@ -58,6 +58,7 @@ function edd_render_download_columns( $column_name, $post_id ) {
 
 		$style 			= isset( $edd_options['button_style'] ) ? $edd_options['button_style'] : 'button';
 		$color 			= isset( $edd_options['checkout_color'] ) ? $edd_options['checkout_color'] : 'blue';
+		$color			= ( $color == 'inherit' ) ? '' : $color;
 		$purchase_text 	= ! empty( $edd_options['add_to_cart_text'] ) ? $edd_options['add_to_cart_text'] : __( 'Purchase', 'edd' );
 
 		switch ( $column_name ) {

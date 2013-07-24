@@ -34,7 +34,8 @@ add_filter('all_plugins', 'leyka_plugins_list');
 $latest_edd_version = get_latest_edd_version();
 if($latest_edd_version > LATEST_SUPPORTED_EDD_VERSION || $latest_edd_version == (float)EDD_VERSION) {
     function leyka_update_plugins_list($value){
-        unset($value->response['easy-digital-downloads/easy-digital-downloads.php']);
+        if( !empty($value->response) )
+            unset($value->response['easy-digital-downloads/easy-digital-downloads.php']);
         return $value;
     }
     add_filter('site_transient_update_plugins', 'leyka_update_plugins_list');

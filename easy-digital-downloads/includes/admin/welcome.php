@@ -20,6 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @since 1.4
  */
 class EDD_Welcome {
+
 	/**
 	 * @var string The capability users should have to view the page
 	 */
@@ -100,6 +101,11 @@ class EDD_Welcome {
 			top: 0;
 			right: 0;
 		}
+
+		.edd-welcome-screenshots {
+			float: right;
+			margin-left: 10px!important;
+		}
 		/*]]>*/
 		</style>
 		<?php
@@ -129,108 +135,91 @@ class EDD_Welcome {
 			</h2>
 
 			<div class="changelog">
-				<h3><?php _e( 'Improved Checkout User Experience', 'edd' ); ?></h3>
+				<h3>Simple, Beautiful Checkout</h3>
 
 				<div class="feature-section">
 
-					<h4><?php _e( 'Preload Default Payment Method', 'edd' ); ?></h4>
-					<p><?php _e( 'You can now define the default payment method for customers that will be loaded immediately when accessing the checkout page. This saves the customer a click and results in more conversions for you.', 'edd' ); ?></p>
+					<img src="<?php echo EDD_PLUGIN_URL . 'assets/images/screenshots/17checkout.png'; ?>" class="edd-welcome-screenshots"/>
 
-					<h4><?php _e( 'Better Payment Method Select', 'edd' ); ?></h4>
-					<p><?php _e( 'Payment methods are now displayed as radio buttons, making the options more accessible and easier to see / understand for customers.', 'edd' ); ?></p>
+					<h4>Prettier, More Versatile Styles</h4>
+					<p>We have completely rewritten the checkout CSS to make it more attractive, more flexible, and more compatible with a wider variety of themes.</p>
 
-					<h4><?php _e( 'Field Descriptions', 'edd' ); ?></h4>
-					<p><?php _e( 'It has been proven by countless studies that descriptive text by every field helps customers complete the purchase process, so we have added description text for each field.', 'edd' ); ?></p>
-
-					<h4><?php _e( 'Reworked Field Order', 'edd' ); ?></h4>
-					<p><?php _e( 'The order that the fields are displayed on the checkout has been updated to reflect the findings of many UX studies to help ensure customers have a simple, enjoyable experiencing purchasing through your store.', 'edd' ); ?></p>
+					<h4>Better Checkout Layout</h4>
+					<p>The position of each field on the checkout has been carefully reconsidered to ensure it is in the proper location so as to best create high conversion rates.</p>
 
 				</div>
 			</div>
 
 			<div class="changelog">
-				<h3><?php _e( 'Greatly Improved Discount Codes', 'edd' ); ?></h3>
+				<h3>Item Quantities</h3>
 
 				<div class="feature-section">
 
-					<h4><?php _e( 'Per-Product Discounts', 'edd' ); ?></h4>
-					<p><?php _e( 'Discount codes can now be restricted to individual (or several) products, giving you greater control over your marketing.', 'edd' ); ?></p>
+					<img src="<?php echo EDD_PLUGIN_URL . 'assets/images/screenshots/17quantities.png'; ?>" class="edd-welcome-screenshots"/>
 
-					<h4><?php _e( 'Once-Per-Customer Discounts', 'edd' ); ?></h4>
-					<p><?php _e( 'You can now specify on a per-discount basis whether customers should be able to use a discount more than once.', 'edd' ); ?></p>
+					<h4>Selling Licenses or Multiple Copies at Once?</h4>
+					<p>With the new item quantities feature, your customers can choose how many of an item they wish to purchase at one time.</p>
+
+					<h4>Makes Bulk Purchases Simple</h4>
+					<p>No longer is purchasing many copies of the same item difficult or tedious. Simply enter the quantity and complete the purchase.</p>
 
 
 				</div>
 			</div>
 
 			<div class="changelog">
-				<h3><?php _e( 'Improved Tax Options', 'edd' ); ?></h3>
+				<h3>Direct to PayPal Purchase Buttons</h3>
 
 				<div class="feature-section">
 
-					<h4><?php _e( 'Checkout Display Options', 'edd' ); ?></h4>
-					<p><?php _e( 'New options to better control how taxes are displayed on checkout have been added.', 'edd' );  ?></p>
+					<img src="<?php echo EDD_PLUGIN_URL . 'assets/images/screenshots/17direct.png'; ?>" class="edd-welcome-screenshots"/>
 
-					<h4><?php _e( 'Better Tax Calculation', 'edd' ); ?></h4>
-					<p><?php _e( 'Taxes are now more accurately calculated and there is an option to set product prices as inclusive or exclusive of tax.', 'edd' );  ?></p>
+					<h4>Buy Now</h4>
+					<p>The Direct purchase option allows you to create Buy Now buttons that take your customers straight to PayPal, completely bypassing the checkout screen.</p>
+
+					<h4>Higher Turnover Rates</h4>
+					<p>By sending your customers straight to PayPal, you can dramatically increase your conversion rates by reducing the amount of friction in the purchase process.</p>
 
 				</div>
 			</div>
 
 			<div class="changelog">
-				<h3><?php _e( 'Improved Reports and Data Export', 'edd' ); ?></h3>
+				<h3>Multiple Discount Codes Per Purchase</h3>
 
 				<div class="feature-section">
 
-					<h4><?php _e( 'Per-Product Customer Export', 'edd' ); ?></h4>
-					<p><?php printf( __( 'You can now export all customers that have purchased a particular product from the %sExport%s screen.', 'edd' ), '<a href="' . admin_url( 'edit.php?post_type=download&page=edd-reports&tab=export' ) . '">', '</a>' );  ?></p>
-
-					<h4><?php _e( 'Export Payment History By Status', 'edd' ); ?></h4>
-					<p><?php _e( 'The Payment History export now includes an option to only export payments of a particular status. Want to export all of your failed payments? Now you can.', 'edd' );  ?></p>
-
-					<h4><?php _e( 'Estimated Monthly Stats', 'edd' ); ?></h4>
-					<p><?php _e( 'Monthly estimates for sales and earnings are now displayed below the graphs in the Reports page.', 'edd' );  ?></p>
+					<h4>Offer Bigger, Better Promotions </h4>
+					<p>With the Ability to redeem multiple discount codes per purchase, you can give your customers even more incentives to purchase your products.</p>
 
 				</div>
 			</div>
 
 			<div class="changelog">
-				<h3><?php _e( 'RESTful API', 'edd' ); ?></h3>
-
-				<div class="feature-section">
-					<h4><?php _e( 'Creation of Third Party Stat Tracking Apps Now Possible', 'edd' ); ?></h4>
-					<p><?php _e( 'The new RESTful API available in Easy Digital Downloads makes it possible to create 3rd party apps (iOS, Android, etc) for tracking your store sales and earnings.', 'edd' );  ?></p>
-
-					<p><?php printf( __( 'The API is %sfully documented%s and ready for developers to have fun with.', 'edd' ), '<a href="https://easydigitaldownloads.com/docs/edd-api-reference/" target="_blank">', '</a>' ); ?></p>
-				</div>
-			</div>
-
-			<div class="changelog">
-				<h3><?php _e( 'Under the Hood', 'edd' ); ?></h3>
+				<h3>Additional Updates</h3>
 
 				<div class="feature-section col three-col">
 					<div>
-						<h4><?php _e( 'EDD_Fees Class', 'edd' ); ?></h4>
-						<p><?php printf( __( 'The new %sEDD_Fees class%s makes it possible to create arbitrary fees (or discounts) that are applied to the shopping cart contents.', 'edd' ), '<a href="https://github.com/pippinsplugins/Easy-Digital-Downloads/issues/418" target="_blank">', '</a>' ); ?></p>
+						<h4>Brought Back [download_history]</h4>
+						<p>The return of the [downloads_history] short code was one of our most common user requests since it was removed. We listened and it is back!</p>
 
-						<h4><?php _e( 'Better Session Management', 'edd' ); ?></h4>
-						<p><?php printf( __( 'We have replaced usage of the standard PHP $_SESSION with the phenomenal %sWP_Session%s system developed by Eric Mann. This will provide a more stable experience and greater support for more hosts.', 'edd' ), '<a href="http://eamann.com/tech/introducing-wp_session/" target="_blank">', '</a>' ); ?></p>
+						<h4>Full Retina Support</h4>
+						<p>Every image and icon used in Easy Digital Downloads has been remade with complete support for high resolution / retina displays.</p>
 					</div>
 
 					<div>
-						<h4><?php _e( 'More Template Files', 'edd' ); ?></h4>
-						<p><?php printf( __( 'Additional %stemplate files%s that can be modified via your theme have been added for the cart widget and shopping cart short code.', 'edd' ), '<a href="https://easydigitaldownloads.com/videos/template-files/" target="_blank">', '</a>' ); ?></p>
+						<h4>Customer Reports Search</h4>
+						<p>Want to find out how much a customer has spent, or how many customers you have with a specific domain\'s email address? Now you can.</p>
 
-						<h4><?php _e( 'Better AJAX Functionality', 'edd' ); ?></h4>
-						<p><?php _e( 'The ajaxed functions, such as payment gateway loading, have been significantly improved to make them faster.', 'edd' ); ?></p>
+						<h4>Better Admin Notifications</h4>
+						<p>The admin sale notification emails can now be completely customized in the same way as purchase receipts. Want to know all details of the customer? Now you can.</p>
 					</div>
 
 					<div class="last-feature">
-						<h4><?php _e( 'New Product Microdata', 'edd' ); ?></h4>
-						<p><?php _e( 'Microdata defined by Schema.org/Product has been added to all download products to improve product appearance in search engines.', 'edd' ); ?></p>
+						<h4>Settings Import / Export</h4>
+						<p>The ability to export and import all store settings makes the process of moving sites from development to live a lot easier.</p>
 
-						<h4><?php _e( 'Improved Performance', 'edd' ); ?></h4>
-						<p><?php _e( 'Memory usage and general performance of the plugin was investigated and dramatically improved in several key areas of the admin interfaces.', 'edd' ); ?></p>
+						<h4>Improved Performance</h4>
+						<p>Several key areas (such as Payment History) of Easy Digital Downloads have been dramatically improved in terms of performance to make your site run better and faster.</p>
 					</div>
 				</div>
 			</div>
@@ -319,7 +308,7 @@ class EDD_Welcome {
 		if ( false !== $contributors )
 			return $contributors;
 
-		$response = wp_remote_get( 'https://api.github.com/repos/pippinsplugins/Easy-Digital-Downloads/contributors', array( 'sslverify' => false ) );
+		$response = wp_remote_get( 'https://api.github.com/repos/easydigitaldownloads/Easy-Digital-Downloads/contributors', array( 'sslverify' => false ) );
 
 		if ( is_wp_error( $response ) || 200 != wp_remote_retrieve_response_code( $response ) )
 			return array();

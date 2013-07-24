@@ -28,7 +28,7 @@ function leyka_donate_meta_boxes(){
     add_meta_box('downloadinformation', __('Donate configuration', 'leyka'), 'edd_render_download_meta_box', 'download', 'normal', 'high');
     add_meta_box('edd_product_notes', __('Donate notes', 'leyka'), 'edd_render_product_notes_meta_box', 'download', 'normal', 'default');
     add_meta_box('leyka_donate_stats', __('Donate stats', 'leyka'), 'leyka_render_stats_meta_box', 'download', 'side', 'high');
-    add_meta_box('leyka_donation_log', __('Donation log', 'leyka'), 'leyka_render_donation_log_meta_box', 'download', 'normal', 'default');
+//    add_meta_box('leyka_donation_log', __('Donation log', 'leyka'), 'leyka_render_donation_log_meta_box', 'download', 'normal', 'default');
 }
 remove_action('add_meta_boxes', 'edd_add_download_meta_box');
 add_action('add_meta_boxes', 'leyka_donate_meta_boxes');

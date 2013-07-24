@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Leyka Yandex.Money gateway v1.1\n"
+"Project-Id-Version: Leyka Yandex.Money gateway v1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-04-25 06:30:17+0000\n"
+"PO-Revision-Date: 2013-04-09 11:17:33+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -37,7 +37,7 @@ msgstr "Введите описание платёжной системы Янд
 
 #: leyka-yandex-money.php:70
 #: leyka-yandex-money.php:71
-#: leyka-yandex-money.php:228
+#: leyka-yandex-money.php:222
 #@ leyka-yandex-money
 msgid "Yandex.Money"
 msgstr "Яндекс.Деньги"
@@ -102,28 +102,28 @@ msgstr ""
 msgid "A legal entity"
 msgstr ""
 
-#: leyka-yandex-money.php:178
-#: leyka-yandex-money.php:189
-#: leyka-yandex-money.php:203
+#: leyka-yandex-money.php:174
+#, php-format
+#@ leyka-yandex-money
+msgid "Error: selecting the receiver type is required for Yandex.Money gateway. Please, configure it at %s"
+msgstr "Ошибка: для работы платёжной системы Яндекс.Деньги необходимо указать тип благоприемника. Пожалуйста, укажите это в %s"
+
+#: leyka-yandex-money.php:175
+#: leyka-yandex-money.php:185
+#: leyka-yandex-money.php:198
 #@ leyka-yandex-money
 msgid "Yandex gateway settings"
 msgstr "настройках модуля Яндекс.Денег"
 
-#: leyka-yandex-money.php:177
+#: leyka-yandex-money.php:184
 #, php-format
 #@ leyka-yandex-money
-msgid "Warning: selecting the receiver type is required for Yandex.Money gateway. Please, configure it at %s"
-msgstr "Внимание: в настройках Яндекс.Деньги не указан тип благополучателя. Пожалуйста, укажите его в %s"
+msgid "Error: Yandex id/email are required. Please, configure it at %s"
+msgstr "Ошибка: id/email благоприемника в системе Яндекс.Деньги не указан. Пожалуйста, укажите это в %s"
 
-#: leyka-yandex-money.php:188
+#: leyka-yandex-money.php:197
 #, php-format
 #@ leyka-yandex-money
-msgid "Warning: Yandex id/email are required. Please, configure it at %s"
-msgstr "Внимание: в настройках Яндекс.Деньги не указан параметр Yandex ID/email благополучателя. Пожалуйста, укажите его в %s"
-
-#: leyka-yandex-money.php:202
-#, php-format
-#@ leyka-yandex-money
-msgid "Warning: both Yandex scid and shop ID are required. Please, configure them at %s"
-msgstr "Внимание: в настройках Яндекс.Деньги не указаны параметры scid и shop ID благополучателя. Пожалуйста, укажите их в %s"
+msgid "Error: both Yandex scid and shop ID are required. Please, configure them at %s"
+msgstr "Ошибка: параметры scid и shop ID благополучателя в системе Яндекс.Деньги не указаны. Пожалуйста, укажите их в %s"
 

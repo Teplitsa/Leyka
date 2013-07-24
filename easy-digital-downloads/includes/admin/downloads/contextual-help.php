@@ -29,8 +29,8 @@ function edd_downloads_contextual_help() {
 		'<p>' . sprintf( __( 'Visit the <a href="%s">documentation</a> on the Easy Digital Downloads website.', 'edd' ), esc_url( 'https://easydigitaldownloads.com/documentation/' ) ) ) . '</p>' .
 		'<p>' . sprintf(
 					__( '<a href="%s">Post an issue</a> on <a href="%s">GitHub</a>. View <a href="%s">extensions</a> or <a href="%s">themes</a>.', 'edd' ),
-					esc_url( 'https://github.com/pippinsplugins/Easy-Digital-Downloads/issues' ),
-					esc_url( 'https://github.com/pippinsplugins/Easy-Digital-Downloads' ),
+					esc_url( 'https://github.com/easydigitaldownloads/Easy-Digital-Downloads/issues' ),
+					esc_url( 'https://github.com/easydigitaldownloads/Easy-Digital-Downloads' ),
 					esc_url( 'https://easydigitaldownloads.com/extensions/' ),
 					esc_url( 'https://easydigitaldownloads.com/themes/' )
 				) . '</p>'
@@ -45,6 +45,8 @@ function edd_downloads_contextual_help() {
 			'<p>' . __( '<strong>File Downloads</strong> - Define download file names and their respsective file URL. Multiple files can be assigned to a single price, or variable prices.', 'edd' ) . '</p>' .
 
 			'<p>' . __( '<strong>File Download Limit</strong> - Define how many times customers are allowed to download their purchased files. Leave at 0 for unlimited. Resending the purchase receipt will permit the customer one additional download if their limit has already been reached.', 'edd' ) . '</p>' .
+
+			'<p>' . __( '<strong>Accounting Options</strong> - If enabled, define an individual SKU or product number for this download.', 'edd' ) . '</p>' .
 
 			'<p>' . __( '<strong>Button Options</strong> - Disable the automatic output the purchase button. If disabled, no button will be added to the download page unless the <code>[purchase_link]</code> shortcode is used.', 'edd' ) . '</p>'
 	) );

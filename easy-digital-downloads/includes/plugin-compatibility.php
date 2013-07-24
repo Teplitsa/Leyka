@@ -15,20 +15,6 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
- * Removes the "Restrict This Content" meta box from Restrict Content Pro.
- *
- * @since 1.0
- * @param array $post_types Post Types
- * @return array $post_types Array with 'download' post type added
- */
-function edd_remove_restrict_meta_box( $post_types ) {
-	$post_types[] = 'download';
-
-	return $post_types;
-}
-add_filter( 'rcp_metabox_excluded_post_types', 'edd_remove_restrict_meta_box', 999 );
-
-/**
  * Disables admin sorting of Post Types Order
  *
  * When sorting downloads by price, earnings, sales, date, or name,
@@ -92,3 +78,18 @@ function edd_append_no_cache_param( $settings ) {
 	return $settings;
 }
 add_filter( 'edd_settings_misc', 'edd_append_no_cache_param', -1 );
+
+/**
+ * Show the correct language on the [downloads] short code if qTranslate is active
+  *
+ * @since 1.7
+ * @param string $content Download content
+ * @return string $content Download content
+ */
+function edd_qtranslate_content( $content ) {
+	if( defined( 'QT_LANGUAGE' ) )
+		$content = qtrans_useCurrentLanguageIfNotFoundShowAvailable( $content );
+	return $content;
+}
+add_filter( 'edd_downloads_content', 'edd_qtranslate_content' );
+add_filter( 'edd_downloads_excerpt', 'edd_qtranslate_content' );

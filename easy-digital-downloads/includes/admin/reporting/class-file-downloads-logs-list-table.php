@@ -31,7 +31,7 @@ class EDD_File_Downloads_Log_Table extends WP_List_Table {
 	 * @var int
 	 * @since 1.4
 	 */
-	public $per_page = 30;
+	public $per_page = 15;
 
 	/**
 	 * Are we searching for files?
@@ -306,16 +306,18 @@ class EDD_File_Downloads_Log_Table extends WP_List_Table {
 	function get_logs() {
 		global $edd_logs;
 
+		// Prevent the queries from getting cached. Without this there are occasional memory issues for some installs
+		wp_suspend_cache_addition( true );
+
 		$logs_data = array();
-
-		$paged    = $this->get_paged();
-		$download = empty( $_GET['s'] ) ? $this->get_filtered_download() : null;
-
+		$paged     = $this->get_paged();
+		$download  = empty( $_GET['s'] ) ? $this->get_filtered_download() : null;
 		$log_query = array(
-			'post_parent' => $download,
-			'log_type'    => 'file_download',
-			'paged'       => $paged,
-			'meta_query'  => $this->get_meta_query()
+			'post_parent'    => $download,
+			'log_type'       => 'file_download',
+			'paged'          => $paged,
+			'meta_query'     => $this->get_meta_query(),
+			'posts_per_page' => $this->per_page
 		);
 
 		$logs = $edd_logs->get_connected_logs( $log_query );

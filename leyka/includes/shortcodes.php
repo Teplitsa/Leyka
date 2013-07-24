@@ -63,46 +63,46 @@ function leyka_user_recalls_list($atts, $content = NULL){
     ));
 
     foreach($recalls as $recall) {?>
-    <li>
-        <?php if(in_array('title', $atts['fields'])) {?>
-            <div><?php echo $recall->post_title;?></div>
-        <?php }?>
-        <br />
-        <?php if(in_array('text', $atts['fields'])) {?>
-            <div><?php echo $recall->post_content;?></div>
-        <?php }?>
-        <div>
-            <?php $payment_id = get_post_meta($recall->ID, '_leyka_payment_id', TRUE);
-            $payment_metadata = get_post_meta($payment_id, '_edd_payment_meta', TRUE);
-            if( !$payment_metadata )
-                continue;
-            if(in_array('sum', $atts['fields'])) {?>
-                <span><?php echo edd_currency_filter(get_post_meta($payment_id, '_edd_payment_total', TRUE));?></span>
-            <?php }
-
-            if(in_array('donates', $atts['fields'])) {
-                $donates = @maybe_unserialize($payment_metadata['downloads']);?>
-                <div>
-                    <strong><?php _e('Donates', 'leyka');?>:</strong>
-                    <ul>
-                    <?php foreach($donates as $donate) {
-                        $donate = get_post($donate['id']);?>
-                        <li><a href="<?php echo get_permalink($donate->ID);?>"><?php echo $donate->post_title;?></a></li>
-                    <?php }?>
-                    </ul>
-                </div>
-            <?php }
-
-            if(in_array('author', $atts['fields'])) {
-                $donor_info = maybe_unserialize($payment_metadata['user_info']);?>
-                <span><?php echo $donor_info['first_name'];?></span>
-            <?php }
-
-            if(in_array('date', $atts['fields'])) {?>
-                <span><?php echo get_the_time('H:i, d.m.Y', $recall);?></span>
+        <li>
+            <?php if(in_array('title', $atts['fields'])) {?>
+                <div><?php echo $recall->post_title;?></div>
             <?php }?>
-        </div>
-    </li>
+            <br />
+            <?php if(in_array('text', $atts['fields'])) {?>
+                <div><?php echo $recall->post_content;?></div>
+            <?php }?>
+            <div>
+                <?php $payment_id = get_post_meta($recall->ID, '_leyka_payment_id', TRUE);
+                $payment_metadata = get_post_meta($payment_id, '_edd_payment_meta', TRUE);
+                if( !$payment_metadata )
+                    continue;
+                if(in_array('sum', $atts['fields'])) {?>
+                    <span><?php echo edd_currency_filter(get_post_meta($payment_id, '_edd_payment_total', TRUE));?></span>
+                <?php }
+
+                if(in_array('donates', $atts['fields'])) {
+                    $donates = @maybe_unserialize($payment_metadata['downloads']);?>
+                    <div>
+                        <strong><?php _e('Donates', 'leyka');?>:</strong>
+                        <ul>
+                            <?php foreach($donates as $donate) {
+                                $donate = get_post($donate['id']);?>
+                                <li><a href="<?php echo get_permalink($donate->ID);?>"><?php echo $donate->post_title;?></a></li>
+                            <?php }?>
+                        </ul>
+                    </div>
+                <?php }
+
+                if(in_array('author', $atts['fields'])) {
+                    $donor_info = maybe_unserialize($payment_metadata['user_info']);?>
+                    <span><?php echo $donor_info['first_name'];?></span>
+                <?php }
+
+                if(in_array('date', $atts['fields'])) {?>
+                    <span><?php echo get_the_time('H:i, d.m.Y', $recall);?></span>
+                <?php }?>
+            </div>
+        </li>
     <?php }
     wp_reset_query();
 }
@@ -137,7 +137,7 @@ function leyka_funds_collected($atts, $content = null){
             if((int)$donate_id > 0)
                 $donates_to_select[] = $donate_id;
         }
-    } 
+    }
 
 //    $donates_to_exclude = array();
 //    if($atts['donates_ex']) {
@@ -203,7 +203,12 @@ function leyka_funds_collected($atts, $content = null){
 
         $sum = 0.0;
         foreach(get_posts($atts) as $donation) {
-            $sum += get_post_meta($donation->ID, '_edd_payment_total', TRUE);
+            foreach(edd_get_payment_meta_cart_details($donation->ID) as $donate_in_cart) {
+                if(in_array($donate_in_cart['id'], $donates_to_select))
+                    $sum += $donate_in_cart['price'];
+            }
+
+            // $sum += get_post_meta($donation->ID, '_edd_payment_total', TRUE);
         }
     }
 

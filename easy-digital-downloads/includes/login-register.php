@@ -57,12 +57,12 @@ function edd_login_form( $redirect = '' ) {
 						<?php _e( 'Lost Password?', 'edd' ); ?>
 					</a>
 				</p>
-				<?php do_action('edd_checkout_login_fields_after');?>
+				<?php do_action( 'edd_checkout_login_fields_after' );?>
 			</fieldset>
 		</form>
 	<?php
 	} else {
-		echo '<p class="edd-logged-in">' . __('You are already logged in', 'edd' ) . '</p>';
+		echo '<p class="edd-logged-in">' . __( 'You are already logged in', 'edd' ) . '</p>';
 	}
 	return ob_get_clean();
 }
@@ -93,7 +93,7 @@ function edd_process_login_form( $data ) {
 		if ( ! $errors ) {
 			$redirect = apply_filters( 'edd_login_redirect', $data['edd_redirect'], $user_ID );
 			wp_redirect( $redirect );
-			exit;
+			edd_die();
 		}
 	}
 }

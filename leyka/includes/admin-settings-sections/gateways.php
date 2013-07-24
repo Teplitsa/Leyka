@@ -48,8 +48,8 @@ function leyka_gateways_options($settings){
     if(empty($edd_options['gateways']['paypal'])) {
         unset(
             $settings['paypal'], $settings['paypal_email'], $settings['paypal_page_style'],
-            $settings['paypal_alternate_verification'], $settings['disable_paypal_verification'],
-            $settings['default_gateway']
+            $settings['paypal_alternate_verification'], $settings['disable_paypal_verification'] //,
+//            $settings['default_gateway']
         );
     }
 

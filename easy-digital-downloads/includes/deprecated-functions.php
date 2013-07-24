@@ -15,54 +15,6 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
- * Checks whether AJAX is enabled.
- *
- * @since 1.0
- * @deprecated 1.0.8.3
- * @return bool
- */
-function edd_is_ajax_enabled() {
-	global $edd_options;
-	if ( ! isset( $edd_options['disable_ajax_cart'] ) ) {
-		return true;
-	}
-	return false;
-}
-
-/**
- * Count Payments
- *
- * Returns the total number of payments recorded.
- *
- * @since 1.0
- * @deprecated 1.2
- * @param string $mode Payment mode (i.e. publish)
- * @param string $user Customer ID (default: null)
- * @return int $count Number of payments
- */
-function edd_count_payments( $mode, $user = null ) {
-	$backtrace = debug_backtrace();
-
-	_edd_deprecated_function( __FUNCTION__, '1.2', null, $backtrace );
-
-	$payments = edd_get_payments( array(
-		'offset'  => 0,
-		'number'  => -1,
-		'mode'    => $mode,
-		'orderby' => 'ID',
-		'order'   => 'DESC',
-		'user'    => $user
-	) );
-	$count = 0;
-
-	if ( $payments ) {
-		$count = count( $payments );
-	}
-
-	return $count;
-}
-
-/**
  * Get Download Sales Log
  *
  * Returns an array of sales and sale info for a download.
@@ -181,4 +133,46 @@ function edd_get_menu_access_level() {
 	_edd_deprecated_function( __FUNCTION__, '1.4.4', 'current_user_can(\'manage_shop_settings\')', $backtrace );
 
 	return apply_filters( 'edd_menu_access_level', 'manage_options' );
+}
+
+
+
+/**
+ * Check if only local taxes are enabled meaning users must opt in by using the
+ * option set from the EDD Settings.
+ *
+ * @since 1.3.3
+ * @deprecated 1.6
+ * @global $edd_options
+ * @return bool $local_only
+ */
+function edd_local_taxes_only() {
+
+	$backtrace = debug_backtrace();
+
+	_edd_deprecated_function( __FUNCTION__, '1.6', 'no alternatives', $backtrace );
+
+	global $edd_options;
+
+	$local_only = isset( $edd_options['tax_condition'] ) && $edd_options['tax_condition'] == 'local';
+
+	return apply_filters( 'edd_local_taxes_only', $local_only );
+}
+
+/**
+ * Checks if a customer has opted into local taxes
+ *
+ * @since 1.4.1
+ * @deprecated 1.6
+ * @uses EDD_Session::get()
+ * @return bool
+ */
+function edd_local_tax_opted_in() {
+
+	$backtrace = debug_backtrace();
+
+	_edd_deprecated_function( __FUNCTION__, '1.6', 'no alternatives', $backtrace );
+
+	$opted_in = EDD()->session->get( 'edd_local_tax_opt_in' );
+	return ! empty( $opted_in );
 }

@@ -38,7 +38,7 @@ function leyka_donate_submit_button($html){
 
     $complete_purchase = isset($edd_options['checkout_label']) && strlen(trim($edd_options['checkout_label'])) > 0 ? $edd_options['checkout_label'] : __('Make the donation', 'leyka');
 
-    return '<input type="submit" class="edd-submit '.$color.' '.$style.'" id="edd-purchase-button" name="edd-purchase" value="'.$complete_purchase.'"/>';
+    return '<input type="submit" disabled="disabled" class="edd-submit '.$color.' '.$style.'" id="edd-purchase-button" name="edd-purchase" value="'.$complete_purchase.'"/>';
 }
 add_filter('edd_checkout_button_purchase', 'leyka_donate_submit_button');
 
@@ -55,9 +55,9 @@ function leyka_show_correct_payment_icons(){
         echo '<div class="edd-payment-icons">';
         foreach($edd_options['accepted_cards'] as $key => $card) {
             if(edd_string_is_image_url($key)) {
-                echo '<img class="payment-icon" src="'.$key.'"/>';
+                echo '<span class="icon-holder"><img class="payment-icon" src="'.$key.'"/></span>';
             } else {
-                echo '<img class="payment-icon" src="'.EDD_PLUGIN_URL.'includes/images/icons/'.strtolower(str_replace(' ', '', $key)).'.png"/>';
+                echo '<span class="icon-holder"><img class="payment-icon" src="'.EDD_PLUGIN_URL.'includes/images/icons/'.strtolower(str_replace(' ', '', $key)).'.png"/></span>';
             }
         }
         echo '</div>';
@@ -116,30 +116,38 @@ function leyka_default_user_info_fields(){
     if(is_user_logged_in()) {
         $user_data = get_userdata(get_current_user_id());
     }?>
-<fieldset id="edd_checkout_user_info">
-    <legend>
+
+    <div class="fields-title">
         <?php echo apply_filters('edd_checkout_personal_info_text', __('Personal Info', 'edd'));?>
-    </legend>
+    </div>
+    
     <?php do_action('edd_purchase_form_before_email');?>
-    <p id="edd-email-wrap">
-    <div class="question-icon for-inputs"
+    
+    <fieldset id="edd-email-wrap" class="field-single with-question">    
+        <input class="edd-input required" type="email" name="edd_email" placeholder="<?php _e( 'Email address', 'edd');?> *" id="edd-email" value="<?php echo is_user_logged_in() ? $user_data->user_email : '';?>"/>
+        
+        <div class="question-icon for-inputs"
          data-placement="right"
+         data-title="<?php _e('Email address', 'edd');?>"
          data-content="<?php _e('We will send the donation success notice to this address.', 'leyka');?>"
          data-html="true"
          data-trigger="hover"></div>
-        <input class="edd-input required" type="email" name="edd_email" placeholder=" <?php _e( 'Email address', 'edd');?> *" id="edd-email" value="<?php echo is_user_logged_in() ? $user_data->user_email : '';?>"/>
-    </p>
+    </fieldset>
+    
     <?php do_action('edd_purchase_form_after_email');?>
-    <p id="edd-first-name-wrap">
-    <div class="question-icon for-inputs"
+    
+    <fieldset id="edd-first-name-wrap" class="field-single with-question">    
+        <input class="edd-input required" type="text" name="edd_first" placeholder="<?php _e('Your name', 'leyka');?> *" id="edd-first" value="<?php echo is_user_logged_in() ? $user_data->first_name : '';?>" />
+        <div class="question-icon for-inputs"
          data-placement="right"
+         data-title="<?php _e('Your name', 'leyka');?>"
          data-content="<?php _e('We will use this to personalize your account experience.', 'leyka');?>"
          data-html="true"
          data-trigger="hover"></div>
-        <input class="edd-input required" type="text" name="edd_first" placeholder=" <?php _e('Your name', 'leyka');?> *" id="edd-first" value="<?php echo is_user_logged_in() ? $user_data->first_name : '';?>" />
-    </p>
+    </fieldset>
+    
     <?php do_action('edd_purchase_form_user_info');?>
-</fieldset>
+
 <?php }
 remove_action('edd_purchase_form_after_user_info', 'edd_user_info_fields');
 add_action('edd_purchase_form_after_user_info', 'leyka_default_user_info_fields');
@@ -162,7 +170,7 @@ add_action('init', 'leyka_no_gateway_error');
 function leyka_terms_agreement(){
     global $edd_options;
     if( !empty($edd_options['show_agree_to_terms']) ) {?>
-        <fieldset id="edd_terms_agreement">
+        <fieldset id="edd_terms_agreement" class="single-field">
             <div id="edd_terms" style="display:none;">
                 <?php do_action('edd_before_terms');
                 echo str_replace(array(
@@ -188,19 +196,19 @@ function leyka_terms_agreement(){
                 );
                 do_action('edd_after_terms');?>
             </div>
-            <p>
+            
             <label id="edd_agree_to_terms_label">
                 <input name="edd_agree_to_terms" class="required" type="checkbox" id="edd_agree_to_terms" value="1"/>
                 <span>
                     <?php echo sprintf('<a href="#" class="edd_terms_links">'.( !empty($edd_options['agree_label']) ? $edd_options['agree_label'] : __('I agree to the terms of the donation service', 'leyka') ).'</a>');?>
                 </span>
             </label>
-            </p>
+            
         </fieldset>
     <?php
     }
 }
-remove_action('edd_purchase_form_after_cc_form', 'edd_terms_agreement');
+remove_action('edd_purchase_form_after_cc_form', 'edd_terms_agreement', 999);
 add_action('edd_purchase_form_after_cc_form', 'leyka_terms_agreement');
 
 function leyka_terms_add_closing_button(){?>
@@ -258,19 +266,26 @@ add_action('edd_purchase_form_before_submit', 'leyka_checkout_final_total', 999)
 
 /** Add a permanent "donor comments" field to all gateway payment forms. */
 function leyka_after_cc_form(){?>
-<fieldset>
-    <legend><?php _e('Payment additional info', 'leyka'); ?></legend>
-    <p  style="text-align:right;">
-        <textarea rows="5" cols="20" name="donor_comments" id="leyka-donor-comment" class="edd-input" placeholder="<?php echo __('Type your comments, if needed', 'leyka');?>"></textarea>
-        <label class="edd-label leyka-donor-comment-label" for="leyka-donor-comment">
-            <?php _e('Symbols remain:', 'leyka');?>
+
+    <fieldset id="leyka-send-donor-email-wrap" class="field-single">
+        <label id="leyka_send_donor_email_">
+            <input type="checkbox" name="leyka_send_donor_email_conf" value="1" checked="1" />&nbsp;<span><?php echo __('Send me an email confimation for my donation', 'leyka');?></span>
         </label>
-        <span id="leyka-comment-symbols-remain">100</span>
-    </p>
-    <p>
-        <label id="leyka_send_donor_email_"><input type="checkbox" name="leyka_send_donor_email_conf" value="1" checked="1" />&nbsp;<span><?php echo __('Send me an email confimation for my donation', 'leyka');?></span></label>
-    </p>
-</fieldset>
+    </fieldset>
+
+    <div class="fields-title"><?php _e('Payment additional info', 'leyka'); ?></div>
+    
+    <fieldset class="field-single">
+        <textarea rows="5" cols="20" name="donor_comments" id="leyka-donor-comment" class="edd-input" placeholder="<?php echo __('Type your comments, if needed', 'leyka');?>"></textarea>
+        <div class="field-help">
+            <label class="edd-label leyka-donor-comment-label" for="leyka-donor-comment">
+             <?php _e('Symbols remain:', 'leyka');?>
+            </label>
+            <span id="leyka-comment-symbols-remain">100</span>
+        </div>
+    </fieldset>
+    
+
 <?php }
 add_action('edd_purchase_form_after_cc_form', 'leyka_after_cc_form', 5);
 
@@ -291,9 +306,10 @@ function leyka_free_amount_field($donate_id){
             }
         }
     } else {?>
-    <div class="leyka_free_donate_amount_ complete">
+    
+        <label for="leyka_free_donate_amount"><?php _e('Specify amount of your donation', 'leyka');?></label>
         <input type="text" name="leyka_free_donate_amount" id="free_donate_amount_<?php echo $donate_id;?>" value="<?php echo leyka_get_min_free_donation_sum($donate_id);?>" maxlength="30" />&nbsp;<?php echo edd_currency_filter('');?>
-    </div>
+    
     <?php
     }
 }
@@ -492,7 +508,7 @@ add_action('edd_before_checkout_cart', 'leyka_before_checkout');
 
 /** Show "quick add" button on the empty cart. */
 function leyka_empty_cart(){
-    do_action('edd_before_checkout_cart');
+//    do_action('edd_before_checkout_cart');
 }
 add_action('edd_empty_cart', 'leyka_empty_cart');
 
@@ -515,7 +531,7 @@ function leyka_scripts(){?>
     if( !empty($edd_options['disable_styles']) )
         return;
 
-    wp_register_style('leyka-styles', LEYKA_PLUGIN_BASE_URL.'styles/style.css');
-    wp_enqueue_style('leyka-styles');
+    //wp_register_style('leyka-styles', LEYKA_PLUGIN_BASE_URL.'styles/style.css');
+    wp_enqueue_style('leyka-styles', LEYKA_PLUGIN_BASE_URL.'styles/style-front.css');
 }
 add_action('wp_enqueue_scripts', 'leyka_scripts', 11);

@@ -121,7 +121,7 @@ function edd_setup_edd_post_types() {
 	);
 	register_post_type( 'edd_discount', $discount_args );
 }
-add_action( 'init', 'edd_setup_edd_post_types', 100 );
+add_action( 'init', 'edd_setup_edd_post_types', 1 );
 
 /**
  * Get Default Labels
@@ -190,7 +190,7 @@ function edd_setup_download_taxonomies() {
 
 	/** Categories */
 	$category_labels = array(
-		'name' 				=> _x( 'Download Categories', 'taxonomy general name', 'edd' ),
+		'name' 				=> sprintf( _x( '%s Categories', 'taxonomy general name', 'edd' ), edd_get_label_singular() ),
 		'singular_name' 	=> _x( 'Category', 'taxonomy singular name', 'edd' ),
 		'search_items' 		=> __( 'Search Categories', 'edd'  ),
 		'all_items' 		=> __( 'All Categories', 'edd'  ),
@@ -213,10 +213,11 @@ function edd_setup_download_taxonomies() {
 		)
 	);
 	register_taxonomy( 'download_category', array('download'), $category_args );
+	register_taxonomy_for_object_type( 'download_category', 'download' );
 
 	/** Tags */
 	$tag_labels = array(
-		'name' 				=> _x( 'Download Tags', 'taxonomy general name', 'edd' ),
+		'name' 				=> sprintf( _x( '%s Tags', 'taxonomy general name', 'edd' ), edd_get_label_singular() ),
 		'singular_name' 	=> _x( 'Tag', 'taxonomy singular name', 'edd' ),
 		'search_items' 		=> __( 'Search Tags', 'edd'  ),
 		'all_items' 		=> __( 'All Tags', 'edd'  ),
@@ -240,8 +241,9 @@ function edd_setup_download_taxonomies() {
 		)
 	);
 	register_taxonomy( 'download_tag', array( 'download' ), $tag_args );
+	register_taxonomy_for_object_type( 'download_tag', 'download' );
 }
-add_action( 'init', 'edd_setup_download_taxonomies', 10 );
+add_action( 'init', 'edd_setup_download_taxonomies', 0 );
 
 /**
  * Registers Custom Post Statuses which are used by the Payments and Discount
@@ -275,6 +277,14 @@ function edd_register_post_type_statuses() {
 		'show_in_admin_all_list'    => true,
 		'show_in_admin_status_list' => true,
 		'label_count'               => _n_noop( 'Revoked <span class="count">(%s)</span>', 'Revoked <span class="count">(%s)</span>', 'edd' )
+	)  );
+	register_post_status( 'abandoned', array(
+		'label'                     => _x( 'Abandoned', 'Abandoned payment status', 'edd' ),
+		'public'                    => true,
+		'exclude_from_search'       => false,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+		'label_count'               => _n_noop( 'Abandoned <span class="count">(%s)</span>', 'Abandoned <span class="count">(%s)</span>', 'edd' )
 	)  );
 
 	// Discount Code Statuses

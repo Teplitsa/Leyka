@@ -22,21 +22,33 @@ function leyka_after_download_content($donate_id){
     }
 
 //    if(edd_item_in_cart($donate_id))
-//        edd_remove_from_cart(edd_get_item_position_in_cart($donate_id));?>
+//        edd_remove_from_cart(edd_get_item_position_in_cart($donate_id));
+    ?>
 <div id="leyka-single-form-wrapper">
     <form id="leyka-single-form" method="post" action="#">
-        <?php if(edd_has_variable_prices($donate_id))
-        edd_purchase_variable_pricing($donate_id, TRUE);
-    elseif(leyka_is_any_sum_allowed($donate_id)) {
-        do_action('leyka_single_donate_pre_free_field', $donate_id);
-        do_action('leyka_free_amount_field', $donate_id);
-        do_action('leyka_single_donate_post_free_field', $donate_id);
-    } else {
-        echo apply_filters('leyka_single_static_amount', edd_price($donate_id, FALSE));
-    }?>
+    <div class="single-form-head">
+        
+    <?php if(edd_has_variable_prices($donate_id)): ?>    
+        <div class="leyka_variable_amount_ complete amount-form">
+        <?php  edd_purchase_variable_pricing($donate_id, TRUE); ?>
+        </div>
+    <?php elseif(leyka_is_any_sum_allowed($donate_id)):  ?>
+        <div class="leyka_free_donate_amount_ complete amount-form">
+        <?php   do_action('leyka_single_donate_pre_free_field', $donate_id);
+                do_action('leyka_free_amount_field', $donate_id);
+                do_action('leyka_single_donate_post_free_field', $donate_id); ?>
+        </div>        
+    <?php else: ?>
+        <div class="leyka_single_static_amount_ complete amount-form">
+            <?php echo apply_filters('leyka_single_static_amount', edd_price($donate_id, FALSE)); ?>
+        </div>
+    <?php endif; ?>
+    
+    </div>
         <?php edd_print_errors();?>
-        <div class="leyka_gateways_">
-            <div id="leyka_gateways_list">
+    <div class="cf">
+        <div class="leyka_gateways_ form-triger">
+            <div id="leyka_gateways_list" class="gateways-list">
                 <?php $gateways = edd_get_enabled_payment_gateways();
                 foreach($gateways as $gateway_id => $gateway) {
                     $content = str_replace('"', "'", leyka_get_gateway_description($gateway_id));?>
@@ -59,11 +71,20 @@ function leyka_after_download_content($donate_id){
             </div>
             <?php do_action('leyka_payment_mode_top');?>
         </div>
-        <div id="leyka_form_resp"></div>
-        <span id="leyka_client_errors"></span>
+        <div id="leyka_form_resp" class="form-wrapper"></div>
+        <div id="leyka_client_errors"></div>
         <input type="hidden" id="leyka_donate_id" name="donate_id" value="<?php echo $donate_id;?>" />
         <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('leyka-single-donate-nonce');?>" />
+    </div>
+    <div id="donation_submit_message">
+        <p><?php _e('You\'ll be redirected to the security payment page.', 'leyka');?></p>
+    </div>
     </form>
+    
+    <div id="leyka-copy">
+        <?php  $link = "<a href='http://leyka.te-st.ru'>".__('Leyka', 'leyka')."</a>"; ?>
+        <p><?php printf(__('Proudly powered by %s', 'leyka'), $link);?></a></p>
+    </div>
 </div>
 <?php
 if( !empty($cart_data) )

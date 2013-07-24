@@ -25,10 +25,11 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  * @since 1.4
  */
 class EDD_Payment_History_Table extends WP_List_Table {
+
 	/**
 	 * Number of results to show per page
 	 *
-	 * @var string 
+	 * @var string
 	 * @since 1.4
 	 */
 	public $per_page = 30;
@@ -36,7 +37,7 @@ class EDD_Payment_History_Table extends WP_List_Table {
 	/**
 	 * URL of this page
 	 *
-	 * @var string 
+	 * @var string
 	 * @since 1.4.1
 	 */
 	public $base_url;
@@ -44,7 +45,7 @@ class EDD_Payment_History_Table extends WP_List_Table {
 	/**
 	 * Total number of payments
 	 *
-	 * @var int 
+	 * @var int
 	 * @since 1.4
 	 */
 	public $total_count;
@@ -52,7 +53,7 @@ class EDD_Payment_History_Table extends WP_List_Table {
 	/**
 	 * Total number of complete payments
 	 *
-	 * @var int 
+	 * @var int
 	 * @since 1.4
 	 */
 	public $complete_count;
@@ -60,7 +61,7 @@ class EDD_Payment_History_Table extends WP_List_Table {
 	/**
 	 * Total number of pending payments
 	 *
-	 * @var int 
+	 * @var int
 	 * @since 1.4
 	 */
 	public $pending_count;
@@ -84,10 +85,18 @@ class EDD_Payment_History_Table extends WP_List_Table {
 	/**
 	 * Total number of revoked payments
 	 *
-	 * @var int 
+	 * @var int
 	 * @since 1.4
 	 */
 	public $revoked_count;
+
+	/**
+	 * Total number of abandoned payments
+	 *
+	 * @var int
+	 * @since 1.6
+	 */
+	public $abandoned_count;
 
 	/**
 	 * Get things started
@@ -99,6 +108,7 @@ class EDD_Payment_History_Table extends WP_List_Table {
 	 * @return void
 	 */
 	public function __construct() {
+
 		global $status, $page;
 
 		// Set parent defaults
@@ -152,7 +162,6 @@ class EDD_Payment_History_Table extends WP_List_Table {
 	 * @return array $views All the views available
 	 */
 	public function get_views() {
-		$base = $this->base_url;
 
 		$current        = isset( $_GET['status'] ) ? $_GET['status'] : '';
 		$total_count    = '&nbsp;<span class="count">(' . $this->total_count    . ')</span>';
@@ -160,15 +169,17 @@ class EDD_Payment_History_Table extends WP_List_Table {
 		$pending_count  = '&nbsp;<span class="count">(' . $this->pending_count  . ')</span>';
 		$refunded_count = '&nbsp;<span class="count">(' . $this->refunded_count . ')</span>';
 		$failed_count   = '&nbsp;<span class="count">(' . $this->failed_count   . ')</span>';
+		$abandoned_count= '&nbsp;<span class="count">(' . $this->abandoned_count . ')</span>';
 		$revoked_count  = '&nbsp;<span class="count">(' . $this->revoked_count   . ')</span>';
 
 		$views = array(
-			'all'		=> sprintf( '<a href="%s"%s>%s</a>', remove_query_arg( 'status', $base ), $current === 'all' || $current == '' ? ' class="current"' : '', __('All', 'edd') . $total_count ),
-			'publish'	=> sprintf( '<a href="%s"%s>%s</a>', add_query_arg( 'status', 'publish', $base ), $current === 'publish' ? ' class="current"' : '', __('Completed', 'edd') . $complete_count ),
-			'pending'	=> sprintf( '<a href="%s"%s>%s</a>', add_query_arg( 'status', 'pending', $base ), $current === 'pending' ? ' class="current"' : '', __('Pending', 'edd') . $pending_count ),
-			'refunded'	=> sprintf( '<a href="%s"%s>%s</a>', add_query_arg( 'status', 'refunded', $base ), $current === 'refunded' ? ' class="current"' : '', __('Refunded', 'edd') . $refunded_count ),
-			'revoked'	=> sprintf( '<a href="%s"%s>%s</a>', add_query_arg( 'status', 'revoked', $base ), $current === 'revoked' ? ' class="current"' : '', __('Revoked', 'edd') . $revoked_count ),
-			'failed'	=> sprintf( '<a href="%s"%s>%s</a>', add_query_arg( 'status', 'failed', $base ), $current === 'failed' ? ' class="current"' : '', __('Failed', 'edd') . $failed_count )
+			'all'		=> sprintf( '<a href="%s"%s>%s</a>', remove_query_arg( 'status' ), $current === 'all' || $current == '' ? ' class="current"' : '', __('All', 'edd') . $total_count ),
+			'publish'	=> sprintf( '<a href="%s"%s>%s</a>', add_query_arg( 'status', 'publish' ), $current === 'publish' ? ' class="current"' : '', __('Completed', 'edd') . $complete_count ),
+			'pending'	=> sprintf( '<a href="%s"%s>%s</a>', add_query_arg( 'status', 'pending' ), $current === 'pending' ? ' class="current"' : '', __('Pending', 'edd') . $pending_count ),
+			'refunded'	=> sprintf( '<a href="%s"%s>%s</a>', add_query_arg( 'status', 'refunded' ), $current === 'refunded' ? ' class="current"' : '', __('Refunded', 'edd') . $refunded_count ),
+			'revoked'	=> sprintf( '<a href="%s"%s>%s</a>', add_query_arg( 'status', 'revoked' ), $current === 'revoked' ? ' class="current"' : '', __('Revoked', 'edd') . $revoked_count ),
+			'failed'	=> sprintf( '<a href="%s"%s>%s</a>', add_query_arg( 'status', 'failed' ), $current === 'failed' ? ' class="current"' : '', __('Failed', 'edd') . $failed_count ),
+			'abandoned'	=> sprintf( '<a href="%s"%s>%s</a>', add_query_arg( 'status', 'abandoned' ), $current === 'abandoned' ? ' class="current"' : '', __('Abandoned', 'edd') . $abandoned_count )
 		);
 
 		return apply_filters( 'edd_payments_table_views', $views );
@@ -226,7 +237,8 @@ class EDD_Payment_History_Table extends WP_List_Table {
 	public function column_default( $item, $column_name ) {
 		switch ( $column_name ) {
 			case 'amount' :
-				$value   = edd_currency_filter( edd_format_amount( $item[ $column_name ] ) );
+				$amount  = ! empty( $item[ $column_name ] ) ? $item['amount'] : 0;
+				$value   = edd_currency_filter( edd_format_amount( $amount ) );
 				break;
 			case 'date' :
 				$date    = strtotime( $item[ $column_name ] );
@@ -235,6 +247,9 @@ class EDD_Payment_History_Table extends WP_List_Table {
 			case 'status' :
 				$payment = get_post( $item['ID'] );
 				$value   = edd_get_payment_status( $payment, true );
+				break;
+			case 'details' :
+				$value = '<a href="' . add_query_arg( 'id', $item['ID'], admin_url( 'edit.php?post_type=download&page=edd-payment-history&view=view-order-details' ) ) . '">' . __( 'View Order Details', 'edd' ) . '</a>';
 				break;
 			default:
 				$value   = isset( $item[ $column_name ] ) ? $item[ $column_name ] : '';
@@ -257,7 +272,7 @@ class EDD_Payment_History_Table extends WP_List_Table {
 
 		$row_actions = array();
 
-		$row_actions['edit'] = '<a href="' . add_query_arg( array( 'edd-action' => 'edit-payment', 'purchase_id' => $payment->ID ), $this->base_url ) . '">' . __( 'Edit', 'edd' ) . '</a>';
+		$row_actions['edit'] = '<a href="' . add_query_arg( array( 'view' => 'edit-payment', 'purchase_id' => $payment->ID ), $this->base_url ) . '">' . __( 'Edit', 'edd' ) . '</a>';
 
 		if ( edd_is_payment_complete( $payment->ID ) )
 			$row_actions['email_links'] = '<a href="' . add_query_arg( array( 'edd-action' => 'email_links', 'purchase_id' => $payment->ID ), $this->base_url ) . '">' . __( 'Resend Purchase Receipt', 'edd' ) . '</a>';
@@ -282,135 +297,9 @@ class EDD_Payment_History_Table extends WP_List_Table {
 	public function column_cb( $item ) {
 		return sprintf(
 			'<input type="checkbox" name="%1$s[]" value="%2$s" />',
-			$this->_args['singular'],
+			'payment',
 			$item['ID']
 		);
-	}
-
-	/**
-	 * Render the Details Column
-	 *
-	 * @access public
-	 * @since 1.4
-	 * @param array $item Contains all the data of the payment
-	 * @return string Data shown in the Details column
-	 */
-	public function column_details( $item ) {
-		$details = "<a href='#TB_inline?width=640&amp;inlineId=purchased-files-" . $item['ID'] . "' class='thickbox' title='" . sprintf( __( 'Purchase Details for Payment #%s', 'edd' ), $item['ID'] ) . "'>" . __( 'View Order Details', 'edd' ) . "</a>";
-
-		ob_start();
-?>
-			<div id="purchased-files-<?php echo $item['ID']; ?>" style="display: none;">
-				<?php
-					$payment_meta = edd_get_payment_meta( $item['ID'] );
-					$cart_items   = isset( $payment_meta['cart_details'] ) ? maybe_unserialize( $payment_meta['cart_details'] ) : false;
-					if ( empty( $cart_items ) || ! $cart_items ) {
-						$cart_items = maybe_unserialize( $payment_meta['downloads'] );
-					}
-				?>
-				<h4><?php echo _n( __( 'Purchased File', 'edd' ), __( 'Purchased Files', 'edd' ), count( $cart_items ) ); ?></h4>
-				<ul class="purchased-files-list">
-				<?php
-					if ( $cart_items ) {
-						foreach ( $cart_items as $key => $cart_item ) {
-							echo '<li>';
-								// Retrieve the ID of the download
-								$id = isset( $payment_meta['cart_details'] ) ? $cart_item['id'] : $cart_item;
-
-								// If download has variable prices, override the default price
-								$price_override = isset( $payment_meta['cart_details'] ) ? $cart_item['price'] : null;
-
-								// Get the user information
-								$user_info = edd_get_payment_meta_user_info( $item['ID'] );
-
-								// Calculate the final item price
-								$price = edd_get_download_final_price( $id, $user_info, $price_override );
-
-								// Show name of download
-								echo '<a href="' . admin_url( 'post.php?post=' . $id . '&action=edit' ) . '" target="_blank">' . get_the_title( $id ) . '</a>';
-
-								echo  ' - ';
-
-								if ( isset( $cart_items[ $key ]['item_number'])) {
-									$price_options = $cart_items[ $key ]['item_number']['options'];
-
-									if ( isset( $price_options['price_id'] ) ) {
-										echo edd_get_price_option_name( $id, $price_options['price_id'], $item['ID'] );
-										echo ' - ';
-									}
-								}
-								// Show the price
-								echo edd_currency_filter( edd_format_amount( $price ) );
-							echo '</li>';
-						}
-					}
-?>
-				</ul>
-				<?php $payment_date = strtotime( $item['date'] ); ?>
-				<p><?php echo __( 'Date and Time:', 'edd' ) . ' ' . date_i18n( get_option( 'date_format' ), $payment_date ) . ' ' . date_i18n( get_option( 'time_format' ), $payment_date ) ?>
-				<p><?php echo __( 'Discount used:', 'edd' ) . ' '; if ( isset( $user_info['discount'] ) && $user_info['discount'] != 'none' ) { echo $user_info['discount']; } else { _e( 'none', 'edd' ); } ?>
-				<?php
-				$fees = edd_get_payment_fees( $item['ID'] );
-				if( ! empty( $fees ) ) : ?>
-				<ul class="payment-fees">
-					<?php foreach( $fees as $fee ) : ?>
-					<li><?php echo $fee['label'] . ':&nbsp;' . edd_currency_filter( $fee['amount'] ); ?></li>
-					<?php endforeach; ?>
-				</ul>
-				<?php endif; ?>
-				<p><?php echo __( 'Total:', 'edd' ) . ' ' . edd_currency_filter( edd_format_amount( edd_get_payment_amount( $item['ID'] ) ) ); ?></p>
-
-				<div class="purchase-personal-details">
-					<h4><?php _e( 'Buyer\'s Personal Details:', 'edd' ); ?></h4>
-					<ul>
-						<li><?php echo __( 'Name:', 'edd' ) . ' ' . $user_info['first_name'] . ' ' . $user_info['last_name']; ?></li>
-						<li><?php echo __( 'Email:', 'edd' ) . ' ' . $payment_meta['email']; ?></li>
-						<?php do_action( 'edd_payment_personal_details_list', $payment_meta, $user_info ); ?>
-					</ul>
-				</div>
-				<div class="payment-notes">
-					<h4><?php _e( 'Payment Notes', 'edd' ); ?></h4>
-					<?php
-					$notes = edd_get_payment_notes( $item['ID'] );
-					if ( ! empty( $notes ) ) :
-						echo '<ul id="payment-notes">';
-						foreach ( $notes as $note ):
-							if ( ! empty( $note->user_id ) ) {
-								$user = get_userdata( $note->user_id );
-								$user = $user->display_name;
-							} else {
-								$user = __( 'EDD Bot', 'edd' );
-							}
-							echo '<div class="edd-payment-note"><strong>' . $user . '</strong>&nbsp;<em>' . $note->comment_date . '</em>&nbsp;&mdash;' . $note->comment_content . '</div>';
-						endforeach;
-						echo '</ul>';
-					else :
-						echo '<p>' . __( 'No payment notes', 'edd' ) . '</p>';
-					endif;
-					?>
-				</div>
-				<?php
-				$gateway = edd_get_payment_gateway( $item['ID'] );
-				if ( $gateway ) { ?>
-				<div class="payment-method">
-					<h4><?php _e('Payment Method:', 'edd'); ?></h4>
-					<span class="payment-method-name"><?php echo edd_get_gateway_admin_label( $gateway ); ?></span>
-				</div>
-				<?php } ?>
-				<div class="purchase-key-wrap">
-					<h4><?php _e('Purchase Key', 'edd'); ?></h4>
-					<span class="purchase-key"><?php echo $payment_meta['key']; ?></span>
-				</div>
-
-				<?php do_action( 'edd_payment_view_details', $item['ID'] ); ?>
-
-				<p><a id="edd-close-purchase-details" class="button-secondary" onclick="tb_remove();" title="<?php _e( 'Close', 'edd' ); ?>"><?php _e( 'Close', 'edd' ); ?></a></p>
-
-
-			</div>
-<?php
-			$details .= ob_get_clean();
-		return $details;
 	}
 
 	/**
@@ -423,16 +312,16 @@ class EDD_Payment_History_Table extends WP_List_Table {
 	 */
 	public function column_user( $item ) {
 		$user_info = edd_get_payment_meta_user_info( $item['ID'] );
-		$user_id = isset( $user_info['id'] ) && $user_info['id'] != -1 ? $user_info['id'] : $user_info['email'];
+		$user_id   = edd_get_payment_user_id( $item['ID'] );
 
-		if ( is_numeric( $user_id ) ) {
+		if ( $user_id > 0 ) {
 			$user = get_userdata( $user_id ) ;
 			$display_name = is_object( $user ) ? $user->display_name : __( 'guest', 'edd' );
 		} else {
 			$display_name = __( 'guest', 'edd' );
 		}
 
-		$value = '<a href="' . remove_query_arg( 'paged', add_query_arg( 'user', $user_id ) ) . '">' . $display_name . '</a>';
+		$value = '<a href="' . remove_query_arg( 'paged', add_query_arg( 'user', $user_info['email'] ) ) . '">' . $display_name . '</a>';
 		return apply_filters( 'edd_payments_table_column', $value, $item['ID'], 'user' );
 	}
 
@@ -459,7 +348,7 @@ class EDD_Payment_History_Table extends WP_List_Table {
 	 * @return void
 	 */
 	public function process_bulk_action() {
-		$ids = isset( $_GET['download'] ) ? $_GET['download'] : false;
+		$ids = isset( $_GET['payment'] ) ? $_GET['payment'] : false;
 
 		if ( ! is_array( $ids ) )
 			$ids = array( $ids );
@@ -481,14 +370,25 @@ class EDD_Payment_History_Table extends WP_List_Table {
 	 * @return void
 	 */
 	public function get_payment_counts() {
-		$payment_count 	= wp_count_posts( 'edd_payment' );
 
+		global $wp_query;
+
+		$args = array();
+
+		if( isset( $_GET['user'] ) ) {
+			$args['user'] = urldecode( $_GET['user'] );
+		} elseif( isset( $_GET['s'] ) ) {
+			$args['s'] = urldecode( $_GET['s'] );
+		}
+
+		$payment_count        = edd_count_payments( $args );
 		$this->complete_count = $payment_count->publish;
 		$this->pending_count  = $payment_count->pending;
 		$this->refunded_count = $payment_count->refunded;
 		$this->failed_count   = $payment_count->failed;
 		$this->revoked_count  = $payment_count->revoked;
-		$this->total_count    = $payment_count->publish + $payment_count->pending + $payment_count->refunded + $payment_count->failed + $payment_count->trash;
+		$this->abandoned_count= $payment_count->abandoned;
+		$this->total_count    = $payment_count->publish + $payment_count->pending + $payment_count->refunded + $payment_count->failed + $payment_count->abandoned + $payment_count->trash;
 	}
 
 	/**
@@ -537,7 +437,7 @@ class EDD_Payment_History_Table extends WP_List_Table {
 				$user_info 		= edd_get_payment_meta_user_info( $payment->ID );
 				$cart_details	= edd_get_payment_meta_cart_details( $payment->ID );
 
-				$user_id = isset( $user_info['ID'] ) && $user_info['ID'] != -1 ? $user_info['ID'] : $user_info['email'];
+				$user_id = isset( $user_info['id'] ) && $user_info['id'] != -1 ? $user_info['id'] : $user_info['email'];
 
 				$payments_data[] = array(
 					'ID' 		=> $payment->ID,
@@ -600,6 +500,8 @@ class EDD_Payment_History_Table extends WP_List_Table {
 				break;
 			case 'revoked':
 				$total_items = $this->revoked_count;
+			case 'abandoned':
+				$total_items = $this->abandoned_count;
 				break;
 			case 'any':
 				$total_items = $this->total_count;

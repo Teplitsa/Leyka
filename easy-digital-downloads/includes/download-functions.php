@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 function edd_get_download( $download ) {
 	if ( is_numeric( $download ) ) {
 		$download = get_post( $download );
-		if ( $download->post_type != 'download' )
+		if ( !$download || $download->post_type != 'download' )
 			return null;
 		return $download;
 	}
@@ -49,11 +49,14 @@ function edd_get_download( $download ) {
  * @param int $download_id ID number of the download to retrieve a price for
  * @return mixed string|int Price of the download
  */
-function edd_get_download_price( $download_id ) {
+function edd_get_download_price( $download_id = 0 ) {
 	$price = get_post_meta( $download_id, 'edd_price', true );
 	if ( $price )
-		return edd_sanitize_amount( $price );
-	return  0;
+		$price = edd_sanitize_amount( $price );
+	else
+		$price = 0;
+
+	return apply_filters( 'edd_get_download_price', $price, $download_id );
 }
 
 /**
@@ -269,19 +272,34 @@ function edd_single_price_option_mode( $download_id = 0 ) {
 /**
  * Gets the Download type, either default or "bundled"
  *
- * @since 1.5
+ * @since 1.6
  * @param int $download_id Download ID
  * @return string $type Download type
  */
 function edd_get_download_type( $download_id ) {
 	$type = get_post_meta( $download_id, '_edd_product_type', true );
+	if( empty( $type ) )
+		$type = 'default';
 	return apply_filters( 'edd_get_download_type', $type, $download_id );
 }
+
+
+/**
+ * Deterimes if a product is a bundle
+ *
+ * @since 1.6
+ * @param int $download_id Download ID
+ * @return bool
+ */
+function edd_is_bundled_product( $download_id = 0 ) {
+	return 'bundle' == edd_get_download_type( $download_id );
+}
+
 
 /**
  * Retrieves the product IDs of bundled products
  *
- * @since 1.5
+ * @since 1.6
  * @param int $download_id Download ID
  * @return array $products Products in the bundle
  */
@@ -483,7 +501,7 @@ function edd_decrease_earnings( $download_id, $amount ) {
 }
 
 /**
- * Retreives the average monthly earnings for a specific download
+ * Retrieves the average monthly earnings for a specific download
  *
  * @since 1.3
  * @param int $download_id Download ID
@@ -493,10 +511,9 @@ function edd_get_average_monthly_download_earnings( $download_id ) {
 	$earnings 	  = edd_get_download_earnings_stats( $download_id );
 	$release_date = get_post_field( 'post_date', $download_id );
 
-	$diff 	= abs( time() - strtotime( $release_date ) );
+	$diff 	= abs( current_time( 'timestamp' ) - strtotime( $release_date ) );
 
-	$years 	= floor( $diff / ( 365*60*60*24 ) );							// Number of years since publication
-	$months = floor( ( $diff - $years * 365*60*60*24 ) / ( 30*60*60*24 ) ); // Number of months since publication
+    $months = floor( $diff / ( 30*60*60*24 ) ); // Number of months since publication
 
 	if ( $months > 0 )
 		return ( $earnings / $months );
@@ -505,25 +522,24 @@ function edd_get_average_monthly_download_earnings( $download_id ) {
 }
 
 /**
- * Retreives the average monthly sales for a specific download
+ * Retrieves the average monthly sales for a specific download
  *
  * @since 1.3
  * @param int $download_id Download ID
  * @return float $sales Average monthly sales
  */
 function edd_get_average_monthly_download_sales( $download_id ) {
-	$sales			= edd_get_download_sales_stats( $download_id );
-	$release_date 	= get_post_field( 'post_date', $download_id );
+    $sales          = edd_get_download_sales_stats( $download_id );
+    $release_date   = get_post_field( 'post_date', $download_id );
 
-	$diff 	= abs( time() - strtotime( $release_date ) );
+    $diff   = abs( current_time( 'timestamp' ) - strtotime( $release_date ) );
 
-	$years 	= floor( $diff / ( 365*60*60*24 ) );							// Number of years since publication
-	$months = floor( ( $diff - $years * 365*60*60*24 ) / ( 30*60*60*24 ) ); // Number of months since publication
+    $months = floor( $diff / ( 30*60*60*24 ) ); // Number of months since publication
 
-	if ( $months > 0 )
-		return ( $sales / $months );
+    if ( $months > 0 )
+        return ( $sales / $months );
 
-	return $sales;
+    return $sales;
 }
 
 /**
@@ -538,13 +554,18 @@ function edd_get_average_monthly_download_sales( $download_id ) {
  */
 function edd_get_download_files( $download_id, $variable_price_id = null ) {
 	$files = array();
+
+	// Bundled products are not allowed to have files
+	if( edd_is_bundled_product( $download_id ) )
+		return $files;
+
 	$download_files = get_post_meta( $download_id, 'edd_download_files', true );
 
 	if ( $download_files ) {
 		if ( ! is_null( $variable_price_id ) ) {
 			foreach ( $download_files as $key => $file_info ) {
 				if ( isset( $file_info['condition'] ) ) {
-					if ( $file_info['condition'] == $variable_price_id || $file_info['condition'] == 'all' ) {
+					if ( $file_info['condition'] == $variable_price_id || $file_info['condition'] === 'all' ) {
 						$files[ $key ] = $file_info;
 					}
 				}
@@ -558,6 +579,51 @@ function edd_get_download_files( $download_id, $variable_price_id = null ) {
 }
 
 /**
+ * Retrieves a file name for a product's downlaod file
+ *
+ * Defaults to the file's actual name if no 'name' key is present
+ *
+ * @since 1.6
+ * @param array $file File array
+ * @return string The file name
+ */
+function edd_get_file_name( $file = array() ) {
+	if( empty( $file ) || ! is_array( $file ) )
+		return false;
+	$name = ! empty( $file['name'] ) ? esc_html( $file['name'] ) : basename( $file['file'] );
+
+	return $name;
+}
+
+/**
+ * Gets the number of times a file has been downloaded for a specific purchase
+ *
+ * @since 1.6
+ * @param int $download_id Download ID
+ * @param int $file_key File key
+ * @param int $payment_id The ID number of the associated payment
+ * @return int Number of times the file has been downloaded for the purchase
+ */
+function edd_get_file_downloaded_count( $download_id = 0, $file_key = 0, $payment_id = 0 ) {
+	global $edd_logs;
+
+	$meta_query = array(
+		'relation'	=> 'AND',
+		array(
+			'key' 	=> '_edd_log_file_id',
+			'value' => (int) $file_key
+		),
+		array(
+			'key' 	=> '_edd_log_payment_id',
+			'value' => (int) $payment_id
+		)
+	);
+
+	return $edd_logs->get_log_count( $download_id, 'file_download', $meta_query );
+}
+
+
+/**
  * Gets the file download file limit for a particular download
  *
  * This limit refers to the maximum number of times files connected to a product
@@ -568,10 +634,19 @@ function edd_get_download_files( $download_id, $variable_price_id = null ) {
  * @return int $limit File download limit
  */
 function edd_get_file_download_limit( $download_id = 0 ) {
+	global $edd_options;
+
+	$ret   = 0;
 	$limit = get_post_meta( $download_id, '_edd_download_limit', true );
-	if ( $limit )
-		return absint( $limit );
-	return 0;
+
+	if ( ! empty( $limit ) ) {
+		// Download specific limit
+		$ret = absint( $limit );
+	} else {
+		// Global limit
+		$ret = ! empty( $edd_options['file_download_limit'] ) ? absint( $edd_options['file_download_limit'] ) : 0;
+	}
+	return apply_filters( 'edd_file_download_limit', $ret, $download_id );
 }
 
 /**
@@ -630,6 +705,7 @@ function edd_set_file_download_limit_override( $download_id = 0, $payment_id = 0
  * @return bool True if at limit, false otherwise
  */
 function edd_is_file_at_download_limit( $download_id = 0, $payment_id = 0, $file_id = 0 ) {
+
 	// Checks to see if at limit
 	$logs = new EDD_Logging();
 
@@ -645,11 +721,12 @@ function edd_is_file_at_download_limit( $download_id = 0, $payment_id = 0, $file
 		)
 	);
 
-	$ret = false;
-	$download_count = $logs->get_log_count( $download_id, 'file_download', $meta_query );
-	$download_limit = edd_get_file_download_limit( $download_id );
+	$ret                = false;
+	$download_count     = $logs->get_log_count( $download_id, 'file_download', $meta_query );
+	$download_limit     = edd_get_file_download_limit( $download_id );
+	$unlimited_purchase = get_post_meta( $payment_id, '_unlimited_file_downloads', true );
 
-	if ( ! empty( $download_limit ) ) {
+	if ( ! empty( $download_limit ) && empty( $unlimited_purchase ) ) {
 		if ( $download_count >= $download_limit ) {
 			$ret = true;
 
@@ -703,9 +780,9 @@ function edd_get_download_file_url( $key, $email, $filekey, $download_id, $price
 
 	$hours = isset( $edd_options['download_link_expiration'] )
 			&& is_numeric( $edd_options['download_link_expiration'] )
-			? absint($edd_options['download_link_expiration']) : 24;
+			? absint( $edd_options['download_link_expiration'] ) : 24;
 
-	if ( ! ( $date = strtotime( '+' . $hours . 'hours' ) ) )
+	if ( ! ( $date = strtotime( '+' . $hours . 'hours', current_time( 'timestamp') ) ) )
 		$date = 2147472000; // Highest possible date, January 19, 2038
 
 	$params = array(
@@ -735,7 +812,8 @@ function edd_get_download_file_url( $key, $email, $filekey, $download_id, $price
  * @param string $file_key
  * @return bool True if payment and link was verified, false otherwise
  */
-function edd_verify_download_link( $download_id, $key, $email, $expire, $file_key ) {
+function edd_verify_download_link( $download_id = 0, $key = '', $email = '', $expire = '', $file_key = 0 ) {
+
 	$meta_query = array(
 		'relation'  => 'AND',
 		array(
@@ -752,46 +830,45 @@ function edd_verify_download_link( $download_id, $key, $email, $expire, $file_ke
 
 	if ( $payments ) {
 		foreach ( $payments as $payment ) {
-			$payment_meta 	= edd_get_payment_meta( $payment->ID );
-			$downloads 		= maybe_unserialize( $payment_meta['downloads'] );
-			$cart_details 	= unserialize( $payment_meta['cart_details'] );
+
+			$cart_details = edd_get_payment_meta_cart_details( $payment->ID, true );
 
 			if ( $payment->post_status != 'publish' && $payment->post_status != 'complete' )
 				return false;
 
-			if ( $downloads ) {
-				foreach ( $downloads as $download_key => $download ) {
+			if ( ! empty( $cart_details ) ) {
+				foreach ( $cart_details as $cart_key => $cart_item ) {
 
-					$id = isset( $payment_meta['cart_details'] ) ? $download['id'] : $download;
-
-					if ( $id != $download_id )
+					if ( $cart_item['id'] != $download_id )
 						continue;
 
-					$price_options = isset( $cart_details[ $download_key ]['item_number']['options'] ) ? $cart_details[ $download_key ]['item_number']['options'] : false;
+					$price_options = isset( $cart_item['item_number']['options'] ) ? $cart_item['item_number']['options'] : false;
 
-					$file_condition = edd_get_file_price_condition( $id, $file_key );
+					$file_condition = edd_get_file_price_condition( $cart_item['id'], $file_key );
 
 					// If this download has variable prices, we have to confirm that this file was included in their purchase
-					if ( ! empty( $price_options ) && $file_condition != 'all' && edd_has_variable_prices( $id ) ) {
+					if ( ! empty( $price_options ) && $file_condition != 'all' && edd_has_variable_prices( $cart_item['id'] ) ) {
 						if ( $file_condition == $price_options['price_id'] )
 							return $payment->ID;
 					}
 
 					// Check to see if the file download limit has been reached
-					if ( edd_is_file_at_download_limit( $id, $payment->ID, $file_key ) )
+					if ( edd_is_file_at_download_limit( $cart_item['id'], $payment->ID, $file_key ) )
 						wp_die( apply_filters( 'edd_download_limit_reached_text', __( 'Sorry but you have hit your download limit for this file.', 'edd' ) ), __( 'Error', 'edd' ) );
 
 					// Make sure the link hasn't expired
-					if ( time() < $expire ) {
-						return $payment->ID; // Payment has been verified and link is still valid
+					if ( current_time( 'timestamp' ) > $expire ) {
+						wp_die( apply_filters( 'edd_download_link_expired_text', __( 'Sorry but your download link has expired.', 'edd' ) ), __( 'Error', 'edd' ) );
 					}
-					return false; // Payment verified, but link is no longer valid
+					return $payment->ID; // Payment has been verified and link is still valid
 				}
 
 			}
 
 		}
 
+	} else {
+		wp_die( __( 'No payments matching your request were found.', 'edd' ), __( 'Error', 'edd' ) );
 	}
 	// Payment not verified
 	return false;
@@ -811,4 +888,77 @@ function edd_get_product_notes( $download_id ) {
 		return (string) apply_filters( 'edd_product_notes', $notes, $download_id );
 
 	return '';
+}
+
+/**
+ * Retrieves a download SKU by ID.
+ *
+ * @since 1.6
+ * @author Daniel J Griffiths
+ * @param int $download Download ID
+ * @return string|int $sku Download SKU
+ */
+function edd_get_download_sku( $download_id = 0 ) {
+	$sku = get_post_meta( $download_id, 'edd_sku', true );
+	if ( empty( $sku ) )
+		$sku = '-';
+
+	return apply_filters( 'edd_get_download_sku', $sku, $download_id );
+}
+
+/**
+ * get the Download button behavior, either add to cart or direct
+ *
+ * @since 1.7
+ * @param int $download Download ID
+ * @return string $behavior Add to Cart or Direct
+ */
+function edd_get_download_button_behavior( $download_id = 0 ) {
+	$behavior = get_post_meta( $download_id, '_edd_button_behavior', true );
+	if( empty( $behavior ) ) {
+		$behavior = 'add_to_cart';
+	}
+	return apply_filters( 'edd_get_download_button_behavior', $behavior, $download_id );
+}
+
+/**
+ * Get the file Download method
+ *
+ * @since 1.6
+ * @return string The method to use for file downloads
+ */
+function edd_get_file_download_method() {
+	global $edd_options;
+	$method = isset( $edd_options['download_method'] ) ? $edd_options['download_method'] : 'direct';
+	return apply_filters( 'edd_file_download_method', $method );
+}
+
+/**
+ * Returns a random download
+ *
+ * @since 1.7
+ * @author Chris Christoff
+ * @param bool $post_ids True for array of post ids, false if array of posts
+ */
+function edd_get_random_download( $post_ids = true ) {
+	 edd_get_random_downloads( 1, $post_ids );
+}
+
+/**
+ * Returns random downloads
+ *
+ * @since 1.7
+ * @author Chris Christoff
+ * @param int $num The number of posts to return
+ * @param bool $post_ids True for array of post objects, else array of ids
+ * @return mixed $query Returns an array of id's or an array of post objects
+ */
+function edd_get_random_downloads( $num = 3, $post_ids = true ) {
+	if ( $post_ids ) {
+		$args = array( 'post_type' => 'download', 'orderby' => 'rand', 'post_count' => $num, 'fields' => 'ids' );
+	} else {
+		$args = array( 'post_type' => 'download', 'orderby' => 'rand', 'post_count' => $num );
+	}
+	$args  = apply_filters( 'edd_get_random_downloads', $args );
+	return get_posts( $args );
 }

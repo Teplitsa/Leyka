@@ -21,7 +21,11 @@ if ( !defined( 'ABSPATH' ) ) exit;
 function edd_checkout_cart() {
 	do_action( 'edd_before_checkout_cart' );
 	echo '<!--dynamic-cached-content-->';
-	edd_get_template_part( 'checkout_cart' );
+	echo '<form id="edd_checkout_cart_form" method="post">';
+		echo '<div id="edd_checkout_cart_wrap">';
+			edd_get_template_part( 'checkout_cart' );
+		echo '</div>';
+	echo '</form>';
 	echo '<!--/dynamic-cached-content-->';
 	do_action( 'edd_after_checkout_cart' );
 }
@@ -35,8 +39,18 @@ function edd_checkout_cart() {
 function edd_shopping_cart( $echo = false ) {
 	global $edd_options;
 
-	ob_start(); ?>
-	<?php do_action('edd_before_cart'); ?>
+	ob_start();
+	do_action('edd_before_cart');
+	$display = 'style="display:none;"';
+  	$cart_quantity = edd_get_cart_quantity();
+
+  	if ( $cart_quantity > 0 ){
+  	  $display = "";
+  	}
+
+  	echo "<p class='edd-cart-number-of-items' {$display}>" . __( 'Number of items in cart', 'edd' ) . ': <span class="edd-cart-quantity">' . $cart_quantity . '<span></p>';
+ 	?>
+
 	<ul class="edd-cart">
 	<!--dynamic-cached-content-->
 	<?php
@@ -96,6 +110,11 @@ function edd_get_cart_item_template( $cart_key, $item, $ajax = false ) {
 	$item = str_replace( '{cart_item_id}', absint( $cart_key ), $item );
 	$item = str_replace( '{item_id}', absint( $id ), $item );
 	$item = str_replace( '{remove_url}', $remove_url, $item );
+  	$subtotal = '';
+  	if ( $ajax ){
+   	 $subtotal = edd_currency_filter( edd_format_amount( edd_get_cart_amount( false ) ) ) ;
+  	}
+ 	$item = str_replace( '{subtotal}', $subtotal, $item );
 
 	return apply_filters( 'edd_cart_item', $item, $id );
 }
@@ -107,7 +126,7 @@ function edd_get_cart_item_template( $cart_key, $item, $ajax = false ) {
  * @return string Cart is empty message
  */
 function edd_empty_cart_message() {
-	return apply_filters( 'edd_empty_cart_message', __('Your cart is empty.', 'edd') );
+	return apply_filters( 'edd_empty_cart_message', '<span class="edd_empty_cart">' . __( 'Your cart is empty.', 'edd' ) . '</span>' );
 }
 
 /**
@@ -119,4 +138,4 @@ function edd_empty_cart_message() {
 function edd_empty_checkout_cart() {
 	echo edd_empty_cart_message();
 }
-add_action( 'edd_empty_cart', 'edd_empty_checkout_cart' );
+add_action( 'edd_cart_empty', 'edd_empty_checkout_cart' );

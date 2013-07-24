@@ -10,6 +10,9 @@
 
 if( !defined('ABSPATH') ) exit; // Exit if accessed directly
 
+//define('EDD_SLUG', 'donates');
+//define('EDD_DISABLE_REWRITE', true);
+
 // Do actions, if given:
 if( !empty($_GET['leyka_action']) ) {
     do_action('leyka_'.$_GET['leyka_action'], $_GET);
@@ -26,7 +29,7 @@ function leyka_add_rur_support($currencies){
 add_filter('edd_currencies', 'leyka_add_rur_support');
 
 // Remove categories and tags as a whole. Must be done in the "init" hook with priority below 10
-remove_action('init', 'edd_setup_download_taxonomies');
+remove_action('init', 'edd_setup_download_taxonomies', 0);
 remove_action('restrict_manage_posts', 'edd_add_download_filters', 100);
 
 // Check if Leyka custom templates are in place, show a warning if it's not:
@@ -63,7 +66,7 @@ if( !is_dir($current_theme_dir.'/edd_templates') ) {
 }
 
 function leyka_admin_menu(){
-    global $edd_payments_page, $edd_settings_page, $edd_reports_page, $edd_add_ons_page, $edd_recalls_page, $edd_system_info_page;
+    global $edd_payments_page, $edd_settings_page, $edd_reports_page, $edd_add_ons_page, $edd_recalls_page, $edd_upgrades_screen, $edd_system_info_page;
 
     require_once EDD_PLUGIN_DIR.'includes/admin/system-info.php';
 
@@ -74,7 +77,8 @@ function leyka_admin_menu(){
     $edd_reports_page = add_submenu_page('edit.php?post_type=download', __('Donations reports', 'leyka'), __('Reports', 'leyka'), 'manage_options', 'edd-reports', 'leyka_reports_page');
     $edd_settings_page = add_submenu_page('edit.php?post_type=download', __('Easy Digital Download Settings', 'edd'), __('Settings', 'edd'), 'manage_options', 'edd-settings', 'edd_options_page');
     $edd_system_info_page = add_submenu_page('edit.php?post_type=download', __('Easy Digital Download System Info', 'edd' ), __('System Info', 'edd'), 'manage_options', 'edd-system-info', 'edd_system_info');
-//    $edd_add_ons_page = add_submenu_page('edit.php?post_type=download', __('Leyka add ons', 'leyka'), __('Add ons', 'leyka'), 'manage_options', 'edd-addons', 'leyka_add_ons_page');
+    // Add-ons page removed until further testing for their compatibility with Leyka:
+//    $edd_add_ons_page = add_submenu_page('edit.php?post_type=download', __('Easy Digital Download Add Ons', 'edd'), __('Add Ons', 'edd'), 'manage_options', 'edd-addons', 'edd_add_ons_page');
 }
 remove_action('admin_menu', 'edd_add_options_link', 10);
 add_action('admin_menu', 'leyka_admin_menu');
@@ -115,9 +119,17 @@ function leyka_admin_messages(){
             empty($edd_options['leyka_receiver_legal_kpp']) ||
             empty($edd_options['leyka_receiver_legal_address']) ||
             empty($edd_options['leyka_receiver_legal_bank_essentials'])
-        )
+        ) // & лейка НЕ только что установлена
     ) {
-        add_settings_error('edd-notices', 'set-receiver-type-settings', sprintf( __('Some of your donations receiver options are not set. All of them are required. Visit <a href="%s">settings</a> to configure them.', 'leyka' ), admin_url('edit.php?post_type=download&page=edd-settings&tab=misc')));
+        $curr_admin_page = get_current_screen();
+        if(strstr($curr_admin_page->id, 'download') !== FALSE || $curr_admin_page->id == 'plugins') {
+            add_settings_error(
+                'edd-notices',
+                'set-receiver-type-settings',
+                sprintf(__('Some of your donations receiver options are not set. All of them are required. Visit <a href="%s">settings</a> to configure them.', 'leyka' ), admin_url('edit.php?post_type=download&page=edd-settings&tab=misc')),
+                'updated'
+            );
+        }
     }
 
     settings_errors('edd-notices');
@@ -151,6 +163,14 @@ function leyka_on_donation_insert($payment_id, $payment_data){
         $payment_data = edd_get_payment_meta($payment_id);
     edd_admin_email_notice($payment_id, $payment_data);
     edd_empty_cart();
+    // Remove cart contents
+//    EDD()->session->set( 'edd_cart', NULL );
+//
+//    // Remove all cart fees
+//    EDD()->session->set( 'edd_cart_fees', NULL );
+//
+//    // Remove any active discounts
+//    edd_unset_all_cart_discounts();
 }
 add_action('edd_insert_payment', 'leyka_on_donation_insert', 10, 2);
 

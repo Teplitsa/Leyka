@@ -14,7 +14,10 @@ if( !defined('ABSPATH') ) exit; // Exit if accessed directly
 function leyka_misc_settings($settings){
     unset(
         $settings['live_cc_validation'], $settings['logged_in_only'], $settings['show_register_form'],
-        $settings['download_link_expiration'], $settings['disable_redownload'], $settings['symlink_file_downloads']
+        $settings['download_link_expiration'], $settings['disable_redownload'], $settings['symlink_file_downloads'],
+        $settings['symlink_file_downloads'], $settings['file_download_limit'], $settings['field_downloads'],
+        $settings['download_method'], $settings['accounting_settings'], $settings['enable_skus'],
+        $settings['item_quantities'], $settings['allow_multiple_discounts']
     );
 
     array_unshift(

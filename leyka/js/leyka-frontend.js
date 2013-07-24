@@ -21,7 +21,32 @@ jQuery(document).ready(function($){
 
     /** Single donation form */
     var $form = $('#leyka-single-form');
-    // send Add to Cart request, then redirect to the cart page
+    
+//    console.log(edd_scripts)
+    
+    // Select first avaliable option always
+    var gOpt = $form.find('.gateway-option'), optSel = false;
+    gOpt.each(function(i){
+        if($(this).is(":checked"))
+            optSel = true;
+    });
+    
+    if(!optSel){
+        gOpt.eq(0).prop('checked', 'checked');
+        gOpt.eq(0).parents('.gateways_list_entry').addClass('active');
+    }
+
+    $form.on('submit.leykaSingle', '', function(e){
+        if( !$form.data('submit-message-showed') ) {
+            e.preventDefault();
+            $form.data('submit-message-showed', true).find('#donation_submit_message').fadeIn(250);
+            setTimeout(function(){
+                $form.submit();
+            }, 5000);
+        }
+    });
+
+    // Send Add to Cart request, then redirect to the cart page
     $form.on('change.leykaSingle', 'input[name="edd-gateway"]', function(e){
         var $this = $(this); // input field
 
@@ -34,18 +59,38 @@ jQuery(document).ready(function($){
             {action: 'leyka-get-gateway-fields', 'payment-mode': $this.val(), 'nonce': leyka_single_nonce},
             function(resp){
                 $form.find('#leyka_form_resp').html(resp);
+                var req = $form.find('#leyka_form_resp').find('.required');
+                req.on('change', function(){
+                    var has_empty = false;
+                    
+                    req.each(function(){
+                        if ($(this).is('[type="checkbox"]') && !$(this).is(':checked')){
+                           has_empty = true;
+                        } else if(!$(this).val()) { 
+                            has_empty = true;
+                        }
+                    });
+                    
+                    if(has_empty) {
+                       $form.find('#leyka_form_resp').removeClass('complete');
+//                       $form.find('#edd-purchase-button').attr('disabled', 'disabled');
+                    } else {
+                        $form.find('#leyka_form_resp').addClass('complete')
+                        $form.find('#edd-purchase-button').removeAttr('disabled');
+                    }
+                });                
         });
     }).on('submit.leykaSingle', '', function(e){
         var $free_sum_field = $('input[name="leyka_free_donate_amount"]'),
             $agree_to_terms = $('#edd_agree_to_terms');
         if($agree_to_terms.length && !$agree_to_terms.attr('checked')) {
-            $form.find('#leyka_client_errors').html(l10n.error_single_donate_must_agree_to_terms).show();
+            $form.find('#leyka_client_errors').html('<p>'+l10n.error_single_donate_must_agree_to_terms+'</p>').show();
             e.preventDefault();
             return;
         }
         if($free_sum_field.length) {
             if( !parseFloat($free_sum_field.val()) || parseFloat($free_sum_field.val()) <= 0 ) {
-                $form.find('#leyka_client_errors').html(l10n.error_single_donate_free_sum_incorrect).show();
+                $form.find('#leyka_client_errors').html('<p>'+l10n.error_single_donate_free_sum_incorrect+'</p>').show();
                 e.preventDefault();
                 return;
             }
@@ -146,12 +191,15 @@ jQuery(document).ready(function($){
         $(this).parents('.gateways_list_entry').addClass('active');
         if($('#leyka-single-form').hasClass('complete')) return true;
         $('#leyka-single-form').addClass('complete');
-    })
-    $('#edd_agree_to_terms').live("change",function(){
+    });
+    
+    
+    
+    /*$('#edd_agree_to_terms').live("change",function(){
         if(this.checked) {
             $('#leyka_form_resp').addClass('complete');
         } else {
             $('#leyka_form_resp').removeClass('complete');
         }
-    })
+    })*/
 });
