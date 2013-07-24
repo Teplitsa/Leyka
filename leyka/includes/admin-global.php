@@ -87,6 +87,9 @@ add_action('admin_menu', 'leyka_admin_menu');
 function leyka_admin_messages(){
     global $typenow, $edd_options;
 
+//    if(empty($_GET['post_type']) || $_GET['post_type'] != 'download')
+//        return;
+
     if(isset($_GET['edd-message']) && $_GET['edd-message'] == 'payment_deleted' && current_user_can('view_shop_reports')) {
         add_settings_error('edd-notices', 'leyka-donation-deleted', __('The donations has been deleted.', 'leyka'), 'updated');
     }
@@ -119,7 +122,7 @@ function leyka_admin_messages(){
             empty($edd_options['leyka_receiver_legal_kpp']) ||
             empty($edd_options['leyka_receiver_legal_address']) ||
             empty($edd_options['leyka_receiver_legal_bank_essentials'])
-        ) // & лейка НЕ только что установлена
+        ) && !get_option('leyka_just_activated')
     ) {
         $curr_admin_page = get_current_screen();
         if(strstr($curr_admin_page->id, 'download') !== FALSE || $curr_admin_page->id == 'plugins') {
@@ -130,6 +133,9 @@ function leyka_admin_messages(){
                 'updated'
             );
         }
+    } else if(get_option('leyka_just_activated')) {
+        add_settings_error('edd-notices', 'set-receiver-type', sprintf( __('Congratulations! You have almost completelely installed Leyka plugin on your website. Please, visit <a href="%s">settings</a> to do the last step and fill some donations settings.', 'leyka' ), admin_url('edit.php?post_type=download&page=edd-settings&tab=misc')), 'updated' );
+        delete_option('leyka_just_activated');
     }
 
     settings_errors('edd-notices');

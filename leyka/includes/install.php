@@ -61,6 +61,7 @@ function leyka_activation()
     update_option('edd_settings_emails', $emails_options);
     // Direct settings manipulation ENDS
 
+    add_option('leyka_just_activated', 1);
 
 //    elseif( !is_plugin_active('easy-digital-downloads/easy-digital-downloads.php') ) {
 //        activate_plugin(WP_PLUGIN_DIR.'/easy-digital-downloads/easy-digital-downloads.php');

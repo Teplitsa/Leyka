@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Leyka v1.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-07-12 11:28:27+0000\n"
+"PO-Revision-Date: 2013-07-24 14:02:20+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -348,17 +348,17 @@ msgstr "Активировать пожертвование"
 msgid "New donation payment"
 msgstr "Новый платеж по пожертвованию"
 
-#: includes/admin-global.php:206
+#: includes/admin-global.php:211
 #@ leyka
 msgid "Error while editing the recall! Please try again later or e-mail the support team to fix it."
 msgstr "Ошибка при редактировании отзыва. Пожалуйста, попробуйте ещё раз. Если ошибка повторится, обратитесь в службу поддержки сайта."
 
-#: includes/admin-global.php:207
+#: includes/admin-global.php:212
 #@ leyka
 msgid "PENDING"
 msgstr "В ОЖИДАНИИ"
 
-#: includes/admin-global.php:208
+#: includes/admin-global.php:213
 #@ leyka
 msgid "COMPLETE"
 msgstr "ЗАВЕРШЕН"
@@ -437,7 +437,7 @@ msgstr "Дополнительная информация "
 msgid "Type your comments, if needed"
 msgstr "Введите ваши комментарии, если нужно"
 
-#: includes/admin-global.php:106
+#: includes/admin-global.php:109
 #: includes/frontend.php:332
 #, php-format
 #@ leyka
@@ -962,11 +962,6 @@ msgstr "#MIN_SUM# #CURRENCY# - #MAX_SUM# #CURRENCY# (размер пожертв
 msgid "A few variants of possible donation sum"
 msgstr "Несколько вариантов размера пожертвования"
 
-#: includes/admin-edit-donate-page.php:31
-#@ leyka
-msgid "Donation log"
-msgstr "Журнал пожертвований"
-
 #: includes/admin-edit-donate-page.php:41
 #@ leyka
 msgid "Special notes or instructions for this donate. These notes will be added to the thanking email sended to the donor."
@@ -1100,12 +1095,12 @@ msgstr "Плагин добавляет на ваш сайт систему сб
 msgid "Sorry, the amount of your donation is 0 somehow."
 msgstr "размер пожертвований равен нулю."
 
-#: includes/admin-global.php:153
+#: includes/admin-global.php:158
 #@ leyka
 msgid "Recall"
 msgstr "Отзыв"
 
-#: includes/admin-global.php:154
+#: includes/admin-global.php:159
 #@ leyka
 msgid "recall"
 msgstr "отзыв"
@@ -1121,37 +1116,37 @@ msgstr "Пожертвования"
 msgid "New donation came"
 msgstr "Сделано новое пожертвование"
 
-#: includes/admin-settings-sections/misc.php:89
+#: includes/admin-settings-sections/misc.php:90
 #@ leyka
 msgid "Redirect to the checkout after adding the donation to the cart."
 msgstr "Перенаправлять на страницу оплаты при каждом добавлении пожертвования в корзину."
 
-#: includes/admin-settings-sections/misc.php:90
+#: includes/admin-settings-sections/misc.php:91
 #@ leyka
 msgid "Show agreement to the terms checkbox. It will have to be checked to make a donation."
 msgstr "Выводить поле согласия с условиями публичной оферты. Если это поле не отмечено, пожертвование не будет разрешено."
 
-#: includes/admin-settings-sections/misc.php:93
+#: includes/admin-settings-sections/misc.php:94
 #@ leyka
 msgid "I agree to the terms of donation making service."
 msgstr "Я согласен с условиями сервиса пожертвований"
 
-#: includes/admin-settings-sections/misc.php:144
+#: includes/admin-settings-sections/misc.php:145
 #@ leyka
 msgid "A text on a button to complete a donation"
 msgstr "Текст для кнопки выполнения пожертвования"
 
-#: includes/admin-settings-sections/misc.php:145
+#: includes/admin-settings-sections/misc.php:146
 #@ leyka
 msgid "A text on a button to complete a donation."
 msgstr "Текст для кнопки выполнения пожертвования на странице оплаты."
 
-#: includes/admin-settings-sections/misc.php:148
+#: includes/admin-settings-sections/misc.php:149
 #@ leyka
 msgid "A text on \"add to cart\" button"
 msgstr "Текст для кнопки добавления в корзину"
 
-#: includes/admin-settings-sections/misc.php:149
+#: includes/admin-settings-sections/misc.php:150
 #@ leyka
 msgid "Add donation to cart"
 msgstr "Добавить в корзину"
@@ -1168,17 +1163,17 @@ msgstr "Добрый день!<br /><br />На сайте {sitename} было с
 msgid "You must enable a payment gateway to use %s"
 msgstr "для совершения пожертвования должна быть включена хотя бы одна платёжная система."
 
-#: includes/admin-global.php:91
+#: includes/admin-global.php:94
 #@ leyka
 msgid "The donations has been deleted."
 msgstr "Пожертвования удалены."
 
-#: includes/admin-global.php:95
+#: includes/admin-global.php:98
 #@ leyka
 msgid "The donation notice has been resent."
 msgstr "Уведомление о пожертвовании отправлено."
 
-#: includes/admin-global.php:99
+#: includes/admin-global.php:102
 #, php-format
 #@ leyka
 msgid "Note: test mode is enabled, only test donation payments are shown below. %sSettings%s."
@@ -1215,7 +1210,7 @@ msgstr "Страница ошибки при пожертвании"
 msgid "Thank you for your donation!"
 msgstr "Спасибо за ваше пожертвование!"
 
-#: includes/admin-settings-sections/misc.php:146
+#: includes/admin-settings-sections/misc.php:147
 #@ leyka
 msgid "Make the donations"
 msgstr "Пожертвовать"
@@ -1393,89 +1388,89 @@ msgstr ""
 msgid "Symbols remain:"
 msgstr "Осталось символов:"
 
-#: includes/admin-global.php:110
+#: includes/admin-global.php:113
 #, php-format
 #@ leyka
 msgid "You have not set your donations receiver options. Visit <a href=\"%s\">settings</a> to configure them."
 msgstr "Вы не выполнили настроек получателя пожертвований. Все эти опции обязательны для корректной работы модуля пожертвований. Пожалуйста, посетите <a href=\"%s\">страницу настроек модуля</a> и выполните эти настройки."
 
-#: includes/admin-global.php:129
+#: includes/admin-global.php:132
 #, php-format
 #@ leyka
 msgid "Some of your donations receiver options are not set. All of them are required. Visit <a href=\"%s\">settings</a> to configure them."
 msgstr "Вы не выполнили некоторые настройки получателя пожертвований. Все эти опции обязательны для корректной работы модуля пожертвований. Пожалуйста, посетите <a href=\"%s\">страницу настроек модуля</a> и заполните недостающие поля."
 
-#: includes/admin-settings-sections/misc.php:26
+#: includes/admin-settings-sections/misc.php:27
 #@ leyka
 msgid "Donations receiver"
 msgstr "Получатель пожертвований (благоприемник)"
 
-#: includes/admin-settings-sections/misc.php:27
+#: includes/admin-settings-sections/misc.php:28
 #@ leyka
 msgid "Configure donations receiver options"
 msgstr "Выполните настройки получателя пожертвований"
 
-#: includes/admin-settings-sections/misc.php:34
+#: includes/admin-settings-sections/misc.php:35
 #@ leyka
 msgid "A private person"
 msgstr "Частное (физическое) лицо"
 
-#: includes/admin-settings-sections/misc.php:34
+#: includes/admin-settings-sections/misc.php:35
 #@ leyka
 msgid "A legal entity"
 msgstr "Юридическое лицо (организация)"
 
-#: includes/admin-settings-sections/misc.php:37
+#: includes/admin-settings-sections/misc.php:38
 #@ leyka
 msgid "Official name of your organization"
 msgstr "Официальное название вашей организации"
 
-#: includes/admin-settings-sections/misc.php:38
+#: includes/admin-settings-sections/misc.php:39
 #@ leyka
 msgid "Full official name of your organization, as in it's Rules."
 msgstr "Полное официальное название вашей организации, как указано в её Уставе."
 
-#: includes/admin-settings-sections/misc.php:42
+#: includes/admin-settings-sections/misc.php:43
 #@ leyka
 msgid "Juristic representative of the organization"
 msgstr "Фамилия, имя и отчество лица, действующего без доверенности от имени НКО (в именительном падеже)"
 
-#: includes/admin-settings-sections/misc.php:47
+#: includes/admin-settings-sections/misc.php:48
 #@ leyka
 msgid "Juristic representative of the organization (in genitive case)"
 msgstr "Фамилия, имя и отчество лица, действующего без доверенности от имени НКО (в родительном падеже)"
 
-#: includes/admin-settings-sections/misc.php:52
+#: includes/admin-settings-sections/misc.php:53
 #@ leyka
 msgid "Official position of the juristic representative"
 msgstr "Официальная должность лица, действующего без доверенности от имени НКО"
 
-#: includes/admin-settings-sections/misc.php:63
+#: includes/admin-settings-sections/misc.php:64
 #@ leyka
 msgid "State registration number of your organization"
 msgstr "ОГРН вашей организации"
 
-#: includes/admin-settings-sections/misc.php:64
+#: includes/admin-settings-sections/misc.php:65
 #@ leyka
 msgid "State registration number of your organization."
 msgstr "ОГРН (номер государственной регистрации) вашей организации."
 
-#: includes/admin-settings-sections/misc.php:68
+#: includes/admin-settings-sections/misc.php:69
 #@ leyka
 msgid "Organization's statement of the account number"
 msgstr "КПП вашей организации"
 
-#: includes/admin-settings-sections/misc.php:73
+#: includes/admin-settings-sections/misc.php:74
 #@ leyka
 msgid "Organization's bank account essentials"
 msgstr "Банковские реквизиты вашей организации"
 
-#: includes/admin-settings-sections/misc.php:78
+#: includes/admin-settings-sections/misc.php:79
 #@ leyka
 msgid "Official organization address"
 msgstr "Официальный адрес вашей организации (как указано в Уставе)"
 
-#: includes/admin-settings-sections/misc.php:83
+#: includes/admin-settings-sections/misc.php:84
 #@ leyka
 msgid "All donations you collected as a private person will be taxed by 13%. Don't forget to pay the taxes! :)"
 msgstr "Все пожертвования, собранные физическими лицами в РФ, облагаются налогом НДФЛ, составляющим 13%. Не забудьте заплатить налоги! :)"
@@ -1485,17 +1480,17 @@ msgstr "Все пожертвования, собранные физически
 msgid "I agree to the terms of the donation service"
 msgstr "Я согласен с условиями сервиса пожертвований"
 
-#: includes/admin-settings-sections/misc.php:91
+#: includes/admin-settings-sections/misc.php:92
 #@ leyka
 msgid "Link to the terms of agreement."
 msgstr "Ссылка на условия сервиса пожертвований"
 
-#: includes/admin-settings-sections/misc.php:92
+#: includes/admin-settings-sections/misc.php:93
 #@ leyka
 msgid "Text of the link to the terms of agreement."
 msgstr "Текст ссылки на условия сервиса пожертвований."
 
-#: includes/admin-settings-sections/misc.php:142
+#: includes/admin-settings-sections/misc.php:143
 #@ leyka
 msgid "#LEGAL_NAME# - official organization title,<br />#LEGAL_FACE# - juristic representative of the organization<br />#LEGAL_FACE_RP# - juristic representative of the organization (in genitive case)<br />#LEGAL_FACE_POSITION# - official position of the juristic representative<br />#LEGAL_STATE_REG_NUMBER# - state registration number of your organization<br />#LEGAL_KPP# - statement of the account number<br />#LEGAL_ADDRESS# - official organization address<br />#LEGAL_BANK_ESSENTIALS# - organization bank account essentials"
 msgstr "#LEGAL_NAME# - официальное название организации,<br />#LEGAL_FACE# - лицо, действующее без доверенности от имени организации (в им. падеже)<br />#LEGAL_FACE_RP# - лицо, действующее без доверенности от имени организации (в род. падеже)<br />#LEGAL_FACE_POSITION# - официальная должность лица, действующего без доверенности от имени организации<br />#LEGAL_STATE_REG_NUMBER# - ОГРН организации<br />#LEGAL_KPP# - КПП организации<br />#LEGAL_ADDRESS# - официальный адрес организации<br />#LEGAL_BANK_ESSENTIALS# - банковские реквизиты организации"
@@ -1551,4 +1546,10 @@ msgstr "Работает с помощью плагина %s"
 #@ leyka
 msgid "Specify amount of your donation"
 msgstr "Укажите сумму пожертвования"
+
+#: includes/admin-global.php:137
+#, php-format
+#@ leyka
+msgid "Congratulations! You have almost completelely installed Leyka plugin on your website. Please, visit <a href=\"%s\">settings</a> to do the last step and fill some donations settings."
+msgstr "<strong>Поздравляем!</strong> Вы почти закончили установку Лейки на ваш сайт. Пожалуйста, не забудьте посетить <a href=\"%s\">страницу настроек</a>, чтобы задать некоторые параметры модуля пожертвований."
 
