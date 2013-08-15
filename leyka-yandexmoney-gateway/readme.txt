@@ -34,6 +34,9 @@ Leyka plugin been translated into the following languages:
 2. Settings page
 
 == Changelog ==
+= 1.2 =
+* Tweak: comments updated
+
 = 1.1 =
 * New: Update for Leyka 1.1
 * New: Options for legal entity and privates
