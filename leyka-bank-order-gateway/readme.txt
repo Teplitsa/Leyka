@@ -4,8 +4,8 @@ Author URI: https://github.com/teplitsa
 Plugin URI: leyka.te-st.ru
 Tags: e-donate, donates, e-downloads, charity, wp-ecommerce, wp-donates, crowdfunding, bank payment, payment gateway, leyka
 Requires at least: 3.3
-Tested up to: 3.5.1
-Stable tag: 1.1
+Tested up to: 3.6
+Stable tag: 1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,6 +34,9 @@ Leyka plugin been translated into the following languages:
 2. Settings page
 
 == Changelog ==
+= 1.2 =
+* Tweak: Translation update
+
 = 1.1 =
 * New: Update for Leyka 1.1
 
