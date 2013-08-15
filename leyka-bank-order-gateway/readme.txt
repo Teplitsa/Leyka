@@ -35,6 +35,7 @@ Leyka plugin been translated into the following languages:
 
 == Changelog ==
 = 1.2 =
+* New: uniq ID option to identify payments
 * Tweak: Translation update
 
 = 1.1 =
