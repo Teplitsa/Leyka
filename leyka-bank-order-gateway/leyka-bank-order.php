@@ -3,7 +3,7 @@
 Plugin Name: Leyka Bank Order gateway
 Plugin URI: http://leyka.te-st.ru/
 Description: Gateway for Leyka donations management system which adds option for donating using bank order or custom  requisites.
-Version: 1.1
+Version: 1.2
 Author: Lev Zvyagincev aka Ahaenor
 Author URI: ahaenor@gmail.com
 License: GPLv2 or later
