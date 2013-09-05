@@ -4,8 +4,8 @@ Author URI: https://github.com/teplitsa
 Plugin URI: leyka.te-st.ru
 Tags: e-donate, donates, e-downloads, charity, wp-ecommerce, wp-donates, crowdfunding, leyka
 Requires at least: 3.3
-Tested up to: 3.5.1
-Stable tag: 1.1
+Tested up to: 3.6
+Stable tag: 1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,6 +38,13 @@ Leyka plugin been translated into the following languages:
 5. All donates admin page
 
 == Changelog ==
+
+= 1.2 =
+* New: Improved design of donation panel
+* New: Updated Leyka to support EDD 1.7.1
+* Fix: Short code for total payment counter is now displayed
+* Tweak: Localization improvements
+
 = 1.1 =
 * New: Design of donation panel
 * New: Donation logging (data is used both for counter and statitics)

@@ -3,11 +3,12 @@
 Plugin Name: Leyka
 Plugin URI: http://leyka.te-st.ru/
 Description: This plugin creates a donations management system on your WP site. This plugin is based on Easy Digital Downloads plugin (by Pippin Williamson).
-Version: 1.1
+Version: 1.2
 Author: Lev Zvyagincev aka Ahaenor
 Author URI: ahaenor@gmail.com
 Contributors: 
 	Denis Kulandin aka VaultDweller <kulandin_ET_SIGN_te-st.ru>
+	Anna Ladoshkina <webdev_ET_SIGN_foralien.com>
 Text Domain: leyka
 Domain Path: languages
 License: GPLv2 or later
