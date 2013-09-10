@@ -163,6 +163,7 @@
 	margin: 0 6px 6px 0; }
 
 .edd-payment-icons span img {
+	border: none !important;
 	display: block;
 	vertical-align: baseline;
 	max-width: 100%;
