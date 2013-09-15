@@ -12,6 +12,9 @@ if( !defined('ABSPATH') ) exit; // Exit if accessed directly
 
 // Changes in on Settings->Emails admin section:
 function leyka_emails_settings($settings){
+
+    unset($settings['email_template']);
+
     $settings['from_name']['desc'] = __('The name donations thanking emails are said to come from. This should probably be your site or NGO name.', 'leyka');
     $from_name = get_bloginfo('name');
     if( !$from_name )
@@ -26,7 +29,7 @@ function leyka_emails_settings($settings){
     $settings['purchase_subject']['std'] = __('Thank you for your donation!', 'leyka');
 
     $settings['purchase_receipt']['name'] = __('Donation thanking email template', 'leyka');
-    $settings['purchase_receipt']['desc'] = __('Enter the email that is sent to donations managers after completing a purchase. HTML is accepted. Available template tags:', 'leyka').'<br/>'.
+    $settings['purchase_receipt']['desc'] = __('Enter the text of email that will be sent to donor (if he opted to receive such email). HTML is accepted. Available template tags:', 'leyka').'<br/>'.
         '{download_list} - '.__('A list of donates given', 'leyka').'<br/>'.
         '{name} - '.__('The donor\'s name', 'leyka').'<br/>'.
         '{date} - '.__('The date of the donation', 'leyka').'<br/>'.
@@ -42,31 +45,24 @@ function leyka_emails_settings($settings){
     $settings['disable_admin_notices']['name'] = __('Disable donations managers notifications', 'leyka');
     $settings['disable_admin_notices']['desc'] = __('Check if you do not want to receive emails when no donations are made.', 'leyka');
 
-    array_push(
-        $settings,
-        array(
-            'id' => 'admin_notifications_subject',
-            'name' => __("Donations manager's notification subject", 'leyka'),
-            'desc' => __("Enter the donations manager's notification email subject", 'leyka'),
-            'type' => 'text',
-            'std' => __('New donation came', 'leyka')
-        ),
-        array(
-            'id' => 'admin_donates_email_text',
-            'name' => __("Donations manager's notification template", 'leyka'),
-            'desc' => __('Enter the email that is sent to donations managers after completing a purchase. HTML is accepted. Available template tags:', 'leyka').'<br/>'.
-                '{download_list} - '.__('A list of donates given', 'leyka').'<br/>'.
-                '{date} - '.__('The date of the donation', 'leyka').'<br/>'.
-                '{price} - '.__('The total amount of the donation', 'leyka').'<br/>'.
-                '{receipt_id} - '.__('The unique ID number for this donation', 'leyka').'<br/>'.
-                '{donate_id} - '.__("The ID number for donation's purpose item", 'leyka').'<br/>'.
-                '{edit_url} - '.__("The URL of the admin page where donation status can be changed", 'leyka').'<br/>'.
-                '{payment_method} - '.__('The method of payment used for this donation', 'leyka').'<br/>'.
-                '{sitename} - '.__('Your site name', 'edd'),
-            'type' => 'rich_editor',
-            'std' => __('Hello!<br /><br />Recently, there has been a new donation on a {sitename}:<br />{download_list}<br />which totally cost {price}, by the {payment_method} gateway.<br /><br />Donate ID: {donate_id}, donation hashcode: {receipt_id} | {edit_url}<br /><br />{sitename}, {date}', 'leyka'),
-        )
-    );
+    $settings['sale_notification_header']['name'] = '<strong>' . __("Manager's notification", 'leyka');
+
+    $settings['sale_notification_subject']['name'] = __("Donations manager's notification subject", 'leyka');
+    $settings['sale_notification_subject']['desc'] = __("Enter the donations manager's notification email subject", 'leyka');
+    $settings['sale_notification_subject']['std'] = __("New donation came", 'leyka');
+
+    $settings['sale_notification']['name'] = __("Donations manager's notification template", 'leyka');
+    $settings['sale_notification']['desc'] = __('Enter the text of email that will be sent to donations managers on donation request. HTML is accepted. Available template tags:', 'leyka').'<br/>'.
+        '{download_list} - '.__('A list of donates given', 'leyka').'<br/>'.
+        '{name} - '.__('The donor\'s name', 'leyka').'<br/>'.
+        '{date} - '.__('The date of the donation', 'leyka').'<br/>'.
+        '{price} - '.__('The total amount of the donation', 'leyka').'<br/>'.
+        '{receipt_id} - '.__('The unique ID number for this donation', 'leyka').'<br/>'.
+        '{payment_method} - '.__('The method of payment used for this donation', 'leyka').'<br/>'.
+        '{sitename} - '.__('Your site name', 'edd');
+    $settings['sale_notification']['std'] =  __('Hello!<br /><br />Recently, there has been a new donation on a {sitename}:<br />{download_list}<br />which totally cost {price}, by the {payment_method} gateway.<br /><br />Donate ID: {donate_id}, donation hashcode: {receipt_id} | {edit_url}<br /><br />{sitename}, {date}', 'leyka');
+    $settings['admin_notice_emails']['desc'] = __("Email addresses of donation managers. One email per line.", 'leyka');
+
     return $settings;
 }
 add_filter('edd_settings_emails', 'leyka_emails_settings');

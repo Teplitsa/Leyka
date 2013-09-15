@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Leyka v1.1\n"
+"Project-Id-Version: Leyka v1.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-07-24 14:02:20+0000\n"
+"PO-Revision-Date: 2013-09-15 23:12:55+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -169,107 +169,92 @@ msgstr "Черновик"
 msgid "Publish"
 msgstr "Опубликовать"
 
-#: includes/admin-settings-sections/emails.php:15
+#: includes/admin-settings-sections/emails.php:18
 #@ leyka
 msgid "The name donations thanking emails are said to come from. This should probably be your site or NGO name."
 msgstr "Значение поля «от кого» в письмах благодарности при пожертвованиях. Обычно содержит ваше имя, или название вашего блога, или название вашей организации."
 
-#: includes/admin-settings-sections/emails.php:21
+#: includes/admin-settings-sections/emails.php:24
 #@ leyka
 msgid "Email to send donations thanking emails from. This will act as the \"from\" and \"reply-to\" address."
 msgstr "Email, от имени которого будут рассылаться благодарственные письма при пожертвованиях. Указанный email будет стоять в полях «from» и «reply-to»."
 
-#: includes/admin-settings-sections/emails.php:24
+#: includes/admin-settings-sections/emails.php:27
 #@ leyka
 msgid "Donations thanking email subject"
 msgstr "Заголовок благодарственного письма за пожертвование"
 
-#: includes/admin-settings-sections/emails.php:25
+#: includes/admin-settings-sections/emails.php:28
 #@ leyka
 msgid "Enter the subject line for the donations thanking email"
 msgstr "Введите заголовок благодарственного письма за пожертвование"
 
-#: includes/admin-settings-sections/emails.php:28
+#: includes/admin-settings-sections/emails.php:31
 #@ leyka
 msgid "Donation thanking email template"
 msgstr "Шаблон благодарственного письма за пожертвование"
 
-#: includes/admin-settings-sections/emails.php:29
-#: includes/admin-settings-sections/emails.php:57
-#@ leyka
-msgid "Enter the email that is sent to donations managers after completing a purchase. HTML is accepted. Available template tags:"
-msgstr "Шаблон почтового сообщения, которое будет отправляться менеджерам пожертвований при каждом их совершении. Возможные тэги шаблона:"
-
-#: includes/admin-settings-sections/emails.php:30
-#: includes/admin-settings-sections/emails.php:58
+#: includes/admin-settings-sections/emails.php:33
+#: includes/admin-settings-sections/emails.php:56
 #@ leyka
 msgid "A list of donates given"
 msgstr "Список сделанных пожертвований"
 
-#: includes/admin-settings-sections/emails.php:31
+#: includes/admin-settings-sections/emails.php:34
+#: includes/admin-settings-sections/emails.php:57
 #@ leyka
 msgid "The donor's name"
 msgstr "Имя донора"
 
-#: includes/admin-settings-sections/emails.php:32
-#: includes/admin-settings-sections/emails.php:59
+#: includes/admin-settings-sections/emails.php:35
+#: includes/admin-settings-sections/emails.php:58
 #@ leyka
 msgid "The date of the donation"
 msgstr "Дата пожертвования"
 
-#: includes/admin-settings-sections/emails.php:33
-#: includes/admin-settings-sections/emails.php:60
+#: includes/admin-settings-sections/emails.php:36
+#: includes/admin-settings-sections/emails.php:59
 #@ leyka
 msgid "The total amount of the donation"
 msgstr "Общее количество пожертвований"
 
-#: includes/admin-settings-sections/emails.php:34
-#: includes/admin-settings-sections/emails.php:61
+#: includes/admin-settings-sections/emails.php:37
+#: includes/admin-settings-sections/emails.php:60
 #@ leyka
 msgid "The unique ID number for this donation"
 msgstr "Уникальный номер (ID) пожертвования"
 
-#: includes/admin-settings-sections/emails.php:35
-#: includes/admin-settings-sections/emails.php:64
+#: includes/admin-settings-sections/emails.php:38
+#: includes/admin-settings-sections/emails.php:61
 #@ leyka
 msgid "The method of payment used for this donation"
 msgstr "Платёжная система, использованная при пожертвовании"
 
-#: includes/admin-settings-sections/emails.php:36
-#: includes/admin-settings-sections/emails.php:65
+#: includes/admin-settings-sections/emails.php:39
+#: includes/admin-settings-sections/emails.php:62
 #@ edd
 msgid "Your site name"
 msgstr "Название вашего сайта"
 
-#: includes/admin-settings-sections/emails.php:39
+#: includes/admin-settings-sections/emails.php:42
 #@ leyka
 msgid "Donations manager's emails"
 msgstr "E-mail менеджеров пожертвований"
 
-#: includes/admin-settings-sections/emails.php:49
+#: includes/admin-settings-sections/emails.php:50
 #@ leyka
 msgid "Donations manager's notification subject"
 msgstr "Тема уведомления для менеджеров пожертвований"
 
-#: includes/admin-settings-sections/emails.php:50
+#: includes/admin-settings-sections/emails.php:51
 #@ leyka
 msgid "Enter the donations manager's notification email subject"
 msgstr "Введите тему письма-уведомления о новом пожертвовании для менеджеров пожертвований"
 
-#: includes/admin-settings-sections/emails.php:56
+#: includes/admin-settings-sections/emails.php:54
 #@ leyka
 msgid "Donations manager's notification template"
 msgstr "Шаблон письма-уведомления о новом пожертвовании для менеджеров пожертвований"
-
-#: includes/admin-settings-sections/emails.php:62
-#@ leyka
-msgid "The ID number for donation's purpose item"
-msgstr "Уникальный номер (ID) цели пожертвования."
-
-#: includes/admin-settings-sections/emails.php:63
-#@ leyka
-msgid "The URL of the admin page where donation status can be changed"
-msgstr "URL страницы админ. панели сайта, на которой можно изменить статус пожертвования"
 
 #: includes/classes/recalls-table.php:90
 #@ default
@@ -338,27 +323,27 @@ msgstr "Отмена"
 msgid "Permissions denied!"
 msgstr "В доступе отказано!"
 
-#: includes/admin-settings-sections/emails.php:88
+#: includes/admin-settings-sections/emails.php:84
 #@ leyka
 msgid "Activate the donation"
 msgstr "Активировать пожертвование"
 
-#: includes/admin-settings-sections/emails.php:100
+#: includes/admin-settings-sections/emails.php:96
 #@ leyka
 msgid "New donation payment"
 msgstr "Новый платеж по пожертвованию"
 
-#: includes/admin-global.php:211
+#: includes/admin-global.php:212
 #@ leyka
 msgid "Error while editing the recall! Please try again later or e-mail the support team to fix it."
 msgstr "Ошибка при редактировании отзыва. Пожалуйста, попробуйте ещё раз. Если ошибка повторится, обратитесь в службу поддержки сайта."
 
-#: includes/admin-global.php:212
+#: includes/admin-global.php:213
 #@ leyka
 msgid "PENDING"
 msgstr "В ОЖИДАНИИ"
 
-#: includes/admin-global.php:213
+#: includes/admin-global.php:214
 #@ leyka
 msgid "COMPLETE"
 msgstr "ЗАВЕРШЕН"
@@ -736,7 +721,7 @@ msgstr "Пожертвования"
 #. translators: plugin header field 'Name'
 #: includes/frontend-single-donations.php:85
 #: leyka.php:0
-#: leyka.php:109
+#: leyka.php:110
 #@ leyka
 msgid "Leyka"
 msgstr "Лейка"
@@ -1095,12 +1080,12 @@ msgstr "Плагин добавляет на ваш сайт систему сб
 msgid "Sorry, the amount of your donation is 0 somehow."
 msgstr "размер пожертвований равен нулю."
 
-#: includes/admin-global.php:158
+#: includes/admin-global.php:159
 #@ leyka
 msgid "Recall"
 msgstr "Отзыв"
 
-#: includes/admin-global.php:159
+#: includes/admin-global.php:160
 #@ leyka
 msgid "recall"
 msgstr "отзыв"
@@ -1151,7 +1136,7 @@ msgstr "Текст для кнопки добавления в корзину"
 msgid "Add donation to cart"
 msgstr "Добавить в корзину"
 
-#: includes/admin-settings-sections/emails.php:67
+#: includes/admin-settings-sections/emails.php:63
 #: includes/install.php:59
 #@ leyka
 msgid "Hello!<br /><br />Recently, there has been a new donation on a {sitename}:<br />{download_list}<br />which totally cost {price}, by the {payment_method} gateway.<br /><br />Donate ID: {donate_id}, donation hashcode: {receipt_id} | {edit_url}<br /><br />{sitename}, {date}"
@@ -1204,7 +1189,7 @@ msgstr "Страница, куда попадают пользователи п�
 msgid "Donations failure page"
 msgstr "Страница ошибки при пожертвании"
 
-#: includes/admin-settings-sections/emails.php:26
+#: includes/admin-settings-sections/emails.php:29
 #: includes/install.php:40
 #@ leyka
 msgid "Thank you for your donation!"
@@ -1220,7 +1205,7 @@ msgstr "Пожертвовать"
 msgid "Make the donation"
 msgstr "Пожертвовать"
 
-#: includes/admin-settings-sections/emails.php:37
+#: includes/admin-settings-sections/emails.php:40
 #: includes/install.php:37
 #@ leyka
 msgid "Hello, {name}!<br /><br />You have chosed to make the following donations:<br />{download_list}<br />which totally cost {price}, by the {payment_method} gateway.<br /><br />Sincerely thank you, {sitename}, {date}"
@@ -1274,18 +1259,18 @@ msgstr ""
 msgid "Donation successfully added to your %scart%s."
 msgstr "Пожертвование добавлено в вашу %sкорзину%s."
 
-#: leyka.php:78
+#: leyka.php:79
 #, php-format
 #@ leyka
 msgid "<div id=\"message\" class=\"error\"><p><strong>Error:</strong> Easy Digital Downloads plugin is missing. It is required for donates module to work. Base donations plugin will be deactivated.</p><p><a href=\"%s\">Click here</a> to download and install Easy Digital Downloads plugin.</p></div>"
 msgstr "<div id=\"message\" class=\"error\"><p><strong>Ошибка:</strong> плагин Easy Digital Downloads не найден. Он необходим для работы модуля пожертвований. Плагин Лейка будет деактивирован.</p><p><a href=\"%s\">Загрузить и инсталлировать Easy Digital Downloads</a></p></div>"
 
-#: leyka.php:85
+#: leyka.php:86
 #@ leyka
 msgid "<div id=\"message\" class=\"error\"><p><strong>Error:</strong> Easy Digital Downloads plugin is missing. It is required for donates module to work. Base donations plugin will be deactivated.</p></div>"
 msgstr "<div id=\"message\" class=\"error\"><p><strong>Ошибка:</strong> плагин Easy Digital Downloads не найден. Он необходим для работы модуля пожертвований. Плагин Лейка будет деактивирован.</p></div>"
 
-#: leyka.php:95
+#: leyka.php:96
 #, php-format
 #@ leyka
 msgid "<div id=\"message\" class=\"error\"><p><strong>Error:</strong> Easy Digital Downloads plugin is installed but inactive. It is required for donates module to work. Base donations plugin will be deactivated.</p><p><a href=\"%s\">Click here</a> to activate Easy Digital Downloads plugin.</p></div>"
@@ -1495,21 +1480,15 @@ msgstr "Текст ссылки на условия сервиса пожерт�
 msgid "#LEGAL_NAME# - official organization title,<br />#LEGAL_FACE# - juristic representative of the organization<br />#LEGAL_FACE_RP# - juristic representative of the organization (in genitive case)<br />#LEGAL_FACE_POSITION# - official position of the juristic representative<br />#LEGAL_STATE_REG_NUMBER# - state registration number of your organization<br />#LEGAL_KPP# - statement of the account number<br />#LEGAL_ADDRESS# - official organization address<br />#LEGAL_BANK_ESSENTIALS# - organization bank account essentials"
 msgstr "#LEGAL_NAME# - официальное название организации,<br />#LEGAL_FACE# - лицо, действующее без доверенности от имени организации (в им. падеже)<br />#LEGAL_FACE_RP# - лицо, действующее без доверенности от имени организации (в род. падеже)<br />#LEGAL_FACE_POSITION# - официальная должность лица, действующего без доверенности от имени организации<br />#LEGAL_STATE_REG_NUMBER# - ОГРН организации<br />#LEGAL_KPP# - КПП организации<br />#LEGAL_ADDRESS# - официальный адрес организации<br />#LEGAL_BANK_ESSENTIALS# - банковские реквизиты организации"
 
-#: includes/admin-settings-sections/emails.php:42
+#: includes/admin-settings-sections/emails.php:45
 #@ leyka
 msgid "Disable donations managers notifications"
 msgstr "Не уведомлять менеджеров пожертвований"
 
-#: includes/admin-settings-sections/emails.php:43
+#: includes/admin-settings-sections/emails.php:46
 #@ leyka
 msgid "Check if you do not want to receive emails when no donations are made."
 msgstr "Отметьте, если вы не хотите получать уведомления для менеджеров пожертвований."
-
-#. translators: plugin header field 'Version'
-#: leyka.php:0
-#@ leyka
-msgid "1.1"
-msgstr ""
 
 #: includes/frontend-single-donations.php:80
 #@ leyka
@@ -1552,4 +1531,30 @@ msgstr "Укажите сумму пожертвования"
 #@ leyka
 msgid "Congratulations! You have almost completelely installed Leyka plugin on your website. Please, visit <a href=\"%s\">settings</a> to do the last step and fill some donations settings."
 msgstr "<strong>Поздравляем!</strong> Вы почти закончили установку Лейки на ваш сайт. Пожалуйста, не забудьте посетить <a href=\"%s\">страницу настроек</a>, чтобы задать некоторые параметры модуля пожертвований."
+
+#: includes/admin-settings-sections/emails.php:32
+#@ leyka
+msgid "Enter the text of email that will be sent to donor (if he opted to receive such email). HTML is accepted. Available template tags:"
+msgstr "Введите текст сообщения которое будет послано жертвователю (если он разрешил его отправить). HTML разрешен. Доступные тэги:"
+
+#: includes/admin-settings-sections/emails.php:48
+#@ leyka
+msgid "Manager's notification"
+msgstr "Уведомление о пожертвование"
+
+#: includes/admin-settings-sections/emails.php:55
+#@ leyka
+msgid "Enter the text of email that will be sent to donations managers on donation request. HTML is accepted. Available template tags:"
+msgstr "Введите текст сообщения, которое будет отправлено операторам пожертвований после появления нового намерения о пожертвовании от донора. HTML разрешен. Доступные тэги:"
+
+#: includes/admin-settings-sections/emails.php:64
+#@ leyka
+msgid "Email addresses of donation managers. One email per line."
+msgstr "Адрес эл. почты операторов пожертвований. Один адрес на строку."
+
+#. translators: plugin header field 'Version'
+#: leyka.php:0
+#@ leyka
+msgid "1.2"
+msgstr ""
 
