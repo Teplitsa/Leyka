@@ -96,7 +96,7 @@ function leyka_bank_order_processing($payment_data){
     global $edd_options;
 
     // Redirect to quittance page to print it out:
-    leyka_insert_payment($payment_data); // Process the payment on our side
+    $donation_id = leyka_insert_payment($payment_data); // Process the payment on our side
 
     if($edd_options['bank_order_document'] == 'file') {
         header('location: '.$edd_options['bank_order_file']); // Send a payment quittance to browser
@@ -110,16 +110,17 @@ function leyka_bank_order_processing($payment_data){
         file_get_contents(dirname(__FILE__).'/standard_bank_order.php') :
         $edd_options['bank_order_custom_html'];
 
-    $payer_full_name = '&nbsp;';
+    $payer_full_name = trim($payment_data['user_info']['first_name']);
     $last_name = trim($payment_data['user_info']['last_name']); 
     if($last_name) {
-        $payer_full_name = trim($payment_data['user_info']['first_name']);
-        $second_name = trim($payment_data['post_data']['edd_second']); 
+        $payer_full_name = $last_name.'&nbsp;'.$payer_full_name;
+        $second_name = trim($payment_data['post_data']['edd_second']);
         if($second_name)
             $payer_full_name .= '&nbsp;'.$second_name;
-        $payer_full_name .= '&nbsp;'.$last_name;
     }
-    
+
+    $edd_options['bank_order_ess_donation_purpose'] = empty($edd_options['bank_order_ess_donation_purpose']) ?
+        '' : str_replace('#DONATION_ID#', $donation_id, $edd_options['bank_order_ess_donation_purpose']);
     $payment_purpose = empty($edd_options['bank_order_ess_add_donor_comment']) ?
         $edd_options['bank_order_ess_donation_purpose'] :
         (
@@ -148,22 +149,22 @@ function leyka_bank_order_processing($payment_data){
         $html);
     for($i=0; $i<10; $i++) {
         $digit = isset($edd_options['bank_order_ess_inn']) ?
-            @$edd_options['bank_order_ess_inn'][$i] : ' ';
+            $edd_options['bank_order_ess_inn'][$i] : ' ';
         $html = str_replace("#INN_$i#", $digit, $html);
     }
     for($i=0; $i<20; $i++) {
         $digit = isset($edd_options['bank_order_ess_account'][$i]) ?
-            @$edd_options['bank_order_ess_account'][$i] : ' ';
+            $edd_options['bank_order_ess_account'][$i] : ' ';
         $html = str_replace("#ACC_$i#", $digit, $html);
     }
     for($i=0; $i<10; $i++) {
         $digit = isset($edd_options['bank_order_ess_bik'][$i]) ?
-            @$edd_options['bank_order_ess_bik'][$i] : ' ';
+            $edd_options['bank_order_ess_bik'][$i] : ' ';
         $html = str_replace("#BIK_$i#", $digit, $html);
     }
     for($i=0; $i<20; $i++) {
         $digit = isset($edd_options['bank_order_ess_corr_account'][$i]) ?
-            @$edd_options['bank_order_ess_corr_account'][$i] : ' ';
+            $edd_options['bank_order_ess_corr_account'][$i] : ' ';
         $html = str_replace("#CORR_$i#", $digit, $html);
     }
     echo $html;
@@ -202,8 +203,7 @@ function leyka_bank_order_options($options){
                 'default' => __('Standard bank order blank', 'leyka-bank-order'),
                 'file' => __('Following document file', 'leyka-bank-order'),
                 'custom' => __('Manual bank order blank settings', 'leyka-bank-order')
-            ),
-            'std' => 'default'
+            )
         ),
         array(
             'id' => 'bank_order_file',
@@ -269,9 +269,9 @@ function leyka_bank_order_options($options){
         array(
             'id' => 'bank_order_ess_donation_purpose',
             'name' => __('Payment purpose text in the bank order', 'leyka-bank-order'),
-            'desc' => __('A text for payment purpose field in the bank order', 'leyka-bank-order'),
+            'desc' => __('A text for payment purpose field in the bank order. If contains #DONATION_ID#, this placeholder will be replaced with numeric donation ID.', 'leyka-bank-order'),
             'type' => 'text',
-            'std' => __('Charity donation', 'leyka-bank-order'),
+            'std' => __('Charity donation №#DONATION_ID#', 'leyka-bank-order'),
         ),
         array(
             'id' => 'bank_order_ess_add_donor_comment',
