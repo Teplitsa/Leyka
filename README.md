@@ -8,11 +8,11 @@ Plugin URI: leyka.te-st.ru
 
 Tags: e-donate, donates, e-downloads, charity, wp-ecommerce, wp-donates, crowdfunding, leyka
 
-Requires at least: 3.3
+Requires at least: 3.5
 
-Tested up to: 3.6
+Tested up to: 3.8.1
 
-Stable tag: 1.2
+Stable tag: 2.0
 
 License: GPLv2 or later
 
@@ -30,11 +30,10 @@ Leyka plugin been translated into the following languages:
 == Installation ==
 
 1. Install and activate the plugin.
-2. Go to Donates -> Settings and configure settings.
-3. If no donate page exists create new Donate from Donates -> Add New page.
-4. Install and activate needed Leyka gateways.
-5. Activate and configure gateways on Donates -> Settings page.
-6. For detailed setup instructions, visit the official [Documentation](http://leyka.te-st.ru) page.
+2. Go to Leyka -> Settings and configure settings.
+3. Create new donation campaign from Leyka -> New Campaign.
+4. Activate and configure gateways on Leyka -> Settings -> Payment Systems tab..
+For detailed setup instructions, visit the official [Documentation](http://leyka.te-st.ru) page.
 
 == Frequently Asked Questions ==
 
@@ -47,6 +46,11 @@ Leyka plugin been translated into the following languages:
 5. All donates admin page
 
 == Changelog ==
+
+= 2.0 =
+* New: Removed dependency from EasyDigitalDownload
+* New: Payment gateways are now embedded in Leyka
+* New: New design of donation widget
 
 = 1.2 =
 * New: Improved design of donation panel
