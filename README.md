@@ -1,21 +1,6 @@
-=== Лейка ===
-Contributors: ahaenor, foralien
-Author URI: http://te-st.ru
-Plugin URI: http://leyka.te-st.ru
-Tags: e-donate, donates, charity, wp-donates, crowdfunding, leyka
-Requires at least: 3.6.1
-Tested up to: 3.8.1
-Stable tag: 2.0
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+# [Лейка](http://leyka.te-st.ru) #
 
 Лейка - простая система для интеграции, сбора и управления пожертвованиями на вашем сайте.
-
-== Description ==
-
-Плагин «Онлайн-Лейка» — это система, позволяющая добавить на ваш сайт функции сбора пожертвований для вашей организации. 
-Пожертвования принимаются в популярных электронных валютах. 
-**Следите за разработкой на [GitHub](https://github.com/Teplitsa/Leyka)**
 
 Задача плагина — облегчить и усовершенствовать интеграцию сбора пожертвований на сайты НКО.
 * Плагин элементарно устанавливается и требует минимум настроек. 
@@ -24,7 +9,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Основная аудитория плагина — сотрудники НКО и общественные инициативы.
 
-Внимание: для сбора пожертвований с помощью популярных платёжных систем необходимо иметь договор с этими системами.
+**Внимание:** для сбора пожертвований с помощью популярных платёжных систем необходимо иметь договор с этими системами.
 
 **Основные функции**
 
@@ -35,15 +20,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 * Редактируй текст вашей благодарности донорам.
 * При необходимости, измените текст договора оферты.
 
-== Installation ==
-
-Процесс инсталляции плагина стандартен для WordPress.
-
-== Frequently Asked Questions ==
-
-Читайте секцию вопросов и ответов на сайте плагина [FAQ](http://leyka.te-st.ru/faq/)
-
-== Screenshots ==
+## Screenshots ##
 
 1. Начальная страница плагина (консоль)
 2. Страница списка поступивших пожертвований
@@ -52,52 +29,28 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 5. Пример формы пожертвования на сайте
 6. Пример квитанции для оплаты через банк
 
-== Changelog ==
+## Установка ##
 
-= 2.0 =
-* New: New major release. Leyka was heavily revritten.
-* New: Removed dependency from EasyDigitalDownload.
-* New: Payment gateways are now embedded in Leyka.
-* New: New design of donation widget.
-* New: gateway/payment method API.
-* New: Min PHP ver: 5.3.
+Подробная инструкция по установке плагина Лейка доступна на официальном сайте в разделе [Установка](http://devleyka.ngo2.ru/ustanovka-lejki/)
 
-= 1.2.1 =
-* New: Updated Leyka to support EDD 1.7.2
-* Fix: Donation panel was not working with some themes
-* Tweak: Email settings section in admin panel was slightly updated
+Если у вас установлен GIT, то вы можете клонировать репозиторий: https://github.com/Teplitsa/Leyka.git
+Или скачать его в виде ZIP архива: https://github.com/Teplitsa/Leyka/archive/master.zip
 
-= 1.2 =
-* New: Improved design of donation panel
-* New: Updated Leyka to support EDD 1.7.1
-* Fix: Short code for total payment counter is now displayed
-* Tweak: Localization improvements
 
-= 1.1 =
-* New: Design of donation panel
-* New: Donation logging (data is used both for counter and statitics)
-* New: Leyka now controls when EDD can upgrade
-* New: Updated Leyka to support EDD 1.5.2
-* New: Counter shows sum of approved donations and distinquish them by Payment Gateways
-* New: Wizard for legal entity and individuals
-* New: Standard contract offer for making donations
-* Fix: Fixed Checkout page donation mode
-* Fix: Made clear for users that no personal data is collected
-* Fix: Wrong link for RBK Money context description
-* Fix: Unable to delete user comments from trash in admin panel
-* Fix: Bulk activation/deactivation of user comments in admin panel
-* Fix: Localization issues
-* Tweak: Option Accept Donation is now a link without additional static text
-* Tweak: Code Refactoring
+## Помощь проекту ##
 
-= 1.0 =
-* First official release!
+Мы очень ждем вашей помощи проекту. Вы можете помочь проекту следующими способами:
 
-== Upgrade Notice ==
+* Добавить сообщение об ошибке или предложение по улучшению на GitHub
+* Поделиться улучшениями кода, послав нам Pull Request
+* Сделать перевод плагина или оптимизировать его для вашей страны
+    
+Замечание: если у вас есть вопросы по работе плагина, то обратитесь за поддержкой на официальной странице.
 
+## Oбновлениe
 **ВНИМАНИЕ!**
 
-В версии 2.0 были внесены критические изменения, не совместимые с кодом и данными **любой более ранней версии**. 
-Если вы активно использовали Лейку версии 1.2.* или ранее, **не выполняйте это обновление**. 
+В версии 2.0 были внесены критические изменения, не совместимые с кодом и данными любой более ранней версии. 
+**Если вы активно использовали Лейку версии 1.2  или ранее, не выполняйте это обновление!** 
 Разработчики плагина не несут ответственности за результат этого действия. 
 Подробнее читайте на [сайте плагина](http://leyka.te-st.ru/old-version/)
