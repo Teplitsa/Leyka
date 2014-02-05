@@ -55,7 +55,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 == Changelog ==
 
 = 2.0 =
-* New: New major release. Leyka was heavily revritten.
+* New: New major release. Leyka was refacored and data structures were changed.
 * New: Removed dependency from EasyDigitalDownload.
 * New: Payment gateways are now embedded in Leyka.
 * New: New design of donation widget.
@@ -97,7 +97,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 **ВНИМАНИЕ!**
 
-В версии 2.0 были внесены критические изменения, не совместимые с кодом и данными **любой более ранней версии**. 
-Если вы активно использовали Лейку версии 1.2.* или ранее, **не выполняйте это обновление**. 
+В версии 2.0 были внесены критические изменения, не совместимые с кодом и данными любой более ранней версии. 
+**Если вы активно использовали Лейку версии 1.2 или ранее, не выполняйте это обновление**. 
 Разработчики плагина не несут ответственности за результат этого действия. 
 Подробнее читайте на [сайте плагина](http://leyka.te-st.ru/old-version/)
