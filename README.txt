@@ -1,4 +1,4 @@
-=== Лейка ===
+=== Leyka ===
 Contributors: ahaenor, foralien
 Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
@@ -9,7 +9,7 @@ Stable tag: 2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Лейка - простая система для интеграции, сбора и управления пожертвованиями на вашем сайте.
+Лейка - система для интеграции, сбора и управления пожертвованиями на вашем сайте.
 
 == Description ==
 
@@ -55,7 +55,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 == Changelog ==
 
 = 2.0 =
-* New: New major release. Leyka was refacored and data structures were changed.
+* New: New major release. Code refactored and data structures changed.
 * New: Removed dependency from EasyDigitalDownload.
 * New: Payment gateways are now embedded in Leyka.
 * New: New design of donation widget.
