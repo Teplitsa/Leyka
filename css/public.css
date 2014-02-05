@@ -1,0 +1,438 @@
+/**
+ * This stylesheet is used to style the public view of the plugin.
+ **/
+
+/* Common styles */
+#leyka-payment-form {
+	margin: 1.5em 0;
+	max-width: 640px;
+	background: #fff;
+	font: 14px/21px "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: #444;
+	-webkit-font-smoothing: antialiased; /* Fix for webkit rendering */
+	-webkit-text-size-adjust: 100%; }
+
+#leyka-payment-form a,
+#leyka-payment-form a:visited {
+	color:  #1DB318; }
+
+#leyka-payment-form a:hover {
+	color:  #198110; }
+
+#leyka-payment-form p {
+	margin: 0; }
+
+#leyka-payment-form img {
+	max-width: 100%;
+	height: auto;
+	-webkit-box-shadow: 0px 0px 0px 0px rgba(255, 255, 255, 0);
+	box-shadow:  0px 0px 0px 0px rgba(255, 255, 255, 0); }
+
+#leyka-payment-form  ul,
+#leyka-payment-form  li {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box; }
+
+#leyka-copy {
+	margin-top: 5px;
+	position: relative;
+	text-align: right;
+	font-size: 11px;
+	line-height: 18px;
+	padding: 4px 30px 4px 4px; 	
+	border: 1px solid #cbe5b5;
+	background: #eef6e8; }
+
+#leyka-copy:after {
+	content: '';
+	display: block;
+	background: transparent url(../img/menu-icon.png) no-repeat 0 0;
+	width: 18px;
+	height: 18px;
+	position: absolute;
+	right: 5px;
+	top: 5px; }
+
+/* modal */
+#lean_overlay {
+    position: fixed;
+    z-index:100;
+    top: 0px;
+    left: 0px;
+    height:100%;
+    width:100%;
+    background: #000;
+    display: none; }
+
+.leyka-oferta-text {
+	display: none;
+	width: 640px;
+	height: 500px;
+	padding: 25px 30px;		
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px; 
+	background: #fff;
+	-webkit-box-shadow:  1px 1px 3px 1px rgba(200, 200, 200, 0.7);
+	box-shadow:  1px 1px 3px 1px rgba(20, 20, 20, 0.7);}
+
+.leyka-oferta-text .leyka-modal-close {
+	display: block;
+	position: absolute;
+	top: -7px;
+	right: -7px;
+	border: 1px solid #aaa;
+	background: #aaa;
+	color: #fff;
+	font-weight: bold;
+	width: 21px;
+	height: 21px;
+	text-align: center;
+	border: 1px solid #fff;
+	-webkit-border-radius: 50%;
+	-moz-border-radius:50%;
+	border-radius: 50%;
+	-webkit-box-shadow:  1px 1px 3px 1px rgba(200, 200, 200, 0.7);
+	box-shadow:  1px 2px 2px rgba(50, 50, 50, 0.7);
+	cursor: pointer; }
+	
+.leyka-oferta-text .leyka-modal-close:hover {
+	background: #1DB318; }
+
+.leyka-oferta-text-frame {
+	width: 100%;
+	height: 100%;
+	overflow-y: scroll; }
+	
+.leyka-oferta-text .leyka-oferta-text-flow {
+	font-size: 13px;
+	line-height: 1.35;
+	padding-left: 5px;
+	padding-right: 20px; }
+	
+#leyka-payment-form .leyka-oferta-text-flow p {
+	margin: 1.35em 0; }
+
+
+/* Forms reset */
+button,
+input,
+select,
+textarea {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;     
+    margin: 0;
+    vertical-align: baseline; 
+    *vertical-align: middle;
+	outline: none; }
+
+textarea {
+    overflow: auto; 
+    vertical-align: top; }
+
+input[type="radio"],
+input[type="checkbox"] {
+	padding: 0;	
+	display: inline;
+	vertical-align: middle; }
+
+
+/* Form defaults */
+#leyka-payment-form input[type="radio"],
+#leyka-payment-form input[type="checkbox"]  {
+	margin-right: 4px; }
+	
+#leyka-payment-form input[type="text"],
+#leyka-payment-form input[type="password"],
+#leyka-payment-form input[type="email"],
+#leyka-payment-form textarea,
+#leyka-payment-form select {
+	width: 100%;
+	border: 1px solid #ccc;
+	background: #fff;
+	padding: 6px 4px;
+	outline: none;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	font: 13px "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: #444;
+	margin: 0; }
+
+#leyka-payment-form select {
+	width: auto;
+	padding: 1px; }
+
+#leyka-payment-form input[type="text"]:focus,
+#leyka-payment-form input[type="password"]:focus,
+#leyka-payment-form input[type="email"]:focus,
+#leyka-payment-form textarea:focus {
+	border: 1px solid #aaa;
+	color: #444;
+	-moz-box-shadow: inset 0 0 3px rgba(0,0,0,.2);
+	-webkit-box-shadow: inset 0 0 3px rgba(0,0,0,.2);
+	box-shadow: inset  0 0 3px rgba(0,0,0,.2); }
+
+#leyka-payment-form input[type="submit"] {
+	font: 13px "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	text-transform: uppercase;
+	color: #fff;
+	background: #1DB318;
+	border: none;
+	padding: 6px 16px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px; }
+
+#leyka-payment-form input[type="submit"]:hover {
+	background: #198110; }
+
+
+
+/* fields */
+.leyka-field {
+	margin: 20px 0; }
+
+.leyka-field.submit,
+.leyka-field.agree {
+	font-size: 12px;
+	margin: 10px 0; }
+
+.leyka-field.amount {
+	text-align: right;
+	margin: 0; }
+	
+.leyka-field.amount label,
+.leyka-field.amount span {
+	display: inline-block;
+	margin-right: 5px; }
+
+.leyka-field.amount .currency {
+	font-weight: bold;
+	text-transform: uppercase; }
+
+#leyka-payment-form .leyka-field.amount select {
+	font-size: 14px;
+	padding: 6px 3px; }
+
+#leyka-payment-form .leyka-field.flexible .figure input {
+	border: 2px solid #1DB318;
+	max-width: 250px;
+	font-size: 18px;
+	padding: 4px;
+	text-align: right; }
+
+.leyka-field.fixed .figure {
+	font-size: 18px; 
+	margin-left: 5px; }
+
+.leyka-field.fixed .currency span {
+	display: inline-block;
+	border: 1px solid #ccc;
+	padding: 5px 6px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px; }
+	
+.leyka-user-data .input {
+	width: 100%;
+	display: inline-block;
+	position: relative; }
+	
+.leyka-user-data .req:after {
+	content: '*';
+	font-size: 18px;
+	display: block;
+	position: absolute;
+	right: 7px;
+	top: 5px;
+	color: red; }
+	
+.field-comment {
+	color: #666;
+	padding-left: 2px; 
+	font-size: 0.785714em; }
+
+
+/* errors */
+.leyka-nopm-error,
+.leyka-submit-errors,
+#leyka-payment-form .field-error,
+.field-error {
+	display: none;
+	background: #FFE9E9;
+	border: 1px solid #FBC4C4;
+	color: #DE5959;
+	padding: 2px 10px;
+	margin-top: 5px;
+	font-size: 12px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px; }
+
+.leyka-submit-errors {
+	display: block;
+	padding: 10px 20px 10px 20px; }
+
+.entry-content .leyka-submit-errors ul,
+.leyka-submit-errors ul {
+	margin: 5px 0; }
+
+#leyka-payment-form .leyka-submit-errors li {
+	margin: 3px 0; }
+
+.leyka-nopm-error {
+	display: block;
+	padding: 10px 20px 10px 20px;
+	font-size: 0.95em; }
+
+*[class *= 'error'] a {
+	color: #fc001e; }
+
+*[class *= 'error'] a:hover {
+	color: #aa363a; }
+
+/* Templates */
+.leyka-pm-fields {
+	position: relative;
+	background: #fff;
+	border: 1px solid #dfdfdf;
+	border-left: none;
+	padding: 20px;
+	margin-right: -1px;
+	max-width: 370px;
+	-webkit-box-shadow:  1px 1px 3px 1px rgba(200, 200, 200, 0.7);
+	box-shadow:  1px 1px 3px 1px rgba(240, 240, 240, 0.67);}
+
+.leyka-pm-icons {
+	overflow: hidden; }
+
+#leyka-payment-form .leyka-pm-icons li {
+	float: right;
+	margin-left: 5px; 
+	width: 60px;
+	border: 1px solid #dfdfdf; }
+
+.leyka-pm-desc {
+	padding: 20px;  }
+
+.entry-content #leyka-payment-form .leyka-pm-desc p, 
+#leyka-payment-form .leyka-pm-desc p {
+	line-height: 21px;
+	margin-top: 10px; }
+
+
+/* toggles */
+.leyka-tpl-toggles .leyka-user-data {
+	margin: 35px 0; }
+	
+.leyka-tpl-toggles .leyka-payment-option {
+	margin: 5px 0; }
+
+.leyka-tpl-toggles .toggle-trigger {	
+	border: 1px solid #dfdfdf;
+	background: #f9f9f9;
+	padding: 7px 15px;
+	cursor: pointer;
+	font-weight: bold;
+	text-shadow: 1px 1px 1px #f5f5f5;}
+
+.toggle-inactive {
+    cursor: default !important;
+}
+
+.leyka-tpl-toggles .toggle-area {
+	display: none;
+	border: 1px solid #dfdfdf;
+	border-top: none;
+	background: #f9f9f9; }
+	
+.leyka-tpl-toggles .toggled .toggle-trigger {
+	border-bottom: none; }
+	
+.leyka-tpl-toggles .toggle-trigger:hover{
+	color: #666; }
+
+/* radios */
+.leyka-tpl-radio .leyka-pm-form {
+	border: 1px solid #dfdfdf; }
+
+.leyka-tpl-radio .form-part {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box; }
+
+#amount-selector {	
+	border-bottom: 1px solid #dfdfdf;
+	padding: 20px; }
+	
+#amount-selector  .currency select {
+	border-color: #1DB318; }
+
+#leyka-currency-data {
+	overflow: hidden; }
+	
+#pm-selector {	
+	background: #f9f9f9;
+	padding: 15px; }
+	
+#leyka-pm-data {
+	background: #f9f9f9; }
+
+#leyka-pm-data.loading .leyka-pm-fields:after {
+	content: '';
+	display: block;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0, 0.1) url(../img/ajax-loader.gif) no-repeat center center;
+	position: absolute;
+	top: 0;
+	left: 0 ; }
+
+.leyka-pm-selector {
+	 }
+
+.leyka-pm-selector label {
+	display: block;	
+	padding: 0 5px 1px;
+	border: 1px solid transparent;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	-webkit-transition: all 0.3s ;
+	-moz-transition: all 0.3s ;
+	-ms-transition: all 0.3s ;
+	-o-transition: all 0.3s ;
+	transition: all 0.3s ;}
+	
+.leyka-pm-selector .active label {
+	border-color:#dfdfdf;
+	background: #e3e3e3;  }
+
+.leyka-tpl-radio .freeze-fields:before,
+.leyka-tpl-radio .freeze-fields:after {
+	content: " "; 
+    display: table; }
+
+.leyka-tpl-radio .freeze-fields:after {
+    clear: both; }
+
+.leyka-tpl-radio .freeze-fields .amount {
+	float: right; }
+
+
+#leyka-campaign-finished {
+	border: 2px solid #1DB318;
+	padding: 10px 15px;
+	color: #333;
+	background: #f9f9f9;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px; }
+
+

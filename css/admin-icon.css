@@ -1,0 +1,25 @@
+/**
+ * Leyka Menu Icon 
+ **/
+
+#adminmenu #toplevel_page_leyka .wp-menu-image {
+	position: relative;
+	background: transparent; }
+
+#adminmenu #toplevel_page_leyka div.wp-menu-image:before {
+	display: none; }
+	
+#adminmenu #toplevel_page_leyka div.wp-menu-image:after  {
+	content: '';
+	display: block;
+	width: 18px;
+	height: 18px;
+	background: transparent url(../img/menu-icon.png) no-repeat 0 -22px;
+	position: absolute;
+	top: 8px;
+	left: 8px;
+    }
+
+#adminmenu #toplevel_page_leyka:hover .wp-menu-image:after,
+#adminmenu #toplevel_page_leyka .wp-has-current-submenu .wp-menu-image:after {
+	background-position: 0 -2px; }
