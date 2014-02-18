@@ -1,8 +1,5 @@
 <?php
-/**
- * Core class.
- * 
- */
+/** Core class. */
 class Leyka {
 	
 	/**
@@ -153,9 +150,7 @@ class Leyka {
         $this->_form_errors[] = $error;
     }
 
-    /**
-     * @return bool
-     */
+    /** @return bool */
     public function payment_form_has_errors() {
         return count($this->_form_errors) > 0;
     }
@@ -585,6 +580,11 @@ class Leyka {
         global $wp_query;
 
 		if(isset($wp_query->query_vars['name']) && $wp_query->query_vars['name'] == 'leyka-process-donation') {
+            
+            if(empty($_POST)) {
+                wp_redirect(site_url());
+                exit();
+            }
 
 			$this->do_payment_form_submission();
 
@@ -647,6 +647,9 @@ class Leyka {
 
     public function do_payment_form_submission() {
 
+        $this->clear_session_errors(); // Clear all previous sumbits errors, if there are some
+//        $this->
+
         if( !wp_verify_nonce($_REQUEST['_wpnonce'], 'leyka_payment_form') ) {
             
             $error = new WP_Error('wrong_form_submission', __('Wrong nonce in submitted form data', 'leyka'));
@@ -660,9 +663,10 @@ class Leyka {
             $this->add_payment_form_error($error);
         }
 
-        $this->clear_session_errors();
+        if($this->payment_form_has_errors())
+            return;
 
-        $donation_id = leyka()->log_submission();
+        $donation_id = $this->log_submission();
 
         /** @todo We may want to replace whole $_POST with some specially created array */
         do_action('leyka_payment_form_submission', $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
@@ -674,8 +678,11 @@ class Leyka {
 
             $error = new WP_Error('wrong_pm_url', __('Wrong payment method URL to submit the form data', 'leyka'));
             $this->add_payment_form_error($error);
-        } else
-            $this->clear_session_errors();
+        } /* else
+            $this->clear_session_errors();*/
+        
+        if($this->payment_form_has_errors()) // No logging needed if submit attempt have failed
+            wp_delete_post($donation_id, true);
 	}
 
     /** Save a base submission info and return new donation ID, so gateway can add it's specific data to the logs. */

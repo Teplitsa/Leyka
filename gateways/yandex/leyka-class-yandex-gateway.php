@@ -88,7 +88,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             case 'yandex_card':
             case 'yandex_terminal':
             case 'yandex_mobile':
-                return 'https://demomoney.yandex.ru/eshop.xml'; /** @todo https://money.yandex.ru - for real payments */
+                return 'https://money.yandex.ru/eshop.xml'; // 'https://demomoney.yandex.ru/eshop.xml'; /** @todo Make a checkbox option for it */
             default:
                 return $current_url;
         }
@@ -552,6 +552,6 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
 //}
 
 
-add_action('leyka_add_gateway', function(){
-    leyka()->add_gateway(Leyka_Yandex_Gateway::get_instance());
-});
+//add_action('leyka_add_gateway', function(){
+leyka()->add_gateway(Leyka_Yandex_Gateway::get_instance());
+//});

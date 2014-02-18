@@ -593,9 +593,8 @@ function leyka_payment_method_action() {
 	if(empty($_POST['pm_id']))
 		die('-1');
 		
-	if(empty($_POST['currency']))
-		die('-1');
-		
+//	if(empty($_POST['currency']))
+//		die('-1');
 	
 	$curr_currency = trim($_POST['currency']);	
 	$curr_pm = leyka_get_pm_by_id(trim($_POST['pm_id']));

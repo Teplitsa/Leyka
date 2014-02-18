@@ -199,7 +199,7 @@ jQuery(document).ready(function($){
 		});
 	}
 	
-	/** oferta modal **/
+	/** Oferta modal **/
 	$(document).on('click', '.leyka-legal-confirmation-trigger', function(e){
         e.preventDefault();
 
@@ -210,7 +210,12 @@ jQuery(document).ready(function($){
                 .click();
         }
     });
-	
+
+    /** Allow modal window closing on Esc */
+    $(document).keyup(function(event){
+        if(event.keyCode == 27)
+            $('#lean_overlay').click();
+    });
 });
 
 function is_email(email) {

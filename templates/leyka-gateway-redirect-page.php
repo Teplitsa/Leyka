@@ -64,7 +64,7 @@
     </form>
     <?php leyka_pf_footer();?>
     <script type="text/javascript">
-        setTimeout(function(){ document.getElementById('leyka-auto-submit').submit(); }, 12000);
+        setTimeout(function(){ document.getElementById('leyka-auto-submit').submit(); }, 3000);
     </script>
 </body>
 </html>
