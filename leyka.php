@@ -38,6 +38,14 @@ if ( ! defined( 'WPINC' ) ) {
 if( !defined('LEYKA_VERSION') )
     define('LEYKA_VERSION', '2.0');
 
+// Plugin base file:
+if( !defined('LEYKA_PLUGIN_BASE_FILE') ) // "leyka.php"
+    define('LEYKA_PLUGIN_BASE_FILE', basename(__FILE__));
+
+// Plugin base directory:
+if( !defined('LEYKA_PLUGIN_DIR_NAME') ) // Most commonly, "leyka"
+    define('LEYKA_PLUGIN_DIR_NAME', basename(dirname(__FILE__)));
+
 // Plugin URL:
 if( !defined('LEYKA_PLUGIN_BASE_URL') )
     define('LEYKA_PLUGIN_BASE_URL', plugin_dir_url(__FILE__));

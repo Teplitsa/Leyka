@@ -12,6 +12,10 @@
 	-webkit-font-smoothing: antialiased; /* Fix for webkit rendering */
 	-webkit-text-size-adjust: 100%; }
 
+#leyka-payment-form:first-child {
+    margin-top: 0;
+}
+
 #leyka-payment-form a,
 #leyka-payment-form a:visited {
 	color:  #1DB318; }

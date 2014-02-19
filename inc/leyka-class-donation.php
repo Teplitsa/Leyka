@@ -308,7 +308,7 @@ class Leyka_Donation_Management {
                 <?php $last_status = end($status_log);
                 echo str_replace(
                     array('%status', '%date'),
-                    array('<i>'.$last_status['status'].'</i>', '<time>'.date('d.m.Y, H:i', $last_status['date']).'</time>'),
+                    array('<i>'.$this->get_status_labels($last_status['status']).'</i>', '<time>'.date('d.m.Y, H:i', $last_status['date']).'</time>'),
                     '<div class="leyka-ddata-string last-log">'.__('Last status change: to&nbsp;%status (at&nbsp;%date)', 'leyka').'</div>'
                 );?>
                 <div id="donation-status-log-toggle"><?php echo __('Show/hide full status history', 'leyka');?></div>
@@ -316,7 +316,7 @@ class Leyka_Donation_Management {
                     <?php for($i=0; $i<count($status_log); $i++) {?>
                     <li><?php echo str_replace(
                         array('%status', '%date'),
-                        array('<i>'.$status_log[$i]['status'].'</i>','<time>'.date('d.m.Y, H:i', $status_log[$i]['date']).'</time>'),
+                        array('<i>'.$this->get_status_labels($status_log[$i]['status']).'</i>','<time>'.date('d.m.Y, H:i', $status_log[$i]['date']).'</time>'),
                         __('%date - %status', 'leyka')
                     );}?></li>
                 </ul>

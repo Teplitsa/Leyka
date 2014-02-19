@@ -45,7 +45,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
                 '#KPP#',
                 '#ACC#',
                 '#RECEIVER_BANK_NAME#',
-                '#BIK#',
+                '#BIC#',
                 '#CORR#',
             ),
             array( // Form field values
@@ -74,7 +74,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
         }
         for($i=0; $i<9; $i++) {
             $quittance_html = str_replace(
-                "#BIK_$i#", substr(leyka_options()->opt('org_bank_bik'), $i, 1), $quittance_html
+                "#BIC_$i#", substr(leyka_options()->opt('org_bank_bic'), $i, 1), $quittance_html
             );
         }
         for($i=0; $i<20; $i++) {
@@ -200,6 +200,6 @@ class Leyka_Bank_Order extends Leyka_Payment_Method {
     }
 }
 
-add_action('leyka_add_gateway', function(){
-    leyka()->add_gateway(Leyka_Quittance_Gateway::get_instance());
-}, 12);
+//add_action('leyka_add_gateway', function(){
+leyka()->add_gateway(Leyka_Quittance_Gateway::get_instance());
+//}, 12);

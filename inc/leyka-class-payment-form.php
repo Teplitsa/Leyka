@@ -160,7 +160,7 @@ class Leyka_Payment_Form {
 		return $out.implode('', $hiddens);
 	}
 	
-	function get_name_field() {
+	function get_name_field($value = '') {
 		
 		if(!$this->is_field_supported('name'))
 			return '';
@@ -170,7 +170,7 @@ class Leyka_Payment_Form {
 		
 		ob_start();
 	?>		
-		<label class="input req"><input type="text" class="required" name="leyka_donor_name" placeholder="<?php echo esc_attr($ph);?>" id="leyka_donor_name" value=""></label>
+		<label class="input req"><input type="text" class="required" name="leyka_donor_name" placeholder="<?php echo esc_attr($ph);?>" id="leyka_donor_name" value="<?php echo $value;?>"></label>
 		<p class="field-comment"><?php echo $comment;?></p>
 		<p id="leyka_donor_name-error" class="field-error"></p>
         
@@ -181,7 +181,7 @@ class Leyka_Payment_Form {
 	}
 	
 	
-	function get_email_field() {
+	function get_email_field($value = '') {
 		
 		if(!$this->is_field_supported('email'))
 			return '';
@@ -191,7 +191,7 @@ class Leyka_Payment_Form {
 		
 		ob_start();
 	?>	
-		<label class="input req"><input type="text" class="required email" name="leyka_donor_email" placeholder="<?php echo esc_attr($ph);?>" id="leyka_donor_email" value=""></label>
+		<label class="input req"><input type="text" class="required email" name="leyka_donor_email" placeholder="<?php echo esc_attr($ph);?>" id="leyka_donor_email" value="<?php echo $value;?>"></label>
 		<p class="field-comment"><?php echo $comment;?></p>
         <p id="leyka_donor_email-error" class="field-error"></p>
 		
@@ -412,22 +412,22 @@ function leyka_pf_get_campaign_id_value() {
 
 function leyka_pf_get_payment_method_value() {
     $pm = empty($_POST['leyka_payment_method']) ? '' : explode('-', $_POST['leyka_payment_method']);
-    
+
     return $pm ? array('gateway_id' => $pm[0], 'payment_method_id' => $pm[1]) : array();
 }
 
-function leyka_pf_get_name_field() {
+function leyka_pf_get_name_field($value = '') {
     /** @var Leyka_Payment_Form $leyka_current_pm */
 	global $leyka_current_pm;
-	
-	return $leyka_current_pm->get_name_field();
+
+	return $leyka_current_pm->get_name_field($value);
 }
 
-function leyka_pf_get_email_field() {
+function leyka_pf_get_email_field($value = '') {
     /** @var Leyka_Payment_Form $leyka_current_pm */
 	global $leyka_current_pm;
-	
-	return $leyka_current_pm->get_email_field();
+
+	return $leyka_current_pm->get_email_field($value);
 }
 
 function leyka_pf_get_agree_field() {
@@ -440,35 +440,35 @@ function leyka_pf_get_agree_field() {
 function leyka_pf_get_submit_field() {
     /** @var Leyka_Payment_Form $leyka_current_pm */
 	global $leyka_current_pm;
-	
+
 	return $leyka_current_pm->get_submit_field();
 }
 
 function leyka_pf_get_pm_label() {
     /** @var Leyka_Payment_Form $leyka_current_pm */
 	global $leyka_current_pm;
-	
+
 	return $leyka_current_pm->get_pm_label();
 }
 
 function leyka_pf_get_pm_description() {
     /** @var Leyka_Payment_Form $leyka_current_pm */
 	global $leyka_current_pm;
-	
+
 	return $leyka_current_pm->get_pm_description();
 }
 
 function leyka_pf_get_pm_fields() {
     /** @var Leyka_Payment_Form $leyka_current_pm */
 	global $leyka_current_pm;
-	
+
 	return $leyka_current_pm->get_pm_fields();
 }
 
 function leyka_pf_get_pm_icons() {
     /** @var Leyka_Payment_Form $leyka_current_pm */
 	global $leyka_current_pm;
-	
+
 	return $leyka_current_pm->get_pm_icons();
 }
 
@@ -593,9 +593,8 @@ function leyka_payment_method_action() {
 	if(empty($_POST['pm_id']))
 		die('-1');
 		
-	if(empty($_POST['currency']))
-		die('-1');
-		
+//	if(empty($_POST['currency']))
+//		die('-1');
 	
 	$curr_currency = trim($_POST['currency']);	
 	$curr_pm = leyka_get_pm_by_id(trim($_POST['pm_id']));
@@ -611,8 +610,8 @@ function leyka_payment_method_action() {
 
 	<div class='leyka-user-data'>
 	<?php
-		echo leyka_pf_get_name_field();
-		echo leyka_pf_get_email_field();
+		echo leyka_pf_get_name_field(empty($_POST['user_name']) ? '' : trim($_POST['user_name']));
+		echo leyka_pf_get_email_field(empty($_POST['user_email']) ? '' : trim($_POST['user_email']));
 		echo leyka_pf_get_pm_fields();
 	?>
 	</div>

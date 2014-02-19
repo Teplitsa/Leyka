@@ -158,7 +158,7 @@ jQuery(document).ready(function($){
 
                 $('#leyka-currency-data').html(response);
                 $('#pm-selector').on('change', 'input', function(e){
-                    leyka_pm_data(e);
+                    leyka_pm_data(e, this);
                 });
             });
         }
@@ -167,13 +167,15 @@ jQuery(document).ready(function($){
     /* Switches of PM for Radios template */
 	$('#pm-selector').on('change', 'input', function(e){
 		
-		leyka_pm_data(e);
+		leyka_pm_data(e, this);
 	});
 	
 	
-	function leyka_pm_data(e){
+	function leyka_pm_data(e, field){
         
-        var curr = $('option:selected', '.leyka_donation_currency').val();
+        var $form = $(field).parents('form:first'),
+            curr = $('option:selected', '.leyka_donation_currency').val();
+
         if( !curr )
             curr = $('.leyka_donation_currency').val();
 		
@@ -184,7 +186,9 @@ jQuery(document).ready(function($){
                 action: 'leyka_payment_method',
                 pm_id: $(e.target).attr('data-pm_id'),
                 currency: curr,
-                _leyka_ajax_nonce: $('#_wpnonce').val()
+                _leyka_ajax_nonce: $('#_wpnonce').val(),
+                user_name: $form.find('#leyka_donor_name').val(),
+                user_email: $form.find('#leyka_donor_email').val()
             },
             beforeSend: function(xhr){
                 // Loaders:
@@ -193,13 +197,14 @@ jQuery(document).ready(function($){
                 $(e.target).parents('li').addClass('active');
             }
 		}).done(function(response){
+
             response = $.parseJSON(response);
 			$('#leyka-pm-data').removeClass('loading').html(response.pm);
             $('.currency').html(response.currency);
 		});
 	}
 	
-	/** oferta modal **/
+	/** Oferta modal **/
 	$(document).on('click', '.leyka-legal-confirmation-trigger', function(e){
         e.preventDefault();
 
@@ -210,7 +215,12 @@ jQuery(document).ready(function($){
                 .click();
         }
     });
-	
+
+    /** Allow modal window closing on Esc */
+    $(document).keyup(function(event){
+        if(event.keyCode == 27)
+            $('#lean_overlay').click();
+    });
 });
 
 function is_email(email) {
