@@ -25,10 +25,10 @@ class Leyka_Admin_Setup {
             'in_plugin_update_message-'.LEYKA_PLUGIN_DIR_NAME.'/'.LEYKA_PLUGIN_BASE_FILE,
             function($plugin_data, $r){
 
-                echo '<pre>' . print_r($plugin_data, TRUE) . '</pre>';
-                echo '<pre>' . print_r($r, TRUE) . '</pre>';
-
-            echo 'Hello World';
+//                echo '<pre>' . print_r($plugin_data, TRUE) . '</pre>';
+//                echo '<pre>' . print_r($r, TRUE) . '</pre>';
+//
+//                echo 'Hello World';
 
         }, 10, 2);
     }
