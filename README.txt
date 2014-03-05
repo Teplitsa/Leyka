@@ -22,6 +22,8 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Если вы активно использовали Лейку версии **1.2.х или ранее**, **не выполняйте это обновление**. 
 Разработчики плагина не несут ответственности за результат этого действия.
 
+[youtube http://www.youtube.com/watch?v=SVxXIynTG8k]
+
 **Следите за разработкой на [GitHub](https://github.com/Teplitsa/Leyka)**
 
 **Официальный сайт плагина:** [leyka.te-st.ru](http://leyka.te-st.ru/)
