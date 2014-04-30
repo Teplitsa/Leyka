@@ -620,7 +620,7 @@ function leyka_payment_method_action() {
 		echo leyka_pf_get_agree_field();
 		echo leyka_pf_get_submit_field();
 		
-		$icons = leyka_pf_get_pm_icons();	
+		$icons = leyka_pf_get_pm_icons();
 		if($icons) {
 			$list = array();
 			foreach($icons as $i){

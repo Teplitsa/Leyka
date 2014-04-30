@@ -6,7 +6,7 @@
 class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     protected static $_instance;
-	
+
     protected function _set_gateway_attributes() {
 
         $this->_id = 'chronopay';
@@ -61,7 +61,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         if(empty($this->_payment_methods['chronopay_card'])) {
             $this->_payment_methods['chronopay_card'] = Leyka_Chronopay_Card::get_instance();
             $this->_payment_methods['chronopay_card']->initialize_pm_options();
-            $this->_payment_methods['chronopay_card']->save_settings();
+//            $this->_payment_methods['chronopay_card']->save_settings();
         }
 		
     }
@@ -232,6 +232,8 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
             return static::$_instance;
         }
 
+        $this->initialize_pm_options();
+
         $this->_id = empty($params['id']) ? 'chronopay_card' : $params['id'];
 
         $this->_label = empty($params['label']) ? __('Payment with Banking Card', 'leyka') : $params['label'];
@@ -270,7 +272,7 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
 
         $this->_default_currency = empty($params['default_currency']) ? 'rur' : $params['default_currency'];
 
-        $this->initialize_pm_options();
+//        echo '<pre>Here: ' . print_r(leyka_options()->opt('chronopay_card_product_id_rur'), 1) . '</pre>';
 
         //add_action('leyka_service_call-'.$this->_id, 'leyka_yandex_handle_service_call'); //AL: WTF ?
 
@@ -320,18 +322,18 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
         );
     }
 
-    public function modify_options_values() {
-
-        $this->_description = leyka_options()->opt_safe($this->_id.'_description');
-
-        $this->_supported_currencies = array();
-        if(leyka_options()->opt('chronopay_card_product_id_rur'))
-            $this->_supported_currencies[] = 'rur';
-        if(leyka_options()->opt('chronopay_card_product_id_usd'))
-            $this->_supported_currencies[] = 'usd';
-        if(leyka_options()->opt('chronopay_card_product_id_eur'))
-            $this->_supported_currencies[] = 'eur';
-    }
+//    public function modify_options_values() {
+//
+//        $this->_description = leyka_options()->opt_safe($this->_id.'_description');
+//
+//        $this->_supported_currencies = array();
+//        if(leyka_options()->opt('chronopay_card_product_id_rur'))
+//            $this->_supported_currencies[] = 'rur';
+//        if(leyka_options()->opt('chronopay_card_product_id_usd'))
+//            $this->_supported_currencies[] = 'usd';
+//        if(leyka_options()->opt('chronopay_card_product_id_eur'))
+//            $this->_supported_currencies[] = 'eur';
+//    }
 }
 
 //add_action('leyka_add_gateway', function(){

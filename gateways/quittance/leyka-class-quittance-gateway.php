@@ -21,7 +21,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
         // Instantiate and save each of PM objects, if needed:
         if(empty($this->_payment_methods['bank_order'])) {
             $this->_payment_methods['bank_order'] = new Leyka_Bank_Order();
-            $this->_payment_methods['bank_order']->save_settings();
+//            $this->_payment_methods['bank_order']->save_settings();
         }
     }
     
@@ -134,6 +134,8 @@ class Leyka_Bank_Order extends Leyka_Payment_Method {
         if(static::$_instance) /** We can't make a public __construct() to private */ {
             return static::$_instance;
         }
+
+        $this->initialize_pm_options();
         
         /** @todo For now, we're taking quittance template HTML from static file. We can also store it in the DB (PM's options) to let user edit it easily in Leyka settings. */
         $this->_quittance_html = file_get_contents(LEYKA_PLUGIN_DIR.'gateways/quittance/bank_order.html');
@@ -164,8 +166,6 @@ class Leyka_Bank_Order extends Leyka_Payment_Method {
 
         $this->_default_currency = empty($params['default_currency']) ? 'rur' : $params['default_currency'];
 
-        $this->initialize_pm_options();
-
         static::$_instance = $this;
 
         return static::$_instance;
@@ -192,12 +192,10 @@ class Leyka_Bank_Order extends Leyka_Payment_Method {
         return $this->_quittance_html;
     }
 
-    public function modify_options_values() {
-
-        $this->_description = leyka_options()->opt_safe($this->_id.'_description');
-        
-//        $this->_active = (int)in_array($this->full_id, leyka_options()->opt('pm_available'));
-    }
+//    public function modify_options_values() {
+//
+//        $this->_description = leyka_options()->opt_safe($this->_id.'_description');
+//    }
 }
 
 //add_action('leyka_add_gateway', function(){

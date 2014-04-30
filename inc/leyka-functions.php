@@ -49,10 +49,39 @@ function leyka_get_default_dm_list() {
 
 function leyka_get_default_success_page() {
 
-    $query = new WP_Query(array('post_type' => 'page', 'name' => 'thank-you-for-your-donation', 'posts_per_page' => 1));
-    $query = $query->get_posts();
+    $page = new WP_Query(array(
+        'post_type' => 'page',
+        'name' => 'thank-you-for-your-donation',
+        'post_status' => array(
+            'publish', 'pending', 'draft', 'auto-draft', 'private', 'future', 'inherit', 'trash'
+        ),
+        'posts_per_page' => 1
+    ));
+    $posts = $page->get_posts();
+    $page = reset($posts);
 
-    return $query ? reset($query)->ID : 0;
+    if($page) {
+
+        if($page->post_status != 'publish')
+            wp_update_post(array(
+                'ID' => $page->ID,
+                'post_status' => 'publish',
+            ));
+
+        $page = $page->ID;
+    } else {
+
+        $page = wp_insert_post(array(
+            'post_type' => 'page',
+            'post_status' => 'publish',
+            'post_name' => 'thank-you-for-your-donation',
+            'post_title' => __('Your donation is completed!', 'leyka'),
+            'post_content' => __('We heartly thank you for your help!', 'leyka'),
+//                '' => __('', 'leyka'),
+        ));
+    }
+
+    return $page ? $page : 0;
 }
 
 function leyka_get_success_page_url() {
@@ -68,10 +97,38 @@ function leyka_get_success_page_url() {
 
 function leyka_get_default_failure_page() {
 
-    $query = new WP_Query(array('post_type' => 'page', 'name' => 'sorry-donation-failure', 'posts_per_page' => 1));
-    $query = $query->get_posts();
+    $page = new WP_Query(array(
+        'post_type' => 'page',
+        'name' => 'sorry-donation-failure',
+        'post_status' => array(
+            'publish', 'pending', 'draft', 'auto-draft', 'private', 'future', 'inherit', 'trash'
+        ),
+        'posts_per_page' => 1
+    ));
+    $posts = $page->get_posts();
+    $page = reset($posts);
 
-    return $query ? reset($query)->ID : 0;
+    if($page) {
+
+        if($page->post_status != 'publish')
+            wp_update_post(array(
+                'ID' => $page->ID,
+                'post_status' => 'publish',
+            ));
+
+        $page = $page->ID;
+    } else {
+
+        $page = wp_insert_post(array(
+            'post_type' => 'page',
+            'post_status' => 'publish',
+            'post_name' => 'sorry-donation-failure',
+            'post_title' => __('Your donation failed', 'leyka'),
+            'post_content' => __('We are deeply sorry, but for some technical reason we failed to receive your donation. Your money are intact. Please try again later!', 'leyka'),
+        ));
+    }
+
+    return $page ? $page : 0;
 }
 
 function leyka_get_failure_page_url() {
@@ -152,3 +209,7 @@ function leyka_get_donation_status_list() {
         'trash' => _x('Trash', '«Deleted» donation status', 'leyka'),
     ));
 }
+
+/** To avoid some strange bug, when WP functions like is_user_logged_in() are suddenly not found: */
+if( !function_exists('is_user_logged_in') )
+    require_once(ABSPATH.'wp-includes/pluggable.php');

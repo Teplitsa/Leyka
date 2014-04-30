@@ -89,8 +89,9 @@ class Leyka {
 			$this->admin_setup();
 
 		/** Handlers: */
-
         add_action('parse_request', function($request){
+            // Callback URLs are: some-site.org/leyka/service/{gateway_id}/{action_name}/
+            // For ex., leyka.ngo2.ru/leyka/service/yandex/check_order/
             $request = $request->request;
             if(stristr($request, 'leyka/service') !== FALSE) { // Leyka service URL
                 $request = explode('/', trim(str_replace('leyka/service', '', $request), '/'));
@@ -226,77 +227,62 @@ class Leyka {
      * false if WPMU is disabled or plugin is activated on an individual blog.
      */
 	public static function activate($network_wide) {
-        
+
+        $leyka_last_ver = get_option('leyka_last_ver');
+        if(empty($leyka_last_ver) || $leyka_last_ver < 2.1) {
+
+            /** Upgrade options structure in the DB */
+            if(get_option('leyka_modules'))
+                delete_option('leyka_modules');
+
+            if(get_option('leyka_options_installed'))
+                delete_option('leyka_options_installed');
+
+            global $options_meta;
+
+            foreach($options_meta as $name => $meta) {
+
+                $option = get_option("leyka_$name");
+                if(is_array($option) && isset($option['type']) && isset($option['title'])) // Update option data
+                    update_option("leyka_$name", $option['value']);
+            }
+
+
+            /** Upgrade gateway and PM options structure in the DB */
+            foreach(leyka_get_gateways() as $gateway) {
+
+                /** @var $gateway Leyka_Gateway */
+                delete_option("leyka_{$gateway->id}_payment_methods");
+
+                foreach($gateway->get_options_names() as $name) {
+
+                    $option = get_option("leyka_$name");
+
+                    if(is_array($option) && isset($option['type']) && isset($option['title'])) // Update option data
+                        update_option("leyka_$name", $option['value']);
+                }
+              
+
+                foreach($gateway->get_payment_methods() as $pm) {
+
+                    /** @var $pm Leyka_Payment_Method */
+                    foreach($pm->get_pm_options_names() as $name) {
+
+                        $option = get_option("leyka_$name");
+                        if(is_array($option) && isset($option['type']) && isset($option['title'])) // Update option data
+                            update_option("leyka_$name", $option['value']);
+                    }
+                }
+            }
+        }
+
+
         /** Set a flag to flush permalinks (needs to be done a bit later, than this activation itself): */
         update_option('leyka_permalinks_flushed', 0);
 
-        /** Create a thank-you and sorry-donation-failed pages, if needed: */
-        if( !leyka_options()->opt('success_page') ) {
+        update_option('leyka_last_ver', 2.1);
 
-            $page = new WP_Query(array(
-                'post_type' => 'page',
-                'name' => 'thank-you-for-your-donation',
-                'posts_per_page' => 1,
-                'post_status' => array(
-                    'publish', 'pending', 'draft', 'auto-draft', 'private', 'future', 'inherit', 'trash'
-                ),
-            ));
-            $page = $page->get_posts();
-            $page = reset($page);
-        } else
-            $page = get_post(leyka_options()->opt('success_page'));
-
-//            echo '<pre>' . print_r($page, TRUE) . '</pre>'; die();
-
-        if($page && $page->post_status != 'publish')
-            wp_update_post(array(
-                'ID' => $page->ID,
-                'post_status' => 'publish',
-            ));
-        else if( !$page ) {
-            $page = wp_insert_post(array(
-                'post_type' => 'page',
-                'post_status' => 'publish',
-                'post_name' => 'thank-you-for-your-donation',
-                'post_title' => __('Your donation is completed!', 'leyka'),
-                'post_content' => __('We heartly thank you for your help!', 'leyka'),
-//                '' => __('', 'leyka'),
-            ));
-            leyka_options()->opt('success_page', $page);
-        }
-
-        if( !leyka_options()->opt('failure_page') ) {
-
-            $page = new WP_Query(array(
-                'post_type' => 'page',
-                'name' => 'sorry-donation-failure',
-                'posts_per_page' => 1,
-                'post_status' => array(
-                    'publish', 'pending', 'draft', 'auto-draft', 'private', 'future', 'inherit', 'trash'
-                ),
-            ));
-            $page = $page->get_posts();
-            $page = reset($page);
-        } else
-            $page = get_post(leyka_options()->opt('failure_page'));
-
-        if($page && $page->post_status != 'publish')
-            wp_update_post(array(
-                'ID' => $page->ID,
-                'post_status' => 'publish',
-            ));
-        else if( !$page ) {
-
-            $page = wp_insert_post(array(
-                'post_type' => 'page',
-                'post_status' => 'publish',
-                'post_name' => 'sorry-donation-failure',
-                'post_title' => __('Your donation failed', 'leyka'),
-                'post_content' => __('We are deeply sorry, but for some technical reason we failed to receive your donation. Please try again later!', 'leyka'),
-//                '' => __('', 'leyka'),
-            ));
-            leyka_options()->opt('success_page', $page);
-        }
+        // ...
     }
 
 	/**
@@ -308,9 +294,11 @@ class Leyka {
 		
         delete_option('leyka_permalinks_flushed');
 	}
-	
+
 	/** Load additional plugin files */
 	public function load_plugin_files(){
+
+		
 		require_once(LEYKA_PLUGIN_DIR.'/inc/leyka-class-payment-form.php');
 	}
 	
@@ -364,9 +352,10 @@ class Leyka {
 	 **/
 	
 	public function admin_setup(){
-		
+		require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-allocator.php');
+		require_once(LEYKA_PLUGIN_DIR.'inc/leyka-render-settings.php');
 		require_once(LEYKA_PLUGIN_DIR.'/inc/leyka-admin.php');
-		Leyka_Admin_Setup::get_instance();		
+		Leyka_Admin_Setup::get_instance();	
 	}
 	
 	
@@ -555,7 +544,7 @@ class Leyka {
             'label_count'               => _n_noop(
                 'Failed <span class="count">(%s)</span>',
                 'Failed <span class="count">(%s)</span>',
-                'edd'
+                'leyka'
             )
         ));
 		
@@ -596,59 +585,15 @@ class Leyka {
 
                 header('HTTP/1.1 200 OK');
 
-                add_action('wp_enqueue_scripts', function(){
-
-                    wp_enqueue_script(
-                        leyka()->plugin_slug.'-form-autosubmit',
-                        LEYKA_PLUGIN_BASE_URL.'js/public.autosubmit.js',
-                        array('jquery'),
-                        LEYKA_VERSION,
-                        false
-                    );
-                });
-
-//                add_filter('wp_title', function($title, $separator){
-//                    $title .= get_bloginfo('name')." $separator ".__('Redirect to the gateway', 'leyka');
-//
-//                    return $title;
-//                }, 10, 2);
-
                 include(LEYKA_PLUGIN_DIR.'templates/leyka-gateway-redirect-page.php'); // Show Gateway redirect page
                 exit();
             }
 		}
 	} // template_redirect
 
-//    public function gateway_redirect_page_display($content) {
-//        if(is_page('leyka-process-donation')) {
-//
-//            add_action('wp_enqueue_scripts', function(){
-//
-//                wp_enqueue_script(
-//                    $this->_plugin_slug.'-form-autosubmit',
-//                    LEYKA_PLUGIN_BASE_URL.'js/public.autosubmit.js',
-//                    array('jquery'),
-//                    $this->_version,
-//                    true
-//                );
-//            });
-//
-////            $content .= "<form id='leyka-auto-submit' action='{$this->_payment_url}' method='post'>";
-////
-////            foreach($this->_payment_vars as $name => $value) {
-////                $content .= "<input type='hidden' name='$name' value='$value' />";
-////            }
-////
-////            $content .= '</form>';
-//        }
-
-//        return $content;
-//    }
-
     public function do_payment_form_submission() {
 
         $this->clear_session_errors(); // Clear all previous sumbits errors, if there are some
-//        $this->
 
         if( !wp_verify_nonce($_REQUEST['_wpnonce'], 'leyka_payment_form') ) {
             
@@ -671,9 +616,10 @@ class Leyka {
         /** @todo We may want to replace whole $_POST with some specially created array */
         do_action('leyka_payment_form_submission', $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
 
-        $this->_payment_vars = apply_filters('leyka_submission_form_data', $this->_payment_vars, $pm[1], $donation_id);
+        $this->_payment_vars = apply_filters('leyka_submission_form_data-'.$pm[0], $this->_payment_vars, $pm[1], $donation_id);
 
-        $this->_payment_url = apply_filters('leyka_submission_redirect_url', $this->_payment_url, $pm[1]); 
+        $this->_payment_url = apply_filters('leyka_submission_redirect_url-'.$pm[0], $this->_payment_url, $pm[1]);
+
         if( !$this->_payment_url ) {
 
             $error = new WP_Error('wrong_pm_url', __('Wrong payment method URL to submit the form data', 'leyka'));
@@ -819,3 +765,7 @@ __('Radios', 'leyka');
 __('Radio options for each payment method', 'leyka');
 __('Toggles', 'leyka');
 __('Toggled options for each payment method', 'leyka');
+
+add_action('all', function(){
+	//var_dump(current_filter());
+});

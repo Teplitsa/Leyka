@@ -1,11 +1,11 @@
 === Leyka ===
-Contributors: ahaenor, foralien
+Contributors: ahaenor, foralien, denis.cherniatev
 Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, charity, wp-donates, crowdfunding, leyka
 Requires at least: 3.6.1
-Tested up to: 3.8.1
-Stable tag: 2.0.1
+Tested up to: 3.9
+Stable tag: 2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,11 +22,8 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Если вы активно использовали Лейку версии **1.2.х или ранее**, **не выполняйте это обновление**. 
 Разработчики плагина не несут ответственности за результат этого действия.
 
-[youtube http://www.youtube.com/watch?v=SVxXIynTG8k]
-
-**Следите за разработкой на [GitHub](https://github.com/Teplitsa/Leyka)**
-
 **Официальный сайт плагина:** [leyka.te-st.ru](http://leyka.te-st.ru/)
+**Следите за разработкой на** [GitHub](https://github.com/Teplitsa/Leyka)
 
 Задача плагина — облегчить и усовершенствовать интеграцию сбора пожертвований на сайты НКО.
 
@@ -36,7 +33,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Основная аудитория плагина — сотрудники НКО и общественные инициативы.
 
-**Внимание:** для сбора пожертвований с помощью популярных платёжных систем необходимо иметь договор с этими системами.
+**Внимание:** для сбора пожертвований с помощью популярных платёжных систем необходимо иметь договор с этими системами. Список платежных систем, которые поддерживает плагин, вы можете найти в [документации](http://leyka.te-st.ru/sistemnye-trebovaniya/)
 
 **Основные функции**
 
@@ -47,9 +44,12 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 * Редактируй текст вашей благодарности донорам.
 * При необходимости, измените текст договора оферты.
 
+Процесс настройки проиллюстрирован в специальном [видео-уроке](http://leyka.te-st.ru/videourok-kak-ustanovit-i-nastroit-plagin-lejka/)
+
 == Installation ==
 
 Процесс инсталляции плагина стандартен для WordPress.
+Для корректной работы плагина необходим PHP версии не ниже 5.3.
 
 == Frequently Asked Questions ==
 
@@ -65,6 +65,14 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 6. Пример квитанции для оплаты через банк
 
 == Changelog ==
+
+= 2.1 =
+* New: Added support for Static text as a payment method.
+* New: Added support for Yandex.money for personal accounts. It presents 2 new payment methods: Yandex.money or Bank card payment to the personal account.
+* New: Minor improvements in plugin's inner API.
+* Fix: The options caching system completely removed to improve admin area usability.
+* Fix: Various bugfixes in plugin options handling
+
 
 = 2.0.1 =
 * New: Added pot file for translation

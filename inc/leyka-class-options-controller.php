@@ -1,5 +1,6 @@
 <?php
 class Leyka_Options_Controller {
+
     private static $_instance = null;
     protected $_options = array();
     protected $_field_types = array('text', 'html', 'rich_html', 'select', 'radio', 'checkbox', 'multi_checkbox');
@@ -13,52 +14,20 @@ class Leyka_Options_Controller {
 
     private function __construct() {
 
-        if( !empty($_GET['leyka_core_refresh_options']) )
-            delete_option('leyka_options_installed');
+        require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
+        global $options_meta;
 
-        if( !get_option('leyka_options_installed') ) { // Clear plugin intallation, set all options to their defaults
+        foreach($options_meta as $name => &$data) {
+
+            $data['value'] = get_option("leyka_$name");       
+                
+            if($data['value'] === false) // Option is not set, use default value from meta
+                $data['value'] = $data['default'];
+
+            $this->_options[str_replace('leyka_', '', $name)] = $data;
             
-            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-defaults.php');
-            global $default_option_values;
-
-            $all_options_installed = true;
-            foreach($default_option_values as $name => $data) {
-
-                if( !empty($_GET['leyka_core_refresh_options']) ) // Remove options just in case
-                    delete_option("leyka_$name");
-                elseif(get_option("leyka_$name") !== false) // Option already installed, skip it
-                    continue;
-
-                $data['value'] = !empty($data['default']) && empty($data['value']) ? $data['default'] : $data['value'];
-                $all_options_installed &= add_option("leyka_$name", $data);
-            }
-
-            if($all_options_installed)
-                update_option('leyka_options_installed', 1);
         }
 
-        // Read cur option values here, and fill $_options:
-        $modules_active = get_option('leyka_modules');
-        if($modules_active)
-            $this->_options['modules'] = $modules_active;
-        else {
-            update_option('leyka_modules', array('leyka'));
-            $this->_options['modules'] = array('leyka');
-        }
-
-        foreach(wp_load_alloptions() as $name => $data) {
-            $matched_substr = stristr($name, 'leyka_');
-            
-            if( !$matched_substr || $name == 'leyka_modules' || $name == 'leyka_options_installed' )
-                continue;
-            else {
-                $data = maybe_unserialize($data);
-                $this->_options[str_replace('leyka_', '', $name)] = $data;
-            }
-        }
-
-//        echo '<pre>'.print_r(wp_load_alloptions(), TRUE).'</pre>';
-//        echo '<pre>'.print_r($this->_options, TRUE).'</pre>';
     }
 
     /** 
@@ -67,11 +36,17 @@ class Leyka_Options_Controller {
      */
     public function get_value($option_name) {
         $option_name = str_replace('leyka_', '', $option_name);
+        if(empty($this->_options[$option_name]))
+            return null;
+       
+        $value = $this->_options[$option_name]['value'];      
+        
+        if($this->_options[$option_name]['type'] == 'html' || $this->_options[$option_name]['type'] == 'rich_html'){
+            $value = html_entity_decode(stripslashes($value));
+        }
+ 
 
-        return empty($this->_options[$option_name]) ? null : (
-            $this->_options[$option_name]['type'] == 'html' || $this->_options[$option_name]['type'] == 'rich_html' ?
-                html_entity_decode(stripslashes($this->_options[$option_name]['value'])) : $this->_options[$option_name]['value']
-        );
+        return $value;
     }
 
     /**
@@ -100,17 +75,26 @@ class Leyka_Options_Controller {
         return $section_opts;
     }
 
-    public function create_option($name, $type, $params) {
-        $name = stristr($name, 'leyka_') ? $name : 'leyka_'.$name;
+    public function add_option($name, $type, $params) {
+        $name = stristr($name, 'leyka_') !== false ? $name : 'leyka_'.$name;
 
         if( !in_array($type, $this->_field_types) )
             return false;
         if( !empty($params['type']) ) // Just in case
             unset($params['type']);
 
-        if(empty($params['value']) && !empty($params['default']))
+        $value_saved = maybe_unserialize(get_option($name)); 
+        
+        if(empty($params['value']) && $value_saved !== false)
+            $params['value'] = $value_saved;
+        else if(empty($params['value']) && !empty($params['default']))
             $params['value'] = $params['default'];
-
+        
+        //hack for some strangely incorrect after-update behavior
+        if(is_array($params['value']) && !empty($params['value']['value']))
+            $params['value'] = $params['value']['value'];
+        
+        
         $params = array_merge(array(
             'type' => $type, // html, rich_html, select, radio, checkbox, multi_checkbox  
             'value' => '',
@@ -124,16 +108,16 @@ class Leyka_Options_Controller {
             'validation_rules' => array(), // List of regexp?..
         ), $params);
 
-        $option_created = add_option($name, $params);
+        $option_added = $value_saved !== false ? true : add_option($name, $params['value']);
 
-        if($option_created)
+        if($option_added)
             $this->_options[ str_replace('leyka_', '', $name) ] = $params;
 
-        return $option_created;
+        return $option_added;
     }
     
     public function delete_option($name) {
-        $name = stristr($name, 'leyka_') ? $name : 'leyka_'.$name;
+        $name = stristr($name, 'leyka_') !== false ? $name : 'leyka_'.$name;
 
         $option_deleted = delete_option($name);
         
@@ -146,7 +130,8 @@ class Leyka_Options_Controller {
     public function option_exists($name) {
         $name = str_replace('leyka_', '', $name);
 
-        return !empty($this->_options[$name]);
+        //return !empty($this->_options[$name]); this cause problem for checkboxes = 0
+        return isset($this->_options[$name]);
     }
 
     /** 
@@ -161,7 +146,7 @@ class Leyka_Options_Controller {
             $old_value = $this->_options[$option_name]['value']; // Rollback to it if option update fails
             $this->_options[$option_name]['value'] = $option_value;
 
-            $updated = update_option('leyka_'.$option_name, $this->_options[$option_name]);
+            $updated = update_option('leyka_'.$option_name, $option_value); 
             if( !$updated )
                 $this->_options[$option_name]['value'] = $old_value;
 
@@ -170,12 +155,12 @@ class Leyka_Options_Controller {
             return false;
     }
 
-    public function opt($option_name, $new_value = null) {
+    public function opt($option_name, $new_value = null) { 
         return $new_value === null ?
             $this->get_value($option_name) : $this->set_value($option_name, $new_value);
     }
 
-    public function opt_safe($option_name) {
+    public function opt_safe($option_name) { 
         return $this->get_value($option_name) ? $this->get_value($option_name) : $this->get_default_of($option_name);
     }
 
@@ -197,7 +182,7 @@ class Leyka_Options_Controller {
     public function get_info_of($option_name) {
         $option_name = str_replace('leyka_', '', $option_name);
 
-        return empty($this->_options[$option_name]) ? false : $this->_options[$option_name];
+        return empty($this->_options[$option_name]) ? false : $this->_options[$option_name]; 
     }
 
     public function get_type_of($option_name) {

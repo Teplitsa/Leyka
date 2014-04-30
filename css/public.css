@@ -439,4 +439,14 @@ input[type="checkbox"] {
 	-moz-border-radius: 3px;
 	border-radius: 3px; }
 
+#leyka-payment-form .leyka-field.box_deatails p {
+	margin: 1em 0; 
+}
 
+#leyka-payment-form .leyka-field.box_deatails p:first-child {
+	margin-top: 0;
+}
+
+#leyka-payment-form .leyka-field.box_deatails p:last-child {
+	margin-bottom: 0;
+}

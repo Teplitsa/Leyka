@@ -4,9 +4,9 @@
 
 jQuery(document).ready(function($){
 
-	/* purpose matbox ui */
+	/* Donation purpose matbox ui */
 	var amout_set = $('#amount-set');
-	
+
 	amout_set.find('#amount_type').on('change', function(e){
 		
 		var opt = $(this).find('option:selected').val(),
@@ -24,13 +24,13 @@ jQuery(document).ready(function($){
 		var variant_wrap = amout_set.find('.amount-variants-range');
 		$('<div><input type="text" name="amount_variants[]" value=""></div>').fadeIn().appendTo(variant_wrap);
 	});
-	
+
     $('#donation-status-log-toggle').click(function(e){
         e.preventDefault();
 
         $('#donation-status-log').slideToggle(100);
     });
-    
+
     $('.send-donor-thanks').click(function(e){
         e.preventDefault();
 
@@ -45,8 +45,17 @@ jQuery(document).ready(function($){
             donation_id: donation_id
         });
     });
-    
-//    $('input[name*=leyka_pm_available]').change(function(){
-//        // Some kind of hiding all options for accorded PM
-//    });
+
+    $('input[name*=leyka_pm_available]').change(function(){
+        var $this = $(this),
+            pm = $this.val();
+
+        pm = pm.split('-')[1];
+        if($this.attr('checked'))
+            $('#leyka_'+pm+'_description-wrapper').slideDown(50);
+        else
+            $('#leyka_'+pm+'_description-wrapper').slideUp(50);
+    }).each(function(){
+        $(this).change();
+    });
 });

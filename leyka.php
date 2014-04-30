@@ -3,12 +3,16 @@
  * Plugin Name: Leyka
  * Plugin URI:  http://leyka.te-st.ru/
  * Description: The donations management system for your WP site.
- * Version:     2.0.1
+ * Version:     2.1
  * Author:      Lev Zvyagincev aka Ahaenor
  * Author URI:  ahaenor@gmail.com
  * Text Domain: leyka
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  * Domain Path: /lang
+ * Contributors:	
+	Anna Ladoshkina aka foralien (webdev@foralien.com)
+	Denis Cherniatev (denis.cherniatev@gmail.com)	
+	
  * License: GPLv2 or later
 	Copyright (C) 2012-2013 by Teplitsa of Social Technologies (http://te-st.ru).
 
@@ -65,21 +69,28 @@ load_plugin_textdomain('leyka', FALSE, plugin_basename(LEYKA_PLUGIN_DIR).'/lang/
 
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-core.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-controller.php');
-
-//global $default_option_values;
-//echo '<pre>' . print_r($default_option_values, TRUE) . '</pre>';
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-functions.php');
-//require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-.php');
-
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-gateways-api.php');
-require_once(LEYKA_PLUGIN_DIR.'gateways/quittance/leyka-class-quittance-gateway.php');
-require_once(LEYKA_PLUGIN_DIR.'gateways/yandex/leyka-class-yandex-gateway.php');
-require_once(LEYKA_PLUGIN_DIR.'gateways/chronopay/leyka-class-chronopay-gateway.php');
 
-if(is_admin()) {
-    require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-allocator.php');
-    require_once(LEYKA_PLUGIN_DIR.'inc/leyka-render-settings.php');
+/** Automatically include all sub-dirs of /leyka/gateways/ */
+/*$gateways_dir = dir(LEYKA_PLUGIN_DIR.'gateways/');
+if( !$gateways_dir ) {
+    // ?..
 }
+else {
+    while(false !== ($gateway_id = $gateways_dir->read())) {
+
+        if($gateway_id != '.' && $gateway_id != '..')
+			require_once(LEYKA_PLUGIN_DIR."gateways/$gateway_id/leyka-class-$gateway_id-gateway.php");
+    }
+    $gateways_dir->close();
+}*/
+require_once(LEYKA_PLUGIN_DIR.'gateways/chronopay/leyka-class-chronopay-gateway.php');
+require_once(LEYKA_PLUGIN_DIR.'gateways/quittance/leyka-class-quittance-gateway.php');
+require_once(LEYKA_PLUGIN_DIR.'gateways/text/leyka-class-text-gateway.php');
+require_once(LEYKA_PLUGIN_DIR.'gateways/yandex/leyka-class-yandex-gateway.php');
+require_once(LEYKA_PLUGIN_DIR.'gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php');
+
 
 // Activation/Deactivation:
 register_activation_hook(__FILE__, array('Leyka', 'activate'));

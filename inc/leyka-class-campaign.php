@@ -15,6 +15,17 @@ class Leyka_Campaign_Management {
 		add_filter('manage_'.$this->post_type.'_posts_columns', array($this, 'manage_columns_names'));
 		add_action('manage_'.$this->post_type.'_posts_custom_column', array($this, 'manage_columns_content'), 2, 2);
 		add_action('save_post', array($this, 'save_data'), 2, 2);
+		
+		add_filter('post_row_actions', function($actions, $donation){
+            global $current_screen;
+			
+            if($current_screen->post_type != 'leyka_campaign')
+                return $actions;
+			
+            unset($actions['inline hide-if-no-js']);
+			return $actions;
+		
+        }, 10, 2);
 	}
 	
 	public static function get_instance() {

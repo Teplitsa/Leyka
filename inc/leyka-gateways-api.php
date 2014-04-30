@@ -109,20 +109,20 @@ abstract class Leyka_Gateway {
 
             static::$_instance = new static();
 
-            if( !empty($_GET['gateway_refresh_options']) ) {
-
-                foreach(static::$_instance->_get_options_names() as $option_name) {
-                    leyka_options()->delete_option($option_name);
-                }
-            }
+//            if( !empty($_GET['gateway_refresh_options']) ) {
+//
+//                foreach(static::$_instance->_get_options_names() as $option_name) {
+//                    leyka_options()->delete_option($option_name);
+//                }
+//            }
 
             static::$_instance->_initialize_options();
 
             add_action('leyka_payment_form_submission', array(static::$_instance, 'process_form'), 10, 4);
             add_action('leyka_log_donation', array(static::$_instance, 'log_gateway_fields'));
 
-            add_filter('leyka_submission_redirect_url', array(static::$_instance, 'submission_redirect_url'), 10, 2);
-            add_filter('leyka_submission_form_data', array(static::$_instance, 'submission_form_data'), 10, 3);
+            add_filter('leyka_submission_redirect_url-'.static::$_instance->id, array(static::$_instance, 'submission_redirect_url'), 10, 2);
+            add_filter('leyka_submission_form_data-'.static::$_instance->id, array(static::$_instance, 'submission_form_data'), 10, 3);
         }
 
         return static::$_instance;
@@ -135,7 +135,7 @@ abstract class Leyka_Gateway {
             return $this->_title;
     }
 
-    protected function _get_options_names() {
+    public function get_options_names() {
 
         $option_names = array();
         foreach($this->_options as $option_name => $params) {
@@ -156,7 +156,7 @@ abstract class Leyka_Gateway {
             }
         }
 
-        $gateway_options_names = $this->_get_options_names();
+        $gateway_options_names = $this->get_options_names();
         if($gateway_section_index < 0)
             $options[] = array('section' => array(
                 'name' => $this->_id,
@@ -183,10 +183,15 @@ abstract class Leyka_Gateway {
     // Handler to use Gateway's responses in Leyka UI:
     abstract public function get_gateway_response_formatted(Leyka_Donation $donation);
 
+    protected function _get_gateway_pm_list($pm_id = false) {
+
+        return $pm_id ? array_keys($this->_payment_methods, $pm_id) : array_keys($this->_payment_methods);
+    }
+
     protected function _set_gateway_pm_list() {
 
-        $this->_initialize_pm_options();
         $this->_initialize_pm_list();
+        $this->_initialize_pm_options();
         $this->_set_pm_activity();
     }
 
@@ -212,23 +217,27 @@ abstract class Leyka_Gateway {
 
     protected function _initialize_pm_options() {
 
-        if(empty($_GET['pm_refresh_options'])) {
+//        if(empty($_GET['pm_refresh_options'])) {
 
-            foreach(get_option('leyka_'.$this->_id.'_payment_methods', array()) as $pm) {
-                /** @var $pm Leyka_Payment_Method */
-                $pm->initialize_pm_options();
-                $this->_payment_methods[$pm->id] = $pm;
-            }
-        } else {
+        foreach($this->_payment_methods as $pm) {
 
-            foreach(get_option('leyka_'.$this->_id.'_payment_methods', array()) as $pm) {
-                foreach($pm->get_pm_options_names() as $option_name) {
-                    leyka_options()->delete_option($option_name);
-                }
-            }
-
-            delete_option('leyka_'.$this->_id.'_payment_methods');
+            /** @var $pm Leyka_Payment_Method */
+            $pm->initialize_pm_options();
+            $this->_payment_methods[$pm->id] = $pm;
         }
+
+//        } else {
+//
+//            foreach(get_option('leyka_'.$this->_id.'_payment_methods', array()) as $pm) {
+//
+//                /** @var $pm Leyka_Payment_Method */
+//                foreach($pm->get_pm_options_names() as $option_name) {
+//                    leyka_options()->delete_option($option_name);
+//                }
+//            }
+//
+//            delete_option('leyka_'.$this->_id.'_payment_methods');
+//        }
     }
 
     protected function _initialize_options() {
@@ -236,7 +245,7 @@ abstract class Leyka_Gateway {
         foreach($this->_options as $option_name => $params) {
 
             if( !leyka_options()->option_exists($option_name) )
-                leyka_options()->create_option($option_name, $params['type'], $params);
+                leyka_options()->add_option($option_name, $params['type'], $params);
         }
 
         add_filter('leyka_payment_options_allocation', array($this, 'allocate_gateway_options'), 1, 1);
@@ -347,25 +356,27 @@ abstract class Leyka_Payment_Method {
     }
 
     abstract protected function _set_pm_options_defaults();
-    
-    /** @todo After options API refactoring, this hook method may not be needed. */
+
+    /** @todo Someday we can comletely stop the support for this method, as it was only used in v2.0. */
     public function modify_options_values() {}
-    
-    protected function _create_pm_options() {
+
+    /** @todo Maybe, it's worth to make this method a final. */
+    protected function _add_pm_options() {
 
         foreach($this->_options as $option_name => $params) {
 
             if( !leyka_options()->option_exists($option_name) )
-                leyka_options()->create_option($option_name, $params['type'], $params);
+                leyka_options()->add_option($option_name, $params['type'], $params);
         }
     }
-    
+
     public function initialize_pm_options() {
 
         $this->_set_pm_options_defaults();
 
-        $this->_create_pm_options();
+        $this->_add_pm_options();
 
+        /** @todo Someday we can comletely stop the support for this method, as it was only used in v2.0. */
         $this->modify_options_values();
     
         add_filter('leyka_payment_options_allocation', array($this, 'allocate_pm_options'), 10, 1);
@@ -387,7 +398,7 @@ abstract class Leyka_Payment_Method {
     /** Allocate gateway options, if needed */
     public function allocate_pm_options($options) {
 
-        $gateway = leyka_get_gateway_by_id($this->_gateway_id);
+        $gateway = leyka_get_gateway_by_id($this->_gateway_id); 
         $gateway_section_index = -1;
 
         foreach($options as $index => $option) {
@@ -417,10 +428,10 @@ abstract class Leyka_Payment_Method {
 
     public function save_settings() {
 
-        $pm_list = get_option('leyka_'.$this->_gateway_id.'_payment_methods');
-        $pm_list[$this->_id] = $this;
-
-        update_option('leyka_'.$this->_gateway_id.'_payment_methods', $pm_list);
+//        $pm_list = get_option('leyka_'.$this->_gateway_id.'_payment_methods');
+//        $pm_list[$this->_id] = $this;
+//
+//        update_option('leyka_'.$this->_gateway_id.'_payment_methods', $pm_list);
     }
     
     public function set_activity($is_active) {

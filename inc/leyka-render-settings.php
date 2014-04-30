@@ -8,7 +8,7 @@ function leyka_render_section_area($section){?>
         <div class="content">
             <?php foreach($section['options'] as $option) {                    
 
-                $option_info = leyka_options()->get_info_of($option);
+                $option_info = leyka_options()->get_info_of($option); //var_dump($option_info);
                 do_action("leyka_render_{$option_info['type']}", $option, $option_info);
             }?>
         </div>
@@ -37,12 +37,13 @@ function leyka_render_text_field($option_name, $data){
 // Checkbox fields:
 add_action('leyka_render_checkbox', 'leyka_render_checkbox_field', 10, 2);
 function leyka_render_checkbox_field($option_name, $data){
-    $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;?>
+    
+    $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name; //var_dump($data);?>
 
     <div id="<?php echo $option_name.'-wrapper'?>">
         <label for="<?php echo $option_name.'-field';?>">
             <span class="field-component title"><?php echo $data['title'];?></span>
-            <span class="field-component field"><input type="checkbox" id="<?php echo $option_name.'-field';?>" name="<?php echo $option_name;?>" value="1" <?php echo $data['value'] >= 1 ? 'checked' : '';?> />&nbsp;
+            <span class="field-component field"><input type="checkbox" id="<?php echo $option_name.'-field';?>" name="<?php echo $option_name;?>" value="1" <?php echo intval($data['value']) >= 1 ? 'checked' : '';?> />&nbsp;
             <?php echo esc_attr($data['description']);?></span>
         </label>
     </div>
@@ -52,7 +53,7 @@ function leyka_render_checkbox_field($option_name, $data){
 /** @todo Check if using just "checkbox" type is sufficient. */
 add_action('leyka_render_multi_checkbox', 'leyka_render_multi_checkboxes_fields', 10, 2);
 function leyka_render_multi_checkboxes_fields($option_name, $data){
-    $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;?>
+    $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name; ?>
 
     <div id="<?php echo $option_name.'-wrapper';?>">
         <span class="field-component title">
@@ -179,7 +180,7 @@ function leyka_render_textarea_field($option_name, $data){
 /** Simple HTML fields */
 add_action('leyka_render_html', 'leyka_render_html_field', 10, 2);
 function leyka_render_html_field($option_name, $data){
-    $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;?>
+    $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name; ?>
 
     <div id="<?php echo $option_name.'-wrapper'?>">
         <label for="<?php echo $option_name;?>">

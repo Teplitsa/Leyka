@@ -19,35 +19,61 @@ class Leyka_Admin_Setup {
 
         /** Reorder Leyka submenu */
         add_filter('custom_menu_order', array($this, 'reorder_submenu'));
-        
+
         /** Custom update message */
-        add_action(
-            'in_plugin_update_message-'.LEYKA_PLUGIN_DIR_NAME.'/'.LEYKA_PLUGIN_BASE_FILE,
-            function($plugin_data, $r){
+//        add_action(
+//            'in_plugin_update_message-'.LEYKA_PLUGIN_DIR_NAME.'/'.LEYKA_PLUGIN_BASE_FILE,
+//            function($plugin_data, $r){
 
 //                echo '<pre>' . print_r($plugin_data, TRUE) . '</pre>';
 //                echo '<pre>' . print_r($r, TRUE) . '</pre>';
 //
 //                echo 'Hello World';
 
-        }, 10, 2);
+//        }, 10, 2);
     }
 
     function reorder_submenu($menu_order) {
         global $submenu;
 
-        $new_order = current_user_can($this->_options_capability) ? array(
-            $submenu['leyka'][0],
-            $submenu['leyka'][2],
-            $submenu['leyka'][3],
-            $submenu['leyka'][4],
-            $submenu['leyka'][1],
-        ) : array(
-            $submenu['leyka'][0],
-            $submenu['leyka'][1],
-            $submenu['leyka'][2],
-            $submenu['leyka'][3],
-        );
+        if(current_user_can($this->_options_capability)) {
+
+            usort($submenu['leyka'], function($a, $b){
+
+//                if($b[0] == __('Donations', 'leyka'))
+//                    echo '<pre>' . print_r(1111111111, 1) . '</pre>';
+//                echo '<pre>' . print_r($b, 1) . '</pre>';
+
+                if($a[0] == __('Dashboard', 'leyka'))
+                    return -1;
+                if($b[0] == __('Dashboard', 'leyka'))
+                    return 1;
+
+                if($a[0] == __('Settings', 'leyka'))
+                    return 1;
+                if($b[0] == __('Settings', 'leyka'))
+                    return -1;
+
+                if($a[0] == __('Donations', 'leyka'))
+                    return 1;
+                if($b[0] == __('Donations', 'leyka'))
+                    return $a[0] == __('Dashboard', 'leyka') ? -1 : 1;
+
+                if($a[0] == __('New campaign', 'leyka'))
+                    return $b[0] == __('Settings', 'leyka') ? -1 : 1;
+
+//                echo '<pre>' . print_r($a, 1) . '</pre>';
+//                echo '<pre>' . print_r($b, 1) . '</pre>';
+            });
+
+            $new_order = $submenu['leyka'];
+        } else {
+
+            /** Remove Settings from plugin submenu: */
+            $new_order = array_filter($submenu['leyka'], function($menu_item){
+                return $menu_item[0] != __('Settings', 'leyka');
+            });
+        }
 
         $submenu['leyka'] = $new_order;
 
@@ -100,7 +126,7 @@ class Leyka_Admin_Setup {
 
 		// Leyka menu root
 		add_menu_page(__('Leyka Dashboard', 'leyka'), __('Leyka', 'leyka'), $this->_options_capability, 'leyka', array($this, 'dashboard_screen'));
-		
+
 		// Dashboard
 		add_submenu_page('leyka', __('Leyka Dashboard', 'leyka'), __('Dashboard', 'leyka'), $this->_options_capability, 'leyka', array($this, 'dashboard_screen'));
 		
@@ -318,10 +344,11 @@ class Leyka_Admin_Setup {
 //        echo '<pre>'.print_r((int)!empty($_POST["leyka_settings_{$current_stage}_submit"]), TRUE).'</pre>';
 //        echo '<pre>'.print_r((int)wp_verify_nonce('_leyka_nonce', 'test nonce'), TRUE).'</pre>';
 //        echo '<pre>'.print_r($_POST, TRUE).'</pre>';
-        if( !empty($_POST["leyka_settings_{$current_stage}_submit"])
+	    if( !empty($_POST["leyka_settings_{$current_stage}_submit"])){
 //         && wp_verify_nonce('_leyka_nonce', "leyka_settings_{$current_stage}")
-        )
-            do_action("leyka_settings_{$current_stage}_submit", $current_stage);
+			do_action("leyka_settings_{$current_stage}_submit", $current_stage);
+		}
+            
 	?>
 
 		<div class="wrap">
@@ -339,10 +366,10 @@ class Leyka_Admin_Setup {
                 foreach(leyka_opt_alloc()->get_tab_options($current_stage) as $option) { // Render each option/section
 
                     if(is_array($option) && !empty($option['section'])) {
-                        do_action('leyka_render_section', $option['section']);?>
-                    <?php } else {
+                        do_action('leyka_render_section', $option['section']);
+						
+                    } else { //is this case ever possible ?						
                         $option_info = leyka_options()->get_info_of($option);
-
                         do_action("leyka_render_{$option_info['type']}", $option, $option_info);
                     }
 
