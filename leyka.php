@@ -73,7 +73,7 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-functions.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-gateways-api.php');
 
 /** Automatically include all sub-dirs of /leyka/gateways/ */
-/*$gateways_dir = dir(LEYKA_PLUGIN_DIR.'gateways/');
+$gateways_dir = dir(LEYKA_PLUGIN_DIR.'gateways/');
 if( !$gateways_dir ) {
     // ?..
 }
@@ -84,13 +84,7 @@ else {
 			require_once(LEYKA_PLUGIN_DIR."gateways/$gateway_id/leyka-class-$gateway_id-gateway.php");
     }
     $gateways_dir->close();
-}*/
-require_once(LEYKA_PLUGIN_DIR.'gateways/chronopay/leyka-class-chronopay-gateway.php');
-require_once(LEYKA_PLUGIN_DIR.'gateways/quittance/leyka-class-quittance-gateway.php');
-require_once(LEYKA_PLUGIN_DIR.'gateways/text/leyka-class-text-gateway.php');
-require_once(LEYKA_PLUGIN_DIR.'gateways/yandex/leyka-class-yandex-gateway.php');
-require_once(LEYKA_PLUGIN_DIR.'gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php');
-
+}
 
 // Activation/Deactivation:
 register_activation_hook(__FILE__, array('Leyka', 'activate'));
