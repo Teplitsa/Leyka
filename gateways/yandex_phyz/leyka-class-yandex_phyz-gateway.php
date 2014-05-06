@@ -398,10 +398,13 @@ class Leyka_Yandex_phyz_Card extends Leyka_Payment_Method {
     }
 }
 
-leyka()->add_gateway(Leyka_Yandex_phyz_Gateway::get_instance());
 
 function error_log_yandex_phyz($string) {
 	return;
 #	$log_file = "/var/www/devuser/data/www/leyka.ngo2.ru/denisch-error.log";
 #	error_log($string, 3, $log_file);
 }
+
+add_action('leyka_init_actions', function(){
+    leyka()->add_gateway(Leyka_Yandex_phyz_Gateway::get_instance());
+}, 25);

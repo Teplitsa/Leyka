@@ -5,7 +5,7 @@ Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, charity, wp-donates, crowdfunding, leyka
 Requires at least: 3.6.1
 Tested up to: 3.9
-Stable tag: 2.1
+Stable tag: 2.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,6 +65,9 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 6. Пример квитанции для оплаты через банк
 
 == Changelog ==
+
+= 2.1.1 =
+* Fix: Permalink problem after activation on some intalls
 
 = 2.1 =
 * New: Added support for Static text as a payment method.

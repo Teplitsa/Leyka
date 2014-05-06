@@ -162,4 +162,6 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
 //    }
 }
 
-leyka()->add_gateway(Leyka_Text_Gateway::get_instance());
+add_action('leyka_init_actions', function(){
+    leyka()->add_gateway(Leyka_Text_Gateway::get_instance());
+}, 40);

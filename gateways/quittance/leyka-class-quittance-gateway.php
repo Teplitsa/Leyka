@@ -198,6 +198,6 @@ class Leyka_Bank_Order extends Leyka_Payment_Method {
 //    }
 }
 
-//add_action('leyka_add_gateway', function(){
-leyka()->add_gateway(Leyka_Quittance_Gateway::get_instance());
-//}, 12);
+add_action('leyka_init_actions', function(){
+    leyka()->add_gateway(Leyka_Quittance_Gateway::get_instance());
+}, 35);

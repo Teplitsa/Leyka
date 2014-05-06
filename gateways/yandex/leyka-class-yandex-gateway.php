@@ -549,6 +549,6 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
 //}
 
 
-//add_action('leyka_add_gateway', function(){
-leyka()->add_gateway(Leyka_Yandex_Gateway::get_instance());
-//});
+add_action('leyka_init_actions', function(){
+    leyka()->add_gateway(Leyka_Yandex_Gateway::get_instance());
+}, 20);

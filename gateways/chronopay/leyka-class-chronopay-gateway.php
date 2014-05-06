@@ -336,6 +336,6 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
 //    }
 }
 
-//add_action('leyka_add_gateway', function(){
-leyka()->add_gateway(Leyka_Chronopay_Gateway::get_instance());	
-//}, 11);
+add_action('leyka_init_actions', function(){
+    leyka()->add_gateway(Leyka_Chronopay_Gateway::get_instance());
+}, 11);
