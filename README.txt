@@ -67,7 +67,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 == Changelog ==
 
 = 2.1.1 =
-* Fix: Permalink problem after activation on some intalls
+* Fix: Permalink problem after activation on some installs
 
 = 2.1 =
 * New: Added support for Static text as a payment method.
