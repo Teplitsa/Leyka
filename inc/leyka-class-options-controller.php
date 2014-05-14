@@ -91,7 +91,7 @@ class Leyka_Options_Controller {
             $params['value'] = $params['default'];
         
         //hack for some strangely incorrect after-update behavior
-        if(is_array($params['value']) && !empty($params['value']['value']))
+        if(is_array($params['value']) && isset($params['value']['value']) && !empty($params['value']['value']))
             $params['value'] = $params['value']['value'];
         
         
