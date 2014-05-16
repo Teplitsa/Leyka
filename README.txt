@@ -4,8 +4,8 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, charity, wp-donates, crowdfunding, leyka
 Requires at least: 3.6.1
-Tested up to: 3.9
-Stable tag: 2.1.1
+Tested up to: 3.9.1
+Stable tag: 2.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,6 +23,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Разработчики плагина не несут ответственности за результат этого действия.
 
 **Официальный сайт плагина:** [leyka.te-st.ru](http://leyka.te-st.ru/)
+
 **Следите за разработкой на** [GitHub](https://github.com/Teplitsa/Leyka)
 
 Задача плагина — облегчить и усовершенствовать интеграцию сбора пожертвований на сайты НКО.
@@ -65,6 +66,9 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 6. Пример квитанции для оплаты через банк
 
 == Changelog ==
+
+= 2.1.2 =
+* Fix: Fixed warning message on new installas
 
 = 2.1.1 =
 * Fix: Permalink problem after activation on some installs
