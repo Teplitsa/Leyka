@@ -14,18 +14,17 @@ class Leyka_Options_Controller {
 
     private function __construct() {
 
-        require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
         global $options_meta;
 
         foreach($options_meta as $name => &$data) {
 
-            $data['value'] = get_option("leyka_$name");       
-                
+            $data['value'] = get_option("leyka_$name");
+
             if($data['value'] === false) // Option is not set, use default value from meta
                 $data['value'] = $data['default'];
 
             $this->_options[str_replace('leyka_', '', $name)] = $data;
-            
+
         }
 
     }
@@ -44,7 +43,6 @@ class Leyka_Options_Controller {
         if($this->_options[$option_name]['type'] == 'html' || $this->_options[$option_name]['type'] == 'rich_html'){
             $value = html_entity_decode(stripslashes($value));
         }
- 
 
         return $value;
     }
@@ -89,12 +87,16 @@ class Leyka_Options_Controller {
             $params['value'] = $value_saved;
         else if(empty($params['value']) && !empty($params['default']))
             $params['value'] = $params['default'];
-        
-        //hack for some strangely incorrect after-update behavior
-        if(is_array($params['value']) && isset($params['value']['value']) && !empty($params['value']['value']))
-            $params['value'] = $params['value']['value'];
-        
-        
+
+        // hack for some strangely incorrect after-update behavior
+//        if(
+//            !empty($params['value'])
+//         && is_array($params['value'])
+//         && isset($params['value']['value'])
+//         && !empty($params['value']['value'])
+//        )
+//            $params['value'] = $params['value']['value'];
+
         $params = array_merge(array(
             'type' => $type, // html, rich_html, select, radio, checkbox, multi_checkbox  
             'value' => '',

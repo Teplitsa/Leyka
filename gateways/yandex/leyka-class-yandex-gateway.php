@@ -41,6 +41,17 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
+            'yandex_test_mode' => array(
+                'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+                'value' => '',
+                'default' => 1,
+                'title' => __('Payments testing mode', 'leyka'),
+                'description' => __('Check if Yandex integration is in test mode.', 'leyka'),
+                'required' => false,
+                'placeholder' => '',
+                'list_entries' => array(), // For select, radio & checkbox fields
+                'validation_rules' => array(), // List of regexp?..
+            ),
         );
     }
 
@@ -83,9 +94,9 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             case 'yandex_money':
             case 'yandex_card':
             case 'yandex_terminal':
-            case 'yandex_mobile': /** @todo Make a checkbox option for it */
-//                return 'https://money.yandex.ru/eshop.xml';
-                return 'https://demomoney.yandex.ru/eshop.xml';
+            case 'yandex_mobile':
+                return leyka_options()->opt('yandex_test_mode') ?
+                    'https://demomoney.yandex.ru/eshop.xml' : 'https://money.yandex.ru/eshop.xml';
             default:
                 return $current_url;
         }
@@ -124,21 +135,22 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
     }
 
     /** Wrapper method to answer the checkOrder service calls */
-    private function _check_order_answer($is_error = false, $message = '', $tech_message = '') {
+    private function _callback_answer($is_error = false, $callback_type = 'co', $message = '', $tech_message = '') {
 
         $is_error = !!$is_error;
         $tech_message = $tech_message ? $tech_message : $message;
+        $callback_type = $callback_type == 'co' ? 'checkOrderResponse' : 'paymentAvisoResponse';
 
         if($is_error)
             die('<?xml version="1.0" encoding="UTF-8"?>
-<checkOrderResponse performedDatetime="'.date(DATE_ATOM).'"
+<'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'"
 code="1000" invoiceId="'.(int)$_POST['invoiceId'].'"
 shopId="'.leyka_options()->opt('yandex_shop_id').'"
 message="'.$message.'"
 techMessage="'.$tech_message.'"/>');
 
         die('<?xml version="1.0" encoding="UTF-8"?>
-<checkOrderResponse performedDatetime="'.date(DATE_ATOM).'"
+<'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'"
 code="0" invoiceId="'.(int)$_POST['invoiceId'].'"
 shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
     }
@@ -150,37 +162,37 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
             case 'check_order': // Gateway test before the payment - to check if it's correct
 
                 if($_POST['action'] != 'checkOrder') // Payment isn't correct, we're not allowing it
-                    $this->_check_order_answer(1, __('Wrong service operation', 'leyka'));
+                    $this->_callback_answer(1, 'co', __('Wrong service operation', 'leyka'));
 
                 $_POST['orderNumber'] = (int)$_POST['orderNumber']; // Donation ID
                 if( !$_POST['orderNumber'] )
-                    $this->_check_order_answer(1, __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('OrderNumber is not set', 'leyka'));
+                    $this->_callback_answer(1, 'co', __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('OrderNumber is not set', 'leyka'));
 
                 $donation = new Leyka_Donation($_POST['orderNumber']);
 
                 if($donation->sum != $_POST['orderSumAmount'])
-                    $this->_check_order_answer(1, __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('Donation sum is unmatched', 'leyka'));
+                    $this->_callback_answer(1, 'co', __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('Donation sum is unmatched', 'leyka'));
 
                 $donation->add_gateway_response($_POST);
 
 //                set_transient('leyka_yandex_test_cho', '<pre>'.print_r($_POST, true).'</pre>', 60*60*24);
 
-                $this->_check_order_answer(); // OK for yandex money payment
+                $this->_callback_answer(); // OK for yandex money payment
                 break; // Not needed, just so my IDE can relax
 
             case 'payment_aviso':
 
                 if($_POST['action'] != 'paymentAviso') // Payment isn't correct, we're not allowing it
-                    $this->_check_order_answer(1, __('Wrong service operation', 'leyka'));
+                    $this->_callback_answer(1, 'pa', __('Wrong service operation', 'leyka'));
 
                 $_POST['orderNumber'] = (int)$_POST['orderNumber']; // Donation ID
                 if( !$_POST['orderNumber'] )
-                    $this->_check_order_answer(1, __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('OrderNumber is not set', 'leyka'));
+                    $this->_callback_answer(1, 'pa', __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('OrderNumber is not set', 'leyka'));
 
                 $donation = new Leyka_Donation($_POST['orderNumber']);
 
                 if($donation->sum != $_POST['orderSumAmount'])
-                    $this->_check_order_answer(1, __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('Donation sum is unmatched', 'leyka'));
+                    $this->_callback_answer(1, 'pa', __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('Donation sum is unmatched', 'leyka'));
 
                 if($donation->status != 'funded') {
 
@@ -189,7 +201,7 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
                 }
 
 //                set_transient('leyka_yandex_test_pa', '<pre>'.print_r($_POST, true).'</pre>', 60*60*24);
-                $this->_check_order_answer(); // OK for yandex money payment
+                $this->_callback_answer(0, 'pa'); // OK for yandex money payment
                 break; // Not needed, just so my IDE can relax
 
             default:
@@ -551,4 +563,4 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
 
 add_action('leyka_init_actions', function(){
     leyka()->add_gateway(Leyka_Yandex_Gateway::get_instance());
-}, 20);
+}, 5);

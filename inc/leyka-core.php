@@ -209,6 +209,7 @@ class Leyka {
      * @return bool
      */
     public function add_gateway(Leyka_Gateway $gateway) {
+
         if(empty($this->_gateways[$gateway->id]))
             $this->_gateways[$gateway->id] = $gateway;
         else
@@ -229,7 +230,7 @@ class Leyka {
 	public static function activate($network_wide) {
 
         $leyka_last_ver = get_option('leyka_last_ver');
-        if(empty($leyka_last_ver) || $leyka_last_ver < 2.1) {
+        if( !$leyka_last_ver || $leyka_last_ver < 2.1 ) {
 
             /** Upgrade options structure in the DB */
             if(get_option('leyka_modules'))
@@ -276,11 +277,10 @@ class Leyka {
             }
         }
 
-
         /** Set a flag to flush permalinks (needs to be done a bit later, than this activation itself): */
         update_option('leyka_permalinks_flushed', 0);
 
-        update_option('leyka_last_ver', 2.1);
+        update_option('leyka_last_ver', LEYKA_VERSION);
 
         // ...
     }

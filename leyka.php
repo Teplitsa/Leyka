@@ -40,7 +40,7 @@ if ( ! defined( 'WPINC' ) ) {
 
 // Leyka plugin version:
 if( !defined('LEYKA_VERSION') )
-    define('LEYKA_VERSION', '2.0');
+    define('LEYKA_VERSION', '2.1');
 
 // Plugin base file:
 if( !defined('LEYKA_PLUGIN_BASE_FILE') ) // "leyka.php"
@@ -67,9 +67,10 @@ if( !defined('LEYKA_PLUGIN_INNER_SHORT_NAME') )
 // Load plugin text domain:
 load_plugin_textdomain('leyka', FALSE, plugin_basename(LEYKA_PLUGIN_DIR).'/lang/');
 
-require_once(LEYKA_PLUGIN_DIR.'inc/leyka-core.php');
-require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-controller.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-functions.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-controller.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-core.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-gateways-api.php');
 
 /** Automatically include all sub-dirs of /leyka/gateways/ */
