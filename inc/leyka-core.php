@@ -230,7 +230,7 @@ class Leyka {
 	public static function activate($network_wide) {
 
         $leyka_last_ver = get_option('leyka_last_ver');
-        if( !$leyka_last_ver || $leyka_last_ver < 2.1 ) {
+        if( !$leyka_last_ver || (float)$leyka_last_ver < 2.1 ) {
 
             /** Upgrade options structure in the DB */
             if(get_option('leyka_modules'))
@@ -248,6 +248,7 @@ class Leyka {
                     update_option("leyka_$name", $option['value']);
             }
 
+            do_action('leyka_init_actions'); // Mostly to initialize gateways' and PM's options before updating them
 
             /** Upgrade gateway and PM options structure in the DB */
             foreach(leyka_get_gateways() as $gateway) {

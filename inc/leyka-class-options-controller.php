@@ -40,8 +40,9 @@ class Leyka_Options_Controller {
        
         $value = $this->_options[$option_name]['value'];      
         
-        if($this->_options[$option_name]['type'] == 'html' || $this->_options[$option_name]['type'] == 'rich_html'){
-            $value = html_entity_decode(stripslashes($value));
+        if($this->_options[$option_name]['type'] == 'html' || $this->_options[$option_name]['type'] == 'rich_html') {
+            $value = is_array($value) && isset($value['value']) ?
+                html_entity_decode(stripslashes($value['value'])) : html_entity_decode(stripslashes((string)$value));
         }
 
         return $value;
