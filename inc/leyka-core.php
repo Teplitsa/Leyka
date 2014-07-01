@@ -263,7 +263,6 @@ class Leyka {
                     if(is_array($option) && isset($option['type']) && isset($option['title'])) // Update option data
                         update_option("leyka_$name", $option['value']);
                 }
-              
 
                 foreach($gateway->get_payment_methods() as $pm) {
 
@@ -292,7 +291,7 @@ class Leyka {
      * false if WPMU is disabled or plugin is deactivated on an individual blog.
 	 */
 	public static function deactivate($network_wide) {
-		
+
         delete_option('leyka_permalinks_flushed');
 	}
 

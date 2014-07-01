@@ -358,7 +358,7 @@ abstract class Leyka_Payment_Method {
     abstract protected function _set_pm_options_defaults();
 
     /** @todo Someday we can comletely stop the support for this method, as it was only used in v2.0. */
-    public function modify_options_values() {}
+//    public function modify_options_values() {}
 
     /** @todo Maybe, it's worth to make this method a final. */
     protected function _add_pm_options() {
@@ -377,12 +377,9 @@ abstract class Leyka_Payment_Method {
         $this->_add_pm_options();
 
         /** @todo Someday we can comletely stop the support for this method, as it was only used in v2.0. */
-        $this->modify_options_values();
+//        $this->modify_options_values();
     
         add_filter('leyka_payment_options_allocation', array($this, 'allocate_pm_options'), 10, 1);
-
-//        global $wp_filter;
-//        echo '<pre>' . print_r($wp_filter['leyka_payment_options_allocation'], TRUE) . '</pre>';
     }
     
     public function get_pm_options_names() {

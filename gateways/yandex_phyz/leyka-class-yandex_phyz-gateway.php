@@ -307,11 +307,11 @@ class Leyka_Yandex_phyz_Money extends Leyka_Payment_Method {
         );
     }
 
-    public function modify_options_values() {
-
-        $this->_description = leyka_options()->opt_safe($this->_id.'_description');
-//        $this->_active = (int)in_array($this->full_id, leyka_options()->opt('pm_available'));
-    }
+//    public function modify_options_values() {
+//
+//        $this->_description = leyka_options()->opt_safe($this->_id.'_description');
+////        $this->_active = (int)in_array($this->full_id, leyka_options()->opt('pm_available'));
+//    }
 }
 
 
@@ -392,10 +392,10 @@ class Leyka_Yandex_phyz_Card extends Leyka_Payment_Method {
         );
     }
 
-    public function modify_options_values() {
-
-        $this->_description = leyka_options()->opt_safe($this->_id.'_description');
-    }
+//    public function modify_options_values() {
+//
+//        $this->_description = leyka_options()->opt_safe($this->_id.'_description');
+//    }
 }
 
 
