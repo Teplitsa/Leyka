@@ -67,6 +67,14 @@ if( !defined('LEYKA_PLUGIN_INNER_SHORT_NAME') )
 // Load plugin text domain:
 load_plugin_textdomain('leyka', FALSE, plugin_basename(LEYKA_PLUGIN_DIR).'/lang/');
 
+// Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
+if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.3.0', '<') ) {
+
+    echo __('<div id="message" class="error"><p><strong>Error:</strong> your PHP version is <strong>below 5.3</strong>. It is required for Leyka to work. Plugin will be deactivated.<br />If you wish to solve this issue, please refer to your hosting provider to have him update PHP to at least <strong>v5.3</strong>. In addition, you may wish to change a hosting provider you are using.</p></div>', 'leyka');
+
+    die();
+}
+
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-functions.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-controller.php');
@@ -77,13 +85,14 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-gateways-api.php');
 $gateways_dir = dir(LEYKA_PLUGIN_DIR.'gateways/');
 if( !$gateways_dir ) {
     // ?..
-}
-else {
+} else {
+
     while(false !== ($gateway_id = $gateways_dir->read())) {
 
         if($gateway_id != '.' && $gateway_id != '..')
 			require_once(LEYKA_PLUGIN_DIR."gateways/$gateway_id/leyka-class-$gateway_id-gateway.php");
     }
+
     $gateways_dir->close();
 }
 
