@@ -459,7 +459,7 @@ class Leyka {
 			'show_in_nav_menus' => true,
 			'show_in_menu' => 'leyka',			
 			'show_in_admin_bar' => false,			
-			'supports' => array('title', 'editor', 'thumbnail'), // custom-fileds ?
+			'supports' => array('title', 'editor', 'thumbnail', 'excerpt'), // custom-fileds ?
 			'register_meta_box_cb' => array($this, 'leyka_campaign_metaboxes'),
 			'taxonomies' => array(),
 			'has_archive' => false,
