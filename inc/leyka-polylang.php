@@ -37,6 +37,18 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
 
         do_action('leyka_init_actions');
 
+        add_filter('leyka_option_value', function($value, $option_name){
+
+            if($option_name == 'success_page' || $option_name == 'failure_page') {
+
+                $localized_page_id = pll_get_post($value); // Get ID of localized pages instead of originally set
+
+                return $localized_page_id ? $localized_page_id : $value;
+            }
+
+            return pll__($value);
+        }, 10, 2);
+
         // Register user-defined strings:
         foreach(leyka_options()->get_options_names() as $option) {
 
@@ -52,10 +64,6 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
             )
                 pll_register_string($option_data['title'], leyka_options()->opt($option), 'leyka', true);
         }
-
-        add_filter('leyka_option_value', function($value, $option_name){
-            return pll__($value);
-        }, 10, 2);
 
         add_filter('leyka_pm_description', function($description, $pm_id){
             return pll__($description);
