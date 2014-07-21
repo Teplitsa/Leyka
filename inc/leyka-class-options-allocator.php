@@ -1,4 +1,5 @@
-<?php
+<?php if( !defined('WPINC') ) die;
+
 class Leyka_Options_Allocator {
     private static $_instance = null;
     protected $_tabs = array();

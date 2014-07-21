@@ -1,4 +1,4 @@
-<?php
+<?php if( !defined('WPINC') ) die;
 /** Core class. */
 class Leyka {
 	
@@ -69,12 +69,12 @@ class Leyka {
         $this->_payment_form_redirect_url = wp_get_referer();
 
 		// Load files
-		$this->load_plugin_files();
-		
+//		$this->load_plugin_files();
+
 		// Load public-facing style sheet and JavaScript.
 		add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
 		add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
-				
+
 		// Post types
 		add_action('init', array($this, 'register_post_types'), 9);
 
@@ -130,7 +130,10 @@ class Leyka {
         if( !self::$_instance ) {
             self::$_instance = new self;
 
-            do_action('leyka_add_gateway');
+//            do_action('leyka_add_gateway');
+//            echo '<pre>' . print_r('gates here', 1) . '</pre>';
+
+//            do_action('leyka_init_actions');
         }
 		
         return self::$_instance;
@@ -218,6 +221,7 @@ class Leyka {
 
     /** Just in case */
     public function remove_gateway($gateway_id) {
+
         if( !empty($this->_gateways[$gateway_id]) )
             unset($this->_gateways[$gateway_id]);
     }
@@ -248,7 +252,10 @@ class Leyka {
                     update_option("leyka_$name", $option['value']);
             }
 
-            do_action('leyka_init_actions'); // Mostly to initialize gateways' and PM's options before updating them
+            // Mostly to initialize gateways' and PM's options before updating them
+            /** @todo Check if all would work out without this do_action() here. */
+            if( !did_action('leyka_init_actions') )
+                do_action('leyka_init_actions');
 
             /** Upgrade gateway and PM options structure in the DB */
             foreach(leyka_get_gateways() as $gateway) {
@@ -296,13 +303,12 @@ class Leyka {
 	}
 
 	/** Load additional plugin files */
-	public function load_plugin_files(){
-
-		
-		require_once(LEYKA_PLUGIN_DIR.'/inc/leyka-class-payment-form.php');
-	}
+//	public function load_plugin_files() {
+//
+//	}
 	
 	function apply_formatting_filters() {
+
 		add_filter('leyka_the_content', 'wptexturize');
 		add_filter('leyka_the_content', 'convert_smilies');
 		add_filter('leyka_the_content', 'convert_chars');
@@ -311,6 +317,7 @@ class Leyka {
 	
 	/** Register and enqueue public-facing style sheet. */
 	public function enqueue_styles() {
+
 		wp_enqueue_style($this->_plugin_slug.'-plugin-styles', LEYKA_PLUGIN_BASE_URL.'css/public.css', array(), $this->_version);
 	}
 
@@ -365,13 +372,12 @@ class Leyka {
      */
 	function register_post_types(){
 
-        //load related filtes here
-        require_once(LEYKA_PLUGIN_DIR.'/inc/leyka-class-campaign.php');
+        /** @todo load related filtes here */
+
         Leyka_Campaign_Management::get_instance();
 
-        require_once(LEYKA_PLUGIN_DIR.'/inc/leyka-class-donation.php');
         Leyka_Donation_Management::get_instance();
-		
+
 		/** Donation CPT */
 		$d_labels = array(
 			'name'          => __('Donations', 'leyka'),

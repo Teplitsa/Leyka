@@ -1,4 +1,4 @@
-<?php
+<?php if( !defined('WPINC') ) die;
 /** @var $options_meta An array of initial options set, with default values of each field */
 global $options_meta;
 
@@ -545,7 +545,7 @@ $options_meta = apply_filters('leyka_core_options_meta', array(
     ),
     'terms_of_service_text' => array(
         'type' => 'rich_html',
-        'default' => __('Terms of donation service text', 'leyka'),
+        'default' => __('Terms of donation service text. Use <br /> for line-breaks, please.', 'leyka'),
         'title' => __('A text of the Terms of donation service', 'leyka'),
         'description' => __('Enter a text that will be shown to the donors to read the Terms of service. It have to include the following special entries:', 'leyka') . $agreement_placeholders,
         'required' => 1, // 1 if field is required, 0 otherwise

@@ -1,4 +1,5 @@
-<?php
+<?php if( !defined('WPINC') ) die;
+
 /**
  * Leyka Admin setup
  **/

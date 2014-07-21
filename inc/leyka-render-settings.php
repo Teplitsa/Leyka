@@ -8,7 +8,7 @@ function leyka_render_section_area($section){?>
         <div class="content">
             <?php foreach($section['options'] as $option) {                    
 
-                $option_info = leyka_options()->get_info_of($option); //var_dump($option_info);
+                $option_info = leyka_options()->get_info_of($option);
                 do_action("leyka_render_{$option_info['type']}", $option, $option_info);
             }?>
         </div>

@@ -1,9 +1,7 @@
-<?php
+<?php if( !defined('WPINC') ) die;
 /**
  * Payment form
  **/
-
-//options in temp_config.php
 
 /**
  * Form
@@ -15,18 +13,9 @@ class Leyka_Payment_Form {
 	private $_current_currency; //current currency in the view
 	
 	function __construct(Leyka_Payment_Method $payment_method, $current_currency = null) {
-//		global $leyka_pm;
-		
-		/*if(is_array($payment_method)){
-			$this->payment_method = $payment_method['id'];
-			$this->pm_options = $payment_method;			
-		}
-		else {*/
 
         $this->_pm = $payment_method;
-        $this->_pm_name = $payment_method->id;       
-        //pm: get whole payment data by PM ID					
-		// }
+        $this->_pm_name = $payment_method->id;
 
 		$this->_current_currency = $current_currency;
 		$this->_form_action = site_url('leyka-process-donation');
@@ -38,25 +27,25 @@ class Leyka_Payment_Form {
 	function get_form_id() {
 		return 'leyka-form-'.$this->_pm_name;
 	}
-	
+
 	function get_form_action(){
 		
 		return $this->_form_action;
 	}
-	
+
 	function get_amount_field() {
 
 		if( !$this->is_field_supported('amount') )
 			return '';
-		
+
 		// Options: amount field mode:
 		$mode = leyka_options()->opt('donation_sum_field_type'); // fixed/flexible
 		$supported_curr = leyka_get_active_currencies(); // $this->get_supported_currencies();
 		$current_curr = $this->get_current_currency();
-		
+
 		if(empty($supported_curr[$current_curr]))
 			return ''; // current currency isn't supported
-		
+
 		ob_start();
 
 		if($mode == 'fixed') {
@@ -262,7 +251,8 @@ class Leyka_Payment_Form {
 	
 	function get_pm_description() {
 
-        return $this->_pm->description ? $this->_pm->description : '';		
+        return $this->_pm->description ?
+            apply_filters('leyka_pm_description', $this->_pm->description, $this->_pm_name) : '';
 	}
 	
 	function get_supported_currencies() {
@@ -587,21 +577,21 @@ function leyka_get_donation_form($echo = true) {
 * AJAX for templates
 **/
 function leyka_payment_method_action() {
-	
+
 	check_ajax_referer('leyka_payment_form', '_leyka_ajax_nonce');
-	
+
 	if(empty($_POST['pm_id']))
 		die('-1');
-		
+
 //	if(empty($_POST['currency']))
 //		die('-1');
-	
+
 	$curr_currency = trim($_POST['currency']);	
 	$curr_pm = leyka_get_pm_by_id(trim($_POST['pm_id']));
-    
+
     if( !$curr_pm )
         die('-1');
-		
+
 	leyka_setup_current_pm($curr_pm, $curr_currency);
 
     ob_start();?>
@@ -619,7 +609,7 @@ function leyka_payment_method_action() {
 	<?php
 		echo leyka_pf_get_agree_field();
 		echo leyka_pf_get_submit_field();
-		
+
 		$icons = leyka_pf_get_pm_icons();
 		if($icons) {
 			$list = array();
@@ -630,9 +620,7 @@ function leyka_payment_method_action() {
 			echo "<ul class='leyka-pm-icons cf'>";
 			echo implode('', $list);
 			echo "</ul>";
-		}
-		
-	?>
+		}?>
 	</div>
 	<?php
 		echo "<div class='leyka-pm-desc'>".apply_filters('leyka_the_content', leyka_pf_get_pm_description())."</div>";
@@ -648,7 +636,7 @@ add_action('wp_ajax_nopriv_leyka_payment_method', 'leyka_payment_method_action')
 
 function leyka_currency_choice_action(){
 	check_ajax_referer('leyka_payment_form', '_leyka_ajax_nonce');
-	
+
 	if(empty($_POST['currency']))
 		die('-1');
 

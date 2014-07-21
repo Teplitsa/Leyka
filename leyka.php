@@ -65,7 +65,16 @@ if( !defined('LEYKA_PLUGIN_INNER_SHORT_NAME') )
 /** Load files: */
 
 // Load plugin text domain:
-load_plugin_textdomain('leyka', FALSE, plugin_basename(LEYKA_PLUGIN_DIR).'/lang/');
+//add_filter('override_load_textdomain', function($marker, $domain, $mofile){
+//
+////    echo '<pre>Marker: ' . print_r($marker, 1) . '</pre>';
+////    echo '<pre>Domain:' . print_r($domain, 1) . '</pre>';
+////    echo '<pre>Mo:' . print_r($mofile, 1) . '</pre>';
+//    if($domain == 'leyka'){ // to-do adopt this for english
+//        return false;
+//    }
+//    return $marker;
+//}, 20, 3);
 
 // Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
 if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.3.0', '<') ) {
@@ -75,11 +84,18 @@ if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.3.0', '<') ) {
     die();
 }
 
+/** To avoid some strange bug, when WP functions like is_user_logged_in() are suddenly not found: */
+if( !function_exists('is_user_logged_in') )
+    require_once(ABSPATH.'wp-includes/pluggable.php');
+
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-functions.php');
-require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-controller.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-core.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-gateways-api.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-campaign.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donation.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-payment-form.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-polylang.php');
 
 /** Automatically include all sub-dirs of /leyka/gateways/ */
 $gateways_dir = dir(LEYKA_PLUGIN_DIR.'gateways/');
@@ -89,8 +105,10 @@ if( !$gateways_dir ) {
 
     while(false !== ($gateway_id = $gateways_dir->read())) {
 
-        if($gateway_id != '.' && $gateway_id != '..')
-			require_once(LEYKA_PLUGIN_DIR."gateways/$gateway_id/leyka-class-$gateway_id-gateway.php");
+        $file_addr = LEYKA_PLUGIN_DIR."gateways/$gateway_id/leyka-class-$gateway_id-gateway.php";
+
+        if($gateway_id != '.' && $gateway_id != '..' && file_exists($file_addr))
+			require_once($file_addr);
     }
 
     $gateways_dir->close();
@@ -101,10 +119,9 @@ register_activation_hook(__FILE__, array('Leyka', 'activate'));
 register_deactivation_hook(__FILE__, array('Leyka', 'deactivate'));
 
 // Init:
-add_action('setup_theme', 'leyka_init', 2);
-function leyka_init(){
-	leyka();
-	do_action('leyka_init_actions');	
-}
+//add_action('init', function(){
+
+leyka();
+//});
 
 //echo '<pre>'.print_r(leyka_get_pm_list(), TRUE).'</pre>';

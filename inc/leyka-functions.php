@@ -1,4 +1,4 @@
-<?
+<? if( !defined('WPINC') ) die;
 /**
  * Leyka Functions
  **/
@@ -16,7 +16,10 @@ function leyka_current_user_has_role($role, $user_id = false) {
 /** Get WP pages list as an array. Used mainly to form a dropdowns. */
 function leyka_get_pages_list() {
 
-    $query = new WP_Query(array('post_type' => 'page', 'posts_per_page' => -1));
+    $query = new WP_Query(apply_filters('leyka_pages_list_query', array(
+        'post_type' => 'page',
+        'posts_per_page' => -1
+    )));
 
     $pages = array(0 => __('Website main page', 'leyka'),);
     foreach($query->get_posts() as $page) {
@@ -49,14 +52,15 @@ function leyka_get_default_dm_list() {
 
 function leyka_get_default_success_page() {
 
-    $page = new WP_Query(array(
+    $page = new WP_Query(apply_filters('leyka_default_success_page_query', array(
         'post_type' => 'page',
+//        'lang' => 'ru',
         'name' => 'thank-you-for-your-donation',
         'post_status' => array(
             'publish', 'pending', 'draft', 'auto-draft', 'private', 'future', 'inherit', 'trash'
         ),
         'posts_per_page' => 1
-    ));
+    )));
     $posts = $page->get_posts();
     $page = reset($posts);
 
@@ -97,14 +101,15 @@ function leyka_get_success_page_url() {
 
 function leyka_get_default_failure_page() {
 
-    $page = new WP_Query(array(
+    $page = new WP_Query(apply_filters('leyka_default_failure_page_query', array(
         'post_type' => 'page',
+//        'lang' => 'ru',
         'name' => 'sorry-donation-failure',
         'post_status' => array(
             'publish', 'pending', 'draft', 'auto-draft', 'private', 'future', 'inherit', 'trash'
         ),
         'posts_per_page' => 1
-    ));
+    )));
     $posts = $page->get_posts();
     $page = reset($posts);
 
@@ -209,7 +214,3 @@ function leyka_get_donation_status_list() {
         'trash' => _x('Trash', '«Deleted» donation status', 'leyka'),
     ));
 }
-
-/** To avoid some strange bug, when WP functions like is_user_logged_in() are suddenly not found: */
-if( !function_exists('is_user_logged_in') )
-    require_once(ABSPATH.'wp-includes/pluggable.php');
