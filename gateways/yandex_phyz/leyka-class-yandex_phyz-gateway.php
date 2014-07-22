@@ -1,9 +1,9 @@
-<?php
+<?php if( !defined('WPINC') ) die;
 /**
  * Leyka_Yandex_phyz_Gateway class
  */
 
-class Leyka_Yandex_phyz_Gateway extends Leyka_Gateway {
+class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
 
     protected static $_instance;
 
@@ -234,7 +234,7 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
 }
 
 
-class Leyka_Yandex_phyz_Money extends Leyka_Payment_Method {
+class Leyka_Yandex_Phyz_Money extends Leyka_Payment_Method {
 
     /** @var Leyka_Yandex_phyz_Money */
     protected static $_instance = null;
@@ -306,16 +306,10 @@ class Leyka_Yandex_phyz_Money extends Leyka_Payment_Method {
             ),
         );
     }
-
-//    public function modify_options_values() {
-//
-//        $this->_description = leyka_options()->opt_safe($this->_id.'_description');
-////        $this->_active = (int)in_array($this->full_id, leyka_options()->opt('pm_available'));
-//    }
 }
 
 
-class Leyka_Yandex_phyz_Card extends Leyka_Payment_Method {
+class Leyka_Yandex_Phyz_Card extends Leyka_Payment_Method {
 
     /** @var $_instance Leyka_Yandex_phyz_Card */
     protected static $_instance = null;
@@ -391,11 +385,6 @@ class Leyka_Yandex_phyz_Card extends Leyka_Payment_Method {
             ),
         );
     }
-
-//    public function modify_options_values() {
-//
-//        $this->_description = leyka_options()->opt_safe($this->_id.'_description');
-//    }
 }
 
 
@@ -405,6 +394,7 @@ function error_log_yandex_phyz($string) {
 #	error_log($string, 3, $log_file);
 }
 
-add_action('leyka_init_actions', function(){
-    leyka()->add_gateway(Leyka_Yandex_phyz_Gateway::get_instance());
-}, 25);
+function leyka_add_gateway_yandex_phys() { // Use named function to leave a possibility to remove/replace it on the hook
+    leyka()->add_gateway(Leyka_Yandex_Phyz_Gateway::get_instance());
+}
+add_action('leyka_init_actions', 'leyka_add_gateway_yandex_phys', 25);

@@ -1,4 +1,4 @@
-<?php
+<?php if( !defined('WPINC') ) die;
 /**
  * Leyka_Quittance_Gateway class
  */
@@ -191,13 +191,9 @@ class Leyka_Bank_Order extends Leyka_Payment_Method {
     function get_quittance_html() {
         return $this->_quittance_html;
     }
-
-//    public function modify_options_values() {
-//
-//        $this->_description = leyka_options()->opt_safe($this->_id.'_description');
-//    }
 }
 
-add_action('leyka_init_actions', function(){
+function leyka_add_gateway_quittance() { // Use named function to leave a possibility to remove/replace it on the hook
     leyka()->add_gateway(Leyka_Quittance_Gateway::get_instance());
-}, 35);
+}
+add_action('leyka_init_actions', 'leyka_add_gateway_quittance', 35);

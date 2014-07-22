@@ -1,4 +1,4 @@
-<?php
+<?php if( !defined('WPINC') ) die;
 /**
  * Leyka Template: Radios
  * Description: Radio options for each payment method

@@ -199,7 +199,7 @@ class Leyka_Campaign {
 				return (int)get_post_meta($this->_id, 'is_finished', true) > 0;
 //            case '': return ''; break;
             default:
-                return null;
+                return apply_filters('leyka_get_unknown_campaign_field', null, $field, $this);
         }
     }
 	
@@ -216,9 +216,9 @@ class Leyka_Campaign {
 
         $meta['is_finished'] = empty($_REQUEST['is_finished']) ? 0 : 1;
 
-        /** Campaing target is commented out for the next release */
+        /** Campaign target is commented out for the next release */
 //		if(isset($_REQUEST['campaign_target']) && !empty($_REQUEST['campaign_target']))
-//			$meta['campaign_target'] = intval($_REQUEST['campaign_target']);
+//			$meta['campaign_target'] = (float)$_REQUEST['campaign_target'];
 
 		foreach($meta as $key => $value) {
 			update_post_meta($this->_id, $key, $value);
@@ -232,13 +232,6 @@ class Leyka_Campaign {
 			'campaign_template' => 'default'
 		);
 	}
-
-//	function get_meta($key) {
-//		return get_post_meta($this->_id, $key, true);
-//	}
-	
-	
-	
 }//class end
 
 

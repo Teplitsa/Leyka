@@ -104,10 +104,10 @@ class Leyka_Payment_Form {
 			$campaign_id = $post->ID;
 
         $template = leyka_get_current_template_data();
-		$hiddens = array(
+		$hiddens = apply_filters('leyka_hidden_donation_form_fields', array(
 			'leyka_template_id' => $template['id'],
 			'leyka_campaign_id' => (int)$campaign_id
-		);
+		), $this);
 
 		$out = wp_nonce_field('leyka_payment_form', '_wpnonce', true, false);
 		foreach($hiddens as $key => $value){
@@ -474,27 +474,25 @@ function leyka_pf_footer() {
 }
 
 /* previous submission errors */
-function leyka_pf_submission_errors() {
-	
-    if(leyka()->has_session_errors()) {?>
+function leyka_pf_submission_errors() {?>
 
-    <div class="leyka-submit-errors">
-		<span><?php _e('Errors', 'leyka');?>: </span>
+    <div class="leyka-submit-errors" <?php echo leyka()->has_session_errors() ? '' : 'style="display:none"';?>>
+    <?php if(leyka()->has_session_errors()) {?>
+        <span><?php _e('Errors', 'leyka');?>: </span>
         <ul>
             <?php foreach(leyka()->get_session_errors() as $wp_error) { /** @var $wp_error WP_Error */?>
                 <li><?php echo $wp_error->get_error_message();?></li>
             <?php }?>
         </ul>
+        <?php leyka()->clear_session_errors();?>
+    <?php }?>
     </div>
-<?php leyka()->clear_session_errors();
-    } 
-}
+<?php }
 
 /* Template */
 add_filter('the_content', 'leyka_print_donation_form');
 function leyka_print_donation_form($content) {
 
-//    echo '<pre>'.print_r('Here', TRUE).'</pre>';
 	$autoprint = leyka_options()->opt('leyka_donation_form_mode'); 
 	if( !is_singular('leyka_campaign') || !$autoprint )
 		return $content;
@@ -643,7 +641,6 @@ function leyka_currency_choice_action(){
 	$curr_currency = trim($_POST['currency']);	
 	$pm_selected = trim($_POST['current_pm']);
 	$currently_active_pmethods = leyka_get_pm_list(true, $curr_currency);
-//    echo '<pre>'.print_r($currently_active_pmethods, TRUE).'</pre>';
 	
     $curr_pm_is_active = false;
     foreach($currently_active_pmethods as $pm) {

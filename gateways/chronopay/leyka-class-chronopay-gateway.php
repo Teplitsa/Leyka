@@ -1,4 +1,4 @@
-<?php
+<?php if( !defined('WPINC') ) die;
 /**
  * Leyka_Chronopay_Gateway class
  */
@@ -321,21 +321,9 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
             ),
         );
     }
-
-//    public function modify_options_values() {
-//
-//        $this->_description = leyka_options()->opt_safe($this->_id.'_description');
-//
-//        $this->_supported_currencies = array();
-//        if(leyka_options()->opt('chronopay_card_product_id_rur'))
-//            $this->_supported_currencies[] = 'rur';
-//        if(leyka_options()->opt('chronopay_card_product_id_usd'))
-//            $this->_supported_currencies[] = 'usd';
-//        if(leyka_options()->opt('chronopay_card_product_id_eur'))
-//            $this->_supported_currencies[] = 'eur';
-//    }
 }
 
-add_action('leyka_init_actions', function(){
+function leyka_add_gateway_chronopay() { // Use named function to leave a possibility to remove/replace it on the hook
     leyka()->add_gateway(Leyka_Chronopay_Gateway::get_instance());
-}, 11);
+}
+add_action('leyka_init_actions', 'leyka_add_gateway_chronopay', 11);

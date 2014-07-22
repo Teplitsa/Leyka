@@ -186,55 +186,6 @@ $options_meta = apply_filters('leyka_core_options_meta', array(
         'list_entries' => 'leyka_get_gateways_pm_list',
         'validation_rules' => array(), // List of regexp?..
     ),
-    /** @todo Решили убрать эти опции за ненужностью. Если ненужность подтвердится, удалить совсем. */
-//    'default_pm' => array(
-//        'type' => 'select', // html, rich_html, select, radio, checkbox, multi_checkbox
-//        'default' => 'yandex',
-//        'title' => __('Default payment method selected on all donation forms', 'leyka'),
-//        'description' => __("A payment method that'd be selected by default on all donation forms.", 'leyka'),
-//        'required' => 0, // If no gateway selected as a default, there is no default selection on donation forms
-//        'placeholder' => '', // For text fields
-//        'length' => '', // For text fields
-//        'list_entries' => 'leyka_get_gateways_pm_list',
-//        'validation_rules' => array(), // List of regexp?..
-//    ), 
-//    'currencies_available' => array(
-//        'type' => 'multi_select', // html, rich_html, select, multi_select, radio, checkbox, multi_checkbox
-//        'default' => array(),
-//        'title' => __('Currencies available for donations', 'leyka'),
-//        'description' => __('Select a currencies that would be available for your donors', 'leyka'),
-//        'required' => 1, // At least 1 must be selected
-//        'placeholder' => '', // For text fields
-//        'length' => 5, // For text and multi-select fields
-//        'list_entries' => 'leyka_get_available_currencies', // callback returns the list of available currencies
-//        'validation_rules' => array(), // List of regexp?..
-//    ), 
-//    'currency_main' => array(
-//        'type' => 'select', // html, rich_html, select, radio, checkbox, multi_checkbox  
-//         /** @todo Need to pass a callback here. Must think, how to do it */
-//        'default' => '',
-//        'title' => __('Main currency of your donations', 'leyka'),
-//        'description' => __("Select the main currency of your donations. Most of the time, it would be your country's national one.", 'leyka'),
-//        'required' => 0, // 1 if field is required, 0 otherwise
-//        'placeholder' => '', // For text fields
-//        'length' => '', // For text fields
-//        'list_entries' => 'leyka_get_available_currencies', // callback returns currencies selected in prev. option
-//        'validation_rules' => array(), // List of regexp?..
-//    ),
-//    'currency_position' => array(
-//        'type' => 'radio', // html, rich_html, select, radio, checkbox, multi_checkbox
-//        'default' => 'after',
-//        'title' => __('Currency position in the money sum', 'leyka'),
-//        'description' => __('Select a currency position that would be used while displaying sums of money.', 'leyka'),
-//        'required' => 1, // 1 if field is required, 0 otherwise
-//        'placeholder' => '', // For text fields
-//        'length' => '', // For text fields
-//        'list_entries' => array(
-//            'before' => __('Before a sum (like $100)', 'leyka'),
-//            'after' => __('After a sum (like 100¥)', 'leyka'),
-//        ), // For select, radio & checkbox fields
-//        'validation_rules' => array(), // List of regexp?..
-//    ),
     'currency_rur_label' => array(
         'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
         'default' => __('RUR', 'leyka'),
@@ -588,27 +539,4 @@ $options_meta = apply_filters('leyka_core_options_meta', array(
         'list_entries' => leyka_get_pages_list(),
         'validation_rules' => array(), // List of regexp?..
     ),
-    /** @todo Решили убрать эти опции за ненужностью. Если ненужность подтвердится, удалить совсем. */
-//    'default_donation_status' => array(
-//        'type' => 'select', // html, rich_html, select, radio, checkbox, multi_checkbox
-//        'default' => 'submitted',
-//        'title' => __('Default status for a new donation', 'leyka'),
-//        'description' => __('Select a status that any new donations will be created with.', 'leyka'),
-//        'required' => 1, // 1 if field is required, 0 otherwise
-//        'placeholder' => '', // For text fields
-//        'length' => '', // For text fields
-//        'list_entries' => 'leyka_get_donation_status_list',
-//        'validation_rules' => array(), // List of regexp?..
-//    ),
-//    'donate_submit_text' => array(
-//        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
-//        'default' => __('Donate!', 'leyka'),
-//        'title' => __('A text for a button to make a donation', 'leyka'),
-//        'description' => __('Enter the text for a button that must be pressed to make a donation.', 'leyka'),
-//        'required' => 1, // 1 if field is required, 0 otherwise
-//        'placeholder' => 'For ex., Donate!', // For text fields
-//        'length' => '15', // For text fields
-//        'list_entries' => array(), // For select, radio & checkbox fields
-//        'validation_rules' => array(), // List of regexp?..
-//    ),
 ));

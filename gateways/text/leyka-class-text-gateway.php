@@ -133,7 +133,7 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
         $this->_options = array(
             'text_box_description' => array(
                 'type' => 'html',
-                'default' => '',
+                'default' => __('With this ways you can make your donation.', 'leyka'),
                 'title' => __('Comment', 'leyka'),
                 'description' => __('Please, set a text of comment to describe an additional ways to donate.', 'leyka'),
                 'required' => 0,
@@ -143,25 +143,15 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
                 'type' => 'html',
                 'default' => '',
                 'title' => __('Ways to donate', 'leyka'),
-                'description' => __('Please, set a text to describe an additional ways to donate.'),
+                'description' => __('Please, set a text to describe an additional ways to donate.', 'leyka'),
                 'required' => 0,
                 'validation_rules' => array(), // List of regexp?..
             )
         );
     }
-
-//    public function modify_options_values() {
-//
-//        $this->_description = leyka_options()->opt_safe($this->_id.'_description');
-//
-//        $details = apply_filters('frl_the_content', leyka_options()->opt_safe('text_boxes_details'));
-//        $this->_custom_fields = array('boxes_deatails'=> $details);
-//
-//        $this->_supported_currencies = array();
-//
-//    }
 }
 
-add_action('leyka_init_actions', function(){
+function leyka_add_gateway_text() { // Use named function to leave a possibility to remove/replace it on the hook
     leyka()->add_gateway(Leyka_Text_Gateway::get_instance());
-}, 40);
+}
+add_action('leyka_init_actions', 'leyka_add_gateway_text', 40);

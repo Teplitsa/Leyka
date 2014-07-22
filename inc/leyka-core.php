@@ -68,9 +68,6 @@ class Leyka {
         // By default, we'll assume some errors in the payment form, so redirect will get us back to it:
         $this->_payment_form_redirect_url = wp_get_referer();
 
-		// Load files
-//		$this->load_plugin_files();
-
 		// Load public-facing style sheet and JavaScript.
 		add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
 		add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
@@ -80,9 +77,6 @@ class Leyka {
 
         if( !session_id() )
             add_action('init', 'session_start', -2);
-
-        // Modules can add/remove all gateways here:
-//        $this->_gateways = apply_filters('leyka_gateways_init', $this->_gateways);
 
 		// Admin
 		if(is_admin())
@@ -129,11 +123,6 @@ class Leyka {
         // If the single instance hasn't been set, set it now.
         if( !self::$_instance ) {
             self::$_instance = new self;
-
-//            do_action('leyka_add_gateway');
-//            echo '<pre>' . print_r('gates here', 1) . '</pre>';
-
-//            do_action('leyka_init_actions');
         }
 		
         return self::$_instance;
@@ -301,11 +290,6 @@ class Leyka {
 
         delete_option('leyka_permalinks_flushed');
 	}
-
-	/** Load additional plugin files */
-//	public function load_plugin_files() {
-//
-//	}
 	
 	function apply_formatting_filters() {
 
@@ -338,7 +322,7 @@ class Leyka {
 			true
         );
 		
-		$js_data = array(
+		$js_data = apply_filters('leyka_js_localized_strings', array(
 			'ajaxurl' => admin_url('admin-ajax.php'),
             'correct_donation_amount_required' => __('Donation amount must be specified to submit the form', 'leyka'),
             'donation_amount_too_great' => __('Donation amount you entered is too great (maximum %s allowed)', 'leyka'),
@@ -349,7 +333,7 @@ class Leyka {
             'email_required' => __('Email must be filled to submit the form', 'leyka'),
             'email_invalid' => __('You have entered an invalid email', 'leyka'),
 //            'email_regexp' => '',
-		);
+		));
 
 		wp_localize_script($this->_plugin_slug . '-plugin-script', 'leyka', $js_data);
 	}
@@ -771,7 +755,3 @@ __('Radios', 'leyka');
 __('Radio options for each payment method', 'leyka');
 __('Toggles', 'leyka');
 __('Toggled options for each payment method', 'leyka');
-
-add_action('all', function(){
-	//var_dump(current_filter());
-});

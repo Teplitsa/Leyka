@@ -107,7 +107,7 @@ class Leyka_Donation_Management {
         $campaign = new Leyka_Campaign($donation->campaign_id);
         $res = wp_mail(
             $donor_email,
-            leyka_options()->opt('email_thanks_title'),
+            apply_filters('leyka_email_thanks_title', leyka_options()->opt('email_thanks_title'), $donation, $campaign),
             wpautop(str_replace(
                 array(
                     '#SITE_NAME#',
@@ -131,9 +131,18 @@ class Leyka_Donation_Management {
                     $donation->amount.' '.$donation->currency_label,
                     $donation->date,
                 ),
-                leyka_options()->opt('email_thanks_text')
+                apply_filters(
+                    'leyka_email_thanks_text',
+                    leyka_options()->opt('email_thanks_text'),
+                    $donation, $campaign
+                )
             )),
-            array('From: '.leyka_options()->opt_safe('email_from_name').' <'.leyka_options()->opt_safe('email_from').'>',)
+            array('From: '.apply_filters(
+                'leyka_email_from_name',
+                leyka_options()->opt_safe('email_from_name'),
+                $donation,
+                $campaign
+            ).' <'.leyka_options()->opt_safe('email_from').'>',)
         );
 
         // Reset content-type to avoid conflicts (http://core.trac.wordpress.org/ticket/23578):
@@ -151,11 +160,10 @@ class Leyka_Donation_Management {
 
         if( !leyka_options()->opt('donations_managers_emails') )
             return;
+
         $donation = new Leyka_Donation($donation);
-        if($donation->managers_emails_date) {
-//            echo '<pre>' . print_r($donation->ID, TRUE) . '</pre>';die();
+        if($donation->managers_emails_date)
             return;
-        }
 
         if( !function_exists('set_html_content_type') ) {
             function set_html_content_type(){ return 'text/html'; }
@@ -172,7 +180,11 @@ class Leyka_Donation_Management {
             $campaign = new Leyka_Campaign($donation->campaign_id);
             if( !wp_mail(
                 $email,
-                leyka_options()->opt('email_notification_title'),
+                apply_filters(
+                    'leyka_email_notification_title',
+                    leyka_options()->opt('email_notification_title'),
+                    $donation, $campaign
+                ),
                 wpautop(str_replace(
                     array(
                         '#SITE_NAME#',
@@ -196,9 +208,18 @@ class Leyka_Donation_Management {
                         $donation->amount.' '.$donation->currency_label,
                         $donation->date,
                     ),
-                    leyka_options()->opt('email_notification_text')
+                    apply_filters(
+                        'leyka_email_notification_text',
+                        leyka_options()->opt('email_notification_text'),
+                        $donation, $campaign
+                    )
                 )),
-                array('From: '.leyka_options()->opt_safe('email_from_name').' <'.leyka_options()->opt_safe('email_from').'>',)
+                array('From: '.apply_filters(
+                    'leyka_email_from_name',
+                    leyka_options()->opt_safe('email_from_name'),
+                    $donation,
+                    $campaign
+                ).' <'.leyka_options()->opt_safe('email_from').'>',)
             ) )
                 $res &= false;
         }
@@ -262,13 +283,6 @@ class Leyka_Donation_Management {
                 .' ('.($gateway ? mb_strtolower($gateway->label) : __('unknown gateway', 'leyka')).')';
             ?>
         </div>
-        <!--<div class="leyka-ddata-string">
-            <span class="label"><?php echo __('Gateway response:', 'leyka');?></span>
-			<?php /*echo ' '.
-                (empty($donation_data['leyka_gateway_response'][0]) ?
-                    __('No gateway response has been received', 'leyka') :
-                    mb_strtolower($donation_data['leyka_gateway_response'][0]));*/?>
-        </div>-->
 	<?php }
 
     public function donation_status_metabox($donation) {
@@ -332,36 +346,25 @@ class Leyka_Donation_Management {
         $donor_thanks_date = get_post_meta($donation->ID, '_leyka_donor_email_date', true);
         $manager_notification_date = get_post_meta($donation->ID, '_leyka_managers_emails_date', true);
 		
-		if($donor_thanks_date){
+		if($donor_thanks_date) {
 			$txt = str_replace(
                 '%s',
                 '<time>'.date('d.m.Y, H:i</time>', $donor_thanks_date).'</time>',
                 __('Grateful email to the donor has been sent (at %s)', 'leyka')
-            );
-		?>
+            );?>
+
 			<div class="leyka-ddata-string donor has-thanks"><?php echo $txt;?></div>
-		<?php
-		}
-		else {
+
+		<?php } else {
+
 			$send = "<div class='send-donor-thanks'>".__('(send it now)', 'leyka')."</div>";
-			$txt = sprintf(__("Grateful email hasn't been sent %s", 'leyka'), $send);
-		?>
+			$txt = sprintf(__("Grateful email hasn't been sent %s", 'leyka'), $send);?>
+
 			<div class="leyka-ddata-string donor no-thanks" data-donation-id="<?php echo $donation->ID;?>">
 				<?php echo $txt;?>
 				<?php wp_nonce_field('leyka_donor_email', '_leyka_donor_email_nonce', false, true); ?>
 			</div>
-		<?php
-		}
-				
-    /*  foralien: I've refactored this above - hope that's OK 
-		echo $donor_thanks_date ?
-            str_replace(
-                '%s',
-                date('d.m.Y, H:i', $donor_thanks_date),
-                __('Grateful email to the donor has been sent (at %s)', 'leyka')
-            ) :
-            '<div class="leyka-no-donor-thanks" data-donation-id="'.$donation->ID.'">'.
-                __("Grateful email hasn't been sent <div class='send-donor-thanks'>(send it now)</div>", 'leyka').wp_nonce_field('leyka_donor_email', '_leyka_donor_email_nonce', false, true).'</div>';*/
+		<?php }
 
         echo $manager_notification_date ?
             str_replace(
@@ -387,9 +390,8 @@ class Leyka_Donation_Management {
 
                 <div class="leyka-ddata-string"><span class="label"><?php echo $name;?></span> <?php echo mb_strtolower($value);?></div>
 
-                <?php }
-            }
-            ?>
+            <?php }
+            } ?>
         </div>
     <?php }
 
@@ -406,10 +408,9 @@ class Leyka_Donation_Management {
 
 		$columns['ID'] = 'ID';
 
-		if(isset($unsort['title'])){
+		if(isset($unsort['title'])) {
 			$columns['title'] = __('Campaign', 'leyka');
 			unset($unsort['title']);
-//			unset($unsort['campaign']);
 		}
 
         unset($unsort['date']);
@@ -428,8 +429,7 @@ class Leyka_Donation_Management {
 	}
 
 	function manage_columns_content($column_name, $donation_id) {
-        
-//		$donation = new Leyka_Donation(get_post($donation_id));
+
 		$donation = get_post($donation_id);
         switch($column_name) {
             case 'ID': echo $donation_id; break;
@@ -468,34 +468,21 @@ class Leyka_Donation_Management {
                 break;
             case 'emails':
                 $donor_thanks_date = get_post_meta($donation_id, '_leyka_donor_email_date', true);
-
-                /*echo $donor_thanks_date ?
-                    str_replace(
-                        '%s',
-                        date('d.m.Y, H:i', $donor_thanks_date),
-                        __('Sent at %s', 'leyka')
-                    ) :
-                    '<div class="leyka-no-donor-thanks" data-donation-id="'.$donation_id.'">'.
-                        __("Not sent <div class='send-donor-thanks'>(send it now)</div>", 'leyka').
-                        wp_nonce_field('leyka_donor_email', '_leyka_donor_email_nonce', false, true).'</div>';*/
-				
 				if($donor_thanks_date){
 					echo str_replace(
 						'%s',
 						'<time>'.date('d.m.Y, H:i</time>', $donor_thanks_date).'</time>',
 						__('Sent at %s', 'leyka')
 					);				
-				}
-				else {
+				} else {
 					$send = "<div class='send-donor-thanks'>".__('(send it now)', 'leyka')."</div>";
-					$txt = sprintf(__("Not sent %s", 'leyka'), $send);
-				?>
+					$txt = sprintf(__("Not sent %s", 'leyka'), $send);?>
+
 					<div class="leyka-no-donor-thanks" data-donation-id="<?php echo $donation_id;?>">
 						<?php echo $txt;?>
 						<?php wp_nonce_field('leyka_donor_email', '_leyka_donor_email_nonce', false, true); ?>
 					</div>
-				<?php
-				}
+				<?php }
 				
                 break;
 //            case '':
@@ -519,8 +506,6 @@ class Leyka_Donation_Management {
 
         if(defined('DOING_AUTOSAVE' ) && DOING_AUTOSAVE)
             return $donation_id;
-
-//        die('<pre>' . print_r('HERE', 1) . '</pre>');
 
         /** @todo Сделать после добавления capabilities Лейки */
 //        if( !current_user_can('edit_donation', $donation_id) )
@@ -661,7 +646,7 @@ class Leyka_Donation {
                 return $this->gateway ? leyka_get_gateway_by_id($this->gateway)->get_gateway_response_formatted($this) : array();
 //            case '': return ''; break;
             default:
-                return null;
+                return apply_filters('leyka_get_unknown_donation_field', null, $field, $this);
         }
     }
 
@@ -686,27 +671,6 @@ class Leyka_Donation {
         return $res;
     }
 
-	public function save() {
-
-		/*$meta = $this->get_default_meta();
-		if(isset($_REQUEST['campaign_target']) && !empty($_REQUEST['campaign_target']))
-			$meta['campaign_target'] = intval($_REQUEST['campaign_target']);
-			
-		foreach($meta as $key => $value){
-			update_post_meta($this->ID, $key, $value);
-		}*/
-	}
-
-//	function get_meta($key) {
-//
-//		return get_post_meta($this->_id, $key, true);
-//	}
-//
-	/** Helpers */
-//	function get_status_label($status){
-//
-//		$labels = leyka()->get_donation_statuses();
-//
-//		return !empty($labels[$status]) ? $labels[$status] : false;
+//	public function save() {
 //	}
 }

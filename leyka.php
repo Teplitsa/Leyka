@@ -34,9 +34,7 @@
  */
 
 // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
-	die;
-}
+if( !defined('WPINC') ) die;
 
 // Leyka plugin version:
 if( !defined('LEYKA_VERSION') )
@@ -62,20 +60,6 @@ if( !defined('LEYKA_PLUGIN_DIR') )
 if( !defined('LEYKA_PLUGIN_INNER_SHORT_NAME') )
     define('LEYKA_PLUGIN_INNER_SHORT_NAME', plugin_basename(__FILE__));
 
-/** Load files: */
-
-// Load plugin text domain:
-//add_filter('override_load_textdomain', function($marker, $domain, $mofile){
-//
-////    echo '<pre>Marker: ' . print_r($marker, 1) . '</pre>';
-////    echo '<pre>Domain:' . print_r($domain, 1) . '</pre>';
-////    echo '<pre>Mo:' . print_r($mofile, 1) . '</pre>';
-//    if($domain == 'leyka'){ // to-do adopt this for english
-//        return false;
-//    }
-//    return $marker;
-//}, 20, 3);
-
 // Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
 if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.3.0', '<') ) {
 
@@ -89,6 +73,7 @@ if( !function_exists('is_user_logged_in') )
     require_once(ABSPATH.'wp-includes/pluggable.php');
 
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-functions.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-controller.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-core.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-gateways-api.php');
@@ -120,8 +105,5 @@ register_deactivation_hook(__FILE__, array('Leyka', 'deactivate'));
 
 // Init:
 //add_action('init', function(){
-
 leyka();
 //});
-
-//echo '<pre>'.print_r(leyka_get_pm_list(), TRUE).'</pre>';

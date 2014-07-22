@@ -35,8 +35,6 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
             load_textdomain('leyka', LEYKA_PLUGIN_DIR."lang/leyka-{$cur_lang->locale}.mo");
         }
 
-        do_action('leyka_init_actions');
-
         add_filter('leyka_option_value', function($value, $option_name){
 
             if($option_name == 'success_page' || $option_name == 'failure_page') {
@@ -46,7 +44,12 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
                 return $localized_page_id ? $localized_page_id : $value;
             }
 
-            return pll__($value);
+            $type = leyka_options()->get_type_of($option_name);
+
+            if($type == 'text' || $type == 'textarea' || $type == 'html' || $type == 'rich_html')
+                $value = pll__($value);
+
+            return $value;
         }, 10, 2);
 
         // Register user-defined strings:
@@ -68,6 +71,30 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
         add_filter('leyka_pm_description', function($description, $pm_id){
             return pll__($description);
         }, 10, 2);
+
+        // Now donations can return their language (a language of their respective campaigns):
+        add_filter('leyka_get_unknown_donation_field', function($value, $field, Leyka_Donation $donation){
+            if($field == 'lang' || $field == 'campaign_lang') {
+
+                global $polylang;
+                return $polylang->model->get_post_language($donation->campaign_id)->slug;
+            }
+
+            return $value;
+        }, 10, 4);
+
+        // Now campaigns can return their language:
+        add_filter('leyka_get_unknown_campaign_field', function($value, $field, Leyka_Campaign $campaign){
+            if($field == 'lang' || $field == 'campaign_lang') {
+
+                global $polylang;
+                return $polylang->model->get_post_language($campaign->id)->slug;
+            }
+
+            return $value;
+        }, 10, 4);
+
+        do_action('leyka_init_actions'); // All localization filters are in places, now create all the gateways
 
     }, 10, 2);
 

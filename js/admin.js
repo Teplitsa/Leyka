@@ -52,9 +52,11 @@ jQuery(document).ready(function($){
 
         pm = pm.split('-')[1];
         if($this.attr('checked'))
-            $('#leyka_'+pm+'_description-wrapper').slideDown(50);
+//            $('#leyka_'+pm+'_description-wrapper').slideDown(50);
+            $('[id*=leyka_'+pm+']').slideDown(50);
         else
-            $('#leyka_'+pm+'_description-wrapper').slideUp(50);
+            $('[id*=leyka_'+pm+']').slideUp(50);
+//            $('#leyka_'+pm+'_description-wrapper').slideUp(50);
     }).each(function(){
         $(this).change();
     });
