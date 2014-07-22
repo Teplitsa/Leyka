@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Leyka v2.1.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-07-22 09:57:54+0000\n"
+"PO-Revision-Date: 2014-07-22 10:30:45+0000\n"
 "Last-Translator: Anna <nordworldofann@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -285,7 +285,7 @@ msgid "Response date:"
 msgstr "Дата ответа:"
 
 #: gateways/chronopay/leyka-class-chronopay-gateway.php:259
-#: gateways/text/leyka-class-text-gateway.php:128
+#: gateways/text/leyka-class-text-gateway.php:119
 #: gateways/yandex/leyka-class-yandex-gateway.php:281
 #: gateways/yandex/leyka-class-yandex-gateway.php:360
 #: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:278
@@ -697,42 +697,42 @@ msgstr "Настройки условий договора публичной о
 msgid "Miscellaneous"
 msgstr "Разное"
 
-#: inc/leyka-class-payment-form.php:53
+#: inc/leyka-class-payment-form.php:54
 #@ leyka
 msgid "Please, specify your donation amount"
 msgstr "Пожалуйста, укажите размер вашего пожертвования"
 
-#: inc/leyka-class-payment-form.php:86
+#: inc/leyka-class-payment-form.php:87
 #@ leyka
 msgid "Specify donation amount"
 msgstr "Укажите размер пожертвования"
 
-#: inc/leyka-class-payment-form.php:157
+#: inc/leyka-class-payment-form.php:158
 #@ leyka
 msgid "Your name"
 msgstr "Ваше имя"
 
-#: inc/leyka-class-payment-form.php:158
+#: inc/leyka-class-payment-form.php:159
 #@ leyka
 msgid "We will use this to personalize your donation experience"
 msgstr "Представьтесь, пожалуйста"
 
-#: inc/leyka-class-payment-form.php:178
+#: inc/leyka-class-payment-form.php:179
 #@ leyka
 msgid "Your email"
 msgstr "Ваш email"
 
-#: inc/leyka-class-payment-form.php:179
+#: inc/leyka-class-payment-form.php:180
 #@ leyka
 msgid "We will send the donation success notice to this address"
 msgstr "Мы пришлем уведомление о получении пожертвования"
 
-#: inc/leyka-class-payment-form.php:481
+#: inc/leyka-class-payment-form.php:482
 #@ leyka
 msgid "Errors"
 msgstr "Ошибки"
 
-#: inc/leyka-class-payment-form.php:527
+#: inc/leyka-class-payment-form.php:528
 #@ leyka
 msgid "This charity campaign has been finished. All fundraising stopped."
 msgstr "Эта благотворительная кампания была завершена. Сбор средств был прекращён."
@@ -1665,13 +1665,13 @@ msgstr "Если вы не перенаправлены на страницу п
 msgid "Proceed to the payment approval page"
 msgstr "Перейти на страницу подтверждения платежа"
 
-#: inc/leyka-class-payment-form.php:537
+#: inc/leyka-class-payment-form.php:538
 #, php-format
 #@ leyka
 msgid "There are no payment methods selected to donate! Please, <a href=\"%s\">set them up</a>."
 msgstr "Ни одна платёжная система не выбрана. Пожалуйста, <a href=\"%s\">настройте их</a>."
 
-#: inc/leyka-class-payment-form.php:538
+#: inc/leyka-class-payment-form.php:539
 #@ leyka
 msgid "Dear donor, we are very sorry, but we had not setted up the donations module yet :( Please try to donate later."
 msgstr "Уважаемый донор, нам жаль, но настройка сервиса сбора пожертвований пока не закончена :( Пожалуйста, попробуйте пожертвовать позже."
@@ -1910,13 +1910,13 @@ msgstr "Разработано в <a href=\"http://te-st.ru/\" target=\"_blank\"
 msgid "Ask a question"
 msgstr "Задать вопрос"
 
-#: inc/leyka-class-payment-form.php:470
+#: inc/leyka-class-payment-form.php:471
 #, php-format
 #@ leyka
 msgid "Proudly powered by %s"
 msgstr "Работает на %s"
 
-#: inc/leyka-class-payment-form.php:470
+#: inc/leyka-class-payment-form.php:471
 #@ leyka
 msgctxt "Plugin name in preposotional case"
 msgid "Leyka"
@@ -1949,27 +1949,27 @@ msgstr "описание"
 msgid "Text information"
 msgstr "Текстовая информация"
 
-#: gateways/text/leyka-class-text-gateway.php:107
+#: gateways/text/leyka-class-text-gateway.php:98
 #@ leyka
 msgid "Additional ways to donate"
 msgstr "Дополнительные способы"
 
-#: gateways/text/leyka-class-text-gateway.php:25
+#: gateways/text/leyka-class-text-gateway.php:137
 #@ leyka
 msgid "Comment"
 msgstr "Комментарий"
 
-#: gateways/text/leyka-class-text-gateway.php:26
+#: gateways/text/leyka-class-text-gateway.php:138
 #@ leyka
 msgid "Please, set a text of comment to describe an additional ways to donate."
 msgstr "Укажите комментарий, описывающий дополнительные способы пожертвования."
 
-#: gateways/text/leyka-class-text-gateway.php:146
+#: gateways/text/leyka-class-text-gateway.php:145
 #@ leyka
 msgid "Ways to donate"
 msgstr "Способы пожертвования"
 
-#: gateways/text/leyka-class-text-gateway.php:147
+#: gateways/text/leyka-class-text-gateway.php:146
 #@ leyka
 msgid "Please, set a text to describe an additional ways to donate."
 msgstr "Пожалуйста, укажите текст, описывающий дополнительные способы пожертвования."
@@ -2114,4 +2114,9 @@ msgstr ""
 "<br />\n"
 "#LEGAL_FACE_POSITION#<br />\n"
 "#LEGAL_FACE#<br />"
+
+#: gateways/text/leyka-class-text-gateway.php:136
+#@ leyka
+msgid "With this ways you can make your donation."
+msgstr "Вы можете сделать пожертвование с помощью указанных здесь способов."
 
