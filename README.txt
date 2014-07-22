@@ -1,11 +1,11 @@
 === Leyka ===
-Contributors: ahaenor, foralien, denis.cherniatev
+Contributors: Ahaenor, foralien, denis.cherniatev
 Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, charity, wp-donates, crowdfunding, leyka
 Requires at least: 3.6.1
 Tested up to: 3.9.1
-Stable tag: 2.1.2
+Stable tag: 2.1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,14 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 6. Пример квитанции для оплаты через банк
 
 == Changelog ==
+
+= 2.1.3 =
+ * Fix: notices when plugin is activating on new installation or update (PHP strict standards based included).
+ * Fix: minor bugs.
+ * New: stable and correct turn-off behavior when plugin is activated on PHP 5.2 and less.
+ * New: compatibility with Polylang plugin.
+ * New: improved code security.
+ * New: lots of new hooks to allow better code customization.
 
 = 2.1.2 =
 * Fix: Fixed warning message on new installas
