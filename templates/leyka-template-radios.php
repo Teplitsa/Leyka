@@ -16,6 +16,7 @@ leyka_setup_current_pm($curr_pm, $curr_pm->default_currency);?>
 <div id="leyka-payment-form" class="leyka-tpl-radio">
 
 <div class="leyka-payment-option">
+<!-- <?php echo __("This donation form is created by Leyka WordPress plugin, created by Teplitsa of Social Technologies. If you are interested in some way, don't hesitate to write to us: support@te-st.ru", 'leyka');?> -->
 <form class="leyka-pm-form" action="<?php echo leyka_pf_get_form_action();?>" method="post" id="leyka-form-common">
 	
 <!--	<div id="amount-selector" class="form-part freeze-fields">-->

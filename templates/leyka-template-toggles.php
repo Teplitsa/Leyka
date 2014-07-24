@@ -9,12 +9,13 @@ $active_pm = leyka_get_pm_list(true);
 leyka_pf_submission_errors();?>
 
 <div id="leyka-payment-form" class="leyka-tpl-toggles">
+    <!-- <?php echo __("This donation form is created by Leyka WordPress plugin, created by Teplitsa of Social Technologies. If you are interested in some way, don't hesitate to write to us: support@te-st.ru", 'leyka');?> -->
 <?php
 	$counter = 0;
-	foreach($active_pm as $i => $pm):
+	foreach($active_pm as $i => $pm) {
 	leyka_setup_current_pm($pm);
-	$counter++;
-?>
+	$counter++;?>
+
 <div class="leyka-payment-option toggle <?php if($counter == 1) echo 'toggled';?>">
 <div class="toggle-trigger <?php echo count($active_pm) > 1 ? '' : 'toggle-inactive';?>">
     <?php echo leyka_pf_get_pm_label();?>
@@ -60,7 +61,7 @@ leyka_pf_submission_errors();?>
 </form>
 </div>
 </div>
-<?php endforeach;?>
+<?php }?>
 
 <?php leyka_pf_footer();?>
 

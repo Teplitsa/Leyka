@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Leyka 2.1.2\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leyka\n"
-"POT-Creation-Date: 2014-07-22 17:41:28+00:00\n"
+"POT-Creation-Date: 2014-07-24 08:50:19+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1676,6 +1676,14 @@ msgstr ""
 
 #: templates/leyka-gateway-redirect-page.php:61
 msgid "Proceed to the payment approval page"
+msgstr ""
+
+#: templates/leyka-template-radios.php:19
+#: templates/leyka-template-toggles.php:12
+msgid ""
+"This donation form is created by Leyka WordPress plugin, created by Teplitsa "
+"of Social Technologies. If you are interested in some way, don't hesitate to "
+"write to us: support@te-st.ru"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
