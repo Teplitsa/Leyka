@@ -194,7 +194,7 @@ abstract class Leyka_Gateway {
         $own_active_pm_list = array();
         for($i=0; $i<count($all_active_pm_list); $i++) {
             
-            if(stristr($all_active_pm_list[$i], $this->_id.'-') !== false)
+            if( !empty($all_active_pm_list[$i]) && stristr($all_active_pm_list[$i], $this->_id.'-') !== false )
                 $own_active_pm_list[] = str_replace($this->_id.'-', '', $all_active_pm_list[$i]);
         }
 

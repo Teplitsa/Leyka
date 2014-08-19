@@ -369,7 +369,7 @@ class Leyka_Admin_Setup {
                     if(is_array($option) && !empty($option['section'])) {
                         do_action('leyka_render_section', $option['section']);
 						
-                    } else { //is this case ever possible ?						
+                    } else { // is this case possible?
                         $option_info = leyka_options()->get_info_of($option);
                         do_action("leyka_render_{$option_info['type']}", $option, $option_info);
                     }

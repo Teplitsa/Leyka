@@ -5,7 +5,9 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
 
     add_action('pll_language_defined', function($slug, $cur_lang){
 
-//    load_plugin_textdomain('leyka', FALSE, plugin_basename(LEYKA_PLUGIN_DIR).'/lang/');
+        if($slug != 'en') {
+            load_textdomain('leyka', LEYKA_PLUGIN_DIR."lang/leyka-{$cur_lang->locale}.mo");
+        }
 
         add_filter('leyka_default_success_page_query', function($params){
 
@@ -30,10 +32,6 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
 
             return $params;
         });
-
-        if($slug != 'en') {
-            load_textdomain('leyka', LEYKA_PLUGIN_DIR."lang/leyka-{$cur_lang->locale}.mo");
-        }
 
         add_filter('leyka_option_value', function($value, $option_name){
 
