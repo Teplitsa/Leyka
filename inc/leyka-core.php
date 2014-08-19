@@ -110,6 +110,10 @@ class Leyka {
             
         });
 
+//        add_action('parse_request', function($wp){
+//            echo '<pre>' . print_r($wp, 1) . '</pre>';
+//        });
+
         add_action('template_redirect', array($this, 'gateway_redirect_page'));
 
 		$this->apply_formatting_filters(); // Internal formatting filters 
@@ -558,7 +562,8 @@ class Leyka {
 
         global $wp_query;
 
-		if(isset($wp_query->query_vars['name']) && $wp_query->query_vars['name'] == 'leyka-process-donation') {
+        // isset($wp_query->query_vars['name']) && $wp_query->query_vars['name'] == 'leyka-process-donation'
+		if(stristr($_SERVER['REQUEST_URI'], 'leyka-process-donation')) {
             
             if(empty($_POST)) {
                 wp_redirect(site_url());
