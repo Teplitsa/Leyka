@@ -61,7 +61,6 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         if(empty($this->_payment_methods['chronopay_card'])) {
             $this->_payment_methods['chronopay_card'] = Leyka_Chronopay_Card::get_instance();
             $this->_payment_methods['chronopay_card']->initialize_pm_options();
-//            $this->_payment_methods['chronopay_card']->save_settings();
         }
 		
     }

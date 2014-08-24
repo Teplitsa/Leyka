@@ -72,9 +72,8 @@ if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.3.0', '<') ) {
 if( !function_exists('is_user_logged_in') )
     require_once(ABSPATH.'wp-includes/pluggable.php');
 
-require_once(LEYKA_PLUGIN_DIR.'inc/leyka-polylang.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-functions.php');
-require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-polylang.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-controller.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-core.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-gateways-api.php');

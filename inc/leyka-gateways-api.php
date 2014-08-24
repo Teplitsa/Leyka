@@ -184,6 +184,8 @@ abstract class Leyka_Gateway {
     protected function _set_gateway_pm_list() {
 
         $this->_initialize_pm_list();
+        do_action('leyka_init_pm_list', $this);
+
         $this->_initialize_pm_options();
         $this->_set_pm_activity();
     }
@@ -230,14 +232,36 @@ abstract class Leyka_Gateway {
     }
 
     abstract public function process_form($gateway_id, $pm_id, $donation_id, $form_data);
-    
+
     abstract public function submission_redirect_url($current_url, $pm_id);
 
     abstract public function submission_form_data($form_data_vars, $pm_id, $donation_id);
-    
+
     abstract public function log_gateway_fields($donation_id);
 
-//    abstract protected function _initialize_options();
+    /**
+     * @param Leyka_Payment_Method $pm New PM to add to a gateway.
+     * @param bool $replace_if_exists True to replace an existing PM (if it exists). False by default.
+     * @return bool True if PM was added/replaced, false otherwise.
+     */
+    public function add_payment_method(Leyka_Payment_Method $pm, $replace_if_exists = false) {
+
+        if(empty($this->_payment_methods[$pm->id]) || !!$replace_if_exists) {
+            $this->_payment_methods[$pm->id] = $pm;
+            return true;
+        }
+
+        return false;
+    }
+
+    /** @param mixed $pm A PM object or it's ID to remove from gateway. */
+    public function remove_payment_method($pm) {
+
+        if(is_object($pm) && $pm instanceof Leyka_Payment_Method)
+            unset($this->_payment_methods[$pm->id]);
+        else if(strlen($pm) && !empty($this->_payment_methods[$pm]))
+            unset($this->_payment_methods[$pm->id]);
+    }
 
     /**
      * @param mixed $activity True to select only active PMs, false for only non-active ones,
