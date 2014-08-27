@@ -27,7 +27,7 @@ class Leyka {
 	 * Slug of the plugin screen.
 	 * @var string
 	 */
-    private $_plugin_screen_hook_suffix = null;
+    // private $_plugin_screen_hook_suffix = null;
 
     /**
      * Gateways list.
@@ -36,7 +36,7 @@ class Leyka {
     private $_gateways = array();
 
     /** @var bool Set in true if gateways addition already processed. */
-    private $_gateways_added = false;
+    // private $_gateways_added = false;
 
     /** @var array Of WP_Error instances. */
     private $_form_errors = array();
@@ -110,11 +110,7 @@ class Leyka {
             
         });
 
-//        add_action('parse_request', function($wp){
-//            echo '<pre>' . print_r($wp, 1) . '</pre>';
-//        });
-
-        add_action('template_redirect', array($this, 'gateway_redirect_page'));
+        add_action('template_redirect', array($this, 'gateway_redirect_page'), 1, 1);
 
 		$this->apply_formatting_filters(); // Internal formatting filters 
 		
