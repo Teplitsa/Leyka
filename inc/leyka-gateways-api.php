@@ -4,7 +4,7 @@
  **/
 
 /**
- * Functions to register and deregister GW
+ * Functions to register and deregister a gateway
  **/
 function leyka_add_gateway($class_name){
     leyka()->add_gateway($class_name);
@@ -94,12 +94,13 @@ abstract class Leyka_Gateway {
 
         $this->_set_gateway_attributes(); // Create main Gateway's attributes
 
-        $this->_set_options_defaults(); // Svaret an admin area's configurable options  
+        $this->_set_options_defaults(); // Set configurable options in admin area
 
         $this->_set_gateway_pm_list(); // Initialize or restore Gateway's PMs list and all their options
 
         // Set a Gateway class method to process a service calls from gateway:
         add_action('leyka_service_call-'.$this->_id, array($this, '_handle_service_calls'));
+        add_action('leyka_cancel_recurrents-'.$this->_id, array($this, 'cancel_recurrents'));
     }
 
     final protected function __clone() {}
@@ -172,6 +173,10 @@ abstract class Leyka_Gateway {
 
     // Handler for Gateway's service calls (activate the donations, etc.):
     abstract public function _handle_service_calls($call_type = '');
+
+    // Handler for Gateway's procedure to stop some recurrent donations:
+    public function cancel_recurrents(Leyka_Donation $donation) {
+    }
 
     // Handler to use Gateway's responses in Leyka UI:
     abstract public function get_gateway_response_formatted(Leyka_Donation $donation);

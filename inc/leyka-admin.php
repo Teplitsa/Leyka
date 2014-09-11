@@ -21,6 +21,12 @@ class Leyka_Admin_Setup {
         /** Reorder Leyka submenu */
         add_filter('custom_menu_order', array($this, 'reorder_submenu'));
 
+        add_action('admin_init', function(){
+
+            if( !empty($GLOBALS['wpseo_metabox']) )
+                remove_action('restrict_manage_posts', array($GLOBALS['wpseo_metabox'], 'posts_filter_dropdown'));
+        });
+
         /** Custom update message */
 //        add_action(
 //            'in_plugin_update_message-'.LEYKA_PLUGIN_DIR_NAME.'/'.LEYKA_PLUGIN_BASE_FILE,

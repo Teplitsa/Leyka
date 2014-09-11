@@ -155,9 +155,9 @@ class Leyka_Bank_Order extends Leyka_Payment_Method {
 
         $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
 
-        $this->_icons = apply_filters('leyka_payment_method_icons', array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/quittance/icons/sber_s.png',
-        ), $this->_id);
+        ));
 
         $this->_submit_label = empty($params['submit_label']) ?
             __('Get bank order quittance', 'leyka') : $params['submit_label'];

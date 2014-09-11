@@ -50,22 +50,6 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
             return $value;
         }, 10, 2);
 
-        // Register user-defined strings:
-        foreach(leyka_options()->get_options_names() as $option) {
-
-            $option_data = leyka_options()->get_info_of($option);
-
-            if($option_data['type'] == 'text')
-                pll_register_string($option_data['title'], $option_data['value'], 'leyka');
-
-            elseif(
-                $option_data['type'] == 'textarea'
-             || $option_data['type'] == 'html'
-             || $option_data['type'] == 'rich_html'
-            )
-                pll_register_string($option_data['title'], leyka_options()->opt($option), 'leyka', true);
-        }
-
         add_filter('leyka_pm_description', function($description, $pm_id){
             return pll__($description);
         }, 10, 2);
@@ -92,7 +76,25 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
             return $value;
         }, 10, 4);
 
-        do_action('leyka_init_actions'); // All localization filters are in places, now create all the gateways
+        add_action('init', function(){ // All localization filters are in places, now create all gateways
+            do_action('leyka_init_actions');
+
+            // Register user-defined strings:
+            foreach(leyka_options()->get_options_names() as $option) {
+
+                $option_data = leyka_options()->get_info_of($option);
+
+                if($option_data['type'] == 'text')
+                    pll_register_string($option_data['title'], $option_data['value'], 'leyka');
+
+                elseif(
+                    $option_data['type'] == 'textarea'
+                    || $option_data['type'] == 'html'
+                    || $option_data['type'] == 'rich_html'
+                )
+                    pll_register_string($option_data['title'], leyka_options()->opt($option), 'leyka', true);
+            }
+        }, 11);
 
     }, 10, 2);
 

@@ -14,8 +14,8 @@ class Leyka_Options_Controller {
     }
 
     private function __construct() {
-	
-		require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
+
+        require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
 
         global $options_meta;
 

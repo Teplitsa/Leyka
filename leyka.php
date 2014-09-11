@@ -3,7 +3,7 @@
  * Plugin Name: Leyka
  * Plugin URI:  http://leyka.te-st.ru/
  * Description: The donations management system for your WP site.
- * Version:     2.1.3
+ * Version:     2.1.4
  * Author:      Lev Zvyagincev aka Ahaenor
  * Author URI:  ahaenor@gmail.com
  * Text Domain: leyka
@@ -38,7 +38,7 @@ if( !defined('WPINC') ) die;
 
 // Leyka plugin version:
 if( !defined('LEYKA_VERSION') )
-    define('LEYKA_VERSION', '2.1.3');
+    define('LEYKA_VERSION', '2.1.4');
 
 // Plugin base file:
 if( !defined('LEYKA_PLUGIN_BASE_FILE') ) // "leyka.php"
@@ -63,7 +63,7 @@ if( !defined('LEYKA_PLUGIN_INNER_SHORT_NAME') )
 // Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
 if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.3.0', '<') ) {
 
-    echo __('<div id="message" class="error"><p><strong>Error:</strong> your PHP version is <strong>below 5.3</strong>. It is required for Leyka to work. Plugin will be deactivated.<br />If you wish to solve this issue, please refer to your hosting provider to have him update PHP to at least <strong>v5.3</strong>. In addition, you may wish to change a hosting provider you are using.</p></div>', 'leyka');
+    echo __('<div id="message" class="error"><p><strong>Ошибка:</strong> версия PHP ниже <strong>5.3.0</strong>. Лейка нуждается в PHP хотя бы <strong>версии 5.3.0</strong>, чтобы работать корректно. Плагин будет деактивирован.<br /><br />Пожалуйста, направьте вашему хостинг-провайдеру запрос на повышение версии PHP для этого сайта.</p> <p><strong>Error:</strong> your PHP version is below <strong>5.3.0</strong>. Leyka needs PHP <strong>v5.3.0</strong> or later to work. Plugin will be deactivated.<br /><br />Please contact your hosting provider to upgrade your PHP version.</p></div>', 'leyka');
 
     die();
 }
@@ -102,7 +102,4 @@ if( !$gateways_dir ) {
 register_activation_hook(__FILE__, array('Leyka', 'activate'));
 register_deactivation_hook(__FILE__, array('Leyka', 'deactivate'));
 
-// Init:
-//add_action('init', function(){
-leyka();
-//});
+leyka(); // Init

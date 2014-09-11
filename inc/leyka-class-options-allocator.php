@@ -109,15 +109,18 @@ class Leyka_Options_Allocator {
                         'name' => 'email_thanks',
                         'title' => __('Grateful emails options', 'leyka'),
                         'is_default_collapsed' => true,
-                        'options' => array('email_thanks_title', 'email_thanks_text',)
+                        'options' => array(
+                            'email_thanks_title', 'email_thanks_text',
+                            'email_recurrents_thanks_title', 'email_recurrents_thanks_text'
+                        )
                     ),),
                     array('section' => array(
                         'name' => 'email_notify',
                         'title' => __('Website personnel notifications options', 'leyka'),
                         'is_default_collapsed' => true,
                         'options' => array(
-                            'notify_donations_managers', 'donations_managers_emails', 'email_notification_title',
-                            'email_notification_text',
+                            'notify_donations_managers', 'notify_managers_on_recurrents', 'donations_managers_emails',
+                            'email_notification_title', 'email_notification_text',
                         )
                     ),),
                 );

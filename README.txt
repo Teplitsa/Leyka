@@ -4,8 +4,8 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, charity, wp-donates, crowdfunding, leyka
 Requires at least: 3.6.1
-Tested up to: 3.9.1
-Stable tag: 2.1.3
+Tested up to: 4.0
+Stable tag: 2.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,16 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 6. Пример квитанции для оплаты через банк
 
 == Changelog ==
+
+= 2.1.4 =
+ * Fix: compatibility with Polylang plugin.
+ * Fix: turn-off behavior when plugin is activated on PHP 5.2 and less.
+ * Fix: gateways and payment methods API behavior.
+ * Fix: minor bugs.
+ * New: new hooks to allow better code customization.
+ * New: Chronopay gateway's recurrent donations.
+ * New: donations history export in MS Excel format.
+ * New: donation form redirect timing now is longer when debug mode is on.
 
 = 2.1.3 =
  * Fix: notices when plugin is activating on new installation or update (PHP strict standards based included).

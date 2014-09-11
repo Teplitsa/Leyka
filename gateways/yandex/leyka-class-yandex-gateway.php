@@ -195,7 +195,7 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
                 if($donation->status != 'funded') {
 
                     $donation->add_gateway_response($_POST);
-                    $donation->set_status('funded');
+                    $donation->status = 'funded';
                 }
 
 //                set_transient('leyka_yandex_test_pa', '<pre>'.print_r($_POST, true).'</pre>', 60*60*24);
@@ -270,10 +270,10 @@ class Leyka_Yandex_Money extends Leyka_Payment_Method {
 
         $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
 
-        $this->_icons = apply_filters('leyka_payment_method_icons', array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
 //            LEYKA_PLUGIN_BASE_URL.'gateways/quittance/icons/sber_s.png',
-        ), $this->_id);
+        ));
 
         $this->_submit_label = empty($params['submit_label']) ?
             __('Donate', 'leyka') : $params['submit_label'];
@@ -348,11 +348,11 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
 
         $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
 
-        $this->_icons = apply_filters('leyka_payment_method_icons', array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
 //            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/master.png',
-        ), $this->_id);
+        ));
 
         $this->_submit_label = empty($params['submit_label']) ?
             __('Donate', 'leyka') : $params['submit_label'];
@@ -423,10 +423,10 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
 //
 //        $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
 //
-//        $this->_icons = apply_filters('leyka_payment_method_icons', array(
+//        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
 //            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
 ////            LEYKA_PLUGIN_BASE_URL.'gateways/quittance/icons/sber_s.png',
-//        ), $this->_id);
+//        ));
 //
 //        $this->_submit_label = empty($params['submit_label']) ?
 //            __('Donate', 'leyka') : $params['submit_label'];

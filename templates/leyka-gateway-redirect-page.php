@@ -1,7 +1,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title><?php echo __('Redirect to the gateway', 'leyka');?></title>
+    <title><?php echo __('Redirecting to the gateway payment page', 'leyka');?></title>
     <style type="text/css">
         body {
             margin: 0;
@@ -64,7 +64,7 @@
     </form>
     <?php leyka_pf_footer();?>
     <script type="text/javascript">
-        setTimeout(function(){ document.getElementById('leyka-auto-submit').submit(); }, 3000);
+        setTimeout(function(){ document.getElementById('leyka-auto-submit').submit(); }, <?php echo WP_DEBUG ? 15000 : 5000;?>);
     </script>
 </body>
 </html>

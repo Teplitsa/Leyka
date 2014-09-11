@@ -58,10 +58,12 @@ class Leyka_Campaign_Management {
         
         $payment_title = $campaign->payment_title;?>
 
-		<fieldset id="target-amount"  class="metabox-field campaign-field">
-			<label for="campaign_target"><?php _e('Campaign target amount', 'leyka');?></label><br />
-			<input type="text" name="campaign_target" id="campaign-target" value="<?php echo $campaign->target == 0 ? '' : $campaign->target;?>" placeholder="<?php _e("If your campaign has not a target amount, just leave this field empty", 'leyka');?>" /> RUR
-		</fieldset>
+        <!-- Campaign target commented out for next release -->
+<!--		<fieldset id="target-amount"  class="metabox-field campaign-field">-->
+<!--			<label for="campaign_target">--><?php //_e('Target amount (in main currency chosen in Settings)', 'leyka');?><!--</label><br>-->
+<!--			<input type="text" name="campaign_target" id="campaign_target" value="--><?php //echo (int)$campaign->get_meta('campaign_target');?><!--">			-->
+<!--		</fieldset>-->
+        <!-- Campaign target comment end -->
 
         <fieldset id="payment-title"  class="metabox-field campaign-field">
             <label for="payment_title">
@@ -90,19 +92,14 @@ class Leyka_Campaign_Management {
 			</select>
 		</fieldset>
 
-        <?php if($post->post_status != 'auto-draft') {?>
         <fieldset id="campaign-finished"  class="metabox-field campaign-field">
-            <label for="is-finished">
-                <input type="checkbox" id="is-finished" name="is_finished" value="1" <?php echo $campaign->is_finished ? 'checked' : '';?> /> <?php _e('Campaign is finished, all donations recieving stopped.', 'leyka');?>
-            </label>
-            <label for="auto-finish">
-                <input type="checkbox" id="auto-finish" name="auto_finish" value="1" <?php echo $campaign->auto_finish ? 'checked' : '';?> /> <?php _e('Finish the campaign automatically when target is achieved. Target needs to be set.', 'leyka');?>
+            <label for="is_finished">
+                <input type="checkbox" id="is_finished" name="is_finished" value="1" <?php echo $campaign->is_finished ? 'checked' : '';?> /> <?php _e('Campaign is finished, all donations recieving stopped.', 'leyka');?>
             </label>
         </fieldset>
-        <?php }?>
 	<?php 
 	}
-
+	
 	function save_data($post_id, WP_Post $post) {
 
 		$campaign = new Leyka_Campaign($post);
@@ -110,8 +107,8 @@ class Leyka_Campaign_Management {
 	}
 
 	/** Table Columns */
-	function manage_columns_names($columns) {
-
+	function manage_columns_names($columns){
+		
 		$unsort = $columns;
 		$columns = array();
 		
@@ -127,7 +124,8 @@ class Leyka_Campaign_Management {
 			unset($unsort['title']);
 		}
 
-		$columns['target'] = __('Target', 'leyka');
+        /* Campaign target commented out for next release */
+//		$columns['target'] = __('Target', 'leyka');
 
 		$columns['payment_title'] = __('Title meant for payment system', 'leyka');
 		//$columns['total'] = __('Total', 'leyka');
@@ -151,8 +149,12 @@ class Leyka_Campaign_Management {
 			echo (int)$campaign->id;
         elseif($column_name == 'payment_title')
             echo $campaign->payment_title;
-		elseif($column_name == 'target')
-			echo round((float)$campaign->target, 2);
+        /** Campaign target commented out for next release */
+//		elseif($column_name == 'target') {
+//			
+//			$target = intval($campaign->get_meta('purpose_target'));			
+//			echo $target;
+//		}
 	}
 }
 
@@ -188,8 +190,6 @@ class Leyka_Campaign {
             case 'payment_title':
                 $p_title = get_post_meta($this->_id, 'payment_title', true);
                 return $p_title ? $p_title : $this->_post_object->post_title;
-            case 'target':
-            case 'campaign_target': return round((float)get_post_meta($this->_id, 'campaign_target', true), 2);
             case 'template': return get_post_meta($this->_id, 'campaign_template', true);
             case 'description': return $this->_post_object->post_content;
             case 'status': return $this->_post_object->post_status;
@@ -197,8 +197,6 @@ class Leyka_Campaign {
             case 'url': return get_permalink($this->_id);
 			case 'is_finished':
 				return (int)get_post_meta($this->_id, 'is_finished', true) > 0;
-            case 'auto_finish':
-				return (int)get_post_meta($this->_id, 'auto_finish', true) > 0;
 //            case '': return ''; break;
             default:
                 return apply_filters('leyka_get_unknown_campaign_field', null, $field, $this);
@@ -217,11 +215,10 @@ class Leyka_Campaign {
 			$meta['payment_title'] = esc_attr(trim($_REQUEST['payment_title']));
 
         $meta['is_finished'] = empty($_REQUEST['is_finished']) ? 0 : 1;
-        $meta['auto_finish'] = empty($_REQUEST['auto_finish']) ? 0 : 1;
 
-		if( !empty($_REQUEST['campaign_target']) )
-			$meta['campaign_target'] = $_REQUEST['campaign_target'] > 0 ?
-                round((float)$_REQUEST['campaign_target'], 2) : 0.0;
+        /** Campaign target is commented out for the next release */
+//		if(isset($_REQUEST['campaign_target']) && !empty($_REQUEST['campaign_target']))
+//			$meta['campaign_target'] = (float)$_REQUEST['campaign_target'];
 
 		foreach($meta as $key => $value) {
 			update_post_meta($this->_id, $key, $value);
@@ -230,7 +227,7 @@ class Leyka_Campaign {
 
 	function get_default_meta() {
 		return array(
-			'campaign_target' => 0.0,
+//			'campaign_target' => 0, /** Campaing target is commented out for the next release */
             'payment_title' => '',
 			'campaign_template' => 'default'
 		);

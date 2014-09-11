@@ -16,7 +16,7 @@ leyka_pf_submission_errors();?>
 	leyka_setup_current_pm($pm);
 	$counter++;?>
 
-<div class="leyka-payment-option toggle <?php if($counter == 1) echo 'toggled';?>">
+<div class="leyka-payment-option toggle <?php if($counter == 1) echo 'toggled';?> <?php echo esc_attr($pm->full_id);?>">
 <div class="toggle-trigger <?php echo count($active_pm) > 1 ? '' : 'toggle-inactive';?>">
     <?php echo leyka_pf_get_pm_label();?>
 </div>

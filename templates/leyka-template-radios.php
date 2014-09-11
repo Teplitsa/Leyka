@@ -45,7 +45,7 @@ leyka_setup_current_pm($curr_pm, $curr_pm->default_currency);?>
 		<!-- changeable area -->
 		<div id="leyka-pm-data" class="changeable-fields form-part">
 			
-			<div class="leyka-pm-fields">
+			<div class="leyka-pm-fields <?php echo esc_attr($curr_pm->id);?>">
 				
 			<div class='leyka-user-data'>
 			<?php

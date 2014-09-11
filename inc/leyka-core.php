@@ -232,6 +232,8 @@ class Leyka {
             if(get_option('leyka_options_installed'))
                 delete_option('leyka_options_installed');
 
+            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
+
             global $options_meta;
 
             foreach($options_meta as $name => $meta) {
@@ -346,7 +348,9 @@ class Leyka {
 		require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-allocator.php');
 		require_once(LEYKA_PLUGIN_DIR.'inc/leyka-render-settings.php');
 		require_once(LEYKA_PLUGIN_DIR.'/inc/leyka-admin.php');
-		Leyka_Admin_Setup::get_instance();	
+		require_once(LEYKA_PLUGIN_DIR.'/inc/leyka-donations-export.php');
+
+		Leyka_Admin_Setup::get_instance();
 	}
 	
 	
@@ -630,43 +634,19 @@ class Leyka {
 		$campaign = get_post((int)$_POST['leyka_campaign_id']);
 		$purpose_text = get_post_meta($campaign->ID, 'payment_title', true);
 		$purpose_text = (empty($purpose_text) && $campaign->post_title) ? $campaign->post_title : $purpose_text;
-        $res = wp_insert_post(array(
-            'post_type' => 'leyka_donation',
-            'post_status' => 'submitted',
-            'post_title' => $purpose_text ?
-                $purpose_text : leyka_options()->opt('donation_purpose_text'),
-        ), true);
-        
-        if(is_wp_error($res)) {
+
+        $pm_data = leyka_pf_get_payment_method_value();
+        $donation_id = Leyka_Donation::add(apply_filters('leyka_new_donation_data', array(
+            'purpose_text' => $purpose_text,
+        )));
+
+        if(is_wp_error($donation_id))
             /** @todo Modify this method so it can take any WP_Error as a param, then call it here: */
-//            $this->_add_session_errors();
             return false;
-        } else {
+        else {
 
-            $pm_data = leyka_pf_get_payment_method_value();
-
-            update_post_meta($res, 'leyka_donation_amount', leyka_pf_get_amount_value());
-            update_post_meta($res, 'leyka_donation_currency', leyka_pf_get_currency_value());
-            update_post_meta($res, 'leyka_donor_name', leyka_pf_get_donor_name_value());
-            update_post_meta($res, 'leyka_donor_email', leyka_pf_get_donor_email_value());
-            update_post_meta($res, 'leyka_payment_method', $pm_data['payment_method_id']);
-            update_post_meta($res, 'leyka_gateway', $pm_data['gateway_id']);
-            update_post_meta($res, 'leyka_campaign_id', leyka_pf_get_campaign_id_value());
-            
-            if( !get_post_meta($res, '_leyka_donor_email_date', true) )
-                update_post_meta($res, '_leyka_donor_email_date', 0);
-            if( !get_post_meta($res, '_leyka_managers_emails_date', true) )
-                update_post_meta($res, '_leyka_managers_emails_date', 0);
-
-            update_post_meta(
-                $res,
-                '_status_log',
-                array(array('date' => time(), 'status' => 'submitted'))
-            );
-
-            do_action('leyka_log_donation', $res);
-
-            return $res;
+            do_action('leyka_log_donation', $donation_id);
+            return $donation_id;
         }
 	}
 
@@ -683,16 +663,16 @@ class Leyka {
 
         do_action('leyka_logging_new_donation', $donation_id, $donation);
     }
-	
+
 	/**
 	 * Templates manipulations
 	 **/
 	public function get_templates() { 
 		if(empty($this->templates)) { 
 			$this->templates = glob(STYLESHEETPATH.'/leyka-template-*.php');
-			if($this->templates === false || empty($this->templates)) { // if glob hits an error, it returns false
+			if($this->templates === false || empty($this->templates)) { // If global hits an error, it returns false
+
 				// Let's search in own folder:
-				
 				$this->templates = glob(LEYKA_PLUGIN_DIR . 'templates/leyka-template-*.php');
 				
 				if($this->templates === false)
@@ -756,3 +736,5 @@ __('Radios', 'leyka');
 __('Radio options for each payment method', 'leyka');
 __('Toggles', 'leyka');
 __('Toggled options for each payment method', 'leyka');
+__('single', 'leyka');
+__('rebill', 'leyka');

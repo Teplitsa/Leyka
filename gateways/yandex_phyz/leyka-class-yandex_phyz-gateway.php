@@ -180,7 +180,7 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
 
 						error_log_yandex_phyz('Make funded' . "\n");
 						$donation->add_gateway_response($_POST);
-						$donation->set_status('funded');
+						$donation->status = 'funded';
 					} else
 						error_log_yandex_phyz('Already funded' . "\n");
 
@@ -201,26 +201,20 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
 
         if( !$donation->gateway_response )
             return array();
-        
+
         $response_vars = maybe_unserialize($donation->gateway_response);
         if( !$response_vars || !is_array($response_vars) )
             return array();
 
-        $action_label = __('Donation confirmation', 'leyka');
-
-		$log_file = "/var/www/devuser/data/www/leyka.ngo2.ru/denisch-error.log";
-		error_log_yandex_phyz(print_r($response_vars, true) . "\n");
-		
 		$payment_type = '';
-		if(@$response_vars['notification_type'] == 'p2p-incoming') {
+		if($response_vars['notification_type'] == 'p2p-incoming') {
 			$payment_type = __('Using Yandex.Money Account', 'leyka');
-		}
-		elseif(@$response_vars['notification_type'] == 'card-incoming') {
+		} elseif($response_vars['notification_type'] == 'card-incoming') {
 			$payment_type = __('Using Banking Card', 'leyka');
 		}
-		
+
         return array(
-            __('Last response operation:', 'leyka') => $action_label,
+            __('Last response operation:', 'leyka') => __('Donation confirmation', 'leyka'),
             __('Yandex payment type:', 'leyka') => $payment_type,
             __('Gateway invoice ID:', 'leyka') => $response_vars['operation_id'],
             __('Full donation amount:', 'leyka') =>
@@ -270,10 +264,10 @@ class Leyka_Yandex_Phyz_Money extends Leyka_Payment_Method {
 
         $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
 
-        $this->_icons = apply_filters('leyka_payment_method_icons', array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex_phyz/icons/yandex_phyz_money_s.png',
 //            LEYKA_PLUGIN_BASE_URL.'gateways/quittance/icons/sber_s.png',
-        ), $this->_id);
+        ));
 
         $this->_submit_label = empty($params['submit_label']) ? __('Donate', 'leyka') : $params['submit_label'];
 
@@ -347,11 +341,11 @@ class Leyka_Yandex_Phyz_Card extends Leyka_Payment_Method {
 
         $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
 
-        $this->_icons = apply_filters('leyka_payment_method_icons', array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
 //            LEYKA_PLUGIN_BASE_URL.'gateways/yandex_phyz/icons/yandex_phyz_money_s.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex_phyz/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex_phyz/icons/master.png',
-        ), $this->_id);
+        ));
 
         $this->_submit_label = empty($params['submit_label']) ?
             __('Donate', 'leyka') : $params['submit_label'];

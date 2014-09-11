@@ -111,9 +111,9 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
         $details = apply_filters('leyka_the_content', leyka_options()->opt_safe('text_box_details'));
         $this->_custom_fields = empty($params['custom_fields']) ? array('box_deatails' => $details) : (array)$params['custom_fields'];
 
-        $this->_icons = apply_filters('leyka_payment_method_icons', array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/text/icons/box.png',
-        ), $this->_id);
+        ));
 
         $this->_submit_label = empty($params['submit_label']) ?
             __('Donate', 'leyka') : $params['submit_label'];
