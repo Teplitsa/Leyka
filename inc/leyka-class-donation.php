@@ -266,7 +266,7 @@ class Leyka_Donation_Management {
 		add_meta_box($this->_post_type.'_status', __('Donation status', 'leyka'), array($this, 'donation_status_metabox'), $this->_post_type, 'side', 'high');
 		add_meta_box($this->_post_type.'_emails_status', __('Emails status', 'leyka'), array($this, 'emails_status_metabox'), $this->_post_type, 'normal', 'high');
 		add_meta_box($this->_post_type.'_gateway_response', __('Gateway responses text', 'leyka'), array($this, 'gateway_response_metabox'), $this->_post_type, 'normal', 'low');
-        add_meta_box($this->_post_type.'_recurrent_cancel', __('Cancel recurrent donations', 'leyka'), array($this, 'recurrent_cancel_metabox'), $this->_post_type, 'normal', 'low');
+//        add_meta_box($this->_post_type.'_recurrent_cancel', __('Cancel recurrent donations', 'leyka'), array($this, 'recurrent_cancel_metabox'), $this->_post_type, 'normal', 'low');
 	}
 
     public function donation_data_metabox($donation) {
@@ -478,7 +478,7 @@ class Leyka_Donation_Management {
 		$columns['amount'] = __('Amount', 'leyka');
 		$columns['method'] = __('Method', 'leyka');	
 		$columns['status'] = __('Status', 'leyka');
-		$columns['emails'] = __('Grateful email', 'leyka');
+		$columns['emails'] = __('Letter', 'leyka');
 		$columns['payment_type'] = __('Type of payment', 'leyka');
 
 		if($unsort)
@@ -845,13 +845,13 @@ class Leyka_Donation {
     public function __set($field, $value) {
         switch($field) {
             case 'status':
-                if( !array_key_exists($status, leyka_get_donation_status_list()) || $status == $this->status )
+                if( !array_key_exists($value, leyka_get_donation_status_list()) || $value == $this->status )
                     return false;
 
-                $res = wp_update_post(array('ID' => $this->_id, 'post_status' => $status));
+                $res = wp_update_post(array('ID' => $this->_id, 'post_status' => $value));
 
                 $status_log = get_post_meta($this->_id, '_status_log', true);
-                $status_log[] = array('date' => time(), 'status' => $status);
+                $status_log[] = array('date' => time(), 'status' => $value);
                 update_post_meta($this->_id, '_status_log', $status_log);
 
                 break;
@@ -917,5 +917,5 @@ function leyka_cancel_recurrents_action() {
     $donation = new Leyka_Donation($_POST['donation_id']);
     do_action('leyka_cancel_recurrents-'.$donation->gateway_id, $donation);
 }
-add_action('wp_ajax_leyka_cancel_recurrents', 'leyka_cancel_recurrents_action');
-add_action('wp_ajax_nopriv_leyka_cancel_recurrents', 'leyka_cancel_recurrents_action');
+//add_action('wp_ajax_leyka_cancel_recurrents', 'leyka_cancel_recurrents_action');
+//add_action('wp_ajax_nopriv_leyka_cancel_recurrents', 'leyka_cancel_recurrents_action');

@@ -295,10 +295,10 @@ input[type="checkbox"] {
 	padding: 10px 20px 10px 20px;
 	font-size: 0.95em; }
 
-*[class *= 'error'] a {
+.single-leyka_campaign *[class *= 'error'] a {
 	color: #fc001e; }
 
-*[class *= 'error'] a:hover {
+.single-leyka_campaign *[class *= 'error'] a:hover {
 	color: #aa363a; }
 
 /* Templates */

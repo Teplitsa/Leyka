@@ -32,7 +32,7 @@ function leyka_get_pm_list($activity = null, $currency = false) {
         $pm_list = array_merge($pm_list, $gateway->get_payment_methods($activity, $currency));
     }
 
-    return $pm_list;
+    return apply_filters('leyka_active_pm_list', $pm_list, $activity, $currency);
 }
 
 /**

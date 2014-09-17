@@ -48,7 +48,7 @@
 
 /* Donations */
 .post-type-leyka_donation .column-ID {
-	width: 5%; }
+	width: 4%; }
 
 .post-type-leyka_donation .column-amount {
 	width: 6%; }
@@ -59,7 +59,7 @@
 .post-type-leyka_donation .column-donor,
 .post-type-leyka_donation .column-method,
 .post-type-leyka_donation .column-status {
-	width: 15%; }
+	width: 12%; }
 
 
 .leyka-ddata-string {
