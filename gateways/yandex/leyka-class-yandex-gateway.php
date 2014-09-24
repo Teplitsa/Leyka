@@ -82,10 +82,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         //...
     }
 
-    public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
-
-//        if($gateway_id != $this->_id || empty($this->_payment_methods[$pm_id]))
-//            return;
+    public function process_form($pm_id, $donation_id, $form_data) {
     }
 
     public function submission_redirect_url($current_url, $pm_id) {

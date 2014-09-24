@@ -112,8 +112,9 @@ abstract class Leyka_Gateway {
             static::$_instance = new static();
             static::$_instance->_initialize_options();
 
-            add_action('leyka_payment_form_submission', array(static::$_instance, 'process_form'), 10, 4);
-            add_action('leyka_log_donation', array(static::$_instance, 'log_gateway_fields'));
+            add_action('leyka_payment_form_submission-'.static::$_instance->id, array(static::$_instance, 'process_form'), 10, 3);
+            add_action('leyka_payment_form_submission-'.static::$_instance->id, array(static::$_instance, 'process_form_default'), 100, 3);
+            add_action('leyka_log_donation'.static::$_instance->id, array(static::$_instance, 'log_gateway_fields'));
 
             add_filter('leyka_submission_redirect_url-'.static::$_instance->id, array(static::$_instance, 'submission_redirect_url'), 10, 2);
             add_filter('leyka_submission_form_data-'.static::$_instance->id, array(static::$_instance, 'submission_form_data'), 10, 3);
@@ -236,13 +237,62 @@ abstract class Leyka_Gateway {
         add_filter('leyka_payment_options_allocation', array($this, 'allocate_gateway_options'), 1, 1);
     }
 
-    abstract public function process_form($gateway_id, $pm_id, $donation_id, $form_data);
+    abstract public function process_form($pm_id, $donation_id, $form_data);
 
     abstract public function submission_redirect_url($current_url, $pm_id);
 
     abstract public function submission_form_data($form_data_vars, $pm_id, $donation_id);
 
     abstract public function log_gateway_fields($donation_id);
+
+    static public function process_form_default($pm_id, $donation_id, $form_data) {
+
+        if(empty($form_data['leyka_donation_amount']) || (float)$form_data['leyka_donation_amount'] <= 0) {
+            $error = new WP_Error('wrong_donation_amount', __('Donation amount must be specified to submit the form', 'leyka'));
+            leyka()->add_payment_form_error($error);
+        }
+
+        $currency = $form_data['leyka_donation_currency'];
+        if(empty($currency)) {
+            $error = new WP_Error('wrong_donation_currency', __('Wrong donation currency in submitted form data', 'leyka'));
+            leyka()->add_payment_form_error($error);
+        }
+
+        if(
+            !empty($form_data['top_'.$currency]) &&
+            $form_data['leyka_donation_amount'] > $form_data['top_'.$currency]
+        ) {
+            $top_amount_allowed = $form_data['top_'.$currency];
+            $error = new WP_Error(
+                'donation_amount_too_great',
+                sprintf(
+                    __('Donation amount you entered is too great (maximum %s allowed)', 'leyka'),
+                    $top_amount_allowed.' '.leyka_options()->opt("currency_{$currency}_label")
+                )
+            );
+            leyka()->add_payment_form_error($error);
+        }
+
+        if(
+            !empty($form_data['bottom_'.$currency]) &&
+            $form_data['leyka_donation_amount'] < $form_data['bottom_'.$currency]
+        ) {
+            $bottom_amount_allowed = $form_data['bottom_'.$currency];
+            $error = new WP_Error(
+                'donation_amount_too_small',
+                sprintf(
+                    __('Donation amount you entered is too small (minimum %s allowed)', 'leyka'),
+                    $bottom_amount_allowed.' '.leyka_options()->opt("currency_{$currency}_label")
+                )
+            );
+            leyka()->add_payment_form_error($error);
+        }
+
+        if(empty($form_data['leyka_agree'])) {
+            $error = new WP_Error('terms_not_agreed', __('You must agree to the terms of donation service', 'leyka'));
+            leyka()->add_payment_form_error($error);
+        }
+    }
 
     /**
      * @param Leyka_Payment_Method $pm New PM to add to a gateway.

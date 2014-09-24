@@ -61,8 +61,7 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
 
     }
 
-    public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
-		
+    public function process_form($pm_id, $donation_id, $form_data) {
     }
 
     public function submission_redirect_url($current_url, $pm_id) {

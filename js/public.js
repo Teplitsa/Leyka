@@ -178,18 +178,23 @@ jQuery(document).ready(function($){
 
         if( !curr )
             curr = $('.leyka_donation_currency').val();
-		
+
+        var form_data = {
+            action: 'leyka_payment_method',
+            pm_id: $(e.target).attr('data-pm_id'),
+            currency: curr,
+            _leyka_ajax_nonce: $('#_wpnonce').val(),
+            user_name: $form.find('#leyka_donor_name').val(),
+            user_email: $form.find('#leyka_donor_email').val()
+        };
+        var lang = $form.find('input[name="cur_lang"]').val();
+        if(lang)
+            form_data.lang = lang;
+
 		$.ajax({
             type: 'POST',
             url: leyka.ajaxurl,
-            data: {
-                action: 'leyka_payment_method',
-                pm_id: $(e.target).attr('data-pm_id'),
-                currency: curr,
-                _leyka_ajax_nonce: $('#_wpnonce').val(),
-                user_name: $form.find('#leyka_donor_name').val(),
-                user_email: $form.find('#leyka_donor_email').val()
-            },
+            data: form_data,
             beforeSend: function(xhr){
                 // Loaders:
                 $('#leyka-pm-data').addClass('loading');

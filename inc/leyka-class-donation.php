@@ -8,7 +8,7 @@ class Leyka_Donation_Management {
 	
 	private static $_instance = null;
 
-	protected $_post_type = 'leyka_donation';
+	public static $post_type = 'leyka_donation';
 
 	private function __construct() {
 
@@ -38,14 +38,14 @@ class Leyka_Donation_Management {
         add_action('leyka_donation_metaboxes', array($this, 'set_metaboxes'));	
         add_action('save_post', array($this, 'save_donation_data'));
 
-		add_filter('manage_'.$this->_post_type.'_posts_columns', array($this, 'manage_columns_names'));
-		add_action('manage_'.$this->_post_type.'_posts_custom_column', array($this, 'manage_columns_content'), 2, 2);
+		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manage_columns_names'));
+		add_action('manage_'.self::$post_type.'_posts_custom_column', array($this, 'manage_columns_content'), 2, 2);
 
         /** Donation status transitions */
         add_action('new_to_submitted', array($this, 'new_donation_added'));
 
         // Leyka_donation status changed to "funded":
-        add_action('funded_'.$this->_post_type, array($this, 'donation_funded'), 10, 2);
+        add_action('funded_'.self::$post_type, array($this, 'donation_funded'), 10, 2);
         
         add_action('wp_ajax_leyka_send_donor_email', array($this, 'ajax_send_donor_email'));
 	}
@@ -53,7 +53,7 @@ class Leyka_Donation_Management {
     function remove_new_donation_button(){
         global $current_screen;
 
-        if($current_screen->post_type == $this->_post_type)
+        if($current_screen->post_type == self::$post_type)
             echo '<style>.add-new-h2{display: none;}</style>';
     }
 
@@ -260,13 +260,13 @@ class Leyka_Donation_Management {
 
 	/** Donation metaboxes */
     public function set_metaboxes(){
-		remove_meta_box('submitdiv', $this->_post_type, 'side'); // Remove default status/publish metabox
+		remove_meta_box('submitdiv', self::$post_type, 'side'); // Remove default status/publish metabox
 
-		add_meta_box($this->_post_type.'_data', __('Donation data', 'leyka'), array($this, 'donation_data_metabox'), $this->_post_type, 'normal', 'high');
-		add_meta_box($this->_post_type.'_status', __('Donation status', 'leyka'), array($this, 'donation_status_metabox'), $this->_post_type, 'side', 'high');
-		add_meta_box($this->_post_type.'_emails_status', __('Emails status', 'leyka'), array($this, 'emails_status_metabox'), $this->_post_type, 'normal', 'high');
-		add_meta_box($this->_post_type.'_gateway_response', __('Gateway responses text', 'leyka'), array($this, 'gateway_response_metabox'), $this->_post_type, 'normal', 'low');
-//        add_meta_box($this->_post_type.'_recurrent_cancel', __('Cancel recurrent donations', 'leyka'), array($this, 'recurrent_cancel_metabox'), $this->_post_type, 'normal', 'low');
+		add_meta_box(self::$post_type.'_data', __('Donation data', 'leyka'), array($this, 'donation_data_metabox'), self::$post_type, 'normal', 'high');
+		add_meta_box(self::$post_type.'_status', __('Donation status', 'leyka'), array($this, 'donation_status_metabox'), self::$post_type, 'side', 'high');
+		add_meta_box(self::$post_type.'_emails_status', __('Emails status', 'leyka'), array($this, 'emails_status_metabox'), self::$post_type, 'normal', 'high');
+		add_meta_box(self::$post_type.'_gateway_response', __('Gateway responses text', 'leyka'), array($this, 'gateway_response_metabox'), self::$post_type, 'normal', 'low');
+//        add_meta_box(self::$post_type.'_recurrent_cancel', __('Cancel recurrent donations', 'leyka'), array($this, 'recurrent_cancel_metabox'), self::$post_type, 'normal', 'low');
 	}
 
     public function donation_data_metabox($donation) {
@@ -335,7 +335,7 @@ class Leyka_Donation_Management {
             <?php }?>
 
             <?php
-            if(current_user_can(get_post_type_object($this->_post_type)->cap->publish_posts)) {?>
+            if(current_user_can(get_post_type_object(self::$post_type)->cap->publish_posts)) {?>
 				<div class="save-action">
 			    <input name="original_funded" type="hidden" id="original_funded" value="<?php esc_attr_e(__('Update status', 'leyka'));?>" />
                 <?php submit_button(__('Update status', 'leyka'), 'primary button-large', 'funded', false, array('accesskey' => 'p'));?>

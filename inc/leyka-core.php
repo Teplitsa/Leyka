@@ -553,7 +553,7 @@ class Leyka {
     public function leyka_donation_metaboxes() {
 		do_action('leyka_donation_metaboxes');
 	}
-	
+
 	/**
      * Payment form submissions
      * @var $query WP_Query
@@ -572,7 +572,7 @@ class Leyka {
 
 			$this->do_payment_form_submission();
 
-			if($this->payment_form_has_errors()) {
+			if($this->payment_form_has_errors() || !$this->_payment_url) {
 
                 $this->_add_session_errors(); // Error handling
                 wp_redirect(wp_get_referer());
@@ -588,10 +588,10 @@ class Leyka {
 
     public function do_payment_form_submission() {
 
-        $this->clear_session_errors(); // Clear all previous sumbits errors, if there are some
+        $this->clear_session_errors(); // Clear all previous submits errors, if there are some
 
         if( !wp_verify_nonce($_REQUEST['_wpnonce'], 'leyka_payment_form') ) {
-            
+
             $error = new WP_Error('wrong_form_submission', __('Wrong nonce in submitted form data', 'leyka'));
             $this->add_payment_form_error($error);
         }
@@ -609,19 +609,19 @@ class Leyka {
         $donation_id = $this->log_submission();
 
         /** @todo We may want to replace whole $_POST with some specially created array */
-        do_action('leyka_payment_form_submission', $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
+        do_action('leyka_payment_form_submission-'.$pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
 
         $this->_payment_vars = apply_filters('leyka_submission_form_data-'.$pm[0], $this->_payment_vars, $pm[1], $donation_id);
 
         $this->_payment_url = apply_filters('leyka_submission_redirect_url-'.$pm[0], $this->_payment_url, $pm[1]);
 
-        if( !$this->_payment_url ) {
+//        if( !$this->_payment_url ) {
+//
+//            $error = new WP_Error('wrong_pm_url', __('Wrong payment method URL to submit the form data', 'leyka'));
+//            $this->add_payment_form_error($error);
+//        } /* else
+//            $this->clear_session_errors();*/
 
-            $error = new WP_Error('wrong_pm_url', __('Wrong payment method URL to submit the form data', 'leyka'));
-            $this->add_payment_form_error($error);
-        } /* else
-            $this->clear_session_errors();*/
-        
         if($this->payment_form_has_errors()) // No logging needed if submit attempt have failed
             wp_delete_post($donation_id, true);
 	}
@@ -633,7 +633,7 @@ class Leyka {
 
 		$campaign = get_post((int)$_POST['leyka_campaign_id']);
 		$purpose_text = get_post_meta($campaign->ID, 'payment_title', true);
-		$purpose_text = (empty($purpose_text) && $campaign->post_title) ? $campaign->post_title : $purpose_text;
+		$purpose_text = empty($purpose_text) && $campaign->post_title ? $campaign->post_title : $purpose_text;
 
         $pm_data = leyka_pf_get_payment_method_value();
         $donation_id = Leyka_Donation::add(apply_filters('leyka_new_donation_data', array(

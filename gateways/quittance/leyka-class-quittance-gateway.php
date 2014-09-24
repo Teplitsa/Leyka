@@ -25,13 +25,12 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
         }
     }
     
-    public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
-
-        if($gateway_id != $this->_id || empty($this->_payment_methods[$pm_id]))
-            return;
+    public function process_form($pm_id, $donation_id, $form_data) {
 
         header('HTTP/1.1 200 OK');
         header('Content-Type: text/html; charset=utf-8');
+
+//        echo '<pre>' . print_r($form_data, 1) . '</pre>';
 
         $campaign = new Leyka_Campaign($form_data['leyka_campaign_id']);
         $quittance_html = str_replace(

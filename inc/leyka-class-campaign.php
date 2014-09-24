@@ -8,13 +8,13 @@ class Leyka_Campaign_Management {
 		
 	private static $_instance = null;
 
-	public $post_type = 'leyka_campaign';
+	public static $post_type = 'leyka_campaign';
 	
 	private function __construct() {
 
 		add_action('leyka_campaign_metaboxes', array($this, 'set_metaboxes'));	
-		add_filter('manage_'.$this->post_type.'_posts_columns', array($this, 'manage_columns_names'));
-		add_action('manage_'.$this->post_type.'_posts_custom_column', array($this, 'manage_columns_content'), 2, 2);
+		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manage_columns_names'));
+		add_action('manage_'.self::$post_type.'_posts_custom_column', array($this, 'manage_columns_content'), 2, 2);
 		add_action('save_post', array($this, 'save_data'), 2, 2);
 		
 		add_filter('post_row_actions', function($actions, $donation){
@@ -41,9 +41,7 @@ class Leyka_Campaign_Management {
 	/** Metaboxes */
 	function set_metaboxes(){
 
-		$post_type = $this->post_type;	
-
-		add_meta_box($post_type.'_data', __('Campaign settings', 'leyka'), array($this, 'data_meta_box'), $post_type, 'normal', 'high');
+		add_meta_box(self::$post_type.'_data', __('Campaign settings', 'leyka'), array($this, 'data_meta_box'), self::$post_type, 'normal', 'high');
 	}
 	
 	function data_meta_box($post) {
@@ -160,7 +158,7 @@ class Leyka_Campaign_Management {
 
 
 class Leyka_Campaign {
-	
+
 	private $_id;
 	private $_post_object;
 
