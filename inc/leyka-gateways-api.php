@@ -112,7 +112,7 @@ abstract class Leyka_Gateway {
             static::$_instance = new static();
             static::$_instance->_initialize_options();
 
-            add_action('leyka_payment_form_submission-'.static::$_instance->id, array(static::$_instance, 'process_form'), 10, 3);
+            add_action('leyka_payment_form_submission-'.static::$_instance->id, array(static::$_instance, 'process_form'), 10, 4);
             add_action('leyka_payment_form_submission-'.static::$_instance->id, array(static::$_instance, 'process_form_default'), 100, 3);
             add_action('leyka_log_donation'.static::$_instance->id, array(static::$_instance, 'log_gateway_fields'));
 
@@ -237,7 +237,7 @@ abstract class Leyka_Gateway {
         add_filter('leyka_payment_options_allocation', array($this, 'allocate_gateway_options'), 1, 1);
     }
 
-    abstract public function process_form($pm_id, $donation_id, $form_data);
+    abstract public function process_form($gateway_id, $pm_id, $donation_id, $form_data);
 
     abstract public function submission_redirect_url($current_url, $pm_id);
 

@@ -86,9 +86,10 @@ class Leyka {
         add_action('parse_request', function($request){
             // Callback URLs are: some-site.org/leyka/service/{gateway_id}/{action_name}/
             // For ex., leyka.ngo2.ru/leyka/service/yandex/check_order/
-            $request = $request->request;
+            $request = $_SERVER['REQUEST_URI']; //$request->request;
             if(stristr($request, 'leyka/service') !== FALSE) { // Leyka service URL
-                $request = explode('/', trim(str_replace('leyka/service', '', $request), '/'));
+                $request = explode('leyka/service', $_SERVER['REQUEST_URI']);
+                $request = explode('/', trim($request[1], '/'));
                 
                 // $request[0] - Payment method's ID, $request[1] - service action:
                 do_action('leyka_service_call-'.$request[0], $request[1]);

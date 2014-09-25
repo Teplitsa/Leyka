@@ -32,7 +32,7 @@ class Leyka_Text_Gateway extends Leyka_Gateway {
 
     }
 
-    public function process_form($pm_id, $donation_id, $form_data) {
+    public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
         remove_action('leyka_payment_form_submission-'.$this->id, array($this, 'process_form_default'), 100);
     }

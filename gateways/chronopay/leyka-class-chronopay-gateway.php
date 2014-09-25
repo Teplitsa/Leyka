@@ -68,7 +68,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         }
     }
 
-    public function process_form($pm_id, $donation_id, $form_data) {
+    public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
     }
 
     public function submission_redirect_url($current_url, $pm_id) {	
@@ -123,11 +123,10 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 	
 	/* submission helpers */
 	protected function _get_callback_service_url(){
-		
-		$path = 'leyka/service/'.$this->_id.'/response';
-		return home_url($path);
+
+        return home_url('leyka/service/'.$this->_id.'/response');
 	}
-	
+
 	protected function _get_currency_id($leyka_currency_id){
 		
 		$chronopay_currencies = array(
@@ -222,7 +221,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         }
 
         // Store donation data - rebill payment:
-        if($_POST['product_id'] == leyka_options()->opt($donation->payment_method_id.'_product_id_'.$currency_string)) {
+        if($_POST['product_id'] == leyka_options()->opt('chronopay_card_rebill_product_id_'.$currency_string)) {
 
             if($transaction_type == 'Purchase') { // Initial rebill payment
 
@@ -262,7 +261,6 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
         } else { // Single payment. For now, processing is just like initial rebills
 
-            $donation = new Leyka_Donation((int)stripslashes($_POST['cs2']));
             if($donation->status != 'funded') {
                 $donation->add_gateway_response($_POST);
                 $donation->status = 'funded';

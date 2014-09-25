@@ -25,7 +25,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
         }
     }
     
-    public function process_form($pm_id, $donation_id, $form_data) {
+    public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
         header('HTTP/1.1 200 OK');
         header('Content-Type: text/html; charset=utf-8');
