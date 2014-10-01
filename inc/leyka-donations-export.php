@@ -13,7 +13,7 @@ add_action('restrict_manage_posts', function(){
             <form action="" method="get">
                 <input type="hidden" name="month-year" value="<?php echo empty($_GET['m']) ? 0 : $_GET['m'];?>" />
 
-                <input type="submit" name="leyka-donations-export-csv-excel" class="button-primary" value="Экспорт истории пожертвований" />
+                <input type="submit" name="leyka-donations-export-csv-excel" class="button-primary" value="<?php _e('Export donations history (csv)', 'leyka');?>" />
             </form>
         </span>
     <?php }

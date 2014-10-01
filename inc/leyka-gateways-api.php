@@ -113,8 +113,8 @@ abstract class Leyka_Gateway {
             static::$_instance->_initialize_options();
 
             add_action('leyka_payment_form_submission-'.static::$_instance->id, array(static::$_instance, 'process_form'), 10, 4);
-            add_action('leyka_payment_form_submission-'.static::$_instance->id, array(static::$_instance, 'process_form_default'), 100, 3);
-            add_action('leyka_log_donation'.static::$_instance->id, array(static::$_instance, 'log_gateway_fields'));
+            add_action('leyka_payment_form_submission-'.static::$_instance->id, array(static::$_instance, 'process_form_default'), 100, 4);
+            add_action('leyka_log_donation-'.static::$_instance->id, array(static::$_instance, 'log_gateway_fields'));
 
             add_filter('leyka_submission_redirect_url-'.static::$_instance->id, array(static::$_instance, 'submission_redirect_url'), 10, 2);
             add_filter('leyka_submission_form_data-'.static::$_instance->id, array(static::$_instance, 'submission_form_data'), 10, 3);
@@ -245,7 +245,7 @@ abstract class Leyka_Gateway {
 
     abstract public function log_gateway_fields($donation_id);
 
-    static public function process_form_default($pm_id, $donation_id, $form_data) {
+    static public function process_form_default($gateway_id, $pm_id, $donation_id, $form_data) {
 
         if(empty($form_data['leyka_donation_amount']) || (float)$form_data['leyka_donation_amount'] <= 0) {
             $error = new WP_Error('wrong_donation_amount', __('Donation amount must be specified to submit the form', 'leyka'));

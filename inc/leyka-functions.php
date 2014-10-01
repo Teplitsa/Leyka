@@ -42,7 +42,9 @@ function leyka_get_gateways_pm_list() {
 }
 
 function leyka_get_default_email_from() {
-    return 'donations@'.trim(str_replace('http://', '', home_url('', 'http')), '/');
+
+    $domain = explode('/', trim(str_replace('http://', '', home_url('', 'http')), '/'));
+    return 'no_reply@'.$domain[0];
 }
 
 /** DM is for "donation manager" */
@@ -83,6 +85,8 @@ function leyka_get_default_success_page() {
             'post_content' => __('We heartly thank you for your help!', 'leyka'),
 //                '' => __('', 'leyka'),
         ));
+
+        do_action('leyka_default_success_page_created', $page);
     }
 
     return $page ? $page : 0;
@@ -131,6 +135,8 @@ function leyka_get_default_failure_page() {
             'post_title' => __('Your donation failed', 'leyka'),
             'post_content' => __('We are deeply sorry, but for some technical reason we failed to receive your donation. Your money are intact. Please try again later!', 'leyka'),
         ));
+
+        do_action('leyka_default_failure_page_created', $page);
     }
 
     return $page ? $page : 0;

@@ -27,14 +27,18 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
     
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
+        // Localize a quittance first:
+        $res = load_textdomain('leyka', LEYKA_PLUGIN_DIR.'lang/leyka-'.get_locale().'.mo');
+
         header('HTTP/1.1 200 OK');
         header('Content-Type: text/html; charset=utf-8');
-
-//        echo '<pre>' . print_r($form_data, 1) . '</pre>';
 
         $campaign = new Leyka_Campaign($form_data['leyka_campaign_id']);
         $quittance_html = str_replace(
             array(
+                '#BACK_TO_DONATION_FORM_TEXT#',
+                '#PRINT_THE_QUITTANCE_TEXT#',
+                '#QUITTANCE_RECEIVED_TEXT#',
                 '#SUCCESS_URL#',
                 '#PAYMENT_COMMENT#',
                 '#PAYER_NAME#',
@@ -48,6 +52,9 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
                 '#CORR#',
             ),
             array( // Form field values
+                __('Return to the donation form', 'leyka'),
+                __('Print the quittance', 'leyka'),
+                __("OK, I've received the quittance", 'leyka'),
                 leyka_get_success_page_url(),
                 $campaign->payment_title,
                 $form_data['leyka_donor_name'],

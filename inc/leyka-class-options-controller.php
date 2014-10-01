@@ -89,8 +89,8 @@ class Leyka_Options_Controller {
         if( !empty($params['type']) ) // Just in case
             unset($params['type']);
 
-        $value_saved = maybe_unserialize(get_option($name)); 
-        
+        $value_saved = maybe_unserialize(get_option($name));
+
         if(empty($params['value']) && $value_saved !== false)
             $params['value'] = $value_saved;
         else if(empty($params['value']) && !empty($params['default']))

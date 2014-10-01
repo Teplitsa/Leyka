@@ -80,19 +80,11 @@
         <input type="hidden" name="ksc" value="#CORR#">
         <input type="hidden" name="plt" value="#PAYMENT_COMMENT#">
         <input type="hidden" name="rubkop" value="#SUM#">
-        <script language="javascript" type="text/javascript">
-            <!--
-            if (document.domain && document.referrer && document.referrer.search(document.domain) > -1)
-                document.write('<input type=\"button\" value=\"Вернуться на форму пожертвования\" onclick=\"window.history.back();\">');
-            //-->
-        </script>
-        <input type="button" value="Напечатать" onclick="window.print();">
-        <script language="javascript" type="text/javascript">
-            <!--
-            if (document.domain && document.referrer && document.referrer.search(document.domain) > -1)
-                document.write('<input type=\"button\" value=\"OK, я получил квитанцию\" onclick=\"window.location.href=\'#SUCCESS_URL#\';\">');
-            //-->
-        </script>
+
+        <input type="button" value="#BACK_TO_DONATION_FORM_TEXT#" onclick="window.history.back();" />
+        <input type="button" value="#PRINT_THE_QUITTANCE_TEXT#" onclick="window.print();" />
+        <input type="button" value="#QUITTANCE_RECEIVED_TEXT#" onclick="window.location.href='#SUCCESS_URL#';" />
+
     </form><span style="font-size: 80%;">информационный блок от начала страницы до пунктирной линии на печать не выводится</span></div>
 <div class="topmargin"></div>
 <table class="ramka" cellspacing="0" style="width: 180mm;">

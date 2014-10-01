@@ -90,34 +90,38 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 			return $form_data_vars; //it's not our PM
 			
         $donation = new Leyka_Donation($donation_id);
-		
-		$product_id_optname = $pm_id.'_product_id_'.$donation->currency; //product_id depends of PM and curr
-		$chronopay_product_id = leyka_options()->opt($product_id_optname); 
+
+		$chronopay_product_id = leyka_options()->opt($pm_id.'_product_id_'.$donation->currency);
 		$sharedsec = leyka_options()->opt('chronopay_shared_sec');
 		$price = number_format((float)$donation->amount, 2,'.','');
-		$lang = 'ru_RU' == get_locale() ? 'ru' : 'en';
+
+//        if(empty($form_data_vars['cur_lang']))
+        $lang = get_locale() == 'ru_RU' ? 'ru' : 'en';
+//        else
+//            $lang = $form_data_vars['cur_lang'];
+
 		$country = ($donation->currency == 'rur') ? 'RUS' : '';
 			
         $form_data_vars =  array(
             'product_id' => $chronopay_product_id, 
 			'product_price' => $price,
 			'product_price_currency' => $this->_get_currency_id($donation->currency), 	
-			'cs1'           => esc_attr($donation->title), // purpose of the donation
-			'cs2'           => $donation_id, // payment id
-			
-			'cb_url'      => $this->_get_callback_service_url(), //url for gateway callbacks
-			'cb_type'     => 'P',
+			'cs1' => esc_attr($donation->title), // purpose of the donation
+			'cs2' => $donation_id, // payment id
+
+			'cb_url' => $this->_get_callback_service_url(), //url for gateway callbacks
+			'cb_type' => 'P',
 			'success_url' => leyka_get_success_page_url(),
 			'decline_url' => leyka_get_failure_page_url(),
-			
-			'sign'        => md5($chronopay_product_id.'-'.$price.'-'.$sharedsec),
-			'language'    => $lang,			
-			'email'       => $donation->donor_email			
+
+			'sign' => md5($chronopay_product_id.'-'.$price.'-'.$sharedsec),
+			'language' => $lang,
+			'email' => $donation->donor_email
         );
-		
+
 		if($country)
 			$form_data_vars['country'] = $country;
-			
+
 		return $form_data_vars;
     }
 	
@@ -526,7 +530,7 @@ class Leyka_Chronopay_Card_Rebill extends Leyka_Payment_Method {
         if(empty($params['currencies']) && leyka_options()->opt('chronopay_card_rebill_product_id_rur'))
             $this->_supported_currencies[] = 'rur';
         else
-            $this->_supported_currencies = empty($params['currencies']) ? 'rur' : $params['currencies'];
+            $this->_supported_currencies = empty($params['currencies']) ? array('rur') : $params['currencies'];
 
         $this->_default_currency = empty($params['default_currency']) ? 'rur' : $params['default_currency'];
 

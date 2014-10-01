@@ -245,9 +245,8 @@ class Leyka {
             }
 
             // Mostly to initialize gateways' and PM's options before updating them
-            /** @todo Check if all would work out without this do_action() here. */
-            if( !did_action('leyka_init_actions') )
-                do_action('leyka_init_actions');
+//            if( !did_action('leyka_init_actions') )
+//                do_action('leyka_init_actions');
 
             /** Upgrade gateway and PM options structure in the DB */
             foreach(leyka_get_gateways() as $gateway) {
@@ -338,7 +337,7 @@ class Leyka {
 //            'email_regexp' => '',
 		));
 
-		wp_localize_script($this->_plugin_slug . '-plugin-script', 'leyka', $js_data);
+		wp_localize_script($this->_plugin_slug.'-plugin-script', 'leyka', $js_data);
 	}
 
 	/**
@@ -571,6 +570,8 @@ class Leyka {
                 exit();
             }
 
+            do_action('leyka_init_gateway_redirect_page');
+
 			$this->do_payment_form_submission();
 
 			if($this->payment_form_has_errors() || !$this->_payment_url) {
@@ -610,7 +611,7 @@ class Leyka {
         $donation_id = $this->log_submission();
 
         /** @todo We may want to replace whole $_POST with some specially created array */
-        do_action('leyka_payment_form_submission-'.$pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
+        do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
 
         $this->_payment_vars = apply_filters('leyka_submission_form_data-'.$pm[0], $this->_payment_vars, $pm[1], $donation_id);
 
@@ -646,7 +647,7 @@ class Leyka {
             return false;
         else {
 
-            do_action('leyka_log_donation', $donation_id);
+            do_action('leyka_log_donation-'.$pm_data['gateway_id'], $donation_id);
             return $donation_id;
         }
 	}
