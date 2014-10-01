@@ -105,28 +105,28 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
         });
 
 
-//        add_action('init', function(){
+        add_action('init', function(){
 
-        // All localization filters are in places, now create all gateways:
+            // All localization filters are in places, now create all gateways:
 
-        do_action('leyka_init_actions');
+            do_action('leyka_init_actions');
 
-        // Register user-defined strings:
-        foreach(leyka_options()->get_options_names() as $option) {
+            // Register user-defined strings:
+            foreach(leyka_options()->get_options_names() as $option) {
 
-            $option_data = leyka_options()->get_info_of($option);
+                $option_data = leyka_options()->get_info_of($option);
 
-            if($option_data['type'] == 'text')
-                pll_register_string($option_data['title'], $option_data['value'], 'leyka');
+                if($option_data['type'] == 'text')
+                    pll_register_string($option_data['title'], $option_data['value'], 'leyka');
 
-            elseif(
-                $option_data['type'] == 'textarea'
-                || $option_data['type'] == 'html'
-                || $option_data['type'] == 'rich_html'
-            )
-                pll_register_string($option_data['title'], leyka_options()->opt($option), 'leyka', true);
-        }
-//        }, 11);
+                elseif(
+                    $option_data['type'] == 'textarea'
+                    || $option_data['type'] == 'html'
+                    || $option_data['type'] == 'rich_html'
+                )
+                    pll_register_string($option_data['title'], leyka_options()->opt($option), 'leyka', true);
+            }
+        }, 11);
 
     }, 10, 2);
 
