@@ -226,6 +226,50 @@ jQuery(document).ready(function($){
         if(event.keyCode == 27)
             $('#lean_overlay').click();
     });
+	
+	
+	/** Donors list width detection **/
+	function leykaWidths() {
+		$('.leyka-donors-list').each(function(){
+		
+			var w = $(this).width();
+			if (parseInt(w) > 400) {
+				$(this).addClass('wide');
+			}
+			else {
+				$(this).removeClass('wide');
+			}
+		});
+		
+		$('.leyka-scale.has-button').each(function(){
+		
+			var w = $(this).width();
+			if (parseInt(w) > 600) {
+				$(this).addClass('wide');
+			}
+			else {
+				$(this).removeClass('wide');
+			}
+		});
+		
+		$('.leyka-campaign-card').each(function(){
+			var w = $(this).width();
+			if (parseInt(w) > 600) {
+				$(this).addClass('wide');
+			}
+			else {
+				$(this).removeClass('wide');
+			}
+		});
+	}
+	
+	leykaWidths();
+	$(window).resize(function(){
+		leykaWidths();
+	});
+	
+	
+	
 });
 
 function is_email(email) {

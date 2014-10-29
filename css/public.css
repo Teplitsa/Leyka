@@ -1,456 +1,598 @@
-/**
- * This stylesheet is used to style the public view of the plugin.
- **/
-
-/* Common styles */
+/** Frontend styles **/
+/*---------------------------------------------------------
+ Mixins (_utility.scss)
+-------------------------------------------------------- */
+/*---------------------------------------------------------
+ Presets (_pr_presets.scss)
+-------------------------------------------------------- */
+/** button **/
+/** Leyka payment form  (_form.scss) **/
+/* Reset form elements */
 #leyka-payment-form {
-	margin: 1.5em 0;
-	max-width: 640px;
-	background: #fff;
-	font: 14px/21px "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
-	color: #444;
-	-webkit-font-smoothing: antialiased; /* Fix for webkit rendering */
-	-webkit-text-size-adjust: 100%; }
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  background: #fff;
+  font: 14px/21px "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #444;
+  -webkit-font-smoothing: antialiased;
+  /* Fix for webkit rendering */
+  -webkit-text-size-adjust: 100%; }
+  #leyka-payment-form button,
+  #leyka-payment-form input,
+  #leyka-payment-form select,
+  #leyka-payment-form textarea {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    vertical-align: baseline;
+    *vertical-align: middle;
+    outline: none; }
+  #leyka-payment-form textarea {
+    overflow: auto;
+    vertical-align: top; }
+  #leyka-payment-form input[type="radio"],
+  #leyka-payment-form input[type="checkbox"] {
+    padding: 0;
+    display: inline;
+    vertical-align: middle; }
+  #leyka-payment-form input[type="radio"],
+  #leyka-payment-form input[type="checkbox"] {
+    margin-right: 4px; }
+  #leyka-payment-form input[type="text"],
+  #leyka-payment-form input[type="password"],
+  #leyka-payment-form input[type="email"],
+  #leyka-payment-form textarea,
+  #leyka-payment-form select {
+    width: 100%;
+    border: 1px solid #ccc;
+    background: #fff;
+    padding: 6px 4px;
+    outline: none;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    color: #444;
+    margin: 0; }
+  #leyka-payment-form select {
+    width: auto;
+    padding: 1px; }
+  #leyka-payment-form input[type="text"]:focus,
+  #leyka-payment-form input[type="password"]:focus,
+  #leyka-payment-form input[type="email"]:focus,
+  #leyka-payment-form textarea:focus {
+    border: 1px solid #aaa;
+    color: #444;
+    @box-shadow (0, 0, 3px, rgba(0,0,0,.2), true); }
+  #leyka-payment-form input[type="submit"] {
+    font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    text-transform: uppercase;
+    font-weight: normal;
+    color: #fff;
+    background: #1db318;
+    border: none;
+    padding: 6px 16px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px; }
+    #leyka-payment-form input[type="submit"]:hover {
+      background: #189414; }
+  #leyka-payment-form a, #leyka-payment-form a:visited {
+    color: #1db318; }
+    #leyka-payment-form a:hover, #leyka-payment-form a:visited:hover {
+      color: #189414; }
+  #leyka-payment-form p {
+    margin: 0; }
+  #leyka-payment-form img {
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+    -webkit-box-shadow: 0px 0px 0px rgba(255, 255, 255, 0);
+    -moz-box-shadow: 0px 0px 0px rgba(255, 255, 255, 0);
+    box-shadow: 0px 0px 0px rgba(255, 255, 255, 0); }
+  #leyka-payment-form ul, #leyka-payment-form li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box; }
+  #leyka-payment-form:first-child {
+    margin-top: 0; }
+  #leyka-payment-form:last-child {
+    margin-bottom: 0; }
 
-#leyka-payment-form:first-child {
-    margin-top: 0;
-}
+/** Fields  **/
+#leyka-payment-form .leyka-field {
+  margin: 20px 0; }
+#leyka-payment-form .leyka-field.submit,
+#leyka-payment-form .leyka-field.agree {
+  font-size: 12px;
+  margin: 10px 0; }
+#leyka-payment-form .leyka-field.amount {
+  text-align: right;
+  margin: 0; }
+  #leyka-payment-form .leyka-field.amount label, #leyka-payment-form .leyka-field.amount span {
+    display: inline-block;
+    margin-right: 5px; }
+  #leyka-payment-form .leyka-field.amount .currency {
+    font-weight: bold;
+    text-transform: uppercase; }
+  #leyka-payment-form .leyka-field.amount select {
+    font-size: 14px;
+    padding: 6px 3px; }
+#leyka-payment-form .leyka-field.flexible .figure input {
+  border: 2px solid #1db318;
+  max-width: 250px;
+  font-size: 18px;
+  padding: 4px;
+  text-align: right; }
+#leyka-payment-form .leyka-field.fixed .figure {
+  font-size: 18px;
+  margin-left: 5px; }
+#leyka-payment-form .leyka-field.fixed .currency span {
+  display: inline-block;
+  border: 1px solid #ccc;
+  padding: 5px 6px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px; }
+#leyka-payment-form .leyka-field.box_deatails p {
+  margin-top: 1em;
+  margin-bottom: 1em; }
+  #leyka-payment-form .leyka-field.box_deatails p:first-child {
+    margin-top: 0; }
+  #leyka-payment-form .leyka-field.box_deatails p:last-child {
+    margin-bottom: 0; }
+#leyka-payment-form .leyka-user-data .input {
+  width: 100%;
+  display: inline-block;
+  position: relative; }
+#leyka-payment-form .leyka-user-data .req:after {
+  content: '*';
+  font-size: 18px;
+  display: block;
+  position: absolute;
+  right: 7px;
+  top: 5px;
+  color: red; }
+#leyka-payment-form .field-comment {
+  color: #666;
+  padding-left: 2px;
+  font-size: 0.785714em; }
+#leyka-payment-form .field-error {
+  display: none;
+  background: #FFE9E9;
+  border: 1px solid #FBC4C4;
+  color: #DE5959;
+  padding: 2px 10px;
+  margin-top: 5px;
+  font-size: 12px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px; }
+  #leyka-payment-form .field-error a {
+    color: #fc001e; }
+    #leyka-payment-form .field-error a:hover {
+      color: #aa363a; }
 
-#leyka-payment-form a,
-#leyka-payment-form a:visited {
-	color:  #1DB318; }
+/** Errors (out of form)  **/
+.entry-content .leyka-nopm-error,
+.leyka-nopm-error {
+  display: none;
+  background: #FFE9E9;
+  border: 1px solid #FBC4C4;
+  color: #DE5959;
+  padding: 2px 10px;
+  margin-top: 5px;
+  font-size: 12px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  display: block;
+  padding: 10px 20px 10px 20px;
+  font-size: 0.95em; }
+  .entry-content .leyka-nopm-error a,
+  .leyka-nopm-error a {
+    color: #fc001e; }
+    .entry-content .leyka-nopm-error a:hover,
+    .leyka-nopm-error a:hover {
+      color: #aa363a; }
 
-#leyka-payment-form a:hover {
-	color:  #198110; }
+.entry-content .leyka-submit-errors,
+.leyka-submit-errors {
+  display: none;
+  background: #FFE9E9;
+  border: 1px solid #FBC4C4;
+  color: #DE5959;
+  padding: 2px 10px;
+  margin-top: 5px;
+  font-size: 12px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  display: block;
+  padding: 10px 20px; }
+  .entry-content .leyka-submit-errors a,
+  .leyka-submit-errors a {
+    color: #fc001e; }
+    .entry-content .leyka-submit-errors a:hover,
+    .leyka-submit-errors a:hover {
+      color: #aa363a; }
+  .entry-content .leyka-submit-errors ul,
+  .leyka-submit-errors ul {
+    margin: 5px 0; }
+    .entry-content .leyka-submit-errors ul li,
+    .leyka-submit-errors ul li {
+      margin: 3px 0; }
 
-#leyka-payment-form p {
-	margin: 0; }
+.single-leyka_campaign *[class*='error'] a {
+  color: #fc001e; }
+  .single-leyka_campaign *[class*='error'] a:visited {
+    color: #fc001e; }
+  .single-leyka_campaign *[class*='error'] a:hover {
+    color: #aa363a; }
 
-#leyka-payment-form img {
-	max-width: 100%;
-	height: auto;
-	vertical-align: middle;
-	-webkit-border-radius: 0;
-	-moz-border-radius: 0;
-	border-radius: 0;	
-	-webkit-box-shadow: 0px 0px 0px 0px rgba(255, 255, 255, 0);
-	box-shadow:  0px 0px 0px 0px rgba(255, 255, 255, 0); }
+/** Templates specifics styles **/
+.entry-content #leyka-payment-form .leyka-pm-fields,
+#leyka-payment-form .leyka-pm-fields {
+  position: relative;
+  background: #fff;
+  border: 1px solid #dfdfdf;
+  border-left: none;
+  padding: 20px;
+  margin-right: -1px;
+  max-width: 370px;
+  -webkit-box-shadow: 1px 1px 3px rgba(240, 240, 240, 0.67);
+  -moz-box-shadow: 1px 1px 3px rgba(240, 240, 240, 0.67);
+  box-shadow: 1px 1px 3px rgba(240, 240, 240, 0.67); }
+.entry-content #leyka-payment-form .leyka-pm-icons,
+#leyka-payment-form .leyka-pm-icons {
+  overflow: hidden; }
+  .entry-content #leyka-payment-form .leyka-pm-icons li,
+  #leyka-payment-form .leyka-pm-icons li {
+    float: right;
+    margin-left: 5px;
+    width: 60px;
+    border: 1px solid #dfdfdf; }
+.entry-content #leyka-payment-form .leyka-pm-desc,
+#leyka-payment-form .leyka-pm-desc {
+  padding: 20px; }
+  .entry-content #leyka-payment-form .leyka-pm-desc p,
+  #leyka-payment-form .leyka-pm-desc p {
+    line-height: 21px;
+    margin-top: 10px; }
 
-#leyka-payment-form  ul,
-#leyka-payment-form  li {
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	box-sizing: border-box; }
+/* Toggles */
+#leyka-payment-form.leyka-tpl-toggles .leyka-user-data {
+  margin: 35px 0; }
+#leyka-payment-form.leyka-tpl-toggles .leyka-payment-option {
+  margin: 5px 0; }
+#leyka-payment-form.leyka-tpl-toggles .toggle-trigger {
+  border: 1px solid #dfdfdf;
+  background: #f9f9f9;
+  padding: 7px 15px;
+  cursor: pointer;
+  font-weight: bold;
+  text-shadow: 1px 1px 1px #f6f6f6; }
+  #leyka-payment-form.leyka-tpl-toggles .toggle-trigger:hover {
+    color: #666; }
+#leyka-payment-form.leyka-tpl-toggles .toggle-inactive {
+  cursor: default !important; }
+#leyka-payment-form.leyka-tpl-toggles .toggle-area {
+  display: none;
+  border: 1px solid #dfdfdf;
+  border-top: none;
+  background: #f9f9f9; }
+#leyka-payment-form.leyka-tpl-toggles .toggled .toggle-trigger {
+  border-bottom: none; }
 
+/* Radios */
+#leyka-payment-form.leyka-tpl-radio .leyka-pm-form {
+  border: 1px solid #dfdfdf; }
+#leyka-payment-form.leyka-tpl-radio .form-part {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box; }
+#leyka-payment-form.leyka-tpl-radio #amount-selector {
+  border-bottom: 1px solid #dfdfdf;
+  padding: 20px; }
+  #leyka-payment-form.leyka-tpl-radio #amount-selector .currency select {
+    border-color: #1db318; }
+#leyka-payment-form.leyka-tpl-radio #leyka-currency-data {
+  overflow: hidden; }
+#leyka-payment-form.leyka-tpl-radio #pm-selector {
+  background: #f9f9f9;
+  padding: 15px; }
+#leyka-payment-form.leyka-tpl-radio #leyka-pm-data {
+  background: #f9f9f9; }
+#leyka-payment-form.leyka-tpl-radio #leyka-pm-data.loading .leyka-pm-fields:after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.1) url(../img/ajax-loader.gif) no-repeat center center;
+  position: absolute;
+  top: 0;
+  left: 0; }
+#leyka-payment-form.leyka-tpl-radio .leyka-pm-selector label {
+  display: block;
+  padding: 0 5px 1px;
+  border: 1px solid transparent;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s; }
+#leyka-payment-form.leyka-tpl-radio .leyka-pm-selector .active label {
+  border-color: #dfdfdf;
+  background: #e7e7e7; }
+#leyka-payment-form.leyka-tpl-radio .freeze-field {
+  @inclide clearfix; }
+  #leyka-payment-form.leyka-tpl-radio .freeze-field .amount {
+    float: right; }
+
+/** Leyka campaign elements  (_campaign.scss) **/
+.leyka-scale {
+  border: 1px solid #dfdfdf;
+  padding: 15px;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em; }
+  .leyka-scale:first-child {
+    margin-top: 0; }
+  .leyka-scale:last-child {
+    margin-bottom: 0; }
+
+.d-scale-compact .d-scale-scale {
+  height: 8px;
+  width: 100%; }
+  .d-scale-compact .d-scale-scale .target {
+    background: #f1f1f1;
+    width: 100%;
+    height: 100%; }
+  .d-scale-compact .d-scale-scale .collected {
+    background: #1db318;
+    height: 100%; }
+.d-scale-compact .d-scale-label {
+  margin-top: 5px;
+  font-size: 13px; }
+
+.scale-button {
+  margin-top: 5px;
+  text-align: right; }
+  .scale-button a {
+    display: inline-block;
+    background: #1db318;
+    color: #fff !important;
+    font-size: 13px;
+    font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    padding: 0.4em 1.5em;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -ms-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s; }
+    .scale-button a:visited {
+      color: #fff !important; }
+    .scale-button a:hover {
+      text-decoration: none;
+      background: #168612; }
+
+.leyka-scale.has-button.wide {
+  position: relative; }
+  .leyka-scale.has-button.wide .d-scale-compact {
+    margin-right: 135px; }
+  .leyka-scale.has-button.wide .scale-button {
+    margin: 0;
+    width: 120px;
+    position: absolute;
+    top: 15px;
+    right: 15px; }
+
+/* vcard */
+.leyka-campaign-card {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  border: 1px solid #dfdfdf; }
+  .leyka-campaign-card:first-child {
+    margin-top: 0; }
+  .leyka-campaign-card:last-child {
+    margin-bottom: 0; }
+  .leyka-campaign-card .lk-thumbnail a {
+    display: block; }
+  .leyka-campaign-card .lk-thumbnail img {
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle; }
+  .leyka-campaign-card .lk-info {
+    padding: 15px 15px 20px;
+    font-size: 13px;
+    line-height: 1.55; }
+    .leyka-campaign-card .lk-info p {
+      margin: 0; }
+  .leyka-campaign-card h4 {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 1em;
+    clear: none; }
+    .leyka-campaign-card h4 a, .leyka-campaign-card h4 a:visited {
+      text-decoration: none;
+      color: #3c3c3c; }
+      .leyka-campaign-card h4 a:hover, .leyka-campaign-card h4 a:visited:hover {
+        color: #1db318;
+        text-decoration: none; }
+  .leyka-campaign-card .scale-button {
+    margin: 0 15px 15px 0; }
+  .leyka-campaign-card .leyka-scale {
+    margin: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none; }
+    .leyka-campaign-card .leyka-scale:first-child {
+      border-top: 0; }
+    .leyka-campaign-card .leyka-scale .scale-button {
+      margin: 7px 0 0; }
+
+.leyka-campaign-card.wide {
+  position: relative; }
+  .leyka-campaign-card.wide .lk-thumbnail {
+    float: left;
+    width: 40%; }
+  .leyka-campaign-card.wide .lk-thumbnail + .lk-info {
+    margin-left: 45%; }
+  .leyka-campaign-card.wide .leyka-scale {
+    clear: both; }
+    .leyka-campaign-card.wide .leyka-scale .scale-button {
+      margin: 0;
+      width: 120px;
+      position: absolute;
+      top: 15px;
+      right: 15px; }
+
+/** Finished campaign notice **/
+#leyka-campaign-finished {
+  border: 2px solid #1db318;
+  padding: 10px 15px;
+  color: #373737;
+  background: #f9f9f9;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px; }
+
+/** Leyka donation lists  (_tickers.scss) **/
+.leyka-donors-list {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  padding: 24px;
+  font-size: 1em;
+  color: #444;
+  border: 1px solid #dfdfdf;
+  background: #f9f9f9;
+  padding: 22px 22px 22px 0; }
+  .leyka-donors-list:first-child {
+    margin-top: 0; }
+  .leyka-donors-list:last-child {
+    margin-bottom: 0; }
+  .leyka-donors-list .ldl-item {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 15px 15px 15px 22px; }
+    .leyka-donors-list .ldl-item:first-child {
+      margin-top: 0; }
+    .leyka-donors-list .ldl-item:last-child {
+      margin-bottom: 0; }
+    .leyka-donors-list .ldl-item:nth-of-type(odd) {
+      border: 1px solid #dfdfdf;
+      border-left: 0;
+      background: #fff; }
+    .leyka-donors-list .ldl-item .amount {
+      font-weight: bold;
+      color: darkent(#444, 5%);
+      margin-bottom: 5px; }
+    .leyka-donors-list .ldl-item .purpose {
+      font-size: 0.9em; }
+    .leyka-donors-list .ldl-item .meta {
+      font-size: 0.9em; }
+      .leyka-donors-list .ldl-item .meta span {
+        font-weight: bold;
+        color: #848484; }
+
+.leyka-donors-list.wide .ldl-item {
+  max-width: 640px; }
+  .leyka-donors-list.wide .ldl-item:after {
+    content: "";
+    display: table;
+    clear: both; }
+  .leyka-donors-list.wide .ldl-item .amount {
+    float: left;
+    width: 30%;
+    margin-bottom: 0; }
+  .leyka-donors-list.wide .ldl-item .purpose,
+  .leyka-donors-list.wide .ldl-item .meta {
+    margin-left: 35%; }
+
+/** Elements **/
 #leyka-copy {
-	margin-top: 5px;
-	position: relative;
-	text-align: right;
-	font-size: 11px;
-	line-height: 18px;
-	padding: 4px 30px 4px 4px; 	
-	border: 1px solid #cbe5b5;
-	background: #eef6e8; }
+  margin-top: 5px;
+  position: relative;
+  text-align: right;
+  font-size: 11px;
+  line-height: 18px;
+  padding: 4px 30px 4px 4px;
+  border: 1px solid #caf8c8;
+  background: #f5fef5; }
+  #leyka-copy:after {
+    content: '';
+    display: block;
+    background: transparent url(../img/menu-icon.png) no-repeat 0 0;
+    width: 18px;
+    height: 18px;
+    position: absolute;
+    right: 5px;
+    top: 5px; }
 
-#leyka-copy:after {
-	content: '';
-	display: block;
-	background: transparent url(../img/menu-icon.png) no-repeat 0 0;
-	width: 18px;
-	height: 18px;
-	position: absolute;
-	right: 5px;
-	top: 5px; }
-
-/* modal */
 #lean_overlay {
-    position: fixed;
-    z-index:100;
-    top: 0px;
-    left: 0px;
-    height:100%;
-    width:100%;
-    background: #000;
-    display: none; }
+  position: fixed;
+  z-index: 100;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
+  background: #000;
+  display: none; }
 
 .leyka-oferta-text {
-	display: none;
-	width: 640px;
-	height: 500px;
-	padding: 25px 30px;		
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px; 
-	background: #fff;
-	-webkit-box-shadow:  1px 1px 3px 1px rgba(200, 200, 200, 0.7);
-	box-shadow:  1px 1px 3px 1px rgba(20, 20, 20, 0.7);}
-
-.leyka-oferta-text .leyka-modal-close {
-	display: block;
-	position: absolute;
-	top: -7px;
-	right: -7px;
-	border: 1px solid #aaa;
-	background: #aaa;
-	color: #fff;
-	font-weight: bold;
-	width: 21px;
-	height: 21px;
-	text-align: center;
-	border: 1px solid #fff;
-	-webkit-border-radius: 50%;
-	-moz-border-radius:50%;
-	border-radius: 50%;
-	-webkit-box-shadow:  1px 1px 3px 1px rgba(200, 200, 200, 0.7);
-	box-shadow:  1px 2px 2px rgba(50, 50, 50, 0.7);
-	cursor: pointer; }
-	
-.leyka-oferta-text .leyka-modal-close:hover {
-	background: #1DB318; }
-
-.leyka-oferta-text-frame {
-	width: 100%;
-	height: 100%;
-	overflow-y: scroll; }
-	
-.leyka-oferta-text .leyka-oferta-text-flow {
-	font-size: 13px;
-	line-height: 1.35;
-	padding-left: 5px;
-	padding-right: 20px; }
-	
-#leyka-payment-form .leyka-oferta-text-flow p {
-	margin: 1.35em 0; }
-
-
-/* Forms reset */
-#leyka-payment-form button,
-#leyka-payment-form input,
-#leyka-payment-form select,
-#leyka-payment-form textarea {
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	box-sizing: border-box;     
-    margin: 0;
-    vertical-align: baseline; 
-    *vertical-align: middle;
-	outline: none; }
-
-#leyka-payment-form textarea {
-    overflow: auto; 
-    vertical-align: top; }
-
-#leyka-payment-form input[type="radio"],
-#leyka-payment-form input[type="checkbox"] {
-	padding: 0;	
-	display: inline;
-	vertical-align: middle; }
-
-
-/* Form defaults */
-#leyka-payment-form input[type="radio"],
-#leyka-payment-form input[type="checkbox"]  {
-	margin-right: 4px; }
-	
-#leyka-payment-form input[type="text"],
-#leyka-payment-form input[type="password"],
-#leyka-payment-form input[type="email"],
-#leyka-payment-form textarea,
-#leyka-payment-form select {
-	width: 100%;
-	border: 1px solid #ccc;
-	background: #fff;
-	padding: 6px 4px;
-	outline: none;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	font: 13px "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
-	color: #444;
-	margin: 0; }
-
-#leyka-payment-form select {
-	width: auto;
-	padding: 1px; }
-
-#leyka-payment-form input[type="text"]:focus,
-#leyka-payment-form input[type="password"]:focus,
-#leyka-payment-form input[type="email"]:focus,
-#leyka-payment-form textarea:focus {
-	border: 1px solid #aaa;
-	color: #444;
-	-moz-box-shadow: inset 0 0 3px rgba(0,0,0,.2);
-	-webkit-box-shadow: inset 0 0 3px rgba(0,0,0,.2);
-	box-shadow: inset  0 0 3px rgba(0,0,0,.2); }
-
-#leyka-payment-form input[type="submit"] {
-	font: 13px "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
-	text-transform: uppercase;
-	color: #fff;
-	background: #1DB318;
-	border: none;
-	padding: 6px 16px;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px; }
-
-#leyka-payment-form input[type="submit"]:hover {
-	background: #198110; }
-
-
-
-/* fields */
-.leyka-field {
-	margin: 20px 0; }
-
-.leyka-field.submit,
-.leyka-field.agree {
-	font-size: 12px;
-	margin: 10px 0; }
-
-.leyka-field.amount {
-	text-align: right;
-	margin: 0; }
-	
-.leyka-field.amount label,
-.leyka-field.amount span {
-	display: inline-block;
-	margin-right: 5px; }
-
-.leyka-field.amount .currency {
-	font-weight: bold;
-	text-transform: uppercase; }
-
-#leyka-payment-form .leyka-field.amount select {
-	font-size: 14px;
-	padding: 6px 3px; }
-
-#leyka-payment-form .leyka-field.flexible .figure input {
-	border: 2px solid #1DB318;
-	max-width: 250px;
-	font-size: 18px;
-	padding: 4px;
-	text-align: right; }
-
-.leyka-field.fixed .figure {
-	font-size: 18px; 
-	margin-left: 5px; }
-
-.leyka-field.fixed .currency span {
-	display: inline-block;
-	border: 1px solid #ccc;
-	padding: 5px 6px;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px; }
-	
-.leyka-user-data .input {
-	width: 100%;
-	display: inline-block;
-	position: relative; }
-	
-.leyka-user-data .req:after {
-	content: '*';
-	font-size: 18px;
-	display: block;
-	position: absolute;
-	right: 7px;
-	top: 5px;
-	color: red; }
-	
-.field-comment {
-	color: #666;
-	padding-left: 2px; 
-	font-size: 0.785714em; }
-
-
-/* errors */
-.leyka-nopm-error,
-.leyka-submit-errors,
-#leyka-payment-form .field-error,
-.field-error {
-	display: none;
-	background: #FFE9E9;
-	border: 1px solid #FBC4C4;
-	color: #DE5959;
-	padding: 2px 10px;
-	margin-top: 5px;
-	font-size: 12px;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px; }
-
-.leyka-submit-errors {
-	display: block;
-	padding: 10px 20px 10px 20px; }
-
-.entry-content .leyka-submit-errors ul,
-.leyka-submit-errors ul {
-	margin: 5px 0; }
-
-#leyka-payment-form .leyka-submit-errors li {
-	margin: 3px 0; }
-
-.leyka-nopm-error {
-	display: block;
-	padding: 10px 20px 10px 20px;
-	font-size: 0.95em; }
-
-.single-leyka_campaign *[class *= 'error'] a {
-	color: #fc001e; }
-
-.single-leyka_campaign *[class *= 'error'] a:hover {
-	color: #aa363a; }
-
-/* Templates */
-.leyka-pm-fields {
-	position: relative;
-	background: #fff;
-	border: 1px solid #dfdfdf;
-	border-left: none;
-	padding: 20px;
-	margin-right: -1px;
-	max-width: 370px;
-	-webkit-box-shadow:  1px 1px 3px 1px rgba(200, 200, 200, 0.7);
-	box-shadow:  1px 1px 3px 1px rgba(240, 240, 240, 0.67);}
-
-.leyka-pm-icons {
-	overflow: hidden; }
-
-#leyka-payment-form .leyka-pm-icons li {
-	float: right;
-	margin-left: 5px; 
-	width: 60px;
-	border: 1px solid #dfdfdf; }
-
-.leyka-pm-desc {
-	padding: 20px;  }
-
-.entry-content #leyka-payment-form .leyka-pm-desc p, 
-#leyka-payment-form .leyka-pm-desc p {
-	line-height: 21px;
-	margin-top: 10px; }
-
-
-/* toggles */
-.leyka-tpl-toggles .leyka-user-data {
-	margin: 35px 0; }
-	
-.leyka-tpl-toggles .leyka-payment-option {
-	margin: 5px 0; }
-
-.leyka-tpl-toggles .toggle-trigger {	
-	border: 1px solid #dfdfdf;
-	background: #f9f9f9;
-	padding: 7px 15px;
-	cursor: pointer;
-	font-weight: bold;
-	text-shadow: 1px 1px 1px #f5f5f5;}
-
-.toggle-inactive {
-    cursor: default !important;
-}
-
-.leyka-tpl-toggles .toggle-area {
-	display: none;
-	border: 1px solid #dfdfdf;
-	border-top: none;
-	background: #f9f9f9; }
-	
-.leyka-tpl-toggles .toggled .toggle-trigger {
-	border-bottom: none; }
-	
-.leyka-tpl-toggles .toggle-trigger:hover{
-	color: #666; }
-
-/* radios */
-.leyka-tpl-radio .leyka-pm-form {
-	border: 1px solid #dfdfdf; }
-
-.leyka-tpl-radio .form-part {
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	box-sizing: border-box; }
-
-#amount-selector {	
-	border-bottom: 1px solid #dfdfdf;
-	padding: 20px; }
-	
-#amount-selector  .currency select {
-	border-color: #1DB318; }
-
-#leyka-currency-data {
-	overflow: hidden; }
-	
-#pm-selector {	
-	background: #f9f9f9;
-	padding: 15px; }
-	
-#leyka-pm-data {
-	background: #f9f9f9; }
-
-#leyka-pm-data.loading .leyka-pm-fields:after {
-	content: '';
-	display: block;
-	width: 100%;
-	height: 100%;
-	background: rgba(0,0,0, 0.1) url(../img/ajax-loader.gif) no-repeat center center;
-	position: absolute;
-	top: 0;
-	left: 0 ; }
-
-.leyka-pm-selector {
-	 }
-
-.leyka-pm-selector label {
-	display: block;	
-	padding: 0 5px 1px;
-	border: 1px solid transparent;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	border-radius: 5px;
-	-webkit-transition: all 0.3s ;
-	-moz-transition: all 0.3s ;
-	-ms-transition: all 0.3s ;
-	-o-transition: all 0.3s ;
-	transition: all 0.3s ;}
-	
-.leyka-pm-selector .active label {
-	border-color:#dfdfdf;
-	background: #e3e3e3;  }
-
-.leyka-tpl-radio .freeze-fields:before,
-.leyka-tpl-radio .freeze-fields:after {
-	content: " "; 
-    display: table; }
-
-.leyka-tpl-radio .freeze-fields:after {
-    clear: both; }
-
-.leyka-tpl-radio .freeze-fields .amount {
-	float: right; }
-
-
-#leyka-campaign-finished {
-	border: 2px solid #1DB318;
-	padding: 10px 15px;
-	color: #333;
-	background: #f9f9f9;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px; }
-
-#leyka-payment-form .leyka-field.box_deatails p {
-	margin: 1em 0; 
-}
-
-#leyka-payment-form .leyka-field.box_deatails p:first-child {
-	margin-top: 0;
-}
-
-#leyka-payment-form .leyka-field.box_deatails p:last-child {
-	margin-bottom: 0;
-}
+  display: none;
+  width: 640px;
+  height: 500px;
+  padding: 25px 30px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background: #fff;
+  -webkit-box-shadow: 1px 1px 3px 1px rgba(200, 200, 200, 0.7);
+  box-shadow: 1px 1px 3px 1px rgba(20, 20, 20, 0.7); }
+  .leyka-oferta-text .leyka-modal-close {
+    display: block;
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    border: 1px solid #aaa;
+    background: #aaa;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+    width: 21px;
+    height: 21px;
+    border: 1px solid #fff;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    -webkit-box-shadow: 1px 1px 3px rgba(50, 50, 50, 0.7);
+    -moz-box-shadow: 1px 1px 3px rgba(50, 50, 50, 0.7);
+    box-shadow: 1px 1px 3px rgba(50, 50, 50, 0.7);
+    cursor: pointer; }
+    .leyka-oferta-text .leyka-modal-close:hover {
+      background: #1db318; }
+  .leyka-oferta-text .leyka-oferta-text-frame {
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll; }
+  .leyka-oferta-text .leyka-oferta-text-flow {
+    font-size: 13px;
+    line-height: 1.35;
+    padding-left: 5px;
+    padding-right: 20px; }
+    .leyka-oferta-text .leyka-oferta-text-flow p {
+      margin: 1.35em 0; }

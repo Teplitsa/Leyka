@@ -16,6 +16,9 @@ class Leyka_Campaign_Management {
 		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manage_columns_names'));
 		add_action('manage_'.self::$post_type.'_posts_custom_column', array($this, 'manage_columns_content'), 2, 2);
 		add_action('save_post', array($this, 'save_data'), 2, 2);
+
+        add_action('restrict_manage_posts', array($this, 'manage_filters'));
+        add_action('pre_get_posts', array($this, 'do_filtering'));
 		
 		add_filter('post_row_actions', function($actions, $donation){
             global $current_screen;
@@ -38,78 +41,244 @@ class Leyka_Campaign_Management {
 		return self::$_instance;
 	}
 
-	/** Metaboxes */
-	function set_metaboxes(){
+    public function manage_filters() {
+
+        global $pagenow;
+
+        if(
+            $pagenow == 'edit.php' &&
+            isset($_GET['post_type']) &&
+            $_GET['post_type'] == 'leyka_campaign' /*&&
+    in_array('administrator', wp_get_current_user()->roles)*/
+        ) {?>
+
+            <label for="campaign-state-select"></label>
+            <select id="campaign-state-select" name="campaign_state">
+                <option value="all" <?php echo empty($_GET['campaign_state']) ? 'selected="selected"' : '';?>>
+                    <?php _e('Funds collection state', 'leyka');?>
+                </option>
+                <option value="is_finished" <?php echo !empty($_GET['campaign_state']) && $_GET['campaign_state'] == 'is_finished' ? 'selected="selected"' : '';?>><?php _e('Closed', 'leyka');?></option>
+                <option value="is_open" <?php echo !empty($_GET['campaign_state']) && $_GET['campaign_state'] == 'is_open' ? 'selected="selected"' : '';?>><?php _e('Opened', 'leyka');?></option>
+
+            </select>
+
+            <label for="target-state-select"></label>
+            <select id="target-state-select" name="target_state">
+                <option value="" <?php echo empty($_GET['target_state']) ? 'selected="selected"' : '';?>>
+                    <?php _e('Target state', 'leyka');?>
+                </option>
+
+                <?php foreach(leyka()->get_campaign_target_states() as $state => $label) {?>
+                <option value="<?php echo $state;?>" <?php echo !empty($_GET['target_state']) && $_GET['target_state'] == $state ? 'selected="selected"' : '';?>>
+                    <?php echo $label;?>
+                </option>
+                <?php }?>
+            </select>
+
+    <?php }
+    }
+
+    public function do_filtering(WP_Query $query) {
+
+        global $pagenow;
+
+        if(
+            $pagenow == 'edit.php' && !empty($_GET['post_type']) &&
+            $_GET['post_type'] == Leyka_Campaign_Management::$post_type && is_admin() && $query->is_main_query()
+        ) {
+            $meta_query = array('relation' => 'AND');
+
+            if(isset($_REQUEST['campaign_state']) && $_REQUEST['campaign_state'] != 'all') {
+
+                $meta_query[] = array(
+                    'key' => 'is_finished',
+                    'value' => $_REQUEST['campaign_state'] == 'is_finished' ? 1 : 0
+                );
+            }
+
+            if( !empty($_REQUEST['target_state']) )
+                $meta_query[] = array('key' => 'target_state', 'value' => $_REQUEST['target_state']);
+
+            //...
+
+            if(count($meta_query) > 1)
+                $query->set('meta_query', $meta_query);
+        }
+    }
+
+	/** Metaboxes: */
+	public function set_metaboxes() {
 
 		add_meta_box(self::$post_type.'_data', __('Campaign settings', 'leyka'), array($this, 'data_meta_box'), self::$post_type, 'normal', 'high');
+
+        // Metabox only for campaign editing page:
+        $screen = get_current_screen();
+
+        if($screen->post_type == Leyka_Campaign_Management::$post_type && $screen->base == 'post' && !$screen->action)
+		    add_meta_box(self::$post_type.'_donations', __('Donations history', 'leyka'), array($this, 'donations_meta_box'), self::$post_type, 'normal', 'high');
 	}
-	
-	function data_meta_box($post) {
-		
+
+    public function data_meta_box($post) {
+
 		$campaign = new Leyka_Campaign($post);
-		
+
 		$cur_template = $campaign->template;
 		if(empty($cur_template))
 			$cur_template = 'default';
-		
-		$templates = leyka()->get_templates();
-        
-        $payment_title = $campaign->payment_title;?>
+			
+		$ignore_global_template = 0; //@to_do make this real option
+	?>
 
-        <!-- Campaign target commented out for next release -->
-<!--		<fieldset id="target-amount"  class="metabox-field campaign-field">-->
-<!--			<label for="campaign_target">--><?php //_e('Target amount (in main currency chosen in Settings)', 'leyka');?><!--</label><br>-->
-<!--			<input type="text" name="campaign_target" id="campaign_target" value="--><?php //echo (int)$campaign->get_meta('campaign_target');?><!--">			-->
-<!--		</fieldset>-->
-        <!-- Campaign target comment end -->
-
-        <fieldset id="payment-title"  class="metabox-field campaign-field">
+        <fieldset id="payment-title" class="metabox-field campaign-field">
             <label for="payment_title">
                 <?php _e('Campaign title meant for payment system', 'leyka');?>
                 <br />
                 <small><?php echo __('If empty, main campaign title will be used', 'leyka');?></small>
             </label>
-            
-            <input type="text" class="widefat" name="payment_title" id="payment_title" value="<?php echo $payment_title ? $payment_title : $campaign->title;?>">
+
+            <input type="text" class="widefat" name="payment_title" id="payment_title" value="<?php echo $campaign->payment_title ? $campaign->payment_title : $campaign->title;?>">
         </fieldset>
 		
-		<fieldset id="campaign-template"  class="metabox-field campaign-field">
-			<label for="campaign_template"><?php _e('Template', 'leyka');?></label>
-			<select name="campaign_template">
+		<h4 class="metabox-field-title"><?php _e('Template settings', 'leyka');?></h4>
+
+		<fieldset id="campaign-template" class="metabox-field campaign-field">
+			<label for="campaign_template"><?php _e('Template for payment form', 'leyka');?></label>
+			<select id="campaign_template" name="campaign_template">
 				<option value="default" <?php selected($cur_template, 'default');?>>
                     <?php _e('Default template', 'leyka');?>
                 </option>
-			<?php
-				if($templates) {
+
+            <?php $templates = leyka()->get_templates();
+                if($templates) {
                     foreach($templates as $template) {?>
-					<option value="<?php echo esc_attr($template['id']);?>" <?php selected($cur_template, $template['id']);?>>
-                        <?php echo esc_attr($template['name']);?>
-                    </option>
-			        <?php }
+                <option value="<?php echo esc_attr($template['id']);?>" <?php selected($cur_template, $template['id']);?>>
+                    <?php echo esc_attr($template['name']);?>
+                </option>
+                <?php }
                 }?>
+
 			</select>
 		</fieldset>
+		
+		<fieldset id="ignore-global-template" class="metabox-field campaign-field">
+			<label for="ignore_global_template">
+			<input type="checkbox" name="ignore_global_template" id="ignore_global_template" value="1" <?php checked($ignore_global_template, 1);?>>&nbsp;
+			<?php _e('Ignore global template settings', 'leyka');?></label>
+		</fieldset>
 
-        <fieldset id="campaign-finished"  class="metabox-field campaign-field">
-            <label for="is_finished">
-                <input type="checkbox" id="is_finished" name="is_finished" value="1" <?php echo $campaign->is_finished ? 'checked' : '';?> /> <?php _e('Campaign is finished, all donations recieving stopped.', 'leyka');?>
+		<h4 class="metabox-field-title"><?php _e('Campaign target', 'leyka');?></h4>
+
+		<fieldset id="target-amount" class="metabox-field campaign-field">
+			<label for="campaign_target">
+                <?php echo sprintf(__('Target (%s)', 'leyka'), leyka_options()->opt('currency_rur_label'));?>
+            </label>
+			<input type="text" name="campaign_target" id="campaign_target" value="<?php echo $campaign->target;?>" class="widefat">
+		</fieldset>
+		
+		<fieldset id="collected-amount" class="metabox-field campaign-field">
+		<?php $collected = $campaign->get_collected_amount(); ?>
+			<label for="collected_target">
+                <?php echo sprintf(__('Collected (%s)', 'leyka'), leyka_get_currency_label('rur'));?>
+            </label>			
+			<input type="text" id="collected_target" disabled="disabled" value="<?php echo $collected;?>" class="widefat">
+		</fieldset>
+
+		<fieldset id="d-scale-demo" class="metabox-field campaign-field">
+		<?php if($campaign->target > 0) {
+
+			$percentage = round(($collected/$campaign->target)*100);
+			if($percentage > 100)
+				$percentage = 100;?>
+
+			<div class="d-scale-scale">
+				<div class="target">
+					<div style="width:<?php echo $percentage;?>%" class="collected">&nbsp;</div>
+				</div>
+			</div>
+			
+			<?php if($campaign->target_state == 'is_reached') {?>        
+			<p>
+				<?php printf(__('Reached at: %s', 'leyka'), '<b>'.$campaign->date_target_reached.'</b>');?>
+			</p>            
+			<?php } ?>
+			
+		<?php }?>
+		</fieldset>
+		
+		
+        <?php $curr_page = get_current_screen();
+        if($curr_page->action != 'add') {?>
+
+        <fieldset id="campaign-finished" class="metabox-field campaign-field">
+            <label for="is-finished">
+                <input type="checkbox" id="is-finished" name="is_finished" value="1" <?php echo $campaign->is_finished ? 'checked' : '';?> /> <?php _e('Campaign is finished, donations collecting stopped', 'leyka');?>
             </label>
         </fieldset>
-	<?php 
+	<?php }
 	}
-	
-	function save_data($post_id, WP_Post $post) {
 
-		$campaign = new Leyka_Campaign($post);
+    public function donations_meta_box($campaign) { $campaign = new Leyka_Campaign($campaign);?>
+
+        <div>
+            <a class="button" href="<?php echo admin_url('/post-new.php?post_type=leyka_donation&campaign_id='.$campaign->id);?>"><?php _e('Add correctional donation', 'leyka');?></a>
+        </div>
+
+        <table id="donations-data-table">
+            <thead>
+                <td><?php _e('ID', 'leyka');?></td>
+                <td><?php _e('Amount', 'leyka');?></td>
+                <td><?php _e('Donor', 'leyka');?></td>
+                <td><?php _e('Method', 'leyka');?></td>
+                <td><?php _e('Date', 'leyka');?></td>
+                <td><?php _e('Status', 'leyka');?></td>
+                <td><?php _e('Payment type', 'leyka');?></td>
+                <td><?php _e('Actions', 'leyka');?></td>
+            </thead>
+            <tfoot>
+                <td><?php _e('ID', 'leyka');?></td>
+                <td><?php _e('Amount', 'leyka');?></td>
+                <td><?php _e('Donor', 'leyka');?></td>
+                <td><?php _e('Method', 'leyka');?></td>
+                <td><?php _e('Date', 'leyka');?></td>
+                <td><?php _e('Status', 'leyka');?></td>
+                <td><?php _e('Payment type', 'leyka');?></td>
+                <td><?php _e('Actions', 'leyka');?></td>
+            </tfoot>
+
+            <tbody>
+            <?php foreach($campaign->get_donations() as $donation) {
+                $gateway_label = $donation->gateway_id ? $donation->gateway_label : __('Custom payment info', 'leyka');
+                $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;?>
+
+                <tr <?php echo $donation->status == 'funded' ? 'class="leyka-donation-row-funded"' : '';?>>
+                    <td><?php echo $donation->id;?></td>
+                    <td><?php echo $donation->sum.' '.$donation->currency_label;?></td>
+                    <td><?php echo $donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka');?></td>
+                    <td><?php echo $pm_label.' ('.mb_strtolower($gateway_label).')';?></td>
+                    <td><?php echo $donation->date;?></td>
+                    <td><?php echo mb_ucfirst($donation->status_label);?></td>
+                    <td><?php echo mb_ucfirst($donation->payment_type_label);?></td>
+                    <td><a href="<?php echo admin_url("/post.php?post={$donation->id}&action=edit");?>"><?php echo __('Edit', 'leyka');?></a></td>
+                </tr>
+
+            <?php }?>
+            </tbody>
+        </table>
+    <?php
+    }
+
+	public function save_data($campaign_id, WP_Post $campaign) {
+
+		$campaign = new Leyka_Campaign($campaign);
 		$campaign->save();
 	}
 
-	/** Table Columns */
-	function manage_columns_names($columns){
-		
+	/** Campaigns list table columns: */
+    public function manage_columns_names($columns){
+
 		$unsort = $columns;
 		$columns = array();
-		
+
 		if(isset($unsort['cb'])){
 			$columns['cb'] = $unsort['cb'];
 			unset($unsort['cb']);
@@ -121,12 +290,12 @@ class Leyka_Campaign_Management {
 			$columns['title'] = $unsort['title'];
 			unset($unsort['title']);
 		}
+		
+		$columns['coll_state'] = __('Collection state', 'leyka');
+		$columns['target'] = __('Target', 'leyka');
+       
 
-        /* Campaign target commented out for next release */
-//		$columns['target'] = __('Target', 'leyka');
-
-		$columns['payment_title'] = __('Title meant for payment system', 'leyka');
-		//$columns['total'] = __('Total', 'leyka');
+		$columns['payment_title'] = __('Payment purpose', 'leyka');
 	
 		if(isset($unsort['date'])){
 			$columns['date'] = $unsort['date'];
@@ -135,24 +304,45 @@ class Leyka_Campaign_Management {
 
 		if(!empty($unsort))
 			$columns = array_merge($columns, $unsort);
-			
-				
+
 		return $columns;
 	}
-	
-	function manage_columns_content($column_name, $post_id){
+
+    public function manage_columns_content($column_name, $campaign_id){
 		
-		$campaign = new Leyka_Campaign(get_post($post_id));
-		if($column_name == 'ID')
+		$campaign = new Leyka_Campaign($campaign_id);
+		
+		if($column_name == 'ID'){
 			echo (int)$campaign->id;
-        elseif($column_name == 'payment_title')
+			
+		}
+        elseif($column_name == 'payment_title'){
             echo $campaign->payment_title;
-        /** Campaign target commented out for next release */
-//		elseif($column_name == 'target') {
-//			
-//			$target = intval($campaign->get_meta('purpose_target'));			
-//			echo $target;
-//		}
+			
+        }
+		elseif($column_name == 'coll_state') {
+			if($campaign->is_finished == 1){
+				_e('Closed', 'leyka');
+			}
+			else {
+				_e('Opened', 'leyka');
+			}
+		}
+		elseif($column_name == 'target') {
+			
+			if($campaign->target_state == 'no_target')
+				echo '&ndash;';
+			
+			leyka_scale_compact($campaign);
+			
+			if($campaign->target_state == 'is_reached'):
+		?>        
+		<span>
+			<?php printf(__('Reached at: %s', 'leyka'), '<b>'.$campaign->date_target_reached.'</b>');?>
+		</span>            
+		<?php
+			endif;
+		}
 	}
 }
 
@@ -161,22 +351,60 @@ class Leyka_Campaign {
 
 	private $_id;
 	private $_post_object;
+    private $_campaign_meta;
 
-	function __construct($campaign) {
-		
+	public function __construct($campaign) {
+
 		if(is_object($campaign)) {
-			$this->_id = $campaign->ID;
-            $this->_post_object = $campaign;
+            if(is_a($campaign, 'WP_Post')) {
+
+                $this->_id = $campaign->ID;
+                $this->_post_object = $campaign;
+
+            } elseif(is_a($campaign, 'Leyka_Campaign')) {
+                return $campaign;
+            }
+
 		} elseif((int)$campaign > 0) {
 			$this->_id = (int)$campaign;
             $this->_post_object = get_post($this->_id);
 		}
-        
-        if( !$this->_post_object ) {
+
+        if( !$this->_post_object || $this->_post_object->post_type != Leyka_Campaign_Management::$post_type ) {
             $this->_id = 0;
-            // throw new Leyka_Exception() 
+            // throw new Leyka_Exception()
+        }
+
+        if( !$this->_campaign_meta ) {
+
+            $meta = get_post_meta($this->_id, '', true);
+
+            if(empty($meta['target_state'])) {
+
+                $this->target_state = $this->_get_calculated_target_state();
+                $meta['target_state'] = array($this->target_state); // [0] is just for uniformity :)
+            }
+
+            $this->_campaign_meta = array(
+                'payment_title' => empty($meta['payment_title']) ?
+                    (empty($this->_post_object) ? '' : $this->_post_object->post_title) : $meta['payment_title'][0],
+                'campaign_template' => empty($meta['campaign_template']) ? '' :  $meta['campaign_template'][0],
+                'campaign_target' => empty($meta['campaign_target']) ? 0 : $meta['campaign_target'][0],
+                'is_finished' => empty($meta['is_finished']) ? '' : $meta['is_finished'][0] > 0,
+                'target_state' => $meta['target_state'][0],
+                'date_target_reached' => empty($meta['date_target_reached']) ? 0 : $meta['date_target_reached'][0],
+//                '' => ''
+            );
         }
 	}
+
+    protected function _get_calculated_target_state() {
+
+        $target = get_post_meta($this->_id, 'campaign_target', true);
+        return empty($target) ?
+            'no_target' :
+            (Leyka_Campaign::get_campaign_collected_amount($this->_id) > $target ? 'is_reached' : 'in_progress');
+    }
 
     public function __get($field) {
 
@@ -185,52 +413,193 @@ class Leyka_Campaign {
             case 'ID': return $this->_id;
             case 'title':
             case 'name': return $this->_post_object->post_title;
-            case 'payment_title':
-                $p_title = get_post_meta($this->_id, 'payment_title', true);
-                return $p_title ? $p_title : $this->_post_object->post_title;
-            case 'template': return get_post_meta($this->_id, 'campaign_template', true);
+            case 'payment_title': return $this->_campaign_meta['payment_title'];
+            case 'template':
+            case 'campaign_template': return $this->_campaign_meta['campaign_template'];
+            case 'campaign_target':
+            case 'target': return $this->_campaign_meta['campaign_target'];
             case 'description': return $this->_post_object->post_content;
             case 'status': return $this->_post_object->post_status;
             case 'permalink':
             case 'url': return get_permalink($this->_id);
 			case 'is_finished':
-				return (int)get_post_meta($this->_id, 'is_finished', true) > 0;
+			case 'is_closed':
+				return $this->_campaign_meta['is_finished'];
+            case 'target_state':
+                return $this->_campaign_meta['target_state'];
+            case 'date_reached':
+            case 'target_reached_date':
+            case 'date_target_reached':
+                $date = $this->_campaign_meta['date_target_reached'];
+                return $date ? date(get_option('date_format'), $date) : 0;
 //            case '': return ''; break;
             default:
                 return apply_filters('leyka_get_unknown_campaign_field', null, $field, $this);
         }
     }
+
+    public function __set($field, $value) {
+
+        switch($field) {
+            case 'target_state':
+                if(in_array($value, array_keys(leyka()->get_campaign_target_states())))
+                    update_post_meta($this->_id, 'target_state', $value);
+            default:
+        }
+    }
+
+	/** Get comlicated params */
+    public function get_donations() {
+
+        $donations = new WP_Query(array(
+            'post_type' => 'leyka_donation',
+            'post_status' => 'any',
+            'posts_per_page' => -1,
+            'meta_key' => 'leyka_campaign_id',
+            'meta_value' => $this->_id,
+        ));
+        $donations = $donations->get_posts();
+
+        foreach($donations as &$donation) {
+            $donation = new Leyka_Donation($donation->ID);
+        }
+
+        return $donations;
+    }
+
+    public static function get_campaign_collected_amount($campaign_id) {
+
+        $campaign_id = (int)$campaign_id;
+        if($campaign_id <= 0)
+            return false;
+
+        $donations = get_posts(array(
+            'post_type' => 'leyka_donation',
+            'post_status' => 'funded',
+            'posts_per_page' => -1,
+            'meta_key' => 'leyka_campaign_id',
+            'meta_value' => $campaign_id,
+        ));
+
+        $sum = 0.0;
+        foreach($donations as $donation) {
+
+            $donation = new Leyka_Donation($donation);
+            $sum += $donation->main_curr_amount ? $donation->main_curr_amount : $donation->amount;
+        }
+
+        return $sum;
+    }
+
+    public function get_collected_amount() {
+
+        return self::get_campaign_collected_amount($this->_id);
+    }
+
+    public function refresh_target_state() {
+
+        $target_state = $this->_get_calculated_target_state();
+        $meta = array();
+
+        if($target_state != $this->target_state) {
+            $meta['target_state'] = $target_state;
+
+            if($target_state == 'is_reached')
+                $meta['date_target_reached'] = time();
+
+        } elseif($target_state == 'is_reached' && !$this->date_target_reached)
+            $meta['date_target_reached'] = time();
+        elseif($target_state != 'is_reached' && $this->date_target_reached)
+            $meta['date_target_reached'] = 0;
+
+        foreach($meta as $key => $value) {
+            update_post_meta($this->_id, $key, $value);
+        }
+    }
 	
-	/** CRUD */
-	function save() {
+	static function get_target_state_label($state = false) {
 
-		$meta = $this->get_default_meta();
+        $labels = leyka()->get_campaign_target_states();
 
-		if( !empty($_REQUEST['campaign_template']) )
+        if( !$state )
+		    return $labels;        
+        else
+		    return !empty($labels[$state]) ? $labels[$state] : false;
+	}
+	
+	/** CRUD and alike */
+	public function save() {
+
+		$meta = array(); // $this->get_default_meta();
+
+		if( !empty($_REQUEST['campaign_template']) && $this->template != $_REQUEST['campaign_template'] )
 			$meta['campaign_template'] = trim($_REQUEST['campaign_template']);
 
-        if( !empty($_REQUEST['payment_title']) )
+        if( !empty($_REQUEST['payment_title']) && $this->payment_title != $_REQUEST['payment_title'] )
 			$meta['payment_title'] = esc_attr(trim($_REQUEST['payment_title']));
 
-        $meta['is_finished'] = empty($_REQUEST['is_finished']) ? 0 : 1;
+        $_REQUEST['is_finished'] = !empty($_REQUEST['is_finished']) ? 1 : 0;
+        if($_REQUEST['is_finished'] != $this->is_finished)
+            $meta['is_finished'] = $_REQUEST['is_finished'];
 
-        /** Campaign target is commented out for the next release */
-//		if(isset($_REQUEST['campaign_target']) && !empty($_REQUEST['campaign_target']))
-//			$meta['campaign_target'] = (float)$_REQUEST['campaign_target'];
+		if(isset($_REQUEST['campaign_target']) && $_REQUEST['campaign_target'] != $this->target) {
+
+            $_REQUEST['campaign_target'] = (float)$_REQUEST['campaign_target'];
+            $_REQUEST['campaign_target'] = $_REQUEST['campaign_target'] >= 0.0 ? $_REQUEST['campaign_target'] : 0.0;
+
+            update_post_meta($this->_id, 'campaign_target', $_REQUEST['campaign_target']);
+
+            $this->refresh_target_state();
+        }
 
 		foreach($meta as $key => $value) {
 			update_post_meta($this->_id, $key, $value);
 		}
+
+//        $this->refresh_target_state();
 	}
 
-	function get_default_meta() {
+    /** @todo Maybe, this method is not needed. Will try to remove it. */
+	public function get_default_meta() {
 		return array(
-//			'campaign_target' => 0, /** Campaing target is commented out for the next release */
+			'campaign_target' => 0,
             'payment_title' => '',
 			'campaign_template' => 'default'
 		);
 	}
-}//class end
+} // class end
 
+function leyka_get_campaigns_list() {
 
+    if(empty($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'leyka_get_campaigns_list_nonce'))
+        die(json_encode(array()));
 
+    $_REQUEST['term'] = empty($_REQUEST['term']) ? '' : trim($_REQUEST['term']);
+
+    $campaigns = get_posts(array(
+        'post_type' => Leyka_Campaign_Management::$post_type,
+        'post_status' => 'publish',
+        'meta_query' => array(array(
+            'key' => 'payment_title', 'value' => $_REQUEST['term'], 'compare' => 'LIKE', 'type' => 'CHAR',
+        )),
+    ));
+
+    if( !$campaigns)
+        $campaigns = get_posts(array(
+            'post_type' => Leyka_Campaign_Management::$post_type,
+            'post_status' => 'publish',
+            's' => empty($_REQUEST['term']) ? '' : trim($_REQUEST['term'])
+        ));
+
+    foreach($campaigns as $index => $campaign) {
+        $campaigns[$index] = array(
+            'value' => $campaign->ID,
+            'label' => $campaign->post_title,
+            'payment_title' => get_post_meta($campaign->ID, 'payment_title', true)
+        );
+    }
+
+    die(json_encode($campaigns));
+}
+add_action('wp_ajax_leyka_get_campaigns_list', 'leyka_get_campaigns_list');
+add_action('wp_ajax_nopriv_leyka_get_campaigns_list', 'leyka_get_campaigns_list');

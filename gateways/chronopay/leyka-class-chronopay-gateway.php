@@ -237,6 +237,8 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                     if( !$donation->donor_email && !empty($_POST['email']) )
                         $donation->donor_email = $_POST['email'];
 
+                    Leyka_Donation_Management::send_all_emails($donation->id);
+
                     // Save donor's customer_id parameter to link this donation to all others in this recurrent chain:
                     $donation->chronopay_customer_id = $customer_id;
                 }
@@ -261,6 +263,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 //                    '' => '',
                 ));
 
+                Leyka_Donation_Management::send_all_emails($donation_id);
             }
 
         } else { // Single payment. For now, processing is just like initial rebills
@@ -270,6 +273,8 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 $donation->status = 'funded';
                 if( !$donation->donor_email && !empty($_POST['email']) )
                     $donation->donor_email = $_POST['email'];
+
+                Leyka_Donation_Management::send_all_emails($donation->id);
 
                 // Save donor's customer_id parameter.. just because we're scrupulous 0:)
                 $donation->chronopay_customer_id = $customer_id;
@@ -402,14 +407,14 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
             leyka_options()->opt_safe('chronopay_card_description') : $params['desc'];
 
         $this->_gateway_id = 'chronopay';
-        
+
         $this->_active = isset($params['active']) ? 1 : 0;
 //        $this->_active = (int)in_array($this->_gateway_id.'-'.$this->_id, leyka_options()->opt('pm_available'));
 
         $this->_support_global_fields = isset($params['has_global_fields']) ? $params['has_global_fields'] : true;
 
         $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
-				
+
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/chronopay/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/chronopay/icons/master.png',
@@ -419,7 +424,7 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
             __('Donate', 'leyka') : $params['submit_label'];
 
         if(empty($params['currencies'])) {
-            
+
             if(leyka_options()->opt('chronopay_card_product_id_rur'))
                 $this->_supported_currencies[] = 'rur';
             if(leyka_options()->opt('chronopay_card_product_id_usd'))

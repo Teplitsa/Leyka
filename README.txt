@@ -69,7 +69,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 = 2.1.4 =
  * Fix: compatibility with Polylang plugin.
- * Fix: turn-off behavior when plugin is activated on PHP 5.2 and less.
+ * Fix: behavior of turning-off when plugin is activated on PHP 5.2 and less.
  * Fix: gateways and payment methods API behavior.
  * Fix: minor bugs.
  * New: new hooks to allow better code customization.

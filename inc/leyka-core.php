@@ -1,4 +1,5 @@
 <?php if( !defined('WPINC') ) die;
+
 /** Core class. */
 class Leyka {
 	
@@ -87,6 +88,7 @@ class Leyka {
             // Callback URLs are: some-site.org/leyka/service/{gateway_id}/{action_name}/
             // For ex., leyka.ngo2.ru/leyka/service/yandex/check_order/
             $request = $_SERVER['REQUEST_URI']; //$request->request;
+			
             if(stristr($request, 'leyka/service') !== FALSE) { // Leyka service URL
                 $request = explode('leyka/service', $_SERVER['REQUEST_URI']);
                 $request = explode('/', trim($request[1], '/'));
@@ -95,28 +97,42 @@ class Leyka {
                 do_action('leyka_service_call-'.$request[0], $request[1]);
                 exit();
             }
-
-//            set_transient('leyka_yandex_test_cho', '');
-//            set_transient('leyka_yandex_test_pa', '');
-
-//            $cho = get_transient('leyka_yandex_test_cho');
-//            $pa = get_transient('leyka_yandex_test_pa');
-//            if(trim($pa)) {
-//                echo '<pre>Cho: ' . print_r($cho, TRUE) . '</pre>';
-//                echo '<pre>Pa: ' . print_r($pa, TRUE) . '</pre>';
-
-//                var_dump($cho);
-//                var_dump($pa);
-//            }
             
         });
 
         add_action('template_redirect', array($this, 'gateway_redirect_page'), 1, 1);
 
-		$this->apply_formatting_filters(); // Internal formatting filters 
-		
+		$this->apply_formatting_filters(); // Internal formatting filters
+
+        /** Currencies rates auto refreshment: */
+        if( !wp_next_scheduled('refresh_currencies_rates') )
+            wp_schedule_event(time(), 'daily', 'refresh_currencies_rates');
+
+        add_action('refresh_currencies_rates', array($this, 'do_currencies_rates_refresh'));
+
+        // Just in case:
+        if( !get_option('leyka__course_rur2usd') || !get_option('leyka__course_rur2eur') )
+            $this->do_currencies_rates_refresh();
+
         do_action('leyka_initiated');
 	}
+
+    public function do_currencies_rates_refresh() {
+
+        $xml = new DOMDocument();
+        if(@$xml->load('http://www.cbr.ru/scripts/XML_daily.asp?date_req='.date('d.m.Y'))) {
+
+            foreach($xml->documentElement->getElementsByTagName('Valute') as $item) {
+
+                $currency = $item->getElementsByTagName('CharCode')->item(0)->nodeValue;
+                if($currency == 'USD' || $currency == 'EUR')
+                    add_option(
+                        'leyka__course_rur2'.mb_strtolower($currency),
+                        (float)str_replace(',', '.', $item->getElementsByTagName('Value')->item(0)->nodeValue)
+                    );
+            }
+        }
+    }
 
     /** Return a single instance of this class */
     public static function get_instance() {
@@ -185,8 +201,27 @@ class Leyka {
      * 
      * @return array of status_id => status label pairs
      */
-    public function get_donation_statuses() {
-        return leyka_get_donation_status_list();
+    public function get_donation_statuses() {        
+		return apply_filters('leyka_donation_statuses', array(
+			'submitted' => _x('Submitted', '«Submitted» donation status', 'leyka'),
+			'funded'    => _x('Funded', '«Completed» donation status', 'leyka'),
+			'refunded'  => _x('Refunded', '«Refunded» donation status', 'leyka'),
+			'failed'    => _x('Failed', '«Failed» donation status', 'leyka'),
+			'trash'     => _x('Trash', '«Deleted» donation status', 'leyka'),
+		));	
+    }
+
+	/**
+     * Retrieve all available campaign target states.
+     * 
+     * @return array of state_id => state label pairs
+     */
+    public function get_campaign_target_states() {        
+		return apply_filters('leyka_campaign_target_states', array(
+			'no_target'   => _x('No target', 'Campaign state when target is not set', 'leyka'),
+			'is_reached'  => _x('Reached', 'Campaign state when target is reached', 'leyka'),
+			'in_progress' => _x('In progress', 'Campaign state when target is not reached yet', 'leyka'),
+		));	
     }
 
     /**
@@ -359,8 +394,6 @@ class Leyka {
      * Donation CPT:
      */
 	function register_post_types(){
-
-        /** @todo load related filtes here */
 
         Leyka_Campaign_Management::get_instance();
 
@@ -740,3 +773,5 @@ __('Toggles', 'leyka');
 __('Toggled options for each payment method', 'leyka');
 __('single', 'leyka');
 __('rebill', 'leyka');
+__('The donations management system for your WP site', 'leyka');
+__('Lev Zvyagincev aka Ahaenor', 'leyka');

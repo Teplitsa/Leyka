@@ -193,6 +193,7 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
 
                     $donation->add_gateway_response($_POST);
                     $donation->status = 'funded';
+                    Leyka_Donation_Management::send_all_emails($donation->id);
                 }
 
 //                set_transient('leyka_yandex_test_pa', '<pre>'.print_r($_POST, true).'</pre>', 60*60*24);

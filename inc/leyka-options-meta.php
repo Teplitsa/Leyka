@@ -1,5 +1,5 @@
 <?php if( !defined('WPINC') ) die;
-/** @var $options_meta An array of initial options set, with default values of each field */
+/** @var $options_meta array An array of initial options set, with default values of each field */
 global $options_meta;
 
 $email_placeholders =

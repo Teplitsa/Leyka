@@ -108,7 +108,7 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
         add_action('init', function(){
 
             // All localization filters are in places, now create all gateways:
-
+    
             do_action('leyka_init_actions');
 
             // Register user-defined strings:

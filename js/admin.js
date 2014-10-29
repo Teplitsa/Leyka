@@ -4,102 +4,79 @@
 
 jQuery(document).ready(function($){
 
-	/* Donation purpose matbox ui */
-	var amount_set = $('#amount-set');
+    // Exchange places of donations Export and Filter buttons:
+//    $('#post-query-submit').after($('.donations-export-form').detach());
 
-	amount_set.find('#amount_type').on('change', function(e){
-		
-		var opt = $(this).find('option:selected').val(),
-			variants = amount_set.find('.leyka-amount-option').find('.amount-variants');
+    $('.wrap h2 a').after($('.donations-export-form').detach());
 
-		variants.filter(':visible').hide(function(){
-			variants.find('input[type="text"]').val(''); //reset values
-		});
-		amount_set.find('.leyka-amount-option').find('#'+opt).fadeIn();
-	});
+    /** All campaign selection fields: */
 
-	amount_set.find('#add_variant').on('click', function(e){
-		
-		e.preventDefault();
-		var variant_wrap = amount_set.find('.amount-variants-range');
-		$('<div><input type="text" name="amount_variants[]" value=""></div>').fadeIn().appendTo(variant_wrap);
-	});
+    var $campaign_select = $('#campaign-select');
+    $campaign_select.keyup(function(){
 
-    $('#donation-status-log-toggle').click(function(e){
-        e.preventDefault();
-
-        $('#donation-status-log').slideToggle(100);
+        if( !$(this).val() ) {
+            $('#campaign-id').val('');
+            $('#new-donation-purpose').html('');
+        }
     });
+    $campaign_select.autocomplete({
+        minLength: 1,
+        focus: function(event, ui){
+            $campaign_select.val(ui.item.label);
+            $('#new-donation-purpose').html(ui.item.payment_title);
 
-    $('.send-donor-thanks').click(function(e){
-        e.preventDefault();
-
-        var $wrap = $(this).parent(),
-            donation_id = $wrap.data('donation-id');
-        
-        $(this).fadeOut(100, function(){ $(this).html('<img src="'+leyka.ajax_loader_url+'" />').fadeIn(100); });
-
-        $wrap.load(leyka.ajaxurl, {
-            action: 'leyka_send_donor_email',
-            nonce: $wrap.find('#_leyka_donor_email_nonce').val(),
-            donation_id: donation_id
-        });
-    });
-
-    $('input[name*=leyka_pm_available]').change(function(){
-        var $this = $(this),
-            pm = $this.val();
-
-        pm = pm.split('-')[1];
-        if($this.attr('checked'))
-//            $('#leyka_'+pm+'_description-wrapper').slideDown(50);
-            $('[id*=leyka_'+pm+']').slideDown(50);
-        else
-            $('[id*=leyka_'+pm+']').slideUp(50);
-//            $('#leyka_'+pm+'_description-wrapper').slideUp(50);
-    }).each(function(){
-        $(this).change();
-    });
-
-    // If single donation page is opened, don't show "cancel this recurrents" metabox:
-    $('#hide-recurrent-metabox').each(function(){
-        $(this).parents('#leyka_donation_recurrent_cancel').hide();
-    });
-
-    $('.recurrent-cancel').click(function(e){
-        e.preventDefault();
-
-        var $this = $(this);
-
-        $('#ajax-processing').fadeIn(100);
-        $this.fadeOut(100);
-
-        // Do a recurrent donations cancelling procedure:
-        $.post(leyka.ajaxurl, {
-            action: 'leyka_cancel_recurrents',
-            nonce: $this.data('nonce'),
-            donation_id: $this.data('donation-id')
-        }, function(response){
-            $('#ajax-processing').fadeOut(100);
-            response = $.parseJSON(response);
-
-            if(response.status == 0) {
-
-                $('#ajax-response').html('<div class="error-message">'+response.message+'</div>').fadeIn(100);
-                $('#recurrent-cancel-retry').fadeIn(100);
-
-            } else if(response.status == 1) {
-
-                $('#ajax-response').html('<div class="success-message">'+response.message+'</div>').fadeIn(100);
-                $('#recurrent-cancel-retry').fadeOut(100);
-
+            return false;
+        },
+        change: function(event, ui){
+            if( !$campaign_select.val() ) {
+                $('#campaign-id').val('');
+                $('#new-donation-purpose').html('');
             }
-        });
-    });
+        },
+        close: function(event, ui){
+            if( !$campaign_select.val() ) {
+                $('#campaign-id').val('');
+                $('#new-donation-purpose').html('');
+            }
+        },
+        select: function(event, ui){
+            $campaign_select.val(ui.item.label);
+            $('#campaign-id').val(ui.item.value);
+            $('#new-donation-purpose').html(ui.item.payment_title);
+            return false;
+        },
+        source: function(request, response) {
+            var term = request.term,
+                cache = $campaign_select.data('cache') ? $campaign_select.data('cache') : [];
 
-    $('#recurrent-cancel-retry').click(function(e){
-        e.preventDefault();
+            if(term in cache) {
+                response(cache[term]);
+                return;
+            }
 
-        $('.recurrent-cancel').click();
+            request.action = 'leyka_get_campaigns_list';
+            request.nonce = $campaign_select.data('nonce');
+
+            $.getJSON(leyka.ajaxurl, request, function(data, status, xhr){
+
+                var cache = $campaign_select.data('cache') ? $campaign_select.data('cache') : [];
+
+                cache[term] = data;
+                response(data);
+            });
+        }
     });
+    if($campaign_select.length) {
+        $campaign_select.data('ui-autocomplete')._renderItem = function(ul, item){
+            return $('<li>')
+                .append(
+                    '<a>'+item.label+(item.label == item.payment_title ? '' : '<div>'+item.payment_title+'</div></a>')
+                )
+                .appendTo(ul);
+        };
+    }
 });
+
+function is_email(email) {
+    return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test(email);
+}

@@ -12,8 +12,6 @@ class Leyka_Donation_Management {
 
 	private function __construct() {
 
-        add_action('admin_head', array($this, 'remove_new_donation_button'));
-
         add_filter('post_row_actions', function($actions, $donation){
             global $current_screen;
 
@@ -35,6 +33,10 @@ class Leyka_Donation_Management {
         /** @todo Maybe, add donation's custom fields to quick edit box */
 //        add_action('quick_edit_custom_box', array($this, 'display_custom_quickedit_donation'), 10, 2);
 
+        add_action('restrict_manage_posts', array($this, 'manage_filters'));
+        add_action('pre_get_posts', array($this, 'do_filtering'));
+
+
         add_action('leyka_donation_metaboxes', array($this, 'set_metaboxes'));	
         add_action('save_post', array($this, 'save_donation_data'));
 
@@ -42,45 +44,186 @@ class Leyka_Donation_Management {
 		add_action('manage_'.self::$post_type.'_posts_custom_column', array($this, 'manage_columns_content'), 2, 2);
 
         /** Donation status transitions */
-        add_action('new_to_submitted', array($this, 'new_donation_added'));
+//        add_action('new_to_submitted', array($this, 'new_donation_added'));
+
+        add_action('transition_post_status',  array($this, 'donation_status_changed'), 10, 3);
 
         // Leyka_donation status changed to "funded":
-        add_action('funded_'.self::$post_type, array($this, 'donation_funded'), 10, 2);
-        
+//        add_action('funded_'.self::$post_type, array($this, 'donation_funded'), 10, 2);
+
         add_action('wp_ajax_leyka_send_donor_email', array($this, 'ajax_send_donor_email'));
 	}
 
-    function remove_new_donation_button(){
-        global $current_screen;
+    public function donation_status_changed($new, $old, WP_Post $donation) {
 
-        if($current_screen->post_type == self::$post_type)
-            echo '<style>.add-new-h2{display: none;}</style>';
+        if($new == $old || $donation->post_type != self::$post_type)
+            return;
+
+        if($old == 'new' && $new != 'trash')
+            $this->new_donation_added($donation);
+
+        elseif($new == 'funded' || $old == 'funded') {
+
+            $donation = new Leyka_Donation($donation);
+            $campaign = new Leyka_Campaign($donation->campaign_id);
+
+            if($campaign->target) {
+
+                $collected_amount = $campaign->get_collected_amount();
+
+                if($collected_amount >= $campaign->target)
+                    $campaign->target_state = 'is_reached';
+                elseif($campaign->target_state != 'in_process')
+                    $campaign->target_state = 'in_process';
+            }
+
+        }
+
+//        elseif($old == 'funded') {
+//
+//            $donation = new Leyka_Donation($donation);
+//            $campaign = new Leyka_Campaign($donation->campaign_id);
+//
+//            if($campaign->target) {
+//
+//                $collected_amount = $campaign->get_collected_amount();
+//
+//                if($collected_amount >= $campaign->target)
+//                    $campaign->target_state = 'is_reached';
+//                elseif($campaign->target_state != 'in_process')
+//                    $campaign->target_state = 'in_process';
+//            }
+//        }
+    }
+
+    public function manage_filters() {
+
+        global $pagenow;
+
+        if(
+            $pagenow == 'edit.php' &&
+            isset($_GET['post_type']) &&
+            $_GET['post_type'] == 'leyka_donation' /*&&
+    in_array('administrator', wp_get_current_user()->roles)*/
+        ) {?>
+
+        <label for="payment-type-select"></label>
+        <select id="payment-type-select" name="payment_type">
+            <option value="" <?php echo empty($_GET['payment_type']) ? 'selected="selected"' : '';?>><?php _e('Select a payment type', 'leyka');?></option>
+
+            <?php foreach(leyka_get_payment_types_list() as $payment_type => $label) {?>
+                <option value="<?php echo $payment_type;?>" <?php echo !empty($_GET['payment_type']) && $_GET['payment_type'] == $payment_type ? 'selected="selected"' : '';?>><?php echo $label;?></option>
+            <?php }?>
+        </select>
+
+        <label for="gateway-pm-select"></label>
+        <select id="gateway-pm-select" name="gateway_pm">
+            <option value="" <?php echo empty($_GET['gateway_pm']) ? '' : 'selected="selected"';?>><?php _e('Select a gateway or a payment method', 'leyka');?></option>
+        <?php $gw_pm_list = array();
+        foreach(leyka_get_gateways() as $gateway) {
+
+            /** @var Leyka_Gateway $gateway */
+            $pm_list = $gateway->get_payment_methods();
+            if($pm_list)
+                $gw_pm_list[] = array('gateway' => $gateway, 'pm_list' => $pm_list);
+        }
+        $gw_pm_list = apply_filters('leyka_donations_list_gw_pm_filter', $gw_pm_list);
+
+        foreach($gw_pm_list as $element) {?>
+
+            <option value="<?php echo 'gateway__'.$element['gateway']->id;?>" <?php echo !empty($_GET['gateway_pm']) && $_GET['gateway_pm'] == 'gateway__'.$element['gateway']->id ? 'selected="selected"' : '';?>><?php echo $element['gateway']->name;?></option>
+
+            <?php foreach($element['pm_list'] as $pm) {?>
+
+                <option value="<?php echo 'pm__'.$pm->id;?>" <?php echo !empty($_GET['gateway_pm']) && $_GET['gateway_pm'] == 'pm__'.$pm->id ? 'selected="selected"' : '';?>><?php echo '&nbsp;&nbsp;&nbsp;&nbsp;'.$pm->name;?></option>
+            <?php }
+        }?>
+
+        </select>
+
+        <?php $campaign_title = '';
+            if( !empty($_GET['campaign']) && (int)$_GET['campaign'] > 0) {
+                $campaign = get_post((int)$_GET['campaign']);
+                if($campaign)
+                    $campaign_title = $campaign->post_title;
+            }?>
+
+        <label for="campaign-select"></label>
+        <input id="campaign-select"
+               type="text"
+               data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>"
+               placeholder="<?php _e('Please, enter campaign title', 'leyka');?>"
+               value="<?php echo $campaign_title;?>"
+            />
+        <input id="campaign-id" type="hidden" name="campaign" value="<?php echo !empty($_GET['campaign']) ? (int)$_GET['campaign'] : '';?>" />
+
+        <?php }
+    }
+
+    public function do_filtering(WP_Query $query) {
+
+        global $pagenow;
+
+        if(
+            $pagenow == 'edit.php' && !empty($_GET['post_type']) && $_GET['post_type'] == 'leyka_donation' &&
+            is_admin() && $query->is_main_query()
+        ) {
+            $meta_query = array('relation' => 'AND');
+
+            if( !empty($_REQUEST['campaign']) )
+                $meta_query[] = array('key' => 'leyka_campaign_id', 'value' => (int)$_REQUEST['campaign']);
+
+            if( !empty($_REQUEST['payment_type']) )
+                $meta_query[] = array('key' => 'leyka_payment_type', 'value' => $_REQUEST['payment_type']);
+
+            if( !empty($_REQUEST['gateway_pm']) ) {
+
+                if(strpos($_REQUEST['gateway_pm'], 'gateway__') !== false)
+                    $meta_query[] = array(
+                        'key' => 'leyka_gateway', 'value' => str_replace('gateway__', '', $_REQUEST['gateway_pm'])
+                    );
+
+                elseif(strpos($_REQUEST['gateway_pm'], 'pm__') !== false)
+                    $meta_query[] = array(
+                        'key' => 'leyka_payment_method', 'value' => str_replace('pm__', '', $_REQUEST['gateway_pm'])
+                    );
+            }
+
+            //...
+
+            if(count($meta_query) > 1)
+                $query->set('meta_query', $meta_query);
+        }
     }
 
     public function new_donation_added(WP_Post $donation) {
 
         if($donation->post_type != 'leyka_donation')
             return;
-
-        if($donation->post_status == 'funded') // Donation was added with "funded" status, do the drill
-            $this->donation_funded($donation->ID, $donation);
     }
 
-    public function donation_funded($donation_id, WP_Post $donation) {
+    public static function send_all_emails($donation) {
 
-//        set_transient('leyka_test_donation_funded', print_r($donation_id, true), 60*60*60);
+        if((int)$donation > 0)
+            $donation = (int)$donation;
+        elseif( !is_object($donation) || is_a($donation, 'WP_Post') )
+            return false;
+
+        $donation = new Leyka_Donation($donation);
 
         Leyka_Donation_Management::send_donor_thanking_email($donation);
 
         if(leyka_options()->opt('donations_managers_emails')) {
-            $donation_id = new Leyka_Donation($donation_id);
+
+            $donation = new Leyka_Donation($donation);
             if(
-                ($donation_id->payment_type == 'single' && leyka_options()->opt('notify_donations_managers')) ||
-                ($donation_id->payment_type == 'rebill' && leyka_options()->opt('notify_managers_on_recurrents'))
+                ($donation->payment_type == 'single' && leyka_options()->opt('notify_donations_managers')) ||
+                ($donation->payment_type == 'rebill' && leyka_options()->opt('notify_managers_on_recurrents'))
             )
                 Leyka_Donation_Management::send_managers_notifications($donation);
-
         }
+
+        return true;
     }
 
     /** Ajax handler method */
@@ -95,7 +238,12 @@ class Leyka_Donation_Management {
             die(__("For some reason, we can't send this email right now :( Please, try again later.", 'leyka'));
     }
 
-    public static function send_donor_thanking_email(WP_Post $donation) {
+    public static function send_donor_thanking_email($donation) {
+
+        if(is_int($donation) && (int)$donation > 0)
+            $donation = (int)$donation;
+        if( !is_object($donation) || !is_a($donation, 'WP_Post') )
+            return false;
 
         $donation = new Leyka_Donation($donation);
 
@@ -103,9 +251,7 @@ class Leyka_Donation_Management {
         if( !$donor_email )
             $donor_email = leyka_pf_get_donor_email_value();
 
-        if( !$donor_email )
-            return false;
-        if($donation->donor_email_date)
+        if( !$donor_email || $donation->donor_email_date )
             return false;
 
         if( !function_exists('set_html_content_type') ) {
@@ -173,14 +319,21 @@ class Leyka_Donation_Management {
             return false;
     }
 
-    public static function send_managers_notifications(WP_Post $donation) {
+    public static function send_managers_notifications($donation) {
+
+        if((int)$donation > 0)
+            $donation = (int)$donation;
+        elseif( !is_object($donation) || is_a($donation, 'WP_Post') )
+            return false;
+
+        $donation = new Leyka_Donation($donation);
 
         if( !leyka_options()->opt('donations_managers_emails') )
-            return;
+            return false;
         $donation_obj = $donation;
         $donation = new Leyka_Donation($donation);
         if($donation->managers_emails_date)
-            return;
+            return false;
 
         if( !function_exists('set_html_content_type') ) {
             function set_html_content_type(){ return 'text/html'; }
@@ -260,75 +413,348 @@ class Leyka_Donation_Management {
 
 	/** Donation metaboxes */
     public function set_metaboxes(){
+
 		remove_meta_box('submitdiv', self::$post_type, 'side'); // Remove default status/publish metabox
 
-		add_meta_box(self::$post_type.'_data', __('Donation data', 'leyka'), array($this, 'donation_data_metabox'), self::$post_type, 'normal', 'high');
-		add_meta_box(self::$post_type.'_status', __('Donation status', 'leyka'), array($this, 'donation_status_metabox'), self::$post_type, 'side', 'high');
-		add_meta_box(self::$post_type.'_emails_status', __('Emails status', 'leyka'), array($this, 'emails_status_metabox'), self::$post_type, 'normal', 'high');
-		add_meta_box(self::$post_type.'_gateway_response', __('Gateway responses text', 'leyka'), array($this, 'gateway_response_metabox'), self::$post_type, 'normal', 'low');
+        $curr_page = get_current_screen();
+
+        if($curr_page->action == 'add') { // New donation page
+
+            add_meta_box(self::$post_type.'_new_data', __('New donation data', 'leyka'), array($this, 'new_donation_data_metabox'), self::$post_type, 'normal', 'high');
+            add_meta_box(self::$post_type.'_status', __('Donation status', 'leyka'), array($this, 'donation_status_metabox'), self::$post_type, 'side', 'high');
+
+        } else { // View/edit donation page
+
+            add_meta_box(self::$post_type.'_data', __('Donation data', 'leyka'), array($this, 'donation_data_metabox'), self::$post_type, 'normal', 'high');
+            add_meta_box(self::$post_type.'_status', __('Donation status', 'leyka'), array($this, 'donation_status_metabox'), self::$post_type, 'side', 'high');
+            add_meta_box(self::$post_type.'_emails_status', __('Emails status', 'leyka'), array($this, 'emails_status_metabox'), self::$post_type, 'normal', 'high');
+            add_meta_box(self::$post_type.'_gateway_response', __('Gateway responses text', 'leyka'), array($this, 'gateway_response_metabox'), self::$post_type, 'normal', 'low');
 //        add_meta_box(self::$post_type.'_recurrent_cancel', __('Cancel recurrent donations', 'leyka'), array($this, 'recurrent_cancel_metabox'), self::$post_type, 'normal', 'low');
+        }
 	}
 
+    public function new_donation_data_metabox($donation) {
+
+        $campaign_id = empty($_GET['campaign_id']) ? '' : (int)$_GET['campaign_id'];
+        $campaign = new Leyka_Campaign($campaign_id);?>
+
+	<fieldset class="leyka-set campaign">
+		<legend><?php _e('Campaign Data', 'leyka');?></legend>
+
+        <div class="leyka-ddata-string">
+			<label for="campaign-select"><?php _e('Campaign', 'leyka');?>:</label>
+			<div class="leyka-ddata-field">
+
+				<input id="campaign-select"
+					   type="text"
+                       value="<?php echo $campaign_id ? $campaign->title : '';?>"
+					   data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>"
+					   placeholder="<?php _e('Please, enter campaign title', 'leyka');?>"
+					/>
+				<input id="campaign-id" type="hidden" name="campaign-id" value="<?php echo $campaign_id;?>" />
+				<div id="campaign_id-error" class="field-error"></div>
+
+			</div>
+        </div>
+
+        <div class="leyka-ddata-string">
+            <label><?php _e('Donation purpose', 'leyka');?>:</label>
+			<div class="leyka-ddata-field">
+				<div id="new-donation-purpose" class="fake-input"><?php echo $campaign_id ? $campaign->payment_title : '';?></div>
+			</div>
+        </div>
+
+	</fieldset>
+
+	<fieldset class="leyka-set donor">
+		<legend><?php _e('Donor Data', 'leyka');?></legend>
+		
+        <div class="leyka-ddata-string">
+            <label for="donor-name"><?php _e('Name', 'leyka');?>:</label>
+            <div class="leyka-ddata-field">
+                <input type="text" id="donor-name" name="donor-name" placeholder="<?php _e("Enter donor's name, or leave it empty for anonymous donation", 'leyka');?>" value="" />
+			</div>
+		</div>
+		
+		<div class="leyka-ddata-string">
+            <label for="donor-email"><?php _e('Email', 'leyka');?>:</label>
+			<div class="leyka-ddata-field">
+                <input type="text" id="donor-email" name="donor-email" placeholder="<?php _e("Enter donor's email", 'leyka');?>" value="" />
+                <div id="donor_email-error" class="field-error"></div>
+            </div>
+        </div>
+	</fieldset>
+
+	<fieldset class="leyka-set donation">
+		<legend><?php _e('Donation Data', 'leyka');?></legend>
+
+        <div class="leyka-ddata-string">
+            <label for="donation-amount"><?php _e('Amount', 'leyka');?>:</label>
+
+			<div class="leyka-ddata-field">
+				<input type="text" id="donation-amount" name="donation-amount" placeholder="<?php _e("Enter a donation's amount", 'leyka');?>" value="" /> <?php echo leyka_options()->opt_safe('currency_rur_label');?>
+
+				<div id="donation_amount-error" class="field-error"></div>
+
+<!--            <select id="new-donation-currency" name="donation_currency">-->
+<!--                <option value="rur" selected="selected">--><?php //echo leyka_options()->opt_safe('currency_rur_label');?><!--</option>-->
+<!--                <option value="usd">--><?php //echo leyka_options()->opt_safe('currency_usd_label');?><!--</option>-->
+<!--                <option value="eur">--><?php //echo leyka_options()->opt_safe('currency_eur_label');?><!--</option>-->
+<!--            </select>-->
+			</div>
+        </div>
+
+        <div class="leyka-ddata-string">
+            <label for="donation-pm"><?php _e('Payment method', 'leyka');?>:</label>
+
+			<div class="leyka-ddata-field">
+            <select id="donation-pm" name="donation-pm">
+                <option value="" selected="selected"><?php _e('Select a payment method', 'leyka');?></option>
+                <?php foreach(leyka_get_gateways() as $gateway) {
+
+                    /** @var Leyka_Gateway $gateway */
+                    $pm_list = $gateway->get_payment_methods();
+                    if($pm_list) {?>
+
+                        <optgroup label="<?php echo $gateway->name;?>">
+
+                        <?php foreach($pm_list as $pm) {?>
+                            <option value="<?php echo $pm->full_id;?>"><?php echo $pm->name;?></option>
+                        <?php }?>
+                        </optgroup>
+
+                    <?php }?>
+
+                <?php }?>
+                <option value="custom"><?php _e('Custom payment info', 'leyka');?></option>
+            </select>
+
+            <input type="text" id="custom-payment-info" name="custom-payment-info" placeholder="<?php _e('Enter some info about source of a new donation', 'leyka');?>" style="display: none;" value="" />
+
+            <div id="donation_pm-error" class="field-error"></div>
+			</div>
+
+        </div>
+
+        <input type="hidden" id="payment-type-hidden" name="payment-type" value="correction" />
+
+        <div id="chronopay-fields" class="leyka-ddata-string" style="display: none;">
+            <label for="chronopay-customer-id"><?php _e('Chronopay customer ID', 'leyka');?>:</label>
+            <div class="leyka-ddata-field">
+                <input type="text" id="chronopay-customer-id" name="chronopay-customer-id" placeholder="<?php _e('Enter Chronopay Customer ID', 'leyka');?>" value="" />
+            </div>
+        </div>
+
+        <div class="leyka-ddata-string">
+            <label for="donation-date"><?php _e('Donation date', 'leyka');?>:</label>
+
+            <div class="leyka-ddata-field">
+                <div id="donation-date"></div>
+                <input type="hidden" id="donation-date-field" name="donation_date" value="" />
+            </div>
+        </div>
+
+	</fieldset>
+    <?php }
+
     public function donation_data_metabox($donation) {
-        $campaign = new Leyka_Campaign(get_post_meta($donation->ID, 'leyka_campaign_id', true));
 
-        $donation = new Leyka_Donation($donation);?>
+        $donation = new Leyka_Donation($donation);
+        $campaign = new Leyka_Campaign($donation->campaign_id);
+	?>
 
-        <div class="leyka-ddata-string"><span class="label"><?php echo __('Campaign:', 'leyka');?></span> 
-            <?php if($campaign->id && $campaign->status == 'publish') {?>
-            <a href="<?php echo $campaign->url;?>">
-                <?php echo mb_strtolower($campaign->title);?>
-            </a>
-            <?php } else { echo __('the campaign has been removed or drafted', 'leyka'); }?>
-        </div>
-        <div class="leyka-ddata-string"><span class="label"><?php echo __('Donation purpose:', 'leyka');?></span> <?php echo $campaign->id ? $campaign->payment_title : $donation->title;?>
-        </div>
-        <div class="leyka-ddata-string">
-            <span class="label"><?php echo __('Donor:', 'leyka');?></span> 
-			<?php echo $donation->donor_name ? $donation->donor_name.' ('.$donation->donor_email.')' : '';?>
-        </div>
-        <div class="leyka-ddata-string">
-            <span class="label"><?php echo __('Donation amount:', 'leyka');?></span> 
-			<?php echo $donation->amount ? $donation->amount.' '.$donation->currency_label : '';?>
-        </div>
-        <div class="leyka-ddata-string">
-            <span class="label"><?php echo __('Payment method:', 'leyka');?></span> 
-            <?php
-            $pm = leyka_get_pm_by_id($donation->payment_method);
-            $gateway = leyka_get_gateway_by_id($donation->gateway_id);
+	<fieldset class="leyka-set campaign">
+		<legend><?php _e('Campaign Data', 'leyka');?></legend>
 
-            echo ($pm ? $pm->label : __('Unknown payment method', 'leyka'))
-                .' ('.($gateway ? mb_strtolower($gateway->label) : __('unknown gateway', 'leyka')).')';
+        <div class="leyka-ddata-string">			
+			<label><?php _e('Campaign', 'leyka');?>:</label>
+			<div class="leyka-ddata-field">
+			<?php if($campaign->id && $campaign->status == 'publish') { ?>
+
+            <span class="campaign-name"><?php echo $campaign->title;?></span> <span class="campaign-actions"><a href="<?php echo admin_url('/post.php?action=edit&post='.$campaign->id);?>"><?php _e('Edit', 'leyka');?></a> <a href="<?php echo $campaign->url;?>" target="_blank"><?php _e('Preview', 'leyka');?></a></span>
+
+			<?php } else
+                _e('the campaign has been removed or drafted', 'leyka');
             ?>
-        </div>
-        <div class="leyka-ddata-string">
-            <span class="label"><?php echo __('Payment type:', 'leyka');?></span>
-            <?php echo __($donation->payment_type, 'leyka'); // "single" or "rebill" ?>
+			</div>
+		</div>
+		
+		<div class="leyka-ddata-string">
+			<label><?php _e('Donation purpose', 'leyka');?>:</label>
+			<div class="leyka-ddata-field"><span class="fake-input">
+			<?php echo $campaign->id ? $campaign->payment_title : $donation->title;?>
+			</span></div>
         </div>
 
-        <?php if($donation->chronopay_customer_id) {?>
+		<div class="set-action">
+            <div id="campaign-select-trigger" class="button"><?php _e('Connect this donation to another campaign', 'leyka');?></div>
+
+            <div id="campaign-select-fields" style="display: none;">
+                <label for="campaign-select"></label>
+                <input id="campaign-select"
+                       type="text"
+                       data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>"
+                       placeholder="<?php _e('Please, enter campaign title', 'leyka');?>"
+                       value="<?php echo htmlentities($campaign->title, ENT_COMPAT, 'UTF-8');?>"
+                    />
+                <input id="campaign-id" type="hidden" name="campaign-id" value="<?php echo $campaign->id;?>" />
+                <div id="cancel-campaign-select" class="button"><?php _e('Cancel', 'leyka');?></div>
+            </div>
+		</div> <!-- .set-action -->
+        
+	</fieldset>
+	
+	<fieldset class="leyka-set donor">
+		<legend><?php _e('Donor Data', 'leyka');?></legend>
+		
+		<div class="leyka-ddata-string">
+            <label for="donor-name"><?php _e('Name', 'leyka');?>:</label>
+			<div class="leyka-ddata-field">
+
+            <?php if($donation->type == 'correction') {?>
+
+                <input type="text" id="donor-name" name="donor-name" placeholder="<?php _e("Enter donor's name, or leave it empty for anonymous donation", 'leyka');?>" value="<?php echo $donation->donor_name;?>" />
+            <?php } else {?>
+
+                <span class="fake-input"><?php echo $donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka');?></span>
+            <?php }?>
+
+            </div>
+        </div>
+			
+		<div class="leyka-ddata-string">
+            <label for="donor-email"><?php _e('Email', 'leyka');?>:</label>
+			<div class="leyka-ddata-field">
+            <?php if($donation->type == 'correction') {?>
+
+                <input type="text" id="donor-email" name="donor-email" placeholder="<?php _e("Enter donor's email", 'leyka');?>" value="<?php echo $donation->donor_email;?>" />
+                <div id="donor_email-error" class="field-error"></div>
+
+            <?php } else {?>
+
+                <span class="fake-input"><?php echo $donation->donor_email ? $donation->donor_email : '&ndash;';?></span>
+            <?php }?>
+            </div>
+        </div>
+			
+	</fieldset>
+	
+	<fieldset class="leyka-set donation">
+		<legend><?php _e('Donation Data', 'leyka');?></legend>
+        
         <div class="leyka-ddata-string">
-            <span class="label"><?php echo __('Chronopay customer ID:', 'leyka');?></span>
-            <?php echo $donation->chronopay_customer_id;?>
+            <label><?php _e('Amount', 'leyka');?>:</label>
+			<div class="leyka-ddata-field">
+            <?php if($donation->type == 'correction') {?>
+
+                <input type="text" id="donation-amount" name="donation-amount" placeholder="<?php _e("Enter a donation's amount", 'leyka');?>" value="<?php echo $donation->amount;?>" /> <?php echo $donation->currency_label;?>
+
+                <div id="donation_amount-error" class="field-error"></div>
+
+            <?php } else {?>
+
+                <span class="fake-input"><?php echo $donation->amount ? $donation->amount.' '.$donation->currency_label : '';?></span>
+            <?php }?>
+            </div>
+        </div>
+		
+        <div class="leyka-ddata-string">
+            <label><?php _e('Payment method', 'leyka');?>:</label>
+			<div class="leyka-ddata-field">
+            <?php if($donation->type == 'correction') {?>
+
+                <select id="donation-pm" name="donation-pm">
+                    <option value="" selected="selected"><?php _e('Select a payment method', 'leyka');?></option>
+                    <?php foreach(leyka_get_gateways() as $gateway) {
+
+                        /** @var Leyka_Gateway $gateway */
+                        $pm_list = $gateway->get_payment_methods();
+                        if($pm_list) {?>
+
+                            <optgroup label="<?php echo $gateway->name;?>">
+                            <?php foreach($pm_list as $pm) {?>
+                                <option value="<?php echo $pm->full_id;?>" <?php echo $donation->gateway_id == $gateway->id && $donation->pm_id == $pm->id ? 'selected="selected"' : '';?>><?php echo $pm->name;?></option>
+                            <?php }?>
+                            </optgroup>
+
+                        <?php }?>
+
+                    <?php }?>
+                    <option value="custom" <?php echo $donation->gw_id == '' && $donation->pm_id ? 'selected="selected"' : '';?>><?php _e('Custom payment info', 'leyka');?></option>
+                </select>
+
+                <input type="text" id="custom-payment-info" name="custom-payment-info" placeholder="<?php _e('Enter some info about source of a new donation', 'leyka');?>" <?php echo $donation->gw_id == '' && $donation->pm_id ? '' : 'style="display: none;"';?> value="<?php echo $donation->gw_id == '' ? $donation->pm_id : '';?>" />
+
+            <?php } else {?>
+
+                <span class="fake-input">
+                <?php $pm = leyka_get_pm_by_id($donation->payment_method);
+                $gateway = leyka_get_gateway_by_id($donation->gateway_id);
+
+                echo ($pm ? $pm->label : __('Unknown payment method', 'leyka'))
+                    .' ('.($gateway ? mb_strtolower($gateway->label) : __('unknown gateway', 'leyka')).')';
+                ?>
+			    </span>
+            <?php }?>
+            </div>
+        </div>
+
+		<?php if($donation->gateway == 'chronopay') {?>
+        <div class="leyka-ddata-string">
+            <label><?php _e('Chronopay customer ID:', 'leyka');?></label>
+			<div class="leyka-ddata-field">
+            <?php if($donation->type == 'correction') {?>
+
+                <input type="text" id="chronopay-customer-id" name="chronopay-customer-id" placeholder="<?php _e('Enter Chronopay Customer ID', 'leyka');?>" value="<?php echo $donation->chronopay_customer_id;?>" />
+            <?php } else {?>
+                <span class="fake-input"><?php echo $donation->chronopay_customer_id;?></span>
+            <?php }?>
+            </div>
         </div>
         <?php }?>
+
+        <div class="leyka-ddata-string">
+            <label><?php _e('Payment type:', 'leyka');?></label>
+			<div class="leyka-ddata-field"><span class="fake-input">
+            <?php echo leyka_get_payment_type_label($donation->payment_type); // "single", "rebill", "correction", etc. ?>
+			</span></div>
+        </div>
+
+        <div class="leyka-ddata-string">
+            <label><?php _e('Donation date:', 'leyka');?></label>
+			<div class="leyka-ddata-field">
+            <?php if($donation->type == 'correction') {?>
+
+                <div id="donation-date"></div>
+                <input type="hidden" id="donation-date-field" name="donation_date" value="<?php echo date('Y-m-d', $donation->date_timestamp);?>" />
+            <?php } else {?>
+
+                <span class="fake-input"><?php echo $donation->date;?></span>
+            <?php }?>
+            </div>
+        </div>
+	</fieldset>
+
 	<?php }
 
     public function donation_status_metabox($donation) {
-        wp_nonce_field('donation_status_metabox', '_donation_edit_nonce');?>
+        wp_nonce_field('donation_status_metabox', '_donation_edit_nonce');
+
+        $is_adding_page = get_current_screen()->action == 'add';?>
+
         <div class="leyka-status-section select">
-            <label><?php echo __('Status', 'leyka');?></label>
-            <select name="donation_status">
+            <label for="donation-status"><?php _e('Status', 'leyka');?></label>
+            <select id="donation-status" name="donation_status">
                 <?php foreach(leyka_get_donation_status_list() as $status => $label) {
                     if($status == 'trash')
                         continue;?>
-                <option value="<?php echo $status;?>" <?php echo $donation->post_status == $status ? 'selected' : '';?>><?php echo $label;?></option>
+                <option value="<?php echo $status;?>" <?php echo $donation->post_status == $status || ($is_adding_page && $status == 'funded') ? 'selected' : '';?>><?php echo $label;?></option>
                 <?php }?>
             </select>
 		</div>
 
         <div class="leyka-status-section actions">
-            <?php if(current_user_can('delete_post', $donation->ID)) {?>
+            <?php if(current_user_can('delete_post', $donation->ID) && !$is_adding_page) {?>
 				<div class="delete-action">
                 <a class="submitdelete deletion" href="<?php echo get_delete_post_link($donation->ID); ?>"><?php echo !EMPTY_TRASH_DAYS ? __('Delete Permanently') : __('Move to Trash');?></a>
 				</div>
@@ -337,12 +763,14 @@ class Leyka_Donation_Management {
             <?php
             if(current_user_can(get_post_type_object(self::$post_type)->cap->publish_posts)) {?>
 				<div class="save-action">
-			    <input name="original_funded" type="hidden" id="original_funded" value="<?php esc_attr_e(__('Update status', 'leyka'));?>" />
-                <?php submit_button(__('Update status', 'leyka'), 'primary button-large', 'funded', false, array('accesskey' => 'p'));?>
+			    <input name="original_funded" type="hidden" id="original_funded" value="<?php esc_attr_e(__('Update', 'leyka'));?>" />
+                <?php submit_button(
+                    $is_adding_page ? __('Add the donation', 'leyka') : __('Update', 'leyka'),
+                    'primary button-large', 'funded', false,
+                    array('accesskey' => 'p', 'data-is-new-donation' => $is_adding_page ? 1 : 0)
+                );?>
 				</div>
-            <?php
-			}
-			?>
+            <?php }?>
         </div>
 
         <div class="leyka-status-section log">
@@ -355,7 +783,7 @@ class Leyka_Donation_Management {
                     array('<i>'.$this->get_status_labels($last_status['status']).'</i>', '<time>'.date('d.m.Y, H:i', $last_status['date']).'</time>'),
                     '<div class="leyka-ddata-string last-log">'.__('Last status change: to&nbsp;%status (at&nbsp;%date)', 'leyka').'</div>'
                 );?>
-                <div id="donation-status-log-toggle"><?php echo __('Show/hide full status history', 'leyka');?></div>
+                <div id="donation-status-log-toggle"><?php _e('Show/hide full status history', 'leyka');?></div>
                 <ul id="donation-status-log" style="display: none;">
                     <?php for($i=0; $i<count($status_log); $i++) {?>
                     <li><?php echo str_replace(
@@ -384,13 +812,14 @@ class Leyka_Donation_Management {
 
 			<div class="leyka-ddata-string donor has-thanks"><?php echo $txt;?></div>
 
-		<?php } else {
-
-			$send = "<div class='send-donor-thanks'>".__('(send it now)', 'leyka')."</div>";
-			$txt = sprintf(__("Grateful email hasn't been sent %s", 'leyka'), $send);?>
+		<?php } else {?>
 
 			<div class="leyka-ddata-string donor no-thanks" data-donation-id="<?php echo $donation->ID;?>">
-				<?php echo $txt;?>
+				<?php echo sprintf(
+                    __("Grateful email hasn't been sent %s", 'leyka'),
+                    "<div class='send-donor-thanks'>".__('(send it now)', 'leyka')."</div>"
+                );?>
+
 				<?php wp_nonce_field('leyka_donor_email', '_leyka_donor_email_nonce', false, true); ?>
 			</div>
 		<?php }
@@ -412,7 +841,7 @@ class Leyka_Donation_Management {
         <div>
             <?php
             if( !$donation->gateway_response_formatted )
-                echo __('No gateway response has been received', 'leyka');
+                _e('No gateway response has been received', 'leyka');
             else {
 
                 foreach($donation->gateway_response_formatted as $name => $value) {?>
@@ -473,13 +902,13 @@ class Leyka_Donation_Management {
 
         unset($unsort['date']);
 
-//		$columns['campaign'] = __('Campaign', 'leyka');
 		$columns['donor'] = __('Donor', 'leyka');
 		$columns['amount'] = __('Amount', 'leyka');
-		$columns['method'] = __('Method', 'leyka');	
+		$columns['method'] = __('Method', 'leyka');
+        $columns['donation_date'] = __('Donation date', 'leyka');
 		$columns['status'] = __('Status', 'leyka');
 		$columns['emails'] = __('Letter', 'leyka');
-		$columns['payment_type'] = __('Type of payment', 'leyka');
+//		$columns[''] = __('', 'leyka');
 
 		if($unsort)
 			$columns = array_merge($columns, $unsort);
@@ -489,67 +918,56 @@ class Leyka_Donation_Management {
 
 	function manage_columns_content($column_name, $donation_id) {
 
-		$donation = get_post($donation_id);
+		$donation = new Leyka_Donation($donation_id);
         switch($column_name) {
             case 'ID': echo $donation_id; break;
             case 'amount':
-                $currency = leyka_options()->opt(
-                    'leyka_currency_'.get_post_meta($donation_id, 'leyka_donation_currency', true).'_label'
-                );
-                echo get_post_meta($donation_id, 'leyka_donation_amount', true).' '.$currency;
+                echo $donation->amount.' '.$donation->currency_label;
                 break;
-            case 'donor': echo get_post_meta($donation_id, 'leyka_donor_name', true); break;
+            case 'donor': echo $donation->donor_name; break;
             case 'method':
-                $pm = leyka_get_pm_by_id(get_post_meta($donation_id, 'leyka_payment_method', true));
-                $gateway = leyka_get_gateway_by_id(get_post_meta($donation_id, 'leyka_gateway', true));
-
-                echo ($pm ? $pm->label : __('Unknown payment method', 'leyka'))
-                    .' ('.($gateway ? mb_strtolower($gateway->label) : __('unknown gateway', 'leyka')).')';
+                $gateway_label = $donation->gateway_id ? $donation->gateway_label : __('Custom payment info', 'leyka');
+                $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;
+                echo "<b>{$donation->payment_type_label}:</b> $pm_label <small>/ $gateway_label</small>";
                 break;
-//            case 'title':
-//                $campaign = get_post(get_post_meta($donation_id, 'leyka_campaign_id', true));
-//                if( !$campaign )
-//                    echo __('Campaign was deleted', 'leyka');
-//                break;
-            case 'status':
-                $status_log = get_post_meta($donation_id, '_status_log', true);
-                if( !$status_log || !is_array($status_log) ) {
-                    $status_log = array(array(
-                        'date' => strtotime($donation->post_modified),
-                        'status' => $donation->post_status
-                    ));
-                    update_post_meta($donation_id, '_status_log', $status_log);
-                }
-                $status_log = end($status_log);
+            case 'donation_date':
+                echo $donation->date;
 
-                echo '<i>'.$this->get_status_labels($donation->post_status).'</i>'
-                    .' ('.date('d.m.Y, H:i:s', $status_log['date']).')';
+//                echo '<pre>' . print_r(date(get_option('date_format'), $donation->date_timestamp), 1) . '</pre>';
+                break;
+            case 'status':
+//                $status_log = get_post_meta($donation_id, '_status_log', true);
+//                if( !$status_log || !is_array($status_log) ) {
+//                    $status_log = array(array(
+//                        'date' => strtotime($donation->date),
+//                        'status' => $donation->status
+//                    ));
+//                    update_post_meta($donation_id, '_status_log', $status_log);
+//                }
+//                $status_log_end = $donation->status_log[count($donation->status_log)-1];
+				
+                echo '<i class="'.esc_attr($donation->status).'">'.$this->get_status_labels($donation->status).'</i>';
+//                    .' ('.date('d.m.Y, H:i:s', $status_log_end['date']).')';
                 break;
             case 'emails':
-                $donor_thanks_date = get_post_meta($donation_id, '_leyka_donor_email_date', true);
-				if($donor_thanks_date){
+				if($donation->donor_email_date){
 					echo str_replace(
 						'%s',
-						'<time>'.date('d.m.Y, H:i</time>', $donor_thanks_date).'</time>',
+						'<time>'.date('d.m.Y, H:i</time>', $donation->donor_email_date).'</time>',
 						__('Sent at %s', 'leyka')
 					);				
-				} else {
-					$send = "<div class='send-donor-thanks'>".__('(send it now)', 'leyka')."</div>";
-					$txt = sprintf(__("Not sent %s", 'leyka'), $send);?>
+				} else {?>
 
 					<div class="leyka-no-donor-thanks" data-donation-id="<?php echo $donation_id;?>">
-						<?php echo $txt;?>
+						<?php echo sprintf(
+                            __("Not sent %s", 'leyka'),
+                            "<div class='send-donor-thanks'>".__('(send it now)', 'leyka')."</div>"
+                        );?>
 						<?php wp_nonce_field('leyka_donor_email', '_leyka_donor_email_nonce', false, true); ?>
 					</div>
 				<?php }
-				
-                break;
-            case 'payment_type':
-                echo get_post_meta($donation_id, 'leyka_payment_type', true) == 'rebill' ?
-                    __('Recurrent (rebill)', 'leyka') : __('Single', 'leyka');
-                break;
-//            case '':
-//                break;
+
+                break;           
             default:
         }
 	}
@@ -557,11 +975,11 @@ class Leyka_Donation_Management {
     /** Save donation data metabox */
     public function save_donation_data($donation_id) {
 
-        // Maybe, donation is inserted trough API:
+        // Maybe donation is inserted trough API:
         if(empty($_POST['post_type']) || $_POST['post_type'] != 'leyka_donation')
             return false;
 
-        // Verify that the nonce is valid.
+        // Verify that nonce is valid.
         if(empty($_POST['_donation_edit_nonce'])
         || !wp_verify_nonce($_POST['_donation_edit_nonce'], 'donation_status_metabox')) {
             return $donation_id;
@@ -570,20 +988,73 @@ class Leyka_Donation_Management {
         if(defined('DOING_AUTOSAVE' ) && DOING_AUTOSAVE)
             return $donation_id;
 
-        /** @todo Сделать после добавления capabilities Лейки */
+        /** @todo Do it after adding some Leyka capabilities */
 //        if( !current_user_can('edit_donation', $donation_id) )
 //            return $donation_id;
 
-        // Unhook & hook again this function later so it doesn't loop infinitely:
-        remove_action('save_post', array($this, 'save_donation_data'));
+        $donation = new Leyka_Donation($donation_id);
+        if($donation->status != $_POST['donation_status'])
+            $donation->status = $_POST['donation_status'];
 
-        wp_update_post(array('ID' => $donation_id, 'post_status' => $_POST['donation_status']));
+        if(isset($_POST['campaign-id']) && $donation->campaign_id != (int)$_POST['campaign-id']) {
 
-        add_action('save_post', array($this, 'save_donation_data'));
+            $old_campaign = new Leyka_Campaign($donation->campaign_id);
+            $new_campaign = new Leyka_Campaign((int)$_POST['campaign-id']);
 
-        $status_log = get_post_meta($donation_id, '_status_log', true);
-        $status_log[] = array('date' => time(), 'status' => $_POST['donation_status']);
-        update_post_meta($donation_id, '_status_log', $status_log);
+            $donation->campaign_id = (int)$_POST['campaign-id'];
+
+            $old_campaign->refresh_target_state();
+            $new_campaign->refresh_target_state();
+        }
+
+        if(isset($_POST['donor-name']) && $donation->donor_name != $_POST['donor-name'])
+            $donation->donor_name = $_POST['donor-name'];
+
+        if(isset($_POST['donor-email']) && $donation->donor_email != $_POST['donor-email'])
+            $donation->donor_email = $_POST['donor-email'];
+
+        if(isset($_POST['donation-amount']) && (float)$donation->amount != (float)$_POST['donation-amount'])
+            $donation->amount = (float)$_POST['donation-amount'];
+
+        if( !$donation->currency )
+            $donation->currency = 'rur';
+
+        if(
+            isset($_POST['donation-pm']) &&
+            ($donation->pm != $_POST['donation-pm'] || $_POST['donation-pm'] == 'custom')
+        ) {
+
+            if($_POST['donation-pm'] == 'custom') {
+                $donation->gateway_id = '';
+                if($donation->pm_id != $_POST['custom-payment-info'])
+                    $donation->pm_id = $_POST['custom-payment-info'];
+            } else {
+                $parts = explode('-', $_POST['donation-pm']);
+                $donation->gateway_id = $parts[0];
+                $donation->pm = $parts[1];
+            }
+        }
+
+        if(isset($_POST['donation_date'])) {
+//            $date = explode('_', $_POST['donation_date']);
+//            $date = (int)$date[0] - ((int)$date[1])*60;
+            if($donation->date_timestamp != strtotime($_POST['donation_date']))
+                $donation->date = $_POST['donation_date'];
+        }
+
+        if(isset($_POST['payment-type']) && $donation->payment_type != $_POST['payment-type']) {
+
+            $donation->payment_type = $_POST['payment-type'];
+
+            // It's a new correction donation, set a title from it's campaign:
+            $donation->title = $donation->campaign_payment_title;
+        }
+
+        if(
+            isset($_POST['chronopay-customer-id']) &&
+            $donation->chronopay_customer_id != $_POST['chronopay-customer-id']
+        )
+            $donation->chronopay_customer_id = $_POST['chronopay-customer-id'];
     }
 
 	/** Helpers **/
@@ -646,14 +1117,18 @@ class Leyka_Donation {
         if(is_wp_error($id))
             return $id;
 
+        $amount = empty($params['amount']) ? leyka_pf_get_amount_value() : round((float)$params['amount'], 2);
+        update_post_meta($id, 'leyka_donation_amount', $amount);
+
+        $currency = empty($params['currency']) ? leyka_pf_get_currency_value() : $params['currency'];
+        update_post_meta($id, 'leyka_donation_currency', $currency);
+
         update_post_meta(
-            $id, 'leyka_donation_amount',
-            empty($params['amount']) ? leyka_pf_get_amount_value() : round((float)$params['amount'], 2)
+            $id,
+            'leyka_main_curr_amount',
+            $currency == 'RUR' ? $amount : $amount*get_transient("leyka_course_rur2{$currency}")
         );
-        update_post_meta(
-            $id, 'leyka_donation_currency',
-            empty($params['currency']) ? leyka_pf_get_currency_value() : $params['currency']
-        );
+
         update_post_meta(
             $id, 'leyka_donor_name',
             empty($params['donor_name']) ? leyka_pf_get_donor_name_value() : $params['donor_name']
@@ -704,8 +1179,8 @@ class Leyka_Donation {
         else
             update_post_meta($id, 'leyka_recurrents_cancel_date', 0);
 
-        if($status != 'submitted')
-            wp_update_post(array('ID' => $id, 'post_status' => $status));
+//        if($status != 'submitted')
+//            wp_update_post(array('ID' => $id, 'post_status' => $status));
 
 //        if($status == 'funded') {
 //            $donation = get_post($id);
@@ -744,7 +1219,7 @@ class Leyka_Donation {
 
         return count($query) ? (new Leyka_Donation($query[0]->ID)) : false;
     }
-	
+
 	function __construct($donation) {
 
         if(is_object($donation)) {
@@ -756,19 +1231,27 @@ class Leyka_Donation {
         }
 
         if( !$this->_donation_meta ) {
+
             $meta = get_post_meta($this->_id, '', true);
+
+            $meta['leyka_donation_amount'] = empty($meta['leyka_donation_amount']) ?
+                0.0 : (float)$meta['leyka_donation_amount'][0];
             $this->_donation_meta = array(
                 'payment_type' => empty($meta['leyka_payment_type']) ? 'single' : $meta['leyka_payment_type'][0],
-                'payment_method' => $meta['leyka_payment_method'][0],
-                'gateway' => $meta['leyka_gateway'][0],
-                'currency' => $meta['leyka_donation_currency'][0],
-                'amount' => (float)$meta['leyka_donation_amount'][0],
-                'donor_name' => $meta['leyka_donor_name'][0],
-                'donor_email' => $meta['leyka_donor_email'][0],
-                'donor_email_date' => $meta['_leyka_donor_email_date'][0],
-                'managers_emails_date' => $meta['_leyka_managers_emails_date'][0],
-                'campaign_id' => (int)$meta['leyka_campaign_id'][0],
-                'status_log' => $meta['_status_log'][0],
+                'payment_method' => empty($meta['leyka_payment_method']) ? '' : $meta['leyka_payment_method'][0],
+                'gateway' => empty($meta['leyka_gateway']) ? '' : $meta['leyka_gateway'][0],
+                'currency' => empty($meta['leyka_donation_currency']) ? 'rur' : $meta['leyka_donation_currency'][0],
+                'amount' => $meta['leyka_donation_amount'],
+                'main_curr_amount' => !empty($meta['leyka_main_curr_amount'][0]) ?
+                    (float)$meta['leyka_main_curr_amount'][0] : $meta['leyka_donation_amount'],
+                'donor_name' => empty($meta['leyka_donor_name']) ? '' : $meta['leyka_donor_name'][0],
+                'donor_email' => empty($meta['leyka_donor_email']) ? '' : $meta['leyka_donor_email'][0],
+                'donor_email_date' => empty($meta['_leyka_donor_email_date']) ?
+                    '' : $meta['_leyka_donor_email_date'][0],
+                'managers_emails_date' => empty($meta['_leyka_managers_emails_date']) ?
+                    '' : $meta['_leyka_managers_emails_date'][0],
+                'campaign_id' => empty($meta['leyka_campaign_id']) ? '' : (int)$meta['leyka_campaign_id'][0],
+                'status_log' => empty($meta['_status_log']) ? '' : maybe_unserialize($meta['_status_log'][0]),
                 'gateway_response' => empty($meta['leyka_gateway_response']) ? '' : $meta['leyka_gateway_response'][0],
                 'recurrents_cancelled' => isset($meta['leyka_recurrents_cancelled']) ?
                     $meta['leyka_recurrents_cancelled'][0] : false,
@@ -788,11 +1271,22 @@ class Leyka_Donation {
             case 'ID': return $this->_id;
             case 'title':
             case 'name': return $this->_post_object->post_title;
+            case 'campaign_payment_title':
+                $campaign = new Leyka_Campaign($this->campaign_id);
+                return $campaign->payment_title ? $campaign->payment_title : $campaign->title;
             case 'status': return $this->_post_object->post_status;
             case 'status_label':
                 $stati = leyka_get_donation_status_list();
                 return $stati[$this->_post_object->post_status];
-            case 'date': return date(get_option('date_format'), strtotime($this->_post_object->post_date));
+            case 'status_log':
+                return $this->_donation_meta['status_log'];
+            case 'date':
+            case 'date_label': return date(get_option('date_format'), strtotime($this->_post_object->post_date));
+            case 'date_timestamp': return strtotime($this->_post_object->post_date);
+            case 'date_funded':
+            case 'funded_date':
+                $date_funded = $this->get_funded_date();
+                return $date_funded ? date(get_option('date_format'), $date_funded) : 0;
             case 'payment_method':
             case 'payment_method_id':
             case 'pm':
@@ -800,10 +1294,15 @@ class Leyka_Donation {
                 return $this->_donation_meta['payment_method'];
             case 'gateway':
             case 'gateway_id':
+            case 'gw_id':
                 return $this->_donation_meta['gateway'];
+            case 'pm_label':
             case 'payment_method_label':
                 $pm = leyka_get_pm_by_id($this->_donation_meta['payment_method']);
                 return ($pm ? $pm->label : __('Unknown payment method', 'leyka'));
+            case 'gateway_label':
+                $gateway = leyka_get_gateway_by_id($this->_donation_meta['gateway']);
+                return ($gateway ? $gateway->label : __('Unknown gateway', 'leyka'));
             case 'currency':
                 return $this->_donation_meta['currency'];
             case 'currency_label':
@@ -811,6 +1310,9 @@ class Leyka_Donation {
             case 'sum':
             case 'amount':
                 return $this->_donation_meta['amount'];
+            case 'main_curr_amount':
+            case 'amount_equiv':
+                return $this->_donation_meta['main_curr_amount'];
             case 'donor_name':
                 return $this->_donation_meta['donor_name'];
             case 'donor_email':
@@ -821,8 +1323,6 @@ class Leyka_Donation {
                 return $this->_donation_meta['managers_emails_date'];
             case 'campaign_id':
                 return $this->_donation_meta['campaign_id'];
-            case 'status_log':
-                return $this->_donation_meta['status_log'];
             case 'gateway_response':
                 return $this->_donation_meta['gateway_response'];
             case 'gateway_response_formatted':
@@ -844,6 +1344,13 @@ class Leyka_Donation {
 
     public function __set($field, $value) {
         switch($field) {
+            case 'title':
+                if($value != $this->_post_object->post_title) {
+                    wp_update_post(array('ID' => $this->_id, 'post_title' => $value));
+                    $this->_post_object->post_title = $value;
+                }
+                break;
+
             case 'status':
                 if( !array_key_exists($value, leyka_get_donation_status_list()) || $value == $this->status )
                     return false;
@@ -853,30 +1360,81 @@ class Leyka_Donation {
                 $status_log = get_post_meta($this->_id, '_status_log', true);
                 $status_log[] = array('date' => time(), 'status' => $value);
                 update_post_meta($this->_id, '_status_log', $status_log);
+                $this->_donation_meta['status_log'] = $status_log;
 
                 break;
 
+            case 'date':
+                wp_update_post(array('ID' => $this->_id, 'post_date' => $value));
+                break;
+            case 'date_timestamp':
+                    wp_update_post(array('ID' => $this->_id, 'post_date' => date('Y-m-d H:i:s', $value)));
+                break;
+
+            case 'donor_name':
+                update_post_meta($this->_id, 'leyka_donor_name', $value);
+                $this->_donation_meta['donor_name'] = $value;
+                break;
             case 'donor_email':
                 update_post_meta($this->_id, 'leyka_donor_email', $value);
+                $this->_donation_meta['donor_email'] = $value;
+                break;
+
+            case 'sum':
+            case 'amount':
+            case 'donation_amount':
+                update_post_meta($this->_id, 'leyka_donation_amount', $value);
+                $this->_donation_meta['amount'] = $value;
+                break;
+
+            case 'currency':
+            case 'donation_currency':
+                update_post_meta($this->_id, 'leyka_donation_currency', $value);
+                $this->_donation_meta['currency'] = $value;
+                break;
+
+            case 'gw_id':
+            case 'gateway_id':
+                update_post_meta($this->_id, 'leyka_gateway', $value);
+                $this->_donation_meta['gateway'] = $value;
+                break;
+
+            case 'pm':
+            case 'pm_id':
+            case 'payment_method_id':
+                update_post_meta($this->_id, 'leyka_payment_method', $value);
+                $this->_donation_meta['payment_method'] = $value;
                 break;
 
             case 'type':
             case 'payment_type':
-                $value = ($value == 'rebill') ? 'rebill' : 'single';
+                $value = in_array($value, array_keys(leyka_get_payment_types_list())) ? $value : 'single';
                 update_post_meta($this->_id, 'leyka_payment_type', $value);
+                $this->_donation_meta['payment_type'] = $value;
+                break;
+
+            case 'campaign':
+            case 'campaign_id':
+                $value = (int)$value > 0 ? (int)$value : $this->campaign_id;
+                update_post_meta($this->_id, 'leyka_campaign_id', $value);
+                $this->_donation_meta['campaign_id'] = $value;
                 break;
 
             case 'recurrents_cancelled':
                 $value = !!$value;
                 update_post_meta($this->_id, 'leyka_recurrents_cancelled', $value);
                 update_post_meta($this->_id, 'leyka_recurrents_cancel_date', $value ? time() : 0);
+                $this->_donation_meta['recurrents_cancelled'] = $value;
+                $this->_donation_meta['recurrents_cancel_date'] = $value;
                 break;
 
             case 'chronopay_customer_id':
                 update_post_meta($this->_id, '_chronopay_customer_id', $value);
+                $this->_donation_meta['chronopay_customer_id'] = $value;
                 break;
             default:
         }
+        return true;
     }
 
     public function add_gateway_response($resp_text) {
@@ -899,6 +1457,21 @@ class Leyka_Donation {
         update_post_meta($this->_id, '_status_log', $status_log);
 
         return $res;
+    }
+
+    /**
+     * @return mixed Last date when status was changed to "funded" in sec, or false if donation was never funded.
+     */
+    public function get_funded_date() {
+
+        $last_date_funded = 0;
+        foreach((array)$this->status_log as $status_change) {
+
+            if($status_change['status'] == 'funded' && $status_change['date'] > $last_date_funded)
+                $last_date_funded = $status_change['date'];
+        }
+
+        return $last_date_funded ? $last_date_funded : false;
     }
 }
 

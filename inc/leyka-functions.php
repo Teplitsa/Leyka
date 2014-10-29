@@ -1,8 +1,14 @@
-<? if( !defined('WPINC') ) die;
+<?php if( !defined('WPINC') ) die;
 /**
- * Leyka Functions
+ * Leyka functions and template tags, irrelevant to a donation form.
  **/
 
+if( !function_exists('mb_ucfirst') ) {
+    function mb_ucfirst($str) {
+        return mb_strtoupper(mb_substr($str, 0, 1)).mb_substr($str, 1);
+    }
+} 
+ 
 function leyka_current_user_has_role($role, $user_id = false) {
 
     $user = is_numeric($user_id) ? get_userdata( $user_id ) : wp_get_current_user();
@@ -54,6 +60,10 @@ function leyka_get_default_dm_list() {
 
 function leyka_get_default_success_page() {
 
+    $default_page = get_option('leyka_success_page');
+    if($default_page)
+        return $default_page;
+
     $page = new WP_Query(apply_filters('leyka_default_success_page_query', array(
         'post_type' => 'page',
 //        'lang' => 'ru',
@@ -104,6 +114,10 @@ function leyka_get_success_page_url() {
 }
 
 function leyka_get_default_failure_page() {
+
+    $default_page = get_option('leyka_failure_page');
+    if($default_page)
+        return $default_page;
 
     $page = new WP_Query(apply_filters('leyka_default_failure_page_query', array(
         'post_type' => 'page',
@@ -210,13 +224,131 @@ function leyka_get_currency_data($currency_code) {
     return isset($currecies[$currency_code]) ? $currecies[$currency_code] : false;
 }
 
-/** Get possible leyka_donation post type's status list as an array. */
+function leyka_get_currency_label($currency_code) {
+
+    $currecies = leyka_get_active_currencies();
+
+    return isset($currecies[$currency_code]['label']) ? $currecies[$currency_code]['label'] : false;
+}
+
+
+/**
+ * Get possible leyka_donation post type's status list as an array.
+ **/
 function leyka_get_donation_status_list() {
-    return apply_filters('leyka_donation_statuses', array(
-        'submitted' => _x('Submitted', '«Submitted» donation status', 'leyka'),
-        'funded' => _x('Funded', '«Completed» donation status', 'leyka'),
-        'refunded' => _x('Refunded', '«Refunded» donation status', 'leyka'),
-        'failed' => _x('Failed', '«Failed» donation status', 'leyka'),
-        'trash' => _x('Trash', '«Deleted» donation status', 'leyka'),
-    ));
+    return leyka()->get_donation_statuses();
+}
+
+/**
+ * Get all possible campaign target states.
+ **/
+function leyka_get_campaign_target_states_list() {
+    return leyka()->get_campaign_target_states();
+}
+
+/**
+ * Get campaign target - template tag
+ * 
+ * @var $campaign integer Campaign ID.
+ * @return mixed Array of campaign target info, or false if wrong campaign ID given.
+ */
+function leyka_get_campaign_target($campaign) {
+
+    $campaign = (int)$campaign;
+    if($campaign <= 0)
+        return false;
+
+    $campaign = new Leyka_Campaign($campaign);
+    if( !$campaign->id )
+        return false;
+
+    return array(
+        'amount' => $campaign->target,
+        'currency' => 'rur', // Currently, target is always in RUR  
+    );
+}
+
+/**
+ * Get campaign collected amount - template tag
+ * 
+ * @var $campaign integer Campaign ID.
+ * @return mixed Array of campaign collected amount info, or false if wrong campaign ID given.
+ */
+function leyka_get_campaign_collections($campaign) {
+
+    $campaign = (int)$campaign;
+    if($campaign <= 0)
+        return false;
+
+    $campaign = new Leyka_Campaign($campaign);
+    if( !$campaign->id )
+        return false;
+
+    return array(
+        'amount' => $campaign->get_collected_amount(),
+        'currency' => 'rur', // Currently, collections are all in RUR
+    );
+}
+
+
+/**
+ * Scale
+ **/
+
+function leyka_scale_compact($campaign) {
+    
+    if( !is_a($campaign, 'Leyka_Campaign') )
+        $campaign = new Leyka_Campaign($campaign);
+        
+    $target = intval($campaign->target);
+    $curr_label = leyka_get_currency_label('rur');
+    $collected = intval($campaign->get_collected_amount());
+   
+    if($target == 0)
+        return;
+    
+    $percentage = round(($collected/$target)*100);
+	if($percentage > 100)
+		$percentage = 100;?>
+
+<div class="d-scale-compact">
+    <div class="d-scale-scale">
+        <div class="target">
+            <div style="width:<?php echo $percentage;?>%" class="collected">&nbsp;</div>
+        </div>
+    </div>
+    <div class="d-scale-label">
+    <?php
+        $target_f = number_format($target, 0, '.', ' ');
+        $collected_f = number_format($collected, 0, '.', ' ');
+        
+        if($collected == 0){
+            printf(__('Needed %s %s', 'leyka'), '<b>'.$target_f.'</b>', $curr_label);
+        }
+        else {
+            printf(__('Collected %s of %s %s', 'leyka'), '<b>'.$collected_f.'</b>', '<b>'.$target_f.'</b>', $curr_label);
+        }
+    ?>    
+    </div>
+</div>
+<?php  
+}
+
+/** @return array An array of possible payment types with labels */
+function leyka_get_payment_types_list() {
+
+    return array(
+        'single' => __('Single', 'leyka'),
+        'rebill' => __('Recurrent (rebill)', 'leyka'),
+        'correction' => __('Correction', 'leyka')
+    );
+}
+
+function leyka_get_payment_type_label($type) {
+
+    if(empty($type))
+        return false;
+
+    $types = leyka_get_payment_types_list();
+    return in_array($type, array_keys($types)) ? $types[$type] : false;
 }

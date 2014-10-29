@@ -180,6 +180,8 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
 						error_log_yandex_phyz('Make funded' . "\n");
 						$donation->add_gateway_response($_POST);
 						$donation->status = 'funded';
+                        Leyka_Donation_Management::send_all_emails($donation->id);
+
 					} else
 						error_log_yandex_phyz('Already funded' . "\n");
 

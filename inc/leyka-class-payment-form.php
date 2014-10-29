@@ -489,7 +489,11 @@ function leyka_pf_submission_errors() {?>
     </div>
 <?php }
 
-/* Template */
+/**
+ * Template
+ **/
+
+ //@to_do: remove this filter in favour of more sophisticated
 add_filter('the_content', 'leyka_print_donation_form');
 function leyka_print_donation_form($content) {
 
@@ -500,12 +504,22 @@ function leyka_print_donation_form($content) {
 	return $content.get_leyka_payment_form_template_html();
 }
 
-function leyka_get_current_template_data() {
+function leyka_get_current_template_data($campaign = null, $template = null) {
     global $post;
 
+	if(!$campaign){
+		$campaign = $post;
+	}
+	elseif(is_int($campaign)){
+		$campaign = get_post($campaign);
+	}
+	
     // Get campaign-specific template, if needed:
-    $campaign = new Leyka_Campaign($post);
-    $template = $campaign->template; 
+	if( !$template ) {
+		$campaign = new Leyka_Campaign($campaign);
+		$template = $campaign->template; 
+	}
+    
     if( !$template || $template == 'default' )
         $template = leyka_options()->opt('donation_form_template');
 
@@ -514,39 +528,51 @@ function leyka_get_current_template_data() {
     return $template ? $template : false;
 }
 
-function get_leyka_payment_form_template_html(){
+function get_leyka_payment_form_template_html($campaign = null, $template = null){
 	global $post;
 
     $out = '';
     ob_start();
+	
+	if(!$campaign){
+		$campaign = $post;
+	}
+	elseif(is_int($campaign)){
+		$campaign = get_post($campaign);
+	}
+	
+    $campaign = new Leyka_Campaign($campaign);
 
-    $campaign = new Leyka_Campaign($post);
-    if($campaign->is_finished) {?>
+    if($campaign->is_finished) {
+?>
 
-        <div id="leyka-campaign-finished"><?php echo __('This charity campaign has been finished. All fundraising stopped.', 'leyka');?></div>
+    <div id="leyka-campaign-finished"><?php echo __('This charity campaign has been finished. All fundraising stopped.', 'leyka');?></div>
 
-    <?php } else {
+<?php } else {
 
         $pm_list = leyka_get_pm_list(true);
         $curr_pm = $pm_list ? leyka_get_pm_by_id(reset($pm_list)->full_id, true) : false;
-        if( !$curr_pm ) {?>
+		
+        if( !$curr_pm ) {
+	?>
 
-            <div class="<?php echo apply_filters('leyka_no_pm_error_classes', 'leyka-nopm-error');?>">
-                <?php echo is_user_logged_in() ?
-                    str_replace('%s', admin_url('admin.php?page=leyka_settings&stage=payment#leyka_pm_available-wrapper'), __('There are no payment methods selected to donate! Please, <a href="%s">set them up</a>.', 'leyka')) :
-                    __('Dear donor, we are very sorry, but we had not setted up the donations module yet :( Please try to donate later.', 'leyka');?>
-            </div>
+        <div class="<?php echo apply_filters('leyka_no_pm_error_classes', 'leyka-nopm-error');?>">
+            <?php echo is_user_logged_in() ?
+                   str_replace('%s', admin_url('admin.php?page=leyka_settings&stage=payment#leyka_pm_available-wrapper'), __('There are no payment methods selected to donate! Please, <a href="%s">set them up</a>.', 'leyka')) :
+                    __('Dear donor, we are very sorry, but we had not setted up the donations module yet :( Please try to donate later.', 'leyka');
+			?>
+        </div>
             
         <?php } else {
 
-            $template = leyka_get_current_template_data();
+            $template = leyka_get_current_template_data($campaign, $template);
 
             if($template && isset($template['file'])){
                 include($template['file']);
             }
         }
 
-    }
+    } //campaign finished
 
     $out = ob_get_contents();
     ob_end_clean();
@@ -556,6 +582,9 @@ function get_leyka_payment_form_template_html(){
 
 /**
  * Template tag for indirect filtering
+ * 
+ * should be probably marked as deprecated
+ * use leyka_get_payment_form instead
  **/
 function leyka_get_donation_form($echo = true) {
 	//may be  it should accept campaign ID as param

@@ -13,7 +13,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
     protected function _set_gateway_attributes() {
 
         $this->_id = 'quittance';
-        $this->_title = __('Bank orders and other quittances', 'leyka');
+        $this->_title = __('Quittances', 'leyka');
     }
 
     protected function _initialize_pm_list() {
