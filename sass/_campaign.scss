@@ -1,0 +1,249 @@
+/** Leyka campaign elements  (_campaign.scss) **/
+
+$scale-padding : 15px;
+
+
+/* embedded scale */
+div[id *= "leyka_scale_standalone"] {
+	@include smart-margin(1.5em);
+	background: $color-white;
+	
+	.leyka-scale {
+		border: 1px solid $color-regular-border;
+		padding: $scale-padding;
+	}
+	
+	.leyka-scale-scale {
+		@include scale($size-scale-height, $color-scale-bg , $color-base-green);
+	}
+	
+	.leyka-scale-label {		
+		@include scale-label;		
+	}
+	
+	.leyka-scale-button {
+		@include help-button;
+	}
+	
+	.leyka-scale.has-button {
+		.leyka-scale-button {
+			margin-top: 5px;
+		}
+	}
+	
+	.leyka-scale.has-button.wide {
+		@include leyka-scale-button-wide-modifier;		
+	}	
+} //id
+
+
+//campaign design
+@mixin campaign-card-design {
+	.lk-thumbnail {
+		@include thumbnail-reset;
+	}
+	
+	.lk-title {
+		@include title-reset;
+	}
+	
+	.lk-info {
+		padding: $scale-padding;
+		p {
+			@include description-text;
+		}
+	}
+	
+	.leyka-scale {
+		border-top: 1px solid $color-regular-border;
+		padding: $scale-padding;
+	}
+	
+	.leyka-scale-scale {
+		@include scale($size-scale-height, $color-scale-bg , $color-base-green);
+	}
+	
+	.leyka-scale-label {		
+		@include scale-label;		
+	}
+		
+	.leyka-scale-button {
+		@include help-button;		
+	}	
+	
+	.leyka-scale-button-alone {
+		@include help-button;
+		border-top: 1px solid $color-regular-border;
+		padding: $scale-padding;
+	}
+	
+	.leyka-scale.has-button {
+		.leyka-scale-button {
+			margin-top: 5px;
+		}
+	}
+	
+}
+
+
+/** Embedded campaign card **/
+div[id *= "leyka_campaign_card_standalone"] {
+	@include smart-margin(1.5em);	
+	
+	.leyka-campaign-card {
+		border: 1px solid $color-regular-border;
+		background: $color-white;
+	}
+	
+	@include campaign-card-design;
+	
+	
+	//wide
+	.leyka-campaign-card.wide {
+		position: relative;
+		@include clearfix;
+		
+		.lk-thumbnail {
+			float: left;
+			width: 40%;
+		}
+		
+		.lk-thumbnail + .lk-info {
+			margin-left: 45%;
+		}
+		
+		.leyka-scale-button-alone,
+		.leyka-scale {
+			margin-top: 0;
+			clear: both;		
+		}
+		
+		.leyka-scale.has-button {
+			@include leyka-scale-button-wide-modifier;
+		}
+		
+		.leyka-scale-button {
+			margin-top: 0;
+		}
+	}
+	
+} //id
+
+
+
+
+
+/** Campaign card widget **/
+div[id *= "leyka_campaign_card_widget"] {
+	.leyka-campaign-card {
+		border: 1px solid $color-regular-border;
+		background: $color-white;
+	}
+	
+	@include campaign-card-design;
+	.lk-title {
+		font-size: $size-font-base*1.3;
+	}
+}
+
+
+/** Campaign list **/
+div[id *= "leyka_campaign_list_widget"] {
+	border-top: 1px solid $color-regular-border;
+	border-bottom: 1px solid $color-regular-border;
+		
+	//single card
+	.lk-thumbnail {
+		@include thumbnail-reset;
+	}
+	
+	.lk-title {
+		@include title-reset;
+		font-size: $size-font-base*1.3;
+	}
+	
+	.lk-info {		
+		p {
+			@include description-text;
+		}
+	}
+		
+	.leyka-scale-scale {
+		@include scale($size-scale-height, $color-scale-bg , $color-base-green);
+	}
+	
+	.leyka-scale-label {		
+		@include scale-label;		
+	}
+		
+	.leyka-scale-button {
+		@include help-button;		
+	}	
+	
+	.leyka-scale-button-alone {
+		@include help-button;		
+	}
+	
+	.leyka-scale.has-button {
+		.leyka-scale-button {
+			margin-top: 5px;
+		}
+	}
+	
+	//list spec
+	.leyka-campaign-list-item  {
+		padding: $scale-padding 0;
+		border-top: 1px solid $color-regular-border;
+		border-bottom: 1px solid $color-regular-border;
+		margin: 5px 0;
+	}
+	
+	.leyka-scale-button-alone,
+	.leyka-scale {
+		margin-top: $scale-padding;
+		clear: both;
+	}
+	
+	//thumb
+	.leyka-campaign-list-item.has-thumb {
+		@include clearfix;
+		.lk-thumbnail {
+			width: 65px;
+			float: left;
+			margin-bottom: $scale-padding;
+		}
+		
+		.lk-title {
+			margin-left: 75px;
+		}
+		
+		.lk-info p {
+			margin-left: 75px;
+		}
+	}
+	
+	.leyka-campaign-list-item.has-thumb.narrow {
+		.lk-thumbnail {
+			margin-bottom: $scale-padding;
+		}
+		.lk-info p {
+			margin-left: 0;
+			clear: both;
+			
+		}
+	}
+}
+
+
+/** Campaign page **/
+#leyka-campaign-finished {
+	border: 2px solid $color-base-green;
+	padding: 10px 15px;
+	color: darken($color-base-text, 5%);
+	background:$color-grey-light;
+	@include border-radius(3px);
+}
+
+#leyka-payment-form {
+	
+}

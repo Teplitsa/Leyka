@@ -1,0 +1,425 @@
+/** Leyka payment form  (_form.scss) **/
+
+/* Reset form elements */
+#leyka-payment-form {
+	//reset
+	button,
+	input,
+	select,
+	textarea {
+		@include box-sizing;    
+		margin: 0;
+		vertical-align: baseline; 
+		*vertical-align: middle;
+		outline: none;
+	}
+	
+	textarea {
+		overflow: auto; 
+		vertical-align: top;
+	}
+	
+	input[type="radio"],
+	input[type="checkbox"] {
+		padding: 0;	
+		display: inline;
+		vertical-align: middle;
+	}
+
+
+	//styling
+	input[type="radio"],
+	input[type="checkbox"]  {
+		margin-right: 4px;
+	}
+	
+	input[type="text"],
+	input[type="password"],
+	input[type="email"],
+	textarea,
+	select {
+		width: 100%;
+		border: 1px solid $color-field-border;
+		background: $color-white;
+		padding: 6px 4px;
+		outline: none;
+		@include border-radius(3px);
+		font-family: $font;
+		font-size: 13px;
+		color: $color-base-text;
+		margin: 0;
+	}
+
+	select {
+		width: auto;
+		padding: 1px;
+	}
+
+	input[type="text"]:focus,
+	input[type="password"]:focus,
+	input[type="email"]:focus,
+	textarea:focus {
+		border: 1px solid $color-grey-dark;
+		color: $color-base-text;
+		@box-shadow(0, 0, 3px, rgba(0,0,0,.2), true);
+	}
+
+	input[type="submit"] {
+		font-family: $font;
+		font-size: 13px;		
+		text-transform: uppercase;
+		font-weight: normal;
+		color: $color-white;
+		background: $color-base-green;
+		border: none;
+		padding: 6px 16px;
+		@include border-radius(3px);
+		&:hover {
+			background: darken($color-base-green, 7%);
+		}
+	}
+	
+	a, a:visited {
+		color: $color-base-green;
+		&:hover {
+			color: darken($color-base-green, 7%);
+		}
+	}
+	
+	p {
+		margin: 0;
+	}
+	
+	img {
+		max-width: 100%;
+		height: auto;
+		vertical-align: middle;
+		@include border-radius(0px);
+		@include box-shadow(0px, 0px, 0px, rgba(255, 255, 255, 0));
+	}
+	
+	ul, li {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+		@include box-sizing;		
+	}
+		
+	//form itself
+	@include smart-margin(1.5em);
+	//max-width: 640px;
+	background: $color-white;
+	font: 14px/21px $font;
+	color: $color-base-text;
+	-webkit-font-smoothing: antialiased; /* Fix for webkit rendering */
+	-webkit-text-size-adjust: 100%;
+	
+	
+} // #leyka-payment-form
+
+
+
+/** Fields  **/
+#leyka-payment-form  {
+
+	.leyka-field {
+		margin: 20px 0;
+	}
+
+	.leyka-field.submit,
+	.leyka-field.agree {
+		font-size: 12px;
+		margin: 10px 0;
+	}
+
+	.leyka-field.amount {
+		text-align: right;
+		margin: 0;
+		
+		* {
+			@include box-sizing(border-box);
+		}
+		
+		label, span {
+			display: inline-block;
+			margin-right: 5px;			
+		}
+				
+		.currency {
+			font-weight: bold;
+			text-transform: uppercase;			
+			height: 36px;
+			span {
+				line-height: 36px;
+				vertical-align: middle;
+			}
+		}
+		
+		select {
+			font-size: 14px;
+			
+		}
+	}
+	
+	.amount.fixed {		
+		
+		.amount-variants-container, label {
+			line-height: 36px;
+			vertical-align: middle;
+		}
+
+		.figure {
+			font-size: 18px; 
+			margin-left: 5px;
+		}
+
+		.currency span {
+			display: inline-block;
+			border: 1px solid $color-field-border;
+			padding: 0 8px;
+			text-align: center;
+			@include border-radius(3px);			
+		}
+		
+		select {
+			vertical-align: middle;
+			border-color: $color-field-border;
+			height: 36px;
+			padding: 1px 6px;
+		}
+	}
+	
+	.amount.flexible {
+		input {
+			border: 2px solid $color-base-green;
+			height: 36px;
+			max-width: 250px;
+			font-size: 18px;
+			padding: 4px;
+			text-align: right;
+		}
+		
+		.currency {
+			vertical-align: top;
+		}
+		
+		select {
+			vertical-align: middle;
+			border-color: $color-field-border;
+			height: 36px;
+			padding: 1px 6px;
+		}
+	}
+
+	
+	
+	.leyka-field.box_deatails {
+		p {
+			@include smart-margin(1em);
+		}
+	}
+	
+	.leyka-user-data  {
+		.input {
+			width: 100%;
+			display: inline-block;
+			position: relative;
+		}
+	
+		.req:after {
+			content: '*';
+			font-size: 18px;
+			display: block;
+			position: absolute;
+			right: 7px;
+			top: 5px;
+			color: red;
+		}
+	}
+	
+	.field-comment {
+		color: $color-comment-text;
+		padding-left: 2px; 
+		font-size: 0.785714em;
+	}
+	
+	.field-error {
+		@include error-area;
+	}
+
+} //#leyka-payment-form 
+
+
+/** Errors (out of form)  **/
+.entry-content .leyka-nopm-error, //overwrite for some themes 
+.leyka-nopm-error {
+	@include error-area;
+	
+	display: block;
+	padding: 10px 20px 10px 20px;
+	font-size: 0.95em;
+}
+
+.entry-content .leyka-submit-errors, //overwrite for some themes 
+.leyka-submit-errors {
+	@include error-area;
+	
+	display: block;
+	padding: 10px 20px;
+	
+	ul {
+		margin: 5px 0;
+		li {
+			margin: 3px 0;
+		}
+	}
+}
+
+.single-leyka_campaign *[class *= 'error'] a {
+	@include link-recolor(#fc001e, #aa363a); //overwrite for some themes 
+}
+
+
+/** Templates specifics styles **/
+.entry-content #leyka-payment-form, 
+#leyka-payment-form {
+	.leyka-pm-fields {
+		position: relative;
+		background: $color-white;
+		border: 1px solid $color-regular-border;
+		border-left: none;
+		padding: 20px;
+		margin-right: -1px;
+		max-width: 370px;
+		@include box-shadow(1px, 1px,3px, rgba(240, 240, 240, 0.67));
+	}
+
+	.leyka-pm-icons {
+		overflow: hidden;
+		li {
+			float: right;
+			margin-left: 5px; 
+			width: 60px;
+			border: 1px solid $color-regular-border;
+		}
+	}
+	
+	.leyka-pm-desc {
+		padding: 20px;
+		p {
+			line-height: 21px;
+			margin-top: 10px;
+		}
+	}
+	
+} //#leyka-payment-form
+
+
+/* Toggles */
+#leyka-payment-form.leyka-tpl-toggles {
+	.leyka-user-data {
+		margin: 35px 0;
+	}
+	
+	.leyka-payment-option {
+		margin: 5px 0;
+	}
+
+	.toggle-trigger {	
+		border: 1px solid $color-regular-border;
+		background: $color-grey-light;
+		padding: 7px 15px;
+		cursor: pointer;
+		font-weight: bold;
+		text-shadow: 1px 1px 1px darken($color-grey-light, 1%);
+		&:hover {
+			color: $color-comment-text; 
+		}
+	}
+
+	.toggle-inactive {
+		cursor: default !important;
+	}
+
+	.toggle-area {
+		display: none;
+		border: 1px solid $color-regular-border;
+		border-top: none;
+		background: $color-grey-light;
+	}
+		
+	.toggled .toggle-trigger {
+		border-bottom: none;
+	}
+
+} // .leyka-tpl-toggles
+
+
+/* Radios */
+#leyka-payment-form.leyka-tpl-radio {
+
+	.leyka-pm-form {
+		border: 1px solid $color-regular-border;
+	}
+
+	.form-part {
+		@include box-sizing;
+	}
+	
+	#amount-selector {	
+		border-bottom: 1px solid $color-regular-border;
+		padding: 20px;	
+		
+	}
+	
+	#leyka-currency-data {
+		overflow: hidden;
+	}
+	
+	#pm-selector {	
+		background: $color-grey-light;
+		padding: 15px;
+	}
+	
+	#leyka-pm-data {
+		background: $color-grey-light;
+	}
+	
+	#leyka-pm-data.loading .leyka-pm-fields:after {
+		content: '';
+		display: block;
+		width: 100%;
+		height: 100%;
+		background: rgba(0,0,0, 0.1) url(../img/ajax-loader.gif) no-repeat center center;
+		position: absolute;
+		top: 0;
+		left: 0 ;
+	}
+	
+	.leyka-pm-selector {
+		label {
+			display: block;	
+			padding: 0 5px 1px;
+			border: 1px solid transparent;
+			@include border-radius(5px);
+			@include transition-all(0.3s);
+		}
+		
+		.active label {
+			border-color: $color-regular-border;
+			background: darken($color-grey-light, 7%);
+		}
+	}
+	
+	.freeze-field {
+		@inclide clearfix;
+		.amount {
+			float: right;
+		}
+	}
+	
+	
+}  // .leyka-tpl-radio
+
+
+

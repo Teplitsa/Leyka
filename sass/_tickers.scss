@@ -1,0 +1,73 @@
+/** Leyka donation lists  (_tickers.scss) **/
+
+div[id *= "leyka_donors_list"] {
+	@include smart-margin(1.5em);
+	padding: 24px;
+	font-size: 14px;
+	line-height: 1.5;
+	color: $color-base-text;	
+	border: 1px solid $color-regular-border;
+	background: $color-grey-light;
+	padding: 22px 22px 22px 0;		
+	
+	
+	.ldl-item {
+		@include smart-margin(5px);
+		padding: 15px 15px 15px 22px;
+		
+		&:nth-of-type(odd) {
+			border: 1px solid $color-regular-border;
+			border-left: 0;
+			background: $color-white;			
+		}
+		
+		.amount {
+			font-weight: bold;
+			color: darkent($color-base-text, 5%);
+			margin-bottom: 5px;
+		}
+		
+		.purpose {
+			font-size:12px;
+			margin-top: 5px;
+		}
+		
+		.meta {			
+			font-size: 12px;
+			color: lighten($color-base-text, 35%);
+			
+			span {
+				
+				
+			}
+			
+		}		
+	}
+	
+	
+}
+
+
+//wide
+div[id *= "leyka_donors_list"].wide {
+	
+	.ldl-item {
+		@include clearfix;
+		max-width: 640px;
+		
+		.amount {
+			float: left;
+			width: 30%;
+			margin-bottom: 0;
+		}
+		
+		.purpose,
+		.meta {
+			margin-left: 35%; 
+		}
+	}
+	
+}
+
+
+
