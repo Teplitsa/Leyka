@@ -475,8 +475,8 @@ $options_meta = apply_filters('leyka_core_options_meta', array(
     'donation_form_template' => array(
         'type' => 'radio', // html, rich_html, select, radio, checkbox, multi_checkbox
         'default' => 'radios',
-        'title' => __('Select a template for all your donation forms', 'leyka'),
-        'description' => __('Select one of the templates.', 'leyka'),
+        'title' => __('Select a default template for all your donation forms', 'leyka'),
+        'description' => __('Select one of the form templates.', 'leyka'),
         'required' => 1,
         'placeholder' => '', // For text fields
         'length' => '', // For text fields
@@ -494,12 +494,39 @@ $options_meta = apply_filters('leyka_core_options_meta', array(
         'list_entries' => array('flexible' => __('Flexible', 'leyka'), 'fixed' => __('Fixed', 'leyka')),
         'validation_rules' => array(), // List of regexp?..
     ),
-	'donation_form_mode' => array(
+    'donation_form_mode' => array(
         'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
         'default' => 1,
-        'title' => __('Display payment forms on campaign page automatically', 'leyka'),
-        'description' => __('When unchecked payment forms will not be displayed automatically. Use following template tag somewhere in your campaign\'s template file - ', 'leyka')."&lt;?php leyka_get_donation_form();?&gt;",
+        'title' => __('Display all payment elements on campaign page automatically', 'leyka'),
+        'description' => __('When unchecked, all payment elements like donation forms or target completion level widgets will not be displayed automatically. To output them manually, use shortcodes inside campaign\'s content or template tags in campaign\'s template file.', 'leyka'),
         'required' => 1,
+        'placeholder' => '', // For text fields
+        'length' => '', // For text fields
+        'list_entries' => array(),
+        'validation_rules' => array(), // List of regexp?..
+    ),
+    'scale_widget_place' => array(
+        'type' => 'radio', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'default' => 'top',
+        'title' => __('Select where Target completion widget will be placed at campaign pages', 'leyka'),
+        'description' => '',
+        'required' => 1,
+        'placeholder' => '', // For text fields
+        'length' => '', // For text fields
+        'list_entries' => array(
+            'top' => __('Above page content', 'leyka'),
+            'bottom' => __('Below page content', 'leyka'),
+            'both' => __('Both', 'leyka'),
+            '-' => __('Nowhere', 'leyka'),
+        ),
+        'validation_rules' => array(), // List of regexp?..
+    ),
+    'donations_history_under_forms' => array(
+        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'default' => 1,
+        'title' => __('Display a Donations history widget below donation form', 'leyka'),
+        'description' => __('Check to display a Donations history widget below donation form', 'leyka'),
+        'required' => 0,
         'placeholder' => '', // For text fields
         'length' => '', // For text fields
         'list_entries' => array(),

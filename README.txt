@@ -5,7 +5,7 @@ Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, charity, wp-donates, crowdfunding, leyka
 Requires at least: 3.6.1
 Tested up to: 4.0
-Stable tag: 2.1.4
+Stable tag: 2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,17 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 6. Пример квитанции для оплаты через банк
 
 == Changelog ==
+
+= 2.2 =
+ * New: campaigns now has optional target sum parameters.
+ * New: campaigns and donations list tables now has lots of new filters and columns. They mostly are relevant to a new target function.
+ * New: now site administrator can manually add a "correctional" donations. They can have positive or negative amount.
+ * New: donations now has explicit "date" field, so donation date is separated from it's status history.
+ * New: additions to a campaign editing screen. For ex., donations history metabox added.
+ * New: Plugin options structure were a little refactored. New "view" option tab added.
+ * New: added several shortcodes and widgets (target reaching level, campaigns list, donations list, etc.).
+ * Fix: some small bugs, known from previous release and noted by plugin users.
+ * Fix: bug with infinite creation of thank-you- and fail-pages, presumably, fixed.
 
 = 2.1.4 =
  * Fix: compatibility with Polylang plugin.

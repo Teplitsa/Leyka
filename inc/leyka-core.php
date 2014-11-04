@@ -479,7 +479,7 @@ class Leyka {
 			'show_ui' => true,
 			'show_in_nav_menus' => true,
 			'show_in_menu' => 'leyka',			
-			'show_in_admin_bar' => false,			
+			'show_in_admin_bar' => true,
 			'supports' => array('title', 'editor', 'thumbnail', 'excerpt'), // custom-fileds ?
 			'register_meta_box_cb' => array($this, 'leyka_campaign_metaboxes'),
 			'taxonomies' => array(),
@@ -610,7 +610,13 @@ class Leyka {
 			if($this->payment_form_has_errors() || !$this->_payment_url) {
 
                 $this->_add_session_errors(); // Error handling
-                wp_redirect(wp_get_referer());
+
+                $referer = wp_get_referer();
+                if(strstr($referer, '#') !== false) {
+                    $referer = reset(explode('#', $referer));
+                }
+
+                wp_redirect($referer.'#leyka-submit-errors');
 			} else {
 
                 header('HTTP/1.1 200 OK');
@@ -773,5 +779,6 @@ __('Toggles', 'leyka');
 __('Toggled options for each payment method', 'leyka');
 __('single', 'leyka');
 __('rebill', 'leyka');
+__('correction', 'leyka');
 __('The donations management system for your WP site', 'leyka');
 __('Lev Zvyagincev aka Ahaenor', 'leyka');

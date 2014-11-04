@@ -4,6 +4,7 @@ add_action('leyka_settings_beneficiary_submit', 'leyka_save_settings');
 add_action('leyka_settings_payment_submit', 'leyka_save_settings');
 add_action('leyka_settings_currency_submit', 'leyka_save_settings');
 add_action('leyka_settings_email_submit', 'leyka_save_settings');
+add_action('leyka_settings_view_submit', 'leyka_save_settings');
 add_action('leyka_settings_additional_submit', 'leyka_save_settings');
 function leyka_save_settings($tab_name) {
 
@@ -25,7 +26,7 @@ function leyka_save_settings($tab_name) {
     foreach($options_names as $name) {
 
         $option_type = leyka_options()->get_type_of($name);
-//        echo '<pre>' . print_r($name.' ('.$option_type.') - '.$_POST["leyka_$name"], TRUE) . '</pre>';
+
         if($option_type == 'checkbox') {
 
             leyka_options()->opt($name, isset($_POST["leyka_$name"]) ? 1 : 0);
@@ -41,10 +42,9 @@ function leyka_save_settings($tab_name) {
                 leyka_options()->opt($name, esc_attr(stripslashes($_POST["leyka_$name"])));
 
         } else {
-//            echo '<pre>' . print_r('Cur: '.leyka_options()->opt($name), TRUE) . '</pre>';
+
             if(isset($_POST["leyka_$name"]) && leyka_options()->opt($name) != $_POST["leyka_$name"])
                 leyka_options()->opt($name, esc_attr(stripslashes($_POST["leyka_$name"])));
-//                leyka_options()->opt($name, stripslashes($_POST["leyka_$name"]));
 
         }
     }

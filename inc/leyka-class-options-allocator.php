@@ -14,10 +14,11 @@ class Leyka_Options_Allocator {
     private function __construct() {
         $this->_tabs = apply_filters('leyka_settings_tabs', array(
             'beneficiary' => __('Beneficiary', 'leyka'),
-            'payment' => __('Payment Options', 'leyka'),
-            'currency' => __('Currency Options', 'leyka'),
-            'email' => __('Email Options', 'leyka'),
-            'additional' => __('Additional Options', 'leyka'),
+            'payment'     => __('Payment options', 'leyka'),
+            'currency'    => __('Currency', 'leyka'),
+            'email'       => __('Email', 'leyka'),
+            'view'        => __('View', 'leyka'),
+            'additional'  => __('Misc', 'leyka'),
         ));
     }
 
@@ -26,6 +27,7 @@ class Leyka_Options_Allocator {
     }
 
     public function get_tab_options($tab_name) {
+
         if(empty($this->_tabs[$tab_name]))
             return false;
 
@@ -126,16 +128,22 @@ class Leyka_Options_Allocator {
                 );
                 break;
 
-            case 'additional':
+            case 'view':
                 $options_allocated = array(
                     array('section' => array(
-                        'name' => 'template_options',
-                        'title' => __('Donation forms template', 'leyka'),
+                        'name' => 'campaign_template_options',
+                        'title' => __('Campaign page template', 'leyka'),
                         'is_default_collapsed' => false,
                         'options' => array(
-                            'donation_form_template', 'donation_sum_field_type', 'donation_form_mode'
+                            'donation_form_template', 'donation_sum_field_type', 'donation_form_mode',
+                            'scale_widget_place', 'donations_history_under_forms',
                         )
                     ),),
+                );
+                break;
+
+            case 'additional':
+                $options_allocated = array(
                     array('section' => array(
                         'name' => 'terms_of_service',
                         'title' => __('Terms of donation service options', 'leyka'),
@@ -146,7 +154,7 @@ class Leyka_Options_Allocator {
                     ),),
                     array('section' => array(
                         'name' => 'misc',
-                        'title' => __('Miscellaneous', 'leyka'),
+                        'title' => __('Additional', 'leyka'),
                         'is_default_collapsed' => true,
                         'options' => array(
                             'success_page', 'failure_page',

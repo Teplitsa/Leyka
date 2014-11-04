@@ -4,9 +4,14 @@
 
 jQuery(document).ready(function($){
 
-    $donation_date = $('#donation-date').datepicker({
-        defaultDate: $('#donation-date-field').val(),
-        dateFormat: 'yy-mm-dd'
+    var $donation_date = $('#donation-date-view').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        minDate: '-5Y',
+        maxDate: '+1Y',
+        dateFormat: 'dd.mm.yy',
+        altField: '#donation-date',
+        altFormat: 'yy-mm-dd'
     });
 
     // Validate add/edit donation form:
@@ -37,7 +42,7 @@ jQuery(document).ready(function($){
             $form.find('#donor_email-error').html('').hide();
 
         $field = $('#donation-amount');
-        if( !$field.val() || parseInt($field.val()) <= 0 || isNaN($field.val()) ) {
+        if( !$field.val() || parseInt($field.val()) == 0 || isNaN($field.val()) ) {
 
             is_valid = false;
             $form.find('#donation_amount-error').html(leyka.amount_incorrect).show();

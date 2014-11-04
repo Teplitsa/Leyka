@@ -6,7 +6,7 @@ jQuery(document).ready(function($){
 
     /** Edit campaign page - donations data table: */
     $('#donations-data-table').DataTable({
-        'lengthMenu': [[2, 10, 50, 100, 200], [2, 10, 50, 100, 200]],
+        'lengthMenu': [[25, 50, 100, 200], [25, 50, 100, 200]],
         language: {
             processing:     leyka_dt.processing,
             search:         leyka_dt.search,

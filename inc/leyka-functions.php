@@ -311,13 +311,13 @@ function leyka_scale_compact($campaign) {
 	if($percentage > 100)
 		$percentage = 100;?>
 
-<div class="d-scale-compact">
-    <div class="d-scale-scale">
+<div class="leyka-scale-compact">
+    <div class="leyka-scale-scale">
         <div class="target">
             <div style="width:<?php echo $percentage;?>%" class="collected">&nbsp;</div>
         </div>
     </div>
-    <div class="d-scale-label">
+    <div class="leyka-scale-label">
     <?php
         $target_f = number_format($target, 0, '.', ' ');
         $collected_f = number_format($collected, 0, '.', ' ');
@@ -334,12 +334,69 @@ function leyka_scale_compact($campaign) {
 <?php  
 }
 
+function leyka_scale_ultra($campaign) {
+    
+    if( !is_a($campaign, 'Leyka_Campaign') )
+        $campaign = new Leyka_Campaign($campaign);
+        
+    $target = intval($campaign->target);
+    $curr_label = leyka_get_currency_label('rur');
+    $collected = intval($campaign->get_collected_amount());
+   
+    if($target == 0)
+        return;
+    
+    $percentage = round(($collected/$target)*100);
+	if($percentage > 100)
+		$percentage = 100;?>
+
+<div class="leyka-scale-ultra">
+    <div class="leyka-scale-scale">
+        <div class="target">
+            <div style="width:<?php echo $percentage;?>%" class="collected">&nbsp;</div>
+        </div>
+    </div>
+    <div class="leyka-scale-label"><span>
+    <?php
+        $target_f = number_format($target, 0, '.', ' ');
+        $collected_f = number_format($collected, 0, '.', ' ');
+                
+        printf(_x('%s of %s %s', 'Label on ultra-compact scale', 'leyka'), '<b>'.$collected_f.'</b>', '<b>'.$target_f.'</b>', $curr_label);
+        
+    ?>    
+    </span></div>
+</div>
+<?php  
+}
+
+function leyka_fake_scale_ultra($campaign) {
+    
+    if( !is_a($campaign, 'Leyka_Campaign') )
+        $campaign = new Leyka_Campaign($campaign);
+        
+   
+    $curr_label = leyka_get_currency_label('rur');
+    $collected = intval($campaign->get_collected_amount());
+    $collected_f = number_format($collected, 0, '.', ' ');       
+?>
+
+<div class="leyka-scale-ultra-fake">
+    <div class="leyka-scale-scale">
+        <div class="target"> </div>
+    </div>
+    <div class="leyka-scale-label"><span>
+        <?php  printf(_x('Collected: %s', 'Label on ultra-compact fake scale', 'leyka'), "<b>{$collected_f}</b> {$curr_label}"); ?>    
+    </span></div>
+</div>
+<?php  
+}
+
 /** @return array An array of possible payment types with labels */
 function leyka_get_payment_types_list() {
 
     return array(
-        'single' => __('Single', 'leyka'),
-        'rebill' => __('Recurrent (rebill)', 'leyka'),
+        'single'     => __('Single', 'leyka'),
+        'rebill'     => __('Recurrent (rebill)', 'leyka'),
         'correction' => __('Correction', 'leyka')
     );
 }

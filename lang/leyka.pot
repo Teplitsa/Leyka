@@ -1,368 +1,188 @@
-# Copyright (C) 2014 Leyka
-# This file is distributed under the same license as the Leyka package.
+# Loco Gettext template
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Leyka 2.1.4\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leyka\n"
 "POT-Creation-Date: 2014-09-11 08:25:09+00:00\n"
+"POT-Revision-Date: Mon Nov 03 2014 20:52:18 GMT+0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2014-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: ..\n"
+"X-Poedit-KeywordsList: _:1;gettext:1;dgettext:2;ngettext:1,2;dngettext:2,3;"
+"__:1;_e:1;_c:1;_n:1,2;_n_noop:1,2;_nc:1,2;__ngettext:1,2;__ngettext_noop:1,2;"
+"_x:1,2c;_ex:1,2c;_nx:1,2,4c;_nx_noop:1,2,3c;_n_js:1,2;_nx_js:1,2,3c;"
+"esc_attr__:1;esc_html__:1;esc_attr_e:1;esc_html_e:1;esc_attr_x:1,2c;"
+"esc_html_x:1,2c;comments_number_link:2,3;t:1;st:1;trans:1;transChoice:1,2\n"
+"X-Generator: Loco - https://localise.biz/"
 
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:13
-msgid "Chronopay"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:26
-msgid "Chronopay shared_sec"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:27
+#: ../leyka.php:66
 msgid ""
-"Please, enter your Chronopay shared_sec value here. It can be found in your "
-"contract."
+"<div id=\"message\" class=\"error\"><p><strong>Ошибка:</strong> версия PHP ниже "
+"<strong>5.3.0</strong>. Лейка нуждается в PHP хотя бы <strong>версии 5.3."
+"0</strong>, чтобы работать корректно. Плагин будет деактивирован.<br /><br "
+"/>Пожалуйста, направьте вашему хостинг-провайдеру запрос на повышение версии "
+"PHP для этого сайта.</p> <p><strong>Error:</strong> your PHP version is "
+"below <strong>5.3.0</strong>. Leyka needs PHP <strong>v5.3.0</strong> or "
+"later to work. Plugin will be deactivated.<br /><br />Please contact your "
+"hosting provider to upgrade your PHP version.</p></div>"
 msgstr ""
 
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:29
-msgid "Ex., 4G0i8590sl5Da37I"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:37
-msgid "Chronopay IP"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:38
-msgid "IP address to check for requests."
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:40
-msgid "Ex., 159.255.220.140"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:48
-#: gateways/yandex/leyka-class-yandex-gateway.php:48
-msgid "Payments testing mode"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:49
-msgid "Check if Chronopay integration is in test mode."
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:169
-msgid ""
-"This message has been sent because a call to your ChronoPay function was "
-"made from an IP that did not match with the one in your Chronopay gateway "
-"setting. This could mean someone is trying to hack your payment website. The "
-"details of the call are below."
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:177
-msgid "Chronopay IP check failed!"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:196
-msgid ""
-"This message has been sent because a call to your ChronoPay function was "
-"made by a server that did not have the correct security key.  This could "
-"mean someone is trying to hack your payment site.  The details of the call "
-"are below."
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:202
-msgid "Chronopay security key check failed!"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:216
-msgid ""
-"This message has been sent because a call to your ChronoPay callbacks URL "
-"was made with a currency parameter (POST['currency']) that Leyka is unknown "
-"of. The details of the call are below."
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:222
-msgid "Chronopay gives unknown currency parameter!"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:346
-msgid "Recurrent donations cancelled."
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:349
-msgid "Error on the gateway side: %s"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:364
-msgid "Operatioin status"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:365
-msgid "Transaction ID"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:366
-#: gateways/yandex/leyka-class-yandex-gateway.php:224
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:220
-msgid "Full donation amount:"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:367
-#: gateways/yandex/leyka-class-yandex-gateway.php:228
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:224
-msgid "Gateway's donor ID:"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:368
-#: gateways/yandex/leyka-class-yandex-gateway.php:229
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:225
-msgid "Response date:"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:400
-#: gateways/yandex/leyka-class-yandex-gateway.php:337
-msgid "Payment with Banking Card"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:420
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:529
-#: gateways/text/leyka-class-text-gateway.php:119
-#: gateways/yandex/leyka-class-yandex-gateway.php:279
-#: gateways/yandex/leyka-class-yandex-gateway.php:358
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:272
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:351
-msgid "Donate"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:449
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:551
-msgid ""
-"Chronopay allows a simple and safe way to pay for goods and services with "
-"bank cards through internet. You will have to fill a payment form, you will "
-"be redirected to the <a href=\"http://www.chronopay.com/ru/\">Chronopay</a> "
-"secure payment page to enter your bank card data and to confirm your payment."
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:450
-msgid "Chronopay bank card payment description"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:451
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:553
-msgid ""
-"Please, enter Chronopay gateway description that will be shown to the donor "
-"when this payment method will be selected for using."
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:458
-msgid "Chronopay product_id for RUR"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:459
-msgid "Please, enter Chronopay product_id for RUR currency."
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:466
-msgid "Chronopay product_id for USD"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:467
-msgid "Please, enter Chronopay product_id for USD currency."
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:474
-msgid "Chronopay product_id for EUR"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:475
-msgid "Please, enter Chronopay product_id for EUR currency."
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:509
-msgid "Rebilling payment with Banking Card"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:552
-msgid "Chronopay bank card rebill payment description"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:560
-msgid "Chronopay product_id for rebills in RUR"
-msgstr ""
-
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:561
-msgid "Please, enter Chronopay product_id for rebills in RUR currency."
-msgstr ""
-
-#: gateways/quittance/leyka-class-quittance-gateway.php:16
-msgid "Bank orders and other quittances"
-msgstr ""
-
-#: gateways/quittance/leyka-class-quittance-gateway.php:149
-msgid "Bank order quittance"
-msgstr ""
-
-#: gateways/quittance/leyka-class-quittance-gateway.php:163
-msgid "Get bank order quittance"
-msgstr ""
-
-#: gateways/quittance/leyka-class-quittance-gateway.php:182
-msgid ""
-"Bank order payment allows you to make a donation through any bank. You can "
-"print out a bank order paper and bring it to the bank to make a payment."
-msgstr ""
-
-#: gateways/quittance/leyka-class-quittance-gateway.php:183
-msgid "Bank order payment description"
-msgstr ""
-
-#: gateways/quittance/leyka-class-quittance-gateway.php:184
-msgid ""
-"Please, enter Bank order description that will be shown to the donor when "
-"this payment method will be selected to make a donation."
-msgstr ""
-
-#: gateways/text/leyka-class-text-gateway.php:13
-msgid "Text information"
-msgstr ""
-
-#: gateways/text/leyka-class-text-gateway.php:98
-msgid "Additional ways to donate"
-msgstr ""
-
-#: gateways/text/leyka-class-text-gateway.php:136
-msgid "With this ways you can make your donation."
-msgstr ""
-
-#: gateways/text/leyka-class-text-gateway.php:137
-msgid "Comment"
-msgstr ""
-
-#: gateways/text/leyka-class-text-gateway.php:138
-msgid "Please, set a text of comment to describe an additional ways to donate."
-msgstr ""
-
-#: gateways/text/leyka-class-text-gateway.php:145
-msgid "Ways to donate"
-msgstr ""
-
-#: gateways/text/leyka-class-text-gateway.php:146
-msgid "Please, set a text to describe an additional ways to donate."
-msgstr ""
-
-#: gateways/yandex/leyka-class-yandex-gateway.php:13
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:13
 msgid "Yandex.Money"
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:26
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:26
 msgid "Yandex shopId"
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:27
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:27
 msgid ""
 "Please, enter your Yandex.Money shop ID here. It can be found in your Yandex "
 "contract."
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:29
-#: gateways/yandex/leyka-class-yandex-gateway.php:40
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:29 ../gateways/yandex/leyka-
+#: class-yandex-gateway.php:40
 msgid "Ex., 12345"
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:37
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:37
 msgid "Yandex scid"
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:38
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:38
 msgid ""
 "Please, enter your Yandex.Money shop showcase ID (SCID) here. It can be "
 "found in your Yandex contract."
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:49
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:48 ..
+#: /gateways/chronopay/leyka-class-chronopay-gateway.php:48
+msgid "Payments testing mode"
+msgstr ""
+
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:49
 msgid "Check if Yandex integration is in test mode."
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:163
-#: gateways/yandex/leyka-class-yandex-gateway.php:184
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:160 ../gateways/yandex/leyka-
+#: class-yandex-gateway.php:181
 msgid "Wrong service operation"
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:167
-#: gateways/yandex/leyka-class-yandex-gateway.php:172
-#: gateways/yandex/leyka-class-yandex-gateway.php:188
-#: gateways/yandex/leyka-class-yandex-gateway.php:193
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:167
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:178
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:191
-msgid ""
-"Sorry, there is some tech error on our side. Your payment will be cancelled."
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:164 ../gateways/yandex/leyka-
+#: class-yandex-gateway.php:169 ../gateways/yandex/leyka-class-yandex-gateway.php:
+#: 185 ../gateways/yandex/leyka-class-yandex-gateway.php:190 ..
+#: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:166 ..
+#: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:177 ..
+#: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:192
+msgid "Sorry, there is some tech error on our side. Your payment will be cancelled."
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:167
-#: gateways/yandex/leyka-class-yandex-gateway.php:188
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:164 ../gateways/yandex/leyka-
+#: class-yandex-gateway.php:185
 msgid "OrderNumber is not set"
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:172
-#: gateways/yandex/leyka-class-yandex-gateway.php:193
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:178
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:169 ../gateways/yandex/leyka-
+#: class-yandex-gateway.php:190 ../gateways/yandex_phyz/leyka-class-yandex_phyz-
+#: gateway.php:177
 msgid "Donation sum is unmatched"
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:219
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:217
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:217 ..
+#: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:218
 msgid "Donation confirmation"
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:219
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:217
 msgid "Donation approval notice"
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:222
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:217
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:220 ..
+#: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:218
 msgid "Last response operation:"
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:223
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:219
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:221 ..
+#: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:220
 msgid "Gateway invoice ID:"
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:226
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:222
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:222 ..
+#: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:221 ..
+#: /gateways/chronopay/leyka-class-chronopay-gateway.php:370
+msgid "Full donation amount:"
+msgstr ""
+
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:224 ..
+#: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:223
 msgid "Donation amount after gateway commission:"
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:260
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:226 ..
+#: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:225 ..
+#: /gateways/chronopay/leyka-class-chronopay-gateway.php:371
+msgid "Gateway's donor ID:"
+msgstr ""
+
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:227 ..
+#: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:226 ..
+#: /gateways/chronopay/leyka-class-chronopay-gateway.php:372
+msgid "Response date:"
+msgstr ""
+
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:258
 msgid "Virtual cash Yandex.money"
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:300
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:295
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:277 ../gateways/yandex/leyka-
+#: class-yandex-gateway.php:356 ../gateways/yandex_phyz/leyka-class-yandex_phyz-
+#: gateway.php:273 ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:
+#: 352 ../gateways/text/leyka-class-text-gateway.php:120 ..
+#: /gateways/chronopay/leyka-class-chronopay-gateway.php:424 ..
+#: /gateways/chronopay/leyka-class-chronopay-gateway.php:533
+msgid "Donate"
+msgstr ""
+
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:298 ..
+#: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:296
 msgid ""
 "Yandex.Money is a simple and safe payment system to pay for goods and "
 "services through internet. You will have to fill a payment form, you will be "
-"redirected to the <a href='https://money.yandex.ru/'>Yandex.Money website</"
-"a> to confirm your payment. If you haven't got a Yandex.Money account, you "
-"can create it there."
+"redirected to the <a href='https://money.yandex.ru/'>Yandex.Money "
+"website</a> to confirm your payment. If you haven't got a Yandex.Money "
+"account, you can create it there."
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:301
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:296
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:299 ..
+#: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:297
 msgid "Yandex.Money description"
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:302
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:297
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:300 ..
+#: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:298
 msgid ""
 "Please, enter Yandex.Money payment description that will be shown to the "
 "donor when this payment method will be selected for using."
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:379
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:374
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:335 ..
+#: /gateways/chronopay/leyka-class-chronopay-gateway.php:404
+msgid "Payment with Banking Card"
+msgstr ""
+
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:377 ..
+#: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:375
 msgid ""
 "Yandex.Money allows a simple and safe way to pay for goods and services with "
 "bank cards through internet. You will have to fill a payment form, you will "
@@ -370,1484 +190,2125 @@ msgid ""
 "website</a> to enter your bank card data and to confirm your payment."
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:380
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:375
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:378 ..
+#: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:376
 msgid "Yandex bank card payment description"
 msgstr ""
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:381
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:376
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:379 ..
+#: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:377
 msgid ""
 "Please, enter Yandex.Money bank cards payment description that will be shown "
 "to the donor when this payment method will be selected for using."
 msgstr ""
 
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:13
+#: ../gateways/quittance/leyka-class-quittance-gateway.php:16
+msgid "Quittances"
+msgstr ""
+
+#. Form field values
+#: ../gateways/quittance/leyka-class-quittance-gateway.php:55
+msgid "Return to the donation form"
+msgstr ""
+
+#: ../gateways/quittance/leyka-class-quittance-gateway.php:56
+msgid "Print the quittance"
+msgstr ""
+
+#: ../gateways/quittance/leyka-class-quittance-gateway.php:57
+msgid "OK, I've received the quittance"
+msgstr ""
+
+#: ../gateways/quittance/leyka-class-quittance-gateway.php:155
+msgid "Bank order quittance"
+msgstr ""
+
+#: ../gateways/quittance/leyka-class-quittance-gateway.php:169
+msgid "Get bank order quittance"
+msgstr ""
+
+#: ../gateways/quittance/leyka-class-quittance-gateway.php:188
+msgid ""
+"Bank order payment allows you to make a donation through any bank. You can "
+"print out a bank order paper and bring it to the bank to make a payment."
+msgstr ""
+
+#: ../gateways/quittance/leyka-class-quittance-gateway.php:189
+msgid "Bank order payment description"
+msgstr ""
+
+#: ../gateways/quittance/leyka-class-quittance-gateway.php:190
+msgid ""
+"Please, enter Bank order description that will be shown to the donor when "
+"this payment method will be selected to make a donation."
+msgstr ""
+
+#: ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:13
 msgid "Yandex.Money for physical persons"
 msgstr ""
 
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:26
+#: ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:26
 msgid "Yandex account ID"
 msgstr ""
 
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:27
+#: ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:27
 msgid ""
 "Please, enter your Yandex.Money account ID here. It's else known as Yandex."
 "wallet number."
 msgstr ""
 
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:29
+#: ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:29
 msgid "Ex., 4100111111111111"
 msgstr ""
 
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:37
+#: ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:37
 msgid "Yandex account API secret"
 msgstr ""
 
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:38
+#: ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:38
 msgid "Please, enter your Yandex.Money account API secret string here."
 msgstr ""
 
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:40
+#: ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:40
 msgid "Ex., QweR+1TYUIo/p2aS3DFgHJ4K5"
 msgstr ""
 
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:167
+#: ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:166
 msgid "Invalid response sha1_hash"
 msgstr ""
 
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:191
+#: ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:192
 msgid "Unregistered donation ID"
 msgstr ""
 
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:211
+#: ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:212
 msgid "Using Yandex.Money Account"
 msgstr ""
 
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:213
+#: ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:214
 msgid "Using Banking Card"
 msgstr ""
 
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:218
+#: ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:219
 msgid "Yandex payment type:"
 msgstr ""
 
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:254
+#: ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:255
 msgid "Virtual cash Yandex.Money"
 msgstr ""
 
-#: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:330
+#: ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:331
 msgid "Payment with Banking Card Yandex"
 msgstr ""
 
-#: inc/leyka-admin.php:54 inc/leyka-admin.php:56 inc/leyka-admin.php:67
-#: inc/leyka-admin.php:138
-msgid "Dashboard"
+#: ../gateways/text/leyka-class-text-gateway.php:13
+msgid "Text information"
 msgstr ""
 
-#: inc/leyka-admin.php:59 inc/leyka-admin.php:61 inc/leyka-admin.php:70
-#: inc/leyka-admin.php:81 inc/leyka-admin.php:141
-msgid "Settings"
+#: ../gateways/text/leyka-class-text-gateway.php:99
+msgid "Additional ways to donate"
 msgstr ""
 
-#: inc/leyka-admin.php:64 inc/leyka-admin.php:66 inc/leyka-core.php:371
-#: inc/leyka-core.php:373 inc/leyka-core.php:374 inc/leyka-core.php:385
-msgid "Donations"
+#: ../gateways/text/leyka-class-text-gateway.php:137
+msgid "With this ways you can make your donation."
 msgstr ""
 
-#: inc/leyka-admin.php:69 inc/leyka-core.php:432 inc/leyka-core.php:435
-#: inc/leyka-core.php:462 inc/leyka-core.php:463
-msgid "New campaign"
+#: ../gateways/text/leyka-class-text-gateway.php:138
+msgid "Comment"
 msgstr ""
 
-#: inc/leyka-admin.php:135 inc/leyka-admin.php:138 inc/leyka-admin.php:155
-msgid "Leyka Dashboard"
+#: ../gateways/text/leyka-class-text-gateway.php:139
+msgid "Please, set a text of comment to describe an additional ways to donate."
 msgstr ""
 
-#. #-#-#-#-#  leyka.pot (Leyka 2.1.4)  #-#-#-#-#
-#. Plugin Name of the plugin/theme
-#: inc/leyka-admin.php:135 inc/leyka-admin.php:314
-msgid "Leyka"
+#: ../gateways/text/leyka-class-text-gateway.php:146
+msgid "Ways to donate"
 msgstr ""
 
-#: inc/leyka-admin.php:141 inc/leyka-admin.php:346
-msgid "Leyka Settings"
+#: ../gateways/text/leyka-class-text-gateway.php:147
+msgid "Please, set a text to describe an additional ways to donate."
 msgstr ""
 
-#: inc/leyka-admin.php:160
-msgid "Leyka's settings"
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:13
+msgid "Chronopay"
 msgstr ""
 
-#: inc/leyka-admin.php:161
-msgid "Recent donations"
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:26
+msgid "Chronopay shared_sec"
 msgstr ""
 
-#: inc/leyka-admin.php:162
-msgid "Recent campaings"
-msgstr ""
-
-#: inc/leyka-admin.php:188
-msgid "Settings type"
-msgstr ""
-
-#: inc/leyka-admin.php:199
-msgid "Banking and legal information about your organisation"
-msgstr ""
-
-#: inc/leyka-admin.php:200
-msgid "Payment method' settings for all you payment forms"
-msgstr ""
-
-#: inc/leyka-admin.php:201
-msgid "Selection of currencies supported in the system"
-msgstr ""
-
-#: inc/leyka-admin.php:202
-msgid "Gratification email to donor and staff notification notices"
-msgstr ""
-
-#: inc/leyka-admin.php:203
-msgid "Various template tweaks (advanced)"
-msgstr ""
-
-#: inc/leyka-admin.php:210 inc/leyka-admin.php:294
-msgid "Edit"
-msgstr ""
-
-#: inc/leyka-admin.php:233
-msgid "Date"
-msgstr ""
-
-#: inc/leyka-admin.php:234 inc/leyka-admin.php:281
-msgid "Purpose"
-msgstr ""
-
-#: inc/leyka-admin.php:235 inc/leyka-class-donation.php:477
-msgid "Donor"
-msgstr ""
-
-#: inc/leyka-admin.php:236 inc/leyka-class-donation.php:478
-msgid "Amount"
-msgstr ""
-
-#: inc/leyka-admin.php:251 inc/leyka-class-donation.php:24
-msgid "Details"
-msgstr ""
-
-#: inc/leyka-admin.php:262
-msgid "You have not received any donations yet"
-msgstr ""
-
-#: inc/leyka-admin.php:280
-msgid "Title"
-msgstr ""
-
-#: inc/leyka-admin.php:306
-msgid "You don't have any campaign yet."
-msgstr ""
-
-#: inc/leyka-admin.php:306
-msgid "Create first one"
-msgstr ""
-
-#: inc/leyka-admin.php:315
-msgid "Leyka is a simple donations management system"
-msgstr ""
-
-#: inc/leyka-admin.php:316
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:27
 msgid ""
-"Developed by <a href=\"http://te-st.ru/\" target=\"_blank\">Teplitsa of "
-"social technologies</a>"
+"Please, enter your Chronopay shared_sec value here. It can be found in your "
+"contract."
 msgstr ""
 
-#: inc/leyka-admin.php:319
-msgid "Plugin website"
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:29
+msgid "Ex., 4G0i8590sl5Da37I"
 msgstr ""
 
-#: inc/leyka-admin.php:320
-msgid "Documentation"
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:37
+msgid "Chronopay IP"
 msgstr ""
 
-#: inc/leyka-admin.php:321
-msgid "Ask a question"
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:38
+msgid "IP address to check for requests."
 msgstr ""
 
-#: inc/leyka-admin.php:334
-msgid "You do not have permissions to access this page."
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:40
+msgid "Ex., 159.255.220.140"
 msgstr ""
 
-#: inc/leyka-admin.php:388
-msgid "Save settings"
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:49
+msgid "Check if Chronopay integration is in test mode."
 msgstr ""
 
-#: inc/leyka-class-campaign.php:46
-msgid "Campaign settings"
-msgstr ""
-
-#: inc/leyka-class-campaign.php:70
-msgid "Campaign title meant for payment system"
-msgstr ""
-
-#: inc/leyka-class-campaign.php:72
-msgid "If empty, main campaign title will be used"
-msgstr ""
-
-#: inc/leyka-class-campaign.php:79
-msgid "Template"
-msgstr ""
-
-#: inc/leyka-class-campaign.php:82
-msgid "Default template"
-msgstr ""
-
-#: inc/leyka-class-campaign.php:97
-msgid "Campaign is finished, all donations recieving stopped."
-msgstr ""
-
-#: inc/leyka-class-campaign.php:130
-msgid "Title meant for payment system"
-msgstr ""
-
-#: inc/leyka-class-donation.php:93
-msgid "Grateful email has been sent to the donor"
-msgstr ""
-
-#: inc/leyka-class-donation.php:95
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:169
 msgid ""
-"For some reason, we can't send this email right now :( Please, try again "
-"later."
+"This message has been sent because a call to your ChronoPay function was "
+"made from an IP that did not match with the one in your Chronopay gateway "
+"setting. This could mean someone is trying to hack your payment website. The "
+"details of the call are below."
 msgstr ""
 
-#: inc/leyka-class-donation.php:265
-msgid "Donation data"
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:177
+msgid "Chronopay IP check failed!"
 msgstr ""
 
-#: inc/leyka-class-donation.php:266
-msgid "Donation status"
-msgstr ""
-
-#: inc/leyka-class-donation.php:267
-msgid "Emails status"
-msgstr ""
-
-#: inc/leyka-class-donation.php:268
-msgid "Gateway responses text"
-msgstr ""
-
-#: inc/leyka-class-donation.php:269
-msgid "Cancel recurrent donations"
-msgstr ""
-
-#: inc/leyka-class-donation.php:277
-msgid "Campaign:"
-msgstr ""
-
-#: inc/leyka-class-donation.php:282
-msgid "the campaign has been removed or drafted"
-msgstr ""
-
-#: inc/leyka-class-donation.php:284
-msgid "Donation purpose:"
-msgstr ""
-
-#: inc/leyka-class-donation.php:287
-msgid "Donor:"
-msgstr ""
-
-#: inc/leyka-class-donation.php:291
-msgid "Donation amount:"
-msgstr ""
-
-#: inc/leyka-class-donation.php:295
-msgid "Payment method:"
-msgstr ""
-
-#: inc/leyka-class-donation.php:300 inc/leyka-class-donation.php:506
-#: inc/leyka-class-donation.php:806
-msgid "Unknown payment method"
-msgstr ""
-
-#: inc/leyka-class-donation.php:301 inc/leyka-class-donation.php:507
-msgid "unknown gateway"
-msgstr ""
-
-#: inc/leyka-class-donation.php:305
-msgid "Payment type:"
-msgstr ""
-
-#: inc/leyka-class-donation.php:311
-msgid "Chronopay customer ID:"
-msgstr ""
-
-#: inc/leyka-class-donation.php:320 inc/leyka-class-donation.php:480
-msgid "Status"
-msgstr ""
-
-#: inc/leyka-class-donation.php:333
-msgid "Delete Permanently"
-msgstr ""
-
-#: inc/leyka-class-donation.php:333
-msgid "Move to Trash"
-msgstr ""
-
-#: inc/leyka-class-donation.php:341
-msgid "Update status"
-msgstr ""
-
-#: inc/leyka-class-donation.php:356
-msgid "Last status change: to&nbsp;%status (at&nbsp;%date)"
-msgstr ""
-
-#: inc/leyka-class-donation.php:358
-msgid "Show/hide full status history"
-msgstr ""
-
-#: inc/leyka-class-donation.php:364
-msgid "%date - %status"
-msgstr ""
-
-#: inc/leyka-class-donation.php:368
-msgid "Last status change: none logged"
-msgstr ""
-
-#: inc/leyka-class-donation.php:382
-msgid "Grateful email to the donor has been sent (at %s)"
-msgstr ""
-
-#: inc/leyka-class-donation.php:389 inc/leyka-class-donation.php:537
-msgid "(send it now)"
-msgstr ""
-
-#: inc/leyka-class-donation.php:390
-msgid "Grateful email hasn't been sent %s"
-msgstr ""
-
-#: inc/leyka-class-donation.php:402
-msgid "Donation managers notifications has been sended (at %s)"
-msgstr ""
-
-#: inc/leyka-class-donation.php:404
-msgid "Donation managers' notification emails hasn't been sent"
-msgstr ""
-
-#: inc/leyka-class-donation.php:415
-msgid "No gateway response has been received"
-msgstr ""
-
-#: inc/leyka-class-donation.php:439
-msgid "Recurrent donations subscription was cancelled at %s"
-msgstr ""
-
-#: inc/leyka-class-donation.php:447
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:196
 msgid ""
-"You are about to cancel all future donations on this recurrent subscribe for "
-"this donor!\\n\\nDo you really want to do it?"
+"This message has been sent because a call to your ChronoPay function was "
+"made by a server that did not have the correct security key.  This could "
+"mean someone is trying to hack your payment site.  The details of the call "
+"are below."
 msgstr ""
 
-#: inc/leyka-class-donation.php:447
-msgid "Cancel recurrent donations of this donor"
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:202
+msgid "Chronopay security key check failed!"
 msgstr ""
 
-#: inc/leyka-class-donation.php:450
-msgid "Recurrent cancelling in progress..."
-msgstr ""
-
-#: inc/leyka-class-donation.php:453
-msgid "Try again"
-msgstr ""
-
-#: inc/leyka-class-donation.php:470 inc/leyka-core.php:429
-msgid "Campaign"
-msgstr ""
-
-#: inc/leyka-class-donation.php:479
-msgid "Method"
-msgstr ""
-
-#: inc/leyka-class-donation.php:481
-msgid "Grateful email"
-msgstr ""
-
-#: inc/leyka-class-donation.php:482
-msgid "Type of payment"
-msgstr ""
-
-#: inc/leyka-class-donation.php:534
-msgid "Sent at %s"
-msgstr ""
-
-#: inc/leyka-class-donation.php:538
-msgid "Not sent %s"
-msgstr ""
-
-#: inc/leyka-class-donation.php:549
-msgid "Recurrent (rebill)"
-msgstr ""
-
-#: inc/leyka-class-donation.php:549
-msgid "Single"
-msgstr ""
-
-#: inc/leyka-class-options-allocator.php:16
-msgid "Beneficiary"
-msgstr ""
-
-#: inc/leyka-class-options-allocator.php:17
-msgid "Payment Options"
-msgstr ""
-
-#: inc/leyka-class-options-allocator.php:18
-msgid "Currency Options"
-msgstr ""
-
-#: inc/leyka-class-options-allocator.php:19
-msgid "Email Options"
-msgstr ""
-
-#: inc/leyka-class-options-allocator.php:20
-msgid "Additional Options"
-msgstr ""
-
-#: inc/leyka-class-options-allocator.php:38
-msgid "Organization's official name and contacts"
-msgstr ""
-
-#: inc/leyka-class-options-allocator.php:46
-msgid "Organization's bank essentials"
-msgstr ""
-
-#: inc/leyka-class-options-allocator.php:60
-msgid "Common options"
-msgstr ""
-
-#: inc/leyka-class-options-allocator.php:72
-msgid "RUR currency options"
-msgstr ""
-
-#: inc/leyka-class-options-allocator.php:81
-msgid "USD currency options"
-msgstr ""
-
-#: inc/leyka-class-options-allocator.php:90
-msgid "EUR currency options"
-msgstr ""
-
-#: inc/leyka-class-options-allocator.php:104
-msgid "All emails options"
-msgstr ""
-
-#: inc/leyka-class-options-allocator.php:110
-msgid "Grateful emails options"
-msgstr ""
-
-#: inc/leyka-class-options-allocator.php:119
-msgid "Website personnel notifications options"
-msgstr ""
-
-#: inc/leyka-class-options-allocator.php:133
-msgid "Donation forms template"
-msgstr ""
-
-#: inc/leyka-class-options-allocator.php:141
-msgid "Terms of donation service options"
-msgstr ""
-
-#: inc/leyka-class-options-allocator.php:149
-msgid "Miscellaneous"
-msgstr ""
-
-#: inc/leyka-class-payment-form.php:53
-msgid "Please, specify your donation amount"
-msgstr ""
-
-#: inc/leyka-class-payment-form.php:86
-msgid "Specify donation amount"
-msgstr ""
-
-#: inc/leyka-class-payment-form.php:157
-msgid "Your name"
-msgstr ""
-
-#: inc/leyka-class-payment-form.php:158
-msgid "We will use this to personalize your donation experience"
-msgstr ""
-
-#: inc/leyka-class-payment-form.php:178
-msgid "Your email"
-msgstr ""
-
-#: inc/leyka-class-payment-form.php:179
-msgid "We will send the donation success notice to this address"
-msgstr ""
-
-#: inc/leyka-class-payment-form.php:470
-msgid "Proudly powered by %s"
-msgstr ""
-
-#: inc/leyka-class-payment-form.php:470
-msgctxt "Plugin name in preposotional case"
-msgid "Leyka"
-msgstr ""
-
-#: inc/leyka-class-payment-form.php:481
-msgid "Errors"
-msgstr ""
-
-#: inc/leyka-class-payment-form.php:526
-msgid "This charity campaign has been finished. All fundraising stopped."
-msgstr ""
-
-#: inc/leyka-class-payment-form.php:536
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:216
 msgid ""
-"There are no payment methods selected to donate! Please, <a href=\"%s\">set "
-"them up</a>."
+"This message has been sent because a call to your ChronoPay callbacks URL "
+"was made with a currency parameter (POST['currency']) that Leyka is unknown "
+"of. The details of the call are below."
 msgstr ""
 
-#: inc/leyka-class-payment-form.php:537
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:222
+msgid "Chronopay gives unknown currency parameter!"
+msgstr ""
+
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:350
+msgid "Recurrent donations cancelled."
+msgstr ""
+
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:353
+#, php-format
+msgid "Error on the gateway side: %s"
+msgstr ""
+
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:368
+msgid "Operatioin status"
+msgstr ""
+
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:369
+msgid "Transaction ID"
+msgstr ""
+
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:453 ..
+#: /gateways/chronopay/leyka-class-chronopay-gateway.php:555
 msgid ""
-"Dear donor, we are very sorry, but we had not setted up the donations module "
-"yet :( Please try to donate later."
+"Chronopay allows a simple and safe way to pay for goods and services with "
+"bank cards through internet. You will have to fill a payment form, you will "
+"be redirected to the <a href=\"http://www.chronopay.com/ru/\">Chronopay</a> "
+"secure payment page to enter your bank card data and to confirm your payment."
 msgstr ""
 
-#: inc/leyka-core.php:329
-msgid "Donation amount must be specified to submit the form"
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:454
+msgid "Chronopay bank card payment description"
 msgstr ""
 
-#: inc/leyka-core.php:330
-msgid "Donation amount you entered is too great (maximum %s allowed)"
-msgstr ""
-
-#: inc/leyka-core.php:331
-msgid "Donation amount you entered is too small (minimum %s allowed)"
-msgstr ""
-
-#: inc/leyka-core.php:332
-msgid "This checkbox must be checked to submit the form"
-msgstr ""
-
-#: inc/leyka-core.php:333
-msgid "The amount must be filled with non-zero, non-negative number"
-msgstr ""
-
-#: inc/leyka-core.php:334
-msgid "This field must be filled to submit the form"
-msgstr ""
-
-#: inc/leyka-core.php:335
-msgid "Email must be filled to submit the form"
-msgstr ""
-
-#: inc/leyka-core.php:336
-msgid "You have entered an invalid email"
-msgstr ""
-
-#: inc/leyka-core.php:372
-msgid "Donation"
-msgstr ""
-
-#: inc/leyka-core.php:375 inc/leyka-core.php:378
-msgid "New donation"
-msgstr ""
-
-#: inc/leyka-core.php:376
-msgid "Add new donation"
-msgstr ""
-
-#: inc/leyka-core.php:377
-msgid "Donation profile"
-msgstr ""
-
-#: inc/leyka-core.php:379
-msgid "View donation"
-msgstr ""
-
-#: inc/leyka-core.php:380
-msgid "Search donation"
-msgstr ""
-
-#: inc/leyka-core.php:381
-msgid "Donations not found"
-msgstr ""
-
-#: inc/leyka-core.php:382
-msgid "Donations not found in Trash"
-msgstr ""
-
-#: inc/leyka-core.php:408
-msgid "Donation updated. <a href=\"%s\">View it</a>"
-msgstr ""
-
-#: inc/leyka-core.php:409 inc/leyka-core.php:476
-msgid "Field updated."
-msgstr ""
-
-#: inc/leyka-core.php:410 inc/leyka-core.php:477
-msgid "Field deleted."
-msgstr ""
-
-#: inc/leyka-core.php:411
-msgid "Donation updated."
-msgstr ""
-
-#. translators: %s: date and time of the revision
-#: inc/leyka-core.php:413
-msgid "Donation restored to revision from %s"
-msgstr ""
-
-#: inc/leyka-core.php:414
-msgid "Donation published. <a href=\"%s\">View it</a>"
-msgstr ""
-
-#: inc/leyka-core.php:415
-msgid "Donation saved."
-msgstr ""
-
-#: inc/leyka-core.php:416
-msgid "Donation submitted. <a target=\"_blank\" href=\"%s\">Preview it</a>"
-msgstr ""
-
-#: inc/leyka-core.php:417
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:455 ..
+#: /gateways/chronopay/leyka-class-chronopay-gateway.php:557
 msgid ""
-"Donation scheduled for: <strong>%1$s</strong>. <a target=\"_blank\" href="
-"\"%2$s\">Preview it</a>"
+"Please, enter Chronopay gateway description that will be shown to the donor "
+"when this payment method will be selected for using."
 msgstr ""
 
-#. translators: Publish box date format, see http:php.net/date
-#: inc/leyka-core.php:419 inc/leyka-core.php:486
-msgid "M j, Y @ G:i"
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:462
+msgid "Chronopay product_id for RUR"
 msgstr ""
 
-#: inc/leyka-core.php:420
-msgid "Donation draft updated. <a target=\"_blank\" href=\"%s\">Preview it</a>"
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:463
+msgid "Please, enter Chronopay product_id for RUR currency."
 msgstr ""
 
-#: inc/leyka-core.php:428 inc/leyka-core.php:430
-msgid "Campaigns"
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:470
+msgid "Chronopay product_id for USD"
 msgstr ""
 
-#: inc/leyka-core.php:431
-msgid "All Campaigns"
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:471
+msgid "Please, enter Chronopay product_id for USD currency."
 msgstr ""
 
-#: inc/leyka-core.php:433
-msgid "Add new campaign"
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:478
+msgid "Chronopay product_id for EUR"
 msgstr ""
 
-#: inc/leyka-core.php:434
-msgid "Edit campaign"
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:479
+msgid "Please, enter Chronopay product_id for EUR currency."
 msgstr ""
 
-#: inc/leyka-core.php:436
-msgid "View campaign"
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:513
+msgid "Rebilling payment with Banking Card"
 msgstr ""
 
-#: inc/leyka-core.php:437
-msgid "Search campaigns"
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:556
+msgid "Chronopay bank card rebill payment description"
 msgstr ""
 
-#: inc/leyka-core.php:438
-msgid "Campaigns not found"
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:564
+msgid "Chronopay product_id for rebills in RUR"
 msgstr ""
 
-#: inc/leyka-core.php:439
-msgid "Campaigns not found in Trash"
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:565
+msgid "Please, enter Chronopay product_id for rebills in RUR currency."
 msgstr ""
 
-#: inc/leyka-core.php:475
-msgid "Campaign updated. <a href=\"%s\">View it</a>"
+#: ../inc/leyka-donations-export.php:21
+msgid "Export (csv)"
 msgstr ""
 
-#: inc/leyka-core.php:478
-msgid "Campaign updated."
-msgstr ""
-
-#. translators: %s: date and time of the revision
-#: inc/leyka-core.php:480
-msgid "Campaign restored to revision from %s"
-msgstr ""
-
-#: inc/leyka-core.php:481
-msgid "Campaign published. <a href=\"%s\">View it</a>"
-msgstr ""
-
-#: inc/leyka-core.php:482
-msgid "Campaign saved."
-msgstr ""
-
-#: inc/leyka-core.php:483
-msgid "Campaign submitted. <a target=\"_blank\" href=\"%s\">Preview it</a>"
-msgstr ""
-
-#: inc/leyka-core.php:484
-msgid ""
-"Campaign scheduled for: <strong>%1$s</strong>. <a target=\"_blank\" href="
-"\"%2$s\">Preview it</a>"
-msgstr ""
-
-#: inc/leyka-core.php:487
-msgid "Campaign draft updated. <a target=\"_blank\" href=\"%s\">Preview it</a>"
-msgstr ""
-
-#: inc/leyka-core.php:494 inc/leyka-functions.php:210
-msgctxt "«Submitted» donation status"
-msgid "Submitted"
-msgstr ""
-
-#: inc/leyka-core.php:499
-msgid "Submitted <span class=\"count\">(%s)</span>"
-msgid_plural "Submitted <span class=\"count\">(%s)</span>"
-msgstr[0] ""
-msgstr[1] ""
-
-#: inc/leyka-core.php:507 inc/leyka-functions.php:211
-msgctxt "«Completed» donation status"
-msgid "Funded"
-msgstr ""
-
-#: inc/leyka-core.php:512
-msgid "Funded <span class=\"count\">(%s)</span>"
-msgid_plural "Funded <span class=\"count\">(%s)</span>"
-msgstr[0] ""
-msgstr[1] ""
-
-#: inc/leyka-core.php:520 inc/leyka-functions.php:212
-msgctxt "«Refunded» donation status"
-msgid "Refunded"
-msgstr ""
-
-#: inc/leyka-core.php:525
-msgid "Refunded <span class=\"count\">(%s)</span>"
-msgid_plural "Refunded <span class=\"count\">(%s)</span>"
-msgstr[0] ""
-msgstr[1] ""
-
-#: inc/leyka-core.php:533 inc/leyka-functions.php:213
-msgctxt "«Failed» donation status"
-msgid "Failed"
-msgstr ""
-
-#: inc/leyka-core.php:538
-msgid "Failed <span class=\"count\">(%s)</span>"
-msgid_plural "Failed <span class=\"count\">(%s)</span>"
-msgstr[0] ""
-msgstr[1] ""
-
-#: inc/leyka-core.php:595
-msgid "Wrong nonce in submitted form data"
-msgstr ""
-
-#: inc/leyka-core.php:602
-msgid "Wrong gateway or/and payment method in submitted form data"
-msgstr ""
-
-#: inc/leyka-core.php:620
-msgid "Wrong payment method URL to submit the form data"
-msgstr ""
-
-#: inc/leyka-core.php:735
-msgid "Radios"
-msgstr ""
-
-#: inc/leyka-core.php:736
-msgid "Radio options for each payment method"
-msgstr ""
-
-#: inc/leyka-core.php:737
-msgid "Toggles"
-msgstr ""
-
-#: inc/leyka-core.php:738
-msgid "Toggled options for each payment method"
-msgstr ""
-
-#: inc/leyka-core.php:739
-msgid "single"
-msgstr ""
-
-#: inc/leyka-core.php:740
-msgid "rebill"
-msgstr ""
-
-#: inc/leyka-functions.php:24
+#: ../inc/leyka-functions.php:30
 msgid "Website main page"
 msgstr ""
 
-#: inc/leyka-functions.php:82
+#: ../inc/leyka-functions.php:94
 msgid "Your donation is completed!"
 msgstr ""
 
-#: inc/leyka-functions.php:83
+#: ../inc/leyka-functions.php:95
 msgid "We heartly thank you for your help!"
 msgstr ""
 
-#: inc/leyka-functions.php:131
+#: ../inc/leyka-functions.php:149
 msgid "Your donation failed"
 msgstr ""
 
-#: inc/leyka-functions.php:132
+#: ../inc/leyka-functions.php:150
 msgid ""
 "We are deeply sorry, but for some technical reason we failed to receive your "
 "donation. Your money are intact. Please try again later!"
 msgstr ""
 
-#: inc/leyka-functions.php:214
+#: ../inc/leyka-functions.php:326
+#, php-format
+msgid "Needed %s %s"
+msgstr ""
+
+#: ../inc/leyka-functions.php:329
+#, php-format
+msgid "Collected %s of %s %s"
+msgstr ""
+
+#: ../inc/leyka-functions.php:364
+#, php-format
+msgctxt "Label on ultra-compact scale"
+msgid "%s of %s %s"
+msgstr ""
+
+#: ../inc/leyka-functions.php:388
+#, php-format
+msgctxt "Label on ultra-compact fake scale"
+msgid "Collected: %s"
+msgstr ""
+
+#: ../inc/leyka-functions.php:398
+msgid "Single"
+msgstr ""
+
+#: ../inc/leyka-functions.php:399
+msgid "Recurrent (rebill)"
+msgstr ""
+
+#: ../inc/leyka-functions.php:400
+msgid "Correction"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:58 ../inc/leyka-class-campaign.php:292
+msgid "Collection state"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:60 ../inc/leyka-class-campaign.php:321
+msgid "Closed"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:61 ../inc/leyka-class-campaign.php:322
+msgid "Opened"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:68
+msgid "Target"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:112
+msgid "Campaign settings"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:118
+msgid "Donations history"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:131
+msgid "Campaign title meant for payment system"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:133
+msgid "If empty, main campaign title will be used"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:139
+msgid "Template settings"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:142
+msgid "Template for payment form"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:145
+msgid "Default template"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:163
+msgid "Ignore global template settings"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:166
+msgid "Campaign target"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:170
+#, php-format
+msgid "Target (%s)"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:178
+#, php-format
+msgid "Collected (%s)"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:198 ../inc/leyka-class-campaign.php:335
+#, php-format
+msgid "Reached at: %s"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:211
+msgid "Campaign is finished, donations collecting stopped"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:220
+msgid "Add correctional donation"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:225 ../inc/leyka-class-campaign.php:235
+msgid "ID"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:226 ../inc/leyka-class-campaign.php:236 ..
+#: /inc/leyka-class-donation.php:490 ../inc/leyka-class-donation.php:647 ..
+#: /inc/leyka-class-donation.php:906 ../inc/leyka-admin.php:220
+msgid "Amount"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:227 ../inc/leyka-class-campaign.php:237 ..
+#: /inc/leyka-class-donation.php:905 ../inc/leyka-admin.php:219
+msgid "Donor"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:228 ../inc/leyka-class-campaign.php:238 ..
+#: /inc/leyka-class-donation.php:907
+msgid "Method"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:229 ../inc/leyka-class-campaign.php:239 ..
+#: /inc/leyka-admin.php:217
+msgid "Date"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:230 ../inc/leyka-class-campaign.php:240 ..
+#: /inc/leyka-class-donation.php:747 ../inc/leyka-class-donation.php:909
+msgid "Status"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:231 ../inc/leyka-class-campaign.php:241 ..
+#: /inc/leyka-class-donation.php:718
+msgid "Payment type"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:232 ../inc/leyka-class-campaign.php:242
+msgid "Actions"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:247 ../inc/leyka-class-donation.php:527 ..
+#: /inc/leyka-class-donation.php:684 ../inc/leyka-class-donation.php:930
+msgid "Custom payment info"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:254 ../inc/leyka-class-donation.php:620 ..
+#: /inc/leyka-admin.php:234 ../inc/leyka-shortcodes.php:336
+msgid "Anonymous"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:259 ../inc/leyka-admin.php:195 ../inc/leyka-
+#: admin.php:281
+msgid "Edit"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:293
+msgid "Progress"
+msgstr ""
+
+#: ../inc/leyka-class-campaign.php:296
+msgid "Payment purpose"
+msgstr ""
+
+#: ../inc/leyka-core.php:206 ../inc/leyka-core.php:527
+msgctxt "«Submitted» donation status"
+msgid "Submitted"
+msgstr ""
+
+#: ../inc/leyka-core.php:207 ../inc/leyka-core.php:540
+msgctxt "«Completed» donation status"
+msgid "Funded"
+msgstr ""
+
+#: ../inc/leyka-core.php:208 ../inc/leyka-core.php:553
+msgctxt "«Refunded» donation status"
+msgid "Refunded"
+msgstr ""
+
+#: ../inc/leyka-core.php:209 ../inc/leyka-core.php:566
+msgctxt "«Failed» donation status"
+msgid "Failed"
+msgstr ""
+
+#: ../inc/leyka-core.php:210
 msgctxt "«Deleted» donation status"
 msgid "Trash"
 msgstr ""
 
-#: inc/leyka-options-meta.php:7
+#: ../inc/leyka-core.php:221
+msgctxt "Campaign state when target is not set"
+msgid "No target"
+msgstr ""
+
+#: ../inc/leyka-core.php:222
+msgctxt "Campaign state when target is reached"
+msgid "Reached"
+msgstr ""
+
+#: ../inc/leyka-core.php:223
+msgctxt "Campaign state when target is not reached yet"
+msgid "In progress"
+msgstr ""
+
+#: ../inc/leyka-core.php:364 ../inc/leyka-gateways-api.php:251
+msgid "Donation amount must be specified to submit the form"
+msgstr ""
+
+#: ../inc/leyka-core.php:365 ../inc/leyka-gateways-api.php:269
+#, php-format
+msgid "Donation amount you entered is too great (maximum %s allowed)"
+msgstr ""
+
+#: ../inc/leyka-core.php:366 ../inc/leyka-gateways-api.php:284
+#, php-format
+msgid "Donation amount you entered is too small (minimum %s allowed)"
+msgstr ""
+
+#: ../inc/leyka-core.php:367
+msgid "This checkbox must be checked to submit the form"
+msgstr ""
+
+#: ../inc/leyka-core.php:368 ../inc/leyka-admin.php:504
+msgid "The amount must be filled with non-zero, non-negative number"
+msgstr ""
+
+#: ../inc/leyka-core.php:369
+msgid "This field must be filled to submit the form"
+msgstr ""
+
+#: ../inc/leyka-core.php:370
+msgid "Email must be filled to submit the form"
+msgstr ""
+
+#: ../inc/leyka-core.php:371 ../inc/leyka-admin.php:503
+msgid "You have entered an invalid email"
+msgstr ""
+
+#: ../inc/leyka-core.php:404 ../inc/leyka-core.php:406 ../inc/leyka-core.php:407 .
+#: ./inc/leyka-core.php:418 ../inc/leyka-admin.php:50 ../inc/leyka-admin.php:52
+msgid "Donations"
+msgstr ""
+
+#: ../inc/leyka-core.php:405
+msgid "Donation"
+msgstr ""
+
+#: ../inc/leyka-core.php:408 ../inc/leyka-core.php:411
+msgid "New donation"
+msgstr ""
+
+#: ../inc/leyka-core.php:409
+msgid "Add new donation"
+msgstr ""
+
+#: ../inc/leyka-core.php:410
+msgid "Donation profile"
+msgstr ""
+
+#: ../inc/leyka-core.php:412
+msgid "View donation"
+msgstr ""
+
+#: ../inc/leyka-core.php:413
+msgid "Search donation"
+msgstr ""
+
+#: ../inc/leyka-core.php:414
+msgid "Donations not found"
+msgstr ""
+
+#: ../inc/leyka-core.php:415
+msgid "Donations not found in Trash"
+msgstr ""
+
+#: ../inc/leyka-core.php:441
+#, php-format
+msgid "Donation updated. <a href=\"%s\">View it</a>"
+msgstr ""
+
+#: ../inc/leyka-core.php:442 ../inc/leyka-core.php:509
+msgid "Field updated."
+msgstr ""
+
+#: ../inc/leyka-core.php:443 ../inc/leyka-core.php:510
+msgid "Field deleted."
+msgstr ""
+
+#: ../inc/leyka-core.php:444
+msgid "Donation updated."
+msgstr ""
+
+#. translators: %s: date and time of the revision
+#: ../inc/leyka-core.php:446
+#, php-format
+msgid "Donation restored to revision from %s"
+msgstr ""
+
+#: ../inc/leyka-core.php:447
+#, php-format
+msgid "Donation published. <a href=\"%s\">View it</a>"
+msgstr ""
+
+#: ../inc/leyka-core.php:448
+msgid "Donation saved."
+msgstr ""
+
+#: ../inc/leyka-core.php:449
+#, php-format
+msgid "Donation submitted. <a target=\"_blank\" href=\"%s\">Preview it</a>"
+msgstr ""
+
+#: ../inc/leyka-core.php:450
+#, php-format
+msgid ""
+"Donation scheduled for: <strong>%1$s</strong>. <a target=\"_blank\" "
+"href=\"%2$s\">Preview it</a>"
+msgstr ""
+
+#. translators: Publish box date format, see http:php.net/date
+#: ../inc/leyka-core.php:452 ../inc/leyka-core.php:519
+msgid "M j, Y @ G:i"
+msgstr ""
+
+#: ../inc/leyka-core.php:453
+#, php-format
+msgid "Donation draft updated. <a target=\"_blank\" href=\"%s\">Preview it</a>"
+msgstr ""
+
+#: ../inc/leyka-core.php:461 ../inc/leyka-core.php:463
+msgid "Campaigns"
+msgstr ""
+
+#: ../inc/leyka-core.php:462 ../inc/leyka-class-donation.php:443 ../inc/leyka-
+#: class-donation.php:568 ../inc/leyka-class-donation.php:899
+msgid "Campaign"
+msgstr ""
+
+#: ../inc/leyka-core.php:464
+msgid "All Campaigns"
+msgstr ""
+
+#: ../inc/leyka-core.php:465 ../inc/leyka-core.php:468 ../inc/leyka-core.php:495 .
+#: ./inc/leyka-core.php:496 ../inc/leyka-admin.php:55
+msgid "New campaign"
+msgstr ""
+
+#: ../inc/leyka-core.php:466
+msgid "Add new campaign"
+msgstr ""
+
+#: ../inc/leyka-core.php:467 ../inc/leyka-class-donation.php:572
+msgid "Edit campaign"
+msgstr ""
+
+#: ../inc/leyka-core.php:469
+msgid "View campaign"
+msgstr ""
+
+#: ../inc/leyka-core.php:470
+msgid "Search campaigns"
+msgstr ""
+
+#: ../inc/leyka-core.php:471
+msgid "Campaigns not found"
+msgstr ""
+
+#: ../inc/leyka-core.php:472
+msgid "Campaigns not found in Trash"
+msgstr ""
+
+#: ../inc/leyka-core.php:508
+#, php-format
+msgid "Campaign updated. <a href=\"%s\">View it</a>"
+msgstr ""
+
+#: ../inc/leyka-core.php:511
+msgid "Campaign updated."
+msgstr ""
+
+#. translators: %s: date and time of the revision
+#: ../inc/leyka-core.php:513
+#, php-format
+msgid "Campaign restored to revision from %s"
+msgstr ""
+
+#: ../inc/leyka-core.php:514
+#, php-format
+msgid "Campaign published. <a href=\"%s\">View it</a>"
+msgstr ""
+
+#: ../inc/leyka-core.php:515
+msgid "Campaign saved."
+msgstr ""
+
+#: ../inc/leyka-core.php:516
+#, php-format
+msgid "Campaign submitted. <a target=\"_blank\" href=\"%s\">Preview it</a>"
+msgstr ""
+
+#: ../inc/leyka-core.php:517
+#, php-format
+msgid ""
+"Campaign scheduled for: <strong>%1$s</strong>. <a target=\"_blank\" "
+"href=\"%2$s\">Preview it</a>"
+msgstr ""
+
+#: ../inc/leyka-core.php:520
+#, php-format
+msgid "Campaign draft updated. <a target=\"_blank\" href=\"%s\">Preview it</a>"
+msgstr ""
+
+#: ../inc/leyka-core.php:532
+#, php-format
+msgid "Submitted <span class=\"count\">(%s)</span>"
+msgid_plural "Submitted <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../inc/leyka-core.php:545
+#, php-format
+msgid "Funded <span class=\"count\">(%s)</span>"
+msgid_plural "Funded <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../inc/leyka-core.php:558
+#, php-format
+msgid "Refunded <span class=\"count\">(%s)</span>"
+msgid_plural "Refunded <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../inc/leyka-core.php:571
+#, php-format
+msgid "Failed <span class=\"count\">(%s)</span>"
+msgid_plural "Failed <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../inc/leyka-core.php:636
+msgid "Wrong nonce in submitted form data"
+msgstr ""
+
+#: ../inc/leyka-core.php:643
+msgid "Wrong gateway or/and payment method in submitted form data"
+msgstr ""
+
+#: ../inc/leyka-core.php:776
+msgid "Radios"
+msgstr ""
+
+#: ../inc/leyka-core.php:777
+msgid "Radio options for each payment method"
+msgstr ""
+
+#: ../inc/leyka-core.php:778
+msgid "Toggles"
+msgstr ""
+
+#: ../inc/leyka-core.php:779
+msgid "Toggled options for each payment method"
+msgstr ""
+
+#: ../inc/leyka-core.php:780
+msgid "single"
+msgstr ""
+
+#: ../inc/leyka-core.php:781
+msgid "rebill"
+msgstr ""
+
+#: ../inc/leyka-core.php:782
+msgid "correction"
+msgstr ""
+
+#: ../inc/leyka-core.php:783
+msgid "The donations management system for your WP site"
+msgstr ""
+
+#. Author of the plugin/theme
+#: ../inc/leyka-core.php:784
+msgid "Lev Zvyagincev aka Ahaenor"
+msgstr ""
+
+#: ../inc/leyka-options-meta.php:7
 msgid "a title of the website"
 msgstr ""
 
-#: inc/leyka-options-meta.php:8
+#: ../inc/leyka-options-meta.php:8
 msgid "an official title of the organization"
 msgstr ""
 
-#: inc/leyka-options-meta.php:9
+#: ../inc/leyka-options-meta.php:9
 msgid "an ID of current donation"
 msgstr ""
 
-#: inc/leyka-options-meta.php:10
+#: ../inc/leyka-options-meta.php:10
 msgid "a name of the donor"
 msgstr ""
 
-#: inc/leyka-options-meta.php:11
-msgid ""
-"a full sum of donation (without taking into account some payment commissions)"
+#: ../inc/leyka-options-meta.php:11
+msgid "a full sum of donation (without taking into account some payment commissions)"
 msgstr ""
 
-#: inc/leyka-options-meta.php:12
+#: ../inc/leyka-options-meta.php:12
 msgid "a name of payment method used"
 msgstr ""
 
-#: inc/leyka-options-meta.php:13
+#: ../inc/leyka-options-meta.php:13
 msgid "a campaign to which donation was made"
 msgstr ""
 
-#: inc/leyka-options-meta.php:14
+#: ../inc/leyka-options-meta.php:14
 msgid "a campaign title meant for payment system (see campaign settings)"
 msgstr ""
 
-#: inc/leyka-options-meta.php:15
+#: ../inc/leyka-options-meta.php:15
 msgid "a date of donation"
 msgstr ""
 
-#: inc/leyka-options-meta.php:20 inc/leyka-options-meta.php:21
+#: ../inc/leyka-options-meta.php:20 ../inc/leyka-options-meta.php:21
 msgid "a legal representative of the organization"
 msgstr ""
 
-#: inc/leyka-options-meta.php:22
+#: ../inc/leyka-options-meta.php:22
 msgid "a legal representative of the organization (in genitive case)"
 msgstr ""
 
-#: inc/leyka-options-meta.php:23
+#: ../inc/leyka-options-meta.php:23
 msgid "an official position of the legal representative"
 msgstr ""
 
-#: inc/leyka-options-meta.php:24
+#: ../inc/leyka-options-meta.php:24
 msgid "an official organization's address"
 msgstr ""
 
-#: inc/leyka-options-meta.php:25
+#: ../inc/leyka-options-meta.php:25
 msgid "a state registration number of your organization"
 msgstr ""
 
-#: inc/leyka-options-meta.php:26
+#: ../inc/leyka-options-meta.php:26
 msgid "an organization's statement of the account number"
 msgstr ""
 
-#: inc/leyka-options-meta.php:27
+#: ../inc/leyka-options-meta.php:27
 msgid "an organization's individual taxpayer number"
 msgstr ""
 
-#: inc/leyka-options-meta.php:28
+#: ../inc/leyka-options-meta.php:28
 msgid "an organization's bank account number"
 msgstr ""
 
-#: inc/leyka-options-meta.php:29
+#: ../inc/leyka-options-meta.php:29
 msgid "an organization's bank name"
 msgstr ""
 
-#: inc/leyka-options-meta.php:30
+#: ../inc/leyka-options-meta.php:30
 msgid "an organization's bank indentification code"
 msgstr ""
 
-#: inc/leyka-options-meta.php:31
+#: ../inc/leyka-options-meta.php:31
 msgid "an organization's bank correspondent account"
 msgstr ""
 
-#: inc/leyka-options-meta.php:38
+#: ../inc/leyka-options-meta.php:38
 msgid "NGO name"
 msgstr ""
 
-#: inc/leyka-options-meta.php:39
+#: ../inc/leyka-options-meta.php:39
 msgid "Full official name of an NGO."
 msgstr ""
 
-#: inc/leyka-options-meta.php:41
+#: ../inc/leyka-options-meta.php:41
 msgid "For ex., Eastern charity foundation"
 msgstr ""
 
-#: inc/leyka-options-meta.php:49
+#: ../inc/leyka-options-meta.php:49
 msgid "A full name of person representing the NGO"
 msgstr ""
 
-#: inc/leyka-options-meta.php:50
+#: ../inc/leyka-options-meta.php:50
 msgid "Enter a person's full name in nominative case."
 msgstr ""
 
-#: inc/leyka-options-meta.php:52 inc/leyka-options-meta.php:63
+#: ../inc/leyka-options-meta.php:52 ../inc/leyka-options-meta.php:63
 msgid "For ex., John Frederic Dow"
 msgstr ""
 
-#: inc/leyka-options-meta.php:60
+#: ../inc/leyka-options-meta.php:60
 msgid "A full name of person representing the NGO, in genitive case"
 msgstr ""
 
-#: inc/leyka-options-meta.php:61
+#: ../inc/leyka-options-meta.php:61
 msgid "Enter a person's full name in genitive case."
 msgstr ""
 
-#: inc/leyka-options-meta.php:71
+#: ../inc/leyka-options-meta.php:71
 msgid "Position of a person representing an NGO"
 msgstr ""
 
-#: inc/leyka-options-meta.php:72
+#: ../inc/leyka-options-meta.php:72
 msgid "Enter an official position of a person representing the NGO."
 msgstr ""
 
-#: inc/leyka-options-meta.php:74
+#: ../inc/leyka-options-meta.php:74
 msgid "For ex., director"
 msgstr ""
 
-#: inc/leyka-options-meta.php:82
+#: ../inc/leyka-options-meta.php:82
 msgid "NGO's official address"
 msgstr ""
 
-#: inc/leyka-options-meta.php:83
+#: ../inc/leyka-options-meta.php:83
 msgid "Enter an official address of an NGO."
 msgstr ""
 
-#: inc/leyka-options-meta.php:85
+#: ../inc/leyka-options-meta.php:85
 msgid "For ex., Malrose str., 4, Washington, DC, USA"
 msgstr ""
 
-#: inc/leyka-options-meta.php:93
+#: ../inc/leyka-options-meta.php:93
 msgid "A state registration number of an NGO"
 msgstr ""
 
-#: inc/leyka-options-meta.php:94
+#: ../inc/leyka-options-meta.php:94
 msgid "Enter a state registration number of an NGO."
 msgstr ""
 
-#: inc/leyka-options-meta.php:104
+#: ../inc/leyka-options-meta.php:104
 msgid "NGO's statement of the account number"
 msgstr ""
 
-#: inc/leyka-options-meta.php:105
+#: ../inc/leyka-options-meta.php:105
 msgid "Enter a statement of the account number of an NGO."
 msgstr ""
 
-#: inc/leyka-options-meta.php:115
+#: ../inc/leyka-options-meta.php:115
 msgid "NGO's individual number of a taxpayer"
 msgstr ""
 
-#: inc/leyka-options-meta.php:116
+#: ../inc/leyka-options-meta.php:116
 msgid "Enter an individual number of a taxpayer of an NGO."
 msgstr ""
 
-#: inc/leyka-options-meta.php:126
+#: ../inc/leyka-options-meta.php:126
 msgid "NGO's bank account number"
 msgstr ""
 
-#: inc/leyka-options-meta.php:127
+#: ../inc/leyka-options-meta.php:127
 msgid "Enter a bank account number of an NGO"
 msgstr ""
 
-#: inc/leyka-options-meta.php:137
+#: ../inc/leyka-options-meta.php:137
 msgid "NGO's bank name"
 msgstr ""
 
-#: inc/leyka-options-meta.php:138
+#: ../inc/leyka-options-meta.php:138
 msgid "Enter a full name for a bank of an NGO."
 msgstr ""
 
-#: inc/leyka-options-meta.php:140
+#: ../inc/leyka-options-meta.php:140
 msgid "For ex., First Columbia Credit Bank"
 msgstr ""
 
-#: inc/leyka-options-meta.php:148
+#: ../inc/leyka-options-meta.php:148
 msgid "NGO's bank BIC number"
 msgstr ""
 
-#: inc/leyka-options-meta.php:149
+#: ../inc/leyka-options-meta.php:149
 msgid "Enter a BIC of the NGO's bank."
 msgstr ""
 
-#: inc/leyka-options-meta.php:159
+#: ../inc/leyka-options-meta.php:159
 msgid "NGO's correspondent bank account number"
 msgstr ""
 
-#: inc/leyka-options-meta.php:160
+#: ../inc/leyka-options-meta.php:160
 msgid "Enter a correspondent account number of an NGO."
 msgstr ""
 
-#: inc/leyka-options-meta.php:169
+#: ../inc/leyka-options-meta.php:169
 msgid "Charity donation"
 msgstr ""
 
-#: inc/leyka-options-meta.php:170
+#: ../inc/leyka-options-meta.php:170
 msgid "A payment purpose text in the bank order"
 msgstr ""
 
-#: inc/leyka-options-meta.php:173
+#: ../inc/leyka-options-meta.php:173
 msgid "For ex., Charity donation"
 msgstr ""
 
-#: inc/leyka-options-meta.php:181
+#: ../inc/leyka-options-meta.php:181
 msgid "Payment methods available on the donation forms"
 msgstr ""
 
-#: inc/leyka-options-meta.php:182
+#: ../inc/leyka-options-meta.php:182
 msgid ""
 "Check out the payment methods through that you'd want to receive a donation "
 "payments."
 msgstr ""
 
-#: inc/leyka-options-meta.php:191
+#: ../inc/leyka-options-meta.php:191
 msgid "RUR"
 msgstr ""
 
-#: inc/leyka-options-meta.php:192
+#: ../inc/leyka-options-meta.php:192
 msgid "RUR label"
 msgstr ""
 
-#: inc/leyka-options-meta.php:193
+#: ../inc/leyka-options-meta.php:193
 msgid "Please set the RUR currency label here."
 msgstr ""
 
-#: inc/leyka-options-meta.php:203
+#: ../inc/leyka-options-meta.php:203
 msgid "Minimum sum available for RUR"
 msgstr ""
 
-#: inc/leyka-options-meta.php:204
+#: ../inc/leyka-options-meta.php:204
 msgid "Please set minimum sum available for RUR donations."
 msgstr ""
 
-#: inc/leyka-options-meta.php:214
+#: ../inc/leyka-options-meta.php:214
 msgid "Maximum sum available for RUR"
 msgstr ""
 
-#: inc/leyka-options-meta.php:215
+#: ../inc/leyka-options-meta.php:215
 msgid "Please set maximum sum available for RUR donations."
 msgstr ""
 
-#: inc/leyka-options-meta.php:225
+#: ../inc/leyka-options-meta.php:225
 msgid "Default amount of donation in RUR (for «flexible» donation type)"
 msgstr ""
 
-#: inc/leyka-options-meta.php:226 inc/leyka-options-meta.php:281
+#: ../inc/leyka-options-meta.php:226 ../inc/leyka-options-meta.php:281
 msgid "Please, set a default amount of donation when RUR selected as currency."
 msgstr ""
 
-#: inc/leyka-options-meta.php:236
+#: ../inc/leyka-options-meta.php:236
 msgid "Possible amounts of donation in RUR (for «fixed» donation type)"
 msgstr ""
 
-#: inc/leyka-options-meta.php:237
+#: ../inc/leyka-options-meta.php:237
 msgid ""
 "Please, set possible amounts of donation in RUR when «fixed» donation type "
 "is selected. Only an integer non-negative values, separated with commas."
 msgstr ""
 
-#: inc/leyka-options-meta.php:246
+#: ../inc/leyka-options-meta.php:246
 msgid "$"
 msgstr ""
 
-#: inc/leyka-options-meta.php:247
+#: ../inc/leyka-options-meta.php:247
 msgid "USD label"
 msgstr ""
 
-#: inc/leyka-options-meta.php:248
+#: ../inc/leyka-options-meta.php:248
 msgid "Please set the USD currency label here."
 msgstr ""
 
-#: inc/leyka-options-meta.php:258
+#: ../inc/leyka-options-meta.php:258
 msgid "Minimum sum available for USD"
 msgstr ""
 
-#: inc/leyka-options-meta.php:259
+#: ../inc/leyka-options-meta.php:259
 msgid "Please set minimum sum available for USD donations."
 msgstr ""
 
-#: inc/leyka-options-meta.php:269
+#: ../inc/leyka-options-meta.php:269
 msgid "Maximum sum available for USD"
 msgstr ""
 
-#: inc/leyka-options-meta.php:270
+#: ../inc/leyka-options-meta.php:270
 msgid "Please set maximum sum available for USD donations."
 msgstr ""
 
-#: inc/leyka-options-meta.php:280
+#: ../inc/leyka-options-meta.php:280
 msgid "Default amount of donation in USD (for «flexible» donation type)"
 msgstr ""
 
-#: inc/leyka-options-meta.php:291
+#: ../inc/leyka-options-meta.php:291
 msgid "Possible amounts of donation in USD (for «fixed» donation type)"
 msgstr ""
 
-#: inc/leyka-options-meta.php:292
+#: ../inc/leyka-options-meta.php:292
 msgid ""
 "Please, set possible amounts of donation in USD when «fixed» donation type "
 "is selected. Only an integer non-negative values, separated with commas."
 msgstr ""
 
-#: inc/leyka-options-meta.php:301
+#: ../inc/leyka-options-meta.php:301
 msgid "euro"
 msgstr ""
 
-#: inc/leyka-options-meta.php:302
+#: ../inc/leyka-options-meta.php:302
 msgid "EUR label"
 msgstr ""
 
-#: inc/leyka-options-meta.php:303
+#: ../inc/leyka-options-meta.php:303
 msgid "Please set the EUR currency label here."
 msgstr ""
 
-#: inc/leyka-options-meta.php:313
+#: ../inc/leyka-options-meta.php:313
 msgid "Minimum sum available for EUR"
 msgstr ""
 
-#: inc/leyka-options-meta.php:314
+#: ../inc/leyka-options-meta.php:314
 msgid "Please set minimum sum available for EUR donations."
 msgstr ""
 
-#: inc/leyka-options-meta.php:324
+#: ../inc/leyka-options-meta.php:324
 msgid "Maximum sum available for EUR"
 msgstr ""
 
-#: inc/leyka-options-meta.php:325
+#: ../inc/leyka-options-meta.php:325
 msgid "Please set maximum sum available for EUR donations."
 msgstr ""
 
-#: inc/leyka-options-meta.php:335
+#: ../inc/leyka-options-meta.php:335
 msgid "Default amount of donation in EUR (for «flexible» donation type)"
 msgstr ""
 
-#: inc/leyka-options-meta.php:336
+#: ../inc/leyka-options-meta.php:336
 msgid "Please, set a default amount of donation when EUR selected as currency."
 msgstr ""
 
-#: inc/leyka-options-meta.php:346
+#: ../inc/leyka-options-meta.php:346
 msgid "Possible amounts of donation in EUR (for «fixed» donation type)"
 msgstr ""
 
-#: inc/leyka-options-meta.php:347
+#: ../inc/leyka-options-meta.php:347
 msgid ""
 "Please, set possible amounts of donation in EUR when «fixed» donation type "
 "is selected. Only an integer non-negative values, separated with commas."
 msgstr ""
 
-#: inc/leyka-options-meta.php:357
+#: ../inc/leyka-options-meta.php:357
 msgid "Notification emails sender name"
 msgstr ""
 
-#: inc/leyka-options-meta.php:358
+#: ../inc/leyka-options-meta.php:358
 msgid ""
 "Enter the name that would be used in all notification emails as «from whom» "
 "field"
 msgstr ""
 
-#: inc/leyka-options-meta.php:360
+#: ../inc/leyka-options-meta.php:360
 msgid "Ex., Daisy Foundation website"
 msgstr ""
 
-#: inc/leyka-options-meta.php:368
+#: ../inc/leyka-options-meta.php:368
 msgid "Notification emails sender's email"
 msgstr ""
 
-#: inc/leyka-options-meta.php:369
+#: ../inc/leyka-options-meta.php:369
 msgid "Enter the email from which all Leyka emails would be sended"
 msgstr ""
 
-#: inc/leyka-options-meta.php:371
+#: ../inc/leyka-options-meta.php:371
 msgid "Ex., donations@daisyfoundation.org"
 msgstr ""
 
-#: inc/leyka-options-meta.php:378
+#: ../inc/leyka-options-meta.php:378
 msgid "Thank you for your donation!"
 msgstr ""
 
-#: inc/leyka-options-meta.php:379
+#: ../inc/leyka-options-meta.php:379
 msgid "A title of after-donation notice sended to a donor"
 msgstr ""
 
-#: inc/leyka-options-meta.php:380
+#: ../inc/leyka-options-meta.php:380
 msgid ""
 "Enter the title of the notification (or thankful) email with donation data "
 "that would be sended to each donor right after his donation is made."
 msgstr ""
 
-#: inc/leyka-options-meta.php:382 inc/leyka-options-meta.php:404
+#: ../inc/leyka-options-meta.php:382 ../inc/leyka-options-meta.php:404
 msgid "Ex., Daisy Foundation thanks you for your kindness"
 msgstr ""
 
-#: inc/leyka-options-meta.php:389
+#: ../inc/leyka-options-meta.php:389
 msgid ""
 "Hello, #DONOR_NAME#!<br /><br />You have chosed to make a #SUM# donation to "
 "the following charity campaign: #CAMPAIGN_NAME#, using #PAYMENT_METHOD_NAME#."
 "<br /><br />Sincerely thank you, #SITE_NAME#"
 msgstr ""
 
-#: inc/leyka-options-meta.php:390
+#: ../inc/leyka-options-meta.php:390
 msgid "A text of after-donation notice sent to a donor"
 msgstr ""
 
-#: inc/leyka-options-meta.php:391
+#: ../inc/leyka-options-meta.php:391
 msgid ""
 "Enter the text of the notification email that would be sended to each donor "
 "right after his donation is made. It may include the following special "
 "entries:"
 msgstr ""
 
-#: inc/leyka-options-meta.php:400
+#: ../inc/leyka-options-meta.php:400
 msgid "Thank you for your unwavering support!"
 msgstr ""
 
-#: inc/leyka-options-meta.php:401
+#: ../inc/leyka-options-meta.php:401
 msgid "A title of after-rebill donation notice sended to a donor"
 msgstr ""
 
-#: inc/leyka-options-meta.php:402
+#: ../inc/leyka-options-meta.php:402
 msgid ""
 "Enter the title of the notification (or thankful) email with donation data "
 "that would be sended to each donor on each rebill donation."
 msgstr ""
 
-#: inc/leyka-options-meta.php:411
+#: ../inc/leyka-options-meta.php:411
 msgid ""
 "Hello, #DONOR_NAME#!<br /><br />We just take a #SUM# as your regular "
 "donation to the following charity campaign: #CAMPAIGN_NAME#, using "
 "#PAYMENT_METHOD_NAME#.<br /><br />If you, regretfully, wish to stop the "
 "future regular donations to this campaign, please <a href=\"mailto:"
-"#SITE_EMAIL#\">write us a letter about it</a>.<br /><br />Sincerely thank "
-"you, #SITE_NAME#"
+"#SITE_EMAIL#\">write us a letter about it</a>.<br /><br />Sincerely thank you,"
+" #SITE_NAME#"
 msgstr ""
 
-#: inc/leyka-options-meta.php:412
+#: ../inc/leyka-options-meta.php:412
 msgid "A text of after-rebill donation notice sent to a donor"
 msgstr ""
 
-#: inc/leyka-options-meta.php:413
+#: ../inc/leyka-options-meta.php:413
 msgid ""
 "Enter the text of the notification email that would be sended to each donor "
 "on each rebill donation. It may include the following special entries:"
 msgstr ""
 
-#: inc/leyka-options-meta.php:423
+#: ../inc/leyka-options-meta.php:423
 msgid "Notify website personal of each incoming donation"
 msgstr ""
 
-#: inc/leyka-options-meta.php:424
+#: ../inc/leyka-options-meta.php:424
 msgid ""
 "Check to notify some website personnel (donations managers) of each incoming "
 "donation."
 msgstr ""
 
-#: inc/leyka-options-meta.php:434
+#: ../inc/leyka-options-meta.php:434
 msgid "Notify website personal of each incoming recurrent donation"
 msgstr ""
 
-#: inc/leyka-options-meta.php:435
+#: ../inc/leyka-options-meta.php:435
 msgid ""
 "Check to notify some website personnel (donations managers) of each incoming "
 "recurrent donation."
 msgstr ""
 
-#: inc/leyka-options-meta.php:445
+#: ../inc/leyka-options-meta.php:445
 msgid "A comma-separated emails to notify of incoming donation"
 msgstr ""
 
-#: inc/leyka-options-meta.php:448
+#: ../inc/leyka-options-meta.php:448
 msgid "For ex., admin@daisyfoundation.org,yourmail@domain.com"
 msgstr ""
 
-#: inc/leyka-options-meta.php:455
+#: ../inc/leyka-options-meta.php:455
 msgid "New donation incoming"
 msgstr ""
 
-#: inc/leyka-options-meta.php:456
+#: ../inc/leyka-options-meta.php:456
 msgid "A title of new donation notification email"
 msgstr ""
 
-#: inc/leyka-options-meta.php:459
+#: ../inc/leyka-options-meta.php:459
 msgid "For ex., new donation incoming"
 msgstr ""
 
-#: inc/leyka-options-meta.php:466
+#: ../inc/leyka-options-meta.php:466
 msgid ""
-"Hello!<br /><br />A new donation has been made on a #SITE_NAME#:<br /"
-"><ul><li>Campaign: #CAMPAIGN_NAME#.</li><li>Amount: #SUM#.</li><li>Payment "
+"Hello!<br /><br />A new donation has been made on a #SITE_NAME#:<br "
+"/><ul><li>Campaign: #CAMPAIGN_NAME#.</li><li>Amount: #SUM#.</li><li>Payment "
 "method: #PAYMENT_METHOD_NAME#.</li><li>Date: #DATE#</li></ul>"
 msgstr ""
 
-#: inc/leyka-options-meta.php:467
+#: ../inc/leyka-options-meta.php:467
 msgid "A text of after-donation notification sended to a website personnel"
 msgstr ""
 
-#: inc/leyka-options-meta.php:468
+#: ../inc/leyka-options-meta.php:468
 msgid ""
 "Enter the text of the notification email that would be sended to each email "
 "stated before right after donation is made. It may include the following "
 "special entries:"
 msgstr ""
 
-#: inc/leyka-options-meta.php:478
-msgid "Select a template for all your donation forms"
+#: ../inc/leyka-options-meta.php:478
+msgid "Select a default template for all your donation forms"
 msgstr ""
 
-#: inc/leyka-options-meta.php:479
-msgid "Select one of the templates."
+#: ../inc/leyka-options-meta.php:479
+msgid "Select one of the form templates."
 msgstr ""
 
-#: inc/leyka-options-meta.php:489
+#: ../inc/leyka-options-meta.php:489
 msgid "Select a type of the sum field for all your donation forms"
 msgstr ""
 
-#: inc/leyka-options-meta.php:490
+#: ../inc/leyka-options-meta.php:490
 msgid ""
 "Select a type of the sum field. «Fixed» means a set of stable sum variants, "
 "while «flexible» is a free input field."
 msgstr ""
 
-#: inc/leyka-options-meta.php:494
+#: ../inc/leyka-options-meta.php:494
 msgid "Flexible"
 msgstr ""
 
-#: inc/leyka-options-meta.php:494
+#: ../inc/leyka-options-meta.php:494
 msgid "Fixed"
 msgstr ""
 
-#: inc/leyka-options-meta.php:500
-msgid "Display payment forms on campaign page automatically"
+#: ../inc/leyka-options-meta.php:500
+msgid "Display all payment elements on campaign page automatically"
 msgstr ""
 
-#: inc/leyka-options-meta.php:501
+#: ../inc/leyka-options-meta.php:501
 msgid ""
-"When unchecked payment forms will not be displayed automatically. Use "
-"following template tag somewhere in your campaign's template file - "
+"When unchecked, all payment elements like donation forms or target "
+"completion level widgets will not be displayed automatically. To output them "
+"manually, use shortcodes inside campaign's content or template tags in "
+"campaign's template file."
 msgstr ""
 
-#: inc/leyka-options-meta.php:511
+#: ../inc/leyka-options-meta.php:511
+msgid "Select where Target completion widget will be placed at campaign pages"
+msgstr ""
+
+#: ../inc/leyka-options-meta.php:517
+msgid "Above page content"
+msgstr ""
+
+#: ../inc/leyka-options-meta.php:518
+msgid "Below page content"
+msgstr ""
+
+#: ../inc/leyka-options-meta.php:519
+msgid "Both"
+msgstr ""
+
+#: ../inc/leyka-options-meta.php:520
+msgid "Nowhere"
+msgstr ""
+
+#: ../inc/leyka-options-meta.php:527
+msgid "Display a Donations history widget below donation form"
+msgstr ""
+
+#: ../inc/leyka-options-meta.php:528
+msgid "Check to display a Donations history widget below donation form"
+msgstr ""
+
+#: ../inc/leyka-options-meta.php:538
 msgid "To donate, donor must agree to the Terms of service"
 msgstr ""
 
-#: inc/leyka-options-meta.php:512
+#: ../inc/leyka-options-meta.php:539
 msgid "Check if you must have donor to accept some terms before donating."
 msgstr ""
 
-#: inc/leyka-options-meta.php:521
+#: ../inc/leyka-options-meta.php:548
 msgid "I agree to the Terms of this donation service"
 msgstr ""
 
-#: inc/leyka-options-meta.php:522
+#: ../inc/leyka-options-meta.php:549
 msgid "Label of checkbox of Terms acception"
 msgstr ""
 
-#: inc/leyka-options-meta.php:523
-msgid ""
-"Enter the text to show next to the checkbox to accept the Terms of service."
+#: ../inc/leyka-options-meta.php:550
+msgid "Enter the text to show next to the checkbox to accept the Terms of service."
 msgstr ""
 
-#: inc/leyka-options-meta.php:525
+#: ../inc/leyka-options-meta.php:552
 msgid "For ex., I agree to the Terms of this donation service"
 msgstr ""
 
-#: inc/leyka-options-meta.php:532
+#: ../inc/leyka-options-meta.php:559
 msgid "Terms of donation service text. Use <br /> for line-breaks, please."
 msgstr ""
 
-#: inc/leyka-options-meta.php:533
+#: ../inc/leyka-options-meta.php:560
 msgid "A text of the Terms of donation service"
 msgstr ""
 
-#: inc/leyka-options-meta.php:534
+#: ../inc/leyka-options-meta.php:561
 msgid ""
 "Enter a text that will be shown to the donors to read the Terms of service. "
 "It have to include the following special entries:"
 msgstr ""
 
-#: inc/leyka-options-meta.php:556
+#: ../inc/leyka-options-meta.php:583
 msgid "Page of successful donation"
 msgstr ""
 
-#: inc/leyka-options-meta.php:557
+#: ../inc/leyka-options-meta.php:584
 msgid "Select a page for donor to redirect to when payment is successful."
 msgstr ""
 
-#: inc/leyka-options-meta.php:567
+#: ../inc/leyka-options-meta.php:594
 msgid "Page of failed donation"
 msgstr ""
 
-#: inc/leyka-options-meta.php:568
+#: ../inc/leyka-options-meta.php:595
 msgid ""
 "Select a page for donor to redirect to when payment is failed for some "
 "reason."
 msgstr ""
 
-#: leyka.php:66
+#: ../inc/leyka-class-donation.php:21 ../inc/leyka-admin.php:238
+msgid "Details"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:110
+msgid "Select a payment type"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:119
+msgid "Select a gateway or a payment method"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:153 ../inc/leyka-class-donation.php:450 ..
+#: /inc/leyka-class-donation.php:598
+msgid "Please, enter campaign title"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:234
+msgid "Grateful email has been sent to the donor"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:236
 msgid ""
-"<div id=\"message\" class=\"error\"><p><strong>Ошибка:</strong> версия PHP "
-"ниже <strong>5.3.0</strong>. Лейка нуждается в PHP хотя бы <strong>версии "
-"5.3.0</strong>, чтобы работать корректно. Плагин будет деактивирован.<br /"
-"><br />Пожалуйста, направьте вашему хостинг-провайдеру запрос на повышение "
-"версии PHP для этого сайта.</p> <p><strong>Error:</strong> your PHP version "
-"is below <strong>5.3.0</strong>. Leyka needs PHP <strong>v5.3.0</strong> or "
-"later to work. Plugin will be deactivated.<br /><br />Please contact your "
-"hosting provider to upgrade your PHP version.</p></div>"
+"For some reason, we can't send this email right now :( Please, try again "
+"later."
 msgstr ""
 
-#: templates/leyka-gateway-redirect-page.php:4
-msgid "Redirecting to the gateway payment page"
+#: ../inc/leyka-class-donation.php:421
+msgid "New donation data"
 msgstr ""
 
-#: templates/leyka-gateway-redirect-page.php:48
+#: ../inc/leyka-class-donation.php:422 ../inc/leyka-class-donation.php:427
+msgid "Donation status"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:426
+msgid "Donation data"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:428
+msgid "Emails status"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:429
+msgid "Gateway responses text"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:440 ../inc/leyka-class-donation.php:565
+msgid "Campaign Data"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:459 ../inc/leyka-class-donation.php:584
+msgid "Donation purpose"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:468 ../inc/leyka-class-donation.php:609
+msgid "Donor Data"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:471 ../inc/leyka-class-donation.php:612
+msgid "Name"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:473 ../inc/leyka-class-donation.php:617
+msgid "Enter donor's name, or leave it empty for anonymous donation"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:478 ../inc/leyka-class-donation.php:627 ..
+#: /inc/leyka-class-options-allocator.php:19
+msgid "Email"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:480 ../inc/leyka-class-donation.php:631
+msgid "Enter donor's email"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:487 ../inc/leyka-class-donation.php:644
+msgid "Donation Data"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:493 ../inc/leyka-class-donation.php:651
+msgid "Enter a donation's amount"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:494
+msgid "Amount could be negative for correctional entry."
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:506 ../inc/leyka-class-donation.php:663
+msgid "Payment method"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:510 ../inc/leyka-class-donation.php:668
+msgid "Select a payment method"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:530 ../inc/leyka-class-donation.php:687
+msgid "Enter some info about source of a new donation"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:540 ../inc/leyka-class-donation.php:705
+msgid "Chronopay customer ID"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:542 ../inc/leyka-class-donation.php:709
+msgid "Enter Chronopay Customer ID"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:547 ../inc/leyka-class-donation.php:725 ..
+#: /inc/leyka-class-donation.php:908
+msgid "Donation date"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:572
+msgid "Preview campaign"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:576
+msgid "the campaign has been removed or drafted"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:591
+msgid "Connect this donation to another campaign"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:602
+msgid "Cancel"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:695 ../inc/leyka-class-donation.php:1290
+msgid "Unknown payment method"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:696
+msgid "unknown gateway"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:760
+msgid "Delete Permanently"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:760
+msgid "Move to Trash"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:769 ../inc/leyka-admin.php:501
+msgid "Add the donation"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:769
+msgid "Update"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:784
+#, php-format
+msgid "Last status change: to&nbsp;%status (at&nbsp;%date)"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:786
+msgid "Show/hide full status history"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:792
+#, php-format
+msgid "%date - %status"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:796
+msgid "Last status change: none logged"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:810
+#, php-format
+msgid "Grateful email to the donor has been sent (at %s)"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:819
+#, php-format
+msgid "Grateful email hasn't been sent %s"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:820 ../inc/leyka-class-donation.php:952
+msgid "(send it now)"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:831
+#, php-format
+msgid "Donation managers notifications has been sended (at %s)"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:833
+msgid "Donation managers' notification emails hasn't been sent"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:844
+msgid "No gateway response has been received"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:868
+#, php-format
+msgid "Recurrent donations subscription was cancelled at %s"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:876
 msgid ""
-"<h3>Thank you!</h3><p>In a few seconds you will be redirected to the payment "
-"system website, where you can complete your donation.</p>"
+"You are about to cancel all future donations on this recurrent subscribe for "
+"this donor!\\n\\nDo you really want to do it?"
 msgstr ""
 
-#: templates/leyka-gateway-redirect-page.php:59
+#: ../inc/leyka-class-donation.php:876
+msgid "Cancel recurrent donations of this donor"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:879
+msgid "Recurrent cancelling in progress..."
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:882
+msgid "Try again"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:910
+msgid "Letter"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:945
+#, php-format
+msgid "Sent at %s"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:951
+#, php-format
+msgid "Not sent %s"
+msgstr ""
+
+#: ../inc/leyka-class-donation.php:1293
+msgid "Unknown gateway"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:24
+msgid "Campaign informer with configurable elements"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:26
+msgid "Leyka: Campaign Card"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:111 ../inc/leyka-widgets.php:277 ../inc/leyka-widgets.
+#: php:409 ../inc/leyka-admin.php:267
+msgid "Title"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:116 ../inc/leyka-widgets.php:423
+msgid "Campaign ID"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:118
 msgid ""
-"If you are not redirected to the payment page automatically, please press "
-"this button"
+"Copy-paste ID of the campaign to output, state \"0\" to detect it from context "
+"or leave the field blank to display the most recent campaign"
 msgstr ""
 
-#: templates/leyka-gateway-redirect-page.php:61
-msgid "Proceed to the payment approval page"
+#: ../inc/leyka-widgets.php:124 ../inc/leyka-widgets.php:293
+msgid "Show title"
 msgstr ""
 
-#: templates/leyka-template-radios.php:19
-#: templates/leyka-template-toggles.php:12
+#: ../inc/leyka-widgets.php:129 ../inc/leyka-widgets.php:297
+msgid "Show thumbnail"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:134 ../inc/leyka-widgets.php:301
+msgid "Show excerpt"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:139 ../inc/leyka-widgets.php:305
+msgid "Show scale"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:144 ../inc/leyka-widgets.php:309
+msgid "Show «support» button"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:161
+msgid "List of recent campaigns with configurable attributes"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:163
+msgid "Leyka: Campaigns List"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:282
+msgid "Number"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:313
+msgid "Include campaigns"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:315 ../inc/leyka-widgets.php:321
+msgid "Comma-separated list of IDs"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:319
+msgid "Exclude campaigns"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:335
+msgid "Recent donations list optionally filtered by campaign"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:337
+msgid "Leyka: Donations List"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:414
+msgid "Donations number"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:425
+msgid ""
+"Copy-paste ID of the campaign to filter donations in the list, state \"0\" to "
+"detect it from context or leave the field blank to display recent entries"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:428
+msgid "Donation item settings"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:433
+msgid "Show donation purpose"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:438
+msgid "Show donor's name"
+msgstr ""
+
+#: ../inc/leyka-widgets.php:443
+msgid "Show donation date"
+msgstr ""
+
+#: ../inc/leyka-admin.php:40 ../inc/leyka-admin.php:42 ../inc/leyka-admin.php:53 .
+#: ./inc/leyka-admin.php:122
+msgid "Dashboard"
+msgstr ""
+
+#: ../inc/leyka-admin.php:45 ../inc/leyka-admin.php:47 ../inc/leyka-admin.php:56 .
+#: ./inc/leyka-admin.php:65 ../inc/leyka-admin.php:125
+msgid "Settings"
+msgstr ""
+
+#: ../inc/leyka-admin.php:119 ../inc/leyka-admin.php:122 ../inc/leyka-admin.php:139
+msgid "Leyka Dashboard"
+msgstr ""
+
+#. #-#-#-#-#  leyka.pot (Leyka 2.1.4)  #-#-#-#-#
+#. Plugin Name of the plugin/theme
+#: ../inc/leyka-admin.php:119 ../inc/leyka-admin.php:301
+msgid "Leyka"
+msgstr ""
+
+#: ../inc/leyka-admin.php:125 ../inc/leyka-admin.php:333
+msgid "Leyka Settings"
+msgstr ""
+
+#: ../inc/leyka-admin.php:144
+msgid "Leyka's settings"
+msgstr ""
+
+#: ../inc/leyka-admin.php:145
+msgid "Recent donations"
+msgstr ""
+
+#: ../inc/leyka-admin.php:146
+msgid "Recent campaings"
+msgstr ""
+
+#: ../inc/leyka-admin.php:172
+msgid "Settings type"
+msgstr ""
+
+#: ../inc/leyka-admin.php:183
+msgid "Banking and legal information about your organisation"
+msgstr ""
+
+#: ../inc/leyka-admin.php:184
+msgid "Payment method' settings for all you payment forms"
+msgstr ""
+
+#: ../inc/leyka-admin.php:185
+msgid "Selection of currencies supported in the system"
+msgstr ""
+
+#: ../inc/leyka-admin.php:186
+msgid "Gratification email to donor and staff notification notices"
+msgstr ""
+
+#: ../inc/leyka-admin.php:187
+msgid "Settings for frontend elements, like donation form templates"
+msgstr ""
+
+#: ../inc/leyka-admin.php:188
+msgid "Various template tweaks (advanced)"
+msgstr ""
+
+#: ../inc/leyka-admin.php:218 ../inc/leyka-admin.php:268
+msgid "Purpose"
+msgstr ""
+
+#: ../inc/leyka-admin.php:249
+msgid "You have not received any donations yet"
+msgstr ""
+
+#: ../inc/leyka-admin.php:293
+msgid "You don't have any campaign yet."
+msgstr ""
+
+#: ../inc/leyka-admin.php:293
+msgid "Create first one"
+msgstr ""
+
+#: ../inc/leyka-admin.php:302
+msgid "Leyka is a simple donations management system"
+msgstr ""
+
+#: ../inc/leyka-admin.php:303
+msgid ""
+"Developed by <a href=\"http://te-st.ru/\" target=\"_blank\">Teplitsa of social "
+"technologies</a>"
+msgstr ""
+
+#: ../inc/leyka-admin.php:306
+msgid "Plugin website"
+msgstr ""
+
+#: ../inc/leyka-admin.php:307
+msgid "Documentation"
+msgstr ""
+
+#: ../inc/leyka-admin.php:308
+msgid "Ask a question"
+msgstr ""
+
+#: ../inc/leyka-admin.php:321
+msgid "You do not have permissions to access this page."
+msgstr ""
+
+#: ../inc/leyka-admin.php:375
+msgid "Save settings"
+msgstr ""
+
+#: ../inc/leyka-admin.php:457
+msgid "Processing..."
+msgstr ""
+
+#: ../inc/leyka-admin.php:458
+msgid "Search:"
+msgstr ""
+
+#: ../inc/leyka-admin.php:459
+msgid "Show _MENU_ entries"
+msgstr ""
+
+#: ../inc/leyka-admin.php:460
+msgid "Showing _START_ to _END_ of _TOTAL_ entries"
+msgstr ""
+
+#: ../inc/leyka-admin.php:461
+msgid "Showing 0 to 0 of 0 entries"
+msgstr ""
+
+#: ../inc/leyka-admin.php:462
+msgid "(filtered from _MAX_ total entries)"
+msgstr ""
+
+#: ../inc/leyka-admin.php:463
+msgid ","
+msgstr ""
+
+#: ../inc/leyka-admin.php:464
+msgid "Loading..."
+msgstr ""
+
+#: ../inc/leyka-admin.php:466
+msgid "No matching records found"
+msgstr ""
+
+#: ../inc/leyka-admin.php:467
+msgid "No data available in table"
+msgstr ""
+
+#: ../inc/leyka-admin.php:468
+msgid "First"
+msgstr ""
+
+#: ../inc/leyka-admin.php:469
+msgid "Previous"
+msgstr ""
+
+#: ../inc/leyka-admin.php:470
+msgid "Next"
+msgstr ""
+
+#: ../inc/leyka-admin.php:471
+msgid "Last"
+msgstr ""
+
+#: ../inc/leyka-admin.php:472
+msgid ": activate to sort column ascending"
+msgstr ""
+
+#: ../inc/leyka-admin.php:473
+msgid ": activate to sort column descending"
+msgstr ""
+
+#: ../inc/leyka-admin.php:502
+msgid "Selecting a campaign is required"
+msgstr ""
+
+#: ../inc/leyka-admin.php:505
+msgid ""
+"Please, set one of a payment methods or just type a few words to describe a "
+"source for this donation"
+msgstr ""
+
+#: ../inc/leyka-class-payment-form.php:53
+msgid "Please, specify your donation amount"
+msgstr ""
+
+#: ../inc/leyka-class-payment-form.php:86
+msgid "Specify donation amount"
+msgstr ""
+
+#: ../inc/leyka-class-payment-form.php:158
+msgid "Your name"
+msgstr ""
+
+#: ../inc/leyka-class-payment-form.php:159
+msgid "We will use this to personalize your donation experience"
+msgstr ""
+
+#: ../inc/leyka-class-payment-form.php:179
+msgid "Your email"
+msgstr ""
+
+#: ../inc/leyka-class-payment-form.php:180
+msgid "We will send the donation success notice to this address"
+msgstr ""
+
+#: ../inc/leyka-class-payment-form.php:471
+#, php-format
+msgid "Proudly powered by %s"
+msgstr ""
+
+#: ../inc/leyka-class-payment-form.php:471
+msgctxt "Plugin name in preposotional case"
+msgid "Leyka"
+msgstr ""
+
+#: ../inc/leyka-class-payment-form.php:482
+msgid "Errors"
+msgstr ""
+
+#: ../inc/leyka-class-payment-form.php:532
+msgid "Our sincere thanks"
+msgstr ""
+
+#: ../inc/leyka-class-payment-form.php:580
+msgid "The fundrising campaign has been finished. Thank you for your support!"
+msgstr ""
+
+#: ../inc/leyka-class-payment-form.php:591
+#, php-format
+msgid ""
+"There are no payment methods selected to donate! Please, <a href=\"%s\">set "
+"them up</a>."
+msgstr ""
+
+#: ../inc/leyka-class-payment-form.php:592
+msgid ""
+"Dear donor, we are very sorry, but we had not setted up the donations module "
+"yet :( Please try to donate later."
+msgstr ""
+
+#: ../inc/leyka-class-options-allocator.php:16
+msgid "Beneficiary"
+msgstr ""
+
+#: ../inc/leyka-class-options-allocator.php:17
+msgid "Payment options"
+msgstr ""
+
+#: ../inc/leyka-class-options-allocator.php:18
+msgid "Currency"
+msgstr ""
+
+#: ../inc/leyka-class-options-allocator.php:20
+msgid "View"
+msgstr ""
+
+#: ../inc/leyka-class-options-allocator.php:21
+msgid "Misc"
+msgstr ""
+
+#: ../inc/leyka-class-options-allocator.php:40
+msgid "Organization's official name and contacts"
+msgstr ""
+
+#: ../inc/leyka-class-options-allocator.php:48
+msgid "Organization's bank essentials"
+msgstr ""
+
+#: ../inc/leyka-class-options-allocator.php:62
+msgid "Common options"
+msgstr ""
+
+#: ../inc/leyka-class-options-allocator.php:74
+msgid "RUR currency options"
+msgstr ""
+
+#: ../inc/leyka-class-options-allocator.php:83
+msgid "USD currency options"
+msgstr ""
+
+#: ../inc/leyka-class-options-allocator.php:92
+msgid "EUR currency options"
+msgstr ""
+
+#: ../inc/leyka-class-options-allocator.php:106
+msgid "All emails options"
+msgstr ""
+
+#: ../inc/leyka-class-options-allocator.php:112
+msgid "Grateful emails options"
+msgstr ""
+
+#: ../inc/leyka-class-options-allocator.php:121
+msgid "Website personnel notifications options"
+msgstr ""
+
+#: ../inc/leyka-class-options-allocator.php:135
+msgid "Campaign page template"
+msgstr ""
+
+#: ../inc/leyka-class-options-allocator.php:149
+msgid "Terms of donation service options"
+msgstr ""
+
+#: ../inc/leyka-class-options-allocator.php:157
+msgid "Additional"
+msgstr ""
+
+#: ../inc/leyka-gateways-api.php:257
+msgid "Wrong donation currency in submitted form data"
+msgstr ""
+
+#: ../inc/leyka-gateways-api.php:292
+msgid "You must agree to the terms of donation service"
+msgstr ""
+
+#: ../inc/leyka-shortcodes.php:82
+msgctxt "«Support» label at scale button"
+msgid "Support"
+msgstr ""
+
+#: ../templates/leyka-template-radios.php:19 ../templates/leyka-template-toggles.
+#: php:12
 msgid ""
 "This donation form is created by Leyka WordPress plugin, created by Teplitsa "
 "of Social Technologies. If you are interested in some way, don't hesitate to "
 "write to us: support@te-st.ru"
 msgstr ""
 
-#. Plugin URI of the plugin/theme
-msgid "http://leyka.te-st.ru/"
+#: ../templates/leyka-gateway-redirect-page.php:4
+msgid "Redirecting to the gateway payment page"
 msgstr ""
 
-#. Description of the plugin/theme
-msgid "The donations management system for your WP site."
+#: ../templates/leyka-gateway-redirect-page.php:48
+msgid ""
+"<h3>Thank you!</h3><p>In a few seconds you will be redirected to the payment "
+"system website, where you can complete your donation.</p>"
 msgstr ""
 
-#. Author of the plugin/theme
-msgid "Lev Zvyagincev aka Ahaenor"
+#: ../templates/leyka-gateway-redirect-page.php:59
+msgid ""
+"If you are not redirected to the payment page automatically, please press "
+"this button"
 msgstr ""
 
-#. Author URI of the plugin/theme
-msgid "ahaenor@gmail.com"
+#: ../templates/leyka-gateway-redirect-page.php:61
+msgid "Proceed to the payment approval page"
 msgstr ""

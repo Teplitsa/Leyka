@@ -38,7 +38,7 @@ if( !defined('WPINC') ) die;
 
 // Leyka plugin version:
 if( !defined('LEYKA_VERSION') )
-    define('LEYKA_VERSION', '2.1.4');
+    define('LEYKA_VERSION', '2.2');
 
 // Plugin base file:
 if( !defined('LEYKA_PLUGIN_BASE_FILE') ) // "leyka.php"

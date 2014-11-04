@@ -2,10 +2,62 @@
 /*---------------------------------------------------------
  Mixins (_utility.scss)
 -------------------------------------------------------- */
-/*---------------------------------------------------------
- Presets (_pr_presets.scss)
--------------------------------------------------------- */
-/** button **/
+.leyka-scale-ultra {
+  position: relative;
+  border: 1px solid #1db318;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box; }
+  .leyka-scale-ultra .leyka-scale-scale {
+    height: 16px; }
+    .leyka-scale-ultra .leyka-scale-scale .target {
+      background: #fff;
+      width: 100%;
+      height: 100%; }
+    .leyka-scale-ultra .leyka-scale-scale .collected {
+      height: 100%;
+      background: rgba(29, 179, 24, 0.5); }
+  .leyka-scale-ultra .leyka-scale-label {
+    position: absolute;
+    top: -2px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    height: 14px; }
+    .leyka-scale-ultra .leyka-scale-label span {
+      font-size: 11px;
+      line-height: 14px;
+      padding: 0 3px;
+      color: #333; }
+
+.leyka-scale-ultra-fake {
+  position: relative;
+  border: 1px solid #ccc;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box; }
+  .leyka-scale-ultra-fake .leyka-scale-scale {
+    height: 16px; }
+    .leyka-scale-ultra-fake .leyka-scale-scale .target {
+      background: #fff;
+      width: 100%;
+      height: 100%; }
+    .leyka-scale-ultra-fake .leyka-scale-scale .collected {
+      height: 100%;
+      background: rgba(204, 204, 204, 0.5); }
+  .leyka-scale-ultra-fake .leyka-scale-label {
+    position: absolute;
+    top: -2px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    height: 14px; }
+    .leyka-scale-ultra-fake .leyka-scale-label span {
+      font-size: 11px;
+      line-height: 14px;
+      padding: 0 3px;
+      color: #333; }
+
 #icon-leyka {
   background: transparent url(../img/leyka-icon.png) no-repeat 1px 0; }
 
@@ -94,16 +146,14 @@
     margin: 25px 0; }
     #donations-data-table_wrapper .dataTable thead td, #donations-data-table_wrapper .dataTable tfoot td {
       border-color: #cacaca; }
-    #donations-data-table_wrapper .dataTable tbody td {
-      border-bottom: 1px solid #fff; }
-    #donations-data-table_wrapper .dataTable .leyka-donation-row-funded td {
-      background: #f5f5f5; }
-    #donations-data-table_wrapper .dataTable .leyka-donation-row-funded td:nth-of-type(2) {
-      font-weight: bold;
-      color: #111; }
-    #donations-data-table_wrapper .dataTable .leyka-donation-row-funded td:nth-of-type(5) {
-      font-weight: bold;
-      color: #111; }
+    #donations-data-table_wrapper .dataTable tr.even {
+      background: #f6f6f6; }
+    #donations-data-table_wrapper .dataTable i.funded {
+      color: #1db318; }
+    #donations-data-table_wrapper .dataTable i.failed {
+      color: #aa0000; }
+    #donations-data-table_wrapper .dataTable .amount-negative {
+      color: red; }
   #donations-data-table_wrapper .dataTables_paginate {
     font-size: 12px; }
     #donations-data-table_wrapper .dataTables_paginate .paginate_button {
@@ -133,13 +183,26 @@
 /** Campaign table **/
 .post-type-leyka_campaign .column-ID {
   width: 4%; }
-.post-type-leyka_campaign .column-target {
-  width: 25%; }
-  .post-type-leyka_campaign .column-target .d-scale-label {
-    font-size: 12px;
-    padding-bottom: 5px; }
-  .post-type-leyka_campaign .column-target b.reached {
-    color: #aa0000; }
+.post-type-leyka_campaign .column-coll_state {
+  width: 10%; }
+.post-type-leyka_campaign tbody .coll_state {
+  text-align: center; }
+.post-type-leyka_campaign tbody .column-target {
+  text-align: center; }
+.post-type-leyka_campaign .column-target .c-reached {
+  display: block;
+  text-align: right;
+  font-size: 0.9em;
+  margin-top: 4px; }
+.post-type-leyka_campaign .column-target time {
+  font-weight: bold; }
+.post-type-leyka_campaign .collected-plain {
+  text-align: right; }
+.post-type-leyka_campaign .c-closed {
+  color: #999; }
+.post-type-leyka_campaign .c-opened {
+  color: #111;
+  font-weight: 500; }
 
 /** Donation table **/
 .post-type-leyka_donation .column-ID {
@@ -151,14 +214,15 @@
 .post-type-leyka_donation .column-emails,
 .post-type-leyka_donation .column-donor {
   width: 12%; }
+.post-type-leyka_donation .column-donation_date,
 .post-type-leyka_donation .column-status {
-  width: 12%;
-  font-size: 12px; }
-  .post-type-leyka_donation .column-status i {
-    display: block;
-    font-size: 13px; }
-  .post-type-leyka_donation .column-status .funded {
-    color: #1db318; }
+  width: 8%; }
+.post-type-leyka_donation i.funded {
+  color: #1db318; }
+.post-type-leyka_donation i.failed {
+  color: #aa0000; }
+.post-type-leyka_donation .amount-negative {
+  color: red; }
 .post-type-leyka_donation .column-method b {
   color: #111;
   text-transform: uppercase;
@@ -193,7 +257,8 @@
     font-weight: bold;
     float: left;
     width: 20%;
-    text-align: right; }
+    text-align: right;
+    line-height: 27px; }
   .leyka-set .leyka-ddata-field {
     float: left;
     width: 78%;
@@ -212,16 +277,47 @@
       padding: 3px 5px;
       line-height: 20px;
       min-height: 27px; }
+    .leyka-set .leyka-ddata-field .text-line {
+      display: inline-block;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      width: 98%;
+      max-width: 700px;
+      border-bottom: 1px dashed #ddd;
+      padding: 3px 5px;
+      line-height: 20px;
+      min-height: 27px; }
+    .leyka-set .leyka-ddata-field .field-help {
+      display: inline-block;
+      padding: 2px 0 0 4px; }
     .leyka-set .leyka-ddata-field .campaign-actions {
       margin-left: 20px; }
       .leyka-set .leyka-ddata-field .campaign-actions a {
         text-transform: uppercase;
         font-size: 10px;
         margin-right: 5px; }
+    .leyka-set .leyka-ddata-field #donation-amount {
+      max-width: 320px; }
     .leyka-set .leyka-ddata-field #new-donation-amount {
       max-width: 320px; }
     .leyka-set .leyka-ddata-field #custom-payment-info {
       margin-top: 10px; }
+  .leyka-set .field-error {
+    display: none;
+    background: #FFE9E9;
+    border: 1px solid #FBC4C4;
+    color: #DE5959;
+    padding: 2px 10px;
+    margin-top: 5px;
+    font-size: 12px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px; }
+    .leyka-set .field-error a {
+      color: #fc001e; }
+      .leyka-set .field-error a:hover {
+        color: #aa363a; }
   .leyka-set .set-action {
     margin: 15px 0 15px 22%; }
     .leyka-set .set-action #campaign-select {
@@ -241,6 +337,66 @@
   font-weight: bold; }
   .send-donor-thanks:hover {
     color: #ff0000; }
+
+/* datepicker */
+#ui-datepicker-div {
+  background: #fff;
+  border: 4px solid #dfdfdf;
+  -webkit-box-shadow: 1px 1px 3px rgba(10, 10, 10, 0.65);
+  -moz-box-shadow: 1px 1px 3px rgba(10, 10, 10, 0.65);
+  box-shadow: 1px 1px 3px rgba(10, 10, 10, 0.65); }
+  #ui-datepicker-div table {
+    font-size: 12px;
+    border-collapse: collapse; }
+    #ui-datepicker-div table thead th {
+      background: #f9f9f9;
+      text-align: center; }
+      #ui-datepicker-div table thead th span {
+        padding: 4px 0; }
+    #ui-datepicker-div table tbody td {
+      text-align: right;
+      border: 1px solid #dfdfdf; }
+      #ui-datepicker-div table tbody td:hover {
+        background: #f5f5f5; }
+    #ui-datepicker-div table a {
+      text-decoration: none !important;
+      display: inline-block;
+      padding: 4px 8px;
+      background: transparent; }
+      #ui-datepicker-div table a, #ui-datepicker-div table a:visited, #ui-datepicker-div table a:hover {
+        color: #333; }
+    #ui-datepicker-div table tbody td.ui-datepicker-current-day,
+    #ui-datepicker-div table tbody td.ui-datepicker-current-day:hover {
+      background: #eaf9ff;
+      font-weight: bold; }
+      #ui-datepicker-div table tbody td.ui-datepicker-current-day a,
+      #ui-datepicker-div table tbody td.ui-datepicker-current-day:hover a {
+        color: #0074a2; }
+  #ui-datepicker-div .ui-datepicker-header {
+    padding: 4px 0;
+    position: relative; }
+    #ui-datepicker-div .ui-datepicker-header .ui-datepicker-prev,
+    #ui-datepicker-div .ui-datepicker-header .ui-datepicker-next {
+      font-size: 12px;
+      line-height: 28px;
+      cursor: pointer;
+      width: 38px;
+      letter-spacing: -0.5px;
+      position: absolute;
+      top: 4px; }
+    #ui-datepicker-div .ui-datepicker-header .ui-datepicker-prev {
+      text-align: right;
+      left: 0; }
+    #ui-datepicker-div .ui-datepicker-header .ui-datepicker-next {
+      text-align: left;
+      right: 0; }
+    #ui-datepicker-div .ui-datepicker-header .ui-datepicker-title {
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      width: 100%;
+      text-align: center;
+      padding: 0 38px; }
 
 /* sidebar */
 .leyka-status-section {
@@ -292,43 +448,32 @@
   font-size: 12px; }
 
 /**  add donation **/
-/** old */
-/* Options */
+/** Options **/
 .leyka-options-section {
   margin: 40px 0 30px; }
 
-.leyka-options-section div[id*=wrapper] {
+#leyka-settings-form div[id*=wrapper] {
   margin: 15px 0; }
-
-.leyka-options-section label[for*="field"] {
-  display: block; }
-
-.leyka-options-section .field-component {
-  display: block;
-  padding: 2px 0; }
-
-.leyka-options-section .field-component.title {
-  font-weight: bold; }
-
-.leyka-options-section .required {
-  display: none; }
-
-.leyka-options-section .wp-editor-container,
-.leyka-options-section .field-component.field {
-  max-width: 900px; }
-
-.leyka-options-section input[type="text"],
-.leyka-options-section textarea {
-  width: 100%; }
-
-.leyka-options-section .field-component.help {
-  font-size: 95%;
-  font-style: italic;
-  color: #666;
-  padding-left: 4px; }
-
-.leyka-options-section .wp-editor-wrap + .field-component.help {
-  padding-top: 4px; }
+  #leyka-settings-form div[id*=wrapper] label[for*="field"] {
+    display: block; }
+  #leyka-settings-form div[id*=wrapper] .field-component {
+    display: block;
+    padding: 2px 0; }
+  #leyka-settings-form div[id*=wrapper] .field-component.title {
+    font-weight: bold; }
+  #leyka-settings-form div[id*=wrapper] .field-component.help {
+    font-size: 95%;
+    font-style: italic;
+    color: #666;
+    padding-left: 4px; }
+  #leyka-settings-form div[id*=wrapper] .required {
+    display: none; }
+  #leyka-settings-form div[id*=wrapper] .wp-editor-container,
+  #leyka-settings-form div[id*=wrapper] .field-component.field {
+    max-width: 900px; }
+  #leyka-settings-form div[id*=wrapper] input[type="text"],
+  #leyka-settings-form div[id*=wrapper] textarea {
+    width: 100%; }
 
 #donation-status-log-toggle {
   cursor: pointer; }
@@ -343,9 +488,13 @@
   color: #333;
   font-size: 12px; }
 
+.wp-editor-wrap + .field-component.help {
+  padding-top: 4px; }
+
 .wp-editor-wrap + .help {
   max-width: 900px; }
 
+/** old */
 /* Dashboard */
 #leyka-widgets #postbox-container-1 {
   width: 65%; }

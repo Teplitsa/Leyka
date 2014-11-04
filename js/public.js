@@ -241,10 +241,20 @@ jQuery(document).ready(function($){
 			}
 		});
 		
-		$('.leyka-scale.has-button').each(function(){
+		$('.leyka-scale').each(function(){
 		
 			var w = $(this).width();
-			if (parseInt(w) > 600) {
+			if (parseInt(w) > 500) {
+				$(this).addClass('wide'); 				
+			}
+			else {
+				$(this).removeClass('wide');				
+			}
+		});
+		
+		$('.leyka-campaign-card').each(function(){
+			var w = $(this).width();
+			if (parseInt(w) > 500) {
 				$(this).addClass('wide');
 			}
 			else {
@@ -252,13 +262,13 @@ jQuery(document).ready(function($){
 			}
 		});
 		
-		$('.leyka-campaign-card').each(function(){
+		$('.leyka-campaign-list-item.has-thumb').each(function(){
 			var w = $(this).width();
-			if (parseInt(w) > 600) {
-				$(this).addClass('wide');
+			if (parseInt(w) < 280) {
+				$(this).addClass('narrow');
 			}
 			else {
-				$(this).removeClass('wide');
+				$(this).removeClass('narrow');
 			}
 		});
 	}
@@ -268,8 +278,14 @@ jQuery(document).ready(function($){
 		leykaWidths();
 	});
 	
-	
-	
+	//scroll
+	$("a[href='#leyka-payment-form']").on('click', function(e){
+		e.preventDefault();
+		var target_top = parseInt($("#leyka-payment-form").offset().top) -50;
+		//var target_top = target_offset.top;
+				
+		$('html, body').animate({scrollTop:target_top}, 500);
+	});
 });
 
 function is_email(email) {

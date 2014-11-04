@@ -176,29 +176,29 @@ class Leyka_Admin_Setup {
 		</thead>
 		<tbody>
 		<?php
-			foreach($tabs as $id => $label){
-				$url = admin_url("admin.php?page=leyka_settings&stage=".$id);
+			foreach($tabs as $id => $label) {
+				$url = admin_url("admin.php?page=leyka_settings&stage=$id");
 				$description = apply_filters('leyka_settings_tabs_description',
 					array(
 						'beneficiary' => __('Banking and legal information about your organisation', 'leyka'),
 						'payment' => __('Payment method\' settings for all you payment forms', 'leyka'),
 						'currency' => __('Selection of currencies supported in the system', 'leyka'),
 						'email' => __('Gratification email to donor and staff notification notices', 'leyka'),
+						'view' => __('Settings for frontend elements, like donation form templates', 'leyka'),
 						'additional' => __('Various template tweaks (advanced)', 'leyka'),
 					)
 				);?>
 
 			<tr>
-				<td><?php echo $label; ?></td>
-				<td><em><?php echo (isset($description[$id])) ? $description[$id] : '-'; ?></em></td>
+				<td><?php echo $label;?></td>
+				<td><em><?php echo empty($description[$id]) ? '-' : $description[$id];?></em></td>
 				<td><a href="<?php echo $url;?>"><?php _e('Edit', 'leyka');?></a></td>
 			</tr>
 
 		<?php }?>
 		</tbody>
 		</table>		
-		<?php	
-		}
+		<?php }
 	}
 	
 	function history_metabox_screen() {
@@ -214,11 +214,11 @@ class Leyka_Admin_Setup {
 		<table class="leyka-widget-table history">
 		<thead>
 			<tr>
-			<th class="date"><?php _e('Date', 'leyka');?></th>
-			<th class="title"><?php _e('Purpose', 'leyka');?></th>
-			<th class="donor"><?php _e('Donor', 'leyka');?></th>
-			<th class="amount"><?php _e('Amount', 'leyka');?></th>
-			<th class="details">&nbsp;</th>
+                <th class="date"><?php _e('Date', 'leyka');?></th>
+                <th class="title"><?php _e('Purpose', 'leyka');?></th>
+                <th class="donor"><?php _e('Donor', 'leyka');?></th>
+                <th class="amount"><?php _e('Amount', 'leyka');?></th>
+                <th class="details">&nbsp;</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -230,7 +230,10 @@ class Leyka_Admin_Setup {
 		<tr>
 			<td><?php echo $donation->date;?></td>
 			<td><?php echo $donation->title;?></td>
-			<td><?php echo $donation->donor_name.' ('.$donation->donor_email.')'; ?></td>
+			<td>
+                <?php echo ($donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka'))
+                    .($donation->donor_email ? ' ('.$donation->donor_email.')' : '');?>
+            </td>
 			<td><?php echo $donation->amount.' '.$donation->currency_label;?></td>
 			<td><a href="<?php echo esc_url($url); ?>"><?php _e('Details', 'leyka'); ?></a></td>
 		</tr>
@@ -474,10 +477,10 @@ class Leyka_Admin_Setup {
         // Donation editing page:
         if($screen->post_type == Leyka_Donation_Management::$post_type && $screen->base == 'post') {
 
-            wp_enqueue_style(
-                'leyka-admin-jquery-ui',
-                LEYKA_PLUGIN_BASE_URL.'css/jquery-ui.css', array(), LEYKA_VERSION
-            );
+//            wp_enqueue_style(
+//                'leyka-admin-jquery-ui',
+//                LEYKA_PLUGIN_BASE_URL.'css/jquery-ui.css', array(), LEYKA_VERSION
+//            );
 
             $locale = get_locale();
             if($locale != 'en_US')

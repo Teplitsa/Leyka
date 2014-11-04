@@ -55,7 +55,7 @@ class Leyka_Campaign_Management {
             <label for="campaign-state-select"></label>
             <select id="campaign-state-select" name="campaign_state">
                 <option value="all" <?php echo empty($_GET['campaign_state']) ? 'selected="selected"' : '';?>>
-                    <?php _e('Funds collection state', 'leyka');?>
+                    - <?php _e('Collection state', 'leyka');?> -
                 </option>
                 <option value="is_finished" <?php echo !empty($_GET['campaign_state']) && $_GET['campaign_state'] == 'is_finished' ? 'selected="selected"' : '';?>><?php _e('Closed', 'leyka');?></option>
                 <option value="is_open" <?php echo !empty($_GET['campaign_state']) && $_GET['campaign_state'] == 'is_open' ? 'selected="selected"' : '';?>><?php _e('Opened', 'leyka');?></option>
@@ -65,7 +65,7 @@ class Leyka_Campaign_Management {
             <label for="target-state-select"></label>
             <select id="target-state-select" name="target_state">
                 <option value="" <?php echo empty($_GET['target_state']) ? 'selected="selected"' : '';?>>
-                    <?php _e('Target state', 'leyka');?>
+                    - <?php _e('Target', 'leyka');?> -
                 </option>
 
                 <?php foreach(leyka()->get_campaign_target_states() as $state => $label) {?>
@@ -124,10 +124,7 @@ class Leyka_Campaign_Management {
 
 		$cur_template = $campaign->template;
 		if(empty($cur_template))
-			$cur_template = 'default';
-			
-		$ignore_global_template = 0; //@to_do make this real option
-	?>
+			$cur_template = 'default';?>
 
         <fieldset id="payment-title" class="metabox-field campaign-field">
             <label for="payment_title">
@@ -162,7 +159,7 @@ class Leyka_Campaign_Management {
 		
 		<fieldset id="ignore-global-template" class="metabox-field campaign-field">
 			<label for="ignore_global_template">
-			<input type="checkbox" name="ignore_global_template" id="ignore_global_template" value="1" <?php checked($ignore_global_template, 1);?>>&nbsp;
+			<input type="checkbox" name="ignore_global_template" id="ignore_global_template" value="1" <?php checked($campaign->ignore_global_template_settings, 1);?>>&nbsp;
 			<?php _e('Ignore global template settings', 'leyka');?></label>
 		</fieldset>
 
@@ -248,15 +245,16 @@ class Leyka_Campaign_Management {
             <tbody>
             <?php foreach($campaign->get_donations() as $donation) {
                 $gateway_label = $donation->gateway_id ? $donation->gateway_label : __('Custom payment info', 'leyka');
-                $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;?>
-
-                <tr <?php echo $donation->status == 'funded' ? 'class="leyka-donation-row-funded"' : '';?>>
+                $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;
+				$amount_css = ($donation->sum < 0) ? 'amount-negative' : 'amount';
+			?>
+                <tr <?php echo $donation->type == 'correction' ? 'class="leyka-donation-row-correction"' : '';?>>
                     <td><?php echo $donation->id;?></td>
-                    <td><?php echo $donation->sum.' '.$donation->currency_label;?></td>
+                    <td><?php echo '<span class="'.$amount_css.'">'.$donation->sum.'&nbsp;'.$donation->currency_label.'</span>';?></td>
                     <td><?php echo $donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka');?></td>
                     <td><?php echo $pm_label.' ('.mb_strtolower($gateway_label).')';?></td>
                     <td><?php echo $donation->date;?></td>
-                    <td><?php echo mb_ucfirst($donation->status_label);?></td>
+                    <td><?php echo '<i class="'.esc_attr($donation->status).'">'.mb_ucfirst($donation->status_label).'</i>';?></td>
                     <td><?php echo mb_ucfirst($donation->payment_type_label);?></td>
                     <td><a href="<?php echo admin_url("/post.php?post={$donation->id}&action=edit");?>"><?php echo __('Edit', 'leyka');?></a></td>
                 </tr>
@@ -292,7 +290,7 @@ class Leyka_Campaign_Management {
 		}
 		
 		$columns['coll_state'] = __('Collection state', 'leyka');
-		$columns['target'] = __('Target', 'leyka');
+		$columns['target'] = __('Progress', 'leyka');
        
 
 		$columns['payment_title'] = __('Payment purpose', 'leyka');
@@ -314,37 +312,32 @@ class Leyka_Campaign_Management {
 		
 		if($column_name == 'ID'){
 			echo (int)$campaign->id;
-			
 		}
         elseif($column_name == 'payment_title'){
             echo $campaign->payment_title;
-			
         }
-		elseif($column_name == 'coll_state') {
-			if($campaign->is_finished == 1){
-				_e('Closed', 'leyka');
-			}
-			else {
-				_e('Opened', 'leyka');
-			}
+		elseif($column_name == 'coll_state'){
+			echo $campaign->is_finished == 1 ?
+				'<span class="c-closed">'.__('Closed', 'leyka').'</span>' :
+				'<span class="c-opened">'.__('Opened', 'leyka').'</span>';
 		}
 		elseif($column_name == 'target') {
 			
-			if($campaign->target_state == 'no_target')
-				echo '&ndash;';
-			
-			leyka_scale_compact($campaign);
-			
-			if($campaign->target_state == 'is_reached'):
-		?>        
-		<span>
-			<?php printf(__('Reached at: %s', 'leyka'), '<b>'.$campaign->date_target_reached.'</b>');?>
-		</span>            
-		<?php
-			endif;
+			if($campaign->target_state == 'no_target'){
+				
+				leyka_fake_scale_ultra($campaign);			
+			}
+			else {
+				leyka_scale_ultra($campaign);
+			}
+						
+			if($campaign->target_state == 'is_reached') {?>
+		    <span class='c-reached'><?php printf(__('Reached at: %s', 'leyka'), '<time>'.$campaign->date_target_reached.'</time>'); ?></span>
+		<?php }
 		}
 	}
-}
+	
+} //class
 
 
 class Leyka_Campaign {
@@ -385,12 +378,20 @@ class Leyka_Campaign {
                 $meta['target_state'] = array($this->target_state); // [0] is just for uniformity :)
             }
 
+            if( !isset($meta['is_finished']) ) {
+
+                update_post_meta($this->_id, 'is_finished', 0);
+                $meta['is_finished'][0] = 0;
+            }
+
             $this->_campaign_meta = array(
                 'payment_title' => empty($meta['payment_title']) ?
                     (empty($this->_post_object) ? '' : $this->_post_object->post_title) : $meta['payment_title'][0],
                 'campaign_template' => empty($meta['campaign_template']) ? '' :  $meta['campaign_template'][0],
                 'campaign_target' => empty($meta['campaign_target']) ? 0 : $meta['campaign_target'][0],
-                'is_finished' => empty($meta['is_finished']) ? '' : $meta['is_finished'][0] > 0,
+                'ignore_global_template' => empty($meta['ignore_global_template']) ?
+                    '' : $meta['ignore_global_template'][0] > 0,
+                'is_finished' => $meta['is_finished'] ? $meta['is_finished'][0] > 0 : 0,
                 'target_state' => $meta['target_state'][0],
                 'date_target_reached' => empty($meta['date_target_reached']) ? 0 : $meta['date_target_reached'][0],
 //                '' => ''
@@ -425,6 +426,9 @@ class Leyka_Campaign {
 			case 'is_finished':
 			case 'is_closed':
 				return $this->_campaign_meta['is_finished'];
+            case 'ignore_global_template':
+            case 'ignore_global_template_settings':
+				return $this->_campaign_meta['ignore_global_template'];
             case 'target_state':
                 return $this->_campaign_meta['target_state'];
             case 'date_reached':
@@ -541,6 +545,10 @@ class Leyka_Campaign {
         $_REQUEST['is_finished'] = !empty($_REQUEST['is_finished']) ? 1 : 0;
         if($_REQUEST['is_finished'] != $this->is_finished)
             $meta['is_finished'] = $_REQUEST['is_finished'];
+
+        $_REQUEST['ignore_global_template'] = !empty($_REQUEST['ignore_global_template']) ? 1 : 0;
+        if($_REQUEST['ignore_global_template'] != $this->ignore_global_template_settings)
+            $meta['ignore_global_template'] = $_REQUEST['ignore_global_template'];
 
 		if(isset($_REQUEST['campaign_target']) && $_REQUEST['campaign_target'] != $this->target) {
 

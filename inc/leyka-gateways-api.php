@@ -288,7 +288,7 @@ abstract class Leyka_Gateway {
             leyka()->add_payment_form_error($error);
         }
 
-        if(empty($form_data['leyka_agree'])) {
+        if(empty($form_data['leyka_agree']) && leyka_options()->opt('argee_to_terms_needed')) {
             $error = new WP_Error('terms_not_agreed', __('You must agree to the terms of donation service', 'leyka'));
             leyka()->add_payment_form_error($error);
         }

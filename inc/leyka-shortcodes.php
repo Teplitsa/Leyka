@@ -24,48 +24,56 @@ function leyka_scale_screen($atts) {
 	if($campaign->post_type != 'leyka_campaign')
 		return ''; //wrong campaign data
 	
-	return leyka_get_scale($campaign, $a);
+	$css_id = 'leyka_scale_standalone-'.uniqid();
+	
+	return "<div id='".esc_attr($css_id)."'>".leyka_get_scale($campaign, $a)."</div>";
 }
 
 function leyka_get_scale($campaign = null, $args = array()){
 	global $post;
-	
+
 	$defaults = array(
 		'show_button'   => 0,
 		'button_target' => 'form'
 	);
-	
+
 	$args = wp_parse_args($args, $defaults);
-	
-	if(!$campaign){
+
+	if( !$campaign )
 		$campaign = $post;
-	}
-	elseif(is_int($campaign)){
+	elseif(is_int($campaign))
 		$campaign = get_post($campaign);
-	}
-	
+
 	if($campaign->post_type != 'leyka_campaign')
 		return ''; //wrong campaign data
 	
-	$css = 'leyka-scale';
-	if($args['show_button'] == 1)
-		$css .= ' has-button';
+	$campaign = new Leyka_Campaign($campaign);
+	
+	$css_class = 'leyka-scale'; 
+	if($args['show_button'] == 1 && intval($campaign->target) == 0){
+		$css_class .= ' has-button-alone';
+	}
+	elseif($args['show_button'] == 1){
+		$css_class .= ' has-button';
+	}
+	
 	
 	ob_start();
 	
-	$url = ($args['button_target'] == 'page') ? get_permalink($campaign) : '#leyka-payment-form';
-?>
-	<div class="<?php echo esc_attr($css);?>">
+	
+	$url = ($args['button_target'] == 'page') ? get_permalink($campaign) : '#leyka-payment-form';?>
+
+	<div class="<?php echo esc_attr($css_class);?>">
 		<?php leyka_scale_compact($campaign);?>
-	<?php if($args['show_button'] == 1) :?>
-		<div class="scale-button">
+	<?php if($args['show_button'] == 1 && !$campaign->is_finished) :?>
+		<div class="leyka-scale-button">
 			<a href='<?php echo $url;?>'><?php echo leyka_get_scale_button_label();?></a>
 		</div>
 	<?php endif;?>
 	</div>
 <?php
 	$out = ob_get_clean();
-	
+
 	return apply_filters('leyka_scale_html', $out, $campaign, $args);
 }
 
@@ -98,7 +106,8 @@ function leyka_campaign_card_screen($atts) {
 	if($campaign->post_type != 'leyka_campaign')
 		return ''; //wrong campaign data
 	
-	return leyka_get_campaign_card($campaign, $a);
+	$css_id = 'leyka_campaign_card_standalone-'.uniqid();
+	return '<div id="'.esc_attr($css_id).'">'.leyka_get_campaign_card($campaign, $a).'</div>';
 }
 
 function leyka_get_campaign_card($campaign = null, $args = array()) {
@@ -124,15 +133,21 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
 	
 	if($campaign->post_type != 'leyka_campaign')
 		return ''; //wrong campaign data
+		
 	
+	$thumbnail_size = apply_filters('leyka_campaign_card_thumbnail_size', 'post-thumbnail', $campaign, $args);
+	$css_class = apply_filters('leyka_campaign_card_class', 'leyka-campaign-card', $campaign, $args);	
+	if($args['show_thumb'] == 1 && has_post_thumbnail($campaign->ID))
+		$css_class .= ' has-thumb';
 	
+	//do we have some content
 	ob_start();
 ?>
-	<div class="leyka-campaign-card">
+	<div class="<?php echo esc_attr($css_class);?>">
 		<?php if($args['show_thumb'] == 1 && has_post_thumbnail($campaign->ID)):?>
 			<div class="lk-thumbnail">
 				<a href="<?php echo get_permalink($campaign);?>">
-					<?php echo get_the_post_thumbnail($campaign->ID);?>
+					<?php echo get_the_post_thumbnail($campaign->ID, $thumbnail_size);?>
 				</a>
 			</div>
 		<?php endif;?>
@@ -140,7 +155,7 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
 		<?php if($args['show_title'] == 1 || $args['show_excerpt'] == 1 ):?>
 			<div class="lk-info">
 				<?php if($args['show_title'] == 1) :?>
-					<h4><a href="<?php echo get_permalink($campaign);?>">
+					<h4 class="lk-title"><a href="<?php echo get_permalink($campaign);?>">
 						<?php echo get_the_title($campaign);?>
 					</a></h4>
 				<?php endif;?>
@@ -162,10 +177,10 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
 			?>
 			
 		<?php
-			elseif($args['show_button'] == 1) :
+			elseif($args['show_button'] == 1 && !$campaign->is_finished) :
 			$url = ($args['button_target'] == 'page') ? get_permalink($campaign) : '#leyka-payment-form'; 
 		?>
-			<div class="scale-button">
+			<div class="leyka-scale-button-alone">
 				<a href='<?php echo $url;?>'><?php echo leyka_get_scale_button_label();?></a>
 			</div>
 			
@@ -175,6 +190,9 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
 	$out = ob_get_clean();
 	return apply_filters('leyka_campaign_card_html', $out, $campaign, $args);
 }
+
+
+
 
 
 /**
@@ -236,7 +254,9 @@ function leyka_donors_list_screen($atts) {
 		'show_date'    => 1,
     ), $atts );
     
-	
+	if($a['id'] != 'all')
+		$a['id'] = (int)$a['id'];
+		
 	return leyka_get_donors_list($a['id'], $a);
 }
 
@@ -257,8 +277,8 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
 	);
 	
 	$args = wp_parse_args($args, $defaults);
-	
-	if($campaign_id == 0){
+		
+	if($campaign_id === 0){
 		$campaign_id = $post->ID;
 	}
 	
@@ -284,15 +304,18 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
 			'value' => $campaign_id
 		);		
 	}
+	
+
 		
 	$query = new WP_Query($d_args);
 	if(!$query->have_posts())
 		return '';
 	
-
+	$css_id = 'leyka_donors_list-'.uniqid();
+	
 	ob_start();
 ?>
-	<div class="leyka-donors-list">
+	<div id="<?php echo esc_attr($css_id);?>" class="leyka-donors-list">
 	<?php
 		foreach($query->posts as $qp):
 			$donation = new Leyka_Donation($qp);			

@@ -75,6 +75,15 @@ jQuery(document).ready(function($){
                 .appendTo(ul);
         };
     }
+
+    $('#leyka_donation_form_mode-field').change(function(e){
+        if($(this).attr('checked'))
+            $('#leyka_scale_widget_place-wrapper, #leyka_donations_history_under_forms-wrapper')
+                .find(':input').removeAttr('disabled');
+        else
+            $('#leyka_scale_widget_place-wrapper, #leyka_donations_history_under_forms-wrapper')
+                .find(':input').attr('disabled', 'disabled');
+    });
 });
 
 function is_email(email) {

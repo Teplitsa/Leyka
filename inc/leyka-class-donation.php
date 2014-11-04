@@ -18,8 +18,7 @@ class Leyka_Donation_Management {
             if($current_screen->post_type != 'leyka_donation')
                 return $actions;
 
-            $actions['edit'] = '<a href="'.get_edit_post_link($donation->ID, 1).'">'
-                               .__('Details', 'leyka').'</a>';
+            $actions['edit'] = '<a href="'.get_edit_post_link($donation->ID, 1).'">'.__('Details', 'leyka').'</a>';
             unset($actions['view']);
 //            unset( $actions['trash'] );
 
@@ -35,7 +34,6 @@ class Leyka_Donation_Management {
 
         add_action('restrict_manage_posts', array($this, 'manage_filters'));
         add_action('pre_get_posts', array($this, 'do_filtering'));
-
 
         add_action('leyka_donation_metaboxes', array($this, 'set_metaboxes'));	
         add_action('save_post', array($this, 'save_donation_data'));
@@ -460,7 +458,7 @@ class Leyka_Donation_Management {
         <div class="leyka-ddata-string">
             <label><?php _e('Donation purpose', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
-				<div id="new-donation-purpose" class="fake-input"><?php echo $campaign_id ? $campaign->payment_title : '';?></div>
+				<div id="new-donation-purpose" class="text-line"><?php echo $campaign_id ? $campaign->payment_title : '';?></div>
 			</div>
         </div>
 
@@ -492,8 +490,8 @@ class Leyka_Donation_Management {
             <label for="donation-amount"><?php _e('Amount', 'leyka');?>:</label>
 
 			<div class="leyka-ddata-field">
-				<input type="text" id="donation-amount" name="donation-amount" placeholder="<?php _e("Enter a donation's amount", 'leyka');?>" value="" /> <?php echo leyka_options()->opt_safe('currency_rur_label');?>
-
+				<input type="text" id="donation-amount" name="donation-amount" placeholder="<?php _e("Enter a donation's amount", 'leyka');?>" value="" /> <?php echo leyka_options()->opt_safe('currency_rur_label');?><br>
+				<small class='field-help howto'><?php _e('Amount could be negative for correctional entry.', 'leyka');?></small>
 				<div id="donation_amount-error" class="field-error"></div>
 
 <!--            <select id="new-donation-currency" name="donation_currency">-->
@@ -546,11 +544,11 @@ class Leyka_Donation_Management {
         </div>
 
         <div class="leyka-ddata-string">
-            <label for="donation-date"><?php _e('Donation date', 'leyka');?>:</label>
+            <label for="donation-date-view"><?php _e('Donation date', 'leyka');?>:</label>
 
             <div class="leyka-ddata-field">
-                <div id="donation-date"></div>
-                <input type="hidden" id="donation-date-field" name="donation_date" value="" />
+                <input type="text" id="donation-date-view" value="<?php echo date('d.m.Y');?>" />
+                <input type="hidden" id="donation-date" name="donation_date" value="<?php echo date('Y-m-d');?>" />
             </div>
         </div>
 
@@ -570,18 +568,21 @@ class Leyka_Donation_Management {
 			<label><?php _e('Campaign', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
 			<?php if($campaign->id && $campaign->status == 'publish') { ?>
+			<span class="text-line">
+            <span class="campaign-name"><?php echo $campaign->title;?></span> <span class="campaign-actions"><a href="<?php echo admin_url('/post.php?action=edit&post='.$campaign->id);?>"><?php _e('Edit campaign', 'leyka');?></a> <a href="<?php echo $campaign->url;?>" target="_blank"><?php _e('Preview campaign', 'leyka');?></a></span></span>
 
-            <span class="campaign-name"><?php echo $campaign->title;?></span> <span class="campaign-actions"><a href="<?php echo admin_url('/post.php?action=edit&post='.$campaign->id);?>"><?php _e('Edit', 'leyka');?></a> <a href="<?php echo $campaign->url;?>" target="_blank"><?php _e('Preview', 'leyka');?></a></span>
-
-			<?php } else
+			<?php } else {
+				echo '<span class="text-line">';
                 _e('the campaign has been removed or drafted', 'leyka');
+				echo '</span>';
+			}
             ?>
 			</div>
 		</div>
 		
 		<div class="leyka-ddata-string">
 			<label><?php _e('Donation purpose', 'leyka');?>:</label>
-			<div class="leyka-ddata-field"><span class="fake-input">
+			<div class="leyka-ddata-field"><span class="text-line">
 			<?php echo $campaign->id ? $campaign->payment_title : $donation->title;?>
 			</span></div>
         </div>
@@ -701,7 +702,7 @@ class Leyka_Donation_Management {
 
 		<?php if($donation->gateway == 'chronopay') {?>
         <div class="leyka-ddata-string">
-            <label><?php _e('Chronopay customer ID:', 'leyka');?></label>
+            <label><?php _e('Chronopay customer ID', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
             <?php if($donation->type == 'correction') {?>
 
@@ -714,19 +715,19 @@ class Leyka_Donation_Management {
         <?php }?>
 
         <div class="leyka-ddata-string">
-            <label><?php _e('Payment type:', 'leyka');?></label>
+            <label><?php _e('Payment type', 'leyka');?>:</label>
 			<div class="leyka-ddata-field"><span class="fake-input">
             <?php echo leyka_get_payment_type_label($donation->payment_type); // "single", "rebill", "correction", etc. ?>
 			</span></div>
         </div>
 
         <div class="leyka-ddata-string">
-            <label><?php _e('Donation date:', 'leyka');?></label>
+            <label for="donation-date-view"><?php _e('Donation date', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
             <?php if($donation->type == 'correction') {?>
 
-                <div id="donation-date"></div>
-                <input type="hidden" id="donation-date-field" name="donation_date" value="<?php echo date('Y-m-d', $donation->date_timestamp);?>" />
+                <input type="text" id="donation-date-view" value="<?php echo date('d.m.Y', $donation->date_timestamp);?>" />
+                <input type="hidden" id="donation-date" name="donation_date" value="<?php echo date('Y-m-d', $donation->date_timestamp);?>" />
             <?php } else {?>
 
                 <span class="fake-input"><?php echo $donation->date;?></span>
@@ -774,8 +775,7 @@ class Leyka_Donation_Management {
         </div>
 
         <div class="leyka-status-section log">
-            <?php
-            $status_log = get_post_meta($donation->ID, '_status_log', true);
+            <?php $status_log = get_post_meta($donation->ID, '_status_log', true);
             if($status_log) {?>
                 <?php $last_status = end($status_log);
                 echo str_replace(
@@ -922,7 +922,8 @@ class Leyka_Donation_Management {
         switch($column_name) {
             case 'ID': echo $donation_id; break;
             case 'amount':
-                echo $donation->amount.' '.$donation->currency_label;
+				$amount_css = ($donation->sum < 0) ? 'amount-negative' : 'amount';
+				echo '<span class="'.$amount_css.'">'.$donation->amount.'&nbsp;'.$donation->currency_label.'</span>';                
                 break;
             case 'donor': echo $donation->donor_name; break;
             case 'method':
@@ -932,22 +933,9 @@ class Leyka_Donation_Management {
                 break;
             case 'donation_date':
                 echo $donation->date;
-
-//                echo '<pre>' . print_r(date(get_option('date_format'), $donation->date_timestamp), 1) . '</pre>';
                 break;
             case 'status':
-//                $status_log = get_post_meta($donation_id, '_status_log', true);
-//                if( !$status_log || !is_array($status_log) ) {
-//                    $status_log = array(array(
-//                        'date' => strtotime($donation->date),
-//                        'status' => $donation->status
-//                    ));
-//                    update_post_meta($donation_id, '_status_log', $status_log);
-//                }
-//                $status_log_end = $donation->status_log[count($donation->status_log)-1];
-				
                 echo '<i class="'.esc_attr($donation->status).'">'.$this->get_status_labels($donation->status).'</i>';
-//                    .' ('.date('d.m.Y, H:i:s', $status_log_end['date']).')';
                 break;
             case 'emails':
 				if($donation->donor_email_date){
@@ -955,7 +943,7 @@ class Leyka_Donation_Management {
 						'%s',
 						'<time>'.date('d.m.Y, H:i</time>', $donation->donor_email_date).'</time>',
 						__('Sent at %s', 'leyka')
-					);				
+					);
 				} else {?>
 
 					<div class="leyka-no-donor-thanks" data-donation-id="<?php echo $donation_id;?>">
