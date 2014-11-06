@@ -119,6 +119,8 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
         $this->_submit_label = empty($params['submit_label']) ?
             __('Donate', 'leyka') : $params['submit_label'];
 
+        $this->_supported_currencies = empty($params['currencies']) ? array('rur',) : $params['currencies'];
+
         $this->_default_currency = empty($params['default_currency']) ? 'rur' : $params['default_currency'];
 
         static::$_instance = $this;
