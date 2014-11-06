@@ -15,8 +15,7 @@ function leyka_scale_screen($atts) {
 	
     $a = shortcode_atts( array(
         'id'            => 0,
-        'show_button'   => 0,
-		'button_target' => 'form'
+        'show_button'   => 0,		
     ), $atts );
 
     $campaign = ($a['id'] > 0) ? get_post($a['id']) : $post;
@@ -33,8 +32,7 @@ function leyka_get_scale($campaign = null, $args = array()){
 	global $post;
 
 	$defaults = array(
-		'show_button'   => 0,
-		'button_target' => 'form'
+		'show_button'   => 0,		
 	);
 
 	$args = wp_parse_args($args, $defaults);
@@ -61,13 +59,14 @@ function leyka_get_scale($campaign = null, $args = array()){
 	ob_start();
 	
 	
-	$url = ($args['button_target'] == 'page') ? get_permalink($campaign) : '#leyka-payment-form';?>
+	$url = trailingslashit(get_permalink($campaign->ID)).'#leyka-payment-form';
+	?>
 
 	<div class="<?php echo esc_attr($css_class);?>">
 		<?php leyka_scale_compact($campaign);?>
 	<?php if($args['show_button'] == 1 && !$campaign->is_finished) :?>
 		<div class="leyka-scale-button">
-			<a href='<?php echo $url;?>'><?php echo leyka_get_scale_button_label();?></a>
+			<a href='<?php echo $url;?>'<?php if($campaign->ID == $post->ID) echo ' class="leyka-scroll"';?>><?php echo leyka_get_scale_button_label();?></a>
 		</div>
 	<?php endif;?>
 	</div>
@@ -97,8 +96,7 @@ function leyka_campaign_card_screen($atts) {
 		'show_thumb'    => 1,
 		'show_excerpt'  => 1,
 		'show_scale'    => 1,
-		'show_button'   => 1,
-		'button_target' => 'form'
+		'show_button'   => 1,		
     ), $atts );
 
     $campaign = ($a['id'] > 0) ? get_post($a['id']) : $post;
@@ -118,8 +116,7 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
 		'show_thumb'    => 1,
 		'show_excerpt'  => 1,
 		'show_scale'    => 1,
-		'show_button'   => 1,
-		'button_target' => 'form'
+		'show_button'   => 1,		
 	);
 	
 	$args = wp_parse_args($args, $defaults);
@@ -139,6 +136,7 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
 	$css_class = apply_filters('leyka_campaign_card_class', 'leyka-campaign-card', $campaign, $args);	
 	if($args['show_thumb'] == 1 && has_post_thumbnail($campaign->ID))
 		$css_class .= ' has-thumb';
+		
 	
 	//do we have some content
 	ob_start();
@@ -169,19 +167,15 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
 		<?php if($args['show_scale'] == 1): ?>
 			
 			<?php
-				echo leyka_get_scale($campaign,
-						array('show_button' => $args['show_button'],
-							  'button_target' => $args['button_target']
-							  )
-						);
+				echo leyka_get_scale($campaign,	array('show_button' => $args['show_button']));
 			?>
 			
 		<?php
 			elseif($args['show_button'] == 1 && !$campaign->is_finished) :
-			$url = ($args['button_target'] == 'page') ? get_permalink($campaign) : '#leyka-payment-form'; 
+			$url = trailingslashit(get_permalink($campaign->ID)).'#leyka-payment-form';
 		?>
 			<div class="leyka-scale-button-alone">
-				<a href='<?php echo $url;?>'><?php echo leyka_get_scale_button_label();?></a>
+				<a href='<?php echo $url;?>'<?php if($campaign->ID == $post->ID) echo ' class="leyka-scroll"';?>><?php echo leyka_get_scale_button_label();?></a>
 			</div>
 			
 		<?php endif;?>

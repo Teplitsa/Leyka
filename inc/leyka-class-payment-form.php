@@ -502,22 +502,22 @@ function leyka_print_donation_elements($content) {
 	$autoprint = leyka_options()->opt('donation_form_mode');
 	if( !is_singular('leyka_campaign') || !$autoprint )
 		return $content;
-
-	$campaign_ignorance = get_post_meta($post->ID, 'ignore_global_template', true);
-	if($campaign_ignorance)
+	
+	$campaign = new Leyka_Campaign($post);	
+	if($campaign->ignore_global_template_settings)
 		return $content;
 
 	$post_content = $content;
 	$content = '';
 
-	// Scale on top of form:
+	// Scale on top of form:	
 	if(leyka_options()->opt('scale_widget_place') == 'top' || leyka_options()->opt('scale_widget_place') == 'both')
         $content .= do_shortcode("[leyka_scale show_button='1']");
 
 	$content .= $post_content;
 
-	// Scale below form:
-	if(leyka_options()->opt('scale_widget_place') == 'bottom' || leyka_options()->opt('scale_widget_place') == 'both')
+	// Scale below form:	
+	if(!empty($campaign->target) && (leyka_options()->opt('scale_widget_place') == 'bottom' || leyka_options()->opt('scale_widget_place') == 'both'))
         $content .= do_shortcode("[leyka_scale show_button='0']");
 
 	// Payment form:

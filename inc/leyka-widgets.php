@@ -55,8 +55,7 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 			'show_thumb'    => !empty($instance['show_thumb']),
 			'show_excerpt'  => !empty($instance['show_excerpt']),
 			'show_scale'    => !empty($instance['show_scale']),
-			'show_button'   => !empty($instance['show_button']),
-			'button_target' => (empty($campaign_id) || $campaign_id == $post->ID) ? 'form' : 'page', // where "help" button should lead
+			'show_button'   => !empty($instance['show_button']),			
 		);		
 		
 		$css_id = 'leyka_campaign_card_widget-'.uniqid();
@@ -193,8 +192,7 @@ class Leyka_Campaigns_List_Widget extends WP_Widget {
 			'show_thumb'    => !empty($instance['show_thumb']),
 			'show_excerpt'  => !empty($instance['show_excerpt']),
 			'show_scale'    => !empty($instance['show_scale']),
-			'show_button'   => !empty($instance['show_button']),
-			'button_target' => 'page' //where button should point
+			'show_button'   => !empty($instance['show_button']),			
 		);
 
 		echo $before_widget;		

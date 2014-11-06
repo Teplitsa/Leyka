@@ -134,21 +134,20 @@ class Leyka_Admin_Setup {
 
 		/* page actions */
 		do_action('leyka_dashboard_actions');
-		
+
 		$page_slug = 'leyka';
 		$page_title = __('Leyka Dashboard', 'leyka');
 		$parent_slug = 'admin.php';
-		$faction = "{$parent_slug}?page={$page_slug}";
-		
+//		$faction = "{$parent_slug}?page={$page_slug}";
+
 		/* @to-do: make metaboxes collapsable */
 		add_meta_box('leyka_status', __('Leyka\'s settings', 'leyka'), array($this, 'status_metabox_screen'), 'toplevel_page_leyka', 'normal');
 		add_meta_box('leyka_history', __('Recent donations', 'leyka'), array($this, 'history_metabox_screen'), 'toplevel_page_leyka', 'normal');
-		add_meta_box('leyka_campaigns', __('Recent campaings', 'leyka'), array($this, 'campaigns_metabox_screen'), 'toplevel_page_leyka', 'normal');
-	?>
-	
+		add_meta_box('leyka_campaigns', __('Recent campaings', 'leyka'), array($this, 'campaigns_metabox_screen'), 'toplevel_page_leyka', 'normal');?>
+
 		<div class="wrap">
 		<h2><?php echo $page_title;?></h2>
-			
+
 		<div class="metabox-holder" id="leyka-widgets">
 		<div class="postbox-container" id="postbox-container-1">
 			<?php //var_dump(get_current_screen());
@@ -160,7 +159,7 @@ class Leyka_Admin_Setup {
 		</div><!-- close .wrap -->
 	<?php
 	}
-	
+
 	function status_metabox_screen(){
 		
 		$tabs = Leyka_Options_Allocator::instance()->get_tabs();

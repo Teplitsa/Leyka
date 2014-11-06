@@ -279,7 +279,7 @@ jQuery(document).ready(function($){
 	});
 	
 	//scroll
-	$("a[href='#leyka-payment-form']").on('click', function(e){
+	$("a.leyka-scroll").on('click', function(e){
 		e.preventDefault();
 		var target_top = parseInt($("#leyka-payment-form").offset().top) -50;
 		//var target_top = target_offset.top;

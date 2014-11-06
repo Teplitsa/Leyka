@@ -126,7 +126,7 @@ class Leyka_Campaign_Management {
 		if(empty($cur_template))
 			$cur_template = 'default';?>
 
-        <fieldset id="payment-title" class="metabox-field campaign-field">
+        <fieldset id="payment-title" class="metabox-field campaign-field campaign-purpose">
             <label for="payment_title">
                 <?php _e('Campaign title meant for payment system', 'leyka');?>
                 <br />
@@ -136,9 +136,9 @@ class Leyka_Campaign_Management {
             <input type="text" class="widefat" name="payment_title" id="payment_title" value="<?php echo $campaign->payment_title ? $campaign->payment_title : $campaign->title;?>">
         </fieldset>
 		
-		<h4 class="metabox-field-title"><?php _e('Template settings', 'leyka');?></h4>
+		<h4 class="metabox-field-title campaign-template"><?php _e('Template settings', 'leyka');?></h4>
 
-		<fieldset id="campaign-template" class="metabox-field campaign-field">
+		<fieldset id="campaign-template" class="metabox-field campaign-field campaign-template">
 			<label for="campaign_template"><?php _e('Template for payment form', 'leyka');?></label>
 			<select id="campaign_template" name="campaign_template">
 				<option value="default" <?php selected($cur_template, 'default');?>>
@@ -157,22 +157,22 @@ class Leyka_Campaign_Management {
 			</select>
 		</fieldset>
 		
-		<fieldset id="ignore-global-template" class="metabox-field campaign-field">
+		<fieldset id="ignore-global-template" class="metabox-field campaign-field campaign-ignorance">
 			<label for="ignore_global_template">
 			<input type="checkbox" name="ignore_global_template" id="ignore_global_template" value="1" <?php checked($campaign->ignore_global_template_settings, 1);?>>&nbsp;
 			<?php _e('Ignore global template settings', 'leyka');?></label>
 		</fieldset>
 
-		<h4 class="metabox-field-title"><?php _e('Campaign target', 'leyka');?></h4>
+		<h4 class="metabox-field-title campaign-target"><?php _e('Campaign target', 'leyka');?></h4>
 
-		<fieldset id="target-amount" class="metabox-field campaign-field">
+		<fieldset id="target-amount" class="metabox-field campaign-field campaign-target">
 			<label for="campaign_target">
                 <?php echo sprintf(__('Target (%s)', 'leyka'), leyka_options()->opt('currency_rur_label'));?>
             </label>
 			<input type="text" name="campaign_target" id="campaign_target" value="<?php echo $campaign->target;?>" class="widefat">
 		</fieldset>
 		
-		<fieldset id="collected-amount" class="metabox-field campaign-field">
+		<fieldset id="collected-amount" class="metabox-field campaign-field campaign-target-collected">
 		<?php $collected = $campaign->get_collected_amount(); ?>
 			<label for="collected_target">
                 <?php echo sprintf(__('Collected (%s)', 'leyka'), leyka_get_currency_label('rur'));?>
@@ -180,7 +180,7 @@ class Leyka_Campaign_Management {
 			<input type="text" id="collected_target" disabled="disabled" value="<?php echo $collected;?>" class="widefat">
 		</fieldset>
 
-		<fieldset id="d-scale-demo" class="metabox-field campaign-field">
+		<fieldset id="d-scale-demo" class="metabox-field campaign-field campaign-target-scale">
 		<?php if($campaign->target > 0) {
 
 			$percentage = round(($collected/$campaign->target)*100);
@@ -206,7 +206,7 @@ class Leyka_Campaign_Management {
         <?php $curr_page = get_current_screen();
         if($curr_page->action != 'add') {?>
 
-        <fieldset id="campaign-finished" class="metabox-field campaign-field">
+        <fieldset id="campaign-finished" class="metabox-field campaign-field campaign-finished">
             <label for="is-finished">
                 <input type="checkbox" id="is-finished" name="is_finished" value="1" <?php echo $campaign->is_finished ? 'checked' : '';?> /> <?php _e('Campaign is finished, donations collecting stopped', 'leyka');?>
             </label>
