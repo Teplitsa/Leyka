@@ -26,6 +26,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 'title' => __('Chronopay shared_sec', 'leyka'),
                 'description' => __('Please, enter your Chronopay shared_sec value here. It can be found in your contract.', 'leyka'),
                 'required' => 1,
+                'is_password' => true,
                 'placeholder' => __('Ex., 4G0i8590sl5Da37I', 'leyka'),
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
@@ -106,17 +107,17 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             'product_id' => $chronopay_product_id, 
 			'product_price' => $price,
 			'product_price_currency' => $this->_get_currency_id($donation->currency), 	
-			'cs1' => esc_attr($donation->title), // purpose of the donation
-			'cs2' => $donation_id, // payment id
+			'cs1' => esc_attr($donation->title), // Purpose of the donation
+			'cs2' => $donation_id, // Payment ID
 
-			'cb_url' => $this->_get_callback_service_url(), //url for gateway callbacks
+			'cb_url' => home_url('leyka/service/'.$this->_id.'/response/'), // URL for the gateway callbacks
 			'cb_type' => 'P',
 			'success_url' => leyka_get_success_page_url(),
 			'decline_url' => leyka_get_failure_page_url(),
 
 			'sign' => md5($chronopay_product_id.'-'.$price.'-'.$sharedsec),
 			'language' => $lang,
-			'email' => $donation->donor_email
+			'email' => $donation->donor_email,
         );
 
 		if($country)
@@ -124,12 +125,6 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
 		return $form_data_vars;
     }
-	
-	/* submission helpers */
-	protected function _get_callback_service_url(){
-
-        return home_url('leyka/service/'.$this->_id.'/response');
-	}
 
 	protected function _get_currency_id($leyka_currency_id){
 		
@@ -365,8 +360,8 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             return array();
 
         return array(
-			__('Operatioin status', 'leyka') => $response_vars['transaction_type'],
-			__('Transaction ID', 'leyka') => $response_vars['transaction_id'],
+			__('Operation status:', 'leyka') => $response_vars['transaction_type'],
+			__('Transaction ID:', 'leyka') => $response_vars['transaction_id'],
 			__('Full donation amount:', 'leyka') => $response_vars['total'].' '.$donation->currency_label,
 			__("Gateway's donor ID:", 'leyka') => $response_vars['customer_id'],
 			__('Response date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($response_vars['date']))

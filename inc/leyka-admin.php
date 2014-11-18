@@ -35,7 +35,7 @@ class Leyka_Admin_Setup {
 
         if(current_user_can($this->_options_capability)) {
 
-            usort($submenu['leyka'], function($a, $b){
+            @usort($submenu['leyka'], function($a, $b){
 
                 if($a[0] == __('Dashboard', 'leyka'))
                     return -1;
@@ -340,9 +340,7 @@ class Leyka_Admin_Setup {
 	    if( !empty($_POST["leyka_settings_{$current_stage}_submit"])){
 //         && wp_verify_nonce('_leyka_nonce', "leyka_settings_{$current_stage}")
 			do_action("leyka_settings_{$current_stage}_submit", $current_stage);
-		}
-            
-	?>
+		}?>
 
 		<div class="wrap">
 

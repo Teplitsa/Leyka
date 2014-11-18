@@ -33,37 +33,24 @@ class Leyka_Text_Gateway extends Leyka_Gateway {
     }
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
-
         remove_action('leyka_payment_form_submission-'.$this->id, array($this, 'process_form_default'), 100);
     }
 
     public function submission_redirect_url($current_url, $pm_id) {
-
         return $current_url;
     }
 
     public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
-
         return $form_data_vars;
     }
 
-    /* submission helpers */
-    protected function _get_callback_service_url(){
-
-    }
-
-
     public function log_gateway_fields($donation_id) {
-
     }
 
     public function _handle_service_calls($call_type = '') {
-
-
     }
 
     public function get_gateway_response_formatted(Leyka_Donation $donation) {
-
         return array();
     }
 
@@ -105,7 +92,7 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
 
 //        $this->_active = !empty($params['active']) ? 1 : 0;
         $pm_available = leyka_options()->opt('pm_available');
-        $this->_active = (is_array($pm_available)) ? (int)in_array($this->_gateway_id.'-'.$this->_id, $pm_available) : 0;
+        $this->_active = is_array($pm_available) ? (int)in_array($this->_gateway_id.'-'.$this->_id, $pm_available) : 0;
 
         $this->_support_global_fields = isset($params['has_global_fields']) ? $params['has_global_fields'] : false;
 
@@ -119,7 +106,8 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
         $this->_submit_label = empty($params['submit_label']) ?
             __('Donate', 'leyka') : $params['submit_label'];
 
-        $this->_supported_currencies = empty($params['currencies']) ? array('rur',) : $params['currencies'];
+        $this->_default_currency = empty($params['default_currency']) ?
+            array('rur', 'usd', 'eur') : $params['default_currency'];
 
         $this->_default_currency = empty($params['default_currency']) ? 'rur' : $params['default_currency'];
 

@@ -6,6 +6,7 @@ add_action('leyka_settings_currency_submit', 'leyka_save_settings');
 add_action('leyka_settings_email_submit', 'leyka_save_settings');
 add_action('leyka_settings_view_submit', 'leyka_save_settings');
 add_action('leyka_settings_additional_submit', 'leyka_save_settings');
+
 function leyka_save_settings($tab_name) {
 
     $options_names = array();
@@ -48,8 +49,4 @@ function leyka_save_settings($tab_name) {
 
         }
     }
-
-//    echo '<pre>'.print_r($_POST, TRUE).'</pre>';
-//    echo '<pre>'.print_r(leyka_opt_alloc()->get_tab_options($tab_name), TRUE).'</pre>';
-//    echo '<pre>'.print_r($options_names, TRUE).'</pre>';
 }

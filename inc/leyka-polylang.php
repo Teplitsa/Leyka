@@ -5,10 +5,8 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
 
     add_action('pll_language_defined', function($slug, $cur_lang){
 
-//        echo '<pre>' . print_r('Here 1', 1) . '</pre>';
-
 //        if($slug != 'en') {
-            load_textdomain('leyka', LEYKA_PLUGIN_DIR."lang/leyka-{$cur_lang->locale}.mo");
+        load_textdomain('leyka', LEYKA_PLUGIN_DIR."lang/leyka-{$cur_lang->locale}.mo");
 //        }
 
         add_filter('leyka_default_success_page_query', function($params){

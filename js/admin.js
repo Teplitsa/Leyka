@@ -4,6 +4,21 @@
 
 jQuery(document).ready(function($){
 
+    $('.send-donor-thanks').click(function(e){
+        e.preventDefault();
+
+        var $wrap = $(this).parent(),
+            donation_id = $wrap.data('donation-id');
+
+        $(this).fadeOut(100, function(){ $(this).html('<img src="'+leyka.ajax_loader_url+'" />').fadeIn(100); });
+
+        $wrap.load(leyka.ajaxurl, {
+            action: 'leyka_send_donor_email',
+            nonce: $wrap.find('#_leyka_donor_email_nonce').val(),
+            donation_id: donation_id
+        });
+    });
+
     // Exchange places of donations Export and Filter buttons:
 //    $('#post-query-submit').after($('.donations-export-form').detach());
 

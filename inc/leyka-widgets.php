@@ -103,8 +103,7 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 			'show_button'  => 1,
 		);
 
-		$instance = wp_parse_args((array)$instance, $defaults);		
-?>
+		$instance = wp_parse_args((array)$instance, $defaults);?>
 
 		<p>
 			<label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php _e('Title', 'leyka');?>:</label>
@@ -330,7 +329,7 @@ class Leyka_Donations_List_Widget extends WP_Widget {
         		
 		$widget_ops = array(
 			'classname'   => 'leyka_donations_list',
-			'description' => __('Recent donations list optionally filtered by campaign', 'leyka')
+			'description' => __('Recent donations list, optionally filtered by campaign', 'leyka')
 		);
 		$this->WP_Widget('leyka_donations_list',  __('Leyka: Donations List', 'leyka'), $widget_ops);	
 	}

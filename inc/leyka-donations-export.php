@@ -65,8 +65,6 @@ function leyka_do_donations_export() {
         'nopaging' => true,
     );
 
-//    die('<pre>' . print_r($args, 1) . '</pre>');
-
     $donations = get_posts(apply_filters('leyka_donations_export_query_args', $args));
 
     $file_lines = array(apply_filters('leyka_donations_export_headers', array('ID', 'Имя донора', 'Email', 'Тип платежа', 'Способ платежа', 'Сумма', 'Дата пожертвования', 'Статус', 'Кампания')));

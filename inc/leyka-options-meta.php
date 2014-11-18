@@ -237,7 +237,7 @@ $options_meta = apply_filters('leyka_core_options_meta', array(
         'description' => __('Please, set possible amounts of donation in RUR when «fixed» donation type is selected. Only an integer non-negative values, separated with commas.', 'leyka'),
         'required' => 1, // 1 if field is required, 0 otherwise
         'placeholder' => '100,300,500,1000', // For text fields
-        'length' => 15, // For text fields
+        'length' => 25, // For text fields
         'list_entries' => '', // For select, radio & checkbox fields
         'validation_rules' => array(), // List of regexp?..
     ),
@@ -292,7 +292,7 @@ $options_meta = apply_filters('leyka_core_options_meta', array(
         'description' => __('Please, set possible amounts of donation in USD when «fixed» donation type is selected. Only an integer non-negative values, separated with commas.', 'leyka'),
         'required' => 1, // 1 if field is required, 0 otherwise
         'placeholder' => '3,5,10,15,50', // For text fields
-        'length' => 15, // For text fields
+        'length' => 25, // For text fields
         'list_entries' => '', // For select, radio & checkbox fields
         'validation_rules' => array(), // List of regexp?..
     ),
@@ -347,7 +347,7 @@ $options_meta = apply_filters('leyka_core_options_meta', array(
         'description' => __('Please, set possible amounts of donation in EUR when «fixed» donation type is selected. Only an integer non-negative values, separated with commas.', 'leyka'),
         'required' => 1, // 1 if field is required, 0 otherwise
         'placeholder' => '3,5,10,100,500', // For text fields
-        'length' => 15, // For text fields
+        'length' => 25, // For text fields
         'list_entries' => '', // For select, radio & checkbox fields
         'validation_rules' => array(), // List of regexp?..
     ),
