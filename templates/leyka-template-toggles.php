@@ -13,7 +13,7 @@ leyka_pf_submission_errors();?>
 <?php
 	$counter = 0;
 	foreach($active_pm as $i => $pm) {
-	leyka_setup_current_pm($pm);
+	leyka_setup_current_pm($pm); 
 	$counter++;?>
 
 <div class="leyka-payment-option toggle <?php if($counter == 1) echo 'toggled';?> <?php echo esc_attr($pm->full_id);?>">

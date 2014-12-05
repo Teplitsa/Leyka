@@ -1077,3 +1077,6 @@ div[id*="leyka_donors_list"].wide .ldl-item {
     padding-right: 20px; }
     .leyka-oferta-text .leyka-oferta-text-flow p {
       margin: 1.35em 0; }
+
+#leyka-payment-form .leyka-oferta-text-flow p {
+  margin: 1.35em 0; }

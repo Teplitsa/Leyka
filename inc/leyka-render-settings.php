@@ -17,7 +17,7 @@ function leyka_render_section_area($section){?>
 
 /** Text fields */
 add_action('leyka_render_text', 'leyka_render_text_field', 10, 2);
-function leyka_render_text_field($option_name, $data){
+function leyka_render_text_field($option_name, $data){ 
     $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;?>
 
     <div id="<?php echo $option_name.'-wrapper'?>">
@@ -158,7 +158,7 @@ function leyka_render_multi_select_field($option_name, $data) {
 
 /** Textarea fields */
 add_action('leyka_render_textarea', 'leyka_render_textarea_field', 10, 2);
-function leyka_render_textarea_field($option_name, $data){
+function leyka_render_textarea_field($option_name, $data){ 
     $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;?>
 
     <div id="<?php echo $option_name.'-wrapper'?>">
@@ -179,7 +179,7 @@ function leyka_render_textarea_field($option_name, $data){
 
 /** Simple HTML fields */
 add_action('leyka_render_html', 'leyka_render_html_field', 10, 2);
-function leyka_render_html_field($option_name, $data){
+function leyka_render_html_field($option_name, $data){ 
     $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name; ?>
 
     <div id="<?php echo $option_name.'-wrapper'?>">

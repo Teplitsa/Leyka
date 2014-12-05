@@ -4,7 +4,8 @@
 @import 'presets';
 
 #icon-leyka {
-	background: transparent url(../img/leyka-icon.png) no-repeat 1px 0; }
+	background: transparent url(../img/leyka-icon.png) no-repeat 1px 0;
+}
 
 
 /** Campaign screen **/
@@ -645,7 +646,8 @@ $working-width : 700px;
 	display: block;
 	width: 32px;
 	height: 32px;
-	background: transparent url(../img/leyka-icon.png) no-repeat 0 0;
+	background: transparent url(../img/leyka-icon.png) no-repeat 0 2px;
+	background-image: url(../img/leyka-icon.svg);
 	position: absolute;
 	top: 5px;
 	left: 0; }

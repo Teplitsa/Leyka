@@ -197,11 +197,10 @@ class Leyka_Payment_Form {
 		if( !leyka_options()->opt('argee_to_terms_needed') || !$this->is_field_supported('agree') )
 			return '';
 
-		// options: agree label for chackbox
-		$agree_id = esc_attr(uniqid().'-text');
+		$agree_id = esc_attr(uniqid().'-text'); // Label for checkbox
 
-		ob_start();
-	?>
+		ob_start();?>
+
 		<div id="<?php echo $agree_id;?>" class="leyka-oferta-text">
 			<div class="leyka-modal-close">X</div>
 			<div class="leyka-oferta-text-frame">
@@ -215,13 +214,13 @@ class Leyka_Payment_Form {
             </a>
 		</label>
         <p class="field-error" id="leyka_agree-error"></p>
-		
+
 	<?php
 		$out = ob_get_contents();
 		ob_end_clean();
 		return leyka_field_wrap($out, 'agree');		
 	}
-	
+
 	function get_submit_field() {
 		
 		if(!$this->is_field_supported('submit'))
@@ -251,7 +250,7 @@ class Leyka_Payment_Form {
 	}
 	
 	function get_pm_description() {
-
+ 
         return $this->_pm->description ?
             apply_filters('leyka_pm_description', $this->_pm->description, $this->_pm_name) : '';
 	}
@@ -516,8 +515,12 @@ function leyka_print_donation_elements($content) {
 
 	$content .= $post_content;
 
-	// Scale below form:	
-	if(!empty($campaign->target) && (leyka_options()->opt('scale_widget_place') == 'bottom' || leyka_options()->opt('scale_widget_place') == 'both'))
+	// Scale below form:
+	if(
+        !empty($campaign->target) && (
+            leyka_options()->opt('scale_widget_place') == 'bottom' ||
+            leyka_options()->opt('scale_widget_place') == 'both'
+    ))
         $content .= do_shortcode("[leyka_scale show_button='0']");
 
 	// Payment form:
@@ -668,13 +671,11 @@ function leyka_payment_method_action() {
 		$icons = leyka_pf_get_pm_icons();
 		if($icons) {
 			$list = array();
-			foreach($icons as $i){
+			foreach($icons as $i) {
 				$list[] = "<li>{$i}</li>";
 			}
 
-			echo "<ul class='leyka-pm-icons cf'>";
-			echo implode('', $list);
-			echo "</ul>";
+			echo '<ul class="leyka-pm-icons cf">'.implode('', $list).'</ul>';
 		}?>
 	</div>
 	<?php

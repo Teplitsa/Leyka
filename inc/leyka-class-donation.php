@@ -739,6 +739,7 @@ class Leyka_Donation_Management {
 	<?php }
 
     public function donation_status_metabox($donation) {
+
         wp_nonce_field('donation_status_metabox', '_donation_edit_nonce');
 
         $is_adding_page = get_current_screen()->action == 'add';?>
@@ -855,11 +856,20 @@ class Leyka_Donation_Management {
         </div>
     <?php }
 
-    public function recurrent_cancel_metabox($donation) { $donation = new Leyka_Donation($donation);
+    public function recurrent_cancel_metabox($donation) {
 
-        if($donation->payment_type != 'rebill') {?>
+        /** @todo Uncomment this metabox in constructor when work on recurrents cancelling will begin. */
+
+        $donation = new Leyka_Donation($donation);
+
+        if($donation->payment_type != 'rebill' || !function_exists('curl_init')) {?>
             <div id="hide-recurrent-metabox"></div>
         <?php return; } else {
+
+            /**
+             * @todo All this code may need to be in Gateway class - it's too many Chronopay things here.
+             * Must think how to make all this more gateway-independent.
+             */
             $init_recurrent_donation = Leyka_Donation::get_init_recurrent_payment($donation->chronopay_customer_id);
             if($init_recurrent_donation->recurrents_cancelled) {?>
 

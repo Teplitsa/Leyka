@@ -125,10 +125,10 @@ jQuery(document).ready(function($){
         $('#campaign-select-trigger').slideDown(100);
     });
 
-    // If single donation page is opened, don't show "cancel this recurrents" metabox:
-    $('#hide-recurrent-metabox').each(function(){
-        $(this).parents('#leyka_donation_recurrent_cancel').hide();
-    });
+    // If single donation page is opened, show "cancel this recurrents" metabox if needed:
+//    if($('#hide-recurrent-metabox').length) {
+//        $('#leyka_donation_recurrent_cancel').hide();
+//    }
 
     $('.recurrent-cancel').click(function(e){
         e.preventDefault();

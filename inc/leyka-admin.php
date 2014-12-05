@@ -294,19 +294,23 @@ class Leyka_Admin_Setup {
 		}
 	}
 	
-	function dashboard_sidebar_screen() {?>
-
+	function dashboard_sidebar_screen() {
+		
+		$svg = 'http://leyka.te-st.ru/wp-content/uploads/assets/tst-logo.svg';
+		$png = 'http://leyka.te-st.ru/wp-content/uploads/assets/tst-logo.png';
+	?>
 		<div id="leyka-card">
 		<h2><i></i><?php _e('Leyka', 'leyka');?></h2>
 		<p><?php _e('Leyka is a simple donations management system', 'leyka');?></p>
 		<p><?php _e('Developed by <a href="http://te-st.ru/" target="_blank">Teplitsa of social technologies</a>', 'leyka');?></p>
-		<p class="te-st"><img src="http://te-st.ru/wp-content/uploads/white-logo-100x50.png" width="100" height="50" /></p>
+		<p class="te-st"><img src="<?php echo $svg;?>" onerror="this.onerror=null;this.src=<?php echo $png;?>"></p>
 		<ul class="leyka-ref-links">
 			<li><a href="http://leyka.te-st.ru" target='_blank'><?php _e('Plugin website', 'leyka');?></a></li>
 			<li><a href="http://leyka.te-st.ru/docs/" target='_blank'><?php _e('Documentation', 'leyka');?></a></li>
 			<li><a href="http://leyka.te-st.ru/faq/" target='_blank'><?php _e('Ask a question', 'leyka');?></a></li>
 		</ul>
 		</div>
+		
 	<?php	
 	}
 	
