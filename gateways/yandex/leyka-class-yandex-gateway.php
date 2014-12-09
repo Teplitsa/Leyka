@@ -78,6 +78,12 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 //            $this->_payment_methods['yandex_money_quick']->initialize_pm_options();
 //        }
 
+        /** @todo Until this PM's API will be upgraded. */
+//        if(empty($this->_payment_methods['yandex_money_quick'])) {
+//            $this->_payment_methods['yandex_money_quick'] = Leyka_Yandex_Money_Quick::get_instance();
+//            $this->_payment_methods['yandex_money_quick']->initialize_pm_options();
+//        }
+
         /** @todo До получения возможности протестировать */
 //        if(empty($this->_payment_methods['yandex_mobile'])) {
 //            $this->_payment_methods['yandex_mobile'] = Leyka_Yandex_Mobile::get_instance();
@@ -95,7 +101,11 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         switch($pm_id) {
             case 'yandex_money':
             case 'yandex_card':
+<<<<<<< HEAD
 //            case 'yandex_wm':
+=======
+            case 'yandex_wm':
+>>>>>>> b5aa8142a29b5a288443c74428ab2e951e062799
 //            case 'yandex_terminal':
 //            case 'yandex_mobile':
                 return leyka_options()->opt('yandex_test_mode') ?
@@ -111,6 +121,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
         $donation = new Leyka_Donation($donation_id);
 
+<<<<<<< HEAD
         /** Quick payment form */
         if($pm_id == 'yandex_money_quick' || $pm_id == 'yandex_money_card') {
 
@@ -153,6 +164,12 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             case 'yandex_money': $payment_type = 'PC'; break;
             case 'yandex_card': $payment_type = 'AC'; break;
 //            case 'yandex_wm': $payment_type = 'WM'; break;
+=======
+        switch($pm_id) { // PC - Yandex.money, AC - bank card, WM - Webmoney, MC - mobile payments
+            case 'yandex_money': $payment_type = 'PC'; break;
+            case 'yandex_card': $payment_type = 'AC'; break;
+            case 'yandex_wm': $payment_type = 'WM'; break;
+>>>>>>> b5aa8142a29b5a288443c74428ab2e951e062799
 //            case 'yandex_terminal': $payment_type = 'GP'; break;
 //            case 'yandex_mobile': $payment_type = 'MC'; break;
             default:
@@ -302,7 +319,9 @@ class Leyka_Yandex_Money extends Leyka_Payment_Method {
 
         $this->_id = empty($params['id']) ? 'yandex_money' : $params['id'];
 
-        $this->_label = empty($params['label']) ? __('Virtual cash Yandex.money', 'leyka') : $params['label'];
+        $this->_label_backend = empty($params['label_backend']) ?
+            __('Virtual cash Yandex.money', 'leyka') : $params['label_backend'];
+        $this->_label = empty($params['label']) ? __('Yandex.money', 'leyka') : $params['label'];
 
         $this->_description = empty($params['desc']) ?
             leyka_options()->opt_safe('yandex_money_description') : $params['desc'];
@@ -379,7 +398,9 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
 
         $this->_id = empty($params['id']) ? 'yandex_card' : $params['id'];
 
-        $this->_label = empty($params['label']) ? __('Payment with Banking Card', 'leyka') : $params['label'];
+        $this->_label_backend = empty($params['label_backend']) ?
+            __('Payment with Banking Card', 'leyka') : $params['label_backend'];
+        $this->_label = empty($params['label']) ? __('Banking Card', 'leyka') : $params['label'];
 
         $this->_description = empty($params['desc']) ?
             leyka_options()->opt_safe('yandex_card_description') : $params['desc'];
@@ -456,7 +477,9 @@ class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
 
         $this->_id = empty($params['id']) ? 'yandex_wm' : $params['id'];
 
-        $this->_label = empty($params['label']) ? __('Virtual cash Webmoney', 'leyka') : $params['label'];
+        $this->_label_backend = empty($params['label_backend']) ?
+            __('Virtual cash Webmoney', 'leyka') : $params['label_backend'];
+        $this->_label = empty($params['label']) ? __('Webmoney', 'leyka') : $params['label'];
 
         $this->_description = empty($params['desc']) ?
             leyka_options()->opt_safe('yandex_wm_description') : $params['desc'];
@@ -470,8 +493,7 @@ class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
         $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-//            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
-//            LEYKA_PLUGIN_BASE_URL.'gateways/quittance/icons/sber_s.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/webmoney.png',
         ));
 
         $this->_submit_label = empty($params['submit_label']) ? __('Donate', 'leyka') : $params['submit_label'];
@@ -495,9 +517,9 @@ class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
         $this->_options = array(
             'yandex_wm_description' => array(
                 'type' => 'html',
-                'default' => __("Yandex.Money is a simple and safe payment system to pay for goods and services through internet. You will have to fill a payment form, you will be redirected to the <a href='https://money.yandex.ru/'>Yandex.Money website</a> to confirm your payment. If you haven't got a Yandex.Money account, you can create it there.", 'leyka'),
-                'title' => __('Yandex.Money description', 'leyka'),
-                'description' => __('Please, enter Yandex Webmoney payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
+                'default' => __('<a href="http://www.webmoney.ru/">WebMoney Transfer</a> is an international financial transactions system and an invironment for a business in Internet, founded in 1988. Up until now, WebMoney clients counts at more than 25 million people around the world. WebMoney system includes a services to account and exchange funds, attract new funding, solve quarrels and make a safe deals.', 'leyka'),
+                'title' => __('WebMoney description', 'leyka'),
+                'description' => __('Please, enter WebMoney payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
                 'required' => 0,
                 'validation_rules' => array(), // List of regexp?..
             ),

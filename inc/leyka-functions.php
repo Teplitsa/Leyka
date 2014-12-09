@@ -41,7 +41,8 @@ function leyka_get_gateways_pm_list() {
     $options = array();
     foreach(leyka_get_pm_list() as $pm) {
         $gateway_title = leyka_get_gateway_by_id($pm->gateway_id)->title;
-        $options[$pm->full_id] = $pm->label.($gateway_title == $pm->label ? '' : ' ('.$gateway_title.')');
+        $options[$pm->full_id] = $pm->label_backend
+            .($gateway_title == $pm->label_backend ? '' : ' ('.$gateway_title.')');
     }
 
     return $options;

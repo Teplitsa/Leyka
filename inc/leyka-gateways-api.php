@@ -360,7 +360,11 @@ abstract class Leyka_Payment_Method {
     protected $_gateway_id = '';
     protected $_active = true;
     protected $_label = '';
+<<<<<<< HEAD
     protected $_label_frontend = '';
+=======
+    protected $_label_backend = '';
+>>>>>>> b5aa8142a29b5a288443c74428ab2e951e062799
     protected $_description = '';
     protected $_support_global_fields = true;
     protected $_custom_fields = array();
@@ -383,9 +387,15 @@ abstract class Leyka_Payment_Method {
             case 'label':
             case 'title':
             case 'name': $param = $this->_label; break;
+<<<<<<< HEAD
             case 'label_frontend':
             case 'title_frontend':
             case 'name_frontend': $param = $this->_label_frontend ? $this->_label_frontend : $this->_label_frontend;
+=======
+            case 'label_backend':
+            case 'title_backend':
+            case 'name_backend': $param = $this->_label_backend ? $this->_label_backend : $this->_label;
+>>>>>>> b5aa8142a29b5a288443c74428ab2e951e062799
                 break;
             case 'desc':
             case 'description': $param = html_entity_decode($this->_description); break;
@@ -434,7 +444,7 @@ abstract class Leyka_Payment_Method {
     
         add_filter('leyka_payment_options_allocation', array($this, 'allocate_pm_options'), 10, 1);
     }
-    
+
     public function get_pm_options_names() {
 
         $option_names = array();
