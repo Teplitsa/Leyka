@@ -265,7 +265,9 @@ class Leyka_Yandex_Money extends Leyka_Payment_Method {
 
         $this->_id = empty($params['id']) ? 'yandex_money' : $params['id'];
 
-        $this->_label = empty($params['label']) ? __('Virtual cash Yandex.money', 'leyka') : $params['label'];
+        $this->_label_backend = empty($params['label_backend']) ?
+            __('Virtual cash Yandex.money', 'leyka') : $params['label_backend'];
+        $this->_label = empty($params['label']) ? __('Yandex.money', 'leyka') : $params['label'];
 
         $this->_description = empty($params['desc']) ?
             leyka_options()->opt_safe('yandex_money_description') : $params['desc'];
@@ -342,7 +344,9 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
 
         $this->_id = empty($params['id']) ? 'yandex_card' : $params['id'];
 
-        $this->_label = empty($params['label']) ? __('Payment with Banking Card', 'leyka') : $params['label'];
+        $this->_label_backend = empty($params['label_backend']) ?
+            __('Payment with Banking Card', 'leyka') : $params['label_backend'];
+        $this->_label = empty($params['label']) ? __('Banking Card', 'leyka') : $params['label'];
 
         $this->_description = empty($params['desc']) ?
             leyka_options()->opt_safe('yandex_card_description') : $params['desc'];
@@ -419,7 +423,8 @@ class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
 
         $this->_id = empty($params['id']) ? 'yandex_wm' : $params['id'];
 
-        $this->_label_backend = empty($params['label']) ? __('Virtual cash Webmoney', 'leyka') : $params['label'];
+        $this->_label_backend = empty($params['label_backend']) ?
+            __('Virtual cash Webmoney', 'leyka') : $params['label_backend'];
         $this->_label = empty($params['label']) ? __('Webmoney', 'leyka') : $params['label'];
 
         $this->_description = empty($params['desc']) ?
@@ -434,8 +439,7 @@ class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
         $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-//            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
-//            LEYKA_PLUGIN_BASE_URL.'gateways/quittance/icons/sber_s.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/webmoney.png',
         ));
 
         $this->_submit_label = empty($params['submit_label']) ? __('Donate', 'leyka') : $params['submit_label'];

@@ -396,7 +396,9 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
 
         $this->_id = empty($params['id']) ? 'chronopay_card' : $params['id'];
 
-        $this->_label = empty($params['label']) ? __('Payment with Banking Card', 'leyka') : $params['label'];
+        $this->_label_backend = empty($params['label_backend']) ?
+            __('Payment with Banking Card', 'leyka') : $params['label_backend'];
+        $this->_label = empty($params['label']) ? __('Banking Card', 'leyka') : $params['label'];
 
         $this->_description = empty($params['desc']) ?
             leyka_options()->opt_safe('chronopay_card_description') : $params['desc'];
@@ -505,7 +507,9 @@ class Leyka_Chronopay_Card_Rebill extends Leyka_Payment_Method {
 
         $this->_id = empty($params['id']) ? 'chronopay_card_rebill' : $params['id'];
 
-        $this->_label = empty($params['label']) ? __('Rebilling payment with Banking Card', 'leyka') : $params['label'];
+        $this->_label_backend = empty($params['label_backend']) ?
+            __('Rebilling payment with Banking Card', 'leyka') : $params['label_backend'];
+        $this->_label = empty($params['label']) ? __('Banking Card', 'leyka') : $params['label'];
 
         $this->_description = empty($params['desc']) ?
             leyka_options()->opt_safe('chronopay_card_rebill_description') : $params['desc'];

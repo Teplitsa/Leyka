@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Leyka 2.1.4\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leyka\n"
 "POT-Creation-Date: 2014-09-11 08:25:09+00:00\n"
-"POT-Revision-Date: Mon Dec 08 2014 16:03:19 GMT+0400\n"
+"POT-Revision-Date: Tue Dec 09 2014 15:54:05 GMT+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -142,23 +142,27 @@ msgstr ""
 msgid "Response date:"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:268
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:269
 msgid "Virtual cash Yandex.money"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:287 ../gateways/yandex/leyka-
-#: class-yandex-gateway.php:366 ../gateways/yandex/leyka-class-yandex-gateway.php:
-#: 441 ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:287 ..
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:270
+msgid "Yandex.money"
+msgstr ""
+
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:289 ../gateways/yandex/leyka-
+#: class-yandex-gateway.php:370 ../gateways/yandex/leyka-class-yandex-gateway.php:
+#: 445 ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:287 ..
 #: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:369 ..
 #: /gateways/text/leyka-class-text-gateway.php:107 ../gateways/rbk/leyka-class-
-#: rbk-gateway.php:312 ../gateways/rbk/leyka-class-rbk-gateway.php:414 ..
-#: /gateways/rbk/leyka-class-rbk-gateway.php:493 ../gateways/chronopay/leyka-
-#: class-chronopay-gateway.php:419 ../gateways/chronopay/leyka-class-chronopay-
-#: gateway.php:528
+#: rbk-gateway.php:314 ../gateways/rbk/leyka-class-rbk-gateway.php:418 ..
+#: /gateways/rbk/leyka-class-rbk-gateway.php:498 ../gateways/chronopay/leyka-
+#: class-chronopay-gateway.php:421 ../gateways/chronopay/leyka-class-chronopay-
+#: gateway.php:532
 msgid "Donate"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:308 ..
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:310 ..
 #: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:310
 msgid ""
 "Yandex.Money is a simple and safe payment system to pay for goods and "
@@ -168,25 +172,31 @@ msgid ""
 "account, you can create it there."
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:309 ..
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:311 ..
 #: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:311
 msgid "Yandex.Money description"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:310 ..
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:312 ..
 #: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:312
 msgid ""
 "Please, enter Yandex.Money payment description that will be shown to the "
 "donor when this payment method will be selected for using."
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:345 ../gateways/rbk/leyka-
-#: class-rbk-gateway.php:293 ../gateways/chronopay/leyka-class-chronopay-gateway.
-#: php:399
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:348 ../gateways/rbk/leyka-
+#: class-rbk-gateway.php:294 ../gateways/chronopay/leyka-class-chronopay-gateway.
+#: php:400
 msgid "Payment with Banking Card"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:387 ..
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:349 ../gateways/rbk/leyka-
+#: class-rbk-gateway.php:295 ../gateways/chronopay/leyka-class-chronopay-gateway.
+#: php:401 ../gateways/chronopay/leyka-class-chronopay-gateway.php:512
+msgid "Banking Card"
+msgstr ""
+
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:391 ..
 #: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:391
 msgid ""
 "Yandex.Money allows a simple and safe way to pay for goods and services with "
@@ -195,27 +205,27 @@ msgid ""
 "website</a> to enter your bank card data and to confirm your payment."
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:388 ..
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:392 ..
 #: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:392
 msgid "Yandex bank card payment description"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:389 ..
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:393 ..
 #: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:393
 msgid ""
 "Please, enter Yandex.Money bank cards payment description that will be shown "
 "to the donor when this payment method will be selected for using."
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:422
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:427
 msgid "Virtual cash Webmoney"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:423
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:428
 msgid "Webmoney"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:462
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:466
 msgid ""
 "<a href=\"http://www.webmoney.ru/\">WebMoney Transfer</a> is an international "
 "financial transactions system and an invironment for a business in Internet, "
@@ -225,11 +235,11 @@ msgid ""
 "safe deals."
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:463
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:467
 msgid "WebMoney description"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:464
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:468
 msgid ""
 "Please, enter WebMoney payment description that will be shown to the donor "
 "when this payment method will be selected for using."
@@ -363,7 +373,8 @@ msgstr ""
 msgid "Please, set a text to describe an additional ways to donate."
 msgstr ""
 
-#: ../gateways/rbk/leyka-class-rbk-gateway.php:13
+#: ../gateways/rbk/leyka-class-rbk-gateway.php:13 ../gateways/rbk/leyka-class-rbk-
+#: gateway.php:399
 msgid "RBK Money"
 msgstr ""
 
@@ -499,8 +510,8 @@ msgstr ""
 msgid "Payment decline code (if it's declined):"
 msgstr ""
 
-#: ../gateways/rbk/leyka-class-rbk-gateway.php:342 ../gateways/rbk/leyka-class-
-#: rbk-gateway.php:437 ../gateways/rbk/leyka-class-rbk-gateway.php:516
+#: ../gateways/rbk/leyka-class-rbk-gateway.php:344 ../gateways/rbk/leyka-class-
+#: rbk-gateway.php:441 ../gateways/rbk/leyka-class-rbk-gateway.php:521
 msgid ""
 "RBK Money allows a simple and safe way to pay for goods and services with "
 "bank cards and other means through internet. You will have to fill a payment "
@@ -509,28 +520,32 @@ msgid ""
 "confirm your payment."
 msgstr ""
 
-#: ../gateways/rbk/leyka-class-rbk-gateway.php:343 ../gateways/rbk/leyka-class-
-#: rbk-gateway.php:517
+#: ../gateways/rbk/leyka-class-rbk-gateway.php:345 ../gateways/rbk/leyka-class-
+#: rbk-gateway.php:522
 msgid "RBK Money bank card payment description"
 msgstr ""
 
-#: ../gateways/rbk/leyka-class-rbk-gateway.php:344 ../gateways/rbk/leyka-class-
-#: rbk-gateway.php:439 ../gateways/rbk/leyka-class-rbk-gateway.php:518
+#: ../gateways/rbk/leyka-class-rbk-gateway.php:346 ../gateways/rbk/leyka-class-
+#: rbk-gateway.php:443 ../gateways/rbk/leyka-class-rbk-gateway.php:523
 msgid ""
 "Please, enter RBK Money gateway description that will be shown to the donor "
 "when this payment method will be selected for using."
 msgstr ""
 
-#: ../gateways/rbk/leyka-class-rbk-gateway.php:395
+#: ../gateways/rbk/leyka-class-rbk-gateway.php:398
 msgid "Payment with RBK Money"
 msgstr ""
 
-#: ../gateways/rbk/leyka-class-rbk-gateway.php:438
+#: ../gateways/rbk/leyka-class-rbk-gateway.php:442
 msgid "RBK Money payment description"
 msgstr ""
 
-#: ../gateways/rbk/leyka-class-rbk-gateway.php:474
+#: ../gateways/rbk/leyka-class-rbk-gateway.php:478
 msgid "Use any RBK Money payment method available"
+msgstr ""
+
+#: ../gateways/rbk/leyka-class-rbk-gateway.php:479
+msgid "RBK Money (any)"
 msgstr ""
 
 #: ../gateways/chronopay/leyka-class-chronopay-gateway.php:13
@@ -615,8 +630,8 @@ msgstr ""
 msgid "Transaction ID:"
 msgstr ""
 
-#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:448 ..
-#: /gateways/chronopay/leyka-class-chronopay-gateway.php:550
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:450 ..
+#: /gateways/chronopay/leyka-class-chronopay-gateway.php:554
 msgid ""
 "Chronopay allows a simple and safe way to pay for goods and services with "
 "bank cards through internet. You will have to fill a payment form, you will "
@@ -624,54 +639,54 @@ msgid ""
 "secure payment page to enter your bank card data and to confirm your payment."
 msgstr ""
 
-#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:449
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:451
 msgid "Chronopay bank card payment description"
 msgstr ""
 
-#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:450 ..
-#: /gateways/chronopay/leyka-class-chronopay-gateway.php:552
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:452 ..
+#: /gateways/chronopay/leyka-class-chronopay-gateway.php:556
 msgid ""
 "Please, enter Chronopay gateway description that will be shown to the donor "
 "when this payment method will be selected for using."
 msgstr ""
 
-#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:457
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:459
 msgid "Chronopay product_id for RUR"
 msgstr ""
 
-#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:458
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:460
 msgid "Please, enter Chronopay product_id for RUR currency."
 msgstr ""
 
-#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:465
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:467
 msgid "Chronopay product_id for USD"
 msgstr ""
 
-#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:466
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:468
 msgid "Please, enter Chronopay product_id for USD currency."
 msgstr ""
 
-#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:473
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:475
 msgid "Chronopay product_id for EUR"
 msgstr ""
 
-#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:474
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:476
 msgid "Please, enter Chronopay product_id for EUR currency."
 msgstr ""
 
-#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:508
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:511
 msgid "Rebilling payment with Banking Card"
 msgstr ""
 
-#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:551
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:555
 msgid "Chronopay bank card rebill payment description"
 msgstr ""
 
-#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:559
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:563
 msgid "Chronopay product_id for rebills in RUR"
 msgstr ""
 
-#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:560
+#: ../gateways/chronopay/leyka-class-chronopay-gateway.php:564
 msgid "Please, enter Chronopay product_id for rebills in RUR currency."
 msgstr ""
 

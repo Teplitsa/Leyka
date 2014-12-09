@@ -290,7 +290,9 @@ class Leyka_Rbk_Card extends Leyka_Payment_Method {
 
         $this->_id = empty($params['id']) ? 'bankcard' : $params['id'];
 
-        $this->_label = empty($params['label']) ? __('Payment with Banking Card', 'leyka') : $params['label'];
+        $this->_label_backend = empty($params['label_backend']) ?
+            __('Payment with Banking Card', 'leyka') : $params['label_backend'];
+        $this->_label = empty($params['label']) ? __('Banking Card', 'leyka') : $params['label'];
 
         $this->_description = empty($params['desc']) ?
             leyka_options()->opt_safe('bankcard_description') : $params['desc'];
@@ -392,7 +394,9 @@ class Leyka_Rbk_Money extends Leyka_Payment_Method {
 
         $this->_id = empty($params['id']) ? 'rbkmoney' : $params['id'];
 
-        $this->_label = empty($params['label']) ? __('Payment with RBK Money', 'leyka') : $params['label'];
+        $this->_label_backend = empty($params['label_backend']) ?
+            __('Payment with RBK Money', 'leyka') : $params['label_backend'];
+        $this->_label = empty($params['label']) ? __('RBK Money', 'leyka') : $params['label'];
 
         $this->_description = empty($params['desc']) ?
             leyka_options()->opt_safe('rbkmoney_description') : $params['desc'];
@@ -406,8 +410,7 @@ class Leyka_Rbk_Money extends Leyka_Payment_Method {
         $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/rbk/icons/visa.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/rbk/icons/master.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/rbk/icons/rbk.png',
         ));
 
         $this->_submit_label = empty($params['submit_label']) ?
@@ -470,8 +473,9 @@ class Leyka_Rbk_All extends Leyka_Payment_Method {
 
         $this->_id = empty($params['id']) ? 'rbk_all' : $params['id'];
 
-        $this->_label = empty($params['label']) ?
-            __('Use any RBK Money payment method available', 'leyka') : $params['label'];
+        $this->_label_backend = empty($params['label_backend']) ?
+            __('Use any RBK Money payment method available', 'leyka') : $params['label_backend'];
+        $this->_label = empty($params['label']) ? __('RBK Money (any)', 'leyka') : $params['label'];
 
         $this->_description = empty($params['desc']) ?
             leyka_options()->opt_safe('rbk_all_description') : $params['desc'];
@@ -485,8 +489,9 @@ class Leyka_Rbk_All extends Leyka_Payment_Method {
         $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-//            LEYKA_PLUGIN_BASE_URL.'gateways/rbk/icons/visa.png',
-//            LEYKA_PLUGIN_BASE_URL.'gateways/rbk/icons/master.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/rbk/icons/visa.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/rbk/icons/master.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/rbk/icons/rbk.png',
         ));
 
         $this->_submit_label = empty($params['submit_label']) ?
