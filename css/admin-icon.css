@@ -14,7 +14,8 @@
 	display: block;
 	width: 18px;
 	height: 18px;
-	background: transparent url(../img/menu-icon.png) no-repeat 0 -22px;
+	background: transparent url(../img/menu-icon.png) no-repeat 0 -20px;
+	background-image: url(../img/menu-icon.svg);
 	position: absolute;
 	top: 8px;
 	left: 8px;
@@ -22,4 +23,4 @@
 
 #adminmenu #toplevel_page_leyka:hover .wp-menu-image:after,
 #adminmenu #toplevel_page_leyka .wp-has-current-submenu .wp-menu-image:after {
-	background-position: 0 -2px; }
+	background-position: 0 0; }

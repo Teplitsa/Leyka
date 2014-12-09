@@ -41,7 +41,7 @@ class Leyka_Options_Controller {
      * @return mixed
      */
     public function get_value($option_name) {
-        $option_name = str_replace('leyka_', '', $option_name);
+        $option_name = str_replace('leyka_', '', $option_name); 
         if(empty($this->_options[$option_name]))
             return null;
 
@@ -158,8 +158,8 @@ class Leyka_Options_Controller {
             $this->get_value($option_name) : $this->set_value($option_name, $new_value);
     }
 
-    public function opt_safe($option_name) {
-        $value = $this->get_value($option_name);
+    public function opt_safe($option_name) { 
+        $value = $this->get_value($option_name); 
 
         return $value ? $value : $this->get_default_of($option_name);
     }

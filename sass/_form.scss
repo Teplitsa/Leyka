@@ -312,6 +312,8 @@
 		}
 	}
 	
+	
+	
 } //#leyka-payment-form
 
 
@@ -420,6 +422,21 @@
 	
 	
 }  // .leyka-tpl-radio
+
+/* embed yandex form */
+#leyka-payment-form .yandex_money_quick,
+#leyka-payment-form #leyka-form-yandex_money_quick {
+	
+	.yandex_money_quick_code,
+	.leyka-user-data {
+		margin: 0;
+	}
+	
+	.yandex_money_quick_code iframe {
+		width: 100% !important;
+		height: 420px !important;
+	}
+}
 
 
 

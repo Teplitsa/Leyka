@@ -415,6 +415,17 @@
   #leyka-payment-form.leyka-tpl-radio .freeze-field .amount {
     float: right; }
 
+/* embed yandex form */
+#leyka-payment-form .yandex_money_quick .yandex_money_quick_code,
+#leyka-payment-form .yandex_money_quick .leyka-user-data,
+#leyka-payment-form #leyka-form-yandex_money_quick .yandex_money_quick_code,
+#leyka-payment-form #leyka-form-yandex_money_quick .leyka-user-data {
+  margin: 0; }
+#leyka-payment-form .yandex_money_quick .yandex_money_quick_code iframe,
+#leyka-payment-form #leyka-form-yandex_money_quick .yandex_money_quick_code iframe {
+  width: 100% !important;
+  height: 420px !important; }
+
 /** Leyka campaign elements  (_campaign.scss) **/
 /* embedded scale */
 div[id*="leyka_scale_standalone"] {
@@ -1077,3 +1088,6 @@ div[id*="leyka_donors_list"].wide .ldl-item {
     padding-right: 20px; }
     .leyka-oferta-text .leyka-oferta-text-flow p {
       margin: 1.35em 0; }
+
+#leyka-payment-form .leyka-oferta-text-flow p {
+  margin: 1.35em 0; }

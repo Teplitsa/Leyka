@@ -28,7 +28,7 @@ function leyka_get_pm_list($activity = null, $currency = false) {
 
     $pm_list = array();
     foreach(leyka()->get_gateways() as $gateway) {
-        /** @var Leyka_Gateway $gateway */
+        /** @var Leyka_Gateway $gateway */ 
         $pm_list = array_merge($pm_list, $gateway->get_payment_methods($activity, $currency));
     }
 
@@ -360,6 +360,7 @@ abstract class Leyka_Payment_Method {
     protected $_gateway_id = '';
     protected $_active = true;
     protected $_label = '';
+    protected $_label_backend = '';
     protected $_description = '';
     protected $_support_global_fields = true;
     protected $_custom_fields = array();
@@ -382,6 +383,10 @@ abstract class Leyka_Payment_Method {
             case 'label':
             case 'title':
             case 'name': $param = $this->_label; break;
+            case 'label_backend':
+            case 'title_backend':
+            case 'name_backend': $param = $this->_label_backend ? $this->_label_backend : $this->_label;
+                break;
             case 'desc':
             case 'description': $param = html_entity_decode($this->_description); break;
             case 'has_global_fields': $param = $this->_support_global_fields; break;
@@ -429,7 +434,7 @@ abstract class Leyka_Payment_Method {
     
         add_filter('leyka_payment_options_allocation', array($this, 'allocate_pm_options'), 10, 1);
     }
-    
+
     public function get_pm_options_names() {
 
         $option_names = array();
