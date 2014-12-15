@@ -382,7 +382,7 @@ abstract class Leyka_Payment_Method {
             case 'is_active': $param = $this->_active; break;
             case 'label':
             case 'title':
-            case 'name': $param = $this->_label; break;
+            case 'name': $param = apply_filters('leyka_get_pm_label', $this->_label, $this); break;
             case 'label_backend':
             case 'title_backend':
             case 'name_backend': $param = $this->_label_backend ? $this->_label_backend : $this->_label;
