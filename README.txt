@@ -4,7 +4,7 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, crowdfunding, fundrising
 Requires at least: 3.6.1
-Tested up to: 4.0.1
+Tested up to: 4.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -25,7 +25,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 * Функции сбора пожертвований доступны сразу после установки.
 * Многие важные параметры заданы автоматически. Например, юридически корректный текст договора оферты на пожертвование.
 
-Плагин предназначен для всех, кто собирает деньги в интеренете, в т.Ч. НКО.
+Плагин предназначен для всех, кто собирает деньги в интернете, в т.Ч. НКО.
 
 **Внимание:** для сбора пожертвований с помощью популярных платёжных систем необходимо иметь договор с этими системами. Полный список платежных систем, которые поддерживает плагин, вы можете найти в [документации](http://leyka.te-st.ru/sistemnye-trebovaniya/)
 

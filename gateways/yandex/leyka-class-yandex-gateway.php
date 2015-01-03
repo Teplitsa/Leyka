@@ -101,8 +101,8 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 //            case 'yandex_mobile':
                 return leyka_options()->opt('yandex_test_mode') ?
                     'https://demomoney.yandex.ru/eshop.xml' : 'https://money.yandex.ru/eshop.xml';
-            case 'yandex_money_quick':
-                return 'https://money.yandex.ru/quickpay/bankconfirm.xml';
+//            case 'yandex_money_quick':
+//                return 'https://money.yandex.ru/quickpay/bankconfirm.xml';
             default:
                 return $current_url;
         }
@@ -119,10 +119,10 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 //            case 'yandex_terminal': $payment_type = 'GP'; break;
 //            case 'yandex_mobile': $payment_type = 'MC'; break;
             default:
-                $payment_type = '';
+                $payment_type = apply_filters('leyka_yandex_custom_payment_type', '', $pm_id);
         }
 
-        return array(
+        return apply_filters('leyka_yandex_custom_submission_data', array(
             'scid' => leyka_options()->opt('yandex_scid'),
             'shopId' => leyka_options()->opt('yandex_shop_id'),
             'sum' => $donation->amount,
@@ -133,7 +133,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             'shopFailURL' => leyka_get_failure_page_url(),
             'cps_email' => $donation->donor_email,
 //            '' => ,
-        );
+        ), $pm_id);
     }
 
     public function log_gateway_fields($donation_id) {
@@ -205,6 +205,8 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
                     $donation->status = 'funded';
                     Leyka_Donation_Management::send_all_emails($donation->id);
                 }
+
+				do_action('leyka_yandex_payment_aviso_success', $donation);
 
 //                set_transient('leyka_yandex_test_pa', '<pre>'.print_r($_POST, true).'</pre>', 60*60*24);
                 $this->_callback_answer(0, 'pa'); // OK for yandex money payment

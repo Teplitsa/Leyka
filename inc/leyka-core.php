@@ -112,25 +112,15 @@ class Leyka {
 
         // Just in case:
         if( !get_option('leyka__course_rur2usd') || !get_option('leyka__course_rur2eur') )
-            $this->do_currencies_rates_refresh();
+            $this->do_currency_rates_refresh();
 
         do_action('leyka_initiated');
 	}
 
-    public function do_currencies_rates_refresh() {
+    public function do_currency_rates_refresh() {
 
-        $xml = new DOMDocument();
-        if(@$xml->load('http://www.cbr.ru/scripts/XML_daily.asp?date_req='.date('d.m.Y'))) {
-
-            foreach($xml->documentElement->getElementsByTagName('Valute') as $item) {
-
-                $currency = $item->getElementsByTagName('CharCode')->item(0)->nodeValue;
-                if($currency == 'USD' || $currency == 'EUR')
-                    add_option(
-                        'leyka__course_rur2'.mb_strtolower($currency),
-                        (float)str_replace(',', '.', $item->getElementsByTagName('Value')->item(0)->nodeValue)
-                    );
-            }
+        foreach(leyka_get_actual_currency_rates() as $currency => $rate) {
+            add_option('leyka__course_rur2'.mb_strtolower($currency), $rate);
         }
     }
 
@@ -699,7 +689,7 @@ class Leyka {
      * @param $donation WP_Post
      */   
     public function finalize_log_submission($donation_id, WP_Post $donation) {
-        if($donation->post_type != 'leyka_donation')
+        if($donation->post_type != Leyka_Donation_Management::$post_type)
             return;
 
         do_action('leyka_logging_new_donation', $donation_id, $donation);

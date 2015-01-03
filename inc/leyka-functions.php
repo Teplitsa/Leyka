@@ -410,3 +410,82 @@ function leyka_get_payment_type_label($type) {
     $types = leyka_get_payment_types_list();
     return in_array($type, array_keys($types)) ? $types[$type] : false;
 }
+
+/**
+ * Service function to get an actual rates from cbr.ru
+ * @return array An assoc array of currency_code => it's rate to RUR
+ */
+function leyka_get_actual_currency_rates() {
+
+    $url = 'http://www.cbr.ru/scripts/XML_daily.asp?date_req='.date('d.m.Y');
+    $currencies = array();
+
+    if(class_exists('XMLReader')) {
+
+        function leyka_xml2assoc(XMLReader $xml) {
+
+            $tree = null;
+            while($xml->read()) {
+
+                switch($xml->nodeType) {
+
+                    case XMLReader::END_ELEMENT: return $tree;
+                    case XMLReader::ELEMENT:
+                        $node = array('tag' => $xml->name, 'value' => $xml->isEmptyElement ? '' : leyka_xml2assoc($xml));
+                        if($xml->hasAttributes) {
+                            while($xml->moveToNextAttribute()) {
+                                $node['attributes'][$xml->name] = $xml->value;
+                            }
+                        }
+                        $tree[] = $node;
+                        break;
+                    case XMLReader::TEXT:
+                    case XMLReader::CDATA:
+                        $tree .= $xml->value;
+                }
+            }
+
+            return $tree;
+        }
+
+        $xml = new XMLReader();
+        $xml->open($url);
+        $currencies_tmp = leyka_xml2assoc($xml);
+        $xml->close();
+
+        if( !empty($currencies_tmp[0]) ) {
+
+            foreach($currencies_tmp[0]['value'] as $currency) {
+
+                $currency = $currency['value']; // Just to shorten this things a bit
+
+                $code = $currency[1]['value']; // USD, EUR etc.
+                $rate = (float)str_replace(',', '.', $currency[4]['value']);
+                if($code == 'USD' || $code == 'EUR') {
+                    $currencies[$code] = $rate;
+                }
+            }
+        }
+
+    } else if(class_exists('DOMDocument')) {
+
+        $xml = new DOMDocument();
+        if( @$xml->load($url) ) {
+
+            foreach($xml->documentElement->getElementsByTagName('Valute') as $item) {
+
+                /** @var $item DOMElement */
+
+                $currency = $item->getElementsByTagName('CharCode')->item(0)->nodeValue;
+                if($currency == 'USD' || $currency == 'EUR') {
+                    $currencies[$currency] = (float)str_replace(
+                        ',', '.',
+                        $item->getElementsByTagName('Value')->item(0)->nodeValue
+                    );
+                }
+            }
+        }
+    }
+
+    return $currencies;
+}

@@ -301,6 +301,9 @@ abstract class Leyka_Gateway {
      */
     public function add_payment_method(Leyka_Payment_Method $pm, $replace_if_exists = false) {
 
+        if($pm->gateway_id != $this->_id)
+            return false;
+
         if(empty($this->_payment_methods[$pm->id]) || !!$replace_if_exists) {
             $this->_payment_methods[$pm->id] = $pm;
             return true;
