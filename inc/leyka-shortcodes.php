@@ -156,8 +156,14 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
 					</a></h4>
 				<?php }?>
 				
-				<?php if($args['show_excerpt'] == 1 && has_excerpt($campaign->ID)) {?>
-					<p><?php echo apply_filters('get_the_excerpt', $campaign->post_excerpt);?></p>
+				<?php if($args['show_excerpt'] == 1 && has_excerpt($campaign->ID)) {
+					//default excerpt filters
+					add_filter( 'leyka_get_the_excerpt', 'wptexturize'      );
+					add_filter( 'leyka_get_the_excerpt', 'convert_smilies'  );
+					add_filter( 'leyka_get_the_excerpt', 'convert_chars'    );					
+					add_filter( 'leyka_get_the_excerpt', 'wp_trim_excerpt'  );
+				?>
+					<p><?php echo apply_filters('leyka_get_the_excerpt', $campaign->post_excerpt, $campaign);?></p>
 				<?php }?>
 			</div>
 		<?php }?>
