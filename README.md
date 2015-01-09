@@ -27,7 +27,7 @@
 
 ## Установка ##
 
-Подробная инструкция по установке плагина Лейка доступна на официальном сайте в разделе [Установка](http://devleyka.ngo2.ru/ustanovka-lejki/). Настройка и работа плагина проиллюстрированы в [видео-уроке](http://leyka.te-st.ru/videourok-kak-ustanovit-i-nastroit-plagin-lejka/).  
+Подробная инструкция по установке плагина Лейка доступна на официальном сайте в разделе [Установка](http://leyka.te-st.ru/ustanovka-lejki/). Настройка и работа плагина проиллюстрированы в [видео-уроке](http://leyka.te-st.ru/videourok-kak-ustanovit-i-nastroit-plagin-lejka/).  
 
 
 ## Помощь проекту ##

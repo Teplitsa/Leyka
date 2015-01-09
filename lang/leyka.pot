@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Leyka 2.1.4\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leyka\n"
 "POT-Creation-Date: 2014-09-11 08:25:09+00:00\n"
-"POT-Revision-Date: Tue Dec 09 2014 15:54:05 GMT+0400\n"
+"POT-Revision-Date: Mon Dec 15 2014 18:06:50 GMT+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -155,7 +155,7 @@ msgstr ""
 #: 445 ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:287 ..
 #: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:369 ..
 #: /gateways/text/leyka-class-text-gateway.php:107 ../gateways/rbk/leyka-class-
-#: rbk-gateway.php:314 ../gateways/rbk/leyka-class-rbk-gateway.php:418 ..
+#: rbk-gateway.php:314 ../gateways/rbk/leyka-class-rbk-gateway.php:417 ..
 #: /gateways/rbk/leyka-class-rbk-gateway.php:498 ../gateways/chronopay/leyka-
 #: class-chronopay-gateway.php:421 ../gateways/chronopay/leyka-class-chronopay-
 #: gateway.php:532
@@ -511,7 +511,7 @@ msgid "Payment decline code (if it's declined):"
 msgstr ""
 
 #: ../gateways/rbk/leyka-class-rbk-gateway.php:344 ../gateways/rbk/leyka-class-
-#: rbk-gateway.php:441 ../gateways/rbk/leyka-class-rbk-gateway.php:521
+#: rbk-gateway.php:440 ../gateways/rbk/leyka-class-rbk-gateway.php:521
 msgid ""
 "RBK Money allows a simple and safe way to pay for goods and services with "
 "bank cards and other means through internet. You will have to fill a payment "
@@ -520,13 +520,12 @@ msgid ""
 "confirm your payment."
 msgstr ""
 
-#: ../gateways/rbk/leyka-class-rbk-gateway.php:345 ../gateways/rbk/leyka-class-
-#: rbk-gateway.php:522
+#: ../gateways/rbk/leyka-class-rbk-gateway.php:345
 msgid "RBK Money bank card payment description"
 msgstr ""
 
 #: ../gateways/rbk/leyka-class-rbk-gateway.php:346 ../gateways/rbk/leyka-class-
-#: rbk-gateway.php:443 ../gateways/rbk/leyka-class-rbk-gateway.php:523
+#: rbk-gateway.php:442 ../gateways/rbk/leyka-class-rbk-gateway.php:523
 msgid ""
 "Please, enter RBK Money gateway description that will be shown to the donor "
 "when this payment method will be selected for using."
@@ -536,16 +535,20 @@ msgstr ""
 msgid "Payment with RBK Money"
 msgstr ""
 
-#: ../gateways/rbk/leyka-class-rbk-gateway.php:442
+#: ../gateways/rbk/leyka-class-rbk-gateway.php:441
 msgid "RBK Money payment description"
 msgstr ""
 
-#: ../gateways/rbk/leyka-class-rbk-gateway.php:478
+#: ../gateways/rbk/leyka-class-rbk-gateway.php:477
 msgid "Use any RBK Money payment method available"
 msgstr ""
 
-#: ../gateways/rbk/leyka-class-rbk-gateway.php:479
+#: ../gateways/rbk/leyka-class-rbk-gateway.php:478
 msgid "RBK Money (any)"
+msgstr ""
+
+#: ../gateways/rbk/leyka-class-rbk-gateway.php:522
+msgid "RBK Money all possible payment types description"
 msgstr ""
 
 #: ../gateways/chronopay/leyka-class-chronopay-gateway.php:13
@@ -698,55 +701,55 @@ msgstr ""
 msgid "Website main page"
 msgstr ""
 
-#: ../inc/leyka-functions.php:94
+#: ../inc/leyka-functions.php:95
 msgid "Your donation is completed!"
 msgstr ""
 
-#: ../inc/leyka-functions.php:95
+#: ../inc/leyka-functions.php:96
 msgid "We heartly thank you for your help!"
 msgstr ""
 
-#: ../inc/leyka-functions.php:149
+#: ../inc/leyka-functions.php:150
 msgid "Your donation failed"
 msgstr ""
 
-#: ../inc/leyka-functions.php:150
+#: ../inc/leyka-functions.php:151
 msgid ""
 "We are deeply sorry, but for some technical reason we failed to receive your "
 "donation. Your money are intact. Please try again later!"
 msgstr ""
 
-#: ../inc/leyka-functions.php:326
+#: ../inc/leyka-functions.php:327
 #, php-format
 msgid "Needed %s %s"
 msgstr ""
 
-#: ../inc/leyka-functions.php:329
+#: ../inc/leyka-functions.php:330
 #, php-format
 msgid "Collected %s of %s %s"
 msgstr ""
 
-#: ../inc/leyka-functions.php:364
+#: ../inc/leyka-functions.php:365
 #, php-format
 msgctxt "Label on ultra-compact scale"
 msgid "%s of %s %s"
 msgstr ""
 
-#: ../inc/leyka-functions.php:388
+#: ../inc/leyka-functions.php:389
 #, php-format
 msgctxt "Label on ultra-compact fake scale"
 msgid "Collected: %s"
 msgstr ""
 
-#: ../inc/leyka-functions.php:398
+#: ../inc/leyka-functions.php:399
 msgid "Single"
 msgstr ""
 
-#: ../inc/leyka-functions.php:399
+#: ../inc/leyka-functions.php:400
 msgid "Recurrent (rebill)"
 msgstr ""
 
-#: ../inc/leyka-functions.php:400
+#: ../inc/leyka-functions.php:401
 msgid "Correction"
 msgstr ""
 

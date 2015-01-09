@@ -321,7 +321,7 @@ class Leyka_Donation_Management {
 
         if((int)$donation > 0)
             $donation = (int)$donation;
-        elseif( !is_object($donation) && is_a($donation, 'WP_Post') && !is_a($donation, 'Leyka_Donation') )
+        elseif( !is_object($donation) && !is_a($donation, 'WP_Post') && !is_a($donation, 'Leyka_Donation') )
             return false;
 
         $donation = new Leyka_Donation($donation);

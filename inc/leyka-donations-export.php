@@ -17,6 +17,9 @@ function leyka_render_export_button() {
             <input type="hidden" name="payment_type" value="<?php echo empty($_GET['payment_type']) ? '' : $_GET['payment_type']; ?>" />
             <input type="hidden" name="gateway_pm" value="<?php echo empty($_GET['gateway_pm']) ? '' : $_GET['gateway_pm']; ?>" />
             <input type="hidden" name="campaign" value="<?php echo empty($_GET['campaign']) ? '' : $_GET['campaign']; ?>" />
+            <?php foreach(apply_filters('leyka_donations_export_form_fields', array()) as $name => $value) {?>
+            <input type="hidden" name="<? echo $name;?>" value="<?echo $value;?>" />
+            <?php }?>
 
             <input type="submit" name="leyka-donations-export-csv-excel" class="button-primary" value="<?php _e('Export (csv)', 'leyka');?>" />
         </form>
@@ -59,7 +62,7 @@ function leyka_do_donations_export() {
         'post_type' => Leyka_Donation_Management::$post_type,
         'post_status' =>
             isset($_GET['post_status']) && in_array($_GET['post_status'], array_keys(leyka()->get_donation_statuses())) ?
-                $_GET['post_status'] : 'all',
+                $_GET['post_status'] : 'any',
         'm' => $_GET['month-year'], // Filter by month
         'meta_query' => $meta_query,
         'nopaging' => true,

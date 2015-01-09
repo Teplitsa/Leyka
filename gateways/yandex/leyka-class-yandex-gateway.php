@@ -68,15 +68,10 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             $this->_payment_methods['yandex_money']->initialize_pm_options();
         }
 
-//        if(empty($this->_payment_methods['yandex_wm'])) {
-//            $this->_payment_methods['yandex_wm'] = Leyka_Yandex_Webmoney::get_instance();
-//            $this->_payment_methods['yandex_wm']->initialize_pm_options();
-//        }
-
-//        if(empty($this->_payment_methods['yandex_money_quick'])) {
-//            $this->_payment_methods['yandex_money_quick'] = Leyka_Yandex_Money_Quick::get_instance();
-//            $this->_payment_methods['yandex_money_quick']->initialize_pm_options();
-//        }
+        if(empty($this->_payment_methods['yandex_wm'])) {
+            $this->_payment_methods['yandex_wm'] = Leyka_Yandex_Webmoney::get_instance();
+            $this->_payment_methods['yandex_wm']->initialize_pm_options();
+        }
 
         /** @todo Until this PM's API will be upgraded. */
 //        if(empty($this->_payment_methods['yandex_money_quick'])) {
@@ -101,17 +96,13 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         switch($pm_id) {
             case 'yandex_money':
             case 'yandex_card':
-<<<<<<< HEAD
-//            case 'yandex_wm':
-=======
             case 'yandex_wm':
->>>>>>> b5aa8142a29b5a288443c74428ab2e951e062799
 //            case 'yandex_terminal':
 //            case 'yandex_mobile':
                 return leyka_options()->opt('yandex_test_mode') ?
                     'https://demomoney.yandex.ru/eshop.xml' : 'https://money.yandex.ru/eshop.xml';
-            case 'yandex_money_quick':
-                return 'https://money.yandex.ru/quickpay/bankconfirm.xml';
+//            case 'yandex_money_quick':
+//                return 'https://money.yandex.ru/quickpay/bankconfirm.xml';
             default:
                 return $current_url;
         }
@@ -121,62 +112,17 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
         $donation = new Leyka_Donation($donation_id);
 
-<<<<<<< HEAD
-        /** Quick payment form */
-        if($pm_id == 'yandex_money_quick' || $pm_id == 'yandex_money_card') {
-
-            $campaign = new Leyka_Campaign($donation->campaign_id);
-            $purpose = esc_attr($campaign->payment_title);
-
-            return array(
-                'payer-type' => 'legal',
-                'WDRegistry_4' => leyka_options()->opt('org_full_name'),
-                'WDRegistry_3' => leyka_options()->opt('org_inn'),
-                'WDRegistry_5' => leyka_options()->opt('org_bank_bic'),
-                'WDRegistry_2' => leyka_options()->opt('org_bank_account'),
-                'supplierName' => leyka_options()->opt('org_full_name'),
-                'supplierInn' => leyka_options()->opt('org_inn'),
-                'supplierBankBik' => leyka_options()->opt('org_bank_bic'),
-                'supplierBankAccount' => leyka_options()->opt('org_bank_account'),
-                'BankCorAccount' => leyka_options()->opt('org_bank_corr_account'),
-                'WDRegistry_7' => leyka_options()->opt('org_kpp'),
-                'supplierKpp' => leyka_options()->opt('org_kpp'),
-                'WDRegistry_8' => '*',
-                'paymentKbk' => '',
-                'WDRegistry_9' => '*',
-                'paymentOkato' => '',
-                'FormComment' => $purpose,
-                'short-dest' => $purpose,
-                'writable-targets' => 'false',
-                'writable-sum' => 'true',
-                'comment-needed' => 'false',
-                'quickpay-form' => 'bank',
-                'fio' => 1,
-                'address' => 1,
-                'targets' => $purpose,
-                'sum' => $donation->amount,
-                'nds-rate' => '',
-            );
-        }
-
-        /** All the rest Yandex PM */
-        switch($pm_id) { // PC - Yandex.money, AC - bank card, WM - Webmoney, MC - mobile payments
-            case 'yandex_money': $payment_type = 'PC'; break;
-            case 'yandex_card': $payment_type = 'AC'; break;
-//            case 'yandex_wm': $payment_type = 'WM'; break;
-=======
         switch($pm_id) { // PC - Yandex.money, AC - bank card, WM - Webmoney, MC - mobile payments
             case 'yandex_money': $payment_type = 'PC'; break;
             case 'yandex_card': $payment_type = 'AC'; break;
             case 'yandex_wm': $payment_type = 'WM'; break;
->>>>>>> b5aa8142a29b5a288443c74428ab2e951e062799
 //            case 'yandex_terminal': $payment_type = 'GP'; break;
 //            case 'yandex_mobile': $payment_type = 'MC'; break;
             default:
-                $payment_type = '';
+                $payment_type = apply_filters('leyka_yandex_custom_payment_type', '', $pm_id);
         }
 
-        return array(
+        return apply_filters('leyka_yandex_custom_submission_data', array(
             'scid' => leyka_options()->opt('yandex_scid'),
             'shopId' => leyka_options()->opt('yandex_shop_id'),
             'sum' => $donation->amount,
@@ -187,7 +133,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             'shopFailURL' => leyka_get_failure_page_url(),
             'cps_email' => $donation->donor_email,
 //            '' => ,
-        );
+        ), $pm_id);
     }
 
     public function log_gateway_fields($donation_id) {
@@ -259,6 +205,8 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
                     $donation->status = 'funded';
                     Leyka_Donation_Management::send_all_emails($donation->id);
                 }
+
+				do_action('leyka_yandex_payment_aviso_success', $donation);
 
 //                set_transient('leyka_yandex_test_pa', '<pre>'.print_r($_POST, true).'</pre>', 60*60*24);
                 $this->_callback_answer(0, 'pa'); // OK for yandex money payment
@@ -526,81 +474,6 @@ class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
         );
     }
 }
-
-
-//class Leyka_Yandex_Money_Quick extends Leyka_Payment_Method {
-//
-//    /** @var Leyka_Yandex_Money */
-//    protected static $_instance = null;
-//
-//    final protected function __clone() {}
-//
-//    public final static function get_instance() {
-//
-//        if(null === static::$_instance) {
-//            static::$_instance = new static();
-//        }
-//
-//        return static::$_instance;
-//    }
-//
-//    public function __construct(array $params = array()) {
-//
-//        if(static::$_instance) /** We can't make a public __construct() to private */
-//            return static::$_instance;
-//
-//        $this->initialize_pm_options();
-//
-//        $this->_id = empty($params['id']) ? 'yandex_money_quick' : $params['id'];
-//
-//        $this->_label = empty($params['label']) ?
-//            __('Virtual cash Yandex.money (quick payment form)', 'leyka') : $params['label'];
-//
-//        $this->_description = empty($params['desc']) ?
-//            leyka_options()->opt_safe('yandex_money_quick_description') : $params['desc'];
-//
-//        $this->_gateway_id = 'yandex';
-//
-//        $this->_active = isset($params['active']) ? $params['active'] : true;
-//
-//        $this->_support_global_fields = isset($params['has_global_fields']) ? $params['has_global_fields'] : true;
-//
-//        $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
-//
-//        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-//            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
-//        ));
-//
-//        $this->_submit_label = empty($params['submit_label']) ? __('Donate', 'leyka') : $params['submit_label'];
-//
-//        $this->_supported_currencies = empty($params['currencies']) ? array('rur',) : $params['currencies'];
-//
-//        $this->_default_currency = empty($params['default_currency']) ? 'rur' : $params['default_currency'];
-//
-//        //add_action('leyka_service_call-'.$this->_id, 'leyka_yandex_handle_service_call');
-//
-//        static::$_instance = $this;
-//
-//        return static::$_instance;
-//    }
-//
-//    protected function _set_pm_options_defaults() {
-//
-//        if($this->_options)
-//            return;
-//
-//        $this->_options = array(
-//            'yandex_money_quick_description' => array(
-//                'type' => 'html',
-//                'default' => __("Yandex.Money is a simple and safe payment system to pay for goods and services through internet. You will have to fill a payment form, you will be redirected to the <a href='https://money.yandex.ru/'>Yandex.Money website</a> to confirm your payment. If you haven't got a Yandex.Money account, you can create it there.", 'leyka'),
-//                'title' => __('Yandex.Money description', 'leyka'),
-//                'description' => __('Please, enter Yandex.Money quick form payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-//                'required' => 0,
-//                'validation_rules' => array(), // List of regexp?..
-//            ),
-//        );
-//    }
-//}
 
 function leyka_add_gateway_yandex() { // Use named function to leave a possibility to remove/replace it on the hook
     leyka()->add_gateway(Leyka_Yandex_Gateway::get_instance());

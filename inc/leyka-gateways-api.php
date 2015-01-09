@@ -301,6 +301,9 @@ abstract class Leyka_Gateway {
      */
     public function add_payment_method(Leyka_Payment_Method $pm, $replace_if_exists = false) {
 
+        if($pm->gateway_id != $this->_id)
+            return false;
+
         if(empty($this->_payment_methods[$pm->id]) || !!$replace_if_exists) {
             $this->_payment_methods[$pm->id] = $pm;
             return true;
@@ -360,11 +363,7 @@ abstract class Leyka_Payment_Method {
     protected $_gateway_id = '';
     protected $_active = true;
     protected $_label = '';
-<<<<<<< HEAD
-    protected $_label_frontend = '';
-=======
     protected $_label_backend = '';
->>>>>>> b5aa8142a29b5a288443c74428ab2e951e062799
     protected $_description = '';
     protected $_support_global_fields = true;
     protected $_custom_fields = array();
@@ -386,16 +385,10 @@ abstract class Leyka_Payment_Method {
             case 'is_active': $param = $this->_active; break;
             case 'label':
             case 'title':
-            case 'name': $param = $this->_label; break;
-<<<<<<< HEAD
-            case 'label_frontend':
-            case 'title_frontend':
-            case 'name_frontend': $param = $this->_label_frontend ? $this->_label_frontend : $this->_label_frontend;
-=======
+            case 'name': $param = apply_filters('leyka_get_pm_label', $this->_label, $this); break;
             case 'label_backend':
             case 'title_backend':
             case 'name_backend': $param = $this->_label_backend ? $this->_label_backend : $this->_label;
->>>>>>> b5aa8142a29b5a288443c74428ab2e951e062799
                 break;
             case 'desc':
             case 'description': $param = html_entity_decode($this->_description); break;

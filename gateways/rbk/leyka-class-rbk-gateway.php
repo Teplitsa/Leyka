@@ -519,7 +519,7 @@ class Leyka_Rbk_All extends Leyka_Payment_Method {
             'rbk_all_description' => array(
                 'type' => 'html',
                 'default' => __('RBK Money allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="https://rbkmoney.ru/">RBK Money</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
-                'title' => __('RBK Money bank card payment description', 'leyka'),
+                'title' => __('RBK Money all possible payment types description', 'leyka'),
                 'description' => __('Please, enter RBK Money gateway description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
                 'required' => 0,
                 'validation_rules' => array(), // List of regexp?..

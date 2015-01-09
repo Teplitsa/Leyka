@@ -93,21 +93,12 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
         return array(
             'receiver' => leyka_options()->opt('yandex_money_account'),
             'sum' => $donation->amount,
-<<<<<<< HEAD
-            'formcomment' => esc_attr($name),
-			'short-dest' => esc_attr($name),
-			'targets' => esc_attr($campaign->payment_title),
-			'quickpay-form' => 'donate',
-            'label'         => $donation_id,
-            'paymentType'   => $payment_type,
-=======
             'formcomment' => $name,
 			'short-dest' => $name,
 			'targets' => esc_attr($campaign->payment_title),
 			'quickpay-form' => 'donate',
             'label' => $donation_id,
             'paymentType' => $payment_type,
->>>>>>> b5aa8142a29b5a288443c74428ab2e951e062799
             'shopSuccessURL' => leyka_get_success_page_url(),
             'shopFailURL' => leyka_get_failure_page_url(),
             'cps_email' => $donation->donor_email,
@@ -182,26 +173,6 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
             error_log_yandex_phyz('$donation->sum='.$donation->sum."\n");
             error_log_yandex_phyz('$donation->status='.$donation->status."\n");
 
-<<<<<<< HEAD
-					error_log_yandex_phyz("Donation OK\n");
-
-					error_log_yandex_phyz('$donation->sum='.$donation->sum."\n");
-					error_log_yandex_phyz('$donation->status='.$donation->status."\n");
-					
-					if($donation->sum != $amount) {
-
-						error_log_yandex_phyz("Donation sum is unmatched\n");
-						$this->_check_order_answer(1, __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('Donation sum is unmatched', 'leyka'));
-					} elseif($donation->status != 'funded') {
-
-						error_log_yandex_phyz("Make funded\n");
-						$donation->add_gateway_response($_POST);
-						$donation->status = 'funded';
-                        Leyka_Donation_Management::send_all_emails($donation->id);
-
-					} else
-						error_log_yandex_phyz("Already funded\n");
-=======
             if($donation->sum != $amount) {
 
                 error_log_yandex_phyz("Donation sum is unmatched\n");
@@ -212,20 +183,13 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
                 error_log_yandex_phyz("Donation is funded\n");
 
                 if( !empty($_POST['notification_type']) ) { // Update a donation's actual PM, if needed
->>>>>>> b5aa8142a29b5a288443c74428ab2e951e062799
 
                     $actual_pm = $_POST['notification_type'] == 'card-incoming' ?
                         'yandex_phyz_card' : 'yandex_phyz_money';
 
-<<<<<<< HEAD
-					error_log_yandex_phyz("No donation\n");
-                    $this->_check_order_answer(1, __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('Unregistered donation ID', 'leyka'));
-				}
-=======
                     if($donation->pm_id != $_POST['notification_type'])
                         $donation->pm_id = $actual_pm;
                 }
->>>>>>> b5aa8142a29b5a288443c74428ab2e951e062799
 
                 $donation->add_gateway_response($_POST);
                 $donation->status = 'funded';
@@ -304,7 +268,6 @@ class Leyka_Yandex_Phyz_Money extends Leyka_Payment_Method {
             __('Virtual cash Yandex.Money', 'leyka') : $params['label_backend'];
         $this->_label = empty($params['label']) ? __('Virtual cash Yandex.Money', 'leyka') : $params['label'];
 
-//        echo '<pre>1: ' . print_r(leyka_options()->opt_safe('yandex_phyz_card_description'), 1) . '</pre>';
         $this->_description = empty($params['desc']) ?
             leyka_options()->opt_safe('yandex_phyz_money_description') : $params['desc'];
 
