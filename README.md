@@ -1,21 +1,21 @@
 # [Лейка](http://leyka.te-st.ru) #
 
-**Scroll down for english description, please**
-
 Лейка - плагин для краудфандинга, фандрайзинга и сбора пожертвований на сайте для физических и юридических лиц. Поддерживаются платежи банковскими картами Visa и MasterCard через **Chronopay и RBK money**, также подключаются **WebMoney, Яндекс.Деньги (YandexMoney)** и традиционные квитанции.
 Плагин разработан и поддерживается [Теплицей социальных технологий](//te-st.ru/).
 
+_For English description scroll down, please_
+
 Задача плагина — облегчить и усовершенствовать интеграцию сбора пожертвований на сайты НКО и общественных проектов.
+
 * Плагин элементарно устанавливается и требует минимум настроек. 
 * Функции сбора пожертвований доступны сразу после установки.
 * Многие важные параметры заданы автоматически. Например, юридически корректный текст договора оферты на пожертвование.
 
-Плагин предназначен для всех, кто собирает деньги в интеренете, в т.ч. НКО.
+Плагин предназначен для всех, кто собирает деньги в интеренете - НКО, общественные объединения, физические лица.
 
 **Официальный сайт плагина:** [leyka.te-st.ru](http://leyka.te-st.ru/)
 
-**Внимание:** для сбора пожертвований с помощью популярных платёжных систем необходимо иметь договор с этими системами. Полный список платежных систем, которые поддерживает плагин, вы можете найти в [документации](http://leyka.te-st.ru/sistemnye-trebovaniya/).
-
+**Внимание:** для сбора пожертвований с помощью популярных платёжных систем необходимо иметь договор с этими системами.
 
 **Основные функции**
 
@@ -30,8 +30,12 @@
 
 ## Установка ##
 
-Подробная инструкция по установке плагина Лейка доступна на официальном сайте в разделе [Установка](http://leyka.te-st.ru/ustanovka-lejki/). Настройка и работа плагина проиллюстрированы в [видео-уроке](http://leyka.te-st.ru/videourok-kak-ustanovit-i-nastroit-plagin-lejka/).
+Подробная инструкция по установке и настройке плагина Лейка доступна на официальном сайте в разделе [Инструкция](https://leyka.te-st.ru/instruction/). Инструкция также содержит видео-уроки:
+* [настройка и базовые функции плагина](https://leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/)
+* [использование популярных фукнций (виджетов, шорткодов и т.п.)](https://leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/)
+
 Для корректной работы плагина необходим PHP версии не ниже 5.3.
+
 
 ## Помощь проекту ##
 
@@ -39,32 +43,35 @@
 
 * Добавить сообщение об ошибке или предложение по улучшению на GitHub
 * Поделиться улучшениями кода, послав нам Pull Request
-* Сделать перевод плагина или оптимизировать его для вашей страны
+* Сделать перевод плагина или оптимизировать его для вашей страны.
     
-**Замечание:** если у вас есть вопросы по работе плагина, то обратитесь к нам за поддержкой на [GitHub](https://github.com/Teplitsa/Leyka/issues/).
+Если у вас есть вопросы по работе плагина, то обратитесь к нам за поддержкой на [GitHub](https://github.com/Teplitsa/Leyka/issues/).
 
-## Oбновлениe
 **ВНИМАНИЕ!**
 
 В версии 2.0 были внесены критические изменения, несовместимые с кодом и данными любой более ранней версии.
 **Если вы активно использовали Лейку версии 1.2  или ранее, не выполняйте это обновление!** 
 Разработчики плагина не несут ответственности за результат этого действия. 
-Подробнее читайте на [сайте плагина](http://leyka.te-st.ru/old-version/)
+Подробнее читайте на [сайте плагина](http://leyka.te-st.ru/old-version/).
 
+
+## In English ##
 
 Leyka is a plugin for fundraising and donations collection via WordPress website. Supported payment methods includes bank cards Visa and MasterCard through **Chronopay and RBK money** systems, also **WebMoney and Yandex.Money** supported. You can also use a traditional bank payment orders (quittances).
+
 This plugin developed and supported by [Teplitsa of social technologies](//te-st.ru/).
 
 The plugin's task is to relieve and improve an integrations of donations collecting function on websites of NGOs and any social oriented projects.
+
 * Plugin is very easy to install, and it requires only a minimum of settings.
 * You can start to collect donations right after plugin setup.
 * Many important settings are setted automatically.
 
-The plugin is designed for any website that wants to collect money in the Internet - for ex., NGOs.
+The plugin is designed for any website that wants to collect money online - NGOs, informal unions,  individuals.
 
 **The plugin's official website:** [leyka.te-st.ru](http://leyka.te-st.ru/)
 
-**Warning:** you will need to sign a contract with some payment systems, like Yandex.Money or RBK, to collect donations through them. A complete list of payment systems supported is in [docs](http://leyka.te-st.ru/sistemnye-trebovaniya/).
+**Warning:** you will need to sign a contract with some payment systems, like Yandex.Money or RBK, to collect donations through them. 
 
 
 **Main functions**
@@ -80,7 +87,11 @@ The plugin is designed for any website that wants to collect money in the Intern
 
 ## Installation ##
 
-You can read a very thorough manual to setup the plugin [here](http://leyka.te-st.ru/ustanovka-lejki/). Setting the  up and user experience are illustrated in the [screencast](http://leyka.te-st.ru/videourok-kak-ustanovit-i-nastroit-plagin-lejka/).
+The plugin manual is avaliable at [official website](https://leyka.te-st.ru/instruction/). Intallation and usage are illustrated with screencasts:
+
+* [basic features](https://leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/)
+* [extended features](https://leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/)
+
 PHP at least 5.3 is required.
 
 ## Help the project ##
