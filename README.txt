@@ -14,20 +14,24 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 == Description ==
 
 «Онлайн-Лейка» — это плагин для краудфандинга, фандрайзинга и сбора пожертвований на вашем сайте. Поддерживаются платежи банковскими картами Visa и MasterCard через **Chronopay и RBK money**, также подключаются **WebMoney, Яндекс.Деньги (YandexMoney)** и традиционные квитанции.
+
+_For English description scroll down, please._
+
 Плагин разработан и поддерживается [Теплицей социальных технологий](//te-st.ru/).
 
 Задача плагина — облегчить и усовершенствовать интеграцию сбора пожертвований на сайты НКО и общественных проектов.
+
 * Плагин элементарно устанавливается и требует минимум настроек.
 * Функции сбора пожертвований доступны сразу после установки.
 * Многие важные параметры заданы автоматически. Например, юридически корректный текст договора оферты на пожертвование.
 
-Плагин предназначен для всех, кто собирает деньги в интеренете, в т.ч. НКО.
+Плагин предназначен для всех, кто собирает деньги в интеренете - НКО, общественные объединения, физические лица.
 
-**Официальный сайт плагина:** [leyka.te-st.ru](//leyka.te-st.ru/)
+**Официальный сайт:** [leyka.te-st.ru](//leyka.te-st.ru/)
 
 **Следите за разработкой на** [GitHub](//github.com/Teplitsa/Leyka)
 
-**Внимание:** для сбора пожертвований с помощью популярных платёжных систем необходимо иметь договор с этими системами. Полный список платежных систем, которые поддерживает плагин, вы можете найти в [документации](http://leyka.te-st.ru/sistemnye-trebovaniya/)
+**Внимание:** для сбора пожертвований с помощью популярных платёжных систем необходимо иметь договор с этими системами. 
 
 **Основные функции**
 
@@ -39,13 +43,73 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 * При необходимости, измените текст договора оферты.
 * Поддерживаемые платёжные системы: Яндекс.деньги (протоколы ЕПР и p2p), Chronopay, RBK Money, распечатка банковских квитанций, отображение статического текста.
 
-Процесс настройки проиллюстрирован в специальном [видео-уроке](//leyka.te-st.ru/videourok-kak-ustanovit-i-nastroit-plagin-lejka/)
+Подробная инструкция по настройке плагина доступна на официальном сайте в разделе [Инструкция](https://leyka.te-st.ru/instruction/). Она также содержит видео-уроки:
+* [настройка и базовые функции плагина](https://leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/)
+* [использование популярных функций (виджетов, шорткодов и т.п.)](https://leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/)
+
+**Помощь проекту**
+
+Мы очень ждем вашей помощи проекту. Вы можете помочь следующими способами:
+
+* Добавить сообщение об ошибке или предложение по улучшению на [GitHub](https://github.com/Teplitsa/Leyka/issues/)
+* Поделиться улучшениями кода, послав нам Pull Request
+* Сделать перевод плагина или оптимизировать его для вашей страны.
+
+Если у вас есть вопросы по работе плагина, то обратитесь к нам за поддержкой на [GitHub](https://github.com/Teplitsa/Leyka/issues/).
 
 **ВНИМАНИЕ!**
 
-В версии 2.0 были внесены критические изменения, не совместимые с кодом и данными любой более ранней версии. 
-Если вы активно использовали Лейку версии **1.2.х или ранее**, **не выполняйте это обновление**. 
-Разработчики плагина не несут ответственности за результат этого действия.
+В версии 2.0 были внесены критические изменения, несовместимые с кодом и данными любой более ранней версии.
+**Если вы активно использовали Лейку версии 1.2  или ранее, не выполняйте это обновление!** 
+Разработчики плагина не несут ответственности за результат этого действия. 
+Подробнее читайте на [сайте плагина](http://leyka.te-st.ru/old-version/).
+
+
+**IN ENGLISH**
+
+Leyka is a plugin for fundraising and donations collection via WordPress website. Supported payment methods includes bank cards Visa and MasterCard through **Chronopay and RBK money** systems, also **WebMoney and Yandex.Money** supported. You can also use a traditional bank payment orders (quittances).
+
+This plugin developed and supported by [Teplitsa of social technologies](//te-st.ru/).
+
+The plugin's task is to relieve and improve an integrations of donations collecting function on websites of NGOs and any social oriented projects.
+
+* Plugin is very easy to install, and it requires only a minimum of settings.
+* You can start to collect donations right after plugin setup.
+* Many important settings are setted automatically.
+
+The plugin is designed for any website that wants to collect money online - NGOs, informal unions,  individuals.
+
+**Official website:** [leyka.te-st.ru](http://leyka.te-st.ru/)
+
+**Warning:** you will need to sign a contract with some payment systems, like Yandex.Money or RBK, to collect donations through them. 
+
+**Main features**
+
+* Create a different kinds of donations for different charity campaigns and projects.
+* Be aware of your donations with email notification system.
+* Look through donation statistics.
+* Collect your donations in different currency (USD, euro and russian roubles are supported) and through different payment operators.
+* Edit a text of your thanks to the donors.
+* Change a terms of agreement text, if need be.
+* Supporting payment systems are: Yandex.Money (all protocols for juristic and physical persons included), Chronopay, RBK Money, bank orders printout, static info display.
+
+The plugin manual is avaliable at [official website](https://leyka.te-st.ru/instruction/). Intallation and usage are illustrated with screencasts:
+
+* [basic features](https://leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/)
+* [extended features](https://leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/)
+
+PHP at least 5.3 is required for plugin to work correctly.
+
+**Help the project**
+
+We will be very grateful if you will help us to make Leyka better.
+
+* You can add a bugreport or a feature request on [GitHub](https://github.com/Teplitsa/Leyka/issues).
+* Send us your pull request to share a code impovement.
+* You can make a new plugin translation for your language or send us a fixes for an existing translation, if needed.
+
+If you have a questions for the plugin work in any aspect, please address our support service on [GitHub](https://github.com/Teplitsa/Leyka/issues/).
+
 
 == Installation ==
 
