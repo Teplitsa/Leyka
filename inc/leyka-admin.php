@@ -27,10 +27,19 @@ class Leyka_Admin_Setup {
                 remove_action('restrict_manage_posts', array($GLOBALS['wpseo_metabox'], 'posts_filter_dropdown'));
         });
 
-
+        add_filter('plugin_row_meta', array($this, 'set_plugin_meta'), 10, 2);
     }
 
-    function reorder_submenu($menu_order) {
+    public function set_plugin_meta($links, $file) {
+
+        if($file == LEYKA_PLUGIN_INNER_SHORT_NAME) {
+            $links[] = '<a href="https://github.com/Teplitsa/Leyka/">GitHub</a>';
+        }
+
+        return $links;
+    }
+
+    public function reorder_submenu($menu_order) {
         global $submenu;
 
         if(current_user_can($this->_options_capability)) {
@@ -113,7 +122,7 @@ class Leyka_Admin_Setup {
 	}
 
 	/** Admin Menu **/
-	function admin_menu_setup() {
+	public function admin_menu_setup() {
 
 		// Leyka menu root
 		add_menu_page(__('Leyka Dashboard', 'leyka'), __('Leyka', 'leyka'), $this->_options_capability, 'leyka', array($this, 'dashboard_screen'));
@@ -127,18 +136,12 @@ class Leyka_Admin_Setup {
     }
 
 	/** Displaying dashboard **/
-	function dashboard_screen(){
+	public function dashboard_screen(){
 
 //		if( !leyka_current_user_has_role($this->_manager_role) )
 //            wp_die(__('Sorry, but you do not have permissions to access this page.', 'leyka'));
 
-		/* page actions */
-		do_action('leyka_dashboard_actions');
-
-		$page_slug = 'leyka';
-		$page_title = __('Leyka Dashboard', 'leyka');
-		$parent_slug = 'admin.php';
-//		$faction = "{$parent_slug}?page={$page_slug}";
+		do_action('leyka_dashboard_actions'); // Collapsible
 
 		/* @to-do: make metaboxes collapsable */
 		add_meta_box('leyka_status', __('Leyka\'s settings', 'leyka'), array($this, 'status_metabox_screen'), 'toplevel_page_leyka', 'normal');
@@ -146,21 +149,21 @@ class Leyka_Admin_Setup {
 		add_meta_box('leyka_campaigns', __('Recent campaings', 'leyka'), array($this, 'campaigns_metabox_screen'), 'toplevel_page_leyka', 'normal');?>
 
 		<div class="wrap">
-		<h2><?php echo $page_title;?></h2>
+            <h2><?php _e('Leyka Dashboard', 'leyka');?></h2>
 
-		<div class="metabox-holder" id="leyka-widgets">
-		<div class="postbox-container" id="postbox-container-1">
-			<?php //var_dump(get_current_screen());
-			do_meta_boxes('toplevel_page_leyka', 'normal', 'leyka_status'); ?> 
-		</div>
-		<div class="postbox-container" id="postbox-container-2">
-			<?php $this->dashboard_sidebar_screen();?>
-		</div>
+            <div class="metabox-holder" id="leyka-widgets">
+            <div class="postbox-container" id="postbox-container-1">
+                <?php //var_dump(get_current_screen());
+                do_meta_boxes('toplevel_page_leyka', 'normal', 'leyka_status'); ?>
+            </div>
+            <div class="postbox-container" id="postbox-container-2">
+                <?php $this->dashboard_sidebar_screen();?>
+            </div>
 		</div><!-- close .wrap -->
 	<?php
 	}
 
-	function status_metabox_screen(){
+	public function status_metabox_screen(){
 		
 		$tabs = Leyka_Options_Allocator::instance()->get_tabs();
 		if($tabs) {?>
@@ -200,15 +203,15 @@ class Leyka_Admin_Setup {
 		<?php }
 	}
 	
-	function history_metabox_screen() {
+	public function history_metabox_screen() {
 		
 		$query = new WP_Query(array(
-			'post_type' => 'leyka_donation',
+			'post_type' => Leyka_Donation_Management::$post_type,
 			'post_status' => 'any',
-			'posts_per_page' => 5
+			'posts_per_page' => 5,
 		));
 		
-		if($query->have_posts()){?>
+		if($query->have_posts()) {?>
 
 		<table class="leyka-widget-table history">
 		<thead>
@@ -224,8 +227,8 @@ class Leyka_Admin_Setup {
 		<?php
 			foreach($query->posts as $cp) {
 				$donation = new Leyka_Donation($cp);
-				$url = get_edit_post_link($donation->ID);
-		?>
+				$url = get_edit_post_link($donation->ID);?>
+
 		<tr>
 			<td><?php echo $donation->date;?></td>
 			<td><?php echo $donation->title;?></td>
@@ -236,30 +239,25 @@ class Leyka_Admin_Setup {
 			<td><?php echo $donation->amount.' '.$donation->currency_label;?></td>
 			<td><a href="<?php echo esc_url($url); ?>"><?php _e('Details', 'leyka'); ?></a></td>
 		</tr>
-		<?php	
-			}
-		?>
+		<?php }?>
 		</tbody>
 		</table>
-		<?php
-		}
-		else {
-		?>
+
+		<?php } else {?>
 			<p class="empty-notice"><?php _e('You have not received any donations yet', 'leyka');?></p>
-		<?php
-		}
+		<?php }
 	}
-	
-	function campaigns_metabox_screen(){
+
+	public function campaigns_metabox_screen() {
 		
 		$query = new WP_Query(array(
-			'post_type' => 'leyka_campaign',
+			'post_type' => Leyka_Campaign_Management::$post_type,
 			'post_status' => 'any',
-			'posts_per_page' => 5
+			'posts_per_page' => 5,
 		));
 		
-		if($query->have_posts()){
-		?>
+		if($query->have_posts()) {?>
+
 		<table class="leyka-widget-table campaigns">
 		<thead>
 			<tr>
@@ -272,52 +270,43 @@ class Leyka_Admin_Setup {
 		<?php
 			foreach($query->posts as $cp){
 				$camp = new Leyka_Campaign($cp);
-				$url = get_edit_post_link($camp->ID);
-		?>
+				$url = get_edit_post_link($camp->ID);?>
+
 		<tr>
 			<td><?php echo $camp->title;?></td>
 			<td><?php echo $camp->payment_title; ?></td>			
 			<td><a href="<?php echo esc_url($url); ?>"><?php _e('Edit', 'leyka'); ?></a></td>
 		</tr>
-		<?php	
-			}
-		?>
+		<?php }?>
 		</tbody>
 		</table>
-		<?php
-		}
-		else {
-			$url = admin_url('post-new.php?post_type=leyka_campaign');
-		?>
+
+		<?php } else {
+			$url = admin_url('post-new.php?post_type=leyka_campaign');?>
+
 			<p class="empty-notice"><?php _e('You don\'t have any campaign yet.', 'leyka');?> <a href="<?php echo esc_url($url); ?>"><?php _e('Create first one', 'leyka'); ?></a></p>
 		<?php
 		}
 	}
 	
-	function dashboard_sidebar_screen() {
-		
-		$svg = 'http://leyka.te-st.ru/wp-content/uploads/assets/tst-logo.svg';
-		$png = 'http://leyka.te-st.ru/wp-content/uploads/assets/tst-logo.png';
-	?>
+	public function dashboard_sidebar_screen() {?>
+
 		<div id="leyka-card">
 		<h2><i></i><?php _e('Leyka', 'leyka');?></h2>
 		<p><?php _e('Leyka is a simple donations management system', 'leyka');?></p>
 		<p><?php _e('Developed by <a href="http://te-st.ru/" target="_blank">Teplitsa of social technologies</a>', 'leyka');?></p>
-		<p class="te-st"><img src="<?php echo $svg;?>" onerror="this.onerror=null;this.src=<?php echo $png;?>"></p>
+		<p class="te-st"><img src="http://leyka.te-st.ru/wp-content/uploads/assets/tst-logo.svg" onerror="this.onerror=null;this.src='http://leyka.te-st.ru/wp-content/uploads/assets/tst-logo.png'"></p>
 		<ul class="leyka-ref-links">
 			<li><a href="http://leyka.te-st.ru" target='_blank'><?php _e('Plugin website', 'leyka');?></a></li>
 			<li><a href="http://leyka.te-st.ru/docs/" target='_blank'><?php _e('Documentation', 'leyka');?></a></li>
 			<li><a href="http://leyka.te-st.ru/faq/" target='_blank'><?php _e('Ask a question', 'leyka');?></a></li>
 		</ul>
 		</div>
-		
 	<?php	
 	}
 	
-	
-	
 	/** Displaying settings **/
-	function settings_screen(){
+	public function settings_screen() {
 		
 		/* Capability test */
 		if( !current_user_can($this->_options_capability) )
@@ -338,9 +327,6 @@ class Leyka_Admin_Setup {
 		$faction = add_query_arg('stage', $current_stage, "admin.php?page={$page_slug}");
 
         /** Process settings change */
-//        echo '<pre>'.print_r((int)!empty($_POST["leyka_settings_{$current_stage}_submit"]), TRUE).'</pre>';
-//        echo '<pre>'.print_r((int)wp_verify_nonce('_leyka_nonce', 'test nonce'), TRUE).'</pre>';
-//        echo '<pre>'.print_r($_POST, TRUE).'</pre>';
 	    if( !empty($_POST["leyka_settings_{$current_stage}_submit"])){
 //         && wp_verify_nonce('_leyka_nonce', "leyka_settings_{$current_stage}")
 			do_action("leyka_settings_{$current_stage}_submit", $current_stage);
@@ -383,34 +369,31 @@ class Leyka_Admin_Setup {
 	<?php 
 	}
 
-	function get_default_settings_tab(){
-		
+	public function get_default_settings_tab() {
 		return apply_filters('leyka_default_settings_tab', 'beneficiary');
 	}
 	
-	function get_current_settings_tab() {
-		
+	public function get_current_settings_tab() {
 		return empty($_GET['stage']) ? $this->get_default_settings_tab() : trim($_GET['stage']);
 	}
 
-	
     /** Settings tabs menu **/
-	function settings_tabs_menu(){
-		
+	public function settings_tabs_menu(){
+
 		$tabs = Leyka_Options_Allocator::instance()->get_tabs();
 		$default_tab = $this->get_default_settings_tab();
 		$current_tab = $this->get_current_settings_tab();
 		$base_url = 'admin.php?page=leyka_settings';
 		$out = '';
-		
-		foreach($tabs as $id => $label){
-			
+
+		foreach($tabs as $id => $label) {
+
 			$css = ($current_tab == $id) ? 'nav-tab nav-tab-active' : 'nav-tab';
 			$url = ($default_tab == $id) ? $base_url : add_query_arg('stage', $id, $base_url);
 			
 			$out .= "<a href='{$url}' class='{$css}'>{$label}</a>";		
 		}
-		
+
 		return $out;
 	}
 
@@ -439,7 +422,11 @@ class Leyka_Admin_Setup {
         ));
 
         // Campaign editing page:
-        if($screen->post_type == Leyka_Campaign_Management::$post_type && $screen->base == 'post' && !$screen->action) {
+        if(
+            $screen->post_type == Leyka_Campaign_Management::$post_type &&
+            $screen->base == 'post' &&
+            !$screen->action
+        ) {
 
             wp_enqueue_style('jquery-dataTables', LEYKA_PLUGIN_BASE_URL.'css/jquery.dataTables.css');
             wp_enqueue_script(
@@ -478,11 +465,6 @@ class Leyka_Admin_Setup {
         // Donation editing page:
         if($screen->post_type == Leyka_Donation_Management::$post_type && $screen->base == 'post') {
 
-//            wp_enqueue_style(
-//                'leyka-admin-jquery-ui',
-//                LEYKA_PLUGIN_BASE_URL.'css/jquery-ui.css', array(), LEYKA_VERSION
-//            );
-
             $locale = get_locale();
             if($locale != 'en_US')
                 wp_enqueue_script(
@@ -508,5 +490,4 @@ class Leyka_Admin_Setup {
             ));
         }
 	}
-
 } //class end

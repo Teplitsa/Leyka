@@ -97,7 +97,6 @@ class Leyka {
                 do_action('leyka_service_call-'.$request[0], $request[1]);
                 exit();
             }
-            
         });
 
         add_action('template_redirect', array($this, 'gateway_redirect_page'), 1, 1);
