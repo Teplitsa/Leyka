@@ -70,6 +70,11 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 == Changelog ==
 
+= 2.2.2 =
+ * Fix: notice on Posts quick edit.
+ * Fix: warnings when wp-admin is accessed by user with Subscriber compatibility.
+ * Fix: small fixes in code and markup.
+
 = 2.2.1 =
  * New: added RBK Money gateway support.
  * New: added WebMoney support in Yandex.money gateway.
