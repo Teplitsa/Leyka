@@ -20,16 +20,7 @@ class Leyka_Campaign_Management {
         add_action('restrict_manage_posts', array($this, 'manage_filters'));
         add_action('pre_get_posts', array($this, 'do_filtering'));
 		
-		add_filter('post_row_actions', function($actions, $donation){
-            global $current_screen;
-			
-            if($current_screen->post_type != 'leyka_campaign')
-                return $actions;
-			
-            unset($actions['inline hide-if-no-js']);
-			return $actions;
-		
-        }, 10, 2);
+		add_filter('post_row_actions', array($this, 'row_actions'), 10, 2);
 	}
 	
 	public static function get_instance() {
@@ -40,6 +31,17 @@ class Leyka_Campaign_Management {
 
 		return self::$_instance;
 	}
+
+    public function row_actions($actions, $campaign) {
+        global $current_screen;
+
+        if( !$current_screen || !is_object($current_screen) || $current_screen->post_type != self::$post_type ) {
+            return $actions;
+        }
+
+        unset($actions['inline hide-if-no-js']);
+        return $actions;
+    }
 
     public function manage_filters() {
 
@@ -420,6 +422,9 @@ class Leyka_Campaign {
             case 'campaign_target':
             case 'target': return $this->_campaign_meta['campaign_target'];
             case 'description': return $this->_post_object->post_content;
+            case 'excerpt':
+            case 'post_excerpt':
+            case 'short_description': return $this->_post_object->post_excerpt;
             case 'status': return $this->_post_object->post_status;
             case 'permalink':
             case 'url': return get_permalink($this->_id);

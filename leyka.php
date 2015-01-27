@@ -63,10 +63,42 @@ if( !defined('LEYKA_PLUGIN_INNER_SHORT_NAME') )
 // Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
 if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.3.0', '<') ) {
 
-    echo __('<div id="message" class="error"><p><strong>Ошибка:</strong> версия PHP ниже <strong>5.3.0</strong>. Лейка нуждается в PHP хотя бы <strong>версии 5.3.0</strong>, чтобы работать корректно. Плагин будет деактивирован.<br /><br />Пожалуйста, направьте вашему хостинг-провайдеру запрос на повышение версии PHP для этого сайта.</p> <p><strong>Error:</strong> your PHP version is below <strong>5.3.0</strong>. Leyka needs PHP <strong>v5.3.0</strong> or later to work. Plugin will be deactivated.<br /><br />Please contact your hosting provider to upgrade your PHP version.</p></div>', 'leyka');
+    echo __('<div id="message" class="error"><p><strong>Внимание:</strong> версия PHP ниже <strong>5.3.0</strong>. Лейка нуждается в PHP хотя бы <strong>версии 5.3.0</strong>, чтобы работать корректно. Плагин будет деактивирован.<br /><br />Пожалуйста, направьте вашему хостинг-провайдеру запрос на повышение версии PHP для этого сайта.</p> <p><strong>Warning:</strong> your PHP version is below <strong>5.3.0</strong>. Leyka needs PHP <strong>v5.3.0</strong> or later to work. Plugin will be deactivated.<br /><br />Please contact your hosting provider to upgrade your PHP version.</p></div>', 'leyka');
 
     die();
 }
+
+// Custom activation errors handler:
+//function leyka_handle_possible_errors($err_number, $err_str, $err_file, $err_line) {
+//
+//    if( !(error_reporting() & $err_number) ) { // This error code is not included in error_reporting
+//        return;
+//    }
+//
+//    _e("<strong>Warning!<strong> Some programming errors appear while Leyka activation. This is definitely a problem that needs to be reported to the <a href='mailto:support@te-st.ru'>plugin support</a> or its <a href='https://github.com/Teplitsa/Leyka/issues/new/'>Github page</a>. Please, send us the following text:<br /><br />", 'leyka');
+//
+//    switch($err_number) {
+//        case E_USER_ERROR:
+//            echo sprintf(__('<p><strong>ERROR %s (%s)</strong></p>: fatal error on line %s in file %s, PHP %s, OS %s.', 'leyka'), $err_number, $err_str, $err_line, $err_file, PHP_VERSION, PHP_OS);
+////            exit(1);
+//            break;
+//
+//        case E_USER_WARNING:
+//            echo sprintf(__('<p><strong>WARNING %s</strong></p>: %s. Line %s in file %s, PHP %s, OS %s.', 'leyka'), $err_number, $err_str, $err_line, $err_file, PHP_VERSION, PHP_OS);
+//            break;
+//
+//        case E_USER_NOTICE:
+//            echo sprintf(__('<p><strong>NOTICE %s</strong></p>: %s. Line %s in file %s, PHP %s, OS %s.', 'leyka'), $err_number, $err_str, $err_line, $err_file, PHP_VERSION, PHP_OS);
+//            break;
+//
+//        default:
+//            echo sprintf(__('<p><strong>Unknown error %s</strong></p>: %s. Line %s in file %s, PHP %s, OS %s.', 'leyka'), $err_number, $err_str, $err_line, $err_file, PHP_VERSION, PHP_OS);
+//            break;
+//    }
+//
+//    return true; // Don't execute PHP internal error handler
+//}
+//set_error_handler('leyka_handle_possible_errors', E_ALL);
 
 /** To avoid some strange bug, when WP functions like is_user_logged_in() are suddenly not found: */
 if( !function_exists('is_user_logged_in') )
@@ -104,4 +136,6 @@ if( !$gateways_dir ) {
 register_activation_hook(__FILE__, array('Leyka', 'activate'));
 register_deactivation_hook(__FILE__, array('Leyka', 'deactivate'));
 
-leyka(); // Init
+leyka(); // All systems go
+
+//restore_error_handler(); // Finally, restore errors handler to previous one

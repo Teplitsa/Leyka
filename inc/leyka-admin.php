@@ -40,11 +40,12 @@ class Leyka_Admin_Setup {
     }
 
     public function reorder_submenu($menu_order) {
+
         global $submenu;
 
-        if(current_user_can($this->_options_capability)) {
+        if(current_user_can($this->_options_capability) && !empty($submenu['leyka'])) {
 
-            @usort($submenu['leyka'], function($a, $b){
+            function leyka_reorder_plugin_submenu($a, $b) {
 
                 if($a[0] == __('Dashboard', 'leyka'))
                     return -1;
@@ -64,18 +65,18 @@ class Leyka_Admin_Setup {
                 if($a[0] == __('New campaign', 'leyka'))
                     return $b[0] == __('Settings', 'leyka') ? -1 : 1;
 
-            });
+                return 0;
+            }
+            @usort($submenu['leyka'], 'leyka_reorder_plugin_submenu');
 
-            $new_order = $submenu['leyka'];
-        } else {
+        } elseif( !empty($submenu['leyka']) ) {
 
             /** Remove Settings from plugin submenu: */
-            $new_order = array_filter($submenu['leyka'], function($menu_item){
+            function leyka_reorder_plugin_submenu($menu_item){
                 return $menu_item[0] != __('Settings', 'leyka');
-            });
+            }
+            $submenu['leyka'] = array_filter($submenu['leyka'], 'leyka_reorder_plugin_submenu');
         }
-
-        $submenu['leyka'] = $new_order;
 
         return $menu_order;
     }

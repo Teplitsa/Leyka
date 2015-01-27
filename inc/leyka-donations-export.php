@@ -18,7 +18,7 @@ function leyka_render_export_button() {
             <input type="hidden" name="gateway_pm" value="<?php echo empty($_GET['gateway_pm']) ? '' : $_GET['gateway_pm']; ?>" />
             <input type="hidden" name="campaign" value="<?php echo empty($_GET['campaign']) ? '' : $_GET['campaign']; ?>" />
             <?php foreach(apply_filters('leyka_donations_export_form_fields', array()) as $name => $value) {?>
-            <input type="hidden" name="<? echo $name;?>" value="<?echo $value;?>" />
+            <input type="hidden" name="<?php echo $name;?>" value="<?echo $value;?>" />
             <?php }?>
 
             <input type="submit" name="leyka-donations-export-csv-excel" class="button-primary" value="<?php _e('Export (csv)', 'leyka');?>" />

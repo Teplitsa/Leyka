@@ -12,25 +12,10 @@ class Leyka_Donation_Management {
 
 	private function __construct() {
 
-        add_filter('post_row_actions', function($actions, $donation){
-            global $current_screen;
-
-            if($current_screen->post_type != 'leyka_donation')
-                return $actions;
-
-            $actions['edit'] = '<a href="'.get_edit_post_link($donation->ID, 1).'">'.__('Details', 'leyka').'</a>';
-            unset($actions['view']);
-//            unset( $actions['trash'] );
-
-            unset($actions['inline hide-if-no-js']);
-
-            //$actions['inline hide-if-no-js'] .= __( 'Quick&nbsp;Edit' );
-
-            return $actions;
-        }, 10, 2);
-
         /** @todo Maybe, add donation's custom fields to quick edit box */
 //        add_action('quick_edit_custom_box', array($this, 'display_custom_quickedit_donation'), 10, 2);
+
+        add_filter('post_row_actions', array($this, 'row_actions'), 10, 2);
 
         add_action('restrict_manage_posts', array($this, 'manage_filters'));
         add_action('pre_get_posts', array($this, 'do_filtering'));
@@ -51,6 +36,22 @@ class Leyka_Donation_Management {
 
         add_action('wp_ajax_leyka_send_donor_email', array($this, 'ajax_send_donor_email'));
 	}
+
+    public function row_actions($actions, $donation) {
+
+        global $current_screen;
+
+        if( !$current_screen || !is_object($current_screen) || $current_screen->post_type != self::$post_type )
+            return $actions;
+
+        $actions['edit'] = '<a href="'.get_edit_post_link($donation->ID, 1).'">'.__('Details', 'leyka').'</a>';
+        unset($actions['view']);
+//            unset( $actions['trash'] );
+
+        unset($actions['inline hide-if-no-js']);
+        //$actions['inline hide-if-no-js'] .= __( 'Quick&nbsp;Edit' );
+        return $actions;
+    }
 
     public function donation_status_changed($new, $old, WP_Post $donation) {
 
