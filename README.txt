@@ -15,6 +15,10 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Плагин разработан и поддерживается [Теплицей социальных технологий](//te-st.ru/).
 
+Leyka is a plugin for fundraising and donations collection via WordPress website.
+
+This plugin developed and supported by [Teplitsa of social technologies](//te-st.ru/).
+
 == Description ==
 
 «Онлайн-Лейка» — это плагин для краудфандинга, фандрайзинга и сбора пожертвований на вашем сайте. Поддерживаются платежи банковскими картами Visa и MasterCard через **Chronopay и RBK money**, также подключаются **WebMoney, Яндекс.Деньги (YandexMoney)** и традиционные квитанции.
@@ -51,37 +55,6 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Если вы активно использовали Лейку версии **1.2.х или ранее**, **не выполняйте это обновление**. 
 Разработчики плагина не несут ответственности за результат этого действия.
 
-
-== Installation ==
-
-Процесс инсталляции плагина стандартен для WordPress.
-Для корректной работы плагина необходим PHP версии не ниже 5.3.
-
-
-== Frequently Asked Questions ==
-
-Читайте секцию вопросов и ответов на сайте плагина [FAQ](http://leyka.te-st.ru/faq/)
-
-== Screenshots ==
-
-1. Пример виджета "карточка кампании"
-2. Пример виджета "список пожертвований"
-3. Пример индикатора достижения целевой суммы кампании
-4. Начальная страница плагина (консоль)
-5. Страница списка поступивших пожертвований
-6. Настройки платёжных систем
-7. Настройки email-уведомлений
-8. Пример формы пожертвования на сайте
-9. Пример квитанции для оплаты через банк
-
-== In English ==
-
-Leyka is a plugin for fundraising and donations collection via WordPress website.
-
-This plugin developed and supported by [Teplitsa of social technologies](//te-st.ru/).
-
-== Description ==
-
 Leyka is a plugin for fundraising and donations collection via WordPress website. Supported payment methods includes bank cards Visa and MasterCard through **Chronopay and RBK money** systems, also **WebMoney and Yandex.Money** supported. You can also use a traditional bank payment orders (quittances).
 
 This plugin developed and supported by [Teplitsa of social technologies](//te-st.ru/).
@@ -114,17 +87,40 @@ The plugin is designed for any website that wants to collect money online - NGOs
 
 == Installation ==
 
+Документация по плагину доступна на [официальном сайте](//leyka.te-st.ru/instruction/). Процесс инсталляции и  настройки плагина изображён на скринкастах:
+
+* [основные функции](//leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/),
+* [продвинутые функции](//leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/).
+
+Для корректной работы плагина необходим PHP версии не ниже 5.3.
+
 The plugin manual is avaliable at [official website](//leyka.te-st.ru/instruction/). Intallation and usage are illustrated with screencasts:
 
-* [basic features](https://leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/),
-* [extended features](https://leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/).
+* [basic features](//leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/),
+* [extended features](//leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/).
 
 PHP at least 5.3 is required.
 
 
 == Frequently Asked Questions ==
 
+Читайте секцию вопросов и ответов на сайте плагина [FAQ](http://leyka.te-st.ru/faq/). Также вы можете задать вопрос нашей службе поддержки на [странице проекта на Github](//github.com/Teplitsa/Leyka/issues/new/).
+
 [FAQ section](//leyka.te-st.ru/faq/) can be found at the plugin website. Also you can address our development and support team by [creating a project issue n Github](//github.com/Teplitsa/Leyka/issues/new/).
+
+
+== Screenshots ==
+
+1. Пример виджета "карточка кампании"
+2. Пример виджета "список пожертвований"
+3. Пример индикатора достижения целевой суммы кампании
+4. Начальная страница плагина (консоль)
+5. Страница списка поступивших пожертвований
+6. Настройки платёжных систем
+7. Настройки email-уведомлений
+8. Пример формы пожертвования на сайте
+9. Пример квитанции для оплаты через банк
+
 
 == Changelog ==
 
