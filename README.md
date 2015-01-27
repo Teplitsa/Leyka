@@ -3,6 +3,7 @@
 **Scroll down for english description, please**
 
 Лейка - плагин для краудфандинга, фандрайзинга и сбора пожертвований на сайте для физических и юридических лиц. Поддерживаются платежи банковскими картами Visa и MasterCard через **Chronopay и RBK money**, также подключаются **WebMoney, Яндекс.Деньги (YandexMoney)** и традиционные квитанции.
+
 Плагин разработан и поддерживается [Теплицей социальных технологий](//te-st.ru/).
 
 Задача плагина — облегчить и усовершенствовать интеграцию сбора пожертвований на сайты НКО и общественных проектов.
@@ -30,13 +31,13 @@
 
 ## Установка ##
 
-Подробная инструкция по установке и настройке плагина Лейка доступна на официальном сайте в разделе [Инструкция](https://leyka.te-st.ru/instruction/). Она также содержит видео-уроки:
-* [настройка и базовые функции плагина](https://leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/)
-* [использование популярных функций (виджетов, шорткодов и т.п.)](https://leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/)
+Подробная инструкция по установке и настройке плагина Лейка доступна на официальном сайте в разделе [Инструкция](//leyka.te-st.ru/instruction/). Она также содержит видео-уроки:
+* [настройка и базовые функции плагина](//leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/)
+* [использование популярных функций (виджетов, шорткодов и т.п.)](//leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/)
 
 Для корректной работы плагина необходим PHP версии не ниже 5.3.
 
-Если вам нужна помощь волонтеров в установке и настройке - создайте задачу на сайте нашего проекта [it-волонтёр](//itv.te-st.ru/).
+Если вам нужна помощь волонтеров в установке и настройке, создайте задачу на сайте нашего проекта [it-волонтёр](//itv.te-st.ru/).
 
 
 ## Помощь проекту ##
@@ -71,7 +72,7 @@ The plugin's task is to relieve and improve an integrations of donations collect
 
 The plugin is designed for any website that wants to collect money online - NGOs, informal unions,  individuals.
 
-**The plugin's official website:** [leyka.te-st.ru](http://leyka.te-st.ru/)
+**The plugin's official website:** [leyka.te-st.ru](//leyka.te-st.ru/)
 
 **Warning:** you will need to sign a contract with some payment systems, like Yandex.Money or RBK, to collect donations through them. 
 

@@ -9,7 +9,11 @@ Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Лейка - плагин для краудфандинга, фандрайзинга и сбора пожертвований на сайте.
+**Scroll down for english description, please**
+
+Лейка - плагин для краудфандинга, фандрайзинга и сбора пожертвований на вашем сайте.
+
+Плагин разработан и поддерживается [Теплицей социальных технологий](//te-st.ru/).
 
 == Description ==
 
@@ -47,10 +51,12 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Если вы активно использовали Лейку версии **1.2.х или ранее**, **не выполняйте это обновление**. 
 Разработчики плагина не несут ответственности за результат этого действия.
 
+
 == Installation ==
 
 Процесс инсталляции плагина стандартен для WordPress.
 Для корректной работы плагина необходим PHP версии не ниже 5.3.
+
 
 == Frequently Asked Questions ==
 
@@ -67,6 +73,58 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 7. Настройки email-уведомлений
 8. Пример формы пожертвования на сайте
 9. Пример квитанции для оплаты через банк
+
+== In English ==
+
+Leyka is a plugin for fundraising and donations collection via WordPress website.
+
+This plugin developed and supported by [Teplitsa of social technologies](//te-st.ru/).
+
+== Description ==
+
+Leyka is a plugin for fundraising and donations collection via WordPress website. Supported payment methods includes bank cards Visa and MasterCard through **Chronopay and RBK money** systems, also **WebMoney and Yandex.Money** supported. You can also use a traditional bank payment orders (quittances).
+
+This plugin developed and supported by [Teplitsa of social technologies](//te-st.ru/).
+
+The plugin's task is to relieve and improve an integrations of donations collecting function on websites of NGOs and any social oriented projects.
+
+* Plugin is very easy to install, and it requires only a minimum of settings.
+* You can start to collect donations right after plugin setup.
+* Many important settings are setted automatically.
+
+The plugin is designed for any website that wants to collect money online - NGOs, informal unions,  individuals.
+
+**The plugin's official website:** [leyka.te-st.ru](//leyka.te-st.ru/)
+
+**Watch the development on** [GitHub](//github.com/Teplitsa/Leyka)
+
+**Warning:** you will need to sign a contract with some payment systems, like Yandex.Money or RBK, to collect donations through them.
+
+
+**Main functions**
+
+* Create a different kinds of donations for different charity campaigns and projects.
+* Be aware of your donations with email notification system.
+* Look through donation statistics.
+* Collect your donations in different currency (USD, euro and russian roubles are supported) and through different payment operators.
+* Edit a text of your thanks to the donors.
+* Change a terms of agreement text, if need be.
+* Supporting payment systems are: Yandex.Money (all protocols for juristic and physical persons included), Chronopay, RBK Money, bank orders printout, static info display.
+
+
+== Installation ==
+
+The plugin manual is avaliable at [official website](//leyka.te-st.ru/instruction/). Intallation and usage are illustrated with screencasts:
+
+* [basic features](https://leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/),
+* [extended features](https://leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/).
+
+PHP at least 5.3 is required.
+
+
+== Frequently Asked Questions ==
+
+[FAQ section](//leyka.te-st.ru/faq/) can be found at the plugin website. Also you can address our development and support team by [creating a project issue n Github](//github.com/Teplitsa/Leyka/issues/new/).
 
 == Changelog ==
 
