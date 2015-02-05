@@ -30,4 +30,22 @@ jQuery(document).ready(function($){
             }
         }
     });
+
+    // Auto-select the code to embed:
+    $('.campaign-embed-code').on('focus keyup', function(e){
+
+        var keycode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+
+        if(keycode == 9 || !keycode) { // Tab or click
+
+            var $this = $(this);
+            $this.select();
+
+            // Work around Chrome's little problem:
+            $this.on('mouseup', function() {
+                $this.off('mouseup');
+                return false;
+            });
+        }
+    });
 });

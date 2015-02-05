@@ -135,7 +135,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         if(leyka_options()->opt('rbk_use_hash')) {
 
             $form_data_vars['hash'] = hash(
-                leyka_options()->opt('rbk_hash_type'), // Hash algorythm is md5 or sha512
+                leyka_options()->opt('rbk_hash_type'), // Hash algorithm is md5 or sha512
                 implode('::', array(
                     leyka_options()->opt('rbk_eshop_id'),
                     $amount,

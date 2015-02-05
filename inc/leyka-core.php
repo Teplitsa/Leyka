@@ -83,7 +83,7 @@ class Leyka {
 		if(is_admin())
 			$this->admin_setup();
 
-		/** Handlers: */
+		/** Service URLs handler: */
         add_action('parse_request', function($request){
             // Callback URLs are: some-site.org/leyka/service/{gateway_id}/{action_name}/
             // For ex., leyka.ngo2.ru/leyka/service/yandex/check_order/
@@ -98,6 +98,20 @@ class Leyka {
                 exit();
             }
         });
+
+        /** Embed campaign URL handler: */
+        add_filter('template_include', function($template){
+
+            if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type) && !empty($_GET['embed'])) {
+
+                $new_template = leyka_get_current_template_data(false, 'embed', true);
+                if($new_template && !empty($new_template['file'])) {
+                    $template = $new_template['file'];
+                }
+            }
+
+            return $template;
+        }, 100);
 
         add_action('template_redirect', array($this, 'gateway_redirect_page'), 1, 1);
 
@@ -582,9 +596,6 @@ class Leyka {
      */
     public function gateway_redirect_page() {
 
-        global $wp_query;
-
-        // isset($wp_query->query_vars['name']) && $wp_query->query_vars['name'] == 'leyka-process-donation'
 		if(stristr($_SERVER['REQUEST_URI'], 'leyka-process-donation')) {
             
             if(empty($_POST)) {
@@ -610,7 +621,7 @@ class Leyka {
 
                 header('HTTP/1.1 200 OK');
 
-                include(LEYKA_PLUGIN_DIR.'templates/leyka-gateway-redirect-page.php'); // Show Gateway redirect page
+                require_once(LEYKA_PLUGIN_DIR.'templates/service/leyka-gateway-redirect-page.php');
                 exit();
             }
 		}
@@ -697,42 +708,52 @@ class Leyka {
 	/**
 	 * Templates manipulations
 	 **/
-	public function get_templates() { 
-		if(empty($this->templates)) { 
+	public function get_templates($is_service = false) {
+
+		if(empty($this->templates)) {
+
 			$this->templates = glob(STYLESHEETPATH.'/leyka-template-*.php');
 			if($this->templates === false || empty($this->templates)) { // If global hits an error, it returns false
 
 				// Let's search in own folder:
-				$this->templates = glob(LEYKA_PLUGIN_DIR . 'templates/leyka-template-*.php');
+				$this->templates = glob(
+                    LEYKA_PLUGIN_DIR.'templates'.($is_service ? '/service' : '').'/leyka-template-*.php'
+                );
 				
-				if($this->templates === false)
+				if($this->templates === false) {
 					$this->templates = array();
+                }
 			}
-			// get data
+
 			$this->templates = array_map(array($this, 'get_template_data'), $this->templates);
 		}
+
 		return (array)$this->templates;
 	}
 
 	public function get_template_data($file) {
+
 		$headers = array(
-			'name' => 'Leyka Template',
-			'description' => 'Description'			
+			'name' => __('Leyka Template', 'leyka'),
+			'description' => __('Description', 'leyka'),
 		);
 
 		$data = get_file_data($file, $headers);
 		$data['file'] = $file;
 		$data['basename'] = basename($file);
 		$id = explode('-', str_replace('.php', '', $data['basename']));
-		$data['id'] = end($id); //otherwise we'll get error in php 5.4.x
-		if(empty($data['name']))
+		$data['id'] = end($id); // Otherwise error appears in php 5.4.x
+
+		if(empty($data['name'])) {
 			$data['name'] = $data['basename'];
+        }
+
 		return $data;
 	}
 	
-	public function get_template($basename) {
+	public function get_template($basename, $is_service = false) {
 		
-		$templates = $this->get_templates();
+		$templates = $this->get_templates($is_service);
 		if( !$templates )
 			return false;
 		
@@ -740,7 +761,7 @@ class Leyka {
 		foreach($templates as $template) {
 			
 			$cur_basename = explode('-', str_replace('.php', '', $template['basename']));
-            $cur_basename = end($cur_basename); //otherwise error in PHP 5.4.x
+            $cur_basename = end($cur_basename); // Otherwise error appears in PHP 5.4.x
 			if($cur_basename == $basename) {
 				$active = $template;
                 break;
@@ -750,10 +771,9 @@ class Leyka {
 		return $active;
 	}
 
-} //class end
+} // Leyka class end
 
 // Shorthands for singletons instances:
-
 /**
  * @return Leyka Core object
  */

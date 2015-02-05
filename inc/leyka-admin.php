@@ -338,7 +338,7 @@ class Leyka_Admin_Setup {
 		<h2 class="nav-tab-wrapper"><?php echo $this->settings_tabs_menu();?></h2>
 
 		<div id="tab-container">
-			<form method="post" action="<?php echo admin_url($faction); ?>" id="leyka-settings-form">
+			<form method="post" action="<?php echo admin_url($faction);?>" id="leyka-settings-form">
 
             <?php
 				wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');

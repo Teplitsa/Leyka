@@ -12,7 +12,7 @@ class Leyka_Campaign_Management {
 	
 	private function __construct() {
 
-		add_action('leyka_campaign_metaboxes', array($this, 'set_metaboxes'));	
+		add_action(self::$post_type.'_metaboxes', array($this, 'set_metaboxes'));
 		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manage_columns_names'));
 		add_action('manage_'.self::$post_type.'_posts_custom_column', array($this, 'manage_columns_content'), 2, 2);
 		add_action('save_post', array($this, 'save_data'), 2, 2);
@@ -33,6 +33,7 @@ class Leyka_Campaign_Management {
 	}
 
     public function row_actions($actions, $campaign) {
+
         global $current_screen;
 
         if( !$current_screen || !is_object($current_screen) || $current_screen->post_type != self::$post_type ) {
@@ -50,7 +51,7 @@ class Leyka_Campaign_Management {
         if(
             $pagenow == 'edit.php' &&
             isset($_GET['post_type']) &&
-            $_GET['post_type'] == 'leyka_campaign' /*&&
+            $_GET['post_type'] == self::$post_type /*&&
     in_array('administrator', wp_get_current_user()->roles)*/
         ) {?>
 
@@ -86,7 +87,7 @@ class Leyka_Campaign_Management {
 
         if(
             $pagenow == 'edit.php' && !empty($_GET['post_type']) &&
-            $_GET['post_type'] == Leyka_Campaign_Management::$post_type && is_admin() && $query->is_main_query()
+            $_GET['post_type'] == self::$post_type && is_admin() && $query->is_main_query()
         ) {
             $meta_query = array('relation' => 'AND');
 
@@ -103,8 +104,9 @@ class Leyka_Campaign_Management {
 
             //...
 
-            if(count($meta_query) > 1)
+            if(count($meta_query) > 1) {
                 $query->set('meta_query', $meta_query);
+            }
         }
     }
 
@@ -113,11 +115,20 @@ class Leyka_Campaign_Management {
 
 		add_meta_box(self::$post_type.'_data', __('Campaign settings', 'leyka'), array($this, 'data_meta_box'), self::$post_type, 'normal', 'high');
 
-        // Metabox only for campaign editing page:
+        // Metaboxs are only for campaign editing page:
         $screen = get_current_screen();
+        if($screen->post_type == self::$post_type && $screen->base == 'post' && !$screen->action) {
 
-        if($screen->post_type == Leyka_Campaign_Management::$post_type && $screen->base == 'post' && !$screen->action)
-		    add_meta_box(self::$post_type.'_donations', __('Donations history', 'leyka'), array($this, 'donations_meta_box'), self::$post_type, 'normal', 'high');
+            add_meta_box(
+                self::$post_type.'_embed', __('Campaign embedding', 'leyka'),
+                array($this, 'embedding_meta_box'), self::$post_type, 'side', 'low'
+            );
+
+		    add_meta_box(
+                self::$post_type.'_donations', __('Donations history', 'leyka'),
+                array($this, 'donations_meta_box'), self::$post_type, 'normal', 'high'
+            );
+        }
 	}
 
     public function data_meta_box($post) {
@@ -216,7 +227,7 @@ class Leyka_Campaign_Management {
 	<?php }
 	}
 
-    public function donations_meta_box($campaign) { $campaign = new Leyka_Campaign($campaign);?>
+    public function donations_meta_box(WP_Post $campaign) { $campaign = new Leyka_Campaign($campaign);?>
 
         <div>
             <a class="button" href="<?php echo admin_url('/post-new.php?post_type=leyka_donation&campaign_id='.$campaign->id);?>"><?php _e('Add correctional donation', 'leyka');?></a>
@@ -248,8 +259,8 @@ class Leyka_Campaign_Management {
             <?php foreach($campaign->get_donations() as $donation) {
                 $gateway_label = $donation->gateway_id ? $donation->gateway_label : __('Custom payment info', 'leyka');
                 $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;
-				$amount_css = ($donation->sum < 0) ? 'amount-negative' : 'amount';
-			?>
+				$amount_css = $donation->sum < 0 ? 'amount-negative' : 'amount';?>
+
                 <tr <?php echo $donation->type == 'correction' ? 'class="leyka-donation-row-correction"' : '';?>>
                     <td><?php echo $donation->id;?></td>
                     <td><?php echo '<span class="'.$amount_css.'">'.$donation->sum.'&nbsp;'.$donation->currency_label.'</span>';?></td>
@@ -267,6 +278,15 @@ class Leyka_Campaign_Management {
     <?php
     }
 
+    public function embedding_meta_box(WP_Post $campaign) { $link = get_permalink($campaign->ID);
+
+        $link .= stristr($link, '?') !== false ? '&embed=1' : '?embed=1';?>
+
+        <label for="campaign-embed-code"><?php _e("To embed a campaign card in some other web page, copy the following code and insert it in a page HTML:", 'leyka');?></label>
+
+        <textarea id="campaign-embed-code" class="campaign-embed-code"><?php echo '<iframe src="'.$link.'"></iframe>'?></textarea>
+    <?php }
+
 	public function save_data($campaign_id, WP_Post $campaign) {
 
 		$campaign = new Leyka_Campaign($campaign);
@@ -279,7 +299,8 @@ class Leyka_Campaign_Management {
 		$unsort = $columns;
 		$columns = array();
 
-		if(isset($unsort['cb'])){
+		if( !empty($unsort['cb']) ) {
+
 			$columns['cb'] = $unsort['cb'];
 			unset($unsort['cb']);
 		}
@@ -312,33 +333,29 @@ class Leyka_Campaign_Management {
 		
 		$campaign = new Leyka_Campaign($campaign_id);
 		
-		if($column_name == 'ID'){
+		if($column_name == 'ID') {
 			echo (int)$campaign->id;
-		}
-        elseif($column_name == 'payment_title'){
+		} elseif($column_name == 'payment_title') {
             echo $campaign->payment_title;
-        }
-		elseif($column_name == 'coll_state'){
+        } elseif($column_name == 'coll_state') {
+
 			echo $campaign->is_finished == 1 ?
 				'<span class="c-closed">'.__('Closed', 'leyka').'</span>' :
 				'<span class="c-opened">'.__('Opened', 'leyka').'</span>';
-		}
-		elseif($column_name == 'target') {
-			
-			if($campaign->target_state == 'no_target'){
-				
+		} elseif($column_name == 'target') {
+
+			if($campaign->target_state == 'no_target') {
 				leyka_fake_scale_ultra($campaign);			
-			}
-			else {
+			} else {
 				leyka_scale_ultra($campaign);
 			}
-						
+
 			if($campaign->target_state == 'is_reached') {?>
 		    <span class='c-reached'><?php printf(__('Reached at: %s', 'leyka'), '<time>'.$campaign->date_target_reached.'</time>'); ?></span>
 		<?php }
 		}
 	}
-	
+
 } //class
 
 
@@ -351,11 +368,11 @@ class Leyka_Campaign {
 	public function __construct($campaign) {
 
 		if(is_object($campaign)) {
+
             if(is_a($campaign, 'WP_Post')) {
 
                 $this->_id = $campaign->ID;
                 $this->_post_object = $campaign;
-
             } elseif(is_a($campaign, 'Leyka_Campaign')) {
                 return $campaign;
             }

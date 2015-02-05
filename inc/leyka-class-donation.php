@@ -203,23 +203,24 @@ class Leyka_Donation_Management {
 
     public static function send_all_emails($donation) {
 
-        if(is_int($donation) && (int)$donation > 0)
-            $donation = (int)$donation;
-        elseif( !is_object($donation) && !is_a($donation, 'WP_Post') && !is_a($donation, 'Leyka_Donation') )
+        if(is_int($donation) && (int)$donation > 0) {
+            $donation = new Leyka_Donation((int)$donation);
+        } elseif(is_a($donation, 'WP_Post')) {
+            $donation = new Leyka_Donation($donation);
+        } elseif( !is_a($donation, 'Leyka_Donation') ) {
             return false;
-
-        $donation = new Leyka_Donation($donation);
+        }
 
         Leyka_Donation_Management::send_donor_thanking_email($donation);
 
         if(leyka_options()->opt('donations_managers_emails')) {
 
-            $donation = new Leyka_Donation($donation);
             if(
                 ($donation->payment_type == 'single' && leyka_options()->opt('notify_donations_managers')) ||
                 ($donation->payment_type == 'rebill' && leyka_options()->opt('notify_managers_on_recurrents'))
-            )
+            ) {
                 Leyka_Donation_Management::send_managers_notifications($donation);
+            }
         }
 
         return true;
@@ -239,12 +240,13 @@ class Leyka_Donation_Management {
 
     public static function send_donor_thanking_email($donation) {
 
-        if(is_int($donation) && (int)$donation > 0)
-            $donation = (int)$donation;
-        elseif( !is_object($donation) && !is_a($donation, 'WP_Post') && !is_a($donation, 'Leyka_Donation') )
+        if(is_int($donation) && (int)$donation > 0) {
+            $donation = new Leyka_Donation((int)$donation);
+        } elseif(is_a($donation, 'WP_Post')) {
+            $donation = new Leyka_Donation($donation);
+        } elseif( !is_a($donation, 'Leyka_Donation') ) {
             return false;
-
-        $donation = new Leyka_Donation($donation);
+        }
 
         $donor_email = $donation->donor_email;
         if( !$donor_email )
@@ -320,17 +322,17 @@ class Leyka_Donation_Management {
 
     public static function send_managers_notifications($donation) {
 
-        if((int)$donation > 0)
-            $donation = (int)$donation;
-        elseif( !is_object($donation) && !is_a($donation, 'WP_Post') && !is_a($donation, 'Leyka_Donation') )
-            return false;
-
-        $donation = new Leyka_Donation($donation);
-
         if( !leyka_options()->opt('donations_managers_emails') )
             return false;
 
-        $donation = new Leyka_Donation($donation);
+        if(is_int($donation) && (int)$donation > 0) {
+            $donation = new Leyka_Donation((int)$donation);
+        } elseif(is_a($donation, 'WP_Post')) {
+            $donation = new Leyka_Donation($donation);
+        } elseif( !is_a($donation, 'Leyka_Donation') ) {
+            return false;
+        }
+
         if($donation->managers_emails_date)
             return false;
 
@@ -1058,6 +1060,7 @@ class Leyka_Donation_Management {
 
 	/** Helpers **/
 	static function get_status_labels($status = false) {
+
         $labels = leyka()->get_donation_statuses();
 
         if(empty($status))
@@ -1107,14 +1110,12 @@ class Leyka_Donation {
 
         $status = empty($params['status']) ? 'submitted' : $params['status'];
         $id = wp_insert_post(array(
-            'post_type' => 'leyka_donation',
+            'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => $status == 'submitted' ? $status : 'submitted',
+            'post_date' => date('Y-m-d H:i:s'),
             'post_title' => empty($params['purpose_text']) ?
                 leyka_options()->opt('donation_purpose_text') : $params['purpose_text'],
         ));
-
-        if(is_wp_error($id))
-            return $id;
 
         $amount = empty($params['amount']) ? leyka_pf_get_amount_value() : round((float)$params['amount'], 2);
         update_post_meta($id, 'leyka_donation_amount', $amount);
@@ -1162,8 +1163,9 @@ class Leyka_Donation {
             array(array('date' => time(), 'status' => $status))
         );
 
-        $params['payment_type'] = empty($params['payment_type']) ? 'single' : $params['payment_type'];
-        update_post_meta($id, 'leyka_payment_type', $params['payment_type'] == 'rebill' ? 'rebill' : 'single');
+        $params['payment_type'] = empty($params['payment_type']) ?
+            'single' : ($params['payment_type'] == 'rebill' ? 'rebill' : 'correction');
+        update_post_meta($id, 'leyka_payment_type', $params['payment_type']);
 
         if( !empty($params['chronopay_customer_id']) )
             update_post_meta($id, '_chronopay_customer_id', $params['chronopay_customer_id']);
@@ -1196,7 +1198,7 @@ class Leyka_Donation {
 
         $query = new WP_Query(array( // Get init recurrent payment with customer_id given
             'posts_per_page' => 1,
-            'post_type' => 'leyka_donation',
+            'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => 'funded', // 'any'?
             'meta_query' => array(
                 'RELATION' => 'AND',
@@ -1221,12 +1223,14 @@ class Leyka_Donation {
 
 	function __construct($donation) {
 
-        if(is_object($donation)) {
-            $this->_id = $donation->ID;
-            $this->_post_object = $donation;
-        } elseif((int)$donation > 0) {
+        if(is_int($donation) && (int)$donation > 0) {
             $this->_id = (int)$donation;
             $this->_post_object = get_post($this->_id);
+        } elseif(is_a($donation, 'WP_Post')) {
+            $this->_id = $donation->ID;
+            $this->_post_object = $donation;
+        } else {
+            return false;
         }
 
         if( !$this->_donation_meta ) {
@@ -1289,7 +1293,7 @@ class Leyka_Donation {
                 return $this->_donation_meta['status_log'];
             case 'date':
             case 'date_label': return date(get_option('date_format'), strtotime($this->_post_object->post_date));
-            case 'date_timestamp': return strtotime($this->_post_object->post_date);
+            case 'date_timestamp': return print_r($this, 1);//strtotime($this->_post_object->post_date);
             case 'date_funded':
             case 'funded_date':
                 $date_funded = $this->get_funded_date();
@@ -1337,13 +1341,13 @@ class Leyka_Donation {
                     leyka_get_gateway_by_id($this->gateway)->get_gateway_response_formatted($this) : array();
 
             case 'type':
-            case 'payment_type': return $this->_donation_meta['payment_type']; break;
-            case 'payment_type_label': return __($this->_donation_meta['payment_type'], 'leyka'); break;
-            case 'recurrents_cancelled': return $this->_donation_meta['recurrents_cancelled']; break;
-            case 'recurrents_cancel_date': return $this->_donation_meta['recurrents_cancel_date']; break;
+            case 'payment_type': return $this->_donation_meta['payment_type'];
+            case 'payment_type_label': return __($this->_donation_meta['payment_type'], 'leyka');
+            case 'recurrents_cancelled': return $this->_donation_meta['recurrents_cancelled'];
+            case 'recurrents_cancel_date': return $this->_donation_meta['recurrents_cancel_date'];
 
-            case 'chronopay_customer_id': return $this->_donation_meta['chronopay_customer_id']; break;
-//            case '': return ''; break;
+            case 'chronopay_customer_id': return $this->_donation_meta['chronopay_customer_id'];
+//            case '': return '';
             default:
                 return apply_filters('leyka_get_unknown_donation_field', null, $field, $this);
         }

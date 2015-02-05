@@ -540,31 +540,36 @@ function leyka_print_donation_elements($content) {
 	return $content;
 }
 
-function leyka_get_current_template_data($campaign = null, $template = null) {
+function leyka_get_current_template_data($campaign = null, $template = null, $is_service = false) {
 
     global $post;
 
-	if( !$campaign )
+	if( !$campaign ) {
 		$campaign = $post;
-	elseif(is_int($campaign))
+    } elseif(is_int($campaign)) {
 		$campaign = get_post($campaign);
-	
+    }
+
     // Get campaign-specific template, if needed:
 	if( !$template ) {
-        if( !is_a($campaign, 'Leyka_Campaign') )
+
+        if( !is_a($campaign, 'Leyka_Campaign') ) {
 		    $campaign = new Leyka_Campaign($campaign);
+        }
+
 		$template = $campaign->template; 
 	}
     
-    if( !$template || $template == 'default' )
+    if( !$template || $template == 'default' ) {
         $template = leyka_options()->opt('donation_form_template');
+    }
 
-    $template = leyka()->get_template($template);
+    $template = leyka()->get_template($template, !!$is_service);
    
     return $template ? $template : false;
 }
 
-function get_leyka_payment_form_template_html($campaign = null, $template = null){
+function get_leyka_payment_form_template_html($campaign = null, $template = null) {
 
 	global $post;
 
@@ -572,7 +577,7 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
 
 	if( !$campaign ) {
 		$campaign = $post;
-	} elseif(is_int($campaign)){
+	} elseif(is_int($campaign)) {
 		$campaign = get_post($campaign);
 	}
 
