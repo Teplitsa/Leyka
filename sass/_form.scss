@@ -59,9 +59,9 @@
 	input[type="password"]:focus,
 	input[type="email"]:focus,
 	textarea:focus {
-		border: 1px solid $color-grey-dark;
+		border: 1px solid $color-comment-text ;
 		color: $color-base-text;
-		@box-shadow(0, 0, 3px, rgba(0,0,0,.2), true);
+		box-shadow: inset 1px 1px 1px rgba(200,200,200, 0.5);
 	}
 
 	input[type="submit"] {
@@ -74,14 +74,14 @@
 		border: none;
 		padding: 6px 16px;
 		@include border-radius(3px);
-		&:hover {
+		&:hover, &:focus, &:active {
 			background: darken($color-base-green, 7%);
 		}
 	}
 	
 	a, a:visited {
 		color: $color-base-green;
-		&:hover {
+		&:hover, &:focus, &:active {
 			color: darken($color-base-green, 7%);
 		}
 	}
@@ -197,6 +197,10 @@
 			font-size: 18px;
 			padding: 4px;
 			text-align: right;
+			&:focus, &:active {
+				border-color: darken($color-base-green, 10%);
+				box-shadow: inset 1px 1px 2px rgba(200,200,200, 0.5);
+			}
 		}
 		
 		.currency {
@@ -334,7 +338,7 @@
 		cursor: pointer;
 		font-weight: bold;
 		text-shadow: 1px 1px 1px darken($color-grey-light, 1%);
-		&:hover {
+		&:hover, &:focus, &:active {
 			color: $color-comment-text; 
 		}
 	}

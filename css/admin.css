@@ -2,6 +2,15 @@
 /*---------------------------------------------------------
  Mixins (_utility.scss)
 -------------------------------------------------------- */
+.leyka-screen-reader-text {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  border: 0 none;
+  padding: 0; }
+
 .leyka-scale-ultra {
   position: relative;
   border: 1px solid #1db318;

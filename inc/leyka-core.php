@@ -734,11 +734,11 @@ class Leyka {
 	public function get_template_data($file) {
 
 		$headers = array(
-			'name' => __('Leyka Template', 'leyka'),
-			'description' => __('Description', 'leyka'),
+			'name' => 'Leyka Template', 
+			'description' => 'Description',
 		);
 
-		$data = get_file_data($file, $headers);
+		$data = get_file_data($file, $headers); 
 		$data['file'] = $file;
 		$data['basename'] = basename($file);
 		$id = explode('-', str_replace('.php', '', $data['basename']));

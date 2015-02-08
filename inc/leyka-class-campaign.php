@@ -158,7 +158,7 @@ class Leyka_Campaign_Management {
                     <?php _e('Default template', 'leyka');?>
                 </option>
 
-            <?php $templates = leyka()->get_templates();
+            <?php $templates = leyka()->get_templates(); 
                 if($templates) {
                     foreach($templates as $template) {?>
                 <option value="<?php echo esc_attr($template['id']);?>" <?php selected($cur_template, $template['id']);?>>

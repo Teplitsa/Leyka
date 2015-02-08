@@ -1,9 +1,10 @@
-<?php if( !defined('WPINC') ) die;
+<?php
 /**
  * Leyka Template: Radios
  * Description: Radio options for each payment method
  **/
 
+if( !defined('WPINC') ) die;
 $active_pm = leyka_get_pm_list(true);
 
 leyka_pf_submission_errors();

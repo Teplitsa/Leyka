@@ -139,14 +139,17 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
 	$css_class = apply_filters('leyka_campaign_card_class', 'leyka-campaign-card', $campaign, $args);	
 	if($args['show_thumb'] == 1 && has_post_thumbnail($campaign->ID))
 		$css_class .= ' has-thumb';
-
+	
+	$thumb_attr = array(
+		'alt' => esc_attr(sprintf(__('Thumbnail for - %s', 'leyka'), $campaign->post_title))
+	);
 	ob_start(); // Do we have some content ?>
 
 	<div class="<?php echo esc_attr($css_class);?>">
 		<?php if($args['show_thumb'] == 1 && has_post_thumbnail($campaign->ID)) {?>
 			<div class="lk-thumbnail">
 				<a href="<?php echo get_permalink($campaign);?>"<?php echo $target;?>>
-					<?php echo get_the_post_thumbnail($campaign->ID, $thumbnail_size);?>
+					<?php echo get_the_post_thumbnail($campaign->ID, $thumbnail_size, $thumb_attr);?>
 				</a>
 			</div>
 		<?php }?>

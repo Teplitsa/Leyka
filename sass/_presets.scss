@@ -187,6 +187,11 @@ $three : 1100px;
 @mixin thumbnail-reset {
 	a {
 		display: block;
+		border: 2px solid transparent;
+		@include transition(all 0.3s);
+		&:hover, &:focus, &:active {
+			border-color: $color-base-green;
+		}
 	}
 	img {
 		max-width: 100%;

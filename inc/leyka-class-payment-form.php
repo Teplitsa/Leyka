@@ -47,7 +47,9 @@ class Leyka_Payment_Form {
 			return ''; // current currency isn't supported
 
 		ob_start();
-
+	?>
+		<label for="leyka_donation_amount" class="leyka-screen-reader-text"><?php _e('Donation amount', 'leyka');?></label>
+	<?php
 		if($mode == 'fixed') {
 
 			$comment = __('Please, specify your donation amount', 'leyka');			
@@ -125,8 +127,9 @@ class Leyka_Payment_Form {
 
 		if(count(array_keys($supported_curr)) > 1) {
 
-			// Multicurrency:
-			$out = "<select name='leyka_donation_currency' class='leyka_donation_currency'>";
+			// Multicurrency:			
+			$out = "<label for='leyka_donation_currency' class='leyka-screen-reader-text'>".__('Currency', 'leyka')."</label>";
+			$out .= "<select name='leyka_donation_currency' class='leyka_donation_currency'>";
 			foreach ($supported_curr as $cid => $obj) {
 				$out .= "<option data-currency-label='".$obj['label']."' value='".esc_attr($cid)."' "
                         .selected($cid, $curr, false).">".$obj['label']."</option>";
@@ -159,7 +162,8 @@ class Leyka_Payment_Form {
 		$comment = __('We will use this to personalize your donation experience', 'leyka');
 		
 		ob_start();
-	?>		
+	?>
+		<label for="leyka_donor_name" class="leyka-screen-reader-text"><?php echo $ph; ?></label>
 		<label class="input req"><input type="text" class="required" name="leyka_donor_name" placeholder="<?php echo esc_attr($ph);?>" id="leyka_donor_name" value="<?php echo $value;?>"></label>
 		<p class="field-comment"><?php echo $comment;?></p>
 		<p id="leyka_donor_name-error" class="field-error"></p>
@@ -167,7 +171,7 @@ class Leyka_Payment_Form {
 	<?php
 		$out = ob_get_contents();
 		ob_end_clean();
-		return leyka_field_wrap($out, 'email');		
+		return leyka_field_wrap($out, 'name');		
 	}
 	
 	
@@ -180,7 +184,8 @@ class Leyka_Payment_Form {
 		$comment = __('We will send the donation success notice to this address', 'leyka');
 		
 		ob_start();
-	?>	
+	?>
+		<label for="leyka_donor_email" class="leyka-screen-reader-text"><?php echo $ph; ?></label>
 		<label class="input req"><input type="text" class="required email" name="leyka_donor_email" placeholder="<?php echo esc_attr($ph);?>" id="leyka_donor_email" value="<?php echo $value;?>"></label>
 		<p class="field-comment"><?php echo $comment;?></p>
         <p id="leyka_donor_email-error" class="field-error"></p>
@@ -188,7 +193,7 @@ class Leyka_Payment_Form {
 	<?php
 		$out = ob_get_contents();
 		ob_end_clean();
-		return leyka_field_wrap($out, 'name');		
+		return leyka_field_wrap($out, 'email');		
 	}
 	
 	
@@ -207,7 +212,8 @@ class Leyka_Payment_Form {
 				<div class="leyka-oferta-text-flow"><?php echo apply_filters('leyka_terms_of_service_text', leyka_options()->opt('terms_of_service_text'));?></div>
 			</div>
 		</div>
-		<label class="checkbox">
+		
+		<label class="checkbox" for="leyka_agree">
 			<input type="checkbox" name="leyka_agree" id="leyka_agree" class="leyka_agree required" value="1" />
 			<a class="leyka-legal-confirmation-trigger" href="#<?php echo $agree_id;?>">
                 <?php echo leyka_options()->opt('agree_to_terms_text');?>
