@@ -313,7 +313,7 @@
     border-radius: 3px; }
     .leyka-set .field-error a {
       color: #fc001e; }
-      .leyka-set .field-error a:hover {
+      .leyka-set .field-error a:hover, .leyka-set .field-error a:focus, .leyka-set .field-error a:active {
         color: #aa363a; }
   .leyka-set .set-action {
     margin: 15px 0 15px 22%; }

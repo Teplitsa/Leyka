@@ -65,7 +65,7 @@ $three : 1100px;
 	&:visited {
 		color:  #fff !important;
 	}
-	&:hover {
+	&:hover, &:focus, &:active {
 		text-decoration: none;
 		background: darken($color, 10%);
 	}
@@ -94,7 +94,7 @@ $three : 1100px;
 	
 	a {
 		color: #fc001e;
-		&:hover {
+		&:hover, &:focus, &:active{
 			color: #aa363a;
 		}
 	}
@@ -216,7 +216,7 @@ $three : 1100px;
 	a, a:visited {
 		text-decoration: none;
 		color: darken($color-base-text, 3%);
-		&:hover {
+		&:hover, &:focus, &:active {
 			color: $color-base-green ;
 			text-decoration: none;
 		}
