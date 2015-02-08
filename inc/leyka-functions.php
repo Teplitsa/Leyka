@@ -449,20 +449,22 @@ function leyka_get_actual_currency_rates() {
         }
 
         $xml = new XMLReader();
-        $xml->open($url);
-        $currencies_tmp = leyka_xml2assoc($xml);
-        $xml->close();
+        if( @$xml->open($url) ) {
 
-        if( !empty($currencies_tmp[0]) ) {
+            $currencies_tmp = leyka_xml2assoc($xml);
+            $xml->close();
 
-            foreach($currencies_tmp[0]['value'] as $currency) {
+            if( !empty($currencies_tmp[0]) ) {
 
-                $currency = $currency['value']; // Just to shorten this things a bit
+                foreach($currencies_tmp[0]['value'] as $currency) {
 
-                $code = $currency[1]['value']; // USD, EUR etc.
-                $rate = (float)str_replace(',', '.', $currency[4]['value']);
-                if($code == 'USD' || $code == 'EUR') {
-                    $currencies[$code] = $rate;
+                    $currency = $currency['value']; // Just to shorten this things a bit
+
+                    $code = $currency[1]['value']; // USD, EUR etc.
+                    $rate = (float)str_replace(',', '.', $currency[4]['value']);
+                    if($code == 'USD' || $code == 'EUR') {
+                        $currencies[$code] = $rate;
+                    }
                 }
             }
         }

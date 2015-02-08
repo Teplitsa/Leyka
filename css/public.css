@@ -5,8 +5,6 @@
 .leyka-scale-ultra {
   position: relative;
   border: 1px solid #1db318;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
   box-sizing: border-box; }
   .leyka-scale-ultra .leyka-scale-scale {
     height: 16px; }
@@ -33,8 +31,6 @@
 .leyka-scale-ultra-fake {
   position: relative;
   border: 1px solid #ccc;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
   box-sizing: border-box; }
   .leyka-scale-ultra-fake .leyka-scale-scale {
     height: 16px; }
@@ -73,8 +69,6 @@
   #leyka-payment-form input,
   #leyka-payment-form select,
   #leyka-payment-form textarea {
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
     box-sizing: border-box;
     margin: 0;
     vertical-align: baseline;
@@ -101,8 +95,6 @@
     background: #fff;
     padding: 6px 4px;
     outline: none;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
     border-radius: 3px;
     font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 13px;
@@ -127,8 +119,6 @@
     background: #1db318;
     border: none;
     padding: 6px 16px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
     border-radius: 3px; }
     #leyka-payment-form input[type="submit"]:hover {
       background: #189414; }
@@ -142,18 +132,12 @@
     max-width: 100%;
     height: auto;
     vertical-align: middle;
-    -webkit-border-radius: 0px;
-    -moz-border-radius: 0px;
     border-radius: 0px;
-    -webkit-box-shadow: 0px 0px 0px rgba(255, 255, 255, 0);
-    -moz-box-shadow: 0px 0px 0px rgba(255, 255, 255, 0);
     box-shadow: 0px 0px 0px rgba(255, 255, 255, 0); }
   #leyka-payment-form ul, #leyka-payment-form li {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
     box-sizing: border-box; }
   #leyka-payment-form:first-child {
     margin-top: 0; }
@@ -171,8 +155,6 @@
   text-align: right;
   margin: 0; }
   #leyka-payment-form .leyka-field.amount * {
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
     box-sizing: border-box; }
   #leyka-payment-form .leyka-field.amount label, #leyka-payment-form .leyka-field.amount span {
     display: inline-block;
@@ -197,8 +179,6 @@
   border: 1px solid #ccc;
   padding: 0 8px;
   text-align: center;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
   border-radius: 3px; }
 #leyka-payment-form .amount.fixed select {
   vertical-align: middle;
@@ -250,8 +230,6 @@
   padding: 2px 10px;
   margin-top: 5px;
   font-size: 12px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
   border-radius: 3px; }
   #leyka-payment-form .field-error a {
     color: #fc001e; }
@@ -268,8 +246,6 @@
   padding: 2px 10px;
   margin-top: 5px;
   font-size: 12px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
   border-radius: 3px;
   display: block;
   padding: 10px 20px 10px 20px;
@@ -290,8 +266,6 @@
   padding: 2px 10px;
   margin-top: 5px;
   font-size: 12px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
   border-radius: 3px;
   display: block;
   padding: 10px 20px; }
@@ -325,8 +299,6 @@
   padding: 20px;
   margin-right: -1px;
   max-width: 370px;
-  -webkit-box-shadow: 1px 1px 3px rgba(240, 240, 240, 0.67);
-  -moz-box-shadow: 1px 1px 3px rgba(240, 240, 240, 0.67);
   box-shadow: 1px 1px 3px rgba(240, 240, 240, 0.67); }
 .entry-content #leyka-payment-form .leyka-pm-icons,
 #leyka-payment-form .leyka-pm-icons {
@@ -373,8 +345,6 @@
 #leyka-payment-form.leyka-tpl-radio .leyka-pm-form {
   border: 1px solid #dfdfdf; }
 #leyka-payment-form.leyka-tpl-radio .form-part {
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
   box-sizing: border-box; }
 #leyka-payment-form.leyka-tpl-radio #amount-selector {
   border-bottom: 1px solid #dfdfdf;
@@ -399,13 +369,8 @@
   display: block;
   padding: 0 5px 1px;
   border: 1px solid transparent;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
   border-radius: 5px;
   -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
-  -ms-transition: all 0.3s;
-  -o-transition: all 0.3s;
   transition: all 0.3s; }
 #leyka-payment-form.leyka-tpl-radio .leyka-pm-selector .active label {
   border-color: #dfdfdf;
@@ -463,8 +428,6 @@ div[id*="leyka_scale_standalone"] {
     font-style: normal;
     text-align: right;
     font-size: 13px;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
     box-sizing: border-box; }
     div[id*="leyka_scale_standalone"] .leyka-scale-button a {
       display: inline-block;
@@ -478,12 +441,7 @@ div[id*="leyka_scale_standalone"] {
       text-decoration: none !important;
       padding: 0.4em 1.5em;
       -webkit-transition: all 0.3s;
-      -moz-transition: all 0.3s;
-      -ms-transition: all 0.3s;
-      -o-transition: all 0.3s;
       transition: all 0.3s;
-      -moz-box-sizing: border-box;
-      -webkit-box-sizing: border-box;
       box-sizing: border-box; }
       div[id*="leyka_scale_standalone"] .leyka-scale-button a:visited {
         color: #fff !important; }
@@ -575,8 +533,6 @@ div[id*="leyka_campaign_card_standalone"] {
     font-style: normal;
     text-align: right;
     font-size: 13px;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
     box-sizing: border-box; }
     div[id*="leyka_campaign_card_standalone"] .leyka-scale-button a {
       display: inline-block;
@@ -590,12 +546,7 @@ div[id*="leyka_campaign_card_standalone"] {
       text-decoration: none !important;
       padding: 0.4em 1.5em;
       -webkit-transition: all 0.3s;
-      -moz-transition: all 0.3s;
-      -ms-transition: all 0.3s;
-      -o-transition: all 0.3s;
       transition: all 0.3s;
-      -moz-box-sizing: border-box;
-      -webkit-box-sizing: border-box;
       box-sizing: border-box; }
       div[id*="leyka_campaign_card_standalone"] .leyka-scale-button a:visited {
         color: #fff !important; }
@@ -609,8 +560,6 @@ div[id*="leyka_campaign_card_standalone"] {
     font-style: normal;
     text-align: right;
     font-size: 13px;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
     box-sizing: border-box;
     border-top: 1px solid #dfdfdf;
     padding: 15px; }
@@ -626,12 +575,7 @@ div[id*="leyka_campaign_card_standalone"] {
       text-decoration: none !important;
       padding: 0.4em 1.5em;
       -webkit-transition: all 0.3s;
-      -moz-transition: all 0.3s;
-      -ms-transition: all 0.3s;
-      -o-transition: all 0.3s;
       transition: all 0.3s;
-      -moz-box-sizing: border-box;
-      -webkit-box-sizing: border-box;
       box-sizing: border-box; }
       div[id*="leyka_campaign_card_standalone"] .leyka-scale-button-alone a:visited {
         color: #fff !important; }
@@ -642,10 +586,10 @@ div[id*="leyka_campaign_card_standalone"] {
     margin-top: 5px; }
   div[id*="leyka_campaign_card_standalone"] .leyka-campaign-card.wide {
     position: relative; }
-    div[id*="leyka_campaign_card_standalone"] .leyka-campaign-card.wide:after {
+    div[id*="leyka_campaign_card_standalone"] .leyka-campaign-card.wide::after {
+      clear: both;
       content: "";
-      display: table;
-      clear: both; }
+      display: table; }
     div[id*="leyka_campaign_card_standalone"] .leyka-campaign-card.wide .lk-thumbnail {
       float: left;
       width: 40%; }
@@ -733,8 +677,6 @@ div[id*="leyka_campaign_card_widget"] .leyka-scale-button {
   font-style: normal;
   text-align: right;
   font-size: 13px;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
   box-sizing: border-box; }
   div[id*="leyka_campaign_card_widget"] .leyka-scale-button a {
     display: inline-block;
@@ -748,12 +690,7 @@ div[id*="leyka_campaign_card_widget"] .leyka-scale-button {
     text-decoration: none !important;
     padding: 0.4em 1.5em;
     -webkit-transition: all 0.3s;
-    -moz-transition: all 0.3s;
-    -ms-transition: all 0.3s;
-    -o-transition: all 0.3s;
     transition: all 0.3s;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
     box-sizing: border-box; }
     div[id*="leyka_campaign_card_widget"] .leyka-scale-button a:visited {
       color: #fff !important; }
@@ -767,8 +704,6 @@ div[id*="leyka_campaign_card_widget"] .leyka-scale-button-alone {
   font-style: normal;
   text-align: right;
   font-size: 13px;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
   box-sizing: border-box;
   border-top: 1px solid #dfdfdf;
   padding: 15px; }
@@ -784,12 +719,7 @@ div[id*="leyka_campaign_card_widget"] .leyka-scale-button-alone {
     text-decoration: none !important;
     padding: 0.4em 1.5em;
     -webkit-transition: all 0.3s;
-    -moz-transition: all 0.3s;
-    -ms-transition: all 0.3s;
-    -o-transition: all 0.3s;
     transition: all 0.3s;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
     box-sizing: border-box; }
     div[id*="leyka_campaign_card_widget"] .leyka-scale-button-alone a:visited {
       color: #fff !important; }
@@ -862,8 +792,6 @@ div[id*="leyka_campaign_list_widget"] {
     font-style: normal;
     text-align: right;
     font-size: 13px;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
     box-sizing: border-box; }
     div[id*="leyka_campaign_list_widget"] .leyka-scale-button a {
       display: inline-block;
@@ -877,12 +805,7 @@ div[id*="leyka_campaign_list_widget"] {
       text-decoration: none !important;
       padding: 0.4em 1.5em;
       -webkit-transition: all 0.3s;
-      -moz-transition: all 0.3s;
-      -ms-transition: all 0.3s;
-      -o-transition: all 0.3s;
       transition: all 0.3s;
-      -moz-box-sizing: border-box;
-      -webkit-box-sizing: border-box;
       box-sizing: border-box; }
       div[id*="leyka_campaign_list_widget"] .leyka-scale-button a:visited {
         color: #fff !important; }
@@ -896,8 +819,6 @@ div[id*="leyka_campaign_list_widget"] {
     font-style: normal;
     text-align: right;
     font-size: 13px;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
     box-sizing: border-box; }
     div[id*="leyka_campaign_list_widget"] .leyka-scale-button-alone a {
       display: inline-block;
@@ -911,12 +832,7 @@ div[id*="leyka_campaign_list_widget"] {
       text-decoration: none !important;
       padding: 0.4em 1.5em;
       -webkit-transition: all 0.3s;
-      -moz-transition: all 0.3s;
-      -ms-transition: all 0.3s;
-      -o-transition: all 0.3s;
       transition: all 0.3s;
-      -moz-box-sizing: border-box;
-      -webkit-box-sizing: border-box;
       box-sizing: border-box; }
       div[id*="leyka_campaign_list_widget"] .leyka-scale-button-alone a:visited {
         color: #fff !important; }
@@ -934,10 +850,10 @@ div[id*="leyka_campaign_list_widget"] {
   div[id*="leyka_campaign_list_widget"] .leyka-scale {
     margin-top: 15px;
     clear: both; }
-  div[id*="leyka_campaign_list_widget"] .leyka-campaign-list-item.has-thumb:after {
+  div[id*="leyka_campaign_list_widget"] .leyka-campaign-list-item.has-thumb::after {
+    clear: both;
     content: "";
-    display: table;
-    clear: both; }
+    display: table; }
   div[id*="leyka_campaign_list_widget"] .leyka-campaign-list-item.has-thumb .lk-thumbnail {
     width: 65px;
     float: left;
@@ -958,8 +874,6 @@ div[id*="leyka_campaign_list_widget"] {
   padding: 10px 15px;
   color: #373737;
   background: #f9f9f9;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
   border-radius: 3px; }
 
 /** Leyka donation lists  (_tickers.scss) **/
@@ -1002,10 +916,10 @@ div[id*="leyka_donors_list"] {
 
 div[id*="leyka_donors_list"].wide .ldl-item {
   max-width: 640px; }
-  div[id*="leyka_donors_list"].wide .ldl-item:after {
+  div[id*="leyka_donors_list"].wide .ldl-item::after {
+    clear: both;
     content: "";
-    display: table;
-    clear: both; }
+    display: table; }
   div[id*="leyka_donors_list"].wide .ldl-item .amount {
     float: left;
     width: 30%;
@@ -1049,11 +963,8 @@ div[id*="leyka_donors_list"].wide .ldl-item {
   width: 640px;
   height: 500px;
   padding: 25px 30px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
   border-radius: 3px;
   background: #fff;
-  -webkit-box-shadow: 1px 1px 3px 1px rgba(200, 200, 200, 0.7);
   box-shadow: 1px 1px 3px 1px rgba(20, 20, 20, 0.7); }
   .leyka-oferta-text .leyka-modal-close {
     display: block;
@@ -1068,11 +979,7 @@ div[id*="leyka_donors_list"].wide .ldl-item {
     width: 21px;
     height: 21px;
     border: 1px solid #fff;
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
     border-radius: 50%;
-    -webkit-box-shadow: 1px 1px 3px rgba(50, 50, 50, 0.7);
-    -moz-box-shadow: 1px 1px 3px rgba(50, 50, 50, 0.7);
     box-shadow: 1px 1px 3px rgba(50, 50, 50, 0.7);
     cursor: pointer; }
     .leyka-oferta-text .leyka-modal-close:hover {
@@ -1091,3 +998,5 @@ div[id*="leyka_donors_list"].wide .ldl-item {
 
 #leyka-payment-form .leyka-oferta-text-flow p {
   margin: 1.35em 0; }
+
+/*# sourceMappingURL=public.css.map */
