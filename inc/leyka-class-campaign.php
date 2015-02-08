@@ -284,7 +284,7 @@ class Leyka_Campaign_Management {
 
         <label for="campaign-embed-code"><?php _e("To embed a campaign card in some other web page, insert the following code in it's HTML:", 'leyka');?></label>
 
-        <textarea id="campaign-embed-code" class="campaign-embed-code"><?php echo '<iframe src="'.$link.'"></iframe>'?></textarea>
+        <textarea id="campaign-embed-code" class="campaign-embed-code"><?php echo '<iframe frameborder="0" width="300" height="510" src="'.$link.'"></iframe>'?></textarea>
     <?php }
 
 	public function save_data($campaign_id, WP_Post $campaign) {

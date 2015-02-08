@@ -174,6 +174,21 @@
 	}
 }
 
+//embed metabox
+#leyka_campaign_embed {
+	
+	label {
+		display: block;
+		margin-bottom: 5px;
+	}
+	
+	textarea {
+		width: 100%;
+		min-height: 150px;
+	}
+}
+
+
 
 /** Campaign table **/
 .post-type-leyka_campaign {

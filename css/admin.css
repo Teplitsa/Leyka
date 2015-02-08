@@ -176,6 +176,13 @@
       cursor: default;
       background: #fff; }
 
+#leyka_campaign_embed label {
+  display: block;
+  margin-bottom: 5px; }
+#leyka_campaign_embed textarea {
+  width: 100%;
+  min-height: 150px; }
+
 /** Campaign table **/
 .post-type-leyka_campaign .column-ID {
   width: 4%; }
