@@ -52,6 +52,23 @@
     
 Если у вас есть вопросы по работе плагина, то обратитесь к нам за поддержкой на [GitHub](https://github.com/Teplitsa/Leyka/issues/).
 
+
+## Как все устроено ##
+
+Визуализация для прогресса кампании
+![](https://leyka.te-st.ru/wp-content/uploads/assets/1-sc-campaign.png)
+
+Список пожертвований
+![](https://leyka.te-st.ru/wp-content/uploads/assets/2-sc-donations.png)
+
+Управление кампаниями
+![](https://leyka.te-st.ru/wp-content/uploads/assets/3-sc-admin.png)
+
+Платежная форма
+![](https://leyka.te-st.ru/wp-content/uploads/assets/4-sc-payment.png)
+
+
+
 **ВНИМАНИЕ!**
 
 В версии 2.0 были внесены критические изменения, несовместимые с кодом и данными любой более ранней версии.
