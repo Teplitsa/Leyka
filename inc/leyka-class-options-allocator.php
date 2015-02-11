@@ -68,7 +68,14 @@ class Leyka_Options_Allocator {
 
             case 'currency':
                 $options_allocated = array(
-//                    'currency_position',
+                    array('section' => array(
+                        'name' => 'currency_rates',
+                        'title' => __('Currency rates options', 'leyka'),
+                        'is_default_collapsed' => false,
+                        'options' => array(
+                            'auto_refresh_currency_rates', 'currency_rur2usd', 'currency_rur2eur',
+                        )
+                    ),),
                     array('section' => array(
                         'name' => 'rur_currency',
                         'title' => __('RUR currency options', 'leyka'),
