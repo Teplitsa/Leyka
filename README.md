@@ -55,16 +55,16 @@
 ## Как все устроено ##
 
 Визуализация прогресса кампании
-![](https://leyka.te-st.ru/wp-content/uploads/assets/1-sc-campaign.png)
+![](https://leyka.te-st.ru/wp-content/uploads/assets/1-sc-campaign.png?stamp=123)
 
 Список пожертвований
-![](https://leyka.te-st.ru/wp-content/uploads/assets/2-sc-donations.png)
+![](https://leyka.te-st.ru/wp-content/uploads/assets/2-sc-donations.png?stamp=123)
 
 Управление кампаниями
-![](https://leyka.te-st.ru/wp-content/uploads/assets/3-sc-admin.png)
+![](https://leyka.te-st.ru/wp-content/uploads/assets/3-sc-admin.png?stamp=123)
 
 Платежная форма
-![](https://leyka.te-st.ru/wp-content/uploads/assets/4-sc-payment.png)
+![](https://leyka.te-st.ru/wp-content/uploads/assets/4-sc-payment.png?stamp=123)
 
 
 **ВНИМАНИЕ!**
