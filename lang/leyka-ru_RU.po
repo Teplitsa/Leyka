@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Leyka Plugin\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-09-11 08:25:09+00:00\n"
-"PO-Revision-Date: Wed Feb 11 2015 17:55:56 GMT+0300\n"
+"PO-Revision-Date: Wed Feb 25 2015 15:44:22 GMT+0400\n"
 "Last-Translator: ahaenor <ahaenor@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: Russian\n"
@@ -23,6 +23,10 @@ msgstr ""
 "X-Textdomain-Support: yes\n"
 "X-Loco-Target-Locale: ru_RU\n"
 "X-Poedit-SearchPath-0: ."
+
+#: ../inc/leyka-class-payment-form.php:51
+msgid "Donation amount"
+msgstr ""
 
 # @ leyka
 #: ../gateways/yandex/leyka-class-yandex-gateway.php:13
@@ -560,7 +564,7 @@ msgid ""
 msgstr ""
 "<a href=\"http://www.robokassa.ru/\">ROBOKASSA</a> - это сервис, позволяющий "
 "интернет-магазинам или поставщикам услуг принимать платежи от клиентов с "
-"помощью банковских карт, в любой электронной валюте , с помощью мобильных "
+"помощью банковских карт, в любой электронной валюте, с помощью мобильных "
 "платежей (МТС, Мегафон, Билайн), а также через интернет-банк и ведущих "
 "Банков РФ, через банкоматы и терминалы мгновенной оплаты."
 
@@ -3205,10 +3209,6 @@ msgid ""
 msgstr ""
 "Пожалуйста, выберите один из способов оплаты, или просто напишите несколько "
 "слов о том, как было получено пожертвование."
-
-#: ../inc/leyka-class-payment-form.php:51
-msgid "Donation amount"
-msgstr ""
 
 # @ leyka
 #: ../inc/leyka-class-payment-form.php:55
