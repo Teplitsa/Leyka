@@ -30,6 +30,7 @@ leyka_pf_submission_errors();?>
 	echo leyka_pf_get_hidden_fields();	
 ?>
 	<input name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="hidden" />
+	<input name="leyka_ga_payment_method" value="<?php echo esc_attr($pm->label);?>" type="hidden" />
 	<div class='leyka-user-data'>
 	<?php
 		echo leyka_pf_get_name_field();
