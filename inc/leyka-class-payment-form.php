@@ -106,11 +106,14 @@ class Leyka_Payment_Form {
 
 		if($campaign_id == null)
 			$campaign_id = $post->ID;
-
-        $template = leyka_get_current_template_data();
+		
+		$campaign = new Leyka_Campaign($campaign_id);
+        $template = leyka_get_current_template_data(); 
 		$hiddens = apply_filters('leyka_hidden_donation_form_fields', array(
 			'leyka_template_id' => $template['id'],
-			'leyka_campaign_id' => (int)$campaign_id
+			'leyka_campaign_id' => (int)$campaign_id,
+			'leyka_ga_action' => esc_attr($campaign->payment_title), //payment purpose as action
+			'leyka_ga_label'  => esc_attr($this->_pm->label), //payment methos as label
 		), $this);
 
 		$out = wp_nonce_field('leyka_payment_form', '_wpnonce', true, false);
