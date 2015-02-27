@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Leyka Plugin\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-09-11 08:25:09+00:00\n"
-"PO-Revision-Date: Wed Feb 25 2015 15:44:22 GMT+0400\n"
+"PO-Revision-Date: Fri Feb 27 2015 14:15:37 GMT+0400\n"
 "Last-Translator: ahaenor <ahaenor@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: Russian\n"
@@ -593,9 +593,7 @@ msgstr "Виртуальная валюта"
 
 #: ../gateways/robokassa/leyka-class-robokassa-gateway.php:360
 msgid "Robokassa virtual cash payment description"
-msgstr ""
-"Пожалуйста, укажите описание платёжной системы Робокасса, которое увидит "
-"донор при выборе этого способа платежа."
+msgstr "Описание платежа с помощью виртуальной валюты через Робокассу"
 
 #: ../gateways/robokassa/leyka-class-robokassa-gateway.php:396
 msgid "Payment with Mobile operator account"
@@ -607,9 +605,7 @@ msgstr "Мобильный платёж"
 
 #: ../gateways/robokassa/leyka-class-robokassa-gateway.php:441
 msgid "Robokassa mobile payment description"
-msgstr ""
-"Пожалуйста, укажите описание платёжной системы Робокасса, которое увидит "
-"донор при выборе этого способа платежа."
+msgstr "Описание платежа с помощью счёта мобильного оператора через Робокассу"
 
 #: ../gateways/robokassa/leyka-class-robokassa-gateway.php:477
 msgid "Use any Robokassa payment method available"
@@ -621,9 +617,7 @@ msgstr "Робокасса (любой способ платежа)"
 
 #: ../gateways/robokassa/leyka-class-robokassa-gateway.php:522
 msgid "Robokassa all possible payment types description"
-msgstr ""
-"Пожалуйста, укажите описание платёжной системы Робокасса, которое увидит "
-"донор при выборе этого способа платежа."
+msgstr "Описание платежа любым возможным способом через Робокассу"
 
 #: ../gateways/rbk/leyka-class-rbk-gateway.php:13 ../gateways/rbk/leyka-class-rbk-
 #: gateway.php:399
