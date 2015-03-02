@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Leyka Plugin\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-09-11 08:25:09+00:00\n"
-"PO-Revision-Date: Mon Mar 02 2015 13:03:36 GMT+0400\n"
+"PO-Revision-Date: Mon Mar 02 2015 18:30:19 GMT+0400\n"
 "Last-Translator: ahaenor <ahaenor@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: Russian\n"
@@ -26,7 +26,7 @@ msgstr ""
 
 # @ leyka
 #: ../gateways/yandex/leyka-class-yandex-gateway.php:13 ..
-#: gateways/robokassa/leyka-class-robokassa-gateway.php:338
+#: gateways/robokassa/leyka-class-robokassa-gateway.php:339
 msgid "Yandex.Money"
 msgstr "Яндекс.Деньги"
 
@@ -172,10 +172,10 @@ msgstr "Яндекс.деньги"
 #: 447 ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:287 ..
 #: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:369 ..
 #: gateways/text/leyka-class-text-gateway.php:107 ../gateways/robokassa/leyka-
-#: class-robokassa-gateway.php:276 ../gateways/robokassa/leyka-class-robokassa-
-#: gateway.php:357 ../gateways/robokassa/leyka-class-robokassa-gateway.php:438 ..
-#: gateways/robokassa/leyka-class-robokassa-gateway.php:519 ..
-#: gateways/robokassa/leyka-class-robokassa-gateway.php:601 ..
+#: class-robokassa-gateway.php:277 ../gateways/robokassa/leyka-class-robokassa-
+#: gateway.php:358 ../gateways/robokassa/leyka-class-robokassa-gateway.php:439 ..
+#: gateways/robokassa/leyka-class-robokassa-gateway.php:520 ..
+#: gateways/robokassa/leyka-class-robokassa-gateway.php:602 ..
 #: gateways/rbk/leyka-class-rbk-gateway.php:314 ../gateways/rbk/leyka-class-rbk-
 #: gateway.php:417 ../gateways/rbk/leyka-class-rbk-gateway.php:498 ..
 #: gateways/chronopay/leyka-class-chronopay-gateway.php:421 ..
@@ -217,14 +217,14 @@ msgstr ""
 
 # @ leyka
 #: ../gateways/yandex/leyka-class-yandex-gateway.php:350 ..
-#: gateways/robokassa/leyka-class-robokassa-gateway.php:256 ..
+#: gateways/robokassa/leyka-class-robokassa-gateway.php:257 ..
 #: gateways/rbk/leyka-class-rbk-gateway.php:294 ../gateways/chronopay/leyka-
 #: class-chronopay-gateway.php:400
 msgid "Payment with Banking Card"
 msgstr "Платёж с помощью банковской карты"
 
 #: ../gateways/yandex/leyka-class-yandex-gateway.php:351 ..
-#: gateways/robokassa/leyka-class-robokassa-gateway.php:257 ..
+#: gateways/robokassa/leyka-class-robokassa-gateway.php:258 ..
 #: gateways/rbk/leyka-class-rbk-gateway.php:295 ../gateways/chronopay/leyka-
 #: class-chronopay-gateway.php:401
 msgid "Banking Card"
@@ -265,7 +265,7 @@ msgid "Virtual cash Webmoney"
 msgstr "Виртуальная валюта WebMoney"
 
 #: ../gateways/yandex/leyka-class-yandex-gateway.php:430 ..
-#: gateways/robokassa/leyka-class-robokassa-gateway.php:419
+#: gateways/robokassa/leyka-class-robokassa-gateway.php:420
 msgid "Webmoney"
 msgstr "WebMoney"
 
@@ -550,36 +550,36 @@ msgstr ""
 msgid "Robokassa digital signature check failed!"
 msgstr "Робокасса - неправильная цифровая подпись"
 
-#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:218
+#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:219
 msgid "Outcoming sum:"
 msgstr "Снято со счёта донора:"
 
-#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:219
+#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:220
 msgid "Incoming sum:"
 msgstr "Зачислено:"
 
-#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:220 ..
+#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:221 ..
 #: gateways/rbk/leyka-class-rbk-gateway.php:250
 msgid "Invoice ID:"
 msgstr "ID инвойса:"
 
-#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:221
+#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:222
 msgid "Signature value (sent from Robokassa):"
 msgstr "Электронная подпись:"
 
-#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:222
+#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:223
 msgid "Payment method:"
 msgstr "Способ оплаты:"
 
-#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:223
+#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:224
 msgid "Robokassa currency label:"
 msgstr "ID способа и валюты платежа:"
 
-#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:300 ..
-#: gateways/robokassa/leyka-class-robokassa-gateway.php:381 ..
-#: gateways/robokassa/leyka-class-robokassa-gateway.php:462 ..
-#: gateways/robokassa/leyka-class-robokassa-gateway.php:543 ..
-#: gateways/robokassa/leyka-class-robokassa-gateway.php:625
+#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:301 ..
+#: gateways/robokassa/leyka-class-robokassa-gateway.php:382 ..
+#: gateways/robokassa/leyka-class-robokassa-gateway.php:463 ..
+#: gateways/robokassa/leyka-class-robokassa-gateway.php:544 ..
+#: gateways/robokassa/leyka-class-robokassa-gateway.php:626
 msgid ""
 "Robokassa system allows a simple and safe way to pay for goods and services "
 "with bank cards and other means through internet. You will have to fill a "
@@ -593,15 +593,15 @@ msgstr ""
 "платежей (МТС, Мегафон, Билайн), а также через интернет-банк и ведущих "
 "Банков РФ, через банкоматы и терминалы мгновенной оплаты."
 
-#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:301
+#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:302
 msgid "Robokassa bank card payment description"
 msgstr "Описание платежа с помощью банковской карты через Робокассу"
 
-#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:302 ..
-#: gateways/robokassa/leyka-class-robokassa-gateway.php:383 ..
-#: gateways/robokassa/leyka-class-robokassa-gateway.php:464 ..
-#: gateways/robokassa/leyka-class-robokassa-gateway.php:545 ..
-#: gateways/robokassa/leyka-class-robokassa-gateway.php:627
+#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:303 ..
+#: gateways/robokassa/leyka-class-robokassa-gateway.php:384 ..
+#: gateways/robokassa/leyka-class-robokassa-gateway.php:465 ..
+#: gateways/robokassa/leyka-class-robokassa-gateway.php:546 ..
+#: gateways/robokassa/leyka-class-robokassa-gateway.php:628
 msgid ""
 "Please, enter Robokassa gateway description that will be shown to the donor "
 "when this payment method will be selected for using."
@@ -609,43 +609,43 @@ msgstr ""
 "Пожалуйста, укажите описание платёжной системы Робокасса, которое увидит "
 "донор при выборе этого способа платежа."
 
-#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:337
+#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:338
 msgid "Payment with Yandex.Money"
 msgstr "Виртуальная валюта Яндекс.Деньги"
 
-#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:382
+#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:383
 msgid "Robokassa Yandex.Money payment description"
 msgstr "Описание платежа с помощью Яндекс.Денег через Робокассу"
 
-#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:418
+#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:419
 msgid "Payment with Webmoney"
 msgstr "Виртуальная валюта Webmoney"
 
-#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:463
+#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:464
 msgid "Robokassa Webmoney payment description"
 msgstr "Описание платежа с помощью Webmoney через Робокассу"
 
-#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:499
+#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:500
 msgid "Payment with Qiwi wallet"
 msgstr "Виртуальная валюта Qiwi-кошелёк\n"
 
-#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:500
+#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:501
 msgid "Qiwi wallet"
 msgstr "Qiwi-кошелёк"
 
-#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:544
+#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:545
 msgid "Robokassa Qiwi wallet payment description"
 msgstr "Описание платежа с помощью Qiwi-кошелька через Робокассу"
 
-#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:581
+#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:582
 msgid "Use any Robokassa payment method available"
 msgstr "Любой возможный способ платежа"
 
-#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:582
+#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:583
 msgid "Robokassa (any)"
 msgstr "Робокасса (любой способ платежа)"
 
-#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:626
+#: ../gateways/robokassa/leyka-class-robokassa-gateway.php:627
 msgid "Robokassa all possible payment types description"
 msgstr "Описание платежа любым возможным способом через Робокассу"
 
@@ -1038,6 +1038,18 @@ msgstr "Значение параметра product_id для регулярны
 #: ../gateways/chronopay/leyka-class-chronopay-gateway.php:564
 msgid "Please, enter Chronopay product_id for rebills in RUR currency."
 msgstr "Пожалуйста, укажите product_id для регулярных пожертвований в руб."
+
+#: ../inc/leyka-polylang.php:140
+#, php-format
+msgid ""
+"<strong>Leyka warning!</strong> Polylang plugin doesn't have any languages "
+"installed. Leyka may work strangely due to that. Please go to the <a "
+"href='%s'>languages settings page</a> and add at least one language."
+msgstr ""
+"<strong>Внимание!</strong> У плагина Polylang не установлено ни одного языка."
+" Это может повлечь необычное поведение Лейки. Во избежание этого, пожалуйста,"
+" перейдите на <a href='%s'>страницу настроек языков</a> и добавьте хотя бы "
+"один язык."
 
 #: ../inc/leyka-donations-export.php:24
 msgid "Export (csv)"

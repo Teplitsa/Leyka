@@ -137,7 +137,7 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
             add_action('admin_notices', function(){
 
                 echo '<div class="error">
-                    <p>'.__(sprintf("<strong>Leyka warning!</strong> Polylang plugin doesn't have any languages installed. Leyka may work strangely due to that. Please go to the <a href='%s'>languages settings page</a> and add at least one language.", site_url('/wp-admin/options-general.php?page=mlang')), 'leyka').'</p>
+                    <p>'.sprintf(__("<strong>Leyka warning!</strong> Polylang plugin doesn't have any languages installed. Leyka may work strangely due to that. Please go to the <a href='%s'>languages settings page</a> and add at least one language.", 'leyka'), site_url('/wp-admin/options-general.php?page=mlang')).'</p>
                 </div>';
             });
 
