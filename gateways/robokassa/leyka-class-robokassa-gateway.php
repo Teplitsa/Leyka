@@ -182,7 +182,8 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
             $donation->status = 'funded';
 
 //            $currency_letter = substr($_REQUEST['IncCurrLabel'], -1);
-            $_REQUEST['IncCurrLabel'] = substr_replace($_REQUEST['IncCurrLabel'], '', -1);
+            $_REQUEST['IncCurrLabel'] = empty($_REQUEST['IncCurrLabel']) ?
+                '' : substr_replace($_REQUEST['IncCurrLabel'], '', -1);
 
             if(
                 $donation->pm_id != $_REQUEST['IncCurrLabel'] &&
