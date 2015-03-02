@@ -186,6 +186,39 @@ $options_meta = apply_filters('leyka_core_options_meta', array(
         'list_entries' => 'leyka_get_gateways_pm_list',
         'validation_rules' => array(), // List of regexp?..
     ),
+    'auto_refresh_currency_rates' => array(
+        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'default' => '1',
+        'title' => __('Automatically refresh currency rates', 'leyka'),
+        'description' => __('Check to enable auto-refresh of currency rates. It will be performed every 24 hours and will require connection with http://cbr.ru website.', 'leyka'),
+        'required' => 0, // 1 if field is required, 0 otherwise
+        'placeholder' => '', // For text fields
+        'length' => '', // For text fields
+        'list_entries' => array(), // For select, radio & checkbox fields
+        'validation_rules' => array(), // List of regexp?..
+    ),
+    'currency_rur2usd' => array(
+        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'default' => '',
+        'title' => __('RUR to USD currency rate', 'leyka'),
+        'description' => __('Please set the RUR to USD currency rate here.', 'leyka'),
+        'required' => 1, // 1 if field is required, 0 otherwise
+        'placeholder' => '70.01', // For text fields
+        'length' => 6, // For text fields
+        'list_entries' => '', // callback returns currencies selected in prev. option
+        'validation_rules' => array(), // List of regexp?..
+    ),
+    'currency_rur2eur' => array(
+        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'default' => '',
+        'title' => __('RUR to EUR currency rate', 'leyka'),
+        'description' => __('Please set the RUR to EUR currency rate here.', 'leyka'),
+        'required' => 1, // 1 if field is required, 0 otherwise
+        'placeholder' => '80.81', // For text fields
+        'length' => 6, // For text fields
+        'list_entries' => '', // callback returns currencies selected in prev. option
+        'validation_rules' => array(), // List of regexp?..
+    ),
     'currency_rur_label' => array(
         'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
         'default' => __('RUR', 'leyka'),

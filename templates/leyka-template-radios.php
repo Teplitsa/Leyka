@@ -1,9 +1,10 @@
-<?php if( !defined('WPINC') ) die;
+<?php
 /**
  * Leyka Template: Radios
  * Description: Radio options for each payment method
  **/
 
+if( !defined('WPINC') ) die;
 $active_pm = leyka_get_pm_list(true);
 
 leyka_pf_submission_errors();
@@ -48,6 +49,8 @@ leyka_setup_current_pm($curr_pm, $curr_pm->default_currency);?>
 			<div class="leyka-pm-fields <?php echo esc_attr($curr_pm->id);?>">
 				
 			<div class='leyka-user-data'>
+				<!-- field for GA -->
+				<input type="hidden" name="leyka_ga_payment_method" value="<?php echo esc_attr($curr_pm->label);?>" />
 			<?php
 				echo leyka_pf_get_name_field();
 				echo leyka_pf_get_email_field();

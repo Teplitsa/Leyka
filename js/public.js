@@ -45,8 +45,9 @@ jQuery(document).ready(function($){
                 leyka.donation_amount_too_small.replace('%s', $bottom_amount+' '+$currency_label)
             ).show();
 
-        } else if($is_valid)
+        } else if($is_valid) {
             $form.find('#leyka_donation_amount-error').html('').hide();
+        }
 
         $('.required', this).each(function(){
             var $field = $(this);
@@ -100,9 +101,31 @@ jQuery(document).ready(function($){
 
             }
         });
-
-        if( !$is_valid )
+		
+			
+        if( !$is_valid ){
             e.preventDefault();
+        }
+		else {
+			if ('function' === typeof ga) { //GA Events on form submit
+				
+				var label = 'undefined_payment_method',
+					action = 'undefined_campaign';
+								
+				
+				if ($form.find('[name ="leyka_ga_payment_method"]').length) {
+					label = $form.find('[name ="leyka_ga_payment_method"]').attr('value');
+				}
+				
+				if ($form.find('[name ="leyka_ga_campaign_title"]').length) {
+					action = $form.find('[name ="leyka_ga_campaign_title"]').attr('value');
+				}
+				
+				ga('send', 'event', 'click_donation_button', action, label, 1);				
+			}
+		}
+		
+		
     });
 
 	/* toggles */
@@ -291,6 +314,9 @@ jQuery(document).ready(function($){
             $('html, body').animate({scrollTop:target_top}, 500);
         }
 	});
+	
+	
+	
 });
 
 function is_email(email) {

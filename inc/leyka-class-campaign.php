@@ -158,7 +158,7 @@ class Leyka_Campaign_Management {
                     <?php _e('Default template', 'leyka');?>
                 </option>
 
-            <?php $templates = leyka()->get_templates();
+            <?php $templates = leyka()->get_templates(); 
                 if($templates) {
                     foreach($templates as $template) {?>
                 <option value="<?php echo esc_attr($template['id']);?>" <?php selected($cur_template, $template['id']);?>>
@@ -282,9 +282,9 @@ class Leyka_Campaign_Management {
 
         $link .= stristr($link, '?') !== false ? '&embed=1' : '?embed=1';?>
 
-        <label for="campaign-embed-code"><?php _e("To embed a campaign card in some other web page, copy the following code and insert it in a page HTML:", 'leyka');?></label>
+        <label for="campaign-embed-code"><?php _e("To embed a campaign card in some other web page, insert the following code in it's HTML:", 'leyka');?></label>
 
-        <textarea id="campaign-embed-code" class="campaign-embed-code"><?php echo '<iframe src="'.$link.'"></iframe>'?></textarea>
+        <textarea id="campaign-embed-code" class="campaign-embed-code"><?php echo '<iframe frameborder="0" width="300" height="510" src="'.$link.'"></iframe>'?></textarea>
     <?php }
 
 	public function save_data($campaign_id, WP_Post $campaign) {

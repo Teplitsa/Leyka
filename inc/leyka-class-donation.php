@@ -400,6 +400,7 @@ class Leyka_Donation_Management {
 
         // Reset content-type to avoid conflicts -- http://core.trac.wordpress.org/ticket/23578
         remove_filter('wp_mail_content_type', 'set_html_content_type');
+        return true;
     }
 
 	public static function get_instance() {
@@ -1123,10 +1124,14 @@ class Leyka_Donation {
         $currency = empty($params['currency']) ? leyka_pf_get_currency_value() : $params['currency'];
         update_post_meta($id, 'leyka_donation_currency', $currency);
 
+        $currency_rate = leyka_options()->opt("currency_rur2$currency");
+        if($currency == 'RUR' || !$currency_rate)
+            $currency_rate = 1.0;
+
         update_post_meta(
             $id,
             'leyka_main_curr_amount',
-            $currency == 'RUR' ? $amount : $amount*get_transient("leyka_course_rur2{$currency}")
+            $currency == 'RUR' ? $amount : $amount*$currency_rate
         );
 
         update_post_meta(

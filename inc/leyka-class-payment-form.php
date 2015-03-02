@@ -18,7 +18,8 @@ class Leyka_Payment_Form {
         $this->_pm_name = $payment_method->id;
 
 		$this->_current_currency = $current_currency;
-		$this->_form_action = site_url('leyka-process-donation');
+		$this->_form_action = get_option('permalink_structure') ?
+			site_url('leyka-process-donation') : site_url('?page=leyka-process-donation');
 	}	
 
 	/**
@@ -47,7 +48,9 @@ class Leyka_Payment_Form {
 			return ''; // current currency isn't supported
 
 		ob_start();
-
+	?>
+		<label for="leyka_donation_amount" class="leyka-screen-reader-text"><?php _e('Donation amount', 'leyka');?></label>
+	<?php
 		if($mode == 'fixed') {
 
 			$comment = __('Please, specify your donation amount', 'leyka');			
@@ -103,11 +106,13 @@ class Leyka_Payment_Form {
 
 		if($campaign_id == null)
 			$campaign_id = $post->ID;
-
-        $template = leyka_get_current_template_data();
+		
+		$campaign = new Leyka_Campaign($campaign_id);
+        $template = leyka_get_current_template_data(); 
 		$hiddens = apply_filters('leyka_hidden_donation_form_fields', array(
 			'leyka_template_id' => $template['id'],
-			'leyka_campaign_id' => (int)$campaign_id
+			'leyka_campaign_id' => (int)$campaign_id,
+			'leyka_ga_campaign_title' => esc_attr($campaign->payment_title), 		
 		), $this);
 
 		$out = wp_nonce_field('leyka_payment_form', '_wpnonce', true, false);
@@ -125,8 +130,9 @@ class Leyka_Payment_Form {
 
 		if(count(array_keys($supported_curr)) > 1) {
 
-			// Multicurrency:
-			$out = "<select name='leyka_donation_currency' class='leyka_donation_currency'>";
+			// Multicurrency:			
+			$out = "<label for='leyka_donation_currency' class='leyka-screen-reader-text'>".__('Currency', 'leyka')."</label>";
+			$out .= "<select name='leyka_donation_currency' class='leyka_donation_currency'>";
 			foreach ($supported_curr as $cid => $obj) {
 				$out .= "<option data-currency-label='".$obj['label']."' value='".esc_attr($cid)."' "
                         .selected($cid, $curr, false).">".$obj['label']."</option>";
@@ -159,7 +165,8 @@ class Leyka_Payment_Form {
 		$comment = __('We will use this to personalize your donation experience', 'leyka');
 		
 		ob_start();
-	?>		
+	?>
+		<label for="leyka_donor_name" class="leyka-screen-reader-text"><?php echo $ph; ?></label>
 		<label class="input req"><input type="text" class="required" name="leyka_donor_name" placeholder="<?php echo esc_attr($ph);?>" id="leyka_donor_name" value="<?php echo $value;?>"></label>
 		<p class="field-comment"><?php echo $comment;?></p>
 		<p id="leyka_donor_name-error" class="field-error"></p>
@@ -167,7 +174,7 @@ class Leyka_Payment_Form {
 	<?php
 		$out = ob_get_contents();
 		ob_end_clean();
-		return leyka_field_wrap($out, 'email');		
+		return leyka_field_wrap($out, 'name');		
 	}
 	
 	
@@ -180,7 +187,8 @@ class Leyka_Payment_Form {
 		$comment = __('We will send the donation success notice to this address', 'leyka');
 		
 		ob_start();
-	?>	
+	?>
+		<label for="leyka_donor_email" class="leyka-screen-reader-text"><?php echo $ph; ?></label>
 		<label class="input req"><input type="text" class="required email" name="leyka_donor_email" placeholder="<?php echo esc_attr($ph);?>" id="leyka_donor_email" value="<?php echo $value;?>"></label>
 		<p class="field-comment"><?php echo $comment;?></p>
         <p id="leyka_donor_email-error" class="field-error"></p>
@@ -188,7 +196,7 @@ class Leyka_Payment_Form {
 	<?php
 		$out = ob_get_contents();
 		ob_end_clean();
-		return leyka_field_wrap($out, 'name');		
+		return leyka_field_wrap($out, 'email');		
 	}
 	
 	
@@ -207,7 +215,8 @@ class Leyka_Payment_Form {
 				<div class="leyka-oferta-text-flow"><?php echo apply_filters('leyka_terms_of_service_text', leyka_options()->opt('terms_of_service_text'));?></div>
 			</div>
 		</div>
-		<label class="checkbox">
+		
+		<label class="checkbox" for="leyka_agree">
 			<input type="checkbox" name="leyka_agree" id="leyka_agree" class="leyka_agree required" value="1" />
 			<a class="leyka-legal-confirmation-trigger" href="#<?php echo $agree_id;?>">
                 <?php echo leyka_options()->opt('agree_to_terms_text');?>
@@ -662,6 +671,8 @@ function leyka_payment_method_action() {
 	<div class="leyka-pm-fields">
 
 	<div class='leyka-user-data'>
+		<!-- field for GA -->
+		<input type="hidden" name="leyka_ga_payment_method" value="<?php echo esc_attr($curr_pm->label);?>" />
 	<?php
 		echo leyka_pf_get_name_field(empty($_POST['user_name']) ? '' : trim($_POST['user_name']));
 		echo leyka_pf_get_email_field(empty($_POST['user_email']) ? '' : trim($_POST['user_email']));
@@ -740,6 +751,8 @@ function leyka_currency_choice_action(){
 		<div class="leyka-pm-fields">
 			
 		<div class='leyka-user-data'>
+			<!-- field for GA -->
+			<input type="hidden" name="leyka_ga_payment_method" value="<?php echo esc_attr($curr_pm->label);?>" />
 		<?php
 			echo leyka_pf_get_name_field();
 			echo leyka_pf_get_email_field();

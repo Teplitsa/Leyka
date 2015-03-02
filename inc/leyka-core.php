@@ -119,15 +119,20 @@ class Leyka {
 
 //        new Non_existing_class; /** @todo  */
 
-        /** Currencies rates auto refreshment: */
-        if( !wp_next_scheduled('refresh_currencies_rates') )
-            wp_schedule_event(time(), 'daily', 'refresh_currencies_rates');
+        /** Currency rates auto refreshment: */
+        if(leyka_options()->opt('auto_refresh_currency_rates')) {
 
-        add_action('refresh_currencies_rates', array($this, 'do_currencies_rates_refresh'));
+            if( !wp_next_scheduled('refresh_currencies_rates') )
+                wp_schedule_event(time(), 'daily', 'refresh_currencies_rates');
 
-        // Just in case:
-        if( !get_option('leyka__course_rur2usd') || !get_option('leyka__course_rur2eur') )
-            $this->do_currency_rates_refresh();
+            add_action('refresh_currencies_rates', array($this, 'do_currencies_rates_refresh'));
+
+            // Just in case:
+            if( !leyka_options()->opt('currency_rur2usd') || !leyka_options()->opt('currency_rur2eur') )
+                $this->do_currency_rates_refresh();
+        } else {
+            wp_clear_scheduled_hook('refresh_currencies_rates');
+        }
 
         do_action('leyka_initiated');
 	}
@@ -135,7 +140,7 @@ class Leyka {
     public function do_currency_rates_refresh() {
 
         foreach(leyka_get_actual_currency_rates() as $currency => $rate) {
-            add_option('leyka__course_rur2'.mb_strtolower($currency), $rate);
+            update_option('leyka_currency_rur2'.mb_strtolower($currency), $rate);
         }
     }
 
@@ -734,11 +739,11 @@ class Leyka {
 	public function get_template_data($file) {
 
 		$headers = array(
-			'name' => __('Leyka Template', 'leyka'),
-			'description' => __('Description', 'leyka'),
+			'name' => 'Leyka Template', 
+			'description' => 'Description',
 		);
 
-		$data = get_file_data($file, $headers);
+		$data = get_file_data($file, $headers); 
 		$data['file'] = $file;
 		$data['basename'] = basename($file);
 		$id = explode('-', str_replace('.php', '', $data['basename']));

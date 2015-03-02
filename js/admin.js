@@ -7,10 +7,13 @@ jQuery(document).ready(function($){
     $('.send-donor-thanks').click(function(e){
         e.preventDefault();
 
-        var $wrap = $(this).parent(),
+        var $this = $(this),
+            $wrap = $this.parent(),
             donation_id = $wrap.data('donation-id');
 
-        $(this).fadeOut(100, function(){ $(this).html('<img src="'+leyka.ajax_loader_url+'" />').fadeIn(100); });
+        $this.fadeOut(100, function(){
+            $this.html('<img src="'+leyka.ajax_loader_url+'" />').fadeIn(100);
+        });
 
         $wrap.load(leyka.ajaxurl, {
             action: 'leyka_send_donor_email',
@@ -99,6 +102,16 @@ jQuery(document).ready(function($){
             $('#leyka_scale_widget_place-wrapper, #leyka_donations_history_under_forms-wrapper')
                 .find(':input').attr('disabled', 'disabled');
     });
+
+    $('#leyka_auto_refresh_currency_rates-field').change(function(e){
+        if($(this).attr('checked')) {
+            $('#leyka_currency_rur2usd-wrapper, #leyka_currency_rur2eur-wrapper')
+                .find(':input').attr('disabled', 'disabled');
+        } else {
+            $('#leyka_currency_rur2usd-wrapper, #leyka_currency_rur2eur-wrapper')
+                .find(':input').removeAttr('disabled');
+        }
+    }).change();
 });
 
 function is_email(email) {

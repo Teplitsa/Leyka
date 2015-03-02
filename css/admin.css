@@ -2,6 +2,15 @@
 /*---------------------------------------------------------
  Mixins (_utility.scss)
 -------------------------------------------------------- */
+.leyka-screen-reader-text {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  border: 0 none;
+  padding: 0; }
+
 .leyka-scale-ultra {
   position: relative;
   border: 1px solid #1db318;
@@ -180,6 +189,13 @@
       cursor: default;
       background: #fff; }
 
+#leyka_campaign_embed label {
+  display: block;
+  margin-bottom: 5px; }
+#leyka_campaign_embed textarea {
+  width: 100%;
+  min-height: 150px; }
+
 /** Campaign table **/
 .post-type-leyka_campaign .column-ID {
   width: 4%; }
@@ -249,10 +265,10 @@
     padding-bottom: 2px; }
   .leyka-set .leyka-ddata-string {
     margin: 5px 0; }
-    .leyka-set .leyka-ddata-string:after {
+    .leyka-set .leyka-ddata-string::after {
+      clear: both;
       content: "";
-      display: table;
-      clear: both; }
+      display: table; }
   .leyka-set label {
     font-weight: bold;
     float: left;
@@ -316,7 +332,7 @@
     border-radius: 3px; }
     .leyka-set .field-error a {
       color: #fc001e; }
-      .leyka-set .field-error a:hover {
+      .leyka-set .field-error a:hover, .leyka-set .field-error a:focus, .leyka-set .field-error a:active {
         color: #aa363a; }
   .leyka-set .set-action {
     margin: 15px 0 15px 22%; }

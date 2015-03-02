@@ -52,7 +52,6 @@
     
 Если у вас есть вопросы по работе плагина, то обратитесь к нам за поддержкой на [GitHub](https://github.com/Teplitsa/Leyka/issues/).
 
-
 ## Как все устроено ##
 
 Визуализация прогресса кампании
@@ -66,7 +65,6 @@
 
 Платежная форма
 ![](https://leyka.te-st.ru/wp-content/uploads/assets/4-sc-payment.png?stamp=123)
-
 
 
 **ВНИМАНИЕ!**

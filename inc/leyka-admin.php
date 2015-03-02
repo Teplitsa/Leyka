@@ -451,7 +451,7 @@ class Leyka_Admin_Setup {
                 'infoFiltered' => __('(filtered from _MAX_ total entries)', 'leyka'),
                 'infoThousands' => __(',', 'leyka'),
                 'loadingRecords' => __('Loading...', 'leyka'),
-                'infoPostFix' => __('', 'leyka'),
+                'infoPostFix' => '',
                 'zeroRecords' => __('No matching records found', 'leyka'),
                 'emptyTable' => __('No data available in table', 'leyka'),
                 'paginate_first' => __('First', 'leyka'),
