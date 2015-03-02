@@ -4,7 +4,7 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, crowdfunding, fundrising
 Requires at least: 3.6.1
-Tested up to: 4.1
+Tested up to: 4.1.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -150,6 +150,13 @@ PHP at least 5.3 is required.
 
 
 == Changelog ==
+
+= 2.2.3 =
+ * New: Robokassa gateway support.
+ * New: the currencies rates manual editing and auto-refresh option.
+ * New: embed campaigns feature (campaign cards).
+ * New: Google Analytics events binded to the donation workflow, to better track down donors activity via GA.
+ * Fix: small fixes.
 
 = 2.2.2 =
  * Fix: notice on Posts quick edit.
