@@ -3,12 +3,30 @@
  * Leyka functions and template tags, irrelevant to a donation form.
  **/
 
+if( !function_exists('mb_substr') ) {
+    function mb_substr($str, $start, $length = null) {
+        return substr($str, $start, $length);
+    }
+}
+
 if( !function_exists('mb_ucfirst') ) {
     function mb_ucfirst($str) {
         return mb_strtoupper(mb_substr($str, 0, 1)).mb_substr($str, 1);
     }
-} 
- 
+}
+
+if( !function_exists('mb_strtolower') ) {
+    function mb_strtolower($str) {
+        return strtolower($str);
+    }
+}
+
+if( !function_exists('mb_strtoupper') ) {
+    function mb_strtoupper($str) {
+        return strtoupper($str);
+    }
+}
+
 function leyka_current_user_has_role($role, $user_id = false) {
 
     $user = is_numeric($user_id) ? get_userdata( $user_id ) : wp_get_current_user();
@@ -24,7 +42,7 @@ function leyka_get_pages_list() {
 
     $query = new WP_Query(apply_filters('leyka_pages_list_query', array(
         'post_type' => 'page',
-        'posts_per_page' => -1
+        'posts_per_page' => -1,
     )));
 
     $pages = array(0 => __('Website main page', 'leyka'),);
