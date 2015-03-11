@@ -197,7 +197,7 @@ class Leyka_Donation_Management {
 
     public function new_donation_added(WP_Post $donation) {
 
-        if($donation->post_type != 'leyka_donation')
+        if($donation->post_type != Leyka_Donation_Management::$post_type)
             return;
     }
 
@@ -978,12 +978,14 @@ class Leyka_Donation_Management {
     public function save_donation_data($donation_id) {
 
         // Maybe donation is inserted trough API:
-        if(empty($_POST['post_type']) || $_POST['post_type'] != 'leyka_donation')
+        if(empty($_POST['post_type']) || $_POST['post_type'] != Leyka_Donation_Management::$post_type)
             return false;
 
         // Verify that nonce is valid.
-        if(empty($_POST['_donation_edit_nonce'])
-        || !wp_verify_nonce($_POST['_donation_edit_nonce'], 'donation_status_metabox')) {
+        if(
+            empty($_POST['_donation_edit_nonce']) ||
+            !wp_verify_nonce($_POST['_donation_edit_nonce'], 'donation_status_metabox')
+        ) {
             return $donation_id;
         }
 
@@ -1008,6 +1010,15 @@ class Leyka_Donation_Management {
             $old_campaign->refresh_target_state();
             $new_campaign->refresh_target_state();
         }
+
+        // It's a new correction donation, set a title from it's campaign:
+        $campaign = new Leyka_Campaign($donation->campaign_id);
+        $donation_title = $campaign->payment_title ?
+            $campaign->payment_title :
+            ($campaign->title ? $campaign->title : sprintf(__('Donation #%s', 'leyka'), $donation_id));
+
+        if($donation->title != $donation_title)
+            $donation->title = $donation_title;
 
         if(isset($_POST['donor-name']) && $donation->donor_name != $_POST['donor-name'])
             $donation->donor_name = $_POST['donor-name'];
@@ -1037,26 +1048,21 @@ class Leyka_Donation_Management {
             }
         }
 
-        if(isset($_POST['donation_date'])) {
-//            $date = explode('_', $_POST['donation_date']);
-//            $date = (int)$date[0] - ((int)$date[1])*60;
-            if($donation->date_timestamp != strtotime($_POST['donation_date']))
-                $donation->date = $_POST['donation_date'];
+        if(isset($_POST['donation_date']) && $donation->date_timestamp != strtotime($_POST['donation_date'])) {
+            $donation->date = $_POST['donation_date'];
         }
 
-        if(isset($_POST['payment-type']) && $donation->payment_type != $_POST['payment-type']) {
-
+        if(isset($_POST['payment-type']) && $donation->payment_type != $_POST['payment-type'])
             $donation->payment_type = $_POST['payment-type'];
 
-            // It's a new correction donation, set a title from it's campaign:
-            $donation->title = $donation->campaign_payment_title;
-        }
-
+        /** @todo Refactor this one day! A mechanism for gateway-based custom donation fields */
         if(
             isset($_POST['chronopay-customer-id']) &&
             $donation->chronopay_customer_id != $_POST['chronopay-customer-id']
         )
             $donation->chronopay_customer_id = $_POST['chronopay-customer-id'];
+
+        return true;
     }
 
 	/** Helpers **/
@@ -1298,7 +1304,7 @@ class Leyka_Donation {
                 return $this->_donation_meta['status_log'];
             case 'date':
             case 'date_label': return date(get_option('date_format'), strtotime($this->_post_object->post_date));
-            case 'date_timestamp': return print_r($this, 1);//strtotime($this->_post_object->post_date);
+            case 'date_timestamp': return strtotime($this->_post_object->post_date);
             case 'date_funded':
             case 'funded_date':
                 $date_funded = $this->get_funded_date();

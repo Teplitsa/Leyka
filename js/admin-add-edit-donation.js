@@ -125,11 +125,6 @@ jQuery(document).ready(function($){
         $('#campaign-select-trigger').slideDown(100);
     });
 
-    // If single donation page is opened, show "cancel this recurrents" metabox if needed:
-//    if($('#hide-recurrent-metabox').length) {
-//        $('#leyka_donation_recurrent_cancel').hide();
-//    }
-
     $('.recurrent-cancel').click(function(e){
         e.preventDefault();
 
