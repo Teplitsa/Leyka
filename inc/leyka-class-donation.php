@@ -262,10 +262,10 @@ class Leyka_Donation_Management {
 
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-        $email_text = $donation->payment_type == 'single' ?
-            leyka_options()->opt('email_thanks_text') : leyka_options()->opt('email_recurrents_thanks_text');
-        $email_title = $donation->payment_type == 'single' ?
-            leyka_options()->opt('email_thanks_title') : leyka_options()->opt('email_recurrents_thanks_title');
+        $email_text = $donation->payment_type == 'rebill' ?
+            leyka_options()->opt('email_recurrents_thanks_text') : leyka_options()->opt('email_thanks_text');
+        $email_title = $donation->payment_type == 'rebill' ?
+            leyka_options()->opt('email_recurrents_thanks_title') : leyka_options()->opt('email_thanks_title');
 
         $res = wp_mail(
             $donor_email,

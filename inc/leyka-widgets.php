@@ -337,7 +337,7 @@ class Leyka_Donations_List_Widget extends WP_Widget {
 	/** Display widget */
     public function widget($args, $instance) {
 
-		global $post;
+//		global $post;
 
 		extract($args, EXTR_SKIP);
 
