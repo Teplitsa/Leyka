@@ -37,6 +37,36 @@ class Leyka_Donation_Management {
         add_action('wp_ajax_leyka_send_donor_email', array($this, 'ajax_send_donor_email'));
 	}
 
+    public function set_admin_messages($messages) {
+
+        global $post;
+
+        $messages[self::$post_type] = array(
+            0 => '', // Unused. Messages start at index 1.
+            1 => __('Donation updated.', 'leyka'),
+            2 => __('Field updated.', 'leyka'),
+            3 => __('Field deleted.', 'leyka'),
+            4 => __('Donation updated.', 'leyka'),
+            /* translators: %s: date and time of the revision */
+            5 => isset($_GET['revision']) ?
+                sprintf(
+                    __('Donation restored to revision from %s', 'leyka'),
+                    wp_post_revision_title((int)$_GET['revision'], false)
+                ) : false,
+            6 => __('Donation published.', 'leyka'),
+            7 => __('Donation saved.', 'leyka'),
+            8 => __('Donation submitted.', 'leyka'),
+            9 => sprintf(
+                __('Donation scheduled for: <strong>%1$s</strong>.', 'leyka'),
+                // translators: Publish box date format, see http://php.net/date
+                date_i18n(__( 'M j, Y @ G:i'), strtotime($post->post_date))
+            ),
+            10 => __('Donation draft updated.', 'leyka'),
+        );
+
+        return $messages;
+    }
+
     public function row_actions($actions, $donation) {
 
         global $current_screen;

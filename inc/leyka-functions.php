@@ -86,10 +86,8 @@ function leyka_get_default_success_page() {
     $page = new WP_Query(apply_filters('leyka_default_success_page_query', array(
         'post_type' => 'page',
 //        'lang' => 'ru',
-        'name' => 'thank-you-for-your-donation',
-        'post_status' => array(
-            'publish', 'pending', 'draft', 'auto-draft', 'private', 'future', 'inherit', 'trash'
-        ),
+        'pagename' => 'thank-you-for-your-donation',
+        'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'private', 'future', 'inherit', 'trash'),
         'posts_per_page' => 1
     )));
     $posts = $page->get_posts();
@@ -124,10 +122,10 @@ function leyka_get_default_success_page() {
 function leyka_get_success_page_url() {
 
     $url = leyka_options()->opt('success_page') ?
-        get_permalink(leyka_options()->opt('success_page')) : site_url();
-    
+        get_permalink(leyka_options()->opt('success_page')) : home_url();
+
     if( !$url ) // It can be in case when "last posts" is selected for homepage
-        $url = site_url();
+        $url = home_url();
     
     return $url;
 }
@@ -141,10 +139,8 @@ function leyka_get_default_failure_page() {
     $page = new WP_Query(apply_filters('leyka_default_failure_page_query', array(
         'post_type' => 'page',
 //        'lang' => 'ru',
-        'name' => 'sorry-donation-failure',
-        'post_status' => array(
-            'publish', 'pending', 'draft', 'auto-draft', 'private', 'future', 'inherit', 'trash'
-        ),
+        'pagename' => 'sorry-donation-failure',
+        'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'private', 'future', 'inherit', 'trash'),
         'posts_per_page' => 1
     )));
     $posts = $page->get_posts();
@@ -178,10 +174,10 @@ function leyka_get_default_failure_page() {
 function leyka_get_failure_page_url() {
 
     $url = leyka_options()->opt('failure_page') ?
-        get_permalink(leyka_options()->opt('failure_page')) : site_url();
+        get_permalink(leyka_options()->opt('failure_page')) : home_url();
 
     if( !$url ) // It can be in case when "last posts" is selected for homepage
-        $url = site_url();
+        $url = home_url();
     
     return $url;
 }

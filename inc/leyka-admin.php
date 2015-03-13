@@ -134,16 +134,19 @@ class Leyka_Admin_Setup {
 	/** Admin Menu **/
 	public function admin_menu_setup() {
 
-		// Leyka menu root
+		// Leyka menu root:
 		add_menu_page(__('Leyka Dashboard', 'leyka'), __('Leyka', 'leyka'), $this->_options_capability, 'leyka', array($this, 'dashboard_screen'));
 
-		// Dashboard
+		// Dashboard:
 		add_submenu_page('leyka', __('Leyka Dashboard', 'leyka'), __('Dashboard', 'leyka'), $this->_options_capability, 'leyka', array($this, 'dashboard_screen'));
-		
-		// Settings
+
+        // New campaign:
+        add_submenu_page('leyka', __('New campaign', 'leyka'), __('New campaign', 'leyka'), 'edit_posts', 'post-new.php?post_type='.Leyka_Campaign_Management::$post_type);
+
+		// Settings:
 		add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), $this->_options_capability, 'leyka_settings', array($this, 'settings_screen'));
 
-		// Feedback
+		// Feedback:
 		add_submenu_page('leyka', __('Connect to us', 'leyka'), __('Feedback', 'leyka'), $this->_options_capability, 'leyka_feedback', array($this, 'feedback_screen'));
 				
     }
@@ -336,7 +339,7 @@ class Leyka_Admin_Setup {
 
 		$page_slug = 'leyka_settings';
 		$page_title = __('Leyka Settings', 'leyka');
-		
+
 		$faction = add_query_arg('stage', $current_stage, "admin.php?page={$page_slug}");
 
         /** Process settings change */
