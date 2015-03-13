@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Leyka Plugin\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-09-11 08:25:09+00:00\n"
-"PO-Revision-Date: Wed Mar 11 2015 10:05:44 GMT+0300 (RTZ 2 (зима))\n"
-"Last-Translator: Leo <ahaenor@gmail.com>\n"
+"PO-Revision-Date: Thu Mar 12 2015 15:00:37 GMT+0400\n"
+"Last-Translator: ahaenor <ahaenor@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: Russian\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10 >= 2 && "
@@ -2920,7 +2920,7 @@ msgstr "Не отправлено %s"
 #: ../inc/leyka-class-donation.php:1018
 #, php-format
 msgid "Donation #%s"
-msgstr ""
+msgstr "Пожертвование #%s"
 
 #: ../inc/leyka-class-donation.php:1327
 msgid "Unknown gateway"
@@ -3046,7 +3046,7 @@ msgstr "Настройки"
 
 #: ../inc/leyka-admin.php:72 ../inc/leyka-admin.php:142
 msgid "Feedback"
-msgstr ""
+msgstr "Написать разработчикам"
 
 # @ leyka
 #: ../inc/leyka-admin.php:133 ../inc/leyka-admin.php:136 ../inc/leyka-admin.php:160
@@ -3065,7 +3065,7 @@ msgstr "Лейка: Настройки"
 
 #: ../inc/leyka-admin.php:142
 msgid "Connect to us"
-msgstr ""
+msgstr "Свяжитесь с нами"
 
 # @ leyka
 #: ../inc/leyka-admin.php:155
@@ -3326,7 +3326,7 @@ msgstr ""
 
 #: ../inc/leyka-class-payment-form.php:52
 msgid "Donation amount"
-msgstr ""
+msgstr "Размер пожертвования"
 
 # @ leyka
 #: ../inc/leyka-class-payment-form.php:56

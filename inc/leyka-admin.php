@@ -22,7 +22,7 @@ class Leyka_Admin_Setup {
         add_filter('custom_menu_order', array($this, 'reorder_submenu'));
 
         /** Remove needless metaboxes */
-        add_action('admin_init', array($this, 'remove_metaboxes'));
+        add_action('admin_init', array($this, 'remove_seo'));
 
         /** Ajax */
         add_action('wp_ajax_leyka_send_feedback', array($this, 'ajax_send_feedback'));
@@ -39,11 +39,16 @@ class Leyka_Admin_Setup {
         return $links;
     }
 
-    function remove_metaboxes(){
+    function remove_seo() {
 
         // WordPress SEO by Yoast's metabox on donation editing page:
-        if( !empty($GLOBALS['wpseo_metabox']) )
-            remove_action('restrict_manage_posts', array($GLOBALS['wpseo_metabox'], 'posts_filter_dropdown'));
+        if( !empty($GLOBALS['wpseo_metabox']) ) {
+
+            $seo_titles_options = get_option('wpseo_titles');
+            $seo_titles_options['hideeditbox-leyka_donation'] = true;
+
+            update_option('wpseo_titles', $seo_titles_options);
+        }
     }
 
     public function reorder_submenu($menu_order) {
@@ -312,7 +317,7 @@ class Leyka_Admin_Setup {
 		</div>
 	<?php	
 	}
-	
+
 	/** Displaying settings **/
 	public function settings_screen() {
 		
