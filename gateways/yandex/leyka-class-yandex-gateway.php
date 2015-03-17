@@ -41,6 +41,17 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
+            'yandex_shop_article_id' => array(
+                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+                'value' => '',
+                'default' => '',
+                'title' => __('Yandex ShopArticleId', 'leyka'),
+                'description' => __('Please, enter your Yandex.Money shop article ID here, if it exists. It can be found in your Yandex contract, also you can ask your Yandex.money manager for it.', 'leyka'),
+                'required' => 1,
+                'placeholder' => __('Ex., 12345', 'leyka'),
+                'list_entries' => array(), // For select, radio & checkbox fields
+                'validation_rules' => array(), // List of regexp?..
+            ),
             'yandex_test_mode' => array(
                 'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
                 'value' => '',
@@ -125,6 +136,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         return apply_filters('leyka_yandex_custom_submission_data', array(
             'scid' => leyka_options()->opt('yandex_scid'),
             'shopId' => leyka_options()->opt('yandex_shop_id'),
+            'shopArticleId' => leyka_options()->opt('yandex_shop_article_id'),
             'sum' => $donation->amount,
             'customerNumber' => $donation->donor_email,
             'orderNumber' => $donation_id,
