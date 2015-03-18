@@ -92,7 +92,7 @@ class Leyka_Admin_Setup {
 
     /*
     function display_custom_quickedit_donation($column_name, $post_type) {
-        if($post_type != 'leyka_donation')
+        if($post_type != Leyka_Donation_Management::$post_type)
             return;
 
         static $printNonce = TRUE;
@@ -134,16 +134,19 @@ class Leyka_Admin_Setup {
 	/** Admin Menu **/
 	public function admin_menu_setup() {
 
-		// Leyka menu root
+		// Leyka menu root:
 		add_menu_page(__('Leyka Dashboard', 'leyka'), __('Leyka', 'leyka'), $this->_options_capability, 'leyka', array($this, 'dashboard_screen'));
 
-		// Dashboard
+		// Dashboard:
 		add_submenu_page('leyka', __('Leyka Dashboard', 'leyka'), __('Dashboard', 'leyka'), $this->_options_capability, 'leyka', array($this, 'dashboard_screen'));
-		
-		// Settings
+
+        // New campaign:
+        add_submenu_page('leyka', __('New campaign', 'leyka'), __('New campaign', 'leyka'), 'edit_posts', 'post-new.php?post_type='.Leyka_Campaign_Management::$post_type);
+
+		// Settings:
 		add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), $this->_options_capability, 'leyka_settings', array($this, 'settings_screen'));
 
-		// Feedback
+		// Feedback:
 		add_submenu_page('leyka', __('Connect to us', 'leyka'), __('Feedback', 'leyka'), $this->_options_capability, 'leyka_feedback', array($this, 'feedback_screen'));
 				
     }
@@ -166,8 +169,7 @@ class Leyka_Admin_Setup {
 
             <div class="metabox-holder" id="leyka-widgets">
             <div class="postbox-container" id="postbox-container-1">
-                <?php //var_dump(get_current_screen());
-                do_meta_boxes('toplevel_page_leyka', 'normal', 'leyka_status'); ?>
+                <?php do_meta_boxes('toplevel_page_leyka', 'normal', 'leyka_status');?>
             </div>
             <div class="postbox-container" id="postbox-container-2">
                 <?php $this->dashboard_sidebar_screen();?>
@@ -233,6 +235,7 @@ class Leyka_Admin_Setup {
                 <th class="title"><?php _e('Purpose', 'leyka');?></th>
                 <th class="donor"><?php _e('Donor', 'leyka');?></th>
                 <th class="amount"><?php _e('Amount', 'leyka');?></th>
+                <th class="status"><?php _e('Status', 'leyka');?></th>
                 <th class="details">&nbsp;</th>
 			</tr>
 		</thead>
@@ -250,6 +253,7 @@ class Leyka_Admin_Setup {
                     .($donation->donor_email ? ' ('.$donation->donor_email.')' : '');?>
             </td>
 			<td><?php echo $donation->amount.' '.$donation->currency_label;?></td>
+			<td><?php echo $donation->status_label;?></td>
 			<td><a href="<?php echo esc_url($url); ?>"><?php _e('Details', 'leyka'); ?></a></td>
 		</tr>
 		<?php }?>
@@ -317,7 +321,7 @@ class Leyka_Admin_Setup {
 		</div>
 	<?php	
 	}
-	
+
 	/** Displaying settings **/
 	public function settings_screen() {
 		
@@ -336,7 +340,7 @@ class Leyka_Admin_Setup {
 
 		$page_slug = 'leyka_settings';
 		$page_title = __('Leyka Settings', 'leyka');
-		
+
 		$faction = add_query_arg('stage', $current_stage, "admin.php?page={$page_slug}");
 
         /** Process settings change */
