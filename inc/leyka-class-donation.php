@@ -20,7 +20,7 @@ class Leyka_Donation_Management {
         add_action('restrict_manage_posts', array($this, 'manage_filters'));
         add_action('pre_get_posts', array($this, 'do_filtering'));
 
-        add_action('leyka_donation_metaboxes', array($this, 'set_metaboxes'));	
+        add_action('add_meta_boxes', array($this, 'set_metaboxes'));
         add_action('save_post', array($this, 'save_donation_data'));
 
 		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manage_columns_names'));
@@ -132,7 +132,7 @@ class Leyka_Donation_Management {
         if(
             $pagenow == 'edit.php' &&
             isset($_GET['post_type']) &&
-            $_GET['post_type'] == 'leyka_donation' /*&&
+            $_GET['post_type'] == self::$post_type /*&&
     in_array('administrator', wp_get_current_user()->roles)*/
         ) {?>
 
@@ -194,7 +194,7 @@ class Leyka_Donation_Management {
         global $pagenow;
 
         if(
-            $pagenow == 'edit.php' && !empty($_GET['post_type']) && $_GET['post_type'] == 'leyka_donation' &&
+            $pagenow == 'edit.php' && !empty($_GET['post_type']) && $_GET['post_type'] == self::$post_type &&
             is_admin() && $query->is_main_query()
         ) {
             $meta_query = array('relation' => 'AND');

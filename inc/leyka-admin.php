@@ -8,24 +8,20 @@ class Leyka_Admin_Setup {
 
 	private static $instance = null;
 
-	private $_options_capability = 'manage_options';
+//	private $_options_capability = 'manage_options';
 //	private $_manager_role = 'editor';
 
 	private function __construct() {
-		// Add the options page and menu item.
-		add_action('admin_menu', array($this, 'admin_menu_setup'), 9);
-			
-		// Load admin style sheet and JavaScript.
-		add_action('admin_enqueue_scripts', array($this, 'enqueue_cssjs'));
 
-        /** Reorder Leyka submenu */
-        add_filter('custom_menu_order', array($this, 'reorder_submenu'));
+		add_action('admin_menu', array($this, 'admin_menu_setup'), 9); // Add the options page and menu item
 
-        /** Remove needless metaboxes */
-        add_action('admin_init', array($this, 'remove_seo'));
+		add_action('admin_enqueue_scripts', array($this, 'enqueue_cssjs')); // Load admin style sheet and JavaScript
 
-        /** Ajax */
-        add_action('wp_ajax_leyka_send_feedback', array($this, 'ajax_send_feedback'));
+        add_filter('custom_menu_order', array($this, 'reorder_submenu')); // Reorder Leyka submenu
+
+        add_action('admin_init', array($this, 'remove_seo')); // Remove needless columns and metaboxes
+
+        add_action('wp_ajax_leyka_send_feedback', array($this, 'ajax_send_feedback')); // Ajax
 
         add_filter('plugin_row_meta', array($this, 'set_plugin_meta'), 10, 2);
     }
@@ -55,7 +51,7 @@ class Leyka_Admin_Setup {
 
         global $submenu;
 
-        if(current_user_can($this->_options_capability) && !empty($submenu['leyka'])) {
+        if( !empty($submenu['leyka']) ) {
 
             $new_order = array();
             function leyka_menu_array_search(array $array, $menu_name) {
@@ -73,7 +69,10 @@ class Leyka_Admin_Setup {
             $new_order[1] = leyka_menu_array_search($submenu['leyka'], __('Donations', 'leyka'));
             $new_order[2] = leyka_menu_array_search($submenu['leyka'], __('All Campaigns', 'leyka'));
             $new_order[3] = leyka_menu_array_search($submenu['leyka'], __('New campaign', 'leyka'));
-            $new_order[4] = leyka_menu_array_search($submenu['leyka'], __('Settings', 'leyka'));
+
+            if(current_user_can('leyka_manage_options'))
+                $new_order[4] = leyka_menu_array_search($submenu['leyka'], __('Settings', 'leyka'));
+
             $new_order[5] = leyka_menu_array_search($submenu['leyka'], __('Feedback', 'leyka'));
 
             $submenu['leyka'] = $new_order;
@@ -92,7 +91,7 @@ class Leyka_Admin_Setup {
 
     /*
     function display_custom_quickedit_donation($column_name, $post_type) {
-        if($post_type != 'leyka_donation')
+        if($post_type != Leyka_Donation_Management::$post_type)
             return;
 
         static $printNonce = TRUE;
@@ -135,27 +134,29 @@ class Leyka_Admin_Setup {
 	public function admin_menu_setup() {
 
 		// Leyka menu root:
-		add_menu_page(__('Leyka Dashboard', 'leyka'), __('Leyka', 'leyka'), $this->_options_capability, 'leyka', array($this, 'dashboard_screen'));
+		add_menu_page(__('Leyka Dashboard', 'leyka'), __('Leyka', 'leyka'), 'leyka_manage_donations', 'leyka', array($this, 'dashboard_screen'));
 
 		// Dashboard:
-		add_submenu_page('leyka', __('Leyka Dashboard', 'leyka'), __('Dashboard', 'leyka'), $this->_options_capability, 'leyka', array($this, 'dashboard_screen'));
+		add_submenu_page('leyka', __('Leyka Dashboard', 'leyka'), __('Dashboard', 'leyka'), 'leyka_manage_donations', 'leyka', array($this, 'dashboard_screen'));
+
+        // Campaigns List:
+//        add_submenu_page('leyka', __('All Campaigns', 'leyka'), __('All Campaigns', 'leyka'), 'leyka_manage_donations', 'edit.php?post_type='.Leyka_Campaign_Management::$post_type);
 
         // New campaign:
-        add_submenu_page('leyka', __('New campaign', 'leyka'), __('New campaign', 'leyka'), 'edit_posts', 'post-new.php?post_type='.Leyka_Campaign_Management::$post_type);
+        add_submenu_page('leyka', __('New campaign', 'leyka'), __('New campaign', 'leyka'), 'leyka_manage_donations', 'post-new.php?post_type='.Leyka_Campaign_Management::$post_type);
 
 		// Settings:
-		add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), $this->_options_capability, 'leyka_settings', array($this, 'settings_screen'));
+        add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), 'leyka_manage_options', 'leyka_settings', array($this, 'settings_screen'));
 
 		// Feedback:
-		add_submenu_page('leyka', __('Connect to us', 'leyka'), __('Feedback', 'leyka'), $this->_options_capability, 'leyka_feedback', array($this, 'feedback_screen'));
-				
+		add_submenu_page('leyka', __('Connect to us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedback_screen'));
     }
 
 	/** Displaying dashboard **/
 	public function dashboard_screen(){
 
-//		if( !leyka_current_user_has_role($this->_manager_role) )
-//            wp_die(__('Sorry, but you do not have permissions to access this page.', 'leyka'));
+		if( !current_user_can('leyka_manage_donations') )
+            wp_die(__('Sorry, but you do not have permissions to access this page.', 'leyka'));
 
 		do_action('leyka_dashboard_actions'); // Collapsible
 
@@ -324,9 +325,9 @@ class Leyka_Admin_Setup {
 
 	/** Displaying settings **/
 	public function settings_screen() {
-		
+
 		/* Capability test */
-		if( !current_user_can($this->_options_capability) )
+		if( !current_user_can('leyka_manage_options') )
             wp_die(__('You do not have permissions to access this page.', 'leyka'));
 
         $current_stage = $this->get_current_settings_tab();
@@ -339,7 +340,7 @@ class Leyka_Admin_Setup {
 		do_action('leyka_pre_settings_actions');
 
 		$page_slug = 'leyka_settings';
-		$page_title = __('Leyka Settings', 'leyka');
+//		$page_title = __('Leyka Settings', 'leyka');
 
 		$faction = add_query_arg('stage', $current_stage, "admin.php?page={$page_slug}");
 
@@ -417,8 +418,7 @@ class Leyka_Admin_Setup {
     /** Displaying feedback **/
     public function feedback_screen(){
 
-        /* Capability test */
-        if( !current_user_can($this->_options_capability) )
+        if( !current_user_can('leyka_manage_donations') )
             wp_die(__('You do not have permissions to access this page.', 'leyka'));
 
         $user = wp_get_current_user();?>

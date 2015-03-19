@@ -88,10 +88,11 @@ function leyka_get_default_success_page() {
 //        'lang' => 'ru',
         'pagename' => 'thank-you-for-your-donation',
         'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'private', 'future', 'inherit', 'trash'),
-        'posts_per_page' => 1
+        'posts_per_page' => 1,
+        'orderby' => 'ID',
+        'order' => 'ASC',
     )));
-    $posts = $page->get_posts();
-    $page = reset($posts);
+    $page = $page->get_queried_object();
 
     if($page) {
 
@@ -141,10 +142,11 @@ function leyka_get_default_failure_page() {
 //        'lang' => 'ru',
         'pagename' => 'sorry-donation-failure',
         'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'private', 'future', 'inherit', 'trash'),
-        'posts_per_page' => 1
+        'posts_per_page' => 1,
+        'orderby' => 'ID',
+        'order' => 'ASC',
     )));
-    $posts = $page->get_posts();
-    $page = reset($posts);
+    $page = $page->get_queried_object();
 
     if($page) {
 

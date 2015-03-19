@@ -12,7 +12,7 @@ class Leyka_Campaign_Management {
 	
 	private function __construct() {
 
-		add_action(self::$post_type.'_metaboxes', array($this, 'set_metaboxes'));
+		add_action('add_meta_boxes', array($this, 'set_metaboxes'));
 		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manage_columns_names'));
 		add_action('manage_'.self::$post_type.'_posts_custom_column', array($this, 'manage_columns_content'), 2, 2);
 		add_action('save_post', array($this, 'save_data'), 2, 2);
@@ -462,7 +462,7 @@ class Leyka_Campaign {
         $target = get_post_meta($this->_id, 'campaign_target', true);
         return empty($target) ?
             'no_target' :
-            (Leyka_Campaign::get_campaign_collected_amount($this->_id) > $target ? 'is_reached' : 'in_progress');
+            (Leyka_Campaign::get_campaign_collected_amount($this->_id) >= $target ? 'is_reached' : 'in_progress');
     }
 
     public function __get($field) {
@@ -517,7 +517,7 @@ class Leyka_Campaign {
     public function get_donations() {
 
         $donations = new WP_Query(array(
-            'post_type' => 'leyka_donation',
+            'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => 'any',
             'posts_per_page' => -1,
             'meta_key' => 'leyka_campaign_id',
@@ -539,7 +539,7 @@ class Leyka_Campaign {
             return false;
 
         $donations = get_posts(array(
-            'post_type' => 'leyka_donation',
+            'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => 'funded',
             'posts_per_page' => -1,
             'meta_key' => 'leyka_campaign_id',
@@ -595,7 +595,7 @@ class Leyka_Campaign {
 	/** CRUD and alike */
 	public function save() {
 
-		$meta = array(); // $this->get_default_meta();
+		$meta = array();
 
 		if( !empty($_REQUEST['campaign_template']) && $this->template != $_REQUEST['campaign_template'] )
 			$meta['campaign_template'] = trim($_REQUEST['campaign_template']);
@@ -624,8 +624,6 @@ class Leyka_Campaign {
 		foreach($meta as $key => $value) {
 			update_post_meta($this->_id, $key, $value);
 		}
-
-//        $this->refresh_target_state();
 	}
 
     /** @todo Maybe, this method is not needed. Will try to remove it. */
