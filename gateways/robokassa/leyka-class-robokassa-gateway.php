@@ -216,8 +216,8 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
             return array();
 
         return array(
-            __('Outcoming sum:', 'leyka') => $this->_get_value_if_any($vars, 'OutSum', round($vars['OutSum'], 2)),
-            __('Incoming sum:', 'leyka') => $this->_get_value_if_any($vars, 'IncSum', round($vars['IncSum'], 2)),
+            __('Outcoming sum:', 'leyka') => $this->_get_value_if_any($vars, 'OutSum', !empty($vars['OutSum']) ? round($vars['OutSum'], 2) : false),
+            __('Incoming sum:', 'leyka') => $this->_get_value_if_any($vars, 'IncSum', !empty($vars['IncSum']) ? round($vars['IncSum'], 2) : false),
             __('Invoice ID:', 'leyka') => $this->_get_value_if_any($vars, 'InvId'),
             __('Signature value (sent from Robokassa):', 'leyka') => $this->_get_value_if_any($vars, 'SignatureValue'),
             __('Payment method:', 'leyka') => $this->_get_value_if_any($vars, 'PaymentMethod'),
