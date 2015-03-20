@@ -24,8 +24,9 @@ class Leyka_Admin_Setup {
         add_action('wp_ajax_leyka_send_feedback', array($this, 'ajax_send_feedback')); // Ajax
 
         add_filter('plugin_row_meta', array($this, 'set_plugin_meta'), 10, 2);
-				
-		add_filter( "plugin_action_links_".LEYKA_PLUGIN_PLUGINBASE_FILE, array($this, 'add_settings_link')); //link in plugin actions
+
+        // Link in plugin actions:
+		add_filter('plugin_action_links_'.LEYKA_PLUGIN_INNER_SHORT_NAME, array($this, 'add_settings_link'));
     }
 
     public function set_plugin_meta($links, $file) {
@@ -327,9 +328,9 @@ class Leyka_Admin_Setup {
 		<p><?php _e('Developed by <a href="http://te-st.ru/" target="_blank">Teplitsa of social technologies</a>', 'leyka');?></p>
 		<p class="te-st"><img src="http://leyka.te-st.ru/wp-content/uploads/assets/tst-logo.svg" onerror="this.onerror=null;this.src='http://leyka.te-st.ru/wp-content/uploads/assets/tst-logo.png'"></p>
 		<ul class="leyka-ref-links">
-			<li><a href="http://leyka.te-st.ru" target='_blank'><?php _e('Plugin website', 'leyka');?></a></li>
-			<li><a href="http://leyka.te-st.ru/docs/" target='_blank'><?php _e('Documentation', 'leyka');?></a></li>
-			<li><a href="http://leyka.te-st.ru/faq/" target='_blank'><?php _e('Ask a question', 'leyka');?></a></li>
+			<li><a href="https://leyka.te-st.ru" target='_blank'><?php _e('Plugin website', 'leyka');?></a></li>
+			<li><a href="https://leyka.te-st.ru/instruction/" target='_blank'><?php _e('Documentation', 'leyka');?></a></li>
+			<li><a href="<?php echo admin_url('admin.php?page=leyka_feedback');?>"><?php _e('Ask a question', 'leyka');?></a></li>
 		</ul>
 		</div>
 	<?php	
@@ -449,32 +450,32 @@ class Leyka_Admin_Setup {
 			<fieldset class="leyka-ff-field">
                 <label for="feedback-topic"><?php _e('Message topic:', 'leyka');?></label>
                 <input id="feedback-topic" name="topic" placeholder="<?php _e('For ex., Paypal support needed', 'leyka');?>" class="regular-text">
-                <div id="feedback-topic-error" style="display: none;"></div>
+                <div id="feedback-topic-error" class="leyka-ff-field-error" style="display: none;"></div>
             </fieldset>
 			<fieldset class="leyka-ff-field">
                 <label for="feedback-name"><?php _e("Your name (we'll use it to address you only):", 'leyka');?></label>
                 <input id="feedback-name" name="name" placeholder="<?php _e('For ex., Leo', 'leyka');?>" value="<?php echo $user->display_name;?>" class="regular-text">
-                <div id="feedback-name-error" style="display: none;"></div>
+                <div id="feedback-name-error" class="leyka-ff-field-error" style="display: none;"></div>
             </fieldset>
 			<fieldset class="leyka-ff-field">
                 <label for="feedback-email"><?php _e('Your email:', 'leyka');?></label>
                 <input id="feedback-email" name="email" placeholder="<?php _e('your@mailbox.com', 'leyka');?>" value="<?php echo $user->user_email;?>" class="regular-text">
-                <div id="feedback-email-error" style="display: none;"></div>
+                <div id="feedback-email-error" class="leyka-ff-field-error" style="display: none;"></div>
             </fieldset>
 			<fieldset class="leyka-ff-field">
                 <label for="feedback-text"><?php _e('Your message:', 'leyka');?></label>
                 <textarea id="feedback-text" name="text" class="regular-text"></textarea>
-                <div id="feedback-text-error" style="display: none;" ></div>
+                <div id="feedback-text-error" class="leyka-ff-field-error" style="display: none;" ></div>
 			</fieldset>	
             <fieldset class="leyka-ff-field leyka-submit">
                 <input type="hidden" id="nonce" value="<?php echo wp_create_nonce('leyka_feedback_sending');?>">
                 <input type="submit" class="button-primary" value="<?php _e('Submit');?>">
 			</fieldset>
-                <div id="message-ok" class="" style="display: none;">
-                    <?php _e('<strong>Thank you!</strong> Your message sended successfully. We will answer it soon - please await our response on the email you entered.', 'leyka');?>
+                <div id="message-ok" class="leyka-ff-msg ok" style="display: none;">
+                    <p><?php _e('<strong>Thank you!</strong> Your message sended successfully. We will answer it soon - please await our response on the email you entered.', 'leyka');?></p>
                 </div>
-                <div id="message-error" class="" style="display: none;">
-                    <?php _e("Sorry, but the message can't be sended. Please check your mail server settings.", 'leyka');?>
+                <div id="message-error" class="leyka-ff-msg wrong" style="display: none;">
+                    <p><?php _e("Sorry, but the message can't be sended. Please check your mail server settings.", 'leyka');?></p>
                 </div>
             </form>
         </div>
@@ -506,10 +507,17 @@ class Leyka_Admin_Setup {
         }
         add_filter('wp_mail_content_type', 'set_html_content_type');
 
-        $res = wp_mail(
-            LEYKA_SUPPORT_EMAIL, __('Leyka: new feedback incoming', 'leyka'),
-            sprintf(
-                "Добрый день!<br><br>
+        $res = true;
+        foreach((array)explode(',', LEYKA_SUPPORT_EMAIL) as $email) {
+
+            $email = trim($email);
+            if( !$email || !filter_var($email, FILTER_VALIDATE_EMAIL) )
+                continue;
+
+            $res &= wp_mail(
+                $email, __('Leyka: new feedback incoming', 'leyka'),
+                sprintf(
+                    "Добрый день!<br><br>
                 Поступила новая обратная связь от пользователя Лейки.<br><br>
                 <strong>Тема:</strong> %s<br>
                 <strong>Имя пользователя:</strong> %s<br>
@@ -523,14 +531,15 @@ class Leyka_Admin_Setup {
                 <strong>Язык:</strong> %s (кодировка: %s)<br>
                 <strong>ПО веб-сервера:</strong> %s<br>
                 <strong>Браузер пользователя:</strong> %s",
-                $_POST['topic'], $_POST['name'], $_POST['email'], nl2br($_POST['text']),
-                home_url(), get_bloginfo('name'), $_SERVER['SERVER_ADDR'],
-                get_bloginfo('version'), LEYKA_VERSION, get_bloginfo('admin_email'),
-                get_bloginfo('language'), get_bloginfo('charset'),
-                $_SERVER['SERVER_SOFTWARE'], $_SERVER['HTTP_USER_AGENT']
-            ),
-            array('From: '.get_bloginfo('name').' <no_reply@leyka.te-st.ru>',)
-        );
+                    $_POST['topic'], $_POST['name'], $_POST['email'], nl2br($_POST['text']),
+                    home_url(), get_bloginfo('name'), $_SERVER['SERVER_ADDR'],
+                    get_bloginfo('version'), LEYKA_VERSION, get_bloginfo('admin_email'),
+                    get_bloginfo('language'), get_bloginfo('charset'),
+                    $_SERVER['SERVER_SOFTWARE'], $_SERVER['HTTP_USER_AGENT']
+                ),
+                array('From: '.get_bloginfo('name').' <no_reply@leyka.te-st.ru>',)
+            );
+        }
 
         // Reset content-type to avoid conflicts (http://core.trac.wordpress.org/ticket/23578):
         remove_filter('wp_mail_content_type', 'set_html_content_type');

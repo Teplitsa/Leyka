@@ -43,10 +43,6 @@ if( !defined('LEYKA_VERSION') )
 // Plugin base file:
 if( !defined('LEYKA_PLUGIN_BASE_FILE') ) // "leyka.php"
     define('LEYKA_PLUGIN_BASE_FILE', basename(__FILE__));
-	
-// Plugin  plugin_basename :
-if( !defined('LEYKA_PLUGIN_PLUGINBASE_FILE') ) // "leyka/leyka.php"
-    define('LEYKA_PLUGIN_PLUGINBASE_FILE', plugin_basename( __FILE__ ));
 
 // Plugin base directory:
 if( !defined('LEYKA_PLUGIN_DIR_NAME') ) // Most commonly, "leyka"
@@ -61,12 +57,12 @@ if( !defined('LEYKA_PLUGIN_DIR') )
     define('LEYKA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
 // Plugin ID:
-if( !defined('LEYKA_PLUGIN_INNER_SHORT_NAME') )
+if( !defined('LEYKA_PLUGIN_INNER_SHORT_NAME') ) // "leyka/leyka.php"
     define('LEYKA_PLUGIN_INNER_SHORT_NAME', plugin_basename(__FILE__));
 
 // Plugin support email:
 if( !defined('LEYKA_SUPPORT_EMAIL') )
-    define('LEYKA_SUPPORT_EMAIL', 'ahaenor@gmail.com' /*'support@te-st.ru'*/);
+    define('LEYKA_SUPPORT_EMAIL', 'support@te-st.ru,webdev@forallien.com,');
 
 // Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
 if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.3.0', '<') ) {
