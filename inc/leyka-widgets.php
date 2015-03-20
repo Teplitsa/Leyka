@@ -37,8 +37,8 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 		if($instance['campaign_id'] == '') {
 
             $query = new WP_Query(array(
-				'post_type' => 'leyka_campaign',
-				'posts_per_page' => 1
+				'post_type' => Leyka_Campaign_Management::$post_type,
+				'posts_per_page' => 1,
 			));
 			if( !$query->have_posts() )
 				return;
@@ -171,9 +171,9 @@ class Leyka_Campaigns_List_Widget extends WP_Widget {
 		$title = apply_filters('widget_title', $instance['title']);
 
 		$q_args = array(
-			'post_type' => 'leyka_campaign',
+			'post_type' => Leyka_Campaign_Management::$post_type,
 			'posts_per_page' => empty($instance['limit']) ? 3 : (int)$instance['limit'],
-			'post_status' => 'publish'
+			'post_status' => 'publish',
 		);
 
 		if( !empty($instance['include']) )
@@ -337,7 +337,7 @@ class Leyka_Donations_List_Widget extends WP_Widget {
 	/** Display widget */
     public function widget($args, $instance) {
 
-		global $post;
+//		global $post;
 
 		extract($args, EXTR_SKIP);
 

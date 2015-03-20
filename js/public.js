@@ -111,17 +111,17 @@ jQuery(document).ready(function($){
 				
 				var label = 'undefined_payment_method',
 					action = 'undefined_campaign';
+								
 				
-				if ($form.find('#leyka_ga_label')) {
-					label = $form.find('[name ="leyka_ga_label"]').attr('value');
+				if ($form.find('[name ="leyka_ga_payment_method"]').length) {
+					label = $form.find('[name ="leyka_ga_payment_method"]').attr('value');
 				}
 				
-				if ($form.find('#leyka_ga_action')) {
-					action = $form.find('[name ="leyka_ga_action"]').attr('value');
+				if ($form.find('[name ="leyka_ga_campaign_title"]').length) {
+					action = $form.find('[name ="leyka_ga_campaign_title"]').attr('value');
 				}
 				
-				ga('send', 'event', 'click_donation_button', action, label, 1);
-				
+				ga('send', 'event', 'click_donation_button', action, label, 1);				
 			}
 		}
 		

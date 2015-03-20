@@ -23,8 +23,6 @@ jQuery(document).ready(function($){
     });
 
     // Exchange places of donations Export and Filter buttons:
-//    $('#post-query-submit').after($('.donations-export-form').detach());
-
     $('.wrap h2 a').after($('.donations-export-form').detach());
 
     /** All campaign selection fields: */
@@ -112,6 +110,95 @@ jQuery(document).ready(function($){
                 .find(':input').removeAttr('disabled');
         }
     }).change();
+
+    /** Feedback form */
+    var $form = $('#feedback'),
+        $loader = $form.find('#feedback-loader'),
+        $message_ok = $form.find('#message-ok'),
+        $message_error = $form.find('#message-error');
+
+    $form.submit(function(e){
+
+        e.preventDefault();
+
+        if( !validate_feedback_form() )
+            return false;
+
+        $message_ok.attr('class', '').hide();
+        $message_error.attr('class', '').hide();
+
+        $form.find(':input').attr('disabled', 'disabled');
+        $loader.show();
+
+        $.post(leyka.ajaxurl, {
+            action: 'leyka_send_feedback',
+            topic: $form.find('#feedback-topic').val(),
+            name: $form.find('#feedback-name').val(),
+            email: $form.find('#feedback-email').val(),
+            text: $form.find('#feedback-text').val(),
+            nonce: $form.find('#nonce').val()
+        }, function(response){
+
+            $loader.hide();
+            $form.find(':input').removeAttr('disabled');
+
+            if(response && response == 0)
+                $message_ok.fadeIn(100);
+            else
+                $message_error.fadeIn(100);
+        });
+
+        return true;
+    });
+
+    function validate_feedback_form() {
+
+        var $form = $('#feedback'),
+            is_valid = true,
+            $field = $form.find('#feedback-topic');
+
+        if( !$field.val() ) {
+
+            is_valid = false;
+            $form.find('#'+$field.attr('id')+'-error').html(leyka.field_required).show();
+
+        } else
+            $form.find('#'+$field.attr('id')+'-error').html('').hide();
+
+        $field = $form.find('#feedback-name');
+        if( !$field.val() ) {
+
+            is_valid = false;
+            $form.find('#'+$field.attr('id')+'-error').html(leyka.field_required).show();
+
+        } else
+            $form.find('#'+$field.attr('id')+'-error').html('').hide();
+
+        $field = $form.find('#feedback-email');
+        if( !$field.val() ) {
+
+            is_valid = false;
+            $form.find('#'+$field.attr('id')+'-error').html(leyka.field_required).show();
+
+        } else if( !is_email($field.val()) ) {
+
+            is_valid = false;
+            $form.find('#'+$field.attr('id')+'-error').html(leyka.email_invalid).show();
+
+        } else
+            $form.find('#'+$field.attr('id')+'-error').html('').hide();
+
+        $field = $form.find('#feedback-text');
+        if( !$field.val() ) {
+
+            is_valid = false;
+            $form.find('#'+$field.attr('id')+'-error').html(leyka.field_required).show();
+
+        } else
+            $form.find('#'+$field.attr('id')+'-error').html('').hide();
+
+        return is_valid;
+    }
 });
 
 function is_email(email) {

@@ -12,7 +12,7 @@ class Leyka_Campaign_Management {
 	
 	private function __construct() {
 
-		add_action(self::$post_type.'_metaboxes', array($this, 'set_metaboxes'));
+		add_action('add_meta_boxes', array($this, 'set_metaboxes'));
 		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manage_columns_names'));
 		add_action('manage_'.self::$post_type.'_posts_custom_column', array($this, 'manage_columns_content'), 2, 2);
 		add_action('save_post', array($this, 'save_data'), 2, 2);
@@ -31,6 +31,45 @@ class Leyka_Campaign_Management {
 
 		return self::$_instance;
 	}
+
+    public function set_admin_messages($messages) {
+
+        global $post, $post_ID;
+
+        $messages[Leyka_Campaign_Management::$post_type] = array(
+            0 => '', // Unused. Messages start at index 1.
+            1 => sprintf(
+                __('Campaign updated. <a href="%s">View it</a>', 'leyka'),
+                esc_url(home_url('?p='.$post_ID))
+            ),
+            2 => __('Field updated.', 'leyka'),
+            3 => __('Field deleted.', 'leyka'),
+            4 => __('Campaign updated.', 'leyka'),
+            /* translators: %s: date and time of the revision */
+            5 => isset($_GET['revision']) ? sprintf(__('Campaign restored to revision from %s', 'leyka'), wp_post_revision_title((int)$_GET['revision'], false)) : false,
+            6 => sprintf(
+                __('Campaign published. <a href="%s">View it</a>', 'leyka'),
+                esc_url(home_url('?p='.$post_ID))
+            ),
+            7 => __('Campaign saved.', 'leyka'),
+            8 => sprintf(
+                __('Campaign submitted. <a target="_blank" href="%s">Preview it</a>', 'leyka'),
+                esc_url(add_query_arg('preview', 'true', home_url('?p='.$post_ID)))
+            ),
+            9 => sprintf(
+                __('Campaign scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview it</a>', 'leyka'),
+                // translators: Publish box date format, see http://php.net/date
+                date_i18n(__( 'M j, Y @ G:i'), strtotime($post->post_date)),
+                esc_url(home_url('?p='.$post_ID))
+            ),
+            10 => sprintf(
+                __('Campaign draft updated. <a target="_blank" href="%s">Preview it</a>', 'leyka'),
+                esc_url(add_query_arg('preview', 'true', home_url('?p='.$post_ID)))
+            ),
+        );
+
+        return $messages;
+    }
 
     public function row_actions($actions, $campaign) {
 
@@ -423,7 +462,7 @@ class Leyka_Campaign {
         $target = get_post_meta($this->_id, 'campaign_target', true);
         return empty($target) ?
             'no_target' :
-            (Leyka_Campaign::get_campaign_collected_amount($this->_id) > $target ? 'is_reached' : 'in_progress');
+            (Leyka_Campaign::get_campaign_collected_amount($this->_id) >= $target ? 'is_reached' : 'in_progress');
     }
 
     public function __get($field) {
@@ -478,7 +517,7 @@ class Leyka_Campaign {
     public function get_donations() {
 
         $donations = new WP_Query(array(
-            'post_type' => 'leyka_donation',
+            'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => 'any',
             'posts_per_page' => -1,
             'meta_key' => 'leyka_campaign_id',
@@ -500,7 +539,7 @@ class Leyka_Campaign {
             return false;
 
         $donations = get_posts(array(
-            'post_type' => 'leyka_donation',
+            'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => 'funded',
             'posts_per_page' => -1,
             'meta_key' => 'leyka_campaign_id',
@@ -556,7 +595,7 @@ class Leyka_Campaign {
 	/** CRUD and alike */
 	public function save() {
 
-		$meta = array(); // $this->get_default_meta();
+		$meta = array();
 
 		if( !empty($_REQUEST['campaign_template']) && $this->template != $_REQUEST['campaign_template'] )
 			$meta['campaign_template'] = trim($_REQUEST['campaign_template']);
@@ -585,8 +624,6 @@ class Leyka_Campaign {
 		foreach($meta as $key => $value) {
 			update_post_meta($this->_id, $key, $value);
 		}
-
-//        $this->refresh_target_state();
 	}
 
     /** @todo Maybe, this method is not needed. Will try to remove it. */

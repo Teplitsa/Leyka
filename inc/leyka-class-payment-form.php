@@ -112,8 +112,7 @@ class Leyka_Payment_Form {
 		$hiddens = apply_filters('leyka_hidden_donation_form_fields', array(
 			'leyka_template_id' => $template['id'],
 			'leyka_campaign_id' => (int)$campaign_id,
-			'leyka_ga_action' => esc_attr($campaign->payment_title), //payment purpose as action
-			'leyka_ga_label'  => esc_attr($this->_pm->label), //payment methos as label
+			'leyka_ga_campaign_title' => esc_attr($campaign->payment_title), 		
 		), $this);
 
 		$out = wp_nonce_field('leyka_payment_form', '_wpnonce', true, false);
@@ -509,7 +508,7 @@ function leyka_print_donation_elements($content) {
 	global $post;
 
 	$autoprint = leyka_options()->opt('donation_form_mode');
-	if( !is_singular('leyka_campaign') || !$autoprint )
+	if( !is_singular(Leyka_Campaign_Management::$post_type) || !$autoprint )
 		return $content;
 	
 	$campaign = new Leyka_Campaign($post);	
@@ -636,8 +635,8 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
 function leyka_get_donation_form($echo = true) {
 
 	/** @todo Maybe, it should accept campaign ID as param? */
-	if( !is_singular('leyka_campaign') )
-		return;
+	if( !is_singular(Leyka_Campaign_Management::$post_type) )
+		return '';
 		
 	if($echo)
 		echo get_leyka_payment_form_template_html();
@@ -672,6 +671,8 @@ function leyka_payment_method_action() {
 	<div class="leyka-pm-fields">
 
 	<div class='leyka-user-data'>
+		<!-- field for GA -->
+		<input type="hidden" name="leyka_ga_payment_method" value="<?php echo esc_attr($curr_pm->label);?>" />
 	<?php
 		echo leyka_pf_get_name_field(empty($_POST['user_name']) ? '' : trim($_POST['user_name']));
 		echo leyka_pf_get_email_field(empty($_POST['user_email']) ? '' : trim($_POST['user_email']));
@@ -750,6 +751,8 @@ function leyka_currency_choice_action(){
 		<div class="leyka-pm-fields">
 			
 		<div class='leyka-user-data'>
+			<!-- field for GA -->
+			<input type="hidden" name="leyka_ga_payment_method" value="<?php echo esc_attr($curr_pm->label);?>" />
 		<?php
 			echo leyka_pf_get_name_field();
 			echo leyka_pf_get_email_field();
