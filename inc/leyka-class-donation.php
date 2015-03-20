@@ -73,13 +73,15 @@ class Leyka_Donation_Management {
 
         if( !$current_screen || !is_object($current_screen) || $current_screen->post_type != self::$post_type )
             return $actions;
-
-        $actions['edit'] = '<a href="'.get_edit_post_link($donation->ID, 1).'">'.__('Details', 'leyka').'</a>';
+		
+		if(current_user_can('edit_donation', $donation->ID)) {
+			$actions['edit'] = '<a href="'.get_edit_post_link($donation->ID, 1).'">'.__('Edit').'</a>';
+		}
+		
         unset($actions['view']);
-//            unset( $actions['trash'] );
-
+//      unset( $actions['trash'] );
         unset($actions['inline hide-if-no-js']);
-        //$actions['inline hide-if-no-js'] .= __( 'Quick&nbsp;Edit' );
+        
         return $actions;
     }
 
