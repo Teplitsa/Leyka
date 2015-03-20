@@ -14,7 +14,7 @@ class Leyka_Admin_Setup {
 	private function __construct() {
 
 		add_action('admin_menu', array($this, 'admin_menu_setup'), 9); // Add the options page and menu item
-
+		
 		add_action('admin_enqueue_scripts', array($this, 'enqueue_cssjs')); // Load admin style sheet and JavaScript
 
         add_filter('custom_menu_order', array($this, 'reorder_submenu')); // Reorder Leyka submenu
@@ -24,6 +24,8 @@ class Leyka_Admin_Setup {
         add_action('wp_ajax_leyka_send_feedback', array($this, 'ajax_send_feedback')); // Ajax
 
         add_filter('plugin_row_meta', array($this, 'set_plugin_meta'), 10, 2);
+				
+		add_filter( "plugin_action_links_".LEYKA_PLUGIN_PLUGINBASE_FILE, array($this, 'add_settings_link')); //link in plugin actions
     }
 
     public function set_plugin_meta($links, $file) {
@@ -151,6 +153,16 @@ class Leyka_Admin_Setup {
 		// Feedback:
 		add_submenu_page('leyka', __('Connect to us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedback_screen'));
     }
+	
+	/** Settings link in plugin list table **/
+	public function add_settings_link( $links ) {
+		$settings_link = '<a href="'.admin_url('admin.php?page=leyka_settings').'">' . __( 'Settings', 'leyka' ) . '</a>';
+		array_push( $links, $settings_link );
+		
+		return $links;
+	}
+
+
 
 	/** Displaying dashboard **/
 	public function dashboard_screen(){
@@ -422,34 +434,42 @@ class Leyka_Admin_Setup {
             wp_die(__('You do not have permissions to access this page.', 'leyka'));
 
         $user = wp_get_current_user();?>
-
-        <div>
-            <h3><?php _e('Send us a feedback', 'leyka');?></h3>
-            <div><?php _e('Found a bug? Need a feature? Please, <a href="https://github.com/Teplitsa/Leyka/issues/new">create an issue on Github</a> or send us a message with the following form.',
-            'leyka');?></div>
-        </div>
-        <div>
+		
+	<div class="wrap">
+		<h2><?php _e('Send us a feedback', 'leyka');?></h2>
+			
+		<div class="leyka-feedback-description">
+			<p><?php _e('Found a bug? Need a feature?', 'leyka'); ?></p>
+			<p><?php _e('Please, <a href="https://github.com/Teplitsa/Leyka/issues/new">create an issue on Github</a> or send us a message with the following form', 'leyka'); ?></p>
+		</div>    
+        
+        <div class="leyka-feedback-form">
             <form id="feedback" action="#" method="post">
                 <img id="feedback-loader" style="display: none;" src="<?php echo LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif';?>" />
+			<fieldset class="leyka-ff-field">
                 <label for="feedback-topic"><?php _e('Message topic:', 'leyka');?></label>
-                <input id="feedback-topic" name="topic" placeholder="<?php _e('For ex., Paypal support needed', 'leyka');?>">
+                <input id="feedback-topic" name="topic" placeholder="<?php _e('For ex., Paypal support needed', 'leyka');?>" class="regular-text">
                 <div id="feedback-topic-error" style="display: none;"></div>
-                <br>
+            </fieldset>
+			<fieldset class="leyka-ff-field">
                 <label for="feedback-name"><?php _e("Your name (we'll use it to address you only):", 'leyka');?></label>
-                <input id="feedback-name" name="name" placeholder="<?php _e('For ex., Leo', 'leyka');?>" value="<?php echo $user->display_name;?>">
+                <input id="feedback-name" name="name" placeholder="<?php _e('For ex., Leo', 'leyka');?>" value="<?php echo $user->display_name;?>" class="regular-text">
                 <div id="feedback-name-error" style="display: none;"></div>
-                <br>
+            </fieldset>
+			<fieldset class="leyka-ff-field">
                 <label for="feedback-email"><?php _e('Your email:', 'leyka');?></label>
-                <input id="feedback-email" name="email" placeholder="<?php _e('your@mailbox.com', 'leyka');?>" value="<?php echo $user->user_email;?>">
+                <input id="feedback-email" name="email" placeholder="<?php _e('your@mailbox.com', 'leyka');?>" value="<?php echo $user->user_email;?>" class="regular-text">
                 <div id="feedback-email-error" style="display: none;"></div>
-                <br>
+            </fieldset>
+			<fieldset class="leyka-ff-field">
                 <label for="feedback-text"><?php _e('Your message:', 'leyka');?></label>
-                <textarea id="feedback-text" name="text"></textarea>
-                <div id="feedback-text-error" style="display: none;"></div>
-                <br>
-                <br>
+                <textarea id="feedback-text" name="text" class="regular-text"></textarea>
+                <div id="feedback-text-error" style="display: none;" ></div>
+			</fieldset>	
+            <fieldset class="leyka-ff-field leyka-submit">
                 <input type="hidden" id="nonce" value="<?php echo wp_create_nonce('leyka_feedback_sending');?>">
-                <input type="submit" value="<?php _e('Submit');?>">
+                <input type="submit" class="button-primary" value="<?php _e('Submit');?>">
+			</fieldset>
                 <div id="message-ok" class="" style="display: none;">
                     <?php _e('<strong>Thank you!</strong> Your message sended successfully. We will answer it soon - please await our response on the email you entered.', 'leyka');?>
                 </div>
@@ -458,6 +478,8 @@ class Leyka_Admin_Setup {
                 </div>
             </form>
         </div>
+		
+	</div>
     <?php }
 
     /** Feedback page processing */
