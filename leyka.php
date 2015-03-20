@@ -62,7 +62,7 @@ if( !defined('LEYKA_PLUGIN_INNER_SHORT_NAME') ) // "leyka/leyka.php"
 
 // Plugin support email:
 if( !defined('LEYKA_SUPPORT_EMAIL') )
-    define('LEYKA_SUPPORT_EMAIL', 'support@te-st.ru,webdev@forallien.com,');
+    define('LEYKA_SUPPORT_EMAIL', 'ahaenor@gmail.com'); //'support@te-st.ru,webdev@foralien.com,');
 
 // Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
 if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.3.0', '<') ) {

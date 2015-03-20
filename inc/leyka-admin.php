@@ -328,9 +328,9 @@ class Leyka_Admin_Setup {
 		<p><?php _e('Developed by <a href="http://te-st.ru/" target="_blank">Teplitsa of social technologies</a>', 'leyka');?></p>
 		<p class="te-st"><img src="http://leyka.te-st.ru/wp-content/uploads/assets/tst-logo.svg" onerror="this.onerror=null;this.src='http://leyka.te-st.ru/wp-content/uploads/assets/tst-logo.png'"></p>
 		<ul class="leyka-ref-links">
-			<li><a href="http://leyka.te-st.ru" target='_blank'><?php _e('Plugin website', 'leyka');?></a></li>
-			<li><a href="http://leyka.te-st.ru/docs/" target='_blank'><?php _e('Documentation', 'leyka');?></a></li>
-			<li><a href="http://leyka.te-st.ru/faq/" target='_blank'><?php _e('Ask a question', 'leyka');?></a></li>
+			<li><a href="https://leyka.te-st.ru" target='_blank'><?php _e('Plugin website', 'leyka');?></a></li>
+			<li><a href="https://leyka.te-st.ru/instruction/" target='_blank'><?php _e('Documentation', 'leyka');?></a></li>
+			<li><a href="<?php echo admin_url('admin.php?page=leyka_feedback');?>"><?php _e('Ask a question', 'leyka');?></a></li>
 		</ul>
 		</div>
 	<?php	
@@ -445,39 +445,39 @@ class Leyka_Admin_Setup {
 		</div>    
         
         <div class="leyka-feedback-form">
+            <img id="feedback-loader" style="display: none;" src="<?php echo LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif';?>" />
             <form id="feedback" action="#" method="post">
-                <img id="feedback-loader" style="display: none;" src="<?php echo LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif';?>" />
-			<fieldset class="leyka-ff-field">
-                <label for="feedback-topic"><?php _e('Message topic:', 'leyka');?></label>
-                <input id="feedback-topic" name="topic" placeholder="<?php _e('For ex., Paypal support needed', 'leyka');?>" class="regular-text">
-                <div id="feedback-topic-error" style="display: none;"></div>
-            </fieldset>
-			<fieldset class="leyka-ff-field">
-                <label for="feedback-name"><?php _e("Your name (we'll use it to address you only):", 'leyka');?></label>
-                <input id="feedback-name" name="name" placeholder="<?php _e('For ex., Leo', 'leyka');?>" value="<?php echo $user->display_name;?>" class="regular-text">
-                <div id="feedback-name-error" style="display: none;"></div>
-            </fieldset>
-			<fieldset class="leyka-ff-field">
-                <label for="feedback-email"><?php _e('Your email:', 'leyka');?></label>
-                <input id="feedback-email" name="email" placeholder="<?php _e('your@mailbox.com', 'leyka');?>" value="<?php echo $user->user_email;?>" class="regular-text">
-                <div id="feedback-email-error" style="display: none;"></div>
-            </fieldset>
-			<fieldset class="leyka-ff-field">
-                <label for="feedback-text"><?php _e('Your message:', 'leyka');?></label>
-                <textarea id="feedback-text" name="text" class="regular-text"></textarea>
-                <div id="feedback-text-error" style="display: none;" ></div>
-			</fieldset>	
-            <fieldset class="leyka-ff-field leyka-submit">
-                <input type="hidden" id="nonce" value="<?php echo wp_create_nonce('leyka_feedback_sending');?>">
-                <input type="submit" class="button-primary" value="<?php _e('Submit');?>">
-			</fieldset>
-                <div id="message-ok" class="" style="display: none;">
-                    <?php _e('<strong>Thank you!</strong> Your message sended successfully. We will answer it soon - please await our response on the email you entered.', 'leyka');?>
-                </div>
-                <div id="message-error" class="" style="display: none;">
-                    <?php _e("Sorry, but the message can't be sended. Please check your mail server settings.", 'leyka');?>
-                </div>
+                <fieldset class="leyka-ff-field">
+                    <label for="feedback-topic"><?php _e('Message topic:', 'leyka');?></label>
+                    <input id="feedback-topic" name="topic" placeholder="<?php _e('For ex., Paypal support needed', 'leyka');?>" class="regular-text">
+                    <div id="feedback-topic-error" class="leyka-ff-field-error" style="display: none;"></div>
+                </fieldset>
+                <fieldset class="leyka-ff-field">
+                    <label for="feedback-name"><?php _e("Your name (we'll use it to address you only):", 'leyka');?></label>
+                    <input id="feedback-name" name="name" placeholder="<?php _e('For ex., Leo', 'leyka');?>" value="<?php echo $user->display_name;?>" class="regular-text">
+                    <div id="feedback-name-error" class="leyka-ff-field-error" style="display: none;"></div>
+                </fieldset>
+                <fieldset class="leyka-ff-field">
+                    <label for="feedback-email"><?php _e('Your email:', 'leyka');?></label>
+                    <input id="feedback-email" name="email" placeholder="<?php _e('your@mailbox.com', 'leyka');?>" value="<?php echo $user->user_email;?>" class="regular-text">
+                    <div id="feedback-email-error" class="leyka-ff-field-error" style="display: none;"></div>
+                </fieldset>
+                <fieldset class="leyka-ff-field">
+                    <label for="feedback-text"><?php _e('Your message:', 'leyka');?></label>
+                    <textarea id="feedback-text" name="text" class="regular-text"></textarea>
+                    <div id="feedback-text-error" class="leyka-ff-field-error" style="display: none;" ></div>
+                </fieldset>
+                <fieldset class="leyka-ff-field leyka-submit">
+                    <input type="hidden" id="nonce" value="<?php echo wp_create_nonce('leyka_feedback_sending');?>">
+                    <input type="submit" class="button-primary" value="<?php _e('Submit');?>">
+                </fieldset>
             </form>
+            <div id="message-ok" class="leyka-ff-msg ok" style="display: none;">
+                <p><?php _e('<strong>Thank you!</strong> Your message sended successfully. We will answer it soon - please await our response on the email you entered.', 'leyka');?></p>
+            </div>
+            <div id="message-error" class="leyka-ff-msg wrong" style="display: none;">
+                <p><?php _e("Sorry, but the message can't be sended. Please check your mail server settings.", 'leyka');?></p>
+            </div>
         </div>
 		
 	</div>

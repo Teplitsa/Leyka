@@ -113,9 +113,9 @@ jQuery(document).ready(function($){
 
     /** Feedback form */
     var $form = $('#feedback'),
-        $loader = $form.find('#feedback-loader'),
-        $message_ok = $form.find('#message-ok'),
-        $message_error = $form.find('#message-error');
+        $loader = $('#feedback-loader'),
+        $message_ok = $('#message-ok'),
+        $message_error = $('#message-error');
 
     $form.submit(function(e){
 
@@ -124,10 +124,7 @@ jQuery(document).ready(function($){
         if( !validate_feedback_form() )
             return false;
 
-        $message_ok.attr('class', '').hide();
-        $message_error.attr('class', '').hide();
-
-        $form.find(':input').attr('disabled', 'disabled');
+        $form.hide();
         $loader.show();
 
         $.post(leyka.ajaxurl, {
@@ -140,7 +137,6 @@ jQuery(document).ready(function($){
         }, function(response){
 
             $loader.hide();
-            $form.find(':input').removeAttr('disabled');
 
             if(response && response == 0)
                 $message_ok.fadeIn(100);

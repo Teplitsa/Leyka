@@ -15,7 +15,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 _For English description scroll down, please._
 
-«Онлайн-Лейка» — это плагин для краудфандинга, фандрайзинга и сбора пожертвований на вашем сайте. Поддерживаются платежи банковскими картами Visa и MasterCard через **Chronopay и RBK money**, также подключаются **WebMoney, Яндекс.Деньги (YandexMoney)** и традиционные квитанции.
+«Онлайн-Лейка» — это плагин для краудфандинга, фандрайзинга и сбора пожертвований на вашем сайте. Поддерживаются платежи банковскими картами Visa и MasterCard через **Chronopay и RBK money**, также подключаются **WebMoney, Яндекс.Деньги (Yandex.Money), ROBOKASSA, SMS-платежи через стороннего провайдера** и традиционные квитанции.
 
 Плагин разработан и поддерживается [Теплицей социальных технологий](//te-st.ru/).
 
@@ -35,13 +35,18 @@ _For English description scroll down, please._
 
 **Основные функции**
 
-* Создавайте различные виды пожертвований для различных благотворительных кампаний и проектов.
-* Отслеживайте пожертвования с помощью извещений на эл. почту.
-* Следите за статистикой пожертвований.
-* Собирайте платежи в разных валютах (поддерживаются рубли, доллары и евро) и с помощью разных платежных операторов.
-* Редактируйте текст вашей благодарности донорам.
-* При необходимости, измените текст договора оферты.
-* Поддерживаемые платёжные системы: Яндекс.деньги (протоколы ЕПР и p2p), Chronopay, RBK Money, распечатка банковских квитанций, отображение статического текста.
+* Широкий набор платежных систем и опций (включая, Яндекс.Деньги, Chronopay, RBK Money, ROBOKASSA и печать банковских квитанций)
+* Подходит для физических и юридических лиц
+* Автоматическая рассылка email-сообщений жертвователям
+* Поддержка нескольких языков
+* Поддержка нескольких валют
+* Шаблоны кампаний и визуализация прогресса кампаний 
+* Виджеты и шорткоды для WP
+* Юридически корректные шаблоны писем и оферты
+* Возможность встраивать модули кампаний для сбора пожертвований через iframe
+* История платежей и готовая отчетность на сайте
+* Интеграция  с Google Analytics «из коробки»
+* Частично соответствует стандартам доступности WCAG 2.0
 
 Подробная инструкция по настройке плагина доступна на официальном сайте в разделе [Инструкция](https://leyka.te-st.ru/instruction/). Она также содержит видео-уроки:
 * [настройка и базовые функции плагина](https://leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/)
@@ -59,17 +64,10 @@ _For English description scroll down, please._
 
 Если у вас есть вопросы по работе плагина, то обратитесь к нам за поддержкой на [GitHub](https://github.com/Teplitsa/Leyka/issues/).
 
-**ВНИМАНИЕ!**
-
-В версии 2.0 были внесены критические изменения, несовместимые с кодом и данными любой более ранней версии.
-**Если вы активно использовали Лейку версии 1.2  или ранее, не выполняйте это обновление!** 
-Разработчики плагина не несут ответственности за результат этого действия. 
-Подробнее читайте на [сайте плагина](http://leyka.te-st.ru/old-version/).
-
 
 **IN ENGLISH**
 
-Leyka is a plugin for fundraising and donations collection via WordPress website. Supported payment methods includes bank cards Visa and MasterCard through **Chronopay and RBK money** systems, also **WebMoney and Yandex.Money** supported. You can also use a traditional bank payment orders (quittances).
+Leyka is a plugin for fundraising and donations collection via WordPress website. Supported payment methods includes bank cards Visa and MasterCard through **Chronopay and RBK money** systems, also **WebMoney, ROBOKASSA and Yandex.Money** supported. You can also use a traditional bank payment orders (quittances).
 
 This plugin developed and supported by [Teplitsa of social technologies](//te-st.ru/).
 
@@ -85,15 +83,20 @@ The plugin is designed for any website that wants to collect money online - NGOs
 
 **Warning:** you will need to sign a contract with some payment systems, like Yandex.Money or RBK, to collect donations through them. 
 
-**Main features**
-
-* Create a different kinds of donations for different charity campaigns and projects.
-* Be aware of your donations with email notification system.
-* Look through donation statistics.
-* Collect your donations in different currency (USD, euro and russian roubles are supported) and through different payment operators.
-* Edit a text of your thanks to the donors.
-* Change a terms of agreement text, if need be.
-* Supporting payment systems are: Yandex.Money (all protocols for juristic and physical persons included), Chronopay, RBK Money, bank orders printout, static info display.
+**Core features**
+ 		
+* Wide range of payment systems and options
+* Suitable for private persons and NGOs
+* Automatic e-mails to supporters
+* Multiple language support
+* Support for multiple currencies
+* Campaign templates and visualization of the progress bars
+* Widgets and shortcodes for WP
+* Legally correct templates and oferta text
+* Ability to embed campaigns via iframe
+* Payment history and statistics on the website
+* Integration with Google Analytics out of the box
+* Partially complies with accessibility standards WCAG 2.0
 
 The plugin manual is avaliable at [official website](//leyka.te-st.ru/instruction/). Intallation and usage are illustrated with screencasts:
 
@@ -138,18 +141,21 @@ PHP at least 5.3 is required.
 
 == Screenshots ==
 
-1. Пример виджета "карточка кампании"
-2. Пример виджета "список пожертвований"
-3. Пример индикатора достижения целевой суммы кампании
-4. Начальная страница плагина (консоль)
-5. Страница списка поступивших пожертвований
-6. Настройки платёжных систем
-7. Настройки email-уведомлений
-8. Пример формы пожертвования на сайте
-9. Пример квитанции для оплаты через банк
-
+1.  Пример виджета "карточка кампании"
+2.  Пример виджета "список пожертвований"
+3.  Пример индикатора достижения целевой суммы кампании
+4.  Начальная страница плагина (консоль)
+5.  Страница списка поступивших пожертвований
+6.  Настройки платёжных систем
+7.  Настройки email-уведомлений
+8.  Пример формы пожертвования на сайте
+9.  Пример квитанции для оплаты через банк
+10. События Google Analytics
 
 == Changelog ==
+
+= 2.2.4 =
+ * New:
 
 = 2.2.3 =
  * New: Robokassa gateway support.
