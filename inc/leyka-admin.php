@@ -331,6 +331,7 @@ class Leyka_Admin_Setup {
 			<li><a href="https://leyka.te-st.ru" target='_blank'><?php _e('Plugin website', 'leyka');?></a></li>
 			<li><a href="https://leyka.te-st.ru/instruction/" target='_blank'><?php _e('Documentation', 'leyka');?></a></li>
 			<li><a href="<?php echo admin_url('admin.php?page=leyka_feedback');?>"><?php _e('Ask a question', 'leyka');?></a></li>
+			<li><a href="https://github.com/Teplitsa/Leyka/issues/new" target='_blank'><?php _e('Create issue at GitHub', 'leyka');?></a></li>
 		</ul>
 		</div>
 	<?php	
