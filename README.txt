@@ -154,6 +154,9 @@ PHP at least 5.3 is required.
 
 == Changelog ==
 
+= 2.2.4 =
+ * New:
+
 = 2.2.3 =
  * New: Robokassa gateway support.
  * New: the currencies rates manual editing and auto-refresh option.

@@ -133,10 +133,9 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 $payment_type = apply_filters('leyka_yandex_custom_payment_type', '', $pm_id);
         }
 
-        return apply_filters('leyka_yandex_custom_submission_data', array(
+        $data = array(
             'scid' => leyka_options()->opt('yandex_scid'),
             'shopId' => leyka_options()->opt('yandex_shop_id'),
-            'shopArticleId' => leyka_options()->opt('yandex_shop_article_id'),
             'sum' => $donation->amount,
             'customerNumber' => $donation->donor_email,
             'orderNumber' => $donation_id,
@@ -144,8 +143,12 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             'shopSuccessURL' => leyka_get_success_page_url(),
             'shopFailURL' => leyka_get_failure_page_url(),
             'cps_email' => $donation->donor_email,
-//            '' => ,
-        ), $pm_id);
+            //            '' => ,
+        );
+        if(leyka_options()->opt('yandex_shop_article_id'))
+            $data['shopArticleId'] = leyka_options()->opt('yandex_shop_article_id');
+
+        return apply_filters('leyka_yandex_custom_submission_data', $data, $pm_id);
     }
 
     public function log_gateway_fields($donation_id) {

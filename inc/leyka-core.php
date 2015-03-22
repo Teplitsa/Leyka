@@ -436,8 +436,8 @@ class Leyka {
     function register_post_types(){
 
         /** Initialize Leyka post types and their settings: */
-        Leyka_Campaign_Management::get_instance();
-        Leyka_Donation_Management::get_instance();
+//        Leyka_Campaign_Management::get_instance();
+//        Leyka_Donation_Management::get_instance();
 
         /** Donation CPT: */
         $args = array(
@@ -473,7 +473,7 @@ class Leyka {
         register_post_type(Leyka_Donation_Management::$post_type, $args);
 
         /** Donation editing messages */
-        add_filter('post_updated_messages', array('Leyka_Donation_Management', 'set_admin_messages'));
+        add_filter('post_updated_messages', array(Leyka_Donation_Management::get_instance(), 'set_admin_messages'));
 
         /** Campaign CPT: */
         $args = array(
@@ -509,7 +509,7 @@ class Leyka {
         register_post_type(Leyka_Campaign_Management::$post_type, $args);
 
         /** Campaign editing messages */
-        add_filter('post_updated_messages', array('Leyka_Campaign_Management', 'set_admin_messages'));
+        add_filter('post_updated_messages', array(Leyka_Campaign_Management::get_instance(), 'set_admin_messages'));
 
         register_post_status('submitted', array(
             'label'                     => _x('Submitted', '«Submitted» donation status', 'leyka'),
