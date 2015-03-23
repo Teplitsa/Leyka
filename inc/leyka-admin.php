@@ -17,8 +17,7 @@ class Leyka_Admin_Setup {
 		
 		add_action('admin_enqueue_scripts', array($this, 'enqueue_cssjs')); // Load admin style sheet and JavaScript
 
-        add_filter('custom_menu_order', array($this, 'reorder_submenu')); // Reorder Leyka submenu
-
+        /** Remove needless metaboxes */
         add_action('admin_init', array($this, 'remove_seo')); // Remove needless columns and metaboxes
 
         add_action('wp_ajax_leyka_send_feedback', array($this, 'ajax_send_feedback')); // Ajax
@@ -130,8 +129,6 @@ class Leyka_Admin_Setup {
 		
 		return $links;
 	}
-
-
 
 	/** Displaying dashboard **/
 	public function dashboard_screen(){
@@ -307,7 +304,7 @@ class Leyka_Admin_Setup {
 
 	/** Displaying settings **/
 	public function settings_screen() {
-
+		
 		/* Capability test */
 		if( !current_user_can('leyka_manage_options') )
             wp_die(__('You do not have permissions to access this page.', 'leyka'));
@@ -476,6 +473,17 @@ class Leyka_Admin_Setup {
         }
         add_filter('wp_mail_content_type', 'set_html_content_type');
 
+        $res = true;
+        foreach((array)explode(',', LEYKA_SUPPORT_EMAIL) as $email) {
+
+            $email = trim($email);
+            if( !$email || !filter_var($email, FILTER_VALIDATE_EMAIL) )
+                continue;
+
+            $res &= wp_mail(
+                $email, __('Leyka: new feedback incoming', 'leyka'),
+                sprintf(
+                    "Добрый день!<br><br>
         $res = true;
         foreach((array)explode(',', LEYKA_SUPPORT_EMAIL) as $email) {
 

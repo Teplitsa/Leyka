@@ -72,7 +72,6 @@ if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.3.0', '<') ) {
     die();
 }
 
-
 // Custom activation errors handler:
 //function leyka_handle_possible_errors($err_number, $err_str, $err_file, $err_line) {
 //
