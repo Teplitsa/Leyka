@@ -484,17 +484,6 @@ class Leyka_Admin_Setup {
                 $email, __('Leyka: new feedback incoming', 'leyka'),
                 sprintf(
                     "Добрый день!<br><br>
-        $res = true;
-        foreach((array)explode(',', LEYKA_SUPPORT_EMAIL) as $email) {
-
-            $email = trim($email);
-            if( !$email || !filter_var($email, FILTER_VALIDATE_EMAIL) )
-                continue;
-
-            $res &= wp_mail(
-                $email, __('Leyka: new feedback incoming', 'leyka'),
-                sprintf(
-                    "Добрый день!<br><br>
                 Поступила новая обратная связь от пользователя Лейки.<br><br>
                 <strong>Тема:</strong> %s<br>
                 <strong>Имя пользователя:</strong> %s<br>
