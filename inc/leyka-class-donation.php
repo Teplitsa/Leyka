@@ -20,7 +20,7 @@ class Leyka_Donation_Management {
         add_action('restrict_manage_posts', array($this, 'manage_filters'));
         add_action('pre_get_posts', array($this, 'do_filtering'));
 
-        add_action('leyka_donation_metaboxes', array($this, 'set_metaboxes'));	
+        add_action('add_meta_boxes', array($this, 'set_metaboxes'));
         add_action('save_post', array($this, 'save_donation_data'));
 
 		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manage_columns_names'));
@@ -73,13 +73,15 @@ class Leyka_Donation_Management {
 
         if( !$current_screen || !is_object($current_screen) || $current_screen->post_type != self::$post_type )
             return $actions;
-
-        $actions['edit'] = '<a href="'.get_edit_post_link($donation->ID, 1).'">'.__('Details', 'leyka').'</a>';
+		
+		if(current_user_can('edit_donation', $donation->ID)) {
+			$actions['edit'] = '<a href="'.get_edit_post_link($donation->ID, 1).'">'.__('Edit').'</a>';
+		}
+		
         unset($actions['view']);
-//            unset( $actions['trash'] );
-
+//      unset( $actions['trash'] );
         unset($actions['inline hide-if-no-js']);
-        //$actions['inline hide-if-no-js'] .= __( 'Quick&nbsp;Edit' );
+        
         return $actions;
     }
 

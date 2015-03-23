@@ -57,12 +57,12 @@ if( !defined('LEYKA_PLUGIN_DIR') )
     define('LEYKA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
 // Plugin ID:
-if( !defined('LEYKA_PLUGIN_INNER_SHORT_NAME') )
+if( !defined('LEYKA_PLUGIN_INNER_SHORT_NAME') ) // "leyka/leyka.php"
     define('LEYKA_PLUGIN_INNER_SHORT_NAME', plugin_basename(__FILE__));
 
 // Plugin support email:
 if( !defined('LEYKA_SUPPORT_EMAIL') )
-    define('LEYKA_SUPPORT_EMAIL', 'ahaenor@gmail.com' /*'support@te-st.ru'*/);
+    define('LEYKA_SUPPORT_EMAIL', 'support@te-st.ru,');
 
 // Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
 if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.3.0', '<') ) {
@@ -71,6 +71,7 @@ if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.3.0', '<') ) {
 
     die();
 }
+
 
 // Custom activation errors handler:
 //function leyka_handle_possible_errors($err_number, $err_str, $err_file, $err_line) {

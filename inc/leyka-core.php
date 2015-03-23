@@ -79,14 +79,13 @@ class Leyka {
         if( !session_id() )
             add_action('init', 'session_start', -2);
 
-        // Admin
-        if(is_admin())
+        if(is_admin() && current_user_can('leyka_manage_donations'))
             $this->admin_setup();
 
         /** Service URLs handler: */
         add_action('parse_request', function($request){
-            // Callback URLs are: some-site.org/leyka/service/{gateway_id}/{action_name}/
-            // For ex., leyka.ngo2.ru/leyka/service/yandex/check_order/
+            // Callback URLs are: some-website.org/leyka/service/{gateway_id}/{action_name}/
+            // For ex., some-website.org/leyka/service/yandex/check_order/
             $request = $_SERVER['REQUEST_URI']; //$request->request;
 
             if(stristr($request, 'leyka/service') !== FALSE) { // Leyka service URL
@@ -117,7 +116,7 @@ class Leyka {
 
         $this->apply_formatting_filters(); // Internal formatting filters
 
-        //        new Non_existing_class; /** @todo  */
+//        new Non_existing_class; /** @todo  */
 
         /** Currency rates auto refreshment: */
         if(leyka_options()->opt('auto_refresh_currency_rates')) {
@@ -242,15 +241,17 @@ class Leyka {
     }
 
     /**
-     * @todo Maybe, this method won't needed - it's work is done by filter.
      * @param Leyka_Gateway $gateway
      * @return bool
      */
     public function add_gateway(Leyka_Gateway $gateway) {
 
-        if(empty($this->_gateways[$gateway->id]))
+        if(empty($this->_gateways[$gateway->id])) {
+
             $this->_gateways[$gateway->id] = $gateway;
-        else
+            return true;
+
+        } else
             return false;
     }
 
@@ -320,6 +321,38 @@ class Leyka {
             }
         }
 
+        /** Create all roles and capabilities: */
+        $caps = array(
+            'read' => true, 'edit_#base#' => true, 'read_#base#' => true, 'delete_#base#' => true,
+            'edit_#base#s' => true, 'edit_others_#base#s' => true, 'publish_#base#s' => true,
+            'read_private_#base#s' => true, 'delete_#base#s' => true, 'delete_private_#base#s' => true,
+            'delete_published_#base#s' => true, 'delete_others_#base#s' => true,
+            'edit_private_#base#s' => true, 'edit_published_#base#s' => true,
+            'upload_files' => true, 'unfiltered_html' => true, 'leyka_manage_donations' => true,
+        );
+
+        $role = get_role('administrator');
+        foreach($caps as $cap => $true) {
+
+            $cap_donation = str_replace('#base#', 'donation', $cap);
+            $role->add_cap($cap_donation, true);
+            $caps[$cap_donation] = true;
+
+            $cap_campaign = str_replace('#base#', 'campaign', $cap);
+            $role->add_cap($cap_campaign, true);
+            $caps[$cap_campaign] = true;
+
+            if(stristr($cap, '#base#') !== false)
+                unset($caps[$cap]);
+        }
+        $role->add_cap('leyka_manage_options', true);
+
+//        remove_role('donations_manager'); // Uncomment to debug
+        remove_role('donations_administrator');
+
+        add_role('donations_manager', __('Donations Manager', 'leyka'), $caps);
+        add_role('donations_administrator', __('Donations Administrator', 'leyka'), array_merge($caps, array('leyka_manage_options' => true,)));
+
         /** Set a flag to flush permalinks (needs to be done a bit later, than this activation itself): */
         update_option('leyka_permalinks_flushed', 0);
 
@@ -377,7 +410,7 @@ class Leyka {
             'text_required' => __('This field must be filled to submit the form', 'leyka'),
             'email_required' => __('Email must be filled to submit the form', 'leyka'),
             'email_invalid' => __('You have entered an invalid email', 'leyka'),
-            //            'email_regexp' => '',
+//            'email_regexp' => '',
         ));
 
         wp_localize_script($this->_plugin_slug.'-plugin-script', 'leyka', $js_data);
@@ -402,11 +435,11 @@ class Leyka {
      */
     function register_post_types(){
 
+        /** Initialize Leyka post types and their settings: */
 //        Leyka_Campaign_Management::get_instance();
-//
 //        Leyka_Donation_Management::get_instance();
 
-        /** Donation CPT */
+        /** Donation CPT: */
         $args = array(
             'label' => __('Donations', 'leyka'),
             'labels' => array(
@@ -430,16 +463,17 @@ class Leyka {
             'show_in_menu' => 'leyka',
             'show_in_admin_bar' => false,
             'supports' => false,
-            'register_meta_box_cb' => array($this, Leyka_Donation_Management::$post_type.'_metaboxes'),
             'taxonomies' => array(),
             'has_archive' => false,
+            'capability_type' => 'donation',
+            'map_meta_cap' => true,
             'rewrite' => array('slug' => 'donation', 'with_front' => false)
         );
 
         register_post_type(Leyka_Donation_Management::$post_type, $args);
 
         /** Donation editing messages */
-        add_filter('post_updated_messages', array('Leyka_Donation_Management', 'set_admin_messages'));
+        add_filter('post_updated_messages', array(Leyka_Donation_Management::get_instance(), 'set_admin_messages'));
 
         /** Campaign CPT: */
         $args = array(
@@ -465,16 +499,17 @@ class Leyka {
             'show_in_menu' => 'leyka',
             'show_in_admin_bar' => true,
             'supports' => array('title', 'editor', 'thumbnail', 'excerpt'),
-            'register_meta_box_cb' => array($this, Leyka_Campaign_Management::$post_type.'_metaboxes'),
             'taxonomies' => array(),
             'has_archive' => true,
+            'capability_type' => 'campaign',
+            'map_meta_cap' => true,
             'rewrite' => array('slug' => 'campaign', 'with_front' => false)
         );
 
         register_post_type(Leyka_Campaign_Management::$post_type, $args);
 
         /** Campaign editing messages */
-        add_filter('post_updated_messages', array('Leyka_Campaign_Management', 'set_admin_messages'));
+        add_filter('post_updated_messages', array(Leyka_Campaign_Management::get_instance(), 'set_admin_messages'));
 
         register_post_status('submitted', array(
             'label'                     => _x('Submitted', '«Submitted» donation status', 'leyka'),

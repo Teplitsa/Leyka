@@ -1,10 +1,10 @@
 # [Лейка](http://leyka.te-st.ru) #
 
-![](http://te-st.ru/wp-content/uploads/2015/02/first-year.png)
+![](https://leyka.te-st.ru/wp-content/uploads/assets/first-year.png?stamp=123)
 
 **Scroll down for english description, please**
 
-Лейка - плагин для краудфандинга, фандрайзинга и сбора пожертвований на сайте для физических и юридических лиц. Поддерживаются платежи банковскими картами Visa и MasterCard через **Chronopay и RBK money**, также подключаются **WebMoney, Яндекс.Деньги (YandexMoney)** и традиционные квитанции.
+Лейка - плагин для краудфандинга, фандрайзинга и сбора пожертвований на сайте для физических и юридических лиц. Поддерживаются платежи банковскими картами Visa и MasterCard через **Chronopay и RBK money**, также подключаются **WebMoney, Яндекс.Деньги (Yandex.Money), ROBOKASSA, SMS-платежи через стороннего провайдера** и традиционные квитанции.
 
 Плагин разработан и поддерживается [Теплицей социальных технологий](//te-st.ru/).
 
@@ -17,18 +17,22 @@
 
 **Официальный сайт плагина:** [leyka.te-st.ru](//leyka.te-st.ru/)
 
-**Внимание:** для сбора пожертвований с помощью популярных платёжных систем необходимо иметь договор с этими системами. Полный список платежных систем, которые поддерживает плагин, вы можете найти в [документации](http://leyka.te-st.ru/sistemnye-trebovaniya/).
-
+**Внимание:** для сбора пожертвований с помощью платёжных систем необходимо иметь договор с ними. Полный список платежных систем, которые поддерживает плагин, вы можете найти в [документации](http://leyka.te-st.ru/sistemnye-trebovaniya/).
 
 **Основные функции**
 
-* Создавайте различные виды пожертвований для различных благотворительных кампаний и проектов.
-* Отслеживайте пожертвования с помощью извещений на эл. почту.
-* Следите за статистикой пожертвований.
-* Собирайте платежи в разных валютах (поддерживаются рубли, доллары и евро) и с помощью разных платежных операторов.
-* Редактируйте текст вашей благодарности донорам.
-* При необходимости, измените текст договора оферты.
-* Поддерживаемые платёжные системы: Яндекс.деньги (протоколы ЕПР и p2p), Chronopay, RBK Money, распечатка банковских квитанций, отображение статического текста.
+* Широкий набор платежных систем и опций (включая, Яндекс.Деньги, Chronopay, RBK Money, ROBOKASSA и печать банковских квитанций)
+* Подходит для физических и юридических лиц
+* Автоматическая рассылка email-сообщений жертвователям
+* Поддержка нескольких языков
+* Поддержка нескольких валют
+* Шаблоны кампаний и визуализация прогресса кампаний 
+* Виджеты и шорткоды для WP
+* Юридически корректные шаблоны писем и оферты
+* Возможность встраивать модули кампаний для сбора пожертвований через iframe
+* История платежей и готовая отчетность на сайте
+* Интеграция  с Google Analytics «из коробки»
+* Частично соответствует стандартам доступности WCAG 2.0
 
 
 ## Установка ##
@@ -66,18 +70,14 @@
 Платежная форма
 ![](https://leyka.te-st.ru/wp-content/uploads/assets/4-sc-payment.png?stamp=123)
 
+События Google Analytics
+![](https://leyka.te-st.ru/wp-content/uploads/assets/5-sc-analytics.png?stamp=123)
 
-**ВНИМАНИЕ!**
-
-В версии 2.0 были внесены критические изменения, несовместимые с кодом и данными любой более ранней версии.
-**Если вы активно использовали Лейку версии 1.2  или ранее, не выполняйте это обновление!** 
-Разработчики плагина не несут ответственности за результат этого действия. 
-Подробнее читайте на [сайте плагина](http://leyka.te-st.ru/old-version/).
 
 
 ## In English ##
 
-Leyka is a plugin for fundraising and donations collection via WordPress website. Supported payment methods includes bank cards Visa and MasterCard through **Chronopay and RBK money** systems, also **WebMoney and Yandex.Money** supported. You can also use a traditional bank payment orders (quittances).
+Leyka is a plugin for fundraising and donations collection via WordPress website. Supported payment methods includes bank cards Visa and MasterCard through **Chronopay and RBK money** systems, also **WebMoney, ROBOKASSA and Yandex.Money** supported. You can also use a traditional bank payment orders (quittances).
 
 This plugin developed and supported by [Teplitsa of social technologies](//te-st.ru/).
 
@@ -93,16 +93,20 @@ The plugin is designed for any website that wants to collect money online - NGOs
 
 **Warning:** you will need to sign a contract with some payment systems, like Yandex.Money or RBK, to collect donations through them. 
 
-
-**Main functions**
-
-* Create a different kinds of donations for different charity campaigns and projects.
-* Be aware of your donations with email notification system.
-* Look through donation statistics.
-* Collect your donations in different currency (USD, euro and russian roubles are supported) and through different payment operators.
-* Edit a text of your thanks to the donors.
-* Change a terms of agreement text, if need be.
-* Supporting payment systems are: Yandex.Money (all protocols for juristic and physical persons included), Chronopay, RBK Money, bank orders printout, static info display.
+**Core features**
+ 		
+* Wide range of payment systems and options 
+* Suitable for private persons and NGOs
+* Automatic e-mails to supporters
+* Multiple language support
+* Support for multiple currencies
+* Campaign templates and visualization of the progress bars
+* Widgets and shortcodes for WP
+* Legally correct templates and oferta text
+* Ability to embed campaigns via iframe
+* Payment history and statistics on the website
+* Integration with Google Analytics out of the box
+* Partially complies with accessibility standards WCAG 2.0
 
 
 ## Installation ##
