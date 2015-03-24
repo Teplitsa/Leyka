@@ -73,8 +73,11 @@ class Leyka {
         add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
 
-        // Post types
+        // Post types:
         add_action('init', array($this, 'register_post_types'), 9);
+
+        // User roles and capabilities:
+        add_action('init', array($this, 'register_user_capabilities'));
 
         if( !session_id() )
             add_action('init', 'session_start', -2);
@@ -321,38 +324,6 @@ class Leyka {
             }
         }
 
-        /** Create all roles and capabilities: */
-        $caps = array(
-            'read' => true, 'edit_#base#' => true, 'read_#base#' => true, 'delete_#base#' => true,
-            'edit_#base#s' => true, 'edit_others_#base#s' => true, 'publish_#base#s' => true,
-            'read_private_#base#s' => true, 'delete_#base#s' => true, 'delete_private_#base#s' => true,
-            'delete_published_#base#s' => true, 'delete_others_#base#s' => true,
-            'edit_private_#base#s' => true, 'edit_published_#base#s' => true,
-            'upload_files' => true, 'unfiltered_html' => true, 'leyka_manage_donations' => true,
-        );
-
-        $role = get_role('administrator');
-        foreach($caps as $cap => $true) {
-
-            $cap_donation = str_replace('#base#', 'donation', $cap);
-            $role->add_cap($cap_donation, true);
-            $caps[$cap_donation] = true;
-
-            $cap_campaign = str_replace('#base#', 'campaign', $cap);
-            $role->add_cap($cap_campaign, true);
-            $caps[$cap_campaign] = true;
-
-            if(stristr($cap, '#base#') !== false)
-                unset($caps[$cap]);
-        }
-        $role->add_cap('leyka_manage_options', true);
-
-//        remove_role('donations_manager'); // Uncomment to debug
-        remove_role('donations_administrator');
-
-        add_role('donations_manager', __('Donations Manager', 'leyka'), $caps);
-        add_role('donations_administrator', __('Donations Administrator', 'leyka'), array_merge($caps, array('leyka_manage_options' => true,)));
-
         /** Set a flag to flush permalinks (needs to be done a bit later, than this activation itself): */
         update_option('leyka_permalinks_flushed', 0);
 
@@ -429,6 +400,38 @@ class Leyka {
         Leyka_Admin_Setup::get_instance();
     }
 
+    /** Register leyka user roles and caps. */
+    function register_user_capabilities() {
+
+        /** Create all roles and capabilities: */
+        $caps = array(
+            'read' => true, 'edit_#base#' => true, 'read_#base#' => true, 'delete_#base#' => true,
+            'edit_#base#s' => true, 'edit_others_#base#s' => true, 'publish_#base#s' => true,
+            'read_private_#base#s' => true, 'delete_#base#s' => true, 'delete_private_#base#s' => true,
+            'delete_published_#base#s' => true, 'delete_others_#base#s' => true,
+            'edit_private_#base#s' => true, 'edit_published_#base#s' => true,
+            'upload_files' => true, 'unfiltered_html' => true, 'leyka_manage_donations' => true,
+        );
+
+        $role = get_role('administrator');
+        foreach($caps as $cap => $true) {
+
+            $cap_donation = str_replace('#base#', 'donation', $cap);
+            $role->add_cap($cap_donation, true);
+            $caps[$cap_donation] = true;
+
+            $cap_campaign = str_replace('#base#', 'campaign', $cap);
+            $role->add_cap($cap_campaign, true);
+            $caps[$cap_campaign] = true;
+
+            if(stristr($cap, '#base#') !== false)
+                unset($caps[$cap]);
+        }
+        $role->add_cap('leyka_manage_options', true);
+
+        add_role('donations_manager', __('Donations Manager', 'leyka'), $caps);
+        add_role('donations_administrator', __('Donations Administrator', 'leyka'), array_merge($caps, array('leyka_manage_options' => true,)));
+    }
 
     /**
      * Register leyka post types.
