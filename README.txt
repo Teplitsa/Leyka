@@ -155,7 +155,14 @@ PHP at least 5.3 is required.
 == Changelog ==
 
 = 2.2.4 =
- * New:
+ * New: Yandex.Money Gateway support widened.
+ * New: entered plugin's specific user capabilities and roles system.
+ * New: added a general user feedback page in the plugin admin menu.
+ * New: Leyka Desktop page is slightly improved.
+ * New: new plugin hooks (to add new items in the plugin's admin menu, to reorder them, etc.).
+ * Fix: presumably, fixed the bug that endlessly doubled plugin's grateful and sorrowful pages.
+ * Fix: many fixes in Robokassa, Yandex.money and another gateways.
+ * Fix: small core refactoring and fixes.
 
 = 2.2.3 =
  * New: Robokassa gateway support.

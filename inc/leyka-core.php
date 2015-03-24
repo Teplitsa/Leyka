@@ -7,7 +7,7 @@ class Leyka {
      * Plugin version, used for cache-busting of style and script file references.
      * @var string
      */
-    private $_version = LEYKA_VERSION;
+//    private $_version = LEYKA_VERSION;
 
     /**
      * Unique identifier for your plugin.
@@ -156,7 +156,7 @@ class Leyka {
 
     public function __get($param) {
         switch($param) {
-            case 'version': return $this->_version;
+            case 'version': return LEYKA_VERSION;
             case 'plugin_slug': return $this->_plugin_slug;
             case 'payment_url': return $this->_payment_url;
             case 'payment_vars': return $this->_payment_vars;
@@ -380,7 +380,7 @@ class Leyka {
     /** Register and enqueue public-facing style sheet. */
     public function enqueue_styles() {
 
-        wp_enqueue_style($this->_plugin_slug.'-plugin-styles', LEYKA_PLUGIN_BASE_URL.'css/public.css', array(), $this->_version);
+        wp_enqueue_style($this->_plugin_slug.'-plugin-styles', LEYKA_PLUGIN_BASE_URL.'css/public.css', array(), LEYKA_VERSION);
     }
 
     /** Register and enqueues public-facing JavaScript files. */
@@ -389,14 +389,14 @@ class Leyka {
         wp_enqueue_script(
             $this->_plugin_slug.'-modal',
             LEYKA_PLUGIN_BASE_URL.'js/jquery.leanModal.min.js', array('jquery'),
-            $this->_version,
+            LEYKA_VERSION,
             true
         );
 
         wp_enqueue_script(
             $this->_plugin_slug.'-plugin-script',
             LEYKA_PLUGIN_BASE_URL.'js/public.js', array('jquery', $this->_plugin_slug.'-modal'),
-            $this->_version,
+            LEYKA_VERSION,
             true
         );
 
@@ -435,10 +435,6 @@ class Leyka {
      */
     function register_post_types(){
 
-        /** Initialize Leyka post types and their settings: */
-//        Leyka_Campaign_Management::get_instance();
-//        Leyka_Donation_Management::get_instance();
-
         /** Donation CPT: */
         $args = array(
             'label' => __('Donations', 'leyka'),
@@ -460,7 +456,7 @@ class Leyka {
             'public' => true,
             'show_ui' => true,
             'show_in_nav_menus' => false,
-            'show_in_menu' => 'leyka',
+            'show_in_menu' => false,
             'show_in_admin_bar' => false,
             'supports' => false,
             'taxonomies' => array(),
@@ -496,7 +492,7 @@ class Leyka {
             'publicly_queryable' => true,
             'show_ui' => true,
             'show_in_nav_menus' => true,
-            'show_in_menu' => 'leyka',
+            'show_in_menu' => false,
             'show_in_admin_bar' => true,
             'supports' => array('title', 'editor', 'thumbnail', 'excerpt'),
             'taxonomies' => array(),
