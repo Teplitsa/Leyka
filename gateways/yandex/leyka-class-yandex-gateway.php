@@ -41,6 +41,17 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
+            'yandex_shop_article_id' => array(
+                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+                'value' => '',
+                'default' => '',
+                'title' => __('Yandex ShopArticleId', 'leyka'),
+                'description' => __('Please, enter your Yandex.Money shop article ID here, if it exists. It can be found in your Yandex contract, also you can ask your Yandex.money manager for it.', 'leyka'),
+                'required' => 1,
+                'placeholder' => __('Ex., 12345', 'leyka'),
+                'list_entries' => array(), // For select, radio & checkbox fields
+                'validation_rules' => array(), // List of regexp?..
+            ),
             'yandex_test_mode' => array(
                 'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
                 'value' => '',
@@ -122,7 +133,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 $payment_type = apply_filters('leyka_yandex_custom_payment_type', '', $pm_id);
         }
 
-        return apply_filters('leyka_yandex_custom_submission_data', array(
+        $data = array(
             'scid' => leyka_options()->opt('yandex_scid'),
             'shopId' => leyka_options()->opt('yandex_shop_id'),
             'sum' => $donation->amount,
@@ -132,8 +143,12 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             'shopSuccessURL' => leyka_get_success_page_url(),
             'shopFailURL' => leyka_get_failure_page_url(),
             'cps_email' => $donation->donor_email,
-//            '' => ,
-        ), $pm_id);
+            //            '' => ,
+        );
+        if(leyka_options()->opt('yandex_shop_article_id'))
+            $data['shopArticleId'] = leyka_options()->opt('yandex_shop_article_id');
+
+        return apply_filters('leyka_yandex_custom_submission_data', $data, $pm_id);
     }
 
     public function log_gateway_fields($donation_id) {
@@ -149,14 +164,14 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         if($is_error)
             die('<?xml version="1.0" encoding="UTF-8"?>
 <'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'"
-code="1000" invoiceId="'.(int)$_POST['invoiceId'].'"
+code="1000" invoiceId="'.$_POST['invoiceId'].'"
 shopId="'.leyka_options()->opt('yandex_shop_id').'"
 message="'.$message.'"
 techMessage="'.$tech_message.'"/>');
 
         die('<?xml version="1.0" encoding="UTF-8"?>
 <'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'"
-code="0" invoiceId="'.(int)$_POST['invoiceId'].'"
+code="0" invoiceId="'.$_POST['invoiceId'].'"
 shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
     }
 

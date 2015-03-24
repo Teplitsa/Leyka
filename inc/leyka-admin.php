@@ -8,26 +8,24 @@ class Leyka_Admin_Setup {
 
 	private static $instance = null;
 
-	private $_options_capability = 'manage_options';
+//	private $_options_capability = 'manage_options';
 //	private $_manager_role = 'editor';
 
 	private function __construct() {
-		// Add the options page and menu item.
-		add_action('admin_menu', array($this, 'admin_menu_setup'), 9);
-			
-		// Load admin style sheet and JavaScript.
-		add_action('admin_enqueue_scripts', array($this, 'enqueue_cssjs'));
 
-        /** Reorder Leyka submenu */
-        add_filter('custom_menu_order', array($this, 'reorder_submenu'));
+		add_action('admin_menu', array($this, 'admin_menu_setup'), 9); // Add the options page and menu item
+		
+		add_action('admin_enqueue_scripts', array($this, 'enqueue_cssjs')); // Load admin style sheet and JavaScript
 
-        add_action('admin_init', function(){
+        /** Remove needless metaboxes */
+        add_action('admin_init', array($this, 'remove_seo')); // Remove needless columns and metaboxes
 
-            if( !empty($GLOBALS['wpseo_metabox']) )
-                remove_action('restrict_manage_posts', array($GLOBALS['wpseo_metabox'], 'posts_filter_dropdown'));
-        });
+        add_action('wp_ajax_leyka_send_feedback', array($this, 'ajax_send_feedback')); // Ajax
 
         add_filter('plugin_row_meta', array($this, 'set_plugin_meta'), 10, 2);
+
+        // Link in plugin actions:
+		add_filter('plugin_action_links_'.LEYKA_PLUGIN_INNER_SHORT_NAME, array($this, 'add_settings_link'));
     }
 
     public function set_plugin_meta($links, $file) {
@@ -39,51 +37,21 @@ class Leyka_Admin_Setup {
         return $links;
     }
 
-    public function reorder_submenu($menu_order) {
+    function remove_seo() {
 
-        global $submenu;
+        // WordPress SEO by Yoast's metabox on donation editing page:
+        if( !empty($GLOBALS['wpseo_metabox']) ) {
 
-        if(current_user_can($this->_options_capability) && !empty($submenu['leyka'])) {
+            $seo_titles_options = get_option('wpseo_titles');
+            $seo_titles_options['hideeditbox-leyka_donation'] = true;
 
-            function leyka_reorder_plugin_submenu($a, $b) {
-
-                if($a[0] == __('Dashboard', 'leyka'))
-                    return -1;
-                if($b[0] == __('Dashboard', 'leyka'))
-                    return 1;
-
-                if($a[0] == __('Settings', 'leyka'))
-                    return 1;
-                if($b[0] == __('Settings', 'leyka'))
-                    return -1;
-
-                if($a[0] == __('Donations', 'leyka'))
-                    return 1;
-                if($b[0] == __('Donations', 'leyka'))
-                    return $a[0] == __('Dashboard', 'leyka') ? -1 : 1;
-
-                if($a[0] == __('New campaign', 'leyka'))
-                    return $b[0] == __('Settings', 'leyka') ? -1 : 1;
-
-                return 0;
-            }
-            @usort($submenu['leyka'], 'leyka_reorder_plugin_submenu');
-
-        } elseif( !empty($submenu['leyka']) ) {
-
-            /** Remove Settings from plugin submenu: */
-            function leyka_reorder_plugin_submenu($menu_item){
-                return $menu_item[0] != __('Settings', 'leyka');
-            }
-            $submenu['leyka'] = array_filter($submenu['leyka'], 'leyka_reorder_plugin_submenu');
+            update_option('wpseo_titles', $seo_titles_options);
         }
-
-        return $menu_order;
     }
 
     /*
     function display_custom_quickedit_donation($column_name, $post_type) {
-        if($post_type != 'leyka_donation')
+        if($post_type != Leyka_Donation_Management::$post_type)
             return;
 
         static $printNonce = TRUE;
@@ -123,24 +91,50 @@ class Leyka_Admin_Setup {
 	}
 
 	/** Admin Menu **/
-	public function admin_menu_setup() {
+    public function admin_menu_setup() {
 
-		// Leyka menu root
-		add_menu_page(__('Leyka Dashboard', 'leyka'), __('Leyka', 'leyka'), $this->_options_capability, 'leyka', array($this, 'dashboard_screen'));
+        // Leyka menu root:
+        add_menu_page(__('Leyka Dashboard', 'leyka'), __('Leyka', 'leyka'), 'leyka_manage_donations', 'leyka', array($this, 'dashboard_screen'));
 
-		// Dashboard
-		add_submenu_page('leyka', __('Leyka Dashboard', 'leyka'), __('Dashboard', 'leyka'), $this->_options_capability, 'leyka', array($this, 'dashboard_screen'));
-		
-		// Settings
-		add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), $this->_options_capability, 'leyka_settings', array($this, 'settings_screen'));
-				
+        // Dashboard:
+        add_submenu_page('leyka', __('Leyka Dashboard', 'leyka'), __('Dashboard', 'leyka'), 'leyka_manage_donations', 'leyka', array($this, 'dashboard_screen'));
+
+        // Donations:
+        add_submenu_page('leyka', __('Donations', 'leyka'), __('Donations', 'leyka'), 'leyka_manage_donations', 'edit.php?post_type='.Leyka_Donation_Management::$post_type);
+
+        // Campigns:
+        add_submenu_page('leyka', __('All Campaigns', 'leyka'), __('All Campaigns', 'leyka'), 'leyka_manage_donations', 'edit.php?post_type='.Leyka_Campaign_Management::$post_type);
+
+        // New campaign:
+        add_submenu_page('leyka', __('New campaign', 'leyka'), __('New campaign', 'leyka'), 'leyka_manage_donations', 'post-new.php?post_type='.Leyka_Campaign_Management::$post_type);
+
+        // Settings:
+        add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), 'leyka_manage_options', 'leyka_settings', array($this, 'settings_screen'));
+
+        // Feedback:
+        add_submenu_page('leyka', __('Connect to us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedback_screen'));
+
+        do_action('leyka_admin_menu_setup');
+
+        global $submenu;
+
+        if( !empty($submenu['leyka']) )
+            $submenu['leyka'] = apply_filters('leyka_admin_menu_order', $submenu['leyka']);
     }
+	
+	/** Settings link in plugin list table **/
+	public function add_settings_link( $links ) {
+		$settings_link = '<a href="'.admin_url('admin.php?page=leyka_settings').'">' . __( 'Settings', 'leyka' ) . '</a>';
+		array_push( $links, $settings_link );
+		
+		return $links;
+	}
 
 	/** Displaying dashboard **/
 	public function dashboard_screen(){
 
-//		if( !leyka_current_user_has_role($this->_manager_role) )
-//            wp_die(__('Sorry, but you do not have permissions to access this page.', 'leyka'));
+		if( !current_user_can('leyka_manage_donations') )
+            wp_die(__('Sorry, but you do not have permissions to access this page.', 'leyka'));
 
 		do_action('leyka_dashboard_actions'); // Collapsible
 
@@ -154,8 +148,7 @@ class Leyka_Admin_Setup {
 
             <div class="metabox-holder" id="leyka-widgets">
             <div class="postbox-container" id="postbox-container-1">
-                <?php //var_dump(get_current_screen());
-                do_meta_boxes('toplevel_page_leyka', 'normal', 'leyka_status'); ?>
+                <?php do_meta_boxes('toplevel_page_leyka', 'normal', 'leyka_status');?>
             </div>
             <div class="postbox-container" id="postbox-container-2">
                 <?php $this->dashboard_sidebar_screen();?>
@@ -221,6 +214,7 @@ class Leyka_Admin_Setup {
                 <th class="title"><?php _e('Purpose', 'leyka');?></th>
                 <th class="donor"><?php _e('Donor', 'leyka');?></th>
                 <th class="amount"><?php _e('Amount', 'leyka');?></th>
+                <th class="status"><?php _e('Status', 'leyka');?></th>
                 <th class="details">&nbsp;</th>
 			</tr>
 		</thead>
@@ -238,6 +232,7 @@ class Leyka_Admin_Setup {
                     .($donation->donor_email ? ' ('.$donation->donor_email.')' : '');?>
             </td>
 			<td><?php echo $donation->amount.' '.$donation->currency_label;?></td>
+			<td><?php echo $donation->status_label;?></td>
 			<td><a href="<?php echo esc_url($url); ?>"><?php _e('Details', 'leyka'); ?></a></td>
 		</tr>
 		<?php }?>
@@ -298,19 +293,20 @@ class Leyka_Admin_Setup {
 		<p><?php _e('Developed by <a href="http://te-st.ru/" target="_blank">Teplitsa of social technologies</a>', 'leyka');?></p>
 		<p class="te-st"><img src="http://leyka.te-st.ru/wp-content/uploads/assets/tst-logo.svg" onerror="this.onerror=null;this.src='http://leyka.te-st.ru/wp-content/uploads/assets/tst-logo.png'"></p>
 		<ul class="leyka-ref-links">
-			<li><a href="http://leyka.te-st.ru" target='_blank'><?php _e('Plugin website', 'leyka');?></a></li>
-			<li><a href="http://leyka.te-st.ru/docs/" target='_blank'><?php _e('Documentation', 'leyka');?></a></li>
-			<li><a href="http://leyka.te-st.ru/faq/" target='_blank'><?php _e('Ask a question', 'leyka');?></a></li>
+			<li><a href="https://leyka.te-st.ru" target='_blank'><?php _e('Plugin website', 'leyka');?></a></li>
+			<li><a href="https://leyka.te-st.ru/instruction/" target='_blank'><?php _e('Documentation', 'leyka');?></a></li>
+			<li><a href="<?php echo admin_url('admin.php?page=leyka_feedback');?>"><?php _e('Ask a question', 'leyka');?></a></li>
+			<li><a href="https://github.com/Teplitsa/Leyka/issues/new" target='_blank'><?php _e('Create issue at GitHub', 'leyka');?></a></li>
 		</ul>
 		</div>
 	<?php	
 	}
-	
+
 	/** Displaying settings **/
 	public function settings_screen() {
 		
 		/* Capability test */
-		if( !current_user_can($this->_options_capability) )
+		if( !current_user_can('leyka_manage_options') )
             wp_die(__('You do not have permissions to access this page.', 'leyka'));
 
         $current_stage = $this->get_current_settings_tab();
@@ -323,8 +319,8 @@ class Leyka_Admin_Setup {
 		do_action('leyka_pre_settings_actions');
 
 		$page_slug = 'leyka_settings';
-		$page_title = __('Leyka Settings', 'leyka');
-		
+//		$page_title = __('Leyka Settings', 'leyka');
+
 		$faction = add_query_arg('stage', $current_stage, "admin.php?page={$page_slug}");
 
         /** Process settings change */
@@ -398,6 +394,125 @@ class Leyka_Admin_Setup {
 		return $out;
 	}
 
+    /** Displaying feedback **/
+    public function feedback_screen(){
+
+        if( !current_user_can('leyka_manage_donations') )
+            wp_die(__('You do not have permissions to access this page.', 'leyka'));
+
+        $user = wp_get_current_user();?>
+		
+	<div class="wrap">
+		<h2><?php _e('Send us a feedback', 'leyka');?></h2>
+			
+		<div class="leyka-feedback-description">
+			<p><?php _e('Found a bug? Need a feature?', 'leyka'); ?></p>
+			<p><?php _e('Please, <a href="https://github.com/Teplitsa/Leyka/issues/new">create an issue on Github</a> or send us a message with the following form', 'leyka'); ?></p>
+		</div>    
+        
+        <div class="leyka-feedback-form">
+            <img id="feedback-loader" style="display: none;" src="<?php echo LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif';?>" />
+            <form id="feedback" action="#" method="post">
+                <fieldset class="leyka-ff-field">
+                    <label for="feedback-topic"><?php _e('Message topic:', 'leyka');?></label>
+                    <input id="feedback-topic" name="topic" placeholder="<?php _e('For ex., Paypal support needed', 'leyka');?>" class="regular-text">
+                    <div id="feedback-topic-error" class="leyka-ff-field-error" style="display: none;"></div>
+                </fieldset>
+                <fieldset class="leyka-ff-field">
+                    <label for="feedback-name"><?php _e("Your name (we'll use it to address you only):", 'leyka');?></label>
+                    <input id="feedback-name" name="name" placeholder="<?php _e('For ex., Leo', 'leyka');?>" value="<?php echo $user->display_name;?>" class="regular-text">
+                    <div id="feedback-name-error" class="leyka-ff-field-error" style="display: none;"></div>
+                </fieldset>
+                <fieldset class="leyka-ff-field">
+                    <label for="feedback-email"><?php _e('Your email:', 'leyka');?></label>
+                    <input id="feedback-email" name="email" placeholder="<?php _e('your@mailbox.com', 'leyka');?>" value="<?php echo $user->user_email;?>" class="regular-text">
+                    <div id="feedback-email-error" class="leyka-ff-field-error" style="display: none;"></div>
+                </fieldset>
+                <fieldset class="leyka-ff-field">
+                    <label for="feedback-text"><?php _e('Your message:', 'leyka');?></label>
+                    <textarea id="feedback-text" name="text" class="regular-text"></textarea>
+                    <div id="feedback-text-error" class="leyka-ff-field-error" style="display: none;" ></div>
+                </fieldset>
+                <fieldset class="leyka-ff-field leyka-submit">
+                    <input type="hidden" id="nonce" value="<?php echo wp_create_nonce('leyka_feedback_sending');?>">
+                    <input type="submit" class="button-primary" value="<?php _e('Submit');?>">
+                </fieldset>
+            </form>
+            <div id="message-ok" class="leyka-ff-msg ok" style="display: none;">
+                <p><?php _e('<strong>Thank you!</strong> Your message sended successfully. We will answer it soon - please await our response on the email you entered.', 'leyka');?></p>
+            </div>
+            <div id="message-error" class="leyka-ff-msg wrong" style="display: none;">
+                <p><?php _e("Sorry, but the message can't be sended. Please check your mail server settings.", 'leyka');?></p>
+            </div>
+        </div>
+		
+	</div>
+    <?php }
+
+    /** Feedback page processing */
+    function ajax_send_feedback() {
+
+        if( !wp_verify_nonce($_POST['nonce'], 'leyka_feedback_sending') ) {
+            die('1');
+        }
+
+        $_POST['topic'] = htmlentities(trim($_POST['topic']), ENT_COMPAT, 'UTF-8');
+        $_POST['name'] = htmlentities(trim($_POST['name']), ENT_COMPAT, 'UTF-8');
+        $_POST['email'] = htmlentities(trim($_POST['email']), ENT_COMPAT, 'UTF-8');
+        $_POST['text'] = htmlentities(trim($_POST['text']), ENT_COMPAT, 'UTF-8');
+
+        if(
+            !$_POST['name'] || !$_POST['email'] || !$_POST['text'] ||
+            !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)
+        ) {
+            die('2');
+        }
+
+        if( !function_exists('set_html_content_type') ) {
+            function set_html_content_type(){ return 'text/html'; }
+        }
+        add_filter('wp_mail_content_type', 'set_html_content_type');
+
+        $res = true;
+        foreach((array)explode(',', LEYKA_SUPPORT_EMAIL) as $email) {
+
+            $email = trim($email);
+            if( !$email || !filter_var($email, FILTER_VALIDATE_EMAIL) )
+                continue;
+
+            $res &= wp_mail(
+                $email, __('Leyka: new feedback incoming', 'leyka'),
+                sprintf(
+                    "Добрый день!<br><br>
+                Поступила новая обратная связь от пользователя Лейки.<br><br>
+                <strong>Тема:</strong> %s<br>
+                <strong>Имя пользователя:</strong> %s<br>
+                <strong>Почта пользователя:</strong> %s<br>
+                <strong>Текст сообщения:</strong><br>%s<br><br>
+                ---------------- Технические данные сайта пользователя --------------<br><br>
+                <strong>Cайт пользователя:</strong> <a href='%s'>%s</a> (IP: %s)<br>
+                <strong>Версия WP:</strong> %s<br>
+                <strong>Версия Лейки:</strong> %s<br>
+                <strong>Параметр admin_email:</strong> %s<br>
+                <strong>Язык:</strong> %s (кодировка: %s)<br>
+                <strong>ПО веб-сервера:</strong> %s<br>
+                <strong>Браузер пользователя:</strong> %s",
+                    $_POST['topic'], $_POST['name'], $_POST['email'], nl2br($_POST['text']),
+                    home_url(), get_bloginfo('name'), $_SERVER['SERVER_ADDR'],
+                    get_bloginfo('version'), LEYKA_VERSION, get_bloginfo('admin_email'),
+                    get_bloginfo('language'), get_bloginfo('charset'),
+                    $_SERVER['SERVER_SOFTWARE'], $_SERVER['HTTP_USER_AGENT']
+                ),
+                array('From: '.get_bloginfo('name').' <no_reply@leyka.te-st.ru>',)
+            );
+        }
+
+        // Reset content-type to avoid conflicts (http://core.trac.wordpress.org/ticket/23578):
+        remove_filter('wp_mail_content_type', 'set_html_content_type');
+
+        die($res ? '0' : '3');
+    }
+
 	/** CSS/JS **/		
 	public function enqueue_cssjs() {
 
@@ -416,11 +531,14 @@ class Leyka_Admin_Setup {
             array('jquery', 'jquery-ui-autocomplete'), LEYKA_VERSION, true
         );
 
-        wp_localize_script('leyka-admin', 'leyka', array(
+        $js_local = array(
             'ajaxurl' => admin_url('admin-ajax.php'),
             'ajax_loader_url' => LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif',
+            'field_required' => __('This field is required to be filled', 'leyka'),
+            'email_invalid' => __('You have entered an invalid email', 'leyka'),
 //            '' => __('', 'leyka'),
-        ));
+        );
+        wp_localize_script('leyka-admin', 'leyka', $js_local);
 
         // Campaign editing page:
         if(
@@ -442,7 +560,7 @@ class Leyka_Admin_Setup {
                 LEYKA_PLUGIN_BASE_URL.'js/admin-edit-campaign.js',
                 array('jquery-dataTables', 'jquery'), LEYKA_VERSION, true
             );
-            wp_localize_script('leyka-admin-edit-campaign', 'leyka_dt', array(
+            wp_localize_script('leyka-admin-edit-campaign', 'leyka_dt', $js_local + array(
                 'processing' => __('Processing...', 'leyka'),
                 'search' => __('Search:', 'leyka'),
                 'lengthMenu' => __('Show _MENU_ entries', 'leyka'),
@@ -479,10 +597,9 @@ class Leyka_Admin_Setup {
                 LEYKA_PLUGIN_BASE_URL.'js/admin-add-edit-donation.js',
                 array('jquery-ui-datepicker-locale'), LEYKA_VERSION, true
             );
-            wp_localize_script('leyka-admin-add-edit-donation', 'leyka', array(
-                'ajaxurl' => admin_url('admin-ajax.php'),
-                'ajax_loader_url' => LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif',
+            wp_localize_script('leyka-admin-add-edit-donation', 'leyka', $js_local + array(
                 'add_donation_button_text' => __('Add the donation', 'leyka'),
+                'field_required' => __('This field is required to be filled', 'leyka'),
                 'campaign_required' => __('Selecting a campaign is required', 'leyka'),
                 'email_invalid' => __('You have entered an invalid email', 'leyka'),
                 'amount_incorrect' => __('The amount must be filled with non-zero, non-negative number', 'leyka'),

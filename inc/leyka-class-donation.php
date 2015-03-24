@@ -20,7 +20,7 @@ class Leyka_Donation_Management {
         add_action('restrict_manage_posts', array($this, 'manage_filters'));
         add_action('pre_get_posts', array($this, 'do_filtering'));
 
-        add_action('leyka_donation_metaboxes', array($this, 'set_metaboxes'));	
+        add_action('add_meta_boxes', array($this, 'set_metaboxes'));
         add_action('save_post', array($this, 'save_donation_data'));
 
 		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manage_columns_names'));
@@ -37,19 +37,51 @@ class Leyka_Donation_Management {
         add_action('wp_ajax_leyka_send_donor_email', array($this, 'ajax_send_donor_email'));
 	}
 
+    public function set_admin_messages($messages) {
+
+        global $post;
+
+        $messages[self::$post_type] = array(
+            0 => '', // Unused. Messages start at index 1.
+            1 => __('Donation updated.', 'leyka'),
+            2 => __('Field updated.', 'leyka'),
+            3 => __('Field deleted.', 'leyka'),
+            4 => __('Donation updated.', 'leyka'),
+            /* translators: %s: date and time of the revision */
+            5 => isset($_GET['revision']) ?
+                sprintf(
+                    __('Donation restored to revision from %s', 'leyka'),
+                    wp_post_revision_title((int)$_GET['revision'], false)
+                ) : false,
+            6 => __('Donation published.', 'leyka'),
+            7 => __('Donation saved.', 'leyka'),
+            8 => __('Donation submitted.', 'leyka'),
+            9 => sprintf(
+                __('Donation scheduled for: <strong>%1$s</strong>.', 'leyka'),
+                // translators: Publish box date format, see http://php.net/date
+                date_i18n(__( 'M j, Y @ G:i'), strtotime($post->post_date))
+            ),
+            10 => __('Donation draft updated.', 'leyka'),
+        );
+
+        return $messages;
+    }
+
     public function row_actions($actions, $donation) {
 
         global $current_screen;
 
         if( !$current_screen || !is_object($current_screen) || $current_screen->post_type != self::$post_type )
             return $actions;
-
-        $actions['edit'] = '<a href="'.get_edit_post_link($donation->ID, 1).'">'.__('Details', 'leyka').'</a>';
+		
+		if(current_user_can('edit_donation', $donation->ID)) {
+			$actions['edit'] = '<a href="'.get_edit_post_link($donation->ID, 1).'">'.__('Edit').'</a>';
+		}
+		
         unset($actions['view']);
-//            unset( $actions['trash'] );
-
+//      unset( $actions['trash'] );
         unset($actions['inline hide-if-no-js']);
-        //$actions['inline hide-if-no-js'] .= __( 'Quick&nbsp;Edit' );
+        
         return $actions;
     }
 
@@ -102,7 +134,7 @@ class Leyka_Donation_Management {
         if(
             $pagenow == 'edit.php' &&
             isset($_GET['post_type']) &&
-            $_GET['post_type'] == 'leyka_donation' /*&&
+            $_GET['post_type'] == self::$post_type /*&&
     in_array('administrator', wp_get_current_user()->roles)*/
         ) {?>
 
@@ -164,7 +196,7 @@ class Leyka_Donation_Management {
         global $pagenow;
 
         if(
-            $pagenow == 'edit.php' && !empty($_GET['post_type']) && $_GET['post_type'] == 'leyka_donation' &&
+            $pagenow == 'edit.php' && !empty($_GET['post_type']) && $_GET['post_type'] == self::$post_type &&
             is_admin() && $query->is_main_query()
         ) {
             $meta_query = array('relation' => 'AND');
@@ -197,7 +229,7 @@ class Leyka_Donation_Management {
 
     public function new_donation_added(WP_Post $donation) {
 
-        if($donation->post_type != 'leyka_donation')
+        if($donation->post_type != Leyka_Donation_Management::$post_type)
             return;
     }
 
@@ -262,10 +294,10 @@ class Leyka_Donation_Management {
 
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-        $email_text = $donation->payment_type == 'single' ?
-            leyka_options()->opt('email_thanks_text') : leyka_options()->opt('email_recurrents_thanks_text');
-        $email_title = $donation->payment_type == 'single' ?
-            leyka_options()->opt('email_thanks_title') : leyka_options()->opt('email_recurrents_thanks_title');
+        $email_text = $donation->payment_type == 'rebill' ?
+            leyka_options()->opt('email_recurrents_thanks_text') : leyka_options()->opt('email_thanks_text');
+        $email_title = $donation->payment_type == 'rebill' ?
+            leyka_options()->opt('email_recurrents_thanks_title') : leyka_options()->opt('email_thanks_title');
 
         $res = wp_mail(
             $donor_email,
@@ -978,12 +1010,14 @@ class Leyka_Donation_Management {
     public function save_donation_data($donation_id) {
 
         // Maybe donation is inserted trough API:
-        if(empty($_POST['post_type']) || $_POST['post_type'] != 'leyka_donation')
+        if(empty($_POST['post_type']) || $_POST['post_type'] != Leyka_Donation_Management::$post_type)
             return false;
 
         // Verify that nonce is valid.
-        if(empty($_POST['_donation_edit_nonce'])
-        || !wp_verify_nonce($_POST['_donation_edit_nonce'], 'donation_status_metabox')) {
+        if(
+            empty($_POST['_donation_edit_nonce']) ||
+            !wp_verify_nonce($_POST['_donation_edit_nonce'], 'donation_status_metabox')
+        ) {
             return $donation_id;
         }
 
@@ -1008,6 +1042,15 @@ class Leyka_Donation_Management {
             $old_campaign->refresh_target_state();
             $new_campaign->refresh_target_state();
         }
+
+        // It's a new correction donation, set a title from it's campaign:
+        $campaign = new Leyka_Campaign($donation->campaign_id);
+        $donation_title = $campaign->payment_title ?
+            $campaign->payment_title :
+            ($campaign->title ? $campaign->title : sprintf(__('Donation #%s', 'leyka'), $donation_id));
+
+        if($donation->title != $donation_title)
+            $donation->title = $donation_title;
 
         if(isset($_POST['donor-name']) && $donation->donor_name != $_POST['donor-name'])
             $donation->donor_name = $_POST['donor-name'];
@@ -1037,26 +1080,21 @@ class Leyka_Donation_Management {
             }
         }
 
-        if(isset($_POST['donation_date'])) {
-//            $date = explode('_', $_POST['donation_date']);
-//            $date = (int)$date[0] - ((int)$date[1])*60;
-            if($donation->date_timestamp != strtotime($_POST['donation_date']))
-                $donation->date = $_POST['donation_date'];
+        if(isset($_POST['donation_date']) && $donation->date_timestamp != strtotime($_POST['donation_date'])) {
+            $donation->date = $_POST['donation_date'];
         }
 
-        if(isset($_POST['payment-type']) && $donation->payment_type != $_POST['payment-type']) {
-
+        if(isset($_POST['payment-type']) && $donation->payment_type != $_POST['payment-type'])
             $donation->payment_type = $_POST['payment-type'];
 
-            // It's a new correction donation, set a title from it's campaign:
-            $donation->title = $donation->campaign_payment_title;
-        }
-
+        /** @todo Refactor this one day! A mechanism for gateway-based custom donation fields */
         if(
             isset($_POST['chronopay-customer-id']) &&
             $donation->chronopay_customer_id != $_POST['chronopay-customer-id']
         )
             $donation->chronopay_customer_id = $_POST['chronopay-customer-id'];
+
+        return true;
     }
 
 	/** Helpers **/
@@ -1298,7 +1336,7 @@ class Leyka_Donation {
                 return $this->_donation_meta['status_log'];
             case 'date':
             case 'date_label': return date(get_option('date_format'), strtotime($this->_post_object->post_date));
-            case 'date_timestamp': return print_r($this, 1);//strtotime($this->_post_object->post_date);
+            case 'date_timestamp': return strtotime($this->_post_object->post_date);
             case 'date_funded':
             case 'funded_date':
                 $date_funded = $this->get_funded_date();

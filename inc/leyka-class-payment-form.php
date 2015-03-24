@@ -508,7 +508,7 @@ function leyka_print_donation_elements($content) {
 	global $post;
 
 	$autoprint = leyka_options()->opt('donation_form_mode');
-	if( !is_singular('leyka_campaign') || !$autoprint )
+	if( !is_singular(Leyka_Campaign_Management::$post_type) || !$autoprint )
 		return $content;
 	
 	$campaign = new Leyka_Campaign($post);	
@@ -635,8 +635,8 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
 function leyka_get_donation_form($echo = true) {
 
 	/** @todo Maybe, it should accept campaign ID as param? */
-	if( !is_singular('leyka_campaign') )
-		return;
+	if( !is_singular(Leyka_Campaign_Management::$post_type) )
+		return '';
 		
 	if($echo)
 		echo get_leyka_payment_form_template_html();

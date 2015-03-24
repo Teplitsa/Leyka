@@ -6,7 +6,7 @@ function leyka_render_export_button() {
     if(
         $pagenow == 'edit.php' &&
         isset($_GET['post_type']) &&
-        $_GET['post_type'] == 'leyka_donation' /*&&
+        $_GET['post_type'] == Leyka_Donation_Management::$post_type /*&&
         in_array('administrator', wp_get_current_user()->roles)*/
     ) {?>
 

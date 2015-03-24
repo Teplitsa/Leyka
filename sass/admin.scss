@@ -698,3 +698,70 @@ $working-width : 700px;
 
 .leyka-widget-table .amount {
 	width: 10%; }
+	
+// feedback form
+.leyka-feedback-form {
+	margin-top: 60px;
+	max-width: 700px;
+	
+	.leyka-ff-field {
+		margin: 30px 0;
+		label {
+			font-family: "Open Sans",sans-serif;
+			font-size: 14px;
+			display: block;
+			font-weight: bold;
+			padding-bottom: 2px;
+		}
+		
+		textarea {
+			height: 16em;
+		}
+	}
+	
+	.regular-text {
+		width: 100%;
+		background-color: #fff;
+		border: 1px solid #ddd;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.07) inset;
+		color: #333;
+		outline: 0 none;
+		@include transition(border-color 0.05s ease-in-out);
+		&:focus, &:active {
+			border-color: #5b9dd9;
+			box-shadow: 0px 0px 2px rgba(30,140,190,0.8);
+		}
+	}
+	
+	.leyka-ff-field-error {
+		border: 1px solid #dd3d36;
+		color: #dd3d36;
+		background: #fff;
+		padding: 4px 8px;
+		margin-top: 3px;
+		border-radius: 3px;
+	}
+}
+
+.leyka-ff-msg {	
+	font-size: 14px;
+	background: none repeat scroll 0 0 #fff;
+    border-left: 4px solid #fff;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+    margin: 30px 0 2px;
+    padding: 1px 12px;	
+	
+	p {
+		margin: 0;
+		padding: 15px;
+	}
+	
+	&.ok {
+		border-left-color: #7ad03a;		
+	}
+	
+	&.wrong {
+		border-left-color: #dd3d36;		
+	}
+}
+	
