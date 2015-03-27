@@ -7,7 +7,7 @@ class Leyka {
      * Plugin version, used for cache-busting of style and script file references.
      * @var string
      */
-    private $_version = LEYKA_VERSION;
+//    private $_version = LEYKA_VERSION;
 
     /**
      * Unique identifier for your plugin.
@@ -73,8 +73,11 @@ class Leyka {
         add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
 
-        // Post types
+        // Post types:
         add_action('init', array($this, 'register_post_types'), 9);
+
+        // User roles and capabilities:
+        add_action('init', array($this, 'register_user_capabilities'));
 
         if( !session_id() )
             add_action('init', 'session_start', -2);
@@ -156,7 +159,7 @@ class Leyka {
 
     public function __get($param) {
         switch($param) {
-            case 'version': return $this->_version;
+            case 'version': return LEYKA_VERSION;
             case 'plugin_slug': return $this->_plugin_slug;
             case 'payment_url': return $this->_payment_url;
             case 'payment_vars': return $this->_payment_vars;
@@ -321,38 +324,6 @@ class Leyka {
             }
         }
 
-        /** Create all roles and capabilities: */
-        $caps = array(
-            'read' => true, 'edit_#base#' => true, 'read_#base#' => true, 'delete_#base#' => true,
-            'edit_#base#s' => true, 'edit_others_#base#s' => true, 'publish_#base#s' => true,
-            'read_private_#base#s' => true, 'delete_#base#s' => true, 'delete_private_#base#s' => true,
-            'delete_published_#base#s' => true, 'delete_others_#base#s' => true,
-            'edit_private_#base#s' => true, 'edit_published_#base#s' => true,
-            'upload_files' => true, 'unfiltered_html' => true, 'leyka_manage_donations' => true,
-        );
-
-        $role = get_role('administrator');
-        foreach($caps as $cap => $true) {
-
-            $cap_donation = str_replace('#base#', 'donation', $cap);
-            $role->add_cap($cap_donation, true);
-            $caps[$cap_donation] = true;
-
-            $cap_campaign = str_replace('#base#', 'campaign', $cap);
-            $role->add_cap($cap_campaign, true);
-            $caps[$cap_campaign] = true;
-
-            if(stristr($cap, '#base#') !== false)
-                unset($caps[$cap]);
-        }
-        $role->add_cap('leyka_manage_options', true);
-
-//        remove_role('donations_manager'); // Uncomment to debug
-        remove_role('donations_administrator');
-
-        add_role('donations_manager', __('Donations Manager', 'leyka'), $caps);
-        add_role('donations_administrator', __('Donations Administrator', 'leyka'), array_merge($caps, array('leyka_manage_options' => true,)));
-
         /** Set a flag to flush permalinks (needs to be done a bit later, than this activation itself): */
         update_option('leyka_permalinks_flushed', 0);
 
@@ -380,7 +351,7 @@ class Leyka {
     /** Register and enqueue public-facing style sheet. */
     public function enqueue_styles() {
 
-        wp_enqueue_style($this->_plugin_slug.'-plugin-styles', LEYKA_PLUGIN_BASE_URL.'css/public.css', array(), $this->_version);
+        wp_enqueue_style($this->_plugin_slug.'-plugin-styles', LEYKA_PLUGIN_BASE_URL.'css/public.css', array(), LEYKA_VERSION);
     }
 
     /** Register and enqueues public-facing JavaScript files. */
@@ -389,14 +360,14 @@ class Leyka {
         wp_enqueue_script(
             $this->_plugin_slug.'-modal',
             LEYKA_PLUGIN_BASE_URL.'js/jquery.leanModal.min.js', array('jquery'),
-            $this->_version,
+            LEYKA_VERSION,
             true
         );
 
         wp_enqueue_script(
             $this->_plugin_slug.'-plugin-script',
             LEYKA_PLUGIN_BASE_URL.'js/public.js', array('jquery', $this->_plugin_slug.'-modal'),
-            $this->_version,
+            LEYKA_VERSION,
             true
         );
 
@@ -429,15 +400,43 @@ class Leyka {
         Leyka_Admin_Setup::get_instance();
     }
 
+    /** Register leyka user roles and caps. */
+    function register_user_capabilities() {
+
+        /** Create all roles and capabilities: */
+        $caps = array(
+            'read' => true, 'edit_#base#' => true, 'read_#base#' => true, 'delete_#base#' => true,
+            'edit_#base#s' => true, 'edit_others_#base#s' => true, 'publish_#base#s' => true,
+            'read_private_#base#s' => true, 'delete_#base#s' => true, 'delete_private_#base#s' => true,
+            'delete_published_#base#s' => true, 'delete_others_#base#s' => true,
+            'edit_private_#base#s' => true, 'edit_published_#base#s' => true,
+            'upload_files' => true, 'unfiltered_html' => true, 'leyka_manage_donations' => true,
+        );
+
+        $role = get_role('administrator');
+        foreach($caps as $cap => $true) {
+
+            $cap_donation = str_replace('#base#', 'donation', $cap);
+            $role->add_cap($cap_donation, true);
+            $caps[$cap_donation] = true;
+
+            $cap_campaign = str_replace('#base#', 'campaign', $cap);
+            $role->add_cap($cap_campaign, true);
+            $caps[$cap_campaign] = true;
+
+            if(stristr($cap, '#base#') !== false)
+                unset($caps[$cap]);
+        }
+        $role->add_cap('leyka_manage_options', true);
+
+        add_role('donations_manager', __('Donations Manager', 'leyka'), $caps);
+        add_role('donations_administrator', __('Donations Administrator', 'leyka'), array_merge($caps, array('leyka_manage_options' => true,)));
+    }
 
     /**
      * Register leyka post types.
      */
     function register_post_types(){
-
-        /** Initialize Leyka post types and their settings: */
-//        Leyka_Campaign_Management::get_instance();
-//        Leyka_Donation_Management::get_instance();
 
         /** Donation CPT: */
         $args = array(
@@ -460,7 +459,7 @@ class Leyka {
             'public' => true,
             'show_ui' => true,
             'show_in_nav_menus' => false,
-            'show_in_menu' => 'leyka',
+            'show_in_menu' => false,
             'show_in_admin_bar' => false,
             'supports' => false,
             'taxonomies' => array(),
@@ -496,7 +495,7 @@ class Leyka {
             'publicly_queryable' => true,
             'show_ui' => true,
             'show_in_nav_menus' => true,
-            'show_in_menu' => 'leyka',
+            'show_in_menu' => false,
             'show_in_admin_bar' => true,
             'supports' => array('title', 'editor', 'thumbnail', 'excerpt'),
             'taxonomies' => array(),
