@@ -88,14 +88,14 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
                 $payment_type = '';
         }
 
-		$name = esc_attr(get_bloginfo('name').': Пожертвование');
+		$name = esc_attr(get_bloginfo('name').': '.__('donation', 'leyka'));
 
         return array(
             'receiver' => leyka_options()->opt('yandex_money_account'),
             'sum' => $donation->amount,
             'formcomment' => $name,
 			'short-dest' => $name,
-			'targets' => esc_attr($campaign->payment_title),
+			'targets' => $campaign->payment_title ? esc_attr($campaign->payment_title) : $name,
 			'quickpay-form' => 'donate',
             'label' => $donation_id,
             'paymentType' => $payment_type,

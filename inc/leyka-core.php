@@ -414,23 +414,28 @@ class Leyka {
         );
 
         $role = get_role('administrator');
-        foreach($caps as $cap => $true) {
+        if( !in_array('leyka_manage_donations', $role->capabilities) ) {
 
-            $cap_donation = str_replace('#base#', 'donation', $cap);
-            $role->add_cap($cap_donation, true);
-            $caps[$cap_donation] = true;
+            foreach($caps as $cap => $true) {
 
-            $cap_campaign = str_replace('#base#', 'campaign', $cap);
-            $role->add_cap($cap_campaign, true);
-            $caps[$cap_campaign] = true;
+                $cap_donation = str_replace('#base#', 'donation', $cap);
+                $role->add_cap($cap_donation, TRUE);
+                $caps[$cap_donation] = TRUE;
 
-            if(stristr($cap, '#base#') !== false)
-                unset($caps[$cap]);
+                $cap_campaign = str_replace('#base#', 'campaign', $cap);
+                $role->add_cap($cap_campaign, TRUE);
+                $caps[$cap_campaign] = TRUE;
+
+                if(stristr($cap, '#base#') !== FALSE)
+                    unset($caps[$cap]);
+            }
+            $role->add_cap('leyka_manage_options', TRUE);
         }
-        $role->add_cap('leyka_manage_options', true);
 
-        add_role('donations_manager', __('Donations Manager', 'leyka'), $caps);
-        add_role('donations_administrator', __('Donations Administrator', 'leyka'), array_merge($caps, array('leyka_manage_options' => true,)));
+        if( !get_role('donations_manager') )
+            add_role('donations_manager', __('Donations Manager', 'leyka'), $caps);
+        if( !get_role('donations_administrator') )
+            add_role('donations_administrator', __('Donations Administrator', 'leyka'), array_merge($caps, array('leyka_manage_options' => true,)));
     }
 
     /**

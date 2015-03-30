@@ -172,6 +172,11 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
         $donation = new Leyka_Donation((int)stripslashes($_POST['orderId']));
 
+        if( !$donation ) {
+            status_header(200);
+            die();
+        }
+
 		// Test for e-sign:
         if(leyka_options()->opt('rbk_use_hash')) {
 
