@@ -1267,11 +1267,20 @@ class Leyka_Donation {
 	function __construct($donation) {
 
         if(is_int($donation) && (int)$donation > 0) {
-            $this->_id = (int)$donation;
+
             $this->_post_object = get_post($this->_id);
+
+            if($this->_post_object) {
+                $this->_id = (int)$donation;
+            } else {
+                return false;
+            }
+
         } elseif(is_a($donation, 'WP_Post')) {
+            /** @var $donation WP_Post */
             $this->_id = $donation->ID;
             $this->_post_object = $donation;
+
         } else {
             return false;
         }

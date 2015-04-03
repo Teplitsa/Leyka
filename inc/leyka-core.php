@@ -84,6 +84,8 @@ class Leyka {
 
         if(is_admin() && current_user_can('leyka_manage_donations'))
             $this->admin_setup();
+        else if( !is_admin() )
+            add_action('admin_bar_menu', array($this, 'leyka_add_toolbar_menu'), 999);
 
         /** Service URLs handler: */
         add_action('parse_request', function($request){
@@ -137,6 +139,40 @@ class Leyka {
         }
 
         do_action('leyka_initiated');
+    }
+
+    public function leyka_add_toolbar_menu(WP_Admin_Bar $wp_admin_bar) {
+
+        $wp_admin_bar->add_node(array(
+            'id' => 'leyka-toolbar-menu',
+            'title' => __('Leyka', 'leyka'),
+            'href' => admin_url('admin.php?page=leyka'),
+        ));
+
+        $wp_admin_bar->add_node(array(
+            'id'     => 'leyka-toolbar-desktop',
+            'title'  => __('Desktop', 'leyka'),
+            'parent' => 'leyka-toolbar-menu',
+            'href' => admin_url('admin.php?page=leyka'),
+        ));
+        $wp_admin_bar->add_node(array(
+            'id'     => 'leyka-toolbar-donations',
+            'title'  => __('Donations', 'leyka'),
+            'parent' => 'leyka-toolbar-menu',
+            'href' => admin_url('edit.php?post_type='.Leyka_Donation_Management::$post_type),
+        ));
+        $wp_admin_bar->add_node(array(
+            'id'     => 'leyka-toolbar-campaigns',
+            'title'  => __('Campaigns', 'leyka'),
+            'parent' => 'leyka-toolbar-menu',
+            'href' => admin_url('edit.php?post_type='.Leyka_Campaign_Management::$post_type),
+        ));
+        $wp_admin_bar->add_node(array(
+            'id'     => 'leyka-toolbar-settings',
+            'title'  => __('Settings', 'leyka'),
+            'parent' => 'leyka-toolbar-menu',
+            'href' => admin_url('admin.php?page=leyka_settings'),
+        ));
     }
 
     public function do_currency_rates_refresh() {
