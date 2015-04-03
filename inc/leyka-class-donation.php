@@ -5,7 +5,7 @@
  **/
 
 class Leyka_Donation_Management {
-
+	
 	private static $_instance = null;
 
 	public static $post_type = 'leyka_donation';
