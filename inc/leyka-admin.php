@@ -404,12 +404,12 @@ class Leyka_Admin_Setup {
 		
 	<div class="wrap">
 		<h2><?php _e('Send us a feedback', 'leyka');?></h2>
-			
+
 		<div class="leyka-feedback-description">
 			<p><?php _e('Found a bug? Need a feature?', 'leyka'); ?></p>
 			<p><?php _e('Please, <a href="https://github.com/Teplitsa/Leyka/issues/new">create an issue on Github</a> or send us a message with the following form', 'leyka'); ?></p>
 		</div>    
-        
+
         <div class="leyka-feedback-form">
             <img id="feedback-loader" style="display: none;" src="<?php echo LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif';?>" />
             <form id="feedback" action="#" method="post">
@@ -445,7 +445,7 @@ class Leyka_Admin_Setup {
                 <p><?php _e("Sorry, but the message can't be sended. Please check your mail server settings.", 'leyka');?></p>
             </div>
         </div>
-		
+
 	</div>
     <?php }
 

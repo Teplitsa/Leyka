@@ -1268,10 +1268,10 @@ class Leyka_Donation {
 
         if(is_int($donation) && (int)$donation > 0) {
 
-            $this->_post_object = get_post($this->_id);
+            $this->_post_object = get_post($donation);
 
             if($this->_post_object) {
-                $this->_id = (int)$donation;
+                $this->_id = $donation;
             } else {
                 return false;
             }

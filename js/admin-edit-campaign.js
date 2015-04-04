@@ -31,8 +31,14 @@ jQuery(document).ready(function($){
         }
     });
 
+    $('input[name="embed-type"]').click(function(){
+
+        $('.embed-area').hide();
+        $('#embed-'+$(this).val()).show();
+    });
+
     // Auto-select the code to embed:
-    $('.campaign-embed-code').on('focus keyup', function(e){
+    $('.embed-code').on('focus keyup', function(e){
 
         var keycode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
 

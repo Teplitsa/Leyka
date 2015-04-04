@@ -41,10 +41,12 @@ if (!class_exists('Composer\\Autoload\\ClassLoader', false)){
 
     // Autoload all interfaces & classes:
     function simple_excel_autoload($class_name){
-        if($class_name != 'SimpleExcel') require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.str_replace('\\', DIRECTORY_SEPARATOR, substr($class_name, strlen('SimpleExcel\\'))).'.php');
+
+        if($class_name != 'SimpleExcel')
+            require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.str_replace('\\', DIRECTORY_SEPARATOR, substr($class_name, strlen('SimpleExcel\\'))).'.php');
     }
 
-    spl_autoload_register('simple_excel_autoload');
+    spl_autoload_register( ((float)phpversion() >= 5.3 ? 'SimpleExcel\\' : '').'simple_excel_autoload' );
 }
 
 /**
