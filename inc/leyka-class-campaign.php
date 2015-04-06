@@ -333,16 +333,16 @@ class Leyka_Campaign_Management {
 
         $link .= stristr($link, '?') !== false ? '&embed=' : '?embed=';?>
 
-        <label><input type="radio" name="embed-type" value="donation_form" checked="checked"> <?php _e('Donation form', 'leyka');?></label>
-        <label><input type="radio" name="embed-type" value="campaign_card"> <?php _e('Campaign card', 'leyka');?></label>
+<!--        <label><input type="radio" name="embed-type" value="donation_form" checked="checked"> --><?php //_e('Donation form', 'leyka');?><!--</label>-->
+<!--        <label><input type="radio" name="embed-type" value="campaign_card" checked="checked"> --><?php //_e('Campaign card', 'leyka');?><!--</label>-->
 
-        <div id="embed-donation_form" class="embed-area">
-            <label for="donation-form-embed-code"><?php _e("To embed a donation form in some other web page, insert the following code in page HTML:", 'leyka');?></label>
+<!--        <div id="embed-donation_form" class="embed-area">-->
+<!--            <label for="donation-form-embed-code">--><?php //_e("To embed a donation form in some other web page, insert the following code in page HTML:", 'leyka');?><!--</label>-->
+<!---->
+<!--            <textarea class="embed-code" id="donation-form-embed-code" class="donation-form-embed-code">--><?php //echo '<iframe frameborder="0" width="300" height="510" src="'.$link.'donation_form'.'"></iframe>'?><!--</textarea>-->
+<!--        </div>-->
 
-            <textarea class="embed-code" id="donation-form-embed-code" class="donation-form-embed-code"><?php echo '<iframe frameborder="0" width="300" height="510" src="'.$link.'donation_form'.'"></iframe>'?></textarea>
-        </div>
-
-        <div id="embed-campaign_card" class="embed-area" style="display: none;">
+        <div id="embed-campaign_card" class="embed-area" style="display: block;">
             <label for="campaign-embed-code"><?php _e("To embed a campaign card in some other web page, insert the following code in page HTML:", 'leyka');?></label>
 
             <textarea class="embed-code" id="campaign-embed-code" class="campaign-embed-code"><?php echo '<iframe frameborder="0" width="300" height="510" src="'.$link.'campaign_card'.'"></iframe>'?></textarea>

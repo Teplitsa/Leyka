@@ -139,7 +139,8 @@ class Leyka_Admin_Setup {
 		do_action('leyka_dashboard_actions'); // Collapsible
 
 		/* @to-do: make metaboxes collapsable */
-		add_meta_box('leyka_status', __('Leyka\'s settings', 'leyka'), array($this, 'status_metabox_screen'), 'toplevel_page_leyka', 'normal');
+		add_meta_box('leyka_guide', __('Base setting up', 'leyka'), array($this, 'guide_metabox_screen'), 'toplevel_page_leyka', 'normal');
+		add_meta_box('leyka_status', __('Leyka settings', 'leyka'), array($this, 'status_metabox_screen'), 'toplevel_page_leyka', 'normal');
 		add_meta_box('leyka_history', __('Recent donations', 'leyka'), array($this, 'history_metabox_screen'), 'toplevel_page_leyka', 'normal');
 		add_meta_box('leyka_campaigns', __('Recent campaings', 'leyka'), array($this, 'campaigns_metabox_screen'), 'toplevel_page_leyka', 'normal');?>
 
@@ -156,6 +157,12 @@ class Leyka_Admin_Setup {
 		</div><!-- close .wrap -->
 	<?php
 	}
+
+    public function guide_metabox_screen() {?>
+
+<!--        Add your code here. -->
+    <?php
+    }
 
 	public function status_metabox_screen(){
 		
