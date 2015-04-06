@@ -139,8 +139,8 @@ class Leyka_Admin_Setup {
 		do_action('leyka_dashboard_actions'); // Collapsible
 
 		/* @to-do: make metaboxes collapsable */
-		add_meta_box('leyka_guide', __('Base setting up', 'leyka'), array($this, 'guide_metabox_screen'), 'toplevel_page_leyka', 'normal');
-		add_meta_box('leyka_status', __('Leyka settings', 'leyka'), array($this, 'status_metabox_screen'), 'toplevel_page_leyka', 'normal');
+		add_meta_box('leyka_guide', __('First steps', 'leyka'), array($this, 'guide_metabox_screen'), 'toplevel_page_leyka', 'normal');
+		add_meta_box('leyka_status', __('Settings', 'leyka'), array($this, 'status_metabox_screen'), 'toplevel_page_leyka', 'normal');
 		add_meta_box('leyka_history', __('Recent donations', 'leyka'), array($this, 'history_metabox_screen'), 'toplevel_page_leyka', 'normal');
 		add_meta_box('leyka_campaigns', __('Recent campaings', 'leyka'), array($this, 'campaigns_metabox_screen'), 'toplevel_page_leyka', 'normal');?>
 
@@ -158,9 +158,59 @@ class Leyka_Admin_Setup {
 	<?php
 	}
 
-    public function guide_metabox_screen() {?>
-
-<!--        Add your code here. -->
+    public function guide_metabox_screen() {
+		
+		$rows = array();
+		//content
+		$row['step_1'] = array(
+			'txt'    => __('Fill in information about your organisation', 'leyka'),
+			'action' => admin_url('admin.php?page=leyka_settings'),
+			'docs'   => 'https://leyka.te-st.ru/docs/nastrojka-lejki/'
+		);
+		$row['step_2'] = array(
+			'txt'    => __('Set up al least one payment gateway, ex. bank order', 'leyka'),
+			'action' => admin_url('admin.php?page=leyka_settings&stage=payment'),
+			'docs'   => 'https://leyka.te-st.ru/docs/nastrojka-lejki-vkladka-2-platezhnye-optsii/'
+		);
+		$row['step_3'] = array(
+			'txt'    => __('Create and publsih your first campaign', 'leyka'),
+			'action' => admin_url('post-new.php?post_type=leyka_campaign'),
+			'docs'   => 'https://leyka.te-st.ru/docs/sozdanie-kampanii/'
+		);
+		
+		if(current_theme_supports('widgets')){
+			$row['step_4'] = array(
+				'txt'    => __('Display campaign and donation information on your site using widgets', 'leyka'),
+				'action' => admin_url('widgets.php'),
+				'docs'   => 'https://leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/'
+			);
+		}
+		elseif(current_theme_supports('menus')) {
+			$row['step_4'] = array(
+				'txt'    => __('Display campaign\'s link on your site using menus', 'leyka'),
+				'action' => admin_url('nav-menus.php'),
+				'docs'   => 'https://leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/'
+			);
+		}
+	?>
+	<table class="leyka-guide-table">		
+		<tbody>
+		<?php
+			$count = 0;
+			foreach($row as $key => $obj){
+				$count++;
+			?>
+			<tr class="<?php echo esc_attr($key);?>">
+				<td class="count"><?php echo $count;?>.</td>
+				<td class="step"><?php echo $obj['txt'];?></td>
+				<td class="action"><a href="<?php echo esc_url($obj['action']);?>"><?php _e('Set up', 'leyka');?></a></td>
+				<td class="docs"><a href="<?php echo esc_url($obj['docs']);?>" title="<?php esc_attr_e('Additional information on the plugin website', 'leyka');?>" target="_blank"><span class="dashicons dashicons-editor-help"></span></a></td>
+			</tr>
+			<?php
+			}
+		?>
+		</tbody>
+	</table>
     <?php
     }
 
