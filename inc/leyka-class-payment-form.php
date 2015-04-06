@@ -482,6 +482,38 @@ function leyka_pf_footer() {
 <?php
 }
 
+function leyka_share_campaign_block($campaign_id = null) {
+	global $post;
+	
+	if(!$campaign_id)
+		$campaign_id = $post->ID;
+		
+	$iframe = Leyka_Campaign_Management::get_card_embed_code($campaign_id);
+?>
+	<div id="share-campaign-area" class="toggle">
+		<div class="toggle-trigger"><?php _e('Share (get embed code)', 'leyka');?></div>
+		<div class="toggle-area">
+			
+			<div class="leyka-embed-block">
+			<div id="embed-size-pane" class="leyka-setting-row">
+				<div class="col-1"><label><?php _e('Width', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_w" value="300" size="4"></label>
+				<label><?php _e('Height', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_h" value="510" size="4"></label>
+				</div>
+				<div class="col-2">
+				<textarea class="embed-code" id="campaign-embed-code" class="campaign-embed-code"><?php echo $iframe; ?></textarea></div>
+			</div>
+			
+			<div class="leyka-embed-preview">
+				<h4><?php _e('Preview', 'leyka');?></h4>
+				<?php echo $iframe; ?>
+			</div>
+			</div><!-- .embed-block -->
+			
+		</div>
+	</div>
+<?php
+}
+
 /* previous submission errors */
 function leyka_pf_submission_errors() {?>
 

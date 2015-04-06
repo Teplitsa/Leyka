@@ -64,6 +64,7 @@ leyka_pf_submission_errors();?>
 </div>
 <?php }?>
 
+<?php leyka_share_campaign_block();?> 
 <?php leyka_pf_footer();?>
 
 </div><!-- #leyka-payment-form -->
