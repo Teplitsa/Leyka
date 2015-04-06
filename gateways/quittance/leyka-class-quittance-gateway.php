@@ -8,7 +8,25 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
     protected static $_instance; // Gateway is always a singleton
 
     /** There are no gateway options */
-    protected function _set_options_defaults() {}
+    protected function _set_options_defaults() {
+
+        if($this->_options) // Create Gateway options, if needed
+            return;
+
+        $this->_options = array(
+            'quittance_redirect_page' => array(
+                'type' => 'select',
+                'default' => leyka_get_default_success_page(),
+                'title' => __('Page to redirect a donor after a donation', 'leyka'),
+                'description' => __('Select a page for donor to redirect to after he has acquired a quittance.', 'leyka'),
+                'required' => 0, // 1 if field is required, 0 otherwise
+                'placeholder' => '', // For text fields
+                'length' => '', // For text fields
+                'list_entries' => leyka_get_pages_list(),
+                'validation_rules' => array(), // List of regexp?..
+            ),
+        );
+    }
     
     protected function _set_gateway_attributes() {
 
@@ -24,7 +42,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
 //            $this->_payment_methods['bank_order']->save_settings();
         }
     }
-    
+
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
         // Localize a quittance first:
@@ -55,7 +73,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
                 __('Return to the donation form', 'leyka'),
                 __('Print the quittance', 'leyka'),
                 __("OK, I've received the quittance", 'leyka'),
-                leyka_get_success_page_url(),
+                get_permalink(leyka_options()->opt('quittance_redirect_page')),
                 $campaign->payment_title,
                 $form_data['leyka_donor_name'],
                 leyka_options()->opt('org_full_name'),

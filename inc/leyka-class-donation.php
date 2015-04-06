@@ -243,6 +243,11 @@ class Leyka_Donation_Management {
             return false;
         }
 
+        if( !$donation ) {
+            return false;
+        }
+
+
         Leyka_Donation_Management::send_donor_thanking_email($donation);
 
         if(leyka_options()->opt('donations_managers_emails')) {
@@ -261,13 +266,16 @@ class Leyka_Donation_Management {
     /** Ajax handler method */
     public function ajax_send_donor_email() {
 
-        if( !wp_verify_nonce($_POST['nonce'], 'leyka_donor_email') )
+        if(empty($_POST['donation_id']) || !wp_verify_nonce($_POST['nonce'], 'leyka_donor_email'))
             return;
 
-        if( Leyka_Donation_Management::send_donor_thanking_email(get_post($_POST['donation_id'])) )
+        $donation = new Leyka_Donation((int)$_POST['donation_id']);
+
+        if($donation && Leyka_Donation_Management::send_donor_thanking_email($donation)) {
             die(__('Grateful email has been sent to the donor', 'leyka'));
-        else
+        } else {
             die(__("For some reason, we can't send this email right now :( Please, try again later.", 'leyka'));
+        }
     }
 
     public static function send_donor_thanking_email($donation) {
@@ -284,7 +292,7 @@ class Leyka_Donation_Management {
         if( !$donor_email )
             $donor_email = leyka_pf_get_donor_email_value();
 
-        if( !$donor_email || $donation->donor_email_date )
+        if( !$donation || !$donor_email || $donation->donor_email_date )
             return false;
 
         if( !function_exists('set_html_content_type') ) {
@@ -365,7 +373,7 @@ class Leyka_Donation_Management {
             return false;
         }
 
-        if($donation->managers_emails_date)
+        if( !$donation || $donation->managers_emails_date )
             return false;
 
         if( !function_exists('set_html_content_type') ) {
@@ -1267,11 +1275,20 @@ class Leyka_Donation {
 	function __construct($donation) {
 
         if(is_int($donation) && (int)$donation > 0) {
-            $this->_id = (int)$donation;
-            $this->_post_object = get_post($this->_id);
+
+            $this->_post_object = get_post($donation);
+
+            if($this->_post_object) {
+                $this->_id = $donation;
+            } else {
+                return false;
+            }
+
         } elseif(is_a($donation, 'WP_Post')) {
+            /** @var $donation WP_Post */
             $this->_id = $donation->ID;
             $this->_post_object = $donation;
+
         } else {
             return false;
         }

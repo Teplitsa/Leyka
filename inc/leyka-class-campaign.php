@@ -152,9 +152,14 @@ class Leyka_Campaign_Management {
 	/** Metaboxes: */
 	public function set_metaboxes() {
 
-		add_meta_box(self::$post_type.'_data', __('Campaign settings', 'leyka'), array($this, 'data_meta_box'), self::$post_type, 'normal', 'high');
+        add_meta_box(
+            self::$post_type.'_excerpt', __('Annotation', 'leyka'),
+            array($this, 'annotation_meta_box'), self::$post_type, 'normal', 'high'
+        );
 
-        // Metaboxs are only for campaign editing page:
+        add_meta_box(self::$post_type.'_data', __('Campaign settings', 'leyka'), array($this, 'data_meta_box'), self::$post_type, 'normal', 'high');
+
+        // Metaboxes are only for campaign editing page:
         $screen = get_current_screen();
         if($screen->post_type == self::$post_type && $screen->base == 'post' && !$screen->action) {
 
@@ -266,6 +271,13 @@ class Leyka_Campaign_Management {
 	<?php }
 	}
 
+    public function annotation_meta_box(WP_Post $campaign) {?>
+
+        <label for="excerpt"></label>
+        <textarea id="excerpt" name="excerpt" cols="40" rows="1"><?php echo $campaign->post_excerpt;?></textarea>
+        <p><?php _e('Annotation is an optional summary of campaign description that can be used in templates.', 'leyka');?></p>
+    <?php }
+
     public function donations_meta_box(WP_Post $campaign) { $campaign = new Leyka_Campaign($campaign);?>
 
         <div>
@@ -319,11 +331,22 @@ class Leyka_Campaign_Management {
 
     public function embedding_meta_box(WP_Post $campaign) { $link = get_permalink($campaign->ID);
 
-        $link .= stristr($link, '?') !== false ? '&embed=1' : '?embed=1';?>
+        $link .= stristr($link, '?') !== false ? '&embed=' : '?embed=';?>
 
-        <label for="campaign-embed-code"><?php _e("To embed a campaign card in some other web page, insert the following code in it's HTML:", 'leyka');?></label>
+        <label><input type="radio" name="embed-type" value="donation_form" checked="checked"> <?php _e('Donation form', 'leyka');?></label>
+        <label><input type="radio" name="embed-type" value="campaign_card"> <?php _e('Campaign card', 'leyka');?></label>
 
-        <textarea id="campaign-embed-code" class="campaign-embed-code"><?php echo '<iframe frameborder="0" width="300" height="510" src="'.$link.'"></iframe>'?></textarea>
+        <div id="embed-donation_form" class="embed-area">
+            <label for="donation-form-embed-code"><?php _e("To embed a donation form in some other web page, insert the following code in page HTML:", 'leyka');?></label>
+
+            <textarea class="embed-code" id="donation-form-embed-code" class="donation-form-embed-code"><?php echo '<iframe frameborder="0" width="300" height="510" src="'.$link.'donation_form'.'"></iframe>'?></textarea>
+        </div>
+
+        <div id="embed-campaign_card" class="embed-area" style="display: none;">
+            <label for="campaign-embed-code"><?php _e("To embed a campaign card in some other web page, insert the following code in page HTML:", 'leyka');?></label>
+
+            <textarea class="embed-code" id="campaign-embed-code" class="campaign-embed-code"><?php echo '<iframe frameborder="0" width="300" height="510" src="'.$link.'campaign_card'.'"></iframe>'?></textarea>
+        </div>
     <?php }
 
 	public function save_data($campaign_id, WP_Post $campaign) {
@@ -516,17 +539,16 @@ class Leyka_Campaign {
 	/** Get comlicated params */
     public function get_donations() {
 
-        $donations = new WP_Query(array(
+        $donations = get_posts(array(
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => 'any',
             'posts_per_page' => -1,
             'meta_key' => 'leyka_campaign_id',
             'meta_value' => $this->_id,
         ));
-        $donations = $donations->get_posts();
 
-        foreach($donations as &$donation) {
-            $donation = new Leyka_Donation($donation->ID);
+        for($i=0; $i<count($donations); $i++) {
+            $donations[$i] = new Leyka_Donation($donations[$i]->ID);
         }
 
         return $donations;

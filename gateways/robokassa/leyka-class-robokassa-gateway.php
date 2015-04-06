@@ -120,7 +120,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
         $pm_curr = $pm_id;
         switch($pm_id) {
             case 'WMR': $pm_curr .= 'M'; break;
-
+            case 'Other': $pm_curr = ''; break;
             default: $pm_curr .= 'R';
         }
 

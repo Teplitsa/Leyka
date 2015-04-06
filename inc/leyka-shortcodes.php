@@ -133,7 +133,7 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
 	if($campaign->post_type != Leyka_Campaign_Management::$post_type) { // Wrong campaign data
 		return '';
     }
-		
+
 	$target = ($args['embed_mode'] == 1 ) ? ' target="_blank"' : '';
 	$thumbnail_size = apply_filters('leyka_campaign_card_thumbnail_size', 'post-thumbnail', $campaign, $args);
 	$css_class = apply_filters('leyka_campaign_card_class', 'leyka-campaign-card', $campaign, $args);	
@@ -162,15 +162,22 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
 					</a></h4>
 				<?php }?>
 				
-				<?php if($args['show_excerpt'] == 1 && has_excerpt($campaign->ID)) {
-					//default excerpt filters
-					add_filter( 'leyka_get_the_excerpt', 'wptexturize'      );
-					add_filter( 'leyka_get_the_excerpt', 'convert_smilies'  );
-					add_filter( 'leyka_get_the_excerpt', 'convert_chars'    );					
-					add_filter( 'leyka_get_the_excerpt', 'wp_trim_excerpt'  );
-				?>
-					<p><?php echo apply_filters('leyka_get_the_excerpt', $campaign->post_excerpt, $campaign);?></p>
-				<?php }?>
+				<?php if($args['show_excerpt'] == 1) {
+					// Default excerpt filters:
+					add_filter('leyka_get_the_excerpt', 'wptexturize');
+					add_filter('leyka_get_the_excerpt', 'convert_smilies');
+					add_filter('leyka_get_the_excerpt', 'convert_chars');
+					add_filter('leyka_get_the_excerpt', 'wp_trim_excerpt');?>
+					<p>
+                    <?php echo has_excerpt($campaign->ID) ?
+                        apply_filters('leyka_get_the_excerpt', $campaign->post_excerpt, $campaign) :
+                        apply_filters(
+                            'leyka_get_the_excerpt',
+                            substr(strip_tags(strip_shortcodes($campaign->post_content)), 0, 350),
+                            $campaign
+                        );?>
+                    </p>
+                <?php }?>
 			</div>
 		<?php }?>
 		
@@ -215,23 +222,24 @@ function leyka_payment_form_screen($atts) {
 }
 
 function leyka_get_payment_form($campaign = null, $args = array()) {
+
 	global $post;
-		
+
 	$defaults = array(
 		'template'  => null, // Ex. "radios" or "toggles"
 	);
-	
+
 	$args = wp_parse_args($args, $defaults);
-	
+
 	if( !$campaign ) {
 		$campaign = $post;
 	} elseif(is_int($campaign)){
 		$campaign = get_post($campaign);
 	}
-	
+
 	if($campaign->post_type != Leyka_Campaign_Management::$post_type)
-		return ''; //wrong campaign data
-	
+		return '';
+
 	return get_leyka_payment_form_template_html($campaign, $args['template']);
 }
 

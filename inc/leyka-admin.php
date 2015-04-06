@@ -17,8 +17,7 @@ class Leyka_Admin_Setup {
 		
 		add_action('admin_enqueue_scripts', array($this, 'enqueue_cssjs')); // Load admin style sheet and JavaScript
 
-        add_filter('custom_menu_order', array($this, 'reorder_submenu')); // Reorder Leyka submenu
-
+        /** Remove needless metaboxes */
         add_action('admin_init', array($this, 'remove_seo')); // Remove needless columns and metaboxes
 
         add_action('wp_ajax_leyka_send_feedback', array($this, 'ajax_send_feedback')); // Ajax
@@ -48,48 +47,6 @@ class Leyka_Admin_Setup {
 
             update_option('wpseo_titles', $seo_titles_options);
         }
-    }
-
-    public function reorder_submenu($menu_order) {
-
-        global $submenu;
-
-        if( !empty($submenu['leyka']) ) {
-
-            $new_order = array();
-            function leyka_menu_array_search(array $array, $menu_name) {
-
-                for($i=0; $i<count($array); $i++) {
-
-                    if($array[$i][0] == $menu_name)
-                        return $array[$i];
-                }
-
-                return false;
-            }
-
-            $new_order[0] = leyka_menu_array_search($submenu['leyka'], __('Dashboard', 'leyka'));
-            $new_order[1] = leyka_menu_array_search($submenu['leyka'], __('Donations', 'leyka'));
-            $new_order[2] = leyka_menu_array_search($submenu['leyka'], __('All Campaigns', 'leyka'));
-            $new_order[3] = leyka_menu_array_search($submenu['leyka'], __('New campaign', 'leyka'));
-
-            if(current_user_can('leyka_manage_options'))
-                $new_order[4] = leyka_menu_array_search($submenu['leyka'], __('Settings', 'leyka'));
-
-            $new_order[5] = leyka_menu_array_search($submenu['leyka'], __('Feedback', 'leyka'));
-
-            $submenu['leyka'] = $new_order;
-
-        } elseif( !empty($submenu['leyka']) ) {
-
-            /** Remove Settings from plugin submenu: */
-            function leyka_reorder_plugin_submenu($menu_item){
-                return $menu_item[0] != __('Settings', 'leyka');
-            }
-            $submenu['leyka'] = array_filter($submenu['leyka'], 'leyka_reorder_plugin_submenu');
-        }
-
-        return $menu_order;
     }
 
     /*
@@ -134,25 +91,35 @@ class Leyka_Admin_Setup {
 	}
 
 	/** Admin Menu **/
-	public function admin_menu_setup() {
+    public function admin_menu_setup() {
 
-		// Leyka menu root:
-		add_menu_page(__('Leyka Dashboard', 'leyka'), __('Leyka', 'leyka'), 'leyka_manage_donations', 'leyka', array($this, 'dashboard_screen'));
+        // Leyka menu root:
+        add_menu_page(__('Leyka Dashboard', 'leyka'), __('Leyka', 'leyka'), 'leyka_manage_donations', 'leyka', array($this, 'dashboard_screen'));
 
-		// Dashboard:
-		add_submenu_page('leyka', __('Leyka Dashboard', 'leyka'), __('Dashboard', 'leyka'), 'leyka_manage_donations', 'leyka', array($this, 'dashboard_screen'));
+        // Dashboard:
+        add_submenu_page('leyka', __('Leyka Dashboard', 'leyka'), __('Dashboard', 'leyka'), 'leyka_manage_donations', 'leyka', array($this, 'dashboard_screen'));
 
-        // Campaigns List:
-//        add_submenu_page('leyka', __('All Campaigns', 'leyka'), __('All Campaigns', 'leyka'), 'leyka_manage_donations', 'edit.php?post_type='.Leyka_Campaign_Management::$post_type);
+        // Donations:
+        add_submenu_page('leyka', __('Donations', 'leyka'), __('Donations', 'leyka'), 'leyka_manage_donations', 'edit.php?post_type='.Leyka_Donation_Management::$post_type);
+
+        // Campigns:
+        add_submenu_page('leyka', __('All Campaigns', 'leyka'), __('All Campaigns', 'leyka'), 'leyka_manage_donations', 'edit.php?post_type='.Leyka_Campaign_Management::$post_type);
 
         // New campaign:
         add_submenu_page('leyka', __('New campaign', 'leyka'), __('New campaign', 'leyka'), 'leyka_manage_donations', 'post-new.php?post_type='.Leyka_Campaign_Management::$post_type);
 
-		// Settings:
+        // Settings:
         add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), 'leyka_manage_options', 'leyka_settings', array($this, 'settings_screen'));
 
-		// Feedback:
-		add_submenu_page('leyka', __('Connect to us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedback_screen'));
+        // Feedback:
+        add_submenu_page('leyka', __('Connect to us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedback_screen'));
+
+        do_action('leyka_admin_menu_setup');
+
+        global $submenu;
+
+        if( !empty($submenu['leyka']) )
+            $submenu['leyka'] = apply_filters('leyka_admin_menu_order', $submenu['leyka']);
     }
 	
 	/** Settings link in plugin list table **/
@@ -162,8 +129,6 @@ class Leyka_Admin_Setup {
 		
 		return $links;
 	}
-
-
 
 	/** Displaying dashboard **/
 	public function dashboard_screen(){
@@ -339,7 +304,7 @@ class Leyka_Admin_Setup {
 
 	/** Displaying settings **/
 	public function settings_screen() {
-
+		
 		/* Capability test */
 		if( !current_user_can('leyka_manage_options') )
             wp_die(__('You do not have permissions to access this page.', 'leyka'));
@@ -439,12 +404,12 @@ class Leyka_Admin_Setup {
 		
 	<div class="wrap">
 		<h2><?php _e('Send us a feedback', 'leyka');?></h2>
-			
+
 		<div class="leyka-feedback-description">
 			<p><?php _e('Found a bug? Need a feature?', 'leyka'); ?></p>
 			<p><?php _e('Please, <a href="https://github.com/Teplitsa/Leyka/issues/new">create an issue on Github</a> or send us a message with the following form', 'leyka'); ?></p>
 		</div>    
-        
+
         <div class="leyka-feedback-form">
             <img id="feedback-loader" style="display: none;" src="<?php echo LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif';?>" />
             <form id="feedback" action="#" method="post">
@@ -480,7 +445,7 @@ class Leyka_Admin_Setup {
                 <p><?php _e("Sorry, but the message can't be sended. Please check your mail server settings.", 'leyka');?></p>
             </div>
         </div>
-		
+
 	</div>
     <?php }
 
