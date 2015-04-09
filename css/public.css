@@ -455,7 +455,8 @@
   border-left: 0;
   border-bottom: 0;
   padding: 20px;
-  max-width: 95%; }
+  max-width: 95%;
+  box-shadow: 1px 1px 2px rgba(220, 220, 220, 0.5); }
   .leyka-embed-block .leyka-setting-row::after {
     clear: both;
     content: "";
@@ -482,16 +483,19 @@
     .leyka-embed-block .leyka-embed-preview h4 {
       margin-top: 0; }
     .leyka-embed-block .leyka-embed-preview iframe {
-      max-width: 100%; }
+      max-width: 100%;
+      border: 4px solid #dfdfdf;
+      padding: 1px; }
 
 #share-campaign-area.toggle {
   background: #fff;
-  border-color: #ccc; }
+  border-color: #dfdfdf; }
   #share-campaign-area.toggle .toggle-trigger {
     background: #fff;
-    border-color: #ccc; }
+    border-color: #dfdfdf; }
   #share-campaign-area.toggle .toggle-area {
-    background: #fff; }
+    background: #fff;
+    border-color: #dfdfdf; }
 
 /** Leyka campaign elements  (_campaign.scss) **/
 /* embedded scale */
