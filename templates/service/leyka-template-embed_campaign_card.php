@@ -21,7 +21,7 @@ $cpost = get_post();
 	}
 	
 	#embedded-card {
-		width: 296px;		
+		width: 100%;		
 		font: 14px/21px "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
 		color: #444;		
 	}

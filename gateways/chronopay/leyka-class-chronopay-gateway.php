@@ -148,79 +148,82 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
     }
 
     public function _handle_service_calls($call_type = '') {
-		
-		$error = false;
-		
-		// Test for gateway's IP:
-		if(
-            empty($_SERVER['REMOTE_ADDR']) ||
-            trim(stripslashes($_SERVER['REMOTE_ADDR'])) != leyka_options()->opt('chronopay_ip')
-        )
-            $error = true;
 
-        // Security fail or not:
-        if($error == true) { // Send notification on security fail
-            $admin_to = get_option('admin_email');
+        // Test for gateway's IP:
+        if( leyka_options()->opt('chronopay_ip') && !in_array($_SERVER['REMOTE_ADDR'], explode(',', leyka_options()->opt('chronopay_ip'))) ) { // Security fail
+
             $message = __("This message has been sent because a call to your ChronoPay function was made from an IP that did not match with the one in your Chronopay gateway setting. This could mean someone is trying to hack your payment website. The details of the call are below.", 'leyka')."\n\r\n\r";
 
-            $message .= "THEIR_POST:\n\r".print_r($_POST,true)."\n\r\n\r";
-            $message .= "GET:\n\r".print_r($_GET,true)."\n\r\n\r";
-            $message .= "SERVER:\n\r".print_r($_SERVER,true)."\n\r\n\r";
-            $message .= "THEIR_IP:\n\r".print_r($_SERVER['REMOTE_ADDR'],true)."\n\r\n\r";
+            $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
+            $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
+            $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
+            $message .= "IP:\n\r".print_r($_SERVER['REMOTE_ADDR'], true)."\n\r\n\r";
             $message .= "Chronopay IP setting value:\n\r".print_r(leyka_options()->opt('chronopay_ip'),true)."\n\r\n\r";
 
-            wp_mail($admin_to, __('Chronopay IP check failed!', 'leyka'), $message);
+            wp_mail(get_option('admin_email'), __('Chronopay IP check failed!', 'leyka'), $message);
             status_header(200);
             die();
         }
 
-		// Test for e-sign:
-		$sharedsec = leyka_options()->opt('chronopay_shared_sec');
-		$customer_id = isset($_POST['customer_id'])? trim(stripslashes($_POST['customer_id'])) : '';
-		$transaction_id = isset($_POST['transaction_id']) ? trim(stripslashes($_POST['transaction_id'])): '';
-		$transaction_type = isset($_POST['transaction_type']) ? trim(stripslashes($_POST['transaction_type'])) : '';
-		$total = isset($_POST['total']) ? trim(stripslashes($_POST['total'])) : '';		
-		$sign = md5($sharedsec.$customer_id.$transaction_id.$transaction_type.$total);
+        // Test for e-sign:
+        $sharedsec = leyka_options()->opt('chronopay_shared_sec');
+        $customer_id = isset($_POST['customer_id'])? trim(stripslashes($_POST['customer_id'])) : '';
+        $transaction_id = isset($_POST['transaction_id']) ? trim(stripslashes($_POST['transaction_id'])): '';
+        $transaction_type = isset($_POST['transaction_type']) ? trim(stripslashes($_POST['transaction_type'])) : '';
+        $total = isset($_POST['total']) ? trim(stripslashes($_POST['total'])) : '';
+        $sign = md5($sharedsec.$customer_id.$transaction_id.$transaction_type.$total);
 
-		if(empty($_POST['sign']) || $sign != trim(stripslashes($_POST['sign'])))
-			$error = true;
+        if(empty($_POST['sign']) || $sign != trim(stripslashes($_POST['sign']))) { // Security fail
 
-		// Security fail or not:
-		if($error == true) { // Send notification on security fail
-			$admin_to = get_option('admin_email');
-			$message = __("This message has been sent because a call to your ChronoPay function was made by a server that did not have the correct security key.  This could mean someone is trying to hack your payment site.  The details of the call are below.", 'leyka')."\n\r\n\r";
-						
-			$message .= "THEIR_POST:\n\r".print_r($_POST,true)."\n\r\n\r";
-			$message .= "GET:\n\r".print_r($_GET,true)."\n\r\n\r";
-			$message .= "SERVER:\n\r".print_r($_SERVER,true)."\n\r\n\r";
+            $message = __("This message has been sent because a call to your ChronoPay function was made by a server that did not have the correct security key.  This could mean someone is trying to hack your payment site.  The details of the call are below.", 'leyka')."\n\r\n\r";
 
-			wp_mail($admin_to, __('Chronopay security key check failed!', 'leyka'), $message);
-			status_header(200);
-			die();
-		}
+            $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
+            $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
+            $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
 
-        $donation_id = (int)stripslashes($_POST['cs2']);
-        $donation = new Leyka_Donation($donation_id);
+            wp_mail(get_option('admin_email'), __('Chronopay security key check failed!', 'leyka'), $message);
+            status_header(200);
+            die();
+        }
+
+        $_POST['cs2'] = (int)$_POST['cs2'];
+        $donation = new Leyka_Donation($_POST['cs2']);
+
+        if( !$donation->id || !$donation->campaign_id ) {
+
+            $message = __("This message has been sent because a call to your ChronoPay callbacks URL was made with a donation ID parameter (POST['cs2']) that Leyka is unknown of. The details of the call are below.", 'leyka')."\n\r\n\r";
+
+            $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
+            $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
+            $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
+            $message .= "Donation ID:\n\r".$_POST['cs2']."\n\r\n\r";
+
+            wp_mail(get_option('admin_email'), __('Chronopay gives unknown donation ID parameter!', 'leyka'), $message);
+            status_header(200);
+            die();
+        }
 
         if(strtolower($_POST['currency']) == 'rub')
             $currency_string = 'rur';
 //        else if() $currency_string = 'usd';
         else {
 
-            $admin_to = get_option('admin_email');
             $message = __("This message has been sent because a call to your ChronoPay callbacks URL was made with a currency parameter (POST['currency']) that Leyka is unknown of. The details of the call are below.", 'leyka')."\n\r\n\r";
 
-            $message .= "THEIR_POST:\n\r".print_r($_POST,true)."\n\r\n\r";
-            $message .= "GET:\n\r".print_r($_GET,true)."\n\r\n\r";
-            $message .= "SERVER:\n\r".print_r($_SERVER,true)."\n\r\n\r";
+            $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
+            $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
+            $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
 
-            wp_mail($admin_to, __('Chronopay gives unknown currency parameter!', 'leyka'), $message);
+            wp_mail(get_option('admin_email'), __('Chronopay gives unknown currency parameter!', 'leyka'), $message);
             status_header(200);
             die();
         }
 
         // Store donation data - rebill payment:
-        if($_POST['product_id'] == leyka_options()->opt('chronopay_card_rebill_product_id_'.$currency_string)) {
+        if(
+            leyka_options()->opt('chronopay_card_rebill_product_id_'.$currency_string) &&
+            $_POST['product_id'] == leyka_options()->opt('chronopay_card_rebill_product_id_'.$currency_string)
+        ) {
 
             if($transaction_type == 'Purchase') { // Initial rebill payment
 
@@ -261,7 +264,10 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 Leyka_Donation_Management::send_all_emails($donation_id);
             }
 
-        } else { // Single payment. For now, processing is just like initial rebills
+        } else if( // Single payment. For now, processing is just like initial rebills
+            leyka_options()->opt('chronopay_card_product_id_'.$currency_string) &&
+            $_POST['product_id'] == leyka_options()->opt('chronopay_card_product_id_'.$currency_string)
+        ) {
 
             if($donation->status != 'funded') {
                 $donation->add_gateway_response($_POST);
@@ -276,8 +282,8 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             }
         }
 
-		status_header(200);
-		die();
+        status_header(200);
+        die();
     }
 
     public function cancel_recurrents(Leyka_Donation $donation) {

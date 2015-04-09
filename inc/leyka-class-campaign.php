@@ -165,7 +165,7 @@ class Leyka_Campaign_Management {
 
             add_meta_box(
                 self::$post_type.'_embed', __('Campaign embedding', 'leyka'),
-                array($this, 'embedding_meta_box'), self::$post_type, 'side', 'low'
+                array($this, 'embedding_meta_box'), self::$post_type, 'normal', 'high'
             );
 
 		    add_meta_box(
@@ -329,26 +329,55 @@ class Leyka_Campaign_Management {
     <?php
     }
 
-    public function embedding_meta_box(WP_Post $campaign) { $link = get_permalink($campaign->ID);
+    public function embedding_meta_box(WP_Post $campaign) {
+		
+		
+		$iframe = self::get_card_embed_code($campaign->ID);
+	?>
 
-        $link .= stristr($link, '?') !== false ? '&embed=' : '?embed=';?>
+<!--        <label><input type="radio" name="embed-type" value="donation_form" checked="checked"> --><?php //_e('Donation form', 'leyka');?><!--</label>-->
+<!--        <label><input type="radio" name="embed-type" value="campaign_card" checked="checked"> --><?php //_e('Campaign card', 'leyka');?><!--</label>-->
 
-        <label><input type="radio" name="embed-type" value="donation_form" checked="checked"> <?php _e('Donation form', 'leyka');?></label>
-        <label><input type="radio" name="embed-type" value="campaign_card"> <?php _e('Campaign card', 'leyka');?></label>
-
-        <div id="embed-donation_form" class="embed-area">
-            <label for="donation-form-embed-code"><?php _e("To embed a donation form in some other web page, insert the following code in page HTML:", 'leyka');?></label>
-
-            <textarea class="embed-code" id="donation-form-embed-code" class="donation-form-embed-code"><?php echo '<iframe frameborder="0" width="300" height="510" src="'.$link.'donation_form'.'"></iframe>'?></textarea>
-        </div>
-
-        <div id="embed-campaign_card" class="embed-area" style="display: none;">
-            <label for="campaign-embed-code"><?php _e("To embed a campaign card in some other web page, insert the following code in page HTML:", 'leyka');?></label>
-
-            <textarea class="embed-code" id="campaign-embed-code" class="campaign-embed-code"><?php echo '<iframe frameborder="0" width="300" height="510" src="'.$link.'campaign_card'.'"></iframe>'?></textarea>
-        </div>
+<!--        <div id="embed-donation_form" class="embed-area">-->
+<!--            <label for="donation-form-embed-code">--><?php //_e("To embed a donation form in some other web page, insert the following code in page HTML:", 'leyka');?><!--</label>-->
+<!---->
+<!--            <textarea class="embed-code" id="donation-form-embed-code" class="donation-form-embed-code">--><?php //echo '<iframe frameborder="0" width="300" height="510" src="'.$link.'donation_form'.'"></iframe>'?><!--</textarea>-->
+<!--        </div>-->
+	
+	
+	<div class="embed-block">
+		<div class="embed-code">
+			<h4><?php _e('Size settings', 'leyka');?></h4>
+			<div id="embed-size-pane" class="setting-row">
+				<label><?php _e('Width', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_w" value="300" size="4"></label>
+				<label><?php _e('Height', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_h" value="510" size="4"></label>
+			</div>
+			
+			<div id="embed-campaign_card" class="settings-field">
+				<label for="campaign-embed-code"><?php _e("To embed a campaign card in some other web page, insert the following code in page HTML:", 'leyka');?></label>
+				<textarea class="embed-code" id="campaign-embed-code" class="campaign-embed-code"><?php echo $iframe; ?></textarea>				
+			</div>
+			
+		</div>
+		
+		<div class="leyka-embed-preview">
+			<h4><?php _e('Preview', 'leyka');?></h4>
+			<?php echo $iframe; ?>
+		</div>
+		
+	</div>
     <?php }
-
+	
+	static function get_card_embed_code($campaign_id, $w = 300, $h = 510){
+		
+		$link = get_permalink($campaign_id);
+        $link .= stristr($link, '?') !== false ? '&embed=' : '?embed=';
+		$w = ($w <= 0 ) ? 300 : intval($w);
+		$h = ($h <= 0 ) ? 510 : intval($h);
+		
+		return '<iframe frameborder="0" width="'.$w.'" height="'.$h.'" src="'.$link.'campaign_card'.'"></iframe>';
+	}
+	
 	public function save_data($campaign_id, WP_Post $campaign) {
 
 		$campaign = new Leyka_Campaign($campaign);

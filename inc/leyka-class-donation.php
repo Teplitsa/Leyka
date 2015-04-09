@@ -12,8 +12,7 @@ class Leyka_Donation_Management {
 
 	private function __construct() {
 
-        /** @todo Maybe, add donation's custom fields to quick edit box */
-//        add_action('quick_edit_custom_box', array($this, 'display_custom_quickedit_donation'), 10, 2);
+//        add_action('quick_edit_custom_box', array($this, 'display_quickedit_box'), 10, 2);
 
         add_filter('post_row_actions', array($this, 'row_actions'), 10, 2);
 
@@ -79,7 +78,7 @@ class Leyka_Donation_Management {
 		}
 		
         unset($actions['view']);
-//      unset( $actions['trash'] );
+//        unset( $actions['trash'] );
         unset($actions['inline hide-if-no-js']);
         
         return $actions;
@@ -109,22 +108,6 @@ class Leyka_Donation_Management {
             }
 
         }
-
-//        elseif($old == 'funded') {
-//
-//            $donation = new Leyka_Donation($donation);
-//            $campaign = new Leyka_Campaign($donation->campaign_id);
-//
-//            if($campaign->target) {
-//
-//                $collected_amount = $campaign->get_collected_amount();
-//
-//                if($collected_amount >= $campaign->target)
-//                    $campaign->target_state = 'is_reached';
-//                elseif($campaign->target_state != 'in_process')
-//                    $campaign->target_state = 'in_process';
-//            }
-//        }
     }
 
     public function manage_filters() {

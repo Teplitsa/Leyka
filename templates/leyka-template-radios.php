@@ -84,6 +84,7 @@ leyka_setup_current_pm($curr_pm, $curr_pm->default_currency);?>
 </form>
 </div><!-- .leyka-payment-option -->
 
+<?php leyka_share_campaign_block();?> 
 <?php leyka_pf_footer();?>
 
 </div><!-- #leyka-payment-form -->
