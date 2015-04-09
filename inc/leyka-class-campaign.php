@@ -360,7 +360,7 @@ class Leyka_Campaign_Management {
 			
 		</div>
 		
-		<div class="embed-preview">
+		<div class="leyka-embed-preview">
 			<h4><?php _e('Preview', 'leyka');?></h4>
 			<?php echo $iframe; ?>
 		</div>

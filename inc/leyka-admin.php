@@ -192,6 +192,12 @@ class Leyka_Admin_Setup {
 				'docs'   => 'https://leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/'
 			);
 		}
+		
+		$row['step_5'] = array(
+			'txt'    => __('Example row', 'leyka'),
+			'action' => false,
+			'docs'   => 'https://leyka.te-st.ru/docs/sozdanie-kampanii/'
+		);
 	?>
 	<table class="leyka-guide-table">		
 		<tbody>
@@ -203,8 +209,13 @@ class Leyka_Admin_Setup {
 			<tr class="<?php echo esc_attr($key);?>">
 				<td class="count"><?php echo $count;?>.</td>
 				<td class="step"><?php echo $obj['txt'];?></td>
-				<td class="action"><a href="<?php echo esc_url($obj['action']);?>"><?php _e('Set up', 'leyka');?></a></td>
-				<td class="docs"><a href="<?php echo esc_url($obj['docs']);?>" title="<?php esc_attr_e('Additional information on the plugin website', 'leyka');?>" target="_blank"><span class="dashicons dashicons-editor-help"></span></a></td>
+				<?php if($obj['action']) { ?>
+					<td class="action"><a href="<?php echo esc_url($obj['action']);?>"><?php _e('Set up', 'leyka');?></a></td>
+					<td class="docs"><a href="<?php echo esc_url($obj['docs']);?>" title="<?php esc_attr_e('Additional information on the plugin website', 'leyka');?>" target="_blank"><span class="dashicons dashicons-editor-help"></span></a></td>
+				<?php } else { ?>
+					<td class="action complete"><span><?php _e('Complete', 'leyka');?></span></td>
+				<?php } ?>
+				
 			</tr>
 			<?php
 			}

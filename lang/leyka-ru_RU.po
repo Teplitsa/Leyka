@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Leyka Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-07 01:21+0300\n"
-"PO-Revision-Date: 2015-04-07 01:22+0300\n"
+"POT-Creation-Date: 2015-04-09 20:51+0300\n"
+"PO-Revision-Date: 2015-04-09 20:52+0300\n"
 "Last-Translator: Anna Ladoshkina <webdev@foralien.com>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -76,7 +76,7 @@ msgstr ""
 "Отметьте, если интеграция с Хронопей сейчас находится в тестовом режиме."
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:164
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:155
 msgid ""
 "This message has been sent because a call to your ChronoPay function was "
 "made from an IP that did not match with the one in your Chronopay gateway "
@@ -88,12 +88,12 @@ msgstr ""
 "пытается взломать ваш сайт. Детали вызова:"
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:172
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:163
 msgid "Chronopay IP check failed!"
 msgstr "Некорректный IP сервиса Хронопей!"
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:191
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:178
 msgid ""
 "This message has been sent because a call to your ChronoPay function was "
 "made by a server that did not have the correct security key.  This could "
@@ -105,9 +105,20 @@ msgstr ""
 "Это может означать, что кто-то пытается взломать ваш сайт. Детали вызова:"
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:197
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:184
 msgid "Chronopay security key check failed!"
 msgstr "Неправильный ключ безопасности!"
+
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:194
+msgid ""
+"This message has been sent because a call to your ChronoPay callbacks URL "
+"was made with a donation ID parameter (POST['cs2']) that Leyka is unknown "
+"of. The details of the call are below."
+msgstr ""
+
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:201
+msgid "Chronopay gives unknown donation ID parameter!"
+msgstr ""
 
 # @ leyka
 #: gateways/chronopay/leyka-class-chronopay-gateway.php:211
@@ -126,27 +137,27 @@ msgid "Chronopay gives unknown currency parameter!"
 msgstr "Хронопей передал неизвестное значение валюты!"
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:345
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:351
 msgid "Recurrent donations cancelled."
 msgstr "Регулярные пожертвования успешно остановлены."
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:348
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:354
 #, php-format
 msgid "Error on the gateway side: %s"
 msgstr "Ошибка на стороне платёжной системы: %s"
 
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:363
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:369
 #: gateways/rbk/leyka-class-rbk-gateway.php:263
 msgid "Operation status:"
 msgstr "Статус операции:"
 
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:364
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:370
 msgid "Transaction ID:"
 msgstr "ID транзакции:"
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:365
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:371
 #: gateways/rbk/leyka-class-rbk-gateway.php:258
 #: gateways/yandex/leyka-class-yandex-gateway.php:249
 #: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:231
@@ -154,28 +165,28 @@ msgid "Full donation amount:"
 msgstr "Полный размер пожертвования:"
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:366
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:372
 #: gateways/yandex/leyka-class-yandex-gateway.php:253
 #: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:235
 msgid "Gateway's donor ID:"
 msgstr "ID донора в рамках платёжной системы:"
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:367
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:373
 #: gateways/yandex/leyka-class-yandex-gateway.php:254
 #: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:236
 msgid "Response date:"
 msgstr "Дата ответа:"
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:400
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:406
 #: gateways/rbk/leyka-class-rbk-gateway.php:299
 #: gateways/robokassa/leyka-class-robokassa-gateway.php:257
 #: gateways/yandex/leyka-class-yandex-gateway.php:365
 msgid "Payment with Banking Card"
 msgstr "Платёж с помощью банковской карты"
 
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:401
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:407
 #: gateways/rbk/leyka-class-rbk-gateway.php:300
 #: gateways/robokassa/leyka-class-robokassa-gateway.php:258
 #: gateways/yandex/leyka-class-yandex-gateway.php:366
@@ -183,8 +194,8 @@ msgid "Banking Card"
 msgstr "Банковская карта"
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:421
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:532
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:427
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:538
 #: gateways/rbk/leyka-class-rbk-gateway.php:319
 #: gateways/rbk/leyka-class-rbk-gateway.php:422
 #: gateways/rbk/leyka-class-rbk-gateway.php:503
@@ -203,8 +214,8 @@ msgid "Donate"
 msgstr "Пожертвовать"
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:450
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:554
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:456
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:560
 msgid ""
 "Chronopay allows a simple and safe way to pay for goods and services with "
 "bank cards through internet. You will have to fill a payment form, you will "
@@ -218,13 +229,13 @@ msgstr ""
 "банковские данные и подтвердить совершение вашего пожертвования."
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:451
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:457
 msgid "Chronopay bank card payment description"
 msgstr "Описание оплаты с помощью банковской карты через Хронопей"
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:452
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:556
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:458
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:562
 msgid ""
 "Please, enter Chronopay gateway description that will be shown to the donor "
 "when this payment method will be selected for using."
@@ -234,62 +245,62 @@ msgstr ""
 "пожертвования."
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:459
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:465
 msgid "Chronopay product_id for RUR"
 msgstr "Значение параметра product_id для пожертвований в руб."
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:460
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:466
 msgid "Please, enter Chronopay product_id for RUR currency."
 msgstr ""
 "Пожалуйста, укажите product_id, который будет использоваться для "
 "пожертвований в руб."
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:467
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:473
 msgid "Chronopay product_id for USD"
 msgstr "Значение параметра product_id для долл. США"
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:468
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:474
 msgid "Please, enter Chronopay product_id for USD currency."
 msgstr ""
 "Пожалуйста, укажите product_id, который будет использоваться для "
 "пожертвований в долл. США."
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:475
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:481
 msgid "Chronopay product_id for EUR"
 msgstr "Значение параметра product_id для евро."
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:476
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:482
 msgid "Please, enter Chronopay product_id for EUR currency."
 msgstr ""
 "Пожалуйста, укажите product_id, который будет использоваться для "
 "пожертвований в евро."
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:511
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:517
 msgid "Rebilling payment with Banking Card"
 msgstr "Регулярный платеж с банковской карты"
 
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:512
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:518
 msgid "Banking Card - monthly rebilling"
 msgstr "Банковская карта - автоматические ежемесячные списания"
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:555
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:561
 msgid "Chronopay bank card rebill payment description"
 msgstr "Описание регулярного списания с банковской карты через Хронопей"
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:563
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:569
 msgid "Chronopay product_id for rebills in RUR"
 msgstr "Значение параметра product_id для регулярных пожертвований в руб."
 
 # @ leyka
-#: gateways/chronopay/leyka-class-chronopay-gateway.php:564
+#: gateways/chronopay/leyka-class-chronopay-gateway.php:570
 msgid "Please, enter Chronopay product_id for rebills in RUR currency."
 msgstr "Пожалуйста, укажите product_id для регулярных пожертвований в руб."
 
@@ -1088,7 +1099,7 @@ msgid "Leyka Dashboard"
 msgstr "Лейка: Консоль"
 
 # @ leyka
-#: inc/leyka-admin.php:97 inc/leyka-admin.php:348 inc/leyka-core.php:148
+#: inc/leyka-admin.php:97 inc/leyka-admin.php:359 inc/leyka-core.php:148
 msgid "Leyka"
 msgstr "Лейка"
 
@@ -1171,127 +1182,135 @@ msgstr ""
 msgid "Display campaign's link on your site using menus"
 msgstr "Укажите ссылку на страницу кампании в меню"
 
-#: inc/leyka-admin.php:206
+#: inc/leyka-admin.php:197
+msgid "Example row"
+msgstr ""
+
+#: inc/leyka-admin.php:213
 msgid "Set up"
 msgstr "Настроить"
 
-#: inc/leyka-admin.php:207
+#: inc/leyka-admin.php:214
 msgid "Additional information on the plugin website"
 msgstr "Дополнительная информация на сайте плагина"
 
+#: inc/leyka-admin.php:216
+msgid "Complete"
+msgstr "Готово"
+
 # @ leyka
-#: inc/leyka-admin.php:225
+#: inc/leyka-admin.php:236
 msgid "Settings type"
 msgstr "Тип настроек"
 
 # @ leyka
-#: inc/leyka-admin.php:236
+#: inc/leyka-admin.php:247
 msgid "Banking and legal information about your organisation"
 msgstr "Банковские и юридические данные о вашей организации"
 
 # @ leyka
-#: inc/leyka-admin.php:237
+#: inc/leyka-admin.php:248
 msgid "Payment method' settings for all you payment forms"
 msgstr "Настройки способов оплаты для всех форм пожертвований"
 
 # @ leyka
-#: inc/leyka-admin.php:238
+#: inc/leyka-admin.php:249
 msgid "Selection of currencies supported in the system"
 msgstr "Выбор валют, поддерживаемых системой"
 
 # @ leyka
-#: inc/leyka-admin.php:239
+#: inc/leyka-admin.php:250
 msgid "Gratification email to donor and staff notification notices"
 msgstr ""
 "Благодарственное письмо донору и уведомления обслуживающему персоналу сайта"
 
-#: inc/leyka-admin.php:240
+#: inc/leyka-admin.php:251
 msgid "Settings for frontend elements, like donation form templates"
 msgstr ""
 "Настройки вывода в публичном разделе сайта, например, шаблонов форм "
 "пожертвований"
 
 # @ leyka
-#: inc/leyka-admin.php:241
+#: inc/leyka-admin.php:252
 msgid "Various template tweaks (advanced)"
 msgstr "Настройки шаблонов (для продвинутых пользователей!)"
 
 # @ leyka
-#: inc/leyka-admin.php:248 inc/leyka-admin.php:331
+#: inc/leyka-admin.php:259 inc/leyka-admin.php:342
 #: inc/leyka-class-campaign.php:323 inc/leyka-class-donation.php:77
 msgid "Edit"
 msgstr "Редактировать"
 
 # @ leyka
-#: inc/leyka-admin.php:270 inc/leyka-class-campaign.php:293
+#: inc/leyka-admin.php:281 inc/leyka-class-campaign.php:293
 #: inc/leyka-class-campaign.php:303
 msgid "Date"
 msgstr "Дата"
 
 # @ leyka
-#: inc/leyka-admin.php:271 inc/leyka-admin.php:318
+#: inc/leyka-admin.php:282 inc/leyka-admin.php:329
 msgid "Purpose"
 msgstr "Цель пожертвования"
 
 # @ leyka
-#: inc/leyka-admin.php:272 inc/leyka-class-campaign.php:291
+#: inc/leyka-admin.php:283 inc/leyka-class-campaign.php:291
 #: inc/leyka-class-campaign.php:301 inc/leyka-class-donation.php:942
 msgid "Donor"
 msgstr "Донор"
 
 # @ leyka
-#: inc/leyka-admin.php:273 inc/leyka-class-campaign.php:290
+#: inc/leyka-admin.php:284 inc/leyka-class-campaign.php:290
 #: inc/leyka-class-campaign.php:300 inc/leyka-class-donation.php:517
 #: inc/leyka-class-donation.php:674 inc/leyka-class-donation.php:943
 msgid "Amount"
 msgstr "Сумма"
 
 # @ leyka
-#: inc/leyka-admin.php:274 inc/leyka-class-campaign.php:294
+#: inc/leyka-admin.php:285 inc/leyka-class-campaign.php:294
 #: inc/leyka-class-campaign.php:304 inc/leyka-class-donation.php:775
 #: inc/leyka-class-donation.php:946
 msgid "Status"
 msgstr "Статус"
 
-#: inc/leyka-admin.php:288 inc/leyka-class-campaign.php:318
+#: inc/leyka-admin.php:299 inc/leyka-class-campaign.php:318
 #: inc/leyka-class-donation.php:647 inc/leyka-shortcodes.php:336
 msgid "Anonymous"
 msgstr "Аноним"
 
 # @ leyka
-#: inc/leyka-admin.php:293
+#: inc/leyka-admin.php:304
 msgid "Details"
 msgstr "Подробности"
 
 # @ leyka
-#: inc/leyka-admin.php:300
+#: inc/leyka-admin.php:311
 msgid "You have not received any donations yet"
 msgstr "Пока пожертвований не было!"
 
 # @ leyka
-#: inc/leyka-admin.php:317 inc/leyka-widgets.php:109 inc/leyka-widgets.php:274
+#: inc/leyka-admin.php:328 inc/leyka-widgets.php:109 inc/leyka-widgets.php:274
 #: inc/leyka-widgets.php:406
 msgid "Title"
 msgstr "Заголовок"
 
 # @ leyka
-#: inc/leyka-admin.php:340
+#: inc/leyka-admin.php:351
 msgid "You don't have any campaign yet."
 msgstr "Вы ещё не создали ни одой благотворительной кампании."
 
 # @ leyka
-#: inc/leyka-admin.php:340
+#: inc/leyka-admin.php:351
 msgid "Create first one"
 msgstr "Создать кампанию"
 
 # @ leyka
-#: inc/leyka-admin.php:349
+#: inc/leyka-admin.php:360
 msgid "Leyka is a simple donations management system"
 msgstr ""
 "Лейка - простая система для сбора и управления пожертвованиями на вашем сайте"
 
 # @ leyka
-#: inc/leyka-admin.php:350
+#: inc/leyka-admin.php:361
 msgid ""
 "Developed by <a href=\"http://te-st.ru/\" target=\"_blank\">Teplitsa of "
 "social technologies</a>"
@@ -1300,43 +1319,43 @@ msgstr ""
 "социальных технологий</a>"
 
 # @ leyka
-#: inc/leyka-admin.php:353
+#: inc/leyka-admin.php:364
 msgid "Plugin website"
 msgstr "Сайт плагина"
 
 # @ leyka
-#: inc/leyka-admin.php:354
+#: inc/leyka-admin.php:365
 msgid "Documentation"
 msgstr "Документация"
 
 # @ leyka
-#: inc/leyka-admin.php:355
+#: inc/leyka-admin.php:366
 msgid "Ask a question"
 msgstr "Задать вопрос"
 
-#: inc/leyka-admin.php:356
+#: inc/leyka-admin.php:367
 msgid "Create issue at GitHub"
 msgstr "Задать вопрос на GitHub"
 
 # @ leyka
-#: inc/leyka-admin.php:367 inc/leyka-admin.php:458
+#: inc/leyka-admin.php:378 inc/leyka-admin.php:469
 msgid "You do not have permissions to access this page."
 msgstr "У вас недостаточно полномочий для доступа к этой странице."
 
 # @ leyka
-#: inc/leyka-admin.php:416
+#: inc/leyka-admin.php:427
 msgid "Save settings"
 msgstr "Сохранить настройки"
 
-#: inc/leyka-admin.php:463
+#: inc/leyka-admin.php:474
 msgid "Send us a feedback"
 msgstr "Напишите в службу поддержки Лейки"
 
-#: inc/leyka-admin.php:466
+#: inc/leyka-admin.php:477
 msgid "Found a bug? Need a feature?"
 msgstr "Нашли ошибку в работе Лейки? Хотите предложить новую функцию?"
 
-#: inc/leyka-admin.php:467
+#: inc/leyka-admin.php:478
 msgid ""
 "Please, <a href=\"https://github.com/Teplitsa/Leyka/issues/new\">create an "
 "issue on Github</a> or send us a message with the following form"
@@ -1345,39 +1364,39 @@ msgstr ""
 "\">создайте обращение на Github</a> или напишите нам письмо с помощью формы "
 "ниже."
 
-#: inc/leyka-admin.php:474
+#: inc/leyka-admin.php:485
 msgid "Message topic:"
 msgstr "Тема сообщения:"
 
-#: inc/leyka-admin.php:475
+#: inc/leyka-admin.php:486
 msgid "For ex., Paypal support needed"
 msgstr "Например, «Нужна поддержка Paypal»"
 
-#: inc/leyka-admin.php:479
+#: inc/leyka-admin.php:490
 msgid "Your name (we'll use it to address you only):"
 msgstr "Ваше имя (мы используем его только для обращения к вам)"
 
-#: inc/leyka-admin.php:480
+#: inc/leyka-admin.php:491
 msgid "For ex., Leo"
 msgstr "Например, Лео"
 
-#: inc/leyka-admin.php:484
+#: inc/leyka-admin.php:495
 msgid "Your email:"
 msgstr "Ваш email:"
 
-#: inc/leyka-admin.php:485
+#: inc/leyka-admin.php:496
 msgid "your@mailbox.com"
 msgstr "your@mailbox.com"
 
-#: inc/leyka-admin.php:489
+#: inc/leyka-admin.php:500
 msgid "Your message:"
 msgstr "Ваше сообщение:"
 
-#: inc/leyka-admin.php:495
+#: inc/leyka-admin.php:506
 msgid "Submit"
 msgstr "Отправить"
 
-#: inc/leyka-admin.php:499
+#: inc/leyka-admin.php:510
 msgid ""
 "<strong>Thank you!</strong> Your message sended successfully. We will answer "
 "it soon - please await our response on the email you entered."
@@ -1385,7 +1404,7 @@ msgstr ""
 "<strong>Спасибо!</strong> Ваше сообщение было отправлено в службу поддержки. "
 "Мы пришлём ответ на указанный вами email."
 
-#: inc/leyka-admin.php:502
+#: inc/leyka-admin.php:513
 msgid ""
 "Sorry, but the message can't be sended. Please check your mail server "
 "settings."
@@ -1393,97 +1412,97 @@ msgstr ""
 "Извините, но сообщение не может быть отправлено. Пожалуйста, проверьте, все "
 "ли поля формы заполнены, и корректно ли настроен почтовый сервер."
 
-#: inc/leyka-admin.php:541
+#: inc/leyka-admin.php:552
 msgid "Leyka: new feedback incoming"
 msgstr "Лейка: поступила новая обратная связь"
 
-#: inc/leyka-admin.php:594 inc/leyka-admin.php:659
+#: inc/leyka-admin.php:605 inc/leyka-admin.php:670
 msgid "This field is required to be filled"
 msgstr "Это поле обязательно должно быть заполнено."
 
 # @ leyka
-#: inc/leyka-admin.php:595 inc/leyka-admin.php:661 inc/leyka-core.php:419
+#: inc/leyka-admin.php:606 inc/leyka-admin.php:672 inc/leyka-core.php:419
 msgid "You have entered an invalid email"
 msgstr "Вы указали некорректный email"
 
-#: inc/leyka-admin.php:621
+#: inc/leyka-admin.php:632
 msgid "Processing..."
 msgstr "Пожалуйста, подождите..."
 
-#: inc/leyka-admin.php:622
+#: inc/leyka-admin.php:633
 msgid "Search:"
 msgstr "Поиск:"
 
-#: inc/leyka-admin.php:623
+#: inc/leyka-admin.php:634
 msgid "Show _MENU_ entries"
 msgstr "Выводить _MENU_ строк"
 
-#: inc/leyka-admin.php:624
+#: inc/leyka-admin.php:635
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr "Строки с _START_ по _END_ из _TOTAL_"
 
-#: inc/leyka-admin.php:625
+#: inc/leyka-admin.php:636
 msgid "Showing 0 to 0 of 0 entries"
 msgstr "Строк не найдено"
 
-#: inc/leyka-admin.php:626
+#: inc/leyka-admin.php:637
 msgid "(filtered from _MAX_ total entries)"
 msgstr "(отфильтровано из _MAX_ строк)"
 
-#: inc/leyka-admin.php:627
+#: inc/leyka-admin.php:638
 msgid ","
 msgstr ","
 
-#: inc/leyka-admin.php:628
+#: inc/leyka-admin.php:639
 msgid "Loading..."
 msgstr "Пожалуйста, подождите..."
 
-#: inc/leyka-admin.php:630
+#: inc/leyka-admin.php:641
 msgid "No matching records found"
 msgstr "Записей не найдено"
 
-#: inc/leyka-admin.php:631
+#: inc/leyka-admin.php:642
 msgid "No data available in table"
 msgstr "Данных в таблице не обнаружено"
 
-#: inc/leyka-admin.php:632
+#: inc/leyka-admin.php:643
 msgid "First"
 msgstr "Первая"
 
-#: inc/leyka-admin.php:633
+#: inc/leyka-admin.php:644
 msgid "Previous"
 msgstr "Назад"
 
-#: inc/leyka-admin.php:634
+#: inc/leyka-admin.php:645
 msgid "Next"
 msgstr "Следующая"
 
-#: inc/leyka-admin.php:635
+#: inc/leyka-admin.php:646
 msgid "Last"
 msgstr "Последняя"
 
-#: inc/leyka-admin.php:636
+#: inc/leyka-admin.php:647
 msgid ": activate to sort column ascending"
 msgstr ": нажмите, чтобы сортировать по возрастанию значений в столбце"
 
-#: inc/leyka-admin.php:637
+#: inc/leyka-admin.php:648
 msgid ": activate to sort column descending"
 msgstr ": нажмите, чтобы сортировать по убыванию значений в столбце"
 
-#: inc/leyka-admin.php:658 inc/leyka-class-donation.php:797
+#: inc/leyka-admin.php:669 inc/leyka-class-donation.php:797
 msgid "Add the donation"
 msgstr "Добавить пожертвование"
 
-#: inc/leyka-admin.php:660
+#: inc/leyka-admin.php:671
 msgid "Selecting a campaign is required"
 msgstr "Пожалуйста, укажите кампанию."
 
 # @ leyka
-#: inc/leyka-admin.php:662 inc/leyka-core.php:416
+#: inc/leyka-admin.php:673 inc/leyka-core.php:416
 msgid "The amount must be filled with non-zero, non-negative number"
 msgstr "Пожалуйста, укажите корректный размер пожертвования"
 
-#: inc/leyka-admin.php:663
+#: inc/leyka-admin.php:674
 msgid ""
 "Please, set one of a payment methods or just type a few words to describe a "
 "source for this donation"

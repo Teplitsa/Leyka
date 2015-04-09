@@ -455,7 +455,7 @@
 	border-bottom: 0;
 	padding: 20px;
 	max-width: 95%;
-	
+	box-shadow: 1px 1px 2px rgba(220,220,220, 0.5);
 	
 	.leyka-setting-row {
 		@include clearfix;		
@@ -498,21 +498,26 @@
 		
 		iframe {
 			max-width: 100%;
+			border: 4px solid $color-regular-border;
+			padding: 1px;
 		}
 	}
 }
 
+
 #share-campaign-area.toggle {
 	background: $color-white;
-	border-color: $color-field-border;
+	border-color: $color-regular-border;	
 	
 	.toggle-trigger {
 		background: $color-white;
-		border-color: $color-field-border;
+		border-color: $color-regular-border;
+		
 	}
 	
 	.toggle-area {
 		background: $color-white;
+		border-color: $color-regular-border;	
 	}
 }
 	
