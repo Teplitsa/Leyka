@@ -31,8 +31,14 @@ jQuery(document).ready(function($){
         }
     });
 
+    $('input[name="embed-type"]').click(function(){
+
+        $('.embed-area').hide();
+        $('#embed-'+$(this).val()).show();
+    });
+
     // Auto-select the code to embed:
-    $('.campaign-embed-code').on('focus keyup', function(e){
+    $('.embed-code').on('focus keyup', function(e){
 
         var keycode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
 
@@ -47,5 +53,50 @@ jQuery(document).ready(function($){
                 return false;
             });
         }
+    });
+
+    var $embed_code = $('#campaign-embed-code');
+
+    $embed_code.keydown(function(e) { // Keep the iframe code from manual changing
+
+        if( // Allowed special keys
+            e.keyCode == 9 || // Tab
+            (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
+            (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
+        ) {
+            return; // Let it happen
+        }
+
+        e.preventDefault();
+    });
+
+    $('#embed_iframe_w, #embed_iframe_h').keydown(function(e) {
+
+        if(e.keyCode == 13) { // Enter pressed - do not let the form be submitted
+            e.preventDefault();
+            return;
+        }
+
+        if( // Allowed special keys
+            $.inArray(e.keyCode, [46, 8, 9]) != -1 || // Backspace, delete, tab
+            (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
+            (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
+        ) {
+            return; // Let it happen
+        }
+
+        if((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+            e.preventDefault();
+        }
+
+    }).change(function(e){
+
+        var $this = $(this),
+            $text = $($embed_code.text());
+
+        $text.attr($this.attr('id') == 'embed_iframe_w' ? 'width' : 'height', $this.val());
+        $('.leyka-embed-preview iframe').attr($this.attr('id') == 'embed_iframe_w' ? 'width' : 'height', $this.val());
+
+        $embed_code.html($text.prop('outerHTML'));
     });
 });

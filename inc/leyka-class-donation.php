@@ -12,8 +12,7 @@ class Leyka_Donation_Management {
 
 	private function __construct() {
 
-        /** @todo Maybe, add donation's custom fields to quick edit box */
-//        add_action('quick_edit_custom_box', array($this, 'display_custom_quickedit_donation'), 10, 2);
+//        add_action('quick_edit_custom_box', array($this, 'display_quickedit_box'), 10, 2);
 
         add_filter('post_row_actions', array($this, 'row_actions'), 10, 2);
 
@@ -79,7 +78,7 @@ class Leyka_Donation_Management {
 		}
 		
         unset($actions['view']);
-//      unset( $actions['trash'] );
+//        unset( $actions['trash'] );
         unset($actions['inline hide-if-no-js']);
         
         return $actions;
@@ -109,22 +108,6 @@ class Leyka_Donation_Management {
             }
 
         }
-
-//        elseif($old == 'funded') {
-//
-//            $donation = new Leyka_Donation($donation);
-//            $campaign = new Leyka_Campaign($donation->campaign_id);
-//
-//            if($campaign->target) {
-//
-//                $collected_amount = $campaign->get_collected_amount();
-//
-//                if($collected_amount >= $campaign->target)
-//                    $campaign->target_state = 'is_reached';
-//                elseif($campaign->target_state != 'in_process')
-//                    $campaign->target_state = 'in_process';
-//            }
-//        }
     }
 
     public function manage_filters() {
@@ -243,6 +226,11 @@ class Leyka_Donation_Management {
             return false;
         }
 
+        if( !$donation ) {
+            return false;
+        }
+
+
         Leyka_Donation_Management::send_donor_thanking_email($donation);
 
         if(leyka_options()->opt('donations_managers_emails')) {
@@ -261,13 +249,16 @@ class Leyka_Donation_Management {
     /** Ajax handler method */
     public function ajax_send_donor_email() {
 
-        if( !wp_verify_nonce($_POST['nonce'], 'leyka_donor_email') )
+        if(empty($_POST['donation_id']) || !wp_verify_nonce($_POST['nonce'], 'leyka_donor_email'))
             return;
 
-        if( Leyka_Donation_Management::send_donor_thanking_email(get_post($_POST['donation_id'])) )
+        $donation = new Leyka_Donation((int)$_POST['donation_id']);
+
+        if($donation && Leyka_Donation_Management::send_donor_thanking_email($donation)) {
             die(__('Grateful email has been sent to the donor', 'leyka'));
-        else
+        } else {
             die(__("For some reason, we can't send this email right now :( Please, try again later.", 'leyka'));
+        }
     }
 
     public static function send_donor_thanking_email($donation) {
@@ -284,7 +275,7 @@ class Leyka_Donation_Management {
         if( !$donor_email )
             $donor_email = leyka_pf_get_donor_email_value();
 
-        if( !$donor_email || $donation->donor_email_date )
+        if( !$donation || !$donor_email || $donation->donor_email_date )
             return false;
 
         if( !function_exists('set_html_content_type') ) {
@@ -365,7 +356,7 @@ class Leyka_Donation_Management {
             return false;
         }
 
-        if($donation->managers_emails_date)
+        if( !$donation || $donation->managers_emails_date )
             return false;
 
         if( !function_exists('set_html_content_type') ) {
@@ -1268,10 +1259,10 @@ class Leyka_Donation {
 
         if(is_int($donation) && (int)$donation > 0) {
 
-            $this->_post_object = get_post($this->_id);
+            $this->_post_object = get_post($donation);
 
             if($this->_post_object) {
-                $this->_id = (int)$donation;
+                $this->_id = $donation;
             } else {
                 return false;
             }
@@ -1359,13 +1350,13 @@ class Leyka_Donation {
             case 'gateway_id':
             case 'gw_id':
                 return $this->_donation_meta['gateway'];
+            case 'gateway_label':
+                $gateway = leyka_get_gateway_by_id($this->_donation_meta['gateway']);
+                return ($gateway ? $gateway->label : __('Unknown gateway', 'leyka'));
             case 'pm_label':
             case 'payment_method_label':
                 $pm = leyka_get_pm_by_id($this->_donation_meta['payment_method']);
                 return ($pm ? $pm->label : __('Unknown payment method', 'leyka'));
-            case 'gateway_label':
-                $gateway = leyka_get_gateway_by_id($this->_donation_meta['gateway']);
-                return ($gateway ? $gateway->label : __('Unknown gateway', 'leyka'));
             case 'currency':
                 return $this->_donation_meta['currency'];
             case 'currency_label':

@@ -5,11 +5,10 @@
  **/
 
 if( !defined('WPINC') ) die;
-$active_pm = leyka_get_pm_list(true);
+$active_pm = apply_filters('leyka_form_pm_order', leyka_get_pm_list(true));
 
 leyka_pf_submission_errors();
 
-// current state
 $curr_pm = leyka_get_pm_by_id(reset($active_pm)->full_id, true);
 
 leyka_setup_current_pm($curr_pm, $curr_pm->default_currency);?>
@@ -85,6 +84,7 @@ leyka_setup_current_pm($curr_pm, $curr_pm->default_currency);?>
 </form>
 </div><!-- .leyka-payment-option -->
 
+<?php leyka_share_campaign_block();?> 
 <?php leyka_pf_footer();?>
 
 </div><!-- #leyka-payment-form -->

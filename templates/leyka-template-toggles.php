@@ -4,7 +4,7 @@
  * Description: Toggled options for each payment method
  **/
 
-$active_pm = leyka_get_pm_list(true);
+$active_pm = apply_filters('leyka_form_pm_order', leyka_get_pm_list(true));
 
 leyka_pf_submission_errors();?>
 
@@ -64,6 +64,7 @@ leyka_pf_submission_errors();?>
 </div>
 <?php }?>
 
+<?php leyka_share_campaign_block();?> 
 <?php leyka_pf_footer();?>
 
 </div><!-- #leyka-payment-form -->

@@ -51,12 +51,39 @@
         .stext7 { font-size: 7.5pt; font-family: "Times New Roman", serif; vertical-align: bottom; }
     </style>
     <style type="text/css">
-        input { font-family: Arial, sans-serif; font-size: 9pt; color: black; background-color: white; border: 1px solid #1DB318; margin: 8pt 8pt 8pt 0; }
-        input:hover { font-family: Arial, sans-serif; font-size: 9pt; color: white; background-color: #1DB318; border: 1px solid #1DB318; margin: 8pt 8pt 8pt 0; }
+        input { font-family: Arial, sans-serif; font-size: 9pt; margin: 8pt 8pt 14pt 0; }       
         a { text-decoration: none; color: #555; }
         a:hover { text-decoration: underline; }
         #toolbox { font-family: Arial, sans-serif; font-size: 9pt; border-bottom: dashed 1pt black; margin-bottom: 0; padding: 2mm 0 0 0; text-align: justify; }
         p { margin: 2pt 0 2pt 0; }
+        
+        input[type="button"]{
+            color: #111;
+            background: #f5f5f5;
+            border: 2px solid #aaa;
+            padding: 0.2em 1em;
+            cursor: pointer;
+        }
+        input[type="button"].ok-btn {            
+            border-color: #1DB318;
+            background: white;
+        }
+        input[type="button"]:hover{
+            background: #1DB318;
+            border-color: #1DB318;
+            color: white;
+        }
+        input[type="button"].print-btn {
+            background: #1DB318;
+            border-color: #1DB318;
+            color: white;
+        }
+        input[type="button"].print-btn:hover {
+            background: #111;
+            border-color: #111;
+            color: white;
+        }
+        
     </style>
     <style type="text/css" media="print">
         #toolbox { display: none; }
@@ -82,8 +109,8 @@
         <input type="hidden" name="rubkop" value="#SUM#">
 
         <input type="button" value="#BACK_TO_DONATION_FORM_TEXT#" onclick="window.history.back();" />
-        <input type="button" value="#PRINT_THE_QUITTANCE_TEXT#" onclick="window.print();" />
-        <input type="button" value="#QUITTANCE_RECEIVED_TEXT#" onclick="window.location.href='#SUCCESS_URL#';" />
+        <input type="button" value="#PRINT_THE_QUITTANCE_TEXT#" onclick="window.print();" class="print-btn" />
+        <input type="button" value="#QUITTANCE_RECEIVED_TEXT#" onclick="window.location.href='#SUCCESS_URL#';" class="ok-btn"/>
 
     </form><span style="font-size: 80%;">информационный блок от начала страницы до пунктирной линии на печать не выводится</span></div>
 <div class="topmargin"></div>

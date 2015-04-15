@@ -189,12 +189,28 @@
       cursor: default;
       background: #fff; }
 
-#leyka_campaign_embed label {
-  display: block;
-  margin-bottom: 5px; }
+#leyka_campaign_embed .embed-block {
+  padding-top: 8px; }
+  #leyka_campaign_embed .embed-block::after {
+    clear: both;
+    content: "";
+    display: table; }
+  #leyka_campaign_embed .embed-block h4 {
+    margin-top: 0; }
+#leyka_campaign_embed .leyka-embed-preview {
+  margin-left: 330px; }
+  #leyka_campaign_embed .leyka-embed-preview iframe {
+    border: 4px solid #dfdfdf;
+    padding: 1px; }
+#leyka_campaign_embed .embed-code {
+  float: left;
+  width: 290px; }
+#leyka_campaign_embed .setting-row {
+  margin-bottom: 25px; }
 #leyka_campaign_embed textarea {
   width: 100%;
-  min-height: 150px; }
+  min-height: 150px;
+  margin-top: 5px; }
 
 /** Campaign table **/
 .post-type-leyka_campaign .column-ID {
@@ -618,3 +634,22 @@
     border-left-color: #7ad03a; }
   .leyka-ff-msg.wrong {
     border-left-color: #dd3d36; }
+
+.leyka-guide-table td {
+  font-size: 14px;
+  padding: 0.4em 0.5em; }
+.leyka-guide-table .step {
+  font-weight: 600; }
+.leyka-guide-table .action {
+  font-size: 13px;
+  padding-left: 2em; }
+.leyka-guide-table .action.complete span {
+  display: inline-block;
+  border-radius: 3px;
+  background: #1db318;
+  color: #fff;
+  padding: 0.1em 0.95em; }
+.leyka-guide-table .docs a {
+  text-decoration: none; }
+  .leyka-guide-table .docs a span {
+    font-size: 24px; }

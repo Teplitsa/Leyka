@@ -108,7 +108,7 @@ class Leyka {
 
             if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type) && !empty($_GET['embed'])) {
 
-                $new_template = leyka_get_current_template_data(false, 'embed', true);
+                $new_template = leyka_get_current_template_data(false, 'embed_'.$_GET['embed'], true);
                 if($new_template && !empty($new_template['file'])) {
                     $template = $new_template['file'];
                 }
@@ -538,7 +538,7 @@ class Leyka {
             'show_in_nav_menus' => true,
             'show_in_menu' => false,
             'show_in_admin_bar' => true,
-            'supports' => array('title', 'editor', 'thumbnail', 'excerpt'),
+            'supports' => array('title', 'editor', 'thumbnail'),
             'taxonomies' => array(),
             'has_archive' => true,
             'capability_type' => 'campaign',
@@ -721,23 +721,35 @@ class Leyka {
      **/
     public function get_templates($is_service = false) {
 
-        if(empty($this->templates)) {
+//        if(empty($this->templates)) {
 
-            $this->templates = glob(STYLESHEETPATH.'/leyka-template-*.php');
-            if($this->templates === false || empty($this->templates)) { // If global hits an error, it returns false
 
-                // Let's search in own folder:
-                $this->templates = glob(
-                    LEYKA_PLUGIN_DIR.'templates'.($is_service ? '/service' : '').'/leyka-template-*.php'
-                );
+        //if($this->templates === false || empty($this->templates)) { // If global hits an error, it returns false
 
-                if($this->templates === false) {
-                    $this->templates = array();
-                }
-            }
-
-            $this->templates = array_map(array($this, 'get_template_data'), $this->templates);
+        if( !$this->templates ) {
+            $this->templates = array();
         }
+
+        if( !!$is_service ) {
+            $this->templates = glob(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-*.php');
+        } else {
+
+            $custom_templates = glob(STYLESHEETPATH.'/leyka-template-*.php');
+            $custom_templates = $custom_templates ? $custom_templates : array();
+
+            $this->templates = array_merge(
+                $custom_templates,
+                glob(LEYKA_PLUGIN_DIR.'templates/leyka-template-*.php')
+            );
+        }
+
+        if( !$this->templates ) {
+            $this->templates = array();
+        }
+//            }
+
+        $this->templates = array_map(array($this, 'get_template_data'), $this->templates);
+//        }
 
         return (array)$this->templates;
     }

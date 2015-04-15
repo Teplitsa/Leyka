@@ -177,14 +177,37 @@
 //embed metabox
 #leyka_campaign_embed {
 	
-	label {
-		display: block;
-		margin-bottom: 5px;
+	.embed-block {
+		@include clearfix;
+		padding-top: 8px;
+		h4 {
+			margin-top: 0;
+			
+		}
 	}
 	
+	.leyka-embed-preview {
+		margin-left: 330px;
+		iframe {
+			border: 4px solid $color-regular-border;
+			padding: 1px;	
+			
+		}
+	}
+	
+	.embed-code {
+		float: left;
+		width: 290px;
+	}
+	
+	.setting-row {
+		margin-bottom: 25px;	
+	}
+		
 	textarea {
 		width: 100%;
 		min-height: 150px;
+		margin-top: 5px;
 	}
 }
 
@@ -765,3 +788,33 @@ $working-width : 700px;
 	}
 }
 	
+.leyka-guide-table {
+	
+	td {
+		font-size: 14px;
+		padding: 0.4em 0.5em;
+	}
+	
+	.step {
+		font-weight: 600;
+	}
+	
+	.action {
+		font-size: 13px;
+		padding-left: 2em;
+	}
+	.action.complete {
+		span {
+			display: inline-block;
+			border-radius: 3px;
+			background: $color-base-green;
+			color: $color-white;
+			padding: 0.1em 0.95em;
+		}
+	}
+	.docs a {
+		text-decoration: none;
+		span { font-size: 24px; }
+	}
+	
+}

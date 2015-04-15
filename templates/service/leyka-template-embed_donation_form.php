@@ -1,7 +1,7 @@
 <?php if( !defined('WPINC') ) die;
 /**
- * Leyka Template: Embed
- * Description: A template for an embed campaigns. On a main website, normally, it is not in use.
+ * Leyka Template: Embed Donation Forms.
+ * Description: A template for an embed donation forms. On a main website, normally, it is not in use.
  **/
 
 
@@ -156,12 +156,11 @@ $cpost = get_post();
 </style>
 </head>
 <body>
-<div id="embedded-card">
+<div id="embedded-donation-form">
 <?php
-	$attr = array('embed_mode' => 1	);
-	echo leyka_get_campaign_card($cpost->ID, $attr);
+	echo leyka_get_payment_form($cpost->ID);
 ?>
-</div>	
+</div>
 </body>
 
 </html>
