@@ -22,7 +22,7 @@ function leyka_render_export_button() {
             <?php }?>
 
             <input type="submit" name="leyka-donations-export-csv-excel" class="button-primary" value="<?php _e('Export (csv)', 'leyka');?>" />
-            <div><input type="checkbox" name="export-tech" id="export-tech" value="1"><label for="export-tech">&nbsp;<?php _e('Technical export', 'leyka');?></label></div>
+            <div id="tech-export-wrapper"><input type="checkbox" name="export-tech" id="export-tech" value="1"><label for="export-tech"><?php _e('Technical export', 'leyka');?></label></div>
         </form>
     </span>
 <?php }
@@ -77,17 +77,18 @@ function leyka_do_donations_export() {
             return '"'.str_replace(array(';', '"'), array('', ''), $text).'"';
         }
 
-        $file_lines = array(array('hash', 'Domain', 'Org name', 'Timestamp', 'Date', 'Email hash', 'Donor name hash', 'Sum', 'Currency', 'Gateway / payment method', 'Donation status', 'Campaign title', 'Campaign URL', 'Payment title', 'Target sum', 'Campaign target state', 'Campaign is finished'));
+        $file_lines = array(array('hash', 'Domain', 'Org_name', 'Timestamp', 'Date', 'Email_hash', 'Donor_name hash', 'Sum', 'Currency', 'Gateway_pm', 'Donation_status', 'Campaign_title', 'Campaign_URL', 'Payment_title', 'Target_sum', 'Campaign_target_state', 'Campaign_is_finished'));
 
         for($i=0; $i<count($file_lines[0]); $i++) {
             $file_lines[0][$i] = prep($file_lines[0][$i]);
         }
 
+        $domain = str_replace(array('http:', 'https:'), '', home_url());
+
         foreach($donations as $donation) {
 
             $donation = new Leyka_Donation($donation);
             $campaign = new Leyka_Campaign($donation->campaign_id);
-            $domain = home_url();
 
             $donation_fields = array(
                 prep(hash('sha256', $domain.$donation->date_timestamp.$donation->sum.$donation->id)),
@@ -114,7 +115,7 @@ function leyka_do_donations_export() {
         }
 
         for($i=0; $i<count($file_lines); $i++) {
-            $file_lines[$i] = implode(";", $file_lines[$i]);
+            $file_lines[$i] = implode(';', $file_lines[$i]);
         }
 
         ob_clean();
@@ -123,8 +124,7 @@ function leyka_do_donations_export() {
         header('Content-Transfer-Encoding: binary');
         header('Expires: 0');
         header('Pragma: no-cache');
-
-        header('Content-Disposition: attachment; filename="donations-tech-'.date('d.m.Y-H.i.s').'.csv"');
+        header('Content-Disposition: attachment; filename="donations-tech-'.$domain.'-'.date('d.m.Y-H.i.s').'.csv"');
 
         die("sep=;\n".implode("\r\n", $file_lines));
 

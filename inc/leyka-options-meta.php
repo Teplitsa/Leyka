@@ -177,7 +177,7 @@ $options_meta = apply_filters('leyka_core_options_meta', array(
     ),
     'pm_available' => array(
         'type' => 'multi_checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
-        'default' => array(),
+        'default' => array('text-text_box'),
         'title' => __('Payment methods available on the donation forms', 'leyka'),
         'description' => __("Check out the payment methods through that you'd want to receive a donation payments.", 'leyka'),
         'required' => 1, // 1 if field is required, 0 otherwise. For checkbox, 1 means "at least 1 value"
