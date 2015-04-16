@@ -405,7 +405,7 @@ abstract class Leyka_Payment_Method {
 
         return $param;
     }
-    
+
     public function has_currency_support($currency = false) {
         if(empty($currency))
             return true;

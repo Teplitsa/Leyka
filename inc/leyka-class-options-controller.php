@@ -164,7 +164,7 @@ class Leyka_Options_Controller {
         return $value ? $value : $this->get_default_of($option_name);
     }
 
-    protected function _validate_option($option_name, $value) {
+    protected function _validate_option($option_name) {
         $option_name = str_replace('leyka_', '', $option_name);
         // use the $this->_options[$option_name]['validation_rules'], luke
         return true;
@@ -198,6 +198,14 @@ class Leyka_Options_Controller {
             return false;
         else
             return $this->_options[$option_name]['required'] >= 1 ? 1 : 0;
+    }
+
+    public function is_valid($option_name) {
+
+        return !(
+            ($this->is_required($option_name) && !$this->opt_safe($option_name)) ||
+            ($this->opt_safe($option_name) && !$this->_validate_option($option_name))
+        );
     }
 }
 
