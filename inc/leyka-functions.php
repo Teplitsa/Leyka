@@ -508,7 +508,8 @@ function leyka_get_actual_currency_rates() {
 function leyka_settings_complete($settings_tab) {
 
     $settings_complete = true;
-    $option_section = reset(leyka_opt_alloc()->get_tab_options($settings_tab));
+    $tab_options = leyka_opt_alloc()->get_tab_options($settings_tab); // Special 4 strict standards
+    $option_section = reset($tab_options);
 
     foreach($option_section['section']['options'] as $option_name) {
 
@@ -534,7 +535,8 @@ function leyka_min_payment_settings_complete() {
     foreach(leyka_options()->opt('pm_available') as $pm_full_id) { // Full ID is "gateway_id-pm_id"
 
         $pm = leyka_get_pm_by_id($pm_full_id, true);
-        $gateway = leyka_get_gateway_by_id(reset(explode('-', $pm_full_id)));
+        $pm_full_id = explode('-', $pm_full_id);
+        $gateway = leyka_get_gateway_by_id(reset($pm_full_id));
 
         if( !$pm || !$gateway ) {
             return false;
@@ -552,7 +554,6 @@ function leyka_min_payment_settings_complete() {
             foreach($gateway->get_options_names() as $option_name) {
 
                 if( !leyka_options()->is_valid($option_name) ) {
-                    echo '<pre>'.print_r('Here: '.$option_name, 1).'</pre>';
                     return false;
                 }
             }

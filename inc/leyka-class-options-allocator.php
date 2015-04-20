@@ -1,10 +1,12 @@
 <?php if( !defined('WPINC') ) die;
 
 class Leyka_Options_Allocator {
+
     private static $_instance = null;
     protected $_tabs = array();
 
     public static function instance() {
+
         if(empty(self::$_instance))
             self::$_instance = new self;
 
@@ -12,6 +14,7 @@ class Leyka_Options_Allocator {
     }
 
     private function __construct() {
+
         $this->_tabs = apply_filters('leyka_settings_tabs', array(
             'beneficiary' => __('Beneficiary', 'leyka'),
             'payment'     => __('Payment options', 'leyka'),

@@ -6,10 +6,7 @@
 
 class Leyka_Admin_Setup {
 
-	private static $instance = null;
-
-//	private $_options_capability = 'manage_options';
-//	private $_manager_role = 'editor';
+	private static $_instance = null;
 
 	private function __construct() {
 
@@ -84,10 +81,10 @@ class Leyka_Admin_Setup {
 	public static function get_instance() {
 
 		// If the single instance hasn't been set, set it now:
-		if( !self::$instance )
-			self::$instance = new self;
+		if( !self::$_instance )
+			self::$_instance = new self;
 
-		return self::$instance;
+		return self::$_instance;
 	}
 
 	/** Admin Menu **/
