@@ -158,6 +158,8 @@ PHP at least 5.3 is required.
  * New: "First steps" metabox is added to the plugin desktop.
  * New: first level of improvement of options validation system.
  * New: technical export function is added.
+ * New: now embed campaign card also can be acquired from donation forms.
+ * New: added a "leyka_form_pm_order" filter to allow PM list reordering in donation forms.
  * Fix: excerpt metabox is renamed to the "annotation" for the campaigns.
  * Fix: embed campaign cards.
  * Fix: donations export problem for PHP 5.3 is fixed.
