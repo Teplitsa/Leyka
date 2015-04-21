@@ -346,6 +346,21 @@ class Leyka {
             }
         }
 
+        // Remove the unneeded scripts for settings pages:
+        if((float)$leyka_last_ver <= 2.5) {
+
+            $settings_pages_dir = dir(LEYKA_PLUGIN_DIR.'inc/settings-pages/');
+            while(false !== ($script = $settings_pages_dir->read())) {
+
+                if($script != '.' && $script != '..' && !in_array($script, array('leyka-settings-common.php',))) {
+                    unlink(LEYKA_PLUGIN_DIR.'inc/settings-pages/'.$script);
+                }
+
+            }
+
+            $settings_pages_dir->close();
+        }
+
         /** Set a flag to flush permalinks (needs to be done a bit later, than this activation itself): */
         update_option('leyka_permalinks_flushed', 0);
 
