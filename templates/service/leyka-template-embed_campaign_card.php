@@ -62,7 +62,7 @@ $cpost = get_post();
 		line-height: 1.2;
 		color: #111;
 		margin-bottom: 0.5em;
-		max-height: 50px;		
+		/*max-height: 50px;	*/	
 	}
 	
 		.lk-title a, .lk-title a:visited {

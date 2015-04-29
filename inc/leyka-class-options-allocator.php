@@ -60,12 +60,12 @@ class Leyka_Options_Allocator {
 
             case 'payment':
                 $options_allocated = array(
-                    array('section' => array(
-                        'name' => 'payment_common',
-                        'title' => __('Common options', 'leyka'),
-                        'is_default_collapsed' => false,
-                        'options' => array('pm_available', /*'default_pm', 'donation_purpose_text',*/)
-                    ),),
+//                    array('section' => array(
+//                        'name' => 'payment_common',
+//                        'title' => __('Common options', 'leyka'),
+//                        'is_default_collapsed' => false,
+//                        'options' => array('pm_available', /*'default_pm', 'donation_purpose_text',*/)
+//                    ),),
                 );
                 break;
 

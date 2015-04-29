@@ -581,10 +581,24 @@ class Leyka_Admin_Setup {
         // Base admin area js/css:
         wp_enqueue_style('leyka-admin', LEYKA_PLUGIN_BASE_URL.'css/admin.css', array(), LEYKA_VERSION);
 
+        $current_screen = get_current_screen();
+//        echo '<pre>'.print_r($current_screen, 1).'</pre>';
+        $dependencies = array('jquery',);
+        if($current_screen->id == 'toplevel_page_leyka') {
+            $dependencies[] = 'postbox';
+        }
+        if($current_screen->id == 'lejka_page_leyka_settings') {
+            $dependencies[] = 'jquery-ui-accordion';
+            $dependencies[] = 'postbox';
+        }
+        if($current_screen->post_type == Leyka_Donation_Management::$post_type) {
+            $dependencies[] = 'jquery-ui-autocomplete';
+        }
+
         wp_enqueue_script(
             'leyka-admin',
             LEYKA_PLUGIN_BASE_URL.'js/admin.js',
-            array('jquery', 'jquery-ui-autocomplete'), LEYKA_VERSION, true
+            $dependencies, LEYKA_VERSION, true
         );
 
         $js_local = array(
