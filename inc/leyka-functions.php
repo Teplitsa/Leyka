@@ -390,22 +390,19 @@ function leyka_fake_scale_ultra($campaign) {
     
     if( !is_a($campaign, 'Leyka_Campaign') )
         $campaign = new Leyka_Campaign($campaign);
-        
-   
+
     $curr_label = leyka_get_currency_label('rur');
-    $collected = intval($campaign->get_collected_amount());
-    $collected_f = number_format($collected, 0, '.', ' ');       
-?>
+    $collected = number_format(intval($campaign->get_collected_amount()), 0, '.', ' ');?>
 
 <div class="leyka-scale-ultra-fake">
     <div class="leyka-scale-scale">
         <div class="target"> </div>
     </div>
     <div class="leyka-scale-label"><span>
-        <?php  printf(_x('Collected: %s', 'Label on ultra-compact fake scale', 'leyka'), "<b>{$collected_f}</b> {$curr_label}"); ?>    
+        <?php  printf(_x('Collected: %s', 'Label on ultra-compact fake scale', 'leyka'), "<b>{$collected}</b> {$curr_label}"); ?>
     </span></div>
 </div>
-<?php  
+<?php
 }
 
 /** @return array An array of possible payment types with labels */
@@ -506,4 +503,68 @@ function leyka_get_actual_currency_rates() {
     }
 
     return $currencies;
+}
+
+function leyka_settings_complete($settings_tab) {
+
+    $settings_complete = true;
+    $tab_options = leyka_opt_alloc()->get_tab_options($settings_tab); // Special 4 strict standards
+    $option_section = reset($tab_options);
+
+    foreach($option_section['section']['options'] as $option_name) {
+
+        if( !leyka_options()->opt_safe($option_name) && leyka_options()->is_required($option_name) ) {
+
+            $settings_complete = false;
+            break;
+        }
+    }
+
+    return $settings_complete;
+}
+
+function leyka_min_payment_settings_complete() {
+
+    $pm_list = leyka_get_pm_list(true);
+    if( !$pm_list ) {
+        return false;
+    }
+
+    $gateway_options_valid = array(); // Array of already validated gateways
+
+    foreach(leyka_options()->opt('pm_available') as $pm_full_id) { // Full ID is "gateway_id-pm_id"
+
+        $pm = leyka_get_pm_by_id($pm_full_id, true);
+        $pm_full_id = explode('-', $pm_full_id);
+        $gateway = leyka_get_gateway_by_id(reset($pm_full_id));
+
+        if( !$pm || !$gateway ) {
+            return false;
+        }
+
+        foreach($pm->get_pm_options_names() as $option_name) {
+
+            if( !leyka_options()->is_valid($option_name) ) {
+                return false;
+            }
+        }
+
+        if(empty($gateway_options_valid[$gateway->id])) {
+
+            foreach($gateway->get_options_names() as $option_name) {
+
+                if( !leyka_options()->is_valid($option_name) ) {
+                    return false;
+                }
+            }
+
+            $gateway_options_valid[$gateway->id] = true;
+        }
+    }
+
+    return true;
+}
+
+function leyka_campaign_published() {
+    return count(get_posts(array('post_type' => Leyka_Campaign_Management::$post_type, 'posts_per_page' => 1))) > 0;
 }

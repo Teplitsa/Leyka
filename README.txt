@@ -154,6 +154,18 @@ PHP at least 5.3 is required.
 
 == Changelog ==
 
+= 2.2.5 =
+ * New: "First steps" metabox is added to the plugin desktop.
+ * New: first level of improvement of options validation system.
+ * New: technical export function is added.
+ * New: now embed campaign card also can be acquired from donation forms.
+ * New: added a "leyka_form_pm_order" filter to allow PM list reordering in donation forms.
+ * Fix: excerpt metabox is renamed to the "annotation" for the campaigns.
+ * Fix: embed campaign cards.
+ * Fix: donations export problem for PHP 5.3 is fixed.
+ * Fix: Chronopay callbacks fixed.
+ * Fix: many small fixes.
+
 = 2.2.4 =
  * New: Yandex.Money Gateway support widened.
  * New: entered plugin's specific user capabilities and roles system.

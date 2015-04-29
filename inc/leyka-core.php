@@ -4,12 +4,6 @@
 class Leyka {
 
     /**
-     * Plugin version, used for cache-busting of style and script file references.
-     * @var string
-     */
-//    private $_version = LEYKA_VERSION;
-
-    /**
      * Unique identifier for your plugin.
      *
      * Use this value (not the variable name) as the text domain when internationalizing strings of text. It should
@@ -25,19 +19,10 @@ class Leyka {
     private static $_instance = null;
 
     /**
-     * Slug of the plugin screen.
-     * @var string
-     */
-    // private $_plugin_screen_hook_suffix = null;
-
-    /**
      * Gateways list.
      * @var array
      */
     private $_gateways = array();
-
-    /** @var bool Set in true if gateways addition already processed. */
-    // private $_gateways_added = false;
 
     /** @var array Of WP_Error instances. */
     private $_form_errors = array();
@@ -59,11 +44,12 @@ class Leyka {
 
         if( !get_option('leyka_permalinks_flushed') ) {
 
-            add_action('init', function(){
+            function leyka_flush_rewrite_rules() {
 
                 flush_rewrite_rules(false);
                 update_option('leyka_permalinks_flushed', 1);
-            });
+            }
+            add_action('init', 'leyka_flush_rewrite_rules');
         }
 
         // By default, we'll assume some errors in the payment form, so redirect will get us back to it:
@@ -430,8 +416,8 @@ class Leyka {
 
         require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-allocator.php');
         require_once(LEYKA_PLUGIN_DIR.'inc/leyka-render-settings.php');
-        require_once(LEYKA_PLUGIN_DIR.'/inc/leyka-admin.php');
-        require_once(LEYKA_PLUGIN_DIR.'/inc/leyka-donations-export.php');
+        require_once(LEYKA_PLUGIN_DIR.'inc/leyka-admin.php');
+        require_once(LEYKA_PLUGIN_DIR.'inc/leyka-donations-export.php');
 
         Leyka_Admin_Setup::get_instance();
     }
@@ -450,7 +436,7 @@ class Leyka {
         );
 
         $role = get_role('administrator');
-        if( !in_array('leyka_manage_donations', $role->capabilities) ) {
+        if(empty($role->capabilities['leyka_manage_donations'])) {
 
             foreach($caps as $cap => $true) {
 

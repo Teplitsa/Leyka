@@ -135,7 +135,7 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
                 'default' => '',
                 'title' => __('Ways to donate', 'leyka'),
                 'description' => __('Please, set a text to describe an additional ways to donate.', 'leyka'),
-                'required' => 0,
+                'required' => 1,
                 'validation_rules' => array(), // List of regexp?..
             )
         );

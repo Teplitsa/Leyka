@@ -6,10 +6,7 @@
 
 class Leyka_Admin_Setup {
 
-	private static $instance = null;
-
-//	private $_options_capability = 'manage_options';
-//	private $_manager_role = 'editor';
+	private static $_instance = null;
 
 	private function __construct() {
 
@@ -84,10 +81,10 @@ class Leyka_Admin_Setup {
 	public static function get_instance() {
 
 		// If the single instance hasn't been set, set it now:
-		if( !self::$instance )
-			self::$instance = new self;
+		if( !self::$_instance )
+			self::$_instance = new self;
 
-		return self::$instance;
+		return self::$_instance;
 	}
 
 	/** Admin Menu **/
@@ -159,46 +156,39 @@ class Leyka_Admin_Setup {
 	}
 
     public function guide_metabox_screen() {
-		
-		$rows = array();
-		//content
+
+		// Content:
 		$row['step_1'] = array(
 			'txt'    => __('Fill in information about your organisation', 'leyka'),
-			'action' => admin_url('admin.php?page=leyka_settings'),
+			'action' => leyka_settings_complete('beneficiary') ? false : admin_url('admin.php?page=leyka_settings'),
 			'docs'   => 'https://leyka.te-st.ru/docs/nastrojka-lejki/'
 		);
 		$row['step_2'] = array(
-			'txt'    => __('Set up al least one payment gateway, ex. bank order', 'leyka'),
-			'action' => admin_url('admin.php?page=leyka_settings&stage=payment'),
+			'txt'    => __('Set up at least one payment gateway - bank order, for example', 'leyka'),
+			'action' => leyka_min_payment_settings_complete() ?
+                false : admin_url('admin.php?page=leyka_settings&stage=payment'),
 			'docs'   => 'https://leyka.te-st.ru/docs/nastrojka-lejki-vkladka-2-platezhnye-optsii/'
 		);
 		$row['step_3'] = array(
 			'txt'    => __('Create and publsih your first campaign', 'leyka'),
-			'action' => admin_url('post-new.php?post_type=leyka_campaign'),
+			'action' => leyka_campaign_published() ?
+                false : admin_url('post-new.php?post_type='.Leyka_Campaign_Management::$post_type),
 			'docs'   => 'https://leyka.te-st.ru/docs/sozdanie-kampanii/'
 		);
-		
-		if(current_theme_supports('widgets')){
+
+		if(current_theme_supports('widgets')) {
 			$row['step_4'] = array(
 				'txt'    => __('Display campaign and donation information on your site using widgets', 'leyka'),
 				'action' => admin_url('widgets.php'),
 				'docs'   => 'https://leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/'
 			);
-		}
-		elseif(current_theme_supports('menus')) {
+		} elseif(current_theme_supports('menus')) {
 			$row['step_4'] = array(
 				'txt'    => __('Display campaign\'s link on your site using menus', 'leyka'),
 				'action' => admin_url('nav-menus.php'),
 				'docs'   => 'https://leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/'
 			);
-		}
-		
-		$row['step_5'] = array(
-			'txt'    => __('Example row', 'leyka'),
-			'action' => false,
-			'docs'   => 'https://leyka.te-st.ru/docs/sozdanie-kampanii/'
-		);
-	?>
+		}?>
 	<table class="leyka-guide-table">		
 		<tbody>
 		<?php
@@ -380,16 +370,11 @@ class Leyka_Admin_Setup {
         $current_stage = $this->get_current_settings_tab();
 
         require(LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-common.php');
-        if(file_exists(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-$current_stage.php"))
-            require(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-$current_stage.php");
 
 		/* Page actions */
 		do_action('leyka_pre_settings_actions');
 
-		$page_slug = 'leyka_settings';
-//		$page_title = __('Leyka Settings', 'leyka');
-
-		$faction = add_query_arg('stage', $current_stage, "admin.php?page={$page_slug}");
+		$faction = add_query_arg('stage', $current_stage, "admin.php?page=leyka_settings");
 
         /** Process settings change */
 	    if( !empty($_POST["leyka_settings_{$current_stage}_submit"])){
@@ -404,28 +389,31 @@ class Leyka_Admin_Setup {
 		<div id="tab-container">
 			<form method="post" action="<?php echo admin_url($faction);?>" id="leyka-settings-form">
 
-            <?php
-				wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
+            <?php wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
 
-				do_action("leyka_settings_pre_{$current_stage}_fields");
+            if(file_exists(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-$current_stage.php")) {
+                require(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-$current_stage.php");
+            } else {
+
+                do_action("leyka_settings_pre_{$current_stage}_fields");
 
                 foreach(leyka_opt_alloc()->get_tab_options($current_stage) as $option) { // Render each option/section
 
                     if(is_array($option) && !empty($option['section'])) {
                         do_action('leyka_render_section', $option['section']);
-						
                     } else { // is this case possible?
+
                         $option_info = leyka_options()->get_info_of($option);
                         do_action("leyka_render_{$option_info['type']}", $option, $option_info);
                     }
-
                 }
 
-                do_action("leyka_settings_post_{$current_stage}_fields");
-			?>
-			<p class="submit">
+                do_action("leyka_settings_post_{$current_stage}_fields");?>
+
+            <p class="submit">
 				<input type="submit" name="<?php echo "leyka_settings_{$current_stage}";?>_submit" value="<?php _e('Save settings', 'leyka'); ?>" class="button-primary" />
 			</p>
+            <?php }?>
 			
 			</form>
 		</div>

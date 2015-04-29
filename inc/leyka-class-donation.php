@@ -1350,13 +1350,13 @@ class Leyka_Donation {
             case 'gateway_id':
             case 'gw_id':
                 return $this->_donation_meta['gateway'];
+            case 'gateway_label':
+                $gateway = leyka_get_gateway_by_id($this->_donation_meta['gateway']);
+                return ($gateway ? $gateway->label : __('Unknown gateway', 'leyka'));
             case 'pm_label':
             case 'payment_method_label':
                 $pm = leyka_get_pm_by_id($this->_donation_meta['payment_method']);
                 return ($pm ? $pm->label : __('Unknown payment method', 'leyka'));
-            case 'gateway_label':
-                $gateway = leyka_get_gateway_by_id($this->_donation_meta['gateway']);
-                return ($gateway ? $gateway->label : __('Unknown gateway', 'leyka'));
             case 'currency':
                 return $this->_donation_meta['currency'];
             case 'currency_label':

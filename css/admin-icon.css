@@ -23,4 +23,14 @@
 
 #adminmenu #toplevel_page_leyka:hover .wp-menu-image:after,
 #adminmenu #toplevel_page_leyka .wp-has-current-submenu .wp-menu-image:after {
-	background-position: 0 0; }
+	background-position: 0 0;
+}
+
+#tech-export-wrapper {
+    display:inline;
+    font-size:13px;
+}
+
+#tech-export-wrapper input {
+    margin-left:5px;
+}
