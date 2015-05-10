@@ -60,12 +60,12 @@ class Leyka_Options_Allocator {
 
             case 'payment':
                 $options_allocated = array(
-//                    array('section' => array(
-//                        'name' => 'payment_common',
-//                        'title' => __('Common options', 'leyka'),
-//                        'is_default_collapsed' => false,
-//                        'options' => array('pm_available', /*'default_pm', 'donation_purpose_text',*/)
-//                    ),),
+                    array('section' => array(
+                        'name' => 'payment_common',
+                        'title' => __('Common options', 'leyka'),
+                        'is_default_collapsed' => false,
+                        'options' => array('pm_available', 'pm_order',)
+                    ),),
                 );
                 break;
 
@@ -146,7 +146,7 @@ class Leyka_Options_Allocator {
                         'is_default_collapsed' => false,
                         'options' => array(
                             'donation_form_template', 'donation_sum_field_type', 'donation_form_mode',
-                            'scale_widget_place', 'donations_history_under_forms',
+                            'scale_widget_place', 'donations_history_under_forms', 'show_campaign_sharing',
                         )
                     ),),
                 );

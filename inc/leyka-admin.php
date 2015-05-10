@@ -8,6 +8,15 @@ class Leyka_Admin_Setup {
 
 	private static $_instance = null;
 
+    public static function get_instance() {
+
+        // If the single instance hasn't been set, set it now:
+        if( !self::$_instance )
+            self::$_instance = new self;
+
+        return self::$_instance;
+    }
+
 	private function __construct() {
 
 		add_action('admin_menu', array($this, 'admin_menu_setup'), 9); // Add the options page and menu item
@@ -23,6 +32,10 @@ class Leyka_Admin_Setup {
 
         // Link in plugin actions:
 		add_filter('plugin_action_links_'.LEYKA_PLUGIN_INNER_SHORT_NAME, array($this, 'add_settings_link'));
+
+        // Metaboxes support where it is needed:
+        add_action('leyka_pre_settings_actions', array($this, 'leyka_metaboxes_full_support'));
+        add_action('leyka_dashboard_actions', array($this, 'leyka_metaboxes_full_support'));
     }
 
     public function set_plugin_meta($links, $file) {
@@ -34,7 +47,20 @@ class Leyka_Admin_Setup {
         return $links;
     }
 
-    function remove_seo() {
+    // A little function to support the full abilities of the metaboxes on any plugin's page:
+    public function leyka_metaboxes_full_support($current_stage = false) {
+
+        if($current_stage && $current_stage != 'payment')
+            return;?>
+
+        <!-- Metaboxes reordering and folding support -->
+        <form style="display:none" method="get" action="">
+            <?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false ); ?>
+            <?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false ); ?>
+        </form>
+    <?php }
+
+    public function remove_seo() {
 
         // WordPress SEO by Yoast's metabox on donation editing page:
         if( !empty($GLOBALS['wpseo_metabox']) ) {
@@ -77,15 +103,6 @@ class Leyka_Admin_Setup {
     <?php
     }
     */
-
-	public static function get_instance() {
-
-		// If the single instance hasn't been set, set it now:
-		if( !self::$_instance )
-			self::$_instance = new self;
-
-		return self::$_instance;
-	}
 
 	/** Admin Menu **/
     public function admin_menu_setup() {
@@ -145,12 +162,12 @@ class Leyka_Admin_Setup {
             <h2><?php _e('Leyka Dashboard', 'leyka');?></h2>
 
             <div class="metabox-holder" id="leyka-widgets">
-            <div class="postbox-container" id="postbox-container-1">
-                <?php do_meta_boxes('toplevel_page_leyka', 'normal', 'leyka_status');?>
-            </div>
-            <div class="postbox-container" id="postbox-container-2">
-                <?php $this->dashboard_sidebar_screen();?>
-            </div>
+                <div class="postbox-container" id="postbox-container-1">
+                    <?php do_meta_boxes('toplevel_page_leyka', 'normal', 'leyka_status');?>
+                </div>
+                <div class="postbox-container" id="postbox-container-2">
+                    <?php $this->dashboard_sidebar_screen();?>
+                </div>
 		</div><!-- close .wrap -->
 	<?php
 	}
@@ -371,13 +388,13 @@ class Leyka_Admin_Setup {
 
         require(LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-common.php');
 
-		/* Page actions */
-		do_action('leyka_pre_settings_actions');
+        /* Page actions */
+		do_action('leyka_pre_settings_actions', $current_stage);
 
 		$faction = add_query_arg('stage', $current_stage, "admin.php?page=leyka_settings");
 
         /** Process settings change */
-	    if( !empty($_POST["leyka_settings_{$current_stage}_submit"])){
+	    if( !empty($_POST["leyka_settings_{$current_stage}_submit"]) ) {
 //         && wp_verify_nonce('_leyka_nonce', "leyka_settings_{$current_stage}")
 			do_action("leyka_settings_{$current_stage}_submit", $current_stage);
 		}?>
@@ -409,13 +426,13 @@ class Leyka_Admin_Setup {
                 }
 
                 do_action("leyka_settings_post_{$current_stage}_fields");?>
-
-            <p class="submit">
-				<input type="submit" name="<?php echo "leyka_settings_{$current_stage}";?>_submit" value="<?php _e('Save settings', 'leyka'); ?>" class="button-primary" />
-			</p>
             <?php }?>
-			
+
+                <p class="submit">
+                    <input type="submit" name="<?php echo "leyka_settings_{$current_stage}";?>_submit" value="<?php _e('Save settings', 'leyka'); ?>" class="button-primary" />
+                </p>
 			</form>
+<!--            --><?php //do_action("leyka_settings_post_{$current_stage}_form");?>
 		</div>
 
 		</div><!-- close .wrap -->
@@ -582,14 +599,15 @@ class Leyka_Admin_Setup {
         wp_enqueue_style('leyka-admin', LEYKA_PLUGIN_BASE_URL.'css/admin.css', array(), LEYKA_VERSION);
 
         $current_screen = get_current_screen();
-//        echo '<pre>'.print_r($current_screen, 1).'</pre>';
         $dependencies = array('jquery',);
+
         if($current_screen->id == 'toplevel_page_leyka') {
             $dependencies[] = 'postbox';
         }
         if($current_screen->id == 'lejka_page_leyka_settings') {
             $dependencies[] = 'jquery-ui-accordion';
             $dependencies[] = 'postbox';
+            $dependencies[] = 'jquery-ui-sortable';
         }
         if($current_screen->post_type == Leyka_Donation_Management::$post_type) {
             $dependencies[] = 'jquery-ui-autocomplete';

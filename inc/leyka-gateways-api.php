@@ -24,12 +24,29 @@ function leyka_get_gateways(){
  * @param $currency mixed
  * @return array
  */
-function leyka_get_pm_list($activity = null, $currency = false) {
+function leyka_get_pm_list($activity = null, $currency = false, $sorted = true) {
 
     $pm_list = array();
-    foreach(leyka()->get_gateways() as $gateway) {
-        /** @var Leyka_Gateway $gateway */ 
-        $pm_list = array_merge($pm_list, $gateway->get_payment_methods($activity, $currency));
+
+    if($sorted) {
+
+        $pm_order = explode('pm_order[]=', leyka_options()->opt('pm_order'));
+        array_shift($pm_order);
+
+        foreach($pm_order as $pm) {
+
+            $pm = leyka_get_pm_by_id(str_replace(array('&amp;', '&'), '', $pm), true);
+
+            if( (!$activity || $pm->active == $activity) && (!$currency || $pm->has_currency_support($currency)) ) {
+                $pm_list[] = $pm;
+            }
+        }
+
+    } else {
+
+        foreach(leyka()->get_gateways() as $gateway) { /** @var Leyka_Gateway $gateway */
+            $pm_list = array_merge($pm_list, $gateway->get_payment_methods($activity, $currency));
+        }
     }
 
     return apply_filters('leyka_active_pm_list', $pm_list, $activity, $currency);
@@ -46,7 +63,7 @@ function leyka_get_pm_by_id($pm_id, $is_full_id = false) {
     if($is_full_id) {
 		
 		$id = explode('-', $pm_id);
-        $gateway = leyka_get_gateway_by_id(reset($id)); //otherwise error in PHP 5.4.0
+        $gateway = leyka_get_gateway_by_id(reset($id)); // Otherwise error in PHP 5.4.0
         if( !$gateway )
             return false;
 
@@ -54,8 +71,8 @@ function leyka_get_pm_by_id($pm_id, $is_full_id = false) {
 
     } else {
 
-        foreach(leyka()->get_gateways() as $gateway) {
-            /** @var Leyka_Gateway $gateway */
+        foreach(leyka()->get_gateways() as $gateway) { /** @var Leyka_Gateway $gateway */
+
             $pm = $gateway->get_payment_method_by_id($pm_id);
             if($pm)
                 break;
@@ -71,8 +88,8 @@ function leyka_get_pm_by_id($pm_id, $is_full_id = false) {
  */
 function leyka_get_gateway_by_id($gateway_id) {
 
-    foreach(leyka()->get_gateways() as $gateway) {
-        /** @var Leyka_Gateway $gateway */
+    foreach(leyka()->get_gateways() as $gateway) { /** @var Leyka_Gateway $gateway */
+
         if($gateway->id == $gateway_id)
             return $gateway;
     }
@@ -85,15 +102,28 @@ abstract class Leyka_Gateway {
 
 	protected $_id = ''; // A unique string, as "quittance", "yandex" or "chronopay"
 	protected $_title = ''; // A human-readable title of gateway, a "Bank quittances" or "Yandex.money"
+    protected $_icon = ''; // A gateway icon URL. Must have 25px on a bigger side
     protected $_payment_methods = array(); // Supported PMs array
     protected $_options = array(); // Gateway configs
+//    protected $_persistent_options = array(); // Gateway universal options (that persists in any gateway)
 
     protected function __construct() {
 
-        // All methods must be redefined in a Gateway subclass to customize it's behavior:
-
         $this->_set_gateway_attributes(); // Create main Gateway's attributes
 
+//        $this->_persistent_options = array(
+//            $this->_id.'_custom_title' => array(
+//                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+//                'value' => '',
+//                'default' => '',
+//                'title' => __('Custom title', 'leyka'),
+//                'description' => __('IP address to check for requests.', 'leyka'),
+//                'required' => 1,
+//                'placeholder' => __('Ex., 159.255.220.140', 'leyka'),
+//                'list_entries' => array(), // For select, radio & checkbox fields
+//                'validation_rules' => array(), // List of regexp?..
+//            ),
+//        );
         $this->_set_options_defaults(); // Set configurable options in admin area
 
         $this->_set_gateway_pm_list(); // Initialize or restore Gateway's PMs list and all their options
@@ -124,10 +154,16 @@ abstract class Leyka_Gateway {
     }
 
     public function __get($param) {
-        if($param == 'id')
-            return $this->_id;
-        elseif($param == 'title' || $param == 'name' || $param == 'label')
-            return $this->_title;
+
+        switch($param) {
+            case 'id': return $this->_id;
+            case 'title':
+            case 'name':
+            case 'label': return $this->_title;
+            case 'icon': return $this->_icon ?
+                $this->_icon : LEYKA_PLUGIN_BASE_URL."/gateways/{$this->_id}/icons/{$this->_id}.png";
+            default:
+        }
     }
 
     public function get_options_names() {

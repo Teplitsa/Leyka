@@ -4,16 +4,72 @@
 
 jQuery(document).ready(function($){
 
-    var $pm_settings = $('#payment-settings-area');
-    if($pm_settings.length) {
+    /** Plugin metaboxes rendering: */
+    function leyka_support_metaboxes(metabox_area) {
 
-        /** Plugin metaboxes rendering: */
         $('.if-js-closed').removeClass('if-js-closed').addClass('closed'); // close postboxes that should be closed
+        postboxes.add_postbox_toggles(metabox_area);
+    }
 
-        postboxes.add_postbox_toggles('leyka_settings_payment');
+    // Leyka desktop page:
+    if($('body').hasClass('toplevel_page_leyka')) {
+        leyka_support_metaboxes('toplevel_page_leyka');
+    }
 
-        $('#pm-settings-wrapper').accordion({
-            heightStyle: 'content'
+    // Payment settings page:
+    if($('#payment-settings-area').length) {
+
+        leyka_support_metaboxes('leyka_settings_payment');
+
+        var $gateways_accordion = $('#pm-settings-wrapper');
+        $gateways_accordion.accordion({
+            heightStyle: 'content',
+            header: '.gateway-settings > h3'
+        });
+
+        /** Gateways & PM folding on click by the active PM checkboxes. Also PM ordering */
+        var $pm_order = $('#pm-order-settings').sortable({
+            placeholder: '',
+            update: function(event){
+
+                $('input[name="leyka_pm_order"]').val( $(this).sortable('serialize', {
+                    key: 'pm_order[]', attribute: 'data-pm-id', expression: /(.+)/
+                }) );
+            }
+        });
+
+        $('.pm-active').click(function(){
+
+            var $this = $(this),
+                $gateway_metabox = $this.parents('.postbox'),
+                gateway_id = $gateway_metabox.attr('id').replace('leyka_payment_settings_gateway_', ''),
+                $gateway_settings = $('#gateway-'+gateway_id);
+
+            // Show/hide a PM settings:
+            $('#pm-'+$this.attr('id')).toggle();
+
+            // Add/remove a sortable block from the PM order settings:
+            if($this.attr('checked')) {
+                $pm_order.append('<li data-pm-id="'+$this.attr('id')+'" class="pm-order">'+$this.data('pm-label')+'</li>');
+            } else {
+                $('.pm-order[data-pm-id="'+$this.attr('id')+'"]').remove();
+            }
+            $pm_order.sortable('refresh').sortable('refreshPositions');
+
+            // Show/hide a whole gateway settings if there are no PMs from it selected:
+            if( !$gateway_metabox.find('input:checked').length ) {
+
+                $gateway_settings.hide();
+                $gateways_accordion.accordion('refresh');
+
+            } else if( !$gateway_settings.is(':visible') ) {
+
+                $gateway_settings.show();
+                $gateways_accordion.accordion('refresh');
+
+                $('.pm-order[data-pm-id='+$this.attr('id')+']').show();
+                $pm_order.sortable('refresh').sortable('refreshPositions');
+            }
         });
     }
 

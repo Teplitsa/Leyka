@@ -1,4 +1,4 @@
-<?php
+<?php if( !defined('WPINC') ) die;
 /**
  * Leyka Template: Toggles
  * Description: Toggled options for each payment method
@@ -22,7 +22,6 @@ leyka_pf_submission_errors();?>
 </div>
 <div class="toggle-area">
 <form class="leyka-pm-form" id="<?php echo leyka_pf_get_form_id();?>" action="<?php echo leyka_pf_get_form_action();?>" method="post">
-<!--	<input type="hidden" name="leyka_debug" value="1" />-->
 	
 	<div class="leyka-pm-fields">
 <?php
@@ -64,7 +63,10 @@ leyka_pf_submission_errors();?>
 </div>
 <?php }?>
 
-<?php leyka_share_campaign_block();?> 
-<?php leyka_pf_footer();?>
+<?php if(leyka_options()->opt('show_campaign_sharing')) {
+    leyka_share_campaign_block();
+}
+
+leyka_pf_footer();?>
 
 </div><!-- #leyka-payment-form -->
