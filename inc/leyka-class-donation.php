@@ -70,29 +70,29 @@ class Leyka_Donation_Management {
 
         global $current_screen;
 
-        if( !$current_screen || !is_object($current_screen) || $current_screen->post_type != self::$post_type )
+        if( !$current_screen || !is_object($current_screen) || $current_screen->post_type != self::$post_type ) {
             return $actions;
-		
+        }
+
 		if(current_user_can('edit_donation', $donation->ID)) {
 			$actions['edit'] = '<a href="'.get_edit_post_link($donation->ID, 1).'">'.__('Edit').'</a>';
 		}
-		
+
         unset($actions['view']);
-//        unset( $actions['trash'] );
         unset($actions['inline hide-if-no-js']);
-        
+
         return $actions;
     }
 
     public function donation_status_changed($new, $old, WP_Post $donation) {
 
-        if($new == $old || $donation->post_type != self::$post_type)
+        if($new == $old || $donation->post_type != self::$post_type) {
             return;
+        }
 
-        if($old == 'new' && $new != 'trash')
+        if($old == 'new' && $new != 'trash') {
             $this->new_donation_added($donation);
-
-        elseif($new == 'funded' || $old == 'funded') {
+        } elseif($new == 'funded' || $old == 'funded') {
 
             $donation = new Leyka_Donation($donation);
             $campaign = new Leyka_Campaign($donation->campaign_id);
@@ -101,12 +101,12 @@ class Leyka_Donation_Management {
 
                 $collected_amount = $campaign->get_collected_amount();
 
-                if($collected_amount >= $campaign->target)
+                if($collected_amount >= $campaign->target) {
                     $campaign->target_state = 'is_reached';
-                elseif($campaign->target_state != 'in_process')
+                } elseif($campaign->target_state != 'in_process') {
                     $campaign->target_state = 'in_process';
+                }
             }
-
         }
     }
 
@@ -117,8 +117,8 @@ class Leyka_Donation_Management {
         if(
             $pagenow == 'edit.php' &&
             isset($_GET['post_type']) &&
-            $_GET['post_type'] == self::$post_type /*&&
-    in_array('administrator', wp_get_current_user()->roles)*/
+            $_GET['post_type'] == self::$post_type &&
+            current_user_can('leyka_manage_donations')
         ) {?>
 
         <label for="payment-type-select"></label>
@@ -789,8 +789,7 @@ class Leyka_Donation_Management {
 				</div>
             <?php }?>
 
-            <?php
-            if(current_user_can(get_post_type_object(self::$post_type)->cap->publish_posts)) {?>
+            <?php if(current_user_can(get_post_type_object(self::$post_type)->cap->publish_posts)) {?>
 				<div class="save-action">
 			    <input name="original_funded" type="hidden" id="original_funded" value="<?php esc_attr_e(__('Update', 'leyka'));?>" />
                 <?php submit_button(
@@ -1012,16 +1011,18 @@ class Leyka_Donation_Management {
             return $donation_id;
         }
 
-        if(defined('DOING_AUTOSAVE' ) && DOING_AUTOSAVE)
+        if(defined('DOING_AUTOSAVE' ) && DOING_AUTOSAVE) {
             return $donation_id;
+        }
 
-        /** @todo Do it after adding some Leyka capabilities */
-//        if( !current_user_can('edit_donation', $donation_id) )
-//            return $donation_id;
+        if( !current_user_can('leyka_manage_donations', $donation_id) ) {
+            return $donation_id;
+        }
 
         $donation = new Leyka_Donation($donation_id);
-        if($donation->status != $_POST['donation_status'])
+        if($donation->status != $_POST['donation_status']) {
             $donation->status = $_POST['donation_status'];
+        }
 
         if(isset($_POST['campaign-id']) && $donation->campaign_id != (int)$_POST['campaign-id']) {
 

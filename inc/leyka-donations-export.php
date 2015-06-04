@@ -1,4 +1,5 @@
-<?php
+<?php if( !defined('WPINC') ) die;
+
 function leyka_render_export_button() {
 
     global $pagenow;
@@ -91,13 +92,13 @@ function leyka_do_donations_export() {
             $campaign = new Leyka_Campaign($donation->campaign_id);
 
             $donation_fields = array(
-                prep(hash('sha256', $domain.$donation->date_timestamp.$donation->sum.$donation->id)),
+                prep(wp_hash($domain.$donation->date_timestamp.$donation->sum.$donation->id)),
                 prep($domain),
                 prep(leyka_options()->opt('org_full_name')),
                 prep($donation->date_timestamp),
                 prep(date('d.m.Y H:i:s', $donation->date_timestamp)),
-                prep(hash('sha256', $donation->donor_email)),
-                prep(hash('sha256', $donation->donor_name)),
+                prep(wp_hash($donation->donor_email)),
+                prep(wp_hash($donation->donor_name)),
                 prep((int)$donation->sum),
                 prep($donation->currency),
                 $donation->payment_type == 'correction' ?

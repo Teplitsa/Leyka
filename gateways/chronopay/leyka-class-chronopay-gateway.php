@@ -7,7 +7,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     protected static $_instance;
 
-    protected function _set_gateway_attributes() {
+    protected function _set_attributes() {
 
         $this->_id = 'chronopay';
         $this->_title = __('Chronopay', 'leyka');
@@ -15,8 +15,9 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     protected function _set_options_defaults() {
 
-        if($this->_options) // Create Gateway options, if needed
+        if($this->_options) { // Create Gateway options, if needed
             return;
+        }
 
         $this->_options = array(
             'chronopay_shared_sec' => array(
@@ -58,14 +59,11 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
 
-        // Instantiate and save each of PM objects, if needed:
         if(empty($this->_payment_methods['chronopay_card'])) {
             $this->_payment_methods['chronopay_card'] = Leyka_Chronopay_Card::get_instance();
-            $this->_payment_methods['chronopay_card']->initialize_pm_options();
         }
         if(empty($this->_payment_methods['chronopay_card_rebill'])) {
             $this->_payment_methods['chronopay_card_rebill'] = Leyka_Chronopay_Card_Rebill::get_instance();
-            $this->_payment_methods['chronopay_card_rebill']->initialize_pm_options();
         }
     }
 
@@ -220,10 +218,14 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         }
 
         // Store donation data - rebill payment:
-        if(
-            leyka_options()->opt('chronopay_card_rebill_product_id_'.$currency_string) &&
-            $_POST['product_id'] == leyka_options()->opt('chronopay_card_rebill_product_id_'.$currency_string)
-        ) {
+        if(apply_filters(
+            'leyka_chronopay_callback_is_recurring',
+            (
+                leyka_options()->opt('chronopay_card_rebill_product_id_'.$currency_string) &&
+                $_POST['product_id'] == leyka_options()->opt('chronopay_card_rebill_product_id_'.$currency_string)
+            ),
+            $_POST['product_id']
+        )) {
 
             if($transaction_type == 'Purchase') { // Initial rebill payment
 
@@ -256,10 +258,12 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                     'donor_email' => $init_recurrent_payment->donor_email,
                     'amount' => $init_recurrent_payment->amount,
                     'currency' => $init_recurrent_payment->currency,
+                    'gateway_response' => $_POST,
 
                     'chronopay_customer_id' => $customer_id,
 //                    '' => '',
                 ));
+                $donation->add_gateway_response($_POST);
 
                 Leyka_Donation_Management::send_all_emails($donation_id);
             }
@@ -378,77 +382,40 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
 class Leyka_Chronopay_Card extends Leyka_Payment_Method {
 
-    /** @var $_instance Leyka_Yandex_Card */
-    protected static $_instance = null;
+    protected static $_instance;
 
-    final protected function __clone() {}
+    protected function _set_attributes() {
 
-    public final static function get_instance() {
-
-        if(null === static::$_instance) {
-            static::$_instance = new static();
-        }
-
-        return static::$_instance;
-    }
-
-    public function __construct(array $params = array()) {
-
-        if(static::$_instance) /** We can't make a public __construct() to private */ {
-            return static::$_instance;
-        }
-
-        $this->initialize_pm_options();
-
-        $this->_id = empty($params['id']) ? 'chronopay_card' : $params['id'];
-
-        $this->_label_backend = empty($params['label_backend']) ?
-            __('Payment with Banking Card', 'leyka') : $params['label_backend'];
-        $this->_label = empty($params['label']) ? __('Banking Card', 'leyka') : $params['label'];
-
-        $this->_description = empty($params['desc']) ?
-            leyka_options()->opt_safe('chronopay_card_description') : $params['desc'];
-
+        $this->_id = 'chronopay_card';
         $this->_gateway_id = 'chronopay';
 
-        $this->_active = isset($params['active']) ? 1 : 0;
-//        $this->_active = (int)in_array($this->_gateway_id.'-'.$this->_id, leyka_options()->opt('pm_available'));
+        $this->_label_backend = __('Payment with Banking Card', 'leyka');
+        $this->_label = __('Banking Card', 'leyka');
 
-        $this->_support_global_fields = isset($params['has_global_fields']) ? $params['has_global_fields'] : true;
-
-        $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
+        $this->_description = leyka_options()->opt_safe('chronopay_card_description');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/chronopay/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/chronopay/icons/master.png',
         ));
 
-        $this->_submit_label = empty($params['submit_label']) ?
-            __('Donate', 'leyka') : $params['submit_label'];
+        $this->_submit_label = __('Donate', 'leyka');
 
-        if(empty($params['currencies'])) {
+        if(leyka_options()->opt('chronopay_card_product_id_rur'))
+            $this->_supported_currencies[] = 'rur';
+        if(leyka_options()->opt('chronopay_card_product_id_usd'))
+            $this->_supported_currencies[] = 'usd';
+        if(leyka_options()->opt('chronopay_card_product_id_eur'))
+            $this->_supported_currencies[] = 'eur';
 
-            if(leyka_options()->opt('chronopay_card_product_id_rur'))
-                $this->_supported_currencies[] = 'rur';
-            if(leyka_options()->opt('chronopay_card_product_id_usd'))
-                $this->_supported_currencies[] = 'usd';
-            if(leyka_options()->opt('chronopay_card_product_id_eur'))
-                $this->_supported_currencies[] = 'eur';
-
-        } else
-            $this->_supported_currencies = $params['currencies'];
-
-        $this->_default_currency = empty($params['default_currency']) ? 'rur' : $params['default_currency'];
-
-        static::$_instance = $this;
-
-        return static::$_instance;
+        $this->_default_currency = 'rur';
     }
 
-    protected function _set_pm_options_defaults() {
+    protected function _set_options_defaults() {
 
-        if($this->_options)
+        if($this->_options) {
             return;
+        }
 
         $this->_options = array(
             'chronopay_card_description' => array(
@@ -489,70 +456,36 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
 
 class Leyka_Chronopay_Card_Rebill extends Leyka_Payment_Method {
 
-    /** @var $_instance Leyka_Yandex_Card */
-    protected static $_instance = null;
+    protected static $_instance;
 
-    final protected function __clone() {}
+    public function _set_attributes() {
 
-    public final static function get_instance() {
-
-        if(null === static::$_instance) {
-            static::$_instance = new static();
-        }
-
-        return static::$_instance;
-    }
-
-    public function __construct(array $params = array()) {
-
-        if(static::$_instance) /** We can't make a public __construct() to private */ {
-            return static::$_instance;
-        }
-
-        $this->initialize_pm_options();
-
-        $this->_id = empty($params['id']) ? 'chronopay_card_rebill' : $params['id'];
-
-        $this->_label_backend = empty($params['label_backend']) ?
-            __('Rebilling payment with Banking Card', 'leyka') : $params['label_backend'];
-        $this->_label = empty($params['label']) ? __('Banking Card - monthly rebilling', 'leyka') : $params['label'];
-
-        $this->_description = empty($params['desc']) ?
-            leyka_options()->opt_safe('chronopay_card_rebill_description') : $params['desc'];
-
+        $this->_id = 'chronopay_card_rebill';
         $this->_gateway_id = 'chronopay';
 
-        $this->_active = isset($params['active']) ? 1 : 0;
-//        $this->_active = (int)in_array($this->_gateway_id.'-'.$this->_id, leyka_options()->opt('pm_available'));
+        $this->_label_backend = __('Rebilling payment with Banking Card', 'leyka');
+        $this->_label = __('Banking Card - monthly rebilling', 'leyka');
 
-        $this->_support_global_fields = isset($params['has_global_fields']) ? $params['has_global_fields'] : true;
-
-        $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
+        $this->_description = leyka_options()->opt_safe('chronopay_card_rebill_description');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/chronopay/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/chronopay/icons/master.png',
         ));
 
-        $this->_submit_label = empty($params['submit_label']) ?
-            __('Donate', 'leyka') : $params['submit_label'];
-
-        if(empty($params['currencies']) && leyka_options()->opt('chronopay_card_rebill_product_id_rur'))
+        if(leyka_options()->opt('chronopay_card_rebill_product_id_rur'))
             $this->_supported_currencies[] = 'rur';
-        else
-            $this->_supported_currencies = empty($params['currencies']) ? array('rur') : $params['currencies'];
+//        else
+//            $this->_supported_currencies = empty($params['currencies']) ? array('rur') : $params['currencies'];
 
-        $this->_default_currency = empty($params['default_currency']) ? 'rur' : $params['default_currency'];
-
-        static::$_instance = $this;
-
-        return static::$_instance;
+        $this->_default_currency = 'rur';
     }
 
-    protected function _set_pm_options_defaults() {
+    protected function _set_options_defaults() {
 
-        if($this->_options)
+        if($this->_options) {
             return;
+        }
 
         $this->_options = array(
             'chronopay_card_rebill_description' => array(
@@ -578,4 +511,4 @@ class Leyka_Chronopay_Card_Rebill extends Leyka_Payment_Method {
 function leyka_add_gateway_chronopay() { // Use named function to leave a possibility to remove/replace it on the hook
     leyka()->add_gateway(Leyka_Chronopay_Gateway::get_instance());
 }
-add_action('leyka_init_actions', 'leyka_add_gateway_chronopay', 11);
+add_action('leyka_init_actions', 'leyka_add_gateway_chronopay');

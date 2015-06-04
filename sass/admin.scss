@@ -2,6 +2,7 @@
 @import 'bourbon';
 @import 'utility';
 @import 'presets';
+@import 'options';
 
 #icon-leyka {
 	background: transparent url(../img/leyka-icon.png) no-repeat 1px 0;
@@ -589,76 +590,6 @@ $working-width : 700px;
 }
 
 /**  add donation **/
-
-
-/** Options **/
-.leyka-options-section {
-	margin: 40px 0 30px;	
-}
-
-#leyka-settings-form div[id *=wrapper] {
-	margin: 15px 0;
-	
-	label[for *="field"]{
-		display: block;
-	}
-	
-	.field-component {
-		display: block;
-		padding: 2px 0;		
-	}
-	
-	.field-component.title {
-		font-weight: bold;
-	}
-	
-	.field-component.help {
-		font-size: 95%;
-		font-style: italic;
-		color: #666;
-		padding-left: 4px;
-	}
-	
-	
-	.required {
-		display: none;
-	}
-	
-	.wp-editor-container,
-	.field-component.field {
-		max-width: 900px;
-	}
-	
-	input[type="text"],
-	textarea {
-		width: 100%;
-	}
-}
-
-
-#donation-status-log-toggle {
-    cursor: pointer; }
-
-.leyka-options-section .placeholders-help {
-	font-style: normal;	
-	display: block;
-	padding-top: 4px;
-	line-height: 1.8;}
-
-.placeholders-help code {
-	color: #333;
-	font-size: 12px; }
-
-.wp-editor-wrap + .field-component.help {
-	padding-top: 4px;
-}
-	
-.wp-editor-wrap + .help {
-	max-width: 900px;
-}
-
-
-/** old */
 
 
 

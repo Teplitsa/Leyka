@@ -57,7 +57,7 @@ function leyka_get_pages_list() {
 function leyka_get_gateways_pm_list() {
 
     $options = array();
-    foreach(leyka_get_pm_list() as $pm) {
+    foreach(leyka_get_pm_list(null, false, false) as $pm) {
         $gateway_title = leyka_get_gateway_by_id($pm->gateway_id)->title;
         $options[$pm->full_id] = $pm->label_backend
             .($gateway_title == $pm->label_backend ? '' : ' ('.$gateway_title.')');
@@ -203,6 +203,7 @@ function leyka_get_form_templates_list() {
 }
 
 function leyka_get_active_currencies() {
+
     return array(
         'rur' => array(
             'label' => leyka_options()->opt('currency_rur_label'),

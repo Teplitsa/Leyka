@@ -8,21 +8,34 @@ class Leyka_Admin_Setup {
 
 	private static $_instance = null;
 
+    public static function get_instance() {
+
+        // If the single instance hasn't been set, set it now:
+        if( !self::$_instance )
+            self::$_instance = new self;
+
+        return self::$_instance;
+    }
+
 	private function __construct() {
 
 		add_action('admin_menu', array($this, 'admin_menu_setup'), 9); // Add the options page and menu item
-		
+
 		add_action('admin_enqueue_scripts', array($this, 'enqueue_cssjs')); // Load admin style sheet and JavaScript
 
         /** Remove needless metaboxes */
         add_action('admin_init', array($this, 'remove_seo')); // Remove needless columns and metaboxes
 
-        add_action('wp_ajax_leyka_send_feedback', array($this, 'ajax_send_feedback')); // Ajax
+        add_action('wp_ajax_leyka_send_feedback', array($this, 'ajax_send_feedback'));
 
         add_filter('plugin_row_meta', array($this, 'set_plugin_meta'), 10, 2);
 
         // Link in plugin actions:
 		add_filter('plugin_action_links_'.LEYKA_PLUGIN_INNER_SHORT_NAME, array($this, 'add_settings_link'));
+
+        // Metaboxes support where it is needed:
+        add_action('leyka_pre_settings_actions', array($this, 'leyka_metaboxes_full_support'));
+        add_action('leyka_dashboard_actions', array($this, 'leyka_metaboxes_full_support'));
     }
 
     public function set_plugin_meta($links, $file) {
@@ -34,7 +47,20 @@ class Leyka_Admin_Setup {
         return $links;
     }
 
-    function remove_seo() {
+    // A little function to support the full abilities of the metaboxes on any plugin's page:
+    public function leyka_metaboxes_full_support($current_stage = false) {
+
+        if($current_stage && $current_stage != 'payment')
+            return;?>
+
+        <!-- Metaboxes reordering and folding support -->
+        <form style="display:none" method="get" action="#">
+            <?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false ); ?>
+            <?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false ); ?>
+        </form>
+    <?php }
+
+    public function remove_seo() {
 
         // WordPress SEO by Yoast's metabox on donation editing page:
         if( !empty($GLOBALS['wpseo_metabox']) ) {
@@ -77,15 +103,6 @@ class Leyka_Admin_Setup {
     <?php
     }
     */
-
-	public static function get_instance() {
-
-		// If the single instance hasn't been set, set it now:
-		if( !self::$_instance )
-			self::$_instance = new self;
-
-		return self::$_instance;
-	}
 
 	/** Admin Menu **/
     public function admin_menu_setup() {
@@ -130,12 +147,12 @@ class Leyka_Admin_Setup {
 	/** Displaying dashboard **/
 	public function dashboard_screen(){
 
-		if( !current_user_can('leyka_manage_donations') )
+		if( !current_user_can('leyka_manage_donations') ) {
             wp_die(__('Sorry, but you do not have permissions to access this page.', 'leyka'));
+        }
 
 		do_action('leyka_dashboard_actions'); // Collapsible
 
-		/* @to-do: make metaboxes collapsable */
 		add_meta_box('leyka_guide', __('First steps', 'leyka'), array($this, 'guide_metabox_screen'), 'toplevel_page_leyka', 'normal');
 		add_meta_box('leyka_status', __('Settings', 'leyka'), array($this, 'status_metabox_screen'), 'toplevel_page_leyka', 'normal');
 		add_meta_box('leyka_history', __('Recent donations', 'leyka'), array($this, 'history_metabox_screen'), 'toplevel_page_leyka', 'normal');
@@ -145,12 +162,12 @@ class Leyka_Admin_Setup {
             <h2><?php _e('Leyka Dashboard', 'leyka');?></h2>
 
             <div class="metabox-holder" id="leyka-widgets">
-            <div class="postbox-container" id="postbox-container-1">
-                <?php do_meta_boxes('toplevel_page_leyka', 'normal', 'leyka_status');?>
-            </div>
-            <div class="postbox-container" id="postbox-container-2">
-                <?php $this->dashboard_sidebar_screen();?>
-            </div>
+                <div class="postbox-container" id="postbox-container-1">
+                    <?php do_meta_boxes('toplevel_page_leyka', 'normal', 'leyka_status');?>
+                </div>
+                <div class="postbox-container" id="postbox-container-2">
+                    <?php $this->dashboard_sidebar_screen();?>
+                </div>
 		</div><!-- close .wrap -->
 	<?php
 	}
@@ -364,21 +381,22 @@ class Leyka_Admin_Setup {
 	public function settings_screen() {
 		
 		/* Capability test */
-		if( !current_user_can('leyka_manage_options') )
+		if( !current_user_can('leyka_manage_options') ) {
             wp_die(__('You do not have permissions to access this page.', 'leyka'));
+        }
 
         $current_stage = $this->get_current_settings_tab();
 
         require(LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-common.php');
 
-		/* Page actions */
-		do_action('leyka_pre_settings_actions');
-
-		$faction = add_query_arg('stage', $current_stage, "admin.php?page=leyka_settings");
+        /* Page actions */
+		do_action('leyka_pre_settings_actions', $current_stage);
 
         /** Process settings change */
-	    if( !empty($_POST["leyka_settings_{$current_stage}_submit"])){
-//         && wp_verify_nonce('_leyka_nonce', "leyka_settings_{$current_stage}")
+	    if(
+            !empty($_POST["leyka_settings_{$current_stage}_submit"]) /*&&
+            wp_verify_nonce('_leyka_nonce', "leyka_settings_{$current_stage}")*/
+        ) {
 			do_action("leyka_settings_{$current_stage}_submit", $current_stage);
 		}?>
 
@@ -387,7 +405,7 @@ class Leyka_Admin_Setup {
 		<h2 class="nav-tab-wrapper"><?php echo $this->settings_tabs_menu();?></h2>
 
 		<div id="tab-container">
-			<form method="post" action="<?php echo admin_url($faction);?>" id="leyka-settings-form">
+			<form method="post" action="<?php echo admin_url(add_query_arg('stage', $current_stage, 'admin.php?page=leyka_settings'));?>" id="leyka-settings-form">
 
             <?php wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
 
@@ -409,13 +427,13 @@ class Leyka_Admin_Setup {
                 }
 
                 do_action("leyka_settings_post_{$current_stage}_fields");?>
-
-            <p class="submit">
-				<input type="submit" name="<?php echo "leyka_settings_{$current_stage}";?>_submit" value="<?php _e('Save settings', 'leyka'); ?>" class="button-primary" />
-			</p>
             <?php }?>
-			
+
+                <p class="submit">
+                    <input type="submit" name="<?php echo "leyka_settings_{$current_stage}";?>_submit" value="<?php _e('Save settings', 'leyka'); ?>" class="button-primary" />
+                </p>
 			</form>
+<!--            --><?php //do_action("leyka_settings_post_{$current_stage}_form");?>
 		</div>
 
 		</div><!-- close .wrap -->
@@ -506,7 +524,7 @@ class Leyka_Admin_Setup {
     <?php }
 
     /** Feedback page processing */
-    function ajax_send_feedback() {
+    public function ajax_send_feedback() {
 
         if( !wp_verify_nonce($_POST['nonce'], 'leyka_feedback_sending') ) {
             die('1');
@@ -581,10 +599,25 @@ class Leyka_Admin_Setup {
         // Base admin area js/css:
         wp_enqueue_style('leyka-admin', LEYKA_PLUGIN_BASE_URL.'css/admin.css', array(), LEYKA_VERSION);
 
+        $current_screen = get_current_screen();
+        $dependencies = array('jquery',);
+
+        if($current_screen->id == 'toplevel_page_leyka') {
+            $dependencies[] = 'postbox';
+        }
+        if($current_screen->id == 'lejka_page_leyka_settings') {
+            $dependencies[] = 'postbox';
+            $dependencies[] = 'jquery-ui-accordion';
+            $dependencies[] = 'jquery-ui-sortable';
+        }
+        if($current_screen->post_type == Leyka_Donation_Management::$post_type) {
+            $dependencies[] = 'jquery-ui-autocomplete';
+        }
+
         wp_enqueue_script(
             'leyka-admin',
             LEYKA_PLUGIN_BASE_URL.'js/admin.js',
-            array('jquery', 'jquery-ui-autocomplete'), LEYKA_VERSION, true
+            $dependencies, LEYKA_VERSION, true
         );
 
         $js_local = array(

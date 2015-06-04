@@ -7,7 +7,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
     protected static $_instance;
 
-    protected function _set_gateway_attributes() {
+    protected function _set_attributes() {
 
         $this->_id = 'yandex';
         $this->_title = __('Yandex.Money', 'leyka');
@@ -15,8 +15,9 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
     protected function _set_options_defaults() {
 
-        if($this->_options) // Create Gateway options, if needed
+        if($this->_options) { // Create Gateway options, if needed
             return;
+        }
 
         $this->_options = array(
             'yandex_shop_id' => array(
@@ -68,20 +69,14 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
 
-        // Instantiate and save each of PM objects, if needed:
         if(empty($this->_payment_methods['yandex_card'])) {
             $this->_payment_methods['yandex_card'] = Leyka_Yandex_Card::get_instance();
-            $this->_payment_methods['yandex_card']->initialize_pm_options();
         }
-
         if(empty($this->_payment_methods['yandex_money'])) {
             $this->_payment_methods['yandex_money'] = Leyka_Yandex_Money::get_instance();
-            $this->_payment_methods['yandex_money']->initialize_pm_options();
         }
-
         if(empty($this->_payment_methods['yandex_wm'])) {
             $this->_payment_methods['yandex_wm'] = Leyka_Yandex_Webmoney::get_instance();
-            $this->_payment_methods['yandex_wm']->initialize_pm_options();
         }
 
         /** @todo Until this PM's API will be upgraded. */
@@ -95,8 +90,6 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 //            $this->_payment_methods['yandex_mobile'] = Leyka_Yandex_Mobile::get_instance();
 //            $this->_payment_methods['yandex_mobile']->initialize_pm_options();
 //        }
-
-        //...
     }
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
@@ -108,12 +101,8 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             case 'yandex_money':
             case 'yandex_card':
             case 'yandex_wm':
-//            case 'yandex_terminal':
-//            case 'yandex_mobile':
                 return leyka_options()->opt('yandex_test_mode') ?
                     'https://demomoney.yandex.ru/eshop.xml' : 'https://money.yandex.ru/eshop.xml';
-//            case 'yandex_money_quick':
-//                return 'https://money.yandex.ru/quickpay/bankconfirm.xml';
             default:
                 return $current_url;
         }
@@ -127,8 +116,6 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             case 'yandex_money': $payment_type = 'PC'; break;
             case 'yandex_card': $payment_type = 'AC'; break;
             case 'yandex_wm': $payment_type = 'WM'; break;
-//            case 'yandex_terminal': $payment_type = 'GP'; break;
-//            case 'yandex_mobile': $payment_type = 'MC'; break;
             default:
                 $payment_type = apply_filters('leyka_yandex_custom_payment_type', '', $pm_id);
         }
@@ -233,8 +220,9 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
 
     public function get_gateway_response_formatted(Leyka_Donation $donation) {
 
-        if( !$donation->gateway_response )
+        if( !$donation->gateway_response ) {
             return array();
+        }
         
         $response_vars = maybe_unserialize($donation->gateway_response);
         if( !$response_vars || !is_array($response_vars) )
@@ -259,67 +247,33 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
 
 class Leyka_Yandex_Money extends Leyka_Payment_Method {
 
-    /** @var Leyka_Yandex_Money */
     protected static $_instance = null;
 
-    final protected function __clone() {}
+    public function _set_attributes() {
 
-    public final static function get_instance() {
-
-        if(null === static::$_instance) {
-            static::$_instance = new static();
-        }
-
-        return static::$_instance;
-    }
-    
-    public function __construct(array $params = array()) {
-
-        if(static::$_instance) /** We can't make a public __construct() to private */
-            return static::$_instance;
-
-        $this->initialize_pm_options();
-
-        $this->_id = empty($params['id']) ? 'yandex_money' : $params['id'];
-
-        $this->_label_backend = empty($params['label_backend']) ?
-            __('Virtual cash Yandex.money', 'leyka') : $params['label_backend'];
-        $this->_label = empty($params['label']) ? __('Yandex.money', 'leyka') : $params['label'];
-
-        $this->_description = empty($params['desc']) ?
-            leyka_options()->opt_safe('yandex_money_description') : $params['desc'];
-
+        $this->_id = 'yandex_money';
         $this->_gateway_id = 'yandex';
 
-        $this->_active = isset($params['active']) ? $params['active'] : true;
+        $this->_label_backend = __('Virtual cash Yandex.money', 'leyka');
+        $this->_label = __('Yandex.money', 'leyka');
 
-        $this->_support_global_fields = isset($params['has_global_fields']) ? $params['has_global_fields'] : true;
-
-        $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
+        $this->_description = leyka_options()->opt_safe('yandex_money_description');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
 //            LEYKA_PLUGIN_BASE_URL.'gateways/quittance/icons/sber_s.png',
         ));
 
-        $this->_submit_label = empty($params['submit_label']) ?
-            __('Donate', 'leyka') : $params['submit_label'];
+        $this->_supported_currencies[] = 'rur';
 
-        $this->_supported_currencies = empty($params['currencies']) ? array('rur',) : $params['currencies'];
-
-        $this->_default_currency = empty($params['default_currency']) ? 'rur' : $params['default_currency'];
-
-        //add_action('leyka_service_call-'.$this->_id, 'leyka_yandex_handle_service_call');
-
-        static::$_instance = $this;
-
-        return static::$_instance;
+        $this->_default_currency = 'rur';
     }
 
-    protected function _set_pm_options_defaults() {
+    protected function _set_options_defaults() {
 
-        if($this->_options)
+        if($this->_options) {
             return;
+        }
 
         $this->_options = array(
             'yandex_money_description' => array(
@@ -337,45 +291,17 @@ class Leyka_Yandex_Money extends Leyka_Payment_Method {
 
 class Leyka_Yandex_Card extends Leyka_Payment_Method {
 
-    /** @var $_instance Leyka_Yandex_Card */
     protected static $_instance = null;
 
-    final protected function __clone() {}
+    public function _set_attributes() {
 
-    public final static function get_instance() {
-
-        if(null === static::$_instance) {
-            static::$_instance = new static();
-        }
-
-        return static::$_instance;
-    }
-
-    public function __construct(array $params = array()) {
-
-        if(static::$_instance) /** We can't make a public __construct() to private */ {
-            return static::$_instance;
-        }
-
-        $this->initialize_pm_options();
-
-        $this->_id = empty($params['id']) ? 'yandex_card' : $params['id'];
-
-        $this->_label_backend = empty($params['label_backend']) ?
-            __('Payment with Banking Card', 'leyka') : $params['label_backend'];
-        $this->_label = empty($params['label']) ? __('Banking Card', 'leyka') : $params['label'];
-
-        $this->_description = empty($params['desc']) ?
-            leyka_options()->opt_safe('yandex_card_description') : $params['desc'];
-
+        $this->_id = 'yandex_card';
         $this->_gateway_id = 'yandex';
-        
-        $this->_active = isset($params['active']) ? 1 : 0;
-//        $this->_active = (int)in_array($this->_gateway_id.'-'.$this->_id, leyka_options()->opt('pm_available'));
 
-        $this->_support_global_fields = isset($params['has_global_fields']) ? $params['has_global_fields'] : true;
+        $this->_label_backend = __('Payment with Banking Card', 'leyka');
+        $this->_label = __('Banking Card', 'leyka');
 
-        $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
+        $this->_description = leyka_options()->opt_safe('yandex_card_description');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
 //            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
@@ -383,24 +309,16 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/master.png',
         ));
 
-        $this->_submit_label = empty($params['submit_label']) ?
-            __('Donate', 'leyka') : $params['submit_label'];
+        $this->_supported_currencies[] = 'rur';
 
-        $this->_supported_currencies = empty($params['currencies']) ? array('rur',) : $params['currencies'];
-
-        $this->_default_currency = empty($params['default_currency']) ? 'rur' : $params['default_currency'];
-
-        //add_action('leyka_service_call-'.$this->_id, 'leyka_yandex_handle_service_call');
-
-        static::$_instance = $this;
-
-        return static::$_instance;
+        $this->_default_currency = 'rur';
     }
 
-    protected function _set_pm_options_defaults() {
+    protected function _set_options_defaults() {
 
-        if($this->_options)
+        if($this->_options){
             return;
+        }
 
         $this->_options = array(
             'yandex_card_description' => array(
@@ -417,65 +335,32 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
 
 class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
 
-    /** @var Leyka_Yandex_Webmoney */
     protected static $_instance = null;
 
-    final protected function __clone() {}
+    public function _set_attributes() {
 
-    public final static function get_instance() {
-
-        if(null === static::$_instance) {
-            static::$_instance = new static();
-        }
-
-        return static::$_instance;
-    }
-
-    public function __construct(array $params = array()) {
-
-        if(static::$_instance) /** We can't make a public __construct() to private */
-            return static::$_instance;
-
-        $this->initialize_pm_options();
-
-        $this->_id = empty($params['id']) ? 'yandex_wm' : $params['id'];
-
-        $this->_label_backend = empty($params['label_backend']) ?
-            __('Virtual cash Webmoney', 'leyka') : $params['label_backend'];
-        $this->_label = empty($params['label']) ? __('Webmoney', 'leyka') : $params['label'];
-
-        $this->_description = empty($params['desc']) ?
-            leyka_options()->opt_safe('yandex_wm_description') : $params['desc'];
-
+        $this->_id = 'yandex_wm';
         $this->_gateway_id = 'yandex';
 
-        $this->_active = isset($params['active']) ? $params['active'] : true;
+        $this->_label_backend = __('Virtual cash Webmoney', 'leyka');
+        $this->_label = __('Webmoney', 'leyka');
 
-        $this->_support_global_fields = isset($params['has_global_fields']) ? $params['has_global_fields'] : true;
-
-        $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
+        $this->_description = leyka_options()->opt_safe('yandex_wm_description');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/webmoney.png',
         ));
 
-        $this->_submit_label = empty($params['submit_label']) ? __('Donate', 'leyka') : $params['submit_label'];
+        $this->_supported_currencies[] = 'rur';
 
-        $this->_supported_currencies = empty($params['currencies']) ? array('rur',) : $params['currencies'];
-
-        $this->_default_currency = empty($params['default_currency']) ? 'rur' : $params['default_currency'];
-
-        //add_action('leyka_service_call-'.$this->_id, 'leyka_yandex_handle_service_call');
-
-        static::$_instance = $this;
-
-        return static::$_instance;
+        $this->_default_currency = 'rur';
     }
 
-    protected function _set_pm_options_defaults() {
+    protected function _set_options_defaults() {
 
-        if($this->_options)
+        if($this->_options){
             return;
+        }
 
         $this->_options = array(
             'yandex_wm_description' => array(
@@ -493,4 +378,4 @@ class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
 function leyka_add_gateway_yandex() { // Use named function to leave a possibility to remove/replace it on the hook
     leyka()->add_gateway(Leyka_Yandex_Gateway::get_instance());
 }
-add_action('leyka_init_actions', 'leyka_add_gateway_yandex', 5);
+add_action('leyka_init_actions', 'leyka_add_gateway_yandex');
