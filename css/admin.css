@@ -168,6 +168,9 @@
         border-left: none; } }
     #payment-settings-area .pm-order-panel .panel-content {
       padding: 15px; }
+      @media screen and (min-width: 900px) {
+        #payment-settings-area .pm-order-panel .panel-content {
+          min-height: 600px; } }
   #payment-settings-area #pm-order-settings {
     margin: 20px 0; }
     #payment-settings-area #pm-order-settings li {

@@ -91,7 +91,7 @@
 		@media screen and (min-width: 900px) {
 			float: left;
 			width: 60%;
-			max-width: 640px;
+			max-width: 640px;			
 		}
 		
 		
@@ -135,6 +135,9 @@
 		
 		.panel-content {
 			padding: 15px;
+			@media screen and (min-width: 900px) {
+				min-height: 600px;
+			}
 		}
 	}
 	
