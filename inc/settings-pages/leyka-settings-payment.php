@@ -1,7 +1,5 @@
-<?php
-if( !defined('WPINC') ) die; // If this file is called directly, abort
+<?php if( !defined('WPINC') ) die; // If this file is called directly, abort
 
-//ad metabox on screen
 function leyka_add_gateway_metabox($post, $args) {
 
     // $post is always null
@@ -15,7 +13,7 @@ function leyka_add_gateway_metabox($post, $args) {
 
     <?php foreach($gateway->get_payment_methods() as $pm) {?>
         <div>
-            <input type="checkbox" name="leyka_pm_available[]" value="<?php echo $pm->full_id;?>" class="pm-active" id="<?php echo $pm->full_id;?>" data-pm-label="<?php echo $pm->title_backend;?>" <?php echo in_array($pm->full_id, $pm_active) ? 'checked="checked"' : '';?>>
+            <input type="checkbox" name="leyka_pm_available[]" value="<?php echo $pm->full_id;?>" class="pm-active" id="<?php echo $pm->full_id;?>" data-pm-label="<?php echo $pm->title_backend;?>" data-pm-label-backend="<?php echo $pm->label_backend;?>" <?php echo in_array($pm->full_id, $pm_active) ? 'checked="checked"' : '';?>>
             <label for="<?php echo $pm->full_id;?>"><?php echo $pm->title_backend;?></label>
         </div>
     <?php }?>
@@ -24,15 +22,12 @@ function leyka_add_gateway_metabox($post, $args) {
 <?php
 }
 
-$gw = leyka_get_gateways();
 $count = 0;
-foreach($gw as $i => $gateway) { //add metaboxes
-        
+foreach(leyka_get_gateways() as $gateway) { //add metaboxes
+
     $count++;
-    if($count > 3){
-       $count = 1;
-    }
-      
+    $count = $count > 3 ? 1 : $count;
+
     add_meta_box(
         'leyka_payment_settings_gateway_'.$gateway->id,
         $gateway->title,
@@ -80,7 +75,7 @@ foreach($gw as $i => $gateway) { //add metaboxes
                     if( !in_array($gateway_id, $active_gateways) )
                         $active_gateways[] = $gateway_id;
                 }?>
-    
+
             <div id="pm-settings-wrapper">
             <?php foreach(leyka_get_gateways() as $gateway) { /** @var $gateway Leyka_Gateway */ ?>
                 <div id="gateway-<?php echo $gateway->id;?>" class="gateway-settings" <?php echo in_array($gateway->id, $active_gateways) ? '' : 'style="display:none;"'?>>
@@ -91,9 +86,9 @@ foreach($gw as $i => $gateway) { //add metaboxes
                             $option = leyka_options()->get_info_of($option_id);
                             do_action("leyka_render_{$option['type']}", $option_id, $option);
                         }
-    
+
                         foreach($gateway->get_payment_methods() as $pm) { /** @var $pm Leyka_Payment_Method */ ?>
-    
+
                             <div id="pm-<?php echo $pm->full_id;?>" class="pm-settings" <?php echo in_array($pm->full_id, $pm_available) ? '' : 'style="display:none;"';?>>
                             <?php foreach($pm->get_pm_options_names() as $option_id) {
     
@@ -106,25 +101,70 @@ foreach($gw as $i => $gateway) { //add metaboxes
                 </div>
             <?php }?>
             </div><!-- #pm-settings-wrapper -->
-           
+
         </div><!-- #active-pm-settings -->
     </div><!-- .active-pm-panel -->
-    
+
+    <?php function leyka_pm_sortable_option_html($is_hidden = false, $full_id = '#FID#', $label = '#L#', $label_backend = '#LB#') {?>
+
+        <li data-pm-id="<?php echo $full_id;?>" class="pm-order" <?php echo !!$is_hidden ? 'style="display:none"' : '';?>>
+            <?php echo $label_backend == $label ? '' : $label_backend.'<br>';?>
+            <span class="pm-label" id="pm-label-<?php echo $full_id;?>"><?php echo $label;?></span>
+                    <span class="pm-label-fields" style="display:none;">
+                        <input type="text" id="pm_labels[<?php echo $full_id;?>]" value="<?php echo $label;?>" placeholder="<?php _e('Enter some title for this payment method', 'leyka');?>">
+                        <input type="hidden" class="pm-label-field" name="leyka_<?php echo $full_id;?>_label" value="<?php echo $label;?>">
+                        <span class="new-pm-label-ok"><? _e('OK', 'leyka');?></span>
+                        <span class="new-pm-label-cancel"><? _e('Cancel', 'leyka');?></span>
+                    </span>
+            <span class="pm-change-label" data-pm-id="<?php echo $full_id;?>"><?php _e('Rename', 'leyka');?></span>
+        </li>
+
+    <?php }?>
+
     <div class="pm-order-panel"><div class="panel-content">
 
         <h3 class="panel-title"><?php _e('Payment methods order', 'leyka');?></h3>
         <p class="panel-desc"><?php _e('Drag the elements up or down to change their order in donation forms', 'leyka');?></p>
         <ul id="pm-order-settings">
-            <?php $pm_order = explode('pm_order[]=', leyka_options()->opt('pm_order'));
+            <?php leyka_pm_sortable_option_html(true);
+
+            $pm_order = explode('pm_order[]=', leyka_options()->opt('pm_order'));
             array_shift($pm_order);
-    
-            foreach($pm_order as $pm) { $pm = leyka_get_pm_by_id(str_replace('&amp;', '', $pm), true);?>
-    
-                <li data-pm-id="<?php echo $pm->full_id;?>" class="pm-order"><?php echo $pm->title_backend;?></li>
-            <?php }?>
+
+            foreach($pm_order as $i => &$pm_full_id) {
+
+                $pm_full_id = str_replace('&amp;', '', $pm_full_id);
+                $pm = leyka_get_pm_by_id($pm_full_id, true);
+
+                if($pm && in_array($pm_full_id, $pm_available) ) {
+                    leyka_pm_sortable_option_html(false, $pm_full_id, $pm->label, $pm->label_backend);
+                } else {
+                    unset($pm_order[$i]);
+                }
+            }
+
+            $pm_order_flipped = array_flip($pm_order); // Somehow in_array() working incorrectly for no reason :((
+            foreach($pm_available as $pm_full_id) { // Add to the end of the order all PMs that are out of this order
+
+                if( !array_key_exists($pm_full_id, $pm_order_flipped) ) {
+
+                    $pm = leyka_get_pm_by_id($pm_full_id, true);
+                    leyka_pm_sortable_option_html(false, $pm_full_id, $pm->label, $pm->label_backend);
+
+                    $pm_order[] = $pm_full_id;
+                }
+            }?>
         </ul>
+
+<!--        --><?php //$pm_order = 'pm_order[]='.implode('&pm_order[]=', $pm_order);
+//        leyka_options()->opt('pm_order', $pm_order);?>
+
         <input type="hidden" name="leyka_pm_order" value="<?php echo leyka_options()->opt('pm_order');?>">
-        
+
+        <p class="submit">
+            <input type="submit" name="<?php echo "leyka_settings_{$current_stage}";?>_submit" value="<?php _e('Save settings', 'leyka'); ?>" class="button-primary" />
+        </p>
+
     </div></div>
-    
+
 </div><!-- #payment-settings-area -->

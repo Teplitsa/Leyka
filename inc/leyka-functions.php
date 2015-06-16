@@ -569,3 +569,11 @@ function leyka_min_payment_settings_complete() {
 function leyka_campaign_published() {
     return count(get_posts(array('post_type' => Leyka_Campaign_Management::$post_type, 'posts_per_page' => 1))) > 0;
 }
+
+/** @return boolean True if at least one Leyka form is currently on the screen, false otherwise */
+function leyka_form_is_screening() {
+
+    return
+        is_singular(Leyka_Campaign_Management::$post_type) ||
+        (is_front_page() && stristr(get_page_template_slug(), 'home-campaign_one') !== false);
+}

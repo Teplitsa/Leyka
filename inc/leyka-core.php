@@ -665,10 +665,15 @@ class Leyka {
 
         $donation_id = $this->log_submission();
 
-        /** @todo We may want to replace whole $_POST with some specially created array */
-        do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
+        do_action(
+            'leyka_payment_form_submission-'.$pm[0],
+            $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST
+        );
 
-        $this->_payment_vars = apply_filters('leyka_submission_form_data-'.$pm[0], $this->_payment_vars, $pm[1], $donation_id);
+        $this->_payment_vars = apply_filters(
+            'leyka_submission_form_data-'.$pm[0],
+            $this->_payment_vars, $pm[1], $donation_id
+        );
 
         $this->_payment_url = apply_filters('leyka_submission_redirect_url-'.$pm[0], $this->_payment_url, $pm[1]);
 
@@ -690,10 +695,9 @@ class Leyka {
             'purpose_text' => $purpose_text,
         )));
 
-        if(is_wp_error($donation_id))
-            /** @todo Modify this method so it can take any WP_Error as a param, then call it here: */
+        if(is_wp_error($donation_id)) {
             return false;
-        else {
+        } else {
 
             do_action('leyka_log_donation-'.$pm_data['gateway_id'], $donation_id);
             return $donation_id;
@@ -708,8 +712,10 @@ class Leyka {
      * @param $donation WP_Post
      */
     public function finalize_log_submission($donation_id, WP_Post $donation) {
-        if($donation->post_type != Leyka_Donation_Management::$post_type)
+
+        if($donation->post_type != Leyka_Donation_Management::$post_type){
             return;
+        }
 
         do_action('leyka_logging_new_donation', $donation_id, $donation);
     }
@@ -721,11 +727,6 @@ class Leyka {
      * @return array Template files.
      **/
     public function get_templates($is_service = false) {
-
-//        if(empty($this->templates)) {
-
-
-        //if($this->templates === false || empty($this->templates)) { // If global hits an error, it returns false
 
         if( !$this->templates ) {
             $this->templates = array();
@@ -747,10 +748,8 @@ class Leyka {
         if( !$this->templates ) {
             $this->templates = array();
         }
-//            }
 
         $this->templates = array_map(array($this, 'get_template_data'), $this->templates);
-//        }
 
         return (array)$this->templates;
     }

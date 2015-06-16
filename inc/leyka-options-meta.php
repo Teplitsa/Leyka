@@ -187,7 +187,7 @@ $options_meta = apply_filters('leyka_core_options_meta', array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'pm_order' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text', // It's intentionally of text type :) Option contains a serialized string of an array
         'default' => '', // PM will be ordered just as their gateways were added
         'title' => __('Payment methods order on donation forms', 'leyka'),
         'description' => '',
@@ -613,25 +613,24 @@ $options_meta = apply_filters('leyka_core_options_meta', array(
         'type' => 'rich_html',
         'default' => __('Terms of donation service text. Use <br /> for line-breaks, please.', 'leyka'),
         'title' => __('A text of the Terms of donation service', 'leyka'),
-        'description' => __('Enter a text that will be shown to the donors to read the Terms of service. It have to include the following special entries:', 'leyka') . $agreement_placeholders,
+        'description' => __('Enter a text that will be shown to the donors to read the Terms of service. It have to include the following special entries:', 'leyka').$agreement_placeholders,
         'required' => 1, // 1 if field is required, 0 otherwise
         'placeholder' => '',
         'length' => '', // For text fields
         'list_entries' => array(), // For select, radio & checkbox fields
         'validation_rules' => array(), // List of regexp?..
     ),
-    /** @todo Решили убрать эту опцию за ненужностью. Если ненужность подтвердится, удалить совсем. */
-//    'test_mode_on' => array(
-//        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
-//        'default' => '',
-//        'title' => __('Test mode is on', 'leyka'),
-//        'description' => __('Check to enable the test mode. While in test mode, the real payments will not be committed.', 'leyka'),
-//        'required' => 0, // 1 if field is required, 0 otherwise
-//        'placeholder' => '', // For text fields
-//        'length' => '', // For text fields
-//        'list_entries' => array(), // For select, radio & checkbox fields
-//        'validation_rules' => array(), // List of regexp?..
-//    ),
+    'donation_submit_text' => array(
+        'type' => 'text',
+        'default' => __('Donate', 'leyka'),
+        'title' => __('Label of the button to submit a donation form', 'leyka'),
+        'description' => __('Enter the text for a submit buttons on a donation forms.', 'leyka'),
+        'required' => 1,
+        'placeholder' => __('For ex., «Donate» or «Support»', 'leyka'),
+        'length' => '', // For text fields
+        'list_entries' => array(), // For select, radio & checkbox fields
+        'validation_rules' => array(), // List of regexp?..
+    ),
     'success_page' => array(
         'type' => 'select',
         'default' => leyka_get_default_success_page(),

@@ -7,7 +7,7 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
 
     protected static $_instance;
 
-    protected function _set_gateway_attributes() {
+    protected function _set_attributes() {
 
         $this->_id = 'yandex_phyz';
         $this->_title = __('Yandex.Money for physical persons', 'leyka');
@@ -46,17 +46,11 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
 
-        // Instantiate and save each of PM objects, if needed:
         if(empty($this->_payment_methods['yandex_phyz_card'])) {
             $this->_payment_methods['yandex_phyz_card'] = Leyka_Yandex_Phyz_Card::get_instance();
-            $this->_payment_methods['yandex_phyz_card']->initialize_pm_options();
-//            $this->_payment_methods['yandex_phyz_card']->save_settings();
         }
-
         if(empty($this->_payment_methods['yandex_phyz_money'])) {
             $this->_payment_methods['yandex_phyz_money'] = Leyka_Yandex_Phyz_Money::get_instance();
-            $this->_payment_methods['yandex_phyz_money']->initialize_pm_options();
-//            $this->_payment_methods['yandex_phyz_money']->save_settings();
         }
     }
 
@@ -79,11 +73,9 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
         $donation = new Leyka_Donation($donation_id);
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-        switch($pm_id) { // PC - ЯД, AC - картой, GP - платеж по коду через терминал, MC - моб. платёж
+        switch($pm_id) {
             case 'yandex_phyz_money': $payment_type = 'PC'; break;
             case 'yandex_phyz_card': $payment_type = 'AC'; break;
-//            case 'yandex_terminal': $payment_type = 'GP'; break;
-//            case 'yandex_mobile': $payment_type = 'MC'; break;
             default:
                 $payment_type = '';
         }
@@ -115,38 +107,39 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
         $is_error = !!$is_error;
         $tech_message = $tech_message ? $tech_message : $message;
 
-        if($is_error)
+        if($is_error) {
             die('<?xml version="1.0" encoding="UTF-8"?>
 <checkOrderResponse performedDatetime="'.date(DATE_ATOM).'"
 code="1000" operation_id="'.(int)@$_POST['operation_id'].'"
 account_id="'.leyka_options()->opt('yandex_money_account').'"
 message="'.$message.'"
 techMessage="'.$tech_message.'"/>');
-
-        die('<?xml version="1.0" encoding="UTF-8"?>
+        } else {
+            die('<?xml version="1.0" encoding="UTF-8"?>
 <checkOrderResponse performedDatetime="'.date(DATE_ATOM).'"
 code="0" operation_id="'.(int)@$_POST['operation_id'].'"
 account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
+        }
     }
 
     public function _handle_service_calls($call_type = '') {
-	
+
 		error_log_yandex_phyz("\n\n---- $call_type ----\n\n".print_r($_REQUEST, true));
 
-        $label = (int)@$_POST['label']; // Donation ID
-        $amount = @$_POST['withdraw_amount'];
+        $donation_id = (int)@$_POST['label']; // Donation ID
+        $amount = (int)@$_POST['withdraw_amount'];
 
-        error_log_yandex_phyz("Label=$label\n");
+        error_log_yandex_phyz("Label=$donation_id\n");
         error_log_yandex_phyz("Amount=$amount\n");
 
-        if( !$label ) {
+        if( !$donation_id ) {
             error_log_yandex_phyz("Label is empty\n");
             return;
         }
 
-        $donation = new Leyka_Donation($label);
+        $donation = new Leyka_Donation($donation_id);
         error_log_yandex_phyz("Donation initialized\n");
-        error_log_yandex_phyz(print_r($donation, TRUE) . "\n");
+        error_log_yandex_phyz(print_r($donation, TRUE)."\n");
 
         $params_to_sha1 = implode('&', array(
             @$_POST['notification_type'],
@@ -210,12 +203,14 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
 
     public function get_gateway_response_formatted(Leyka_Donation $donation) {
 
-        if( !$donation->gateway_response )
+        if( !$donation->gateway_response ){
             return array();
+        }
 
         $response_vars = maybe_unserialize($donation->gateway_response);
-        if( !$response_vars || !is_array($response_vars) )
+        if( !$response_vars || !is_array($response_vars) ) {
             return array();
+        }
 
 		$payment_type = '';
 		if($response_vars['notification_type'] == 'p2p-incoming') {
@@ -241,71 +236,36 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
 
 class Leyka_Yandex_Phyz_Money extends Leyka_Payment_Method {
 
-    /** @var Leyka_Yandex_phyz_Money */
     protected static $_instance = null;
-
-    final protected function __clone() {}
-
-    public final static function get_instance() {
-
-        if(null === static::$_instance) {
-            static::$_instance = new static();
-        }
-
-        return static::$_instance;
-    }
     
-    public function __construct(array $params = array()) {
+    public function _set_attributes() {
 
-        if(static::$_instance) /** We can't make a public __construct() to private */
-            return static::$_instance;
-	
-		$this->initialize_pm_options();
-
-        $this->_id = empty($params['id']) ? 'yandex_phyz_money' : $params['id'];
-
-        $this->_label_backend = empty($params['label_backend']) ?
-            __('Virtual cash Yandex.Money', 'leyka') : $params['label_backend'];
-        $this->_label = empty($params['label']) ? __('Virtual cash Yandex.Money', 'leyka') : $params['label'];
-
-        $this->_description = empty($params['desc']) ?
-            leyka_options()->opt_safe('yandex_phyz_money_description') : $params['desc'];
-
+        $this->_id = 'yandex_phyz_money';
         $this->_gateway_id = 'yandex_phyz';
 
-        $this->_active = isset($params['active']) ? $params['active'] : true;
+        $this->_label_backend = __('Virtual cash Yandex.Money', 'leyka');
+        $this->_label = __('Virtual cash Yandex.Money', 'leyka');
 
-        $this->_support_global_fields = isset($params['has_global_fields']) ? $params['has_global_fields'] : true;
-
-        $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
+        $this->_description = leyka_options()->opt_safe('yandex_phyz_money_description');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex_phyz/icons/yandex_phyz_money_s.png',
 //            LEYKA_PLUGIN_BASE_URL.'gateways/quittance/icons/sber_s.png',
         ));
 
-        $this->_submit_label = empty($params['submit_label']) ? __('Donate', 'leyka') : $params['submit_label'];
+        $this->_supported_currencies[] = 'rur';
 
-        $this->_supported_currencies = empty($params['currencies']) ? array('rur',) : $params['currencies'];
-
-        $this->_default_currency = empty($params['default_currency']) ? 'rur' : $params['default_currency'];
-
-        
-
-        //add_action('leyka_service_call-'.$this->_id, 'leyka_yandex_handle_service_call');
-
-        static::$_instance = $this;
-
-        return static::$_instance;
+        $this->_default_currency = 'rur';
     }
 
-    protected function _set_pm_options_defaults() {
+    protected function _set_options_defaults() {
 
-        if($this->_options)
+        if($this->_options){
             return;
+        }
 
         $this->_options = array(
-            'yandex_phyz_money_description' => array(
+            $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __("Yandex.Money is a simple and safe payment system to pay for goods and services through internet. You will have to fill a payment form, you will be redirected to the <a href='https://money.yandex.ru/'>Yandex.Money website</a> to confirm your payment. If you haven't got a Yandex.Money account, you can create it there.", 'leyka'),
                 'title' => __('Yandex.Money description', 'leyka'),
@@ -320,44 +280,17 @@ class Leyka_Yandex_Phyz_Money extends Leyka_Payment_Method {
 
 class Leyka_Yandex_Phyz_Card extends Leyka_Payment_Method {
 
-    /** @var $_instance Leyka_Yandex_phyz_Card */
     protected static $_instance = null;
 
-    final protected function __clone() {}
+    public function _set_attributes() {
 
-    public final static function get_instance() {
-
-        if(null === static::$_instance) {
-            static::$_instance = new static();
-        }
-
-        return static::$_instance;
-    }
-
-    public function __construct(array $params = array()) {
-
-        if(static::$_instance) /** We can't make a public __construct() to private */ {
-            return static::$_instance;
-        }
-	
-		$this->initialize_pm_options();
-		 
-        $this->_id = empty($params['id']) ? 'yandex_phyz_card' : $params['id'];
-
-        $this->_label = empty($params['label']) ? __('Payment with Banking Card Yandex', 'leyka') : $params['label'];
-
-//        echo '<pre>2: ' . print_r(leyka_options()->opt_safe('yandex_phyz_card_description'), 1) . '</pre>';
-        $this->_description = empty($params['desc']) ?
-            leyka_options()->opt_safe('yandex_phyz_card_description') : $params['desc'];
-
+        $this->_id = 'yandex_phyz_card';
         $this->_gateway_id = 'yandex_phyz';
 
-        $this->_active = isset($params['active']) ? 1 : 0;
-//        $this->_active = (int)in_array($this->_gateway_id.'-'.$this->_id, leyka_options()->opt('pm_available'));
+        $this->_label = __('Payment with Banking Card Yandex', 'leyka');
+        $this->_label_backend = $this->_label;
 
-        $this->_support_global_fields = isset($params['has_global_fields']) ? $params['has_global_fields'] : true;
-
-        $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
+        $this->_description = leyka_options()->opt_safe('yandex_phyz_card_description');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
 //            LEYKA_PLUGIN_BASE_URL.'gateways/yandex_phyz/icons/yandex_phyz_money_s.png',
@@ -365,28 +298,19 @@ class Leyka_Yandex_Phyz_Card extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex_phyz/icons/master.png',
         ));
 
-        $this->_submit_label = empty($params['submit_label']) ?
-            __('Donate', 'leyka') : $params['submit_label'];
+        $this->_supported_currencies[] = 'rur';
 
-        $this->_supported_currencies = empty($params['currencies']) ? array('rur',) : $params['currencies'];
-
-        $this->_default_currency = empty($params['default_currency']) ? 'rur' : $params['default_currency'];
-    
-
-        //add_action('leyka_service_call-'.$this->_id, 'leyka_yandex_handle_service_call');
-
-        static::$_instance = $this;
-
-        return static::$_instance;
+        $this->_default_currency = 'rur';
     }
 
-    protected function _set_pm_options_defaults() {
+    protected function _set_options_defaults() {
 
-        if($this->_options)
+        if($this->_options){
             return;
+        }
 
         $this->_options = array(
-            'yandex_phyz_card_description' => array(
+            $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('Yandex.Money allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Money website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
                 'title' => __('Yandex bank card payment description', 'leyka'),
@@ -399,11 +323,10 @@ class Leyka_Yandex_Phyz_Card extends Leyka_Payment_Method {
 }
 
 function error_log_yandex_phyz($string) {
-//	return;
 	error_log($string, 3, WP_CONTENT_DIR.'/uploads/phyz-error.log');
 }
 
 function leyka_add_gateway_yandex_phyz() { // Use named function to leave a possibility to remove/replace it on the hook
     leyka()->add_gateway(Leyka_Yandex_Phyz_Gateway::get_instance());
 }
-add_action('leyka_init_actions', 'leyka_add_gateway_yandex_phyz', 25);
+add_action('leyka_init_actions', 'leyka_add_gateway_yandex_phyz');

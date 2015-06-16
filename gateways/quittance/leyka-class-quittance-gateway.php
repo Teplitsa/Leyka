@@ -7,7 +7,6 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
 
     protected static $_instance; // Gateway is always a singleton
 
-    /** There are no gateway options */
     protected function _set_options_defaults() {
 
         if($this->_options) // Create Gateway options, if needed
@@ -28,7 +27,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
         );
     }
     
-    protected function _set_gateway_attributes() {
+    protected function _set_attributes() {
 
         $this->_id = 'quittance';
         $this->_title = __('Quittances', 'leyka');
@@ -36,17 +35,14 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
 
-        // Instantiate and save each of PM objects, if needed:
         if(empty($this->_payment_methods['bank_order'])) {
-            $this->_payment_methods['bank_order'] = new Leyka_Bank_Order();
-//            $this->_payment_methods['bank_order']->save_settings();
+            $this->_payment_methods['bank_order'] = Leyka_Bank_Order::get_instance();
         }
     }
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
-        // Localize a quittance first:
-        $res = load_textdomain('leyka', LEYKA_PLUGIN_DIR.'lang/leyka-'.get_locale().'.mo');
+        load_textdomain('leyka', LEYKA_PLUGIN_DIR.'lang/leyka-'.get_locale().'.mo'); // Localize a quittance first
 
         header('HTTP/1.1 200 OK');
         header('Content-Type: text/html; charset=utf-8');
@@ -74,7 +70,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
                 __('Print the quittance', 'leyka'),
                 __("OK, I've received the quittance", 'leyka'),
                 get_permalink(leyka_options()->opt('quittance_redirect_page')),
-                $campaign->payment_title,
+                $campaign->payment_title." (№ $donation_id)",
                 $form_data['leyka_donor_name'],
                 leyka_options()->opt('org_full_name'),
                 (int)$form_data['leyka_donation_amount'],
@@ -112,13 +108,11 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
 
     /** Quittance don't use any specific redirects, so this method is empty. */
     public function submission_redirect_url($current_url, $pm_id) {
-
         return $current_url;
     }
     
     /** Quittance don't have some form data to send to the gateway site */
-    public function submission_form_data($form_data_vars, $pm_id, $donation_id) {     
-                
+    public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
         return $form_data_vars;
     }
 
@@ -131,7 +125,6 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
 
     /** Quittance don't use any specific fields, so this method is empty. */
     public function log_gateway_fields($donation_id) {
-        
     }
 }
 
@@ -139,69 +132,37 @@ class Leyka_Bank_Order extends Leyka_Payment_Method {
 
     private $_quittance_html = '';
 
-    /** @var $_instance Leyka_Yandex_Card */
-    protected static $_instance = null;
+    protected static $_instance;
 
-    final protected function __clone() {}
+    protected function _set_attributes() {
 
-    public final static function get_instance() {
-
-        if(null === static::$_instance) {
-            static::$_instance = new static();
-        }
-
-        return static::$_instance;
-    }
-
-    public function __construct(array $params = array()) {
-
-        if(static::$_instance) /** We can't make a public __construct() to private */ {
-            return static::$_instance;
-        }
-
-        $this->initialize_pm_options();
-        
-        /** @todo For now, we're taking quittance template HTML from static file. We can also store it in the DB (PM's options) to let user edit it easily in Leyka settings. */
         $this->_quittance_html = file_get_contents(LEYKA_PLUGIN_DIR.'gateways/quittance/bank_order.html');
 
-        $this->_id = empty($params['id']) ? 'bank_order' : $params['id'];
-
+        $this->_id = 'bank_order';
         $this->_gateway_id = 'quittance';
 
-        $this->_active = isset($params['active']) ? $params['active'] : true;
-
-        $this->_label = empty($params['label']) ? __('Bank order quittance', 'leyka') : $params['label'];
-
-        $this->_description = empty($params['desc']) ?
-            leyka_options()->opt_safe('bank_order_description') : $params['desc'];
-
-        $this->_support_global_fields = isset($params['has_global_fields']) ? $params['has_global_fields'] : true;
-
-        $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
+        $this->_label_backend = __('Bank order quittance', 'leyka');
+        $this->_label = __('Bank order quittance', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/quittance/icons/sber_s.png',
         ));
 
-        $this->_submit_label = empty($params['submit_label']) ?
-            __('Get bank order quittance', 'leyka') : $params['submit_label'];
+        $this->_submit_label = __('Get bank order quittance', 'leyka');
 
-        $this->_supported_currencies = empty($params['currencies']) ? array('rur') : $params['currencies'];
+        $this->_supported_currencies = array('rur');
 
-        $this->_default_currency = empty($params['default_currency']) ? 'rur' : $params['default_currency'];
-
-        static::$_instance = $this;
-
-        return static::$_instance;
+        $this->_default_currency = 'rur';
     }
-    
-    protected function _set_pm_options_defaults() {
 
-        if($this->_options)
+    protected function _set_options_defaults() {
+
+        if($this->_options) {
             return;
+        }
 
         $this->_options = array(
-            'bank_order_description' => array(
+            $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('Bank order payment allows you to make a donation through any bank. You can print out a bank order paper and bring it to the bank to make a payment.', 'leyka'),
                 'title' => __('Bank order payment description', 'leyka'),
@@ -220,4 +181,4 @@ class Leyka_Bank_Order extends Leyka_Payment_Method {
 function leyka_add_gateway_quittance() { // Use named function to leave a possibility to remove/replace it on the hook
     leyka()->add_gateway(Leyka_Quittance_Gateway::get_instance());
 }
-add_action('leyka_init_actions', 'leyka_add_gateway_quittance', 35);
+add_action('leyka_init_actions', 'leyka_add_gateway_quittance');

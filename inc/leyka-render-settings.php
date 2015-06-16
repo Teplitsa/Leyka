@@ -50,7 +50,6 @@ function leyka_render_checkbox_field($option_name, $data){
 <?php }
 
 /** Multicheckbox fields */
-/** @todo Check if using just "checkbox" type is sufficient. */
 add_action('leyka_render_multi_checkbox', 'leyka_render_multi_checkboxes_fields', 10, 2);
 function leyka_render_multi_checkboxes_fields($option_name, $data){
     $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name; ?>

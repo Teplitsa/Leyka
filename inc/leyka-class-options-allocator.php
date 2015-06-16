@@ -160,6 +160,7 @@ class Leyka_Options_Allocator {
                         'is_default_collapsed' => false,
                         'options' => array(
                             'argee_to_terms_needed', 'agree_to_terms_text', 'terms_of_service_text',
+                            'donation_submit_text',
                         )
                     ),),
                     array('section' => array(
