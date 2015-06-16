@@ -254,7 +254,7 @@ class Leyka_Payment_Form {
 	}
 	
 	function get_pm_label() {
-        /** @todo Maybe, we need to throw an ex in case when PM label is empty for some reason */
+
         return $this->_pm->label ? $this->_pm->label : '';
 	}
 	
@@ -483,13 +483,15 @@ function leyka_pf_footer() {
 }
 
 function leyka_share_campaign_block($campaign_id = null) {
+
 	global $post;
 	
-	if(!$campaign_id)
+	if( !$campaign_id ) {
 		$campaign_id = $post->ID;
+    }
 		
-	$iframe = Leyka_Campaign_Management::get_card_embed_code($campaign_id);
-?>
+	$iframe = Leyka_Campaign_Management::get_card_embed_code($campaign_id);?>
+
 	<div id="share-campaign-area" class="toggle">
 		<div class="toggle-trigger"><?php _e('Share (get embed code)', 'leyka');?></div>
 		<div class="toggle-area">
@@ -666,7 +668,6 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
  **/
 function leyka_get_donation_form($echo = true) {
 
-	/** @todo Maybe, it should accept campaign ID as param? */
 	if( !is_singular(Leyka_Campaign_Management::$post_type) )
 		return '';
 		

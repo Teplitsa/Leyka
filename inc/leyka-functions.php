@@ -57,7 +57,7 @@ function leyka_get_pages_list() {
 function leyka_get_gateways_pm_list() {
 
     $options = array();
-    foreach(leyka_get_pm_list() as $pm) {
+    foreach(leyka_get_pm_list(null, false, false) as $pm) {
         $gateway_title = leyka_get_gateway_by_id($pm->gateway_id)->title;
         $options[$pm->full_id] = $pm->label_backend
             .($gateway_title == $pm->label_backend ? '' : ' ('.$gateway_title.')');
@@ -203,6 +203,7 @@ function leyka_get_form_templates_list() {
 }
 
 function leyka_get_active_currencies() {
+
     return array(
         'rur' => array(
             'label' => leyka_options()->opt('currency_rur_label'),
@@ -508,7 +509,8 @@ function leyka_get_actual_currency_rates() {
 function leyka_settings_complete($settings_tab) {
 
     $settings_complete = true;
-    $option_section = reset(leyka_opt_alloc()->get_tab_options($settings_tab));
+    $tab_options = leyka_opt_alloc()->get_tab_options($settings_tab); // Special 4 strict standards
+    $option_section = reset($tab_options);
 
     foreach($option_section['section']['options'] as $option_name) {
 
@@ -534,7 +536,8 @@ function leyka_min_payment_settings_complete() {
     foreach(leyka_options()->opt('pm_available') as $pm_full_id) { // Full ID is "gateway_id-pm_id"
 
         $pm = leyka_get_pm_by_id($pm_full_id, true);
-        $gateway = leyka_get_gateway_by_id(reset(explode('-', $pm_full_id)));
+        $pm_full_id = explode('-', $pm_full_id);
+        $gateway = leyka_get_gateway_by_id(reset($pm_full_id));
 
         if( !$pm || !$gateway ) {
             return false;
@@ -552,7 +555,6 @@ function leyka_min_payment_settings_complete() {
             foreach($gateway->get_options_names() as $option_name) {
 
                 if( !leyka_options()->is_valid($option_name) ) {
-                    echo '<pre>'.print_r('Here: '.$option_name, 1).'</pre>';
                     return false;
                 }
             }
@@ -566,4 +568,12 @@ function leyka_min_payment_settings_complete() {
 
 function leyka_campaign_published() {
     return count(get_posts(array('post_type' => Leyka_Campaign_Management::$post_type, 'posts_per_page' => 1))) > 0;
+}
+
+/** @return boolean True if at least one Leyka form is currently on the screen, false otherwise */
+function leyka_form_is_screening() {
+
+    return
+        is_singular(Leyka_Campaign_Management::$post_type) ||
+        (is_front_page() && stristr(get_page_template_slug(), 'home-campaign_one') !== false);
 }

@@ -102,7 +102,7 @@ class Leyka_Options_Controller {
             'default' => '',
             'title' => $name,
             'description' => '',
-            'required' => 0, // 1 if field is required, 0 otherwise
+            'required' => false,
             'placeholder' => '', // For text fields
             'length' => '', // For text fields
             'list_entries' => array(), // For select, radio & checkbox fields

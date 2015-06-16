@@ -1,10 +1,9 @@
-<?php
+<?php if( !defined('WPINC') ) die;
 /**
  * Leyka Template: Radios
  * Description: Radio options for each payment method
  **/
 
-if( !defined('WPINC') ) die;
 $active_pm = apply_filters('leyka_form_pm_order', leyka_get_pm_list(true));
 
 leyka_pf_submission_errors();
@@ -84,7 +83,10 @@ leyka_setup_current_pm($curr_pm, $curr_pm->default_currency);?>
 </form>
 </div><!-- .leyka-payment-option -->
 
-<?php leyka_share_campaign_block();?> 
-<?php leyka_pf_footer();?>
+<?php if(leyka_options()->opt('show_campaign_sharing')) {
+    leyka_share_campaign_block();
+}
+
+leyka_pf_footer();?>
 
 </div><!-- #leyka-payment-form -->

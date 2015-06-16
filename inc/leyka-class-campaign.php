@@ -330,10 +330,8 @@ class Leyka_Campaign_Management {
     }
 
     public function embedding_meta_box(WP_Post $campaign) {
-		
-		
-		$iframe = self::get_card_embed_code($campaign->ID);
-	?>
+
+		$iframe = self::get_card_embed_code($campaign->ID);?>
 
 <!--        <label><input type="radio" name="embed-type" value="donation_form" checked="checked"> --><?php //_e('Donation form', 'leyka');?><!--</label>-->
 <!--        <label><input type="radio" name="embed-type" value="campaign_card" checked="checked"> --><?php //_e('Campaign card', 'leyka');?><!--</label>-->
@@ -343,8 +341,7 @@ class Leyka_Campaign_Management {
 <!---->
 <!--            <textarea class="embed-code" id="donation-form-embed-code" class="donation-form-embed-code">--><?php //echo '<iframe frameborder="0" width="300" height="510" src="'.$link.'donation_form'.'"></iframe>'?><!--</textarea>-->
 <!--        </div>-->
-	
-	
+
 	<div class="embed-block">
 		<div class="embed-code">
 			<h4><?php _e('Size settings', 'leyka');?></h4>
@@ -367,15 +364,16 @@ class Leyka_Campaign_Management {
 		
 	</div>
     <?php }
-	
+
 	static function get_card_embed_code($campaign_id, $w = 300, $h = 510){
-		
+
 		$link = get_permalink($campaign_id);
-        $link .= stristr($link, '?') !== false ? '&embed=' : '?embed=';
-		$w = ($w <= 0 ) ? 300 : intval($w);
-		$h = ($h <= 0 ) ? 510 : intval($h);
-		
-		return '<iframe frameborder="0" width="'.$w.'" height="'.$h.'" src="'.$link.'campaign_card'.'"></iframe>';
+        $link .= stristr($link, '?') !== false ? '&' : '?';
+
+		$w = $w <= 0 ? 300 : (int)$w;
+		$h = $h <= 0 ? 510 : (int)$h;
+
+		return '<iframe width="'.$w.'" height="'.$h.'" src="'.$link.'embed=campaign_card"></iframe>';
 	}
 	
 	public function save_data($campaign_id, WP_Post $campaign) {

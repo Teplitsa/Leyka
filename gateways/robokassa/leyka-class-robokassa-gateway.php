@@ -7,7 +7,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
 
     protected static $_instance;
 
-    protected function _set_gateway_attributes() {
+    protected function _set_attributes() {
 
         $this->_id = 'robokassa';
         $this->_title = __('Robokassa', 'leyka');
@@ -15,8 +15,9 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
 
     protected function _set_options_defaults() {
 
-        if($this->_options) // Create Gateway options, if needed
+        if($this->_options) {
             return;
+        }
 
         $this->_options = array(
             'robokassa_shop_id' => array(
@@ -70,30 +71,20 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
 
-        // Instantiate and save each of PM objects, if needed:
         if(empty($this->_payment_methods['BANKOCEAN2'])) {
             $this->_payment_methods['BANKOCEAN2'] = Leyka_Robokassa_Card::get_instance();
-            $this->_payment_methods['BANKOCEAN2']->initialize_pm_options();
         }
-
         if(empty($this->_payment_methods['YandexMerchantOcean'])) {
             $this->_payment_methods['YandexMerchantOcean'] = Leyka_Robokassa_Yandex_Money::get_instance();
-            $this->_payment_methods['YandexMerchantOcean']->initialize_pm_options();
         }
-
         if(empty($this->_payment_methods['WMR'])) {
             $this->_payment_methods['WMR'] = Leyka_Robokassa_Webmoney::get_instance();
-            $this->_payment_methods['WMR']->initialize_pm_options();
         }
-
         if(empty($this->_payment_methods['Qiwi30Ocean'])) {
             $this->_payment_methods['Qiwi30Ocean'] = Leyka_Robokassa_Qiwi::get_instance();
-            $this->_payment_methods['Qiwi30Ocean']->initialize_pm_options();
         }
-
         if(empty($this->_payment_methods['Other'])) {
             $this->_payment_methods['Other'] = Leyka_Robokassa_All::get_instance();
-            $this->_payment_methods['Other']->initialize_pm_options();
         }
     }
 
@@ -113,7 +104,6 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
 
         $donation = new Leyka_Donation($donation_id);
 	    $amount = number_format((float)$donation->amount, 2, '.', '');
-//        $currency = mb_strtoupper($donation->currency);
         $hash = md5(leyka_options()->opt('robokassa_shop_id').":$amount:$donation_id:"
                .leyka_options()->opt('robokassa_shop_password1').":Shp_item=1");
 
@@ -229,74 +219,36 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
 
 class Leyka_Robokassa_Card extends Leyka_Payment_Method {
 
-    /** @var $_instance Leyka_Robokassa_Card */
     protected static $_instance = null;
 
-    final protected function __clone() {}
+    public function _set_attributes() {
 
-    public final static function get_instance() {
-
-        if(null === static::$_instance) {
-            static::$_instance = new static();
-        }
-
-        return static::$_instance;
-    }
-
-    public function __construct(array $params = array()) {
-
-        if(static::$_instance) /** We can't make a public __construct() to private */ {
-            return static::$_instance;
-        }
-
-        $this->initialize_pm_options();
-
-        $this->_id = empty($params['id']) ? 'BANKOCEAN2' : $params['id'];
-
-        $this->_label_backend = empty($params['label_backend']) ?
-            __('Payment with Banking Card', 'leyka') : $params['label_backend'];
-        $this->_label = empty($params['label']) ? __('Banking Card', 'leyka') : $params['label'];
-
-        $this->_description = empty($params['desc']) ?
-            leyka_options()->opt_safe('robokassa_card_description') : $params['desc'];
-
+        $this->_id = 'BANKOCEAN2';
         $this->_gateway_id = 'robokassa';
 
-        $this->_active = isset($params['active']) ? 1 : 0;
+        $this->_label_backend = __('Payment with Banking Card', 'leyka');
+        $this->_label = __('Banking Card', 'leyka');
 
-        $this->_support_global_fields = isset($params['has_global_fields']) ? $params['has_global_fields'] : true;
-
-        $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
+        $this->_description = leyka_options()->opt_safe('robokassa_card_description');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/master.png',
         ));
 
-        $this->_submit_label = empty($params['submit_label']) ?
-            __('Donate', 'leyka') : $params['submit_label'];
+        $this->_supported_currencies[] = 'rur';
 
-        if(empty($params['currencies'])) {
-
-            $this->_supported_currencies[] = 'rur';
-        } else {
-            $this->_supported_currencies = $params['currencies'];
-        }
-
-        $this->_default_currency = empty($params['default_currency']) ? 'rur' : $params['default_currency'];
-
-        static::$_instance = $this;
-
-        return static::$_instance;
+        $this->_default_currency = 'rur';
     }
 
-    protected function _set_pm_options_defaults() {
+    protected function _set_options_defaults() {
 
-        if($this->_options)
+        if($this->_options) {
             return;
+        }
 
         $this->_options = array(
-            'robokassa_card_description' => array(
+            $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('Robokassa system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="http://www.robokassa.ru/ru/">Robokassa</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
                 'title' => __('Robokassa bank card payment description', 'leyka'),
@@ -310,74 +262,36 @@ class Leyka_Robokassa_Card extends Leyka_Payment_Method {
 
 class Leyka_Robokassa_Yandex_Money extends Leyka_Payment_Method {
 
-    /** @var $_instance Leyka_Robokassa_Yandex_Money */
     protected static $_instance = null;
 
-    final protected function __clone() {}
+    public function _set_attributes() {
 
-    public final static function get_instance() {
-
-        if(null === static::$_instance) {
-            static::$_instance = new static();
-        }
-
-        return static::$_instance;
-    }
-
-    public function __construct(array $params = array()) {
-
-        if(static::$_instance) /** We can't make a public __construct() to private */ {
-            return static::$_instance;
-        }
-
-        $this->initialize_pm_options();
-
-        $this->_id = empty($params['id']) ? 'YandexMerchantOcean' : $params['id'];
-
-        $this->_label_backend = empty($params['label_backend']) ?
-            __('Payment with Yandex.Money', 'leyka') : $params['label_backend'];
-        $this->_label = empty($params['label']) ? __('Yandex.Money', 'leyka') : $params['label'];
-
-        $this->_description = empty($params['desc']) ?
-            leyka_options()->opt_safe('robokassa_yandex_money_description') : $params['desc'];
-
+        $this->_id = 'YandexMerchantOcean';
         $this->_gateway_id = 'robokassa';
 
-        $this->_active = isset($params['active']) ? 1 : 0;
+        $this->_label_backend = __('Payment with Yandex.Money', 'leyka');
+        $this->_label = __('Yandex.Money', 'leyka');
 
-        $this->_support_global_fields = isset($params['has_global_fields']) ? $params['has_global_fields'] : true;
-
-        $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
+        $this->_description = leyka_options()->opt_safe('robokassa_yandex_money_description');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/master.png',
         ));
 
-        $this->_submit_label = empty($params['submit_label']) ?
-            __('Donate', 'leyka') : $params['submit_label'];
+        $this->_supported_currencies[] = 'rur';
 
-        if(empty($params['currencies'])) {
-
-            $this->_supported_currencies[] = 'rur';
-        } else {
-            $this->_supported_currencies = $params['currencies'];
-        }
-
-        $this->_default_currency = empty($params['default_currency']) ? 'rur' : $params['default_currency'];
-
-        static::$_instance = $this;
-
-        return static::$_instance;
+        $this->_default_currency = 'rur';
     }
 
-    protected function _set_pm_options_defaults() {
+    protected function _set_options_defaults() {
 
-        if($this->_options)
+        if($this->_options) {
             return;
+        }
 
         $this->_options = array(
-            'robokassa_yandex_money_description' => array(
+            $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('Robokassa system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="http://www.robokassa.ru/ru/">Robokassa</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
                 'title' => __('Robokassa Yandex.Money payment description', 'leyka'),
@@ -391,74 +305,36 @@ class Leyka_Robokassa_Yandex_Money extends Leyka_Payment_Method {
 
 class Leyka_Robokassa_Webmoney extends Leyka_Payment_Method {
 
-    /** @var $_instance Leyka_Robokassa_Webmoney */
     protected static $_instance = null;
 
-    final protected function __clone() {}
+    public function _set_attributes() {
 
-    public final static function get_instance() {
-
-        if(null === static::$_instance) {
-            static::$_instance = new static();
-        }
-
-        return static::$_instance;
-    }
-
-    public function __construct(array $params = array()) {
-
-        if(static::$_instance) /** We can't make a public __construct() to private */ {
-            return static::$_instance;
-        }
-
-        $this->initialize_pm_options();
-
-        $this->_id = empty($params['id']) ? 'WMR' : $params['id'];
-
-        $this->_label_backend = empty($params['label_backend']) ?
-            __('Payment with Webmoney', 'leyka') : $params['label_backend'];
-        $this->_label = empty($params['label']) ? __('Webmoney', 'leyka') : $params['label'];
-
-        $this->_description = empty($params['desc']) ?
-            leyka_options()->opt_safe('robokassa_webmoney_description') : $params['desc'];
-
+        $this->_id = 'WMR';
         $this->_gateway_id = 'robokassa';
 
-        $this->_active = isset($params['active']) ? 1 : 0;
+        $this->_label_backend = __('Payment with Webmoney', 'leyka');
+        $this->_label = __('Webmoney', 'leyka');
 
-        $this->_support_global_fields = isset($params['has_global_fields']) ? $params['has_global_fields'] : true;
-
-        $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
+        $this->_description = leyka_options()->opt_safe('robokassa_webmoney_description');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/master.png',
         ));
 
-        $this->_submit_label = empty($params['submit_label']) ?
-            __('Donate', 'leyka') : $params['submit_label'];
+        $this->_supported_currencies[] = 'rur';
 
-        if(empty($params['currencies'])) {
-
-            $this->_supported_currencies[] = 'rur';
-        } else {
-            $this->_supported_currencies = $params['currencies'];
-        }
-
-        $this->_default_currency = empty($params['default_currency']) ? 'rur' : $params['default_currency'];
-
-        static::$_instance = $this;
-
-        return static::$_instance;
+        $this->_default_currency = 'rur';
     }
 
-    protected function _set_pm_options_defaults() {
+    protected function _set_options_defaults() {
 
-        if($this->_options)
+        if($this->_options){
             return;
+        }
 
         $this->_options = array(
-            'robokassa_webmoney_description' => array(
+            $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('Robokassa system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="http://www.robokassa.ru/ru/">Robokassa</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
                 'title' => __('Robokassa Webmoney payment description', 'leyka'),
@@ -472,74 +348,36 @@ class Leyka_Robokassa_Webmoney extends Leyka_Payment_Method {
 
 class Leyka_Robokassa_Qiwi extends Leyka_Payment_Method {
 
-    /** @var $_instance Leyka_Robokassa_Qiwi */
     protected static $_instance = null;
 
-    final protected function __clone() {}
+    public function _set_attributes() {
 
-    public final static function get_instance() {
-
-        if(null === static::$_instance) {
-            static::$_instance = new static();
-        }
-
-        return static::$_instance;
-    }
-
-    public function __construct(array $params = array()) {
-
-        if(static::$_instance) /** We can't make a public __construct() to private */ {
-            return static::$_instance;
-        }
-
-        $this->initialize_pm_options();
-
-        $this->_id = empty($params['id']) ? 'Qiwi30Ocean' : $params['id'];
-
-        $this->_label_backend = empty($params['label_backend']) ?
-            __('Payment with Qiwi wallet', 'leyka') : $params['label_backend'];
-        $this->_label = empty($params['label']) ? __('Qiwi wallet', 'leyka') : $params['label'];
-
-        $this->_description = empty($params['desc']) ?
-            leyka_options()->opt_safe('robokassa_qiwi_description') : $params['desc'];
-
+        $this->_id = 'Qiwi30Ocean';
         $this->_gateway_id = 'robokassa';
 
-        $this->_active = isset($params['active']) ? 1 : 0;
+        $this->_label_backend = __('Payment with Qiwi wallet', 'leyka');
+        $this->_label = __('Qiwi wallet', 'leyka');
 
-        $this->_support_global_fields = isset($params['has_global_fields']) ? $params['has_global_fields'] : true;
-
-        $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
+        $this->_description = leyka_options()->opt_safe('robokassa_qiwi_description');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/master.png',
         ));
 
-        $this->_submit_label = empty($params['submit_label']) ?
-            __('Donate', 'leyka') : $params['submit_label'];
+        $this->_supported_currencies[] = 'rur';
 
-        if(empty($params['currencies'])) {
-
-            $this->_supported_currencies[] = 'rur';
-        } else {
-            $this->_supported_currencies = $params['currencies'];
-        }
-
-        $this->_default_currency = empty($params['default_currency']) ? 'rur' : $params['default_currency'];
-
-        static::$_instance = $this;
-
-        return static::$_instance;
+        $this->_default_currency = 'rur';
     }
 
-    protected function _set_pm_options_defaults() {
+    protected function _set_options_defaults() {
 
-        if($this->_options)
+        if($this->_options) {
             return;
+        }
 
         $this->_options = array(
-            'robokassa_qiwi_description' => array(
+            $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('Robokassa system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="http://www.robokassa.ru/ru/">Robokassa</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
                 'title' => __('Robokassa Qiwi wallet payment description', 'leyka'),
@@ -554,74 +392,36 @@ class Leyka_Robokassa_Qiwi extends Leyka_Payment_Method {
 
 class Leyka_Robokassa_All extends Leyka_Payment_Method {
 
-    /** @var $_instance Leyka_Robokassa_All */
     protected static $_instance = null;
 
-    final protected function __clone() {}
+    public function _set_attributes() {
 
-    public final static function get_instance() {
-
-        if(null === static::$_instance) {
-            static::$_instance = new static();
-        }
-
-        return static::$_instance;
-    }
-
-    public function __construct(array $params = array()) {
-
-        if(static::$_instance) /** We can't make a public __construct() to private */ {
-            return static::$_instance;
-        }
-
-        $this->initialize_pm_options();
-
-        $this->_id = empty($params['id']) ? 'Other' : $params['id'];
-
-        $this->_label_backend = empty($params['label_backend']) ?
-            __('Use any Robokassa payment method available', 'leyka') : $params['label_backend'];
-        $this->_label = empty($params['label']) ? __('Robokassa (any)', 'leyka') : $params['label'];
-
-        $this->_description = empty($params['desc']) ?
-            leyka_options()->opt_safe('robokassa_all_description') : $params['desc'];
-
+        $this->_id = 'Other';
         $this->_gateway_id = 'robokassa';
 
-        $this->_active = isset($params['active']) ? 1 : 0;
+        $this->_label_backend = __('Use any Robokassa payment method available', 'leyka');
+        $this->_label = __('Robokassa (any)', 'leyka');
 
-        $this->_support_global_fields = isset($params['has_global_fields']) ? $params['has_global_fields'] : true;
-
-        $this->_custom_fields = empty($params['custom_fields']) ? array() : (array)$params['custom_fields'];
+        $this->_description = leyka_options()->opt_safe('robokassa_all_description');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/master.png',
         ));
 
-        $this->_submit_label = empty($params['submit_label']) ?
-            __('Donate', 'leyka') : $params['submit_label'];
+        $this->_supported_currencies[] = 'rur';
 
-        if(empty($params['currencies'])) {
-
-            $this->_supported_currencies[] = 'rur';
-        } else {
-            $this->_supported_currencies = $params['currencies'];
-        }
-
-        $this->_default_currency = empty($params['default_currency']) ? 'rur' : $params['default_currency'];
-
-        static::$_instance = $this;
-
-        return static::$_instance;
+        $this->_default_currency = 'rur';
     }
 
-    protected function _set_pm_options_defaults() {
+    protected function _set_options_defaults() {
 
-        if($this->_options)
+        if($this->_options) {
             return;
+        }
 
         $this->_options = array(
-            'robokassa_all_description' => array(
+            $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('Robokassa system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="http://www.robokassa.ru/ru/">Robokassa</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
                 'title' => __('Robokassa all possible payment types description', 'leyka'),
@@ -636,4 +436,4 @@ class Leyka_Robokassa_All extends Leyka_Payment_Method {
 function leyka_add_gateway_robokassa() {
     leyka()->add_gateway(Leyka_Robokassa_Gateway::get_instance());
 }
-add_action('leyka_init_actions', 'leyka_add_gateway_robokassa', 11);
+add_action('leyka_init_actions', 'leyka_add_gateway_robokassa');

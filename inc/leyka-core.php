@@ -4,12 +4,6 @@
 class Leyka {
 
     /**
-     * Plugin version, used for cache-busting of style and script file references.
-     * @var string
-     */
-//    private $_version = LEYKA_VERSION;
-
-    /**
      * Unique identifier for your plugin.
      *
      * Use this value (not the variable name) as the text domain when internationalizing strings of text. It should
@@ -25,19 +19,10 @@ class Leyka {
     private static $_instance = null;
 
     /**
-     * Slug of the plugin screen.
-     * @var string
-     */
-    // private $_plugin_screen_hook_suffix = null;
-
-    /**
      * Gateways list.
      * @var array
      */
     private $_gateways = array();
-
-    /** @var bool Set in true if gateways addition already processed. */
-    // private $_gateways_added = false;
 
     /** @var array Of WP_Error instances. */
     private $_form_errors = array();
@@ -59,11 +44,12 @@ class Leyka {
 
         if( !get_option('leyka_permalinks_flushed') ) {
 
-            add_action('init', function(){
+            function leyka_flush_rewrite_rules() {
 
                 flush_rewrite_rules(false);
                 update_option('leyka_permalinks_flushed', 1);
-            });
+            }
+            add_action('init', 'leyka_flush_rewrite_rules');
         }
 
         // By default, we'll assume some errors in the payment form, so redirect will get us back to it:
@@ -360,6 +346,21 @@ class Leyka {
             }
         }
 
+        // Remove the unneeded scripts for settings pages:
+        if((float)$leyka_last_ver <= 2.5) {
+
+            $settings_pages_dir = dir(LEYKA_PLUGIN_DIR.'inc/settings-pages/');
+            while(false !== ($script = $settings_pages_dir->read())) {
+
+                if($script != '.' && $script != '..' && !in_array($script, array('leyka-settings-common.php',))) {
+                    unlink(LEYKA_PLUGIN_DIR.'inc/settings-pages/'.$script);
+                }
+
+            }
+
+            $settings_pages_dir->close();
+        }
+
         /** Set a flag to flush permalinks (needs to be done a bit later, than this activation itself): */
         update_option('leyka_permalinks_flushed', 0);
 
@@ -430,8 +431,8 @@ class Leyka {
 
         require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-allocator.php');
         require_once(LEYKA_PLUGIN_DIR.'inc/leyka-render-settings.php');
-        require_once(LEYKA_PLUGIN_DIR.'/inc/leyka-admin.php');
-        require_once(LEYKA_PLUGIN_DIR.'/inc/leyka-donations-export.php');
+        require_once(LEYKA_PLUGIN_DIR.'inc/leyka-admin.php');
+        require_once(LEYKA_PLUGIN_DIR.'inc/leyka-donations-export.php');
 
         Leyka_Admin_Setup::get_instance();
     }
@@ -450,7 +451,7 @@ class Leyka {
         );
 
         $role = get_role('administrator');
-        if( !in_array('leyka_manage_donations', $role->capabilities) ) {
+        if(empty($role->capabilities['leyka_manage_donations'])) {
 
             foreach($caps as $cap => $true) {
 
@@ -664,10 +665,15 @@ class Leyka {
 
         $donation_id = $this->log_submission();
 
-        /** @todo We may want to replace whole $_POST with some specially created array */
-        do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
+        do_action(
+            'leyka_payment_form_submission-'.$pm[0],
+            $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST
+        );
 
-        $this->_payment_vars = apply_filters('leyka_submission_form_data-'.$pm[0], $this->_payment_vars, $pm[1], $donation_id);
+        $this->_payment_vars = apply_filters(
+            'leyka_submission_form_data-'.$pm[0],
+            $this->_payment_vars, $pm[1], $donation_id
+        );
 
         $this->_payment_url = apply_filters('leyka_submission_redirect_url-'.$pm[0], $this->_payment_url, $pm[1]);
 
@@ -689,10 +695,9 @@ class Leyka {
             'purpose_text' => $purpose_text,
         )));
 
-        if(is_wp_error($donation_id))
-            /** @todo Modify this method so it can take any WP_Error as a param, then call it here: */
+        if(is_wp_error($donation_id)) {
             return false;
-        else {
+        } else {
 
             do_action('leyka_log_donation-'.$pm_data['gateway_id'], $donation_id);
             return $donation_id;
@@ -707,8 +712,10 @@ class Leyka {
      * @param $donation WP_Post
      */
     public function finalize_log_submission($donation_id, WP_Post $donation) {
-        if($donation->post_type != Leyka_Donation_Management::$post_type)
+
+        if($donation->post_type != Leyka_Donation_Management::$post_type){
             return;
+        }
 
         do_action('leyka_logging_new_donation', $donation_id, $donation);
     }
@@ -720,11 +727,6 @@ class Leyka {
      * @return array Template files.
      **/
     public function get_templates($is_service = false) {
-
-//        if(empty($this->templates)) {
-
-
-        //if($this->templates === false || empty($this->templates)) { // If global hits an error, it returns false
 
         if( !$this->templates ) {
             $this->templates = array();
@@ -746,10 +748,8 @@ class Leyka {
         if( !$this->templates ) {
             $this->templates = array();
         }
-//            }
 
         $this->templates = array_map(array($this, 'get_template_data'), $this->templates);
-//        }
 
         return (array)$this->templates;
     }

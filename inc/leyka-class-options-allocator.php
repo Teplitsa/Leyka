@@ -1,10 +1,12 @@
 <?php if( !defined('WPINC') ) die;
 
 class Leyka_Options_Allocator {
+
     private static $_instance = null;
     protected $_tabs = array();
 
     public static function instance() {
+
         if(empty(self::$_instance))
             self::$_instance = new self;
 
@@ -12,6 +14,7 @@ class Leyka_Options_Allocator {
     }
 
     private function __construct() {
+
         $this->_tabs = apply_filters('leyka_settings_tabs', array(
             'beneficiary' => __('Beneficiary', 'leyka'),
             'payment'     => __('Payment options', 'leyka'),
@@ -61,7 +64,7 @@ class Leyka_Options_Allocator {
                         'name' => 'payment_common',
                         'title' => __('Common options', 'leyka'),
                         'is_default_collapsed' => false,
-                        'options' => array('pm_available', /*'default_pm', 'donation_purpose_text',*/)
+                        'options' => array('pm_available', 'pm_order',)
                     ),),
                 );
                 break;
@@ -143,7 +146,7 @@ class Leyka_Options_Allocator {
                         'is_default_collapsed' => false,
                         'options' => array(
                             'donation_form_template', 'donation_sum_field_type', 'donation_form_mode',
-                            'scale_widget_place', 'donations_history_under_forms',
+                            'scale_widget_place', 'donations_history_under_forms', 'show_campaign_sharing',
                         )
                     ),),
                 );
@@ -157,6 +160,7 @@ class Leyka_Options_Allocator {
                         'is_default_collapsed' => false,
                         'options' => array(
                             'argee_to_terms_needed', 'agree_to_terms_text', 'terms_of_service_text',
+                            'donation_submit_text',
                         )
                     ),),
                     array('section' => array(
