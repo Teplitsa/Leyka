@@ -1,0 +1,296 @@
+/** Options **/
+
+
+
+.leyka-options-section {
+	margin: 40px 0 30px;	
+}
+
+#leyka-settings-form div[id *=wrapper] {
+	margin: 15px 0;
+	
+	label[for *="field"]{
+		display: block;
+	}
+	
+	.field-component {
+		display: block;
+		padding: 2px 0;		
+	}
+	
+	.field-component.title {
+		font-weight: bold;
+	}
+	
+	.field-component.help {
+		font-size: 95%;
+		font-style: italic;
+		color: #666;
+		padding-left: 4px;
+	}
+	
+	
+	.required {
+		display: none;
+	}
+	
+	.wp-editor-container,
+	.field-component.field {
+		max-width: 700px;
+	}
+	
+	input[type="text"],
+	textarea {
+		width: 100%;
+	}	
+}
+
+
+//temp - no description
+#currency_rates, #rur_currency, #usd_currency, #eur_currency,
+#email_from,
+#org_name,
+#org_bank_essentials {
+	div[id*="wrapper"] .field-component.help {
+		display: none;
+	}
+}
+
+#leyka-settings-form {
+	#leyka_donation_submit_text-wrapper,
+	#leyka_agree_to_terms_text-wrapper,
+	#leyka_email_recurrents_thanks_title-wrapper,
+	#leyka_email_thanks_title-wrapper {
+		.field-component.help {
+			display: none;
+		}
+	}
+}
+
+// end of temp
+
+
+#donation-status-log-toggle {
+    cursor: pointer; }
+
+.leyka-options-section .placeholders-help {
+	font-style: normal;	
+	display: block;
+	padding-top: 4px;
+	line-height: 1.8;}
+
+.placeholders-help code {
+	color: #333;
+	font-size: 12px; }
+
+.wp-editor-wrap + .field-component.help {
+	padding-top: 4px;
+}
+	
+.wp-editor-wrap + .help {
+	max-width: 900px;
+}
+
+
+/* PM page */
+.gw-icon {	
+	margin-right: 8px;
+	display: inline-block;
+	line-height: 20px;
+	height: 20px;
+	img {
+		line-height: 20px;
+		vertical-align: middle;
+	}
+}
+
+#wpbody-content #leyka-pm-selectors {
+	padding-top: 20px;
+}
+
+#leyka-pm-selectors {
+	@include clearfix;
+
+	.postbox-container {
+		min-width: 98%;
+		@media screen and (min-width: 900px) {
+			min-width: 350px;
+			margin-right: 12px;
+		}
+	}
+	
+	.inside input[type="checkbox"] {
+		margin-right: 8px;
+	}
+	
+	.active {
+		display: inline-block;
+		padding: 0px 6px;
+		border-radius: 3px;
+		background: $color-wp-link;
+		color: $color-white ;
+		font-size: 12px;
+		font-weight: normal;
+		margin-left: 10px;
+		line-height: 18px;
+	}
+	
+	.dashicons {
+		color: $color-grey-dark;
+		margin-right: 8px;
+	}
+}
+
+#payment-settings-area {
+	@include clearfix;
+	padding-top: 36px;
+	
+	.accordion-section-title .dashicons {
+		color: $color-grey-dark;
+		margin-right: 8px;
+	}
+	
+	.doc-link {
+		font-weight: normal;
+		font-size: 12px;
+		margin-left: 12px;
+		text-decoration: uderline;
+	}
+	
+	.pm-active-panel {
+		background: #fff;
+		border: 1px solid #d6d6d6;
+		padding: 5px 0;
+		
+		@media screen and (min-width: 900px) {
+			float: left;
+			width: 60%;
+			max-width: 640px;
+			min-height: 600px;
+		}
+		
+		
+		.panel-title {
+			padding: 0 15px;
+			margin: 15px 0 0;
+		}
+		
+		.panel-desc {
+			padding: 0 15px;
+			margin: 5px 0;
+		}
+		
+		.gateway-settings {
+			margin-top: 4px;
+		}
+		.accordion-section-title {
+			border: none;
+			font-size: 14px;
+			border-top: 1px solid #eee;
+			border-bottom: 1px solid #eee;
+			background: #fafafa;
+		}
+		
+		.accordion-section-content {
+			padding: 15px;
+		}
+		
+		.field-component.help {
+			display: none;
+		}
+	}
+	
+	.pm-order-panel {
+		background: #E9E9E9;
+		border: 1px solid #d6d6d6;		
+		margin-top: 36px;
+		
+		@media screen and (min-width: 900px) {
+			float: left;
+			width: 39%;
+			max-width: 400px;
+			margin-left: -1px;
+		}
+		
+		.panel-content {
+			padding: 15px;
+			@media screen and (min-width: 900px) {
+				min-height: 380px;
+			}
+		}
+	}
+	
+	#pm-order-settings {
+		margin: 20px 0;
+		
+		li {
+			background: #fff;
+			border: 1px solid #d6d6d6;
+			padding: 8px;
+			margin-bottom: 4px;
+			cursor: move;
+			position: relative;
+			
+			.pm-label {
+				display: inline-block;
+				width: 100%;
+				padding-right: 34px;
+				box-sizing: border-box;
+			}
+		}
+		
+		.pm-change-label  {
+			cursor: pointer;
+			color: $color-grey-dark;
+			display: block;
+			width: 22px;
+			text-align: right;
+			height: 18px;
+			line-height: 18px;
+			position: absolute;
+			right: 8px;
+			top: 8px;
+			
+			&:hover {
+				color: $color-wp-link;
+			}
+			.dashicons {
+				color: inherit;
+				
+			}
+		}
+		
+		.pm-label-fields {
+			input {
+				box-sizing: border-box;
+				@include calc(width, "100% - 50px");				
+			}
+			
+			span[class*="new-pm-label"] {
+				cursor: pointer;
+				display: inline-block;
+				text-align: center;
+				@include transition(all 0.35s);
+			}
+			
+			.new-pm-label-ok {				
+				background: $color-base-green;
+				color: $color-white;
+				border-radius: 3px;
+				
+				&:hover {
+					background:  lighten($color-base-green, 10%);
+				}
+			}
+			
+			.new-pm-label-cancel:hover {
+				color: $color-warning-text;
+			}
+			
+			.dashicons {
+				vertical-align: middle;
+				color: inherit;
+			}
+		}
+	}
+}
