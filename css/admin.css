@@ -89,10 +89,22 @@
     display: none; }
   #leyka-settings-form div[id*=wrapper] .wp-editor-container,
   #leyka-settings-form div[id*=wrapper] .field-component.field {
-    max-width: 900px; }
+    max-width: 700px; }
   #leyka-settings-form div[id*=wrapper] input[type="text"],
   #leyka-settings-form div[id*=wrapper] textarea {
     width: 100%; }
+
+#currency_rates div[id*="wrapper"] .field-component.help, #rur_currency div[id*="wrapper"] .field-component.help, #usd_currency div[id*="wrapper"] .field-component.help, #eur_currency div[id*="wrapper"] .field-component.help,
+#email_from div[id*="wrapper"] .field-component.help,
+#org_name div[id*="wrapper"] .field-component.help,
+#org_bank_essentials div[id*="wrapper"] .field-component.help {
+  display: none; }
+
+#leyka-settings-form #leyka_donation_submit_text-wrapper .field-component.help,
+#leyka-settings-form #leyka_agree_to_terms_text-wrapper .field-component.help,
+#leyka-settings-form #leyka_email_recurrents_thanks_title-wrapper .field-component.help,
+#leyka-settings-form #leyka_email_thanks_title-wrapper .field-component.help {
+  display: none; }
 
 #donation-status-log-toggle {
   cursor: pointer; }
@@ -114,6 +126,18 @@
   max-width: 900px; }
 
 /* PM page */
+.gw-icon {
+  margin-right: 8px;
+  display: inline-block;
+  line-height: 20px;
+  height: 20px; }
+  .gw-icon img {
+    line-height: 20px;
+    vertical-align: middle; }
+
+#wpbody-content #leyka-pm-selectors {
+  padding-top: 20px; }
+
 #leyka-pm-selectors::after {
   clear: both;
   content: "";
@@ -123,7 +147,22 @@
   @media screen and (min-width: 900px) {
     #leyka-pm-selectors .postbox-container {
       min-width: 350px;
-      margin-right: 10px; } }
+      margin-right: 12px; } }
+#leyka-pm-selectors .inside input[type="checkbox"] {
+  margin-right: 8px; }
+#leyka-pm-selectors .active {
+  display: inline-block;
+  padding: 0px 6px;
+  border-radius: 3px;
+  background: #0073aa;
+  color: #fff;
+  font-size: 12px;
+  font-weight: normal;
+  margin-left: 10px;
+  line-height: 18px; }
+#leyka-pm-selectors .dashicons {
+  color: #aaa;
+  margin-right: 8px; }
 
 #payment-settings-area {
   padding-top: 36px; }
@@ -131,6 +170,14 @@
     clear: both;
     content: "";
     display: table; }
+  #payment-settings-area .accordion-section-title .dashicons {
+    color: #aaa;
+    margin-right: 8px; }
+  #payment-settings-area .doc-link {
+    font-weight: normal;
+    font-size: 12px;
+    margin-left: 12px;
+    text-decoration: uderline; }
   #payment-settings-area .pm-active-panel {
     background: #fff;
     border: 1px solid #d6d6d6;
@@ -139,7 +186,8 @@
       #payment-settings-area .pm-active-panel {
         float: left;
         width: 60%;
-        max-width: 640px; } }
+        max-width: 640px;
+        min-height: 600px; } }
     #payment-settings-area .pm-active-panel .panel-title {
       padding: 0 15px;
       margin: 15px 0 0; }
@@ -156,6 +204,8 @@
       background: #fafafa; }
     #payment-settings-area .pm-active-panel .accordion-section-content {
       padding: 15px; }
+    #payment-settings-area .pm-active-panel .field-component.help {
+      display: none; }
   #payment-settings-area .pm-order-panel {
     background: #E9E9E9;
     border: 1px solid #d6d6d6;
@@ -165,19 +215,63 @@
         float: left;
         width: 39%;
         max-width: 400px;
-        border-left: none; } }
+        margin-left: -1px; } }
     #payment-settings-area .pm-order-panel .panel-content {
       padding: 15px; }
       @media screen and (min-width: 900px) {
         #payment-settings-area .pm-order-panel .panel-content {
-          min-height: 600px; } }
+          min-height: 380px; } }
   #payment-settings-area #pm-order-settings {
     margin: 20px 0; }
     #payment-settings-area #pm-order-settings li {
       background: #fff;
       border: 1px solid #d6d6d6;
       padding: 8px;
-      margin-bottom: 4px; }
+      margin-bottom: 4px;
+      cursor: move;
+      position: relative; }
+      #payment-settings-area #pm-order-settings li .pm-label {
+        display: inline-block;
+        width: 100%;
+        padding-right: 34px;
+        box-sizing: border-box; }
+    #payment-settings-area #pm-order-settings .pm-change-label {
+      cursor: pointer;
+      color: #aaa;
+      display: block;
+      width: 22px;
+      text-align: right;
+      height: 18px;
+      line-height: 18px;
+      position: absolute;
+      right: 8px;
+      top: 8px; }
+      #payment-settings-area #pm-order-settings .pm-change-label:hover {
+        color: #0073aa; }
+      #payment-settings-area #pm-order-settings .pm-change-label .dashicons {
+        color: inherit; }
+    #payment-settings-area #pm-order-settings .pm-label-fields input {
+      box-sizing: border-box;
+      width: -webkit-calc(100% - 50px);
+      width: calc(100% - 50px); }
+    #payment-settings-area #pm-order-settings .pm-label-fields span[class*="new-pm-label"] {
+      cursor: pointer;
+      display: inline-block;
+      text-align: center;
+      -webkit-transition: all 0.35s;
+      -moz-transition: all 0.35s;
+      transition: all 0.35s; }
+    #payment-settings-area #pm-order-settings .pm-label-fields .new-pm-label-ok {
+      background: #1db318;
+      color: #fff;
+      border-radius: 3px; }
+      #payment-settings-area #pm-order-settings .pm-label-fields .new-pm-label-ok:hover {
+        background: #24e01e; }
+    #payment-settings-area #pm-order-settings .pm-label-fields .new-pm-label-cancel:hover {
+      color: #aa0000; }
+    #payment-settings-area #pm-order-settings .pm-label-fields .dashicons {
+      vertical-align: middle;
+      color: inherit; }
 
 #icon-leyka {
   background: transparent url(../img/leyka-icon.png) no-repeat 1px 0; }
