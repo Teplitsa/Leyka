@@ -586,7 +586,7 @@ function leyka_itv_info_widget(){
     if($locale != 'ru_RU')
         return;
     
-    //http://leyka.local/wp-content/plugins/leyka/
+    
     $src = LEYKA_PLUGIN_BASE_URL.'img/logo-itv.png';
     $domain = parse_url(home_url()); 
     $itv_url = "https://itv.te-st.ru/?leyka=".$domain['host'];
