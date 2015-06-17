@@ -229,7 +229,7 @@ class Leyka_Robokassa_Card extends Leyka_Payment_Method {
         $this->_label_backend = __('Payment with Banking Card', 'leyka');
         $this->_label = __('Banking Card', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('robokassa_card_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
@@ -272,7 +272,7 @@ class Leyka_Robokassa_Yandex_Money extends Leyka_Payment_Method {
         $this->_label_backend = __('Payment with Yandex.Money', 'leyka');
         $this->_label = __('Yandex.Money', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('robokassa_yandex_money_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
@@ -315,7 +315,7 @@ class Leyka_Robokassa_Webmoney extends Leyka_Payment_Method {
         $this->_label_backend = __('Payment with Webmoney', 'leyka');
         $this->_label = __('Webmoney', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('robokassa_webmoney_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
@@ -358,7 +358,7 @@ class Leyka_Robokassa_Qiwi extends Leyka_Payment_Method {
         $this->_label_backend = __('Payment with Qiwi wallet', 'leyka');
         $this->_label = __('Qiwi wallet', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('robokassa_qiwi_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
@@ -402,7 +402,7 @@ class Leyka_Robokassa_All extends Leyka_Payment_Method {
         $this->_label_backend = __('Use any Robokassa payment method available', 'leyka');
         $this->_label = __('Robokassa (any)', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('robokassa_all_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
