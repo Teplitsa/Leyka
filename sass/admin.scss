@@ -3,6 +3,7 @@
 @import 'utility';
 @import 'presets';
 @import 'options';
+@import 'shared' ;
 
 #icon-leyka {
 	background: transparent url(../img/leyka-icon.png) no-repeat 1px 0;
@@ -654,12 +655,38 @@ $working-width : 700px;
 	width: 10%; }
 	
 // feedback form
-.leyka-feedback-form {
+.feedback-columns {
+	@include clearfix;
 	margin-top: 60px;
-	max-width: 700px;
 	
+	.leyka-feedback-form {
+		width: 90%;
+	}
+	
+	.feedback-sidebar {
+		width: 100%;
+	}
+	
+	@media screen and (min-width: 900px) {
+		.leyka-feedback-form {
+			float: left;
+			@include calc(width, "100% - 315px");
+			max-width: 700px;
+		}
+		
+		.feedback-sidebar {
+			float: left;
+			width: 280px;
+			margin-left: 35px;
+			padding-top: 20px;
+		}
+	}
+}
+
+
+.leyka-feedback-form {	
 	.leyka-ff-field {
-		margin: 30px 0;
+		margin: 0 0 30px;
 		label {
 			font-family: "Open Sans",sans-serif;
 			font-size: 14px;

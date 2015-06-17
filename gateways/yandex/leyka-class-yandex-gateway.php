@@ -126,6 +126,8 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             'sum' => $donation->amount,
             'customerNumber' => $donation->donor_email,
             'orderNumber' => $donation_id,
+            /** "@todo Make a global option to know whether add donation ID to the payment title or not */
+            'orderDetails' => $donation->payment_title." (№ $donation_id)",
             'paymentType' => $payment_type,
             'shopSuccessURL' => leyka_get_success_page_url(),
             'shopFailURL' => leyka_get_failure_page_url(),
@@ -257,7 +259,7 @@ class Leyka_Yandex_Money extends Leyka_Payment_Method {
         $this->_label_backend = __('Virtual cash Yandex.money', 'leyka');
         $this->_label = __('Yandex.money', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('yandex_money_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
@@ -276,7 +278,7 @@ class Leyka_Yandex_Money extends Leyka_Payment_Method {
         }
 
         $this->_options = array(
-            'yandex_money_description' => array(
+            $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __("Yandex.Money is a simple and safe payment system to pay for goods and services through internet. You will have to fill a payment form, you will be redirected to the <a href='https://money.yandex.ru/'>Yandex.Money website</a> to confirm your payment. If you haven't got a Yandex.Money account, you can create it there.", 'leyka'),
                 'title' => __('Yandex.Money description', 'leyka'),
@@ -301,7 +303,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
         $this->_label_backend = __('Payment with Banking Card', 'leyka');
         $this->_label = __('Banking Card', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('yandex_card_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
 //            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
@@ -321,7 +323,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
         }
 
         $this->_options = array(
-            'yandex_card_description' => array(
+            $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('Yandex.Money allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Money website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
                 'title' => __('Yandex bank card payment description', 'leyka'),
@@ -345,7 +347,8 @@ class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
         $this->_label_backend = __('Virtual cash Webmoney', 'leyka');
         $this->_label = __('Webmoney', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('yandex_wm_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
+//        $this->_description = leyka_options()->opt_safe('yandex_wm_description');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/webmoney.png',
@@ -363,7 +366,7 @@ class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
         }
 
         $this->_options = array(
-            'yandex_wm_description' => array(
+            $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('<a href="http://www.webmoney.ru/">WebMoney Transfer</a> is an international financial transactions system and an invironment for a business in Internet, founded in 1988. Up until now, WebMoney clients counts at more than 25 million people around the world. WebMoney system includes a services to account and exchange funds, attract new funding, solve quarrels and make a safe deals.', 'leyka'),
                 'title' => __('WebMoney description', 'leyka'),

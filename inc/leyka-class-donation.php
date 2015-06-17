@@ -1000,8 +1000,9 @@ class Leyka_Donation_Management {
     public function save_donation_data($donation_id) {
 
         // Maybe donation is inserted trough API:
-        if(empty($_POST['post_type']) || $_POST['post_type'] != Leyka_Donation_Management::$post_type)
+        if(empty($_POST['post_type']) || $_POST['post_type'] != Leyka_Donation_Management::$post_type) {
             return false;
+        }
 
         // Verify that nonce is valid.
         if(
@@ -1011,13 +1012,15 @@ class Leyka_Donation_Management {
             return $donation_id;
         }
 
-        if(defined('DOING_AUTOSAVE' ) && DOING_AUTOSAVE) {
+        if(defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
             return $donation_id;
         }
 
-        if( !current_user_can('leyka_manage_donations', $donation_id) ) {
-            return $donation_id;
-        }
+        /** @todo Do it after adding some Leyka capabilities */
+//        if( !current_user_can('edit_donation', $donation_id) )
+//            return $donation_id;
+
+        remove_action('save_post', array($this, 'save_donation_data'));
 
         $donation = new Leyka_Donation($donation_id);
         if($donation->status != $_POST['donation_status']) {
@@ -1037,24 +1040,30 @@ class Leyka_Donation_Management {
 
         // It's a new correction donation, set a title from it's campaign:
         $campaign = new Leyka_Campaign($donation->campaign_id);
+
         $donation_title = $campaign->payment_title ?
             $campaign->payment_title :
             ($campaign->title ? $campaign->title : sprintf(__('Donation #%s', 'leyka'), $donation_id));
 
-        if($donation->title != $donation_title)
+        if($donation->title != $donation_title) {
             $donation->title = $donation_title;
+        }
 
-        if(isset($_POST['donor-name']) && $donation->donor_name != $_POST['donor-name'])
+        if(isset($_POST['donor-name']) && $donation->donor_name != $_POST['donor-name']) {
             $donation->donor_name = $_POST['donor-name'];
+        }
 
-        if(isset($_POST['donor-email']) && $donation->donor_email != $_POST['donor-email'])
+        if(isset($_POST['donor-email']) && $donation->donor_email != $_POST['donor-email']) {
             $donation->donor_email = $_POST['donor-email'];
+        }
 
-        if(isset($_POST['donation-amount']) && (float)$donation->amount != (float)$_POST['donation-amount'])
+        if(isset($_POST['donation-amount']) && (float)$donation->amount != (float)$_POST['donation-amount']) {
             $donation->amount = (float)$_POST['donation-amount'];
+        }
 
-        if( !$donation->currency )
+        if( !$donation->currency ) {
             $donation->currency = 'rur';
+        }
 
         if(
             isset($_POST['donation-pm']) &&
@@ -1076,15 +1085,19 @@ class Leyka_Donation_Management {
             $donation->date = $_POST['donation_date'];
         }
 
-        if(isset($_POST['payment-type']) && $donation->payment_type != $_POST['payment-type'])
+        if(isset($_POST['payment-type']) && $donation->payment_type != $_POST['payment-type']) {
             $donation->payment_type = $_POST['payment-type'];
+        }
 
         /** @todo Refactor this one day! A mechanism for gateway-based custom donation fields */
         if(
             isset($_POST['chronopay-customer-id']) &&
             $donation->chronopay_customer_id != $_POST['chronopay-customer-id']
-        )
+        ) {
             $donation->chronopay_customer_id = $_POST['chronopay-customer-id'];
+        }
+
+        add_action('save_post', array($this, 'save_donation_data'));
 
         return true;
     }

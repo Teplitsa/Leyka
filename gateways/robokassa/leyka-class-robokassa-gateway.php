@@ -229,7 +229,7 @@ class Leyka_Robokassa_Card extends Leyka_Payment_Method {
         $this->_label_backend = __('Payment with Banking Card', 'leyka');
         $this->_label = __('Banking Card', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('robokassa_card_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
@@ -248,7 +248,7 @@ class Leyka_Robokassa_Card extends Leyka_Payment_Method {
         }
 
         $this->_options = array(
-            'robokassa_card_description' => array(
+            $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('Robokassa system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="http://www.robokassa.ru/ru/">Robokassa</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
                 'title' => __('Robokassa bank card payment description', 'leyka'),
@@ -272,7 +272,7 @@ class Leyka_Robokassa_Yandex_Money extends Leyka_Payment_Method {
         $this->_label_backend = __('Payment with Yandex.Money', 'leyka');
         $this->_label = __('Yandex.Money', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('robokassa_yandex_money_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
@@ -291,7 +291,7 @@ class Leyka_Robokassa_Yandex_Money extends Leyka_Payment_Method {
         }
 
         $this->_options = array(
-            'robokassa_yandex_money_description' => array(
+            $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('Robokassa system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="http://www.robokassa.ru/ru/">Robokassa</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
                 'title' => __('Robokassa Yandex.Money payment description', 'leyka'),
@@ -315,7 +315,7 @@ class Leyka_Robokassa_Webmoney extends Leyka_Payment_Method {
         $this->_label_backend = __('Payment with Webmoney', 'leyka');
         $this->_label = __('Webmoney', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('robokassa_webmoney_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
@@ -334,7 +334,7 @@ class Leyka_Robokassa_Webmoney extends Leyka_Payment_Method {
         }
 
         $this->_options = array(
-            'robokassa_webmoney_description' => array(
+            $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('Robokassa system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="http://www.robokassa.ru/ru/">Robokassa</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
                 'title' => __('Robokassa Webmoney payment description', 'leyka'),
@@ -358,7 +358,7 @@ class Leyka_Robokassa_Qiwi extends Leyka_Payment_Method {
         $this->_label_backend = __('Payment with Qiwi wallet', 'leyka');
         $this->_label = __('Qiwi wallet', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('robokassa_qiwi_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
@@ -377,7 +377,7 @@ class Leyka_Robokassa_Qiwi extends Leyka_Payment_Method {
         }
 
         $this->_options = array(
-            'robokassa_qiwi_description' => array(
+            $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('Robokassa system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="http://www.robokassa.ru/ru/">Robokassa</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
                 'title' => __('Robokassa Qiwi wallet payment description', 'leyka'),
@@ -402,7 +402,7 @@ class Leyka_Robokassa_All extends Leyka_Payment_Method {
         $this->_label_backend = __('Use any Robokassa payment method available', 'leyka');
         $this->_label = __('Robokassa (any)', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('robokassa_all_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
@@ -421,7 +421,7 @@ class Leyka_Robokassa_All extends Leyka_Payment_Method {
         }
 
         $this->_options = array(
-            'robokassa_all_description' => array(
+            $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('Robokassa system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="http://www.robokassa.ru/ru/">Robokassa</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
                 'title' => __('Robokassa all possible payment types description', 'leyka'),

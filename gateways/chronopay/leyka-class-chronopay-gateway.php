@@ -21,7 +21,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
         $this->_options = array(
             'chronopay_shared_sec' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox  
+                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
                 'value' => '',
                 'default' => '',
                 'title' => __('Chronopay shared_sec', 'leyka'),
@@ -33,7 +33,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 'validation_rules' => array(), // List of regexp?..
             ),
             'chronopay_ip' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox  
+                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
                 'value' => '',
                 'default' => '159.255.220.140',
                 'title' => __('Chronopay IP', 'leyka'),
@@ -44,7 +44,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 'validation_rules' => array(), // List of regexp?..
             ),
             'chronopay_test_mode' => array(
-                'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox  
+                'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
                 'value' => '',
                 'default' => 1,
                 'title' => __('Payments testing mode', 'leyka'),
@@ -70,8 +70,8 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
     }
 
-    public function submission_redirect_url($current_url, $pm_id) {	
-	
+    public function submission_redirect_url($current_url, $pm_id) {
+
         switch($pm_id) {
             case 'chronopay_card':
             case 'chronopay_card_rebill':
@@ -84,10 +84,10 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
     }
 
     public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
-		
+
 		if(false === strpos($pm_id, 'chronopay'))
 			return $form_data_vars; //it's not our PM
-			
+
         $donation = new Leyka_Donation($donation_id);
 
 		$chronopay_product_id = leyka_options()->opt($pm_id.'_product_id_'.$donation->currency);
@@ -100,11 +100,11 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 //            $lang = $form_data_vars['cur_lang'];
 
 		$country = ($donation->currency == 'rur') ? 'RUS' : '';
-			
+
         $form_data_vars =  array(
-            'product_id' => $chronopay_product_id, 
+            'product_id' => $chronopay_product_id,
 			'product_price' => $price,
-			'product_price_currency' => $this->_get_currency_id($donation->currency), 	
+			'product_price_currency' => $this->_get_currency_id($donation->currency),
 			'cs1' => esc_attr($donation->title), // Purpose of the donation
 			'cs2' => $donation_id, // Payment ID
 
@@ -125,17 +125,17 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
     }
 
 	protected function _get_currency_id($leyka_currency_id){
-		
+
 		$chronopay_currencies = array(
 			'rur' => 'RUB',
 			'usd' => 'USD',
 			'eur' => 'EUR'
 		);
-		
+
 		return isset($chronopay_currencies[$leyka_currency_id]) ?
             $chronopay_currencies[$leyka_currency_id] : 'RUB';
 	}
-	
+
     public function log_gateway_fields($donation_id) {
 
         $donation = new Leyka_Donation($donation_id);
@@ -375,7 +375,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 			__('Full donation amount:', 'leyka') => $response_vars['total'].' '.$donation->currency_label,
 			__("Gateway's donor ID:", 'leyka') => $response_vars['customer_id'],
 			__('Response date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($response_vars['date']))
-        );		
+        );
     }
 } // gateway class end
 
@@ -392,7 +392,7 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
         $this->_label_backend = __('Payment with Banking Card', 'leyka');
         $this->_label = __('Banking Card', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('chronopay_card_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/chronopay/icons/visa.png',
@@ -418,7 +418,7 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
         }
 
         $this->_options = array(
-            'chronopay_card_description' => array(
+            $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('Chronopay allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="http://www.chronopay.com/ru/">Chronopay</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
                 'title' => __('Chronopay bank card payment description', 'leyka'),
@@ -466,7 +466,7 @@ class Leyka_Chronopay_Card_Rebill extends Leyka_Payment_Method {
         $this->_label_backend = __('Rebilling payment with Banking Card', 'leyka');
         $this->_label = __('Banking Card - monthly rebilling', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('chronopay_card_rebill_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/chronopay/icons/visa.png',
@@ -488,7 +488,7 @@ class Leyka_Chronopay_Card_Rebill extends Leyka_Payment_Method {
         }
 
         $this->_options = array(
-            'chronopay_card_rebill_description' => array(
+            $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('Chronopay allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="http://www.chronopay.com/ru/">Chronopay</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
                 'title' => __('Chronopay bank card rebill payment description', 'leyka'),

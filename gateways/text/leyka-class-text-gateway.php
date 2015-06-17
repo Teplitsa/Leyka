@@ -64,13 +64,9 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
         $this->_label_backend = __('Additional ways to donate', 'leyka');
         $this->_label = __('Additional ways to donate', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('text_box_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_support_global_fields = false;
-
-        $this->_custom_fields = array(
-            'box_deatails' => apply_filters('leyka_the_content', leyka_options()->opt_safe('text_box_details')),
-        );
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/text/icons/box.png',
@@ -81,6 +77,13 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
         $this->_default_currency = 'rur';
     }
 
+    protected function _set_dynamic_attributes() {
+
+        $this->_custom_fields = array(
+            'box_details' => apply_filters('leyka_the_content', leyka_options()->opt_safe('text_box_details')),
+        );
+    }
+
     protected function _set_options_defaults() {
 
         if($this->_options){
@@ -88,7 +91,7 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
         }
 
         $this->_options = array(
-            'text_box_description' => array(
+            $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('With this ways you can make your donation.', 'leyka'),
                 'title' => __('Comment', 'leyka'),

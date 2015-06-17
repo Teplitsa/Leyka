@@ -159,8 +159,13 @@ abstract class Leyka_Gateway {
             case 'title':
             case 'name':
             case 'label': return $this->_title;
-            case 'icon': return $this->_icon ?
-                $this->_icon : LEYKA_PLUGIN_BASE_URL."/gateways/{$this->_id}/icons/{$this->_id}.png";
+            case 'icon': $icon = false;
+                if($this->_icon) {
+                    $icon = $this->_icon;
+                } elseif(file_exists(LEYKA_PLUGIN_DIR."gateways/{$this->_id}/icons/{$this->_id}.png")) {
+                    $icon = LEYKA_PLUGIN_BASE_URL."gateways/{$this->_id}/icons/{$this->_id}.png";
+                }
+                return $icon;
             default:
         }
     }
@@ -398,6 +403,7 @@ abstract class Leyka_Payment_Method {
 
         $this->_set_attributes();
         $this->_initialize_options();
+        $this->_set_dynamic_attributes();
     }
 
     public function __get($param) {
@@ -439,6 +445,9 @@ abstract class Leyka_Payment_Method {
     }
 
     abstract protected function _set_attributes();
+
+    /** To set some custom options-dependent attributes */
+    protected function _set_dynamic_attributes() {}
 
     public function has_currency_support($currency = false) {
 
@@ -489,13 +498,9 @@ abstract class Leyka_Payment_Method {
         $this->_label = $custom_label && $custom_label != $this->_label ?
             $custom_label : apply_filters('leyka_get_pm_label_original', $this->_label, $this);
 
-        foreach(leyka_options()->opt('pm_available') as $pm_full_id) {
+        $this->_active = in_array($this->full_id, leyka_options()->opt('pm_available'));
 
-            if($this->full_id == $pm_full_id) {
-                $this->_active = true;
-                break;
-            }
-        }
+        $this->_description = leyka_options()->opt_safe($this->full_id.'_description');
 
         add_filter('leyka_payment_options_allocation', array($this, 'allocate_pm_options'), 10, 1);
     }

@@ -26,7 +26,13 @@ jQuery(document).ready(function($){
         $gateways_accordion.accordion({
             heightStyle: 'content',
             header: '.gateway-settings > h3',
-            collapsible: true
+            collapsible: true,
+            activate: function(event, ui){
+
+                $('html, body').animate({ // 35px is a height of the WP admin bar:
+                    scrollTop: $(this).find('.ui-state-active').parent().offset().top - 35
+                }, 250);
+            }
         });
 
         /** Gateways & PM folding on click by the active PM checkboxes. Also PM ordering */
@@ -121,6 +127,8 @@ jQuery(document).ready(function($){
             $wrapper.find('.pm-label-fields').hide();
             $wrapper.find('.pm-change-label').show();
         });
+
+        $('.pm-order-panel').stick_in_parent({offset_top: 0});
     }
 
     /** Manual emails sending: */
