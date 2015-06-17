@@ -10,9 +10,9 @@ class Leyka_Admin_Setup {
 
     public static function get_instance() {
 
-        // If the single instance hasn't been set, set it now:
-        if( !self::$_instance )
+        if( !self::$_instance ) { // If the single instance hasn't been set, set it now
             self::$_instance = new self;
+        }
 
         return self::$_instance;
     }
@@ -380,11 +380,11 @@ class Leyka_Admin_Setup {
 		leyka_itv_info_widget();
 	}
 	
-	
+
 
 	/** Displaying settings **/
 	public function settings_screen() {
-		
+
 		/* Capability test */
 		if( !current_user_can('leyka_manage_options') ) {
             wp_die(__('You do not have permissions to access this page.', 'leyka'));

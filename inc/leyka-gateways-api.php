@@ -101,13 +101,14 @@ function leyka_get_gateway_by_id($gateway_id) {
 }
 
 abstract class Leyka_Gateway {
-	
+
     /** @var $_instance Leyka_Gateway Gateway is always a singleton */
     protected static $_instance;
 
 	protected $_id = ''; // A unique string, as "quittance", "yandex" or "chronopay"
 	protected $_title = ''; // A human-readable title of gateway, a "Bank quittances" or "Yandex.money"
     protected $_icon = ''; // A gateway icon URL. Must have 25px on a bigger side
+    protected $_docs_link = ''; // A link to gateways user docs page
     protected $_payment_methods = array(); // Supported PMs array
     protected $_options = array(); // Gateway configs
 
@@ -159,6 +160,10 @@ abstract class Leyka_Gateway {
             case 'title':
             case 'name':
             case 'label': return $this->_title;
+            case 'docs':
+            case 'docs_url':
+            case 'docs_href':
+            case 'docs_link': return $this->_docs_link ? $this->_docs_link : false;
             case 'icon': $icon = false;
                 if($this->_icon) {
                     $icon = $this->_icon;
