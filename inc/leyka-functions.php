@@ -577,3 +577,26 @@ function leyka_form_is_screening() {
         is_singular(Leyka_Campaign_Management::$post_type) ||
         (is_front_page() && stristr(get_page_template_slug(), 'home-campaign_one') !== false);
 }
+
+/** ITV info-widget **/
+function leyka_itv_info_widget(){
+	//only in Russian as for now
+    $locale = get_locale();
+    
+    if($locale != 'ru_RU')
+        return;
+    
+    //http://leyka.local/wp-content/plugins/leyka/
+    $src = LEYKA_PLUGIN_BASE_URL.'img/logo-itv.png';
+    $domain = parse_url(home_url()); 
+    $itv_url = "https://itv.te-st.ru/?leyka=".$domain['host'];
+?>
+	<div id="itv-card">
+        <div class="itv-logo"><a href="<?php echo esc_url($itv_url);?>" target="_blank"><img src="<?php echo esc_url($src);?>"></a></div>
+        
+        <p>Вам нужна помощь в настройке пожертвований или подключении к платежным системам? Опубликуйте задачу на платформе <a href="<?php echo esc_url($itv_url);?>" target="_blank">it-волонтер</a></p>
+                
+        <p><a href="<?php echo esc_url($itv_url);?>" target="_blank" class="button">Опубликовать задачу</a></p>
+    </div>
+<?php
+}
