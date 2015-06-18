@@ -355,6 +355,17 @@ class Leyka {
 
         if( !$leyka_last_ver || $leyka_last_ver <= '2.2.5' ) {
 
+            // Initialize pm_order option if needed:
+            if( !get_option('leyka_pm_order') ) {
+
+                $pm_list = array();
+                foreach(get_option('leyka_pm_available') as $pm_full_id) {
+
+                    $pm_list[] = "pm_order[]={$pm_full_id}";
+                }
+                update_option('leyka_pm_order', implode('&', $pm_list));
+            }
+
             // Remove an unneeded scripts for settings pages:
             $settings_pages_dir = dir(LEYKA_PLUGIN_DIR.'inc/settings-pages/');
             while(false !== ($script = $settings_pages_dir->read())) {
