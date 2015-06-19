@@ -358,12 +358,12 @@ class Leyka {
             // Initialize pm_order option if needed:
             if( !get_option('leyka_pm_order') ) {
 
-                $pm_list = array();
-                foreach(get_option('leyka_pm_available') as $pm_full_id) {
+                $pm_order = array();
+                foreach((array)get_option('leyka_pm_available') as $pm_full_id) {
 
-                    $pm_list[] = "pm_order[]={$pm_full_id}";
+                    $pm_order[] = "pm_order[]={$pm_full_id}";
                 }
-                update_option('leyka_pm_order', implode('&', $pm_list));
+                update_option('leyka_pm_order', implode('&', $pm_order));
             }
 
             // Remove an unneeded scripts for settings pages:
