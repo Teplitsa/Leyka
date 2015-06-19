@@ -129,16 +129,17 @@ if( !$gateways_dir ) {
 
         $file_addr = LEYKA_PLUGIN_DIR."gateways/$gateway_id/leyka-class-$gateway_id-gateway.php";
 
-        if($gateway_id != '.' && $gateway_id != '..' && file_exists($file_addr))
-			require_once($file_addr);
+        if($gateway_id != '.' && $gateway_id != '..' && file_exists($file_addr)) {
+            require_once($file_addr);
+        }
     }
 
     $gateways_dir->close();
 }
 
-// Activation/Deactivation:
-register_activation_hook(__FILE__, array('Leyka', 'activate'));
-register_deactivation_hook(__FILE__, array('Leyka', 'deactivate'));
+register_activation_hook(__FILE__, array('Leyka', 'activate')); // Activation
+add_action('plugins_loaded', array('Leyka', 'activate')); // Any update needed
+register_deactivation_hook(__FILE__, array('Leyka', 'deactivate')); // Deactivate
 
 leyka(); // All systems go
 

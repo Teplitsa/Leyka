@@ -295,21 +295,28 @@ class Leyka {
     }
 
     /**
-     * Fired when the plugin is activated.
+     * Fired when the plugin is activated or when an update is needed.
      * @param boolean $network_wide True if WPMU superadmin uses "Network Activate" action,
      * false if WPMU is disabled or plugin is activated on an individual blog.
      */
     public static function activate($network_wide) {
 
         $leyka_last_ver = get_option('leyka_last_ver');
+
+        if($leyka_last_ver && $leyka_last_ver == LEYKA_VERSION) { // Already at last version
+            return;
+        }
+
         if( !$leyka_last_ver || $leyka_last_ver < '2.1' ) {
 
             /** Upgrade options structure in the DB */
-            if(get_option('leyka_modules'))
+            if(get_option('leyka_modules')) {
                 delete_option('leyka_modules');
+            }
 
-            if(get_option('leyka_options_installed'))
+            if(get_option('leyka_options_installed')) {
                 delete_option('leyka_options_installed');
+            }
 
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
 
@@ -360,8 +367,9 @@ class Leyka {
 
                 $pm_order = array();
                 foreach((array)get_option('leyka_pm_available') as $pm_full_id) {
-
-                    $pm_order[] = "pm_order[]={$pm_full_id}";
+                    if($pm_full_id) {
+                        $pm_order[] = "pm_order[]={$pm_full_id}";
+                    }
                 }
                 update_option('leyka_pm_order', implode('&', $pm_order));
             }
