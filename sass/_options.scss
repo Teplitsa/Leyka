@@ -1,0 +1,155 @@
+/** Options **/
+
+.leyka-options-section {
+	margin: 40px 0 30px;	
+}
+
+#leyka-settings-form div[id *=wrapper] {
+	margin: 15px 0;
+	
+	label[for *="field"]{
+		display: block;
+	}
+	
+	.field-component {
+		display: block;
+		padding: 2px 0;		
+	}
+	
+	.field-component.title {
+		font-weight: bold;
+	}
+	
+	.field-component.help {
+		font-size: 95%;
+		font-style: italic;
+		color: #666;
+		padding-left: 4px;
+	}
+	
+	
+	.required {
+		display: none;
+	}
+	
+	.wp-editor-container,
+	.field-component.field {
+		max-width: 900px;
+	}
+	
+	input[type="text"],
+	textarea {
+		width: 100%;
+	}
+}
+
+
+#donation-status-log-toggle {
+    cursor: pointer; }
+
+.leyka-options-section .placeholders-help {
+	font-style: normal;	
+	display: block;
+	padding-top: 4px;
+	line-height: 1.8;}
+
+.placeholders-help code {
+	color: #333;
+	font-size: 12px; }
+
+.wp-editor-wrap + .field-component.help {
+	padding-top: 4px;
+}
+	
+.wp-editor-wrap + .help {
+	max-width: 900px;
+}
+
+
+/* PM page */
+#leyka-pm-selectors {
+	@include clearfix;
+		
+	.postbox-container {
+		min-width: 98%;
+		@media screen and (min-width: 900px) {
+			min-width: 350px;
+			margin-right: 10px;
+		}
+	}
+}
+
+#payment-settings-area {
+	@include clearfix;
+	padding-top: 36px;
+	
+	.pm-active-panel {
+		background: #fff;
+		border: 1px solid #d6d6d6;
+		padding: 5px 0;
+		
+		@media screen and (min-width: 900px) {
+			float: left;
+			width: 60%;
+			max-width: 640px;			
+		}
+		
+		
+		.panel-title {
+			padding: 0 15px;
+			margin: 15px 0 0;
+		}
+		
+		.panel-desc {
+			padding: 0 15px;
+			margin: 5px 0;
+		}
+		
+		.gateway-settings {
+			margin-top: 4px;
+		}
+		.accordion-section-title {
+			border: none;
+			font-size: 14px;
+			border-top: 1px solid #eee;
+			border-bottom: 1px solid #eee;
+			background: #fafafa;
+		}
+		
+		.accordion-section-content {
+			padding: 15px;
+		}
+	}
+	
+	.pm-order-panel {
+		background: #E9E9E9;
+		border: 1px solid #d6d6d6;		
+		margin-top: 36px;
+		
+		@media screen and (min-width: 900px) {
+			float: left;
+			width: 39%;
+			max-width: 400px;
+			border-left: none;
+		}
+		
+		.panel-content {
+			padding: 15px;
+			@media screen and (min-width: 900px) {
+				min-height: 600px;
+			}
+		}
+	}
+	
+	#pm-order-settings {
+		margin: 20px 0;
+		
+		li {
+			background: #fff;
+			border: 1px solid #d6d6d6;
+			padding: 8px;
+			margin-bottom: 4px;
+		}
+		
+	}
+}
