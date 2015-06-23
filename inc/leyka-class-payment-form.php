@@ -488,27 +488,25 @@ function leyka_share_campaign_block($campaign_id = null) {
 	
 	if( !$campaign_id ) {
 		$campaign_id = $post->ID;
-    }
-		
-	$iframe = Leyka_Campaign_Management::get_card_embed_code($campaign_id);?>
+    }?>
 
 	<div id="share-campaign-area" class="toggle">
 		<div class="toggle-trigger"><?php _e('Share (get embed code)', 'leyka');?></div>
 		<div class="toggle-area">
 			
 			<div class="leyka-embed-block">
-			<div id="embed-size-pane" class="leyka-setting-row">
-				<div class="col-1"><label><?php _e('Width', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_w" value="300" size="4"></label>
-				<label><?php _e('Height', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_h" value="510" size="4"></label>
-				</div>
-				<div class="col-2">
-				<textarea class="embed-code" id="campaign-embed-code" class="campaign-embed-code"><?php echo $iframe; ?></textarea></div>
-			</div>
-			
-			<div class="leyka-embed-preview">
-				<h4><?php _e('Preview', 'leyka');?></h4>
-				<?php echo $iframe; ?>
-			</div>
+                <div id="embed-size-pane" class="leyka-setting-row">
+                    <div class="col-1"><label><?php _e('Width', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_w" value="300" size="4"></label>
+                    <label><?php _e('Height', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_h" value="510" size="4"></label>
+                    </div>
+                    <div class="col-2">
+                    <textarea class="embed-code" id="campaign-embed-code" class="campaign-embed-code"><?php echo Leyka_Campaign_Management::get_card_embed_code($campaign_id, true);?></textarea></div>
+                </div>
+
+                <div class="leyka-embed-preview">
+                    <h4><?php _e('Preview', 'leyka');?></h4>
+                    <?php echo Leyka_Campaign_Management::get_card_embed_code($campaign_id, false); ?>
+                </div>
 			</div><!-- .embed-block -->
 			
 		</div>
@@ -542,19 +540,22 @@ function leyka_print_donation_elements($content) {
 	global $post;
 
 	$autoprint = leyka_options()->opt('donation_form_mode');
-	if( !is_singular(Leyka_Campaign_Management::$post_type) || !$autoprint )
-		return $content;
+	if( !is_singular(Leyka_Campaign_Management::$post_type) || !$autoprint ) {
+        return $content;
+    }
 	
 	$campaign = new Leyka_Campaign($post);	
-	if($campaign->ignore_global_template_settings)
+	if($campaign->ignore_global_template_settings) {
 		return $content;
+    }
 
 	$post_content = $content;
 	$content = '';
 
 	// Scale on top of form:	
-	if(leyka_options()->opt('scale_widget_place') == 'top' || leyka_options()->opt('scale_widget_place') == 'both')
+	if(leyka_options()->opt('scale_widget_place') == 'top' || leyka_options()->opt('scale_widget_place') == 'both') {
         $content .= do_shortcode("[leyka_scale show_button='1']");
+    }
 
 	$content .= $post_content;
 
@@ -563,11 +564,13 @@ function leyka_print_donation_elements($content) {
         !empty($campaign->target) && (
             leyka_options()->opt('scale_widget_place') == 'bottom' ||
             leyka_options()->opt('scale_widget_place') == 'both'
-    ))
+    )) {
         $content .= do_shortcode("[leyka_scale show_button='0']");
+    }
 
-	// Payment form:
-    $content .= get_leyka_payment_form_template_html($post);
+    $content .= get_leyka_payment_form_template_html($post); // Payment form
+
+    $campaign->increase_views_counter(); // Increase campaign views counter
 
 	// Donations list:
     if(leyka_options()->opt('leyka_donations_history_under_forms')) {
@@ -619,16 +622,16 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
     ob_start();
 
 	if( !$campaign ) {
-		$campaign = $post;
-	} elseif(is_int($campaign)) {
-		$campaign = get_post($campaign);
-	}
-
-    $campaign = new Leyka_Campaign($campaign);
+        $campaign = new Leyka_Campaign($post);
+	} elseif(is_int($campaign) || is_a($campaign, 'WP_Post')) {
+        $campaign = new Leyka_Campaign($campaign);
+	} elseif( !is_a($campaign, 'Leyka_Campaign') ) {
+        return false;
+    }
 
     if($campaign->is_finished) {?>
 
-    <div id="leyka-campaign-finished"><?php echo __('The fundrising campaign has been finished. Thank you for your support!', 'leyka');?></div>
+    <div id="leyka-campaign-finished"><?php echo __('The fundraising campaign has been finished. Thank you for your support!', 'leyka');?></div>
 
 <?php } else {
 
@@ -647,12 +650,12 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
 
             $template = leyka_get_current_template_data($campaign, $template /*? $template : $campaign->template*/);
 
-            if($template && isset($template['file'])){
+            if($template && isset($template['file'])) {
                 include($template['file']);
             }
         }
 
-    } //campaign finished
+    } // Campaign finished
 
     $out = ob_get_contents();
     ob_end_clean();
@@ -668,13 +671,15 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
  **/
 function leyka_get_donation_form($echo = true) {
 
-	if( !is_singular(Leyka_Campaign_Management::$post_type) )
-		return '';
-		
-	if($echo)
-		echo get_leyka_payment_form_template_html();
-	else
-		return get_leyka_payment_form_template_html();
+	if( !is_singular(Leyka_Campaign_Management::$post_type) ) {
+        return '';
+    }
+
+	if($echo) {
+        echo get_leyka_payment_form_template_html();
+    } else {
+        return get_leyka_payment_form_template_html();
+    }
 }
 
 
@@ -685,8 +690,9 @@ function leyka_payment_method_action() {
 
 	check_ajax_referer('leyka_payment_form', '_leyka_ajax_nonce');
 
-	if(empty($_POST['pm_id']))
-		die('-1');
+	if(empty($_POST['pm_id'])) {
+        die('-1');
+    }
 
 //	if(empty($_POST['currency']))
 //		die('-1');
@@ -694,8 +700,9 @@ function leyka_payment_method_action() {
 	$curr_currency = trim($_POST['currency']);	
 	$curr_pm = leyka_get_pm_by_id(trim($_POST['pm_id']));
 
-    if( !$curr_pm )
+    if( !$curr_pm ) {
         die('-1');
+    }
 
 	leyka_setup_current_pm($curr_pm, $curr_currency);
 
@@ -703,15 +710,15 @@ function leyka_payment_method_action() {
 
 	<div class="leyka-pm-fields">
 
-	<div class='leyka-user-data'>
-		<!-- field for GA -->
-		<input type="hidden" name="leyka_ga_payment_method" value="<?php echo esc_attr($curr_pm->label);?>" />
-	<?php
-		echo leyka_pf_get_name_field(empty($_POST['user_name']) ? '' : trim($_POST['user_name']));
-		echo leyka_pf_get_email_field(empty($_POST['user_email']) ? '' : trim($_POST['user_email']));
-		echo leyka_pf_get_pm_fields();
-	?>
-	</div>
+        <div class='leyka-user-data'>
+            <!-- field for GA -->
+            <input type="hidden" name="leyka_ga_payment_method" value="<?php echo esc_attr($curr_pm->label);?>" />
+        <?php
+            echo leyka_pf_get_name_field(empty($_POST['user_name']) ? '' : trim($_POST['user_name']));
+            echo leyka_pf_get_email_field(empty($_POST['user_email']) ? '' : trim($_POST['user_email']));
+            echo leyka_pf_get_pm_fields();
+        ?>
+        </div>
 
 	<?php
 		echo leyka_pf_get_agree_field();
@@ -727,8 +734,7 @@ function leyka_payment_method_action() {
 			echo '<ul class="leyka-pm-icons cf">'.implode('', $list).'</ul>';
 		}?>
 	</div>
-	<?php
-		echo "<div class='leyka-pm-desc'>".apply_filters('leyka_the_content', leyka_pf_get_pm_description())."</div>";
+	<?php echo "<div class='leyka-pm-desc'>".apply_filters('leyka_the_content', leyka_pf_get_pm_description())."</div>";
     $out = ob_get_contents();
     ob_end_clean();
 
@@ -739,7 +745,8 @@ function leyka_payment_method_action() {
 add_action('wp_ajax_leyka_payment_method', 'leyka_payment_method_action');
 add_action('wp_ajax_nopriv_leyka_payment_method', 'leyka_payment_method_action');
 
-function leyka_currency_choice_action(){
+function leyka_currency_choice_action() {
+
 	check_ajax_referer('leyka_payment_form', '_leyka_ajax_nonce');
 
 	if(empty($_POST['currency']))
@@ -748,7 +755,7 @@ function leyka_currency_choice_action(){
 	$curr_currency = trim($_POST['currency']);	
 	$pm_selected = trim($_POST['current_pm']);
 	$currently_active_pmethods = leyka_get_pm_list(true, $curr_currency);
-	
+
     $curr_pm_is_active = false;
     foreach($currently_active_pmethods as $pm) {
         if($pm->id == $pm_selected) {

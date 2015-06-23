@@ -743,22 +743,27 @@ class Leyka {
     /** Save a base submission info and return new donation ID, so gateway can add it's specific data to the logs. */
     public function log_submission() {
 
+        if(empty($_POST['leyka_campaign_id']) || (int)$_POST['leyka_campaign_id'] <= 0) {
+            return false;
+        }
+
         add_action('save_post', array($this, 'finalize_log_submission'), 2, 2);
 
-        $campaign = get_post((int)$_POST['leyka_campaign_id']);
-        $purpose_text = get_post_meta($campaign->ID, 'payment_title', true);
-        $purpose_text = empty($purpose_text) && $campaign->post_title ? $campaign->post_title : $purpose_text;
+        $campaign = new Leyka_Campaign((int)$_POST['leyka_campaign_id']);
 
-        $pm_data = leyka_pf_get_payment_method_value();
         $donation_id = Leyka_Donation::add(apply_filters('leyka_new_donation_data', array(
-            'purpose_text' => $purpose_text,
+            'purpose_text' => $campaign->payment_title,
         )));
+
+        $campaign->increase_submits_counter();
 
         if(is_wp_error($donation_id)) {
             return false;
         } else {
 
+            $pm_data = leyka_pf_get_payment_method_value();
             do_action('leyka_log_donation-'.$pm_data['gateway_id'], $donation_id);
+
             return $donation_id;
         }
     }

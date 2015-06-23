@@ -2,7 +2,7 @@
 Contributors: Ahaenor, foralien, denis.cherniatev
 Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
-Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundrising, webmoney, robokassa, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндексденьги
+Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, webmoney, robokassa, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндексденьги
 Requires at least: 3.6.1
 Tested up to: 4.1.1
 Stable tag: trunk
