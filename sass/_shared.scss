@@ -1,0 +1,28 @@
+/** Shared styles **/
+
+#itv-card {
+	max-width: 280px;
+	background: #f9f9f9;
+	padding: 10px;
+	
+	.itv-logo {
+		width: 160px;
+		padding: 5px;
+		img {
+			max-width: 100%;
+			height: auto;
+		}
+		
+		a {
+			display: block;
+		}
+	}
+	
+	p:last-child {
+		margin-bottom: 0;
+	}
+}
+
+#leyka-card + #itv-card {
+	margin-top: 3em;
+}

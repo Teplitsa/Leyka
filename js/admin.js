@@ -26,7 +26,20 @@ jQuery(document).ready(function($){
         $gateways_accordion.accordion({
             heightStyle: 'content',
             header: '.gateway-settings > h3',
-            collapsible: true
+            collapsible: true,
+            activate: function(event, ui){
+
+                var $header_clicked = $(this).find('.ui-state-active');
+                if($header_clicked.length) {
+                    $('html, body').animate({ // 35px is a height of the WP admin bar:
+                        scrollTop: $header_clicked.parent().offset().top - 35
+                    }, 250);
+                }
+            }
+        });
+
+        $gateways_accordion.find('.doc-link').click(function(e){
+            e.stopImmediatePropagation(); // Do not toggle the accordion panel when clicking on the docs link
         });
 
         /** Gateways & PM folding on click by the active PM checkboxes. Also PM ordering */

@@ -31,6 +31,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
 
         $this->_id = 'quittance';
         $this->_title = __('Quittances', 'leyka');
+        $this->_docs_link = '//leyka.te-st.ru/docs/nastrojka-lejki/';
     }
 
     protected function _initialize_pm_list() {

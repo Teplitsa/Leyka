@@ -2,7 +2,7 @@
 Contributors: Ahaenor, foralien, denis.cherniatev
 Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
-Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, crowdfunding, fundrising
+Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundrising, webmoney, robokassa, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндексденьги
 Requires at least: 3.6.1
 Tested up to: 4.1.1
 Stable tag: trunk
@@ -153,6 +153,16 @@ PHP at least 5.3 is required.
 10. События Google Analytics
 
 == Changelog ==
+
+= 2.2.6 =
+ * New: payment settings page has a new UI.
+ * New: now PMs on the donation forms can be reordered.
+ * New: now text for the donation submits can be changed.
+ * New: gateways API is slightly refactored.
+ * New: now donation ID adds to the bank order payment title.
+ * New: small UI fixes for the bank order.
+ * Fix: small, but important fixes in Chronopay and Yandex.Money. Other gateways also has their share of a refactoring.
+ * Fix: as always, small fixes.
 
 = 2.2.5 =
  * New: "First steps" metabox is added to the plugin desktop.

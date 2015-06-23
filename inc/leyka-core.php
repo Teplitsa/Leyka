@@ -65,13 +65,17 @@ class Leyka {
         // User roles and capabilities:
         add_action('init', array($this, 'register_user_capabilities'));
 
-        if( !session_id() )
+        if( !session_id() ) {
             add_action('init', 'session_start', -2);
+        }
 
-        if(is_admin() && current_user_can('leyka_manage_donations'))
+        if(is_admin() && current_user_can('leyka_manage_donations')) {
             $this->admin_setup();
-        else if( !is_admin() )
+        }
+
+        if(current_user_can('leyka_manage_donations')) {
             add_action('admin_bar_menu', array($this, 'leyka_add_toolbar_menu'), 999);
+        }
 
         /** Service URLs handler: */
         add_action('parse_request', function($request){
@@ -153,12 +157,15 @@ class Leyka {
             'parent' => 'leyka-toolbar-menu',
             'href' => admin_url('edit.php?post_type='.Leyka_Campaign_Management::$post_type),
         ));
-        $wp_admin_bar->add_node(array(
-            'id'     => 'leyka-toolbar-settings',
-            'title'  => __('Settings', 'leyka'),
-            'parent' => 'leyka-toolbar-menu',
-            'href' => admin_url('admin.php?page=leyka_settings'),
-        ));
+
+        if(current_user_can('leyka_manage_options')) {
+            $wp_admin_bar->add_node(array(
+                'id'     => 'leyka-toolbar-settings',
+                'title'  => __('Settings', 'leyka'),
+                'parent' => 'leyka-toolbar-menu',
+                'href' => admin_url('admin.php?page=leyka_settings'),
+            ));
+        }
     }
 
     public function do_currency_rates_refresh() {
@@ -347,6 +354,17 @@ class Leyka {
         }
 
         if( !$leyka_last_ver || $leyka_last_ver <= '2.2.5' ) {
+
+            // Initialize pm_order option if needed:
+            if( !get_option('leyka_pm_order') ) {
+
+                $pm_list = array();
+                foreach(get_option('leyka_pm_available') as $pm_full_id) {
+
+                    $pm_list[] = "pm_order[]={$pm_full_id}";
+                }
+                update_option('leyka_pm_order', implode('&', $pm_list));
+            }
 
             // Remove an unneeded scripts for settings pages:
             $settings_pages_dir = dir(LEYKA_PLUGIN_DIR.'inc/settings-pages/');
