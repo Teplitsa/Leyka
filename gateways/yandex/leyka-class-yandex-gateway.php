@@ -126,6 +126,8 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             'sum' => $donation->amount,
             'customerNumber' => $donation->donor_email,
             'orderNumber' => $donation_id,
+            /** "@todo Make a global option to know whether add donation ID to the payment title or not */
+            'orderDetails' => $donation->payment_title." (№ $donation_id)",
             'paymentType' => $payment_type,
             'shopSuccessURL' => leyka_get_success_page_url(),
             'shopFailURL' => leyka_get_failure_page_url(),
@@ -257,7 +259,7 @@ class Leyka_Yandex_Money extends Leyka_Payment_Method {
         $this->_label_backend = __('Virtual cash Yandex.money', 'leyka');
         $this->_label = __('Yandex.money', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('yandex_money_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
@@ -301,7 +303,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
         $this->_label_backend = __('Payment with Banking Card', 'leyka');
         $this->_label = __('Banking Card', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('yandex_card_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
 //            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
@@ -345,7 +347,8 @@ class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
         $this->_label_backend = __('Virtual cash Webmoney', 'leyka');
         $this->_label = __('Webmoney', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('yandex_wm_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
+//        $this->_description = leyka_options()->opt_safe('yandex_wm_description');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/webmoney.png',

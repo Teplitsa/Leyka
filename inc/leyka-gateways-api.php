@@ -159,8 +159,13 @@ abstract class Leyka_Gateway {
             case 'title':
             case 'name':
             case 'label': return $this->_title;
-            case 'icon': return $this->_icon ?
-                $this->_icon : LEYKA_PLUGIN_BASE_URL."/gateways/{$this->_id}/icons/{$this->_id}.png";
+            case 'icon': $icon = false;
+                if($this->_icon) {
+                    $icon = $this->_icon;
+                } elseif(file_exists(LEYKA_PLUGIN_DIR."gateways/{$this->_id}/icons/{$this->_id}.png")) {
+                    $icon = LEYKA_PLUGIN_BASE_URL."gateways/{$this->_id}/icons/{$this->_id}.png";
+                }
+                return $icon;
             default:
         }
     }
@@ -398,6 +403,7 @@ abstract class Leyka_Payment_Method {
 
         $this->_set_attributes();
         $this->_initialize_options();
+        $this->_set_dynamic_attributes();
     }
 
     public function __get($param) {
@@ -423,12 +429,7 @@ abstract class Leyka_Payment_Method {
             case 'name_backend': $param = $this->_label_backend ? $this->_label_backend : $this->_label;
                 break;
             case 'desc':
-            case 'description':
-                if( !$this->_description ) {
-                    $this->_description = leyka_options()->opt_safe($this->full_id.'_description');
-                }
-                $param = html_entity_decode($this->_description);
-                break;
+            case 'description': $param = html_entity_decode($this->_description); break;
             case 'has_global_fields': $param = $this->_support_global_fields; break;
             case 'custom_fields': $param = $this->_custom_fields; break;
             case 'icons': $param = $this->_icons; break;
@@ -444,6 +445,9 @@ abstract class Leyka_Payment_Method {
     }
 
     abstract protected function _set_attributes();
+
+    /** To set some custom options-dependent attributes */
+    protected function _set_dynamic_attributes() {}
 
     public function has_currency_support($currency = false) {
 
@@ -495,6 +499,8 @@ abstract class Leyka_Payment_Method {
             $custom_label : apply_filters('leyka_get_pm_label_original', $this->_label, $this);
 
         $this->_active = in_array($this->full_id, leyka_options()->opt('pm_available'));
+
+        $this->_description = leyka_options()->opt_safe($this->full_id.'_description');
 
         add_filter('leyka_payment_options_allocation', array($this, 'allocate_pm_options'), 10, 1);
     }

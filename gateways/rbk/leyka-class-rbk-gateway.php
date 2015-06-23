@@ -94,12 +94,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
     }
 
-    public function submission_redirect_url($current_url, $pm_id) {	
-	
-//        switch($pm_id) {
-//            default:
-//                $current_url = 'https://rbkmoney.ru/acceptpurchase.aspx';
-//        }
+    public function submission_redirect_url($current_url, $pm_id) {
 
         return 'https://rbkmoney.ru/acceptpurchase.aspx';
     }
@@ -271,13 +266,13 @@ class Leyka_Rbk_Card extends Leyka_Payment_Method {
 
     public function _set_attributes() {
 
-        $this->_id = empty($params['id']) ? 'bankcard' : $params['id'];
+        $this->_id = 'bankcard';
         $this->_gateway_id = 'rbk';
 
         $this->_label_backend = __('Payment with Banking Card', 'leyka');
         $this->_label = __('Banking Card', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('bankcard_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/rbk/icons/visa.png',
@@ -320,7 +315,7 @@ class Leyka_Rbk_Money extends Leyka_Payment_Method {
         $this->_label_backend = __('Payment with RBK Money', 'leyka');
         $this->_label = __('RBK Money', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('rbkmoney_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/rbk/icons/rbk.png',
@@ -362,7 +357,7 @@ class Leyka_Rbk_All extends Leyka_Payment_Method {
         $this->_label_backend = __('Use any RBK Money payment method available', 'leyka');
         $this->_label = __('RBK Money (any)', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('rbk_all_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/rbk/icons/visa.png',
