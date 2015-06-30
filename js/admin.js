@@ -15,8 +15,16 @@ jQuery(document).ready(function($){
 
     if($body.hasClass('toplevel_page_leyka')) { // Leyka desktop page
         leyka_support_metaboxes('toplevel_page_leyka');
-    } else if($body.hasClass('lejka_page_leyka_settings')) { // Leyka payment settings page
-        leyka_support_metaboxes('lejka_page_leyka_settings');
+    } else {
+
+        $.each($body.attr('class').split(' '), function(){
+
+            if(this.indexOf('_page_leyka_settings') >= 0) { // Leyka payment settings page
+
+                leyka_support_metaboxes('lejka_page_leyka_settings');
+                return false; // to break the loop
+            }
+        });
     }
 
     // Payment settings page:
@@ -26,7 +34,20 @@ jQuery(document).ready(function($){
         $gateways_accordion.accordion({
             heightStyle: 'content',
             header: '.gateway-settings > h3',
-            collapsible: true
+            collapsible: true,
+            activate: function(event, ui){
+
+                var $header_clicked = $(this).find('.ui-state-active');
+                if($header_clicked.length) {
+                    $('html, body').animate({ // 35px is a height of the WP admin bar:
+                        scrollTop: $header_clicked.parent().offset().top - 35
+                    }, 250);
+                }
+            }
+        });
+
+        $gateways_accordion.find('.doc-link').click(function(e){
+            e.stopImmediatePropagation(); // Do not toggle the accordion panel when clicking on the docs link
         });
 
         /** Gateways & PM folding on click by the active PM checkboxes. Also PM ordering */
@@ -245,8 +266,9 @@ jQuery(document).ready(function($){
 
         e.preventDefault();
 
-        if( !validate_feedback_form() )
+        if( !validate_feedback_form() ) {
             return false;
+        }
 
         $form.hide();
         $loader.show();

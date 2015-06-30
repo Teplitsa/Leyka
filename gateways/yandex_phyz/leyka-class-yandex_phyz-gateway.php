@@ -11,6 +11,7 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
 
         $this->_id = 'yandex_phyz';
         $this->_title = __('Yandex.Money for physical persons', 'leyka');
+        $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-robokassa/#yandex_phyz-settings';
     }
 
     protected function _set_options_defaults() {
@@ -246,7 +247,7 @@ class Leyka_Yandex_Phyz_Money extends Leyka_Payment_Method {
         $this->_label_backend = __('Virtual cash Yandex.Money', 'leyka');
         $this->_label = __('Virtual cash Yandex.Money', 'leyka');
 
-        $this->_description = leyka_options()->opt_safe('yandex_phyz_money_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex_phyz/icons/yandex_phyz_money_s.png',
@@ -290,7 +291,7 @@ class Leyka_Yandex_Phyz_Card extends Leyka_Payment_Method {
         $this->_label = __('Payment with Banking Card Yandex', 'leyka');
         $this->_label_backend = $this->_label;
 
-        $this->_description = leyka_options()->opt_safe('yandex_phyz_card_description');
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
 //            LEYKA_PLUGIN_BASE_URL.'gateways/yandex_phyz/icons/yandex_phyz_money_s.png',

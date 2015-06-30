@@ -3,7 +3,7 @@
  * Plugin Name: Leyka
  * Plugin URI:  http://leyka.te-st.ru/
  * Description: The donations management system for your WP site
- * Version:     2.2.5
+ * Version:     2.2.6
  * Author:      Lev Zvyagincev aka Ahaenor
  * Author URI:  ahaenor@gmail.com
  * Text Domain: leyka
@@ -38,7 +38,7 @@ if( !defined('WPINC') ) die;
 
 // Leyka plugin version:
 if( !defined('LEYKA_VERSION') )
-    define('LEYKA_VERSION', '2.2.5');
+    define('LEYKA_VERSION', '2.2.6');
 
 // Plugin base file:
 if( !defined('LEYKA_PLUGIN_BASE_FILE') ) // "leyka.php"
@@ -116,6 +116,7 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-gateways-api.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-campaign.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donation.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-payment-form.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-ajax.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-shortcodes.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-widgets.php');
 
@@ -129,16 +130,17 @@ if( !$gateways_dir ) {
 
         $file_addr = LEYKA_PLUGIN_DIR."gateways/$gateway_id/leyka-class-$gateway_id-gateway.php";
 
-        if($gateway_id != '.' && $gateway_id != '..' && file_exists($file_addr))
-			require_once($file_addr);
+        if($gateway_id != '.' && $gateway_id != '..' && file_exists($file_addr)) {
+            require_once($file_addr);
+        }
     }
 
     $gateways_dir->close();
 }
 
-// Activation/Deactivation:
-register_activation_hook(__FILE__, array('Leyka', 'activate'));
-register_deactivation_hook(__FILE__, array('Leyka', 'deactivate'));
+register_activation_hook(__FILE__, array('Leyka', 'activate')); // Activation
+add_action('plugins_loaded', array('Leyka', 'activate')); // Any update needed
+register_deactivation_hook(__FILE__, array('Leyka', 'deactivate')); // Deactivate
 
 leyka(); // All systems go
 

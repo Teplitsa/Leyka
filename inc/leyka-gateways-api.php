@@ -101,13 +101,14 @@ function leyka_get_gateway_by_id($gateway_id) {
 }
 
 abstract class Leyka_Gateway {
-	
+
     /** @var $_instance Leyka_Gateway Gateway is always a singleton */
     protected static $_instance;
 
 	protected $_id = ''; // A unique string, as "quittance", "yandex" or "chronopay"
 	protected $_title = ''; // A human-readable title of gateway, a "Bank quittances" or "Yandex.money"
     protected $_icon = ''; // A gateway icon URL. Must have 25px on a bigger side
+    protected $_docs_link = ''; // A link to gateways user docs page
     protected $_payment_methods = array(); // Supported PMs array
     protected $_options = array(); // Gateway configs
 
@@ -127,9 +128,15 @@ abstract class Leyka_Gateway {
 
         $this->_set_gateway_pm_list(); // Initialize or restore Gateway's PMs list and all their options
 
-        // Set a Gateway class method to process a service calls from gateway:
+        // Set a gateway class method to process a service calls from gateway:
         add_action('leyka_service_call-'.$this->_id, array($this, '_handle_service_calls'));
         add_action('leyka_cancel_recurrents-'.$this->_id, array($this, 'cancel_recurrents'));
+
+        add_action("leyka_{$this->_id}_save_donation_data", array($this, 'save_donation_specific_data'));
+        add_action("leyka_{$this->_id}_add_donation_specific_data", array($this, 'add_donation_specific_data'));
+
+        add_filter('leyka_get_unknown_donation_field', array($this, 'get_specific_data_value'), 10, 3);
+        add_action('leyka_set_unknown_donation_field', array($this, 'set_specific_data_value'), 10, 3);
     }
 
     final protected function __clone() {}
@@ -159,8 +166,17 @@ abstract class Leyka_Gateway {
             case 'title':
             case 'name':
             case 'label': return $this->_title;
-            case 'icon': return $this->_icon ?
-                $this->_icon : LEYKA_PLUGIN_BASE_URL."/gateways/{$this->_id}/icons/{$this->_id}.png";
+            case 'docs':
+            case 'docs_url':
+            case 'docs_href':
+            case 'docs_link': return $this->_docs_link ? $this->_docs_link : false;
+            case 'icon': $icon = false;
+                if($this->_icon) {
+                    $icon = $this->_icon;
+                } elseif(file_exists(LEYKA_PLUGIN_DIR."gateways/{$this->_id}/icons/{$this->_id}.png")) {
+                    $icon = LEYKA_PLUGIN_BASE_URL."gateways/{$this->_id}/icons/{$this->_id}.png";
+                }
+                return $icon;
             default:
         }
     }
@@ -210,6 +226,10 @@ abstract class Leyka_Gateway {
     // Handler for Gateway's service calls (activate the donations, etc.):
     abstract public function _handle_service_calls($call_type = '');
 
+    public function get_init_recurrent_donation(Leyka_Donation $donation) {
+        return false;
+    }
+
     // Handler for Gateway's procedure to stop some recurrent donations:
     public function cancel_recurrents(Leyka_Donation $donation) {
     }
@@ -251,13 +271,21 @@ abstract class Leyka_Gateway {
     static public function process_form_default($gateway_id, $pm_id, $donation_id, $form_data) {
 
         if(empty($form_data['leyka_donation_amount']) || (float)$form_data['leyka_donation_amount'] <= 0) {
-            $error = new WP_Error('wrong_donation_amount', __('Donation amount must be specified to submit the form', 'leyka'));
+
+            $error = new WP_Error(
+                'wrong_donation_amount',
+                __('Donation amount must be specified to submit the form', 'leyka')
+            );
             leyka()->add_payment_form_error($error);
         }
 
         $currency = $form_data['leyka_donation_currency'];
         if(empty($currency)) {
-            $error = new WP_Error('wrong_donation_currency', __('Wrong donation currency in submitted form data', 'leyka'));
+
+            $error = new WP_Error(
+                'wrong_donation_currency',
+                __('Wrong donation currency in submitted form data', 'leyka')
+            );
             leyka()->add_payment_form_error($error);
         }
 
@@ -304,8 +332,9 @@ abstract class Leyka_Gateway {
      */
     public function add_payment_method(Leyka_Payment_Method $pm, $replace_if_exists = false) {
 
-        if($pm->gateway_id != $this->_id)
+        if($pm->gateway_id != $this->_id) {
             return false;
+        }
 
         if(empty($this->_payment_methods[$pm->id]) || !!$replace_if_exists) {
             $this->_payment_methods[$pm->id] = $pm;
@@ -318,10 +347,11 @@ abstract class Leyka_Gateway {
     /** @param mixed $pm A PM object or it's ID to remove from gateway. */
     public function remove_payment_method($pm) {
 
-        if(is_object($pm) && $pm instanceof Leyka_Payment_Method)
+        if(is_object($pm) && $pm instanceof Leyka_Payment_Method) {
             unset($this->_payment_methods[$pm->id]);
-        else if(strlen($pm) && !empty($this->_payment_methods[$pm]))
+        } else if(strlen($pm) && !empty($this->_payment_methods[$pm])) {
             unset($this->_payment_methods[$pm->id]);
+        }
     }
 
     /**
@@ -354,6 +384,25 @@ abstract class Leyka_Gateway {
 
         $pm_id = trim((string)$pm_id);
         return empty($this->_payment_methods[$pm_id]) ? false : $this->_payment_methods[$pm_id]; 
+    }
+
+    /** Get gateway specific donation fields for an "add/edit donation" page ("donation data" metabox). */
+    public function display_donation_specific_data_fields($donation = false) {
+    }
+
+    /** Filter function for "leyka_get_unknown_donation_field" hook to get gateway specific donation data values. */
+    public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
+        return $value;
+    }
+
+    /** Action function for "leyka_set_unknown_donation_field" hook to set gateway specific donation data values. */
+    public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
+    }
+
+    public function save_donation_specific_data(Leyka_Donation $donation) {
+    }
+
+    public function add_donation_specific_data($donation_id, array $donation_params) {
     }
 } //class end
 
@@ -398,6 +447,7 @@ abstract class Leyka_Payment_Method {
 
         $this->_set_attributes();
         $this->_initialize_options();
+        $this->_set_dynamic_attributes();
     }
 
     public function __get($param) {
@@ -423,12 +473,7 @@ abstract class Leyka_Payment_Method {
             case 'name_backend': $param = $this->_label_backend ? $this->_label_backend : $this->_label;
                 break;
             case 'desc':
-            case 'description':
-                if( !$this->_description ) {
-                    $this->_description = leyka_options()->opt_safe($this->full_id.'_description');
-                }
-                $param = html_entity_decode($this->_description);
-                break;
+            case 'description': $param = html_entity_decode($this->_description); break;
             case 'has_global_fields': $param = $this->_support_global_fields; break;
             case 'custom_fields': $param = $this->_custom_fields; break;
             case 'icons': $param = $this->_icons; break;
@@ -444,6 +489,9 @@ abstract class Leyka_Payment_Method {
     }
 
     abstract protected function _set_attributes();
+
+    /** To set some custom options-dependent attributes */
+    protected function _set_dynamic_attributes() {}
 
     public function has_currency_support($currency = false) {
 
@@ -495,6 +543,8 @@ abstract class Leyka_Payment_Method {
             $custom_label : apply_filters('leyka_get_pm_label_original', $this->_label, $this);
 
         $this->_active = in_array($this->full_id, leyka_options()->opt('pm_available'));
+
+        $this->_description = leyka_options()->opt_safe($this->full_id.'_description');
 
         add_filter('leyka_payment_options_allocation', array($this, 'allocate_pm_options'), 10, 1);
     }

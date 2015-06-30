@@ -71,16 +71,17 @@ jQuery(document).ready(function($){
     $('#donation-pm').change(function(){
 
         var $this = $(this);
-        if($this.val() == 'custom')
+
+        if($this.val() == 'custom') {
             $('#custom-payment-info').show();
-        else {
+        } else {
 
             $('#custom-payment-info').hide();
 
-            if($this.val().split('-')[0] == 'chronopay')
-                $('#chronopay-fields').show();
-            else
-                $('#chronopay-fields').hide();
+            var gateway_id = $this.val().split('-')[0];
+
+            $('.gateway-fields').hide();
+            $('#'+gateway_id+'-fields').show();
         }
     }).keyup(function(e){
         $(this).trigger('change');
