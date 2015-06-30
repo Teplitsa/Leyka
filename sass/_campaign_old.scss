@@ -1,0 +1,253 @@
+/** Leyka campaign elements  (_campaign.scss) **/
+
+$scale-padding : 15px;
+
+@mixin scale-template($standalone : true, $wide : false, $has_button : true) {
+	
+	@if $standalone {
+		border: 1px solid $color-regular-border;
+		@include smart-margin(1.5em);	
+	}
+	
+	padding: $scale-padding;
+}
+
+@mixin scale-compact {
+	.leyka-scale-scale {
+		@include scale($size-scale-height, $color-scale-bg , $color-base-green);
+	}
+	.leyka-scale-label {		
+		@include text-reset;
+		margin-top: 5px;
+		font-size: $size-font-base;
+	}
+}
+
+@mixin scale-button($margin-top : 0, $position : false) {
+	margin-top: $margin-top;
+	@include text-reset;
+	text-align: right;
+	font-size: $size-font-base;
+	width: $size-font-base*10;
+	a {
+		@include button($color-base-green, $size-font-base);		
+	}
+	
+	@if $position {
+		position: absolute;
+		top: $scale-padding;
+		right: $scale-padding;
+	}
+}
+
+
+
+
+
+/** old **/
+.leyka-scale {	
+	border: 1px solid $color-regular-border;
+	padding: 15px;
+	@include smart-margin(1.5em);		
+}
+
+.leyka-scale-compact {	
+	.leyka-scale-scale {
+		@include scale($size-scale-height, $color-scale-bg , $color-base-green);
+	}
+	.leyka-scale-label {		
+		@include text-reset;
+		margin-top: 5px;
+		font-size: $size-font-base;
+	}
+}
+
+.leyka-scale-button {
+	margin-top: 5px;
+	@include text-reset;
+	text-align: right;
+	font-size: $size-font-base;
+	a {
+		@include button($color-base-green, $size-font-base);		
+	}
+}
+
+.leyka-scale-button-wide {
+	@extend .leyka-scale-button;
+	margin: 0;
+	width: $size-font-base*10;
+	position: absolute;
+	top: 15px;
+	right: 15px;
+}
+
+.leyka-scale-button-alone {
+	@extend .leyka-scale-button;
+	margin: 0 15px 15px 0;
+	a {
+		@include button($color-base-green, $size-font-base);		
+	}
+}
+
+
+.leyka-scale.has-button.wide {
+	position: relative;
+	
+	.d-scale-compact {		
+		margin-right: $size-font-base*11;
+	}
+	
+	.scale-button {
+		margin: 0;
+	}
+}
+
+
+/* vcard */
+.lk-thumbnail  {
+	a {
+		display: block;
+	}
+	img {
+		max-width: 100%;
+		height: auto;
+		vertical-align: middle;
+	}
+}
+
+.lk-info {		
+	@include text-reset;
+	font-size: $size-font-base;
+	line-height: 1.5;	
+}
+
+.lk-title {
+	font-weight: bold;
+	font-size: $size-font-base*1.23077;
+	margin: 0 0 1em 0;
+	clear: none;
+	
+	a, a:visited {
+		text-decoration: none;
+		color: darken($color-base-text, 3%);
+		&:hover {
+			color: $color-base-green ;
+			text-decoration: none;
+		}
+	}
+}
+
+	
+.leyka-campaign-card {
+	@include smart-margin(1.5em);
+	border: 1px solid $color-regular-border;	
+	
+	.lk-thumbnail  {
+		@extend .lk-thumbnail;
+	}
+	
+	.lk-info {
+		@extend .lk-info;
+		padding: 15px 15px 20px;
+			
+		p {
+			margin: 0;
+		}
+	}
+	
+	.lk-title {
+		@extend .lk-title;		
+				
+		/*a, a:visited {
+			text-decoration: none;
+			color: darken($color-base-text, 3%);
+			&:hover {
+				color: $color-base-green ;
+				text-decoration: none;
+			}
+		}*/
+	}
+	
+	
+	.leyka-scale {		
+		margin: 0;
+		border:  {
+			left: none;
+			right: none;
+			bottom: none;
+		}
+		&:first-child {
+			border-top: 0;
+		}		
+	}	
+	
+}
+
+.leyka_campaign_card .leyka-campaign-card {
+	@extend .leyka-campaign-card;
+}
+
+.leyka-campaign-card.wide {
+	position: relative;
+	
+	.lk-thumbnail {
+		float: left;
+		width: 40%;
+	}
+	
+	.lk-thumbnail + .lk-info {
+		margin-left: 45%;
+	}
+	
+	.leyka-scale {
+		clear: both;		
+	}
+	
+	.scale-button {
+		margin: 0;
+	}
+}
+
+/* campaignes list */
+.leyka-campaign-list-item {
+	.lk-thumbnail {
+		@extend .lk-thumbnail;
+	}
+	
+	.lk-info {
+		@extend .lk-info;
+		p {
+			margin: 0;
+		}
+	}
+	.lk-title {
+		@extend .lk-title;
+	}
+	
+	
+}
+
+.leyka-campaign-list-item.has-thumb {
+	@include clearfix;
+	.lk-thumbnail {
+		
+	}
+}
+
+
+
+
+
+
+
+
+
+
+/** Finished campaign notice **/
+#leyka-campaign-finished {
+	border: 2px solid $color-base-green;
+	padding: 10px 15px;
+	color: darken($color-base-text, 5%);
+	background:$color-grey-light;
+	@include border-radius(3px);
+}

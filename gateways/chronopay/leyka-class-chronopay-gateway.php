@@ -563,6 +563,8 @@ class Leyka_Chronopay_Card_Rebill extends Leyka_Payment_Method {
         $this->_label_backend = __('Rebilling payment with Banking Card', 'leyka');
         $this->_label = __('Banking Card - monthly rebilling', 'leyka');
 
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
+
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/chronopay/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/chronopay/icons/master.png',
