@@ -15,8 +15,16 @@ jQuery(document).ready(function($){
 
     if($body.hasClass('toplevel_page_leyka')) { // Leyka desktop page
         leyka_support_metaboxes('toplevel_page_leyka');
-    } else if($body.hasClass('lejka_page_leyka_settings')) { // Leyka payment settings page
-        leyka_support_metaboxes('lejka_page_leyka_settings');
+    } else {
+
+        $.each($body.attr('class').split(' '), function(){
+
+            if(this.indexOf('_page_leyka_settings') >= 0) { // Leyka payment settings page
+
+                leyka_support_metaboxes('lejka_page_leyka_settings');
+                return false; // to break the loop
+            }
+        });
     }
 
     // Payment settings page:
@@ -258,8 +266,9 @@ jQuery(document).ready(function($){
 
         e.preventDefault();
 
-        if( !validate_feedback_form() )
+        if( !validate_feedback_form() ) {
             return false;
+        }
 
         $form.hide();
         $loader.show();
