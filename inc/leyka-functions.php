@@ -37,6 +37,23 @@ function leyka_current_user_has_role($role, $user_id = false) {
     return in_array($role, (array)$user->roles);
 }
 
+/**
+ * @param $donation mixed
+ * @return Leyka_Donation A donation object, if parameter is valid in one way or another; false otherwise.
+ */
+function get_validated_donation($donation) {
+
+    if(is_int($donation) && (int)$donation > 0) {
+        $donation = new Leyka_Donation((int)$donation);
+    } elseif(is_a($donation, 'WP_Post')) {
+        $donation = new Leyka_Donation($donation);
+    } elseif( !is_a($donation, 'Leyka_Donation') ) {
+        return false;
+    }
+
+    return $donation ? $donation : false;
+}
+
 /** Get WP pages list as an array. Used mainly to form a dropdowns. */
 function leyka_get_pages_list() {
 

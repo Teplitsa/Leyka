@@ -461,7 +461,7 @@ class Leyka {
         );
 
         wp_enqueue_script(
-            $this->_plugin_slug.'-plugin-script',
+            $this->_plugin_slug.'-public',
             LEYKA_PLUGIN_BASE_URL.'js/public.js', array('jquery', $this->_plugin_slug.'-modal'),
             LEYKA_VERSION,
             true
@@ -480,7 +480,7 @@ class Leyka {
 //            'email_regexp' => '',
         ));
 
-        wp_localize_script($this->_plugin_slug.'-plugin-script', 'leyka', $js_data);
+        wp_localize_script($this->_plugin_slug.'-public', 'leyka', $js_data);
     }
 
     /**
@@ -719,8 +719,9 @@ class Leyka {
             $this->add_payment_form_error($error);
         }
 
-        if($this->payment_form_has_errors())
+        if($this->payment_form_has_errors()) {
             return;
+        }
 
         $donation_id = $this->log_submission();
 
@@ -736,8 +737,9 @@ class Leyka {
 
         $this->_payment_url = apply_filters('leyka_submission_redirect_url-'.$pm[0], $this->_payment_url, $pm[1]);
 
-        if($this->payment_form_has_errors()) // No logging needed if submit attempt have failed
+        if($this->payment_form_has_errors()) { // No logging needed if submit attempt failed
             wp_delete_post($donation_id, true);
+        }
     }
 
     /** Save a base submission info and return new donation ID, so gateway can add it's specific data to the logs. */
@@ -750,9 +752,11 @@ class Leyka {
         add_action('save_post', array($this, 'finalize_log_submission'), 2, 2);
 
         $campaign = new Leyka_Campaign((int)$_POST['leyka_campaign_id']);
+        $pm_data = leyka_pf_get_payment_method_value();
 
         $donation_id = Leyka_Donation::add(apply_filters('leyka_new_donation_data', array(
             'purpose_text' => $campaign->payment_title,
+            'gateway_id' => $pm_data['gateway_id'],
         )));
 
         $campaign->increase_submits_counter();
@@ -761,7 +765,6 @@ class Leyka {
             return false;
         } else {
 
-            $pm_data = leyka_pf_get_payment_method_value();
             do_action('leyka_log_donation-'.$pm_data['gateway_id'], $donation_id);
 
             return $donation_id;

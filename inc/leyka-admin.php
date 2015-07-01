@@ -614,7 +614,7 @@ class Leyka_Admin_Setup {
         if($current_screen->id == 'toplevel_page_leyka') {
             $dependencies[] = 'postbox';
         }
-        if($current_screen->id == 'lejka_page_leyka_settings') {
+        if(stristr($current_screen->id, '_page_leyka_settings') !== false) {
 
             $dependencies[] = 'postbox';
             $dependencies[] = 'jquery-ui-accordion';

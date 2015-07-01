@@ -128,9 +128,15 @@ abstract class Leyka_Gateway {
 
         $this->_set_gateway_pm_list(); // Initialize or restore Gateway's PMs list and all their options
 
-        // Set a Gateway class method to process a service calls from gateway:
+        // Set a gateway class method to process a service calls from gateway:
         add_action('leyka_service_call-'.$this->_id, array($this, '_handle_service_calls'));
         add_action('leyka_cancel_recurrents-'.$this->_id, array($this, 'cancel_recurrents'));
+
+        add_action("leyka_{$this->_id}_save_donation_data", array($this, 'save_donation_specific_data'));
+        add_action("leyka_{$this->_id}_add_donation_specific_data", array($this, 'add_donation_specific_data'));
+
+        add_filter('leyka_get_unknown_donation_field', array($this, 'get_specific_data_value'), 10, 3);
+        add_action('leyka_set_unknown_donation_field', array($this, 'set_specific_data_value'), 10, 3);
     }
 
     final protected function __clone() {}
@@ -220,6 +226,10 @@ abstract class Leyka_Gateway {
     // Handler for Gateway's service calls (activate the donations, etc.):
     abstract public function _handle_service_calls($call_type = '');
 
+    public function get_init_recurrent_donation(Leyka_Donation $donation) {
+        return false;
+    }
+
     // Handler for Gateway's procedure to stop some recurrent donations:
     public function cancel_recurrents(Leyka_Donation $donation) {
     }
@@ -261,13 +271,21 @@ abstract class Leyka_Gateway {
     static public function process_form_default($gateway_id, $pm_id, $donation_id, $form_data) {
 
         if(empty($form_data['leyka_donation_amount']) || (float)$form_data['leyka_donation_amount'] <= 0) {
-            $error = new WP_Error('wrong_donation_amount', __('Donation amount must be specified to submit the form', 'leyka'));
+
+            $error = new WP_Error(
+                'wrong_donation_amount',
+                __('Donation amount must be specified to submit the form', 'leyka')
+            );
             leyka()->add_payment_form_error($error);
         }
 
         $currency = $form_data['leyka_donation_currency'];
         if(empty($currency)) {
-            $error = new WP_Error('wrong_donation_currency', __('Wrong donation currency in submitted form data', 'leyka'));
+
+            $error = new WP_Error(
+                'wrong_donation_currency',
+                __('Wrong donation currency in submitted form data', 'leyka')
+            );
             leyka()->add_payment_form_error($error);
         }
 
@@ -314,8 +332,9 @@ abstract class Leyka_Gateway {
      */
     public function add_payment_method(Leyka_Payment_Method $pm, $replace_if_exists = false) {
 
-        if($pm->gateway_id != $this->_id)
+        if($pm->gateway_id != $this->_id) {
             return false;
+        }
 
         if(empty($this->_payment_methods[$pm->id]) || !!$replace_if_exists) {
             $this->_payment_methods[$pm->id] = $pm;
@@ -328,10 +347,11 @@ abstract class Leyka_Gateway {
     /** @param mixed $pm A PM object or it's ID to remove from gateway. */
     public function remove_payment_method($pm) {
 
-        if(is_object($pm) && $pm instanceof Leyka_Payment_Method)
+        if(is_object($pm) && $pm instanceof Leyka_Payment_Method) {
             unset($this->_payment_methods[$pm->id]);
-        else if(strlen($pm) && !empty($this->_payment_methods[$pm]))
+        } else if(strlen($pm) && !empty($this->_payment_methods[$pm])) {
             unset($this->_payment_methods[$pm->id]);
+        }
     }
 
     /**
@@ -364,6 +384,25 @@ abstract class Leyka_Gateway {
 
         $pm_id = trim((string)$pm_id);
         return empty($this->_payment_methods[$pm_id]) ? false : $this->_payment_methods[$pm_id]; 
+    }
+
+    /** Get gateway specific donation fields for an "add/edit donation" page ("donation data" metabox). */
+    public function display_donation_specific_data_fields($donation = false) {
+    }
+
+    /** Filter function for "leyka_get_unknown_donation_field" hook to get gateway specific donation data values. */
+    public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
+        return $value;
+    }
+
+    /** Action function for "leyka_set_unknown_donation_field" hook to set gateway specific donation data values. */
+    public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
+    }
+
+    public function save_donation_specific_data(Leyka_Donation $donation) {
+    }
+
+    public function add_donation_specific_data($donation_id, array $donation_params) {
     }
 } //class end
 
