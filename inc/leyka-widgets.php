@@ -57,7 +57,7 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 			'show_excerpt'  => !!$instance['show_excerpt'],
 			'show_scale'    => !!$instance['show_scale'],
 			'show_button'   => !!$instance['show_button'],
-		);		
+		);
 
 		$css_id = 'leyka_campaign_card_widget-'.uniqid();
 		$html = leyka_get_campaign_card($campaign_id, $args);
@@ -68,7 +68,7 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
         $campaign->increase_views_counter(); // Increase campaign views counter
 
         /** @var $before_widget */
-		echo $before_widget;		
+		echo $before_widget;
         if($title) {
             /**
              * @var $before_title
@@ -123,7 +123,24 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 
 		<p>
 			<label for="<?php echo esc_attr($this->get_field_id('campaign_id'));?>"><?php _e('Campaign ID', 'leyka');?>:</label>
-			<input id="<?php echo $this->get_field_id('campaign_id');?>" name="<?php echo $this->get_field_name( 'campaign_id' ); ?>" value="<?php echo esc_attr($instance['campaign_id']);?>" type="text" /><br />
+
+            <?php $current_value = $instance['campaign_id'];?>
+            <select id="<?php echo $this->get_field_id('campaign_id');?>" name="<?php echo $this->get_field_name( 'campaign_id');?>">
+                <option value="-" <?php echo $current_value == '-' ? 'selected="selected"' : '';?>>
+                    <?php _e('The most recent campaign', 'leyka');?>
+                </option>
+                <option value="0" <?php echo $current_value == '0' ? 'selected="selected"' : '';?>>
+                    <?php _e('Campaign based on a context', 'leyka');?>
+                </option>
+
+            <?php foreach(get_posts(array('post_type' => Leyka_Campaign_Management::$post_type, 'nopaging' => true)) as $campaign) {?>
+                <option value="<?php echo $campaign->ID;?>" <?php echo $current_value == $campaign->ID ? 'selected="selected"' : '';?>>
+                    <?php echo $campaign->post_title;?>
+                </option>
+            <?php }?>
+
+            </select>
+            <br />
 			<small class="help"><?php _e('Copy-paste ID of the campaign to output, state "0" to detect it from context or leave the field blank to display the most recent campaign', 'leyka');?></small>
 		</p>
 

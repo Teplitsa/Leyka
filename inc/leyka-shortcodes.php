@@ -149,17 +149,17 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
         $css_class .= ' has-thumb';
     }
 
-	$thumb_attr = array(
-		'alt' => esc_attr(sprintf(__('Thumbnail for - %s', 'leyka'), $campaign->post_title))
-	);
-
 	ob_start(); // Do we have some content ?>
 
 	<div class="<?php echo esc_attr($css_class);?>">
 		<?php if($args['show_thumb'] == 1 && has_post_thumbnail($campaign->ID)) {?>
 			<div class="lk-thumbnail">
 				<a href="<?php echo get_permalink($campaign);?>"<?php echo $target;?>>
-					<?php echo get_the_post_thumbnail($campaign->ID, $thumbnail_size, $thumb_attr);?>
+					<?php echo get_the_post_thumbnail(
+                        $campaign->ID,
+                        $thumbnail_size,
+                        array('alt' => esc_attr(sprintf(__('Thumbnail for - %s', 'leyka'), $campaign->post_title)),)
+                    );?>
 				</a>
 			</div>
 		<?php }?>
@@ -179,13 +179,14 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
 					add_filter('leyka_get_the_excerpt', 'convert_chars');
 					add_filter('leyka_get_the_excerpt', 'wp_trim_excerpt');?>
 					<p>
-                    <?php echo has_excerpt($campaign->ID) ?
-                        apply_filters('leyka_get_the_excerpt', $campaign->post_excerpt, $campaign) :
-                        apply_filters(
-                            'leyka_get_the_excerpt',
-                            substr(strip_tags(strip_shortcodes($campaign->post_content)), 0, 350),
-                            $campaign
-                        );?>
+                    <?php if(has_excerpt($campaign->ID)) {
+                        $text = $campaign->post_excerpt;
+                    } else {
+                        $text = substr(strip_tags(strip_shortcodes(
+                            $campaign->post_content ? $campaign->post_content : ' ' // So wp_trim_excerpt work correctly
+                        )), 0, 350);
+                    }
+                    echo apply_filters('leyka_get_the_excerpt', $text, $campaign);?>
                     </p>
                 <?php }?>
 			</div>
