@@ -749,8 +749,6 @@ class Leyka {
             return false;
         }
 
-        add_action('save_post', array($this, 'finalize_log_submission'), 2, 2);
-
         $campaign = new Leyka_Campaign((int)$_POST['leyka_campaign_id']);
         $pm_data = leyka_pf_get_payment_method_value();
 
@@ -765,26 +763,10 @@ class Leyka {
             return false;
         } else {
 
-            do_action('leyka_log_donation-'.$pm_data['gateway_id'], $donation_id);
+            do_action('leyka_log_donation-' . $pm_data['gateway_id'], $donation_id);
 
             return $donation_id;
         }
-    }
-
-    /**
-     * A save_post hook wrapper method. It must be used by gateways to add their specific data
-     * to the donation in DB while it's saving.
-     *
-     * @param $donation_id integer
-     * @param $donation WP_Post
-     */
-    public function finalize_log_submission($donation_id, WP_Post $donation) {
-
-        if($donation->post_type != Leyka_Donation_Management::$post_type){
-            return;
-        }
-
-        do_action('leyka_logging_new_donation', $donation_id, $donation);
     }
 
     /**

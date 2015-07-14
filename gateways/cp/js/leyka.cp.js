@@ -5,13 +5,13 @@ jQuery(document).ready(function($){
         // Donation form validation is already passed in the main script (public.js)
 
         var $form = $(this),
+            is_recurrent = $form.find('#leyka_cp-card_recurring').attr('checked'),
             data_array = $form.serializeArray(),
-            data = {};
+            data = {action: 'leyka_ajax_donation_submit'};
 
         for(var i=0; i<data_array.length; i++) {
             data[data_array[i].name] = data_array[i].value;
         }
-        data.action = 'leyka_ajax_donation_submit';
 
         if(data.leyka_payment_method.indexOf('cp') < 0) { // Selected PM don't belong to the CP gateway
             return;
@@ -46,7 +46,14 @@ jQuery(document).ready(function($){
             }
 
             var widget = new cp.CloudPayments(),
-                $errors = $('#leyka-submit-errors');
+                $errors = $('#leyka-submit-errors'),
+                data = {};
+
+            /** @todo Make this a "Month" instead of a "Week" */
+            if(is_recurrent) {
+                data.cloudPayments = {recurrent: {interval: 'Week', period: 1}};
+                console.log('Here:', data);
+            }
 
             widget.charge({
                 publicId: response.public_id,
@@ -54,8 +61,8 @@ jQuery(document).ready(function($){
                 amount: parseFloat(response.amount),
                 currency: response.currency,
                 invoiceId: parseInt(response.donation_id),
-                accountId: response.donor_email /*,
-                data: {key: 'value'}*/
+                accountId: response.donor_email,
+                data: data
             }, function(options){ // success callback
 
                 window.location.href = response.success_page;

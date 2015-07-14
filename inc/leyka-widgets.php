@@ -125,7 +125,7 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 			<label for="<?php echo esc_attr($this->get_field_id('campaign_id'));?>"><?php _e('Campaign ID', 'leyka');?>:</label>
 
             <?php $current_value = $instance['campaign_id'];?>
-            <select id="<?php echo $this->get_field_id('campaign_id');?>" name="<?php echo $this->get_field_name( 'campaign_id');?>">
+            <select id="<?php echo $this->get_field_id('campaign_id');?>" name="<?php echo $this->get_field_name( 'campaign_id');?>" class="widefat">
                 <option value="-" <?php echo $current_value == '-' ? 'selected="selected"' : '';?>>
                     <?php _e('The most recent campaign', 'leyka');?>
                 </option>

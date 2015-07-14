@@ -12,6 +12,8 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         $this->_id = 'chronopay';
         $this->_title = __('Chronopay', 'leyka');
         $this->_docs_link = '//leyka.te-st.ru/docs/chronopay/';
+        $this->_admin_ui_column = 1;
+        $this->_admin_ui_order = 20;
     }
 
     protected function _set_options_defaults() {
@@ -249,13 +251,13 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 $donation_id = Leyka_Donation::add(array(
                     'status' => 'funded',
                     'payment_type' => 'rebill',
-                    'chronopay_customer_id' => $customer_id,
 //                    '' => '',
                 ));
                 $donation->add_gateway_response($_POST);
 
-                $init_recurrent_payment = $this->get_init_recurrent_donation($donation_id);
+                $init_recurrent_payment = $this->get_init_recurrent_donation($customer_id);
 
+                $donation->chronopay_customer_id = $customer_id;
                 $donation->payment_title = $init_recurrent_payment->title;
                 $donation->campaign_id = $init_recurrent_payment->campaign_id;
                 $donation->payment_method_id = $init_recurrent_payment->pm_id;
@@ -292,17 +294,24 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         die();
     }
 
-    public function get_init_recurrent_donation(Leyka_Donation $donation) {
+    public function get_init_recurrent_donation($recurring) {
+
+        if(is_a($recurring, 'Leyka_Donation')) {
+            $recurring = $recurring->chronopay_customer_id;
+        } elseif(empty($recurring)) {
+            return false;
+        }
 
         $init_donation_post = get_posts(array( // Get init recurrent payment with customer_id given
             'posts_per_page' => 1,
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => 'funded',
+//            'post_parent' => 0, /** @todo Until Chronopay recurring posts structure will be refactored */
             'meta_query' => array(
                 'RELATION' => 'AND',
                 array(
                     'key'     => '_chronopay_customer_id',
-                    'value'   => $donation->chronopay_customer_id,
+                    'value'   => $recurring,
                     'compare' => '=',
                 ),
                 array(
@@ -464,7 +473,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     public function add_donation_specific_data($donation_id, array $donation_params) {
 
-        if( !empty($params['chronopay_customer_id']) ) {
+        if( !empty($donation_params['chronopay_customer_id']) ) {
             update_post_meta($donation_id, '_chronopay_customer_id', $donation_params['chronopay_customer_id']);
         }
     }

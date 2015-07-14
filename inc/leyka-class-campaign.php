@@ -277,13 +277,13 @@ class Leyka_Campaign_Management {
 
     public function statistics_meta_box(WP_Post $campaign) { $campaign = new Leyka_Campaign($campaign);?>
 
-        <div>
-            <span><?php _e('Campaign was displayed:', 'leyka');?></span>
-            <span><?php echo $campaign->views_count;?> <?php _e('times', 'leyka');?></span>
+        <div class="stats-block">
+            <span class="stats-label"><?php _e('Views:', 'leyka');?></span>
+            <span class="stats-data"><?php echo $campaign->views_count;?> <?php _e('times', 'leyka');?></span>
         </div>
-        <div>
-            <span><?php _e('Donors attempted to make a donation:', 'leyka');?></span>
-            <span><?php echo $campaign->submits_count;?> <?php _e('times', 'leyka');?></span>
+        <div class="stats-block">
+            <span class="stats-label"><?php _e('Donation attempts:', 'leyka');?></span>
+            <span class="stats-data"><?php echo $campaign->submits_count;?> <?php _e('times', 'leyka');?></span>
         </div>
     <?php
     }
@@ -536,17 +536,17 @@ class Leyka_Campaign {
             case 'id':
             case 'ID': return $this->_id;
             case 'title':
-            case 'name': return $this->_post_object->post_title;
+            case 'name': return $this->_post_object ? $this->_post_object->post_title : '';
             case 'payment_title': return $this->_campaign_meta['payment_title'];
             case 'template':
             case 'campaign_template': return $this->_campaign_meta['campaign_template'];
             case 'campaign_target':
             case 'target': return $this->_campaign_meta['campaign_target'];
-            case 'description': return $this->_post_object->post_content;
+            case 'description': return $this->_post_object ? $this->_post_object->post_content : '';
             case 'excerpt':
             case 'post_excerpt':
-            case 'short_description': return $this->_post_object->post_excerpt;
-            case 'status': return $this->_post_object->post_status;
+            case 'short_description': return $this->_post_object ? $this->_post_object->post_excerpt : '';
+            case 'status': return $this->_post_object ? $this->_post_object->post_status : '';
             case 'permalink':
             case 'url': return get_permalink($this->_id);
 			case 'is_finished':

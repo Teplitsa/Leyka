@@ -7,6 +7,7 @@
  * Form
  **/
 class Leyka_Payment_Form {
+
 	private $_pm_name;
 	private $_pm = array();
 	private $_form_action;
@@ -157,53 +158,66 @@ class Leyka_Payment_Form {
 	}
 	
 	function get_name_field($value = '') {
-		
-		if(!$this->is_field_supported('name'))
-			return '';
-		
-		$ph = __('Your name', 'leyka');
-		$comment = __('We will use this to personalize your donation experience', 'leyka');
-		
+
+		if( !$this->is_field_supported('name') ) {
+            return '';
+        }
+
 		ob_start();
 	?>
-		<label for="leyka_donor_name" class="leyka-screen-reader-text"><?php echo $ph; ?></label>
-		<label class="input req"><input type="text" class="required" name="leyka_donor_name" placeholder="<?php echo esc_attr($ph);?>" id="leyka_donor_name" value="<?php echo $value;?>"></label>
-		<p class="field-comment"><?php echo $comment;?></p>
+		<label for="leyka_donor_name" class="leyka-screen-reader-text"><?php _e('Your name', 'leyka');?></label>
+		<label class="input req"><input type="text" class="required" name="leyka_donor_name" placeholder="<?php _e('Your name', 'leyka');?>" id="leyka_donor_name" value="<?php echo $value;?>"></label>
+		<p class="field-comment"><?php _e('We will use this to personalize your donation experience', 'leyka');?></p>
 		<p id="leyka_donor_name-error" class="field-error"></p>
-        
+
 	<?php
 		$out = ob_get_contents();
 		ob_end_clean();
 		return leyka_field_wrap($out, 'name');		
 	}
-	
-	
+
 	function get_email_field($value = '') {
-		
-		if(!$this->is_field_supported('email'))
+
+		if( !$this->is_field_supported('email') ) {
 			return '';
-		
-		$ph = __('Your email', 'leyka');
-		$comment = __('We will send the donation success notice to this address', 'leyka');
-		
-		ob_start();
-	?>
-		<label for="leyka_donor_email" class="leyka-screen-reader-text"><?php echo $ph; ?></label>
-		<label class="input req"><input type="text" class="required email" name="leyka_donor_email" placeholder="<?php echo esc_attr($ph);?>" id="leyka_donor_email" value="<?php echo $value;?>"></label>
-		<p class="field-comment"><?php echo $comment;?></p>
+        }
+
+		ob_start();?>
+
+		<label for="leyka_donor_email" class="leyka-screen-reader-text"><?php _e('Your email', 'leyka');?></label>
+		<label class="input req"><input type="text" class="required email" name="leyka_donor_email" placeholder="<?php _e('Your email', 'leyka');?>" id="leyka_donor_email" value="<?php echo $value;?>"></label>
+		<p class="field-comment"><?php _e('We will send the donation success notice to this address', 'leyka');?></p>
         <p id="leyka_donor_email-error" class="field-error"></p>
-		
-	<?php
-		$out = ob_get_contents();
+
+	<?php $out = ob_get_contents();
 		ob_end_clean();
 		return leyka_field_wrap($out, 'email');		
 	}
-	
-	
-	function get_agree_field() {
+
+    public function get_recurring_field() {
+
+        if( !$this->is_field_supported('recurring') ) {
+            return '';
+        }
+
+        ob_start();?>
+
+        <label class="checkbox" for="leyka_recurring">
+            <input type="checkbox" name="leyka_recurring" id="leyka_recurring" class="leyka_recurring" value="1">
+            <?php echo 'Регулярное списание'; //leyka_options()->opt('recurring_subscription_text');?>
+        </label>
+        <p class="field-error" id="leyka_recurring-error"></p>
+
+        <?php $out = ob_get_contents();
+        ob_end_clean();
+        return leyka_field_wrap($out, 'recurring');
+    }
+
+	public function get_agree_field() {
 		
-		if( !leyka_options()->opt('argee_to_terms_needed') || !$this->is_field_supported('agree') )
-			return '';
+		if( !leyka_options()->opt('argee_to_terms_needed') || !$this->is_field_supported('agree') ) {
+            return '';
+        }
 
 		$agree_id = esc_attr(uniqid().'-text'); // Label for checkbox
 
@@ -231,22 +245,19 @@ class Leyka_Payment_Form {
 	}
 
 	function get_submit_field() {
-		
-		if(!$this->is_field_supported('submit'))
+
+		if( !$this->is_field_supported('submit') ) {
 			return '';
-		
-		$label = $this->get_submit_label();
-		//disabled="disabled"
-		ob_start();
-	?>
-		<input type="submit" id="leyka_donation_submit" name="leyka_donation_submit" value="<?php echo esc_attr($label);?>" />
-	<?php
-		$out = ob_get_contents();
+        }
+
+		ob_start();?>
+		<input type="submit" id="leyka_donation_submit" name="leyka_donation_submit" value="<?php echo esc_attr($this->get_submit_label());?>" />
+
+    <?php $out = ob_get_contents();
 		ob_end_clean();
 		return leyka_field_wrap($out, 'submit');	
 	}
 
-	
 	/** PM related methods **/
 	function get_pm_id() {
 
@@ -257,13 +268,13 @@ class Leyka_Payment_Form {
 
         return $this->_pm->label ? $this->_pm->label : '';
 	}
-	
+
 	function get_pm_description() {
  
         return $this->_pm->description ?
             apply_filters('leyka_pm_description', $this->_pm->description, $this->_pm_name) : '';
 	}
-	
+
 	function get_supported_currencies() {
 
 		$supported_curr = $this->_pm->currencies;
@@ -278,9 +289,11 @@ class Leyka_Payment_Form {
 		return $curr;
 	}
 
-	function get_current_currency(){
-		if(empty($this->_current_currency))
+	function get_current_currency() {
+
+		if( !$this->_current_currency ) {
 			$this->_current_currency = $this->_pm->default_currency;
+        }
 
 		return $this->_current_currency;
 	}
@@ -290,17 +303,17 @@ class Leyka_Payment_Form {
 	}
 
 	function is_field_supported($field) {
-		return in_array($field, $this->get_supported_global_fields());
+		return in_array($field, array_merge($this->get_supported_global_fields(), $this->_pm->custom_fields));
 	}
 
 	function get_pm_fields() {
-//		global $leyka_pm;
-		
+
 		$res = $this->_pm->custom_fields; // Array of custom fields' HTMLs
 
 		if($res) {
-            foreach($res as $key => $f)
-			    $res[$key] = leyka_field_wrap($f, $key);
+            foreach($res as $key => $field) {
+			    $res[$key] = leyka_field_wrap($field, $key);
+            }
 		}
 
 		return implode('', $res);
@@ -310,15 +323,15 @@ class Leyka_Payment_Form {
 
 		return $this->_pm->submit_label; // ? $this->_pm->submit_label : leyka_options()->opt('donate_submit_text');
 	}
-	
+
 	function get_pm_icons() {
-//		global $leyka_pm;
 
 		$res = $list = array(); // Array of icons urls
-		if($this->_pm->icons)		
-			$res = $this->_pm->icons;
+		if($this->_pm->icons) {
+            $res = $this->_pm->icons;
+        }
 
-        foreach($res as $src){
+        foreach($res as $src) {
             $src = esc_url($src);
             $list[] = "<img src='{$src}' />";
         }
@@ -329,7 +342,7 @@ class Leyka_Payment_Form {
 	/**
 	 * Template elements: tooltps error marks etc
 	 **/
-	
+
 	function question_mark($content, $css = '', $title = '') {
 		
 		return "<div class='question-icon {$css}'
@@ -427,6 +440,13 @@ function leyka_pf_get_email_field($value = '') {
 	global $leyka_current_pm;
 
 	return $leyka_current_pm->get_email_field($value);
+}
+
+function leyka_pf_get_recurring_field() {
+    /** @var Leyka_Payment_Form $leyka_current_pm */
+	global $leyka_current_pm;
+
+	return $leyka_current_pm->get_recurring_field();
 }
 
 function leyka_pf_get_agree_field() {

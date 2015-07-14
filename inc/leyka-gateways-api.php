@@ -109,6 +109,8 @@ abstract class Leyka_Gateway {
 	protected $_title = ''; // A human-readable title of gateway, a "Bank quittances" or "Yandex.money"
     protected $_icon = ''; // A gateway icon URL. Must have 25px on a bigger side
     protected $_docs_link = ''; // A link to gateways user docs page
+    protected $_admin_ui_column = 2; // 1 or 2. A number of the metaboxes columns, to which gateway belogns by default
+    protected $_admin_ui_order = 100; // Default sorting index for gateway metabox in its column. Lower number = higher
     protected $_payment_methods = array(); // Supported PMs array
     protected $_options = array(); // Gateway configs
 
@@ -128,12 +130,14 @@ abstract class Leyka_Gateway {
 
         $this->_set_gateway_pm_list(); // Initialize or restore Gateway's PMs list and all their options
 
+        do_action('leyka_initialize_gateway', $this, $this->_id); // So one could change some of gateway's attributes
+
         // Set a gateway class method to process a service calls from gateway:
         add_action('leyka_service_call-'.$this->_id, array($this, '_handle_service_calls'));
         add_action('leyka_cancel_recurrents-'.$this->_id, array($this, 'cancel_recurrents'));
 
         add_action("leyka_{$this->_id}_save_donation_data", array($this, 'save_donation_specific_data'));
-        add_action("leyka_{$this->_id}_add_donation_specific_data", array($this, 'add_donation_specific_data'));
+        add_action("leyka_{$this->_id}_add_donation_specific_data", array($this, 'add_donation_specific_data'), 10, 2);
 
         add_filter('leyka_get_unknown_donation_field', array($this, 'get_specific_data_value'), 10, 3);
         add_action('leyka_set_unknown_donation_field', array($this, 'set_specific_data_value'), 10, 3);
@@ -170,6 +174,12 @@ abstract class Leyka_Gateway {
             case 'docs_url':
             case 'docs_href':
             case 'docs_link': return $this->_docs_link ? $this->_docs_link : false;
+            case 'admin_column':
+            case 'admin_ui_column': return in_array($this->_admin_ui_column, array(1, 2)) ? $this->_admin_ui_column : 2;
+            case 'admin_order':
+            case 'admin_priority':
+            case 'admin_ui_order':
+            case 'admin_ui_priority': return (int)$this->_admin_ui_order;
             case 'icon': $icon = false;
                 if($this->_icon) {
                     $icon = $this->_icon;
@@ -226,7 +236,7 @@ abstract class Leyka_Gateway {
     // Handler for Gateway's service calls (activate the donations, etc.):
     abstract public function _handle_service_calls($call_type = '');
 
-    public function get_init_recurrent_donation(Leyka_Donation $donation) {
+    public function get_init_recurrent_donation($donation) {
         return false;
     }
 
@@ -390,18 +400,20 @@ abstract class Leyka_Gateway {
     public function display_donation_specific_data_fields($donation = false) {
     }
 
-    /** Filter function for "leyka_get_unknown_donation_field" hook to get gateway specific donation data values. */
+    /** For "leyka_get_unknown_donation_field" filter hook, to get gateway specific donation data values. */
     public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
         return $value;
     }
 
-    /** Action function for "leyka_set_unknown_donation_field" hook to set gateway specific donation data values. */
+    /** For "leyka_set_unknown_donation_field" action hook, to set gateway specific donation data values. */
     public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
     }
 
+    /** To save gateway specific fields when donation editing page is being saved */
     public function save_donation_specific_data(Leyka_Donation $donation) {
     }
 
+    /** Action called when new donation (Leyka_Donation::add()) is being created to add gateway-specific fields. */
     public function add_donation_specific_data($donation_id, array $donation_params) {
     }
 } //class end
@@ -420,6 +432,7 @@ abstract class Leyka_Payment_Method {
     protected $_label = '';
     protected $_label_backend = '';
     protected $_description = '';
+    protected $_global_fields = array();
     protected $_support_global_fields = true;
     protected $_custom_fields = array();
     protected $_icons = array();
@@ -475,7 +488,8 @@ abstract class Leyka_Payment_Method {
             case 'desc':
             case 'description': $param = html_entity_decode($this->_description); break;
             case 'has_global_fields': $param = $this->_support_global_fields; break;
-            case 'custom_fields': $param = $this->_custom_fields; break;
+//            case 'global_fields': $param = $this->_global_fields ? $this->_global_fields; break;
+            case 'custom_fields': $param = $this->_custom_fields ? $this->_custom_fields : array(); break;
             case 'icons': $param = $this->_icons; break;
             case 'submit_label': $param = $this->_submit_label; break;
             case 'currencies': $param = $this->_supported_currencies; break;

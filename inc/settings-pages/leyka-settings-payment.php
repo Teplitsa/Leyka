@@ -1,5 +1,7 @@
 <?php if( !defined('WPINC') ) die; // If this file is called directly, abort
 
+$current_screen_id = get_current_screen()->id;
+
 function leyka_add_gateway_metabox($post, $args) {
 
     // $post is always null
@@ -11,12 +13,12 @@ function leyka_add_gateway_metabox($post, $args) {
 
     <div>
 
-    <?php foreach($gateway->get_payment_methods() as $pm) {?>
-        <div>
-            <input type="checkbox" name="leyka_pm_available[]" value="<?php echo $pm->full_id;?>" class="pm-active" id="<?php echo $pm->full_id;?>" data-pm-label="<?php echo $pm->title_backend;?>" data-pm-label-backend="<?php echo $pm->label_backend;?>" <?php echo in_array($pm->full_id, $pm_active) ? 'checked="checked"' : '';?>>
-            <label for="<?php echo $pm->full_id;?>"><?php echo $pm->title_backend;?></label>
-        </div>
-    <?php }?>
+        <?php foreach($gateway->get_payment_methods() as $pm) {?>
+            <div>
+                <input type="checkbox" name="leyka_pm_available[]" value="<?php echo $pm->full_id;?>" class="pm-active" id="<?php echo $pm->full_id;?>" data-pm-label="<?php echo $pm->title_backend;?>" data-pm-label-backend="<?php echo $pm->label_backend;?>" <?php echo in_array($pm->full_id, $pm_active) ? 'checked="checked"' : '';?>>
+                <label for="<?php echo $pm->full_id;?>"><?php echo $pm->title_backend;?></label>
+            </div>
+        <?php }?>
 
     </div>
 <?php
@@ -29,49 +31,52 @@ function leyka_gateway_admin_icon_markup($gateway) {
         "<span class='dashicons dashicons-admin-page'></span>";
 }
 
-$count = 0;
-foreach(leyka_get_gateways() as $gateway) { //add metaboxes
+$gateways_by_columns = array('side' => array(), 'normal' => array());
+foreach(leyka_get_gateways() as $gateway) { // Place gateways metaboxes in their respective columns
 
-    $count++;
-    $count = $count > 3 ? 1 : $count;
+    $gateways_by_columns[$gateway->admin_ui_column == 1 ? 'side' : 'normal'][$gateway->admin_ui_order][] = $gateway;
+}
 
-    $pm_active = leyka_options()->opt('pm_available');
-    $active = '';
+foreach($gateways_by_columns as $admin_ui_column => $gateways) { // Add gateways metaboxes
 
-    if($pm_active) {
-        foreach($pm_active as $pm_id) {
+    ksort($gateways); // Sort by gateways priority
 
-            $test = explode('-', $pm_id);
-            if(trim($test[0]) == $gateway->id) {
+    foreach($gateways as $priority => $gateways_list) {
 
-                $active = " <span class='active'>".__('active', 'leyka')."</span>";
-                break;
+        foreach($gateways_list as $gateway) {
+
+            $pm_active = leyka_options()->opt('pm_available');
+            $active = '';
+
+            if($pm_active) {
+                foreach($pm_active as $pm_id) {
+
+                    $test = explode('-', $pm_id);
+                    if(trim($test[0]) == $gateway->id) {
+
+                        $active = " <span class='active'>".__('active', 'leyka')."</span>";
+                        break;
+                    }
+                }
             }
+
+            add_meta_box(
+                'leyka_payment_settings_gateway_'.$gateway->id,
+                leyka_gateway_admin_icon_markup($gateway).$gateway->title.$active,
+                'leyka_add_gateway_metabox',
+                $current_screen_id,
+                $admin_ui_column, // This is a column distribution only by default
+                'high',
+                array('gateway' => $gateway,)
+            );
         }
     }
-
-    add_meta_box(
-        'leyka_payment_settings_gateway_'.$gateway->id,
-        leyka_gateway_admin_icon_markup($gateway).$gateway->title.$active,
-        'leyka_add_gateway_metabox',
-        'leyka_settings_payment_'.$count,
-        'normal',
-        'high',
-        array('gateway' => $gateway,)
-    );
 }?>
 
-<div class="metabox-holder" id="leyka-pm-selectors">
-    <div class="postbox-container" id="postbox-container-1">
-        <?php do_meta_boxes('leyka_settings_payment_1', 'normal', null);?>
-    </div>
-    
-    <div class="postbox-container" id="postbox-container-2">
-        <?php do_meta_boxes('leyka_settings_payment_2', 'normal', null);?>
-    </div>
-    
-     <div class="postbox-container" id="postbox-container-3">
-        <?php do_meta_boxes('leyka_settings_payment_3', 'normal', null);?>
+<div id="post-body" class="metabox-holder columns-3">
+    <div id="leyka-pm-selectors">
+        <div id="postbox-container-1" class="postbox-container"><?php do_meta_boxes('', 'side', null);?></div>
+        <div id="postbox-container-2" class="postbox-container"><?php do_meta_boxes('', 'normal', null);?></div>
     </div>
 </div>
 
