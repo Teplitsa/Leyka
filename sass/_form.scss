@@ -123,14 +123,21 @@
 #leyka-payment-form  {
 
 	.leyka-field {
-		margin: 20px 0;
+		margin: 12px 0 0;
 	}
-
+	
+	.leyka-user-data {
+		margin: 35px 0 27px;
+	}
+	
 	.leyka-field.submit,
 	.leyka-field.agree {
 		font-size: 12px;
 		margin: 10px 0;
+		padding-left: 5px;
 	}
+	
+	
 
 	.leyka-field.amount {
 		text-align: right;
@@ -161,6 +168,27 @@
 		}
 	}
 	
+	.leyka-field.recurring {
+		font-size: 11px;
+		font-weight: bold;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		line-height: 28px;
+		vertical-align: middle;
+		
+		span {
+			display: inline-block;
+			padding: 5px;
+			background: $color-scale-bg ;
+			line-height: 10px;
+			border-radius: 6px;
+			margin-right: 8px;
+		}
+				
+		input {
+			margin: 0
+		}
+	}
 	.amount.fixed {		
 		
 		.amount-variants-container, label {
@@ -243,7 +271,7 @@
 	
 	.field-comment {
 		color: $color-comment-text;
-		padding-left: 2px; 
+		padding-left: 5px; 
 		font-size: 0.785714em;
 	}
 	
@@ -323,10 +351,7 @@
 
 /* Toggles */
 #leyka-payment-form.leyka-tpl-toggles {
-	.leyka-user-data {
-		margin: 35px 0;
-	}
-	
+		
 	.leyka-payment-option {
 		margin: 5px 0;
 	}

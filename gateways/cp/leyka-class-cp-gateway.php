@@ -48,7 +48,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
                 'value' => '',
                 'default' => 1,
-                'title' => __('Testing mode', 'leyka'),
+                'title' => __('Payments testing mode', 'leyka'),
                 'description' => __('Check if CloudPayments shop account is in testing mode.', 'leyka'),
                 'required' => false,
                 'placeholder' => '',
@@ -343,7 +343,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         );
 
         if( !empty($vars['reason']) ) {
-            $vars_final[__('Donation failure reason', 'leyka')] = $vars['reason'];
+            $vars_final[__('Donation failure reason:', 'leyka')] = $vars['reason'];
         }
         if( !empty($vars['SubscriptionId']) ) {
             $vars_final[__('Recurrent subscription ID:', 'leyka')] = $this->_get_value_if_any($vars, 'SubscriptionId');
@@ -453,7 +453,7 @@ class Leyka_CP_Card extends Leyka_Payment_Method {
         ));
 
         $this->_custom_fields = array(
-            'recurring' => '<label><input type="checkbox" id="leyka_'.$this->full_id.'_recurring" name="leyka_recurring" value="1"> '.__('Recurring donations', 'leyka').'</label>'
+            'recurring' => '<label class="checkbox"><span><input type="checkbox" id="leyka_'.$this->full_id.'_recurring" name="leyka_recurring" value="1"></span> '.__('Recurring donations', 'leyka').'</label>'
         );
 
         $this->_supported_currencies[] = 'rur';

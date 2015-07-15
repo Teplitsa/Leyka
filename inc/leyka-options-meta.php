@@ -430,7 +430,7 @@ $options_meta = apply_filters('leyka_core_options_meta', array(
     ),
     'email_thanks_text' => array(
         'type' => 'html', // Maybe, rich_html
-        'default' => __('Hello, #DONOR_NAME#!<br /><br />You have chosed to make a #SUM# donation to the following charity campaign: #CAMPAIGN_NAME#, using #PAYMENT_METHOD_NAME#.<br /><br />Sincerely thank you, #SITE_NAME#', 'leyka'),
+        'default' => __('Hello, #DONOR_NAME#!<br><br>You have chosed to make a #SUM# donation to the following charity campaign: #CAMPAIGN_NAME#, using #PAYMENT_METHOD_NAME#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
         'title' => __('A text of after-donation notice sent to a donor', 'leyka'),
         'description' => __('Enter the text of the notification email that would be sended to each donor right after his donation is made. It may include the following special entries:', 'leyka').$email_placeholders,
         'required' => 1,
@@ -452,7 +452,7 @@ $options_meta = apply_filters('leyka_core_options_meta', array(
     ),
     'email_recurrents_thanks_text' => array(
         'type' => 'html', // Maybe, rich_html
-        'default' => __('Hello, #DONOR_NAME#!<br /><br />We just take a #SUM# as your regular donation to the following charity campaign: #CAMPAIGN_NAME#, using #PAYMENT_METHOD_NAME#.<br /><br />If you, regretfully, wish to stop the future regular donations to this campaign, please <a href="mailto:#SITE_EMAIL#">write us a letter about it</a>.<br /><br />Sincerely thank you, #SITE_NAME#', 'leyka'),
+        'default' => __('Hello, #DONOR_NAME#!<br><br>We just take a #SUM# as your regular donation to the following charity campaign: #CAMPAIGN_NAME#, using #PAYMENT_METHOD_NAME#.<br><br>If you, regretfully, wish to stop the future regular donations to this campaign, please <a href="mailto:#SITE_EMAIL#">write us a letter about it</a>.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
         'title' => __('A text of after-rebill donation notice sent to a donor', 'leyka'),
         'description' => __('Enter the text of the notification email that would be sended to each donor on each rebill donation. It may include the following special entries:', 'leyka').$email_placeholders,
         'required' => 1,
@@ -507,7 +507,7 @@ $options_meta = apply_filters('leyka_core_options_meta', array(
     ),
     'email_notification_text' => array(
         'type' => 'html',
-        'default' => __('Hello!<br /><br />A new donation has been made on a #SITE_NAME#:<br /><ul><li>Campaign: #CAMPAIGN_NAME#.</li><li>Amount: #SUM#.</li><li>Payment method: #PAYMENT_METHOD_NAME#.</li><li>Date: #DATE#</li></ul>', 'leyka'),
+        'default' => __('Hello!<br><br>A new donation has been made on a #SITE_NAME#:<br><ul><li>Campaign: #CAMPAIGN_NAME#.</li><li>Donation purpose: #PURPOSE#</li><li>Amount: #SUM#.</li><li>Payment method: #PAYMENT_METHOD_NAME#.</li><li>Date: #DATE#</li></ul><br><br>Your Leyka', 'leyka'),
         'title' => __('A text of after-donation notification sended to a website personnel', 'leyka'),
         'description' => __("Enter the text of the notification email that would be sended to each email stated before right after donation is made. It may include the following special entries:", 'leyka').$email_placeholders,
         'required' => 0, // 1 if field is required, 0 otherwise
