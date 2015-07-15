@@ -163,6 +163,8 @@
 #leyka-pm-selectors .dashicons {
   color: #aaa;
   margin-right: 8px; }
+#leyka-pm-selectors .postbox {
+  margin-bottom: 10px; }
 
 #payment-settings-area {
   padding-top: 36px; }
@@ -185,8 +187,8 @@
     @media screen and (min-width: 900px) {
       #payment-settings-area .pm-active-panel {
         float: left;
-        width: 60%;
-        max-width: 640px;
+        width: 65%;
+        max-width: 712px;
         min-height: 600px; } }
     #payment-settings-area .pm-active-panel .panel-title {
       padding: 0 15px;
@@ -213,7 +215,7 @@
     @media screen and (min-width: 900px) {
       #payment-settings-area .pm-order-panel {
         float: left;
-        width: 39%;
+        width: 34%;
         max-width: 400px;
         margin-left: -1px; } }
     #payment-settings-area .pm-order-panel .panel-content {
@@ -356,6 +358,13 @@
   #d-scale-demo .d-scale-scale {
     max-width: 420px;
     height: 10px; }
+
+#leyka_campaign_statistics .stats-block {
+  margin-bottom: 3px; }
+#leyka_campaign_statistics .stats-block:first-child {
+  margin-top: 10px; }
+#leyka_campaign_statistics .stats-data {
+  font-weight: bold; }
 
 /* donations metabox */
 #donations-data-table_wrapper {

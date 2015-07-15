@@ -87,6 +87,19 @@
 	}
 }
 
+#leyka_campaign_statistics {
+	.stats-block {
+		margin-bottom: 3px;
+	}
+	.stats-block:first-child {
+		margin-top: 10px;
+	}
+	
+	.stats-data {
+		font-weight: bold;
+	}
+}
+
 /* donations metabox */
 #donations-data-table_wrapper {
 	margin-top: 20px;

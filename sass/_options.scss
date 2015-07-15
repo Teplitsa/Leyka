@@ -139,6 +139,10 @@
 		color: $color-grey-dark;
 		margin-right: 8px;
 	}
+	
+	.postbox {
+		margin-bottom: 10px;
+	}
 }
 
 #payment-settings-area {
@@ -164,8 +168,8 @@
 		
 		@media screen and (min-width: 900px) {
 			float: left;
-			width: 60%;
-			max-width: 640px;
+			width: 65%;
+			max-width: 712px;
 			min-height: 600px;
 		}
 		
@@ -207,7 +211,7 @@
 		
 		@media screen and (min-width: 900px) {
 			float: left;
-			width: 39%;
+			width: 34%;
 			max-width: 400px;
 			margin-left: -1px;
 		}
