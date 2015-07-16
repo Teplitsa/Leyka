@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Leyka Plugin\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leyka\n"
 "POT-Creation-Date: 2014-09-11 08:25:09+00:00\n"
-"POT-Revision-Date: Wed Jul 15 2015 17:23:00 GMT+0300\n"
+"POT-Revision-Date: Thu Jul 16 2015 16:15:32 GMT+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2287,7 +2287,7 @@ msgid "Enter an official position of a person representing the NGO."
 msgstr ""
 
 #: ../inc/leyka-options-meta.php:74
-msgid "For ex., director"
+msgid "For ex., Director"
 msgstr ""
 
 #: ../inc/leyka-options-meta.php:82
