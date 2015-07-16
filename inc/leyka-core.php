@@ -461,7 +461,7 @@ class Leyka {
         );
 
         wp_enqueue_script(
-            $this->_plugin_slug.'-plugin-script',
+            $this->_plugin_slug.'-public',
             LEYKA_PLUGIN_BASE_URL.'js/public.js', array('jquery', $this->_plugin_slug.'-modal'),
             LEYKA_VERSION,
             true
@@ -480,7 +480,7 @@ class Leyka {
 //            'email_regexp' => '',
         ));
 
-        wp_localize_script($this->_plugin_slug.'-plugin-script', 'leyka', $js_data);
+        wp_localize_script($this->_plugin_slug.'-public', 'leyka', $js_data);
     }
 
     /**
@@ -719,8 +719,9 @@ class Leyka {
             $this->add_payment_form_error($error);
         }
 
-        if($this->payment_form_has_errors())
+        if($this->payment_form_has_errors()) {
             return;
+        }
 
         $donation_id = $this->log_submission();
 
@@ -736,47 +737,36 @@ class Leyka {
 
         $this->_payment_url = apply_filters('leyka_submission_redirect_url-'.$pm[0], $this->_payment_url, $pm[1]);
 
-        if($this->payment_form_has_errors()) // No logging needed if submit attempt have failed
+        if($this->payment_form_has_errors()) { // No logging needed if submit attempt failed
             wp_delete_post($donation_id, true);
+        }
     }
 
     /** Save a base submission info and return new donation ID, so gateway can add it's specific data to the logs. */
     public function log_submission() {
 
-        add_action('save_post', array($this, 'finalize_log_submission'), 2, 2);
+        if(empty($_POST['leyka_campaign_id']) || (int)$_POST['leyka_campaign_id'] <= 0) {
+            return false;
+        }
 
-        $campaign = get_post((int)$_POST['leyka_campaign_id']);
-        $purpose_text = get_post_meta($campaign->ID, 'payment_title', true);
-        $purpose_text = empty($purpose_text) && $campaign->post_title ? $campaign->post_title : $purpose_text;
-
+        $campaign = new Leyka_Campaign((int)$_POST['leyka_campaign_id']);
         $pm_data = leyka_pf_get_payment_method_value();
+
         $donation_id = Leyka_Donation::add(apply_filters('leyka_new_donation_data', array(
-            'purpose_text' => $purpose_text,
+            'purpose_text' => $campaign->payment_title,
+            'gateway_id' => $pm_data['gateway_id'],
         )));
+
+        $campaign->increase_submits_counter();
 
         if(is_wp_error($donation_id)) {
             return false;
         } else {
 
-            do_action('leyka_log_donation-'.$pm_data['gateway_id'], $donation_id);
+            do_action('leyka_log_donation-' . $pm_data['gateway_id'], $donation_id);
+
             return $donation_id;
         }
-    }
-
-    /**
-     * A save_post hook wrapper method. It must be used by gateways to add their specific data
-     * to the donation in DB while it's saving.
-     *
-     * @param $donation_id integer
-     * @param $donation WP_Post
-     */
-    public function finalize_log_submission($donation_id, WP_Post $donation) {
-
-        if($donation->post_type != Leyka_Donation_Management::$post_type){
-            return;
-        }
-
-        do_action('leyka_logging_new_donation', $donation_id, $donation);
     }
 
     /**

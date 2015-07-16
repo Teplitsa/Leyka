@@ -5,7 +5,7 @@
  **/
 
 class Leyka_Campaign_Management {
-		
+
 	private static $_instance = null;
 
 	public static $post_type = 'leyka_campaign';
@@ -19,15 +19,15 @@ class Leyka_Campaign_Management {
 
         add_action('restrict_manage_posts', array($this, 'manage_filters'));
         add_action('pre_get_posts', array($this, 'do_filtering'));
-		
+
 		add_filter('post_row_actions', array($this, 'row_actions'), 10, 2);
 	}
 	
 	public static function get_instance() {
 
-		// If the single instance hasn't been set, set it now.
-		if(self::$_instance === null)
+		if(self::$_instance === null) {
 			self::$_instance = new self;
+        }
 
 		return self::$_instance;
 	}
@@ -172,6 +172,11 @@ class Leyka_Campaign_Management {
                 self::$post_type.'_donations', __('Donations history', 'leyka'),
                 array($this, 'donations_meta_box'), self::$post_type, 'normal', 'high'
             );
+
+            add_meta_box(
+                self::$post_type.'_statistics', __('Campaign statistics', 'leyka'),
+                array($this, 'statistics_meta_box'), self::$post_type, 'side', 'low'
+            );
         }
 	}
 
@@ -180,8 +185,9 @@ class Leyka_Campaign_Management {
 		$campaign = new Leyka_Campaign($post);
 
 		$cur_template = $campaign->template;
-		if(empty($cur_template))
-			$cur_template = 'default';?>
+		if(empty($cur_template)) {
+            $cur_template = 'default';
+        }?>
 
         <fieldset id="payment-title" class="metabox-field campaign-field campaign-purpose">
             <label for="payment_title">
@@ -240,9 +246,8 @@ class Leyka_Campaign_Management {
 		<fieldset id="d-scale-demo" class="metabox-field campaign-field campaign-target-scale">
 		<?php if($campaign->target > 0) {
 
-			$percentage = round(($collected/$campaign->target)*100);
-			if($percentage > 100)
-				$percentage = 100;?>
+			$percentage = round(100*$collected/$campaign->target);
+            $percentage = $percentage > 100 ? 100 : $percentage;?>
 
 			<div class="d-scale-scale">
 				<div class="target">
@@ -254,22 +259,34 @@ class Leyka_Campaign_Management {
 			<p>
 				<?php printf(__('Reached at: %s', 'leyka'), '<b>'.$campaign->date_target_reached.'</b>');?>
 			</p>            
-			<?php } ?>
-			
+			<?php }?>
+
 		<?php }?>
 		</fieldset>
-		
-		
+
         <?php $curr_page = get_current_screen();
         if($curr_page->action != 'add') {?>
 
         <fieldset id="campaign-finished" class="metabox-field campaign-field campaign-finished">
             <label for="is-finished">
-                <input type="checkbox" id="is-finished" name="is_finished" value="1" <?php echo $campaign->is_finished ? 'checked' : '';?> /> <?php _e('Campaign is finished, donations collecting stopped', 'leyka');?>
+                <input type="checkbox" id="is-finished" name="is_finished" value="1" <?php echo $campaign->is_finished ? 'checked' : '';?> /> <?php _e('Campaign is finished, donations collection is stopped', 'leyka');?>
             </label>
         </fieldset>
 	<?php }
-	}
+    }
+
+    public function statistics_meta_box(WP_Post $campaign) { $campaign = new Leyka_Campaign($campaign);?>
+
+        <div class="stats-block">
+            <span class="stats-label"><?php _e('Views:', 'leyka');?></span>
+            <span class="stats-data"><?php echo $campaign->views_count;?> <?php _e('times', 'leyka');?></span>
+        </div>
+        <div class="stats-block">
+            <span class="stats-label"><?php _e('Donation attempts:', 'leyka');?></span>
+            <span class="stats-data"><?php echo $campaign->submits_count;?> <?php _e('times', 'leyka');?></span>
+        </div>
+    <?php
+    }
 
     public function annotation_meta_box(WP_Post $campaign) {?>
 
@@ -329,9 +346,7 @@ class Leyka_Campaign_Management {
     <?php
     }
 
-    public function embedding_meta_box(WP_Post $campaign) {
-
-		$iframe = self::get_card_embed_code($campaign->ID);?>
+    public function embedding_meta_box(WP_Post $campaign) {?>
 
 <!--        <label><input type="radio" name="embed-type" value="donation_form" checked="checked"> --><?php //_e('Donation form', 'leyka');?><!--</label>-->
 <!--        <label><input type="radio" name="embed-type" value="campaign_card" checked="checked"> --><?php //_e('Campaign card', 'leyka');?><!--</label>-->
@@ -352,28 +367,26 @@ class Leyka_Campaign_Management {
 			
 			<div id="embed-campaign_card" class="settings-field">
 				<label for="campaign-embed-code"><?php _e("To embed a campaign card in some other web page, insert the following code in page HTML:", 'leyka');?></label>
-				<textarea class="embed-code" id="campaign-embed-code" class="campaign-embed-code"><?php echo $iframe; ?></textarea>				
+				<textarea class="embed-code" id="campaign-embed-code" class="campaign-embed-code"><?php echo self::get_card_embed_code($campaign->ID, true); ?></textarea>
 			</div>
 			
 		</div>
 		
 		<div class="leyka-embed-preview">
 			<h4><?php _e('Preview', 'leyka');?></h4>
-			<?php echo $iframe; ?>
+			<?php echo self::get_card_embed_code($campaign->ID, false); ?>
 		</div>
 		
 	</div>
     <?php }
 
-	static function get_card_embed_code($campaign_id, $w = 300, $h = 510){
+	static function get_card_embed_code($campaign_id, $increase_counters = false, $w = 300, $h = 510){
 
 		$link = get_permalink($campaign_id);
-        $link .= stristr($link, '?') !== false ? '&' : '?';
+        $link .= (stristr($link, '?') !== false ? '&' : '?').'embed=campaign_card';
+        $link .= '&increase_counters='.(int)!!$increase_counters;
 
-		$w = $w <= 0 ? 300 : (int)$w;
-		$h = $h <= 0 ? 510 : (int)$h;
-
-		return '<iframe width="'.$w.'" height="'.$h.'" src="'.$link.'embed=campaign_card"></iframe>';
+		return '<iframe width="'.(int)$w.'" height="'.(int)$h.'" src="'.$link.'"></iframe>';
 	}
 	
 	public function save_data($campaign_id, WP_Post $campaign) {
@@ -502,7 +515,9 @@ class Leyka_Campaign {
                 'is_finished' => $meta['is_finished'] ? $meta['is_finished'][0] > 0 : 0,
                 'target_state' => $meta['target_state'][0],
                 'date_target_reached' => empty($meta['date_target_reached']) ? 0 : $meta['date_target_reached'][0],
-//                '' => ''
+                'count_views' => empty($meta['count_views']) ? 0 : $meta['count_views'][0],
+                'count_submits' => empty($meta['count_submits']) ? 0 : $meta['count_submits'][0],
+//                '' => '',
             );
         }
 	}
@@ -521,17 +536,17 @@ class Leyka_Campaign {
             case 'id':
             case 'ID': return $this->_id;
             case 'title':
-            case 'name': return $this->_post_object->post_title;
+            case 'name': return $this->_post_object ? $this->_post_object->post_title : '';
             case 'payment_title': return $this->_campaign_meta['payment_title'];
             case 'template':
             case 'campaign_template': return $this->_campaign_meta['campaign_template'];
             case 'campaign_target':
             case 'target': return $this->_campaign_meta['campaign_target'];
-            case 'description': return $this->_post_object->post_content;
+            case 'description': return $this->_post_object ? $this->_post_object->post_content : '';
             case 'excerpt':
             case 'post_excerpt':
-            case 'short_description': return $this->_post_object->post_excerpt;
-            case 'status': return $this->_post_object->post_status;
+            case 'short_description': return $this->_post_object ? $this->_post_object->post_excerpt : '';
+            case 'status': return $this->_post_object ? $this->_post_object->post_status : '';
             case 'permalink':
             case 'url': return get_permalink($this->_id);
 			case 'is_finished':
@@ -547,7 +562,14 @@ class Leyka_Campaign {
             case 'date_target_reached':
                 $date = $this->_campaign_meta['date_target_reached'];
                 return $date ? date(get_option('date_format'), $date) : 0;
-//            case '': return ''; break;
+            case 'views':
+            case 'count_views':
+            case 'views_count': return $this->_campaign_meta['count_views'];
+            case 'submits':
+            case 'count_submits':
+            case 'submits_count': return $this->_campaign_meta['count_submits'];
+            case '': return '';
+//            case '': return '';
             default:
                 return apply_filters('leyka_get_unknown_campaign_field', null, $field, $this);
         }
@@ -584,8 +606,9 @@ class Leyka_Campaign {
     public static function get_campaign_collected_amount($campaign_id) {
 
         $campaign_id = (int)$campaign_id;
-        if($campaign_id <= 0)
+        if($campaign_id <= 0) {
             return false;
+        }
 
         $donations = get_posts(array(
             'post_type' => Leyka_Donation_Management::$post_type,
@@ -616,15 +639,18 @@ class Leyka_Campaign {
         $meta = array();
 
         if($target_state != $this->target_state) {
+
             $meta['target_state'] = $target_state;
 
-            if($target_state == 'is_reached')
+            if($target_state == 'is_reached') {
                 $meta['date_target_reached'] = time();
+            }
 
-        } elseif($target_state == 'is_reached' && !$this->date_target_reached)
+        } elseif($target_state == 'is_reached' && !$this->date_target_reached) {
             $meta['date_target_reached'] = time();
-        elseif($target_state != 'is_reached' && $this->date_target_reached)
+        } elseif($target_state != 'is_reached' && $this->date_target_reached) {
             $meta['date_target_reached'] = 0;
+        }
 
         foreach($meta as $key => $value) {
             update_post_meta($this->_id, $key, $value);
@@ -635,30 +661,47 @@ class Leyka_Campaign {
 
         $labels = leyka()->get_campaign_target_states();
 
-        if( !$state )
-		    return $labels;        
-        else
-		    return !empty($labels[$state]) ? $labels[$state] : false;
+        if( !$state ) {
+            return $labels;
+        } else {
+            return !empty($labels[$state]) ? $labels[$state] : false;
+        }
 	}
+
+    public function increase_views_counter() {
+
+        $this->_campaign_meta['count_views']++;
+        update_post_meta($this->_id, 'count_views', $this->_campaign_meta['count_views']);
+    }
+
+    public function increase_submits_counter() {
+
+        $this->_campaign_meta['count_submits']++;
+        update_post_meta($this->_id, 'count_submits', $this->_campaign_meta['count_submits']);
+    }
 	
 	/** CRUD and alike */
 	public function save() {
 
 		$meta = array();
 
-		if( !empty($_REQUEST['campaign_template']) && $this->template != $_REQUEST['campaign_template'] )
+		if( !empty($_REQUEST['campaign_template']) && $this->template != $_REQUEST['campaign_template'] ) {
 			$meta['campaign_template'] = trim($_REQUEST['campaign_template']);
+        }
 
-        if( !empty($_REQUEST['payment_title']) && $this->payment_title != $_REQUEST['payment_title'] )
+        if( !empty($_REQUEST['payment_title']) && $this->payment_title != $_REQUEST['payment_title'] ) {
 			$meta['payment_title'] = esc_attr(trim($_REQUEST['payment_title']));
+        }
 
         $_REQUEST['is_finished'] = !empty($_REQUEST['is_finished']) ? 1 : 0;
-        if($_REQUEST['is_finished'] != $this->is_finished)
+        if($_REQUEST['is_finished'] != $this->is_finished) {
             $meta['is_finished'] = $_REQUEST['is_finished'];
+        }
 
         $_REQUEST['ignore_global_template'] = !empty($_REQUEST['ignore_global_template']) ? 1 : 0;
-        if($_REQUEST['ignore_global_template'] != $this->ignore_global_template_settings)
+        if($_REQUEST['ignore_global_template'] != $this->ignore_global_template_settings) {
             $meta['ignore_global_template'] = $_REQUEST['ignore_global_template'];
+        }
 
 		if(isset($_REQUEST['campaign_target']) && $_REQUEST['campaign_target'] != $this->target) {
 
@@ -674,48 +717,4 @@ class Leyka_Campaign {
 			update_post_meta($this->_id, $key, $value);
 		}
 	}
-
-    /** @todo Maybe, this method is not needed. Will try to remove it. */
-	public function get_default_meta() {
-		return array(
-			'campaign_target' => 0,
-            'payment_title' => '',
-			'campaign_template' => 'default'
-		);
-	}
-} // class end
-
-function leyka_get_campaigns_list() {
-
-    if(empty($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'leyka_get_campaigns_list_nonce'))
-        die(json_encode(array()));
-
-    $_REQUEST['term'] = empty($_REQUEST['term']) ? '' : trim($_REQUEST['term']);
-
-    $campaigns = get_posts(array(
-        'post_type' => Leyka_Campaign_Management::$post_type,
-        'post_status' => 'publish',
-        'meta_query' => array(array(
-            'key' => 'payment_title', 'value' => $_REQUEST['term'], 'compare' => 'LIKE', 'type' => 'CHAR',
-        )),
-    ));
-
-    if( !$campaigns)
-        $campaigns = get_posts(array(
-            'post_type' => Leyka_Campaign_Management::$post_type,
-            'post_status' => 'publish',
-            's' => empty($_REQUEST['term']) ? '' : trim($_REQUEST['term'])
-        ));
-
-    foreach($campaigns as $index => $campaign) {
-        $campaigns[$index] = array(
-            'value' => $campaign->ID,
-            'label' => $campaign->post_title,
-            'payment_title' => get_post_meta($campaign->ID, 'payment_title', true)
-        );
-    }
-
-    die(json_encode($campaigns));
 }
-add_action('wp_ajax_leyka_get_campaigns_list', 'leyka_get_campaigns_list');
-add_action('wp_ajax_nopriv_leyka_get_campaigns_list', 'leyka_get_campaigns_list');

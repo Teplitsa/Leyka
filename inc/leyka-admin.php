@@ -48,15 +48,12 @@ class Leyka_Admin_Setup {
     }
 
     // A little function to support the full abilities of the metaboxes on any plugin's page:
-    public function leyka_metaboxes_full_support($current_stage = false) {
-
-        if($current_stage && $current_stage != 'payment')
-            return;?>
+    public function leyka_metaboxes_full_support($current_stage = false) {?>
 
         <!-- Metaboxes reordering and folding support -->
         <form style="display:none" method="get" action="#">
-            <?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false ); ?>
-            <?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false ); ?>
+            <?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false); ?>
+            <?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false); ?>
         </form>
     <?php }
 
@@ -145,7 +142,7 @@ class Leyka_Admin_Setup {
 	}
 
 	/** Displaying dashboard **/
-	public function dashboard_screen(){
+	public function dashboard_screen() {
 
 		if( !current_user_can('leyka_manage_donations') ) {
             wp_die(__('Sorry, but you do not have permissions to access this page.', 'leyka'));
@@ -163,7 +160,7 @@ class Leyka_Admin_Setup {
 
             <div class="metabox-holder" id="leyka-widgets">
                 <div class="postbox-container" id="postbox-container-1">
-                    <?php do_meta_boxes('toplevel_page_leyka', 'normal', 'leyka_status');?>
+                    <?php do_meta_boxes('toplevel_page_leyka', 'normal', null);?>
                 </div>
                 <div class="postbox-container" id="postbox-container-2">
                     <?php $this->dashboard_sidebar_screen();?>
@@ -359,28 +356,28 @@ class Leyka_Admin_Setup {
 		<?php
 		}
 	}
-	
+
 	public function dashboard_sidebar_screen() {?>
 
 		<div id="leyka-card">
-		<h2><i></i><?php _e('Leyka', 'leyka');?></h2>
-		<p><?php _e('Leyka is a simple donations management system', 'leyka');?></p>
-		<p><?php _e('Developed by <a href="http://te-st.ru/" target="_blank">Teplitsa of social technologies</a>', 'leyka');?></p>
-		<p class="te-st"><img src="http://leyka.te-st.ru/wp-content/uploads/assets/tst-logo.svg" onerror="this.onerror=null;this.src='http://leyka.te-st.ru/wp-content/uploads/assets/tst-logo.png'"></p>
-		<ul class="leyka-ref-links">
-			<li><a href="https://leyka.te-st.ru" target='_blank'><?php _e('Plugin website', 'leyka');?></a></li>
-			<li><a href="https://leyka.te-st.ru/instruction/" target='_blank'><?php _e('Documentation', 'leyka');?></a></li>
-			<li><a href="<?php echo admin_url('admin.php?page=leyka_feedback');?>"><?php _e('Ask a question', 'leyka');?></a></li>
-			<li><a href="https://github.com/Teplitsa/Leyka/issues/new" target='_blank'><?php _e('Create issue at GitHub', 'leyka');?></a></li>
-		</ul>
+            <h2><i></i><?php _e('Leyka', 'leyka');?></h2>
+            <p><?php _e('Leyka is a simple donations management system', 'leyka');?></p>
+            <p>
+                <?php _e('Developed by <a href="http://te-st.ru/" target="_blank">Teplitsa of social technologies</a>', 'leyka');?>
+            </p>
+            <p class="te-st">
+                <img src="http://leyka.te-st.ru/wp-content/uploads/assets/tst-logo.svg" onerror="this.onerror=null;this.src='http://leyka.te-st.ru/wp-content/uploads/assets/tst-logo.png'">
+            </p>
+            <ul class="leyka-ref-links">
+                <li><a href="https://leyka.te-st.ru" target='_blank'><?php _e('Plugin website', 'leyka');?></a></li>
+                <li><a href="https://leyka.te-st.ru/instruction/" target='_blank'><?php _e('Documentation', 'leyka');?></a></li>
+                <li><a href="<?php echo admin_url('admin.php?page=leyka_feedback');?>"><?php _e('Ask a question', 'leyka');?></a></li>
+                <li><a href="https://github.com/Teplitsa/Leyka/issues/new" target='_blank'><?php _e('Create issue at GitHub', 'leyka');?></a></li>
+            </ul>
 		</div>
-		
-		
-	<?php
-		leyka_itv_info_widget();
-	}
-	
 
+	<?php leyka_itv_info_widget();
+	}
 
 	/** Displaying settings **/
 	public function settings_screen() {

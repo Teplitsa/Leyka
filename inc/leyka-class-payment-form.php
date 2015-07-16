@@ -7,6 +7,7 @@
  * Form
  **/
 class Leyka_Payment_Form {
+
 	private $_pm_name;
 	private $_pm = array();
 	private $_form_action;
@@ -157,53 +158,66 @@ class Leyka_Payment_Form {
 	}
 	
 	function get_name_field($value = '') {
-		
-		if(!$this->is_field_supported('name'))
-			return '';
-		
-		$ph = __('Your name', 'leyka');
-		$comment = __('We will use this to personalize your donation experience', 'leyka');
-		
+
+		if( !$this->is_field_supported('name') ) {
+            return '';
+        }
+
 		ob_start();
 	?>
-		<label for="leyka_donor_name" class="leyka-screen-reader-text"><?php echo $ph; ?></label>
-		<label class="input req"><input type="text" class="required" name="leyka_donor_name" placeholder="<?php echo esc_attr($ph);?>" id="leyka_donor_name" value="<?php echo $value;?>"></label>
-		<p class="field-comment"><?php echo $comment;?></p>
+		<label for="leyka_donor_name" class="leyka-screen-reader-text"><?php _e('Your name', 'leyka');?></label>
+		<label class="input req"><input type="text" class="required" name="leyka_donor_name" placeholder="<?php _e('Your name', 'leyka');?>" id="leyka_donor_name" value="<?php echo $value;?>"></label>
+		<p class="field-comment"><?php _e('We will use this to personalize your donation experience', 'leyka');?></p>
 		<p id="leyka_donor_name-error" class="field-error"></p>
-        
+
 	<?php
 		$out = ob_get_contents();
 		ob_end_clean();
 		return leyka_field_wrap($out, 'name');		
 	}
-	
-	
+
 	function get_email_field($value = '') {
-		
-		if(!$this->is_field_supported('email'))
+
+		if( !$this->is_field_supported('email') ) {
 			return '';
-		
-		$ph = __('Your email', 'leyka');
-		$comment = __('We will send the donation success notice to this address', 'leyka');
-		
-		ob_start();
-	?>
-		<label for="leyka_donor_email" class="leyka-screen-reader-text"><?php echo $ph; ?></label>
-		<label class="input req"><input type="text" class="required email" name="leyka_donor_email" placeholder="<?php echo esc_attr($ph);?>" id="leyka_donor_email" value="<?php echo $value;?>"></label>
-		<p class="field-comment"><?php echo $comment;?></p>
+        }
+
+		ob_start();?>
+
+		<label for="leyka_donor_email" class="leyka-screen-reader-text"><?php _e('Your email', 'leyka');?></label>
+		<label class="input req"><input type="text" class="required email" name="leyka_donor_email" placeholder="<?php _e('Your email', 'leyka');?>" id="leyka_donor_email" value="<?php echo $value;?>"></label>
+		<p class="field-comment"><?php _e('We will send the donation success notice to this address', 'leyka');?></p>
         <p id="leyka_donor_email-error" class="field-error"></p>
-		
-	<?php
-		$out = ob_get_contents();
+
+	<?php $out = ob_get_contents();
 		ob_end_clean();
 		return leyka_field_wrap($out, 'email');		
 	}
-	
-	
-	function get_agree_field() {
+
+    public function get_recurring_field() {
+
+        if( !$this->is_field_supported('recurring') ) {
+            return '';
+        }
+
+        ob_start();?>
+
+        <label class="checkbox" for="leyka_recurring">
+            <input type="checkbox" name="leyka_recurring" id="leyka_recurring" class="leyka_recurring" value="1">
+            <?php echo 'Регулярное списание'; //leyka_options()->opt('recurring_subscription_text');?>
+        </label>
+        <p class="field-error" id="leyka_recurring-error"></p>
+
+        <?php $out = ob_get_contents();
+        ob_end_clean();
+        return leyka_field_wrap($out, 'recurring');
+    }
+
+	public function get_agree_field() {
 		
-		if( !leyka_options()->opt('argee_to_terms_needed') || !$this->is_field_supported('agree') )
-			return '';
+		if( !leyka_options()->opt('argee_to_terms_needed') || !$this->is_field_supported('agree') ) {
+            return '';
+        }
 
 		$agree_id = esc_attr(uniqid().'-text'); // Label for checkbox
 
@@ -231,22 +245,19 @@ class Leyka_Payment_Form {
 	}
 
 	function get_submit_field() {
-		
-		if(!$this->is_field_supported('submit'))
+
+		if( !$this->is_field_supported('submit') ) {
 			return '';
-		
-		$label = $this->get_submit_label();
-		//disabled="disabled"
-		ob_start();
-	?>
-		<input type="submit" id="leyka_donation_submit" name="leyka_donation_submit" value="<?php echo esc_attr($label);?>" />
-	<?php
-		$out = ob_get_contents();
+        }
+
+		ob_start();?>
+		<input type="submit" id="leyka_donation_submit" name="leyka_donation_submit" value="<?php echo esc_attr($this->get_submit_label());?>" />
+
+    <?php $out = ob_get_contents();
 		ob_end_clean();
 		return leyka_field_wrap($out, 'submit');	
 	}
 
-	
 	/** PM related methods **/
 	function get_pm_id() {
 
@@ -257,13 +268,13 @@ class Leyka_Payment_Form {
 
         return $this->_pm->label ? $this->_pm->label : '';
 	}
-	
+
 	function get_pm_description() {
  
         return $this->_pm->description ?
             apply_filters('leyka_pm_description', $this->_pm->description, $this->_pm_name) : '';
 	}
-	
+
 	function get_supported_currencies() {
 
 		$supported_curr = $this->_pm->currencies;
@@ -278,9 +289,11 @@ class Leyka_Payment_Form {
 		return $curr;
 	}
 
-	function get_current_currency(){
-		if(empty($this->_current_currency))
+	function get_current_currency() {
+
+		if( !$this->_current_currency ) {
 			$this->_current_currency = $this->_pm->default_currency;
+        }
 
 		return $this->_current_currency;
 	}
@@ -290,17 +303,17 @@ class Leyka_Payment_Form {
 	}
 
 	function is_field_supported($field) {
-		return in_array($field, $this->get_supported_global_fields());
+		return in_array($field, array_merge($this->get_supported_global_fields(), $this->_pm->custom_fields));
 	}
 
 	function get_pm_fields() {
-//		global $leyka_pm;
-		
+
 		$res = $this->_pm->custom_fields; // Array of custom fields' HTMLs
 
 		if($res) {
-            foreach($res as $key => $f)
-			    $res[$key] = leyka_field_wrap($f, $key);
+            foreach($res as $key => $field) {
+			    $res[$key] = leyka_field_wrap($field, $key);
+            }
 		}
 
 		return implode('', $res);
@@ -310,15 +323,15 @@ class Leyka_Payment_Form {
 
 		return $this->_pm->submit_label; // ? $this->_pm->submit_label : leyka_options()->opt('donate_submit_text');
 	}
-	
+
 	function get_pm_icons() {
-//		global $leyka_pm;
 
 		$res = $list = array(); // Array of icons urls
-		if($this->_pm->icons)		
-			$res = $this->_pm->icons;
+		if($this->_pm->icons) {
+            $res = $this->_pm->icons;
+        }
 
-        foreach($res as $src){
+        foreach($res as $src) {
             $src = esc_url($src);
             $list[] = "<img src='{$src}' />";
         }
@@ -329,7 +342,7 @@ class Leyka_Payment_Form {
 	/**
 	 * Template elements: tooltps error marks etc
 	 **/
-	
+
 	function question_mark($content, $css = '', $title = '') {
 		
 		return "<div class='question-icon {$css}'
@@ -429,6 +442,13 @@ function leyka_pf_get_email_field($value = '') {
 	return $leyka_current_pm->get_email_field($value);
 }
 
+function leyka_pf_get_recurring_field() {
+    /** @var Leyka_Payment_Form $leyka_current_pm */
+	global $leyka_current_pm;
+
+	return $leyka_current_pm->get_recurring_field();
+}
+
 function leyka_pf_get_agree_field() {
     /** @var Leyka_Payment_Form $leyka_current_pm */
 	global $leyka_current_pm;
@@ -488,27 +508,25 @@ function leyka_share_campaign_block($campaign_id = null) {
 	
 	if( !$campaign_id ) {
 		$campaign_id = $post->ID;
-    }
-		
-	$iframe = Leyka_Campaign_Management::get_card_embed_code($campaign_id);?>
+    }?>
 
 	<div id="share-campaign-area" class="toggle">
 		<div class="toggle-trigger"><?php _e('Share (get embed code)', 'leyka');?></div>
 		<div class="toggle-area">
 			
 			<div class="leyka-embed-block">
-			<div id="embed-size-pane" class="leyka-setting-row">
-				<div class="col-1"><label><?php _e('Width', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_w" value="300" size="4"></label>
-				<label><?php _e('Height', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_h" value="510" size="4"></label>
-				</div>
-				<div class="col-2">
-				<textarea class="embed-code" id="campaign-embed-code" class="campaign-embed-code"><?php echo $iframe; ?></textarea></div>
-			</div>
-			
-			<div class="leyka-embed-preview">
-				<h4><?php _e('Preview', 'leyka');?></h4>
-				<?php echo $iframe; ?>
-			</div>
+                <div id="embed-size-pane" class="leyka-setting-row">
+                    <div class="col-1"><label><?php _e('Width', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_w" value="300" size="4"></label>
+                    <label><?php _e('Height', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_h" value="510" size="4"></label>
+                    </div>
+                    <div class="col-2">
+                    <textarea class="embed-code" id="campaign-embed-code" class="campaign-embed-code"><?php echo Leyka_Campaign_Management::get_card_embed_code($campaign_id, true);?></textarea></div>
+                </div>
+
+                <div class="leyka-embed-preview">
+                    <h4><?php _e('Preview', 'leyka');?></h4>
+                    <?php echo Leyka_Campaign_Management::get_card_embed_code($campaign_id, false); ?>
+                </div>
 			</div><!-- .embed-block -->
 			
 		</div>
@@ -542,19 +560,22 @@ function leyka_print_donation_elements($content) {
 	global $post;
 
 	$autoprint = leyka_options()->opt('donation_form_mode');
-	if( !is_singular(Leyka_Campaign_Management::$post_type) || !$autoprint )
-		return $content;
+	if( !is_singular(Leyka_Campaign_Management::$post_type) || !$autoprint ) {
+        return $content;
+    }
 	
 	$campaign = new Leyka_Campaign($post);	
-	if($campaign->ignore_global_template_settings)
+	if($campaign->ignore_global_template_settings) {
 		return $content;
+    }
 
 	$post_content = $content;
 	$content = '';
 
 	// Scale on top of form:	
-	if(leyka_options()->opt('scale_widget_place') == 'top' || leyka_options()->opt('scale_widget_place') == 'both')
+	if(leyka_options()->opt('scale_widget_place') == 'top' || leyka_options()->opt('scale_widget_place') == 'both') {
         $content .= do_shortcode("[leyka_scale show_button='1']");
+    }
 
 	$content .= $post_content;
 
@@ -563,11 +584,13 @@ function leyka_print_donation_elements($content) {
         !empty($campaign->target) && (
             leyka_options()->opt('scale_widget_place') == 'bottom' ||
             leyka_options()->opt('scale_widget_place') == 'both'
-    ))
+    )) {
         $content .= do_shortcode("[leyka_scale show_button='0']");
+    }
 
-	// Payment form:
-    $content .= get_leyka_payment_form_template_html($post);
+    $content .= get_leyka_payment_form_template_html($post); // Payment form
+
+    $campaign->increase_views_counter(); // Increase campaign views counter
 
 	// Donations list:
     if(leyka_options()->opt('leyka_donations_history_under_forms')) {
@@ -619,16 +642,16 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
     ob_start();
 
 	if( !$campaign ) {
-		$campaign = $post;
-	} elseif(is_int($campaign)) {
-		$campaign = get_post($campaign);
-	}
-
-    $campaign = new Leyka_Campaign($campaign);
+        $campaign = new Leyka_Campaign($post);
+	} elseif(is_int($campaign) || is_a($campaign, 'WP_Post')) {
+        $campaign = new Leyka_Campaign($campaign);
+	} elseif( !is_a($campaign, 'Leyka_Campaign') ) {
+        return false;
+    }
 
     if($campaign->is_finished) {?>
 
-    <div id="leyka-campaign-finished"><?php echo __('The fundrising campaign has been finished. Thank you for your support!', 'leyka');?></div>
+    <div id="leyka-campaign-finished"><?php echo __('The fundraising campaign has been finished. Thank you for your support!', 'leyka');?></div>
 
 <?php } else {
 
@@ -647,12 +670,12 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
 
             $template = leyka_get_current_template_data($campaign, $template /*? $template : $campaign->template*/);
 
-            if($template && isset($template['file'])){
+            if($template && isset($template['file'])) {
                 include($template['file']);
             }
         }
 
-    } //campaign finished
+    } // Campaign finished
 
     $out = ob_get_contents();
     ob_end_clean();
@@ -668,158 +691,16 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
  **/
 function leyka_get_donation_form($echo = true) {
 
-	if( !is_singular(Leyka_Campaign_Management::$post_type) )
-		return '';
-		
-	if($echo)
-		echo get_leyka_payment_form_template_html();
-	else
-		return get_leyka_payment_form_template_html();
-}
-
-
-/**
-* AJAX for templates
-**/
-function leyka_payment_method_action() {
-
-	check_ajax_referer('leyka_payment_form', '_leyka_ajax_nonce');
-
-	if(empty($_POST['pm_id']))
-		die('-1');
-
-//	if(empty($_POST['currency']))
-//		die('-1');
-
-	$curr_currency = trim($_POST['currency']);	
-	$curr_pm = leyka_get_pm_by_id(trim($_POST['pm_id']));
-
-    if( !$curr_pm )
-        die('-1');
-
-	leyka_setup_current_pm($curr_pm, $curr_currency);
-
-    ob_start();?>
-
-	<div class="leyka-pm-fields">
-
-	<div class='leyka-user-data'>
-		<!-- field for GA -->
-		<input type="hidden" name="leyka_ga_payment_method" value="<?php echo esc_attr($curr_pm->label);?>" />
-	<?php
-		echo leyka_pf_get_name_field(empty($_POST['user_name']) ? '' : trim($_POST['user_name']));
-		echo leyka_pf_get_email_field(empty($_POST['user_email']) ? '' : trim($_POST['user_email']));
-		echo leyka_pf_get_pm_fields();
-	?>
-	</div>
-
-	<?php
-		echo leyka_pf_get_agree_field();
-		echo leyka_pf_get_submit_field();
-
-		$icons = leyka_pf_get_pm_icons();
-		if($icons) {
-			$list = array();
-			foreach($icons as $i) {
-				$list[] = "<li>{$i}</li>";
-			}
-
-			echo '<ul class="leyka-pm-icons cf">'.implode('', $list).'</ul>';
-		}?>
-	</div>
-	<?php
-		echo "<div class='leyka-pm-desc'>".apply_filters('leyka_the_content', leyka_pf_get_pm_description())."</div>";
-    $out = ob_get_contents();
-    ob_end_clean();
-
-    $payment_form = new Leyka_Payment_Form($curr_pm, $curr_currency);
-    echo json_encode(array('pm' => $out, 'currency' => $payment_form->get_currency_field()));
-	die();
-}
-add_action('wp_ajax_leyka_payment_method', 'leyka_payment_method_action');
-add_action('wp_ajax_nopriv_leyka_payment_method', 'leyka_payment_method_action');
-
-function leyka_currency_choice_action(){
-	check_ajax_referer('leyka_payment_form', '_leyka_ajax_nonce');
-
-	if(empty($_POST['currency']))
-		die('-1');
-
-	$curr_currency = trim($_POST['currency']);	
-	$pm_selected = trim($_POST['current_pm']);
-	$currently_active_pmethods = leyka_get_pm_list(true, $curr_currency);
-	
-    $curr_pm_is_active = false;
-    foreach($currently_active_pmethods as $pm) {
-        if($pm->id == $pm_selected) {
-            $curr_pm_is_active = true;
-            $pm_selected = $pm;
-            break;
-        }
+	if( !is_singular(Leyka_Campaign_Management::$post_type) ) {
+        return '';
     }
-	if( !$curr_pm_is_active )
-		$pm_selected = reset($currently_active_pmethods);
 
-	leyka_setup_current_pm($pm_selected, $curr_currency);
-
-    echo leyka_pf_get_hidden_fields((int)$_POST['campaign']);?>
-	
-	<!-- pm selector -->
-	<div id="pm-selector" class="form-part">
-		<ul class="leyka-pm-selector">
-	<?php foreach($currently_active_pmethods as $pm) {?>
-		<li>
-			<label class="radio">
-			<input type="radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" <?php checked($pm_selected->id, $pm->id);?> data-pm_id="<?php echo esc_attr($pm->id);?>">
-			<?php echo $pm->label;?>
-			</label>
-		</li>
-	<?php }?>
-		</ul>
-	</div>
-
-	<!-- changeable area -->
-	<div id="leyka-pm-data" class="changeable-fields form-part">
-			
-		<div class="leyka-pm-fields">
-			
-		<div class='leyka-user-data'>
-			<!-- field for GA -->
-			<input type="hidden" name="leyka_ga_payment_method" value="<?php echo esc_attr($curr_pm->label);?>" />
-		<?php
-			echo leyka_pf_get_name_field();
-			echo leyka_pf_get_email_field();
-			echo leyka_pf_get_pm_fields();
-		?>
-		</div>
-		
-		<?php
-			echo leyka_pf_get_agree_field();
-			echo leyka_pf_get_submit_field();
-			
-			$icons = leyka_pf_get_pm_icons();	
-			if($icons) {
-				$list = array();
-				foreach($icons as $i){
-					$list[] = "<li>{$i}</li>";
-				}
-
-				echo "<ul class='leyka-pm-icons cf'>";
-				echo implode('', $list);
-				echo "</ul>";
-			}
-			
-		?>
-		</div>
-		<?php echo "<div class='leyka-pm-desc'>".apply_filters('leyka_the_content', leyka_pf_get_pm_description())."</div>";?>
-
-	</div>
-<?php
-
-	die();
+	if($echo) {
+        echo get_leyka_payment_form_template_html();
+    } else {
+        return get_leyka_payment_form_template_html();
+    }
 }
-add_action('wp_ajax_leyka_currency_choice', 'leyka_currency_choice_action');
-add_action('wp_ajax_nopriv_leyka_currency_choice', 'leyka_currency_choice_action');
 
 /** Filters */
 function leyka_terms_of_service_text($text) {

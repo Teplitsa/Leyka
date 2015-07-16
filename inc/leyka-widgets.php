@@ -28,47 +28,58 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 
 	/** Display widget */
     public function widget($args, $instance) {
-		global $post;
-		
+
 		extract($args, EXTR_SKIP);
 
 		$title = apply_filters('widget_title', $instance['title']);
-				
-		if($instance['campaign_id'] == '') {
+
+		if( !$instance['campaign_id'] ) {
 
             $query = new WP_Query(array(
 				'post_type' => Leyka_Campaign_Management::$post_type,
 				'posts_per_page' => 1,
 			));
-			if( !$query->have_posts() )
+            if( !$query->have_posts() ) {
 				return;
+            }
 
 			$campaign_id = $query->posts[0]->ID;
-		}
-		elseif(intval($instance['campaign_id']) === 0)			
-			$campaign_id = null;
-		else 
-			$campaign_id = (int)$instance['campaign_id'];
-		
+
+		} elseif((int)$instance['campaign_id'] === 0) {
+            $campaign_id = null;
+        } else {
+            $campaign_id = (int)$instance['campaign_id'];
+        }
+
 		$args = array(
-			'show_title'    => !empty($instance['show_title']),
-			'show_thumb'    => !empty($instance['show_thumb']),
-			'show_excerpt'  => !empty($instance['show_excerpt']),
-			'show_scale'    => !empty($instance['show_scale']),
-			'show_button'   => !empty($instance['show_button']),			
-		);		
-		
+			'show_title'    => !!$instance['show_title'],
+			'show_thumb'    => !!$instance['show_thumb'],
+			'show_excerpt'  => !!$instance['show_excerpt'],
+			'show_scale'    => !!$instance['show_scale'],
+			'show_button'   => !!$instance['show_button'],
+		);
+
 		$css_id = 'leyka_campaign_card_widget-'.uniqid();
 		$html = leyka_get_campaign_card($campaign_id, $args);
-		if(empty($html))
-			return;
+		if( !$html ) {
+            return;
+        }
+        $campaign = new Leyka_Campaign($campaign_id);
+        $campaign->increase_views_counter(); // Increase campaign views counter
 
-		echo $before_widget;		
-        if($title)
-		    echo $before_title.$title.$after_title;
+        /** @var $before_widget */
+		echo $before_widget;
+        if($title) {
+            /**
+             * @var $before_title
+             * @var $after_title
+             */
+            echo $before_title.$title.$after_title;
+        }
 
 		echo '<div id="'.esc_attr($css_id).'">'.$html."</div>";
 
+        /** @var $after_widget */
 		echo $after_widget;
 	}
 
@@ -77,14 +88,14 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 
 		$instance = $old_instance;
 
-		$instance['title']        = sanitize_text_field($new_instance['title']);					
-		$instance['campaign_id']  = sanitize_text_field($new_instance['campaign_id']);
+		$instance['title'] = sanitize_text_field($new_instance['title']);
+		$instance['campaign_id'] = sanitize_text_field($new_instance['campaign_id']);
 
-		$instance['show_title']   = !empty($new_instance['show_title']);
-		$instance['show_thumb']   = !empty($new_instance['show_thumb']);
+		$instance['show_title'] = !empty($new_instance['show_title']);
+		$instance['show_thumb'] = !empty($new_instance['show_thumb']);
 		$instance['show_excerpt'] = !empty($new_instance['show_excerpt']);
-		$instance['show_scale']   = !empty($new_instance['show_scale']);
-		$instance['show_button']  = !empty($new_instance['show_button']);
+		$instance['show_scale'] = !empty($new_instance['show_scale']);
+		$instance['show_button'] = !empty($new_instance['show_button']);
 
 		return $instance;
 	}
@@ -109,13 +120,30 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 			<label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php _e('Title', 'leyka');?>:</label>
 			<input class="widefat" id="<?php echo esc_attr($this->get_field_id('title')); ?>" name="<?php echo esc_attr($this->get_field_name('title')); ?>" type="text" value="<?php echo esc_attr($instance['title']);?>">
 		</p>
-			
+
 		<p>
 			<label for="<?php echo esc_attr($this->get_field_id('campaign_id'));?>"><?php _e('Campaign ID', 'leyka');?>:</label>
-			<input id="<?php echo $this->get_field_id('campaign_id');?>" name="<?php echo $this->get_field_name( 'campaign_id' ); ?>" value="<?php echo esc_attr($instance['campaign_id']);?>" type="text" /><br />
+
+            <?php $current_value = $instance['campaign_id'];?>
+            <select id="<?php echo $this->get_field_id('campaign_id');?>" name="<?php echo $this->get_field_name( 'campaign_id');?>" class="widefat">
+                <option value="-" <?php echo $current_value == '-' ? 'selected="selected"' : '';?>>
+                    <?php _e('The most recent campaign', 'leyka');?>
+                </option>
+                <option value="0" <?php echo $current_value == '0' ? 'selected="selected"' : '';?>>
+                    <?php _e('Campaign based on a context', 'leyka');?>
+                </option>
+
+            <?php foreach(get_posts(array('post_type' => Leyka_Campaign_Management::$post_type, 'nopaging' => true)) as $campaign) {?>
+                <option value="<?php echo $campaign->ID;?>" <?php echo $current_value == $campaign->ID ? 'selected="selected"' : '';?>>
+                    <?php echo $campaign->post_title;?>
+                </option>
+            <?php }?>
+
+            </select>
+            <br />
 			<small class="help"><?php _e('Copy-paste ID of the campaign to output, state "0" to detect it from context or leave the field blank to display the most recent campaign', 'leyka');?></small>
 		</p>
-			
+
 		<p>
 			<label for="<?php echo esc_attr($this->get_field_id('show_title'));?>">
 			    <input id="<?php echo $this->get_field_id('show_title');?>" name="<?php echo $this->get_field_name('show_title');?>" value="1" type="checkbox" <?php checked( !!$instance['show_title'], 1 );?> />

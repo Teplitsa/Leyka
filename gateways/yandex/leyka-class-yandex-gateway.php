@@ -12,6 +12,8 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         $this->_id = 'yandex';
         $this->_title = __('Yandex.Money', 'leyka');
         $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-robokassa/#yandex-settings';
+        $this->_admin_ui_column = 1;
+        $this->_admin_ui_order = 10;
     }
 
     protected function _set_options_defaults() {

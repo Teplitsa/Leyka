@@ -96,7 +96,7 @@ function leyka_do_donations_export() {
                 prep($domain),
                 prep(leyka_options()->opt('org_full_name')),
                 prep($donation->date_timestamp),
-                prep(date('d.m.Y H:i:s', $donation->date_timestamp)),
+                prep(date(get_option('date_format').', H:i', $donation->date_timestamp)),
                 prep(wp_hash($donation->donor_email)),
                 prep(wp_hash($donation->donor_name)),
                 prep((int)$donation->sum),

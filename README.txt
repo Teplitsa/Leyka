@@ -2,9 +2,9 @@
 Contributors: Ahaenor, foralien, denis.cherniatev
 Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
-Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundrising, webmoney, robokassa, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндексденьги
+Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, webmoney, robokassa, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндексденьги
 Requires at least: 3.6.1
-Tested up to: 4.1.1
+Tested up to: 4.2.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -35,7 +35,7 @@ _For English description scroll down, please._
 
 **Основные функции**
 
-* Широкий набор платежных систем и опций (включая, Яндекс.Деньги, Chronopay, RBK Money, ROBOKASSA и печать банковских квитанций)
+* Широкий набор платежных систем и опций (включая Яндекс.Деньги, CloudPayments, Chronopay, RBK Money, ROBOKASSA и печать банковских квитанций)
 * Подходит для физических и юридических лиц
 * Автоматическая рассылка email-сообщений жертвователям
 * Поддержка нескольких языков
@@ -153,6 +153,14 @@ PHP at least 5.3 is required.
 10. События Google Analytics
 
 == Changelog ==
+
+= 2.2.7 =
+ * New: added the new CloudPayments gateway. Single and recurring bank card payments supported.
+ * New: added a simple campaign statistics function.
+ * Fix: more sweet refactioring for the gateways API. Now Chronopay (and all other gateways) are compatible with gateway-specific data fields.
+ * Fix: payment settings page UI improved. Known bugs fixed.
+ * Fix: campaign selection field in the Donations widget is a dropdown list now. No more pain with copy-pasting IDs.
+ * Fix: small fixes... we'll never tired to polish this child of ours.
 
 = 2.2.6 =
  * New: payment settings page has a new UI.

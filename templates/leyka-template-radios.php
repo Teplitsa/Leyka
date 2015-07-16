@@ -43,12 +43,12 @@ leyka_setup_current_pm($curr_pm, $curr_pm->default_currency);?>
 
 		<!-- changeable area -->
 		<div id="leyka-pm-data" class="changeable-fields form-part">
-			
+
 			<div class="leyka-pm-fields <?php echo esc_attr($curr_pm->id);?>">
-				
-			<div class='leyka-user-data'>
+
+			<div class="leyka-user-data">
 				<!-- field for GA -->
-				<input type="hidden" name="leyka_ga_payment_method" value="<?php echo esc_attr($curr_pm->label);?>" />
+				<input type="hidden" name="leyka_ga_payment_method" value="<?php echo esc_attr($curr_pm->label);?>">
 			<?php
 				echo leyka_pf_get_name_field();
 				echo leyka_pf_get_email_field();
@@ -57,25 +57,22 @@ leyka_setup_current_pm($curr_pm, $curr_pm->default_currency);?>
 			</div>
 			
 			<?php
+                echo leyka_pf_get_recurring_field();
 				echo leyka_pf_get_agree_field();
 				echo leyka_pf_get_submit_field();
 				
 				$icons = leyka_pf_get_pm_icons();	
 				if($icons) {
+
 					$list = array();
-					foreach($icons as $i){
+					foreach($icons as $i) {
 						$list[] = "<li>{$i}</li>";
 					}
 
-					echo "<ul class='leyka-pm-icons cf'>";
-					echo implode('', $list);
-					echo "</ul>";
-				}
-			?>
+					echo '<ul class="leyka-pm-icons cf">'.implode('', $list).'</ul>';
+				}?>
 			</div>
-			<?php
-				echo "<div class='leyka-pm-desc'>".apply_filters('leyka_the_content', leyka_pf_get_pm_description())."</div>";
-			?>
+			<?php echo '<div class="leyka-pm-desc">'.apply_filters('leyka_the_content', leyka_pf_get_pm_description()).'</div>';?>
 		</div>
 
 	</div> <!-- #currecy data -->

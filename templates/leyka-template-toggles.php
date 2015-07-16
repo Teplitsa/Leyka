@@ -39,25 +39,24 @@ leyka_pf_submission_errors();?>
 	</div>
 	
 <?php
+    echo leyka_pf_get_recurring_field();
     echo leyka_pf_get_agree_field();
     echo leyka_pf_get_submit_field();
 	
 	$icons = leyka_pf_get_pm_icons();	
-	if(!empty($icons)){
+	if($icons) {
+
 		$list = array();
-		foreach($icons as $i){
+		foreach($icons as $i) {
 			$list[] = "<li>{$i}</li>";
 		}
 
-		echo "<ul class='leyka-pm-icons cf'>";
-		echo implode('', $list);
-		echo "</ul>";
-	}
-?>
+		echo '<ul class="leyka-pm-icons cf">'.implode('', $list).'</ul>';
+	}?>
 	</div> <!-- .leyka-pm-fields -->	
 
 <?php echo "<div class='leyka-pm-desc'>".apply_filters('leyka_the_content', leyka_pf_get_pm_description())."</div>"; ?>
-	
+
 </form>
 </div>
 </div>
