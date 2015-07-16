@@ -149,8 +149,6 @@ jQuery(document).ready(function($){
                     $form.find('#'+$field.attr('id')+'-error').html(leyka.email_required).show();
 
                 } else {
-//                    var regexp = new RegExp(leyka.email_regexp, 'i');
-//                    console.log(regexp.test($field.val()));
 
                     if( !is_email($field.val()) ) {
 

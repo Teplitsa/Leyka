@@ -49,10 +49,8 @@ jQuery(document).ready(function($){
                 $errors = $('#leyka-submit-errors'),
                 data = {};
 
-            /** @todo Make this a "Month" instead of a "Week" */
             if(is_recurrent) {
-                data.cloudPayments = {recurrent: {interval: 'Week', period: 1}};
-                console.log('Here:', data);
+                data.cloudPayments = {recurrent: {interval: 'Month', period: 1}};
             }
 
             widget.charge({
