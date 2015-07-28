@@ -75,8 +75,8 @@ foreach($gateways_by_columns as $admin_ui_column => $gateways) { // Add gateways
 
 <div id="post-body" class="metabox-holder columns-3">
     <div id="leyka-pm-selectors">
-        <div id="postbox-container-1" class="postbox-container"><?php do_meta_boxes('', 'side', null);?></div>
-        <div id="postbox-container-2" class="postbox-container"><?php do_meta_boxes('', 'normal', null);?></div>
+        <div id="postbox-container-1" class="postbox-container"><?php do_meta_boxes($current_screen_id, 'side', null);?></div>
+        <div id="postbox-container-2" class="postbox-container"><?php do_meta_boxes($current_screen_id, 'normal', null);?></div>
     </div>
 </div>
 
