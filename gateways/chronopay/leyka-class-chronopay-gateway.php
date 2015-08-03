@@ -46,17 +46,17 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
-            'chronopay_test_mode' => array(
-                'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
-                'default' => 1,
-                'title' => __('Payments testing mode', 'leyka'),
-                'description' => __('Check if Chronopay integration is in test mode.', 'leyka'),
-                'required' => false,
-                'placeholder' => '',
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
-            ),
+//            'chronopay_test_mode' => array(
+//                'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+//                'value' => '',
+//                'default' => 1,
+//                'title' => __('Payments testing mode', 'leyka'),
+//                'description' => __('Check if Chronopay integration is in test mode.', 'leyka'),
+//                'required' => false,
+//                'placeholder' => '',
+//                'list_entries' => array(), // For select, radio & checkbox fields
+//                'validation_rules' => array(), // List of regexp?..
+//            ),
         );
     }
 
@@ -78,8 +78,9 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         switch($pm_id) {
             case 'chronopay_card':
             case 'chronopay_card_rebill':
-                $current_url =  leyka_options()->opt('chronopay_test_mode') ?
-                    'https://payments.test.chronopay.com/' : 'https://payments.chronopay.com/';
+                $current_url =
+//                    leyka_options()->opt('chronopay_test_mode') ? 'https://payments.test.chronopay.com/' :
+                    'https://payments.chronopay.com/';
                 break;
         }
 

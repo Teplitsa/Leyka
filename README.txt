@@ -154,6 +154,10 @@ PHP at least 5.3 is required.
 
 == Changelog ==
 
+= 2.2.7.1 =
+ * Fix: fixed the bug with gateways & PMs list in Payment Settings page.
+ * Fix: Chronopay test mode option is removed now. By the words of Chronopay support, test mode using is very rare.
+
 = 2.2.7 =
  * New: added the new CloudPayments gateway. Single and recurring bank card payments supported.
  * New: added a simple campaign statistics function.
