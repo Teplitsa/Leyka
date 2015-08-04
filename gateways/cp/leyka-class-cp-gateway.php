@@ -97,7 +97,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         }
 
         $form_data_vars = array(
-            'public_id' => leyka_options()->opt('cp_public_id'),
+            'public_id' => trim(leyka_options()->opt('cp_public_id')),
             'donation_id' => $donation_id,
             'amount' => number_format((float)$donation->amount, 2, '.', ''),
             'currency' => $cp_currency,
