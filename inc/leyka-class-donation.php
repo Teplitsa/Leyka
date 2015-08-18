@@ -98,13 +98,13 @@ class Leyka_Donation_Management {
         } elseif($new == 'funded' || $old == 'funded') {
 
             $donation = new Leyka_Donation($donation);
+
             $campaign = new Leyka_Campaign($donation->campaign_id);
+            $campaign->update_total_funded_amount($donation);
 
             if($campaign->target) {
 
-                $collected_amount = $campaign->get_collected_amount();
-
-                if($collected_amount >= $campaign->target) {
+                if($campaign->total_funded >= $campaign->target) {
                     $campaign->target_state = 'is_reached';
                 } elseif($campaign->target_state != 'in_process') {
                     $campaign->target_state = 'in_process';
@@ -1056,8 +1056,8 @@ class Leyka_Donation_Management {
 
             $donation->campaign_id = (int)$_POST['campaign-id'];
 
-            $old_campaign->refresh_target_state();
-            $new_campaign->refresh_target_state();
+            $old_campaign->update_total_funded_amount($donation)->refresh_target_state();
+            $new_campaign->update_total_funded_amount($donation)->refresh_target_state();
         }
 
         // It's a new correction donation, set a title from it's campaign:
@@ -1273,8 +1273,13 @@ class Leyka_Donation {
                 0.0 : (float)$meta['leyka_donation_amount'][0];
 
             if( !empty($meta['leyka_campaign_id']) ) {
-                $campaign = new Leyka_Campaign((int)$meta['leyka_campaign_id'][0]);
-                $payment_title = $campaign->payment_title ? $campaign->payment_title : $campaign->title;
+
+                // Don't use Leyka_Campaign here to avoid loop dependency:
+                $campaign = get_post((int)$meta['leyka_campaign_id'][0]);
+                $payment_title = get_post_meta($campaign->ID, 'payment_title', true);
+                if( !$payment_title ) {
+                    $payment_title = $campaign->post_title;
+                }
             }
 
             $this->_donation_meta = array(
@@ -1292,7 +1297,7 @@ class Leyka_Donation {
                     '' : $meta['_leyka_donor_email_date'][0],
                 'managers_emails_date' => empty($meta['_leyka_managers_emails_date']) ?
                     '' : $meta['_leyka_managers_emails_date'][0],
-                'campaign_id' => empty($campaign) ? 0 : $campaign->id,
+                'campaign_id' => empty($meta['leyka_campaign_id']) ? 0 : $meta['leyka_campaign_id'][0],
                 'status_log' => empty($meta['_status_log']) ? '' : maybe_unserialize($meta['_status_log'][0]),
                 'gateway_response' => empty($meta['leyka_gateway_response']) ? '' : $meta['leyka_gateway_response'][0],
 

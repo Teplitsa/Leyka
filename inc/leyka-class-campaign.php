@@ -505,6 +505,31 @@ class Leyka_Campaign {
                 $meta['is_finished'][0] = 0;
             }
 
+            // If campaign total collected amount is not saved, save it:
+            if( !isset($meta['total_funded']) || !$meta['total_funded'][0] ) {
+
+                $donations = get_posts(array(
+                    'post_type' => Leyka_Donation_Management::$post_type,
+                    'post_status' => 'funded',
+                    'posts_per_page' => -1,
+                    'meta_key' => 'leyka_campaign_id',
+                    'meta_value' => $this->_id,
+                ));
+//                echo '<pre>' . print_r($this->_id.' - '.count($donations), 1) . '</pre>';
+
+                $sum = 0.0;
+                foreach($donations as $donation) {
+//                    echo '<pre>' . print_r('Here:'.$donation->ID, 1) . '</pre>';
+
+                    $donation = new Leyka_Donation($donation);
+                    $sum += $donation->main_curr_amount ? $donation->main_curr_amount : $donation->amount;
+                }
+
+                update_post_meta($this->_id, 'total_funded', $sum);
+
+                $meta['total_funded'][0] = $sum;
+            }
+
             $this->_campaign_meta = array(
                 'payment_title' => empty($meta['payment_title']) ?
                     (empty($this->_post_object) ? '' : $this->_post_object->post_title) : $meta['payment_title'][0],
@@ -517,6 +542,7 @@ class Leyka_Campaign {
                 'date_target_reached' => empty($meta['date_target_reached']) ? 0 : $meta['date_target_reached'][0],
                 'count_views' => empty($meta['count_views']) ? 0 : $meta['count_views'][0],
                 'count_submits' => empty($meta['count_submits']) ? 0 : $meta['count_submits'][0],
+                'total_funded' => empty($meta['total_funded']) ? 0.0 : $meta['total_funded'][0],
 //                '' => '',
             );
         }
@@ -568,6 +594,9 @@ class Leyka_Campaign {
             case 'submits':
             case 'count_submits':
             case 'submits_count': return $this->_campaign_meta['count_submits'];
+            case 'total_funded':
+            case 'total_collected':
+            case 'total_donations_funded': return $this->_campaign_meta['total_funded'];
             case '': return '';
 //            case '': return '';
             default:
@@ -585,12 +614,12 @@ class Leyka_Campaign {
         }
     }
 
-	/** Get comlicated params */
+	/** Get complicated params */
     public function get_donations() {
 
         $donations = get_posts(array(
             'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => 'any',
+            'post_status' => array('submitted', 'funded', 'refunded', 'failed', 'trash',),
             'posts_per_page' => -1,
             'meta_key' => 'leyka_campaign_id',
             'meta_value' => $this->_id,
@@ -610,27 +639,15 @@ class Leyka_Campaign {
             return false;
         }
 
-        $donations = get_posts(array(
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => 'funded',
-            'posts_per_page' => -1,
-            'meta_key' => 'leyka_campaign_id',
-            'meta_value' => $campaign_id,
-        ));
+        $campaign = new Leyka_Campaign($campaign_id);
 
-        $sum = 0.0;
-        foreach($donations as $donation) {
-
-            $donation = new Leyka_Donation($donation);
-            $sum += $donation->main_curr_amount ? $donation->main_curr_amount : $donation->amount;
-        }
-
-        return $sum;
+        return $campaign->total_funded > 0.0 ? $campaign->total_funded : 0.0;
     }
 
+    /** @deprecated Use $campaign->total_funded instead. */
     public function get_collected_amount() {
 
-        return self::get_campaign_collected_amount($this->_id);
+        return $this->total_funded > 0.0 ? $this->total_funded : 0.0;
     }
 
     public function refresh_target_state() {
@@ -679,7 +696,22 @@ class Leyka_Campaign {
         $this->_campaign_meta['count_submits']++;
         update_post_meta($this->_id, 'count_submits', $this->_campaign_meta['count_submits']);
     }
-	
+
+    public function update_total_funded_amount($donation) {
+
+        $donation = get_validated_donation($donation);
+        if( !$donation ) {
+            return false;
+        }
+
+        $this->_campaign_meta['total_funded'] +=
+            ($donation->status != 'funded' || $donation->campaign_id != $this->_id ? -$donation->sum : $donation->sum);
+
+        update_post_meta($this->_id, 'total_funded', $this->_campaign_meta['total_funded']);
+
+        return $this;
+    }
+
 	/** CRUD and alike */
 	public function save() {
 

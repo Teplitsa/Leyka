@@ -4,7 +4,7 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, webmoney, robokassa, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндексденьги
 Requires at least: 3.6.1
-Tested up to: 4.2.3
+Tested up to: 4.3
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -153,6 +153,11 @@ PHP at least 5.3 is required.
 10. События Google Analytics
 
 == Changelog ==
+
+= 2.2.7.2 =
+ * New: full support for WP 4.3 is achieved.
+ * Fix: storing of total funded amount for each campaign is greatly optimized.
+ * Fix: Donations export algorythm is optimised to require much less of the memory to work.
 
 = 2.2.7.1 =
  * Fix: fixed the bug with gateways & PMs list in Payment Settings page.

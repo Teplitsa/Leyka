@@ -23,7 +23,7 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 			'classname'   => 'leyka_campaign_card',
 			'description' => __('Campaign informer with configurable elements', 'leyka')
 		);
-		$this->WP_Widget('leyka_campaign_card',  __('Leyka: Campaign Card', 'leyka'), $widget_ops);	
+		parent::__construct('leyka_campaign_card',  __('Leyka: Campaign Card', 'leyka'), $widget_ops);
 	}
 
 	/** Display widget */
@@ -186,7 +186,7 @@ class Leyka_Campaigns_List_Widget extends WP_Widget {
 			'classname'   => 'leyka_campaigns_list',
 			'description' => __('List of recent campaigns with configurable attributes', 'leyka')
 		);
-		$this->WP_Widget('leyka_campaigns_list',  __('Leyka: Campaigns List', 'leyka'), $widget_ops);	
+		parent::__construct('leyka_campaigns_list',  __('Leyka: Campaigns List', 'leyka'), $widget_ops);
 	}
 
 	/** Display widget */
@@ -359,13 +359,11 @@ class Leyka_Donations_List_Widget extends WP_Widget {
 			'classname'   => 'leyka_donations_list',
 			'description' => __('Recent donations list, optionally filtered by campaign', 'leyka')
 		);
-		$this->WP_Widget('leyka_donations_list',  __('Leyka: Donations List', 'leyka'), $widget_ops);	
+		parent::__construct('leyka_donations_list',  __('Leyka: Donations List', 'leyka'), $widget_ops);
 	}
 
 	/** Display widget */
     public function widget($args, $instance) {
-
-//		global $post;
 
 		extract($args, EXTR_SKIP);
 
@@ -384,6 +382,12 @@ class Leyka_Donations_List_Widget extends WP_Widget {
 		if(empty($html))
 			return;
 
+		/**
+		 * @var $before_widget
+		 * @var $before_title
+		 * @var $after_title
+		 * @var $after_widget
+		 */
 		echo $before_widget;
         if($title)
 		    echo $before_title.$title.$after_title;
