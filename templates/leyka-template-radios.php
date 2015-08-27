@@ -25,7 +25,7 @@ leyka_setup_current_pm($curr_pm, $curr_pm->default_currency);?>
 
 	<div id="leyka-currency-data">
 
-		<?php echo leyka_pf_get_hidden_fields();?>		
+		<?php echo leyka_pf_get_hidden_fields(empty($campaign) ? false : $campaign->id);?>
 
 		<!-- pm selector -->
 		<div id="pm-selector" class="form-part">
@@ -33,7 +33,7 @@ leyka_setup_current_pm($curr_pm, $curr_pm->default_currency);?>
             <?php foreach($active_pm as $pm) {?>
                 <li <?php if($curr_pm->id == $pm->id) echo 'class="active"';?>>
                     <label class="radio">
-                        <input type="radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" <?php checked($curr_pm->id, $pm->id); ?> data-pm_id="<?php echo esc_attr($pm->id);?>" />
+                        <input type="radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" <?php checked($curr_pm->id, $pm->id); ?> data-pm_id="<?php echo esc_attr($pm->id);?>">
                         <?php echo $pm->label;?>
                     </label>
                 </li>
@@ -81,7 +81,7 @@ leyka_setup_current_pm($curr_pm, $curr_pm->default_currency);?>
 </div><!-- .leyka-payment-option -->
 
 <?php if(leyka_options()->opt('show_campaign_sharing')) {
-    leyka_share_campaign_block();
+    leyka_share_campaign_block(empty($campaign) ? false : $campaign->id);
 }
 
 leyka_pf_footer();?>

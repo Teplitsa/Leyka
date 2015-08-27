@@ -69,13 +69,17 @@ class Leyka {
             add_action('init', 'session_start', -2);
         }
 
-        if(is_admin() && current_user_can('leyka_manage_donations')) {
-            $this->admin_setup();
+        if(is_admin()) {
+//            $this->admin_setup();
+            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-allocator.php');
+            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-render-settings.php');
+            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-admin.php');
+            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-donations-export.php');
+
+            Leyka_Admin_Setup::get_instance();
         }
 
-        if(current_user_can('leyka_manage_donations')) {
-            add_action('admin_bar_menu', array($this, 'leyka_add_toolbar_menu'), 999);
-        }
+        add_action('admin_bar_menu', array($this, 'leyka_add_toolbar_menu'), 999);
 
         /** Service URLs handler: */
         add_action('parse_request', function($request){
@@ -132,6 +136,10 @@ class Leyka {
     }
 
     public function leyka_add_toolbar_menu(WP_Admin_Bar $wp_admin_bar) {
+
+        if( !current_user_can('leyka_manage_donations') ) {
+            return;
+        }
 
         $wp_admin_bar->add_node(array(
             'id' => 'leyka-toolbar-menu',
@@ -486,15 +494,15 @@ class Leyka {
     /**
      * Setup admin for the plugin.
      **/
-    public function admin_setup() {
-
-        require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-allocator.php');
-        require_once(LEYKA_PLUGIN_DIR.'inc/leyka-render-settings.php');
-        require_once(LEYKA_PLUGIN_DIR.'inc/leyka-admin.php');
-        require_once(LEYKA_PLUGIN_DIR.'inc/leyka-donations-export.php');
-
-        Leyka_Admin_Setup::get_instance();
-    }
+//    public function admin_setup() {
+//
+//        require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-allocator.php');
+//        require_once(LEYKA_PLUGIN_DIR.'inc/leyka-render-settings.php');
+//        require_once(LEYKA_PLUGIN_DIR.'inc/leyka-admin.php');
+//        require_once(LEYKA_PLUGIN_DIR.'inc/leyka-donations-export.php');
+//
+//        Leyka_Admin_Setup::get_instance();
+//    }
 
     /** Register leyka user roles and caps. */
     function register_user_capabilities() {

@@ -231,7 +231,7 @@ function leyka_payment_form_screen($atts) {
 
     $campaign = $a['id'] > 0 ? get_post($a['id']) : $post;
 
-	if($campaign->post_type != Leyka_Campaign_Management::$post_type) { // Wrong campaign data
+	if($campaign->post_type != Leyka_Campaign_Management::$post_type) {
 		return '';
     }
 
@@ -259,7 +259,7 @@ function leyka_get_payment_form($campaign = null, $args = array()) {
     }
 
     $campaign = new Leyka_Campaign($campaign);
-    $campaign->increase_views_counter(); // Increase campaign views counter
+    $campaign->increase_views_counter();
 
 	return get_leyka_payment_form_template_html($campaign, $args['template']);
 }

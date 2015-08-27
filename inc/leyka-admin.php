@@ -129,15 +129,16 @@ class Leyka_Admin_Setup {
 
         global $submenu;
 
-        if( !empty($submenu['leyka']) )
+        if( !empty($submenu['leyka']) ) {
             $submenu['leyka'] = apply_filters('leyka_admin_menu_order', $submenu['leyka']);
+		}
     }
 	
 	/** Settings link in plugin list table **/
-	public function add_settings_link( $links ) {
-		$settings_link = '<a href="'.admin_url('admin.php?page=leyka_settings').'">' . __( 'Settings', 'leyka' ) . '</a>';
-		array_push( $links, $settings_link );
-		
+	public function add_settings_link($links) {
+
+		$links[] = '<a href="'.admin_url('admin.php?page=leyka_settings').'">'.__( 'Settings', 'leyka').'</a>';
+
 		return $links;
 	}
 

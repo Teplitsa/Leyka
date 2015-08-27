@@ -423,7 +423,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
         if($donation) { // Edit donation page displayed
 
-            $donation = get_validated_donation($donation);?>
+            $donation = leyka_get_validated_donation($donation);?>
 
             <label><?php _e('Chronopay customer ID', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">

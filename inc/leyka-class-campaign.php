@@ -699,7 +699,7 @@ class Leyka_Campaign {
 
     public function update_total_funded_amount($donation) {
 
-        $donation = get_validated_donation($donation);
+        $donation = leyka_get_validated_donation($donation);
         if( !$donation ) {
             return false;
         }

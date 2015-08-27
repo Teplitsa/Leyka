@@ -639,7 +639,7 @@ $options_meta = apply_filters('leyka_core_options_meta', array(
         'required' => 0, // 1 if field is required, 0 otherwise
         'placeholder' => '', // For text fields
         'length' => '', // For text fields
-        'list_entries' => leyka_get_pages_list(),
+        'list_entries' => 'leyka_get_pages_list',
         'validation_rules' => array(), // List of regexp?..
     ),
     'failure_page' => array(
@@ -650,7 +650,7 @@ $options_meta = apply_filters('leyka_core_options_meta', array(
         'required' => 0, // 1 if field is required, 0 otherwise
         'placeholder' => '', // For text fields
         'length' => '', // For text fields
-        'list_entries' => leyka_get_pages_list(),
+        'list_entries' => 'leyka_get_pages_list',
         'validation_rules' => array(), // List of regexp?..
     ),
 ));

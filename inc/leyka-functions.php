@@ -41,7 +41,7 @@ function leyka_current_user_has_role($role, $user_id = false) {
  * @param $donation mixed
  * @return Leyka_Donation A donation object, if parameter is valid in one way or another; false otherwise.
  */
-function get_validated_donation($donation) {
+function leyka_get_validated_donation($donation) {
 
     if(is_int($donation) && (int)$donation > 0) {
         $donation = new Leyka_Donation((int)$donation);
@@ -52,6 +52,23 @@ function get_validated_donation($donation) {
     }
 
     return $donation ? $donation : false;
+}
+
+/**
+ * @param $campaign mixed
+ * @return Leyka_Campaign A campaign object, if parameter is valid in one way or another; false otherwise.
+ */
+function leyka_get_validated_campaign($campaign) {
+
+    if(is_int($campaign) && (int)$campaign > 0) {
+        $campaign = new Leyka_Campaign((int)$campaign);
+    } elseif(is_a($campaign, 'WP_Post')) {
+        $campaign = new Leyka_Campaign($campaign);
+    } elseif( !is_a($campaign, 'Leyka_Campaign') ) {
+        return false;
+    }
+
+    return $campaign ? $campaign : false;
 }
 
 /** Get WP pages list as an array. Used mainly to form a dropdowns. */
@@ -588,12 +605,12 @@ function leyka_campaign_published() {
 }
 
 /** @return boolean True if at least one Leyka form is currently on the screen, false otherwise */
-function leyka_form_is_screening() {
-
-    return
-        is_singular(Leyka_Campaign_Management::$post_type) ||
-        (is_front_page() && stristr(get_page_template_slug(), 'home-campaign_one') !== false);
-}
+//function leyka_form_is_screening() {
+//
+//    return
+//        is_singular(Leyka_Campaign_Management::$post_type) ||
+//        (is_front_page() && stristr(get_page_template_slug(), 'home-campaign_one') !== false);
+//}
 
 /** ITV info-widget **/
 function leyka_itv_info_widget(){

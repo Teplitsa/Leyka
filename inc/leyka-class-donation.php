@@ -221,7 +221,7 @@ class Leyka_Donation_Management {
 
     public static function send_all_emails($donation) {
 
-        $donation = get_validated_donation($donation);
+        $donation = leyka_get_validated_donation($donation);
 
         if( !$donation ) {
             return false;
@@ -260,7 +260,7 @@ class Leyka_Donation_Management {
 
     public static function send_donor_thanking_email($donation) {
 
-        $donation = get_validated_donation($donation);
+        $donation = leyka_get_validated_donation($donation);
 
         $donor_email = $donation->donor_email;
         if( !$donor_email )
@@ -340,7 +340,7 @@ class Leyka_Donation_Management {
             return false;
         }
 
-        $donation = get_validated_donation($donation);
+        $donation = leyka_get_validated_donation($donation);
 
         if( !$donation || $donation->managers_emails_date ) {
             return false;
