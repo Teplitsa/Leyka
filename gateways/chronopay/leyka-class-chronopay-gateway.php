@@ -38,11 +38,11 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             'chronopay_ip' => array(
                 'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
                 'value' => '',
-                'default' => '159.255.220.140',
+                'default' => '185.30.16.166',
                 'title' => __('Chronopay IP', 'leyka'),
                 'description' => __('IP address to check for requests.', 'leyka'),
                 'required' => 1,
-                'placeholder' => __('Ex., 159.255.220.140', 'leyka'),
+                'placeholder' => __('Ex., 185.30.16.166', 'leyka'),
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
