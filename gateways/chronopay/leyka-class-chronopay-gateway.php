@@ -46,17 +46,17 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
-//            'chronopay_test_mode' => array(
-//                'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
-//                'value' => '',
-//                'default' => 1,
-//                'title' => __('Payments testing mode', 'leyka'),
-//                'description' => __('Check if Chronopay integration is in test mode.', 'leyka'),
-//                'required' => false,
-//                'placeholder' => '',
-//                'list_entries' => array(), // For select, radio & checkbox fields
-//                'validation_rules' => array(), // List of regexp?..
-//            ),
+            'chronopay_test_mode' => array(
+                'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+                'value' => '',
+                'default' => 0,
+                'title' => __('Use test gateway', 'leyka'),
+                'description' => __('Check to connect via test gateway (payments.test.chronopay.com).', 'leyka'),
+                'required' => false,
+                'placeholder' => '',
+                'list_entries' => array(), // For select, radio & checkbox fields
+                'validation_rules' => array(), // List of regexp?..
+            ),
         );
     }
 
@@ -79,8 +79,8 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             case 'chronopay_card':
             case 'chronopay_card_rebill':
                 $current_url =
-//                    leyka_options()->opt('chronopay_test_mode') ? 'https://payments.test.chronopay.com/' :
-                    'https://payments.chronopay.com/';
+                    leyka_options()->opt('chronopay_test_mode') ?
+                        'https://payments.test.chronopay.com/' : 'https://payments.chronopay.com/';
                 break;
         }
 
@@ -98,9 +98,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 		$sharedsec = leyka_options()->opt('chronopay_shared_sec');
 		$price = number_format((float)$donation->amount, 2,'.','');
 
-        $lang = get_locale() == 'ru_RU' ? 'ru' : 'en';
-
-		$country = ($donation->currency == 'rur') ? 'RUS' : '';
+		$country = $donation->currency == 'rur' ? 'RUS' : '';
 
         $form_data_vars =  array(
             'product_id' => $chronopay_product_id,
@@ -115,7 +113,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 			'decline_url' => leyka_get_failure_page_url(),
 
 			'sign' => md5($chronopay_product_id.'-'.$price.'-'.$sharedsec),
-			'language' => $lang,
+			'language' => get_locale() == 'ru_RU' ? 'ru' : 'en',
 			'email' => $donation->donor_email,
         );
 
@@ -128,11 +126,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
 	protected function _get_currency_id($leyka_currency_id){
 
-		$chronopay_currencies = array(
-			'rur' => 'RUB',
-			'usd' => 'USD',
-			'eur' => 'EUR'
-		);
+		$chronopay_currencies = array('rur' => 'RUB', 'usd' => 'USD', 'eur' => 'EUR');
 
 		return isset($chronopay_currencies[$leyka_currency_id]) ?
             $chronopay_currencies[$leyka_currency_id] : 'RUB';
@@ -152,7 +146,10 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
     public function _handle_service_calls($call_type = '') {
 
         // Test for gateway's IP:
-        if( leyka_options()->opt('chronopay_ip') && !in_array($_SERVER['REMOTE_ADDR'], explode(',', leyka_options()->opt('chronopay_ip'))) ) { // Security fail
+        if(
+            leyka_options()->opt('chronopay_ip') &&
+            !in_array($_SERVER['REMOTE_ADDR'], explode(',', leyka_options()->opt('chronopay_ip')))
+        ) { // Security fail
 
             $message = __("This message has been sent because a call to your ChronoPay function was made from an IP that did not match with the one in your Chronopay gateway setting. This could mean someone is trying to hack your payment website. The details of the call are below.", 'leyka')."\n\r\n\r";
 
@@ -164,7 +161,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
             wp_mail(get_option('admin_email'), __('Chronopay IP check failed!', 'leyka'), $message);
             status_header(200);
-            die();
+            die(1);
         }
 
         // Test for e-sign:
@@ -185,7 +182,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
             wp_mail(get_option('admin_email'), __('Chronopay security key check failed!', 'leyka'), $message);
             status_header(200);
-            die();
+            die(2);
         }
 
         $_POST['cs2'] = (int)$_POST['cs2'];
@@ -202,13 +199,17 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
             wp_mail(get_option('admin_email'), __('Chronopay gives unknown donation ID parameter!', 'leyka'), $message);
             status_header(200);
-            die();
+            die(3);
         }
 
-        if(strtolower($_POST['currency']) == 'rub')
+        $_POST['currency'] = strtolower($_POST['currency']);
+        if($_POST['currency'] == 'rub') {
             $currency_string = 'rur';
-//        else if() $currency_string = 'usd';
-        else {
+        } else if($_POST['currency'] == 'usd') {
+            $currency_string = 'usd';
+        } else if($_POST['currency'] == 'eur') {
+            $currency_string = 'eur';
+        } else {
 
             $message = __("This message has been sent because a call to your ChronoPay callbacks URL was made with a currency parameter (POST['currency']) that Leyka is unknown of. The details of the call are below.", 'leyka')."\n\r\n\r";
 
@@ -218,7 +219,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
             wp_mail(get_option('admin_email'), __('Chronopay gives unknown currency parameter!', 'leyka'), $message);
             status_header(200);
-            die();
+            die(4);
         }
 
         // Store donation data - rebill payment:
@@ -272,7 +273,6 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             }
 
         } else if( // Single payment. For now, processing is just like initial rebills
-
             leyka_options()->opt('chronopay_card_product_id_'.$currency_string) &&
             $_POST['product_id'] == leyka_options()->opt('chronopay_card_product_id_'.$currency_string)
         ) {
@@ -292,7 +292,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         }
 
         status_header(200);
-        die();
+        die(0);
     }
 
     public function get_init_recurrent_donation($recurring) {
