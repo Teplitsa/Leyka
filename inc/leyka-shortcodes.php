@@ -11,15 +11,14 @@
 
 add_shortcode('leyka_scale', 'leyka_scale_screen' );
 function leyka_scale_screen($atts) {
-	global $post;
-	
+
     $a = shortcode_atts(array(
         'id'          => 0,
         'show_button' => 0,
     ), $atts);
 
-    $campaign = ($a['id'] > 0) ? get_post($a['id']) : $post;
-	
+    $campaign = ($a['id'] > 0) ? get_post($a['id']) : get_post();
+
 	if($campaign->post_type != Leyka_Campaign_Management::$post_type) { // Wrong campaign data
 		return '';
     }
@@ -28,7 +27,8 @@ function leyka_scale_screen($atts) {
 }
 
 function leyka_get_scale($campaign = null, $args = array()) {
-	global $post;
+
+	$current_post = get_post();
 
 	$defaults = array(
 		'show_button' => 0,
@@ -38,7 +38,7 @@ function leyka_get_scale($campaign = null, $args = array()) {
 	$args = wp_parse_args($args, $defaults);
 
 	if( !$campaign ) {
-		$campaign = $post;
+		$campaign = $current_post;
     } elseif(is_int($campaign)) {
 		$campaign = get_post($campaign);
     }
@@ -65,7 +65,7 @@ function leyka_get_scale($campaign = null, $args = array()) {
 		<?php leyka_scale_compact($campaign);?>
 	<?php if($args['show_button'] == 1 && !$campaign->is_finished) {?>
 		<div class="leyka-scale-button">
-			<a href='<?php echo $url;?>'<?php if($campaign->ID == $post->ID) echo ' class="leyka-scroll"';?><?php echo $target;?>>
+			<a href='<?php echo $url;?>' <?php if($campaign->ID == $current_post->ID) echo 'class="leyka-scroll"';?><?php echo $target;?>>
                 <?php echo leyka_get_scale_button_label();?>
             </a>
 		</div>
@@ -90,8 +90,6 @@ function leyka_get_scale_button_label(){
 add_shortcode('leyka_campaign_card', 'leyka_campaign_card_screen' );
 function leyka_campaign_card_screen($atts) {
 
-	global $post;
-
     $a = shortcode_atts(array(
         'id' => 0,
         'show_title' => 1,
@@ -101,7 +99,7 @@ function leyka_campaign_card_screen($atts) {
 		'show_button' => 1,
     ), $atts);
 
-    $campaign_post = $a['id'] > 0 ? get_post($a['id']) : $post;
+    $campaign_post = $a['id'] > 0 ? get_post($a['id']) : get_post();
 	
 	if($campaign_post->post_type != Leyka_Campaign_Management::$post_type) { // Wrong campaign data
 		return '';
@@ -116,7 +114,7 @@ function leyka_campaign_card_screen($atts) {
 
 function leyka_get_campaign_card($campaign = null, $args = array()) {
 
-	global $post;
+	$current_post = get_post();
 
 	$defaults = array(
 		'show_title' => 1,
@@ -131,7 +129,7 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
 	$args = wp_parse_args($args, $defaults);
 
 	if( !$campaign ) {
-		$campaign = $post;
+		$campaign = $current_post;
 	} elseif((int)$campaign > 0) {
 		$campaign = get_post($campaign);
 	} elseif( !is_a($campaign, 'WP_Post') ) {
@@ -205,7 +203,7 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
                 ( !!$args['increase_counters'] ? '?increase_counters=1' : '' );?>
 
 			<div class="leyka-scale-button-alone">
-				<a href="<?php echo $url;?>" <?php echo $campaign->ID == $post->ID ? 'class="leyka-scroll"' : '';?><?php echo $target;?>><?php echo leyka_get_scale_button_label();?></a>
+				<a href="<?php echo $url;?>" <?php echo $campaign->ID == $current_post->ID ? 'class="leyka-scroll"' : '';?><?php echo $target;?>><?php echo leyka_get_scale_button_label();?></a>
 			</div>
 
 		<?php }?>
@@ -222,14 +220,12 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
 add_shortcode('leyka_payment_form', 'leyka_payment_form_screen');
 function leyka_payment_form_screen($atts) {
 
-	global $post;
-
     $a = shortcode_atts(array(
         'id'          => 0,
         'template'    => null,		
     ), $atts);
 
-    $campaign = $a['id'] > 0 ? get_post($a['id']) : $post;
+    $campaign = $a['id'] > 0 ? get_post($a['id']) : get_post();
 
 	if($campaign->post_type != Leyka_Campaign_Management::$post_type) {
 		return '';
@@ -240,8 +236,6 @@ function leyka_payment_form_screen($atts) {
 
 function leyka_get_payment_form($campaign = null, $args = array()) {
 
-	global $post;
-
 	$defaults = array(
 		'template'  => null, // Ex. "radios" or "toggles"
 	);
@@ -249,7 +243,7 @@ function leyka_get_payment_form($campaign = null, $args = array()) {
 	$args = wp_parse_args($args, $defaults);
 
 	if( !$campaign ) {
-		$campaign = $post;
+		$campaign = get_post();
 	} elseif(is_int($campaign)){
 		$campaign = get_post($campaign);
 	}
@@ -290,10 +284,7 @@ function leyka_get_donors_list_per_page() {
 	return apply_filters('leyka_donors_list_per_page', 25);
 }
 
-
 function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
-
-	global $post;
 
 	$defaults = array(
 		'num'          => leyka_get_donors_list_per_page(),
@@ -305,10 +296,10 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
 	$args = wp_parse_args($args, $defaults);
 
 	if($campaign_id === 0) {
-		$campaign_id = $post->ID;
+		$campaign_id = get_post()->ID;
 	}
 
-	//get donations: funded amount > 0  
+	// Get donations: funded amount > 0
 	$d_args = array(
 		'post_type' => Leyka_Donation_Management::$post_type,
 		'post_status' => 'funded',
@@ -317,13 +308,14 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
 			array(
 				'key'     => 'leyka_donation_amount',
 				'value'   => 0,
-				'compare' => '>',
+				'compare' => '!=',
 				'type'    => 'NUMERIC'
 			)
 		)
 	);
-	
-	if($campaign_id != 'all'){
+
+	if($campaign_id != 'all') {
+
 		$d_args['meta_query']['relation'] = 'AND';
 		$d_args['meta_query'][] = array(
 			'key'   => 'leyka_campaign_id',
@@ -331,29 +323,32 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
 		);		
 	}
 
-	$query = new WP_Query($d_args);
-	if( !$query->have_posts() ) {
+	$donations = get_posts($d_args);
+
+	if( !$donations ) {
 		return '';
     }
-	
+
 	ob_start();?>
 
 	<div id="<?php echo esc_attr('leyka_donors_list-'.uniqid());?>" class="leyka-donors-list">
 	<?php
-		foreach($query->posts as $qp) {
-			$donation = new Leyka_Donation($qp);			
-			
+		foreach($donations as $donation) {
+
+			$donation = new Leyka_Donation($donation);
+
 			$amount = number_format($donation->sum, 0, '.', ' ');
-			
-			$html = "<div class='ldl-item'>";	
+
+			$html = "<div class='ldl-item'>";
 			$html .= "<div class='amount'>{$amount} {$donation->currency_label}</div>";
-			
+
 			if($args['show_purpose'] == 1) {
-				$html .= "<div class='purpose'><a href='".get_permalink($donation->campaign_id)."'>".$donation->campaign_payment_title."</a></div>"; // correct property?
+				$html .= "<div class='purpose'><a href='".get_permalink($donation->campaign_id)."'>".$donation->campaign_payment_title."</a></div>";
 			}
 
 			$meta = array();
 			if($args['show_name'] == 1) {
+
 				$name = $donation->donor_name;
 				$name = (!empty($name)) ? $name : __('Anonymous', 'leyka');				
 				$meta[] = '<span>'.$name.'</span>';

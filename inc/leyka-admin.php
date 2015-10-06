@@ -113,6 +113,9 @@ class Leyka_Admin_Setup {
         // Donations:
         add_submenu_page('leyka', __('Donations', 'leyka'), __('Donations', 'leyka'), 'leyka_manage_donations', 'edit.php?post_type='.Leyka_Donation_Management::$post_type);
 
+        // New donation:
+        add_submenu_page('leyka', __('New donation', 'leyka'), __('New correction donation', 'leyka'), 'leyka_manage_donations', 'post-new.php?post_type='.Leyka_Donation_Management::$post_type);
+
         // Campigns:
         add_submenu_page('leyka', __('All Campaigns', 'leyka'), __('All Campaigns', 'leyka'), 'leyka_manage_donations', 'edit.php?post_type='.Leyka_Campaign_Management::$post_type);
 
@@ -133,7 +136,7 @@ class Leyka_Admin_Setup {
             $submenu['leyka'] = apply_filters('leyka_admin_menu_order', $submenu['leyka']);
 		}
     }
-	
+
 	/** Settings link in plugin list table **/
 	public function add_settings_link($links) {
 
@@ -158,7 +161,6 @@ class Leyka_Admin_Setup {
 
 		<div class="wrap">
             <h2><?php _e('Leyka Dashboard', 'leyka');?></h2>
-
             <div class="metabox-holder" id="leyka-widgets">
                 <div class="postbox-container" id="postbox-container-1">
                     <?php do_meta_boxes('toplevel_page_leyka', 'normal', null);?>
@@ -172,7 +174,6 @@ class Leyka_Admin_Setup {
 
     public function guide_metabox_screen() {
 
-		// Content:
 		$row['step_1'] = array(
 			'txt'    => __('Fill in information about your organisation', 'leyka'),
 			'action' => leyka_are_settings_complete('beneficiary') ? false : admin_url('admin.php?page=leyka_settings'),
@@ -206,32 +207,27 @@ class Leyka_Admin_Setup {
 		}?>
 	<table class="leyka-guide-table">		
 		<tbody>
-		<?php
-			$count = 0;
-			foreach($row as $key => $obj){
-				$count++;
-			?>
+		<?php $count = 0;
+			foreach($row as $key => $obj) { $count++;?>
+
 			<tr class="<?php echo esc_attr($key);?>">
 				<td class="count"><?php echo $count;?>.</td>
 				<td class="step"><?php echo $obj['txt'];?></td>
-				<?php if($obj['action']) { ?>
-					<td class="action"><a href="<?php echo esc_url($obj['action']);?>"><?php _e('Set up', 'leyka');?></a></td>
-					<td class="docs"><a href="<?php echo esc_url($obj['docs']);?>" title="<?php esc_attr_e('Additional information on the plugin website', 'leyka');?>" target="_blank"><span class="dashicons dashicons-editor-help"></span></a></td>
-				<?php } else { ?>
-					<td class="action complete"><span><?php _e('Complete', 'leyka');?></span></td>
-				<?php } ?>
-				
+				<?php if($obj['action']) {?>
+				<td class="action"><a href="<?php echo esc_url($obj['action']);?>"><?php _e('Set up', 'leyka');?></a></td>
+				<td class="docs"><a href="<?php echo esc_url($obj['docs']);?>" title="<?php esc_attr_e('Additional information on the plugin website', 'leyka');?>" target="_blank"><span class="dashicons dashicons-editor-help"></span></a></td>
+				<?php } else {?>
+				<td class="action complete"><span><?php _e('Complete', 'leyka');?></span></td>
+				<?php }?>
 			</tr>
-			<?php
-			}
-		?>
+		<?php }?>
 		</tbody>
 	</table>
     <?php
     }
 
 	public function status_metabox_screen(){
-		
+
 		$tabs = Leyka_Options_Allocator::instance()->get_tabs();
 		if($tabs) {?>
 
@@ -473,13 +469,14 @@ class Leyka_Admin_Setup {
 	}
 
     /** Displaying feedback **/
-    public function feedback_screen(){
+    public function feedback_screen() {
 
-        if( !current_user_can('leyka_manage_donations') )
+        if( !current_user_can('leyka_manage_donations') ) {
             wp_die(__('You do not have permissions to access this page.', 'leyka'));
+		}
 
         $user = wp_get_current_user();?>
-		
+
 	<div class="wrap">
 		<h2><?php _e('Send us a feedback', 'leyka');?></h2>
 

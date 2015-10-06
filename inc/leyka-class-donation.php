@@ -101,28 +101,12 @@ class Leyka_Donation_Management {
 
             $campaign = new Leyka_Campaign($donation->campaign_id);
             $campaign->update_total_funded_amount($donation);
-
-            if($campaign->target) {
-
-                if($campaign->total_funded >= $campaign->target) {
-                    $campaign->target_state = 'is_reached';
-                } elseif($campaign->target_state != 'in_process') {
-                    $campaign->target_state = 'in_process';
-                }
-            }
         }
     }
 
     public function manage_filters() {
 
-        global $pagenow;
-
-        if(
-            $pagenow == 'edit.php' &&
-            isset($_GET['post_type']) &&
-            $_GET['post_type'] == self::$post_type &&
-            current_user_can('leyka_manage_donations')
-        ) {?>
+        if(get_current_screen()->id == 'edit-'.self::$post_type && current_user_can('leyka_manage_donations')) {?>
 
         <label for="payment-type-select"></label>
         <select id="payment-type-select" name="payment_type">
@@ -136,6 +120,7 @@ class Leyka_Donation_Management {
         <label for="gateway-pm-select"></label>
         <select id="gateway-pm-select" name="gateway_pm">
             <option value="" <?php echo empty($_GET['gateway_pm']) ? '' : 'selected="selected"';?>><?php _e('Select a gateway or a payment method', 'leyka');?></option>
+
         <?php $gw_pm_list = array();
         foreach(leyka_get_gateways() as $gateway) {
 
@@ -159,11 +144,12 @@ class Leyka_Donation_Management {
         </select>
 
         <?php $campaign_title = '';
-            if( !empty($_GET['campaign']) && (int)$_GET['campaign'] > 0) {
-                $campaign = get_post((int)$_GET['campaign']);
-                if($campaign)
-                    $campaign_title = $campaign->post_title;
-            }?>
+        if( !empty($_GET['campaign']) && (int)$_GET['campaign'] > 0) {
+            $campaign = get_post((int)$_GET['campaign']);
+            if($campaign) {
+                $campaign_title = $campaign->post_title;
+            }
+        }?>
 
         <label for="campaign-select"></label>
         <input id="campaign-select"
@@ -705,15 +691,17 @@ class Leyka_Donation_Management {
                 $gateway = leyka_get_gateway_by_id($donation->gateway_id);
 
                 echo ($pm ? $pm->label : __('Unknown payment method', 'leyka'))
-                    .' ('.($gateway ? $gateway->label : __('unknown gateway', 'leyka')).')';
-                ?>
+                    .' ('.($gateway ? $gateway->label : __('unknown gateway', 'leyka')).')';?>
 			    </span>
             <?php }?>
             </div>
         </div>
 
         <div class="leyka-ddata-string">
-            <?php leyka_get_gateway_by_id($donation->gateway_id)->display_donation_specific_data_fields($donation);?>
+            <?php $gateway = leyka_get_gateway_by_id($donation->gateway_id);
+            if($gateway) {
+                $gateway->display_donation_specific_data_fields($donation);
+            }?>
         </div>
 
         <div class="leyka-ddata-string">
@@ -1045,24 +1033,34 @@ class Leyka_Donation_Management {
         remove_action('save_post', array($this, 'save_donation_data'));
 
         $donation = new Leyka_Donation($donation_id);
+
+        if(isset($_POST['donation-amount']) && (float)$donation->amount != (float)$_POST['donation-amount']) {
+            $donation->amount = (float)$_POST['donation-amount'];
+        }
+
+        if( !$donation->currency ) {
+            $donation->currency = 'rur';
+        }
+
         if($donation->status != $_POST['donation_status']) {
             $donation->status = $_POST['donation_status'];
         }
 
         if(isset($_POST['campaign-id']) && $donation->campaign_id != (int)$_POST['campaign-id']) {
 
-            $old_campaign = new Leyka_Campaign($donation->campaign_id);
-            $new_campaign = new Leyka_Campaign((int)$_POST['campaign-id']);
+            if($donation->campaign_id) { // If we're adding a correctional donation, $donation->campaign_id == 0
+
+                $old_campaign = new Leyka_Campaign($donation->campaign_id);
+                $old_campaign->update_total_funded_amount($donation);
+            }
 
             $donation->campaign_id = (int)$_POST['campaign-id'];
-
-            $old_campaign->update_total_funded_amount($donation)->refresh_target_state();
-            $new_campaign->update_total_funded_amount($donation)->refresh_target_state();
         }
 
-        // It's a new correction donation, set a title from it's campaign:
         $campaign = new Leyka_Campaign($donation->campaign_id);
+        $campaign->update_total_funded_amount($donation);
 
+        // It's a new correction donation, set a title from it's campaign:
         $donation_title = $campaign->payment_title ?
             $campaign->payment_title :
             ($campaign->title ? $campaign->title : sprintf(__('Donation #%s', 'leyka'), $donation_id));
@@ -1077,14 +1075,6 @@ class Leyka_Donation_Management {
 
         if(isset($_POST['donor-email']) && $donation->donor_email != $_POST['donor-email']) {
             $donation->donor_email = $_POST['donor-email'];
-        }
-
-        if(isset($_POST['donation-amount']) && (float)$donation->amount != (float)$_POST['donation-amount']) {
-            $donation->amount = (float)$_POST['donation-amount'];
-        }
-
-        if( !$donation->currency ) {
-            $donation->currency = 'rur';
         }
 
         if(
@@ -1160,70 +1150,70 @@ class Leyka_Donation {
         ));
 
         $amount = empty($params['amount']) ? leyka_pf_get_amount_value() : round((float)$params['amount'], 2);
-        update_post_meta($id, 'leyka_donation_amount', $amount);
+        add_post_meta($id, 'leyka_donation_amount', $amount);
 
         $currency = empty($params['currency']) ? leyka_pf_get_currency_value() : $params['currency'];
-        update_post_meta($id, 'leyka_donation_currency', $currency);
+        add_post_meta($id, 'leyka_donation_currency', $currency);
 
         $currency_rate = leyka_options()->opt("currency_rur2$currency");
         if($currency == 'RUR' || !$currency_rate)
             $currency_rate = 1.0;
 
-        update_post_meta(
+        add_post_meta(
             $id,
             'leyka_main_curr_amount',
             $currency == 'RUR' ? $amount : $amount*$currency_rate
         );
 
-        update_post_meta(
+        add_post_meta(
             $id, 'leyka_donor_name',
             empty($params['donor_name']) ? leyka_pf_get_donor_name_value() : $params['donor_name']
         );
-        update_post_meta(
+        add_post_meta(
             $id, 'leyka_donor_email',
             empty($params['donor_email']) ? leyka_pf_get_donor_email_value() : $params['donor_email']
         );
 
         $pm_data = leyka_pf_get_payment_method_value();
         $pm_data = $pm_data ? $pm_data : array('payment_method_id' => '', 'gateway_id' => '',);
-        update_post_meta(
+        add_post_meta(
             $id, 'leyka_payment_method',
             empty($params['payment_method_id']) ? $pm_data['payment_method_id'] : $params['payment_method_id']
         );
-        update_post_meta(
+        add_post_meta(
             $id, 'leyka_gateway',
             empty($params['gateway_id']) ? $pm_data['gateway_id'] : $params['gateway_id']
         );
-        update_post_meta(
+        add_post_meta(
             $id, 'leyka_campaign_id',
             empty($params['campaign_id']) ? leyka_pf_get_campaign_id_value() : $params['campaign_id']
         );
 
         if( !get_post_meta($id, '_leyka_donor_email_date', true) )
-            update_post_meta($id, '_leyka_donor_email_date', 0);
+            add_post_meta($id, '_leyka_donor_email_date', 0);
         if( !get_post_meta($id, '_leyka_managers_emails_date', true) )
-            update_post_meta($id, '_leyka_managers_emails_date', 0);
+            add_post_meta($id, '_leyka_managers_emails_date', 0);
 
-        update_post_meta($id, '_status_log', array(array('date' => time(), 'status' => $status)));
+        add_post_meta($id, '_status_log', array(array('date' => time(), 'status' => $status)));
 
         $params['payment_type'] = empty($params['payment_type']) ?
             'single' : ($params['payment_type'] == 'rebill' ? 'rebill' : 'correction');
-        update_post_meta($id, 'leyka_payment_type', $params['payment_type']);
+        add_post_meta($id, 'leyka_payment_type', $params['payment_type']);
 
         if( !empty($params['gateway_id']) ) {
             do_action("leyka_{$params['gateway_id']}_add_donation_specific_data", $id, $params);
         }
 
         if( !empty($params['recurrents_cancelled']) ) {
-            update_post_meta($id, 'leyka_recurrents_cancelled', $params['recurrents_cancelled']);
+            add_post_meta($id, 'leyka_recurrents_cancelled', $params['recurrents_cancelled']);
         }
 
         if( !empty($params['recurrents_cancel_date']) ) {
-            update_post_meta($id, 'leyka_recurrents_cancel_date', $params['recurrents_cancel_date']);
+            add_post_meta($id, 'leyka_recurrents_cancel_date', $params['recurrents_cancel_date']);
         } elseif( !empty($params['recurrents_cancelled']) && $params['recurrents_cancelled']) {
-            update_post_meta($id, 'leyka_recurrents_cancel_date', time());
+            add_post_meta($id, 'leyka_recurrents_cancel_date', time());
         } else {
-            update_post_meta($id, 'leyka_recurrents_cancel_date', 0);
+            add_post_meta($id, 'leyka_recurrents_cancel_date', 0);
         }
 
         return $id;
@@ -1413,10 +1403,11 @@ class Leyka_Donation {
                 break;
 
             case 'status':
-                if( !array_key_exists($value, leyka_get_donation_status_list()) || $value == $this->status )
+                if( !array_key_exists($value, leyka_get_donation_status_list()) || $value == $this->status ) {
                     return false;
+                }
 
-                $res = wp_update_post(array('ID' => $this->_id, 'post_status' => $value));
+                wp_update_post(array('ID' => $this->_id, 'post_status' => $value));
 
                 $status_log = get_post_meta($this->_id, '_status_log', true);
                 $status_log[] = array('date' => time(), 'status' => $value);

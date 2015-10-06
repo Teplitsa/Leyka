@@ -85,14 +85,7 @@ class Leyka_Campaign_Management {
 
     public function manage_filters() {
 
-        global $pagenow;
-
-        if(
-            $pagenow == 'edit.php' &&
-            isset($_GET['post_type']) &&
-            $_GET['post_type'] == self::$post_type /*&&
-    in_array('administrator', wp_get_current_user()->roles)*/
-        ) {?>
+        if(get_current_screen()->id == 'edit-'.self::$post_type && current_user_can('leyka_manage_donations')) {?>
 
             <label for="campaign-state-select"></label>
             <select id="campaign-state-select" name="campaign_state">
@@ -116,7 +109,6 @@ class Leyka_Campaign_Management {
                 </option>
                 <?php }?>
             </select>
-
     <?php }
     }
 
@@ -508,22 +500,17 @@ class Leyka_Campaign {
             // If campaign total collected amount is not saved, save it:
             if( !isset($meta['total_funded']) || !$meta['total_funded'][0] ) {
 
-                $donations = get_posts(array(
-                    'post_type' => Leyka_Donation_Management::$post_type,
-                    'post_status' => 'funded',
-                    'posts_per_page' => -1,
-                    'meta_key' => 'leyka_campaign_id',
-                    'meta_value' => $this->_id,
-                ));
-//                echo '<pre>' . print_r($this->_id.' - '.count($donations), 1) . '</pre>';
-
                 $sum = 0.0;
-                foreach($donations as $donation) {
-//                    echo '<pre>' . print_r('Here:'.$donation->ID, 1) . '</pre>';
-
-                    $donation = new Leyka_Donation($donation);
-                    $sum += $donation->main_curr_amount ? $donation->main_curr_amount : $donation->amount;
+                foreach($this->get_donations(array('funded')) as $donation) {
+                    $sum += $donation->main_curr_amount ? $donation->main_curr_amount : $donation->amount; //$donation->sum;
                 }
+
+//                $sum = 0.0;
+//                foreach($donations as $donation) {
+//
+//                    $donation = new Leyka_Donation($donation);
+//                    $sum += $donation->main_curr_amount ? $donation->main_curr_amount : $donation->amount;
+//                }
 
                 update_post_meta($this->_id, 'total_funded', $sum);
 
@@ -614,12 +601,11 @@ class Leyka_Campaign {
         }
     }
 
-	/** Get complicated params */
-    public function get_donations() {
+    public function get_donations(array $status = null) {
 
         $donations = get_posts(array(
             'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => array('submitted', 'funded', 'refunded', 'failed', 'trash',),
+            'post_status' => $status ? $status : array('submitted', 'funded', 'refunded', 'failed', 'trash',),
             'posts_per_page' => -1,
             'meta_key' => 'leyka_campaign_id',
             'meta_value' => $this->_id,
@@ -652,6 +638,10 @@ class Leyka_Campaign {
 
     public function refresh_target_state() {
 
+        if( !$this->target ) {
+            return false;
+        }
+
         $target_state = $this->_get_calculated_target_state();
         $meta = array();
 
@@ -672,6 +662,8 @@ class Leyka_Campaign {
         foreach($meta as $key => $value) {
             update_post_meta($this->_id, $key, $value);
         }
+
+        return $meta['target_state'];
     }
 	
 	static function get_target_state_label($state = false) {
@@ -697,17 +689,34 @@ class Leyka_Campaign {
         update_post_meta($this->_id, 'count_submits', $this->_campaign_meta['count_submits']);
     }
 
-    public function update_total_funded_amount($donation) {
+    public function update_total_funded_amount($donation = false) {
 
-        $donation = leyka_get_validated_donation($donation);
-        if( !$donation ) {
-            return false;
+        if( !$donation ) { // Recalculate total collected amount for a campaign and recache it
+
+            $sum = 0.0;
+            foreach($this->get_donations(array('funded')) as $donation) {
+                $sum += $donation->sum;
+            }
+
+            $this->_campaign_meta['total_funded'] = $sum;
+            update_post_meta($this->_id, 'total_funded', $this->_campaign_meta['total_funded']);
+
+        } else { // Just add/subtract a sum of new donation from a campaign metadata
+
+            $donation = leyka_get_validated_donation($donation);
+            if( !$donation ) {
+                return false;
+            }
+
+            $sum = ($donation->status != 'funded' || $donation->campaign_id != $this->_id) && $donation->sum > 0 ?
+                -$donation->sum : $donation->sum;
+
+            $this->_campaign_meta['total_funded'] += $sum;
+
+            update_post_meta($this->_id, 'total_funded', $this->_campaign_meta['total_funded']);
         }
 
-        $this->_campaign_meta['total_funded'] +=
-            ($donation->status != 'funded' || $donation->campaign_id != $this->_id ? -$donation->sum : $donation->sum);
-
-        update_post_meta($this->_id, 'total_funded', $this->_campaign_meta['total_funded']);
+        $this->refresh_target_state();
 
         return $this;
     }

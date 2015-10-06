@@ -566,14 +566,14 @@ function leyka_pf_submission_errors() {?>
 add_filter('the_content', 'leyka_print_donation_elements');
 function leyka_print_donation_elements($content) {
 
-	global $post;
+	$current_campaign_post = get_post();
 
 	$autoprint = leyka_options()->opt('donation_form_mode');
 	if( !is_singular(Leyka_Campaign_Management::$post_type) || !$autoprint ) {
         return $content;
     }
 	
-	$campaign = new Leyka_Campaign($post);	
+	$campaign = new Leyka_Campaign($current_campaign_post);
 	if($campaign->ignore_global_template_settings) {
 		return $content;
     }
@@ -597,17 +597,17 @@ function leyka_print_donation_elements($content) {
         $content .= do_shortcode("[leyka_scale show_button='0']");
     }
 
-    $content .= get_leyka_payment_form_template_html($post); // Payment form
+    $content .= get_leyka_payment_form_template_html($current_campaign_post); // Payment form
 
     $campaign->increase_views_counter(); // Increase campaign views counter
 
 	// Donations list:
     if(leyka_options()->opt('leyka_donations_history_under_forms')) {
 
-		$list = leyka_get_donors_list($post->ID);
+		$list = leyka_get_donors_list($current_campaign_post->ID);
 		if($list) {
 
-			$label = apply_filters('leyka_donations_list_title', __('Our sincere thanks', 'leyka'), $post->ID);
+			$label = apply_filters('leyka_donations_list_title', __('Our sincere thanks', 'leyka'), $current_campaign_post->ID);
 			$content .= '<h3 class="leyka-donations-list-title">'.$label.'</h3>'.$list;
 		}
     }
@@ -617,10 +617,8 @@ function leyka_print_donation_elements($content) {
 
 function leyka_get_current_template_data($campaign = null, $template = null, $is_service = false) {
 
-    global $post;
-
 	if( !$campaign ) {
-		$campaign = $post;
+		$campaign = get_post();
     } elseif(is_int($campaign)) {
 		$campaign = get_post($campaign);
     }
@@ -646,12 +644,10 @@ function leyka_get_current_template_data($campaign = null, $template = null, $is
 
 function get_leyka_payment_form_template_html($campaign = null, $template = null) {
 
-	global $post;
-
     ob_start();
 
 	if( !$campaign ) {
-        $campaign = new Leyka_Campaign($post);
+        $campaign = new Leyka_Campaign(get_post());
 	} elseif(is_int($campaign) || is_a($campaign, 'WP_Post')) {
         $campaign = new Leyka_Campaign($campaign);
 	} elseif( !is_a($campaign, 'Leyka_Campaign') ) {
