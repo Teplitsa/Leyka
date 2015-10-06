@@ -175,18 +175,18 @@ class Leyka_Admin_Setup {
 		// Content:
 		$row['step_1'] = array(
 			'txt'    => __('Fill in information about your organisation', 'leyka'),
-			'action' => leyka_settings_complete('beneficiary') ? false : admin_url('admin.php?page=leyka_settings'),
+			'action' => leyka_are_settings_complete('beneficiary') ? false : admin_url('admin.php?page=leyka_settings'),
 			'docs'   => 'https://leyka.te-st.ru/docs/nastrojka-lejki/'
 		);
 		$row['step_2'] = array(
 			'txt'    => __('Set up at least one payment gateway - bank order, for example', 'leyka'),
-			'action' => leyka_min_payment_settings_complete() ?
+			'action' => leyka_is_min_payment_settings_complete() ?
                 false : admin_url('admin.php?page=leyka_settings&stage=payment'),
 			'docs'   => 'https://leyka.te-st.ru/docs/nastrojka-lejki-vkladka-2-platezhnye-optsii/'
 		);
 		$row['step_3'] = array(
 			'txt'    => __('Create and publsih your first campaign', 'leyka'),
-			'action' => leyka_campaign_published() ?
+			'action' => leyka_is_campaign_published() ?
                 false : admin_url('post-new.php?post_type='.Leyka_Campaign_Management::$post_type),
 			'docs'   => 'https://leyka.te-st.ru/docs/sozdanie-kampanii/'
 		);
@@ -194,13 +194,13 @@ class Leyka_Admin_Setup {
 		if(current_theme_supports('widgets')) {
 			$row['step_4'] = array(
 				'txt'    => __('Display campaign and donation information on your site using widgets', 'leyka'),
-				'action' => admin_url('widgets.php'),
+				'action' => leyka_is_widget_active() ? false : admin_url('widgets.php'),
 				'docs'   => 'https://leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/'
 			);
 		} elseif(current_theme_supports('menus')) {
 			$row['step_4'] = array(
 				'txt'    => __('Display campaign\'s link on your site using menus', 'leyka'),
-				'action' => admin_url('nav-menus.php'),
+				'action' => leyka_is_campaign_link_in_menu() ? false : admin_url('nav-menus.php'),
 				'docs'   => 'https://leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/'
 			);
 		}?>

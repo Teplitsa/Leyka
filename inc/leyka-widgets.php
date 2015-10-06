@@ -379,8 +379,9 @@ class Leyka_Donations_List_Widget extends WP_Widget {
 		);
 
 		$html = leyka_get_donors_list($campaign_id, $args);
-		if(empty($html))
+		if( !$html ) {
 			return;
+        }
 
 		/**
 		 * @var $before_widget
@@ -388,13 +389,7 @@ class Leyka_Donations_List_Widget extends WP_Widget {
 		 * @var $after_title
 		 * @var $after_widget
 		 */
-		echo $before_widget;
-        if($title)
-		    echo $before_title.$title.$after_title;
-
-		echo $html;
-
-		echo $after_widget;
+		echo $before_widget.($title ? $before_title.$title.$after_title : '').$html.$after_widget;
 	}
 	
 	/** Update widget */

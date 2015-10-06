@@ -292,21 +292,22 @@ function leyka_get_donors_list_per_page() {
 
 
 function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
+
 	global $post;
-	
+
 	$defaults = array(
 		'num'          => leyka_get_donors_list_per_page(),
 		'show_purpose' => 1,
 		'show_name'    => 1,
 		'show_date'    => 1,
 	);
-	
+
 	$args = wp_parse_args($args, $defaults);
-		
+
 	if($campaign_id === 0) {
 		$campaign_id = $post->ID;
 	}
-	
+
 	//get donations: funded amount > 0  
 	$d_args = array(
 		'post_type' => Leyka_Donation_Management::$post_type,
@@ -348,7 +349,7 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
 			$html .= "<div class='amount'>{$amount} {$donation->currency_label}</div>";
 			
 			if($args['show_purpose'] == 1) {
-				$html .= "<div class='purpose'>".$donation->campaign_payment_title."</div>"; // correct property?
+				$html .= "<div class='purpose'><a href='".get_permalink($donation->campaign_id)."'>".$donation->campaign_payment_title."</a></div>"; // correct property?
 			}
 
 			$meta = array();
