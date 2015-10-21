@@ -4,7 +4,7 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндексденьги
 Requires at least: 3.6.1
-Tested up to: 4.3
+Tested up to: 4.3.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -153,6 +153,16 @@ PHP at least 5.3 is required.
 10. События Google Analytics
 
 == Changelog ==
+
+= 2.2.8 =
+ * New: options engine is refactored. Large queries number improvement.
+ * New: now correctional donation may be added from the plugin's main menu.
+ * New: added new caching system for campaigns' total collected amounts.
+ * New: added a service CC to the feedback form processing.
+ * Fix: important bug when correctional donations led to the incorrect total funded amounts' calculations is fixed.
+ * Fix: donations export function is returned to it's rightful place.
+ * Fix: donations dataTable bug on campaign editing page is fixed.
+ * Fix: small code improvements and fixes. Oh come on, you knew that we won't miss this line.
 
 = 2.2.7.2 =
  * New: full support for WP 4.3 is achieved.

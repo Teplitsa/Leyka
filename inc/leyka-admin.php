@@ -533,10 +533,7 @@ class Leyka_Admin_Setup {
         $_POST['email'] = htmlentities(trim($_POST['email']), ENT_COMPAT, 'UTF-8');
         $_POST['text'] = htmlentities(trim($_POST['text']), ENT_COMPAT, 'UTF-8');
 
-        if(
-            !$_POST['name'] || !$_POST['email'] || !$_POST['text'] ||
-            !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)
-        ) {
+        if( !$_POST['name'] || !$_POST['email'] || !$_POST['text'] || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) ) {
             die('2');
         }
 

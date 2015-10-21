@@ -3,7 +3,7 @@
  * Plugin Name: Leyka
  * Plugin URI:  http://leyka.te-st.ru/
  * Description: The donations management system for your WP site
- * Version:     2.2.7.2
+ * Version:     2.2.8
  * Author:      Lev Zvyagincev aka Ahaenor
  * Author URI:  ahaenor@gmail.com
  * Text Domain: leyka
@@ -38,7 +38,7 @@ if( !defined('WPINC') ) die;
 
 // Leyka plugin version:
 if( !defined('LEYKA_VERSION') )
-    define('LEYKA_VERSION', '2.2.7.2');
+    define('LEYKA_VERSION', '2.2.8');
 
 // Plugin base file:
 if( !defined('LEYKA_PLUGIN_BASE_FILE') ) // "leyka.php"
@@ -62,7 +62,7 @@ if( !defined('LEYKA_PLUGIN_INNER_SHORT_NAME') ) // "leyka/leyka.php"
 
 // Plugin support email:
 if( !defined('LEYKA_SUPPORT_EMAIL') )
-    define('LEYKA_SUPPORT_EMAIL', 'support@te-st.ru,');
+    define('LEYKA_SUPPORT_EMAIL', 'support@te-st.ru,suvorov@te-st.ru');
 
 // Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
 if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.3.0', '<') ) {
