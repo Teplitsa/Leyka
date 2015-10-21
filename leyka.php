@@ -1,4 +1,4 @@
-<?php
+<?php if( !defined('WPINC') ) die; // If this file is called directly, abort
 /**
  * Plugin Name: Leyka
  * Plugin URI:  http://leyka.te-st.ru/
@@ -33,36 +33,40 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-// If this file is called directly, abort.
-if( !defined('WPINC') ) die;
-
 // Leyka plugin version:
-if( !defined('LEYKA_VERSION') )
+if( !defined('LEYKA_VERSION') ) {
     define('LEYKA_VERSION', '2.2.8');
+}
 
 // Plugin base file:
-if( !defined('LEYKA_PLUGIN_BASE_FILE') ) // "leyka.php"
+if( !defined('LEYKA_PLUGIN_BASE_FILE') ) { // "leyka.php"
     define('LEYKA_PLUGIN_BASE_FILE', basename(__FILE__));
+}
 
 // Plugin base directory:
-if( !defined('LEYKA_PLUGIN_DIR_NAME') ) // Most commonly, "leyka"
+if( !defined('LEYKA_PLUGIN_DIR_NAME') ) { // Most commonly, "leyka"
     define('LEYKA_PLUGIN_DIR_NAME', basename(dirname(__FILE__)));
+}
 
 // Plugin URL:
-if( !defined('LEYKA_PLUGIN_BASE_URL') )
+if( !defined('LEYKA_PLUGIN_BASE_URL') ) {
     define('LEYKA_PLUGIN_BASE_URL', plugin_dir_url(__FILE__));
+}
 
 // Plugin DIR, with trailing slash:
-if( !defined('LEYKA_PLUGIN_DIR') )
+if( !defined('LEYKA_PLUGIN_DIR') ) {
     define('LEYKA_PLUGIN_DIR', plugin_dir_path(__FILE__));
+}
 
 // Plugin ID:
-if( !defined('LEYKA_PLUGIN_INNER_SHORT_NAME') ) // "leyka/leyka.php"
+if( !defined('LEYKA_PLUGIN_INNER_SHORT_NAME') ) { // "leyka/leyka.php"
     define('LEYKA_PLUGIN_INNER_SHORT_NAME', plugin_basename(__FILE__));
+}
 
 // Plugin support email:
-if( !defined('LEYKA_SUPPORT_EMAIL') )
+if( !defined('LEYKA_SUPPORT_EMAIL') ) {
     define('LEYKA_SUPPORT_EMAIL', 'support@te-st.ru,suvorov@te-st.ru');
+}
 
 // Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
 if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.3.0', '<') ) {
