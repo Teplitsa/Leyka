@@ -379,62 +379,56 @@ class Leyka_Admin_Setup {
 	/** Displaying settings **/
 	public function settings_screen() {
 
-		/* Capability test */
 		if( !current_user_can('leyka_manage_options') ) {
             wp_die(__('You do not have permissions to access this page.', 'leyka'));
         }
 
         $current_stage = $this->get_current_settings_tab();
 
-        require(LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-common.php');
+        require_once(LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-common.php');
 
-        /* Page actions */
 		do_action('leyka_pre_settings_actions', $current_stage);
 
         /** Process settings change */
-	    if(
-            !empty($_POST["leyka_settings_{$current_stage}_submit"]) /*&&
-            wp_verify_nonce('_leyka_nonce', "leyka_settings_{$current_stage}")*/
-        ) {
+	    if( !empty($_POST["leyka_settings_{$current_stage}_submit"]) /*&& wp_verify_nonce('_leyka_nonce', "leyka_settings_{$current_stage}")*/ ) {
 			do_action("leyka_settings_{$current_stage}_submit", $current_stage);
 		}?>
 
 		<div class="wrap">
 
-		<h2 class="nav-tab-wrapper"><?php echo $this->settings_tabs_menu();?></h2>
+            <h2 class="nav-tab-wrapper"><?php echo $this->settings_tabs_menu();?></h2>
 
-		<div id="tab-container">
-			<form method="post" action="<?php echo admin_url(add_query_arg('stage', $current_stage, 'admin.php?page=leyka_settings'));?>" id="leyka-settings-form">
+            <div id="tab-container">
+                <form method="post" action="<?php echo admin_url(add_query_arg('stage', $current_stage, 'admin.php?page=leyka_settings'));?>" id="leyka-settings-form">
 
-            <?php wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
+                <?php wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
 
-            if(file_exists(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-$current_stage.php")) {
-                require(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-$current_stage.php");
-            } else {
+                if(file_exists(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-$current_stage.php")) {
+                    require_once(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-$current_stage.php");
+                } else {
 
-                do_action("leyka_settings_pre_{$current_stage}_fields");
+                    do_action("leyka_settings_pre_{$current_stage}_fields");
 
-                foreach(leyka_opt_alloc()->get_tab_options($current_stage) as $option) { // Render each option/section
+                    foreach(leyka_opt_alloc()->get_tab_options($current_stage) as $option) { // Render each option/section
 
-                    if(is_array($option) && !empty($option['section'])) {
-                        do_action('leyka_render_section', $option['section']);
-                    } else { // is this case possible?
+                        if(is_array($option) && !empty($option['section'])) {
+                            do_action('leyka_render_section', $option['section']);
+                        } else { // is this case even possible?
 
-                        $option_info = leyka_options()->get_info_of($option);
-                        do_action("leyka_render_{$option_info['type']}", $option, $option_info);
+                            $option_info = leyka_options()->get_info_of($option);
+                            do_action("leyka_render_{$option_info['type']}", $option, $option_info);
+                        }
                     }
-                }
 
-                do_action("leyka_settings_post_{$current_stage}_fields");?>
+                    do_action("leyka_settings_post_{$current_stage}_fields");?>
 
-                <p class="submit">
-                    <input type="submit" name="<?php echo "leyka_settings_{$current_stage}";?>_submit" value="<?php _e('Save settings', 'leyka'); ?>" class="button-primary" />
-                </p>
-            <?php }?>
+                    <p class="submit">
+                        <input type="submit" name="<?php echo "leyka_settings_{$current_stage}";?>_submit" value="<?php _e('Save settings', 'leyka');?>" class="button-primary">
+                    </p>
+                <?php }?>
 
-			</form>
-<!--            --><?php //do_action("leyka_settings_post_{$current_stage}_form");?>
-		</div>
+                </form>
+            </div>
 
 		</div><!-- close .wrap -->
 	<?php 

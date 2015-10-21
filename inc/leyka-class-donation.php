@@ -41,8 +41,6 @@ class Leyka_Donation_Management {
 
     public function set_admin_messages($messages) {
 
-        global $post;
-
         $messages[self::$post_type] = array(
             0 => '', // Unused. Messages start at index 1.
             1 => __('Donation updated.', 'leyka'),
@@ -61,7 +59,7 @@ class Leyka_Donation_Management {
             9 => sprintf(
                 __('Donation scheduled for: <strong>%1$s</strong>.', 'leyka'),
                 // translators: Publish box date format, see http://php.net/date
-                date_i18n(__( 'M j, Y @ G:i'), strtotime($post->post_date))
+                date_i18n(__( 'M j, Y @ G:i'), strtotime(get_post()->post_date))
             ),
             10 => __('Donation draft updated.', 'leyka'),
         );
@@ -71,7 +69,7 @@ class Leyka_Donation_Management {
 
     public function row_actions($actions, $donation) {
 
-        global $current_screen;
+        $current_screen = get_current_screen();
 
         if( !$current_screen || !is_object($current_screen) || $current_screen->post_type != self::$post_type ) {
             return $actions;
@@ -100,7 +98,7 @@ class Leyka_Donation_Management {
             $donation = new Leyka_Donation($donation);
 
             $campaign = new Leyka_Campaign($donation->campaign_id);
-            $campaign->update_total_funded_amount($donation);
+            $campaign->update_total_funded_amount($donation, $old == 'funded' ? 'remove' : 'add');
         }
     }
 
@@ -165,12 +163,8 @@ class Leyka_Donation_Management {
 
     public function do_filtering(WP_Query $query) {
 
-        global $pagenow;
+        if(is_admin() && $query->is_main_query() && get_current_screen()->id == 'edit-'.self::$post_type) {
 
-        if(
-            $pagenow == 'edit.php' && !empty($_GET['post_type']) && $_GET['post_type'] == self::$post_type &&
-            is_admin() && $query->is_main_query()
-        ) {
             $meta_query = array('relation' => 'AND');
 
             if( !empty($_REQUEST['campaign']) )
@@ -433,7 +427,7 @@ class Leyka_Donation_Management {
         }
 	}
 
-    public function new_donation_data_metabox($donation) {
+    public function new_donation_data_metabox() {
 
         $campaign_id = empty($_GET['campaign_id']) ? '' : (int)$_GET['campaign_id'];
         $campaign = new Leyka_Campaign($campaign_id);?>
@@ -714,7 +708,7 @@ class Leyka_Donation_Management {
         <div class="leyka-ddata-string">
             <label><?php _e('Initial donation of the recurring subscription', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <a href="<?php echo admin_url('post.php?post='.$donation->init_recurring_donation_id.'&action=edit');?>">#<?php echo $donation->init_recurring_donation_id;?></a></span>
+                <a href="<?php echo admin_url('post.php?post='.$donation->init_recurring_donation_id.'&action=edit');?>">#<?php echo $donation->init_recurring_donation_id;?></a>
             </div>
         </div>
         <?php }?>
@@ -1033,14 +1027,7 @@ class Leyka_Donation_Management {
         remove_action('save_post', array($this, 'save_donation_data'));
 
         $donation = new Leyka_Donation($donation_id);
-
-        if(isset($_POST['donation-amount']) && (float)$donation->amount != (float)$_POST['donation-amount']) {
-            $donation->amount = (float)$_POST['donation-amount'];
-        }
-
-        if( !$donation->currency ) {
-            $donation->currency = 'rur';
-        }
+        $campaign = new Leyka_Campaign($donation->campaign_id);
 
         if($donation->status != $_POST['donation_status']) {
             $donation->status = $_POST['donation_status'];
@@ -1048,17 +1035,35 @@ class Leyka_Donation_Management {
 
         if(isset($_POST['campaign-id']) && $donation->campaign_id != (int)$_POST['campaign-id']) {
 
-            if($donation->campaign_id) { // If we're adding a correctional donation, $donation->campaign_id == 0
-
-                $old_campaign = new Leyka_Campaign($donation->campaign_id);
-                $old_campaign->update_total_funded_amount($donation);
+            // If we're adding a correctional donation, $donation->campaign_id == 0:
+            if($donation->campaign_id && $donation->status == 'funded') {
+                $campaign->update_total_funded_amount($donation, 'remove'); // Old campaign
             }
 
             $donation->campaign_id = (int)$_POST['campaign-id'];
+            $campaign = new Leyka_Campaign($donation->campaign_id); // New campaign
+
+            if($donation->status == 'funded') {
+                $campaign->update_total_funded_amount($donation);
+            }
         }
 
-        $campaign = new Leyka_Campaign($donation->campaign_id);
-        $campaign->update_total_funded_amount($donation);
+        if(isset($_POST['donation-amount']) && (float)$donation->amount != (float)$_POST['donation-amount']) {
+
+            $_POST['donation-amount'] = round((float)$_POST['donation-amount'], 2);
+
+            $old_amount = $donation->amount;
+            $donation->amount = $_POST['donation-amount'];
+
+            // If we're adding a correctional donation, $donation->campaign_id == 0:
+            if($donation->campaign_id && $donation->status == 'funded') {
+                $campaign->update_total_funded_amount($donation, 'update_sum', $old_amount);
+            }
+        }
+
+        if( !$donation->currency ) {
+            $donation->currency = 'rur';
+        }
 
         // It's a new correction donation, set a title from it's campaign:
         $donation_title = $campaign->payment_title ?
@@ -1155,9 +1160,10 @@ class Leyka_Donation {
         $currency = empty($params['currency']) ? leyka_pf_get_currency_value() : $params['currency'];
         add_post_meta($id, 'leyka_donation_currency', $currency);
 
-        $currency_rate = leyka_options()->opt("currency_rur2$currency");
-        if($currency == 'RUR' || !$currency_rate)
+        $currency_rate = $currency == 'RUR' ? 1.0 : leyka_options()->opt("currency_rur2$currency");
+        if( !$currency_rate ) {
             $currency_rate = 1.0;
+        }
 
         add_post_meta(
             $id,
@@ -1408,6 +1414,7 @@ class Leyka_Donation {
                 }
 
                 wp_update_post(array('ID' => $this->_id, 'post_status' => $value));
+                $this->_post_object->post_status = $value;
 
                 $status_log = get_post_meta($this->_id, '_status_log', true);
                 $status_log[] = array('date' => time(), 'status' => $value);

@@ -167,7 +167,7 @@ jQuery(document).ready(function($){
     });
 
     // Exchange places of donations Export and Filter buttons:
-    $('.wrap h2 a').after($('.donations-export-form').detach());
+    $('.wrap a.page-title-action').after($('.donations-export-form').detach());
 
     /** All campaign selection fields: */
     var $campaign_select = $('#campaign-select');

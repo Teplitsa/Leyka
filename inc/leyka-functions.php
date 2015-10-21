@@ -362,16 +362,18 @@ function leyka_get_campaign_collections($campaign) {
  **/
 function leyka_scale_compact($campaign) {
     
-    if( !is_a($campaign, 'Leyka_Campaign') )
+    if( !is_a($campaign, 'Leyka_Campaign') ) {
         $campaign = new Leyka_Campaign($campaign);
+    }
         
-    $target = intval($campaign->target);
+    $target = (int)$campaign->target;
     $curr_label = leyka_get_currency_label('rur');
-    $collected = intval($campaign->get_collected_amount());
-   
-    if($target == 0)
+    $collected = $campaign->get_collected_amount();
+
+    if($target <= 0) {
         return;
-    
+    }
+
     $percentage = round(($collected/$target)*100);
 	if($percentage > 100)
 		$percentage = 100;?>
@@ -569,7 +571,6 @@ function leyka_are_settings_complete($settings_tab) {
     return $settings_complete;
 }
 
-/** @todo We should explixitly output a list of PMs and gateways that are not configured enough */
 function leyka_is_min_payment_settings_complete() {
 
     $pm_list = leyka_get_pm_list(true);
@@ -579,37 +580,46 @@ function leyka_is_min_payment_settings_complete() {
 
     $gateway_options_valid = array(); // Array of already validated gateways
 
-    foreach(leyka_options()->opt('pm_available') as $pm_full_id) { // Full ID is "gateway_id-pm_id"
+    foreach($pm_list as $pm) { /** @var $pm Leyka_Payment_Method */
 
-        $pm = leyka_get_pm_by_id($pm_full_id, true);
-        $pm_full_id = explode('-', $pm_full_id);
-        $gateway = leyka_get_gateway_by_id(reset($pm_full_id));
+        $gateway = leyka_get_gateway_by_id($pm->gateway_id);
 
         if( !$pm || !$gateway ) {
-            return false;
+            continue;
         }
 
+        $min_settings_complete = true;
         foreach($pm->get_pm_options_names() as $option_name) {
 
             if( !leyka_options()->is_valid($option_name) ) {
-                return false;
+
+                $min_settings_complete = false;
+                break;
             }
         }
 
-        if(empty($gateway_options_valid[$gateway->id])) {
+        if( !isset($gateway_options_valid[$gateway->id]) ) {
 
             foreach($gateway->get_options_names() as $option_name) {
 
                 if( !leyka_options()->is_valid($option_name) ) {
-                    return false;
+
+                    $gateway_options_valid[$gateway->id] = false;
+                    break;
                 }
             }
 
-            $gateway_options_valid[$gateway->id] = true;
+            if( !isset($gateway_options_valid[$gateway->id]) ) {
+                $gateway_options_valid[$gateway->id] = true;
+            }
+        }
+
+        if($min_settings_complete && !empty($gateway_options_valid[$gateway->id])) {
+            return true;
         }
     }
 
-    return true;
+    return false;
 }
 
 function leyka_is_campaign_published() {
@@ -650,12 +660,18 @@ function leyka_is_campaign_link_in_menu() {
 }
 
 /** @return boolean True if at least one Leyka form is currently on the screen, false otherwise */
-//function leyka_form_is_screening() {
-//
-//    return
-//        is_singular(Leyka_Campaign_Management::$post_type) ||
-//        (is_front_page() && stristr(get_page_template_slug(), 'home-campaign_one') !== false);
-//}
+function leyka_form_is_screening($widgets_also = true) {
+
+    $template = get_page_template_slug();
+
+    $form_is_screening = leyka()->form_is_screening ||
+        is_singular(Leyka_Campaign_Management::$post_type) ||
+        stristr($template, 'home-campaign_one') !== false ||
+        stripos($template, 'leyka') !== false ||
+        ( !!$widgets_also ? leyka_is_widget_active() : false );
+
+    return $form_is_screening;
+}
 
 /** ITV info-widget **/
 function leyka_itv_info_widget() {
@@ -666,14 +682,14 @@ function leyka_itv_info_widget() {
     }
 
     $domain = parse_url(home_url());
-    $itv_url = "https://itv.te-st.ru/?leyka=".$domain['host'];?>
+    $itv_url = esc_url("https://itv.te-st.ru/?leyka=".$domain['host']);?>
 
 	<div id="itv-card">
-        <div class="itv-logo"><a href="<?php echo esc_url($itv_url);?>" target="_blank"><img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL.'img/logo-itv.png');?>"></a></div>
+        <div class="itv-logo"><a href="<?php echo $itv_url;?>" target="_blank"><img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL.'img/logo-itv.png');?>"></a></div>
 
-        <p>Вам нужна помощь в настройке пожертвований или подключении к платежным системам? Опубликуйте задачу на платформе <a href="<?php echo esc_url($itv_url);?>" target="_blank">it-волонтер</a></p>
+        <p>Вам нужна помощь в настройке пожертвований или подключении к платежным системам? Опубликуйте задачу на платформе <a href="<?php echo $itv_url;?>" target="_blank">it-волонтер</a></p>
 
-        <p><a href="<?php echo esc_url($itv_url);?>" target="_blank" class="button">Опубликовать задачу</a></p>
+        <p><a href="<?php echo $itv_url;?>" target="_blank" class="button">Опубликовать задачу</a></p>
     </div>
 <?php
 }

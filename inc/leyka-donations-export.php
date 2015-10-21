@@ -2,14 +2,7 @@
 
 function leyka_render_export_button() {
 
-    global $pagenow;
-
-    if(
-        $pagenow == 'edit.php' &&
-        isset($_GET['post_type']) &&
-        $_GET['post_type'] == Leyka_Donation_Management::$post_type /*&&
-        in_array('administrator', wp_get_current_user()->roles)*/
-    ) {?>
+    if(get_current_screen()->id == 'edit-'.Leyka_Donation_Management::$post_type && current_user_can('leyka_manage_donations')) {?>
 
     <span class="donations-export-form">
         <form action="#" method="get">

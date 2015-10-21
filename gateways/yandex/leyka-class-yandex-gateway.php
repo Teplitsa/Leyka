@@ -129,7 +129,6 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             'sum' => $donation->amount,
             'customerNumber' => $donation->donor_email,
             'orderNumber' => $donation_id,
-            /** "@todo Make a global option to know whether add donation ID to the payment title or not */
             'orderDetails' => $donation->payment_title." (№ $donation_id)",
             'paymentType' => $payment_type,
             'shopSuccessURL' => leyka_get_success_page_url(),

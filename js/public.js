@@ -246,7 +246,7 @@ jQuery(document).ready(function($){
 
     });
 
-    /** Switches of curr: */
+    // Switches of currency:
     var template = $('input[name="leyka_template_id"]').val();
 	$('.amount-selector').on('change', 'select.leyka_donation_currency', function(e){
 	
@@ -280,7 +280,7 @@ jQuery(document).ready(function($){
             });
         }
 	});
-	
+
     /* Switches of PM for Radios template */
 	$('#pm-selector').on('change', 'input', function(e){
 		leyka_pm_data(e, this);

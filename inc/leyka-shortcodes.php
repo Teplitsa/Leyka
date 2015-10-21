@@ -48,8 +48,7 @@ function leyka_get_scale($campaign = null, $args = array()) {
     }
 
 	$campaign = new Leyka_Campaign($campaign);
-	
-	$target = ($args['embed_mode'] === 1 ) ? ' target="_blank"' : '';
+
 	$css_class = 'leyka-scale';
 	if($args['show_button'] == 1 && (int)$campaign->target == 0) {
 		$css_class .= ' has-button-alone';
@@ -57,22 +56,19 @@ function leyka_get_scale($campaign = null, $args = array()) {
 		$css_class .= ' has-button';
 	}
 
-	ob_start();
-
-	$url = trailingslashit(get_permalink($campaign->ID)).'#leyka-payment-form';?>
+	ob_start();?>
 
 	<div class="<?php echo esc_attr($css_class);?>">
 		<?php leyka_scale_compact($campaign);?>
 	<?php if($args['show_button'] == 1 && !$campaign->is_finished) {?>
 		<div class="leyka-scale-button">
-			<a href='<?php echo $url;?>' <?php if($campaign->ID == $current_post->ID) echo 'class="leyka-scroll"';?><?php echo $target;?>>
+			<a href='<?php echo trailingslashit(get_permalink($campaign->ID)).'#leyka-payment-form';?>' <?php echo $campaign->ID == $current_post->ID ? 'class="leyka-scroll"' : '';?><?php echo $args['embed_mode'] === 1 ? ' target="_blank"' : '';?>>
                 <?php echo leyka_get_scale_button_label();?>
             </a>
 		</div>
 	<?php }?>
 	</div>
-<?php
-	$out = ob_get_clean();
+<?php $out = ob_get_clean();
 
 	return apply_filters('leyka_scale_html', $out, $campaign, $args);
 }
@@ -106,7 +102,7 @@ function leyka_campaign_card_screen($atts) {
     }
 
     $campaign = new Leyka_Campaign($campaign_post);
-    $campaign->increase_views_counter(); // Increase campaign views counter
+    $campaign->increase_views_counter();
 
 	return '<div id="'.esc_attr('leyka_campaign_card_standalone-'.uniqid()).'">'
            .leyka_get_campaign_card($campaign_post, $a).'</div>';

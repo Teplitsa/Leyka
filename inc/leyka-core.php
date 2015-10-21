@@ -10,34 +10,37 @@ class Leyka {
      * match the Text Domain file header in the main plugin file.
      * @var string
      */
-    private $_plugin_slug = 'leyka';
+    protected $_plugin_slug = 'leyka';
 
     /**
      * Instance of this class.
      * @var object
      */
-    private static $_instance = null;
+    protected static $_instance = null;
 
     /**
      * Gateways list.
      * @var array
      */
-    private $_gateways = array();
+    protected $_gateways = array();
 
     /** @var array Of WP_Error instances. */
-    private $_form_errors = array();
+    protected $_form_errors = array();
 
     /** @var string Gateway URL to process payment data. */
-    private $_payment_url = '';
+    protected $_payment_url = '';
 
     /** @var array Of key => value pairs of payment form vars to send to the Gateway URL. */
-    private $_payment_vars = array();
+    protected $_payment_vars = array();
 
     /**
      * Template list.
      * @var array
      */
-    private $templates = null;
+    protected $templates = null;
+
+    /** @var bool|null */
+    protected $_form_is_screening = false;
 
     /** Initialize the plugin by setting localization, filters, and administration functions. */
     private function __construct() {
@@ -56,13 +59,11 @@ class Leyka {
         $this->_payment_form_redirect_url = wp_get_referer();
 
         // Load public-facing style sheet and JavaScript:
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
+        add_action('wp_footer', array($this, 'enqueue_styles'));
+        add_action('wp_footer', array($this, 'enqueue_scripts')); // wp_enqueue_scripts action
 
-        // Post types:
         add_action('init', array($this, 'register_post_types'), 9);
 
-        // User roles and capabilities:
         add_action('init', array($this, 'register_user_capabilities'));
 
         if( !session_id() ) {
@@ -82,7 +83,7 @@ class Leyka {
         add_action('admin_bar_menu', array($this, 'leyka_add_toolbar_menu'), 999);
 
         /** Service URLs handler: */
-        add_action('parse_request', function($request){
+        add_action('parse_request', function(){
             // Callback URLs are: some-website.org/leyka/service/{gateway_id}/{action_name}/
             // For ex., some-website.org/leyka/service/yandex/check_order/
             $request = $_SERVER['REQUEST_URI']; //$request->request;
@@ -115,7 +116,7 @@ class Leyka {
 
         $this->apply_formatting_filters(); // Internal formatting filters
 
-//        new Non_existing_class; /** @todo  */
+//        new Non_existing_class; /** @todo */
 
         /** Currency rates auto refreshment: */
         if(leyka_options()->opt('auto_refresh_currency_rates')) {
@@ -195,13 +196,26 @@ class Leyka {
     }
 
     public function __get($param) {
+
         switch($param) {
             case 'version': return LEYKA_VERSION;
             case 'plugin_slug': return $this->_plugin_slug;
             case 'payment_url': return $this->_payment_url;
             case 'payment_vars': return $this->_payment_vars;
+            case 'form_is_screening': return $this->_form_is_screening;
             default:
                 return '';
+        }
+    }
+
+    public function __set($name, $value) {
+
+        switch($name) {
+            case 'form_is_screening':
+                $value = !!$value;
+                if( !$this->_form_is_screening && $value ) {
+                    $this->_form_is_screening = $value;
+                }
         }
     }
 
@@ -307,7 +321,7 @@ class Leyka {
      * @param boolean $network_wide True if WPMU superadmin uses "Network Activate" action,
      * false if WPMU is disabled or plugin is activated on an individual blog.
      */
-    public static function activate($network_wide) {
+    public static function activate() {
 
         $leyka_last_ver = get_option('leyka_last_ver');
 
@@ -328,13 +342,12 @@ class Leyka {
 
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
 
-            global $options_meta;
-
-            foreach($options_meta as $name => $meta) {
+            foreach(leyka_options()->get_options_names() as $name) {
 
                 $option = get_option("leyka_$name");
-                if(is_array($option) && isset($option['type']) && isset($option['title'])) // Update option data
+                if(is_array($option) && isset($option['type']) && isset($option['title'])) { // Update option data
                     update_option("leyka_$name", $option['value']);
+                }
             }
 
             // Mostly to initialize gateways' and PM's options before updating them:
@@ -428,6 +441,23 @@ class Leyka {
             }
         }
 
+        /** Fix the bug when total_funded amount of campaigns was calculated incorrectly if correctional donations existed */
+        if($leyka_last_ver && $leyka_last_ver >= '2.2.5' && $leyka_last_ver <= '2.2.7.2') {
+
+            set_time_limit(3600);
+
+            $campaigns = get_posts(array(
+                'post_type' => Leyka_Campaign_Management::$post_type,
+                'nopaging' => true,
+                'post_status' => 'any'
+            ));
+            foreach($campaigns as $campaign) {
+
+                $campaign = new Leyka_Campaign($campaign);
+                $campaign->update_total_funded_amount();
+            }
+        }
+
         /** Set a flag to flush permalinks (needs to be done a bit later, than this activation itself): */
         update_option('leyka_permalinks_flushed', 0);
 
@@ -439,7 +469,7 @@ class Leyka {
      * @param boolean $network_wide True if WPMU superadmin uses "Network Deactivate" action,
      * false if WPMU is disabled or plugin is deactivated on an individual blog.
      */
-    public static function deactivate($network_wide) {
+    public static function deactivate() {
 
         delete_option('leyka_permalinks_flushed');
     }
@@ -455,11 +485,19 @@ class Leyka {
     /** Register and enqueue public-facing style sheet. */
     public function enqueue_styles() {
 
+        if( !leyka_form_is_screening() ) {
+            return;
+        }
+
         wp_enqueue_style($this->_plugin_slug.'-plugin-styles', LEYKA_PLUGIN_BASE_URL.'css/public.css', array(), LEYKA_VERSION);
     }
 
     /** Register and enqueues public-facing JavaScript files. */
     public function enqueue_scripts() {
+
+        if( !leyka_form_is_screening() ) {
+            return;
+        }
 
         wp_enqueue_script(
             $this->_plugin_slug.'-modal',
@@ -489,6 +527,8 @@ class Leyka {
         ));
 
         wp_localize_script($this->_plugin_slug.'-public', 'leyka', $js_data);
+
+        do_action('leyka_enqueue_scripts'); // Allow the gateways to add their own scripts
     }
 
     /** Register leyka user roles and caps. */

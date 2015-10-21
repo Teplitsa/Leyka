@@ -16,68 +16,60 @@ leyka_setup_current_pm($curr_pm, $curr_pm->default_currency);?>
 
 <div class="leyka-payment-option">
 <!-- <?php echo __("This donation form is created by Leyka WordPress plugin, created by Teplitsa of Social Technologies. If you are interested in some way, don't hesitate to write to us: support@te-st.ru", 'leyka');?> -->
-<form class="leyka-pm-form" action="<?php echo leyka_pf_get_form_action();?>" method="post" id="leyka-form-common">
-	
-<!--	<div id="amount-selector" class="form-part freeze-fields">-->
-	<div id="amount-selector" class="form-part freeze-fields">
-		<?php echo leyka_pf_get_amount_field();?>		
-	</div>
+    <form class="leyka-pm-form" action="<?php echo leyka_pf_get_form_action();?>" method="post" id="leyka-form-common">
 
-	<div id="leyka-currency-data">
+        <div id="amount-selector" class="form-part freeze-fields">
+            <?php echo leyka_pf_get_amount_field();?>
+        </div>
 
-		<?php echo leyka_pf_get_hidden_fields(empty($campaign) ? false : $campaign->id);?>
+        <div id="leyka-currency-data">
 
-		<!-- pm selector -->
-		<div id="pm-selector" class="form-part">
-			<ul class="leyka-pm-selector">
-            <?php foreach($active_pm as $pm) {?>
-                <li <?php if($curr_pm->id == $pm->id) echo 'class="active"';?>>
-                    <label class="radio">
-                        <input type="radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" <?php checked($curr_pm->id, $pm->id); ?> data-pm_id="<?php echo esc_attr($pm->id);?>">
-                        <?php echo $pm->label;?>
-                    </label>
-                </li>
-            <?php }?>
-			</ul>
-		</div>
+            <?php echo leyka_pf_get_hidden_fields(empty($campaign) ? false : $campaign->id);?>
 
-		<!-- changeable area -->
-		<div id="leyka-pm-data" class="changeable-fields form-part">
+            <!-- pm selector -->
+            <div id="pm-selector" class="form-part">
+                <ul class="leyka-pm-selector">
+                <?php foreach($active_pm as $pm) {?>
+                    <li <?php if($curr_pm->full_id == $pm->full_id) echo 'class="active"';?>>
+                        <label class="radio">
+                            <input type="radio"
+                                   name="leyka_payment_method"
+                                   value="<?php echo esc_attr($pm->full_id);?>"
+                                   data-pm_id="<?php echo esc_attr($pm->id);?>" <?php checked($curr_pm->id, $pm->id);?>>
+                            <?php echo $pm->label;?>
+                        </label>
+                    </li>
+                <?php }?>
+                </ul>
+            </div>
+        </div>
 
-			<div class="leyka-pm-fields <?php echo esc_attr($curr_pm->id);?>">
+        <!-- changeable area -->
+        <div id="leyka-pm-data" class="changeable-fields form-part">
 
-			<div class="leyka-user-data">
-				<!-- field for GA -->
-				<input type="hidden" name="leyka_ga_payment_method" value="<?php echo esc_attr($curr_pm->label);?>">
-			<?php
-				echo leyka_pf_get_name_field();
-				echo leyka_pf_get_email_field();
-				echo leyka_pf_get_pm_fields();
-			?>
-			</div>
-			
-			<?php
-                echo leyka_pf_get_recurring_field();
-				echo leyka_pf_get_agree_field();
-				echo leyka_pf_get_submit_field();
-				
-				$icons = leyka_pf_get_pm_icons();	
-				if($icons) {
+            <div class="leyka-pm-fields <?php echo esc_attr($curr_pm->full_id);?>">
 
-					$list = array();
-					foreach($icons as $i) {
-						$list[] = "<li>{$i}</li>";
-					}
+                <div class="leyka-user-data">
+                    <!-- field for GA -->
+                    <input type="hidden" name="leyka_ga_payment_method" value="<?php echo esc_attr($curr_pm->label);?>">
+                    <?php echo leyka_pf_get_name_field()
+                        .leyka_pf_get_email_field()
+                        .leyka_pf_get_pm_fields();?>
+                </div>
 
-					echo '<ul class="leyka-pm-icons cf">'.implode('', $list).'</ul>';
-				}?>
-			</div>
-			<?php echo '<div class="leyka-pm-desc">'.apply_filters('leyka_the_content', leyka_pf_get_pm_description()).'</div>';?>
-		</div>
+                <?php echo leyka_pf_get_recurring_field()
+                    .leyka_pf_get_agree_field()
+                    .leyka_pf_get_submit_field();
 
-	</div> <!-- #currecy data -->
+                $icons = leyka_pf_get_pm_icons();
+                if($icons) {
+                    echo '<ul class="leyka-pm-icons cf"><li>'.implode('</li><li>', $icons).'</li></ul>';
+                }?>
+            </div>
+            <div class="leyka-pm-desc"><?php echo apply_filters('leyka_the_content', leyka_pf_get_pm_description());?></div>
+        </div>
 
-</form>
+    </form>
 </div><!-- .leyka-payment-option -->
 
 <?php if(leyka_options()->opt('show_campaign_sharing')) {

@@ -168,7 +168,7 @@ class Leyka_Options_Allocator {
                         'title' => __('Additional', 'leyka'),
                         'is_default_collapsed' => true,
                         'options' => array(
-                            'success_page', 'failure_page',
+                            'success_page', 'failure_page', 'load_scripts_if_need',
                         )
                     ),),
                 );

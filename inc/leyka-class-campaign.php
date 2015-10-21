@@ -34,13 +34,13 @@ class Leyka_Campaign_Management {
 
     public function set_admin_messages($messages) {
 
-        global $post, $post_ID;
+        $current_post = get_post();
 
         $messages[Leyka_Campaign_Management::$post_type] = array(
             0 => '', // Unused. Messages start at index 1.
             1 => sprintf(
                 __('Campaign updated. <a href="%s">View it</a>', 'leyka'),
-                esc_url(home_url('?p='.$post_ID))
+                esc_url(home_url('?p='.$current_post->ID))
             ),
             2 => __('Field updated.', 'leyka'),
             3 => __('Field deleted.', 'leyka'),
@@ -49,22 +49,22 @@ class Leyka_Campaign_Management {
             5 => isset($_GET['revision']) ? sprintf(__('Campaign restored to revision from %s', 'leyka'), wp_post_revision_title((int)$_GET['revision'], false)) : false,
             6 => sprintf(
                 __('Campaign published. <a href="%s">View it</a>', 'leyka'),
-                esc_url(home_url('?p='.$post_ID))
+                esc_url(home_url('?p='.$current_post->ID))
             ),
             7 => __('Campaign saved.', 'leyka'),
             8 => sprintf(
                 __('Campaign submitted. <a target="_blank" href="%s">Preview it</a>', 'leyka'),
-                esc_url(add_query_arg('preview', 'true', home_url('?p='.$post_ID)))
+                esc_url(add_query_arg('preview', 'true', home_url('?p='.$current_post->ID)))
             ),
             9 => sprintf(
                 __('Campaign scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview it</a>', 'leyka'),
                 // translators: Publish box date format, see http://php.net/date
-                date_i18n(__( 'M j, Y @ G:i'), strtotime($post->post_date)),
-                esc_url(home_url('?p='.$post_ID))
+                date_i18n(__( 'M j, Y @ G:i'), strtotime($current_post->post_date)),
+                esc_url(home_url('?p='.$current_post->ID))
             ),
             10 => sprintf(
                 __('Campaign draft updated. <a target="_blank" href="%s">Preview it</a>', 'leyka'),
-                esc_url(add_query_arg('preview', 'true', home_url('?p='.$post_ID)))
+                esc_url(add_query_arg('preview', 'true', home_url('?p='.$current_post->ID)))
             ),
         );
 
@@ -73,7 +73,7 @@ class Leyka_Campaign_Management {
 
     public function row_actions($actions, $campaign) {
 
-        global $current_screen;
+        $current_screen = get_current_screen();
 
         if( !$current_screen || !is_object($current_screen) || $current_screen->post_type != self::$post_type ) {
             return $actions;
@@ -114,12 +114,8 @@ class Leyka_Campaign_Management {
 
     public function do_filtering(WP_Query $query) {
 
-        global $pagenow;
+        if(is_admin() && $query->is_main_query() && get_current_screen()->id == 'edit-'.self::$post_type) {
 
-        if(
-            $pagenow == 'edit.php' && !empty($_GET['post_type']) &&
-            $_GET['post_type'] == self::$post_type && is_admin() && $query->is_main_query()
-        ) {
             $meta_query = array('relation' => 'AND');
 
             if(isset($_REQUEST['campaign_state']) && $_REQUEST['campaign_state'] != 'all') {
@@ -228,17 +224,21 @@ class Leyka_Campaign_Management {
 		</fieldset>
 		
 		<fieldset id="collected-amount" class="metabox-field campaign-field campaign-target-collected">
-		<?php $collected = $campaign->get_collected_amount(); ?>
 			<label for="collected_target">
                 <?php echo sprintf(__('Collected (%s)', 'leyka'), leyka_get_currency_label('rur'));?>
             </label>			
-			<input type="text" id="collected_target" disabled="disabled" value="<?php echo $collected;?>" class="widefat">
+			<input type="text" id="collected_target" disabled="disabled" value="<?php echo $campaign->total_funded;?>" class="widefat">
+            <div class="recalculate-total-funded">
+                <a href="<?php echo add_query_arg(array('recalculate_total_funded' => 1,));?>" id="recalculate_total_funded" data-nonce="<?php echo wp_create_nonce('leyka_recalculate_total_funded_amount');?>" data-campaign-id="<?php echo $campaign->id;?>"><?php _e('Recalculate collected amount', 'leyka');?></a>
+                <img src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/ajax-loader-h.gif';?>" id="recalculate_total_funded_loader" style="display: none;">
+                <div class="message error-message" id="recalculate_message"></div>
+            </div>
 		</fieldset>
 
 		<fieldset id="d-scale-demo" class="metabox-field campaign-field campaign-target-scale">
 		<?php if($campaign->target > 0) {
 
-			$percentage = round(100*$collected/$campaign->target);
+			$percentage = round(100*$campaign->total_funded/$campaign->target);
             $percentage = $percentage > 100 ? 100 : $percentage;?>
 
 			<div class="d-scale-scale">
@@ -316,7 +316,8 @@ class Leyka_Campaign_Management {
             </tfoot>
 
             <tbody>
-            <?php foreach($campaign->get_donations() as $donation) {
+            <?php foreach($campaign->get_donations(array('submitted', 'funded', 'refunded', 'failed')) as $donation) {
+
                 $gateway_label = $donation->gateway_id ? $donation->gateway_label : __('Custom payment info', 'leyka');
                 $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;
 				$amount_css = $donation->sum < 0 ? 'amount-negative' : 'amount';?>
@@ -340,15 +341,6 @@ class Leyka_Campaign_Management {
 
     public function embedding_meta_box(WP_Post $campaign) {?>
 
-<!--        <label><input type="radio" name="embed-type" value="donation_form" checked="checked"> --><?php //_e('Donation form', 'leyka');?><!--</label>-->
-<!--        <label><input type="radio" name="embed-type" value="campaign_card" checked="checked"> --><?php //_e('Campaign card', 'leyka');?><!--</label>-->
-
-<!--        <div id="embed-donation_form" class="embed-area">-->
-<!--            <label for="donation-form-embed-code">--><?php //_e("To embed a donation form in some other web page, insert the following code in page HTML:", 'leyka');?><!--</label>-->
-<!---->
-<!--            <textarea class="embed-code" id="donation-form-embed-code" class="donation-form-embed-code">--><?php //echo '<iframe frameborder="0" width="300" height="510" src="'.$link.'donation_form'.'"></iframe>'?><!--</textarea>-->
-<!--        </div>-->
-
 	<div class="embed-block">
 		<div class="embed-code">
 			<h4><?php _e('Size settings', 'leyka');?></h4>
@@ -356,7 +348,7 @@ class Leyka_Campaign_Management {
 				<label><?php _e('Width', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_w" value="300" size="4"></label>
 				<label><?php _e('Height', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_h" value="510" size="4"></label>
 			</div>
-			
+
 			<div id="embed-campaign_card" class="settings-field">
 				<label for="campaign-embed-code"><?php _e("To embed a campaign card in some other web page, insert the following code in page HTML:", 'leyka');?></label>
 				<textarea class="embed-code" id="campaign-embed-code" class="campaign-embed-code"><?php echo self::get_card_embed_code($campaign->ID, true); ?></textarea>
@@ -497,20 +489,12 @@ class Leyka_Campaign {
                 $meta['is_finished'][0] = 0;
             }
 
-            // If campaign total collected amount is not saved, save it:
-            if( !isset($meta['total_funded']) || !$meta['total_funded'][0] ) {
+            if( !isset($meta['total_funded']) ) { // If campaign total collected amount is not saved, save it
 
                 $sum = 0.0;
                 foreach($this->get_donations(array('funded')) as $donation) {
                     $sum += $donation->main_curr_amount ? $donation->main_curr_amount : $donation->amount; //$donation->sum;
                 }
-
-//                $sum = 0.0;
-//                foreach($donations as $donation) {
-//
-//                    $donation = new Leyka_Donation($donation);
-//                    $sum += $donation->main_curr_amount ? $donation->main_curr_amount : $donation->amount;
-//                }
 
                 update_post_meta($this->_id, 'total_funded', $sum);
 
@@ -659,6 +643,10 @@ class Leyka_Campaign {
             $meta['date_target_reached'] = 0;
         }
 
+        if( !isset($meta['target_state']) ) {
+            $meta['target_state'] = $target_state;
+        }
+
         foreach($meta as $key => $value) {
             update_post_meta($this->_id, $key, $value);
         }
@@ -689,7 +677,7 @@ class Leyka_Campaign {
         update_post_meta($this->_id, 'count_submits', $this->_campaign_meta['count_submits']);
     }
 
-    public function update_total_funded_amount($donation = false) {
+    public function update_total_funded_amount($donation = false, $action = '', $old_sum = false) {
 
         if( !$donation ) { // Recalculate total collected amount for a campaign and recache it
 
@@ -701,19 +689,33 @@ class Leyka_Campaign {
             $this->_campaign_meta['total_funded'] = $sum;
             update_post_meta($this->_id, 'total_funded', $this->_campaign_meta['total_funded']);
 
-        } else { // Just add/subtract a sum of new donation from a campaign metadata
+        } else { // Add/subtract a sum of a donation from it's campaign metadata
 
             $donation = leyka_get_validated_donation($donation);
             if( !$donation ) {
                 return false;
             }
 
-            $sum = ($donation->status != 'funded' || $donation->campaign_id != $this->_id) && $donation->sum > 0 ?
-                -$donation->sum : $donation->sum;
+            if($action == 'remove') { // Subtract given donation's sum from campaign's total_funded
+                $sum = -$donation->sum;
+            } else { // Add given donation's sum to campaign's total_funded
 
+                if($action == 'update_sum' && (int)$old_sum) { // If donation sum was changed, subtract it from total_funded first
+                    $this->_campaign_meta['total_funded'] -= (int)$old_sum;
+                }
+
+                $sum = ($donation->status != 'funded' || $donation->campaign_id != $this->_id) && $donation->sum > 0 ?
+                    -$donation->sum : $donation->sum;
+                $sum = $donation->status == 'trash' ? -$sum : $sum;
+            }
+
+//            echo '<pre>Before: ' . print_r($this->_campaign_meta['total_funded'], 1) . '</pre>';
+//            echo '<pre>' . print_r($sum, 1) . '</pre>';
             $this->_campaign_meta['total_funded'] += $sum;
+//            echo '<pre>After: ' . print_r($this->_campaign_meta['total_funded'], 1) . '</pre>';
 
             update_post_meta($this->_id, 'total_funded', $this->_campaign_meta['total_funded']);
+//            die($this->total_funded);
         }
 
         $this->refresh_target_state();

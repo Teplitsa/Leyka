@@ -485,7 +485,7 @@ function leyka_add_gateway_cp() {
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_cp');
 
-add_action('wp_enqueue_scripts', 'leyka_enqueue_scripts_cp');
+add_action('leyka_enqueue_scripts', 'leyka_enqueue_scripts_cp');
 function leyka_enqueue_scripts_cp() {
 
     if(Leyka_CP_Card::get_instance()->active) {

@@ -100,4 +100,31 @@ jQuery(document).ready(function($){
 
         $embed_code.html($text.prop('outerHTML'));
     });
+
+    // Recalculate total funded amount:
+    $('#recalculate_total_funded').click(function(e){
+
+        e.preventDefault();
+
+        var $link = $(this).attr('disabled', 'disabled'),
+            $indicator = $link.parent().find('#recalculate_total_funded_loader').show(),
+            $message = $link.parent().find('#recalculate_message').hide(),
+            $total_collected_field = $('#collected_target');
+
+        $.get(leyka.ajaxurl, {
+            campaign_id: $link.data('campaign-id'),
+            action: 'leyka_recalculate_total_funded_amount',
+            nonce: $link.data('nonce')
+        }, function(resp){
+
+            $link.removeAttr('disabled');
+            $indicator.hide();
+
+            if(parseFloat(resp) >= 0) {
+                $total_collected_field.val(parseFloat(resp));
+            } else {
+                $message.html(resp).show();
+            }
+        });
+    });
 });

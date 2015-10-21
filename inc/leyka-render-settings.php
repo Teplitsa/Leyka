@@ -3,6 +3,7 @@
 /** Sections */
 add_action('leyka_render_section', 'leyka_render_section_area');
 function leyka_render_section_area($section){?>
+
     <div class="leyka-options-section <?php echo $section['is_default_collapsed'] ? 'collapsed' : '';?>" id="<?php echo $section['name'];?>">
         <div class="header"><h3><?php echo esc_attr($section['title']);?></h3></div>
         <div class="content">
@@ -17,7 +18,8 @@ function leyka_render_section_area($section){?>
 
 /** Text fields */
 add_action('leyka_render_text', 'leyka_render_text_field', 10, 2);
-function leyka_render_text_field($option_name, $data){ 
+function leyka_render_text_field($option_name, $data){
+
     $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;?>
 
     <div id="<?php echo $option_name.'-wrapper'?>">
