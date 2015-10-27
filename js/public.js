@@ -222,9 +222,9 @@ jQuery(document).ready(function($){
     });
 
 	/* toggles */
-	$('.toggle.toggled').find('.toggle-area').css({display: 'block'});
+	$('.toggle.toggled').find('.leyka-toggle-area').css({display: 'block'});
 
-    $('.toggle-trigger').on('click', function(e){
+    $('.leyka-toggle-trigger').on('click', function(e){
         
         var $this = $(this);
 
@@ -235,13 +235,13 @@ jQuery(document).ready(function($){
 
 		if(toggleCont.hasClass('toggled')) {
 			toggleCont.removeClass('toggled');
-			toggleCont.find('.toggle-area').slideUp('normal', function(){
+			toggleCont.find('.leyka-toggle-area').slideUp('normal', function(){
                 toggleCont.find('.leyka-pm-form .field-error').hide();
             });
 		} else {
-            $this.parents('#leyka-payment-form').find('.leyka-payment-option.toggled .toggle-trigger').click();
+            $this.parents('#leyka-payment-form').find('.leyka-payment-option.toggled .leyka-toggle-trigger').click();
 			toggleCont.addClass('toggled');
-			toggleCont.find('.toggle-area').slideDown('normal');
+			toggleCont.find('.leyka-toggle-area').slideDown('normal');
 		}
 
     });

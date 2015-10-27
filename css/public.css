@@ -356,26 +356,26 @@
 #leyka-payment-form.leyka-tpl-toggles .leyka-payment-option {
   margin: 5px 0; }
 
-.toggle-trigger {
+.leyka-toggle-trigger {
   border: 1px solid #dfdfdf;
   background: #f9f9f9;
   padding: 7px 15px;
   cursor: pointer;
   font-weight: bold;
   text-shadow: 1px 1px 1px #f6f6f6; }
-  .toggle-trigger:hover, .toggle-trigger:focus, .toggle-trigger:active {
+  .leyka-toggle-trigger:hover, .leyka-toggle-trigger:focus, .leyka-toggle-trigger:active {
     color: #666; }
 
 .toggle-inactive {
   cursor: default !important; }
 
-.toggle-area {
+.leyka-toggle-area {
   display: none;
   border: 1px solid #dfdfdf;
   border-top: none;
   background: #f9f9f9; }
 
-.toggled .toggle-trigger {
+.toggled .leyka-toggle-trigger {
   border-bottom: none; }
 
 /* Radios */
@@ -472,7 +472,7 @@
 #share-campaign-area.toggle {
   background: #fff;
   border-color: #dfdfdf; }
-  #share-campaign-area.toggle .toggle-trigger {
+  #share-campaign-area.toggle .leyka-toggle-trigger {
     background: #fff;
     border-color: #dfdfdf; }
   #share-campaign-area.toggle .toggle-area {

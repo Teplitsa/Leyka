@@ -528,8 +528,8 @@ function leyka_share_campaign_block($campaign_id = null) {
     }?>
 
 	<div id="share-campaign-area" class="toggle">
-		<div class="toggle-trigger"><?php _e('Share (get embed code)', 'leyka');?></div>
-		<div class="toggle-area">
+		<div class="leyka-toggle-trigger"><?php _e('Share (get embed code)', 'leyka');?></div>
+		<div class="leyka-toggle-area">
 			
 			<div class="leyka-embed-block">
                 <div id="embed-size-pane" class="leyka-setting-row">

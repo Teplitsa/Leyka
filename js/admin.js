@@ -141,6 +141,15 @@ jQuery(document).ready(function($){
             $pm_label_wrapper.show();
             $wrapper.find('.pm-label-fields').hide();
             $wrapper.find('.pm-change-label').show();
+
+        }).on('keydown', 'input[id*="pm_label"]', function(e){
+
+            var keycode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+            if(keycode == 13) { // Enter pressed - stop settings form from being submitted, but save PM custom label
+
+                e.preventDefault();
+                $(this).parents('.pm-label-fields').find('.new-pm-label-ok').click();
+            }
         });
 
         $('.pm-order-panel').stick_in_parent({offset_top: 0});

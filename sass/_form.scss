@@ -357,7 +357,7 @@
 	}
 }
 
-	.toggle-trigger {	
+	.leyka-toggle-trigger {
 		border: 1px solid $color-regular-border;
 		background: $color-grey-light;
 		padding: 7px 15px;
@@ -373,14 +373,14 @@
 		cursor: default !important;
 	}
 
-	.toggle-area {
+	.leyka-toggle-area {
 		display: none;
 		border: 1px solid $color-regular-border;
 		border-top: none;
 		background: $color-grey-light;
 	}
 		
-	.toggled .toggle-trigger {
+	.toggled .leyka-toggle-trigger {
 		border-bottom: none;
 	}
 
@@ -534,13 +534,13 @@
 	background: $color-white;
 	border-color: $color-regular-border;	
 	
-	.toggle-trigger {
+	.leyka-toggle-trigger {
 		background: $color-white;
 		border-color: $color-regular-border;
 		
 	}
 	
-	.toggle-area {
+	.leyka-toggle-area {
 		background: $color-white;
 		border-color: $color-regular-border;	
 	}
