@@ -155,10 +155,11 @@ PHP at least 5.3 is required.
 == Changelog ==
 
 = 2.2.8 =
- * New: options engine is refactored. Large queries number improvement.
  * New: now correctional donation may be added from the plugin's main menu.
- * New: added new caching system for campaigns' total collected amounts.
- * New: added a service CC to the feedback form processing.
+ * Tweak: options engine is refactored. Large queries number improvement.
+ * Tweak: added new caching system for campaigns' total collected amounts.
+ * Tweak: added a service CC to the feedback form processing.
+ * Fix: plugin frontend's compatibility with some another visual frameworks improved.
  * Fix: now pressing enter key while editing PM's custom label won't submit the whole Payment settings form.
  * Fix: serious bug when correctional donations led to the incorrect total funded amounts' calculations is fixed.
  * Fix: the behavior of donation-campaign link when donation form is inserted somewhere via shortcode is fixed.
