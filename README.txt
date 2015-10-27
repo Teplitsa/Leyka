@@ -163,6 +163,7 @@ PHP at least 5.3 is required.
  * Fix: the behavior of donation-campaign link when donation form is inserted somewhere via shortcode is fixed.
  * Fix: donations export function is returned to it's rightful place.
  * Fix: donations dataTable bug on campaign editing page is fixed.
+ * Fix: campaign views counting is improved to be more accurate and logical.
  * Fix: small code improvements and fixes. Oh come on, you knew that we won't miss this line.
 
 = 2.2.7.2 =

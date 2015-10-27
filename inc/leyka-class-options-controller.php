@@ -22,6 +22,13 @@ class Leyka_Options_Controller {
         require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
     }
 
+    /**
+     * A service method to load the plugin option metadata to the controller's cache array.
+     *
+     * @param $option_name string
+     * @param $load_value bool Whether to load the option value from the DB. Sometimes it's not needed.
+     * @return bool True/false of the initailization.
+     */
     protected function _intialize_option($option_name, $load_value = false) {
 
         $option_name = str_replace('leyka_', '', $option_name);
@@ -41,21 +48,27 @@ class Leyka_Options_Controller {
         return true;
     }
 
+    /**
+     * A service method to load the option value from the DB to the controller's cache array.
+     * @param $option_name string
+     */
     protected function _initialize_value($option_name) {
 
         $option_name = str_replace('leyka_', '', $option_name);
 
-        if(empty($this->_options[$option_name]['value'])) {
+        if( !isset($this->_options[$option_name]['value']) ) {
 
             $this->_options[$option_name]['value'] = get_option("leyka_$option_name");
 
-            if( !$this->_options[$option_name]['value'] && !empty(self::$_options_meta[$option_name]) ) { // Option is not set, use default value from meta
+            // Option is not set, use default value from meta:
+            if($this->_options[$option_name]['value'] === false && !empty(self::$_options_meta[$option_name])) {
                 $this->_options[$option_name]['value'] = self::$_options_meta[$option_name]['default'];
             }
         }
 
         if(
-            $this->_options[$option_name]['value'] && ($this->_options[$option_name]['type'] == 'html' || $this->_options[$option_name]['type'] == 'rich_html')
+            $this->_options[$option_name]['value'] && ($this->_options[$option_name]['type'] == 'html' ||
+            $this->_options[$option_name]['type'] == 'rich_html')
         ) {
 
             $this->_options[$option_name]['value'] =
@@ -162,7 +175,7 @@ class Leyka_Options_Controller {
             $old_value = $this->_options[$option_name]['value']; // Rollback to it if option update fails
             $this->_options[$option_name]['value'] = $option_value;
 
-            $updated = update_option('leyka_'.$option_name, $option_value); 
+            $updated = update_option('leyka_'.$option_name, $option_value);
             if( !$updated ) {
                 $this->_options[$option_name]['value'] = $old_value;
             }

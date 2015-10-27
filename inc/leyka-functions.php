@@ -637,7 +637,7 @@ function leyka_is_widget_active() {
     // is_active_widget() is not working for some reason, so emulate it:
     foreach(wp_get_sidebars_widgets() as $sidebar => $widgets) {
 
-        foreach($widgets as $widget) {
+        foreach((array)$widgets as $widget) {
 
             if(stristr($widget, 'leyka_') !== false) {
                 return true;
