@@ -458,6 +458,13 @@ class Leyka {
             }
         }
 
+        /** Fix the typo in one option's name */
+        if($leyka_last_ver && $leyka_last_ver <= '2.2.7.2') {
+
+            update_option('leyka_agree_to_terms_needed', get_option('leyka_argee_to_terms_needed'));
+            delete_option('leyka_argee_to_terms_needed');
+        }
+
         /** Set a flag to flush permalinks (needs to be done a bit later, than this activation itself): */
         update_option('leyka_permalinks_flushed', 0);
 

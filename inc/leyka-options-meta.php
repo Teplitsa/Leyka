@@ -586,7 +586,7 @@ self::$_options_meta = apply_filters('leyka_core_options_meta', array(
         'list_entries' => array(),
         'validation_rules' => array(), // List of regexp?..
     ),
-    'argee_to_terms_needed' => array(
+    'agree_to_terms_needed' => array(
         'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
         'default' => 1,
         'title' => __('To donate, donor must agree to the Terms of service', 'leyka'),
