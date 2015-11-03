@@ -207,7 +207,7 @@ class Leyka_Campaign_Management {
 
 			</select>
 		</fieldset>
-		
+
 		<fieldset id="ignore-global-template" class="metabox-field campaign-field campaign-ignorance">
 			<label for="ignore_global_template">
 			<input type="checkbox" name="ignore_global_template" id="ignore_global_template" value="1" <?php checked($campaign->ignore_global_template_settings, 1);?>>&nbsp;
@@ -228,11 +228,13 @@ class Leyka_Campaign_Management {
                 <?php echo sprintf(__('Collected (%s)', 'leyka'), leyka_get_currency_label('rur'));?>
             </label>			
 			<input type="text" id="collected_target" disabled="disabled" value="<?php echo $campaign->total_funded;?>" class="widefat">
+            <?php if(get_current_screen()->action != 'add') {?>
             <div class="recalculate-total-funded">
                 <a href="<?php echo add_query_arg(array('recalculate_total_funded' => 1,));?>" id="recalculate_total_funded" data-nonce="<?php echo wp_create_nonce('leyka_recalculate_total_funded_amount');?>" data-campaign-id="<?php echo $campaign->id;?>"><?php _e('Recalculate collected amount', 'leyka');?></a>
                 <img src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/ajax-loader-h.gif';?>" id="recalculate_total_funded_loader" style="display: none;">
                 <div class="message error-message" id="recalculate_message"></div>
             </div>
+            <?php }?>
 		</fieldset>
 
 		<fieldset id="d-scale-demo" class="metabox-field campaign-field campaign-target-scale">
