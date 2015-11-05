@@ -1,27 +1,20 @@
 <?php
 function leyka_render_export_button() {
 
-    global $pagenow;
-
-    if(
-        $pagenow == 'edit.php' &&
-        isset($_GET['post_type']) &&
-        $_GET['post_type'] == Leyka_Donation_Management::$post_type /*&&
-        in_array('administrator', wp_get_current_user()->roles)*/
-    ) {?>
+    if(get_current_screen()->id == 'edit-'.Leyka_Donation_Management::$post_type) {?>
 
         <span class="donations-export-form">
         <form action="#" method="get">
-            <input type="hidden" name="post_status" value="<?php echo empty($_GET['post_status']) ? 0 : $_GET['post_status'];?>" />
-            <input type="hidden" name="month-year" value="<?php echo empty($_GET['m']) ? 0 : $_GET['m'];?>" />
-            <input type="hidden" name="payment_type" value="<?php echo empty($_GET['payment_type']) ? '' : $_GET['payment_type']; ?>" />
-            <input type="hidden" name="gateway_pm" value="<?php echo empty($_GET['gateway_pm']) ? '' : $_GET['gateway_pm']; ?>" />
-            <input type="hidden" name="campaign" value="<?php echo empty($_GET['campaign']) ? '' : $_GET['campaign']; ?>" />
+            <input type="hidden" name="post_status" value="<?php echo empty($_GET['post_status']) ? 0 : $_GET['post_status'];?>">
+            <input type="hidden" name="month-year" value="<?php echo empty($_GET['m']) ? 0 : $_GET['m'];?>">
+            <input type="hidden" name="payment_type" value="<?php echo empty($_GET['payment_type']) ? '' : $_GET['payment_type']; ?>">
+            <input type="hidden" name="gateway_pm" value="<?php echo empty($_GET['gateway_pm']) ? '' : $_GET['gateway_pm']; ?>">
+            <input type="hidden" name="campaign" value="<?php echo empty($_GET['campaign']) ? '' : $_GET['campaign']; ?>">
             <?php foreach(apply_filters('leyka_donations_export_form_fields', array()) as $name => $value) {?>
-                <input type="hidden" name="<?php echo $name;?>" value="<?echo $value;?>" />
+                <input type="hidden" name="<?php echo $name;?>" value="<?echo $value;?>">
             <?php }?>
 
-            <input type="submit" name="leyka-donations-export-csv-excel" class="button-primary" value="<?php _e('Export (csv)', 'leyka');?>" />
+            <input type="submit" name="leyka-donations-export-csv-excel" class="button-primary" value="<?php _e('Export (csv)', 'leyka');?>">
             <div id="tech-export-wrapper"><input type="checkbox" name="export-tech" id="export-tech" value="1"><label for="export-tech"><?php _e('Technical export', 'leyka');?></label></div>
         </form>
     </span>
