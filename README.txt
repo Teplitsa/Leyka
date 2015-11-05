@@ -159,6 +159,7 @@ PHP at least 5.3 is required.
  * Tweak: options engine is refactored. Large queries number improvement.
  * Tweak: added new caching system for campaigns' total collected amounts.
  * Tweak: added a service CC to the feedback form processing.
+ * Tweak: the donations export engine is refactored to work more sustainably with large amounts of data. The dependency on Excel Writer is removed.
  * Fix: plugin frontend's compatibility with some another visual frameworks improved.
  * Fix: now pressing enter key while editing PM's custom label won't submit the whole Payment settings form.
  * Fix: serious bug when correctional donations led to the incorrect total funded amounts' calculations is fixed.
