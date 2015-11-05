@@ -233,7 +233,7 @@ class Leyka_Payment_Form {
 
 	public function get_agree_field() {
 		
-		if( !leyka_options()->opt('argee_to_terms_needed') || !$this->is_field_supported('agree') ) {
+		if( !leyka_options()->opt('agree_to_terms_needed') || !$this->is_field_supported('agree') ) {
             return '';
         }
 
