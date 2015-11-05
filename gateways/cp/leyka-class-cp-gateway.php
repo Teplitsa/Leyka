@@ -40,7 +40,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 'title' => __('CloudPayments IP', 'leyka'),
                 'description' => __('IP address to check for requests.', 'leyka'),
                 'required' => 1,
-                'placeholder' => __('Ex., 10.3.175.212', 'leyka'),
+                'placeholder' => __('Ex., 130.193.70.192', 'leyka'),
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
