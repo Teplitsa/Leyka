@@ -48,13 +48,14 @@ class Leyka_Payment_Form {
 
 	function get_amount_field() {
 
-		if( !$this->is_field_supported('amount') ) {
-			return '';
-        }
+        /** @todo Fix a bug when amount+currency fields doesn't appear on Radio form if Text PM is first in a PM list */
+//		if( !$this->is_field_supported('amount') ) {
+//			return '';
+//        }
 
 		// Options: amount field mode:
 		$mode = leyka_options()->opt('donation_sum_field_type'); // fixed/flexible
-		$supported_curr = leyka_get_active_currencies(); // $this->get_supported_currencies();
+		$supported_curr = leyka_get_active_currencies();
 		$current_curr = $this->get_current_currency();
 
 		if(empty($supported_curr[$current_curr])) {

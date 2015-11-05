@@ -82,7 +82,7 @@ function leyka_payment_method_action() {
         die('-1');
     }
 
-    $curr_currency = trim($_POST['currency']);
+    $curr_currency = empty($_POST['currency']) ? 'rur' : trim($_POST['currency']);
     $curr_pm = leyka_get_pm_by_id(trim($_POST['pm_id']));
 
     if( !$curr_pm ) {
