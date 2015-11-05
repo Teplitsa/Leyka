@@ -1,10 +1,16 @@
-<?php if( !defined('WPINC') ) die;
-
+<?php
 function leyka_render_export_button() {
 
-    if(get_current_screen()->id == 'edit-'.Leyka_Donation_Management::$post_type && current_user_can('leyka_manage_donations')) {?>
+    global $pagenow;
 
-    <span class="donations-export-form">
+    if(
+        $pagenow == 'edit.php' &&
+        isset($_GET['post_type']) &&
+        $_GET['post_type'] == Leyka_Donation_Management::$post_type /*&&
+        in_array('administrator', wp_get_current_user()->roles)*/
+    ) {?>
+
+        <span class="donations-export-form">
         <form action="#" method="get">
             <input type="hidden" name="post_status" value="<?php echo empty($_GET['post_status']) ? 0 : $_GET['post_status'];?>" />
             <input type="hidden" name="month-year" value="<?php echo empty($_GET['m']) ? 0 : $_GET['m'];?>" />
@@ -12,18 +18,16 @@ function leyka_render_export_button() {
             <input type="hidden" name="gateway_pm" value="<?php echo empty($_GET['gateway_pm']) ? '' : $_GET['gateway_pm']; ?>" />
             <input type="hidden" name="campaign" value="<?php echo empty($_GET['campaign']) ? '' : $_GET['campaign']; ?>" />
             <?php foreach(apply_filters('leyka_donations_export_form_fields', array()) as $name => $value) {?>
-            <input type="hidden" name="<?php echo $name;?>" value="<?php echo $value;?>" />
+                <input type="hidden" name="<?php echo $name;?>" value="<?echo $value;?>" />
             <?php }?>
 
             <input type="submit" name="leyka-donations-export-csv-excel" class="button-primary" value="<?php _e('Export (csv)', 'leyka');?>" />
             <div id="tech-export-wrapper"><input type="checkbox" name="export-tech" id="export-tech" value="1"><label for="export-tech"><?php _e('Technical export', 'leyka');?></label></div>
         </form>
     </span>
-<?php }
+    <?php }
 }
 add_action('admin_notices', 'leyka_render_export_button');
-
-use SimpleExcel\SimpleExcel;
 
 function leyka_do_donations_export() {
 
@@ -49,15 +53,15 @@ function leyka_do_donations_export() {
 
     if( !empty($_GET['gateway_pm']) ) {
 
-        if(strpos($_GET['gateway_pm'], 'gateway__') !== false) {
+        if(strpos($_GET['gateway_pm'], 'gateway__') !== false)
             $meta_query[] = array(
                 'key' => 'leyka_gateway', 'value' => str_replace('gateway__', '', $_GET['gateway_pm'])
             );
-        } elseif(strpos($_GET['gateway_pm'], 'pm__') !== false) {
+
+        elseif(strpos($_GET['gateway_pm'], 'pm__') !== false)
             $meta_query[] = array(
                 'key' => 'leyka_payment_method', 'value' => str_replace('pm__', '', $_GET['gateway_pm'])
             );
-        }
     }
 
     $args = array(
@@ -67,86 +71,18 @@ function leyka_do_donations_export() {
                 $_GET['post_status'] : 'any',
         'm' => $_GET['month-year'], // Filter by month
         'meta_query' => $meta_query,
-        'posts_per_page' => 200,
+        'nopaging' => true,
     );
 
-    $donations = new WP_Query(apply_filters('leyka_donations_export_query_args', $args));
-    $total_pages = $donations->found_posts/200;
-    $total_pages = $total_pages - (int)$total_pages > 0 ? (int)$total_pages+1 : $total_pages;
-    $posts_page = $total_pages > 0 ? 1 : 0;
+    $donations = get_posts(apply_filters('leyka_donations_export_query_args', $args));
 
-    $donations = $donations->get_posts();
-
-    require_once LEYKA_PLUGIN_DIR.'inc/excel-writer/SimpleExcel.php';
-
-    $excel = new SimpleExcel('csv');
-    $domain = str_replace(array('http:', 'https:'), '', home_url());
-    function prep($text) {
+    function leyka_prep($text) {
         return '"'.str_replace(array(';', '"'), array('', ''), $text).'"';
-    }
-
-    if(isset($_GET['export-tech'])) { // Technical export mode column headings
-
-        $excel->writer->addRow(array('hash', 'Domain', 'Org_name', 'Timestamp', 'Date', 'Email_hash', 'Donor_name hash', 'Sum', 'Currency', 'Gateway_pm', 'Donation_status', 'Campaign_title', 'Campaign_URL', 'Payment_title', 'Target_sum', 'Campaign_target_state', 'Campaign_is_finished'));
-
-    } else { // Normal export mode column headings
-
-        $excel->writer->addRow(array(apply_filters('leyka_donations_export_headers', array('ID', 'Имя донора', 'Email', 'Тип платежа', 'Способ платежа', 'Сумма', 'Дата пожертвования', 'Статус', 'Кампания'))));
-    }
-
-    while($posts_page && $posts_page <= $total_pages) { // Main loop too fill the export file
-
-        foreach($donations as $donation) {
-
-            $donation = new Leyka_Donation($donation);
-            $campaign = new Leyka_Campaign($donation->campaign_id);
-
-            if(isset($_GET['export-tech'])) {
-
-                $excel->writer->addRow(array(
-                    prep(wp_hash($domain.$donation->date_timestamp.$donation->sum.$donation->id)),
-                    prep($domain),
-                    prep(leyka_options()->opt('org_full_name')),
-                    prep($donation->date_timestamp),
-                    prep(date(get_option('date_format').', H:i', $donation->date_timestamp)),
-                    prep(wp_hash($donation->donor_email)),
-                    prep(wp_hash($donation->donor_name)),
-                    prep((int)$donation->sum),
-                    prep($donation->currency),
-                    $donation->payment_type == 'correction' ?
-                        prep($donation->pm_id) : prep($donation->gateway_label.'-'.$donation->pm_id),
-                    prep($donation->status),
-                    prep($campaign->title),
-                    prep($campaign->url),
-                    prep($campaign->payment_title),
-                    prep((int)$campaign->target),
-                    prep($campaign->target_state),
-                    prep((int)$campaign->is_finished)
-                ));
-
-            } else {
-
-                $excel->writer->addRow(apply_filters('leyka_donations_export_line', array(
-                    $donation->id, $donation->donor_name, $donation->donor_email, $donation->payment_type_label,
-                    $donation->payment_method_label, $donation->sum.' '.$donation->currency_label, $donation->date,
-                    $donation->status_label, $campaign->title,
-                )));
-
-            }
-
-        }
-
-        $posts_page++;
-
-        $args['paged'] = $posts_page;
-        $donations = get_posts(apply_filters('leyka_donations_export_query_args', $args));
-
-        wp_cache_flush();
     }
 
     if(isset($_GET['export-tech'])) {
 
-        $excel->writer->setDelimiter(';');
+        $domain = str_replace(array('http:', 'https:'), '', home_url());
 
         ob_clean();
 
@@ -154,28 +90,53 @@ function leyka_do_donations_export() {
         header('Content-Transfer-Encoding: binary');
         header('Expires: 0');
         header('Pragma: no-cache');
-
         header('Content-Disposition: attachment; filename="donations-tech-'.$domain.'-'.date('d.m.Y-H.i.s').'.csv"');
 
-        die(iconv( // Do iconv so Excel could open it
-            'UTF-8',
-            apply_filters('leyka_donations_export_content_charset', 'windows-1251'),
-            "sep=;\n".$excel->writer->saveString()
-        ));
+        echo iconv('UTF-8', apply_filters('leyka_donations_tech_export_content_charset', 'windows-1251'), "sep=;\n".implode(';', array(
+                'hash', 'Domain', 'Org_name', 'Timestamp', 'Date', 'Email_hash', 'Donor_name hash', 'Sum', 'Currency', 'Gateway_pm', 'Donation_status', 'Campaign_title', 'Campaign_URL', 'Payment_title', 'Target_sum', 'Campaign_target_state', 'Campaign_is_finished',
+            )));
 
-//        ob_clean();
-//
-//        header('Content-type: application/vnd.ms-excel');
-//        header('Content-Transfer-Encoding: binary');
-//        header('Expires: 0');
-//        header('Pragma: no-cache');
-//        header('Content-Disposition: attachment; filename="donations-tech-'.$domain.'-'.date('d.m.Y-H.i.s').'.csv"');
-//
-//        die("sep=;\n".implode("\r\n", $file_lines));
+        foreach($donations as $donation) {
+
+            $donation = new Leyka_Donation($donation);
+            $campaign = new Leyka_Campaign($donation->campaign_id);
+
+            // @ to avoid notices about illegal chars that happen in the line sometimes:
+            echo @iconv('UTF-8', apply_filters('leyka_donations_tech_export_content_charset', 'windows-1251'), "\r\n".implode(';', array(
+                    leyka_prep(hash('sha256', $domain.$donation->date_timestamp.$donation->sum.$donation->id)),
+                    leyka_prep($domain),
+                    leyka_prep(leyka_options()->opt('org_full_name')),
+                    leyka_prep($donation->date_timestamp),
+                    leyka_prep(date('d.m.Y H:i:s', $donation->date_timestamp)),
+                    leyka_prep(hash('sha256', $donation->donor_email)),
+                    leyka_prep(hash('sha256', $donation->donor_name)),
+                    leyka_prep((int)$donation->sum),
+                    leyka_prep($donation->currency),
+                    $donation->payment_type == 'correction' ?
+                        leyka_prep($donation->pm_id) : leyka_prep($donation->gateway_label.'-'.$donation->pm_id),
+                    leyka_prep($donation->status),
+                    leyka_prep($campaign->title),
+                    leyka_prep($campaign->url),
+                    leyka_prep($campaign->payment_title),
+                    leyka_prep((int)$campaign->target),
+                    leyka_prep($campaign->target_state),
+                    leyka_prep((int)$campaign->is_finished)
+                )));
+        }
+
+        die('');
 
     } else {
 
-        $excel->writer->setDelimiter(',');
+        function leyka_prepare_donation_data_for_export($donation_data) {
+
+            foreach($donation_data as &$data) {
+                $data = leyka_prep($data);
+            }
+
+            return $donation_data;
+        }
+        add_filter('leyka_donations_export_line', 'leyka_prepare_donation_data_for_export');
 
         ob_clean();
 
@@ -186,12 +147,37 @@ function leyka_do_donations_export() {
 
         header('Content-Disposition: attachment; filename="donations-'.date('d.m.Y-H.i.s').'.csv"');
 
-        die(iconv( // Do iconv so Excel could open it
+        echo iconv(
             'UTF-8',
             apply_filters('leyka_donations_export_content_charset', 'windows-1251'),
-            "sep=,\n".$excel->writer->saveString()
-        ));
+            "sep=;\n".implode(';', apply_filters('leyka_donations_export_headers', array(
+                'ID', 'Имя донора', 'Email', 'Тип платежа', 'Способ платежа', 'Сумма', 'Дата пожертвования', 'Статус', 'Кампания',
+            )))
+        );
 
+        foreach($donations as $donation) {
+
+            $donation = new Leyka_Donation($donation);
+            $campaign = new Leyka_Campaign($donation->campaign_id);
+
+            echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
+                'UTF-8',
+                apply_filters('leyka_donations_export_content_charset', 'windows-1251'),
+                "\r\n".implode(';', apply_filters('leyka_donations_export_line', array(
+                        $donation->id,
+                        $donation->donor_name,
+                        $donation->donor_email,
+                        $donation->payment_type_label,
+                        $donation->payment_method_label,
+                        $donation->sum.' '.$donation->currency_label,
+                        $donation->date,
+                        $donation->status_label,
+                        $campaign->title,
+                    ))
+                ));
+        }
+
+        die('');
     }
 }
 add_action('admin_init', 'leyka_do_donations_export');
