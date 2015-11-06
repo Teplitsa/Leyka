@@ -11,6 +11,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         $this->_id = 'cp';
         $this->_title = __('CloudPayments', 'leyka');
+        $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-cloudpaiments/';
         $this->_admin_ui_column = 1;
         $this->_admin_ui_order = 30;
     }

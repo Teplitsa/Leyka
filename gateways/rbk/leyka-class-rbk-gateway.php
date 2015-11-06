@@ -11,7 +11,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
         $this->_id = 'rbk';
         $this->_title = __('RBK Money', 'leyka');
-        $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-robokassa/#rbk-settings';
+        $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-rbk/';
         $this->_admin_ui_column = 1;
         $this->_admin_ui_order = 50;
     }

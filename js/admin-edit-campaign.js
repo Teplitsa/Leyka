@@ -121,7 +121,15 @@ jQuery(document).ready(function($){
             $indicator.hide();
 
             if(parseFloat(resp) >= 0) {
-                $total_collected_field.val(parseFloat(resp));
+
+                var old_value = parseFloat($total_collected_field.val());
+                resp = parseFloat(resp);
+
+                $total_collected_field.val(resp);
+                if(old_value != resp) { // If recalculated sum is different than saved one, refresh the campaign edition page
+                    $('#publish').click();
+                }
+
             } else {
                 $message.html(resp).show();
             }
