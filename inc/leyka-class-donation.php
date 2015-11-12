@@ -1265,9 +1265,6 @@ class Leyka_Donation {
 
             $meta = get_post_meta($this->_id, '', true);
 
-            $meta['leyka_donation_amount'] = empty($meta['leyka_donation_amount']) ?
-                0.0 : (float)$meta['leyka_donation_amount'][0];
-
             if( !empty($meta['leyka_campaign_id']) ) {
 
                 // Don't use Leyka_Campaign here to avoid loop dependency:
@@ -1284,7 +1281,7 @@ class Leyka_Donation {
                 'payment_method' => empty($meta['leyka_payment_method']) ? '' : $meta['leyka_payment_method'][0],
                 'gateway' => empty($meta['leyka_gateway']) ? '' : $meta['leyka_gateway'][0],
                 'currency' => empty($meta['leyka_donation_currency']) ? 'rur' : $meta['leyka_donation_currency'][0],
-                'amount' => $meta['leyka_donation_amount'],
+                'amount' => empty($meta['leyka_donation_amount']) ? 0.0 : (float)$meta['leyka_donation_amount'][0],
                 'main_curr_amount' => !empty($meta['leyka_main_curr_amount'][0]) ?
                     (float)$meta['leyka_main_curr_amount'][0] : $meta['leyka_donation_amount'],
                 'donor_name' => empty($meta['leyka_donor_name']) ? '' : $meta['leyka_donor_name'][0],
@@ -1360,7 +1357,7 @@ class Leyka_Donation {
                 return leyka_options()->opt('leyka_currency_'.$this->_donation_meta['currency'].'_label');
             case 'sum':
             case 'amount':
-                return $this->_donation_meta['amount'];
+                return empty($this->_donation_meta['amount']) ? 0.0 : $this->_donation_meta['amount'];
             case 'main_curr_amount':
             case 'amount_equiv':
                 return $this->_donation_meta['main_curr_amount'];
