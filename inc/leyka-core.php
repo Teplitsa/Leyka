@@ -62,9 +62,9 @@ class Leyka {
         add_action('wp_footer', array($this, 'enqueue_styles'));
         add_action('wp_footer', array($this, 'enqueue_scripts')); // wp_enqueue_scripts action
 
-        add_action('init', array($this, 'register_post_types'), 9);
+        add_action('init', array($this, 'register_post_types'), 1);
 
-        add_action('init', array($this, 'register_user_capabilities'));
+        add_action('init', array($this, 'register_user_capabilities'), 1);
 
         if( !session_id() ) {
             add_action('init', 'session_start', -2);
@@ -318,8 +318,6 @@ class Leyka {
 
     /**
      * Fired when the plugin is activated or when an update is needed.
-     * @param boolean $network_wide True if WPMU superadmin uses "Network Activate" action,
-     * false if WPMU is disabled or plugin is activated on an individual blog.
      */
     public static function activate() {
 
@@ -441,21 +439,31 @@ class Leyka {
             }
         }
 
-        /** Fix the bug when total_funded amount of campaigns was calculated incorrectly if correctional donations existed */
+        /**
+         * Fix the bug when total_funded amount of campaign was calculated incorrectly
+         * if there were correctional donations for that campaign.
+         */
         if($leyka_last_ver && $leyka_last_ver >= '2.2.5' && $leyka_last_ver <= '2.2.7.2') {
 
-            set_time_limit(3600);
+            function leyka_update_campaigns_total_funded() {
 
-            $campaigns = get_posts(array(
-                'post_type' => Leyka_Campaign_Management::$post_type,
-                'nopaging' => true,
-                'post_status' => 'any'
-            ));
-            foreach($campaigns as $campaign) {
+                set_time_limit(3600);
+                wp_suspend_cache_addition(true);
 
-                $campaign = new Leyka_Campaign($campaign);
-                $campaign->update_total_funded_amount();
+                $campaigns = get_posts(array(
+                    'post_type' => Leyka_Campaign_Management::$post_type,
+                    'nopaging' => true,
+                    'post_status' => 'any'
+                ));
+                foreach($campaigns as $campaign) {
+
+                    $campaign = new Leyka_Campaign($campaign);
+                    $campaign->update_total_funded_amount();
+                }
+
+                wp_suspend_cache_addition(false);
             }
+            add_action('init', 'leyka_update_campaigns_total_funded', 100);
         }
 
         /** Fix the typo in one option's name */

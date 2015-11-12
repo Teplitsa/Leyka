@@ -587,17 +587,31 @@ class Leyka_Campaign {
         }
     }
 
+    /**
+     * Get all donations of the campaign with given statuses.
+     * NOTE: This method is to be called after init (1), or else it will return an empty array.
+     *
+     * @param $status array Of leyka donation statuses.
+     * @return array Of Leyka_Donation objects.
+     */
     public function get_donations(array $status = null) {
 
-        $donations = get_posts(array(
+        if( !did_action('leyka_cpt_registered') ) { // Leyka PT statuses isn't there yet
+            return array();
+        }
+
+        $args = array(
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => $status ? $status : array('submitted', 'funded', 'refunded', 'failed', 'trash',),
-            'posts_per_page' => -1,
+            'nopaging' => true,
             'meta_key' => 'leyka_campaign_id',
             'meta_value' => $this->_id,
-        ));
+        );
 
-        for($i=0; $i<count($donations); $i++) {
+        $donations = get_posts($args);
+
+        $count = count($donations);
+        for($i = 0; $i < $count; $i++) {
             $donations[$i] = new Leyka_Donation($donations[$i]->ID);
         }
 
