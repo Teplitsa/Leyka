@@ -21,7 +21,7 @@ class Leyka_Payment_Form {
 
 		$this->_current_currency = $current_currency;
 		$this->_form_action = get_option('permalink_structure') ?
-			site_url('leyka-process-donation') : site_url('?page=leyka-process-donation');
+			home_url('leyka-process-donation') : home_url('?page=leyka-process-donation');
 	}
 
 	public function __get($name) {
