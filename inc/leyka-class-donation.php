@@ -1275,15 +1275,17 @@ class Leyka_Donation {
                 }
             }
 
+            $donation_amount = empty($meta['leyka_donation_amount']) ? 0.0 : (float)$meta['leyka_donation_amount'][0];
+
             $this->_donation_meta = array(
                 'payment_title' => empty($payment_title) ? $this->_post_object->post_title : $payment_title,
                 'payment_type' => empty($meta['leyka_payment_type']) ? 'single' : $meta['leyka_payment_type'][0],
                 'payment_method' => empty($meta['leyka_payment_method']) ? '' : $meta['leyka_payment_method'][0],
                 'gateway' => empty($meta['leyka_gateway']) ? '' : $meta['leyka_gateway'][0],
                 'currency' => empty($meta['leyka_donation_currency']) ? 'rur' : $meta['leyka_donation_currency'][0],
-                'amount' => empty($meta['leyka_donation_amount']) ? 0.0 : (float)$meta['leyka_donation_amount'][0],
+                'amount' => $donation_amount,
                 'main_curr_amount' => !empty($meta['leyka_main_curr_amount'][0]) ?
-                    (float)$meta['leyka_main_curr_amount'][0] : $meta['leyka_donation_amount'],
+                    (float)$meta['leyka_main_curr_amount'][0] : $donation_amount,
                 'donor_name' => empty($meta['leyka_donor_name']) ? '' : $meta['leyka_donor_name'][0],
                 'donor_email' => empty($meta['leyka_donor_email']) ? '' : $meta['leyka_donor_email'][0],
                 'donor_email_date' => empty($meta['_leyka_donor_email_date']) ?

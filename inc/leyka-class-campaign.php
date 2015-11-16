@@ -418,9 +418,9 @@ class Leyka_Campaign_Management {
 	}
 
     public function manage_columns_content($column_name, $campaign_id){
-		
+
 		$campaign = new Leyka_Campaign($campaign_id);
-		
+
 		if($column_name == 'ID') {
 			echo (int)$campaign->id;
 		} elseif($column_name == 'payment_title') {
@@ -430,6 +430,7 @@ class Leyka_Campaign_Management {
 			echo $campaign->is_finished == 1 ?
 				'<span class="c-closed">'.__('Closed', 'leyka').'</span>' :
 				'<span class="c-opened">'.__('Opened', 'leyka').'</span>';
+
 		} elseif($column_name == 'target') {
 
 			if($campaign->target_state == 'no_target') {
@@ -438,7 +439,7 @@ class Leyka_Campaign_Management {
 				leyka_scale_ultra($campaign);
 			}
 
-			if($campaign->target_state == 'is_reached') {?>
+			if($campaign->target_state == 'is_reached' && $campaign->date_target_reached) {?>
 		    <span class='c-reached'><?php printf(__('Reached at: %s', 'leyka'), '<time>'.$campaign->date_target_reached.'</time>'); ?></span>
 		<?php }
 		}
@@ -495,7 +496,13 @@ class Leyka_Campaign {
 
                 $sum = 0.0;
                 foreach($this->get_donations(array('funded')) as $donation) {
-                    $sum += $donation->main_curr_amount ? $donation->main_curr_amount : $donation->amount; //$donation->sum;
+
+                    $donation_amount = $donation->main_curr_amount ? $donation->main_curr_amount : $donation->amount;
+                    if(is_array($donation_amount) && !empty($donation_amount[0]) && (float)$donation_amount[0] >= 0.0) {
+                        $donation_amount = $donation_amount[0];
+                    }
+
+                    $sum += $donation_amount;
                 }
 
                 update_post_meta($this->_id, 'total_funded', $sum);
