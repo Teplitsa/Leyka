@@ -511,16 +511,14 @@ function leyka_pf_get_pm_icons() {
 	return $leyka_current_pm->get_pm_icons();
 }
 
-function leyka_pf_footer() {
-?>
+function leyka_pf_footer() {?>
+
 <div class="leyka-form-footer">
-	<!-- credentials -->
-	<div id="leyka-copy"><p>
-	<?php printf(__('Proudly powered by %s', 'leyka'), '<a href="http://leyka.te-st.ru">'._x('Leyka', 'Plugin name in preposotional case', 'leyka').'</a>'); ?>							
-	</p></div>
+	<div id="leyka-copy">
+		<p><?php printf(__('Proudly powered by %s', 'leyka'), '<a href="http://leyka.te-st.ru" target="_blank">'._x('Leyka', 'Plugin name in preposotional case', 'leyka').'</a>');?></p>
+	</div>
 </div>
-<?php
-}
+<?php }
 
 function leyka_share_campaign_block($campaign_id = null) {
 	
