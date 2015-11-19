@@ -59,8 +59,8 @@ class Leyka {
         $this->_payment_form_redirect_url = wp_get_referer();
 
         // Load public-facing style sheet and JavaScript:
-        add_action('wp_footer', array($this, 'enqueue_styles'));
-        add_action('wp_footer', array($this, 'enqueue_scripts')); // wp_enqueue_scripts action
+        add_action('wp_enqueue_scripts', array($this, 'enqueue_styles')); // wp_footer
+        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts')); // wp_footer
 
         add_action('init', array($this, 'register_post_types'), 1);
 

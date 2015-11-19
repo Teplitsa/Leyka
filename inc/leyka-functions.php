@@ -659,15 +659,44 @@ function leyka_is_campaign_link_in_menu() {
     return false;
 }
 
+function leyka_get_shortcodes() {
+
+    global $shortcode_tags;
+
+    $leyka_shortcodes = array();
+
+    foreach($shortcode_tags as $shortcode_tag => $function_name) {
+        if(stripos($shortcode_tag, 'leyka') !== false) {
+            $leyka_shortcodes[] = $shortcode_tag;
+        }
+    }
+
+    return $leyka_shortcodes;
+}
+
 /** @return boolean True if at least one Leyka form is currently on the screen, false otherwise */
 function leyka_form_is_screening($widgets_also = true) {
 
     $template = get_page_template_slug();
 
+    $content_has_shortcode = false;
+    if(get_post()) {
+
+        foreach(leyka_get_shortcodes() as $shortcode_tag) {
+
+            if(has_shortcode(get_post()->post_content, $shortcode_tag)) {
+
+                $content_has_shortcode = true;
+                break;
+            }
+        }
+    }
+
     $form_is_screening = leyka()->form_is_screening ||
         is_singular(Leyka_Campaign_Management::$post_type) ||
         stristr($template, 'home-campaign_one') !== false ||
         stripos($template, 'leyka') !== false ||
+        $content_has_shortcode ||
         ( !!$widgets_also ? leyka_is_widget_active() : false );
 
     return $form_is_screening;
