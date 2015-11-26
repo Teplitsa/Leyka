@@ -205,6 +205,7 @@ class Leyka_Admin_Setup {
 				'docs'   => 'https://leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/'
 			);
 		}?>
+
 	<table class="leyka-guide-table">		
 		<tbody>
 		<?php $count = 0;
@@ -615,7 +616,9 @@ class Leyka_Admin_Setup {
             $dependencies[] = 'leyka-sticky';
         }
         if($current_screen->post_type == Leyka_Donation_Management::$post_type) {
+
             $dependencies[] = 'jquery-ui-autocomplete';
+            $dependencies[] = 'jquery-ui-tooltip';
         }
 
         wp_enqueue_script('leyka-admin', LEYKA_PLUGIN_BASE_URL.'js/admin.js', $dependencies, LEYKA_VERSION, true);

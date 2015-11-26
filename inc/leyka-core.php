@@ -273,6 +273,20 @@ class Leyka {
             'trash'     => _x('Trash', '«Deleted» donation status', 'leyka'),
         ));
     }
+    /**
+     * Retrieve all available payment/donation statuses' descriptions.
+     *
+     * @return array of status_id => status_description pairs
+     */
+    public function get_donation_statuses_descriptions() {
+        return apply_filters('leyka_donation_statuses_descriptions', array(
+            'submitted' => _x("Donation attempt was made, but the payment itself wasn't sent.", '«Submitted» donation status description', 'leyka'),
+            'funded'    => _x('Donation was finished, the funds were made to your account.', '«Completed» donation status description', 'leyka'),
+            'refunded'  => _x("Donation funds were returned to the donor.", '«Refunded» donation status description', 'leyka'),
+            'failed'    => _x("Donation payment was finished with an error. The funds weren't sent.", '«Failed» donation status description', 'leyka'),
+            'trash'     => _x("Donation information was deleted.", '«Trash» donation status description', 'leyka'),
+        ));
+    }
 
     /**
      * Retrieve all available campaign target states.

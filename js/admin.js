@@ -155,6 +155,9 @@ jQuery(document).ready(function($){
         $('.pm-order-panel').stick_in_parent({offset_top: 0});
     }
 
+    /** Tooltips: */
+    $body.find('.has-tooltip').tooltip();
+
     /** Manual emails sending: */
     $('.send-donor-thanks').click(function(e){
 

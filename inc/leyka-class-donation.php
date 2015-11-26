@@ -153,7 +153,7 @@ class Leyka_Donation_Management {
         <input id="campaign-select"
                type="text"
                data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>"
-               placeholder="<?php _e('Please, enter campaign title', 'leyka');?>"
+               placeholder="<?php _e('Select a campaign', 'leyka');?>"
                value="<?php echo $campaign_title;?>"
             />
         <input id="campaign-id" type="hidden" name="campaign" value="<?php echo !empty($_GET['campaign']) ? (int)$_GET['campaign'] : '';?>" />
@@ -443,7 +443,7 @@ class Leyka_Donation_Management {
 					   type="text"
                        value="<?php echo $campaign_id ? $campaign->title : '';?>"
 					   data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>"
-					   placeholder="<?php _e('Please, enter campaign title', 'leyka');?>"
+					   placeholder="<?php _e('Select a campaign', 'leyka');?>"
 					/>
 				<input id="campaign-id" type="hidden" name="campaign-id" value="<?php echo $campaign_id;?>" />
 				<div id="campaign_id-error" class="field-error"></div>
@@ -587,19 +587,19 @@ class Leyka_Donation_Management {
                 <input id="campaign-select"
                        type="text"
                        data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>"
-                       placeholder="<?php _e('Please, enter campaign title', 'leyka');?>"
+                       placeholder="<?php _e('Select a campaign', 'leyka');?>"
                        value="<?php echo htmlentities($campaign->title, ENT_COMPAT, 'UTF-8');?>"
                     />
                 <input id="campaign-id" type="hidden" name="campaign-id" value="<?php echo $campaign->id;?>" />
                 <div id="cancel-campaign-select" class="button"><?php _e('Cancel', 'leyka');?></div>
             </div>
 		</div> <!-- .set-action -->
-        
+
 	</fieldset>
-	
+
 	<fieldset class="leyka-set donor">
 		<legend><?php _e('Donor Data', 'leyka');?></legend>
-		
+
 		<div class="leyka-ddata-string">
             <label for="donor-name"><?php _e('Name', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
@@ -937,7 +937,8 @@ class Leyka_Donation_Management {
                 echo $donation->date;
                 break;
             case 'status':
-                echo '<i class="'.esc_attr($donation->status).'">'.$this->get_status_labels($donation->status).'</i>';
+                echo '<i class="'.esc_attr($donation->status).'">'
+                    .$this->get_status_labels($donation->status).'</i>&nbsp;<span class="dashicons dashicons-editor-help has-tooltip" title="'.$this->get_status_descriptions($donation->status).'"></span>';
                 break;
             case 'type':
                 echo '<i class="'.esc_attr($donation->payment_type).'">'.$donation->payment_type_label.'</i>';
@@ -1119,13 +1120,28 @@ class Leyka_Donation_Management {
 
         $labels = leyka()->get_donation_statuses();
 
-        if(empty($status))
+        if(empty($status)) {
 		    return $labels;
-        elseif($status == 'publish')
+        } elseif($status == 'publish') {
             return $labels['funded'];
-        else
+        } else {
 		    return !empty($labels[$status]) ? $labels[$status] : false;
+        }
 	}
+
+	static function get_status_descriptions($status = false) {
+
+        $descriptions = leyka()->get_donation_statuses_descriptions();
+
+        if(empty($status)) {
+		    return $descriptions;
+        } elseif($status == 'publish') {
+            return $descriptions['funded'];
+        } else {
+		    return !empty($descriptions[$status]) ? $descriptions[$status] : false;
+        }
+	}
+
 } // class end
 
 function leyka_donation_management() {
