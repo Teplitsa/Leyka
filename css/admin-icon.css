@@ -48,6 +48,10 @@ span.dashicons-editor-help.has-tooltip {
     max-width: 300px;
     -webkit-box-shadow: 0 0 5px #aaa;
     box-shadow: 0 0 5px #aaa;
+    background-color: white;
+    opacity: 1.0 !important;
+    /* for IE */
+    filter: alpha(opacity=100) !important;
 }
 body .ui-tooltip {
     border-width: 2px;

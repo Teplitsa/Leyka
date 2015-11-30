@@ -156,7 +156,75 @@ jQuery(document).ready(function($){
     }
 
     /** Tooltips: */
-    $body.find('.has-tooltip').tooltip();
+    $body.find('.has-tooltip').tooltip({hide: 0});
+
+    /** Inline status changing: */
+    $body.find('.edit-status').on('click', function(e){
+
+        e.preventDefault();
+
+        var $this = $(this),
+            $status_label = $this.parents('.status-label'),
+            $status_controls = $status_label.siblings('.status-controls');
+
+        $status_label.slideUp(100);
+        $status_controls.slideDown(100);
+    });
+    $body.find('.new-status-cancel').on('click', function(e){
+
+        e.preventDefault();
+
+        var $this = $(this),
+            $status_controls = $this.parents('.status-controls');
+
+        $status_controls.slideUp(100).siblings('.status-label').slideDown(100);
+        $status_controls.find('.new-donation-status').val($status_controls.data('original-status'));
+    });
+    $body.find('.new-status-ok').on('click', function(e){
+
+        e.preventDefault();
+
+        var $this = $(this),
+            $status_controls_wrapper = $this.parents('.status-controls'),
+            $status_label = $status_controls_wrapper.siblings('.status-label'),
+            $status_field = $status_controls_wrapper.find('.new-donation-status'),
+            new_status = $status_field.val(),
+            $indicator = $status_controls_wrapper.find('.status-change-loading'),
+            $status_controls = $status_controls_wrapper.find('.control'),
+            $error_message = $status_controls_wrapper.find('.error');
+
+            $indicator.show();
+            $status_controls.hide();
+
+        $.post(leyka.ajaxurl, {
+            action: 'leyka_change_status',
+            nonce: $status_controls_wrapper.data('nonce'),
+            donation_id: $status_controls_wrapper.data('donation-id'),
+            donation_status: new_status
+        }, function(response){
+
+            $indicator.hide();
+            $status_controls.show();
+
+            response = $.parseJSON(response);
+
+            if(response && response.result == 0) {
+
+                $status_label
+                    .show()
+                    .find('.label-text')
+                    .removeClass($status_controls_wrapper.data('original-status')).addClass(new_status)
+                    .html($status_field.find('option[value="'+new_status+'"]').html());
+
+                $status_controls_wrapper.data('original-status', new_status).hide();
+                $error_message.hide();
+                $status_label.find('.status-description').attr('title', response.new_status_description);
+
+            } else {
+                $error_message.show();
+            }
+        });
+    });
 
     /** Manual emails sending: */
     $('.send-donor-thanks').click(function(e){

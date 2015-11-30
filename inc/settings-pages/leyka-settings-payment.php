@@ -137,7 +137,6 @@ foreach($gateways_by_columns as $admin_ui_column => $gateways) { // Add gateways
     <?php function leyka_pm_sortable_option_html($is_hidden = false, $full_id = '#FID#', $label = '#L#', $label_backend = '#LB#') {?>
 
         <li data-pm-id="<?php echo $full_id;?>" class="pm-order" <?php echo !!$is_hidden ? 'style="display:none"' : '';?>>
-            <?php //echo $label_backend == $label ? '' : $label_backend.'<br>';?>
             <span class="pm-label" id="pm-label-<?php echo $full_id;?>"><?php echo $label;?></span>
             <span class="pm-label-fields" style="display:none;">
                 <input type="text" id="pm_labels[<?php echo $full_id;?>]" value="<?php echo $label;?>" placeholder="<?php _e('Enter some title for this payment method', 'leyka');?>">

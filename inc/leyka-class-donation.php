@@ -922,10 +922,11 @@ class Leyka_Donation_Management {
 
 		$donation = new Leyka_Donation($donation_id);
         switch($column_name) {
+
             case 'ID': echo $donation_id; break;
             case 'amount':
 				$amount_css = ($donation->sum < 0) ? 'amount-negative' : 'amount';
-				echo '<span class="'.$amount_css.'">'.$donation->amount.'&nbsp;'.$donation->currency_label.'</span>';                
+				echo '<span class="'.$amount_css.'">'.$donation->amount.'&nbsp;'.$donation->currency_label.'</span>';
                 break;
             case 'donor': echo $donation->donor_name; break;
             case 'method':
@@ -936,10 +937,32 @@ class Leyka_Donation_Management {
             case 'donation_date':
                 echo $donation->date;
                 break;
+
             case 'status':
-                echo '<i class="'.esc_attr($donation->status).'">'
-                    .$this->get_status_labels($donation->status).'</i>&nbsp;<span class="dashicons dashicons-editor-help has-tooltip" title="'.$this->get_status_descriptions($donation->status).'"></span>';
+
+                $status_list = $this->get_status_labels();
+
+                echo '<div class="status-label">
+                    <i class="'.esc_attr($donation->status).' label-text">'.$status_list[$donation->status].'</i>
+                    &nbsp;<span class="dashicons dashicons-editor-help status-description has-tooltip" title="'.$this->get_status_descriptions($donation->status).'"></span>
+                    &nbsp;<span class="dashicons dashicons-edit has-tooltip edit-status" title="'.__('Change donation status', 'leyka').'"></span>
+                </div>
+                <div class="status-controls" style="display:none;" data-original-status="'.esc_attr($donation->status).'" data-donation-id="'.$donation->id.'" data-nonce="'.wp_create_nonce('leyka_change_donation_status_nonce').'">
+                    <label class="control">'.__('Status', 'leyka').'
+                        <select name="new-donation-status" class="new-donation-status">';
+
+                foreach($status_list as $status_id => $label) {
+                    echo "<option value='$status_id' ".($status_id == $donation->status ? 'selected' : '').">$label</option>";
+                }
+
+                echo '</select></label>
+                    <span class="new-status-ok control"><span class="dashicons dashicons-yes"></span></span>
+                    <span class="new-status-cancel control"><span class="dashicons dashicons-no"></span></span>
+                    <img class="status-change-loading" src="'.LEYKA_PLUGIN_BASE_URL.'img/ajax-loader-h.gif'.'" style="display:none;">
+                    <div class="error" style="display:none;">'.__('Donation status can not be updated now.', 'leyka').'</div>
+                </div>';
                 break;
+
             case 'type':
                 echo '<i class="'.esc_attr($donation->payment_type).'">'.$donation->payment_type_label.'</i>';
                 break;
@@ -956,8 +979,8 @@ class Leyka_Donation_Management {
 						<?php echo sprintf(
                             __("Not sent %s", 'leyka'),
                             "<div class='send-donor-thanks'>".__('(send it now)', 'leyka')."</div>"
-                        );?>
-						<?php wp_nonce_field('leyka_donor_email', '_leyka_donor_email_nonce', false, true); ?>
+                        );
+                        wp_nonce_field('leyka_donor_email', '_leyka_donor_email_nonce', false, true);?>
 					</div>
 				<?php }
 

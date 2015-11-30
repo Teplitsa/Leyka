@@ -74,7 +74,6 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 'description' => __('Please, enter your secret key value here. It can be found in your RBK Money Shop Settings.', 'leyka'),
                 'required' => 0,
                 'placeholder' => __('Ex., fW!^12@3#&8A4', 'leyka'),
-                'is_password' => true,
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),

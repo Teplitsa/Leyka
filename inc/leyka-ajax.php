@@ -79,14 +79,14 @@ function leyka_payment_method_action() {
     check_ajax_referer('leyka_payment_form', '_leyka_ajax_nonce');
 
     if(empty($_POST['pm_id'])) {
-        die('-1');
+        wp_die('-1');
     }
 
     $curr_currency = empty($_POST['currency']) ? 'rur' : trim($_POST['currency']);
     $curr_pm = leyka_get_pm_by_id(trim($_POST['pm_id']));
 
     if( !$curr_pm ) {
-        die('-1');
+        wp_die('-1');
     }
 
     leyka_setup_current_pm($curr_pm, $curr_currency);
@@ -135,7 +135,7 @@ function leyka_currency_choice_action() {
     check_ajax_referer('leyka_payment_form', '_leyka_ajax_nonce');
 
     if(empty($_POST['currency'])) {
-        die('-1');
+        wp_die('-1');
     }
 
     $curr_currency = trim($_POST['currency']);
@@ -206,9 +206,8 @@ function leyka_currency_choice_action() {
         <?php echo "<div class='leyka-pm-desc'>".apply_filters('leyka_the_content', leyka_pf_get_pm_description())."</div>";?>
 
     </div>
-    <?php
 
-    die();
+    <?php wp_die();
 }
 add_action('wp_ajax_leyka_currency_choice', 'leyka_currency_choice_action');
 add_action('wp_ajax_nopriv_leyka_currency_choice', 'leyka_currency_choice_action');
@@ -230,3 +229,24 @@ function leyka_recalculate_total_funded_action() {
 }
 add_action('wp_ajax_leyka_recalculate_total_funded_amount', 'leyka_recalculate_total_funded_action');
 add_action('wp_ajax_nopriv_leyka_recalculate_total_funded_amount', 'leyka_recalculate_total_funded_action');
+
+function leyka_change_donation_status() {
+
+    if( !wp_verify_nonce($_POST['nonce'], 'leyka_change_donation_status_nonce') ) {
+        wp_die('-1');
+    }
+
+    if(empty($_POST['donation_id']) || empty($_POST['donation_status'])) {
+        wp_die('-1');
+    }
+
+    $donation = new Leyka_Donation((int)$_POST['donation_id']);
+    $donation->status = $_POST['donation_status'];
+
+    wp_die(json_encode(array(
+        'result' => 0,
+        'new_status_description' => Leyka_Donation_Management::get_status_descriptions($_POST['donation_status']),
+    )));
+}
+add_action('wp_ajax_leyka_change_status', 'leyka_change_donation_status');
+add_action('wp_ajax_nopriv_leyka_change_status', 'leyka_change_donation_status');

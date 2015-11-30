@@ -30,7 +30,6 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 'title' => __('Chronopay shared_sec', 'leyka'),
                 'description' => __('Please, enter your Chronopay shared_sec value here. It can be found in your contract.', 'leyka'),
                 'required' => 1,
-                'is_password' => true,
                 'placeholder' => __('Ex., 4G0i8590sl5Da37I', 'leyka'),
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
