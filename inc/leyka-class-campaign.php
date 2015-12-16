@@ -369,7 +369,7 @@ class Leyka_Campaign_Management {
 	static function get_card_embed_code($campaign_id, $increase_counters = false, $w = 300, $h = 510){
 
 		$link = get_permalink($campaign_id);
-        $link .= (stristr($link, '?') !== false ? '&' : '?').'embed=campaign_card';
+        $link .= (stristr($link, '?') !== false ? '&' : '?').'embed_object=campaign_card';
         $link .= '&increase_counters='.(int)!!$increase_counters;
 
 		return '<iframe width="'.(int)$w.'" height="'.(int)$h.'" src="'.$link.'"></iframe>';

@@ -106,9 +106,9 @@ class Leyka {
         /** Embed campaign URL handler: */
         add_filter('template_include', function($template){
 
-            if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type) && !empty($_GET['embed'])) {
+            if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type) && !empty($_GET['embed_object'])) {
 
-                $new_template = leyka_get_current_template_data(false, 'embed_'.$_GET['embed'], true);
+                $new_template = leyka_get_current_template_data(false, 'embed_'.$_GET['embed_object'], true);
                 if($new_template && !empty($new_template['file'])) {
                     $template = $new_template['file'];
                 }
@@ -570,7 +570,7 @@ class Leyka {
 
         $role = get_role('administrator'); // Just in case. There were some exotic cases..
         if( !$role ) {
-            return false;
+            return;
         }
 
         /** Create all roles and capabilities: */
