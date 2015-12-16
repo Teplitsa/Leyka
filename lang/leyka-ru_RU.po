@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Leyka Plugin\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-09-11 08:25:09+00:00\n"
-"PO-Revision-Date: Thu Nov 26 2015 17:27:41 GMT+0300\n"
+"PO-Revision-Date: Wed Dec 16 2015 18:53:35 GMT+0300\n"
 "Last-Translator: ahaenor <ahaenor@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: Russian\n"
@@ -24,10 +24,17 @@ msgstr ""
 "X-Loco-Target-Locale: ru_RU\n"
 "X-Poedit-SearchPath-0: ."
 
-#: ../inc/leyka-class-donation.php:156 ../inc/leyka-class-donation.php:446 ..
-#: inc/leyka-class-donation.php:590
-msgid "Select a campaign"
-msgstr "Выберите кампанию"
+#: ../inc/leyka-class-payment-form.php:90
+msgid "or"
+msgstr "или"
+
+#: ../inc/leyka-class-payment-form.php:92
+msgid "Specify the amount of your donation"
+msgstr "Укажите размер платежа"
+
+#: ../inc/leyka-options-meta.php:537
+msgid "Fixed sum variants + flexible field"
+msgstr "Фиксированные размеры + поле для произвольного размера"
 
 # @ leyka
 msgid "Leyka"
@@ -1255,8 +1262,8 @@ msgstr "Панель управления"
 
 # @ leyka
 #: ../inc/leyka-admin.php:114 ../inc/leyka-admin.php:114 ../inc/leyka-core.php:
-#: 159 ../inc/leyka-core.php:600 ../inc/leyka-core.php:602 ../inc/leyka-core.php:
-#: 604 ../inc/leyka-core.php:605
+#: 164 ../inc/leyka-core.php:619 ../inc/leyka-core.php:621 ../inc/leyka-core.php:
+#: 623 ../inc/leyka-core.php:624
 msgid "Donations"
 msgstr "Пожертвования"
 
@@ -1271,12 +1278,12 @@ msgstr "Добавить новое"
 
 # @ leyka
 #: ../inc/leyka-admin.php:120 ../inc/leyka-admin.php:120 ../inc/leyka-core.php:
-#: 165 ../inc/leyka-core.php:637 ../inc/leyka-core.php:639
+#: 170 ../inc/leyka-core.php:656 ../inc/leyka-core.php:658
 msgid "Campaigns"
 msgstr "Кампании"
 
 # @ leyka
-#: ../inc/leyka-admin.php:123 ../inc/leyka-core.php:641 ../inc/leyka-core.php:644
+#: ../inc/leyka-admin.php:123 ../inc/leyka-core.php:660 ../inc/leyka-core.php:663
 msgid "New campaign"
 msgstr "Новая кампания"
 
@@ -1292,7 +1299,7 @@ msgstr "Лейка: Настройки"
 
 # @ leyka
 #: ../inc/leyka-admin.php:126 ../inc/leyka-admin.php:143 ../inc/leyka-admin.php:
-#: 158 ../inc/leyka-core.php:173
+#: 158 ../inc/leyka-core.php:178
 msgid "Settings"
 msgstr "Настройки"
 
@@ -1342,129 +1349,129 @@ msgstr "Показывайте информацию о ваших кампани
 msgid "Display campaign's link on your site using menus"
 msgstr "Укажите ссылку на страницу кампании в меню"
 
-#: ../inc/leyka-admin.php:217
+#: ../inc/leyka-admin.php:218
 msgid "Set up"
 msgstr "Настроить"
 
-#: ../inc/leyka-admin.php:218
+#: ../inc/leyka-admin.php:219
 msgid "Additional information on the plugin website"
 msgstr "Дополнительная информация на сайте плагина"
 
-#: ../inc/leyka-admin.php:220
+#: ../inc/leyka-admin.php:221
 msgid "Complete"
 msgstr "Готово"
 
 # @ leyka
-#: ../inc/leyka-admin.php:237
+#: ../inc/leyka-admin.php:238
 msgid "Settings type"
 msgstr "Тип настроек"
 
 # @ leyka
-#: ../inc/leyka-admin.php:248
+#: ../inc/leyka-admin.php:249
 msgid "Banking and legal information about your organisation"
 msgstr "Банковские и юридические данные о вашей организации"
 
 # @ leyka
-#: ../inc/leyka-admin.php:249
+#: ../inc/leyka-admin.php:250
 msgid "Payment method' settings for all you payment forms"
 msgstr "Настройки способов оплаты для всех форм пожертвований"
 
 # @ leyka
-#: ../inc/leyka-admin.php:250
+#: ../inc/leyka-admin.php:251
 msgid "Selection of currencies supported in the system"
 msgstr "Выбор валют, поддерживаемых системой"
 
 # @ leyka
-#: ../inc/leyka-admin.php:251
+#: ../inc/leyka-admin.php:252
 msgid "Gratification email to donor and staff notification notices"
 msgstr "Благодарственное письмо донору и уведомления обслуживающему персоналу сайта"
 
-#: ../inc/leyka-admin.php:252
+#: ../inc/leyka-admin.php:253
 msgid "Settings for frontend elements, like donation form templates"
 msgstr ""
 "Настройки вывода в публичном разделе сайта, например, шаблонов форм "
 "пожертвований"
 
 # @ leyka
-#: ../inc/leyka-admin.php:253
+#: ../inc/leyka-admin.php:254
 msgid "Various template tweaks (advanced)"
 msgstr "Настройки шаблонов (для продвинутых пользователей!)"
 
 # @ leyka
-#: ../inc/leyka-admin.php:260 ../inc/leyka-admin.php:343 ../inc/leyka-class-
+#: ../inc/leyka-admin.php:261 ../inc/leyka-admin.php:344 ../inc/leyka-class-
 #: campaign.php:335 ../inc/leyka-class-donation.php:79
 msgid "Edit"
 msgstr "Редактировать"
 
 # @ leyka
-#: ../inc/leyka-admin.php:282 ../inc/leyka-class-campaign.php:304 ../inc/leyka-
+#: ../inc/leyka-admin.php:283 ../inc/leyka-class-campaign.php:304 ../inc/leyka-
 #: class-campaign.php:314
 msgid "Date"
 msgstr "Дата"
 
 # @ leyka
-#: ../inc/leyka-admin.php:283 ../inc/leyka-admin.php:330
+#: ../inc/leyka-admin.php:284 ../inc/leyka-admin.php:331
 msgid "Purpose"
 msgstr "Цель пожертвования"
 
 # @ leyka
-#: ../inc/leyka-admin.php:284 ../inc/leyka-class-campaign.php:302 ../inc/leyka-
+#: ../inc/leyka-admin.php:285 ../inc/leyka-class-campaign.php:302 ../inc/leyka-
 #: class-campaign.php:312 ../inc/leyka-class-donation.php:906
 msgid "Donor"
 msgstr "Донор"
 
 # @ leyka
-#: ../inc/leyka-admin.php:285 ../inc/leyka-class-campaign.php:301 ../inc/leyka-
+#: ../inc/leyka-admin.php:286 ../inc/leyka-class-campaign.php:301 ../inc/leyka-
 #: class-campaign.php:311 ../inc/leyka-class-donation.php:486 ../inc/leyka-class-
 #: donation.php:639 ../inc/leyka-class-donation.php:907
 msgid "Amount"
 msgstr "Сумма"
 
 # @ leyka
-#: ../inc/leyka-admin.php:286 ../inc/leyka-class-campaign.php:305 ../inc/leyka-
+#: ../inc/leyka-admin.php:287 ../inc/leyka-class-campaign.php:305 ../inc/leyka-
 #: class-campaign.php:315 ../inc/leyka-class-donation.php:740 ../inc/leyka-class-
 #: donation.php:910
 msgid "Status"
 msgstr "Статус"
 
-#: ../inc/leyka-admin.php:300 ../inc/leyka-class-campaign.php:330 ../inc/leyka-
+#: ../inc/leyka-admin.php:301 ../inc/leyka-class-campaign.php:330 ../inc/leyka-
 #: class-donation.php:612 ../inc/leyka-shortcodes.php:349
 msgid "Anonymous"
 msgstr "Аноним"
 
 # @ leyka
-#: ../inc/leyka-admin.php:305
+#: ../inc/leyka-admin.php:306
 msgid "Details"
 msgstr "Подробности"
 
 # @ leyka
-#: ../inc/leyka-admin.php:312
+#: ../inc/leyka-admin.php:313
 msgid "You have not received any donations yet"
 msgstr "Пока пожертвований не было!"
 
 # @ leyka
-#: ../inc/leyka-admin.php:329 ../inc/leyka-widgets.php:122 ../inc/leyka-widgets.
+#: ../inc/leyka-admin.php:330 ../inc/leyka-widgets.php:122 ../inc/leyka-widgets.
 #: php:302 ../inc/leyka-widgets.php:433
 msgid "Title"
 msgstr "Заголовок"
 
 # @ leyka
-#: ../inc/leyka-admin.php:352
+#: ../inc/leyka-admin.php:353
 msgid "You don't have any campaign yet."
 msgstr "Вы ещё не создали ни одой благотворительной кампании."
 
 # @ leyka
-#: ../inc/leyka-admin.php:352
+#: ../inc/leyka-admin.php:353
 msgid "Create first one"
 msgstr "Создать кампанию"
 
 # @ leyka
-#: ../inc/leyka-admin.php:361
+#: ../inc/leyka-admin.php:362
 msgid "Leyka is a simple donations management system"
 msgstr "Лейка - простая система для сбора и управления пожертвованиями на вашем сайте"
 
 # @ leyka
-#: ../inc/leyka-admin.php:363
+#: ../inc/leyka-admin.php:364
 msgid ""
 "Developed by <a href=\"http://te-st.ru/\" target=\"_blank\">Teplitsa of social "
 "technologies</a>"
@@ -1473,43 +1480,43 @@ msgstr ""
 "технологий</a>"
 
 # @ leyka
-#: ../inc/leyka-admin.php:369
+#: ../inc/leyka-admin.php:370
 msgid "Plugin website"
 msgstr "Сайт плагина"
 
 # @ leyka
-#: ../inc/leyka-admin.php:370
+#: ../inc/leyka-admin.php:371
 msgid "Documentation"
 msgstr "Документация"
 
 # @ leyka
-#: ../inc/leyka-admin.php:371
+#: ../inc/leyka-admin.php:372
 msgid "Ask a question"
 msgstr "Задать вопрос"
 
-#: ../inc/leyka-admin.php:372
+#: ../inc/leyka-admin.php:373
 msgid "Create issue at GitHub"
 msgstr "Задать вопрос на GitHub"
 
 # @ leyka
-#: ../inc/leyka-admin.php:383 ../inc/leyka-admin.php:469
+#: ../inc/leyka-admin.php:384 ../inc/leyka-admin.php:470
 msgid "You do not have permissions to access this page."
 msgstr "У вас недостаточно полномочий для доступа к этой странице."
 
 # @ leyka
-#: ../inc/leyka-admin.php:426 ../inc/settings-pages/leyka-settings-payment.php:194
+#: ../inc/leyka-admin.php:427 ../inc/settings-pages/leyka-settings-payment.php:194
 msgid "Save settings"
 msgstr "Сохранить настройки"
 
-#: ../inc/leyka-admin.php:475
+#: ../inc/leyka-admin.php:476
 msgid "Send us a feedback"
 msgstr "Напишите в службу поддержки Лейки"
 
-#: ../inc/leyka-admin.php:478
+#: ../inc/leyka-admin.php:479
 msgid "Found a bug? Need a feature?"
 msgstr "Нашли ошибку в работе Лейки? Хотите предложить новую функцию?"
 
-#: ../inc/leyka-admin.php:479
+#: ../inc/leyka-admin.php:480
 msgid ""
 "Please, <a href=\"https://github.com/Teplitsa/Leyka/issues/new\">create an "
 "issue on Github</a> or send us a message with the following form"
@@ -1517,39 +1524,39 @@ msgstr ""
 "Пожалуйста, <a href=\"https://github.com/Teplitsa/Leyka/issues/new\">создайте "
 "обращение на Github</a> или напишите нам письмо с помощью формы ниже."
 
-#: ../inc/leyka-admin.php:487
+#: ../inc/leyka-admin.php:488
 msgid "Message topic:"
 msgstr "Тема сообщения:"
 
-#: ../inc/leyka-admin.php:488
+#: ../inc/leyka-admin.php:489
 msgid "For ex., Paypal support needed"
 msgstr "Например, «Нужна поддержка Paypal»"
 
-#: ../inc/leyka-admin.php:492
+#: ../inc/leyka-admin.php:493
 msgid "Your name (we'll use it to address you only):"
 msgstr "Ваше имя (мы используем его только для обращения к вам)"
 
-#: ../inc/leyka-admin.php:493
+#: ../inc/leyka-admin.php:494
 msgid "For ex., Leo"
 msgstr "Например, Лео"
 
-#: ../inc/leyka-admin.php:497
+#: ../inc/leyka-admin.php:498
 msgid "Your email:"
 msgstr "Ваш email:"
 
-#: ../inc/leyka-admin.php:498
+#: ../inc/leyka-admin.php:499
 msgid "your@mailbox.com"
 msgstr "your@mailbox.com"
 
-#: ../inc/leyka-admin.php:502
+#: ../inc/leyka-admin.php:503
 msgid "Your message:"
 msgstr "Ваше сообщение:"
 
-#: ../inc/leyka-admin.php:508
+#: ../inc/leyka-admin.php:509
 msgid "Submit"
 msgstr "Отправить"
 
-#: ../inc/leyka-admin.php:512
+#: ../inc/leyka-admin.php:513
 msgid ""
 "<strong>Thank you!</strong> Your message sended successfully. We will answer "
 "it soon - please await our response on the email you entered."
@@ -1557,7 +1564,7 @@ msgstr ""
 "<strong>Спасибо!</strong> Ваше сообщение было отправлено в службу поддержки. "
 "Мы пришлём ответ на указанный вами email."
 
-#: ../inc/leyka-admin.php:515
+#: ../inc/leyka-admin.php:516
 msgid ""
 "Sorry, but the message can't be sended. Please check your mail server "
 "settings."
@@ -1565,97 +1572,97 @@ msgstr ""
 "Извините, но сообщение не может быть отправлено. Пожалуйста, проверьте, все "
 "ли поля формы заполнены, и корректно ли настроен почтовый сервер."
 
-#: ../inc/leyka-admin.php:553
+#: ../inc/leyka-admin.php:554
 msgid "Leyka: new feedback incoming"
 msgstr "Лейка: поступила новая обратная связь"
 
-#: ../inc/leyka-admin.php:626 ../inc/leyka-admin.php:687
+#: ../inc/leyka-admin.php:629 ../inc/leyka-admin.php:690
 msgid "This field is required to be filled"
 msgstr "Это поле обязательно должно быть заполнено."
 
 # @ leyka
-#: ../inc/leyka-admin.php:627 ../inc/leyka-admin.php:689 ../inc/leyka-core.php:540
+#: ../inc/leyka-admin.php:630 ../inc/leyka-admin.php:692 ../inc/leyka-core.php:559
 msgid "You have entered an invalid email"
 msgstr "Вы указали некорректный email"
 
-#: ../inc/leyka-admin.php:649
+#: ../inc/leyka-admin.php:652
 msgid "Processing..."
 msgstr "Пожалуйста, подождите..."
 
-#: ../inc/leyka-admin.php:650
+#: ../inc/leyka-admin.php:653
 msgid "Search:"
 msgstr "Поиск:"
 
-#: ../inc/leyka-admin.php:651
+#: ../inc/leyka-admin.php:654
 msgid "Show _MENU_ entries"
 msgstr "Выводить _MENU_ строк"
 
-#: ../inc/leyka-admin.php:652
+#: ../inc/leyka-admin.php:655
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr "Строки с _START_ по _END_ из _TOTAL_"
 
-#: ../inc/leyka-admin.php:653
+#: ../inc/leyka-admin.php:656
 msgid "Showing 0 to 0 of 0 entries"
 msgstr "Строк не найдено"
 
-#: ../inc/leyka-admin.php:654
+#: ../inc/leyka-admin.php:657
 msgid "(filtered from _MAX_ total entries)"
 msgstr "(отфильтровано из _MAX_ строк)"
 
-#: ../inc/leyka-admin.php:655
+#: ../inc/leyka-admin.php:658
 msgid ","
 msgstr ","
 
-#: ../inc/leyka-admin.php:656
+#: ../inc/leyka-admin.php:659
 msgid "Loading..."
 msgstr "Пожалуйста, подождите..."
 
-#: ../inc/leyka-admin.php:658
+#: ../inc/leyka-admin.php:661
 msgid "No matching records found"
 msgstr "Записей не найдено"
 
-#: ../inc/leyka-admin.php:659
+#: ../inc/leyka-admin.php:662
 msgid "No data available in table"
 msgstr "Данных в таблице не обнаружено"
 
-#: ../inc/leyka-admin.php:660
+#: ../inc/leyka-admin.php:663
 msgid "First"
 msgstr "Первая"
 
-#: ../inc/leyka-admin.php:661
+#: ../inc/leyka-admin.php:664
 msgid "Previous"
 msgstr "Назад"
 
-#: ../inc/leyka-admin.php:662
+#: ../inc/leyka-admin.php:665
 msgid "Next"
 msgstr "Следующая"
 
-#: ../inc/leyka-admin.php:663
+#: ../inc/leyka-admin.php:666
 msgid "Last"
 msgstr "Последняя"
 
-#: ../inc/leyka-admin.php:664
+#: ../inc/leyka-admin.php:667
 msgid ": activate to sort column ascending"
 msgstr ": нажмите, чтобы сортировать по возрастанию значений в столбце"
 
-#: ../inc/leyka-admin.php:665
+#: ../inc/leyka-admin.php:668
 msgid ": activate to sort column descending"
 msgstr ": нажмите, чтобы сортировать по убыванию значений в столбце"
 
-#: ../inc/leyka-admin.php:686 ../inc/leyka-class-donation.php:761
+#: ../inc/leyka-admin.php:689 ../inc/leyka-class-donation.php:761
 msgid "Add the donation"
 msgstr "Добавить пожертвование"
 
-#: ../inc/leyka-admin.php:688
+#: ../inc/leyka-admin.php:691
 msgid "Selecting a campaign is required"
 msgstr "Пожалуйста, укажите кампанию."
 
 # @ leyka
-#: ../inc/leyka-admin.php:690 ../inc/leyka-core.php:537
+#: ../inc/leyka-admin.php:693 ../inc/leyka-core.php:556
 msgid "The amount must be filled with non-zero, non-negative number"
-msgstr "Укажите сумму"
+msgstr "Укажите корректную сумму платежа"
 
-#: ../inc/leyka-admin.php:691
+#: ../inc/leyka-admin.php:694
 msgid ""
 "Please, set one of a payment methods or just type a few words to describe a "
 "source for this donation"
@@ -1664,12 +1671,12 @@ msgstr ""
 "слов о том, как было получено пожертвование."
 
 # @ leyka
-#: ../inc/leyka-ajax.php:9 ../inc/leyka-core.php:767
+#: ../inc/leyka-ajax.php:9 ../inc/leyka-core.php:815
 msgid "Wrong nonce in submitted form data"
 msgstr "Данные формы некорректны"
 
 # @ leyka
-#: ../inc/leyka-ajax.php:19 ../inc/leyka-core.php:774
+#: ../inc/leyka-ajax.php:19 ../inc/leyka-core.php:822
 msgid "Wrong gateway or/and payment method in submitted form data"
 msgstr "На форме использовалась некорректная платёжная система и/или способ оплаты"
 
@@ -1865,8 +1872,8 @@ msgstr ""
 "Аннотация - это краткое описание вашей кампании. Оно используется, например, "
 "при отображении карточки кампании."
 
-#: ../inc/leyka-class-campaign.php:295 ../inc/leyka-core.php:606 ../inc/leyka-
-#: core.php:607
+#: ../inc/leyka-class-campaign.php:295 ../inc/leyka-core.php:625 ../inc/leyka-
+#: core.php:626
 msgid "Add correctional donation"
 msgstr "Добавить коррекционное пожертвование"
 
@@ -1898,11 +1905,11 @@ msgstr "Индивидуальная информация о платеже"
 msgid "Size settings"
 msgstr "Установить размер"
 
-#: ../inc/leyka-class-campaign.php:350 ../inc/leyka-class-payment-form.php:535
+#: ../inc/leyka-class-campaign.php:350 ../inc/leyka-class-payment-form.php:549
 msgid "Width"
 msgstr "Ширина"
 
-#: ../inc/leyka-class-campaign.php:351 ../inc/leyka-class-payment-form.php:536
+#: ../inc/leyka-class-campaign.php:351 ../inc/leyka-class-payment-form.php:550
 msgid "Height"
 msgstr "Высота"
 
@@ -1912,7 +1919,7 @@ msgid ""
 "in page HTML:"
 msgstr "Чтобы встроить карточку кампании в любую веб-страницу, скопируйте код:"
 
-#: ../inc/leyka-class-campaign.php:362 ../inc/leyka-class-payment-form.php:543
+#: ../inc/leyka-class-campaign.php:362 ../inc/leyka-class-payment-form.php:557
 msgid "Preview"
 msgstr "Предварительный просмотр"
 
@@ -1965,6 +1972,11 @@ msgstr "Выберите тип платежа"
 msgid "Select a gateway or a payment method"
 msgstr "Выберите платёжную систему или способ платежа"
 
+#: ../inc/leyka-class-donation.php:156 ../inc/leyka-class-donation.php:446 ..
+#: inc/leyka-class-donation.php:590
+msgid "Select a campaign"
+msgstr "Выберите кампанию"
+
 # @ leyka
 #: ../inc/leyka-class-donation.php:235
 msgid "Grateful email has been sent to the donor"
@@ -2010,7 +2022,7 @@ msgstr "Данные кампании"
 
 # @ leyka
 #: ../inc/leyka-class-donation.php:439 ../inc/leyka-class-donation.php:563 ..
-#: inc/leyka-class-donation.php:900 ../inc/leyka-core.php:638
+#: inc/leyka-class-donation.php:900 ../inc/leyka-core.php:657
 msgid "Campaign"
 msgstr "Кампания"
 
@@ -2071,7 +2083,7 @@ msgid "Donation date"
 msgstr "Дата пожертвования"
 
 # @ leyka
-#: ../inc/leyka-class-donation.php:567 ../inc/leyka-core.php:643
+#: ../inc/leyka-class-donation.php:567 ../inc/leyka-core.php:662
 msgid "Edit campaign"
 msgstr "Редактировать кампанию"
 
@@ -2093,7 +2105,7 @@ msgid "Cancel"
 msgstr "Отмена"
 
 # @ leyka
-#: ../inc/leyka-class-donation.php:687 ../inc/leyka-class-donation.php:1355
+#: ../inc/leyka-class-donation.php:687 ../inc/leyka-class-donation.php:1371
 msgid "Unknown payment method"
 msgstr "Неизвестный способ платежа"
 
@@ -2155,7 +2167,7 @@ msgid "Grateful email hasn't been sent %s"
 msgstr "Благодарственное письмо донору не отправлялось %s"
 
 # @ leyka
-#: ../inc/leyka-class-donation.php:812 ../inc/leyka-class-donation.php:957
+#: ../inc/leyka-class-donation.php:812 ../inc/leyka-class-donation.php:958
 msgid "(send it now)"
 msgstr "(отправить)"
 
@@ -2212,23 +2224,23 @@ msgid "Letter"
 msgstr "Письмо"
 
 # @ leyka
-#: ../inc/leyka-class-donation.php:950
+#: ../inc/leyka-class-donation.php:951
 #, php-format
 msgid "Sent at %s"
 msgstr "Отправлено %s"
 
 # @ leyka
-#: ../inc/leyka-class-donation.php:956
+#: ../inc/leyka-class-donation.php:957
 #, php-format
 msgid "Not sent %s"
 msgstr "Не отправлено %s"
 
-#: ../inc/leyka-class-donation.php:1071
+#: ../inc/leyka-class-donation.php:1072
 #, php-format
 msgid "Donation #%s"
 msgstr "Пожертвование #%s"
 
-#: ../inc/leyka-class-donation.php:1351
+#: ../inc/leyka-class-donation.php:1367
 msgid "Unknown gateway"
 msgstr "Неизвестная платёжная система"
 
@@ -2242,7 +2254,7 @@ msgid "Payment options"
 msgstr "Платёжные системы"
 
 #: ../inc/leyka-class-options-allocator.php:21 ../inc/leyka-class-payment-form.
-#: php:154
+#: php:168
 msgid "Currency"
 msgstr "Валюта"
 
@@ -2316,73 +2328,73 @@ msgstr "Договора публичной оферты"
 msgid "Additional"
 msgstr "Дополнительно"
 
-#: ../inc/leyka-class-payment-form.php:67
+#: ../inc/leyka-class-payment-form.php:68
 msgid "Donation amount"
 msgstr "Размер пожертвования"
 
 # @ leyka
-#: ../inc/leyka-class-payment-form.php:71
+#: ../inc/leyka-class-payment-form.php:73
 msgid "Please, specify your donation amount"
 msgstr "Пожалуйста, укажите размер вашего пожертвования"
 
 # @ leyka
-#: ../inc/leyka-class-payment-form.php:104
+#: ../inc/leyka-class-payment-form.php:118
 msgid "Specify donation amount"
 msgstr "Укажите размер пожертвования"
 
 # @ leyka
-#: ../inc/leyka-class-payment-form.php:187 ../inc/leyka-class-payment-form.php:188
+#: ../inc/leyka-class-payment-form.php:201 ../inc/leyka-class-payment-form.php:202
 msgid "Your name"
 msgstr "Ваше имя"
 
 # @ leyka
-#: ../inc/leyka-class-payment-form.php:189
+#: ../inc/leyka-class-payment-form.php:203
 msgid "We will use this to personalize your donation experience"
 msgstr "Представьтесь, пожалуйста"
 
 # @ leyka
-#: ../inc/leyka-class-payment-form.php:206 ../inc/leyka-class-payment-form.php:207
+#: ../inc/leyka-class-payment-form.php:220 ../inc/leyka-class-payment-form.php:221
 msgid "Your email"
 msgstr "Ваш email"
 
 # @ leyka
-#: ../inc/leyka-class-payment-form.php:208
+#: ../inc/leyka-class-payment-form.php:222
 msgid "We will send the donation success notice to this address"
 msgstr "Мы пришлем уведомление о получении пожертвования"
 
 # @ leyka
-#: ../inc/leyka-class-payment-form.php:518
+#: ../inc/leyka-class-payment-form.php:532
 #, php-format
 msgid "Proudly powered by %s"
 msgstr "Работает на %s"
 
 # @ leyka
-#: ../inc/leyka-class-payment-form.php:518
+#: ../inc/leyka-class-payment-form.php:532
 msgctxt "Plugin name in preposotional case"
 msgid "Leyka"
 msgstr "Лейке"
 
-#: ../inc/leyka-class-payment-form.php:530
+#: ../inc/leyka-class-payment-form.php:544
 msgid "Share (get embed code)"
 msgstr "Поделиться (получить код для вставки)"
 
 # @ leyka
-#: ../inc/leyka-class-payment-form.php:558
+#: ../inc/leyka-class-payment-form.php:572
 msgid "Errors"
 msgstr "Ошибки"
 
-#: ../inc/leyka-class-payment-form.php:617
+#: ../inc/leyka-class-payment-form.php:631
 msgid "Our sincere thanks"
 msgstr "Мы искренне благодарим"
 
-#: ../inc/leyka-class-payment-form.php:666
+#: ../inc/leyka-class-payment-form.php:680
 msgid "The fundraising campaign has been finished. Thank you for your support!"
 msgstr ""
 "Кампания была завершена, и сбор пожертвований остановлен. Спасибо за вашу "
 "поддержку!"
 
 # @ leyka
-#: ../inc/leyka-class-payment-form.php:677
+#: ../inc/leyka-class-payment-form.php:691
 #, php-format
 msgid ""
 "There are no payment methods selected to donate! Please, <a href=\"%s\">set "
@@ -2392,7 +2404,7 @@ msgstr ""
 "их</a>."
 
 # @ leyka
-#: ../inc/leyka-class-payment-form.php:678
+#: ../inc/leyka-class-payment-form.php:692
 msgid ""
 "Dear donor, we are very sorry, but we had not setted up the donations module "
 "yet :( Please try to donate later."
@@ -2400,162 +2412,189 @@ msgstr ""
 "Уважаемый донор, нам жаль, но настройка сервиса сбора пожертвований пока не "
 "закончена :( Пожалуйста, попробуйте пожертвовать позже."
 
-#: ../inc/leyka-core.php:153
+#: ../inc/leyka-core.php:158
 msgid "Desktop"
 msgstr "Панель управления"
 
 # @ leyka
-#: ../inc/leyka-core.php:269 ../inc/leyka-core.php:671
+#: ../inc/leyka-core.php:274 ../inc/leyka-core.php:690
 msgctxt "«Submitted» donation status"
 msgid "Submitted"
 msgstr "Попытка платежа"
 
 # @ leyka
-#: ../inc/leyka-core.php:270 ../inc/leyka-core.php:684
+#: ../inc/leyka-core.php:275 ../inc/leyka-core.php:703
 msgctxt "«Completed» donation status"
 msgid "Funded"
 msgstr "Платёж зачислен"
 
 # @ leyka
-#: ../inc/leyka-core.php:271 ../inc/leyka-core.php:697
+#: ../inc/leyka-core.php:276 ../inc/leyka-core.php:716
 msgctxt "«Refunded» donation status"
 msgid "Refunded"
 msgstr "Платёж возвращен"
 
 # @ leyka
-#: ../inc/leyka-core.php:272 ../inc/leyka-core.php:710
+#: ../inc/leyka-core.php:277 ../inc/leyka-core.php:729
 msgctxt "«Failed» donation status"
 msgid "Failed"
 msgstr "Ошибка платежа"
 
 # @ leyka
-#: ../inc/leyka-core.php:273
+#: ../inc/leyka-core.php:278
 msgctxt "«Deleted» donation status"
 msgid "Trash"
 msgstr "Корзина"
 
-#: ../inc/leyka-core.php:284
+#: ../inc/leyka-core.php:288
+msgctxt "«Submitted» donation status description"
+msgid "Donation attempt was made, but the payment itself wasn't sent."
+msgstr "Донор сделал попытку пожертвования, но не выполнил перевод средств."
+
+#: ../inc/leyka-core.php:289
+msgctxt "«Completed» donation status description"
+msgid "Donation was finished, the funds were made to your account."
+msgstr "Пожертвование было завершено, средства поступили на ваш счёт."
+
+#: ../inc/leyka-core.php:290
+msgctxt "«Refunded» donation status description"
+msgid "Donation funds were returned to the donor."
+msgstr "Средства были возвращены донору (например, по его требованию)."
+
+#: ../inc/leyka-core.php:291
+msgctxt "«Failed» donation status description"
+msgid "Donation payment was finished with an error. The funds weren't sent."
+msgstr ""
+"Платёж не был завершён по технической причине (например, средств на счету "
+"донора оказалось недостаточно)."
+
+#: ../inc/leyka-core.php:292
+msgctxt "«Trash» donation status description"
+msgid "Donation information was deleted."
+msgstr "Информация о пожертвовании была удалена."
+
+#: ../inc/leyka-core.php:303
 msgctxt "Campaign state when target is not set"
 msgid "No target"
 msgstr "Целевая сумма не задана"
 
-#: ../inc/leyka-core.php:285
+#: ../inc/leyka-core.php:304
 msgctxt "Campaign state when target is reached"
 msgid "Reached"
 msgstr "Достигнуто"
 
-#: ../inc/leyka-core.php:286
+#: ../inc/leyka-core.php:305
 msgctxt "Campaign state when target is not reached yet"
 msgid "In progress"
 msgstr "В процессе"
 
 # @ leyka
-#: ../inc/leyka-core.php:533 ../inc/leyka-gateways-api.php:287
+#: ../inc/leyka-core.php:552 ../inc/leyka-gateways-api.php:287
 msgid "Donation amount must be specified to submit the form"
-msgstr "Укажите сумму"
+msgstr "Укажите сумму платежа"
 
 # @ leyka
-#: ../inc/leyka-core.php:534 ../inc/leyka-gateways-api.php:310
+#: ../inc/leyka-core.php:553 ../inc/leyka-gateways-api.php:310
 #, php-format
 msgid "Donation amount you entered is too great (maximum %s allowed)"
 msgstr "Указанный размер слишком велик (допустимо максимум %s)"
 
 # @ leyka
-#: ../inc/leyka-core.php:535 ../inc/leyka-gateways-api.php:325
+#: ../inc/leyka-core.php:554 ../inc/leyka-gateways-api.php:325
 #, php-format
 msgid "Donation amount you entered is too small (minimum %s allowed)"
 msgstr "Указанный размер слишком мал (допустимо минимум %s)"
 
 # @ leyka
-#: ../inc/leyka-core.php:536
+#: ../inc/leyka-core.php:555
 msgid "This checkbox must be checked to submit the form"
 msgstr "Необходимо ваше согласие"
 
 # @ leyka
-#: ../inc/leyka-core.php:538
+#: ../inc/leyka-core.php:557
 msgid "This field must be filled to submit the form"
 msgstr "Заполните это поле"
 
 # @ leyka
-#: ../inc/leyka-core.php:539
+#: ../inc/leyka-core.php:558
 msgid "Email must be filled to submit the form"
 msgstr "Укажите email"
 
-#: ../inc/leyka-core.php:586
+#: ../inc/leyka-core.php:605
 msgid "Donations Manager"
 msgstr "Менеджер пожертвований"
 
-#: ../inc/leyka-core.php:589
+#: ../inc/leyka-core.php:608
 msgid "Donations Administrator"
 msgstr "Администратор пожертвований"
 
 # @ leyka
-#: ../inc/leyka-core.php:603
+#: ../inc/leyka-core.php:622
 msgid "Donation"
 msgstr "Пожертвование"
 
 # @ leyka
-#: ../inc/leyka-core.php:608
+#: ../inc/leyka-core.php:627
 msgid "Donation profile"
 msgstr "Профиль пожертвования"
 
 # @ leyka
-#: ../inc/leyka-core.php:609
+#: ../inc/leyka-core.php:628
 msgid "New donation"
 msgstr "Новое пожертвование"
 
 # @ leyka
-#: ../inc/leyka-core.php:610
+#: ../inc/leyka-core.php:629
 msgid "View donation"
 msgstr "Просмотреть пожертвование"
 
 # @ leyka
-#: ../inc/leyka-core.php:611
+#: ../inc/leyka-core.php:630
 msgid "Search donation"
 msgstr "Поиск пожертвований"
 
 # @ leyka
-#: ../inc/leyka-core.php:612
+#: ../inc/leyka-core.php:631
 msgid "Donations not found"
 msgstr "Пожертвования не найдены"
 
 # @ leyka
-#: ../inc/leyka-core.php:613
+#: ../inc/leyka-core.php:632
 msgid "Donations not found in Trash"
 msgstr "Пожертвования не найдены в Корзине"
 
 # @ leyka
-#: ../inc/leyka-core.php:640
+#: ../inc/leyka-core.php:659
 msgid "All Campaigns"
 msgstr "Все кампании"
 
 # @ leyka
-#: ../inc/leyka-core.php:642
+#: ../inc/leyka-core.php:661
 msgid "Add new campaign"
 msgstr "Добавить новую кампанию"
 
 # @ leyka
-#: ../inc/leyka-core.php:645
+#: ../inc/leyka-core.php:664
 msgid "View campaign"
 msgstr "Просмотр кампании"
 
 # @ leyka
-#: ../inc/leyka-core.php:646
+#: ../inc/leyka-core.php:665
 msgid "Search campaigns"
 msgstr "Поиск кампаний"
 
 # @ leyka
-#: ../inc/leyka-core.php:647
+#: ../inc/leyka-core.php:666
 msgid "Campaigns not found"
 msgstr "Кампании не найдены"
 
 # @ leyka
-#: ../inc/leyka-core.php:648
+#: ../inc/leyka-core.php:667
 msgid "Campaigns not found in Trash"
 msgstr "Кампании не найдены в корзине"
 
 # @ leyka
-#: ../inc/leyka-core.php:676
+#: ../inc/leyka-core.php:695
 #, php-format
 msgid "Submitted <span class=\"count\">(%s)</span>"
 msgid_plural "Submitted <span class=\"count\">(%s)</span>"
@@ -2564,7 +2603,7 @@ msgstr[1] "Попытка платежа <span class=\"count\">(%s)</span>"
 msgstr[2] "Попытка платежа <span class=\"count\">(%s)</span>"
 
 # @ leyka
-#: ../inc/leyka-core.php:689
+#: ../inc/leyka-core.php:708
 #, php-format
 msgid "Funded <span class=\"count\">(%s)</span>"
 msgid_plural "Funded <span class=\"count\">(%s)</span>"
@@ -2573,7 +2612,7 @@ msgstr[1] "Платёж зачислен <span class=\"count\">(%s)</span>"
 msgstr[2] "Платёж зачислен <span class=\"count\">(%s)</span>"
 
 # @ leyka
-#: ../inc/leyka-core.php:702
+#: ../inc/leyka-core.php:721
 #, php-format
 msgid "Refunded <span class=\"count\">(%s)</span>"
 msgid_plural "Refunded <span class=\"count\">(%s)</span>"
@@ -2582,7 +2621,7 @@ msgstr[1] "Платёж возвращен <span class=\"count\">(%s)</span>"
 msgstr[2] "Платёж возвращен <span class=\"count\">(%s)</span>"
 
 # @ leyka
-#: ../inc/leyka-core.php:715
+#: ../inc/leyka-core.php:734
 #, php-format
 msgid "Failed <span class=\"count\">(%s)</span>"
 msgid_plural "Failed <span class=\"count\">(%s)</span>"
@@ -2591,36 +2630,36 @@ msgstr[1] "Ошибка платежа <span class=\"count\">(%s)</span>"
 msgstr[2] "Ошибка платежа <span class=\"count\">(%s)</span>"
 
 # @ leyka
-#: ../inc/leyka-core.php:913
+#: ../inc/leyka-core.php:961
 msgid "Radios"
 msgstr "Радио"
 
 # @ leyka
-#: ../inc/leyka-core.php:914
+#: ../inc/leyka-core.php:962
 msgid "Radio options for each payment method"
 msgstr "переключатель методов оплаты с обновлением полей формы"
 
 # @ leyka
-#: ../inc/leyka-core.php:915
+#: ../inc/leyka-core.php:963
 msgid "Toggles"
 msgstr "Блоки"
 
 # @ leyka
-#: ../inc/leyka-core.php:916
+#: ../inc/leyka-core.php:964
 msgid "Toggled options for each payment method"
 msgstr "Способы оплаты расположены в раскрывающихся блоках"
 
 # @ leyka
-#: ../inc/leyka-core.php:917
+#: ../inc/leyka-core.php:965
 msgid "single"
 msgstr "разовое"
 
 # @ leyka
-#: ../inc/leyka-core.php:918
+#: ../inc/leyka-core.php:966
 msgid "rebill"
 msgstr "регулярное"
 
-#: ../inc/leyka-core.php:919
+#: ../inc/leyka-core.php:967
 msgid "correction"
 msgstr "коррекционное"
 
@@ -3446,12 +3485,12 @@ msgstr ""
 # @ leyka
 #: ../inc/leyka-options-meta.php:537
 msgid "Flexible"
-msgstr "Произвольный размер"
+msgstr "Произвольный размер платежей"
 
 # @ leyka
 #: ../inc/leyka-options-meta.php:537
 msgid "Fixed"
-msgstr "Фиксированный размер"
+msgstr "Фиксированные размеры платежей"
 
 #: ../inc/leyka-options-meta.php:543
 msgid "Display all payment elements on campaign page automatically"

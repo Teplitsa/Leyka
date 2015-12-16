@@ -115,8 +115,7 @@ jQuery(document).ready(function($){
             e.preventDefault();
 
             var $this = $(this),
-                $wrapper = $this.parents('li:first'),
-                pm_full_id = $this.data('pm-id');
+                $wrapper = $this.parents('li:first');
 
             $this.hide();
             $wrapper.find('.pm-label').hide();

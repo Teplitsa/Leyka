@@ -534,7 +534,7 @@ self::$_options_meta = apply_filters('leyka_core_options_meta', array(
         'required' => 1,
         'placeholder' => '', // For text fields
         'length' => '', // For text fields
-        'list_entries' => array('flexible' => __('Flexible', 'leyka'), 'fixed' => __('Fixed', 'leyka')),
+        'list_entries' => array('flexible' => __('Flexible', 'leyka'), 'fixed' => __('Fixed', 'leyka'), 'mixed' => __('Fixed sum variants + flexible field', 'leyka')),
         'validation_rules' => array(), // List of regexp?..
     ),
     'donation_form_mode' => array(
