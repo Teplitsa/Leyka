@@ -70,7 +70,7 @@ jQuery(document).ready(function($){
             e.preventDefault();
         }
 
-    }).change(function(e){
+    }).change(function(){
 
         var $this = $(this),
             $text = $($embed_code.text());
@@ -96,11 +96,15 @@ jQuery(document).ready(function($){
                 $form.find('.donate_amount_flex_checked').attr('checked', 'checked');
             }
         })
-        .on('keyup.leyka', 'input.donate_amount_flex', function(e){
+        .on('keydown.leyka', 'input.donate_amount_flex', function(e){
 
             if( !leyka_is_digit_key(e, true) ) {
+
                 e.preventDefault();
+                e.stopImmediatePropagation();
             }
+        })
+        .on('keyup.leyka', 'input.donate_amount_flex', function(){
 
             var $this = $(this);
             $this.parents('form.leyka-pm-form').find('input.donate_amount_flex_checked').val($this.val());
