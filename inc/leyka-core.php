@@ -47,12 +47,12 @@ class Leyka {
 
         if( !get_option('leyka_permalinks_flushed') ) {
 
-            function leyka_flush_rewrite_rules() {
+            function leyka_rewrite_rules() {
 
                 flush_rewrite_rules(false);
                 update_option('leyka_permalinks_flushed', 1);
             }
-            add_action('init', 'leyka_flush_rewrite_rules');
+            add_action('init', 'leyka_rewrite_rules');
         }
 
         // By default, we'll assume some errors in the payment form, so redirect will get us back to it:
@@ -63,6 +63,11 @@ class Leyka {
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts')); // wp_footer
 
         add_action('init', array($this, 'register_post_types'), 1);
+
+        // Add/modify the rewrite rules:
+        add_filter('rewrite_rules_array', array($this, 'insert_rewrite_rules'));
+        add_filter('query_vars', array($this, 'insert_rewrite_query_vars'));
+//        add_filter('init', array($this, 'flush_rewrite_rules'));
 
         add_action('init', array($this, 'register_user_capabilities'), 1);
 
@@ -734,6 +739,35 @@ class Leyka {
         ));
 
         do_action('leyka_cpt_registered');
+    }
+
+    /**
+     * Calls flush_rules() when adding rules.
+     */
+//    function flush_rewrite_rules() {
+//
+//        flush_rewrite_rules(false);
+//    }
+
+    /**
+     * Add the plugin's rules themselves.
+     * @var $rules array
+     * @return array
+     */
+    function insert_rewrite_rules(array $rules) {
+
+        return array('campaign/([^/]+)/donations/?$' => 'index.php?leyka_campaign=$matches[1]&donations_list=1') + $rules; // The rules' order is important
+    }
+
+    /**
+     * Add the special query var to indicate the campaign's donations list view.
+     * @var $vars array
+     * @return array
+     */
+    function insert_rewrite_query_vars(array $vars) {
+
+        $vars[] = 'donations_list';
+        return $vars;
     }
 
     /**
