@@ -13,7 +13,7 @@ function leyka_render_export_button() {
             <input type="hidden" name="search_string" value="<?php echo empty($_GET['s']) ? '' : $_GET['s'];?>">
 
             <?php foreach(apply_filters('leyka_donations_export_form_fields', array()) as $name => $value) {?>
-                <input type="hidden" name="<?php echo $name;?>" value="<?echo $value;?>">
+                <input type="hidden" name="<?php echo $name;?>" value="<?php echo $value;?>">
             <?php }?>
 
             <input type="submit" name="leyka-donations-export-csv-excel" class="button-primary" value="<?php _e('Export (csv)', 'leyka');?>">
@@ -89,7 +89,7 @@ function leyka_do_donations_export() {
         header('Pragma: no-cache');
         header('Content-Disposition: attachment; filename="donations-tech-'.$domain.'-'.date('d.m.Y-H.i.s').'.csv"');
 
-        echo iconv('UTF-8', apply_filters('leyka_donations_tech_export_content_charset', 'windows-1251'), "sep=;\n".implode(';', array(
+        echo @iconv('UTF-8', apply_filters('leyka_donations_tech_export_content_charset', 'windows-1251'), "sep=;\n".implode(';', array(
                 'hash', 'Domain', 'Org_name', 'Timestamp', 'Date', 'Email_hash', 'Donor_name hash', 'Sum', 'Currency', 'Gateway_pm', 'Donation_status', 'Campaign_title', 'Campaign_URL', 'Payment_title', 'Target_sum', 'Campaign_target_state', 'Campaign_is_finished',
             )));
 
@@ -121,7 +121,7 @@ function leyka_do_donations_export() {
                 )));
         }
 
-        die('');
+        die(); // wp_die() is bad here
 
     } else {
 
@@ -144,7 +144,7 @@ function leyka_do_donations_export() {
 
         header('Content-Disposition: attachment; filename="donations-'.date('d.m.Y-H.i.s').'.csv"');
 
-        echo iconv(
+        echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
             'UTF-8',
             apply_filters('leyka_donations_export_content_charset', 'windows-1251'),
             "sep=;\n".implode(';', apply_filters('leyka_donations_export_headers', array(
@@ -174,7 +174,7 @@ function leyka_do_donations_export() {
                 ));
         }
 
-        die('');
+        die(); // wp_die() is bad here
     }
 }
 add_action('admin_init', 'leyka_do_donations_export');

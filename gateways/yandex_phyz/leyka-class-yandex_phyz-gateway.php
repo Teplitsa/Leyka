@@ -327,7 +327,4 @@ function error_log_yandex_phyz($string) {
 	error_log($string, 3, WP_CONTENT_DIR.'/uploads/phyz-error.log');
 }
 
-function leyka_add_gateway_yandex_phyz() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka()->add_gateway(Leyka_Yandex_Phyz_Gateway::get_instance());
-}
-add_action('leyka_init_actions', 'leyka_add_gateway_yandex_phyz');
+leyka_add_gateway(Leyka_Yandex_Phyz_Gateway::get_instance());

@@ -6,15 +6,15 @@
 /**
  * Functions to register and deregister a gateway
  **/
-function leyka_add_gateway($class_name){
+function leyka_add_gateway($class_name) {
     leyka()->add_gateway($class_name);
 }
 
-function leyka_remove_gateway($class_name){
+function leyka_remove_gateway($class_name) {
     leyka()->remove_gateway($class_name);
 }
 
-function leyka_get_gateways(){
+function leyka_get_gateways() {
 	return leyka()->get_gateways();
 }
 
@@ -147,10 +147,12 @@ abstract class Leyka_Gateway {
 
     public final static function get_instance() {
 
-        if(null == static::$_instance) {
+        if( !static::$_instance ) {
 
             static::$_instance = new static();
             static::$_instance->_initialize_options();
+
+            add_action('leyka_enqueue_scripts', array(static::$_instance, 'enqueue_gateway_scripts'));
 
             add_action('leyka_payment_form_submission-'.static::$_instance->id, array(static::$_instance, 'process_form'), 10, 4);
             add_action('leyka_payment_form_submission-'.static::$_instance->id, array(static::$_instance, 'process_form_default'), 100, 4);
@@ -213,20 +215,30 @@ abstract class Leyka_Gateway {
         }
 
         $gateway_options_names = $this->get_options_names();
-        if($gateway_section_index < 0)
+        if($gateway_section_index < 0) {
             $options[] = array('section' => array(
                 'name' => $this->_id,
                 'title' => $this->_title,
                 'is_default_collapsed' => false,
                 'options' => $gateway_options_names
             ));
-        else
+        } else {
             $options[$gateway_section_index]['section']['options'] = array_unique(array_merge(
                 $gateway_options_names,
                 $options[$gateway_section_index]['section']['options']
             ));
+        }
 
         return $options;
+    }
+
+    /** Register a gateway in the plugin */
+    public function add_gateway() {
+        leyka()->add_gateway(self::get_instance());
+    }
+
+    /** Register a gateway's scripts in the plugin */
+    public function enqueue_gateway_scripts() {
     }
 
     abstract protected function _set_attributes(); // Attributes are constant, like id, title, etc.

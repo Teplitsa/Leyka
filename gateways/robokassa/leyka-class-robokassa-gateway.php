@@ -41,6 +41,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
                 'title' => __('Shop password 1', 'leyka'),
                 'description' => __('Please, enter your Robokassa shop password 1 here. It can be found in your Robokassa control panel (shop technical settings, field "password 1").', 'leyka'),
                 'required' => true,
+                'is_password' => true,
                 'placeholder' => __('Ex., 12abc34+', 'leyka'),
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
@@ -52,6 +53,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
                 'title' => __('Shop password 2', 'leyka'),
                 'description' => __('Please, enter your Robokassa shop password 2 here. It can be found in your Robokassa control panel (shop technical settings, field "password 2").', 'leyka'),
                 'required' => true,
+                'is_password' => true,
                 'placeholder' => __('Ex., 12abc34+', 'leyka'),
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
@@ -434,7 +436,4 @@ class Leyka_Robokassa_All extends Leyka_Payment_Method {
     }
 }
 
-function leyka_add_gateway_robokassa() {
-    leyka()->add_gateway(Leyka_Robokassa_Gateway::get_instance());
-}
-add_action('leyka_init_actions', 'leyka_add_gateway_robokassa');
+leyka_add_gateway(Leyka_Robokassa_Gateway::get_instance());

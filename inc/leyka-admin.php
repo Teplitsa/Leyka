@@ -538,10 +538,7 @@ class Leyka_Admin_Setup {
             die('2');
         }
 
-        if( !function_exists('set_html_content_type') ) {
-            function set_html_content_type(){ return 'text/html'; }
-        }
-        add_filter('wp_mail_content_type', 'set_html_content_type');
+        add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
         $res = true;
         foreach((array)explode(',', LEYKA_SUPPORT_EMAIL) as $email) {
@@ -578,7 +575,7 @@ class Leyka_Admin_Setup {
         }
 
         // Reset content-type to avoid conflicts (http://core.trac.wordpress.org/ticket/23578):
-        remove_filter('wp_mail_content_type', 'set_html_content_type');
+        remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
         die($res ? '0' : '3');
     }

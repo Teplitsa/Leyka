@@ -380,7 +380,4 @@ class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
     }
 }
 
-function leyka_add_gateway_yandex() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka()->add_gateway(Leyka_Yandex_Gateway::get_instance());
-}
-add_action('leyka_init_actions', 'leyka_add_gateway_yandex');
+leyka_add_gateway(Leyka_Yandex_Gateway::get_instance());

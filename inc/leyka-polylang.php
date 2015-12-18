@@ -9,17 +9,29 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
         load_textdomain('leyka', LEYKA_PLUGIN_DIR."lang/leyka-{$cur_lang->locale}.mo");
 //        }
 
-		function leyka_add_language_parameter_to_pages_query($query_params) {
+        add_filter('leyka_default_success_page_query', function($params){
 
-			if(pll_current_language()) {
-                $query_params[] = array('taxonomy' => 'language', 'field' => 'slug', 'terms' => array(pll_current_language()),);
-			}
+            if(empty($params['lang']))
+                $params['lang'] = pll_current_language();
 
-            return $query_params;
-		}
-        add_filter('leyka_default_success_page_query_taxonomy', 'leyka_add_language_parameter_to_pages_query');
-        add_filter('leyka_default_failure_page_query_taxonomy', 'leyka_add_language_parameter_to_pages_query');
-        add_filter('leyka_pages_list_query_taxonomy', 'leyka_add_language_parameter_to_pages_query');
+            return $params;
+        });
+
+        add_filter('leyka_default_failure_page_query', function($params){
+
+            if(empty($params['lang']))
+                $params['lang'] = pll_current_language();
+
+            return $params;
+        });
+
+        add_filter('leyka_pages_list_query', function($params){
+
+            if(empty($params['lang']))
+                $params['lang'] = pll_current_language();
+
+            return $params;
+        });
 
         // Localize options values:
         add_filter('leyka_option_value', function($value, $option_name){

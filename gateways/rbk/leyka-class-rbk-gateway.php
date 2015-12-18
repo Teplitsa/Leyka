@@ -74,6 +74,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 'description' => __('Please, enter your secret key value here. It can be found in your RBK Money Shop Settings.', 'leyka'),
                 'required' => 0,
                 'placeholder' => __('Ex., fW!^12@3#&8A4', 'leyka'),
+                'is_password' => true,
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
@@ -391,7 +392,4 @@ class Leyka_Rbk_All extends Leyka_Payment_Method {
     }
 }
 
-function leyka_add_gateway_rbk() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka()->add_gateway(Leyka_Rbk_Gateway::get_instance());
-}
-add_action('leyka_init_actions', 'leyka_add_gateway_rbk');
+leyka_add_gateway(Leyka_Rbk_Gateway::get_instance());

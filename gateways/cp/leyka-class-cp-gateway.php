@@ -66,6 +66,21 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         }
     }
 
+    public function enqueue_gateway_scripts() {
+
+        if(Leyka_CP_Card::get_instance()->active) {
+
+            wp_enqueue_script('leyka-cp-widget', 'https://widget.cloudpayments.ru/bundles/cloudpayments');
+            wp_enqueue_script(
+                'leyka-cp',
+                LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_CP_Gateway::get_instance()->id.'/js/leyka.cp.js',
+                array('jquery', 'leyka-cp-widget', 'leyka-public'),
+                LEYKA_VERSION,
+                true
+            );
+        }
+    }
+
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
         $donation = new Leyka_Donation($donation_id);
@@ -481,22 +496,4 @@ class Leyka_CP_Card extends Leyka_Payment_Method {
     }
 }
 
-function leyka_add_gateway_cp() {
-    leyka()->add_gateway(Leyka_CP_Gateway::get_instance());
-}
-add_action('leyka_init_actions', 'leyka_add_gateway_cp');
-
-add_action('leyka_enqueue_scripts', 'leyka_enqueue_scripts_cp');
-function leyka_enqueue_scripts_cp() {
-
-    if(Leyka_CP_Card::get_instance()->active) {
-        wp_enqueue_script('leyka-cp-widget', 'https://widget.cloudpayments.ru/bundles/cloudpayments');
-        wp_enqueue_script(
-            'leyka-cp',
-            LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_CP_Gateway::get_instance()->id.'/js/leyka.cp.js',
-            array('jquery', 'leyka-cp-widget', 'leyka-public'),
-            LEYKA_VERSION,
-            true
-        );
-    }
-}
+leyka_add_gateway(Leyka_CP_Gateway::get_instance());

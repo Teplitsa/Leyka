@@ -54,7 +54,7 @@ class Leyka_Payment_Form {
 //        }
 
 		// Options: amount field mode:
-		$mode = leyka_options()->opt('donation_sum_field_type'); // fixed/flexible
+		$mode = leyka_options()->opt('donation_sum_field_type'); // fixed/flexible/mixed
 		$supported_curr = leyka_get_active_currencies();
 		$current_curr = $this->get_current_currency();
 
@@ -64,41 +64,55 @@ class Leyka_Payment_Form {
 
 		ob_start();?>
 
-		<label for="leyka_donation_amount" class="leyka-screen-reader-text"><?php _e('Donation amount', 'leyka');?></label>
-	<?php
-		if($mode == 'fixed') {
+		<label for="leyka_donation_amount" class="leyka-screen-reader-text" class="sum-field-type" data-sum-field-type="<?php echo $mode;?>">
+			<?php _e('Donation amount', 'leyka');?>
+		</label>
+
+	<?php if($mode == 'fixed' || $mode == 'mixed') { // Variants of sum (+ flexible field optionally)
 
 			$comment = __('Please, specify your donation amount', 'leyka');			
-			$variants = explode(',', $supported_curr[$current_curr]['amount_settings']['fixed']);	
+			$variants = explode(',', $supported_curr[$current_curr]['amount_settings']['fixed']);?>
 
-			if($variants) {?>
+			<span class="<?php echo $current_curr;?> amount-variants-container">
+			<?php if($variants) {
 
-                <span class="<?php echo $current_curr;?> amount-variants-container">
-                <?php foreach($variants as $amount) {?>
-                    <label class="figure" title="<?php echo esc_attr($comment);?>">
-                        <input type="radio" value="<?php echo (int)$amount;?>" name="leyka_donation_amount"><?php echo (int)$amount;?>
-                    </label>
-		        <?php }?>
-                </span>
+				foreach($variants as $amount) {?>
 
-                <?php foreach($supported_curr as $currency => $data) {
-                    if($currency == $current_curr)
-                        continue;?>
+					<label class="figure" title="<?php echo esc_attr($comment);?>">
+						<input type="radio" value="<?php echo (int)$amount;?>" name="leyka_donation_amount"><?php echo (int)$amount;?>
+					</label>
+				<?php }
+			}
 
-                    <span class="<?php echo $currency;?> amount-variants-container" style="display:none;">
-                        <?php foreach(explode(',', $data['amount_settings']['fixed']) as $amount) {?>
-                            <label class="figure" title="<?php echo esc_attr($comment);?>">
-                                <input type="radio" value="<?php echo (int)$amount;?>" name="leyka_donation_amount" /><?php echo (int)$amount;?>
-                            </label>
-                        <?php }?>
-                    </span>
-                <?php }?>
+			if($mode == 'mixed') {?>
 
-                <span class="currency"><?php echo $this->get_currency_field();?></span>                
-				<div id="leyka_donation_amount-error" class="field-error"></div>
-		    <?php }
+				<label class="figure" for="donate_amount_flex_checked">
+					<?php if($variants) { _e('or', 'leyka');?> <input type="radio" name="leyka_donation_amount" class="donate_amount_flex_checked" value="<?php echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?>"><?php }?>
 
-        } else {?>
+					<input type="text" title="<?php echo __('Specify the amount of your donation', 'leyka');?>" name="leyka_donation_amount" class="donate_amount_flex" value="<?php echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?>">
+				</label>
+			<?php }?>
+			</span>
+
+			<?php foreach($supported_curr as $currency => $data) {
+
+				if($currency == $current_curr) {
+					continue;
+				}?>
+
+				<span class="<?php echo $currency;?> amount-variants-container" style="display:none;">
+					<?php foreach(explode(',', $data['amount_settings']['fixed']) as $amount) {?>
+						<label class="figure" title="<?php echo esc_attr($comment);?>">
+							<input type="radio" value="<?php echo (int)$amount;?>" name="leyka_donation_amount" /><?php echo (int)$amount;?>
+						</label>
+					<?php }?>
+				</span>
+			<?php }?>
+
+			<span class="currency"><?php echo $this->get_currency_field();?></span>
+			<div id="leyka_donation_amount-error" class="field-error"></div>
+
+		<?php } else { // Flexible sum field ?>
 
 			<span class="figure">
                 <input type="text" title="<?php echo __('Specify donation amount', 'leyka');?>" name="leyka_donation_amount" class="required" id="donate_amount_flex" value="<?php echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?>">                
