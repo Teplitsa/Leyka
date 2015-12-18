@@ -1,4 +1,4 @@
-<?php
+<?php if( !defined('WPINC') ) die; // If this file is called directly, abort
 /**
  * Fired when the plugin is uninstalled.
  *
@@ -10,8 +10,8 @@
  */
 
 // If uninstall, not called from WordPress, then exit
-if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+if( !defined('WP_UNINSTALL_PLUGIN') ) {
 	exit;
 }
 
-// TODO: Define uninstall functionality here
+// Uninstall functionality here...
