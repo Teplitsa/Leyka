@@ -137,7 +137,14 @@ function leyka_get_default_success_page() {
     foreach($params as $name => &$value) {
         $value = is_array($value) ? "`$name` IN ('".implode("', '", $value)."')" : "`$name` = '$value'";
     }
-    $page = $wpdb->get_row("SELECT ID, post_status FROM $wpdb->posts WHERE ".implode(' AND ', $params)." ORDER BY ID ASC LIMIT 0,1");
+
+    $tax_params = apply_filters('leyka_default_success_page_query_taxonomy', array());
+    $tax_sql = $tax_params ? get_tax_sql($tax_params, $wpdb->posts, 'ID') : array('join' => '', 'where' => '');
+
+    $page = $wpdb->get_row(
+        "SELECT ID, post_status FROM $wpdb->posts {$tax_sql['join']} WHERE "
+        .implode(' AND ', $params).($tax_sql['where'] ? "{$tax_sql['where']}" : "")." ORDER BY ID ASC LIMIT 0,1"
+    );
 
     if($page) {
 
@@ -168,8 +175,7 @@ function leyka_get_default_success_page() {
 
 function leyka_get_success_page_url() {
 
-    $url = leyka_options()->opt('success_page') ?
-        get_permalink(leyka_options()->opt('success_page')) : home_url();
+    $url = leyka_options()->opt('success_page') ? get_permalink(leyka_options()->opt('success_page')) : home_url();
 
     if( !$url ) { // It can be in case when "last posts" is selected for homepage
         $url = home_url();
@@ -195,7 +201,14 @@ function leyka_get_default_failure_page() {
     foreach($params as $name => &$value) {
         $value = is_array($value) ? "`$name` IN ('".implode("', '", $value)."')" : "`$name` = '$value'";
     }
-    $page = $wpdb->get_row("SELECT ID, post_status FROM $wpdb->posts WHERE ".implode(' AND ', $params)." ORDER BY ID ASC LIMIT 0,1");
+
+    $tax_params = apply_filters('leyka_default_failure_page_query_taxonomy', array());
+    $tax_sql = $tax_params ? get_tax_sql($tax_params, $wpdb->posts, 'ID') : array('join' => '', 'where' => '');
+
+    $page = $wpdb->get_row(
+        "SELECT ID, post_status FROM $wpdb->posts {$tax_sql['join']} WHERE "
+        .implode(' AND ', $params).($tax_sql['where'] ? "{$tax_sql['where']}" : "")." ORDER BY ID ASC LIMIT 0,1"
+    );
 
     if($page) {
 
@@ -225,8 +238,7 @@ function leyka_get_default_failure_page() {
 
 function leyka_get_failure_page_url() {
 
-    $url = leyka_options()->opt('failure_page') ?
-        get_permalink(leyka_options()->opt('failure_page')) : home_url();
+    $url = leyka_options()->opt('failure_page') ? get_permalink(leyka_options()->opt('failure_page')) : home_url();
 
     if( !$url ) { // It can be in case when "last posts" is selected for homepage
         $url = home_url();

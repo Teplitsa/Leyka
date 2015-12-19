@@ -9,29 +9,17 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
         load_textdomain('leyka', LEYKA_PLUGIN_DIR."lang/leyka-{$cur_lang->locale}.mo");
 //        }
 
-        add_filter('leyka_default_success_page_query', function($params){
+        function leyka_add_language_parameter_to_pages_query($query_params) {
 
-            if(empty($params['lang']))
-                $params['lang'] = pll_current_language();
+            if(pll_current_language()) {
+                $query_params[] = array('taxonomy' => 'language', 'field' => 'slug', 'terms' => array(pll_current_language()),);
+            }
 
-            return $params;
-        });
-
-        add_filter('leyka_default_failure_page_query', function($params){
-
-            if(empty($params['lang']))
-                $params['lang'] = pll_current_language();
-
-            return $params;
-        });
-
-        add_filter('leyka_pages_list_query', function($params){
-
-            if(empty($params['lang']))
-                $params['lang'] = pll_current_language();
-
-            return $params;
-        });
+            return $query_params;
+        }
+        add_filter('leyka_default_success_page_query_taxonomy', 'leyka_add_language_parameter_to_pages_query');
+        add_filter('leyka_default_failure_page_query_taxonomy', 'leyka_add_language_parameter_to_pages_query');
+        add_filter('leyka_pages_list_query_taxonomy', 'leyka_add_language_parameter_to_pages_query');
 
         // Localize options values:
         add_filter('leyka_option_value', function($value, $option_name){
@@ -39,8 +27,7 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
             if($option_name == 'success_page' || $option_name == 'failure_page') {
 
                 // Get ID of localized page instead of originally set:
-                $localized_page_id = empty($_POST['cur_lang']) ?
-                    pll_get_post($value) : pll_get_post($value, $_POST['cur_lang']);
+                $localized_page_id = empty($_POST['cur_lang']) ? pll_get_post($value) : pll_get_post($value, $_POST['cur_lang']);
 
                 return $localized_page_id ? $localized_page_id : $value;
             }

@@ -86,7 +86,7 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
 
     protected function _set_options_defaults() {
 
-        if($this->_options){
+        if($this->_options) {
             return;
         }
 
