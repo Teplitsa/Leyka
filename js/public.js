@@ -324,7 +324,7 @@ jQuery(document).ready(function($){
                 }
             }).done(function(response){
 
-                $('#leyka-currency-data').html(response);
+                $('#leyka-pm-list').html(response);
                 $('#pm-selector').on('change', 'input', function(e){
                     leyka_pm_data(e, this);
                 });
