@@ -4,11 +4,17 @@
  * Description: Radio options for each payment method
  **/
 
-$active_pm = apply_filters('leyka_form_pm_order', leyka_get_pm_list(true));
+$active_pm_list = apply_filters('leyka_form_pm_order', leyka_get_pm_list(true));
+
+$active_currencies = array();
+foreach($active_pm_list as $pm) {
+    $active_currencies = $active_currencies + $pm->currencies;
+}
+echo '<pre>' . print_r($active_currencies, 1) . '</pre>';
 
 leyka_pf_submission_errors();
 
-$curr_pm = leyka_get_pm_by_id(reset($active_pm)->full_id, true);
+$curr_pm = leyka_get_pm_by_id(reset($active_pm_list)->full_id, true);
 
 leyka_setup_current_pm($curr_pm, $curr_pm->default_currency);?>
 
@@ -20,16 +26,17 @@ leyka_setup_current_pm($curr_pm, $curr_pm->default_currency);?>
 
         <div id="amount-selector" class="form-part freeze-fields">
             <?php echo leyka_pf_get_amount_field();?>
+            <span class="currency-var rur" style="display: none;"></span>
         </div>
 
-        <div id="leyka-currency-data">
+        <div id="leyka-pm-list">
 
             <?php echo leyka_pf_get_hidden_fields(empty($campaign) ? false : $campaign->id);?>
 
             <!-- pm selector -->
             <div id="pm-selector" class="form-part">
                 <ul class="leyka-pm-selector">
-                <?php foreach($active_pm as $pm) {?>
+                <?php foreach($active_pm_list as $pm) {?>
                     <li <?php if($curr_pm->full_id == $pm->full_id) echo 'class="active"';?>>
                         <label class="radio">
                             <input type="radio"
@@ -62,11 +69,43 @@ leyka_setup_current_pm($curr_pm, $curr_pm->default_currency);?>
                     .leyka_pf_get_submit_field();
 
                 $icons = leyka_pf_get_pm_icons();
-                if($icons) {
-                    echo '<ul class="leyka-pm-icons cf"><li>'.implode('</li><li>', $icons).'</li></ul>';
-                }?>
+                if($icons) {?>
+                    <ul class="leyka-pm-icons cf"><li><?php echo implode('</li><li>', $icons);?></li></ul>
+                <?php }?>
             </div>
-            <div class="leyka-pm-desc"><?php echo apply_filters('leyka_the_content', leyka_pf_get_pm_description());?></div>
+            <div class="leyka-pm-desc <?php echo esc_attr($curr_pm->full_id);?>">
+                <?php echo apply_filters('leyka_the_content', leyka_pf_get_pm_description());?>
+            </div>
+
+            <?php $count = count($active_pm_list);
+            for($i=1; $i<$count; $i++) {
+
+                leyka_setup_current_pm($active_pm_list[$i], $active_pm_list[$i]->default_currency);?>
+
+                <div class="leyka-pm-fields <?php echo esc_attr($active_pm_list[$i]->full_id);?>" style="display: none;">
+
+                    <div class="leyka-user-data">
+                        <!-- field for GA -->
+                        <input type="hidden" name="leyka_ga_payment_method" value="<?php echo esc_attr($active_pm_list[$i]->label);?>">
+                        <?php echo leyka_pf_get_name_field()
+                            .leyka_pf_get_email_field()
+                            .leyka_pf_get_pm_fields();?>
+                    </div>
+
+                    <?php echo leyka_pf_get_recurring_field()
+                        .leyka_pf_get_agree_field()
+                        .leyka_pf_get_submit_field();
+
+                    $icons = leyka_pf_get_pm_icons();
+                    if($icons) {
+                        echo '<ul class="leyka-pm-icons cf"><li>'.implode('</li><li>', $icons).'</li></ul>';
+                    }?>
+                </div>
+                <div class="leyka-pm-desc <?php echo esc_attr($active_pm_list[$i]->full_id);?>" style="display: none;">
+                    <?php echo apply_filters('leyka_the_content', leyka_pf_get_pm_description());?>
+                </div>
+
+            <?php }?>
         </div>
 
     </form>

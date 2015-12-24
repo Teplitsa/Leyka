@@ -164,7 +164,7 @@ class Leyka_Payment_Form {
 
 		if(count(array_keys($supported_curr)) > 1) {
 
-			// Multicurrency:			
+			// Multi-currency:
 			$out = "<label for='leyka_donation_currency' class='leyka-screen-reader-text'>".__('Currency', 'leyka')."</label>";
 			$out .= "<select name='leyka_donation_currency' class='leyka_donation_currency'>";
 			foreach ($supported_curr as $cid => $obj) {
