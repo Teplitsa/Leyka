@@ -25,7 +25,7 @@ class Leyka_Campaign_Management {
 	
 	public static function get_instance() {
 
-		if(self::$_instance === null) {
+		if( !self::$_instance ) {
 			self::$_instance = new self;
         }
 
@@ -369,7 +369,7 @@ class Leyka_Campaign_Management {
 	static function get_card_embed_code($campaign_id, $increase_counters = false, $w = 300, $h = 510){
 
 		$link = get_permalink($campaign_id);
-        $link .= (stristr($link, '?') !== false ? '&' : '?').'embed=campaign_card';
+        $link .= (stristr($link, '?') !== false ? '&' : '?').'embed_object=campaign_card';
         $link .= '&increase_counters='.(int)!!$increase_counters;
 
 		return '<iframe width="'.(int)$w.'" height="'.(int)$h.'" src="'.$link.'"></iframe>';
@@ -618,7 +618,7 @@ class Leyka_Campaign {
         $donations = get_posts($args);
 
         $count = count($donations);
-        for($i = 0; $i < $count; $i++) {
+        for($i=0; $i<$count; $i++) {
             $donations[$i] = new Leyka_Donation($donations[$i]->ID);
         }
 

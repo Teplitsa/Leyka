@@ -47,12 +47,12 @@ class Leyka {
 
         if( !get_option('leyka_permalinks_flushed') ) {
 
-            function leyka_flush_rewrite_rules() {
+            function leyka_rewrite_rules() {
 
                 flush_rewrite_rules(false);
                 update_option('leyka_permalinks_flushed', 1);
             }
-            add_action('init', 'leyka_flush_rewrite_rules');
+            add_action('init', 'leyka_rewrite_rules');
         }
 
         // By default, we'll assume some errors in the payment form, so redirect will get us back to it:
@@ -63,6 +63,11 @@ class Leyka {
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts')); // wp_footer
 
         add_action('init', array($this, 'register_post_types'), 1);
+
+        // Add/modify the rewrite rules:
+        add_filter('rewrite_rules_array', array($this, 'insert_rewrite_rules'));
+        add_filter('query_vars', array($this, 'insert_rewrite_query_vars'));
+//        add_filter('init', array($this, 'flush_rewrite_rules'));
 
         add_action('init', array($this, 'register_user_capabilities'), 1);
 
@@ -101,9 +106,9 @@ class Leyka {
         /** Embed campaign URL handler: */
         add_filter('template_include', function($template){
 
-            if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type) && !empty($_GET['embed'])) {
+            if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type) && !empty($_GET['embed_object'])) {
 
-                $new_template = leyka_get_current_template_data(false, 'embed_'.$_GET['embed'], true);
+                $new_template = leyka_get_current_template_data(false, 'embed_'.$_GET['embed_object'], true);
                 if($new_template && !empty($new_template['file'])) {
                     $template = $new_template['file'];
                 }
@@ -319,15 +324,17 @@ class Leyka {
             $this->_gateways[$gateway->id] = $gateway;
             return true;
 
-        } else
+        } else {
             return false;
+        }
     }
 
     /** Just in case */
     public function remove_gateway($gateway_id) {
 
-        if( !empty($this->_gateways[$gateway_id]) )
+        if( !empty($this->_gateways[$gateway_id]) ) {
             unset($this->_gateways[$gateway_id]);
+        }
     }
 
     /**
@@ -565,7 +572,7 @@ class Leyka {
 
         $role = get_role('administrator'); // Just in case. There were some exotic cases..
         if( !$role ) {
-            return false;
+            return;
         }
 
         /** Create all roles and capabilities: */
@@ -737,6 +744,35 @@ class Leyka {
     }
 
     /**
+     * Calls flush_rules() when adding rules.
+     */
+//    function flush_rewrite_rules() {
+//
+//        flush_rewrite_rules(false);
+//    }
+
+    /**
+     * Add the plugin's rules themselves.
+     * @var $rules array
+     * @return array
+     */
+    function insert_rewrite_rules(array $rules) {
+
+        return array('campaign/([^/]+)/donations/?$' => 'index.php?leyka_campaign=$matches[1]&donations_list=1') + $rules; // The rules' order is important
+    }
+
+    /**
+     * Add the special query var to indicate the campaign's donations list view.
+     * @var $vars array
+     * @return array
+     */
+    function insert_rewrite_query_vars(array $vars) {
+
+        $vars[] = 'donations_list';
+        return $vars;
+    }
+
+    /**
      * Payment form submissions.
      */
     public function gateway_redirect_page() {
@@ -795,15 +831,9 @@ class Leyka {
 
         $donation_id = $this->log_submission();
 
-        do_action(
-            'leyka_payment_form_submission-'.$pm[0],
-            $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST
-        );
+        do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
 
-        $this->_payment_vars = apply_filters(
-            'leyka_submission_form_data-'.$pm[0],
-            $this->_payment_vars, $pm[1], $donation_id
-        );
+        $this->_payment_vars = apply_filters('leyka_submission_form_data-'.$pm[0], $this->_payment_vars, $pm[1], $donation_id);
 
         $this->_payment_url = apply_filters('leyka_submission_redirect_url-'.$pm[0], $this->_payment_url, $pm[1]);
 

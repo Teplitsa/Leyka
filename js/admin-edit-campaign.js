@@ -42,13 +42,13 @@ jQuery(document).ready(function($){
 
         var keycode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
 
-        if(keycode == 9 || !keycode) { // Tab or click
+        if( !keycode || keycode == 9 ) { // Click or tab
 
             var $this = $(this);
             $this.select();
 
-            // Work around Chrome's little problem:
-            $this.on('mouseup', function() {
+            $this.on('mouseup', function() { // Work around Chrome's little problem
+
                 $this.off('mouseup');
                 return false;
             });

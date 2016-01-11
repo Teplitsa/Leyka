@@ -86,7 +86,7 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
 
     protected function _set_options_defaults() {
 
-        if($this->_options){
+        if($this->_options) {
             return;
         }
 
@@ -111,7 +111,4 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
     }
 }
 
-function leyka_add_gateway_text() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka()->add_gateway(Leyka_Text_Gateway::get_instance());
-}
-add_action('leyka_init_actions', 'leyka_add_gateway_text');
+leyka_add_gateway(Leyka_Text_Gateway::get_instance());

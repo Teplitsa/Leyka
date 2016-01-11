@@ -105,6 +105,12 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
     }
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
+
+        if($pm_id == 'yandex_sb' && $form_data['leyka_donation_currency'] == 'rur' && $form_data['leyka_donation_amount'] < 10.0) {
+
+            $error = new WP_Error('leyka_donation_amount_too_small', __('The amount of donations via Sberbank Online should be at least 10 RUR.', 'leyka'));
+            leyka()->add_payment_form_error($error);
+        }
     }
 
     public function submission_redirect_url($current_url, $pm_id) {
@@ -152,8 +158,9 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             'cps_email' => $donation->donor_email,
 //            '' => ,
         );
-        if(leyka_options()->opt('yandex_shop_article_id'))
+        if(leyka_options()->opt('yandex_shop_article_id')) {
             $data['shopArticleId'] = leyka_options()->opt('yandex_shop_article_id');
+        }
 
         return apply_filters('leyka_yandex_custom_submission_data', $data, $pm_id);
     }
@@ -168,18 +175,19 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         $tech_message = $tech_message ? $tech_message : $message;
         $callback_type = $callback_type == 'co' ? 'checkOrderResponse' : 'paymentAvisoResponse';
 
-        if($is_error)
+        if($is_error) {
             die('<?xml version="1.0" encoding="UTF-8"?>
 <'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'"
 code="1000" invoiceId="'.$_POST['invoiceId'].'"
 shopId="'.leyka_options()->opt('yandex_shop_id').'"
 message="'.$message.'"
 techMessage="'.$tech_message.'"/>');
-
-        die('<?xml version="1.0" encoding="UTF-8"?>
+        } else {
+            die('<?xml version="1.0" encoding="UTF-8"?>
 <'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'"
 code="0" invoiceId="'.$_POST['invoiceId'].'"
 shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
+        }
     }
 
     public function _handle_service_calls($call_type = '') {
@@ -188,17 +196,20 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
 
             case 'check_order': // Gateway test before the payment - to check if it's correct
 
-                if($_POST['action'] != 'checkOrder') // Payment isn't correct, we're not allowing it
+                if($_POST['action'] != 'checkOrder') { // Payment isn't correct, we're not allowing it
                     $this->_callback_answer(1, 'co', __('Wrong service operation', 'leyka'));
+                }
 
                 $_POST['orderNumber'] = (int)$_POST['orderNumber']; // Donation ID
-                if( !$_POST['orderNumber'] )
+                if( !$_POST['orderNumber'] ) {
                     $this->_callback_answer(1, 'co', __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('OrderNumber is not set', 'leyka'));
+                }
 
                 $donation = new Leyka_Donation($_POST['orderNumber']);
 
-                if($donation->sum != $_POST['orderSumAmount'])
+                if($donation->sum != $_POST['orderSumAmount']) {
                     $this->_callback_answer(1, 'co', __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('Donation sum is unmatched', 'leyka'));
+                }
 
                 $donation->add_gateway_response($_POST);
 
@@ -209,17 +220,20 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
 
             case 'payment_aviso':
 
-                if($_POST['action'] != 'paymentAviso') // Payment isn't correct, we're not allowing it
+                if($_POST['action'] != 'paymentAviso') { // Payment isn't correct, we're not allowing it
                     $this->_callback_answer(1, 'pa', __('Wrong service operation', 'leyka'));
+                }
 
                 $_POST['orderNumber'] = (int)$_POST['orderNumber']; // Donation ID
-                if( !$_POST['orderNumber'] )
+                if( !$_POST['orderNumber'] ) {
                     $this->_callback_answer(1, 'pa', __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('OrderNumber is not set', 'leyka'));
+                }
 
                 $donation = new Leyka_Donation($_POST['orderNumber']);
 
-                if($donation->sum != $_POST['orderSumAmount'])
+                if($donation->sum != $_POST['orderSumAmount']) {
                     $this->_callback_answer(1, 'pa', __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('Donation sum is unmatched', 'leyka'));
+                }
 
                 if($donation->status != 'funded') {
 
@@ -248,8 +262,7 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
         if( !$response_vars || !is_array($response_vars) )
             return array();
 
-        $action_label = $response_vars['action'] == 'checkOrder' ?
-            __('Donation confirmation', 'leyka') : __('Donation approval notice', 'leyka');
+        $action_label = $response_vars['action'] == 'checkOrder' ? __('Donation confirmation', 'leyka') : __('Donation approval notice', 'leyka');
 
         return array(
             __('Last response operation:', 'leyka') => $action_label,
@@ -366,7 +379,6 @@ class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
         $this->_label = __('Webmoney', 'leyka');
 
         // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-//        $this->_description = leyka_options()->opt_safe('yandex_wm_description');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/webmoney.png',

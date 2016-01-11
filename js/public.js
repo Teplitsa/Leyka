@@ -1,17 +1,48 @@
 jQuery(document).ready(function($){
 
+    /** @var e JS keyup/keydown event */
+    function leyka_is_special_key(e) {
+
+        // Allowed special keys
+        return (
+            e.keyCode == 9 || // Tab
+            (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
+            (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
+            (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
+        );
+    }
+
+    /** @var e JS keyup/keydown event */
+    function leyka_is_digit_key(e, numpad_allowed) {
+
+        if( // Allowed special keys
+            $.inArray(e.keyCode, [46, 8, 9, 13]) != -1 || // Backspace, delete, tab, enter
+            (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
+            (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
+            (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
+        ) {
+            return true;
+        }
+
+        if(typeof numpad_allowed != 'undefined' && !!numpad_allowed) {
+            return !((e.shiftKey || e.keyCode < 48 || e.keyCode > 57) && (e.keyCode < 96 || e.keyCode > 105));
+        } else {
+            return false;
+        }
+    }
+
     // Auto-select the code to embed:
-    $('.embed-code').on('focus keyup', function(e){
+    $('.embed-code').on('focus.leyka keyup.leyka', function(e){
 
         var keycode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
 
-        if(keycode == 9 || !keycode) { // Tab or click
+        if( !keycode || keycode == 9 ) { // Click or tab
 
             var $this = $(this);
             $this.select();
 
-            // Work around Chrome's little problem:
-            $this.on('mouseup', function() {
+            $this.on('mouseup', function(){ // Work around Chrome's little problem
+
                 $this.off('mouseup');
                 return false;
             });
@@ -20,21 +51,14 @@ jQuery(document).ready(function($){
 
     var $embed_code = $('#campaign-embed-code');
 
-    $embed_code.keydown(function(e) { // Keep the iframe code from manual changing
+    $embed_code.keydown(function(e){ // Keep the iframe code from manual changing
 
-        if( // Allowed special keys
-            e.keyCode == 9 || // Tab
-                (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
-                (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
-                (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
-            ) {
-            return; // Let it happen
+        if(leyka_is_special_key(e)) {
+            e.preventDefault();
         }
-
-        e.preventDefault();
     });
 
-    $('#embed_iframe_w, #embed_iframe_h').keydown(function(e) {
+    $('#embed_iframe_w, #embed_iframe_h').keydown(function(e){
 
         if(e.keyCode == 13) { // Enter pressed - do not let the form be submitted
 
@@ -42,20 +66,11 @@ jQuery(document).ready(function($){
             return;
         }
 
-        if( // Allowed special keys
-            $.inArray(e.keyCode, [46, 8, 9]) != -1 || // Backspace, delete, tab
-                (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
-                (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
-                (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
-            ) {
-            return; // Let it happen
-        }
-
-        if((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+        if( !leyka_is_digit_key(e, true) ) {
             e.preventDefault();
         }
 
-    }).change(function(e){
+    }).change(function(){
 
         var $this = $(this),
             $text = $($embed_code.text());
@@ -66,16 +81,50 @@ jQuery(document).ready(function($){
         $embed_code.html($text.prop('outerHTML'));
     });
 
+    // Mixed sum fields behavior:
+    $('form.leyka-pm-form')
+        .on('click.leyka', 'input[name="leyka_donation_amount"]', function(e){
+
+            var $field = $(this),
+                $form = $field.parents('form.leyka-pm-form');
+
+            if($field.hasClass('donate_amount_flex_checked')) {
+                $form.find('input.donate_amount_flex').focus();
+            } else if($field.hasClass('donate_amount_flex')) {
+
+                $form.find('input[name="leyka_donation_amount"]:checked').removeAttr('checked');
+                $form.find('.donate_amount_flex_checked').attr('checked', 'checked');
+            }
+        })
+        .on('keydown.leyka', 'input.donate_amount_flex', function(e){
+
+            if( !leyka_is_digit_key(e, true) ) {
+
+                e.preventDefault();
+                e.stopImmediatePropagation();
+            }
+        })
+        .on('keyup.leyka', 'input.donate_amount_flex', function(){
+
+            var $this = $(this);
+            $this.parents('form.leyka-pm-form').find('input.donate_amount_flex_checked').val($this.val());
+        });
+
     function validate_donation_form($form) {
 
         var is_valid = true;
 
         /** @var leyka object Localization strings */
 
-        var $amount_is_flex = $form.find('#donate_amount_flex').length > 0,
-            $amount_field = $amount_is_flex ?
-                $form.find('input[name="leyka_donation_amount"]') :
-                $form.find('input[name="leyka_donation_amount"]:checked');
+        var amount_field_type = $form.find('.sum-field-type').data('sum-field-type'),
+            $amount_flex_field = $form.find('input.donate_amount_flex'),
+            $amount_fixed_field = $form.find('input[name="leyka_donation_amount"]:checked'),
+            $amount_field = amount_field_type == 'flex' ?
+                $amount_flex_field :
+                (amount_field_type == 'fixed' ?
+                    $amount_fixed_field :
+                    ($amount_fixed_field.attr('id') == 'donate_amount_flex_checked' ? $amount_flex_field : $amount_fixed_field)
+                );
 
         if( !$amount_field.val() || parseInt($amount_field.val()) <= 0 || isNaN($amount_field.val()) ) {
 
@@ -85,7 +134,7 @@ jQuery(document).ready(function($){
         } else {
 
             $form.find('#leyka_donation_amount-error').html('').hide();
-            if($amount_is_flex) {
+            if(amount_field_type == 'flex' || (amount_field_type == 'mixed' && $amount_field.hasClass('donate_amount_flex'))) {
                 $amount_field.val(parseInt($amount_field.val()));
             }
         }
@@ -203,7 +252,7 @@ jQuery(document).ready(function($){
 
         } else {
 
-			if(typeof ga == 'function') { //GA Events on form submit
+			if(typeof ga == 'function') { // GA Events on form submit
 				
 				var label = 'undefined_payment_method',
 					action = 'undefined_campaign';
@@ -234,22 +283,24 @@ jQuery(document).ready(function($){
         var toggleCont = $(this).parents('.toggle');
 
 		if(toggleCont.hasClass('toggled')) {
+
 			toggleCont.removeClass('toggled');
 			toggleCont.find('.leyka-toggle-area').slideUp('normal', function(){
                 toggleCont.find('.leyka-pm-form .field-error').hide();
             });
+
 		} else {
+
             $this.parents('#leyka-payment-form').find('.leyka-payment-option.toggled .leyka-toggle-trigger').click();
 			toggleCont.addClass('toggled');
 			toggleCont.find('.leyka-toggle-area').slideDown('normal');
 		}
-
     });
 
     // Switches of currency:
     var template = $('input[name="leyka_template_id"]').val();
 	$('.amount-selector').on('change', 'select.leyka_donation_currency', function(e){
-	
+
 		var curr = $(this).find('option:selected').val(),
 			curr_pm = $('#pm-selector').find('input:checked').val();
 
@@ -273,7 +324,7 @@ jQuery(document).ready(function($){
                 }
             }).done(function(response){
 
-                $('#leyka-currency-data').html(response);
+                $('#leyka-pm-list').html(response);
                 $('#pm-selector').on('change', 'input', function(e){
                     leyka_pm_data(e, this);
                 });

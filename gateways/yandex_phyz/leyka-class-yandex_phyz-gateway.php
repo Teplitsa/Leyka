@@ -108,17 +108,19 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
         $is_error = !!$is_error;
         $tech_message = $tech_message ? $tech_message : $message;
 
+        $_POST['operation_id'] = empty($_POST['operation_id']) ? 0 : (int)$_POST['operation_id'];
+
         if($is_error) {
             die('<?xml version="1.0" encoding="UTF-8"?>
 <checkOrderResponse performedDatetime="'.date(DATE_ATOM).'"
-code="1000" operation_id="'.(int)@$_POST['operation_id'].'"
+code="1000" operation_id="'.$_POST['operation_id'].'"
 account_id="'.leyka_options()->opt('yandex_money_account').'"
 message="'.$message.'"
 techMessage="'.$tech_message.'"/>');
         } else {
             die('<?xml version="1.0" encoding="UTF-8"?>
 <checkOrderResponse performedDatetime="'.date(DATE_ATOM).'"
-code="0" operation_id="'.(int)@$_POST['operation_id'].'"
+code="0" operation_id="'.$_POST['operation_id'].'"
 account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
         }
     }
@@ -127,41 +129,49 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
 
 		error_log_yandex_phyz("\n\n---- $call_type ----\n\n".print_r($_REQUEST, true));
 
-        $donation_id = (int)@$_POST['label']; // Donation ID
-        $amount = (int)@$_POST['withdraw_amount'];
+        $donation_id = empty($_POST['label']) ? 0 : (int)$_POST['label']; // Donation ID
+        $amount = empty($_POST['withdraw_amount']) ? 0.0 : (float)$_POST['withdraw_amount'];
 
         error_log_yandex_phyz("Label=$donation_id\n");
         error_log_yandex_phyz("Amount=$amount\n");
 
         if( !$donation_id ) {
-            error_log_yandex_phyz("Label is empty\n");
+
+            error_log_yandex_phyz("Donation ID is empty\n");
             return;
+
+        } else if( !$amount ) {
+
+            error_log_yandex_phyz("Donation amount is empty\n");
+            return;
+
         }
 
         $donation = new Leyka_Donation($donation_id);
+
         error_log_yandex_phyz("Donation initialized\n");
         error_log_yandex_phyz(print_r($donation, TRUE)."\n");
 
-        $params_to_sha1 = implode('&', array(
-            @$_POST['notification_type'],
-            @$_POST['operation_id'],
-            @$_POST['amount'],
-            @$_POST['currency'],
-            @$_POST['datetime'],
-            @$_POST['sender'],
-            @$_POST['codepro'],
+        $sha1 = sha1(implode('&', array(
+            empty($_POST['notification_type']) ? '' : $_POST['notification_type'],
+            empty($_POST['operation_id']) ? '' : $_POST['operation_id'],
+            empty($_POST['amount']) ? '' : $_POST['amount'],
+            empty($_POST['currency']) ? '' : $_POST['currency'],
+            empty($_POST['datetime']) ? '' : $_POST['datetime'],
+            empty($_POST['sender']) ? '' : $_POST['sender'],
+            empty($_POST['codepro']) ? '' : $_POST['codepro'],
             leyka_options()->opt('yandex_money_secret'),
-            @$_POST['label']
-        ));
-        error_log_yandex_phyz("Params_to_sha1=$params_to_sha1\n");
-        $sha1 = sha1($params_to_sha1);
+            $donation_id
+        )));
+
         error_log_yandex_phyz("sha1=$sha1\n");
 
-        if($sha1 != @$_POST['sha1_hash']) {
+        if(empty($_POST['sha1_hash']) || $sha1 != @$_POST['sha1_hash']) {
 
             error_log_yandex_phyz("Invalid response sha1_hash\n");
             $this->_check_order_answer(1, __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('Invalid response sha1_hash', 'leyka'));
-        } elseif($donation) {
+
+        } else if($donation) {
 
             error_log_yandex_phyz("Donation OK\n");
             error_log_yandex_phyz('$donation->sum='.$donation->sum."\n");
@@ -172,7 +182,7 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
                 error_log_yandex_phyz("Donation sum is unmatched\n");
                 $this->_check_order_answer(1, __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('Donation sum is unmatched', 'leyka'));
 
-            } elseif($donation->status != 'funded') {
+            } else if($donation->status != 'funded') {
 
                 error_log_yandex_phyz("Donation is funded\n");
 
@@ -204,7 +214,7 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
 
     public function get_gateway_response_formatted(Leyka_Donation $donation) {
 
-        if( !$donation->gateway_response ){
+        if( !$donation->gateway_response ) {
             return array();
         }
 
@@ -216,7 +226,7 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
 		$payment_type = '';
 		if($response_vars['notification_type'] == 'p2p-incoming') {
 			$payment_type = __('Using Yandex.Money Account', 'leyka');
-		} elseif($response_vars['notification_type'] == 'card-incoming') {
+		} else if($response_vars['notification_type'] == 'card-incoming') {
 			$payment_type = __('Using Banking Card', 'leyka');
 		}
 
@@ -291,8 +301,6 @@ class Leyka_Yandex_Phyz_Card extends Leyka_Payment_Method {
         $this->_label = __('Payment with Banking Card Yandex', 'leyka');
         $this->_label_backend = $this->_label;
 
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
 //            LEYKA_PLUGIN_BASE_URL.'gateways/yandex_phyz/icons/yandex_phyz_money_s.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex_phyz/icons/visa.png',
@@ -327,7 +335,4 @@ function error_log_yandex_phyz($string) {
 	error_log($string, 3, WP_CONTENT_DIR.'/uploads/phyz-error.log');
 }
 
-function leyka_add_gateway_yandex_phyz() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka()->add_gateway(Leyka_Yandex_Phyz_Gateway::get_instance());
-}
-add_action('leyka_init_actions', 'leyka_add_gateway_yandex_phyz');
+leyka_add_gateway(Leyka_Yandex_Phyz_Gateway::get_instance());
