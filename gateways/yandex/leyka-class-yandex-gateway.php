@@ -87,6 +87,15 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         if(empty($this->_payment_methods['yandex_ab'])) {
             $this->_payment_methods['yandex_ab'] = Leyka_Yandex_Alpha_Click::get_instance();
         }
+        if(empty($this->_payment_methods['yandex_pb'])) {
+            $this->_payment_methods['yandex_pb'] = Leyka_Yandex_Promvzyazbank::get_instance();
+        }
+
+        /** @todo Until this PM's API will be upgraded. */
+//        if(empty($this->_payment_methods['yandex_money_quick'])) {
+//            $this->_payment_methods['yandex_money_quick'] = Leyka_Yandex_Money_Quick::get_instance();
+//            $this->_payment_methods['yandex_money_quick']->initialize_pm_options();
+//        }
 
         /** @todo До получения возможности протестировать */
 //        if(empty($this->_payment_methods['yandex_mobile'])) {
@@ -114,6 +123,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                     'https://demomoney.yandex.ru/eshop.xml' : 'https://money.yandex.ru/eshop.xml';
             case 'yandex_sb':
             case 'yandex_ab':
+            case 'yandex_pb':
                 return 'https://money.yandex.ru/eshop.xml';
             default:
                 return $current_url;
@@ -130,6 +140,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             case 'yandex_wm': $payment_type = 'WM'; break;
             case 'yandex_sb': $payment_type = 'SB'; break;
             case 'yandex_ab': $payment_type = 'AB'; break;
+            case 'yandex_pb': $payment_type = 'PB'; break;
             default:
                 $payment_type = apply_filters('leyka_yandex_custom_payment_type', '', $pm_id);
         }
@@ -410,9 +421,10 @@ class Leyka_Yandex_Sberbank_Online extends Leyka_Payment_Method {
         $this->_label = __('Sberbank Online', 'leyka');
 
         // The description won't be setted here - it requires the PM option being configured at this time (which is not)
+//        $this->_description = leyka_options()->opt_safe('yandex_wm_description');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/sber.png',
+//            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/webmoney.png',
         ));
 
         $this->_supported_currencies[] = 'rur';
@@ -429,7 +441,7 @@ class Leyka_Yandex_Sberbank_Online extends Leyka_Payment_Method {
         $this->_options = array(
             $this->full_id.'_description' => array(
                 'type' => 'html',
-                'default' => __('Sberbank Online is an internet banking service from Sberbank. It allows bank clients do many kinds of banking operations at any moment. This option allows you to make a payment from your Sberbank Online account.', 'leyka'),
+                'default' => __('<a href="https://online.sberbank.ru/CSAFront/index.do">Sberbank Online</a> is an Internet banking service of Sberbank. It allows you to make many banking operations at any moment without applying to the bank department, using your computer.', 'leyka'),
                 'title' => __('Sberbank Online description', 'leyka'),
                 'description' => __('Please, enter Sberbank Online payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
                 'required' => 0,
@@ -452,6 +464,7 @@ class Leyka_Yandex_Alpha_Click extends Leyka_Payment_Method {
         $this->_label = __('Alpha-Click', 'leyka');
 
         // The description won't be setted here - it requires the PM option being configured at this time (which is not)
+//        $this->_description = leyka_options()->opt_safe('yandex_wm_description');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
 //            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/webmoney.png',
@@ -471,9 +484,52 @@ class Leyka_Yandex_Alpha_Click extends Leyka_Payment_Method {
         $this->_options = array(
             $this->full_id.'_description' => array(
                 'type' => 'html',
-                'default' => __('Alpha-Click is an internet banking service from Alfa bank. It allows bank clients do many kinds of banking operations at any moment. This option allows you to make a payment from your Alfa-Click account.', 'leyka'),
+                'default' => __('<a href="https://alfabank.ru/retail/internet/">Alfa-Click</a> is an Internet banking service of Alfa bank. It allows you to make many banking operations at any moment without applying to the bank department, using your computer.', 'leyka'),
                 'title' => __('Alpha-Click description', 'leyka'),
                 'description' => __('Please, enter Alpha-Click payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
+                'required' => 0,
+                'validation_rules' => array(), // List of regexp?..
+            ),
+        );
+    }
+}
+
+class Leyka_Yandex_Promvzyazbank extends Leyka_Payment_Method {
+
+    protected static $_instance = null;
+
+    public function _set_attributes() {
+
+        $this->_id = 'yandex_pb';
+        $this->_gateway_id = 'yandex';
+
+        $this->_label_backend = __('Promsvyazbank invoicing', 'leyka');
+        $this->_label = __('Promsvyazbank', 'leyka');
+
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
+//        $this->_description = leyka_options()->opt_safe('yandex_wm_description');
+
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+//            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/webmoney.png',
+        ));
+
+        $this->_supported_currencies[] = 'rur';
+
+        $this->_default_currency = 'rur';
+    }
+
+    protected function _set_options_defaults() {
+
+        if($this->_options){
+            return;
+        }
+
+        $this->_options = array(
+            $this->full_id.'_description' => array(
+                'type' => 'html',
+                'default' => __('<a href="http://www.psbank.ru/Personal/Everyday/Remote/">PSB-Retail</a> is an Internet banking service of Promsvyazbank. It allows you to make many banking operations at any moment without applying to the bank department, using your computer.', 'leyka'),
+                'title' => __('Promsvyazbank description', 'leyka'),
+                'description' => __('Please, enter Promsvyazbank payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
                 'required' => 0,
                 'validation_rules' => array(), // List of regexp?..
             ),
