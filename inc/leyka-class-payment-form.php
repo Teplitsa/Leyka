@@ -76,11 +76,19 @@ class Leyka_Payment_Form {
 			<span class="<?php echo $current_curr;?> amount-variants-container">
 			<?php if($variants) {
 
+				if($mode == 'mixed') {?>
+				<div class="block1">
+				<?php }
+
 				foreach($variants as $amount) {?>
 
 					<label class="figure" title="<?php echo esc_attr($comment);?>">
 						<input type="radio" value="<?php echo (int)$amount;?>" name="leyka_donation_amount"><?php echo (int)$amount;?>
 					</label>
+				<?php }
+
+				if($mode == 'mixed') {?>
+				</div>
 				<?php }
 			}
 
@@ -88,9 +96,8 @@ class Leyka_Payment_Form {
 
 				<label class="figure" for="donate_amount_flex_checked">
 					<?php if($variants) { _e('or', 'leyka');?> <input type="radio" name="leyka_donation_amount" class="donate_amount_flex_checked" value="<?php echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?>"><?php }?>
-
-					<input type="text" title="<?php echo __('Specify the amount of your donation', 'leyka');?>" name="leyka_donation_amount" class="donate_amount_flex" value="<?php echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?>">
 				</label>
+				<input type="text" title="<?php echo __('Specify the amount of your donation', 'leyka');?>" name="leyka_donation_amount" class="donate_amount_flex" value="<?php echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?>">
 			<?php }?>
 			</span>
 
@@ -199,8 +206,12 @@ class Leyka_Payment_Form {
 		ob_start();?>
 
 		<label for="leyka_donor_name" class="leyka-screen-reader-text"><?php _e('Your name', 'leyka');?></label>
-		<label class="input req"><input type="text" class="required" name="leyka_donor_name" placeholder="<?php _e('Your name', 'leyka');?>" id="leyka_donor_name" value="<?php echo $value;?>"></label>
-		<p class="field-comment"><?php _e('We will use this to personalize your donation experience', 'leyka');?></p>
+		<label class="input req">
+            <input type="text" class="required" name="leyka_donor_name" placeholder="<?php echo apply_filters('leyka_form_donor_name_placeholder', __('Your name', 'leyka'));?>" id="leyka_donor_name" value="<?php echo apply_filters('leyka_form_donor_name_value', $value);?>">
+        </label>
+		<p class="field-comment">
+            <?php echo apply_filters('leyka_form_donor_name_comment', __('We will use this to personalize your donation experience', 'leyka'));?>
+        </p>
 		<p id="leyka_donor_name-error" class="field-error"></p>
 
 	<?php
@@ -525,17 +536,18 @@ function leyka_pf_get_pm_icons() {
 	return $leyka_current_pm->get_pm_icons();
 }
 
-function leyka_pf_footer() {?>
+function leyka_pf_footer() { do_action('leyka_before_footer');?>
 
 <div class="leyka-form-footer">
 	<div id="leyka-copy">
 		<p><?php printf(__('Proudly powered by %s', 'leyka'), '<a href="http://leyka.te-st.ru" target="_blank">'._x('Leyka', 'Plugin name in preposotional case', 'leyka').'</a>');?></p>
 	</div>
 </div>
-<?php }
+<?php do_action('leyka_after_footer');
+}
 
 function leyka_share_campaign_block($campaign_id = null) {
-	
+
 	if( !$campaign_id ) {
 		$campaign_id = get_the_ID();
     }?>
@@ -580,6 +592,8 @@ function leyka_pf_submission_errors() {?>
     </div>
 <?php }
 
+add_action('leyka_single_campaign_sharing', 'leyka_share_campaign_block');
+
 /**
  * Donation forms template
  **/
@@ -593,7 +607,7 @@ function leyka_print_donation_elements($content) {
 	if( !is_singular(Leyka_Campaign_Management::$post_type) || !$autoprint ) {
         return $content;
     }
-	
+
 	$campaign = new Leyka_Campaign($current_campaign_post);
 	if($campaign->ignore_global_template_settings) {
 		return $content;
@@ -610,11 +624,7 @@ function leyka_print_donation_elements($content) {
 	$content .= $post_content;
 
 	// Scale below form:
-	if(
-        !empty($campaign->target) && (
-            leyka_options()->opt('scale_widget_place') == 'bottom' ||
-            leyka_options()->opt('scale_widget_place') == 'both'
-    )) {
+	if($campaign->target && (leyka_options()->opt('scale_widget_place') == 'bottom' || leyka_options()->opt('scale_widget_place') == 'both')) {
         $content .= do_shortcode("[leyka_scale show_button='0']");
     }
 
