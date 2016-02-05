@@ -1160,7 +1160,6 @@ class Leyka_Donation {
         $id = wp_insert_post(array(
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => $status == 'submitted' ? $status : 'submitted',
-            'post_date' => date('Y-m-d H:i:s'),
             'post_title' => empty($params['purpose_text']) ?
                 leyka_options()->opt('donation_purpose_text') : $params['purpose_text'],
             'post_parent' => empty($params['init_recurring_donation']) ? 0 : (int)$params['init_recurring_donation'],
