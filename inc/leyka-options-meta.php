@@ -14,7 +14,7 @@ $email_placeholders =
 </span>";
 
 // "self" is Leyka_Options_Controller
-self::$_options_meta = apply_filters('leyka_core_options_meta', array(
+self::$_options_meta = array(
     'org_full_name' => array(
         'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
         'default' => '',
@@ -660,4 +660,4 @@ self::$_options_meta = apply_filters('leyka_core_options_meta', array(
         'list_entries' => array(),
         'validation_rules' => array(), // List of regexp?..
     ),
-));
+);

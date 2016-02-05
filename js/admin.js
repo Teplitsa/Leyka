@@ -155,7 +155,10 @@ jQuery(document).ready(function($){
     }
 
     /** Tooltips: */
-    $body.find('.has-tooltip').tooltip();
+    var $tooltips = $body.find('.has-tooltip');
+    if($tooltips.length) {
+        $tooltips.tooltip();
+    }
 
     /** Manual emails sending: */
     $('.send-donor-thanks').click(function(e){

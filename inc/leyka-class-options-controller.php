@@ -34,7 +34,12 @@ class Leyka_Options_Controller {
         $option_name = str_replace('leyka_', '', $option_name);
 
         if(empty(self::$_options_meta[$option_name]) && empty($this->_options[$option_name])) {
-            return false;
+
+            do_action('leyka_add_custom_option', $option_name);
+
+            if(empty($this->_options[$option_name])) {
+                return false;
+            }
         }
 
         if(empty($this->_options[$option_name])) {
