@@ -64,12 +64,11 @@ class Leyka {
 
         add_action('init', array($this, 'register_post_types'), 1);
 
+        add_action('init', array($this, 'register_user_capabilities'), 1);
+
         // Add/modify the rewrite rules:
         add_filter('rewrite_rules_array', array($this, 'insert_rewrite_rules'));
         add_filter('query_vars', array($this, 'insert_rewrite_query_vars'));
-//        add_filter('init', array($this, 'flush_rewrite_rules'));
-
-        add_action('init', array($this, 'register_user_capabilities'), 1);
 
         if( !session_id() ) {
             add_action('init', 'session_start', -2);
@@ -744,19 +743,11 @@ class Leyka {
     }
 
     /**
-     * Calls flush_rules() when adding rules.
-     */
-//    function flush_rewrite_rules() {
-//
-//        flush_rewrite_rules(false);
-//    }
-
-    /**
      * Add the plugin's rules themselves.
      * @var $rules array
      * @return array
      */
-    function insert_rewrite_rules(array $rules) {
+    public function insert_rewrite_rules(array $rules) {
 
         return array('campaign/([^/]+)/donations/?$' => 'index.php?leyka_campaign=$matches[1]&donations_list=1') + $rules; // The rules' order is important
     }
@@ -766,7 +757,7 @@ class Leyka {
      * @var $vars array
      * @return array
      */
-    function insert_rewrite_query_vars(array $vars) {
+    public function insert_rewrite_query_vars(array $vars) {
 
         $vars[] = 'donations_list';
         return $vars;
@@ -863,7 +854,8 @@ class Leyka {
             return false;
         } else {
 
-            do_action('leyka_log_donation-' . $pm_data['gateway_id'], $donation_id);
+            do_action('leyka_log_donation', $pm_data['gateway_id'], $pm_data['payment_method_id'], $donation_id);
+            do_action('leyka_log_donation-'.$pm_data['gateway_id'], $donation_id);
 
             return $donation_id;
         }
