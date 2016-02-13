@@ -88,11 +88,12 @@ class Leyka {
 
         /** Service URLs handler: */
         add_action('parse_request', function(){
+
             // Callback URLs are: some-website.org/leyka/service/{gateway_id}/{action_name}/
             // For ex., some-website.org/leyka/service/yandex/check_order/
-            $request = $_SERVER['REQUEST_URI']; //$request->request;
 
-            if(stristr($request, 'leyka/service') !== FALSE) { // Leyka service URL
+            if(stristr($_SERVER['REQUEST_URI'], 'leyka/service') !== FALSE) { // Leyka service URL
+
                 $request = explode('leyka/service', $_SERVER['REQUEST_URI']);
                 $request = explode('/', trim($request[1], '/'));
 
@@ -101,6 +102,23 @@ class Leyka {
                 exit();
             }
         });
+
+        add_action('pre_get_posts', function(WP_Query $query){
+
+            if($query->is_main_query() && $query->is_post_type_archive(Leyka_Donation_Management::$post_type) && get_query_var('leyka_campaign_filter')) {
+
+                $campaign = get_posts(array('post_type' => Leyka_Campaign_Management::$post_type, 'name' => get_query_var('leyka_campaign_filter')));
+                if( !$campaign ) {
+                    return;
+                }
+                $campaign = reset($campaign);
+
+                $query->set('meta_query', array(array(
+                    'key'     => 'leyka_campaign_id',
+                    'value'   => $campaign->ID,
+                ),));
+            }
+        }, 1);
 
         /** Embed campaign URL handler: */
         add_filter('template_include', function($template){
@@ -114,6 +132,7 @@ class Leyka {
             }
 
             return $template;
+
         }, 100);
 
         add_action('template_redirect', array($this, 'gateway_redirect_page'), 1, 1);
@@ -640,7 +659,7 @@ class Leyka {
             'show_in_admin_bar' => false,
             'supports' => false,
             'taxonomies' => array(),
-            'has_archive' => false,
+            'has_archive' => 'donations',
             'capability_type' => array('donation', 'donations'),
             'map_meta_cap' => true,
             'rewrite' => array('slug' => 'donation', 'with_front' => false)
@@ -693,11 +712,7 @@ class Leyka {
             'exclude_from_search'       => false,
             'show_in_admin_all_list'    => true,
             'show_in_admin_status_list' => true,
-            'label_count'               => _n_noop(
-                'Submitted <span class="count">(%s)</span>',
-                'Submitted <span class="count">(%s)</span>',
-                'leyka'
-            )
+            'label_count'               => _n_noop('Submitted <span class="count">(%s)</span>', 'Submitted <span class="count">(%s)</span>', 'leyka'),
         ));
 
         register_post_status('funded', array(
@@ -706,11 +721,7 @@ class Leyka {
             'exclude_from_search'       => false,
             'show_in_admin_all_list'    => true,
             'show_in_admin_status_list' => true,
-            'label_count'               => _n_noop(
-                'Funded <span class="count">(%s)</span>',
-                'Funded <span class="count">(%s)</span>',
-                'leyka'
-            )
+            'label_count'               => _n_noop('Funded <span class="count">(%s)</span>', 'Funded <span class="count">(%s)</span>', 'leyka'),
         ));
 
         register_post_status('refunded', array(
@@ -719,11 +730,7 @@ class Leyka {
             'exclude_from_search'       => false,
             'show_in_admin_all_list'    => true,
             'show_in_admin_status_list' => true,
-            'label_count'               => _n_noop(
-                'Refunded <span class="count">(%s)</span>',
-                'Refunded <span class="count">(%s)</span>',
-                'leyka'
-            )
+            'label_count'               => _n_noop('Refunded <span class="count">(%s)</span>', 'Refunded <span class="count">(%s)</span>', 'leyka'),
         ));
 
         register_post_status('failed', array(
@@ -732,11 +739,7 @@ class Leyka {
             'exclude_from_search'       => false,
             'show_in_admin_all_list'    => true,
             'show_in_admin_status_list' => true,
-            'label_count'               => _n_noop(
-                'Failed <span class="count">(%s)</span>',
-                'Failed <span class="count">(%s)</span>',
-                'leyka'
-            )
+            'label_count'               => _n_noop('Failed <span class="count">(%s)</span>', 'Failed <span class="count">(%s)</span>', 'leyka'),
         ));
 
         do_action('leyka_cpt_registered');
@@ -749,17 +752,21 @@ class Leyka {
      */
     public function insert_rewrite_rules(array $rules) {
 
-        return array('campaign/([^/]+)/donations/?$' => 'index.php?leyka_campaign=$matches[1]&donations_list=1') + $rules; // The rules' order is important
+        return array(
+            'campaign/([^/]+)/donations/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter=$matches[1]',
+            'campaign/([^/]+)/donations/page/([1-9]{1,})/?$' =>
+                'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter=$matches[1]&paged=$matches[2]',
+        ) + $rules; // The rules' order is important
     }
 
     /**
-     * Add the special query var to indicate the campaign's donations list view.
+     * Add the special query var to indicate a donations archive filtering by particular campaign.
      * @var $vars array
      * @return array
      */
     public function insert_rewrite_query_vars(array $vars) {
 
-        $vars[] = 'donations_list';
+        $vars[] = 'leyka_campaign_filter';
         return $vars;
     }
 
@@ -954,4 +961,4 @@ __('single', 'leyka');
 __('rebill', 'leyka');
 __('correction', 'leyka');
 __('The donations management system for your WP site', 'leyka');
-__('Lev Zvyagincev aka Ahaenor', 'leyka');
+__('Teplitsa of Social Technologies', 'leyka');
