@@ -715,7 +715,8 @@ function leyka_form_is_screening($widgets_also = true) {
         stristr($template, 'home-campaign_one') !== false ||
         stripos($template, 'leyka') !== false ||
         $content_has_shortcode ||
-        ( !!$widgets_also ? leyka_is_widget_active() : false );
+        ( !!$widgets_also ? leyka_is_widget_active() : false ) ||
+        apply_filters('leyka_form_is_screening', false);
 
     return $form_is_screening;
 }
