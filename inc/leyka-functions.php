@@ -695,6 +695,10 @@ function leyka_get_shortcodes() {
 /** @return boolean True if at least one Leyka form is currently on the screen, false otherwise */
 function leyka_form_is_screening($widgets_also = true) {
 
+    if( !leyka_options()->opt('load_scripts_if_need') ) {
+        return true;
+    }
+
     $template = get_page_template_slug();
 
     $content_has_shortcode = false;
