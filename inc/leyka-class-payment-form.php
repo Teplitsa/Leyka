@@ -207,7 +207,7 @@ class Leyka_Payment_Form {
 
 		<label for="leyka_donor_name" class="leyka-screen-reader-text"><?php _e('Your name', 'leyka');?></label>
 		<label class="input req">
-            <input type="text" class="required" name="leyka_donor_name" placeholder="<?php echo apply_filters('leyka_form_donor_name_placeholder', __('Your name', 'leyka'));?>" id="leyka_donor_name" value="<?php echo apply_filters('leyka_form_donor_name_value', $value);?>">
+            <input type="text" class="required non-email" name="leyka_donor_name" placeholder="<?php echo apply_filters('leyka_form_donor_name_placeholder', __('Your name', 'leyka'));?>" id="leyka_donor_name" value="<?php echo apply_filters('leyka_form_donor_name_value', $value);?>">
         </label>
 		<p class="field-comment">
             <?php echo apply_filters('leyka_form_donor_name_comment', __('We will use this to personalize your donation experience', 'leyka'));?>
@@ -540,7 +540,7 @@ function leyka_pf_footer() { do_action('leyka_before_footer');?>
 
 <div class="leyka-form-footer">
 	<div id="leyka-copy">
-		<p><?php printf(__('Proudly powered by %s', 'leyka'), '<a href="http://leyka.te-st.ru" target="_blank">'._x('Leyka', 'Plugin name in preposotional case', 'leyka').'</a>');?></p>
+		<p><?php printf(__('Proudly powered by %s', 'leyka'), '<a href="//leyka.te-st.ru" target="_blank">'._x('Leyka', 'Plugin name in preposotional case', 'leyka').'</a>');?></p>
 	</div>
 </div>
 <?php do_action('leyka_after_footer');

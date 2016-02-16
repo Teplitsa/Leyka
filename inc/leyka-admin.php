@@ -364,7 +364,7 @@ class Leyka_Admin_Setup {
                 <?php _e('Developed by <a href="http://te-st.ru/" target="_blank">Teplitsa of social technologies</a>', 'leyka');?>
             </p>
             <p class="te-st">
-                <img src="http://leyka.te-st.ru/wp-content/uploads/assets/tst-logo.svg" onerror="this.onerror=null;this.src='http://leyka.te-st.ru/wp-content/uploads/assets/tst-logo.png'">
+                <img src="//leyka.te-st.ru/wp-content/uploads/assets/tst-logo.svg" onerror="this.onerror=null;this.src='//leyka.te-st.ru/wp-content/uploads/assets/tst-logo.png'">
             </p>
             <ul class="leyka-ref-links">
                 <li><a href="https://leyka.te-st.ru" target='_blank'><?php _e('Plugin website', 'leyka');?></a></li>

@@ -1,7 +1,7 @@
 <?php if( !defined('WPINC') ) die; // If this file is called directly, abort
 /**
  * Plugin Name: Leyka
- * Plugin URI:  http://leyka.te-st.ru/
+ * Plugin URI:  https://leyka.te-st.ru/
  * Description: The donations management system for your WP site
  * Version:     2.2.8
  * Author:      Lev Zvyagincev aka Ahaenor

@@ -581,6 +581,7 @@ class Leyka {
             'text_required' => __('This field must be filled to submit the form', 'leyka'),
             'email_required' => __('Email must be filled to submit the form', 'leyka'),
             'email_invalid' => __('You have entered an invalid email', 'leyka'),
+            'must_not_be_email' => __("You shouldn't enter an email here", 'leyka'),
 //            'email_regexp' => '',
         ));
 

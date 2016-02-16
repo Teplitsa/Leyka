@@ -225,6 +225,21 @@ jQuery(document).ready(function($){
                     $form.find('#'+$field.attr('id')+'-error').html('').hide();
                 }
 
+            } else if($field.attr('type') == 'text' && $field.hasClass('non-email')) {
+
+                if( !$field.val().length ) {
+
+                    is_valid = false;
+                    $form.find('#'+$field.attr('id')+'-error').html(leyka.text_required).show();
+
+                } else if(is_email($field.val())) {
+
+                    is_valid = false;
+                    $form.find('#'+$field.attr('id')+'-error').html(leyka.must_not_be_email).show();
+
+                } else {
+                    $form.find('#'+$field.attr('id')+'-error').html('').hide();
+                }
             } else if($field.attr('type') == 'text') {
 
                 if( !$field.val().length ) {
