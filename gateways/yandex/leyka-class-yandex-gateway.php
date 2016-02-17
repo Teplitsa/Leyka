@@ -56,6 +56,17 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
+            'yandex_rebilling_available' => array(
+                'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+                'value' => '',
+                'default' => 0,
+                'title' => __('Regular monthly payments subscriptions are available', 'leyka'),
+                'description' => __('Check if Yandex.money allows you to create recurrent subscriptions to do regular automatic payments.', 'leyka'),
+                'required' => false,
+                'placeholder' => '',
+                'list_entries' => array(), // For select, radio & checkbox fields
+                'validation_rules' => array(), // List of regexp?..
+            ),
             'yandex_test_mode' => array(
                 'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
                 'value' => '',
@@ -106,7 +117,14 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
-        if($pm_id == 'yandex_sb' && $form_data['leyka_donation_currency'] == 'rur' && $form_data['leyka_donation_amount'] < 10.0) {
+        if($pm_id == 'yandex_card' && !empty($form_data['leyka_recurring'])) {
+
+            $donation = new Leyka_Donation($donation_id);
+
+            $donation->payment_type = 'rebill';
+            update_post_meta($donation_id, '_rebilling_is_active', 1); // So we could turn it on/off
+
+        } else if($pm_id == 'yandex_sb' && $form_data['leyka_donation_currency'] == 'rur' && $form_data['leyka_donation_amount'] < 10.0) {
 
             $error = new WP_Error('leyka_donation_amount_too_small', __('The amount of donations via Sberbank Online should be at least 10 RUR.', 'leyka'));
             leyka()->add_payment_form_error($error);
@@ -161,6 +179,9 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         if(leyka_options()->opt('yandex_shop_article_id')) {
             $data['shopArticleId'] = leyka_options()->opt('yandex_shop_article_id');
         }
+        if( !empty($_POST['leyka_recurring']) ) {
+            $data['rebillingOn'] = 'true';
+        }
 
         return apply_filters('leyka_yandex_custom_submission_data', $data, $pm_id);
     }
@@ -213,10 +234,8 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
 
                 $donation->add_gateway_response($_POST);
 
-//                set_transient('leyka_yandex_test_cho', '<pre>'.print_r($_POST, true).'</pre>', 60*60*24);
-
-                $this->_callback_answer(); // OK for yandex money payment
-                break; // Not needed, just so my IDE can relax
+                $this->_callback_answer(); // OK for yandex.money payment
+                break; // Not needed, just for my IDE could relax
 
             case 'payment_aviso':
 
@@ -244,12 +263,44 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
 
 				do_action('leyka_yandex_payment_aviso_success', $donation);
 
-//                set_transient('leyka_yandex_test_pa', '<pre>'.print_r($_POST, true).'</pre>', 60*60*24);
                 $this->_callback_answer(0, 'pa'); // OK for yandex money payment
-                break; // Not needed, just so my IDE can relax
+                break; // Not needed, just for my IDE could relax
 
             default:
         }
+    }
+
+    public function get_init_recurrent_donation($recurring) {
+
+        if(is_a($recurring, 'Leyka_Donation')) {
+            $recurring = $recurring->recurring_id;
+        } elseif(empty($recurring)) {
+            return false;
+        }
+
+        $init_donation_post = get_posts(array( // Get init recurrent payment with customer_id given
+            'posts_per_page' => 1,
+            'post_type' => Leyka_Donation_Management::$post_type,
+            'post_status' => 'funded',
+            'post_parent' => 0,
+            'meta_query' => array(
+                'RELATION' => 'AND',
+                array(
+                    'key'     => '_yandex_recurring_id',
+                    'value'   => $recurring,
+                    'compare' => '=',
+                ),
+                array(
+                    'key'     => 'leyka_payment_type',
+                    'value'   => 'rebill',
+                    'compare' => '=',
+                ),
+            ),
+            'orderby' => 'date',
+            'order' => 'ASC',
+        ));
+
+        return count($init_donation_post) ? new Leyka_Donation($init_donation_post[0]->ID) : false;
     }
 
     public function get_gateway_response_formatted(Leyka_Donation $donation) {
@@ -277,6 +328,57 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
     }
 }
 
+
+class Leyka_Yandex_Card extends Leyka_Payment_Method {
+
+    protected static $_instance = null;
+
+    public function _set_attributes() {
+
+        $this->_id = 'yandex_card';
+        $this->_gateway_id = 'yandex';
+
+        $this->_label_backend = __('Payment with Banking Card', 'leyka');
+        $this->_label = __('Banking Card', 'leyka');
+
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
+
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+//            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/visa.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/master.png',
+        ));
+
+        /** @todo Right now we can't use leyka_options()->opt() here because Gateway options are not included in options_meta ATM. Refactor this. */
+        $this->_custom_fields = get_option('leyka_yandex_rebilling_available', true) ?
+            array(
+                'recurring' => '<label class="checkbox"><span><input type="checkbox" id="leyka_'.$this->full_id.'_recurring" name="leyka_recurring" value="1"></span> '.__('Monthly recurring donations', 'leyka').'</label>'
+            ) :
+            array();
+
+        $this->_supported_currencies[] = 'rur';
+
+        $this->_default_currency = 'rur';
+    }
+
+    protected function _set_options_defaults() {
+
+        if($this->_options) {
+            return;
+        }
+
+        $this->_options = array(
+            $this->full_id.'_description' => array(
+                'type' => 'html',
+                'default' => __('Yandex.Money allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Money website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
+                'title' => __('Yandex bank card payment description', 'leyka'),
+                'description' => __('Please, enter Yandex.Money bank cards payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
+                'required' => 0,
+                'validation_rules' => array(), // List of regexp?..
+            ),
+        );
+    }
+}
 
 class Leyka_Yandex_Money extends Leyka_Payment_Method {
 
@@ -321,51 +423,6 @@ class Leyka_Yandex_Money extends Leyka_Payment_Method {
     }
 }
 
-
-class Leyka_Yandex_Card extends Leyka_Payment_Method {
-
-    protected static $_instance = null;
-
-    public function _set_attributes() {
-
-        $this->_id = 'yandex_card';
-        $this->_gateway_id = 'yandex';
-
-        $this->_label_backend = __('Payment with Banking Card', 'leyka');
-        $this->_label = __('Banking Card', 'leyka');
-
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-//            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/visa.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/master.png',
-        ));
-
-        $this->_supported_currencies[] = 'rur';
-
-        $this->_default_currency = 'rur';
-    }
-
-    protected function _set_options_defaults() {
-
-        if($this->_options){
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('Yandex.Money allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Money website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
-                'title' => __('Yandex bank card payment description', 'leyka'),
-                'description' => __('Please, enter Yandex.Money bank cards payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
-    }
-}
-
 class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
 
     protected static $_instance = null;
@@ -391,7 +448,7 @@ class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
 
     protected function _set_options_defaults() {
 
-        if($this->_options){
+        if($this->_options) {
             return;
         }
 
