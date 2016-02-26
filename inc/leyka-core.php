@@ -42,6 +42,17 @@ class Leyka {
     /** @var bool|null */
     protected $_form_is_screening = false;
 
+    /** Return a single instance of this class */
+    public static function get_instance() {
+
+        // If the single instance hasn't been set, set it now.
+        if( !self::$_instance ) {
+            self::$_instance = new self;
+        }
+
+        return self::$_instance;
+    }
+
     /** Initialize the plugin by setting localization, filters, and administration functions. */
     private function __construct() {
 
@@ -84,21 +95,29 @@ class Leyka {
             Leyka_Admin_Setup::get_instance();
         }
 
-        add_action('admin_bar_menu', array($this, 'leyka_add_toolbar_menu'), 999);
+        add_action('admin_bar_menu', array($this, 'add_toolbar_menu'), 999);
 
         /** Service URLs handler: */
         add_action('parse_request', function(){
-
-            // Callback URLs are: some-website.org/leyka/service/{gateway_id}/{action_name}/
-            // For ex., some-website.org/leyka/service/yandex/check_order/
 
             if(stristr($_SERVER['REQUEST_URI'], 'leyka/service') !== FALSE) { // Leyka service URL
 
                 $request = explode('leyka/service', $_SERVER['REQUEST_URI']);
                 $request = explode('/', trim($request[1], '/'));
 
-                // $request[0] - Payment method's ID, $request[1] - service action:
-                do_action('leyka_service_call-'.$request[0], $request[1]);
+                if($request[0] == 'do_recurring') { // Recurrents processing URL
+
+                    $this->_do_active_recurrents_rebilling();
+
+                } else { // Gateway callback URL
+
+                    // Callback URLs are: some-website.org/leyka/service/{gateway_id}/{action_name}/
+                    // For ex., some-website.org/leyka/service/yandex/check_order/
+
+                    // $request[0] - Gateway ID, $request[1] - service action:
+                    do_action('leyka_service_call-'.$request[0], $request[1]);
+                }
+
                 exit();
             }
         });
@@ -152,7 +171,7 @@ class Leyka {
 
             // Just in case:
             if( !leyka_options()->opt('currency_rur2usd') || !leyka_options()->opt('currency_rur2eur') ) {
-                $this->do_currency_rates_refresh();
+                $this->_do_currency_rates_refresh();
             }
 
         } else {
@@ -162,7 +181,7 @@ class Leyka {
         do_action('leyka_initiated');
     }
 
-    public function leyka_add_toolbar_menu(WP_Admin_Bar $wp_admin_bar) {
+    public function add_toolbar_menu(WP_Admin_Bar $wp_admin_bar) {
 
         if( !current_user_can('leyka_manage_donations') ) {
             return;
@@ -203,7 +222,7 @@ class Leyka {
         }
     }
 
-    public function do_currency_rates_refresh() {
+    protected function _do_currency_rates_refresh() {
 
         foreach(leyka_get_actual_currency_rates() as $currency => $rate) {
 
@@ -211,15 +230,41 @@ class Leyka {
         }
     }
 
-    /** Return a single instance of this class */
-    public static function get_instance() {
+    /** Proceed the rebill requests for all recurring subsriptions. */
+    protected function _do_active_recurrents_rebilling() {
 
-        // If the single instance hasn't been set, set it now.
-        if( !self::$_instance ) {
-            self::$_instance = new self;
+        ini_set('max_execution_time', 0);
+        set_time_limit(0);
+        ini_set('memory_limit', 268435456); // 256 Mb, just in case
+
+        // Get all active initial donations for the recurring subscriptions:
+        $params = array(
+            'post_type' => Leyka_Donation_Management::$post_type,
+            'nopaging' => true,
+            'post_status' => 'funded',
+            'post_parent' => 0,
+            'day' => (int)date('j'),
+            'meta_query' => array(
+                'relation' => 'AND',
+                array(
+                    'key' => 'leyka_payment_type',
+                    'value' => 'rebill',
+                    'compare' => '=',
+                ),
+                array(
+                    'key' => '_rebilling_is_active',
+                    'value' => '1',
+                    'compare' => '=',
+                ),
+            ),
+        );
+
+        foreach(get_posts($params) as $donation) {
+
+            $donation = new Leyka_Donation($donation);
+
+            do_action('leyka_do_recurring_donation-'.$donation->gateway_id, $donation);
         }
-
-        return self::$_instance;
     }
 
     public function __get($param) {
@@ -532,7 +577,7 @@ class Leyka {
         delete_option('leyka_permalinks_flushed');
     }
 
-    function apply_formatting_filters() {
+    public function apply_formatting_filters() {
 
         add_filter('leyka_the_content', 'wptexturize');
         add_filter('leyka_the_content', 'convert_smilies');
@@ -789,7 +834,7 @@ class Leyka {
 
             do_action('leyka_init_gateway_redirect_page');
 
-            $this->do_payment_form_submission();
+            $this->_do_payment_form_submission();
 
             if($this->payment_form_has_errors() || !$this->_payment_url) {
 
@@ -811,7 +856,7 @@ class Leyka {
         }
     } // template_redirect
 
-    public function do_payment_form_submission() {
+    public function _do_payment_form_submission() {
 
         $this->clear_session_errors(); // Clear all previous submits errors, if there are some
 

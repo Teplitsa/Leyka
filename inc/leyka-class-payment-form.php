@@ -95,7 +95,7 @@ class Leyka_Payment_Form {
 			if($mode == 'mixed') {?>
 
 				<label class="figure" for="donate_amount_flex_checked">
-					<?php if($variants) { _e('or', 'leyka');?> <input type="radio" name="leyka_donation_amount" class="donate_amount_flex_checked" value="<?php echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?>"><?php }?>
+					<?php if($variants) { _e('or', 'leyka');?> <input type="radio" name="leyka_donation_amount" class="donate_amount_flex_checked hidden" value="<?php echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?>"><?php }?>
 				</label>
 				<input type="text" title="<?php echo __('Specify the amount of your donation', 'leyka');?>" name="leyka_donation_amount" class="donate_amount_flex" value="<?php echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?>">
 			<?php }?>
@@ -238,7 +238,7 @@ class Leyka_Payment_Form {
 		return leyka_field_wrap($out, 'email');		
 	}
 
-    public function get_recurring_field() {
+    /*public function get_recurring_field() {
 
         if( !$this->is_field_supported('recurring') ) {
             return '';
@@ -255,7 +255,7 @@ class Leyka_Payment_Form {
         <?php $out = ob_get_contents();
         ob_end_clean();
         return leyka_field_wrap($out, 'recurring');
-    }
+    }*/
 
 	public function get_agree_field() {
 
@@ -487,12 +487,12 @@ function leyka_pf_get_email_field($value = '') {
 	return $leyka_current_pm->get_email_field($value);
 }
 
-function leyka_pf_get_recurring_field() {
-    /** @var Leyka_Payment_Form $leyka_current_pm */
-	global $leyka_current_pm;
-
-	return $leyka_current_pm->get_recurring_field();
-}
+//function leyka_pf_get_recurring_field() {
+//    /** @var Leyka_Payment_Form $leyka_current_pm */
+//	global $leyka_current_pm;
+//
+//	return $leyka_current_pm->get_recurring_field();
+//}
 
 function leyka_pf_get_agree_field() {
     /** @var Leyka_Payment_Form $leyka_current_pm */

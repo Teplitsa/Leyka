@@ -135,6 +135,7 @@ abstract class Leyka_Gateway {
         // Set a gateway class method to process a service calls from gateway:
         add_action('leyka_service_call-'.$this->_id, array($this, '_handle_service_calls'));
         add_action('leyka_cancel_recurrents-'.$this->_id, array($this, 'cancel_recurrents'));
+        add_action('leyka_do_recurring_donation-'.$this->_id, array($this, 'do_recurring_donation'));
 
         add_action("leyka_{$this->_id}_save_donation_data", array($this, 'save_donation_specific_data'));
         add_action("leyka_{$this->_id}_add_donation_specific_data", array($this, 'add_donation_specific_data'), 10, 2);
@@ -248,12 +249,28 @@ abstract class Leyka_Gateway {
     // Handler for Gateway's service calls (activate the donations, etc.):
     abstract public function _handle_service_calls($call_type = '');
 
+    /** Default behavior, may be substituted in descendants: */
     public function get_init_recurrent_donation($donation) {
-        return false;
+
+        if(is_a($donation, 'Leyka_Donation')) {
+            return $donation->init_recurring_donation_id;
+        } elseif( !empty($donation) && (int)$donation > 0 ) {
+
+            $donation = new Leyka_Donation($donation);
+
+            return $donation->init_recurring_donation_id;
+
+        } else {
+            return false;
+        }
     }
 
-    // Handler for Gateway's procedure to stop some recurrent donations:
+    // Handler for Gateway's procedure for stopping some recurrent donations subscription:
     public function cancel_recurrents(Leyka_Donation $donation) {
+    }
+
+    // Handler for Gateway's procedure for doing new rebill on recurring donations subscription:
+    public function do_recurring_donation(Leyka_Donation $init_recurring_donation) {
     }
 
     // Handler to use Gateway's responses in Leyka UI:

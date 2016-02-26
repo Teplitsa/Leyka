@@ -10,7 +10,6 @@ $active_currencies = array();
 foreach($active_pm_list as $pm) {
     $active_currencies = $active_currencies + $pm->currencies;
 }
-echo '<pre>' . print_r($active_currencies, 1) . '</pre>';
 
 leyka_pf_submission_errors();
 
@@ -64,9 +63,7 @@ leyka_setup_current_pm($curr_pm, $curr_pm->default_currency);?>
                         .leyka_pf_get_pm_fields();?>
                 </div>
 
-                <?php echo leyka_pf_get_recurring_field()
-                    .leyka_pf_get_agree_field()
-                    .leyka_pf_get_submit_field();
+                <?php echo /* leyka_pf_get_recurring_field(). */ leyka_pf_get_agree_field().leyka_pf_get_submit_field();
 
                 $icons = leyka_pf_get_pm_icons();
                 if($icons) {?>

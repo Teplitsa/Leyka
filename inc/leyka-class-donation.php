@@ -1206,10 +1206,12 @@ class Leyka_Donation {
             empty($params['campaign_id']) ? leyka_pf_get_campaign_id_value() : $params['campaign_id']
         );
 
-        if( !get_post_meta($id, '_leyka_donor_email_date', true) )
+        if( !get_post_meta($id, '_leyka_donor_email_date', true) ) {
             add_post_meta($id, '_leyka_donor_email_date', 0);
-        if( !get_post_meta($id, '_leyka_managers_emails_date', true) )
+        }
+        if( !get_post_meta($id, '_leyka_managers_emails_date', true) ) {
             add_post_meta($id, '_leyka_managers_emails_date', 0);
+        }
 
         add_post_meta($id, '_status_log', array(array('date' => time(), 'status' => $status)));
 
@@ -1219,6 +1221,14 @@ class Leyka_Donation {
 
         if( !empty($params['gateway_id']) ) {
             do_action("leyka_{$params['gateway_id']}_add_donation_specific_data", $id, $params);
+        }
+
+        if(
+            $params['payment_type'] == 'rebill' &&
+            empty($params['init_recurring_donation']) &&
+            !empty($params['rebilling_is_active'])
+        ) {
+            add_post_meta($id, '_rebilling_is_active', true);
         }
 
         if( !empty($params['recurrents_cancelled']) ) {
@@ -1249,13 +1259,18 @@ class Leyka_Donation {
 
         $donation = new Leyka_Donation($donation_id);
 
+        if($donation->type != 'rebill') {
+            return false;
+        }
+
         return leyka_get_gateway_by_id($donation->gateway_id)->get_init_recurrent_donation($donation);
     }
 
-	function __construct($donation) {
+	public function __construct($donation) {
 
-        if(is_int($donation) && (int)$donation > 0) {
+        if((is_int($donation) || is_string($donation)) && (int)$donation > 0) {
 
+            $donation = (int)$donation;
             $this->_post_object = get_post($donation);
 
             if($this->_post_object) {
@@ -1311,6 +1326,8 @@ class Leyka_Donation {
                     $meta['leyka_recurrents_cancelled'][0] : false,
                 'recurrents_cancel_date' => isset($meta['leyka_recurrents_cancel_date']) ?
                     $meta['leyka_recurrents_cancel_date'][0] : false,
+
+                'rebilling_is_active' => !empty($meta['_rebilling_is_active'][0]), // For active schemes of recurring donations
             );
         }
 	}
@@ -1396,11 +1413,25 @@ class Leyka_Donation {
             case 'payment_type_label': return __($this->_donation_meta['payment_type'], 'leyka');
 
             case 'init_recurring_payment_id':
-            case 'init_recurring_donation_id': return $this->_post_object->post_parent;
+            case 'init_recurring_donation_id': return $this->payment_type == 'rebill' ? $this->_post_object->post_parent : false;
             case 'init_recurring_payment':
-            case 'init_recurring_donation': return $this->_post_object->post_parent ?
-                new Leyka_Donation($this->_post_object->post_parent) : false;
-
+            case 'init_recurring_donation':
+                if($this->payment_type != 'rebill') {
+                    return false;
+                } else if($this->_post_object->post_parent) {
+                    return new Leyka_Donation($this->_post_object->post_parent);
+                } else {
+                    return $this;
+                }
+            case 'recurring_subscription_is_active':
+            case 'rebilling_on':
+            case 'rebilling_is_on':
+            case 'recurring_on':
+            case 'recurring_is_on':
+            case 'rebilling_is_active':
+            case 'recurring_is_active': $tmp = $this->payment_type == 'rebill' ?
+                !empty($this->_donation_meta['rebilling_is_active']) : NULL;
+                return $tmp;
             default:
                 return apply_filters('leyka_get_unknown_donation_field', null, $field, $this);
         }
@@ -1497,6 +1528,24 @@ class Leyka_Donation {
                 if($value > 0 && $value != $this->_post_object->post_parent) {
                     wp_update_post(array('ID' => $this->_id, 'post_parent' => $value));
                     $this->_post_object->post_parent = $value;
+                }
+                break;
+
+            case 'rebilling_on':
+            case 'rebilling_is_on':
+            case 'recurring_on':
+            case 'recurring_is_on':
+            case 'rebilling_is_active':
+            case 'recurring_is_active':
+                $value = !!$value;
+                if($this->type != 'rebill') {
+                    break;
+                }
+                $init_recurring_donation = $this->init_recurring_donation;
+                if($init_recurring_donation->recurring_is_active != $value) {
+
+                    update_post_meta($init_recurring_donation->id, '_rebilling_is_active', $value);
+                    $this->_donation_meta['rebilling_is_active'] = $value;
                 }
                 break;
 

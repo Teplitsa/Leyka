@@ -56,17 +56,6 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
-            'yandex_rebilling_available' => array(
-                'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
-                'default' => 0,
-                'title' => __('Regular monthly payments subscriptions are available', 'leyka'),
-                'description' => __('Check if Yandex.money allows you to create recurrent subscriptions to do regular automatic payments.', 'leyka'),
-                'required' => false,
-                'placeholder' => '',
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
-            ),
             'yandex_test_mode' => array(
                 'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
                 'value' => '',
@@ -101,18 +90,6 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         if(empty($this->_payment_methods['yandex_pb'])) {
             $this->_payment_methods['yandex_pb'] = Leyka_Yandex_Promvzyazbank::get_instance();
         }
-
-        /** @todo Until this PM's API will be upgraded. */
-//        if(empty($this->_payment_methods['yandex_money_quick'])) {
-//            $this->_payment_methods['yandex_money_quick'] = Leyka_Yandex_Money_Quick::get_instance();
-//            $this->_payment_methods['yandex_money_quick']->initialize_pm_options();
-//        }
-
-        /** @todo До получения возможности протестировать */
-//        if(empty($this->_payment_methods['yandex_mobile'])) {
-//            $this->_payment_methods['yandex_mobile'] = Leyka_Yandex_Mobile::get_instance();
-//            $this->_payment_methods['yandex_mobile']->initialize_pm_options();
-//        }
     }
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
@@ -122,7 +99,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             $donation = new Leyka_Donation($donation_id);
 
             $donation->payment_type = 'rebill';
-            update_post_meta($donation_id, '_rebilling_is_active', 1); // So we could turn it on/off
+            $donation->rebilling_is_active = true; // So we could turn it on/off
 
         } else if($pm_id == 'yandex_sb' && $form_data['leyka_donation_currency'] == 'rur' && $form_data['leyka_donation_amount'] < 10.0) {
 
@@ -174,6 +151,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             'shopSuccessURL' => leyka_get_success_page_url(),
             'shopFailURL' => leyka_get_failure_page_url(),
             'cps_email' => $donation->donor_email,
+            'cms_name' => 'wp-leyka', // Service parameter, added by Yandex' request
 //            '' => ,
         );
         if(leyka_options()->opt('yandex_shop_article_id')) {
@@ -258,6 +236,11 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
 
                     $donation->add_gateway_response($_POST);
                     $donation->status = 'funded';
+
+                    if($donation->type == 'rebill' && !empty($_POST['invoiceId'])) {
+                        $donation->recurring_id = (int)$_POST['invoiceId'];
+                    }
+
                     Leyka_Donation_Management::send_all_emails($donation->id);
                 }
 
@@ -270,50 +253,19 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
         }
     }
 
-    public function get_init_recurrent_donation($recurring) {
-
-        if(is_a($recurring, 'Leyka_Donation')) {
-            $recurring = $recurring->recurring_id;
-        } elseif(empty($recurring)) {
-            return false;
-        }
-
-        $init_donation_post = get_posts(array( // Get init recurrent payment with customer_id given
-            'posts_per_page' => 1,
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => 'funded',
-            'post_parent' => 0,
-            'meta_query' => array(
-                'RELATION' => 'AND',
-                array(
-                    'key'     => '_yandex_recurring_id',
-                    'value'   => $recurring,
-                    'compare' => '=',
-                ),
-                array(
-                    'key'     => 'leyka_payment_type',
-                    'value'   => 'rebill',
-                    'compare' => '=',
-                ),
-            ),
-            'orderby' => 'date',
-            'order' => 'ASC',
-        ));
-
-        return count($init_donation_post) ? new Leyka_Donation($init_donation_post[0]->ID) : false;
-    }
-
     public function get_gateway_response_formatted(Leyka_Donation $donation) {
 
         if( !$donation->gateway_response ) {
             return array();
         }
-        
-        $response_vars = maybe_unserialize($donation->gateway_response);
-        if( !$response_vars || !is_array($response_vars) )
-            return array();
 
-        $action_label = $response_vars['action'] == 'checkOrder' ? __('Donation confirmation', 'leyka') : __('Donation approval notice', 'leyka');
+        $response_vars = maybe_unserialize($donation->gateway_response);
+        if( !$response_vars || !is_array($response_vars) ) {
+            return array();
+        }
+
+        $action_label = $response_vars['action'] == 'checkOrder' ?
+            __('Donation confirmation', 'leyka') : __('Donation approval notice', 'leyka');
 
         return array(
             __('Last response operation:', 'leyka') => $action_label,
@@ -325,6 +277,167 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
             __("Gateway's donor ID:", 'leyka') => $response_vars['customerNumber'],
             __('Response date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($response_vars['requestDatetime'])),
         );
+    }
+
+    public function do_recurring_donation(Leyka_Donation $init_recurring_donation) {
+
+        if( !$init_recurring_donation->recurring_id ) {
+            return;
+        }
+
+        $new_recurring_donation_id = Leyka_Donation::add(array(
+            'status' => 'submitted',
+            'payment_type' => 'rebill',
+            'purpose_text' => $init_recurring_donation->title,
+            'campaign_id' => $init_recurring_donation->campaign_id,
+            'payment_method_id' => $init_recurring_donation->pm_id,
+            'gateway_id' => $init_recurring_donation->gateway_id,
+            'donor_name' => $init_recurring_donation->donor_name,
+            'donor_email' => $init_recurring_donation->donor_email,
+            'amount' => $init_recurring_donation->amount,
+            'currency' => $init_recurring_donation->currency,
+            'init_recurring_donation' => $init_recurring_donation->id,
+            'recurring_id' => $init_recurring_donation->recurring_id, // InvoiceId of the original donation in a subscription
+//        '' => '',
+        ));
+
+        $certificate_path = leyka_options()->opt('yandex-yandex_card_certificate_path') ?
+            WP_CONTENT_DIR.'/'.trim(leyka_options()->opt('yandex-yandex_card_certificate_path'), '/') : false;
+        $certificate_private_key_path = leyka_options()->opt('yandex-yandex_card_private_key_path') ?
+            WP_CONTENT_DIR.'/'.trim(leyka_options()->opt('yandex-yandex_card_private_key_path'), '/') : false;
+
+        $ch = curl_init();
+        curl_setopt_array($ch, array(
+            CURLOPT_URL => leyka_options()->opt('yandex_test_mode') ?
+                'https://penelope-demo.yamoney.ru/webservice/mws/api/repeatCardPayment' :
+                'https://penelope.yamoney.ru/webservice/mws/api/repeatCardPayment',
+            CURLOPT_PORT => leyka_options()->opt('yandex_test_mode') ? 8083 : 443,
+            CURLOPT_HEADER => false,
+            CURLOPT_HTTPHEADER => array('Content-Type: application/x-www-form-urlencoded'),
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => http_build_query(array(
+                'clientOrderId' => $new_recurring_donation_id,
+                'invoiceId' => $init_recurring_donation->recurring_id,
+                'orderNumber' => 'recurring-'.$init_recurring_donation->id.'-'.$new_recurring_donation_id,
+                'amount' => $init_recurring_donation->amount,
+            )),
+            CURLOPT_VERBOSE => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CONNECTTIMEOUT => 60,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_FORBID_REUSE => true,
+            CURLOPT_FRESH_CONNECT => true,
+            CURLOPT_SSLCERT => $certificate_path,
+            CURLOPT_SSLKEY => $certificate_private_key_path,
+            CURLOPT_SSLKEYPASSWD => leyka_options()->opt('yandex-yandex_card_private_key_password'),
+        ));
+        $answer = curl_exec($ch);
+
+        $new_recurring_donation = new Leyka_Donation($new_recurring_donation_id);
+
+        if($answer) {
+
+            $p = xml_parser_create();
+            xml_parse_into_struct($p, $answer, $vals, $index);
+            xml_parser_free($p);
+
+            $new_recurring_donation->add_gateway_response($answer);
+
+            if(isset($vals[0]['attributes']['STATUS']) && $vals[0]['attributes']['STATUS'] == 0) {
+                $new_recurring_donation->status = 'funded';
+            }
+
+        } else {
+
+            $error = 'Error '.curl_errno($ch).': '.curl_error($ch);
+            $new_recurring_donation->add_gateway_response($error);
+        }
+
+        curl_close($ch);
+    }
+
+    public function display_donation_specific_data_fields($donation = false) {
+
+        if($donation) { // Edit donation page displayed
+
+            $donation = leyka_get_validated_donation($donation);
+
+            if($donation->type != 'rebill') {
+                return;
+            }?>
+
+            <label><?php _e('Yandex.Money recurring subscription ID', 'leyka');?>:</label>
+            <div class="leyka-ddata-field">
+
+                <?php if($donation->type == 'correction') {?>
+                <input type="text" id="yandex-recurring-id" name="yandex-recurring-id" placeholder="<?php _e('Enter Yandex.Money invoice ID', 'leyka');?>" value="<?php echo $donation->recurring_id;?>">
+                <?php } else {?>
+                <span class="fake-input"><?php echo $donation->recurring_id;?></span>
+                <?php }?>
+            </div>
+
+        <?php $init_recurring_donation = $donation->init_recurring_donation;?>
+
+            <label for="yandex-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka');?></label>
+            <div class="leyka-ddata-field">
+                <input type="checkbox" id="yandex-recurring-is-active" name="yandex-recurring-is-active" value="1" <?php echo $init_recurring_donation->recurring_is_active ? 'checked="checked"' : '';?>>
+            </div>
+
+        <?php } else { // New donation page displayed ?>
+
+            <label for="yandex-recurring-id"><?php _e('Yandex.Money recurring subscription ID', 'leyka');?>:</label>
+            <div class="leyka-ddata-field">
+                <input type="text" id="yandex-recurring-id" name="yandex-recurring-id" placeholder="<?php _e('Enter Yandex.Money invoice ID', 'leyka');?>" value="">
+            </div>
+            <?php
+        }
+    }
+
+    public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
+
+        switch($field_name) {
+            case 'recurring_id':
+            case 'recurrent_id':
+            case 'invoice_id':
+            case 'yandex_recurrent_id':
+            case 'yandex_recurring_id':
+            case 'yandex_invoice_id': return get_post_meta($donation->id, '_yandex_invoice_id', true);
+            default: return $value;
+        }
+    }
+
+    public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
+
+        switch($field_name) {
+            case 'recurring_id':
+            case 'recurrent_id':
+            case 'invoice_id':
+            case 'yandex_recurrent_id':
+            case 'yandex_recurring_id':
+            case 'yandex_invoice_id':
+                return update_post_meta($donation->id, '_yandex_invoice_id', $value);
+            default: return false;
+        }
+    }
+
+    public function save_donation_specific_data(Leyka_Donation $donation) {
+
+        if(isset($_POST['yandex-recurring-id']) && $donation->recurring_id != $_POST['yandex-recurring-id']) {
+            $donation->recurring_id = $_POST['yandex-recurring-id'];
+        }
+
+        $_POST['yandex-recurring-is-active'] = !empty($_POST['yandex-recurring-is-active']);
+
+        // Check if the value's different is inside the Leyka_Donation::__set():
+        $donation->recurring_is_active = $_POST['yandex-recurring-is-active'];
+    }
+
+    public function add_donation_specific_data($donation_id, array $donation_params) {
+
+        if( !empty($donation_params['recurring_id']) ) {
+            update_post_meta($donation_id, '_yandex_invoice_id', $donation_params['recurring_id']);
+        }
     }
 }
 
@@ -350,7 +463,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
         ));
 
         /** @todo Right now we can't use leyka_options()->opt() here because Gateway options are not included in options_meta ATM. Refactor this. */
-        $this->_custom_fields = get_option('leyka_yandex_rebilling_available', true) ?
+        $this->_custom_fields = get_option('leyka_'.$this->full_id.'_rebilling_available', true) ?
             array(
                 'recurring' => '<label class="checkbox"><span><input type="checkbox" id="leyka_'.$this->full_id.'_recurring" name="leyka_recurring" value="1"></span> '.__('Monthly recurring donations', 'leyka').'</label>'
             ) :
@@ -368,6 +481,45 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
         }
 
         $this->_options = array(
+            $this->full_id.'_rebilling_available' => array(
+                'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+                'value' => '',
+                'default' => 0,
+                'title' => __('Monthly recurring subscriptions are available', 'leyka'),
+                'description' => __('Check if Yandex.Money allows you to create recurrent subscriptions to do regular automatic payments.', 'leyka'),
+                'required' => false,
+                'placeholder' => '',
+                'list_entries' => array(), // For select, radio & checkbox fields
+                'validation_rules' => array(), // List of regexp?..
+            ),
+            $this->full_id.'_certificate_path' => array(
+                'type' => 'text',
+                'default' => '',
+                'title' => __('Yandex.Money recurring payments certificate path', 'leyka'),
+                'description' => __("Please, enter the path to your SSL certificate given to you by Yandex.Money. <strong>Warning!</strong> The path should include the certificate's filename intself. Also it should be relative to wp-content directory.", 'leyka'),
+                'placeholder' => __('For ex., /uploads/leyka/your-cert-file.cer', 'leyka'),
+                'required' => 1,
+                'validation_rules' => array(), // List of regexp?..
+            ),
+            $this->full_id.'_private_key_path' => array(
+                'type' => 'text',
+                'default' => '',
+                'title' => __("Yandex.Money recurring payments certificate's private key path", 'leyka'),
+                'description' => __("Please, enter the path to your SSL certificate's private key given to you by Yandex.Money.<li><li>The path should include the certificate's filename intself.</li><li>The path should be relative to wp-content directory. </li></ul>", 'leyka'),
+                'placeholder' => __('For ex., /uploads/leyka/your-private.key', 'leyka'),
+                'required' => 1,
+                'validation_rules' => array(), // List of regexp?..
+            ),
+            $this->full_id.'_private_key_password' => array(
+                'type' => 'text',
+                'default' => '',
+                'title' => __("Yandex.Money recurring payments certificate's private key password", 'leyka'),
+                'description' => __("Please, enter the path to your SSL certificate's private key password, if you set it during the generation of your sertificate request file.", 'leyka'),
+                'placeholder' => __('Ex., fW!^12@3#&8A4', 'leyka'),
+                'is_password' => 1,
+                'required' => 0,
+                'validation_rules' => array(), // List of regexp?..
+            ),
             $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('Yandex.Money allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Money website</a> to enter your bank card data and to confirm your payment.', 'leyka'),

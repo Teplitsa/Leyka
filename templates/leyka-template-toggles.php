@@ -36,7 +36,7 @@ leyka_pf_submission_errors();?>
 
 	</div>
 
-<?php echo leyka_pf_get_recurring_field().leyka_pf_get_agree_field().leyka_pf_get_submit_field();
+<?php echo /*leyka_pf_get_recurring_field().*/ leyka_pf_get_agree_field().leyka_pf_get_submit_field();
 
 	$icons = leyka_pf_get_pm_icons();	
 	if($icons) {

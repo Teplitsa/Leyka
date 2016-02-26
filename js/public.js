@@ -88,12 +88,13 @@ jQuery(document).ready(function($){
             var $field = $(this),
                 $form = $field.parents('form.leyka-pm-form');
 
-            if($field.hasClass('donate_amount_flex_checked')) {
+            if($field.attr('type') == 'radio') {
+                $form.find('input.donate_amount_flex').val($field.val());
+            } else if($field.hasClass('donate_amount_flex_checked')) {
                 $form.find('input.donate_amount_flex').focus();
             } else if($field.hasClass('donate_amount_flex')) {
-
                 $form.find('input[name="leyka_donation_amount"]:checked').removeAttr('checked');
-                $form.find('.donate_amount_flex_checked').attr('checked', 'checked');
+                //$form.find('.donate_amount_flex_checked').attr('checked', 'checked');
             }
         })
         .on('keydown.leyka', 'input.donate_amount_flex', function(e){
@@ -108,7 +109,9 @@ jQuery(document).ready(function($){
 
             var $this = $(this);
             $this.parents('form.leyka-pm-form').find('input.donate_amount_flex_checked').val($this.val());
-        });
+
+        })
+        .find('input[name="leyka_donation_amount"][type="radio"]:first').click();
 
     function validate_donation_form($form) {
 
@@ -123,7 +126,7 @@ jQuery(document).ready(function($){
                 $amount_flex_field :
                 (amount_field_type == 'fixed' ?
                     $amount_fixed_field :
-                    ($amount_fixed_field.attr('id') == 'donate_amount_flex_checked' ? $amount_flex_field : $amount_fixed_field)
+                    ($amount_fixed_field.length ? $amount_fixed_field : $amount_flex_field)
                 );
 
         if( !$amount_field.val() || parseInt($amount_field.val()) <= 0 || isNaN($amount_field.val()) ) {
@@ -151,7 +154,6 @@ jQuery(document).ready(function($){
 
             $currency = $form.find('.leyka_donation_currency').val();
             $currency_label = $form.find('.leyka_donation_currency').data('currency-label');
-
         }
 
         var $top_amount = parseInt($form.find('input[name="top_'+$currency+'"]').val()),
