@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Leyka Plugin\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leyka\n"
 "POT-Creation-Date: 2014-09-11 08:25:09+00:00\n"
-"POT-Revision-Date: Fri Feb 19 2016 18:51:52 GMT+0300\n"
+"POT-Revision-Date: Wed Mar 02 2016 16:54:44 GMT+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -151,19 +151,19 @@ msgstr ""
 
 #: ../gateways/chronopay/leyka-class-chronopay-gateway.php:416 ..
 #: /gateways/rbk/leyka-class-rbk-gateway.php:252 ../gateways/yandex/leyka-class-
-#: yandex-gateway.php:306 ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.
+#: yandex-gateway.php:273 ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.
 #: php:237
 msgid "Full donation amount:"
 msgstr ""
 
 #: ../gateways/chronopay/leyka-class-chronopay-gateway.php:417 ..
-#: /gateways/yandex/leyka-class-yandex-gateway.php:310 ..
+#: /gateways/yandex/leyka-class-yandex-gateway.php:277 ..
 #: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:241
 msgid "Gateway's donor ID:"
 msgstr ""
 
 #: ../gateways/chronopay/leyka-class-chronopay-gateway.php:418 ..
-#: /gateways/yandex/leyka-class-yandex-gateway.php:311 ..
+#: /gateways/yandex/leyka-class-yandex-gateway.php:278 ..
 #: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:242
 msgid "Response date:"
 msgstr ""
@@ -181,14 +181,14 @@ msgstr ""
 #: ../gateways/chronopay/leyka-class-chronopay-gateway.php:493 ..
 #: /gateways/cp/leyka-class-cp-gateway.php:463 ../gateways/rbk/leyka-class-rbk-
 #: gateway.php:275 ../gateways/robokassa/leyka-class-robokassa-gateway.php:232 ..
-#: /gateways/yandex/leyka-class-yandex-gateway.php:421
+#: /gateways/yandex/leyka-class-yandex-gateway.php:454
 msgid "Payment with Banking Card"
 msgstr ""
 
 #: ../gateways/chronopay/leyka-class-chronopay-gateway.php:494 ..
 #: /gateways/cp/leyka-class-cp-gateway.php:464 ../gateways/rbk/leyka-class-rbk-
 #: gateway.php:276 ../gateways/robokassa/leyka-class-robokassa-gateway.php:233 ..
-#: /gateways/yandex/leyka-class-yandex-gateway.php:422
+#: /gateways/yandex/leyka-class-yandex-gateway.php:455
 msgid "Banking Card"
 msgstr ""
 
@@ -510,7 +510,7 @@ msgid ""
 msgstr ""
 
 #: ../gateways/rbk/leyka-class-rbk-gateway.php:76 ../gateways/yandex/leyka-class-
-#: yandex-gateway.php:485
+#: yandex-gateway.php:518
 msgid "Ex., fW!^12@3#&8A4"
 msgstr ""
 
@@ -743,7 +743,7 @@ msgid "Payment with Webmoney"
 msgstr ""
 
 #: ../gateways/robokassa/leyka-class-robokassa-gateway.php:319 ..
-#: /gateways/yandex/leyka-class-yandex-gateway.php:555
+#: /gateways/yandex/leyka-class-yandex-gateway.php:588
 msgid "Webmoney"
 msgstr ""
 
@@ -873,74 +873,78 @@ msgstr ""
 msgid "Donation sum is unmatched"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:301 ..
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:268 ..
 #: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:234
 msgid "Donation confirmation"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:301
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:268
 msgid "Donation approval notice"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:304 ..
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:271 ..
 #: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:234
 msgid "Last response operation:"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:305 ..
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:272 ..
 #: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:236
 msgid "Gateway invoice ID:"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:308 ..
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:275 ..
 #: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:239
 msgid "Donation amount after gateway commission:"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:349 ../gateways/yandex/leyka-
-#: class-yandex-gateway.php:361
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:370 ../gateways/yandex/leyka-
+#: class-yandex-gateway.php:389
 msgid "Yandex.Money recurring subscription ID"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:353 ../gateways/yandex/leyka-
-#: class-yandex-gateway.php:363
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:374 ../gateways/yandex/leyka-
+#: class-yandex-gateway.php:391
 msgid "Enter Yandex.Money invoice ID"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:435
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:382
+msgid "Recurring subscription is active"
+msgstr ""
+
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:468
 msgid "Monthly recurring donations"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:455
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:488
 msgid "Monthly recurring subscriptions are available"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:456
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:489
 msgid ""
 "Check if Yandex.Money allows you to create recurrent subscriptions to do "
 "regular automatic payments."
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:465
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:498
 msgid "Yandex.Money recurring payments certificate path"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:466
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:499
 msgid ""
 "Please, enter the path to your SSL certificate given to you by Yandex.Money. "
 "<strong>Warning!</strong> The path should include the certificate's filename "
 "intself. Also it should be relative to wp-content directory."
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:467
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:500
 msgid "For ex., /uploads/leyka/your-cert-file.cer"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:474
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:507
 msgid "Yandex.Money recurring payments certificate's private key path"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:475
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:508
 msgid ""
 "Please, enter the path to your SSL certificate's private key given to you by "
 "Yandex.Money.<li><li>The path should include the certificate's filename "
@@ -948,21 +952,21 @@ msgid ""
 "</li></ul>"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:476
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:509
 msgid "For ex., /uploads/leyka/your-private.key"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:483
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:516
 msgid "Yandex.Money recurring payments certificate's private key password"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:484
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:517
 msgid ""
 "Please, enter the path to your SSL certificate's private key password, if "
 "you set it during the generation of your sertificate request file."
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:492 ..
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:525 ..
 #: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:324
 msgid ""
 "Yandex.Money allows a simple and safe way to pay for goods and services with "
@@ -971,27 +975,27 @@ msgid ""
 "website</a> to enter your bank card data and to confirm your payment."
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:493 ..
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:526 ..
 #: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:325
 msgid "Yandex bank card payment description"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:494 ..
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:527 ..
 #: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:326
 msgid ""
 "Please, enter Yandex.Money bank cards payment description that will be shown "
 "to the donor when this payment method will be selected for using."
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:511
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:544
 msgid "Virtual cash Yandex.money"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:512
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:545
 msgid "Yandex.money"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:535 ..
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:568 ..
 #: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:281
 msgid ""
 "Yandex.Money is a simple and safe payment system to pay for goods and "
@@ -1001,23 +1005,23 @@ msgid ""
 "account, you can create it there."
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:536 ..
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:569 ..
 #: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:282
 msgid "Yandex.Money description"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:537 ..
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:570 ..
 #: /gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:283
 msgid ""
 "Please, enter Yandex.Money payment description that will be shown to the "
 "donor when this payment method will be selected for using."
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:554
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:587
 msgid "Virtual cash Webmoney"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:577
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:610
 msgid ""
 "<a href=\"http://www.webmoney.ru/\">WebMoney Transfer</a> is an international "
 "financial transactions system and an invironment for a business in Internet, "
@@ -1027,25 +1031,25 @@ msgid ""
 "safe deals."
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:578
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:611
 msgid "WebMoney description"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:579
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:612
 msgid ""
 "Please, enter WebMoney payment description that will be shown to the donor "
 "when this payment method will be selected for using."
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:596
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:629
 msgid "Sberbank Online invoicing"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:597
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:630
 msgid "Sberbank Online"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:620
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:653
 msgid ""
 "<a href=\"https://online.sberbank.ru/CSAFront/index.do\">Sberbank Online</a> "
 "is an Internet banking service of Sberbank. It allows you to make many "
@@ -1053,50 +1057,50 @@ msgid ""
 "using your computer."
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:621
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:654
 msgid "Sberbank Online description"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:622
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:655
 msgid ""
 "Please, enter Sberbank Online payment description that will be shown to the "
 "donor when this payment method will be selected for using."
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:639
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:672
 msgid "Alpha-Click invoicing"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:640
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:673
 msgid "Alpha-Click"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:663
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:696
 msgid ""
 "<a href=\"https://alfabank.ru/retail/internet/\">Alfa-Click</a> is an Internet "
 "banking service of Alfa bank. It allows you to make many banking operations "
 "at any moment without applying to the bank department, using your computer."
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:664
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:697
 msgid "Alpha-Click description"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:665
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:698
 msgid ""
 "Please, enter Alpha-Click payment description that will be shown to the "
 "donor when this payment method will be selected for using."
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:682
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:715
 msgid "Promsvyazbank invoicing"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:683
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:716
 msgid "Promsvyazbank"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:706
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:739
 msgid ""
 "<a href=\"http://www.psbank.ru/Personal/Everyday/Remote/\">PSB-Retail</a> is "
 "an Internet banking service of Promsvyazbank. It allows you to make many "
@@ -1104,11 +1108,11 @@ msgid ""
 "using your computer."
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:707
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:740
 msgid "Promsvyazbank description"
 msgstr ""
 
-#: ../gateways/yandex/leyka-class-yandex-gateway.php:708
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:741
 msgid ""
 "Please, enter Promsvyazbank payment description that will be shown to the "
 "donor when this payment method will be selected for using."
@@ -1940,7 +1944,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: ../inc/leyka-class-donation.php:683 ../inc/leyka-class-donation.php:1378
+#: ../inc/leyka-class-donation.php:683 ../inc/leyka-class-donation.php:1383
 msgid "Unknown payment method"
 msgstr ""
 
@@ -2051,7 +2055,7 @@ msgstr ""
 msgid "Donation #%s"
 msgstr ""
 
-#: ../inc/leyka-class-donation.php:1374
+#: ../inc/leyka-class-donation.php:1379
 msgid "Unknown gateway"
 msgstr ""
 
@@ -3344,30 +3348,7 @@ msgstr ""
 msgid "Drag the elements up or down to change their order on donation forms"
 msgstr ""
 
-#: ../templates/leyka-gateway-redirect-page.php:4
-msgid "Redirect to the gateway"
-msgstr ""
-
-#: ../templates/leyka-gateway-redirect-page.php:48 ../templates/service/leyka-
-#: gateway-redirect-page.php:48
-msgid ""
-"<h3>Thank you!</h3><p>In a few seconds you will be redirected to the payment "
-"system website, where you can complete your donation.</p>"
-msgstr ""
-
-#: ../templates/leyka-gateway-redirect-page.php:59 ../templates/service/leyka-
-#: gateway-redirect-page.php:59
-msgid ""
-"If you are not redirected to the payment page automatically, please press "
-"this button"
-msgstr ""
-
-#: ../templates/leyka-gateway-redirect-page.php:61 ../templates/service/leyka-
-#: gateway-redirect-page.php:61
-msgid "Proceed to the payment approval page"
-msgstr ""
-
-#: ../templates/leyka-template-radios.php:24 ../templates/leyka-template-toggles.
+#: ../templates/leyka-template-radios.php:23 ../templates/leyka-template-toggles.
 #: php:12
 msgid ""
 "This donation form is created by Leyka WordPress plugin, created by Teplitsa "
@@ -3377,6 +3358,22 @@ msgstr ""
 
 #: ../templates/service/leyka-gateway-redirect-page.php:4
 msgid "Redirecting to the gateway payment page"
+msgstr ""
+
+#: ../templates/service/leyka-gateway-redirect-page.php:48
+msgid ""
+"<h3>Thank you!</h3><p>In a few seconds you will be redirected to the payment "
+"system website, where you can complete your donation.</p>"
+msgstr ""
+
+#: ../templates/service/leyka-gateway-redirect-page.php:59
+msgid ""
+"If you are not redirected to the payment page automatically, please press "
+"this button"
+msgstr ""
+
+#: ../templates/service/leyka-gateway-redirect-page.php:61
+msgid "Proceed to the payment approval page"
 msgstr ""
 
 #. Description of the plugin
