@@ -1,12 +1,12 @@
 <?php if( !defined('WPINC') ) die;
 
 // Polylang  plugin compatibility:
-if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
+if(defined('POLYLANG_VERSION')) {
 
     add_action('pll_language_defined', function($slug, PLL_Language $cur_lang){
 
 //        if($slug != 'en') {
-        load_textdomain('leyka', LEYKA_PLUGIN_DIR."lang/leyka-{$cur_lang->locale}.mo");
+            load_textdomain('leyka', LEYKA_PLUGIN_DIR."lang/leyka-{$cur_lang->locale}.mo");
 //        }
 
         function leyka_add_language_parameter_to_pages_query($query_params) {
@@ -72,10 +72,13 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
         // To make frontend ajax calls localized:
         add_filter('leyka_hidden_donation_form_fields', function($fields){
 
-            if(empty($fields['cur_lang']))
+            if(empty($fields['cur_lang'])) {
                 $fields['cur_lang'] = pll_current_language();
-            if(empty($fields['cur_locale']))
+            }
+
+            if(empty($fields['cur_locale'])) {
                 $fields['cur_locale'] = get_locale();
+            }
 
             return $fields;
         });
@@ -93,7 +96,7 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
         add_action('init', function(){
 
             // All localization filters are in places, now create all gateways:
-    
+
             do_action('leyka_init_actions');
 
             // Register user-defined strings:
@@ -101,15 +104,16 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
 
                 $option_data = leyka_options()->get_info_of($option);
 
-                if($option_data['type'] == 'text')
+                if($option_data['type'] == 'text') {
                     pll_register_string($option_data['title'], $option_data['value'], 'leyka');
+                } elseif(
 
-                elseif(
-                    $option_data['type'] == 'textarea'
-                    || $option_data['type'] == 'html'
-                    || $option_data['type'] == 'rich_html'
-                )
+                    $option_data['type'] == 'textarea' ||
+                    $option_data['type'] == 'html' ||
+                    $option_data['type'] == 'rich_html'
+                ) {
                     pll_register_string($option_data['title'], leyka_options()->opt($option), 'leyka', true);
+                }
             }
         }, 11);
 
@@ -129,8 +133,7 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
             });
 
             $locale = get_locale();
-            if( !$locale )
-                $locale = 'en_US';
+            $locale = $locale ? $locale : 'en_US';
 
             load_textdomain('leyka', LEYKA_PLUGIN_DIR."lang/leyka-$locale.mo");
 
@@ -149,15 +152,15 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
 
                         $option_data = leyka_options()->get_info_of($option);
 
-                        if($option_data['type'] == 'text')
+                        if($option_data['type'] == 'text') {
                             pll_register_string($option_data['title'], $option_data['value'], 'leyka');
-
-                        elseif(
+                        } elseif(
                             $option_data['type'] == 'textarea'
                             || $option_data['type'] == 'html'
                             || $option_data['type'] == 'rich_html'
-                        )
+                        ) {
                             pll_register_string($option_data['title'], leyka_options()->opt($option), 'leyka', true);
+                        }
                     }
                 }
             }
@@ -172,6 +175,7 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
             $leyka_post_types = array(Leyka_Campaign_Management::$post_type);
 
             if($leyka_post_types != $polylang->options['post_types']) {
+
                 $polylang->options['post_types'] = $polylang->options['post_types'] + $leyka_post_types;
                 update_option('polylang', $polylang->options);
             }
@@ -184,7 +188,6 @@ if(defined('POLYLANG_VERSION') && function_exists('pll_register_string')) {
     load_plugin_textdomain('leyka', FALSE, plugin_basename(LEYKA_PLUGIN_DIR).'/lang/');
 
     add_action('init', function(){
-
         do_action('leyka_init_actions');
     }, 11);
 }

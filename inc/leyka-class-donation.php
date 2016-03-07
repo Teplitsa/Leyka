@@ -10,6 +10,16 @@ class Leyka_Donation_Management {
 
 	public static $post_type = 'leyka_donation';
 
+    public static function get_instance() {
+
+        // If the single instance hasn't been set, set it now.
+        if( !self::$_instance ) {
+            self::$_instance = new self;
+        }
+
+        return self::$_instance;
+    }
+
 	private function __construct() {
 
 //        add_action('quick_edit_custom_box', array($this, 'display_quickedit_box'), 10, 2);
@@ -29,12 +39,7 @@ class Leyka_Donation_Management {
         add_filter('request', array($this, 'do_column_sorting'));
 
         /** Donation status transitions */
-//        add_action('new_to_submitted', array($this, 'new_donation_added'));
-
         add_action('transition_post_status',  array($this, 'donation_status_changed'), 10, 3);
-
-        // Leyka_donation status changed to "funded":
-//        add_action('funded_'.self::$post_type, array($this, 'donation_funded'), 10, 2);
 
         add_action('wp_ajax_leyka_send_donor_email', array($this, 'ajax_send_donor_email'));
 	}
@@ -195,8 +200,9 @@ class Leyka_Donation_Management {
 
     public function new_donation_added(WP_Post $donation) {
 
-        if($donation->post_type != Leyka_Donation_Management::$post_type)
+        if($donation->post_type != Leyka_Donation_Management::$post_type) {
             return;
+        }
     }
 
     public static function send_all_emails($donation) {
@@ -206,7 +212,6 @@ class Leyka_Donation_Management {
         if( !$donation ) {
             return false;
         }
-
 
         Leyka_Donation_Management::send_donor_thanking_email($donation);
 
@@ -226,8 +231,9 @@ class Leyka_Donation_Management {
     /** Ajax handler method */
     public function ajax_send_donor_email() {
 
-        if(empty($_POST['donation_id']) || !wp_verify_nonce($_POST['nonce'], 'leyka_donor_email'))
+        if(empty($_POST['donation_id']) || !wp_verify_nonce($_POST['nonce'], 'leyka_donor_email')) {
             return;
+        }
 
         $donation = new Leyka_Donation((int)$_POST['donation_id']);
 
@@ -243,19 +249,21 @@ class Leyka_Donation_Management {
         $donation = leyka_get_validated_donation($donation);
 
         $donor_email = $donation->donor_email;
-        if( !$donor_email )
+        if( !$donor_email ) {
             $donor_email = leyka_pf_get_donor_email_value();
+        }
 
-        if( !$donation || !$donor_email || $donation->donor_email_date )
+        if( !$donation || !$donor_email || $donation->donor_email_date ) {
             return false;
+        }
 
         add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-        $email_text = $donation->payment_type == 'rebill' ?
+        $email_text = $donation->type == 'rebill' ?
             leyka_options()->opt('email_recurrents_thanks_text') : leyka_options()->opt('email_thanks_text');
-        $email_title = $donation->payment_type == 'rebill' ?
+        $email_title = $donation->type == 'rebill' ?
             leyka_options()->opt('email_recurrents_thanks_title') : leyka_options()->opt('email_thanks_title');
 
         $res = wp_mail(
@@ -303,12 +311,88 @@ class Leyka_Donation_Management {
         // Reset content-type to avoid conflicts (http://core.trac.wordpress.org/ticket/23578):
         remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
+        $res &= update_post_meta($donation->id, '_leyka_donor_email_date', time());
+
+        return $res;
+    }
+
+    public static function send_all_recurring_emails($donation) {
+
+        $donation = leyka_get_validated_donation($donation);
+
+        $donor_email = $donation->donor_email;
+        if( !$donor_email ) {
+            $donor_email = leyka_pf_get_donor_email_value();
+        }
+
+        if( !$donation || !$donor_email || $donation->type != 'rebill' ) {
+            return false;
+        }
+
+        add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+
+        $campaign = new Leyka_Campaign($donation->campaign_id);
+
+        // Donor thanking email:
+        $res = wp_mail(
+            $donor_email,
+            apply_filters(
+                'leyka_email_thanks_recurring_ongoing_title',
+                leyka_options()->opt('email_recurrents_ongoing_thanks_title'),
+                $donation, $campaign
+            ),
+            wpautop(str_replace(
+                array(
+                    '#SITE_NAME#',
+                    '#SITE_EMAIL#',
+                    '#ORG_NAME#',
+                    '#DONATION_ID#',
+                    '#DONOR_NAME#',
+                    '#PAYMENT_METHOD_NAME#',
+                    '#CAMPAIGN_NAME#',
+                    '#PURPOSE#',
+                    '#SUM#',
+                    '#DATE#',
+                ),
+                array(
+                    get_bloginfo('name'),
+                    get_bloginfo('admin_email'),
+                    leyka_options()->opt('org_full_name'),
+                    $donation->id,
+                    $donation->donor_name,
+                    $donation->payment_method_label,
+                    $campaign->title,
+                    $campaign->payment_title,
+                    $donation->amount.' '.$donation->currency_label,
+                    $donation->date,
+                ),
+                apply_filters(
+                    'leyka_email_thanks_recurring_ongoing_text',
+                    leyka_options()->opt('email_recurrents_ongoing_thanks_text'),
+                    $donation, $campaign
+                )
+            )),
+            array('From: '.apply_filters(
+                    'leyka_email_from_name',
+                    leyka_options()->opt_safe('email_from_name'),
+                    $donation,
+                    $campaign
+                ).' <'.leyka_options()->opt_safe('email_from').'>',)
+        );
+
         if($res) {
             update_post_meta($donation->id, '_leyka_donor_email_date', time());
+        }
 
-            return true;
-        } else
-            return false;
+        // Donations managers notifying emails:
+        if(leyka_options()->opt('notify_managers_on_recurrents')) {
+            $res &= Leyka_Donation_Management::send_managers_notifications($donation);
+        }
+
+        // Reset content-type to avoid conflicts (http://core.trac.wordpress.org/ticket/23578):
+        remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+
+        return $res;
     }
 
     public static function send_managers_notifications($donation) {
@@ -390,16 +474,6 @@ class Leyka_Donation_Management {
         remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
         return true;
     }
-
-	public static function get_instance() {
-
-		// If the single instance hasn't been set, set it now.
-		if( !self::$_instance ) {
-			self::$_instance = new self;
-		}
-
-		return self::$_instance;
-	}
 
 	/** Donation metaboxes */
     public function set_metaboxes() {

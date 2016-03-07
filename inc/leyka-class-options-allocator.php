@@ -123,7 +123,8 @@ class Leyka_Options_Allocator {
                         'is_default_collapsed' => true,
                         'options' => array(
                             'email_thanks_title', 'email_thanks_text',
-                            'email_recurrents_thanks_title', 'email_recurrents_thanks_text'
+                            'email_recurrents_thanks_title', 'email_recurrents_thanks_text',
+                            'email_recurrents_ongoing_thanks_title', 'email_recurrents_ongoing_thanks_text',
                         )
                     ),),
                     array('section' => array(

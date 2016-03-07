@@ -282,7 +282,7 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
     public function do_recurring_donation(Leyka_Donation $init_recurring_donation) {
 
         if( !$init_recurring_donation->recurring_id ) {
-            return;
+            return false;
         }
 
         $new_recurring_donation_id = Leyka_Donation::add(array(
@@ -335,6 +335,7 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
         $answer = curl_exec($ch);
 
         $new_recurring_donation = new Leyka_Donation($new_recurring_donation_id);
+        $res = false;
 
         if($answer) {
 
@@ -345,16 +346,17 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
             $new_recurring_donation->add_gateway_response($answer);
 
             if(isset($vals[0]['attributes']['STATUS']) && $vals[0]['attributes']['STATUS'] == 0) {
+
                 $new_recurring_donation->status = 'funded';
+                $res = $new_recurring_donation;
             }
 
         } else {
-
-            $error = 'Error '.curl_errno($ch).': '.curl_error($ch);
-            $new_recurring_donation->add_gateway_response($error);
+            $new_recurring_donation->add_gateway_response('Error '.curl_errno($ch).': '.curl_error($ch));
         }
 
         curl_close($ch);
+        return $res;
     }
 
     public function display_donation_specific_data_fields($donation = false) {

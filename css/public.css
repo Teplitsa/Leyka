@@ -99,7 +99,7 @@
   #leyka-payment-form input[type="email"],
   #leyka-payment-form textarea,
   #leyka-payment-form select {
-    width: 100%;
+    width: 100%; /*MASHA*/
     border: 1px solid #ccc;
     background: #fff;
     padding: 6px 4px;
@@ -108,7 +108,7 @@
     font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 13px;
     color: #444;
-    margin: 0; }
+    margin: 6px; /*MASHA*/ }
   #leyka-payment-form select {
     width: auto;
     padding: 1px; }
@@ -167,10 +167,12 @@
   text-align: right;
   margin: 0; }
   #leyka-payment-form .leyka-field.amount * {
-    box-sizing: border-box; }
+    box-sizing: border-box;
+    width:auto; /*MASHA add*/
+}
   #leyka-payment-form .leyka-field.amount label, #leyka-payment-form .leyka-field.amount span {
     display: inline-block;
-    margin-right: 5px; }
+    margin-right: 8px; } /*MASHA change from 5 to 8*/
   #leyka-payment-form .leyka-field.amount .currency {
     font-weight: bold;
     text-transform: uppercase;
@@ -388,7 +390,7 @@
 #leyka-payment-form.leyka-tpl-radio #amount-selector {
   border-bottom: 1px solid #dfdfdf;
   padding: 20px; }
-#leyka-payment-form.leyka-tpl-radio #leyka-pm-list {
+#leyka-payment-form.leyka-tpl-radio #leyka-currency-data {
   overflow: hidden; }
 #leyka-payment-form.leyka-tpl-radio #pm-selector {
   background: #f9f9f9;
@@ -1101,3 +1103,6 @@ div[id*="leyka_donors_list"].wide .ldl-item {
 
 #leyka-payment-form .leyka-oferta-text-flow p {
   margin: 1.35em 0; }
+
+
+ 

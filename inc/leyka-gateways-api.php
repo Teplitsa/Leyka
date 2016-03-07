@@ -269,8 +269,13 @@ abstract class Leyka_Gateway {
     public function cancel_recurrents(Leyka_Donation $donation) {
     }
 
-    // Handler for Gateway's procedure for doing new rebill on recurring donations subscription:
+    /**
+     * Handler for Gateway's procedure for doing new rebill on recurring donations subscription.
+     * @param Leyka_Donation $init_recurring_donation
+     * @return mixed False if donation weren't made, new recurring Leyka_Donation object otherwise.
+     */
     public function do_recurring_donation(Leyka_Donation $init_recurring_donation) {
+        return false;
     }
 
     // Handler to use Gateway's responses in Leyka UI:

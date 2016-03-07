@@ -425,7 +425,7 @@ self::$_options_meta = array(
     'email_recurrents_thanks_title' => array(
         'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
         'default' => __('Thank you for your unwavering support!', 'leyka'),
-        'title' => __('A title of after-rebill donation notice sended to a donor', 'leyka'),
+        'title' => __('A title of a recurring subscription donation notice sent to a donor', 'leyka'),
         'description' => __('Enter the title of the notification (or thankful) email with donation data that would be sended to each donor on each rebill donation.', 'leyka'),
         'required' => 1,
         'placeholder' => __('Ex., Daisy Foundation thanks you for your kindness', 'leyka'), // For text fields
@@ -434,6 +434,28 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'email_recurrents_thanks_text' => array(
+        'type' => 'html', // Maybe, rich_html
+        'default' => __('Hello, #DONOR_NAME#!<br><br>We just take a #SUM# as your regular donation to the following charity campaign: #CAMPAIGN_NAME#, using #PAYMENT_METHOD_NAME#.<br><br>If you, regretfully, wish to stop the future regular donations to this campaign, please <a href="mailto:#SITE_EMAIL#">write us a letter about it</a>.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
+        'title' => __('A text of a recurring subscription donation notice sent to a donor', 'leyka'),
+        'description' => __('Enter the text of the notification email that would be sended to each donor on each rebill donation. It may include the following special entries:', 'leyka').$email_placeholders,
+        'required' => 1,
+        'placeholder' => '', // For text fields
+        'length' => '', // For text fields
+        'list_entries' => array(), // For select, radio & checkbox fields
+        'validation_rules' => array(), // List of regexp?..
+    ),
+    'email_recurrents_ongoing_thanks_title' => array(
+        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'default' => __('Thank you for your unwavering support!', 'leyka'),
+        'title' => __('A title of after-rebill donation notice sended to a donor', 'leyka'),
+        'description' => __('Enter the title of the notification (or thankful) email with donation data that would be sended to each donor on each rebill donation.', 'leyka'),
+        'required' => 1,
+        'placeholder' => __('Ex., Daisy Foundation thanks you for your kindness', 'leyka'), // For text fields
+        'length' => '', // For text fields
+        'list_entries' => array(), // For select, radio & checkbox fields
+        'validation_rules' => array(), // List of regexp?..
+    ),
+    'email_recurrents_ongoing_thanks_text' => array(
         'type' => 'html', // Maybe, rich_html
         'default' => __('Hello, #DONOR_NAME#!<br><br>We just take a #SUM# as your regular donation to the following charity campaign: #CAMPAIGN_NAME#, using #PAYMENT_METHOD_NAME#.<br><br>If you, regretfully, wish to stop the future regular donations to this campaign, please <a href="mailto:#SITE_EMAIL#">write us a letter about it</a>.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
         'title' => __('A text of after-rebill donation notice sent to a donor', 'leyka'),
