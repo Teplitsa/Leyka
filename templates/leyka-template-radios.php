@@ -41,9 +41,11 @@ $campaign = leyka_get_validated_campaign($campaign);?>
         <div class="leyka-pm-list">
 
             <div class="leyka-hidden-fields">
-                <?php foreach($active_pm_list as $pm) {?>
+                <?php echo leyka_pf_get_common_hidden_fields($campaign);
+
+                foreach($active_pm_list as $pm) {?>
                 <div class="pm-hidden-field <?php echo $pm->full_id;?>" <?php echo $curr_pm->full_id == $pm->full_id ? '' : 'style="display:none;"';?>>
-                    <?php echo $pm_forms[$pm->full_id]->get_hidden_fields($campaign);?>
+                    <?php echo leyka_pf_get_pm_hidden_fields($campaign, $pm_forms[$pm->full_id]);?>
                 </div>
                 <?php }?>
             </div>

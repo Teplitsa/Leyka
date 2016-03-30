@@ -14,14 +14,12 @@ class Leyka_Text_Gateway extends Leyka_Gateway {
     }
 
     protected function _set_options_defaults() {
-
         if($this->_options) { // Create Gateway options, if needed
             return;
         }
     }
 
     protected function _initialize_pm_list() {
-
         if(empty($this->_payment_methods['text_box'])) {
             $this->_payment_methods['text_box'] = Leyka_Text_Box::get_instance();
         }
@@ -78,7 +76,6 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
     }
 
     protected function _set_dynamic_attributes() {
-
         $this->_custom_fields = array(
             'box_details' => apply_filters('leyka_the_content', leyka_options()->opt_safe('text_box_details')),
         );
