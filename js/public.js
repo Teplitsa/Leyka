@@ -87,7 +87,7 @@ jQuery(document).ready(function($){
         var amount = 0,
             $field = $form.find('input.donate_amount_flex:visible');
 
-        if($field.length) { // Flexible or mixed sum field type
+        if($field.length && $field.val() > 0) { // Flexible or mixed sum field type
             amount = $field.val();
         } else { // Fixed sum field type
             amount = $form.find('input[name="leyka_donation_amount"]:checked:visible').val();
@@ -174,24 +174,28 @@ jQuery(document).ready(function($){
                 e.preventDefault();
                 e.stopImmediatePropagation();
             }
-        })
-        .find('input[name="leyka_donation_amount"][type="radio"]:first').click();
+        });
 
-    // Switches of PM for Radios template:
-    $('#pm-selector').on('change', 'input', function(e){
+    // PM switching on Radios template:
+    $('.pm-selector').on('change.leyka', 'input', function(e){
 
         var $form = $(this).parents('form:first'),
             sum = leyka_get_donation_amount($form),
             curr = leyka_get_donation_currency($form),
             pm_full_id = $(e.target).val();
 
+        if(sum) {
+            $form.data('amount-last-chosen', sum);
+        } else {
+            sum = $form.data('amount-last-chosen');
+        }
+
         $form.find('.leyka-pm-selector .active').removeClass('active');
         $(e.target).parents('li:first').addClass('active');
 
         $form.find('.field-error').html('').hide(); // Hide the errors of current form before changing to a new one
 
-        // Amount field:
-        var $amount_field_new = $form.find('.amount-selector > .pm-amount-field.'+pm_full_id);
+        var $amount_field_new = $form.find('.amount-selector > .pm-amount-field.'+pm_full_id); // Amount field
 
         $form.find('.amount-selector > .pm-amount-field:visible').hide();
         $amount_field_new.show();
@@ -206,35 +210,58 @@ jQuery(document).ready(function($){
         $form.find('.leyka-hidden-fields > .pm-hidden-field:visible').hide();
         $form.find('.leyka-hidden-fields > .pm-hidden-field.'+pm_full_id).show();
 
-        $form.find('.leyka-pm-fields:visible').hide();
+        var $pm_fields_old = $form.find('.leyka-pm-fields:visible'),
+            $pm_fields_new = $form.find('.leyka-pm-fields.'+pm_full_id),
+            fields_vals = {}; // To populate form fields' values between different PMs
+
+        $pm_fields_old.find('.leyka-user-data :input:visible:not(:button,:submit)').each(function(){
+
+            var $this = $(this);
+            fields_vals[$this.attr('name')] = $this.val();
+
+        });
+
+        $pm_fields_old.hide();
         $form.find('.leyka-pm-desc:visible').hide();
 
-        $form.find('.leyka-pm-fields.'+pm_full_id).show();
+        // Prevent a submission of an inactive form's fields:
+        $form.find('.amount-selector :input').attr('disabled', 'disabled');
+        $form.find('.leyka-pm-fields :input').attr('disabled', 'disabled');
+
+        $amount_field_new.find(':input:disabled').removeAttr('disabled');
+        $pm_fields_new.find(':input:disabled').removeAttr('disabled');
+
+        // Re-populate a form fields' values from a previous PM:
+        $pm_fields_new.find('.leyka-user-data :input:not(:button,:submit)').each(function(){
+
+            var $this = $(this);
+            if( fields_vals[$this.attr('name')] ) {
+                $this.val( fields_vals[$this.attr('name')] );
+            }
+        });
+        $pm_fields_new.show();
         $form.find('.leyka-pm-desc.'+pm_full_id).show();
     })
     .find('input[name="leyka_payment_method"]:checked').change();
 
     // Switches of currency:
-    $('.amount-selector').find('select.leyka_donation_currency').on('change', function(e){
+    $('.amount-selector').on('change', 'select.leyka_donation_currency', function(e){
 
         e.stopImmediatePropagation();
 
         var $this = $(this),
             $form = $this.parents('form:first'),
-            $pm_variants = $form.find('#pm-selector').find('.leyka-pm-variant'),
+            $pm_variants = $form.find('.pm-selector').find('.leyka-pm-variant'),
             currency = $this.find('option:selected').val();
 
-        // Toggle PMs in their list:
-        $pm_variants.each(function(){
+        $pm_variants.each(function(){ // Toggle PMs in their list
 
             var $this = $(this); // PM option line
-
-            if($this.find('input[data-curr-supported*='+currency+']').length) {
-                $this.show();
-            } else {
-                $this.hide();
-            }
+            $this.find('input[data-curr-supported*='+currency+']').length ? $this.show() : $this.hide();
         });
+
+        // Hide the errors of current amoount before changing to a new one:
+        $form.find('.leyka_donation_amount-error.field-error').html('').hide();
 
         // Toggle the donation amount variants for a different currencies:
         $form.find('.amount-variants-container').hide();
@@ -265,11 +292,7 @@ jQuery(document).ready(function($){
             $error.html(leyka.correct_donation_amount_required).show();
 
         } else {
-
             $error.html('').hide();
-            if(amount_field_type == 'flex' || (amount_field_type == 'mixed' && $amount_field.hasClass('donate_amount_flex'))) {
-                $amount_field.val(parseInt($amount_field.val()));
-            }
         }
 
         var $currency = '',
@@ -303,7 +326,7 @@ jQuery(document).ready(function($){
             $error.html('').hide();
         }
 
-        $('.required', $form).each(function(){
+        $('.required:visible', $form).each(function(){
 
             var $field = $(this);
 
@@ -312,10 +335,10 @@ jQuery(document).ready(function($){
                 if( !$field.prop('checked') ) {
 
                     is_valid = false;
-                    $form.find('#'+$field.attr('id')+'-error').html(leyka.checkbox_check_required).show();
+                    $form.find('.'+$field.attr('name')+'-error').html(leyka.checkbox_check_required).show();
 
                 } else {
-                    $form.find('#'+$field.attr('id')+'-error').html('').hide();
+                    $form.find('.'+$field.attr('name')+'-error').html('').hide();
                 }
 
             } else if($field.attr('type') == 'text' && $field.hasClass('email')) {
@@ -323,17 +346,17 @@ jQuery(document).ready(function($){
                 if( !$field.val().length ) {
 
                     is_valid = false;
-                    $form.find('#'+$field.attr('id')+'-error').html(leyka.email_required).show();
+                    $form.find('.'+$field.attr('name')+'-error').html(leyka.email_required).show();
 
                 } else {
 
                     if( !is_email($field.val()) ) {
 
                         is_valid = false;
-                        $form.find('#'+$field.attr('id')+'-error').html(leyka.email_invalid).show();
+                        $form.find('.'+$field.attr('name')+'-error').html(leyka.email_invalid).show();
 
                     } else {
-                        $form.find('#'+$field.attr('id')+'-error').html('').hide();
+                        $form.find('.'+$field.attr('name')+'-error').html('').hide();
                     }
                 }
 
@@ -342,15 +365,15 @@ jQuery(document).ready(function($){
                 if( !$field.val().length ) {
 
                     is_valid = false;
-                    $form.find('#'+$field.attr('id')+'-error').html(leyka.text_required).show();
+                    $form.find('.'+$field.attr('name')+'-error').html(leyka.text_required).show();
 
                 } else if(parseInt($field.val()) <= 0 || isNaN($field.val())) {
 
                     is_valid = false;
-                    $form.find('#'+$field.attr('id')+'-error').html(leyka.amount_incorrect).show();
+                    $form.find('.'+$field.attr('name')+'-error').html(leyka.amount_incorrect).show();
 
                 } else {
-                    $form.find('#'+$field.attr('id')+'-error').html('').hide();
+                    $form.find('.'+$field.attr('name')+'-error').html('').hide();
                 }
 
             } else if($field.attr('type') == 'text' && $field.hasClass('non-email')) {
@@ -358,15 +381,15 @@ jQuery(document).ready(function($){
                 if( !$field.val().length ) {
 
                     is_valid = false;
-                    $form.find('#'+$field.attr('id')+'-error').html(leyka.text_required).show();
+                    $form.find('.'+$field.attr('name')+'-error').html(leyka.text_required).show();
 
                 } else if(is_email($field.val())) {
 
                     is_valid = false;
-                    $form.find('#'+$field.attr('id')+'-error').html(leyka.must_not_be_email).show();
+                    $form.find('.'+$field.attr('name')+'-error').html(leyka.must_not_be_email).show();
 
                 } else {
-                    $form.find('#'+$field.attr('id')+'-error').html('').hide();
+                    $form.find('.'+$field.attr('name')+'-error').html('').hide();
                 }
 
             } else if($field.attr('type') == 'text') {
@@ -374,10 +397,10 @@ jQuery(document).ready(function($){
                 if( !$field.val().length ) {
 
                     is_valid = false;
-                    $form.find('#'+$field.attr('id')+'-error').html(leyka.text_required).show();
+                    $form.find('.'+$field.attr('name')+'-error').html(leyka.text_required).show();
 
                 } else {
-                    $form.find('#'+$field.attr('id')+'-error').html('').hide();
+                    $form.find('.'+$field.attr('name')+'-error').html('').hide();
                 }
             }
         });

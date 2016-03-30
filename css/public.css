@@ -173,8 +173,8 @@
     width:auto; /*MASHA add*/
 }
   #leyka-payment-form .leyka-field.amount label, #leyka-payment-form .leyka-field.amount span {
-    display: inline-block;
-    margin-right: 8px; } /*MASHA change from 5 to 8*/
+    display: inline;
+    margin-right: 8px; }
   #leyka-payment-form .leyka-field.amount .currency {
     font-weight: bold;
     text-transform: uppercase;
@@ -217,12 +217,22 @@
   border-color: #ccc;
   height: 36px;
   padding: 1px 6px; }
+
 #leyka-payment-form .amount.flexible input {
-  border: 2px solid #1db318;
+    border: 1px solid #1db318;
+    height: 36px;
+    max-width: 250px;
+    font-size: 18px;
+    padding: 4px;
+    text-align: right; }
+#leyka-payment-form .amount.mixed input[type="text"] {
+  border: 1px solid #1db318;
   height: 36px;
+  width: 50px;
   max-width: 250px;
-  font-size: 18px;
-  padding: 4px;
+  font-size: 13px;
+  padding: 0 4px;
+  margin-left: 4px;
   text-align: right; }
   #leyka-payment-form .amount.flexible input:focus, #leyka-payment-form .amount.flexible input:active {
     border-color: #168612;
@@ -392,9 +402,7 @@
 #leyka-payment-form.leyka-tpl-radio #amount-selector {
   border-bottom: 1px solid #dfdfdf;
   padding: 20px; }
-#leyka-payment-form.leyka-tpl-radio #leyka-currency-data {
-  overflow: hidden; }
-#leyka-payment-form.leyka-tpl-radio #pm-selector {
+#leyka-payment-form.leyka-tpl-radio .pm-selector {
   background: #f9f9f9;
   padding: 15px; }
 #leyka-payment-form.leyka-tpl-radio #leyka-pm-data {

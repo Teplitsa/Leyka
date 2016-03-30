@@ -38,7 +38,7 @@ $campaign = leyka_get_validated_campaign($campaign);?>
             <span class="currency-var rur" style="display: none;"></span>
         </div>
 
-        <div id="leyka-pm-list">
+        <div class="leyka-pm-list">
 
             <div class="leyka-hidden-fields">
                 <?php foreach($active_pm_list as $pm) {?>
@@ -49,7 +49,7 @@ $campaign = leyka_get_validated_campaign($campaign);?>
             </div>
 
             <!-- pm selector -->
-            <div id="pm-selector" class="form-part">
+            <div class="pm-selector form-part">
                 <ul class="leyka-pm-selector">
                 <?php foreach($active_pm_list as $pm) {?>
                     <li class="leyka-pm-variant <?php echo $curr_pm->full_id == $pm->full_id ? 'active' : '';?>">
