@@ -109,3 +109,20 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
 }
 
 leyka_add_gateway(Leyka_Text_Gateway::get_instance());
+
+// Remove Text PM from payment forms if text doesn't set:
+function leyka_remove_text_pm_if_empty($pm_list) {
+
+    if(is_admin()) {
+        return $pm_list;
+    }
+
+    foreach($pm_list as $index => $pm) { /** @var $pm Leyka_Payment_Method */
+        if($pm->gateway_id == 'text' && empty($pm->custom_fields['box_details'])) {
+            unset($pm_list[$index]);
+        }
+    }
+
+    return $pm_list;
+}
+add_filter('leyka_active_pm_list', 'leyka_remove_text_pm_if_empty');

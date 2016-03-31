@@ -40,7 +40,7 @@ function leyka_get_pm_list($activity = null, $currency = false, $sorted = true) 
                 continue;
             }
 
-            if( (!$activity || $pm->active == $activity) && (!$currency || $pm->has_currency_support($currency)) ) {
+            if( ( !$activity || $pm->active == $activity ) && ( !$currency || $pm->has_currency_support($currency) ) ) {
                 $pm_list[] = $pm;
             }
         }
@@ -405,15 +405,18 @@ abstract class Leyka_Gateway {
      * @return array Of Leyka_Payment_Method objects.
      */
     public function get_payment_methods($activity = null, $currency = false) {
+
         $pm_list = array();
         foreach($this->_payment_methods as $pm_name => $pm) {
 
             /** @var $pm Leyka_Payment_Method */
-            if( (($activity || $activity === null) && $pm->is_active) || empty($activity) ) {
-                if(empty($currency))
+            if((($activity || $activity === null) && $pm->is_active) || empty($activity)) {
+
+                if(empty($currency)) {
                     $pm_list[] = $pm;
-                elseif($currency && $pm->has_currency_support($currency))
+                } elseif($currency && $pm->has_currency_support($currency)) {
                     $pm_list[] = $pm;
+                }
             }
         }
 

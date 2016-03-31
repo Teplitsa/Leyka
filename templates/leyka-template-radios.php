@@ -69,7 +69,6 @@ $campaign = leyka_get_validated_campaign($campaign);?>
             </div>
         </div>
 
-        <!-- changeable area -->
         <div id="leyka-pm-data" class="changeable-fields form-part">
 
         <?php foreach($active_pm_list as $pm) {?>
