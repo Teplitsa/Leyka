@@ -516,7 +516,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
                 'type' => 'text',
                 'default' => '',
                 'title' => __("Yandex.Money recurring payments certificate's private key password", 'leyka'),
-                'description' => __("Please, enter the path to your SSL certificate's private key password, if you set it during the generation of your sertificate request file.", 'leyka'),
+                'description' => __("Please, enter a password for your SSL certificate's private key, if you set this password during the generation of your sertificate request file.", 'leyka'),
                 'placeholder' => __('Ex., fW!^12@3#&8A4', 'leyka'),
                 'is_password' => 1,
                 'required' => 0,

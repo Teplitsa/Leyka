@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Leyka Plugin\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leyka\n"
 "POT-Creation-Date: 2014-09-11 08:25:09+00:00\n"
-"POT-Revision-Date: Mon Mar 07 2016 14:57:57 GMT+0300\n"
+"POT-Revision-Date: Fri Apr 01 2016 14:45:27 GMT+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -779,28 +779,28 @@ msgstr ""
 msgid "Text information"
 msgstr ""
 
-#: ../gateways/text/leyka-class-text-gateway.php:64 ../gateways/text/leyka-class-
-#: text-gateway.php:65
+#: ../gateways/text/leyka-class-text-gateway.php:62 ../gateways/text/leyka-class-
+#: text-gateway.php:63
 msgid "Additional ways to donate"
 msgstr ""
 
-#: ../gateways/text/leyka-class-text-gateway.php:96
+#: ../gateways/text/leyka-class-text-gateway.php:93
 msgid "With this ways you can make your donation."
 msgstr ""
 
-#: ../gateways/text/leyka-class-text-gateway.php:97
+#: ../gateways/text/leyka-class-text-gateway.php:94
 msgid "Comment"
 msgstr ""
 
-#: ../gateways/text/leyka-class-text-gateway.php:98
+#: ../gateways/text/leyka-class-text-gateway.php:95
 msgid "Please, set a text of comment to describe an additional ways to donate."
 msgstr ""
 
-#: ../gateways/text/leyka-class-text-gateway.php:105
+#: ../gateways/text/leyka-class-text-gateway.php:102
 msgid "Ways to donate"
 msgstr ""
 
-#: ../gateways/text/leyka-class-text-gateway.php:106
+#: ../gateways/text/leyka-class-text-gateway.php:103
 msgid "Please, set a text to describe an additional ways to donate."
 msgstr ""
 
@@ -962,8 +962,8 @@ msgstr ""
 
 #: ../gateways/yandex/leyka-class-yandex-gateway.php:519
 msgid ""
-"Please, enter the path to your SSL certificate's private key password, if "
-"you set it during the generation of your sertificate request file."
+"Please, enter a password for your SSL certificate's private key, if you set "
+"this password during the generation of your sertificate request file."
 msgstr ""
 
 #: ../gateways/yandex/leyka-class-yandex-gateway.php:527 ..
@@ -1562,11 +1562,11 @@ msgstr ""
 msgid "Wrong gateway or/and payment method in submitted form data"
 msgstr ""
 
-#: ../inc/leyka-ajax.php:219
+#: ../inc/leyka-ajax.php:76
 msgid "Error: incorrect request parameters"
 msgstr ""
 
-#: ../inc/leyka-ajax.php:223
+#: ../inc/leyka-ajax.php:80
 msgid "Error: campaign ID is missing"
 msgstr ""
 
@@ -1761,11 +1761,11 @@ msgstr ""
 msgid "Size settings"
 msgstr ""
 
-#: ../inc/leyka-class-campaign.php:350 ../inc/leyka-class-payment-form.php:561
+#: ../inc/leyka-class-campaign.php:350 ../inc/leyka-class-payment-form.php:548
 msgid "Width"
 msgstr ""
 
-#: ../inc/leyka-class-campaign.php:351 ../inc/leyka-class-payment-form.php:562
+#: ../inc/leyka-class-campaign.php:351 ../inc/leyka-class-payment-form.php:549
 msgid "Height"
 msgstr ""
 
@@ -1775,7 +1775,7 @@ msgid ""
 "in page HTML:"
 msgstr ""
 
-#: ../inc/leyka-class-campaign.php:362 ../inc/leyka-class-payment-form.php:569
+#: ../inc/leyka-class-campaign.php:362 ../inc/leyka-class-payment-form.php:556
 msgid "Preview"
 msgstr ""
 
@@ -2068,7 +2068,7 @@ msgid "Payment options"
 msgstr ""
 
 #: ../inc/leyka-class-options-allocator.php:21 ../inc/leyka-class-payment-form.
-#: php:175
+#: php:166
 msgid "Currency"
 msgstr ""
 
@@ -2132,76 +2132,76 @@ msgstr ""
 msgid "Additional"
 msgstr ""
 
-#: ../inc/leyka-class-payment-form.php:68
+#: ../inc/leyka-class-payment-form.php:65
 msgid "Donation amount"
 msgstr ""
 
-#: ../inc/leyka-class-payment-form.php:73
+#: ../inc/leyka-class-payment-form.php:76
 msgid "Please, specify your donation amount"
 msgstr ""
 
-#: ../inc/leyka-class-payment-form.php:98
+#: ../inc/leyka-class-payment-form.php:84
 msgid "or"
 msgstr ""
 
-#: ../inc/leyka-class-payment-form.php:100
+#: ../inc/leyka-class-payment-form.php:86
 msgid "Specify the amount of your donation"
 msgstr ""
 
-#: ../inc/leyka-class-payment-form.php:125
+#: ../inc/leyka-class-payment-form.php:95
 msgid "Specify donation amount"
 msgstr ""
 
-#: ../inc/leyka-class-payment-form.php:208 ../inc/leyka-class-payment-form.php:210
+#: ../inc/leyka-class-payment-form.php:200 ../inc/leyka-class-payment-form.php:202
 msgid "Your name"
 msgstr ""
 
-#: ../inc/leyka-class-payment-form.php:213
+#: ../inc/leyka-class-payment-form.php:205
 msgid "We will use this to personalize your donation experience"
 msgstr ""
 
-#: ../inc/leyka-class-payment-form.php:231 ../inc/leyka-class-payment-form.php:232
+#: ../inc/leyka-class-payment-form.php:222 ../inc/leyka-class-payment-form.php:224
 msgid "Your email"
 msgstr ""
 
-#: ../inc/leyka-class-payment-form.php:233
+#: ../inc/leyka-class-payment-form.php:226
 msgid "We will send the donation success notice to this address"
 msgstr ""
 
-#: ../inc/leyka-class-payment-form.php:543
+#: ../inc/leyka-class-payment-form.php:530
 #, php-format
 msgid "Proudly powered by %s"
 msgstr ""
 
-#: ../inc/leyka-class-payment-form.php:543
+#: ../inc/leyka-class-payment-form.php:530
 msgctxt "Plugin name in preposotional case"
 msgid "Leyka"
 msgstr ""
 
-#: ../inc/leyka-class-payment-form.php:556
+#: ../inc/leyka-class-payment-form.php:543
 msgid "Share (get embed code)"
 msgstr ""
 
-#: ../inc/leyka-class-payment-form.php:584
+#: ../inc/leyka-class-payment-form.php:571
 msgid "Errors"
 msgstr ""
 
-#: ../inc/leyka-class-payment-form.php:641
+#: ../inc/leyka-class-payment-form.php:628
 msgid "Our sincere thanks"
 msgstr ""
 
-#: ../inc/leyka-class-payment-form.php:690
+#: ../inc/leyka-class-payment-form.php:677
 msgid "The fundraising campaign has been finished. Thank you for your support!"
 msgstr ""
 
-#: ../inc/leyka-class-payment-form.php:701
+#: ../inc/leyka-class-payment-form.php:688
 #, php-format
 msgid ""
 "There are no payment methods selected to donate! Please, <a href=\"%s\">set "
 "them up</a>."
 msgstr ""
 
-#: ../inc/leyka-class-payment-form.php:702
+#: ../inc/leyka-class-payment-form.php:689
 msgid ""
 "Dear donor, we are very sorry, but we had not setted up the donations module "
 "yet :( Please try to donate later."
@@ -2498,11 +2498,11 @@ msgstr ""
 msgid "You must agree to the terms of donation service"
 msgstr ""
 
-#: ../inc/leyka-gateways-api.php:581
+#: ../inc/leyka-gateways-api.php:584
 msgid "Payment method custom label"
 msgstr ""
 
-#: ../inc/leyka-gateways-api.php:582
+#: ../inc/leyka-gateways-api.php:585
 msgid "A label for this payment method that will appear on all donation forms."
 msgstr ""
 
@@ -3357,30 +3357,7 @@ msgstr ""
 msgid "Drag the elements up or down to change their order on donation forms"
 msgstr ""
 
-#: ../templates/leyka-gateway-redirect-page.php:4
-msgid "Redirect to the gateway"
-msgstr ""
-
-#: ../templates/leyka-gateway-redirect-page.php:48 ../templates/service/leyka-
-#: gateway-redirect-page.php:48
-msgid ""
-"<h3>Thank you!</h3><p>In a few seconds you will be redirected to the payment "
-"system website, where you can complete your donation.</p>"
-msgstr ""
-
-#: ../templates/leyka-gateway-redirect-page.php:59 ../templates/service/leyka-
-#: gateway-redirect-page.php:59
-msgid ""
-"If you are not redirected to the payment page automatically, please press "
-"this button"
-msgstr ""
-
-#: ../templates/leyka-gateway-redirect-page.php:61 ../templates/service/leyka-
-#: gateway-redirect-page.php:61
-msgid "Proceed to the payment approval page"
-msgstr ""
-
-#: ../templates/leyka-template-radios.php:23 ../templates/leyka-template-toggles.
+#: ../templates/leyka-template-radios.php:29 ../templates/leyka-template-toggles.
 #: php:12
 msgid ""
 "This donation form is created by Leyka WordPress plugin, created by Teplitsa "
@@ -3390,6 +3367,22 @@ msgstr ""
 
 #: ../templates/service/leyka-gateway-redirect-page.php:4
 msgid "Redirecting to the gateway payment page"
+msgstr ""
+
+#: ../templates/service/leyka-gateway-redirect-page.php:48
+msgid ""
+"<h3>Thank you!</h3><p>In a few seconds you will be redirected to the payment "
+"system website, where you can complete your donation.</p>"
+msgstr ""
+
+#: ../templates/service/leyka-gateway-redirect-page.php:59
+msgid ""
+"If you are not redirected to the payment page automatically, please press "
+"this button"
+msgstr ""
+
+#: ../templates/service/leyka-gateway-redirect-page.php:61
+msgid "Proceed to the payment approval page"
 msgstr ""
 
 #. Description of the plugin
