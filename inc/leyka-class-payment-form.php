@@ -61,9 +61,7 @@ class Leyka_Payment_Form {
 
 		ob_start();?>
 
-		<label for="leyka_donation_amount" class="leyka-screen-reader-text" class="sum-field-type" data-sum-field-type="<?php echo $mode;?>">
-			<?php _e('Donation amount', 'leyka');?>
-		</label>
+		<label for="leyka_donation_amount" class="leyka-screen-reader-text"><?php _e('Donation amount', 'leyka');?></label>
 
 	<?php if($mode == 'fixed' || $mode == 'mixed') { // Variants of sum (+ flexible field optionally)
 
@@ -92,7 +90,7 @@ class Leyka_Payment_Form {
         } else { // Flexible sum field ?>
 
 			<span class="figure">
-                <input type="text" title="<?php echo __('Specify donation amount', 'leyka');?>" name="leyka_donation_amount" class="required" id="donate_amount_flex" value="<?php echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?>">                
+                <input type="text" title="<?php echo __('Specify donation amount', 'leyka');?>" name="leyka_donation_amount" class="donate_amount_flex required" value="<?php echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?>">
             </span>
 
 		<?php }?>
@@ -124,11 +122,12 @@ class Leyka_Payment_Form {
             'leyka_template_id' => $template['id'],
             'leyka_campaign_id' => $campaign->id,
             'leyka_ga_campaign_title' => esc_attr($campaign->payment_title),
+            'leyka_amount_field_type' => leyka_options()->opt('donation_sum_field_type'),
         ));
 
         $out = wp_nonce_field('leyka_payment_form', '_wpnonce', true, false);
         foreach($hiddens as $key => $value) {
-            $out .= '<input type="hidden" name="'.esc_attr($key).'" value="'.esc_attr($value).'">';
+            $out .= '<input type="hidden" name="'.esc_attr($key).'" value="'.esc_attr($value).'" class="'.esc_attr($key).'">';
         }
 
         return $out;

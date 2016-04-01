@@ -182,7 +182,8 @@ jQuery(document).ready(function($){
         var $form = $(this).parents('form:first'),
             sum = leyka_get_donation_amount($form),
             curr = leyka_get_donation_currency($form),
-            pm_full_id = $(e.target).val();
+            pm_full_id = $(e.target).val(),
+            amount_field_type = $form.find('input.leyka_amount_field_type').val();
 
         if(sum) {
             $form.data('amount-last-chosen', sum);
@@ -275,7 +276,7 @@ jQuery(document).ready(function($){
         /** @var leyka object Localization strings */
 
         var pm_full_id = leyka_get_pm_full_id($form),
-            amount_field_type = $form.find('.sum-field-type:visible').data('sum-field-type'),
+            amount_field_type = $form.find('input.leyka_amount_field_type').val(),
             $amount_flex_field = $form.find('input.donate_amount_flex:visible'),
             $amount_fixed_field = $form.find('input[name="leyka_donation_amount"]:checked:visible'),
             $amount_field = amount_field_type == 'flex' ?
