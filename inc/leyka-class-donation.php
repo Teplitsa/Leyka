@@ -1369,9 +1369,14 @@ class Leyka_Donation {
 
                 // Don't use Leyka_Campaign here to avoid loop dependency:
                 $campaign = get_post((int)$meta['leyka_campaign_id'][0]);
-                $payment_title = get_post_meta($campaign->ID, 'payment_title', true);
-                if( !$payment_title ) {
-                    $payment_title = $campaign->post_title;
+                $payment_title = '';
+
+                if($campaign) {
+
+                    $payment_title = get_post_meta($campaign->ID, 'payment_title', true);
+                    if( !$payment_title ) {
+                        $payment_title = $campaign->post_title;
+                    }
                 }
             }
 
@@ -1404,6 +1409,8 @@ class Leyka_Donation {
                 'rebilling_is_active' => !empty($meta['_rebilling_is_active'][0]), // For active schemes of recurring donations
             );
         }
+
+        return $this;
 	}
 
     public function __get($field) {
