@@ -4,7 +4,7 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндексденьги
 Requires at least: 3.6.1
-Tested up to: 4.3.1
+Tested up to: 4.4.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -153,6 +153,19 @@ PHP at least 5.3 is required.
 10. События Google Analytics
 
 == Changelog ==
+
+= 2.2.9 =
+ * New: donations' status names changed. Now there are comment about each status near it.
+ * New: Mixed donation amount field type added.
+ * New: Yandex.money has 3 additional internet banking PMs now: Sberbank online, Apfa click, Promsvyazbank.
+ * New: now there are archive pages for donations, optionally filtered by campaign.
+ * New: now donor name field won't take an email as a value (to protect donors' personal data from being accidentally displayed).
+ * New: active recurring engine added. It's supported by Yandex.money gateway (bank card PM).
+ * New: lots of new core hooks.
+ * New: now donation forms submits through Yandex.money include hidden field to indicate Leyka as a source.
+ * Tweak: Radio template refactored. Server loading from it's use strongly optimized.*
+ * Fix: important Polylang compatibility fix.
+ * Fix: lots of small core and gateways fixes.
 
 = 2.2.8 =
  * New: now correctional donation may be added from the plugin's main menu.

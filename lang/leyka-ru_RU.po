@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Leyka Plugin\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-09-11 08:25:09+00:00\n"
-"PO-Revision-Date: Fri Apr 01 2016 17:05:12 GMT+0300\n"
+"PO-Revision-Date: Fri Apr 01 2016 18:02:25 GMT+0300\n"
 "Last-Translator: ahaenor <ahaenor@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: Russian\n"
@@ -2704,11 +2704,11 @@ msgstr "Собрано: %s"
 
 #: ../inc/leyka-functions.php:477
 msgid "Single"
-msgstr "Разовый"
+msgstr "Разовое"
 
 #: ../inc/leyka-functions.php:478
 msgid "Recurrent (rebill)"
-msgstr "Регулярный"
+msgstr "Регулярное"
 
 #: ../inc/leyka-functions.php:479
 msgid "Correction"
