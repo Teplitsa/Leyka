@@ -213,7 +213,7 @@
   text-align: center;
   border-radius: 3px; }
 #leyka-payment-form .amount.fixed select {
-  vertical-align: middle;
+  vertical-align: top;
   border-color: #ccc;
   height: 36px;
   padding: 1px 6px; }
@@ -240,7 +240,7 @@
 #leyka-payment-form .amount.flexible .currency {
   vertical-align: middle; }
 #leyka-payment-form .amount.flexible select {
-  vertical-align: middle;
+  vertical-align: top;
   border-color: #ccc;
   height: 36px;
   padding: 1px 6px; }
