@@ -9,18 +9,14 @@ function leyka_add_gateway_metabox($post, $args) {
     /** @var Leyka_Gateway $gateway */
     $gateway = $args['args']['gateway'];
 
-    $pm_active = leyka_options()->opt('pm_available'); ?>
+    $pm_active = leyka_options()->opt('pm_available');?>
 
-    <div>
-
-        <?php foreach($gateway->get_payment_methods() as $pm) {?>
-            <div>
-                <input type="checkbox" name="leyka_pm_available[]" value="<?php echo $pm->full_id;?>" class="pm-active" id="<?php echo $pm->full_id;?>" data-pm-label="<?php echo $pm->title_backend;?>" data-pm-label-backend="<?php echo $pm->label_backend;?>" <?php echo in_array($pm->full_id, $pm_active) ? 'checked="checked"' : '';?>>
-                <label for="<?php echo $pm->full_id;?>"><?php echo $pm->title_backend;?></label>
-            </div>
-        <?php }?>
-
-    </div>
+    <?php foreach($gateway->get_payment_methods() as $pm) {?>
+        <div>
+            <input type="checkbox" name="leyka_pm_available[]" value="<?php echo $pm->full_id;?>" class="pm-active" id="<?php echo $pm->full_id;?>" data-pm-label="<?php echo $pm->title_backend;?>" data-pm-label-backend="<?php echo $pm->label_backend;?>" <?php echo in_array($pm->full_id, $pm_active) ? 'checked="checked"' : '';?>>
+            <label for="<?php echo $pm->full_id;?>"><?php echo $pm->title_backend;?></label>
+        </div>
+    <?php }?>
 <?php
 }
 

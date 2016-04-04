@@ -313,6 +313,10 @@ class Leyka_Donation_Management {
 
         $res &= update_post_meta($donation->id, '_leyka_donor_email_date', time());
 
+        if( !$res ) {
+            $res = get_post_meta($donation->id, '_leyka_donor_email_date', true) > 0;
+        }
+
         return $res;
     }
 

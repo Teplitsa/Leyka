@@ -4,7 +4,7 @@ function leyka_render_export_button() {
     if(get_current_screen()->id == 'edit-'.Leyka_Donation_Management::$post_type) {?>
 
         <span class="donations-export-form">
-        <form action="#" method="get">
+        <form action="<?php echo admin_url('/');?>" method="get">
             <input type="hidden" name="post_status" value="<?php echo empty($_GET['post_status']) ? 0 : $_GET['post_status'];?>">
             <input type="hidden" name="month-year" value="<?php echo empty($_GET['m']) ? 0 : $_GET['m'];?>">
             <input type="hidden" name="payment_type" value="<?php echo empty($_GET['payment_type']) ? '' : $_GET['payment_type'];?>">

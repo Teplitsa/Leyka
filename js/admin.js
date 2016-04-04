@@ -252,13 +252,16 @@ jQuery(document).ready(function($){
     }
 
     $('#leyka_donation_form_mode-field').change(function(e){
-        if($(this).attr('checked'))
+
+        if($(this).attr('checked')) {
             $('#leyka_scale_widget_place-wrapper, #leyka_donations_history_under_forms-wrapper')
                 .find(':input').removeAttr('disabled');
-        else
+        } else {
             $('#leyka_scale_widget_place-wrapper, #leyka_donations_history_under_forms-wrapper')
                 .find(':input').attr('disabled', 'disabled');
-    });
+        }
+
+    }).change();
 
     $('#leyka_auto_refresh_currency_rates-field').change(function(e){
         if($(this).attr('checked')) {

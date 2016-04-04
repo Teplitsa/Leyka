@@ -489,7 +489,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
                 'default' => 0,
                 'title' => __('Monthly recurring subscriptions are available', 'leyka'),
                 'description' => __('Check if Yandex.Money allows you to create recurrent subscriptions to do regular automatic payments.', 'leyka'),
-                'required' => false,
+                'required' => 0,
                 'placeholder' => '',
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
@@ -500,7 +500,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
                 'title' => __('Yandex.Money recurring payments certificate path', 'leyka'),
                 'description' => __("Please, enter the path to your SSL certificate given to you by Yandex.Money. <strong>Warning!</strong> The path should include the certificate's filename intself. Also it should be relative to wp-content directory.", 'leyka'),
                 'placeholder' => __('For ex., /uploads/leyka/your-cert-file.cer', 'leyka'),
-                'required' => 1,
+                'required' => 0,
                 'validation_rules' => array(), // List of regexp?..
             ),
             $this->full_id.'_private_key_path' => array(
@@ -509,7 +509,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
                 'title' => __("Yandex.Money recurring payments certificate's private key path", 'leyka'),
                 'description' => __("Please, enter the path to your SSL certificate's private key given to you by Yandex.Money.<li><li>The path should include the certificate's filename intself.</li><li>The path should be relative to wp-content directory. </li></ul>", 'leyka'),
                 'placeholder' => __('For ex., /uploads/leyka/your-private.key', 'leyka'),
-                'required' => 1,
+                'required' => 0,
                 'validation_rules' => array(), // List of regexp?..
             ),
             $this->full_id.'_private_key_password' => array(

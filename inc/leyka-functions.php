@@ -591,7 +591,7 @@ function leyka_are_settings_complete($settings_tab) {
 
 function leyka_is_min_payment_settings_complete() {
 
-    $pm_list = leyka_get_pm_list(true);
+    $pm_list = leyka_get_pm_list(true, false, false);
     if( !$pm_list ) {
         return false;
     }
