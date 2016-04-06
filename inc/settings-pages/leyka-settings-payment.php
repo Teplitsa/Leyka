@@ -1,6 +1,8 @@
 <?php if( !defined('WPINC') ) die; // If this file is called directly, abort
 
-$current_screen_id = get_current_screen()->id;
+$current_screen_id = 'leyka_payment_settings_page';//get_current_screen()->id;
+//echo '<pre>' . print_r($current_screen_id, 1) . '</pre>';
+$pm_active = leyka_options()->opt('pm_available');
 
 function leyka_add_gateway_metabox($post, $args) {
 
@@ -29,7 +31,6 @@ function leyka_gateway_admin_icon_markup($gateway) {
 
 $gateways_by_columns = array('side' => array(), 'normal' => array());
 foreach(leyka_get_gateways() as $gateway) { // Place gateways metaboxes in their respective columns
-
     $gateways_by_columns[$gateway->admin_ui_column == 1 ? 'side' : 'normal'][$gateway->admin_ui_order][] = $gateway;
 }
 
@@ -41,7 +42,6 @@ foreach($gateways_by_columns as $admin_ui_column => $gateways) { // Add gateways
 
         foreach($gateways_list as $gateway) {
 
-            $pm_active = leyka_options()->opt('pm_available');
             $active = '';
 
             if($pm_active) {

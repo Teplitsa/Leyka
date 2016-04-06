@@ -4,7 +4,7 @@
 
 jQuery(document).ready(function($){
 
-    /** Plugin metaboxes rendering: */
+    // Plugin metaboxes rendering:
     function leyka_support_metaboxes(metabox_area) {
 
         $('.if-js-closed').removeClass('if-js-closed').addClass('closed'); // Close postboxes that should be closed
@@ -21,8 +21,8 @@ jQuery(document).ready(function($){
 
             if(this.indexOf('_page_leyka_settings') >= 0) { // Leyka payment settings page
 
-                leyka_support_metaboxes('lejka_page_leyka_settings');
-                return false; // to break the loop
+                leyka_support_metaboxes('leyka_payment_settings_page');
+                return false; // To break the loop
             }
         });
     }
