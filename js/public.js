@@ -202,7 +202,7 @@ jQuery(document).ready(function($){
             $amount_field_new.show();
 
             // Selected amount & currency synchronization:
-            if(amount_field_type == 'mixed') {
+            if(sum) {
 
                 $amount_field_new.find('.'+curr+'.amount-variants-container')
                     .find('input[name="leyka_donation_amount"][value="'+sum+'"]:radio')
@@ -289,23 +289,7 @@ jQuery(document).ready(function($){
                 $form.find('.'+$field.attr('name')+'-error').html('').hide();
             }
 
-        } else if($field.attr('type') == 'text' && $field.attr('name') == 'leyka_donation_amount') {
-
-            if( !$field.val().length ) {
-
-                field_is_valid = false;
-                $form.find('.'+$field.attr('name')+'-error').html(leyka.text_required).show();
-
-            } else if(parseInt($field.val()) <= 0 || isNaN($field.val())) {
-
-                field_is_valid = false;
-                $form.find('.'+$field.attr('name')+'-error').html(leyka.amount_incorrect).show();
-
-            } else {
-                $form.find('.'+$field.attr('name')+'-error').html('').hide();
-            }
-
-        } else if($field.attr('type') == 'text') {
+        } else if($field.attr('type') == 'text' && $field.attr('name') != 'leyka_donation_amount') {
 
             if( !$field.val().length ) {
 
@@ -330,53 +314,12 @@ jQuery(document).ready(function($){
             amount_field_type = $form.find('input.leyka_amount_field_type').val(),
             $amount_flex_field = $form.find('input.donate_amount_flex:visible'),
             $amount_fixed_field = $form.find('input[name="leyka_donation_amount"]:checked:visible'),
-            $amount_field = amount_field_type == 'flex' ?
+            $amount_field = amount_field_type == 'flexible' ?
                 $amount_flex_field : (
                 amount_field_type == 'fixed' ?
                     $amount_fixed_field : ($amount_fixed_field.length ? $amount_fixed_field : $amount_flex_field)
             ),
             $error;
-
-        $error = $form.find('.leyka_donation_amount-error', '.leyka-pm-fields.'+pm_full_id);
-        if( !$amount_field.val() || parseInt($amount_field.val()) <= 0 || isNaN($amount_field.val()) ) {
-
-            is_valid = false;
-            $error.html(leyka.correct_donation_amount_required).show();
-
-        } else {
-            $error.html('').hide();
-        }
-
-        var $currency = '',
-            $currency_label = '';
-
-        if($('.leyka_donation_currency option').length) {
-
-            $currency = $form.find('.leyka_donation_currency option:selected').val();
-            $currency_label = $form.find('.leyka_donation_currency option:selected').data('currency-label');
-
-        } else {
-
-            $currency = $form.find('.leyka_donation_currency').val();
-            $currency_label = $form.find('.leyka_donation_currency').data('currency-label');
-        }
-
-        var $top_amount = parseInt($form.find('input[name="top_'+$currency+'"]').val()),
-            $bottom_amount = parseInt($form.find('input[name="bottom_'+$currency+'"]').val());
-
-        if(is_valid && $amount_field.val() > $top_amount) {
-
-            is_valid = false;
-            $error.html(leyka.donation_amount_too_great.replace('%s', $top_amount+' '+$currency_label)).show();
-
-        } else if(is_valid && $amount_field.val() < $bottom_amount) {
-
-            is_valid = false;
-            $error.html(leyka.donation_amount_too_small.replace('%s', $bottom_amount+' '+$currency_label)).show();
-
-        } else if(is_valid) {
-            $error.html('').hide();
-        }
 
         $(':input:visible', $form).each(function(){
 
@@ -432,6 +375,47 @@ jQuery(document).ready(function($){
                 is_valid = false;
             }
         });
+
+        $error = $form.find('.leyka_donation_amount-error', '.leyka-pm-fields.'+pm_full_id);
+        if( !$amount_field.val() || parseInt($amount_field.val()) <= 0 || isNaN($amount_field.val()) ) {
+
+            is_valid = false;
+            $error.html(leyka.correct_donation_amount_required).show();
+
+        } else {
+            $error.html('').hide();
+        }
+
+        var currency = '',
+            currency_label = '';
+
+        if($('.leyka_donation_currency option').length) {
+
+            currency = $form.find('.leyka_donation_currency option:selected').val();
+            currency_label = $form.find('.leyka_donation_currency option:selected').data('currency-label');
+
+        } else {
+
+            currency = $form.find('.leyka_donation_currency').val();
+            currency_label = $form.find('.leyka_donation_currency').data('currency-label');
+        }
+
+        var top_amount = parseInt($form.find('input[name="top_'+currency+'"]').val()),
+            bottom_amount = parseInt($form.find('input[name="bottom_'+currency+'"]').val());
+
+        if($amount_field.val() > top_amount) {
+
+            is_valid = false;
+            $error.html(leyka.donation_amount_too_great.replace('%s', top_amount+' '+currency_label)).show();
+
+        } else if($amount_field.val() < bottom_amount) {
+
+            is_valid = false;
+            $error.html(leyka.donation_amount_too_small.replace('%s', bottom_amount+' '+currency_label)).show();
+
+        } else {
+            $error.html('').hide();
+        }
 
         return is_valid;
     }
