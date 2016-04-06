@@ -202,10 +202,15 @@ jQuery(document).ready(function($){
             $amount_field_new.show();
 
             // Selected amount & currency synchronization:
-            $amount_field_new.find('.'+curr+'.amount-variants-container')
-                .find('input[name="leyka_donation_amount"][value="'+sum+'"]:radio')
-                .attr('checked', 'checked');
-            $amount_field_new.find('input.donate_amount_flex').val(sum);
+            if(amount_field_type == 'mixed') {
+
+                $amount_field_new.find('.'+curr+'.amount-variants-container')
+                    .find('input[name="leyka_donation_amount"][value="'+sum+'"]:radio')
+                    .attr('checked', 'checked');
+                $amount_field_new.find('input.donate_amount_flex').val(sum);
+
+            }
+
             $form.find('select.leyka_donation_currency > option[value="'+curr+'"]').attr('selected', 'selected');
 
             $form.find('.leyka-hidden-fields > .pm-hidden-field:visible').hide();
