@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Leyka Plugin\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-09-11 08:25:09+00:00\n"
-"PO-Revision-Date: Fri Apr 01 2016 18:02:25 GMT+0300\n"
+"PO-Revision-Date: Thu Apr 07 2016 12:31:54 GMT+0300\n"
 "Last-Translator: ahaenor <ahaenor@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: Russian\n"
@@ -441,7 +441,7 @@ msgstr "Укажите значение параметра ID подписки �
 
 #: ../gateways/cp/leyka-class-cp-gateway.php:472
 msgid "Recurring donations"
-msgstr "Повторять платёж ежемесячно"
+msgstr "Перечислять ежемесячно"
 
 #: ../gateways/cp/leyka-class-cp-gateway.php:489
 msgid ""
