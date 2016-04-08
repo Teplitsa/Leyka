@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Leyka Plugin\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-09-11 08:25:09+00:00\n"
-"PO-Revision-Date: Thu Apr 07 2016 12:31:54 GMT+0300\n"
+"PO-Revision-Date: Fri Apr 08 2016 13:10:53 GMT+0300\n"
 "Last-Translator: ahaenor <ahaenor@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: Russian\n"
@@ -1039,7 +1039,7 @@ msgstr "Рекуррентная подписка активна"
 
 #: ../gateways/yandex/leyka-class-yandex-gateway.php:470
 msgid "Monthly recurring donations"
-msgstr "Ежемесячные рекуррентные пожертвования"
+msgstr "Перечислять ежемесячно"
 
 #: ../gateways/yandex/leyka-class-yandex-gateway.php:490
 msgid "Monthly recurring subscriptions are available"
