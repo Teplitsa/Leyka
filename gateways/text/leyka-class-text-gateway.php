@@ -108,7 +108,10 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
     }
 }
 
-leyka_add_gateway(Leyka_Text_Gateway::get_instance());
+function leyka_add_gateway_text() { // Use named function to leave a possibility to remove/replace it on the hook
+    leyka_add_gateway(Leyka_Text_Gateway::get_instance());
+}
+add_action('leyka_init_actions', 'leyka_add_gateway_text');
 
 // Remove Text PM from payment forms if text doesn't set:
 function leyka_remove_text_pm_if_empty($pm_list) {
