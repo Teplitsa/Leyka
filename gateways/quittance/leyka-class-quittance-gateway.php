@@ -179,4 +179,7 @@ class Leyka_Bank_Order extends Leyka_Payment_Method {
     }
 }
 
-leyka_add_gateway(Leyka_Quittance_Gateway::get_instance());
+function leyka_add_gateway_quittance() { // Use named function to leave a possibility to remove/replace it on the hook
+    leyka_add_gateway(Leyka_Quittance_Gateway::get_instance());
+}
+add_action('leyka_init_actions', 'leyka_add_gateway_quittance');
