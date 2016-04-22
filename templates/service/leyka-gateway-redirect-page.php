@@ -64,7 +64,7 @@
     </form>
     <?php leyka_pf_footer();?>
     <script type="text/javascript">
-        setTimeout(function(){ document.getElementById('leyka-auto-submit').submit(); }, <?php echo WP_DEBUG ? 1500 : 5000;?>);
+        setTimeout(function(){ document.getElementById('leyka-auto-submit').submit(); }, <?php echo WP_DEBUG ? 10000 : 5000;?>);
     </script>
 </body>
 </html>

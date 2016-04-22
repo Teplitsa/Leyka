@@ -72,7 +72,7 @@ class Leyka_Payment_Form {
             <span class="<?php echo $currency;?> amount-variants-container" <?php echo $currency == $current_curr ? '' : 'style="display:none;"';?>>
             <?php foreach($variants as $amount) {?>
                 <label class="figure" title="<?php _e('Please, specify your donation amount', 'leyka');?>">
-                    <input type="radio" value="<?php echo (int)$amount;?>" name="leyka_donation_amount">
+                    <input type="radio" value="<?php echo (int)$amount;?>" name="leyka_donation_amount" <?php echo $currency == $current_curr ? '' : 'disabled="disabled"';?>>
                     <?php echo (int)$amount;?>
                 </label>
             <?php }
@@ -81,7 +81,7 @@ class Leyka_Payment_Form {
 
                 <?php if($variants) { _e('or', 'leyka');?><?php }?>
 
-                <input type="text" title="<?php echo __('Specify the amount of your donation', 'leyka');?>" name="leyka_donation_amount" class="donate_amount_flex" value="<?php echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?>">
+                <input type="text" title="<?php echo __('Specify the amount of your donation', 'leyka');?>" name="leyka_donation_amount" class="donate_amount_flex" value="<?php echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?>" <?php echo $currency == $current_curr ? '' : 'disabled="disabled"';?>>
             <?php }?>
 
             </span>

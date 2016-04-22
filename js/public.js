@@ -161,9 +161,9 @@ jQuery(document).ready(function($){
                 $form = $field.parents('form.leyka-pm-form');
 
             if($field.attr('type') == 'radio') {
-                $form.find('input.donate_amount_flex').val($field.val());
+                $form.find('input.donate_amount_flex:visible').val($field.val());
             } else if($field.hasClass('donate_amount_flex')) {
-                $form.find('input[name="leyka_donation_amount"]:checked').removeAttr('checked');
+                $form.find('input[name="leyka_donation_amount"]:checked:visible').removeAttr('checked');
             }
 
         })
@@ -179,79 +179,82 @@ jQuery(document).ready(function($){
     // PM switching on Radios template:
     $('.pm-selector').on('change.leyka', 'input', function(e){
 
-            var $form = $(this).parents('form:first'),
-                sum = leyka_get_donation_amount($form),
-                curr = leyka_get_donation_currency($form),
-                pm_full_id = $(e.target).val(),
-                amount_field_type = $form.find('input.leyka_amount_field_type').val();
+        var $form = $(this).parents('form:first'),
+            sum = leyka_get_donation_amount($form),
+            curr = leyka_get_donation_currency($form),
+            pm_full_id = $(e.target).val(),
+            amount_field_type = $form.find('input.leyka_amount_field_type').val();
 
-            if(sum) {
-                $form.data('amount-last-chosen', sum);
-            } else {
-                sum = $form.data('amount-last-chosen');
+        if(sum) {
+            $form.data('amount-last-chosen', sum);
+        } else {
+            sum = $form.data('amount-last-chosen');
+        }
+
+        $form.find('.leyka-pm-selector .active').removeClass('active');
+        $(e.target).parents('li:first').addClass('active');
+
+        $form.find('.field-error').html('').hide(); // Hide the errors of current form before changing to a new one
+
+        var $amount_field_new = $form.find('.amount-selector > .pm-amount-field.'+pm_full_id),
+            $amount_field_old = $form.find('.amount-selector > .pm-amount-field:visible');
+
+        // Form serialization includes all "leyka_donation_amount" fields, whether they are visible/disabled or not:
+        $amount_field_old.hide(); // .find('input').attr('disabled', 'disabled');
+        $amount_field_new.show(); // .find('input').removeAttr('disabled');
+
+        // Selected amount & currency synchronization:
+        if(sum) {
+
+            $amount_field_new.find('.'+curr+'.amount-variants-container')
+                .find('input[name="leyka_donation_amount"][value="'+sum+'"]:radio')
+                .attr('checked', 'checked');
+            $amount_field_new.find('input.donate_amount_flex').val(sum);
+
+        }
+
+        $form.find('select.leyka_donation_currency > option[value="'+curr+'"]').attr('selected', 'selected');
+
+        $form.find('.leyka-hidden-fields > .pm-hidden-field:visible').hide();
+        $form.find('.leyka-hidden-fields > .pm-hidden-field.'+pm_full_id).show();
+
+        var $pm_fields_old = $form.find('.leyka-pm-fields:visible'),
+            $pm_fields_new = $form.find('.leyka-pm-fields.'+pm_full_id),
+            fields_vals = {}; // To populate form fields' values between different PMs
+
+        $pm_fields_old.find('.leyka-user-data :input:visible:not(:button,:submit)').each(function(){
+
+            var $this = $(this);
+            fields_vals[$this.attr('name')] = $this.val();
+
+        });
+
+        $pm_fields_old.hide();
+        $form.find('.leyka-pm-desc:visible').hide();
+
+        // Prevent a submission of an inactive form's fields:
+        $form.find('.amount-selector :input').attr('disabled', 'disabled');
+        $form.find('.leyka-pm-fields :input').attr('disabled', 'disabled');
+
+        $amount_field_new.find('.'+curr+'.amount-variants-container').find(':input:disabled').removeAttr('disabled');
+        $amount_field_new.find('.currency').find(':input:disabled').removeAttr('disabled');
+        $pm_fields_new.find(':input:disabled').removeAttr('disabled');
+
+        // Re-populate a form fields' values from a previous PM:
+        $pm_fields_new.find('.leyka-user-data :input:not(:button,:submit)').each(function(){
+
+            var $this = $(this);
+            if( fields_vals[$this.attr('name')] ) {
+                $this.val( fields_vals[$this.attr('name')] );
             }
-
-            $form.find('.leyka-pm-selector .active').removeClass('active');
-            $(e.target).parents('li:first').addClass('active');
-
-            $form.find('.field-error').html('').hide(); // Hide the errors of current form before changing to a new one
-
-            var $amount_field_new = $form.find('.amount-selector > .pm-amount-field.'+pm_full_id); // Amount field
-
-            $form.find('.amount-selector > .pm-amount-field:visible').hide();
-            $amount_field_new.show();
-
-            // Selected amount & currency synchronization:
-            if(sum) {
-
-                $amount_field_new.find('.'+curr+'.amount-variants-container')
-                    .find('input[name="leyka_donation_amount"][value="'+sum+'"]:radio')
-                    .attr('checked', 'checked');
-                $amount_field_new.find('input.donate_amount_flex').val(sum);
-
-            }
-
-            $form.find('select.leyka_donation_currency > option[value="'+curr+'"]').attr('selected', 'selected');
-
-            $form.find('.leyka-hidden-fields > .pm-hidden-field:visible').hide();
-            $form.find('.leyka-hidden-fields > .pm-hidden-field.'+pm_full_id).show();
-
-            var $pm_fields_old = $form.find('.leyka-pm-fields:visible'),
-                $pm_fields_new = $form.find('.leyka-pm-fields.'+pm_full_id),
-                fields_vals = {}; // To populate form fields' values between different PMs
-
-            $pm_fields_old.find('.leyka-user-data :input:visible:not(:button,:submit)').each(function(){
-
-                var $this = $(this);
-                fields_vals[$this.attr('name')] = $this.val();
-
-            });
-
-            $pm_fields_old.hide();
-            $form.find('.leyka-pm-desc:visible').hide();
-
-            // Prevent a submission of an inactive form's fields:
-            $form.find('.amount-selector :input').attr('disabled', 'disabled');
-            $form.find('.leyka-pm-fields :input').attr('disabled', 'disabled');
-
-            $amount_field_new.find(':input:disabled').removeAttr('disabled');
-            $pm_fields_new.find(':input:disabled').removeAttr('disabled');
-
-            // Re-populate a form fields' values from a previous PM:
-            $pm_fields_new.find('.leyka-user-data :input:not(:button,:submit)').each(function(){
-
-                var $this = $(this);
-                if( fields_vals[$this.attr('name')] ) {
-                    $this.val( fields_vals[$this.attr('name')] );
-                }
-            });
-            $pm_fields_new.show();
-            $form.find('.leyka-pm-desc.'+pm_full_id).show();
-        })
-        .find('input[name="leyka_payment_method"]:checked').change();
+        });
+        $pm_fields_new.show();
+        $form.find('.leyka-pm-desc.'+pm_full_id).show();
+    })
+    .find('input[name="leyka_payment_method"]:checked').change();
 
     // Switches of currency:
-    $('.amount-selector').on('change', 'select.leyka_donation_currency', function(e){
+    $('select.leyka_donation_currency', '.amount-selector').on('change.leyka', function(e){
 
         e.stopImmediatePropagation();
 
@@ -270,8 +273,8 @@ jQuery(document).ready(function($){
         $form.find('.leyka_donation_amount-error.field-error').html('').hide();
 
         // Toggle the donation amount variants for a different currencies:
-        $form.find('.amount-variants-container').hide();
-        $form.find('.amount-variants-container.'+currency).show();
+        $form.find('.amount-variants-container').hide().find('input').attr('disabled', 'disabled');
+        $form.find('.amount-variants-container.'+currency).show().find('input').removeAttr('disabled');
     });
 
     function leyka_validate_required_field($form, $field) {
@@ -326,7 +329,7 @@ jQuery(document).ready(function($){
             var $field = $(this),
                 field_is_valid = true;
 
-            // Validate field requiredness:
+            // Validate field requireness:
             if($field.hasClass('required') && !leyka_validate_required_field($form, $field)) {
                 field_is_valid = false;
             }
@@ -432,6 +435,9 @@ jQuery(document).ready(function($){
 
         } else {
 
+            // console.log($form.serializeArray())
+            // return false;
+
             if(typeof ga == 'function') { // GA Events on form submit
 
                 var label = 'undefined_payment_method',
@@ -456,10 +462,7 @@ jQuery(document).ready(function($){
         e.preventDefault();
 
         if( !$(this).data('modal-ready') ) {
-            $(this)
-                .data('modal-ready', 1)
-                .leanModal({top: 100, overlay: 0.5, closeButton: '.leyka-modal-close'})
-                .click();
+            $(this).data('modal-ready', 1).leanModal({top: 100, overlay: 0.5, closeButton: '.leyka-modal-close'}).click();
         }
     });
 

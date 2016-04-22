@@ -886,6 +886,7 @@ class Leyka {
 
         $donation_id = $this->log_submission();
 
+//        die('<pre>' . print_r($_POST, 1) . '</pre>');
         do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
 
         $this->_payment_vars = apply_filters('leyka_submission_form_data-'.$pm[0], $this->_payment_vars, $pm[1], $donation_id);
