@@ -71,9 +71,12 @@ class Leyka {
 
         add_action('init', array($this, 'register_user_capabilities'), 1);
 
-        if( !session_id() ) {
-            add_action('init', 'session_start', -2);
+        function leyka_session_start() {
+            if( !session_id() ) {
+                session_start();
+            }
         }
+        add_action('init', 'leyka_session_start', -2);
 
         if(is_admin()) {
 
