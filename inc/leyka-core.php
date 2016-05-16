@@ -823,6 +823,20 @@ class Leyka {
             $this->add_payment_form_error($error);
         }
 
+        $donor_name = leyka_pf_get_donor_name_value();
+        if($donor_name && !leyka_validate_donor_name($donor_name)) {
+
+            $error = new WP_Error('incorrect_donor_name', __('Incorrect donor name given while trying to add a donation', 'leyka'));
+            $this->add_payment_form_error($error);
+        }
+
+        $donor_email = leyka_pf_get_donor_email_value();
+        if($donor_name && !leyka_validate_email($donor_email)) {
+
+            $error = new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
+            $this->add_payment_form_error($error);
+        }
+
         if($this->payment_form_has_errors()) {
             return;
         }
@@ -861,11 +875,11 @@ class Leyka {
             'gateway_id' => $pm_data['gateway_id'],
         )));
 
-        $campaign->increase_submits_counter();
-
         if(is_wp_error($donation_id)) {
             return false;
         } else {
+
+            $campaign->increase_submits_counter();
 
             do_action('leyka_log_donation-' . $pm_data['gateway_id'], $donation_id);
 

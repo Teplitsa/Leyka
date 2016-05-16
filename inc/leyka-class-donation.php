@@ -662,7 +662,7 @@ class Leyka_Donation_Management {
                        type="text"
                        data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>"
                        placeholder="<?php _e('Select a campaign', 'leyka');?>"
-                       value="<?php echo htmlentities($campaign->title, ENT_COMPAT, 'UTF-8');?>"
+                       value="<?php echo htmlentities($campaign->title, ENT_QUOTES, 'UTF-8');?>"
                     />
                 <input id="campaign-id" type="hidden" name="campaign-id" value="<?php echo $campaign->id;?>" />
                 <div id="cancel-campaign-select" class="button"><?php _e('Cancel', 'leyka');?></div>
@@ -683,7 +683,9 @@ class Leyka_Donation_Management {
                 <input type="text" id="donor-name" name="donor-name" placeholder="<?php _e("Enter donor's name, or leave it empty for anonymous donation", 'leyka');?>" value="<?php echo $donation->donor_name;?>" />
             <?php } else {?>
 
-                <span class="fake-input"><?php echo $donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka');?></span>
+                <span class="fake-input">
+                    <?php echo $donation->donor_name ? htmlentities($donation->donor_name, ENT_QUOTES) : __('Anonymous', 'leyka');?>
+                </span>
             <?php }?>
 
             </div>
@@ -699,7 +701,9 @@ class Leyka_Donation_Management {
 
             <?php } else {?>
 
-                <span class="fake-input"><?php echo $donation->donor_email ? $donation->donor_email : '&ndash;';?></span>
+                <span class="fake-input">
+                    <?php echo $donation->donor_email ? htmlentities($donation->donor_email, ENT_QUOTES) : '&ndash;';?>
+                </span>
             <?php }?>
             </div>
         </div>
@@ -1001,7 +1005,7 @@ class Leyka_Donation_Management {
 				$amount_css = ($donation->sum < 0) ? 'amount-negative' : 'amount';
 				echo '<span class="'.$amount_css.'">'.$donation->amount.'&nbsp;'.$donation->currency_label.'</span>';                
                 break;
-            case 'donor': echo $donation->donor_name; break;
+            case 'donor': echo htmlentities($donation->donor_name, ENT_QUOTES); break;
             case 'method':
                 $gateway_label = $donation->gateway_id ? $donation->gateway_label : __('Custom payment info', 'leyka');
                 $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;
@@ -1260,14 +1264,21 @@ class Leyka_Donation {
             $currency == 'RUR' ? $amount : $amount*$currency_rate
         );
 
-        add_post_meta(
-            $id, 'leyka_donor_name',
-            empty($params['donor_name']) ? leyka_pf_get_donor_name_value() : $params['donor_name']
-        );
-        add_post_meta(
-            $id, 'leyka_donor_email',
-            empty($params['donor_email']) ? leyka_pf_get_donor_email_value() : $params['donor_email']
-        );
+        $value = empty($params['donor_name']) ? leyka_pf_get_donor_name_value() : trim($params['donor_name']);
+        if($value && !leyka_validate_donor_name($value)) { // Validate donor's name
+
+            wp_delete_post($id, true);
+            return new WP_Error('incorrect_donor_name', __('Incorrect donor name given while trying to add a donation', 'leyka'));
+        }
+        add_post_meta($id, 'leyka_donor_name', $value);
+
+        $value = empty($params['donor_email']) ? leyka_pf_get_donor_email_value() : $params['donor_email'];
+        if($value && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+
+            wp_delete_post($id, true);
+            return new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
+        }
+        add_post_meta($id, 'leyka_donor_email', $value);
 
         $pm_data = leyka_pf_get_payment_method_value();
         $pm_data = $pm_data ? $pm_data : array('payment_method_id' => '', 'gateway_id' => '',);
