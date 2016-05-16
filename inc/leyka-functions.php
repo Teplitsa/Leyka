@@ -745,3 +745,11 @@ function leyka_itv_info_widget() {
     </div>
 <?php
 }
+
+function leyka_validate_donor_name($name) {
+    return $name ? !preg_match('/[^\\x{0410}-\\x{044F}\w\s\-_\'\"]/iu', $name) : true;
+}
+
+function leyka_validate_email($email) {
+    return $email ? filter_var($email, FILTER_VALIDATE_EMAIL) : true;
+}

@@ -880,14 +880,30 @@ class Leyka {
             $this->add_payment_form_error($error);
         }
 
+        $donor_name = leyka_pf_get_donor_name_value();
+        if($donor_name && !leyka_validate_donor_name($donor_name)) {
+
+            $error = new WP_Error('incorrect_donor_name', __('Incorrect donor name given while trying to add a donation', 'leyka'));
+            $this->add_payment_form_error($error);
+        }
+
+        $donor_email = leyka_pf_get_donor_email_value();
+        if($donor_name && !leyka_validate_email($donor_email)) {
+
+            $error = new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
+            $this->add_payment_form_error($error);
+        }
+
         if($this->payment_form_has_errors()) {
             return;
         }
 
         $donation_id = $this->log_submission();
 
-//        die('<pre>' . print_r($_POST, 1) . '</pre>');
-        do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
+        do_action(
+            'leyka_payment_form_submission-'.$pm[0],
+            $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST
+        );
 
         $this->_payment_vars = apply_filters('leyka_submission_form_data-'.$pm[0], $this->_payment_vars, $pm[1], $donation_id);
 
@@ -913,11 +929,11 @@ class Leyka {
             'gateway_id' => $pm_data['gateway_id'],
         )));
 
-        $campaign->increase_submits_counter();
-
         if(is_wp_error($donation_id)) {
             return false;
         } else {
+
+            $campaign->increase_submits_counter();
 
             do_action('leyka_log_donation', $pm_data['gateway_id'], $pm_data['payment_method_id'], $donation_id);
             do_action('leyka_log_donation-'.$pm_data['gateway_id'], $donation_id);
