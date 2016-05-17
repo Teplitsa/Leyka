@@ -255,10 +255,12 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                     'payment_type' => 'rebill',
 //                    '' => '',
                 ));
-                $donation->add_gateway_response($_POST);
+
+                $donation = new Leyka_Donation($donation_id);
 
                 $init_recurrent_payment = $this->get_init_recurrent_donation($customer_id);
 
+                $donation->add_gateway_response($_POST);
                 $donation->chronopay_customer_id = $customer_id;
                 $donation->payment_title = $init_recurrent_payment->title;
                 $donation->campaign_id = $init_recurrent_payment->campaign_id;
