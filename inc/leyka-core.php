@@ -81,9 +81,12 @@ class Leyka {
         add_filter('rewrite_rules_array', array($this, 'insert_rewrite_rules'));
         add_filter('query_vars', array($this, 'insert_rewrite_query_vars'));
 
-        if( !session_id() ) {
-            add_action('init', 'session_start', -2);
+        function leyka_session_start() {
+            if( !session_id() ) {
+                session_start();
+            }
         }
+        add_action('init', 'leyka_session_start', -2);
 
         if(is_admin()) {
 
