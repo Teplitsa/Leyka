@@ -2,10 +2,18 @@ jQuery(document).ready(function($){
 
     $(document).on('submit', 'form.leyka-pm-form', function(e){
 
+        var $form = $(this);
+
+        // Exclude the repeated submits:
+        if($form.data('submit-in-process')) {
+            return false;
+        } else {
+            $form.data('submit-in-process', 1);
+        }
+
         // Donation form validation is already passed in the main script (public.js)
 
-        var $form = $(this),
-            is_recurrent = $form.find('#leyka_cp-card_recurring').attr('checked'),
+        var is_recurrent = $form.find('#leyka_cp-card_recurring').attr('checked'),
             data_array = $form.serializeArray(),
             data = {action: 'leyka_ajax_donation_submit'};
 
@@ -27,6 +35,8 @@ jQuery(document).ready(function($){
                 /** @todo Show some loader */
             }
         }).done(function(response){
+
+            $form.data('submit-in-process', 0);
 
             response = $.parseJSON(response);
             if( !response || !response.status ) {
