@@ -235,6 +235,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             if($transaction_type == 'Purchase') { // Initial rebill payment
 
                 if($donation->status != 'funded') {
+
                     $donation->add_gateway_response($_POST);
                     $donation->status = 'funded';
                     $donation->type = 'rebill';
@@ -270,6 +271,13 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 $donation->donor_email = $init_recurrent_payment->donor_email;
                 $donation->amount = $init_recurrent_payment->amount;
                 $donation->currency = $init_recurrent_payment->currency;
+
+                if($donation->status != 'funded') {
+                    $donation->status = 'funded';
+                }
+                if($donation->type != 'rebill') {
+                    $donation->type = 'rebill';
+                }
 
                 Leyka_Donation_Management::send_all_emails($donation_id);
             }
