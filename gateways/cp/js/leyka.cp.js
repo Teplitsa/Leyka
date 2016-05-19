@@ -1,6 +1,6 @@
 jQuery(document).ready(function($){
 
-    $(document).on('submit', 'form.leyka-pm-form', function(e){
+    $(document).on('submit.leyka', 'form.leyka-pm-form', function(e){
 
         var $form = $(this);
 

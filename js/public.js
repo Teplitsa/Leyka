@@ -16,10 +16,10 @@ jQuery(document).ready(function($){
     function leyka_is_digit_key(e, numpad_allowed) {
 
         if( // Allowed special keys
-        $.inArray(e.keyCode, [46, 8, 9, 13]) != -1 || // Backspace, delete, tab, enter
-        (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
-        (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
-        (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
+            $.inArray(e.keyCode, [46, 8, 9, 13]) != -1 || // Backspace, delete, tab, enter
+            (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
+            (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
+            (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
         ) {
             return true;
         }
@@ -129,7 +129,7 @@ jQuery(document).ready(function($){
     // Toggles template behavior:
     $('.toggle.toggled').find('.leyka-toggle-area').css({display: 'block'});
 
-    $('.leyka-toggle-trigger').on('click', function(){
+    $('.leyka-toggle-trigger').on('click.leyka', function(){
 
         var $this = $(this),
             toggleCont = $this.parents('.toggle');
@@ -154,27 +154,26 @@ jQuery(document).ready(function($){
     });
 
     // Mixed sum fields behavior:
-    $('form.leyka-pm-form')
-        .on('click.leyka', 'input[name="leyka_donation_amount"]', function(){
+    $('form.leyka-pm-form').on('click.leyka', 'input[name="leyka_donation_amount"]', function(){
 
-            var $field = $(this),
-                $form = $field.parents('form.leyka-pm-form');
+        var $field = $(this),
+            $form = $field.parents('form.leyka-pm-form');
 
-            if($field.attr('type') == 'radio') {
-                $form.find('input.donate_amount_flex:visible').val($field.val());
-            } else if($field.hasClass('donate_amount_flex')) {
-                $form.find('input[name="leyka_donation_amount"]:checked:visible').removeAttr('checked');
-            }
+        if($field.attr('type') == 'radio') {
+            $form.find('input.donate_amount_flex:visible').val($field.val());
+        } else if($field.hasClass('donate_amount_flex')) {
+            $form.find('input[name="leyka_donation_amount"]:checked:visible').removeAttr('checked');
+        }
 
-        })
-        .on('keydown.leyka', 'input.donate_amount_flex', function(e){
+    })
+    .on('keydown.leyka', 'input.donate_amount_flex', function(e){
 
-            if( !leyka_is_digit_key(e, true) ) {
+        if( !leyka_is_digit_key(e, true) ) {
 
-                e.preventDefault();
-                e.stopImmediatePropagation();
-            }
-        });
+            e.preventDefault();
+            e.stopImmediatePropagation();
+        }
+    });
 
     // PM switching on Radios template:
     $('.pm-selector').on('change.leyka', 'input', function(e){
@@ -424,7 +423,7 @@ jQuery(document).ready(function($){
         return is_valid;
     }
 
-    $(document).on('submit', 'form.leyka-pm-form', function(e){
+    $(document).on('submit.leyka', 'form.leyka-pm-form', function(e){
 
         var $form = $(this);
 
@@ -434,9 +433,6 @@ jQuery(document).ready(function($){
             e.stopImmediatePropagation();
 
         } else {
-
-            // console.log($form.serializeArray())
-            // return false;
 
             if(typeof ga == 'function') { // GA Events on form submit
 
@@ -457,7 +453,7 @@ jQuery(document).ready(function($){
     });
 
     // Terms of Agreement modal:
-    $(document).on('click', '.leyka-legal-confirmation-trigger', function(e){
+    $(document).on('click.leyka', '.leyka-legal-confirmation-trigger', function(e){
 
         e.preventDefault();
 
@@ -526,7 +522,7 @@ jQuery(document).ready(function($){
     });
 
     // Scroll:
-    $('a.leyka-scroll').on('click', function(e){
+    $('a.leyka-scroll').on('click.leyka', function(e){
 
         if( !$(this).parents('.leyka-campaign-card').length ) {
 
