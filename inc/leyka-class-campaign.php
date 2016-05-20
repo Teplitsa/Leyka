@@ -399,20 +399,20 @@ class Leyka_Campaign_Management {
 			$columns['title'] = $unsort['title'];
 			unset($unsort['title']);
 		}
-		
+
 		$columns['coll_state'] = __('Collection state', 'leyka');
 		$columns['target'] = __('Progress', 'leyka');
-       
 
 		$columns['payment_title'] = __('Payment purpose', 'leyka');
-	
+
 		if(isset($unsort['date'])){
 			$columns['date'] = $unsort['date'];
 			unset($unsort['date']);
 		}
 
-		if(!empty($unsort))
+		if($unsort) {
 			$columns = array_merge($columns, $unsort);
+        }
 
 		return $columns;
 	}
@@ -424,7 +424,7 @@ class Leyka_Campaign_Management {
 		if($column_name == 'ID') {
 			echo (int)$campaign->id;
 		} elseif($column_name == 'payment_title') {
-            echo $campaign->payment_title;
+            echo htmlentities($campaign->payment_title, ENT_QUOTES);
         } elseif($column_name == 'coll_state') {
 
 			echo $campaign->is_finished == 1 ?

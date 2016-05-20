@@ -1153,11 +1153,19 @@ class Leyka_Donation_Management {
             $donation->title = $donation_title;
         }
 
-        if(isset($_POST['donor-name']) && $donation->donor_name != $_POST['donor-name']) {
+        if(
+            isset($_POST['donor-name'])
+            && $donation->donor_name != $_POST['donor-name']
+            && leyka_validate_donor_name($_POST['donor-name'])
+        ) {
             $donation->donor_name = $_POST['donor-name'];
         }
 
-        if(isset($_POST['donor-email']) && $donation->donor_email != $_POST['donor-email']) {
+        if(
+            isset($_POST['donor-email'])
+            && $donation->donor_email != $_POST['donor-email']
+            && filter_var($_POST['donor-email'], FILTER_VALIDATE_EMAIL)
+        ) {
             $donation->donor_email = $_POST['donor-email'];
         }
 
