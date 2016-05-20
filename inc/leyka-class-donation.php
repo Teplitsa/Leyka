@@ -684,7 +684,7 @@ class Leyka_Donation_Management {
             <?php } else {?>
 
                 <span class="fake-input">
-                    <?php echo $donation->donor_name ? htmlentities($donation->donor_name, ENT_QUOTES) : __('Anonymous', 'leyka');?>
+                    <?php echo $donation->donor_name ? htmlentities($donation->donor_name, ENT_QUOTES, 'UTF-8') : __('Anonymous', 'leyka');?>
                 </span>
             <?php }?>
 
@@ -702,7 +702,7 @@ class Leyka_Donation_Management {
             <?php } else {?>
 
                 <span class="fake-input">
-                    <?php echo $donation->donor_email ? htmlentities($donation->donor_email, ENT_QUOTES) : '&ndash;';?>
+                    <?php echo $donation->donor_email ? htmlentities($donation->donor_email, ENT_QUOTES, 'UTF-8') : '&ndash;';?>
                 </span>
             <?php }?>
             </div>
@@ -1005,7 +1005,7 @@ class Leyka_Donation_Management {
 				$amount_css = ($donation->sum < 0) ? 'amount-negative' : 'amount';
 				echo '<span class="'.$amount_css.'">'.$donation->amount.'&nbsp;'.$donation->currency_label.'</span>';
                 break;
-            case 'donor': echo htmlentities($donation->donor_name, ENT_QUOTES); break;
+            case 'donor': echo htmlentities($donation->donor_name, ENT_QUOTES, 'UTF-8'); break;
             case 'method':
                 $gateway_label = $donation->gateway_id ? $donation->gateway_label : __('Custom payment info', 'leyka');
                 $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;
