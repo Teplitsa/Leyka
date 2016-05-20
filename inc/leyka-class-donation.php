@@ -1003,7 +1003,7 @@ class Leyka_Donation_Management {
             case 'ID': echo $donation_id; break;
             case 'amount':
 				$amount_css = ($donation->sum < 0) ? 'amount-negative' : 'amount';
-				echo '<span class="'.$amount_css.'">'.$donation->amount.'&nbsp;'.$donation->currency_label.'</span>';                
+				echo '<span class="'.$amount_css.'">'.$donation->amount.'&nbsp;'.$donation->currency_label.'</span>';
                 break;
             case 'donor': echo htmlentities($donation->donor_name, ENT_QUOTES); break;
             case 'method':
