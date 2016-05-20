@@ -154,7 +154,7 @@ PHP at least 5.3 is required.
 
 == Changelog ==
 
-= 2.2.9.1 =
+= 2.2.9.3 =
  * New: server-side data validation is enforced.
  * Fix: flexible and mixed sum field behavior is fixed.
  * Fix: fix of the session_start() bug on PHP 7.
