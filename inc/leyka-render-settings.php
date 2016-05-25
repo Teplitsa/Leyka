@@ -7,7 +7,7 @@ function leyka_render_section_area($section){?>
     <div class="leyka-options-section <?php echo $section['is_default_collapsed'] ? 'collapsed' : '';?>" id="<?php echo $section['name'];?>">
         <div class="header"><h3><?php echo esc_attr($section['title']);?></h3></div>
         <div class="content">
-            <?php foreach($section['options'] as $option) {                    
+            <?php foreach($section['options'] as $option) {
 
                 $option_info = leyka_options()->get_info_of($option);
                 do_action("leyka_render_{$option_info['type']}", $option, $option_info);

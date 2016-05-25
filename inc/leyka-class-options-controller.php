@@ -23,6 +23,17 @@ class Leyka_Options_Controller {
     }
 
     /**
+     * A service method to retrieve the plugin option value when it's just being initialized, and can't do
+     * proper options metadata loading yet.
+     */
+    public static function get_option_value($option_name) {
+
+        $option_name = stristr($option_name, 'leyka_') !== false ? $option_name : 'leyka_'.$option_name;
+
+        return apply_filters('leyka_option_value', get_option($option_name), $option_name);
+    }
+
+    /**
      * A service method to load the plugin option metadata to the controller's cache array.
      *
      * @param $option_name string
