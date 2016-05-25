@@ -424,7 +424,7 @@ class Leyka_Campaign_Management {
 		if($column_name == 'ID') {
 			echo (int)$campaign->id;
 		} elseif($column_name == 'payment_title') {
-            echo htmlentities($campaign->payment_title, ENT_QUOTES);
+            echo htmlentities($campaign->payment_title, ENT_QUOTES, 'UTF-8');
         } elseif($column_name == 'coll_state') {
 
 			echo $campaign->is_finished == 1 ?

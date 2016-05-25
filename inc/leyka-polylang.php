@@ -26,7 +26,7 @@ if(defined('POLYLANG_VERSION')) {
 
             if($option_name == 'success_page' || $option_name == 'failure_page') {
 
-                // Get ID of localized page instead of originally set:
+                // Get ID of a localized page instead of originally set:
                 $localized_page_id = empty($_POST['cur_lang']) ? pll_get_post($value) : pll_get_post($value, $_POST['cur_lang']);
 
                 return $localized_page_id ? $localized_page_id : $value;
@@ -133,16 +133,21 @@ if(defined('POLYLANG_VERSION')) {
             });
 
             $locale = get_locale();
-            $locale = $locale ? $locale : 'en_US';
+            $locale = $locale ? $locale : 'ru_RU';
 
             load_textdomain('leyka', LEYKA_PLUGIN_DIR."lang/leyka-$locale.mo");
 
             do_action('leyka_init_actions');
 
         } else {
+
 //            $locale = is_admin() ? pll_default_language('locale') : pll_current_language('locale');
+//            $locale = $locale ? $locale : 'ru_RU';
+//
+//            load_textdomain('leyka', LEYKA_PLUGIN_DIR."lang/leyka-$locale.mo");
 
             if(is_admin() && !did_action('leyka_init_actions')) {
+
                 do_action('leyka_init_actions');
 
                 if(count(pll_languages_list()) > 1) {
@@ -166,8 +171,6 @@ if(defined('POLYLANG_VERSION')) {
             }
 
             add_action('leyka_default_success_page_created', function($page_id){
-//                echo '<pre>' . print_r($page_id, 1) . '</pre>';
-//                die('<pre>' . print_r(pll_default_language(), 1) . '</pre>');
                 // ... get localized strings from PL and update success page params
             });
 

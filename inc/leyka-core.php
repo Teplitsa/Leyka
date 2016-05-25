@@ -164,7 +164,7 @@ class Leyka {
 //        new Non_existing_class; /** @todo */
 
         /** Currency rates auto refreshment: */
-        if(leyka_options()->opt('auto_refresh_currency_rates')) {
+        if(Leyka_Options_Controller::get_option_value('leyka_auto_refresh_currency_rates')) {
 
             if( !wp_next_scheduled('refresh_currencies_rates') ) {
                 wp_schedule_event(time(), 'daily', 'refresh_currencies_rates');
@@ -173,7 +173,10 @@ class Leyka {
             add_action('refresh_currencies_rates', array($this, 'do_currencies_rates_refresh'));
 
             // Just in case:
-            if( !leyka_options()->opt('currency_rur2usd') || !leyka_options()->opt('currency_rur2eur') ) {
+            if(
+                !Leyka_Options_Controller::get_option_value('leyka_currency_rur2usd')
+                || !Leyka_Options_Controller::get_option_value('leyka_currency_rur2eur')
+            ) {
                 $this->_do_currency_rates_refresh();
             }
 
