@@ -351,7 +351,7 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
 			}
 
 			if($args['show_date'] == 1 && $donation->date_funded) {
-				$meta[] = '<time>'.$donation->date_funded.'</time>';
+                $meta[] = '<time>'.($donation->type == 'correction' ? $donation->date : $donation->date_funded).'</time>';
 			}
 
 			if($meta) {
