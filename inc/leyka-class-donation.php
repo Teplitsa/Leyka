@@ -1469,6 +1469,8 @@ class Leyka_Donation {
             case 'funded_date':
                 $date_funded = $this->get_funded_date();
                 return $date_funded ? date(get_option('date_format'), $date_funded) : 0;
+            case 'date_funded_timestamp':
+                return strtotime($this->get_funded_date());
             case 'payment_method':
             case 'payment_method_id':
             case 'pm':

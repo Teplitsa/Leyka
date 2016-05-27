@@ -350,8 +350,21 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
 				$meta[] = '<span>'.$name.'</span>';
 			}
 
-			if($args['show_date'] == 1 && $donation->date_funded) {
-				$meta[] = '<time>'.$donation->date_funded.'</time>';
+			if($args['show_date'] == 1) {
+
+                if($donation->type == 'correction') {
+
+                    $time = date('H:i:s', $donation->date_timestamp) == '00:00:00' ?
+                        '' : date(' '.get_option('time_format'), $donation->date_timestamp);
+                    $date = date(get_option('date_format').$time, $donation->date_timestamp);
+
+                } else {
+                    $date = $donation->date_funded;
+                }
+
+                if($date) {
+                    $meta[] = '<time>'.$date.'</time>';
+                }
 			}
 
 			if($meta) {
