@@ -127,32 +127,18 @@ function leyka_get_default_success_page() {
         return $default_page;
     }
 
-    global $wpdb;
-
-    $params = apply_filters('leyka_default_success_page_query', array(
+    $page = get_posts(apply_filters('leyka_default_success_page_query', array(
         'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'private', 'future', 'inherit', 'trash'),
         'post_type' => 'page',
-        'post_name' => 'thank-you-for-your-donation',
-    ));
-    foreach($params as $name => &$value) {
-        $value = is_array($value) ? "`$name` IN ('".implode("', '", $value)."')" : "`$name` = '$value'";
-    }
-
-    $tax_params = apply_filters('leyka_default_success_page_query_taxonomy', array());
-    $tax_sql = $tax_params ? get_tax_sql($tax_params, $wpdb->posts, 'ID') : array('join' => '', 'where' => '');
-
-    $page = $wpdb->get_row(
-        "SELECT ID, post_status FROM $wpdb->posts {$tax_sql['join']} WHERE "
-        .implode(' AND ', $params).($tax_sql['where'] ? "{$tax_sql['where']}" : "")." ORDER BY ID ASC LIMIT 0,1"
-    );
+        'post_name__in' => array('thank-you-for-your-donation'),
+        'posts_per_page' => 1,
+    )));
+    $page = reset($page);
 
     if($page) {
 
         if($page->post_status != 'publish') {
-            wp_update_post(array(
-                'ID' => $page->ID,
-                'post_status' => 'publish',
-            ));
+            wp_update_post(array('ID' => $page->ID, 'post_status' => 'publish',));
         }
 
         $page = $page->ID;
@@ -163,11 +149,15 @@ function leyka_get_default_success_page() {
             'post_type' => 'page',
             'post_status' => 'publish',
             'post_name' => 'thank-you-for-your-donation',
-            'post_title' => __('Your donation is completed!', 'leyka'),
+            'post_title' => __('Your donation completed!', 'leyka'),
             'post_content' => __('We heartly thank you for your help!', 'leyka'),
         ));
 
         do_action('leyka_default_success_page_created', $page);
+    }
+
+    if($page) {
+        update_option('leyka_success_page', $page);
     }
 
     return $page ? $page : 0;
@@ -191,32 +181,19 @@ function leyka_get_default_failure_page() {
         return $default_page;
     }
 
-    global $wpdb;
-
-    $params = apply_filters('leyka_default_failure_page_query', array(
+    $page = get_posts(apply_filters('leyka_default_failure_page_query', array(
         'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'private', 'future', 'inherit', 'trash'),
         'post_type' => 'page',
-        'post_name' => 'sorry-donation-failure',
-    ));
-    foreach($params as $name => &$value) {
-        $value = is_array($value) ? "`$name` IN ('".implode("', '", $value)."')" : "`$name` = '$value'";
-    }
-
-    $tax_params = apply_filters('leyka_default_failure_page_query_taxonomy', array());
-    $tax_sql = $tax_params ? get_tax_sql($tax_params, $wpdb->posts, 'ID') : array('join' => '', 'where' => '');
-
-    $page = $wpdb->get_row(
-        "SELECT ID, post_status FROM $wpdb->posts {$tax_sql['join']} WHERE "
-        .implode(' AND ', $params).($tax_sql['where'] ? "{$tax_sql['where']}" : "")." ORDER BY ID ASC LIMIT 0,1"
-    );
+        'post_name__in' => array('sorry-donation-failure'),
+        'posts_per_page' => 1,
+    )));
+    $page = reset($page);
 
     if($page) {
 
-        if($page->post_status != 'publish')
-            wp_update_post(array(
-                'ID' => $page->ID,
-                'post_status' => 'publish',
-            ));
+        if($page->post_status != 'publish') {
+            wp_update_post(array('ID' => $page->ID, 'post_status' => 'publish',));
+        }
 
         $page = $page->ID;
 
@@ -231,6 +208,10 @@ function leyka_get_default_failure_page() {
         ));
 
         do_action('leyka_default_failure_page_created', $page);
+    }
+
+    if($page) {
+        update_option('leyka_failure_page', $page);
     }
 
     return $page ? $page : 0;

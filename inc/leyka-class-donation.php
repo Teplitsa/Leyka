@@ -1457,11 +1457,10 @@ class Leyka_Donation {
             case 'date':
             case 'date_label':
                 $date_format = get_option('date_format');
-                $time_format = get_option('time_format');
                 $donation_timestamp = strtotime($this->_post_object->post_date);
                 return apply_filters(
                     'leyka_admin_donation_date',
-                    date($date_format.' '.$time_format, $donation_timestamp),
+                    date($date_format, $donation_timestamp),
                     $donation_timestamp, $date_format, $time_format
                 );
             case 'date_timestamp': return strtotime($this->_post_object->post_date);
@@ -1469,8 +1468,6 @@ class Leyka_Donation {
             case 'funded_date':
                 $date_funded = $this->get_funded_date();
                 return $date_funded ? date(get_option('date_format'), $date_funded) : 0;
-            case 'date_funded_timestamp':
-                return strtotime($this->get_funded_date());
             case 'payment_method':
             case 'payment_method_id':
             case 'pm':
