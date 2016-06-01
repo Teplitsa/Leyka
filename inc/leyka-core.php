@@ -72,6 +72,7 @@ class Leyka {
         // Load public-facing style sheet and JavaScript:
         add_action('wp_enqueue_scripts', array($this, 'enqueue_styles')); // wp_footer
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts')); // wp_footer
+        add_action('wp_enqueue_scripts', array($this, 'localize_scripts')); // wp_footer
 
         add_action('init', array($this, 'register_post_types'), 1);
 
@@ -629,6 +630,11 @@ class Leyka {
             true
         );
 
+        do_action('leyka_enqueue_scripts'); // Allow the gateways to add their own scripts
+    }
+
+    public function localize_scripts() {
+
         $js_data = apply_filters('leyka_js_localized_strings', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
             'correct_donation_amount_required' => __('Donation amount must be specified to submit the form', 'leyka'),
@@ -643,9 +649,7 @@ class Leyka {
 //            'email_regexp' => '',
         ));
 
-        wp_localize_script($this->_plugin_slug.'-public', 'leyka', $js_data);
-
-        do_action('leyka_enqueue_scripts'); // Allow the gateways to add their own scripts
+        wp_localize_script(apply_filters('leyka_js_localized_script_id', $this->_plugin_slug.'-public'), 'leyka', $js_data);
     }
 
     /** Register leyka user roles and caps. */
