@@ -204,36 +204,56 @@ class Leyka_Campaigns_List_Widget extends WP_Widget {
 			'post_status' => 'publish',
 		);
 
-		if( !empty($instance['include']) )
+		if( !empty($instance['include']) ) {
 			$q_args['post__in'] = array_map('intval', explode(',', $instance['include']));
+        }
 
-		if( !empty($instance['exclude']) )
+		if( !empty($instance['exclude']) ) {
 			$q_args['post__not_in'] = array_map('intval', explode(',', $instance['exclude']));
+        }
 
-		$query = new WP_Query(apply_filters('leyka_campaigns_list_widget_query_args', $q_args, $instance));
-		if( !$query->have_posts() )
+        if( !empty($instance['exclude_finished']) ) {
+            $q_args['meta_query'] = array(
+                array(
+                    'key'     => 'is_finished',
+                    'value'   => 1,
+                    'compare' => '!=',
+                    'type' => 'NUMERIC',
+                ),
+            );
+        }
+
+		$campaigns = get_posts(apply_filters('leyka_campaigns_list_widget_query_args', $q_args, $instance));
+		if( !$campaigns ) {
 			return;
+        }
 
 		$args = array(
-			'show_title'    => !empty($instance['show_title']),
-			'show_thumb'    => !empty($instance['show_thumb']),
-			'show_excerpt'  => !empty($instance['show_excerpt']),
-			'show_scale'    => !empty($instance['show_scale']),
-			'show_button'   => !empty($instance['show_button']),			
+			'show_title' => !empty($instance['show_title']),
+			'show_thumb' => !empty($instance['show_thumb']),
+			'show_excerpt' => !empty($instance['show_excerpt']),
+			'show_scale' => !empty($instance['show_scale']),
+			'show_button' => !empty($instance['show_button']),
+			'exclude_finished' => !empty($instance['exclude_finished']),
 		);
 
-		echo $before_widget;		
-        if($title)
+        /** @var $before_widget */
+        /** @var $before_title */
+        /** @var $after_widget */
+        /** @var $after_title */
+		echo $before_widget;
+        if($title) {
 		    echo $before_title.$title.$after_title;
-		
+        }
+
 		$css_id = 'leyka_campaign_list_widget-'.uniqid();
 		echo "<div id='".esc_attr($css_id)."' class='leyka-campaigns-list'>";
-		
+
 		add_filter('leyka_campaign_card_thumbnail_size', array($this, '_campaign_thumb_size'));
 		add_filter('leyka_campaign_card_class', array($this, '_campaign_css'));
-		
-		foreach($query->posts as $qp) {
-			echo leyka_get_campaign_card($qp->ID, $args);		
+
+		foreach($campaigns as $campaign) {
+			echo leyka_get_campaign_card($campaign->ID, $args);
 		}
 		remove_filter('leyka_campaign_card_thumbnail_size', array($this, '_campaign_thumb_size'));
 		remove_filter('leyka_campaign_card_class', array($this, '_campaign_css'));
@@ -241,33 +261,33 @@ class Leyka_Campaigns_List_Widget extends WP_Widget {
 		echo "</div>";				
 		echo $after_widget;
 	}
-	
+
 	public function _campaign_thumb_size($size){
-		
 		return 'thumbnail';
 	}
-	
+
 	public function _campaign_css($css) {
-		
 		return 'leyka-campaign-list-item';
 	}
-	
+
 	/** Update widget */
     public function update($new_instance, $old_instance) {
 
 		$instance = $old_instance;
-		
+
 		$instance['title'] = sanitize_text_field($new_instance['title']);
 		$instance['limit'] = empty($new_instance['limit']) ? 3 : (int)$new_instance['limit'];
-		
+
 		$instance['show_title']   = !empty($new_instance['show_title']);
 		$instance['show_thumb']   = !empty($new_instance['show_thumb']);
 		$instance['show_excerpt'] = !empty($new_instance['show_excerpt']);
 		$instance['show_scale']   = !empty($new_instance['show_scale']);
 		$instance['show_button']  = !empty($new_instance['show_button']);
-		
+
 		$instance['include'] = sanitize_text_field($new_instance['include']);
 		$instance['exclude'] = sanitize_text_field($new_instance['exclude']);
+
+		$instance['exclude_finished'] = !empty($new_instance['exclude_finished']);
 
 		return $instance;
 	}
@@ -277,26 +297,29 @@ class Leyka_Campaigns_List_Widget extends WP_Widget {
 
 		/* Set up some default widget settings. */
 		$defaults = array(
-			'title'        => '',		
-			'limit'        => 3,
-			'show_title'   => 1,
-			'show_thumb'   => 1,
-			'show_excerpt' => 1,
-			'show_scale'   => 1,
-			'show_button'  => 1,
-			'include'      => '',
-			'exclude'      => '',
+			'title' => '',
+			'limit' => 3,
+			'show_title' => true,
+			'show_thumb' => true,
+			'show_excerpt' => true,
+			'show_scale' => true,
+			'show_button' => true,
+			'include' => '',
+			'exclude' => '',
+			'exclude_finished' => false,
 		);
 
 		$instance = wp_parse_args((array)$instance, $defaults);
 
 		$limit = (int)$instance['limit'];
 
-		$show_title   = (int)$instance['show_title'];
-		$show_thumb   = (int)$instance['show_thumb'];
+		$show_title = (int)$instance['show_title'];
+		$show_thumb = (int)$instance['show_thumb'];
 		$show_excerpt = !empty($instance['show_excerpt']);
-		$show_scale   = !empty($instance['show_scale']);
-		$show_button  = !empty($instance['show_button']);?>
+		$show_scale = !empty($instance['show_scale']);
+		$show_button = !empty($instance['show_button']);
+
+        $exclude_finished = !empty($instance['exclude_finished']);?>
 
 		<p>
 			<label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php _e('Title', 'leyka');?>:</label>
@@ -310,42 +333,49 @@ class Leyka_Campaigns_List_Widget extends WP_Widget {
 					<option <?php selected($limit, $i);?> value="<?php echo $i;?>"><?php echo $i;?></option>
 				<?php }?>
 			</select>
-		</p>	
+		</p>
 
 		<p>
 			<label for="<?php echo esc_attr($this->get_field_id('show_title'));?>">
-			<input id="<?php echo $this->get_field_id('show_title');?>" name="<?php echo $this->get_field_name( 'show_title' ); ?>" value="1" type="checkbox" <?php checked($show_title, 1);?>>
+			<input id="<?php echo $this->get_field_id('show_title');?>" name="<?php echo $this->get_field_name('show_title'); ?>" value="1" type="checkbox" <?php checked($show_title, 1);?>>
 			<?php _e('Show title', 'leyka');?></label>
 		<br>
-			<label for="<?php echo esc_attr($this->get_field_id('show_thumb')); ?>">
-			<input id="<?php echo $this->get_field_id('show_thumb');?>" name="<?php echo $this->get_field_name( 'show_thumb' ); ?>" value="1" type="checkbox" <?php checked($show_thumb, 1);?>>
+			<label for="<?php echo esc_attr($this->get_field_id('show_thumb'));?>">
+			<input id="<?php echo $this->get_field_id('show_thumb');?>" name="<?php echo $this->get_field_name('show_thumb'); ?>" value="1" type="checkbox" <?php checked($show_thumb, 1);?>>
 			<?php _e('Show thumbnail', 'leyka');?></label>
 		<br>
 			<label for="<?php echo esc_attr($this->get_field_id('show_excerpt')); ?>">
-			<input id="<?php echo $this->get_field_id('show_excerpt');?>" name="<?php echo $this->get_field_name( 'show_excerpt' ); ?>" value="1" type="checkbox" <?php checked($show_excerpt, 1);?>>
+			<input id="<?php echo $this->get_field_id('show_excerpt');?>" name="<?php echo $this->get_field_name('show_excerpt'); ?>" value="1" type="checkbox" <?php checked($show_excerpt, 1);?>>
 			<?php _e('Show excerpt', 'leyka');?></label>
 		<br>
 			<label for="<?php echo esc_attr($this->get_field_id('show_scale')); ?>">
-			<input id="<?php echo $this->get_field_id('show_scale');?>" name="<?php echo $this->get_field_name( 'show_scale' ); ?>" value="1" type="checkbox" <?php checked($show_scale, 1);?>>
+			<input id="<?php echo $this->get_field_id('show_scale');?>" name="<?php echo $this->get_field_name('show_scale'); ?>" value="1" type="checkbox" <?php checked($show_scale, 1);?>>
 			<?php _e('Show scale', 'leyka');?></label>
 		<br>
 			<label for="<?php echo esc_attr($this->get_field_id('show_button')); ?>">
-			<input id="<?php echo $this->get_field_id('show_button');?>" name="<?php echo $this->get_field_name( 'show_button' ); ?>" value="1" type="checkbox" <?php checked($show_button, 1);?>>
+			<input id="<?php echo $this->get_field_id('show_button');?>" name="<?php echo $this->get_field_name('show_button'); ?>" value="1" type="checkbox" <?php checked($show_button, 1);?>>
 			<?php _e('Show «support» button', 'leyka');?></label>
 		</p>
-		
+
 		<p>
 			<label for="<?php echo esc_attr($this->get_field_id('include'));?>"><?php _e('Include campaigns', 'leyka');?>:</label>
-			<input class="widefat" id="<?php echo esc_attr($this->get_field_id('include'));?>" name="<?php echo esc_attr($this->get_field_name('include'));?>" type="text" value="<?php echo esc_attr($instance['include']);?>" />
+			<input class="widefat" id="<?php echo esc_attr($this->get_field_id('include'));?>" name="<?php echo esc_attr($this->get_field_name('include'));?>" type="text" value="<?php echo esc_attr($instance['include']);?>">
 			<small class="help"><?php _e('Comma-separated list of IDs', 'leyka');?></small>
 		</p>
-		
+
 		<p>
 			<label for="<?php echo esc_attr($this->get_field_id('exclude'));?>"><?php _e('Exclude campaigns', 'leyka');?>:</label>
-			<input class="widefat" id="<?php echo esc_attr($this->get_field_id('exclude'));?>" name="<?php echo esc_attr($this->get_field_name('exclude'));?>" type="text" value="<?php echo esc_attr($instance['exclude']);?>" />
+			<input class="widefat" id="<?php echo esc_attr($this->get_field_id('exclude'));?>" name="<?php echo esc_attr($this->get_field_name('exclude'));?>" type="text" value="<?php echo esc_attr($instance['exclude']);?>">
 			<small class="help"><?php _e('Comma-separated list of IDs', 'leyka');?></small>
 		</p>
-		
+
+		<p>
+			<label for="<?php echo esc_attr($this->get_field_id('exclude_finished'));?>">
+            <input id="<?php echo $this->get_field_id('exclude_finished');?>" name="<?php echo $this->get_field_name('exclude_finished');?>" value="1" type="checkbox" <?php checked($exclude_finished, 1);?>>
+            <?php _e('Exclude finished campaigns', 'leyka');?>
+            </label>
+		</p>
+
 	<?php }
 } //class end
 
