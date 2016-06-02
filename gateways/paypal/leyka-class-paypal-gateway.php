@@ -444,50 +444,11 @@ class Leyka_Paypal_Card extends Leyka_Payment_Method {
         }
 
         $this->_options = array(
-            $this->full_id.'_rebilling_available' => array(
-                'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
-                'default' => 0,
-                'title' => __('Monthly recurring subscriptions are available', 'leyka'),
-                'description' => __('Check if Yandex.Money allows you to create recurrent subscriptions to do regular automatic payments.', 'leyka'),
-                'required' => 0,
-                'placeholder' => '',
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
-            ),
-            $this->full_id.'_certificate_path' => array(
-                'type' => 'text',
-                'default' => '',
-                'title' => __('Yandex.Money recurring payments certificate path', 'leyka'),
-                'description' => __("Please, enter the path to your SSL certificate given to you by Yandex.Money. <strong>Warning!</strong> The path should include the certificate's filename intself. Also it should be relative to wp-content directory.", 'leyka'),
-                'placeholder' => __('For ex., /uploads/leyka/your-cert-file.cer', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-            $this->full_id.'_private_key_path' => array(
-                'type' => 'text',
-                'default' => '',
-                'title' => __("Yandex.Money recurring payments certificate's private key path", 'leyka'),
-                'description' => __("Please, enter the path to your SSL certificate's private key given to you by Yandex.Money.<li><li>The path should include the certificate's filename intself.</li><li>The path should be relative to wp-content directory. </li></ul>", 'leyka'),
-                'placeholder' => __('For ex., /uploads/leyka/your-private.key', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-            $this->full_id.'_private_key_password' => array(
-                'type' => 'text',
-                'default' => '',
-                'title' => __("Yandex.Money recurring payments certificate's private key password", 'leyka'),
-                'description' => __("Please, enter a password for your SSL certificate's private key, if you set this password during the generation of your sertificate request file.", 'leyka'),
-                'placeholder' => __('Ex., fW!^12@3#&8A4', 'leyka'),
-                'is_password' => 1,
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
             $this->full_id.'_description' => array(
                 'type' => 'html',
-                'default' => __('Yandex.Money allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Money website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
-                'title' => __('Yandex bank card payment description', 'leyka'),
-                'description' => __('Please, enter Yandex.Money bank cards payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
+                'default' => __("PayPal is an international payment system and it's just cool and gorgeous. Enjoy!", 'leyka'),
+                'title' => __('PayPal bank card payment description', 'leyka'),
+                'description' => __('Please, enter PayPal bank cards payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
                 'required' => 0,
                 'validation_rules' => array(), // List of regexp?..
             ),
