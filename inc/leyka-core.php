@@ -618,7 +618,7 @@ class Leyka {
 
         wp_enqueue_script(
             $this->_plugin_slug.'-modal',
-            LEYKA_PLUGIN_BASE_URL.'js/jquery.leanModal.min.js', array('jquery'),
+            LEYKA_PLUGIN_BASE_URL.'js/jquery.easyModal.min.js', array('jquery'),
             LEYKA_VERSION,
             true
         );

@@ -243,7 +243,7 @@ class Leyka_Payment_Form {
             return '';
         }
 
-		$agree_id = esc_attr(uniqid().'-text'); // Label for checkbox
+		$agree_id = esc_attr(uniqid().'-text');
 
 		ob_start();?>
 
@@ -255,10 +255,10 @@ class Leyka_Payment_Form {
 		</div>
 
 		<label class="checkbox" for="leyka_agree">
-			<input type="checkbox" name="leyka_agree" class="leyka_agree required" value="1" />
-			<a class="leyka-legal-confirmation-trigger" href="#<?php echo $agree_id;?>">
-                <?php echo leyka_options()->opt('agree_to_terms_text');?>
-            </a>
+			<input type="checkbox" name="leyka_agree" class="leyka_agree required" value="1">
+			<a class="leyka-legal-confirmation-trigger" href="#" data-oferta-content="#<?php echo $agree_id;?>">
+				<?php echo leyka_options()->opt('agree_to_terms_text');?>
+			</a>
 		</label>
         <p class="leyka_agree-error field-error"></p>
 

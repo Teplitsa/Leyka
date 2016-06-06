@@ -453,20 +453,16 @@ jQuery(document).ready(function($){
     });
 
     // Terms of Agreement modal:
-    $(document).on('click.leyka', '.leyka-legal-confirmation-trigger', function(e){
-
-        e.preventDefault();
-
-        if( !$(this).data('modal-ready') ) {
-            $(this).data('modal-ready', 1).leanModal({top: 100, overlay: 0.5, closeButton: '.leyka-modal-close'}).click();
-        }
+    $('.leyka-oferta-text').easyModal({
+        top: 100,
+        autoOpen: false,
+        closeButtonClass: '.leyka-modal-close'
     });
 
-    // Allow modal window closing on Esc:
-    $(document).keyup(function(e){
-        if(e.keyCode == 27) {
-            $('#lean_overlay').click();
-        }
+    $('.leyka-legal-confirmation-trigger').on('click.leyka', function(e){
+
+        e.preventDefault();
+        $( $(this).data('oferta-content') ).trigger('openModal');
     });
 
     // Donors list width detection:
