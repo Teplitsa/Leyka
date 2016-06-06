@@ -213,7 +213,9 @@ class Leyka_Donation_Management {
             return false;
         }
 
-        Leyka_Donation_Management::send_donor_thanking_email($donation);
+        if(leyka_options()->opt('send_donor_thanking_emails')) {
+            Leyka_Donation_Management::send_donor_thanking_email($donation);
+        }
 
         if(leyka_options()->opt('donations_managers_emails')) {
 
@@ -246,6 +248,10 @@ class Leyka_Donation_Management {
 
     public static function send_donor_thanking_email($donation) {
 
+        if( !leyka_options()->opt('send_donor_thanking_emails') ) {
+            return false;
+        }
+
         $donation = leyka_get_validated_donation($donation);
 
         $donor_email = $donation->donor_email;
@@ -261,8 +267,6 @@ class Leyka_Donation_Management {
 
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-        $email_text = $donation->type == 'rebill' ?
-            leyka_options()->opt('email_recurrents_thanks_text') : leyka_options()->opt('email_thanks_text');
         $email_title = $donation->type == 'rebill' ?
             leyka_options()->opt('email_recurrents_thanks_title') : leyka_options()->opt('email_thanks_title');
 
@@ -296,8 +300,9 @@ class Leyka_Donation_Management {
                 ),
                 apply_filters(
                     'leyka_email_thanks_text',
-                    $email_text,
-                    $donation, $campaign
+                    $donation->type == 'rebill' ? leyka_options()->opt('email_recurrents_thanks_text') : leyka_options()->opt('email_thanks_text'),
+                    $donation,
+                    $campaign
                 )
             )),
             array('From: '.apply_filters(
@@ -1457,6 +1462,7 @@ class Leyka_Donation {
             case 'date':
             case 'date_label':
                 $date_format = get_option('date_format');
+                $time_format = get_option('time_format');
                 $donation_timestamp = strtotime($this->_post_object->post_date);
                 return apply_filters(
                     'leyka_admin_donation_date',
