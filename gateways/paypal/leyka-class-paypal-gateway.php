@@ -13,18 +13,18 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         $this->_title = __('PayPal', 'leyka');
         $this->_docs_link = '';
         $this->_admin_ui_column = 1;
-        $this->_admin_ui_order = 10;
+        $this->_admin_ui_order = 30;
     }
 
     protected function _set_options_defaults() {
 
-        if($this->_options) { // Create Gateway options, if needed
+        if($this->_options) {
             return;
         }
 
         $this->_options = array(
             'paypal_api_username' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox  
+                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
                 'value' => '',
                 'default' => '',
                 'title' => __('API username', 'leyka'),
@@ -61,7 +61,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 'value' => '',
                 'default' => 1,
                 'title' => __('Payments testing mode', 'leyka'),
-                'description' => __('Check if Yandex integration is in test mode.', 'leyka'),
+                'description' => __('Check if PayPal business account is in testing (sandbox) mode.', 'leyka'),
                 'required' => false,
                 'placeholder' => '',
                 'list_entries' => array(), // For select, radio & checkbox fields
@@ -72,146 +72,256 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
 
-        if(empty($this->_payment_methods['paypal_card'])) {
-            $this->_payment_methods['paypal_card'] = Leyka_Paypal_Card::get_instance();
+        if(empty($this->_payment_methods['all'])) {
+            $this->_payment_methods['all'] = Leyka_Paypal_All::get_instance();
         }
-//        if(empty($this->_payment_methods['yandex_money'])) {
-//            $this->_payment_methods['yandex_money'] = Leyka_Yandex_Money::get_instance();
-//        }
+    }
+
+    public function enqueue_gateway_scripts() {
+
+        if(Leyka_Paypal_All::get_instance()->active) {
+
+            wp_enqueue_script('leyka-paypal-widget', 'https://www.paypalobjects.com/api/checkout.js');
+            wp_enqueue_script(
+                'leyka-paypal',
+                LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Paypal_Gateway::get_instance()->id.'/js/leyka.paypal.js',
+                array('jquery', 'leyka-paypal-widget', 'leyka-public'),
+                LEYKA_VERSION,
+                true
+            );
+        }
     }
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
+
+//        $donation = new Leyka_Donation($donation_id);
+//
+//        if( !empty($form_data['leyka_recurring']) ) {
+//            $donation->payment_type = 'rebill';
+//        }
     }
 
     public function submission_redirect_url($current_url, $pm_id) {
 
-        switch($pm_id) {
-            case 'paypal_card':
-//            case 'paypal_pp':
-                return leyka_options()->opt('paypal_test_mode') ?
-                    'https://api-3t.sandbox.paypal.com/nvp' : 'https://api-3t.paypal.com/nvp';
-            default:
-                return $current_url;
-        }
+        return leyka_options()->opt('paypal_test_mode') ?
+            '' : '';
     }
 
     public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
 
+        if( !array_key_exists($pm_id, $this->_payment_methods) ) {
+            return $form_data_vars; // It's not our PM
+        }
+
         $donation = new Leyka_Donation($donation_id);
 
-        $data = array(
-            'USER' => leyka_options()->opt('paypal_api_username'),
-            'PWD' => leyka_options()->opt('paypal_api_password'),
-            'SIGNATURE' => leyka_options()->opt('paypal_api_signature'),
-            'VERSION' => '120',
-            'METHOD' => 'SetExpressCheckout',
-            'LOCALECODE' => mb_strtoupper(get_bloginfo('language')), // RU, EN, etc
-            'RETURNURL' => '???', // URL of the website to return after donor authorises himself in PayPal
-            'CANCELURL' => '???', // ... and the URL to return after donor cancels the authorization in PayPal
-            'PAYMENTREQUEST_0_NOTIFYURL' => home_url('leyka/service/'.$this->_id.'/response/'), // URL for success callback
-            'PAYMENTREQUEST_0_INVNUM' => $donation_id,
-            'PAYMENTREQUEST_0_PAYMENTACTION' => 'Sale',
-            'PAYMENTREQUEST_0_AMT' => $donation->amount,
-            'PAYMENTREQUEST_0_CURRENCYCODE' => $donation->currency == 'RUR' ? 'RUB' : $donation->currency, // RUB, USD, ...
-            'PAYMENTREQUEST_0_ITEMAMT' => $donation->amount,
-            'PAYMENTREQUEST_0_DESC' => 'payment',
-            'L_PAYMENTREQUEST_0_NAME0' => $donation->payment_title,
-            'L_PAYMENTREQUEST_0_AMT0' => $donation->amount,
-            'L_PAYMENTREQUEST_0_QTY0' => '1',
-//            'LOGOIMG' => '',
-            'NOSHIPPING' => '1',
+        $cp_currency = 'RUB';
+        switch($_POST['leyka_donation_currency']) {
+            case 'usd': $cp_currency = 'USD'; break;
+            case 'eur': $cp_currency = 'EUR'; break;
+            default:
+        }
+
+        $form_data_vars = array(
+//            'public_id' => trim(leyka_options()->opt('cp_public_id')),
+//            'donation_id' => $donation_id,
+//            'amount' => number_format((float)$donation->amount, 2, '.', ''),
+//            'currency' => $cp_currency,
+//            'payment_title' => $donation->payment_title,
+//            'donor_email' => $donation->donor_email,
+//            'success_page' => get_permalink(leyka_options()->opt('success_page')),
+//            'failure_page' => get_permalink(leyka_options()->opt('failure_page')),
         );
 
-        return apply_filters('leyka_'.$this->_id.'_custom_submission_data', $data, $pm_id);
+        return $form_data_vars;
     }
 
     public function log_gateway_fields($donation_id) {
-    }
-
-    /** Wrapper method to answer checkOrder and paymentAviso service calls */
-    private function _callback_answer($is_error = false, $callback_type = 'co', $message = '', $tech_message = '') {
-
-        $is_error = !!$is_error;
-        $tech_message = $tech_message ? $tech_message : $message;
-        $callback_type = $callback_type == 'co' ? 'checkOrderResponse' : 'paymentAvisoResponse';
-
-        if($is_error) {
-            die('<?xml version="1.0" encoding="UTF-8"?>
-<'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'"
-code="1000" invoiceId="'.$_POST['invoiceId'].'"
-shopId="'.leyka_options()->opt('yandex_shop_id').'"
-message="'.$message.'"
-techMessage="'.$tech_message.'"/>');
-        } else {
-            die('<?xml version="1.0" encoding="UTF-8"?>
-<'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'"
-code="0" invoiceId="'.$_POST['invoiceId'].'"
-shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
-        }
     }
 
     public function _handle_service_calls($call_type = '') {
 
         switch($call_type) {
 
-            case 'check_order': // Gateway test before the payment - to check if it's correct
+//            case 'check': // Check if payment is correct
+//
+//                // InvoiceId - leyka donation ID, SubscriptionId - CP recurring subscription ID
+//                if(empty($_POST['InvoiceId']) && empty($_POST['SubscriptionId'])) {
+//                    die(json_encode(array('code' => '10')));
+//                }
+//
+//                if(empty($_POST['Amount']) || (float)$_POST['Amount'] <= 0 || empty($_POST['Currency'])) {
+//                    die(json_encode(array(
+//                        'code' => '11',
+//                        'reason' => sprintf(
+//                            'Amount or Currency in POST are empty. Amount: %s, Currency: %s',
+//                            $_POST['Amount'], $_POST['Currency']
+//                        )
+//                    )));
+//                }
+//
+//                if(empty($_POST['InvoiceId'])) { // Non-init recurring donation
+//
+//                    if( !$this->get_init_recurrent_donation($_POST['SubscriptionId']) ) {
+//                        die(json_encode(array(
+//                            'code' => '11',
+//                            'reason' => sprintf(
+//                                'Init recurring payment is not found. POST SubscriptionId: %s',
+//                                $_POST['SubscriptionId']
+//                            )
+//                        )));
+//                    }
+//
+//                } else { // Single or init recurring donation
+//
+//                    $donation = new Leyka_Donation((int)$_POST['InvoiceId']);
+//                    $donation->add_gateway_response($_POST);
+//
+//                    switch($_POST['Currency']) {
+//                        case 'RUB': $_POST['Currency'] = 'rur'; break;
+//                        case 'USD': $_POST['Currency'] = 'usd'; break;
+//                        case 'EUR': $_POST['Currency'] = 'eur'; break;
+//                        default:
+//                    }
+//
+//                    if($donation->sum != $_POST['Amount'] || $donation->currency != $_POST['Currency']) {
+//                        die(json_encode(array(
+//                            'code' => '11',
+//                            'reason' => sprintf(
+//                                'Amount of original data and POST are mismatching. Original: %.2f %s, POST: %.2f %s',
+//                                $donation->sum, $donation->currency, $_POST['Amount'], $_POST['Currency']
+//                            )
+//                        )));
+//                    }
+//                }
+//
+//                die(json_encode(array('code' => '0'))); // Payment check passed
 
-                if($_POST['action'] != 'checkOrder') { // Payment isn't correct, we're not allowing it
-                    $this->_callback_answer(1, 'co', __('Wrong service operation', 'leyka'));
-                }
+            case 'complete':
+            case 'success':
+            case 'fail':
 
-                $_POST['orderNumber'] = (int)$_POST['orderNumber']; // Donation ID
-                if( !$_POST['orderNumber'] ) {
-                    $this->_callback_answer(1, 'co', __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('OrderNumber is not set', 'leyka'));
-                }
+                // InvoiceId - leyka donation ID, SubscriptionId - CP recurring subscription ID
+//                if(empty($_POST['InvoiceId']) && empty($_POST['SubscriptionId'])) {
+//                    die(json_encode(array('code' => '10')));
+//                }
 
-                $donation = new Leyka_Donation($_POST['orderNumber']);
-
-                if($donation->sum != $_POST['orderSumAmount']) {
-                    $this->_callback_answer(1, 'co', __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('Donation sum is unmatched', 'leyka'));
-                }
-
-                $donation->add_gateway_response($_POST);
-
-                $this->_callback_answer(); // OK for yandex.money payment
-                break; // Not needed, just for my IDE could relax
-
-            case 'payment_aviso':
-
-                if($_POST['action'] != 'paymentAviso') { // Payment isn't correct, we're not allowing it
-                    $this->_callback_answer(1, 'pa', __('Wrong service operation', 'leyka'));
-                }
-
-                $_POST['orderNumber'] = (int)$_POST['orderNumber']; // Donation ID
-                if( !$_POST['orderNumber'] ) {
-                    $this->_callback_answer(1, 'pa', __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('OrderNumber is not set', 'leyka'));
-                }
-
-                $donation = new Leyka_Donation($_POST['orderNumber']);
-
-                if($donation->sum != $_POST['orderSumAmount']) {
-                    $this->_callback_answer(1, 'pa', __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('Donation sum is unmatched', 'leyka'));
-                }
-
-                if($donation->status != 'funded') {
-
-                    $donation->add_gateway_response($_POST);
-                    $donation->status = 'funded';
-
-                    if($donation->type == 'rebill' && !empty($_POST['invoiceId'])) {
-                        $donation->recurring_id = (int)$_POST['invoiceId'];
-                    }
-
-                    Leyka_Donation_Management::send_all_emails($donation->id);
-                }
-
-				do_action('leyka_yandex_payment_aviso_success', $donation);
-
-                $this->_callback_answer(0, 'pa'); // OK for yandex money payment
-                break; // Not needed, just for my IDE could relax
+//                if(empty($_POST['InvoiceId'])) { // Non-init recurring donation
+//
+//                    $donation = $this->get_donation_by_transaction_id($_POST['TransactionId']);
+//
+//                    $init_recurrent_payment = $this->get_init_recurrent_donation($_POST['SubscriptionId']);
+//
+//                    $donation->init_recurring_donation_id = $init_recurrent_payment->id;
+//                    $donation->payment_title = $init_recurrent_payment->title;
+//                    $donation->campaign_id = $init_recurrent_payment->campaign_id;
+//                    $donation->payment_method_id = $init_recurrent_payment->pm_id;
+//                    $donation->gateway_id = $init_recurrent_payment->gateway_id;
+//                    $donation->donor_name = $init_recurrent_payment->donor_name;
+//                    $donation->donor_email = $init_recurrent_payment->donor_email;
+//                    $donation->amount = $init_recurrent_payment->amount;
+//                    $donation->currency = $init_recurrent_payment->currency;
+//
+//                } else { // Single or init recurring donation
+//                    $donation = new Leyka_Donation((int)$_POST['InvoiceId']);
+//                }
+//
+//                if( !empty($_POST['SubscriptionId']) ) {
+//
+//                    $donation->payment_type = 'rebill';
+//                    $donation->recurring_id = $_POST['SubscriptionId'];
+//                }
+//
+//                $donation->add_gateway_response($_POST);
+//
+//                if($call_type == 'complete') {
+//
+//                    Leyka_Donation_Management::send_all_emails($donation->id);
+//                    $donation->status = 'funded';
+//
+//                } else {
+//                    $donation->status = 'failed';
+//                }
+//
+//                die(json_encode(array('code' => '0'))); // Payment completed / fail registered
 
             default:
         }
+    }
+
+    /**
+     * It is possible for PayPal to call a callback several times for one donation.
+     * This donation must be created only once and then updated. It can be identified with PayPal token (unique payment ID).
+     *
+     * @param $paypal_payment_token string
+     * @return Leyka_Donation
+     */
+    public function get_donation_by_token($paypal_payment_token) {
+
+        $donation = get_posts(array( // Get init recurrent payment with customer_id given
+            'posts_per_page' => 1,
+            'post_type' => Leyka_Donation_Management::$post_type,
+            'post_status' => 'any',
+            'meta_query' => array(
+                'RELATION' => 'AND',
+                array(
+                    'key'     => '_paypal_token',
+                    'value'   => $paypal_payment_token,
+                    'compare' => '=',
+                ),
+            ),
+            'orderby' => 'date',
+            'order' => 'ASC',
+        ));
+
+        if(count($donation)) {
+            $donation = new Leyka_Donation($donation[0]->ID);
+        } else {
+            $donation = new Leyka_Donation(Leyka_Donation::add(array(
+                'status' => 'submitted',
+                'paypal_token' => $paypal_payment_token,
+            )));
+        }
+
+        return $donation;
+    }
+
+//    public function get_init_recurrent_donation($recurring) {
+
+//        if(is_a($recurring, 'Leyka_Donation')) {
+//            $recurring = $recurring->recurring_id;
+//        } elseif(empty($recurring)) {
+//            return false;
+//        }
+//
+//        $init_donation_post = array(); // get_posts(array( // Get init recurrent payment with customer_id given
+//            'posts_per_page' => 1,
+//            'post_type' => Leyka_Donation_Management::$post_type,
+//            'post_status' => 'funded',
+//            'post_parent' => 0,
+//            'meta_query' => array(
+//                'RELATION' => 'AND',
+//                array(
+//                    'key'     => '_cp_recurring_id',
+//                    'value'   => $recurring,
+//                    'compare' => '=',
+//                ),
+//                array(
+//                    'key'     => 'leyka_payment_type',
+//                    'value'   => 'rebill',
+//                    'compare' => '=',
+//                ),
+//            ),
+//            'orderby' => 'date',
+//            'order' => 'ASC',
+//        ));
+
+//        return count($init_donation_post) ? new Leyka_Donation($init_donation_post[0]->ID) : false;
+//    }
+
+    protected function _get_value_if_any($arr, $key, $val = false) {
+
+        return empty($arr[$key]) ? '' : ($val ? $val : $arr[$key]);
     }
 
     public function get_gateway_response_formatted(Leyka_Donation $donation) {
@@ -220,152 +330,50 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
             return array();
         }
 
-        $response_vars = maybe_unserialize($donation->gateway_response);
-        if( !$response_vars || !is_array($response_vars) ) {
+        $vars = maybe_unserialize($donation->gateway_response);
+        if( !$vars || !is_array($vars) ) {
             return array();
         }
 
-        $action_label = $response_vars['action'] == 'checkOrder' ?
-            __('Donation confirmation', 'leyka') : __('Donation approval notice', 'leyka');
+        $vars_final = $vars; //array(
+//            __('Transaction ID:', 'leyka') => $this->_get_value_if_any($vars, 'TransactionId'),
+//            __('Outcoming sum:', 'leyka') => $this->_get_value_if_any($vars, 'Amount'),
+//            __('Outcoming currency:', 'leyka') => $this->_get_value_if_any($vars, 'Currency'),
+//            __('Incoming sum:', 'leyka') => $this->_get_value_if_any($vars, 'PaymentAmount'),
+//            __('Incoming currency:', 'leyka') => $this->_get_value_if_any($vars, 'PaymentCurrency'),
+//            __('Donor name:', 'leyka') => $this->_get_value_if_any($vars, 'Name'),
+//            __('Donor email:', 'leyka') => $this->_get_value_if_any($vars, 'Email'),
+//            __('Callback time:', 'leyka') => $this->_get_value_if_any($vars, 'DateTime'),
+//            __('Donor IP:', 'leyka') => $this->_get_value_if_any($vars, 'IpAddress'),
+//            __('Donation description:', 'leyka') => $this->_get_value_if_any($vars, 'Description'),
+//            __('Is test donation:', 'leyka') => $this->_get_value_if_any($vars, 'TestMode'),
+//            __('Invoice status:', 'leyka') => $this->_get_value_if_any($vars, 'Status'),
+//        );
 
-        return array(
-            __('Last response operation:', 'leyka') => $action_label,
-            __('Gateway invoice ID:', 'leyka') => $response_vars['invoiceId'],
-            __('Full donation amount:', 'leyka') =>
-                (float)$response_vars['orderSumAmount'].' '.$donation->currency_label,
-            __('Donation amount after gateway commission:', 'leyka') =>
-                (float)$response_vars['shopSumAmount'].' '.$donation->currency_label,
-            __("Gateway's donor ID:", 'leyka') => $response_vars['customerNumber'],
-            __('Response date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($response_vars['requestDatetime'])),
-        );
-    }
-
-    public function do_recurring_donation(Leyka_Donation $init_recurring_donation) {
-
-        if( !$init_recurring_donation->recurring_id ) {
-            return false;
-        }
-
-        $new_recurring_donation_id = Leyka_Donation::add(array(
-            'status' => 'submitted',
-            'payment_type' => 'rebill',
-            'purpose_text' => $init_recurring_donation->title,
-            'campaign_id' => $init_recurring_donation->campaign_id,
-            'payment_method_id' => $init_recurring_donation->pm_id,
-            'gateway_id' => $init_recurring_donation->gateway_id,
-            'donor_name' => $init_recurring_donation->donor_name,
-            'donor_email' => $init_recurring_donation->donor_email,
-            'amount' => $init_recurring_donation->amount,
-            'currency' => $init_recurring_donation->currency,
-            'init_recurring_donation' => $init_recurring_donation->id,
-            'recurring_id' => $init_recurring_donation->recurring_id, // InvoiceId of the original donation in a subscription
-//        '' => '',
-        ));
-
-        $certificate_path = leyka_options()->opt('yandex-yandex_card_certificate_path') ?
-            WP_CONTENT_DIR.'/'.trim(leyka_options()->opt('yandex-yandex_card_certificate_path'), '/') : false;
-        $certificate_private_key_path = leyka_options()->opt('yandex-yandex_card_private_key_path') ?
-            WP_CONTENT_DIR.'/'.trim(leyka_options()->opt('yandex-yandex_card_private_key_path'), '/') : false;
-
-        $ch = curl_init();
-        curl_setopt_array($ch, array(
-            CURLOPT_URL => leyka_options()->opt('yandex_test_mode') ?
-                'https://penelope-demo.yamoney.ru/webservice/mws/api/repeatCardPayment' :
-                'https://penelope.yamoney.ru/webservice/mws/api/repeatCardPayment',
-            CURLOPT_PORT => leyka_options()->opt('yandex_test_mode') ? 8083 : 443,
-            CURLOPT_HEADER => false,
-            CURLOPT_HTTPHEADER => array('Content-Type: application/x-www-form-urlencoded'),
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => http_build_query(array(
-                'clientOrderId' => $new_recurring_donation_id,
-                'invoiceId' => $init_recurring_donation->recurring_id,
-                'orderNumber' => 'recurring-'.$init_recurring_donation->id.'-'.$new_recurring_donation_id,
-                'amount' => $init_recurring_donation->amount,
-            )),
-            CURLOPT_VERBOSE => false,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CONNECTTIMEOUT => 60,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
-            CURLOPT_FORBID_REUSE => true,
-            CURLOPT_FRESH_CONNECT => true,
-            CURLOPT_SSLCERT => $certificate_path,
-            CURLOPT_SSLKEY => $certificate_private_key_path,
-            CURLOPT_SSLKEYPASSWD => leyka_options()->opt('yandex-yandex_card_private_key_password'),
-        ));
-        $answer = curl_exec($ch);
-
-        $new_recurring_donation = new Leyka_Donation($new_recurring_donation_id);
-        $res = false;
-
-        if($answer) {
-
-            $p = xml_parser_create();
-            xml_parse_into_struct($p, $answer, $vals, $index);
-            xml_parser_free($p);
-
-            $new_recurring_donation->add_gateway_response($answer);
-
-            if(isset($vals[0]['attributes']['STATUS']) && $vals[0]['attributes']['STATUS'] == 0) {
-
-                $new_recurring_donation->status = 'funded';
-                $res = $new_recurring_donation;
-            }
-
-        } else {
-            $new_recurring_donation->add_gateway_response('Error '.curl_errno($ch).': '.curl_error($ch));
-        }
-
-        curl_close($ch);
-        return $res;
+        return $vars_final;
     }
 
     public function display_donation_specific_data_fields($donation = false) {
 
         if($donation) { // Edit donation page displayed
 
-            $donation = leyka_get_validated_donation($donation);
 
-            if($donation->type != 'rebill') {
-                return;
-            }?>
+        } else { // New donation page displayed ?>
 
-            <label><?php _e('Yandex.Money recurring subscription ID', 'leyka');?>:</label>
-            <div class="leyka-ddata-field">
-
-                <?php if($donation->type == 'correction') {?>
-                <input type="text" id="yandex-recurring-id" name="yandex-recurring-id" placeholder="<?php _e('Enter Yandex.Money invoice ID', 'leyka');?>" value="<?php echo $donation->recurring_id;?>">
-                <?php } else {?>
-                <span class="fake-input"><?php echo $donation->recurring_id;?></span>
-                <?php }?>
-            </div>
-
-        <?php $init_recurring_donation = $donation->init_recurring_donation;?>
-
-            <label for="yandex-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka');?></label>
-            <div class="leyka-ddata-field">
-                <input type="checkbox" id="yandex-recurring-is-active" name="yandex-recurring-is-active" value="1" <?php echo $init_recurring_donation->recurring_is_active ? 'checked="checked"' : '';?>>
-            </div>
-
-        <?php } else { // New donation page displayed ?>
-
-            <label for="yandex-recurring-id"><?php _e('Yandex.Money recurring subscription ID', 'leyka');?>:</label>
-            <div class="leyka-ddata-field">
-                <input type="text" id="yandex-recurring-id" name="yandex-recurring-id" placeholder="<?php _e('Enter Yandex.Money invoice ID', 'leyka');?>" value="">
-            </div>
-            <?php
+        <?php
         }
     }
 
     public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
 
         switch($field_name) {
-            case 'recurring_id':
-            case 'recurrent_id':
+            case 'token':
+            case 'transaction_id':
             case 'invoice_id':
-            case 'yandex_recurrent_id':
-            case 'yandex_recurring_id':
-            case 'yandex_invoice_id': return get_post_meta($donation->id, '_yandex_invoice_id', true);
+            case 'paypal_token':
+            case 'paypal_transaction_id':
+            case 'paypal_invoice_id':
+                return get_post_meta($donation->id, '_paypal_token', true);
             default: return $value;
         }
     }
@@ -373,64 +381,59 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
     public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
 
         switch($field_name) {
-            case 'recurring_id':
-            case 'recurrent_id':
+            case 'token':
+            case 'transaction_id':
             case 'invoice_id':
-            case 'yandex_recurrent_id':
-            case 'yandex_recurring_id':
-            case 'yandex_invoice_id':
-                return update_post_meta($donation->id, '_yandex_invoice_id', $value);
+            case 'paypal_token':
+            case 'paypal_transaction_id':
+            case 'paypal_invoice_id':
+                return update_post_meta($donation->id, '_paypal_token', $value);
             default: return false;
         }
     }
 
     public function save_donation_specific_data(Leyka_Donation $donation) {
 
-        if(isset($_POST['yandex-recurring-id']) && $donation->recurring_id != $_POST['yandex-recurring-id']) {
-            $donation->recurring_id = $_POST['yandex-recurring-id'];
-        }
-
-        $_POST['yandex-recurring-is-active'] = !empty($_POST['yandex-recurring-is-active']);
-
-        // Check if the value's different is inside the Leyka_Donation::__set():
-        $donation->recurring_is_active = $_POST['yandex-recurring-is-active'];
+//        if(
+//            isset($_POST['cp-recurring-id']) &&
+//            $donation->recurring_id != $_POST['cp-recurring-id']
+//        ) {
+//            $donation->recurring_id = $_POST['cp-recurring-id'];
+//        }
     }
 
     public function add_donation_specific_data($donation_id, array $donation_params) {
 
-        if( !empty($donation_params['recurring_id']) ) {
-            update_post_meta($donation_id, '_yandex_invoice_id', $donation_params['recurring_id']);
-        }
+//        if( !empty($donation_params['recurring_id']) ) {
+//            update_post_meta($donation_id, '_cp_recurring_id', $donation_params['recurring_id']);
+//        }
+//        if( !empty($donation_params['transaction_id']) ) {
+//            update_post_meta($donation_id, '_cp_transaction_id', $donation_params['transaction_id']);
+//        }
     }
-}
+} // Gateway class end
 
 
-class Leyka_Paypal_Card extends Leyka_Payment_Method {
+class Leyka_Paypal_All extends Leyka_Payment_Method {
 
     protected static $_instance = null;
 
     public function _set_attributes() {
 
-        $this->_id = 'paypal_card';
+        $this->_id = 'all';
         $this->_gateway_id = 'paypal';
 
-        $this->_label_backend = __('Payment with Banking Card', 'leyka');
-        $this->_label = __('Banking Card', 'leyka');
-
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
+        $this->_label_backend = __('Payment with PayPal', 'leyka');
+        $this->_label = __('PayPal', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-//            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/visa.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/master.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/cp/icons/visa.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/cp/icons/master.png',
         ));
 
-        /** @todo Right now we can't use leyka_options()->opt() here because Gateway options are not included in options_meta ATM. Refactor this. */
-        $this->_custom_fields = get_option('leyka_'.$this->full_id.'_rebilling_available', true) ?
-            array(
-                'recurring' => '<label class="checkbox"><span><input type="checkbox" id="leyka_'.$this->full_id.'_recurring" name="leyka_recurring" value="1"></span> '.__('Monthly recurring donations', 'leyka').'</label>'
-            ) :
-            array();
+        $this->_custom_fields = array(
+//            'recurring' => '<label class="checkbox"><span><input type="checkbox" id="leyka_'.$this->full_id.'_recurring" name="leyka_recurring" value="1"></span> '.__('Recurring donations', 'leyka').'</label>'
+        );
 
         $this->_supported_currencies[] = 'rur';
 
@@ -446,231 +449,17 @@ class Leyka_Paypal_Card extends Leyka_Payment_Method {
         $this->_options = array(
             $this->full_id.'_description' => array(
                 'type' => 'html',
-                'default' => __("PayPal is an international payment system and it's just cool and gorgeous. Enjoy!", 'leyka'),
-                'title' => __('PayPal bank card payment description', 'leyka'),
-                'description' => __('Please, enter PayPal bank cards payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
+                'default' => __('PayPal is an international payment system.', 'leyka'),
+                'title' => __('PayPal payment description', 'leyka'),
+                'description' => __('Please, enter PayPal gateway description that will be shown to the donor as he will select this payment method.', 'leyka'),
                 'required' => 0,
                 'validation_rules' => array(), // List of regexp?..
             ),
         );
     }
 }
-
-/*class Leyka_Paypal_Money extends Leyka_Payment_Method {
-
-    protected static $_instance = null;
-
-    public function _set_attributes() {
-
-        $this->_id = 'yandex_money';
-        $this->_gateway_id = 'yandex';
-
-        $this->_label_backend = __('Virtual cash Yandex.money', 'leyka');
-        $this->_label = __('Yandex.money', 'leyka');
-
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
-//            LEYKA_PLUGIN_BASE_URL.'gateways/quittance/icons/sber_s.png',
-        ));
-
-        $this->_supported_currencies[] = 'rur';
-
-        $this->_default_currency = 'rur';
-    }
-
-    protected function _set_options_defaults() {
-
-        if($this->_options) {
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __("Yandex.Money is a simple and safe payment system to pay for goods and services through internet. You will have to fill a payment form, you will be redirected to the <a href='https://money.yandex.ru/'>Yandex.Money website</a> to confirm your payment. If you haven't got a Yandex.Money account, you can create it there.", 'leyka'),
-                'title' => __('Yandex.Money description', 'leyka'),
-                'description' => __('Please, enter Yandex.Money payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
-    }
-}
-
-class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
-
-    protected static $_instance = null;
-
-    public function _set_attributes() {
-
-        $this->_id = 'yandex_wm';
-        $this->_gateway_id = 'yandex';
-
-        $this->_label_backend = __('Virtual cash Webmoney', 'leyka');
-        $this->_label = __('Webmoney', 'leyka');
-
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/webmoney.png',
-        ));
-
-        $this->_supported_currencies[] = 'rur';
-
-        $this->_default_currency = 'rur';
-    }
-
-    protected function _set_options_defaults() {
-
-        if($this->_options) {
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('<a href="http://www.webmoney.ru/">WebMoney Transfer</a> is an international financial transactions system and an invironment for a business in Internet, founded in 1988. Up until now, WebMoney clients counts at more than 25 million people around the world. WebMoney system includes a services to account and exchange funds, attract new funding, solve quarrels and make a safe deals.', 'leyka'),
-                'title' => __('WebMoney description', 'leyka'),
-                'description' => __('Please, enter WebMoney payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
-    }
-}
-
-class Leyka_Yandex_Sberbank_Online extends Leyka_Payment_Method {
-
-    protected static $_instance = null;
-
-    public function _set_attributes() {
-
-        $this->_id = 'yandex_sb';
-        $this->_gateway_id = 'yandex';
-
-        $this->_label_backend = __('Sberbank Online invoicing', 'leyka');
-        $this->_label = __('Sberbank Online', 'leyka');
-
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-//        $this->_description = leyka_options()->opt_safe('yandex_wm_description');
-
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-//            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/webmoney.png',
-        ));
-
-        $this->_supported_currencies[] = 'rur';
-
-        $this->_default_currency = 'rur';
-    }
-
-    protected function _set_options_defaults() {
-
-        if($this->_options){
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('<a href="https://online.sberbank.ru/CSAFront/index.do">Sberbank Online</a> is an Internet banking service of Sberbank. It allows you to make many banking operations at any moment without applying to the bank department, using your computer.', 'leyka'),
-                'title' => __('Sberbank Online description', 'leyka'),
-                'description' => __('Please, enter Sberbank Online payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
-    }
-}
-
-class Leyka_Yandex_Alpha_Click extends Leyka_Payment_Method {
-
-    protected static $_instance = null;
-
-    public function _set_attributes() {
-
-        $this->_id = 'yandex_ab';
-        $this->_gateway_id = 'yandex';
-
-        $this->_label_backend = __('Alpha-Click invoicing', 'leyka');
-        $this->_label = __('Alpha-Click', 'leyka');
-
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-//        $this->_description = leyka_options()->opt_safe('yandex_wm_description');
-
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-//            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/webmoney.png',
-        ));
-
-        $this->_supported_currencies[] = 'rur';
-
-        $this->_default_currency = 'rur';
-    }
-
-    protected function _set_options_defaults() {
-
-        if($this->_options){
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('<a href="https://alfabank.ru/retail/internet/">Alfa-Click</a> is an Internet banking service of Alfa bank. It allows you to make many banking operations at any moment without applying to the bank department, using your computer.', 'leyka'),
-                'title' => __('Alpha-Click description', 'leyka'),
-                'description' => __('Please, enter Alpha-Click payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
-    }
-}
-
-class Leyka_Yandex_Promvzyazbank extends Leyka_Payment_Method {
-
-    protected static $_instance = null;
-
-    public function _set_attributes() {
-
-        $this->_id = 'yandex_pb';
-        $this->_gateway_id = 'yandex';
-
-        $this->_label_backend = __('Promsvyazbank invoicing', 'leyka');
-        $this->_label = __('Promsvyazbank', 'leyka');
-
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-//        $this->_description = leyka_options()->opt_safe('yandex_wm_description');
-
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-//            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/webmoney.png',
-        ));
-
-        $this->_supported_currencies[] = 'rur';
-
-        $this->_default_currency = 'rur';
-    }
-
-    protected function _set_options_defaults() {
-
-        if($this->_options){
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('<a href="http://www.psbank.ru/Personal/Everyday/Remote/">PSB-Retail</a> is an Internet banking service of Promsvyazbank. It allows you to make many banking operations at any moment without applying to the bank department, using your computer.', 'leyka'),
-                'title' => __('Promsvyazbank description', 'leyka'),
-                'description' => __('Please, enter Promsvyazbank payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
-    }
-}*/
 
 function leyka_add_gateway_paypal() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka()->add_gateway(Leyka_Paypal_Gateway::get_instance());
+    leyka_add_gateway(Leyka_Paypal_Gateway::get_instance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_paypal');
