@@ -89,6 +89,12 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 LEYKA_VERSION,
                 true
             );
+
+            add_filter('leyka_js_localized_strings', function($js_vars){
+
+                $js_vars['paypal_business_id'] = leyka_options()->opt('paypal_api_username');
+                return $js_vars;
+            });
         }
     }
 
@@ -115,10 +121,10 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
         $donation = new Leyka_Donation($donation_id);
 
-        $cp_currency = 'RUB';
+        $currency = 'RUB';
         switch($_POST['leyka_donation_currency']) {
-            case 'usd': $cp_currency = 'USD'; break;
-            case 'eur': $cp_currency = 'EUR'; break;
+            case 'usd': $currency = 'USD'; break;
+            case 'eur': $currency = 'EUR'; break;
             default:
         }
 
@@ -126,7 +132,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 //            'public_id' => trim(leyka_options()->opt('cp_public_id')),
 //            'donation_id' => $donation_id,
 //            'amount' => number_format((float)$donation->amount, 2, '.', ''),
-//            'currency' => $cp_currency,
+//            'currency' => $currency,
 //            'payment_title' => $donation->payment_title,
 //            'donor_email' => $donation->donor_email,
 //            'success_page' => get_permalink(leyka_options()->opt('success_page')),

@@ -1,44 +1,53 @@
+window.paypalCheckoutReady = function(){
+
+    paypal.checkout.setup(leyka.paypal_business_id, { /** @todo pp */
+    environment: 'sandbox',
+        locale: 'ru_RU', /** @todo pp */
+        click: function(e){
+
+            e.preventDefault();
+            console.log('HERE', e);
+
+            // var form = $(e.target).closest('form')[0]; /** @todo pp */
+            //
+            // paypal.checkout.initXO();
+            //
+            // $.support.cors = true;
+            // $.ajax({
+            //     url: "http://166.78.8.98/cgi-bin/aries.cgi?sandbox=1&direct=1&returnurl=http://166.78.8.98/cgi-bin/return.htm&cancelurl=http://166.78.8.98/cgi-bin/cancel.htm",
+            //     type: "GET",
+            //     data: '&ajax=1&onlytoken=1',
+            //     async: true,
+            //     crossDomain: true,
+            //
+            //     //Load the minibrowser with the redirection url in the success handler
+            //     success: function(token){
+            //
+            //         var url = paypal.checkout.urlPrefix +token;
+            //         paypal.checkout.startFlow(url); // Loading Mini browser with redirect url, true for async AJAX calls
+            //     },
+            //     error: function(responseData, textStatus, errorThrown){
+            //
+            //         alert("Error in ajax post "+responseData.statusText);
+            //         paypal.checkout.closeFlow(); // Gracefully Close the minibrowser in case of AJAX errors
+            //     }
+            // });
+        },
+        condition: function(){
+            console.log('Condition:', !!data.leyka_payment_method.indexOf('paypal') < 0 )
+            return !!data.leyka_payment_method.indexOf('paypal') < 0;
+        },
+        buttons: [{container: 'leyka_donation_submit'} /*, { container: 't2' }*/] /** @todo pp */
+    });
+};
 jQuery(document).ready(function($){
 
-    window.paypalCheckoutReady = function(){
-        paypal.checkout.setup(leyka.paypal_business_id, { /** @todo pp */
-            environment: 'sandbox',
-            locale: 'ru_RU', /** @todo pp */
-            click: function(e){
+    $(document).on('submit.leyka', 'form.leyka-pm-form', function(e){
 
-                e.preventDefault();
-
-                var form = $(e.target).closest('form')[0]; /** @todo pp */
-
-                paypal.checkout.initXO();
-
-                $.support.cors = true;
-                $.ajax({
-                    url: "http://166.78.8.98/cgi-bin/aries.cgi?sandbox=1&direct=1&returnurl=http://166.78.8.98/cgi-bin/return.htm&cancelurl=http://166.78.8.98/cgi-bin/cancel.htm",
-                    type: "GET",
-                    data: '&ajax=1&onlytoken=1',
-                    async: true,
-                    crossDomain: true,
-
-                    //Load the minibrowser with the redirection url in the success handler
-                    success: function(token){
-
-                        var url = paypal.checkout.urlPrefix +token;
-                        paypal.checkout.startFlow(url); // Loading Mini browser with redirect url, true for async AJAX calls
-                    },
-                    error: function(responseData, textStatus, errorThrown){
-
-                        alert("Error in ajax post "+responseData.statusText);
-                        paypal.checkout.closeFlow(); // Gracefully Close the minibrowser in case of AJAX errors
-                    }
-                });
-            },
-            condition: function(){
-                return !!data.leyka_payment_method.indexOf('paypal') < 0;
-            },
-            buttons: [{container: 'input[type="leyka_donation_submit"]'} /*, { container: 't2' }*/] /** @todo pp */
-        });
-    };
+        if( !!$(this).find('input[name="leyka_payment_method"]').val().indexOf('paypal') < 0 ) {
+            e.preventDefault();
+        }
+    });
 
     // $(document).on('click.leyka', 'input[name="leyka_donation_submit"]', function(e){
 
