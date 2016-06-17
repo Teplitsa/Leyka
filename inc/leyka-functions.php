@@ -753,3 +753,39 @@ function leyka_validate_donor_name($name) {
 function leyka_validate_email($email) {
     return $email ? filter_var($email, FILTER_VALIDATE_EMAIL) : true;
 }
+
+// For some reason wp_validate_redirect() aren't get defined in WP 3.6.1, so define it if needed:
+if( !function_exists('wp_validate_redirect') ) {
+    function wp_validate_redirect($location, $default = '') {
+        $location = trim( $location );
+        // browsers will assume 'http' is your protocol, and will obey a redirect to a URL starting with '//'
+        if ( substr($location, 0, 2) == '//' )
+            $location = 'http:' . $location;
+
+        // In php 5 parse_url may fail if the URL query part contains http://, bug #38143
+        $test = ( $cut = strpos($location, '?') ) ? substr( $location, 0, $cut ) : $location;
+
+        $lp  = parse_url($test);
+
+        // Give up if malformed URL
+        if ( false === $lp )
+            return $default;
+
+        // Allow only http and https schemes. No data:, etc.
+        if ( isset($lp['scheme']) && !('http' == $lp['scheme'] || 'https' == $lp['scheme']) )
+            return $default;
+
+        // Reject if scheme is set but host is not. This catches urls like https:host.com for which parse_url does not set the host field.
+        if ( isset($lp['scheme'])  && !isset($lp['host']) )
+            return $default;
+
+        $wpp = parse_url(home_url());
+
+        $allowed_hosts = (array) apply_filters('allowed_redirect_hosts', array($wpp['host']), isset($lp['host']) ? $lp['host'] : '');
+
+        if ( isset($lp['host']) && ( !in_array($lp['host'], $allowed_hosts) && $lp['host'] != strtolower($wpp['host'])) )
+            $location = $default;
+
+        return $location;
+    }
+}
