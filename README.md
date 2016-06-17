@@ -4,7 +4,7 @@
 
 **Scroll down for english description, please**
 
-Лейка - плагин для краудфандинга, фандрайзинга и сбора пожертвований на сайте для физических и юридических лиц. Поддерживаются платежи банковскими картами Visa и MasterCard через **Chronopay и RBK money**, также подключаются **WebMoney, Яндекс.Деньги (Yandex.Money), ROBOKASSA, SMS-платежи через стороннего провайдера** и традиционные квитанции.
+Лейка - плагин для краудфандинга, фандрайзинга и сбора пожертвований на сайте для физических и юридических лиц. Поддерживаются платежи банковскими картами Visa и MasterCard через **Cloudpayments, Chronopay и RBK money**, также подключаются **WebMoney, Яндекс.Деньги (Yandex.Money), ROBOKASSA, SMS-платежи через стороннего провайдера** и традиционные квитанции.
 
 Плагин разработан и поддерживается [Теплицей социальных технологий](//te-st.ru/).
 
@@ -77,7 +77,7 @@
 
 ## In English ##
 
-Leyka is a plugin for fundraising and donations collection via WordPress website. Supported payment methods includes bank cards Visa and MasterCard through **Chronopay and RBK money** systems, also **WebMoney, ROBOKASSA and Yandex.Money** supported. You can also use a traditional bank payment orders (quittances).
+Leyka is a plugin for fundraising and donations collection via WordPress website. Supported payment methods includes bank cards Visa and MasterCard through **Cloudpayments, Chronopay and RBK money** systems, also **WebMoney, ROBOKASSA and Yandex.Money** supported. You can also use a traditional bank payment orders (quittances).
 
 This plugin developed and supported by [Teplitsa of social technologies](//te-st.ru/).
 

@@ -15,7 +15,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 _For English description scroll down, please._
 
-«Онлайн-Лейка» — это плагин для краудфандинга, фандрайзинга и сбора пожертвований на вашем сайте. Поддерживаются платежи банковскими картами Visa и MasterCard через **Chronopay и RBK money**, также подключаются **WebMoney, Яндекс.Деньги (Yandex.Money), ROBOKASSA, SMS-платежи через стороннего провайдера** и традиционные квитанции.
+«Онлайн-Лейка» — это плагин для краудфандинга, фандрайзинга и сбора пожертвований на вашем сайте. Поддерживаются платежи банковскими картами Visa и MasterCard через **Cloudpayments, Chronopay и RBK money**, также подключаются **WebMoney, Яндекс.Деньги (Yandex.Money), ROBOKASSA, SMS-платежи через стороннего провайдера** и традиционные квитанции.
 
 Плагин разработан и поддерживается [Теплицей социальных технологий](//te-st.ru/).
 
@@ -67,7 +67,7 @@ _For English description scroll down, please._
 
 **IN ENGLISH**
 
-Leyka is a plugin for fundraising and donations collection via WordPress website. Supported payment methods includes bank cards Visa and MasterCard through **Chronopay and RBK money** systems, also **WebMoney, ROBOKASSA and Yandex.Money** supported. You can also use a traditional bank payment orders (quittances).
+Leyka is a plugin for fundraising and donations collection via WordPress website. Supported payment methods includes bank cards Visa and MasterCard through **Cloudpayments, Chronopay and RBK money** systems, also **WebMoney, ROBOKASSA and Yandex.Money** supported. You can also use a traditional bank payment orders (quittances).
 
 This plugin developed and supported by [Teplitsa of social technologies](//te-st.ru/).
 
