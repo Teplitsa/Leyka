@@ -465,7 +465,7 @@ class Leyka_Paypal_All extends Leyka_Payment_Method {
     }
 }
 
-function leyka_add_gateway_paypal() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka_add_gateway(Leyka_Paypal_Gateway::get_instance());
-}
-add_action('leyka_init_actions', 'leyka_add_gateway_paypal');
+//function leyka_add_gateway_paypal() { // Use named function to leave a possibility to remove/replace it on the hook
+//    leyka_add_gateway(Leyka_Paypal_Gateway::get_instance());
+//}
+//add_action('leyka_init_actions', 'leyka_add_gateway_paypal');
