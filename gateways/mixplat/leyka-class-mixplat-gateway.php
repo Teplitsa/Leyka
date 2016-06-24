@@ -97,7 +97,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             return;
         }
 
-        $phone = '7'.substr(str_replace(array('+', ' ', '-', '.'), '', trim($form_data['mixplat-phone'])), -10);
+        $phone = '7'.substr(str_replace(array('+', ' ', '-', '.'), '', trim($form_data['leyka_donor_phone'])), -10);
 
         $is_test = leyka_options()->opt('mixplat_test_mode') ? 1 : 0;
 
@@ -345,10 +345,10 @@ class Leyka_Mixplat_Sms extends Leyka_Payment_Method {
         ));
 
         $this->_custom_fields = array(
-            'mixplat_phone' => apply_filters('', '<label class="input req"><input id="leyka_'.$this->full_id.'_phone" class="required phone-num" type="text" value="" name="leyka_donor_phone" placeholder="'.__('Your phone number in the 7xxxxxxxxxx format', 'leyka').'">
+            'mixplat_phone' => apply_filters('leyka_donor_phone_field_html', '<label class="input req"><input id="leyka_'.$this->full_id.'_phone" class="required phone-num" type="text" value="" name="leyka_donor_phone" placeholder="'.__('Your phone number in the 7xxxxxxxxxx format', 'leyka').'">
 </label>
 <p class="field-comment">'.__('We will use this phone number to make a mobile payment', 'leyka').'</p>
-<p class="leyka_donor_phone-error field-error"></p>'),
+<p class="leyka_donor_phone-error field-error"></p>', $this),
         );
 
         $this->_supported_currencies[] = 'rur';
