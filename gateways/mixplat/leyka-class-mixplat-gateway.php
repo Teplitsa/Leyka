@@ -85,6 +85,13 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                 true
             );
         }
+
+        add_filter('leyka_js_localized_strings', function($js_data){
+
+            $js_data['phone_invalid'] = __('Please, enter a phone number in a 7xxxxxxxxxx format.', 'leyka');
+
+            return $js_data;
+        });
     }
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
@@ -262,9 +269,9 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         return array(
             __('MIXPLAT payment ID:', 'leyka') => $this->_get_value_if_any($vars, 'id'),
-            __('MIXPLAT operation result:', 'leyka') => $this->_get_value_if_any($vars, 'result'),
-			__('MIXPLAT operator:', 'leyka') => $this->_get_value_if_any($vars, 'operator'),
-			__('MIXPLAT error message:', 'leyka') => $this->_get_value_if_any($vars, 'message'),
+            __('Operation result:', 'leyka') => $this->_get_value_if_any($vars, 'result'),
+			__('Operator:', 'leyka') => $this->_get_value_if_any($vars, 'operator'),
+			__('Error message:', 'leyka') => $this->_get_value_if_any($vars, 'message'),
         );		
     }
 
@@ -274,7 +281,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
             $donation = leyka_get_validated_donation($donation);?>
 
-            <label><?php _e('MIXPLAT phone', 'leyka');?>:</label>
+            <label><?php _e('Phone number', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
 
             <?php if($donation->type == 'correction') {?>
@@ -286,7 +293,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         <?php } else { // New donation page displayed ?>
 
-            <label for="mixplat-phone"><?php _e('MIXPLAT phone', 'leyka');?>:</label>
+            <label for="mixplat-phone"><?php _e('Phone number', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
                 <input type="text" id="mixplat-phone" name="mixplat-phone" placeholder="<?php _e('Enter a phone number', 'leyka');?>" value="">
             </div>
@@ -345,7 +352,7 @@ class Leyka_Mixplat_Sms extends Leyka_Payment_Method {
         ));
 
         $this->_custom_fields = array(
-            'mixplat_phone' => apply_filters('leyka_donor_phone_field_html', '<label class="input req"><input id="leyka_'.$this->full_id.'_phone" class="required phone-num" type="text" value="" name="leyka_donor_phone" placeholder="'.__('Your phone number in the 7xxxxxxxxxx format', 'leyka').'">
+            'mixplat_phone' => apply_filters('leyka_donor_phone_field_html', '<label class="input req"><input id="leyka_'.$this->full_id.'_phone" class="required phone-num mixplat-phone" type="text" value="" name="leyka_donor_phone" placeholder="'.__('Your phone number in the 7xxxxxxxxxx format', 'leyka').'" maxlength="11">
 </label>
 <p class="field-comment">'.__('We will use this phone number to make a mobile payment', 'leyka').'</p>
 <p class="leyka_donor_phone-error field-error"></p>', $this),

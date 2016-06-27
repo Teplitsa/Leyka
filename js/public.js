@@ -420,6 +420,13 @@ jQuery(document).ready(function($){
             $error.html('').hide();
         }
 
+        $form.trigger('validate-custom-form-fields.leyka', [$form]);
+        if($form.data('custom-fields-are-invalid')) {
+
+            is_valid = false;
+            $form.removeData('custom-fields-are-invalid');
+        }
+
         return is_valid;
     }
 
