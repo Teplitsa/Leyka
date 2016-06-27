@@ -61,8 +61,11 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
 
+        if(empty($this->_payment_methods['mobile'])) {
+            $this->_payment_methods['mobile'] = Leyka_Mixplat_Mobile::get_instance();
+        }
         if(empty($this->_payment_methods['sms'])) {
-            $this->_payment_methods['sms'] = Leyka_Mixplat_Sms::get_instance();
+            $this->_payment_methods['sms'] = Leyka_Mixplat_Text::get_instance();
         }
     }
 
@@ -75,7 +78,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
     public function enqueue_gateway_scripts() {
 
-        if(Leyka_Mixplat_Sms::get_instance()->active) {
+        if(Leyka_Mixplat_Mobile::get_instance()->active) {
 
             wp_enqueue_script(
                 'leyka-mixplat',
@@ -333,17 +336,17 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 } // Gateway class end
 
 
-class Leyka_Mixplat_Sms extends Leyka_Payment_Method {
+class Leyka_Mixplat_Mobile extends Leyka_Payment_Method {
 
     protected static $_instance = null;
 
     public function _set_attributes() {
 
-        $this->_id = 'sms';
+        $this->_id = 'mobile';
         $this->_gateway_id = 'mixplat';
 
-        $this->_label_backend = __('Payment with SMS', 'leyka');
-        $this->_label = __('SMS', 'leyka');
+        $this->_label_backend = __('Mobile payment', 'leyka');
+        $this->_label = __('Mobile payment', 'leyka');
 
         // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
@@ -373,9 +376,75 @@ class Leyka_Mixplat_Sms extends Leyka_Payment_Method {
             $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('MIXPLAT allows a simple and safe way to pay for goods and services with your mobile phone by sending SMS.', 'leyka'),
-                'title' => __('MIXPLAT payment description', 'leyka'),
+                'title' => __('Mobile payment description', 'leyka'),
                 'description' => __('Please, enter MIXPLAT gateway description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
                 'required' => 0,
+                'validation_rules' => array(), // List of regexp?..
+            ),
+            $this->full_id.'_details' => array(
+                'type' => 'html',
+                'default' => '',
+                'title' => __('Ways to donate via mobile payments', 'leyka'),
+                'description' => __('Please, set a text to describe a donation via mobile payments.', 'leyka'),
+                'required' => 1,
+                'validation_rules' => array(), // List of regexp?..
+            ),
+        );
+    }
+}
+
+class Leyka_Mixplat_Text extends Leyka_Payment_Method {
+
+    protected static $_instance = null;
+
+    public function _set_attributes() {
+
+        $this->_id = 'sms';
+        $this->_gateway_id = 'mixplat';
+
+        $this->_label_backend = __('Payments via SMS', 'leyka');
+        $this->_label = __('Payments via SMS', 'leyka');
+
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
+
+        $this->_support_global_fields = false;
+
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+            LEYKA_PLUGIN_BASE_URL.'gateways/mixplat/icons/sms.png',
+        ));
+
+        $this->_supported_currencies[] = 'rur';
+
+        $this->_default_currency = 'rur';
+    }
+
+    protected function _set_dynamic_attributes() {
+        $this->_custom_fields = array(
+            'sms_details' => apply_filters('leyka_the_content', leyka_options()->opt_safe($this->full_id.'_details')),
+        );
+    }
+
+    protected function _set_options_defaults() {
+
+        if($this->_options) {
+            return;
+        }
+
+        $this->_options = array(
+            $this->full_id.'_description' => array(
+                'type' => 'html',
+                'default' => __('You can make a donation by sending an SMS.', 'leyka'),
+                'title' => __('Comment to the message of donations via SMS', 'leyka'),
+                'description' => __('Please, set a text of payments via SMS description.', 'leyka'),
+                'required' => 0,
+                'validation_rules' => array(), // List of regexp?..
+            ),
+            $this->full_id.'_details' => array(
+                'type' => 'html',
+                'default' => '',
+                'title' => __('Ways to donate via SMS', 'leyka'),
+                'description' => __('Please, set a text to describe a donation via SMS.', 'leyka'),
+                'required' => 1,
                 'validation_rules' => array(), // List of regexp?..
             ),
         );
