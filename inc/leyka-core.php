@@ -440,7 +440,7 @@ class Leyka {
                 delete_option('leyka_options_installed');
             }
 
-            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
+//            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
 
             foreach(leyka_options()->get_options_names() as $name) {
 
@@ -449,10 +449,6 @@ class Leyka {
                     update_option("leyka_$name", $option['value']);
                 }
             }
-
-            // Mostly to initialize gateways' and PM's options before updating them:
-//            if( !did_action('leyka_init_actions') )
-//                do_action('leyka_init_actions');
 
             /** Upgrade gateway and PM options structure in the DB */
             foreach(leyka_get_gateways() as $gateway) {

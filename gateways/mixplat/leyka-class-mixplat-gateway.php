@@ -433,7 +433,7 @@ class Leyka_Mixplat_Text extends Leyka_Payment_Method {
         $this->_options = array(
             $this->full_id.'_description' => array(
                 'type' => 'html',
-                'default' => __('You can make a donation by sending an SMS.', 'leyka'),
+                'default' => '',
                 'title' => __('Comment to the message of donations via SMS', 'leyka'),
                 'description' => __('Please, set a text of payments via SMS description.', 'leyka'),
                 'required' => 0,
@@ -441,7 +441,7 @@ class Leyka_Mixplat_Text extends Leyka_Payment_Method {
             ),
             $this->full_id.'_details' => array(
                 'type' => 'html',
-                'default' => '',
+                'default' => __('You can make a donation by sending an SMS on the number XXXX.', 'leyka'),
                 'title' => __('Ways to donate via SMS', 'leyka'),
                 'description' => __('Please, set a text to describe a donation via SMS.', 'leyka'),
                 'required' => 1,
