@@ -156,6 +156,7 @@ PHP at least 5.3 is required.
 == Changelog ==
 = 2.2.10 =
  * New: MIXPLAT support added. Mobile payments and dedicated text box supported.
+ * Tweak: now plugin uses EasyModal to work with modal popups.
  * Fix: russian naming and localization fixes.
  * Fix: lots of small fixes.
 

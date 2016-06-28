@@ -593,9 +593,6 @@
 #leyka_donation_emails_status .leyka-ddata-string {
   margin: 7px 0; }
 
-.leyka-no-donor-thanks,
-.no-thanks.donor {
-  color: #AA0000; }
 
 .send-donor-thanks {
   display: inline;
