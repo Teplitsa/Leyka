@@ -741,7 +741,7 @@ class Leyka {
         $args = array(
             'labels' => array(
                 'name'          => __('Campaigns', 'leyka'),
-                'singular_name' => __('Campaign', 'leyka'),
+                'singular_name' => _x('Campaign', 'In genitive case', 'leyka'),
                 'menu_name'     => __('Campaigns', 'leyka'),
                 'all_items'     => __('All Campaigns', 'leyka'),
                 'add_new'       => __('New campaign', 'leyka'),

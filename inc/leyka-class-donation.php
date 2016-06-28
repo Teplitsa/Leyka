@@ -451,7 +451,7 @@ class Leyka_Donation_Management {
                         get_bloginfo('name'),
                         leyka_options()->opt('org_full_name'),
                         $donation->id,
-                        $donation->donor_name ? $donation->donor_name : __('anonimous', 'leyka'),
+                        $donation->donor_name ? $donation->donor_name : __('anonymous', 'leyka'),
                         $donation->payment_method_label,
                         $campaign->title,
                         $campaign->payment_title,
@@ -639,7 +639,7 @@ class Leyka_Donation_Management {
 		<legend><?php _e('Campaign Data', 'leyka');?></legend>
 
         <div class="leyka-ddata-string">			
-			<label><?php _e('Campaign', 'leyka');?>:</label>
+			<label><?php echo _x('Campaign', 'In subjective case', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
 			<?php if($campaign->id && $campaign->status == 'publish') { ?>
 			<span class="text-line">
@@ -980,7 +980,8 @@ class Leyka_Donation_Management {
 		$columns['ID'] = 'ID';
 
 		if(isset($unsort['title'])) {
-			$columns['title'] = __('Campaign', 'leyka');
+
+			$columns['title'] = _x('Campaign', 'In subjective case', 'leyka');
 			unset($unsort['title']);
 		}
 
@@ -993,10 +994,10 @@ class Leyka_Donation_Management {
 		$columns['status'] = __('Status', 'leyka');
 		$columns['type'] = __('Payment type', 'leyka');
 		$columns['emails'] = __('Letter', 'leyka');
-//		$columns[''] = __('', 'leyka');
 
-		if($unsort)
+		if($unsort) {
 			$columns = array_merge($columns, $unsort);
+        }
 
 		return $columns;
 	}
