@@ -194,7 +194,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         $json_string = file_get_contents('php://input');
 
-        $response = [];
+        $response = array();
         try {
             $response = json_decode($json_string, true);
         } catch(Exception $ex) {
@@ -208,6 +208,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             'test', 'signature'
         );
         foreach($nessessary_params as $param_name) {
+
             if(empty($response[$param_name])) {
 
                 $message = sprintf(__("This message has been sent because a call to your MIXPLAT callback was made without required parameters given. The details of the call are below. The parameter missing: ", 'leyka'), $param_name)."\n\r\n\r";
