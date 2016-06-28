@@ -50,6 +50,7 @@ _For English description scroll down, please._
 * Частично соответствует стандартам доступности WCAG 2.0
 
 Подробная инструкция по настройке плагина доступна на официальном сайте в разделе [Инструкция](https://leyka.te-st.ru/instruction/). Она также содержит видео-уроки:
+
 * [настройка и базовые функции плагина](https://leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/)
 * [использование популярных функций (виджетов, шорткодов и т.п.)](https://leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/)
 
