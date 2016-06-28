@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Leyka Plugin\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/leyka\n"
 "POT-Creation-Date: 2014-09-11 08:25:09+00:00\n"
-"POT-Revision-Date: Tue Jun 28 2016 13:17:20 GMT+0300\n"
+"POT-Revision-Date: Tue Jun 28 2016 13:59:56 GMT+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2006,7 +2006,7 @@ msgid "dear donor"
 msgstr ""
 
 #: ../inc/leyka-class-donation.php:454
-msgid "anonimous"
+msgid "anonymous"
 msgstr ""
 
 #: ../inc/leyka-class-donation.php:496

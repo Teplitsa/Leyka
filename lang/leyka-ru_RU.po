@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Leyka Plugin\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-09-11 08:25:09+00:00\n"
-"PO-Revision-Date: Tue Jun 28 2016 13:17:55 GMT+0300\n"
+"PO-Revision-Date: Tue Jun 28 2016 14:00:50 GMT+0300\n"
 "Last-Translator: ahaenor <ahaenor@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: Russian\n"
@@ -23,15 +23,9 @@ msgstr ""
 "esc_html_x:1,2c;comments_number_link:2,3;t:1;st:1;trans:1;transChoice:1,2\n"
 "X-Loco-Target-Locale: ru_RU"
 
-#: ../inc/leyka-class-donation.php:642 ../inc/leyka-class-donation.php:984
-msgctxt "In subjective case"
-msgid "Campaign"
-msgstr "Кампания"
-
-#: ../inc/leyka-core.php:744
-msgctxt "In genitive case"
-msgid "Campaign"
-msgstr "Кампанию"
+#: ../inc/leyka-class-donation.php:454
+msgid "anonymous"
+msgstr "аноним"
 
 #. #-#-#-#-#  tmp-leyka.pot (Leyka 2.2.8)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
@@ -2227,10 +2221,6 @@ msgstr ""
 msgid "dear donor"
 msgstr "уважаемый донор"
 
-#: ../inc/leyka-class-donation.php:454
-msgid "anonimous"
-msgstr "аноним"
-
 #: ../inc/leyka-class-donation.php:496
 msgid "New donation data"
 msgstr "Данные нового пожертвования"
@@ -2314,6 +2304,11 @@ msgstr "Информация об источнике пожертвования.
 #: inc/leyka-class-donation.php:993
 msgid "Donation date"
 msgstr "Дата пожертвования"
+
+#: ../inc/leyka-class-donation.php:642 ../inc/leyka-class-donation.php:984
+msgctxt "In subjective case"
+msgid "Campaign"
+msgstr "Кампания"
 
 #: ../inc/leyka-class-donation.php:646 ../inc/leyka-core.php:749
 msgid "Edit campaign"
@@ -2748,6 +2743,11 @@ msgstr "Пожертвования не найдены"
 #: ../inc/leyka-core.php:719
 msgid "Donations not found in Trash"
 msgstr "Пожертвования не найдены в Корзине"
+
+#: ../inc/leyka-core.php:744
+msgctxt "In genitive case"
+msgid "Campaign"
+msgstr "Кампанию"
 
 #: ../inc/leyka-core.php:746
 msgid "All Campaigns"
