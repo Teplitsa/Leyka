@@ -4,7 +4,7 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндексденьги
 Requires at least: 3.6.1
-Tested up to: 4.5.2
+Tested up to: 4.5.3
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -35,7 +35,8 @@ _For English description scroll down, please._
 
 **Основные функции**
 
-* Широкий набор платежных систем и опций (включая Яндекс.Деньги, CloudPayments, Chronopay, RBK Money, ROBOKASSA и печать банковских квитанций)
+* Широкий набор платежных систем и опций (включая Яндекс.Деньги, CloudPayments, MIXPLAT, Chronopay, RBK Money, ROBOKASSA и печать банковских квитанций)
+* Поддерживается приём мобильных платежей
 * Подходит для физических и юридических лиц
 * Автоматическая рассылка email-сообщений жертвователям
 * Поддержка нескольких языков
@@ -153,6 +154,10 @@ PHP at least 5.3 is required.
 10. События Google Analytics
 
 == Changelog ==
+= 2.2.10 =
+ * New: MIXPLAT support added. Mobile payments and dedicated text box supported.
+ * Fix: russian naming and localization fixes.
+ * Fix: lots of small fixes.
 
 = 2.2.9.3 =
  * New: server-side data validation is enforced.
