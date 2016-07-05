@@ -89,8 +89,15 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
 
-		if(false === strpos($pm_id, 'chronopay'))
-			return $form_data_vars; //it's not our PM
+		if(false === strpos($pm_id, 'chronopay')) {
+            return $form_data_vars; // It's not our PM
+        }
+
+        if(is_wp_error($donation_id)) { /** @var WP_Error $donation_id */
+            return array('status' => 1, 'message' => $donation_id->get_error_message());
+        } else if( !$donation_id ) {
+            return array('status' => 1, 'message' => __('The donation was not created due to error.', 'leyka'));
+        }
 
         $donation = new Leyka_Donation($donation_id);
 

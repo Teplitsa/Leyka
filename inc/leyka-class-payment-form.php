@@ -449,7 +449,7 @@ function leyka_pf_get_currency_value() {
 }
 
 function leyka_pf_get_donor_name_value() {
-    return empty($_POST['leyka_donor_name']) ? '' : $_POST['leyka_donor_name'];
+    return empty($_POST['leyka_donor_name']) ? '' : stripslashes($_POST['leyka_donor_name']);
 }
 
 function leyka_pf_get_donor_email_value() {

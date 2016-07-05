@@ -906,6 +906,18 @@ class Leyka {
 
         $donation_id = $this->log_submission();
 
+        if(is_wp_error($donation_id)) { /** @var WP_Error $donation_id */
+
+            $this->add_payment_form_error($donation_id);
+            return;
+
+        } else if( !$donation_id ) {
+
+            $error = new WP_Error('unknown_donation_submit_error', __('The donation was not created due to error.', 'leyka'));
+            $this->add_payment_form_error($error);
+            return;
+        }
+
         do_action(
             'leyka_payment_form_submission-'.$pm[0],
             $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST
@@ -914,10 +926,6 @@ class Leyka {
         $this->_payment_vars = apply_filters('leyka_submission_form_data-'.$pm[0], $this->_payment_vars, $pm[1], $donation_id);
 
         $this->_payment_url = apply_filters('leyka_submission_redirect_url-'.$pm[0], $this->_payment_url, $pm[1]);
-
-        if($this->payment_form_has_errors()) { // No logging needed if submit attempt failed
-            wp_delete_post($donation_id, true);
-        }
     }
 
     /** Save a base submission info and return new donation ID, so gateway can add it's specific data to the logs. */

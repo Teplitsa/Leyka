@@ -722,7 +722,7 @@ function leyka_itv_info_widget() {
 }
 
 function leyka_validate_donor_name($name) {
-    return $name ? !preg_match('/[^\\x{0410}-\\x{044F}\w\s\-_\'\"]/iu', $name) : true;
+    return $name ? !preg_match('/[^\\x{0410}-\\x{044F}\w\s\-_\']/iu', $name) : true;
 }
 
 function leyka_validate_email($email) {
@@ -732,6 +732,7 @@ function leyka_validate_email($email) {
 // For some reason wp_validate_redirect() aren't get defined in WP 3.6.1, so define it if needed:
 if( !function_exists('wp_validate_redirect') ) {
     function wp_validate_redirect($location, $default = '') {
+
         $location = trim( $location );
         // browsers will assume 'http' is your protocol, and will obey a redirect to a URL starting with '//'
         if ( substr($location, 0, 2) == '//' )

@@ -643,7 +643,7 @@ class Leyka_Donation_Management {
 			<div class="leyka-ddata-field">
 			<?php if($campaign->id && $campaign->status == 'publish') { ?>
 			<span class="text-line">
-            <span class="campaign-name"><?php echo $campaign->title;?></span> <span class="campaign-actions"><a href="<?php echo admin_url('/post.php?action=edit&post='.$campaign->id);?>"><?php _e('Edit campaign', 'leyka');?></a> <a href="<?php echo $campaign->url;?>" target="_blank"><?php _e('Preview campaign', 'leyka');?></a></span></span>
+            <span class="campaign-name"><?php echo htmlentities($campaign->title, ENT_QUOTES, 'UTF-8');?></span> <span class="campaign-actions"><a href="<?php echo admin_url('/post.php?action=edit&post='.$campaign->id);?>"><?php _e('Edit campaign', 'leyka');?></a> <a href="<?php echo $campaign->url;?>" target="_blank"><?php _e('Preview campaign', 'leyka');?></a></span></span>
 
 			<?php } else {
 				echo '<span class="text-line">'.__('the campaign has been removed or drafted', 'leyka').'</span>';
@@ -689,7 +689,7 @@ class Leyka_Donation_Management {
             <?php } else {?>
 
                 <span class="fake-input">
-                    <?php echo $donation->donor_name ? htmlentities($donation->donor_name, ENT_QUOTES, 'UTF-8') : __('Anonymous', 'leyka');?>
+                    <?php echo $donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka');?>
                 </span>
             <?php }?>
 
@@ -1011,7 +1011,7 @@ class Leyka_Donation_Management {
 				$amount_css = ($donation->sum < 0) ? 'amount-negative' : 'amount';
 				echo '<span class="'.$amount_css.'">'.$donation->amount.'&nbsp;'.$donation->currency_label.'</span>';
                 break;
-            case 'donor': echo htmlentities($donation->donor_name, ENT_QUOTES, 'UTF-8'); break;
+            case 'donor': echo $donation->donor_name; break;
             case 'method':
                 $gateway_label = $donation->gateway_id ? $donation->gateway_label : __('Custom payment info', 'leyka');
                 $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;
@@ -1056,6 +1056,7 @@ class Leyka_Donation_Management {
         $sortable_columns['donation_date'] = 'donation_date';
         $sortable_columns['donor'] = 'donor_name';
         $sortable_columns['type'] = 'payment_type';
+        $sortable_columns['method'] = 'leyka_payment_method';
 //        $sortable_columns['status'] = 'donation_status'; // Apparently, WP can't sort posts by status
 
         return $sortable_columns;
@@ -1272,11 +1273,7 @@ class Leyka_Donation {
             $currency_rate = 1.0;
         }
 
-        add_post_meta(
-            $id,
-            'leyka_main_curr_amount',
-            $currency == 'RUR' ? $amount : $amount*$currency_rate
-        );
+        add_post_meta($id, 'leyka_main_curr_amount', $currency == 'RUR' ? $amount : $amount*$currency_rate);
 
         $value = empty($params['donor_name']) ? leyka_pf_get_donor_name_value() : trim($params['donor_name']);
         if($value && !leyka_validate_donor_name($value)) { // Validate donor's name
@@ -1284,7 +1281,7 @@ class Leyka_Donation {
             wp_delete_post($id, true);
             return new WP_Error('incorrect_donor_name', __('Incorrect donor name given while trying to add a donation', 'leyka'));
         }
-        add_post_meta($id, 'leyka_donor_name', $value);
+        add_post_meta($id, 'leyka_donor_name', htmlentities($value, ENT_QUOTES, 'UTF-8'));
 
         $value = empty($params['donor_email']) ? leyka_pf_get_donor_email_value() : $params['donor_email'];
         if($value && !filter_var($value, FILTER_VALIDATE_EMAIL)) {

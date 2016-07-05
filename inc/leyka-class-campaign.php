@@ -355,14 +355,14 @@ class Leyka_Campaign_Management {
 				<label for="campaign-embed-code"><?php _e("To embed a campaign card in some other web page, insert the following code in page HTML:", 'leyka');?></label>
 				<textarea class="embed-code" id="campaign-embed-code" class="campaign-embed-code"><?php echo self::get_card_embed_code($campaign->ID, true); ?></textarea>
 			</div>
-			
+
 		</div>
-		
+
 		<div class="leyka-embed-preview">
 			<h4><?php _e('Preview', 'leyka');?></h4>
 			<?php echo self::get_card_embed_code($campaign->ID, false); ?>
 		</div>
-		
+
 	</div>
     <?php }
 
@@ -374,7 +374,7 @@ class Leyka_Campaign_Management {
 
 		return '<iframe width="'.(int)$w.'" height="'.(int)$h.'" src="'.$link.'"></iframe>';
 	}
-	
+
 	public function save_data($campaign_id, WP_Post $campaign) {
 
 		$campaign = new Leyka_Campaign($campaign);
@@ -388,7 +388,7 @@ class Leyka_Campaign_Management {
         if( !empty($_REQUEST['payment_title']) && $campaign->payment_title != $_REQUEST['payment_title'] ) {
 
             $meta['payment_title'] = trim($_REQUEST['payment_title']);
-            $meta['payment_title'] = esc_attr(htmlspecialchars($meta['payment_title'], ENT_QUOTES, 'UTF-8'));
+            $meta['payment_title'] = esc_attr(htmlentities($meta['payment_title'], ENT_QUOTES, 'UTF-8'));
         }
 
         $_REQUEST['is_finished'] = !empty($_REQUEST['is_finished']) ? 1 : 0;
