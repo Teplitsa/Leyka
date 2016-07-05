@@ -4,7 +4,7 @@ jQuery(document).ready(function($){
     $(document).on('validate-custom-form-fields.leyka', 'form.leyka-pm-form', function(e, $form){
 
         // Selected PM don't belong to the MIXPLAT gateway:
-        if($form.find('input[name="leyka_payment_method"]').val().indexOf('mixplat') < 0) {
+        if(leyka_get_pm_full_id($form).indexOf('mixplat') < 0) {
             return;
         }
 

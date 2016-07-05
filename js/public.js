@@ -80,21 +80,6 @@ jQuery(document).ready(function($){
         return currency;
     }
 
-    // Get currenly selected PM's full ID:
-    function leyka_get_pm_full_id($form) {
-
-        var template = $form.parents('#leyka-payment-form').data('template'),
-            pm_full_id = '';
-
-        switch(template) {
-            case 'radio': pm_full_id = $form.find('input[name="leyka_payment_method"]:checked').val(); break;
-            case 'toggles': pm_full_id = $form.find('input[name="leyka_payment_method"]').val(); break;
-            default:
-        }
-
-        return pm_full_id;
-    }
-
     // Toggles template behavior:
     $('.toggle.toggled').find('.leyka-toggle-area').css({display: 'block'});
 
@@ -513,6 +498,21 @@ function leyka_decode_htmlentities(encoded_text) {
     textArea.innerHTML = encoded_text;
 
     return textArea.value;
+}
+
+/** Get currenly selected PM's full ID */
+function leyka_get_pm_full_id($form) {
+
+    var template = $form.parents('#leyka-payment-form').data('template'),
+        pm_full_id = '';
+
+    switch(template) {
+        case 'radio': pm_full_id = $form.find('input[name="leyka_payment_method"]:checked').val(); break;
+        case 'toggles': pm_full_id = $form.find('input[name="leyka_payment_method"]').val(); break;
+        default:
+    }
+
+    return pm_full_id;
 }
 
 /** @var e JS keyup/keydown event */
