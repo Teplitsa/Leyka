@@ -1,36 +1,5 @@
 jQuery(document).ready(function($){
 
-    /** @var e JS keyup/keydown event */
-    function leyka_is_special_key(e) {
-
-        // Allowed special keys
-        return (
-            e.keyCode == 9 || // Tab
-            (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
-            (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
-            (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
-        );
-    }
-
-    /** @var e JS keyup/keydown event */
-    function leyka_is_digit_key(e, numpad_allowed) {
-
-        if( // Allowed special keys
-            $.inArray(e.keyCode, [46, 8, 9, 13]) != -1 || // Backspace, delete, tab, enter
-            (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
-            (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
-            (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
-        ) {
-            return true;
-        }
-
-        if(typeof numpad_allowed != 'undefined' && !!numpad_allowed) {
-            return !((e.shiftKey || e.keyCode < 48 || e.keyCode > 57) && (e.keyCode < 96 || e.keyCode > 105));
-        } else {
-            return false;
-        }
-    }
-
     // Auto-select the code to embed:
     $('.embed-code').on('focus.leyka keyup.leyka', function(e){
 
@@ -537,6 +506,46 @@ jQuery(document).ready(function($){
     });
 });
 
+/** Change "&lt;" to "<", "&rt;" to ">", etc. */
+function leyka_decode_htmlentities(encoded_text) {
+
+    var textArea = document.createElement('textarea');
+    textArea.innerHTML = encoded_text;
+
+    return textArea.value;
+}
+
+/** @var e JS keyup/keydown event */
+function leyka_is_special_key(e) {
+
+    // Allowed special keys
+    return (
+        e.keyCode == 9 || // Tab
+        (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
+        (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
+        (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
+    );
+}
+
+/** @var e JS keyup/keydown event */
+function leyka_is_digit_key(e, numpad_allowed) {
+
+    if( // Allowed special keys
+    $.inArray(e.keyCode, [46, 8, 9, 13]) != -1 || // Backspace, delete, tab, enter
+    (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
+    (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
+    (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
+    ) {
+        return true;
+    }
+
+    if(typeof numpad_allowed != 'undefined' && !!numpad_allowed) {
+        return !((e.shiftKey || e.keyCode < 48 || e.keyCode > 57) && (e.keyCode < 96 || e.keyCode > 105));
+    } else {
+        return false;
+    }
+}
+
 function is_email(email) {
-    return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test(email);
+    return /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i.test(email);
 }

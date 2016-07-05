@@ -76,6 +76,12 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         return isset($currencies[$leyka_currency_id]) ? $currencies[$leyka_currency_id] : 'RUB';
     }
 
+    public function localize_js_strings($js_data){
+        return array_merge($js_data, array(
+            'phone_invalid' => __('Please, enter a phone number in a 7xxxxxxxxxx format.', 'leyka'),
+        ));
+    }
+
     public function enqueue_gateway_scripts() {
 
         if(Leyka_Mixplat_Mobile::get_instance()->active) {
@@ -89,12 +95,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             );
         }
 
-        add_filter('leyka_js_localized_strings', function($js_data){
-
-            $js_data['phone_invalid'] = __('Please, enter a phone number in a 7xxxxxxxxxx format.', 'leyka');
-
-            return $js_data;
-        });
+        add_filter('leyka_js_localized_strings', array($this, 'localize_js_strings'));
     }
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {

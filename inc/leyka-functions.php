@@ -515,7 +515,6 @@ function leyka_get_actual_currency_rates() {
             $xml->close();
 
             if( !empty($currencies_tmp[0]) ) {
-
                 foreach($currencies_tmp[0]['value'] as $currency) {
 
                     $currency = $currency['value']; // Just to shorten this things a bit
@@ -600,7 +599,6 @@ function leyka_is_min_payment_settings_complete() {
         if( !isset($gateway_options_valid[$gateway->id]) ) {
 
             foreach($gateway->get_options_names() as $option_name) {
-
                 if( !leyka_options()->is_valid($option_name) ) {
 
                     $gateway_options_valid[$gateway->id] = false;
@@ -635,9 +633,7 @@ function leyka_is_widget_active() {
 
     // is_active_widget() is not working for some reason, so emulate it:
     foreach(wp_get_sidebars_widgets() as $sidebar => $widgets) {
-
         foreach((array)$widgets as $widget) {
-
             if(stristr($widget, 'leyka_') !== false) {
                 return true;
             }
@@ -684,9 +680,7 @@ function leyka_form_is_screening($widgets_also = true) {
 
     $content_has_shortcode = false;
     if(get_post()) {
-
         foreach(leyka_get_shortcodes() as $shortcode_tag) {
-
             if(has_shortcode(get_post()->post_content, $shortcode_tag)) {
 
                 $content_has_shortcode = true;

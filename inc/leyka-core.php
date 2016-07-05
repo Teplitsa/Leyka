@@ -936,7 +936,7 @@ class Leyka {
         )));
 
         if(is_wp_error($donation_id)) {
-            return false;
+            return $donation_id;
         } else {
 
             $campaign->increase_submits_counter();

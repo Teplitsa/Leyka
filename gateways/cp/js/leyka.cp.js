@@ -2,7 +2,10 @@ jQuery(document).ready(function($){
 
     $(document).on('submit.leyka', 'form.leyka-pm-form', function(e){
 
-        var $form = $(this);
+        /** @var leyka object Localization strings */
+
+        var $form = $(this),
+            $errors = $('#leyka-submit-errors');
 
         // Exclude the repeated submits:
         if($form.data('submit-in-process')) {
@@ -39,24 +42,35 @@ jQuery(document).ready(function($){
             $form.data('submit-in-process', 0);
 
             response = $.parseJSON(response);
-            if( !response || !response.status ) {
+            if( !response || typeof response.status == 'undefined' ) { // Wrong answer from ajax handler
 
-                /** @todo Show some error message on the form */
+                $errors.html(leyka.cp_wrong_server_response).show();
+                $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
+                    scrollTop: $errors.offset().top - 35
+                }, 250);
+
                 return false;
 
-            } else if(response.status == 0 && response.message) {
+            } else if(response.status != 0 && typeof response.message != 'undefined') {
 
-                /** @todo Show response.message on the form */
+                $errors.html(response.message).show();
+                $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
+                    scrollTop: $errors.offset().top - 35
+                }, 250);
+
                 return false;
 
             } else if( !response.public_id ) {
 
-                /** @todo Show response.message on the form */
+                $errors.html(leyka.cp_not_set_up).show();
+                $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
+                    scrollTop: $errors.offset().top - 35
+                }, 250);
+
                 return false;
             }
 
             var widget = new cp.CloudPayments(),
-                $errors = $('#leyka-submit-errors'),
                 data = {};
 
             if(is_recurrent) {
@@ -64,8 +78,9 @@ jQuery(document).ready(function($){
             }
 
             widget.charge({
+                language: 'ru-RU',
                 publicId: response.public_id,
-                description: response.payment_title,
+                description: leyka_decode_htmlentities(response.payment_title),
                 amount: parseFloat(response.amount),
                 currency: response.currency,
                 invoiceId: parseInt(response.donation_id),
@@ -78,7 +93,7 @@ jQuery(document).ready(function($){
 
             }, function(reason, options){ // fail callback
 
-                $errors.html(reason).show();
+                $errors.html(leyka.cp_donation_failure_reasons[reason]).show();
                 $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
                     scrollTop: $errors.offset().top - 35
                 }, 250);

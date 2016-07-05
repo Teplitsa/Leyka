@@ -378,7 +378,42 @@ class Leyka_Campaign_Management {
 	public function save_data($campaign_id, WP_Post $campaign) {
 
 		$campaign = new Leyka_Campaign($campaign);
-		$campaign->save();
+
+        $meta = array();
+
+        if( !empty($_REQUEST['campaign_template']) && $campaign->template != $_REQUEST['campaign_template'] ) {
+            $meta['campaign_template'] = trim($_REQUEST['campaign_template']);
+        }
+
+        if( !empty($_REQUEST['payment_title']) && $campaign->payment_title != $_REQUEST['payment_title'] ) {
+
+            $meta['payment_title'] = trim($_REQUEST['payment_title']);
+            $meta['payment_title'] = esc_attr(htmlspecialchars($meta['payment_title'], ENT_QUOTES, 'UTF-8'));
+        }
+
+        $_REQUEST['is_finished'] = !empty($_REQUEST['is_finished']) ? 1 : 0;
+        if($_REQUEST['is_finished'] != $campaign->is_finished) {
+            $meta['is_finished'] = $_REQUEST['is_finished'];
+        }
+
+        $_REQUEST['ignore_global_template'] = !empty($_REQUEST['ignore_global_template']) ? 1 : 0;
+        if($_REQUEST['ignore_global_template'] != $campaign->ignore_global_template_settings) {
+            $meta['ignore_global_template'] = $_REQUEST['ignore_global_template'];
+        }
+
+        if(isset($_REQUEST['campaign_target']) && $_REQUEST['campaign_target'] != $campaign->target) {
+
+            $_REQUEST['campaign_target'] = (float)$_REQUEST['campaign_target'];
+            $_REQUEST['campaign_target'] = $_REQUEST['campaign_target'] >= 0.0 ? $_REQUEST['campaign_target'] : 0.0;
+
+            update_post_meta($campaign->id, 'campaign_target', $_REQUEST['campaign_target']);
+
+            $campaign->refresh_target_state();
+        }
+
+        foreach($meta as $key => $value) {
+            update_post_meta($campaign->id, $key, $value);
+        }
 	}
 
 	/** Campaigns list table columns: */
@@ -396,6 +431,7 @@ class Leyka_Campaign_Management {
 		$columns['ID'] = 'ID';
 
 		if(isset($unsort['title'])) {
+
 			$columns['title'] = $unsort['title'];
 			unset($unsort['title']);
 		}
@@ -424,7 +460,7 @@ class Leyka_Campaign_Management {
 		if($column_name == 'ID') {
 			echo (int)$campaign->id;
 		} elseif($column_name == 'payment_title') {
-            echo htmlentities($campaign->payment_title, ENT_QUOTES, 'UTF-8');
+            echo $campaign->payment_title;
         } elseif($column_name == 'coll_state') {
 
 			echo $campaign->is_finished == 1 ?
@@ -745,42 +781,4 @@ class Leyka_Campaign {
 
         return $this;
     }
-
-	/** CRUD and alike */
-	public function save() {
-
-		$meta = array();
-
-		if( !empty($_REQUEST['campaign_template']) && $this->template != $_REQUEST['campaign_template'] ) {
-			$meta['campaign_template'] = trim($_REQUEST['campaign_template']);
-        }
-
-        if( !empty($_REQUEST['payment_title']) && $this->payment_title != $_REQUEST['payment_title'] ) {
-			$meta['payment_title'] = esc_attr(trim($_REQUEST['payment_title']));
-        }
-
-        $_REQUEST['is_finished'] = !empty($_REQUEST['is_finished']) ? 1 : 0;
-        if($_REQUEST['is_finished'] != $this->is_finished) {
-            $meta['is_finished'] = $_REQUEST['is_finished'];
-        }
-
-        $_REQUEST['ignore_global_template'] = !empty($_REQUEST['ignore_global_template']) ? 1 : 0;
-        if($_REQUEST['ignore_global_template'] != $this->ignore_global_template_settings) {
-            $meta['ignore_global_template'] = $_REQUEST['ignore_global_template'];
-        }
-
-		if(isset($_REQUEST['campaign_target']) && $_REQUEST['campaign_target'] != $this->target) {
-
-            $_REQUEST['campaign_target'] = (float)$_REQUEST['campaign_target'];
-            $_REQUEST['campaign_target'] = $_REQUEST['campaign_target'] >= 0.0 ? $_REQUEST['campaign_target'] : 0.0;
-
-            update_post_meta($this->_id, 'campaign_target', $_REQUEST['campaign_target']);
-
-            $this->refresh_target_state();
-        }
-
-		foreach($meta as $key => $value) {
-			update_post_meta($this->_id, $key, $value);
-		}
-	}
 }

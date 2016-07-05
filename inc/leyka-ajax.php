@@ -5,7 +5,7 @@ function leyka_submit_donation() {
 
     if(empty($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'leyka_payment_form')) {
         die(json_encode(array(
-            'status' => 0,
+            'status' => 1,
             'message' => __('Wrong nonce in submitted form data', 'leyka'),
         )));
     }
@@ -15,7 +15,7 @@ function leyka_submit_donation() {
     $pm = explode('-', $_POST['leyka_payment_method']);
     if( !$pm || count($pm) < 2 ) {
         die(json_encode(array(
-            'status' => 0,
+            'status' => 1,
             'message' => __('Wrong gateway or/and payment method in submitted form data', 'leyka'),
         )));
     }
@@ -24,9 +24,16 @@ function leyka_submit_donation() {
 
     do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
 
+    $payment_vars = array('status' => $donation_id && !is_wp_error($donation_id) ? 0 : 1,);
+    if($payment_vars['status'] == 0) {
+        $payment_vars['donation_id'] = $donation_id;
+    } else {
+        $payment_vars['errors'] = $donation_id;
+    }
+
     $payment_vars = array_merge(
         apply_filters('leyka_submission_form_data-'.$pm[0], $_POST, $pm[1], $donation_id),
-        array('status' => 1, 'donation_id' => $donation_id,)
+        $payment_vars
     );
 
     die(json_encode($payment_vars));

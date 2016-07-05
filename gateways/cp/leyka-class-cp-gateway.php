@@ -60,10 +60,19 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
     }
 
     protected function _initialize_pm_list() {
-
         if(empty($this->_payment_methods['card'])) {
             $this->_payment_methods['card'] = Leyka_CP_Card::get_instance();
         }
+    }
+
+    public function localize_js_strings(array $js_data) {
+        return array_merge($js_data, array(
+            'cp_wrong_server_response' => __('Error in server response. Please report to the website tech support.', 'leyka'),
+            'cp_not_set_up' => __('Error in CloudPayments settings. Please report to the website tech support.', 'leyka'),
+            'cp_donation_failure_reasons' => array(
+                'User has cancelled' => __('You cancelled the payment', 'leyka'),
+            ),
+        ));
     }
 
     public function enqueue_gateway_scripts() {
@@ -79,6 +88,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 true
             );
         }
+
+        add_filter('leyka_js_localized_strings', array($this, 'localize_js_strings'));
     }
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
@@ -91,16 +102,24 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
     }
 
     public function submission_redirect_url($current_url, $pm_id) {
-
-        // CP isn't using redirection to safely ask donor for his bank card data:
-        return leyka_options()->opt('cp_test_mode') ?
-            '' : '';
+        return leyka_options()->opt('cp_test_mode') ? '' : ''; // CP don't use redirection on payment
     }
 
     public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
 
 		if( !array_key_exists($pm_id, $this->_payment_methods) ) {
 			return $form_data_vars; // It's not our PM
+        }
+
+        if(is_wp_error($donation_id)) { /** @var WP_Error $donation_id */
+            return array('status' => 1, 'message' => $donation_id->get_error_message());
+        } else if( !$donation_id ) {
+            return array('status' => 1, 'message' => __('The donation was not created due to error.', 'leyka'));
+        } else if( !leyka_options()->opt('cp_public_id') ) {
+            return array(
+                'status' => 1,
+                'message' => __('Error in CloudPayments settings. Please report to the website tech support.', 'leyka')
+            );
         }
 
         $donation = new Leyka_Donation($donation_id);
@@ -154,7 +173,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
             case 'check': // Check if payment is correct
 
-                // InvoiceId - leyka donation ID, SubscriptionId - CP recurring subscription ID
+                // InvoiceId - leyka donation ID, SubscriptionId - CP recurring subscription ID:
                 if(empty($_POST['InvoiceId']) && empty($_POST['SubscriptionId'])) {
                     die(json_encode(array('code' => '10')));
                 }

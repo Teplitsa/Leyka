@@ -3,6 +3,11 @@ jQuery(document).ready(function($){
     /** @var leyka object Localization strings */
     $(document).on('validate-custom-form-fields.leyka', 'form.leyka-pm-form', function(e, $form){
 
+        // Selected PM don't belong to the MIXPLAT gateway:
+        if($form.find('input[name="leyka_payment_method"]').val().indexOf('mixplat') < 0) {
+            return;
+        }
+
         var $phone_field = $form.find(':input.phone-num.mixplat-phone'),
             $error = $form.find('.'+$phone_field.attr('name')+'-error'),
             phone_value = $phone_field.val();
