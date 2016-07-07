@@ -204,41 +204,71 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         $message = '';
         $is_error = false;
-        $nessessary_params = array(
-            'id', 'external_id', 'service_id', 'status', 'status_extended', 'phone', 'amount', 'amount_merchant', 'currency',
-            'test', 'signature'
-        );
-        foreach($nessessary_params as $param_name) {
 
-            if( !isset($response[$param_name]) ) {
+        if(empty($response['request'])) {
 
-                $message = sprintf(__("This message has been sent because a call to your MIXPLAT callback was made without required parameters given. The details of the call are below. The parameter missing: ", 'leyka'), $param_name)."\n\r\n\r";
-                $is_error = true;
-                break;
+            $message = __("This message has been sent because a call to your MIXPLAT callback was made with an empty request parameter value. The details of the call are below.", 'leyka')."\n\r\n\r";
+            $is_error = true;
+
+        } else if( !in_array($response['request'], array('check', 'status'))) {
+
+            $message = sprintf(__("This message has been sent because a call to your MIXPLAT callback was made with an unknown request parameter value. The details of the call are below. Request value: %s", 'leyka'), $response['request'])."\n\r\n\r";
+            $is_error = true;
+        }
+
+        if( !$is_error ) {
+
+            if($response['request'] == 'check') { // Check request
+                $nessessary_params = array(
+                    'id', 'service_id', 'phone', 'date_created', 'amount', 'currency', 'text', 'signature',
+                );
+            } else { // Status request
+                $nessessary_params = array(
+                    'id', 'external_id', 'service_id', 'status', 'status_extended', 'phone', 'amount', 'amount_merchant',
+                    'currency', 'test', 'signature',
+                );
+            }
+
+            foreach($nessessary_params as $param_name) {
+                if( !isset($response[$param_name]) ) {
+
+                    $message = sprintf(__("This message has been sent because a call to your MIXPLAT callback was made without required parameters given. The details of the call are below. The callback type: %s. The arameter missing: %s", 'leyka'), $response['request'], $param_name)."\n\r\n\r";
+                    $is_error = true;
+                    break;
+                }
             }
         }
 
         if( !$is_error ) {
 
-            $params_signature = md5(
-                $response['id'].$response['external_id'].$response['service_id'].$response['status'] .
-                $response['status_extended'].$response['phone'].$response['amount'].$response['amount_merchant'].
-                $response['currency'].$response['test'].leyka_options()->opt('mixplat_secret_key')
-            );
+            if($response['request'] == 'check') { // Check request
+                $params_signature = md5(
+                    $response['id'].$response['service_id'].$response['phone'].$response['amount'].
+                    leyka_options()->opt('mixplat_secret_key')
+                );
+            } else { // Status request
+                $params_signature = md5(
+                    $response['id'].$response['external_id'].$response['service_id'].$response['status'] .
+                    $response['status_extended'].$response['phone'].$response['amount'].$response['amount_merchant'].
+                    $response['currency'].$response['test'].leyka_options()->opt('mixplat_secret_key')
+                );
+            }
 
             if($params_signature != $response['signature']) {
 
-                $message = sprintf(__("This message has been sent because a call to your MIXPLAT callback was made with invalid MIXPLAT signature. The details of the call are below. Signatures sent / calculated: %s / %s", 'leyka'), $response['signature'], $params_signature)."\n\r\n\r";
+                $message = sprintf(__("This message has been sent because a call to your MIXPLAT callback was made with invalid MIXPLAT signature. The details of the call are below. The callback type: %s. Signatures sent / calculated: %s / %s", 'leyka'), $response['request'], $response['signature'], $params_signature)."\n\r\n\r";
                 $is_error = true;
             }
         }
 
         if($is_error) {
 
-            $message .= "THEIR_POST:\n\r".print_r($_POST, true)."\n\r\n\r";
+            $message .= "CALLBACK TYPE: ".print_r($response['request'], true)."\n\r\n\r";
+            $message .= "THEIR POST:\n\r".print_r($_POST, true)."\n\r\n\r";
             $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
             $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
-            $message .= "THEIR_JSON:\n\r".print_r($json_string, true)."\n\r\n\r";
+            $message .= "THEIR JSON:\n\r".print_r($json_string, true)."\n\r\n\r";
+            $message .= "THEIR JSON DECODED:\n\r".print_r(json_decode($json_string), true)."\n\r\n\r";
 
             wp_mail(get_option('admin_email'), __('MIXPLAT - payment callback error occured', 'leyka'), $message);
             status_header(200);
@@ -246,11 +276,27 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             die('Payment callback error');
         }
 
-        $donation = new Leyka_Donation((int)stripslashes($response['external_id']));
-        if($donation && $donation->status != 'funded') {
+        if($response['request'] == 'check') {
 
-            $donation->status = 'funded';
-            Leyka_Donation_Management::send_all_emails($donation->id);
+            /** @todo Create new donation instead.. */
+            $message = "CALLBACK TYPE: ".print_r($response['request'], true)."\n\r\n\r";
+            $message .= "THEIR POST:\n\r".print_r($_POST, true)."\n\r\n\r";
+            $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
+            $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
+            $message .= "THEIR JSON:\n\r".print_r($json_string, true)."\n\r\n\r";
+            $message .= "THEIR JSON DECODED:\n\r".print_r(json_decode($json_string), true)."\n\r\n\r";
+
+            wp_mail(get_option('admin_email'), __('MIXPLAT - payment callback error occured', 'leyka'), $message);
+            die(json_encode(array('result' => 'none-for-now')));
+
+        } else { // Status request
+
+            $donation = new Leyka_Donation((int)stripslashes($response['external_id']));
+            if($donation && $donation->status != 'funded') {
+
+                $donation->status = 'funded';
+                Leyka_Donation_Management::send_all_emails($donation->id);
+            }
         }
 
         status_header(200);
