@@ -629,6 +629,42 @@ function leyka_is_campaign_published() {
     ) > 0;
 }
 
+function leyka_get_campaigns_list($params = array(), $simple_format = true) {
+
+    $campaigns = get_posts(array_merge(array(
+        'post_type' => Leyka_Campaign_Management::$post_type,
+        'posts_per_page' => -1,
+    ), $params));
+
+    if( !!$simple_format ) { // Array of WP_Post objects
+
+        $list = array();
+        foreach($campaigns as $campaign) {
+
+            $campaign = new Leyka_Campaign($campaign);
+            $list[$campaign->id] = $campaign->title;
+        }
+
+        return $list;
+
+    } else { // Simple assoc. array of ID => title
+
+        array_walk($campaigns, function($campaign){
+            $campaign->post_title = htmlentities($campaign->post_title, ENT_QUOTES, 'UTF-8');
+        });
+
+        return $campaigns;
+    }
+}
+
+function leyka_get_campaigns_select_options() {
+    return leyka_get_campaigns_list(array('orderby' => 'title', 'order' => 'ASC'), true);
+}
+
+function leyka_get_campaigns_select_default() {
+    return reset(array_keys(leyka_get_campaigns_select_options()));
+}
+
 function leyka_is_widget_active() {
 
     // is_active_widget() is not working for some reason, so emulate it:

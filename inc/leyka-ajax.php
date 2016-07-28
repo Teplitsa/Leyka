@@ -41,7 +41,7 @@ function leyka_submit_donation() {
 add_action('wp_ajax_leyka_ajax_donation_submit', 'leyka_submit_donation');
 add_action('wp_ajax_nopriv_leyka_ajax_donation_submit', 'leyka_submit_donation');
 
-function leyka_get_campaigns_list() {
+function leyka_ajax_get_campaigns_list() { // leyka_get_campaigns_list() is already taken
 
     if(empty($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'leyka_get_campaigns_list_nonce')) {
         die(json_encode(array()));
@@ -49,33 +49,37 @@ function leyka_get_campaigns_list() {
 
     $_REQUEST['term'] = empty($_REQUEST['term']) ? '' : trim($_REQUEST['term']);
 
-    $campaigns = get_posts(array(
-        'post_type' => Leyka_Campaign_Management::$post_type,
-        'post_status' => 'publish',
+    $campaigns = leyka_get_campaigns_list(array(
         'meta_query' => array(array(
             'key' => 'payment_title', 'value' => $_REQUEST['term'], 'compare' => 'LIKE', 'type' => 'CHAR',
         )),
-    ));
+    ), 0);
 
-    if( !$campaigns)
-        $campaigns = get_posts(array(
-            'post_type' => Leyka_Campaign_Management::$post_type,
-            'post_status' => 'publish',
-            's' => empty($_REQUEST['term']) ? '' : trim($_REQUEST['term'])
-        ));
-
+    $ids_found = array();
     foreach($campaigns as $index => $campaign) {
+
+        $ids_found[] = $campaign->ID;
         $campaigns[$index] = array(
             'value' => $campaign->ID,
             'label' => $campaign->post_title,
-            'payment_title' => get_post_meta($campaign->ID, 'payment_title', true)
+            'payment_title' => get_post_meta($campaign->ID, 'payment_title', true),
         );
+    }
+
+    foreach(leyka_get_campaigns_list(array('s' => empty($_REQUEST['term']) ? '' : trim($_REQUEST['term'])), 0) as $campaign) {
+        if( !in_array($campaign->ID, $ids_found) ) {
+            $campaigns[] = array(
+                'value' => $campaign->ID,
+                'label' => $campaign->post_title,
+                'payment_title' => get_post_meta($campaign->ID, 'payment_title', true),
+            );
+        }
     }
 
     die(json_encode($campaigns));
 }
-add_action('wp_ajax_leyka_get_campaigns_list', 'leyka_get_campaigns_list');
-add_action('wp_ajax_nopriv_leyka_get_campaigns_list', 'leyka_get_campaigns_list');
+add_action('wp_ajax_leyka_get_campaigns_list', 'leyka_ajax_get_campaigns_list');
+add_action('wp_ajax_nopriv_leyka_get_campaigns_list', 'leyka_ajax_get_campaigns_list');
 
 function leyka_recalculate_total_funded_action() {
 

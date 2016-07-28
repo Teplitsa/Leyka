@@ -205,24 +205,24 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         $message = '';
         $is_error = false;
 
-        if(empty($response['request'])) {
+        if(empty($response['request']) && $response['method'] != 'notifyStatus') {
 
-            $message = __("This message has been sent because a call to your MIXPLAT callback was made with an empty request parameter value. The details of the call are below.", 'leyka')."\n\r\n\r";
+            $message = __("This message was sent because a call to your MIXPLAT callback was made with an empty request parameter value. The details of the call are below.", 'leyka')."\n\r\n\r";
             $is_error = true;
 
         } else if( !in_array($response['request'], array('check', 'status'))) {
 
-            $message = sprintf(__("This message has been sent because a call to your MIXPLAT callback was made with an unknown request parameter value. The details of the call are below. Request value: %s", 'leyka'), $response['request'])."\n\r\n\r";
+            $message = sprintf(__("This message was sent because a call to your MIXPLAT callback was made with an unknown request parameter value. The details of the call are below. Request value: %s", 'leyka'), $response['request'])."\n\r\n\r";
             $is_error = true;
         }
 
         if( !$is_error ) {
 
-            if($response['request'] == 'check') { // Check request
+            if($response['request'] == 'check') {
                 $nessessary_params = array(
                     'id', 'service_id', 'phone', 'date_created', 'amount', 'currency', 'text', 'signature',
                 );
-            } else { // Status request
+            } else { // Status request and SMS payment notification
                 $nessessary_params = array(
                     'id', 'external_id', 'service_id', 'status', 'status_extended', 'phone', 'amount', 'amount_merchant',
                     'currency', 'test', 'signature',
@@ -232,7 +232,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             foreach($nessessary_params as $param_name) {
                 if( !isset($response[$param_name]) ) {
 
-                    $message = sprintf(__("This message has been sent because a call to your MIXPLAT callback was made without required parameters given. The details of the call are below. The callback type: %s. The arameter missing: %s", 'leyka'), $response['request'], $param_name)."\n\r\n\r";
+                    $message = sprintf(__("This message has been sent because a call to your MIXPLAT callback was made without required parameters given. The details of the call are below. The callback type: %s. The parameter missing: %s", 'leyka'), $response['request'], $param_name)."\n\r\n\r";
                     $is_error = true;
                     break;
                 }
@@ -241,14 +241,14 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         if( !$is_error ) {
 
-            if($response['request'] == 'check') { // Check request
+            if($response['request'] == 'check') {
                 $params_signature = md5(
                     $response['id'].$response['service_id'].$response['phone'].$response['amount'].
                     leyka_options()->opt('mixplat_secret_key')
                 );
-            } else { // Status request
+            } else { // Status request and SMS payment notification
                 $params_signature = md5(
-                    $response['id'].$response['external_id'].$response['service_id'].$response['status'] .
+                    $response['id'].$response['external_id'].$response['service_id'].$response['status'].
                     $response['status_extended'].$response['phone'].$response['amount'].$response['amount_merchant'].
                     $response['currency'].$response['test'].leyka_options()->opt('mixplat_secret_key')
                 );
@@ -276,20 +276,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             die('Payment callback error');
         }
 
-        if($response['request'] == 'check') {
-
-            /** @todo Create new donation instead.. */
-            $message = "CALLBACK TYPE: ".print_r($response['request'], true)."\n\r\n\r";
-            $message .= "THEIR POST:\n\r".print_r($_POST, true)."\n\r\n\r";
-            $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
-            $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
-            $message .= "THEIR JSON:\n\r".print_r($json_string, true)."\n\r\n\r";
-            $message .= "THEIR JSON DECODED:\n\r".print_r(json_decode($json_string), true)."\n\r\n\r";
-
-            wp_mail(get_option('admin_email'), __('MIXPLAT - payment callback error occured', 'leyka'), $message);
-            die(json_encode(array('result' => 'none-for-now')));
-
-        } else { // Status request
+        if($response['request'] == 'status') { // Status request
 
             $donation = new Leyka_Donation((int)stripslashes($response['external_id']));
             if($donation && $donation->status != 'funded') {
@@ -297,6 +284,25 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                 $donation->status = 'funded';
                 Leyka_Donation_Management::send_all_emails($donation->id);
             }
+
+        } else if(empty($response['request']) && $response['method'] == 'notifyStatus') { // SMS payment
+
+            $donation_id = Leyka_Donation::add(array(
+                'gateway_id' => $this->_id,
+                'payment_method_id' => 'mobile',
+                'campaign_id' => leyka_options()->opt('mixplat-mobile_default_campaign_id'),
+                'status' => 'funded',
+                'payment_type' => 'single',
+                'amount' => $response['amount'],
+                'currency' => empty($response['currency']) ?
+                    'RUR' : ($response['currency'] == 'RUB' ? 'RUR' : $response['currency']),
+                'mixplat_phone' => $response['phone'],
+            ));
+
+            $donation = new Leyka_Donation($donation_id);
+            $donation->add_gateway_response($response);
+
+            Leyka_Donation_Management::send_all_emails($donation->id);
         }
 
         status_header(200);
@@ -421,6 +427,17 @@ class Leyka_Mixplat_Mobile extends Leyka_Payment_Method {
         }
 
         $this->_options = array(
+            $this->full_id.'_default_campaign_id' => array(
+                'type' => 'select',
+                'default' => 'leyka_get_campaigns_select_default',
+                'title' => __('Campaign for SMS payments', 'leyka'),
+                'description' => __('Select a campaign to which SMS payments will be related by default.', 'leyka'),
+                'required' => 0,
+                'placeholder' => '', // For text fields
+                'length' => '', // For text fields
+                'list_entries' => 'leyka_get_campaigns_list',
+                'validation_rules' => array(), // List of regexp?..
+            ),
             $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('MIXPLAT allows a simple and safe way to pay for goods and services with your mobile phone by sending SMS.', 'leyka'),
