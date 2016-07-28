@@ -1315,8 +1315,9 @@ class Leyka_Donation {
 
         add_post_meta($id, '_status_log', array(array('date' => time(), 'status' => $status)));
 
-        $params['payment_type'] = empty($params['payment_type']) ?
-            'single' : ($params['payment_type'] == 'rebill' ? 'rebill' : 'correction');
+        $params['payment_type'] = empty($params['payment_type']) || $params['payment_type'] == 'single' ?
+            'single' :
+            ($params['payment_type'] == 'rebill' ? 'rebill' : 'correction');
         add_post_meta($id, 'leyka_payment_type', $params['payment_type']);
 
         if( !empty($params['gateway_id']) ) {

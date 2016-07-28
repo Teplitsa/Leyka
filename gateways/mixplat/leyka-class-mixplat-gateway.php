@@ -289,7 +289,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                     'campaign_id' => leyka_options()->opt('mixplat-mobile_default_campaign_id'),
                     'status' => 'funded',
                     'payment_type' => 'single',
-                    'amount' => $response['amount'],
+                    'amount' => round($response['amount']/100.0, 2),
                     'currency' => empty($response['currency']) ?
                         'RUR' : ($response['currency'] == 'RUB' ? 'RUR' : $response['currency']),
                     'mixplat_phone' => $response['phone'],
@@ -309,9 +309,6 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                     Leyka_Donation_Management::send_all_emails($donation->id);
                 }
             }
-
-        } else if(empty($response['request']) && $response['method'] == 'notifyStatus') {
-
 
         }
 
