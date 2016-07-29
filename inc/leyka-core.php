@@ -571,6 +571,11 @@ class Leyka {
             delete_option('leyka_argee_to_terms_needed');
         }
 
+        /** Fix the CloudPayments callbacks' IPs */
+        if($leyka_last_ver && $leyka_last_ver <= '2.2.10') {
+            update_option('cp_ip', '130.193.70.192,185.98.85.109');
+        }
+
         /** Set a flag to flush permalinks (needs to be done a bit later, than this activation itself): */
         update_option('leyka_permalinks_flushed', 0);
 
