@@ -15,7 +15,7 @@
     Marie Borisyonok (pro100mary@gmail.com)
 	
  * License: GPLv2 or later
-	Copyright (C) 2012-2015 by Teplitsa of Social Technologies (http://te-st.ru).
+	Copyright (C) 2012-2016 by Teplitsa of Social Technologies (http://te-st.ru).
 
 	GNU General Public License, Free Software Foundation <http://www.gnu.org/licenses/gpl-2.0.html>
 
