@@ -155,6 +155,12 @@ PHP at least 5.3 is required.
 10. События Google Analytics
 
 == Changelog ==
+= 2.2.11 =
+ * New: MIXPLAT SMS payments support added.
+ * New: now CloudPayments outputs errors to a donor in more frienly way.
+ * Fix: localization fixes.
+ * Fix: small fixes.
+
 = 2.2.10 =
  * New: MIXPLAT support added. Mobile payments and dedicated text box supported.
  * Tweak: now plugin uses EasyModal to work with modal popups.
