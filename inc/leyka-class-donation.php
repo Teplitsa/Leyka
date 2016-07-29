@@ -912,12 +912,11 @@ class Leyka_Donation_Management {
      * @param $donation WP_Post
      */
     public function gateway_response_metabox($donation) { $donation = new Leyka_Donation($donation);?>
-        
+
         <div>
-            <?php
-            if( !$donation->gateway_response_formatted )
+            <?php if( !$donation->gateway_response_formatted ) {
                 _e('No gateway response has been received', 'leyka');
-            else {
+            } else {
 
                 foreach($donation->gateway_response_formatted as $name => $value) {?>
 
@@ -926,13 +925,11 @@ class Leyka_Donation_Management {
                 </div>
 
             <?php }
-            } ?>
+            }?>
         </div>
     <?php }
 
     public function recurrent_cancel_metabox($donation) {
-
-        /** @todo Uncomment this metabox in constructor when work on recurrents cancelling will begin. */
 
         $donation = new Leyka_Donation($donation);
 
@@ -1265,7 +1262,10 @@ class Leyka_Donation {
         $amount = empty($params['amount']) ? leyka_pf_get_amount_value() : round((float)$params['amount'], 2);
         add_post_meta($id, 'leyka_donation_amount', $amount);
 
-        $currency = empty($params['currency']) ? leyka_pf_get_currency_value() : $params['currency'];
+        $currency = empty($params['currency']) ? leyka_pf_get_currency_value() : strtolower($params['currency']);
+        if( !$currency || !array_key_exists($currency, leyka_get_active_currencies()) ) {
+            $currency = 'rur';
+        }
         add_post_meta($id, 'leyka_donation_currency', $currency);
 
         $currency_rate = $currency == 'RUR' ? 1.0 : leyka_options()->opt("currency_rur2$currency");

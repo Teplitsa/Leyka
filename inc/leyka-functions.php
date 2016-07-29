@@ -662,7 +662,9 @@ function leyka_get_campaigns_select_options() {
 }
 
 function leyka_get_campaigns_select_default() {
-    return reset(array_keys(leyka_get_campaigns_select_options()));
+
+    $campaigns_ids = array_keys(leyka_get_campaigns_select_options());
+    return reset($campaigns_ids);
 }
 
 function leyka_is_widget_active() {

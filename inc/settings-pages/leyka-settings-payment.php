@@ -1,7 +1,6 @@
 <?php if( !defined('WPINC') ) die; // If this file is called directly, abort
 
-$current_screen_id = 'leyka_payment_settings_page';//get_current_screen()->id;
-//echo '<pre>' . print_r($current_screen_id, 1) . '</pre>';
+$current_screen_id = 'leyka_payment_settings_page';
 $pm_active = leyka_options()->opt('pm_available');
 
 function leyka_add_gateway_metabox($post, $args) {

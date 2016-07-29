@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Leyka Plugin\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-09-11 08:25:09+00:00\n"
-"PO-Revision-Date: Thu Jul 28 2016 13:29:21 GMT+0300\n"
+"PO-Revision-Date: Fri Jul 29 2016 11:54:53 GMT+0300\n"
 "Last-Translator: ahaenor <ahaenor@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: Russian\n"
@@ -542,7 +542,7 @@ msgstr "Подключение работает в режиме тестиров
 
 #: ../gateways/mixplat/leyka-class-mixplat-gateway.php:81
 msgid "Please, enter a phone number in a 7xxxxxxxxxx format."
-msgstr "Пожалуйста, введите номер телефона в формате 7хххххххххх."
+msgstr "Пожалуйста, введите номер телефона в формате 7хххххххххх"
 
 #: ../gateways/mixplat/leyka-class-mixplat-gateway.php:105
 msgid "Valid phone number is required."

@@ -281,7 +281,10 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         if($response['request'] == 'status') { // Status request
 
-            if(empty($response['external_id'])) { // SMS payment
+            // SMS payment:
+            if(empty($response['external_id']) && !empty($response['status']) && $response['status'] == 'success') {
+
+                $response['currency'] = empty($response['currency']) ? 'rur' : trim($response['currency']);
 
                 $donation_id = Leyka_Donation::add(array(
                     'gateway_id' => $this->_id,
@@ -289,18 +292,27 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                     'campaign_id' => leyka_options()->opt('mixplat-mobile_default_campaign_id'),
                     'status' => 'funded',
                     'payment_type' => 'single',
-                    'amount' => round($response['amount']/100.0, 2),
+                    'amount' => $response['amount']/100.0,
                     'currency' => empty($response['currency']) ?
-                        'RUR' : ($response['currency'] == 'RUB' ? 'RUR' : $response['currency']),
+                        'rur' : ($response['currency'] == 'RUB' ? 'rur' : strtolower($response['currency'])),
                     'mixplat_phone' => $response['phone'],
                 ));
+
+//                $params = array(
+//                    'response-currency-empty' => (int)empty($response['currency']),
+//                    'response-currency-original' => $response['currency'],
+//                    'currency-alt' => $response['currency'] == 'RUB' ? 'rur' : strtolower($response['currency']),
+//                    'currency-total' => empty($response['currency']) ?
+//                        'rur' :
+//                        ($response['currency'] == 'RUB' ? 'rur' : strtolower($response['currency']))
+//                );
 
                 $donation = new Leyka_Donation($donation_id);
                 $donation->add_gateway_response($response);
 
                 Leyka_Donation_Management::send_all_emails($donation->id);
 
-            } else { // Mobile payment
+            } else if( !empty($response['status']) && $response['status'] == 'success' ) { // Mobile payment via website
 
                 $donation = new Leyka_Donation((int)stripslashes($response['external_id']));
                 if($donation && $donation->status != 'funded') {
@@ -436,7 +448,7 @@ class Leyka_Mixplat_Mobile extends Leyka_Payment_Method {
         $this->_options = array(
             $this->full_id.'_default_campaign_id' => array(
                 'type' => 'select',
-                'default' => 'leyka_get_campaigns_select_default',
+                'default' => leyka_get_campaigns_select_default(),
                 'title' => __('Campaign for SMS payments', 'leyka'),
                 'description' => __('Select a campaign to which SMS payments will be related by default.', 'leyka'),
                 'required' => 0,
