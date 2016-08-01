@@ -128,18 +128,23 @@ class Leyka {
 
         add_action('pre_get_posts', function(WP_Query $query){
 
-            if($query->is_main_query() && $query->is_post_type_archive(Leyka_Donation_Management::$post_type) && get_query_var('leyka_campaign_filter')) {
+            if($query->is_main_query() && $query->is_post_type_archive(Leyka_Donation_Management::$post_type)) {
 
-                $campaign = get_posts(array('post_type' => Leyka_Campaign_Management::$post_type, 'name' => get_query_var('leyka_campaign_filter')));
-                if( !$campaign ) {
-                    return;
+                $query->set('post_status', 'funded');
+
+                if(get_query_var('leyka_campaign_filter')) {
+
+                    $campaign = get_posts(array('post_type' => Leyka_Campaign_Management::$post_type, 'name' => get_query_var('leyka_campaign_filter')));
+                    if( !$campaign ) {
+                        return;
+                    }
+                    $campaign = reset($campaign);
+
+                    $query->set('meta_query', array(array(
+                        'key'     => 'leyka_campaign_id',
+                        'value'   => $campaign->ID,
+                    ),));
                 }
-                $campaign = reset($campaign);
-
-                $query->set('meta_query', array(array(
-                    'key'     => 'leyka_campaign_id',
-                    'value'   => $campaign->ID,
-                ),));
             }
         }, 1);
 
