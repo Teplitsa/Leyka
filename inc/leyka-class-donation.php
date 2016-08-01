@@ -996,7 +996,7 @@ class Leyka_Donation_Management {
 			$columns = array_merge($columns, $unsort);
         }
 
-		return $columns;
+		return apply_filters('leyka_admin_donations_columns_names', $columns);
 	}
 
 	function manage_columns_content($column_name, $donation_id) {
@@ -1005,10 +1005,13 @@ class Leyka_Donation_Management {
         switch($column_name) {
             case 'ID': echo $donation_id; break;
             case 'amount':
-				$amount_css = ($donation->sum < 0) ? 'amount-negative' : 'amount';
-				echo '<span class="'.$amount_css.'">'.$donation->amount.'&nbsp;'.$donation->currency_label.'</span>';
+				echo '<span class="'.apply_filters('leyka_admin_donation_amount_column_css', ($donation->sum < 0 ? 'amount-negative' : 'amount')).'">'.
+                    apply_filters('leyka_admin_donation_amount_column_content', $donation->amount.'&nbsp;'.$donation->currency_label, $donation).
+                '</span>';
                 break;
-            case 'donor': echo $donation->donor_name; break;
+            case 'donor':
+                echo apply_filters('leyka_admin_donation_donor_name_column_content', $donation->donor_name, $donation);
+                break;
             case 'method':
                 $gateway_label = $donation->gateway_id ? $donation->gateway_label : __('Custom payment info', 'leyka');
                 $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;
@@ -1478,6 +1481,9 @@ class Leyka_Donation {
             case 'pm':
             case 'pm_id':
                 return $this->_donation_meta['payment_method'];
+            case 'pm_full_id':
+                return empty($this->_donation_meta['gateway']) || empty($this->_donation_meta['gateway']) ?
+                    '' : $this->_donation_meta['gateway'].'-'.$this->_donation_meta['payment_method'];
             case 'gateway':
             case 'gateway_id':
             case 'gw_id':
@@ -1521,7 +1527,8 @@ class Leyka_Donation {
             case 'payment_type_label': return __($this->_donation_meta['payment_type'], 'leyka');
 
             case 'init_recurring_payment_id':
-            case 'init_recurring_donation_id': return $this->payment_type == 'rebill' ? $this->_post_object->post_parent : false;
+            case 'init_recurring_donation_id':
+                return $this->payment_type == 'rebill' ? $this->_post_object->post_parent : false;
             case 'init_recurring_payment':
             case 'init_recurring_donation':
                 if($this->payment_type != 'rebill') {

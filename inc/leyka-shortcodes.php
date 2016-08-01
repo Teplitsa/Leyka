@@ -336,7 +336,7 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
 			$amount = number_format($donation->sum, 0, '.', ' ');
 
 			$html = "<div class='ldl-item'>";
-			$html .= "<div class='amount'>{$amount} {$donation->currency_label}</div>";
+			$html .= "<div class='amount'>".apply_filters('leyka_donations_list_amount_content', $amount.' '.$donation->currency_label, $donation)."</div>";
 
 			if($args['show_purpose'] == 1) {
 				$html .= "<div class='purpose'><a href='".get_permalink($donation->campaign_id)."'>".$donation->campaign_payment_title."</a></div>";
