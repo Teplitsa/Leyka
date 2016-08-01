@@ -136,6 +136,7 @@ class Leyka {
                 }
                 $campaign = reset($campaign);
 
+                $query->set('post_status', 'funded');
                 $query->set('meta_query', array(array(
                     'key'     => 'leyka_campaign_id',
                     'value'   => $campaign->ID,
