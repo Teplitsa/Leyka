@@ -95,9 +95,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
     }
 
     public function submission_redirect_url($current_url, $pm_id) {
-
-        return leyka_options()->opt('robokassa_test_mode') ?
-            'http://test.robokassa.ru/Index.aspx' : 'https://auth.robokassa.ru/Merchant/Index.aspx';
+        return 'https://auth.robokassa.ru/Merchant/Index.aspx';
     }
 
     public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
@@ -127,6 +125,10 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
             'IncCurrLabel' => $pm_curr, // Default PM + Currency. "R" for "RUR", as we'll always use RUR for now
             'Culture' => get_locale() == 'ru_RU' ? 'ru' : 'en',
         );
+
+        if(leyka_options()->opt('robokassa_test_mode')) {
+            $form_data_vars['isTest'] = 1;
+        }
 
 		return $form_data_vars;
     }
