@@ -21,7 +21,7 @@
 
 **Основные функции**
 
-* Широкий набор платежных систем и опций (включая Яндекс.Деньги, Chronopay, RBK Money, ROBOKASSA, CloudPayments и печать банковских квитанций)
+* Широкий набор платежных систем и опций (включая Яндекс.Деньги, Chronopay, RBK Money, ROBOKASSA, CloudPayments, MIXPLAT и печать банковских квитанций)
 * Подходит для физических и юридических лиц
 * Автоматическая рассылка email-сообщений жертвователям
 * Поддержка нескольких языков
@@ -77,7 +77,7 @@
 
 ## In English ##
 
-Leyka is a plugin for fundraising and donations collection via WordPress website. Supported payment methods includes bank cards Visa and MasterCard through **Cloudpayments, Chronopay and RBK money** systems, also **WebMoney, ROBOKASSA and Yandex.Money** supported. You can also use a traditional bank payment orders (quittances).
+Leyka is a plugin for fundraising and donations collection via WordPress website. Supported payment methods includes bank cards Visa and MasterCard through **Cloudpayments, Chronopay and RBK money** systems, mobile and SMS payments via MIXPLAT, also **WebMoney, ROBOKASSA and Yandex.Money** are supported. You can also use a traditional bank payment orders (quittances).
 
 This plugin developed and supported by [Teplitsa of social technologies](//te-st.ru/).
 

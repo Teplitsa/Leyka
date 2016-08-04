@@ -11,7 +11,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         $this->_id = 'mixplat';
         $this->_title = __('MIXPLAT', 'leyka');
-        $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-mixplat/';
+        $this->_docs_link = '';
         $this->_admin_ui_column = 1;
         $this->_admin_ui_order = 60;
     }
