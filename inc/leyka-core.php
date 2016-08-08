@@ -128,7 +128,7 @@ class Leyka {
 
         add_action('pre_get_posts', function(WP_Query $query){
 
-            if($query->is_main_query() && $query->is_post_type_archive(Leyka_Donation_Management::$post_type)) {
+            if( !is_admin() && $query->is_main_query() && $query->is_post_type_archive(Leyka_Donation_Management::$post_type)) {
 
                 $query->set('post_status', 'funded');
 
