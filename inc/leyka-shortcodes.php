@@ -367,7 +367,11 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
 			}
 
 			if($meta) {
-				$html .= "<div class='meta'>".implode(' / ', $meta)."</div>"; 
+                $html .= apply_filters(
+                    'leyka_donations_list_meta_content',
+                    "<div class='meta'>".implode(' / ', $meta)."</div>",
+                    $donation
+                );
 			}
 
 			$html .= "</div>";
