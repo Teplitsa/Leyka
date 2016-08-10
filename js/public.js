@@ -531,7 +531,7 @@ function leyka_is_special_key(e) {
 function leyka_is_digit_key(e, numpad_allowed) {
 
     if( // Allowed special keys
-    $.inArray(e.keyCode, [46, 8, 9, 13]) != -1 || // Backspace, delete, tab, enter
+    e.keyCode == 46 || e.keyCode == 8 || e.keyCode == 9 || e.keyCode == 13 || // Backspace, delete, tab, enter
     (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
     (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
     (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up

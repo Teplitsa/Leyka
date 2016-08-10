@@ -12,7 +12,7 @@ jQuery(document).ready(function($){
             $error = $form.find('.'+$phone_field.attr('name')+'-error'),
             phone_value = $phone_field.val();
 
-        if(phone_value.length) {
+        if($phone_field.length && phone_value.length) {
 
             phone_value = phone_value.replace(/[+. -]/, '');
             phone_value = phone_value.replace(/\s/, '');
