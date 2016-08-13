@@ -89,7 +89,11 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         }
         if(empty($this->_payment_methods['yandex_pb'])) {
             $this->_payment_methods['yandex_pb'] = Leyka_Yandex_Promvzyazbank::get_instance();
-        }
+		}
+        
+		if(empty($this->_payment_methods['yandex_ymn'])) {
+            $this->_payment_methods['yandex_ymn'] = Leyka_Yandex_Smart_payment::get_instance();
+        } 
     }
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
@@ -119,6 +123,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             case 'yandex_sb':
             case 'yandex_ab':
             case 'yandex_pb':
+			case 'yandex_ymn':
                 return 'https://money.yandex.ru/eshop.xml';
             default:
                 return $current_url;
@@ -136,6 +141,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             case 'yandex_sb': $payment_type = 'SB'; break;
             case 'yandex_ab': $payment_type = 'AB'; break;
             case 'yandex_pb': $payment_type = 'PB'; break;
+			case 'yandex_ymn': $payment_type = ''; break;
             default:
                 $payment_type = apply_filters('leyka_yandex_custom_payment_type', '', $pm_id);
         }
@@ -741,6 +747,49 @@ class Leyka_Yandex_Promvzyazbank extends Leyka_Payment_Method {
                 'default' => __('<a href="http://www.psbank.ru/Personal/Everyday/Remote/">PSB-Retail</a> is an Internet banking service of Promsvyazbank. It allows you to make many banking operations at any moment without applying to the bank department, using your computer.', 'leyka'),
                 'title' => __('Promsvyazbank description', 'leyka'),
                 'description' => __('Please, enter Promsvyazbank payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
+                'required' => 0,
+                'validation_rules' => array(), // List of regexp?..
+            ),
+        );
+    }
+}
+
+class Leyka_Yandex_Smart_payment extends Leyka_Payment_Method {
+
+    protected static $_instance = null;
+
+    public function _set_attributes() {
+
+        $this->_id = 'yandex_ymn';
+        $this->_gateway_id = 'yandex';
+
+        $this->_label_backend = __('Smart payment', 'leyka');
+        $this->_label = __('Smartpayment', 'leyka');
+
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
+//        $this->_description = leyka_options()->opt_safe('yandex_wm_description');
+
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+//            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/webmoney.png',
+        ));
+
+        $this->_supported_currencies[] = 'rur';
+
+        $this->_default_currency = 'rur';
+    }
+
+    protected function _set_options_defaults() {
+
+        if($this->_options){
+            return;
+        }
+
+        $this->_options = array(
+            $this->full_id.'_description' => array(
+                'type' => 'html',
+                'default' => __('Yandeks.Kassa. Credit cards, electronic money, etc.  <a href="https://money.yandex.ru/">Yandeks.Kassa website </a>', 'leyka'),
+                'title' => __('Smart payment', 'leyka'),
+                'description' => __('Please, enter Smart payment payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
                 'required' => 0,
                 'validation_rules' => array(), // List of regexp?..
             ),

@@ -1462,9 +1462,17 @@ msgstr ""
 msgid "Promsvyazbank invoicing"
 msgstr "Платёж через Промсвязьбанк"
 
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:766
+msgid "Smart payment"
+msgstr "Умный платёж"
+
 #: ../gateways/yandex/leyka-class-yandex-gateway.php:718
 msgid "Promsvyazbank"
 msgstr "Промсвязьбанк"
+
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:767
+msgid "Smartpayment"
+msgstr "Яндекс.Касса"
 
 #: ../gateways/yandex/leyka-class-yandex-gateway.php:741
 msgid ""
@@ -1479,9 +1487,22 @@ msgstr ""
 "от времени суток, без обращения в отделение. Вы можете выполнить платёж с "
 "помощью списания с вашего счёта в Промсвязьбанке."
 
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:790
+msgid ""
+"Yandeks.Kassa. Credit cards, electronic money, etc."
+"<a href=\"https://money.yandex.ru/\">Yandeks.Kassa website </a>"
+msgstr ""
+"Оплата через сервис Яндекс.Касса."
+"<a href=\"https://money.yandex.ru/\">Яндекс.Касса</a>"
+
+
 #: ../gateways/yandex/leyka-class-yandex-gateway.php:742
 msgid "Promsvyazbank description"
 msgstr "Описание сервиса «Промсвязьбанк»"
+
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:791
+msgid "Smart payment"
+msgstr "Описание сервиса «Яндекс.Касса»"
 
 #: ../gateways/yandex/leyka-class-yandex-gateway.php:743
 msgid ""
@@ -1490,6 +1511,15 @@ msgid ""
 msgstr ""
 "Пожалуйста, введите описание этого способа оплаты, которое увидит донор при "
 "его выборе на форме пожертвования."
+
+#: ../gateways/yandex/leyka-class-yandex-gateway.php:792
+msgid ""
+"Please, enter Smart payment payment description that will be shown to the "
+"donor when this payment method will be selected for using."
+msgstr ""
+"Пожалуйста, введите описание этого способа оплаты, которое увидит донор при "
+"его выборе на форме пожертвования."
+
 
 #: ../gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:13
 msgid "Yandex.Money for physical persons"
