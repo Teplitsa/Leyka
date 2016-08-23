@@ -250,6 +250,9 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
                 break; // Not needed, just for my IDE could relax
 
             default:
+
+                do_action('leyka_yandex_unknown_callback_call', $call_type);
+                $this->_callback_answer(1, 'unknown', sprintf(__('Unknown service operation: %s', 'leyka'), $call_type));
         }
     }
 
