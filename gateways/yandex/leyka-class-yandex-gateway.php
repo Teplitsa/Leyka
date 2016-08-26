@@ -199,7 +199,23 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
                     $this->_callback_answer(1, 'co', __('Wrong service operation', 'leyka'));
                 }
 
-                $_POST['orderNumber'] = (int)$_POST['orderNumber']; // Donation ID
+				if((int)$_POST['orderNumber'] <= 0) { // Recurring donation callback
+
+					$_POST['orderNumber'] = explode('-', $_POST['orderNumber']);
+                    if(
+                        count($_POST['orderNumber']) == 3 &&
+                        $_POST['orderNumber'][0] == 'recurring' &&
+                        (int)$_POST['orderNumber'][2] > 0
+                    ) {
+                        $_POST['orderNumber'] = (int)$_POST['orderNumber'][2];
+                    } else { // Order number is wrong
+                        $_POST['orderNumber'] = false;
+                    }
+
+				} else { // Single donation callback
+					$_POST['orderNumber'] = (int)$_POST['orderNumber'];
+				}
+
                 if( !$_POST['orderNumber'] ) {
                     $this->_callback_answer(1, 'co', __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('OrderNumber is not set', 'leyka'));
                 }
@@ -221,7 +237,23 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
                     $this->_callback_answer(1, 'pa', __('Wrong service operation', 'leyka'));
                 }
 
-                $_POST['orderNumber'] = (int)$_POST['orderNumber']; // Donation ID
+                if((int)$_POST['orderNumber'] <= 0) { // Recurring donation callback
+
+					$_POST['orderNumber'] = explode('-', $_POST['orderNumber']);
+                    if(
+                        count($_POST['orderNumber']) == 3 &&
+                        $_POST['orderNumber'][0] == 'recurring' &&
+                        (int)$_POST['orderNumber'][2] > 0
+                    ) {
+                        $_POST['orderNumber'] = (int)$_POST['orderNumber'][2];
+                    } else { // Order number is wrong
+                        $_POST['orderNumber'] = false;
+                    }
+
+				} else { // Single donation callback
+					$_POST['orderNumber'] = (int)$_POST['orderNumber'];
+				}
+
                 if( !$_POST['orderNumber'] ) {
                     $this->_callback_answer(1, 'pa', __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('OrderNumber is not set', 'leyka'));
                 }
@@ -250,9 +282,7 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
                 break; // Not needed, just for my IDE could relax
 
             default:
-
-                do_action('leyka_yandex_unknown_callback_call', $call_type);
-                $this->_callback_answer(1, 'unknown', sprintf(__('Unknown service operation: %s', 'leyka'), $call_type));
+				$this->_callback_answer(1, 'unknown', __('Unknown service operation', 'leyka'), 'Unknown callback type: '.$call_type);
         }
     }
 
@@ -301,7 +331,6 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
             'currency' => $init_recurring_donation->currency,
             'init_recurring_donation' => $init_recurring_donation->id,
             'recurring_id' => $init_recurring_donation->recurring_id, // InvoiceId of the original donation in a subscription
-//        '' => '',
         ));
 
         $certificate_path = leyka_options()->opt('yandex-yandex_card_certificate_path') ?
@@ -350,8 +379,19 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
 
             if(isset($vals[0]['attributes']['STATUS']) && $vals[0]['attributes']['STATUS'] == 0) {
 
-                $new_recurring_donation->status = 'funded';
+                // Recurring payment isn't funded here yet! Only its possibility is confirmed.
+                // To fund a payment, we should wait for a normal callbacks.
+
                 $res = $new_recurring_donation;
+
+            } else { // Some error on payment test run
+
+                $error_num = empty($vals[0]['attributes']['error']) ? 'unknown' : $vals[0]['attributes']['error'];
+                $error_text = empty($vals[0]['attributes']['techMessage']) ?
+                    __('Some error while repeatCardPayment call. Please ask your Yandex.Money manager for details.', 'leyka') : $vals[0]['attributes']['techMessage'];
+
+                $new_recurring_donation->add_gateway_response('Error '.$error_num.': '.$error_text);
+
             }
 
         } else {

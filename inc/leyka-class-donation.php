@@ -515,7 +515,7 @@ class Leyka_Donation_Management {
 		<legend><?php _e('Campaign Data', 'leyka');?></legend>
 
         <div class="leyka-ddata-string">
-			<label for="campaign-select"><?php _e('Campaign', 'leyka');?>:</label>
+            <label for="campaign-select"><?php echo _x('Campaign', 'In subjective case', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
 
 				<input id="campaign-select"
@@ -523,8 +523,8 @@ class Leyka_Donation_Management {
                        value="<?php echo $campaign_id ? $campaign->title : '';?>"
 					   data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>"
 					   placeholder="<?php _e('Select a campaign', 'leyka');?>"
-					/>
-				<input id="campaign-id" type="hidden" name="campaign-id" value="<?php echo $campaign_id;?>" />
+                >
+				<input id="campaign-id" type="hidden" name="campaign-id" value="<?php echo $campaign_id;?>">
 				<div id="campaign_id-error" class="field-error"></div>
 
 			</div>

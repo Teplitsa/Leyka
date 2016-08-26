@@ -180,7 +180,7 @@ class Leyka_Campaign_Management {
         <fieldset id="payment-title" class="metabox-field campaign-field campaign-purpose">
             <label for="payment_title">
                 <?php _e('Campaign title meant for payment system', 'leyka');?>
-                <br />
+                <br>
                 <small><?php echo __('If empty, main campaign title will be used', 'leyka');?></small>
             </label>
 
