@@ -5,9 +5,10 @@ if(defined('POLYLANG_VERSION')) {
 
     add_action('pll_language_defined', function($slug, PLL_Language $cur_lang){
 
-//        if($slug != 'en') {
-            load_textdomain('leyka', LEYKA_PLUGIN_DIR."lang/leyka-{$cur_lang->locale}.mo");
-//        }
+        load_textdomain('leyka', apply_filters(
+            'leyka_l10n_mo_file',
+            LEYKA_PLUGIN_DIR."lang/leyka-{$cur_lang->locale}.mo")
+        );
 
         // Localize options values:
         add_filter('leyka_option_value', function($value, $option_name){
@@ -73,7 +74,10 @@ if(defined('POLYLANG_VERSION')) {
 
         add_action('leyka_init_gateway_redirect_page', function(){
 
-            load_textdomain('leyka', LEYKA_PLUGIN_DIR."lang/leyka-{$_POST['cur_locale']}.mo");
+            load_textdomain('leyka', apply_filters(
+                'leyka_l10n_mo_file',
+                LEYKA_PLUGIN_DIR."lang/leyka-{$_POST['cur_locale']}.mo")
+            );
 
             add_filter('locale', function($locale){
                 return $_POST['cur_locale'];
@@ -125,7 +129,7 @@ if(defined('POLYLANG_VERSION')) {
             $locale = get_locale();
             $locale = $locale ? $locale : 'ru_RU';
 
-            load_textdomain('leyka', LEYKA_PLUGIN_DIR."lang/leyka-$locale.mo");
+            load_textdomain('leyka', apply_filters('leyka_l10n_mo_file', LEYKA_PLUGIN_DIR."lang/leyka-{$locale}.mo"));
 
             do_action('leyka_init_actions');
 
@@ -173,7 +177,7 @@ if(defined('POLYLANG_VERSION')) {
 
 } else {
 
-    load_plugin_textdomain('leyka', FALSE, plugin_basename(LEYKA_PLUGIN_DIR).'/lang/');
+    load_plugin_textdomain('leyka', FALSE, apply_filters('leyka_l10n_folder', plugin_basename(LEYKA_PLUGIN_DIR).'/lang/'));
 
     add_action('init', function(){
         do_action('leyka_init_actions');
