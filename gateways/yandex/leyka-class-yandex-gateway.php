@@ -14,6 +14,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         $this->_docs_link = '//leyka.te-st.ru/docs/yandex-dengi/';
         $this->_admin_ui_column = 1;
         $this->_admin_ui_order = 10;
+
     }
 
     protected function _set_options_defaults() {
@@ -72,6 +73,9 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
 
+        if(empty($this->_payment_methods['yandex_all'])) {
+            $this->_payment_methods['yandex_all'] = Leyka_Yandex_All::get_instance();
+        }
         if(empty($this->_payment_methods['yandex_card'])) {
             $this->_payment_methods['yandex_card'] = Leyka_Yandex_Card::get_instance();
         }
@@ -101,16 +105,22 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             $donation->payment_type = 'rebill';
             $donation->rebilling_is_active = true; // So we could turn it on/off
 
-        } else if($pm_id == 'yandex_sb' && $form_data['leyka_donation_currency'] == 'rur' && $form_data['leyka_donation_amount'] < 10.0) {
+        } else if(
+            $pm_id == 'yandex_sb' &&
+            $form_data['leyka_donation_currency'] == 'rur' &&
+            $form_data['leyka_donation_amount'] < 10.0
+        ) {
 
             $error = new WP_Error('leyka_donation_amount_too_small', __('The amount of donations via Sberbank Online should be at least 10 RUR.', 'leyka'));
             leyka()->add_payment_form_error($error);
+
         }
     }
 
     public function submission_redirect_url($current_url, $pm_id) {
 
         switch($pm_id) {
+            case 'yandex_all':
             case 'yandex_money':
             case 'yandex_card':
             case 'yandex_wm':
@@ -129,16 +139,8 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
         $donation = new Leyka_Donation($donation_id);
 
-        switch($pm_id) { // PC - Yandex.money, AC - bank card, WM - Webmoney, MC - mobile payments
-            case 'yandex_money': $payment_type = 'PC'; break;
-            case 'yandex_card': $payment_type = 'AC'; break;
-            case 'yandex_wm': $payment_type = 'WM'; break;
-            case 'yandex_sb': $payment_type = 'SB'; break;
-            case 'yandex_ab': $payment_type = 'AB'; break;
-            case 'yandex_pb': $payment_type = 'PB'; break;
-            default:
-                $payment_type = apply_filters('leyka_yandex_custom_payment_type', '', $pm_id);
-        }
+        $payment_type = $this->_get_yandex_pm_id($pm_id);
+        $payment_type = $payment_type ? $payment_type : apply_filters('leyka_yandex_custom_payment_type', '', $pm_id);
 
         $data = array(
             'scid' => leyka_options()->opt('yandex_scid'),
@@ -268,6 +270,11 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
 
                     $donation->add_gateway_response($_POST);
                     $donation->status = 'funded';
+
+                    // Change PM if needed. Mostly for Smart Payments:
+                    if($_POST['paymentType'] != $this->_get_yandex_pm_id($donation->pm_id)) {
+                        $donation->pm_id = $this->_get_yandex_pm_id($_POST['paymentType']);
+                    }
 
                     if($donation->type == 'rebill' && !empty($_POST['invoiceId'])) {
                         $donation->recurring_id = (int)$_POST['invoiceId'];
@@ -484,8 +491,77 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
             update_post_meta($donation_id, '_yandex_invoice_id', $donation_params['recurring_id']);
         }
     }
+
+    /** A service method to get Yandex' paymentType values by according pm_ids, and vice versa. */
+    protected function _get_yandex_pm_id($pm_id) {
+
+        $all_pm_ids = array(
+            'yandex_all' => '',
+            'yandex_card' => 'AC',
+            'yandex_money' => 'PC',
+            'yandex_wm' => 'WM',
+            'yandex_sb' => 'SB',
+            'yandex_ab' => 'AB',
+            'yandex_pb' => 'PB',
+//            '' => '',
+//            '' => '',
+        );
+
+        if(array_key_exists($pm_id, $all_pm_ids)) {
+            return $all_pm_ids[$pm_id];
+        } else if(in_array($pm_id, $all_pm_ids)) {
+            return array_search($pm_id, $all_pm_ids);
+        } else {
+            return false;
+        }
+    }
 }
 
+
+class Leyka_Yandex_All extends Leyka_Payment_Method {
+
+    protected static $_instance = null;
+
+    public function _set_attributes() {
+
+        $this->_id = 'yandex_all';
+        $this->_gateway_id = 'yandex';
+
+        $this->_label_backend = __('Any Yandex.money payment method available', 'leyka');
+        $this->_label = __('Yandex.money (any)', 'leyka');
+
+        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
+
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/visa.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/master.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
+        ));
+
+        $this->_supported_currencies[] = 'rur';
+
+        $this->_default_currency = 'rur';
+    }
+
+    protected function _set_options_defaults() {
+
+        if($this->_options) {
+            return;
+        }
+
+        $this->_options = array(
+
+            $this->full_id.'_description' => array(
+                'type' => 'html',
+                'default' => __('Yandex.Money allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Money website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
+                'title' => __('Yandex Smart Payment description', 'leyka'),
+                'description' => __('Please, enter Yandex.Money smart payment service description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
+                'required' => 0,
+                'validation_rules' => array(), // List of regexp?..
+            ),
+        );
+    }
+}
 
 class Leyka_Yandex_Card extends Leyka_Payment_Method {
 
