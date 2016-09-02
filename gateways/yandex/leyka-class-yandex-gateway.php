@@ -57,6 +57,16 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
+            $this->full_id.'_secret_word' => array(
+                'type' => 'text',
+                'default' => '',
+                'title' => __('Yandex.Money shop secret word', 'leyka'),
+                'description' => __("Please, enter a secret word that you filled in Yandex.money' technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
+                'placeholder' => __('Ex., 1^2@3#&84nDsOmE5h1T', 'leyka'),
+                'is_password' => 1,
+                'required' => 0,
+                'validation_rules' => array(), // List of regexp?..
+            ),
             'yandex_test_mode' => array(
                 'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
                 'value' => '',

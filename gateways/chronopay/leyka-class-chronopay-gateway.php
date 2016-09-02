@@ -38,11 +38,11 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             'chronopay_ip' => array(
                 'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
                 'value' => '',
-                'default' => '185.30.16.166',
+                'default' => '207.97.254.211',
                 'title' => __('Chronopay IP', 'leyka'),
                 'description' => __('IP address to check for requests.', 'leyka'),
                 'required' => 1,
-                'placeholder' => __('Ex., 185.30.16.166', 'leyka'),
+                'placeholder' => __('Ex., 207.97.254.211', 'leyka'),
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
@@ -52,6 +52,17 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 'default' => 0,
                 'title' => __('Use test gateway', 'leyka'),
                 'description' => __('Check to connect via test gateway (payments.test.chronopay.com).', 'leyka'),
+                'required' => false,
+                'placeholder' => '',
+                'list_entries' => array(), // For select, radio & checkbox fields
+                'validation_rules' => array(), // List of regexp?..
+            ),
+            'chronopay_use_payment_uniqueness_control' => array(
+                'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+                'value' => '',
+                'default' => 0,
+                'title' => __('Use the payments uniqueness control', 'leyka'),
+                'description' => __('Check if you use Chronopay payment uniqueness control setting.', 'leyka'),
                 'required' => false,
                 'placeholder' => '',
                 'list_entries' => array(), // For select, radio & checkbox fields
@@ -112,14 +123,16 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 			'product_price' => $price,
 			'product_price_currency' => $this->_get_currency_id($donation->currency),
 			'cs1' => esc_attr($donation->title), // Purpose of the donation
-			'cs2' => $donation_id, // Payment ID
-
+			'cs2' => $donation_id, // Purpose of the donation
+            'order_id' => $donation_id,
 			'cb_url' => home_url('leyka/service/'.$this->_id.'/response/'), // URL for the gateway callbacks
 			'cb_type' => 'P',
 			'success_url' => leyka_get_success_page_url(),
 			'decline_url' => leyka_get_failure_page_url(),
 
-			'sign' => md5($chronopay_product_id.'-'.$price.'-'.$sharedsec),
+			'sign' => md5($chronopay_product_id.'-'.$price
+                .(leyka_options()->opt('chronopay_use_payment_uniqueness_control') ? '-'.$donation_id : '')
+                .'-'.$sharedsec),
 			'language' => get_locale() == 'ru_RU' ? 'ru' : 'en',
 			'email' => $donation->donor_email,
         );
@@ -163,8 +176,8 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
             $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
             $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
-            $message .= "IP:\n\r".print_r($_SERVER['REMOTE_ADDR'], true)."\n\r\n\r";
-            $message .= "Chronopay IP setting value:\n\r".print_r(leyka_options()->opt('chronopay_ip'),true)."\n\r\n\r";
+            $message .= "IP: ".print_r($_SERVER['REMOTE_ADDR'], true)."\n\r\n\r";
+            $message .= "Chronopay IP setting value: ".print_r(leyka_options()->opt('chronopay_ip'),true)."\n\r\n\r";
 
             wp_mail(get_option('admin_email'), __('Chronopay IP check failed!', 'leyka'), $message);
             status_header(200);
@@ -197,12 +210,12 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
         if( !$donation->id || !$donation->campaign_id ) {
 
-            $message = __("This message has been sent because a call to your ChronoPay callbacks URL was made with a donation ID parameter (POST['cs2']) that Leyka is unknown of. The details of the call are below.", 'leyka')."\n\r\n\r";
+            $message = __("This message has been sent because a call to your ChronoPay callbacks URL was made with a donation ID parameter (POST['order_id']) that Leyka is unknown of. The details of the call are below.", 'leyka')."\n\r\n\r";
 
             $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
             $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
             $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
-            $message .= "Donation ID:\n\r".$_POST['cs2']."\n\r\n\r";
+            $message .= "Donation ID: ".$_POST['cs2']."\n\r\n\r";
 
             wp_mail(get_option('admin_email'), __('Chronopay gives unknown donation ID parameter!', 'leyka'), $message);
             status_header(200);
@@ -328,13 +341,13 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             'meta_query' => array(
                 'RELATION' => 'AND',
                 array(
-                    'key'     => '_chronopay_customer_id',
-                    'value'   => $recurring,
+                    'key' => '_chronopay_customer_id',
+                    'value' => $recurring,
                     'compare' => '=',
                 ),
                 array(
-                    'key'     => 'leyka_payment_type',
-                    'value'   => 'rebill',
+                    'key' => 'leyka_payment_type',
+                    'value' => 'rebill',
                     'compare' => '=',
                 ),
             ),

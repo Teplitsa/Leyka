@@ -1132,6 +1132,7 @@ class Leyka_Donation_Management {
             if($donation->status == 'funded') {
                 $campaign->update_total_funded_amount($donation);
             }
+
         }
 
         if(isset($_POST['donation-amount']) && (float)$donation->amount != (float)$_POST['donation-amount']) {
@@ -1145,6 +1146,7 @@ class Leyka_Donation_Management {
             if($donation->campaign_id && $donation->status == 'funded') {
                 $campaign->update_total_funded_amount($donation, 'update_sum', $old_amount);
             }
+
         }
 
         if( !$donation->currency ) {
