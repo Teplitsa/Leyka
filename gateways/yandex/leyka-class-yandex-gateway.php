@@ -596,7 +596,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
         /** @todo Right now we can't use leyka_options()->opt() here because Gateway options are not included in options_meta ATM. Refactor this. */
         $this->_custom_fields = get_option('leyka_'.$this->full_id.'_rebilling_available', true) ?
             array(
-                'recurring' => '<label class="checkbox"><span><input type="checkbox" id="leyka_'.$this->full_id.'_recurring" name="leyka_recurring" value="1"></span> '.__('Monthly recurring donations', 'leyka').'</label>'
+                'recurring' => '<label class="checkbox"><span><input type="checkbox" id="leyka_'.$this->full_id.'_recurring" name="leyka_recurring" value="1"></span> '.__('Monthly donations', 'leyka').'</label>'
             ) :
             array();
 
