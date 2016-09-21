@@ -90,6 +90,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         }
 
         add_filter('leyka_js_localized_strings', array($this, 'localize_js_strings'));
+
     }
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {

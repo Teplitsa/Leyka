@@ -588,7 +588,6 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
         // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-//            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/master.png',
         ));
@@ -727,6 +726,7 @@ class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
         $this->_supported_currencies[] = 'rur';
 
         $this->_default_currency = 'rur';
+
     }
 
     protected function _set_options_defaults() {
@@ -745,7 +745,9 @@ class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
                 'validation_rules' => array(), // List of regexp?..
             ),
         );
+
     }
+
 }
 
 class Leyka_Yandex_Sberbank_Online extends Leyka_Payment_Method {

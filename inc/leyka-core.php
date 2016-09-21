@@ -30,6 +30,9 @@ class Leyka {
     /** @var string Gateway URL to process payment data. */
     protected $_payment_url = '';
 
+    /** @var string Gateway URL to process payment data. */
+    protected $_auto_redirect = true;
+
     /** @var array Of key => value pairs of payment form vars to send to the Gateway URL. */
     protected $_payment_vars = array();
 
@@ -62,8 +65,10 @@ class Leyka {
 
                 flush_rewrite_rules(false);
                 update_option('leyka_permalinks_flushed', 1);
+
             }
             add_action('init', 'leyka_rewrite_rules');
+
         }
 
         // By default, we'll assume some errors in the payment form, so redirect will get us back to it:
@@ -97,6 +102,7 @@ class Leyka {
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-donations-export.php');
 
             Leyka_Admin_Setup::get_instance();
+
         }
 
         add_action('admin_bar_menu', array($this, 'add_toolbar_menu'), 999);
@@ -110,9 +116,7 @@ class Leyka {
                 $request = explode('/', trim($request[1], '/'));
 
                 if($request[0] == 'do_recurring') { // Recurrents processing URL
-
                     $this->_do_active_recurrents_rebilling();
-
                 } else { // Gateway callback URL
 
                     // Callback URLs are: some-website.org/leyka/service/{gateway_id}/{action_name}/
@@ -123,7 +127,9 @@ class Leyka {
                 }
 
                 exit();
+
             }
+
         });
 
         add_action('pre_get_posts', function(WP_Query $query){
@@ -148,7 +154,9 @@ class Leyka {
                         'value'   => $campaign->ID,
                     ),));
                 }
+
             }
+
         }, 1);
 
         /** Embed campaign URL handler: */
@@ -285,8 +293,11 @@ class Leyka {
                 if($new_recurring_donation && is_a($new_recurring_donation, 'Leyka_Donation')) {
                     Leyka_Donation_Management::send_all_recurring_emails($new_recurring_donation);
                 }
+
             }
+
         }
+
     }
 
     public function __get($param) {
@@ -296,10 +307,12 @@ class Leyka {
             case 'plugin_slug': return $this->_plugin_slug;
             case 'payment_url': return $this->_payment_url;
             case 'payment_vars': return $this->_payment_vars;
-            case 'form_is_screening': return $this->_form_is_screening;
+            case 'auto_redirect': return !!$this->_auto_redirect;
+            case 'form_is_screening': return !!$this->_form_is_screening;
             default:
                 return '';
         }
+
     }
 
     public function __set($name, $value) {
@@ -311,6 +324,7 @@ class Leyka {
                     $this->_form_is_screening = $value;
                 }
         }
+
     }
 
     public function add_payment_form_error(WP_Error $error) {
@@ -854,8 +868,10 @@ class Leyka {
         if(stristr($_SERVER['REQUEST_URI'], 'leyka-process-donation')) {
 
             if(empty($_POST)) {
+
                 wp_redirect(site_url());
                 exit();
+
             }
 
             do_action('leyka_init_gateway_redirect_page');
@@ -872,12 +888,14 @@ class Leyka {
                 }
 
                 wp_redirect($referer.'#leyka-submit-errors');
+
             } else {
 
                 header('HTTP/1.1 200 OK');
 
                 require_once(LEYKA_PLUGIN_DIR.'templates/service/leyka-gateway-redirect-page.php');
                 exit();
+
             }
         }
     } // template_redirect
@@ -906,8 +924,7 @@ class Leyka {
             $this->add_payment_form_error($error);
         }
 
-        $donor_email = leyka_pf_get_donor_email_value();
-        if($donor_name && !leyka_validate_email($donor_email)) {
+        if($donor_name && !leyka_validate_email(leyka_pf_get_donor_email_value())) {
 
             $error = new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
             $this->add_payment_form_error($error);
@@ -922,23 +939,26 @@ class Leyka {
         if(is_wp_error($donation_id)) { /** @var WP_Error $donation_id */
 
             $this->add_payment_form_error($donation_id);
+
             return;
 
         } else if( !$donation_id ) {
 
             $error = new WP_Error('unknown_donation_submit_error', __('The donation was not created due to error.', 'leyka'));
             $this->add_payment_form_error($error);
+
             return;
+
         }
 
-        do_action(
-            'leyka_payment_form_submission-'.$pm[0],
-            $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST
-        );
+        do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
 
         $this->_payment_vars = apply_filters('leyka_submission_form_data-'.$pm[0], $this->_payment_vars, $pm[1], $donation_id);
 
         $this->_payment_url = apply_filters('leyka_submission_redirect_url-'.$pm[0], $this->_payment_url, $pm[1]);
+
+        $this->_auto_redirect = apply_filters('leyka_submission_auto_redirect-'.$pm[0], true, $pm[1], $donation_id);
+
     }
 
     /** Save a base submission info and return new donation ID, so gateway can add it's specific data to the logs. */

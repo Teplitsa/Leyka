@@ -142,6 +142,7 @@ abstract class Leyka_Gateway {
 
         add_filter('leyka_get_unknown_donation_field', array($this, 'get_specific_data_value'), 10, 3);
         add_action('leyka_set_unknown_donation_field', array($this, 'set_specific_data_value'), 10, 3);
+
     }
 
     final protected function __clone() {}
@@ -160,7 +161,10 @@ abstract class Leyka_Gateway {
             add_action('leyka_log_donation-'.static::$_instance->id, array(static::$_instance, 'log_gateway_fields'));
 
             add_filter('leyka_submission_redirect_url-'.static::$_instance->id, array(static::$_instance, 'submission_redirect_url'), 10, 2);
+            add_filter('leyka_submission_auto_redirect-'.static::$_instance->id, array(static::$_instance, 'submission_auto_redirect'), 10, 3);
             add_filter('leyka_submission_form_data-'.static::$_instance->id, array(static::$_instance, 'submission_form_data'), 10, 3);
+            add_filter('leyka_submission_redirect_scripts-'.static::$_instance->id, array(static::$_instance, 'submission_redirect_scripts'), 10, 3);
+
         }
 
         return static::$_instance;
@@ -191,6 +195,7 @@ abstract class Leyka_Gateway {
                 }
                 return $icon;
             default:
+                return false;
         }
     }
 
@@ -263,6 +268,7 @@ abstract class Leyka_Gateway {
         } else {
             return false;
         }
+
     }
 
     // Handler for Gateway's procedure for stopping some recurrent donations subscription:
@@ -321,6 +327,7 @@ abstract class Leyka_Gateway {
                 __('Donation amount must be specified to submit the form', 'leyka')
             );
             leyka()->add_payment_form_error($error);
+
         }
 
         $currency = $form_data['leyka_donation_currency'];
@@ -331,27 +338,24 @@ abstract class Leyka_Gateway {
                 __('Wrong donation currency in submitted form data', 'leyka')
             );
             leyka()->add_payment_form_error($error);
+
         }
 
-        if(
-            !empty($form_data['top_'.$currency]) &&
-            $form_data['leyka_donation_amount'] > $form_data['top_'.$currency]
-        ) {
-            $top_amount_allowed = $form_data['top_'.$currency];
+        if( !empty($form_data['top_'.$currency]) && $form_data['leyka_donation_amount'] > $form_data['top_'.$currency] ) {
+
             $error = new WP_Error(
                 'donation_amount_too_great',
                 sprintf(
                     __('Donation amount you entered is too great (maximum %s allowed)', 'leyka'),
-                    $top_amount_allowed.' '.leyka_options()->opt("currency_{$currency}_label")
+                    $form_data['top_'.$currency].' '.leyka_options()->opt("currency_{$currency}_label")
                 )
             );
             leyka()->add_payment_form_error($error);
+
         }
 
-        if(
-            !empty($form_data['bottom_'.$currency]) &&
-            $form_data['leyka_donation_amount'] < $form_data['bottom_'.$currency]
-        ) {
+        if( !empty($form_data['bottom_'.$currency]) && $form_data['leyka_donation_amount'] < $form_data['bottom_'.$currency] ) {
+
             $bottom_amount_allowed = $form_data['bottom_'.$currency];
             $error = new WP_Error(
                 'donation_amount_too_small',
@@ -361,11 +365,14 @@ abstract class Leyka_Gateway {
                 )
             );
             leyka()->add_payment_form_error($error);
+
         }
 
         if(empty($form_data['leyka_agree']) && leyka_options()->opt('agree_to_terms_needed')) {
+
             $error = new WP_Error('terms_not_agreed', __('You must agree to the terms of donation service', 'leyka'));
             leyka()->add_payment_form_error($error);
+
         }
     }
 
@@ -386,6 +393,7 @@ abstract class Leyka_Gateway {
         }
 
         return false;
+
     }
 
     /** @param mixed $pm A PM object or it's ID to remove from gateway. */
@@ -396,6 +404,7 @@ abstract class Leyka_Gateway {
         } else if(strlen($pm) && !empty($this->_payment_methods[$pm])) {
             unset($this->_payment_methods[$pm->id]);
         }
+
     }
 
     /**
@@ -417,6 +426,7 @@ abstract class Leyka_Gateway {
                 } elseif($currency && $pm->has_currency_support($currency)) {
                     $pm_list[] = $pm;
                 }
+
             }
         }
 
@@ -429,8 +439,19 @@ abstract class Leyka_Gateway {
      */
     public function get_payment_method_by_id($pm_id) {
 
-        $pm_id = trim((string)$pm_id);
-        return empty($this->_payment_methods[$pm_id]) ? false : $this->_payment_methods[$pm_id]; 
+        $pm_id = trim($pm_id);
+        return empty($this->_payment_methods[$pm_id]) ? false : $this->_payment_methods[$pm_id];
+
+    }
+
+    /** Default filter for the donation page auto redirect parameter */
+    public function submission_auto_redirect($is_auto_redirect, $pm_id, $donation_id) {
+        return !!$is_auto_redirect;
+    }
+
+    /** Default filter for the donation page auto redirect parameter */
+    public function submission_redirect_scripts($redirect_scripts, $pm_id, $donation_id) {
+        return $redirect_scripts;
     }
 
     /** Get gateway specific donation fields for an "add/edit donation" page ("donation data" metabox). */
