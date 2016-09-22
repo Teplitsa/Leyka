@@ -161,13 +161,14 @@ abstract class Leyka_Gateway {
             add_action('leyka_log_donation-'.static::$_instance->id, array(static::$_instance, 'log_gateway_fields'));
 
             add_filter('leyka_submission_redirect_url-'.static::$_instance->id, array(static::$_instance, 'submission_redirect_url'), 10, 2);
-            add_filter('leyka_submission_auto_redirect-'.static::$_instance->id, array(static::$_instance, 'submission_auto_redirect'), 10, 3);
+//            add_filter('leyka_submission_auto_redirect-'.static::$_instance->id, array(static::$_instance, 'submission_auto_redirect'), 10, 3);
             add_filter('leyka_submission_form_data-'.static::$_instance->id, array(static::$_instance, 'submission_form_data'), 10, 3);
-            add_filter('leyka_submission_redirect_scripts-'.static::$_instance->id, array(static::$_instance, 'submission_redirect_scripts'), 10, 3);
+            add_action('leyka_'.static::$_instance->id.'_redirect_page_content', array(static::$_instance, 'gateway_redirect_page_content'), 10, 2);
 
         }
 
         return static::$_instance;
+
     }
 
     public function __get($param) {
@@ -438,20 +439,16 @@ abstract class Leyka_Gateway {
      * @return Leyka_Payment_Method Object, or false if it's not found. 
      */
     public function get_payment_method_by_id($pm_id) {
-
-        $pm_id = trim($pm_id);
         return empty($this->_payment_methods[$pm_id]) ? false : $this->_payment_methods[$pm_id];
-
     }
 
     /** Default filter for the donation page auto redirect parameter */
-    public function submission_auto_redirect($is_auto_redirect, $pm_id, $donation_id) {
-        return !!$is_auto_redirect;
-    }
+//    public function submission_auto_redirect($is_auto_redirect, $pm_id, $donation_id) {
+//        return !!$is_auto_redirect;
+//    }
 
-    /** Default filter for the donation page auto redirect parameter */
-    public function submission_redirect_scripts($redirect_scripts, $pm_id, $donation_id) {
-        return $redirect_scripts;
+    /** Default action for the gateway redirect page content */
+    public function gateway_redirect_page_content($pm_id, $donation_id) {
     }
 
     /** Get gateway specific donation fields for an "add/edit donation" page ("donation data" metabox). */

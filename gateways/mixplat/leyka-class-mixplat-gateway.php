@@ -157,6 +157,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             if($json['result'] == 'ok') {
                 $is_success = true;
             }
+
         }
 
         if($is_success) {
@@ -170,6 +171,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             );
 
             wp_redirect(leyka_get_failure_page_url());
+
         }
 
         exit(0);

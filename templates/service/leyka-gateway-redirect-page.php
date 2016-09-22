@@ -46,7 +46,11 @@
 
 <body>
     <div>
-        <?php echo apply_filters('leyka_gateway_redirect_message', __('<h3>Thank you!</h3><p>In a few seconds you will be redirected to the payment system website, where you can complete your donation.</p>', 'leyka'));?>
+        <?php echo apply_filters('leyka_gateway_redirect_message', __('<h3>Thank you!</h3><p>In a few seconds you will be redirected to the payment system website, where you can complete your donation.</p>', 'leyka'));
+
+        $gateway_pm = explode('-', $_POST['leyka_payment_method']);
+
+        do_action('leyka_'.$gateway_pm[0].'_redirect_page_content', $gateway_pm[1], leyka()->donation_id);?>
     </div>
 
     <form id="leyka-auto-submit" action="<?php echo leyka()->payment_url;?>" method="post">
@@ -63,10 +67,6 @@
 
     </form>
     <?php leyka_pf_footer();
-
-//    foreach(leyka()->gateway_redirect_scripts as $script) {?>
-<!--        <script type="text/javascript" src="--><?php //echo $script;?><!--"></script>-->
-<!--    --><?php //}
 
     if(leyka()->auto_redirect) {?>
 

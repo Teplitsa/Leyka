@@ -767,17 +767,27 @@ function leyka_validate_email($email) {
     return $email ? filter_var($email, FILTER_VALIDATE_EMAIL) : true;
 }
 
+/** @return string URL of a current page, according to permalinks stucture setting. */
+function leyka_get_current_url() {
+
+    global $wp;
+    return add_query_arg($wp->query_string, '', home_url($wp->request));
+
+}
+
 // For some reason wp_validate_redirect() aren't get defined in WP 3.6.1, so define it if needed:
 if( !function_exists('wp_validate_redirect') ) {
     function wp_validate_redirect($location, $default = '') {
 
-        $location = trim( $location );
+        $location = trim($location);
+
         // browsers will assume 'http' is your protocol, and will obey a redirect to a URL starting with '//'
-        if ( substr($location, 0, 2) == '//' )
+        if(substr($location, 0, 2) == '//') {
             $location = 'http:' . $location;
+        }
 
         // In php 5 parse_url may fail if the URL query part contains http://, bug #38143
-        $test = ( $cut = strpos($location, '?') ) ? substr( $location, 0, $cut ) : $location;
+        $test = ($cut = strpos($location, '?')) ? substr($location, 0, $cut) : $location;
 
         $lp  = parse_url($test);
 

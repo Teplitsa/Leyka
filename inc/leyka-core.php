@@ -31,7 +31,10 @@ class Leyka {
     protected $_payment_url = '';
 
     /** @var string Gateway URL to process payment data. */
-    protected $_auto_redirect = true;
+//    protected $_auto_redirect = true;
+
+    /** @var integer Currently submitted donation ID. */
+    protected $_submitted_donation_id = 0;
 
     /** @var array Of key => value pairs of payment form vars to send to the Gateway URL. */
     protected $_payment_vars = array();
@@ -54,6 +57,7 @@ class Leyka {
         }
 
         return self::$_instance;
+
     }
 
     /** Initialize the plugin by setting localization, filters, and administration functions. */
@@ -307,6 +311,8 @@ class Leyka {
             case 'plugin_slug': return $this->_plugin_slug;
             case 'payment_url': return $this->_payment_url;
             case 'payment_vars': return $this->_payment_vars;
+            case 'submitted_donation_id':
+            case 'donation_id': return $this->_submitted_donation_id;
             case 'auto_redirect': return !!$this->_auto_redirect;
             case 'form_is_screening': return !!$this->_form_is_screening;
             default:
@@ -833,6 +839,7 @@ class Leyka {
         ));
 
         do_action('leyka_cpt_registered');
+
     }
 
     /**
@@ -847,6 +854,7 @@ class Leyka {
             'campaign/([^/]+)/donations/page/([1-9]{1,})/?$' =>
                 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter=$matches[1]&paged=$matches[2]',
         ) + $rules; // The rules' order is important
+
     }
 
     /**
@@ -858,6 +866,7 @@ class Leyka {
 
         $vars[] = 'leyka_campaign_filter';
         return $vars;
+
     }
 
     /**
@@ -897,7 +906,9 @@ class Leyka {
                 exit();
 
             }
+
         }
+
     } // template_redirect
 
     public function _do_payment_form_submission() {
@@ -908,6 +919,7 @@ class Leyka {
 
             $error = new WP_Error('wrong_form_submission', __('Wrong nonce in submitted form data', 'leyka'));
             $this->add_payment_form_error($error);
+
         }
 
         $pm = explode('-', $_POST['leyka_payment_method']);
@@ -915,6 +927,7 @@ class Leyka {
 
             $error = new WP_Error('wrong_gateway_pm_data', __('Wrong gateway or/and payment method in submitted form data', 'leyka'));
             $this->add_payment_form_error($error);
+
         }
 
         $donor_name = leyka_pf_get_donor_name_value();
@@ -922,12 +935,14 @@ class Leyka {
 
             $error = new WP_Error('incorrect_donor_name', __('Incorrect donor name given while trying to add a donation', 'leyka'));
             $this->add_payment_form_error($error);
+
         }
 
         if($donor_name && !leyka_validate_email(leyka_pf_get_donor_email_value())) {
 
             $error = new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
             $this->add_payment_form_error($error);
+
         }
 
         if($this->payment_form_has_errors()) {
@@ -953,11 +968,12 @@ class Leyka {
 
         do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
 
+        $this->_submitted_donation_id = $donation_id;
         $this->_payment_vars = apply_filters('leyka_submission_form_data-'.$pm[0], $this->_payment_vars, $pm[1], $donation_id);
 
         $this->_payment_url = apply_filters('leyka_submission_redirect_url-'.$pm[0], $this->_payment_url, $pm[1]);
 
-        $this->_auto_redirect = apply_filters('leyka_submission_auto_redirect-'.$pm[0], true, $pm[1], $donation_id);
+//        $this->_auto_redirect = apply_filters('leyka_submission_auto_redirect-'.$pm[0], true, $pm[1], $donation_id);
 
     }
 
