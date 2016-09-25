@@ -448,17 +448,6 @@ class Leyka_Mixplat_Mobile extends Leyka_Payment_Method {
         }
 
         $this->_options = array(
-            $this->full_id.'_default_campaign_id' => array(
-                'type' => 'select',
-                'default' => leyka_get_campaigns_select_default(),
-                'title' => __('Campaign for SMS payments', 'leyka'),
-                'description' => __('Select a campaign to which SMS payments will be related by default.', 'leyka'),
-                'required' => 0,
-                'placeholder' => '', // For text fields
-                'length' => '', // For text fields
-                'list_entries' => 'leyka_get_campaigns_list',
-                'validation_rules' => array(), // List of regexp?..
-            ),
             $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('MIXPLAT allows a simple and safe way to pay for goods and services with your mobile phone by sending SMS.', 'leyka'),
@@ -517,6 +506,17 @@ class Leyka_Mixplat_Text extends Leyka_Payment_Method {
         }
 
         $this->_options = array(
+            $this->full_id.'_default_campaign_id' => array(
+                'type' => 'select',
+                'default' => leyka_get_campaigns_select_default(),
+                'title' => __('Campaign for SMS payments', 'leyka'),
+                'description' => __('Select a campaign to which SMS payments will be related by default.', 'leyka'),
+                'required' => 0,
+                'placeholder' => '', // For text fields
+                'length' => '', // For text fields
+                'list_entries' => 'leyka_get_campaigns_list',
+                'validation_rules' => array(), // List of regexp?..
+            ),
             $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => '',
