@@ -100,6 +100,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         if( !empty($form_data['leyka_recurring']) ) {
             $donation->payment_type = 'rebill';
         }
+
     }
 
     public function submission_redirect_url($current_url, $pm_id) {
@@ -144,6 +145,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         );
 
 		return $form_data_vars;
+
     }
 
     public function log_gateway_fields($donation_id) {
@@ -495,6 +497,7 @@ class Leyka_CP_Card extends Leyka_Payment_Method {
         $this->_supported_currencies[] = 'rur';
 
         $this->_default_currency = 'rur';
+
     }
 
     protected function _set_options_defaults() {
