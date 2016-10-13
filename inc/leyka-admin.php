@@ -36,6 +36,7 @@ class Leyka_Admin_Setup {
         // Metaboxes support where it is needed:
         add_action('leyka_pre_settings_actions', array($this, 'leyka_metaboxes_full_support'));
         add_action('leyka_dashboard_actions', array($this, 'leyka_metaboxes_full_support'));
+
     }
 
     public function set_plugin_meta($links, $file) {

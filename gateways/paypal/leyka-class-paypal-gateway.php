@@ -338,16 +338,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     );
                 }
 
-                // IPR checks:
-//                if(empty($result['PaymentStatus']) || $result['PaymentStatus'] != 'Completed') {
-//                    $this->_donation_error(
-//                        __('PayPal - payment error occured', 'leyka'),
-//                        sprintf(__("DoExpressCheckoutPayment request to PayPal system returned without 'Completed' status.\n\nThe request result: %s", 'leyka'), print_r($result, 1)),
-//                        $donation,
-//                        'DoECPayment'
-//                    );
-//                }
-
                 parse_str($result_str, $result);
                 curl_close($ch);
 
@@ -361,6 +351,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     );
                 }
 
+                /** @todo IPR checks here, maybe */
                 if(empty($result['PAYMENTINFO_0_PAYMENTSTATUS']) || $result['PAYMENTINFO_0_PAYMENTSTATUS'] != 'Completed') {
                     $this->_donation_error(
                         __('PayPal - payment error occured', 'leyka'),
@@ -373,13 +364,33 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 $this->_add_to_payment_log($donation, 'DoECPayment', $data, $result);
 
-                status_header(200);
+                $donation->status = 'funded';
+                $donation->add_gateway_response($result);
+                Leyka_Donation_Management::send_all_emails($donation->id);
+
+                wp_redirect(leyka_get_success_page_url());
+                exit(0);
+
+            case 'ipn': // Instant payment notifications processing: confirm the payment
+
+                if(isset($_GET['tst'])) {
+                    die('<pre>' . print_r(get_transient('paypal_ipn_tmp'), 1) . '</pre>');
+                }
+
+                if(isset($_REQUEST)) {
+                    $tmp = (array)get_transient('paypal_ipn_tmp');
+                    array_push($tmp, $_REQUEST);
+                    set_transient('paypal_ipn_tmp', $tmp);
+                }
                 die();
 
-            case 'ipn':
-
-
             default:
+                if(isset($_REQUEST)) {
+                    $tmp = (array)get_transient('paypal_ipn_tmp');
+                    array_push($tmp, '<pre>' . print_r($_REQUEST, 1) . '</pre>');
+                    set_transient('paypal_ipn_tmp', $tmp);
+                }
+                die();
         }
 
         exit(0);
