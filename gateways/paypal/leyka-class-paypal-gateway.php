@@ -287,6 +287,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 // $result['COUNTRYCODE'] can be checked too, if needed...
 
                 $this->_add_to_payment_log($donation, 'GetECDetails', $data, $result);
+                $donation->paypal_payer_id = $_GET['PayerID'];
 
                 // 2. DoExpressCheckoutPayment call:
 
@@ -316,6 +317,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     'L_PAYMENTREQUEST_0_DESC0' => is_a($campaign_post, 'WP_Post') ? $campaign_post->post_excerpt : '',
                     'L_PAYMENTREQUEST_0_AMT0' => $donation->amount,
                     'L_PAYMENTREQUEST_0_ITEMCATEGORY0' => 'Digital',
+                    'NOSHIPPING' => 1,
                 ), $donation);
 
                 $ch = curl_init();
@@ -351,8 +353,29 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     );
                 }
 
-                /** @todo IPR checks here, maybe */
-                if(empty($result['PAYMENTINFO_0_PAYMENTSTATUS']) || $result['PAYMENTINFO_0_PAYMENTSTATUS'] != 'Completed') {
+                if(empty($result['PAYMENTINFO_0_PAYMENTSTATUS'])) {
+                    $this->_donation_error(
+                        __('PayPal - payment error occured', 'leyka'),
+                        sprintf(__("DoECPayment request to PayPal system reported about some transaction error: a payment status is empty.\n\nThe request result: %s", 'leyka'), print_r($result, 1)),
+                        $donation,
+                        'DoECPayment',
+                        $data
+                    );
+                }
+
+                // IPR checks, if needed:
+                if(
+                    $result['PAYMENTINFO_0_PAYMENTSTATUS'] == 'Pending' &&
+                    $result['PAYMENTINFO_0_PENDINGREASON'] == 'PaymentReview'
+                ) {
+
+                    $donation->add_gateway_response($result);
+                    $this->_add_to_payment_log($donation, 'DoECPayment', $data, $result);
+                    wp_redirect(leyka_get_success_page_url());
+
+                    // Do not fund a donation here! Wait for it's approval and IPN callback
+
+                } else if($result['PAYMENTINFO_0_PAYMENTSTATUS'] != 'Completed') {
                     $this->_donation_error(
                         __('PayPal - payment error occured', 'leyka'),
                         sprintf(__("DoECPayment request to PayPal system reported about some transaction error: a payment status isn't 'Completed'.\n\nThe request result: %s", 'leyka'), print_r($result, 1)),
@@ -360,37 +383,44 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                         'DoECPayment',
                         $data
                     );
+                } else {
+
+                    $donation->status = 'funded';
+                    $donation->add_gateway_response($result);
+                    Leyka_Donation_Management::send_all_emails($donation->id);
+
+                    $this->_add_to_payment_log($donation, 'DoECPayment', $data, $result);
+                    wp_redirect(leyka_get_success_page_url());
+
                 }
 
-                $this->_add_to_payment_log($donation, 'DoECPayment', $data, $result);
-
-                $donation->status = 'funded';
-                $donation->add_gateway_response($result);
-                Leyka_Donation_Management::send_all_emails($donation->id);
-
-                wp_redirect(leyka_get_success_page_url());
-                exit(0);
+                break;
 
             case 'ipn': // Instant payment notifications processing: confirm the payment
 
-                if(isset($_GET['tst'])) {
-                    die('<pre>' . print_r(get_transient('paypal_ipn_tmp'), 1) . '</pre>');
+                if( !empty($_GET['tst']) ) {
+                    echo '<pre>' . print_r(get_transient('paypal_ipn_tmp'), 1) . '</pre>';
+                }
+                if( !empty($_GET['clear']) ) {
+                    delete_transient('paypal_ipn_tmp');
                 }
 
-                if(isset($_REQUEST)) {
+                if( !empty($_POST) ) {
+
                     $tmp = (array)get_transient('paypal_ipn_tmp');
-                    array_push($tmp, $_REQUEST);
+                    array_push($tmp, $_POST);
                     set_transient('paypal_ipn_tmp', $tmp);
+
                 }
-                die();
+
+                if(empty($_POST['invoice'])) {
+                    exit(0);
+                }
+
+                break;
 
             default:
-                if(isset($_REQUEST)) {
-                    $tmp = (array)get_transient('paypal_ipn_tmp');
-                    array_push($tmp, '<pre>' . print_r($_REQUEST, 1) . '</pre>');
-                    set_transient('paypal_ipn_tmp', $tmp);
-                }
-                die();
+
         }
 
         exit(0);
@@ -455,7 +485,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
         if($donation) { // Edit donation page displayed
 
-            $donation = leyka_get_validated_donation($donation);?>
+            $donation = leyka_get_validated_donation($donation);
+            echo '<pre>' . print_r($donation->paypal_log, 1) . '</pre>';?>
 
             <label><?php _e('PayPal token', 'leyka');?>:</label>
             <div class="leyka-ddata-field">

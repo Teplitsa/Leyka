@@ -1,0 +1,41 @@
+/** Gateway redirect page styles **/
+
+html {
+    background: #fff !important;
+}
+body {
+    margin: 0 !important;
+    padding: 40px 30px !important;
+    background: #fff !important;
+    color: #444 !important;
+    font: normal 14px / 1.4 Arial, Helvetica, sans-serif !important;
+}
+h3 {
+    font-size: 2em !important;
+    margin-bottom: 0.8em !important;
+    background: url(../img/ajax-loader-h.gif) no-repeat right center !important;
+}
+div,
+form {
+    margin: 0 auto !important;
+    max-width: 300px !important;
+}
+
+#leyka-copy {
+    margin-top: 5px !important;
+    font-size: 11px !important;
+    line-height: 18px !important;
+    padding: 4px 30px 4px 4px !important;
+    border: 1px solid #cbe5b5 !important;
+    background: #eef6e8 !important;
+    color: #666 !important;
+}
+
+#leyka-copy p {
+    margin: 0 !important;
+}
+
+#leyka-copy a,
+#leyka-copy a:hover {
+    color:  #1DB318 !important;
+}

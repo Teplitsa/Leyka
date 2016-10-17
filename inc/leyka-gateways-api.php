@@ -161,7 +161,7 @@ abstract class Leyka_Gateway {
             add_action('leyka_log_donation-'.static::$_instance->id, array(static::$_instance, 'log_gateway_fields'));
 
             add_filter('leyka_submission_redirect_url-'.static::$_instance->id, array(static::$_instance, 'submission_redirect_url'), 10, 2);
-//            add_filter('leyka_submission_auto_redirect-'.static::$_instance->id, array(static::$_instance, 'submission_auto_redirect'), 10, 3);
+            add_filter('leyka_submission_auto_redirect-'.static::$_instance->id, array(static::$_instance, 'submission_auto_redirect'), 10, 3);
             add_filter('leyka_submission_form_data-'.static::$_instance->id, array(static::$_instance, 'submission_form_data'), 10, 3);
             add_action('leyka_'.static::$_instance->id.'_redirect_page_content', array(static::$_instance, 'gateway_redirect_page_content'), 10, 2);
 
@@ -443,9 +443,9 @@ abstract class Leyka_Gateway {
     }
 
     /** Default filter for the donation page auto redirect parameter */
-//    public function submission_auto_redirect($is_auto_redirect, $pm_id, $donation_id) {
-//        return !!$is_auto_redirect;
-//    }
+    public function submission_auto_redirect($is_auto_redirect, $pm_id, $donation_id) {
+        return !!$is_auto_redirect;
+    }
 
     /** Default action for the gateway redirect page content */
     public function gateway_redirect_page_content($pm_id, $donation_id) {

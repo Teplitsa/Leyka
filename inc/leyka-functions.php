@@ -649,11 +649,13 @@ function leyka_get_campaigns_list($params = array(), $simple_format = true) {
 
     } else { // Simple assoc. array of ID => title
 
-        array_walk($campaigns, function($campaign){
+        function leyka_sanitize_campaign_title($campaign) {
             $campaign->post_title = htmlentities($campaign->post_title, ENT_QUOTES, 'UTF-8');
-        });
+        }
+        array_walk($campaigns, 'leyka_sanitize_campaign_title');
 
         return $campaigns;
+
     }
 }
 
