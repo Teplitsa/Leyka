@@ -398,26 +398,26 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
             case 'ipn': // Instant payment notifications processing: confirm the payment
 
-                if( !empty($_GET['tst']) ) {
-                    echo '<pre>' . print_r(get_transient('paypal_ipn_tmp'), 1) . '</pre>';
-                }
-                if( !empty($_GET['clear']) ) {
-                    delete_transient('paypal_ipn_tmp');
-                }
-
-                if( !empty($_POST) ) {
-
-                    $tmp = (array)get_transient('paypal_ipn_tmp');
-                    array_push($tmp, $_POST);
-                    set_transient('paypal_ipn_tmp', $tmp);
-
-                }
-
-                if(empty($_POST['invoice'])) {
-                    exit(0);
-                }
-
-                break;
+//                if( !empty($_GET['tst']) ) {
+//                    echo '<pre>' . print_r(get_transient('paypal_ipn_tmp'), 1) . '</pre>';
+//                }
+//                if( !empty($_GET['clear']) ) {
+//                    delete_transient('paypal_ipn_tmp');
+//                }
+//
+//                if( !empty($_POST) ) {
+//
+//                    $tmp = (array)get_transient('paypal_ipn_tmp');
+//                    array_push($tmp, $_POST);
+//                    set_transient('paypal_ipn_tmp', $tmp);
+//
+//                }
+//
+//                if(empty($_POST['invoice'])) {
+//                    exit(0);
+//                }
+//
+//                break;
 
             default:
 
