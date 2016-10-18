@@ -14,6 +14,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-cloudpayments/';
         $this->_admin_ui_column = 1;
         $this->_admin_ui_order = 30;
+
     }
 
     protected function _set_options_defaults() {
@@ -50,13 +51,14 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 'value' => '',
                 'default' => 1,
                 'title' => __('Payments testing mode', 'leyka'),
-                'description' => __('Check if CloudPayments shop account is in testing mode.', 'leyka'),
+                'description' => __('Check if the gateway integration is in test mode.', 'leyka'),
                 'required' => false,
                 'placeholder' => '',
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
         );
+
     }
 
     protected function _initialize_pm_list() {
@@ -277,6 +279,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
             default:
         }
+
     }
 
     /**
@@ -314,6 +317,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         }
 
         return $donation;
+
     }
 
     public function get_init_recurrent_donation($recurring) {
@@ -347,10 +351,10 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         ));
 
         return count($init_donation_post) ? new Leyka_Donation($init_donation_post[0]->ID) : false;
+
     }
 
     protected function _get_value_if_any($arr, $key, $val = false) {
-
         return empty($arr[$key]) ? '' : ($val ? $val : $arr[$key]);
     }
 
@@ -391,6 +395,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         }
 
         return $vars_final;
+
     }
 
     public function display_donation_specific_data_fields($donation = false) {
@@ -417,6 +422,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             </div>
         <?php
         }
+
     }
 
     public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
@@ -432,6 +438,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             case 'cp_invoice_id': return get_post_meta($donation->id, '_cp_transaction_id', true);
             default: return $value;
         }
+
     }
 
     public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
@@ -449,10 +456,10 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 return update_post_meta($donation->id, '_cp_transaction_id', $value);
             default: return false;
         }
+
     }
 
     public function save_donation_specific_data(Leyka_Donation $donation) {
-
         if(
             isset($_POST['cp-recurring-id']) &&
             $donation->recurring_id != $_POST['cp-recurring-id']
@@ -469,7 +476,9 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         if( !empty($donation_params['transaction_id']) ) {
             update_post_meta($donation_id, '_cp_transaction_id', $donation_params['transaction_id']);
         }
+
     }
+
 } // Gateway class end
 
 
@@ -516,6 +525,7 @@ class Leyka_CP_Card extends Leyka_Payment_Method {
                 'validation_rules' => array(), // List of regexp?..
             ),
         );
+
     }
 }
 

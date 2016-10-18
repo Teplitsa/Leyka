@@ -72,13 +72,14 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'value' => '',
                 'default' => 1,
                 'title' => __('Payments testing mode', 'leyka'),
-                'description' => __('Check if Yandex integration is in test mode.', 'leyka'),
+                'description' => __('Check if the gateway integration is in test mode.', 'leyka'),
                 'required' => false,
                 'placeholder' => '',
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
         );
+
     }
 
     protected function _initialize_pm_list() {
@@ -104,10 +105,10 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         if(empty($this->_payment_methods['yandex_pb'])) {
             $this->_payment_methods['yandex_pb'] = Leyka_Yandex_Promvzyazbank::get_instance();
         }
+
     }
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
-
         if($pm_id == 'yandex_card' && !empty($form_data['leyka_recurring'])) {
 
             $donation = new Leyka_Donation($donation_id);
@@ -128,7 +129,6 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
     }
 
     public function submission_redirect_url($current_url, $pm_id) {
-
         switch($pm_id) {
             case 'yandex_all':
             case 'yandex_money':
@@ -174,6 +174,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         }
 
         return apply_filters('leyka_yandex_custom_submission_data', $data, $pm_id);
+
     }
 
     public function log_gateway_fields($donation_id) {
@@ -199,10 +200,10 @@ techMessage="'.$tech_message.'"/>');
 code="0" invoiceId="'.$_POST['invoiceId'].'"
 shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
         }
+
     }
 
     public function _handle_service_calls($call_type = '') {
-
         switch($call_type) {
 
             case 'check_order': // Gateway test before the payment - to check if it's correct
@@ -327,6 +328,7 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
             __("Gateway's donor ID:", 'leyka') => $response_vars['customerNumber'],
             __('Response date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($response_vars['requestDatetime'])),
         );
+
     }
 
     public function do_recurring_donation(Leyka_Donation $init_recurring_donation) {
@@ -417,6 +419,7 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
 
         curl_close($ch);
         return $res;
+
     }
 
     public function display_donation_specific_data_fields($donation = false) {
@@ -454,10 +457,10 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
             </div>
             <?php
         }
+
     }
 
     public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
-
         switch($field_name) {
             case 'recurring_id':
             case 'recurrent_id':
@@ -470,7 +473,6 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
     }
 
     public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
-
         switch($field_name) {
             case 'recurring_id':
             case 'recurrent_id':
@@ -493,10 +495,10 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
 
         // Check if the value's different is inside the Leyka_Donation::__set():
         $donation->recurring_is_active = $_POST['yandex-recurring-is-active'];
+
     }
 
     public function add_donation_specific_data($donation_id, array $donation_params) {
-
         if( !empty($donation_params['recurring_id']) ) {
             update_post_meta($donation_id, '_yandex_invoice_id', $donation_params['recurring_id']);
         }
@@ -524,7 +526,9 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
         } else {
             return false;
         }
+
     }
+
 }
 
 
@@ -551,6 +555,7 @@ class Leyka_Yandex_All extends Leyka_Payment_Method {
         $this->_supported_currencies[] = 'rur';
 
         $this->_default_currency = 'rur';
+
     }
 
     protected function _set_options_defaults() {
@@ -570,7 +575,9 @@ class Leyka_Yandex_All extends Leyka_Payment_Method {
                 'validation_rules' => array(), // List of regexp?..
             ),
         );
+
     }
+
 }
 
 class Leyka_Yandex_Card extends Leyka_Payment_Method {
@@ -602,6 +609,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
         $this->_supported_currencies[] = 'rur';
 
         $this->_default_currency = 'rur';
+
     }
 
     protected function _set_options_defaults() {
@@ -659,7 +667,9 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
                 'validation_rules' => array(), // List of regexp?..
             ),
         );
+
     }
+
 }
 
 class Leyka_Yandex_Money extends Leyka_Payment_Method {
@@ -684,6 +694,7 @@ class Leyka_Yandex_Money extends Leyka_Payment_Method {
         $this->_supported_currencies[] = 'rur';
 
         $this->_default_currency = 'rur';
+
     }
 
     protected function _set_options_defaults() {
@@ -702,7 +713,9 @@ class Leyka_Yandex_Money extends Leyka_Payment_Method {
                 'validation_rules' => array(), // List of regexp?..
             ),
         );
+
     }
+
 }
 
 class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
@@ -772,6 +785,7 @@ class Leyka_Yandex_Sberbank_Online extends Leyka_Payment_Method {
         $this->_supported_currencies[] = 'rur';
 
         $this->_default_currency = 'rur';
+
     }
 
     protected function _set_options_defaults() {
@@ -790,7 +804,9 @@ class Leyka_Yandex_Sberbank_Online extends Leyka_Payment_Method {
                 'validation_rules' => array(), // List of regexp?..
             ),
         );
+
     }
+
 }
 
 class Leyka_Yandex_Alpha_Click extends Leyka_Payment_Method {
@@ -815,6 +831,7 @@ class Leyka_Yandex_Alpha_Click extends Leyka_Payment_Method {
         $this->_supported_currencies[] = 'rur';
 
         $this->_default_currency = 'rur';
+
     }
 
     protected function _set_options_defaults() {
@@ -833,7 +850,9 @@ class Leyka_Yandex_Alpha_Click extends Leyka_Payment_Method {
                 'validation_rules' => array(), // List of regexp?..
             ),
         );
+
     }
+
 }
 
 class Leyka_Yandex_Promvzyazbank extends Leyka_Payment_Method {
@@ -858,6 +877,7 @@ class Leyka_Yandex_Promvzyazbank extends Leyka_Payment_Method {
         $this->_supported_currencies[] = 'rur';
 
         $this->_default_currency = 'rur';
+
     }
 
     protected function _set_options_defaults() {
@@ -876,7 +896,9 @@ class Leyka_Yandex_Promvzyazbank extends Leyka_Payment_Method {
                 'validation_rules' => array(), // List of regexp?..
             ),
         );
+
     }
+
 }
 
 function leyka_add_gateway_yandex() { // Use named function to leave a possibility to remove/replace it on the hook

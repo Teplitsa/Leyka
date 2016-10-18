@@ -671,7 +671,7 @@ class Leyka_Paypal_All extends Leyka_Payment_Method {
         $this->_id = 'paypal_all';
         $this->_gateway_id = 'paypal';
 
-        $this->_label_backend = __('PayPal - any payment method available', 'leyka');
+        $this->_label_backend = __('PayPal', 'leyka');
         $this->_label = __('PayPal', 'leyka');
 
         // The description won't be setted here - it requires the PM option being configured at this time (which is not)

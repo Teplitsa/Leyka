@@ -11,9 +11,10 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         $this->_id = 'mixplat';
         $this->_title = __('MIXPLAT', 'leyka');
-        $this->_docs_link = '';
+        $this->_docs_link = '//leyka.te-st.ru/docs/nastrojka-mixplat/';
         $this->_admin_ui_column = 1;
         $this->_admin_ui_order = 60;
+
     }
 
     protected function _set_options_defaults() {
@@ -50,13 +51,14 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                 'value' => '',
                 'default' => 1,
                 'title' => __('Payments testing mode', 'leyka'),
-                'description' => __('Check to run MIXPLAT in testing mode.', 'leyka'),
+                'description' => __('Check if the gateway integration is in test mode.', 'leyka'),
                 'required' => false,
                 'placeholder' => '',
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
         );
+
     }
 
     protected function _initialize_pm_list() {

@@ -62,8 +62,8 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
                 'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
                 'value' => '',
                 'default' => 1,
-                'title' => __('Shop testing mode', 'leyka'),
-                'description' => __('Check if Robokassa shop is in testing mode.', 'leyka'),
+                'title' => __('Payments testing mode', 'leyka'),
+                'description' => __('Check if the gateway integration is in test mode.', 'leyka'),
                 'required' => false,
                 'placeholder' => '',
                 'list_entries' => array(), // For select, radio & checkbox fields
