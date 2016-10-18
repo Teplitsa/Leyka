@@ -4,7 +4,7 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндексденьги
 Requires at least: 3.6.1
-Tested up to: 4.5.3
+Tested up to: 4.6.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -35,7 +35,7 @@ _For English description scroll down, please._
 
 **Основные функции**
 
-* Широкий набор платежных систем и опций (включая Яндекс.Деньги, CloudPayments, MIXPLAT, Chronopay, RBK Money, ROBOKASSA и печать банковских квитанций)
+* Широкий набор платежных систем и опций (включая Яндекс.Деньги, CloudPayments, PayPal, MIXPLAT, Chronopay, RBK Money, ROBOKASSA и печать банковских квитанций)
 * Поддерживается приём мобильных платежей
 * Подходит для физических и юридических лиц
 * Автоматическая рассылка email-сообщений жертвователям
@@ -86,7 +86,7 @@ The plugin is designed for any website that wants to collect money online - NGOs
 **Warning:** you will need to sign a contract with some payment systems, like Yandex.Money or RBK, to collect donations through them. 
 
 **Core features**
- 		
+
 * Wide range of payment systems and options
 * Suitable for private persons and NGOs
 * Automatic e-mails to supporters
@@ -155,6 +155,14 @@ PHP at least 5.3 is required.
 10. События Google Analytics
 
 == Changelog ==
+= 2.2.12 =
+ * New: PayPal gateway support added (Express Checkout, single payments).
+ * New: now gateway redirection page can be customized by client code.
+ * New: now Chronopay payments can pass uniqueness checks.
+ * New: Yandex Smart payments added.
+ * Fix: localization fixes.
+ * Fix: small fixes.
+
 = 2.2.11 =
  * New: MIXPLAT SMS payments support added.
  * New: now CloudPayments outputs errors to a donor in more frienly way.
