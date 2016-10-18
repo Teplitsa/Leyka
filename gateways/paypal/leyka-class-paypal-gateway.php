@@ -112,7 +112,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             'PAYMENTREQUEST_0_DESC' => $payment_description,
             'L_PAYMENTREQUEST_0_NAME0' => $donation->payment_title,
             'L_PAYMENTREQUEST_0_ITEMURL0' => get_permalink($campaign_post),
-            'L_PAYMENTREQUEST_0_DESC0' => is_a($campaign_post, 'WP_Post') ? $campaign_post->post_excerpt : '',
+            'L_PAYMENTREQUEST_0_DESC0' => $payment_description,
             'L_PAYMENTREQUEST_0_AMT0' => $donation->amount,
             'L_PAYMENTREQUEST_0_ITEMCATEGORY0' => 'Digital',
             'L_BILLINGTYPE0' => 'MerchantInitiatedBilling', // WARNING: for recurring this will be "RecurringPayments"
@@ -314,7 +314,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     'PAYMENTREQUEST_0_DESC' => $payment_description,
                     'L_PAYMENTREQUEST_0_NAME0' => $donation->payment_title,
                     'L_PAYMENTREQUEST_0_ITEMURL0' => get_permalink($campaign_post),
-                    'L_PAYMENTREQUEST_0_DESC0' => is_a($campaign_post, 'WP_Post') ? $campaign_post->post_excerpt : '',
+                    'L_PAYMENTREQUEST_0_DESC0' => $payment_description,
                     'L_PAYMENTREQUEST_0_AMT0' => $donation->amount,
                     'L_PAYMENTREQUEST_0_ITEMCATEGORY0' => 'Digital',
                     'NOSHIPPING' => 1,
@@ -486,7 +486,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         if($donation) { // Edit donation page displayed
 
             $donation = leyka_get_validated_donation($donation);
-            echo '<pre>' . print_r($donation->paypal_log, 1) . '</pre>';?>
+//            echo '<pre>' . print_r($donation->paypal_log, 1) . '</pre>';?>
 
             <label><?php _e('PayPal token', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
