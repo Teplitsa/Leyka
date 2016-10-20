@@ -364,9 +364,8 @@ class Leyka {
         return empty($_SESSION['leyka_errors']) ? array() : $_SESSION['leyka_errors'];
     }
 
-    /** @return true */
     public function clear_session_errors() {
-        return ($_SESSION['leyka_errors'] = array());
+        $_SESSION['leyka_errors'] = array();
     }
 
     /**
@@ -1013,6 +1012,7 @@ class Leyka {
             do_action('leyka_log_donation-'.$pm_data['gateway_id'], $donation_id);
 
             return $donation_id;
+
         }
 
     }
@@ -1040,6 +1040,7 @@ class Leyka {
                 $custom_templates,
                 glob(LEYKA_PLUGIN_DIR.'templates/leyka-template-*.php')
             );
+
         }
 
         if( !$this->templates ) {

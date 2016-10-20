@@ -355,7 +355,8 @@ class Leyka_Payment_Form {
             $list[] = "<img src='{$src}' />";
         }
 
-		return $list;			
+		return $list;
+
 	}
 
 	/**
@@ -377,6 +378,7 @@ function leyka_field_wrap($out, $css = '') {
 		
 	$css = esc_attr($css);
 	return "<div class='leyka-field {$css}'>{$out}</div>";
+
 }
 
 function leyka_get_req_mark(){		
@@ -389,22 +391,22 @@ global $leyka_current_pm; /** @todo Make it a singletone instead of global var *
 function leyka_setup_current_pm(Leyka_Payment_Method $payment_method, $currency = null) {
 	/** @var Leyka_Payment_Form $leyka_current_pm */
 	global $leyka_current_pm;
-	
 	$leyka_current_pm = new Leyka_Payment_Form($payment_method, $currency);
+
 }
 
 function leyka_pf_get_form_id() {
     /** @var Leyka_Payment_Form $leyka_current_pm */
 	global $leyka_current_pm;
-	
 	return $leyka_current_pm->get_form_id();
+
 }
 
 function leyka_pf_get_form_action() {
     /** @var Leyka_Payment_Form $leyka_current_pm */
 	global $leyka_current_pm;
-	
 	return $leyka_current_pm->get_form_action();
+
 }
 
 function leyka_pf_get_common_hidden_fields(Leyka_Campaign $campaign = null) {
@@ -414,10 +416,10 @@ function leyka_pf_get_common_hidden_fields(Leyka_Campaign $campaign = null) {
 function leyka_pf_get_pm_hidden_fields($campaign = null, Leyka_Payment_Form $pf = null) {
 
     if( !$pf ) {
-
         /** @var Leyka_Payment_Form $leyka_current_pm */
         global $leyka_current_pm;
         $pf = $leyka_current_pm;
+
     }
 
     return $pf->get_hidden_fields(leyka_get_validated_campaign($campaign));

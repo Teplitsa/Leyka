@@ -156,10 +156,11 @@ PHP at least 5.3 is required.
 
 == Changelog ==
 = 2.2.12 =
- * New: PayPal gateway support added (Express Checkout, single payments).
+ * New: alhpa-version of PayPal gateway support added (Express Checkout, single payments).
  * New: now gateway redirection page can be customized by client code.
  * New: now Chronopay payments can pass uniqueness checks.
  * New: Yandex Smart payments added.
+ * New: now Yandex.Kassa gateway can use shopPassword parameter to enforce payments security.
  * Fix: localization fixes.
  * Fix: small fixes.
 

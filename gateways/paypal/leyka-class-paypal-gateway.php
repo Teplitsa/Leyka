@@ -398,26 +398,100 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
             case 'ipn': // Instant payment notifications processing: confirm the payment
 
-//                if( !empty($_GET['tst']) ) {
-//                    echo '<pre>' . print_r(get_transient('paypal_ipn_tmp'), 1) . '</pre>';
-//                }
-//                if( !empty($_GET['clear']) ) {
-//                    delete_transient('paypal_ipn_tmp');
-//                }
-//
-//                if( !empty($_POST) ) {
-//
-//                    $tmp = (array)get_transient('paypal_ipn_tmp');
-//                    array_push($tmp, $_POST);
-//                    set_transient('paypal_ipn_tmp', $tmp);
-//
-//                }
-//
-//                if(empty($_POST['invoice'])) {
-//                    exit(0);
-//                }
-//
-//                break;
+                if( !empty($_GET['tst']) ) {
+                    echo '<pre>' . print_r(get_transient('paypal_ipn_tmp'), 1) . '</pre>';
+                }
+                if( !empty($_GET['clear']) ) {
+                    delete_transient('paypal_ipn_tmp');
+                }
+
+                if( !empty($_POST) ) {
+
+                    $tmp = (array)get_transient('paypal_ipn_tmp');
+                    array_push($tmp, $_POST);
+                    set_transient('paypal_ipn_tmp', $tmp);
+
+                }
+
+                if(empty($_POST['invoice'])) {
+                    exit(0);
+                }
+
+                require_once 'leyka-paypal-tools-ipn-verificator.php';
+
+                // Reply with an empty 200 response to indicate to paypal that the IPN was received correctly:
+                header('HTTP/1.1 200 OK');
+
+                // Verify an IPN:
+                $ipn = new PayPalIPN(leyka_options()->opt('paypal_test_mode'));
+                $result = $ipn->verifyIPN();
+                if($result !== true) {
+                    $this->_donation_error(
+                        __('PayPal - IPN processing error occured', 'leyka'),
+                        __("Leyka reported about an IPN processing error. The details are below:\n\n", 'leyka').$result,
+                        NULL, 'IPN', $_POST, '', false
+                    );
+                }
+
+                // Donation ID. If missing, it may be a wrong IPN call:
+                if(empty($_POST['invoice']) || (int)$_POST['invoice'] <= 0) {
+                    exit(0);
+                }
+
+                if(empty($_POST['txn_id'])) { // IPN transaction ID
+                    $this->_donation_error(
+                        __('PayPal - IPN processing error occured', 'leyka'),
+                        __("Leyka reported about an IPN processing error: the 'txn_id' parameter is missing.\n\nIPN POST data: %s", 'leyka').print_r($_POST, 1),
+                        NULL, 'IPN', $_POST, '', false
+                    );
+                }
+
+                $donation = new Leyka_Donation((int)$_POST['invoice']);
+                $_POST['txn_id'] = (int)$_POST['txn_id'];
+
+                // This IPN was already processed:
+                if($donation->last_ipn_transaction_id && $donation->last_ipn_transaction_id == $_POST['txn_id'] ) {
+                    exit(0);
+                }
+
+                $donation->last_ipn_transaction_id = $_POST['txn_id'];
+                if( !empty($_POST['payment_status']) && $_POST['payment_status'] == 'Completed' ) {
+
+                    if( !leyka_options()->opt('paypal_accept_verified_only') || $_POST['payer_status'] == 'verified' ) {
+
+                        $donation->status = 'funded';
+                        $donation->add_gateway_response($_POST);
+                        $this->_add_to_payment_log($donation, 'IPN', $_POST);
+
+                        Leyka_Donation_Management::send_all_emails($donation->id);
+
+                    }
+
+                } elseif(
+                    !empty($_POST['payment_status']) && in_array($_POST['payment_status'], array('Pending', 'In-Progress'))
+                ) {
+
+                    $donation->status = 'submitted';
+                    $donation->add_gateway_response($_POST);
+                    $this->_add_to_payment_log($donation, 'IPN', $_POST);
+
+                } else if(
+                    !empty($_POST['payment_status']) && in_array($_POST['payment_status'], array('Refunded', 'Reversed'))
+                ) {
+
+                    $donation->status = 'refunded';
+                    $donation->add_gateway_response($_POST);
+                    $this->_add_to_payment_log($donation, 'IPN', $_POST);
+
+                } else {
+
+                    $donation->status = 'failed';
+                    $donation->add_gateway_response($_POST);
+                    $this->_add_to_payment_log($donation, 'IPN', $_POST);
+
+                }
+
+                break;
 
             default:
 
@@ -554,6 +628,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             case 'paypal_payment_log':
             case 'paypal_log':
             case 'pp_log': return get_post_meta($donation->id, '_paypal_payment_log', true);
+            case 'last_ipn_transaction_id': return get_post_meta($donation->id, '_paypal_ipn_txn_id', true);
             default: return $value;
         }
 
@@ -574,6 +649,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             case 'paypal_payment_log':
             case 'paypal_log':
             case 'pp_log': update_post_meta($donation->id, '_paypal_payment_log', $value); break;
+            case 'last_ipn_transaction_id': update_post_meta($donation->id, '_paypal_ipn_txn_id', !!$value); break;
             default:
         }
 
@@ -605,7 +681,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             update_post_meta($donation_id, '_paypal_payer_id', $donation_params['paypal_payer_id']);
         }
 
-        update_post_meta($donation_id, '_paypal_payment_log', array()); // Payment log will fill out automatically
+        update_post_meta($donation_id, '_paypal_payment_log', array());
+        update_post_meta($donation_id, '_paypal_ipn_txn_id', 0);
 
     }
 
@@ -634,7 +711,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
     }
 
-    protected function _donation_error($title, $text, Leyka_Donation $donation = NULL, $operation_type = '', $data = array(), $new_status = 'failed') {
+    protected function _donation_error($title, $text, Leyka_Donation $donation = NULL, $operation_type = '', $data = array(), $new_status = 'failed', $do_redirect = true) {
 
         if($donation && array_key_exists($new_status, leyka_get_donation_status_list())) {
             $donation->status = $new_status;
@@ -646,7 +723,10 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
         wp_mail(get_option('admin_email'), $title, $text."\n\r\n\r");
 
-        wp_redirect(leyka_get_failure_page_url());
+        if( !!$do_redirect ) {
+            wp_redirect(leyka_get_failure_page_url());
+        }
+
         exit(0);
 
     }
