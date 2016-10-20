@@ -56,17 +56,18 @@ function leyka_ajax_get_campaigns_list() { // leyka_get_campaigns_list() is alre
     ), 0);
 
     $ids_found = array();
-    foreach($campaigns as $index => $campaign) {
+    $count = count($campaigns);
+    for($i=0; $i<$count; $i++) {
 
-        $ids_found[] = $campaign->ID;
-        $campaigns[$index] = array(
-            'value' => $campaign->ID,
-            'label' => $campaign->post_title,
-            'payment_title' => get_post_meta($campaign->ID, 'payment_title', true),
+        $ids_found[] = $campaigns[$i]->ID;
+        $campaigns[$i] = array(
+            'value' => $campaigns[$i]->ID,
+            'label' => $campaigns[$i]->post_title,
+            'payment_title' => get_post_meta($campaigns[$i]->ID, 'payment_title', true),
         );
     }
 
-    foreach(leyka_get_campaigns_list(array('s' => empty($_REQUEST['term']) ? '' : trim($_REQUEST['term'])), 0) as $campaign) {
+    foreach(leyka_get_campaigns_list(array('s' => $_REQUEST['term']), 0) as $campaign) { // Any criteria search - low priority
         if( !in_array($campaign->ID, $ids_found) ) {
             $campaigns[] = array(
                 'value' => $campaign->ID,
