@@ -19,7 +19,7 @@ class PaypalIPN {
     const VALID = 'VERIFIED';
     const INVALID = 'INVALID';
 
-    public function __construct($use_sandbox = false, $use_local_certs = false) {
+    public function __construct($use_sandbox = false, $use_local_certs = true) {
 
         $this->_use_sandbox = !!$use_sandbox;
         $this->_use_local_certs = !!$use_local_certs;
@@ -58,10 +58,9 @@ class PaypalIPN {
         if ( !count($_POST) ) {
             return 'Missing POST Data while processing IPN';
         }
-        $raw_post_data = file_get_contents('php://input');
-        $raw_post_array = explode('&', $raw_post_data);
-        $myPost = [];
-        foreach ($raw_post_array as $keyval) {
+
+        $myPost = array();
+        foreach (explode('&', file_get_contents('php://input')) as $keyval) {
             $keyval = explode('=', $keyval);
             if (count($keyval) == 2) {
                 // Since we do not want the plus in the datetime string to be encoded to a space, we manually encode it.
@@ -96,13 +95,15 @@ class PaypalIPN {
         curl_setopt($ch, CURLOPT_SSLVERSION, 6);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch, CURLOPT_FORBID_REUSE, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Connection: Close'));
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+
         // This is often required if the server is missing a global cert bundle, or is using an outdated one.
         if ($this->_use_local_certs) {
-            curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . "/cert/cacert.pem");
+            curl_setopt($ch, CURLOPT_CAINFO, __DIR__.'/cacert.pem');
         }
-        curl_setopt($ch, CURLOPT_FORBID_REUSE, 1);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Connection: Close']);
+
         $res = curl_exec($ch);
         $info = curl_getinfo($ch);
         $http_code = $info['http_code'];
