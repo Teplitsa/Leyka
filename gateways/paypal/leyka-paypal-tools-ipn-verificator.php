@@ -8,12 +8,12 @@ class PaypalIPN {
     private $_use_sandbox = false;
     private $_use_local_certs = true;
 
-    /*
+    /**
      * PayPal IPN postback endpoints
      */
     const VERIFY_URI = 'https://ipnpb.paypal.com/cgi-bin/webscr';
     const SANDBOX_VERIFY_URI = 'https://ipnpb.sandbox.paypal.com/cgi-bin/webscr';
-    /*
+    /**
      * Possible responses from PayPal after the request is issued.
      */
     const VALID = 'VERIFIED';

@@ -11,7 +11,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
         $this->_id = 'paypal';
         $this->_title = __('PayPal', 'leyka');
-        $this->_docs_link = ''; /** @todo Add a link to the docs after it's ready */
+        $this->_docs_link = 'https://habrahabr.ru/post/294038/'; /** @todo Add a link to a manual after it will be ready */
         $this->_admin_ui_column = 1;
         $this->_admin_ui_order = 10;
 
