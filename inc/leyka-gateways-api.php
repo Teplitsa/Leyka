@@ -237,6 +237,7 @@ abstract class Leyka_Gateway {
         }
 
         return $options;
+
     }
 
     /** Register a gateway in the plugin */
@@ -289,7 +290,6 @@ abstract class Leyka_Gateway {
     abstract public function get_gateway_response_formatted(Leyka_Donation $donation);
 
     protected function _get_gateway_pm_list($pm_id = false) {
-
         return $pm_id ? array_keys($this->_payment_methods, $pm_id) : array_keys($this->_payment_methods);
     }
 
@@ -297,6 +297,7 @@ abstract class Leyka_Gateway {
 
         $this->_initialize_pm_list();
         do_action('leyka_init_pm_list', $this);
+
     }
 
     protected function _initialize_options() {
@@ -309,6 +310,7 @@ abstract class Leyka_Gateway {
         }
 
         add_filter('leyka_payment_options_allocation', array($this, 'allocate_gateway_options'), 1, 1);
+
     }
 
     abstract public function process_form($gateway_id, $pm_id, $donation_id, $form_data);
@@ -375,6 +377,7 @@ abstract class Leyka_Gateway {
             leyka()->add_payment_form_error($error);
 
         }
+
     }
 
     /**

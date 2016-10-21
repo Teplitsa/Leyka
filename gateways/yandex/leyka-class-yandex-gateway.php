@@ -552,6 +552,8 @@ class Leyka_Yandex_All extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
         ));
 
+        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
+
         $this->_supported_currencies[] = 'rur';
 
         $this->_default_currency = 'rur';
@@ -600,11 +602,13 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
         ));
 
         /** @todo Right now we can't use leyka_options()->opt() here because Gateway options are not included in options_meta ATM. Refactor this. */
-        $this->_custom_fields = get_option('leyka_'.$this->full_id.'_rebilling_available', true) ?
-            array(
-                'recurring' => '<label class="checkbox"><span><input type="checkbox" id="leyka_'.$this->full_id.'_recurring" name="leyka_recurring" value="1"></span> '.__('Monthly donations', 'leyka').'</label>'
-            ) :
-            array();
+        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id,
+            get_option('leyka_'.$this->full_id.'_rebilling_available', true) ?
+                array(
+                    'recurring' => '<label class="checkbox"><span><input type="checkbox" id="leyka_'.$this->full_id.'_recurring" name="leyka_recurring" value="1"></span> '.__('Monthly donations', 'leyka').'</label>'
+                ) :
+                array()
+        );
 
         $this->_supported_currencies[] = 'rur';
 
@@ -688,8 +692,9 @@ class Leyka_Yandex_Money extends Leyka_Payment_Method {
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
-//            LEYKA_PLUGIN_BASE_URL.'gateways/quittance/icons/sber_s.png',
         ));
+
+        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 
         $this->_supported_currencies[] = 'rur';
 
@@ -730,11 +735,11 @@ class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
         $this->_label_backend = __('Virtual cash Webmoney', 'leyka');
         $this->_label = __('Webmoney', 'leyka');
 
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/webmoney.png',
         ));
+
+        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 
         $this->_supported_currencies[] = 'rur';
 
@@ -775,12 +780,9 @@ class Leyka_Yandex_Sberbank_Online extends Leyka_Payment_Method {
         $this->_label_backend = __('Sberbank Online invoicing', 'leyka');
         $this->_label = __('Sberbank Online', 'leyka');
 
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-//        $this->_description = leyka_options()->opt_safe('yandex_wm_description');
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array());
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-//            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/webmoney.png',
-        ));
+        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 
         $this->_supported_currencies[] = 'rur';
 
@@ -821,12 +823,9 @@ class Leyka_Yandex_Alpha_Click extends Leyka_Payment_Method {
         $this->_label_backend = __('Alpha-Click invoicing', 'leyka');
         $this->_label = __('Alpha-Click', 'leyka');
 
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-//        $this->_description = leyka_options()->opt_safe('yandex_wm_description');
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array());
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-//            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/webmoney.png',
-        ));
+        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 
         $this->_supported_currencies[] = 'rur';
 
@@ -870,9 +869,9 @@ class Leyka_Yandex_Promvzyazbank extends Leyka_Payment_Method {
         // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 //        $this->_description = leyka_options()->opt_safe('yandex_wm_description');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-//            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/webmoney.png',
-        ));
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array());
+
+        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 
         $this->_supported_currencies[] = 'rur';
 
