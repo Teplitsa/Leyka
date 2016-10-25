@@ -882,10 +882,6 @@ class Leyka {
      */
     public function gateway_redirect_page() {
 
-        if(is_admin_bar_showing()) { // Hide adminbar (toolbar) if needed
-            add_filter('show_admin_bar', '__return_false');
-        }
-
         if(stristr($_SERVER['REQUEST_URI'], 'leyka-process-donation')) {
 
             if(empty($_POST)) {
@@ -894,6 +890,10 @@ class Leyka {
                 exit();
 
             }
+			
+			if(is_admin_bar_showing()) { // Hide adminbar (toolbar) if needed
+				add_filter('show_admin_bar', '__return_false');
+			}
 
             do_action('leyka_init_gateway_redirect_page');
 
