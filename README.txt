@@ -155,6 +155,10 @@ PHP at least 5.3 is required.
 10. События Google Analytics
 
 == Changelog ==
+= 2.2.12.1 =
+ * Fix: missing adminbar now returned.
+ * Fix: now donation forms can include custom select fields, and amount fields will not be disabled.
+
 = 2.2.12 =
  * New: alhpa-version of PayPal gateway support added (Express Checkout, single payments).
  * New: now gateway redirection page can be customized by client code.
