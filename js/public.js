@@ -69,7 +69,7 @@ jQuery(document).ready(function($){
     function leyka_get_donation_currency($form) {
 
         var currency = '',
-            $field = $form.find('option:selected', '.leyka_donation_currency:visible');
+            $field = $form.find('.leyka_donation_currency:visible').find('option:selected');
 
         if($field.length) {
             currency = $field.val();
