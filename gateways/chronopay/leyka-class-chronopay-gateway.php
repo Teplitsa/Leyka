@@ -171,10 +171,12 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     public function _handle_service_calls($call_type = '') {
 
+        $client_ip = leyka_get_client_ip();
+
         // Test for gateway's IP:
         if(
             leyka_options()->opt('chronopay_ip') &&
-            !in_array($_SERVER['REMOTE_ADDR'], explode(',', leyka_options()->opt('chronopay_ip')))
+            !in_array($client_ip, explode(',', leyka_options()->opt('chronopay_ip')))
         ) { // Security fail
 
             $message = __("This message has been sent because a call to your ChronoPay function was made from an IP that did not match with the one in your Chronopay gateway setting. This could mean someone is trying to hack your payment website. The details of the call are below.", 'leyka')."\n\r\n\r";
@@ -182,7 +184,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
             $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
             $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
-            $message .= "IP: ".print_r($_SERVER['REMOTE_ADDR'], true)."\n\r\n\r";
+            $message .= "IP: ".print_r($client_ip, true)."\n\r\n\r";
             $message .= "Chronopay IP setting value: ".print_r(leyka_options()->opt('chronopay_ip'),true)."\n\r\n\r";
 
             wp_mail(get_option('admin_email'), __('Chronopay IP check failed!', 'leyka'), $message);

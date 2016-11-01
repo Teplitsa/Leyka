@@ -155,10 +155,12 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     public function _handle_service_calls($call_type = '') {
 
+        $client_ip = leyka_get_client_ip();
+
         // Test for gateway's IP:
         if(
             leyka_options()->opt('cp_ip') &&
-            !in_array($_SERVER['REMOTE_ADDR'], explode(',', leyka_options()->opt('cp_ip')))
+            !in_array($client_ip, explode(',', leyka_options()->opt('cp_ip')))
         ) { // Security fail
 
             $message = __("This message has been sent because a call to your CloudPayments function was made from an IP that did not match with the one in your CloudPayments gateway setting. This could mean someone is trying to hack your payment website. The details of the call are below.", 'leyka')."\n\r\n\r";
@@ -166,12 +168,18 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
             $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
             $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
-            $message .= "IP:\n\r".print_r($_SERVER['REMOTE_ADDR'], true)."\n\r\n\r";
+            $message .= "IP:\n\r".print_r($client_ip, true)."\n\r\n\r";
             $message .= "CloudPayments IP setting value:\n\r".print_r(leyka_options()->opt('cp_ip'),true)."\n\r\n\r";
 
             wp_mail(get_option('admin_email'), __('CloudPayments IP check failed!', 'leyka'), $message);
             status_header(200);
-            die();
+            die(json_encode(array(
+                'code' => '13',
+                'reason' => sprintf(
+                    'Unknown callback sender IP: %s (IP permitted: %s)',
+                    $client_ip, str_replace(',', ', ', leyka_options()->opt('cp_ip'))
+                )
+            )));
         }
 
         switch($call_type) {
