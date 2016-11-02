@@ -47,17 +47,6 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
-            'chronopay_test_mode' => array(
-                'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
-                'default' => 0,
-                'title' => __('Payments testing mode', 'leyka'),
-                'description' => __('Check if the gateway integration is in test mode.', 'leyka'),
-                'required' => false,
-                'placeholder' => '',
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
-            ),
             'chronopay_use_payment_uniqueness_control' => array(
                 'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
                 'value' => '',
@@ -88,18 +77,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
     }
 
     public function submission_redirect_url($current_url, $pm_id) {
-
-        switch($pm_id) {
-            case 'chronopay_card':
-            case 'chronopay_card_rebill':
-                $current_url =
-                    leyka_options()->opt('chronopay_test_mode') ?
-                        'https://payments.test.chronopay.com/' : 'https://payments.chronopay.com/';
-                break;
-        }
-
-        return $current_url;
-
+        return 'https://payments.chronopay.com/';
     }
 
     public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
