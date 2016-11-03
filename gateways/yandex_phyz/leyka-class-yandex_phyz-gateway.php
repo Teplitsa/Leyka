@@ -81,7 +81,7 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
                 $payment_type = '';
         }
 
-		$name = esc_attr(get_bloginfo('name').': '.__('donation', 'leyka'));
+		$name = apply_filters('leyka_yandex_phyz_custom_payment_comment', esc_attr(get_bloginfo('name').': '.__('donation', 'leyka')));
 
         return array(
             'receiver' => leyka_options()->opt('yandex_money_account'),
@@ -95,7 +95,6 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
             'shopSuccessURL' => leyka_get_success_page_url(),
             'shopFailURL' => leyka_get_failure_page_url(),
             'cps_email' => $donation->donor_email,
-//            '' => ,
         );
     }
 
