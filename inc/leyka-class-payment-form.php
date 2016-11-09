@@ -234,7 +234,8 @@ class Leyka_Payment_Form {
 
 	<?php $out = ob_get_contents();
 		ob_end_clean();
-		return leyka_field_wrap($out, 'email');		
+		return leyka_field_wrap($out, 'email');
+
 	}
 
 	public function get_agree_field() {
@@ -265,6 +266,7 @@ class Leyka_Payment_Form {
 	<?php $out = ob_get_contents();
 		ob_end_clean();
 		return leyka_field_wrap($out, 'agree');
+
 	}
 
     public function get_submit_field() {
@@ -409,6 +411,13 @@ function leyka_pf_get_form_action() {
 
 }
 
+function leyka_pf_is_field_supported($field) {
+    /** @var Leyka_Payment_Form $leyka_current_pm */
+    global $leyka_current_pm;
+    return $leyka_current_pm->is_field_supported($field);
+
+}
+
 function leyka_pf_get_common_hidden_fields(Leyka_Campaign $campaign = null) {
     return Leyka_Payment_Form::get_common_hidden_fields(leyka_get_validated_campaign($campaign));
 }
@@ -440,6 +449,7 @@ function leyka_pf_get_amount_field() {
 	global $leyka_current_pm;
 	
 	return $leyka_current_pm->get_amount_field();
+
 }
 
 function leyka_pf_get_amount_value() {
