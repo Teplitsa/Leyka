@@ -170,7 +170,7 @@
 }
   #leyka-payment-form .leyka-field.amount * {
     box-sizing: border-box;
-    width:auto; /*MASHA add*/
+    width:auto;
 }
   #leyka-payment-form .leyka-field.amount label, #leyka-payment-form .leyka-field.amount span {
     display: inline;
@@ -340,7 +340,8 @@
 
 /** Templates specifics styles **/
 .entry-content #leyka-payment-form .leyka-pm-fields,
-#leyka-payment-form .leyka-pm-fields {
+.leyka-tpl-radio #leyka-payment-form .leyka-pm-fields,
+.leyka-tpl-toggles #leyka-payment-form .leyka-pm-fields {
   position: relative;
   background: #fff;
   border: 1px solid #dfdfdf;
@@ -348,7 +349,9 @@
   padding: 20px;
   margin-right: -1px;
   max-width: 370px;
-  box-shadow: 1px 1px 3px rgba(240, 240, 240, 0.67); }
+  box-shadow: 1px 1px 3px rgba(240, 240, 240, 0.67);
+}
+
 .entry-content #leyka-payment-form .leyka-pm-icons,
 #leyka-payment-form .leyka-pm-icons {
   overflow: hidden; }
@@ -370,7 +373,7 @@
 #leyka-payment-form.leyka-tpl-toggles .leyka-payment-option {
   margin: 5px 0; }
 
-.leyka-toggle-trigger {
+.leyka-template-toggles .leyka-toggle-trigger {
   border: 1px solid #dfdfdf;
   background: #f9f9f9;
   padding: 7px 15px;
@@ -380,16 +383,16 @@
   .leyka-toggle-trigger:hover, .leyka-toggle-trigger:focus, .leyka-toggle-trigger:active {
     color: #666; }
 
-.toggle-inactive {
+.leyka-template-toggles .toggle-inactive {
   cursor: default !important; }
 
-.leyka-toggle-area {
+.leyka-template-toggles .leyka-toggle-area {
   display: none;
   border: 1px solid #dfdfdf;
   border-top: none;
   background: #f9f9f9; }
 
-.toggled .leyka-toggle-trigger {
+.leyka-template-toggles .toggled .leyka-toggle-trigger {
   border-bottom: none; }
 
 /* Radios */
@@ -1114,5 +1117,546 @@ div[id*="leyka_donors_list"].wide .ldl-item {
 #leyka-payment-form .leyka-oferta-text-flow p {
   margin: 1.35em 0; }
 
+/** "Neo" template **/
+.leyka-tpl-neo {
+    border: 1px solid #d1d1d1;
+    background: #ffffff;
+    box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.08);
+    border-top: none;
+}
 
- 
+.leyka-tpl-neo .leyka-payment-option .leyka-toggle-trigger {
+    font-family: "Cuprum", "Helvetica Neue", Helvetica Neue, Helvetica, sans-serif;
+    color: #224883;
+    font-weight: normal;
+    text-transform: uppercase;
+    line-height: 1.5;
+    font-size: 18px;
+    padding: 15px 30px;
+    cursor: pointer;
+    border-top: 1px solid #d1d1d1;
+    border-bottom: 1px solid #d1d1d1;
+    margin-top: -1px;
+}
+
+.leyka-tpl-neo .leyka-pm-fields {
+    position: relative;
+    background: #fff;
+    padding: 20px;
+    max-width: 100%;
+}
+
+.leyka-tpl-neo .leyka-payment-option.toggled .leyka-toggle-trigger {
+    border-bottom: 2px solid #ff4824;
+    color: #ff4824;
+}
+
+.leyka-tpl-neo .currency-variants {
+    width: 70%;
+    display: inline-block;
+}
+
+.leyka-tpl-neo .currency {
+    width: 25%;
+    display: inline-block;
+}
+
+/*.leyka-tpl-neo .currency-selector-row {*/
+    /*display: -webkit-flex;*/
+    /*display: -ms-flexbox;*/
+    /*display: flex;*/
+    /*-webkit-flex-flow: row nowrap;*/
+    /*-ms-flex-flow: row nowrap;*/
+    /*flex-flow: row nowrap;*/
+    /*-webkit-justify-content: space-between;*/
+    /*-ms-flex-pack: justify;*/
+    /*justify-content: space-between;*/
+    /*-webkit-align-items: center;*/
+    /*-ms-flex-align: center;*/
+    /*align-items: center;*/
+/*}*/
+
+/*.currency-selector-row .currency-variants {*/
+/*-webkit-flex: 1 1 auto;*/
+/*-ms-flex: 1 1 auto;*/
+/*flex: 1 1 auto;*/
+/*}*/
+
+/*.currency-selector-row .currency {*/
+/*-webkit-flex: 0 0 auto;*/
+/*-ms-flex: 0 0 auto;*/
+/*flex: 0 0 auto;*/
+/*-webkit-align-self: flex-end;*/
+/*-ms-flex-item-align: end;*/
+/*align-self: flex-end;*/
+/*}*/
+
+/*.leyka-payment-option .leyka-pm-form:before {*/
+    /*content: '';*/
+    /*display: block;*/
+    /*width: 100%;*/
+    /*height: 2px;*/
+    /*background: #ff4824;*/
+    /*position: absolute;*/
+    /*top: 0;*/
+    /*left: 0;*/
+/*}*/
+
+/*.leyka-payment-option .leyka-field.recurring {*/
+    /*padding: 4px 8px 5px;*/
+    /*border-radius: 4px;*/
+    /*background: #f8f8f8;*/
+    /*margin-bottom: 36px;*/
+/*}*/
+
+/*.leyka-payment-option .leyka-field.agree {*/
+    /*margin: 18px 0 18px 8px;*/
+/*}*/
+
+/*.leyka-payment-option .leyka-field.amount {*/
+    /*margin-bottom: 36px;*/
+/*}*/
+
+/*.leyka-payment-option .leyka-field.rdc-textfield {*/
+    /*padding: 20px 0;*/
+/*}*/
+
+/*.leyka-payment-option .leyka-field.rdc-textfield label::after {*/
+    /*bottom: 20px;*/
+/*}*/
+
+/*.leyka-payment-option .leyka-field.box_details {*/
+    /*font-family: "Roboto", Helvetica, sans-serif;*/
+    /*color: rgba(0, 0, 0, 0.9);*/
+    /*font-weight: normal;*/
+    /*text-transform: none;*/
+    /*letter-spacing: normal;*/
+    /*font-size: 14px;*/
+    /*line-height: 1.5;*/
+    /*font-size: 16px;*/
+    /*color: rgba(0, 0, 0, 0.9);*/
+/*}*/
+
+/*.leyka-payment-option .leyka-field a {*/
+    /*color: #224883;*/
+/*}*/
+
+/*.leyka-payment-option .leyka-field a:visited {*/
+    /*color: #224883;*/
+/*}*/
+
+/*.leyka-payment-option .leyka-field a:hover, .leyka-payment-option .leyka-field a:focus, .leyka-payment-option .leyka-field a:active {*/
+    /*text-decoration: underline;*/
+/*}*/
+
+/*.leyka-payment-option .rdc-checkbox__input:checked + .rdc-checkbox__label:before {*/
+    /*background-color: #ff4824;*/
+    /*border-color: #ff4824;*/
+/*}*/
+
+/*.leyka-payment-option .rdc-textfield__label:after {*/
+    /*background-color: #ff4824;*/
+/*}*/
+
+/*.leyka-payment-option .rdc-textfield__input:focus ~ .rdc-textfield__label {*/
+    /*color: #ff4824;*/
+/*}*/
+
+/*.leyka-payment-option .rdc-submit-button {*/
+    /*display: inline-block;*/
+    /*font-family: "Roboto Condensed", "Helvetica Neue", Helvetica Neue, Helvetica, sans-serif;*/
+    /*text-transform: uppercase;*/
+    /*color: #ffffff;*/
+    /*background: #6FD4E0;*/
+    /*border: 1px solid #6FD4E0;*/
+    /*transition: all 0.3s;*/
+    /*padding: 14px 24px;*/
+    /*font-size: 16px;*/
+    /*line-height: 18px;*/
+    /*background: #ff4824;*/
+    /*border: 1px solid #ff4824;*/
+/*}*/
+
+/*.leyka-payment-option .rdc-submit-button:visited {*/
+    /*color: #ffffff;*/
+/*}*/
+
+/*.leyka-payment-option .rdc-submit-button:hover, .leyka-payment-option .rdc-submit-button:focus, .leyka-payment-option .rdc-submit-button:active {*/
+    /*background: #45c7d7;*/
+    /*border-color: #45c7d7;*/
+    /*color: #ffffff;*/
+/*}*/
+
+/*.leyka-payment-option .rdc-submit-button:hover, .leyka-payment-option .rdc-submit-button:focus, .leyka-payment-option .rdc-submit-button:active {*/
+    /*background: #f02700;*/
+    /*border-color: #f02700;*/
+/*}*/
+
+/*.leyka-payment-option .submit {*/
+    /*position: relative;*/
+/*}*/
+
+/*.leyka-payment-option .leyka-pm-icons {*/
+    /*position: absolute;*/
+    /*top: 6px;*/
+    /*right: 0;*/
+/*}*/
+
+/*@media screen and (max-width: 360px) {*/
+    /*.leyka-payment-option .leyka-pm-icons {*/
+        /*display: none;*/
+    /*}*/
+/*}*/
+
+/*.leyka-payment-option.toggled .leyka-toggle-area {*/
+    /*display: block;*/
+/*}*/
+
+/*.leyka-payment-option.toggled .leyka-toggle-trigger {*/
+    /*color: #ff4824;*/
+/*}*/
+
+/*.leyka-payment-option.toggled .leyka-toggle-trigger:before {*/
+    /*background: #ff4824;*/
+/*}*/
+
+/*.leyka-field.amount-selector {*/
+    /*line-height: 40px;*/
+/*}*/
+
+/*.leyka-field.amount-selector .figure,*/
+/*.leyka-field.amount-selector .figure-flex {*/
+    /*display: inline-block;*/
+    /*height: 40px;*/
+    /*margin-bottom: 8px;*/
+/*}*/
+
+/*.leyka-field.amount-selector .figure span,*/
+/*.leyka-field.amount-selector .figure-flex span {*/
+    /*height: 40px;*/
+/*}*/
+
+/*.leyka-field.amount-selector .figure {*/
+    /*display: inline-block;*/
+    /*line-height: inherit;*/
+    /*padding-left: 30px;*/
+/*}*/
+
+/*.leyka-field.amount-selector .figure .rdc-radio__label {*/
+    /*font-family: "Roboto", Helvetica, sans-serif;*/
+    /*line-height: 1.2;*/
+    /*color: rgba(0, 0, 0, 0.9);*/
+    /*text-align: left;*/
+    /*font-size: 28px;*/
+    /*line-height: inherit;*/
+/*}*/
+
+/*.leyka-field.amount-selector .figure .rdc-radio__label:before {*/
+    /*width: 20px;*/
+    /*height: 20px;*/
+    /*top: 50%;*/
+    /*-webkit-transform: translateY(-50%);*/
+    /*-ms-transform: translateY(-50%);*/
+    /*transform: translateY(-50%);*/
+    /*left: -30px;*/
+/*}*/
+
+/*.leyka-field.amount-selector .figure-sep {*/
+    /*font-family: "Roboto", Helvetica, sans-serif;*/
+    /*color: rgba(0, 0, 0, 0.9);*/
+    /*font-weight: normal;*/
+    /*text-transform: none;*/
+    /*letter-spacing: normal;*/
+    /*font-size: 14px;*/
+    /*line-height: 1.5;*/
+    /*font-size: 18px;*/
+    /*line-height: inherit;*/
+    /*text-transform: uppercase;*/
+    /*color: #224883;*/
+    /*margin-right: 8px;*/
+/*}*/
+
+/*.leyka-field.amount-selector .donate_amount_flex {*/
+    /*border: 2px solid #dfdfdf;*/
+    /*border-radius: 2px;*/
+    /*font-family: "Roboto", Helvetica, sans-serif;*/
+    /*line-height: 1.2;*/
+    /*color: rgba(0, 0, 0, 0.9);*/
+    /*text-align: left;*/
+    /*font-size: 28px;*/
+    /*line-height: 30px;*/
+    /*text-align: right;*/
+/*}*/
+
+/*.leyka-field.amount-selector .currency {*/
+    /*font-family: "Roboto", Helvetica, sans-serif;*/
+    /*color: rgba(0, 0, 0, 0.9);*/
+    /*font-weight: normal;*/
+    /*text-transform: none;*/
+    /*letter-spacing: normal;*/
+    /*font-size: 14px;*/
+    /*line-height: 1.5;*/
+    /*font-size: 18px;*/
+    /*line-height: inherit;*/
+    /*text-transform: uppercase;*/
+    /*width: 70px;*/
+    /*margin-bottom: 8px;*/
+/*}*/
+
+/*.leyka-field.amount-selector .currency .leyka-screen-reader-text {*/
+    /*display: none;*/
+/*}*/
+
+/*.leyka-field.amount-selector .currency-frame {*/
+    /*display: block;*/
+    /*line-height: inherit;*/
+    /*width: 100%;*/
+    /*height: 40px;*/
+    /*text-align: left;*/
+    /*overflow: hidden;*/
+    /*position: relative;*/
+    /*z-index: 1;*/
+/*}*/
+
+/*.leyka-field.amount-selector .currency-frame:after {*/
+    /*content: '▾';*/
+    /*display: inline-block;*/
+    /*color: black;*/
+    /*font-size: 18px;*/
+    /*position: absolute;*/
+    /*top: -2px;*/
+    /*right: 0;*/
+    /*z-index: -1;*/
+/*}*/
+
+/*.leyka-field.amount-selector .currency-frame span {*/
+    /*display: inline-block;*/
+    /*background: #ffffff;*/
+    /*width: 100%;*/
+    /*line-height: inherit;*/
+    /*height: 40px;*/
+    /*z-index: 10;*/
+/*}*/
+
+/*.leyka-field.amount-selector .currency-frame select {*/
+    /*border: none;*/
+    /*width: 90px;*/
+    /*background: transparent;*/
+    /*font-family: "Roboto", Helvetica, sans-serif;*/
+    /*color: rgba(0, 0, 0, 0.9);*/
+    /*font-weight: normal;*/
+    /*text-transform: none;*/
+    /*letter-spacing: normal;*/
+    /*font-size: 14px;*/
+    /*line-height: 1.5;*/
+    /*font-size: 18px;*/
+    /*line-height: inherit;*/
+    /*text-transform: uppercase;*/
+/*}*/
+
+/*.leyka-field.amount-selector .rdc-radio__button:checked + .rdc-radio__label:before {*/
+    /*background-color: #ff4824;*/
+    /*border-color: #ff4824;*/
+/*}*/
+
+
+
+/*@media screen and (min-width: 480px) {*/
+    /*.amount-variants-row {*/
+        /*display: -webkit-flex;*/
+        /*display: -ms-flexbox;*/
+        /*display: flex;*/
+        /*-webkit-flex-flow: row wrap;*/
+        /*-ms-flex-flow: row wrap;*/
+        /*flex-flow: row wrap;*/
+        /*-webkit-justify-content: space-between;*/
+        /*-ms-flex-pack: justify;*/
+        /*justify-content: space-between;*/
+        /*-webkit-align-items: flex-start;*/
+        /*-ms-flex-align: start;*/
+        /*align-items: flex-start;*/
+    /*}*/
+    /*.amount-variants-row .figure {*/
+        /*-webkit-flex: 0 0 auto;*/
+        /*-ms-flex: 0 0 auto;*/
+        /*flex: 0 0 auto;*/
+        /*width: 20%;*/
+    /*}*/
+    /*.amount-variants-row .figure-flex {*/
+        /*-webkit-flex: 1 1 auto;*/
+        /*-ms-flex: 1 1 auto;*/
+        /*flex: 1 1 auto;*/
+        /*padding: 0 8px;*/
+        /*text-align: right;*/
+    /*}*/
+/*}*/
+
+/*.entry-content .leyka-pm-icons,*/
+/*.leyka-pm-icons {*/
+    /*margin: 0;*/
+/*}*/
+
+/*.entry-content .leyka-pm-icons::after,*/
+/*.leyka-pm-icons::after {*/
+    /*clear: both;*/
+    /*content: "";*/
+    /*display: table;*/
+/*}*/
+
+/*.entry-content .leyka-pm-icons li,*/
+/*.leyka-pm-icons li {*/
+    /*list-style-type: none;*/
+    /*float: left;*/
+    /*width: 52px;*/
+    /*height: 36px;*/
+    /*margin: 0 0 0 4px;*/
+    /*padding: 0;*/
+/*}*/
+
+/*.entry-content .leyka-pm-icons li:before,*/
+/*.leyka-pm-icons li:before {*/
+    /*display: none;*/
+/*}*/
+
+/*.entry-content .leyka-pm-icons li img,*/
+/*.leyka-pm-icons li img {*/
+    /*max-width: 100%;*/
+    /*height: auto;*/
+/*}*/
+
+/*#leyka-form-yandex_money .leyka-pm-icons li {*/
+    /*width: 100px;*/
+/*}*/
+
+/*#leyka-form-yandex_money .leyka-pm-icons li img {*/
+    /*margin-top: -10px;*/
+/*}*/
+
+/*.leyka-pm-desc {*/
+    /*font-family: "Roboto", Helvetica, sans-serif;*/
+    /*color: rgba(0, 0, 0, 0.9);*/
+    /*font-weight: normal;*/
+    /*text-transform: none;*/
+    /*letter-spacing: normal;*/
+    /*font-size: 14px;*/
+    /*line-height: 1.5;*/
+    /*font-size: 12px;*/
+    /*margin-top: 30px;*/
+/*}*/
+
+/*.leyka-pm-desc a {*/
+    /*color: #224883;*/
+/*}*/
+
+/*.leyka-pm-desc a:visited {*/
+    /*color: #224883;*/
+/*}*/
+
+/*.leyka-pm-desc a:hover, .leyka-pm-desc a:focus, .leyka-pm-desc a:active {*/
+    /*text-decoration: underline;*/
+/*}*/
+
+/*.leyka-form-footer {*/
+    /*padding: 8px 30px 0;*/
+    /*text-align: right;*/
+/*}*/
+
+/*.leyka-form-footer a {*/
+    /*color: #224883;*/
+/*}*/
+
+/*.leyka-form-footer a:visited {*/
+    /*color: #224883;*/
+/*}*/
+
+/*.leyka-form-footer a:hover, .leyka-form-footer a:focus, .leyka-form-footer a:active {*/
+    /*text-decoration: underline;*/
+/*}*/
+
+/*.leyka-form-footer p {*/
+    /*font-family: "Roboto", Helvetica, sans-serif;*/
+    /*color: rgba(0, 0, 0, 0.9);*/
+    /*font-weight: normal;*/
+    /*text-transform: none;*/
+    /*letter-spacing: normal;*/
+    /*font-size: 14px;*/
+    /*line-height: 1.5;*/
+    /*font-size: 12px;*/
+/*}*/
+
+/*.leyka-custom-modal {*/
+    /*display: none;*/
+    /*box-sizing: border-box;*/
+    /*border-radius: 2px;*/
+    /*width: 90%;*/
+    /*max-width: 760px;*/
+    /*height: calc(100% - 220px);*/
+    /*max-height: 700px;*/
+    /*background-color: #ffffff;*/
+/*}*/
+
+/*.leyka-custom-modal .leyka-modal-close {*/
+    /*background: #224883;*/
+    /*color: #ffffff;*/
+    /*width: 28px;*/
+    /*height: 28px;*/
+    /*border-radius: 50%;*/
+    /*position: absolute;*/
+    /*top: -16px;*/
+    /*right: -16px;*/
+    /*text-align: center;*/
+    /*cursor: pointer;*/
+/*}*/
+
+/*.leyka-custom-modal .leyka-modal-close .svg-icon {*/
+    /*width: 12px;*/
+    /*height: 12px;*/
+    /*fill: #ffffff;*/
+    /*pointer-events: none;*/
+    /*margin-top: -1px;*/
+/*}*/
+
+/*.leyka-custom-modal .leyka-oferta-text-frame {*/
+    /*box-sizing: border-box;*/
+    /*width: 100%;*/
+    /*height: 100%;*/
+    /*padding: 36px;*/
+    /*overflow-y: scroll;*/
+/*}*/
+
+/*.leyka-custom-modal .leyka-oferta-text-flow {*/
+    /*font-family: "Roboto", Helvetica, sans-serif;*/
+    /*color: rgba(0, 0, 0, 0.9);*/
+    /*font-weight: normal;*/
+    /*font-size: 14px;*/
+    /*line-height: 1.5;*/
+    /*font-size: 15px;*/
+    /*line-height: 1.35;*/
+/*}*/
+
+/*@media screen and (min-width: 767px) {*/
+    /*.leyka-custom-modal .leyka-oferta-text-flow {*/
+        /*font-size: 18px;*/
+        /*line-height: 1.45;*/
+    /*}*/
+/*}*/
+
+/*@media screen and (min-width: 767px) {*/
+    /*.leyka-custom-modal .leyka-oferta-text-flow {*/
+        /*font-size: 16px;*/
+        /*line-height: 1.4;*/
+    /*}*/
+/*}*/
+
+/*.leyka-custom-modal .leyka-oferta-text-flow p {*/
+    /*margin-bottom: 16px;*/
+/*}*/
+
+/*.leyka-custom-modal .leyka-oferta-text-flow p:first-child {*/
+    /*font-family: "Cuprum", "Helvetica Neue", Helvetica Neue, Helvetica, sans-serif;*/
+    /*color: #224883;*/
+    /*font-weight: normal;*/
+    /*text-transform: none;*/
+    /*font-size: 21px;*/
+    /*line-height: 24px;*/
+/*}*/
