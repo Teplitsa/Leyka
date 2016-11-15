@@ -184,7 +184,9 @@ if(defined('POLYLANG_VERSION')) {
 
 } else {
 
-    load_plugin_textdomain('leyka', FALSE, apply_filters('leyka_l10n_folder', plugin_basename(LEYKA_PLUGIN_DIR).'/lang/'));
+    $locale = apply_filters('plugin_locale', get_locale(), 'leyka');
+
+    load_textdomain('leyka', apply_filters('leyka_l10n_mo_file', LEYKA_PLUGIN_DIR."lang/leyka-$locale.mo"));
 
     function leyka_init_actions(){
         do_action('leyka_init_actions');
