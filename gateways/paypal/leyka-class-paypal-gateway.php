@@ -114,13 +114,11 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             'L_PAYMENTREQUEST_0_ITEMURL0' => get_permalink($campaign_post),
             'L_PAYMENTREQUEST_0_DESC0' => $payment_description,
             'L_PAYMENTREQUEST_0_AMT0' => $donation->amount,
-            'L_PAYMENTREQUEST_0_ITEMCATEGORY0' => 'Digital',
-            'L_BILLINGTYPE0' => 'MerchantInitiatedBilling', // WARNING: for recurring this will be "RecurringPayments"
-//            'L_BILLINGAGREEMENTDESCRIPTION0' => 'Some blah-blah',
-            'L_PAYMENTTYPE0' => 'InstantOnly',
-//            'LOGOIMG' => 'https://sandbox.paypal.com/logo.png', // Logo in the cart page header, HTTPS only
             'NOSHIPPING' => 1,
-//            '' => ,
+//            'LOGOIMG' => 'https://sandbox.paypal.com/logo.png',
+//            'L_BILLINGTYPE0' => 'MerchantInitiatedBilling', // WARNING: for recurring this will be "RecurringPayments"
+//            'L_BILLINGAGREEMENTDESCRIPTION0' => 'Recurring Donations', // WARNING: if L_BILLINGTYPE0 is set, it is necessary
+            /** @todo // Logo in the cart page header, HTTPS only. Add the gateway parameter for it. */
         ), $pm_id, $donation_id, $form_data);
 
         $ch = curl_init();
@@ -398,25 +396,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
             case 'ipn': // Instant payment notifications processing: confirm the payment
 
-//                if( !empty($_GET['tst']) ) {
-//                    echo '<pre>' . print_r(get_transient('paypal_ipn_tmp'), 1) . '</pre>';
-//                }
-//                if( !empty($_GET['clear']) ) {
-//                    delete_transient('paypal_ipn_tmp');
-//                }
-//
-//                if( !empty($_POST) ) {
-//
-//                    $tmp = (array)get_transient('paypal_ipn_tmp');
-//                    array_push($tmp, $_POST);
-//                    set_transient('paypal_ipn_tmp', $tmp);
-//
-//                }
-//
-//                if(empty($_POST['invoice'])) {
-//                    exit(0);
-//                }
-
                 require_once 'leyka-paypal-tools-ipn-verificator.php';
 
                 // Reply with an empty 200 response to indicate to paypal that the IPN was received correctly:
@@ -543,16 +522,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             return array();
         }
 
-        return $response_vars; //array(
-//            __('Last response operation:', 'leyka') => $action_label,
-//            __('Gateway invoice ID:', 'leyka') => $response_vars['invoiceId'],
-//            __('Full donation amount:', 'leyka') =>
-//                (float)$response_vars['orderSumAmount'].' '.$donation->currency_label,
-//            __('Donation amount after gateway commission:', 'leyka') =>
-//                (float)$response_vars['shopSumAmount'].' '.$donation->currency_label,
-//            __("Gateway's donor ID:", 'leyka') => $response_vars['customerNumber'],
-//            __('Response date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($response_vars['requestDatetime'])),
-        //);
+        return $response_vars;
+
     }
 
     public function display_donation_specific_data_fields($donation = false) {
@@ -566,9 +537,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type == 'correction') {?>
-                <input type="text" id="paypal-token" name="paypal-token" placeholder="<?php _e('Enter PayPal token', 'leyka');?>" value="<?php echo $donation->paypal_token;?>">
+                    <input type="text" id="paypal-token" name="paypal-token" placeholder="<?php _e('Enter PayPal token', 'leyka');?>" value="<?php echo $donation->paypal_token;?>">
                 <?php } else {?>
-                <span class="fake-input"><?php echo $donation->paypal_token;?></span>
+                    <span class="fake-input"><?php echo $donation->paypal_token;?></span>
                 <?php }?>
             </div>
 
