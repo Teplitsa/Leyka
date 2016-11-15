@@ -114,13 +114,11 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             'L_PAYMENTREQUEST_0_ITEMURL0' => get_permalink($campaign_post),
             'L_PAYMENTREQUEST_0_DESC0' => $payment_description,
             'L_PAYMENTREQUEST_0_AMT0' => $donation->amount,
-            'L_PAYMENTREQUEST_0_ITEMCATEGORY0' => 'Digital',
-            'L_BILLINGTYPE0' => 'MerchantInitiatedBilling', // WARNING: for recurring this will be "RecurringPayments"
-//            'L_BILLINGAGREEMENTDESCRIPTION0' => 'Some blah-blah',
-            'L_PAYMENTTYPE0' => 'InstantOnly',
-//            'LOGOIMG' => 'https://sandbox.paypal.com/logo.png', // Logo in the cart page header, HTTPS only
             'NOSHIPPING' => 1,
-//            '' => ,
+//            'LOGOIMG' => 'https://sandbox.paypal.com/logo.png',
+//            'L_BILLINGTYPE0' => 'MerchantInitiatedBilling', // WARNING: for recurring this will be "RecurringPayments"
+//            'L_BILLINGAGREEMENTDESCRIPTION0' => 'Recurring Donations', // WARNING: if L_BILLINGTYPE0 is set, it is necessary
+            /** @todo // Logo in the cart page header, HTTPS only. Add the gateway parameter for it. */
         ), $pm_id, $donation_id, $form_data);
 
         $ch = curl_init();
