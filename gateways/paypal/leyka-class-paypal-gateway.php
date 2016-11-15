@@ -396,25 +396,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
             case 'ipn': // Instant payment notifications processing: confirm the payment
 
-//                if( !empty($_GET['tst']) ) {
-//                    echo '<pre>' . print_r(get_transient('paypal_ipn_tmp'), 1) . '</pre>';
-//                }
-//                if( !empty($_GET['clear']) ) {
-//                    delete_transient('paypal_ipn_tmp');
-//                }
-//
-//                if( !empty($_POST) ) {
-//
-//                    $tmp = (array)get_transient('paypal_ipn_tmp');
-//                    array_push($tmp, $_POST);
-//                    set_transient('paypal_ipn_tmp', $tmp);
-//
-//                }
-//
-//                if(empty($_POST['invoice'])) {
-//                    exit(0);
-//                }
-
                 require_once 'leyka-paypal-tools-ipn-verificator.php';
 
                 // Reply with an empty 200 response to indicate to paypal that the IPN was received correctly:
@@ -541,16 +522,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             return array();
         }
 
-        return $response_vars; //array(
-//            __('Last response operation:', 'leyka') => $action_label,
-//            __('Gateway invoice ID:', 'leyka') => $response_vars['invoiceId'],
-//            __('Full donation amount:', 'leyka') =>
-//                (float)$response_vars['orderSumAmount'].' '.$donation->currency_label,
-//            __('Donation amount after gateway commission:', 'leyka') =>
-//                (float)$response_vars['shopSumAmount'].' '.$donation->currency_label,
-//            __("Gateway's donor ID:", 'leyka') => $response_vars['customerNumber'],
-//            __('Response date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($response_vars['requestDatetime'])),
-        //);
+        return $response_vars;
+
     }
 
     public function display_donation_specific_data_fields($donation = false) {
