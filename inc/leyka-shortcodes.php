@@ -176,9 +176,10 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
                         <?php if(has_excerpt($campaign->ID)) {
                             $text = $campaign->post_excerpt;
                         } else {
-                            $text = substr(strip_tags(strip_shortcodes(
-                                $campaign->post_content ? $campaign->post_content : ' ' // So wp_trim_excerpt work correctly
-                            )), 0, 350);
+
+                            $text = $campaign->post_content ? $campaign->post_content : ' '; // So wp_trim_excerpt work correctly
+                            $text = leyka_strip_string_by_words($text, 200, true).(mb_strlen($text) > 200 ? '...' : '');
+
                         }
                         echo apply_filters('leyka_get_the_excerpt', $text, $campaign);?>
                     </p>
@@ -199,14 +200,17 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
                 ( !!$args['increase_counters'] ? '?increase_counters=1' : '' );?>
 
             <div class="leyka-scale-button-alone">
-                <a href="<?php echo $url;?>" <?php echo $campaign->ID == $current_post->ID ? 'class="leyka-scroll"' : '';?><?php echo $target;?>><?php echo leyka_get_scale_button_label();?></a>
+                <a href="<?php echo $url;?>" <?php echo $campaign->ID == $current_post->ID ? 'class="leyka-scroll"' : '';?>
+                    <?php echo $target;?>><?php echo leyka_get_scale_button_label();?>
+                </a>
             </div>
 
         <?php }?>
     </div>
-    <?php
-    $out = ob_get_clean();
+
+    <?php $out = ob_get_clean();
     return apply_filters('leyka_campaign_card_html', $out, $campaign, $args);
+
 }
 
 
@@ -228,6 +232,7 @@ function leyka_payment_form_screen($atts) {
     }
 
     return leyka_get_payment_form($campaign, $a);
+
 }
 
 function leyka_get_payment_form($campaign = null, $args = array()) {
@@ -273,6 +278,7 @@ function leyka_donors_list_screen($atts) {
         $a['id'] = (int)$a['id'];
 
     return leyka_get_donors_list($a['id'], $a);
+
 }
 
 function leyka_get_donors_list_per_page() {
