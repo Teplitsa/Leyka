@@ -99,7 +99,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             'LANDINGPAGE' => 'Billing',
             'CHANNELTYPE' => 'Merchant',
             'USERSELECTEDFUNDINGSOURCE' => 'CreditCard', // WARNING: it may be a default PM! (CreditCard, QIWI, ELV)
-            'BRANDNAME' => leyka_options()->opt('org_full_name'),
+            'BRANDNAME' => html_entity_decode(leyka_options()->opt('org_full_name'), ENT_COMPAT, 'UTF-8'),
             'LOCALECODE' => 'RU',
             'RETURNURL' => home_url('leyka/service/'.$this->_id.'/process_payment/'),
             'CANCELURL' => leyka_get_failure_page_url(),
@@ -537,9 +537,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type == 'correction') {?>
-                <input type="text" id="paypal-token" name="paypal-token" placeholder="<?php _e('Enter PayPal token', 'leyka');?>" value="<?php echo $donation->paypal_token;?>">
+                    <input type="text" id="paypal-token" name="paypal-token" placeholder="<?php _e('Enter PayPal token', 'leyka');?>" value="<?php echo $donation->paypal_token;?>">
                 <?php } else {?>
-                <span class="fake-input"><?php echo $donation->paypal_token;?></span>
+                    <span class="fake-input"><?php echo $donation->paypal_token;?></span>
                 <?php }?>
             </div>
 

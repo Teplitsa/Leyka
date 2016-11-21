@@ -155,6 +155,10 @@ PHP at least 5.3 is required.
 10. События Google Analytics
 
 == Changelog ==
+= 2.2.12.2 =
+ * Fix: now single bank card payments via PayPal in real mode work correctly.
+ * Fix: bug with some obsolete and untranslated language lines fixed.
+
 = 2.2.12.1 =
  * Fix: missing adminbar now returned.
  * Fix: now donation forms can include custom select fields, and amount fields will not be disabled.
