@@ -1191,23 +1191,23 @@ div[id*="leyka_donors_list"].wide .ldl-item {
 /*align-self: flex-end;*/
 /*}*/
 
-/*.leyka-payment-option .leyka-pm-form:before {*/
-    /*content: '';*/
-    /*display: block;*/
-    /*width: 100%;*/
-    /*height: 2px;*/
-    /*background: #ff4824;*/
-    /*position: absolute;*/
-    /*top: 0;*/
-    /*left: 0;*/
-/*}*/
+.leyka-payment-option .leyka-pm-form:before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: #ff4824;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
 
-/*.leyka-payment-option .leyka-field.recurring {*/
-    /*padding: 4px 8px 5px;*/
-    /*border-radius: 4px;*/
-    /*background: #f8f8f8;*/
-    /*margin-bottom: 36px;*/
-/*}*/
+.leyka-payment-option .leyka-field.recurring {
+    padding: 4px 8px 5px;
+    border-radius: 4px;
+    background: #f8f8f8;
+    margin-bottom: 36px;
+}
 
 /*.leyka-payment-option .leyka-field.agree {*/
     /*margin: 18px 0 18px 8px;*/
