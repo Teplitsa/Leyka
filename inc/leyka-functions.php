@@ -27,6 +27,34 @@ if( !function_exists('mb_strtoupper') ) {
     }
 }
 
+if( !function_exists('leyka_strip_string_by_words') ) {
+    function leyka_strip_string_by_words($string, $length = 350, $strip_tags_shortcodes = true) {
+
+        if( !!$strip_tags_shortcodes ) {
+            $string = strip_tags(strip_shortcodes($string));
+        }
+
+        if(mb_strlen($string) <= $length || stripos($string, ' ') === false) {
+            return $string;
+        }
+
+        $characters_count = 0;
+        $result_string = array();
+        foreach(explode(' ', $string) as $word) {
+
+            $characters_count += mb_strlen($word);
+            if($characters_count <= $length) {
+                $result_string[] = $word;
+            } else {
+                break;
+            }
+
+        }
+
+        return implode(' ', $result_string);
+    }
+}
+
 if( !function_exists('leyka_set_html_content_type') ) {
     function leyka_set_html_content_type() {
         return 'text/html';
@@ -820,11 +848,11 @@ if( !function_exists('wp_validate_redirect') ) {
 if( !function_exists('leyka_get_client_ip') ) {
 
     function leyka_get_client_ip() {
-        return getenv('HTTP_CLIENT_IP')?:
-            getenv('HTTP_X_FORWARDED_FOR')?:
-                getenv('HTTP_X_FORWARDED')?:
-                    getenv('HTTP_FORWARDED_FOR')?:
-                        getenv('HTTP_FORWARDED')?:
+        return getenv('HTTP_CLIENT_IP') ? :
+            getenv('HTTP_X_FORWARDED_FOR') ? :
+                getenv('HTTP_X_FORWARDED') ? :
+                    getenv('HTTP_FORWARDED_FOR') ? :
+                        getenv('HTTP_FORWARDED') ? :
                             getenv('REMOTE_ADDR');
     }
 
