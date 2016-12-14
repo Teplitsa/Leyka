@@ -155,6 +155,10 @@ PHP at least 5.3 is required.
 10. События Google Analytics
 
 == Changelog ==
+= 2.2.13 =
+ * New: "Neo" donation form template added.
+ * Fix: markup for the Radios and Toggles template fixed.
+
 = 2.2.12.2 =
  * Fix: now single bank card payments via PayPal in real mode work correctly.
  * Fix: bug with some obsolete and untranslated language lines fixed.

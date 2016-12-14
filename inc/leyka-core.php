@@ -1109,6 +1109,7 @@ function leyka() {
 __('Radios', 'leyka');
 __('Radio options for each payment method', 'leyka');
 __('Toggles', 'leyka');
+__('Neo', 'leyka');
 __('Toggled options for each payment method', 'leyka');
 __('single', 'leyka');
 __('rebill', 'leyka');

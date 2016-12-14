@@ -516,7 +516,7 @@ class Leyka_CP_Card extends Leyka_Payment_Method {
         ));
 
         $this->_custom_fields = array(
-            'recurring' => '<label class="checkbox"><span><input type="checkbox" id="leyka_'.$this->full_id.'_recurring" name="leyka_recurring" value="1"></span> '.__('Monthly donations', 'leyka').'</label>'
+            'recurring' => '<label class="checkbox"><input type="checkbox" id="leyka_'.$this->full_id.'_recurring" name="leyka_recurring" value="1"> <span class="leyka-checkbox-label">'.__('Monthly donations', 'leyka').'</span></label>'
         );
 
         $this->_supported_currencies[] = 'rur';

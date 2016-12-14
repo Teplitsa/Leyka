@@ -63,27 +63,26 @@ class Leyka_Payment_Form {
 
 		<label for="leyka_donation_amount" class="leyka-screen-reader-text"><?php _e('Donation amount', 'leyka');?></label>
 
-<!--	--><?php //if($mode == 'fixed' || $mode == 'mixed') { // Variants of sum (+ flexible field optionally)
+        <?php foreach($supported_curr as $currency => $data) {?>
 
-        foreach($supported_curr as $currency => $data) {?>
-
-            <span class="<?php echo $currency; ?> amount-variants-container" <?php echo $currency == $current_curr ? '' : 'style="display:none;"'; ?>>
+            <span class="<?php echo $currency; ?> amount-variants-container" <?php echo $currency == $current_curr ? '' : 'style="display:none;"';?>>
 
             <?php if($mode == 'fixed' || $mode == 'mixed') {
 
                 $variants = explode(',', $data['amount_settings']['fixed']);?>
 
-            <?php foreach ($variants as $amount) { ?>
-                    <label class="figure" title="<?php _e('Please, specify your donation amount', 'leyka'); ?>">
+            <?php foreach($variants as $amount) {?>
+                <label class="figure" title="<?php _e('Please, specify your donation amount', 'leyka'); ?>">
                     <input type="radio" value="<?php echo (int)$amount; ?>"
                            name="leyka_donation_amount" <?php echo $currency == $current_curr ? '' : 'disabled="disabled"'; ?>>
-                        <?php echo (int)$amount; ?>
+                    <?php echo (int)$amount; ?>
                 </label>
                 <?php }
 
                 if ($mode == 'mixed' && $variants) {
                     _e('or', 'leyka');
                 }
+
             }
 
             if($mode != 'fixed') {?>
@@ -92,15 +91,7 @@ class Leyka_Payment_Form {
             <?php }?>
 
             </span>
-        <?php }
-
-//        } else { // Flexible sum field ?>
-<!---->
-<!--			<span class="figure">-->
-<!--                <input type="text" title="--><?php //echo __('Specify donation amount', 'leyka');?><!--" name="leyka_donation_amount" class="donate_amount_flex required" value="--><?php //echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?><!--">-->
-<!--            </span>-->
-<!---->
-<!--		--><?php //}?>
+        <?php }?>
 
         <span class="currency"><?php echo $this->get_currency_field();?></span>
         <div class="leyka_donation_amount-error field-error"></div>
@@ -108,7 +99,8 @@ class Leyka_Payment_Form {
 		<?php $out = ob_get_contents();
 		ob_end_clean();
 
-		return leyka_field_wrap($out, 'amount-selector amount '.$mode);			
+		return leyka_field_wrap($out, 'amount-selector amount '.$mode);
+
 	}
 
     public static function get_common_hidden_fields($campaign = null) {
@@ -251,15 +243,20 @@ class Leyka_Payment_Form {
 		<div id="<?php echo $agree_id;?>" class="leyka-oferta-text">
 			<div class="leyka-modal-close">X</div>
 			<div class="leyka-oferta-text-frame">
-				<div class="leyka-oferta-text-flow"><?php echo apply_filters('leyka_terms_of_service_text', leyka_options()->opt('terms_of_service_text'));?></div>
+				<div class="leyka-oferta-text-flow">
+                    <?php echo apply_filters('leyka_terms_of_service_text', leyka_options()->opt('terms_of_service_text'));?>
+                </div>
 			</div>
 		</div>
 
-		<label class="checkbox" for="leyka_agree">
-			<input type="checkbox" name="leyka_agree" class="leyka_agree required" value="1">
-			<a class="leyka-legal-confirmation-trigger" href="#" data-oferta-content="#<?php echo $agree_id;?>">
-				<?php echo leyka_options()->opt('agree_to_terms_text');?>
-			</a>
+		<label class="checkbox">
+			<input type="checkbox" name="leyka_agree" class="leyka_agree required" value="1" id="leyka_agree">
+            <span class="leyka-checkbox-label">
+                <?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';?>
+                <a class="leyka-legal-confirmation-trigger" href="#" data-oferta-content="#<?php echo $agree_id;?>">
+				    <?php echo apply_filters('agree_to_terms_text_link_part', leyka_options()->opt('agree_to_terms_text_link_part'));?>
+			    </a>
+            </span>
 		</label>
         <p class="leyka_agree-error field-error"></p>
 
