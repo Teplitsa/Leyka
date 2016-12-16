@@ -111,31 +111,7 @@ class Leyka {
         add_action('admin_bar_menu', array($this, 'add_toolbar_menu'), 999);
 
         /** Service URLs handler: */
-        function leyka_parse_request() {
-
-            if(stristr($_SERVER['REQUEST_URI'], 'leyka/service') !== FALSE) { // Leyka service URL
-
-                $request = explode('leyka/service', $_SERVER['REQUEST_URI']);
-                $request = explode('/', trim($request[1], '/'));
-
-                if($request[0] == 'do_recurring') { // Recurrents processing URL
-                    $this->_do_active_recurrents_rebilling();
-                } else { // Gateway callback URL
-
-                    // Callback URLs are: some-website.org/leyka/service/{gateway_id}/{action_name}/
-                    // For ex., some-website.org/leyka/service/yandex/check_order/
-
-                    // $request[0] - Gateway ID, $request[1] - service action:
-                    do_action('leyka_service_call-'.$request[0], empty($request[1]) ? '' : $request[1]);
-
-                }
-
-                exit();
-
-            }
-
-        }
-        add_action('parse_request', 'leyka_parse_request');
+        add_action('parse_request', array($this, 'parse_request'));
 
         function leyka_get_posts(WP_Query $query) {
 
@@ -207,6 +183,31 @@ class Leyka {
         }
 
         do_action('leyka_initiated');
+    }
+
+    public function parse_request() {
+
+        if(stristr($_SERVER['REQUEST_URI'], 'leyka/service') !== FALSE) { // Leyka service URL
+
+            $request = explode('leyka/service', $_SERVER['REQUEST_URI']);
+            $request = explode('/', trim($request[1], '/'));
+
+            if($request[0] == 'do_recurring') { // Recurrents processing URL
+                $this->_do_active_recurrents_rebilling();
+            } else { // Gateway callback URL
+
+                // Callback URLs are: some-website.org/leyka/service/{gateway_id}/{action_name}/
+                // For ex., some-website.org/leyka/service/yandex/check_order/
+
+                // $request[0] - Gateway ID, $request[1] - service action:
+                do_action('leyka_service_call-'.$request[0], empty($request[1]) ? '' : $request[1]);
+
+            }
+
+            exit();
+
+        }
+
     }
 
     public function add_toolbar_menu(WP_Admin_Bar $wp_admin_bar) {
