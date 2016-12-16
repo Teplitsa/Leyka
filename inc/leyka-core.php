@@ -602,6 +602,10 @@ class Leyka {
             update_option('leyka_cp_ip', '130.193.70.192,185.98.85.109');
         }
 
+        if($leyka_last_ver && $leyka_last_ver <= '2.2.12.2') {
+            delete_option('agree_to_terms_text'); // From now on, "agree to Terms" text field is separated in two new settings
+        }
+
         /** Set a flag to flush permalinks (needs to be done a bit later, than this activation itself): */
         update_option('leyka_permalinks_flushed', 0);
 
@@ -895,6 +899,11 @@ class Leyka {
 				add_filter('show_admin_bar', '__return_false');
 			}
 
+            add_filter('document_title_parts', 'leyka_remove_gateway_redirect_title', 10);
+            function leyka_remove_gateway_redirect_title($title){
+                return __('Redirecting to the gateway payment page', 'leyka');
+            }
+
             do_action('leyka_init_gateway_redirect_page');
 
             $this->_do_payment_form_submission();
@@ -1110,6 +1119,8 @@ __('Radios', 'leyka');
 __('Radio options for each payment method', 'leyka');
 __('Toggles', 'leyka');
 __('Toggled options for each payment method', 'leyka');
+__('Neo', 'leyka');
+__('Styled after recent te-st.ru works, more modern variant of Toggles form template', 'leyka');
 __('single', 'leyka');
 __('rebill', 'leyka');
 __('correction', 'leyka');

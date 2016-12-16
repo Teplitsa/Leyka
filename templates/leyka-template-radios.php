@@ -29,7 +29,7 @@ $campaign = leyka_get_validated_campaign($campaign);?>
 <!-- <?php echo __("This donation form is created by Leyka WordPress plugin, created by Teplitsa of Social Technologies. If you are interested in some way, don't hesitate to write to us: support@te-st.ru", 'leyka');?> -->
     <form class="leyka-pm-form" action="<?php echo leyka_pf_get_form_action();?>" method="post" id="leyka-form-common">
 
-        <div class="amount-selector" class="form-part freeze-fields">
+        <div class="form-part freeze-fields">
             <?php foreach($active_pm_list as $pm) {?>
             <div class="pm-amount-field <?php echo $pm->full_id;?>" <?php echo $curr_pm->full_id == $pm->full_id ? '' : 'style="display:none;"';?>>
                 <?php echo $pm_forms[$pm->full_id]->get_amount_field();?>

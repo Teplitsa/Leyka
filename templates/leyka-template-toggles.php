@@ -45,6 +45,7 @@ leyka_pf_submission_errors();?>
                 }
 
                 echo '<ul class="leyka-pm-icons cf">'.implode('', $list).'</ul>';
+
             }?>
             </div> <!-- .leyka-pm-fields -->
 

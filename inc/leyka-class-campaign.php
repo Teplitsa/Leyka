@@ -200,7 +200,7 @@ class Leyka_Campaign_Management {
                 if($templates) {
                     foreach($templates as $template) {?>
                 <option value="<?php echo esc_attr($template['id']);?>" <?php selected($cur_template, $template['id']);?>>
-                    <?php echo esc_attr($template['name']);?>
+                    <?php _e(esc_attr($template['name']), 'leyka');?>
                 </option>
                 <?php }
                 }?>
