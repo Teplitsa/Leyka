@@ -1240,11 +1240,12 @@ div[id*="leyka_donors_list"].wide .ldl-item {
     display: inline-block;
     margin-left: 30px;
     flex: 1 1 auto;
-    text-align: left;
+    text-align: right;
 }
 
 .leyka-tpl-neo .currency-selector-row {
     display: flex;
+    justify-content: flex-start;
 }
 
 .leyka-tpl-neo .leyka-field.amount-selector {
@@ -1505,7 +1506,8 @@ text-decoration: underline;
     color: rgba(0, 0, 0, 0.9);
     line-height: 30px;
     text-align: right;
-    width: 110px;
+    width: 90px;
+    padding: 0.1em;
 }
 
 .leyka-tpl-neo#leyka-payment-form .leyka-field.amount-selector .rdc-radio__label::before {
@@ -1588,11 +1590,11 @@ text-decoration: underline;
 }
 
 .leyka-tpl-neo input[type="checkbox"]:checked ~ .leyka-checkbox-label::before {
-    background-color: #f02700;
+    background-color: #1db318;
     background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyB3aWR0aD0iMTdweCIgaGVpZ2h0PSIxM3B4IiB2aWV3Qm94PSIwIDAgMTcgMTMiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sbnM6c2tldGNoPSJodHRwOi8vd3d3LmJvaGVtaWFuY29kaW5nLmNvbS9za2V0Y2gvbnMiPiAgICAgICAgPHRpdGxlPlNoYXBlPC90aXRsZT4gICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+ICAgIDxkZWZzPjwvZGVmcz4gICAgPGcgaWQ9IlBhZ2UtMSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc2tldGNoOnR5cGU9Ik1TUGFnZSI+ICAgICAgICA8cGF0aCBkPSJNMTYuNSwxLjg3OTE0Mjg2IEw1LjUyODU3MTQzLDEyLjg1MDU3MTQgTDAuNSw3LjgyMiBMMS43ODkxNDI4Niw2LjUzMjg1NzE0IEw1LjUyODU3MTQzLDEwLjI2MzE0MjkgTDE1LjIxMDg1NzEsMC41OSBMMTYuNSwxLjg3OTE0Mjg2IEwxNi41LDEuODc5MTQyODYgWiIgaWQ9IlNoYXBlIiBmaWxsPSIjRkZGRkZGIiBza2V0Y2g6dHlwZT0iTVNTaGFwZUdyb3VwIj48L3BhdGg+ICAgIDwvZz48L3N2Zz4=");
     background-repeat: no-repeat;
     background-size: 16px 13px;
-    border-color: #f02700;
+    border-color: #1db318;
 }
 
 
@@ -1636,6 +1638,7 @@ color: #ffffff;
 
 .leyka-tpl-neo .leyka_donation_amount-error {
     bottom: -10px;
+    margin-left: 30px;
 }
 
 .leyka-tpl-neo .leyka-payment-option .submit {

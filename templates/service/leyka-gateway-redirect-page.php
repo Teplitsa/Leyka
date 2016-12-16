@@ -1,8 +1,9 @@
 <html>
 <head>
-    <?php wp_head();?>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title><?php echo __('Redirecting to the gateway payment page', 'leyka');?></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <?php wp_head();?>
 </head>
 
 <body>
