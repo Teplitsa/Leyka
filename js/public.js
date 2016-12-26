@@ -149,8 +149,8 @@ jQuery(document).ready(function($){
 
         $form.find('.field-error').html('').hide(); // Hide the errors of current form before changing to a new one
 
-        var $amount_field_new = $form.find('.amount-selector > .pm-amount-field.'+pm_full_id),
-            $amount_field_old = $form.find('.amount-selector > .pm-amount-field:visible');
+        var $amount_field_new = $form.find('.pm-amount-field.'+pm_full_id),
+            $amount_field_old = $form.find('.pm-amount-field:visible');
 
         // Form serialization includes all "leyka_donation_amount" fields, whether they are visible/disabled or not:
         $amount_field_old.hide(); // .find('input').attr('disabled', 'disabled');

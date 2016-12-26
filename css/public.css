@@ -1238,7 +1238,7 @@ div[id*="leyka_donors_list"].wide .ldl-item {
 
 .leyka-tpl-neo .currency-variants {
     display: inline-block;
-    margin-left: 30px;
+    margin-left: 25px;
     flex: 1 1 auto;
     text-align: right;
 }
@@ -1260,7 +1260,7 @@ div[id*="leyka_donors_list"].wide .ldl-item {
     font-size: 18px;
     line-height: inherit;
     text-transform: uppercase;
-    width: 70px;
+    width: 40px;
     margin-left: 10px;
 }
 
@@ -1293,7 +1293,6 @@ div[id*="leyka_donors_list"].wide .ldl-item {
     display: flex;
     flex: 0 0 auto;
     align-self: flex-start;
-
     background: #ffffff;
     width: 100%;
     line-height: inherit;
@@ -1514,7 +1513,7 @@ text-decoration: underline;
     cursor: pointer;
     display: block;
     height: 16px;
-    left: -26px;
+    left: -20px;
     position: absolute;
     top: 1px;
     width: 16px;
