@@ -288,7 +288,7 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
                     }
 
                     if($donation->type == 'rebill' && !empty($_POST['invoiceId'])) {
-                        $donation->recurring_id = (int)$_POST['invoiceId'];
+                        $donation->recurring_id = $_POST['invoiceId'];
                     }
 
                     Leyka_Donation_Management::send_all_emails($donation->id);
