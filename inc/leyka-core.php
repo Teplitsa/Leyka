@@ -1087,8 +1087,9 @@ class Leyka {
     public function get_template($basename, $is_service = false) {
 
         $templates = $this->get_templates($is_service);
-        if( !$templates )
+        if( !$templates ) {
             return false;
+        }
 
         $active = '';
         foreach($templates as $template) {
@@ -1096,8 +1097,10 @@ class Leyka {
             $cur_basename = explode('-', str_replace('.php', '', $template['basename']));
             $cur_basename = end($cur_basename); // Otherwise error appears in PHP 5.4.x
             if($cur_basename == $basename) {
+
                 $active = $template;
                 break;
+
             }
         }
 

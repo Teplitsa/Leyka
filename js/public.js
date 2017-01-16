@@ -10,21 +10,28 @@ jQuery(document).ready(function($){
             var $this = $(this);
             $this.select();
 
-            $this.on('mouseup', function(){ // Work around Chrome's little problem
+            $this.on('mouseup', function() { // Work around Chrome's little problem
 
                 $this.off('mouseup');
                 return false;
+
             });
         }
     });
 
-    var $embed_code = $('#campaign-embed-code');
+    $('.read-only').on('keydown.leyka', function(e){ // Keep the iframe code from manual changing
 
-    $embed_code.keydown(function(e){ // Keep the iframe code from manual changing
-
-        if(leyka_is_special_key(e)) {
-            e.preventDefault();
+        if( // Allowed special keys
+            e.keyCode == 9 || // Tab
+            (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
+            (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
+            (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
+        ) {
+            return; // Let it happen
         }
+
+        e.preventDefault();
+
     });
 
     $('#embed_iframe_w, #embed_iframe_h').keydown(function(e){
@@ -32,22 +39,34 @@ jQuery(document).ready(function($){
         if(e.keyCode == 13) { // Enter pressed - do not let the form be submitted
 
             e.preventDefault();
+            $(this).change();
             return;
+
         }
 
-        if( !leyka_is_digit_key(e, true) ) {
+        if( // Allowed special keys
+            $.inArray(e.keyCode, [46, 8, 9]) != -1 || // Backspace, delete, tab
+            (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
+            (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
+        ) {
+            return; // Let it happen
+        }
+
+        if( !leyka_is_digit_key(e) ){
             e.preventDefault();
         }
 
-    }).change(function(){
+    }).change(function(e){
 
         var $this = $(this),
+            $embed_code = $('#campaign-embed-code'),
             $text = $($embed_code.text());
 
         $text.attr($this.attr('id') == 'embed_iframe_w' ? 'width' : 'height', $this.val());
         $('.leyka-embed-preview iframe').attr($this.attr('id') == 'embed_iframe_w' ? 'width' : 'height', $this.val());
 
         $embed_code.html($text.prop('outerHTML'));
+
     });
 
     // Get donation amount currently selected on the given form:
@@ -153,8 +172,8 @@ jQuery(document).ready(function($){
             $amount_field_old = $form.find('.pm-amount-field:visible');
 
         // Form serialization includes all "leyka_donation_amount" fields, whether they are visible/disabled or not:
-        $amount_field_old.hide(); // .find('input').attr('disabled', 'disabled');
-        $amount_field_new.show(); // .find('input').removeAttr('disabled');
+        $amount_field_old.hide();
+        $amount_field_new.show();
 
         // Selected amount & currency synchronization:
         if(sum) {
@@ -530,20 +549,31 @@ function leyka_is_special_key(e) {
 /** @var e JS keyup/keydown event */
 function leyka_is_digit_key(e, numpad_allowed) {
 
+    if(typeof numpad_allowed == 'undefined') {
+        numpad_allowed = true;
+    } else {
+        numpad_allowed = !!numpad_allowed;
+    }
+
     if( // Allowed special keys
-        e.keyCode == 46 || e.keyCode == 8 || e.keyCode == 9 || e.keyCode == 13 || // Backspace, delete, tab, enter
-        (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
-        (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
-        (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
+    e.keyCode == 46 || e.keyCode == 8 || e.keyCode == 9 || e.keyCode == 13 || // Backspace, delete, tab, enter
+    (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
+    (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
+    (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
     ) {
         return true;
     }
 
-    if(typeof numpad_allowed != 'undefined' && !!numpad_allowed) {
-        return !((e.shiftKey || e.keyCode < 48 || e.keyCode > 57) && (e.keyCode < 96 || e.keyCode > 105));
+    if(numpad_allowed) {
+        if( !e.shiftKey && e.keyCode >= 48 && e.keyCode <= 57 ) {
+            return true;
+        } else {
+            return e.keyCode >= 96 && e.keyCode <= 105;
+        }
     } else {
-        return false;
+        return !(e.shiftKey || e.keyCode < 48 || e.keyCode > 57);
     }
+
 }
 
 function is_email(email) {

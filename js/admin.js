@@ -1,8 +1,16 @@
-/**
- * Admin JS
- **/
-
 jQuery(document).ready(function($){
+
+    /** @var e JS keyup/keydown event */
+    // function leyka_is_special_key(e) {
+    //
+    //     // Allowed special keys
+    //     return (
+    //         e.keyCode == 9 || // Tab
+    //         (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
+    //         (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
+    //         (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
+    //     );
+    // }
 
     // Plugin metaboxes rendering:
     function leyka_support_metaboxes(metabox_area) {
@@ -10,6 +18,33 @@ jQuery(document).ready(function($){
         $('.if-js-closed').removeClass('if-js-closed').addClass('closed'); // Close postboxes that should be closed
         postboxes.add_postbox_toggles(metabox_area);
     }
+
+    // Auto-select the code to embed:
+    // $('.embed-code').on('focus.leyka keyup.leyka', function(e){
+    //
+    //     var keycode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+    //
+    //     if( !keycode || keycode == 9 ) { // Click or tab
+    //
+    //         var $this = $(this);
+    //         $this.select();
+    //
+    //         $this.on('mouseup', function(){ // Work around Chrome's little problem
+    //
+    //             $this.off('mouseup');
+    //             return false;
+    //
+    //         });
+    //
+    //     }
+    //
+    // }).on('keydown.leyka', function(e){ // Keep the code from manual changing
+    //
+    //     if( !leyka_is_special_key(e) ) {
+    //         e.preventDefault();
+    //     }
+    //
+    // });
 
     var $body = $('body');
 

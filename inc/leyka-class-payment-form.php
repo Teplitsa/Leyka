@@ -564,7 +564,7 @@ function leyka_share_campaign_block($campaign_id = null) {
                     <label><?php _e('Height', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_h" value="510" size="4"></label>
                     </div>
                     <div class="col-2">
-                    <textarea class="embed-code" id="campaign-embed-code" class="campaign-embed-code"><?php echo Leyka_Campaign_Management::get_card_embed_code($campaign_id, true);?></textarea></div>
+                    <textarea class="embed-code read-only campaign-embed-code"><?php echo Leyka_Campaign_Management::get_card_embed_code($campaign_id, true);?></textarea></div>
                 </div>
 
                 <div class="leyka-embed-preview">

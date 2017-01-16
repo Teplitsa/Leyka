@@ -262,12 +262,12 @@ function leyka_get_form_templates_list() {
     $list = array();
     foreach(leyka()->get_templates() as $template) {
 
-        $name = $template['name'] == __($template['name'], 'leyka') ?
-            $template['name'] : __($template['name'], 'leyka');
+        $name = $template['name'] == __($template['name'], 'leyka') ? $template['name'] : __($template['name'], 'leyka');
         $description = $template['description'] == __($template['description'], 'leyka') ?
             $template['description'] : __($template['description'], 'leyka');
 
         $list[$template['id']] = $name.' ('.mb_strtolower($description).')';
+
     }
 
     return $list;

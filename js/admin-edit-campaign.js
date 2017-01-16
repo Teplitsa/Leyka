@@ -2,6 +2,36 @@
  * Admin JS - Campaign editing page
  **/
 
+/** @var e JS keyup/keydown event */
+function leyka_is_digit_key(e, numpad_allowed) {
+
+    if(typeof numpad_allowed == 'undefined') {
+        numpad_allowed = true;
+    } else {
+        numpad_allowed = !!numpad_allowed;
+    }
+
+    if( // Allowed special keys
+        e.keyCode == 46 || e.keyCode == 8 || e.keyCode == 9 || e.keyCode == 13 || // Backspace, delete, tab, enter
+        (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
+        (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
+        (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
+    ) {
+        return true;
+    }
+
+    if(numpad_allowed) {
+        if( !e.shiftKey && e.keyCode >= 48 && e.keyCode <= 57 ) {
+            return true;
+        } else {
+            return e.keyCode >= 96 && e.keyCode <= 105;
+        }
+    } else {
+        return !(e.shiftKey || e.keyCode < 48 || e.keyCode > 57);
+    }
+
+}
+
 jQuery(document).ready(function($){
 
     /** Edit campaign page - donations data table: */
@@ -35,10 +65,11 @@ jQuery(document).ready(function($){
 
         $('.embed-area').hide();
         $('#embed-'+$(this).val()).show();
+
     });
 
     // Auto-select the code to embed:
-    $('.embed-code').on('focus keyup', function(e){
+    $('.embed-code').on('focus.leyka keyup.leyka', function(e){
 
         var keycode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
 
@@ -51,13 +82,12 @@ jQuery(document).ready(function($){
 
                 $this.off('mouseup');
                 return false;
+
             });
         }
     });
 
-    var $embed_code = $('#campaign-embed-code');
-
-    $embed_code.keydown(function(e) { // Keep the iframe code from manual changing
+    $('.read-only').on('keydown.leyka', function(e){ // Keep the iframe code from manual changing
 
         if( // Allowed special keys
             e.keyCode == 9 || // Tab
@@ -69,13 +99,17 @@ jQuery(document).ready(function($){
         }
 
         e.preventDefault();
+
     });
 
-    $('#embed_iframe_w, #embed_iframe_h').keydown(function(e) {
+    $('#embed_iframe_w, #embed_iframe_h').keydown(function(e){
 
         if(e.keyCode == 13) { // Enter pressed - do not let the form be submitted
+
             e.preventDefault();
+            $(this).change();
             return;
+
         }
 
         if( // Allowed special keys
@@ -86,19 +120,21 @@ jQuery(document).ready(function($){
             return; // Let it happen
         }
 
-        if((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+        if( !leyka_is_digit_key(e) ){
             e.preventDefault();
         }
 
     }).change(function(e){
 
         var $this = $(this),
+            $embed_code = $('#campaign-embed-code'),
             $text = $($embed_code.text());
 
         $text.attr($this.attr('id') == 'embed_iframe_w' ? 'width' : 'height', $this.val());
         $('.leyka-embed-preview iframe').attr($this.attr('id') == 'embed_iframe_w' ? 'width' : 'height', $this.val());
 
         $embed_code.html($text.prop('outerHTML'));
+
     });
 
     // Recalculate total funded amount:

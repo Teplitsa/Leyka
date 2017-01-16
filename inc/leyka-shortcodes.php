@@ -218,6 +218,7 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
  * Payment form shortcode
  **/
 add_shortcode('leyka_payment_form', 'leyka_payment_form_screen');
+add_shortcode('leyka_campaign_form', 'leyka_payment_form_screen');
 function leyka_payment_form_screen($atts) {
 
     $a = shortcode_atts(array(

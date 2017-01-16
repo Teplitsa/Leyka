@@ -344,18 +344,18 @@ class Leyka_Campaign_Management {
     public function embedding_meta_box(WP_Post $campaign) {?>
 
 	<div class="embed-block">
-		<div class="embed-code">
+
+		<div class="embed-code-wrap">
 			<h4><?php _e('Size settings', 'leyka');?></h4>
 			<div id="embed-size-pane" class="setting-row">
 				<label><?php _e('Width', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_w" value="300" size="4"></label>
-				<label><?php _e('Height', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_h" value="510" size="4"></label>
+				<label><?php _e('Height', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_h" value="400" size="4"></label>
 			</div>
 
 			<div id="embed-campaign_card" class="settings-field">
 				<label for="campaign-embed-code"><?php _e("To embed a campaign card in some other web page, insert the following code in page HTML:", 'leyka');?></label>
-				<textarea class="embed-code" id="campaign-embed-code" class="campaign-embed-code"><?php echo self::get_card_embed_code($campaign->ID, true); ?></textarea>
+				<textarea class="embed-code read-only campaign-embed-code" id="campaign-embed-code"><?php echo self::get_card_embed_code($campaign->ID, true); ?></textarea>
 			</div>
-
 		</div>
 
 		<div class="leyka-embed-preview">
@@ -374,6 +374,10 @@ class Leyka_Campaign_Management {
 
 		return '<iframe width="'.(int)$w.'" height="'.(int)$h.'" src="'.$link.'"></iframe>';
 	}
+
+    static function get_campaign_form_shortcode($campaign_id) {
+        return '[leyka_campaign_form id="'.$campaign_id.'"]';
+    }
 
 	public function save_data($campaign_id, WP_Post $campaign) {
 
@@ -426,6 +430,7 @@ class Leyka_Campaign_Management {
 
 			$columns['cb'] = $unsort['cb'];
 			unset($unsort['cb']);
+
 		}
 
 		$columns['ID'] = 'ID';
@@ -434,16 +439,19 @@ class Leyka_Campaign_Management {
 
 			$columns['title'] = $unsort['title'];
 			unset($unsort['title']);
+
 		}
 
 		$columns['coll_state'] = __('Collection state', 'leyka');
 		$columns['target'] = __('Progress', 'leyka');
-
 		$columns['payment_title'] = __('Payment purpose', 'leyka');
+        $columns['shortcode'] = __('Campaign shortcode', 'leyka');
 
-		if(isset($unsort['date'])){
+		if(isset($unsort['date'])) {
+
 			$columns['date'] = $unsort['date'];
 			unset($unsort['date']);
+
 		}
 
 		if($unsort) {
@@ -478,7 +486,9 @@ class Leyka_Campaign_Management {
 			if($campaign->target_state == 'is_reached' && $campaign->date_target_reached) {?>
 		    <span class='c-reached'><?php printf(__('Reached at: %s', 'leyka'), '<time>'.$campaign->date_target_reached.'</time>'); ?></span>
 		<?php }
-		}
+		} elseif($column_name == 'shortcode') {?>
+            <textarea class="embed-code campaign-shortcode"><?php echo self::get_campaign_form_shortcode($campaign->ID); ?></textarea>
+        <?php }
 	}
 
 } //class
