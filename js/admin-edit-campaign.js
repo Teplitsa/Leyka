@@ -2,36 +2,6 @@
  * Admin JS - Campaign editing page
  **/
 
-/** @var e JS keyup/keydown event */
-function leyka_is_digit_key(e, numpad_allowed) {
-
-    if(typeof numpad_allowed == 'undefined') {
-        numpad_allowed = true;
-    } else {
-        numpad_allowed = !!numpad_allowed;
-    }
-
-    if( // Allowed special keys
-        e.keyCode == 46 || e.keyCode == 8 || e.keyCode == 9 || e.keyCode == 13 || // Backspace, delete, tab, enter
-        (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
-        (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
-        (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
-    ) {
-        return true;
-    }
-
-    if(numpad_allowed) {
-        if( !e.shiftKey && e.keyCode >= 48 && e.keyCode <= 57 ) {
-            return true;
-        } else {
-            return e.keyCode >= 96 && e.keyCode <= 105;
-        }
-    } else {
-        return !(e.shiftKey || e.keyCode < 48 || e.keyCode > 57);
-    }
-
-}
-
 jQuery(document).ready(function($){
 
     /** Edit campaign page - donations data table: */
@@ -61,46 +31,12 @@ jQuery(document).ready(function($){
         }
     });
 
-    $('input[name="embed-type"]').click(function(){
-
-        $('.embed-area').hide();
-        $('#embed-'+$(this).val()).show();
-
-    });
-
-    // Auto-select the code to embed:
-    $('.embed-code').on('focus.leyka keyup.leyka', function(e){
-
-        var keycode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
-
-        if( !keycode || keycode == 9 ) { // Click or tab
-
-            var $this = $(this);
-            $this.select();
-
-            $this.on('mouseup', function() { // Work around Chrome's little problem
-
-                $this.off('mouseup');
-                return false;
-
-            });
-        }
-    });
-
-    $('.read-only').on('keydown.leyka', function(e){ // Keep the iframe code from manual changing
-
-        if( // Allowed special keys
-            e.keyCode == 9 || // Tab
-            (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
-            (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
-            (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
-        ) {
-            return; // Let it happen
-        }
-
-        e.preventDefault();
-
-    });
+    // $('input[name="embed-type"]').click(function(){
+    //
+    //     $('.embed-area').hide();
+    //     $('#embed-'+$(this).val()).show();
+    //
+    // });
 
     $('#embed_iframe_w, #embed_iframe_h').keydown(function(e){
 

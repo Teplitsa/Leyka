@@ -345,17 +345,27 @@ class Leyka_Campaign_Management {
 
 	<div class="embed-block">
 
+        <h3><?php _e('On this website content', 'leyka');?></h3>
+        <div id="embed-size-pane" class="setting-row">
+            <label for="campaign-shortcode"><?php _e("To embed a campaign donation form in any of your website materials, insert the following code in page HTML:", 'leyka');?></label>
+            <br>
+            <input type="text" class="embed-code read-only campaign-shortcode" id="campaign-shortcode" value="<?php echo esc_attr(self::get_campaign_form_shortcode($campaign->ID));?>">
+        </div>
+
+        <h3><?php _e('On the other websites pages', 'leyka');?></h3>
 		<div class="embed-code-wrap">
-			<h4><?php _e('Size settings', 'leyka');?></h4>
-			<div id="embed-size-pane" class="setting-row">
+
+            <div id="embed-size-pane" class="setting-row">
+                <h4><?php _e('Size settings', 'leyka');?></h4>
 				<label><?php _e('Width', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_w" value="300" size="4"></label>
 				<label><?php _e('Height', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_h" value="400" size="4"></label>
+
+                <div id="embed-campaign_card" class="settings-field">
+                    <label for="campaign-embed-code"><?php _e("To embed a campaign card in some other web page, insert the following code in page HTML:", 'leyka');?></label>
+                    <textarea class="embed-code read-only campaign-embed-code" id="campaign-embed-code"><?php echo self::get_card_embed_code($campaign->ID, true, 300, 400); ?></textarea>
+                </div>
 			</div>
 
-			<div id="embed-campaign_card" class="settings-field">
-				<label for="campaign-embed-code"><?php _e("To embed a campaign card in some other web page, insert the following code in page HTML:", 'leyka');?></label>
-				<textarea class="embed-code read-only campaign-embed-code" id="campaign-embed-code"><?php echo self::get_card_embed_code($campaign->ID, true); ?></textarea>
-			</div>
 		</div>
 
 		<div class="leyka-embed-preview">
@@ -366,7 +376,7 @@ class Leyka_Campaign_Management {
 	</div>
     <?php }
 
-	static function get_card_embed_code($campaign_id, $increase_counters = false, $w = 300, $h = 510){
+	static function get_card_embed_code($campaign_id, $increase_counters = false, $w = 300, $h = 400){
 
 		$link = get_permalink($campaign_id);
         $link .= (stristr($link, '?') !== false ? '&' : '?').'embed_object=campaign_card';
@@ -487,7 +497,7 @@ class Leyka_Campaign_Management {
 		    <span class='c-reached'><?php printf(__('Reached at: %s', 'leyka'), '<time>'.$campaign->date_target_reached.'</time>'); ?></span>
 		<?php }
 		} elseif($column_name == 'shortcode') {?>
-            <textarea class="embed-code campaign-shortcode"><?php echo self::get_campaign_form_shortcode($campaign->ID); ?></textarea>
+            <input type="text" class="embed-code read-only campaign-shortcode" value="<?php echo esc_attr(self::get_campaign_form_shortcode($campaign->ID));?>">
         <?php }
 	}
 

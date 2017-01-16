@@ -1,17 +1,5 @@
 jQuery(document).ready(function($){
 
-    /** @var e JS keyup/keydown event */
-    // function leyka_is_special_key(e) {
-    //
-    //     // Allowed special keys
-    //     return (
-    //         e.keyCode == 9 || // Tab
-    //         (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
-    //         (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
-    //         (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
-    //     );
-    // }
-
     // Plugin metaboxes rendering:
     function leyka_support_metaboxes(metabox_area) {
 
@@ -20,31 +8,38 @@ jQuery(document).ready(function($){
     }
 
     // Auto-select the code to embed:
-    // $('.embed-code').on('focus.leyka keyup.leyka', function(e){
-    //
-    //     var keycode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
-    //
-    //     if( !keycode || keycode == 9 ) { // Click or tab
-    //
-    //         var $this = $(this);
-    //         $this.select();
-    //
-    //         $this.on('mouseup', function(){ // Work around Chrome's little problem
-    //
-    //             $this.off('mouseup');
-    //             return false;
-    //
-    //         });
-    //
-    //     }
-    //
-    // }).on('keydown.leyka', function(e){ // Keep the code from manual changing
-    //
-    //     if( !leyka_is_special_key(e) ) {
-    //         e.preventDefault();
-    //     }
-    //
-    // });
+    $('.embed-code').on('focus.leyka keyup.leyka', function(e){
+
+        var keycode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+
+        if( !keycode || keycode == 9 ) { // Click or tab
+
+            var $this = $(this);
+            $this.select();
+
+            $this.on('mouseup', function() { // Work around Chrome's little problem
+
+                $this.off('mouseup');
+                return false;
+
+            });
+        }
+    });
+
+    $('.read-only').on('keydown.leyka', function(e){ // Keep the field value from manual changing
+
+        if( // Allowed special keys
+        e.keyCode == 9 || // Tab
+        (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
+        (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
+        (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
+        ) {
+            return; // Let it happen
+        }
+
+        e.preventDefault();
+
+    });
 
     var $body = $('body');
 
@@ -394,6 +389,48 @@ jQuery(document).ready(function($){
         return is_valid;
     }
 });
+
+/** @var e JS keyup/keydown event */
+function leyka_is_digit_key(e, numpad_allowed) {
+
+    if(typeof numpad_allowed == 'undefined') {
+        numpad_allowed = true;
+    } else {
+        numpad_allowed = !!numpad_allowed;
+    }
+
+    if( // Allowed special keys
+    e.keyCode == 46 || e.keyCode == 8 || e.keyCode == 9 || e.keyCode == 13 || // Backspace, delete, tab, enter
+    (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
+    (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
+    (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
+    ) {
+        return true;
+    }
+
+    if(numpad_allowed) {
+        if( !e.shiftKey && e.keyCode >= 48 && e.keyCode <= 57 ) {
+            return true;
+        } else {
+            return e.keyCode >= 96 && e.keyCode <= 105;
+        }
+    } else {
+        return !(e.shiftKey || e.keyCode < 48 || e.keyCode > 57);
+    }
+
+}
+
+/** @var e JS keyup/keydown event */
+function leyka_is_special_key(e) {
+
+    // Allowed special keys
+    return (
+        e.keyCode == 9 || // Tab
+        (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
+        (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
+        (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
+    );
+}
 
 function is_email(email) {
     return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test(email);

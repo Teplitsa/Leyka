@@ -859,6 +859,9 @@
 
 .column-shortcode .campaign-shortcode {
     font-size: 9pt;
-    min-width: 190px;
-    max-height: 40px;
+    width: 100%;
+}
+
+.campaign-shortcode {
+    width: 30%;
 }
