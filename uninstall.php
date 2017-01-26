@@ -16,6 +16,16 @@ if(get_option('leyka_delete_plugin_data')) { // Completely remove all campaigns 
         wp_delete_post($id, true); // All revisions, post metas and comments will also be deleted
     }
 
+    $success_page = get_post(get_option('leyka_success_page'));
+    if(stristr($success_page->post_name, 'thank-you-for-your-donation') !== false) {
+        wp_delete_post($success_page->ID, true);
+    }
+
+    $failure_page = get_post(get_option('leyka_failure_page'));
+    if(stristr($failure_page->post_name, 'sorry-donation-failure') !== false) {
+        wp_delete_post($failure_page->ID, true);
+    }
+
 }
 
 if(get_option('leyka_delete_plugin_options')) {
