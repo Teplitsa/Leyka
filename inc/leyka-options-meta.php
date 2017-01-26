@@ -660,6 +660,17 @@ self::$_options_meta = array(
         'list_entries' => array(), // For select, radio & checkbox fields
         'validation_rules' => array(), // List of regexp?..
     ),
+    'terms_agreed_by_default' => array(
+        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'default' => false,
+        'title' => __('Donor agreement with the Terms checked by default', 'leyka'),
+        'description' => __('When donor see a donation form, the Terms of service agreement field is already checked.', 'leyka'),
+        'required' => false,
+        'placeholder' => '', // For text fields
+        'length' => '', // For text fields
+        'list_entries' => array(), // For select, radio & checkbox fields
+        'validation_rules' => array(), // List of regexp?..
+    ),
     'donation_submit_text' => array(
         'type' => 'text',
         'default' => __('Donate', 'leyka'),
@@ -695,10 +706,10 @@ self::$_options_meta = array(
     ),
     'load_scripts_if_need' => array(
         'type' => 'checkbox',
-        'default' => 0,
+        'default' => true,
         'title' => __('Load plugin scripts only if necessary', 'leyka'),
         'description' => __("Check this to load Leyka scripts and styles only on an applicable pages. If this box is unchecked, plugin will load it's scripts on every website page.", 'leyka'),
-        'required' => 0, // 1 if field is required, 0 otherwise
+        'required' => false, // 1 if field is required, 0 otherwise
         'placeholder' => '', // For text fields
         'length' => '', // For text fields
         'list_entries' => array(),

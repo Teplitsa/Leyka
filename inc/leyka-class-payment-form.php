@@ -244,13 +244,13 @@ class Leyka_Payment_Form {
 			<div class="leyka-modal-close">X</div>
 			<div class="leyka-oferta-text-frame">
 				<div class="leyka-oferta-text-flow">
-                    <?php echo apply_filters('leyka_terms_of_service_text', leyka_options()->opt('terms_of_service_text'));?>
+                    <?php echo apply_filters('leyka_terms_of_service_text', do_shortcode(leyka_options()->opt('terms_of_service_text')));?>
                 </div>
 			</div>
 		</div>
 
 		<label class="checkbox">
-			<input type="checkbox" name="leyka_agree" class="leyka_agree required" value="1" id="leyka_agree">
+			<input type="checkbox" name="leyka_agree" class="leyka_agree required" value="1" id="leyka_agree" <?php echo leyka_options()->opt('terms_agreed_by_default') ? 'checked="checked"' : '';?>>
             <span class="leyka-checkbox-label">
                 <?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';?>
                 <a class="leyka-legal-confirmation-trigger" href="#" data-oferta-content="#<?php echo $agree_id;?>">
