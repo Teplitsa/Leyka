@@ -160,16 +160,21 @@ class Leyka_Options_Allocator {
                         'title' => __('Terms of donation service options', 'leyka'),
                         'is_default_collapsed' => false,
                         'options' => array(
-                            'agree_to_terms_needed', 'agree_to_terms_text_text_part', 'agree_to_terms_text_link_part', 'terms_of_service_text', 'donation_submit_text',
+                            'agree_to_terms_needed', 'agree_to_terms_text_text_part', 'agree_to_terms_text_link_part',
+                            'terms_of_service_text', 'donation_submit_text',
                         )
                     ),),
                     array('section' => array(
                         'name' => 'misc',
                         'title' => __('Additional', 'leyka'),
                         'is_default_collapsed' => true,
-                        'options' => array(
-                            'success_page', 'failure_page', 'load_scripts_if_need',
-                        )
+                        'options' => array('success_page', 'failure_page', 'load_scripts_if_need',)
+                    ),),
+                    array('section' => array(
+                        'name' => 'plugin_deletion',
+                        'title' => __('Plugin data deletion', 'leyka'),
+                        'is_default_collapsed' => true,
+                        'options' => array('delete_plugin_options', 'delete_plugin_data',)
                     ),),
                 );
                 break;

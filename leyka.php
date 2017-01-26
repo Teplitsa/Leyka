@@ -66,7 +66,7 @@ if( !defined('LEYKA_PLUGIN_INNER_SHORT_NAME') ) { // "leyka/leyka.php"
 
 // Plugin support email:
 if( !defined('LEYKA_SUPPORT_EMAIL') ) {
-    define('LEYKA_SUPPORT_EMAIL', 'suvorov@te-st.ru,sidorenko.a@gmail.com,spiro.llc1@gmail.com,ahaenor@gmail.com');
+    define('LEYKA_SUPPORT_EMAIL', 'suvorov@te-st.ru,sidorenko.a@gmail.com,ahaenor@gmail.com');
 }
 
 // Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
@@ -77,14 +77,6 @@ if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.3.0', '<') ) {
     die();
 
 }
-
-/**
- * To avoid some strange bug, when WP functions like is_user_logged_in() are suddenly not found.
- * UPDATE 27.08.2015: Now I'm removing this code as it causes conflicts with Postman Mailer plugin.
- * If an original bug will occur, we should find a way to use is_user_logged_in() without directly include pluggable.php
- */
-//if( !function_exists('is_user_logged_in') )
-//    require_once(ABSPATH.'wp-includes/pluggable.php');
 
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-functions.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-polylang.php');
@@ -122,5 +114,3 @@ add_action('plugins_loaded', array('Leyka', 'activate')); // Any update needed
 register_deactivation_hook(__FILE__, array('Leyka', 'deactivate')); // Deactivate
 
 leyka(); // All systems go
-
-//restore_error_handler(); // Finally, restore errors handler to previous one

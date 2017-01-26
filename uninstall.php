@@ -1,18 +1,27 @@
-<?php if(!defined('WP_UNINSTALL_PLUGIN')) exit; // if uninstall.php is not called by WordPress, die
+<?php if( !defined('WP_UNINSTALL_PLUGIN') ) exit; // if uninstall.php is not called by WordPress, die
 /**
  * Fired when the plugin is uninstalled.
  */
 
+if( !get_option('leyka_delete_plugin_options') && !get_option('leyka_delete_plugin_data') ) {
+    exit;
+}
 
-//$option_name = 'wporg_option';
-//
-//delete_option($option_name);
-//
-//// for site options in Multisite
-//delete_site_option($option_name);
-//
-//// drop a custom database table
-//global $wpdb;
-//$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}mytable"); // If this file is called directly, abort
+if(get_option('leyka_delete_plugin_data')) { // Completely remove all campaigns & donations data
 
-// Uninstall functionality here...
+    global $wpdb;
+
+    $leyka_posts_ids = $wpdb->get_col("SELECT ID FROM {$wpdb->prefix}posts WHERE post_type='leyka_campaign' OR post_type='leyka_donation'");
+    foreach($leyka_posts_ids as $id) {
+        wp_delete_post($id, true); // All revisions, post metas and comments will also be deleted
+    }
+
+}
+
+if(get_option('leyka_delete_plugin_options')) {
+    foreach(wp_load_alloptions() as $option => $value) {
+        if(stristr($option, 'leyka_') !== false) {
+            delete_option($option);
+        }
+    }
+}

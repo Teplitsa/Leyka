@@ -391,10 +391,10 @@ class Leyka {
     public function get_donation_statuses_descriptions() {
         return apply_filters('leyka_donation_statuses_descriptions', array(
             'submitted' => _x("Donation attempt was made, but the payment itself wasn't sent.", '«Submitted» donation status description', 'leyka'),
-            'funded'    => _x('Donation was finished, the funds were made to your account.', '«Completed» donation status description', 'leyka'),
-            'refunded'  => _x("Donation funds were returned to the donor.", '«Refunded» donation status description', 'leyka'),
-            'failed'    => _x("Donation payment was finished with an error. The funds weren't sent.", '«Failed» donation status description', 'leyka'),
-            'trash'     => _x("Donation information was deleted.", '«Trash» donation status description', 'leyka'),
+            'funded' => _x('Donation was finished, the funds were made to your account.', '«Completed» donation status description', 'leyka'),
+            'refunded' => _x('Donation funds were returned to the donor.', '«Refunded» donation status description', 'leyka'),
+            'failed' => _x("Donation payment was finished with an error. The funds weren't sent.", '«Failed» donation status description', 'leyka'),
+            'trash' => _x('Donation information was deleted.', '«Trash» donation status description', 'leyka'),
         ));
     }
 
@@ -444,8 +444,6 @@ class Leyka {
      * Fired when the plugin is activated or when an update is needed.
      */
     public static function activate() {
-
-        register_uninstall_hook(__FILE__, array('Leyka', 'uninstall'));
 
         $leyka_last_ver = get_option('leyka_last_ver');
 
@@ -623,30 +621,6 @@ class Leyka {
      */
     public static function deactivate() {
         delete_option('leyka_permalinks_flushed');
-    }
-
-    public static function uninstall() {
-
-        if(empty($_POST['cleanup'])) {?>
-            <h2>
-                <?php _e('Should Leyka delete all its settings, campaigns and donations data from the website database?', 'leyka');?>
-            </h2>
-            <form action="#" method="post">
-                <div class="leyka-remove-data">
-                    <input type="submit" name="cleanup[y]" value="<?php _e('YES, delete all Leyka database presence', 'leyka');?>">
-                </div>
-                <div class="leyka-leave-data">
-                    <input type="submit" name="cleanup[n]" value="<?php _e("NO, leave Leyka database entries", 'leyka');?>">
-                </div>
-                <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('leyka_delete_plugin');?>">
-            </form>
-        <?php } else if($_POST['cleanup'] && !empty($_POST['cleanup']['y'])) {
-            echo '<pre>' . print_r('DO DB CLEANUP!', 1) . '</pre>';?>
-
-        <?php } else if($_POST['cleanup'] && !empty($_POST['cleanup']['n'])) {
-            echo '<pre>' . print_r('JUST DELETE PLUGIN FILES!', 1) . '</pre>'?>
-
-        <?php }
     }
 
     public function apply_formatting_filters() {

@@ -704,4 +704,26 @@ self::$_options_meta = array(
         'list_entries' => array(),
         'validation_rules' => array(), // List of regexp?..
     ),
+    'delete_plugin_options' => array(
+        'type' => 'checkbox',
+        'default' => 0,
+        'title' => __('Remove all plugin settings when deleting it', 'leyka'),
+        'description' => __('WARNING: checking this will cause in lost of all Leyka settings. Please check only if necessary.', 'leyka'),
+        'required' => 0, // 1 if field is required, 0 otherwise
+        'placeholder' => '', // For text fields
+        'length' => '', // For text fields
+        'list_entries' => array(),
+        'validation_rules' => array(), // List of regexp?..
+    ),
+    'delete_plugin_data' => array(
+        'type' => 'checkbox',
+        'default' => 0,
+        'title' => __('Remove all plugin data when deleting it', 'leyka'),
+        'description' => __('WARNING: checking this will cause in lost of all Leyka data - including all donations and campaigns. Please check only if necessary.', 'leyka'),
+        'required' => 0, // 1 if field is required, 0 otherwise
+        'placeholder' => '', // For text fields
+        'length' => '', // For text fields
+        'list_entries' => array(),
+        'validation_rules' => array(), // List of regexp?..
+    ),
 );
