@@ -901,8 +901,11 @@ class Leyka {
 			}
 
             add_filter('document_title_parts', 'leyka_remove_gateway_redirect_title', 10);
-            function leyka_remove_gateway_redirect_title($title){
-                return __('Redirecting to the gateway payment page', 'leyka');
+            function leyka_remove_gateway_redirect_title($title_parts){
+
+                $title_parts['title'] = __('Redirecting to the gateway payment page', 'leyka');
+                return $title_parts;
+
             }
 
             do_action('leyka_init_gateway_redirect_page');
