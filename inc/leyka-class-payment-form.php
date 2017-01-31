@@ -75,7 +75,7 @@ class Leyka_Payment_Form {
                 <label class="figure" title="<?php _e('Please, specify your donation amount', 'leyka'); ?>">
                     <input type="radio" value="<?php echo (int)$amount; ?>"
                            name="leyka_donation_amount" <?php echo $currency == $current_curr ? '' : 'disabled="disabled"'; ?>>
-                    <?php echo (int)$amount; ?>
+                    <?php echo (int)$amount;?>
                 </label>
                 <?php }
 
@@ -87,7 +87,7 @@ class Leyka_Payment_Form {
 
             if($mode != 'fixed') {?>
 
-                <input type="text" title="<?php echo __('Specify the amount of your donation', 'leyka');?>" name="leyka_donation_amount" class="donate_amount_flex" value="<?php echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?>" <?php echo $currency == $current_curr ? '' : 'disabled="disabled"';?>>
+                <input type="text" title="<?php echo __('Specify the amount of your donation', 'leyka');?>" name="leyka_donation_amount" class="donate_amount_flex" value="<?php echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?>" <?php echo $currency == $current_curr ? '' : 'disabled="disabled"';?> placeholder="<?php echo apply_filters('leyka_form_free_amount_placeholder', $supported_curr[$current_curr]['amount_settings']['flexible']);?>">
             <?php }?>
 
             </span>
@@ -219,7 +219,7 @@ class Leyka_Payment_Form {
 
 		<label for="leyka_donor_email" class="leyka-screen-reader-text"><?php _e('Your email', 'leyka');?></label>
 		<label class="input req">
-            <input type="text" class="required email leyka_donor_email" name="leyka_donor_email" placeholder="<?php _e('Your email', 'leyka');?>" value="<?php echo $value;?>">
+            <input type="text" class="required email leyka_donor_email" name="leyka_donor_email" placeholder="<?php echo apply_filters('leyka_form_donor_email_placeholder', __('Your email', 'leyka'));?>" value="<?php echo $value;?>">
         </label>
 		<p class="field-comment"><?php _e('We will send the donation success notice to this address', 'leyka');?></p>
         <p class="leyka_donor_email-error field-error"></p>
