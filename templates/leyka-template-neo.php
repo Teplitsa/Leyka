@@ -147,5 +147,3 @@ leyka_pf_submission_errors();?>
 }
 
 leyka_pf_footer();?>
-
-</div><!-- #leyka-payment-form -->
