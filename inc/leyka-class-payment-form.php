@@ -45,6 +45,26 @@ class Leyka_Payment_Form {
 		return $this->_form_action;
 	}
 
+	public function get_recurring_field() {
+
+        if( !$this->is_field_supported('recurring') ) {
+            return '';
+        }
+
+        ob_start();?>
+
+        <label class="checkbox">
+            <input type="checkbox" id="leyka_<?php echo $this->full_id;?>_recurring" name="leyka_recurring" value="1">
+            <span class="leyka-checkbox-label"><?php _e('Monthly donations', 'leyka');?></span>
+        </label>
+
+        <?php $out = ob_get_contents();
+        ob_end_clean();
+
+        return apply_filters('leyka_recurring_field_html', $out);
+
+    }
+
     public function get_amount_field() {
 
 		if( !$this->is_field_supported('amount') ) {
@@ -277,7 +297,8 @@ class Leyka_Payment_Form {
 
     <?php $out = ob_get_contents();
 		ob_end_clean();
-		return leyka_field_wrap($out, 'submit');	
+		return leyka_field_wrap($out, 'submit');
+
 	}
 
 	/** PM related methods **/
@@ -306,6 +327,7 @@ class Leyka_Payment_Form {
 		}
 
 		return $curr;
+
 	}
 
     public function get_current_currency() {
@@ -318,7 +340,14 @@ class Leyka_Payment_Form {
 	}
 
     public function get_supported_global_fields() {
-		return $this->_pm->has_global_fields ? array('amount', 'name', 'email', 'agree', 'submit') : array('');
+
+        $global_fields = $this->_pm->has_global_fields ? array('amount', 'name', 'email', 'agree', 'submit') : array('');
+        if($global_fields && $this->_pm->has_recurring_support()) {
+            $global_fields[] = 'recurring';
+        }
+
+		return $global_fields;
+
 	}
 
     public function is_field_supported($field) {
@@ -336,6 +365,7 @@ class Leyka_Payment_Form {
 		}
 
 		return implode('', $res);
+
 	}
 
     public function get_submit_label(){
@@ -439,6 +469,14 @@ function leyka_pf_get_hidden_fields($campaign = null, $include_common_fields = t
 
 	return ($include_common_fields ? Leyka_Payment_Form::get_common_hidden_fields($campaign) : '')
             .$leyka_current_pm->get_hidden_fields($campaign);
+}
+
+function leyka_pf_get_recurring_field() {
+    /** @var Leyka_Payment_Form $leyka_current_pm */
+    global $leyka_current_pm;
+
+    return $leyka_current_pm->get_recurring_field();
+
 }
 
 function leyka_pf_get_amount_field() {

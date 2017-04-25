@@ -515,10 +515,6 @@ class Leyka_CP_Card extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'gateways/cp/icons/master.png',
         ));
 
-        $this->_custom_fields = array(
-            'recurring' => '<label class="checkbox"><input type="checkbox" id="leyka_'.$this->full_id.'_recurring" name="leyka_recurring" value="1"> <span class="leyka-checkbox-label">'.__('Monthly donations', 'leyka').'</span></label>'
-        );
-
         $this->_supported_currencies[] = 'rur';
 
         $this->_default_currency = 'rur';
@@ -543,6 +539,11 @@ class Leyka_CP_Card extends Leyka_Payment_Method {
         );
 
     }
+
+    public function has_recurring_support() {
+        return true;
+    }
+
 }
 
 function leyka_add_gateway_cp() { // Use named function to leave a possibility to remove/replace it on the hook

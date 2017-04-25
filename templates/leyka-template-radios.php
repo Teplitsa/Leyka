@@ -32,7 +32,7 @@ $campaign = leyka_get_validated_campaign($campaign);?>
         <div class="form-part freeze-fields">
             <?php foreach($active_pm_list as $pm) {?>
             <div class="pm-amount-field <?php echo $pm->full_id;?>" <?php echo $curr_pm->full_id == $pm->full_id ? '' : 'style="display:none;"';?>>
-                <?php echo $pm_forms[$pm->full_id]->get_amount_field();?>
+                <?php echo $pm_forms[$pm->full_id]->get_amount_field().$pm_forms[$pm->full_id]->get_recurring_field();?>
             </div>
             <?php }?>
             <span class="currency-var rur" style="display: none;"></span>

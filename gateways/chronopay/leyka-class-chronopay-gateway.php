@@ -63,14 +63,9 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
     }
 
     protected function _initialize_pm_list() {
-
         if(empty($this->_payment_methods['chronopay_card'])) {
             $this->_payment_methods['chronopay_card'] = Leyka_Chronopay_Card::get_instance();
         }
-        if(empty($this->_payment_methods['chronopay_card_rebill'])) {
-            $this->_payment_methods['chronopay_card_rebill'] = Leyka_Chronopay_Card_Rebill::get_instance();
-        }
-
     }
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
@@ -94,7 +89,18 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
         $donation = new Leyka_Donation($donation_id);
 
-        $chronopay_product_id = leyka_options()->opt($pm_id.'_product_id_'.$donation->currency);
+        if(empty($_POST['leyka_recurring'])) { // Single donation
+
+            $donation->payment_type = 'single';
+            $chronopay_product_id = leyka_options()->opt($pm_id.'_product_id_'.$donation->currency);
+
+        } else { // Recurring donation
+
+            $donation->payment_type = 'rebill';
+            $chronopay_product_id = leyka_options()->opt($pm_id.'_rebill_product_id_'.$donation->currency);
+
+        }
+
         $sharedsec = leyka_options()->opt('chronopay_shared_sec');
         $price = number_format((float)$donation->amount, 2,'.','');
 
@@ -136,15 +142,6 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
     }
 
     public function log_gateway_fields($donation_id) {
-
-        $donation = new Leyka_Donation($donation_id);
-
-        if($donation->payment_method_id == 'chronopay_card_rebill') {
-            $donation->payment_type = 'rebill';
-        } else if($donation->payment_method_id == 'chronopay_card') {
-            $donation->payment_type = 'single';
-        }
-
     }
 
     public function _handle_service_calls($call_type = '') {
@@ -577,62 +574,6 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
                 'required' => 0,
                 'validation_rules' => array(), // List of regexp?..
             ),
-        );
-
-    }
-
-}
-
-class Leyka_Chronopay_Card_Rebill extends Leyka_Payment_Method {
-
-    protected static $_instance;
-
-    public function _set_attributes() {
-
-        $this->_id = 'chronopay_card_rebill';
-        $this->_gateway_id = 'chronopay';
-
-        $this->_label_backend = __('Rebilling payment with Banking Card', 'leyka');
-        $this->_label = __('Banking Card - monthly donations', 'leyka');
-
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/chronopay/icons/visa.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/chronopay/icons/master.png',
-        ));
-
-        $this->_default_currency = 'rur';
-
-    }
-
-    protected function _set_dynamic_attributes() {
-
-        if(leyka_options()->opt('chronopay_card_product_id_rur')) {
-            $this->_supported_currencies[] = 'rur';
-        }
-        if(leyka_options()->opt('chronopay_card_product_id_usd')) {
-            $this->_supported_currencies[] = 'usd';
-        }
-        if(leyka_options()->opt('chronopay_card_product_id_eur')) {
-            $this->_supported_currencies[] = 'eur';
-        }
-
-    }
-
-    protected function _set_options_defaults() {
-
-        if($this->_options) {
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('Chronopay allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="http://www.chronopay.com/ru/">Chronopay</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
-                'title' => __('Chronopay bank card rebill payment description', 'leyka'),
-                'description' => __('Please, enter Chronopay gateway description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
             'chronopay_card_rebill_product_id_rur' => array(
                 'type' => 'text',
                 'default' => '',
@@ -641,9 +582,32 @@ class Leyka_Chronopay_Card_Rebill extends Leyka_Payment_Method {
                 'required' => 0,
                 'validation_rules' => array(), // List of regexp?..
             ),
+            'chronopay_card_rebill_product_id_usd' => array(
+                'type' => 'text',
+                'default' => '',
+                'title' => __('Chronopay product_id for rebills in USD', 'leyka'),
+                'description' => __('Please, enter Chronopay product_id for rebills in USD currency.', 'leyka'),
+                'required' => 0,
+                'validation_rules' => array(), // List of regexp?..
+            ),
+            'chronopay_card_rebill_product_id_eur' => array(
+                'type' => 'text',
+                'default' => '',
+                'title' => __('Chronopay product_id for rebills in EUR', 'leyka'),
+                'description' => __('Please, enter Chronopay product_id for rebills in EUR currency.', 'leyka'),
+                'required' => 0,
+                'validation_rules' => array(), // List of regexp?..
+            ),
         );
 
     }
+
+    public function has_recurring_support() { // Support recurring donations only if both single & recurring options set
+        return ( !!leyka_options()->opt('chronopay_card_rebill_product_id_rur') && !!leyka_options()->opt('chronopay_card_product_id_rur') ) ||
+            ( !!leyka_options()->opt('chronopay_card_rebill_product_id_usd') && !!leyka_options()->opt('chronopay_card_product_id_usd') ) ||
+            ( !!leyka_options()->opt('chronopay_card_rebill_product_id_eur') && !!leyka_options()->opt('chronopay_card_product_id_eur') );
+    }
+
 }
 
 function leyka_add_gateway_chronopay() { // Use named function to leave a possibility to remove/replace it on the hook

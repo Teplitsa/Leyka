@@ -82,6 +82,8 @@ leyka_pf_submission_errors();?>
 
                     <?php }
 
+                    echo leyka_pf_get_recurring_field();
+
                     echo leyka_pf_get_hidden_fields(empty($campaign) ? false : $campaign->id);?>
 
                     <input name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="hidden">
