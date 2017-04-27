@@ -53,7 +53,7 @@ class Leyka_Payment_Form {
 
         ob_start();?>
 
-        <label class="checkbox">
+        <label class="checkbox leyka-recurring-field">
             <input type="checkbox" id="leyka_<?php echo $this->full_id;?>_recurring" name="leyka_recurring" value="1">
             <span class="leyka-checkbox-label"><?php _e('Monthly donations', 'leyka');?></span>
         </label>

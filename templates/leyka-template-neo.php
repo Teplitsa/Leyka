@@ -89,6 +89,7 @@ leyka_pf_submission_errors();?>
                     <input name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="hidden">
                     <input name="leyka_ga_payment_method" value="<?php echo esc_attr($pm->label);?>" type="hidden">
 
+                    <div class="leyka-donor-fields">
                     <!-- name -->
                     <?php if($leyka_current_pm->is_field_supported('name') ) { ?>
                         <div class="rdc-textfield leyka-field name">
@@ -107,9 +108,10 @@ leyka_pf_submission_errors();?>
                             <span class="leyka_donor_email-error field-error rdc-textfield__error" id="leyka_donor_email-error"></span>
                         </div>
 
-                    <?php }
+                    <?php }?>
+                    </div>
 
-                    echo leyka_pf_get_pm_fields();
+                    <?php echo leyka_pf_get_pm_fields();
 
                     echo leyka_pf_get_agree_field();?>
 
