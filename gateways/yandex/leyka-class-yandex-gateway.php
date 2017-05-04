@@ -601,15 +601,6 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/master.png',
         ));
 
-        /** @todo Right now we can't use leyka_options()->opt() here because Gateway options are not included in options_meta ATM. Refactor this. */
-        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id,
-            get_option('leyka_'.$this->full_id.'_rebilling_available', true) ?
-                array(
-                    'recurring' => '<label class="checkbox"><span><input type="checkbox" id="leyka_'.$this->full_id.'_recurring" name="leyka_recurring" value="1"></span> '.__('Monthly donations', 'leyka').'</label>'
-                ) :
-                array()
-        );
-
         $this->_supported_currencies[] = 'rur';
 
         $this->_default_currency = 'rur';
@@ -672,6 +663,10 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
             ),
         );
 
+    }
+
+    public function has_recurring_support() {
+        return !!leyka_options()->opt($this->full_id.'_rebilling_available');
     }
 
 }
