@@ -183,6 +183,7 @@ class Leyka {
         }
 
         do_action('leyka_initiated');
+
     }
 
     public function parse_request() {
@@ -423,6 +424,7 @@ class Leyka {
      * @return bool
      */
     public function add_gateway(Leyka_Gateway $gateway) {
+
         if(empty($this->_gateways[$gateway->id])) {
 
             $this->_gateways[$gateway->id] = $gateway;
@@ -431,6 +433,7 @@ class Leyka {
         } else {
             return false;
         }
+
     }
 
     /** Just in case */
@@ -470,6 +473,7 @@ class Leyka {
                 if(is_array($option) && isset($option['type']) && isset($option['title'])) { // Update option data
                     update_option("leyka_$name", $option['value']);
                 }
+
             }
 
             /** Upgrade gateway and PM options structure in the DB */
@@ -482,8 +486,10 @@ class Leyka {
 
                     $option = get_option("leyka_$name");
 
-                    if(is_array($option) && isset($option['type']) && isset($option['title'])) // Update option data
+                    if(is_array($option) && isset($option['type']) && isset($option['title'])) { // Update option data
                         update_option("leyka_$name", $option['value']);
+                    }
+
                 }
 
                 foreach($gateway->get_payment_methods() as $pm) {
@@ -495,7 +501,9 @@ class Leyka {
                         if(is_array($option) && isset($option['type']) && isset($option['title'])) // Update option data
                             update_option("leyka_$name", $option['value']);
                     }
+
                 }
+
             }
 
         }
@@ -511,7 +519,9 @@ class Leyka {
                         $pm_order[] = "pm_order[]={$pm_full_id}";
                     }
                 }
+
                 update_option('leyka_pm_order', implode('&', $pm_order));
+
             }
 
             // Remove an unneeded scripts for settings pages:
@@ -605,6 +615,24 @@ class Leyka {
 
         if($leyka_last_ver && $leyka_last_ver <= '2.2.12.2') {
             delete_option('agree_to_terms_text'); // From now on, "agree to Terms" text field is separated in two new settings
+        }
+
+        if($leyka_last_ver && $leyka_last_ver <= '2.2.14') {
+
+            if(in_array('chronopay-chronopay_card_rebill', (array)get_option('leyka_pm_available'))) {
+
+                $pm_order_parts = explode('&', get_option('leyka_pm_order'));
+                $key = array_search('chronopay-chronopay_card_rebill', $pm_order_parts);
+
+                if($key !== false) {
+
+                    unset($pm_order_parts[$key]);
+                    update_option('leyka_pm_order', implode('&', $pm_order_parts));
+
+                }
+
+            }
+
         }
 
         /** Set a flag to flush permalinks (needs to be done a bit later, than this activation itself): */
