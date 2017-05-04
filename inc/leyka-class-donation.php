@@ -683,7 +683,7 @@ class Leyka_Donation_Management {
             <label for="donor-name"><?php _e('Name', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
 
-            <?php if($donation->type == 'correction') {?>
+            <?php if($donation->type == 'correction' || leyka_options()->opt('donors_data_editable')) {?>
 
                 <input type="text" id="donor-name" name="donor-name" placeholder="<?php _e("Enter donor's name, or leave it empty for anonymous donation", 'leyka');?>" value="<?php echo $donation->donor_name;?>" />
             <?php } else {?>
@@ -699,7 +699,7 @@ class Leyka_Donation_Management {
 		<div class="leyka-ddata-string">
             <label for="donor-email"><?php _e('Email', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
-            <?php if($donation->type == 'correction') {?>
+            <?php if($donation->type == 'correction' || leyka_options()->opt('donors_data_editable')) {?>
 
                 <input type="text" id="donor-email" name="donor-email" placeholder="<?php _e("Enter donor's email", 'leyka');?>" value="<?php echo $donation->donor_email;?>" />
                 <div id="donor_email-error" class="field-error"></div>
