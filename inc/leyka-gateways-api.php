@@ -55,10 +55,23 @@ function leyka_get_pm_list($activity = null, $currency = false, $sorted = true) 
     return apply_filters('leyka_active_pm_list', $pm_list, $activity, $currency);
 }
 
+/** @return boolean True if at least one PM supports recurring, false otherwise. */
+function leyka_is_recurring_supported() {
+
+    foreach(leyka_get_pm_list(true) as $pm) { /** @var $pm Leyka_Payment_Method */
+        if($pm->has_recurring_support()) {
+            return true;
+        }
+    }
+
+    return false;
+
+}
+
 /**
  * @param $pm_id string
  * @param $is_full_id boolean
- * @return Leyka_Payment_Method Or false, if no PM found.
+ * @return mixed Leyka_Payment_Method object or false, if no PM found.
  */
 function leyka_get_pm_by_id($pm_id, $is_full_id = false) {
 
@@ -546,7 +559,6 @@ abstract class Leyka_Payment_Method {
             case 'desc':
             case 'description': $param = html_entity_decode($this->_description); break;
             case 'has_global_fields': $param = $this->_support_global_fields; break;
-//            case 'global_fields': $param = $this->_global_fields ? $this->_global_fields; break;
             case 'custom_fields': $param = $this->_custom_fields ? $this->_custom_fields : array(); break;
             case 'icons': $param = $this->_icons; break;
             case 'submit_label': $param = $this->_submit_label; break;
@@ -565,6 +577,10 @@ abstract class Leyka_Payment_Method {
     /** To set some custom options-dependent attributes */
     protected function _set_dynamic_attributes() {}
 
+    public function has_recurring_support() {
+        return false;
+    }
+
     public function has_currency_support($currency = false) {
 
         if( !$currency ) {
@@ -576,6 +592,7 @@ abstract class Leyka_Payment_Method {
         } else {
             return false;
         }
+
     }
 
     abstract protected function _set_options_defaults();

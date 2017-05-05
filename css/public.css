@@ -1238,8 +1238,8 @@ div[id*="leyka_donors_list"].wide .ldl-item {
 
 .leyka-tpl-neo .currency-variants {
     display: inline-block;
-    margin-left: 25px;
-    flex: 1 1 auto;
+    /*margin-left: 25px;*/
+    flex: 0 1 auto;
     text-align: right;
 }
 
@@ -1277,17 +1277,6 @@ div[id*="leyka_donors_list"].wide .ldl-item {
     position: relative;
     z-index: 1;
 }
-
-/*.leyka-field.amount-selector .currency-frame:after {*/
-/*content: '▾';*/
-/*display: inline-block;*/
-/*color: black;*/
-/*font-size: 18px;*/
-/*position: absolute;*/
-/*top: -2px;*/
-/*right: 0;*/
-/*z-index: -1;*/
-/*}*/
 
 .leyka-tpl-neo .leyka-field.amount-selector .currency-frame span {
     display: flex;
@@ -1327,7 +1316,6 @@ div[id*="leyka_donors_list"].wide .ldl-item {
 
 .leyka-tpl-neo#leyka-payment-form .leyka-field.amount-selector {
     margin-top: 0;
-    margin-bottom: 36px;
     line-height: 40px;
 }
 
@@ -1350,6 +1338,12 @@ text-decoration: underline;
     position: relative;
     display: block;
     width: 100%;
+}
+.leyka-tpl-neo#leyka-payment-form .leyka-donor-fields {
+    margin-top: 36px;
+}
+.leyka-tpl-neo#leyka-payment-form .leyka-recurring-field {
+    margin-top: 15px;
 }
 
 .leyka-tpl-neo .rdc-textfield .rdc-textfield__input {
@@ -1375,31 +1369,6 @@ text-decoration: underline;
 .leyka-tpl-neo .rdc-textfield .rdc-textfield__input:focus {
     border-bottom-color: #f02700;
 }
-
-/*.leyka-tpl-neo .leyka-payment-option .rdc-textfield__label::after {
-    background-color: #1db318;
-}
-
-.leyka-tpl-neo .leyka-payment-option .leyka-field.rdc-textfield label::after {
-    bottom: 20px;
-}
-
-.leyka-tpl-neo .rdc-textfield__label::after {
-    content: "";
-    height: 2px;
-    left: 45%;
-    position: absolute;
-    transition-duration: 0.45s;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    visibility: hidden;
-    width: 10px;
-}
-
-.leyka-tpl-neo .rdc-textfield .rdc-textfield__input:focus ~ label::after {
-    left: 0;
-    visibility: visible;
-    width: 100%;
-}*/
 
 .leyka-tpl-neo .rdc-textfield .rdc-textfield__input:focus ~ label {
     color: #f02700;
@@ -1442,36 +1411,38 @@ text-decoration: underline;
 }
 
 .leyka-tpl-neo#leyka-payment-form .rdc-radio .rdc-radio__button {
-    border: medium none;
-    left: 0;
-    margin: 0;
-    opacity: 0;
-    padding: 0;
+    /*display: none;*/
     position: absolute;
-    top: 0;
+    left: -9999px;
 }
 
 .leyka-tpl-neo#leyka-payment-form .figure.rdc-radio {
-    margin-right: 50px;
+    display: inline-block;
+    text-align: center;
+    width: 100px;
+    height: 40px;
 }
 
 .leyka-tpl-neo#leyka-payment-form .leyka-field.amount-selector .figure .rdc-radio__label {
     color: rgba(0, 0, 0, 0.9);
     font-family: Helvetica,sans-serif;
     font-size: 28px;
-    line-height: inherit;
-    text-align: left;
-    position: relative;
     display: inline-block;
+    width: 100%;
+    /*height: 100%;*/
+    border: 1px solid #d1d1d1;
+    padding: 0 10px;
+    cursor: pointer;
 }
 
-.leyka-tpl-neo#leyka-payment-form .leyka-field.amount-selector .figure span,
+.leyka-tpl-neo#leyka-payment-form .rdc-radio .rdc-radio__button:focus + .rdc-radio__label {
+    background-color: #1db318;
+    border-color: #1db318;
+    color: white;
+}
+
 .leyka-tpl-neo#leyka-payment-form .leyka-field.amount-selector .figure-flex span {
-    height: 40px;
-}
-
-.leyka-tpl-neo#leyka-payment-form .leyka-field.amount-selector .figure-flex {
-    margin-left: -30px;
+    margin-left: 10px;
 }
 
 .leyka-tpl-neo#leyka-payment-form .leyka-field.amount-selector .figure-sep {
@@ -1498,38 +1469,12 @@ text-decoration: underline;
     padding: 0.1em;
 }
 
-.leyka-tpl-neo#leyka-payment-form .leyka-field.amount-selector .rdc-radio__label::before {
-    height: 20px;
-    left: -30px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 20px;
-}
-.leyka-tpl-neo#leyka-payment-form .rdc-radio .rdc-radio__label::before {
-    background: #fff none repeat scroll 0 0;
-    border: 2px solid rgba(0, 0, 0, 0.9);
-    border-radius: 50%;
-    content: "";
-    cursor: pointer;
-    display: block;
-    height: 16px;
-    left: -20px;
-    position: absolute;
-    top: 1px;
-    width: 16px;
-}
-
-.leyka-tpl-neo#leyka-payment-form .rdc-radio .rdc-radio__button:checked + .rdc-radio__label::before {
-    background-color: #f02700;
-    background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyB3aWR0aD0iMTJweCIgaGVpZ2h0PSIxMnB4IiB2aWV3Qm94PSIwIDAgMTIgMTIiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sbnM6c2tldGNoPSJodHRwOi8vd3d3LmJvaGVtaWFuY29kaW5nLmNvbS9za2V0Y2gvbnMiPiAgICAgICAgPHRpdGxlPk92YWwgMTwvdGl0bGU+ICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPiAgICA8ZGVmcz48L2RlZnM+ICAgIDxnIGlkPSJQYWdlLTEiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHNrZXRjaDp0eXBlPSJNU1BhZ2UiPiAgICAgICAgPHBhdGggZD0iTTYsMTIgQzkuMzEzNzA4NSwxMiAxMiw5LjMxMzcwODUgMTIsNiBDMTIsMi42ODYyOTE1IDkuMzEzNzA4NSwwIDYsMCBDMi42ODYyOTE1LDAgMCwyLjY4NjI5MTUgMCw2IEMwLDkuMzEzNzA4NSAyLjY4NjI5MTUsMTIgNiwxMiBaIE02LDEwIEM4LjIwOTEzOSwxMCAxMCw4LjIwOTEzOSAxMCw2IEMxMCwzLjc5MDg2MSA4LjIwOTEzOSwyIDYsMiBDMy43OTA4NjEsMiAyLDMuNzkwODYxIDIsNiBDMiw4LjIwOTEzOSAzLjc5MDg2MSwxMCA2LDEwIFoiIGlkPSJPdmFsLTEiIGZpbGw9IiNGRkZGRkYiIHNrZXRjaDp0eXBlPSJNU1NoYXBlR3JvdXAiPjwvcGF0aD4gICAgPC9nPjwvc3ZnPg==");
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: 12px 12px;
-    border-color: #f02700;
+.leyka-tpl-neo#leyka-payment-form .leyka-field.amount-selector .donate_amount_flex:focus {
+    border: 2px solid #1db318;
 }
 
 .leyka-tpl-neo .leyka-payment-option .leyka-field.agree {
-    margin: 18px 0 18px 8px;
+    margin: 18px 0 18px 0;
     position: relative;
 }
 
