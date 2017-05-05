@@ -184,9 +184,15 @@ if(defined('POLYLANG_VERSION')) {
 
 } else {
 
-    $locale = apply_filters('plugin_locale', get_locale(), 'leyka');
+    if(leyka_options()->opt('custom_l10n_path')) {
 
-    load_textdomain('leyka', apply_filters('leyka_l10n_mo_file', LEYKA_PLUGIN_DIR."lang/leyka-$locale.mo"));
+//        $locale = apply_filters('plugin_locale', get_locale(), 'leyka');
+
+        load_plugin_textdomain('leyka', false, WP_CONTENT_DIR.'/'.trim(leyka_options()->opt('custom_l10n_path'), '/'));
+
+//        load_textdomain('leyka', apply_filters('leyka_l10n_mo_file', WP_CONTENT_DIR.'/'.trim(leyka_options()->opt('custom_l10n_path'), '/')."/leyka-$locale.mo"));
+
+    }
 
     function leyka_init_actions(){
         do_action('leyka_init_actions');
