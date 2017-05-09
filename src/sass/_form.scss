@@ -3,17 +3,29 @@
 /** Layout and states  */
 div[id *="leyka-pf-"] { //aka namespace
 	margin: $base*4 0;
+	&:first-child { margin-top: 0; }
+	&:last-child { margin-bottom: 0; }
+
 	@include body-text();
 
 	& > svg {
 		display: none;
 	}
 
+	a {
+		border: none;
+		text-decoration: none;
+	}
+
+	form {
+		display: block;
+	}
 }
 
 
 /** Elements */
-//inpage card
+
+//INPAGE CARD
 div[id *="leyka-pf-"] { //aka namespace
 
 	.inpage-card__thumb {
@@ -24,6 +36,12 @@ div[id *="leyka-pf-"] { //aka namespace
 		width: 100%;
 		height: 0;
 		padding-bottom: 56.7%;
+		border-top-left-radius: 10px;
+		border-top-right-radius: 10px;
+	}
+
+	.inpage-card__content{
+		padding: $base*3;
 	}
 
 	.inpage-card_title {
@@ -32,17 +50,25 @@ div[id *="leyka-pf-"] { //aka namespace
 	}
 
 	.inpage-card_scale {
-		margin: $base*3 0 $base*2;
+		margin-bottom: $base*3;
 	}
 
 	.scale {
 		width: 100%;
 		height: 6px;
 		background: $color-border-light;
+		border-radius: 2.5px;
 
 		.progress {
 			height: 6px;
 			background: $color-main;
+			border-top-left-radius: 2.5px;
+			border-bottom-left-radius: 2.5px;
+
+			&.fin {
+				border-top-right-radius: 2.5px;
+				border-bottom-right-radius: 2.5px;
+			}
 		}
 	}
 
@@ -84,7 +110,7 @@ div[id *="leyka-pf-"] { //aka namespace
 	}
 }
 
-//common styles for steps
+// STEPS COMMONS
 div[id *="leyka-pf-"] {
 
 	.step__selection {
@@ -99,21 +125,38 @@ div[id *="leyka-pf-"] {
 				color: darken($color-link, 10%);
 			}
 		}
+
+		a + a {
+			margin-left: 4px;
+		}
 	}
 
 	.step__title {
 		@include step-title();
 		color: $color-text-black;
 		text-align: center;
-		padding: 8px 0;
+		padding: $base 0 $base*3;
 	}
 
+	.step__note {
+		@include note-text();
+		color: $color-text-light;
+		padding: $base*2 $base*3 0;
+		hyphens: none;
 
+		a {
+			color: currentColor;
+			text-decoration: underline;
+		}
+
+		@include for(small-screens) {
+			padding: $base*2 $base*6 0;
+		}
+	}
 }
 
-//amount step
+// AMOUNT
 div[id *="leyka-pf-"] { //aka namespace
-
 
 	.amount__figure {
 		text-align: center;
@@ -162,8 +205,13 @@ div[id *="leyka-pf-"] { //aka namespace
 		padding: $base*3 $base;
 
 		.svg-icon {
-			width: 115px;
-			height: 110px;
+			width: 85px;
+			height: 80px;
+
+			@include for(small-screens) {
+				width: 115px;
+				height: 110px;
+			}
 		}
 	}
 
@@ -194,6 +242,23 @@ div[id *="leyka-pf-"] { //aka namespace
 			left: 18px;
 		}
 	}
+
+	.amount.invalid {
+		.amount__figure {
+			border-bottom-color: $color-form-invalid;
+		}
+
+		.amount__error {
+			display: block;
+		}
+
+		.amount__icon {
+
+			.svg-icon {
+				display: none;
+			}
+		}
+	}
 }
 
 
@@ -218,9 +283,10 @@ div[id *="leyka-pf-"] { //aka namespace
 	height: 20px;
 	background: $color-white;
 	border: 1px solid $color-border-normal;
+	cursor: pointer;
 }
 
-div[id *="leyka-pf-"] {
+div[id *="leyka-pf-"] { //aka namespace
 	.amount_range {
 		padding: 8px;
 		text-align: center;
@@ -267,4 +333,323 @@ div[id *="leyka-pf-"] {
 			margin-top: -7px;
 		}
 	}
+
+	.invalid {
+		input[type=range]::-ms-track,
+		input[type=range]::-moz-range-track,
+		input[type=range]::-webkit-slider-runnable-track {
+			background: $color-form-invalid;
+		}
+	}
+}
+
+
+// CARDS STEP
+div[id *="leyka-pf-"] {  //aka namespace
+	.payments-grid {
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: center;
+		align-items: stretch;
+		justify-items: center;
+		max-width: 300px;
+		margin: 0 auto;
+		padding-top: $base*3;
+
+		@include for(small-screens) {
+			max-width: 352px;
+		}
+	}
+
+	.payment-opt {
+		text-align: center;
+		margin: $base;
+	}
+
+	.payment-opt__button {
+		display: block;
+		position: relative;
+		z-index: 1;
+		width: 100px;
+
+		@include for(small-screens) {
+			width: 152px;
+		}
+	}
+
+	.payment-opt__radio {
+		position: absolute;
+		top: 10px;
+		left: 10px;
+		border: none;
+		opacity: 0;
+	}
+
+	.payment-opt__icon {
+		display: block;
+		border-radius: 5px;
+		background: $color-border-tiny;
+		transition: background 0.35s;
+		cursor: pointer;
+		&:hover {
+			background: darken($color-border-tiny, 5%);
+		}
+
+		width: 100px;
+		padding: 10px;
+
+		.svg-icon {
+			width: 80px;
+			height: 41px;
+		}
+
+		@include for(small-screens) {
+			width: 152px;
+			padding: 20px;
+
+			.svg-icon {
+				width: 112px;
+				height: 57px;
+			}
+		}
+	}
+
+	.payment-opt__radio:checked + .payment-opt__icon {
+		background: $color-form-active;
+		&:hover {
+			background: $color-form-active;
+		}
+	}
+
+	.payment-opt__label {
+		display: block;
+		margin-top: $base*1.5;
+		width: 100px;
+		text-align: center;
+		font-size: 11px;
+		hyphens: none;
+
+		@include for(small-screens) {
+			width: 152px;
+			font-size: 13px;
+		}
+	}
+}
+
+
+// FIELDS STEP
+div[id *="leyka-pf-"] {  //aka namespace
+
+	.donor__textfield {
+		margin-bottom: $base*3;
+
+		label {
+			display: block;
+			position: relative;
+			@include input-label();
+			color: $color-text;
+			margin: 0;
+		}
+
+		input {
+			-webkit-appearance: none;
+			border: none;
+			background: transparent;
+			text-align: left;
+			border-radius: 0;
+			margin: 0;
+
+			padding: 6px 0;
+			@include input-text();
+			color: $color-text;
+			border-bottom: 1px solid $color-border-normal;
+		}
+
+		.donor__textfield-error {
+			display: none;
+			@include input-label();
+			color: $color-form-invalid;
+		}
+
+		&.invalid {
+			.donor__textfield-label { display: none; }
+			.donor__textfield-error { display: inline-block; }
+			input {
+				color: $color-form-invalid;
+				border-bottom-color: $color-form-invalid;
+			}
+		}
+	}
+
+	.donor__submit {
+		margin-bottom: $base*3;
+		text-align: center;
+
+		input {
+			@include button();
+		}
+	}
+
+	.donor__oferta {
+		z-index: 1;
+		text-align: center;
+
+		span {
+			display: inline-block;
+			padding-left: 26px;
+			position: relative;
+		}
+
+		input {
+			margin: 0;
+			padding: 0;
+			position: absolute;
+			top: 4px;
+			left: 0;
+
+			border: none;
+			opacity: 0;
+			z-index: 10;
+			cursor: pointer;
+		}
+
+		label {
+			display: inline-block;
+			position: relative;
+			@include note-text();
+			color: $color-text-light;
+			z-index: 2;
+
+			&:before {
+				content: '';
+				display: block;
+				width: 16px;
+				height: 16px;
+				border-radius: 2px;
+				background: $color-white;
+				border: 2px solid $color-text;
+				position: absolute;
+				top: 1px;
+				left: -26px;
+				cursor: pointer;
+			}
+
+			a {
+				color: currentColor;
+				text-decoration: underline;
+			}
+		}
+
+		input:checked + label {
+			&:before {
+				background-color: $color-main;
+				border-color: $color-main;
+				background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyB3aWR0aD0iMTdweCIgaGVpZ2h0PSIxM3B4IiB2aWV3Qm94PSIwIDAgMTcgMTMiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sbnM6c2tldGNoPSJodHRwOi8vd3d3LmJvaGVtaWFuY29kaW5nLmNvbS9za2V0Y2gvbnMiPiAgICAgICAgPHRpdGxlPlNoYXBlPC90aXRsZT4gICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+ICAgIDxkZWZzPjwvZGVmcz4gICAgPGcgaWQ9IlBhZ2UtMSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc2tldGNoOnR5cGU9Ik1TUGFnZSI+ICAgICAgICA8cGF0aCBkPSJNMTYuNSwxLjg3OTE0Mjg2IEw1LjUyODU3MTQzLDEyLjg1MDU3MTQgTDAuNSw3LjgyMiBMMS43ODkxNDI4Niw2LjUzMjg1NzE0IEw1LjUyODU3MTQzLDEwLjI2MzE0MjkgTDE1LjIxMDg1NzEsMC41OSBMMTYuNSwxLjg3OTE0Mjg2IEwxNi41LDEuODc5MTQyODYgWiIgaWQ9IlNoYXBlIiBmaWxsPSIjRkZGRkZGIiBza2V0Y2g6dHlwZT0iTVNTaGFwZUdyb3VwIj48L3BhdGg+ICAgIDwvZz48L3N2Zz4=);
+				background-repeat: no-repeat;
+				background-size: 16px 13px;
+				background-position: 0 -2px;
+			}
+		}
+	}
+}
+
+//OFERTA
+div[id *="leyka-pf-"] {  //aka namespace
+	.leyka-pf__oferta {
+		display: none;
+		background: $color-white;
+		@include body-text();
+		color: $color-text;
+
+		p:nth-of-type(1) {
+			font-weight: bold;
+			font-size: 1.2em;
+		}
+	}
+
+	.leyka-pf__oferta-action {
+		text-align: center;
+		padding: $base*2 0;
+
+		a {
+			color: $color-link;
+			text-decoration: underline;
+			&:hover {
+				color: darken($color-link, 10%);
+			}
+		}
+	}
+}
+
+
+//REDIRECT
+.waiting {
+	//position: absolute;
+	//top: 0;
+	//left: 0;
+
+
+	width: 100%;
+	height: 100%;
+
+
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
+	background: $color-main;
+	border-raius: 10px;
+}
+
+.waiting__card {
+	width: 223px;
+	text-align: center;
+	color: $color-white;
+
+	.loading {
+		margin: 80px auto;
+		width: 80px;
+	}
+}
+
+//spinner
+.spinner {
+  width: 80px;
+  text-align: center;
+}
+
+.spinner > div {
+  width: 22px;
+  height: 22px;
+  background-color: #fff;
+
+  border-radius: 100%;
+  display: inline-block;
+  -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.spinner .bounce1 {
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+
+.spinner .bounce2 {
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+
+@-webkit-keyframes sk-bouncedelay {
+  0%, 80%, 100% { -webkit-transform: scale(0) }
+  40% { -webkit-transform: scale(1.0) }
+}
+
+@keyframes sk-bouncedelay {
+  0%, 80%, 100% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  } 40% {
+    -webkit-transform: scale(1.0);
+    transform: scale(1.0);
+  }
 }

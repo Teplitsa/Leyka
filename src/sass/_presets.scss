@@ -1,8 +1,10 @@
 /** == Seetings and variables (_presets.scss)  == **/
 
 
-
+//sizes
 $base :  8px;
+
+$one : 640px;
 
 
 //colors
@@ -22,10 +24,11 @@ $color-border-tiny:		#f6f6f6;
 $color-border-dark:		#353d3f;
 
 $color-form-invalid:	#FC0A69;
+$color-form-active:		#8ae724;
 
 
 
-/* Elements */
+/** == Elements == **/
 @mixin button($mod: default){
 	@include body-text();
 	display: inline-block;
@@ -50,5 +53,45 @@ $color-form-invalid:	#FC0A69;
 		text-transform: none;
 		padding: 6px 24px;
 		border-radius: 18px;
+	}
+}
+
+
+
+/** == Mq == **/
+
+@mixin for($media) {
+	@if $media == small-screens {
+		@media screen and (min-width: $one) { @content; }
+	}
+	@else if $media == medium-screens {
+		@media screen and (min-width: $two) { @content; }
+	}
+	@else if $media == large-screens {
+		@media screen and (min-width: $three) { @content; }
+	}
+	@else if $media == exlarge-screens {
+		@media screen and (min-width: $four) { @content; }
+	}
+	@else if $media == xxlarge-screens {
+		@media screen and (min-width: $five) { @content; }
+	}
+}
+
+@mixin upto($media) {
+	@if $media == small-screens {
+		@media screen and (max-width: $one - 1) { @content; }
+	}
+	@else if $media == medium-screens {
+		@media screen and (max-width: $two - 1) { @content; }
+	}
+	@else if $media == large-screens {
+		@media screen and (max-width: $three - 1) { @content; }
+	}
+	@else if $media == exlarge-screens {
+		@media screen and (max-width: $four - 1) { @content; }
+	}
+	@else if $media == xxlarge-screens {
+		@media screen and (max-width: $five - 1) { @content; }
 	}
 }
