@@ -203,6 +203,11 @@ div[id *="leyka-pf-"] { //aka namespace
 	.amount__icon {
 		text-align: center;
 		padding: $base*3 $base;
+		min-height: 80px;
+
+		@include for(small-screens) {
+			min-height: 110px;
+		}
 
 		.svg-icon {
 			width: 85px;
@@ -218,6 +223,7 @@ div[id *="leyka-pf-"] { //aka namespace
 	.amount__error {
 		color: $color-form-invalid;
 		display:none;
+		padding-top: $base*3;
 	}
 
 	.step__action {
@@ -244,7 +250,7 @@ div[id *="leyka-pf-"] { //aka namespace
 	}
 
 	.amount.invalid {
-		.amount__figure {
+		.amount__figure input {
 			border-bottom-color: $color-form-invalid;
 		}
 
@@ -334,7 +340,7 @@ div[id *="leyka-pf-"] { //aka namespace
 		}
 	}
 
-	.invalid {
+	.invalid .amount_range {
 		input[type=range]::-ms-track,
 		input[type=range]::-moz-range-track,
 		input[type=range]::-webkit-slider-runnable-track {
@@ -391,8 +397,9 @@ div[id *="leyka-pf-"] {  //aka namespace
 		background: $color-border-tiny;
 		transition: background 0.35s;
 		cursor: pointer;
+
 		&:hover {
-			background: darken($color-border-tiny, 5%);
+			background: $color-form-active;
 		}
 
 		width: 100px;
@@ -471,12 +478,24 @@ div[id *="leyka-pf-"] {  //aka namespace
 			color: $color-form-invalid;
 		}
 
+		&.focus {
+			border-bottom-color: $color-border-dark;
+		}
+
 		&.invalid {
 			.donor__textfield-label { display: none; }
 			.donor__textfield-error { display: inline-block; }
 			input {
 				color: $color-form-invalid;
 				border-bottom-color: $color-form-invalid;
+			}
+		}
+
+		&.valid {
+			.donor__textfield-label { color: $color-main; }
+			input {
+				color: $color-main;
+				border-bottom-color: $color-main;
 			}
 		}
 	}
@@ -549,6 +568,17 @@ div[id *="leyka-pf-"] {  //aka namespace
 				background-size: 16px 13px;
 				background-position: 0 -2px;
 			}
+		}
+
+		.donor__oferta-error {
+			visibility: hidden;
+			@include input-label();
+			font-size: 12px;
+			color: $color-form-invalid;
+		}
+
+		&.invalid {
+			.donor__oferta-error { visibility: visible; }
 		}
 	}
 }

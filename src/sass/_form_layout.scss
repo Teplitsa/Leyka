@@ -174,7 +174,7 @@
 	.step__content--border {
 		border-top: 1px solid $color-border-light;
 		border-bottom: 1px solid $color-border-light;
-		padding: $base*2 $base*3 $base*3;
+		padding: $base*2 $base*3 $base*2;
 		margin-top: $base*2;
 
 		@include for(small-screens) {

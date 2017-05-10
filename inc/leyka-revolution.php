@@ -111,7 +111,7 @@ function leyka_rev_campaign_top($campaign_id) {
 			<div class="step__fields amount">
 
 				<div class="amount__figure">
-					<input type="text" name="amount" value="500" autocomplete="off" />
+					<input type="text" name="leyka_amount" value="500" autocomplete="off" />
 					<span class="curr-mark">&#8381;</span>
 					<input type="hidden" name="monthly" value="0">
 				</div>
@@ -180,7 +180,7 @@ function leyka_rev_campaign_top($campaign_id) {
 				<span class="remembered-amount">500</span>&nbsp;<span class="curr-mark">&#8381;</span>
 				<span class="remembered-monthly">ежемесячно </span>
 			</a>
-			<a href="cards" class="leyka-js-another-step"><span class="remembered-payment">банковская карта</span></a>
+			<a href="cards" class="leyka-js-another-step"><span class="remembered-payment">Банковская карта</span></a>
 		</div>
 
 		<div class="step__content step__content--border">
@@ -210,7 +210,8 @@ function leyka_rev_campaign_top($campaign_id) {
 
 				<div class="donor__oferta">
 					<span><input type="checkbox" name="leyka_agree" value="1" checked="checked">
-					<label for="leyka_agree">Я принимаю  <a href="#" class="oferta-trigger">договор-оферту</a></label></span>
+					<label for="leyka_agree">Я принимаю  <a href="#" class="leyka-js-oferta-trigger">договор-оферту</a></label></span>
+					<span class="donor__oferta-error leyka_agree-error">Укажите согласие с офертой</span>
 				</div>
 
 			</div>
