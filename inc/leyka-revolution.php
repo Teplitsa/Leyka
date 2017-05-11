@@ -64,8 +64,11 @@ function leyka_inline_js() {
 
 /** Templates **/
 function leyka_rev_campaign_top($campaign_id) {
+
 	//add option if we need thumb
 	$thumb_url = get_the_post_thumbnail_url($campaign_id, 'post-thumbnail');
+
+	ob_start();
 ?>
 <div id="leyka-pf-<?php echo $campaign_id;?>" class="leyka-pf">
 <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
