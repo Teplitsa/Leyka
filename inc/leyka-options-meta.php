@@ -737,4 +737,16 @@ self::$_options_meta = array(
         'list_entries' => array(),
         'validation_rules' => array(), // List of regexp?..
     ),
+    'donors_data_editable' => array(
+        'type' => 'checkbox',
+        'default' => 0,
+        'title' => __('All donation types donors data may be edited', 'leyka'),
+        'description' => __('Donation administrators and managers are allowed to edit non-correctional donations donors 
+        data.', 'leyka'),
+        'required' => 0, // 1 if field is required, 0 otherwise
+        'placeholder' => '', // For text fields
+        'length' => '', // For text fields
+        'list_entries' => array(),
+        'validation_rules' => array(), // List of regexp?..
+    ),
 );

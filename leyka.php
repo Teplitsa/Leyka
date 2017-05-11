@@ -66,7 +66,7 @@ if( !defined('LEYKA_PLUGIN_INNER_SHORT_NAME') ) { // "leyka/leyka.php"
 
 // Plugin support email:
 if( !defined('LEYKA_SUPPORT_EMAIL') ) {
-    define('LEYKA_SUPPORT_EMAIL', 'support@te-st.ru,sidorenko.a@gmail.com,ahaenor@gmail.com');
+    define('LEYKA_SUPPORT_EMAIL', 'support@te-st.ru,sidorenko.a@gmail.com');
 }
 
 // Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
@@ -79,8 +79,8 @@ if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.3.0', '<') ) {
 }
 
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-functions.php');
-require_once(LEYKA_PLUGIN_DIR.'inc/leyka-polylang.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-controller.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-polylang.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-core.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-gateways-api.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-campaign.php');
