@@ -56,6 +56,22 @@ $color-form-active:		#8ae724;
 	}
 }
 
+@mixin supporters() {
+
+	strong { font-weight: bold; }
+	color: $color-text;
+
+	a {
+		color: $color-text;
+		text-decoration: underline;
+		border: none;
+		font-weight: normal;
+
+		&:hover, &:focus, &:active {
+			color: $color-text-light;
+		}
+	}
+}
 
 
 /** == Mq == **/

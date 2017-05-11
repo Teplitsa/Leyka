@@ -4,6 +4,7 @@ jQuery(document).ready(function($){
 	var amountMin = 1, //temp - take it from options
 		amountMax = 30000; //temp - take it from options
 
+	/* open close form */
 	$('.leyka-js-open-form').on('click', function(e){
 		e.preventDefault();
 
@@ -15,6 +16,30 @@ jQuery(document).ready(function($){
 		e.preventDefault();
 
 		$(this).parents('.leyka-pf').removeClass('leyka-pf--active');
+	});
+
+	$('.leyka-js-open-form-bottom').on('click', function(e){
+		e.preventDefault();
+
+		var formId = $(this).parents('.leyka-pf-bottom').attr('data-target'),
+			amount = parseInt($(this).parents('.leyka-pf-bottom').find('input').val()),
+			form = $('#'+formId);
+
+		if(form.length > 0) {
+
+			//copy amount if it's correct
+			if(Number.isInteger(amount) && amount >= amountMin && amount <= amountMax) {
+				form.find('.amount__figure input').val(amount);
+				form.find('.amount_range input').val(amount);
+			}
+
+			//reset active steps
+			form.find('.step').removeClass('step--active');
+			form.find('.step--amount').addClass('step--active');
+
+			//open form
+			form.addClass('leyka-pf--active');
+		}
 	});
 
 
@@ -32,6 +57,7 @@ jQuery(document).ready(function($){
 		}
 	});
 
+
 	/** amount step **/
 	//init sync
 	$('.amount__figure input').each(function(){
@@ -43,6 +69,10 @@ jQuery(document).ready(function($){
 
 		$(this).val(val);
 		$(this).parents('.step__fields').find('.amount_range').find('input').val(val);
+
+		//sync with bottom
+		var formId = $(this).parents('.leyka-pf').attr('id');
+		$('div[data-target = "'+formId+'"]').find('input').val(val);
 	});
 
 
@@ -52,11 +82,12 @@ jQuery(document).ready(function($){
 		//console.log(val);
 		$(this).parents('.step__fields').find('.amount__figure').find('input').val(val);
 		$(this).parents('.step__fields').removeClass('invalid');
+
 	});
 
 	$('.amount__figure input').on('input change', function(){
 		var val = $(this).val();
-		console.log(val);
+		//console.log(val);
 		$(this).parents('.step__fields').find('.amount_range').find('input').val(val);
 		$(this).parents('.step__fields').removeClass('invalid');
 	});
@@ -73,7 +104,7 @@ jQuery(document).ready(function($){
 			$_form = $_link.parents('.leyka-pf__form'),
 			amount = parseInt($_step.find('.amount__figure input').val());
 
-			console.log(amount);
+
 			if(!Number.isInteger(amount) || amount < amountMin || amount > amountMax) { //correct this
 				//invalid!!!
 				$_step.find('.step__fields').addClass('invalid');
@@ -86,14 +117,18 @@ jQuery(document).ready(function($){
 					$_step.find('input[name="monthly"]').val(1);
 					$_form.find('.remembered-amount').text(amount);
 					$_form.find('.remembered-monthly').show();
-					$_form.find('.remembered-payment').parents('leyka-js-another-step').attr('href', 'amount');
+
+					//remember payment option
+					$_form.find('.remembered-payment').parents('.leyka-js-another-step').attr('href', 'amount');
 					$_form.find('.payment-opt__radio[value="bcard"]').prop('checked', true);
+					var name = $_form.find('.payment-opt__radio[value="bcard"]').parents('.payment-opt').find('.payment-opt__label').text();
+					$_form.find('.remembered-payment').text(name);
 				}
 				else {
 					$_step.find('input[name="monthly"]').val(0);
 					$_form.find('.remembered-amount').text(amount);
 					$_form.find('.remembered-monthly').hide();
-					$_form.find('.remembered-payment').parents('leyka-js-another-step').attr('href', 'cards');
+					$_form.find('.remembered-payment').parents('.leyka-js-another-step').attr('href', 'cards');
 
 					//reset choice for payment
 					$_form.find('.payment-opt__radio').prop('checked', false);
@@ -204,7 +239,7 @@ jQuery(document).ready(function($){
 		var	$_form = $(this),
 			pName = $_form.find('.donor__textfield--name input').val(),
 			pEmail = $_form.find('.donor__textfield--email input').val(),
-			amount = $_form.find('.amount__figure input').val(),
+			amount = parseInt($_form.find('.amount__figure input').val()),
 			agree = $_form.find('.donor__oferta input').val(),
 			error = false;
 
@@ -226,6 +261,7 @@ jQuery(document).ready(function($){
 		if(!Number.isInteger(amount) || amount < amountMin || amount > amountMax){
 			error = true;
 			//what to do ????
+			console.log('error amount');
 		}
 
 		if(!error){
@@ -235,7 +271,7 @@ jQuery(document).ready(function($){
 
 			setTimeout(function() {
 				$_form.parents('.leyka-pf').find('.leyka-pf__redirect').removeClass('leyka-pf__redirect--open');
-			}, 3500);
+			}, 4500);
 
 			e.preventDefault(); //temp
 		}

@@ -85,19 +85,7 @@ div[id *="leyka-pf-"] { //aka namespace
 	}
 
 	.inpage-card__note {
-		strong { font-weight: bold; }
-		color: $color-text;
-
-		a {
-			color: $color-text;
-			text-decoration: underline;
-			border: none;
-			font-weight: normal;
-
-			&:hover, &:focus, &:active {
-				color: $color-text-light;
-			}
-		}
+		@include supporters();
 	}
 
 	.inpage-card__action {
@@ -682,4 +670,73 @@ div[id *="leyka-pf-"] {  //aka namespace
     -webkit-transform: scale(1.0);
     transform: scale(1.0);
   }
+}
+
+
+/** form at bottom **/
+div[id *="leyka-pf-bottom"] { //aka namespace
+
+	padding: $base*4;
+	border: 1px solid $color-border-light;
+	background: $color-border-tiny;
+	border-radius: 4px;
+	margin-top: $base*4;
+
+	.bottom-form__label {
+		@include step-title();
+		color: $color-main;
+		margin-bottom: $base*2;
+	}
+
+	.bottom-form__fields {
+		max-width: 270px;
+	}
+
+	.bottom-form__field {
+		width: 100%;
+		margin-bottom: $base*3;
+		position: relative;
+		z-index: 1;
+
+		input {
+			position: relative;
+			z-index: 1;
+			box-sizing: border-box;
+			width: 100%;
+			-webkit-appearance: none;
+			background: $color-white;
+			text-align: left;
+			border-radius: 5px;
+			margin: 0;
+
+			padding: 8px;
+			@include input-text();
+			color: $color-text;
+			border: 1px solid $color-border-light;
+		}
+
+		.curr-mark {
+			@include body-text();
+			font-size: 14px;
+			display: inline-block;
+			position: absolute;
+			top: 50%;
+			right: 10px;
+			transform: translateY(-50%);
+			z-index: 10;
+		}
+	}
+
+	.bottom-form__button {
+		width: 100%;
+		button {
+			width: 100%;
+			@include button();
+		}
+	}
+
+	.bottom-form__note {
+		margin-top: $base*4;
+		@include supporters();
+	}
 }

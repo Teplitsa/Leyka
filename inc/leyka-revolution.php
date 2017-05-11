@@ -64,7 +64,8 @@ function leyka_inline_js() {
 
 /** Templates **/
 function leyka_rev_campaign_top($campaign_id) {
-
+	//add option if we need thumb
+	$thumb_url = get_the_post_thumbnail_url($campaign_id, 'post-thumbnail');
 ?>
 <div id="leyka-pf-<?php echo $campaign_id;?>" class="leyka-pf">
 <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
@@ -73,7 +74,6 @@ function leyka_rev_campaign_top($campaign_id) {
 <div class="leyka-pf__module">
 	<div class="leyka-pf__close leyka-js-close-form">x</div>
 	<div class="leyka-pf__card inpage-card">
-		<?php $thumb_url = get_the_post_thumbnail_url($campaign_id, 'post-thumbnail'); ?>
 		<?php  if($thumb_url) { //add other terms ?>
 			<div class="inpage-card__thumb" style="background-image: url(<?php echo $thumb_url;?>);"></div>
 		<?php  } ?>
@@ -118,7 +118,7 @@ function leyka_rev_campaign_top($campaign_id) {
 
 				<div class="amount__icon">
 					<svg class="svg-icon pic-money-middle"><use xlink:href="#pic-money-middle" /></svg>
-					<div class="amount__error">Укажите сумму от 10 до 30&nbsp;000 руб.</div>
+					<div class="amount__error">Укажите сумму от 10 до 30&nbsp;000 <span class="curr-mark">&#8381;</span></div>
 				</div>
 
 				<div class="amount_range">
@@ -258,17 +258,19 @@ function leyka_rev_campaign_bottom($campaign_id) {
 
 	ob_start();
 ?>
-<div rel="leyka-pf-<?php echo $campaign_id;?>" class="leyka-pf-bottom">
-	<div class="">Сделайте пожертвование</div>
-	<div class="">
-		<input type="text" value="500" name="leyka_temp_amount">
-		<span>&#8381;</span>
+<div data-target="leyka-pf-<?php echo $campaign_id;?>" id="leyka-pf-bottom-<?php echo $campaign_id;?>" class="leyka-pf-bottom bottom-form">
+	<div class="bottom-form__label">Сделайте пожертвование</div>
+	<div class="bottom-form__fields">
+		<div class="bottom-form__field">
+			<input type="text" value="500" name="leyka_temp_amount">
+			<span class="curr-mark">&#8381;</span>
+		</div>
+		<div class="bottom-form__button">
+			<button type="button" class="leyka-js-open-form-bottom">Поддержать</button>
+		</div>
 	</div>
-	<div class="">
-		<button type="button">Поддержать</button>
-	</div>
-	<div class="">
-		<strong>Поддержали:</strong> Василий Иванов, Мария Петрова, Семен Луковичный, Даниил Черный, Ольга Богуславская и еще 35 человек
+	<div class="bottom-form__note supporters">
+		<strong>Поддержали:</strong> Василий Иванов, Мария Петрова, Семен Луковичный, Даниил Черный, Ольга Богуславская и еще <a href="#" class="history-more">еще 35 человек</a>
 	</div>
 </div>
 <?php

@@ -119,6 +119,51 @@
 	}
 }
 
+@include for(small-screens) {
+	.leyka-pf--active {
+		.leyka-pf__module {
+
+			max-width: 900px;
+			max-height: 470px;
+
+			display: flex;
+			flex-flow: row nowrap;
+			justify-content: space-between;
+			align-items: stretch;
+
+			&:after {
+				content: '';
+				display: block;
+				width: 1px;
+				height: 100%;
+				background: $color-border-light;
+				position: absolute;
+				top: 0;
+				left: 50%;
+				z-index: 10080;
+			}
+		}
+
+		.leyka-pf__card {
+			width: 50%;
+			display: block;
+			border-top-right-radius: 0;
+
+			.inpage-card__thumb {
+				border-top-right-radius: 0;
+			}
+		}
+
+		.leyka-pf__form {
+			width: 50%;
+		}
+	}
+
+	.leyka-pf--active.leyka-pf--oferta {
+		.leyka-pf__module:after { display: none; }
+	}
+}
+
 .leyka-pf--active.leyka-pf--oferta {
 
 	.leyka-pf__module {
