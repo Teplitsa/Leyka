@@ -86,17 +86,66 @@ function leyka_rev_campaign_top($campaign_id) {
 
 			<div class="inpage-card_scale">
 				<!-- NB: add class .fin to progress when it's 100% in fav of border-radius -->
-				<div class="scale"><div class="progress" style="width:20%;"></div></div>
-				<div class="target">50 000<span class="curr-mark">&#8381;</span></div>
-				<div class="info">собрано из 250 000<span class="curr-mark">&#8381;</span></div>
+                <?php $collected = leyka_get_campaign_collections($campaign_id);
+                $target = leyka_get_campaign_target($campaign_id);
+
+                $ready = round(100.0*$collected['amount']/$target['amount'], 1);
+                $ready = $ready >= 100.0 ? 100.0 : $ready;?>
+
+				<div class="scale"><div class="progress <?php echo $ready >= 100.0 ? 'fin' : '';?>" style="width:<?php echo $ready;?>%;"></div></div>
+				<div class="target">
+                    <?php echo $collected['amount'];?>
+                    <span class="curr-mark"><?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?></span>
+                </div>
+
+				<div class="info">собрано из <?php echo $target['amount'];?>
+                    <span class="curr-mark"><?php echo leyka_options()->opt("currency_{$target['currency']}_label");?></span>
+                </div>
 			</div>
 
 			<div class="inpage-card__note supporters">
-				<strong>Поддержали:</strong> Василий Иванов, Мария Петрова, Семен Луковичный, Даниил Черный, Ольга Богуславская и <a href="#" class="history-more">еще 35 человек</a>
+                <?php $donations = leyka_get_campaign_donations($campaign_id);
+                $first_donors_names = array();
+                foreach($donations as $donation) { /** @var $donation Leyka_Donation */
+
+                    if(
+                        $donation->donor_name &&
+                        !in_array($donation->donor_name, array(__('Anonymous', 'leyka'), 'Anonymous')) &&
+                        !in_array($donation->donor_name, $first_donors_names)
+                    ) {
+                        $first_donors_names[] = mb_ucfirst($donation->donor_name);
+                    }
+
+                    if(count($first_donors_names) >= 5) { // 5 is a max number of donors names in a list
+                        break;
+                    }
+
+                }
+
+                if(count($first_donors_names)) { // There is at least one donor ?>
+                <strong><?php _e('Supporters:', 'leyka');?></strong>
+                <?php }
+
+                if(count($donations) <= count($first_donors_names)) { // Only names in the list
+                    echo implode(', ', array_slice($first_donors_names, 0, -1)).' '.__('and').' '.end($first_donors_names);
+                } else { // names list and the number of the rest of donors
+
+                    echo implode(', ', array_slice($first_donors_names, 0, -1)).' '.__('and', 'leyka');
+                    $campaign = get_post($campaign_id);
+
+                    $campaign_donations_permalink = trim(get_permalink($campaign_id), '/');
+                    if(strpos($campaign_donations_permalink, '?')) {
+                        $campaign_donations_permalink = home_url('?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter='.$campaign->post_name);
+                    } else {
+                        $campaign_donations_permalink = $campaign_donations_permalink.'/donations/';
+                    }?>
+
+                    <a href="<?php echo $campaign_donations_permalink;?>" class="history-more"><?php echo sprintf(__('%d more', 'leyka'), count($donations) - count($first_donors_names));?></a>
+                <?php }?>
 			</div>
 
 			<div class="inpage-card__action">
-				<button type="button" class="leyka-js-open-form">Поддержать</button>
+				<button type="button" class="leyka-js-open-form"><?php echo leyka_options()->opt('donation_submit_text');?></button>
 			</div>
 		</div>
 	</div>
