@@ -9,11 +9,11 @@
  * Text Domain: leyka
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  * Domain Path: /lang
- * Contributors:	
+ * Contributors:
 	Anna "foralien" Ladoshkina (webdev@foralien.com)
 	Denis Cherniatev (denis.cherniatev@gmail.com)
     Marie Borisyonok (pro100mary@gmail.com)
-	
+
  * License: GPLv2 or later
 	Copyright (C) 2012-2017 by Teplitsa of Social Technologies (http://te-st.ru).
 
@@ -89,6 +89,8 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-payment-form.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-ajax.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-shortcodes.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-widgets.php');
+
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-revolution.php');
 
 /** Automatically include all sub-dirs of /leyka/gateways/ */
 $gateways_dir = dir(LEYKA_PLUGIN_DIR.'gateways/');
