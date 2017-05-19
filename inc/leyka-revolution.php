@@ -76,6 +76,41 @@ function leyka_inline_scripts() {
 }
 
 /** Templates **/
+function leyka_donation_history_list($campaign_id) {
+
+	$currency = "<span class='curr-mark'>&#8381;</span>";
+
+	//dummy history items
+	$history = array(
+		array(1000, 'Василий Иванов', '12.05.2017'),
+		array(1500, 'Мария Петрова', '11.05.2017'),
+		array(300, 'Семен Луковичный', '08.05.2017'),
+		array(350, 'Даниил Черный', '08.05.2017'),
+		array(300, 'Ольга Богуславская', '08.05.2017'),
+		array(1000, 'Мария Разумовская-Розенберг', '05.05.2017'),
+		array(10000, 'Анонимное пожертвование', '02.05.2017')
+	);
+
+	for($i=0; $i<2; $i++) {
+		$history = array_merge($history, $history);
+	}
+
+	ob_start();
+
+	foreach($history as $h) { ?>
+	<div class="history__row">
+		<div class="history__cell h-amount"><?php echo number_format($h[0], 2, '.', ' ').' '.$currency;?></div>
+		<div class="history__cell h-name"><?php echo $h[1];?></div>
+		<div class="history__cell h-date"><?php echo $h[2];?></div>
+	</div>
+<?php }
+
+	$out = ob_get_contents();
+	ob_end_clean();
+
+	return $out;
+}
+
 function leyka_rev_campaign_top($campaign_id) {
 
 	//add option if we need thumb
@@ -85,8 +120,9 @@ function leyka_rev_campaign_top($campaign_id) {
 
 	$currency = "<span class='curr-mark'>&#8381;</span>";
 	//$currency = "<span class='curr-mark'>РУБ.</span>";
+
 ?>
-<div id="leyka-pf-<?php echo $campaign_id;?>" class="leyka-pf">
+<div id="leyka-pf-<?php echo $campaign_id;?>" class="leyka-pf leyka-pf--history-open">
 <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
 <div class="leyka-pf__overlay"></div>
 
@@ -113,6 +149,17 @@ function leyka_rev_campaign_top($campaign_id) {
 
 			<div class="inpage-card__action">
 				<button type="button" class="leyka-js-open-form">Поддержать</button>
+			</div>
+		</div>
+
+		<div class="inpage-card__history history">
+			<div class="history__title">Мы благодарим</div>
+			<div class="history__list">
+				<div class="history__list-flow"><?php echo leyka_donation_history_list($campaign_id);?></div>
+			</div>
+			<div class="history__action">
+				<!-- link to full history page -->
+				<a href="#">Показать весь список</a>
 			</div>
 		</div>
 	</div>
@@ -258,10 +305,11 @@ function leyka_rev_campaign_top($campaign_id) {
 		</div>
 	</div>
 
-	<div class="leyka-pf__oferta ">
-		<div class="leyka-pf__oferta-action"><a href="#" class="leyka-js-oferta-close">Я принимаю договор-оферту</a></div>
-		<?php echo apply_filters('leyka_terms_of_service_text', do_shortcode(leyka_options()->opt('terms_of_service_text')));?>
-		<div class="leyka-pf__oferta-action"><a href="#" class="leyka-js-oferta-close">Я принимаю договор-оферту</a></div>
+	<div class="leyka-pf__oferta oferta">
+		<div class="oferta__frame">
+			<div class="oferta__flow"><?php echo apply_filters('leyka_terms_of_service_text', do_shortcode(leyka_options()->opt('terms_of_service_text')));?></div>
+		</div>
+		<div class="oferta__action"><a href="#" class="leyka-js-oferta-close">Я принимаю договор-оферту</a></div>
 	</div>
 </div><!-- columnt -->
 </div>
@@ -271,6 +319,7 @@ function leyka_rev_campaign_top($campaign_id) {
 
 	return $out;
 }
+
 
 function leyka_rev_campaign_bottom($campaign_id) {
 
@@ -291,6 +340,17 @@ function leyka_rev_campaign_bottom($campaign_id) {
 	</div>
 	<div class="bottom-form__note supporters">
 		<strong>Поддержали:</strong> Василий Иванов, Мария Петрова, Семен Луковичный, Даниил Черный, Ольга Богуславская и еще <a href="#" class="history-more">еще 35 человек</a>
+	</div>
+
+	<div class="bottom-form__history history">
+		<div class="history__title">Мы благодарим</div>
+		<div class="history__list">
+			<div class="history__list-flow"><?php echo leyka_donation_history_list($campaign_id);?></div>
+		</div>
+		<div class="history__action">
+			<!-- link to full history page -->
+			<a href="#">Показать весь список</a>
+		</div>
 	</div>
 </div>
 <?php

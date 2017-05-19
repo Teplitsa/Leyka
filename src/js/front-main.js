@@ -13,9 +13,18 @@ jQuery(document).ready(function($){
 	});
 
 	$('.leyka-js-close-form').on('click', function(e){
-		e.preventDefault();
 
-		$(this).parents('.leyka-pf').removeClass('leyka-pf--active');
+		e.preventDefault();
+		var pf = $(this).parents('.leyka-pf');
+
+		if(pf.hasClass('leyka-pf--oferta')){ //close only oferta
+			pf.removeClass('leyka-pf--oferta');
+
+		}
+		else { //close module
+			pf.removeClass('leyka-pf--active');
+
+		}
 	});
 
 	$('.leyka-js-open-form-bottom').on('click', function(e){
@@ -296,7 +305,7 @@ jQuery(document).ready(function($){
 	$('.leyka-js-oferta-trigger').on('click', function(e){
 		e.preventDefault();
 
-		$(this).parents('.leyka-pf').addClass('leyka-pf--oferta');
+		$(this).parents('.leyka-pf').addClass('leyka-pf--oferta-open');
 
 	});
 
@@ -304,7 +313,7 @@ jQuery(document).ready(function($){
 		e.preventDefault();
 
 		$(this).parents('.leyka-pf').find('.donor__oferta').removeClass('invalid').find('input').prop('checked', true);
-		$(this).parents('.leyka-pf').removeClass('leyka-pf--oferta');
+		$(this).parents('.leyka-pf').removeClass('leyka-pf--oferta-open');
 
 	});
 

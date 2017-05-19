@@ -216,7 +216,7 @@
 		}
 	}
 
-	.leyka-pf--active.leyka-pf--oferta { //remove divider
+	.leyka-pf--active.leyka-pf--oferta-open { //remove divider
 		.leyka-pf__module:after { display: none; }
 	}
 }
@@ -225,7 +225,7 @@
 
 /* Oferta */
 .leyka-js {
-	.leyka-pf--active.leyka-pf--oferta {
+	.leyka-pf--active.leyka-pf--oferta-open {
 
 		.leyka-pf__module {
 			max-width: 900px;
@@ -241,7 +241,34 @@
 			height: 100%;
 			z-index: 10015;
 			border-radius: 10px;
-			padding: $base*1 10%;
+			padding: $base*3 9% 0;
+		}
+
+		.oferta__frame {
+			width: 100%;
+			padding: 0 20px 56px;
+			height: 100%;
+			overflow-y: scroll;
+		}
+
+		.oferta__flow {
+			padding-bottom: 56px + 20px;
+		}
+
+		.oferta__action {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			z-index: 10020;
+			padding: $base;
+			text-align: center;
+			background: $color-white;
+			border-top: 1px solid $color-border-light;
+
+			a {
+				@include button(small);
+			}
 		}
 	}
 }
@@ -325,4 +352,72 @@
 	}
 }
 
+/** History **/
+.inpage-card__history {
+	display: none;
+}
 
+.leyka-js {
+	//in page
+	.inpage-card {
+		postion: relative;
+	}
+
+	.leyka-pf--history-open {
+
+		.inpage-card {
+			@inlcude module-height();
+		}
+
+		.inpage-card__history {
+			display: block;
+			padding: $base*3 $base*2;
+			position: absolute;
+			height: 100%;
+			width: 100%;
+			border-radius: 10px;
+			background: $color-border-tiny;
+			top: 0;
+			left: 0;
+		}
+
+		.history__title {
+			padding-bottom: $base*2;
+		}
+
+		.history__list {
+			width: 100%;
+			padding: 0 10px 0 0;
+			height: calc(100% - 70px);
+			overflow-y: scroll;
+		}
+
+		.history__action {
+			padding: $base 0;
+
+			a {
+				@include body-text();
+				display: inline-block;
+				color: $color-text;
+				background: $color-white;
+				padding: $base;
+				text-align: center;
+				border: 1px solid $color-border-normal;
+				border-radius: 3px;
+				width: 100%;
+				transition: all 0.35s;
+
+				&:hover {
+					border-color: $color-border-dark;
+				}
+			}
+		}
+	}
+
+	//in open module
+	.leyka-pf--active.leyka-pf--history-open {
+		.inpage-card__history {
+			display: block;
+		}
+	}
+}
