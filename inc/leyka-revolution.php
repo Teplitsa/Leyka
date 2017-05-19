@@ -127,7 +127,8 @@ function leyka_rev_campaign_top($campaign_id) {
                 <?php }
 
                 if(count($donations) <= count($first_donors_names)) { // Only names in the list
-                    echo implode(', ', array_slice($first_donors_names, 0, -1)).' '.__('and').' '.end($first_donors_names);
+                    echo implode(', ', array_slice($first_donors_names, 0, -1))
+                        .' '.__('and', 'leyka').' '.end($first_donors_names);
                 } else { // names list and the number of the rest of donors
 
                     echo implode(', ', array_slice($first_donors_names, 0, -1)).' '.__('and', 'leyka');
@@ -140,7 +141,10 @@ function leyka_rev_campaign_top($campaign_id) {
                         $campaign_donations_permalink = $campaign_donations_permalink.'/donations/';
                     }?>
 
-                    <a href="<?php echo $campaign_donations_permalink;?>" class="history-more"><?php echo sprintf(__('%d more', 'leyka'), count($donations) - count($first_donors_names));?></a>
+                    <a href="<?php echo $campaign_donations_permalink;?>" class="history-more">
+                        <?php echo sprintf(__('%d more', 'leyka'), count($donations) - count($first_donors_names));?>
+                    </a>
+
                 <?php }?>
 			</div>
 
@@ -153,37 +157,60 @@ function leyka_rev_campaign_top($campaign_id) {
 	<div class="leyka-pf__form">
 
 	<form action="#" method="post" novalidate="novalidate">
-	<!-- step amount -->
+
+    <!-- Step 1: amount -->
+
+    <?php $supported_curr = leyka_get_active_currencies();?>
+
 	<div class="step step--amount step--active">
 		<div class="step__selection"></div>
 
 		<div class="step__content">
-			<div class="step__title">Укажите сумму</div>
+			<div class="step__title"><?php _e('Donation amount', 'leyka');?></div>
 
 			<div class="step__fields amount">
+            <?php
+                $amount_default = $supported_curr['rur']['amount_settings']['flexible'];
+                $amount_min = $supported_curr['rur']['bottom'];
+                $amount_max = $supported_curr['rur']['top'];
+                $currency_label = $supported_curr['rur']['label'];
+            ?>
+                <!-- @todo Refactor Leyka_Payment_Form so it could work without $payment_method set. Then output the following fields with Leyka_Payment_Form class means -->
+                <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $currency_label;?>" value="rur">
+                <input type="hidden" name="top_rur" value="<?php echo $amount_max;?>">
+                <input type="hidden" name="bottom_rur" value="<?php echo $amount_min;?>">
 
 				<div class="amount__figure">
-					<input type="text" name="leyka_amount" value="500" autocomplete="off" />
-					<span class="curr-mark">&#8381;</span>
-					<input type="hidden" name="monthly" value="0">
+					<input type="text" name="leyka_donation_amount" value="<?php echo $amount_default;?>" autocomplete="off" placeholder="<?php echo apply_filters('leyka_form_free_amount_placeholder', $amount_default);?>">
+					<span class="curr-mark"><?php echo $currency_label;?></span>
+					<input type="hidden" name="monthly" value="0"> <!-- @todo Check if this field is needed -->
 				</div>
 
 				<div class="amount__icon">
-					<svg class="svg-icon pic-money-middle"><use xlink:href="#pic-money-middle" /></svg>
-					<div class="amount__error">Укажите сумму от 10 до 30&nbsp;000 <span class="curr-mark">&#8381;</span></div>
+					<svg class="svg-icon pic-money-middle"><use xlink:href="#pic-money-middle"></svg>
+					<div class="leyka_donation_amount-error field-error amount__error">
+                        <?php echo sprintf(__('Set an amount from %s to %s <span class="curr-mark">%s</span>', 'leyka'), $amount_min, $amount_max, $currency_label);?>
+                    </div> <!-- @todo The error text is hardcoded. Remove it in favor of the normal frontend validation -->
 				</div>
 
 				<div class="amount_range">
-					<input  name="amount-range" type="range" min="100" max="2500" step="200" value="500">
+					<input name="amount-range" type="range" min="<?php echo $amount_min;?>" max="<?php echo $amount_max;?>" step="1" value="<?php echo $amount_default;?>">
 				</div>
 
 			</div>
 
 			<div class="step__action">
-				<!-- hidden field to store choice ? -->
-				<a href="cards" class="leyka-js-amount">Поддержать разово</a>
-				<a href="person" class="leyka-js-amount monthly">
-					<svg class="svg-icon icon-card"><use xlink:href="#icon-card" /></svg>Ежемесячно</a>
+            <?php if(leyka_is_recurring_supported()) {?>
+
+                <a href="cards" class="leyka-js-amount"><?php _e('Support once-only', 'leyka');?></a>
+                <a href="person" class="leyka-js-amount monthly">
+                    <svg class="svg-icon icon-card"><use xlink:href="#icon-card"></svg><?php _e('Support monthly', 'leyka');?>
+                </a>
+
+            <?php } else {?>
+                <a href="cards" class="leyka-js-amount"><?php _e('Select a payment method', 'leyka');?></a>
+            <?php }?>
+
 			</div>
 		</div>
 	</div>
@@ -191,13 +218,14 @@ function leyka_rev_campaign_top($campaign_id) {
 	<!-- step pm -->
 	<div class="step step--cards">
 		<div class="step__selection">
+            <!-- @todo The amount & currency are hardcoded! Fill this with JS on the amount step -->
 			<a href="amount" class="leyka-js-another-step">
 				<span class="remembered-amount">500</span>&nbsp;<span class="curr-mark">&#8381;</span>
 			</a>
 		</div>
 
 		<div class="step__content">
-			<div class="step__title">Выберите способ оплаты</div>
+			<div class="step__title"><?php _e('Payment method', 'leyka');?></div>
 
 			<div class="step__fields payments-grid">
 			<!-- hidden field to store choice ? -->
@@ -209,18 +237,20 @@ function leyka_rev_campaign_top($campaign_id) {
 					'check' => array('label' => 'Квитанция', 'icon' => 'pic-check'),
 				);
 
-				foreach($items as $key => $item) {
-			?>
+				foreach($items as $key => $item) {?>
+
 				<div class="payment-opt">
 					<label class="payment-opt__button">
 						<input class="payment-opt__radio" name="payment_option" value="<?php echo esc_attr($key);?>" type="radio">
 						<span class="payment-opt__icon">
-							<svg class="svg-icon <?php echo esc_attr($item['icon']);?>"><use xlink:href="#<?php echo esc_attr($item['icon']);?>"/></svg>
+							<svg class="svg-icon <?php echo esc_attr($item['icon']);?>"><use xlink:href="#<?php echo esc_attr($item['icon']);?>"></svg>
 						</span>
 					</label>
 					<span class="payment-opt__label"><?php echo $item['label'];?></span>
 				</div>
-			<?php } ?>
+
+			<?php }?>
+
 			</div>
 		</div>
 	</div>
