@@ -118,114 +118,6 @@ div[id *="leyka-pf-"] {
 }
 
 // AMOUNT
-div[id *="leyka-pf-"] { //aka namespace
-
-	.amount__figure {
-		position: relative;
-		width: 196px;
-		z-index: 1;
-		margin: 0 auto;
-		border-bottom: 2px solid $color-border-light;
-
-		display: flex;
-		flex-flow: row nowrap;
-		align-items: center;
-		justify-content: space-between;
-
-		&.focus {
-			border-bottom-color: $color-main;
-		}
-
-		span {
-			@include amount-input();
-			font-weight: 100;
-			color: $color-text-black;
-			z-index: 20;
-		}
-
-		input {
-			@include amount-input();
-			-webkit-appearance: none;
-			background: transparent;
-			border: none;
-			border-radius: 0;
-
-			flex: 1 1 auto;
-
-			text-align: center;
-			color: $color-text-black;
-			padding: 0 4px 4px 4px;
-			width: 100px;
-		}
-	}
-
-	.amount__icon {
-		text-align: center;
-		padding: $base*3 $base $base*2;
-		min-height: 80px;
-
-		@include for(small-screens) {
-			min-height: 110px;
-		}
-
-		.svg-icon {
-			width: 85px;
-			height: 80px;
-
-			@include for(small-screens) {
-				width: 115px;
-				height: 110px;
-			}
-		}
-	}
-
-	.amount__error {
-		color: $color-form-invalid;
-		display:none;
-		padding-top: $base*3;
-	}
-
-	.step__action {
-
-		a {
-			@include button(small);
-			width: 176px;
-			text-align: center;
-			margin: 4px;
-		}
-
-		.monthly {
-			position: relative;
-			//padding-left: 44px;
-		}
-
-		.svg-icon {
-			width: 22px;
-			height: 15px;
-			fill: $color-white;
-			vertical-align: text-bottom;
-			margin-right: 4px;
-		}
-	}
-
-	.amount.invalid {
-		.amount__figure input {
-			border-bottom-color: $color-form-invalid;
-		}
-
-		.amount__error {
-			display: block;
-		}
-
-		.amount__icon {
-
-			.svg-icon {
-				display: none;
-			}
-		}
-	}
-}
-
 
 //range selector
 
@@ -249,6 +141,10 @@ div[id *="leyka-pf-"] { //aka namespace
 	background: $color-white;
 	border: 1px solid $color-border-normal;
 	cursor: pointer;
+}
+
+@mixin range-track-invalid() {
+	background: $color-form-invalid;
 }
 
 div[id *="leyka-pf-"] { //aka namespace
@@ -308,6 +204,128 @@ div[id *="leyka-pf-"] { //aka namespace
 	}
 }
 
+//general
+div[id *="leyka-pf-"] { //aka namespace
+
+	.amount__figure {
+		position: relative;
+		width: 196px;
+		z-index: 1;
+		margin: 0 auto;
+		border-bottom: 2px solid $color-border-light;
+
+		display: flex;
+		flex-flow: row nowrap;
+		align-items: center;
+		justify-content: space-between;
+
+		&.focus {
+			border-bottom-color: $color-main;
+		}
+
+		span {
+			@include amount-input();
+			font-weight: 100;
+			color: $color-text-black;
+			z-index: 20;
+		}
+
+		input {
+			@include amount-input();
+			-webkit-appearance: none;
+			background: transparent;
+			border: none;
+			border-radius: 0;
+
+			flex: 1 1 auto;
+
+			text-align: center;
+			color: $color-text-black;
+			padding: 0 4px 4px 4px;
+			width: 100px;
+		}
+	}
+
+	.amount__icon {
+		text-align: center;
+		padding: $base*3 $base $base*2;
+		height: 80px + $base*5;
+
+		@include for(medium-screens) {
+			height: 110px + $base*5;
+		}
+
+		.svg-icon {
+			width: 85px;
+			height: 80px;
+
+			@include for(medium-screens) {
+				width: 115px;
+				height: 110px;
+			}
+		}
+	}
+
+	.amount__error {
+		color: $color-form-invalid;
+		display:none;
+		padding-top: $base*3;
+	}
+
+	.step__action {
+
+		a {
+			@include button(small);
+			width: 176px;
+			text-align: center;
+			margin: 4px;
+		}
+
+		.monthly {
+			position: relative;
+			//padding-left: 44px;
+		}
+
+		.svg-icon {
+			width: 22px;
+			height: 15px;
+			fill: $color-white;
+			vertical-align: text-bottom;
+			margin-right: 4px;
+		}
+	}
+
+	.amount.invalid {
+		.amount__figure {
+			border-bottom-color: $color-form-invalid;
+		}
+
+		.amount__error {
+			display: block;
+		}
+
+		.amount__icon {
+			.svg-icon {
+				display: none;
+			}
+		}
+
+		input[type=range]::-ms-track {
+			@include range-track-invalid();
+		}
+
+		input[type=range]::-moz-range-track {
+			@include range-track-invalid();
+		}
+
+		input[type=range]::-webkit-slider-runnable-track  {
+			@include range-track-invalid();
+		}
+	}
+}
+
+
+
 
 // CARDS STEP
 div[id *="leyka-pf-"] {  //aka namespace
@@ -364,7 +382,7 @@ div[id *="leyka-pf-"] {  //aka namespace
 			height: 41px;
 		}
 
-		@include for(small-screens) {
+		@include for(medium-screens) {
 			height: 85px;
 
 			.svg-icon {
@@ -387,7 +405,7 @@ div[id *="leyka-pf-"] {  //aka namespace
 		font-size: 11px;
 		hyphens: none;
 
-		@include for(small-screens) {
+		@include for(medium-screens) {
 			font-size: 13px;
 		}
 	}

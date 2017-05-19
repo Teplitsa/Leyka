@@ -33,11 +33,28 @@
 
 .step__fields {
 	padding: $base $base*2;
+
+	@include for(small-screens) {
+		padding: $base $base*3;
+	}
 }
 
 .step__note {
 	text-align: center;
-	padding: $base*2 0;
+	padding: $base*2;
+
+	@include for(small-screens) {
+		padding: $base*2 $base*3;
+	}
+}
+
+// donors step
+.donor__textfield {
+	margin-bottom: $base*3;
+}
+
+.donor__submit {
+	margin-bottom: $base*3;
 }
 
 
@@ -124,6 +141,10 @@
 			max-width: 400px;
 			@include module-height();
 			overflow: hidden;
+
+			@include for(small-screens) {
+				box-shadow: 0px 2px 25px rgba(0, 0, 0, 0.25);
+			}
 		}
 
 		.leyka-pf__close {
@@ -146,7 +167,7 @@
 			position: relative;
 			z-index: 10;
 			max-width: none;
-			margin: auto;
+			margin: 0;
 		}
 
 		.leyka-pf__redirect--open {
@@ -156,22 +177,18 @@
 }
 
 /* Open in larger screens - 2 colums support */
-@include for(small-screens) {
+@include for(medium-screens) {
 .leyka-js {
 	.leyka-pf--active {
 		.leyka-pf__module {
-
 			max-width: 900px;
-			max-height: 470px;
 
 			display: flex;
 			flex-flow: row nowrap;
 			justify-content: space-between;
 			align-items: stretch;
 
-			box-shadow: 0px 2px 25px rgba(0, 0, 0, 0.25);
-
-			&:after {
+			&:after { //divider
 				content: '';
 				display: block;
 				width: 1px;
@@ -199,7 +216,7 @@
 		}
 	}
 
-	.leyka-pf--active.leyka-pf--oferta { //wtf???
+	.leyka-pf--active.leyka-pf--oferta { //remove divider
 		.leyka-pf__module:after { display: none; }
 	}
 }
@@ -279,6 +296,9 @@
 		//modifiers
 		.step__title--amount {
 			padding-top: $base*5;
+			@include for(small-screens) {
+				padding-top: $base*4;
+			}
 		}
 
 		.step__action--amount {
@@ -291,19 +311,18 @@
 			border-bottom: 1px solid $color-border-light;
 			padding-top: 8px;
 		}
+
+		@include for(large-screens) {
+			.step__border {
+				border: 1px solid $color-border-light;
+			}
+
+			.step--person {
+				padding-left: $base*2.5;
+				padding-right: $base*2.5;
+			}
+		}
 	}
 }
 
-/* Amount step  */
 
-
-/* Cards step  */
-
-/* Donors step  */
-.donor__textfield {
-	margin-bottom: $base*3;
-}
-
-.donor__submit {
-	margin-bottom: $base*3;
-}

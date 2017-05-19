@@ -92,6 +92,16 @@ jQuery(document).ready(function($){
 		$(this).parents('.step__fields').removeClass('invalid');
 	});
 
+	$('.amount__figure')
+	.on('focus', 'input', function(){
+
+		$(this).parents('.amount__figure').addClass('focus');
+	})
+	.on('blur', 'input', function(){
+
+		$(this).parents('.amount__figure').removeClass('focus');
+	});
+
 
 	//select amount
 	$('.leyka-js-amount').on('click', function(e){
@@ -219,6 +229,8 @@ jQuery(document).ready(function($){
 			$(this).parents('.donor__textfield--email').addClass('invalid');
 		}
 	});
+
+
 
 	//agree
 	$('.donor__oferta').on('change', 'input', function(){
