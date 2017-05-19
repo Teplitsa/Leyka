@@ -16,7 +16,7 @@ function leyka_rev_campaign_page($content) {
 	$before = '';
 	$after = '';
 
-	if(isset($_GET['rev']) && (int)$_GET['rev'] == 1) {
+	if(isset($_GET['rev']) && (int)$_GET['rev'] >= 1) {
 		$before = leyka_rev_campaign_top($campaign_id);
 		$after = leyka_rev_campaign_bottom($campaign_id);
 	}
@@ -51,14 +51,27 @@ function leyka_rev_cssjs() {
     wp_localize_script('leyka-rev', 'leykarev', $js_data);
 }
 
-add_action('wp_head', 'leyka_inline_js');
-function leyka_inline_js() {
+add_action('wp_head', 'leyka_inline_scripts');
+function leyka_inline_scripts() {
 
-//detect if we have JS
+	if(isset($_GET['rev']) && (int)$_GET['rev'] == 1) {
+		$colors = array('#1db318', '#1aa316', '#8ae724');
+	} else {
+		$colors = array('#07C7FD', '#05A6D3', '#8CE4FD');
+	}
+
+	//detect if we have JS
 ?>
 <script>
 	document.documentElement.classList.add("leyka-js");
 </script>
+<style>
+	:root {
+		--color-main: 		<?php echo $colors[0];?>;
+		--color-main-dark: 	<?php echo $colors[1];?>;
+		--color-main-light: <?php echo $colors[2];?>;
+	}
+</style>
 <?php
 }
 
@@ -69,6 +82,9 @@ function leyka_rev_campaign_top($campaign_id) {
 	$thumb_url = get_the_post_thumbnail_url($campaign_id, 'post-thumbnail');
 
 	ob_start();
+
+	$currency = "<span class='curr-mark'>&#8381;</span>";
+	//$currency = "<span class='curr-mark'>РУБ.</span>";
 ?>
 <div id="leyka-pf-<?php echo $campaign_id;?>" class="leyka-pf">
 <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
@@ -87,8 +103,8 @@ function leyka_rev_campaign_top($campaign_id) {
 			<div class="inpage-card_scale">
 				<!-- NB: add class .fin to progress when it's 100% in fav of border-radius -->
 				<div class="scale"><div class="progress" style="width:20%;"></div></div>
-				<div class="target">50 000<span class="curr-mark">&#8381;</span></div>
-				<div class="info">собрано из 250 000<span class="curr-mark">&#8381;</span></div>
+				<div class="target">50 000<?php echo $currency;?></div>
+				<div class="info">собрано из 250 000<?php echo $currency;?></div>
 			</div>
 
 			<div class="inpage-card__note supporters">
@@ -104,91 +120,90 @@ function leyka_rev_campaign_top($campaign_id) {
 	<div class="leyka-pf__form">
 
 	<form action="#" method="post" novalidate="novalidate">
+
 	<!-- step amount -->
 	<div class="step step--amount step--active">
-		<div class="step__selection"></div>
 
-		<div class="step__content">
-			<div class="step__title">Укажите сумму</div>
+		<div class="step__title step__title--amount">Укажите сумму</div>
 
-			<div class="step__fields amount">
+		<div class="step__fields amount">
 
-				<div class="amount__figure">
-					<input type="text" name="leyka_amount" value="500" autocomplete="off" />
-					<span class="curr-mark">&#8381;</span>
-					<input type="hidden" name="monthly" value="0">
-				</div>
-
-				<div class="amount__icon">
-					<svg class="svg-icon pic-money-middle"><use xlink:href="#pic-money-middle" /></svg>
-					<div class="amount__error">Укажите сумму от 10 до 30&nbsp;000 <span class="curr-mark">&#8381;</span></div>
-				</div>
-
-				<div class="amount_range">
-					<input  name="amount-range" type="range" min="100" max="2500" step="200" value="500">
-				</div>
-
+			<div class="amount__figure">
+				<input type="text" name="leyka_amount" value="500" autocomplete="off" />
+				<?php echo $currency;?>
 			</div>
 
-			<div class="step__action">
-				<!-- hidden field to store choice ? -->
-				<a href="cards" class="leyka-js-amount">Поддержать разово</a>
-				<a href="person" class="leyka-js-amount monthly">
-					<svg class="svg-icon icon-card"><use xlink:href="#icon-card" /></svg>Ежемесячно</a>
+			<input type="hidden" name="monthly" value="0">
+
+			<div class="amount__icon">
+				<svg class="svg-icon pic-money-middle"><use xlink:href="#pic-money-middle" /></svg>
+				<div class="amount__error">Укажите сумму от 10 до 30&nbsp;000 <?php echo $currency;?></div>
 			</div>
+
+			<div class="amount_range">
+				<input  name="amount-range" type="range" min="100" max="2500" step="200" value="500">
+			</div>
+
+		</div>
+
+		<div class="step__action step__action--amount">
+			<!-- hidden field to store choice ? -->
+			<a href="cards" class="leyka-js-amount">Поддержать разово</a>
+			<a href="person" class="leyka-js-amount monthly">
+				<svg class="svg-icon icon-card"><use xlink:href="#icon-card" /></svg>Ежемесячно</a>
 		</div>
 	</div>
 
 	<!-- step pm -->
 	<div class="step step--cards">
+
 		<div class="step__selection">
 			<a href="amount" class="leyka-js-another-step">
-				<span class="remembered-amount">500</span>&nbsp;<span class="curr-mark">&#8381;</span>
+				<span class="remembered-amount">500</span>&nbsp;<?php echo $currency;?>
 			</a>
 		</div>
 
-		<div class="step__content">
-			<div class="step__title">Выберите способ оплаты</div>
+		<div class="step__title">Выберите способ оплаты</div>
 
-			<div class="step__fields payments-grid">
-			<!-- hidden field to store choice ? -->
-			<?php
-				$items = array(
-					'bcard' => array('label' => 'Банковская карта', 'icon' => 'pic-bcard'),
-					'yandex' => array('label' => 'Яндекс.Деньги', 'icon' => 'pic-yandex'),
-					'sber' => array('label' => 'Сбербанк Онлайн', 'icon' => 'pic-sber'),
-					'check' => array('label' => 'Квитанция', 'icon' => 'pic-check'),
-				);
+		<div class="step__fields payments-grid">
+		<!-- hidden field to store choice ? -->
+		<?php
+			$items = array(
+				'bcard' => array('label' => 'Банковская карта', 'icon' => 'pic-bcard'),
+				'yandex' => array('label' => 'Яндекс.Деньги', 'icon' => 'pic-yandex'),
+				'sber' => array('label' => 'Сбербанк Онлайн', 'icon' => 'pic-sber'),
+				'check' => array('label' => 'Квитанция', 'icon' => 'pic-check'),
+			);
 
-				foreach($items as $key => $item) {
-			?>
-				<div class="payment-opt">
-					<label class="payment-opt__button">
-						<input class="payment-opt__radio" name="payment_option" value="<?php echo esc_attr($key);?>" type="radio">
-						<span class="payment-opt__icon">
-							<svg class="svg-icon <?php echo esc_attr($item['icon']);?>"><use xlink:href="#<?php echo esc_attr($item['icon']);?>"/></svg>
-						</span>
-					</label>
-					<span class="payment-opt__label"><?php echo $item['label'];?></span>
-				</div>
-			<?php } ?>
+			foreach($items as $key => $item) {
+		?>
+			<div class="payment-opt">
+				<label class="payment-opt__button">
+					<input class="payment-opt__radio" name="payment_option" value="<?php echo esc_attr($key);?>" type="radio">
+					<span class="payment-opt__icon">
+						<svg class="svg-icon <?php echo esc_attr($item['icon']);?>"><use xlink:href="#<?php echo esc_attr($item['icon']);?>"/></svg>
+					</span>
+				</label>
+				<span class="payment-opt__label"><?php echo $item['label'];?></span>
 			</div>
+		<?php } ?>
 		</div>
+
 	</div>
 
 	<!-- step data -->
 	<div class="step step--person">
+
 		<div class="step__selection">
 			<a href="amount" class="leyka-js-another-step">
-				<span class="remembered-amount">500</span>&nbsp;<span class="curr-mark">&#8381;</span>
+				<span class="remembered-amount">500</span>&nbsp;<?php echo $currency;?>
 				<span class="remembered-monthly">ежемесячно </span>
 			</a>
 			<a href="cards" class="leyka-js-another-step"><span class="remembered-payment">Банковская карта</span></a>
 		</div>
 
-		<div class="step__content step__content--border">
+		<div class="step__border">
 			<div class="step__title">Кого нам благодарить?</div>
-
 			<div class="step__fields donor">
 
 				<div class="donor__textfield donor__textfield--name ">
@@ -214,7 +229,7 @@ function leyka_rev_campaign_top($campaign_id) {
 				<div class="donor__oferta">
 					<span><input type="checkbox" name="leyka_agree" value="1" checked="checked">
 					<label for="leyka_agree">Я принимаю  <a href="#" class="leyka-js-oferta-trigger">договор-оферту</a></label></span>
-					<span class="donor__oferta-error leyka_agree-error">Укажите согласие с офертой</span>
+					<div class="donor__oferta-error leyka_agree-error">Укажите согласие с офертой</div>
 				</div>
 
 			</div>
@@ -259,6 +274,8 @@ function leyka_rev_campaign_top($campaign_id) {
 
 function leyka_rev_campaign_bottom($campaign_id) {
 
+	$currency = "<span class='curr-mark'>&#8381;</span>";
+
 	ob_start();
 ?>
 <div data-target="leyka-pf-<?php echo $campaign_id;?>" id="leyka-pf-bottom-<?php echo $campaign_id;?>" class="leyka-pf-bottom bottom-form">
@@ -266,7 +283,7 @@ function leyka_rev_campaign_bottom($campaign_id) {
 	<div class="bottom-form__fields">
 		<div class="bottom-form__field">
 			<input type="text" value="500" name="leyka_temp_amount">
-			<span class="curr-mark">&#8381;</span>
+			<?php echo $currency;?>
 		</div>
 		<div class="bottom-form__button">
 			<button type="button" class="leyka-js-open-form-bottom">Поддержать</button>

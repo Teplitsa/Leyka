@@ -1,12 +1,50 @@
 /** == Form layout and states (_form_layout.scss) == **/
 
+/* NO JS basics */
 .leyka-pf__module {
 	position: relative;
 	border: 1px solid $color-border-light;
 	border-radius: 10px;
 	background: $color-white;
 	transition: all 0.35s;
+}
 
+
+.leyka-pf__form {
+	max-width: 400px;
+	margin: 0 auto;
+}
+
+
+.inpage-card__action,
+.leyka-pf__redirect,
+.leyka-pf__overlay,
+.leyka-pf__close,
+.oferta,
+.step__selection,
+.step__action {
+	display: none;
+}
+
+.step__title {
+	text-align: center;
+	padding: $base*2 0 $base*3;
+}
+
+.step__fields {
+	padding: $base $base*2;
+}
+
+.step__note {
+	text-align: center;
+	padding: $base*2 0;
+}
+
+
+/** JS state */
+
+/* Init layout */
+.leyka-js {
 	.leyka-pf__close {
 		display: none;
 		font-size: 13px;
@@ -49,77 +87,77 @@
 		border-radius: 10px;
 	}
 
-	.oferta {
-		display: none;
-	}
-}
-
-
-//write for JS and move it on later
-.leyka-js {
 	.leyka-pf__form {
 		display: none;
-	}
-}
-
-
-.leyka-pf--active {
-	.leyka-pf__overlay {
-		display: block;
-		position: fixed;
-		width: 100%;
-		height: 100%;
-		left: 0;
-		top: 0;
-		transform: translateZ(0);
-		background: transparentize($color-white, 0.1);
-		z-index: 10000;
-		opacity: 1;
-	}
-
-	.leyka-pf__module {
-		position: fixed;
-		top: 50%;
-		left: 50%;
-		width: 90%;
-		height: 96vh;
-		max-width: 400px;
-		max-height: 470px; //test
-		transform: translate(-50%, -50%);
-		z-index: 10010;
-		box-shadow: 0px 2px 25px rgba(0, 0, 0, 0.25);
-
-		overflow-x: hidden;
-		overflow-y: scroll;
-	}
-
-	.leyka-pf__close {
-		display: block;
-		z-index: 10020;
 	}
 
 	.inpage-card__action {
-		display: none;
-	}
-
-	//mobile
-	.leyka-pf__card {
-		display: none;
-		z-index: 10;
-	}
-
-	.leyka-pf__form {
-		display: block;
-		position: relative;
-		z-index: 10;
-	}
-
-	.leyka-pf__redirect--open {
 		display: block;
 	}
 }
 
+/* Open state */
+.leyka-js {
+	.leyka-pf--active {
+
+		.leyka-pf__overlay {
+			display: block;
+			position: fixed;
+			width: 100%;
+			height: 100%;
+			left: 0;
+			top: 0;
+			transform: translateZ(0);
+			background: transparentize($color-white, 0.1);
+			z-index: 10000;
+			opacity: 1;
+		}
+
+		.leyka-pf__module {
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			width: 90%;
+			transform: translate(-50%, -50%);
+			z-index: 10010;
+
+			max-width: 400px;
+			@include module-height();
+			overflow: hidden;
+		}
+
+		.leyka-pf__close {
+			display: block;
+			z-index: 10020;
+		}
+
+		.inpage-card__action {
+			display: none;
+		}
+
+		//mobile
+		.leyka-pf__card {
+			display: none;
+			z-index: 10;
+		}
+
+		.leyka-pf__form {
+			display: block;
+			position: relative;
+			z-index: 10;
+			max-width: none;
+			margin: auto;
+		}
+
+		.leyka-pf__redirect--open {
+			display: block;
+		}
+	}
+}
+
+/* Open in larger screens - 2 colums support */
 @include for(small-screens) {
+.leyka-js {
 	.leyka-pf--active {
 		.leyka-pf__module {
 
@@ -130,6 +168,8 @@
 			flex-flow: row nowrap;
 			justify-content: space-between;
 			align-items: stretch;
+
+			box-shadow: 0px 2px 25px rgba(0, 0, 0, 0.25);
 
 			&:after {
 				content: '';
@@ -159,73 +199,111 @@
 		}
 	}
 
-	.leyka-pf--active.leyka-pf--oferta {
+	.leyka-pf--active.leyka-pf--oferta { //wtf???
 		.leyka-pf__module:after { display: none; }
 	}
 }
+} //mq
 
-.leyka-pf--active.leyka-pf--oferta {
 
-	.leyka-pf__module {
-		max-width: 900px;
-		max-height: 700px;
-	}
+/* Oferta */
+.leyka-js {
+	.leyka-pf--active.leyka-pf--oferta {
 
-	.leyka-pf__oferta {
-		display: block;
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		z-index: 10015;
-		border-radius: 10px;
-		padding: $base*1 10%;
+		.leyka-pf__module {
+			max-width: 900px;
+			max-height: 700px;
+		}
+
+		.leyka-pf__oferta {
+			display: block;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 10015;
+			border-radius: 10px;
+			padding: $base*1 10%;
+		}
 	}
 }
 
 
-//steps
-.leyka-pf__form {
-	.step {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		border-radius: 10px;
-		z-index: 5;
-		visibility: hidden;
-		opacity: 0;
-		transition: opacity 0.35s;
-	}
+/* Steps */
 
-	.step--active {
-		visibility: visible;
-		opacity: 1;
-		z-index: 100;
-	}
+/* Common steps layout */
+.leyka-js {
+	.leyka-pf__form {
+		.step {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			border-radius: 10px;
+			z-index: 5;
+			visibility: hidden;
+			opacity: 0;
+			transition: opacity 0.35s;
 
-	.step__selection {
-		min-height: 32px;
-		text-align: center;
-		padding: $base*2 32px $base;
-	}
+			display: flex;
+			flex-flow: column nowrap;
+			align-items: center;
+			justify-content: flex-start;
+			@include module-height();
+		}
 
-	.step__content {
-		padding: 0 $base*3;
-	}
+		.step--person {
+			justify-content: space-between;
+		}
 
-	//donor
-	.step__content--border {
-		border-top: 1px solid $color-border-light;
-		border-bottom: 1px solid $color-border-light;
-		padding: $base*2 $base*3 $base*2;
-		margin-top: $base*2;
+		.step--active {
+			visibility: visible;
+			opacity: 1;
+			z-index: 100;
+		}
 
-		@include for(small-screens) {
-			border: 1px solid $color-border-light;
-			margin: $base*3 $base*3 0;
+
+		//cells
+		.step__selection {
+			display: block;
+			text-align: center;
+			padding: $base 0 $base*1.5;
+		}
+
+		.step__action  {
+			display: block;
+			text-align: center;
+		}
+
+		//modifiers
+		.step__title--amount {
+			padding-top: $base*5;
+		}
+
+		.step__action--amount {
+			padding: $base*2 0;
+		}
+
+		.step__border {
+			width: 100%;
+			border-top: 1px solid $color-border-light;
+			border-bottom: 1px solid $color-border-light;
+			padding-top: 8px;
 		}
 	}
+}
 
+/* Amount step  */
+
+
+/* Cards step  */
+
+/* Donors step  */
+.donor__textfield {
+	margin-bottom: $base*3;
+}
+
+.donor__submit {
+	margin-bottom: $base*3;
 }

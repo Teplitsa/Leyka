@@ -8,7 +8,19 @@ $one : 640px;
 
 
 //colors
-$color-main :	#1db318;
+
+//declare CSS variables - this will be inlined in PHP
+/*:root {
+  --color-main: 		#1db318;
+  --color-main-dark: 	#1aa316;
+  --color-main-light: 	#8ae724;
+}*/
+
+
+//SASS variables
+$color-main: 		var(--color-main);
+$color-main-dark: 	var(--color-main-dark);
+
 $color-link :	#2963E8;
 $color-text:	#333333;
 $color-white:	#ffffff;
@@ -24,8 +36,13 @@ $color-border-tiny:		#f6f6f6;
 $color-border-dark:		#353d3f;
 
 $color-form-invalid:	#FC0A69;
-$color-form-active:		#8ae724;
+$color-form-active:		var(--color-main-light);
 
+
+
+@function color($color-name) {
+  @return var(--color-#{$color-name});
+}
 
 
 /** == Elements == **/
@@ -46,7 +63,7 @@ $color-form-active:		#8ae724;
 		color: $color-white;
 	}
 	&:hover, &:focus {
-		background: darken($color-main, 10%);
+		background: $color-main-dark;
 	}
 
 	@if $mod == small {
