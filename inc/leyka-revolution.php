@@ -62,14 +62,60 @@ function leyka_inline_js() {
 <?php
 }
 
+function leyka_get_supporters_list($campaign_id) {
+
+    $donations = leyka_get_campaign_donations($campaign_id);
+    $first_donors_names = array();
+    foreach($donations as $donation) { /** @var $donation Leyka_Donation */
+
+        if(
+            $donation->donor_name &&
+            !in_array($donation->donor_name, array(__('Anonymous', 'leyka'), 'Anonymous')) &&
+            !in_array($donation->donor_name, $first_donors_names)
+        ) {
+            $first_donors_names[] = mb_ucfirst($donation->donor_name);
+        }
+
+        if(count($first_donors_names) >= 5) { // 5 is a max number of donors names in a list
+            break;
+        }
+
+    }
+
+    if(count($first_donors_names)) { // There is at least one donor ?>
+        <strong><?php _e('Supporters:', 'leyka');?></strong>
+    <?php }
+
+    if(count($donations) <= count($first_donors_names)) { // Only names in the list
+        echo implode(', ', array_slice($first_donors_names, 0, -1))
+            .' '.__('and', 'leyka').' '.end($first_donors_names);
+    } else { // names list and the number of the rest of donors
+
+        echo implode(', ', array_slice($first_donors_names, 0, -1)).' '.__('and', 'leyka');
+        $campaign = get_post($campaign_id);
+
+        $campaign_donations_permalink = trim(get_permalink($campaign_id), '/');
+        if(strpos($campaign_donations_permalink, '?')) {
+            $campaign_donations_permalink = home_url('?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter='.$campaign->post_name);
+        } else {
+            $campaign_donations_permalink = $campaign_donations_permalink.'/donations/';
+        }?>
+
+        <a href="<?php echo $campaign_donations_permalink;?>" class="history-more">
+            <?php echo sprintf(__('%d more', 'leyka'), count($donations) - count($first_donors_names));?>
+        </a>
+
+    <?php }
+
+}
+
 /** Templates **/
 function leyka_rev_campaign_top($campaign_id) {
 
-	//add option if we need thumb
 	$thumb_url = get_the_post_thumbnail_url($campaign_id, 'post-thumbnail');
 
-	ob_start();
-?>
+	ob_start();?>
+
 <div id="leyka-pf-<?php echo $campaign_id;?>" class="leyka-pf">
 <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
 <div class="leyka-pf__overlay"></div>
@@ -77,9 +123,9 @@ function leyka_rev_campaign_top($campaign_id) {
 <div class="leyka-pf__module">
 	<div class="leyka-pf__close leyka-js-close-form">x</div>
 	<div class="leyka-pf__card inpage-card">
-		<?php  if($thumb_url) { //add other terms ?>
+		<?php if($thumb_url) { //add other terms ?>
 			<div class="inpage-card__thumb" style="background-image: url(<?php echo $thumb_url;?>);"></div>
-		<?php  } ?>
+		<?php  }?>
 
 		<div class="inpage-card__content">
 			<div class="inpage-card_title"><?php echo get_the_title($campaign_id);?></div>
@@ -98,54 +144,13 @@ function leyka_rev_campaign_top($campaign_id) {
                     <span class="curr-mark"><?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?></span>
                 </div>
 
-				<div class="info">собрано из <?php echo $target['amount'];?>
+				<div class="info"><?php _e('collected of ', 'leyka');?> <?php echo $target['amount'];?>
                     <span class="curr-mark"><?php echo leyka_options()->opt("currency_{$target['currency']}_label");?></span>
                 </div>
 			</div>
 
 			<div class="inpage-card__note supporters">
-                <?php $donations = leyka_get_campaign_donations($campaign_id);
-                $first_donors_names = array();
-                foreach($donations as $donation) { /** @var $donation Leyka_Donation */
-
-                    if(
-                        $donation->donor_name &&
-                        !in_array($donation->donor_name, array(__('Anonymous', 'leyka'), 'Anonymous')) &&
-                        !in_array($donation->donor_name, $first_donors_names)
-                    ) {
-                        $first_donors_names[] = mb_ucfirst($donation->donor_name);
-                    }
-
-                    if(count($first_donors_names) >= 5) { // 5 is a max number of donors names in a list
-                        break;
-                    }
-
-                }
-
-                if(count($first_donors_names)) { // There is at least one donor ?>
-                <strong><?php _e('Supporters:', 'leyka');?></strong>
-                <?php }
-
-                if(count($donations) <= count($first_donors_names)) { // Only names in the list
-                    echo implode(', ', array_slice($first_donors_names, 0, -1))
-                        .' '.__('and', 'leyka').' '.end($first_donors_names);
-                } else { // names list and the number of the rest of donors
-
-                    echo implode(', ', array_slice($first_donors_names, 0, -1)).' '.__('and', 'leyka');
-                    $campaign = get_post($campaign_id);
-
-                    $campaign_donations_permalink = trim(get_permalink($campaign_id), '/');
-                    if(strpos($campaign_donations_permalink, '?')) {
-                        $campaign_donations_permalink = home_url('?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter='.$campaign->post_name);
-                    } else {
-                        $campaign_donations_permalink = $campaign_donations_permalink.'/donations/';
-                    }?>
-
-                    <a href="<?php echo $campaign_donations_permalink;?>" class="history-more">
-                        <?php echo sprintf(__('%d more', 'leyka'), count($donations) - count($first_donors_names));?>
-                    </a>
-
-                <?php }?>
+                <?php leyka_get_supporters_list($campaign_id);?>
 			</div>
 
 			<div class="inpage-card__action">
@@ -230,7 +235,7 @@ function leyka_rev_campaign_top($campaign_id) {
 			<div class="step__fields payments-grid">
 			<!-- hidden field to store choice ? -->
 			<?php
-				$items = array(
+				$items = array( /** @todo Need Anna's consultation on SVG and gulp work on it */
 					'bcard' => array('label' => 'Банковская карта', 'icon' => 'pic-bcard'),
 					'yandex' => array('label' => 'Яндекс.Деньги', 'icon' => 'pic-yandex'),
 					'sber' => array('label' => 'Сбербанк Онлайн', 'icon' => 'pic-sber'),
@@ -258,6 +263,7 @@ function leyka_rev_campaign_top($campaign_id) {
 	<!-- step data -->
 	<div class="step step--person">
 		<div class="step__selection">
+            <!-- @todo The amount & currency are hardcoded! Fill this with JS on the amount step -->
 			<a href="amount" class="leyka-js-another-step">
 				<span class="remembered-amount">500</span>&nbsp;<span class="curr-mark">&#8381;</span>
 				<span class="remembered-monthly">ежемесячно </span>
@@ -266,41 +272,48 @@ function leyka_rev_campaign_top($campaign_id) {
 		</div>
 
 		<div class="step__content step__content--border">
-			<div class="step__title">Кого нам благодарить?</div>
+			<div class="step__title"><?php _e('Who should we thank?', 'leyka');?><!--Кого нам благодарить?--></div>
 
 			<div class="step__fields donor">
 
 				<div class="donor__textfield donor__textfield--name ">
 					<label for="leyka_donor_name">
-						<span class="donor__textfield-label leyka_donor_name-label">Имя</span>
-						<span class="donor__textfield-error leyka_donor_name-error">Укажие имя</span>
+						<span class="donor__textfield-label leyka_donor_name-label"><?php _e('Your name', 'leyka');?></span>
+						<span class="donor__textfield-error leyka_donor_name-error"></span>
 					</label>
 					<input type="text" name="leyka_donor_name" value="" autocomplete="off">
 				</div>
 
 				<div class="donor__textfield donor__textfield--email">
 					<label for="leyka_donor_email">
-						<span class="donor__textfield-label leyka_donor_name-label">Email</span>
-						<span class="donor__textfield-error leyka_donor_email-error">Укажие email в формате test@test.ru</span>
+						<span class="donor__textfield-label leyka_donor_name-label"><?php _e('Your email', 'leyka');?></span>
+						<span class="donor__textfield-error leyka_donor_email-error"></span>
 					</label>
 					<input type="email" name="leyka_donor_email" value="" autocomplete="off">
 				</div>
 
 				<div class="donor__submit">
-					<input type="submit" value="Продолжить">
+					<input type="submit" value="<?php echo leyka_options()->opt_safe('donation_submit_text');?>">
 				</div>
 
+                <?php if(leyka_options()->opt('agree_to_terms_needed')) {?>
 				<div class="donor__oferta">
-					<span><input type="checkbox" name="leyka_agree" value="1" checked="checked">
-					<label for="leyka_agree">Я принимаю  <a href="#" class="leyka-js-oferta-trigger">договор-оферту</a></label></span>
-					<span class="donor__oferta-error leyka_agree-error">Укажите согласие с офертой</span>
+					<span>
+                        <input type="checkbox" name="leyka_agree" value="1" checked="checked">
+                        <label for="leyka_agree">
+                            <?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';?>
+                            <a href="#" class="leyka-js-oferta-trigger"><?php echo apply_filters('agree_to_terms_text_link_part', leyka_options()->opt('agree_to_terms_text_link_part'));?></a>
+                        </label>
+                    </span>
+					<span class="donor__oferta-error leyka_agree-error"></span>
 				</div>
+                <?php }?>
 
 			</div>
 		</div>
 
 		<div class="step__note">
-			<p><a href="http://www.consultant.ru/document/cons_doc_LAW_162595/" target="_blank">110-ФЗ от 5 мая 2014 года</a> обязывает нас спрашивать имя и почту.</p>
+<!--			<p><a href="http://www.consultant.ru/document/cons_doc_LAW_162595/" target="_blank">110-ФЗ от 5 мая 2014 года</a> обязывает нас спрашивать имя и почту.</p>-->
 		</div>
 
 	</div>
@@ -317,42 +330,48 @@ function leyka_rev_campaign_top($campaign_id) {
 						<div class="bounce3"></div>
 					</div>
 				</div>
-				<div class="waiting__card-text">Ждем ответа платежной системы</div>
+				<div class="waiting__card-text">
+				<?php echo apply_filters('leyka_short_gateway_redirect_message', __('Awaiting for the safe payment page redirection...', 'leyka'));?>
+                </div>
 			</div>
 		</div>
 	</div>
 
 	<div class="leyka-pf__oferta ">
-		<div class="leyka-pf__oferta-action"><a href="#" class="leyka-js-oferta-close">Я принимаю договор-оферту</a></div>
+<!--		<div class="leyka-pf__oferta-action"><a href="#" class="leyka-js-oferta-close">Я принимаю договор-оферту</a></div>-->
 		<?php echo apply_filters('leyka_terms_of_service_text', do_shortcode(leyka_options()->opt('terms_of_service_text')));?>
-		<div class="leyka-pf__oferta-action"><a href="#" class="leyka-js-oferta-close">Я принимаю договор-оферту</a></div>
+<!--		<div class="leyka-pf__oferta-action"><a href="#" class="leyka-js-oferta-close">Я принимаю договор-оферту</a></div>-->
+        <!-- @todo We decided that there should be a lower panel with an "I agree" button on the oferta text window -->
 	</div>
 </div><!-- columnt -->
 </div>
-<?php
-	$out = ob_get_contents();
+<?php $out = ob_get_contents();
 	ob_end_clean();
 
 	return $out;
+
 }
 
-function leyka_rev_campaign_bottom($campaign_id) {
+function leyka_rev_campaign_bottom($campaign_id) { ob_start();
 
-	ob_start();
-?>
+    $supported_curr = leyka_get_active_currencies();
+    $collected = leyka_get_campaign_collections($campaign_id);?>
+
 <div data-target="leyka-pf-<?php echo $campaign_id;?>" id="leyka-pf-bottom-<?php echo $campaign_id;?>" class="leyka-pf-bottom bottom-form">
-	<div class="bottom-form__label">Сделайте пожертвование</div>
+	<div class="bottom-form__label"><?php _e('Make a donation', 'leyka');?></div>
 	<div class="bottom-form__fields">
 		<div class="bottom-form__field">
-			<input type="text" value="500" name="leyka_temp_amount">
-			<span class="curr-mark">&#8381;</span>
+			<input type="text" value="<?php echo $supported_curr['rur']['amount_settings']['flexible'];?>" name="leyka_temp_amount">
+            <span class="curr-mark"><?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?></span>
 		</div>
 		<div class="bottom-form__button">
-			<button type="button" class="leyka-js-open-form-bottom">Поддержать</button>
+			<button type="button" class="leyka-js-open-form-bottom">
+                <?php echo leyka_options()->opt('donation_submit_text');?>
+            </button>
 		</div>
 	</div>
 	<div class="bottom-form__note supporters">
-		<strong>Поддержали:</strong> Василий Иванов, Мария Петрова, Семен Луковичный, Даниил Черный, Ольга Богуславская и еще <a href="#" class="history-more">еще 35 человек</a>
+        <?php leyka_get_supporters_list($campaign_id);?>
 	</div>
 </div>
 <?php

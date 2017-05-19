@@ -90,8 +90,8 @@ class Leyka_Payment_Form {
 
             <?php foreach($variants as $amount) {?>
                 <label class="figure" title="<?php _e('Please, specify your donation amount', 'leyka');?>">
-                    <input type="radio" value="<?php echo (int)$amount; ?>"
-                           name="leyka_donation_amount" <?php echo $currency == $current_curr ? '' : 'disabled="disabled"'; ?>>
+                    <input type="radio" value="<?php echo (int)$amount;?>"
+                           name="leyka_donation_amount" <?php echo $currency == $current_curr ? '' : 'disabled="disabled"';?>>
                     <?php echo (int)$amount;?>
                 </label>
                 <?php }
