@@ -1,6 +1,7 @@
 /** == Form elements (_form_elements.scss) == **/
 
 
+
 //OFERTA
 div[id *="leyka-pf-"] {  //aka namespace
 	.leyka-pf__oferta {
@@ -110,6 +111,7 @@ div[id *="leyka-pf-"] {  //aka namespace
 
 .leyka-js .leyka-pf-bottom  {
 	display: block;
+	position: relative;
 
 	padding: $base*4;
 	border: 1px solid $color-border-light;
@@ -194,6 +196,7 @@ div[id *="leyka-pf-"] { //aka namespace
 	}
 
 	.history__row {
+		box-sizing: border-box;
 		padding: 6px 0;
 		display: flex;
 		flex-flow: row wrap;
@@ -206,13 +209,15 @@ div[id *="leyka-pf-"] { //aka namespace
 	}
 
 	.h-amount {
+		box-sizing: border-box;
 		width: 120px;
 		text-align: right;
 		padding-right: $base*2;
 	}
 
 	.h-name {
-		flex: 1 1 auto;
+		box-sizing: border-box;
+		width: calc(100% - 240px);
 		max-width: calc(100% - 120px);
 		overflow: hidden;
 		text-overflow: clip;
@@ -220,6 +225,10 @@ div[id *="leyka-pf-"] { //aka namespace
 		hyphens: none;
 		position: relative;
 		z-index: 1;
+
+		@media screen and (max-width: 500px) {
+			width: calc(100% - 120px);
+		}
 
 		&:after {
 			content: '';
@@ -230,19 +239,20 @@ div[id *="leyka-pf-"] { //aka namespace
 			top: 0;
 			right: 0;
 			background: $color-border-tiny;
+			/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f6f6f6+0,f6f6f6+100&0+0,1+100 */
+background: -moz-linear-gradient(left,  rgba(246,246,246,0) 0%, rgba(246,246,246,1) 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(left,  rgba(246,246,246,0) 0%,rgba(246,246,246,1) 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to right,  rgba(246,246,246,0) 0%,rgba(246,246,246,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00f6f6f6', endColorstr='#f6f6f6',GradientType=1 ); /* IE6-9 */
+
 		}
 	}
 
 	.h-date {
+		box-sizing: border-box;
 		width: 120px;
 		text-align: right;
 		color: $color-text-light;
 		padding-right: $base*2;
-	}
-
-	.history__action {
-		a {
-
-		}
 	}
 }

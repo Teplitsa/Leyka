@@ -57,34 +57,45 @@
 	margin-bottom: $base*3;
 }
 
+/** Card layout **/
+.leyka-pf.card-2col:not(.leyka-pf--active) {
+	.inpage-card {
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: flex-start;
+		align-items: stretch;
+	}
+
+	.inpage-card__thumbframe {
+		flex: 0 1 auto;
+		width: 50%;
+	}
+
+	.inpage-card__content {
+		flex: 0 1 auto;
+		width: 50%;
+	}
+
+	.inpage-card__thumb {
+		height: 100%;
+		padding: 0;
+		border-top-right-radius: 0;
+		border-bottom-right-radius: 0;
+	}
+}
+
 
 /** JS state */
 
 /* Init layout */
 .leyka-js {
 	.leyka-pf__close {
+		@include close-mark(green);
+
 		display: none;
-		font-size: 13px;
-		font-weight: bold;
-		color: $color-text-light;
-		width: 24px;
-		height: 24px;
-		background: transparentize($color-white, 0.1);
-		border-radius: 50%;
-		border: 1px solid $color-border-normal;
 		position: absolute;
 		top: 4px;
 		right: 4px;
-		text-align: center;
-		line-height: 20px;
-		vertical-align: middle;
-		cursor: pointer;
-
-		&:hover {
-			color: $color-white;
-			background: $color-main;
-			border-color: $color-main;
-		}
 	}
 
 	.leyka-pf__overlay {
@@ -353,14 +364,24 @@
 }
 
 /** History **/
+.bottom-form__history,
 .inpage-card__history {
-	display: none;
+	visibility: hidden;
+	z-index: -1;
+	opacity: 0;
+	transition: opacity 0.35s;
+	padding: $base*3 $base*2;
+	position: absolute;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	top: 0;
 }
 
 .leyka-js {
 	//in page
 	.inpage-card {
-		postion: relative;
+		position: relative;
 	}
 
 	.leyka-pf--history-open {
@@ -369,16 +390,30 @@
 			@inlcude module-height();
 		}
 
+		&.leyka-pf-bottom {
+			min-height: 460px;
+		}
+
+		.bottom-form__history ,
 		.inpage-card__history {
-			display: block;
-			padding: $base*3 $base*2;
-			position: absolute;
-			height: 100%;
-			width: 100%;
+			visibility: visible;
+			z-index: 100;
+			opacity: 1;
+
 			border-radius: 10px;
 			background: $color-border-tiny;
-			top: 0;
-			left: 0;
+		}
+
+		.inpage-card__history {
+			height: calc(100% + 1px);
+			top: -1px;
+		}
+
+		.history__close {
+			@include close-mark();
+			position: absolute;
+			top: 4px;
+			right: 4px;
 		}
 
 		.history__title {
@@ -417,7 +452,8 @@
 	//in open module
 	.leyka-pf--active.leyka-pf--history-open {
 		.inpage-card__history {
-			display: block;
+			border-top-right-radius: 0;
+			border-bottom-right-radius: 0;
 		}
 	}
 }

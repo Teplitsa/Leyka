@@ -17,8 +17,8 @@ jQuery(document).ready(function($){
 		e.preventDefault();
 		var pf = $(this).parents('.leyka-pf');
 
-		if(pf.hasClass('leyka-pf--oferta')){ //close only oferta
-			pf.removeClass('leyka-pf--oferta');
+		if(pf.hasClass('leyka-pf--oferta-open')){ //close only oferta
+			pf.removeClass('leyka-pf--oferta-open');
 
 		}
 		else { //close module
@@ -317,6 +317,40 @@ jQuery(document).ready(function($){
 
 	});
 
+	/* history */
+	$('.leyka-js-history-close').on('click', function(e){
+		e.preventDefault();
+
+		$(this).parents('.leyka-pf--history-open').removeClass('leyka-pf--history-open');
+	});
+
+	$('.leyka-js-history-more').on('click', function(e){
+		e.preventDefault();
+		$(this).parents('.leyka-pf, .leyka-pf-bottom').addClass('leyka-pf--history-open');
+	});
+
+	/* resize event */
+	function leyka_inpage_card_columns() {
+
+		var form = $('.leyka-pf');
+		form.each(function(){
+			var w = $('.leyka-pf').width();
+
+			if(w >= 600) {
+				$(this).addClass('card-2col');
+			}
+			else{
+				$(this).removeClass('card-2col');
+			}
+		});
+	}
+
+	leyka_inpage_card_columns();
+
+	//resize event
+	$(window).resize(function(){
+		leyka_inpage_card_columns();
+	});
 
 }); //jQuery
 

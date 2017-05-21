@@ -122,7 +122,7 @@ function leyka_rev_campaign_top($campaign_id) {
 	//$currency = "<span class='curr-mark'>РУБ.</span>";
 
 ?>
-<div id="leyka-pf-<?php echo $campaign_id;?>" class="leyka-pf leyka-pf--history-open">
+<div id="leyka-pf-<?php echo $campaign_id;?>" class="leyka-pf">
 <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
 <div class="leyka-pf__overlay"></div>
 
@@ -130,7 +130,7 @@ function leyka_rev_campaign_top($campaign_id) {
 	<div class="leyka-pf__close leyka-js-close-form">x</div>
 	<div class="leyka-pf__card inpage-card">
 		<?php  if($thumb_url) { //add other terms ?>
-			<div class="inpage-card__thumb" style="background-image: url(<?php echo $thumb_url;?>);"></div>
+			<div class="inpage-card__thumbframe"><div class="inpage-card__thumb" style="background-image: url(<?php echo $thumb_url;?>);"></div></div>
 		<?php  } ?>
 
 		<div class="inpage-card__content">
@@ -144,7 +144,7 @@ function leyka_rev_campaign_top($campaign_id) {
 			</div>
 
 			<div class="inpage-card__note supporters">
-				<strong>Поддержали:</strong> Василий Иванов, Мария Петрова, Семен Луковичный, Даниил Черный, Ольга Богуславская и <a href="#" class="history-more">еще 35 человек</a>
+				<strong>Поддержали:</strong> Василий Иванов, Мария Петрова, Семен Луковичный, Даниил Черный, Ольга Богуславская и <a href="#" class="leyka-js-history-more">еще 35 человек</a>
 			</div>
 
 			<div class="inpage-card__action">
@@ -153,6 +153,7 @@ function leyka_rev_campaign_top($campaign_id) {
 		</div>
 
 		<div class="inpage-card__history history">
+			<div class="history__close leyka-js-history-close">x</div>
 			<div class="history__title">Мы благодарим</div>
 			<div class="history__list">
 				<div class="history__list-flow"><?php echo leyka_donation_history_list($campaign_id);?></div>
@@ -183,7 +184,7 @@ function leyka_rev_campaign_top($campaign_id) {
 			<input type="hidden" name="monthly" value="0">
 
 			<div class="amount__icon">
-				<svg class="svg-icon pic-money-middle"><use xlink:href="#pic-money-middle" /></svg>
+				<svg class="svg-icon icon-money-size3"><use xlink:href="#icon-money-size3" /></svg>
 				<div class="amount__error">Укажите сумму от 10 до 30&nbsp;000 <?php echo $currency;?></div>
 			</div>
 
@@ -339,10 +340,11 @@ function leyka_rev_campaign_bottom($campaign_id) {
 		</div>
 	</div>
 	<div class="bottom-form__note supporters">
-		<strong>Поддержали:</strong> Василий Иванов, Мария Петрова, Семен Луковичный, Даниил Черный, Ольга Богуславская и еще <a href="#" class="history-more">еще 35 человек</a>
+		<strong>Поддержали:</strong> Василий Иванов, Мария Петрова, Семен Луковичный, Даниил Черный, Ольга Богуславская и еще <a href="#" class="leyka-js-history-more">еще 35 человек</a>
 	</div>
 
 	<div class="bottom-form__history history">
+		<div class="history__close leyka-js-history-close">x</div>
 		<div class="history__title">Мы благодарим</div>
 		<div class="history__list">
 			<div class="history__list-flow"><?php echo leyka_donation_history_list($campaign_id);?></div>
