@@ -6,8 +6,15 @@
  **/
 
 //add form JS/CSS to campaign page
-add_filter('the_content', 'leyka_rev_campaign_page');
-function leyka_rev_campaign_page($content) {
+add_action('wp_head', function(){
+
+	if(is_singular('leyka_campaign') && isset($_GET['rev']) && (int)$_GET['rev'] >= 21) {
+		remove_filter('the_content', 'leyka_print_donation_elements');
+		add_filter('the_content', 'leyka_rev2_campaign_page');
+	}
+});
+
+function leyka_rev2_campaign_page($content) {
 
 	if(!is_singular('leyka_campaign'))
 		return $content;
@@ -16,17 +23,17 @@ function leyka_rev_campaign_page($content) {
 	$before = '';
 	$after = '';
 
-	if(isset($_GET['rev']) && (int)$_GET['rev'] >= 1) {
-		$before = leyka_rev_campaign_top($campaign_id);
-		$after = leyka_rev_campaign_bottom($campaign_id);
+	if(isset($_GET['rev']) && (int)$_GET['rev'] >= 21) {
+		$before = leyka_rev2_campaign_top($campaign_id);
+		$after = leyka_rev2_campaign_bottom($campaign_id);
 	}
 
 
 	return $before.$content.$after;
 }
 
-add_action('wp_enqueue_scripts', 'leyka_rev_cssjs');
-function leyka_rev_cssjs() {
+add_action('wp_enqueue_scripts', 'leyka_rev2_cssjs');
+function leyka_rev2_cssjs() {
 	//for dev just load them everywhere
 
 	wp_enqueue_style(
@@ -54,7 +61,7 @@ function leyka_rev_cssjs() {
 add_action('wp_head', 'leyka_inline_scripts');
 function leyka_inline_scripts() {
 
-	if(isset($_GET['rev']) && (int)$_GET['rev'] == 1) {
+	if(isset($_GET['rev']) && (int)$_GET['rev'] == 21) {
 		$colors = array('#1db318', '#1aa316', '#8ae724');
 	} else {
 		$colors = array('#07C7FD', '#05A6D3', '#8CE4FD');
@@ -111,7 +118,7 @@ function leyka_donation_history_list($campaign_id) {
 	return $out;
 }
 
-function leyka_rev_campaign_top($campaign_id) {
+function leyka_rev2_campaign_top($campaign_id) {
 
 	//add option if we need thumb
 	$thumb_url = get_the_post_thumbnail_url($campaign_id, 'post-thumbnail');
@@ -322,7 +329,7 @@ function leyka_rev_campaign_top($campaign_id) {
 }
 
 
-function leyka_rev_campaign_bottom($campaign_id) {
+function leyka_rev2_campaign_bottom($campaign_id) {
 
 	$currency = "<span class='curr-mark'>&#8381;</span>";
 

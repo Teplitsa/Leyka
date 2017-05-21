@@ -91,6 +91,7 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-shortcodes.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-widgets.php');
 
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-revolution.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-revolution2.php');
 
 /** Automatically include all sub-dirs of /leyka/gateways/ */
 $gateways_dir = dir(LEYKA_PLUGIN_DIR.'gateways/');

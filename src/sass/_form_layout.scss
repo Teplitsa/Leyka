@@ -69,6 +69,8 @@
 	.inpage-card__thumbframe {
 		flex: 0 1 auto;
 		width: 50%;
+		border-top-left-radius: 10px;
+		border-bottom-left-radius: 10px;
 	}
 
 	.inpage-card__content {
@@ -81,6 +83,8 @@
 		padding: 0;
 		border-top-right-radius: 0;
 		border-bottom-right-radius: 0;
+		border-top-left-radius: 10px;
+		border-bottom-left-radius: 10px;
 	}
 }
 
@@ -385,13 +389,10 @@
 	}
 
 	.leyka-pf--history-open {
+		&.leyka-pf-bottom { @include module-height(); }
 
 		.inpage-card {
-			@inlcude module-height();
-		}
-
-		&.leyka-pf-bottom {
-			min-height: 460px;
+			@include module-height();
 		}
 
 		.bottom-form__history ,
