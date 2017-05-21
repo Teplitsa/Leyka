@@ -18,7 +18,7 @@
   "devDependencies": {
     "del": "^2.0.2",
     "event-stream": "^3.3.1",
-    "gulp": "^3.9.0",
+    "gulp": "^3.9.1",
     "gulp-autoprefixer": "^2.3.1",
     "gulp-cheerio": "^0.6.2",
     "gulp-concat": "^2.6.0",
@@ -39,7 +39,5 @@
     "relative-path": "^1.0.0",
     "run-sequence": "^1.1.2"
   },
-  "dependencies": {
-    
-  }
+  "dependencies": {}
 }

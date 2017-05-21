@@ -10,22 +10,22 @@ class Leyka_Payment_Form {
 	protected $_form_action;
 	protected $_current_currency; // Current currency in the view
 
-	public function __construct(Leyka_Payment_Method $payment_method, $current_currency = null) {
+	public function __construct(Leyka_Payment_Method $payment_method = null, $current_currency = null) {
 
         if( !leyka()->form_is_screening ) {
             leyka()->form_is_screening = true;
         }
 
-        $this->_pm = $payment_method;
-        $this->_pm_name = $payment_method->id;
+        $this->_pm = $payment_method ? $payment_method : false;
+        $this->_pm_name = $payment_method ? $payment_method->id : false;
 
 		$this->_current_currency = $current_currency;
 		$this->_form_action = get_option('permalink_structure') ?
 			home_url('leyka-process-donation') : home_url('?page=leyka-process-donation');
+
 	}
 
 	public function __get($name) {
-
 		switch($name) {
 			case 'id': return $this->_pm ? $this->_pm->id : false;
 			case 'full_id': return $this->_pm ? $this->_pm->full_id : false;
@@ -34,9 +34,6 @@ class Leyka_Payment_Form {
 		}
 	}
 
-	/**
-	 * Global Form params
-	 **/
     public function get_form_id() {
 		return 'leyka-form-'.$this->_pm_name;
 	}
@@ -92,9 +89,9 @@ class Leyka_Payment_Form {
                 $variants = explode(',', $data['amount_settings']['fixed']);?>
 
             <?php foreach($variants as $amount) {?>
-                <label class="figure" title="<?php _e('Please, specify your donation amount', 'leyka'); ?>">
-                    <input type="radio" value="<?php echo (int)$amount; ?>"
-                           name="leyka_donation_amount" <?php echo $currency == $current_curr ? '' : 'disabled="disabled"'; ?>>
+                <label class="figure" title="<?php _e('Please, specify your donation amount', 'leyka');?>">
+                    <input type="radio" value="<?php echo (int)$amount;?>"
+                           name="leyka_donation_amount" <?php echo $currency == $current_curr ? '' : 'disabled="disabled"';?>>
                     <?php echo (int)$amount;?>
                 </label>
                 <?php }
