@@ -6,8 +6,15 @@
  **/
 
 //add form JS/CSS to campaign page
-add_filter('the_content', 'leyka_rev_campaign_page');
-function leyka_rev_campaign_page($content) {
+add_action('wp_head', function(){
+
+	if(is_singular('leyka_campaign') && isset($_GET['rev']) && (int)$_GET['rev'] >= 21) {
+		remove_filter('the_content', 'leyka_print_donation_elements');
+		add_filter('the_content', 'leyka_rev2_campaign_page');
+	}
+});
+
+function leyka_rev2_campaign_page($content) {
 
 	if(!is_singular('leyka_campaign'))
 		return $content;
@@ -16,17 +23,17 @@ function leyka_rev_campaign_page($content) {
 	$before = '';
 	$after = '';
 
-	if(isset($_GET['rev']) && (int)$_GET['rev'] == 1) {
-		$before = leyka_rev_campaign_top($campaign_id);
-		$after = leyka_rev_campaign_bottom($campaign_id);
+	if(isset($_GET['rev']) && (int)$_GET['rev'] >= 21) {
+		$before = leyka_rev2_campaign_top($campaign_id);
+		$after = leyka_rev2_campaign_bottom($campaign_id);
 	}
 
 
 	return $before.$content.$after;
 }
 
-add_action('wp_enqueue_scripts', 'leyka_rev_cssjs');
-function leyka_rev_cssjs() {
+add_action('wp_enqueue_scripts', 'leyka_rev2_cssjs');
+function leyka_rev2_cssjs() {
 	//for dev just load them everywhere
 
 	wp_enqueue_style(
@@ -51,18 +58,68 @@ function leyka_rev_cssjs() {
     wp_localize_script('leyka-rev', 'leykarev', $js_data);
 }
 
-add_action('wp_head', 'leyka_inline_js');
-function leyka_inline_js() {
+add_action('wp_head', 'leyka_inline_scripts');
+function leyka_inline_scripts() {
 
-//detect if we have JS
+	if(isset($_GET['rev']) && (int)$_GET['rev'] == 21) {
+		$colors = array('#1db318', '#1aa316', '#8ae724');
+	} else {
+		$colors = array('#07C7FD', '#05A6D3', '#8CE4FD');
+	}
+
+	//detect if we have JS
 ?>
 <script>
 	document.documentElement.classList.add("leyka-js");
 </script>
+<style>
+	:root {
+		--color-main: 		<?php echo $colors[0];?>;
+		--color-main-dark: 	<?php echo $colors[1];?>;
+		--color-main-light: <?php echo $colors[2];?>;
+	}
+</style>
 <?php
 }
 
-function leyka_get_supporters_list($campaign_id) {
+/** Templates **/
+function leyka_donation_history_list($campaign_id) {
+
+	$currency = "<span class='curr-mark'>&#8381;</span>";
+
+	//dummy history items
+	$history = array(
+		array(1000, 'Василий Иванов', '12.05.2017'),
+		array(1500, 'Мария Петрова', '11.05.2017'),
+		array(300, 'Семен Луковичный', '08.05.2017'),
+		array(350, 'Даниил Черный', '08.05.2017'),
+		array(300, 'Ольга Богуславская', '08.05.2017'),
+		array(1000, 'Мария Разумовская-Розенберг', '05.05.2017'),
+		array(10000, 'Анонимное пожертвование', '02.05.2017')
+	);
+
+	for($i=0; $i<2; $i++) {
+		$history = array_merge($history, $history);
+	}
+
+	ob_start();
+
+	foreach($history as $h) { ?>
+	<div class="history__row">
+		<div class="history__cell h-amount"><?php echo number_format($h[0], 2, '.', ' ').' '.$currency;?></div>
+		<div class="history__cell h-name"><?php echo $h[1];?></div>
+		<div class="history__cell h-date"><?php echo $h[2];?></div>
+	</div>
+<?php }
+
+	$out = ob_get_contents();
+	ob_end_clean();
+
+	return $out;
+}
+
+
+function leyka_rev2_get_supporters_list($campaign_id) {
 
     $donations = leyka_get_campaign_donations($campaign_id);
     $first_donors_names = array();
@@ -101,7 +158,7 @@ function leyka_get_supporters_list($campaign_id) {
             $campaign_donations_permalink = $campaign_donations_permalink.'/donations/';
         }?>
 
-        <a href="<?php echo $campaign_donations_permalink;?>" class="history-more">
+        <a href="<?php echo $campaign_donations_permalink;?>" class="leyka-js-history-more">
             <?php echo sprintf(__('%d more', 'leyka'), count($donations) - count($first_donors_names));?>
         </a>
 
@@ -109,13 +166,19 @@ function leyka_get_supporters_list($campaign_id) {
 
 }
 
-/** Templates **/
-function leyka_rev_campaign_top($campaign_id) {
 
+
+function leyka_rev2_campaign_top($campaign_id) {
+
+	//add option if we need thumb
 	$thumb_url = get_the_post_thumbnail_url($campaign_id, 'post-thumbnail');
 
-	ob_start();?>
+	ob_start();
 
+	$currency = "<span class='curr-mark'>&#8381;</span>";
+	//$currency = "<span class='curr-mark'>РУБ.</span>";
+
+?>
 <div id="leyka-pf-<?php echo $campaign_id;?>" class="leyka-pf">
 <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
 <div class="leyka-pf__overlay"></div>
@@ -123,9 +186,9 @@ function leyka_rev_campaign_top($campaign_id) {
 <div class="leyka-pf__module">
 	<div class="leyka-pf__close leyka-js-close-form">x</div>
 	<div class="leyka-pf__card inpage-card">
-		<?php if($thumb_url) { //add other terms ?>
-			<div class="inpage-card__thumb" style="background-image: url(<?php echo $thumb_url;?>);"></div>
-		<?php  }?>
+		<?php  if($thumb_url) { //add other terms ?>
+			<div class="inpage-card__thumbframe"><div class="inpage-card__thumb" style="background-image: url(<?php echo $thumb_url;?>);"></div></div>
+		<?php  } ?>
 
 		<div class="inpage-card__content">
 			<div class="inpage-card_title"><?php echo get_the_title($campaign_id);?></div>
@@ -150,11 +213,24 @@ function leyka_rev_campaign_top($campaign_id) {
 			</div>
 
 			<div class="inpage-card__note supporters">
-                <?php leyka_get_supporters_list($campaign_id);?>
+				<?php leyka_rev2_get_supporters_list($campaign_id);?>
 			</div>
 
 			<div class="inpage-card__action">
 				<button type="button" class="leyka-js-open-form"><?php echo leyka_options()->opt('donation_submit_text');?></button>
+			</div>
+		</div>
+
+		<div class="inpage-card__history history">
+			<div class="history__close leyka-js-history-close">x</div>
+			<div class="history__title">Мы благодарим</div>
+			<div class="history__list">
+				<div class="history__list-flow"><?php echo leyka_donation_history_list($campaign_id);?></div>
+			</div>
+			<div class="history__action">
+				<!-- link to full history page -->
+				<?php  $all = trailingslashit(get_permalink($campaign_id)).'donations/';?>
+				<a href="<?php echo $all;?>">Показать весь список</a>
 			</div>
 		</div>
 	</div>
@@ -163,18 +239,15 @@ function leyka_rev_campaign_top($campaign_id) {
 
 	<form action="#" method="post" novalidate="novalidate">
 
-    <!-- Step 1: amount -->
+	<!-- Step 1: amount -->
 
     <?php $supported_curr = leyka_get_active_currencies();?>
-
 	<div class="step step--amount step--active">
-		<div class="step__selection"></div>
 
-		<div class="step__content">
-			<div class="step__title"><?php _e('Donation amount', 'leyka');?></div>
+		<div class="step__title step__title--amount"><?php _e('Donation amount', 'leyka');?></div>
 
-			<div class="step__fields amount">
-            <?php
+		<div class="step__fields amount">
+			<?php
                 $amount_default = $supported_curr['rur']['amount_settings']['flexible'];
                 $amount_min = $supported_curr['rur']['bottom'];
                 $amount_max = $supported_curr['rur']['top'];
@@ -185,27 +258,30 @@ function leyka_rev_campaign_top($campaign_id) {
                 <input type="hidden" name="top_rur" value="<?php echo $amount_max;?>">
                 <input type="hidden" name="bottom_rur" value="<?php echo $amount_min;?>">
 
-				<div class="amount__figure">
-					<input type="text" name="leyka_donation_amount" value="<?php echo $amount_default;?>" autocomplete="off" placeholder="<?php echo apply_filters('leyka_form_free_amount_placeholder', $amount_default);?>">
+
+			<div class="amount__figure">
+				<input type="text" name="leyka_donation_amount" value="<?php echo $amount_default;?>" autocomplete="off" placeholder="<?php echo apply_filters('leyka_form_free_amount_placeholder', $amount_default);?>">
 					<span class="curr-mark"><?php echo $currency_label;?></span>
-					<input type="hidden" name="monthly" value="0"> <!-- @todo Check if this field is needed -->
-				</div>
-
-				<div class="amount__icon">
-					<svg class="svg-icon pic-money-middle"><use xlink:href="#pic-money-middle"></svg>
-					<div class="leyka_donation_amount-error field-error amount__error">
-                        <?php echo sprintf(__('Set an amount from %s to %s <span class="curr-mark">%s</span>', 'leyka'), $amount_min, $amount_max, $currency_label);?>
-                    </div> <!-- @todo The error text is hardcoded. Remove it in favor of the normal frontend validation -->
-				</div>
-
-				<div class="amount_range">
-					<input name="amount-range" type="range" min="<?php echo $amount_min;?>" max="<?php echo $amount_max;?>" step="1" value="<?php echo $amount_default;?>">
-				</div>
-
 			</div>
 
-			<div class="step__action">
-            <?php if(leyka_is_recurring_supported()) {?>
+			<input type="hidden" name="monthly" value="0"><!-- @todo Check if this field is needed -->
+
+			<div class="amount__icon">
+				<svg class="svg-icon icon-money-size3"><use xlink:href="#icon-money-size3" /></svg>
+				<div class="leyka_donation_amount-error field-error amount__error">
+                        <?php echo sprintf(__('Set an amount from %s to %s <span class="curr-mark">%s</span>', 'leyka'), $amount_min, $amount_max, $currency_label);?>
+                    </div> <!-- @todo The error text is hardcoded. Remove it in favor of the normal frontend validation -->
+			</div>
+
+			<div class="amount_range">
+				<input name="amount-range" type="range" min="<?php echo $amount_min;?>" max="<?php echo $amount_max;?>" step="200" value="<?php echo $amount_default;?>">
+				<!-- @todo step also shoud be calculated -->
+			</div>
+
+		</div>
+
+		<div class="step__action step__action--amount">
+			<?php if(leyka_is_recurring_supported()) {?>
 
                 <a href="cards" class="leyka-js-amount"><?php _e('Support once-only', 'leyka');?></a>
                 <a href="person" class="leyka-js-amount monthly">
@@ -215,71 +291,65 @@ function leyka_rev_campaign_top($campaign_id) {
             <?php } else {?>
                 <a href="cards" class="leyka-js-amount"><?php _e('Select a payment method', 'leyka');?></a>
             <?php }?>
-
-			</div>
 		</div>
 	</div>
 
 	<!-- step pm -->
 	<div class="step step--cards">
+
 		<div class="step__selection">
-            <!-- @todo The amount & currency are hardcoded! Fill this with JS on the amount step -->
 			<a href="amount" class="leyka-js-another-step">
-				<span class="remembered-amount">500</span>&nbsp;<span class="curr-mark">&#8381;</span>
+				<span class="remembered-amount">500</span>&nbsp;<?php echo $currency;?>
 			</a>
 		</div>
 
-		<div class="step__content">
-			<div class="step__title"><?php _e('Payment method', 'leyka');?></div>
+		<div class="step__title"><?php _e('Payment method', 'leyka');?></div>
 
-			<div class="step__fields payments-grid">
-			<!-- hidden field to store choice ? -->
-			<?php
-				$items = array( /** @todo Need Anna's consultation on SVG and gulp work on it */
-					'bcard' => array('label' => 'Банковская карта', 'icon' => 'pic-bcard'),
-					'yandex' => array('label' => 'Яндекс.Деньги', 'icon' => 'pic-yandex'),
-					'sber' => array('label' => 'Сбербанк Онлайн', 'icon' => 'pic-sber'),
-					'check' => array('label' => 'Квитанция', 'icon' => 'pic-check'),
-				);
+		<div class="step__fields payments-grid">
+		<!-- hidden field to store choice ? -->
+		<?php
+			$items = array(/** @todo Need Anna's consultation on SVG and gulp work on it */
+				'bcard' => array('label' => 'Банковская карта', 'icon' => 'pic-bcard'),
+				'yandex' => array('label' => 'Яндекс.Деньги', 'icon' => 'pic-yandex'),
+				'sber' => array('label' => 'Сбербанк Онлайн', 'icon' => 'pic-sber'),
+				'check' => array('label' => 'Квитанция', 'icon' => 'pic-check'),
+			);
 
-				foreach($items as $key => $item) {?>
-
-				<div class="payment-opt">
-					<label class="payment-opt__button">
-						<input class="payment-opt__radio" name="payment_option" value="<?php echo esc_attr($key);?>" type="radio">
-						<span class="payment-opt__icon">
-							<svg class="svg-icon <?php echo esc_attr($item['icon']);?>"><use xlink:href="#<?php echo esc_attr($item['icon']);?>"></svg>
-						</span>
-					</label>
-					<span class="payment-opt__label"><?php echo $item['label'];?></span>
-				</div>
-
-			<?php }?>
-
+			foreach($items as $key => $item) {
+		?>
+			<div class="payment-opt">
+				<label class="payment-opt__button">
+					<input class="payment-opt__radio" name="payment_option" value="<?php echo esc_attr($key);?>" type="radio">
+					<span class="payment-opt__icon">
+						<svg class="svg-icon <?php echo esc_attr($item['icon']);?>"><use xlink:href="#<?php echo esc_attr($item['icon']);?>"/></svg>
+					</span>
+				</label>
+				<span class="payment-opt__label"><?php echo $item['label'];?></span>
 			</div>
+		<?php } ?>
 		</div>
+
 	</div>
 
 	<!-- step data -->
 	<div class="step step--person">
+
 		<div class="step__selection">
-            <!-- @todo The amount & currency are hardcoded! Fill this with JS on the amount step -->
 			<a href="amount" class="leyka-js-another-step">
-				<span class="remembered-amount">500</span>&nbsp;<span class="curr-mark">&#8381;</span>
+				<span class="remembered-amount">500</span>&nbsp;<?php echo $currency;?>
 				<span class="remembered-monthly">ежемесячно </span>
 			</a>
 			<a href="cards" class="leyka-js-another-step"><span class="remembered-payment">Банковская карта</span></a>
 		</div>
 
-		<div class="step__content step__content--border">
+		<div class="step__border">
 			<div class="step__title"><?php _e('Who should we thank?', 'leyka');?><!--Кого нам благодарить?--></div>
-
 			<div class="step__fields donor">
 
 				<div class="donor__textfield donor__textfield--name ">
 					<label for="leyka_donor_name">
 						<span class="donor__textfield-label leyka_donor_name-label"><?php _e('Your name', 'leyka');?></span>
-						<span class="donor__textfield-error leyka_donor_name-error"></span>
+						<span class="donor__textfield-error leyka_donor_name-error">Укажие имя</span>
 					</label>
 					<input type="text" name="leyka_donor_name" value="" autocomplete="off">
 				</div>
@@ -287,7 +357,7 @@ function leyka_rev_campaign_top($campaign_id) {
 				<div class="donor__textfield donor__textfield--email">
 					<label for="leyka_donor_email">
 						<span class="donor__textfield-label leyka_donor_name-label"><?php _e('Your email', 'leyka');?></span>
-						<span class="donor__textfield-error leyka_donor_email-error"></span>
+						<span class="donor__textfield-error leyka_donor_email-error">Укажие email в формате test@test.ru</span>
 					</label>
 					<input type="email" name="leyka_donor_email" value="" autocomplete="off">
 				</div>
@@ -296,24 +366,20 @@ function leyka_rev_campaign_top($campaign_id) {
 					<input type="submit" value="<?php echo leyka_options()->opt_safe('donation_submit_text');?>">
 				</div>
 
-                <?php if(leyka_options()->opt('agree_to_terms_needed')) {?>
+				<?php if(leyka_options()->opt('agree_to_terms_needed')) {?>
 				<div class="donor__oferta">
-					<span>
-                        <input type="checkbox" name="leyka_agree" value="1" checked="checked">
-                        <label for="leyka_agree">
-                            <?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';?>
-                            <a href="#" class="leyka-js-oferta-trigger"><?php echo apply_filters('agree_to_terms_text_link_part', leyka_options()->opt('agree_to_terms_text_link_part'));?></a>
-                        </label>
-                    </span>
-					<span class="donor__oferta-error leyka_agree-error"></span>
+					<span><input type="checkbox" name="leyka_agree" value="1" checked="checked">
+					<label for="leyka_agree">
+					<?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';?>
+                            <a href="#" class="leyka-js-oferta-trigger"><?php echo apply_filters('agree_to_terms_text_link_part', leyka_options()->opt('agree_to_terms_text_link_part'));?></a></label></span>
+					<div class="donor__oferta-error leyka_agree-error">Укажите согласие с офертой</div>
 				</div>
-                <?php }?>
-
+				<?php }?>
 			</div>
 		</div>
 
 		<div class="step__note">
-<!--			<p><a href="http://www.consultant.ru/document/cons_doc_LAW_162595/" target="_blank">110-ФЗ от 5 мая 2014 года</a> обязывает нас спрашивать имя и почту.</p>-->
+			<p><a href="http://www.consultant.ru/document/cons_doc_LAW_162595/" target="_blank">110-ФЗ от 5 мая 2014 года</a> обязывает нас спрашивать имя и почту.</p>
 		</div>
 
 	</div>
@@ -330,33 +396,35 @@ function leyka_rev_campaign_top($campaign_id) {
 						<div class="bounce3"></div>
 					</div>
 				</div>
-				<div class="waiting__card-text">
-				<?php echo apply_filters('leyka_short_gateway_redirect_message', __('Awaiting for the safe payment page redirection...', 'leyka'));?>
-                </div>
+				<div class="waiting__card-text"><?php echo apply_filters('leyka_short_gateway_redirect_message', __('Awaiting for the safe payment page redirection...', 'leyka'));?></div>
 			</div>
 		</div>
 	</div>
 
-	<div class="leyka-pf__oferta ">
-<!--		<div class="leyka-pf__oferta-action"><a href="#" class="leyka-js-oferta-close">Я принимаю договор-оферту</a></div>-->
-		<?php echo apply_filters('leyka_terms_of_service_text', do_shortcode(leyka_options()->opt('terms_of_service_text')));?>
-<!--		<div class="leyka-pf__oferta-action"><a href="#" class="leyka-js-oferta-close">Я принимаю договор-оферту</a></div>-->
-        <!-- @todo We decided that there should be a lower panel with an "I agree" button on the oferta text window -->
+	<div class="leyka-pf__oferta oferta">
+		<div class="oferta__frame">
+			<div class="oferta__flow"><?php echo apply_filters('leyka_terms_of_service_text', do_shortcode(leyka_options()->opt('terms_of_service_text')));?></div>
+		</div>
+		<div class="oferta__action"><a href="#" class="leyka-js-oferta-close">Я принимаю договор-оферту</a></div>
 	</div>
 </div><!-- columnt -->
 </div>
-<?php $out = ob_get_contents();
+<?php
+	$out = ob_get_contents();
 	ob_end_clean();
 
 	return $out;
-
 }
 
-function leyka_rev_campaign_bottom($campaign_id) { ob_start();
 
-    $supported_curr = leyka_get_active_currencies();
-    $collected = leyka_get_campaign_collections($campaign_id);?>
+function leyka_rev2_campaign_bottom($campaign_id) {
 
+	$currency = "<span class='curr-mark'>&#8381;</span>";
+	$supported_curr = leyka_get_active_currencies();
+    $collected = leyka_get_campaign_collections($campaign_id);
+
+	ob_start();
+?>
 <div data-target="leyka-pf-<?php echo $campaign_id;?>" id="leyka-pf-bottom-<?php echo $campaign_id;?>" class="leyka-pf-bottom bottom-form">
 	<div class="bottom-form__label"><?php _e('Make a donation', 'leyka');?></div>
 	<div class="bottom-form__fields">
@@ -365,13 +433,24 @@ function leyka_rev_campaign_bottom($campaign_id) { ob_start();
             <span class="curr-mark"><?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?></span>
 		</div>
 		<div class="bottom-form__button">
-			<button type="button" class="leyka-js-open-form-bottom">
-                <?php echo leyka_options()->opt('donation_submit_text');?>
-            </button>
+			<button type="button" class="leyka-js-open-form-bottom"><?php echo leyka_options()->opt('donation_submit_text');?></button>
 		</div>
 	</div>
 	<div class="bottom-form__note supporters">
-        <?php leyka_get_supporters_list($campaign_id);?>
+		<?php leyka_rev2_get_supporters_list($campaign_id);?>
+	</div>
+
+	<div class="bottom-form__history history">
+		<div class="history__close leyka-js-history-close">x</div>
+		<div class="history__title">Мы благодарим</div>
+		<div class="history__list">
+			<div class="history__list-flow"><?php echo leyka_donation_history_list($campaign_id);?></div>
+		</div>
+		<div class="history__action">
+			<!-- link to full history page -->
+			<?php  $all = trailingslashit(get_permalink($campaign_id)).'donations/';?>
+			<a href="<?php echo $all;?>">Показать весь список</a>
+		</div>
 	</div>
 </div>
 <?php
