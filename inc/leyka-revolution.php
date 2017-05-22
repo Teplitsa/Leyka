@@ -135,7 +135,7 @@ function leyka_rev_campaign_top($campaign_id) {
                 <?php $collected = leyka_get_campaign_collections($campaign_id);
                 $target = leyka_get_campaign_target($campaign_id);
 
-                $ready = round(100.0*$collected['amount']/$target['amount'], 1);
+                $ready = (isset($target['amount']) && $target['amount']) ? round(100.0*$collected['amount']/$target['amount'], 1) : 0;
                 $ready = $ready >= 100.0 ? 100.0 : $ready;?>
 
 				<div class="scale"><div class="progress <?php echo $ready >= 100.0 ? 'fin' : '';?>" style="width:<?php echo $ready;?>%;"></div></div>

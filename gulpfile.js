@@ -41,7 +41,8 @@ var changeEvent = function(evt) {
 //js
 gulp.task('build-js', function() {
     var vendorFiles = [],
-        appFiles = [basePaths.src+'js/front-main*']; //our own JS files
+//        appFiles = [basePaths.src+'js/front-main*']; //our own JS files
+        appFiles = [basePaths.src+'js/refactored/front/*']; //our own JS files    
 
     return gulp.src(vendorFiles.concat(appFiles)) //join them
         .pipe(plugins.filter('*.js'))//select only .js ones
@@ -181,7 +182,10 @@ gulp.task('watch', function(){
     gulp.watch([basePaths.src+'sass/*.scss', basePaths.src+'sass/**/*.scss'], ['full-build-css']).on('change', function(evt) {
         changeEvent(evt);
     });
-    gulp.watch(basePaths.src+'js/*.js', ['full-build-js']).on('change', function(evt) {
+//    gulp.watch(basePaths.src+'js/*.js', ['full-build-js']).on('change', function(evt) {
+//        changeEvent(evt);
+//    });
+    gulp.watch([basePaths.src+'js/*.js', basePaths.src+'js/refactored/front/*.js'], ['full-build-js']).on('change', function(evt) {
         changeEvent(evt);
     });
 });
