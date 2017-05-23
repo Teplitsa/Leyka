@@ -44,7 +44,12 @@ $_SERVER = array(
 
 //global $wp, $wp_query, $wp_the_query, $wp_rewrite, $wp_did_header;
 
-require_once(BASE_PATH.'core/wp-blog-header.php'); // Use actual root path to wp-blog-header.php
+if(is_file(BASE_PATH.'core/wp-blog-header.php')) {
+    require_once(BASE_PATH.'core/wp-blog-header.php'); // Use actual root path to wp-blog-header.php
+}
+else {
+    require_once(BASE_PATH.'wp-blog-header.php');
+}
 header("HTTP/1.0 200 OK");
 
 fwrite(STDOUT, "HOST: " . $tst_host . chr(10));
