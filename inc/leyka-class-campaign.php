@@ -797,4 +797,9 @@ class Leyka_Campaign {
 
         return $this;
     }
+
+    public function delete($force = False) {
+        wp_delete_post( $this->_id, $force );
+    }
+    
 }

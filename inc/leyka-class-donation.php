@@ -1708,6 +1708,10 @@ class Leyka_Donation {
 
         return $last_date_funded ? $last_date_funded : false;
     }
+
+    public function delete($force = False) {
+        wp_delete_post( $this->_id, $force );
+    }
 }
 
 
