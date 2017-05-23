@@ -348,17 +348,15 @@
 		}
 
 		.step__border {
-			width: 100%;
-			border-top: 1px solid $color-border-light;
-			border-bottom: 1px solid $color-border-light;
+			width: 80%;
 			padding-top: 8px;
+			
+			border-image: url(../../img/quittance-wave.png) 10 10 round;
+			border-width: 7px;
+			border-style: solid;
 		}
 
 		@include for(large-screens) {
-			.step__border {
-				border: 1px solid $color-border-light;
-			}
-
 			.step--person {
 				padding-left: $base*2.5;
 				padding-right: $base*2.5;

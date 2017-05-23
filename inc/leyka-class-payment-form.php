@@ -427,10 +427,24 @@ function leyka_setup_current_pm(Leyka_Payment_Method $payment_method, $currency 
 
 }
 
-function leyka_pf_get_form_id() {
+function leyka_pf_get_form_id($campaign) {
     /** @var Leyka_Payment_Form $leyka_current_pm */
-	global $leyka_current_pm;
-	return $leyka_current_pm->get_form_id();
+//     global $leyka_current_pm;
+//     return $leyka_current_pm->get_form_id();
+	
+	$campaign_suffix = '';
+	if(!empty($campaign)) {
+	    if(is_object($campaign)) {
+	        if(is_a($campaign, 'Leyka_Campaign')) {
+	            $campaign_suffix = '-' . $campaign->ID;
+	        }
+	    }
+	    elseif((int)$campaign > 0) {
+	        $campaign_suffix = '-' . (int)$campaign;
+	    }
+	}
+	
+	return 'leyka-form' . $campaign_suffix;
 
 }
 

@@ -28,7 +28,7 @@ leyka_pf_submission_errors();?>
                 <?php echo leyka_pf_get_pm_label();?>
             </div>
             <div class="leyka-toggle-area">
-                <form class="leyka-pm-form" id="<?php echo leyka_pf_get_form_id();?>" action="<?php echo leyka_pf_get_form_action();?>" method="post">
+                <form class="leyka-pm-form" id="<?php echo leyka_pf_get_form_id($campaign);?>" action="<?php echo leyka_pf_get_form_action();?>" method="post">
 
                     <div class="leyka-pm-fields">
 

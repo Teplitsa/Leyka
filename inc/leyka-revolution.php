@@ -236,7 +236,7 @@ function leyka_rev2_campaign_top($campaign_id) {
 
 	<div class="leyka-pf__form">
 
-	<form action="#" method="post" novalidate="novalidate">
+	<form action="#" method="post" novalidate="novalidate" id="<?php echo leyka_pf_get_form_id($campaign_id);?>">
 
 	<!-- Step 1: amount -->
 
