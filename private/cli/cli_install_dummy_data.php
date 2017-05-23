@@ -68,10 +68,12 @@ class LeykaDummyData {
         global $wpdb;
         
         $campaigns_data = array(
-            array('name' => 'build-house-for-pets', 'title' => 'Строим жилье для питомцев', 'target' => 27000.0),
-            array('name' => 'buy-food-for-kittens', 'title' => 'Покупаем еду для котят', 'target' => 15000.0),
+            array('name' => 'build-house-for-pets', 'title' => 'Строим жилье для питомцев', 'target' => 27000.0, 'thumbnail' => 'dog001.jpg'),
+            array('name' => 'buy-food-for-kittens', 'title' => 'Покупаем еду для котят', 'target' => 15000.0, 'thumbnail' => 'cat001.jpg'),
             array('name' => 'treat-pets', 'title' => 'Лечим больных животных', 'target' => 800.0),
         );
+        
+        $uploads = wp_upload_dir();
         
         foreach($campaigns_data as $campaign_data) {
             
@@ -97,6 +99,23 @@ class LeykaDummyData {
             
             self::install_campaign_donations($campaign);
             $campaign->refresh_target_state();
+            
+            # add thumbnail
+            if(isset($campaign_data['thumbnail'])) {
+                $thumb_id = false;
+                $file = $campaign_data['thumbnail'];
+                $path = WP_CONTENT_DIR.'/plugins/leyka/private/res/'.$file;
+                
+                $test_path = $uploads['path'].'/'.$file;
+                if(!file_exists($test_path)) {
+                    $thumb_id = self::upload_img_from_path($path);
+                }
+                else {
+                    $a_url = $uploads['url'].'/'.$file;
+                    $thumb_id = attachment_url_to_postid($a_url);
+                }
+                update_post_meta($campaign->ID, '_thumbnail_id', (int)$thumb_id);
+            }
         }
     }
     
@@ -138,5 +157,45 @@ class LeykaDummyData {
     public static function reset_default_pages() {
         leyka_get_default_success_page();
         leyka_get_default_failure_page();
+    }
+    
+    public static function upload_img_from_path($path) {
+    
+        if(!$path || !file_exists($path))
+            return false;
+    
+            $attachment_id = false;
+    
+            $file = file_get_contents($path);
+    
+            if($file){
+                $filename = basename($path);
+                $upload_file = wp_upload_bits($filename, null, $file);
+    
+                if (!$upload_file['error']) {
+                    $wp_filetype = wp_check_filetype($filename, null );
+    
+                    $attachment_title = preg_replace('/\.[^.]+$/', '', $filename);
+                    $attachment = array(
+                        'post_mime_type' => $wp_filetype['type'],
+                        'post_parent' => 0,
+                        'post_title' => $attachment_title,
+                        'post_name' => 'datt-' . sanitize_title( $attachment_title ),
+                        'post_content' => '',
+                        'post_status' => 'inherit'
+                    );
+    
+                    $attachment_id = wp_insert_attachment( $attachment, $upload_file['file'], 0 );
+    
+                    if (!is_wp_error($attachment_id)) {
+                        require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+                        $attachment_data = wp_generate_attachment_metadata( $attachment_id, $upload_file['file'] );
+                        wp_update_attachment_metadata( $attachment_id,  $attachment_data );
+                    }
+                }
+    
+            }
+    
+            return $attachment_id;
     }
 }
