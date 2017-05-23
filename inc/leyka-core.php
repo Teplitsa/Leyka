@@ -465,8 +465,6 @@ class Leyka {
                 delete_option('leyka_options_installed');
             }
 
-//            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
-
             foreach(leyka_options()->get_options_names() as $name) {
 
                 $option = get_option("leyka_$name");

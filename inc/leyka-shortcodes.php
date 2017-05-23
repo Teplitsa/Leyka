@@ -398,3 +398,8 @@ add_shortcode('leyka_service_terms_text', 'leyka_get_terms_text');
 function leyka_get_terms_text() {
     return apply_filters('leyka_terms_of_service_text', leyka_options()->opt('terms_of_service_text'));
 }
+
+add_shortcode('leyka_inline_campaign', 'leyka_inline_campaign');
+function leyka_inline_campaign() {
+    
+}

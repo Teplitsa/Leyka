@@ -749,4 +749,15 @@ self::$_options_meta = array(
         'list_entries' => array(),
         'validation_rules' => array(), // List of regexp?..
     ),
+    'main_currency' => array(
+        'type' => 'select',
+        'default' => 'rur',
+        'title' => __('Donations main currency', 'leyka'),
+        'description' => '',
+        'required' => 1, // 1 if field is required, 0 otherwise
+        'placeholder' => '', // For text fields
+        'length' => '', // For text fields
+        'list_entries' => array('rur' => __('RUR', 'leyka'), 'usd' => __('$', 'leyka'), 'eur' => __('euro', 'leyka'),),
+        'validation_rules' => array(), // List of regexp?..
+    ),
 );

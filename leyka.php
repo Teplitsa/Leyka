@@ -117,3 +117,14 @@ add_action('plugins_loaded', array('Leyka', 'activate')); // Any update needed
 register_deactivation_hook(__FILE__, array('Leyka', 'deactivate')); // Deactivate
 
 leyka(); // All systems go
+
+$template_id = leyka_options()->opt('donation_form_template');
+$template_subdir = LEYKA_PLUGIN_DIR.'templates/leyka-'.$template['id'];
+
+if($template_id && file_exists($template_subdir)) {
+
+    foreach(glob($template_subdir.'/leyka-'.$template['id'].'-*.php') as $file) {
+        require_once($file);
+    }
+
+}

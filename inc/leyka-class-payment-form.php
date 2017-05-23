@@ -51,7 +51,7 @@ class Leyka_Payment_Form {
         ob_start();?>
 
         <label class="checkbox leyka-recurring-field">
-            <input type="checkbox" id="leyka_<?php echo $this->full_id;?>_recurring" name="leyka_recurring" value="1">
+            <input type="checkbox" class="leyka-recurring" name="leyka_recurring" value="1">
             <span class="leyka-checkbox-label"><?php _e('Monthly donations', 'leyka');?></span>
         </label>
 
@@ -313,7 +313,7 @@ class Leyka_Payment_Form {
 
     public function get_supported_currencies() {
 
-		$supported_curr = $this->_pm->currencies;
+		$supported_curr = $this->_pm ? $this->_pm->currencies : array(leyka_options()->opt('main_currency'));
 		$active_curr = leyka_get_active_currencies();
 		$curr = array();
 
@@ -330,15 +330,18 @@ class Leyka_Payment_Form {
     public function get_current_currency() {
 
 		if( !$this->_current_currency ) {
-			$this->_current_currency = $this->_pm->default_currency;
+			$this->_current_currency = $this->_pm ? $this->_pm->default_currency : leyka_options()->opt('main_currency');
         }
 
 		return $this->_current_currency;
+
 	}
 
     public function get_supported_global_fields() {
 
-        $global_fields = $this->_pm->has_global_fields ? array('amount', 'name', 'email', 'agree', 'submit') : array('');
+        $global_fields = $this->_pm && $this->_pm->has_global_fields ?
+            array('amount', 'name', 'email', 'agree', 'submit') : array('');
+
         if($global_fields && $this->_pm->has_recurring_support()) {
             $global_fields[] = 'recurring';
         }
@@ -348,12 +351,15 @@ class Leyka_Payment_Form {
 	}
 
     public function is_field_supported($field) {
-		return in_array($field, array_merge($this->get_supported_global_fields(), $this->_pm->custom_fields));
+		return in_array($field, array_merge(
+            $this->get_supported_global_fields(),
+            $this->_pm ? $this->_pm->custom_fields : array()
+        ));
 	}
 
     public function get_pm_fields() {
 
-		$res = $this->_pm->custom_fields; // Array of custom fields' HTMLs
+		$res = $this->_pm ? $this->_pm->custom_fields : array(); // Array of custom fields' HTMLs
 
 		if($res) {
             foreach($res as $key => $field) {
@@ -366,7 +372,7 @@ class Leyka_Payment_Form {
 	}
 
     public function get_submit_label(){
-		return $this->_pm->submit_label; // ? $this->_pm->submit_label : leyka_options()->opt('donate_submit_text');
+		return $this->_pm && $this->_pm->submit_label ? $this->_pm->submit_label : leyka_options()->opt('donation_submit_text');
 	}
 
     public function get_pm_icons() {
@@ -386,7 +392,7 @@ class Leyka_Payment_Form {
 	}
 
 	/**
-	 * Template elements: tooltps error marks etc
+	 * Template elements: tooltips error marks etc
 	 **/
 
     public function question_mark($content, $css = '', $title = '') {
@@ -744,7 +750,16 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
             $template = leyka_get_current_template_data($campaign, $template);
 
             if($template && isset($template['file'])) {
-                include($template['file']);
+
+                require $template['file'];
+
+                $template_subdir = LEYKA_PLUGIN_DIR.'templates/leyka-'.$template['id'];
+                if(file_exists($template_subdir)) {
+                    foreach(glob($template_subdir.'/leyka-'.$template['id'].'-*.php') as $file) {
+                        require_once($file);
+                    }
+                }
+
             }
         }
 
