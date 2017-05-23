@@ -90,7 +90,7 @@ function leyka_get_validated_donation($donation) {
 
 /**
  * @param $campaign mixed
- * @return Leyka_Campaign A campaign object, if parameter is valid in one way or another; false otherwise.
+ * @return mixed A Leyka_Campaign instance if parameter is valid in one way or another; false otherwise.
  */
 function leyka_get_validated_campaign($campaign) {
 
@@ -103,6 +103,7 @@ function leyka_get_validated_campaign($campaign) {
     }
 
     return $campaign ? $campaign : false;
+
 }
 
 /** Get WP pages list as an array. Used mainly to form a dropdowns. */
@@ -339,7 +340,7 @@ function leyka_get_campaign_target_states_list() {
  * Get campaign target - template tag
  * 
  * @var $campaign integer Campaign ID.
- * @return mixed Array of campaign target info, or false if wrong campaign ID given.
+ * @return mixed Array of campaign target info, false if wrong campaign ID given, or int 0 if a campaign doesn't have a target.
  */
 function leyka_get_campaign_target($campaign) {
 
@@ -353,10 +354,11 @@ function leyka_get_campaign_target($campaign) {
         return false;
     }
 
-    return array(
+    return $campaign->target ? array(
         'amount' => $campaign->target,
         'currency' => 'rur', // Currently, target is always in RUR  
-    );
+    ) : 0;
+
 }
 
 /**

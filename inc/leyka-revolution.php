@@ -67,8 +67,8 @@ function leyka_inline_scripts() {
 		$colors = array('#07C7FD', '#05A6D3', '#8CE4FD');
 	}
 
-	//detect if we have JS
-?>
+	//detect if we have JS ?>
+
 <script>
 	document.documentElement.classList.add("leyka-js");
 </script>
@@ -144,8 +144,7 @@ function leyka_rev2_get_supporters_list($campaign_id) {
     <?php }
 
     if(count($donations) <= count($first_donors_names)) { // Only names in the list
-        echo implode(', ', array_slice($first_donors_names, 0, -1))
-            .' '.__('and', 'leyka').' '.end($first_donors_names);
+        echo implode(', ', array_slice($first_donors_names, 0, -1)).' '.__('and', 'leyka').' '.end($first_donors_names);
     } else { // names list and the number of the rest of donors
 
         echo implode(', ', array_slice($first_donors_names, 0, -1)).' '.__('and', 'leyka');

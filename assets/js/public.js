@@ -1,10 +1,116 @@
 /* Scripts */
 jQuery(document).ready(function($){
-    
+
 	var amountMin = 1, //temp - take it from options
 		amountMax = 30000; //temp - take it from options
 
+	/* open close form */
+	$('.leyka-js-open-form').on('click', function(e){
+		e.preventDefault();
+
+		$(this).parents('.leyka-pf').addClass('leyka-pf--active');
+
+	});
+
+	$('.leyka-js-close-form').on('click', function(e){
+
+		e.preventDefault();
+		var pf = $(this).parents('.leyka-pf');
+
+		if(pf.hasClass('leyka-pf--oferta-open')){ //close only oferta
+			pf.removeClass('leyka-pf--oferta-open');
+
+		}
+		else { //close module
+			pf.removeClass('leyka-pf--active');
+
+		}
+	});
+
+	$('.leyka-js-open-form-bottom').on('click', function(e){
+		e.preventDefault();
+
+		var formId = $(this).parents('.leyka-pf-bottom').attr('data-target'),
+			amount = parseInt($(this).parents('.leyka-pf-bottom').find('input').val()),
+			form = $('#'+formId);
+
+		if(form.length > 0) {
+
+			//copy amount if it's correct
+			if(Number.isInteger(amount) && amount >= amountMin && amount <= amountMax) {
+				form.find('.amount__figure input').val(amount);
+				form.find('.amount_range input').val(amount);
+			}
+
+			//reset active steps
+			form.find('.step').removeClass('step--active');
+			form.find('.step--amount').addClass('step--active');
+
+			//open form
+			form.addClass('leyka-pf--active');
+		}
+	});
+
+
+	//no scroll when form is open
+	var position = $(window).scrollTop();
+	$(window).scroll(function(){
+
+		var scroll = $(window).scrollTop();
+
+		if($('.leyka-pf').hasClass('leyka-pf--active')){
+			$(window).scrollTop(position);
+		}
+		else {
+			position = scroll;
+		}
+	});
+
+
 	/** amount step **/
+	//init sync
+	$('.amount__figure input').each(function(){
+		var val = parseInt($(this).val());
+
+		if(!Number.isInteger(val) || val < amountMin || val > amountMax){ //correct this
+			val = 500;
+		}
+
+		$(this).val(val);
+		$(this).parents('.step__fields').find('.amount_range').find('input').val(val);
+
+		//sync with bottom
+		var formId = $(this).parents('.leyka-pf').attr('id');
+		$('div[data-target = "'+formId+'"]').find('input').val(val);
+	});
+
+
+	//sync of amount field
+	$('.amount_range input').on('input change', function(){
+		var val = $(this).val();
+		//console.log(val);
+		$(this).parents('.step__fields').find('.amount__figure').find('input').val(val);
+		$(this).parents('.step__fields').removeClass('invalid');
+
+	});
+
+	$('.amount__figure input').on('input change', function(){
+		var val = $(this).val();
+		//console.log(val);
+		$(this).parents('.step__fields').find('.amount_range').find('input').val(val);
+		$(this).parents('.step__fields').removeClass('invalid');
+	});
+
+	$('.amount__figure')
+	.on('focus', 'input', function(){
+
+		$(this).parents('.amount__figure').addClass('focus');
+	})
+	.on('blur', 'input', function(){
+
+		$(this).parents('.amount__figure').removeClass('focus');
+	});
+
 
 	//select amount
 	$('.leyka-js-amount').on('click', function(e){
@@ -247,244 +353,6 @@ jQuery(document).ready(function($){
 	});
 
 }); //jQuery
-
-window.LeykaGUIBottom = function($) {
-    this.$ = $;
-}
-
-window.LeykaGUIBottom.prototype = {
-        
-    bindEvents: function() {
-        var self = this; var $ = self.$;
-        
-        $('.leyka-js-open-form-bottom').on('click', function(e){
-            e.preventDefault();
-
-            $(this).closest('.leyka-pf-bottom').leykaForm('openFromBottom');
-        });
-        
-    }
-
-}
-
-jQuery(document).ready(function($){
-    
-    leykaGUIBottom = new LeykaGUIBottom($);
-    leykaGUIBottom.bindEvents();
-    
-}); //jQuery
-
-window.LeykaGUICard = function($) {
-    this.$ = $;
-}
-
-window.LeykaGUICard.prototype = {
-        
-    bindEvents: function() {
-        var self = this; var $ = self.$;
-    }
-
-}
-
-jQuery(document).ready(function($){
-    
-    leykaGUICard = new LeykaGUICard($);
-    leykaGUICard.bindEvents();
-    
-}); //jQuery
-
-window.LeykaGUIForm = function($) {
-    this.$ = $;
-}
-
-window.LeykaGUIForm.prototype = {
-        
-    bindEvents: function() {
-        var self = this; var $ = self.$;
-        
-        $('.amount__figure')
-            .on('focus', 'input', function(){
-    
-                $(this).parents('.amount__figure').addClass('focus');
-            })
-            .on('blur', 'input', function(){
-    
-                $(this).parents('.amount__figure').removeClass('focus');
-            });        
-    }
-
-}
-
-jQuery(document).ready(function($){
-    
-    leykaGUIForm = new LeykaGUIForm($);
-    leykaGUIForm.bindEvents();
-    
-}); //jQuery
-
-(function( $ ) {
-    
-    var amountMin = 1, //temp - take it from options
-        amountMax = 30000;
-    
-    var methods = {
-        'defaults': {
-            'color': 'green'
-        },
-        'open': open,
-        'close': close,
-        'openFromBottom': openFromBottom,
-        'init': init
-    };
-    
-    function init(options) {
-        initAmountSync();
-        bindEvents();
-    }
-    
-    /* amount sync */
-    function initAmountSync() {
-        $('.amount__figure input').each(function(){
-            var val = parseInt($(this).val());
-
-            if(!Number.isInteger(val) || val < amountMin || val > amountMax){ //correct this
-                val = 500;
-            }
-
-            $(this).val(val);
-            $(this).parents('.step__fields').find('.amount_range').find('input').val(val);
-
-            //sync with bottom
-            var formId = $(this).closest('.leyka-pf').attr('id');
-            $('div[data-target = "'+formId+'"]').find('input').val(val);
-        });
-    }
-    
-    function syncFigure() {
-        var val = $(this).val();
-        $(this).parents('.step__fields').find('.amount__figure').find('input').val(val);
-        $(this).parents('.step__fields').removeClass('invalid');
-    }
-    
-    function syncRange() {
-        var val = $(this).val();
-        $(this).parents('.step__fields').find('.amount_range').find('input').val(val);
-        $(this).parents('.step__fields').removeClass('invalid');
-    }
-    
-    /* event handlers */
-    function bindEvents() {
-        //sync of amount field
-        $('.amount_range input').on('input change', syncFigure);
-        $('.amount__figure input').on('input change', syncRange);
-    }
-    
-    /* open/close form */
-    function open() {
-        $(this).addClass('leyka-pf--active');
-    }
-    
-    function openFromBottom() {
-        
-        var formId = $(this).attr('data-target'),
-            amount = parseInt($(this).find('input').val()),
-            form = $('#'+formId);
-        
-        //copy amount if it's correct
-        if(Number.isInteger(amount) && amount >= amountMin && amount <= amountMax) {
-            form.find('.amount__figure input').val(amount);
-            form.find('.amount_range input').val(amount);
-        }
-
-        //reset active steps
-        form.find('.step').removeClass('step--active');
-        form.find('.step--amount').addClass('step--active');
-
-        //open form
-        form.addClass('leyka-pf--active');
-    }
-
-    function close() {
-        
-        var pf = $(this);
-
-        if(pf.hasClass('leyka-pf--oferta-open')){ //close only oferta
-            pf.removeClass('leyka-pf--oferta-open');
-
-        }
-        else { //close module
-            pf.removeClass('leyka-pf--active');
-
-        }
-    }
-
-    $.fn.leykaForm = function(methodOrOptions) {
-        if ( methods[methodOrOptions] ) {
-            return methods[ methodOrOptions ].apply( this, Array.prototype.slice.call( arguments, 1 ));
-        } else if ( typeof methodOrOptions === 'object' || ! methodOrOptions ) {
-            return methods.init.apply( this, arguments );
-        } else {
-            $.error( 'Method ' +  methodOrOptions + ' does not exist on jQuery.leykaForm' );
-        }    
-    }
-    
-}( jQuery ));
-
-window.LeykaPageMain = function($) {
-    this.$ = $;
-    this.setupNoScroll();
-    this.initForms();
-}
-
-window.LeykaPageMain.prototype = {
-        
-    bindEvents: function() {
-        var self = this; var $ = self.$;
-   
-        $('.leyka-js-open-form').on('click', function(e){
-            e.preventDefault();
-            
-            $(this).closest('.leyka-pf').leykaForm('open');
-        });
-   
-        $('.leyka-js-close-form').on('click', function(e){
-            e.preventDefault();
-   
-            $(this).closest('.leyka-pf').leykaForm('close');
-        });
-    },
-
-    setupNoScroll: function() {
-        var self = this; var $ = self.$;
-        
-        var position = $(window).scrollTop();
-        $(window).scroll(function(){
-
-            var scroll = $(window).scrollTop();
-
-            if($('.leyka-pf').hasClass('leyka-pf--active')){
-                $(window).scrollTop(position);
-            }
-            else {
-                position = scroll;
-            }
-        });
-    },
-    
-    initForms: function() {
-        var self = this; var $ = self.$;
-        
-        $('.leyka-pf').leykaForm();
-    }
-}
-
-jQuery(document).ready(function($){
-    
-    leykaPageMain = new LeykaPageMain($);
-    leykaPageMain.bindEvents();
-    
-}); //jQuery
-
 
 function is_email(email) {
     return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test(email);

@@ -400,6 +400,114 @@ function leyka_get_terms_text() {
 }
 
 add_shortcode('leyka_inline_campaign', 'leyka_inline_campaign');
-function leyka_inline_campaign() {
-    
+function leyka_inline_campaign($attributes) {
+
+    $attributes = shortcode_atts(array(
+        'id' => false,
+        'template' => leyka_options()->opt('donation_form_template'),
+    ), $attributes);
+
+    $campaign_id = $attributes['id'] ? (int)$attributes['id'] : get_post()->ID;
+    $campaign = leyka_get_validated_campaign($campaign_id);
+    if( !$campaign ) {
+        return false;
+    }
+
+    $template_id = $attributes['template'];
+    $template_subdir = LEYKA_PLUGIN_DIR.'templates/leyka-'.$template_id;
+    $template_file = LEYKA_PLUGIN_DIR.'templates/leyka-template-'.$template_id.'.php';
+
+    if($template_id && file_exists($template_subdir) && file_exists($template_file)) {
+        foreach(glob($template_subdir.'/leyka-'.$template_id.'-*.php') as $file) {
+            require_once($file);
+        }
+    } else {
+        return false;
+    }
+
+    /** @todo Mb, add option here if we need thumb */
+    $thumb_url = get_the_post_thumbnail_url($campaign_id, 'post-thumbnail');
+
+    ob_start();?>
+
+    <div id="leyka-pf-<?php echo $campaign_id;?>" class="leyka-pf">
+        <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
+        <div class="leyka-pf__overlay"></div>
+
+        <div class="leyka-pf__module">
+            <div class="leyka-pf__close leyka-js-close-form">x</div>
+            <div class="leyka-pf__card inpage-card">
+                <?php  if($thumb_url) { // Add other terms ?>
+                    <div class="inpage-card__thumbframe"><div class="inpage-card__thumb" style="background-image: url(<?php echo $thumb_url;?>);"></div></div>
+                <?php  }?>
+
+                <div class="inpage-card__content">
+                    <div class="inpage-card_title"><?php echo get_the_title($campaign_id);?></div>
+
+                    <div class="inpage-card_scale">
+                        <!-- NB: add class .fin to progress when it's 100% in fav of border-radius -->
+                        <?php $collected = leyka_get_campaign_collections($campaign_id);
+                        $target = leyka_get_campaign_target($campaign_id);
+
+                        if($target) { // Campaign target set
+
+                            $ready = (isset($target['amount']) && $target['amount']) ? round(100.0*$collected['amount']/$target['amount'], 1) : 0;
+                            $ready = $ready >= 100.0 ? 100.0 : $ready;?>
+
+                        <div class="scale"><div class="progress <?php echo $ready >= 100.0 ? 'fin' : '';?>" style="width:<?php echo $ready;?>%;"></div></div>
+                        <div class="target">
+                            <?php echo $collected['amount'];?>
+                            <span class="curr-mark">
+                                <?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?>
+                            </span>
+                        </div>
+
+                        <div class="info"><?php _e('collected of ', 'leyka');?>
+                            <?php echo $target['amount'];?>
+                            <span class="curr-mark">
+                                <?php echo leyka_options()->opt("currency_{$target['currency']}_label");?>
+                            </span>
+                        </div>
+
+                        <?php } else { // Campaign doesn't have a target sum ?>
+
+                        <div class="target">
+                            <?php echo $collected['amount'];?>
+                            <span class="curr-mark">
+                                <?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?>
+                            </span>
+                        </div>
+                        <div class="info"><?php _e('collected', 'leyka');?></div>
+
+                        <?php }?>
+
+                    </div>
+
+                    <div class="inpage-card__note supporters">
+                        <?php leyka_template_revo_get_supporters_list($campaign_id);?>
+                    </div>
+
+                    <div class="inpage-card__action">
+                        <button type="button" class="leyka-js-open-form">
+                            <?php echo leyka_options()->opt('donation_submit_text');?>
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="leyka-pf__form">
+                <?php require($template_file);?>
+
+            </div>
+
+        </div><!-- columnt -->
+    </div>
+    <?php
+    $out = ob_get_contents();
+    ob_end_clean();
+
+    return $out;
+
 }
