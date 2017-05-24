@@ -562,8 +562,9 @@ abstract class Leyka_Payment_Method {
             case 'has_global_fields': $param = $this->_support_global_fields; break;
             case 'custom_fields': $param = $this->_custom_fields ? $this->_custom_fields : array(); break;
             case 'icons': $param = $this->_icons; break;
-            case 'main_icon': $param = $this->_main_icon ? $this->_main_icon : $this->_gateway_id.'-'.$this->_id;
-                echo '<pre>' . print_r($param, 1) . '</pre>';break;
+            case 'main_icon': /** @todo Mb, add a filter here to set a custom main icon */
+                $param = $this->_main_icon ? $this->_main_icon : 'pic-main-'.$this->full_id;
+                break;
             case 'submit_label': $param = $this->_submit_label; break;
             case 'currencies': $param = $this->_supported_currencies; break;
             case 'default_currency': $param = $this->_default_currency; break;

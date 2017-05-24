@@ -3,7 +3,8 @@ var basePaths = {
     src: 'src/',
     dest: 'assets/',
     npm: 'node_modules/',
-    bower: 'bower_components/'
+    bower: 'bower_components/',
+    root: ''
 };
 
 //require plugins
@@ -162,7 +163,7 @@ gulp.task('svg-opt', function() {
             },
             parserOptions: { xmlMode: true }
         })),
-        pics = gulp.src([basePaths.src+'svg/pic-*.svg'])
+        pics = gulp.src([basePaths.root+'gateways/**/pic-main-*.svg', basePaths.src+'svg/pic-*.svg'])
         .pipe(plugins.svgmin({
             plugins: [{
                 removeTitle: true,

@@ -27,15 +27,7 @@ $amount_min = $supported_curr['rur']['bottom'];
 $amount_max = $supported_curr['rur']['top'];
 $currency_label = $supported_curr['rur']['label'];
 
-$pm_list = leyka_get_pm_list(true);
-
-//$pm_list = array(
-//    'bcard' => array('label' => 'Банковская карта', 'icon' => 'pic-bcard'),
-//    'yandex' => array('label' => 'Яндекс.Деньги', 'icon' => 'pic-yandex'),
-//    'sber' => array('label' => 'Сбербанк Онлайн', 'icon' => 'pic-sber'),
-//    'check' => array('label' => 'Квитанция', 'icon' => 'pic-check'),
-//);
-?>
+$pm_list = leyka_get_pm_list(true);?>
 
 <form action="#" method="post" novalidate="novalidate" id="<?php echo leyka_pf_get_form_id($campaign_id);?>">
 
