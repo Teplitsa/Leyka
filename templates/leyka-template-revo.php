@@ -78,11 +78,12 @@ $pm_list = leyka_get_pm_list(true);?>
     <!-- step pm -->
     <div class="step step--cards">
 
-<!--        <div class="step__selection">-->
-<!--            <a href="amount" class="leyka-js-another-step">-->
-<!--                <span class="remembered-amount">500</span>&nbsp;--><?php //echo $currency;?>
-<!--            </a>-->
-<!--        </div>-->
+        <div class="step__selection">
+            <a href="amount" class="leyka-js-another-step">
+                <span class="remembered-amount">#SUM#</span>&nbsp;<span class='curr-mark'><?php echo leyka_options()->opt('main_currency');?></span>
+                <span class="remembered-monthly">#IS_RECURRING#</span>
+            </a>
+        </div>
 
         <div class="step__title"><?php _e('Payment method', 'leyka');?></div>
 
@@ -105,16 +106,17 @@ $pm_list = leyka_get_pm_list(true);?>
 
     </div>
 
+    <?php if(leyka_options()->opt('revo_template_ask_donor_data') == 'during-donation') {?>
     <!-- step data -->
     <div class="step step--person">
 
-<!--        <div class="step__selection">-->
-<!--            <a href="amount" class="leyka-js-another-step">-->
-<!--                <span class="remembered-amount">500</span>&nbsp;--><?php //echo $currency;?>
-<!--                <span class="remembered-monthly">ежемесячно </span>-->
-<!--            </a>-->
-<!--            <a href="cards" class="leyka-js-another-step"><span class="remembered-payment">Банковская карта</span></a>-->
-<!--        </div>-->
+        <div class="step__selection">
+            <a href="amount" class="leyka-js-another-step">
+                <span class="remembered-amount">#SUM#</span>&nbsp;<span class='curr-mark'><?php echo leyka_options()->opt('main_currency');?></span>
+                <span class="remembered-monthly">#IS_RECURRING#</span>
+            </a>
+            <a href="cards" class="leyka-js-another-step"><span class="remembered-payment">#PM_LABEL#</span></a>
+        </div>
 
         <div class="step__border">
             <div class="step__title"><?php _e('Who should we thank?', 'leyka');?><!--Кого нам благодарить?--></div>
@@ -123,7 +125,9 @@ $pm_list = leyka_get_pm_list(true);?>
                 <div class="donor__textfield donor__textfield--name ">
                     <label for="leyka_donor_name">
                         <span class="donor__textfield-label leyka_donor_name-label"><?php _e('Your name', 'leyka');?></span>
-                        <span class="donor__textfield-error leyka_donor_name-error">Укажие имя</span>
+                        <span class="donor__textfield-error leyka_donor_name-error">
+                            <?php _e('Enter your name', 'leyka');?>
+                        </span>
                     </label>
                     <input type="text" name="leyka_donor_name" value="" autocomplete="off">
                 </div>
@@ -131,7 +135,9 @@ $pm_list = leyka_get_pm_list(true);?>
                 <div class="donor__textfield donor__textfield--email">
                     <label for="leyka_donor_email">
                         <span class="donor__textfield-label leyka_donor_name-label"><?php _e('Your email', 'leyka');?></span>
-                        <span class="donor__textfield-error leyka_donor_email-error">Укажие email в формате test@test.ru</span>
+                        <span class="donor__textfield-error leyka_donor_email-error">
+                            <?php _e('Enter an email in the some@email.com format', 'leyka');?>
+                        </span>
                     </label>
                     <input type="email" name="leyka_donor_email" value="" autocomplete="off">
                 </div>
@@ -146,15 +152,18 @@ $pm_list = leyka_get_pm_list(true);?>
                         <label for="leyka_agree">
                         <?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';?>
                             <a href="#" class="leyka-js-oferta-trigger"><?php echo apply_filters('agree_to_terms_text_link_part', leyka_options()->opt('agree_to_terms_text_link_part'));?></a></label></span>
-                        <div class="donor__oferta-error leyka_agree-error">Укажите согласие с офертой</div>
+                        <div class="donor__oferta-error leyka_agree-error">
+                            <?php _e('Enter an email in the some@email.com format', 'leyka');?>
+                        </div>
                     </div>
                 <?php }?>
             </div>
         </div>
 
         <div class="step__note">
-            <p><a href="http://www.consultant.ru/document/cons_doc_LAW_162595/" target="_blank">110-ФЗ от 5 мая 2014 года</a> обязывает нас спрашивать имя и почту.</p>
+<!--            <p><a href="http://www.consultant.ru/document/cons_doc_LAW_162595/" target="_blank">110-ФЗ от 5 мая 2014 года</a> обязывает нас спрашивать имя и почту.</p>-->
         </div>
 
     </div>
+    <?php }?>
 </form>

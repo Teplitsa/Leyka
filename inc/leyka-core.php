@@ -708,11 +708,14 @@ class Leyka {
             'correct_donation_amount_required' => __('Donation amount must be specified to submit the form', 'leyka'),
             'donation_amount_too_great' => __('Donation amount you entered is too great (maximum %s allowed)', 'leyka'),
             'donation_amount_too_small' => __('Donation amount you entered is too small (minimum %s allowed)', 'leyka'),
+            'amount_incorrect' => __('Set an amount from %s to %s <span class="curr-mark">%s</span>', 'leyka'),
+            'donor_name_required' => __('Enter your name', 'leyka'),
+            'oferta_agreement_required' => __('You have to agree with the terms of the donation service', 'leyka'),
+
             'checkbox_check_required' => __('This checkbox must be checked to submit the form', 'leyka'),
-            'amount_incorrect' => __('The amount must be filled with non-zero, non-negative number', 'leyka'),
             'text_required' => __('This field must be filled to submit the form', 'leyka'),
             'email_required' => __('Email must be filled to submit the form', 'leyka'),
-            'email_invalid' => __('You have entered an invalid email', 'leyka'),
+            'email_invalid' => __('Enter an email in the some@email.com format', 'leyka'),
             'must_not_be_email' => __("You shouldn't enter an email here", 'leyka'),
 //            'email_regexp' => '',
         ));
