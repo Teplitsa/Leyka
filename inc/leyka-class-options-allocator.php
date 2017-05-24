@@ -142,13 +142,19 @@ class Leyka_Options_Allocator {
             case 'view':
                 $options_allocated = array(
                     array('section' => array(
-                        'name' => 'campaign_template_options',
+                        'name' => 'global_campaign_templates_options',
                         'title' => __('Campaign page template', 'leyka'),
                         'is_default_collapsed' => false,
                         'options' => array(
                             'donation_form_template', 'donation_sum_field_type', 'donation_form_mode',
                             'scale_widget_place', 'donations_history_under_forms', 'show_campaign_sharing',
                         )
+                    ),),
+                    array('section' => array(
+                        'name' => 'revo_template_options',
+                        'title' => __('Revo template', 'leyka'),
+                        'is_default_collapsed' => false,
+                        'options' => array('revo_template_ask_donor_data',)
                     ),),
                 );
                 break;

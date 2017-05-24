@@ -603,6 +603,21 @@ self::$_options_meta = array(
         'list_entries' => array(),
         'validation_rules' => array(), // List of regexp?..
     ),
+    'revo_template_ask_donor_data' => array(
+        'type' => 'radio', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'default' => 'during-donation',
+        'title' => __('When to display donor data form fields?', 'leyka'),
+        'description' => '', //__('', 'leyka'),
+        'required' => 1,
+        'placeholder' => '', // For text fields
+        'length' => '', // For text fields
+        'list_entries' => array(
+            'during-donation' => __('As a step during donation process', 'leyka'),
+            'thank-you-page' => __('On a payment success page', 'leyka'),
+            'never' => __("Don't display the fields", 'leyka'),
+        ),
+        'validation_rules' => array(), // List of regexp?..
+    ),
     'agree_to_terms_needed' => array(
         'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
         'default' => 1,
