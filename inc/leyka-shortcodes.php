@@ -258,6 +258,7 @@ function leyka_get_payment_form($campaign = null, $args = array()) {
     $campaign->increase_views_counter();
 
     return get_leyka_payment_form_template_html($campaign, $args['template']);
+
 }
 
 
@@ -283,7 +284,6 @@ function leyka_donors_list_screen($atts) {
 }
 
 function leyka_get_donors_list_per_page() {
-
     return apply_filters('leyka_donors_list_per_page', 25);
 }
 
@@ -399,6 +399,30 @@ function leyka_get_terms_text() {
     return apply_filters('leyka_terms_of_service_text', leyka_options()->opt('terms_of_service_text'));
 }
 
+function leyka_get_campaign_supporters($campaign_id, $max_names = 5) {
+
+    $donations = leyka_get_campaign_donations($campaign_id);
+    $first_donors_names = array();
+    foreach($donations as $donation) { /** @var $donation Leyka_Donation */
+
+        if(
+            $donation->donor_name &&
+            !in_array($donation->donor_name, array(__('Anonymous', 'leyka'), 'Anonymous')) &&
+            !in_array($donation->donor_name, $first_donors_names)
+        ) {
+            $first_donors_names[] = mb_ucfirst($donation->donor_name);
+        }
+
+        if(count($first_donors_names) >= (int)$max_names) {
+            break;
+        }
+
+    }
+
+    return array('supporters' => $first_donors_names, 'donations' => $donations);
+
+}
+
 add_shortcode('leyka_inline_campaign', 'leyka_inline_campaign');
 function leyka_inline_campaign($attributes) {
 
@@ -484,7 +508,33 @@ function leyka_inline_campaign($attributes) {
                     </div>
 
                     <div class="inpage-card__note supporters">
-                        <?php leyka_template_revo_get_supporters_list($campaign_id);?>
+
+                        <?php $supporters = leyka_get_campaign_supporters($campaign_id, 5);
+
+                        if(count($supporters['supporters'])) { // There is at least one donor ?>
+                            <strong><?php _e('Supporters:', 'leyka');?></strong>
+                        <?php }
+
+                        if(count($supporters['donations']) <= count($supporters['supporters'])) { // Only names in the list
+                            echo implode(', ', array_slice($supporters['supporters'], 0, -1))
+                                .' '.__('and', 'leyka').' '.end($supporters['supporters']);
+                        } else { // Names list and the number of the rest of donors
+
+                            echo implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka');
+                            $campaign = get_post($campaign_id);
+
+                            $campaign_donations_permalink = trim(get_permalink($campaign_id), '/');
+                            if(strpos($campaign_donations_permalink, '?')) {
+                                $campaign_donations_permalink = home_url('?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter='.$campaign->post_name);
+                            } else {
+                                $campaign_donations_permalink = $campaign_donations_permalink.'/donations/';
+                            }?>
+
+                            <a href="<?php echo $campaign_donations_permalink;?>" class="leyka-js-history-more">
+                                <?php echo sprintf(__('%d more', 'leyka'), count($supporters['donations']) - count($supporters['supporters']));?>
+                            </a>
+
+                        <?php }?>
                     </div>
 
                     <div class="inpage-card__action">

@@ -53,6 +53,7 @@ function leyka_get_pm_list($activity = null, $currency = false, $sorted = true) 
     }
 
     return apply_filters('leyka_active_pm_list', $pm_list, $activity, $currency);
+
 }
 
 /** @return boolean True if at least one PM supports recurring, false otherwise. */
@@ -507,6 +508,7 @@ abstract class Leyka_Payment_Method {
     protected $_support_global_fields = true;
     protected $_custom_fields = array();
     protected $_icons = array();
+    protected $_main_icon = '';
     protected $_submit_label = '';
     protected $_supported_currencies = array();
     protected $_default_currency = '';
@@ -518,9 +520,11 @@ abstract class Leyka_Payment_Method {
 
             static::$_instance = new static();
             static::$_instance->_initialize_options();
+
         }
 
         return static::$_instance;
+
     }
 
     final protected function __clone() {}
@@ -532,6 +536,7 @@ abstract class Leyka_Payment_Method {
         $this->_set_attributes();
         $this->_initialize_options();
         $this->_set_dynamic_attributes();
+
     }
 
     public function __get($param) {
@@ -546,11 +551,7 @@ abstract class Leyka_Payment_Method {
             case 'title':
             case 'name':
                 $param = leyka_options()->opt_safe($this->full_id.'_label');
-                $param = apply_filters(
-                    'leyka_get_pm_label',
-                    $param && $param != $this->_label ? $param : $this->_label,
-                    $this
-                );
+                $param = apply_filters('leyka_get_pm_label', $param && $param != $this->_label ? $param : $this->_label, $this);
                 break;
             case 'label_backend':
             case 'title_backend':
@@ -561,6 +562,8 @@ abstract class Leyka_Payment_Method {
             case 'has_global_fields': $param = $this->_support_global_fields; break;
             case 'custom_fields': $param = $this->_custom_fields ? $this->_custom_fields : array(); break;
             case 'icons': $param = $this->_icons; break;
+            case 'main_icon': $param = $this->_main_icon ? $this->_main_icon : $this->_gateway_id.'-'.$this->_id;
+                echo '<pre>' . print_r($param, 1) . '</pre>';break;
             case 'submit_label': $param = $this->_submit_label; break;
             case 'currencies': $param = $this->_supported_currencies; break;
             case 'default_currency': $param = $this->_default_currency; break;
@@ -570,6 +573,7 @@ abstract class Leyka_Payment_Method {
         }
 
         return $param;
+
     }
 
     abstract protected function _set_attributes();
@@ -598,9 +602,7 @@ abstract class Leyka_Payment_Method {
     abstract protected function _set_options_defaults();
 
     protected final function _add_options() {
-
         foreach($this->_options as $option_name => $params) {
-
             if( !leyka_options()->option_exists($option_name) ) {
                 leyka_options()->add_option($option_name, $params['type'], $params);
             }

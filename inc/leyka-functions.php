@@ -860,7 +860,7 @@ if( !function_exists('leyka_get_client_ip') ) {
 
 }
 
-function leyka_get_campaign_donations($campaign) {
+function leyka_get_campaign_donations($campaign, $limit = false) {
 
     $campaign = (int)$campaign;
     if($campaign <= 0) {
@@ -872,7 +872,8 @@ function leyka_get_campaign_donations($campaign) {
         return false;
     }
 
-    // Get all active initial donations for the recurring subscriptions:
+    $limit = (int)$limit > 0 ? (int)$limit : false;
+
     $params = array(
         'post_type' => Leyka_Donation_Management::$post_type,
         'nopaging' => true,
@@ -886,11 +887,18 @@ function leyka_get_campaign_donations($campaign) {
         ),
     );
 
-    $donors_list = array();
-    foreach(get_posts($params) as $donation) {
-        $donors_list[] = new Leyka_Donation($donation);
+    if($limit) {
+
+        unset($params['nopaging']);
+        $params['posts_per_page'] = $limit;
+
     }
 
-    return $donors_list;
+    $donations = array();
+    foreach(get_posts($params) as $donation) {
+        $donations[] = new Leyka_Donation($donation);
+    }
+
+    return $donations;
 
 }
