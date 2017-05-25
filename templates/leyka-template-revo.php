@@ -89,11 +89,11 @@ $pm_list = leyka_get_pm_list(true);?>
 
         <div class="step__fields payments-grid">
             <!-- hidden field to store choice ? -->
-            <?php foreach($pm_list as $pm_full_id => $pm) {?>
+            <?php foreach($pm_list as $pm) {?>
 
                 <div class="payment-opt">
                     <label class="payment-opt__button">
-                        <input class="payment-opt__radio" name="payment_option" value="<?php echo esc_attr($pm_full_id);?>" type="radio">
+                        <input class="payment-opt__radio" name="payment_option" value="<?php echo esc_attr($pm->full_id);?>" type="radio">
                         <span class="payment-opt__icon">
                             <svg class="svg-icon <?php echo esc_attr($pm->main_icon);?>"><use xlink:href="#<?php echo esc_attr($pm->main_icon);?>"/></svg>
                         </span>
