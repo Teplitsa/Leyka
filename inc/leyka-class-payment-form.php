@@ -120,7 +120,7 @@ class Leyka_Payment_Form {
 
 	}
 
-    public static function get_common_hidden_fields($campaign = null) {
+    public static function get_common_hidden_fields($campaign = null, array $rewrite = array()) {
 
         if($campaign) {
             $campaign = leyka_get_validated_campaign($campaign);
@@ -131,6 +131,7 @@ class Leyka_Payment_Form {
             }
 
             $campaign = new Leyka_Campaign(get_post());
+
         }
 
         $template = leyka_get_current_template_data();
@@ -140,13 +141,15 @@ class Leyka_Payment_Form {
             'leyka_ga_campaign_title' => esc_attr($campaign->payment_title),
             'leyka_amount_field_type' => leyka_options()->opt('donation_sum_field_type'),
         ));
+        $hiddens = $rewrite + $hiddens;
 
         $out = wp_nonce_field('leyka_payment_form', '_wpnonce', true, false);
         foreach($hiddens as $key => $value) {
-            $out .= '<input type="hidden" name="'.esc_attr($key).'" value="'.esc_attr($value).'" class="'.esc_attr($key).'">';
+            $out .= "<input type='hidden' name='$key' value='".esc_attr($value)."' class='$key'>\n";
         }
 
         return $out;
+
     }
 
     public function get_hidden_fields($campaign = null) {
@@ -194,15 +197,21 @@ class Leyka_Payment_Form {
 			        <input type="hidden" name="leyka_donation_currency" class="leyka_donation_currency" data-currency-label="'.$obj['value']['label'].'" value="'.$obj['key'].'" >';
 		}
 
-        // Add an amount limits:
-		$hiddens = array();
-		foreach($supported_curr as $cid => $obj) {
-			$hiddens[] = '<input type="hidden" name="top_'.esc_attr($cid).'" value="'.esc_attr($obj['top']).'">
-			              <input type="hidden" name="bottom_'.esc_attr($cid).'" value="'.esc_attr($obj['bottom']).'">';
-		}
+		return $out.$this->get_hidden_amount_fields();
 
-		return $out.implode('', $hiddens);
 	}
+
+	public function get_hidden_amount_fields() {
+
+        $hiddens = array();
+        foreach($this->get_supported_currencies() as $currency_id => $data) {
+            $hiddens[] = '<input type="hidden" name="top_'.esc_attr($currency_id).'" value="'.esc_attr($data['top']).'">
+			              <input type="hidden" name="bottom_'.esc_attr($currency_id).'" value="'.esc_attr($data['bottom']).'">';
+        }
+
+        return implode("\n", $hiddens);
+
+    }
 
 	public function get_name_field($value = '') {
 

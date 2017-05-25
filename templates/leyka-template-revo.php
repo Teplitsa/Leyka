@@ -15,15 +15,20 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
         <div class="step__title step__title--amount"><?php _e('Donation amount', 'leyka');?></div>
 
         <div class="step__fields amount">
-            <?php echo Leyka_Payment_Form::get_common_hidden_fields();?>
-            <!-- @todo Refactor Leyka_Payment_Form so it could work without $payment_method set. Then output the following fields with Leyka_Payment_Form class means -->
-            <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $template_data['currency_label'];?>" value="rur">
-            <input type="hidden" name="top_rur" value="<?php echo $template_data['amount_max'];?>">
-            <input type="hidden" name="bottom_rur" value="<?php echo $template_data['amount_min'];?>">
+
+            <?php echo Leyka_Payment_Form::get_common_hidden_fields(null, array(
+                'leyka_template_id' => 'revo',
+                'leyka_amount_field_type' => 'custom',
+            ));
+
+            $form_api = new Leyka_Payment_Form();
+            echo $form_api->get_hidden_amount_fields();?>
 
             <div class="amount__figure">
                 <input type="text" name="leyka_donation_amount" value="<?php echo $template_data['amount_default'];?>" autocomplete="off" placeholder="<?php echo apply_filters('leyka_form_free_amount_placeholder', $template_data['amount_default']);?>">
                 <span class="curr-mark"><?php echo $template_data['currency_label'];?></span>
+
+                <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $template_data['currency_label'];?>" value="<?php echo leyka_options()->opt('main_currency');?>">
             </div>
 
             <input type="hidden" name="monthly" value="0"><!-- @todo Check if this field is needed -->
