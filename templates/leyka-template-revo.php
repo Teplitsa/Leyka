@@ -39,8 +39,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
             </div>
 
             <div class="amount_range">
-                <input name="amount-range" type="range" min="<?php echo $template_data['amount_min'];?>" max="<?php echo $template_data['amount_max'];?>" step="200" value="<?php echo $template_data['amount_default'];?>">
-                <!-- @todo step also shoud be calculated -->
+                <input name="amount-range" type="range" min="<?php echo $template_data['amount_min'];?>" max="<?php echo $template_data['amount_max'];?>" step="10" value="<?php echo $template_data['amount_default'];?>">
             </div>
 
         </div>
