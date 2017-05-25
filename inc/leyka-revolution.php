@@ -240,7 +240,7 @@ function leyka_rev2_campaign_top($campaign_id) {
 
 	<!-- Step 1: amount -->
 
-    <?php $supported_curr = leyka_get_active_currencies();?>
+    <?php $supported_curr = leyka_get_currencies_data();?>
 	<div class="step step--amount step--active">
 
 		<div class="step__title step__title--amount"><?php _e('Donation amount', 'leyka');?></div>
@@ -419,7 +419,7 @@ function leyka_rev2_campaign_top($campaign_id) {
 function leyka_rev2_campaign_bottom($campaign_id) {
 
 	$currency = "<span class='curr-mark'>&#8381;</span>";
-	$supported_curr = leyka_get_active_currencies();
+	$supported_curr = leyka_get_currencies_data();
     $collected = leyka_get_campaign_collections($campaign_id);
 
 	ob_start();

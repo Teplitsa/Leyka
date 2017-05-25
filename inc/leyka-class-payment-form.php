@@ -69,7 +69,7 @@ class Leyka_Payment_Form {
         }
 
 		$mode = leyka_options()->opt('donation_sum_field_type'); // fixed/flexible/mixed
-		$supported_curr = leyka_get_active_currencies();
+		$supported_curr = leyka_get_currencies_data();
 		$current_curr = $this->get_current_currency();
 
 		if(empty($supported_curr[$current_curr])) {
@@ -314,7 +314,7 @@ class Leyka_Payment_Form {
     public function get_supported_currencies() {
 
 		$supported_curr = $this->_pm ? $this->_pm->currencies : array(leyka_options()->opt('main_currency'));
-		$active_curr = leyka_get_active_currencies();
+		$active_curr = leyka_get_currencies_data();
 		$curr = array();
 
 		foreach($active_curr as $cid => $obj) {

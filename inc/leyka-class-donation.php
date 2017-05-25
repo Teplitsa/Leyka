@@ -1268,7 +1268,7 @@ class Leyka_Donation {
         add_post_meta($id, 'leyka_donation_amount', $amount);
 
         $currency = empty($params['currency']) ? leyka_pf_get_currency_value() : strtolower($params['currency']);
-        if( !$currency || !array_key_exists($currency, leyka_get_active_currencies()) ) {
+        if( !$currency || !array_key_exists($currency, leyka_get_currencies_data()) ) {
             $currency = 'rur';
         }
         add_post_meta($id, 'leyka_donation_currency', $currency);

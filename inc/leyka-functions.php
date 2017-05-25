@@ -274,7 +274,7 @@ function leyka_get_form_templates_list() {
     return $list;
 }
 
-function leyka_get_active_currencies() {
+function leyka_get_currencies_data() {
 
     return array(
         'rur' => array(
@@ -309,14 +309,14 @@ function leyka_get_active_currencies() {
 
 function leyka_get_currency_data($currency_code) {
 
-    $currecies = leyka_get_active_currencies();
+    $currecies = leyka_get_currencies_data();
 
     return isset($currecies[$currency_code]) ? $currecies[$currency_code] : false;
 }
 
 function leyka_get_currency_label($currency_code) {
 
-    $currecies = leyka_get_active_currencies();
+    $currecies = leyka_get_currencies_data();
 
     return isset($currecies[$currency_code]['label']) ? $currecies[$currency_code]['label'] : false;
 }

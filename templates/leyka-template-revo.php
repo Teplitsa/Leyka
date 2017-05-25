@@ -4,32 +4,10 @@
  * Description: The most recent te-st.ru design work, the modern and lightweight step-by-step form template.
  **/
 
-//$active_pm = apply_filters('leyka_form_pm_order', leyka_get_pm_list(true));
-//$supported_curr = leyka_get_active_currencies();
-//$mode = leyka_options()->opt('donation_sum_field_type'); // fixed/flexible/mixed
-//
-//global $leyka_current_pm; /** @todo Make it a Leyka_Payment_Form class singleton */
-//
-//leyka_pf_submission_errors();
-//
-////add option if we need thumb
-//$thumb_url = get_the_post_thumbnail_url($campaign_id, 'post-thumbnail');
+$campaign = Leyka_Revo_Template_Controller::get_instance()->get_current_campaign();
+$template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_data();?>
 
-//ob_start();
-
-//$currency = "<span class='curr-mark'>&#8381;</span>";
-//$currency = "<span class='curr-mark'>РУБ.</span>";
-$campaign_id;
-
-$supported_curr = leyka_get_active_currencies();
-$amount_default = $supported_curr['rur']['amount_settings']['flexible'];
-$amount_min = $supported_curr['rur']['bottom'];
-$amount_max = $supported_curr['rur']['top'];
-$currency_label = $supported_curr['rur']['label'];
-
-$pm_list = leyka_get_pm_list(true);?>
-
-<form action="#" method="post" novalidate="novalidate" id="<?php echo leyka_pf_get_form_id($campaign_id);?>">
+<form action="#" method="post" novalidate="novalidate" id="<?php echo leyka_pf_get_form_id($campaign->id);?>">
 
 	<!-- Step 1: amount -->
     <div class="step step--amount step--active">
@@ -37,14 +15,15 @@ $pm_list = leyka_get_pm_list(true);?>
         <div class="step__title step__title--amount"><?php _e('Donation amount', 'leyka');?></div>
 
         <div class="step__fields amount">
+            <?php echo Leyka_Payment_Form::get_common_hidden_fields();?>
             <!-- @todo Refactor Leyka_Payment_Form so it could work without $payment_method set. Then output the following fields with Leyka_Payment_Form class means -->
-            <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $currency_label;?>" value="rur">
-            <input type="hidden" name="top_rur" value="<?php echo $amount_max;?>">
-            <input type="hidden" name="bottom_rur" value="<?php echo $amount_min;?>">
+            <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $template_data['currency_label'];?>" value="rur">
+            <input type="hidden" name="top_rur" value="<?php echo $template_data['amount_max'];?>">
+            <input type="hidden" name="bottom_rur" value="<?php echo $template_data['amount_min'];?>">
 
             <div class="amount__figure">
-                <input type="text" name="leyka_donation_amount" value="<?php echo $amount_default;?>" autocomplete="off" placeholder="<?php echo apply_filters('leyka_form_free_amount_placeholder', $amount_default);?>">
-                <span class="curr-mark"><?php echo $currency_label;?></span>
+                <input type="text" name="leyka_donation_amount" value="<?php echo $template_data['amount_default'];?>" autocomplete="off" placeholder="<?php echo apply_filters('leyka_form_free_amount_placeholder', $template_data['amount_default']);?>">
+                <span class="curr-mark"><?php echo $template_data['currency_label'];?></span>
             </div>
 
             <input type="hidden" name="monthly" value="0"><!-- @todo Check if this field is needed -->
@@ -55,7 +34,7 @@ $pm_list = leyka_get_pm_list(true);?>
             </div>
 
             <div class="amount_range">
-                <input name="amount-range" type="range" min="<?php echo $amount_min;?>" max="<?php echo $amount_max;?>" step="200" value="<?php echo $amount_default;?>">
+                <input name="amount-range" type="range" min="<?php echo $template_data['amount_min'];?>" max="<?php echo $template_data['amount_max'];?>" step="200" value="<?php echo $template_data['amount_default'];?>">
                 <!-- @todo step also shoud be calculated -->
             </div>
 
@@ -89,13 +68,13 @@ $pm_list = leyka_get_pm_list(true);?>
 
         <div class="step__fields payments-grid">
             <!-- hidden field to store choice ? -->
-            <?php foreach($pm_list as $pm) {?>
+            <?php foreach($template_data['pm_list'] as $pm) { /** @var $pm Leyka_Payment_Method */?>
 
                 <div class="payment-opt">
                     <label class="payment-opt__button">
                         <input class="payment-opt__radio" name="payment_option" value="<?php echo esc_attr($pm->full_id);?>" type="radio">
                         <span class="payment-opt__icon">
-                            <svg class="svg-icon <?php echo esc_attr($pm->main_icon);?>"><use xlink:href="#<?php echo esc_attr($pm->main_icon);?>"/></svg>
+                            <svg class="svg-icon <?php echo esc_attr($pm->main_icon);?>"><use xlink:href="#<?php echo esc_attr($pm->main_icon);?>" /></svg>
                         </span>
                     </label>
                     <span class="payment-opt__label"><?php echo $pm->label;?></span>
