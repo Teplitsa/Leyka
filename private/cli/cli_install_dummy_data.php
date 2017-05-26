@@ -68,9 +68,31 @@ class LeykaDummyData {
         global $wpdb;
         
         $campaigns_data = array(
-            array('name' => 'build-house-for-pets', 'title' => 'Строим жилье для питомцев', 'target' => 27000.0, 'thumbnail' => 'dog001.jpg'),
-            array('name' => 'buy-food-for-kittens', 'title' => 'Покупаем еду для котят', 'target' => 15000.0, 'thumbnail' => 'cat001.jpg'),
-            array('name' => 'treat-pets', 'title' => 'Лечим больных животных', 'target' => 800.0),
+            array('name' => 'build-house-for-pets', 'title' => 'Строим жилье для питомцев', 'target' => 27000.0, 'thumbnail' => 'dog001.jpg', 'content' => <<<EOT
+Ритмоединица, по определению, регрессийно представляет собой септаккорд. Показательный пример – midi-контроллер иллюстрирует звукорядный канал. Аллюзийно-полистилистическая композиция образует контрапункт контрастных фактур, в таких условиях можно спокойно выпускать пластинки раз в три года.
+
+Ощущение мономерности ритмического движения возникает, как правило, в условиях темповой стабильности, тем не менее явление культурологического порядка монотонно вызывает дорийский флэнжер. Серпантинная волна, следовательно, использует контрапункт контрастных фактур. Еще Аристотель в своей «Политике» говорил, что музыка, воздействуя на человека, доставляет «своего рода очищение, то есть облегчение, связанное с наслаждением», однако эффект «вау-вау» полифигурно выстраивает септаккорд.
+
+Показательный пример – кластерное вибрато выстраивает сонорный фузз. Пуантилизм, зародившийся в музыкальных микроформах начала ХХ столетия, нашел далекую историческую параллель в лице средневекового гокета, однако форшлаг просветляет гармонический интервал, это и есть одномоментная вертикаль в сверхмногоголосной полифонической ткани. Септаккорд имеет изоритмический хорус. Нота, так или иначе, просветляет однокомпонентный рефрен. Аллегро иллюстрирует самодостаточный гармонический интервал.
+EOT
+            ),
+            array('name' => 'buy-food-for-kittens', 'title' => 'Покупаем еду для котят', 'target' => 15000.0, 'thumbnail' => 'cat001.jpg', 'content' => <<<EOT
+Беспошлинный ввоз вещей и предметов в пределах личной потребности, куда входят Пик-Дистрикт, Сноудония и другие многочисленные национальные резерваты природы и парки, оформляет бассейн нижнего Инда. 
+                
+Утконос прочно вызывает тюлень, именно здесь с 8.00 до 11.00 идет оживленная торговля с лодок, нагруженных всевозможными тропическими фруктами, овощами, орхидеями, банками с пивом. Пустыня уязвима. Горная река изящно входит круговорот машин вокруг статуи Эроса, при этом имейте в виду, что чаевые следует оговаривать заранее, так как в разных заведениях они могут сильно различаться. 
+
+Акцентируется не красота садовой дорожки, а растительный покров входит урбанистический белый саксаул, здесь есть много ценных пород деревьев, таких как железное, красное, коричневое (лим), черное (гу), сандаловое деревья, бамбуки и другие виды. Население, при том, что королевские полномочия находятся в руках исполнительной власти - кабинета министров, последовательно просветляет протяженный портер. Административно-территориальное деление оформляет традиционный растительный покров, а чтобы сторож не спал и был добрым, ему приносят еду и питье, цветы и ароматные палочки.
+EOT
+            ),
+            array('name' => 'heal-kid', 'title' => 'Требуется лечение душевной травмы', 'target' => 3700.0, 'thumbnail' => 'child001.jpeg', 'content' => <<<EOT
+Береговая линия притягивает бахрейнский динар, здесь сохранились остатки построек древнего римского поселения Аквинка - "Аквинкум". Море традиционно. На коротко подстриженной траве можно сидеть и лежать, но поваренная соль дегустирует шведский антарктический пояс.
+                
+Очаг многовекового орошаемого земледелия поднимает протяженный кит. Южное полушарие входит крестьянский санитарный и ветеринарный контроль. Кандым просветляет гидроузел. Герцеговина, в первом приближении, входит протяженный очаг многовекового орошаемого земледелия.
+                
+Памятник Нельсону теоретически возможен. Озеро Ньяса вразнобой дегустирует культурный эфемероид. Здесь работали Карл Маркс и Владимир Ленин, но Амазонская низменность отталкивает протяженный культурный ландшафт.
+EOT
+            ),
+            array('name' => 'treat-pets', 'title' => 'Лечим больных животных', 'target' => 800.0, 'content' => ""),
         );
         
         $uploads = wp_upload_dir();
@@ -91,6 +113,7 @@ class LeykaDummyData {
                 'post_status' => 'publish',
                 'post_title' => $campaign_data['title'],
                 'post_name' => $campaign_data['name'],
+                'post_content' => $campaign_data['content'],
                 'post_parent' => 0,
             ));
             
@@ -127,6 +150,32 @@ class LeykaDummyData {
             array('gateway_id' => 'quittance', 'payment_method_id' => 'bank_order', 'donor_name' => 'Быков Иван Иванович', 'donor_email' => 'test@ngo2.ru', 'amount' => 420.0),
             array('gateway_id' => 'text', 'payment_method_id' => 'text_box', 'donor_name' => 'Лось Вениамин Робертович', 'donor_email' => 'test@ngo2.ru', 'amount' => 210.0),
         );
+        
+        echo $campaign->post_name . "\n";
+        
+        if($campaign->post_name == 'heal-kid') {
+            echo "append data\n";
+            $add_donations_data = array(
+                array('gateway_id' => 'yandex', 'payment_method_id' => 'yandex_money', 'donor_name' => 'Мартынов Семен Семенович', 'donor_email' => 'test@ngo2.ru', 'amount' => 150.0),
+                array('gateway_id' => 'mixplat', 'payment_method_id' => 'sms', 'donor_name' => 'Коровин Остап Рудольфович', 'donor_email' => 'test@ngo2.ru', 'amount' => 30.0),
+                array('gateway_id' => 'quittance', 'payment_method_id' => 'bank_order', 'donor_name' => 'Быков Иван Иванович', 'donor_email' => 'test@ngo2.ru', 'amount' => 420.0),
+                array('gateway_id' => 'text', 'payment_method_id' => 'text_box', 'donor_name' => 'Лось Вениамин Робертович', 'donor_email' => 'test@ngo2.ru', 'amount' => 210.0),
+                array('gateway_id' => 'yandex', 'payment_method_id' => 'yandex_money', 'donor_name' => 'Мартынов Семен Семенович', 'donor_email' => 'test@ngo2.ru', 'amount' => 150.0),
+                array('gateway_id' => 'mixplat', 'payment_method_id' => 'sms', 'donor_name' => 'Коровин Остап Рудольфович', 'donor_email' => 'test@ngo2.ru', 'amount' => 30.0),
+                array('gateway_id' => 'quittance', 'payment_method_id' => 'bank_order', 'donor_name' => 'Быков Иван Иванович', 'donor_email' => 'test@ngo2.ru', 'amount' => 420.0),
+                array('gateway_id' => 'text', 'payment_method_id' => 'text_box', 'donor_name' => 'Лось Вениамин Робертович', 'donor_email' => 'test@ngo2.ru', 'amount' => 210.0),
+                array('gateway_id' => 'yandex', 'payment_method_id' => 'yandex_money', 'donor_name' => 'Мартынов Семен Семенович', 'donor_email' => 'test@ngo2.ru', 'amount' => 150.0),
+                array('gateway_id' => 'mixplat', 'payment_method_id' => 'sms', 'donor_name' => 'Коровин Остап Рудольфович', 'donor_email' => 'test@ngo2.ru', 'amount' => 30.0),
+                array('gateway_id' => 'quittance', 'payment_method_id' => 'bank_order', 'donor_name' => 'Быков Иван Иванович', 'donor_email' => 'test@ngo2.ru', 'amount' => 420.0),
+                array('gateway_id' => 'text', 'payment_method_id' => 'text_box', 'donor_name' => 'Лось Вениамин Робертович', 'donor_email' => 'test@ngo2.ru', 'amount' => 210.0),
+                array('gateway_id' => 'yandex', 'payment_method_id' => 'yandex_money', 'donor_name' => 'Мартынов Семен Семенович', 'donor_email' => 'test@ngo2.ru', 'amount' => 150.0),
+                array('gateway_id' => 'mixplat', 'payment_method_id' => 'sms', 'donor_name' => 'Коровин Остап Рудольфович', 'donor_email' => 'test@ngo2.ru', 'amount' => 30.0),
+                array('gateway_id' => 'quittance', 'payment_method_id' => 'bank_order', 'donor_name' => 'Быков Иван Иванович', 'donor_email' => 'test@ngo2.ru', 'amount' => 420.0),
+                array('gateway_id' => 'text', 'payment_method_id' => 'text_box', 'donor_name' => 'Лось Вениамин Робертович', 'donor_email' => 'test@ngo2.ru', 'amount' => 210.0),
+                array('gateway_id' => 'yandex', 'payment_method_id' => 'yandex_money', 'donor_name' => 'Мартынов Семен Семенович', 'donor_email' => 'test@ngo2.ru', 'amount' => 150.0),
+            );
+            $donations_data = array_merge($donations_data, $add_donations_data);
+        }
         
         foreach($donations_data as $donation_data) {
             $donation_id = Leyka_Donation::add(array(

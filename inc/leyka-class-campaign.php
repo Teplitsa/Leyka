@@ -607,6 +607,7 @@ class Leyka_Campaign {
             case 'description': return $this->_post_object ? $this->_post_object->post_content : '';
             case 'excerpt':
             case 'post_excerpt':
+            case 'post_name': return $this->_post_object ? $this->_post_object->post_name : '';
             case 'short_description': return $this->_post_object ? $this->_post_object->post_excerpt : '';
             case 'status': return $this->_post_object ? $this->_post_object->post_status : '';
             case 'permalink':
