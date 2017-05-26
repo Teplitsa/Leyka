@@ -53,8 +53,20 @@ class LeykaDummyData {
         update_option('leyka_org_bank_name', 'МЯО Звербанк');
         update_option('leyka_org_bank_bic', '555556789');
         update_option('leyka_org_bank_corr_account', '66666678901234567890');
-    
-        //     update_option('', '');
+
+        // View settings:
+        update_option('leyka_donation_form_template', 'revo');
+        update_option('leyka_donation_sum_field_type', 'mixed');
+        update_option('leyka_scale_widget_place', '-');
+        update_option('leyka_donations_history_under_forms', 0);
+        update_option('leyka_show_campaign_sharing', 0);
+
+         // Misc settings:
+        update_option('leyka_agree_to_terms_needed', 1);
+        update_option('leyka_terms_agreed_by_default', 1);
+        update_option('leyka_agree_to_terms_text_text_part', __('I accept', 'leyka'));
+        update_option('leyka_agree_to_terms_text_link_part', __('Terms of the service', 'leyka'));
+
     }
     
     public static function install_payment_methods() {
