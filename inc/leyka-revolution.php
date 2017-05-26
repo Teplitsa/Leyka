@@ -40,14 +40,14 @@ function leyka_rev2_cssjs() {
 		'leyka-rev',
 		LEYKA_PLUGIN_BASE_URL.'assets/css/public.css',
 		array(),
-		LEYKA_VERSION
+        rand() #LEYKA_VERSION
 	);
 
 	wp_enqueue_script(
         'leyka-rev',
         LEYKA_PLUGIN_BASE_URL.'assets/js/public.js',
 		array('jquery'),
-        LEYKA_VERSION,
+        rand(), #LEYKA_VERSION,
         true
     );
 

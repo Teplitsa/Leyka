@@ -672,7 +672,8 @@ class Leyka {
             return;
         }
 
-        wp_enqueue_style($this->_plugin_slug.'-plugin-styles', LEYKA_PLUGIN_BASE_URL.'css/public.css', array(), LEYKA_VERSION);
+        #wp_enqueue_style($this->_plugin_slug.'-plugin-styles', LEYKA_PLUGIN_BASE_URL.'css/public.css', array(), LEYKA_VERSION);
+        wp_enqueue_style($this->_plugin_slug.'-plugin-styles', LEYKA_PLUGIN_BASE_URL.'css/public.css', array(), rand());
 
     }
 
@@ -693,7 +694,7 @@ class Leyka {
         wp_enqueue_script(
             $this->_plugin_slug.'-public',
             LEYKA_PLUGIN_BASE_URL.'js/public.js', array('jquery', $this->_plugin_slug.'-modal'),
-            LEYKA_VERSION,
+            rand(), #LEYKA_VERSION
             true
         );
 
