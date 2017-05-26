@@ -478,7 +478,10 @@ function leyka_inline_campaign(array $attributes = array()) {
                             $ready = (isset($target['amount']) && $target['amount']) ? round(100.0*$collected['amount']/$target['amount'], 1) : 0;
                             $ready = $ready >= 100.0 ? 100.0 : $ready;?>
 
-                        <div class="scale"><div class="progress <?php echo $ready >= 100.0 ? 'fin' : '';?>" style="width:<?php echo $ready;?>%;"></div></div>
+                        <div class="scale">
+                            <div class="progress <?php echo $ready >= 100.0 ? 'fin' : '';?>" style="width:<?php echo $ready;?>%;"></div>
+                        </div>
+
                         <div class="target">
                             <?php echo $collected['amount'];?>
                             <span class="curr-mark">
@@ -520,17 +523,9 @@ function leyka_inline_campaign(array $attributes = array()) {
                                 .' '.__('and', 'leyka').' '.end($supporters['supporters']);
                         } else { // Names list and the number of the rest of donors
 
-                            echo implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka');
-                            $campaign = get_post($campaign_id);
+                            echo implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka');?>
 
-                            $campaign_donations_permalink = trim(get_permalink($campaign_id), '/');
-                            if(strpos($campaign_donations_permalink, '?')) {
-                                $campaign_donations_permalink = home_url('?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter='.$campaign->post_name);
-                            } else {
-                                $campaign_donations_permalink = $campaign_donations_permalink.'/donations/';
-                            }?>
-
-                            <a href="<?php echo $campaign_donations_permalink;?>" class="leyka-js-history-more">
+                            <a href="#" class="leyka-js-history-more">
                                 <?php echo sprintf(__('%d more', 'leyka'), count($supporters['donations']) - count($supporters['supporters']));?>
                             </a>
 
@@ -545,11 +540,56 @@ function leyka_inline_campaign(array $attributes = array()) {
 
                 </div>
 
+                <div class="inpage-card__history history">
+                    <div class="history__close leyka-js-history-close">x</div>
+                    <div class="history__title"><?php _e('We thank', 'leyka');?></div>
+                    <div class="history__list">
+                        <div class="history__list-flow">
+
+                            <?php foreach(leyka_get_campaign_donations($campaign_id) as $donation) {
+                                /** @var $donation Leyka_Donation */?>
+
+                                <div class="history__row">
+                                    <div class="history__cell h-amount">
+                                        <?php echo number_format($donation->sum, 2, '.', ' ');?>
+                                        <span class="curr-mark">
+                                            <?php echo leyka_options()->opt("currency_{$target['currency']}_label");?>
+                                        </span>
+                                    </div>
+                                    <div class="history__cell h-name"><?php echo $donation->donor_name;?></div>
+                                    <div class="history__cell h-date"><?php echo $donation->date_label;?></div>
+                                </div>
+
+                            <?php } //echo leyka_donation_history_list($campaign_id);?>
+
+                        </div>
+                    </div>
+                    <div class="history__action">
+                        <a href="<?php echo leyka_get_donations_archive_url($campaign_id);?>">
+                            <?php _e('Show all donors', 'leyka');?>
+                        </a>
+                    </div>
+                </div>
+
             </div>
 
             <div class="leyka-pf__form">
                 <?php require($template_file);?>
+            </div>
 
+            <div class="leyka-pf__redirect">
+                <div class="waiting">
+                    <div class="waiting__card">
+                        <div class="loading">
+                            <div class="spinner">
+                                <div class="bounce1"></div>
+                                <div class="bounce2"></div>
+                                <div class="bounce3"></div>
+                            </div>
+                        </div>
+                        <div class="waiting__card-text"><?php echo apply_filters('leyka_short_gateway_redirect_message', __('Awaiting for the safe payment page redirection...', 'leyka'));?></div>
+                    </div>
+                </div>
             </div>
 
         </div><!-- columnt -->

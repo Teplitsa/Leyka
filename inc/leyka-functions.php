@@ -902,3 +902,27 @@ function leyka_get_campaign_donations($campaign, $limit = false) {
     return $donations;
 
 }
+
+function leyka_get_donations_archive_url($campaign_id = false) {
+
+    if((int)$campaign_id > 0) {
+
+        $campaign = get_post($campaign_id);
+
+        $donations_permalink = trim(get_permalink($campaign_id), '/');
+        if(strpos($donations_permalink, '?')) {
+            $donations_permalink = home_url('?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter='.$campaign->post_name);
+        } else {
+            $donations_permalink = $donations_permalink.'/donations/';
+        }
+
+    } else {
+
+        $donations_permalink = get_option('permalink-structure') ?
+            home_url('/donations/') : home_url('?post_type='.Leyka_Donation_Management::$post_type);
+
+    }
+
+    return $donations_permalink;
+
+}
