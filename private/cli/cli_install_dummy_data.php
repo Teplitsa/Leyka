@@ -38,6 +38,7 @@ catch (Exception $ex) {
 class LeykaDummyData {
     
     public static function install_settings() {
+
         # NGO data
         update_option('leyka_org_full_name', 'Фонд помощи бездомным животным "Общий Барсик"');
         update_option('leyka_org_face_fio_ip', 'Котов Аристарх Евграфович');
