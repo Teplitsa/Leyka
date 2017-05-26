@@ -424,7 +424,7 @@ function leyka_get_campaign_supporters($campaign_id, $max_names = 5) {
 }
 
 add_shortcode('leyka_inline_campaign', 'leyka_inline_campaign');
-function leyka_inline_campaign($attributes) {
+function leyka_inline_campaign(array $attributes = array()) {
 
     $attributes = shortcode_atts(array(
         'id' => false,

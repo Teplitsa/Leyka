@@ -774,13 +774,17 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
 
             if($template && isset($template['file'])) {
 
-                require $template['file'];
-
                 $template_subdir = LEYKA_PLUGIN_DIR.'templates/leyka-'.$template['id'];
                 if(file_exists($template_subdir)) {
                     foreach(glob($template_subdir.'/leyka-'.$template['id'].'-*.php') as $file) {
                         require_once($file);
                     }
+                }
+                
+                if($template['id'] == 'revo') { /** @todo TMP!!! Make it normal */
+                    echo leyka_inline_campaign(array('id' => $campaign->id, 'template' => 'revo'));
+                } else {
+                    require $template['file'];
                 }
 
             }

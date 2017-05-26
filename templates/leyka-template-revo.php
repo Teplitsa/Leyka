@@ -74,7 +74,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
 
         <div class="step__selection">
             <a href="amount" class="leyka-js-another-step">
-                <span class="remembered-amount">#SUM#</span>&nbsp;<span class='curr-mark'><?php echo leyka_options()->opt('main_currency');?></span>
+                <span class="remembered-amount">#SUM#</span>&nbsp;<span class='curr-mark'><?php echo $template_data['currency_label'];?></span>
                 <span class="remembered-monthly">#IS_RECURRING#</span>
             </a>
         </div>
@@ -106,7 +106,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
 
         <div class="step__selection">
             <a href="amount" class="leyka-js-another-step">
-                <span class="remembered-amount">#SUM#</span>&nbsp;<span class='curr-mark'><?php echo leyka_options()->opt('main_currency');?></span>
+                <span class="remembered-amount">#SUM#</span>&nbsp;<span class='curr-mark'><?php echo $template_data['currency_label'];?></span>
                 <span class="remembered-monthly">#IS_RECURRING#</span>
             </a>
             <a href="cards" class="leyka-js-another-step"><span class="remembered-payment">#PM_LABEL#</span></a>
@@ -155,7 +155,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
         </div>
 
         <div class="step__note">
-<!--            <p><a href="http://www.consultant.ru/document/cons_doc_LAW_162595/" target="_blank">110-ФЗ от 5 мая 2014 года</a> обязывает нас спрашивать имя и почту.</p>-->
+            <p><a href="http://www.consultant.ru/document/cons_doc_LAW_162595/" target="_blank">110-ФЗ от 5 мая 2014 года</a> обязывает нас спрашивать имя и почту.</p>
         </div>
 
     </div>
