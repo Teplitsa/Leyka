@@ -103,9 +103,9 @@
     
     function syncCustomRangeInput() {
         var percent = getAmountPercent($(this));
-        var leftOffset = inputRangeWidth * percent / 100;
-        $('.range-circle').css({'left': (leftOffset - inputRangeButtonRadius) + 'px'});
-        $('.range-color-wrapper').width(leftOffset);
+        var leftOffset = (inputRangeWidth - 2 * inputRangeButtonRadius) * percent / 100;
+        $('.range-circle').css({'left': (leftOffset) + 'px'});
+        $('.range-color-wrapper').width(leftOffset + inputRangeButtonRadius);
     }
     
     /* event handlers */

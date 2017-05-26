@@ -309,10 +309,12 @@ div[id *="leyka-pf-"] { //aka namespace
 	.amount__icon {
 		text-align: center;
 		padding: $base*3 $base $base*2;
-		height: 80px + $base*5;
+		/*height: 80px + $base*5;*/
+		height: 100px + $base*5;
 
 		@include for(medium-screens) {
-			height: 110px + $base*5;
+			/*height: 110px + $base*5;*/
+			height: 130px + $base*5;
 		}
 
 		.svg-icon {
