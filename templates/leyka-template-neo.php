@@ -1,7 +1,7 @@
 <?php if( !defined('WPINC') ) die;
 /**
  * Leyka Template: Neo
- * Description: Styled after recent te-st.ru works, more modern variant of Toggles form template
+ * Description: An updated version of "Toggles" form template
  **/
 
 $active_pm = apply_filters('leyka_form_pm_order', leyka_get_pm_list(true));

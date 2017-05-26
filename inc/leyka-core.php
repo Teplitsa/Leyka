@@ -1157,7 +1157,7 @@ __('Radio options for each payment method', 'leyka');
 __('Toggles', 'leyka');
 __('Toggled options for each payment method', 'leyka');
 __('Neo', 'leyka');
-__('Styled after recent te-st.ru works, more modern variant of Toggles form template', 'leyka');
+__('An updated version of "Toggles" form template', 'leyka');
 __('single', 'leyka');
 __('rebill', 'leyka');
 __('correction', 'leyka');
