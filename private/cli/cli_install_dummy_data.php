@@ -118,6 +118,7 @@ EOT
             ));
             
             update_post_meta($campaign_id, 'campaign_target', $campaign_data['target']);
+            update_post_meta($campaign_id, 'campaign_template', 'revo');
             $campaign = new Leyka_Campaign($campaign_id);
             
             self::install_campaign_donations($campaign);

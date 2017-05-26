@@ -348,7 +348,7 @@
 		}
 
 		.step__border {
-			width: 80%;
+			width: 86%;
 			padding-top: 8px;
 			
 			border-image: url(../../img/quittance-wave.png) 10 10 round;
@@ -358,8 +358,8 @@
 
 		@include for(large-screens) {
 			.step--person {
-				padding-left: $base*2.5;
-				padding-right: $base*2.5;
+				/*padding-left: $base*2.5;
+				padding-right: $base*2.5;*/
 			}
 		}
 	}
