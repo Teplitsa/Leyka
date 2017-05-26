@@ -1,7 +1,10 @@
 (function( $ ) {
     
     var amountMin = 1, //temp - take it from options
-        amountMax = 30000;
+        amountMax = 30000,
+        amountIconMarks = [25, 50, 75],
+        inputRangeWidth = 200,
+        inputRangeButtonRadius = 14;
     
     var methods = {
         'defaults': {
@@ -48,16 +51,84 @@
         $(this).parents('.step__fields').removeClass('invalid');
     }
     
+    function getAmountPercent($rangeInput) {
+        var val = $rangeInput.val();
+        var min, max;
+        
+        try {
+            min = parseInt($rangeInput.attr('min'));
+            max = parseInt($rangeInput.attr('max'));
+        }
+        catch(e) {
+            min = 0;
+            max = 0;
+        }
+        
+        var amountIconIndex = 1;
+        var percent = 0;
+        if(max) {
+            percent = 100 * (val - min) / (max - min);
+        }
+        return percent;
+    }
+    
+    function syncAmountIcon() {
+        var percent = getAmountPercent($(this));
+
+        var amountIconIndex = 1;
+        for(var i in amountIconMarks) {
+            rangePercent = amountIconMarks[i];
+            if(percent >= rangePercent) {
+                amountIconIndex = parseInt(i) + 2;
+            }
+        }
+        
+        var $svgIcon = $('.amount__icon .svg-icon');
+        
+        // set icon class
+        $svgIcon.find('use').attr("xlink:href", "#icon-money-size" + amountIconIndex);
+        
+        // set size class
+        $svgIcon.addClass('icon-money-size' + amountIconIndex);
+        if(amountIconIndex != 1) {
+            $svgIcon.removeClass('icon-money-size1')
+        }
+        for(var i in amountIconMarks) {
+            var size = parseInt(i) + 2;
+            if(amountIconIndex != size) {
+                $svgIcon.removeClass('icon-money-size' + size);
+            }
+        }
+    }
+    
+    function syncCustomRangeInput() {
+        var percent = getAmountPercent($(this));
+        var leftOffset = inputRangeWidth * percent / 100;
+        $('.range-circle').css({'left': (leftOffset - inputRangeButtonRadius) + 'px'});
+        $('.range-color-wrapper').width(leftOffset);
+    }
+    
     /* event handlers */
     function bindEvents() {
         //sync of amount field
         $('.amount_range input').on('input change', syncFigure);
         $('.amount__figure input').on('input change', syncRange);
+        $('.amount_range input').on('input change', syncAmountIcon);
+        $('.amount_range input').on('input change', syncCustomRangeInput);
+        
+        $('.amount__figure')
+        .on('focus', 'input', function(){
+            $(this).parents('.amount__figure').addClass('focus');
+        })
+        .on('blur', 'input', function(){
+            $(this).parents('.amount__figure').removeClass('focus');
+        });
     }
     
     /* open/close form */
     function open() {
         $(this).addClass('leyka-pf--active');
+        $('.amount_range input').change(); // sync coins pic
     }
     
     function openFromBottom() {

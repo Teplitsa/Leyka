@@ -316,16 +316,110 @@ div[id *="leyka-pf-"] { //aka namespace
 		}
 
 		.svg-icon {
-			width: 85px;
-			height: 80px;
-			fill: $color_main;
+            fill: $color_main;
 
-			@include for(medium-screens) {
-				width: 115px;
-				height: 110px;
-			}
+            &.icon-money-size1 {
+                width: 46px;
+                height: 80px;
+                padding-top: 40px;
+                
+                @include for(medium-screens) {
+                    width: 62px;
+                    height: 110px;
+                    padding-top: 44px;
+                }
+            }
+
+            &.icon-money-size2 {
+                width: 80px;
+                height: 80px;
+                padding-top: 30px;
+                
+                @include for(medium-screens) {
+                    width: 102px;
+                    height: 110px;
+                    padding-top: 34px;
+                }
+            }
+
+            &.icon-money-size3 {
+                width: 86px;
+                height: 80px;
+                padding-top: 25px;
+                
+                @include for(medium-screens) {
+                    width: 114px;
+                    height: 110px;
+                    padding-top: 24px;
+                }
+            }
+            
+            &.icon-money-size4 {
+	            width: 85px;
+	            height: 110px;
+	            
+	            @include for(medium-screens) {
+	                width: 114px;
+	                height: 132px;
+	            }
+            }
 		}
 	}
+	
+	.amount__range_wrapper {
+	    position:relative;
+	    
+	    .amount__range_overlay {
+		    background-color: #ffffff;
+		    height: 30px;
+		    left: 0;
+		    position: absolute;
+		    top: 0;
+		    width: 210px;
+		    z-index:5;
+		    pointer-events:none;
+	    }
+	    
+	    .amount__range_custom {
+	       position:relative;
+	       left:10px;
+	       top:10px;
+	       z-index:7;
+	       pointer-events:none;
+	       
+	       .range-bg {
+	           width:200px;
+	           height:12px;
+	           fill: #E6E7E9;
+	           position:absolute;
+	           top:0px;
+	           left:0px;
+	       }
+	       
+	       .range-color, .range-color-wrapper {
+	           width:200px;
+	           height:12px;
+	           fill: $color_main;
+	           position:absolute;
+	           top:0px;
+	           left:0px;
+	        }
+	        
+	        .range-color-wrapper {
+               width:50px;
+               overflow:hidden;
+            }
+	       
+	       .range-circle {
+	           width:28px;
+	           height:28px;
+	           fill: $color_main;
+	           position:absolute;
+	           top:-8px;
+	           left:50px;
+	       }
+	    }
+    }
 
 	.amount__error {
 		color: $color-form-invalid;

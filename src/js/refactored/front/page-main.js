@@ -11,7 +11,6 @@ window.LeykaPageMain.prototype = {
    
         $('.leyka-js-open-form').on('click', function(e){
             e.preventDefault();
-            
             $(this).closest('.leyka-pf').leykaForm('open');
         });
    
@@ -47,7 +46,7 @@ window.LeykaPageMain.prototype = {
 }
 
 jQuery(document).ready(function($){
-    
+
     leykaPageMain = new LeykaPageMain($);
     leykaPageMain.bindEvents();
     

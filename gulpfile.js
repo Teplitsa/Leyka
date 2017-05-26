@@ -183,9 +183,6 @@ gulp.task('watch', function(){
     gulp.watch([basePaths.src+'sass/*.scss', basePaths.src+'sass/**/*.scss'], ['full-build-css']).on('change', function(evt) {
         changeEvent(evt);
     });
-//    gulp.watch(basePaths.src+'js/*.js', ['full-build-js']).on('change', function(evt) {
-//        changeEvent(evt);
-//    });
     gulp.watch([basePaths.src+'js/*.js', basePaths.src+'js/refactored/front/*.js'], ['full-build-js']).on('change', function(evt) {
         changeEvent(evt);
     });

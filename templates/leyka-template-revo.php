@@ -38,8 +38,19 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
                 <div class="leyka_donation_amount-error field-error amount__error"></div>
             </div>
 
-            <div class="amount_range">
-                <input name="amount-range" type="range" min="<?php echo $template_data['amount_min'];?>" max="<?php echo $template_data['amount_max'];?>" step="10" value="<?php echo $template_data['amount_default'];?>">
+            <div class="amount__range_wrapper">
+                <div class="amount__range_custom">
+                    <svg class="svg-icon range-bg"><use xlink:href="#icon-input-range-gray" /></svg>
+                    <div class="range-color-wrapper">
+                    	<svg class="svg-icon range-color"><use xlink:href="#icon-input-range-green" /></svg>
+                    </div>
+                    <svg class="svg-icon range-circle"><use xlink:href="#pic-input-range-circle" /></svg>
+                </div>
+                <div class="amount__range_overlay"></div>
+    
+                <div class="amount_range">
+                    <input name="amount-range" type="range" min="<?php echo $template_data['amount_min'];?>" max="<?php echo $template_data['amount_max'];?>" step="10" value="<?php echo $template_data['amount_default'];?>">
+                </div>
             </div>
 
         </div>
