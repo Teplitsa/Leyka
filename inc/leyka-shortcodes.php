@@ -546,21 +546,21 @@ function leyka_inline_campaign(array $attributes = array()) {
                     <div class="history__list">
                         <div class="history__list-flow">
 
-                            <?php foreach(leyka_get_campaign_donations($campaign_id) as $donation) {
-                                /** @var $donation Leyka_Donation */?>
+                        <?php foreach(leyka_get_campaign_donations($campaign_id) as $donation) {
+                            /** @var $donation Leyka_Donation */?>
 
-                                <div class="history__row">
-                                    <div class="history__cell h-amount">
-                                        <?php echo number_format($donation->sum, 2, '.', ' ');?>
-                                        <span class="curr-mark">
-                                            <?php echo leyka_options()->opt("currency_{$target['currency']}_label");?>
-                                        </span>
-                                    </div>
-                                    <div class="history__cell h-name"><?php echo $donation->donor_name;?></div>
-                                    <div class="history__cell h-date"><?php echo $donation->date_label;?></div>
+                            <div class="history__row">
+                                <div class="history__cell h-amount">
+                                    <?php echo number_format($donation->sum, 2, '.', ' ');?>
+                                    <span class="curr-mark">
+                                        <?php echo leyka_options()->opt("currency_{$target['currency']}_label");?>
+                                    </span>
                                 </div>
+                                <div class="history__cell h-name"><?php echo $donation->donor_name;?></div>
+                                <div class="history__cell h-date"><?php echo $donation->date_label;?></div>
+                            </div>
 
-                            <?php } //echo leyka_donation_history_list($campaign_id);?>
+                        <?php }?>
 
                         </div>
                     </div>
