@@ -7,7 +7,7 @@
 $campaign = Leyka_Revo_Template_Controller::get_instance()->get_current_campaign();
 $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_data();?>
 
-<form action="#" method="post" novalidate="novalidate" id="<?php echo leyka_pf_get_form_id($campaign->id);?>">
+<form action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate" id="<?php echo leyka_pf_get_form_id($campaign->id);?>">
 
 	<!-- Step 1: amount -->
     <div class="step step--amount step--active">
@@ -25,10 +25,12 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
             echo $form_api->get_hidden_amount_fields();?>
 
             <div class="amount__figure">
-                <input type="text" name="leyka_donation_amount" value="<?php echo $template_data['amount_default'];?>" autocomplete="off" placeholder="<?php echo apply_filters('leyka_form_free_amount_placeholder', $template_data['amount_default']);?>">
+
+                <input type="text" class="leyka_donation_amount" name="leyka_donation_amount" value="<?php echo $template_data['amount_default'];?>" autocomplete="off" placeholder="<?php echo apply_filters('leyka_form_free_amount_placeholder', $template_data['amount_default']);?>">
                 <span class="curr-mark"><?php echo $template_data['currency_label'];?></span>
 
                 <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $template_data['currency_label'];?>" value="<?php echo leyka_options()->opt('main_currency');?>">
+
             </div>
 
             <input type="hidden" name="monthly" value="0"><!-- @todo Check if this field is needed -->

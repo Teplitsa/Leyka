@@ -7,7 +7,7 @@ class Leyka_Payment_Form {
 
 	protected $_pm_name;
 	protected $_pm = null;
-	protected $_form_action;
+	protected static $_form_action;
 	protected $_current_currency; // Current currency in the view
 
 	public function __construct(Leyka_Payment_Method $payment_method = null, $current_currency = null) {
@@ -20,8 +20,6 @@ class Leyka_Payment_Form {
         $this->_pm_name = $payment_method ? $payment_method->id : false;
 
 		$this->_current_currency = $current_currency;
-		$this->_form_action = get_option('permalink_structure') ?
-			home_url('leyka-process-donation') : home_url('?page=leyka-process-donation');
 
 	}
 
@@ -35,11 +33,18 @@ class Leyka_Payment_Form {
 	}
 
     public function get_form_id() {
-		return 'leyka-form-'.$this->_pm_name;
+		return 'leyka-form-'.($this->_pm_name ? $this->_pm_name : '');
 	}
 
-    public function get_form_action(){
-		return $this->_form_action;
+    public static function get_form_action() {
+
+        if( !self::$_form_action ) {
+            self::$_form_action = get_option('permalink_structure') ?
+                home_url('leyka-process-donation') : home_url('?page=leyka-process-donation');
+        }
+
+		return self::$_form_action;
+
 	}
 
 	public function get_recurring_field() {
@@ -437,31 +442,24 @@ function leyka_setup_current_pm(Leyka_Payment_Method $payment_method, $currency 
 }
 
 function leyka_pf_get_form_id($campaign) {
-    /** @var Leyka_Payment_Form $leyka_current_pm */
-//     global $leyka_current_pm;
-//     return $leyka_current_pm->get_form_id();
-	
+
 	$campaign_suffix = '';
-	if(!empty($campaign)) {
+	if($campaign) {
 	    if(is_object($campaign)) {
 	        if(is_a($campaign, 'Leyka_Campaign')) {
-	            $campaign_suffix = '-' . $campaign->ID;
+	            $campaign_suffix = '-'.$campaign->ID;
 	        }
-	    }
-	    elseif((int)$campaign > 0) {
+	    } elseif((int)$campaign > 0) {
 	        $campaign_suffix = '-' . (int)$campaign;
 	    }
 	}
 	
-	return 'leyka-form' . $campaign_suffix;
+	return 'leyka-form'.$campaign_suffix;
 
 }
 
 function leyka_pf_get_form_action() {
-    /** @var Leyka_Payment_Form $leyka_current_pm */
-	global $leyka_current_pm;
-	return $leyka_current_pm->get_form_action();
-
+	return Leyka_Payment_Form::get_form_action();
 }
 
 function leyka_pf_is_field_supported($field) {
