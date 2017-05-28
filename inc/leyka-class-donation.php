@@ -42,6 +42,7 @@ class Leyka_Donation_Management {
         add_action('transition_post_status',  array($this, 'donation_status_changed'), 10, 3);
 
         add_action('wp_ajax_leyka_send_donor_email', array($this, 'ajax_send_donor_email'));
+
 	}
 
     public function set_admin_messages($messages) {
@@ -1285,7 +1286,11 @@ class Leyka_Donation {
 
             wp_delete_post($id, true);
             return new WP_Error('incorrect_donor_name', __('Incorrect donor name given while trying to add a donation', 'leyka'));
+
+        } else if(filter_var($value, FILTER_VALIDATE_EMAIL)) {
+            $value = apply_filters('leyka_donor_name_email_given', __('Anonymous', 'leyka'));
         }
+
         add_post_meta($id, 'leyka_donor_name', htmlentities($value, ENT_QUOTES, 'UTF-8'));
 
         $value = empty($params['donor_email']) ? leyka_pf_get_donor_email_value() : $params['donor_email'];
