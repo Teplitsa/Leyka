@@ -618,6 +618,17 @@ self::$_options_meta = array(
         ),
         'validation_rules' => array(), // List of regexp?..
     ),
+    'revo_template_show_thumbnail' => array(
+        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'default' => 1,
+        'title' => __('Display a thumbnail in inline page blocks', 'leyka'),
+        'description' => __('Check if you need to show a campaign thumbnail in inline page blocks.', 'leyka'),
+        'required' => 0,
+        'placeholder' => '', // For text fields
+        'length' => '', // For text fields
+        'list_entries' => array(), // For select, radio & checkbox fields
+        'validation_rules' => array(), // List of regexp?..
+    ),
     'agree_to_terms_needed' => array(
         'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
         'default' => 1,

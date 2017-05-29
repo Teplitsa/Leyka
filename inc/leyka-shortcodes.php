@@ -429,6 +429,7 @@ function leyka_inline_campaign(array $attributes = array()) {
     $attributes = shortcode_atts(array(
         'id' => false,
         'template' => leyka_options()->opt('donation_form_template'),
+        'show_thumbnail' => leyka_options()->opt('revo_template_show_thumbnail'),
     ), $attributes);
 
     $campaign_id = $attributes['id'] ? (int)$attributes['id'] : get_post()->ID;
@@ -451,8 +452,8 @@ function leyka_inline_campaign(array $attributes = array()) {
         return false;
     }
 
-    /** @todo Mb, add option here if we need thumb */
-    $thumb_url = get_the_post_thumbnail_url($campaign_id, 'post-thumbnail');
+    $attributes['show_thumbnail'] = !!$attributes['show_thumbnail'];
+    $thumb_url = $attributes['show_thumbnail'] ? get_the_post_thumbnail_url($campaign_id, 'post-thumbnail') : false;
 
     ob_start();?>
 
@@ -463,22 +464,23 @@ function leyka_inline_campaign(array $attributes = array()) {
         <div class="leyka-pf__module">
             <div class="leyka-pf__close leyka-js-close-form">x</div>
             <div class="leyka-pf__card inpage-card">
-                <?php if($thumb_url) { // Add other terms ?>
-                    <div class="inpage-card__thumbframe"><div class="inpage-card__thumb" style="background-image: url(<?php echo $thumb_url;?>);"></div></div>
-                <?php }?>
+
+            <?php if($thumb_url) {?>
+                <div class="inpage-card__thumbframe"><div class="inpage-card__thumb" style="background-image: url(<?php echo $thumb_url;?>);"></div></div>
+            <?php }?>
 
                 <div class="inpage-card__content">
                     <div class="inpage-card_title"><?php echo get_the_title($campaign_id);?></div>
 
                     <div class="inpage-card_scale">
-                        <!-- NB: add class .fin to progress when it's 100% in fav of border-radius -->
-                        <?php $collected = leyka_get_campaign_collections($campaign_id);
-                        $target = leyka_get_campaign_target($campaign_id);
 
-                        if($target) { // Campaign target set
+                    <?php $collected = leyka_get_campaign_collections($campaign_id);
+                    $target = leyka_get_campaign_target($campaign_id);
 
-                            $ready = isset($target['amount']) ? round(100.0*$collected['amount']/$target['amount'], 1) : 0;
-                            $ready = $ready >= 100.0 ? 100.0 : $ready;?>
+                    if($target) { // Campaign target set
+
+                        $ready = isset($target['amount']) ? round(100.0*$collected['amount']/$target['amount'], 1) : 0;
+                        $ready = $ready >= 100.0 ? 100.0 : $ready;?>
 
                         <div class="scale">
                             <div class="progress <?php echo $ready >= 100.0 ? 'fin' : '';?>" style="width:<?php echo $ready;?>%;"></div>
@@ -498,7 +500,7 @@ function leyka_inline_campaign(array $attributes = array()) {
                             </span>
                         </div>
 
-                        <?php } else { // Campaign doesn't have a target sum ?>
+                    <?php } else { // Campaign doesn't have a target sum ?>
 
                         <div class="target">
                             <?php echo leyka_format_amount($collected['amount']);?>
@@ -508,7 +510,7 @@ function leyka_inline_campaign(array $attributes = array()) {
                         </div>
                         <div class="info"><?php _e('collected', 'leyka');?></div>
 
-                        <?php }?>
+                    <?php }?>
 
                     </div>
 
@@ -608,8 +610,7 @@ function leyka_inline_campaign(array $attributes = array()) {
 
         </div><!-- columnt -->
     </div>
-    <?php
-    $out = ob_get_contents();
+    <?php $out = ob_get_contents();
     ob_end_clean();
 
     return $out;
