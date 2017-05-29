@@ -346,7 +346,7 @@ jQuery(document).ready(function($){
             val = $this.val(),
             $form = $this.parents('.leyka-pf__form');
 
-        $form.removeClass('invalid').find('.amount_range').find('input').val(val);
+        $form.removeClass('invalid').find('.amount_range').find('input').val(val).change();
 
     }
 

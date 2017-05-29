@@ -259,7 +259,7 @@ function leyka_rev2_campaign_top($campaign_id) {
 
 
 			<div class="amount__figure">
-				<input type="text" name="leyka_donation_amount" value="<?php echo $amount_default;?>" autocomplete="off" placeholder="<?php echo apply_filters('leyka_form_free_amount_placeholder', $amount_default);?>">
+				<input type="text" name="leyka_donation_amount" class="leyka_donation_amount" value="<?php echo $amount_default;?>" autocomplete="off" placeholder="<?php echo apply_filters('leyka_form_free_amount_placeholder', $amount_default);?>">
 					<span class="curr-mark"><?php echo $currency_label;?></span>
 			</div>
 
