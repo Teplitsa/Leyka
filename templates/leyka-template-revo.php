@@ -160,13 +160,6 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
             <p><a href="http://www.consultant.ru/document/cons_doc_LAW_162595/" target="_blank">110-ФЗ от 5 мая 2014 года</a> обязывает нас спрашивать имя и почту.</p>
         </div>
 
-        <div class="leyka-pf__oferta oferta">
-            <div class="oferta__frame">
-                <div class="oferta__flow"><?php echo apply_filters('leyka_terms_of_service_text', do_shortcode(leyka_options()->opt('terms_of_service_text')));?></div>
-            </div>
-            <div class="oferta__action"><a href="#" class="leyka-js-oferta-close">Я принимаю договор-оферту</a></div>
-        </div>
-
     </div>
     <?php }?>
 </form>
