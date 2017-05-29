@@ -616,6 +616,7 @@ function leyka_inline_campaign(array $attributes = array()) {
 
 }
 
+add_shortcode('leyka_inline_campaign_small', 'leyka_inline_campaign_small');
 function leyka_inline_campaign_small($campaign_id) {
 
     $currency_data = leyka_get_currencies_data(leyka_options()->opt('main_currency'));
