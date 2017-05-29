@@ -274,9 +274,9 @@ function leyka_get_form_templates_list() {
     return $list;
 }
 
-function leyka_get_currencies_data() {
+function leyka_get_currencies_data($currency_id = false) {
 
-    return array(
+    $currencies = array(
         'rur' => array(
             'label' => leyka_options()->opt('currency_rur_label'),
             'top' => leyka_options()->opt('currency_rur_max_sum'),
@@ -305,6 +305,9 @@ function leyka_get_currencies_data() {
             ),
         ),
     );
+
+    return $currency_id && !empty($currencies[$currency_id]) ? $currencies[$currency_id] : $currencies;
+
 }
 
 function leyka_get_currency_data($currency_code) {
@@ -769,6 +772,7 @@ function leyka_form_is_screening($widgets_also = true) {
         apply_filters('leyka_form_is_screening', false);
 
     return $form_is_screening;
+
 }
 
 /** ITV info-widget **/
@@ -790,6 +794,18 @@ function leyka_itv_info_widget() {
         <p><a href="<?php echo $itv_url;?>" target="_blank" class="button">Опубликовать задачу</a></p>
     </div>
 <?php
+}
+
+function leyka_format_amount($amount) {
+
+    if((int)$amount >= 0) {
+        $amount_is_float = (float)$amount - (int)$amount > 0;
+    } else {
+        return false;
+    }
+
+    return number_format((float)$amount, $amount_is_float ? 2 : 0, '.', ' ');
+
 }
 
 function leyka_validate_donor_name($name) {

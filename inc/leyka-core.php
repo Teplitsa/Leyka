@@ -115,7 +115,11 @@ class Leyka {
 
         function leyka_get_posts(WP_Query $query) {
 
-            if( !is_admin() && $query->is_main_query() && $query->is_post_type_archive(Leyka_Donation_Management::$post_type)) {
+            if( !$query->is_main_query() ) {
+                return;
+            }
+
+            if($query->is_post_type_archive(Leyka_Donation_Management::$post_type)) {
 
                 $query->set('post_status', 'funded');
 
@@ -140,6 +144,29 @@ class Leyka {
 
         }
         add_action('pre_get_posts', 'leyka_get_posts', 1);
+
+        add_action('wp_head', function() {
+            if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type)) {
+
+                $campaign = new Leyka_Campaign(get_queried_object_id());
+                $template = leyka_get_current_template_data($campaign);
+
+                if($template && isset($template['file'])) {
+
+                    $init_file = LEYKA_PLUGIN_DIR.'templates/leyka-'.$template['id'].'/leyka-'.$template['id'].'-init.php';
+                    if(file_exists($init_file)) {
+                        require_once($init_file);
+                    }
+
+                }
+
+            }
+            
+                
+
+
+
+        });
 
         /** Embed campaign URL handler: */
         function leyka_template_include($template) {

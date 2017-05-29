@@ -735,6 +735,7 @@ function leyka_get_current_template_data($campaign = null, $template = null, $is
     $template = leyka()->get_template($template, !!$is_service);
    
     return $template ? $template : false;
+
 }
 
 function get_leyka_payment_form_template_html($campaign = null, $template = null) {
@@ -775,7 +776,9 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
                 $template_subdir = LEYKA_PLUGIN_DIR.'templates/leyka-'.$template['id'];
                 if(file_exists($template_subdir)) {
                     foreach(glob($template_subdir.'/leyka-'.$template['id'].'-*.php') as $file) {
-                        require_once($file);
+                        if(stristr($file, 'leyka-'.$template['id'].'-init.php') === false) {
+                            require_once($file);
+                        }
                     }
                 }
                 

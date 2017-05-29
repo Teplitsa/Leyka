@@ -443,7 +443,9 @@ function leyka_inline_campaign(array $attributes = array()) {
 
     if($template_id && file_exists($template_subdir) && file_exists($template_file)) {
         foreach(glob($template_subdir.'/leyka-'.$template_id.'-*.php') as $file) {
-            require_once($file);
+            if(stristr($file, 'leyka-'.$template_id.'-init.php') === false) {
+                require_once($file);
+            }
         }
     } else {
         return false;
@@ -461,9 +463,9 @@ function leyka_inline_campaign(array $attributes = array()) {
         <div class="leyka-pf__module">
             <div class="leyka-pf__close leyka-js-close-form">x</div>
             <div class="leyka-pf__card inpage-card">
-                <?php  if($thumb_url) { // Add other terms ?>
+                <?php if($thumb_url) { // Add other terms ?>
                     <div class="inpage-card__thumbframe"><div class="inpage-card__thumb" style="background-image: url(<?php echo $thumb_url;?>);"></div></div>
-                <?php  }?>
+                <?php }?>
 
                 <div class="inpage-card__content">
                     <div class="inpage-card_title"><?php echo get_the_title($campaign_id);?></div>
@@ -475,7 +477,7 @@ function leyka_inline_campaign(array $attributes = array()) {
 
                         if($target) { // Campaign target set
 
-                            $ready = (isset($target['amount']) && $target['amount']) ? round(100.0*$collected['amount']/$target['amount'], 1) : 0;
+                            $ready = isset($target['amount']) ? round(100.0*$collected['amount']/$target['amount'], 1) : 0;
                             $ready = $ready >= 100.0 ? 100.0 : $ready;?>
 
                         <div class="scale">
@@ -483,14 +485,14 @@ function leyka_inline_campaign(array $attributes = array()) {
                         </div>
 
                         <div class="target">
-                            <?php echo $collected['amount'];?>
+                            <?php echo leyka_format_amount($collected['amount']);?>
                             <span class="curr-mark">
                                 <?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?>
                             </span>
                         </div>
 
                         <div class="info"><?php _e('collected of ', 'leyka');?>
-                            <?php echo $target['amount'];?>
+                            <?php echo leyka_format_amount($target['amount']);?>
                             <span class="curr-mark">
                                 <?php echo leyka_options()->opt("currency_{$target['currency']}_label");?>
                             </span>
@@ -499,7 +501,7 @@ function leyka_inline_campaign(array $attributes = array()) {
                         <?php } else { // Campaign doesn't have a target sum ?>
 
                         <div class="target">
-                            <?php echo $collected['amount'];?>
+                            <?php echo leyka_format_amount($collected['amount']);?>
                             <span class="curr-mark">
                                 <?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?>
                             </span>
@@ -530,6 +532,7 @@ function leyka_inline_campaign(array $attributes = array()) {
                             </a>
 
                         <?php }?>
+
                     </div>
 
                     <div class="inpage-card__action">
@@ -542,7 +545,7 @@ function leyka_inline_campaign(array $attributes = array()) {
 
                 <div class="inpage-card__history history">
                     <div class="history__close leyka-js-history-close">x</div>
-                    <div class="history__title"><?php _e('We thank', 'leyka');?></div>
+                    <div class="history__title"><?php _e('We are grateful to', 'leyka');?></div>
                     <div class="history__list">
                         <div class="history__list-flow">
 
@@ -551,7 +554,7 @@ function leyka_inline_campaign(array $attributes = array()) {
 
                             <div class="history__row">
                                 <div class="history__cell h-amount">
-                                    <?php echo number_format($donation->sum, 2, '.', ' ');?>
+                                    <?php echo leyka_format_amount($donation->sum);?>
                                     <span class="curr-mark">
                                         <?php echo leyka_options()->opt("currency_{$target['currency']}_label");?>
                                     </span>
@@ -596,7 +599,11 @@ function leyka_inline_campaign(array $attributes = array()) {
                 <div class="oferta__frame">
                     <div class="oferta__flow"><?php echo apply_filters('leyka_terms_of_service_text', do_shortcode(leyka_options()->opt('terms_of_service_text')));?></div>
                 </div>
-                <div class="oferta__action"><a href="#" class="leyka-js-oferta-close">Я принимаю договор-оферту</a></div>
+                <div class="oferta__action">
+                    <a href="#" class="leyka-js-oferta-close">
+                        <?php echo leyka_options()->opt('leyka_agree_to_terms_text_text_part').' '.leyka_options()->opt('leyka_agree_to_terms_text_link_part')?>
+                    </a>
+                </div>
             </div>
 
         </div><!-- columnt -->
@@ -607,4 +614,81 @@ function leyka_inline_campaign(array $attributes = array()) {
 
     return $out;
 
+}
+
+function leyka_inline_campaign_small($campaign_id) {
+
+    $currency_data = leyka_get_currencies_data(leyka_options()->opt('main_currency'));
+
+    ob_start();?>
+
+    <div data-target="leyka-pf-<?php echo $campaign_id;?>" id="leyka-pf-bottom-<?php echo $campaign_id;?>" class="leyka-pf-bottom bottom-form">
+        <div class="bottom-form__label"><?php _e('Make a donation', 'leyka');?></div>
+        <div class="bottom-form__fields">
+            <div class="bottom-form__field">
+                <input type="text" value="<?php echo $currency_data['amount_settings']['flexible'];?>" name="leyka_temp_amount">
+                <span class="curr-mark"><?php echo $currency_data['label'];?></span>
+            </div>
+            <div class="bottom-form__button">
+                <button type="button" class="leyka-js-open-form-bottom"><?php echo leyka_options()->opt('donation_submit_text');?></button>
+            </div>
+        </div>
+        <div class="bottom-form__note supporters">
+
+        <?php $supporters = leyka_get_campaign_supporters($campaign_id, 5);
+
+            if(count($supporters['supporters'])) { // There is at least one donor ?>
+                <strong><?php _e('Supporters:', 'leyka');?></strong>
+            <?php }
+
+            if(count($supporters['donations']) <= count($supporters['supporters'])) { // Only names in the list
+                echo implode(', ', array_slice($supporters['supporters'], 0, -1))
+                    .' '.__('and', 'leyka').' '.end($supporters['supporters']);
+            } else { // Names list and the number of the rest of donors
+
+                echo implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka');?>
+
+                <a href="#" class="leyka-js-history-more">
+                    <?php echo sprintf(__('%d more', 'leyka'), count($supporters['donations']) - count($supporters['supporters']));?>
+                </a>
+
+        <?php }?>
+
+        </div>
+
+        <div class="bottom-form__history history">
+            <div class="history__close leyka-js-history-close">x</div>
+            <div class="history__title"><?php _e('We are grateful to', 'leyka');?></div>
+            <div class="history__list">
+                <div class="history__list-flow">
+
+                <?php foreach(leyka_get_campaign_donations($campaign_id) as $donation) {
+                    /** @var $donation Leyka_Donation */?>
+
+                    <div class="history__row">
+                        <div class="history__cell h-amount">
+                            <?php echo leyka_format_amount($donation->sum);?>
+                            <span class="curr-mark"><?php echo $currency_data['label'];?></span>
+                        </div>
+                        <div class="history__cell h-name"><?php echo $donation->donor_name;?></div>
+                        <div class="history__cell h-date"><?php echo $donation->date_label;?></div>
+                    </div>
+
+                <?php }?>
+
+                </div>
+            </div>
+            <div class="history__action">
+                <a href="<?php echo leyka_get_donations_archive_url($campaign_id);?>">
+                    <?php _e('Show all donors', 'leyka');?>
+                </a>
+            </div>
+        </div>
+    </div>
+    <?php
+
+    $out = ob_get_contents();
+    ob_end_clean();
+
+    return $out;
 }
