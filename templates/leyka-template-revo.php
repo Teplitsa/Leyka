@@ -84,23 +84,33 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
         <div class="step__title"><?php _e('Payment method', 'leyka');?></div>
 
         <div class="step__fields payments-grid">
-            <!-- hidden field to store choice ? -->
-            <?php foreach($template_data['pm_list'] as $pm) { /** @var $pm Leyka_Payment_Method */?>
 
+            <?php foreach($template_data['pm_list'] as $pm) { /** @var $pm Leyka_Payment_Method */?>
             <div class="payment-opt">
                 <label class="payment-opt__button">
-                    <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio">
+                    <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" <?php echo $pm->processing_type == 'static' ? 'data-processing="static"' : '';?>>
                     <span class="payment-opt__icon">
                         <svg class="svg-icon <?php echo esc_attr($pm->main_icon);?>"><use xlink:href="#<?php echo esc_attr($pm->main_icon);?>" /></svg>
                     </span>
                 </label>
                 <span class="payment-opt__label"><?php echo $pm->label;?></span>
             </div>
-
             <?php }?>
+
         </div>
 
     </div>
+
+    <?php foreach($template_data['pm_list'] as $pm) { /** @var $pm Leyka_Payment_Method */
+
+        if($pm->processing_type != 'static') {
+            continue;
+        }?>
+    <div class="step step--static <?php echo $pm->full_id;?>">
+        <?php $pm->display_static_data();?>
+    </div>
+
+    <?php }?>
 
     <?php if(leyka_options()->opt('revo_template_ask_donor_data') == 'during-donation') {?>
     <!-- step data -->

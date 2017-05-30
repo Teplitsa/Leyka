@@ -542,7 +542,7 @@ class Leyka_Mixplat_Text extends Leyka_Payment_Method {
     }
 
     public function display_static_data() {
-        return apply_filters('leyka_the_content', leyka_options()->opt_safe($this->full_id.'_details'));
+        echo apply_filters('leyka_the_content', leyka_options()->opt_safe($this->full_id.'_details'));
     }
 
 }
