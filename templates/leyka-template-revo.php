@@ -149,7 +149,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
                         <?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';?>
                             <a href="#" class="leyka-js-oferta-trigger"><?php echo apply_filters('agree_to_terms_text_link_part', leyka_options()->opt('agree_to_terms_text_link_part'));?></a></label></span>
                         <div class="donor__oferta-error leyka_agree-error">
-                            <?php _e('Enter an email in the some@email.com format', 'leyka');?>
+                            <?php _e('You should accept Terms of service to donate', 'leyka');?>
                         </div>
                     </div>
                 <?php }?>
@@ -157,7 +157,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
         </div>
 
         <div class="step__note">
-            <p><a href="http://www.consultant.ru/document/cons_doc_LAW_162595/" target="_blank">110-ФЗ от 5 мая 2014 года</a> обязывает нас спрашивать имя и почту.</p>
+<!--            <p><a href="http://www.consultant.ru/document/cons_doc_LAW_162595/" target="_blank">110-ФЗ от 5 мая 2014 года</a> обязывает нас спрашивать имя и почту.</p>-->
         </div>
 
     </div>
