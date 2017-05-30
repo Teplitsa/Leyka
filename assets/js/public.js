@@ -181,14 +181,71 @@ jQuery(document).ready(function($){
 
 		if(!error){
 
-			//open waiting
-			$_form.parents('.leyka-pf').find('.leyka-pf__redirect').addClass('leyka-pf__redirect--open');
+			// open waiting
+            var $redirect_step = $_form.parents('.leyka-pf').find('.leyka-pf__redirect'),
+                data_array = $_form.serializeArray(),
+                data = {action: 'leyka_ajax_get_gateway_redirect_data'};
 
-			setTimeout(function() {
-				$_form.parents('.leyka-pf').find('.leyka-pf__redirect').removeClass('leyka-pf__redirect--open');
-			}, 4500);
+            for(var i=0; i<data_array.length; i++) {
+                data[data_array[i].name] = data_array[i].value;
+            }
 
-			e.preventDefault(); //temp
+            e.preventDefault();
+            $redirect_step.addClass('leyka-pf__redirect--open');
+
+            // Get gateway redirection form and submit it manually:
+            $.post(leyka.ajaxurl, data).done(function(response){
+
+                response = $.parseJSON(response);
+                if( !response || typeof response.status == 'undefined' ) { // Wrong answer from ajax handler
+
+                    // $errors.html(leyka.cp_wrong_server_response).show();
+                    // $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
+                    //     scrollTop: $errors.offset().top - 35
+                    // }, 250);
+
+                    return false;
+
+                } else if(response.status != 0 && typeof response.message != 'undefined') {
+
+                    // $errors.html(response.message).show();
+                    // $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
+                    //     scrollTop: $errors.offset().top - 35
+                    // }, 250);
+
+                    return false;
+
+                } else if( !response.payment_url ) {
+
+                    // $errors.html(leyka.cp_not_set_up).show();
+                    // $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
+                    //     scrollTop: $errors.offset().top - 35
+                    // }, 250);
+
+                    return false;
+
+                }
+
+                var redirect_form_html = '<form class="leyka-auto-submit" action="'+response.payment_url+'" method="post">';
+
+                $.each(response, function(field_name, value){
+                    if(field_name != 'payment_url') {
+                        redirect_form_html += '<input type="hidden" name="'+field_name+'" value="'+value+'">';
+                    }
+                });
+                redirect_form_html += '</form>';
+
+                $redirect_step.append(redirect_form_html);
+                $redirect_step.find('.leyka-auto-submit').submit();
+
+            });
+
+			// setTimeout(function() {
+			// 	$redirect_step.removeClass('leyka-pf__redirect--open');
+             //
+			// }, 4500);
+
+			e.preventDefault(); // temp
 		}
 		else {
 			e.preventDefault(); //temp
@@ -473,7 +530,7 @@ jQuery(document).ready(function($){
     function redirectForm() {
 
         var $form = $(this);
-        console.log($form);
+        console.log($form.serializeArray());
 
     }
 

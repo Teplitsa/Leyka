@@ -115,7 +115,7 @@ class Leyka {
 
         function leyka_get_posts(WP_Query $query) {
 
-            if( !$query->is_main_query() ) {
+            if(is_admin() || !$query->is_main_query()) {
                 return;
             }
 

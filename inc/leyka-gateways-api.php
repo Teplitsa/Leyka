@@ -513,6 +513,7 @@ abstract class Leyka_Payment_Method {
     protected $_supported_currencies = array();
     protected $_default_currency = '';
     protected $_options = array();
+    protected $_processing_type = 'default';
 
     public final static function get_instance() {
 
@@ -568,6 +569,10 @@ abstract class Leyka_Payment_Method {
             case 'submit_label': $param = $this->_submit_label; break;
             case 'currencies': $param = $this->_supported_currencies; break;
             case 'default_currency': $param = $this->_default_currency; break;
+            case 'processing_type':
+            case 'processing':
+                $param = $this->_processing_type;
+                break;
             default:
 //                trigger_error('Error: unknown param "'.$param.'"');
                 $param = null;
@@ -639,6 +644,7 @@ abstract class Leyka_Payment_Method {
         $this->_description = leyka_options()->opt_safe($this->full_id.'_description');
 
         add_filter('leyka_payment_options_allocation', array($this, 'allocate_pm_options'), 10, 1);
+
     }
 
     public function get_pm_options_names() {
@@ -684,4 +690,8 @@ abstract class Leyka_Payment_Method {
 
         return $options;
     }
+
+    /** For PM with a static processing type, this method should display some static data. Otherwise, it may stay empty. */
+    public function display_static_data() {}
+
 } // Leyka_Payment_Method end

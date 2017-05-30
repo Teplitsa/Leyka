@@ -179,7 +179,7 @@
     function redirectForm() {
 
         var $form = $(this);
-        console.log($form);
+        console.log($form.serializeArray());
 
     }
 

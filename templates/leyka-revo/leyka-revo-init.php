@@ -4,7 +4,7 @@
  **/
 
 // Revo campaigns have different elements order:
-if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type)) {
+if( !is_admin() && is_main_query() && is_singular(Leyka_Campaign_Management::$post_type) ) {
 
     remove_filter('the_content', 'leyka_print_donation_elements');
     add_filter('the_content', 'leyka_revo_template_campaign_page');
