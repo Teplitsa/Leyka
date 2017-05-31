@@ -386,9 +386,10 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
             echo apply_filters('leyka_donors_list_item_html', $html, $campaign_id, $args);
         }?>
     </div>
-    <?php
-    $out = ob_get_clean();
+
+    <?php $out = ob_get_clean();
     return $out;
+
 }
 
 /**
@@ -455,9 +456,23 @@ function leyka_inline_campaign(array $attributes = array()) {
     $attributes['show_thumbnail'] = !!$attributes['show_thumbnail'];
     $thumb_url = $attributes['show_thumbnail'] ? get_the_post_thumbnail_url($campaign_id, 'post-thumbnail') : false;
 
+    /** @todo For the forms caching task */
+//    global $test; // USE A COLLECTION/FACTORY OBJECT INSTEAD OF GLOBAL!
+//    $test = array();
+//
+//    if( empty($test[$campaign_id.'-'.$template_id]) ) {
+//
+//        ob_start();
+//        require($template_file);
+//        $out = ob_get_clean();
+//
+//        $test[$campaign_id.'-'.$template_id] = $out;
+//
+//    }
+
     ob_start();?>
 
-    <div id="<?php echo leyka_pf_get_form_id($campaign_id);?>" class="leyka-pf">
+    <div id="<?php echo leyka_pf_get_form_id($campaign_id);?>" class="leyka-pf" data-form-id="<?php echo leyka_pf_get_form_id($campaign->id).'-revo-form';?>">
         <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
         <div class="leyka-pf__overlay"></div>
 
@@ -579,7 +594,7 @@ function leyka_inline_campaign(array $attributes = array()) {
             </div>
 
             <div class="leyka-pf__form">
-                <?php require($template_file);?>
+                <?php /** @todo For the forms caching task comment this require out */ require($template_file);?>
             </div>
 
             <div class="leyka-pf__redirect">
@@ -693,4 +708,14 @@ function leyka_inline_campaign_small($campaign_id) {
     ob_end_clean();
 
     return $out;
+
 }
+
+add_action('wp_footer', function(){
+
+    global $test;
+    foreach ($test as $form_id => $form_html) {
+        echo $form_html;
+    }
+
+}, 100);

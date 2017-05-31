@@ -7,7 +7,7 @@
 $campaign = Leyka_Revo_Template_Controller::get_instance()->get_current_campaign();
 $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_data();?>
 
-<form action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
+<form id="<?php echo leyka_pf_get_form_id($campaign->id).'-revo-form';?>" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
 
 	<!-- Step 1: amount -->
     <div class="step step--amount step--active">
@@ -16,13 +16,13 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
 
         <div class="step__fields amount">
 
-            <?php echo Leyka_Payment_Form::get_common_hidden_fields(null, array(
-                'leyka_template_id' => 'revo',
-                'leyka_amount_field_type' => 'custom',
-            ));
+        <?php echo Leyka_Payment_Form::get_common_hidden_fields(null, array(
+            'leyka_template_id' => 'revo',
+            'leyka_amount_field_type' => 'custom',
+        ));
 
-            $form_api = new Leyka_Payment_Form();
-            echo $form_api->get_hidden_amount_fields();?>
+        $form_api = new Leyka_Payment_Form();
+        echo $form_api->get_hidden_amount_fields();?>
 
             <div class="amount__figure">
 
@@ -58,16 +58,16 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
         </div>
 
         <div class="step__action step__action--amount">
-            <?php if(leyka_is_recurring_supported()) {?>
+        <?php if(leyka_is_recurring_supported()) {?>
 
-                <a href="cards" class="leyka-js-amount"><?php _e('Support once-only', 'leyka');?></a>
-                <a href="person" class="leyka-js-amount monthly">
-                    <svg class="svg-icon icon-card"><use xlink:href="#icon-card"></svg><?php _e('Support monthly', 'leyka');?>
-                </a>
+            <a href="cards" class="leyka-js-amount"><?php _e('Support once-only', 'leyka');?></a>
+            <a href="person" class="leyka-js-amount monthly">
+                <svg class="svg-icon icon-card"><use xlink:href="#icon-card"></svg><?php _e('Support monthly', 'leyka');?>
+            </a>
 
-            <?php } else {?>
-                <a href="cards" class="leyka-js-amount"><?php _e('Proceed', 'leyka');?></a>
-            <?php }?>
+        <?php } else {?>
+            <a href="cards" class="leyka-js-amount"><?php _e('Proceed', 'leyka');?></a>
+        <?php }?>
         </div>
     </div>
 
@@ -85,7 +85,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
 
         <div class="step__fields payments-grid">
 
-            <?php foreach($template_data['pm_list'] as $pm) { /** @var $pm Leyka_Payment_Method */?>
+        <?php foreach($template_data['pm_list'] as $pm) { /** @var $pm Leyka_Payment_Method */?>
             <div class="payment-opt">
                 <label class="payment-opt__button">
                     <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>">
@@ -95,7 +95,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
                 </label>
                 <span class="payment-opt__label"><?php echo $pm->label;?></span>
             </div>
-            <?php }?>
+        <?php }?>
 
         </div>
 

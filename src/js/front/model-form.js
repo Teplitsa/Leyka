@@ -451,8 +451,16 @@
     
     /* open/close form */
     function open() {
-        $(this).addClass('leyka-pf--active');
-        $('.amount_range input').change(); // sync coins pic
+
+        var $this = $(this);
+
+        /** @todo For the forms caching task */
+        // $this.find('.leyka-pf__form').append($('#'+$this.data('form-id'))); // Get form HTML from cache
+
+        $this.addClass('leyka-pf--active'); // Open the popup
+
+        $('.amount_range input').change(); // Sync the coins picture with the amount
+
     }
 
     function openFromBottom() {
