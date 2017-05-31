@@ -133,8 +133,6 @@ jQuery(document).ready(function($){
 		}
 	});
 
-
-
 	//agree
 	$('.donor__oferta').on('change', 'input', function(){
 
