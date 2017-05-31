@@ -88,7 +88,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
             <?php foreach($template_data['pm_list'] as $pm) { /** @var $pm Leyka_Payment_Method */?>
             <div class="payment-opt">
                 <label class="payment-opt__button">
-                    <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" <?php echo $pm->processing_type == 'static' ? 'data-processing="static"' : '';?>>
+                    <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>">
                     <span class="payment-opt__icon">
                         <svg class="svg-icon <?php echo esc_attr($pm->main_icon);?>"><use xlink:href="#<?php echo esc_attr($pm->main_icon);?>" /></svg>
                     </span>

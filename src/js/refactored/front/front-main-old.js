@@ -181,6 +181,12 @@ jQuery(document).ready(function($){
 
 		if(!error){
 
+            if($_form.find('input[name="leyka_payment_method"]:checked').data('processing') != 'default') {
+                return;
+            }
+
+            e.preventDefault();
+
 			// open waiting
             var $redirect_step = $_form.parents('.leyka-pf').find('.leyka-pf__redirect'),
                 data_array = $_form.serializeArray(),
@@ -190,7 +196,6 @@ jQuery(document).ready(function($){
                 data[data_array[i].name] = data_array[i].value;
             }
 
-            e.preventDefault();
             $redirect_step.addClass('leyka-pf__redirect--open');
 
             // Get gateway redirection form and submit it manually:
@@ -244,8 +249,6 @@ jQuery(document).ready(function($){
 			// 	$redirect_step.removeClass('leyka-pf__redirect--open');
              //
 			// }, 4500);
-
-			e.preventDefault(); // temp
 		}
 		else {
 			e.preventDefault(); //temp
