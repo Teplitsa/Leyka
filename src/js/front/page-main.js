@@ -1,7 +1,10 @@
 window.LeykaPageMain = function($) {
-    this.$ = $;
-    this.setupNoScroll();
-    this.initForms();
+    var self = this; self.$ = $;
+    
+    self.setupNoScroll();
+    self.initForms();
+    self.inpageCardColumns();
+    self.setupCustomRangeControl();
 }
 
 window.LeykaPageMain.prototype = {
@@ -18,6 +21,10 @@ window.LeykaPageMain.prototype = {
             e.preventDefault();
    
             $(this).closest('.leyka-pf').leykaForm('close');
+        });
+        
+        $(window).resize(function(){
+            self.inpageCardColumns();
         });
     },
 
@@ -42,7 +49,31 @@ window.LeykaPageMain.prototype = {
         var self = this; var $ = self.$;
         
         $('.leyka-pf').leykaForm();
+    },
+    
+    inpageCardColumns: function() {
+        var self = this; var $ = self.$;
+        
+        var form = $('.leyka-pf');
+        form.each(function(){
+            var w = $('.leyka-pf').width();
+
+            if(w >= 600) {
+                $(this).addClass('card-2col');
+            }
+            else{
+                $(this).removeClass('card-2col');
+            }
+        });
+    },
+    
+    setupCustomRangeControl: function() {
+        var self = this; var $ = self.$;
+        
+        $('.amount__range_overlay').show();
+        $('.amount__range_custom').show();
     }
+    
 }
 
 jQuery(document).ready(function($){

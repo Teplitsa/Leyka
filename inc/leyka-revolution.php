@@ -236,7 +236,7 @@ function leyka_rev2_campaign_top($campaign_id) {
 
 	<div class="leyka-pf__form">
 
-	<form action="#" method="post" novalidate="novalidate" id="<?php echo leyka_pf_get_form_id($campaign_id);?>">
+	<form action="#" method="post" novalidate="novalidate">
 
 	<!-- Step 1: amount -->
 
@@ -435,7 +435,7 @@ function leyka_rev2_campaign_bottom($campaign_id) {
 
 	ob_start();
 ?>
-<div data-target="leyka-pf-<?php echo $campaign_id;?>" id="leyka-pf-bottom-<?php echo $campaign_id;?>" class="leyka-pf-bottom bottom-form">
+<div data-target="<?php echo leyka_pf_get_form_id($campaign_id);?>" id="leyka-pf-bottom-<?php echo $campaign_id;?>" class="leyka-pf-bottom bottom-form">
 	<div class="bottom-form__label"><?php _e('Make a donation', 'leyka');?></div>
 	<div class="bottom-form__fields">
 		<div class="bottom-form__field">

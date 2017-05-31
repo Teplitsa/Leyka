@@ -457,7 +457,7 @@ function leyka_inline_campaign(array $attributes = array()) {
 
     ob_start();?>
 
-    <div id="leyka-pf-<?php echo $campaign_id;?>" class="leyka-pf">
+    <div id="<?php echo leyka_pf_get_form_id($campaign_id);?>" class="leyka-pf">
         <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
         <div class="leyka-pf__overlay"></div>
 
@@ -624,7 +624,7 @@ function leyka_inline_campaign_small($campaign_id) {
 
     ob_start();?>
 
-    <div data-target="leyka-pf-<?php echo $campaign_id;?>" id="leyka-pf-bottom-<?php echo $campaign_id;?>" class="leyka-pf-bottom bottom-form">
+    <div data-target="<?php echo leyka_pf_get_form_id($campaign_id);?>" id="leyka-pf-bottom-<?php echo $campaign_id;?>" class="leyka-pf-bottom bottom-form">
         <div class="bottom-form__label"><?php _e('Make a donation', 'leyka');?></div>
         <div class="bottom-form__fields">
             <div class="bottom-form__field">

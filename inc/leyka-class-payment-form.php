@@ -447,14 +447,14 @@ function leyka_pf_get_form_id($campaign) {
 	if($campaign) {
 	    if(is_object($campaign)) {
 	        if(is_a($campaign, 'Leyka_Campaign')) {
-	            $campaign_suffix = '-'.$campaign->ID;
+	            $campaign_suffix = $campaign->ID;
 	        }
 	    } elseif((int)$campaign > 0) {
-	        $campaign_suffix = '-' . (int)$campaign;
+	        $campaign_suffix = (int)$campaign;
 	    }
 	}
 	
-	return 'leyka-form'.$campaign_suffix;
+	return 'leyka-pf-'.$campaign_suffix;
 
 }
 

@@ -7,7 +7,7 @@
 $campaign = Leyka_Revo_Template_Controller::get_instance()->get_current_campaign();
 $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_data();?>
 
-<form action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate" id="<?php echo leyka_pf_get_form_id($campaign->id);?>">
+<form action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
 
 	<!-- Step 1: amount -->
     <div class="step step--amount step--active">

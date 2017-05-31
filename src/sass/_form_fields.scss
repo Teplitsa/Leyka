@@ -372,6 +372,7 @@ div[id *="leyka-pf-"] { //aka namespace
 	    position:relative;
 	    
 	    .amount__range_overlay {
+	        display:none;
 		    background-color: #ffffff;
 		    height: 30px;
 		    left: 0;
@@ -383,6 +384,7 @@ div[id *="leyka-pf-"] { //aka namespace
 	    }
 	    
 	    .amount__range_custom {
+	       display:none;
 	       position:relative;
 	       left:10px;
 	       top:10px;
