@@ -596,7 +596,7 @@ function leyka_inline_campaign(array $attributes = array()) {
             <div class="leyka-pf__form">
                 <?php /** @todo For the forms caching task comment this require out */ require($template_file);?>
             </div>
-            <div id="leyka-submit-errors"></div>
+            <?php leyka_pf_submission_errors();?>
 
             <div class="leyka-pf__redirect">
                 <div class="waiting">
