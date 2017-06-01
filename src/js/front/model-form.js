@@ -438,9 +438,16 @@
 
         //move
         $_step.removeClass('step--active');
-        $_form.find('.step--person').addClass('step--active');
+        
+        var $step_static_step = $_form.find('.step--static.' + $_opt.val());
+        if($step_static_step.length > 0) {
+            $step_static_step.addClass('step--active');
+        }
+        else {
+            $_form.find('.step--person').addClass('step--active');
+        }
 
-    };
+    }
     
     /* donor step */
     function setupDonorForm() {

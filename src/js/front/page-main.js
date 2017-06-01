@@ -5,6 +5,10 @@ window.LeykaPageMain = function($) {
     self.initForms();
     self.inpageCardColumns();
     self.setupCustomRangeControl();
+    
+    self.bindEvents();
+    
+    self.showTargetForm();
 }
 
 window.LeykaPageMain.prototype = {
@@ -72,6 +76,16 @@ window.LeykaPageMain.prototype = {
         
         $('.amount__range_overlay').show();
         $('.amount__range_custom').show();
+    },
+    
+    showTargetForm: function() {
+        var self = this; var $ = self.$;
+        
+        var hash = window.location.hash.substr(1);
+        var $_form = $('#' + hash);
+        if($_form.length > 0) {
+            $_form.leykaForm('open');
+        }
     }
     
 }
@@ -79,6 +93,5 @@ window.LeykaPageMain.prototype = {
 jQuery(document).ready(function($){
 
     leykaPageMain = new LeykaPageMain($);
-    leykaPageMain.bindEvents();
     
 }); //jQuery

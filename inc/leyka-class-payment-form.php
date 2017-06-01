@@ -441,21 +441,29 @@ function leyka_setup_current_pm(Leyka_Payment_Method $payment_method, $currency 
 
 }
 
-function leyka_pf_get_form_id($campaign) {
+function leyka_pf_get_form_id($campaign_id) {
 
-	$campaign_suffix = '';
-	if($campaign) {
-	    if(is_object($campaign)) {
-	        if(is_a($campaign, 'Leyka_Campaign')) {
-	            $campaign_suffix = $campaign->ID;
-	        }
-	    } elseif((int)$campaign > 0) {
-	        $campaign_suffix = (int)$campaign;
-	    }
-	}
-	
-	return 'leyka-pf-'.$campaign_suffix;
+    $campaign_suffix = '';
+    
+    if($campaign_id && (int)$campaign_id > 0) {
+        $campaign_suffix = (int)$campaign_id;
+    }
+    
+    return 'leyka-pf-'.$campaign_suffix;
 
+}
+
+function leyka_pf_get_form_auto_open_class($campaign_id) {
+    
+    $auto_open_form_param = 'leyka-auto-open-form';
+    $auto_open_form_class = 'leyka-pf--active';
+    
+    if(isset($_GET[$auto_open_form_param]) && $_GET[$auto_open_form_param]) {
+        if( $_GET[$auto_open_form_param] == leyka_pf_get_form_id($campaign_id) ) {
+            return $auto_open_form_class;
+        }
+    }
+    
 }
 
 function leyka_pf_get_form_action() {

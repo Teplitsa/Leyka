@@ -482,9 +482,16 @@ jQuery(document).ready(function($){
 
         //move
         $_step.removeClass('step--active');
-        $_form.find('.step--person').addClass('step--active');
+        
+        var $step_static_step = $_form.find('.step--static.' + $_opt.val());
+        if($step_static_step.length > 0) {
+            $step_static_step.addClass('step--active');
+        }
+        else {
+            $_form.find('.step--person').addClass('step--active');
+        }
 
-    };
+    }
     
     /* donor step */
     function setupDonorForm() {
@@ -567,6 +574,10 @@ window.LeykaPageMain = function($) {
     self.initForms();
     self.inpageCardColumns();
     self.setupCustomRangeControl();
+    
+    self.bindEvents();
+    
+    self.showTargetForm();
 }
 
 window.LeykaPageMain.prototype = {
@@ -634,6 +645,16 @@ window.LeykaPageMain.prototype = {
         
         $('.amount__range_overlay').show();
         $('.amount__range_custom').show();
+    },
+    
+    showTargetForm: function() {
+        var self = this; var $ = self.$;
+        
+        var hash = window.location.hash.substr(1);
+        var $_form = $('#' + hash);
+        if($_form.length > 0) {
+            $_form.leykaForm('open');
+        }
     }
     
 }
@@ -641,6 +662,5 @@ window.LeykaPageMain.prototype = {
 jQuery(document).ready(function($){
 
     leykaPageMain = new LeykaPageMain($);
-    leykaPageMain.bindEvents();
     
 }); //jQuery

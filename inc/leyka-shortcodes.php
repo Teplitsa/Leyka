@@ -472,7 +472,7 @@ function leyka_inline_campaign(array $attributes = array()) {
 
     ob_start();?>
 
-    <div id="<?php echo leyka_pf_get_form_id($campaign_id);?>" class="leyka-pf" data-form-id="<?php echo leyka_pf_get_form_id($campaign->id).'-revo-form';?>">
+    <div id="<?php echo leyka_pf_get_form_id($campaign_id);?>" class="leyka-pf <?php echo leyka_pf_get_form_auto_open_class($campaign_id);?>" data-form-id="<?php echo leyka_pf_get_form_id($campaign->id).'-revo-form';?>">
         <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
         <div class="leyka-pf__overlay"></div>
 

@@ -712,4 +712,36 @@ div[id *="leyka-pf-"] {  //aka namespace
 			.donor__oferta-error { visibility: visible; }
 		}
 	}
+	
+	.step--static {
+	
+		.step__border {
+		
+		    min-height:80%;
+		    position:relative;
+
+			.static-text {
+			}
+			
+			.static__complete-donation {
+				text-align: center;
+				margin-top: $base*1.5;
+				margin-bottom: $base*1.5;
+				position:absolute;
+				bottom:0px;
+				
+				margin-left: auto;
+				margin-right: auto;
+				left: 0;
+				right: 0;			    
+			
+			    input {
+			        @include button();
+			    }
+			}
+           
+        }
+	
+    }
+	
 }

@@ -708,6 +708,17 @@ self::$_options_meta = array(
         'list_entries' => array(), // For select, radio & checkbox fields
         'validation_rules' => array(), // List of regexp?..
     ),
+    'revo_donation_complete_button_text' => array(
+        'type' => 'text',
+        'default' => __('Complete donation', 'leyka'),
+        'title' => __('Label of the button to complete a donation', 'leyka'),
+        'description' => __('Enter the text for a complete donation buttons on a donation forms.', 'leyka'),
+        'required' => 1,
+        'placeholder' => __('For ex., «Complete donation» or «Close form»', 'leyka'),
+        'length' => '', // For text fields
+        'list_entries' => array(), // For select, radio & checkbox fields
+        'validation_rules' => array(), // List of regexp?..
+    ),
     'success_page' => array(
         'type' => 'select',
         'default' => leyka_get_default_success_page(),
