@@ -520,6 +520,8 @@ class Leyka_CP_Card extends Leyka_Payment_Method {
 
         $this->_default_currency = 'rur';
 
+        $this->_processing_type = 'custom';
+
     }
 
     protected function _set_options_defaults() {

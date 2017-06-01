@@ -62,31 +62,29 @@ jQuery(document).ready(function($){
     };
 
     function init(options) {
+
         setupAmount();
         setupDonorForm();
-        
         bindEvents();
+
     }
     
     /* event handlers */
     function bindEvents() {
 
         bindNavigationEvents();
-        
         bindAmountStepEvents();
         bindPaymentStepEvents();
         bindDonorStepEvents();
-        
         bindOfertaEvents();
         bindHistoryEvents();
-        
         bindSubmitPaymentFormEvent();
-    }
-    
-    function bindSubmitPaymentFormEvent() {
-        
-        $('.leyka-pf__form').on('submit', 'form',  function(e){
 
+    }
+
+    function bindSubmitPaymentFormEvent() {
+
+        $('.leyka-pf__form').on('submit.leyka', 'form',  function(e){
 
             var $_form = $(this),
                 pName = $_form.find('.donor__textfield--name input').val(),
@@ -187,10 +185,10 @@ jQuery(document).ready(function($){
                  //
                 // }, 4500);
 
+            } else { // Errors exist
+                e.preventDefault(); // temp
             }
-            else {
-                e.preventDefault(); //temp
-            }
+
         });
     }
     
@@ -538,33 +536,30 @@ jQuery(document).ready(function($){
 
         var $pf = $(this);
 
-        if($pf.hasClass('leyka-pf--oferta-open')){ //close only oferta
+        if($pf.hasClass('leyka-pf--oferta-open')) { // close only the Oferta terms window
             $pf.removeClass('leyka-pf--oferta-open');
-
-        }
-        else { //close module
+        } else { // close module
             $pf.removeClass('leyka-pf--active');
-
         }
     }
 
     function redirectForm() {
 
-        var $form = $(this);
-        console.log($form.serializeArray());
+        // var $form = $(this);
+        // console.log($form.serializeArray());
 
     }
 
     $.fn.leykaForm = function(methodOrOptions) {
-        if ( methods[methodOrOptions] ) {
-            return methods[ methodOrOptions ].apply( this, Array.prototype.slice.call( arguments, 1 ));
-        } else if ( typeof methodOrOptions === 'object' || ! methodOrOptions ) {
-            return methods.init.apply( this, arguments );
+        if(methods[methodOrOptions]) {
+            return methods[methodOrOptions].apply(this, Array.prototype.slice.call(arguments, 1));
+        } else if (typeof methodOrOptions === 'object' || !methodOrOptions) {
+            return methods.init.apply(this, arguments);
         } else {
-            $.error( 'Method ' +  methodOrOptions + ' does not exist on jQuery.leykaForm' );
-        }    
+            $.error('Method '+methodOrOptions+' does not exist on jQuery.leykaForm');
+        }
     }
-    
+
 }( jQuery ));
 
 window.LeykaPageMain = function($) {
@@ -582,39 +577,45 @@ window.LeykaPageMain = function($) {
 
 window.LeykaPageMain.prototype = {
         
-    bindEvents: function() {
+    bindEvents: function(){
+
         var self = this; var $ = self.$;
    
         $('.leyka-js-open-form').on('click', function(e){
+
             e.preventDefault();
             $(this).closest('.leyka-pf').leykaForm('open');
+
         });
    
         $('.leyka-js-close-form').on('click', function(e){
+
             e.preventDefault();
-   
             $(this).closest('.leyka-pf').leykaForm('close');
+
         });
         
         $(window).resize(function(){
             self.inpageCardColumns();
         });
+
     },
 
     setupNoScroll: function() {
+
         var self = this; var $ = self.$;
-        
         var position = $(window).scrollTop();
+
         $(window).scroll(function(){
 
             var scroll = $(window).scrollTop();
 
             if($('.leyka-pf').hasClass('leyka-pf--active')){
                 $(window).scrollTop(position);
-            }
-            else {
+            } else {
                 position = scroll;
             }
+
         });
     },
     

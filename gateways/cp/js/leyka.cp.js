@@ -1,6 +1,6 @@
 jQuery(document).ready(function($){
 
-    $(document).on('submit.leyka', 'form.leyka-pm-form', function(e){
+    $(document).on('submit.leyka', 'form.leyka-pm-form,form.leyka-revo-form', function(e){
 
         /** @var leyka object Localization strings */
 
@@ -68,6 +68,7 @@ jQuery(document).ready(function($){
                 }, 250);
 
                 return false;
+
             }
 
             var widget = new cp.CloudPayments(),
@@ -75,6 +76,10 @@ jQuery(document).ready(function($){
 
             if(is_recurrent) {
                 data.cloudPayments = {recurrent: {interval: 'Month', period: 1}};
+            }
+
+            if($form.hasClass('leyka-revo-form')) {
+                $form.closest('.leyka-pf').leykaForm('close');
             }
 
             widget.charge({
@@ -98,6 +103,9 @@ jQuery(document).ready(function($){
                     scrollTop: $errors.offset().top - 35
                 }, 250);
             });
+
         });
+
     });
+
 });

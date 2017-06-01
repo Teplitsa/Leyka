@@ -13,39 +13,45 @@ window.LeykaPageMain = function($) {
 
 window.LeykaPageMain.prototype = {
         
-    bindEvents: function() {
+    bindEvents: function(){
+
         var self = this; var $ = self.$;
    
         $('.leyka-js-open-form').on('click', function(e){
+
             e.preventDefault();
             $(this).closest('.leyka-pf').leykaForm('open');
+
         });
    
         $('.leyka-js-close-form').on('click', function(e){
+
             e.preventDefault();
-   
             $(this).closest('.leyka-pf').leykaForm('close');
+
         });
         
         $(window).resize(function(){
             self.inpageCardColumns();
         });
+
     },
 
     setupNoScroll: function() {
+
         var self = this; var $ = self.$;
-        
         var position = $(window).scrollTop();
+
         $(window).scroll(function(){
 
             var scroll = $(window).scrollTop();
 
             if($('.leyka-pf').hasClass('leyka-pf--active')){
                 $(window).scrollTop(position);
-            }
-            else {
+            } else {
                 position = scroll;
             }
+
         });
     },
     

@@ -18,31 +18,29 @@
     };
 
     function init(options) {
+
         setupAmount();
         setupDonorForm();
-        
         bindEvents();
+
     }
     
     /* event handlers */
     function bindEvents() {
 
         bindNavigationEvents();
-        
         bindAmountStepEvents();
         bindPaymentStepEvents();
         bindDonorStepEvents();
-        
         bindOfertaEvents();
         bindHistoryEvents();
-        
         bindSubmitPaymentFormEvent();
-    }
-    
-    function bindSubmitPaymentFormEvent() {
-        
-        $('.leyka-pf__form').on('submit', 'form',  function(e){
 
+    }
+
+    function bindSubmitPaymentFormEvent() {
+
+        $('.leyka-pf__form').on('submit.leyka', 'form',  function(e){
 
             var $_form = $(this),
                 pName = $_form.find('.donor__textfield--name input').val(),
@@ -143,10 +141,10 @@
                  //
                 // }, 4500);
 
+            } else { // Errors exist
+                e.preventDefault(); // temp
             }
-            else {
-                e.preventDefault(); //temp
-            }
+
         });
     }
     
@@ -494,31 +492,28 @@
 
         var $pf = $(this);
 
-        if($pf.hasClass('leyka-pf--oferta-open')){ //close only oferta
+        if($pf.hasClass('leyka-pf--oferta-open')) { // close only the Oferta terms window
             $pf.removeClass('leyka-pf--oferta-open');
-
-        }
-        else { //close module
+        } else { // close module
             $pf.removeClass('leyka-pf--active');
-
         }
     }
 
     function redirectForm() {
 
-        var $form = $(this);
-        console.log($form.serializeArray());
+        // var $form = $(this);
+        // console.log($form.serializeArray());
 
     }
 
     $.fn.leykaForm = function(methodOrOptions) {
-        if ( methods[methodOrOptions] ) {
-            return methods[ methodOrOptions ].apply( this, Array.prototype.slice.call( arguments, 1 ));
-        } else if ( typeof methodOrOptions === 'object' || ! methodOrOptions ) {
-            return methods.init.apply( this, arguments );
+        if(methods[methodOrOptions]) {
+            return methods[methodOrOptions].apply(this, Array.prototype.slice.call(arguments, 1));
+        } else if (typeof methodOrOptions === 'object' || !methodOrOptions) {
+            return methods.init.apply(this, arguments);
         } else {
-            $.error( 'Method ' +  methodOrOptions + ' does not exist on jQuery.leykaForm' );
-        }    
+            $.error('Method '+methodOrOptions+' does not exist on jQuery.leykaForm');
+        }
     }
-    
+
 }( jQuery ));
