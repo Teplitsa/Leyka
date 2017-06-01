@@ -626,6 +626,7 @@ function leyka_inline_campaign(array $attributes = array()) {
 
         </div><!-- columnt -->
     </div>
+
     <?php $out = ob_get_contents();
     ob_end_clean();
 
@@ -712,11 +713,14 @@ function leyka_inline_campaign_small($campaign_id) {
 
 }
 
-add_action('wp_footer', function(){
-
-    global $test;
-    foreach ($test as $form_id => $form_html) {
-        echo $form_html;
-    }
-
-}, 100);
+//add_action('wp_footer', function(){
+//
+//    global $test;
+//    if(empty($test)) {
+//        return;
+//    }
+//    foreach($test as $form_id => $form_html) {
+//        echo $form_html;
+//    }
+//
+//}, 100);

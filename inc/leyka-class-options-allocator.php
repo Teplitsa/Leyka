@@ -148,6 +148,7 @@ class Leyka_Options_Allocator {
                         'options' => array(
                             'donation_form_template', 'donation_sum_field_type', 'donation_form_mode',
                             'scale_widget_place', 'donations_history_under_forms', 'show_campaign_sharing',
+                            'show_subscription_on_success',
                         )
                     ),),
                     array('section' => array(
