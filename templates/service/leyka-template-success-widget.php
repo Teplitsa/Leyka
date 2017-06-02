@@ -11,19 +11,21 @@
 
     <h3><?php _e('Want us to keep you posted about the results?', 'leyka');?></h3>
 
-    <p><input type="text" name="leyka_donor_name" value="<?php echo ''; //leyka_get_remembered_donor_name();?>" placeholder="Ваше имя"></p>
-    <p><input type="text" name="leyka_donor_email" value="<?php echo ''; //leyka_get_remembered_donor_email();?>" placeholder="Ваш email"></p>
-    <input type="hidden" name="leyka_donation_id" value="<?php echo ''; //leyka_get_remembered_donation_id();?>">
+    <p><input type="text" name="leyka_donor_name" value="<?php echo leyka_remembered_data('donor_name');?>" placeholder="Ваше имя"></p>
+    <p><input type="text" name="leyka_donor_email" value="<?php echo leyka_remembered_data('donor_email');?>" placeholder="Ваш email"></p>
+    <input type="hidden" name="leyka_donation_id" value="<?php echo leyka_remembered_data('donation_id');?>">
 
-    <input type="submit" name="leyka_donor_data_submit" value="<?php _e("I want to know about the results", 'leyka');?>">
+    <input type="submit" name="leyka_donor_data_submit" value="<?php _e('I want to know about the results', 'leyka');?>">
     <br>
     <a href="#"><?php _e('No, thank you', 'leyka');?></a>
 
 <?php } else if(leyka_options()->opt('show_subscription_on_success')) {?>
 
+    <h3><?php _e('Want us to keep you posted about the results?', 'leyka');?></h3>
+
     <p><input type="text" name="leyka_donor_email" value="<?php echo ''; //leyka_get_remembered_donor_email();?>" placeholder="Ваш email"></p>
 
-    <input type="submit" name="leyka_donor_data_submit" value="<?php _e("I want to know about the results", 'leyka');?>">
+    <input type="submit" name="leyka_donor_data_submit" value="<?php _e('I want to know about the results', 'leyka');?>">
     <br>
     <a href="#"><?php _e('No, thank you', 'leyka');?></a>
 

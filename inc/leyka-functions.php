@@ -942,3 +942,15 @@ function leyka_get_donations_archive_url($campaign_id = false) {
     return $donations_permalink;
 
 }
+
+function leyka_remembered_data($name, $value = null) {
+
+    $name = stripos($name, 'leyka_') === false ? 'leyka_'.$name : $name;
+
+    if($value) {
+        return setcookie('leyka_donation_id', trim($value), 0, '', '', true);
+    } else {
+        return empty($_COOKIE[$name]) ? '' : trim($_COOKIE[$name]);
+    }
+
+}
