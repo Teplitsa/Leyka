@@ -1,3 +1,7 @@
+/*
+ * Donation form inner functionality and handlers
+ */
+
 (function($){
 
     var amountMin = 1, //temp - take it from options
@@ -277,15 +281,16 @@
     function goAnotherStep($_link) {
         
         var target = $_link.attr('href'),
-        $_form = $_link.parents('.leyka-pf__form');
+        $_form = $_link.parents('.leyka-pf');
 
         if(target == 'cards') {
             //reset choice for payment
             $_form.find('.payment-opt__radio').prop('checked', false);
         }
 
-        $_link.parents('.step').removeClass('step--active');
+        $_form.find('.step').removeClass('step--active');
         $_form.find('.step--'+target).addClass('step--active');
+        $_form.find('.leyka-pf__final-screen').removeClass('leyka-pf__final--open').removeClass('leyka-pf__final--open-half');
         
     }
 

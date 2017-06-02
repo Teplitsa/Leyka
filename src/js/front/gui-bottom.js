@@ -1,3 +1,7 @@
+/*
+ * Class to manipulate donation form from bottom
+ */
+
 window.LeykaGUIBottom = function($) {
     this.$ = $;
 }

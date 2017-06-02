@@ -1,3 +1,7 @@
+/*
+ * Class to manipulate donation form from campaign carda
+ */
+
 window.LeykaGUICard = function($) {
     this.$ = $;
 };
