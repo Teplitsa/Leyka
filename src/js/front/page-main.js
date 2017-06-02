@@ -1,3 +1,7 @@
+/*
+ * Common functionaly for every page with Leyka donation forms
+ */
+
 window.LeykaPageMain = function($) {
     var self = this; self.$ = $;
     
@@ -8,7 +12,7 @@ window.LeykaPageMain = function($) {
     
     self.bindEvents();
     
-    self.showTargetForm();
+    self.handleHashChange();
 }
 
 window.LeykaPageMain.prototype = {
@@ -34,7 +38,10 @@ window.LeykaPageMain.prototype = {
         $(window).resize(function(){
             self.inpageCardColumns();
         });
-
+        
+        $(window).on('hashchange', function() {
+            self.handleHashChange();
+        });
     },
 
     setupNoScroll: function() {
@@ -84,16 +91,42 @@ window.LeykaPageMain.prototype = {
         $('.amount__range_custom').show();
     },
     
-    showTargetForm: function() {
+    handleHashChange: function() {
         var self = this; var $ = self.$;
         
         var hash = window.location.hash.substr(1);
-        var $_form = $('#' + hash);
-        if($_form.length > 0) {
-            $_form.leykaForm('open');
+        var parts = hash.split('|');
+        
+        if(parts.length > 0) {
+            var form_id = parts[0];
+            var $_form = $('#' + form_id);
+            
+            if($_form.length > 0) {
+                $_form.leykaForm('open');
+                
+                for(var i in parts) {
+                    var part = parts[i];
+                    self.handleFinalScreenParams($_form, part);
+                }
+            }
+        }
+    },
+    
+    handleFinalScreenParams: function($_form, part) {
+        if(part.search(/final-open/) > -1) {
+            $_form.find('.leyka-pf__final-screen').removeClass('leyka-pf__final--open').removeClass('leyka-pf__final--open-half');
+            var final_parts = part.split('_');
+            try {
+                var $final_screen = $_form.find('.leyka-pf__final-screen.leyka-pf__final-' + final_parts[1]);
+                $final_screen.addClass('leyka-pf__final--open');
+                if(final_parts[2]) {
+                    $final_screen.addClass('leyka-pf__final--open-half');
+                }
+            }
+            catch(ex) {
+            }
         }
     }
-    
 }
 
 jQuery(document).ready(function($){

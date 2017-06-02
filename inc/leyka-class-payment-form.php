@@ -466,6 +466,25 @@ function leyka_pf_get_form_auto_open_class($campaign_id) {
     
 }
 
+function leyka_pf_get_form_auto_open_final_screen_class($final_screen_name) {
+    
+    $open_class = "leyka-pf__final--open";
+    $open_half_class = "leyka-pf__final--open-half";
+    $open_param = 'leyka-final-screen';
+    
+    $ret = '';
+    if(isset($_GET[$open_param]) && $_GET[$open_param]) {
+        if( preg_match( "/^".preg_quote($final_screen_name)."/", $_GET[$open_param])) {
+            $ret .= " " . $open_class;
+            if( preg_match( "/-half$/", $_GET[$open_param])) {
+                $ret .= " " . $open_half_class;
+            }
+        }
+    }
+    
+    return $ret;
+}
+
 function leyka_pf_get_form_action() {
 	return Leyka_Payment_Form::get_form_action();
 }

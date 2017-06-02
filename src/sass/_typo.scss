@@ -65,3 +65,35 @@ $body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, 
 	font-size: 12px;
 	line-height: 18px;
 }
+
+@mixin thankyou-title($mod: default) {
+    font-family: $body;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 18px;
+    line-height: 30px;
+}
+
+@mixin no-thankyou-link($mod: default) {
+    font-family: $body;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 18px;
+}
+
+@mixin informyou-text($mod: default) {
+    font-family: $body;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 22px;
+}
+
+@mixin error-text($mod: default) {
+    font-family: $body;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 15px;
+    line-height: 21px;
+}

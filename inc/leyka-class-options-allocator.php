@@ -175,7 +175,9 @@ class Leyka_Options_Allocator {
                         'name' => 'misc',
                         'title' => __('Additional', 'leyka'),
                         'is_default_collapsed' => true,
-                        'options' => array('success_page', 'failure_page', 'load_scripts_if_need', 'donors_data_editable',)
+                        'options' => array(
+                            'success_page', 'failure_page', 'load_scripts_if_need', 'donors_data_editable', 'revo_thankyou_text', 'revo_thankyou_email_result_text'
+                        )
                     ),),
                     array('section' => array(
                         'name' => 'plugin_deletion',
