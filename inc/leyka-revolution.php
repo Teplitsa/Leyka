@@ -62,9 +62,9 @@ add_action('wp_head', 'leyka_inline_scripts');
 function leyka_inline_scripts() {
 
 	if(isset($_GET['rev']) && (int)$_GET['rev'] == 21) {
-		$colors = array('#1db318', '#1aa316', '#8ae724');
-	} else {
 		$colors = array('#07C7FD', '#05A6D3', '#8CE4FD');
+	} else {
+		$colors = array('#1db318', '#1aa316', '#8ae724');
 	}
 
 	//detect if we have JS ?>
@@ -271,7 +271,7 @@ function leyka_rev2_campaign_top($campaign_id) {
                         <?php echo sprintf(__('Set an amount from %s to %s <span class="curr-mark">%s</span>', 'leyka'), $amount_min, $amount_max, $currency_label);?>
                     </div> <!-- @todo The error text is hardcoded. Remove it in favor of the normal frontend validation -->
 			</div>
-			
+
             <div class="amount__range_wrapper">
                 <div class="amount__range_custom">
                     <svg class="svg-icon range-bg"><use xlink:href="#icon-input-range-gray" /></svg>
@@ -281,7 +281,7 @@ function leyka_rev2_campaign_top($campaign_id) {
                     <svg class="svg-icon range-circle"><use xlink:href="#pic-input-range-circle" /></svg>
                 </div>
                 <div class="amount__range_overlay"></div>
-    
+
     			<div class="amount_range">
     				<input name="amount-range" type="range" min="<?php echo $amount_min;?>" max="<?php echo $amount_max;?>" step="200" value="<?php echo $amount_default;?>">
     				<!-- @todo step also shoud be calculated -->
