@@ -145,7 +145,7 @@ class Leyka {
         }
         add_action('pre_get_posts', 'leyka_get_posts', 1);
 
-        function leyka_successful_page_subscription_template($content) {
+        function leyka_successful_page_widget_template($content) {
 
             if(
                 get_post()->ID != leyka_options()->opt('success_page') ||
@@ -157,12 +157,12 @@ class Leyka {
             ob_start();
             require_once(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-success-widget.php');
 
-            $subscription_template = ob_get_clean();
+            $widget_template = ob_get_clean();
 
-            return $content.$subscription_template;
+            return $content.$widget_template;
 
         }
-        add_filter('the_content', 'leyka_successful_page_subscription_template', 1);
+        add_filter('the_content', 'leyka_successful_page_widget_template', 1);
 
         add_action('wp_head', function() {
             if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type)) {
