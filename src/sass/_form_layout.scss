@@ -589,6 +589,10 @@
             a {
                 color: $color-link;
                 text-decoration: underline;
+                
+                &:visited {
+                    color: $color-link;
+                }
             }
             
             &:nth-child(4) {
