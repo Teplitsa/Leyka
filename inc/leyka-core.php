@@ -155,7 +155,7 @@ class Leyka {
             }
 
             ob_start();
-            require_once(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-subscription-form.php');
+            require_once(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-success-widget.php');
 
             $subscription_template = ob_get_clean();
 
