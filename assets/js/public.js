@@ -104,6 +104,18 @@ jQuery(document).ready(function($){
                 amount = parseInt($_form.find('.amount__figure input').val()),
                 agree = $_form.find('.donor__oferta input').val(),
                 error = false;
+            
+            if(!$_form.find('.step.step--active').hasClass('step--person')) {
+                if($_form.find('.step.step--active').hasClass('step--amount')) {
+                    var $proceed_button = $_form.find('.step.step--amount .step__action--amount a');
+                    if($proceed_button.length < 2) {
+                        $proceed_button.click();
+                    }
+                }
+                
+                e.preventDefault();
+                return false;
+            }
 
             if(pName.length === 0){
                 error = true;
