@@ -60,7 +60,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
         <div class="step__action step__action--amount">
         <?php if(leyka_is_recurring_supported()) {?>
 
-            <a href="cards" class="leyka-js-amount"><?php _e('Support once-only', 'leyka');?></a>
+            <a href="cards" class="leyka-js-amount"><?php _e('Support once', 'leyka');?></a>
             <a href="person" class="leyka-js-amount monthly">
                 <svg class="svg-icon icon-card"><use xlink:href="#icon-card"></svg><?php _e('Support monthly', 'leyka');?>
             </a>
@@ -144,7 +144,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
         </div>
 
         <div class="step__border">
-            <div class="step__title"><?php _e('Who should we thank?', 'leyka');?><!--Кого нам благодарить?--></div>
+            <div class="step__title"><?php _e('Whom should we thank?', 'leyka');?></div>
             <div class="step__fields donor">
 
                 <div class="donor__textfield donor__textfield--name ">

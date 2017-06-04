@@ -66,7 +66,7 @@ class LeykaDummyData {
         update_option('leyka_agree_to_terms_needed', 1);
         update_option('leyka_terms_agreed_by_default', 1);
         update_option('leyka_agree_to_terms_text_text_part', __('I accept', 'leyka'));
-        update_option('leyka_agree_to_terms_text_link_part', __('Terms of the service', 'leyka'));
+        update_option('leyka_agree_to_terms_text_link_part', __('Terms of Service', 'leyka'));
 
     }
     
