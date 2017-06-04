@@ -22,6 +22,8 @@ function leyka_submit_donation() {
 
     $donation_id = leyka()->log_submission();
 
+    leyka_remember_donation_data(array('donation_id' => $donation_id));
+
     do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
 
     $payment_vars = array('status' => $donation_id && !is_wp_error($donation_id) ? 0 : 1,);
@@ -141,9 +143,7 @@ function leyka_get_gateway_redirect_data() {
 
     $donation_id = leyka()->log_submission();
 
-    leyka_remembered_data('donor_name', $donor_name);
-    leyka_remembered_data('donor_email', $donor_email);
-    leyka_remembered_data('donation_id', $donation_id);
+    leyka_remember_donation_data(array('donation_id' => $donation_id));
 
     do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
 

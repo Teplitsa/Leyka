@@ -1058,9 +1058,7 @@ class Leyka {
 
         }
 
-        leyka_remembered_data('donor_name', $donor_name);
-        leyka_remembered_data('donor_email', $donor_email);
-        leyka_remembered_data('donation_id', $donation_id);
+        leyka_remember_donation_data(array('donation_id' => $donation_id));
 
         do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
 
