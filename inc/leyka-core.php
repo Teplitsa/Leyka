@@ -151,8 +151,6 @@ class Leyka {
                 get_post()->ID != leyka_options()->opt('success_page') ||
                 !leyka_options()->opt('show_subscription_on_success')
             ) {
-                echo '<pre>' . print_r(get_post(), 1) . '</pre>';
-                echo '<pre>' . print_r((int)leyka_options()->opt('show_subscription_on_success'), 1) . '</pre>';
                 return $content;
             }
 
