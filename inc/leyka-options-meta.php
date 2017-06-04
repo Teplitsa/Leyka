@@ -643,7 +643,7 @@ self::$_options_meta = array(
     'agree_to_terms_needed' => array(
         'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
         'default' => 1,
-        'title' => __('To donate, donor must agree to the Terms of service', 'leyka'),
+        'title' => __('To donate, donor must agree to the Terms of Service', 'leyka'),
         'description' => __('Check if you must have donor to accept some terms before donating.', 'leyka'),
         'required' => 0,
         'placeholder' => '', // For text fields
@@ -677,7 +677,7 @@ self::$_options_meta = array(
         'type' => 'rich_html',
         'default' => __('Terms of donation service text. Use <br /> for line-breaks, please.', 'leyka'),
         'title' => __('A text of the Terms of donation service', 'leyka'),
-        'description' => __('Enter a text that will be shown to the donors to read the Terms of service. It have to include the following special entries:', 'leyka')."<span class='placeholders-help'>
+        'description' => __('Enter a text that will be shown to the donors to read Terms of Service. It have to include the following special entries:', 'leyka')."<span class='placeholders-help'>
             <code>#LEGAL_NAME#</code> — ".__("a legal representative of the organization", 'leyka')."<br>
             <code>#LEGAL_FACE#</code> — ".__("a legal representative of the organization", 'leyka')."<br>
             <code>#LEGAL_FACE_RP#</code> — ".__("a legal representative of the organization (in genitive case)", 'leyka')."<br>
@@ -700,8 +700,8 @@ self::$_options_meta = array(
     'terms_agreed_by_default' => array(
         'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
         'default' => false,
-        'title' => __('Donor agreement with the Terms of Service checkbox is checked by default', 'leyka'),
-        'description' => __('When donor sees a donation form, the Terms of Service agreement checkbox is checked by default.', 'leyka'),
+        'title' => __('Donor agreement with Terms of Service checkbox is checked by default', 'leyka'),
+        'description' => __('When donor sees a donation form, Terms of Service agreement checkbox is checked by default.', 'leyka'),
         'required' => false,
         'placeholder' => '', // For text fields
         'length' => '', // For text fields

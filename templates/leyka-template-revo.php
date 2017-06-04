@@ -178,7 +178,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
                         <?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';?>
                             <a href="#" class="leyka-js-oferta-trigger"><?php echo apply_filters('agree_to_terms_text_link_part', leyka_options()->opt('agree_to_terms_text_link_part'));?></a></label></span>
                         <div class="donor__oferta-error leyka_agree-error">
-                            <?php _e('You should accept Terms of service to donate', 'leyka');?>
+                            <?php _e('You should accept Terms of Service to donate', 'leyka');?>
                         </div>
                     </div>
                 <?php }?>

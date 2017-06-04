@@ -393,7 +393,7 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
 }
 
 /**
- * Terms of service shortcode
+ * Terms of Service shortcode
  **/
 add_shortcode('leyka_service_terms_text', 'leyka_get_terms_text');
 function leyka_get_terms_text() {
