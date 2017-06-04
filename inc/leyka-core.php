@@ -147,10 +147,7 @@ class Leyka {
 
         function leyka_successful_page_widget_template($content) {
 
-            if(
-                get_post()->ID != leyka_options()->opt('success_page') ||
-                !leyka_options()->opt('show_subscription_on_success')
-            ) {
+            if(get_post()->ID != leyka_options()->opt('success_page') || !leyka_options()->opt('show_subscription_on_success')) {
                 return $content;
             }
 
@@ -1035,7 +1032,7 @@ class Leyka {
         }
 
         $donor_email = leyka_pf_get_donor_email_value();
-        if($donor_name && !leyka_validate_email($donor_email)) {
+        if($donor_email && !leyka_validate_email($donor_email)) {
 
             $error = new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
             $this->add_payment_form_error($error);

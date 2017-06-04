@@ -624,7 +624,7 @@ self::$_options_meta = array(
         'length' => '', // For text fields
         'list_entries' => array(
             'during-donation' => __('As a step during donation process', 'leyka'),
-            'thank-you-page' => __('On a payment success page', 'leyka'),
+            'success-page' => __('On a payment success page', 'leyka'),
             'never' => __("Don't display the fields", 'leyka'),
         ),
         'validation_rules' => array(), // List of regexp?..
