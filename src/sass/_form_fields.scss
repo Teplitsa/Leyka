@@ -57,6 +57,27 @@ div[id *="leyka-pf-"] { //aka namespace
 	form {
 		display: block;
 	}
+
+	.leyka-submit-errors {
+		border: none;
+		border-radius: 0 0 10px 10px;
+		color: $color-white;
+		background: $color-form-invalid;
+		margin: 0 -1px;
+		position: relative;
+
+		&:after {
+			content: 'x';
+			display: block;
+			color: currentColor;
+			font-weight: bold;
+			font-size: 16px;
+			position: absolute;
+			top: 4px;
+			right: 16px;
+			cursor: pointer;
+		}
+	}
 }
 
 
@@ -153,8 +174,8 @@ div[id *="leyka-pf-"] {
 			}
 		}
 
-		a + a {
-			margin-left: 4px;
+		a + a, .remembered-monthly {
+			margin-left: 5px;
 		}
 	}
 

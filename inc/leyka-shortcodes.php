@@ -560,6 +560,7 @@ function leyka_inline_campaign(array $attributes = array()) {
 
                 </div>
 
+				<?php if(count($supporters['donations']) > count($supporters['supporters'])) { //print history when it's need ?>
                 <div class="inpage-card__history history">
                     <div class="history__close leyka-js-history-close">x</div>
                     <div class="history__title"><?php _e('We are grateful to', 'leyka');?></div>
@@ -584,19 +585,23 @@ function leyka_inline_campaign(array $attributes = array()) {
 
                         </div>
                     </div>
+					<!-- temp disable until archive template implemented
                     <div class="history__action">
                         <a href="<?php echo leyka_get_donations_archive_url($campaign_id);?>">
                             <?php _e('Show all donors', 'leyka');?>
                         </a>
-                    </div>
+                    </div>-->
                 </div>
-
+				<?php } ?>
             </div>
 
             <div class="leyka-pf__form">
                 <?php /** @todo For the forms caching task comment this require out */ require($template_file);?>
             </div>
+
+			
             <?php leyka_pf_submission_errors();?>
+
 
             <div class="leyka-pf__redirect">
                 <div class="waiting">
@@ -675,6 +680,7 @@ function leyka_inline_campaign_small($campaign_id) {
 
         </div>
 
+		<?php if(count($supporters['donations']) > count($supporters['supporters'])) { ?>
         <div class="bottom-form__history history">
             <div class="history__close leyka-js-history-close">x</div>
             <div class="history__title"><?php _e('We are grateful to', 'leyka');?></div>
@@ -697,12 +703,14 @@ function leyka_inline_campaign_small($campaign_id) {
 
                 </div>
             </div>
+			<!-- temp remove until archive page template done
             <div class="history__action">
                 <a href="<?php echo leyka_get_donations_archive_url($campaign_id);?>">
                     <?php _e('Show all donors', 'leyka');?>
                 </a>
-            </div>
+            </div>-->
         </div>
+		<?php } ?>
     </div>
     <?php
 

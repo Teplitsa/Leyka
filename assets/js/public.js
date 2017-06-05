@@ -256,7 +256,7 @@ jQuery(document).ready(function($){
         bindEvents();
 
     }
-    
+
     /* event handlers */
     function bindEvents() {
 
@@ -280,7 +280,7 @@ jQuery(document).ready(function($){
                 amount = parseInt($_form.find('.amount__figure input').val()),
                 agree = $_form.find('.donor__oferta input').val(),
                 error = false;
-            
+
             if(!$_form.find('.step.step--active').hasClass('step--person')) {
                 if($_form.find('.step.step--active').hasClass('step--amount')) {
                     var $proceed_button = $_form.find('.step.step--amount .step__action--amount a');
@@ -288,7 +288,7 @@ jQuery(document).ready(function($){
                         $proceed_button.click();
                     }
                 }
-                
+
                 e.preventDefault();
                 return false;
             }
@@ -321,7 +321,7 @@ jQuery(document).ready(function($){
                 }
 
                 e.preventDefault();
-                
+
                 // open waiting
                 var $redirect_step = $_form.parents('.leyka-pf').find('.leyka-pf__redirect'),
                     data_array = $_form.serializeArray(),
@@ -391,10 +391,10 @@ jQuery(document).ready(function($){
 
         });
     }
-    
+
     function bindDonorStepEvents() {
         // validation
-        
+
         $('.donor__textfield--name')
         .on('focus', 'input', function(){
             $(this).parents('.donor__textfield--name').removeClass('invalid').removeClass('valid').addClass('focus');
@@ -432,9 +432,9 @@ jQuery(document).ready(function($){
             }
         });
     }
-    
+
     function bindOfertaEvents() {
-        
+
         $('.leyka-js-oferta-trigger').on('click', function(e){
             e.preventDefault();
 
@@ -449,7 +449,7 @@ jQuery(document).ready(function($){
             $(this).parents('.leyka-pf').removeClass('leyka-pf--oferta-open');
 
         });
-        
+
         //agree
         $('.donor__oferta').on('change', 'input', function(){
 
@@ -461,9 +461,9 @@ jQuery(document).ready(function($){
             }
         });
     }
-    
+
     function bindHistoryEvents() {
-        
+
         $('.leyka-js-history-close').on('click', function(e){
             e.preventDefault();
 
@@ -476,28 +476,33 @@ jQuery(document).ready(function($){
         });
 
     }
-    
+
     function bindPaymentStepEvents() {
         $('.payment-opt__radio').change(function(){
             selectPaymentProvider($(this));
         });
     }
-    
+
     function bindNavigationEvents() {
         $('.leyka-js-another-step').on('click', function(e){
             e.preventDefault();
             goAnotherStep($(this));
         });
-        
+
+		//is it should be here
+		$('.leyka-submit-errors').on('click', function(e){
+			e.preventDefault();
+			$(this).hide();
+		});
     }
-    
+
     function bindAmountStepEvents() {
-        
+
         $('.leyka-js-amount').on('click', function(e){
             e.preventDefault();
             setChosenAmount($(this));
         });
-        
+
         var $amount_range = $('.amount_range').find('input'),
         $amount_figure = $('.amount__figure').find('input.leyka_donation_amount');
 
@@ -506,7 +511,7 @@ jQuery(document).ready(function($){
         $amount_figure.on('change input', syncRange);
         $amount_range.on('change input', syncAmountIcon);
         $amount_range.on('change input', syncCustomRangeInput);
-    
+
         $amount_figure
             .on('focus', function(){
                 $(this).parents('.amount__figure').addClass('focus');
@@ -514,12 +519,12 @@ jQuery(document).ready(function($){
             .on('blur', function(){
                 $(this).parents('.amount__figure').removeClass('focus');
             });
-        
+
     }
-    
+
     /* go another step */
     function goAnotherStep($_link) {
-        
+
         var target = $_link.attr('href'),
         $_form = $_link.parents('.leyka-pf');
 
@@ -531,7 +536,7 @@ jQuery(document).ready(function($){
         $_form.find('.step').removeClass('step--active');
         $_form.find('.step--'+target).addClass('step--active');
         $_form.find('.leyka-pf__final-screen').removeClass('leyka-pf__final--open').removeClass('leyka-pf__final--open-half');
-        
+
     }
 
     /* amount step */
@@ -625,9 +630,9 @@ jQuery(document).ready(function($){
         $('.range-circle').css({'left': (leftOffset) + 'px'});
         $('.range-color-wrapper').width(leftOffset + inputRangeButtonRadius);
     }
-    
+
     function setChosenAmount($_link) {
-        
+
         var target = $_link.attr('href'),
             $_step = $_link.parents('.step'),
             $_form = $_link.parents('.leyka-pf__form'),
@@ -668,7 +673,7 @@ jQuery(document).ready(function($){
             $_form.find('.step--'+target).addClass('step--active');
         }
     }
-    
+
     /** payment step **/
     function selectPaymentProvider($_opt) {
 
@@ -681,7 +686,7 @@ jQuery(document).ready(function($){
 
         //move
         $_step.removeClass('step--active');
-        
+
         var $step_static_step = $_form.find('.step--static.' + $_opt.val());
         if($step_static_step.length > 0) {
             $step_static_step.addClass('step--active');
@@ -691,14 +696,14 @@ jQuery(document).ready(function($){
         }
 
     }
-    
+
     /* donor step */
     function setupDonorForm() {
         $('.donor__textfield--name').removeClass('invalid').removeClass('valid');
         $('.donor__textfield--email').removeClass('invalid').removeClass('valid');
         $('.donor__oferta').removeClass('invalid').removeClass('valid');
     }
-    
+
     /* open/close form */
     function open() {
 

@@ -75,6 +75,10 @@
 
 	.inpage-card__content {
 		flex: 0 1 auto;
+		width: 100%;
+	}
+
+	.inpage-card__thumbframe + .inpage-card__content {
 		width: 50%;
 	}
 
@@ -142,6 +146,16 @@
 .leyka-js {
 	.leyka-pf--active {
 
+		.leyka-submit-errors {
+			width: 100%;
+			z-index: 200;
+			height: $base*7;
+			padding: $base $base*3;
+			position: absolute;
+			left: 0;
+			bottom: 0;
+		}
+
 		.leyka-pf__overlay {
 			display: block;
 			position: fixed;
@@ -198,7 +212,7 @@
 		.leyka-pf__redirect--open {
 			display: block;
 		}
-		
+
 	}
 }
 
@@ -223,7 +237,7 @@
 				position: absolute;
 				top: 0;
 				left: 50%;
-				z-index: 10080;
+				z-index: 108;
 			}
 		}
 
@@ -240,7 +254,7 @@
 		.leyka-pf__form {
 			width: 50%;
 		}
-		
+
 	}
 
 	.leyka-pf--active.leyka-pf--oferta-open { //remove divider
@@ -360,15 +374,21 @@
 		}
 
 		.step__border {
-			width: 86%;
+			width: 100%;
 			padding-top: 8px;
-			
-			border-image: url(../../img/quittance-wave.png) 10 10 round;
-			border-width: 7px;
+
+			border-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACYAAAAmCAYAAACoPemuAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QUXFgUJCOIR8gAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAADkklEQVRYw71Y2XLqOhBsyVpskzikKv//iQkQLLTYmvtAja7BwCHERI8qkFuzdPdI4M5FRHS+l3NGSgl934OIMI4jhBBo2xZt20IIMTtHXNq8sMSjwIgIfd8jxoiUEpRSyDmDiFBVFZRSaJoGxpiHgCk8uGKMCCGAiPDx8YGqqkoUnXNwzoGIZsDuXfI3wABgtVpByv+PkVKibVtUVYVxHHGhAp4HLOeMYRggpUTTNLNaYnAAEEL4O2DDMBRgU7Dn4KWUfwvMew8iOonUFCQAKHUs35TSDPSixc8f8N4jxghjDJqmufp7rTW01hjHEZvNBk3TzMAvAmyz2ZSb13WN19fX2Ye40IUQpc6klNjv9zgcDj9qhLuB1XVdUnQeKU6rEOLk49MOZTK+GxjduEYIAfv9HlprdF0nsMDa7Xbkvcd6vYbW+rHizzlDCHHzgEfp5l8NIW/9+XA4zGjht4u71Xt/WyunqSQihBAQQij1MBHkRVJJRLTdbhFjhLUWdV1DKTW7vCAiijHCOYdxHE84SWtdOmtJYDln7HY7xBghhIBSCkopGGNgjDk2Us6ZdrsdQgioqgpt2yLnDKUUtNYF5JLAmBeZQqY1Z609Zmi/35P3vmxcq6elgZ2vw+GAvu8hpTwaA07hNVBE9LBDuALsKk++v78X4ymZHG913kLBungWp1AIUQwmEUGxwbvkDJYGda4Ul8SfXbAUQmAYhhNTd00Dn5nKKSghBORqtYLWGl9fX1dJb+lUXjqPLTkzgxjHkZxzxdBJKZm30DRNkaOlu5JFnZWFm9Bai67rjgRLRIgxIsZY3CkPEl3XPYVgnXNFXbgBOFrGmFNJmvp57z1CCDDG4O3tbVFgPEWxulhrYa09SfHMj0kpizRst1t47x8ewW5ZKaUU1uv1VZqS95jDYRgWtTxsNm9x501g3AhLrpTSkaf+ce7ddbPdbolF3Vp7lTDPpyfWQY76vU74R1MSd+zLywvquj659dT3T9P2/f1d+PEn0b87Yt57Ylebc0Zd1zfdCItxSgnGmHIRY8yyEeP0WWvx+fmJlBJSSrO0TtMXY0Rd1+i67vmTuJSyqMF5t04HDE4td/afPBFYa08cyKVnAqYFHj7+DBgAOOdmYxgRlTq8NGQ8FRibunEcZ+Byzuj7HgB+pRgPvyjyG2sIAc654oKHYYDWusjaw/boN0MEEZ08a1ZVBSEE2ONdSuO9ZuA/JuV2YiK5ohEAAAAASUVORK5CYII=") 10 10 round;
+
+			border-width: 7px 0 7px 0;
 			border-style: solid;
+
 		}
 
 		@include for(large-screens) {
+			.step__border {
+				width: 86%;
+				border-width: 7px;
+			}
 			.step--person {
 				/*padding-left: $base*2.5;
 				padding-right: $base*2.5;*/
@@ -472,7 +492,7 @@
 .leyka-pf__final-screen {
     background: $color-white;
     text-align:center;
-    
+
     .icon {
         width:100%;
         margin-top: $base*2.2;
@@ -483,17 +503,17 @@
         background-size: 120px 120px;
         background-position: center center;
     }
-    
+
     .text {
         @include thankyou-title;
         width:100%;
-        
+
         div {
             display:inline-block;
             max-width:328px;
         }
     }
-    
+
     .leyka-logo {
         position:relative;
         width:100%;
@@ -504,13 +524,13 @@
         background-size: 64px 20px;
         background-position: center center;
     }
-    
+
     &.leyka-pf__final-thankyou {
-        
+
         .icon {
             background-image: url(../../img/final-heart.png);
         }
-    
+
         .thankyou-email-field {
             width:100%;
             margin-top: $base*4.8;
@@ -518,7 +538,7 @@
                 max-width:305px;
             }
         }
-        
+
         .thankyou-email-me-button {
             padding-top: $base * 0.8;
             a {
@@ -526,7 +546,7 @@
                 text-transform: none;
             }
         }
-        
+
         .thankyou-no-email {
             margin-top: $base * 4;
             a {
@@ -536,59 +556,58 @@
             }
         }
     }
-    
+
     &.leyka-pf__final-informyou {
         display:none;
-        
+
         .icon {
             background-image: url(../../img/final-check.png);
         }
-    
+
         .informyou-redirect-text {
             @include informyou-text;
             color: $color-text-semi;
             width:100%;
             padding-top:$base * 8;
-            
+
             div {
                 display:inline-block;
                 max-width:170px;
             }
         }
-        
-    }    
-    
+
+    }
+
     &.leyka-pf__final-error {
-        
+
         .icon {
             background-image: url(../../img/final-cross.png);
         }
-        
+
         .error-text {
             @include error-text;
             color: $color-text-semi;
             width:100%;
             margin-top:$base * 4;
-            
+
             div {
                 display:inline-block;
                 text-align:left;
                 max-width:440px;
             }
-            
+
             a {
                 color: $color-link;
                 text-decoration: underline;
-                
+
                 &:visited {
                     color: $color-link;
                 }
             }
-            
+
             &:nth-child(4) {
                 margin-top:$base * 2;
             }
         }
     }
 }
-
