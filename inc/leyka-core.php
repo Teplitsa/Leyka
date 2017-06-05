@@ -147,13 +147,22 @@ class Leyka {
 
         function leyka_successful_page_widget_template($content) {
             
-            $error = isset($_GET['leyka-error']) ? __($_GET['leyka-error'], 'leyka') : '';
-
             $template = leyka_options()->opt('donation_form_template');
+            $successful_page_content = $content;
+            
             if($template == 'revo') {
                 
 //                 leyka_options()->opt('revo_thankyou_text');
                 if( get_post()->ID == leyka_options()->opt('success_page') || get_post()->ID == leyka_options()->opt('quittance_redirect_page') ) {
+                    
+                    ob_start();
+                    require_once(LEYKA_PLUGIN_DIR . 'templates/service/leyka-template-revo-final-thankyou.php');
+                    $successful_page_content = ob_get_clean();
+                    
+                }
+                elseif( get_post()->ID == leyka_options()->opt('failure_page') ) {
+                    
+                    $error = 1;
                     
                     ob_start();
                     require_once(LEYKA_PLUGIN_DIR . 'templates/service/leyka-template-revo-final-thankyou.php');
@@ -169,10 +178,7 @@ class Leyka {
             }
             else {
                 
-                if(
-                    get_post()->ID != leyka_options()->opt('success_page') ||
-                    !leyka_options()->opt('show_subscription_on_success')
-                ) {
+                if( get_post()->ID != leyka_options()->opt('success_page') || !leyka_options()->opt('show_subscription_on_success') ) {
         
                     $widget_template = '';
         
