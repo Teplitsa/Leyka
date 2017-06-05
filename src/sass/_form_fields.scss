@@ -250,7 +250,7 @@ div[id *="leyka-pf-"] { //aka namespace
 			-webkit-appearance: none;
 			width: 200px;
 			margin: 0 auto;
-			height:55px;
+			height:40px;
 		}
 
 		input[type=range]::-ms-track {
@@ -394,12 +394,11 @@ div[id *="leyka-pf-"] { //aka namespace
 	
 	.amount__range_wrapper {
 	    position:relative;
-	    margin-top: -25px;
 	    
 	    .amount__range_overlay {
 	        display:none;
 		    background-color: #ffffff;
-		    height: 90px;
+		    height: 50px;
 		    left: 0;
 		    position: absolute;
 		    top: 0;
@@ -412,7 +411,7 @@ div[id *="leyka-pf-"] { //aka namespace
 	       display:none;
 	       position:relative;
 	       left:10px;
-	       top:35px;
+	       top:20px;
 	       z-index:7;
 	       pointer-events:none;
 	       
