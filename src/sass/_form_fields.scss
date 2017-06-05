@@ -463,12 +463,12 @@ div[id *="leyka-pf-"] { //aka namespace
 
 	.step__action {
 
-		a {
-			@include button();
-			width: 186px; 
-			text-align: center;
-			margin: 4px;
-		}
+        a {
+            @include button(medium);
+            width: 186px; 
+            text-align: center;
+            margin: 4px;
+        }
 
 		.monthly {
 			position: relative;

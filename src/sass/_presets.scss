@@ -73,6 +73,10 @@ $color-form-active:		var(--color-main-light);
 		padding: 6px 24px;
 		border-radius: 18px;
 	}
+	
+    @if $mod == medium {
+        text-transform: none;
+    }
 }
 
 @mixin supporters() {
