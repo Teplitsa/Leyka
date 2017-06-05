@@ -1,5 +1,5 @@
 /*
- * Class to manipulate donation form from campaign carda
+ * Class to manipulate final page UI
  */
 
 window.LeykaGUIFinal = function($) {
