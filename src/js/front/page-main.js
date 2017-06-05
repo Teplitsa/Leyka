@@ -27,18 +27,18 @@ window.LeykaPageMain.prototype = {
             $(this).closest('.leyka-pf').leykaForm('open');
 
         });
-   
+
         $('.leyka-js-close-form').on('click', function(e){
-            
+
             e.preventDefault();
             $(this).closest('.leyka-pf').leykaForm('close');
 
         });
-        
+
         $(window).resize(function(){
             self.inpageCardColumns();
         });
-        
+
         $(window).on('hashchange', function() {
             self.handleHashChange();
         });
@@ -79,7 +79,6 @@ window.LeykaPageMain.prototype = {
 
         var $success_forms = $('.leyka-success-form'),
             donation_id = leyka_remembered_data('leyka_donation_id');
-        console.log('Donation ID cookie:', donation_id)
 
         if( !donation_id ) { // Hide the success form if there are no donation ID stored...
             $success_forms.hide();

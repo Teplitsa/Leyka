@@ -30,6 +30,8 @@ jQuery(document).ready(function($){
 
         e.preventDefault();
 
+        $('.leyka-pf__overlay').show();
+
         $.ajax({
             type: 'post',
             url: leyka.ajaxurl,
@@ -102,6 +104,8 @@ jQuery(document).ready(function($){
                 $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
                     scrollTop: $errors.offset().top - 35
                 }, 250);
+
+                $('.leyka-pf__overlay').hide();
             });
 
         });

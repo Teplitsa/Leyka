@@ -245,7 +245,7 @@ jQuery(document).ready(function($){
         'open': open,
         'close': close,
         'openFromBottom': openFromBottom,
-        'redirectForm': redirectForm,
+        // 'redirectForm': redirectForm,
         'init': init
     };
 
@@ -282,7 +282,7 @@ jQuery(document).ready(function($){
                 agree = $_form.find('.donor__oferta input').val(),
                 error = false;
 
-            if(!$_form.find('.step.step--active').hasClass('step--person')) {
+            if( !$_form.find('.step.step--active').hasClass('step--person') ) {
                 if($_form.find('.step.step--active').hasClass('step--amount')) {
                     var $proceed_button = $_form.find('.step.step--amount .step__action--amount a');
                     if($proceed_button.length < 2) {
@@ -315,7 +315,7 @@ jQuery(document).ready(function($){
                 console.log('error amount');
             }
 
-            if(!error){
+            if( !error ) {
 
                 if($_form.find('input[name="leyka_payment_method"]:checked').data('processing') != 'default') {
                     return;
@@ -381,13 +381,9 @@ jQuery(document).ready(function($){
 
                 });
 
-                // setTimeout(function() {
-                //  $redirect_step.removeClass('leyka-pf__redirect--open');
-                 //
-                // }, 4500);
-
             } else { // Errors exist
-                e.preventDefault(); // temp
+                e.preventDefault();
+                e.stopPropagation();
             }
 
         });
@@ -766,12 +762,12 @@ jQuery(document).ready(function($){
         }
     }
 
-    function redirectForm() {
+    // function redirectForm() {
 
         // var $form = $(this);
         // console.log($form.serializeArray());
 
-    }
+    // }
 
     $.fn.leykaForm = function(methodOrOptions) {
         if(methods[methodOrOptions]) {
@@ -814,18 +810,18 @@ window.LeykaPageMain.prototype = {
             $(this).closest('.leyka-pf').leykaForm('open');
 
         });
-   
+
         $('.leyka-js-close-form').on('click', function(e){
-            
+
             e.preventDefault();
             $(this).closest('.leyka-pf').leykaForm('close');
 
         });
-        
+
         $(window).resize(function(){
             self.inpageCardColumns();
         });
-        
+
         $(window).on('hashchange', function() {
             self.handleHashChange();
         });
@@ -866,7 +862,6 @@ window.LeykaPageMain.prototype = {
 
         var $success_forms = $('.leyka-success-form'),
             donation_id = leyka_remembered_data('leyka_donation_id');
-        console.log('Donation ID cookie:', donation_id)
 
         if( !donation_id ) { // Hide the success form if there are no donation ID stored...
             $success_forms.hide();

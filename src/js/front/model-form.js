@@ -17,7 +17,7 @@
         'open': open,
         'close': close,
         'openFromBottom': openFromBottom,
-        'redirectForm': redirectForm,
+        // 'redirectForm': redirectForm,
         'init': init
     };
 
@@ -54,7 +54,7 @@
                 agree = $_form.find('.donor__oferta input').val(),
                 error = false;
 
-            if(!$_form.find('.step.step--active').hasClass('step--person')) {
+            if( !$_form.find('.step.step--active').hasClass('step--person') ) {
                 if($_form.find('.step.step--active').hasClass('step--amount')) {
                     var $proceed_button = $_form.find('.step.step--amount .step__action--amount a');
                     if($proceed_button.length < 2) {
@@ -87,7 +87,7 @@
                 console.log('error amount');
             }
 
-            if(!error){
+            if( !error ) {
 
                 if($_form.find('input[name="leyka_payment_method"]:checked').data('processing') != 'default') {
                     return;
@@ -153,13 +153,9 @@
 
                 });
 
-                // setTimeout(function() {
-                //  $redirect_step.removeClass('leyka-pf__redirect--open');
-                 //
-                // }, 4500);
-
             } else { // Errors exist
-                e.preventDefault(); // temp
+                e.preventDefault();
+                e.stopPropagation();
             }
 
         });
@@ -538,12 +534,12 @@
         }
     }
 
-    function redirectForm() {
+    // function redirectForm() {
 
         // var $form = $(this);
         // console.log($form.serializeArray());
 
-    }
+    // }
 
     $.fn.leykaForm = function(methodOrOptions) {
         if(methods[methodOrOptions]) {
