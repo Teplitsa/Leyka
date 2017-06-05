@@ -423,6 +423,7 @@ div[id *="leyka-pf-"] { //aka namespace
 	           position:absolute;
 	           top:0px;
 	           left:0px;
+	           pointer-events:none;
 	       }
 	       
 	       .range-color, .range-color-wrapper {
@@ -432,11 +433,13 @@ div[id *="leyka-pf-"] { //aka namespace
 	           position:absolute;
 	           top:0px;
 	           left:0px;
+	           pointer-events:none;
 	        }
 	        
 	        .range-color-wrapper {
                width:50px;
                overflow:hidden;
+               pointer-events:none;
             }
 	       
 	       .range-circle {
@@ -446,6 +449,7 @@ div[id *="leyka-pf-"] { //aka namespace
 	           position:absolute;
 	           top:-10px;
 	           left:50px;
+	           pointer-events:none;
 	       }
 	    }
     }
