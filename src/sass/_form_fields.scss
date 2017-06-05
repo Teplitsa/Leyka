@@ -63,7 +63,9 @@ div[id *="leyka-pf-"] { //aka namespace
 		border-radius: 0 0 10px 10px;
 		color: $color-white;
 		background: $color-form-invalid;
-		margin: 0 -1px;
+		margin: -10px -1px 0;
+		height: $base*7;
+		padding: $base $base*3;
 		position: relative;
 
 		&:after {
