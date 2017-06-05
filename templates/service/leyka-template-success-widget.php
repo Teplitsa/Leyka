@@ -6,7 +6,8 @@
 ?>
 
 <?php $donation_id = leyka_remembered_data('donation_id');
-echo '<pre>' . print_r($_COOKIE, 1) . '</pre>';?>
+#echo '<pre>' . print_r($_COOKIE, 1) . '</pre>';
+?>
 
 <form action="#" class="leyka-success-form" method="post" novalidate="novalidate" <?php echo empty($donation_id) ? 'style="display: none;"' : '';?>>
 

@@ -5,6 +5,17 @@
  **/
 ?>
 
+<?php 
+$donation_id = leyka_remembered_data('donation_id');
+$campaign = null;
+$campaign_id = null;
+if($donation_id) {
+    $donation = new Leyka_Donation($donation_id);
+    $campaign_id = $donation ? $donation->campaign_id : null;
+    $campaign = new Leyka_Campaign($campaign_id);
+}
+?>
+
 <div id="leyka-pf-" class="leyka-pf">
 
 <?php if(isset($error) && $error):?>
@@ -13,7 +24,7 @@
     <div class="icon"> </div>
     <div class="text"><div class="leyka-js-error-text"><?php _e('Payment error', 'leyka');?></div></div>
     <div class="error-text"><div><?php _e('Perhaps there are problems in the Internet connection, in the operation of the payment system or an internal system error.', 'leyka');?></div></div>
-    <div class="error-text"><div><?php _e('Please try <a href="cards" class="leyka-js-another-step">again</a> and if the error recurs, use another payment method or contact <a href="#">technical support</a>.', 'leyka');?></div></div>
+    <div class="error-text leyka-js-try-again-block" data-campaign-url="<?php echo $campaign ? $campaign->url : '';?>"><div><?php _e('Please try <a href="#" class="leyka-js-try-again">again</a> and if the error recurs, use another payment method or contact <a href="#">technical support</a>.', 'leyka');?></div></div>
     <div class="leyka-logo"> </div>
 </div>
 
