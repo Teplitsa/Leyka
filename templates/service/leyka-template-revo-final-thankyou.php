@@ -57,12 +57,14 @@ if($donation_id) {
     
 <?php endif;?>
 
+    <div class="informyou-redirect-text"><div><?php _e('Redirect to site home page in <span class="leyka-redirect-countdown">5</span> seconds...', 'leyka');?></div></div>
+    
 </div>
 
 <div class="leyka-pf__final-screen leyka-pf__final-informyou">
     <div class="icon"> </div>
     <div class="text"><div><?php echo leyka_options()->opt('revo_thankyou_email_result_text');?></div></div>
-    <div class="informyou-redirect-text"><div><?php _e('Redirect to campaigns page in 5 seconds...', 'leyka');?></div></div>
+    <div class="informyou-redirect-text"><div><?php _e('Redirect to site home page in <span class="leyka-redirect-countdown">5</span> seconds...', 'leyka');?></div></div>
     <div class="leyka-logo"> </div>
 </div>
 

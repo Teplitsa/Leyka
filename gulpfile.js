@@ -42,7 +42,7 @@ var changeEvent = function(evt) {
 //js
 gulp.task('build-js', function() {
     var vendorFiles = [basePaths.npm+'jquery.cookie/jquery.cookie.js'],
-        appFiles = [basePaths.src+'js/front/*']; //our own JS files
+        appFiles = [basePaths.src+'js/*', basePaths.src+'js/front/*']; //our own JS files
 
     return gulp.src(vendorFiles.concat(appFiles)) //join them
         .pipe(plugins.filter('*.js'))//select only .js ones

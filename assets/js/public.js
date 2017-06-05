@@ -116,6 +116,31 @@
 
 }));
 
+
+function is_email(email) {
+    return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test(email);
+}
+
+function leyka_get_ajax_url() {
+    var ajax_url;
+    if(typeof leyka != 'undefined') {
+        ajax_url = leyka.ajaxurl;
+    }
+    else {
+        ajax_url = frontend.ajaxurl;
+    }
+    
+    return ajax_url;
+}
+
+//polyfill for unsupported Number.isInteger
+//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger
+Number.isInteger = Number.isInteger || function(value) {
+    return typeof value === "number" &&
+           isFinite(value) &&
+           Math.floor(value) === value;
+};
+
 /*
  * Class to manipulate donation form from bottom
  */
@@ -180,6 +205,8 @@ window.LeykaGUIFinal = function($) {
     if(campaign_url) {
         $try_again_block.find('.leyka-js-try-again').prop('href', campaign_url);
     }
+    
+    $('.leyka-pf__final-informyou .informyou-redirect-text').show();
 };
 
 window.LeykaGUIFinal.prototype = {
@@ -189,6 +216,10 @@ window.LeykaGUIFinal.prototype = {
         
         $('.leyka-js-no-subscribe').click(function(){
             $(this).closest('.leyka-final-subscribe-form').remove();
+            
+            var $thankyou_block = $('.leyka-pf__final-thankyou');
+            $thankyou_block.find('.informyou-redirect-text').show();
+            self.runRedirectProcess($thankyou_block);
         });
         
         $(".thankyou-email-me-button a").click(function(e){
@@ -196,20 +227,57 @@ window.LeykaGUIFinal.prototype = {
             self.subscribeUser();
         });
     },
-
+    
+    animateRedirectCountdown: function($container){
+        var self = this; var $ = self.$;
+        
+        var countdown = $container.find('.informyou-redirect-text .leyka-redirect-countdown').text();
+        countdown = parseInt(countdown, 10);
+        countdown -= 1;
+        if(countdown == 0) {
+            clearInterval(self.countdownInterval);
+        }
+        $container.find('.informyou-redirect-text .leyka-redirect-countdown').text(String(countdown));
+        
+    },
+    
+    runRedirectProcess: function($container) {
+        var self = this; var $ = self.$;
+        
+        var ajax_url = leyka_get_ajax_url();
+        
+        setTimeout(function(){
+            
+            var redirect_url;
+            
+            if(null == ajax_url) {
+                redirect_url = '/';
+            }
+            else {
+                redirect_url = ajax_url.replace(/\/core\/wp-admin\/.*/, '');
+                redirect_url = redirect_url.replace(/\/wp-admin\/.*/, '');
+            }
+            
+            window.location.href = redirect_url;
+            
+        }, 4000);
+        
+        self.countdownInterval = setInterval(self.animateRedirectCountdown.bind(null, $container), 1000);
+    },
+    
     subscribeUser: function(){
         var self = this; var $ = self.$;
         
         $('.leyka-pf__final-thankyou').hide();
-        $('.leyka-pf__final-informyou').show();
         
-        setTimeout(function(){
-            window.location.href = leyka.homeurl;
-        }, 5000);
+        var $informyou_block = $('.leyka-pf__final-informyou');
+        $informyou_block.show();
+
+        self.runRedirectProcess($informyou_block);
         
         var data = {action: 'leyka_ajax_submit_subscribe'};
         
-        $.post(leyka.ajaxurl, data, null, 'json')
+        $.post(leyka_get_ajax_url(), data, null, 'json')
         .done(function(json){
         })
         .fail(function(){
@@ -561,10 +629,16 @@ jQuery(document).ready(function($){
         });
     }
 
-    function syncFigure() {
+    function syncFigure(event, options) {
         var val = $(this).val();
-        $(this).parents('.step__fields').find('.amount__figure').find('input.leyka_donation_amount').val(val);
-        $(this).parents('.step__fields').removeClass('invalid');
+        
+        if(options && options['skipSyncFigure']) {
+            // skip sync figure after range change trigger
+        }
+        else {
+            $(this).parents('.step__fields').find('.amount__figure').find('input.leyka_donation_amount').val(val);
+            $(this).parents('.step__fields').removeClass('invalid');
+        }
     }
 
     function syncRange() {
@@ -573,7 +647,7 @@ jQuery(document).ready(function($){
             val = $this.val(),
             $form = $this.parents('.leyka-pf__form');
 
-        $form.removeClass('invalid').find('.amount_range').find('input').val(val).change();
+        $form.removeClass('invalid').find('.amount_range').find('input').val(val).trigger('change', {'skipSyncFigure': true} );
 
     }
 
@@ -913,9 +987,10 @@ window.LeykaPageMain.prototype = {
 
         var self = this; var $ = self.$;
         
-        $('.amount__range_overlay').show();
-        $('.amount__range_custom').show();
-
+//        $('.amount__range_overlay').show();
+//        $('.amount__range_custom').show();
+        $('.amount__range_overlay').addClass('amount__range_custom--visible');
+        $('.amount__range_custom').addClass('amount__range_custom--visible');
     },
     
     handleHashChange: function() {

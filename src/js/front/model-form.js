@@ -333,10 +333,16 @@
         });
     }
 
-    function syncFigure() {
+    function syncFigure(event, options) {
         var val = $(this).val();
-        $(this).parents('.step__fields').find('.amount__figure').find('input.leyka_donation_amount').val(val);
-        $(this).parents('.step__fields').removeClass('invalid');
+        
+        if(options && options['skipSyncFigure']) {
+            // skip sync figure after range change trigger
+        }
+        else {
+            $(this).parents('.step__fields').find('.amount__figure').find('input.leyka_donation_amount').val(val);
+            $(this).parents('.step__fields').removeClass('invalid');
+        }
     }
 
     function syncRange() {
@@ -345,7 +351,7 @@
             val = $this.val(),
             $form = $this.parents('.leyka-pf__form');
 
-        $form.removeClass('invalid').find('.amount_range').find('input').val(val).change();
+        $form.removeClass('invalid').find('.amount_range').find('input').val(val).trigger('change', {'skipSyncFigure': true} );
 
     }
 

@@ -513,6 +513,19 @@
         }
     }
 
+    .informyou-redirect-text {
+        display:none;
+        @include informyou-text;
+        color: $color-text-semi;
+        width:100%;
+        padding-top:$base * 8;
+
+        div {
+            display:inline-block;
+            max-width:170px;
+        }
+    }
+
     .leyka-logo {
         position:relative;
         width:100%;
@@ -554,6 +567,8 @@
                 text-decoration: underline;
             }
         }
+        
+        
     }
 
     &.leyka-pf__final-informyou {
@@ -562,19 +577,6 @@
         .icon {
             background-image: url(../../img/final-check.png);
         }
-
-        .informyou-redirect-text {
-            @include informyou-text;
-            color: $color-text-semi;
-            width:100%;
-            padding-top:$base * 8;
-
-            div {
-                display:inline-block;
-                max-width:170px;
-            }
-        }
-
     }
 
     &.leyka-pf__final-error {

@@ -130,9 +130,10 @@ window.LeykaPageMain.prototype = {
 
         var self = this; var $ = self.$;
         
-        $('.amount__range_overlay').show();
-        $('.amount__range_custom').show();
-
+//        $('.amount__range_overlay').show();
+//        $('.amount__range_custom').show();
+        $('.amount__range_overlay').addClass('amount__range_custom--visible');
+        $('.amount__range_custom').addClass('amount__range_custom--visible');
     },
     
     handleHashChange: function() {

@@ -250,7 +250,6 @@ div[id *="leyka-pf-"] { //aka namespace
 			-webkit-appearance: none;
 			width: 200px;
 			margin: 0 auto;
-			height:40px;
 		}
 
 		input[type=range]::-ms-track {
@@ -398,7 +397,7 @@ div[id *="leyka-pf-"] { //aka namespace
 	    .amount__range_overlay {
 	        display:none;
 		    background-color: #ffffff;
-		    height: 50px;
+		    height: 30px;
 		    left: 0;
 		    position: absolute;
 		    top: 0;
@@ -408,49 +407,52 @@ div[id *="leyka-pf-"] { //aka namespace
 	    }
 	    
 	    .amount__range_custom {
-	       display:none;
-	       position:relative;
-	       left:10px;
-	       top:20px;
-	       z-index:7;
-	       pointer-events:none;
+            display:none;
+            position:relative;
+            left:10px;
+            top:10px;
+            z-index:7;
+            pointer-events:none;
 	       
-	       .range-bg {
-	           width:200px;
-	           height:12px;
-	           fill: #E6E7E9;
-	           position:absolute;
-	           top:0px;
-	           left:0px;
-	           pointer-events:none;
-	       }
-	       
-	       .range-color, .range-color-wrapper {
-	           width:200px;
-	           height:12px;
-	           fill: $color_main;
-	           position:absolute;
-	           top:0px;
-	           left:0px;
-	           pointer-events:none;
-	        }
-	        
-	        .range-color-wrapper {
+            .range-bg {
+               width:200px;
+               height:12px;
+               fill: #E6E7E9;
+               position:absolute;
+               top:0px;
+               left:0px;
+            }
+            
+            .range-color, .range-color-wrapper {
+               width:200px;
+               height:12px;
+               fill: $color_main;
+               position:absolute;
+               top:0px;
+               left:0px;
+            }
+            
+            .range-color-wrapper {
                width:50px;
                overflow:hidden;
-               pointer-events:none;
             }
-	       
-	       .range-circle {
-	           width:34px;
-	           height:34px;
-	           fill: $color_main;
-	           position:absolute;
-	           top:-10px;
-	           left:50px;
-	           pointer-events:none;
-	       }
+            
+            .range-circle {
+               width:34px;
+               height:34px;
+               fill: $color_main;
+               position:absolute;
+               top:-10px;
+               left:50px;
+            }
 	    }
+	    
+        @include for(medium-screens) {
+            .amount__range_custom--visible {
+                display:block;
+            }
+        }
+        
     }
 
 	.amount__error {
