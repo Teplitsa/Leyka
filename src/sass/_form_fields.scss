@@ -464,7 +464,7 @@ div[id *="leyka-pf-"] { //aka namespace
 	.step__action {
 
 		a {
-			@include button(small);
+			@include button();
 			width: 186px; 
 			text-align: center;
 			margin: 4px;
