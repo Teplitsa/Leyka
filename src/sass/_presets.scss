@@ -37,7 +37,7 @@ $color-border-light:	#eeeeee;
 $color-border-tiny:		#f6f6f6;
 $color-border-dark:		#353d3f;
 
-$color-form-invalid:	#FC0A69;
+$color-form-invalid:	#D0011B;
 $color-form-active:		var(--color-main-light);
 
 
@@ -81,17 +81,20 @@ $color-form-active:		var(--color-main-light);
 	color: $color-text;
 
 	a {
-		color: $color-text;
-		text-decoration: underline;
-		border: none;
-		font-weight: normal;
-
-		&:hover, &:focus, &:active {
-			color: $color-text-light;
-		}
+		@include internal-link();
 	}
 }
 
+@mixin internal-link() {
+	color: $color-link;
+	text-decoration: underline;
+	border: none;
+	font-weight: normal;
+
+	&:hover, &:focus, &:active {
+		color: darken($color-link, 10%);
+	}
+}
 
 /** == Mq == **/
 

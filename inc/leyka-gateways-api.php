@@ -30,7 +30,7 @@ function leyka_get_pm_list($activity = null, $currency = false, $sorted = true) 
 
     if($sorted) {
 
-        $pm_order = explode('pm_order[]=', leyka_options()->opt('pm_order'));
+        $pm_order = explode('pm_order[]=', leyka_options()->opt('pm_order')); 
         array_shift($pm_order);
 
         foreach($pm_order as $pm) {
@@ -78,7 +78,7 @@ function leyka_get_pm_by_id($pm_id, $is_full_id = false) {
 
     $pm = false;
     if($is_full_id) {
-		
+
 		$id = explode('-', $pm_id);
         $gateway = leyka_get_gateway_by_id(reset($id)); // Otherwise error in PHP 5.4.0
         if( !$gateway ) {
@@ -453,7 +453,7 @@ abstract class Leyka_Gateway {
 
     /**
      * @param string $pm_id
-     * @return Leyka_Payment_Method Object, or false if it's not found. 
+     * @return Leyka_Payment_Method Object, or false if it's not found.
      */
     public function get_payment_method_by_id($pm_id) {
         return empty($this->_payment_methods[$pm_id]) ? false : $this->_payment_methods[$pm_id];
@@ -660,7 +660,7 @@ abstract class Leyka_Payment_Method {
     /** Allocate gateway options, if needed */
     public function allocate_pm_options($options) {
 
-        $gateway = leyka_get_gateway_by_id($this->_gateway_id); 
+        $gateway = leyka_get_gateway_by_id($this->_gateway_id);
         $gateway_section_index = -1;
 
         foreach($options as $index => $option) {

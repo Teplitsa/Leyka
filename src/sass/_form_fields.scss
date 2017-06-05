@@ -324,7 +324,7 @@ div[id *="leyka-pf-"] { //aka namespace
                 width: 46px;
                 height: 80px;
                 padding-top: 40px;
-                
+
                 @include for(medium-screens) {
                     width: 62px;
                     height: 110px;
@@ -336,7 +336,7 @@ div[id *="leyka-pf-"] { //aka namespace
                 width: 80px;
                 height: 80px;
                 padding-top: 30px;
-                
+
                 @include for(medium-screens) {
                     width: 102px;
                     height: 110px;
@@ -348,18 +348,18 @@ div[id *="leyka-pf-"] { //aka namespace
                 width: 86px;
                 height: 80px;
                 padding-top: 25px;
-                
+
                 @include for(medium-screens) {
                     width: 114px;
                     height: 110px;
                     padding-top: 24px;
                 }
             }
-            
+
             &.icon-money-size4 {
 	            width: 85px;
 	            height: 110px;
-	            
+
 	            @include for(medium-screens) {
 	                width: 114px;
 	                height: 132px;
@@ -367,10 +367,10 @@ div[id *="leyka-pf-"] { //aka namespace
             }
 		}
 	}
-	
+
 	.amount__range_wrapper {
 	    position:relative;
-	    
+
 	    .amount__range_overlay {
 	        display:none;
 		    background-color: #ffffff;
@@ -382,7 +382,7 @@ div[id *="leyka-pf-"] { //aka namespace
 		    z-index:5;
 		    pointer-events:none;
 	    }
-	    
+
 	    .amount__range_custom {
 	       display:none;
 	       position:relative;
@@ -390,7 +390,7 @@ div[id *="leyka-pf-"] { //aka namespace
 	       top:10px;
 	       z-index:7;
 	       pointer-events:none;
-	       
+
 	       .range-bg {
 	           width:200px;
 	           height:12px;
@@ -399,7 +399,7 @@ div[id *="leyka-pf-"] { //aka namespace
 	           top:0px;
 	           left:0px;
 	       }
-	       
+
 	       .range-color, .range-color-wrapper {
 	           width:200px;
 	           height:12px;
@@ -408,12 +408,12 @@ div[id *="leyka-pf-"] { //aka namespace
 	           top:0px;
 	           left:0px;
 	        }
-	        
+
 	        .range-color-wrapper {
                width:50px;
                overflow:hidden;
             }
-	       
+
 	       .range-circle {
 	           width:28px;
 	           height:28px;
@@ -435,7 +435,7 @@ div[id *="leyka-pf-"] { //aka namespace
 
 		a {
 			@include button(small);
-			width: 186px; 
+			width: 186px;
 			text-align: center;
 			margin: 4px;
 		}
@@ -498,7 +498,7 @@ div[id *="leyka-pf-"] {  //aka namespace
 
 	.payment-opt {
 		text-align: center;
-		margin: 6px 4px;
+		margin: 9px 4px;
 		flex: 1 1 auto;
 		width: calc(50% - 8px)
 	}
@@ -560,8 +560,9 @@ div[id *="leyka-pf-"] {  //aka namespace
 
 	.payment-opt__label {
 		display: block;
-		margin-top: $base*1.5;
+		margin-top: $base;
 		font-size: 11px;
+		line-height: 1.33;
 		hyphens: none;
 
 		@include for(medium-screens) {
@@ -712,36 +713,36 @@ div[id *="leyka-pf-"] {  //aka namespace
 			.donor__oferta-error { visibility: visible; }
 		}
 	}
-	
+
 	.step--static {
-	
+
 		.step__border {
-		
+
 		    min-height:80%;
 		    position:relative;
 
 			.static-text {
 			}
-			
+
 			.static__complete-donation {
 				text-align: center;
 				margin-top: $base*1.5;
 				margin-bottom: $base*1.5;
 				position:absolute;
 				bottom:0px;
-				
+
 				margin-left: auto;
 				margin-right: auto;
 				left: 0;
-				right: 0;			    
-			
+				right: 0;
+
 			    input {
 			        @include button();
 			    }
 			}
-           
+
         }
-	
+
     }
-	
+
 }
