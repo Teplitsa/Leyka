@@ -328,7 +328,7 @@ div[id *="leyka-pf-"] { //aka namespace
                 @include for(medium-screens) {
                     width: 62px;
                     height: 110px;
-                    padding-top: 44px;
+                    padding-top: 64px;
                 }
             }
 
@@ -362,7 +362,7 @@ div[id *="leyka-pf-"] { //aka namespace
 	            
 	            @include for(medium-screens) {
 	                width: 114px;
-	                height: 132px;
+	                height: 110px;
 	            }
             }
 		}
