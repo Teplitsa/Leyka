@@ -250,6 +250,7 @@ div[id *="leyka-pf-"] { //aka namespace
 			-webkit-appearance: none;
 			width: 200px;
 			margin: 0 auto;
+			height:55px;
 		}
 
 		input[type=range]::-ms-track {
@@ -347,7 +348,7 @@ div[id *="leyka-pf-"] { //aka namespace
                 width: 46px;
                 height: 80px;
                 padding-top: 40px;
-
+                
                 @include for(medium-screens) {
                     width: 62px;
                     height: 110px;
@@ -359,7 +360,7 @@ div[id *="leyka-pf-"] { //aka namespace
                 width: 80px;
                 height: 80px;
                 padding-top: 30px;
-
+                
                 @include for(medium-screens) {
                     width: 102px;
                     height: 110px;
@@ -371,18 +372,18 @@ div[id *="leyka-pf-"] { //aka namespace
                 width: 86px;
                 height: 80px;
                 padding-top: 25px;
-
+                
                 @include for(medium-screens) {
                     width: 114px;
                     height: 110px;
                     padding-top: 24px;
                 }
             }
-
+            
             &.icon-money-size4 {
 	            width: 85px;
 	            height: 110px;
-
+	            
 	            @include for(medium-screens) {
 	                width: 114px;
 	                height: 110px;
@@ -390,14 +391,15 @@ div[id *="leyka-pf-"] { //aka namespace
             }
 		}
 	}
-
+	
 	.amount__range_wrapper {
 	    position:relative;
-
+	    margin-top: -25px;
+	    
 	    .amount__range_overlay {
 	        display:none;
 		    background-color: #ffffff;
-		    height: 30px;
+		    height: 90px;
 		    left: 0;
 		    position: absolute;
 		    top: 0;
@@ -405,15 +407,15 @@ div[id *="leyka-pf-"] { //aka namespace
 		    z-index:5;
 		    pointer-events:none;
 	    }
-
+	    
 	    .amount__range_custom {
 	       display:none;
 	       position:relative;
 	       left:10px;
-	       top:10px;
+	       top:35px;
 	       z-index:7;
 	       pointer-events:none;
-
+	       
 	       .range-bg {
 	           width:200px;
 	           height:12px;
@@ -422,7 +424,7 @@ div[id *="leyka-pf-"] { //aka namespace
 	           top:0px;
 	           left:0px;
 	       }
-
+	       
 	       .range-color, .range-color-wrapper {
 	           width:200px;
 	           height:12px;
@@ -431,18 +433,18 @@ div[id *="leyka-pf-"] { //aka namespace
 	           top:0px;
 	           left:0px;
 	        }
-
+	        
 	        .range-color-wrapper {
                width:50px;
                overflow:hidden;
             }
-
+	       
 	       .range-circle {
-	           width:28px;
-	           height:28px;
+	           width:34px;
+	           height:34px;
 	           fill: $color_main;
 	           position:absolute;
-	           top:-8px;
+	           top:-10px;
 	           left:50px;
 	       }
 	    }
@@ -458,7 +460,7 @@ div[id *="leyka-pf-"] { //aka namespace
 
 		a {
 			@include button(small);
-			width: 186px;
+			width: 186px; 
 			text-align: center;
 			margin: 4px;
 		}

@@ -8,7 +8,7 @@
         amountMax = 30000,
         amountIconMarks = [25, 50, 75],
         inputRangeWidth = 200,
-        inputRangeButtonRadius = 14;
+        inputRangeButtonRadius = 17;
 
     var methods = {
         'defaults': {
