@@ -147,3 +147,12 @@ function leyka_get_gateway_redirect_data() {
 }
 add_action('wp_ajax_leyka_ajax_get_gateway_redirect_data', 'leyka_get_gateway_redirect_data');
 add_action('wp_ajax_nopriv_leyka_ajax_get_gateway_redirect_data', 'leyka_get_gateway_redirect_data');
+
+
+function leyka_submit_subscribe() {
+
+    die(json_encode($payment_vars));
+
+}
+add_action('wp_ajax_leyka_ajax_submit_subscribe', 'leyka_submit_subscribe');
+add_action('wp_ajax_nopriv_leyka_ajax_submit_subscribe', 'leyka_submit_subscribe');

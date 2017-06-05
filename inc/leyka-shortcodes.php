@@ -613,37 +613,6 @@ function leyka_inline_campaign(array $attributes = array()) {
                 </div>
             </div>
 
-            <div class="leyka-pf__final-screen leyka-pf__final-thankyou <?php echo leyka_pf_get_form_auto_open_final_screen_class('thankyou');?>">
-            	<div class="icon"> </div>
-            	<div class="text"><div><?php echo leyka_options()->opt('revo_thankyou_text');?></div></div>
-            	<div class="thankyou-email-field">
-                    <div class="donor__textfield">
-                        <input type="text" name="leyka_inform_email" value="" autocomplete="off">
-                    </div>
-                </div>
-            	<div class="thankyou-email-me-button">
-            		<a href="#"><?php _e('Yes, keep me in touch please', 'leyka');?></a>
-            	</div>
-            	<div class="thankyou-no-email">
-                    <a href="#" class="leyka-js-close-form"><?php _e('No, thank you', 'leyka');?></a>
-                </div>
-            </div>
-            
-            <div class="leyka-pf__final-screen leyka-pf__final-informyou <?php echo leyka_pf_get_form_auto_open_final_screen_class('informyou');?>">
-                <div class="icon"> </div>
-                <div class="text"><div><?php echo leyka_options()->opt('revo_thankyou_text');?></div></div>
-                <div class="informyou-redirect-text"><div><?php _e('Redirect to campaigns page in 5 seconds...', 'leyka');?></div></div>
-                <div class="leyka-logo"> </div>
-            </div>
-            
-            <div class="leyka-pf__final-screen leyka-pf__final-error <?php echo leyka_pf_get_form_auto_open_final_screen_class('error');?>">
-                <div class="icon"> </div>
-                <div class="text"><div class="leyka-js-error-text"><?php _e('Payment error', 'leyka');?></div></div>
-                <div class="error-text"><div><?php _e('Perhaps there are problems in the Internet connection, in the operation of the payment system or an internal system error.', 'leyka');?></div></div>
-                <div class="error-text"><div><?php _e('Please try <a href="cards" class="leyka-js-another-step">again</a> and if the error recurs, use another payment method or contact <a href="#">technical support</a>.', 'leyka');?></div></div>
-                <div class="leyka-logo"> </div>
-            </div>
-            
             <div class="leyka-pf__oferta oferta">
                 <div class="oferta__frame">
                     <div class="oferta__flow"><?php echo apply_filters('leyka_terms_of_service_text', do_shortcode(leyka_options()->opt('terms_of_service_text')));?></div>

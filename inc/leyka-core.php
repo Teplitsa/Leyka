@@ -146,20 +146,49 @@ class Leyka {
         add_action('pre_get_posts', 'leyka_get_posts', 1);
 
         function leyka_successful_page_widget_template($content) {
+            
+            $error = isset($_GET['leyka-error']) ? __($_GET['leyka-error'], 'leyka') : '';
 
-            if(
-                get_post()->ID != leyka_options()->opt('success_page') ||
-                !leyka_options()->opt('show_subscription_on_success')
-            ) {
-                return $content;
+            $template = leyka_options()->opt('donation_form_template');
+            if($template == 'revo') {
+                
+//                 leyka_options()->opt('revo_thankyou_text');
+                if( get_post()->ID == leyka_options()->opt('success_page') || get_post()->ID == leyka_options()->opt('quittance_redirect_page') ) {
+                    
+                    ob_start();
+                    require_once(LEYKA_PLUGIN_DIR . 'templates/service/leyka-template-revo-final-thankyou.php');
+                    $successful_page_content = ob_get_clean();
+                    
+                }
+                else {
+                    
+                    $successful_page_content = $content;
+                    
+                }
+                
             }
-
-            ob_start();
-            require_once(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-success-widget.php');
-
-            $widget_template = ob_get_clean();
-
-            return $content.$widget_template;
+            else {
+                
+                if(
+                    get_post()->ID != leyka_options()->opt('success_page') ||
+                    !leyka_options()->opt('show_subscription_on_success')
+                ) {
+        
+                    $widget_template = '';
+        
+                }
+                else {
+        
+                    ob_start();
+                    require_once(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-success-widget.php');
+                    $widget_template = ob_get_clean();
+        
+                }
+                
+                $successful_page_content = $content . $widget_template;
+            }
+            
+            return $successful_page_content;
 
         }
         add_filter('the_content', 'leyka_successful_page_widget_template', 1);
