@@ -120,8 +120,7 @@
 	}
 
     .leyka-pf__final-screen {
-        display: none;
-        position: absolute;
+        position: relative;
         top: 0;
         left: 0;
         width: 100%;
@@ -200,9 +199,6 @@
 			display: block;
 		}
 		
-        .leyka-pf__final--open {
-            display: block;
-        }
 	}
 }
 
@@ -245,13 +241,6 @@
 			width: 50%;
 		}
 		
-        .leyka-pf__final--open {
-            &.leyka-pf__final--open-half {
-                width:50%;
-                left:50%;
-                margin-left:1px;
-            }
-        }
 	}
 
 	.leyka-pf--active.leyka-pf--oferta-open { //remove divider
@@ -488,7 +477,7 @@
         width:100%;
         margin-top: $base*2.2;
         max-height:156px;
-        height:50%;
+        height:150px;
         background-image: url(../../img/final-heart.png);
         background-repeat: no-repeat;
         background-size: 120px 120px;
@@ -506,10 +495,10 @@
     }
     
     .leyka-logo {
-        position:absolute;
+        position:relative;
         width:100%;
         height:20px;
-        bottom:35px;
+        margin-top:35px;
         background-image: url(../../img/final-leyka-logo.png);
         background-repeat: no-repeat;
         background-size: 64px 20px;
@@ -549,7 +538,8 @@
     }
     
     &.leyka-pf__final-informyou {
-    
+        display:none;
+        
         .icon {
             background-image: url(../../img/final-check.png);
         }
@@ -569,7 +559,7 @@
     }    
     
     &.leyka-pf__final-error {
-    
+        
         .icon {
             background-image: url(../../img/final-cross.png);
         }
@@ -583,7 +573,7 @@
             div {
                 display:inline-block;
                 text-align:left;
-                max-width:340px;
+                max-width:440px;
             }
             
             a {

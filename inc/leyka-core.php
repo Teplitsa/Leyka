@@ -145,24 +145,59 @@ class Leyka {
         }
         add_action('pre_get_posts', 'leyka_get_posts', 1);
 
-        function leyka_successful_page_subscription_template($content) {
-
-            if(
-                get_post()->ID != leyka_options()->opt('success_page') ||
-                !leyka_options()->opt('show_subscription_on_success')
-            ) {
-                return $content;
+        function leyka_successful_page_widget_template($content) {
+            
+            $template = leyka_options()->opt('donation_form_template');
+            $successful_page_content = $content;
+            
+            if($template == 'revo') {
+                
+//                 leyka_options()->opt('revo_thankyou_text');
+                if( get_post()->ID == leyka_options()->opt('success_page') || get_post()->ID == leyka_options()->opt('quittance_redirect_page') ) {
+                    
+                    ob_start();
+                    include(LEYKA_PLUGIN_DIR . 'templates/service/leyka-template-revo-final-thankyou.php');
+                    $successful_page_content = ob_get_clean();
+                    
+                }
+                elseif( get_post()->ID == leyka_options()->opt('failure_page') ) {
+                    
+                    $error = 1;
+                    
+                    ob_start();
+                    include(LEYKA_PLUGIN_DIR . 'templates/service/leyka-template-revo-final-thankyou.php');
+                    $successful_page_content = ob_get_clean();
+                    
+                }
+                else {
+                    
+                    $successful_page_content = $content;
+                    
+                }
+                
             }
-
-            ob_start();
-            require_once(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-subscription-form.php');
-
-            $subscription_template = ob_get_clean();
-
-            return $content.$subscription_template;
+            else {
+                
+                if( get_post()->ID != leyka_options()->opt('success_page') || !leyka_options()->opt('show_subscription_on_success') ) {
+        
+                    $widget_template = '';
+        
+                }
+                else {
+        
+                    ob_start();
+                    require_once(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-success-widget.php');
+                    $widget_template = ob_get_clean();
+        
+                }
+                
+                $successful_page_content = $content . $widget_template;
+            }
+            
+            return $successful_page_content;
 
         }
-        add_filter('the_content', 'leyka_successful_page_subscription_template', 1);
+        add_filter('the_content', 'leyka_successful_page_widget_template', 1);
 
         add_action('wp_head', function() {
             if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type)) {
@@ -747,6 +782,7 @@ class Leyka {
 
         $js_data = apply_filters('leyka_js_localized_strings', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
+            'homeurl' => home_url('/'),
             'correct_donation_amount_required' => __('Donation amount must be specified to submit the form', 'leyka'),
             'donation_amount_too_great' => __('Donation amount you entered is too great (maximum %s allowed)', 'leyka'),
             'donation_amount_too_small' => __('Donation amount you entered is too small (minimum %s allowed)', 'leyka'),
@@ -1034,7 +1070,8 @@ class Leyka {
 
         }
 
-        if($donor_name && !leyka_validate_email(leyka_pf_get_donor_email_value())) {
+        $donor_email = leyka_pf_get_donor_email_value();
+        if($donor_email && !leyka_validate_email($donor_email)) {
 
             $error = new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
             $this->add_payment_form_error($error);
@@ -1059,6 +1096,8 @@ class Leyka {
             return;
 
         }
+
+        leyka_remember_donation_data(array('donation_id' => $donation_id));
 
         do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
 

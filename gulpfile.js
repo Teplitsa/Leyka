@@ -41,7 +41,7 @@ var changeEvent = function(evt) {
 
 //js
 gulp.task('build-js', function() {
-    var vendorFiles = [],
+    var vendorFiles = [basePaths.npm+'jquery.cookie/jquery.cookie.js'],
         appFiles = [basePaths.src+'js/front/*']; //our own JS files    
 
     return gulp.src(vendorFiles.concat(appFiles)) //join them

@@ -5,29 +5,34 @@
  **/
 ?>
 
-<form action="#" method="post" novalidate="novalidate">
+<?php $donation_id = leyka_remembered_data('donation_id');
+#echo '<pre>' . print_r($_COOKIE, 1) . '</pre>';
+?>
 
-<?php if(leyka_options()->opt('revo_template_ask_donor_data') == 'thank-you-page') {?>
+<form action="#" class="leyka-success-form" method="post" novalidate="novalidate" <?php echo empty($donation_id) ? 'style="display: none;"' : '';?>>
+
+    <input type="hidden" name="leyka_donation_id" value="<?php echo $donation_id;?>">
+    <input type="hidden" name="action" value="leyka_donor_subscription">
+    <?php wp_create_nonce('leyka_donor_subscription');?>
+
+<?php if(leyka_options()->opt('revo_template_ask_donor_data') == 'success-page') {?>
 
     <h3><?php _e('Want us to keep you posted about the results?', 'leyka');?></h3>
 
-    <p><input type="text" name="leyka_donor_name" value="<?php echo ''; //leyka_get_remembered_donor_name();?>" placeholder="Ваше имя"></p>
-    <p><input type="text" name="leyka_donor_email" value="<?php echo ''; //leyka_get_remembered_donor_email();?>" placeholder="Ваш email"></p>
-    <input type="hidden" name="leyka_donation_id" value="<?php echo ''; //leyka_get_remembered_donation_id();?>">
-
-    <input type="submit" name="leyka_donor_data_submit" value="<?php _e("I want to know about the results", 'leyka');?>">
-    <br>
-    <a href="#"><?php _e('No, thank you', 'leyka');?></a>
+    <p><input type="text" name="leyka_donor_name" value="" placeholder="<?php _e('Your name', 'leyka');?>"></p>
+    <p><input type="text" name="leyka_donor_email" value="" placeholder="<?php _e('Your email', 'leyka');?>"></p>
 
 <?php } else if(leyka_options()->opt('show_subscription_on_success')) {?>
 
-    <p><input type="text" name="leyka_donor_email" value="<?php echo ''; //leyka_get_remembered_donor_email();?>" placeholder="Ваш email"></p>
+    <h3><?php _e('Want us to keep you posted about the results?', 'leyka');?></h3>
 
-    <input type="submit" name="leyka_donor_data_submit" value="<?php _e("I want to know about the results", 'leyka');?>">
-    <br>
-    <a href="#"><?php _e('No, thank you', 'leyka');?></a>
+    <p><input type="text" name="leyka_donor_email" value="<?php echo leyka_remembered_data('donor_email');?>" placeholder="Ваш <?php _e('Your email', 'leyka');?>"></p>
 
 <?php }?>
+
+    <input type="submit" class="leyka-success-submit" name="leyka_success_submit" value="<?php _e('I want to know about the results', 'leyka');?>">
+    <br>
+    <a href="#"><?php _e('No, thank you', 'leyka');?></a>
 
 <!-- Original prototype markup -->
 <!--<div id="thankyou" class="step thankyou inactive">-->
