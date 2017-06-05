@@ -24,6 +24,7 @@
     function init(options) {
 
         setupAmount();
+        setupPaymentsGrid();
         setupDonorForm();
         bindEvents();
 
@@ -45,7 +46,7 @@
     function bindSubmitPaymentFormEvent() {
 
         $('.leyka-pf__form').on('submit.leyka', 'form',  function(e){
-
+            
             var $_form = $(this),
                 pName = $_form.find('.donor__textfield--name input').val(),
                 pEmail = $_form.find('.donor__textfield--email input').val(),
@@ -256,9 +257,16 @@
     }
     
     function bindNavigationEvents() {
+        
         $('.leyka-js-another-step').on('click', function(e){
             e.preventDefault();
             goAnotherStep($(this));
+        });
+        
+        $('.leyka-js-complete-donation').click(function(){
+            
+            $(this).closest('.leyka-pf').leykaForm('close');
+            
         });
         
     }
@@ -442,6 +450,15 @@
     }
     
     /** payment step **/
+    function setupPaymentsGrid() {
+        
+        var $pg = $('.payments-grid');
+        if( $pg.find('.payment-opt').length <= 4 ) {
+            $pg.css('overflow-y', 'hidden');
+        }
+        
+    }
+    
     function selectPaymentProvider($_opt) {
 
         var name = $_opt.parents('.payment-opt').find('.payment-opt__label').text(),

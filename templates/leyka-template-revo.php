@@ -121,7 +121,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
         		<?php $pm->display_static_data();?>
         		
                 <div class="static__complete-donation">
-                    <input type="submit" class="leyka-js-close-form" value="<?php echo leyka_options()->opt_safe('revo_donation_complete_button_text');?>">
+                    <input class="leyka-js-complete-donation" value="<?php echo leyka_options()->opt_safe('revo_donation_complete_button_text');?>">
                 </div>
         		
         	</div>

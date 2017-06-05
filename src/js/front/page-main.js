@@ -29,7 +29,7 @@ window.LeykaPageMain.prototype = {
         });
    
         $('.leyka-js-close-form').on('click', function(e){
-
+            
             e.preventDefault();
             $(this).closest('.leyka-pf').leykaForm('close');
 
