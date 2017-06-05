@@ -33,7 +33,7 @@
     <div class="leyka-final-subscribe-form">
         <div class="thankyou-email-field">
             <div class="donor__textfield">
-                <input type="text" name="leyka_inform_email" value="<?php echo leyka_remembered_data('donor_email');?>" autocomplete="off">
+                <input type="text" name="leyka_donor_email" value="<?php echo leyka_remembered_data('donor_email');?>" autocomplete="off">
             </div>
         </div>
         <div class="thankyou-email-me-button">

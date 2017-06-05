@@ -933,10 +933,8 @@ function leyka_get_donations_archive_url($campaign_id = false) {
         }
 
     } else {
-
         $donations_permalink = get_option('permalink-structure') ?
             home_url('/donations/') : home_url('?post_type='.Leyka_Donation_Management::$post_type);
-
     }
 
     return $donations_permalink;
@@ -948,7 +946,7 @@ function leyka_remembered_data($name, $value = null) {
     $name = stripos($name, 'leyka_') === false ? 'leyka_'.$name : $name;
 
     if($value) {
-        return setcookie('leyka_donation_id', trim($value), 0, '', '', true);
+        return setcookie($name, trim($value), time()+60*60, COOKIEPATH, COOKIE_DOMAIN, false); /** @todo Last argument is for HTTPS-only */
     } else {
         return empty($_COOKIE[$name]) ? '' : trim($_COOKIE[$name]);
     }

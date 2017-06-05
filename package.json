@@ -37,7 +37,8 @@
     "main-bower-files": "^2.9.0",
     "node-bourbon": "^4.2.3",
     "relative-path": "^1.0.0",
-    "run-sequence": "^1.1.2"
+    "run-sequence": "^1.1.2",
+    "jquery.cookie": "^1.4.1"
   },
   "dependencies": {}
 }

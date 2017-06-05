@@ -1064,7 +1064,7 @@ class Leyka {
         }
 
         $donor_email = leyka_pf_get_donor_email_value();
-        if($donor_name && !leyka_validate_email($donor_email)) {
+        if($donor_email && !leyka_validate_email($donor_email)) {
 
             $error = new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
             $this->add_payment_form_error($error);
@@ -1090,9 +1090,7 @@ class Leyka {
 
         }
 
-        leyka_remembered_data('donor_name', $donor_name);
-        leyka_remembered_data('donor_email', $donor_email);
-        leyka_remembered_data('donation_id', $donation_id);
+        leyka_remember_donation_data(array('donation_id' => $donation_id));
 
         do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
 

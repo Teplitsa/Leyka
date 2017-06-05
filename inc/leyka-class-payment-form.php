@@ -848,6 +848,16 @@ function leyka_get_donation_form($echo = true) {
     }
 }
 
+function leyka_remember_donation_data(array $additional_data = array()) {
+
+    $to_remember = array('donor_name' => leyka_pf_get_donor_name_value(), 'donor_email' => leyka_pf_get_donor_email_value());
+
+    foreach(array_merge($to_remember, $additional_data) as $key => $value) {
+        leyka_remembered_data($key, $value);
+    }
+
+}
+
 /** Filters */
 function leyka_terms_of_service_text($text) {
     return wpautop(str_replace(
