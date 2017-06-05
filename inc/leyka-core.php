@@ -156,7 +156,7 @@ class Leyka {
                 if( get_post()->ID == leyka_options()->opt('success_page') || get_post()->ID == leyka_options()->opt('quittance_redirect_page') ) {
                     
                     ob_start();
-                    require_once(LEYKA_PLUGIN_DIR . 'templates/service/leyka-template-revo-final-thankyou.php');
+                    include(LEYKA_PLUGIN_DIR . 'templates/service/leyka-template-revo-final-thankyou.php');
                     $successful_page_content = ob_get_clean();
                     
                 }
@@ -165,7 +165,7 @@ class Leyka {
                     $error = 1;
                     
                     ob_start();
-                    require_once(LEYKA_PLUGIN_DIR . 'templates/service/leyka-template-revo-final-thankyou.php');
+                    include(LEYKA_PLUGIN_DIR . 'templates/service/leyka-template-revo-final-thankyou.php');
                     $successful_page_content = ob_get_clean();
                     
                 }
