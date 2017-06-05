@@ -782,6 +782,7 @@ class Leyka {
 
         $js_data = apply_filters('leyka_js_localized_strings', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
+            'homeurl' => home_url('/'),
             'correct_donation_amount_required' => __('Donation amount must be specified to submit the form', 'leyka'),
             'donation_amount_too_great' => __('Donation amount you entered is too great (maximum %s allowed)', 'leyka'),
             'donation_amount_too_small' => __('Donation amount you entered is too small (minimum %s allowed)', 'leyka'),

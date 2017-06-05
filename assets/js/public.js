@@ -203,9 +203,13 @@ window.LeykaGUIFinal.prototype = {
         $('.leyka-pf__final-thankyou').hide();
         $('.leyka-pf__final-informyou').show();
         
+        setTimeout(function(){
+            window.location.href = leyka.homeurl;
+        }, 5000);
+        
         var data = {action: 'leyka_ajax_submit_subscribe'};
         
-        $.post(frontend.ajaxurl, data, null, 'json')
+        $.post(leyka.ajaxurl, data, null, 'json')
         .done(function(json){
         })
         .fail(function(){
