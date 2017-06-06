@@ -518,12 +518,11 @@ function leyka_inline_campaign(array $attributes = array()) {
 					</div>
                     <?php }  // Campaign doesn't have a target sum - display nothing ?>
 
+					<?php $supporters = leyka_get_campaign_supporters($campaign_id, 5); ?>
 					<?php  if(count($supporters['supporters'])) { ?>
                     <div class="inpage-card__note supporters">
 
-                        <?php $supporters = leyka_get_campaign_supporters($campaign_id, 5);
-
-                        if(count($supporters['supporters'])) { // There is at least one donor ?>
+                        <?php if(count($supporters['supporters'])) { // There is at least one donor ?>
                             <strong><?php _e('Supporters:', 'leyka');?></strong>
                         <?php }
 
