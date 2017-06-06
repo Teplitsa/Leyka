@@ -658,11 +658,13 @@ function leyka_inline_campaign_small($campaign_id) {
                 <button type="button" class="leyka-js-open-form-bottom"><?php echo leyka_options()->opt('donation_submit_text');?></button>
             </div>
         </div>
-        <div class="bottom-form__note supporters">
 
-        <?php $supporters = leyka_get_campaign_supporters($campaign_id, 5);
+		<?php
+			$supporters = leyka_get_campaign_supporters($campaign_id, 5);
+			if(count($supporters['supporters'])) { // There is at least one donor ?>
 
-            if(count($supporters['supporters'])) { // There is at least one donor ?>
+			<div class="bottom-form__note supporters">
+			<?php if(count($supporters['supporters'])) { // There is at least one donor ?>
                 <strong><?php _e('Supporters:', 'leyka');?></strong>
             <?php }
 
@@ -678,9 +680,9 @@ function leyka_inline_campaign_small($campaign_id) {
                 </a>
 
         <?php }?>
-
-        </div>
-
+			</div>
+		<?php } ?>
+		
 		<?php if(count($supporters['donations']) > count($supporters['supporters'])) { ?>
         <div class="bottom-form__history history">
             <div class="history__close leyka-js-history-close">x</div>
