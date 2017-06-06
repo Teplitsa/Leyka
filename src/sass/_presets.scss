@@ -60,6 +60,7 @@ $color-form-active:		var(--color-main-light);
 	border: none;
 	border-radius: 23px;
 	transition: all 0.35s;
+	cursor: pointer;
 
 	&:visited {
 		color: $color-white;
@@ -73,10 +74,16 @@ $color-form-active:		var(--color-main-light);
 		padding: 6px 24px;
 		border-radius: 18px;
 	}
-
-    @if $mod == medium {
+    @else if $mod == medium {
         text-transform: none;
     }
+	@else if $mod == action {
+		border-radius: 27px;
+        padding: 12px 26px;
+		min-width: 200px;
+		font-size: 14px;
+    }
+	
 }
 
 @mixin supporters() {

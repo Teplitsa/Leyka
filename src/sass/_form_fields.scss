@@ -671,7 +671,7 @@ div[id *="leyka-pf-"] {  //aka namespace
 		text-align: center;
 
 		input {
-			@include button();
+			@include button(action);
 		}
 	}
 
@@ -771,7 +771,8 @@ div[id *="leyka-pf-"] {  //aka namespace
 				right: 0;
 
 			    input {
-			        @include button();
+			        @include button(action);
+					
 			    }
 			}
 
