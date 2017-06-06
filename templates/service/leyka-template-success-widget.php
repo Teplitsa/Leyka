@@ -35,7 +35,7 @@ $donation_id = leyka_remembered_data('donation_id');?>
                             <input type="text" name="leyka_donor_name" placeholder="<?php _e('Your name', 'leyka');?>" value="<?php echo leyka_remembered_data('donor_name');?>">
                         </div>
                         <div class="donor__textfield">
-                            <input type="text" name="leyka_donor_email" placeholder="<?php _e('Your email', 'leyka');?>" value="<?php echo leyka_remembered_data('donor_email');?>">
+                            <input type="email" name="leyka_donor_email" placeholder="<?php _e('Your email', 'leyka');?>" value="<?php echo leyka_remembered_data('donor_email');?>">
                         </div>
                     </div>
 
@@ -43,14 +43,13 @@ $donation_id = leyka_remembered_data('donation_id');?>
 
                     <div class="thankyou-email-field">
                         <div class="donor__textfield">
-                            <input type="text" name="leyka_donor_email" placeholder="<?php _e('Your email', 'leyka');?>" value="<?php echo leyka_remembered_data('donor_email');?>">
+                            <input type="email" name="leyka_donor_email" placeholder="<?php _e('Your email', 'leyka');?>" value="<?php echo leyka_remembered_data('donor_email');?>">
                         </div>
                     </div>
 
                 <?php }?>
 
                 <div class="thankyou-email-me-button">
-<!--                    <a href="#">--><?php //_e('Yes, keep me in touch', 'leyka');?><!--</a>-->
                     <input type="submit" class="leyka-success-submit" name="leyka_success_submit" value="<?php _e('Yes, keep me in touch', 'leyka');?>">
                 </div>
                 <div class="thankyou-no-email">

@@ -298,7 +298,7 @@ window.LeykaGUIFinal.prototype = {
         var self = this; var $ = self.$;
         
         $('.leyka-pf__final-thankyou').hide();
-        
+
         var $informyou_block = $('.leyka-pf__final-informyou');
         $informyou_block.show();
 
