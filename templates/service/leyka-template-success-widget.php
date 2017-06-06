@@ -3,64 +3,73 @@
  * Leyka Template: Successful donation page block.
  * Description: A template for the interactive actions block shown on the successful donation page.
  **/
-?>
 
-<?php $donation_id = leyka_remembered_data('donation_id');
-#echo '<pre>' . print_r($_COOKIE, 1) . '</pre>';
-?>
+if(
+    !leyka_options()->opt('revo_template_ask_donor_data') == 'success-page' &&
+    !leyka_options()->opt('show_subscription_on_success')
+) {
+    exit();
+}
 
-<form action="#" class="leyka-success-form" method="post" novalidate="novalidate" <?php echo empty($donation_id) ? 'style="display: none;"' : '';?>>
+$donation_id = leyka_remembered_data('donation_id');?>
 
-    <input type="hidden" name="leyka_donation_id" value="<?php echo $donation_id;?>">
-    <input type="hidden" name="action" value="leyka_donor_subscription">
-    <?php wp_create_nonce('leyka_donor_subscription');?>
+<div id="leyka-pf-" class="leyka-pf leyka-success-form">
 
-<?php if(leyka_options()->opt('revo_template_ask_donor_data') == 'success-page') {?>
+    <div class="leyka-pf__final-screen leyka-pf__final-thankyou">
 
-    <h3><?php _e('Want us to keep you posted about the results?', 'leyka');?></h3>
+        <div class="icon"> </div>
+        <div class="text"><div><?php echo get_the_content();?></div></div>
 
-    <p><input type="text" name="leyka_donor_name" value="" placeholder="<?php _e('Your name', 'leyka');?>"></p>
-    <p><input type="text" name="leyka_donor_email" value="" placeholder="<?php _e('Your email', 'leyka');?>"></p>
+        <div class="leyka-final-subscribe-form">
 
-<?php } else if(leyka_options()->opt('show_subscription_on_success')) {?>
+            <form action="#" class="leyka-success-form" method="post" novalidate="novalidate" <?php //echo empty($donation_id) ? 'style="display: none;"' : '';?>>
 
-    <h3><?php _e('Want us to keep you posted about the results?', 'leyka');?></h3>
+                <input type="hidden" name="leyka_donation_id" value="<?php echo $donation_id;?>">
+                <input type="hidden" name="action" value="leyka_donor_subscription">
+                <?php wp_create_nonce('leyka_donor_subscription');?>
 
-    <p><input type="text" name="leyka_donor_email" value="<?php echo leyka_remembered_data('donor_email');?>" placeholder="Ваш <?php _e('Your email', 'leyka');?>"></p>
+                <?php if(leyka_options()->opt('revo_template_ask_donor_data') == 'success-page') {?>
 
-<?php }?>
+                    <div class="thankyou-email-field">
+                        <div class="donor__textfield">
+                            <input type="text" name="leyka_donor_name" placeholder="<?php _e('Your name', 'leyka');?>" value="<?php echo leyka_remembered_data('donor_name');?>">
+                        </div>
+                        <div class="donor__textfield">
+                            <input type="text" name="leyka_donor_email" placeholder="<?php _e('Your email', 'leyka');?>" value="<?php echo leyka_remembered_data('donor_email');?>">
+                        </div>
+                    </div>
 
-    <input type="submit" class="leyka-success-submit" name="leyka_success_submit" value="<?php _e('I want to know about the results', 'leyka');?>">
-    <br>
-    <a href="#"><?php _e('No, thank you', 'leyka');?></a>
+                <?php } else if(leyka_options()->opt('show_subscription_on_success')) {?>
 
-<!-- Original prototype markup -->
-<!--<div id="thankyou" class="step thankyou inactive">-->
-<!--    <div class="step__form thankyou_form">-->
-<!--        <div class="thankyou__icon">-->
-<!--            <svg class="svg-icon pic-ok"><use xlink:href="#pic-ok"/></svg>-->
-<!--        </div>-->
-<!--        <div class="thankyou__text">-->
-<!--            <p class="subscribe-ok-hide">Спасибо! Вы очень нам помогли! Давайте оставаться на связи?</p>-->
-<!--            <div class="subscribe-ok">-->
-<!--                <p>Мы отправим письмо с результатами на указанную почту, спасибо!</p>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <div class="thankyou__field subscribe-ok-hide">-->
-<!--            <input type="text" name="person_email2" value="" id="person_email2">-->
-<!--            <div class="text-field-validation">-->
-<!--                <span class="valid"><svg class="svg-icon icon-valid"><use xlink:href="#icon-valid"/></svg></span>-->
-<!--                <span class="invalid"><svg class="svg-icon icon-invalid"><use xlink:href="#icon-invalid"/></svg></span>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <div class="thankyou_btn subscribe-ok-hide">-->
-<!--            <button class="thanks">Да, держите меня в&nbsp;курсе</button>-->
-<!--        </div>-->
-<!--        <div class="step__note subscribe-ok-hide">-->
-<!--            <p><a href="#finalstep" class="another-step">Нет, спасибо</a> </p>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
-<!-- Original prototype markup END -->
+                    <div class="thankyou-email-field">
+                        <div class="donor__textfield">
+                            <input type="text" name="leyka_donor_email" placeholder="<?php _e('Your email', 'leyka');?>" value="<?php echo leyka_remembered_data('donor_email');?>">
+                        </div>
+                    </div>
 
-</form>
+                <?php }?>
+
+                <div class="thankyou-email-me-button">
+<!--                    <a href="#">--><?php //_e('Yes, keep me in touch', 'leyka');?><!--</a>-->
+                    <input type="submit" class="leyka-success-submit" name="leyka_success_submit" value="<?php _e('Yes, keep me in touch', 'leyka');?>">
+                </div>
+                <div class="thankyou-no-email">
+                    <a href="#" class="leyka-js-no-subscribe"><?php _e('No, thank you', 'leyka');?></a>
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="informyou-redirect-text"><div><?php _e('Redirect to site home page in <span class="leyka-redirect-countdown">5</span> seconds...', 'leyka');?></div></div>
+
+    </div>
+
+    <div class="leyka-pf__final-screen leyka-pf__final-informyou">
+        <div class="icon"> </div>
+        <div class="text"><div><?php echo leyka_options()->opt('revo_thankyou_email_result_text');?></div></div>
+        <div class="informyou-redirect-text"><div><?php _e('Redirect to site home page in <span class="leyka-redirect-countdown">5</span> seconds...', 'leyka');?></div></div>
+        <div class="leyka-logo"> </div>
+    </div>
+
+</div>

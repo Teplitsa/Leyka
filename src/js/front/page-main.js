@@ -81,7 +81,7 @@ window.LeykaPageMain.prototype = {
             donation_id = leyka_remembered_data('leyka_donation_id');
 
         if( !donation_id ) { // Hide the success form if there are no donation ID stored...
-            $success_forms.hide();
+            // $success_forms.hide();
         } else { // ... or display them if there is one in the local storage
             $success_forms.each(function(index, element) {
 
