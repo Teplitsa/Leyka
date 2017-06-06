@@ -518,6 +518,7 @@ function leyka_inline_campaign(array $attributes = array()) {
 					</div>
                     <?php }  // Campaign doesn't have a target sum - display nothing ?>
 
+					<?php  if(count($supporters['supporters'])) { ?>
                     <div class="inpage-card__note supporters">
 
                         <?php $supporters = leyka_get_campaign_supporters($campaign_id, 5);
@@ -540,6 +541,7 @@ function leyka_inline_campaign(array $attributes = array()) {
                         <?php }?>
 
                     </div>
+					<?php } ?>
 
                     <div class="inpage-card__action">
 					<?php if($campaign->is_finished) { ?>
