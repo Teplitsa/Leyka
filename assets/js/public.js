@@ -1,3 +1,137 @@
+/*!
+ * jQuery Cookie Plugin v1.4.1
+ * https://github.com/carhartl/jquery-cookie
+ *
+ * Copyright 2013 Klaus Hartl
+ * Released under the MIT license
+ */
+(function (factory) {
+	if (typeof define === 'function' && define.amd) {
+		// AMD
+		define(['jquery'], factory);
+	} else if (typeof exports === 'object') {
+		// CommonJS
+		factory(require('jquery'));
+	} else {
+		// Browser globals
+		factory(jQuery);
+	}
+}(function ($) {
+
+	var pluses = /\+/g;
+
+	function encode(s) {
+		return config.raw ? s : encodeURIComponent(s);
+	}
+
+	function decode(s) {
+		return config.raw ? s : decodeURIComponent(s);
+	}
+
+	function stringifyCookieValue(value) {
+		return encode(config.json ? JSON.stringify(value) : String(value));
+	}
+
+	function parseCookieValue(s) {
+		if (s.indexOf('"') === 0) {
+			// This is a quoted cookie as according to RFC2068, unescape...
+			s = s.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+		}
+
+		try {
+			// Replace server-side written pluses with spaces.
+			// If we can't decode the cookie, ignore it, it's unusable.
+			// If we can't parse the cookie, ignore it, it's unusable.
+			s = decodeURIComponent(s.replace(pluses, ' '));
+			return config.json ? JSON.parse(s) : s;
+		} catch(e) {}
+	}
+
+	function read(s, converter) {
+		var value = config.raw ? s : parseCookieValue(s);
+		return $.isFunction(converter) ? converter(value) : value;
+	}
+
+	var config = $.cookie = function (key, value, options) {
+
+		// Write
+
+		if (value !== undefined && !$.isFunction(value)) {
+			options = $.extend({}, config.defaults, options);
+
+			if (typeof options.expires === 'number') {
+				var days = options.expires, t = options.expires = new Date();
+				t.setTime(+t + days * 864e+5);
+			}
+
+			return (document.cookie = [
+				encode(key), '=', stringifyCookieValue(value),
+				options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
+				options.path    ? '; path=' + options.path : '',
+				options.domain  ? '; domain=' + options.domain : '',
+				options.secure  ? '; secure' : ''
+			].join(''));
+		}
+
+		// Read
+
+		var result = key ? undefined : {};
+
+		// To prevent the for loop in the first place assign an empty array
+		// in case there are no cookies at all. Also prevents odd result when
+		// calling $.cookie().
+		var cookies = document.cookie ? document.cookie.split('; ') : [];
+
+		for (var i = 0, l = cookies.length; i < l; i++) {
+			var parts = cookies[i].split('=');
+			var name = decode(parts.shift());
+			var cookie = parts.join('=');
+
+			if (key && key === name) {
+				// If second argument (value) is a function it's a converter...
+				result = read(cookie, value);
+				break;
+			}
+
+			// Prevent storing a cookie that we couldn't decode.
+			if (!key && (cookie = read(cookie)) !== undefined) {
+				result[name] = cookie;
+			}
+		}
+
+		return result;
+	};
+
+	config.defaults = {};
+
+	$.removeCookie = function (key, options) {
+		if ($.cookie(key) === undefined) {
+			return false;
+		}
+
+		// Must not alter options, thus extending a fresh object...
+		$.cookie(key, '', $.extend({}, options, { expires: -1 }));
+		return !$.cookie(key);
+	};
+
+}));
+
+
+function is_email(email) {
+    return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test(email);
+}
+
+function leyka_get_ajax_url() {
+    return typeof leyka != 'undefined' ? leyka.ajaxurl : frontend.ajaxurl;
+}
+
+//polyfill for unsupported Number.isInteger
+//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger
+Number.isInteger = Number.isInteger || function(value) {
+    return typeof value === "number" &&
+           isFinite(value) &&
+           Math.floor(value) === value;
+};
 /*
  * Class to manipulate donation form from bottom
  */
@@ -62,43 +196,79 @@ window.LeykaGUIFinal = function($) {
     if(campaign_url) {
         $try_again_block.find('.leyka-js-try-again').prop('href', campaign_url);
     }
-    
+
     $('.leyka-pf__final-informyou .informyou-redirect-text').show();
 };
 
 window.LeykaGUIFinal.prototype = {
         
-    bindEvents: function() {
+    bindEvents: function(){
+
         var self = this; var $ = self.$;
-        
-        $('.leyka-js-no-subscribe').click(function(){
-            $(this).closest('.leyka-final-subscribe-form').remove();
-            
-            var $thankyou_block = $('.leyka-pf__final-thankyou');
-            $thankyou_block.find('.informyou-redirect-text').show();
-            self.runRedirectProcess($thankyou_block);
-        });
-        
-        $(".thankyou-email-me-button a").click(function(e){
+
+        function leyka_remembered_data(data_name) {
+            return $.cookie(data_name) ? $.cookie(data_name) : ''; /** add local storage check... */
+        }
+
+        var $success_forms = $('.leyka-success-form'),
+            donation_id = leyka_remembered_data('leyka_donation_id');
+
+        if( !donation_id ) { // Hide the success form if there are no donation ID stored...
+            // $success_forms.hide();
+        } else { // ... or display them if there is one in the local storage
+            $success_forms.each(function(index, element) {
+
+                var $form = $(element),
+                    $donation_id_field = $form.find('input[name="leyka_donation_id"]');
+
+                if( !$donation_id_field.val() ) {
+
+                    $donation_id_field.val(donation_id);
+                    $form.show();
+
+                }
+
+            });
+        }
+
+        $success_forms.on('submit', function(e){
+
             e.preventDefault();
             self.subscribeUser();
+
         });
+
+        $('.leyka-js-no-subscribe').on('click', function(){
+
+            $(this).closest('.leyka-final-subscribe-form').slideUp(100);
+
+            var $thankyou_block = $('.leyka-pf__final-thankyou');
+
+            $thankyou_block.find('.informyou-redirect-text').slideDown(100);
+            self.runRedirectProcess($thankyou_block);
+
+        });
+
     },
     
     animateRedirectCountdown: function($container){
+
         var self = this; var $ = self.$;
         
-        var countdown = $container.find('.informyou-redirect-text .leyka-redirect-countdown').text();
+        var $countdown_div = $container.find('.informyou-redirect-text .leyka-redirect-countdown'),
+        countdown = $countdown_div.text();
+
         countdown = parseInt(countdown, 10);
         countdown -= 1;
-        if(countdown == 0) {
+        if(countdown <= 0) {
             clearInterval(self.countdownInterval);
         }
-        $container.find('.informyou-redirect-text .leyka-redirect-countdown').text(String(countdown));
-        
+        $countdown_div.text(String(countdown));
+
     },
-    
+
     runRedirectProcess: function($container) {
+
         var self = this; var $ = self.$;
         
         var ajax_url = leyka_get_ajax_url();
@@ -106,23 +276,25 @@ window.LeykaGUIFinal.prototype = {
         setTimeout(function(){
             
             var redirect_url;
-            
-            if(null == ajax_url) {
+
+            if( !ajax_url ) {
                 redirect_url = '/';
             }
             else {
                 redirect_url = ajax_url.replace(/\/core\/wp-admin\/.*/, '');
                 redirect_url = redirect_url.replace(/\/wp-admin\/.*/, '');
             }
-            
+
             window.location.href = redirect_url;
-            
+
         }, 4000);
-        
+
         self.countdownInterval = setInterval(self.animateRedirectCountdown.bind(null, $container), 1000);
+
     },
-    
+
     subscribeUser: function(){
+
         var self = this; var $ = self.$;
         
         $('.leyka-pf__final-thankyou').hide();
@@ -131,17 +303,17 @@ window.LeykaGUIFinal.prototype = {
         $informyou_block.show();
 
         self.runRedirectProcess($informyou_block);
+
+        var data = $(this).find('form.leyka-success-form').serializeArray();
         
-        var data = {action: 'leyka_ajax_submit_subscribe'};
-        
-        $.post(leyka_get_ajax_url(), data, null, 'json')
-        .done(function(json){
-        })
-        .fail(function(){
-        })
-        .always(function(){
-        });
-        
+        $.post(leyka_get_ajax_url(), data, 'json')
+            .done(function(json){
+            })
+            .fail(function(){
+            })
+            .always(function(){
+            });
+
     }
 };
 
@@ -785,40 +957,34 @@ window.LeykaPageMain.prototype = {
 
         /** Leyka success widget behavior - BEGIN */
 
-        function leyka_remembered_data(data_name) {
-
-            return $.cookie(data_name) ? $.cookie(data_name) : ''; // add local storage check...
-
-        }
-
-        var $success_forms = $('.leyka-success-form'),
-            donation_id = leyka_remembered_data('leyka_donation_id');
-
-        if( !donation_id ) { // Hide the success form if there are no donation ID stored...
-            // $success_forms.hide();
-        } else { // ... or display them if there is one in the local storage
-            $success_forms.each(function(index, element) {
-
-                var $form = $(element),
-                    $donation_id_field = $form.find('input[name="leyka_donation_id"]');
-
-                if( !$donation_id_field.val() ) {
-
-                    $donation_id_field.val(donation_id);
-                    $form.show();
-
-                }
-
-            });
-        }
-
-        $success_forms.on('submit', function(e){
-
-            e.preventDefault();
-
-            var $this = $(this);
-
-        });
+        // var $success_forms = $('.leyka-success-form'),
+        //     donation_id = leyka_remembered_data('leyka_donation_id');
+        //
+        // if( !donation_id ) { // Hide the success form if there are no donation ID stored...
+        //     // $success_forms.hide();
+        // } else { // ... or display them if there is one in the local storage
+        //     $success_forms.each(function(index, element) {
+        //
+        //         var $form = $(element),
+        //             $donation_id_field = $form.find('input[name="leyka_donation_id"]');
+        //
+        //         if( !$donation_id_field.val() ) {
+        //
+        //             $donation_id_field.val(donation_id);
+        //             $form.show();
+        //
+        //         }
+        //
+        //     });
+        // }
+        //
+        // $success_forms.on('submit', function(e){
+        //
+        //     e.preventDefault();
+        //
+        //     var $this = $(this);
+        //
+        // });
 
         /** Leyka success widget behavior - END */
 
