@@ -55,7 +55,7 @@ $color-form-active:		var(--color-main-light);
 	text-transform: uppercase;
 	color: $color-white;
 	background: $color-main;
-	padding: 10px 30px;
+	padding: 10px 26px;
 	text-align: center;
 	border: none;
 	border-radius: 23px;
@@ -73,7 +73,7 @@ $color-form-active:		var(--color-main-light);
 		padding: 6px 24px;
 		border-radius: 18px;
 	}
-	
+
     @if $mod == medium {
         text-transform: none;
     }
@@ -85,7 +85,7 @@ $color-form-active:		var(--color-main-light);
 	color: $color-text;
 
 	a {
-		@include internal-link();
+		@include internal-sublink();
 	}
 }
 
@@ -95,9 +95,21 @@ $color-form-active:		var(--color-main-light);
 	border: none;
 	font-weight: normal;
 
+	&:visited {
+		color: $color-link;
+	}
 	&:hover, &:focus, &:active {
 		color: darken($color-link, 10%);
 	}
+}
+
+@mixin internal-sublink() {
+	color: $color-text-light;
+	&:visited {
+		color: $color-text-light;
+	}
+	text-decoration: underline;
+	border: none;
 }
 
 /** == Mq == **/

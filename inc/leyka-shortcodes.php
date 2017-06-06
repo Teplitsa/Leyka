@@ -436,7 +436,7 @@ function leyka_inline_campaign(array $attributes = array()) {
     $campaign_id = $attributes['id'] ? (int)$attributes['id'] : get_post()->ID;
     $campaign = leyka_get_validated_campaign($campaign_id);
     if( !$campaign ) {
-        return false;
+        return '';
     }
 
     $template_id = $attributes['template'];
@@ -487,16 +487,17 @@ function leyka_inline_campaign(array $attributes = array()) {
                 <div class="inpage-card__content">
                     <div class="inpage-card_title"><?php echo get_the_title($campaign_id);?></div>
 
-                    <div class="inpage-card_scale">
+                    <?php
+						$collected = leyka_get_campaign_collections($campaign_id);
+						$target = leyka_get_campaign_target($campaign_id);
 
-                    <?php $collected = leyka_get_campaign_collections($campaign_id);
-                    $target = leyka_get_campaign_target($campaign_id);
+						if($target) { // Campaign target set
 
-                    if($target) { // Campaign target set
+							$ready = isset($target['amount']) ? round(100.0*$collected['amount']/$target['amount'], 1) : 0;
+							$ready = $ready >= 100.0 ? 100.0 : $ready;
+					?>
 
-                        $ready = isset($target['amount']) ? round(100.0*$collected['amount']/$target['amount'], 1) : 0;
-                        $ready = $ready >= 100.0 ? 100.0 : $ready;?>
-
+					<div class="inpage-card_scale">
                         <div class="scale">
                             <div class="progress <?php echo $ready >= 100.0 ? 'fin' : '';?>" style="width:<?php echo $ready;?>%;"></div>
                         </div>
@@ -514,20 +515,8 @@ function leyka_inline_campaign(array $attributes = array()) {
                                 <?php echo leyka_options()->opt("currency_{$target['currency']}_label");?>
                             </span>
                         </div>
-
-                    <?php } else { // Campaign doesn't have a target sum ?>
-
-                        <div class="target">
-                            <?php echo leyka_format_amount($collected['amount']);?>
-                            <span class="curr-mark">
-                                <?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?>
-                            </span>
-                        </div>
-                        <div class="info"><?php _e('collected', 'leyka');?></div>
-
-                    <?php }?>
-
-                    </div>
+					</div>
+                    <?php }  // Campaign doesn't have a target sum - display nothing ?>
 
                     <div class="inpage-card__note supporters">
 
@@ -553,9 +542,13 @@ function leyka_inline_campaign(array $attributes = array()) {
                     </div>
 
                     <div class="inpage-card__action">
+					<?php if($campaign->is_finished) { ?>
+						<div class="message-finished"><?php echo __('The fundraising campaign has been finished. Thank you for your support!', 'leyka');?></div>
+					<?php } else { ?>
                         <button type="button" class="leyka-js-open-form">
                             <?php echo leyka_options()->opt('donation_submit_text');?>
                         </button>
+					<?php } ?>
                     </div>
 
                 </div>
@@ -599,7 +592,7 @@ function leyka_inline_campaign(array $attributes = array()) {
                 <?php /** @todo For the forms caching task comment this require out */ require($template_file);?>
             </div>
 
-			
+
             <?php leyka_pf_submission_errors();?>
 
 
@@ -641,6 +634,13 @@ function leyka_inline_campaign(array $attributes = array()) {
 
 add_shortcode('leyka_inline_campaign_small', 'leyka_inline_campaign_small');
 function leyka_inline_campaign_small($campaign_id) {
+
+
+    $campaign = leyka_get_validated_campaign($campaign_id);
+    if( !$campaign || $campaign->is_finished) {
+        return '';
+    }
+
 
     $currency_data = leyka_get_currencies_data(leyka_options()->opt('main_currency'));
 

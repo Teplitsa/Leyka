@@ -37,11 +37,24 @@
 	@include for(small-screens) {
 		padding: $base $base*3;
 	}
+
+	&.static-text {
+		max-width: 300px;
+		margin: $base*3 auto 0;
+
+		p { margin-bottom: $base; }
+	}
 }
 
 .step__note {
 	text-align: center;
 	padding: $base*2;
+
+	p {
+		margin: 0;
+		font-size: 11px;
+		line-height: 14px;
+	}
 
 	@include for(small-screens) {
 		padding: $base*2 $base*3;
@@ -84,6 +97,7 @@
 
 	.inpage-card__thumb {
 		height: 100%;
+		min-height: 230px;
 		padding: 0;
 		border-top-right-radius: 0;
 		border-bottom-right-radius: 0;
@@ -350,9 +364,25 @@
 
 		//cells
 		.step__selection {
-			display: block;
-			text-align: center;
-			padding: $base 0 $base*1.5;
+			display: flex;
+			flex-flow: row wrap;
+			align-items: center;
+			justify-content: center;
+
+			padding: $base $base*2 $base*1.5;
+			white-space: nowrap;
+			width: 100%;
+
+			.leyka-js-another-step {
+				padding: 2px 4px;
+				max-width: 90%;
+				overflow: hidden;
+				text-overflow: ellipsis;
+
+				@include for(medium-screens) {
+					max-width: 240px;
+				}
+			}
 		}
 
 		.step__action  {
@@ -374,23 +404,15 @@
 
 		.step__border {
 			width: 100%;
-			padding-top: 8px;
-
-			border-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACYAAAAmCAYAAACoPemuAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QUXFgUJCOIR8gAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAADkklEQVRYw71Y2XLqOhBsyVpskzikKv//iQkQLLTYmvtAja7BwCHERI8qkFuzdPdI4M5FRHS+l3NGSgl934OIMI4jhBBo2xZt20IIMTtHXNq8sMSjwIgIfd8jxoiUEpRSyDmDiFBVFZRSaJoGxpiHgCk8uGKMCCGAiPDx8YGqqkoUnXNwzoGIZsDuXfI3wABgtVpByv+PkVKibVtUVYVxHHGhAp4HLOeMYRggpUTTNLNaYnAAEEL4O2DDMBRgU7Dn4KWUfwvMew8iOonUFCQAKHUs35TSDPSixc8f8N4jxghjDJqmufp7rTW01hjHEZvNBk3TzMAvAmyz2ZSb13WN19fX2Ye40IUQpc6klNjv9zgcDj9qhLuB1XVdUnQeKU6rEOLk49MOZTK+GxjduEYIAfv9HlprdF0nsMDa7Xbkvcd6vYbW+rHizzlDCHHzgEfp5l8NIW/9+XA4zGjht4u71Xt/WyunqSQihBAQQij1MBHkRVJJRLTdbhFjhLUWdV1DKTW7vCAiijHCOYdxHE84SWtdOmtJYDln7HY7xBghhIBSCkopGGNgjDk2Us6ZdrsdQgioqgpt2yLnDKUUtNYF5JLAmBeZQqY1Z609Zmi/35P3vmxcq6elgZ2vw+GAvu8hpTwaA07hNVBE9LBDuALsKk++v78X4ymZHG913kLBungWp1AIUQwmEUGxwbvkDJYGda4Ul8SfXbAUQmAYhhNTd00Dn5nKKSghBORqtYLWGl9fX1dJb+lUXjqPLTkzgxjHkZxzxdBJKZm30DRNkaOlu5JFnZWFm9Bai67rjgRLRIgxIsZY3CkPEl3XPYVgnXNFXbgBOFrGmFNJmvp57z1CCDDG4O3tbVFgPEWxulhrYa09SfHMj0kpizRst1t47x8ewW5ZKaUU1uv1VZqS95jDYRgWtTxsNm9x501g3AhLrpTSkaf+ce7ddbPdbolF3Vp7lTDPpyfWQY76vU74R1MSd+zLywvquj659dT3T9P2/f1d+PEn0b87Yt57Ylebc0Zd1zfdCItxSgnGmHIRY8yyEeP0WWvx+fmJlBJSSrO0TtMXY0Rd1+i67vmTuJSyqMF5t04HDE4td/afPBFYa08cyKVnAqYFHj7+DBgAOOdmYxgRlTq8NGQ8FRibunEcZ+Byzuj7HgB+pRgPvyjyG2sIAc654oKHYYDWusjaw/boN0MEEZ08a1ZVBSEE2ONdSuO9ZuA/JuV2YiK5ohEAAAAASUVORK5CYII=") 10 10 round;
-
-			border-width: 7px 0 7px 0;
-			border-style: solid;
-
 		}
 
 		@include for(large-screens) {
 			.step__border {
 				width: 86%;
+				padding-top: 8px;
 				border-width: 7px;
-			}
-			.step--person {
-				/*padding-left: $base*2.5;
-				padding-right: $base*2.5;*/
+				border-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACYAAAAmCAYAAACoPemuAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QUXFgUJCOIR8gAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAADkklEQVRYw71Y2XLqOhBsyVpskzikKv//iQkQLLTYmvtAja7BwCHERI8qkFuzdPdI4M5FRHS+l3NGSgl934OIMI4jhBBo2xZt20IIMTtHXNq8sMSjwIgIfd8jxoiUEpRSyDmDiFBVFZRSaJoGxpiHgCk8uGKMCCGAiPDx8YGqqkoUnXNwzoGIZsDuXfI3wABgtVpByv+PkVKibVtUVYVxHHGhAp4HLOeMYRggpUTTNLNaYnAAEEL4O2DDMBRgU7Dn4KWUfwvMew8iOonUFCQAKHUs35TSDPSixc8f8N4jxghjDJqmufp7rTW01hjHEZvNBk3TzMAvAmyz2ZSb13WN19fX2Ye40IUQpc6klNjv9zgcDj9qhLuB1XVdUnQeKU6rEOLk49MOZTK+GxjduEYIAfv9HlprdF0nsMDa7Xbkvcd6vYbW+rHizzlDCHHzgEfp5l8NIW/9+XA4zGjht4u71Xt/WyunqSQihBAQQij1MBHkRVJJRLTdbhFjhLUWdV1DKTW7vCAiijHCOYdxHE84SWtdOmtJYDln7HY7xBghhIBSCkopGGNgjDk2Us6ZdrsdQgioqgpt2yLnDKUUtNYF5JLAmBeZQqY1Z609Zmi/35P3vmxcq6elgZ2vw+GAvu8hpTwaA07hNVBE9LBDuALsKk++v78X4ymZHG913kLBungWp1AIUQwmEUGxwbvkDJYGda4Ul8SfXbAUQmAYhhNTd00Dn5nKKSghBORqtYLWGl9fX1dJb+lUXjqPLTkzgxjHkZxzxdBJKZm30DRNkaOlu5JFnZWFm9Bai67rjgRLRIgxIsZY3CkPEl3XPYVgnXNFXbgBOFrGmFNJmvp57z1CCDDG4O3tbVFgPEWxulhrYa09SfHMj0kpizRst1t47x8ewW5ZKaUU1uv1VZqS95jDYRgWtTxsNm9x501g3AhLrpTSkaf+ce7ddbPdbolF3Vp7lTDPpyfWQY76vU74R1MSd+zLywvquj659dT3T9P2/f1d+PEn0b87Yt57Ylebc0Zd1zfdCItxSgnGmHIRY8yyEeP0WWvx+fmJlBJSSrO0TtMXY0Rd1+i67vmTuJSyqMF5t04HDE4td/afPBFYa08cyKVnAqYFHj7+DBgAOOdmYxgRlTq8NGQ8FRibunEcZ+Byzuj7HgB+pRgPvyjyG2sIAc654oKHYYDWusjaw/boN0MEEZ08a1ZVBSEE2ONdSuO9ZuA/JuV2YiK5ohEAAAAASUVORK5CYII=") 10 10 round;
+				border-style: solid;
 			}
 		}
 	}
@@ -567,8 +589,8 @@
                 text-decoration: underline;
             }
         }
-        
-        
+
+
     }
 
     &.leyka-pf__final-informyou {

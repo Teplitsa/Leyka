@@ -49,7 +49,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
                     <svg class="svg-icon range-circle"><use xlink:href="#pic-input-range-circle" /></svg>
                 </div>
                 <div class="amount__range_overlay"></div>
-    
+
                 <div class="amount_range">
                     <input name="amount-range" type="range" min="<?php echo $template_data['amount_min'];?>" max="<?php echo $template_data['amount_max'];?>" step="10" value="<?php echo $template_data['amount_default'];?>">
                 </div>
@@ -108,24 +108,21 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
         }?>
     <div class="step step--static <?php echo $pm->full_id;?>">
         <div class="step__selection">
-            <a href="amount" class="leyka-js-another-step">
-                <span class="remembered-amount">#SUM#</span>&nbsp;<span class='curr-mark'><?php echo $template_data['currency_label'];?></span>
-                <span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span>
-            </a>
+            <a href="amount" class="leyka-js-another-step"><span class="remembered-amount">#SUM#</span>&nbsp;<span class='curr-mark'><?php echo $template_data['currency_label'];?></span><span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span></a>
             <a href="cards" class="leyka-js-another-step"><span class="remembered-payment">#PM_LABEL#</span></a>
         </div>
 
         <div class="step__border">
-        
+
         	<div class="step__fields static-text">
         		<?php $pm->display_static_data();?>
-        		
+
                 <div class="static__complete-donation">
                     <input class="leyka-js-complete-donation" value="<?php echo leyka_options()->opt_safe('revo_donation_complete_button_text');?>">
                 </div>
-        		
+
         	</div>
-        	
+
     	</div>
     </div>
 
@@ -136,10 +133,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
     <div class="step step--person">
 
         <div class="step__selection">
-            <a href="amount" class="leyka-js-another-step">
-                <span class="remembered-amount">#SUM#</span>&nbsp;<span class='curr-mark'><?php echo $template_data['currency_label'];?></span>
-                <span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span>
-            </a>
+            <a href="amount" class="leyka-js-another-step"><span class="remembered-amount">#SUM#</span>&nbsp;<span class='curr-mark'><?php echo $template_data['currency_label'];?></span><span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span></a>
             <a href="cards" class="leyka-js-another-step"><span class="remembered-payment">#PM_LABEL#</span></a>
         </div>
 
@@ -186,7 +180,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
         </div>
 
         <div class="step__note">
-<!--            <p><a href="http://www.consultant.ru/document/cons_doc_LAW_162595/" target="_blank">110-ФЗ от 5 мая 2014 года</a> обязывает нас спрашивать имя и почту.</p>-->
+			<p><?php _e('We will send the donation success notice to this address', 'leyka');?></p>
         </div>
 
     </div>

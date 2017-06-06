@@ -64,7 +64,7 @@ function leyka_inline_scripts() {
 	if(isset($_GET['rev']) && (int)$_GET['rev'] == 21) {
 		$colors = array('#07C7FD', '#05A6D3', '#8CE4FD');
 	} else {
-		$colors = array('#1db318', '#1aa316', '#8ae724');
+		$colors = array('#1db318', '#1aa316', '#acebaa');
 	}
 
 	//detect if we have JS ?>
