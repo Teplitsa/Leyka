@@ -4,15 +4,7 @@ function is_email(email) {
 }
 
 function leyka_get_ajax_url() {
-    var ajax_url;
-    if(typeof leyka != 'undefined') {
-        ajax_url = leyka.ajaxurl;
-    }
-    else {
-        ajax_url = frontend.ajaxurl;
-    }
-    
-    return ajax_url;
+    return typeof leyka != 'undefined' ? leyka.ajaxurl : frontend.ajaxurl;
 }
 
 //polyfill for unsupported Number.isInteger

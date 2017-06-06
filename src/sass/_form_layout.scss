@@ -575,7 +575,7 @@
 
         .thankyou-email-me-button {
             padding-top: $base * 0.8;
-            a {
+            input[type="submit"] {
                 @include button;
                 text-transform: none;
             }

@@ -71,40 +71,34 @@ window.LeykaPageMain.prototype = {
 
         /** Leyka success widget behavior - BEGIN */
 
-        function leyka_remembered_data(data_name) {
-
-            return $.cookie(data_name) ? $.cookie(data_name) : ''; // add local storage check...
-
-        }
-
-        var $success_forms = $('.leyka-success-form'),
-            donation_id = leyka_remembered_data('leyka_donation_id');
-
-        if( !donation_id ) { // Hide the success form if there are no donation ID stored...
-            // $success_forms.hide();
-        } else { // ... or display them if there is one in the local storage
-            $success_forms.each(function(index, element) {
-
-                var $form = $(element),
-                    $donation_id_field = $form.find('input[name="leyka_donation_id"]');
-
-                if( !$donation_id_field.val() ) {
-
-                    $donation_id_field.val(donation_id);
-                    $form.show();
-
-                }
-
-            });
-        }
-
-        $success_forms.on('submit', function(e){
-
-            e.preventDefault();
-
-            var $this = $(this);
-
-        });
+        // var $success_forms = $('.leyka-success-form'),
+        //     donation_id = leyka_remembered_data('leyka_donation_id');
+        //
+        // if( !donation_id ) { // Hide the success form if there are no donation ID stored...
+        //     // $success_forms.hide();
+        // } else { // ... or display them if there is one in the local storage
+        //     $success_forms.each(function(index, element) {
+        //
+        //         var $form = $(element),
+        //             $donation_id_field = $form.find('input[name="leyka_donation_id"]');
+        //
+        //         if( !$donation_id_field.val() ) {
+        //
+        //             $donation_id_field.val(donation_id);
+        //             $form.show();
+        //
+        //         }
+        //
+        //     });
+        // }
+        //
+        // $success_forms.on('submit', function(e){
+        //
+        //     e.preventDefault();
+        //
+        //     var $this = $(this);
+        //
+        // });
 
         /** Leyka success widget behavior - END */
 

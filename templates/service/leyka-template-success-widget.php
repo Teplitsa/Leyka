@@ -13,7 +13,7 @@ if(
 
 $donation_id = leyka_remembered_data('donation_id');?>
 
-<div id="leyka-pf-" class="leyka-pf leyka-success-form">
+<div id="leyka-pf-" class="leyka-pf">
 
     <div class="leyka-pf__final-screen leyka-pf__final-thankyou">
 
@@ -35,7 +35,7 @@ $donation_id = leyka_remembered_data('donation_id');?>
                             <input type="text" name="leyka_donor_name" placeholder="<?php _e('Your name', 'leyka');?>" value="<?php echo leyka_remembered_data('donor_name');?>">
                         </div>
                         <div class="donor__textfield">
-                            <input type="text" name="leyka_donor_email" placeholder="<?php _e('Your email', 'leyka');?>" value="<?php echo leyka_remembered_data('donor_email');?>">
+                            <input type="email" name="leyka_donor_email" placeholder="<?php _e('Your email', 'leyka');?>" value="<?php echo leyka_remembered_data('donor_email');?>">
                         </div>
                     </div>
 
@@ -43,25 +43,24 @@ $donation_id = leyka_remembered_data('donation_id');?>
 
                     <div class="thankyou-email-field">
                         <div class="donor__textfield">
-                            <input type="text" name="leyka_donor_email" placeholder="<?php _e('Your email', 'leyka');?>" value="<?php echo leyka_remembered_data('donor_email');?>">
+                            <input type="email" name="leyka_donor_email" placeholder="<?php _e('Your email', 'leyka');?>" value="<?php echo leyka_remembered_data('donor_email');?>">
                         </div>
                     </div>
 
                 <?php }?>
 
                 <div class="thankyou-email-me-button">
-<!--                    <a href="#">--><?php //_e('Yes, keep me in touch', 'leyka');?><!--</a>-->
                     <input type="submit" class="leyka-success-submit" name="leyka_success_submit" value="<?php _e('Yes, keep me in touch', 'leyka');?>">
                 </div>
                 <div class="thankyou-no-email">
-                    <a href="#" class="leyka-js-no-subscribe"><?php _e('No, thank you', 'leyka');?></a>
+                    <a href="<?php echo home_url('/');?>" class="leyka-js-no-subscribe"><?php _e('No, thank you', 'leyka');?></a>
                 </div>
 
             </form>
 
         </div>
 
-        <div class="informyou-redirect-text"><div><?php _e('Redirect to site home page in <span class="leyka-redirect-countdown">5</span> seconds...', 'leyka');?></div></div>
+        <div class="informyou-redirect-text"><?php _e('Redirect to site home page in <span class="leyka-redirect-countdown">5</span> seconds...', 'leyka');?></div>
 
     </div>
 
