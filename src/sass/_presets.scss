@@ -55,11 +55,12 @@ $color-form-active:		var(--color-main-light);
 	text-transform: uppercase;
 	color: $color-white;
 	background: $color-main;
-	padding: 10px 30px;
+	padding: 10px 26px;
 	text-align: center;
 	border: none;
 	border-radius: 23px;
 	transition: all 0.35s;
+	cursor: pointer;
 
 	&:visited {
 		color: $color-white;
@@ -73,10 +74,17 @@ $color-form-active:		var(--color-main-light);
 		padding: 6px 24px;
 		border-radius: 18px;
 	}
-	
-    @if $mod == medium {
+    @else if $mod == medium {
         text-transform: none;
+        padding: 8px 24px 12px 24px;
     }
+	@else if $mod == action {
+		border-radius: 27px;
+        padding: 12px 26px;
+		min-width: 200px;
+		font-size: 14px;
+    }
+	
 }
 
 @mixin supporters() {
@@ -85,7 +93,7 @@ $color-form-active:		var(--color-main-light);
 	color: $color-text;
 
 	a {
-		@include internal-link();
+		@include internal-sublink();
 	}
 }
 
@@ -95,9 +103,21 @@ $color-form-active:		var(--color-main-light);
 	border: none;
 	font-weight: normal;
 
+	&:visited {
+		color: $color-link;
+	}
 	&:hover, &:focus, &:active {
 		color: darken($color-link, 10%);
 	}
+}
+
+@mixin internal-sublink() {
+	color: $color-text-light;
+	&:visited {
+		color: $color-text-light;
+	}
+	text-decoration: underline;
+	border: none;
 }
 
 /** == Mq == **/

@@ -139,6 +139,11 @@ div[id *="leyka-pf-"] { //aka namespace
 		.curr-mark { margin-left: 2px; }
 	}
 
+	.message-finished {
+		color: $color-main;
+		font-size: 1.15em;
+	}
+
 	.info {
 		color: $color-text-light;
 		.curr-mark { margin-left: 2px; }
@@ -174,10 +179,6 @@ div[id *="leyka-pf-"] {
 			&:hover, &:focus, &:active {
 				color: darken($color-link, 10%);
 			}
-		}
-
-		a + a, .remembered-monthly {
-			margin-left: 5px;
 		}
 	}
 
@@ -326,6 +327,14 @@ div[id *="leyka-pf-"] { //aka namespace
 			color: $color-text-black;
 			padding: 0 4px 4px 4px;
 			width: 100px;
+			
+			&::placeholder {
+			     color:$color-border-normal;
+			}
+			
+            &:focus {
+                &::placeholder { opacity: 0; }
+            }
 		}
 	}
 
@@ -347,7 +356,7 @@ div[id *="leyka-pf-"] { //aka namespace
                 width: 46px;
                 height: 80px;
                 padding-top: 40px;
-                
+
                 @include for(medium-screens) {
                     width: 62px;
                     height: 110px;
@@ -359,7 +368,7 @@ div[id *="leyka-pf-"] { //aka namespace
                 width: 80px;
                 height: 80px;
                 padding-top: 30px;
-                
+
                 @include for(medium-screens) {
                     width: 102px;
                     height: 110px;
@@ -371,18 +380,18 @@ div[id *="leyka-pf-"] { //aka namespace
                 width: 86px;
                 height: 80px;
                 padding-top: 25px;
-                
+
                 @include for(medium-screens) {
                     width: 114px;
                     height: 110px;
                     padding-top: 24px;
                 }
             }
-            
+
             &.icon-money-size4 {
 	            width: 85px;
 	            height: 110px;
-	            
+
 	            @include for(medium-screens) {
 	                width: 114px;
 	                height: 110px;
@@ -390,10 +399,10 @@ div[id *="leyka-pf-"] { //aka namespace
             }
 		}
 	}
-	
+
 	.amount__range_wrapper {
 	    position:relative;
-	    
+
 	    .amount__range_overlay {
 	        display:none;
 		    background-color: #ffffff;
@@ -405,7 +414,7 @@ div[id *="leyka-pf-"] { //aka namespace
 		    z-index:5;
 		    pointer-events:none;
 	    }
-	    
+
 	    .amount__range_custom {
             display:none;
             position:relative;
@@ -413,7 +422,7 @@ div[id *="leyka-pf-"] { //aka namespace
             top:10px;
             z-index:7;
             pointer-events:none;
-	       
+
             .range-bg {
                width:200px;
                height:12px;
@@ -422,7 +431,7 @@ div[id *="leyka-pf-"] { //aka namespace
                top:0px;
                left:0px;
             }
-            
+
             .range-color, .range-color-wrapper {
                width:200px;
                height:12px;
@@ -431,12 +440,12 @@ div[id *="leyka-pf-"] { //aka namespace
                top:0px;
                left:0px;
             }
-            
+
             .range-color-wrapper {
                width:50px;
                overflow:hidden;
             }
-            
+
             .range-circle {
                width:34px;
                height:34px;
@@ -446,26 +455,32 @@ div[id *="leyka-pf-"] { //aka namespace
                left:50px;
             }
 	    }
-	    
+
         @include for(medium-screens) {
             .amount__range_custom--visible {
                 display:block;
             }
         }
-        
+
     }
 
 	.amount__error {
 		color: $color-form-invalid;
 		display:none;
 		padding-top: $base*3;
+		max-width:186px;
 	}
 
 	.step__action {
 
         a {
             @include button(medium);
-            width: 186px; 
+            
+            @include for(medium-screens) {
+                @include button(small);
+            }
+            
+            width: 186px;
             text-align: center;
             margin: 4px;
         }
@@ -510,6 +525,18 @@ div[id *="leyka-pf-"] { //aka namespace
 		input[type=range]::-webkit-slider-runnable-track  {
 			@include range-track-invalid();
 		}
+		
+        .amount__range_wrapper {
+            .amount__range_custom {
+                .range-color, .range-color-wrapper {
+                    fill: $color-form-invalid;
+                }
+                
+                .range-circle {
+                    fill: $color-form-invalid;
+                }
+            }
+        }
 	}
 }
 
@@ -593,11 +620,14 @@ div[id *="leyka-pf-"] {  //aka namespace
 		display: block;
 		margin-top: $base;
 		font-size: 11px;
-		line-height: 1.33;
+		line-height: 1.25;
 		hyphens: none;
+		max-height: 1.25*2*11px;
+		overflow: hidden;
 
 		@include for(medium-screens) {
 			font-size: 13px;
+			max-height: 1.25*2*13px;
 		}
 	}
 }
@@ -667,7 +697,7 @@ div[id *="leyka-pf-"] {  //aka namespace
 		text-align: center;
 
 		input {
-			@include button();
+			@include button(action);
 		}
 	}
 
@@ -716,8 +746,7 @@ div[id *="leyka-pf-"] {  //aka namespace
 			}
 
 			a {
-				color: currentColor;
-				text-decoration: underline;
+				@include internal-sublink();
 			}
 		}
 
@@ -768,7 +797,8 @@ div[id *="leyka-pf-"] {  //aka namespace
 				right: 0;
 
 			    input {
-			        @include button();
+			        @include button(action);
+					
 			    }
 			}
 

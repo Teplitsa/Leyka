@@ -157,6 +157,13 @@ class Leyka {
                 $content = ob_get_clean();
 
             }
+            elseif( get_post()->ID == leyka_options()->opt('failure_page') ) {
+            
+                ob_start();
+                include(LEYKA_PLUGIN_DIR . 'templates/service/leyka-template-final-error.php');
+                $content = ob_get_clean();
+            
+            }
 
             return $content;
 

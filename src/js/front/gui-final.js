@@ -5,12 +5,6 @@
 window.LeykaGUIFinal = function($) {
     this.$ = $;
     
-    var $try_again_block = $('.leyka-js-try-again-block');
-    var campaign_url = $try_again_block.data('campaign-url');
-    if(campaign_url) {
-        $try_again_block.find('.leyka-js-try-again').prop('href', campaign_url);
-    }
-
     $('.leyka-pf__final-informyou .informyou-redirect-text').show();
 };
 
@@ -52,7 +46,9 @@ window.LeykaGUIFinal.prototype = {
 
         });
 
-        $('.leyka-js-no-subscribe').on('click', function(){
+        $('.leyka-js-no-subscribe').on('click', function(e){
+            
+            e.preventDefault();
 
             $(this).closest('.leyka-final-subscribe-form').slideUp(100);
 

@@ -191,12 +191,6 @@ jQuery(document).ready(function($){
 window.LeykaGUIFinal = function($) {
     this.$ = $;
     
-    var $try_again_block = $('.leyka-js-try-again-block');
-    var campaign_url = $try_again_block.data('campaign-url');
-    if(campaign_url) {
-        $try_again_block.find('.leyka-js-try-again').prop('href', campaign_url);
-    }
-
     $('.leyka-pf__final-informyou .informyou-redirect-text').show();
 };
 
@@ -238,7 +232,9 @@ window.LeykaGUIFinal.prototype = {
 
         });
 
-        $('.leyka-js-no-subscribe').on('click', function(){
+        $('.leyka-js-no-subscribe').on('click', function(e){
+            
+            e.preventDefault();
 
             $(this).closest('.leyka-final-subscribe-form').slideUp(100);
 
@@ -367,16 +363,43 @@ jQuery(document).ready(function($){
         bindSubmitPaymentFormEvent();
 
     }
+    
+    function validateForm($_form) {
+        
+        var error_struct = {}, 
+        pName = $_form.find('.donor__textfield--name input').val(),
+        pEmail = $_form.find('.donor__textfield--email input').val(),
+        amount = parseInt($_form.find('.amount__figure input').val()),
+        agree = $_form.find('.donor__oferta input').val();
+        
+        if(pName.length === 0){
+            error_struct['name'] = true;
+            $_form.find('.donor__textfield--name').addClass('invalid');
+        }
+
+        if(pEmail.length === 0 || !is_email(pEmail)){
+            error_struct['email'] = true;
+            $_form.find('.donor__textfield--email').addClass('invalid');
+        }
+
+        if(agree === 0){
+            error_struct['agree'] = true;
+            $_form.find('.donor__oferta').addClass('invalid');
+        }
+
+        if(!Number.isInteger(amount) || amount < amountMin || amount > amountMax){
+            error_struct['amount'] = true;
+            console.log('error amount');
+        }
+        
+        return Object.keys(error_struct).length ? error_struct : false;
+    }
 
     function bindSubmitPaymentFormEvent() {
 
         $('.leyka-pf__form').on('submit.leyka', 'form',  function(e){
             
             var $_form = $(this),
-                pName = $_form.find('.donor__textfield--name input').val(),
-                pEmail = $_form.find('.donor__textfield--email input').val(),
-                amount = parseInt($_form.find('.amount__figure input').val()),
-                agree = $_form.find('.donor__oferta input').val(),
                 error = false;
 
             if( !$_form.find('.step.step--active').hasClass('step--person') ) {
@@ -391,27 +414,8 @@ jQuery(document).ready(function($){
                 return false;
             }
 
-            if(pName.length === 0){
-                error = true;
-                $_form.find('.donor__textfield--name').addClass('invalid');
-            }
-
-            if(pEmail.length === 0 || !is_email(pEmail)){
-                error = true;
-                $_form.find('.donor__textfield--email').addClass('invalid');
-            }
-
-            if(agree === 0){
-                error = true;
-                $_form.find('.donor__oferta').addClass('invalid');
-            }
-
-            if(!Number.isInteger(amount) || amount < amountMin || amount > amountMax){
-                error = true;
-                //what to do ????
-                console.log('error amount');
-            }
-
+            error = validateForm($_form);
+            
             if( !error ) {
 
                 if($_form.find('input[name="leyka_payment_method"]:checked').data('processing') != 'default') {
@@ -676,7 +680,12 @@ jQuery(document).ready(function($){
             val = $this.val(),
             $form = $this.parents('.leyka-pf__form');
 
-        $form.removeClass('invalid').find('.amount_range').find('input').val(val).trigger('change', {'skipSyncFigure': true} );
+        if(!val) {
+            val = 0;
+        }
+        
+        $form.find('.step--amount .step__fields').removeClass('invalid')
+        $form.find('.amount_range').find('input').val(val).trigger('change', {'skipSyncFigure': true} );
 
     }
 
