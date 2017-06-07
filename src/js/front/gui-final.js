@@ -82,7 +82,6 @@ window.LeykaGUIFinal.prototype = {
     },
 
     runRedirectProcess: function($container) {
-        return;
 
         var self = this; var $ = self.$;
         
