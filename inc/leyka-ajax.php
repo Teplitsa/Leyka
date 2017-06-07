@@ -203,7 +203,7 @@ function leyka_process_success_form() {
 
     }
 
-//    leyka_remembered_data('donation_id', false, true); // Delete the donor data cookie
+    leyka_remembered_data('donation_id', false, true); // Delete the donor data cookie
 
     die(json_encode(array(
         'status' => 0,

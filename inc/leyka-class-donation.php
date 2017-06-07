@@ -1079,7 +1079,7 @@ class Leyka_Donation_Management {
 
                 <div class="donor-subscription-status total"><?php _e('Full subscription', 'leyka');?></div>
 
-                <?php } else if((int)$donation->donor_subscription > 0) {?>
+                <?php } else if($donation->donor_subscribed > 0) {?>
 
                 <div class="donor-subscription-status on-campaign">
                     <?php printf(__('On <a href="%s">campaign</a> news', 'leyka'), admin_url('post.php?post='.$donation->campaign_id.'&action=edit'));?>
