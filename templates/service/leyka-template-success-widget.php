@@ -5,7 +5,7 @@
  **/
 
 if(
-    !leyka_options()->opt('revo_template_ask_donor_data') == 'success-page' &&
+//    !leyka_options()->opt('revo_template_ask_donor_data') == 'success-page' &&
     !leyka_options()->opt('show_subscription_on_success')
 ) {
     exit();
@@ -29,7 +29,7 @@ $donation_id = leyka_remembered_data('donation_id');?>
                 <input type="hidden" name="action" value="leyka_donor_subscription">
                 <?php wp_nonce_field('leyka_donor_subscription');?>
 
-                <?php if(leyka_options()->opt('revo_template_ask_donor_data') == 'success-page') {?>
+                <?php /*if(leyka_options()->opt('revo_template_ask_donor_data') == 'success-page') {?>
 
                     <div class="thankyou-email-field">
                         <div class="donor__textfield">
@@ -40,7 +40,7 @@ $donation_id = leyka_remembered_data('donation_id');?>
                         </div>
                     </div>
 
-                <?php } else if(leyka_options()->opt('show_subscription_on_success')) {?>
+                <?php } else*/ if(leyka_options()->opt('show_subscription_on_success')) {?>
 
                     <div class="thankyou-email-field">
                         <div class="donor__textfield">

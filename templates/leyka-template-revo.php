@@ -128,7 +128,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
 
     <?php }?>
 
-    <?php if(leyka_options()->opt('revo_template_ask_donor_data') == 'during-donation') {?>
+<!--    --><?php //if(leyka_options()->opt('revo_template_ask_donor_data') == 'during-donation') {?>
     <!-- Maybe, step 3: donor data -->
     <div class="step step--person">
 
@@ -184,5 +184,5 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
         </div>
 
     </div>
-    <?php }?>
+<!--    --><?php //}?>
 </form>
