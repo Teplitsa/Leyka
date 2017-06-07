@@ -20,11 +20,14 @@ if($donation_id) {
     <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
 
     <div class="leyka-pf__final-screen leyka-pf__final-error">
+
         <svg class="svg-icon icon"><use xlink:href="#pic-red-cross"></svg>
         <div class="text"><div class="leyka-js-error-text"><?php _e('Payment error', 'leyka');?></div></div>
-        <div class="error-text"><div><?php _e('Perhaps there are problems in the Internet connection, in the operation of the payment system or an internal system error.', 'leyka');?></div></div>
-        <div class="error-text"><div><?php printf( __('Please try <a href="%s" class="leyka-js-try-again">again</a> and if the error recurs, use another payment method or contact <a href="mailto:%s">technical support</a>.', 'leyka'), $campaign ? $campaign->url : home_url('/'), get_option('admin_email'));?></div></div>
+        <div class="error-text"><div><?php _e('Perhaps there are problems in the Internet connection, in the operation of the payment system or an internal system error. The money will return to your account.', 'leyka');?></div></div>
+
+        <div class="error-text"><div><?php printf(__('Please try to <a href="%s" class="leyka-js-try-again">donate  again</a>. If the error continues to occur, please use another payment method or <a href="mailto:%s">contact our technical support</a>.', 'leyka'), $campaign ? $campaign->url : home_url('/'), get_option('admin_email'));?></div></div>
         <div class="leyka-logo"> </div>
+
     </div>
 
 </div>
