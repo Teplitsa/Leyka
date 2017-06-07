@@ -157,18 +157,26 @@ class Leyka {
                 $content = ob_get_clean();
 
             }
-            elseif( get_post()->ID == leyka_options()->opt('failure_page') ) {
-            
-                ob_start();
-                include(LEYKA_PLUGIN_DIR . 'templates/service/leyka-template-final-error.php');
-                $content = ob_get_clean();
-            
-            }
 
             return $content;
 
         }
         add_filter('the_content', 'leyka_successful_page_widget_template', 1);
+
+        function leyka_failed_page_widget_template($content) {
+
+            if(get_the_ID() == leyka_options()->opt('failure_page')) {
+
+                ob_start();
+                include(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-failure-widget.php');
+                $content = ob_get_clean();
+
+            }
+
+            return $content;
+
+        }
+        add_filter('the_content', 'leyka_failed_page_widget_template', 1);
 
         add_action('wp_head', function(){
             if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type)) {

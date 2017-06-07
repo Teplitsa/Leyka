@@ -228,7 +228,10 @@ window.LeykaGUIFinal.prototype = {
         $success_forms.on('submit', function(e){
 
             e.preventDefault();
-            self.subscribeUser();
+
+            if(self.validateForm(this)) {
+                self.subscribeUser();
+            }
 
         });
 
@@ -245,6 +248,48 @@ window.LeykaGUIFinal.prototype = {
 
         });
 
+    },
+
+    validateForm: function($form){
+
+        var self = this; var $ = self.$;
+
+        $form = $($form); // Just in case
+        var form_valid = false;
+
+        $form.find(':input').each(function(){
+
+            var $input = $(this),
+                type = $input.attr('type'),
+                name = $input.attr('name'),
+                value = $input.val(),
+                $error_message = $form.find('.'+name+'-error');
+
+            if($.inArray(type, ['text', 'email']) == 1) {
+
+                if($input.hasClass('required') && !value) {
+
+                    $error_message.show();
+                    $input.closest('.donor__textfield').addClass('invalid');
+
+                } else if(type == 'email' && !is_email(value)) {
+
+                    $error_message.show();
+                    $input.closest('.donor__textfield').addClass('invalid');
+
+                } else {
+
+                    $error_message.hide();
+                    $input.closest('.donor__textfield').removeClass('invalid');
+                    form_valid = true;
+
+                }
+
+            }
+
+        });
+
+        return form_valid;
     },
     
     animateRedirectCountdown: function($container){

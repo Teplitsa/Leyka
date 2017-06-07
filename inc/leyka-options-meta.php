@@ -616,11 +616,11 @@ self::$_options_meta = array(
     ),
     'revo_template_slider_max_sum' => array(
         'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
-        'default' => 10000,
+        'default' => 3000,
         'title' => __('Maximum sum available for slider', 'leyka'),
         'description' => __('Please set the maximum sum available for slider control.', 'leyka'),
         'required' => 1, // 1 if field is required, 0 otherwise
-        'placeholder' => '10000', // For text fields
+        'placeholder' => '3000', // For text fields
         'length' => 6, // For text fields
         'list_entries' => '', // callback returns currencies selected in prev. option
         'validation_rules' => array(), // List of regexp?..

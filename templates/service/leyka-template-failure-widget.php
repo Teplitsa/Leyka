@@ -1,7 +1,7 @@
 <?php if( !defined('WPINC') ) die;
 /**
- * Leyka Template: Successful donation page block.
- * Description: A template for the interactive actions block shown on the successful donation page.
+ * Leyka Template: Failed donation page block.
+ * Description: A template for the interactive actions block shown on the failed donation page.
  **/
 
 $donation_id = leyka_remembered_data('donation_id');
@@ -9,9 +9,11 @@ $campaign = null;
 $campaign_id = null;
 
 if($donation_id) {
-   $donation = new Leyka_Donation($donation_id);
-   $campaign_id = $donation ? $donation->campaign_id : null;
-   $campaign = new Leyka_Campaign($campaign_id);
+
+    $donation = new Leyka_Donation($donation_id);
+    $campaign_id = $donation ? $donation->campaign_id : null;
+    $campaign = new Leyka_Campaign($campaign_id);
+
 }?>
 
 <div id="leyka-pf-" class="leyka-pf">
