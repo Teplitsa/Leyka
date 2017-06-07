@@ -68,7 +68,7 @@ $donation_id = leyka_remembered_data('donation_id');?>
 
     </div>
 
-    <div class="leyka-pf__final-screen error-message"></div>
+    <div class="leyka-pf__final-screen leyka-pf__final-error-message"></div>
 
     <div class="leyka-pf__final-screen leyka-pf__final-informyou">
         <svg class="svg-icon icon"><use xlink:href="#pic-check-mark"></svg>

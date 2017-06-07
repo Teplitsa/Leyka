@@ -346,8 +346,6 @@ window.LeykaGUIFinal.prototype = {
 
         var self = this; var $ = self.$;
 
-        $('.leyka-pf__final-thankyou').hide();
-
         var $informyou_block = $('.leyka-pf__final-informyou');
 
         $.post(
@@ -367,7 +365,7 @@ window.LeykaGUIFinal.prototype = {
 
         }).always(function(){
 
-
+            $('.leyka-pf__final-thankyou').hide();
 
         });
 
