@@ -52,7 +52,9 @@ window.LeykaGUIFinal.prototype = {
 
         });
 
-        $('.leyka-js-no-subscribe').on('click', function(){
+        $('.leyka-js-no-subscribe').on('click', function(e){
+            
+            e.preventDefault();
 
             $(this).closest('.leyka-final-subscribe-form').slideUp(100);
 
