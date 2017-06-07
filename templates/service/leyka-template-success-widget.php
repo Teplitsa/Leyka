@@ -44,6 +44,9 @@ $donation_id = leyka_remembered_data('donation_id');?>
                     <div class="thankyou-email-field">
                         <div class="donor__textfield">
                             <input type="email" name="leyka_donor_email" placeholder="<?php _e('Your email', 'leyka');?>" value="<?php echo leyka_remembered_data('donor_email');?>">
+                            <span class="donor__textfield-error leyka_donor_email-error">
+                                <?php _e('Enter an email in the some@email.com format', 'leyka');?>
+                            </span>
                         </div>
                     </div>
 
