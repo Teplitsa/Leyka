@@ -195,14 +195,11 @@ function leyka_process_success_form() {
         $donation->donor_name = $_POST['leyka_donor_name'];
     }
 
-    if(isset($_POST['leyka_donor_email']) && leyka_validate_donor_name($_POST['leyka_donor_email'])) {
+    if(isset($_POST['leyka_donor_email']) && leyka_validate_donor_email($_POST['leyka_donor_email'])) {
 
         $donation->donor_email = $donation->donor_email ? $donation->donor_email : $_POST['leyka_donor_email'];
         $donation->donor_subscription_email = $_POST['leyka_donor_email'];
         $donation->donor_subscribed = $donation->campaign_id;
-
-        echo '<pre>' . print_r($donation->campaign_id, 1) . '</pre>';
-        echo '<pre>' . print_r($donation->donor_subscribed, 1) . '</pre>';
 
     }
 
