@@ -176,8 +176,8 @@ window.LeykaGUIFinal.prototype = {
 
             // leyka_remembered_data('leyka_donation_id', '', true); // Delete the donor data
 
-            $informyou_block.show();
-            self.runRedirectProcess($informyou_block);
+            // $informyou_block.show();
+            // self.runRedirectProcess($informyou_block);
 
         }).always(function(){
 
