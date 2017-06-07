@@ -155,7 +155,10 @@ class Leyka_Options_Allocator {
                         'name' => 'revo_template_options',
                         'title' => __('Revo template', 'leyka'),
                         'is_default_collapsed' => false,
-                        'options' => array('revo_template_ask_donor_data', 'revo_template_show_thumbnail',)
+                        'options' => array(
+                            'revo_template_slider_max_sum', 'revo_template_ask_donor_data',
+                            'revo_template_show_thumbnail',
+                        )
                     ),),
                 );
                 break;
