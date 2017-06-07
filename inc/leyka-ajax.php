@@ -169,10 +169,39 @@ add_action('wp_ajax_leyka_ajax_get_gateway_redirect_data', 'leyka_get_gateway_re
 add_action('wp_ajax_nopriv_leyka_ajax_get_gateway_redirect_data', 'leyka_get_gateway_redirect_data');
 
 
-function leyka_submit_subscribe() {
+function leyka_process_success_form() {
 
-    die(json_encode($payment_vars));
+    if(empty($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'leyka_donor_subscription')) {
+        die(json_encode(array(
+            'status' => 1,
+            'message' => __('Wrong nonce in the submitted data', 'leyka'),
+        )));
+    } else if(empty($_POST['leyka_donation_id'])) {
+        die(json_encode(array(
+            'status' => 1,
+            'message' => __('No donation ID found in the submitted data', 'leyka'),
+        )));
+    }
+
+    $donation = new Leyka_Donation((int)$_POST['leyka_donation_id']);
+    if( !$donation ) {
+        die(json_encode(array(
+            'status' => 1,
+            'message' => __('Wrong donation ID in the submitted data', 'leyka'),
+        )));
+    }
+
+    if(isset($_POST['leyka_donor_name']) && leyka_validate_donor_name($_POST['leyka_donor_name'])) {
+        $donation->donor_name = $_POST['leyka_donor_name'];
+    }
+
+    if(isset($_POST['leyka_donor_email']) && leyka_validate_donor_name($_POST['leyka_donor_email'])) {
+
+        $donation->donor_email = $_POST['leyka_donor_email'];
+        $donation->donor_subscribed = $donation->campaign_id;
+
+    }
 
 }
-add_action('wp_ajax_leyka_ajax_submit_subscribe', 'leyka_submit_subscribe');
-add_action('wp_ajax_nopriv_leyka_ajax_submit_subscribe', 'leyka_submit_subscribe');
+add_action('wp_ajax_leyka_donor_subscription', 'leyka_process_success_form');
+add_action('wp_ajax_nopriv_leyka_donor_subscription', 'leyka_process_success_form');

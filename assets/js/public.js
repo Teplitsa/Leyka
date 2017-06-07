@@ -337,23 +337,27 @@ window.LeykaGUIFinal.prototype = {
     subscribeUser: function(){
 
         var self = this; var $ = self.$;
-        
+
         $('.leyka-pf__final-thankyou').hide();
 
         var $informyou_block = $('.leyka-pf__final-informyou');
-        $informyou_block.show();
 
-        self.runRedirectProcess($informyou_block);
+        $.post(
+            leyka_get_ajax_url(),
+            $('form.leyka-success-form').serializeArray(),
+            'json'
+        ).done(function(response){
 
-        var data = $(this).find('form.leyka-success-form').serializeArray();
-        
-        $.post(leyka_get_ajax_url(), data, 'json')
-            .done(function(json){
-            })
-            .fail(function(){
-            })
-            .always(function(){
-            });
+            if(typeof response.status != 'undefined' && response.status != 0 && typeof response.message != 'undefined') {
+                $('.leyka-pf__final-error-message').html(response.message).show();
+            }
+
+        }).always(function(){
+
+            $informyou_block.show();
+            self.runRedirectProcess($informyou_block);
+
+        });
 
     }
 };

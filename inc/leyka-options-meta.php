@@ -625,6 +625,17 @@ self::$_options_meta = array(
         'list_entries' => array(),
         'validation_rules' => array(), // List of regexp?..
     ),
+    'show_failure_widget_on_failure' => array(
+        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'default' => 1,
+        'title' => __('Failure widget on the failed donation page', 'leyka'),
+        'description' => __('Display the widget automatically', 'leyka'),
+        'required' => 0,
+        'placeholder' => '', // For text fields
+        'length' => '', // For text fields
+        'list_entries' => array(),
+        'validation_rules' => array(), // List of regexp?..
+    ),
     'revo_template_slider_max_sum' => array(
         'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
         'default' => 3000,
