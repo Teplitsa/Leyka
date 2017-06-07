@@ -328,6 +328,10 @@ div[id *="leyka-pf-"] { //aka namespace
 			padding: 0 4px 4px 4px;
 			width: 100px;
 			
+			&::placeholder {
+			     color:$color-border-normal;
+			}
+			
             &:focus {
                 &::placeholder { opacity: 0; }
             }
