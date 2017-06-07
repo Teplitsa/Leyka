@@ -27,7 +27,7 @@ $donation_id = leyka_remembered_data('donation_id');?>
 
                 <input type="hidden" name="leyka_donation_id" value="<?php echo $donation_id;?>">
                 <input type="hidden" name="action" value="leyka_donor_subscription">
-                <?php wp_create_nonce('leyka_donor_subscription');?>
+                <?php wp_nonce_field('leyka_donor_subscription');?>
 
                 <?php if(leyka_options()->opt('revo_template_ask_donor_data') == 'success-page') {?>
 

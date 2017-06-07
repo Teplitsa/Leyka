@@ -729,7 +729,10 @@ class Leyka_Donation_Management {
 
             <?php } else {?>
 
-                <span class="fake-input"><?php echo $donation->amount ? $donation->amount.' '.$donation->currency_label : '';?></span>
+                <span class="fake-input">
+                    <?php echo $donation->amount ? $donation->amount.' '.$donation->currency_label : '';?>
+                </span>
+
             <?php }?>
             </div>
         </div>
@@ -801,12 +804,34 @@ class Leyka_Donation_Management {
 			<div class="leyka-ddata-field">
             <?php if($donation->type == 'correction') {?>
 
-                <input type="text" id="donation-date-view" value="<?php echo date(get_option('date_format'), $donation->date_timestamp);?>" />
-                <input type="hidden" id="donation-date" name="donation_date" value="<?php echo date('Y-m-d', $donation->date_timestamp);?>" />
+                <input type="text" id="donation-date-view" value="<?php echo date(get_option('date_format'), $donation->date_timestamp);?>">
+                <input type="hidden" id="donation-date" name="donation_date" value="<?php echo date('Y-m-d', $donation->date_timestamp);?>">
             <?php } else {?>
-
                 <span class="fake-input"><?php echo $donation->date;?></span>
             <?php }?>
+            </div>
+        </div>
+
+        <div class="leyka-ddata-string">
+            <label><?php _e('Donor subscription status', 'leyka');?>:</label>
+            <div class="leyka-ddata-field">
+                <span class="fake-input">
+                <?php $subscription_status = __('None', 'leyka');
+                if($donation->donor_subscribed === true) {
+                    $subscription_status = __('Full subscription', 'leyka');
+                } else if($donation->donor_subscribed > 0) {
+                    $subscription_status = sprintf(__('On <a href="%s">campaign</a> news', 'leyka'), admin_url('post.php?post='.$donation->campaign_id.'&action=edit'));
+                }
+
+                echo $subscription_status;?>
+                </span>
+            </div>
+        </div>
+
+        <div class="leyka-ddata-string">
+            <label><?php _e('Donor subscription email', 'leyka');?>:</label>
+            <div class="leyka-ddata-field">
+                <span class="fake-input"><?php echo $donation->donor_subscription_email;?></span>
             </div>
         </div>
 	</fieldset>
@@ -1052,7 +1077,7 @@ class Leyka_Donation_Management {
             case 'donor_subscribed':
                 if($donation->donor_subscribed === true) {?>
 
-                <div class="donor-subscription-status total"><?php _e('No subscription', 'leyka');?></div>
+                <div class="donor-subscription-status total"><?php _e('Full subscription', 'leyka');?></div>
 
                 <?php } else if((int)$donation->donor_subscription > 0) {?>
 
@@ -1380,7 +1405,7 @@ class Leyka_Donation {
     /**
      * A wrapper to access gateway's method to get init recurrent donation.
      * @param int $donation_id
-     * @return Leyka_Donation or false if param is wrong or nothing foundd.
+     * @return mixed Leyka_Donation or false if param is wrong or nothing foundd.
      */
     public static function get_init_recurrent_donation($donation_id) {
 
@@ -1452,6 +1477,8 @@ class Leyka_Donation {
                     (float)$meta['leyka_main_curr_amount'][0] : $donation_amount,
                 'donor_name' => empty($meta['leyka_donor_name']) ? '' : $meta['leyka_donor_name'][0],
                 'donor_email' => empty($meta['leyka_donor_email']) ? '' : $meta['leyka_donor_email'][0],
+                'donor_subscription_email' => empty($meta['leyka_donor_subscription_email']) ?
+                    '' : $meta['leyka_donor_subscription_email'][0],
                 'donor_email_date' => empty($meta['_leyka_donor_email_date']) ?
                     '' : $meta['_leyka_donor_email_date'][0],
                 'managers_emails_date' => empty($meta['_leyka_managers_emails_date']) ?
@@ -1552,7 +1579,9 @@ class Leyka_Donation {
             case 'donor_subscribed':
                 return $this->_donation_meta['donor_subscribed'];
             case 'donor_subscription_email':
-                return $this->_donation_meta['donor_subscription_email'];
+                return $this->_donation_meta['donor_subscription_email'] ?
+                    $this->_donation_meta['donor_subscription_email'] :
+                    ($this->_donation_meta['donor_email'] ? $this->_donation_meta['donor_email'] : '');
 
             case 'gateway_response':
                 return $this->_donation_meta['gateway_response'];

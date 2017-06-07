@@ -502,6 +502,7 @@ function leyka_get_payment_type_label($type) {
 
     $types = leyka_get_payment_types_list();
     return in_array($type, array_keys($types)) ? $types[$type] : false;
+
 }
 
 /**
