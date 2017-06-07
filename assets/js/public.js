@@ -200,12 +200,20 @@ window.LeykaGUIFinal.prototype = {
 
         var self = this; var $ = self.$;
 
-        function leyka_remembered_data(data_name) {
-            return $.cookie(data_name) ? $.cookie(data_name) : ''; /** add local storage check... */
+        function leyka_remembered_data(data_name, data_value, data_delete) {
+
+            if(data_value.length) {
+                return $.cookie(data_name, data_value);
+            } else if(data_delete) {
+                return $.cookie(data_name, '');
+            } else {
+                return $.cookie(data_name) ? $.cookie(data_name) : '';
+                /** add local storage check... */
+            }
         }
 
         var $success_forms = $('.leyka-success-form'),
-            donation_id = leyka_remembered_data('leyka_donation_id');
+            donation_id = leyka_remembered_data('leyka_donation_id', '', false);
 
         if( !donation_id ) { // Hide the success form if there are no donation ID stored...
             // $success_forms.hide();
@@ -351,6 +359,8 @@ window.LeykaGUIFinal.prototype = {
             if(typeof response.status != 'undefined' && response.status != 0 && typeof response.message != 'undefined') {
                 $('.leyka-pf__final-error-message').html(response.message).show();
             }
+
+            leyka_remembered_data('leyka_donation_id', '', true); // Delete the donor data
 
         }).always(function(){
 

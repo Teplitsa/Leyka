@@ -1548,8 +1548,12 @@ class Leyka_Donation {
                 return $this->_donation_meta['managers_emails_date'];
             case 'campaign_id':
                 return $this->_donation_meta['campaign_id'];
+
             case 'donor_subscribed':
                 return $this->_donation_meta['donor_subscribed'];
+            case 'donor_subscription_email':
+                return $this->_donation_meta['donor_subscription_email'];
+
             case 'gateway_response':
                 return $this->_donation_meta['gateway_response'];
             case 'gateway_response_formatted':
@@ -1585,6 +1589,7 @@ class Leyka_Donation {
             default:
                 return apply_filters('leyka_get_unknown_donation_field', null, $field, $this);
         }
+
     }
 
     public function __set($field, $value) {
@@ -1670,10 +1675,18 @@ class Leyka_Donation {
                 $this->_donation_meta['campaign_id'] = $value;
                 break;
 
+            case 'is_subscribed':
             case 'donor_subscribed':
                 $value = $value === true || (int)$value > 0 ? $value : false;
                 update_post_meta($this->_id, 'leyka_donor_subscribed', $value);
                 $this->_donation_meta['donor_subscribed'] = $value;
+                break;
+
+            case 'subscription_email':
+            case 'donor_subscription_email':
+                $value = leyka_validate_email($value) ? $value : $this->donor_email;
+                update_post_meta($this->_id, 'leyka_donor_subscription_email', $value);
+                $this->_donation_meta['donor_subscription_email'] = $value;
                 break;
 
             case 'init_recurring_payment':

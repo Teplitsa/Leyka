@@ -941,12 +941,14 @@ function leyka_get_donations_archive_url($campaign_id = false) {
 
 }
 
-function leyka_remembered_data($name, $value = null) {
+function leyka_remembered_data($name, $value = null, $delete = false) {
 
     $name = stripos($name, 'leyka_') === false ? 'leyka_'.$name : $name;
 
     if($value) {
-        return setcookie($name, trim($value), time()+60*60, COOKIEPATH, COOKIE_DOMAIN, false); /** @todo Last argument is for HTTPS-only */
+        return setcookie($name, trim($value), time()+60*60, COOKIEPATH, COOKIE_DOMAIN, false);
+    } else if( !!$delete ) {
+        return setcookie($name, '', time()-3600, COOKIEPATH, COOKIE_DOMAIN, false);
     } else {
         return empty($_COOKIE[$name]) ? '' : trim($_COOKIE[$name]);
     }

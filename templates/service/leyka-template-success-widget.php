@@ -23,7 +23,7 @@ $donation_id = leyka_remembered_data('donation_id');?>
 
         <div class="leyka-final-subscribe-form">
 
-            <form action="#" class="leyka-success-form" method="post" novalidate="novalidate" <?php //echo empty($donation_id) ? 'style="display: none;"' : '';?>>
+            <form action="#" class="leyka-success-form" method="post" novalidate="novalidate" <?php echo empty($donation_id) ? 'style="display: none;"' : '';?>>
 
                 <input type="hidden" name="leyka_donation_id" value="<?php echo $donation_id;?>">
                 <input type="hidden" name="action" value="leyka_donor_subscription">

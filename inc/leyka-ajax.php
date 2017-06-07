@@ -197,10 +197,17 @@ function leyka_process_success_form() {
 
     if(isset($_POST['leyka_donor_email']) && leyka_validate_donor_name($_POST['leyka_donor_email'])) {
 
-        $donation->donor_email = $_POST['leyka_donor_email'];
+        $donation->donor_email = $donation->donor_email ? $donation->donor_email : $_POST['leyka_donor_email'];
+        $donation->donor_subscription_email = $_POST['leyka_donor_email'];
         $donation->donor_subscribed = $donation->campaign_id;
 
     }
+
+    leyka_remembered_data('donation_id', false, true); // Delete the donor data cookie
+
+    die(json_encode(array(
+        'status' => 0,
+    )));
 
 }
 add_action('wp_ajax_leyka_donor_subscription', 'leyka_process_success_form');
