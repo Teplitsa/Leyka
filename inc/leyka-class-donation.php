@@ -816,7 +816,8 @@ class Leyka_Donation_Management {
             <label><?php _e('Donor subscription status', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
                 <span class="fake-input">
-                <?php $subscription_status = __('None', 'leyka');
+                <?php var_dump($donation->donor_subscribed);
+                $subscription_status = __('None', 'leyka');
                 if($donation->donor_subscribed === true) {
                     $subscription_status = __('Full subscription', 'leyka');
                 } else if($donation->donor_subscribed > 0) {
