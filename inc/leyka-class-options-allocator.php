@@ -133,7 +133,7 @@ class Leyka_Options_Allocator {
                         'is_default_collapsed' => true,
                         'options' => array(
                             'notify_donations_managers', 'notify_managers_on_recurrents', 'donations_managers_emails',
-                            'email_notification_title', 'email_notification_text',
+                            'email_notification_title', 'email_notification_text', 'tech_support_email',
                         )
                     ),),
                 );

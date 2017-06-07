@@ -532,6 +532,17 @@ self::$_options_meta = array(
         'list_entries' => array(), // For select, radio & checkbox fields
         'validation_rules' => array(), // List of regexp?..
     ),
+    'tech_support_email' => array(
+        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'default' => '',
+        'title' => __('Website technical support email', 'leyka'),
+        'description' => __('An email for donors to write about problems during donations.', 'leyka'),
+        'required' => 0, // 1 if field is required, 0 otherwise
+        'placeholder' => __('E.g. techsupport@email.com', 'leyka'),
+        'length' => '', // For text fields
+        'list_entries' => array(), // For select, radio & checkbox fields
+        'validation_rules' => array(), // List of regexp?..
+    ),
     'donation_form_template' => array(
         'type' => 'radio', // html, rich_html, select, radio, checkbox, multi_checkbox
         'default' => 'radios',
