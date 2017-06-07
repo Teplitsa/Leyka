@@ -14,10 +14,11 @@ if(
 $donation_id = leyka_remembered_data('donation_id');?>
 
 <div id="leyka-pf-" class="leyka-pf">
+    <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
 
     <div class="leyka-pf__final-screen leyka-pf__final-thankyou">
 
-        <div class="icon"> </div>
+        <svg class="svg-icon icon"><use xlink:href="#pic-heart"></svg>
         <div class="text"><div><?php echo get_the_content();?></div></div>
 
         <div class="leyka-final-subscribe-form">
@@ -65,7 +66,7 @@ $donation_id = leyka_remembered_data('donation_id');?>
     </div>
 
     <div class="leyka-pf__final-screen leyka-pf__final-informyou">
-        <div class="icon"> </div>
+        <svg class="svg-icon icon"><use xlink:href="#pic-check-mark"></svg>
         <div class="text"><div><?php echo leyka_options()->opt('revo_thankyou_email_result_text');?></div></div>
         <div class="informyou-redirect-text"><div><?php _e('Redirect to site home page in <span class="leyka-redirect-countdown">5</span> seconds...', 'leyka');?></div></div>
         <div class="leyka-logo"> </div>

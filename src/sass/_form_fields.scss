@@ -327,6 +327,10 @@ div[id *="leyka-pf-"] { //aka namespace
 			color: $color-text-black;
 			padding: 0 4px 4px 4px;
 			width: 100px;
+			
+            &:focus {
+                &::placeholder { opacity: 0; }
+            }
 		}
 	}
 
@@ -460,12 +464,18 @@ div[id *="leyka-pf-"] { //aka namespace
 		color: $color-form-invalid;
 		display:none;
 		padding-top: $base*3;
+		max-width:186px;
 	}
 
 	.step__action {
 
         a {
             @include button(medium);
+            
+            @include for(medium-screens) {
+                @include button(small);
+            }
+            
             width: 186px;
             text-align: center;
             margin: 4px;
@@ -511,6 +521,18 @@ div[id *="leyka-pf-"] { //aka namespace
 		input[type=range]::-webkit-slider-runnable-track  {
 			@include range-track-invalid();
 		}
+		
+        .amount__range_wrapper {
+            .amount__range_custom {
+                .range-color, .range-color-wrapper {
+                    fill: $color-form-invalid;
+                }
+                
+                .range-circle {
+                    fill: $color-form-invalid;
+                }
+            }
+        }
 	}
 }
 

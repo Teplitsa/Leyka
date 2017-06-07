@@ -37,7 +37,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
 
             <div class="amount__icon">
                 <svg class="svg-icon icon-money-size3"><use xlink:href="#icon-money-size3" /></svg>
-                <div class="leyka_donation_amount-error field-error amount__error"></div>
+                <div class="leyka_donation_amount-error field-error amount__error"><?php printf(__('Please enter valid amount <br />from %s to %s', 'leyka'), $template_data['amount_min'], $template_data['amount_max'] )?></div>
             </div>
 
             <div class="amount__range_wrapper">

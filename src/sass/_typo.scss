@@ -76,7 +76,7 @@ $body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, 
 
 @mixin no-thankyou-link($mod: default) {
     font-family: $body;
-    font-weight: 500;
+    font-weight: normal;
     font-style: normal;
     font-size: 16px;
     line-height: 18px;
@@ -84,7 +84,7 @@ $body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, 
 
 @mixin informyou-text($mod: default) {
     font-family: $body;
-    font-weight: 500;
+    font-weight: normal;
     font-style: normal;
     font-size: 16px;
     line-height: 22px;
@@ -92,7 +92,7 @@ $body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, 
 
 @mixin error-text($mod: default) {
     font-family: $body;
-    font-weight: 500;
+    font-weight: normal;
     font-style: normal;
     font-size: 15px;
     line-height: 21px;

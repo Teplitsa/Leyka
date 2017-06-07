@@ -404,6 +404,7 @@
 
 		.step__border {
 			width: 100%;
+			overflow-y:auto;
 		}
 
 		@include for(large-screens) {
@@ -518,11 +519,7 @@
         width:100%;
         margin-top: $base*2.2;
         max-height:156px;
-        height:150px;
-        background-image: url(../../img/final-heart.png);
-        background-repeat: no-repeat;
-        background-size: 120px 120px;
-        background-position: center center;
+        height:110px;
     }
 
     .text {
@@ -562,7 +559,6 @@
     &.leyka-pf__final-thankyou {
 
         .icon {
-            background-image: url(../../img/final-heart.png);
         }
 
         .thankyou-email-field {
@@ -597,14 +593,12 @@
         display:none;
 
         .icon {
-            background-image: url(../../img/final-check.png);
         }
     }
 
     &.leyka-pf__final-error {
 
         .icon {
-            background-image: url(../../img/final-cross.png);
         }
 
         .error-text {
