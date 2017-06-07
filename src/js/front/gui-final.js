@@ -174,7 +174,7 @@ window.LeykaGUIFinal.prototype = {
                 $('.leyka-pf__final-error-message').html(response.message).show();
             }
 
-            leyka_remembered_data('leyka_donation_id', '', true); // Delete the donor data
+            // leyka_remembered_data('leyka_donation_id', '', true); // Delete the donor data
 
             $informyou_block.show();
             self.runRedirectProcess($informyou_block);
