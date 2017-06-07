@@ -429,7 +429,7 @@ jQuery(document).ready(function($){
         pName = $_form.find('.donor__textfield--name input').val(),
         pEmail = $_form.find('.donor__textfield--email input').val(),
         amount = parseInt($_form.find('.amount__figure input').val()),
-        agree = $_form.find('.donor__oferta input').val();
+        agree = $_form.find('.donor__oferta input').prop('checked');
         
         if(pName.length === 0){
             error_struct['name'] = true;
@@ -441,7 +441,7 @@ jQuery(document).ready(function($){
             $_form.find('.donor__textfield--email').addClass('invalid');
         }
 
-        if(agree === 0){
+        if(!agree){
             error_struct['agree'] = true;
             $_form.find('.donor__oferta').addClass('invalid');
         }
