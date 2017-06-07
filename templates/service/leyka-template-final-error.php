@@ -21,7 +21,7 @@ if($donation_id) {
         <svg class="svg-icon icon"><use xlink:href="#pic-red-cross"></svg>
         <div class="text"><div class="leyka-js-error-text"><?php _e('Payment error', 'leyka');?></div></div>
         <div class="error-text"><div><?php _e('Perhaps there are problems in the Internet connection, in the operation of the payment system or an internal system error.', 'leyka');?></div></div>
-        <div class="error-text leyka-js-try-again-block" data-campaign-url="<?php echo $campaign ? $campaign->url : '';?>"><div><?php printf( __('Please try <a href="%s" class="leyka-js-try-again">again</a> and if the error recurs, use another payment method or contact <a href="mailto:support@te-st.ru">technical support</a>.', 'leyka'), home_url('/'));?></div></div>
+        <div class="error-text leyka-js-try-again-block" data-campaign-url="<?php echo $campaign ? $campaign->url : '';?>"><div><?php printf( __('Please try <a href="%s" class="leyka-js-try-again">again</a> and if the error recurs, use another payment method or contact <a href="mailto:%s">technical support</a>.', 'leyka'), home_url('/'), get_option('admin_email'));?></div></div>
         <div class="leyka-logo"> </div>
     </div>
 
