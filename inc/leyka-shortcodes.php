@@ -487,6 +487,8 @@ function leyka_inline_campaign(array $attributes = array()) {
                 <div class="inpage-card__content">
                     <div class="inpage-card_title"><?php echo get_the_title($campaign_id);?></div>
 
+
+					<div class="inpage-card_scale">
                     <?php
 						$collected = leyka_get_campaign_collections($campaign_id);
 						$target = leyka_get_campaign_target($campaign_id);
@@ -496,8 +498,6 @@ function leyka_inline_campaign(array $attributes = array()) {
 							$ready = isset($target['amount']) ? round(100.0*$collected['amount']/$target['amount'], 1) : 0;
 							$ready = $ready >= 100.0 ? 100.0 : $ready;
 					?>
-
-					<div class="inpage-card_scale">
                         <div class="scale">
                             <div class="progress <?php echo $ready >= 100.0 ? 'fin' : '';?>" style="width:<?php echo $ready;?>%;"></div>
                         </div>
@@ -515,18 +515,17 @@ function leyka_inline_campaign(array $attributes = array()) {
                                 <?php echo leyka_options()->opt("currency_{$target['currency']}_label");?>
                             </span>
                         </div>
+					<?php } else {  // Campaign doesn't have a target sum  - display empty scale ?>
+						<div class="scale"></div>
+                    <?php }    ?>
 					</div>
-                    <?php }  // Campaign doesn't have a target sum - display nothing ?>
 
 					<?php $supporters = leyka_get_campaign_supporters($campaign_id, 5); ?>
+					<div class="inpage-card__note supporters">
 					<?php  if(count($supporters['supporters'])) { ?>
-                    <div class="inpage-card__note supporters">
+                        <strong><?php _e('Supporters:', 'leyka');?></strong>
 
-                        <?php if(count($supporters['supporters'])) { // There is at least one donor ?>
-                            <strong><?php _e('Supporters:', 'leyka');?></strong>
-                        <?php }
-
-                        if(count($supporters['donations']) <= count($supporters['supporters'])) { // Only names in the list
+                        <?php if(count($supporters['donations']) <= count($supporters['supporters'])) { // Only names in the list
                             echo implode(', ', array_slice($supporters['supporters'], 0, -1))
                                 .' '.__('and', 'leyka').' '.end($supporters['supporters']);
                         } else { // Names list and the number of the rest of donors
@@ -537,10 +536,12 @@ function leyka_inline_campaign(array $attributes = array()) {
                                 <?php echo sprintf(__('%d more', 'leyka'), count($supporters['donations']) - count($supporters['supporters']));?>
                             </a>
 
-                        <?php }?>
-
-                    </div>
+                        <?php } ?>
+					<?php } else { ?>
+						<?php _e('Every campaign is an jorney. Let\'s do the first step.', 'leyka');?>
 					<?php } ?>
+                    </div>
+
 
                     <div class="inpage-card__action">
 					<?php if($campaign->is_finished) { ?>
@@ -574,9 +575,7 @@ function leyka_inline_campaign(array $attributes = array()) {
                                 <div class="history__cell h-name"><?php echo $donation->donor_name;?></div>
                                 <div class="history__cell h-date"><?php echo $donation->date_label;?></div>
                             </div>
-
                         <?php }?>
-
                         </div>
                     </div>
 					<!-- temp disable until archive template implemented
@@ -682,7 +681,7 @@ function leyka_inline_campaign_small($campaign_id) {
         <?php }?>
 			</div>
 		<?php } ?>
-		
+
 		<?php if(count($supporters['donations']) > count($supporters['supporters'])) { ?>
         <div class="bottom-form__history history">
             <div class="history__close leyka-js-history-close">x</div>
