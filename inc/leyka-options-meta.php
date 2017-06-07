@@ -658,7 +658,7 @@ self::$_options_meta = array(
         'list_entries' => array(
             'during-donation' => __('As a step during donation process', 'leyka'),
             'success-page' => __('On a payment success page', 'leyka'),
-            'never' => __("Don't display the fields", 'leyka'),
+//            'never' => __("Don't display the fields - receive donor data from payment systems", 'leyka'),
         ),
         'validation_rules' => array(), // List of regexp?..
     ),
