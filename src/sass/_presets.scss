@@ -76,7 +76,7 @@ $color-form-active:		var(--color-main-light);
 	}
     @else if $mod == medium {
         text-transform: none;
-        padding: 8px 26px 12px 26px;
+        padding: 8px 24px 12px 24px;
     }
 	@else if $mod == action {
 		border-radius: 27px;
