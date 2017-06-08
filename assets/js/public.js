@@ -457,25 +457,26 @@ jQuery(document).ready(function($){
     function bindSubmitPaymentFormEvent() {
 
         $('.leyka-pf__form').on('submit.leyka', 'form',  function(e){
-            
-            var $_form = $(this),
-                error = false;
 
-            if( !$_form.find('.step.step--active').hasClass('step--person') ) {
-                if($_form.find('.step.step--active').hasClass('step--amount')) {
+            var $_form = $(this),
+                $active_step = $_form.find('.step.step--active');
+
+            if( !$active_step.hasClass('step--person') ) {
+                if($active_step.hasClass('step--amount')) {
+
                     var $proceed_button = $_form.find('.step.step--amount .step__action--amount a');
                     if($proceed_button.length < 2) {
                         $proceed_button.click();
                     }
+
                 }
 
                 e.preventDefault();
                 return false;
+
             }
 
-            error = validateForm($_form);
-            
-            if( !error ) {
+            if( !validateForm($_form) ) { // Form is valid
 
                 if($_form.find('input[name="leyka_payment_method"]:checked').data('processing') != 'default') {
                     return;
@@ -483,8 +484,8 @@ jQuery(document).ready(function($){
 
                 e.preventDefault();
 
-                // open waiting
-                var $redirect_step = $_form.parents('.leyka-pf').find('.leyka-pf__redirect'),
+                // Open waiting:
+                var $redirect_step = $_form.closest('.leyka-pf').find('.leyka-pf__redirect'),
                     data_array = $_form.serializeArray(),
                     data = {action: 'leyka_ajax_get_gateway_redirect_data'};
 
@@ -542,8 +543,10 @@ jQuery(document).ready(function($){
                 });
 
             } else { // Errors exist
+
                 e.preventDefault();
                 e.stopPropagation();
+
             }
 
         });

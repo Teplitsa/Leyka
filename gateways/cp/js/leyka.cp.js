@@ -7,6 +7,11 @@ jQuery(document).ready(function($){
         var $form = $(this),
             $errors = $('#leyka-submit-errors');
 
+        var $revo_redirect_step = $form.closest('.leyka-pf').find('.leyka-pf__redirect');
+        if($revo_redirect_step.length) {
+            $revo_redirect_step.addClass('leyka-pf__redirect--open');
+        }
+
         if($form.data('submit-in-process')) {
             return false;
         } else {
@@ -29,8 +34,6 @@ jQuery(document).ready(function($){
         }
 
         e.preventDefault();
-
-        $('.leyka-pf__overlay').show();
 
         $.ajax({
             type: 'post',
@@ -80,10 +83,6 @@ jQuery(document).ready(function($){
                 data.cloudPayments = {recurrent: {interval: 'Month', period: 1}};
             }
 
-            if($form.hasClass('leyka-revo-form')) {
-                $form.closest('.leyka-pf').leykaForm('close');
-            }
-
             widget.charge({
                 language: 'ru-RU',
                 publicId: response.public_id,
@@ -105,9 +104,15 @@ jQuery(document).ready(function($){
                     scrollTop: $errors.offset().top - 35
                 }, 250);
 
-                $('.leyka-pf__overlay').hide();
-
             });
+
+            if($revo_redirect_step.length) {
+                $revo_redirect_step.removeClass('leyka-pf__redirect--open');
+            }
+
+            if($form.hasClass('leyka-revo-form')) {
+                $form.closest('.leyka-pf').leykaForm('close');
+            }
 
         });
 
