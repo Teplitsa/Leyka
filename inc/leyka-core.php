@@ -749,7 +749,7 @@ class Leyka {
         wp_enqueue_script(
             $this->_plugin_slug.'-public',
             LEYKA_PLUGIN_BASE_URL.'js/public.js', array('jquery', $this->_plugin_slug.'-modal'),
-            rand(), #LEYKA_VERSION
+            LEYKA_VERSION,
             true
         );
 
