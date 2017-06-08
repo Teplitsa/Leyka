@@ -33,7 +33,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
 
             </div>
 
-            <input type="hidden" name="monthly" value="0"><!-- @todo Check if this field is needed -->
+            <input type="hidden" name="monthly" class="is-recurring-chosen" value="0">
 
             <div class="amount__icon">
                 <svg class="svg-icon icon-money-size3"><use xlink:href="#icon-money-size3" /></svg>
@@ -88,7 +88,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
         <?php foreach($template_data['pm_list'] as $pm) { /** @var $pm Leyka_Payment_Method */?>
             <div class="payment-opt">
                 <label class="payment-opt__button">
-                    <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>">
+                    <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>" data-has-recurring="<?php echo $pm->has_recurring_support() ? '1' : '0';?>">
                     <span class="payment-opt__icon">
                         <svg class="svg-icon <?php echo esc_attr($pm->main_icon);?>"><use xlink:href="#<?php echo esc_attr($pm->main_icon);?>" /></svg>
                     </span>

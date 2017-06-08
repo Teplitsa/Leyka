@@ -814,33 +814,34 @@ jQuery(document).ready(function($){
             amount = parseInt($_step.find('.amount__figure input').val());
 
 
-        if(!Number.isInteger(amount) || amount < amountMin || amount > amountMax) { //correct this
-            //invalid!!!
+        if( !Number.isInteger(amount) || amount < amountMin || amount > amountMax ) { // Correct this
             $_step.find('.step__fields').addClass('invalid');
-        }
-        else {
+        } else {
+
             $_step.find('.step__fields').removeClass('invalid');
 
-            //remember amount
-            if($_link.hasClass('monthly')){
+            if($_link.hasClass('monthly')) {
+
                 $_step.find('input[name="monthly"]').val(1);
                 $_form.find('.remembered-amount').text(amount);
                 $_form.find('.remembered-monthly').show();
 
-                //remember payment option
-                $_form.find('.remembered-payment').parents('.leyka-js-another-step').attr('href', 'amount');
-                $_form.find('.payment-opt__radio[value="bcard"]').prop('checked', true);
-                var name = $_form.find('.payment-opt__radio[value="bcard"]').parents('.payment-opt').find('.payment-opt__label').text();
-                $_form.find('.remembered-payment').text(name);
-            }
-            else {
+                var $recurring_option = $_form.find('.payment-opt__radio[data-has-recurring="1"]:first'),
+                    $remembered_pm = $_form.find('.remembered-payment');
+
+                $remembered_pm.closest('.leyka-js-another-step').attr('href', 'amount'); // Remember payment option
+                $recurring_option.attr('checked', true);
+                $remembered_pm.text($recurring_option.closest('.payment-opt').find('.payment-opt__label').text());
+
+            } else {
+
                 $_step.find('input[name="monthly"]').val(0);
                 $_form.find('.remembered-amount').text(amount);
                 $_form.find('.remembered-monthly').hide();
                 $_form.find('.remembered-payment').parents('.leyka-js-another-step').attr('href', 'cards');
 
-                //reset choice for payment
-                $_form.find('.payment-opt__radio').prop('checked', false);
+                $_form.find('.payment-opt__radio').prop('checked', false); // Reset payment option
+
             }
 
 

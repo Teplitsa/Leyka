@@ -7,16 +7,16 @@ jQuery(document).ready(function($){
         var $form = $(this),
             $errors = $('#leyka-submit-errors');
 
-        // Exclude the repeated submits:
         if($form.data('submit-in-process')) {
             return false;
         } else {
             $form.data('submit-in-process', 1);
         }
 
-        // Donation form validation is already passed in the main script (public.js)
+        // Donation form validation already passed in the main script (public.js)
 
-        var is_recurrent = $form.find('#leyka_cp-card_recurring').attr('checked'),
+        var is_recurrent = $form.find('.leyka_recurring').attr('checked') ||
+                           $form.find('.is-recurring-chosen').val(), // For Revo template
             data_array = $form.serializeArray(),
             data = {action: 'leyka_ajax_donation_submit'};
 
@@ -106,6 +106,7 @@ jQuery(document).ready(function($){
                 }, 250);
 
                 $('.leyka-pf__overlay').hide();
+
             });
 
         });
