@@ -375,7 +375,7 @@
 			width: 100%;
 
 			.leyka-js-another-step {
-				padding: 2px 4px;
+				padding: 2px 4px 2px 0;
 				max-width: 90%;
 				overflow: hidden;
 				text-overflow: ellipsis;
@@ -383,6 +383,10 @@
 				@include for(medium-screens) {
 					max-width: 240px;
 				}
+
+                .remembered-monthly {
+                  padding-left: 4px;
+                }
 			}
 		}
 
