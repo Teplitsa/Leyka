@@ -56,7 +56,7 @@
             $_form.find('.donor__textfield--name').addClass('invalid');
         }
 
-        if(pEmail.length === 0 || !leyka_is_email(pEmail)){
+        if(pEmail.length === 0 || !is_email(pEmail)){
             error_struct['email'] = true;
             $_form.find('.donor__textfield--email').addClass('invalid');
         }
@@ -204,7 +204,7 @@
             //validate
             var testVal = $(this).val();
 
-            if(testVal.length > 0 && leyka_is_email(testVal)){
+            if(testVal.length > 0 && is_email(testVal)){
                 $(this).parents('.donor__textfield--email').addClass('valid');
             }
             else {

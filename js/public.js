@@ -317,7 +317,7 @@ jQuery(document).ready(function($){
 
                     } else {
 
-                        if( !leyka_is_email($field.val()) ) {
+                        if( !is_email($field.val()) ) {
 
                             field_is_valid = false;
                             $form.find('.'+$field.attr('name')+'-error').html(leyka.email_invalid).show();
@@ -334,7 +334,7 @@ jQuery(document).ready(function($){
                         field_is_valid = false;
                         $form.find('.'+$field.attr('name')+'-error').html(leyka.text_required).show();
 
-                    } else if(leyka_is_email($field.val())) {
+                    } else if(is_email($field.val())) {
 
                         field_is_valid = false;
                         $form.find('.'+$field.attr('name')+'-error').html(leyka.must_not_be_email).show();
@@ -578,10 +578,5 @@ function leyka_is_digit_key(e, numpad_allowed) {
 
 function is_email(email) {
     return /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|expert|[a-z]+)|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i.test(email);
-}
-    
-function leyka_is_email(email) {
-    var email_re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-    return email_re.test(email);
 }
     
