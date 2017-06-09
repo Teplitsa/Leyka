@@ -59,7 +59,7 @@ class Leyka {
 
     }
 
-    /** Initialize the plugin by setting localization, filters, and administration functions. */
+    /** Initialize the plugin by setting up localization, filters, administration functions etc. */
     private function __construct() {
 
         if( !get_option('leyka_permalinks_flushed') ) {
@@ -178,23 +178,48 @@ class Leyka {
         }
         add_filter('the_content', 'leyka_failed_page_widget_template', 1);
 
-        add_action('wp_head', function(){
-            if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type)) {
+        if( !is_admin() ) {
 
-                $campaign = new Leyka_Campaign(get_queried_object_id());
-                $template = leyka_get_current_template_data($campaign);
+            add_action('wp_head', 'leyka_inline_scripts');
+            function leyka_inline_scripts(){
 
-                if($template && isset($template['file'])) {
+//                $colors = array('#07C7FD', '#05A6D3', '#8CE4FD'); // Leyka blue
+                $colors = array('#1db318', '#1aa316', '#acebaa'); // Leyka green
 
-                    $init_file = LEYKA_PLUGIN_DIR.'templates/leyka-'.$template['id'].'/leyka-'.$template['id'].'-init.php';
-                    if(file_exists($init_file)) {
-                        require_once($init_file);
+                // detect if we have JS at all... ?>
+
+                <script>
+                    document.documentElement.classList.add("leyka-js");
+                </script>
+                <style>
+                    :root {
+                        --color-main: 		<?php echo $colors[0];?>;
+                        --color-main-dark: 	<?php echo $colors[1];?>;
+                        --color-main-light: <?php echo $colors[2];?>;
+                    }
+                </style>
+                <?php
+            }
+
+            add_action('wp_head', function(){
+                if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type)) { // Include template init script
+
+                    $campaign = new Leyka_Campaign(get_queried_object_id());
+                    $template = leyka_get_current_template_data($campaign);
+
+                    if($template && isset($template['file'])) {
+
+                        $init_file = LEYKA_PLUGIN_DIR.'templates/leyka-'.$template['id'].'/leyka-'.$template['id'].'-init.php';
+                        if(file_exists($init_file)) {
+                            require_once($init_file);
+                        }
+
                     }
 
                 }
+            });
 
-            }
-        });
+        }
 
         /** Embed campaign URL handler: */
         function leyka_template_include($template) {
