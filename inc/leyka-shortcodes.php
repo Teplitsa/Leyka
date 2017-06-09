@@ -590,7 +590,11 @@ function leyka_inline_campaign(array $attributes = array()) {
             </div>
 
             <div class="leyka-pf__form">
-                <?php /** @todo For the forms caching task comment this require out */ require($template_file);?>
+            <?php // Pass the curr. campaign to the template:
+                Leyka_Revo_Template_Controller::get_instance()->current_campaign = $campaign;
+
+                require($template_file); /** @todo For the forms caching task comment this require out */
+            ?>
             </div>
 
             <?php leyka_pf_submission_errors();?>
