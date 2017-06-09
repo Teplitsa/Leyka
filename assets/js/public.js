@@ -121,6 +121,11 @@ function is_email(email) {
     return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test(email);
 }
 
+function leyka_is_email(email) {
+    var email_re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+    return email_re.test(email);
+}
+
 function leyka_get_ajax_url() {
     return typeof leyka != 'undefined' ? leyka.ajaxurl : frontend.ajaxurl;
 }
@@ -280,7 +285,7 @@ window.LeykaGUIFinal.prototype = {
                     $error_message.show();
                     $input.closest('.donor__textfield').addClass('invalid');
 
-                } else if(type == 'email' && !is_email(value)) {
+                } else if(type == 'email' && !leyka_is_email(value)) {
 
                     $error_message.show();
                     $input.closest('.donor__textfield').addClass('invalid');
@@ -436,7 +441,7 @@ jQuery(document).ready(function($){
             $_form.find('.donor__textfield--name').addClass('invalid');
         }
 
-        if(pEmail.length === 0 || !is_email(pEmail)){
+        if(pEmail.length === 0 || !leyka_is_email(pEmail)){
             error_struct['email'] = true;
             $_form.find('.donor__textfield--email').addClass('invalid');
         }
@@ -584,7 +589,7 @@ jQuery(document).ready(function($){
             //validate
             var testVal = $(this).val();
 
-            if(testVal.length > 0 && is_email(testVal)){
+            if(testVal.length > 0 && leyka_is_email(testVal)){
                 $(this).parents('.donor__textfield--email').addClass('valid');
             }
             else {

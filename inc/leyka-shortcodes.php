@@ -539,7 +539,12 @@ function leyka_inline_campaign(array $attributes = array()) {
                         <?php }
 
 					} else {
-					    _e("Every campaign is an jorney. Let's do the first step.", 'leyka');
+					    ?>
+                        <div class="no-supporters">
+    					    <svg class="svg-icon pic-first-step"><use xlink:href="#pic-first-step" /></svg>
+                            <?php _e("Every campaign is an jorney. Let's do the first step.", 'leyka');?>
+                        </div>
+                        <?php
 					}?>
                     </div>
 

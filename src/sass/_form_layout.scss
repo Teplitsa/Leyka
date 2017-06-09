@@ -90,6 +90,10 @@
 		flex: 0 1 auto;
 		width: 100%;
 		box-sizing:border-box;
+		
+		.pic-first-step {
+		  display:none;
+        }
 	}
 
 	.inpage-card__thumbframe + .inpage-card__content {
@@ -160,6 +164,24 @@
 /* Open state */
 .leyka-js {
 	.leyka-pf--active {
+	
+        .inpage-card__content {
+            .no-supporters {
+            
+                width:100%;
+                align-items: center;
+                text-align:center;
+                
+                .pic-first-step {
+                    margin:20% auto 0px auto;
+                    display:block;
+                    fill:$color_main;
+                    max-width:50%;
+                    height: 200px;
+                }
+            }
+        }
+	
 
 		.leyka-submit-errors {
 			width: 100%;

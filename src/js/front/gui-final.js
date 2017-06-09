@@ -94,7 +94,7 @@ window.LeykaGUIFinal.prototype = {
                     $error_message.show();
                     $input.closest('.donor__textfield').addClass('invalid');
 
-                } else if(type == 'email' && !is_email(value)) {
+                } else if(type == 'email' && !leyka_is_email(value)) {
 
                     $error_message.show();
                     $input.closest('.donor__textfield').addClass('invalid');
