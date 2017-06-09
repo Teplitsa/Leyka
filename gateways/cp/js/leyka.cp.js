@@ -21,7 +21,7 @@ jQuery(document).ready(function($){
         // Donation form validation already passed in the main script (public.js)
 
         var is_recurrent = $form.find('.leyka_recurring').attr('checked') ||
-                           $form.find('.is-recurring-chosen').val(), // For Revo template
+                           $form.find('.is-recurring-chosen').val() > 0, // For Revo template
             data_array = $form.serializeArray(),
             data = {action: 'leyka_ajax_donation_submit'};
 
@@ -78,6 +78,8 @@ jQuery(document).ready(function($){
 
             var widget = new cp.CloudPayments(),
                 data = {};
+
+            console.log('Recurring:', is_recurrent);
 
             if(is_recurrent) {
                 data.cloudPayments = {recurrent: {interval: 'Month', period: 1}};
