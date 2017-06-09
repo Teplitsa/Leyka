@@ -6,7 +6,7 @@
 
 if(
 //    !leyka_options()->opt('revo_template_ask_donor_data') == 'success-page' &&
-    !leyka_options()->opt('show_subscription_on_success')
+    !leyka_options()->opt('show_success_widget_on_success')
 ) {
     exit();
 }
@@ -40,7 +40,7 @@ $donation_id = leyka_remembered_data('donation_id');?>
                         </div>
                     </div>
 
-                <?php } else*/ if(leyka_options()->opt('show_subscription_on_success')) {?>
+                <?php } else*/ if(leyka_options()->opt('show_success_widget_on_success')) {?>
 
                     <div class="thankyou-email-field">
                         <div class="donor__textfield">

@@ -795,6 +795,14 @@ function leyka_revo_template_displayed() {
 
 }
 
+function leyka_success_widget_displayed() {
+    return leyka_options()->opt('show_success_widget_on_success') && is_page(leyka_options()->opt('success_page'));
+}
+
+function leyka_failure_widget_displayed() {
+    return leyka_options()->opt('show_failure_widget_on_failure') && is_page(leyka_options()->opt('failure_page'));
+}
+
 /** ITV info-widget **/
 function leyka_itv_info_widget() {
 

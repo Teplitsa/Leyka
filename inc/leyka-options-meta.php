@@ -614,7 +614,7 @@ self::$_options_meta = array(
         'list_entries' => array(),
         'validation_rules' => array(), // List of regexp?..
     ),
-    'show_subscription_on_success' => array(
+    'show_success_widget_on_success' => array(
         'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
         'default' => 1,
         'title' => __('Email subscription widget on the successful donation page', 'leyka'),

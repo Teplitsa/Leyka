@@ -732,7 +732,8 @@ class Leyka {
             return;
         }
 
-        if(leyka_revo_template_displayed()) { // Revo template styles
+        // Revo template or success/failure widgets styles:
+        if(leyka_revo_template_displayed() || leyka_success_widget_displayed() || leyka_failure_widget_displayed()) {
             wp_enqueue_style(
                 $this->_plugin_slug.'-revo-plugin-styles',
                 LEYKA_PLUGIN_BASE_URL.'assets/css/public.css',
@@ -758,7 +759,8 @@ class Leyka {
             return;
         }
 
-        if(leyka_revo_template_displayed()) { // Revo template JS
+        // Revo template or success/failure widgets JS:
+        if(leyka_revo_template_displayed() || leyka_success_widget_displayed() || leyka_failure_widget_displayed()) {
             wp_enqueue_script(
                 $this->_plugin_slug.'-revo-public',
                 LEYKA_PLUGIN_BASE_URL.'assets/js/public.js',
