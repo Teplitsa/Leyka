@@ -786,7 +786,7 @@ function leyka_revo_template_displayed() {
         $campaign = new Leyka_Campaign(get_post());
         $revo_displayed = $campaign->template == 'revo';
 
-    } else if(has_shortcode(get_post()->post_content, 'leyka_inline_campaign')) {
+    } else if(get_post() && has_shortcode(get_post()->post_content, 'leyka_inline_campaign')) {
         $revo_displayed = true;
         /** @todo Refactor this logic! Right now the check doesn't watch if shortcode uses Revo template or not */
     }
