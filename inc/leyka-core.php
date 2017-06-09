@@ -91,13 +91,9 @@ class Leyka {
         add_filter('query_vars', array($this, 'insert_rewrite_query_vars'));
 
         function leyka_session_start() {
-
             if( !session_id() ) {
                 session_start();
             }
-
-            $_SESSION['revo_displayed'] = false; /** @todo Remove this var uses after donation forms templates CSS refactoring */
-
         }
         add_action('init', 'leyka_session_start', -2);
 
