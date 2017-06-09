@@ -36,26 +36,26 @@ add_action('wp_enqueue_scripts', 'leyka_rev2_cssjs');
 function leyka_rev2_cssjs() {
 	//for dev just load them everywhere
 
-	wp_enqueue_style(
-		'leyka-rev',
-		LEYKA_PLUGIN_BASE_URL.'assets/css/public.css',
-		array(),
-        rand() #LEYKA_VERSION
-	);
-
-	wp_enqueue_script(
-        'leyka-rev',
-        LEYKA_PLUGIN_BASE_URL.'assets/js/public.js',
-		array('jquery'),
-        rand(), #LEYKA_VERSION,
-        true
-    );
-
-	$js_data = apply_filters('leyka_js_localized_strings', array(
-        'ajaxurl' => admin_url('admin-ajax.php')
-    ));
-
-    wp_localize_script('leyka-rev', 'leykarev', $js_data);
+//	wp_enqueue_style(
+//		'leyka-rev',
+//		LEYKA_PLUGIN_BASE_URL.'assets/css/public.css',
+//		array(),
+//        rand() #LEYKA_VERSION
+//	);
+//
+//	wp_enqueue_script(
+//        'leyka-rev',
+//        LEYKA_PLUGIN_BASE_URL.'assets/js/public.js',
+//		array('jquery'),
+//        rand(), #LEYKA_VERSION,
+//        true
+//    );
+//
+//	$js_data = apply_filters('leyka_js_localized_strings', array(
+//        'ajaxurl' => admin_url('admin-ajax.php')
+//    ));
+//
+//    wp_localize_script('leyka-rev', 'leykarev', $js_data);
 }
 
 add_action('wp_head', 'leyka_inline_scripts');

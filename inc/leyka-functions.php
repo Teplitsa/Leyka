@@ -760,6 +760,7 @@ function leyka_form_is_screening($widgets_also = true) {
 
                 $content_has_shortcode = true;
                 break;
+
             }
         }
     }
@@ -773,6 +774,24 @@ function leyka_form_is_screening($widgets_also = true) {
         apply_filters('leyka_form_is_screening', false);
 
     return $form_is_screening;
+
+}
+
+function leyka_revo_template_displayed() {
+
+    $revo_displayed = false;
+
+    if(is_singular(Leyka_Campaign_Management::$post_type)) {
+
+        $campaign = new Leyka_Campaign(get_post());
+        $revo_displayed = $campaign->template == 'revo';
+
+    } else if(has_shortcode(get_post()->post_content, 'leyka_inline_campaign')) {
+        $revo_displayed = true;
+        /** @todo Refactor this logic! Right now the check doesn't watch if shortcode uses Revo template or not */
+    }
+
+    return apply_filters('leyka_revo_template_displayed', $revo_displayed);
 
 }
 

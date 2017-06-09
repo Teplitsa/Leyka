@@ -106,9 +106,9 @@ jQuery(document).ready(function($){
 
             });
 
-            if($revo_redirect_step.length) {
-                $revo_redirect_step.removeClass('leyka-pf__redirect--open');
-            }
+            // if($revo_redirect_step.length) {
+            //     $revo_redirect_step.removeClass('leyka-pf__redirect--open');
+            // }
 
             if($form.hasClass('leyka-revo-form')) {
                 $form.closest('.leyka-pf').leykaForm('close');

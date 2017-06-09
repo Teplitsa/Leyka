@@ -91,9 +91,13 @@ class Leyka {
         add_filter('query_vars', array($this, 'insert_rewrite_query_vars'));
 
         function leyka_session_start() {
+
             if( !session_id() ) {
                 session_start();
             }
+
+            $_SESSION['revo_displayed'] = false; /** @todo Remove this var uses after donation forms templates CSS refactoring */
+
         }
         add_action('init', 'leyka_session_start', -2);
 
@@ -718,7 +722,12 @@ class Leyka {
 
         if(stristr($_SERVER['REQUEST_URI'], 'leyka-process-donation') !== FALSE) { // Leyka service URL
 
-            wp_enqueue_style($this->_plugin_slug.'-redirect-styles', LEYKA_PLUGIN_BASE_URL.'css/gateway-redirect-page.css', array(), LEYKA_VERSION);
+            wp_enqueue_style(
+                $this->_plugin_slug.'-redirect-styles',
+                LEYKA_PLUGIN_BASE_URL.'css/gateway-redirect-page.css',
+                array(),
+                LEYKA_VERSION
+            );
             return;
 
         }
@@ -727,8 +736,22 @@ class Leyka {
             return;
         }
 
-        #wp_enqueue_style($this->_plugin_slug.'-plugin-styles', LEYKA_PLUGIN_BASE_URL.'css/public.css', array(), LEYKA_VERSION);
-        wp_enqueue_style($this->_plugin_slug.'-plugin-styles', LEYKA_PLUGIN_BASE_URL.'css/public.css', array(), rand());
+        if(leyka_revo_template_displayed()) { // Revo template styles
+            wp_enqueue_style(
+                $this->_plugin_slug.'-revo-plugin-styles',
+                LEYKA_PLUGIN_BASE_URL.'assets/css/public.css',
+                array(),
+                LEYKA_VERSION
+            );
+        }
+
+        // Enqueue the normal Leyka CSS just in case some other plugin elements exist on page:
+        wp_enqueue_style(
+            $this->_plugin_slug.'-plugin-styles',
+            LEYKA_PLUGIN_BASE_URL.'css/public.css',
+            array(),
+            LEYKA_VERSION
+        );
 
     }
 
@@ -739,17 +762,30 @@ class Leyka {
             return;
         }
 
+        if(leyka_revo_template_displayed()) { // Revo template JS
+            wp_enqueue_script(
+                $this->_plugin_slug.'-revo-public',
+                LEYKA_PLUGIN_BASE_URL.'assets/js/public.js',
+                array('jquery',),
+                LEYKA_VERSION,
+                true
+            );
+        }
+
+        // Enqueue the normal Leyka scripts just in case some other plugin elements exist on page:
         wp_enqueue_script(
             $this->_plugin_slug.'-modal',
-            LEYKA_PLUGIN_BASE_URL.'js/jquery.easyModal.min.js', array('jquery'),
+            LEYKA_PLUGIN_BASE_URL.'js/jquery.easyModal.min.js',
+            array('jquery'),
             LEYKA_VERSION,
             true
         );
 
         wp_enqueue_script(
             $this->_plugin_slug.'-public',
-            LEYKA_PLUGIN_BASE_URL.'js/public.js', array('jquery', $this->_plugin_slug.'-modal'),
-            rand(), #LEYKA_VERSION
+            LEYKA_PLUGIN_BASE_URL.'js/public.js',
+            array('jquery', $this->_plugin_slug.'-modal'),
+            LEYKA_VERSION,
             true
         );
 
