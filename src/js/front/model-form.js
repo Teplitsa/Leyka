@@ -445,7 +445,7 @@
 
             if($_link.hasClass('monthly')) {
 
-                $_step.find('input[name="monthly"]').val(1);
+                $_step.find('input.is-recurring-chosen').val(1);
                 $_form.find('.remembered-amount').text(amount);
                 $_form.find('.remembered-monthly').show();
 
@@ -458,7 +458,7 @@
 
             } else {
 
-                $_step.find('input[name="monthly"]').val(0);
+                $_step.find('input.is-recurring-chosen').val(0);
                 $_form.find('.remembered-amount').text(amount);
                 $_form.find('.remembered-monthly').hide();
                 $_form.find('.remembered-payment').parents('.leyka-js-another-step').attr('href', 'cards');
@@ -466,7 +466,6 @@
                 $_form.find('.payment-opt__radio').prop('checked', false); // Reset payment option
 
             }
-
 
             $_step.removeClass('step--active');
             $_form.find('.step--'+target).addClass('step--active');

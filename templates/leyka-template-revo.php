@@ -33,7 +33,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
 
             </div>
 
-            <input type="hidden" name="monthly" class="is-recurring-chosen" value="0">
+            <input type="hidden" name="leyka_recurring" class="is-recurring-chosen" value="0">
 
             <div class="amount__icon">
                 <svg class="svg-icon icon-money-size3"><use xlink:href="#icon-money-size3" /></svg>
@@ -108,7 +108,11 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
         }?>
     <div class="step step--static <?php echo $pm->full_id;?>">
         <div class="step__selection">
-            <a href="amount" class="leyka-js-another-step"><span class="remembered-amount">#SUM#</span>&nbsp;<span class='curr-mark'><?php echo $template_data['currency_label'];?></span><span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span></a>
+            <a href="amount" class="leyka-js-another-step">
+                <span class="remembered-amount">#SUM#</span>&nbsp;
+                <span class='curr-mark'><?php echo $template_data['currency_label'];?></span>
+                <span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span>
+            </a>
             <a href="cards" class="leyka-js-another-step"><span class="remembered-payment">#PM_LABEL#</span></a>
         </div>
 
@@ -133,7 +137,11 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
     <div class="step step--person">
 
         <div class="step__selection">
-            <a href="amount" class="leyka-js-another-step"><span class="remembered-amount">#SUM#</span>&nbsp;<span class='curr-mark'><?php echo $template_data['currency_label'];?></span><span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span></a>
+            <a href="amount" class="leyka-js-another-step">
+                <span class="remembered-amount">#SUM#</span>&nbsp;
+                <span class='curr-mark'><?php echo $template_data['currency_label'];?></span>
+                <span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span>
+            </a>
             <a href="cards" class="leyka-js-another-step"><span class="remembered-payment">#PM_LABEL#</span></a>
         </div>
 
