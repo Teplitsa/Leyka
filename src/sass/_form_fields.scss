@@ -179,6 +179,10 @@ div[id *="leyka-pf-"] {
 			&:hover, &:focus, &:active {
 				color: darken($color-link, 10%);
 			}
+			
+			span.remembered-amount:after, span.curr-mark:after {
+			    content: " ";
+			}
 		}
 	}
 
