@@ -1277,7 +1277,7 @@ __('Toggled options for each payment method', 'leyka');
 __('Neo', 'leyka');
 __('An updated version of "Toggles" form template', 'leyka');
 __('Revo', 'leyka');
-__('The modern and lightweight step-by-step form template', 'leyka');
+__('A modern and lightweight step-by-step form template', 'leyka');
 __('single', 'leyka');
 __('rebill', 'leyka');
 __('correction', 'leyka');
