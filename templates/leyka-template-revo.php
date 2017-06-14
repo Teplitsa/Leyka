@@ -76,8 +76,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
 
         <div class="step__selection">
             <a href="amount" class="leyka-js-another-step">
-                <span class="remembered-amount">#SUM#</span>&nbsp;<span class='curr-mark'><?php echo $template_data['currency_label'];?></span>
-                <span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span>
+                <span class="remembered-amount">#SUM#</span><span class="curr-mark"><?php echo $template_data['currency_label'];?></span><span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span>
             </a>
         </div>
 
@@ -85,7 +84,12 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
 
         <div class="step__fields payments-grid">
 
-        <?php foreach($template_data['pm_list'] as $pm) { /** @var $pm Leyka_Payment_Method */?>
+        <?php foreach($template_data['pm_list'] as $number => $pm) { /** @var $pm Leyka_Payment_Method */
+
+            if($number > 3) { // Max. 4 PM blocks
+                break;
+            }?>
+
             <div class="payment-opt">
                 <label class="payment-opt__button">
                     <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>" data-has-recurring="<?php echo $pm->has_recurring_support() ? '1' : '0';?>">
@@ -109,8 +113,8 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
     <div class="step step--static <?php echo $pm->full_id;?>">
         <div class="step__selection">
             <a href="amount" class="leyka-js-another-step">
-                <span class="remembered-amount">#SUM#</span>&nbsp;
-                <span class='curr-mark'><?php echo $template_data['currency_label'];?></span>
+                <span class="remembered-amount">#SUM#</span>
+                <span class="curr-mark"><?php echo $template_data['currency_label'];?></span>
                 <span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span>
             </a>
             <a href="cards" class="leyka-js-another-step"><span class="remembered-payment">#PM_LABEL#</span></a>
@@ -138,9 +142,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
 
         <div class="step__selection">
             <a href="amount" class="leyka-js-another-step">
-                <span class="remembered-amount">#SUM#</span>&nbsp;
-                <span class='curr-mark'><?php echo $template_data['currency_label'];?></span>
-                <span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span>
+                <span class="remembered-amount">#SUM#</span><span class="curr-mark"><?php echo $template_data['currency_label'];?></span><span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span>
             </a>
             <a href="cards" class="leyka-js-another-step"><span class="remembered-payment">#PM_LABEL#</span></a>
         </div>
