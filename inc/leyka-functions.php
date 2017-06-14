@@ -178,8 +178,8 @@ function leyka_get_default_success_page() {
             'post_type' => 'page',
             'post_status' => 'publish',
             'post_name' => 'thank-you-for-your-donation',
-            'post_title' => __('Your donation completed!', 'leyka'),
-            'post_content' => __('We heartly thank you for your help!', 'leyka'),
+            'post_title' => __('Thank you!', 'leyka'),
+            'post_content' => __('Your donation completed. We are grateful for your help.', 'leyka'),
         ));
 
         do_action('leyka_default_success_page_created', $page);
@@ -232,7 +232,7 @@ function leyka_get_default_failure_page() {
             'post_type' => 'page',
             'post_status' => 'publish',
             'post_name' => 'sorry-donation-failure',
-            'post_title' => __('Your donation failed', 'leyka'),
+            'post_title' => __('Payment failure', 'leyka'),
             'post_content' => __('We are deeply sorry, but for some technical reason we failed to receive your donation. Your money are intact. Please try again later!', 'leyka'),
         ));
 

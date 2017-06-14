@@ -27,9 +27,9 @@ if($donation_id) {
 
         <div class="error-text"><div><?php
                if(leyka_options()->opt('tech_support_email') && leyka_validate_email(leyka_options()->opt('tech_support_email'))) {
-                   printf(__('Please try to <a href="%s" class="leyka-js-try-again">donate again</a>. If the error continues to occur, please use another payment method or <a href="mailto:%s">contact our technical support</a>.', 'leyka'), $campaign ? $campaign->url : home_url('/'), leyka_options()->opt('tech_support_email'));
+                   printf(__("We've received the error report and are working to fix it. Please try to <a href='%s' class='leyka-js-try-again'>donate again</a>. If the error continues to occur, please use another payment method or <a href='mailto:%s'>contact our technical support</a>.", 'leyka'), $campaign ? $campaign->url : home_url('/'), leyka_options()->opt('tech_support_email'));
                } else {
-                   printf(__('Please try to <a href="%s" class="leyka-js-try-again">donate again</a>. If the error continues to occur, please use another payment method or try donating again later.', 'leyka'), $campaign ? $campaign->url : home_url('/'));
+                   printf(__("We've received the error report and are working to fix it. Please try to <a href='%s' class='leyka-js-try-again'>donate again</a>. If the error continues to occur, please use another payment method or try donating again later.", 'leyka'), $campaign ? $campaign->url : home_url('/'));
                }?></div></div>
         <div class="leyka-logo"> </div>
 

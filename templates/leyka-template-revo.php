@@ -1,7 +1,7 @@
 <?php if( !defined('WPINC') ) die;
 /**
  * Leyka Template: Revo
- * Description: The modern and lightweight step-by-step form template
+ * Description: A modern and lightweight step-by-step form template
  **/
 
 $campaign = Leyka_Revo_Template_Controller::get_instance()->get_current_campaign();
