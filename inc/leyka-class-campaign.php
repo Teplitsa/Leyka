@@ -230,7 +230,7 @@ class Leyka_Campaign_Management {
 			<input type="text" id="collected_target" disabled="disabled" value="<?php echo $campaign->total_funded;?>" class="widefat">
             <?php if(get_current_screen()->action != 'add') {?>
             <div class="recalculate-total-funded">
-                <a href="<?php echo add_query_arg(array('recalculate_total_funded' => 1,));?>" id="recalculate_total_funded" data-nonce="<?php echo wp_create_nonce('leyka_recalculate_total_funded_amount');?>" data-campaign-id="<?php echo $campaign->id;?>"><?php _e('Recalculate collected amount', 'leyka');?></a>
+                <a href="<?php echo add_query_arg(array('recalculate_total_funded' => 1,));?>" id="recalculate_total_funded" data-nonce="<?php echo wp_create_nonce('leyka_recalculate_total_funded_amount');?>" data-campaign-id="<?php echo $campaign->id;?>"><?php _e('Recalculate the collected amount', 'leyka');?></a>
                 <img src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/ajax-loader-h.gif';?>" id="recalculate_total_funded_loader" style="display: none;">
                 <div class="message error-message" id="recalculate_message"></div>
             </div>
@@ -248,11 +248,9 @@ class Leyka_Campaign_Management {
 					<div style="width:<?php echo $percentage;?>%" class="collected">&nbsp;</div>
 				</div>
 			</div>
-			
+
 			<?php if($campaign->target_state == 'is_reached') {?>        
-			<p>
-				<?php printf(__('Reached at: %s', 'leyka'), '<b>'.$campaign->date_target_reached.'</b>');?>
-			</p>            
+			<p><?php printf(__('Reached at: %s', 'leyka'), '<b>'.$campaign->date_target_reached.'</b>');?></p>
 			<?php }?>
 
 		<?php }?>
@@ -263,10 +261,11 @@ class Leyka_Campaign_Management {
 
         <fieldset id="campaign-finished" class="metabox-field campaign-field campaign-finished">
             <label for="is-finished">
-                <input type="checkbox" id="is-finished" name="is_finished" value="1" <?php echo $campaign->is_finished ? 'checked' : '';?> /> <?php _e('Campaign is finished, donations collection is stopped', 'leyka');?>
+                <input type="checkbox" id="is-finished" name="is_finished" value="1" <?php echo $campaign->is_finished ? 'checked' : '';?>> <?php _e('Donations collection finished. Thank you for your support!', 'leyka');?>
             </label>
         </fieldset>
-	<?php }
+	    <?php }
+
     }
 
     public function statistics_meta_box(WP_Post $campaign) { $campaign = new Leyka_Campaign($campaign);?>
@@ -279,6 +278,7 @@ class Leyka_Campaign_Management {
             <span class="stats-label"><?php _e('Donation attempts:', 'leyka');?></span>
             <span class="stats-data"><?php echo $campaign->submits_count;?> <?php _e('times', 'leyka');?></span>
         </div>
+
     <?php
     }
 
@@ -287,6 +287,7 @@ class Leyka_Campaign_Management {
         <label for="excerpt"></label>
         <textarea id="excerpt" name="excerpt" cols="40" rows="1"><?php echo $campaign->post_excerpt;?></textarea>
         <p><?php _e('Annotation is an optional summary of campaign description that can be used in templates.', 'leyka');?></p>
+
     <?php }
 
     public function donations_meta_box(WP_Post $campaign) { $campaign = new Leyka_Campaign($campaign);?>
@@ -607,6 +608,7 @@ class Leyka_Campaign {
             case 'description': return $this->_post_object ? $this->_post_object->post_content : '';
             case 'excerpt':
             case 'post_excerpt':
+            case 'post_name': return $this->_post_object ? $this->_post_object->post_name : '';
             case 'short_description': return $this->_post_object ? $this->_post_object->post_excerpt : '';
             case 'status': return $this->_post_object ? $this->_post_object->post_status : '';
             case 'permalink':
@@ -797,4 +799,9 @@ class Leyka_Campaign {
 
         return $this;
     }
+
+    public function delete($force = False) {
+        wp_delete_post( $this->_id, $force );
+    }
+    
 }

@@ -1,11 +1,11 @@
 <?php if( !defined('WPINC') ) die;
 /**
  * Leyka Template: Neo
- * Description: Styled after recent te-st.ru works, more modern variant of Toggles form template
+ * Description: An updated version of "Toggles" form template
  **/
 
 $active_pm = apply_filters('leyka_form_pm_order', leyka_get_pm_list(true));
-$supported_curr = leyka_get_active_currencies();
+$supported_curr = leyka_get_currencies_data();
 $mode = leyka_options()->opt('donation_sum_field_type'); // fixed/flexible/mixed
 
 global $leyka_current_pm; /** @todo Make it a Leyka_Payment_Form class singleton */
@@ -28,7 +28,7 @@ leyka_pf_submission_errors();?>
                 <?php echo leyka_pf_get_pm_label();?>
             </div>
             <div class="leyka-toggle-area">
-                <form class="leyka-pm-form" id="<?php echo leyka_pf_get_form_id();?>" action="<?php echo leyka_pf_get_form_action();?>" method="post">
+                <form class="leyka-pm-form" action="<?php echo leyka_pf_get_form_action();?>" method="post">
 
                     <div class="leyka-pm-fields">
 

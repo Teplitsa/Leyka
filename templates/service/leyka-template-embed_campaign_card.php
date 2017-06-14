@@ -78,7 +78,7 @@ $campaign = new Leyka_Campaign(get_post());?>
 	}
 
 	.lk-title + p:before {
-		content: '';		
+		content: '';
 		display: block;
 		width: 100%;
 		height: 40px;

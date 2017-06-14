@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="28px" height="28px" viewBox="0 0 28 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <g stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g fill-rule="nonzero">
+            <circle cx="14" cy="14" r="14" fill="#FFFFFF" stroke="#E6E7E9" stroke-width="1"></circle>
+            <circle cx="14" cy="14" r="4"></circle>
+        </g>
+    </g>
+</svg>

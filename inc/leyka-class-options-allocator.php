@@ -133,7 +133,7 @@ class Leyka_Options_Allocator {
                         'is_default_collapsed' => true,
                         'options' => array(
                             'notify_donations_managers', 'notify_managers_on_recurrents', 'donations_managers_emails',
-                            'email_notification_title', 'email_notification_text',
+                            'email_notification_title', 'email_notification_text', 'tech_support_email',
                         )
                     ),),
                 );
@@ -142,12 +142,22 @@ class Leyka_Options_Allocator {
             case 'view':
                 $options_allocated = array(
                     array('section' => array(
-                        'name' => 'campaign_template_options',
+                        'name' => 'global_campaign_templates_options',
                         'title' => __('Campaign page template', 'leyka'),
                         'is_default_collapsed' => false,
                         'options' => array(
                             'donation_form_template', 'donation_sum_field_type', 'donation_form_mode',
                             'scale_widget_place', 'donations_history_under_forms', 'show_campaign_sharing',
+                            'show_success_widget_on_success', 'show_failure_widget_on_failure',
+                        )
+                    ),),
+                    array('section' => array(
+                        'name' => 'revo_template_options',
+                        'title' => __('Revo template', 'leyka'),
+                        'is_default_collapsed' => false,
+                        'options' => array(
+                            'revo_template_slider_max_sum', //'revo_template_ask_donor_data',
+                            'revo_template_show_thumbnail',
                         )
                     ),),
                 );
@@ -161,14 +171,16 @@ class Leyka_Options_Allocator {
                         'is_default_collapsed' => false,
                         'options' => array(
                             'agree_to_terms_needed', 'agree_to_terms_text_text_part', 'agree_to_terms_text_link_part',
-                            'terms_of_service_text', 'terms_agreed_by_default', 'donation_submit_text',
+                            'terms_of_service_text', 'terms_agreed_by_default', 'donation_submit_text', 'revo_donation_complete_button_text',
                         )
                     ),),
                     array('section' => array(
                         'name' => 'misc',
                         'title' => __('Additional', 'leyka'),
                         'is_default_collapsed' => true,
-                        'options' => array('success_page', 'failure_page', 'load_scripts_if_need', 'donors_data_editable',)
+                        'options' => array(
+                            'success_page', 'failure_page', 'load_scripts_if_need', 'donors_data_editable', 'revo_thankyou_text', 'revo_thankyou_email_result_text'
+                        )
                     ),),
                     array('section' => array(
                         'name' => 'plugin_deletion',

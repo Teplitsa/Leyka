@@ -30,7 +30,7 @@ function leyka_get_pm_list($activity = null, $currency = false, $sorted = true) 
 
     if($sorted) {
 
-        $pm_order = explode('pm_order[]=', leyka_options()->opt('pm_order'));
+        $pm_order = explode('pm_order[]=', leyka_options()->opt('pm_order')); 
         array_shift($pm_order);
 
         foreach($pm_order as $pm) {
@@ -53,6 +53,7 @@ function leyka_get_pm_list($activity = null, $currency = false, $sorted = true) 
     }
 
     return apply_filters('leyka_active_pm_list', $pm_list, $activity, $currency);
+
 }
 
 /** @return boolean True if at least one PM supports recurring, false otherwise. */
@@ -77,7 +78,7 @@ function leyka_get_pm_by_id($pm_id, $is_full_id = false) {
 
     $pm = false;
     if($is_full_id) {
-		
+
 		$id = explode('-', $pm_id);
         $gateway = leyka_get_gateway_by_id(reset($id)); // Otherwise error in PHP 5.4.0
         if( !$gateway ) {
@@ -452,7 +453,7 @@ abstract class Leyka_Gateway {
 
     /**
      * @param string $pm_id
-     * @return Leyka_Payment_Method Object, or false if it's not found. 
+     * @return Leyka_Payment_Method Object, or false if it's not found.
      */
     public function get_payment_method_by_id($pm_id) {
         return empty($this->_payment_methods[$pm_id]) ? false : $this->_payment_methods[$pm_id];
@@ -507,10 +508,12 @@ abstract class Leyka_Payment_Method {
     protected $_support_global_fields = true;
     protected $_custom_fields = array();
     protected $_icons = array();
+    protected $_main_icon = '';
     protected $_submit_label = '';
     protected $_supported_currencies = array();
     protected $_default_currency = '';
     protected $_options = array();
+    protected $_processing_type = 'default';
 
     public final static function get_instance() {
 
@@ -518,9 +521,11 @@ abstract class Leyka_Payment_Method {
 
             static::$_instance = new static();
             static::$_instance->_initialize_options();
+
         }
 
         return static::$_instance;
+
     }
 
     final protected function __clone() {}
@@ -532,6 +537,7 @@ abstract class Leyka_Payment_Method {
         $this->_set_attributes();
         $this->_initialize_options();
         $this->_set_dynamic_attributes();
+
     }
 
     public function __get($param) {
@@ -546,11 +552,7 @@ abstract class Leyka_Payment_Method {
             case 'title':
             case 'name':
                 $param = leyka_options()->opt_safe($this->full_id.'_label');
-                $param = apply_filters(
-                    'leyka_get_pm_label',
-                    $param && $param != $this->_label ? $param : $this->_label,
-                    $this
-                );
+                $param = apply_filters('leyka_get_pm_label', $param && $param != $this->_label ? $param : $this->_label, $this);
                 break;
             case 'label_backend':
             case 'title_backend':
@@ -561,15 +563,23 @@ abstract class Leyka_Payment_Method {
             case 'has_global_fields': $param = $this->_support_global_fields; break;
             case 'custom_fields': $param = $this->_custom_fields ? $this->_custom_fields : array(); break;
             case 'icons': $param = $this->_icons; break;
+            case 'main_icon': /** @todo Mb, add a filter here to set a custom main icon */
+                $param = $this->_main_icon ? $this->_main_icon : 'pic-main-'.$this->full_id;
+                break;
             case 'submit_label': $param = $this->_submit_label; break;
             case 'currencies': $param = $this->_supported_currencies; break;
             case 'default_currency': $param = $this->_default_currency; break;
+            case 'processing_type':
+            case 'processing':
+                $param = $this->_processing_type;
+                break;
             default:
 //                trigger_error('Error: unknown param "'.$param.'"');
                 $param = null;
         }
 
         return $param;
+
     }
 
     abstract protected function _set_attributes();
@@ -598,9 +608,7 @@ abstract class Leyka_Payment_Method {
     abstract protected function _set_options_defaults();
 
     protected final function _add_options() {
-
         foreach($this->_options as $option_name => $params) {
-
             if( !leyka_options()->option_exists($option_name) ) {
                 leyka_options()->add_option($option_name, $params['type'], $params);
             }
@@ -636,6 +644,7 @@ abstract class Leyka_Payment_Method {
         $this->_description = leyka_options()->opt_safe($this->full_id.'_description');
 
         add_filter('leyka_payment_options_allocation', array($this, 'allocate_pm_options'), 10, 1);
+
     }
 
     public function get_pm_options_names() {
@@ -651,7 +660,7 @@ abstract class Leyka_Payment_Method {
     /** Allocate gateway options, if needed */
     public function allocate_pm_options($options) {
 
-        $gateway = leyka_get_gateway_by_id($this->_gateway_id); 
+        $gateway = leyka_get_gateway_by_id($this->_gateway_id);
         $gateway_section_index = -1;
 
         foreach($options as $index => $option) {
@@ -681,4 +690,8 @@ abstract class Leyka_Payment_Method {
 
         return $options;
     }
+
+    /** For PM with a static processing type, this method should display some static data. Otherwise, it may stay empty. */
+    public function display_static_data() {}
+
 } // Leyka_Payment_Method end

@@ -90,7 +90,7 @@ function leyka_get_validated_donation($donation) {
 
 /**
  * @param $campaign mixed
- * @return Leyka_Campaign A campaign object, if parameter is valid in one way or another; false otherwise.
+ * @return mixed A Leyka_Campaign instance if parameter is valid in one way or another; false otherwise.
  */
 function leyka_get_validated_campaign($campaign) {
 
@@ -103,6 +103,7 @@ function leyka_get_validated_campaign($campaign) {
     }
 
     return $campaign ? $campaign : false;
+
 }
 
 /** Get WP pages list as an array. Used mainly to form a dropdowns. */
@@ -273,9 +274,9 @@ function leyka_get_form_templates_list() {
     return $list;
 }
 
-function leyka_get_active_currencies() {
+function leyka_get_currencies_data($currency_id = false) {
 
-    return array(
+    $currencies = array(
         'rur' => array(
             'label' => leyka_options()->opt('currency_rur_label'),
             'top' => leyka_options()->opt('currency_rur_max_sum'),
@@ -304,18 +305,21 @@ function leyka_get_active_currencies() {
             ),
         ),
     );
+
+    return $currency_id && !empty($currencies[$currency_id]) ? $currencies[$currency_id] : $currencies;
+
 }
 
 function leyka_get_currency_data($currency_code) {
 
-    $currecies = leyka_get_active_currencies();
+    $currecies = leyka_get_currencies_data();
 
     return isset($currecies[$currency_code]) ? $currecies[$currency_code] : false;
 }
 
 function leyka_get_currency_label($currency_code) {
 
-    $currecies = leyka_get_active_currencies();
+    $currecies = leyka_get_currencies_data();
 
     return isset($currecies[$currency_code]['label']) ? $currecies[$currency_code]['label'] : false;
 }
@@ -339,7 +343,7 @@ function leyka_get_campaign_target_states_list() {
  * Get campaign target - template tag
  * 
  * @var $campaign integer Campaign ID.
- * @return mixed Array of campaign target info, or false if wrong campaign ID given.
+ * @return mixed Array of campaign target info, false if wrong campaign ID given, or int 0 if a campaign doesn't have a target.
  */
 function leyka_get_campaign_target($campaign) {
 
@@ -353,10 +357,11 @@ function leyka_get_campaign_target($campaign) {
         return false;
     }
 
-    return array(
+    return $campaign->target ? array(
         'amount' => $campaign->target,
         'currency' => 'rur', // Currently, target is always in RUR  
-    );
+    ) : 0;
+
 }
 
 /**
@@ -497,6 +502,7 @@ function leyka_get_payment_type_label($type) {
 
     $types = leyka_get_payment_types_list();
     return in_array($type, array_keys($types)) ? $types[$type] : false;
+
 }
 
 /**
@@ -754,6 +760,7 @@ function leyka_form_is_screening($widgets_also = true) {
 
                 $content_has_shortcode = true;
                 break;
+
             }
         }
     }
@@ -767,6 +774,33 @@ function leyka_form_is_screening($widgets_also = true) {
         apply_filters('leyka_form_is_screening', false);
 
     return $form_is_screening;
+
+}
+
+function leyka_revo_template_displayed() {
+
+    $revo_displayed = false;
+
+    if(is_singular(Leyka_Campaign_Management::$post_type)) {
+
+        $campaign = new Leyka_Campaign(get_post());
+        $revo_displayed = $campaign->template == 'revo';
+
+    } else if(get_post() && has_shortcode(get_post()->post_content, 'leyka_inline_campaign')) {
+        $revo_displayed = true;
+        /** @todo Refactor this logic! Right now the check doesn't watch if shortcode uses Revo template or not */
+    }
+
+    return apply_filters('leyka_revo_template_displayed', $revo_displayed);
+
+}
+
+function leyka_success_widget_displayed() {
+    return leyka_options()->opt('show_success_widget_on_success') && is_page(leyka_options()->opt('success_page'));
+}
+
+function leyka_failure_widget_displayed() {
+    return leyka_options()->opt('show_failure_widget_on_failure') && is_page(leyka_options()->opt('failure_page'));
 }
 
 /** ITV info-widget **/
@@ -788,6 +822,18 @@ function leyka_itv_info_widget() {
         <p><a href="<?php echo $itv_url;?>" target="_blank" class="button">Опубликовать задачу</a></p>
     </div>
 <?php
+}
+
+function leyka_format_amount($amount) {
+
+    if((int)$amount >= 0) {
+        $amount_is_float = (float)$amount - (int)$amount > 0;
+    } else {
+        return false;
+    }
+
+    return number_format((float)$amount, $amount_is_float ? 2 : 0, '.', ' ');
+
 }
 
 function leyka_validate_donor_name($name) {
@@ -854,6 +900,85 @@ if( !function_exists('leyka_get_client_ip') ) {
                     getenv('HTTP_FORWARDED_FOR') ? :
                         getenv('HTTP_FORWARDED') ? :
                             getenv('REMOTE_ADDR');
+    }
+
+}
+
+function leyka_get_campaign_donations($campaign, $limit = false) {
+
+    $campaign = (int)$campaign;
+    if($campaign <= 0) {
+        return false;
+    }
+
+    $campaign = new Leyka_Campaign($campaign);
+    if( !$campaign->id ) {
+        return false;
+    }
+
+    $limit = (int)$limit > 0 ? (int)$limit : false;
+
+    $params = array(
+        'post_type' => Leyka_Donation_Management::$post_type,
+        'nopaging' => true,
+        'post_status' => 'funded',
+        'meta_query' => array(
+            array(
+                'key' => 'leyka_campaign_id',
+                'value' => $campaign->id,
+                'compare' => '=',
+            ),
+        ),
+    );
+
+    if($limit) {
+
+        unset($params['nopaging']);
+        $params['posts_per_page'] = $limit;
+
+    }
+
+    $donations = array();
+    foreach(get_posts($params) as $donation) {
+        $donations[] = new Leyka_Donation($donation);
+    }
+
+    return $donations;
+
+}
+
+function leyka_get_donations_archive_url($campaign_id = false) {
+
+    if((int)$campaign_id > 0) {
+
+        $campaign = get_post($campaign_id);
+
+        $donations_permalink = trim(get_permalink($campaign_id), '/');
+        if(strpos($donations_permalink, '?')) {
+            $donations_permalink = home_url('?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter='.$campaign->post_name);
+        } else {
+            $donations_permalink = $donations_permalink.'/donations/';
+        }
+
+    } else {
+        $donations_permalink = get_option('permalink-structure') ?
+            home_url('/donations/') : home_url('?post_type='.Leyka_Donation_Management::$post_type);
+    }
+
+    return $donations_permalink;
+
+}
+
+function leyka_remembered_data($name, $value = null, $delete = false) {
+
+    $name = stripos($name, 'leyka_') === false ? 'leyka_'.$name : $name;
+
+    if($value) {
+        return setcookie($name, trim($value), time()+60*60, COOKIEPATH, COOKIE_DOMAIN, false);
+    } else if( !!$delete ) {
+        return setcookie($name, '', time()-3600, COOKIEPATH, COOKIE_DOMAIN, false);
+    } else {
+        return empty($_COOKIE[$name]) ? '' : trim($_COOKIE[$name]);
     }
 
 }

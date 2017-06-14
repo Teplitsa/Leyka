@@ -1,0 +1,159 @@
+/** == Seetings and variables (_presets.scss)  == **/
+
+
+//sizes
+$base :  8px;
+
+$one : 420px;
+$two : 640px;
+$three : 800px;
+
+
+//colors
+
+//declare CSS variables - this will be inlined in PHP
+/*:root {
+  --color-main: 		#1db318;
+  --color-main-dark: 	#1aa316;
+  --color-main-light: 	#8ae724;
+}*/
+
+
+//SASS variables
+$color-main: 		var(--color-main);
+$color-main-dark: 	var(--color-main-dark);
+
+$color-link :	#2963E8;
+$color-text:	#333333;
+$color-white:	#ffffff;
+
+$color-text-black:		#000000;
+$color-text-semi:		#666666;
+$color-text-light:		#999999;
+$color-text-light2:		#b2b2b2;
+
+$color-border-normal:	#cccccc;
+$color-border-light:	#eeeeee;
+$color-border-tiny:		#f6f6f6;
+$color-border-dark:		#353d3f;
+
+$color-form-invalid:	#D0011B;
+$color-form-active:		var(--color-main-light);
+
+
+
+@function color($color-name) {
+  @return var(--color-#{$color-name});
+}
+
+
+/** == Elements == **/
+@mixin button($mod: default){
+	@include body-text();
+	display: inline-block;
+
+	text-transform: uppercase;
+	color: $color-white;
+	background: $color-main;
+	padding: 10px 26px;
+	text-align: center;
+	border: none;
+	border-radius: 23px;
+	transition: all 0.35s;
+	cursor: pointer;
+
+	&:visited {
+		color: $color-white;
+	}
+	&:hover, &:focus {
+		background: $color-main-dark;
+	}
+
+	@if $mod == small {
+		text-transform: none;
+		padding: 6px 24px;
+		border-radius: 18px;
+	}
+    @else if $mod == medium {
+        text-transform: none;
+        padding: 8px 24px 12px 24px;
+    }
+	@else if $mod == action {
+		border-radius: 27px;
+        padding: 12px 26px;
+		min-width: 200px;
+		font-size: 14px;
+    }
+	
+}
+
+@mixin supporters() {
+
+	strong { font-weight: bold; }
+	color: $color-text;
+
+	a {
+		@include internal-sublink();
+	}
+}
+
+@mixin internal-link() {
+	color: $color-link;
+	text-decoration: underline;
+	border: none;
+	font-weight: normal;
+
+	&:visited {
+		color: $color-link;
+	}
+	&:hover, &:focus, &:active {
+		color: darken($color-link, 10%);
+	}
+}
+
+@mixin internal-sublink() {
+	color: $color-text-light;
+	&:visited {
+		color: $color-text-light;
+	}
+	text-decoration: underline;
+	border: none;
+}
+
+/** == Mq == **/
+
+@mixin for($media) {
+	@if $media == small-screens {
+		@media screen and (min-width: $one) { @content; }
+	}
+	@else if $media == medium-screens {
+		@media screen and (min-width: $two) { @content; }
+	}
+	@else if $media == large-screens {
+		@media screen and (min-width: $three) { @content; }
+	}
+	@else if $media == exlarge-screens {
+		@media screen and (min-width: $four) { @content; }
+	}
+	@else if $media == xxlarge-screens {
+		@media screen and (min-width: $five) { @content; }
+	}
+}
+
+@mixin upto($media) {
+	@if $media == small-screens {
+		@media screen and (max-width: $one - 1) { @content; }
+	}
+	@else if $media == medium-screens {
+		@media screen and (max-width: $two - 1) { @content; }
+	}
+	@else if $media == large-screens {
+		@media screen and (max-width: $three - 1) { @content; }
+	}
+	@else if $media == exlarge-screens {
+		@media screen and (max-width: $four - 1) { @content; }
+	}
+	@else if $media == xxlarge-screens {
+		@media screen and (max-width: $five - 1) { @content; }
+	}
+}

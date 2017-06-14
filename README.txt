@@ -93,9 +93,9 @@ PHP at least 5.3 is required.
  * New: plugin options and data clearup function added.
  * New: fields with donation form shortcodes added in campaigns admin area.
  * Fix: problem with inactive donation amount on Radio template solved.
- * Fix: now shortcodes in Terms of service text work correctly.
+ * Fix: now shortcodes in Terms of Service text work correctly.
  * Fix: support system contacts update.
- * Fix: Terms of service text markup improved.
+ * Fix: Terms of Service text markup improved.
 
 = 2.2.13 =
  * New: "Neo" donation form template added.

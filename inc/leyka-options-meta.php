@@ -532,6 +532,17 @@ self::$_options_meta = array(
         'list_entries' => array(), // For select, radio & checkbox fields
         'validation_rules' => array(), // List of regexp?..
     ),
+    'tech_support_email' => array(
+        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'default' => '',
+        'title' => __('Website technical support email', 'leyka'),
+        'description' => __('An email for donors to write about problems during donations.', 'leyka'),
+        'required' => 0, // 1 if field is required, 0 otherwise
+        'placeholder' => __('E.g. techsupport@email.com', 'leyka'),
+        'length' => '', // For text fields
+        'list_entries' => array(), // For select, radio & checkbox fields
+        'validation_rules' => array(), // List of regexp?..
+    ),
     'donation_form_template' => array(
         'type' => 'radio', // html, rich_html, select, radio, checkbox, multi_checkbox
         'default' => 'radios',
@@ -584,8 +595,8 @@ self::$_options_meta = array(
     'donations_history_under_forms' => array(
         'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
         'default' => 1,
-        'title' => __('Display a Donations history widget below donation form', 'leyka'),
-        'description' => __('Check to display a Donations history widget below donation form', 'leyka'),
+        'title' => __('Donations history widget below donation forms', 'leyka'),
+        'description' => __('Display the widget automatically', 'leyka'),
         'required' => 0,
         'placeholder' => '', // For text fields
         'length' => '', // For text fields
@@ -595,18 +606,77 @@ self::$_options_meta = array(
     'show_campaign_sharing' => array(
         'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
         'default' => 1,
-        'title' => __('Display a campaign sharing widget below donation form', 'leyka'),
-        'description' => __('Check to display a campaign sharing widget below donation form', 'leyka'),
+        'title' => __('Campaign sharing widget below donation forms', 'leyka'),
+        'description' => __('Display the widget automatically', 'leyka'),
         'required' => 0,
         'placeholder' => '', // For text fields
         'length' => '', // For text fields
         'list_entries' => array(),
         'validation_rules' => array(), // List of regexp?..
     ),
+    'show_success_widget_on_success' => array(
+        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'default' => 1,
+        'title' => __('Email subscription widget on the successful donation page', 'leyka'),
+        'description' => __('Display the widget automatically', 'leyka'),
+        'required' => 0,
+        'placeholder' => '', // For text fields
+        'length' => '', // For text fields
+        'list_entries' => array(),
+        'validation_rules' => array(), // List of regexp?..
+    ),
+    'show_failure_widget_on_failure' => array(
+        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'default' => 1,
+        'title' => __('Failure widget on the failed donation page', 'leyka'),
+        'description' => __('Display the widget automatically', 'leyka'),
+        'required' => 0,
+        'placeholder' => '', // For text fields
+        'length' => '', // For text fields
+        'list_entries' => array(),
+        'validation_rules' => array(), // List of regexp?..
+    ),
+    'revo_template_slider_max_sum' => array(
+        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'default' => 3000,
+        'title' => __('Maximum sum available for slider', 'leyka'),
+        'description' => __('Please set the maximum sum available for slider control.', 'leyka'),
+        'required' => 1, // 1 if field is required, 0 otherwise
+        'placeholder' => '3000', // For text fields
+        'length' => 6, // For text fields
+        'list_entries' => '', // callback returns currencies selected in prev. option
+        'validation_rules' => array(), // List of regexp?..
+    ),
+//    'revo_template_ask_donor_data' => array(
+//        'type' => 'radio', // html, rich_html, select, radio, checkbox, multi_checkbox
+//        'default' => 'during-donation',
+//        'title' => __('When to display donor data form fields?', 'leyka'),
+//        'description' => '', //__('', 'leyka'),
+//        'required' => 1,
+//        'placeholder' => '', // For text fields
+//        'length' => '', // For text fields
+//        'list_entries' => array(
+//            'during-donation' => __('As a step during donation process', 'leyka'),
+//            'success-page' => __('On a payment success page', 'leyka'),
+////            'never' => __("Don't display the fields - receive donor data from payment systems", 'leyka'),
+//        ),
+//        'validation_rules' => array(), // List of regexp?..
+//    ),
+    'revo_template_show_thumbnail' => array(
+        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'default' => 1,
+        'title' => __('Display a thumbnail in inline page blocks', 'leyka'),
+        'description' => __('Check if you need to show a campaign thumbnail in inline page blocks.', 'leyka'),
+        'required' => 0,
+        'placeholder' => '', // For text fields
+        'length' => '', // For text fields
+        'list_entries' => array(), // For select, radio & checkbox fields
+        'validation_rules' => array(), // List of regexp?..
+    ),
     'agree_to_terms_needed' => array(
         'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
         'default' => 1,
-        'title' => __('To donate, donor must agree to the Terms of service', 'leyka'),
+        'title' => __('To donate, donor must agree to the Terms of Service', 'leyka'),
         'description' => __('Check if you must have donor to accept some terms before donating.', 'leyka'),
         'required' => 0,
         'placeholder' => '', // For text fields
@@ -620,7 +690,7 @@ self::$_options_meta = array(
         'title' => __('Label of checkbox of Terms acception - the first (text) part', 'leyka'),
         'description' => '',
         'required' => 1,
-        'placeholder' => __('For ex., I agree with', 'leyka'),
+        'placeholder' => __('E.g., «I agree with»', 'leyka'),
         'length' => '', // For text fields
         'list_entries' => array(), // For select, radio & checkbox fields
         'validation_rules' => array(), // List of regexp?..
@@ -640,7 +710,7 @@ self::$_options_meta = array(
         'type' => 'rich_html',
         'default' => __('Terms of donation service text. Use <br /> for line-breaks, please.', 'leyka'),
         'title' => __('A text of the Terms of donation service', 'leyka'),
-        'description' => __('Enter a text that will be shown to the donors to read the Terms of service. It have to include the following special entries:', 'leyka')."<span class='placeholders-help'>
+        'description' => __('Enter a text that will be shown to the donors to read Terms of Service. It have to include the following special entries:', 'leyka')."<span class='placeholders-help'>
             <code>#LEGAL_NAME#</code> — ".__("a legal representative of the organization", 'leyka')."<br>
             <code>#LEGAL_FACE#</code> — ".__("a legal representative of the organization", 'leyka')."<br>
             <code>#LEGAL_FACE_RP#</code> — ".__("a legal representative of the organization (in genitive case)", 'leyka')."<br>
@@ -663,8 +733,8 @@ self::$_options_meta = array(
     'terms_agreed_by_default' => array(
         'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
         'default' => false,
-        'title' => __('Donor agreement with the Terms checked by default', 'leyka'),
-        'description' => __('When donor see a donation form, the Terms of service agreement field is already checked.', 'leyka'),
+        'title' => __('Donor agreement with Terms of Service checkbox is checked by default', 'leyka'),
+        'description' => __('When donor sees a donation form, Terms of Service agreement checkbox is checked by default.', 'leyka'),
         'required' => false,
         'placeholder' => '', // For text fields
         'length' => '', // For text fields
@@ -678,6 +748,39 @@ self::$_options_meta = array(
         'description' => __('Enter the text for a submit buttons on a donation forms.', 'leyka'),
         'required' => 1,
         'placeholder' => __('For ex., «Donate» or «Support»', 'leyka'),
+        'length' => '', // For text fields
+        'list_entries' => array(), // For select, radio & checkbox fields
+        'validation_rules' => array(), // List of regexp?..
+    ),
+    'revo_donation_complete_button_text' => array(
+        'type' => 'text',
+        'default' => __('Complete donation', 'leyka'),
+        'title' => __('Label of the button to complete a donation', 'leyka'),
+        'description' => __('Enter the text for a complete donation buttons on a donation forms.', 'leyka'),
+        'required' => 1,
+        'placeholder' => __('For ex., «Complete donation» or «Close form»', 'leyka'),
+        'length' => '', // For text fields
+        'list_entries' => array(), // For select, radio & checkbox fields
+        'validation_rules' => array(), // List of regexp?..
+    ),
+    'revo_thankyou_text' => array(
+        'type' => 'text',
+        'default' => __('Thank you! We appreciate your help! Let\'s stay in touch.', 'leyka'),
+        'title' => __('Text on "Thank you" screen', 'leyka'),
+        'description' => '',
+        'required' => 1,
+        'placeholder' => __('For ex., «Thank you! We appreciate your help! Let\'s stay in touch.»', 'leyka'),
+        'length' => '', // For text fields
+        'list_entries' => array(), // For select, radio & checkbox fields
+        'validation_rules' => array(), // List of regexp?..
+    ),
+    'revo_thankyou_email_result_text' => array(
+        'type' => 'text',
+        'default' => __('We will inform you about the result by email', 'leyka'),
+        'title' => __('Text on "Donation process complete" page', 'leyka'),
+        'description' => '',
+        'required' => 1,
+        'placeholder' => __('For ex., «We will inform you about the result by email»', 'leyka'),
         'length' => '', // For text fields
         'list_entries' => array(), // For select, radio & checkbox fields
         'validation_rules' => array(), // List of regexp?..
@@ -718,8 +821,8 @@ self::$_options_meta = array(
     'delete_plugin_options' => array(
         'type' => 'checkbox',
         'default' => 0,
-        'title' => __('Remove all plugin settings when deleting it', 'leyka'),
-        'description' => __('WARNING: checking this will cause in lost of all Leyka settings. Please check only if necessary.', 'leyka'),
+        'title' => __('Remove all plugin settings upon plugin uninstall', 'leyka'),
+        'description' => __('WARNING: checking this checkbox will cause loss of all Leyka settings upon plugin uninstall. Please, proceed with caution.', 'leyka'),
         'required' => 0, // 1 if field is required, 0 otherwise
         'placeholder' => '', // For text fields
         'length' => '', // For text fields
@@ -729,8 +832,8 @@ self::$_options_meta = array(
     'delete_plugin_data' => array(
         'type' => 'checkbox',
         'default' => 0,
-        'title' => __('Remove all plugin data when deleting it', 'leyka'),
-        'description' => __('WARNING: checking this will cause in lost of all Leyka data - including all donations and campaigns. Please check only if necessary.', 'leyka'),
+        'title' => __('Remove all plugin data upon plugin uninstall', 'leyka'),
+        'description' => __('WARNING: checking this checkbox will cause loss of ALL Leyka data, including all donation and campaign transaction history, upon plugin uninstall. Please, proceed with caution.', 'leyka'),
         'required' => 0, // 1 if field is required, 0 otherwise
         'placeholder' => '', // For text fields
         'length' => '', // For text fields
@@ -740,13 +843,23 @@ self::$_options_meta = array(
     'donors_data_editable' => array(
         'type' => 'checkbox',
         'default' => 0,
-        'title' => __('All donation types donors data may be edited', 'leyka'),
-        'description' => __('Donation administrators and managers are allowed to edit non-correctional donations donors 
-        data.', 'leyka'),
+        'title' => __("You can edit donors' data for all donation types", 'leyka'),
+        'description' => __("Donation administrators and managers are allowed to edit donors' data for non-correctional donations.", 'leyka'),
         'required' => 0, // 1 if field is required, 0 otherwise
         'placeholder' => '', // For text fields
         'length' => '', // For text fields
         'list_entries' => array(),
+        'validation_rules' => array(), // List of regexp?..
+    ),
+    'main_currency' => array(
+        'type' => 'select',
+        'default' => 'rur',
+        'title' => __('Primary currency', 'leyka'),
+        'description' => '',
+        'required' => 1, // 1 if field is required, 0 otherwise
+        'placeholder' => '', // For text fields
+        'length' => '', // For text fields
+        'list_entries' => array('rur' => __('RUR', 'leyka'), 'usd' => __('$', 'leyka'), 'eur' => __('euro', 'leyka'),),
         'validation_rules' => array(), // List of regexp?..
     ),
 );

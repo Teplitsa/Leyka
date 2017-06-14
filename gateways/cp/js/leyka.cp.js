@@ -1,22 +1,27 @@
 jQuery(document).ready(function($){
 
-    $(document).on('submit.leyka', 'form.leyka-pm-form', function(e){
+    $(document).on('submit.leyka', 'form.leyka-pm-form,form.leyka-revo-form', function(e){
 
         /** @var leyka object Localization strings */
 
         var $form = $(this),
             $errors = $('#leyka-submit-errors');
 
-        // Exclude the repeated submits:
+        var $revo_redirect_step = $form.closest('.leyka-pf').find('.leyka-pf__redirect');
+        if($revo_redirect_step.length) {
+            $revo_redirect_step.addClass('leyka-pf__redirect--open');
+        }
+
         if($form.data('submit-in-process')) {
             return false;
         } else {
             $form.data('submit-in-process', 1);
         }
 
-        // Donation form validation is already passed in the main script (public.js)
+        // Donation form validation already passed in the main script (public.js)
 
-        var is_recurrent = $form.find('#leyka_cp-card_recurring').attr('checked'),
+        var is_recurrent = $form.find('.leyka_recurring').attr('checked') ||
+                           $form.find('.is-recurring-chosen').val() > 0, // For Revo template
             data_array = $form.serializeArray(),
             data = {action: 'leyka_ajax_donation_submit'};
 
@@ -68,10 +73,13 @@ jQuery(document).ready(function($){
                 }, 250);
 
                 return false;
+
             }
 
             var widget = new cp.CloudPayments(),
                 data = {};
+
+            console.log('Recurring:', is_recurrent);
 
             if(is_recurrent) {
                 data.cloudPayments = {recurrent: {interval: 'Month', period: 1}};
@@ -97,7 +105,19 @@ jQuery(document).ready(function($){
                 $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
                     scrollTop: $errors.offset().top - 35
                 }, 250);
+
             });
+
+            // if($revo_redirect_step.length) {
+            //     $revo_redirect_step.removeClass('leyka-pf__redirect--open');
+            // }
+
+            if($form.hasClass('leyka-revo-form')) {
+                $form.closest('.leyka-pf').leykaForm('close');
+            }
+
         });
+
     });
+
 });
