@@ -763,17 +763,6 @@ self::$_options_meta = array(
         'list_entries' => array(), // For select, radio & checkbox fields
         'validation_rules' => array(), // List of regexp?..
     ),
-    'revo_thankyou_text' => array(
-        'type' => 'text',
-        'default' => __('Thank you! We appreciate your help! Let\'s stay in touch.', 'leyka'),
-        'title' => __('Text on "Thank you" screen', 'leyka'),
-        'description' => '',
-        'required' => 1,
-        'placeholder' => __('For ex., «Thank you! We appreciate your help! Let\'s stay in touch.»', 'leyka'),
-        'length' => '', // For text fields
-        'list_entries' => array(), // For select, radio & checkbox fields
-        'validation_rules' => array(), // List of regexp?..
-    ),
     'revo_thankyou_email_result_text' => array(
         'type' => 'text',
         'default' => __('We will inform you about the result by email', 'leyka'),
