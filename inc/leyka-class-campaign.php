@@ -261,7 +261,7 @@ class Leyka_Campaign_Management {
 
         <fieldset id="campaign-finished" class="metabox-field campaign-field campaign-finished">
             <label for="is-finished">
-                <input type="checkbox" id="is-finished" name="is_finished" value="1" <?php echo $campaign->is_finished ? 'checked' : '';?>> <?php _e('Donations collection finished. Thank you for your support!', 'leyka');?>
+                <input type="checkbox" id="is-finished" name="is_finished" value="1" <?php echo $campaign->is_finished ? 'checked' : '';?>> <?php _e('Donations collection stopped', 'leyka');?>
             </label>
         </fieldset>
 	    <?php }
