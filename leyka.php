@@ -8,8 +8,8 @@
  * Author URI:  https://te-st.ru
  * Text Domain: leyka
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
- * Domain Path: /lang
  * Contributors:
+	Lev "ahaenor" Zvyagintsev (ahaenor@gmail.com)
 	Anna "foralien" Ladoshkina (webdev@foralien.com)
 	Denis Cherniatev (denis.cherniatev@gmail.com)
     Marie Borisyonok (pro100mary@gmail.com)
