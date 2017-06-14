@@ -19,7 +19,7 @@ $donation_id = leyka_remembered_data('donation_id');?>
     <div class="leyka-pf__final-screen leyka-pf__final-thankyou">
 
         <svg class="svg-icon icon"><use xlink:href="#pic-heart"></svg>
-        <div class="text"><div><?php echo get_the_content();?></div></div>
+        <div class="text"><div><?php echo leyka_options()->opt('revo_thankyou_text');?></div></div>
 
         <div class="leyka-final-subscribe-form">
 

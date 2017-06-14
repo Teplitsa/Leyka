@@ -753,7 +753,7 @@ class Leyka {
 
         }
 
-        if( !leyka_form_is_screening() ) {
+        if( !leyka_form_is_screening() && !leyka_success_widget_displayed() && !leyka_failure_widget_displayed() ) {
             return;
         }
 
@@ -780,7 +780,7 @@ class Leyka {
     /** Register and enqueues public-facing JavaScript files. */
     public function enqueue_scripts() {
 
-        if( !leyka_form_is_screening() ) {
+        if( !leyka_form_is_screening()  && !leyka_success_widget_displayed() && !leyka_failure_widget_displayed() ) {
             return;
         }
 

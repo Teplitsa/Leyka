@@ -255,6 +255,7 @@ function leyka_get_failure_page_url() {
     }
 
     return $url;
+
 }
 
 /** Get a list of donation form templates as an array. */
