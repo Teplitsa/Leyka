@@ -2,6 +2,15 @@ jQuery(document).ready(function($){
 
     $(document).on('submit.leyka', 'form.leyka-pm-form,form.leyka-revo-form', function(e){
 
+        function addError($errors_block, error_html) {
+
+            $errors_block.html(error_html).show();
+            $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
+                scrollTop: $errors_block.offset().top - 35
+            }, 250);
+
+        }
+
         /** @var leyka object Localization strings */
 
         var $form = $(this),
@@ -49,29 +58,17 @@ jQuery(document).ready(function($){
             response = $.parseJSON(response);
             if( !response || typeof response.status == 'undefined' ) { // Wrong answer from ajax handler
 
-                $errors.html(leyka.cp_wrong_server_response).show();
-                $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
-                    scrollTop: $errors.offset().top - 35
-                }, 250);
-
+                addError($errors, leyka.cp_wrong_server_response);
                 return false;
 
             } else if(response.status != 0 && typeof response.message != 'undefined') {
 
-                $errors.html(response.message).show();
-                $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
-                    scrollTop: $errors.offset().top - 35
-                }, 250);
-
+                addError($errors, response.message);
                 return false;
 
             } else if( !response.public_id ) {
 
-                $errors.html(leyka.cp_not_set_up).show();
-                $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
-                    scrollTop: $errors.offset().top - 35
-                }, 250);
-
+                addError($errors, leyka.cp_not_set_up);
                 return false;
 
             }
@@ -79,10 +76,12 @@ jQuery(document).ready(function($){
             var widget = new cp.CloudPayments(),
                 data = {};
 
-            console.log('Recurring:', is_recurrent);
-
             if(is_recurrent) {
                 data.cloudPayments = {recurrent: {interval: 'Month', period: 1}};
+            }
+
+            if($revo_redirect_step.length) {
+                $revo_redirect_step.removeClass('leyka-pf__redirect--open');
             }
 
             widget.charge({
@@ -100,17 +99,8 @@ jQuery(document).ready(function($){
                 $errors.html('').hide();
 
             }, function(reason, options){ // fail callback
-
-                $errors.html(leyka.cp_donation_failure_reasons[reason]).show();
-                $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
-                    scrollTop: $errors.offset().top - 35
-                }, 250);
-
+                addError($errors, leyka.cp_donation_failure_reasons[reason]);
             });
-
-            // if($revo_redirect_step.length) {
-            //     $revo_redirect_step.removeClass('leyka-pf__redirect--open');
-            // }
 
             if($form.hasClass('leyka-revo-form')) {
                 $form.closest('.leyka-pf').leykaForm('close');

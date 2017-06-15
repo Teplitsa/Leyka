@@ -277,15 +277,20 @@
         });
         
         $('.leyka-js-complete-donation').click(function(){
-            
             $(this).closest('.leyka-pf').leykaForm('close');
-            
         });
-	//if it's should be here
-	$('.leyka-submit-errors').on('click', function(e){
-		e.preventDefault();
-		$(this).hide();
-	});
+
+        //if it's should be here
+        $('.leyka-submit-errors').on('click', function(e){
+
+            e.preventDefault();
+
+            var $this = $(this);
+
+            $this.hide();
+            goFirstStep();
+
+        });
 
     }
 
@@ -315,15 +320,25 @@
 
     }
 
-    /* go another step */
+    function goFirstStep() {
+
+        var $_form = $(this).closest('.leyka-pf');
+
+        $_form.find('.payment-opt__radio').prop('checked', false); // Reset a chosen PM
+
+        $_form.find('.step').removeClass('step--active');
+        $_form.find('.step:first').addClass('step--active');
+        $_form.find('.leyka-pf__redirect').removeClass('leyka-pf__redirect--open');
+
+    }
+
     function goAnotherStep($_link) {
 
         var target = $_link.attr('href'),
-        $_form = $_link.parents('.leyka-pf');
+        $_form = $_link.closest('.leyka-pf');
 
         if(target == 'cards') {
-            //reset choice for payment
-            $_form.find('.payment-opt__radio').prop('checked', false);
+            $_form.find('.payment-opt__radio').prop('checked', false); // Reset a chosen PM
         }
 
         $_form.find('.step').removeClass('step--active');
@@ -390,7 +405,6 @@
             max = 0;
         }
 
-        var amountIconIndex = 1;
         var percent = 0;
         if(max) {
             percent = 100 * (val - min) / (max - min);
