@@ -49,28 +49,33 @@
         pName = $_form.find('.donor__textfield--name input').val(),
         pEmail = $_form.find('.donor__textfield--email input').val(),
         amount = parseInt($_form.find('.amount__figure input').val()),
-        agree = $_form.find('.donor__oferta input').prop('checked');
+        $agree = $_form.find('.donor__oferta input');
         
-        if(pName.length === 0){
+        if(pName.length === 0) {
+
             error_struct['name'] = true;
             $_form.find('.donor__textfield--name').addClass('invalid');
+
         }
 
-        if(pEmail.length === 0 || !is_email(pEmail)){
+        if(pEmail.length === 0 || !is_email(pEmail)) {
+
             error_struct['email'] = true;
             $_form.find('.donor__textfield--email').addClass('invalid');
+
         }
 
-        if(!agree){
+        if($agree.length && !$agree.prop('checked')) {
+
             error_struct['agree'] = true;
             $_form.find('.donor__oferta').addClass('invalid');
+
         }
 
-        if(!Number.isInteger(amount) || amount < amountMin || amount > amountMax){
+        if( !Number.isInteger(amount) || amount < amountMin || amount > amountMax ) {
             error_struct['amount'] = true;
-            console.log('error amount');
         }
-        
+
         return Object.keys(error_struct).length ? error_struct : false;
     }
 
@@ -81,7 +86,8 @@
             var $_form = $(this),
                 $active_step = $_form.find('.step.step--active');
 
-            if( !$active_step.hasClass('step--person') ) {
+            if( !$active_step.hasClass('step--person') ) { // Do not validate + submit if donor's data step not reached yet
+
                 if($active_step.hasClass('step--amount')) {
 
                     var $proceed_button = $_form.find('.step.step--amount .step__action--amount a');
@@ -422,11 +428,13 @@
     }
 
     function syncCustomRangeInput() {
-        var percent = getAmountPercent($(this));
-        // console.log('Percents:', percent)
-        var leftOffset = (inputRangeWidth - 2 * inputRangeButtonRadius) * percent / 100;
+
+        var percent = getAmountPercent($(this)),
+            leftOffset = (inputRangeWidth - 2 * inputRangeButtonRadius) * percent / 100;
+
         $('.range-circle').css({'left': (leftOffset) + 'px'});
         $('.range-color-wrapper').width(leftOffset + inputRangeButtonRadius);
+
     }
 
     function setChosenAmount($_link) {
@@ -555,13 +563,6 @@
             $pf.removeClass('leyka-pf--active');
         }
     }
-
-    // function redirectForm() {
-
-        // var $form = $(this);
-        // console.log($form.serializeArray());
-
-    // }
 
     $.fn.leykaForm = function(methodOrOptions) {
         if(methods[methodOrOptions]) {
