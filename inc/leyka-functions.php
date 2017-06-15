@@ -838,7 +838,7 @@ function leyka_format_amount($amount) {
 }
 
 function leyka_validate_donor_name($name) {
-    return $name ? !preg_match('/[^\\x{0410}-\\x{044F}\w\s\-_\']/iu', $name) : true;
+    return $name ? !preg_match('/[^\\x{0410}-\\x{044F}\w\s\-_\'\.]/iu', $name) : true;
 }
 
 function leyka_validate_email($email) {
