@@ -145,12 +145,9 @@ class Leyka {
         }
         add_action('pre_get_posts', 'leyka_get_posts', 1);
 
-        function leyka_successful_page_widget_template($content) {
+        function leyka_success_page_widget_template($content) {
 
-            if(
-                get_the_ID() == leyka_options()->opt('success_page') ||
-                get_the_ID() == leyka_options()->opt('quittance_redirect_page')
-            ) {
+            if(is_page(leyka_options()->opt('success_page')) && leyka_options()->opt('show_success_widget_on_success')) {
 
                 ob_start();
                 include(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-success-widget.php');
@@ -161,11 +158,11 @@ class Leyka {
             return $content;
 
         }
-        add_filter('the_content', 'leyka_successful_page_widget_template', 1);
+        add_filter('the_content', 'leyka_success_page_widget_template', 1);
 
-        function leyka_failed_page_widget_template($content) {
+        function leyka_failure_page_widget_template($content) {
 
-            if(get_the_ID() == leyka_options()->opt('failure_page')) {
+            if(is_page(leyka_options()->opt('failure_page')) && leyka_options()->opt('show_failure_widget_on_failure')) {
 
                 ob_start();
                 include(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-failure-widget.php');
@@ -176,7 +173,7 @@ class Leyka {
             return $content;
 
         }
-        add_filter('the_content', 'leyka_failed_page_widget_template', 1);
+        add_filter('the_content', 'leyka_failure_page_widget_template', 1);
 
         if( !is_admin() ) {
 
