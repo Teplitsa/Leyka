@@ -198,7 +198,7 @@ class Leyka {
                 <?php
             }
 
-            add_action('wp_head', function(){
+            function leyka_template_init_include() {
                 if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type)) { // Include template init script
 
                     $campaign = new Leyka_Campaign(get_queried_object_id());
@@ -214,7 +214,8 @@ class Leyka {
                     }
 
                 }
-            });
+            }
+            add_action('wp_head', 'leyka_template_init_include');
 
         }
 
