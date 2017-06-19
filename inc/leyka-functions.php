@@ -311,6 +311,11 @@ function leyka_get_currencies_data($currency_id = false) {
 
 }
 
+/** @deprecated Use leyka_get_currencies_data($currency_id) instead. */
+function leyka_get_active_currencies($currency_id = false) {
+    return leyka_get_currencies_data($currency_id);
+}
+
 function leyka_get_currency_data($currency_code) {
 
     $currecies = leyka_get_currencies_data();

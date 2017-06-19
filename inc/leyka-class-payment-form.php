@@ -441,8 +441,9 @@ function leyka_setup_current_pm(Leyka_Payment_Method $payment_method, $currency 
 
 }
 
-function leyka_pf_get_form_id($campaign_id) {
+function leyka_pf_get_form_id($campaign_id = false) {
 
+    $campaign_id = !$campaign_id ? get_the_ID() : (int)$campaign_id;
     $campaign_suffix = '';
     
     if($campaign_id && (int)$campaign_id > 0) {
