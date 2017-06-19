@@ -176,10 +176,7 @@ class Leyka {
             $theme = wp_get_theme();
             if($theme && $theme->template == 'giger' && !is_singular('leyka_campaign')) {
         
-                if(get_the_ID() == leyka_options()->opt('failure_page') 
-                    || get_the_ID() == leyka_options()->opt('success_page') 
-                    || get_the_ID() == leyka_options()->opt('quittance_redirect_page') 
-                ) {
+                if(get_the_ID() == leyka_options()->opt('failure_page') || get_the_ID() == leyka_options()->opt('success_page')) {
                     
                     $leyla_template_data = leyka_get_current_template_data();
                     
