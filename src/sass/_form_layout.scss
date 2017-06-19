@@ -2,11 +2,19 @@
 
 /* NO JS basics */
 .leyka-pf__module {
+    box-sizing:border-box;
 	position: relative;
 	border: 1px solid $color-border-light;
 	border-radius: 10px;
 	background: $color-white;
 	transition: all 0.35s;
+	
+    *, *::after, *::before {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+	
 }
 
 
@@ -463,6 +471,7 @@
 	width: 100%;
 	height: 100%;
 	top: 0;
+	box-sizing: border-box;
 }
 
 .leyka-js {

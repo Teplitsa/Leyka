@@ -790,7 +790,13 @@ function leyka_revo_template_displayed() {
     if(is_singular(Leyka_Campaign_Management::$post_type)) {
 
         $campaign = new Leyka_Campaign(get_post());
-        $revo_displayed = $campaign->template == 'revo';
+        if($campaign->template == 'default') {
+            $leyla_template_data = leyka_get_current_template_data();
+            $revo_displayed = $leyla_template_data['id'] == 'revo';
+        }
+        else {
+            $revo_displayed = $campaign->template == 'revo';
+        }
 
     } else if(get_post() && has_shortcode(get_post()->post_content, 'leyka_inline_campaign')) {
         $revo_displayed = true;
