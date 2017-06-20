@@ -526,10 +526,8 @@ function leyka_inline_campaign(array $attributes = array()) {
                         <strong><?php _e('Supporters:', 'leyka');?></strong>
 
                         <?php if(count($supporters['donations']) <= count($supporters['supporters'])) { // Only names
-                            echo count($supporters['supporters']) == 1 ?
-                                $supporters['supporters'][0] :
-                                implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka').' '.
-                                end($supporters['supporters']);
+                            echo implode(', ', array_slice($supporters['supporters'], 0, -1))
+                                .' '.__('and', 'leyka').' '.end($supporters['supporters']);
                         } else { // Names and the number of the rest of donors
 
                             echo implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka');?>
