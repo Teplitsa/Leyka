@@ -478,6 +478,7 @@
 	//in page
 	.inpage-card {
 		position: relative;
+		overflow:hidden;
 	}
 
 	.leyka-pf--history-open {
@@ -609,6 +610,7 @@
             margin-top: $base*4.8;
             input {
                 max-width:305px;
+                margin:0px auto;
             }
         }
 
