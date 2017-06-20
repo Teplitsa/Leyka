@@ -485,6 +485,9 @@
 
 		.inpage-card {
 			@include module-height();
+
+          max-height: 505px;
+          height: 97vh;
 		}
 
 		.bottom-form__history ,
