@@ -29,7 +29,7 @@ jQuery(document).ready(function($){
 
         // Donation form validation already passed in the main script (public.js)
 
-        var is_recurrent = $form.find('.leyka_recurring').attr('checked') ||
+        var is_recurrent = $form.find('.leyka-recurring').attr('checked') ||
                            $form.find('.is-recurring-chosen').val() > 0, // For Revo template
             data_array = $form.serializeArray(),
             data = {action: 'leyka_ajax_donation_submit'};
