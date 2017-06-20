@@ -10,7 +10,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
     protected function _set_attributes() {
 
         $this->_id = 'yandex';
-        $this->_title = __('Yandex.Money', 'leyka');
+        $this->_title = __('Yandex.Kassa', 'leyka');
         $this->_docs_link = '//leyka.te-st.ru/docs/yandex-dengi/';
         $this->_admin_ui_column = 1;
         $this->_admin_ui_order = 10;
@@ -29,7 +29,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'value' => '',
                 'default' => '',
                 'title' => __('Yandex shopId', 'leyka'),
-                'description' => __('Please, enter your Yandex.Money shop ID here. It can be found in your Yandex contract.', 'leyka'),
+                'description' => __('Please, enter your Yandex.Kassa shop ID here. It can be found in your Yandex contract.', 'leyka'),
                 'required' => 1,
                 'placeholder' => __('Ex., 12345', 'leyka'),
                 'list_entries' => array(), // For select, radio & checkbox fields
@@ -40,7 +40,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'value' => '',
                 'default' => '',
                 'title' => __('Yandex scid', 'leyka'),
-                'description' => __('Please, enter your Yandex.Money shop showcase ID (SCID) here. It can be found in your Yandex contract.', 'leyka'),
+                'description' => __('Please, enter your Yandex.Kassa shop showcase ID (SCID) here. It can be found in your Yandex contract.', 'leyka'),
                 'required' => 1,
                 'placeholder' => __('Ex., 12345', 'leyka'),
                 'list_entries' => array(), // For select, radio & checkbox fields
@@ -51,7 +51,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'value' => '',
                 'default' => '',
                 'title' => __('Yandex ShopArticleId', 'leyka'),
-                'description' => __('Please, enter your Yandex.Money shop article ID here, if it exists. It can be found in your Yandex contract, also you can ask your Yandex.money manager for it.', 'leyka'),
+                'description' => __('Please, enter your Yandex.Kassa shop article ID here, if it exists. It can be found in your Yandex contract, also you can ask your Yandex.Kassa manager for it.', 'leyka'),
                 'required' => 0,
                 'placeholder' => __('Ex., 12345', 'leyka'),
                 'list_entries' => array(), // For select, radio & checkbox fields
@@ -60,8 +60,8 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             $this->full_id.'_secret_word' => array(
                 'type' => 'text',
                 'default' => '',
-                'title' => __('Yandex.Money shop secret word', 'leyka'),
-                'description' => __("Please, enter a secret word that you filled in Yandex.money' technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
+                'title' => __('Yandex.Kassa shop secret word', 'leyka'),
+                'description' => __("Please, enter a secret word that you filled in Yandex.Kassa' technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
                 'placeholder' => __('Ex., 1^2@3#&84nDsOmE5h1T', 'leyka'),
                 'is_password' => 1,
                 'required' => 0,
@@ -241,7 +241,7 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
 
                 $donation->add_gateway_response($_POST);
 
-                $this->_callback_answer(); // OK for yandex.money payment
+                $this->_callback_answer(); // OK for Yandex.Kassa payment
                 break; // Not needed, just for my IDE could relax
 
             case 'payment_aviso':
@@ -428,7 +428,7 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
 
                 $error_num = empty($vals[0]['attributes']['error']) ? 'unknown' : $vals[0]['attributes']['error'];
                 $error_text = empty($vals[0]['attributes']['techMessage']) ?
-                    __('Some error while repeatCardPayment call. Please ask your Yandex.Money manager for details.', 'leyka') : $vals[0]['attributes']['techMessage'];
+                    __('Some error while repeatCardPayment call. Please ask your Yandex.Kassa manager for details.', 'leyka') : $vals[0]['attributes']['techMessage'];
 
                 $new_recurring_donation->add_gateway_response('Error '.$error_num.': '.$error_text);
 
@@ -453,11 +453,11 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
                 return;
             }?>
 
-            <label><?php _e('Yandex.Money recurring subscription ID', 'leyka');?>:</label>
+            <label><?php _e('Yandex.Kassa recurring subscription ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type == 'correction') {?>
-                <input type="text" id="yandex-recurring-id" name="yandex-recurring-id" placeholder="<?php _e('Enter Yandex.Money invoice ID', 'leyka');?>" value="<?php echo $donation->recurring_id;?>">
+                <input type="text" id="yandex-recurring-id" name="yandex-recurring-id" placeholder="<?php _e('Enter Yandex.Kassa invoice ID', 'leyka');?>" value="<?php echo $donation->recurring_id;?>">
                 <?php } else {?>
                 <span class="fake-input"><?php echo $donation->recurring_id;?></span>
                 <?php }?>
@@ -472,9 +472,9 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
 
         <?php } else { // New donation page displayed ?>
 
-            <label for="yandex-recurring-id"><?php _e('Yandex.Money recurring subscription ID', 'leyka');?>:</label>
+            <label for="yandex-recurring-id"><?php _e('Yandex.Kassa recurring subscription ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="yandex-recurring-id" name="yandex-recurring-id" placeholder="<?php _e('Enter Yandex.Money invoice ID', 'leyka');?>" value="">
+                <input type="text" id="yandex-recurring-id" name="yandex-recurring-id" placeholder="<?php _e('Enter Yandex.Kassa invoice ID', 'leyka');?>" value="">
             </div>
             <?php
         }
@@ -562,8 +562,8 @@ class Leyka_Yandex_All extends Leyka_Payment_Method {
         $this->_id = 'yandex_all';
         $this->_gateway_id = 'yandex';
 
-        $this->_label_backend = __('Any Yandex.money payment method available', 'leyka');
-        $this->_label = __('Yandex.money (any)', 'leyka');
+        $this->_label_backend = __('Any Yandex.Kassa payment method available', 'leyka');
+        $this->_label = __('Yandex.Kassa (any)', 'leyka');
 
         // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
@@ -591,9 +591,9 @@ class Leyka_Yandex_All extends Leyka_Payment_Method {
 
             $this->full_id.'_description' => array(
                 'type' => 'html',
-                'default' => __('Yandex.Money allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Money website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
+                'default' => __('Yandex.Kassa allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Kassa website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
                 'title' => __('Yandex Smart Payment description', 'leyka'),
-                'description' => __('Please, enter Yandex.Money smart payment service description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
+                'description' => __('Please, enter Yandex.Kassa smart payment service description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
                 'required' => 0,
                 'validation_rules' => array(), // List of regexp?..
             ),
@@ -640,7 +640,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
                 'value' => '',
                 'default' => 0,
                 'title' => __('Monthly recurring subscriptions are available', 'leyka'),
-                'description' => __('Check if Yandex.Money allows you to create recurrent subscriptions to do regular automatic payments.', 'leyka'),
+                'description' => __('Check if Yandex.Kassa allows you to create recurrent subscriptions to do regular automatic payments.', 'leyka'),
                 'required' => 0,
                 'placeholder' => '',
                 'list_entries' => array(), // For select, radio & checkbox fields
@@ -649,8 +649,8 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
             $this->full_id.'_certificate_path' => array(
                 'type' => 'text',
                 'default' => '',
-                'title' => __('Yandex.Money recurring payments certificate path', 'leyka'),
-                'description' => __("Please, enter the path to your SSL certificate given to you by Yandex.Money. <strong>Warning!</strong> The path should include the certificate's filename intself. Also it should be relative to wp-content directory.", 'leyka'),
+                'title' => __('Yandex.Kassa recurring payments certificate path', 'leyka'),
+                'description' => __("Please, enter the path to your SSL certificate given to you by Yandex.Kassa. <strong>Warning!</strong> The path should include the certificate's filename intself. Also it should be relative to wp-content directory.", 'leyka'),
                 'placeholder' => __('For ex., /uploads/leyka/your-cert-file.cer', 'leyka'),
                 'required' => 0,
                 'validation_rules' => array(), // List of regexp?..
@@ -658,8 +658,8 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
             $this->full_id.'_private_key_path' => array(
                 'type' => 'text',
                 'default' => '',
-                'title' => __("Yandex.Money recurring payments certificate's private key path", 'leyka'),
-                'description' => __("Please, enter the path to your SSL certificate's private key given to you by Yandex.Money.<li><li>The path should include the certificate's filename intself.</li><li>The path should be relative to wp-content directory. </li></ul>", 'leyka'),
+                'title' => __("Yandex.Kassa recurring payments certificate's private key path", 'leyka'),
+                'description' => __("Please, enter the path to your SSL certificate's private key given to you by Yandex.Kassa.<li><li>The path should include the certificate's filename intself.</li><li>The path should be relative to wp-content directory. </li></ul>", 'leyka'),
                 'placeholder' => __('For ex., /uploads/leyka/your-private.key', 'leyka'),
                 'required' => 0,
                 'validation_rules' => array(), // List of regexp?..
@@ -667,7 +667,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
             $this->full_id.'_private_key_password' => array(
                 'type' => 'text',
                 'default' => '',
-                'title' => __("Yandex.Money recurring payments certificate's private key password", 'leyka'),
+                'title' => __("Yandex.Kassa recurring payments certificate's private key password", 'leyka'),
                 'description' => __("Please, enter a password for your SSL certificate's private key, if you set this password during the generation of your sertificate request file.", 'leyka'),
                 'placeholder' => __('Ex., fW!^12@3#&8A4', 'leyka'),
                 'is_password' => 1,
@@ -676,9 +676,9 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
             ),
             $this->full_id.'_description' => array(
                 'type' => 'html',
-                'default' => __('Yandex.Money allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Money website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
+                'default' => __('Yandex.Kassa allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Kassa website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
                 'title' => __('Yandex bank card payment description', 'leyka'),
-                'description' => __('Please, enter Yandex.Money bank cards payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
+                'description' => __('Please, enter Yandex.Kassa bank cards payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
                 'required' => 0,
                 'validation_rules' => array(), // List of regexp?..
             ),
@@ -727,7 +727,7 @@ class Leyka_Yandex_Money extends Leyka_Payment_Method {
         $this->_options = array(
             $this->full_id.'_description' => array(
                 'type' => 'html',
-                'default' => __("Yandex.Money is a simple and safe payment system to pay for goods and services through internet. You will have to fill a payment form, you will be redirected to the <a href='https://money.yandex.ru/'>Yandex.Money website</a> to confirm your payment. If you haven't got a Yandex.Money account, you can create it there.", 'leyka'),
+                'default' => __("Yandex.Kassa is a simple and safe payment system to pay for goods and services through internet. You will have to fill a payment form, you will be redirected to the <a href='https://money.yandex.ru/'>Yandex.Kassa website</a> to confirm your payment. If you haven't got a Yandex.Money account, you can create it there.", 'leyka'),
                 'title' => __('Yandex.Money description', 'leyka'),
                 'description' => __('Please, enter Yandex.Money payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
                 'required' => 0,
