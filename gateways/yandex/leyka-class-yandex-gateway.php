@@ -562,8 +562,8 @@ class Leyka_Yandex_All extends Leyka_Payment_Method {
         $this->_id = 'yandex_all';
         $this->_gateway_id = 'yandex';
 
-        $this->_label_backend = __('Any Yandex.Kassa payment method available', 'leyka');
-        $this->_label = __('Yandex.Kassa (any)', 'leyka');
+        $this->_label_backend = __('Yandex.Kassa smart payment', 'leyka');
+        $this->_label = __('Yandex.Kassa smart payment', 'leyka');
 
         // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
@@ -612,8 +612,8 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
         $this->_id = 'yandex_card';
         $this->_gateway_id = 'yandex';
 
-        $this->_label_backend = __('Payment with Banking Card', 'leyka');
-        $this->_label = __('Banking Card', 'leyka');
+        $this->_label_backend = __('Bank card', 'leyka');
+        $this->_label = __('Bank card', 'leyka');
 
         // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
@@ -701,7 +701,7 @@ class Leyka_Yandex_Money extends Leyka_Payment_Method {
         $this->_id = 'yandex_money';
         $this->_gateway_id = 'yandex';
 
-        $this->_label_backend = __('Virtual cash Yandex.money', 'leyka');
+        $this->_label_backend = __('Yandex.money', 'leyka');
         $this->_label = __('Yandex.money', 'leyka');
 
         // The description won't be setted here - it requires the PM option being configured at this time (which is not)
@@ -748,7 +748,7 @@ class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
         $this->_id = 'yandex_wm';
         $this->_gateway_id = 'yandex';
 
-        $this->_label_backend = __('Virtual cash Webmoney', 'leyka');
+        $this->_label_backend = __('Webmoney', 'leyka');
         $this->_label = __('Webmoney', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(

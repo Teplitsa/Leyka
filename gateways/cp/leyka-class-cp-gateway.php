@@ -507,8 +507,8 @@ class Leyka_CP_Card extends Leyka_Payment_Method {
         $this->_id = 'card';
         $this->_gateway_id = 'cp';
 
-        $this->_label_backend = __('Payment with Banking Card', 'leyka');
-        $this->_label = __('Banking Card', 'leyka');
+        $this->_label_backend = __('Bank card', 'leyka');
+        $this->_label = __('Bank card', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/cp/icons/visa.png',

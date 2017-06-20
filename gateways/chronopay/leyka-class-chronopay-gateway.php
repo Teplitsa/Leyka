@@ -505,8 +505,8 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
         $this->_id = 'chronopay_card';
         $this->_gateway_id = 'chronopay';
 
-        $this->_label_backend = __('Payment with Banking Card', 'leyka');
-        $this->_label = __('Banking Card', 'leyka');
+        $this->_label_backend = __('Bank card', 'leyka');
+        $this->_label = __('Bank card', 'leyka');
 
         // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
