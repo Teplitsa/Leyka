@@ -176,15 +176,22 @@ class Leyka {
             $theme = wp_get_theme();
             if($theme && $theme->template == 'giger' && !is_singular('leyka_campaign')) {
         
+                $is_cssjs_reqiured = false;
+                
                 if(get_the_ID() == leyka_options()->opt('failure_page') || get_the_ID() == leyka_options()->opt('success_page')) {
-                    
+                    $is_cssjs_reqiured = true;
+                }
+                elseif(leyka_form_is_screening()) {
+                    $is_cssjs_reqiured = true;
+                }
+                
+                if($is_cssjs_reqiured) {
                     $leyla_template_data = leyka_get_current_template_data();
                     
                     if($leyla_template_data['id'] == 'revo') {
                         $leyka = leyka();
                         $leyka->load_public_cssjs(); // force add leyka cssjs in giger for revo leyka theme
                     }
-                    
                 }
         
             }
