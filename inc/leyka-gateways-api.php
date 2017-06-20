@@ -132,7 +132,7 @@ abstract class Leyka_Gateway {
 
         // A gateway icon is an attribute that is persistent for all gateways, it's just changing values:
         $this->_icon = apply_filters(
-            'leyka_icon_'.$this->_gateway_id,
+            'leyka_icon_'.$this->_id,
             file_exists(LEYKA_PLUGIN_DIR."/gateways/{$this->_id}/icons/{$this->_id}.png") ?
                 LEYKA_PLUGIN_BASE_URL."/gateways/{$this->_id}/icons/{$this->_id}.png" :
                 '' /** @todo Set an URL to the anonymous gateway icon?? */
@@ -148,14 +148,22 @@ abstract class Leyka_Gateway {
 
         // Set a gateway class method to process a service calls from gateway:
         add_action('leyka_service_call-'.$this->_id, array($this, '_handle_service_calls'));
-        add_action('leyka_cancel_recurrents-'.$this->_id, array($this, 'cancel_recurrents'));
-        add_action('leyka_do_recurring_donation-'.$this->_id, array($this, 'do_recurring_donation'));
 
         add_action("leyka_{$this->_id}_save_donation_data", array($this, 'save_donation_specific_data'));
         add_action("leyka_{$this->_id}_add_donation_specific_data", array($this, 'add_donation_specific_data'), 10, 2);
 
         add_filter('leyka_get_unknown_donation_field', array($this, 'get_specific_data_value'), 10, 3);
         add_action('leyka_set_unknown_donation_field', array($this, 'set_specific_data_value'), 10, 3);
+
+        add_action('leyka_do_recurring_donation-'.$this->_id, array($this, 'do_recurring_donation'));
+        add_filter(
+            "leyka_{$this->_id}_recurring_subscription_cancelling_link",
+            array($this, 'get_recurring_subscription_cancelling_link')
+        );
+        add_action(
+            "leyka_{$this->_id}_cancel_recurring_subscription",
+            array($this, 'cancel_recurring_subscription')
+        );
 
     }
 
@@ -287,15 +295,13 @@ abstract class Leyka_Gateway {
 
     }
 
-    // Handler for Gateway's procedure for stopping some recurrent donations subscription:
-    public function cancel_recurrents(Leyka_Donation $donation) {
+    public function cancel_recurring_subscription(Leyka_Donation $donation) {
     }
 
-    /**
-     * Handler for Gateway's procedure for doing new rebill on recurring donations subscription.
-     * @param Leyka_Donation $init_recurring_donation
-     * @return mixed False if donation weren't made, new recurring Leyka_Donation object otherwise.
-     */
+    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation $donation) {
+        return $link_text;
+    }
+
     public function do_recurring_donation(Leyka_Donation $init_recurring_donation) {
         return false;
     }

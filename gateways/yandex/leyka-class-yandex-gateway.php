@@ -292,6 +292,7 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
                     }
 
                     Leyka_Donation_Management::send_all_emails($donation->id);
+
                 }
 
 				do_action('leyka_yandex_payment_aviso_success', $donation);
@@ -328,6 +329,26 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
             __("Gateway's donor ID:", 'leyka') => $response_vars['customerNumber'],
             __('Response date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($response_vars['requestDatetime'])),
         );
+
+    }
+
+    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation $donation) {
+
+        $cancelling_url = get_option('permalink_structure') ?
+            home_url("leyka/service/cancel_recurring/{$donation->id}") :
+            home_url("?page=leyka/service/cancel_recurring/{$donation->id}");
+
+        return sprintf(__('<a href="%s" target="_blank">click here</a>', 'leyka'), $cancelling_url);
+
+    }
+
+    public function cancel_recurring_subscription(Leyka_Donation $donation) {
+
+        if($donation->type == 'rebill' && $donation->recurring_is_active) {
+            $donation->recurring_subscription_cancelled = true;
+        }
+
+        die(__('Recurring subscription cancelled.', 'leyka'));
 
     }
 

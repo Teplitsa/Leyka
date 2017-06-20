@@ -343,7 +343,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     }
 
-    public function cancel_recurrents(Leyka_Donation $donation) {
+    public function cancel_recurring_subscription(Leyka_Donation $donation) {
 
         $ch = curl_init();
 
@@ -405,10 +405,10 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 $init_recurrent_donation = $this->get_init_recurrent_donation($donation);
                 $init_recurrent_donation->recurrents_cancelled = true;
 
-                die(json_encode(array('status' => 1, 'message' => __('Recurrent donations cancelled.', 'leyka'))));
+                die(json_encode(array('status' => 1, 'message' => __('Recurring subscription cancelled.', 'leyka'))));
 
             } else {
-                die(json_encode(array('status' => 0, 'message' => sprintf(__('Error on the gateway side: %s', 'leyka'), $response_text." (code $response_code)"))));
+                die(json_encode(array('status' => 0, 'message' => sprintf(__('Error on a gateway side: %s', 'leyka'), $response_text." (code $response_code)"))));
             }
 
         }

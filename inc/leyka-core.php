@@ -301,8 +301,15 @@ class Leyka {
             $request = explode('leyka/service', $_SERVER['REQUEST_URI']);
             $request = explode('/', trim($request[1], '/'));
 
-            if($request[0] == 'do_recurring') { // Recurrents processing URL
+            if($request[0] == 'do_recurring') { // Recurring payments processing URL
                 $this->_do_active_recurrents_rebilling();
+            } else if($request[0] == 'cancel_recurring' && !empty($request[1])) { // Recurring subscription cancelling URL
+
+                $donation = new Leyka_Donation($request[1]);
+                if($donation) {
+                    do_action("leyka_{$donation->gateway_id}_cancel_recurring_subscription", $donation);
+                }
+
             } else { // Gateway callback URL
 
                 // Callback URLs are: some-website.org/leyka/service/{gateway_id}/{action_name}/

@@ -246,6 +246,7 @@ class Leyka_Donation_Management {
 
     }
 
+    /** Send a donor thanking email, including the case of initializing a recurring subscription */
     public static function send_donor_thanking_email($donation) {
 
         if( !leyka_options()->opt('send_donor_thanking_emails') ) {
@@ -268,7 +269,7 @@ class Leyka_Donation_Management {
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
         $email_title = $donation->type == 'rebill' ?
-            leyka_options()->opt('email_recurrents_thanks_title') : leyka_options()->opt('email_thanks_title');
+            leyka_options()->opt('email_recurring_init_thanks_title') : leyka_options()->opt('email_thanks_title');
 
         $res = wp_mail(
             $donor_email,
@@ -300,7 +301,9 @@ class Leyka_Donation_Management {
                 ),
                 apply_filters(
                     'leyka_email_thanks_text',
-                    $donation->type == 'rebill' ? leyka_options()->opt('email_recurrents_thanks_text') : leyka_options()->opt('email_thanks_text'),
+                    $donation->type == 'rebill' ?
+                        leyka_options()->opt('email_recurring_init_thanks_text') :
+                        leyka_options()->opt('email_thanks_text'),
                     $donation,
                     $campaign
                 )
@@ -323,8 +326,10 @@ class Leyka_Donation_Management {
         }
 
         return $res;
+
     }
 
+    /** Send all emails in case of a recurring auto-payment */
     public static function send_all_recurring_emails($donation) {
 
         $donation = leyka_get_validated_donation($donation);
@@ -347,13 +352,14 @@ class Leyka_Donation_Management {
             $donor_email,
             apply_filters(
                 'leyka_email_thanks_recurring_ongoing_title',
-                leyka_options()->opt('email_recurrents_ongoing_thanks_title'),
+                leyka_options()->opt('email_recurring_ongoing_thanks_title'),
                 $donation, $campaign
             ),
             wpautop(str_replace(
                 array(
                     '#SITE_NAME#',
                     '#SITE_EMAIL#',
+                    '#SITE_TECH_SUPPORT_EMAIL#',
                     '#ORG_NAME#',
                     '#DONATION_ID#',
                     '#DONOR_NAME#',
@@ -362,10 +368,12 @@ class Leyka_Donation_Management {
                     '#PURPOSE#',
                     '#SUM#',
                     '#DATE#',
+                    '#RECURRING_SUBSCRIPTION_CANCELLING_LINK#',
                 ),
                 array(
                     get_bloginfo('name'),
                     get_bloginfo('admin_email'),
+                    leyka_options()->opt('tech_support_email'),
                     leyka_options()->opt('org_full_name'),
                     $donation->id,
                     $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
@@ -374,10 +382,15 @@ class Leyka_Donation_Management {
                     $campaign->payment_title,
                     $donation->amount.' '.$donation->currency_label,
                     $donation->date,
+                    apply_filters(
+                        'leyka_'.$donation->gateway_id.'_recurring_subscription_cancelling_link',
+                        sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_options()->opt('tech_support_email')),
+                        $donation
+                    ),
                 ),
                 apply_filters(
                     'leyka_email_thanks_recurring_ongoing_text',
-                    leyka_options()->opt('email_recurrents_ongoing_thanks_text'),
+                    leyka_options()->opt('email_recurring_ongoing_thanks_text'),
                     $donation, $campaign
                 )
             )),
@@ -1596,7 +1609,8 @@ class Leyka_Donation {
 
             case 'init_recurring_payment_id':
             case 'init_recurring_donation_id':
-                return $this->payment_type == 'rebill' ? $this->_post_object->post_parent : false;
+                return $this->payment_type == 'rebill' ?
+                    ($this->_post_object->post_parent ? $this->_post_object->post_parent : $this->_id) : false;
             case 'init_recurring_payment':
             case 'init_recurring_donation':
                 if($this->payment_type != 'rebill') {
@@ -1729,7 +1743,7 @@ class Leyka_Donation {
                 }
                 break;
 
-            case 'rebilling_on':
+            case 'rebilling_on': /** @todo Make it a method calling instead of setting an attribute value! */
             case 'rebilling_is_on':
             case 'recurring_on':
             case 'recurring_is_on':
@@ -1739,14 +1753,19 @@ class Leyka_Donation {
                 if($this->type != 'rebill') {
                     break;
                 }
+
                 $init_recurring_donation = $this->init_recurring_donation;
                 if($init_recurring_donation->recurring_is_active != $value) {
 
                     update_post_meta($init_recurring_donation->id, '_rebilling_is_active', $value);
                     $this->_donation_meta['rebilling_is_active'] = $value;
+
                 }
                 break;
 
+            case 'recurring_cancelled': /** @todo Make it a method calling instead of setting an attribute value! */
+            case 'recurring_subscription_cancelled':
+            case 'recurrents_stopped':
             case 'recurrents_cancelled':
                 $value = !!$value;
                 update_post_meta($this->_id, 'leyka_recurrents_cancelled', $value);
