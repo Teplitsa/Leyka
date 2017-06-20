@@ -622,6 +622,7 @@
             a {
                 color: $color-text-semi;
                 @include no-thankyou-link;
+                box-shadow: none;
                 text-decoration: underline;
             }
         }
@@ -657,6 +658,7 @@
 
             a {
                 color: $color-link;
+                box-shadow: none;
                 text-decoration: underline;
 
                 &:visited {
