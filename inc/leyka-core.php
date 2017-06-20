@@ -174,7 +174,7 @@ class Leyka {
         
         function reinstall_cssjs_in_giger() {
             $theme = wp_get_theme();
-            if($theme && $theme->template == 'giger' && !is_singular('leyka_campaign')) {
+            if($theme && ($theme->template == 'giger' || $theme->template == 'giger-kms') && !is_singular('leyka_campaign')) {
         
                 $is_cssjs_reqiured = false;
                 
