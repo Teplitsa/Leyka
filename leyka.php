@@ -155,6 +155,8 @@ add_action('init', function(){
                 echo '<pre>' . print_r('Recurring donation creation failure', 1) . '</pre>';
             }
 
+        } else {
+            echo '<pre>' . print_r('Gateway not found: '.$init_recurring_donation->gateway_id, 1) . '</pre>';
         }
 
     }
