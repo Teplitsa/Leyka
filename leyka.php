@@ -149,6 +149,10 @@ add_action('init', function(){
 
                 $new_recurring_donation->status = 'funded';
                 Leyka_Donation_Management::send_all_recurring_emails($new_recurring_donation);
+                echo '<pre>' . print_r('Recurring donation created: '.$new_recurring_donation->id, 1) . '</pre>';
+
+            } else {
+                echo '<pre>' . print_r('Recurring donation creation failure', 1) . '</pre>';
             }
 
         }
