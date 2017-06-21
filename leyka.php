@@ -127,7 +127,7 @@ add_action('init', function(){
             'purpose_text' => 'Для тестирования рекуррентной подписки на ЯК',
             'post_parent' => 0,
             'amount' => 99.0,
-            'campaign_id' => 368,
+            'campaign_id' => 455, // Campaign ID on the devhost
             'donor_name' => 'Лев Тестерович',
             'donor_email' => 'ahaenor@gmail.com',
             'payment_method_id' => 'yandex_card',
