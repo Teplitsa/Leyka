@@ -103,14 +103,13 @@ function leyka_get_pm_by_id($pm_id, $is_full_id = false) {
 
 /**
  * @param $gateway_id string
- * @return Leyka_Gateway
+ * @return mixed Leyka_Gateway object or false if none found.
  */
 function leyka_get_gateway_by_id($gateway_id) {
-    foreach(leyka()->get_gateways() as $gateway) { /** @var Leyka_Gateway $gateway */
-        if($gateway->id == $gateway_id) {
-            return $gateway;
-        }
-    }
+
+    $gateways = leyka()->get_gateways();
+    return empty($gateways[$gateway_id]) ? false : $gateways[$gateway_id];
+
 }
 
 abstract class Leyka_Gateway {
@@ -157,7 +156,8 @@ abstract class Leyka_Gateway {
         add_action('leyka_do_recurring_donation-'.$this->_id, array($this, 'do_recurring_donation'));
         add_filter(
             "leyka_{$this->_id}_recurring_subscription_cancelling_link",
-            array($this, 'get_recurring_subscription_cancelling_link')
+            array($this, 'get_recurring_subscription_cancelling_link'),
+            10, 2
         );
         add_action(
             "leyka_{$this->_id}_cancel_recurring_subscription",

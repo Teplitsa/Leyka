@@ -127,7 +127,7 @@ add_action('init', function(){
             'purpose_text' => 'Для тестирования рекуррентной подписки на ЯК',
             'post_parent' => 0,
             'amount' => 99.0,
-            'campaign_id' => 455, // Campaign ID on the devhost
+            'campaign_id' => stristr(site_url(), 'leyka.local') ? 305 : 455,
             'donor_name' => 'Лев Тестерович',
             'donor_email' => 'ahaenor@gmail.com',
             'payment_method_id' => 'yandex_card',
@@ -139,17 +139,29 @@ add_action('init', function(){
 
         echo '<pre>' . print_r('Init recurring donation ID: '.$init_recurring_donation_id, 1) . '</pre>';
 
-        echo '<pre>Gateways: ' . print_r(leyka_get_gateways(), 1) . '</pre>';
-
         $init_recurring_donation = new Leyka_Donation($init_recurring_donation_id);
 
         $gateway = leyka_get_gateway_by_id($init_recurring_donation->gateway_id);
         if($gateway) {
 
-            $new_recurring_donation = $gateway->do_recurring_donation($init_recurring_donation);
+            $new_recurring_donation_id = Leyka_Donation::add(array(
+                'status' => 'funded',
+                'payment_type' => 'rebill',
+                'purpose_text' => $init_recurring_donation->title,
+                'campaign_id' => $init_recurring_donation->campaign_id,
+                'payment_method_id' => $init_recurring_donation->pm_id,
+                'gateway_id' => $init_recurring_donation->gateway_id,
+                'donor_name' => $init_recurring_donation->donor_name,
+                'donor_email' => $init_recurring_donation->donor_email,
+                'amount' => $init_recurring_donation->amount,
+                'currency' => $init_recurring_donation->currency,
+                'init_recurring_donation' => $init_recurring_donation->id,
+                'recurring_id' => $init_recurring_donation->recurring_id, // InvoiceId of the original donation in a subscription
+            ));
+            $new_recurring_donation = new Leyka_Donation($new_recurring_donation_id);
+
             if($new_recurring_donation && is_a($new_recurring_donation, 'Leyka_Donation')) {
 
-                $new_recurring_donation->status = 'funded';
                 Leyka_Donation_Management::send_all_recurring_emails($new_recurring_donation);
                 echo '<pre>' . print_r('Recurring donation created: '.$new_recurring_donation->id, 1) . '</pre>';
 
