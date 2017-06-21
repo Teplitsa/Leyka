@@ -139,6 +139,8 @@ add_action('init', function(){
 
         echo '<pre>' . print_r('Init recurring donation ID: '.$init_recurring_donation_id, 1) . '</pre>';
 
+        echo '<pre>Gateways: ' . print_r(leyka_get_gateways(), 1) . '</pre>';
+
         $init_recurring_donation = new Leyka_Donation($init_recurring_donation_id);
 
         $gateway = leyka_get_gateway_by_id($init_recurring_donation->gateway_id);
@@ -161,4 +163,4 @@ add_action('init', function(){
 
     }
 
-});
+}, 999, 1);

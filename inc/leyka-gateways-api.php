@@ -106,11 +106,10 @@ function leyka_get_pm_by_id($pm_id, $is_full_id = false) {
  * @return Leyka_Gateway
  */
 function leyka_get_gateway_by_id($gateway_id) {
-
     foreach(leyka()->get_gateways() as $gateway) { /** @var Leyka_Gateway $gateway */
-
-        if($gateway->id == $gateway_id)
+        if($gateway->id == $gateway_id) {
             return $gateway;
+        }
     }
 }
 
