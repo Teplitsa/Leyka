@@ -5,7 +5,7 @@ Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса,яндекс.деньги, миксплат, paypal
 Requires at least: 3.6.1
 Tested up to: 4.8
-Stable tag: 2.3
+Stable tag: 2.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,12 @@ PHP at least 5.3 is required.
 10. Google Analytics events
 
 == Changelog ==
+= 2.3.1 =
+ * New: Yandex.Kassa recurring subscription cancelling via donor emails added.
+ * New: inner API architecture improved.
+ * Tweak: wordings improved.
+ * Fix: fixes of Revo compatibility with different themes.
+
 = 2.3 =
  * New: Revo template added.
  * New: inner API architecture evolved. Template controllers class tree added.
