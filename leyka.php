@@ -115,3 +115,44 @@ add_action('plugins_loaded', array('Leyka', 'activate')); // Any update needed
 register_deactivation_hook(__FILE__, array('Leyka', 'deactivate')); // Deactivate
 
 leyka(); // All systems go
+
+add_action('init', function(){
+
+    // Yandex.Kassa recurring auto-testing
+    if(isset($_GET['recurring_testing'])) {
+
+        echo '<pre>' . print_r('Begin testing...', 1) . '</pre>';
+        $init_recurring_donation_id = Leyka_Donation::add(array(
+            'status' => 'funded',
+            'purpose_text' => 'Для тестирования рекуррентной подписки на ЯК',
+            'post_parent' => 0,
+            'amount' => 99.0,
+            'campaign_id' => 368,
+            'donor_name' => 'Лев Тестерович',
+            'donor_email' => 'ahaenor@gmail.com',
+            'payment_method_id' => 'yandex_card',
+            'gateway_id' => 'yandex',
+            'payment_type' => 'rebill',
+            'rebilling_is_active' => true,
+        ));
+        update_post_meta($init_recurring_donation_id, '_yandex_invoice_id', 12345); // Set recurring subscription ID
+
+        echo '<pre>' . print_r('Init recurring donation ID: '.$init_recurring_donation_id, 1) . '</pre>';
+
+        $init_recurring_donation = new Leyka_Donation($init_recurring_donation_id);
+
+        $gateway = leyka_get_gateway_by_id($init_recurring_donation->gateway_id);
+        if($gateway) {
+
+            $new_recurring_donation = $gateway->do_recurring_donation($init_recurring_donation);
+            if($new_recurring_donation && is_a($new_recurring_donation, 'Leyka_Donation')) {
+
+                $new_recurring_donation->status = 'funded';
+                Leyka_Donation_Management::send_all_recurring_emails($new_recurring_donation);
+            }
+
+        }
+
+    }
+
+});

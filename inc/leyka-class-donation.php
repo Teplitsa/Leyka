@@ -1392,12 +1392,15 @@ class Leyka_Donation {
             do_action("leyka_{$params['gateway_id']}_add_donation_specific_data", $id, $params);
         }
 
-        if(
-            $params['payment_type'] == 'rebill' &&
-            empty($params['init_recurring_donation']) &&
-            !empty($params['rebilling_is_active'])
-        ) {
-            add_post_meta($id, '_rebilling_is_active', true);
+        if($params['payment_type'] == 'rebill' && empty($params['init_recurring_donation'])) {
+            if(
+                !empty($params['rebilling_is_active']) ||
+                !empty($params['rebilling_on']) ||
+                !empty($params['recurring_is_active']) ||
+                !empty($params['recurring_on'])
+            ) {
+                add_post_meta($id, '_rebilling_is_active', true);
+            }
         }
 
         if( !empty($params['recurrents_cancelled']) ) {
@@ -1413,6 +1416,7 @@ class Leyka_Donation {
         }
 
         return $id;
+
     }
 
     /**
