@@ -345,7 +345,9 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
     public function cancel_recurring_subscription(Leyka_Donation $donation) {
 
         if($donation->type == 'rebill' && $donation->recurring_is_active) {
+            echo '<pre>' . print_r($donation, 1) . '</pre>';
             $donation->recurring_subscription_cancelled = true;
+            echo '<pre>Here: ' . print_r((int)$donation->recurring_subscription_cancelled, 1) . '</pre>';
         }
 
         die(__('Recurring subscription cancelled.', 'leyka'));
