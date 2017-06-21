@@ -976,12 +976,12 @@ class Leyka_Donation_Management {
         <?php return; } else {
 
             $init_recurrent_donation = Leyka_Donation::get_init_recurrent_donation($donation);
-            if($init_recurrent_donation->recurrents_cancelled) {?>
+            if( !$init_recurrent_donation->recurring_is_active ) {?>
 
             <div class="">
                 <?php print_r(
                     __('Recurrent donations subscription was cancelled at %s', 'leyka'),
-                    date(get_option('date_format').', H:i', $init_recurrent_donation->recurrents_cancel_date)
+                    date(get_option('date_format').', H:i', $init_recurrent_donation->recurring_cancel_date)
                 );?>
             </div>
 
@@ -1421,22 +1421,19 @@ class Leyka_Donation {
 
     /**
      * A wrapper to access gateway's method to get init recurrent donation.
-     * @param int $donation_id
+     * @param mixed $donation
      * @return mixed Leyka_Donation or false if param is wrong or nothing foundd.
      */
-    public static function get_init_recurrent_donation($donation_id) {
+    public static function get_init_recurrent_donation($donation) {
 
-        if( !$donation_id || (int)$donation_id <= 0 ) {
-            return false;
-        }
-
-        $donation = new Leyka_Donation($donation_id);
+        $donation = leyka_get_validated_donation($donation);
 
         if($donation->type != 'rebill') {
             return false;
         }
 
         return leyka_get_gateway_by_id($donation->gateway_id)->get_init_recurrent_donation($donation);
+
     }
 
 	public function __construct($donation) {
@@ -1633,6 +1630,10 @@ class Leyka_Donation {
             case 'recurring_is_active': $tmp = $this->payment_type == 'rebill' ?
                 !empty($this->_donation_meta['rebilling_is_active']) : NULL;
                 return $tmp;
+            case 'recurrents_cancel_date':
+            case 'recurring_cancel_date': $tmp = $this->payment_type == 'rebill' ?
+                !empty($this->_donation_meta['recurrents_cancel_date']) : NULL;
+                return $tmp;
             default:
                 return apply_filters('leyka_get_unknown_donation_field', null, $field, $this);
         }
@@ -1765,23 +1766,41 @@ class Leyka_Donation {
                     $this->_donation_meta['rebilling_is_active'] = $value;
 
                 }
+
+                if($value) {
+
+                    update_post_meta($this->_id, 'leyka_recurrents_cancelled', false);
+                    update_post_meta($this->_id, 'leyka_recurrents_cancel_date', 0);
+                    $this->_donation_meta['recurrents_cancelled'] = false;
+                    $this->_donation_meta['recurrents_cancel_date'] = 0;
+
+                } else {
+
+                    update_post_meta($this->_id, 'leyka_recurrents_cancelled', true);
+                    update_post_meta($this->_id, 'leyka_recurrents_cancel_date', time());
+                    $this->_donation_meta['recurrents_cancelled'] = true;
+                    $this->_donation_meta['recurrents_cancel_date'] = time();
+
+                }
                 break;
 
-            case 'recurring_cancelled': /** @todo Make it a method calling instead of setting an attribute value! */
-            case 'recurring_subscription_cancelled':
-            case 'recurrents_stopped':
-            case 'recurrents_cancelled':
-                $value = !!$value;
-                update_post_meta($this->_id, 'leyka_recurrents_cancelled', $value);
-                update_post_meta($this->_id, 'leyka_recurrents_cancel_date', $value ? time() : 0);
-                $this->_donation_meta['recurrents_cancelled'] = $value;
-                $this->_donation_meta['recurrents_cancel_date'] = $value;
-                break;
+//            case 'recurring_cancelled': /** @todo Make it a method calling instead of setting an attribute value! */
+//            case 'recurring_subscription_cancelled':
+//            case 'recurrents_stopped':
+//            case 'recurrents_cancelled':
+//                $value = !!$value;
+//                update_post_meta($this->_id, 'leyka_recurrents_cancelled', $value);
+//                update_post_meta($this->_id, 'leyka_recurrents_cancel_date', $value ? time() : 0);
+//                $this->_donation_meta['recurrents_cancelled'] = $value;
+//                $this->_donation_meta['recurrents_cancel_date'] = $value;
+//                break;
 
             default:
                 do_action('leyka_set_unknown_donation_field', $field, $value, $this);
         }
+
         return true;
+
     }
 
     public function add_gateway_response($resp_text) {

@@ -303,10 +303,10 @@ class Leyka {
 
             if($request[0] == 'do_recurring') { // Recurring payments processing URL
                 $this->_do_active_recurrents_rebilling();
-            } else if($request[0] == 'cancel_recurring' && !empty($request[1])) { // Recurring subscription cancelling URL
+            } else if($request[0] == 'cancel_recurring' && !empty($request[1]) && !empty($request[2])) {
 
                 $donation = new Leyka_Donation($request[1]);
-                if($donation) {
+                if($donation && wp_verify_nonce($request[2], '_leyka_cancel_recurring_subscription')) {
                     do_action("leyka_{$donation->gateway_id}_cancel_recurring_subscription", $donation);
                 }
 

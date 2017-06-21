@@ -281,12 +281,12 @@ abstract class Leyka_Gateway {
     public function get_init_recurrent_donation($donation) {
 
         if(is_a($donation, 'Leyka_Donation')) {
-            return $donation->init_recurring_donation_id;
+            return new Leyka_Donation($donation->init_recurring_donation_id);
         } elseif( !empty($donation) && (int)$donation > 0 ) {
 
             $donation = new Leyka_Donation($donation);
 
-            return $donation->init_recurring_donation_id;
+            return new Leyka_Donation($donation->init_recurring_donation_id);
 
         } else {
             return false;

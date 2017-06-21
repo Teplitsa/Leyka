@@ -337,6 +337,7 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
         $cancelling_url = get_option('permalink_structure') ?
             home_url("leyka/service/cancel_recurring/{$donation->id}") :
             home_url("?page=leyka/service/cancel_recurring/{$donation->id}");
+        $cancelling_url .= '/'.wp_create_nonce('_leyka_cancel_recurring_subscription');
 
         return sprintf(__('<a href="%s" target="_blank">click here</a>', 'leyka'), $cancelling_url);
 
@@ -344,11 +345,11 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
 
     public function cancel_recurring_subscription(Leyka_Donation $donation) {
 
-        echo '<pre>' . print_r($donation->type.' - '.(int)$donation->recurring_is_active.' - '.(int)get_post_meta($donation->id, '_rebilling_is_active', true), 1) . '</pre>';
-        if($donation->type == 'rebill' && $donation->recurring_is_active) {
-            echo '<pre>' . print_r($donation, 1) . '</pre>';
-            $donation->recurring_subscription_cancelled = true;
-            echo '<pre>Here: ' . print_r((int)$donation->recurring_subscription_cancelled, 1) . '</pre>';
+        if($donation->type == 'rebill') {
+
+            $init_recurrent_donation = Leyka_Donation::get_init_recurrent_donation($donation);
+            $init_recurrent_donation->recurring_is_active = false;
+
         }
 
         die(__('Recurring subscription cancelled.', 'leyka'));
