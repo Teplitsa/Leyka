@@ -256,6 +256,7 @@ div[id *="leyka-pf-"] { //aka namespace
 			-webkit-appearance: none;
 			width: 200px;
 			margin: 0 auto;
+			border:none;
 		}
 
 		input[type=range]::-ms-track {
@@ -411,7 +412,7 @@ div[id *="leyka-pf-"] { //aka namespace
 	    .amount__range_overlay {
 	        display:none;
 		    background-color: #ffffff;
-		    height: 30px;
+		    height: 38px;
 		    left: 0;
 		    position: absolute;
 		    top: 0;
