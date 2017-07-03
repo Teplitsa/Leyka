@@ -339,7 +339,10 @@ div[id *="leyka-pf-"] { //aka namespace
 			}
 			
             &:focus {
-                &::placeholder { opacity: 0; }
+                &::placeholder { 
+                    opacity: 0; 
+                    color: $color-white;
+                }
             }
 		}
 	}
