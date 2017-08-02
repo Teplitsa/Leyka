@@ -785,6 +785,15 @@ self::$_options_meta = array(
         'list_entries' => array(), // For select, radio & checkbox fields
         'validation_rules' => array(), // List of regexp?..
     ),
+    'commission' => array(
+        'type' => 'gateways_commission', // Special option type
+        'default' => '',
+        'title' => __('Payment operators commission', 'leyka'),
+        'description' => '',
+        'required' => false, // True if field is required, false otherwise. For checkbox, 1 means "at least 1 value"
+        'placeholder' => '', // For text fields
+        'validation_rules' => array(), // List of regexp?..
+    ),
     'success_page' => array(
         'type' => 'select',
         'default' => leyka_get_default_success_page(),

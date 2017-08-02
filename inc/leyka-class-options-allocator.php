@@ -21,6 +21,7 @@ class Leyka_Options_Allocator {
             'currency'    => __('Currency', 'leyka'),
             'email'       => __('Email', 'leyka'),
             'view'        => __('View', 'leyka'),
+            'commission'  => __('Commission', 'leyka'),
             'additional'  => __('Misc', 'leyka'),
         ));
     }
@@ -163,6 +164,19 @@ class Leyka_Options_Allocator {
                 );
                 break;
 
+            case 'commission':
+                $options_allocated = array(
+                    array('section' => array(
+                        'name' => 'payment_operators_commission_options',
+                        'title' => __('Payments operators commission', 'leyka'),
+                        'is_default_collapsed' => false,
+                        'options' => array(
+                            'commission',
+                        )
+                    ),),
+                );
+                break;
+
             case 'additional':
                 $options_allocated = array(
                     array('section' => array(
@@ -171,7 +185,8 @@ class Leyka_Options_Allocator {
                         'is_default_collapsed' => false,
                         'options' => array(
                             'agree_to_terms_needed', 'agree_to_terms_text_text_part', 'agree_to_terms_text_link_part',
-                            'terms_of_service_text', 'terms_agreed_by_default', 'donation_submit_text', 'revo_donation_complete_button_text',
+                            'terms_of_service_text', 'terms_agreed_by_default', 'donation_submit_text',
+                            'revo_donation_complete_button_text',
                         )
                     ),),
                     array('section' => array(

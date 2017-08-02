@@ -126,13 +126,19 @@ function leyka_get_pages_list() {
 }
 
 /** A callback for the default gateway select field. */
-function leyka_get_gateways_pm_list() {
+function leyka_get_gateways_pm_list($gateway_id = false) {
 
     $options = array();
     foreach(leyka_get_pm_list(null, false, false) as $pm) {
+
+        if( !empty($gateway_id) && $pm->gateway_id != $gateway_id ) {
+            continue;
+        }
+
         $gateway_title = leyka_get_gateway_by_id($pm->gateway_id)->title;
         $options[$pm->full_id] = $pm->label_backend
             .($gateway_title == $pm->label_backend ? '' : ' ('.$gateway_title.')');
+
     }
 
     return $options;

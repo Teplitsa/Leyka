@@ -229,6 +229,7 @@ abstract class Leyka_Gateway {
         }
 
         return $option_names;
+
     }
 
     /** Allocate gateway options, if needed */
