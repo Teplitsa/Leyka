@@ -173,20 +173,34 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
                     <input type="submit" value="<?php echo leyka_options()->opt_safe('donation_submit_text');?>">
                 </div>
 
-                <?php if(leyka_options()->opt('agree_to_terms_needed')) {?>
+                <?php if(leyka_options()->opt('agree_to_terms_needed') || leyka_options()->opt('agree_to_pd_terms_needed')) {?>
                 <div class="donor__oferta">
                     <span>
-                        <input type="checkbox" name="leyka_agree" value="1" <?php echo leyka_options()->opt('terms_agreed_by_default') ? 'checked="checked"' : '';?>>
+                    <?php if(leyka_options()->opt('agree_to_terms_needed')) {?>
+                        <input type="checkbox" name="leyka_agree" id="leyka_agree" value="1" <?php echo leyka_options()->opt('terms_agreed_by_default') ? 'checked="checked"' : '';?>>
                         <label for="leyka_agree">
                         <?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';?>
                             <a href="#" class="leyka-js-oferta-trigger"><?php echo apply_filters('agree_to_terms_text_link_part', leyka_options()->opt('agree_to_terms_text_link_part'));?></a>
                         </label>
+                    <?php if(leyka_options()->opt('agree_to_pd_terms_needed')) {?>
+
+                        <input type="checkbox" name="leyka_agree_pd" id="leyka_agree_pd" value="1" <?php echo leyka_options()->opt('pd_terms_agreed_by_default') ? 'checked="checked"' : '';?>>
+                        <label for="leyka_agree_pd">
+                        <?php echo apply_filters('agree_to_pd_terms_text_text_part', leyka_options()->opt('agree_to_pd_terms_text_text_part')).' ';?>
+                            <a href="#" class="leyka-js-pd-trigger">
+                                <?php echo apply_filters('agree_to_pd_terms_text_link_part', leyka_options()->opt('agree_to_pd_terms_text_link_part'));?>
+                            </a>
+                        </label>
+
+                    <?php }?>
                     </span>
-                    <div class="donor__oferta-error leyka_agree-error">
+                    <div class="donor__oferta-error leyka_agree-error leyka_agree_pd-error">
                         <?php _e('You should accept Terms of Service to donate', 'leyka');?>
                     </div>
+                    <?php }?>
                 </div>
                 <?php }?>
+
             </div>
         </div>
 

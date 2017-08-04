@@ -712,7 +712,7 @@ div[id *="leyka-pf-"] {  //aka namespace
 
 	.donor__oferta {
 		z-index: 1;
-		text-align: center;
+		text-align: left; // center
 
 		span {
 			display: inline-block;
@@ -724,7 +724,7 @@ div[id *="leyka-pf-"] {  //aka namespace
 			margin: 0;
 			padding: 0;
 			position: absolute;
-			top: 4px;
+			top: -1000px; // 4px
 			left: 0;
 
 			border: none;

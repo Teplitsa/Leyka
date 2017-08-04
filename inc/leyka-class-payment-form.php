@@ -263,11 +263,15 @@ class Leyka_Payment_Form {
 
 	public function get_agree_field() {
 
-		if( !leyka_options()->opt('agree_to_terms_needed') || !$this->is_field_supported('agree') ) {
+		if(
+		    ( !leyka_options()->opt('agree_to_terms_needed') && !leyka_options()->opt('agree_to_pd_terms_needed') ) ||
+            !$this->is_field_supported('agree')
+        ) {
             return '';
         }
 
 		$agree_id = esc_attr(uniqid().'-text');
+		$agree_pd_id = esc_attr(uniqid().'-text');
 
 		ob_start();?>
 
@@ -279,17 +283,40 @@ class Leyka_Payment_Form {
                 </div>
 			</div>
 		</div>
+        <div id="<?php echo $agree_pd_id;?>" class="leyka-oferta-text">
+            <div class="leyka-modal-close">X</div>
+            <div class="leyka-oferta-text-frame">
+                <div class="leyka-oferta-text-flow">
+                    <?php echo apply_filters('leyka_terms_of_pd_usage_text', do_shortcode(leyka_options()->opt('pd_terms_text')));?>
+                </div>
+            </div>
+        </div>
 
-		<label class="checkbox">
-			<input type="checkbox" name="leyka_agree" class="leyka_agree required" value="1" id="leyka_agree" <?php echo leyka_options()->opt('terms_agreed_by_default') ? 'checked="checked"' : '';?>>
-            <span class="leyka-checkbox-label">
-                <?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';?>
-                <a class="leyka-legal-confirmation-trigger" href="#" data-oferta-content="#<?php echo $agree_id;?>">
-				    <?php echo apply_filters('agree_to_terms_text_link_part', leyka_options()->opt('agree_to_terms_text_link_part'));?>
-			    </a>
-            </span>
-		</label>
+        <p>
+            <label class="checkbox">
+                <input type="checkbox" name="leyka_agree" class="leyka_agree required" value="1" id="leyka_agree" <?php echo leyka_options()->opt('terms_agreed_by_default') ? 'checked="checked"' : '';?>>
+                <span class="leyka-checkbox-label">
+                    <?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';?>
+                    <a class="leyka-legal-confirmation-trigger" href="#" data-oferta-content="#<?php echo $agree_id;?>">
+                        <?php echo apply_filters('agree_to_terms_text_link_part', leyka_options()->opt('agree_to_terms_text_link_part'));?>
+                    </a>
+                </span>
+            </label>
+        </p>
         <p class="leyka_agree-error field-error"></p>
+
+        <p>
+            <label class="checkbox">
+                <input type="checkbox" name="leyka_agree_pd" class="leyka_agree_pd required" value="1" id="leyka_agree_pd" <?php echo leyka_options()->opt('pd_terms_agreed_by_default') ? 'checked="checked"' : '';?>>
+                <span class="leyka-checkbox-label">
+                    <?php echo apply_filters('agree_to_pd_terms_text_text_part', leyka_options()->opt('agree_to_pd_terms_text_text_part')).' ';?>
+                    <a class="leyka-legal-confirmation-trigger" href="#" data-oferta-content="#<?php echo $agree_pd_id;?>">
+                        <?php echo apply_filters('agree_to_pd_terms_text_link_part', leyka_options()->opt('agree_to_pd_terms_text_link_part'));?>
+                    </a>
+                </span>
+            </label>
+        </p>
+        <p class="leyka_agree_pd-error field-error"></p>
 
 	<?php $out = ob_get_contents();
 		ob_end_clean();
@@ -894,3 +921,22 @@ function leyka_terms_of_service_text($text) {
     ));
 }
 add_filter('leyka_terms_of_service_text', 'leyka_terms_of_service_text');
+
+function leyka_terms_of_pd_usage_text($text) {
+    return wpautop(str_replace(
+        array(
+            '#LEGAL_NAME#',
+            '#LEGAL_ADDRESS#',
+            '#SITE_URL#',
+            '#ADMIN_EMAIL#',
+        ),
+        array(
+            leyka_options()->opt('org_full_name'),
+            leyka_options()->opt('org_address'),
+            home_url(),
+            get_option('admin_email'),
+        ),
+        $text
+    ));
+}
+add_filter('leyka_terms_of_pd_usage_text', 'leyka_terms_of_pd_usage_text');

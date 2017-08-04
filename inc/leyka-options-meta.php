@@ -675,10 +675,10 @@ self::$_options_meta = array(
     ),
     'agree_to_terms_needed' => array(
         'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
-        'default' => 1,
-        'title' => __('To donate, donor must agree to the Terms of Service', 'leyka'),
-        'description' => __('Check if you must have donor to accept some terms before donating.', 'leyka'),
-        'required' => 0,
+        'default' => true,
+        'title' => __('To donate, donor must agree to Terms of Service', 'leyka'),
+        'description' => __("Check if you must have donor's agreement with some terms before his donation.", 'leyka'),
+        'required' => false,
         'placeholder' => '', // For text fields
         'length' => '', // For text fields
         'list_entries' => array(), // For select, radio & checkbox fields
@@ -689,7 +689,7 @@ self::$_options_meta = array(
         'default' => __('I agree with', 'leyka'),
         'title' => __('Label of checkbox of Terms acception - the first (text) part', 'leyka'),
         'description' => '',
-        'required' => 1,
+        'required' => true,
         'placeholder' => __('E.g., «I agree with»', 'leyka'),
         'length' => '', // For text fields
         'list_entries' => array(), // For select, radio & checkbox fields
@@ -697,11 +697,11 @@ self::$_options_meta = array(
     ),
     'agree_to_terms_text_link_part' => array(
         'type' => 'text',
-        'default' => __('the Terms of the donation service', 'leyka'),
+        'default' => __('Terms of the donation service', 'leyka'),
         'title' => __('Label of checkbox of Terms acception - the second (link) part', 'leyka'),
         'description' => '',
         'required' => 1,
-        'placeholder' => __('I. e., the Terms of the donation service', 'leyka'),
+        'placeholder' => __('I. e., Terms of the donation service', 'leyka'),
         'length' => '', // For text fields
         'list_entries' => array(), // For select, radio & checkbox fields
         'validation_rules' => array(), // List of regexp?..
@@ -709,20 +709,20 @@ self::$_options_meta = array(
     'terms_of_service_text' => array(
         'type' => 'rich_html',
         'default' => __('Terms of donation service text. Use <br /> for line-breaks, please.', 'leyka'),
-        'title' => __('A text of the Terms of donation service', 'leyka'),
-        'description' => __('Enter a text that will be shown to the donors to read Terms of Service. It have to include the following special entries:', 'leyka')."<span class='placeholders-help'>
-            <code>#LEGAL_NAME#</code> — ".__("a legal representative of the organization", 'leyka')."<br>
-            <code>#LEGAL_FACE#</code> — ".__("a legal representative of the organization", 'leyka')."<br>
-            <code>#LEGAL_FACE_RP#</code> — ".__("a legal representative of the organization (in genitive case)", 'leyka')."<br>
-            <code>#LEGAL_FACE_POSITION#</code> — ".__("an official position of the legal representative", 'leyka')."<br>
-            <code>#LEGAL_ADDRESS#</code> — ".__("an official organization's address", 'leyka')."<br>
-            <code>#STATE_REG_NUMBER#</code> — ".__("a state registration number of your organization", 'leyka')."<br>
-            <code>#KPP#</code> — ".__("an organization's statement of the account number", 'leyka')."<br>
-            <code>#INN#</code> — ".__("an organization's individual taxpayer number", 'leyka')."<br>
-            <code>#BANK_ACCOUNT#</code> — ".__("an organization's bank account number", 'leyka')."<br>
-            <code>#BANK_NAME#</code> — ".__("an organization's bank name", 'leyka')."<br>
-            <code>#BANK_BIC#</code> — ".__("an organization's bank indentification code", 'leyka')."<br>
-            <code>#BANK_CORR_ACCOUNT#</code> — ".__("an organization's bank correspondent account", 'leyka')."<br>
+        'title' => __('A text of Terms of donation service', 'leyka'),
+        'description' => __('Enter a Terms of Service text. The text may include following special entries:', 'leyka')."<span class='placeholders-help'>
+            <code>#LEGAL_NAME#</code> — ".__("the organization legal name", 'leyka')."<br>
+            <code>#LEGAL_FACE#</code> — ".__("the organization legal representative", 'leyka')."<br>
+            <code>#LEGAL_FACE_RP#</code> — ".__("the organization legal representative (in genitive case)", 'leyka')."<br>
+            <code>#LEGAL_FACE_POSITION#</code> — ".__("an official position of the organization legal representative", 'leyka')."<br>
+            <code>#LEGAL_ADDRESS#</code> — ".__("the organization legal address", 'leyka')."<br>
+            <code>#STATE_REG_NUMBER#</code> — ".__("the organization state registration number", 'leyka')."<br>
+            <code>#KPP#</code> — ".__("the organization statement of the account number", 'leyka')."<br>
+            <code>#INN#</code> — ".__("the organization individual taxpayer number", 'leyka')."<br>
+            <code>#BANK_ACCOUNT#</code> — ".__("the organization bank account number", 'leyka')."<br>
+            <code>#BANK_NAME#</code> — ".__("the organization bank name", 'leyka')."<br>
+            <code>#BANK_BIC#</code> — ".__("the organization bank indentification code", 'leyka')."<br>
+            <code>#BANK_CORR_ACCOUNT#</code> — ".__("the organization bank correspondent account", 'leyka')."<br>
             </span>",
         'required' => 1, // 1 if field is required, 0 otherwise
         'placeholder' => '',
@@ -733,8 +733,69 @@ self::$_options_meta = array(
     'terms_agreed_by_default' => array(
         'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
         'default' => false,
-        'title' => __('Donor agreement with Terms of Service checkbox is checked by default', 'leyka'),
-        'description' => __('When donor sees a donation form, Terms of Service agreement checkbox is checked by default.', 'leyka'),
+        'title' => __("Donor is agreed with Terms of Service by default", 'leyka'),
+        'description' => __('When donor sees a donation form, Terms of Service agreement checkbox is already checked.', 'leyka'),
+        'required' => false,
+        'placeholder' => '', // For text fields
+        'length' => '', // For text fields
+        'list_entries' => array(), // For select, radio & checkbox fields
+        'validation_rules' => array(), // List of regexp?..
+    ),
+    'agree_to_pd_terms_needed' => array(
+        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'default' => true,
+        'title' => __('To donate, donor must agree to Terms of personal data usage', 'leyka'),
+        'description' => __("Check if you should have donor's agreement with some terms regarding his personal data usage.", 'leyka'),
+        'required' => false,
+        'placeholder' => '', // For text fields
+        'length' => '', // For text fields
+        'list_entries' => array(), // For select, radio & checkbox fields
+        'validation_rules' => array(), // List of regexp?..
+    ),
+    'agree_to_pd_terms_text_text_part' => array(
+        'type' => 'text',
+        'default' => __('I agree with', 'leyka'),
+        'title' => __('Label of personal data usage Terms checkbox - the first (text) part', 'leyka'),
+        'description' => '',
+        'required' => true,
+        'placeholder' => __('I. e., "I agree with"', 'leyka'),
+        'length' => '', // For text fields
+        'list_entries' => array(), // For select, radio & checkbox fields
+        'validation_rules' => array(), // List of regexp?..
+    ),
+    'agree_to_pd_terms_text_link_part' => array(
+        'type' => 'text',
+        'default' => __('Terms of personal data usage', 'leyka'),
+        'title' => __('Label of personal data usage Terms checkbox - the second (link) part', 'leyka'),
+        'description' => '',
+        'required' => true,
+        'placeholder' => __('I. e., "Terms of personal data usage"', 'leyka'),
+        'length' => '', // For text fields
+        'list_entries' => array(), // For select, radio & checkbox fields
+        'validation_rules' => array(), // List of regexp?..
+    ),
+    'pd_terms_text' => array(
+        'type' => 'rich_html',
+        'default' => __('Terms of personal data usage full text. Use <br> for line-breaks.', 'leyka'),
+        'title' => __('A text of personal data usage Terms', 'leyka'),
+        'description' => __("Enter a donors' personal data usage Terms text. The text may include following special entries:", 'leyka')."<span class='placeholders-help'>
+            <code>#LEGAL_NAME#</code> — ".__("the organization legal name", 'leyka')."<br>
+            <code>#LEGAL_ADDRESS#</code> — ".__("the organization legal address", 'leyka')."<br>
+            <code>#SITE_URL#</code> — ".__("the website homepage URL", 'leyka')."<br>
+            <code>#ADMIN_EMAIL#</code> — ".__("the website administrator email", 'leyka')."<br>
+            </span>
+            <span class='pd-warning'>".sprintf(__('WARNING! We strongly recommend you to revise this Terms text and fill the field with your own value according to the organization personal data policy. Read more about it: %s', 'leyka'), leyka_get_pd_usage_info_links())."</span>",
+        'required' => 1, // 1 if field is required, 0 otherwise
+        'placeholder' => '',
+        'length' => '', // For text fields
+        'list_entries' => array(), // For select, radio & checkbox fields
+        'validation_rules' => array(), // List of regexp?..
+    ),
+    'pd_terms_agreed_by_default' => array(
+        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'default' => false,
+        'title' => __("Donor is agreed with personal data usage Terms by default", 'leyka'),
+        'description' => __('When donor sees a donation form, personal data usage Terms agreement checkbox is already checked.', 'leyka'),
         'required' => false,
         'placeholder' => '', // For text fields
         'length' => '', // For text fields
@@ -785,15 +846,15 @@ self::$_options_meta = array(
         'list_entries' => array(), // For select, radio & checkbox fields
         'validation_rules' => array(), // List of regexp?..
     ),
-    'commission' => array(
-        'type' => 'gateways_commission', // Special option type
-        'default' => '',
-        'title' => __('Payment operators commission', 'leyka'),
-        'description' => '',
-        'required' => false, // True if field is required, false otherwise. For checkbox, 1 means "at least 1 value"
-        'placeholder' => '', // For text fields
-        'validation_rules' => array(), // List of regexp?..
-    ),
+//    'commission' => array(
+//        'type' => 'gateways_commission', // Special option type
+//        'default' => '',
+//        'title' => __('Payment operators commission', 'leyka'),
+//        'description' => '',
+//        'required' => false, // True if field is required, false otherwise. For checkbox, 1 means "at least 1 value"
+//        'placeholder' => '', // For text fields
+//        'validation_rules' => array(), // List of regexp?..
+//    ),
     'success_page' => array(
         'type' => 'select',
         'default' => leyka_get_default_success_page(),

@@ -413,7 +413,7 @@
   border-left: none;
   padding: 20px;
   margin-right: -1px;
-  max-width: 390px;
+  max-width: 400px;
   box-shadow: 1px 1px 3px rgba(240, 240, 240, 0.67);
 }
 
@@ -473,7 +473,7 @@
 #leyka-payment-form.leyka-tpl-radio .form-part {
   box-sizing: border-box; }
 #leyka-payment-form.leyka-tpl-radio .amount-selector {
-  margin: 12px 0 12px 20px; }
+  margin: 12px 0 0 20px; }
 #leyka-payment-form.leyka-tpl-radio .pm-selector {
   background: #f9f9f9;
   padding: 15px; }
@@ -502,6 +502,10 @@
   @inclide clearfix; }
   #leyka-payment-form.leyka-tpl-radio .freeze-field .amount {
     float: right; }
+
+.leyka-tpl-radio .leyka-recurring-field {
+    margin-left: 20px;
+}
 
 /* embed yandex form */
 #leyka-payment-form .yandex_money_quick .yandex_money_quick_code,
@@ -1480,7 +1484,10 @@ text-decoration: underline;
 }
 
 .leyka-tpl-neo .leyka_agree-error.field-error {
-    bottom: -15px;
+    bottom: 30px;
+}
+.leyka-tpl-neo .leyka_agree_pd-error.field-error {
+    bottom: -17px;
 }
 
 .leyka-tpl-neo label.checkbox {
