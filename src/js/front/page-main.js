@@ -21,14 +21,14 @@ window.LeykaPageMain.prototype = {
 
         var self = this; var $ = self.$;
    
-        $('.leyka-js-open-form').on('click', function(e){
+        $('.leyka-js-open-form').on('click.leyka', function(e){
 
             e.preventDefault();
             $(this).closest('.leyka-pf').leykaForm('open');
 
         });
 
-        $('.leyka-js-close-form').on('click', function(e){
+        $('.leyka-js-close-form').on('click.leyka', function(e){
 
             e.preventDefault();
             $(this).closest('.leyka-pf').leykaForm('close');

@@ -306,9 +306,13 @@
 
 	}
 
-	.leyka-pf--active.leyka-pf--oferta-open { //remove divider
-		.leyka-pf__module:after { display: none; }
-	}
+	.leyka-pf--active {
+        &.leyka-pf--oferta-open, &.leyka-pf--pd-open { // remove divider
+            .leyka-pf__module:after {
+                display: none;
+            }
+        }
+    }
 }
 } //mq
 
@@ -361,6 +365,53 @@
 			}
 		}
 	}
+
+    .leyka-pf--active.leyka-pf--pd-open {
+
+        .leyka-pf__module {
+            max-width: 900px;
+            max-height: 700px;
+        }
+
+        .leyka-pf__pd {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10015;
+            border-radius: 10px;
+            padding: $base*3 9% 0;
+        }
+
+        .pd__frame {
+            width: 100%;
+            padding: 0 20px 56px;
+            height: 100%;
+            overflow-y: scroll;
+        }
+
+        .pd__flow {
+            padding-bottom: 56px + 20px;
+        }
+
+        .pd__action {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 10120;
+            padding: $base;
+            text-align: center;
+            background: $color-white;
+            border-top: 1px solid $color-border-light;
+
+            a {
+                @include button(small);
+            }
+        }
+    }
 }
 
 

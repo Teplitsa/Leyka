@@ -4,7 +4,7 @@
 
 //OFERTA
 div[id *="leyka-pf-"] {  //aka namespace
-	.leyka-pf__oferta {
+	.leyka-pf__oferta, .leyka-pf__pd {
 		display: none;
 		background: $color-white;
 		@include body-text();
@@ -16,7 +16,7 @@ div[id *="leyka-pf-"] {  //aka namespace
 		}
 	}
 
-	.leyka-pf__oferta-action {
+	.leyka-pf__oferta-action, .leyka-pf__pd-action {
 		text-align: center;
 		padding: $base*2 0;
 

@@ -617,6 +617,7 @@ function leyka_inline_campaign(array $attributes = array()) {
                 </div>
             </div>
 
+            <?php if(leyka_options()->opt('agree_to_terms_needed')) {?>
             <div class="leyka-pf__oferta oferta">
                 <div class="oferta__frame">
                     <div class="oferta__flow">
@@ -629,6 +630,22 @@ function leyka_inline_campaign(array $attributes = array()) {
                     </a>
                 </div>
             </div>
+            <?php }?>
+
+            <?php if(leyka_options()->opt('agree_to_pd_terms_needed')) {?>
+            <div class="leyka-pf__pd pd">
+                <div class="pd__frame">
+                    <div class="pd__flow">
+                        <?php echo apply_filters('leyka_terms_of_pd_usage_text', do_shortcode(leyka_options()->opt('pd_terms_text')));?>
+                    </div>
+                </div>
+                <div class="pd__action">
+                    <a href="#" class="leyka-js-pd-close">
+                        <?php echo leyka_options()->opt('agree_to_pd_terms_text_text_part').' '.leyka_options()->opt('agree_to_pd_terms_text_link_part');?>
+                    </a>
+                </div>
+            </div>
+            <?php }?>
 
         </div><!-- columnt -->
     </div>

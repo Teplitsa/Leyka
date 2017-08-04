@@ -38,6 +38,7 @@
         bindPaymentStepEvents();
         bindDonorStepEvents();
         bindOfertaEvents();
+        bindPdEvents();
         bindHistoryEvents();
         bindSubmitPaymentFormEvent();
 
@@ -221,29 +222,65 @@
 
     function bindOfertaEvents() {
 
-        $('.leyka-js-oferta-trigger').on('click', function(e){
+        $('.leyka-js-oferta-trigger').on('click.leyka', function(e){
             e.preventDefault();
 
             $(this).parents('.leyka-pf').addClass('leyka-pf--oferta-open');
 
         });
 
-        $('.leyka-js-oferta-close').on('click', function(e){
+        $('.leyka-js-oferta-close').on('click.leyka', function(e){
             e.preventDefault();
 
-            $(this).parents('.leyka-pf').find('.donor__oferta').removeClass('invalid').find('input').prop('checked', true);
+            $(this)
+                .parents('.leyka-pf').find('.donor__oferta')
+                .removeClass('invalid').find('input[name="leyka_agree"]')
+                .prop('checked', true);
+
             $(this).parents('.leyka-pf').removeClass('leyka-pf--oferta-open');
 
         });
 
-        //agree
-        $('.donor__oferta').on('change', 'input', function(){
+        // agree
+        $('.donor__oferta').on('change.leyka', 'input:checkbox', function(){
 
-            if($(this).prop('checked')) {
+            if( $('.donor__oferta').find('input:checkbox.required:not(:checked)').length ) {
+                $(this).parents('.donor__oferta').addClass('invalid');
+            } else {
                 $(this).parents('.donor__oferta').removeClass('invalid');
             }
-            else {
+
+        });
+    }
+
+    function bindPdEvents() {
+
+        $('.leyka-js-pd-trigger').on('click.leyka', function(e){
+            e.preventDefault();
+
+            $(this).parents('.leyka-pf').addClass('leyka-pf--pd-open');
+
+        });
+
+        $('.leyka-js-pd-close').on('click.leyka', function(e){
+            e.preventDefault();
+
+            $(this)
+                .parents('.leyka-pf').find('.donor__oferta')
+                .removeClass('invalid').find('input[name="leyka_agree_pd"]')
+                .prop('checked', true);
+
+            $(this).parents('.leyka-pf').removeClass('leyka-pf--pd-open');
+
+        });
+
+        // agree
+        $('.donor__oferta').on('change.leyka', 'input:checkbox', function(){
+
+            if( $('.donor__oferta').find('input:checkbox.required:not(:checked)').length ) {
                 $(this).parents('.donor__oferta').addClass('invalid');
+            } else {
+                $(this).parents('.donor__oferta').removeClass('invalid');
             }
         });
     }
@@ -573,6 +610,8 @@
 
         if($pf.hasClass('leyka-pf--oferta-open')) { // close only the Oferta terms window
             $pf.removeClass('leyka-pf--oferta-open');
+        } else if($pf.hasClass('leyka-pf--pd-open')) { // close only the PD terms window
+            $pf.removeClass('leyka-pf--pd-open');
         } else { // close module
             $pf.removeClass('leyka-pf--active');
         }
