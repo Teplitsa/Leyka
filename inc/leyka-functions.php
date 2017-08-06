@@ -145,7 +145,7 @@ function leyka_get_gateways_pm_list($gateway_id = false) {
 }
 
 function leyka_get_pd_usage_info_links() {
-    return __('<a href="//te-st.ru/" target="_blank">the Teplitsa article</a>.', 'leyka');
+    return __('<a href="//te-st.ru/reports/personal-data-perm/" target="_blank">the Teplitsa article</a>.', 'leyka');
 }
 
 function leyka_get_default_email_from() {
