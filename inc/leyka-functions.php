@@ -159,6 +159,62 @@ function leyka_get_default_dm_list() {
     return get_bloginfo('admin_email').',';
 }
 
+function leyka_get_default_pd_terms_page() {
+
+    $default_page = get_option('pd_terms_page');
+    if($default_page) {
+        return $default_page;
+    }
+
+    $page = get_posts(apply_filters('leyka_default_pd_terms_page_query', array(
+        'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'private', 'future', 'inherit', 'trash'),
+        'post_type' => 'page',
+        'post_name__in' => array('personal-data-usage-terms'),
+        'posts_per_page' => 1,
+    )));
+    $page = reset($page);
+
+    if($page) {
+
+        if($page->post_status != 'publish') {
+            wp_update_post(array('ID' => $page->ID, 'post_status' => 'publish',));
+        }
+
+        $page = $page->ID;
+
+    } else {
+
+        $page = wp_insert_post(array(
+            'post_type' => 'page',
+            'post_status' => 'publish',
+            'post_name' => 'personal-data-usage-terms',
+            'post_title' => __('Terms of personal data usage', 'leyka'),
+            'post_content' => __('Terms of personal data usage full text. Use <br> for line-breaks.', 'leyka'),
+        ));
+
+        do_action('leyka_default_pd_terms_page_created', $page);
+    }
+
+    if($page) {
+        update_option('leyka_pd_terms_page', $page);
+    }
+
+    return $page ? $page : 0;
+
+}
+
+function leyka_get_pd_terms_page_url() {
+
+    $url = leyka_options()->opt('pd_terms_page') ? get_permalink(leyka_options()->opt('pd_terms_page')) : home_url();
+
+    if( !$url ) { // It can be in case when "last posts" is selected for homepage
+        $url = home_url();
+    }
+
+    return $url;
+
+}
+
 function leyka_get_default_success_page() {
 
     $default_page = get_option('leyka_success_page');
@@ -200,6 +256,7 @@ function leyka_get_default_success_page() {
     }
 
     return $page ? $page : 0;
+
 }
 
 function leyka_get_success_page_url() {
@@ -211,6 +268,7 @@ function leyka_get_success_page_url() {
     }
     
     return $url;
+
 }
 
 function leyka_get_default_failure_page() {

@@ -782,6 +782,7 @@ self::$_options_meta = array(
             <code>#LEGAL_NAME#</code> — ".__("the organization legal name", 'leyka')."<br>
             <code>#LEGAL_ADDRESS#</code> — ".__("the organization legal address", 'leyka')."<br>
             <code>#SITE_URL#</code> — ".__("the website homepage URL", 'leyka')."<br>
+            <code>#PD_TERMS_PAGE_URL#</code> — ".__("the website personal data terms page URL", 'leyka')."<br>
             <code>#ADMIN_EMAIL#</code> — ".__("the website administrator email", 'leyka')."<br>
             </span>
             <span class='pd-warning'>".sprintf(__('WARNING! We strongly recommend you to revise this Terms text and fill the field with your own value according to the organization personal data policy. Read more about it: %s', 'leyka'), leyka_get_pd_usage_info_links())."</span>",
@@ -800,6 +801,17 @@ self::$_options_meta = array(
         'placeholder' => '', // For text fields
         'length' => '', // For text fields
         'list_entries' => array(), // For select, radio & checkbox fields
+        'validation_rules' => array(), // List of regexp?..
+    ),
+    'pd_terms_page' => array(
+        'type' => 'select',
+        'default' => leyka_get_default_pd_terms_page(),
+        'title' => __("Page of personal data usage terms and policy", 'leyka'),
+        'description' => __('Select a page with personal data usage terms and policy full text.', 'leyka'),
+        'required' => 0, // 1 if field is required, 0 otherwise
+        'placeholder' => '', // For text fields
+        'length' => '', // For text fields
+        'list_entries' => 'leyka_get_pages_list',
         'validation_rules' => array(), // List of regexp?..
     ),
     'donation_submit_text' => array(

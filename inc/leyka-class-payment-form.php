@@ -928,12 +928,14 @@ function leyka_terms_of_pd_usage_text($text) {
             '#LEGAL_NAME#',
             '#LEGAL_ADDRESS#',
             '#SITE_URL#',
+            '#PD_TERMS_PAGE_URL#',
             '#ADMIN_EMAIL#',
         ),
         array(
             leyka_options()->opt('org_full_name'),
             leyka_options()->opt('org_address'),
             home_url(),
+            leyka_get_pd_terms_page_url(),
             get_option('admin_email'),
         ),
         $text
