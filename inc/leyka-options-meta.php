@@ -424,8 +424,8 @@ self::$_options_meta = array(
     ),
     'email_recurring_init_thanks_title' => array(
         'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
-        'default' => __('Thank you for your unwavering support!', 'leyka'),
-        'title' => __('A title of a recurring subscription donation notice sent to a donor', 'leyka'),
+        'default' => __('Thank you for your support!', 'leyka'),
+        'title' => __('A title of an initial recurring donation notice sent to a donor', 'leyka'),
         'description' => __('Enter a title of a notification email with donation data that would be sended to each donor on each rebill donation.', 'leyka'),
         'required' => 1,
         'placeholder' => __('E.g., Daisy Foundation thanks you for your kindness', 'leyka'), // For text fields
@@ -435,7 +435,7 @@ self::$_options_meta = array(
     ),
     'email_recurring_init_thanks_text' => array(
         'type' => 'html', // Maybe, rich_html
-        'default' => __('Hello, #DONOR_NAME#!<br><br>We just took a #SUM# from your account as a regular donation to the campaign «#CAMPAIGN_NAME#», using #PAYMENT_METHOD_NAME#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
+        'default' => __('Hello, #DONOR_NAME#!<br><br>We just took a #SUM# from your account as a regular donation to the campaign «#CAMPAIGN_NAME#», using #PAYMENT_METHOD_NAME#.<br><br>If you, regretfully, wish to stop future regular donations to this campaign, please #RECURRING_SUBSCRIPTION_CANCELLING_LINK#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
         'title' => __('A text of a recurring subscription donation notice sent to a donor', 'leyka'),
         'description' => __('Enter the text of the notification email that would be sended to each donor on each rebill donation. It may include the following special entries:', 'leyka').$email_placeholders,
         'required' => 1,

@@ -286,6 +286,7 @@ class Leyka_Donation_Management {
                     '#PURPOSE#',
                     '#SUM#',
                     '#DATE#',
+                    '#RECURRING_SUBSCRIPTION_CANCELLING_LINK#',
                 ),
                 array(
                     get_bloginfo('name'),
@@ -298,6 +299,11 @@ class Leyka_Donation_Management {
                     $campaign->payment_title,
                     $donation->amount.' '.$donation->currency_label,
                     $donation->date,
+                    apply_filters(
+                        'leyka_'.$donation->gateway_id.'_recurring_subscription_cancelling_link',
+                        sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_options()->opt('tech_support_email')),
+                        $donation
+                    ),
                 ),
                 apply_filters(
                     'leyka_email_thanks_text',

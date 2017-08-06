@@ -352,6 +352,8 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
 
         }
 
+        header('Content-type: text/html; charset=utf-8');
+
         die(__('Recurring subscription cancelled.', 'leyka'));
 
     }
