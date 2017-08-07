@@ -271,7 +271,7 @@ class Leyka_Payment_Form {
         }
 
 		$agree_id = esc_attr(uniqid().'-text');
-		$agree_pd_id = esc_attr(uniqid().'-text');
+		$agree_pd_id = esc_attr(uniqid().'-pd-text');
 
 		ob_start();?>
 
@@ -297,7 +297,7 @@ class Leyka_Payment_Form {
                 <input type="checkbox" name="leyka_agree" class="leyka_agree required" value="1" id="leyka_agree" <?php echo leyka_options()->opt('terms_agreed_by_default') ? 'checked="checked"' : '';?>>
                 <span class="leyka-checkbox-label">
                     <?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';?>
-                    <a class="leyka-legal-confirmation-trigger" href="#" data-oferta-content="#<?php echo $agree_id;?>">
+                    <a class="leyka-legal-terms-trigger" href="#" data-terms-content="#<?php echo $agree_id;?>">
                         <?php echo apply_filters('agree_to_terms_text_link_part', leyka_options()->opt('agree_to_terms_text_link_part'));?>
                     </a>
                 </span>
@@ -310,7 +310,7 @@ class Leyka_Payment_Form {
                 <input type="checkbox" name="leyka_agree_pd" class="leyka_agree_pd required" value="1" id="leyka_agree_pd" <?php echo leyka_options()->opt('pd_terms_agreed_by_default') ? 'checked="checked"' : '';?>>
                 <span class="leyka-checkbox-label">
                     <?php echo apply_filters('agree_to_pd_terms_text_text_part', leyka_options()->opt('agree_to_pd_terms_text_text_part')).' ';?>
-                    <a class="leyka-legal-confirmation-trigger" href="#" data-oferta-content="#<?php echo $agree_pd_id;?>">
+                    <a class="leyka-legal-terms-trigger" href="#" data-terms-content="#<?php echo $agree_pd_id;?>">
                         <?php echo apply_filters('agree_to_pd_terms_text_link_part', leyka_options()->opt('agree_to_pd_terms_text_link_part'));?>
                     </a>
                 </span>

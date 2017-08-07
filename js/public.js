@@ -439,10 +439,11 @@ jQuery(document).ready(function($){
         closeButtonClass: '.leyka-modal-close'
     });
 
-    $('.leyka-legal-confirmation-trigger').on('click.leyka', function(e){
+    $('.leyka-legal-terms-trigger').on('click.leyka', function(e){
 
         e.preventDefault();
-        $( $(this).data('oferta-content') ).trigger('openModal');
+        $( $(this).data('terms-content') ).trigger('openModal');
+
     });
 
     // Donors list width detection:
