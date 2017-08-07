@@ -161,7 +161,7 @@ function leyka_get_default_dm_list() {
 
 function leyka_get_default_pd_terms_page() {
 
-    $default_page = get_option('pd_terms_page');
+    $default_page = get_option('leyka_pd_terms_page');
     if($default_page) {
         return $default_page;
     }
@@ -173,6 +173,7 @@ function leyka_get_default_pd_terms_page() {
         'posts_per_page' => 1,
     )));
     $page = reset($page);
+
 
     if($page) {
 
@@ -206,23 +207,9 @@ function leyka_get_default_pd_terms_page() {
 
 function leyka_get_pd_terms_page_url() {
 
-    if( !leyka_options()->opt('pd_terms_page') ) {
-        return home_url();
-    }
+    $url = leyka_options()->opt('pd_terms_page') ? get_permalink(leyka_options()->opt('pd_terms_page')) : home_url();
 
-    $page = get_posts(array(
-        'ID' => leyka_options()->opt('pd_terms_page'),
-        'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'private', 'future', 'inherit',),
-        'post_type' => 'page',
-        'posts_per_page' => 1,
-    ));
-
-    if($page) {
-
-        $page = reset($page);
-        $url = get_permalink($page);
-
-    } else {
+    if( !$url ) { // It can be in case when "last posts" is selected for homepage
         $url = home_url();
     }
 

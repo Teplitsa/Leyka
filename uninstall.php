@@ -26,6 +26,11 @@ if(get_option('leyka_delete_plugin_data')) { // Completely remove all campaigns 
         wp_delete_post($failure_page->ID, true);
     }
 
+    $pd_terms_page = get_post(get_option('leyka_pd_terms_page'));
+    if(stristr($pd_terms_page->post_name, 'personal-data-usage-terms') !== false) {
+        wp_delete_post($pd_terms_page->ID, true);
+    }
+
 }
 
 if(get_option('leyka_delete_plugin_options')) {
