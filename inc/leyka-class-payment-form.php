@@ -303,8 +303,6 @@ class Leyka_Payment_Form {
                 </span>
             </label>
         </p>
-        <p class="leyka_agree-error field-error"></p>
-
         <p>
             <label class="checkbox">
                 <input type="checkbox" name="leyka_agree_pd" class="leyka_agree_pd required" value="1" id="leyka_agree_pd" <?php echo leyka_options()->opt('pd_terms_agreed_by_default') ? 'checked="checked"' : '';?>>
@@ -316,7 +314,7 @@ class Leyka_Payment_Form {
                 </span>
             </label>
         </p>
-        <p class="leyka_agree_pd-error field-error"></p>
+        <p class="leyka_agree_error leyka_agree_pd-error field-error"></p>
 
 	<?php $out = ob_get_contents();
 		ob_end_clean();
