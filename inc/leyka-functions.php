@@ -188,11 +188,12 @@ function leyka_get_default_pd_terms_page() {
             'post_type' => 'page',
             'post_status' => 'publish',
             'post_name' => 'personal-data-usage-terms',
-            'post_title' => __('Terms of personal data usage', 'leyka'),
+            'post_title' => _x('Terms of personal data usage', 'In subjective case', 'leyka'),
             'post_content' => __('Terms of personal data usage full text. Use <br> for line-breaks.', 'leyka'),
         ));
 
         do_action('leyka_default_pd_terms_page_created', $page);
+
     }
 
     if($page) {
@@ -205,9 +206,23 @@ function leyka_get_default_pd_terms_page() {
 
 function leyka_get_pd_terms_page_url() {
 
-    $url = leyka_options()->opt('pd_terms_page') ? get_permalink(leyka_options()->opt('pd_terms_page')) : home_url();
+    if( !leyka_options()->opt('pd_terms_page') ) {
+        return home_url();
+    }
 
-    if( !$url ) { // It can be in case when "last posts" is selected for homepage
+    $page = get_posts(array(
+        'ID' => leyka_options()->opt('pd_terms_page'),
+        'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'private', 'future', 'inherit',),
+        'post_type' => 'page',
+        'posts_per_page' => 1,
+    ));
+
+    if($page) {
+
+        $page = reset($page);
+        $url = get_permalink($page);
+
+    } else {
         $url = home_url();
     }
 

@@ -765,7 +765,7 @@ self::$_options_meta = array(
     ),
     'agree_to_pd_terms_text_link_part' => array(
         'type' => 'text',
-        'default' => __('Terms of personal data usage', 'leyka'),
+        'default' => _x('Terms of personal data usage', 'In instrumental case', 'leyka'),
         'title' => __('Personal data usage Terms checkbox label - the second (link) part', 'leyka'),
         'description' => '',
         'required' => true,
