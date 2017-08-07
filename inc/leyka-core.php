@@ -731,7 +731,6 @@ class Leyka {
         }
 
         if($leyka_last_ver && $leyka_last_ver <= '2.2.14') {
-
             if(in_array('chronopay-chronopay_card_rebill', (array)get_option('leyka_pm_available'))) {
 
                 $pm_order_parts = explode('&', get_option('leyka_pm_order'));
@@ -745,7 +744,6 @@ class Leyka {
                 }
 
             }
-
         }
 
         /** Set a flag to flush permalinks (needs to be done a bit later, than this activation itself): */

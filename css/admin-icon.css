@@ -40,7 +40,7 @@ span.dashicons-editor-help.has-tooltip {
     display: inline;
 }
 
-/** jQuery UI tooltips styles */
+/** jQuery UI tooltips */
 .ui-tooltip {
     border-width: 2px;
     padding: 8px;
@@ -50,4 +50,31 @@ span.dashicons-editor-help.has-tooltip {
     -webkit-box-shadow: 0 0 5px #aaa;
     box-shadow: 0 0 5px #aaa;
     background: #fff;
+}
+
+/** Admin notices */
+.leyka-message {
+    overflow: hidden;
+    position: relative;
+    border-left-color: #1db318 !important;
+}
+.leyka-message a.button-primary,
+.leyka-message a.button-secondary {
+    text-decoration: none !important;
+}
+.leyka-message a.leyka-message-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px 15px 10px 21px;
+    font-size: 13px;
+    line-height: 1.23076923;
+    text-decoration: none;
+}
+.leyka-message a.leyka-message-close:before {
+    position: absolute;
+    top: 8px;
+    left: 0;
+    -webkit-transition: all .1s ease-in-out;
+    transition: all .1s ease-in-out;
 }
