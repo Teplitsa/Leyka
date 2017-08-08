@@ -438,7 +438,8 @@ class Leyka_Admin_Setup {
 
         /** Process settings change */
 	    if( !empty($_POST["leyka_settings_{$current_stage}_submit"]) /*&& wp_verify_nonce('_leyka_nonce', "leyka_settings_{$current_stage}")*/ ) {
-			do_action("leyka_settings_{$current_stage}_submit", $current_stage);
+//			do_action("leyka_settings_{$current_stage}_submit", $current_stage);
+			do_action("leyka_settings_submit", $current_stage);
 		}?>
 
 		<div class="wrap">

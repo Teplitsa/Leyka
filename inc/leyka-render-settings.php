@@ -224,3 +224,35 @@ function leyka_render_rich_html_field($option_name, $data){
         </label>
     </div>
 <?php }
+
+/** Special field: gateways commission options */
+add_action('leyka_render_gateways_commission', 'leyka_render_gateways_commission_field', 10, 2);
+function leyka_render_gateways_commission_field($option_name, $data){
+
+    $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;
+    $option_value = maybe_unserialize(leyka_options()->opt('commission'));
+    echo '<pre>'.print_r($option_value, 1).'</pre>';?>
+
+    <div id="<?php echo $option_name.'-wrapper';?>">
+
+    <?php foreach(leyka_get_gateways() as $gateway) { /** @var Leyka_Gateway $gateway */?>
+
+        <div style="display: flex;">
+            <h4><?php echo $gateway->name;?></h4>
+            <div style="display: flex;">
+        <?php foreach($gateway->get_payment_methods() as $pm) {?>
+
+                <span>
+                    <input type="number" name="leyka_commission[<?php echo $pm->full_id;?>]" value="<?php echo isset($option_value[$pm->full_id]) ? (float)$option_value[$pm->full_id] : '0.0';?>" step="0.01" min="0.0" max="100.0" id="leyka_commission_<?php echo $pm->full_id;?>"> %
+                    <label style="display: block" for="leyka_commission_<?php echo $pm->full_id;?>"><?php echo $pm->name;?></label>
+                </span>
+
+        <?php }?>
+            </div>
+        </div>
+
+    <?php }?>
+
+    </div>
+
+<?php }

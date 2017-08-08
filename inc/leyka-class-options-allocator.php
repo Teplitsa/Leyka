@@ -21,7 +21,7 @@ class Leyka_Options_Allocator {
             'currency'    => __('Currency', 'leyka'),
             'email'       => __('Email', 'leyka'),
             'view'        => __('View', 'leyka'),
-//            'commission'  => __('Commission', 'leyka'),
+            'commission'  => __('Commission', 'leyka'),
             'additional'  => __('Misc', 'leyka'),
         ));
     }
@@ -32,8 +32,9 @@ class Leyka_Options_Allocator {
 
     public function get_tab_options($tab_name) {
 
-        if(empty($this->_tabs[$tab_name]))
+        if(empty($this->_tabs[$tab_name])) {
             return false;
+        }
 
         $options_allocated = array();
         switch($tab_name) {
@@ -164,18 +165,18 @@ class Leyka_Options_Allocator {
                 );
                 break;
 
-//            case 'commission':
-//                $options_allocated = array(
-//                    array('section' => array(
-//                        'name' => 'payment_operators_commission_options',
-//                        'title' => __('Payments operators commission', 'leyka'),
-//                        'is_default_collapsed' => false,
-//                        'options' => array(
-//                            'commission',
-//                        )
-//                    ),),
-//                );
-//                break;
+            case 'commission':
+                $options_allocated = array(
+                    array('section' => array(
+                        'name' => 'payment_operators_commission_options',
+                        'title' => __('Payments operators commission', 'leyka'),
+                        'is_default_collapsed' => false,
+                        'options' => array(
+                            'commission',
+                        )
+                    ),),
+                );
+                break;
 
             case 'additional':
                 $options_allocated = array(
@@ -220,6 +221,7 @@ class Leyka_Options_Allocator {
         }
 
         return apply_filters("leyka_{$tab_name}_options_allocation", $options_allocated);
+
     }
 }
 

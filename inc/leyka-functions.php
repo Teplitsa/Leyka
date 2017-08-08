@@ -174,7 +174,6 @@ function leyka_get_default_pd_terms_page() {
     )));
     $page = reset($page);
 
-
     if($page) {
 
         if($page->post_status != 'publish') {
@@ -188,10 +187,11 @@ function leyka_get_default_pd_terms_page() {
         $page = wp_insert_post(array(
             'post_type' => 'page',
             'post_status' => 'publish',
-            'post_name' => 'personal-data-usage-terms',
             'post_title' => _x('Terms of personal data usage', 'In subjective case', 'leyka'),
             'post_content' => __('Terms of personal data usage full text. Use <br> for line-breaks.', 'leyka'),
         ));
+        // To avoid the strange get_permastruct() notice:
+        wp_update_post(array('ID' => $page, 'post_name' => 'personal-data-usage-terms',));
 
         do_action('leyka_default_pd_terms_page_created', $page);
 
