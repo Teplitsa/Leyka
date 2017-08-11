@@ -10,12 +10,13 @@ if(defined('POLYLANG_VERSION')) {
         // Localize options values:
         function leyka_localize_option_value($value, $option_name) {
 
-            if($option_name == 'success_page' || $option_name == 'failure_page') {
+            if(in_array($option_name, array('success_page', 'failure_page', 'pd_terms_page'))) {
 
                 // Get ID of a localized page instead of originally set:
                 $localized_page_id = empty($_POST['cur_lang']) ? pll_get_post($value) : pll_get_post($value, $_POST['cur_lang']);
 
                 return $localized_page_id ? $localized_page_id : $value;
+
             }
 
             $type = leyka_options()->get_type_of($option_name);
@@ -77,8 +78,8 @@ if(defined('POLYLANG_VERSION')) {
         function leyka_localize_gateway_redirect_page() {
 
             load_textdomain('leyka', apply_filters(
-                    'leyka_l10n_mo_file',
-                    LEYKA_PLUGIN_DIR."lang/leyka-{$_POST['cur_locale']}.mo")
+                'leyka_l10n_mo_file',
+                LEYKA_PLUGIN_DIR."lang/leyka-{$_POST['cur_locale']}.mo")
             );
 
             function leyka_get_current_locale($locale){

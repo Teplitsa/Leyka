@@ -334,10 +334,11 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
 
     public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation $donation) {
 
+        $init_recurrent_donation = Leyka_Donation::get_init_recurrent_donation($donation);
         $cancelling_url = get_option('permalink_structure') ?
             home_url("leyka/service/cancel_recurring/{$donation->id}") :
             home_url("?page=leyka/service/cancel_recurring/{$donation->id}");
-        $cancelling_url .= '/'.wp_create_nonce('_leyka_cancel_recurring_subscription');
+        $cancelling_url .= '/'.md5($donation->id.'_'.$init_recurrent_donation->id.'_leyka_cancel_recurring_subscription');
 
         return sprintf(__('<a href="%s" target="_blank">click here</a>', 'leyka'), $cancelling_url);
 
