@@ -1064,3 +1064,17 @@ function leyka_remembered_data($name, $value = null, $delete = false) {
     }
 
 }
+
+function leyka_calculate_donation_total_amount($donation = false, $amount = 0.0, $pm_full_id = '') {
+
+    $donation = leyka_get_validated_donation($donation);
+    $amount = $amount ? $amount : $donation->amount;
+    $pm_full_id = $pm_full_id ? $pm_full_id : $donation->pm_full_id;
+
+    $commission = leyka_options()->opt('commission');
+    $commission = empty($commission[$pm_full_id]) ?
+        0.0 : $commission[$pm_full_id]/100.0;
+
+    return $commission && $commission > 0.0 ? $amount - round($amount*$commission, 2) : $amount;
+
+}

@@ -110,6 +110,7 @@ class Leyka_Options_Controller {
         return $this->_intialize_option($option_name, true) ?
             apply_filters('leyka_option_value', $this->_options[$option_name]['value'], $option_name) :
             false;
+
     }
 
     public function add_option($name, $type, $params) {
@@ -151,6 +152,7 @@ class Leyka_Options_Controller {
         }
 
         return $option_added;
+
     }
 
     public function delete_option($name) {
@@ -166,6 +168,7 @@ class Leyka_Options_Controller {
         }
 
         return $option_deleted;
+
     }
 
     public function option_exists($name) {
@@ -173,6 +176,7 @@ class Leyka_Options_Controller {
         $this->_intialize_option($name);
 
         return isset($this->_options[str_replace('leyka_', '', $name)]);
+
     }
 
     /** 
@@ -201,6 +205,7 @@ class Leyka_Options_Controller {
         } else {
             return false;
         }
+
     }
 
     public function opt($option_name, $new_value = null) {

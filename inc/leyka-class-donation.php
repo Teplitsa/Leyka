@@ -537,12 +537,7 @@ class Leyka_Donation_Management {
             <label for="campaign-select"><?php echo _x('Campaign', 'In subjective case', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
 
-				<input id="campaign-select"
-					   type="text"
-                       value="<?php echo $campaign_id ? $campaign->title : '';?>"
-					   data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>"
-					   placeholder="<?php _e('Select a campaign', 'leyka');?>"
-                >
+				<input id="campaign-select" type="text" value="<?php echo $campaign_id ? $campaign->title : '';?>" data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>" placeholder="<?php _e('Select a campaign', 'leyka');?>">
 				<input id="campaign-id" type="hidden" name="campaign-id" value="<?php echo $campaign_id;?>">
 				<div id="campaign_id-error" class="field-error"></div>
 
@@ -564,7 +559,7 @@ class Leyka_Donation_Management {
         <div class="leyka-ddata-string">
             <label for="donor-name"><?php _e('Name', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="donor-name" name="donor-name" placeholder="<?php _e("Enter donor's name, or leave it empty for anonymous donation", 'leyka');?>" value="" />
+                <input type="text" id="donor-name" name="donor-name" placeholder="<?php _e("Enter donor's name, or leave it empty for anonymous donation", 'leyka');?>" value="">
 			</div>
 		</div>
 		
@@ -584,16 +579,23 @@ class Leyka_Donation_Management {
             <label for="donation-amount"><?php _e('Amount', 'leyka');?>:</label>
 
 			<div class="leyka-ddata-field">
-				<input type="text" id="donation-amount" name="donation-amount" placeholder="<?php _e("Enter a donation's amount", 'leyka');?>" value="" /> <?php echo leyka_options()->opt_safe('currency_rur_label');?><br>
-				<small class='field-help howto'><?php _e('Amount could be negative for correctional entry.', 'leyka');?></small>
+				<input type="text" id="donation-amount" name="donation-amount" placeholder="<?php _e('Enter the donation amount', 'leyka');?>" value=""> <?php echo leyka_options()->opt_safe('currency_rur_label');?><br>
+				<small class="field-help howto">
+                    <?php _e('Amount may be negative for correctional donations.', 'leyka');?>
+                </small>
 				<div id="donation_amount-error" class="field-error"></div>
-
-<!--            <select id="new-donation-currency" name="donation_currency">-->
-<!--                <option value="rur" selected="selected">--><?php //echo leyka_options()->opt_safe('currency_rur_label');?><!--</option>-->
-<!--                <option value="usd">--><?php //echo leyka_options()->opt_safe('currency_usd_label');?><!--</option>-->
-<!--                <option value="eur">--><?php //echo leyka_options()->opt_safe('currency_eur_label');?><!--</option>-->
-<!--            </select>-->
 			</div>
+        </div>
+        <div class="leyka-ddata-string">
+            <label for="donation-amount"><?php _e('Total amount', 'leyka');?>:</label>
+
+            <div class="leyka-ddata-field">
+                <input type="text" id="donation-amount-total" name="donation-amount-total" placeholder="<?php _e('Enter the donation total amount', 'leyka');?>" value=""> <?php echo leyka_options()->opt_safe('currency_rur_label');?><br>
+                <small class="field-help howto">
+                    <?php _e('Leave empty to calculate the total amount based on gateway commission setting.', 'leyka');?>
+                </small>
+                <div id="donation_amount_total-error" class="field-error"></div>
+            </div>
         </div>
 
         <div class="leyka-ddata-string">
@@ -621,14 +623,14 @@ class Leyka_Donation_Management {
                 <option value="custom"><?php _e('Custom payment info', 'leyka');?></option>
             </select>
 
-            <input type="text" id="custom-payment-info" name="custom-payment-info" placeholder="<?php _e('Enter some info about source of a new donation', 'leyka');?>" style="display: none;" value="" />
+            <input type="text" id="custom-payment-info" name="custom-payment-info" placeholder="<?php _e('Enter some info about source of a new donation', 'leyka');?>" style="display: none;" value="">
 
             <div id="donation_pm-error" class="field-error"></div>
 			</div>
 
         </div>
 
-        <input type="hidden" id="payment-type-hidden" name="payment-type" value="correction" />
+        <input type="hidden" id="payment-type-hidden" name="payment-type" value="correction">
 
         <?php /** @todo Maybe, display divs only for "active" gateways? I.e. those with currently active PMs. */
         foreach(leyka_get_gateways() as $gateway) {?>
@@ -742,7 +744,7 @@ class Leyka_Donation_Management {
 			<div class="leyka-ddata-field">
             <?php if($donation->type == 'correction') {?>
 
-                <input type="text" id="donation-amount" name="donation-amount" placeholder="<?php _e("Enter a donation's amount", 'leyka');?>" value="<?php echo $donation->amount;?>" /> <?php echo $donation->currency_label;?>
+                <input type="text" id="donation-amount" name="donation-amount" placeholder="<?php _e("Enter a donation's amount", 'leyka');?>" value="<?php echo $donation->amount;?>"> <?php echo $donation->currency_label;?>
 
                 <div id="donation_amount-error" class="field-error"></div>
 
@@ -750,6 +752,25 @@ class Leyka_Donation_Management {
 
                 <span class="fake-input">
                     <?php echo $donation->amount ? $donation->amount.' '.$donation->currency_label : '';?>
+                </span>
+
+            <?php }?>
+            </div>
+        </div>
+        <div class="leyka-ddata-string">
+            <label for="donation-amount"><?php _e('Total amount', 'leyka');?>:</label>
+
+            <div class="leyka-ddata-field">
+            <?php if($donation->type == 'correction') {?>
+                <input type="text" id="donation-amount-total" name="donation-amount-total" placeholder="<?php _e('Enter the donation total amount', 'leyka');?>" value="<?php echo $donation->amount_total;?>"> <?php echo leyka_options()->opt_safe('currency_rur_label');?><br>
+                <small class="field-help howto">
+                    <?php _e('Leave empty to calculate the total amount based on gateway commission setting.', 'leyka');?>
+                </small>
+                <div id="donation_amount_total-error" class="field-error"></div>
+            <?php } else {?>
+
+                <span class="fake-input">
+                    <?php echo $donation->amount_total ? $donation->amount_total.' '.$donation->currency_label : '';?>
                 </span>
 
             <?php }?>
@@ -1051,8 +1072,10 @@ class Leyka_Donation_Management {
         switch($column_name) {
             case 'ID': echo $donation_id; break;
             case 'amount':
+                $amount = $donation->amount_total && $donation->amount != $donation->amount_total ?
+                   "{$donation->amount} / {$donation->amount_total}" : $donation->amount;
 				echo '<span class="'.apply_filters('leyka_admin_donation_amount_column_css', ($donation->sum < 0 ? 'amount-negative' : 'amount')).'">'.
-                    apply_filters('leyka_admin_donation_amount_column_content', $donation->amount.'&nbsp;'.$donation->currency_label, $donation).
+                    apply_filters('leyka_admin_donation_amount_column_content', $amount.'&nbsp;'.$donation->currency_label, $donation).
                 '</span>';
                 break;
             case 'donor':
@@ -1203,9 +1226,12 @@ class Leyka_Donation_Management {
         if(isset($_POST['donation-amount']) && (float)$donation->amount != (float)$_POST['donation-amount']) {
 
             $_POST['donation-amount'] = round((float)$_POST['donation-amount'], 2);
+            $_POST['donation-amount-total'] = isset($_POST['donation-amount-total']) ?
+                round((float)$_POST['donation-amount-total'], 2) : leyka_calculate_donation_total_amount($donation, $donation->amount, $donation->pm_full_id);
 
-            $old_amount = $donation->amount;
+            $old_amount = $donation->amount_total;
             $donation->amount = $_POST['donation-amount'];
+            $donation->amount_total = $_POST['donation-amount_total'];
 
             // If we're adding a correctional donation, $donation->campaign_id == 0:
             if($donation->campaign_id && $donation->status == 'funded') {
@@ -1329,22 +1355,6 @@ class Leyka_Donation {
             'post_parent' => empty($params['init_recurring_donation']) ? 0 : (int)$params['init_recurring_donation'],
         ));
 
-        $amount = empty($params['amount']) ? leyka_pf_get_amount_value() : round((float)$params['amount'], 2);
-        add_post_meta($id, 'leyka_donation_amount', $amount);
-
-        $currency = empty($params['currency']) ? leyka_pf_get_currency_value() : strtolower($params['currency']);
-        if( !$currency || !array_key_exists($currency, leyka_get_currencies_data()) ) {
-            $currency = 'rur';
-        }
-        add_post_meta($id, 'leyka_donation_currency', $currency);
-
-        $currency_rate = $currency == 'RUR' ? 1.0 : leyka_options()->opt("currency_rur2$currency");
-        if( !$currency_rate ) {
-            $currency_rate = 1.0;
-        }
-
-        add_post_meta($id, 'leyka_main_curr_amount', $currency == 'RUR' ? $amount : $amount*$currency_rate);
-
         $value = empty($params['donor_name']) ? leyka_pf_get_donor_name_value() : trim($params['donor_name']);
         if($value && !leyka_validate_donor_name($value)) { // Validate donor's name
 
@@ -1366,7 +1376,12 @@ class Leyka_Donation {
         add_post_meta($id, 'leyka_donor_email', $value);
 
         $pm_data = leyka_pf_get_payment_method_value();
-        $pm_data = $pm_data ? $pm_data : array('payment_method_id' => '', 'gateway_id' => '',);
+        $pm_data = $pm_data ?
+            $pm_data :
+            array(
+                'payment_method_id' => empty($params['payment_method_id']) ? '' : $params['payment_method_id'],
+                'gateway_id' => empty($params['gateway_id']) ? '' : $params['gateway_id'],
+            );
         add_post_meta(
             $id, 'leyka_payment_method',
             empty($params['payment_method_id']) ? $pm_data['payment_method_id'] : $params['payment_method_id']
@@ -1375,6 +1390,30 @@ class Leyka_Donation {
             $id, 'leyka_gateway',
             empty($params['gateway_id']) ? $pm_data['gateway_id'] : $params['gateway_id']
         );
+
+        $amount = empty($params['amount']) ? leyka_pf_get_amount_value() : round((float)$params['amount'], 2);
+        add_post_meta($id, 'leyka_donation_amount', $amount);
+
+        if(
+            (empty($params['amount_total']) || $params['amount_total'] == 'auto') &&
+            ( !empty($pm_data['payment_method_id']) && !empty($pm_data['gateway_id']) )
+        ) {
+            add_post_meta($id, 'leyka_donation_amount_total', leyka_calculate_donation_total_amount(false, $amount, "{$pm_data['gateway_id']}-{$pm_data['payment_method_id']}"));
+        }
+
+        $currency = empty($params['currency']) ? leyka_pf_get_currency_value() : strtolower($params['currency']);
+        if( !$currency || !array_key_exists($currency, leyka_get_currencies_data()) ) {
+            $currency = 'rur';
+        }
+        add_post_meta($id, 'leyka_donation_currency', $currency);
+
+        $currency_rate = $currency == 'RUR' ? 1.0 : leyka_options()->opt("currency_rur2$currency");
+        if( !$currency_rate ) {
+            $currency_rate = 1.0;
+        }
+
+        add_post_meta($id, 'leyka_main_curr_amount', $currency == 'RUR' ? $amount : $amount*$currency_rate);
+
         add_post_meta(
             $id, 'leyka_campaign_id',
             empty($params['campaign_id']) ? leyka_pf_get_campaign_id_value() : $params['campaign_id']
@@ -1485,6 +1524,8 @@ class Leyka_Donation {
             }
 
             $donation_amount = empty($meta['leyka_donation_amount']) ? 0.0 : (float)$meta['leyka_donation_amount'][0];
+            $donation_amount_total = empty($meta['leyka_donation_amount_total']) ?
+                $donation_amount : (float)$meta['leyka_donation_amount_total'][0];
 
             $this->_donation_meta = array(
                 'payment_title' => empty($payment_title) ? $this->_post_object->post_title : $payment_title,
@@ -1493,6 +1534,7 @@ class Leyka_Donation {
                 'gateway' => empty($meta['leyka_gateway']) ? '' : $meta['leyka_gateway'][0],
                 'currency' => empty($meta['leyka_donation_currency']) ? 'rur' : $meta['leyka_donation_currency'][0],
                 'amount' => $donation_amount,
+                'amount_total' => $donation_amount_total,
                 'main_curr_amount' => !empty($meta['leyka_main_curr_amount'][0]) ?
                     (float)$meta['leyka_main_curr_amount'][0] : $donation_amount,
                 'donor_name' => empty($meta['leyka_donor_name']) ? '' : $meta['leyka_donor_name'][0],
@@ -1579,9 +1621,14 @@ class Leyka_Donation {
                 return $this->_donation_meta['currency'];
             case 'currency_label':
                 return leyka_options()->opt('leyka_currency_'.$this->_donation_meta['currency'].'_label');
+
             case 'sum':
             case 'amount':
                 return empty($this->_donation_meta['amount']) ? 0.0 : $this->_donation_meta['amount'];
+            case 'sum_total':
+            case 'amount_total':
+                return empty($this->_donation_meta['amount_total']) ? $this->amount : $this->_donation_meta['amount_total'];
+
             case 'main_curr_amount':
             case 'amount_equiv':
                 return $this->_donation_meta['main_curr_amount'];
