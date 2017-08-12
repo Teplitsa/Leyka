@@ -13,10 +13,12 @@ $email_placeholders =
 <code>#DATE#</code> — ".__('a date of donation', 'leyka')."<br>
 </span>";
 
-// "self" is Leyka_Options_Controller
+/** Possible field types are: text, html, rich_html, select, radio, checkbox, multi_checkbox, custom_XXX */
+
+/** @var self Leyka_Options_Controller */
 self::$_options_meta = array(
     'org_full_name' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => '',
         'title' => __('NGO name', 'leyka'),
         'description' => __('NGO full official name.', 'leyka'),
@@ -27,7 +29,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'org_face_fio_ip' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => '',
         'title' => __('Full name of a person representing the NGO', 'leyka'),
         'description' => __("Enter a person's full name in subjective case.", 'leyka'),
@@ -38,7 +40,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'org_face_fio_rp' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => '',
         'title' => __('Full name of a person representing the NGO, in genitive case', 'leyka'),
         'description' => __("Enter a person's full name in genitive case.", 'leyka'),
@@ -49,7 +51,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'org_face_position' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => '',
         'title' => __('Position of a person representing the NGO', 'leyka'),
         'description' => __('Enter an official position of a person representing the NGO.', 'leyka'),
@@ -60,7 +62,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'org_address' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => '',
         'title' => __('The NGO official address', 'leyka'),
         'description' => __('Enter the NGO official address.', 'leyka'),
@@ -71,7 +73,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'org_state_reg_number' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => '',
         'title' => __('The NGO state registration number', 'leyka'),
         'description' => __('Enter the NGO state registration number.', 'leyka'),
@@ -82,7 +84,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'org_kpp' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => '',
         'title' => __('The NGO statement of the account number', 'leyka'),
         'description' => __("Enter the NGO statement of the account number.", 'leyka'),
@@ -93,7 +95,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'org_inn' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => '',
         'title' => __('The NGO taxpayer individual number', 'leyka'),
         'description' => __('Enter the NGO individual number of a taxpayer.', 'leyka'),
@@ -104,7 +106,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'org_bank_account' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => '',
         'title' => __('The NGO bank account number', 'leyka'),
         'description' => __('Enter a bank account number of the NGO', 'leyka'),
@@ -115,7 +117,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'org_bank_name' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => '',
         'title' => __('NGO bank name', 'leyka'),
         'description' => __('Enter a full name for the NGO bank.', 'leyka'),
@@ -126,7 +128,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ), 
     'org_bank_bic' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => '',
         'title' => __('The NGO bank BIC number', 'leyka'),
         'description' => __("Enter a BIC of the NGO bank.", 'leyka'),
@@ -137,7 +139,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ), 
     'org_bank_corr_account' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => '',
         'title' => __('The NGO correspondent bank account number', 'leyka'),
         'description' => __('Enter a correspondent account number of the NGO.', 'leyka'),
@@ -148,7 +150,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'donation_purpose_text' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => __('Charity donation', 'leyka'),
         'title' => __('Payment purpose text for bank orders', 'leyka'),
         'description' => '',
@@ -159,7 +161,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'pm_available' => array(
-        'type' => 'multi_checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'multi_checkbox',
         'default' => array('text-text_box'),
         'title' => __('Payment methods available on donation forms', 'leyka'),
         'description' => __("Check out payment methods through that you'd want to receive a donation payments.", 'leyka'),
@@ -181,7 +183,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'auto_refresh_currency_rates' => array(
-        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'checkbox',
         'default' => '1',
         'title' => __('Automatically refresh currency rates', 'leyka'),
         'description' => __('Check to enable auto-refresh of currency rates. It will be performed every 24 hours and will require connection with http://cbr.ru website.', 'leyka'),
@@ -192,7 +194,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'currency_rur2usd' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => '',
         'title' => __('RUR to USD currency rate', 'leyka'),
         'description' => __('Please set the RUR to USD currency rate here.', 'leyka'),
@@ -203,7 +205,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'currency_rur2eur' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => '',
         'title' => __('RUR to EUR currency rate', 'leyka'),
         'description' => __('Please set the RUR to EUR currency rate here.', 'leyka'),
@@ -214,7 +216,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'currency_rur_label' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => __('RUR', 'leyka'),
         'title' => __('RUR label', 'leyka'),
         'description' => __('Please set the RUR currency label here.', 'leyka'),
@@ -225,7 +227,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'currency_rur_min_sum' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => 100,
         'title' => __('Minimum sum available for RUR', 'leyka'),
         'description' => __('Please set minimum sum available for RUR donations.', 'leyka'),
@@ -236,7 +238,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'currency_rur_max_sum' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => 30000,
         'title' => __('Maximum sum available for RUR', 'leyka'),
         'description' => __('Please set maximum sum available for RUR donations.', 'leyka'),
@@ -247,7 +249,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'currency_rur_flexible_default_amount' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => 500,
         'title' => __('Default amount of donation in RUR (for "flexible" donation type)', 'leyka'),
         'description' => __('Please, set a default amount of donation when RUR selected as currency.', 'leyka'),
@@ -258,7 +260,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'currency_rur_fixed_amounts' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => '100,300,500,1000',
         'title' => __('Possible amounts of donation in RUR (for "fixed" donation type)', 'leyka'),
         'description' => __('Please, set possible amounts of donation in RUR when "fixed" donation type is selected. Only an integer non-negative values, separated with commas.', 'leyka'),
@@ -269,7 +271,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'currency_usd_label' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => __('$', 'leyka'),
         'title' => __('USD label', 'leyka'),
         'description' => __('Please set the USD currency label here.', 'leyka'),
@@ -280,7 +282,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'currency_usd_min_sum' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => 10,
         'title' => __('Minimum sum available for USD', 'leyka'),
         'description' => __('Please set minimum sum available for USD donations.', 'leyka'),
@@ -291,7 +293,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'currency_usd_max_sum' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => 1000,
         'title' => __('Maximum sum available for USD', 'leyka'),
         'description' => __('Please set maximum sum available for USD donations.', 'leyka'),
@@ -302,7 +304,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'currency_usd_flexible_default_amount' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => 10,
         'title' => __('Default amount of donation in USD (for "flexible" donation type)', 'leyka'),
         'description' => __('Please, set a default amount of donation when RUR selected as currency.', 'leyka'),
@@ -313,7 +315,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'currency_usd_fixed_amounts' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => '3,5,10,15,50',
         'title' => __('Possible amounts of donation in USD (for «fixed» donation type)', 'leyka'),
         'description' => __('Please, set possible amounts of donation in USD when "fixed" donation type is selected. Only an integer non-negative values, separated with commas.', 'leyka'),
@@ -324,7 +326,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'currency_eur_label' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => __('euro', 'leyka'),
         'title' => __('EUR label', 'leyka'),
         'description' => __('Please set the EUR currency label here.', 'leyka'),
@@ -335,7 +337,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'currency_eur_min_sum' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => 3,
         'title' => __('Minimum sum available for EUR', 'leyka'),
         'description' => __('Please set minimum sum available for EUR donations.', 'leyka'),
@@ -346,7 +348,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'currency_eur_max_sum' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => 650,
         'title' => __('Maximum sum available for EUR', 'leyka'),
         'description' => __('Please set maximum sum available for EUR donations.', 'leyka'),
@@ -357,7 +359,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'currency_eur_flexible_default_amount' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => 5,
         'title' => __('Default amount of donation in EUR (for «flexible» donation type)', 'leyka'),
         'description' => __('Please, set a default amount of donation when EUR selected as currency.', 'leyka'),
@@ -368,7 +370,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'currency_eur_fixed_amounts' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => '3,5,10,100,500',
         'title' => __('Possible amounts of donation in EUR (for «fixed» donation type)', 'leyka'),
         'description' => __('Please, set possible amounts of donation in EUR when «fixed» donation type is selected. Only an integer non-negative values, separated with commas.', 'leyka'),
@@ -379,7 +381,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'email_from_name' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => get_bloginfo('name'),
         'title' => __('Notification emails sender name', 'leyka'),
         'description' => __('Enter the name that would be used in all notification emails as «from whom» field', 'leyka'),
@@ -390,7 +392,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'email_from' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => leyka_get_default_email_from(),
         'title' => __("Notification emails sender's email", 'leyka'),
         'description' => __('Enter the email from which all Leyka emails would be sended', 'leyka'),
@@ -401,7 +403,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'email_thanks_title' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => __('Thank you for your donation!', 'leyka'),
         'title' => __('A title of after-donation notice sended to a donor', 'leyka'),
         'description' => __('Enter the title of the notification (or thankful) email with donation data that would be sended to each donor right after his donation is made.', 'leyka'),
@@ -423,7 +425,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'email_recurring_init_thanks_title' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => __('Thank you for your support!', 'leyka'),
         'title' => __('A title of an initial recurring donation notice sent to a donor', 'leyka'),
         'description' => __('Enter a title of a notification email with donation data that would be sended to each donor on each rebill donation.', 'leyka'),
@@ -445,7 +447,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'email_recurring_ongoing_thanks_title' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => __('Thank you for your unwavering support!', 'leyka'),
         'title' => __('A title of an after-rebill donation notice for a donor', 'leyka'),
         'description' => __('Enter a title of a donor notification email with donation data that will be sent on each recurring auto-payment.', 'leyka'),
@@ -467,7 +469,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'send_donor_thanking_emails' => array(
-        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'checkbox',
         'default' => '1',
         'title' => __('Send a thankful email to a donor on each funded donation', 'leyka'),
         'description' => __('Check to send a thankful email to a donor on each funded donation', 'leyka'),
@@ -478,7 +480,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'notify_donations_managers' => array(
-        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'checkbox',
         'default' => '1',
         'title' => __('Notify website personal of each incoming donation', 'leyka'),
         'description' => __('Check to notify some website personnel (donations managers) of each incoming donation', 'leyka'),
@@ -489,7 +491,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'notify_managers_on_recurrents' => array(
-        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'checkbox',
         'default' => '1',
         'title' => __('Notify website personal of each incoming recurrent donation', 'leyka'),
         'description' => __('Check to notify some website personnel (donations managers) of each incoming recurrent donation', 'leyka'),
@@ -500,7 +502,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'donations_managers_emails' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => leyka_get_default_dm_list(), 
         'title' => __('A comma-separated emails to notify of incoming donation', 'leyka'),
         'description' => '',
@@ -511,7 +513,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'email_notification_title' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => __('New donation incoming', 'leyka'),
         'title' => __('A title of new donation notification email', 'leyka'),
         'description' => '',
@@ -533,7 +535,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'tech_support_email' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => '',
         'title' => __('Website technical support email', 'leyka'),
         'description' => __('E-mail that you want to use to collect technical support requests from the donors.', 'leyka'),
@@ -544,7 +546,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'donation_form_template' => array(
-        'type' => 'radio', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'radio',
         'default' => 'radios',
         'title' => __('Select a default template for all your donation forms', 'leyka'),
         'description' => __('Select one of the form templates.', 'leyka'),
@@ -555,7 +557,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'donation_sum_field_type' => array(
-        'type' => 'radio', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'radio',
         'default' => 'flexible',
         'title' => __('Select a type of the sum field for all your donation forms', 'leyka'),
         'description' => __('Select a type of the sum field. «Fixed» means a set of stable sum variants, while «flexible» is a free input field.', 'leyka'),
@@ -566,7 +568,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'donation_form_mode' => array(
-        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'checkbox',
         'default' => 1,
         'title' => __('Display all payment elements on campaign page automatically', 'leyka'),
         'description' => __('When unchecked, all payment elements like donation forms or target completion level widgets will not be displayed automatically. To output them manually, use shortcodes inside campaign\'s content or template tags in campaign\'s template file.', 'leyka'),
@@ -577,7 +579,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'scale_widget_place' => array(
-        'type' => 'radio', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'radio',
         'default' => 'top',
         'title' => __('Select where Target completion widget will be placed at campaign pages', 'leyka'),
         'description' => '',
@@ -593,7 +595,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'donations_history_under_forms' => array(
-        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'checkbox',
         'default' => 1,
         'title' => __('Donations history widget below donation forms', 'leyka'),
         'description' => __('Display the widget automatically', 'leyka'),
@@ -604,7 +606,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'show_campaign_sharing' => array(
-        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'checkbox',
         'default' => 1,
         'title' => __('Campaign sharing widget below donation forms', 'leyka'),
         'description' => __('Display the widget automatically', 'leyka'),
@@ -615,7 +617,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'show_success_widget_on_success' => array(
-        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'checkbox',
         'default' => 1,
         'title' => __('Show an email subscription widget on the successful donation page', 'leyka'),
         'description' => __('Display the widget automatically', 'leyka'),
@@ -626,7 +628,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'show_failure_widget_on_failure' => array(
-        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'checkbox',
         'default' => 1,
         'title' => __('Show a failure notification widget on the donation page', 'leyka'),
         'description' => __('Display the widget automatically', 'leyka'),
@@ -637,7 +639,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'revo_template_slider_max_sum' => array(
-        'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'text',
         'default' => 3000,
         'title' => __('Maximum sum available for slider', 'leyka'),
         'description' => __('Please set the maximum sum available for slider control.', 'leyka'),
@@ -648,7 +650,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
 //    'revo_template_ask_donor_data' => array(
-//        'type' => 'radio', // html, rich_html, select, radio, checkbox, multi_checkbox
+//        'type' => 'radio',
 //        'default' => 'during-donation',
 //        'title' => __('When to display donor data form fields?', 'leyka'),
 //        'description' => '', //__('', 'leyka'),
@@ -663,7 +665,7 @@ self::$_options_meta = array(
 //        'validation_rules' => array(), // List of regexp?..
 //    ),
     'revo_template_show_thumbnail' => array(
-        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'checkbox',
         'default' => 1,
         'title' => __('Display a thumbnail in inline page blocks', 'leyka'),
         'description' => __('Check if you need to show a campaign thumbnail in inline page blocks.', 'leyka'),
@@ -674,7 +676,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'agree_to_terms_needed' => array(
-        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'checkbox',
         'default' => true,
         'title' => __('To donate, donor must agree to Terms of Service', 'leyka'),
         'description' => __("Check if you must receive donor's agreement with some terms before his donation.", 'leyka'),
@@ -731,7 +733,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'terms_agreed_by_default' => array(
-        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'checkbox',
         'default' => false,
         'title' => __("Donor is agreed with Terms of Service by default", 'leyka'),
         'description' => __('When donor sees a donation form, Terms of Service agreement checkbox is already checked.', 'leyka'),
@@ -742,7 +744,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'agree_to_pd_terms_needed' => array(
-        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'checkbox',
         'default' => true,
         'title' => __('To donate, donor must agree to Terms of personal data usage', 'leyka'),
         'description' => __("Check if you should have donor's agreement with some terms regarding his personal data usage.", 'leyka'),
@@ -793,7 +795,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'pd_terms_agreed_by_default' => array(
-        'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
+        'type' => 'checkbox',
         'default' => false,
         'title' => __('Donor is agreed with personal data usage Terms by default', 'leyka'),
         'description' => __('When donor sees a donation form, personal data usage Terms agreement checkbox is already checked.', 'leyka'),
@@ -859,7 +861,7 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'commission' => array(
-        'type' => 'gateways_commission', // Special option type
+        'type' => 'custom_gateways_commission', // Special option type
         'default' => '',
         'title' => __('Payment operators commission', 'leyka'),
         'description' => '',

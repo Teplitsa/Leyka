@@ -226,12 +226,11 @@ function leyka_render_rich_html_field($option_name, $data){
 <?php }
 
 /** Special field: gateways commission options */
-add_action('leyka_render_gateways_commission', 'leyka_render_gateways_commission_field', 10, 2);
+add_action('leyka_render_custom_gateways_commission', 'leyka_render_gateways_commission_field', 10, 2);
 function leyka_render_gateways_commission_field($option_name, $data){
 
     $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;
-    $option_value = maybe_unserialize(leyka_options()->opt('commission'));
-    echo '<pre>'.print_r($option_value, 1).'</pre>';?>
+    $option_value = maybe_unserialize(leyka_options()->opt('commission'));?>
 
     <div id="<?php echo $option_name.'-wrapper';?>">
 
@@ -256,3 +255,23 @@ function leyka_render_gateways_commission_field($option_name, $data){
     </div>
 
 <?php }
+
+add_action('leyka_save_custom_setting_commission', 'leyka_save_custom_setting_commission');
+function leyka_save_custom_setting_commission($option_value) {
+
+    foreach($option_value as $pm_full_id => $commission) {
+
+        $commission = trim($commission);
+        $commission = (float)str_replace(',', '.', $commission);
+
+        $option_value[$pm_full_id] = $commission < 0.0 ? -$commission : $commission;
+
+    }
+
+    $option_value = maybe_serialize($option_value);
+    if($option_value != leyka_options()->opt('commission')) {
+        leyka_options()->opt('commission', $option_value);
+    }
+
+}
+/** Special field: gateways commission options - END */

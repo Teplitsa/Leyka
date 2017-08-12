@@ -45,8 +45,9 @@ function leyka_save_settings($tab_name) {
                 leyka_options()->opt($name, esc_attr(stripslashes($_POST["leyka_$name"])));
             }
 
-        } else {
-
+        } else if(stristr($option_type, 'custom_') !== false && isset($_POST["leyka_$name"])) { // Custom field types
+            do_action("leyka_save_custom_setting_$name", $_POST["leyka_$name"]);
+        } else { // Simple field types
             if(isset($_POST["leyka_$name"]) && leyka_options()->opt($name) != $_POST["leyka_$name"]) {
                 leyka_options()->opt($name, esc_attr(stripslashes($_POST["leyka_$name"])));
             }
