@@ -175,6 +175,14 @@ class Leyka_Options_Allocator {
                             'commission',
                         )
                     ),),
+                    array('section' => array(
+                        'name' => 'donations_total_amount_usage_options',
+                        'title' => __('Total amount usage', 'leyka'),
+                        'is_default_collapsed' => false,
+                        'options' => array(
+                            'admin_donations_list_display', 'widgets_total_amount_usage', 'archive_page_total_amount_usage',
+                        )
+                    ),),
                 );
                 break;
 

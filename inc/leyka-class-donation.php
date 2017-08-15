@@ -592,7 +592,10 @@ class Leyka_Donation_Management {
             <div class="leyka-ddata-field">
                 <input type="text" id="donation-amount-total" name="donation-amount-total" placeholder="<?php _e('Enter the donation total amount', 'leyka');?>" value=""> <?php echo leyka_options()->opt_safe('currency_rur_label');?><br>
                 <small class="field-help howto">
-                    <?php _e('Leave empty to calculate the total amount based on gateway commission setting.', 'leyka');?>
+                    <?php
+                    /** @todo Add a checkbox here (unckecked by default) to auto-calculate the total amount */
+                    //_e('Leave empty to calculate the total amount based on gateway commission setting.', 'leyka');
+                    ?>
                 </small>
                 <div id="donation_amount_total-error" class="field-error"></div>
             </div>
@@ -1226,17 +1229,30 @@ class Leyka_Donation_Management {
         if(isset($_POST['donation-amount']) && (float)$donation->amount != (float)$_POST['donation-amount']) {
 
             $_POST['donation-amount'] = round((float)$_POST['donation-amount'], 2);
-            $_POST['donation-amount-total'] = isset($_POST['donation-amount-total']) ?
-                round((float)$_POST['donation-amount-total'], 2) : leyka_calculate_donation_total_amount($donation, $donation->amount, $donation->pm_full_id);
 
-            $old_amount = $donation->amount_total;
+//            $old_amount = $donation->amount_total;
             $donation->amount = $_POST['donation-amount'];
-            $donation->amount_total = $_POST['donation-amount_total'];
+//            $donation->amount_total = $_POST['donation-amount_total'];
+
+        }
+
+        if(isset($_POST['donation-amount-total']) && (float)$donation->amount_total != (float)$_POST['donation-amount-total']) {
+
+//            $_POST['donation-amount-total'] = isset($_POST['donation-amount-total']) ?
+//                round((float)$_POST['donation-amount-total'], 2) : leyka_calculate_donation_total_amount($donation, $donation->amount, $donation->pm_full_id);
+            $_POST['donation-amount-total'] = round((float)$_POST['donation-amount-total'], 2);
+
+            if($_POST['donation-amount-total'] <= 0.0 && $donation->amount > 0.0) {
+                $_POST['donation-amount-total'] = $donation->amount;
+            }
+
+//            $old_amount = $donation->amount_total ? $donation->amount_total : $donation->amount;
+            $donation->amount_total = $_POST['donation-amount-total'];
 
             // If we're adding a correctional donation, $donation->campaign_id == 0:
-            if($donation->campaign_id && $donation->status == 'funded') {
-                $campaign->update_total_funded_amount($donation, 'update_sum', $old_amount);
-            }
+//            if($donation->campaign_id && $donation->status == 'funded') {
+//                $campaign->update_total_funded_amount($donation, 'update_sum', $old_amount);
+//            }
 
         }
 
@@ -1741,6 +1757,13 @@ class Leyka_Donation {
             case 'donation_amount':
                 update_post_meta($this->_id, 'leyka_donation_amount', $value);
                 $this->_donation_meta['amount'] = $value;
+                break;
+
+            case 'sum_total':
+            case 'amount_total':
+            case 'donation_amount_total':
+                update_post_meta($this->_id, 'leyka_donation_amount_total', $value);
+                $this->_donation_meta['amount_total'] = $value;
                 break;
 
             case 'currency':
