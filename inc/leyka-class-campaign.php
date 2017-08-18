@@ -764,7 +764,7 @@ class Leyka_Campaign {
 
             $sum = 0.0;
             foreach($this->get_donations(array('funded')) as $donation) {
-                $sum += $donation->sum;
+                $sum += $donation->sum_total;
             }
 
             $this->_campaign_meta['total_funded'] = $sum;
@@ -778,15 +778,15 @@ class Leyka_Campaign {
             }
 
             if($action == 'remove') { // Subtract given donation's sum from campaign's total_funded
-                $sum = -$donation->sum;
+                $sum = -$donation->sum_total;
             } else { // Add given donation's sum to campaign's total_funded
 
                 if($action == 'update_sum' && (int)$old_sum) { // If donation sum was changed, subtract it from total_funded first
                     $this->_campaign_meta['total_funded'] -= (int)$old_sum;
                 }
 
-                $sum = ($donation->status != 'funded' || $donation->campaign_id != $this->_id) && $donation->sum > 0 ?
-                    -$donation->sum : $donation->sum;
+                $sum = ($donation->status != 'funded' || $donation->campaign_id != $this->_id) && $donation->sum_total > 0 ?
+                    -$donation->sum_total : $donation->sum_total;
                 $sum = $donation->status == 'trash' ? -$sum : $sum;
             }
 
@@ -798,6 +798,7 @@ class Leyka_Campaign {
         $this->refresh_target_state();
 
         return $this;
+
     }
 
     public function delete($force = False) {

@@ -593,9 +593,10 @@ class Leyka_Donation_Management {
                 <input type="text" id="donation-amount-total" name="donation-amount-total" placeholder="<?php _e('Enter the donation total amount', 'leyka');?>" value=""> <?php echo leyka_options()->opt_safe('currency_rur_label');?><br>
                 <small class="field-help howto">
                     <?php
-                    /** @todo Add a checkbox here (unckecked by default) to auto-calculate the total amount */
-                    //_e('Leave empty to calculate the total amount based on gateway commission setting.', 'leyka');
-                    ?>
+                    /** @todo Add a checkbox here (unckecked by default) to calculate total amount
+                     * based on current commission setting.
+                     */
+                    _e('Leave empty to make the total amount value equal to the amount value.', 'leyka');?>
                 </small>
                 <div id="donation_amount_total-error" class="field-error"></div>
             </div>
@@ -767,7 +768,11 @@ class Leyka_Donation_Management {
             <?php if($donation->type == 'correction') {?>
                 <input type="text" id="donation-amount-total" name="donation-amount-total" placeholder="<?php _e('Enter the donation total amount', 'leyka');?>" value="<?php echo $donation->amount_total;?>"> <?php echo leyka_options()->opt_safe('currency_rur_label');?><br>
                 <small class="field-help howto">
-                    <?php _e('Leave empty to calculate the total amount based on gateway commission setting.', 'leyka');?>
+                    <?php
+                    /** @todo Add a checkbox here (unckecked by default) to calculate total amount
+                     * based on current commission setting.
+                     */
+                    _e('Leave empty to make the total amount value equal to the amount value.', 'leyka');?>
                 </small>
                 <div id="donation_amount_total-error" class="field-error"></div>
             <?php } else {?>
@@ -1210,22 +1215,6 @@ class Leyka_Donation_Management {
             $donation->status = $_POST['donation_status'];
         }
 
-        if(isset($_POST['campaign-id']) && $donation->campaign_id != (int)$_POST['campaign-id']) {
-
-            // If we're adding a correctional donation, $donation->campaign_id == 0:
-            if($donation->campaign_id && $donation->status == 'funded') {
-                $campaign->update_total_funded_amount($donation, 'remove'); // Old campaign
-            }
-
-            $donation->campaign_id = (int)$_POST['campaign-id'];
-            $campaign = new Leyka_Campaign($donation->campaign_id); // New campaign
-
-            if($donation->status == 'funded') {
-                $campaign->update_total_funded_amount($donation);
-            }
-
-        }
-
         if(isset($_POST['donation-amount']) && (float)$donation->amount != (float)$_POST['donation-amount']) {
 
             $_POST['donation-amount'] = round((float)$_POST['donation-amount'], 2);
@@ -1246,18 +1235,35 @@ class Leyka_Donation_Management {
                 $_POST['donation-amount-total'] = $donation->amount;
             }
 
-//            $old_amount = $donation->amount_total ? $donation->amount_total : $donation->amount;
+            $old_amount = $donation->amount_total ? $donation->amount_total : $donation->amount;
             $donation->amount_total = $_POST['donation-amount-total'];
 
             // If we're adding a correctional donation, $donation->campaign_id == 0:
-//            if($donation->campaign_id && $donation->status == 'funded') {
-//                $campaign->update_total_funded_amount($donation, 'update_sum', $old_amount);
-//            }
+            if($donation->campaign_id && $donation->status == 'funded') {
+                $campaign->update_total_funded_amount($donation, 'update_sum', $old_amount);
+            }
 
         }
 
         if( !$donation->currency ) {
             $donation->currency = 'rur';
+        }
+
+        if(isset($_POST['campaign-id']) && $donation->campaign_id != (int)$_POST['campaign-id']) {
+
+            // If we're adding a correctional donation, $donation->campaign_id == 0:
+            if($donation->campaign_id && $donation->status == 'funded') {
+                $campaign->update_total_funded_amount($donation, 'remove'); // Old campaign
+            }
+
+            $donation->campaign_id = (int)$_POST['campaign-id'];
+            $campaign = new Leyka_Campaign($donation->campaign_id); // New campaign
+
+            if($donation->status == 'funded') {
+//                die('<pre>'.print_r($donation->amount_total, 1).'</pre>');
+                $campaign->update_total_funded_amount($donation);
+            }
+
         }
 
         // It's a new correction donation, set a title from it's campaign:
