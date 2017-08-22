@@ -870,12 +870,13 @@ self::$_options_meta = array(
         'validation_rules' => array(), // List of regexp?..
     ),
     'admin_donations_list_display' => array(
-        'type' => 'multi_checkbox',
-        'default' => array('amount-column',),
+        'type' => 'radio',
+        'default' => 'amount-column',
         'title' => __('Total amount display on the admin donations list page', 'leyka'),
         'description' => '',
         'required' => 0,
         'list_entries' => array(
+            'none' => __("Don't show total amount", 'leyka'),
             'amount-column' => __('In the amount column, with original amount value', 'leyka'),
             'separate-column' => __('In the separate column', 'leyka'),
         ),
@@ -883,7 +884,7 @@ self::$_options_meta = array(
     'widgets_total_amount_usage' => array(
         'type' => 'radio',
         'default' => 'display-total',
-        'title' => __('Total amount display in plugin widgets', 'leyka'),
+        'title' => __('Total amount display in plugin widgets and shortcodes', 'leyka'),
         'description' => '',
         'required' => true,
         'list_entries' => array(
@@ -892,18 +893,18 @@ self::$_options_meta = array(
             'display-total-only' => __('Display only total amount values', 'leyka'),
         ),
     ),
-    'archive_page_total_amount_usage' => array(
-        'type' => 'radio',
-        'default' => 'display-total',
-        'title' => __('Total amount display in donations archive entries', 'leyka'),
-        'description' => '',
-        'required' => true,
-        'list_entries' => array(
-            'none' => __('Do not display total amount', 'leyka'),
-            'display-total' => __('Display total amount values with original values', 'leyka'),
-            'display-total-only' => __('Display only total amount values', 'leyka'),
-        ),
-    ),
+//    'archive_page_total_amount_usage' => array(
+//        'type' => 'radio',
+//        'default' => 'display-total',
+//        'title' => __('Total amount display in donations archive entries', 'leyka'),
+//        'description' => '',
+//        'required' => true,
+//        'list_entries' => array(
+//            'none' => __('Do not display total amount', 'leyka'),
+//            'display-total' => __('Display total amount values with original values', 'leyka'),
+//            'display-total-only' => __('Display only total amount values', 'leyka'),
+//        ),
+//    ),
     'success_page' => array(
         'type' => 'select',
         'default' => leyka_get_default_success_page(),

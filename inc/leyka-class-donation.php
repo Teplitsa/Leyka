@@ -1058,7 +1058,12 @@ class Leyka_Donation_Management {
         unset($unsort['date']);
 
 		$columns['donor'] = __('Donor', 'leyka');
+
 		$columns['amount'] = __('Amount', 'leyka');
+        if(leyka_options()->opt('admin_donations_list_display') == 'separate-column') {
+            $columns['amount_total'] = __('Total amount', 'leyka');
+        }
+
 		$columns['method'] = __('Method', 'leyka');
         $columns['donation_date'] = __('Donation date', 'leyka');
 		$columns['status'] = __('Status', 'leyka');
@@ -1077,14 +1082,27 @@ class Leyka_Donation_Management {
 	function manage_columns_content($column_name, $donation_id) {
 
 		$donation = new Leyka_Donation($donation_id);
+
         switch($column_name) {
             case 'ID': echo $donation_id; break;
             case 'amount':
-                $amount = $donation->amount_total && $donation->amount != $donation->amount_total ?
-                   "{$donation->amount} / {$donation->amount_total}" : $donation->amount;
+                if(leyka_options()->opt('admin_donations_list_display') == 'amount-column') {
+                    $amount = $donation->amount == $donation->amount_total ?
+                        $donation->amount :
+                        $donation->amount
+                        .'<span class="amount-total"> / '.$donation->amount_total.'</span>';
+                } else {
+                    $amount = $donation->amount;
+                }
+
 				echo '<span class="'.apply_filters('leyka_admin_donation_amount_column_css', ($donation->sum < 0 ? 'amount-negative' : 'amount')).'">'.
                     apply_filters('leyka_admin_donation_amount_column_content', $amount.'&nbsp;'.$donation->currency_label, $donation).
                 '</span>';
+                break;
+            case 'amount_total':
+                echo '<span class="'.apply_filters('leyka_admin_donation_amount_total_column_css', $donation->amount_total < 0 ? 'amount-negative' : 'amount').'">'.
+                    apply_filters('leyka_admin_donation_amount_total_column_content', $donation->amount_total.'&nbsp;'.$donation->currency_label, $donation).
+                    '</span>';
                 break;
             case 'donor':
                 echo apply_filters('leyka_admin_donation_donor_name_column_content', $donation->donor_name, $donation);

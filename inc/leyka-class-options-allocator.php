@@ -180,7 +180,7 @@ class Leyka_Options_Allocator {
                         'title' => __('Total amount usage', 'leyka'),
                         'is_default_collapsed' => false,
                         'options' => array(
-                            'admin_donations_list_display', 'widgets_total_amount_usage', 'archive_page_total_amount_usage',
+                            'admin_donations_list_display', 'widgets_total_amount_usage', /*'archive_page_total_amount_usage',*/
                         )
                     ),),
                 );

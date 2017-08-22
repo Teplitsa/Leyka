@@ -335,12 +335,22 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
     ob_start();?>
 
     <div id="<?php echo esc_attr('leyka_donors_list-'.uniqid());?>" class="leyka-donors-list">
-        <?php
-        foreach($donations as $donation) {
+    <?php foreach($donations as $donation) {
 
             $donation = new Leyka_Donation($donation);
 
-            $amount = number_format($donation->sum, 0, '.', ' ');
+            if(leyka_options()->opt('widgets_total_amount_usage') == 'display-total') {
+
+                $amount = $donation->amount == $donation->amount_total ?
+                    number_format($donation->amount, 0, '.', ' ') :
+                    number_format($donation->amount, 0, '.', ' ')
+                    .'<span class="amount-total"> / '.number_format($donation->amount_total, 0, '.', ' ').'</span>';
+
+            } else if(leyka_options()->opt('widgets_total_amount_usage') == 'display-total-only') {
+                $amount = number_format($donation->amount_total, 0, '.', ' ');
+            } else {
+                $amount = number_format($donation->amount, 0, '.', ' ');
+            }
 
             $html = "<div class='ldl-item'>";
             $html .= "<div class='amount'>".apply_filters('leyka_donations_list_amount_content', $amount.' '.$donation->currency_label, $donation)."</div>";

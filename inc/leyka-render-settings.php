@@ -87,15 +87,15 @@ function leyka_render_radio_fields($option_name, $data){
             <?php echo $data['title'];?>
             <?php echo $data['required'] ? '<span class="required">*</span>' : '';?>
         </span>
-        
+
         <span class="field-component field">
             <?php if(is_string($data['list_entries'])) {
                 $data['list_entries'] = $data['list_entries'](); // Call the callback to create an options
             }
 
-            foreach((array)$data['list_entries'] as $value => $label) {?>
-                <label for="<?php echo $value.'-field';?>">
-                    <input type="radio" id="<?php echo $value.'-field';?>" name="<?php echo $option_name;?>" value="<?php echo $value;?>" <?php echo $data['value'] == $value ? 'checked' : '';?> />
+            foreach((array)$data['list_entries'] as $value => $label) { $field_id = $option_name.'-'.$value.'-field';?>
+                <label for="<?php echo $field_id;?>">
+                    <input type="radio" id="<?php echo $field_id;?>" name="<?php echo $option_name;?>" value="<?php echo $value;?>" <?php echo $data['value'] == $value ? 'checked' : '';?>>
                     &nbsp;<?php echo esc_attr($label);?>
                 </label>
             <?php }?>
@@ -242,7 +242,7 @@ function leyka_render_gateways_commission_field($option_name, $data){
         <?php foreach($gateway->get_payment_methods() as $pm) {?>
 
                 <span>
-                    <input type="number" name="leyka_commission[<?php echo $pm->full_id;?>]" value="<?php echo isset($option_value[$pm->full_id]) ? (float)$option_value[$pm->full_id] : '0.0';?>" step="0.01" min="0.0" max="100.0" id="leyka_commission_<?php echo $pm->full_id;?>"> %
+                    <input type="number" name="leyka_commission[<?php echo $pm->full_id;?>]" value="<?php echo isset($option_value[$pm->full_id]) ? (float)$option_value[$pm->full_id] : '0.0';?>" step="0.01" min="0.0" max="100.0" id="leyka_commission_<?php echo $pm->full_id;?>" pattern="[0-9]+(,[0-9]+)?"><label for="leyka_commission_<?php echo $pm->full_id;?>"> %</label>
                     <label style="display: block" for="leyka_commission_<?php echo $pm->full_id;?>"><?php echo $pm->name;?></label>
                 </span>
 
