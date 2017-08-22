@@ -236,14 +236,17 @@ function leyka_render_gateways_commission_field($option_name, $data){
 
     <?php foreach(leyka_get_gateways() as $gateway) { /** @var Leyka_Gateway $gateway */?>
 
-        <div style="display: flex;">
+        <div class="leyka-commission-container">
             <h4><?php echo $gateway->name;?></h4>
-            <div style="display: flex;">
+            <div class="leyka-commission-pm-list-container">
         <?php foreach($gateway->get_payment_methods() as $pm) {?>
 
                 <span>
-                    <input type="number" name="leyka_commission[<?php echo $pm->full_id;?>]" value="<?php echo isset($option_value[$pm->full_id]) ? (float)$option_value[$pm->full_id] : '0.0';?>" step="0.01" min="0.0" max="100.0" id="leyka_commission_<?php echo $pm->full_id;?>" pattern="[0-9]+(,[0-9]+)?"><label for="leyka_commission_<?php echo $pm->full_id;?>"> %</label>
-                    <label style="display: block" for="leyka_commission_<?php echo $pm->full_id;?>"><?php echo $pm->name;?></label>
+                    <input type="number" class="leyka-commission-field" name="leyka_commission[<?php echo $pm->full_id;?>]" value="<?php echo isset($option_value[$pm->full_id]) ? (float)$option_value[$pm->full_id] : '0.0';?>" step="0.01" min="0.0" max="100.0" id="leyka_commission_<?php echo $pm->full_id;?>" pattern="[0-9]+(,[0-9]+)?">
+                    <label for="leyka_commission_<?php echo $pm->full_id;?>"> %</label>
+                    <label class="leyka-pm-label" for="leyka_commission_<?php echo $pm->full_id;?>">
+                        <?php echo $pm->name;?>
+                    </label>
                 </span>
 
         <?php }?>

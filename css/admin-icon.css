@@ -78,3 +78,26 @@ span.dashicons-editor-help.has-tooltip {
     -webkit-transition: all .1s ease-in-out;
     transition: all .1s ease-in-out;
 }
+
+/* Gateway commissions field */
+.leyka-commission-container {
+    display: flex;
+}
+
+.leyka-commission-container h4 {
+    padding: 10px;
+    width: 150px;
+}
+
+.leyka-commission-container .leyka-commission-pm-list-container {
+    display: flex;
+}
+
+.leyka-commission-container .leyka-pm-label {
+    display: block;
+}
+
+.leyka-commission-container .leyka-commission-field {
+    width: 80px;
+}
+/* Gateway commissions field - END */
