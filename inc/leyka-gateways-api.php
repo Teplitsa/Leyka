@@ -30,7 +30,7 @@ function leyka_get_pm_list($activity = null, $currency = false, $sorted = true) 
 
     if($sorted) {
 
-        $pm_order = explode('pm_order[]=', leyka_options()->opt('pm_order')); 
+        $pm_order = explode('pm_order[]=', leyka_options()->opt('pm_order'));
         array_shift($pm_order);
 
         foreach($pm_order as $pm) {
