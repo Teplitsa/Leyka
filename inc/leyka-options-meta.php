@@ -874,11 +874,11 @@ self::$_options_meta = array(
         'default' => 'amount-column',
         'title' => __('Total amount display on the admin donations list page', 'leyka'),
         'description' => '',
-        'required' => 0,
+        'required' => true,
         'list_entries' => array(
-            'none' => __("Don't show total amount", 'leyka'),
-            'amount-column' => __('In the amount column, with original amount value', 'leyka'),
-            'separate-column' => __('In the separate column', 'leyka'),
+            'none' => __('Do not display total amount', 'leyka'),
+            'amount-column' => __('Display total amount in the amount column, with original amount value', 'leyka'),
+            'separate-column' => __('Display total amount in the separate column', 'leyka'),
         ),
     ),
     'widgets_total_amount_usage' => array(

@@ -861,10 +861,11 @@ function leyka_revo_template_displayed() {
 
         $campaign = new Leyka_Campaign(get_post());
         if($campaign->template == 'default') {
-            $leyla_template_data = leyka_get_current_template_data();
-            $revo_displayed = $leyla_template_data['id'] == 'revo';
-        }
-        else {
+
+            $leyka_template_data = leyka_get_current_template_data();
+            $revo_displayed = $leyka_template_data['id'] == 'revo';
+
+        } else {
             $revo_displayed = $campaign->template == 'revo';
         }
 

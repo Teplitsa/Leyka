@@ -82,19 +82,37 @@ span.dashicons-editor-help.has-tooltip {
 /* Gateway commissions field */
 .leyka-commission-container {
     display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+
+    margin-bottom: -1px;
+    border-bottom: 1px solid black;
 }
 
 .leyka-commission-container h4 {
-    padding: 10px;
-    width: 150px;
+    padding: 10px 5px;
+    width: 180px;
 }
 
 .leyka-commission-container .leyka-commission-pm-list-container {
     display: flex;
+    flex-flow: row wrap;
+    flex-basis: 90%;
 }
 
-.leyka-commission-container .leyka-pm-label {
-    display: block;
+.leyka-commission-container .leyka-commission-pm {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+
+    flex-basis: 250px;
+
+    margin-bottom: -1px;
+    padding: 10px;
+}
+
+.leyka-commission-container .leyka-commission-pm:hover {
+    background-color: #8aed87;
 }
 
 .leyka-commission-container .leyka-commission-field {
