@@ -149,17 +149,6 @@ self::$_options_meta = array(
         'list_entries' => array(), // For select, radio & checkbox fields
         'validation_rules' => array(), // List of regexp?..
     ),
-    'donation_purpose_text' => array(
-        'type' => 'text',
-        'default' => __('Charity donation', 'leyka'),
-        'title' => __('Payment purpose text for bank orders', 'leyka'),
-        'description' => '',
-        'required' => 1, // 1 if field is required, 0 otherwise
-        'placeholder' => __('E.g., Charity donation', 'leyka'), // For text fields
-        'length' => '', // For text fields
-        'list_entries' => array(), // For select, radio & checkbox fields
-        'validation_rules' => array(), // List of regexp?..
-    ),
     'pm_available' => array(
         'type' => 'multi_checkbox',
         'default' => array('text-text_box'),
