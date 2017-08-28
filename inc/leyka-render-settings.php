@@ -259,29 +259,4 @@ function leyka_render_gateways_commission_field($option_name, $data){
     </div>
 
 <?php }
-
-add_action('leyka_save_custom_setting_commission', 'leyka_save_custom_setting_commission');
-function leyka_save_custom_setting_commission($option_value) {
-
-    foreach($option_value as $pm_full_id => $commission) {
-
-        $commission = trim($commission);
-        $commission = (float)str_replace(',', '.', $commission);
-
-        $option_value[$pm_full_id] = $commission < 0.0 ? -$commission : $commission;
-
-    }
-
-    $option_value = maybe_serialize($option_value);
-    if($option_value != leyka_options()->opt('commission')) {
-        leyka_options()->opt('commission', $option_value);
-    }
-
-}
-
-add_filter('leyka_option_value', 'leyka_get_commission_values', 10, 2);
-function leyka_get_commission_values($value, $option_name) {
-    return $option_name == 'commission' ? maybe_unserialize($value) : $value;
-}
-
 /** Special field: gateways commission options - END */

@@ -882,18 +882,6 @@ self::$_options_meta = array(
             'display-total-only' => __('Display only total amount values', 'leyka'),
         ),
     ),
-//    'archive_page_total_amount_usage' => array(
-//        'type' => 'radio',
-//        'default' => 'display-total',
-//        'title' => __('Total amount display in donations archive entries', 'leyka'),
-//        'description' => '',
-//        'required' => true,
-//        'list_entries' => array(
-//            'none' => __('Do not display total amount', 'leyka'),
-//            'display-total' => __('Display total amount values with original values', 'leyka'),
-//            'display-total-only' => __('Display only total amount values', 'leyka'),
-//        ),
-//    ),
     'success_page' => array(
         'type' => 'select',
         'default' => leyka_get_default_success_page(),

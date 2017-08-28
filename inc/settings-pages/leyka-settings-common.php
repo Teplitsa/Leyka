@@ -25,6 +25,7 @@ function leyka_save_settings($tab_name) {
         } else {
             $options_names[] = $entry;
         }
+
     }
 
     foreach($options_names as $name) {
@@ -52,6 +53,7 @@ function leyka_save_settings($tab_name) {
                 leyka_options()->opt($name, esc_attr(stripslashes($_POST["leyka_$name"])));
             }
         }
+
     }
 
 }

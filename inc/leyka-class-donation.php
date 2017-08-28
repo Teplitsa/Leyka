@@ -1233,32 +1233,33 @@ class Leyka_Donation_Management {
             $donation->status = $_POST['donation_status'];
         }
 
-        if(isset($_POST['donation-amount']) && (float)$donation->amount != (float)$_POST['donation-amount']) {
+        if(isset($_POST['donation-amount'])) {
 
-            $_POST['donation-amount'] = round((float)$_POST['donation-amount'], 2);
-
-//            $old_amount = $donation->amount_total;
-            $donation->amount = $_POST['donation-amount'];
-//            $donation->amount_total = $_POST['donation-amount_total'];
+            $_POST['donation-amount'] = round((float)str_replace(',', '.', $_POST['donation-amount']), 2);
+            if((float)$donation->amount != $_POST['donation-amount']) {
+                $donation->amount = $_POST['donation-amount'];
+            }
 
         }
 
-        if(isset($_POST['donation-amount-total']) && (float)$donation->amount_total != (float)$_POST['donation-amount-total']) {
+        if(isset($_POST['donation-amount-total'])) {
 
-//            $_POST['donation-amount-total'] = isset($_POST['donation-amount-total']) ?
-//                round((float)$_POST['donation-amount-total'], 2) : leyka_calculate_donation_total_amount($donation, $donation->amount, $donation->pm_full_id);
-            $_POST['donation-amount-total'] = round((float)$_POST['donation-amount-total'], 2);
+            $_POST['donation-amount-total'] = round((float)str_replace(',', '.', $_POST['donation-amount-total']), 2);
 
-            if($_POST['donation-amount-total'] <= 0.0 && $donation->amount > 0.0) {
-                $_POST['donation-amount-total'] = $donation->amount;
-            }
+            if((float)$donation->amount_total != $_POST['donation-amount-total']) {
 
-            $old_amount = $donation->amount_total ? $donation->amount_total : $donation->amount;
-            $donation->amount_total = $_POST['donation-amount-total'];
+                if($_POST['donation-amount-total'] <= 0.0 && $donation->amount > 0.0) {
+                    $_POST['donation-amount-total'] = $donation->amount;
+                }
 
-            // If we're adding a correctional donation, $donation->campaign_id == 0:
-            if($donation->campaign_id && $donation->status == 'funded') {
-                $campaign->update_total_funded_amount($donation, 'update_sum', $old_amount);
+                $old_amount = $donation->amount_total ? $donation->amount_total : $donation->amount;
+                $donation->amount_total = $_POST['donation-amount-total'];
+
+                // If we're adding a correctional donation, $donation->campaign_id == 0:
+                if($donation->campaign_id && $donation->status == 'funded') {
+                    $campaign->update_total_funded_amount($donation, 'update_sum', $old_amount);
+                }
+
             }
 
         }
@@ -1666,12 +1667,15 @@ class Leyka_Donation {
             case 'amount':
                 return empty($this->_donation_meta['amount']) ? 0.0 : $this->_donation_meta['amount'];
             case 'sum_total':
+            case 'total_sum':
+            case 'total_amount':
             case 'amount_total':
                 return empty($this->_donation_meta['amount_total']) ? $this->amount : $this->_donation_meta['amount_total'];
 
             case 'main_curr_amount':
             case 'amount_equiv':
                 return $this->_donation_meta['main_curr_amount'];
+
             case 'donor_name':
                 return $this->_donation_meta['donor_name'];
             case 'donor_email':

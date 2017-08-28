@@ -237,6 +237,7 @@ class Leyka_Options_Controller {
         } else {
             return empty($this->_options[$option_name]['default']) ? '' : $this->_options[$option_name]['default'];
         }
+
     }
 
     public function get_info_of($option_name) {
@@ -246,6 +247,7 @@ class Leyka_Options_Controller {
         $this->_intialize_option($option_name, true);
 
         return $this->_options[$option_name];
+
     }
 
     public function get_type_of($option_name) {
@@ -263,11 +265,8 @@ class Leyka_Options_Controller {
 
         $this->_intialize_option($option_name);
 
-        if(empty($this->_options[$option_name])) {
-            return false;
-        } else {
-            return !!$this->_options[$option_name]['required'];
-        }
+        return empty($this->_options[$option_name]) ? false : !!$this->_options[$option_name]['required'];
+
     }
 
     public function is_valid($option_name) {
@@ -277,11 +276,10 @@ class Leyka_Options_Controller {
         $this->_intialize_option($option_name, true);
         $value = $this->opt_safe($option_name);
 
-        return !(
-            ($this->is_required($option_name) && !$value) ||
-            ($value && !$this->_validate_option($option_name, $value))
-        );
+        return !(($this->is_required($option_name) && !$value) || ($value && !$this->_validate_option($option_name, $value)));
+
     }
+
 }
 
 /**
@@ -290,3 +288,29 @@ class Leyka_Options_Controller {
 function leyka_options() {
     return Leyka_Options_Controller::instance();
 }
+
+/** Special field: gateway commission options */
+add_action('leyka_save_custom_setting_commission', 'leyka_save_custom_setting_commission');
+function leyka_save_custom_setting_commission($option_value) {
+
+    foreach($option_value as $pm_full_id => $commission) {
+
+        $commission = trim($commission);
+        $commission = (float)str_replace(',', '.', $commission);
+
+        $option_value[$pm_full_id] = $commission < 0.0 ? -$commission : $commission;
+
+    }
+
+    $option_value = maybe_serialize($option_value);
+    if($option_value != leyka_options()->opt('commission')) {
+        leyka_options()->opt('commission', $option_value);
+    }
+
+}
+
+add_filter('leyka_option_value', 'leyka_get_commission_values', 10, 2);
+function leyka_get_commission_values($value, $option_name) {
+    return $option_name == 'commission' ? maybe_unserialize($value) : $value;
+}
+/** Special field: gateway commission options - END */
