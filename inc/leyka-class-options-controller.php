@@ -302,7 +302,6 @@ function leyka_save_custom_setting_commission($option_value) {
 
     }
 
-    $option_value = maybe_serialize($option_value);
     if($option_value != leyka_options()->opt('commission')) {
         leyka_options()->opt('commission', $option_value);
     }
