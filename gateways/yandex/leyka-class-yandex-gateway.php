@@ -312,8 +312,10 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
         }
 
         $response_vars = maybe_unserialize($donation->gateway_response);
-        if( !$response_vars || !is_array($response_vars) ) {
+        if( !$response_vars ) {
             return array();
+        } else if( !is_array($response_vars) ) {
+            return array('' => ucfirst($response_vars));
         }
 
         $action_label = $response_vars['action'] == 'checkOrder' ?
