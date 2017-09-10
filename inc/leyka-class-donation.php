@@ -566,10 +566,20 @@ class Leyka_Donation_Management {
 		<div class="leyka-ddata-string">
             <label for="donor-email"><?php _e('Email', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
-                <input type="text" id="donor-email" name="donor-email" placeholder="<?php _e("Enter donor's email", 'leyka');?>" value="" />
+                <input type="text" id="donor-email" name="donor-email" placeholder="<?php _e("Enter donor's email", 'leyka');?>" value="">
                 <div id="donor_email-error" class="field-error"></div>
             </div>
         </div>
+
+        <?php if(leyka_options()->opt('show_donation_comment_field')) {?>
+        <div class="leyka-ddata-string">
+            <label for="donor-comment"><?php _e("Donor's comment", 'leyka');?>:</label>
+            <div class="leyka-ddata-field">
+                <textarea type="text" id="donor-comment" name="donor-comment"></textarea>
+                <div id="donor_comment-error" class="field-error"></div>
+            </div>
+        </div>
+        <?php }?>
 	</fieldset>
 
 	<fieldset class="leyka-set donation">
@@ -709,10 +719,8 @@ class Leyka_Donation_Management {
 			<div class="leyka-ddata-field">
 
             <?php if($donation->type == 'correction' || leyka_options()->opt('donors_data_editable')) {?>
-
-                <input type="text" id="donor-name" name="donor-name" placeholder="<?php _e("Enter donor's name, or leave it empty for anonymous donation", 'leyka');?>" value="<?php echo $donation->donor_name;?>" />
+                <input type="text" id="donor-name" name="donor-name" placeholder="<?php _e("Enter donor's name, or leave it empty for anonymous donation", 'leyka');?>" value="<?php echo $donation->donor_name;?>">
             <?php } else {?>
-
                 <span class="fake-input">
                     <?php echo $donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka');?>
                 </span>
@@ -720,13 +728,13 @@ class Leyka_Donation_Management {
 
             </div>
         </div>
-			
+
 		<div class="leyka-ddata-string">
             <label for="donor-email"><?php _e('Email', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
             <?php if($donation->type == 'correction' || leyka_options()->opt('donors_data_editable')) {?>
 
-                <input type="text" id="donor-email" name="donor-email" placeholder="<?php _e("Enter donor's email", 'leyka');?>" value="<?php echo $donation->donor_email;?>" />
+                <input type="text" id="donor-email" name="donor-email" placeholder="<?php _e("Enter donor's email", 'leyka');?>" value="<?php echo $donation->donor_email;?>">
                 <div id="donor_email-error" class="field-error"></div>
 
             <?php } else {?>
@@ -737,7 +745,25 @@ class Leyka_Donation_Management {
             <?php }?>
             </div>
         </div>
-			
+
+        <?php if(leyka_options()->opt('show_donation_comment_field') || $donation->donor_comment) {?>
+        <div class="leyka-ddata-string">
+            <label for="donor-comment"><?php _e('Comment', 'leyka');?>:</label>
+            <div class="leyka-ddata-field">
+            <?php if(
+                leyka_options()->opt('show_donation_comment_field') &&
+                ($donation->type == 'correction' || leyka_options()->opt('donors_data_editable'))
+            ) {?>
+
+                <textarea id="donor-comment" name="donor-comment"><?php echo $donation->donor_comment;?></textarea>
+                <div id="donor_comment-error" class="field-error"></div>
+
+            <?php } else {?>
+                <span class="fake-input"><?php echo esc_html($donation->donor_comment);?></span>
+            <?php }?>
+            </div>
+        </div>
+        <?php }?>
 	</fieldset>
 	
 	<fieldset class="leyka-set donation">
@@ -1053,11 +1079,15 @@ class Leyka_Donation_Management {
 
 			$columns['title'] = _x('Campaign', 'In subjective case', 'leyka');
 			unset($unsort['title']);
+
 		}
 
         unset($unsort['date']);
 
 		$columns['donor'] = __('Donor', 'leyka');
+        if(leyka_options()->opt('show_donation_comment_field')) {
+            $columns['donor_comment'] = __("Donor's comment", 'leyka');
+        }
 
 		$columns['amount'] = __('Amount', 'leyka');
         if(leyka_options()->opt('admin_donations_list_display') == 'separate-column') {
@@ -1106,6 +1136,9 @@ class Leyka_Donation_Management {
                 break;
             case 'donor':
                 echo apply_filters('leyka_admin_donation_donor_name_column_content', $donation->donor_name, $donation);
+                break;
+            case 'donor_comment':
+                echo apply_filters('leyka_admin_donation_donor_comment_column_content', $donation->donor_comment, $donation);
                 break;
             case 'method':
                 $gateway_label = $donation->gateway_id ? $donation->gateway_label : __('Custom payment info', 'leyka');
@@ -1279,7 +1312,6 @@ class Leyka_Donation_Management {
             $campaign = new Leyka_Campaign($donation->campaign_id); // New campaign
 
             if($donation->status == 'funded') {
-//                die('<pre>'.print_r($donation->amount_total, 1).'</pre>');
                 $campaign->update_total_funded_amount($donation);
             }
 
@@ -1299,7 +1331,7 @@ class Leyka_Donation_Management {
             && $donation->donor_name != $_POST['donor-name']
             && leyka_validate_donor_name($_POST['donor-name'])
         ) {
-            $donation->donor_name = $_POST['donor-name'];
+            $donation->donor_name = sanitize_text_field($_POST['donor-name']);
         }
 
         if(
@@ -1307,7 +1339,11 @@ class Leyka_Donation_Management {
             && $donation->donor_email != $_POST['donor-email']
             && filter_var($_POST['donor-email'], FILTER_VALIDATE_EMAIL)
         ) {
-            $donation->donor_email = $_POST['donor-email'];
+            $donation->donor_email = sanitize_email($_POST['donor-email']);
+        }
+
+        if(isset($_POST['donor-comment']) && $donation->donor_comment != $_POST['donor-comment']) {
+            $donation->donor_comment = sanitize_textarea_field($_POST['donor-comment']);
         }
 
         if(
@@ -1316,13 +1352,18 @@ class Leyka_Donation_Management {
         ) {
 
             if($_POST['donation-pm'] == 'custom') {
+
                 $donation->gateway_id = '';
-                if($donation->pm_id != $_POST['custom-payment-info'])
+                if($donation->pm_id != $_POST['custom-payment-info']) {
                     $donation->pm_id = $_POST['custom-payment-info'];
+                }
+
             } else {
+
                 $parts = explode('-', $_POST['donation-pm']);
                 $donation->gateway_id = $parts[0];
                 $donation->pm = $parts[1];
+
             }
         }
 
@@ -1339,6 +1380,7 @@ class Leyka_Donation_Management {
         add_action('save_post', array($this, 'save_donation_data'));
 
         return true;
+
     }
 
 	/** Helpers **/
@@ -1415,6 +1457,11 @@ class Leyka_Donation {
             return new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
         }
         add_post_meta($id, 'leyka_donor_email', $value);
+
+        $value = empty($params['donor_comment']) ? leyka_pf_get_donor_comment_value() : $params['donor_comment'];
+        if($value) {
+            add_post_meta($id, 'leyka_donor_comment', sanitize_textarea_field($value));
+        }
 
         $pm_data = leyka_pf_get_payment_method_value();
         $pm_data = $pm_data ?
@@ -1580,6 +1627,7 @@ class Leyka_Donation {
                     (float)$meta['leyka_main_curr_amount'][0] : $donation_amount,
                 'donor_name' => empty($meta['leyka_donor_name']) ? '' : $meta['leyka_donor_name'][0],
                 'donor_email' => empty($meta['leyka_donor_email']) ? '' : $meta['leyka_donor_email'][0],
+                'donor_comment' => empty($meta['leyka_donor_comment']) ? '' : $meta['leyka_donor_comment'][0],
                 'donor_subscription_email' => empty($meta['leyka_donor_subscription_email']) ?
                     '' : $meta['leyka_donor_subscription_email'][0],
                 'donor_email_date' => empty($meta['_leyka_donor_email_date']) ?
@@ -1682,6 +1730,8 @@ class Leyka_Donation {
                 return $this->_donation_meta['donor_email'];
             case 'donor_email_date':
                 return $this->_donation_meta['donor_email_date'];
+            case 'donor_comment':
+                return empty($this->_donation_meta['donor_comment']) ? '' : $this->_donation_meta['donor_comment'];
             case 'managers_emails_date':
                 return $this->_donation_meta['managers_emails_date'];
             case 'campaign_id':
@@ -1778,6 +1828,11 @@ class Leyka_Donation {
             case 'donor_email':
                 update_post_meta($this->_id, 'leyka_donor_email', $value);
                 $this->_donation_meta['donor_email'] = $value;
+                break;
+            case 'donor_comment':
+                $value = sanitize_textarea_field($value);
+                update_post_meta($this->_id, 'leyka_donor_comment', $value);
+                $this->_donation_meta['donor_comment'] = $value;
                 break;
 
             case 'sum':

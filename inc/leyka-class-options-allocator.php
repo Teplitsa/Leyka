@@ -158,8 +158,15 @@ class Leyka_Options_Allocator {
                         'title' => __('Revo template', 'leyka'),
                         'is_default_collapsed' => false,
                         'options' => array(
-                            'revo_template_slider_max_sum', //'revo_template_ask_donor_data',
-                            'revo_template_show_thumbnail',
+                            'revo_template_slider_max_sum', 'revo_template_show_thumbnail', 'revo_donation_complete_button_text',
+                        )
+                    ),),
+                    array('section' => array(
+                        'name' => 'donation_form_options',
+                        'title' => __('Donation form options', 'leyka'),
+                        'is_default_collapsed' => false,
+                        'options' => array(
+                            'donation_submit_text', 'show_donation_comment_field',
                         )
                     ),),
                 );
@@ -194,8 +201,8 @@ class Leyka_Options_Allocator {
                         'is_default_collapsed' => false,
                         'options' => array(
                             'agree_to_terms_needed', 'agree_to_terms_text_text_part', 'agree_to_terms_text_link_part',
-                            'terms_of_service_text', 'terms_agreed_by_default', 'donation_submit_text',
-                            'revo_donation_complete_button_text',
+                            'terms_of_service_text', 'terms_agreed_by_default', /*'donation_submit_text',*/
+                            /*'revo_donation_complete_button_text',*/
                         )
                     ),),
                     array('section' => array(

@@ -149,25 +149,38 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
             <div class="step__title"><?php _e('Whom should we thank?', 'leyka');?></div>
             <div class="step__fields donor">
 
+                <?php $field_id = 'leyka-'.wp_rand();?>
                 <div class="donor__textfield donor__textfield--name ">
-                    <label for="leyka_donor_name">
+                    <label for="<?php echo $field_id;?>">
                         <span class="donor__textfield-label leyka_donor_name-label"><?php _e('Your name', 'leyka');?></span>
                         <span class="donor__textfield-error leyka_donor_name-error">
                             <?php _e('Enter your name', 'leyka');?>
                         </span>
                     </label>
-                    <input type="text" name="leyka_donor_name" value="" autocomplete="off">
+                    <input id="<?php echo $field_id;?>" type="text" name="leyka_donor_name" value="" autocomplete="off">
                 </div>
 
+                <?php $field_id = 'leyka-'.wp_rand();?>
                 <div class="donor__textfield donor__textfield--email">
-                    <label for="leyka_donor_email">
+                    <label for="<?php echo $field_id;?>">
                         <span class="donor__textfield-label leyka_donor_name-label"><?php _e('Your email', 'leyka');?></span>
                         <span class="donor__textfield-error leyka_donor_email-error">
                             <?php _e('Enter an email in the some@email.com format', 'leyka');?>
                         </span>
                     </label>
-                    <input type="email" name="leyka_donor_email" value="" autocomplete="off">
+                    <input type="email" id="<?php echo $field_id;?>" name="leyka_donor_email" value="" autocomplete="off">
                 </div>
+
+                <?php if(leyka_options()->opt('show_donation_comment_field')) { $field_id = 'leyka-'.wp_rand();?>
+                <div class="donor__textfield donor__textfield--comment">
+                    <label for="<?php echo $field_id;?>">
+                        <span class="donor__textfield-label leyka_donor_comment-label"><?php _e('Your comment', 'leyka');?></span>
+                        <span class="donor__textfield-error leyka_donor_comment-error">
+                        </span>
+                    </label>
+                    <textarea id="<?php echo $field_id;?>" name="leyka_donor_comment"></textarea>
+                </div>
+                <?php }?>
 
                 <div class="donor__submit">
                     <input type="submit" value="<?php echo leyka_options()->opt_safe('donation_submit_text');?>">

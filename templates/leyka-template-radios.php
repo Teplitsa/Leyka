@@ -80,6 +80,7 @@ $campaign = leyka_get_validated_campaign($campaign);?>
                     <input type="hidden" name="leyka_ga_payment_method" value="<?php echo esc_attr($pm->label);?>">
                     <?php echo $pm_forms[$pm->full_id]->get_name_field()
                         .$pm_forms[$pm->full_id]->get_email_field()
+                        .$pm_forms[$pm->full_id]->get_comment_field()
                         .$pm_forms[$pm->full_id]->get_pm_fields();?>
                 </div>
 

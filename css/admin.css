@@ -529,7 +529,7 @@
     float: left;
     width: 78%;
     margin-left: 2%; }
-    .leyka-set .leyka-ddata-field input {
+    .leyka-set .leyka-ddata-field input, .leyka-set .leyka-ddata-field textarea {
       width: 98%;
       max-width: 700px; }
     .leyka-set .leyka-ddata-field .fake-input {
@@ -563,10 +563,12 @@
         text-transform: uppercase;
         font-size: 10px;
         margin-right: 5px; }
-    .leyka-set .leyka-ddata-field #donation-amount {
-      max-width: 320px; }
-    .leyka-set .leyka-ddata-field #new-donation-amount {
-      max-width: 320px; }
+    .leyka-set .leyka-ddata-field #donation-amount,
+    .leyka-set .leyka-ddata-field #donation-amount-total,
+    .leyka-set .leyka-ddata-field #new-donation-amount
+    {
+      max-width: 320px;
+    }
     .leyka-set .leyka-ddata-field #custom-payment-info {
       margin-top: 10px; }
   .leyka-set .field-error {

@@ -2,7 +2,7 @@
 
 /** Common settings  */
 @mixin module-height() {
-	max-height: 460px; //test
+	max-height: 520px;
 	height: 96vh;
 }
 
@@ -657,7 +657,7 @@ div[id *="leyka-pf-"] {  //aka namespace
 			overflow: hidden;
 		}
 
-		input {
+		input, textarea {
 			width: 100%;
 			box-sizing: border-box;
 			-webkit-appearance: none;

@@ -638,6 +638,13 @@ self::$_options_meta = array(
         'list_entries' => '', // callback returns currencies selected in prev. option
         'validation_rules' => array(), // List of regexp?..
     ),
+    'show_donation_comment_field' => array(
+        'type' => 'checkbox',
+        'default' => false,
+        'title' => __('Display a comment textarea field on donation forms', 'leyka'),
+        'description' => __("Check to include an additional textarea field (a donor's comment) on all donation forms", 'leyka'),
+        'required' => false, // 1 if field is required, 0 otherwise
+    ),
 //    'revo_template_ask_donor_data' => array(
 //        'type' => 'radio',
 //        'default' => 'during-donation',

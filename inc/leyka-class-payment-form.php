@@ -261,6 +261,27 @@ class Leyka_Payment_Form {
 
 	}
 
+    public function get_comment_field($value = '') {
+
+        if( !$this->is_field_supported('comment') || !leyka_options()->opt('show_donation_comment_field') ) {
+            return '';
+        }
+
+        ob_start();?>
+
+        <label for="leyka_donor_commment" class="leyka-screen-reader-text"><?php _e('Your comment', 'leyka');?></label>
+        <label class="input">
+            <textarea class="comment leyka-donor-comment" name="leyka_donor_comment"><?php echo $value;?></textarea>
+        </label>
+        <p class="field-comment"><?php _e('Your comments', 'leyka');?></p>
+        <p class="leyka_donor_comment-error field-error"></p>
+
+        <?php $out = ob_get_contents();
+        ob_end_clean();
+        return leyka_field_wrap($out, 'email');
+
+    }
+
 	public function get_agree_field() {
 
 		if(
@@ -379,7 +400,7 @@ class Leyka_Payment_Form {
     public function get_supported_global_fields() {
 
         $global_fields = $this->_pm && $this->_pm->has_global_fields ?
-            array('amount', 'name', 'email', 'agree', 'submit') : array('');
+            array('amount', 'name', 'email', 'comment', 'agree', 'submit') : array('');
 
         if($global_fields && $this->_pm->has_recurring_support()) {
             $global_fields[] = 'recurring';
@@ -580,6 +601,10 @@ function leyka_pf_get_donor_email_value() {
     return empty($_POST['leyka_donor_email']) ? '' : $_POST['leyka_donor_email'];
 }
 
+function leyka_pf_get_donor_comment_value() {
+    return empty($_POST['leyka_donor_comment']) ? '' : $_POST['leyka_donor_comment'];
+}
+
 function leyka_pf_get_campaign_id_value() {
     return empty($_POST['leyka_campaign_id']) ? 0 : $_POST['leyka_campaign_id'];
 }
@@ -602,6 +627,12 @@ function leyka_pf_get_email_field($value = '') {
 	global $leyka_current_pm;
 
 	return $leyka_current_pm->get_email_field($value);
+}
+function leyka_pf_get_comment_field($value = '') {
+    /** @var Leyka_Payment_Form $leyka_current_pm */
+	global $leyka_current_pm;
+
+	return $leyka_current_pm->get_comment_field($value);
 }
 
 //function leyka_pf_get_recurring_field() {

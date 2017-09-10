@@ -40,10 +40,10 @@
 }
 
 .step__fields {
-	padding: $base $base*2;
+	padding: 0 $base*2;
 
 	@include for(small-screens) {
-		padding: $base $base*3;
+		padding: 0 $base*3;
 	}
 
 	&.static-text {
