@@ -78,7 +78,8 @@ class Leyka_Options_Controller {
 
             // Option is not set, use default value from meta:
             if($this->_options[$option_name]['value'] === false && !empty(self::$_options_meta[$option_name])) {
-                $this->_options[$option_name]['value'] = self::$_options_meta[$option_name]['default'];
+                $this->_options[$option_name]['value'] = empty(self::$_options_meta[$option_name]['default']) ?
+                    '' : self::$_options_meta[$option_name]['default'];
             }
         }
 

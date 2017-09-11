@@ -302,15 +302,6 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                     'mixplat_phone' => $response['phone'],
                 ));
 
-//                $params = array(
-//                    'response-currency-empty' => (int)empty($response['currency']),
-//                    'response-currency-original' => $response['currency'],
-//                    'currency-alt' => $response['currency'] == 'RUB' ? 'rur' : strtolower($response['currency']),
-//                    'currency-total' => empty($response['currency']) ?
-//                        'rur' :
-//                        ($response['currency'] == 'RUB' ? 'rur' : strtolower($response['currency']))
-//                );
-
                 $donation = new Leyka_Donation($donation_id);
                 $donation->add_gateway_response($response);
 

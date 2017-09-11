@@ -317,8 +317,13 @@ class Leyka_Payment_Form {
             <label class="checkbox">
                 <input type="checkbox" name="leyka_agree" class="leyka_agree required" value="1" id="leyka_agree" <?php echo leyka_options()->opt('terms_agreed_by_default') ? 'checked="checked"' : '';?>>
                 <span class="leyka-checkbox-label">
-                    <?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';?>
+                    <?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';
+                    
+                    if(leyka_options()->opt('agree_to_terms_link_action') == 'popup') {?>
                     <a class="leyka-legal-terms-trigger" href="#" data-terms-content="#<?php echo $agree_id;?>">
+                    <?php } else {?>
+                    <a target="_blank" href="<?php echo leyka_get_terms_of_service_page_url();?>">
+                    <?php }?>
                         <?php echo apply_filters('agree_to_terms_text_link_part', leyka_options()->opt('agree_to_terms_text_link_part'));?>
                     </a>
                 </span>
