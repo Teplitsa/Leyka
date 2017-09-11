@@ -78,6 +78,7 @@ if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.3.0', '<') ) {
 
 }
 
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-tmp-translations.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-functions.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-controller.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-polylang.php');
@@ -90,6 +91,7 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-template-controller.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-ajax.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-shortcodes.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-widgets.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-hooks.php');
 
 /** Automatically include all sub-dirs of /leyka/gateways/ */
 $gateways_dir = dir(LEYKA_PLUGIN_DIR.'gateways/');

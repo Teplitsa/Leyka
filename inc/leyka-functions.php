@@ -184,16 +184,15 @@ function leyka_get_default_pd_terms_page() {
 
     } else {
 
-        $page = wp_insert_post(array(
-            'post_type' => 'page',
-            'post_status' => 'publish',
-            'post_title' => _x('Terms of personal data usage', 'In subjective case', 'leyka'),
-            'post_content' => __('Terms of personal data usage full text. Use <br> for line-breaks.', 'leyka'),
+        // Can't use wp_insert_post due to some strange get_permastruct() notice, so insert the post manually:
+        $page = leyka_manually_insert_page(array(
+            'post_title' => leyka_tmp__('Terms of personal data usage'),
+            'post_content' => leyka_tmp__('Terms of personal data usage full text. Use <br> for line-breaks.'),
+            'post_name' => 'personal-data-usage-terms',
         ));
-        // To avoid the strange get_permastruct() notice:
-        wp_update_post(array('ID' => $page, 'post_name' => 'personal-data-usage-terms',));
-
-        do_action('leyka_default_pd_terms_page_created', $page);
+        if((int)$page > 0) {
+            do_action('leyka_default_pd_terms_page_created', $page);
+        }
 
     }
 
@@ -208,6 +207,64 @@ function leyka_get_default_pd_terms_page() {
 function leyka_get_pd_terms_page_url() {
 
     $url = leyka_options()->opt('pd_terms_page') ? get_permalink(leyka_options()->opt('pd_terms_page')) : home_url();
+
+    if( !$url ) { // It can be in case when "last posts" is selected for homepage
+        $url = home_url();
+    }
+
+    return $url;
+
+}
+
+function leyka_get_default_service_terms_page() {
+
+    $default_page = get_option('leyka_terms_of_service_page');
+    if($default_page) {
+        return $default_page;
+    }
+
+    $page = get_posts(apply_filters('leyka_default_service_terms_page_query', array(
+        'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'private', 'future', 'inherit', 'trash'),
+        'post_type' => 'page',
+        'post_name__in' => array('donation-service-terms'),
+        'posts_per_page' => 1,
+    )));
+    $page = reset($page);
+
+    if($page) {
+
+        if($page->post_status != 'publish') {
+            wp_update_post(array('ID' => $page->ID, 'post_status' => 'publish',));
+        }
+
+        $page = $page->ID;
+
+    } else {
+
+        // Can't use wp_insert_post due to some strange get_permastruct() notice, so insert the post manually:
+        $page = leyka_manually_insert_page(array(
+            'post_title' => leyka_tmp__('Terms of donation service'),
+            'post_content' => leyka_tmp__('Terms of donation service text. Use <br /> for line-breaks, please.'),
+            'post_name' => 'donation-service-terms',
+        ));
+        if((int)$page > 0) {
+            do_action('leyka_default_terms_of_service_page_created', $page);
+        }
+
+    }
+
+    if($page) {
+        update_option('leyka_terms_of_service_page', $page);
+    }
+
+    return $page ? $page : 0;
+
+}
+
+function leyka_get_terms_of_service_page_url() {
+
+    $url = leyka_options()->opt('terms_of_service_page') ?
+        get_permalink(leyka_options()->opt('terms_of_service_page')) : home_url();
 
     if( !$url ) { // It can be in case when "last posts" is selected for homepage
         $url = home_url();
@@ -242,15 +299,16 @@ function leyka_get_default_success_page() {
 
     } else {
 
-        $page = wp_insert_post(array(
-            'post_type' => 'page',
-            'post_status' => 'publish',
+        // Can't use wp_insert_post due to some strange get_permastruct() notice, so insert the post manually:
+        $page = leyka_manually_insert_page(array(
+            'post_title' => leyka_tmp__('Thank you!'),
+            'post_content' => leyka_tmp__('Your donation completed. We are grateful for your help.'),
             'post_name' => 'thank-you-for-your-donation',
-            'post_title' => __('Thank you!', 'leyka'),
-            'post_content' => __('Your donation completed. We are grateful for your help.', 'leyka'),
         ));
+        if((int)$page > 0) {
+            do_action('leyka_default_success_page_created', $page);
+        }
 
-        do_action('leyka_default_success_page_created', $page);
     }
 
     if($page) {
@@ -298,15 +356,16 @@ function leyka_get_default_failure_page() {
 
     } else {
 
-        $page = wp_insert_post(array(
-            'post_type' => 'page',
-            'post_status' => 'publish',
+        // Can't use wp_insert_post due to some strange get_permastruct() notice, so insert the post manually:
+        $page = leyka_manually_insert_page(array(
+            'post_title' => leyka_tmp__('Payment failure'),
+            'post_content' => leyka_tmp__('We are deeply sorry, but for some technical reason we failed to receive your donation. Your money are intact. Please try again later!'),
             'post_name' => 'sorry-donation-failure',
-            'post_title' => __('Payment failure', 'leyka'),
-            'post_content' => __('We are deeply sorry, but for some technical reason we failed to receive your donation. Your money are intact. Please try again later!', 'leyka'),
         ));
+        if((int)$page > 0) {
+            do_action('leyka_default_failure_page_created', $page);
+        }
 
-        do_action('leyka_default_failure_page_created', $page);
     }
 
     if($page) {
@@ -314,6 +373,7 @@ function leyka_get_default_failure_page() {
     }
 
     return $page ? $page : 0;
+
 }
 
 function leyka_get_failure_page_url() {
@@ -1077,5 +1137,27 @@ function leyka_calculate_donation_total_amount($donation = false, $amount = 0.0,
         0.0 : $commission[$pm_full_id]/100.0;
 
     return $commission && $commission > 0.0 ? $amount - round($amount*$commission, 2) : $amount;
+
+}
+
+/** A helper function to insert posts manually. Used only when wp_insert_post() leads to notices & fatal errors. */
+function leyka_manually_insert_page(array $post_data) {
+
+    global $wpdb;
+
+    $post_date = current_time('mysql');
+    $wpdb->insert($wpdb->prefix.'posts', array(
+        'post_type' => 'page',
+        'post_status' => 'publish',
+        'post_title' => $post_data['post_title'],
+        'post_content' => $post_data['post_content'],
+        'post_name' => $post_data['post_name'],
+        'post_author' => get_current_user_id(),
+        'post_excerpt' => '',
+        'post_date' => $post_date,
+        'post_date_gmt' => get_gmt_from_date($post_date),
+        'post_modified' => $post_date,
+        'post_modified_gmt' => get_gmt_from_date($post_date),
+    ));
 
 }

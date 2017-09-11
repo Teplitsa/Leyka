@@ -734,10 +734,25 @@ self::$_options_meta = array(
         'title' => __("Donor is agreed with Terms of Service by default", 'leyka'),
         'description' => __('When donor sees a donation form, Terms of Service agreement checkbox is already checked.', 'leyka'),
         'required' => false,
-        'placeholder' => '', // For text fields
-        'length' => '', // For text fields
-        'list_entries' => array(), // For select, radio & checkbox fields
-        'validation_rules' => array(), // List of regexp?..
+    ),
+    'terms_of_service_page' => array(
+        'type' => 'select',
+        'default' => leyka_get_default_service_terms_page(),
+        'title' => __("Page of terms of service text", 'leyka'),
+        'description' => __('Select a page with terms of the donation service full text.', 'leyka'),
+        'required' => false, // 1 if field is required, 0 otherwise
+        'list_entries' => 'leyka_get_pages_list',
+    ),
+    'agree_to_terms_link_action' => array(
+        'type' => 'radio',
+        'default' => 'popup',
+        'title' => __('Click on terms of service link...', 'leyka'),
+        'description' => '',
+        'required' => true,
+        'list_entries' => array(
+            'popup' => __('Opens the terms text in popup window', 'leyka'),
+            'page' => __('Opens the page of terms text', 'leyka')
+        ),
     ),
     'agree_to_pd_terms_needed' => array(
         'type' => 'checkbox',
@@ -745,10 +760,6 @@ self::$_options_meta = array(
         'title' => __('To donate, donor must agree to Terms of personal data usage', 'leyka'),
         'description' => __("Check if you should have donor's agreement with some terms regarding his personal data usage.", 'leyka'),
         'required' => false,
-        'placeholder' => '', // For text fields
-        'length' => '', // For text fields
-        'list_entries' => array(), // For select, radio & checkbox fields
-        'validation_rules' => array(), // List of regexp?..
     ),
     'agree_to_pd_terms_text_text_part' => array(
         'type' => 'text',
