@@ -29,10 +29,32 @@ function leyka_render_text_field($option_name, $data){
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
             </span>
             <span class="field-component field">
-                <input type="<?php echo empty($data['is_password']) ? 'text' : 'password';?>" id="<?php echo $option_name.'-field';?>" name="<?php echo $option_name;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo esc_attr($data['placeholder']);?>" maxlength="<?php echo $data['length'];?>" />
+                <input type="<?php echo empty($data['is_password']) ? 'text' : 'password';?>" id="<?php echo $option_name.'-field';?>" name="<?php echo $option_name;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo esc_attr($data['placeholder']);?>" maxlength="<?php echo $data['length'];?>">
             </span>
             <?php if( !empty($data['description']) ) {?>
             <span class="field-component help"><?php echo $data['description'];?></span>
+            <?php }?>
+        </label>
+    </div>
+<?php }
+
+/** Number fields */
+add_action('leyka_render_number', 'leyka_render_number_field', 10, 2);
+function leyka_render_number_field($option_name, $data){
+
+    $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;?>
+
+    <div id="<?php echo $option_name.'-wrapper'?>">
+        <label for="<?php echo $option_name.'-field';?>">
+            <span class="field-component title">
+                <?php echo $data['title'];?>
+                <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
+            </span>
+            <span class="field-component field">
+                <input type="number" id="<?php echo $option_name.'-field';?>" name="<?php echo $option_name;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo esc_attr($data['placeholder']);?>" maxlength="<?php echo $data['length'];?>" <?php echo $data['max'] === false ? '' : 'max="'.(int)$data['max'].'"';?> <?php echo $data['min'] === false ? '' : 'min="'.(int)$data['min'].'"';?> <?php echo $data['step'] === false ? '' : 'step="'.(int)$data['step'].'"';?>>
+            </span>
+            <?php if( !empty($data['description']) ) {?>
+                <span class="field-component help"><?php echo $data['description'];?></span>
             <?php }?>
         </label>
     </div>

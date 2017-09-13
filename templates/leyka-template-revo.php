@@ -172,13 +172,12 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
                 </div>
 
                 <?php if(leyka_options()->opt('show_donation_comment_field')) { $field_id = 'leyka-'.wp_rand();?>
-                <div class="donor__textfield donor__textfield--comment">
+                <div class="donor__textfield donor__textfield--comment leyka-field">
                     <label for="<?php echo $field_id;?>">
-                        <span class="donor__textfield-label leyka_donor_comment-label"><?php _e('Your comment', 'leyka');?></span>
-                        <span class="donor__textfield-error leyka_donor_comment-error">
-                        </span>
+                        <span class="donor__textfield-label leyka_donor_comment-label"><?php echo leyka_options()->opt('donation_comment_max_length') ? sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt('donation_comment_max_length')) : __('Your comment', 'leyka');?></span>
+                        <span class="donor__textfield-error leyka_donor_comment-error"><?php _e('Entered value is too long', 'leyka');?></span>
                     </label>
-                    <textarea id="<?php echo $field_id;?>" name="leyka_donor_comment"></textarea>
+                    <textarea id="<?php echo $field_id;?>" class="leyka-donor-comment" name="leyka_donor_comment" data-max-length="<?php echo leyka_options()->opt('donation_comment_max_length');?>"></textarea>
                 </div>
                 <?php }?>
 

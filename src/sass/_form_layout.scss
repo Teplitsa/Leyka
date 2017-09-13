@@ -219,6 +219,13 @@
 		}
 
 		.leyka-pf__module {
+
+            @include module-height(460px);
+
+            &.leyka-with-comment {
+                @include module-height(570px);
+            }
+
 			position: fixed;
 			top: 50%;
 			left: 50%;
@@ -227,11 +234,10 @@
 			z-index: 10010;
 
 			max-width: 400px;
-			@include module-height();
 			overflow: hidden;
 
 			@include for(small-screens) {
-				box-shadow: 0px 2px 25px rgba(0, 0, 0, 0.25);
+				box-shadow: 0 2px 25px rgba(0, 0, 0, 0.25);
 			}
 		}
 
@@ -421,6 +427,9 @@
 .leyka-js {
 	.leyka-pf__form {
 		.step {
+
+            @include module-height(460px);
+
 			position: absolute;
 			top: 0;
 			left: 0;
@@ -435,8 +444,11 @@
 			flex-flow: column nowrap;
 			align-items: center;
 			justify-content: flex-start;
-			@include module-height();
 		}
+
+        &.leyka-with-comment .step {
+            @include module-height(570px);
+        }
 
 		.step--person {
 			justify-content: space-between;

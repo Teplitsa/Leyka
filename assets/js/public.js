@@ -430,6 +430,7 @@ jQuery(document).ready(function($){
         pName = $_form.find('.donor__textfield--name input').val(),
         pEmail = $_form.find('.donor__textfield--email input').val(),
         amount = parseInt($_form.find('.amount__figure input').val()),
+        $comment = $_form.find(':input.leyka-donor-comment'),
         $agree = $_form.find('.donor__oferta input');
         
         if(pName.length === 0) {
@@ -443,6 +444,13 @@ jQuery(document).ready(function($){
 
             error_struct['email'] = true;
             $_form.find('.donor__textfield--email').addClass('invalid');
+
+        }
+
+        if($comment.length && $comment.data('max-length') && $comment.val().length > $comment.data('max-length')) {
+
+            error_struct['comment'] = true;
+            $_form.find('.donor__textfield--comment').addClass('invalid');
 
         }
 
@@ -560,44 +568,60 @@ jQuery(document).ready(function($){
     }
 
     function bindDonorStepEvents() {
-        // validation
 
-        $('.donor__textfield--name')
-        .on('focus', 'input', function(){
+        $('.donor__textfield--name').on('focus', 'input', function(){
             $(this).parents('.donor__textfield--name').removeClass('invalid').removeClass('valid').addClass('focus');
+        }).on('blur', ':input', function(){
 
-        })
-        .on('blur', 'input', function(){
-            $(this).parents('.donor__textfield--name').removeClass('focus');
+            // validate
+            var $this = $(this),
+                testVal = $this.val();
 
-            //validate
-            var testVal = $(this).val();
+            $this.parents('.donor__textfield--name').removeClass('focus');
 
             if(testVal.length > 0){
-                $(this).parents('.donor__textfield--name').addClass('valid');
+                $this.parents('.donor__textfield--name').addClass('valid');
+            } else {
+                $this.parents('.donor__textfield--name').addClass('invalid');
             }
-            else {
-                $(this).parents('.donor__textfield--name').addClass('invalid');
-            }
+
         });
 
-        $('.donor__textfield--email')
-        .on('focus', 'input', function(){
+        $('.donor__textfield--email').on('focus', 'input', function(){
             $(this).parents('.donor__textfield--email').removeClass('invalid').removeClass('valid').addClass('focus');
-        })
-        .on('blur', 'input', function(){
-            $(this).parents('.donor__textfield--email').removeClass('focus');
+        }).on('blur', ':input', function(){
 
-            //validate
-            var testVal = $(this).val();
+            // validate
+            var $this = $(this),
+                testVal = $this.val();
+
+            $this.parents('.donor__textfield--email').removeClass('focus');
 
             if(testVal.length > 0 && is_email(testVal)){
-                $(this).parents('.donor__textfield--email').addClass('valid');
+                $this.parents('.donor__textfield--email').addClass('valid');
+            } else {
+                $this.parents('.donor__textfield--email').addClass('invalid');
             }
-            else {
-                $(this).parents('.donor__textfield--email').addClass('invalid');
-            }
+
         });
+
+        $('.donor__textfield--comment').on('focus', ':input', function(){
+            $(this).parents('.donor__textfield--comment').removeClass('invalid').removeClass('valid').addClass('focus');
+        }).on('blur', ':input', function(){
+
+                // validate
+                var $this = $(this),
+                    testVal = $this.val();
+
+                $this.parents('.donor__textfield--comment').removeClass('focus');
+
+                if(testVal.length && $this.data('max-length') && testVal.length > $this.data('max-length')) {
+                    $this.parents('.donor__textfield--comment').addClass('invalid');
+                } else {
+                    $this.parents('.donor__textfield--comment').addClass('valid');
+                }
+            });
+
     }
 
     function bindOfertaEvents() {

@@ -1,8 +1,8 @@
 /** == Form common settings (_form_settings.scss) == **/
 
 /** Common settings  */
-@mixin module-height() {
-	max-height: 520px;
+@mixin module-height($mod: default) {
+	max-height: $mod;
 	height: 96vh;
 }
 
@@ -687,7 +687,7 @@ div[id *="leyka-pf-"] {  //aka namespace
 		&.invalid {
 			.donor__textfield-label { display: none; }
 			.donor__textfield-error { display: inline-block; }
-			input {
+			input, textarea {
 				color: $color-form-invalid;
 				border-bottom-color: $color-form-invalid;
 			}

@@ -17,17 +17,25 @@ $email_placeholders =
 
 // For type='text':
 // 'length' => '',
-// 'placeholder' => ''
-// 'required' => 1 / 0 // For checkbox & multi_checkbox, 1 means "at least 1 value"
+// 'placeholder' => '',
+// 'required' => boolean,
 
-// For select, radio & checkbox fields:
+// For type='number':
+// 'length' => '',
+// 'placeholder' => '',
+// 'required' => 1 / 0
+// 'min' => 0+ / false,
+// 'max' => 0+ / false,
+// 'step' => positive number or false,
+
+// For select, radio, checkbox & multi_checkbox fields:
 // 'list_entries' => array(),
+// 'required' => boolean / integer, // For multi_checkbox, any positive integer "N" means "at least N values"
 
 // For all:
 // 'default' => '',
 // 'title' => '',
 // 'description' => '',
-// 
 
 /** @var self Leyka_Options_Controller */
 self::$_options_meta = array(
@@ -465,6 +473,16 @@ self::$_options_meta = array(
         'default' => false,
         'title' => __('Display a comment textarea field on donation forms', 'leyka'),
         'description' => __("Check to include an additional textarea field (a donor's comment) on all donation forms", 'leyka'),
+    ),
+    'donation_comment_max_length' => array(
+        'type' => 'number',
+        'default' => 140,
+        'title' => __('The maximum length of a donation comment value', 'leyka'),
+        'description' => __('Set the maximum number of symbols allowed for donation comments. You may set "0" for the unlimited values length.', 'leyka'),
+        'placeholder' => __('E.g., 140', 'leyka'),
+        'min' => 0,
+        'max' => false,
+        'step' => 1,
     ),
 //    'revo_template_ask_donor_data' => array(
 //        'type' => 'radio',

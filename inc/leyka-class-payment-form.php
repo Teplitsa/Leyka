@@ -271,14 +271,16 @@ class Leyka_Payment_Form {
 
         <label for="leyka_donor_commment" class="leyka-screen-reader-text"><?php _e('Your comment', 'leyka');?></label>
         <label class="input">
-            <textarea class="comment leyka-donor-comment" name="leyka_donor_comment"><?php echo $value;?></textarea>
+            <textarea class="comment leyka-donor-comment" name="leyka_donor_comment" data-max-length="<?php echo leyka_options()->opt('donation_comment_max_length');?>"><?php echo $value;?></textarea>
         </label>
-        <p class="field-comment"><?php _e('Your comments', 'leyka');?></p>
+        <p class="field-comment">
+            <?php echo leyka_options()->opt('donation_comment_max_length') ? sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt('donation_comment_max_length')) : __('Your comment', 'leyka');?>
+        </p>
         <p class="leyka_donor_comment-error field-error"></p>
 
         <?php $out = ob_get_contents();
         ob_end_clean();
-        return leyka_field_wrap($out, 'email');
+        return leyka_field_wrap($out, 'comment');
 
     }
 

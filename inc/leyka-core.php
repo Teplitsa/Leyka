@@ -869,6 +869,7 @@ class Leyka {
             'email_required' => __('Email must be filled to submit the form', 'leyka'),
             'email_invalid' => __('Enter an email in the some@email.com format', 'leyka'),
             'must_not_be_email' => __("You shouldn't enter an email here", 'leyka'),
+            'value_too_long' => __('Entered value is too long', 'leyka'),
 //            'email_regexp' => '',
         ));
 
@@ -1149,6 +1150,18 @@ class Leyka {
 
             $error = new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
             $this->add_payment_form_error($error);
+
+        }
+
+        if(leyka_options()->opt('show_donation_comment_field') && leyka_options()->opt('donation_comment_max_length')) {
+
+            $donor_comment = leyka_pf_get_donor_comment_value();
+            if($donor_comment && mb_strlen($donor_comment) > leyka_options()->opt('donation_comment_max_length')) {
+
+                $error = new WP_Error('donor_comment_too_long', sprintf(__('Entered comment is too long (maximum %d characters allowed)', 'leyka'), leyka_options()->opt('donation_comment_max_length')));
+                $this->add_payment_form_error($error);
+
+            }
 
         }
 

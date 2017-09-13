@@ -486,7 +486,7 @@ function leyka_inline_campaign(array $attributes = array()) {
         <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
         <div class="leyka-pf__overlay"></div>
 
-        <div class="leyka-pf__module">
+        <div class="leyka-pf__module <?php echo leyka_options()->opt('show_donation_comment_field') ? 'leyka-with-comment' : '';?>">
             <div class="leyka-pf__close leyka-js-close-form">x</div>
             <div class="leyka-pf__card inpage-card">
 
@@ -602,7 +602,7 @@ function leyka_inline_campaign(array $attributes = array()) {
 				<?php }?>
             </div>
 
-            <div class="leyka-pf__form">
+            <div class="leyka-pf__form <?php echo leyka_options()->opt('show_donation_comment_field') ? 'leyka-with-comment' : '';?>">
             <?php // Pass the curr. campaign to the template:
                 Leyka_Revo_Template_Controller::get_instance()->current_campaign = $campaign;
 

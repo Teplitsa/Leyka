@@ -69,6 +69,38 @@ jQuery(document).ready(function($){
 
     });
 
+    function leyka_value_length_count(e){
+
+        var $this = $(this),
+            $wrapper = $(this).parents('.leyka-field:first'),
+            length = $this.val().length,
+            max_length = parseInt($wrapper.find('.donation-comment-max-length').text());
+
+        if(length >= max_length) {
+
+            $wrapper.find('.donation-comment-current-length').html(length);
+            if( // Allowed special keys
+                $.inArray(e.keyCode, [46, 8, 9]) != -1 || // Backspace, delete, tab
+                (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
+                (e.keyCode == 88 && e.ctrlKey) || // Ctrl+X
+                (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
+                (e.keyCode == 86 && e.ctrlKey) || // Ctrl+V
+                (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
+            ) {
+                $wrapper.find('.donation-comment-current-length').html(length);
+            } else {
+                e.preventDefault();
+            }
+
+        } else if(length < max_length) {
+            $wrapper.find('.donation-comment-current-length').html(length);
+        } else {
+            e.preventDefault();
+        }
+
+    } //  input.leyka
+    $(':input.leyka-donor-comment').on('keydown.leyka keyup.leyka', leyka_value_length_count);
+
     // Get donation amount currently selected on the given form:
     function leyka_get_donation_amount($form) {
 
@@ -338,6 +370,17 @@ jQuery(document).ready(function($){
 
                         field_is_valid = false;
                         $form.find('.'+$field.attr('name')+'-error').html(leyka.must_not_be_email).show();
+
+                    } else {
+                        $form.find('.'+$field.attr('name')+'-error').html('').hide();
+                    }
+
+                } else if($field.data('max-length')) {
+
+                    if($field.val().length > $field.data('max-length')) {
+
+                        field_is_valid = false;
+                        $form.find('.'+$field.attr('name')+'-error').html(leyka.value_too_long).show();
 
                     } else {
                         $form.find('.'+$field.attr('name')+'-error').html('').hide();

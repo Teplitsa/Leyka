@@ -111,8 +111,11 @@ leyka_pf_submission_errors();?>
 
                     if($leyka_current_pm->is_field_supported('comment') && leyka_options()->opt('show_donation_comment_field')) {?>
                         <div class="rdc-textfield leyka-field comment">
-                            <textarea id="leyka_donor_comment" name="leyka_donor_comment" class="comment rdc-textfield__input"></textarea>
+                            <textarea id="leyka_donor_comment" name="leyka_donor_comment" class="comment leyka-donor-comment rdc-textfield__input" data-max-length="<?php echo leyka_options()->opt('donation_comment_max_length');?>"></textarea>
                             <label class="leyka-screen-reader-text rdc-textfield__label" for="leyka_donor_comment"><?php _e('Your comments', 'leyka');?></label>
+                            <p class="field-comment">
+                                <?php echo leyka_options()->opt('donation_comment_max_length') ? sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt('donation_comment_max_length')) : __('Your comment', 'leyka');?>
+                            </p>
                             <span class="leyka_donor_comment-error field-error rdc-textfield__error" id="leyka_donor_comment-error"></span>
                         </div>
 
