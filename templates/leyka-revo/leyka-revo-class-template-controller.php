@@ -23,7 +23,7 @@ class Leyka_Revo_Template_Controller extends Leyka_Template_Controller {
             'amount_min' => $currencies[$main_currency_id]['bottom'],
             'amount_max' => leyka_options()->opt('revo_template_slider_max_sum'),
             'pm_list' => leyka_get_pm_list(true, $main_currency_id),
-            //            '' => ,
+//            '' => ,
         );
 
     }

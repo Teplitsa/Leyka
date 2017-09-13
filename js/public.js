@@ -74,7 +74,11 @@ jQuery(document).ready(function($){
         var $this = $(this),
             $wrapper = $(this).parents('.leyka-field:first'),
             length = $this.val().length,
-            max_length = parseInt($wrapper.find('.donation-comment-max-length').text());
+            max_length = $this.data('max-length');
+
+        if(typeof max_length == 'undefined' || max_length == 0) {
+            return;
+        }
 
         if(length >= max_length) {
 
@@ -99,7 +103,7 @@ jQuery(document).ready(function($){
         }
 
     } //  input.leyka
-    $(':input.leyka-donor-comment').on('keydown.leyka keyup.leyka', leyka_value_length_count);
+    $(':input.leyka-donor-comment[data-max-length]').on('keydown.leyka keyup.leyka', leyka_value_length_count);
 
     // Get donation amount currently selected on the given form:
     function leyka_get_donation_amount($form) {
