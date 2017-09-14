@@ -5,7 +5,7 @@ Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса,яндекс.деньги, миксплат, paypal
 Requires at least: 3.6.1
 Tested up to: 4.8
-Stable tag: 2.3.2
+Stable tag: 2.3.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -68,7 +68,7 @@ The plugin manual is avaliable at [official website](//leyka.te-st.ru/instructio
 * [basic features](//leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/),
 * [extended features](//leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/).
 
-PHP at least 5.3 is required.
+PHP version required: 5.3+
 
 
 == Frequently Asked Questions ==
@@ -89,6 +89,13 @@ PHP at least 5.3 is required.
 10. Google Analytics events
 
 == Changelog ==
+= 2.3.3 =
+* New: gateways commissions function added.
+* New: optional donor comment field added.
+* Fix: missing emails settings returned.
+* Fix: localization improved.
+* Fix: lots of small fixes.
+
 = 2.3.2 =
 * New: Personal data usage options support added.
 * Fix: Recurring email notifications fixed.
