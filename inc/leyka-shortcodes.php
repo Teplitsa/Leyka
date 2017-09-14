@@ -413,6 +413,7 @@ function leyka_get_terms_text() {
 function leyka_get_campaign_supporters($campaign_id, $max_names = 5) {
 
     $donations = leyka_get_campaign_donations($campaign_id);
+    $donations_total = array();
     $first_donors_names = array();
     foreach($donations as $donation) { /** @var $donation Leyka_Donation */
 
@@ -421,7 +422,10 @@ function leyka_get_campaign_supporters($campaign_id, $max_names = 5) {
             !in_array($donation->donor_name, array(__('Anonymous', 'leyka'), 'Anonymous')) &&
             !in_array($donation->donor_name, $first_donors_names)
         ) {
+
             $first_donors_names[] = mb_ucfirst($donation->donor_name);
+            $donations_total[] = $donation;
+
         }
 
         if(count($first_donors_names) >= (int)$max_names) {
@@ -430,16 +434,17 @@ function leyka_get_campaign_supporters($campaign_id, $max_names = 5) {
 
     }
 
-    return array('supporters' => $first_donors_names, 'donations' => $donations);
+    return array('supporters' => $first_donors_names, 'donations' => $donations_total);
 
 }
 
 add_shortcode('leyka_inline_campaign', 'leyka_inline_campaign');
 function leyka_inline_campaign(array $attributes = array()) {
 
+    /** @todo Make the shortcode work not only with Revo, but with the rest of form templates */
     $attributes = shortcode_atts(array(
         'id' => false,
-        'template' => leyka_options()->opt('donation_form_template'),
+        'template' => 'revo', // leyka_options()->opt('donation_form_template'),
         'show_thumbnail' => leyka_options()->opt('revo_template_show_thumbnail'),
     ), $attributes);
 
@@ -536,8 +541,9 @@ function leyka_inline_campaign(array $attributes = array()) {
                         <strong><?php _e('Supporters:', 'leyka');?></strong>
 
                         <?php if(count($supporters['donations']) <= count($supporters['supporters'])) { // Only names
-                            echo implode(', ', array_slice($supporters['supporters'], 0, -1))
-                                .' '.__('and', 'leyka').' '.end($supporters['supporters']);
+                            echo count($supporters['supporters']) == 1 ?
+                                reset($supporters['supporters']) :
+                                implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka').' '.end($supporters['supporters']);
                         } else { // Names and the number of the rest of donors
 
                             echo implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka');?>

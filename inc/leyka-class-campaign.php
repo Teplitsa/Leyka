@@ -387,7 +387,15 @@ class Leyka_Campaign_Management {
 	}
 
     static function get_campaign_form_shortcode($campaign_id) {
-        return '[leyka_campaign_form id="'.$campaign_id.'"]';
+
+        // Right now, Revo template only works through [leyka_inline_campaign] shortcode,
+        // and all other templates need [leyka_campaign_form] shortcode:
+
+        $campaign = new Leyka_Campaign($campaign_id);
+
+        /** @todo When [leyka_inline_campaign] could display any form template, change this. */
+        return $campaign->template == 'revo' ?
+            '[leyka_inline_campaign id="'.$campaign_id.'"]' : '[leyka_campaign_form id="'.$campaign_id.'"]';
     }
 
 	public function save_data($campaign_id, WP_Post $campaign) {
@@ -602,7 +610,9 @@ class Leyka_Campaign {
             case 'name': return $this->_post_object ? $this->_post_object->post_title : '';
             case 'payment_title': return $this->_campaign_meta['payment_title'];
             case 'template':
-            case 'campaign_template': return $this->_campaign_meta['campaign_template'];
+            case 'campaign_template':
+                return $this->_campaign_meta['campaign_template'] == 'default' ?
+                    leyka_options()->opt('donation_form_template') : $this->_campaign_meta['campaign_template'];
             case 'campaign_target':
             case 'target': return $this->_campaign_meta['campaign_target'];
             case 'description': return $this->_post_object ? $this->_post_object->post_content : '';
