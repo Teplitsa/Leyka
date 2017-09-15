@@ -534,13 +534,13 @@ function leyka_scale_compact($campaign) {
         $campaign = new Leyka_Campaign($campaign);
     }
         
-    $target = (int)$campaign->target;
-    $curr_label = leyka_get_currency_label('rur');
-    $collected = $campaign->get_collected_amount();
-
-    if($target <= 0) {
+    $target = (float)$campaign->target;
+    if($target <= 0.0) {
         return;
     }
+
+    $curr_label = leyka_get_currency_label('rur');
+    $collected = $campaign->get_collected_amount();
 
     $percentage = round(($collected/$target)*100);
 	if($percentage > 100)
@@ -553,8 +553,8 @@ function leyka_scale_compact($campaign) {
         </div>
     </div>
     <div class="leyka-scale-label">
-    <?php $target_f = number_format($target, 0, '.', ' ');
-    $collected_f = number_format($collected, 0, '.', ' ');
+    <?php $target_f = number_format($target, ($target - round($target) > 0.0 ? 2 : 0), '.', ' ');
+    $collected_f = number_format($collected, ($collected - round($collected) > 0.0 ? 2 : 0), '.', ' ');
 
     if($collected == 0) {
         printf(__('Needed %s %s', 'leyka'), '<b>'.$target_f.'</b>', $curr_label);
@@ -572,9 +572,9 @@ function leyka_scale_ultra($campaign) {
         $campaign = new Leyka_Campaign($campaign);
     }
 
-    $target = (int)$campaign->target;
+    $target = (float)$campaign->target;
     $curr_label = leyka_get_currency_label('rur');
-    $collected = (int)$campaign->get_collected_amount();
+    $collected = $campaign->get_collected_amount();
    
     if($target == 0) {
         return;
@@ -591,8 +591,9 @@ function leyka_scale_ultra($campaign) {
         </div>
     </div>
     <div class="leyka-scale-label"><span>
-    <?php $target_f = number_format($target, 0, '.', ' ');
-    $collected_f = number_format($collected, 0, '.', ' ');
+
+    <?php $target_f = number_format($target, ($target - round($target) > 0.0 ? 2 : 0), '.', ' ');
+    $collected_f = number_format($collected, ($collected - round($collected) > 0.0 ? 2 : 0), '.', ' ');
 
     printf(_x('%s of %s %s', 'Label on ultra-compact scale', 'leyka'), '<b>'.$collected_f.'</b>', '<b>'.$target_f.'</b>', $curr_label);?>
     </span></div>
@@ -607,14 +608,15 @@ function leyka_fake_scale_ultra($campaign) {
     }
 
     $curr_label = leyka_get_currency_label('rur');
-    $collected = number_format(intval($campaign->get_collected_amount()), 0, '.', ' ');?>
+    $collected = $campaign->get_collected_amount();
+    $collected_f = number_format($collected, ($collected - round($collected) > 0.0 ? 2 : 0), '.', ' ');?>
 
 <div class="leyka-scale-ultra-fake">
     <div class="leyka-scale-scale">
         <div class="target"> </div>
     </div>
     <div class="leyka-scale-label"><span>
-        <?php printf(_x('Collected: %s', 'Label on ultra-compact fake scale', 'leyka'), "<b>{$collected}</b> {$curr_label}");?>
+        <?php printf(_x('Collected: %s', 'Label on ultra-compact fake scale', 'leyka'), "<b>{$collected_f}</b> {$curr_label}");?>
     </span></div>
 </div>
 <?php

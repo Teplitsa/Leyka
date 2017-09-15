@@ -167,6 +167,7 @@ class Leyka_Options_Allocator {
                         'is_default_collapsed' => false,
                         'options' => array(
                             'donation_submit_text', 'show_donation_comment_field', 'donation_comment_max_length',
+                            'show_donation_comments_in_frontend',
                         )
                     ),),
                 );

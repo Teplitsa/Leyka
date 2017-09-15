@@ -291,12 +291,13 @@ jQuery(document).ready(function($){
 
         if($field.attr('type') == 'checkbox') {
 
-            if( !$field.prop('checked') ) {
+            var $required_checkbox_fields = $form.find('input[type="checkbox"].required:not(:checked)');
+            if( !$field.prop('checked') || $required_checkbox_fields.length ) {
 
                 field_is_valid = false;
                 $form.find('.'+$field.attr('name')+'-error').html(leyka.checkbox_check_required).show();
 
-            } else {
+            } else if( !$required_checkbox_fields.length ) {
                 $form.find('.'+$field.attr('name')+'-error').html('').hide();
             }
 

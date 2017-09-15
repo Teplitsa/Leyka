@@ -484,6 +484,12 @@ self::$_options_meta = array(
         'max' => false,
         'step' => 1,
     ),
+    'show_donation_comments_in_frontend' => array(
+        'type' => 'checkbox',
+        'default' => false,
+        'title' => __('Display donation comments in frontend', 'leyka'),
+        'description' => __('Check to show donors comments in the website frontend (e.g. in donation lists widgets)', 'leyka'),
+    ),
 //    'revo_template_ask_donor_data' => array(
 //        'type' => 'radio',
 //        'default' => 'during-donation',

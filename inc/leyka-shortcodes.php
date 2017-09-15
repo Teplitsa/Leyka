@@ -289,14 +289,13 @@ function leyka_get_donors_list_per_page() {
 
 function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
 
-    $defaults = array(
+    $args = wp_parse_args($args, array(
         'num'          => leyka_get_donors_list_per_page(),
         'show_purpose' => 1,
         'show_name'    => 1,
         'show_date'    => 1,
-    );
-
-    $args = wp_parse_args($args, $defaults);
+        'show_donation_comments' => leyka_options()->opt('show_donation_comments_in_frontend'),
+    ));
 
     if($campaign_id === 0) {
         $campaign_id = get_post()->ID;
@@ -339,17 +338,22 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
 
             $donation = new Leyka_Donation($donation);
 
+            $amount_decimal_digits = (float)$donation->amount - round($donation->amount) > 0.0 ? 2 : 0;
+            $amount_total_decimal_digits = (float)$donation->amount_total - round($donation->amount_total) > 0.0 ? 2 : 0;
+
             if(leyka_options()->opt('widgets_total_amount_usage') == 'display-total') {
 
                 $amount = $donation->amount == $donation->amount_total ?
-                    number_format($donation->amount, 0, '.', ' ') :
-                    number_format($donation->amount, 0, '.', ' ')
-                    .'<span class="amount-total"> / '.number_format($donation->amount_total, 0, '.', ' ').'</span>';
+                    number_format($donation->amount, $amount_decimal_digits, '.', ' ') :
+                    number_format($donation->amount, $amount_decimal_digits, '.', ' ')
+                        .'<span class="amount-total"> / '
+                        .number_format($donation->amount_total, $amount_total_decimal_digits, '.', ' ')
+                        .'</span>';
 
             } else if(leyka_options()->opt('widgets_total_amount_usage') == 'display-total-only') {
-                $amount = number_format($donation->amount_total, 0, '.', ' ');
+                $amount = number_format($donation->amount_total, $amount_total_decimal_digits, '.', ' ');
             } else {
-                $amount = number_format($donation->amount, 0, '.', ' ');
+                $amount = number_format($donation->amount, $amount_decimal_digits, '.', ' ');
             }
 
             $html = "<div class='ldl-item'>";
@@ -360,11 +364,9 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
             }
 
             $meta = array();
-            if($args['show_name'] == 1) {
 
-                $name = $donation->donor_name;
-                $name = (!empty($name)) ? $name : __('Anonymous', 'leyka');
-                $meta[] = '<span>'.$name.'</span>';
+            if($args['show_name'] == 1) {
+                $meta[] = '<span>'.($donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka')).'</span>';
             }
 
             if($args['show_date'] == 1) {
@@ -389,6 +391,10 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
                     "<div class='meta'>".implode(' / ', $meta)."</div>",
                     $donation
                 );
+            }
+
+            if($args['show_donation_comments'] && $donation->donor_comment) {
+                $html .= '<div class="donor-comment">'.apply_filters('leyka_donors_list_comment', $donation->donor_comment).'</div>';
             }
 
             $html .= "</div>";
