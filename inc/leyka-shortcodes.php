@@ -336,71 +336,71 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
     <div id="<?php echo esc_attr('leyka_donors_list-'.uniqid());?>" class="leyka-donors-list">
     <?php foreach($donations as $donation) {
 
-            $donation = new Leyka_Donation($donation);
+        $donation = new Leyka_Donation($donation);
 
-            $amount_decimal_digits = (float)$donation->amount - round($donation->amount) > 0.0 ? 2 : 0;
-            $amount_total_decimal_digits = (float)$donation->amount_total - round($donation->amount_total) > 0.0 ? 2 : 0;
+        $amount_decimal_digits = (float)$donation->amount - (int)$donation->amount > 0.0 ? 2 : 0;
+        $amount_total_decimal_digits = (float)$donation->amount_total - (int)$donation->amount_total > 0.0 ? 2 : 0;
 
-            if(leyka_options()->opt('widgets_total_amount_usage') == 'display-total') {
+        if(leyka_options()->opt('widgets_total_amount_usage') == 'display-total') {
 
-                $amount = $donation->amount == $donation->amount_total ?
-                    number_format($donation->amount, $amount_decimal_digits, '.', ' ') :
-                    number_format($donation->amount, $amount_decimal_digits, '.', ' ')
-                        .'<span class="amount-total"> / '
-                        .number_format($donation->amount_total, $amount_total_decimal_digits, '.', ' ')
-                        .'</span>';
+            $amount = $donation->amount == $donation->amount_total ?
+                number_format($donation->amount, $amount_decimal_digits, '.', ' ') :
+                number_format($donation->amount, $amount_decimal_digits, '.', ' ')
+                    .'<span class="amount-total"> / '
+                    .number_format($donation->amount_total, $amount_total_decimal_digits, '.', ' ')
+                    .'</span>';
 
-            } else if(leyka_options()->opt('widgets_total_amount_usage') == 'display-total-only') {
-                $amount = number_format($donation->amount_total, $amount_total_decimal_digits, '.', ' ');
+        } else if(leyka_options()->opt('widgets_total_amount_usage') == 'display-total-only') {
+            $amount = number_format($donation->amount_total, $amount_total_decimal_digits, '.', ' ');
+        } else {
+            $amount = number_format($donation->amount, $amount_decimal_digits, '.', ' ');
+        }
+
+        $html = "<div class='ldl-item'>";
+        $html .= "<div class='amount'>".apply_filters('leyka_donations_list_amount_content', $amount.' '.$donation->currency_label, $donation)."</div>";
+
+        if($args['show_purpose'] == 1) {
+            $html .= "<div class='purpose'><a href='".get_permalink($donation->campaign_id)."'>".$donation->campaign_payment_title."</a></div>";
+        }
+
+        $meta = array();
+
+        if($args['show_name'] == 1) {
+            $meta[] = '<span>'.($donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka')).'</span>';
+        }
+
+        if($args['show_date'] == 1) {
+
+            if($donation->type == 'correction') {
+
+                $time = date('H:i:s', $donation->date_timestamp) == '00:00:00' ? '' : date(' '.get_option('time_format'), $donation->date_timestamp);
+                $date = date(get_option('date_format').$time, $donation->date_timestamp);
+
             } else {
-                $amount = number_format($donation->amount, $amount_decimal_digits, '.', ' ');
+                $date = $donation->date_funded;
             }
 
-            $html = "<div class='ldl-item'>";
-            $html .= "<div class='amount'>".apply_filters('leyka_donations_list_amount_content', $amount.' '.$donation->currency_label, $donation)."</div>";
-
-            if($args['show_purpose'] == 1) {
-                $html .= "<div class='purpose'><a href='".get_permalink($donation->campaign_id)."'>".$donation->campaign_payment_title."</a></div>";
+            if($date) {
+                $meta[] = '<time>'.$date.'</time>';
             }
+        }
 
-            $meta = array();
+        if($meta) {
+            $html .= apply_filters(
+                'leyka_donations_list_meta_content',
+                "<div class='meta'>".implode(' / ', $meta)."</div>",
+                $donation
+            );
+        }
 
-            if($args['show_name'] == 1) {
-                $meta[] = '<span>'.($donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka')).'</span>';
-            }
+        if($args['show_donation_comments'] && $donation->donor_comment) {
+            $html .= '<div class="donor-comment">'.apply_filters('leyka_donors_list_comment', $donation->donor_comment).'</div>';
+        }
 
-            if($args['show_date'] == 1) {
+        $html .= "</div>";
 
-                if($donation->type == 'correction') {
-
-                    $time = date('H:i:s', $donation->date_timestamp) == '00:00:00' ? '' : date(' '.get_option('time_format'), $donation->date_timestamp);
-                    $date = date(get_option('date_format').$time, $donation->date_timestamp);
-
-                } else {
-                    $date = $donation->date_funded;
-                }
-
-                if($date) {
-                    $meta[] = '<time>'.$date.'</time>';
-                }
-            }
-
-            if($meta) {
-                $html .= apply_filters(
-                    'leyka_donations_list_meta_content',
-                    "<div class='meta'>".implode(' / ', $meta)."</div>",
-                    $donation
-                );
-            }
-
-            if($args['show_donation_comments'] && $donation->donor_comment) {
-                $html .= '<div class="donor-comment">'.apply_filters('leyka_donors_list_comment', $donation->donor_comment).'</div>';
-            }
-
-            $html .= "</div>";
-
-            echo apply_filters('leyka_donors_list_item_html', $html, $campaign_id, $args);
-        }?>
+        echo apply_filters('leyka_donors_list_item_html', $html, $campaign_id, $args);
+    }?>
     </div>
 
     <?php $out = ob_get_clean();
@@ -429,13 +429,12 @@ function leyka_get_campaign_supporters($campaign_id, $max_names = 5) {
             !in_array($donation->donor_name, $first_donors_names)
         ) {
 
-            $first_donors_names[] = mb_ucfirst($donation->donor_name);
+            if(count($first_donors_names) < (int)$max_names) {
+                $first_donors_names[] = mb_ucfirst($donation->donor_name);
+            }
+
             $donations_total[] = $donation;
 
-        }
-
-        if(count($first_donors_names) >= (int)$max_names) {
-            break;
         }
 
     }
@@ -547,6 +546,7 @@ function leyka_inline_campaign(array $attributes = array()) {
                         <strong><?php _e('Supporters:', 'leyka');?></strong>
 
                         <?php if(count($supporters['donations']) <= count($supporters['supporters'])) { // Only names
+
                             echo count($supporters['supporters']) == 1 ?
                                 reset($supporters['supporters']) :
                                 implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka').' '.end($supporters['supporters']);

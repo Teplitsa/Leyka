@@ -1277,7 +1277,10 @@ class Leyka_Donation_Management {
 
         if(isset($_POST['donation-amount-total'])) {
 
-            $_POST['donation-amount-total'] = round((float)str_replace(',', '.', $_POST['donation-amount-total']), 2);
+            $_POST['donation-amount-total'] = round((float)str_replace(
+                array(',', ' '), array('.', ''),
+                $_POST['donation-amount-total']
+            ), 2);
 
             if((float)$donation->amount_total != $_POST['donation-amount-total']) {
 

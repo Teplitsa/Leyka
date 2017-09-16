@@ -17,9 +17,6 @@ jQuery(document).ready(function($){
     // Validate add/edit donation form:
     $('form#post').submit(function(e){
 
-//        if( !$('#payment-type-hidden').length ) // Donation edit page, we're not validating it
-//            return;
-
         var $form = $(this),
             is_valid = true,
             $field = $('#campaign-id');
@@ -29,8 +26,9 @@ jQuery(document).ready(function($){
             is_valid = false;
             $form.find('#campaign_id-error').html(leyka.campaign_required).show();
 
-        } else
+        } else {
             $form.find('#campaign_id-error').html('').hide();
+        }
 
         $field = $('#donor-email');
         if($field.val() && !is_email($field.val())) {
@@ -38,17 +36,22 @@ jQuery(document).ready(function($){
             is_valid = false;
             $form.find('#donor_email-error').html(leyka.email_invalid).show();
 
-        } else
+        } else {
             $form.find('#donor_email-error').html('').hide();
+        }
 
         $field = $('#donation-amount');
-        if( !$field.val() || parseInt($field.val()) == 0 || isNaN($field.val()) ) {
+        var amount_clear = parseFloat($field.val().replace(',', '.'));
+        if( !$field.val() || amount_clear == 0 || isNaN(amount_clear) ) {
+
+            console.log( !$field.val(), parseFloat($field.val().replace(',', '.')), isNaN($field.val()))
 
             is_valid = false;
             $form.find('#donation_amount-error').html(leyka.amount_incorrect).show();
 
-        } else
+        } else {
             $form.find('#donation_amount-error').html('').hide();
+        }
 
         $field = $('#donation-pm');
         if($field.val() == 'custom')
@@ -96,34 +99,39 @@ jQuery(document).ready(function($){
     });
 
     $('input[name*=leyka_pm_available]').change(function(){
+
         var $this = $(this),
             pm = $this.val();
 
         pm = pm.split('-')[1];
-        if($this.attr('checked'))
-//            $('#leyka_'+pm+'_description-wrapper').slideDown(50);
+        if($this.attr('checked')) {
             $('[id*=leyka_'+pm+']').slideDown(50);
-        else
+        } else {
             $('[id*=leyka_'+pm+']').slideUp(50);
-//            $('#leyka_'+pm+'_description-wrapper').slideUp(50);
+        }
+
     }).each(function(){
         $(this).change();
     });
 
     $('#campaign-select-trigger').click(function(e){
+
         e.preventDefault();
 
         $(this).slideUp(100);
         $('#campaign-select-fields').slideDown(100);
         $('#campaign-field').removeAttr('disabled');
+
     });
 
     $('#cancel-campaign-select').click(function(e){
+
         e.preventDefault();
 
         $('#campaign-select-fields').slideUp(100);
         $('#campaign-field').attr('disabled', 'disabled');
         $('#campaign-select-trigger').slideDown(100);
+
     });
 
     $('.recurrent-cancel').click(function(e){

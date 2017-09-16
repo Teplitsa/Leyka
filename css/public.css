@@ -1116,8 +1116,15 @@ div[id*="leyka_donors_list"].wide .ldl-item {
     width: 30%;
     margin-bottom: 0; }
   div[id*="leyka_donors_list"].wide .ldl-item .purpose,
-  div[id*="leyka_donors_list"].wide .ldl-item .meta {
-    margin-left: 35%; }
+  div[id*="leyka_donors_list"].wide .ldl-item .meta,
+  div[id*="leyka_donors_list"].wide .ldl-item .donor-comment {
+    margin-left: 35%;
+  }
+    div[id*="leyka_donors_list"].wide .ldl-item .donor-comment {
+        margin-top: 10px;
+        font-size: 12px;
+        color: #9d9d9d;
+    }
 
 /** Elements **/
 .leyka-tpl-radio #leyka-copy,

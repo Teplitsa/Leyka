@@ -547,12 +547,12 @@
 	.leyka-pf--history-open {
 		&.leyka-pf-bottom { @include module-height(); }
 
-		.inpage-card {
-			@include module-height();
+            .inpage-card {
+                //@include module-height(505px);
 
-          max-height: 505px;
-          height: 97vh;
-		}
+                max-height: 505px;
+                height: 97vh;
+            }
 
 		.bottom-form__history ,
 		.inpage-card__history {
