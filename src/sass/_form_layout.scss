@@ -545,13 +545,10 @@
 	}
 
 	.leyka-pf--history-open {
-		&.leyka-pf-bottom { @include module-height(); }
+		&.leyka-pf-bottom { @include module-height(505px); }
 
             .inpage-card {
-                //@include module-height(505px);
-
-                max-height: 505px;
-                height: 97vh;
+                @include module-height(505px);
             }
 
 		.bottom-form__history ,
@@ -608,6 +605,14 @@
 			}
 		}
 	}
+
+    .leyka-pf--history-open .leyka-with-comment .inpage-card {
+
+        @include module-height(570px);
+
+        //max-height: 505px;
+        //height: 97vh;
+    }
 
 	//in open module
 	.leyka-pf--active.leyka-pf--history-open {
