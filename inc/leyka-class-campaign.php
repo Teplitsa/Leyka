@@ -707,7 +707,6 @@ class Leyka_Campaign {
 
     /** @deprecated Use $campaign->total_funded instead. */
     public function get_collected_amount() {
-
         return $this->total_funded > 0.0 ? $this->total_funded : 0.0;
     }
 

@@ -608,8 +608,7 @@ function leyka_fake_scale_ultra($campaign) {
     }
 
     $curr_label = leyka_get_currency_label('rur');
-    $collected = $campaign->get_collected_amount();
-    $collected_f = number_format($collected, ($collected - round($collected) > 0.0 ? 2 : 0), '.', ' ');?>
+    $collected_f = number_format($campaign->total_funded, ($campaign->total_funded - round($campaign->total_funded) > 0.0 ? 2 : 0), '.', ' ');?>
 
 <div class="leyka-scale-ultra-fake">
     <div class="leyka-scale-scale">
