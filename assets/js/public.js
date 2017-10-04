@@ -425,15 +425,15 @@ jQuery(document).ready(function($){
     }
 
     function validateForm($_form) {
-        
+
         var error_struct = {}, 
-        pName = $_form.find('.donor__textfield--name input').val(),
-        pEmail = $_form.find('.donor__textfield--email input').val(),
-        amount = parseInt($_form.find('.amount__figure input').val()),
-        $comment = $_form.find(':input.leyka-donor-comment'),
-        $agree_terms = $_form.find('.donor__oferta input[name="leyka_agree"]'),
-        $agree_pd = $_form.find('.donor__oferta input[name="leyka_agree_pd"]');
-        
+            pName = $_form.find('.donor__textfield--name input').val(),
+            pEmail = $_form.find('.donor__textfield--email input').val(),
+            amount = parseInt($_form.find('.amount__figure input').val()),
+            $comment = $_form.find(':input.leyka-donor-comment'),
+            $agree_terms = $_form.find('.donor__oferta input[name="leyka_agree"]'),
+            $agree_pd = $_form.find('.donor__oferta input[name="leyka_agree_pd"]');
+
         if(pName.length === 0) {
 
             error_struct['name'] = true;
