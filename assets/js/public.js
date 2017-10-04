@@ -423,7 +423,7 @@ jQuery(document).ready(function($){
         bindSubmitPaymentFormEvent();
 
     }
-    
+
     function validateForm($_form) {
         
         var error_struct = {}, 
@@ -431,7 +431,8 @@ jQuery(document).ready(function($){
         pEmail = $_form.find('.donor__textfield--email input').val(),
         amount = parseInt($_form.find('.amount__figure input').val()),
         $comment = $_form.find(':input.leyka-donor-comment'),
-        $agree = $_form.find('.donor__oferta input');
+        $agree_terms = $_form.find('.donor__oferta input[name="leyka_agree"]'),
+        $agree_pd = $_form.find('.donor__oferta input[name="leyka_agree_pd"]');
         
         if(pName.length === 0) {
 
@@ -454,12 +455,16 @@ jQuery(document).ready(function($){
 
         }
 
-        if($agree.length && !$agree.prop('checked')) {
+        if(
+            ($agree_terms.length && !$agree_terms.prop('checked')) ||
+            ($agree_pd.length && !$agree_pd.prop('checked'))
+        ) {
 
             error_struct['agree'] = true;
             $_form.find('.donor__oferta').addClass('invalid');
 
         }
+
 
         if( !Number.isInteger(amount) || amount < amountMin || amount > amountMax ) {
             error_struct['amount'] = true;
