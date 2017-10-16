@@ -292,7 +292,7 @@ jQuery(document).ready(function($){
         if($field.attr('type') == 'checkbox') {
 
             var $required_checkbox_fields = $form.find('input[type="checkbox"].required:visible:not(:checked)');
-            if( !$field.attr('checked') || $required_checkbox_fields.length ) {
+            if($field.attr('checked') !== 'checked' || $required_checkbox_fields.length) {
 
                 field_is_valid = false;
                 $form.find('.'+$field.attr('name')+'-error').html(leyka.checkbox_check_required).show();
@@ -314,6 +314,7 @@ jQuery(document).ready(function($){
         }
 
         return field_is_valid;
+
     }
 
     function leyka_validate_donation_form($form) {

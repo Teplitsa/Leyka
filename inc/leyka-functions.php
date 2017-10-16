@@ -274,6 +274,19 @@ function leyka_get_terms_of_service_page_url() {
 
 }
 
+function leyka_get_terms_of_pd_usage_page_url() {
+
+    $url = leyka_options()->opt('pd_terms_page') ?
+        get_permalink(leyka_options()->opt('pd_terms_page')) : home_url();
+
+    if( !$url ) { // It can be in case when "last posts" is selected for homepage
+        $url = home_url();
+    }
+
+    return $url;
+
+}
+
 function leyka_get_default_success_page() {
 
     $default_page = get_option('leyka_success_page');
