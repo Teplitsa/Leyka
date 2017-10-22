@@ -382,6 +382,17 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
             'recurring_id' => $init_recurring_donation->recurring_id, // InvoiceId of the original donation in a subscription
         ));
 
+        $new_recurring_donation = new Leyka_Donation($new_recurring_donation_id);
+
+        // If init donation was made before the commission was set, apply a commission to the recurring one:
+        if(
+            $init_recurring_donation->amount == $init_recurring_donation->amount_total &&
+            $new_recurring_donation->amount == $new_recurring_donation->amount_total &&
+            leyka_get_pm_commission($new_recurring_donation->pm_full_id) > 0.0
+        ) {
+            $new_recurring_donation->amount_total = leyka_calculate_donation_total_amount($new_recurring_donation);
+        }
+
         $certificate_path = leyka_options()->opt('yandex-yandex_card_certificate_path') ?
             WP_CONTENT_DIR.'/'.trim(leyka_options()->opt('yandex-yandex_card_certificate_path'), '/') : false;
         $certificate_private_key_path = leyka_options()->opt('yandex-yandex_card_private_key_path') ?
@@ -413,9 +424,8 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
             CURLOPT_SSLKEY => $certificate_private_key_path,
             CURLOPT_SSLKEYPASSWD => leyka_options()->opt('yandex-yandex_card_private_key_password'),
         ));
-        $answer = curl_exec($ch);
 
-        $new_recurring_donation = new Leyka_Donation($new_recurring_donation_id);
+        $answer = curl_exec($ch);
         $res = false;
 
         if($answer) {

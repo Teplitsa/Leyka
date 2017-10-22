@@ -262,18 +262,28 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
                 $donation = new Leyka_Donation($donation_id);
 
-                $init_recurrent_payment = $this->get_init_recurrent_donation($customer_id);
+                $init_recurring_payment = $this->get_init_recurrent_donation($customer_id);
 
                 $donation->add_gateway_response($_POST);
                 $donation->chronopay_customer_id = $customer_id;
-                $donation->payment_title = $init_recurrent_payment->title;
-                $donation->campaign_id = $init_recurrent_payment->campaign_id;
-                $donation->payment_method_id = $init_recurrent_payment->pm_id;
-                $donation->gateway_id = $init_recurrent_payment->gateway_id;
-                $donation->donor_name = $init_recurrent_payment->donor_name;
-                $donation->donor_email = $init_recurrent_payment->donor_email;
-                $donation->amount = $init_recurrent_payment->amount;
-                $donation->currency = $init_recurrent_payment->currency;
+                $donation->payment_title = $init_recurring_payment->title;
+                $donation->campaign_id = $init_recurring_payment->campaign_id;
+                $donation->payment_method_id = $init_recurring_payment->pm_id;
+                $donation->gateway_id = $init_recurring_payment->gateway_id;
+                $donation->donor_name = $init_recurring_payment->donor_name;
+                $donation->donor_email = $init_recurring_payment->donor_email;
+                $donation->amount = $init_recurring_payment->amount;
+                $donation->currency = $init_recurring_payment->currency;
+
+                // If init donation was made before the commission was set, apply a commission to the recurring one:
+                if(
+                    $init_recurring_payment->amount == $init_recurring_payment->amount_total &&
+                    $donation->amount == $donation->amount_total &&
+                    leyka_get_pm_commission($donation->pm_full_id) > 0.0
+                ) {
+                    $donation->amount_total = leyka_calculate_donation_total_amount($donation);
+                }
+                
 
                 if($donation->status != 'funded') {
                     $donation->status = 'funded';
