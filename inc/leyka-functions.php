@@ -1141,6 +1141,14 @@ function leyka_calculate_donation_total_amount($donation = false, $amount = 0.0,
 
 }
 
+function leyka_get_pm_commission($pm_full_id) {
+
+    $commission = leyka_options()->opt('commission');
+
+    return empty($commission[$pm_full_id]) ? 0.0 : $commission[$pm_full_id]/100.0;
+
+}
+
 /** A helper function to insert posts manually. Used only when wp_insert_post() leads to notices & fatal errors. */
 function leyka_manually_insert_page(array $post_data) {
 

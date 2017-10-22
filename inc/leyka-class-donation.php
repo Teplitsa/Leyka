@@ -1847,6 +1847,8 @@ class Leyka_Donation {
 
             case 'sum_total':
             case 'amount_total':
+            case 'total_sum':
+            case 'total_amount':
             case 'donation_amount_total':
                 update_post_meta($this->_id, 'leyka_donation_amount_total', $value);
                 $this->_donation_meta['amount_total'] = $value;
