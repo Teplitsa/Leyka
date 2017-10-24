@@ -211,8 +211,9 @@ class Leyka_Options_Allocator {
                         'title' => __('Terms of personal data usage options', 'leyka'),
                         'is_default_collapsed' => false,
                         'options' => array(
-                            'agree_to_pd_terms_needed', 'agree_to_pd_terms_text_text_part', 'agree_to_pd_terms_text_link_part',
-                            'pd_terms_text', 'pd_terms_agreed_by_default', 'pd_terms_page',
+                            'agree_to_pd_terms_needed', 'agree_to_pd_terms_text_text_part',
+                            'agree_to_pd_terms_text_link_part', 'pd_terms_text', 'pd_terms_agreed_by_default',
+                            'agree_to_pd_terms_link_action', 'pd_terms_page',
                         )
                     ),),
                     array('section' => array(

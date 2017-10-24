@@ -621,6 +621,16 @@ self::$_options_meta = array(
         'description' => __('Select a page with personal data usage terms and policy full text.', 'leyka'),
         'list_entries' => 'leyka_get_pages_list',
     ),
+    'agree_to_pd_terms_link_action' => array(
+        'type' => 'radio',
+        'default' => 'popup',
+        'title' => __('Click on personal data usage Terms link...', 'leyka'),
+        'required' => true,
+        'list_entries' => array(
+            'popup' => __('Opens the Terms text in popup window', 'leyka'),
+            'page' => __('Opens the page of Terms text', 'leyka')
+        ),
+    ),
     'donation_submit_text' => array(
         'type' => 'text',
         'default' => __('Donate', 'leyka'),
