@@ -26,19 +26,6 @@ $body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, 
 	line-height: 42px;
 }
 
-@mixin title-text($mod: default) {
-	font-family: $body;
-	font-weight: 500;
-	font-style: normal;
-	font-size: 18px;
-	line-height: 20px;
-
-	@include for(small-screens) {
-		font-size: 21px;
-		line-height: 23px;
-	}
-}
-
 @mixin step-back($mod: default) {
 	font-family: $body;
 	font-weight: normal;
@@ -53,4 +40,60 @@ $body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, 
 	font-style: normal;
 	font-size: 16px;
 	line-height: 18px;
+}
+
+@mixin input-text($mod: default) {
+	font-family: $body;
+	font-weight: 500;
+	font-style: normal;
+	font-size: 16px;
+	line-height: 18px;
+}
+
+@mixin input-label($mod: default) {
+	font-family: $body;
+	font-weight: 400;
+	font-style: normal;
+	font-size: 14px;
+	line-height: 18px;
+}
+
+@mixin note-text($mod: default) {
+	font-family: $body;
+	font-weight: 300;
+	font-style: normal;
+	font-size: 12px;
+	line-height: 18px;
+}
+
+@mixin thankyou-title($mod: default) {
+    font-family: $body;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 18px;
+    line-height: 30px;
+}
+
+@mixin no-thankyou-link($mod: default) {
+    font-family: $body;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 18px;
+}
+
+@mixin informyou-text($mod: default) {
+    font-family: $body;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 22px;
+}
+
+@mixin error-text($mod: default) {
+    font-family: $body;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 15px;
+    line-height: 21px;
 }

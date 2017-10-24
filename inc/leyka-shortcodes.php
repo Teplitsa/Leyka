@@ -258,6 +258,7 @@ function leyka_get_payment_form($campaign = null, $args = array()) {
     $campaign->increase_views_counter();
 
     return get_leyka_payment_form_template_html($campaign, $args['template']);
+
 }
 
 
@@ -283,20 +284,18 @@ function leyka_donors_list_screen($atts) {
 }
 
 function leyka_get_donors_list_per_page() {
-
     return apply_filters('leyka_donors_list_per_page', 25);
 }
 
 function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
 
-    $defaults = array(
+    $args = wp_parse_args($args, array(
         'num'          => leyka_get_donors_list_per_page(),
         'show_purpose' => 1,
         'show_name'    => 1,
         'show_date'    => 1,
-    );
-
-    $args = wp_parse_args($args, $defaults);
+        'show_donation_comments' => leyka_options()->opt('show_donation_comments_in_frontend'),
+    ));
 
     if($campaign_id === 0) {
         $campaign_id = get_post()->ID;
@@ -335,66 +334,467 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
     ob_start();?>
 
     <div id="<?php echo esc_attr('leyka_donors_list-'.uniqid());?>" class="leyka-donors-list">
-        <?php
-        foreach($donations as $donation) {
+    <?php foreach($donations as $donation) {
 
-            $donation = new Leyka_Donation($donation);
+        $donation = new Leyka_Donation($donation);
 
-            $amount = number_format($donation->sum, 0, '.', ' ');
+        $amount_decimal_digits = (float)$donation->amount - (int)$donation->amount > 0.0 ? 2 : 0;
+        $amount_total_decimal_digits = (float)$donation->amount_total - (int)$donation->amount_total > 0.0 ? 2 : 0;
 
-            $html = "<div class='ldl-item'>";
-            $html .= "<div class='amount'>".apply_filters('leyka_donations_list_amount_content', $amount.' '.$donation->currency_label, $donation)."</div>";
+        if(leyka_options()->opt('widgets_total_amount_usage') == 'display-total') {
 
-            if($args['show_purpose'] == 1) {
-                $html .= "<div class='purpose'><a href='".get_permalink($donation->campaign_id)."'>".$donation->campaign_payment_title."</a></div>";
+            $amount = $donation->amount == $donation->amount_total ?
+                number_format($donation->amount, $amount_decimal_digits, '.', ' ') :
+                number_format($donation->amount, $amount_decimal_digits, '.', ' ')
+                    .'<span class="amount-total"> / '
+                    .number_format($donation->amount_total, $amount_total_decimal_digits, '.', ' ')
+                    .'</span>';
+
+        } else if(leyka_options()->opt('widgets_total_amount_usage') == 'display-total-only') {
+            $amount = number_format($donation->amount_total, $amount_total_decimal_digits, '.', ' ');
+        } else {
+            $amount = number_format($donation->amount, $amount_decimal_digits, '.', ' ');
+        }
+
+        $html = "<div class='ldl-item'>";
+        $html .= "<div class='amount'>".apply_filters('leyka_donations_list_amount_content', $amount.' '.$donation->currency_label, $donation)."</div>";
+
+        if($args['show_purpose'] == 1) {
+            $html .= "<div class='purpose'><a href='".get_permalink($donation->campaign_id)."'>".$donation->campaign_payment_title."</a></div>";
+        }
+
+        $meta = array();
+
+        if($args['show_name'] == 1) {
+            $meta[] = '<span>'.($donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka')).'</span>';
+        }
+
+        if($args['show_date'] == 1) {
+
+            if($donation->type == 'correction') {
+
+                $time = date('H:i:s', $donation->date_timestamp) == '00:00:00' ? '' : date(' '.get_option('time_format'), $donation->date_timestamp);
+                $date = date(get_option('date_format').$time, $donation->date_timestamp);
+
+            } else {
+                $date = $donation->date_funded;
             }
 
-            $meta = array();
-            if($args['show_name'] == 1) {
-
-                $name = $donation->donor_name;
-                $name = (!empty($name)) ? $name : __('Anonymous', 'leyka');
-                $meta[] = '<span>'.$name.'</span>';
+            if($date) {
+                $meta[] = '<time>'.$date.'</time>';
             }
+        }
 
-            if($args['show_date'] == 1) {
+        if($meta) {
+            $html .= apply_filters(
+                'leyka_donations_list_meta_content',
+                "<div class='meta'>".implode(' / ', $meta)."</div>",
+                $donation
+            );
+        }
 
-                if($donation->type == 'correction') {
+        if($args['show_donation_comments'] && $donation->donor_comment) {
+            $html .= '<div class="donor-comment">'.apply_filters('leyka_donors_list_comment', $donation->donor_comment).'</div>';
+        }
 
-                    $time = date('H:i:s', $donation->date_timestamp) == '00:00:00' ? '' : date(' '.get_option('time_format'), $donation->date_timestamp);
-                    $date = date(get_option('date_format').$time, $donation->date_timestamp);
+        $html .= "</div>";
 
-                } else {
-                    $date = $donation->date_funded;
-                }
-
-                if($date) {
-                    $meta[] = '<time>'.$date.'</time>';
-                }
-            }
-
-            if($meta) {
-                $html .= apply_filters(
-                    'leyka_donations_list_meta_content',
-                    "<div class='meta'>".implode(' / ', $meta)."</div>",
-                    $donation
-                );
-            }
-
-            $html .= "</div>";
-
-            echo apply_filters('leyka_donors_list_item_html', $html, $campaign_id, $args);
-        }?>
+        echo apply_filters('leyka_donors_list_item_html', $html, $campaign_id, $args);
+    }?>
     </div>
-    <?php
-    $out = ob_get_clean();
+
+    <?php $out = ob_get_clean();
     return $out;
+
 }
 
 /**
- * Terms of service shortcode
+ * Terms of Service shortcode
  **/
 add_shortcode('leyka_service_terms_text', 'leyka_get_terms_text');
 function leyka_get_terms_text() {
     return apply_filters('leyka_terms_of_service_text', leyka_options()->opt('terms_of_service_text'));
 }
+
+function leyka_get_campaign_supporters($campaign_id, $max_names = 5) {
+
+    $donations = leyka_get_campaign_donations($campaign_id);
+    $donations_total = array();
+    $first_donors_names = array();
+    foreach($donations as $donation) { /** @var $donation Leyka_Donation */
+
+        if(
+            $donation->donor_name &&
+            !in_array($donation->donor_name, array(__('Anonymous', 'leyka'), 'Anonymous')) &&
+            !in_array($donation->donor_name, $first_donors_names)
+        ) {
+
+            if(count($first_donors_names) < (int)$max_names) {
+                $first_donors_names[] = mb_ucfirst($donation->donor_name);
+            }
+
+            $donations_total[] = $donation;
+
+        }
+
+    }
+
+    return array('supporters' => $first_donors_names, 'donations' => $donations_total);
+
+}
+
+add_shortcode('leyka_inline_campaign', 'leyka_inline_campaign');
+function leyka_inline_campaign(array $attributes = array()) {
+
+    /** @todo Make the shortcode work not only with Revo, but with the rest of form templates */
+    $attributes = shortcode_atts(array(
+        'id' => false,
+        'template' => 'revo', // leyka_options()->opt('donation_form_template'),
+        'show_thumbnail' => leyka_options()->opt('revo_template_show_thumbnail'),
+    ), $attributes);
+
+    $campaign_id = $attributes['id'] ? (int)$attributes['id'] : get_post()->ID;
+    $campaign = leyka_get_validated_campaign($campaign_id);
+    if( !$campaign ) {
+        return '';
+    }
+
+    $template_id = $attributes['template'];
+    $template_subdir = LEYKA_PLUGIN_DIR.'templates/leyka-'.$template_id;
+    $template_file = LEYKA_PLUGIN_DIR.'templates/leyka-template-'.$template_id.'.php';
+
+    if($template_id && file_exists($template_subdir) && file_exists($template_file)) {
+        foreach(glob($template_subdir.'/leyka-'.$template_id.'-*.php') as $file) {
+            if(stristr($file, 'leyka-'.$template_id.'-init.php') === false) {
+                require_once($file);
+            }
+        }
+    } else {
+        return false;
+    }
+
+    $attributes['show_thumbnail'] = !!$attributes['show_thumbnail'];
+    $thumb_url = $attributes['show_thumbnail'] ? get_the_post_thumbnail_url($campaign_id, 'post-thumbnail') : false;
+
+    /** @todo For the forms caching task */
+//    global $test; // USE A COLLECTION/FACTORY OBJECT INSTEAD OF GLOBAL!
+//    $test = array();
+//
+//    if( empty($test[$campaign_id.'-'.$template_id]) ) {
+//
+//        ob_start();
+//        require($template_file);
+//        $out = ob_get_clean();
+//
+//        $test[$campaign_id.'-'.$template_id] = $out;
+//
+//    }
+
+    ob_start();?>
+
+    <div id="<?php echo leyka_pf_get_form_id($campaign_id);?>" class="leyka-pf <?php echo leyka_pf_get_form_auto_open_class($campaign_id);?>" data-form-id="<?php echo leyka_pf_get_form_id($campaign->id).'-revo-form';?>">
+        <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
+        <div class="leyka-pf__overlay"></div>
+
+        <div class="leyka-pf__module <?php echo leyka_options()->opt('show_donation_comment_field') ? 'leyka-with-comment' : '';?>">
+            <div class="leyka-pf__close leyka-js-close-form">x</div>
+            <div class="leyka-pf__card inpage-card">
+
+            <?php if($thumb_url) {?>
+                <div class="inpage-card__thumbframe"><div class="inpage-card__thumb" style="background-image: url(<?php echo $thumb_url;?>);"></div></div>
+            <?php }?>
+
+                <div class="inpage-card__content">
+                    <div class="inpage-card_title"><?php echo get_the_title($campaign_id);?></div>
+
+					<div class="inpage-card_scale">
+                    <?php $collected = leyka_get_campaign_collections($campaign_id);
+						$target = leyka_get_campaign_target($campaign_id);
+
+						if($target) { // Campaign target set
+
+							$ready = isset($target['amount']) ?
+                                round(100.0*$collected['amount']/$target['amount'], 1) : 0;
+							$ready = $ready >= 100.0 ? 100.0 : $ready;?>
+
+                        <div class="scale">
+                            <div class="progress <?php echo $ready >= 100.0 ? 'fin' : '';?>" style="width:<?php echo $ready;?>%;"></div>
+                        </div>
+
+                        <div class="target">
+                            <?php echo leyka_format_amount($collected['amount']);?>
+                            <span class="curr-mark">
+                                <?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?>
+                            </span>
+                        </div>
+
+                        <div class="info"><?php _e('collected of ', 'leyka');?>
+                            <?php echo leyka_format_amount($target['amount']);?>
+                            <span class="curr-mark">
+                                <?php echo leyka_options()->opt("currency_{$target['currency']}_label");?>
+                            </span>
+                        </div>
+					<?php } else {  // Campaign doesn't have a target sum  - display empty scale ?>
+						<div class="scale"></div>
+                    <?php }?>
+					</div>
+
+					<?php $supporters = leyka_get_campaign_supporters($campaign_id, 5); ?>
+					<div class="inpage-card__note supporters">
+					<?php if(count($supporters['supporters'])) {?>
+
+                        <strong><?php _e('Supporters:', 'leyka');?></strong>
+
+                        <?php if(count($supporters['donations']) <= count($supporters['supporters'])) { // Only names
+
+                            echo count($supporters['supporters']) == 1 ?
+                                reset($supporters['supporters']) :
+                                implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka').' '.end($supporters['supporters']);
+                        } else { // Names and the number of the rest of donors
+
+                            echo implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka');?>
+
+                            <a href="#" class="leyka-js-history-more">
+                                <?php echo sprintf(__('%d more', 'leyka'), count($supporters['donations']) - count($supporters['supporters']));?>
+                            </a>
+
+                        <?php }
+
+					} else if( !$thumb_url ) {?>
+                        <div class="no-supporters">
+    					    <svg class="svg-icon pic-first-step"><use xlink:href="#pic-first-step" /></svg>
+                            <div class="lets-do-first-step-text"><?php _e("Every campaign is a journey. Be the one to make the first step.", 'leyka');?></div>
+                        </div>
+                        <?php
+					}?>
+                    </div>
+
+                    <div class="inpage-card__action">
+					<?php if($campaign->is_finished) { ?>
+						<div class="message-finished"><?php echo __('The fundraising campaign has been finished. Thank you for your support!', 'leyka');?></div>
+					<?php } else { ?>
+                        <button type="button" class="leyka-js-open-form">
+                            <?php echo leyka_options()->opt('donation_submit_text');?>
+                        </button>
+					<?php } ?>
+                    </div>
+
+                </div>
+
+				<?php if(count($supporters['donations']) > count($supporters['supporters'])) {?>
+
+                <div class="inpage-card__history history">
+                    <div class="history__close leyka-js-history-close">x</div>
+                    <div class="history__title"><?php _e('We are grateful to', 'leyka');?></div>
+                    <div class="history__list">
+                        <div class="history__list-flow">
+                        <?php foreach(leyka_get_campaign_donations($campaign_id) as $donation) {
+                            /** @var $donation Leyka_Donation */?>
+
+                            <div class="history__row">
+                                <div class="history__cell h-amount">
+                                    <?php if(leyka_options()->opt('widgets_total_amount_usage') == 'display-total') {
+                                         echo $donation->amount == $donation->amount_total ?
+                                             leyka_format_amount($donation->amount) :
+                                             leyka_format_amount($donation->amount).'<span class="amount-total"> / '.leyka_format_amount($donation->amount_total).'</span>';
+
+                                    } else if(leyka_options()->opt('widgets_total_amount_usage') == 'display-total-only') {
+                                        echo leyka_format_amount($donation->amount_total);
+                                    } else {
+                                        echo leyka_format_amount($donation->amount);
+                                    }?>
+                                    <span class="curr-mark">
+                                        <?php echo leyka_options()->opt("currency_{$target['currency']}_label");?>
+                                    </span>
+                                </div>
+                                <div class="history__cell h-name"><?php echo $donation->donor_name;?></div>
+                                <div class="history__cell h-date"><?php echo $donation->date_label;?></div>
+                            </div>
+
+                        <?php }?>
+                        </div>
+                    </div>
+                    <?php /** @todo Add normal donations history page template & return this link */
+//                echo '<div class="history__action">
+//                    <a href="'.leyka_get_donations_archive_url($campaign_id).'">'.__('Show all donors', 'leyka').'</a>
+//                </div>';?>
+                </div>
+
+				<?php }?>
+            </div>
+
+            <div class="leyka-pf__form <?php echo leyka_options()->opt('show_donation_comment_field') ? 'leyka-with-comment' : '';?>">
+            <?php // Pass the curr. campaign to the template:
+                Leyka_Revo_Template_Controller::get_instance()->current_campaign = $campaign;
+
+                require($template_file); /** @todo For the forms caching task comment this require out */
+            ?>
+            </div>
+
+            <?php leyka_pf_submission_errors();?>
+
+            <div class="leyka-pf__redirect">
+                <div class="waiting">
+                    <div class="waiting__card">
+                        <div class="loading">
+                            <div class="spinner">
+                                <div class="bounce1"></div>
+                                <div class="bounce2"></div>
+                                <div class="bounce3"></div>
+                            </div>
+                        </div>
+                        <div class="waiting__card-text"><?php echo apply_filters('leyka_short_gateway_redirect_message', __('Awaiting for the safe payment page redirection...', 'leyka'));?></div>
+                    </div>
+                </div>
+            </div>
+
+            <?php if(leyka_options()->opt('agree_to_terms_needed')) {?>
+            <div class="leyka-pf__oferta oferta">
+                <div class="oferta__frame">
+                    <div class="oferta__flow">
+                        <?php echo apply_filters('leyka_terms_of_service_text', do_shortcode(leyka_options()->opt('terms_of_service_text')));?>
+                    </div>
+                </div>
+                <div class="oferta__action">
+                    <a href="#" class="leyka-js-oferta-close">
+                        <?php echo leyka_options()->opt('leyka_agree_to_terms_text_text_part').' '.leyka_options()->opt('leyka_agree_to_terms_text_link_part');?>
+                    </a>
+                </div>
+            </div>
+            <?php }?>
+
+            <?php if(leyka_options()->opt('agree_to_pd_terms_needed')) {?>
+            <div class="leyka-pf__pd pd">
+                <div class="pd__frame">
+                    <div class="pd__flow">
+                        <?php echo apply_filters('leyka_terms_of_pd_usage_text', do_shortcode(leyka_options()->opt('pd_terms_text')));?>
+                    </div>
+                </div>
+                <div class="pd__action">
+                    <a href="#" class="leyka-js-pd-close">
+                        <?php echo leyka_options()->opt('agree_to_pd_terms_text_text_part').' '.leyka_options()->opt('agree_to_pd_terms_text_link_part');?>
+                    </a>
+                </div>
+            </div>
+            <?php }?>
+
+        </div><!-- columnt -->
+    </div>
+
+    <?php $out = ob_get_contents();
+    ob_end_clean();
+
+    return $out;
+
+}
+
+add_shortcode('leyka_inline_campaign_small', 'leyka_inline_campaign_small');
+function leyka_inline_campaign_small($campaign_id) {
+
+
+    $campaign = leyka_get_validated_campaign($campaign_id);
+    if( !$campaign || $campaign->is_finished) {
+        return '';
+    }
+
+
+    $currency_data = leyka_get_currencies_data(leyka_options()->opt('main_currency'));
+
+    ob_start();?>
+
+    <div data-target="<?php echo leyka_pf_get_form_id($campaign_id);?>" id="leyka-pf-bottom-<?php echo $campaign_id;?>" class="leyka-pf-bottom bottom-form">
+        <div class="bottom-form__label"><?php _e('Make a donation', 'leyka');?></div>
+        <div class="bottom-form__fields">
+            <div class="bottom-form__field">
+                <input type="text" value="<?php echo $currency_data['amount_settings']['flexible'];?>" name="leyka_temp_amount">
+                <span class="curr-mark"><?php echo $currency_data['label'];?></span>
+            </div>
+            <div class="bottom-form__button">
+                <button type="button" class="leyka-js-open-form-bottom"><?php echo leyka_options()->opt('donation_submit_text');?></button>
+            </div>
+        </div>
+
+		<?php
+			$supporters = leyka_get_campaign_supporters($campaign_id, 5);
+			if(count($supporters['supporters'])) { // There is at least one donor ?>
+
+			<div class="bottom-form__note supporters">
+			<?php if(count($supporters['supporters'])) { // There is at least one donor ?>
+                <strong><?php _e('Supporters:', 'leyka');?></strong>
+            <?php }
+
+            if(count($supporters['donations']) <= count($supporters['supporters'])) { // Only names in the list
+                echo count($supporters['supporters']) == 1 ?
+                    $supporters['supporters'][0] :
+                    implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka').' '.
+                    end($supporters['supporters']);
+            } else { // Names list and the number of the rest of donors
+                echo implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka');?>
+
+                <a href="#" class="leyka-js-history-more">
+                    <?php echo sprintf(__('%d more', 'leyka'), count($supporters['donations']) - count($supporters['supporters']));?>
+                </a>
+
+        <?php }?>
+			</div>
+		<?php }?>
+
+		<?php if(count($supporters['donations']) > count($supporters['supporters'])) { ?>
+        <div class="bottom-form__history history">
+            <div class="history__close leyka-js-history-close">x</div>
+            <div class="history__title"><?php _e('We are grateful to', 'leyka');?></div>
+            <div class="history__list">
+                <div class="history__list-flow">
+
+                <?php foreach(leyka_get_campaign_donations($campaign_id) as $donation) {
+                    /** @var $donation Leyka_Donation */?>
+
+                    <div class="history__row">
+                        <div class="history__cell h-amount">
+                            <?php if(leyka_options()->opt('widgets_total_amount_usage') == 'display-total') {
+                                echo $donation->amount == $donation->amount_total ?
+                                    leyka_format_amount($donation->amount) :
+                                    leyka_format_amount($donation->amount).'<span class="amount-total"> / '.leyka_format_amount($donation->amount_total).'</span>';
+
+                            } else if(leyka_options()->opt('widgets_total_amount_usage') == 'display-total-only') {
+                                echo leyka_format_amount($donation->amount_total);
+                            } else {
+                                echo leyka_format_amount($donation->amount);
+                            }?>
+                            <span class="curr-mark"><?php echo $currency_data['label'];?></span>
+                        </div>
+                        <div class="history__cell h-name"><?php echo $donation->donor_name;?></div>
+                        <div class="history__cell h-date"><?php echo $donation->date_label;?></div>
+                    </div>
+
+                <?php }?>
+
+                </div>
+            </div>
+            <?php /** @todo Add normal donations history page template & return this link */
+//            echo '<div class="history__action">
+//                <a href="'.leyka_get_donations_archive_url($campaign_id).'">'.__('Show all donors', 'leyka').'</a>
+//            </div>';?>
+        </div>
+		<?php } ?>
+    </div>
+    <?php
+
+    $out = ob_get_contents();
+    ob_end_clean();
+
+    return $out;
+
+}
+
+//add_action('wp_footer', function(){
+//
+//    global $test;
+//    if(empty($test)) {
+//        return;
+//    }
+//    foreach($test as $form_id => $form_html) {
+//        echo $form_html;
+//    }
+//
+//}, 100);

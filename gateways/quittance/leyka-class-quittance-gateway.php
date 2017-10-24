@@ -35,7 +35,6 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
     }
 
     protected function _initialize_pm_list() {
-
         if(empty($this->_payment_methods['bank_order'])) {
             $this->_payment_methods['bank_order'] = Leyka_Bank_Order::get_instance();
         }
@@ -154,6 +153,9 @@ class Leyka_Bank_Order extends Leyka_Payment_Method {
         $this->_supported_currencies = array('rur');
 
         $this->_default_currency = 'rur';
+
+        $this->_processing_type = 'redirect'; // We should always redirect donors, even on ajax-based templates
+
     }
 
     protected function _set_options_defaults() {

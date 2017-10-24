@@ -5,17 +5,18 @@ if(defined('POLYLANG_VERSION')) {
 
     function leyka_pll_do_localization($slug, PLL_Language $cur_lang){
 
-        load_textdomain('leyka', apply_filters('leyka_l10n_mo_file', LEYKA_PLUGIN_DIR."lang/leyka-{$cur_lang->locale}.mo"));
+        load_textdomain('leyka', apply_filters('leyka_l10n_mo_file', WP_CONTENT_DIR."/languages/plugins/leyka-{$cur_lang->locale}.mo"));
 
         // Localize options values:
         function leyka_localize_option_value($value, $option_name) {
 
-            if($option_name == 'success_page' || $option_name == 'failure_page') {
+            if(in_array($option_name, array('success_page', 'failure_page', 'pd_terms_page'))) {
 
                 // Get ID of a localized page instead of originally set:
                 $localized_page_id = empty($_POST['cur_lang']) ? pll_get_post($value) : pll_get_post($value, $_POST['cur_lang']);
 
                 return $localized_page_id ? $localized_page_id : $value;
+
             }
 
             $type = leyka_options()->get_type_of($option_name);
@@ -77,8 +78,8 @@ if(defined('POLYLANG_VERSION')) {
         function leyka_localize_gateway_redirect_page() {
 
             load_textdomain('leyka', apply_filters(
-                    'leyka_l10n_mo_file',
-                    LEYKA_PLUGIN_DIR."lang/leyka-{$_POST['cur_locale']}.mo")
+                'leyka_l10n_mo_file',
+                LEYKA_PLUGIN_DIR."lang/leyka-{$_POST['cur_locale']}.mo")
             );
 
             function leyka_get_current_locale($locale){
@@ -183,16 +184,6 @@ if(defined('POLYLANG_VERSION')) {
     add_action('init', 'leyka_pll_languages_not_set');
 
 } else {
-
-    if(leyka_options()->opt('custom_l10n_path')) {
-
-//        $locale = apply_filters('plugin_locale', get_locale(), 'leyka');
-
-        load_plugin_textdomain('leyka', false, WP_CONTENT_DIR.'/'.trim(leyka_options()->opt('custom_l10n_path'), '/'));
-
-//        load_textdomain('leyka', apply_filters('leyka_l10n_mo_file', WP_CONTENT_DIR.'/'.trim(leyka_options()->opt('custom_l10n_path'), '/')."/leyka-$locale.mo"));
-
-    }
 
     function leyka_init_actions(){
         do_action('leyka_init_actions');

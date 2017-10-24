@@ -90,7 +90,7 @@ function leyka_get_validated_donation($donation) {
 
 /**
  * @param $campaign mixed
- * @return Leyka_Campaign A campaign object, if parameter is valid in one way or another; false otherwise.
+ * @return mixed A Leyka_Campaign instance if parameter is valid in one way or another; false otherwise.
  */
 function leyka_get_validated_campaign($campaign) {
 
@@ -103,6 +103,7 @@ function leyka_get_validated_campaign($campaign) {
     }
 
     return $campaign ? $campaign : false;
+
 }
 
 /** Get WP pages list as an array. Used mainly to form a dropdowns. */
@@ -125,16 +126,26 @@ function leyka_get_pages_list() {
 }
 
 /** A callback for the default gateway select field. */
-function leyka_get_gateways_pm_list() {
+function leyka_get_gateways_pm_list($gateway_id = false) {
 
     $options = array();
     foreach(leyka_get_pm_list(null, false, false) as $pm) {
+
+        if( !empty($gateway_id) && $pm->gateway_id != $gateway_id ) {
+            continue;
+        }
+
         $gateway_title = leyka_get_gateway_by_id($pm->gateway_id)->title;
         $options[$pm->full_id] = $pm->label_backend
             .($gateway_title == $pm->label_backend ? '' : ' ('.$gateway_title.')');
+
     }
 
     return $options;
+}
+
+function leyka_get_pd_usage_info_links() {
+    return __('<a href="//te-st.ru/reports/personal-data-perm/" target="_blank">the Teplitsa article</a>.', 'leyka');
 }
 
 function leyka_get_default_email_from() {
@@ -146,6 +157,121 @@ function leyka_get_default_email_from() {
 /** DM is for "donation manager" */
 function leyka_get_default_dm_list() {
     return get_bloginfo('admin_email').',';
+}
+
+function leyka_get_default_pd_terms_page() {
+
+    $default_page = get_option('leyka_pd_terms_page');
+    if($default_page) {
+        return $default_page;
+    }
+
+    $page = get_posts(apply_filters('leyka_default_pd_terms_page_query', array(
+        'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'private', 'future', 'inherit', 'trash'),
+        'post_type' => 'page',
+        'post_name__in' => array('personal-data-usage-terms'),
+        'posts_per_page' => 1,
+    )));
+    $page = reset($page);
+
+    if($page) {
+
+        if($page->post_status != 'publish') {
+            wp_update_post(array('ID' => $page->ID, 'post_status' => 'publish',));
+        }
+
+        $page = $page->ID;
+
+    } else {
+
+        // Can't use wp_insert_post due to some strange get_permastruct() notice, so insert the post manually:
+        $page = leyka_manually_insert_page(array(
+            'post_title' => leyka_tmp__('Terms of personal data usage'),
+            'post_content' => leyka_tmp__('Terms of personal data usage full text. Use <br> for line-breaks.'),
+            'post_name' => 'personal-data-usage-terms',
+        ));
+        if((int)$page > 0) {
+            do_action('leyka_default_pd_terms_page_created', $page);
+        }
+
+    }
+
+    if($page) {
+        update_option('leyka_pd_terms_page', $page);
+    }
+
+    return $page ? $page : 0;
+
+}
+
+function leyka_get_pd_terms_page_url() {
+
+    $url = leyka_options()->opt('pd_terms_page') ? get_permalink(leyka_options()->opt('pd_terms_page')) : home_url();
+
+    if( !$url ) { // It can be in case when "last posts" is selected for homepage
+        $url = home_url();
+    }
+
+    return $url;
+
+}
+
+function leyka_get_default_service_terms_page() {
+
+    $default_page = get_option('leyka_terms_of_service_page');
+    if($default_page) {
+        return $default_page;
+    }
+
+    $page = get_posts(apply_filters('leyka_default_service_terms_page_query', array(
+        'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'private', 'future', 'inherit', 'trash'),
+        'post_type' => 'page',
+        'post_name__in' => array('donation-service-terms'),
+        'posts_per_page' => 1,
+    )));
+    $page = reset($page);
+
+    if($page) {
+
+        if($page->post_status != 'publish') {
+            wp_update_post(array('ID' => $page->ID, 'post_status' => 'publish',));
+        }
+
+        $page = $page->ID;
+
+    } else {
+
+        // Can't use wp_insert_post due to some strange get_permastruct() notice, so insert the post manually:
+        $page = leyka_manually_insert_page(array(
+            'post_title' => leyka_tmp__('Terms of donation service'),
+            'post_content' => leyka_tmp__('Terms of donation service text. Use <br /> for line-breaks, please.'),
+            'post_name' => 'donation-service-terms',
+        ));
+        if((int)$page > 0) {
+            do_action('leyka_default_terms_of_service_page_created', $page);
+        }
+
+    }
+
+    if($page) {
+        update_option('leyka_terms_of_service_page', $page);
+    }
+
+    return $page ? $page : 0;
+
+}
+
+function leyka_get_terms_of_service_page_url() {
+
+    $url = leyka_options()->opt('terms_of_service_page') ?
+        get_permalink(leyka_options()->opt('terms_of_service_page')) : home_url();
+
+    if( !$url ) { // It can be in case when "last posts" is selected for homepage
+        $url = home_url();
+    }
+
+    return $url;
+
 }
 
 function leyka_get_default_success_page() {
@@ -173,15 +299,16 @@ function leyka_get_default_success_page() {
 
     } else {
 
-        $page = wp_insert_post(array(
-            'post_type' => 'page',
-            'post_status' => 'publish',
+        // Can't use wp_insert_post due to some strange get_permastruct() notice, so insert the post manually:
+        $page = leyka_manually_insert_page(array(
+            'post_title' => leyka_tmp__('Thank you!'),
+            'post_content' => leyka_tmp__('Your donation completed. We are grateful for your help.'),
             'post_name' => 'thank-you-for-your-donation',
-            'post_title' => __('Your donation completed!', 'leyka'),
-            'post_content' => __('We heartly thank you for your help!', 'leyka'),
         ));
+        if((int)$page > 0) {
+            do_action('leyka_default_success_page_created', $page);
+        }
 
-        do_action('leyka_default_success_page_created', $page);
     }
 
     if($page) {
@@ -189,6 +316,7 @@ function leyka_get_default_success_page() {
     }
 
     return $page ? $page : 0;
+
 }
 
 function leyka_get_success_page_url() {
@@ -200,6 +328,7 @@ function leyka_get_success_page_url() {
     }
     
     return $url;
+
 }
 
 function leyka_get_default_failure_page() {
@@ -227,15 +356,16 @@ function leyka_get_default_failure_page() {
 
     } else {
 
-        $page = wp_insert_post(array(
-            'post_type' => 'page',
-            'post_status' => 'publish',
+        // Can't use wp_insert_post due to some strange get_permastruct() notice, so insert the post manually:
+        $page = leyka_manually_insert_page(array(
+            'post_title' => leyka_tmp__('Payment failure'),
+            'post_content' => leyka_tmp__('We are deeply sorry, but for some technical reason we failed to receive your donation. Your money are intact. Please try again later!'),
             'post_name' => 'sorry-donation-failure',
-            'post_title' => __('Your donation failed', 'leyka'),
-            'post_content' => __('We are deeply sorry, but for some technical reason we failed to receive your donation. Your money are intact. Please try again later!', 'leyka'),
         ));
+        if((int)$page > 0) {
+            do_action('leyka_default_failure_page_created', $page);
+        }
 
-        do_action('leyka_default_failure_page_created', $page);
     }
 
     if($page) {
@@ -243,6 +373,7 @@ function leyka_get_default_failure_page() {
     }
 
     return $page ? $page : 0;
+
 }
 
 function leyka_get_failure_page_url() {
@@ -254,6 +385,7 @@ function leyka_get_failure_page_url() {
     }
 
     return $url;
+
 }
 
 /** Get a list of donation form templates as an array. */
@@ -273,9 +405,9 @@ function leyka_get_form_templates_list() {
     return $list;
 }
 
-function leyka_get_active_currencies() {
+function leyka_get_currencies_data($currency_id = false) {
 
-    return array(
+    $currencies = array(
         'rur' => array(
             'label' => leyka_options()->opt('currency_rur_label'),
             'top' => leyka_options()->opt('currency_rur_max_sum'),
@@ -304,18 +436,26 @@ function leyka_get_active_currencies() {
             ),
         ),
     );
+
+    return $currency_id && !empty($currencies[$currency_id]) ? $currencies[$currency_id] : $currencies;
+
+}
+
+/** @deprecated Use leyka_get_currencies_data($currency_id) instead. */
+function leyka_get_active_currencies($currency_id = false) {
+    return leyka_get_currencies_data($currency_id);
 }
 
 function leyka_get_currency_data($currency_code) {
 
-    $currecies = leyka_get_active_currencies();
+    $currecies = leyka_get_currencies_data();
 
     return isset($currecies[$currency_code]) ? $currecies[$currency_code] : false;
 }
 
 function leyka_get_currency_label($currency_code) {
 
-    $currecies = leyka_get_active_currencies();
+    $currecies = leyka_get_currencies_data();
 
     return isset($currecies[$currency_code]['label']) ? $currecies[$currency_code]['label'] : false;
 }
@@ -339,7 +479,7 @@ function leyka_get_campaign_target_states_list() {
  * Get campaign target - template tag
  * 
  * @var $campaign integer Campaign ID.
- * @return mixed Array of campaign target info, or false if wrong campaign ID given.
+ * @return mixed Array of campaign target info, false if wrong campaign ID given, or int 0 if a campaign doesn't have a target.
  */
 function leyka_get_campaign_target($campaign) {
 
@@ -353,10 +493,11 @@ function leyka_get_campaign_target($campaign) {
         return false;
     }
 
-    return array(
+    return $campaign->target ? array(
         'amount' => $campaign->target,
         'currency' => 'rur', // Currently, target is always in RUR  
-    );
+    ) : 0;
+
 }
 
 /**
@@ -393,13 +534,13 @@ function leyka_scale_compact($campaign) {
         $campaign = new Leyka_Campaign($campaign);
     }
         
-    $target = (int)$campaign->target;
-    $curr_label = leyka_get_currency_label('rur');
-    $collected = $campaign->get_collected_amount();
-
-    if($target <= 0) {
+    $target = (float)$campaign->target;
+    if($target <= 0.0) {
         return;
     }
+
+    $curr_label = leyka_get_currency_label('rur');
+    $collected = $campaign->get_collected_amount();
 
     $percentage = round(($collected/$target)*100);
 	if($percentage > 100)
@@ -412,8 +553,8 @@ function leyka_scale_compact($campaign) {
         </div>
     </div>
     <div class="leyka-scale-label">
-    <?php $target_f = number_format($target, 0, '.', ' ');
-    $collected_f = number_format($collected, 0, '.', ' ');
+    <?php $target_f = number_format($target, ($target - round($target) > 0.0 ? 2 : 0), '.', ' ');
+    $collected_f = number_format($collected, ($collected - round($collected) > 0.0 ? 2 : 0), '.', ' ');
 
     if($collected == 0) {
         printf(__('Needed %s %s', 'leyka'), '<b>'.$target_f.'</b>', $curr_label);
@@ -431,9 +572,9 @@ function leyka_scale_ultra($campaign) {
         $campaign = new Leyka_Campaign($campaign);
     }
 
-    $target = (int)$campaign->target;
+    $target = (float)$campaign->target;
     $curr_label = leyka_get_currency_label('rur');
-    $collected = (int)$campaign->get_collected_amount();
+    $collected = $campaign->get_collected_amount();
    
     if($target == 0) {
         return;
@@ -450,8 +591,9 @@ function leyka_scale_ultra($campaign) {
         </div>
     </div>
     <div class="leyka-scale-label"><span>
-    <?php $target_f = number_format($target, 0, '.', ' ');
-    $collected_f = number_format($collected, 0, '.', ' ');
+
+    <?php $target_f = number_format($target, ($target - round($target) > 0.0 ? 2 : 0), '.', ' ');
+    $collected_f = number_format($collected, ($collected - round($collected) > 0.0 ? 2 : 0), '.', ' ');
 
     printf(_x('%s of %s %s', 'Label on ultra-compact scale', 'leyka'), '<b>'.$collected_f.'</b>', '<b>'.$target_f.'</b>', $curr_label);?>
     </span></div>
@@ -466,14 +608,14 @@ function leyka_fake_scale_ultra($campaign) {
     }
 
     $curr_label = leyka_get_currency_label('rur');
-    $collected = number_format(intval($campaign->get_collected_amount()), 0, '.', ' ');?>
+    $collected_f = number_format($campaign->total_funded, ($campaign->total_funded - round($campaign->total_funded) > 0.0 ? 2 : 0), '.', ' ');?>
 
 <div class="leyka-scale-ultra-fake">
     <div class="leyka-scale-scale">
         <div class="target"> </div>
     </div>
     <div class="leyka-scale-label"><span>
-        <?php printf(_x('Collected: %s', 'Label on ultra-compact fake scale', 'leyka'), "<b>{$collected}</b> {$curr_label}");?>
+        <?php printf(_x('Collected: %s', 'Label on ultra-compact fake scale', 'leyka'), "<b>{$collected_f}</b> {$curr_label}");?>
     </span></div>
 </div>
 <?php
@@ -497,6 +639,7 @@ function leyka_get_payment_type_label($type) {
 
     $types = leyka_get_payment_types_list();
     return in_array($type, array_keys($types)) ? $types[$type] : false;
+
 }
 
 /**
@@ -754,6 +897,7 @@ function leyka_form_is_screening($widgets_also = true) {
 
                 $content_has_shortcode = true;
                 break;
+
             }
         }
     }
@@ -767,6 +911,40 @@ function leyka_form_is_screening($widgets_also = true) {
         apply_filters('leyka_form_is_screening', false);
 
     return $form_is_screening;
+
+}
+
+function leyka_revo_template_displayed() {
+
+    $revo_displayed = false;
+
+    if(is_singular(Leyka_Campaign_Management::$post_type)) {
+
+        $campaign = new Leyka_Campaign(get_post());
+        if($campaign->template == 'default') {
+
+            $leyka_template_data = leyka_get_current_template_data();
+            $revo_displayed = $leyka_template_data['id'] == 'revo';
+
+        } else {
+            $revo_displayed = $campaign->template == 'revo';
+        }
+
+    } else if(get_post() && has_shortcode(get_post()->post_content, 'leyka_inline_campaign')) {
+        $revo_displayed = true;
+        /** @todo Refactor this logic! Right now the check doesn't watch if shortcode uses Revo template or not */
+    }
+
+    return apply_filters('leyka_revo_template_displayed', $revo_displayed);
+
+}
+
+function leyka_success_widget_displayed() {
+    return leyka_options()->opt('show_success_widget_on_success') && is_page(leyka_options()->opt('success_page'));
+}
+
+function leyka_failure_widget_displayed() {
+    return leyka_options()->opt('show_failure_widget_on_failure') && is_page(leyka_options()->opt('failure_page'));
 }
 
 /** ITV info-widget **/
@@ -790,8 +968,20 @@ function leyka_itv_info_widget() {
 <?php
 }
 
+function leyka_format_amount($amount) {
+
+    if((int)$amount >= 0) {
+        $amount_is_float = (float)$amount - (int)$amount > 0;
+    } else {
+        return false;
+    }
+
+    return number_format((float)$amount, $amount_is_float ? 2 : 0, '.', ' ');
+
+}
+
 function leyka_validate_donor_name($name) {
-    return $name ? !preg_match('/[^\\x{0410}-\\x{044F}\w\s\-_\']/iu', $name) : true;
+    return $name ? !preg_match('/[^\\x{0410}-\\x{044F}\w\s\-_\'\.]/iu', $name) : true;
 }
 
 function leyka_validate_email($email) {
@@ -855,5 +1045,128 @@ if( !function_exists('leyka_get_client_ip') ) {
                         getenv('HTTP_FORWARDED') ? :
                             getenv('REMOTE_ADDR');
     }
+
+}
+
+function leyka_get_campaign_donations($campaign, $limit = false) {
+
+    $campaign = (int)$campaign;
+    if($campaign <= 0) {
+        return false;
+    }
+
+    $campaign = new Leyka_Campaign($campaign);
+    if( !$campaign->id ) {
+        return false;
+    }
+
+    $limit = (int)$limit > 0 ? (int)$limit : false;
+
+    $params = array(
+        'post_type' => Leyka_Donation_Management::$post_type,
+        'nopaging' => true,
+        'post_status' => 'funded',
+        'meta_query' => array(
+            array(
+                'key' => 'leyka_campaign_id',
+                'value' => $campaign->id,
+                'compare' => '=',
+            ),
+        ),
+    );
+
+    if($limit) {
+
+        unset($params['nopaging']);
+        $params['posts_per_page'] = $limit;
+
+    }
+
+    $donations = array();
+    foreach(get_posts($params) as $donation) {
+        $donations[] = new Leyka_Donation($donation);
+    }
+
+    return $donations;
+
+}
+
+function leyka_get_donations_archive_url($campaign_id = false) {
+
+    if((int)$campaign_id > 0) {
+
+        $campaign = get_post($campaign_id);
+
+        $donations_permalink = trim(get_permalink($campaign_id), '/');
+        if(strpos($donations_permalink, '?')) {
+            $donations_permalink = home_url('?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter='.$campaign->post_name);
+        } else {
+            $donations_permalink = $donations_permalink.'/donations/';
+        }
+
+    } else {
+        $donations_permalink = get_option('permalink-structure') ?
+            home_url('/donations/') : home_url('?post_type='.Leyka_Donation_Management::$post_type);
+    }
+
+    return $donations_permalink;
+
+}
+
+function leyka_remembered_data($name, $value = null, $delete = false) {
+
+    $name = stripos($name, 'leyka_') === false ? 'leyka_'.$name : $name;
+
+    if($value) {
+        return setcookie($name, trim($value), time()+60*60, COOKIEPATH, COOKIE_DOMAIN, false);
+    } else if( !!$delete ) {
+        return setcookie($name, '', time()-3600, COOKIEPATH, COOKIE_DOMAIN, false);
+    } else {
+        return empty($_COOKIE[$name]) ? '' : trim($_COOKIE[$name]);
+    }
+
+}
+
+function leyka_calculate_donation_total_amount($donation = false, $amount = 0.0, $pm_full_id = '') {
+
+    $donation = leyka_get_validated_donation($donation);
+    $amount = $amount ? $amount : $donation->amount;
+    $pm_full_id = $pm_full_id ? $pm_full_id : $donation->pm_full_id;
+
+    $commission = leyka_options()->opt('commission');
+    $commission = empty($commission[$pm_full_id]) ?
+        0.0 : $commission[$pm_full_id]/100.0;
+
+    return $commission && $commission > 0.0 ? $amount - round($amount*$commission, 2) : $amount;
+
+}
+
+function leyka_get_pm_commission($pm_full_id) {
+
+    $commission = leyka_options()->opt('commission');
+
+    return empty($commission[$pm_full_id]) ? 0.0 : $commission[$pm_full_id]/100.0;
+
+}
+
+/** A helper function to insert posts manually. Used only when wp_insert_post() leads to notices & fatal errors. */
+function leyka_manually_insert_page(array $post_data) {
+
+    global $wpdb;
+
+    $post_date = current_time('mysql');
+    $wpdb->insert($wpdb->prefix.'posts', array(
+        'post_type' => 'page',
+        'post_status' => 'publish',
+        'post_title' => $post_data['post_title'],
+        'post_content' => $post_data['post_content'],
+        'post_name' => $post_data['post_name'],
+        'post_author' => get_current_user_id(),
+        'post_excerpt' => '',
+        'post_date' => $post_date,
+        'post_date_gmt' => get_gmt_from_date($post_date),
+        'post_modified' => $post_date,
+        'post_modified_gmt' => get_gmt_from_date($post_date),
+    ));
 
 }

@@ -3,13 +3,13 @@
  * Plugin Name: Leyka
  * Plugin URI:  https://leyka.te-st.ru/
  * Description: The donations management system for your WP site
- * Version:     2.2.14
- * Author:      Lev Zvyagintsev
- * Author URI:  ahaenor@gmail.com
+ * Version:     2.3.3
+ * Author:      Teplitsa of social technologies
+ * Author URI:  https://te-st.ru
  * Text Domain: leyka
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
- * Domain Path: /lang
  * Contributors:
+	Lev "ahaenor" Zvyagintsev (ahaenor@gmail.com)
 	Anna "foralien" Ladoshkina (webdev@foralien.com)
 	Denis Cherniatev (denis.cherniatev@gmail.com)
     Marie Borisyonok (pro100mary@gmail.com)
@@ -36,7 +36,7 @@
 
 // Leyka plugin version:
 if( !defined('LEYKA_VERSION') ) {
-    define('LEYKA_VERSION', '2.2.14');
+    define('LEYKA_VERSION', '2.3.3');
 }
 
 // Plugin base file:
@@ -78,6 +78,7 @@ if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.3.0', '<') ) {
 
 }
 
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-tmp-translations.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-functions.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-controller.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-polylang.php');
@@ -86,11 +87,11 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-gateways-api.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-campaign.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donation.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-payment-form.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-template-controller.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-ajax.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-shortcodes.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-widgets.php');
-
-require_once(LEYKA_PLUGIN_DIR.'inc/leyka-revolution.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-hooks.php');
 
 /** Automatically include all sub-dirs of /leyka/gateways/ */
 $gateways_dir = dir(LEYKA_PLUGIN_DIR.'gateways/');

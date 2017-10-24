@@ -4,8 +4,8 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса,яндекс.деньги, миксплат, paypal
 Requires at least: 3.6.1
-Tested up to: 4.7.2
-Stable tag: 2.2.14
+Tested up to: 4.8
+Stable tag: 2.3.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,7 +38,7 @@ The plugin is designed for any website that wants to collect money online - NGOs
 * Support for multiple currencies
 * Campaign templates and visualization of the progress bars
 * Widgets and shortcodes for WP
-* Legally correct templates and oferta text
+* Legally correct templates, personal data usage agreement and oferta text
 * Ability to embed campaigns via iframe
 * Payment history and statistics on the website
 * Integration with Google Analytics out of the box
@@ -68,7 +68,7 @@ The plugin manual is avaliable at [official website](//leyka.te-st.ru/instructio
 * [basic features](//leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/),
 * [extended features](//leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/).
 
-PHP at least 5.3 is required.
+PHP version required: 5.3+
 
 
 == Frequently Asked Questions ==
@@ -89,13 +89,39 @@ PHP at least 5.3 is required.
 10. Google Analytics events
 
 == Changelog ==
+= 2.3.3 =
+* New: gateways commissions function added.
+* New: optional donor comment field added.
+* Fix: missing emails settings returned.
+* Fix: localization improved.
+* Fix: lots of small fixes.
+
+= 2.3.2 =
+* New: Personal data usage options support added.
+* Fix: Recurring email notifications fixed.
+* Fix: Yandex.Kassa - recurring bugs fixed.
+* Fix: localization improved.
+
+= 2.3.1 =
+ * New: Yandex.Kassa recurring subscription cancelling via donor emails added.
+ * New: inner API architecture improved.
+ * Tweak: wordings improved.
+ * Fix: fixes of Revo compatibility with different themes.
+
+= 2.3 =
+ * New: Revo template added.
+ * New: inner API architecture evolved. Template controllers class tree added.
+ * Tweak: localization files detached from the plugin bundle and provided via WP language packs.
+ * Tweak: many wordings improved.
+ * Fix: lots of small fixes.
+
 = 2.2.14 =
  * New: plugin options and data clearup function added.
  * New: fields with donation form shortcodes added in campaigns admin area.
  * Fix: problem with inactive donation amount on Radio template solved.
- * Fix: now shortcodes in Terms of service text work correctly.
+ * Fix: now shortcodes in Terms of Service text work correctly.
  * Fix: support system contacts update.
- * Fix: Terms of service text markup improved.
+ * Fix: Terms of Service text markup improved.
 
 = 2.2.13 =
  * New: "Neo" donation form template added.

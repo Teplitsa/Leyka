@@ -22,7 +22,7 @@ leyka_pf_submission_errors();?>
         <?php echo leyka_pf_get_pm_label();?>
     </div>
     <div class="leyka-toggle-area">
-        <form class="leyka-pm-form" id="<?php echo leyka_pf_get_form_id();?>" action="<?php echo leyka_pf_get_form_action();?>" method="post">
+        <form class="leyka-pm-form" action="<?php echo leyka_pf_get_form_action();?>" method="post">
 
             <div class="leyka-pm-fields">
 
@@ -32,7 +32,11 @@ leyka_pf_submission_errors();?>
             <input name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="hidden">
             <input name="leyka_ga_payment_method" value="<?php echo esc_attr($pm->label);?>" type="hidden">
             <div class="leyka-user-data">
-                <?php echo leyka_pf_get_name_field().leyka_pf_get_email_field().leyka_pf_get_pm_fields();?>
+            <?php echo leyka_pf_get_name_field()
+                .leyka_pf_get_email_field()
+                .leyka_pf_get_comment_field()
+                .leyka_pf_get_pm_fields();
+            ?>
             </div>
 
         <?php echo leyka_pf_get_agree_field().leyka_pf_get_submit_field();

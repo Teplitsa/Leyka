@@ -1,0 +1,258 @@
+/** == Form elements (_form_elements.scss) == **/
+
+
+
+//OFERTA
+div[id *="leyka-pf-"] {  //aka namespace
+	.leyka-pf__oferta, .leyka-pf__pd {
+		display: none;
+		background: $color-white;
+		@include body-text();
+		color: $color-text;
+
+		p:nth-of-type(1) {
+			font-weight: bold;
+			font-size: 1.2em;
+		}
+	}
+
+	.leyka-pf__oferta-action, .leyka-pf__pd-action {
+		text-align: center;
+		padding: $base*2 0;
+
+		a {
+			color: $color-link;
+			text-decoration: underline;
+			&:hover {
+				color: darken($color-link, 10%);
+			}
+		}
+	}
+}
+
+
+//REDIRECT
+.waiting {
+	//position: absolute;
+	//top: 0;
+	//left: 0;
+
+
+	width: 100%;
+	height: 100%;
+
+
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
+	background: $color-main;
+	border-raius: 10px;
+}
+
+.waiting__card {
+	width: 223px;
+	text-align: center;
+	color: $color-white;
+
+	.loading {
+		margin: 80px auto;
+		width: 80px;
+	}
+}
+
+//spinner
+.spinner {
+  width: 80px;
+  text-align: center;
+}
+
+.spinner > div {
+  width: 22px;
+  height: 22px;
+  background-color: #fff;
+
+  border-radius: 100%;
+  display: inline-block;
+  -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.spinner .bounce1 {
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+
+.spinner .bounce2 {
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+
+@-webkit-keyframes sk-bouncedelay {
+  0%, 80%, 100% { -webkit-transform: scale(0) }
+  40% { -webkit-transform: scale(1.0) }
+}
+
+@keyframes sk-bouncedelay {
+  0%, 80%, 100% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  } 40% {
+    -webkit-transform: scale(1.0);
+    transform: scale(1.0);
+  }
+}
+
+
+/** form at bottom **/
+.leyka-pf-bottom {
+	display: none;
+}
+
+.leyka-js .leyka-pf-bottom  {
+	display: block;
+	position: relative;
+
+	padding: $base*4;
+	border: 1px solid $color-border-light;
+	background: $color-border-tiny;
+	border-radius: 4px;
+	margin-top: $base*4;
+
+	.bottom-form__fields {
+		max-width: 270px;
+	}
+}
+
+
+div[id *="leyka-pf-bottom"] { //aka namespace
+
+	.bottom-form__label {
+		@include step-title();
+		color: $color-main;
+		margin-bottom: $base*2;
+	}
+
+	.bottom-form__field {
+		width: 100%;
+		margin-bottom: $base*3;
+		position: relative;
+		z-index: 1;
+
+		input {
+			position: relative;
+			z-index: 1;
+			box-sizing: border-box;
+			width: 100%;
+			-webkit-appearance: none;
+			background: $color-white;
+			text-align: left;
+			border-radius: 5px;
+			margin: 0;
+
+			padding: 8px;
+			@include input-text();
+			color: $color-text;
+			border: 1px solid $color-border-light;
+		}
+
+		.curr-mark {
+			@include body-text();
+			font-size: 14px;
+			display: inline-block;
+			position: absolute;
+			top: 50%;
+			right: 10px;
+			transform: translateY(-50%);
+			z-index: 10;
+		}
+	}
+
+	.bottom-form__button {
+		width: 100%;
+		button {
+			width: 100%;
+			@include button();
+		}
+	}
+
+	.bottom-form__note {
+		margin-top: $base*4;
+		@include supporters();
+	}
+} 
+
+
+/** history block **/
+div[id *="leyka-pf-"] { //aka namespace
+	.history__title {
+		@include step-title();
+		color: $color-text-black;
+		text-align: center;
+	}
+
+	.history {
+		background: $color-border-tiny;
+	}
+
+	.history__row {
+		box-sizing: border-box;
+		padding: 6px 0;
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: space-between;
+		align-items: flex-top;
+
+		@inlcude body-text();
+		font-size: 12px;
+		line-height: 18px;
+	}
+
+	.h-amount {
+		box-sizing: border-box;
+		width: 110px;
+		text-align: right;
+		padding-right: $base*2;
+	}
+
+	.h-name {
+		box-sizing: border-box;
+		width: calc(100% - 240px);
+		max-width: calc(100% - 120px);
+		overflow: hidden;
+		text-overflow: clip;
+		white-space: nowrap;
+		hyphens: none;
+		position: relative;
+		z-index: 1;
+
+		@media screen and (max-width: 500px) {
+			width: calc(100% - 120px);
+		}
+
+		&:after {
+			content: '';
+			display: block;
+			width: $base*2;
+			height: 100%;
+			position: absolute;
+			top: 0;
+			right: 0;
+			background: $color-border-tiny;
+			/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f6f6f6+0,f6f6f6+100&0+0,1+100 */
+background: -moz-linear-gradient(left,  rgba(246,246,246,0) 0%, rgba(246,246,246,1) 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(left,  rgba(246,246,246,0) 0%,rgba(246,246,246,1) 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to right,  rgba(246,246,246,0) 0%,rgba(246,246,246,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00f6f6f6', endColorstr='#f6f6f6',GradientType=1 ); /* IE6-9 */
+
+		}
+	}
+
+	.h-date {
+		box-sizing: border-box;
+		width: 100px;
+		text-align: right;
+		color: $color-text-light;
+		padding-right: $base*2;
+	}
+}

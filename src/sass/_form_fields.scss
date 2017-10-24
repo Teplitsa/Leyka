@@ -1,0 +1,818 @@
+/** == Form common settings (_form_settings.scss) == **/
+
+/** Common settings  */
+@mixin module-height($mod: default) {
+	max-height: $mod;
+	height: 96vh;
+}
+
+@mixin close-mark($mod: default) {
+	font-size: 13px;
+	font-weight: bold;
+	color: $color-text-light;
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	border: 1px solid $color-border-normal;
+	text-align: center;
+	line-height: 20px;
+	vertical-align: middle;
+	cursor: pointer;
+	transition: all 0.35s;
+
+	&:hover {
+		color: $color-border-dark;
+		border-color: $color-border-dark;
+	}
+
+	@if $mod == green {
+		background: transparentize($color-white, 0.1);
+
+		&:hover {
+			color: $color-white;
+			background: $color-main;
+			border-color: $color-main;
+		}
+	}
+}
+
+
+div[id *="leyka-pf-"] { //aka namespace
+	margin: $base*4 0;
+
+	&:first-child { margin-top: 0; }
+	&:last-child { margin-bottom: 0; }
+
+	@include body-text();
+
+	& > svg {
+		display: none;
+	}
+
+	a {
+		border: none;
+		text-decoration: none;
+	}
+
+	form {
+		display: block;
+	}
+
+	.leyka-submit-errors {
+		border: none;
+		border-radius: 0 0 10px 10px;
+		color: $color-white;
+		background: $color-form-invalid;
+		margin: -10px -1px 0;
+		height: $base*7;
+		padding: $base $base*3;
+		position: relative;
+
+		&:after {
+			content: 'x';
+			display: block;
+			color: currentColor;
+			font-weight: bold;
+			font-size: 16px;
+			position: absolute;
+			top: 4px;
+			right: 16px;
+			cursor: pointer;
+		}
+	}
+}
+
+
+/** == Form fields styles == */
+
+//INPAGE CARD
+div[id *="leyka-pf-"] { //aka namespace
+
+	.inpage-card__thumb {
+		background-color: $color-border-tiny;
+		background-repeat: no-repeat;
+		background-position: center center;
+		background-size: cover;
+		width: 100%;
+		height: 0;
+		padding-bottom: 56.7%;
+		border-top-left-radius: 10px;
+		border-top-right-radius: 10px;
+	}
+
+	.inpage-card__content{
+		padding: $base*3;
+	}
+
+	.inpage-card_title {
+		display: none;
+		margin-bottom: $base*2;
+	}
+
+	.inpage-card_scale {
+		margin-bottom: $base*3;
+	}
+
+	.scale {
+		width: 100%;
+		height: 6px;
+		background: $color-border-light;
+		border-radius: 2.5px;
+
+		.progress {
+			height: 6px;
+			background: $color-main;
+			border-top-left-radius: 2.5px;
+			border-bottom-left-radius: 2.5px;
+
+			&.fin {
+				border-top-right-radius: 2.5px;
+				border-bottom-right-radius: 2.5px;
+			}
+		}
+	}
+
+	.target {
+		margin: $base*2 0 $base/2;
+		color: $color-main;
+		font-size: 1.2em;
+		.curr-mark { margin-left: 2px; }
+	}
+
+	.message-finished {
+		color: $color-main;
+		font-size: 1.15em;
+	}
+
+	.info {
+		color: $color-text-light;
+		.curr-mark { margin-left: 2px; }
+	}
+
+	.inpage-card__note {
+		@include supporters();
+	}
+
+	.inpage-card__action {
+		margin-top: $base*3;
+
+		button {
+			border: none;
+			@include button();
+		}
+	}
+}
+
+
+// STEPS COMMONS
+div[id *="leyka-pf-"] {
+
+	.step__selection {
+		text-align: center;
+
+		a {
+			color: $color-link;
+			text-decoration: underline;
+			border: none;
+            box-shadow: none;
+			font-weight: normal;
+
+			&:hover, &:focus, &:active {
+				color: darken($color-link, 10%);
+			}
+			
+			span.remembered-amount:after, span.curr-mark:after {
+			    content: " ";
+			}
+		}
+	}
+
+	.step__title {
+		@include step-title();
+		color: $color-text-black;
+		text-align: center;
+	}
+
+	.step__note {
+		@include note-text();
+		color: $color-text-light;
+		hyphens: none;
+		text-align: center;
+
+		a {
+			color: currentColor;
+			text-decoration: underline;
+		}
+	}
+}
+
+// AMOUNT
+
+//range selector
+
+@mixin range-track() {
+	width: 100%;
+	cursor: pointer;
+	border-color: transparent;
+	color: transparent;
+	height: 6px;
+	border: none;
+	border-radius: 6px;
+	background: $color-main;
+	animate: 0.2s;
+}
+
+@mixin range-thumb() {
+	-webkit-appearance: none;
+	border-radius: 50%;
+	width: 20px;
+	height: 20px;
+	background: $color-white;
+	border: 1px solid $color-border-normal;
+	cursor: pointer;
+}
+
+@mixin range-track-invalid() {
+	background: $color-form-invalid;
+}
+
+div[id *="leyka-pf-"] { //aka namespace
+	.amount_range {
+		padding: 8px;
+		text-align: center;
+
+		input[type=range],
+		input[type=range]:focus,
+		input[type=range]:active,
+		input[type=range]::-moz-focus-inner,
+		input[type=range]::-moz-focus-outer,
+		input[type=range]:-moz-focusring {
+			border: 0;
+			outline: none;
+			background: none;
+		}
+
+		input[type=range] {
+			-webkit-appearance: none;
+			width: 200px;
+			margin: 0 auto;
+			border:none;
+		}
+
+		input[type=range]::-ms-track {
+			@include range-track();
+		}
+
+		input[type=range]::-moz-range-track {
+			@include range-track();
+		}
+
+		input[type=range]::-webkit-slider-runnable-track  {
+			@include range-track();
+		}
+
+		input[type=range]::-ms-thumb {
+			@include range-thumb();
+		}
+
+		input[type=range]::-moz-range-thumb{
+			@include range-thumb();
+		}
+
+		input[type=range]::-webkit-slider-thumb {
+			@include range-thumb();
+			margin-top: -7px;
+		}
+	}
+
+	.invalid .amount_range {
+		input[type=range]::-ms-track,
+		input[type=range]::-moz-range-track,
+		input[type=range]::-webkit-slider-runnable-track {
+			background: $color-form-invalid;
+		}
+	}
+}
+
+//general
+div[id *="leyka-pf-"] { //aka namespace
+
+	.amount__figure {
+		position: relative;
+		width: 196px;
+		z-index: 1;
+		margin: 0 auto;
+		border-bottom: 2px solid $color-border-light;
+
+		display: flex;
+		flex-flow: row nowrap;
+		align-items: center;
+		justify-content: space-between;
+
+		&.focus {
+			border-bottom-color: $color-main;
+		}
+
+		span {
+			@include amount-input();
+			font-weight: 100;
+			color: $color-text-black;
+			z-index: 20;
+		}
+
+		input {
+			@include amount-input();
+			-webkit-appearance: none;
+			background: transparent;
+			border: none;
+			border-radius: 0;
+
+			flex: 1 1 auto;
+
+			text-align: center;
+			color: $color-text-black;
+			padding: 0 4px 4px 4px;
+			width: 100px;
+			
+			&::placeholder {
+			     color:$color-border-normal;
+			}
+			
+            &:focus {
+                &::placeholder { 
+                    opacity: 0; 
+                    color: $color-white;
+                }
+            }
+		}
+	}
+
+	.amount__icon {
+		text-align: center;
+		padding: $base*3 $base $base*2;
+		/*height: 80px + $base*5;*/
+		height: 100px + $base*5;
+
+		@include for(medium-screens) {
+			/*height: 110px + $base*5;*/
+			height: 130px + $base*5;
+		}
+
+		.svg-icon {
+            fill: $color_main;
+
+            &.icon-money-size1 {
+                width: 46px;
+                height: 80px;
+                padding-top: 40px;
+
+                @include for(medium-screens) {
+                    width: 62px;
+                    height: 110px;
+                    padding-top: 64px;
+                }
+            }
+
+            &.icon-money-size2 {
+                width: 80px;
+                height: 80px;
+                padding-top: 30px;
+
+                @include for(medium-screens) {
+                    width: 102px;
+                    height: 110px;
+                    padding-top: 34px;
+                }
+            }
+
+            &.icon-money-size3 {
+                width: 86px;
+                height: 80px;
+                padding-top: 25px;
+
+                @include for(medium-screens) {
+                    width: 114px;
+                    height: 110px;
+                    padding-top: 24px;
+                }
+            }
+
+            &.icon-money-size4 {
+	            width: 85px;
+	            height: 110px;
+
+	            @include for(medium-screens) {
+	                width: 114px;
+	                height: 110px;
+	            }
+            }
+		}
+	}
+
+	.amount__range_wrapper {
+	    position:relative;
+
+	    .amount__range_overlay {
+	        display:none;
+		    background-color: #ffffff;
+		    height: 38px;
+		    left: 0;
+		    position: absolute;
+		    top: 0;
+		    width: 210px;
+		    z-index:5;
+		    pointer-events:none;
+	    }
+
+	    .amount__range_custom {
+            display:none;
+            position:relative;
+            left:10px;
+            top:10px;
+            z-index:7;
+            pointer-events:none;
+
+            .range-bg {
+               width:200px;
+               height:12px;
+               fill: #E6E7E9;
+               position:absolute;
+               top:0px;
+               left:0px;
+            }
+
+            .range-color, .range-color-wrapper {
+               width:200px;
+               height:12px;
+               fill: $color_main;
+               position:absolute;
+               top:0px;
+               left:0px;
+            }
+
+            .range-color-wrapper {
+               width:50px;
+               overflow:hidden;
+            }
+
+            .range-circle {
+               width:34px;
+               height:34px;
+               fill: $color_main;
+               position:absolute;
+               top:-10px;
+               left:50px;
+            }
+	    }
+
+        @include for(medium-screens) {
+            .amount__range_custom--visible {
+                display:block;
+            }
+        }
+
+    }
+
+	.amount__error {
+		color: $color-form-invalid;
+		display:none;
+		padding-top: $base*3;
+		max-width:186px;
+	}
+
+	.step__action {
+
+        a {
+            @include button(medium);
+            
+            @include for(medium-screens) {
+                @include button(small);
+            }
+            
+            width: 186px;
+            text-align: center;
+            margin: 4px;
+        }
+
+		.monthly {
+			position: relative;
+			//padding-left: 44px;
+		}
+
+		.svg-icon {
+			width: 22px;
+			height: 15px;
+			fill: $color-white;
+			vertical-align: text-bottom;
+			margin-right: 4px;
+		}
+	}
+
+	.amount.invalid {
+		.amount__figure {
+			border-bottom-color: $color-form-invalid;
+		}
+
+		.amount__error {
+			display: block;
+		}
+
+		.amount__icon {
+			.svg-icon {
+				display: none;
+			}
+		}
+
+		input[type=range]::-ms-track {
+			@include range-track-invalid();
+		}
+
+		input[type=range]::-moz-range-track {
+			@include range-track-invalid();
+		}
+
+		input[type=range]::-webkit-slider-runnable-track  {
+			@include range-track-invalid();
+		}
+		
+        .amount__range_wrapper {
+            .amount__range_custom {
+                .range-color, .range-color-wrapper {
+                    fill: $color-form-invalid;
+                }
+                
+                .range-circle {
+                    fill: $color-form-invalid;
+                }
+            }
+        }
+	}
+}
+
+
+
+
+// CARDS STEP
+div[id *="leyka-pf-"] {  //aka namespace
+	.payments-grid {
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: center;
+		align-items: stretch;
+		justify-items: center;
+		overflow-y: hidden; /*scroll;*/
+	}
+
+	.payment-opt {
+		text-align: center;
+		margin: 9px 4px;
+		flex: 1 1 auto;
+		width: calc(50% - 8px)
+	}
+
+	.payment-opt__button {
+		display: inline-block;
+		position: relative;
+		z-index: 1;
+		width: 100%;
+	}
+
+	.payment-opt__radio {
+		position: absolute;
+		top: 10px;
+		left: 10px;
+		border: none;
+		opacity: 0;
+	}
+
+	.payment-opt__icon {
+		width: 100%;
+		height: 65px;
+
+		display: flex;
+		flex-flow: column nowrap;
+		justify-content: center;
+		align-items: center;
+
+		border-radius: 5px;
+		background: $color-border-tiny;
+		transition: background 0.35s;
+		cursor: pointer;
+
+		&:hover {
+			background: $color-form-active;
+		}
+
+		.svg-icon {
+			width: 80px;
+			height: 41px;
+		}
+
+		@include for(medium-screens) {
+			height: 85px;
+
+			.svg-icon {
+				width: 112px;
+				height: 57px;
+			}
+		}
+	}
+
+	.payment-opt__radio:checked + .payment-opt__icon {
+		background: $color-form-active;
+		&:hover {
+			background: $color-form-active;
+		}
+	}
+
+	.payment-opt__label {
+		display: block;
+		margin-top: $base;
+		font-size: 11px;
+		line-height: 1.25;
+		hyphens: none;
+		max-height: 1.25*2*11px;
+		overflow: hidden;
+
+		@include for(medium-screens) {
+			font-size: 13px;
+			max-height: 1.25*2*13px;
+		}
+	}
+}
+
+
+// FIELDS STEP
+div[id *="leyka-pf-"] {  //aka namespace
+
+	.donor__textfield {
+
+		label {
+			display: block;
+			position: relative;
+			@include input-label();
+			color: $color-text;
+			margin: 0;
+			height: 20px;
+			overflow: hidden;
+		}
+
+		input, textarea {
+			width: 100%;
+			box-sizing: border-box;
+			-webkit-appearance: none;
+			border: none;
+			background: transparent;
+			text-align: left;
+			border-radius: 0;
+			margin: 0;
+
+			padding: 6px 0;
+			@include input-text();
+			color: $color-text;
+			border-bottom: 1px solid $color-border-normal;
+		}
+
+		.donor__textfield-error {
+			display: none;
+			@include input-label();
+			color: $color-form-invalid;
+			font-size: 12px;
+		}
+
+		&.focus {
+			input { border-bottom-color: $color-border-dark; }
+		}
+
+		&.invalid {
+			.donor__textfield-label { display: none; }
+			.donor__textfield-error { display: inline-block; }
+			input, textarea {
+				color: $color-form-invalid;
+				border-bottom-color: $color-form-invalid;
+			}
+		}
+
+		&.valid {
+			.donor__textfield-label { color: $color-main; }
+			input {
+				color: $color-main;
+				border-bottom-color: $color-main;
+			}
+		}
+	}
+
+	.donor__submit {
+		text-align: center;
+
+		input {
+			@include button(action);
+		}
+	}
+
+	.donor__oferta {
+		z-index: 1;
+		text-align: left; // center
+
+		span {
+			display: inline-block;
+			padding-left: 26px;
+			position: relative;
+		}
+
+		input {
+			margin: 0;
+			padding: 0;
+			position: absolute;
+			top: -1000px; // 4px
+			left: 0;
+
+			border: none;
+			opacity: 0;
+			z-index: 10;
+			cursor: pointer;
+		}
+
+		label {
+			display: inline-block;
+			position: relative;
+			@include note-text();
+			color: $color-text-light;
+			z-index: 2;
+
+			&:before {
+				content: '';
+				display: block;
+				width: 16px;
+				height: 16px;
+				border-radius: 2px;
+				background: $color-white;
+				border: 2px solid $color-text;
+				position: absolute;
+				top: 1px;
+				left: -26px;
+				cursor: pointer;
+			}
+
+			a {
+				@include internal-sublink();
+			}
+		}
+
+		input:checked + label {
+			&:before {
+				background-color: $color-main;
+				border-color: $color-main;
+				background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyB3aWR0aD0iMTdweCIgaGVpZ2h0PSIxM3B4IiB2aWV3Qm94PSIwIDAgMTcgMTMiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sbnM6c2tldGNoPSJodHRwOi8vd3d3LmJvaGVtaWFuY29kaW5nLmNvbS9za2V0Y2gvbnMiPiAgICAgICAgPHRpdGxlPlNoYXBlPC90aXRsZT4gICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+ICAgIDxkZWZzPjwvZGVmcz4gICAgPGcgaWQ9IlBhZ2UtMSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc2tldGNoOnR5cGU9Ik1TUGFnZSI+ICAgICAgICA8cGF0aCBkPSJNMTYuNSwxLjg3OTE0Mjg2IEw1LjUyODU3MTQzLDEyLjg1MDU3MTQgTDAuNSw3LjgyMiBMMS43ODkxNDI4Niw2LjUzMjg1NzE0IEw1LjUyODU3MTQzLDEwLjI2MzE0MjkgTDE1LjIxMDg1NzEsMC41OSBMMTYuNSwxLjg3OTE0Mjg2IEwxNi41LDEuODc5MTQyODYgWiIgaWQ9IlNoYXBlIiBmaWxsPSIjRkZGRkZGIiBza2V0Y2g6dHlwZT0iTVNTaGFwZUdyb3VwIj48L3BhdGg+ICAgIDwvZz48L3N2Zz4=);
+				background-repeat: no-repeat;
+				background-size: 16px 13px;
+				background-position: 0 -2px;
+			}
+		}
+
+		.donor__oferta-error {
+			visibility: hidden;
+			@include input-label();
+			font-size: 12px;
+			padding-top: 6px;
+			color: $color-form-invalid;
+		}
+
+		&.invalid {
+			.donor__oferta-error { visibility: visible; }
+		}
+	}
+
+	.step--static {
+
+		.step__border {
+
+		    min-height:80%;
+		    position:relative;
+
+			.static-text {
+			}
+
+			.static__complete-donation {
+				text-align: center;
+				margin-top: $base*1.5;
+				margin-bottom: $base*1.5;
+				position:absolute;
+				bottom:0px;
+
+				margin-left: auto;
+				margin-right: auto;
+				left: 0;
+				right: 0;
+
+			    input {
+			        @include button(action);
+					
+			    }
+			}
+
+        }
+
+    }
+
+}

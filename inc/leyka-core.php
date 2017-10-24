@@ -59,9 +59,9 @@ class Leyka {
 
     }
 
-    /** Initialize the plugin by setting localization, filters, and administration functions. */
+    /** Initialize the plugin by setting up localization, filters, administration functions etc. */
     private function __construct() {
-
+        
         if( !get_option('leyka_permalinks_flushed') ) {
 
             function leyka_rewrite_rules() {
@@ -76,11 +76,8 @@ class Leyka {
 
         // By default, we'll assume some errors in the payment form, so redirect will get us back to it:
         $this->_payment_form_redirect_url = wp_get_referer();
-
-        // Load public-facing style sheet and JavaScript:
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_styles')); // wp_footer
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts')); // wp_footer
-        add_action('wp_enqueue_scripts', array($this, 'localize_scripts')); // wp_footer
+        
+        $this->load_public_cssjs();
 
         add_action('init', array($this, 'register_post_types'), 1);
 
@@ -115,7 +112,11 @@ class Leyka {
 
         function leyka_get_posts(WP_Query $query) {
 
-            if( !is_admin() && $query->is_main_query() && $query->is_post_type_archive(Leyka_Donation_Management::$post_type)) {
+            if(is_admin() || !$query->is_main_query()) {
+                return;
+            }
+
+            if($query->is_post_type_archive(Leyka_Donation_Management::$post_type)) {
 
                 $query->set('post_status', 'funded');
 
@@ -140,6 +141,106 @@ class Leyka {
 
         }
         add_action('pre_get_posts', 'leyka_get_posts', 1);
+
+        function leyka_success_page_widget_template($content) {
+
+            if(is_page(leyka_options()->opt('success_page')) && leyka_options()->opt('show_success_widget_on_success')) {
+
+                ob_start();
+                include(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-success-widget.php');
+                $content = ob_get_clean();
+
+            }
+
+            return $content;
+
+        }
+        add_filter('the_content', 'leyka_success_page_widget_template', 1);
+
+        function leyka_failure_page_widget_template($content) {
+
+            if(is_page(leyka_options()->opt('failure_page')) && leyka_options()->opt('show_failure_widget_on_failure')) {
+
+                ob_start();
+                include(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-failure-widget.php');
+                $content = ob_get_clean();
+
+            }
+
+            return $content;
+
+        }
+        add_filter('the_content', 'leyka_failure_page_widget_template', 1);
+        
+        function reinstall_cssjs_in_giger() {
+            $theme = wp_get_theme();
+            if($theme && ($theme->template == 'giger' || $theme->template == 'giger-kms') && !is_singular('leyka_campaign')) {
+        
+                $is_cssjs_reqiured = false;
+                
+                if(get_the_ID() == leyka_options()->opt('failure_page') || get_the_ID() == leyka_options()->opt('success_page')) {
+                    $is_cssjs_reqiured = true;
+                }
+                elseif(leyka_form_is_screening()) {
+                    $is_cssjs_reqiured = true;
+                }
+                
+                if($is_cssjs_reqiured) {
+                    $leyla_template_data = leyka_get_current_template_data();
+                    
+                    if($leyla_template_data['id'] == 'revo') {
+                        $leyka = leyka();
+                        $leyka->load_public_cssjs(); // force add leyka cssjs in giger for revo leyka theme
+                    }
+                }
+        
+            }
+        }
+        add_action('template_redirect', 'reinstall_cssjs_in_giger', 90); # is important, in giger problem code run with priority 80
+        
+        if( !is_admin() ) {
+
+            add_action('wp_head', 'leyka_inline_scripts');
+            function leyka_inline_scripts(){
+
+//                $colors = array('#07C7FD', '#05A6D3', '#8CE4FD'); // Leyka blue
+                $colors = array('#1db318', '#1aa316', '#acebaa'); // Leyka green
+
+                // detect if we have JS at all... ?>
+
+                <script>
+                    document.documentElement.classList.add("leyka-js");
+                </script>
+                <style>
+                    :root {
+                        --color-main: 		<?php echo $colors[0];?>;
+                        --color-main-dark: 	<?php echo $colors[1];?>;
+                        --color-main-light: <?php echo $colors[2];?>;
+                    }
+                </style>
+                <?php
+            }
+
+            function leyka_template_init_include() {
+                if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type)) { // Include template init script
+
+                    $campaign = new Leyka_Campaign(get_queried_object_id());
+                    $template = leyka_get_current_template_data($campaign);
+
+                    if($template && isset($template['file'])) {
+
+                        $init_file = LEYKA_PLUGIN_DIR.'templates/leyka-'.$template['id'].'/leyka-'.$template['id'].'-init.php';
+                        if(file_exists($init_file)) {
+                            require_once($init_file);
+                        }
+
+                    }
+
+                }
+            }
+            add_action('wp_head', 'leyka_template_init_include');
+
+        }
 
         /** Embed campaign URL handler: */
         function leyka_template_include($template) {
@@ -185,6 +286,13 @@ class Leyka {
         do_action('leyka_initiated');
 
     }
+    
+    public function load_public_cssjs() {
+        // Load public-facing style sheet and JavaScript:
+        add_action('wp_enqueue_scripts', array($this, 'enqueue_styles')); // wp_footer
+        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts')); // wp_footer
+        add_action('wp_enqueue_scripts', array($this, 'localize_scripts')); // wp_footer
+    }
 
     public function parse_request() {
 
@@ -193,8 +301,18 @@ class Leyka {
             $request = explode('leyka/service', $_SERVER['REQUEST_URI']);
             $request = explode('/', trim($request[1], '/'));
 
-            if($request[0] == 'do_recurring') { // Recurrents processing URL
+            if($request[0] == 'do_recurring') { // Recurring payments processing URL
                 $this->_do_active_recurrents_rebilling();
+            } else if($request[0] == 'cancel_recurring' && !empty($request[1]) && !empty($request[2])) {
+
+                $donation = new Leyka_Donation($request[1]);
+                $init_recurrent_donation = Leyka_Donation::get_init_recurrent_donation($donation);
+                $hash = md5($donation->id.'_'.$init_recurrent_donation->id.'_leyka_cancel_recurring_subscription');
+
+                if($donation && $hash == $request[2]) {
+                    do_action("leyka_{$donation->gateway_id}_cancel_recurring_subscription", $donation);
+                }
+
             } else { // Gateway callback URL
 
                 // Callback URLs are: some-website.org/leyka/service/{gateway_id}/{action_name}/
@@ -465,8 +583,6 @@ class Leyka {
                 delete_option('leyka_options_installed');
             }
 
-//            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
-
             foreach(leyka_options()->get_options_names() as $name) {
 
                 $option = get_option("leyka_$name");
@@ -618,7 +734,6 @@ class Leyka {
         }
 
         if($leyka_last_ver && $leyka_last_ver <= '2.2.14') {
-
             if(in_array('chronopay-chronopay_card_rebill', (array)get_option('leyka_pm_available'))) {
 
                 $pm_order_parts = explode('&', get_option('leyka_pm_order'));
@@ -632,7 +747,6 @@ class Leyka {
                 }
 
             }
-
         }
 
         /** Set a flag to flush permalinks (needs to be done a bit later, than this activation itself): */
@@ -665,36 +779,71 @@ class Leyka {
 
         if(stristr($_SERVER['REQUEST_URI'], 'leyka-process-donation') !== FALSE) { // Leyka service URL
 
-            wp_enqueue_style($this->_plugin_slug.'-redirect-styles', LEYKA_PLUGIN_BASE_URL.'css/gateway-redirect-page.css', array(), LEYKA_VERSION);
+            wp_enqueue_style(
+                $this->_plugin_slug.'-redirect-styles',
+                LEYKA_PLUGIN_BASE_URL.'css/gateway-redirect-page.css',
+                array(),
+                LEYKA_VERSION
+            );
             return;
 
+        }
+        
+        // Revo template or success/failure widgets styles:
+        if(leyka_revo_template_displayed() || leyka_success_widget_displayed() || leyka_failure_widget_displayed()) {
+            wp_enqueue_style(
+                $this->_plugin_slug.'-revo-plugin-styles',
+                LEYKA_PLUGIN_BASE_URL.'assets/css/public.css',
+                array(),
+                LEYKA_VERSION
+            );
         }
 
         if( !leyka_form_is_screening() ) {
             return;
         }
-
-        wp_enqueue_style($this->_plugin_slug.'-plugin-styles', LEYKA_PLUGIN_BASE_URL.'css/public.css', array(), LEYKA_VERSION);
+        
+        // Enqueue the normal Leyka CSS just in case some other plugin elements exist on page:
+        wp_enqueue_style(
+            $this->_plugin_slug.'-plugin-styles',
+            LEYKA_PLUGIN_BASE_URL.'css/public.css',
+            array(),
+            LEYKA_VERSION
+        );
 
     }
 
     /** Register and enqueues public-facing JavaScript files. */
     public function enqueue_scripts() {
 
+        // Revo template or success/failure widgets JS:
+        if(leyka_revo_template_displayed() || leyka_success_widget_displayed() || leyka_failure_widget_displayed()) {
+            wp_enqueue_script(
+                $this->_plugin_slug.'-revo-public',
+                LEYKA_PLUGIN_BASE_URL.'assets/js/public.js',
+                array('jquery',),
+                LEYKA_VERSION,
+                true
+            );
+        }
+        
         if( !leyka_form_is_screening() ) {
             return;
         }
-
+        
+        // Enqueue the normal Leyka scripts just in case some other plugin elements exist on page:
         wp_enqueue_script(
             $this->_plugin_slug.'-modal',
-            LEYKA_PLUGIN_BASE_URL.'js/jquery.easyModal.min.js', array('jquery'),
+            LEYKA_PLUGIN_BASE_URL.'js/jquery.easyModal.min.js',
+            array('jquery'),
             LEYKA_VERSION,
             true
         );
 
         wp_enqueue_script(
             $this->_plugin_slug.'-public',
-            LEYKA_PLUGIN_BASE_URL.'js/public.js', array('jquery', $this->_plugin_slug.'-modal'),
+            LEYKA_PLUGIN_BASE_URL.'js/public.js',
+            array('jquery', $this->_plugin_slug.'-modal'),
             LEYKA_VERSION,
             true
         );
@@ -707,15 +856,20 @@ class Leyka {
 
         $js_data = apply_filters('leyka_js_localized_strings', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
+            'homeurl' => home_url('/'),
             'correct_donation_amount_required' => __('Donation amount must be specified to submit the form', 'leyka'),
             'donation_amount_too_great' => __('Donation amount you entered is too great (maximum %s allowed)', 'leyka'),
             'donation_amount_too_small' => __('Donation amount you entered is too small (minimum %s allowed)', 'leyka'),
+            'amount_incorrect' => __('Set an amount from %s to %s <span class="curr-mark">%s</span>', 'leyka'),
+            'donor_name_required' => __('Enter your name', 'leyka'),
+            'oferta_agreement_required' => __('You have to agree with the terms of the donation service', 'leyka'),
+
             'checkbox_check_required' => __('This checkbox must be checked to submit the form', 'leyka'),
-            'amount_incorrect' => __('The amount must be filled with non-zero, non-negative number', 'leyka'),
             'text_required' => __('This field must be filled to submit the form', 'leyka'),
             'email_required' => __('Email must be filled to submit the form', 'leyka'),
-            'email_invalid' => __('You have entered an invalid email', 'leyka'),
+            'email_invalid' => __('Enter an email in the some@email.com format', 'leyka'),
             'must_not_be_email' => __("You shouldn't enter an email here", 'leyka'),
+            'value_too_long' => __('Entered value is too long', 'leyka'),
 //            'email_regexp' => '',
         ));
 
@@ -991,10 +1145,23 @@ class Leyka {
 
         }
 
-        if($donor_name && !leyka_validate_email(leyka_pf_get_donor_email_value())) {
+        $donor_email = leyka_pf_get_donor_email_value();
+        if($donor_email && !leyka_validate_email($donor_email)) {
 
             $error = new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
             $this->add_payment_form_error($error);
+
+        }
+
+        if(leyka_options()->opt('show_donation_comment_field') && leyka_options()->opt('donation_comment_max_length')) {
+
+            $donor_comment = leyka_pf_get_donor_comment_value();
+            if($donor_comment && mb_strlen($donor_comment) > leyka_options()->opt('donation_comment_max_length')) {
+
+                $error = new WP_Error('donor_comment_too_long', sprintf(__('Entered comment is too long (maximum %d characters allowed)', 'leyka'), leyka_options()->opt('donation_comment_max_length')));
+                $this->add_payment_form_error($error);
+
+            }
 
         }
 
@@ -1016,6 +1183,8 @@ class Leyka {
             return;
 
         }
+
+        leyka_remember_donation_data(array('donation_id' => $donation_id));
 
         do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
 
@@ -1155,7 +1324,9 @@ __('Radio options for each payment method', 'leyka');
 __('Toggles', 'leyka');
 __('Toggled options for each payment method', 'leyka');
 __('Neo', 'leyka');
-__('Styled after recent te-st.ru works, more modern variant of Toggles form template', 'leyka');
+__('An updated version of "Toggles" form template', 'leyka');
+__('Revo', 'leyka');
+__('A modern and lightweight step-by-step form template', 'leyka');
 __('single', 'leyka');
 __('rebill', 'leyka');
 __('correction', 'leyka');

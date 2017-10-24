@@ -258,17 +258,26 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                     $donation = $this->get_donation_by_transaction_id($_POST['TransactionId']);
 
-                    $init_recurrent_payment = $this->get_init_recurrent_donation($_POST['SubscriptionId']);
+                    $init_recurring_donation = $this->get_init_recurrent_donation($_POST['SubscriptionId']);
 
-                    $donation->init_recurring_donation_id = $init_recurrent_payment->id;
-                    $donation->payment_title = $init_recurrent_payment->title;
-                    $donation->campaign_id = $init_recurrent_payment->campaign_id;
-                    $donation->payment_method_id = $init_recurrent_payment->pm_id;
-                    $donation->gateway_id = $init_recurrent_payment->gateway_id;
-                    $donation->donor_name = $init_recurrent_payment->donor_name;
-                    $donation->donor_email = $init_recurrent_payment->donor_email;
-                    $donation->amount = $init_recurrent_payment->amount;
-                    $donation->currency = $init_recurrent_payment->currency;
+                    $donation->init_recurring_donation_id = $init_recurring_donation->id;
+                    $donation->payment_title = $init_recurring_donation->title;
+                    $donation->campaign_id = $init_recurring_donation->campaign_id;
+                    $donation->payment_method_id = $init_recurring_donation->pm_id;
+                    $donation->gateway_id = $init_recurring_donation->gateway_id;
+                    $donation->donor_name = $init_recurring_donation->donor_name;
+                    $donation->donor_email = $init_recurring_donation->donor_email;
+                    $donation->amount = $init_recurring_donation->amount;
+                    $donation->currency = $init_recurring_donation->currency;
+
+                    // If init donation was made before the commission was set, apply a commission to the recurring one:
+                    if(
+                        $init_recurring_donation->amount == $init_recurring_donation->amount_total &&
+                        $donation->amount == $donation->amount_total &&
+                        leyka_get_pm_commission($donation->pm_full_id) > 0.0
+                    ) {
+                        $donation->amount_total = leyka_calculate_donation_total_amount($donation);
+                    }
 
                 } else { // Single or init recurring donation
                     $donation = new Leyka_Donation((int)$_POST['InvoiceId']);
@@ -507,17 +516,20 @@ class Leyka_CP_Card extends Leyka_Payment_Method {
         $this->_id = 'card';
         $this->_gateway_id = 'cp';
 
-        $this->_label_backend = __('Payment with Banking Card', 'leyka');
-        $this->_label = __('Banking Card', 'leyka');
+        $this->_label_backend = __('Bank card', 'leyka');
+        $this->_label = __('Bank card', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/cp/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/cp/icons/master.png',
         ));
+//        $this->_main_icon = '';
 
         $this->_supported_currencies[] = 'rur';
 
         $this->_default_currency = 'rur';
+
+        $this->_processing_type = 'custom';
 
     }
 

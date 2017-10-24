@@ -15,6 +15,7 @@ class Leyka_Admin_Setup {
         }
 
         return self::$_instance;
+
     }
 
 	private function __construct() {
@@ -23,8 +24,7 @@ class Leyka_Admin_Setup {
 
 		add_action('admin_enqueue_scripts', array($this, 'enqueue_cssjs')); // Load admin style sheet and JavaScript
 
-        /** Remove needless metaboxes */
-        add_action('admin_init', array($this, 'remove_seo')); // Remove needless columns and metaboxes
+        add_action('admin_init', array($this, 'pre_admin_actions'));
 
         add_action('wp_ajax_leyka_send_feedback', array($this, 'ajax_send_feedback'));
 
@@ -46,6 +46,7 @@ class Leyka_Admin_Setup {
         }
 
         return $links;
+
     }
 
     // A little function to support the full abilities of the metaboxes on any plugin's page:
@@ -58,16 +59,58 @@ class Leyka_Admin_Setup {
         </form>
     <?php }
 
-    public function remove_seo() {
+    public function pre_admin_actions() {
 
-        // WordPress SEO by Yoast's metabox on donation editing page:
+        // Remove Yoast SEO metaboxes and columns:
         if( !empty($GLOBALS['wpseo_metabox']) ) {
 
             $seo_titles_options = get_option('wpseo_titles');
             $seo_titles_options['hideeditbox-leyka_donation'] = true;
 
             update_option('wpseo_titles', $seo_titles_options);
+
         }
+
+        // Leyka admin notices:
+        if(isset($_GET['leyka_reset_msg'])) {
+            update_option('leyka_admin_notice_'.$_GET['leyka_reset_msg'], 0);
+        }
+
+        if(isset($_GET['leyka-hide-notice']) && isset($_GET['_leyka_notice_nonce'])) {
+
+            if( !wp_verify_nonce($_GET['_leyka_notice_nonce'], 'leyka_hide_notice_nonce') ) {
+                wp_die(__('Action failed. Please refresh the page and retry.', 'leyka'));
+            }
+
+            if( !current_user_can('manage_options') ) {
+                wp_die(__('Action failed: insufficient permissions.', 'leyka'));
+            }
+
+            update_option('leyka_admin_notice_'.sanitize_text_field($_GET['leyka-hide-notice']), 1);
+
+        }
+
+        if( !get_option('leyka_admin_notice_pd') ) {
+
+            function leyka_admin_notice_pd() {?>
+
+                <div id="message" class="updated leyka-message">
+                <a class="leyka-message-close notice-dismiss" href="<?php echo esc_url(wp_nonce_url(remove_query_arg('leyka_reset_msg', add_query_arg('leyka-hide-notice', 'pd')), 'leyka_hide_notice_nonce', '_leyka_notice_nonce'));?>">
+                    <?php _e('Dismiss', 'leyka');?>
+                </a>
+                <p><?php printf(esc_html__('Hello! Thank you for updating Leyka. Please make sure you reviewed %snecessary personal data usage settings%s.', 'leyka'), '<a href="'.admin_url('admin.php?page=leyka_settings&stage=additional#terms_of_pd').'">', '</a>');?></p>
+                <p class="submit">
+                    <a class="button-secondary" href="<?php echo admin_url('admin.php?page=leyka_settings&stage=additional#terms_of_pd');?>">
+                        <?php _e('Open personal data usage settings', 'leyka');?>
+                    </a>
+                </p>
+            </div>
+            <?php
+            }
+            add_action('admin_notices', 'leyka_admin_notice_pd');
+
+        }
+
     }
 
     /*
@@ -136,6 +179,7 @@ class Leyka_Admin_Setup {
         if( !empty($submenu['leyka']) ) {
             $submenu['leyka'] = apply_filters('leyka_admin_menu_order', $submenu['leyka']);
 		}
+
     }
 
 	/** Settings link in plugin list table **/
@@ -144,6 +188,7 @@ class Leyka_Admin_Setup {
 		$links[] = '<a href="'.admin_url('admin.php?page=leyka_settings').'">'.__( 'Settings', 'leyka').'</a>';
 
 		return $links;
+
 	}
 
 	/** Displaying dashboard **/
@@ -393,7 +438,8 @@ class Leyka_Admin_Setup {
 
         /** Process settings change */
 	    if( !empty($_POST["leyka_settings_{$current_stage}_submit"]) /*&& wp_verify_nonce('_leyka_nonce', "leyka_settings_{$current_stage}")*/ ) {
-			do_action("leyka_settings_{$current_stage}_submit", $current_stage);
+//			do_action("leyka_settings_{$current_stage}_submit", $current_stage);
+			do_action("leyka_settings_submit", $current_stage);
 		}?>
 
 		<div class="wrap">

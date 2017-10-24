@@ -3,9 +3,9 @@
  * Fired when the plugin is uninstalled.
  */
 
-if( !get_option('leyka_delete_plugin_options') && !get_option('leyka_delete_plugin_data') ) {
-    exit;
-}
+//if( !get_option('leyka_delete_plugin_options') && !get_option('leyka_delete_plugin_data') ) {
+//    exit;
+//}
 
 if(get_option('leyka_delete_plugin_data')) { // Completely remove all campaigns & donations data
 
@@ -24,6 +24,11 @@ if(get_option('leyka_delete_plugin_data')) { // Completely remove all campaigns 
     $failure_page = get_post(get_option('leyka_failure_page'));
     if(stristr($failure_page->post_name, 'sorry-donation-failure') !== false) {
         wp_delete_post($failure_page->ID, true);
+    }
+
+    $pd_terms_page = get_post(get_option('leyka_pd_terms_page'));
+    if(stristr($pd_terms_page->post_name, 'personal-data-usage-terms') !== false) {
+        wp_delete_post($pd_terms_page->ID, true);
     }
 
 }

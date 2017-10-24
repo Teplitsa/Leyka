@@ -73,6 +73,9 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
         $this->_supported_currencies[] = 'rur';
 
         $this->_default_currency = 'rur';
+
+        $this->_processing_type = 'static'; // We should display custom data instead of the donors data & submit step
+
     }
 
     protected function _set_dynamic_attributes() {
@@ -106,6 +109,11 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
             )
         );
     }
+
+    public function display_static_data() {
+        echo apply_filters('leyka_the_content', leyka_options()->opt_safe('text_box_details'));
+    }
+
 }
 
 function leyka_add_gateway_text() { // Use named function to leave a possibility to remove/replace it on the hook

@@ -1,0 +1,747 @@
+/** == Form layout and states (_form_layout.scss) == **/
+
+/* NO JS basics */
+.leyka-pf__module {
+    box-sizing:border-box;
+	position: relative;
+	border: 1px solid $color-border-light;
+	border-radius: 10px;
+	background: $color-white;
+	transition: all 0.35s;
+	
+    *, *::after, *::before {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+	
+}
+
+
+.leyka-pf__form {
+	max-width: 400px;
+	margin: 0 auto;
+}
+
+
+.inpage-card__action,
+.leyka-pf__redirect,
+.leyka-pf__overlay,
+.leyka-pf__close,
+.oferta,
+.step__selection,
+.step__action {
+	display: none;
+}
+
+.step__title {
+	text-align: center;
+	padding: $base*2 0 $base*3;
+}
+
+.step__fields {
+	padding: 0 $base*2;
+
+	@include for(small-screens) {
+		padding: 0 $base*3;
+	}
+
+	&.static-text {
+		max-width: 300px;
+		margin: $base*3 auto 0;
+
+		p { margin-bottom: $base; }
+	}
+}
+
+.step__note {
+	text-align: center;
+	padding: $base*2;
+
+	p {
+		margin: 0;
+		font-size: 11px;
+		line-height: 14px;
+	}
+
+	@include for(small-screens) {
+		padding: $base*2 $base*3;
+	}
+}
+
+// donors step
+.donor__textfield {
+	margin-bottom: $base*3;
+}
+
+.donor__submit {
+	margin-bottom: $base*2;
+}
+
+/** Card layout **/
+.leyka-pf.card-2col:not(.leyka-pf--active) {
+	.inpage-card {
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: flex-start;
+		align-items: stretch;
+	}
+
+	.inpage-card__thumbframe {
+		flex: 0 1 auto;
+		width: 50%;
+		border-top-left-radius: 10px;
+		border-bottom-left-radius: 10px;
+	}
+
+	.inpage-card__content {
+		flex: 0 1 auto;
+		width: 100%;
+		box-sizing:border-box;
+		
+		.pic-first-step {
+		  display:none;
+        }
+	}
+
+	.inpage-card__thumbframe + .inpage-card__content {
+		width: 50%;
+	}
+
+	.inpage-card__thumb {
+		height: 100%;
+		min-height: 230px;
+		padding: 0;
+		border-top-right-radius: 0;
+		border-bottom-right-radius: 0;
+		border-top-left-radius: 10px;
+		border-bottom-left-radius: 10px;
+	}
+}
+
+
+/** JS state */
+
+/* Init layout */
+.leyka-js {
+	.leyka-pf__close {
+		@include close-mark(green);
+
+		display: none;
+		position: absolute;
+		top: 4px;
+		right: 4px;
+	}
+
+	.leyka-pf__overlay {
+		display: none;
+		opacity: 0;
+		transition: opacity 0.35s;
+	}
+
+	.leyka-pf__redirect {
+		display: none;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 10150;
+		border-radius: 10px;
+	}
+
+    .leyka-pf__final-screen {
+        position: relative;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10100;
+        border-radius: 10px;
+    }
+
+	.leyka-pf__form {
+		display: none;
+	}
+
+	.inpage-card__action {
+		display: block;
+	}
+}
+
+/* Open state */
+.leyka-js {
+	.leyka-pf--active {
+	
+        .inpage-card__content {
+            .no-supporters {
+            
+                width:100%;
+                align-items: center;
+                text-align:center;
+                
+                .pic-first-step {
+                    margin:20% auto 0px auto;
+                    display:block;
+                    fill:$color_main;
+                    max-width:50%;
+                    height: 200px;
+                }
+                
+                .lets-do-first-step-text {
+                    width:85%;
+                    margin:0px auto;
+                }
+            }
+        }
+	
+
+		.leyka-submit-errors {
+			width: 100%;
+			z-index: 200;
+			position: absolute;
+			left: 0;
+			bottom: 0;
+			margin-top: 0;
+		}
+
+		.leyka-pf__overlay {
+			display: block;
+			position: fixed;
+			width: 100%;
+			height: 100%;
+			left: 0;
+			top: 0;
+			transform: translateZ(0);
+			background: transparentize($color-white, 0.1);
+			z-index: 10000;
+			opacity: 1;
+		}
+
+		.leyka-pf__module {
+
+            @include module-height(460px);
+
+            &.leyka-with-comment {
+                @include module-height(570px);
+            }
+
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			width: 90%;
+			transform: translate(-50%, -50%);
+			z-index: 10010;
+
+			max-width: 400px;
+			overflow: hidden;
+
+			@include for(small-screens) {
+				box-shadow: 0 2px 25px rgba(0, 0, 0, 0.25);
+			}
+		}
+
+		.leyka-pf__close {
+			display: block;
+			z-index: 10120;
+		}
+
+		.inpage-card__action {
+			display: none;
+		}
+
+		//mobile
+		.leyka-pf__card {
+			display: none;
+			z-index: 10;
+		}
+
+		.leyka-pf__form {
+			display: block;
+			position: relative;
+			z-index: 10;
+			max-width: none;
+			margin: 0;
+		}
+
+		.leyka-pf__redirect--open {
+			display: block;
+		}
+
+	}
+}
+
+/* Open in larger screens - 2 colums support */
+@include for(medium-screens) {
+.leyka-js {
+	.leyka-pf--active {
+		.leyka-pf__module {
+			max-width: 900px;
+
+			display: flex;
+			flex-flow: row nowrap;
+			justify-content: space-between;
+			align-items: stretch;
+
+			&:after { //divider
+				content: '';
+				display: block;
+				width: 1px;
+				height: 100%;
+				background: $color-border-light;
+				position: absolute;
+				top: 0;
+				left: 50%;
+				z-index: 108;
+			}
+		}
+
+		.leyka-pf__card {
+			width: 50%;
+			display: block;
+			border-top-right-radius: 0;
+
+			.inpage-card__thumb {
+				border-top-right-radius: 0;
+			}
+		}
+
+		.leyka-pf__form {
+			width: 50%;
+		}
+
+	}
+
+	.leyka-pf--active {
+        &.leyka-pf--oferta-open, &.leyka-pf--pd-open { // remove divider
+            .leyka-pf__module:after {
+                display: none;
+            }
+        }
+    }
+}
+} //mq
+
+
+/* Oferta */
+.leyka-js {
+	.leyka-pf--active.leyka-pf--oferta-open {
+
+		.leyka-pf__module {
+			max-width: 900px;
+			max-height: 700px;
+		}
+
+		.leyka-pf__oferta {
+			display: block;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 10015;
+			border-radius: 10px;
+			padding: $base*3 9% 0;
+		}
+
+		.oferta__frame {
+			width: 100%;
+			padding: 0 20px 56px;
+			height: 100%;
+			overflow-y: scroll;
+		}
+
+		.oferta__flow {
+			padding-bottom: 56px + 20px;
+		}
+
+		.oferta__action {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			z-index: 10120;
+			padding: $base;
+			text-align: center;
+			background: $color-white;
+			border-top: 1px solid $color-border-light;
+
+			a {
+				@include button(small);
+			}
+		}
+	}
+
+    .leyka-pf--active.leyka-pf--pd-open {
+
+        .leyka-pf__module {
+            max-width: 900px;
+            max-height: 700px;
+        }
+
+        .leyka-pf__pd {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10015;
+            border-radius: 10px;
+            padding: $base*3 9% 0;
+        }
+
+        .pd__frame {
+            width: 100%;
+            padding: 0 20px 56px;
+            height: 100%;
+            overflow-y: scroll;
+        }
+
+        .pd__flow {
+            padding-bottom: 56px + 20px;
+        }
+
+        .pd__action {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 10120;
+            padding: $base;
+            text-align: center;
+            background: $color-white;
+            border-top: 1px solid $color-border-light;
+
+            a {
+                @include button(small);
+            }
+        }
+    }
+}
+
+
+/* Steps */
+
+/* Common steps layout */
+.leyka-js {
+	.leyka-pf__form {
+		.step {
+
+            @include module-height(460px);
+
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			border-radius: 10px;
+			z-index: 5;
+			visibility: hidden;
+			opacity: 0;
+			transition: opacity 0.35s;
+
+			display: flex;
+			flex-flow: column nowrap;
+			align-items: center;
+			justify-content: flex-start;
+		}
+
+        &.leyka-with-comment .step {
+            @include module-height(570px);
+        }
+
+		.step--person {
+			justify-content: space-between;
+		}
+
+		.step--active {
+			visibility: visible;
+			opacity: 1;
+			z-index: 100;
+		}
+
+
+		//cells
+		.step__selection {
+			display: flex;
+			flex-flow: row wrap;
+			align-items: center;
+			justify-content: center;
+
+			padding: $base $base*2 $base*1.5;
+			white-space: nowrap;
+			width: 100%;
+
+			.leyka-js-another-step {
+				padding: 2px 4px 2px 0;
+				max-width: 90%;
+				overflow: hidden;
+				text-overflow: ellipsis;
+
+				@include for(medium-screens) {
+					max-width: 240px;
+				}
+
+                .remembered-monthly {
+                }
+			}
+		}
+
+		.step__action  {
+			display: block;
+			text-align: center;
+		}
+
+		//modifiers
+		.step__title--amount {
+			padding-top: $base*5;
+			@include for(small-screens) {
+				padding-top: $base*4;
+			}
+		}
+
+		.step__action--amount {
+			padding: $base*2 0;
+		}
+
+		.step__border {
+			width: 100%;
+			overflow-y:auto;
+		}
+
+		@include for(large-screens) {
+			.step__border {
+				width: 86%;
+				padding-top: 8px;
+				border-width: 7px;
+				border-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACYAAAAmCAYAAACoPemuAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QUXFgUJCOIR8gAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAADkklEQVRYw71Y2XLqOhBsyVpskzikKv//iQkQLLTYmvtAja7BwCHERI8qkFuzdPdI4M5FRHS+l3NGSgl934OIMI4jhBBo2xZt20IIMTtHXNq8sMSjwIgIfd8jxoiUEpRSyDmDiFBVFZRSaJoGxpiHgCk8uGKMCCGAiPDx8YGqqkoUnXNwzoGIZsDuXfI3wABgtVpByv+PkVKibVtUVYVxHHGhAp4HLOeMYRggpUTTNLNaYnAAEEL4O2DDMBRgU7Dn4KWUfwvMew8iOonUFCQAKHUs35TSDPSixc8f8N4jxghjDJqmufp7rTW01hjHEZvNBk3TzMAvAmyz2ZSb13WN19fX2Ye40IUQpc6klNjv9zgcDj9qhLuB1XVdUnQeKU6rEOLk49MOZTK+GxjduEYIAfv9HlprdF0nsMDa7Xbkvcd6vYbW+rHizzlDCHHzgEfp5l8NIW/9+XA4zGjht4u71Xt/WyunqSQihBAQQij1MBHkRVJJRLTdbhFjhLUWdV1DKTW7vCAiijHCOYdxHE84SWtdOmtJYDln7HY7xBghhIBSCkopGGNgjDk2Us6ZdrsdQgioqgpt2yLnDKUUtNYF5JLAmBeZQqY1Z609Zmi/35P3vmxcq6elgZ2vw+GAvu8hpTwaA07hNVBE9LBDuALsKk++v78X4ymZHG913kLBungWp1AIUQwmEUGxwbvkDJYGda4Ul8SfXbAUQmAYhhNTd00Dn5nKKSghBORqtYLWGl9fX1dJb+lUXjqPLTkzgxjHkZxzxdBJKZm30DRNkaOlu5JFnZWFm9Bai67rjgRLRIgxIsZY3CkPEl3XPYVgnXNFXbgBOFrGmFNJmvp57z1CCDDG4O3tbVFgPEWxulhrYa09SfHMj0kpizRst1t47x8ewW5ZKaUU1uv1VZqS95jDYRgWtTxsNm9x501g3AhLrpTSkaf+ce7ddbPdbolF3Vp7lTDPpyfWQY76vU74R1MSd+zLywvquj659dT3T9P2/f1d+PEn0b87Yt57Ylebc0Zd1zfdCItxSgnGmHIRY8yyEeP0WWvx+fmJlBJSSrO0TtMXY0Rd1+i67vmTuJSyqMF5t04HDE4td/afPBFYa08cyKVnAqYFHj7+DBgAOOdmYxgRlTq8NGQ8FRibunEcZ+Byzuj7HgB+pRgPvyjyG2sIAc654oKHYYDWusjaw/boN0MEEZ08a1ZVBSEE2ONdSuO9ZuA/JuV2YiK5ohEAAAAASUVORK5CYII=") 10 10 round;
+				border-style: solid;
+			}
+		}
+	}
+}
+
+/** History **/
+.bottom-form__history,
+.inpage-card__history {
+	visibility: hidden;
+	z-index: -1;
+	opacity: 0;
+	transition: opacity 0.35s;
+	padding: $base*3 $base*2;
+	position: absolute;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	box-sizing: border-box;
+}
+
+.leyka-js {
+	//in page
+	.inpage-card {
+		position: relative;
+		overflow:hidden;
+	}
+
+	.leyka-pf--history-open {
+		&.leyka-pf-bottom { @include module-height(505px); }
+
+            .inpage-card {
+                @include module-height(505px);
+            }
+
+		.bottom-form__history ,
+		.inpage-card__history {
+			visibility: visible;
+			z-index: 100;
+			opacity: 1;
+
+			border-radius: 10px;
+			background: $color-border-tiny;
+		}
+
+		.inpage-card__history {
+			height: calc(100% + 1px);
+			top: -1px;
+		}
+
+		.history__close {
+			@include close-mark();
+			position: absolute;
+			top: 4px;
+			right: 4px;
+		}
+
+		.history__title {
+			padding-bottom: $base*2;
+		}
+
+		.history__list {
+			width: 100%;
+			padding: 0 10px 0 0;
+			height: calc(100% - 70px);
+			overflow-y: scroll;
+		}
+
+		.history__action {
+			padding: $base 0;
+
+			a {
+				@include body-text();
+				display: inline-block;
+				color: $color-text;
+				background: $color-white;
+				padding: $base;
+				text-align: center;
+				border: 1px solid $color-border-normal;
+				border-radius: 3px;
+				width: 100%;
+				transition: all 0.35s;
+
+				&:hover {
+					border-color: $color-border-dark;
+				}
+			}
+		}
+	}
+
+    .leyka-pf--history-open .leyka-with-comment .inpage-card {
+
+        @include module-height(570px);
+
+        //max-height: 505px;
+        //height: 97vh;
+    }
+
+	//in open module
+	.leyka-pf--active.leyka-pf--history-open {
+		.inpage-card__history {
+			border-top-right-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+	}
+}
+
+.leyka-pf__final-screen {
+    background: $color-white;
+    text-align:center;
+
+    .icon {
+        width:100%;
+        margin-top: $base*2.2;
+        max-height:156px;
+        height:110px;
+    }
+
+    .text {
+        @include thankyou-title;
+        width:100%;
+
+        div {
+            display:inline-block;
+            max-width:328px;
+        }
+    }
+
+    .informyou-redirect-text {
+        display:none;
+        @include informyou-text;
+        color: $color-text-semi;
+        width:100%;
+        padding-top:$base * 8;
+
+        div {
+            display:inline-block;
+            max-width:170px;
+        }
+    }
+
+    .leyka-logo {
+        position:relative;
+        width:100%;
+        height:20px;
+        margin-top:35px;
+        background-image: url(../../img/final-leyka-logo.png);
+        background-repeat: no-repeat;
+        background-size: 64px 20px;
+        background-position: center center;
+    }
+
+    &.leyka-pf__final-thankyou {
+
+        .icon {
+        }
+
+        .thankyou-email-field {
+            width:100%;
+            margin-top: $base*4.8;
+            input {
+                max-width:305px;
+                margin:0px auto;
+            }
+        }
+
+        .thankyou-email-me-button {
+            padding-top: $base * 0.8;
+            input[type="submit"] {
+                @include button;
+                text-transform: none;
+            }
+        }
+
+        .thankyou-no-email {
+            margin-top: $base * 4;
+            a {
+                color: $color-text-semi;
+                @include no-thankyou-link;
+                box-shadow: none;
+                text-decoration: underline;
+            }
+        }
+
+
+    }
+
+    &.leyka-pf__final-informyou {
+        display:none;
+
+        .icon {
+        }
+    }
+
+    &.leyka-pf__final-error {
+
+        .icon {
+        }
+
+        .error-text {
+            @include error-text;
+            color: $color-text-semi;
+            width:100%;
+            margin-top:$base * 4;
+
+            div {
+                display:inline-block;
+                text-align:left;
+                max-width:440px;
+                min-width:250px;
+                width:60%;
+            }
+
+            a {
+                color: $color-link;
+                box-shadow: none;
+                text-decoration: underline;
+
+                &:visited {
+                    color: $color-link;
+                }
+            }
+
+            &:nth-child(4) {
+                margin-top:$base * 2;
+            }
+        }
+    }
+}

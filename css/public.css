@@ -413,7 +413,7 @@
   border-left: none;
   padding: 20px;
   margin-right: -1px;
-  max-width: 390px;
+  max-width: 400px;
   box-shadow: 1px 1px 3px rgba(240, 240, 240, 0.67);
 }
 
@@ -473,7 +473,7 @@
 #leyka-payment-form.leyka-tpl-radio .form-part {
   box-sizing: border-box; }
 #leyka-payment-form.leyka-tpl-radio .amount-selector {
-  margin: 12px 0 12px 20px; }
+  margin: 12px 0 0 20px; }
 #leyka-payment-form.leyka-tpl-radio .pm-selector {
   background: #f9f9f9;
   padding: 15px; }
@@ -502,6 +502,10 @@
   @inclide clearfix; }
   #leyka-payment-form.leyka-tpl-radio .freeze-field .amount {
     float: right; }
+
+.leyka-tpl-radio .leyka-recurring-field {
+    margin-left: 20px;
+}
 
 /* embed yandex form */
 #leyka-payment-form .yandex_money_quick .yandex_money_quick_code,
@@ -1112,8 +1116,15 @@ div[id*="leyka_donors_list"].wide .ldl-item {
     width: 30%;
     margin-bottom: 0; }
   div[id*="leyka_donors_list"].wide .ldl-item .purpose,
-  div[id*="leyka_donors_list"].wide .ldl-item .meta {
-    margin-left: 35%; }
+  div[id*="leyka_donors_list"].wide .ldl-item .meta,
+  div[id*="leyka_donors_list"].wide .ldl-item .donor-comment {
+    margin-left: 35%;
+  }
+    div[id*="leyka_donors_list"].wide .ldl-item .donor-comment {
+        margin-top: 10px;
+        font-size: 12px;
+        color: #9d9d9d;
+    }
 
 /** Elements **/
 .leyka-tpl-radio #leyka-copy,
@@ -1377,14 +1388,15 @@ text-decoration: underline;
 /* Hide the inputs placeholders: */
 .leyka-tpl-neo .rdc-textfield input::-webkit-input-placeholder { /* WebKit browsers */
     color: #fff;
+    opacity: 0;
 }
 .leyka-tpl-neo .rdc-textfield input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
     color: #fff;
-    opacity: 1;
+    opacity: 0;
 }
 .leyka-tpl-neo .rdc-textfield input::-moz-placeholder { /* Mozilla Firefox 19+ */
     color: #fff;
-    opacity: 1;
+    opacity: 0;
 }
 .leyka-tpl-neo .rdc-textfield input:-ms-input-placeholder { /* Internet Explorer 10+ */
     color: #fff;
@@ -1431,7 +1443,7 @@ text-decoration: underline;
     width: 100%;
     /*height: 100%;*/
     border: 1px solid #d1d1d1;
-    padding: 0 10px;
+    padding: 0;
     cursor: pointer;
 }
 
@@ -1479,7 +1491,10 @@ text-decoration: underline;
 }
 
 .leyka-tpl-neo .leyka_agree-error.field-error {
-    bottom: -15px;
+    bottom: 30px;
+}
+.leyka-tpl-neo .leyka_agree_pd-error.field-error {
+    bottom: -17px;
 }
 
 .leyka-tpl-neo label.checkbox {

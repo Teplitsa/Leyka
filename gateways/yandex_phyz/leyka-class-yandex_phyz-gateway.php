@@ -297,7 +297,7 @@ class Leyka_Yandex_Phyz_Card extends Leyka_Payment_Method {
         $this->_id = 'yandex_phyz_card';
         $this->_gateway_id = 'yandex_phyz';
 
-        $this->_label = __('Payment with Banking Card Yandex', 'leyka');
+        $this->_label = __('Bank card', 'leyka');
         $this->_label_backend = $this->_label;
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(

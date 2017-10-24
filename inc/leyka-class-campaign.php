@@ -230,7 +230,7 @@ class Leyka_Campaign_Management {
 			<input type="text" id="collected_target" disabled="disabled" value="<?php echo $campaign->total_funded;?>" class="widefat">
             <?php if(get_current_screen()->action != 'add') {?>
             <div class="recalculate-total-funded">
-                <a href="<?php echo add_query_arg(array('recalculate_total_funded' => 1,));?>" id="recalculate_total_funded" data-nonce="<?php echo wp_create_nonce('leyka_recalculate_total_funded_amount');?>" data-campaign-id="<?php echo $campaign->id;?>"><?php _e('Recalculate collected amount', 'leyka');?></a>
+                <a href="<?php echo add_query_arg(array('recalculate_total_funded' => 1,));?>" id="recalculate_total_funded" data-nonce="<?php echo wp_create_nonce('leyka_recalculate_total_funded_amount');?>" data-campaign-id="<?php echo $campaign->id;?>"><?php _e('Recalculate the collected amount', 'leyka');?></a>
                 <img src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/ajax-loader-h.gif';?>" id="recalculate_total_funded_loader" style="display: none;">
                 <div class="message error-message" id="recalculate_message"></div>
             </div>
@@ -248,11 +248,9 @@ class Leyka_Campaign_Management {
 					<div style="width:<?php echo $percentage;?>%" class="collected">&nbsp;</div>
 				</div>
 			</div>
-			
+
 			<?php if($campaign->target_state == 'is_reached') {?>        
-			<p>
-				<?php printf(__('Reached at: %s', 'leyka'), '<b>'.$campaign->date_target_reached.'</b>');?>
-			</p>            
+			<p><?php printf(__('Reached at: %s', 'leyka'), '<b>'.$campaign->date_target_reached.'</b>');?></p>
 			<?php }?>
 
 		<?php }?>
@@ -263,10 +261,11 @@ class Leyka_Campaign_Management {
 
         <fieldset id="campaign-finished" class="metabox-field campaign-field campaign-finished">
             <label for="is-finished">
-                <input type="checkbox" id="is-finished" name="is_finished" value="1" <?php echo $campaign->is_finished ? 'checked' : '';?> /> <?php _e('Campaign is finished, donations collection is stopped', 'leyka');?>
+                <input type="checkbox" id="is-finished" name="is_finished" value="1" <?php echo $campaign->is_finished ? 'checked' : '';?>> <?php _e('Donations collection stopped', 'leyka');?>
             </label>
         </fieldset>
-	<?php }
+	    <?php }
+
     }
 
     public function statistics_meta_box(WP_Post $campaign) { $campaign = new Leyka_Campaign($campaign);?>
@@ -279,6 +278,7 @@ class Leyka_Campaign_Management {
             <span class="stats-label"><?php _e('Donation attempts:', 'leyka');?></span>
             <span class="stats-data"><?php echo $campaign->submits_count;?> <?php _e('times', 'leyka');?></span>
         </div>
+
     <?php
     }
 
@@ -287,6 +287,7 @@ class Leyka_Campaign_Management {
         <label for="excerpt"></label>
         <textarea id="excerpt" name="excerpt" cols="40" rows="1"><?php echo $campaign->post_excerpt;?></textarea>
         <p><?php _e('Annotation is an optional summary of campaign description that can be used in templates.', 'leyka');?></p>
+
     <?php }
 
     public function donations_meta_box(WP_Post $campaign) { $campaign = new Leyka_Campaign($campaign);?>
@@ -386,7 +387,15 @@ class Leyka_Campaign_Management {
 	}
 
     static function get_campaign_form_shortcode($campaign_id) {
-        return '[leyka_campaign_form id="'.$campaign_id.'"]';
+
+        // Right now, Revo template only works through [leyka_inline_campaign] shortcode,
+        // and all other templates need [leyka_campaign_form] shortcode:
+
+        $campaign = new Leyka_Campaign($campaign_id);
+
+        /** @todo When [leyka_inline_campaign] could display any form template, change this. */
+        return $campaign->template == 'revo' ?
+            '[leyka_inline_campaign id="'.$campaign_id.'"]' : '[leyka_campaign_form id="'.$campaign_id.'"]';
     }
 
 	public function save_data($campaign_id, WP_Post $campaign) {
@@ -601,12 +610,15 @@ class Leyka_Campaign {
             case 'name': return $this->_post_object ? $this->_post_object->post_title : '';
             case 'payment_title': return $this->_campaign_meta['payment_title'];
             case 'template':
-            case 'campaign_template': return $this->_campaign_meta['campaign_template'];
+            case 'campaign_template':
+                return $this->_campaign_meta['campaign_template'] == 'default' ?
+                    leyka_options()->opt('donation_form_template') : $this->_campaign_meta['campaign_template'];
             case 'campaign_target':
             case 'target': return $this->_campaign_meta['campaign_target'];
             case 'description': return $this->_post_object ? $this->_post_object->post_content : '';
             case 'excerpt':
             case 'post_excerpt':
+            case 'post_name': return $this->_post_object ? $this->_post_object->post_name : '';
             case 'short_description': return $this->_post_object ? $this->_post_object->post_excerpt : '';
             case 'status': return $this->_post_object ? $this->_post_object->post_status : '';
             case 'permalink':
@@ -695,7 +707,6 @@ class Leyka_Campaign {
 
     /** @deprecated Use $campaign->total_funded instead. */
     public function get_collected_amount() {
-
         return $this->total_funded > 0.0 ? $this->total_funded : 0.0;
     }
 
@@ -762,7 +773,7 @@ class Leyka_Campaign {
 
             $sum = 0.0;
             foreach($this->get_donations(array('funded')) as $donation) {
-                $sum += $donation->sum;
+                $sum += $donation->sum_total;
             }
 
             $this->_campaign_meta['total_funded'] = $sum;
@@ -776,15 +787,15 @@ class Leyka_Campaign {
             }
 
             if($action == 'remove') { // Subtract given donation's sum from campaign's total_funded
-                $sum = -$donation->sum;
+                $sum = -$donation->sum_total;
             } else { // Add given donation's sum to campaign's total_funded
 
                 if($action == 'update_sum' && (int)$old_sum) { // If donation sum was changed, subtract it from total_funded first
                     $this->_campaign_meta['total_funded'] -= (int)$old_sum;
                 }
 
-                $sum = ($donation->status != 'funded' || $donation->campaign_id != $this->_id) && $donation->sum > 0 ?
-                    -$donation->sum : $donation->sum;
+                $sum = ($donation->status != 'funded' || $donation->campaign_id != $this->_id) && $donation->sum_total > 0 ?
+                    -$donation->sum_total : $donation->sum_total;
                 $sum = $donation->status == 'trash' ? -$sum : $sum;
             }
 
@@ -796,5 +807,11 @@ class Leyka_Campaign {
         $this->refresh_target_state();
 
         return $this;
+
     }
+
+    public function delete($force = False) {
+        wp_delete_post( $this->_id, $force );
+    }
+    
 }

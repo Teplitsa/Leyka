@@ -40,7 +40,7 @@ span.dashicons-editor-help.has-tooltip {
     display: inline;
 }
 
-/** jQuery UI tooltips styles */
+/** jQuery UI tooltips */
 .ui-tooltip {
     border-width: 2px;
     padding: 8px;
@@ -51,3 +51,71 @@ span.dashicons-editor-help.has-tooltip {
     box-shadow: 0 0 5px #aaa;
     background: #fff;
 }
+
+/** Admin notices */
+.leyka-message {
+    overflow: hidden;
+    position: relative;
+    border-left-color: #1db318 !important;
+}
+.leyka-message a.button-primary,
+.leyka-message a.button-secondary {
+    text-decoration: none !important;
+}
+.leyka-message a.leyka-message-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px 15px 10px 21px;
+    font-size: 13px;
+    line-height: 1.23076923;
+    text-decoration: none;
+}
+.leyka-message a.leyka-message-close:before {
+    position: absolute;
+    top: 8px;
+    left: 0;
+    -webkit-transition: all .1s ease-in-out;
+    transition: all .1s ease-in-out;
+}
+
+/* Gateway commissions field */
+.leyka-commission-container {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+
+    margin-bottom: -1px;
+    border-bottom: 1px solid black;
+}
+
+.leyka-commission-container h4 {
+    padding: 10px 5px;
+    width: 180px;
+}
+
+.leyka-commission-container .leyka-commission-pm-list-container {
+    display: flex;
+    flex-flow: row wrap;
+    flex-basis: 90%;
+}
+
+.leyka-commission-container .leyka-commission-pm {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+
+    flex-basis: 250px;
+
+    margin-bottom: -1px;
+    padding: 10px;
+}
+
+.leyka-commission-container .leyka-commission-pm:hover {
+    background-color: #8aed87;
+}
+
+.leyka-commission-container .leyka-commission-field {
+    width: 80px;
+}
+/* Gateway commissions field - END */

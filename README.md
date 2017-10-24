@@ -28,7 +28,7 @@
 * Поддержка нескольких валют
 * Шаблоны кампаний и визуализация прогресса кампаний 
 * Виджеты и шорткоды для WP
-* Юридически корректные шаблоны писем и оферты
+* Юридически корректные шаблоны писем, соглашения о персональных данных и договора оферты
 * Возможность встраивать модули кампаний для сбора пожертвований через iframe
 * История платежей и готовая отчетность на сайте
 * Интеграция  с Google Analytics «из коробки»
@@ -102,7 +102,7 @@ The plugin is designed for any website that wants to collect money online - NGOs
 * Support for multiple currencies
 * Campaign templates and visualization of the progress bars
 * Widgets and shortcodes for WP
-* Legally correct templates and oferta text
+* Legally correct templates, personal data usage agreement and oferta text
 * Ability to embed campaigns via iframe
 * Payment history and statistics on the website
 * Integration with Google Analytics out of the box

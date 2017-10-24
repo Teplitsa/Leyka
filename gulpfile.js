@@ -3,7 +3,8 @@ var basePaths = {
     src: 'src/',
     dest: 'assets/',
     npm: 'node_modules/',
-    bower: 'bower_components/'
+    bower: 'bower_components/',
+    root: ''
 };
 
 //require plugins
@@ -40,8 +41,8 @@ var changeEvent = function(evt) {
 
 //js
 gulp.task('build-js', function() {
-    var vendorFiles = [],
-        appFiles = [basePaths.src+'js/front-main*']; //our own JS files
+    var vendorFiles = [basePaths.npm+'jquery.cookie/jquery.cookie.js'],
+        appFiles = [basePaths.src+'js/*', basePaths.src+'js/front/*']; //our own JS files
 
     return gulp.src(vendorFiles.concat(appFiles)) //join them
         .pipe(plugins.filter('*.js'))//select only .js ones
@@ -128,6 +129,7 @@ gulp.task('revision', function(){
 gulp.task('full-build', function(callback) {
     runSequence('build-css',
         'build-js',
+		'svg-opt',
         callback);
 });
 
@@ -161,7 +163,7 @@ gulp.task('svg-opt', function() {
             },
             parserOptions: { xmlMode: true }
         })),
-        pics = gulp.src([basePaths.src+'svg/pic-*.svg'])
+        pics = gulp.src([basePaths.root+'gateways/**/pic-main-*.svg', basePaths.src+'svg/pic-*.svg'])
         .pipe(plugins.svgmin({
             plugins: [{
                 removeTitle: true,
@@ -181,7 +183,7 @@ gulp.task('watch', function(){
     gulp.watch([basePaths.src+'sass/*.scss', basePaths.src+'sass/**/*.scss'], ['full-build-css']).on('change', function(evt) {
         changeEvent(evt);
     });
-    gulp.watch(basePaths.src+'js/*.js', ['full-build-js']).on('change', function(evt) {
+    gulp.watch([basePaths.src+'js/*.js', basePaths.src+'js/front/*.js'], ['full-build-js']).on('change', function(evt) {
         changeEvent(evt);
     });
 });

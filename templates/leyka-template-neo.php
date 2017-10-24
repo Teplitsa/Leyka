@@ -1,13 +1,14 @@
 <?php if( !defined('WPINC') ) die;
 /**
  * Leyka Template: Neo
- * Description: Styled after recent te-st.ru works, more modern variant of Toggles form template
+ * Description: An updated version of "Toggles" form template
  **/
 
 $active_pm = apply_filters('leyka_form_pm_order', leyka_get_pm_list(true));
-$supported_curr = leyka_get_active_currencies();
+$supported_curr = leyka_get_currencies_data();
 $mode = leyka_options()->opt('donation_sum_field_type'); // fixed/flexible/mixed
 
+/** @var Leyka_Payment_Form $leyka_current_pm */
 global $leyka_current_pm; /** @todo Make it a Leyka_Payment_Form class singleton */
 
 leyka_pf_submission_errors();?>
@@ -28,7 +29,7 @@ leyka_pf_submission_errors();?>
                 <?php echo leyka_pf_get_pm_label();?>
             </div>
             <div class="leyka-toggle-area">
-                <form class="leyka-pm-form" id="<?php echo leyka_pf_get_form_id();?>" action="<?php echo leyka_pf_get_form_action();?>" method="post">
+                <form class="leyka-pm-form" action="<?php echo leyka_pf_get_form_action();?>" method="post">
 
                     <div class="leyka-pm-fields">
 
@@ -90,7 +91,6 @@ leyka_pf_submission_errors();?>
                     <input name="leyka_ga_payment_method" value="<?php echo esc_attr($pm->label);?>" type="hidden">
 
                     <div class="leyka-donor-fields">
-                    <!-- name -->
                     <?php if($leyka_current_pm->is_field_supported('name') ) { ?>
                         <div class="rdc-textfield leyka-field name">
                             <input type="text" class="required rdc-textfield__input" name="leyka_donor_name" id="leyka_donor_name" value="" placeholder="<?php _e('Your name', 'leyka');?>">
@@ -98,14 +98,25 @@ leyka_pf_submission_errors();?>
                             <span id="leyka_donor_name-error" class="leyka_donor_name-error field-error rdc-textfield__error"></span>
                         </div>
 
-                    <?php }?>
+                    <?php }
 
-                    <!-- email -->
-                    <?php if($leyka_current_pm->is_field_supported('email') ) { ?>
+                    if($leyka_current_pm->is_field_supported('email') ) {?>
                         <div class="rdc-textfield leyka-field email">
                             <input type="text" value="" id="leyka_donor_email" name="leyka_donor_email" class="required email rdc-textfield__input" placeholder="<?php _e('Your email', 'leyka');?>">
                             <label class="leyka-screen-reader-text rdc-textfield__label" for="leyka_donor_email"><?php _e('Your email', 'leyka');?></label>
                             <span class="leyka_donor_email-error field-error rdc-textfield__error" id="leyka_donor_email-error"></span>
+                        </div>
+
+                    <?php }
+
+                    if($leyka_current_pm->is_field_supported('comment') && leyka_options()->opt('show_donation_comment_field')) {?>
+                        <div class="rdc-textfield leyka-field comment">
+                            <textarea id="leyka_donor_comment" name="leyka_donor_comment" class="comment leyka-donor-comment rdc-textfield__input" data-max-length="<?php echo leyka_options()->opt('donation_comment_max_length');?>"></textarea>
+                            <label class="leyka-screen-reader-text rdc-textfield__label" for="leyka_donor_comment"><?php _e('Your comments', 'leyka');?></label>
+                            <p class="field-comment">
+                                <?php echo leyka_options()->opt('donation_comment_max_length') ? sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt('donation_comment_max_length')) : __('Your comment', 'leyka');?>
+                            </p>
+                            <span class="leyka_donor_comment-error field-error rdc-textfield__error" id="leyka_donor_comment-error"></span>
                         </div>
 
                     <?php }?>
@@ -115,10 +126,9 @@ leyka_pf_submission_errors();?>
 
                     echo leyka_pf_get_agree_field();?>
 
-                    <!-- submit -->
                     <div class="leyka-field submit">
                         <?php if($leyka_current_pm->is_field_supported('submit') ) { ?>
-                            <input type="submit" class="rdc-submit-button" id="leyka_donation_submit" name="leyka_donation_submit" value="Пожертвовать" />
+                            <input type="submit" class="rdc-submit-button" id="leyka_donation_submit" name="leyka_donation_submit" value="<?php echo leyka_options()->opt('donation_submit_text');?>">
                         <?php }
 
                         $icons = leyka_pf_get_pm_icons();
