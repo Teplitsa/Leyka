@@ -382,13 +382,64 @@ jQuery(document).ready(function($){
  * Donation form inner functionality and handlers
  */
 
+var leykaValidateForm;
+
 (function($){
 
-    var amountMin = 1, //temp - take it from options
-        amountMax = 30000,
-        amountIconMarks = [25, 50, 75],
-        inputRangeWidth = 200,
-        inputRangeButtonRadius = 17;
+	var amountMin = 1, //temp - take it from options
+		amountMax = 30000,
+		amountIconMarks = [25, 50, 75],
+		inputRangeWidth = 200,
+		inputRangeButtonRadius = 17;
+
+	leykaValidateForm = function($_form){
+
+		var error_struct = {},
+			pName = $_form.find('.donor__textfield--name input').val(),
+			pEmail = $_form.find('.donor__textfield--email input').val(),
+			amount = parseInt($_form.find('.amount__figure input').val()),
+			$comment = $_form.find(':input.leyka-donor-comment'),
+			$agree_terms = $_form.find('.donor__oferta input[name="leyka_agree"]'),
+			$agree_pd = $_form.find('.donor__oferta input[name="leyka_agree_pd"]');
+
+		if(pName.length === 0) {
+
+			error_struct['name'] = true;
+			$_form.find('.donor__textfield--name').addClass('invalid');
+
+		}
+
+		if(pEmail.length === 0 || !is_email(pEmail)) {
+
+			error_struct['email'] = true;
+			$_form.find('.donor__textfield--email').addClass('invalid');
+
+		}
+
+		if($comment.length && $comment.data('max-length') && $comment.val().length > $comment.data('max-length')) {
+
+			error_struct['comment'] = true;
+			$_form.find('.donor__textfield--comment').addClass('invalid');
+
+		}
+
+		if(
+			($agree_terms.length && !$agree_terms.prop('checked')) ||
+			($agree_pd.length && !$agree_pd.prop('checked'))
+		) {
+
+			error_struct['agree'] = true;
+			$_form.find('.donor__oferta').addClass('invalid');
+
+		}
+
+
+		if( !Number.isInteger(amount) || amount < amountMin || amount > amountMax ) {
+			error_struct['amount'] = true;
+		}
+
+		return Object.keys(error_struct).length ? error_struct : false;
+	};
 
     var methods = {
         'defaults': {
@@ -422,55 +473,6 @@ jQuery(document).ready(function($){
         bindHistoryEvents();
         bindSubmitPaymentFormEvent();
 
-    }
-
-    function validateForm($_form) {
-
-        var error_struct = {}, 
-            pName = $_form.find('.donor__textfield--name input').val(),
-            pEmail = $_form.find('.donor__textfield--email input').val(),
-            amount = parseInt($_form.find('.amount__figure input').val()),
-            $comment = $_form.find(':input.leyka-donor-comment'),
-            $agree_terms = $_form.find('.donor__oferta input[name="leyka_agree"]'),
-            $agree_pd = $_form.find('.donor__oferta input[name="leyka_agree_pd"]');
-
-        if(pName.length === 0) {
-
-            error_struct['name'] = true;
-            $_form.find('.donor__textfield--name').addClass('invalid');
-
-        }
-
-        if(pEmail.length === 0 || !is_email(pEmail)) {
-
-            error_struct['email'] = true;
-            $_form.find('.donor__textfield--email').addClass('invalid');
-
-        }
-
-        if($comment.length && $comment.data('max-length') && $comment.val().length > $comment.data('max-length')) {
-
-            error_struct['comment'] = true;
-            $_form.find('.donor__textfield--comment').addClass('invalid');
-
-        }
-
-        if(
-            ($agree_terms.length && !$agree_terms.prop('checked')) ||
-            ($agree_pd.length && !$agree_pd.prop('checked'))
-        ) {
-
-            error_struct['agree'] = true;
-            $_form.find('.donor__oferta').addClass('invalid');
-
-        }
-
-
-        if( !Number.isInteger(amount) || amount < amountMin || amount > amountMax ) {
-            error_struct['amount'] = true;
-        }
-
-        return Object.keys(error_struct).length ? error_struct : false;
     }
 
     function bindSubmitPaymentFormEvent() {

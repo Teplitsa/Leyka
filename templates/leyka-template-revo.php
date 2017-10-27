@@ -184,7 +184,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
                 <?php }?>
 
                 <div class="donor__submit">
-                    <input type="submit" value="<?php echo leyka_options()->opt_safe('donation_submit_text');?>">
+                    <?php echo apply_filters('leyka_revo_template_final_submit', '<input type="submit" class="leyka-default-submit" value="'.leyka_options()->opt_safe('donation_submit_text').'">');?>
                 </div>
 
                 <?php if(leyka_options()->opt('agree_to_terms_needed') || leyka_options()->opt('agree_to_pd_terms_needed')) {?>

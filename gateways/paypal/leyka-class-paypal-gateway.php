@@ -496,19 +496,48 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             return;
         }
 
-        // For donation redirect page:
-        if(get_query_var('name') == 'leyka-process-donation') {
-            wp_enqueue_script(
-                'leyka-paypal-front',
-                LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Paypal_Gateway::get_instance()->id.'/js/leyka.paypal.js',
-                array('jquery',),
-                LEYKA_VERSION,
-                true
-            );
-        }
+        wp_enqueue_script('leyka-paypal-api', 'https://www.paypalobjects.com/api/checkout.js');
 
-//        add_filter('leyka_js_localized_strings', array($this, 'localize_js_strings'));
+        $dependencies = array('jquery', 'leyka-paypal-api',);
 
+	    // If Revo template is in use:
+	    if(leyka_revo_template_displayed() || leyka_success_widget_displayed() || leyka_failure_widget_displayed()) {
+		    $dependencies[] = 'leyka-revo-public';
+//		    wp_enqueue_script(
+//			    $this->_plugin_slug.'-revo-public',
+//			    LEYKA_PLUGIN_BASE_URL.'assets/js/public.js',
+//			    array('jquery',),
+//			    LEYKA_VERSION,
+//			    true
+//		    );
+	    }
+
+	    $dependencies[] = 'leyka-public';
+
+        wp_enqueue_script(
+            'leyka-paypal-front',
+            LEYKA_PLUGIN_BASE_URL.'gateways/'.self::get_instance()->id.'/js/leyka.paypal.js',
+	        $dependencies,
+            LEYKA_VERSION,
+            true
+        );
+
+	    add_filter('leyka_revo_template_final_submit', array($this, 'get_gateway_submit'));
+	    add_filter('leyka_js_localized_strings', array($this, 'localize_js_strings'));
+
+    }
+
+	public function localize_js_strings(array $js_data) {
+
+		return array_merge($js_data, array(
+			'paypal_locale' => get_locale(),
+//			'' => ,
+		));
+	}
+
+    public function get_gateway_submit($default_submit) {
+        return $default_submit.
+               '<div class="leyka-paypal-form-submit" style="display: none;"></div>';
     }
 
     public function get_gateway_response_formatted(Leyka_Donation $donation) {
