@@ -72,6 +72,7 @@ window.LeykaGUIFinal.prototype = {
 
     },
 
+    /** Subscription form validation */
     validateForm: function($form){
 
         var self = this; var $ = self.$;

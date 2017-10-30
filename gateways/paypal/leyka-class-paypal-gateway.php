@@ -503,13 +503,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 	    // If Revo template is in use:
 	    if(leyka_revo_template_displayed() || leyka_success_widget_displayed() || leyka_failure_widget_displayed()) {
 		    $dependencies[] = 'leyka-revo-public';
-//		    wp_enqueue_script(
-//			    $this->_plugin_slug.'-revo-public',
-//			    LEYKA_PLUGIN_BASE_URL.'assets/js/public.js',
-//			    array('jquery',),
-//			    LEYKA_VERSION,
-//			    true
-//		    );
 	    }
 
 	    $dependencies[] = 'leyka-public';
@@ -531,6 +524,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
 		return array_merge($js_data, array(
 			'paypal_locale' => get_locale(),
+            'paypal_is_test_mode' => !!leyka_options()->opt('paypal_test_mode'),
 //			'' => ,
 		));
 	}

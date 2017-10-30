@@ -258,6 +258,7 @@ window.LeykaGUIFinal.prototype = {
 
     },
 
+    /** Subscription form validation */
     validateForm: function($form){
 
         var self = this; var $ = self.$;
@@ -394,7 +395,7 @@ var leykaValidateForm;
 
 	leykaValidateForm = function($_form){
 
-		var error_struct = {},
+		var is_valid = true,
 			pName = $_form.find('.donor__textfield--name input').val(),
 			pEmail = $_form.find('.donor__textfield--email input').val(),
 			amount = parseInt($_form.find('.amount__figure input').val()),
@@ -404,21 +405,21 @@ var leykaValidateForm;
 
 		if(pName.length === 0) {
 
-			error_struct['name'] = true;
+            is_valid = false;
 			$_form.find('.donor__textfield--name').addClass('invalid');
 
 		}
 
 		if(pEmail.length === 0 || !is_email(pEmail)) {
 
-			error_struct['email'] = true;
+            is_valid = false;
 			$_form.find('.donor__textfield--email').addClass('invalid');
 
 		}
 
 		if($comment.length && $comment.data('max-length') && $comment.val().length > $comment.data('max-length')) {
 
-			error_struct['comment'] = true;
+            is_valid = false;
 			$_form.find('.donor__textfield--comment').addClass('invalid');
 
 		}
@@ -428,17 +429,17 @@ var leykaValidateForm;
 			($agree_pd.length && !$agree_pd.prop('checked'))
 		) {
 
-			error_struct['agree'] = true;
+            is_valid = false;
 			$_form.find('.donor__oferta').addClass('invalid');
 
 		}
 
 
 		if( !Number.isInteger(amount) || amount < amountMin || amount > amountMax ) {
-			error_struct['amount'] = true;
+            is_valid = false;
 		}
 
-		return Object.keys(error_struct).length ? error_struct : false;
+		return is_valid;
 	};
 
     var methods = {
@@ -498,7 +499,7 @@ var leykaValidateForm;
 
             }
 
-            if( !validateForm($_form) ) { // Form is valid
+            if(leykaValidateForm($_form)) { // Form is valid
 
                 if($_form.find('input[name="leyka_payment_method"]:checked').data('processing') != 'default') {
                     return;

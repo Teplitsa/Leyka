@@ -1,5 +1,6 @@
-//jQuery(document).ready(function($){
 (function($){
+
+    $('script[src*="checkout.js"]').data('log-level', leyka.paypal_is_test_mode ? 'debug' : 'error');
 
 	var $form;
 
@@ -20,29 +21,19 @@
 
 	});
 
-//	function onChangeCheckbox(handler) {
-//		document.querySelector('#check').addEventListener('change', handler);
-//	}
-
-//	function toggleValidationMessage() {
-//		document.querySelector('#msg').style.display = (isValid() ? 'none' : 'block');
-//	}
-
-	function togglePayPalSubmit(event) {
+	function togglePayPalSubmit(actions) {
 
 		if( $form.data('paypal-validation-allowed') ) {
-			return leykaValidateForm($form) ?
-				   event.data.paypalSubmitActions.enable() :
-				   event.data.paypalSubmitActions.disable();
+			return leykaValidateForm($form) ? actions.enable() : actions.disable();
 		} else {
-			return event.data.paypalSubmitActions.disable();
+			return actions.disable();
 		}
 
 	}
 
 	paypal.Button.render({
 
-		env: 'sandbox', // 'production'
+		env: leyka.paypal_is_test_mode ? 'sandbox' : 'production',
 		locale: leyka.paypal_locale,
 		style: {
 			color: 'blue',
@@ -70,29 +61,21 @@
 				$form = $(this.outlet).closest('.leyka-pf__form');
 			}
 
-//			togglePayPalSubmit(actions, $form);
+            togglePayPalSubmit(actions);
 
-			$form.on(
-				'change.leyka',
-				'.step--person :input',
-				{paypalSubmitActions: actions},
-				togglePayPalSubmit
-			);
+            $form.on('change.leyka', '.step--person :input', function(){
+                togglePayPalSubmit(actions);
+            });
 		},
 
 		onClick: function(){
-
-//			var $form = $(this.outlet).closest('.leyka-pf__form');
 
 			if( !$form.data('paypal-validation-allowed') ) {
 				$form.data('paypal-validation-allowed', true);
 			}
 
-			$form.find('.step--person :input:first').trigger('change.leyka');
-
-//			leykaValidateForm($form);
-//
-//			console.log(this, this.actions);
+            // $('#leyka_agree').trigger('change');
+            $form.find('.step--person :input:first').trigger('change.leyka');
 
 		},
 
