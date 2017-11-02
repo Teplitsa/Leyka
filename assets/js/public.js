@@ -387,7 +387,7 @@ var leykaValidateForm;
 
 (function($){
 
-	var amountMin = 1, //temp - take it from options
+	var amountMin = 1, /** @todo WARNING: HARDCODE! We'd take values from plugin options */
 		amountMax = 30000,
 		amountIconMarks = [25, 50, 75],
 		inputRangeWidth = 200,
@@ -398,7 +398,7 @@ var leykaValidateForm;
 		var is_valid = true,
 			pName = $_form.find('.donor__textfield--name input').val(),
 			pEmail = $_form.find('.donor__textfield--email input').val(),
-			amount = parseInt($_form.find('.amount__figure input').val()),
+			amount = parseFloat($_form.find('.amount__figure input').val()),
 			$comment = $_form.find(':input.leyka-donor-comment'),
 			$agree_terms = $_form.find('.donor__oferta input[name="leyka_agree"]'),
 			$agree_pd = $_form.find('.donor__oferta input[name="leyka_agree_pd"]');

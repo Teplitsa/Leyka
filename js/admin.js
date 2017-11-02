@@ -425,9 +425,9 @@ function leyka_is_special_key(e) {
 
     // Allowed special keys
     return (
-        e.keyCode == 9 || // Tab
-        (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
-        (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
+        e.keyCode === 9 || // Tab
+        (e.keyCode === 65 && e.ctrlKey) || // Ctrl+A
+        (e.keyCode === 67 && e.ctrlKey) || // Ctrl+C
         (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
     );
 }

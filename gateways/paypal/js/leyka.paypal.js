@@ -74,7 +74,6 @@
 				$form.data('paypal-validation-allowed', true);
 			}
 
-            // $('#leyka_agree').trigger('change');
             $form.find('.step--person :input:first').trigger('change.leyka');
 
 		},
