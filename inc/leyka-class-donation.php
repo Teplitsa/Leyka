@@ -1811,7 +1811,12 @@ class Leyka_Donation {
                 $this->_post_object->post_status = $value;
 
                 $status_log = get_post_meta($this->_id, '_status_log', true);
-                $status_log[] = array('date' => time(), 'status' => $value);
+                if($status_log && is_array($status_log)) {
+	                $status_log[] = array('date' => time(), 'status' => $value);
+                } else {
+                    $status_log = array(array('date' => time(), 'status' => $value));
+                }
+
                 update_post_meta($this->_id, '_status_log', $status_log);
                 $this->_donation_meta['status_log'] = $status_log;
 
