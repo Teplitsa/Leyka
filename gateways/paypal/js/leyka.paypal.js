@@ -80,12 +80,15 @@
 
 		payment: function(data, actions) {
 
+			var donation_amount = parseFloat($form.find('.amount__figure input').val()),
+				donation_currency = $form.find('input.leyka_donation_currency').val();
+
+			donation_currency = donation_currency === 'rur' ? 'RUB' : donation_currency.toUpperCase();
+
 			return actions.payment.create({
 				payment: {
 					transactions: [
-						{
-							amount: { total: '1.00', currency: 'USD' }
-						}
+						{amount: {total: donation_amount, currency: donation_currency}}
 					]
 				},
 

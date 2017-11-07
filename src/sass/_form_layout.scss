@@ -220,7 +220,7 @@
 
 		.leyka-pf__module {
 
-            @include module-height(460px);
+            @include module-height(480px);
 
             &.leyka-with-comment {
                 @include module-height(570px);
@@ -428,7 +428,7 @@
 	.leyka-pf__form {
 		.step {
 
-            @include module-height(460px);
+            @include module-height(480px);
 
 			position: absolute;
 			top: 0;
