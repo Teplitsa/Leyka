@@ -81,15 +81,32 @@
 		payment: function(data, actions) {
 
 			var donation_amount = parseFloat($form.find('.amount__figure input').val()),
-				donation_currency = $form.find('input.leyka_donation_currency').val();
+				donation_currency = $form.find('input.leyka_donation_currency').val(),
+				donor_info = {
+					email: $form.find('input[name="leyka_donor_email"]').val(),
+					first_name: $form.find('input[name="leyka_donor_name"]').val() /** @todo Check if it's needed */
+				};
 
 			donation_currency = donation_currency === 'rur' ? 'RUB' : donation_currency.toUpperCase();
+			if(donation_currency === 'RUB') {
+				donor_info.country_code = 'RU';
+			}
 
 			return actions.payment.create({
 				payment: {
+					intent: 'sale',
+					payer: {
+						payment_method: 'paypal',
+						status: leyka.paypal_accept_verified_only ? 'VERIFIED' : 'UNVERIFIED',
+						payer_info: donor_info
+					},
 					transactions: [
 						{amount: {total: donation_amount, currency: donation_currency}}
-					]
+					],
+					redirect_urls: {
+						return_url: leyka.success_page_url,
+						cancel_url: leyka.failure_page_url
+					}
 				},
 
 				experience: {
@@ -101,7 +118,7 @@
 		},
 
 		onAuthorize: function(data, actions) {
-			return actions.payment.execute().then(function(payment) {
+			return actions.payment.execute().then(function(payment){
 
 				// The payment is complete!
 				// You can now show a confirmation message to the customer

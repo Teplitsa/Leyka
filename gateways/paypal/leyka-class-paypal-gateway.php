@@ -527,6 +527,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 		return array_merge($js_data, array(
 			'paypal_locale' => get_locale(),
             'paypal_is_test_mode' => !!leyka_options()->opt('paypal_test_mode'),
+            'success_page_url' => leyka_options()->opt('success_page'),
+            'failure_page_url' => leyka_options()->opt('failure_page'),
+            'paypal_accept_verified_only' => !!leyka_options()->opt('paypal_accept_verified_only'),
 //			'' => ,
 		));
 	}
