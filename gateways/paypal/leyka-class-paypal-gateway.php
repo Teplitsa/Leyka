@@ -51,6 +51,13 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 'description' => __('Check if the gateway integration is in test mode.', 'leyka'),
                 'required' => false,
             ),
+            'paypal_enable_recurring' => array(
+                'type' => 'checkbox',
+                'default' => true,
+                'title' => __('Enable monthly recurring payments', 'leyka'),
+                'description' => __('Check if you want to enable monthly recurring payments.', 'leyka'),
+                'required' => false,
+            ),
             'paypal_accept_verified_only' => array(
                 'type' => 'checkbox',
                 'default' => false,
