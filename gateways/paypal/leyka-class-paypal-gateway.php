@@ -530,6 +530,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             'success_page_url' => leyka_options()->opt('success_page'),
             'failure_page_url' => leyka_options()->opt('failure_page'),
             'paypal_accept_verified_only' => !!leyka_options()->opt('paypal_accept_verified_only'),
+            'paypal_callback_url' => home_url('leyka/service/'.$this->_id.'/ipn/'),
 //			'' => ,
 		));
 	}

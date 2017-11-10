@@ -100,9 +100,15 @@
 						status: leyka.paypal_accept_verified_only ? 'VERIFIED' : 'UNVERIFIED',
 						payer_info: donor_info
 					},
-					transactions: [
-						{amount: {total: donation_amount, currency: donation_currency}}
-					],
+					transactions: [{
+                        amount: {total: donation_amount, currency: donation_currency},
+                        invoice_number: '', // Leyka donation ID?
+                        notify_url: leyka.paypal_callback_url,
+                        description: $form.find('input[name="leyka_ga_campaign_title"]'),
+                        payment_options: {
+                            allowed_payment_method: 'INSTANT_FUNDING_SOURCE'
+                        }
+                    }],
 					redirect_urls: {
 						return_url: leyka.success_page_url,
 						cancel_url: leyka.failure_page_url
@@ -118,7 +124,10 @@
 		},
 
 		onAuthorize: function(data, actions) {
+            console.log(data, actions)
 			return actions.payment.execute().then(function(payment){
+
+                console.log('payment:', payment)
 
 				// The payment is complete!
 				// You can now show a confirmation message to the customer
