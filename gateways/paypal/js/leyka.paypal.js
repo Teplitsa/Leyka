@@ -94,7 +94,7 @@
 					intent: 'sale',
 					payer: {
 						// payment_method: 'paypal',
-						status: leyka.paypal_accept_verified_only ? 'VERIFIED' : 'UNVERIFIED',
+						// status: leyka.paypal_accept_verified_only ? 'VERIFIED' : 'UNVERIFIED',
 						payer_info: donor_info
 					},
 					transactions: [{
