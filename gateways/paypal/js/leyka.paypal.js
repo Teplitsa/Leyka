@@ -92,11 +92,11 @@
 			return actions.payment.create({
 				payment: {
 					intent: 'sale',
-					// payer: {
-					// 	payment_method: 'paypal',
-					// 	status: leyka.paypal_accept_verified_only ? 'VERIFIED' : 'UNVERIFIED',
-					// 	payer_info: donor_info
-					// },
+					payer: {
+						// payment_method: 'paypal',
+						status: leyka.paypal_accept_verified_only ? 'VERIFIED' : 'UNVERIFIED',
+						payer_info: donor_info
+					},
 					transactions: [{
                         amount: {total: donation_amount, currency: donation_currency},
                         // invoice_number: 1234567, // Leyka donation ID?
