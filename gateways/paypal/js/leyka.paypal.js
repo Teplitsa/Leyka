@@ -82,10 +82,7 @@
 
 			var donation_amount = parseFloat($form.find('.amount__figure input').val()),
 				donation_currency = $form.find('input.leyka_donation_currency').val(),
-				donor_info = {
-					email: $form.find('input[name="leyka_donor_email"]').val(),
-					first_name: $form.find('input[name="leyka_donor_name"]').val() /** @todo Check if it's needed */
-				};
+				donor_info = {email: $form.find('input[name="leyka_donor_email"]').val()};
 
 			donation_currency = donation_currency === 'rur' ? 'RUB' : donation_currency.toUpperCase();
 			if(donation_currency === 'RUB') {
@@ -102,12 +99,13 @@
 					},
 					transactions: [{
                         amount: {total: donation_amount, currency: donation_currency},
-                        invoice_number: '', // Leyka donation ID?
-                        notify_url: leyka.paypal_callback_url,
-                        description: $form.find('input[name="leyka_ga_campaign_title"]').val(),
-                        payment_options: {
-                            allowed_payment_method: 'INSTANT_FUNDING_SOURCE'
-                        }
+                        invoice_number: 1234567, // Leyka donation ID?
+                        // notify_url: leyka.paypal_callback_url,
+                        description: $form.find('input[name="leyka_ga_campaign_title"]').val()
+                        // ,
+                        // payment_options: {
+                        //     allowed_payment_method: 'INSTANT_FUNDING_SOURCE'
+                        // }
                     }],
 					redirect_urls: {
 						return_url: leyka.success_page_url,
