@@ -104,7 +104,7 @@
                         amount: {total: donation_amount, currency: donation_currency},
                         invoice_number: '', // Leyka donation ID?
                         notify_url: leyka.paypal_callback_url,
-                        description: $form.find('input[name="leyka_ga_campaign_title"]'),
+                        description: $form.find('input[name="leyka_ga_campaign_title"]').val(),
                         payment_options: {
                             allowed_payment_method: 'INSTANT_FUNDING_SOURCE'
                         }
