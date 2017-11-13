@@ -219,12 +219,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
         switch($call_type) {
 
-//            case 'response':
-//
-//                $text = sprintf("Get: %s\n\nPost: %s\n\n", '<pre>'.print_r($_GET, 1).'</pre>', '<pre>'.print_r($_POST, 1).'</pre>');
-//                wp_mail(get_option('admin_email'), 'Leyka debugging', $text."\n\r\n\r");
-//                break;
-
             // Used in classic API callbacks:
             case 'process_payment': // Do a payment itself
 
@@ -412,8 +406,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 break;
 
-//            case 'create_donation':
-
             // Used in classic & New API:
             case 'ipn': // Instant payment notifications processing: confirm the payment
 
@@ -508,6 +500,52 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 break;
 
+            case 'donation_update':
+
+                if(empty($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'leyka_payment_form')) {
+                    die(json_encode(array(
+                        'status' => 1,
+                        'message' => __('Wrong nonce in submitted form data', 'leyka'),
+                    )));
+                }
+
+                $_POST['donation_id'] = (int)$_POST['donation_id'];
+
+                if( !$_POST['donation_id']) {
+                    die(json_encode(array(
+                        'status' => 1,
+                        'message' => __('No donation ID in submitted payment data', 'leyka'),
+                    )));
+                }
+
+                $donation = new Leyka_Donation($_POST['donation_id']);
+
+                if( !$donation ) {
+                    die(json_encode(array(
+                        'status' => 1,
+                        'message' => __('Wrong donation ID in submitted payment data', 'leyka'),
+                    )));
+                }
+
+                if($donation->gateway_id !== $this->_id) {
+                    die(json_encode(array(
+                        'status' => 1,
+                        'message' => __('Wrong gateway in submitted payment data', 'leyka'),
+                    )));
+                }
+
+                if( $_POST['paypal_token'] && !$donation->paypal_token ) {
+                    $donation->paypal_token = esc_attr($_POST['paypal_token']);
+                }
+
+                if( $_POST['paypal_payment_id'] && !$donation->paypal_payment_id ) {
+                    $donation->paypal_payment_id = esc_attr($_POST['paypal_payment_id']);
+                }
+
+                die(json_encode(array('status' => 0,)));
+
+                break;
+
             default:
 
         }
@@ -566,8 +604,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             'success_page_url' => leyka_get_success_page_url(),
             'failure_page_url' => leyka_get_failure_page_url(),
             'paypal_accept_verified_only' => !!leyka_options()->opt('paypal_accept_verified_only'),
-            'paypal_callback_url' => home_url('leyka/service/'.$this->_id.'/ipn/'), //leyka_options()->opt('paypal_use_ipn_callbacks') ?
-//                home_url('leyka/service/'.$this->_id.'/ipn/') : false,
+            'paypal_ipn_callback_url' => home_url('leyka/service/'.$this->_id.'/ipn/'),
+			'paypal_donation_update_callback_url' => home_url('leyka/service/'.$this->_id.'/donation_update/'),
 //			'' => ,
 		));
 	}
@@ -602,9 +640,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type == 'correction') {?>
-                    <input type="text" id="paypal-token" name="paypal-token" placeholder="<?php _e('Enter PayPal token', 'leyka');?>" value="<?php echo $donation->paypal_token;?>">
+                <input type="text" id="paypal-token" name="paypal-token" placeholder="<?php _e('Enter PayPal token', 'leyka');?>" value="<?php echo $donation->paypal_token;?>">
                 <?php } else {?>
-                    <span class="fake-input"><?php echo $donation->paypal_token;?></span>
+                <span class="fake-input"><?php echo $donation->paypal_token;?></span>
                 <?php }?>
             </div>
 
@@ -612,9 +650,19 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type == 'correction') {?>
-                    <input type="text" id="paypal-correlation-id" name="paypal-token" placeholder="<?php _e('Enter PayPal correlation ID', 'leyka');?>" value="<?php echo $donation->paypal_correlation_id;?>">
+                <input type="text" id="paypal-correlation-id" name="paypal-correlation-id" placeholder="<?php _e('Enter PayPal correlation ID', 'leyka');?>" value="<?php echo $donation->paypal_correlation_id;?>">
                 <?php } else {?>
-                    <span class="fake-input"><?php echo $donation->paypal_correlation_id;?></span>
+                <span class="fake-input"><?php echo $donation->paypal_correlation_id;?></span>
+                <?php }?>
+            </div>
+
+            <label><?php _e('PayPal payment ID', 'leyka');?>:</label>
+            <div class="leyka-ddata-field">
+
+                <?php if($donation->type == 'correction') {?>
+                <input type="text" id="paypal-payment-id" name="paypal-payment-id" placeholder="<?php _e('Enter PayPal payment ID', 'leyka');?>" value="<?php echo $donation->paypal_payment_id;?>">
+                <?php } else {?>
+                <span class="fake-input"><?php echo $donation->paypal_payment_id;?></span>
                 <?php }?>
             </div>
 
@@ -622,9 +670,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type == 'correction') {?>
-                    <input type="text" id="paypal-payer-id" name="paypal-token" placeholder="<?php _e('Enter PayPal Payer ID', 'leyka');?>" value="<?php echo $donation->paypal_payer_id;?>">
+                <input type="text" id="paypal-payer-id" name="paypal-token" placeholder="<?php _e('Enter PayPal Payer ID', 'leyka');?>" value="<?php echo $donation->paypal_payer_id;?>">
                 <?php } else {?>
-                    <span class="fake-input"><?php echo $donation->paypal_payer_id;?></span>
+                <span class="fake-input"><?php echo $donation->paypal_payer_id;?></span>
                 <?php }?>
             </div>
 
@@ -656,6 +704,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             case 'pp_token': return get_post_meta($donation->id, '_paypal_token', true);
             case 'paypal_correlation_id':
             case 'pp_correlation_id': return get_post_meta($donation->id, '_paypal_correlation_id', true);
+            case 'paypal_payment_id':
+            case 'pp_payment_id': return get_post_meta($donation->id, '_paypal_payment_id', true);
             case 'paypal_payer_id':
             case 'pp_payer_id': return get_post_meta($donation->id, '_paypal_payer_id', true);
             case 'paypal_payment_history':
@@ -677,6 +727,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             case 'pp_token': update_post_meta($donation->id, '_paypal_token', $value); break;
             case 'paypal_correlation_id':
             case 'pp_correlation_id': update_post_meta($donation->id, '_paypal_correlation_id', $value); break;
+            case 'paypal_payment_id':
+            case 'pp_payment_id': update_post_meta($donation->id, '_paypal_payment_id', $value); break;
             case 'paypal_payer_id':
             case 'pp_payer_id': update_post_meta($donation->id, '_paypal_payer_id', $value); break;
             case 'paypal_payment_history':
@@ -701,6 +753,10 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             $donation->paypal_correlation_id = $_POST['paypal-correlation-id'];
         }
 
+        if(isset($_POST['paypal-payment-id']) && $donation->paypal_payment_id != $_POST['paypal-payment-id']) {
+            $donation->paypal_payment_id = $_POST['paypal-payment-id'];
+        }
+
         if(isset($_POST['paypal-payer-id']) && $donation->paypal_token != $_POST['paypal-payer-id']) {
             $donation->paypal_payer_id = $_POST['paypal-payer-id'];
         }
@@ -713,8 +769,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             update_post_meta($donation_id, '_paypal_payer_id', $donation_params['paypal_payer_id']);
         }
 
-        if( !empty($donation_params['paypal_payer_id']) ) {
-            update_post_meta($donation_id, '_paypal_payer_id', $donation_params['paypal_payer_id']);
+        if( !empty($donation_params['paypal_payment_id']) ) {
+            update_post_meta($donation_id, '_paypal_payment_id', $donation_params['paypal_payment_id']);
         }
 
         update_post_meta($donation_id, '_paypal_payment_log', array());

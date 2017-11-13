@@ -1,6 +1,6 @@
 (function($){
 
-    $('script[src*="checkout.js"]').data('log-level', leyka.paypal_is_test_mode ? 'debug' : 'error');
+    // $('script[src*="checkout.js"]').data('log-level', leyka.paypal_is_test_mode ? 'debug' : 'error');
 
 	var $form;
 
@@ -30,6 +30,10 @@
 		}
 
 	}
+
+    if( !$('.leyka-paypal-form-submit').length ) { // No Revo forms with PayPal on current page
+        return;
+    }
 
 	paypal.Button.render({
 
@@ -93,7 +97,6 @@
                 tmp_donation_data[tmp_donation_data_array[i].name] = tmp_donation_data_array[i].value;
             }
 
-            console.log('Request...');
             $.ajax({
                 type: 'post',
                 url: leyka.ajaxurl,
@@ -121,9 +124,9 @@
                 donor_info.country_code = 'RU';
             }
 
-            if($form.hasClass('leyka-revo-form')) {
-                $form.closest('.leyka-pf').leykaForm('close');
-            }
+            // if($form.hasClass('leyka-revo-form')) {
+            //     $form.closest('.leyka-pf').leykaForm('close');
+            // }
 
             return actions.payment.create({
                 payment: {
@@ -135,7 +138,7 @@
                     transactions: [{
                         amount: {total: donation_amount, currency: donation_currency},
                         invoice_number: new_donation_id,
-                        notify_url: leyka.paypal_callback_url,
+                        notify_url: leyka.paypal_ipn_callback_url,
                         description: $form.find('input[name="leyka_ga_campaign_title"]').val(),
                         payment_options: {
                             allowed_payment_method: 'INSTANT_FUNDING_SOURCE'
@@ -157,13 +160,29 @@
 		},
 
 		onAuthorize: function(data, actions) {
-            console.log('On Authorize:', data, actions)
 			return actions.payment.execute().then(function(payment){
+                $.ajax({
+                    type: 'post',
+                    url: leyka.paypal_donation_update_callback_url,
+                    data: {
+                        _wpnonce: $form.find('input[name="_wpnonce"]').val(),
+                        donation_id: payment.transactions[0].invoice_number,
+                        paypal_token: data.paymentToken,
+                        paypal_payment_id: data.paymentID
+                    },
+                    async: false,
+                    beforeSend: function(xhr){
+                        /** @todo Show some loader */
+                    }
+                }).done(function(response){
 
-                console.log('payment:', payment)
+                    // check response for errors...
 
-				// The payment is complete!
-				// You can now show a confirmation message to the customer
+                    if(data && data.returnUrl) {
+                        document.location.href = data.returnUrl;
+                    }
+
+                });
 			});
 		}
 
