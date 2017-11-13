@@ -58,6 +58,13 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 'description' => __('Check if you want to accept payments only from verified PayPal accounts.', 'leyka'),
                 'required' => false,
             ),
+//            'paypal_use_ipn_callbacks' => array(
+//                'type' => 'checkbox',
+//                'default' => false,
+//                'title' => __('Complete payments by PayPal IPN callbacks', 'leyka'),
+//                'description' => __('Check if you want to control payments status by PayPal IPN callbacks. If unchecked, the payments will be completed automatically by PayPal checkout.js procedure.', 'leyka'),
+//                'required' => false,
+//            ),
             'paypal_keep_payment_logs' => array(
                 'type' => 'checkbox',
                 'default' => true,
@@ -75,6 +82,10 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         }
     }
 
+    /**
+     * This processing is used only for old Express Checkout payment procedure.
+     * Revo template (and, in the future, the rest of templates) uses the new checkout.js API.
+     */
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
         leyka()->auto_redirect = false;
@@ -208,6 +219,13 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
         switch($call_type) {
 
+//            case 'response':
+//
+//                $text = sprintf("Get: %s\n\nPost: %s\n\n", '<pre>'.print_r($_GET, 1).'</pre>', '<pre>'.print_r($_POST, 1).'</pre>');
+//                wp_mail(get_option('admin_email'), 'Leyka debugging', $text."\n\r\n\r");
+//                break;
+
+            // Used in classic API callbacks:
             case 'process_payment': // Do a payment itself
 
                 if(empty($_GET['token']) || empty($_GET['PayerID'])) {
@@ -394,6 +412,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 break;
 
+//            case 'create_donation':
+
+            // Used in classic & New API:
             case 'ipn': // Instant payment notifications processing: confirm the payment
 
                 require_once 'leyka-paypal-tools-ipn-verificator.php';
@@ -434,9 +455,24 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 }
 
                 $donation->last_ipn_transaction_id = $_POST['txn_id'];
+
+                if( !empty($_POST['payer_id']) ) {
+                    $donation->paypal_payer_id = esc_attr($_POST['payer_id']);
+                }
+
+                if(
+                    !$donation->donor_name &&
+                    ( !empty($_POST['first_name']) || !empty($_POST['last_name']) )
+                ) {
+                    $donation->donor_name = $_POST['first_name'].' '.$_POST['last_name'];
+                }
+
                 if( !empty($_POST['payment_status']) && $_POST['payment_status'] == 'Completed' ) {
 
-                    if( !leyka_options()->opt('paypal_accept_verified_only') || $_POST['payer_status'] == 'verified' ) {
+                    if(
+                        !leyka_options()->opt('paypal_accept_verified_only') ||
+                        $_POST['payer_status'] == 'verified'
+                    ) {
 
                         $donation->status = 'funded';
                         $donation->add_gateway_response($_POST);
@@ -530,7 +566,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             'success_page_url' => leyka_get_success_page_url(),
             'failure_page_url' => leyka_get_failure_page_url(),
             'paypal_accept_verified_only' => !!leyka_options()->opt('paypal_accept_verified_only'),
-            'paypal_callback_url' => home_url('leyka/service/'.$this->_id.'/ipn/'),
+            'paypal_callback_url' => home_url('leyka/service/'.$this->_id.'/ipn/'), //leyka_options()->opt('paypal_use_ipn_callbacks') ?
+//                home_url('leyka/service/'.$this->_id.'/ipn/') : false,
 //			'' => ,
 		));
 	}
@@ -559,8 +596,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
         if($donation) { // Edit donation page displayed
 
-            $donation = leyka_get_validated_donation($donation);
-//            echo '<pre>' . print_r($donation->paypal_log, 1) . '</pre>';?>
+            $donation = leyka_get_validated_donation($donation);?>
 
             <label><?php _e('PayPal token', 'leyka');?>:</label>
             <div class="leyka-ddata-field">

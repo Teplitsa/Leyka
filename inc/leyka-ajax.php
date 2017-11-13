@@ -24,7 +24,9 @@ function leyka_submit_donation() {
 
     leyka_remember_donation_data(array('donation_id' => $donation_id));
 
-    do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
+    if(empty($_POST['without_form_submission'])) {
+        do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
+    }
 
     $payment_vars = array('status' => $donation_id && !is_wp_error($donation_id) ? 0 : 1,);
     if($payment_vars['status'] == 0) {
