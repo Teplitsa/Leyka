@@ -68,18 +68,15 @@
             togglePayPalSubmit(actions);
 
             $form.on('change.leyka', '.step--person :input', function(){
+
+                $form.data('paypal-validation-allowed', true);
                 togglePayPalSubmit(actions);
+
             });
 		},
 
 		onClick: function(){
-
-			if( !$form.data('paypal-validation-allowed') ) {
-				$form.data('paypal-validation-allowed', true);
-			}
-
             $form.find('.step--person :input:first').trigger('change.leyka');
-
 		},
 
 		payment: function(data, actions) {
@@ -117,16 +114,16 @@
 
                 new_donation_id = response.donation_id;
 
+                if($form.hasClass('leyka-revo-form')) { // Close the Revo popup
+                    $form.closest('.leyka-pf').leykaForm('close');
+                }
+
             });
 
             donation_currency = donation_currency === 'rur' ? 'RUB' : donation_currency.toUpperCase();
             if(donation_currency === 'RUB') {
                 donor_info.country_code = 'RU';
             }
-
-            // if($form.hasClass('leyka-revo-form')) {
-            //     $form.closest('.leyka-pf').leykaForm('close');
-            // }
 
             return actions.payment.create({
                 payment: {
