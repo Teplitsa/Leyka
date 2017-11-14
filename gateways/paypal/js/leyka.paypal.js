@@ -2,7 +2,17 @@
 
     // $('script[src*="checkout.js"]').data('log-level', leyka.paypal_is_test_mode ? 'debug' : 'error');
 
-	var $form;
+	var $form,
+		$errors;
+
+	function addError($errors_block, error_html) {
+
+		$errors_block.html(error_html).show();
+		$('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
+			scrollTop: $errors_block.offset().top - 35
+		}, 250);
+
+	}
 
 	// If PayPal chosen, show its special submit instead of normal:
 	$('.payment-opt__radio').change(function(){
@@ -10,6 +20,7 @@
 		var $this = $(this);
 
 		$form = $this.closest('.leyka-pf');
+		$errors = $form.find('.leyka-submit-errors');
 
 		if($this.attr('value').indexOf('paypal') !== -1) {
 			$form.find('.leyka-paypal-form-submit').show();
@@ -35,6 +46,10 @@
         return;
     }
 
+	var paypal_env_data = leyka.paypal_is_test_mode ?
+			{sandbox: leyka.paypal_client_id, production: 'xxxxxxxxxx'} :
+			{production: leyka.paypal_client_id, sandbox: 'xxxxxxxxxx'};
+
 	paypal.Button.render({
 
 		env: leyka.paypal_is_test_mode ? 'sandbox' : 'production',
@@ -52,10 +67,7 @@
 			}
 		},
 
-		client: {
-			sandbox: 'ATdEeBNHoUPIE2l1XJY16iK_JzzwUciT-_0XFY-QUIbGXy3pZw76k7A8BJ4OYy7M77Ql-idSKcqEI6we',
-			production: 'xxxxxxxxx'
-		},
+		client: paypal_env_data,
 
 		commit: true, // Show a 'Pay Now' button
 
@@ -98,21 +110,30 @@
                 type: 'post',
                 url: leyka.ajaxurl,
                 data: tmp_donation_data,
-                async: false,
-                beforeSend: function(xhr){
-                    /** @todo Show some loader */
-                }
+                async: false
             }).done(function(response){
 
-                $form.data('submit-in-process', 0);
-
                 response = $.parseJSON(response);
-                if( !response || typeof response.status == 'undefined' ) { // Wrong answer from ajax handler
-                    // addError($errors, leyka.cp_wrong_server_response);
-                    return false;
-                }
 
-                new_donation_id = response.donation_id;
+                if( !response || typeof response.status === 'undefined' ) {
+
+					addError($errors, leyka.ajax_wrong_server_response);
+					/** @todo Return some [object] created by [actions]. API docs missing ATM */
+                    return false;
+
+                } else if(response.status !== 0 && typeof response.message !== 'undefined') {
+
+					addError($errors, response.message);
+					return false;
+
+				} else if(typeof response.donation_id === 'undefined' || response.donation_id <= 0) {
+
+					addError($errors, leyka.ajax_donation_not_created);
+					return false;
+
+				} else {
+					new_donation_id = response.donation_id;
+				}
 
                 if($form.hasClass('leyka-revo-form')) { // Close the Revo popup
                     $form.closest('.leyka-pf').leykaForm('close');
@@ -120,7 +141,8 @@
 
             });
 
-            donation_currency = donation_currency === 'rur' ? 'RUB' : donation_currency.toUpperCase();
+            donation_currency = donation_currency === 'rur' ?
+				'RUB' : donation_currency.toUpperCase();
             if(donation_currency === 'RUB') {
                 donor_info.country_code = 'RU';
             }
@@ -156,8 +178,10 @@
 
 		},
 
-		onAuthorize: function(data, actions) {
+		onAuthorize: function(data, actions){
 			return actions.payment.execute().then(function(payment){
+
+				// Update the dateway related payment data in donation:
                 $.ajax({
                     type: 'post',
                     url: leyka.paypal_donation_update_callback_url,
@@ -167,20 +191,38 @@
                         paypal_token: data.paymentToken,
                         paypal_payment_id: data.paymentID
                     },
-                    async: false,
-                    beforeSend: function(xhr){
-                        /** @todo Show some loader */
-                    }
+                    async: false
                 }).done(function(response){
 
-                    // check response for errors...
+					response = $.parseJSON(response);
 
-                    if(data && data.returnUrl) {
+					if( !response || typeof response.status === 'undefined' ) {
+
+						addError($errors, leyka.ajax_wrong_server_response);
+						/** @todo Return some [object] created by [actions]. API docs missing ATM */
+						return false;
+
+					} else if(response.status !== 0 && typeof response.message !== 'undefined') {
+
+						addError($errors, response.message);
+						return false;
+
+					}
+
+                    if(typeof data !== 'undefined' && typeof data.returnUrl !== 'undefined') {
                         document.location.href = data.returnUrl;
                     }
 
                 });
 			});
+		},
+
+		/**
+		 * On PayPal window close. Mb, we should just reload the campaign page
+		 * instead of failure page redirect.
+		 * */
+		onCancel: function(data, actions){
+			return actions.redirect();
 		}
 
 	}, '.leyka-paypal-form-submit');

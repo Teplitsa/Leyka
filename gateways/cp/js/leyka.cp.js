@@ -56,17 +56,18 @@ jQuery(document).ready(function($){
             $form.data('submit-in-process', 0);
 
             response = $.parseJSON(response);
-            if( !response || typeof response.status == 'undefined' ) { // Wrong answer from ajax handler
+            if( !response || typeof response.status === 'undefined' ) {
 
-                addError($errors, leyka.cp_wrong_server_response);
+                addError($errors, leyka.ajax_wrong_server_response);
                 return false;
 
-            } else if(response.status != 0 && typeof response.message != 'undefined') {
+            } else if(response.status !== 0 && typeof response.message !== 'undefined') {
 
                 addError($errors, response.message);
                 return false;
 
             } else if( !response.public_id ) {
+				/** @todo Remove this check when more common gateways settings check will be added in leyka-ajax.php:leyka_submit_donation(). */
 
                 addError($errors, leyka.cp_not_set_up);
                 return false;

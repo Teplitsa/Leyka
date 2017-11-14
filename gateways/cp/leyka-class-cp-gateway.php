@@ -69,7 +69,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     public function localize_js_strings(array $js_data) {
         return array_merge($js_data, array(
-            'cp_wrong_server_response' => __('Error in server response. Please report to the website tech support.', 'leyka'),
+            'ajax_wrong_server_response' => __('Error in server response. Please report to the website tech support.', 'leyka'),
             'cp_not_set_up' => __('Error in CloudPayments settings. Please report to the website tech support.', 'leyka'),
             'cp_donation_failure_reasons' => array(
                 'User has cancelled' => __('You cancelled the payment', 'leyka'),

@@ -28,6 +28,8 @@ function leyka_submit_donation() {
         do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
     }
 
+    /** @todo Check if selected gateway set up completely. If it's not, return the error */
+
     $payment_vars = array('status' => $donation_id && !is_wp_error($donation_id) ? 0 : 1,);
     if($payment_vars['status'] == 0) {
         $payment_vars['donation_id'] = $donation_id;
@@ -127,21 +129,22 @@ function leyka_get_gateway_redirect_data() {
         )));
     }
 
-    $donor_name = leyka_pf_get_donor_name_value();
-    if($donor_name && !leyka_validate_donor_name($donor_name)) {
-
-//        $error = new WP_Error('incorrect_donor_name', __('Incorrect donor name given while trying to add a donation', 'leyka'));
-//        $this->add_payment_form_error($error);
-
-    }
-
-    $donor_email = leyka_pf_get_donor_email_value();
-    if($donor_email && !leyka_validate_email($donor_email)) {
-
-//        $error = new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
-//        $this->add_payment_form_error($error);
-
-    }
+    /** @todo Add this server-side checks for donor name & email */
+//    $donor_name = leyka_pf_get_donor_name_value();
+//    if($donor_name && !leyka_validate_donor_name($donor_name)) {
+//
+////        $error = new WP_Error('incorrect_donor_name', __('Incorrect donor name given while trying to add a donation', 'leyka'));
+////        $this->add_payment_form_error($error);
+//
+//    }
+//
+//    $donor_email = leyka_pf_get_donor_email_value();
+//    if($donor_email && !leyka_validate_email($donor_email)) {
+//
+////        $error = new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
+////        $this->add_payment_form_error($error);
+//
+//    }
 
     $donation_id = leyka()->log_submission();
 

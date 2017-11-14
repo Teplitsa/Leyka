@@ -27,7 +27,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             'paypal_api_username' => array(
                 'type' => 'text',
                 'title' => __('PayPal API username', 'leyka'),
-                'required' => true,
+                'required' => false,
                 'placeholder' => __('Ex., your.name@yourmail.com', 'leyka'),
             ),
             'paypal_api_password' => array(
@@ -40,9 +40,15 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             'paypal_api_signature' => array(
                 'type' => 'text',
                 'title' => __('PayPal API signature', 'leyka'),
-                'required' => true,
+                'required' => false,
                 'placeholder' => __('Ex., 1^2@3#&84nDsOmE5h1T', 'leyka'),
                 'is_password' => true,
+            ),
+            'paypal_client_id' => array(
+	            'type' => 'text',
+	            'title' => __('PayPal Client ID', 'leyka'),
+	            'required' => false,
+	            'placeholder' => __('Ex., ATdEeBNHoUPIE2l1XJY16iK_JzzwUciT-_0XFY-QUIbGXy3pZw76k7A8BJ4OYy7M77Ql-idSKcqEI6we', 'leyka'),
             ),
             'paypal_test_mode' => array(
                 'type' => 'checkbox',
@@ -600,12 +606,15 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
 		return array_merge($js_data, array(
 			'paypal_locale' => get_locale(),
+            'paypal_client_id' => leyka_options()->opt('paypal_client_id'),
             'paypal_is_test_mode' => !!leyka_options()->opt('paypal_test_mode'),
             'success_page_url' => leyka_get_success_page_url(),
             'failure_page_url' => leyka_get_failure_page_url(),
             'paypal_accept_verified_only' => !!leyka_options()->opt('paypal_accept_verified_only'),
             'paypal_ipn_callback_url' => home_url('leyka/service/'.$this->_id.'/ipn/'),
 			'paypal_donation_update_callback_url' => home_url('leyka/service/'.$this->_id.'/donation_update/'),
+			'ajax_wrong_server_response' => __('Error in server response. Please report to the website tech support.', 'leyka'),
+			'ajax_donation_not_created' => __('Error while creating donation. Please report to the website tech support.', 'leyka'),
 //			'' => ,
 		));
 	}
