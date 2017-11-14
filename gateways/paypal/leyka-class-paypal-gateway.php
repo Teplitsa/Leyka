@@ -613,8 +613,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             'paypal_accept_verified_only' => !!leyka_options()->opt('paypal_accept_verified_only'),
             'paypal_ipn_callback_url' => home_url('leyka/service/'.$this->_id.'/ipn/'),
 			'paypal_donation_update_callback_url' => home_url('leyka/service/'.$this->_id.'/donation_update/'),
-			'ajax_wrong_server_response' => __('Error in server response. Please report to the website tech support.', 'leyka'),
-			'ajax_donation_not_created' => __('Error while creating donation. Please report to the website tech support.', 'leyka'),
+			'paypal_payment_process_error' => __('Error while processing the payment on PayPal side: %s. Your money will remain intact. Please report to the website tech support.', 'leyka'),
+			'ajax_wrong_server_response' => __('Error in server response. Your money will remain intact. Please report to the website tech support.', 'leyka'),
+			'ajax_donation_not_created' => __('Error while creating donation. Your money will remain intact. Please report to the website tech support.', 'leyka'),
 //			'' => ,
 		));
 	}

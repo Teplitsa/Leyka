@@ -179,7 +179,7 @@
 		},
 
 		onAuthorize: function(data, actions){
-			return actions.payment.execute().then(function(payment){
+			return actions.payment.execute().then(function(payment){ // Transaction success
 
 				// Update the dateway related payment data in donation:
                 $.ajax({
@@ -209,12 +209,24 @@
 
 					}
 
-                    if(typeof data !== 'undefined' && typeof data.returnUrl !== 'undefined') {
-                        document.location.href = data.returnUrl;
-                    }
+					actions.redirect(); // Redirect on a success page
+//                    if(typeof data !== 'undefined' && typeof data.returnUrl !== 'undefined') {
+//                        document.location.href = data.returnUrl;
+//                    }
 
                 });
+			}, function(){ // Transaction error
+
 			});
+		},
+
+		/** Checkout process error (on PayPal side). */
+		onError: function(error_code) {
+			if(typeof leyka.paypal_donation_failure_reasons[error_code] !== 'undefined') {
+				addError($errors, leyka.paypal_donation_failure_reasons[error_code]);
+			} else { // Unknown error on PayPal side
+				addError($errors, leyka.paypal_payment_process_error.replace('%s', error_code));
+			}
 		},
 
 		/**
