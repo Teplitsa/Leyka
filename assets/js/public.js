@@ -494,18 +494,19 @@ var leykaValidateForm;
 
                 }
 
-                e.preventDefault();
+//                e.preventDefault();
                 return false;
 
             }
 
+			e.preventDefault();
+
             if(leykaValidateForm($_form)) { // Form is valid
 
-                if($_form.find('input[name="leyka_payment_method"]:checked').data('processing') != 'default') {
+                if($_form.find('input[name="leyka_payment_method"]:checked').data('processing') !== 'default') {
+					e.stopPropagation();
                     return;
                 }
-
-                e.preventDefault();
 
                 // Open waiting:
                 var $redirect_step = $_form.closest('.leyka-pf').find('.leyka-pf__redirect'),

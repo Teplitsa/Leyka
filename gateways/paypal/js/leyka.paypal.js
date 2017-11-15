@@ -19,15 +19,25 @@
 
 		var $this = $(this);
 
-		$form = $this.closest('.leyka-pf');
+		$form = $this.closest('.leyka-pf__form'); //('.leyka-pf');
 		$errors = $form.find('.leyka-submit-errors');
 
 		if($this.attr('value').indexOf('paypal') !== -1) {
+
+			// For PayPal, disable Leyka form submits if form is valid:
+			$this.data('processing', 'custom');
+			console.log('Radio checked:', $this, $this.data('processing'))
+
 			$form.find('.leyka-paypal-form-submit').show();
 			$form.find('input.leyka-default-submit').hide();
+
 		} else {
+
+			$this.data('processing', 'default');
+
 			$form.find('.leyka-paypal-form-submit').hide();
 			$form.find('input.leyka-default-submit').show();
+
 		}
 
 	});
