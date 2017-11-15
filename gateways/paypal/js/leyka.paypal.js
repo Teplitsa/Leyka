@@ -234,7 +234,8 @@
 		 * instead of failure page redirect.
 		 * */
 		onCancel: function(data, actions){
-			return actions.redirect(); // window.location.href = '' doesn't work
+			window.location.href = '';
+//			return actions.redirect();
 		}
 
 	}, '.leyka-paypal-form-submit');
