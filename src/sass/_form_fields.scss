@@ -659,6 +659,7 @@ div[id *="leyka-pf-"] {  //aka namespace
 
 		input, textarea {
 			width: 100%;
+            height: inherit;
 			box-sizing: border-box;
 			-webkit-appearance: none;
 			border: none;

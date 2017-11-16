@@ -26,7 +26,6 @@
 
 			// For PayPal, disable Leyka form submits if form is valid:
 			$this.data('processing', 'custom');
-			console.log('Radio checked:', $this, $this.data('processing'))
 
 			$form.find('.leyka-paypal-form-submit').show();
 			$form.find('input.leyka-default-submit').hide();
@@ -220,9 +219,6 @@
 					}
 
 					actions.redirect(); // Redirect on a success page
-//                    if(typeof data !== 'undefined' && typeof data.returnUrl !== 'undefined') {
-//                        document.location.href = data.returnUrl;
-//                    }
 
                 });
 			}, function(){ // Transaction error

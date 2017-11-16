@@ -54,19 +54,21 @@
 	}
 }
 
-.step__note {
-	text-align: center;
-	padding: 0 $base*2 $base*4 $base*2;
+div[id*="leyka-pf-"] { // Leyka namespace
+    .step__note {
+        text-align: center;
+        padding: 0 $base*2 $base*4 $base*2;
 
-	p {
-		margin: 0;
-		font-size: 11px;
-		line-height: 14px;
-	}
+        p {
+            margin: 0;
+            font-size: 11px;
+            line-height: 14px;
+        }
 
-	@include for(small-screens) {
-		padding: 0 $base*3 $base*4 $base*3;
-	}
+        @include for(small-screens) {
+            padding: 0 $base*3 $base*4 $base*3;
+        }
+    }
 }
 
 // donors step
@@ -458,6 +460,7 @@
 			visibility: visible;
 			opacity: 1;
 			z-index: 100;
+            font-size: inherit;
 		}
 
 

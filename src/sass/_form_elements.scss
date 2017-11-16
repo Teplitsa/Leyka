@@ -10,6 +10,10 @@ div[id *="leyka-pf-"] {  //aka namespace
 		@include body-text();
 		color: $color-text;
 
+        p {
+            font-size: inherit;
+        }
+
 		p:nth-of-type(1) {
 			font-weight: bold;
 			font-size: 1.2em;
@@ -184,7 +188,7 @@ div[id *="leyka-pf-bottom"] { //aka namespace
 
 
 /** history block **/
-div[id *="leyka-pf-"] { //aka namespace
+div[id*="leyka-pf-"] { //aka namespace
 	.history__title {
 		@include step-title();
 		color: $color-text-black;
@@ -255,4 +259,21 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00f6f6f6', e
 		color: $color-text-light;
 		padding-right: $base*2;
 	}
+
+    .bottom-form__field input {
+        height: 36px;
+    }
+
+    .amount__figure input {
+        height: 36px;
+        margin-bottom: 0;
+    }
+
+    .amount__icon .svg-icon {
+        background-image: none;
+    }
+
+    a {
+        font-size: inherit;
+    }
 }
