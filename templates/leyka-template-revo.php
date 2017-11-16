@@ -88,7 +88,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
         foreach($template_data['pm_list'] as $number => $pm) { /** @var $pm Leyka_Payment_Method */
 
             // Max. 4 PM blocks for forms without comment field, or max. 6 PM blocks otherwise:
-            if($number > $max_pm_number) {
+            if($number >= $max_pm_number) {
                 break;
             }?>
 

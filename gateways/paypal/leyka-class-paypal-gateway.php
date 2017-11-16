@@ -880,7 +880,7 @@ class Leyka_Paypal_All extends Leyka_Payment_Method {
             $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('PayPal allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://www.paypal.com/">PayPal website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
-                'title' => __('Yandex Smart Payment description', 'leyka'),
+                'title' => __('PayPal payment description', 'leyka'),
                 'description' => __('Please, enter PayPal payment service description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
                 'required' => 0,
                 'validation_rules' => array(), // List of regexp?..
