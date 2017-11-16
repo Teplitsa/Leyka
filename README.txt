@@ -89,6 +89,12 @@ PHP version required: 5.3+
 10. Google Analytics events
 
 == Changelog ==
+= 2.3.4 =
+* New: PayPal payments API for Revo template changed to checkout.js.
+* Tweak: Revo template CSS compatibility with outside code improved.
+* Fix: recurring donations gateways commissions behavior fixed.
+* Fix: small fixes.
+
 = 2.3.3 =
 * New: gateways commissions function added.
 * New: optional donor comment field added.
