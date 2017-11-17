@@ -108,7 +108,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
 
     /** Quittance don't use any specific redirects, so this method is empty. */
     public function submission_redirect_url($current_url, $pm_id) {
-        return $current_url;
+        return home_url('/leyka-process-donation');
     }
     
     /** Quittance don't have some form data to send to the gateway site */
@@ -154,7 +154,9 @@ class Leyka_Bank_Order extends Leyka_Payment_Method {
 
         $this->_default_currency = 'rur';
 
-        $this->_processing_type = 'redirect'; // We should always redirect donors, even on ajax-based templates
+	    // We should always redirect donors, even on ajax-based templates:
+        $this->_processing_type = 'redirect';
+        $this->_ajax_without_form_submission = true;
 
     }
 

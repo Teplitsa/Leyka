@@ -503,12 +503,14 @@ var leykaValidateForm;
 
             if(leykaValidateForm($_form)) { // Form is valid
 
-                if($_form.find('input[name="leyka_payment_method"]:checked').data('processing') !== 'default') {
+				var $pm_selected = $_form.find('input[name="leyka_payment_method"]:checked');
+
+                if($pm_selected.data('processing') !== 'default') {
 					e.stopPropagation();
                     return;
                 }
 
-                // Open waiting:
+                // Open "waiting" form step:
                 var $redirect_step = $_form.closest('.leyka-pf').find('.leyka-pf__redirect'),
                     data_array = $_form.serializeArray(),
                     data = {action: 'leyka_ajax_get_gateway_redirect_data'};
@@ -517,22 +519,28 @@ var leykaValidateForm;
                     data[data_array[i].name] = data_array[i].value;
                 }
 
+                if($pm_selected.data('ajax-without-form-submission')) {
+                	data['without_form_submission'] = true;
+				}
+
                 $redirect_step.addClass('leyka-pf__redirect--open');
 
                 // Get gateway redirection form and submit it manually:
                 $.post(leyka.ajaxurl, data).done(function(response){
 
                     response = $.parseJSON(response);
-                    if( !response || typeof response.status == 'undefined' ) { // Wrong answer from ajax handler
 
-                        // $errors.html(leyka.cp_wrong_server_response).show();
-                        // $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
-                        //     scrollTop: $errors.offset().top - 35
-                        // }, 250);
+					// Wrong answer from ajax handler:
+                    if( !response || typeof response.status === 'undefined' ) {
+
+//                         $errors.html(leyka.ajax_wrong_server_response).show();
+//                         $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
+//                             scrollTop: $errors.offset().top - 35
+//                         }, 250);
 
                         return false;
 
-                    } else if(response.status != 0 && typeof response.message != 'undefined') {
+                    } else if(response.status !== 0 && typeof response.message !== 'undefined') {
 
                         // $errors.html(response.message).show();
                         // $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
