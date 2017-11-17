@@ -520,6 +520,7 @@ abstract class Leyka_Payment_Method {
     protected $_default_currency = '';
     protected $_options = array();
     protected $_processing_type = 'default';
+    protected $_ajax_without_form_submission = false;
 
     public final static function get_instance() {
 
@@ -578,6 +579,9 @@ abstract class Leyka_Payment_Method {
             case 'processing_type':
             case 'processing':
                 $param = $this->_processing_type;
+                break;
+            case 'ajax_without_form_submission':
+                $param = !!$this->_ajax_without_form_submission;
                 break;
             default:
 //                trigger_error('Error: unknown param "'.$param.'"');
