@@ -1917,7 +1917,7 @@ class Leyka_Donation {
                 }
                 break;
 
-            case 'rebilling_on': /** @todo Make it a method calling instead of setting an attribute value! */
+            case 'rebilling_on':
             case 'rebilling_is_on':
             case 'recurring_on':
             case 'recurring_is_on':
@@ -1952,17 +1952,6 @@ class Leyka_Donation {
 
                 }
                 break;
-
-//            case 'recurring_cancelled': /** @todo Make it a method calling instead of setting an attribute value! */
-//            case 'recurring_subscription_cancelled':
-//            case 'recurrents_stopped':
-//            case 'recurrents_cancelled':
-//                $value = !!$value;
-//                update_post_meta($this->_id, 'leyka_recurrents_cancelled', $value);
-//                update_post_meta($this->_id, 'leyka_recurrents_cancel_date', $value ? time() : 0);
-//                $this->_donation_meta['recurrents_cancelled'] = $value;
-//                $this->_donation_meta['recurrents_cancel_date'] = $value;
-//                break;
 
             default:
                 do_action('leyka_'.$this->gateway_id.'_set_unknown_donation_field', $field, $value, $this);
