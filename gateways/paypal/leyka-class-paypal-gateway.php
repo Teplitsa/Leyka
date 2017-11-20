@@ -64,13 +64,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 'description' => __('Check if you want to accept payments only from verified PayPal accounts.', 'leyka'),
                 'required' => false,
             ),
-//            'paypal_use_ipn_callbacks' => array(
-//                'type' => 'checkbox',
-//                'default' => false,
-//                'title' => __('Complete payments by PayPal IPN callbacks', 'leyka'),
-//                'description' => __('Check if you want to control payments status by PayPal IPN callbacks. If unchecked, the payments will be completed automatically by PayPal checkout.js procedure.', 'leyka'),
-//                'required' => false,
-//            ),
             'paypal_keep_payment_logs' => array(
                 'type' => 'checkbox',
                 'default' => true,
@@ -565,9 +558,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     }
 
     public function gateway_redirect_page_content($pm_id, $donation_id) {
-
-
-
     }
 
     public function enqueue_gateway_scripts() {
