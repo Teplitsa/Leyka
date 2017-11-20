@@ -1785,7 +1785,7 @@ class Leyka_Donation {
                 !empty($this->_donation_meta['recurrents_cancel_date']) : NULL;
                 return $tmp;
             default:
-                return apply_filters('leyka_get_unknown_donation_field', null, $field, $this);
+                return apply_filters('leyka_'.$this->gateway_id.'_get_unknown_donation_field', null, $field, $this);
         }
 
     }
@@ -1811,7 +1811,12 @@ class Leyka_Donation {
                 $this->_post_object->post_status = $value;
 
                 $status_log = get_post_meta($this->_id, '_status_log', true);
-                $status_log[] = array('date' => time(), 'status' => $value);
+                if($status_log && is_array($status_log)) {
+	                $status_log[] = array('date' => time(), 'status' => $value);
+                } else {
+                    $status_log = array(array('date' => time(), 'status' => $value));
+                }
+
                 update_post_meta($this->_id, '_status_log', $status_log);
                 $this->_donation_meta['status_log'] = $status_log;
 
@@ -1960,7 +1965,7 @@ class Leyka_Donation {
 //                break;
 
             default:
-                do_action('leyka_set_unknown_donation_field', $field, $value, $this);
+                do_action('leyka_'.$this->gateway_id.'_set_unknown_donation_field', $field, $value, $this);
         }
 
         return true;

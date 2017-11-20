@@ -150,8 +150,8 @@ abstract class Leyka_Gateway {
         add_action("leyka_{$this->_id}_save_donation_data", array($this, 'save_donation_specific_data'));
         add_action("leyka_{$this->_id}_add_donation_specific_data", array($this, 'add_donation_specific_data'), 10, 2);
 
-        add_filter('leyka_get_unknown_donation_field', array($this, 'get_specific_data_value'), 10, 3);
-        add_action('leyka_set_unknown_donation_field', array($this, 'set_specific_data_value'), 10, 3);
+        add_filter('leyka_'.$this->_id.'_get_unknown_donation_field', array($this, 'get_specific_data_value'), 10, 3);
+        add_action('leyka_'.$this->_id.'_set_unknown_donation_field', array($this, 'set_specific_data_value'), 10, 3);
 
         add_action('leyka_do_recurring_donation-'.$this->_id, array($this, 'do_recurring_donation'));
         add_filter(
