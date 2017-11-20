@@ -4,32 +4,32 @@
 
 **Scroll down for english description, please**
 
-Лейка - плагин для краудфандинга, фандрайзинга и сбора пожертвований на сайте для физических и юридических лиц. Поддерживаются платежи банковскими картами Visa и MasterCard через **Cloudpayments, Chronopay и RBK money**, также подключаются **WebMoney, Яндекс.Деньги (Yandex.Money), ROBOKASSA, SMS-платежи через стороннего провайдера** и традиционные квитанции.
+Лейка - плагин для краудфандинга, фандрайзинга и сбора пожертвований на сайте для физических и юридических лиц. Поддерживаются платежи банковскими картами Visa и MasterCard через **Cloudpayments, Chronopay, PayPal и RBK money**, также подключаются **WebMoney, Яндекс.Деньги (Yandex.Money), ROBOKASSA, SMS-платежи через стороннего провайдера** и традиционные квитанции.
 
 Плагин разработан и поддерживается [Теплицей социальных технологий](//te-st.ru/).
 
-Задача плагина — облегчить и усовершенствовать интеграцию сбора пожертвований на сайты НКО и общественных проектов.
-* Плагин элементарно устанавливается и требует минимум настроек. 
+Задача плагина — облегчить и усовершенствовать интеграцию сбора пожертвований на сайтах НКО и общественных проектов.
+* Плагин элементарно устанавливается и требует минимальных настроек. 
 * Функции сбора пожертвований доступны сразу после установки.
-* Многие важные параметры заданы автоматически. Например, юридически корректный текст договора оферты на пожертвование.
+* Многие важные параметры заданы автоматически — например, юридически корректный текст договора оферты на пожертвование.
 
 Плагин предназначен для всех, кто собирает деньги в интернете, в т.ч. НКО, общественных объединений и физических лиц.
 
 **Официальный сайт плагина:** [leyka.te-st.ru](//leyka.te-st.ru/)
 
-**Внимание:** для сбора пожертвований с помощью платёжных систем необходимо иметь договор с ними. Полный список платежных систем, которые поддерживает плагин, вы можете найти в [документации](http://leyka.te-st.ru/sistemnye-trebovaniya/).
+**Внимание:** для сбора пожертвований с помощью платёжных операторов необходимо иметь договор с ними. Полный список платежных систем, которые поддерживает плагин, вы можете найти в [документации](http://leyka.te-st.ru/sistemnye-trebovaniya/).
 
 **Основные функции**
 
-* Широкий набор платежных систем и опций (включая Яндекс.Деньги, CloudPayments, PayPal, Chronopay, RBK Money, ROBOKASSA, MIXPLAT и печать банковских квитанций)
+* Широкий набор платежных операторов и опций (включая Яндекс.Кассу, CloudPayments, PayPal, Chronopay, RBK Money, ROBOKASSA, MIXPLAT и печать банковских квитанций)
 * Подходит для физических и юридических лиц
-* Автоматическая рассылка email-сообщений жертвователям
+* Автоматическая рассылка email-сообщений донорам
 * Поддержка нескольких языков
 * Поддержка нескольких валют
-* Шаблоны кампаний и визуализация прогресса кампаний 
+* Шаблоны кампаний и визуализация прогресса кампаний
 * Виджеты и шорткоды для WP
-* Юридически корректные шаблоны писем, соглашения о персональных данных и договора оферты
-* Возможность встраивать модули кампаний для сбора пожертвований через iframe
+* Юридически корректные шаблоны писем донорам, соглашения о персональных данных и договора оферты
+* Возможность встраивать модули кампаний для сбора пожертвований на другие сайты через iframe
 * История платежей и готовая отчетность на сайте
 * Интеграция  с Google Analytics «из коробки»
 * Частично соответствует стандартам доступности WCAG 2.0
@@ -77,7 +77,7 @@
 
 ## In English ##
 
-Leyka is a plugin for fundraising and donations collection via WordPress website. Supported payment methods includes bank cards Visa and MasterCard through **Cloudpayments, Chronopay and RBK money** systems, mobile and SMS payments via MIXPLAT, also **WebMoney, ROBOKASSA and Yandex.Money** are supported. You can also use a traditional bank payment orders (quittances).
+Leyka is a plugin for fundraising and donations collection via WordPress website. Supported payment methods includes bank cards Visa and MasterCard through **Cloudpayments, Chronopay, PayPal and RBK money** operators, mobile and SMS payments via MIXPLAT, also **WebMoney, ROBOKASSA and Yandex.Money** are supported. You can also use a traditional bank payment orders (quittances).
 
 This plugin developed and supported by [Teplitsa of social technologies](//te-st.ru/).
 
@@ -95,7 +95,7 @@ The plugin is designed for any website that wants to collect money online - NGOs
 
 **Core features**
  		
-* Wide range of payment systems and options 
+* Wide range of payment operators and options 
 * Suitable for private persons and NGOs
 * Automatic e-mails to supporters
 * Multiple language support

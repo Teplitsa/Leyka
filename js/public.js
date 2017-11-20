@@ -118,6 +118,7 @@ jQuery(document).ready(function($){
         }
 
         return amount;
+
     }
 
     // Get donation currency currently selected on the given form:
@@ -572,7 +573,7 @@ function leyka_decode_htmlentities(encoded_text) {
 /** Get currenly selected PM's full ID */
 function leyka_get_pm_full_id($form) {
 
-    var template = $form.parents('#leyka-payment-form').data('template'),
+    var template = leyka_get_template_id($form),
         pm_full_id = '';
 
     switch(template) {
@@ -584,14 +585,35 @@ function leyka_get_pm_full_id($form) {
     return pm_full_id;
 }
 
+/** * @return mixed Form template id (if found) or false (if not found). */
+function leyka_get_template_id($form) {
+
+	var $tmp = $form.closest('#leyka-payment-form'),
+		template_id = false;
+
+	if($tmp.length) {
+		template_id = $tmp.data('template');
+	} else {
+
+		$tmp = $form.closest('.leyka-pf');
+
+		if($tmp.length) {
+			template_id = $tmp.find('.leyka-inline-campaign-form').data('template');
+		}
+
+	}
+
+	return template_id;
+}
+
 /** @var e JS keyup/keydown event */
 function leyka_is_special_key(e) {
 
     // Allowed special keys
     return (
-        e.keyCode == 9 || // Tab
-        (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
-        (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
+        e.keyCode === 9 || // Tab
+        (e.keyCode === 65 && e.ctrlKey) || // Ctrl+A
+        (e.keyCode === 67 && e.ctrlKey) || // Ctrl+C
         (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
     );
 }
@@ -605,11 +627,12 @@ function leyka_is_digit_key(e, numpad_allowed) {
         numpad_allowed = !!numpad_allowed;
     }
 
-    if( // Allowed special keys
-    e.keyCode == 46 || e.keyCode == 8 || e.keyCode == 9 || e.keyCode == 13 || // Backspace, delete, tab, enter
-    (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
-    (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
-    (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
+	// Allowed special keys:
+    if( // Backspace, delete, tab, enter:
+		e.keyCode === 46 || e.keyCode === 8 || e.keyCode === 9 || e.keyCode === 13 ||
+		(e.keyCode === 65 && e.ctrlKey) || // Ctrl+A
+		(e.keyCode === 67 && e.ctrlKey) || // Ctrl+C
+		(e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
     ) {
         return true;
     }
@@ -629,4 +652,3 @@ function leyka_is_digit_key(e, numpad_allowed) {
 function is_email(email) {
     return /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|expert|[a-z]+)|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i.test(email);
 }
-    

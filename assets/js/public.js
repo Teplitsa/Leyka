@@ -258,6 +258,7 @@ window.LeykaGUIFinal.prototype = {
 
     },
 
+    /** Subscription form validation */
     validateForm: function($form){
 
         var self = this; var $ = self.$;
@@ -382,13 +383,64 @@ jQuery(document).ready(function($){
  * Donation form inner functionality and handlers
  */
 
+var leykaValidateForm;
+
 (function($){
 
-    var amountMin = 1, //temp - take it from options
-        amountMax = 30000,
-        amountIconMarks = [25, 50, 75],
-        inputRangeWidth = 200,
-        inputRangeButtonRadius = 17;
+	var amountMin = 1, /** @todo WARNING: HARDCODE! We'd take values from plugin options */
+		amountMax = 30000,
+		amountIconMarks = [25, 50, 75],
+		inputRangeWidth = 200,
+		inputRangeButtonRadius = 17;
+
+	leykaValidateForm = function($_form){
+
+		var is_valid = true,
+			pName = $_form.find('.donor__textfield--name input').val(),
+			pEmail = $_form.find('.donor__textfield--email input').val(),
+			amount = parseFloat($_form.find('.amount__figure input').val()),
+			$comment = $_form.find(':input.leyka-donor-comment'),
+			$agree_terms = $_form.find('.donor__oferta input[name="leyka_agree"]'),
+			$agree_pd = $_form.find('.donor__oferta input[name="leyka_agree_pd"]');
+
+		if(pName.length === 0) {
+
+            is_valid = false;
+			$_form.find('.donor__textfield--name').addClass('invalid');
+
+		}
+
+		if(pEmail.length === 0 || !is_email(pEmail)) {
+
+            is_valid = false;
+			$_form.find('.donor__textfield--email').addClass('invalid');
+
+		}
+
+		if($comment.length && $comment.data('max-length') && $comment.val().length > $comment.data('max-length')) {
+
+            is_valid = false;
+			$_form.find('.donor__textfield--comment').addClass('invalid');
+
+		}
+
+		if(
+			($agree_terms.length && !$agree_terms.prop('checked')) ||
+			($agree_pd.length && !$agree_pd.prop('checked'))
+		) {
+
+            is_valid = false;
+			$_form.find('.donor__oferta').addClass('invalid');
+
+		}
+
+
+		if( !Number.isInteger(amount) || amount < amountMin || amount > amountMax ) {
+            is_valid = false;
+		}
+
+		return is_valid;
+	};
 
     var methods = {
         'defaults': {
@@ -424,55 +476,6 @@ jQuery(document).ready(function($){
 
     }
 
-    function validateForm($_form) {
-
-        var error_struct = {}, 
-            pName = $_form.find('.donor__textfield--name input').val(),
-            pEmail = $_form.find('.donor__textfield--email input').val(),
-            amount = parseInt($_form.find('.amount__figure input').val()),
-            $comment = $_form.find(':input.leyka-donor-comment'),
-            $agree_terms = $_form.find('.donor__oferta input[name="leyka_agree"]'),
-            $agree_pd = $_form.find('.donor__oferta input[name="leyka_agree_pd"]');
-
-        if(pName.length === 0) {
-
-            error_struct['name'] = true;
-            $_form.find('.donor__textfield--name').addClass('invalid');
-
-        }
-
-        if(pEmail.length === 0 || !is_email(pEmail)) {
-
-            error_struct['email'] = true;
-            $_form.find('.donor__textfield--email').addClass('invalid');
-
-        }
-
-        if($comment.length && $comment.data('max-length') && $comment.val().length > $comment.data('max-length')) {
-
-            error_struct['comment'] = true;
-            $_form.find('.donor__textfield--comment').addClass('invalid');
-
-        }
-
-        if(
-            ($agree_terms.length && !$agree_terms.prop('checked')) ||
-            ($agree_pd.length && !$agree_pd.prop('checked'))
-        ) {
-
-            error_struct['agree'] = true;
-            $_form.find('.donor__oferta').addClass('invalid');
-
-        }
-
-
-        if( !Number.isInteger(amount) || amount < amountMin || amount > amountMax ) {
-            error_struct['amount'] = true;
-        }
-
-        return Object.keys(error_struct).length ? error_struct : false;
-    }
-
     function bindSubmitPaymentFormEvent() {
 
         $('.leyka-pf__form').on('submit.leyka', 'form',  function(e){
@@ -491,20 +494,23 @@ jQuery(document).ready(function($){
 
                 }
 
-                e.preventDefault();
+//                e.preventDefault();
                 return false;
 
             }
 
-            if( !validateForm($_form) ) { // Form is valid
+			e.preventDefault();
 
-                if($_form.find('input[name="leyka_payment_method"]:checked').data('processing') != 'default') {
+            if(leykaValidateForm($_form)) { // Form is valid
+
+				var $pm_selected = $_form.find('input[name="leyka_payment_method"]:checked');
+
+                if($pm_selected.data('processing') !== 'default') {
+					e.stopPropagation();
                     return;
                 }
 
-                e.preventDefault();
-
-                // Open waiting:
+                // Open "waiting" form step:
                 var $redirect_step = $_form.closest('.leyka-pf').find('.leyka-pf__redirect'),
                     data_array = $_form.serializeArray(),
                     data = {action: 'leyka_ajax_get_gateway_redirect_data'};
@@ -513,22 +519,28 @@ jQuery(document).ready(function($){
                     data[data_array[i].name] = data_array[i].value;
                 }
 
+                if($pm_selected.data('ajax-without-form-submission')) {
+                	data['without_form_submission'] = true;
+				}
+
                 $redirect_step.addClass('leyka-pf__redirect--open');
 
                 // Get gateway redirection form and submit it manually:
                 $.post(leyka.ajaxurl, data).done(function(response){
 
                     response = $.parseJSON(response);
-                    if( !response || typeof response.status == 'undefined' ) { // Wrong answer from ajax handler
 
-                        // $errors.html(leyka.cp_wrong_server_response).show();
-                        // $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
-                        //     scrollTop: $errors.offset().top - 35
-                        // }, 250);
+					// Wrong answer from ajax handler:
+                    if( !response || typeof response.status === 'undefined' ) {
+
+//                         $errors.html(leyka.ajax_wrong_server_response).show();
+//                         $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
+//                             scrollTop: $errors.offset().top - 35
+//                         }, 250);
 
                         return false;
 
-                    } else if(response.status != 0 && typeof response.message != 'undefined') {
+                    } else if(response.status !== 0 && typeof response.message !== 'undefined') {
 
                         // $errors.html(response.message).show();
                         // $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)

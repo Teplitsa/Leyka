@@ -7,7 +7,7 @@
 $campaign = Leyka_Revo_Template_Controller::get_instance()->get_current_campaign();
 $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_data();?>
 
-<form id="<?php echo leyka_pf_get_form_id($campaign->id).'-revo-form';?>" class="leyka-revo-form" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
+<form id="<?php echo leyka_pf_get_form_id($campaign->id).'-revo-form';?>" class="leyka-inline-campaign-form leyka-revo-form" data-template="revo" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
 
 	<!-- Step 1: amount -->
     <div class="step step--amount step--active">
@@ -88,13 +88,13 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
         foreach($template_data['pm_list'] as $number => $pm) { /** @var $pm Leyka_Payment_Method */
 
             // Max. 4 PM blocks for forms without comment field, or max. 6 PM blocks otherwise:
-            if($number > $max_pm_number) {
+            if($number >= $max_pm_number) {
                 break;
             }?>
 
             <div class="payment-opt">
                 <label class="payment-opt__button">
-                    <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>" data-has-recurring="<?php echo $pm->has_recurring_support() ? '1' : '0';?>">
+                    <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>" data-has-recurring="<?php echo $pm->has_recurring_support() ? '1' : '0';?>" data-ajax-without-form-submission="<?php echo $pm->ajax_without_form_submission ? '1' : '0';?>">
                     <span class="payment-opt__icon">
                         <svg class="svg-icon <?php echo esc_attr($pm->main_icon);?>"><use xlink:href="#<?php echo esc_attr($pm->main_icon);?>" /></svg>
                     </span>
@@ -184,7 +184,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
                 <?php }?>
 
                 <div class="donor__submit">
-                    <input type="submit" value="<?php echo leyka_options()->opt_safe('donation_submit_text');?>">
+                    <?php echo apply_filters('leyka_revo_template_final_submit', '<input type="submit" class="leyka-default-submit" value="'.leyka_options()->opt_safe('donation_submit_text').'">');?>
                 </div>
 
                 <?php if(leyka_options()->opt('agree_to_terms_needed') || leyka_options()->opt('agree_to_pd_terms_needed')) {?>
