@@ -576,9 +576,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             return;
         }
 
-//        wp_enqueue_script('leyka-paypal-api', 'https://www.paypalobjects.com/api/checkout.min.js'); // VERY slow loading, try to load from the plugin own copy
-
-        wp_enqueue_script('leyka-paypal-api', LEYKA_PLUGIN_BASE_URL.'gateways/'.self::get_instance()->id.'/js/checkout.min.js');
+        wp_enqueue_script('leyka-paypal-api', 'https://www.paypalobjects.com/api/checkout.min.js');
 
         $dependencies = array('jquery', 'leyka-paypal-api',);
 
