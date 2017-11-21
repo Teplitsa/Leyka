@@ -118,9 +118,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
               // 'USERSELECTEDFUNDINGSOURCE' => 'CreditCard', // WARNING: it may be a default PM! (CreditCard, QIWI, ELV)
               'BRANDNAME' => html_entity_decode(leyka_options()->opt('org_full_name'), ENT_COMPAT, 'UTF-8'),
               'LOCALECODE' => 'RU',
-              'RETURNURL' => home_url('leyka/service/'.$this->_id.'/process_payment/'),
+              'RETURNURL' => home_url('?p=leyka/service/'.$this->_id.'/process_payment/'),
               'CANCELURL' => leyka_get_failure_page_url(),
-              'PAYMENTREQUEST_0_NOTIFYURL' => home_url('leyka/service/'.$this->_id.'/ipn/'),
+              'PAYMENTREQUEST_0_NOTIFYURL' => home_url('?p=leyka/service/'.$this->_id.'/ipn/'),
               'PAYMENTREQUEST_0_INVNUM' => $donation_id,
               'PAYMENTREQUEST_0_PAYMENTACTION' => 'Sale',
               'PAYMENTREQUEST_0_AMT' => $donation->amount,
@@ -153,9 +153,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
               // 'USERSELECTEDFUNDINGSOURCE' => 'CreditCard', // WARNING: it may be a default PM! (CreditCard, QIWI, ELV)
               'BRANDNAME' => html_entity_decode(leyka_options()->opt('org_full_name'), ENT_COMPAT, 'UTF-8'),
               'LOCALECODE' => 'RU',
-              'RETURNURL' => home_url('leyka/service/'.$this->_id.'/process_payment/'),
+              'RETURNURL' => home_url('?p=leyka/service/'.$this->_id.'/process_payment/'),
               'CANCELURL' => leyka_get_failure_page_url(),
-              'PAYMENTREQUEST_0_NOTIFYURL' => home_url('leyka/service/'.$this->_id.'/ipn/'),
+              'PAYMENTREQUEST_0_NOTIFYURL' => home_url('?p=leyka/service/'.$this->_id.'/ipn/'),
               'PAYMENTREQUEST_0_INVNUM' => $donation_id,
               'PAYMENTREQUEST_0_PAYMENTACTION' => 'Sale',
               'PAYMENTREQUEST_0_AMT' => $donation->amount,
