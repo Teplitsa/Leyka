@@ -364,8 +364,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     'DESC' => $payment_description,
                     'BILLINGPERIOD' => 'Month',
                     'BILLINGFREQUENCY' => '12',
-                    // 'PROFILESTARTDATE' => '2017-11-09T14:50:00Z',
-                    'PROFILESTARTDATE' => date(DateTime::ISO8601),
+                    'PROFILESTARTDATE' => Date(DateTime::ISO8601, strtotime("+1 Month")),
                 ), $donation);
 
                 $ch = curl_init();
