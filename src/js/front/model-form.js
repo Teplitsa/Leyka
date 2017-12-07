@@ -566,7 +566,8 @@ var leykaValidateForm,
                 var $recurring_option = $_form.find('.payment-opt__radio[data-has-recurring="1"]:first'),
                     $remembered_pm = $_form.find('.remembered-payment');
 
-                $remembered_pm.closest('.leyka-js-another-step').attr('href', 'amount'); // Remember payment option
+				// Remember payment option
+                $remembered_pm.closest('.leyka-js-another-step').attr('href', 'amount');
                 $recurring_option.attr('checked', true);
                 $remembered_pm.text($recurring_option.closest('.payment-opt').find('.payment-opt__label').text());
 
