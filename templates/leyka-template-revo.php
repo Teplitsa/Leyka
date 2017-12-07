@@ -26,7 +26,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
 
             <div class="amount__figure">
 
-                <input type="text" class="leyka_donation_amount" name="leyka_donation_amount" value="<?php echo $template_data['amount_default'];?>" autocomplete="off" placeholder="<?php echo apply_filters('leyka_form_free_amount_placeholder', $template_data['amount_default']);?>">
+                <input type="text" class="leyka_donation_amount" name="leyka_donation_amount" value="<?php echo $template_data['amount_default'];?>" autocomplete="off" placeholder="<?php echo apply_filters('leyka_form_free_amount_placeholder', $template_data['amount_default']);?>" data-default-value="<?php echo $template_data['amount_default'];?>" data-min-value="<?php echo $template_data['amount_min'];?>" data-max-value="<?php echo $template_data['amount_max_total'];?>">
                 <span class="curr-mark"><?php echo $template_data['currency_label'];?></span>
 
                 <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $template_data['currency_label'];?>" value="<?php echo leyka_options()->opt('main_currency');?>">
@@ -37,7 +37,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
 
             <div class="amount__icon">
                 <svg class="svg-icon icon-money-size3"><use xlink:href="#icon-money-size3" /></svg>
-                <div class="leyka_donation_amount-error field-error amount__error"><?php printf(__('Please enter valid amount <br />from %s to %s', 'leyka'), $template_data['amount_min'], $template_data['amount_max'] )?></div>
+                <div class="leyka_donation_amount-error field-error amount__error"><?php printf(__('Please enter valid amount <br />from %s to %s %s', 'leyka'), $template_data['amount_min'], $template_data['amount_max_total'], $template_data['currency_label'] )?></div>
             </div>
 
             <div class="amount__range_wrapper">
@@ -51,7 +51,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
                 <div class="amount__range_overlay"></div>
 
                 <div class="amount_range">
-                    <input name="amount-range" type="range" min="<?php echo $template_data['amount_min'];?>" max="<?php echo $template_data['amount_max'];?>" step="10" value="<?php echo $template_data['amount_default'];?>">
+                    <input name="amount-range" type="range" min="<?php echo $template_data['amount_min'];?>" max="<?php echo $template_data['amount_max'];?>" step="10" data-default-value="<?php echo $template_data['amount_default'];?>" value="<?php echo $template_data['amount_default'];?>">
                 </div>
             </div>
 

@@ -383,27 +383,26 @@ jQuery(document).ready(function($){
  * Donation form inner functionality and handlers
  */
 
-var leykaValidateForm;
+var leykaValidateForm,
+	leyka;
 
 (function($){
 
-	var amountMin = 1, /** @todo WARNING: HARDCODE! We'd take values from plugin options */
-		amountMax = 30000,
-		amountIconMarks = [25, 50, 75],
+	var amountIconMarks = [25, 50, 75],
 		inputRangeWidth = 200,
 		inputRangeButtonRadius = 17;
 
 	leykaValidateForm = function($_form){
 
 		var is_valid = true,
-			pName = $_form.find('.donor__textfield--name input').val(),
 			pEmail = $_form.find('.donor__textfield--email input').val(),
-			amount = parseFloat($_form.find('.amount__figure input').val()),
-			$comment = $_form.find(':input.leyka-donor-comment'),
+			$amount_field = $_form.find('.amount__figure input'),
+			amount = $amount_field.val(),
+			$comment_filed = $_form.find(':input.leyka-donor-comment'),
 			$agree_terms = $_form.find('.donor__oferta input[name="leyka_agree"]'),
 			$agree_pd = $_form.find('.donor__oferta input[name="leyka_agree_pd"]');
 
-		if(pName.length === 0) {
+		if($_form.find('.donor__textfield--name input').val().length === 0) {
 
             is_valid = false;
 			$_form.find('.donor__textfield--name').addClass('invalid');
@@ -417,7 +416,11 @@ var leykaValidateForm;
 
 		}
 
-		if($comment.length && $comment.data('max-length') && $comment.val().length > $comment.data('max-length')) {
+		if(
+			$comment_filed.length &&
+			$comment_filed.data('max-length') &&
+			$comment_filed.val().length > $comment_filed.data('max-length')
+		) {
 
             is_valid = false;
 			$_form.find('.donor__textfield--comment').addClass('invalid');
@@ -434,8 +437,11 @@ var leykaValidateForm;
 
 		}
 
-
-		if( !Number.isInteger(amount) || amount < amountMin || amount > amountMax ) {
+		if(
+			!Number.isInteger(amount) ||
+			amount < $amount_field.attr('min') ||
+			amount > $amount_field.attr('max')
+		) {
             is_valid = false;
 		}
 
@@ -526,7 +532,7 @@ var leykaValidateForm;
                 $redirect_step.addClass('leyka-pf__redirect--open');
 
                 // Get gateway redirection form and submit it manually:
-                $.post(leyka.ajaxurl, data).done(function(response){
+                $.post(leyka_get_ajax_url(), data).done(function(response){
 
                     response = $.parseJSON(response);
 
@@ -795,7 +801,7 @@ var leykaValidateForm;
         var target = $_link.attr('href'),
         $_form = $_link.closest('.leyka-pf');
 
-        if(target == 'cards') {
+        if(target === 'cards') {
             $_form.find('.payment-opt__radio').prop('checked', false); // Reset a chosen PM
         }
 
@@ -805,21 +811,27 @@ var leykaValidateForm;
 
     }
 
-    /* amount step */
     function setupAmount() {
         $('.amount__figure input.leyka_donation_amount').each(function(){
-            var val = parseInt($(this).val());
 
-            if(!Number.isInteger(val) || val < amountMin || val > amountMax){ //correct this
-                val = 500;
+            var $this = $(this),
+				$amount_range = $this.parents('.step__fields').find('.amount_range input'),
+				value = parseInt($(this).val());
+
+            if(
+            	!Number.isInteger(value) ||
+				value < $amount_range.attr('min') ||
+				value > $amount_range.attr('max')
+			) {
+                value = $amount_range.data('default-value');
             }
 
-            $(this).val(val);
-            $(this).parents('.step__fields').find('.amount_range').find('input').val(val);
+			$this.val(value);
+            $amount_range.val(value);
 
-            //sync with bottom
-            var formId = $(this).closest('.leyka-pf').attr('id');
-            $('div[data-target = "'+formId+'"]').find('input').val(val);
+            // Sync with bottom
+            var formId = $this.closest('.leyka-pf').attr('id');
+            $('div[data-target = "'+formId+'"]').find('input').val(value);
         });
     }
 
@@ -845,8 +857,8 @@ var leykaValidateForm;
             val = 0;
         }
         
-        $form.find('.step--amount .step__fields').removeClass('invalid')
-        $form.find('.amount_range').find('input').val(val).trigger('change', {'skipSyncFigure': true} );
+        $form.find('.step--amount .step__fields').removeClass('invalid');
+        $form.find('.amount_range input').val(val).trigger('change', {'skipSyncFigure': true} );
 
     }
 
@@ -857,8 +869,7 @@ var leykaValidateForm;
         try {
             min = parseInt($rangeInput.attr('min'));
             max = parseInt($rangeInput.attr('max'));
-        }
-        catch(e) {
+        } catch(e) {
             min = 0;
             max = 0;
         }
@@ -914,10 +925,14 @@ var leykaValidateForm;
         var target = $_link.attr('href'),
             $_step = $_link.parents('.step'),
             $_form = $_link.parents('.leyka-pf__form'),
-            amount = parseInt($_step.find('.amount__figure input').val());
+			$amount_field = $_step.find('.amount__figure input.leyka_donation_amount'),
+			amount = parseInt($amount_field.val());
 
-
-        if( !Number.isInteger(amount) || amount < amountMin || amount > amountMax ) { // Correct this
+        if(
+        	!Number.isInteger(amount) ||
+			amount < $amount_field.data('min-value') ||
+			amount > $amount_field.data('max-value')
+		) {
             $_step.find('.step__fields').addClass('invalid');
         } else {
 
@@ -1008,21 +1023,26 @@ var leykaValidateForm;
     function openFromBottom() {
 
         var formId = $(this).attr('data-target'),
-            amount = parseInt($(this).find('input').val()),
-            form = $('#'+formId);
+            $form = $('#'+formId),
+			$amount_field = $form.find('.amount__figure input'),
+			amount = parseInt($amount_field.val());
 
         //copy amount if it's correct
-        if(Number.isInteger(amount) && amount >= amountMin && amount <= amountMax) {
-            form.find('.amount__figure input.leyka_donation_amount').val(amount);
-            form.find('.amount_range input').val(amount);
+        if(
+        	Number.isInteger(amount) &&
+			amount >= $amount_field.attr('min') &&
+			amount <= $amount_field.attr('max')
+		) {
+			$form.find('.amount__figure input.leyka_donation_amount').val(amount);
+			$form.find('.amount_range input').val(amount);
         }
 
-        //reset active steps
-        form.find('.step').removeClass('step--active');
-        form.find('.step--amount').addClass('step--active');
+        // Reset active steps
+		$form.find('.step').removeClass('step--active');
+		$form.find('.step--amount').addClass('step--active');
 
-        //open form
-        form.addClass('leyka-pf--active');
+		// Open a form
+		$form.addClass('leyka-pf--active');
     }
 
     function close() {
