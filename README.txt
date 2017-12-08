@@ -4,8 +4,8 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса,яндекс.деньги, миксплат, paypal
 Requires at least: 3.6.1
-Tested up to: 4.9
-Stable tag: 2.3.4
+Tested up to: 4.9.1
+Stable tag: 2.3.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,12 @@ PHP version required: 5.3+
 10. Google Analytics events
 
 == Changelog ==
+= 2.3.5 =
+* New: in the donations export, donations amount and currency are separate columns now.
+* New: PayPal recurring donations added.
+* Fix: CloudPayments on the Revo template works correctly again.
+* Fix: min and max donations amount settings for the Revo template fixed.
+
 = 2.3.4 =
 * New: PayPal payments API for Revo template changed to checkout.js.
 * Tweak: Revo template CSS compatibility with outside code improved.
