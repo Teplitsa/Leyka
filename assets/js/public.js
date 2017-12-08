@@ -396,8 +396,8 @@ var leykaValidateForm,
 
 		var is_valid = true,
 			pEmail = $_form.find('.donor__textfield--email input').val(),
-			$amount_field = $_form.find('.amount__figure input'),
-			amount = $amount_field.val(),
+			$amount_field = $_form.find('.amount__figure input.leyka_donation_amount'),
+			amount = parseInt($amount_field.val().replace(/\s/g, '')),
 			$comment_filed = $_form.find(':input.leyka-donor-comment'),
 			$agree_terms = $_form.find('.donor__oferta input[name="leyka_agree"]'),
 			$agree_pd = $_form.find('.donor__oferta input[name="leyka_agree_pd"]');
@@ -438,9 +438,9 @@ var leykaValidateForm,
 		}
 
 		if(
-			!Number.isInteger(amount) ||
-			amount < $amount_field.attr('min') ||
-			amount > $amount_field.attr('max')
+			amount <= 0 ||
+			amount < $amount_field.data('min-value') ||
+			amount > $amount_field.data('max-value')
 		) {
             is_valid = false;
 		}
@@ -484,7 +484,7 @@ var leykaValidateForm,
 
     function bindSubmitPaymentFormEvent() {
 
-        $('.leyka-pf__form').on('submit.leyka', 'form',  function(e){
+        $('.leyka-pf__form').on('submit.leyka', 'form.leyka-revo-form', function(e){
 
             var $_form = $(this),
                 $active_step = $_form.find('.step.step--active');
@@ -512,8 +512,12 @@ var leykaValidateForm,
 				var $pm_selected = $_form.find('input[name="leyka_payment_method"]:checked');
 
                 if($pm_selected.data('processing') !== 'default') {
-					e.stopPropagation();
+
+					if($pm_selected.data('processing') !== 'custom-process-submit-event') {
+						e.stopPropagation();
+					}
                     return;
+
                 }
 
                 // Open "waiting" form step:

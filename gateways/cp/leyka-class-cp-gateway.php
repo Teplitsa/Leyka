@@ -529,7 +529,7 @@ class Leyka_CP_Card extends Leyka_Payment_Method {
 
         $this->_default_currency = 'rur';
 
-        $this->_processing_type = 'custom';
+        $this->_processing_type = 'custom-process-submit-event';
 
     }
 
