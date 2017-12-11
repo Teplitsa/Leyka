@@ -302,6 +302,9 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                 die(json_encode(array('code' => '0'))); // Payment completed / fail registered
 
+            case 'recurring_change':
+                /** @todo Add recurring cancelling support */
+
             default:
         }
 
