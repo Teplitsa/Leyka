@@ -115,6 +115,10 @@
                 tmp_donation_data[tmp_donation_data_array[i].name] = tmp_donation_data_array[i].value;
             }
 
+            /**
+			 * @todo Do tests to wrap this ajax call in promise-returning function.
+			 * See possible problem here: https://github.com/paypal/paypal-checkout/issues/494
+			 * */
             $.ajax({
                 type: 'post',
                 url: leyka.ajaxurl,
