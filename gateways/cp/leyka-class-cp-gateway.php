@@ -311,7 +311,11 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 	                $init_recurring_donation = $this->get_init_recurrent_donation($_POST['Id']);
 
 	                if($init_recurring_donation && $init_recurring_donation->recurring_is_active) {
+
 		                $init_recurring_donation->recurring_is_active = false;
+
+		                die(json_encode(array('code' => '0')));
+
                     }
                 }
 
@@ -334,7 +338,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => 'any',
             'meta_query' => array(
-                'RELATION' => 'AND',
+//                'RELATION' => 'AND',
                 array(
                     'key'     => '_cp_transaction_id',
                     'value'   => $cp_transaction_id,
