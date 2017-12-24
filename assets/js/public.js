@@ -738,12 +738,12 @@ var leykaValidateForm,
     }
 
     function bindNavigationEvents() {
-        
+
         $('.leyka-js-another-step').on('click', function(e){
             e.preventDefault();
             goAnotherStep($(this));
         });
-        
+
         $('.leyka-js-complete-donation').click(function(){
             $(this).closest('.leyka-pf').leykaForm('close');
         });
@@ -841,7 +841,7 @@ var leykaValidateForm,
 
     function syncFigure(event, options) {
         var val = $(this).val();
-        
+
         if(options && options['skipSyncFigure']) {
             // skip sync figure after range change trigger
         }
@@ -860,7 +860,7 @@ var leykaValidateForm,
         if(!val) {
             val = 0;
         }
-        
+
         $form.find('.step--amount .step__fields').removeClass('invalid');
         $form.find('.amount_range input').val(val).trigger('change', {'skipSyncFigure': true} );
 
@@ -974,14 +974,14 @@ var leykaValidateForm,
 
     /** payment step **/
     function setupPaymentsGrid() {
-        
+
         var $pg = $('.payments-grid');
         if( $pg.find('.payment-opt').length <= 4 ) {
             $pg.css('overflow-y', 'hidden');
         }
-        
+
     }
-    
+
     function selectPaymentProvider($_opt) {
 
         var name = $_opt.parents('.payment-opt').find('.payment-opt__label').text(),
@@ -1020,6 +1020,7 @@ var leykaValidateForm,
         // $this.find('.leyka-pf__form').append($('#'+$this.data('form-id'))); // Get form HTML from cache
 
         $this.addClass('leyka-pf--active'); // Open the popup
+        $(document.documentElement).addClass('leyka-js--open-modal');
 
         $('.amount_range input').change(); // Sync the coins picture with the amount
 
@@ -1060,6 +1061,7 @@ var leykaValidateForm,
             $pf.removeClass('leyka-pf--pd-open');
         } else { // close module
             $pf.removeClass('leyka-pf--active');
+            $(document.documentElement).removeClass('leyka-js--open-modal');
         }
     }
 
