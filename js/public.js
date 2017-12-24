@@ -486,7 +486,13 @@ jQuery(document).ready(function($){
     $('.leyka-oferta-text').easyModal({
         top: 100,
         autoOpen: false,
-        closeButtonClass: '.leyka-modal-close'
+        closeButtonClass: '.leyka-modal-close',
+        onOpen: function () {
+            $(document.documentElement).addClass('leyka-js--open-modal');
+        },
+        onClose: function () {
+            $(document.documentElement).removeClass('leyka-js--open-modal');
+        }
     });
 
     $('.leyka-legal-terms-trigger').on('click.leyka', function(e){
