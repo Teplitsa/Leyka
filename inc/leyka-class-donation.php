@@ -1498,8 +1498,8 @@ class Leyka_Donation {
         }
         add_post_meta($id, 'leyka_donation_currency', $currency);
 
-        $currency_rate = $currency == 'RUR' ? 1.0 : leyka_options()->opt("currency_rur2$currency");
-        if( !$currency_rate ) {
+        $currency_rate = $currency == 'RUR' ? 1.0 : leyka_options()->opt('currency_rur2'.mb_strtolower($currency));
+        if( !$currency_rate || (float)$currency_rate <= 0.0 ) {
             $currency_rate = 1.0;
         }
 

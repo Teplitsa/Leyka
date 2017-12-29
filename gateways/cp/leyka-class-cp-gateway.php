@@ -305,15 +305,16 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             case 'recurring_change':
             case 'recurrent_change':
 
-                if( !empty($_POST['Id']) ) { // Recurring subscription ID in the CP system
-
-	                $_POST['Id'] = trim($_POST['Id']);
-	                $init_recurring_donation = $this->get_init_recurrent_donation($_POST['Id']);
-
-	                if($init_recurring_donation && $init_recurring_donation->recurring_is_active) {
-		                $init_recurring_donation->recurring_is_active = false;
-                    }
-                }
+                /** @todo UNTESTED! The possible reason for CP recurring problems */
+//                if( !empty($_POST['Id']) ) { // Recurring subscription ID in the CP system
+//
+//	                $_POST['Id'] = trim($_POST['Id']);
+//	                $init_recurring_donation = $this->get_init_recurrent_donation($_POST['Id']);
+//
+//	                if($init_recurring_donation && $init_recurring_donation->recurring_is_active) {
+//		                $init_recurring_donation->recurring_is_active = false;
+//                    }
+//                }
 
             default:
         }

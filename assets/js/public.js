@@ -1020,6 +1020,7 @@ var leykaValidateForm,
         // $this.find('.leyka-pf__form').append($('#'+$this.data('form-id'))); // Get form HTML from cache
 
         $this.addClass('leyka-pf--active'); // Open the popup
+	    $('.leyka-js').addClass('leyka-js--open-modal');
 
         $('.amount_range input').change(); // Sync the coins picture with the amount
 
@@ -1060,6 +1061,7 @@ var leykaValidateForm,
             $pf.removeClass('leyka-pf--pd-open');
         } else { // close module
             $pf.removeClass('leyka-pf--active');
+	        $('.leyka-js').removeClass('leyka-js--open-modal');
         }
     }
 
