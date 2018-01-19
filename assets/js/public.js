@@ -988,18 +988,20 @@ var leykaValidateForm,
             $_step = $_opt.parents('.step'),
             $_form = $_opt.parents('.leyka-pf__form');
 
-        //remember
+        $('html').addClass('leyka-js--open-modal');
+
         $_form.find('.remembered-payment').text(name);
 
-        //move
         $_step.removeClass('step--active');
 
         var $step_static_step = $_form.find('.step--static.' + $_opt.val());
         if($step_static_step.length > 0) {
             $step_static_step.addClass('step--active');
-        }
-        else {
+        } else {
+
             $_form.find('.step--person').addClass('step--active');
+            $('html').removeClass('leyka-js--open-modal');
+
         }
 
     }
