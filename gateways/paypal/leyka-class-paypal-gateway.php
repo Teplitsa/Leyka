@@ -115,73 +115,82 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         // $donation->payment_type = 'rebill';
 
         if ($donation->payment_type === 'rebill') {
-          $data = apply_filters('leyka_paypal_submission_data', array(
-              'USER' => leyka_options()->opt('paypal_api_username'),
-              'PWD' => leyka_options()->opt('paypal_api_password'),
-              'SIGNATURE' => leyka_options()->opt('paypal_api_signature'),
-              'VERSION' => 204,
-              'METHOD' => 'SetExpressCheckout',
-              'EMAIL' => $donation->donor_email,
-              // 'SOLUTIONTYPE' => 'Sole',
-              // 'LANDINGPAGE' => 'Billing',
-              // 'CHANNELTYPE' => 'Merchant',
-              // 'USERSELECTEDFUNDINGSOURCE' => 'CreditCard', // WARNING: it may be a default PM! (CreditCard, QIWI, ELV)
-              'BRANDNAME' => html_entity_decode(leyka_options()->opt('org_full_name'), ENT_COMPAT, 'UTF-8'),
-              'LOCALECODE' => 'RU',
-              'RETURNURL' => home_url('?p=leyka/service/'.$this->_id.'/process_payment/'),
-              'CANCELURL' => leyka_get_failure_page_url(),
-              'PAYMENTREQUEST_0_NOTIFYURL' => home_url('?p=leyka/service/'.$this->_id.'/ipn/'),
-              'PAYMENTREQUEST_0_INVNUM' => $donation_id,
-              'PAYMENTREQUEST_0_PAYMENTACTION' => 'Sale',
-              'PAYMENTREQUEST_0_AMT' => $donation->amount,
-              'PAYMENTREQUEST_0_ITEMAMT' => $donation->amount,
-              'PAYMENTREQUEST_0_CURRENCYCODE' => 'RUB',
-              'PAYMENTREQUEST_0_DESC' => $payment_description,
-              'L_PAYMENTREQUEST_0_NAME0' => $donation->payment_title,
-              'L_PAYMENTREQUEST_0_ITEMURL0' => get_permalink($campaign_post),
-              'L_PAYMENTREQUEST_0_DESC0' => $payment_description,
-              'L_PAYMENTREQUEST_0_AMT0' => $donation->amount,
-              'NOSHIPPING' => 1,
-              'L_BILLINGTYPE0'=>'RecurringPayments',
-              'L_BILLINGAGREEMENTDESCRIPTION0'=>$payment_description
-  //            'LOGOIMG' => 'https://sandbox.paypal.com/logo.png',
-  //            'L_BILLINGTYPE0' => 'MerchantInitiatedBilling', // WARNING: for recurring this will be "RecurringPayments"
-  //            'L_BILLINGAGREEMENTDESCRIPTION0' => 'Recurring Donations', // WARNING: if L_BILLINGTYPE0 is set, it is necessary
-              /** @todo // Logo in the cart page header, HTTPS only. Add the gateway parameter for it. */
-          ), $pm_id, $donation_id, $form_data);
+            $data = apply_filters('leyka_paypal_submission_data', array(
+                'USER' => leyka_options()->opt('paypal_api_username'),
+                'PWD' => leyka_options()->opt('paypal_api_password'),
+                'SIGNATURE' => leyka_options()->opt('paypal_api_signature'),
+                'VERSION' => 204,
+                'METHOD' => 'SetExpressCheckout',
+                'EMAIL' => $donation->donor_email,
+                // 'USERSELECTEDFUNDINGSOURCE' => 'CreditCard', // WARNING: it may be a default PM! (CreditCard, QIWI, ELV)
+                'BRANDNAME' => html_entity_decode(leyka_options()->opt('org_full_name'), ENT_COMPAT, 'UTF-8'),
+                'LOCALECODE' => 'RU',
+                'RETURNURL' => apply_filters(
+                    'leyka_paypal_process_payment_callback_url',
+                    home_url('?p=leyka/service/'.$this->_id.'/process_payment/')
+                ),
+                'CANCELURL' => leyka_get_failure_page_url(),
+                'PAYMENTREQUEST_0_NOTIFYURL' => apply_filters(
+                    'leyka_paypal_ipn_callback_url',
+                    home_url('?p=leyka/service/'.$this->_id.'/ipn/')
+                ),
+                'PAYMENTREQUEST_0_INVNUM' => $donation_id,
+                'PAYMENTREQUEST_0_PAYMENTACTION' => 'Sale',
+                'PAYMENTREQUEST_0_AMT' => $donation->amount,
+                'PAYMENTREQUEST_0_ITEMAMT' => $donation->amount,
+                'PAYMENTREQUEST_0_CURRENCYCODE' => 'RUB',
+                'PAYMENTREQUEST_0_DESC' => $payment_description,
+                'L_PAYMENTREQUEST_0_NAME0' => $donation->payment_title,
+                'L_PAYMENTREQUEST_0_ITEMURL0' => get_permalink($campaign_post),
+                'L_PAYMENTREQUEST_0_DESC0' => $payment_description,
+                'L_PAYMENTREQUEST_0_AMT0' => $donation->amount,
+                'NOSHIPPING' => 1,
+                'L_BILLINGTYPE0'=>'RecurringPayments',
+                'L_BILLINGAGREEMENTDESCRIPTION0'=>$payment_description
+//                'LOGOIMG' => 'https://sandbox.paypal.com/logo.png',
+//                'L_BILLINGTYPE0' => 'MerchantInitiatedBilling', // WARNING: for recurring this will be "RecurringPayments"
+//                'L_BILLINGAGREEMENTDESCRIPTION0' => 'Recurring Donations', // WARNING: if L_BILLINGTYPE0 is set, it is necessary
+                /** @todo // Logo in the cart page header, HTTPS only. Add the gateway parameter for it. */
+            ), $pm_id, $donation_id, $form_data);
         } else {
-          $data = apply_filters('leyka_paypal_submission_data', array(
-              'USER' => leyka_options()->opt('paypal_api_username'),
-              'PWD' => leyka_options()->opt('paypal_api_password'),
-              'SIGNATURE' => leyka_options()->opt('paypal_api_signature'),
-              'VERSION' => 204,
-              'METHOD' => 'SetExpressCheckout',
-              'EMAIL' => $donation->donor_email,
-              // 'SOLUTIONTYPE' => 'Sole',
-              // 'LANDINGPAGE' => 'Billing',
-              // 'CHANNELTYPE' => 'Merchant',
-              // 'USERSELECTEDFUNDINGSOURCE' => 'CreditCard', // WARNING: it may be a default PM! (CreditCard, QIWI, ELV)
-              'BRANDNAME' => html_entity_decode(leyka_options()->opt('org_full_name'), ENT_COMPAT, 'UTF-8'),
-              'LOCALECODE' => 'RU',
-              'RETURNURL' => home_url('?p=leyka/service/'.$this->_id.'/process_payment/'),
-              'CANCELURL' => leyka_get_failure_page_url(),
-              'PAYMENTREQUEST_0_NOTIFYURL' => home_url('?p=leyka/service/'.$this->_id.'/ipn/'),
-              'PAYMENTREQUEST_0_INVNUM' => $donation_id,
-              'PAYMENTREQUEST_0_PAYMENTACTION' => 'Sale',
-              'PAYMENTREQUEST_0_AMT' => $donation->amount,
-              'PAYMENTREQUEST_0_ITEMAMT' => $donation->amount,
-              'PAYMENTREQUEST_0_CURRENCYCODE' => 'RUB',
-              'PAYMENTREQUEST_0_DESC' => $payment_description,
-              'L_PAYMENTREQUEST_0_NAME0' => $donation->payment_title,
-              'L_PAYMENTREQUEST_0_ITEMURL0' => get_permalink($campaign_post),
-              'L_PAYMENTREQUEST_0_DESC0' => $payment_description,
-              'L_PAYMENTREQUEST_0_AMT0' => $donation->amount,
-              'NOSHIPPING' => 1,
-  //            'LOGOIMG' => 'https://sandbox.paypal.com/logo.png',
-  //            'L_BILLINGTYPE0' => 'MerchantInitiatedBilling', // WARNING: for recurring this will be "RecurringPayments"
-  //            'L_BILLINGAGREEMENTDESCRIPTION0' => 'Recurring Donations', // WARNING: if L_BILLINGTYPE0 is set, it is necessary
-              /** @todo // Logo in the cart page header, HTTPS only. Add the gateway parameter for it. */
-          ), $pm_id, $donation_id, $form_data);
+            $data = apply_filters('leyka_paypal_submission_data', array(
+                'USER' => leyka_options()->opt('paypal_api_username'),
+                'PWD' => leyka_options()->opt('paypal_api_password'),
+                'SIGNATURE' => leyka_options()->opt('paypal_api_signature'),
+                'VERSION' => 204,
+                'METHOD' => 'SetExpressCheckout',
+                'EMAIL' => $donation->donor_email,
+                // 'SOLUTIONTYPE' => 'Sole',
+                // 'LANDINGPAGE' => 'Billing',
+                // 'CHANNELTYPE' => 'Merchant',
+                // 'USERSELECTEDFUNDINGSOURCE' => 'CreditCard', // WARNING: it may be a default PM! (CreditCard, QIWI, ELV)
+                'BRANDNAME' => html_entity_decode(leyka_options()->opt('org_full_name'), ENT_COMPAT, 'UTF-8'),
+                'LOCALECODE' => 'RU',
+                'RETURNURL' => apply_filters(
+                    'leyka_paypal_recurring_process_payment_callback_url',
+                    home_url('?p=leyka/service/'.$this->_id.'/process_payment/')
+                ),
+                'CANCELURL' => leyka_get_failure_page_url(),
+                'PAYMENTREQUEST_0_NOTIFYURL' => apply_filters(
+                    'leyka_paypal_recurring_ipn_callback_url',
+                    home_url('?p=leyka/service/'.$this->_id.'/ipn/')
+                ),
+                'PAYMENTREQUEST_0_INVNUM' => $donation_id,
+                'PAYMENTREQUEST_0_PAYMENTACTION' => 'Sale',
+                'PAYMENTREQUEST_0_AMT' => $donation->amount,
+                'PAYMENTREQUEST_0_ITEMAMT' => $donation->amount,
+                'PAYMENTREQUEST_0_CURRENCYCODE' => 'RUB',
+                'PAYMENTREQUEST_0_DESC' => $payment_description,
+                'L_PAYMENTREQUEST_0_NAME0' => $donation->payment_title,
+                'L_PAYMENTREQUEST_0_ITEMURL0' => get_permalink($campaign_post),
+                'L_PAYMENTREQUEST_0_DESC0' => $payment_description,
+                'L_PAYMENTREQUEST_0_AMT0' => $donation->amount,
+                'NOSHIPPING' => 1,
+//                'LOGOIMG' => 'https://sandbox.paypal.com/logo.png',
+//                'L_BILLINGTYPE0' => 'MerchantInitiatedBilling', // WARNING: for recurring this will be "RecurringPayments"
+//                'L_BILLINGAGREEMENTDESCRIPTION0' => 'Recurring Donations', // WARNING: if L_BILLINGTYPE0 is set, it is necessary
+                /** @todo // Logo in the cart page header, HTTPS only. Add the gateway parameter for it. */
+            ), $pm_id, $donation_id, $form_data);
         }
 
 
