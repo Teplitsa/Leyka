@@ -251,14 +251,24 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                 // InvoiceId - leyka donation ID, SubscriptionId - CP recurring subscription ID
                 if(empty($_POST['InvoiceId']) && empty($_POST['SubscriptionId'])) {
-                    die(json_encode(array('code' => '10')));
+                    die(json_encode(array('code' => '0')));
                 }
 
                 if(empty($_POST['InvoiceId'])) { // Non-init recurring donation
 
                     $donation = $this->get_donation_by_transaction_id($_POST['TransactionId']);
 
+                    if( !$donation || is_wp_error($donation) ) {
+                        /** @todo Send some email to the admin */
+                        die(json_encode(array('code' => '0')));
+                    }
+
                     $init_recurring_donation = $this->get_init_recurrent_donation($_POST['SubscriptionId']);
+
+                    if( !$init_recurring_donation || is_wp_error($init_recurring_donation) ) {
+                        /** @todo Send some email to the admin */
+                        die(json_encode(array('code' => '0')));
+                    }
 
                     $donation->init_recurring_donation_id = $init_recurring_donation->id;
                     $donation->payment_title = $init_recurring_donation->title;
@@ -342,8 +352,6 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     'compare' => '=',
                 ),
             ),
-            'orderby' => 'date',
-            'order' => 'ASC',
         ));
 
         if(count($donation)) {
@@ -385,8 +393,6 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     'compare' => '=',
                 ),
             ),
-            'orderby' => 'date',
-            'order' => 'ASC',
         ));
 
         return count($init_donation_post) ? new Leyka_Donation($init_donation_post[0]->ID) : false;
