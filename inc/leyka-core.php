@@ -144,7 +144,7 @@ class Leyka {
 
         function leyka_success_page_widget_template($content) {
 
-            if(is_page(leyka_options()->opt('success_page')) && leyka_options()->opt('show_success_widget_on_success')) {
+            if(is_page(leyka_options()->opt('success_page')) && leyka_options()->opt('show_success_widget_on_success') && is_main_query()) {
 
                 ob_start();
                 include(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-success-widget.php');
