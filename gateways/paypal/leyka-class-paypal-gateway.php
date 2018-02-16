@@ -105,16 +105,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             $payment_description = sprintf(__('Donation № %d', 'leyka'), $donation_id);
         }
 
+        $donation->payment_type = empty($_POST['leyka_recurring']) ? 'single' : 'rebill';
 
-        if(empty($_POST['leyka_recurring'])) { // Single donation
-            $donation->payment_type = 'single';
-        } else { // Recurring donation
-            $donation->payment_type = 'rebill';
-        }
-
-        // $donation->payment_type = 'rebill';
-
-        if ($donation->payment_type === 'rebill') {
+        if($donation->payment_type === 'rebill') {
             $data = apply_filters('leyka_paypal_submission_data', array(
                 'USER' => leyka_options()->opt('paypal_api_username'),
                 'PWD' => leyka_options()->opt('paypal_api_password'),
@@ -192,7 +185,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 /** @todo // Logo in the cart page header, HTTPS only. Add the gateway parameter for it. */
             ), $pm_id, $donation_id, $form_data);
         }
-
 
         $ch = curl_init();
         curl_setopt_array($ch, array(
