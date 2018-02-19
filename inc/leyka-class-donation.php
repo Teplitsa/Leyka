@@ -1579,16 +1579,22 @@ class Leyka_Donation {
             $donation = (int)$donation;
             $this->_post_object = get_post($donation);
 
-            if($this->_post_object) {
-                $this->_id = $donation;
-            } else {
+            if( !$this->_post_object || $this->_post_object->post_type !== Leyka_Donation_Management::$post_type ) {
                 return false;
             }
 
+            $this->_id = $donation;
+
         } elseif(is_a($donation, 'WP_Post')) {
+
             /** @var $donation WP_Post */
+            if($donation->post_type !== Leyka_Donation_Management::$post_type) {
+                return false;
+            }
+
             $this->_id = $donation->ID;
             $this->_post_object = $donation;
+
         } else {
             return false;
         }
@@ -1659,6 +1665,10 @@ class Leyka_Donation {
 
     public function __get($field) {
 
+        if( !$this->_id ) {
+            return false;
+        }
+
         switch($field) {
             case 'id':
             case 'ID': return $this->_id;
@@ -1696,15 +1706,21 @@ class Leyka_Donation {
             case 'pm_id':
                 return $this->_donation_meta['payment_method'];
             case 'pm_full_id':
-                return empty($this->_donation_meta['gateway']) || empty($this->_donation_meta['gateway']) ?
+                return empty($this->_donation_meta['gateway']) || empty($this->_donation_meta['payment_method']) ?
                     '' : $this->_donation_meta['gateway'].'-'.$this->_donation_meta['payment_method'];
             case 'gateway':
             case 'gateway_id':
             case 'gw_id':
-                return $this->_donation_meta['gateway'];
+                return empty($this->_donation_meta['gateway']) ? '' : $this->_donation_meta['gateway'];
             case 'gateway_label':
+
+                if(empty($this->_donation_meta['gateway'])) {
+                    return __('Unknown gateway', 'leyka');
+                }
+
                 $gateway = leyka_get_gateway_by_id($this->_donation_meta['gateway']);
-                return ($gateway ? $gateway->label : __('Unknown gateway', 'leyka'));
+                return $gateway ? $gateway->label : __('Unknown gateway', 'leyka');
+
             case 'pm_label':
             case 'payment_method_label':
                 $pm = leyka_get_pm_by_id($this->_donation_meta['payment_method']);
@@ -1791,6 +1807,10 @@ class Leyka_Donation {
     }
 
     public function __set($field, $value) {
+
+        if( !$this->_id ) {
+            return false;
+        }
 
         switch($field) {
             case 'title':
