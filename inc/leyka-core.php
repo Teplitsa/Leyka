@@ -286,6 +286,11 @@ class Leyka {
         do_action('leyka_initiated');
 
     }
+
+    /** @todo Create a procedure to get actual currencies rates and save them in the plugin options values */
+    public function do_currencies_rates_refresh() {
+
+    }
     
     public function load_public_cssjs() {
         // Load public-facing style sheet and JavaScript:
