@@ -191,6 +191,8 @@ class Leyka_Options_Controller {
 
         $this->_intialize_option($option_name, true);
 
+        $option_value = trim($option_value);
+
         if($this->option_exists($option_name) && $this->_validate_option($option_name, $option_value)) {
 
             $old_value = $this->_options[$option_name]['value']; // Rollback to it if option update fails
