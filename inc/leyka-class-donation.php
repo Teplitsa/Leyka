@@ -1483,6 +1483,7 @@ class Leyka_Donation {
         );
 
         $amount = empty($params['amount']) ? leyka_pf_get_amount_value() : round((float)$params['amount'], 2);
+        $amount = $amount ? (float)$amount : 0.0;
         add_post_meta($id, 'leyka_donation_amount', $amount);
 
         if(
