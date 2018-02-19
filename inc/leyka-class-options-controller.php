@@ -313,6 +313,10 @@ function leyka_save_custom_setting_commission($option_value) {
 
 add_filter('leyka_option_value', 'leyka_get_commission_values', 10, 2);
 function leyka_get_commission_values($value, $option_name) {
+
+    $value = trim($value);
+
     return $option_name == 'commission' ? maybe_unserialize($value) : $value;
+
 }
 /** Special field: gateway commission options - END */
