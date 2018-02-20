@@ -107,10 +107,15 @@ class Leyka_Options_Controller {
     public function get_value($option_name) {
 
         $option_name = str_replace('leyka_', '', $option_name);
+        if( !$this->_intialize_option($option_name, true) ) {
+            return false;
+        }
 
-        return $this->_intialize_option($option_name, true) ?
-            apply_filters('leyka_option_value', $this->_options[$option_name]['value'], $option_name) :
-            false;
+        if(in_array($this->_options[$option_name]['type'], array('text', 'html', 'rich_html'))) {
+            $this->_options[$option_name]['value'] = trim($this->_options[$option_name]['value']);
+        }
+
+        return apply_filters('leyka_option_value', $this->_options[$option_name]['value'], $option_name);
 
     }
 
@@ -292,6 +297,11 @@ function leyka_options() {
     return Leyka_Options_Controller::instance();
 }
 
+add_filter('leyka_option_value', 'leyka_filter_option_values', 10, 2);
+function leyka_filter_option_values($value, $option_name) {
+    return $option_name == 'commission' ? maybe_unserialize($value) : $value;
+}
+
 /** Special field: gateway commission options */
 add_action('leyka_save_custom_setting_commission', 'leyka_save_custom_setting_commission');
 function leyka_save_custom_setting_commission($option_value) {
@@ -313,10 +323,6 @@ function leyka_save_custom_setting_commission($option_value) {
 
 add_filter('leyka_option_value', 'leyka_get_commission_values', 10, 2);
 function leyka_get_commission_values($value, $option_name) {
-
-    $value = trim($value);
-
     return $option_name == 'commission' ? maybe_unserialize($value) : $value;
-
 }
 /** Special field: gateway commission options - END */
