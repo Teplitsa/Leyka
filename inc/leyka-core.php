@@ -900,23 +900,35 @@ class Leyka {
             'upload_files' => true, 'unfiltered_html' => true, 'leyka_manage_donations' => true,
         );
 
-        if(empty($role->capabilities['leyka_manage_donations'])) {
+//        if(empty($role->capabilities['leyka_manage_donations'])) {
 
             foreach($caps as $cap => $true) {
 
                 $cap_donation = str_replace('#base#', 'donation', $cap);
-                $role->add_cap($cap_donation, TRUE);
+
+                if(empty($role->capabilities[$cap_donation])) {
+                    $role->add_cap($cap_donation, TRUE);
+                }
+
                 $caps[$cap_donation] = TRUE;
 
                 $cap_campaign = str_replace('#base#', 'campaign', $cap);
-                $role->add_cap($cap_campaign, TRUE);
+
+                if(empty($role->capabilities[$cap_campaign])) {
+                    $role->add_cap($cap_campaign, TRUE);
+                }
+
                 $caps[$cap_campaign] = TRUE;
 
                 if(stristr($cap, '#base#') !== FALSE)
                     unset($caps[$cap]);
             }
-            $role->add_cap('leyka_manage_options', TRUE);
-        }
+
+            if(empty($role->capabilities['leyka_manage_options'])) {
+                $role->add_cap('leyka_manage_options', TRUE);
+            }
+//            $role->add_cap('leyka_manage_options', TRUE);
+//        }
 
         if( !get_role('donations_manager') ) {
             add_role('donations_manager', __('Donations Manager', 'leyka'), $caps);
