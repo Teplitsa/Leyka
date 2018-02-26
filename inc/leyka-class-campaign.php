@@ -118,12 +118,8 @@ class Leyka_Campaign_Management {
 
             $meta_query = array('relation' => 'AND');
 
-            if(isset($_REQUEST['campaign_state']) && $_REQUEST['campaign_state'] != 'all') {
-
-                $meta_query[] = array(
-                    'key' => 'is_finished',
-                    'value' => $_REQUEST['campaign_state'] == 'is_finished' ? 1 : 0
-                );
+            if( !empty($_REQUEST['campaign_state']) && $_REQUEST['campaign_state'] !== 'all' ) {
+                $meta_query[] = array('key' => 'is_finished', 'value' => $_REQUEST['campaign_state'] == 'is_finished' ? 1 : 0);
             }
 
             if( !empty($_REQUEST['target_state']) )
@@ -249,7 +245,7 @@ class Leyka_Campaign_Management {
 				</div>
 			</div>
 
-			<?php if($campaign->target_state == 'is_reached') {?>        
+			<?php if($campaign->target_state === 'is_reached') {?>
 			<p><?php printf(__('Reached at: %s', 'leyka'), '<b>'.$campaign->date_target_reached.'</b>');?></p>
 			<?php }?>
 
@@ -257,7 +253,7 @@ class Leyka_Campaign_Management {
 		</fieldset>
 
         <?php $curr_page = get_current_screen();
-        if($curr_page->action != 'add') {?>
+        if($curr_page->action !== 'add') {?>
 
         <fieldset id="campaign-finished" class="metabox-field campaign-field campaign-finished">
             <label for="is-finished">
@@ -484,11 +480,11 @@ class Leyka_Campaign_Management {
 
 		$campaign = new Leyka_Campaign($campaign_id);
 
-		if($column_name == 'ID') {
+		if($column_name === 'ID') {
 			echo (int)$campaign->id;
-		} elseif($column_name == 'payment_title') {
+		} elseif($column_name === 'payment_title') {
             echo $campaign->payment_title;
-        } elseif($column_name == 'coll_state') {
+        } elseif($column_name === 'coll_state') {
 
 			echo $campaign->is_finished == 1 ?
 				'<span class="c-closed">'.__('Closed', 'leyka').'</span>' :
@@ -502,10 +498,10 @@ class Leyka_Campaign_Management {
 				leyka_scale_ultra($campaign);
 			}
 
-			if($campaign->target_state == 'is_reached' && $campaign->date_target_reached) {?>
+			if($campaign->target_state === 'is_reached' && $campaign->date_target_reached) {?>
 		    <span class='c-reached'><?php printf(__('Reached at: %s', 'leyka'), '<time>'.$campaign->date_target_reached.'</time>'); ?></span>
 		<?php }
-		} elseif($column_name == 'shortcode') {?>
+		} elseif($column_name === 'shortcode') {?>
             <input type="text" class="embed-code read-only campaign-shortcode" value="<?php echo esc_attr(self::get_campaign_form_shortcode($campaign->ID));?>">
         <?php }
 	}
@@ -686,7 +682,7 @@ class Leyka_Campaign {
         $donations = get_posts($args);
 
         $count = count($donations);
-        for($i=0; $i<$count; $i++) {
+        for($i = 0; $i < $count; $i++) {
             $donations[$i] = new Leyka_Donation($donations[$i]->ID);
         }
 
@@ -716,25 +712,31 @@ class Leyka_Campaign {
             return false;
         }
 
-        $target_state = $this->_get_calculated_target_state();
+        $new_target_state = $this->_get_calculated_target_state();
         $meta = array();
 
-        if($target_state != $this->target_state) {
+        if($new_target_state != $this->target_state) {
 
-            $meta['target_state'] = $target_state;
+            $meta['target_state'] = $new_target_state;
 
-            if($target_state == 'is_reached') {
+            if($new_target_state == 'is_reached') {
                 $meta['date_target_reached'] = time();
             }
 
-        } elseif($target_state == 'is_reached' && !$this->date_target_reached) {
+            /** @todo !!!!! */
+            // Send donors notifications of campaign target reaching, if needed:
+//            if(leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')) {
+//                $donations = $this->get_donations(array('funded'));
+//            }
+
+        } elseif($new_target_state == 'is_reached' && !$this->date_target_reached) {
             $meta['date_target_reached'] = time();
-        } elseif($target_state != 'is_reached' && $this->date_target_reached) {
+        } elseif($new_target_state != 'is_reached' && $this->date_target_reached) {
             $meta['date_target_reached'] = 0;
         }
 
         if( !isset($meta['target_state']) ) {
-            $meta['target_state'] = $target_state;
+            $meta['target_state'] = $new_target_state;
         }
 
         foreach($meta as $key => $value) {

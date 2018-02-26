@@ -279,7 +279,7 @@ class Leyka {
                 wp_schedule_event(time(), 'daily', 'refresh_currencies_rates');
             }
 
-            add_action('refresh_currencies_rates', array($this, 'do_currencies_rates_refresh'));
+            add_action('refresh_currencies_rates', array($this, '_do_currencies_rates_refresh'));
 
             if( // Just in case..
                 !Leyka_Options_Controller::get_option_value('leyka_currency_rur2usd')
@@ -290,6 +290,11 @@ class Leyka {
 
         } else {
             wp_clear_scheduled_hook('refresh_currencies_rates');
+        }
+
+        /** Mailout for campaigns with successfully reached targets - default processing: */
+        if(class_exists('Leyka_Options_Controller') && leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')) {
+            add_action('leyka_do_campaigns_targets_reaching_mailout', array($this, '_do_campaigns_targets_reaching_mailout'));
         }
 
         do_action('leyka_initiated');
@@ -315,9 +320,9 @@ class Leyka {
             $request = explode('leyka/service', $_SERVER['REQUEST_URI']);
             $request = explode('/', trim($request[1], '/'));
 
-            if($request[0] == 'do_recurring') { // Recurring payments processing URL
+            if($request[0] === 'do_recurring') { // Recurring payments processing URL
                 $this->_do_active_recurrents_rebilling();
-            } else if($request[0] == 'cancel_recurring' && !empty($request[1]) && !empty($request[2])) {
+            } else if($request[0] === 'cancel_recurring' && !empty($request[1]) && !empty($request[2])) {
 
                 $donation = new Leyka_Donation($request[1]);
                 $init_recurrent_donation = Leyka_Donation::get_init_recurrent_donation($donation);
@@ -327,10 +332,15 @@ class Leyka {
                     do_action("leyka_{$donation->gateway_id}_cancel_recurring_subscription", $donation);
                 }
 
+            } else if(
+                $request[0] === 'do_campaigns_targets_reaching_mailout' &&
+                leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')
+            ) {
+                do_action('leyka_do_campaigns_targets_reaching_mailout');
             } else { // Gateway callback URL
 
                 // Callback URLs are: some-website.org/leyka/service/{gateway_id}/{action_name}/
-                // For ex., some-website.org/leyka/service/yandex/check_order/
+                // E.g., some-website.org/leyka/service/yandex/check_order/
 
                 // $request[0] - Gateway ID, $request[1] - service action:
                 do_action('leyka_service_call-'.$request[0], empty($request[1]) ? '' : $request[1]);
@@ -385,10 +395,14 @@ class Leyka {
 
     }
 
-    protected function _do_currency_rates_refresh() {
+    public function _do_currency_rates_refresh() {
         foreach(leyka_get_actual_currency_rates() as $currency => $rate) {
             update_option('leyka_currency_rur2'.mb_strtolower($currency), $rate);
         }
+    }
+
+    public function _do_campaigns_targets_reaching_mailout() {
+        include(LEYKA_PLUGIN_DIR.'procedures/leyka-campaigns-targets-reaching-mailout.php');
     }
 
     /** Proceed the rebill requests for all recurring subsriptions. */

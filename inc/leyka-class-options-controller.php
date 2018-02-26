@@ -18,7 +18,6 @@ class Leyka_Options_Controller {
     }
 
     protected function __construct() {
-
         require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
     }
 
@@ -31,6 +30,7 @@ class Leyka_Options_Controller {
         $option_name = stristr($option_name, 'leyka_') !== false ? $option_name : 'leyka_'.$option_name;
 
         return apply_filters('leyka_option_value', get_option($option_name), $option_name);
+
     }
 
     /**

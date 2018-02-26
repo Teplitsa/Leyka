@@ -1,2 +1,4 @@
 !.gitignore
 node_modules
+vendor
+php7cc.phar
