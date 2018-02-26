@@ -884,10 +884,13 @@ class Leyka {
             'email_invalid' => __('Enter an email in the some@email.com format', 'leyka'),
             'must_not_be_email' => __("You shouldn't enter an email here", 'leyka'),
             'value_too_long' => __('Entered value is too long', 'leyka'),
-//            'email_regexp' => '',
         ));
 
-        wp_localize_script(apply_filters('leyka_js_localized_script_id', $this->_plugin_slug.'-public'), 'leyka', $js_data);
+        $leyka_js_handle = wp_script_is($this->_plugin_slug.'-public') ?
+            $this->_plugin_slug.'-public' :
+            (wp_script_is($this->_plugin_slug.'-revo-public') ? $this->_plugin_slug.'-revo-public' : '');
+
+        wp_localize_script(apply_filters('leyka_js_localized_script_id', $leyka_js_handle   ), 'leyka', $js_data);
 
     }
 
