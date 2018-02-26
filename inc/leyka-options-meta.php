@@ -9,6 +9,7 @@ $email_placeholders =
 <code>#SUM#</code> — ".__('a full sum of donation (without taking into account some payment commissions)', 'leyka')."<br>
 <code>#PAYMENT_METHOD_NAME#</code> — ".__('a name of payment method used', 'leyka')."<br>
 <code>#CAMPAIGN_NAME#</code> — ".__('a campaign to which donation was made', 'leyka')."<br>
+<code>#CAMPAIGN_TARGET#</code> — ".__('a target amount of a campaign to which donation was made', 'leyka')."<br>
 <code>#PURPOSE#</code> — ".__('a campaign title meant for payment system (see campaign settings)', 'leyka')."<br>
 <code>#DATE#</code> — ".__('a date of donation', 'leyka')."<br>
 </span>";
@@ -360,6 +361,27 @@ self::$_options_meta = array(
         'title' => __('Send a thankful email to a donor on each funded donation', 'leyka'),
         'description' => __('Check to send a thankful email to a donor on each funded donation', 'leyka'),
     ),
+    'send_donor_emails_on_campaign_target_reaching' => array(
+        'type' => 'checkbox',
+        'default' => '1',
+        'title' => __("Send campaign reaching email notifications to all it's donors", 'leyka'),
+        'description' => __('Check to send a special thankful email to each donor when campaign target reached', 'leyka'),
+    ),
+    'email_campaign_target_reaching_title' => array(
+        'type' => 'text',
+        'default' => __('Thanks to you, the campaign succeeded!', 'leyka'),
+        'title' => __('A title of an email notification sent to each donor when campaign target reached', 'leyka'),
+        'description' => __('Enter the title of an email.', 'leyka'),
+        'required' => 1,
+        'placeholder' => __('E.g., Thanks to you, the campaign succeeded!', 'leyka'),
+    ),
+    'email_campaign_target_reaching_text' => array(
+        'type' => 'html',
+        'default' => __("Hello, #DONOR_NAME#!<br><br>You donated #SUM# to the following campaign «#CAMPAIGN_NAME#».<br><br>We're glad to tell that, thanks to your support, this campaign successfully finished just now!<br><br>We heartfully thank you,<br>#ORG_NAME#", 'leyka'),
+        'title' => __('A text of a notification email sent to each donor when campaign target reached', 'leyka'),
+        'description' => __('Enter the text of a notification email sent to each donor when campaign target reached. The text may include the following special entries:', 'leyka').$email_placeholders,
+        'required' => 1,
+    ),
     'notify_donations_managers' => array(
         'type' => 'checkbox',
         'default' => '1',
@@ -420,7 +442,7 @@ self::$_options_meta = array(
         'type' => 'checkbox',
         'default' => 1,
         'title' => __('Display all payment elements on campaign page automatically', 'leyka'),
-        'description' => __("When unchecked, all payment elements like donation forms or target completion level widgets will not be displayed automatically. To output them manually, use shortcodes inside campaign's content or template tags in campaign's template file.", 'leyka'),
+        'description' => __("When unchecked, all payment elements like donation forms or target completion level widgets will not be displayed automatically. To output them manually, use shortcodes inside campaign content or template tags in campaign template file.", 'leyka'),
         'required' => 1,
     ),
     'scale_widget_place' => array(
@@ -490,21 +512,6 @@ self::$_options_meta = array(
         'title' => __('Display donation comments in frontend', 'leyka'),
         'description' => __('Check to show donors comments in the website frontend (e.g. in donation lists widgets)', 'leyka'),
     ),
-//    'revo_template_ask_donor_data' => array(
-//        'type' => 'radio',
-//        'default' => 'during-donation',
-//        'title' => __('When to display donor data form fields?', 'leyka'),
-//        'description' => '', //__('', 'leyka'),
-//        'required' => 1,
-//        'placeholder' => '',
-//
-//        'list_entries' => array(
-//            'during-donation' => __('As a step during donation process', 'leyka'),
-//            'success-page' => __('On a payment success page', 'leyka'),
-////            'never' => __("Don't display the fields - receive donor data from payment systems", 'leyka'),
-//        ),
-//        
-//    ),
     'revo_template_show_thumbnail' => array(
         'type' => 'checkbox',
         'default' => 1,
