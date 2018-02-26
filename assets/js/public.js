@@ -500,7 +500,6 @@ var leykaValidateForm,
 
                 }
 
-//                e.preventDefault();
                 return false;
 
             }
@@ -573,7 +572,7 @@ var leykaValidateForm,
                     var redirect_form_html = '<form class="leyka-auto-submit" action="'+response.payment_url+'" method="post">';
 
                     $.each(response, function(field_name, value){
-                        if(field_name != 'payment_url') {
+                        if(field_name !== 'payment_url') {
                             redirect_form_html += '<input type="hidden" name="'+field_name+'" value="'+value+'">';
                         }
                     });

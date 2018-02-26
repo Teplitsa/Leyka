@@ -155,7 +155,7 @@ class Leyka_Bank_Order extends Leyka_Payment_Method {
         $this->_default_currency = 'rur';
 
 	    // We should always redirect donors, even on ajax-based templates:
-        $this->_processing_type = 'redirect';
+//        $this->_processing_type = 'redirect';
         $this->_ajax_without_form_submission = true;
 
     }
