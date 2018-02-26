@@ -144,7 +144,11 @@ class Leyka {
 
         function leyka_success_page_widget_template($content) {
 
-            if(is_page(leyka_options()->opt('success_page')) && leyka_options()->opt('show_success_widget_on_success') && is_main_query()) {
+            if(
+                is_page(leyka_options()->opt('success_page'))
+                && leyka_options()->opt('show_success_widget_on_success')
+                && is_main_query()
+            ) {
 
                 ob_start();
                 include(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-success-widget.php');
@@ -159,7 +163,11 @@ class Leyka {
 
         function leyka_failure_page_widget_template($content) {
 
-            if(is_page(leyka_options()->opt('failure_page')) && leyka_options()->opt('show_failure_widget_on_failure')) {
+            if(
+                is_page(leyka_options()->opt('failure_page'))
+                && leyka_options()->opt('show_failure_widget_on_failure')
+                && is_main_query()
+            ) {
 
                 ob_start();
                 include(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-failure-widget.php');
@@ -173,6 +181,7 @@ class Leyka {
         add_filter('the_content', 'leyka_failure_page_widget_template', 1);
         
         function reinstall_cssjs_in_giger() {
+
             $theme = wp_get_theme();
             if($theme && ($theme->template == 'giger' || $theme->template == 'giger-kms') && !is_singular('leyka_campaign')) {
         
@@ -196,7 +205,7 @@ class Leyka {
         
             }
         }
-        add_action('template_redirect', 'reinstall_cssjs_in_giger', 90); # is important, in giger problem code run with priority 80
+        add_action('template_redirect', 'reinstall_cssjs_in_giger', 90); // Important: in Giger problem code run with priority 80
         
         if( !is_admin() ) {
 
