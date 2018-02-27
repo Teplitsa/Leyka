@@ -432,6 +432,7 @@ class Leyka_Campaign_Management {
             update_post_meta($campaign->id, 'campaign_target', $_REQUEST['campaign_target']);
 
             $campaign->refresh_target_state();
+
         }
 
         foreach($meta as $key => $value) {
@@ -711,15 +712,13 @@ class Leyka_Campaign {
             return array();
         }
 
-        $args = array(
+        $donations = get_posts(array(
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => $status ? $status : array('submitted', 'funded', 'refunded', 'failed', 'trash',),
             'nopaging' => true,
             'meta_key' => 'leyka_campaign_id',
             'meta_value' => $this->_id,
-        );
-
-        $donations = get_posts($args);
+        ));
 
         $count = count($donations);
         for($i = 0; $i < $count; $i++) {
@@ -727,6 +726,7 @@ class Leyka_Campaign {
         }
 
         return $donations;
+
     }
 
     public static function get_campaign_collected_amount($campaign_id) {
@@ -739,6 +739,7 @@ class Leyka_Campaign {
         $campaign = new Leyka_Campaign($campaign_id);
 
         return $campaign->total_funded > 0.0 ? $campaign->total_funded : 0.0;
+
     }
 
     /** @deprecated Use $campaign->total_funded instead. */
@@ -755,23 +756,17 @@ class Leyka_Campaign {
         $new_target_state = $this->_get_calculated_target_state();
         $meta = array();
 
-        if($new_target_state != $this->target_state) {
+        if($new_target_state !== $this->target_state) {
 
             $meta['target_state'] = $new_target_state;
 
-            if($new_target_state == 'is_reached') {
+            if($new_target_state === 'is_reached') {
                 $meta['date_target_reached'] = time();
             }
 
-            /** @todo !!!!! */
-            // Send donors notifications of campaign target reaching, if needed:
-//            if(leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')) {
-//                $donations = $this->get_donations(array('funded'));
-//            }
-
-        } elseif($new_target_state == 'is_reached' && !$this->date_target_reached) {
+        } elseif($new_target_state === 'is_reached' && !$this->date_target_reached) {
             $meta['date_target_reached'] = time();
-        } elseif($new_target_state != 'is_reached' && $this->date_target_reached) {
+        } elseif($new_target_state !== 'is_reached' && $this->date_target_reached) {
             $meta['date_target_reached'] = 0;
         }
 
@@ -783,7 +778,17 @@ class Leyka_Campaign {
             update_post_meta($this->_id, $key, $value);
         }
 
+        // Send donors notifications of campaign target reaching, if needed:
+        if(
+            $new_target_state !== $this->target_state &&
+            $new_target_state === 'is_reached' &&
+            leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')
+        ) {
+            do_action('leyka_do_campaigns_targets_reaching_mailout', $this->id);
+        }
+
         return $meta['target_state'];
+
     }
 	
 	static function get_target_state_label($state = false) {

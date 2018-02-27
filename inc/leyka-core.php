@@ -401,8 +401,14 @@ class Leyka {
         }
     }
 
-    public function _do_campaigns_targets_reaching_mailout() {
+    public function _do_campaigns_targets_reaching_mailout($campaign_id = false) {
+
+        if((int)$campaign_id > 0) {
+            $_GET['mailout_campaign_id'] = (int)$campaign_id;
+        }
+
         include(LEYKA_PLUGIN_DIR.'procedures/leyka-campaigns-targets-reaching-mailout.php');
+
     }
 
     /** Proceed the rebill requests for all recurring subsriptions. */
