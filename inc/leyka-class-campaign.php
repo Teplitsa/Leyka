@@ -21,6 +21,7 @@ class Leyka_Campaign_Management {
         add_action('pre_get_posts', array($this, 'do_filtering'));
 
 		add_filter('post_row_actions', array($this, 'row_actions'), 10, 2);
+
 	}
 	
 	public static function get_instance() {
@@ -81,6 +82,7 @@ class Leyka_Campaign_Management {
 
         unset($actions['inline hide-if-no-js']);
         return $actions;
+
     }
 
     public function manage_filters() {
@@ -168,10 +170,7 @@ class Leyka_Campaign_Management {
 
 		$campaign = new Leyka_Campaign($post);
 
-		$cur_template = $campaign->template;
-		if(empty($cur_template)) {
-            $cur_template = 'default';
-        }?>
+		$cur_template = $campaign->template ? $campaign->template : 'default';?>
 
         <fieldset id="payment-title" class="metabox-field campaign-field campaign-purpose">
             <label for="payment_title">
@@ -182,7 +181,7 @@ class Leyka_Campaign_Management {
 
             <input type="text" class="widefat" name="payment_title" id="payment_title" value="<?php echo $campaign->payment_title ? $campaign->payment_title : $campaign->title;?>">
         </fieldset>
-		
+
 		<h4 class="metabox-field-title campaign-template"><?php _e('Template settings', 'leyka');?></h4>
 
 		<fieldset id="campaign-template" class="metabox-field campaign-field campaign-template">
@@ -193,13 +192,13 @@ class Leyka_Campaign_Management {
                 </option>
 
             <?php $templates = leyka()->get_templates(); 
-                if($templates) {
-                    foreach($templates as $template) {?>
+            if($templates) {
+                foreach($templates as $template) {?>
                 <option value="<?php echo esc_attr($template['id']);?>" <?php selected($cur_template, $template['id']);?>>
                     <?php _e(esc_attr($template['name']), 'leyka');?>
                 </option>
-                <?php }
-                }?>
+            <?php }
+            }?>
 
 			</select>
 		</fieldset>
@@ -247,6 +246,11 @@ class Leyka_Campaign_Management {
 
 			<?php if($campaign->target_state === 'is_reached') {?>
 			<p><?php printf(__('Reached at: %s', 'leyka'), '<b>'.$campaign->date_target_reached.'</b>');?></p>
+            <p><?php echo __('Donors mailout:', 'leyka');?>
+                <b><?php echo $campaign->target_reaching_mailout_sent ?
+                    __('sent', 'leyka').' ('.($campaign->target_reaching_mailout_errors ? __('errors detected', 'leyka') : __('mailing succeeded', 'leyka')).')' :
+                    __('not sent', 'leyka');?></b>
+            </p>
 			<?php }?>
 
 		<?php }?>
@@ -501,12 +505,13 @@ class Leyka_Campaign_Management {
 			if($campaign->target_state === 'is_reached' && $campaign->date_target_reached) {?>
 		    <span class='c-reached'><?php printf(__('Reached at: %s', 'leyka'), '<time>'.$campaign->date_target_reached.'</time>'); ?></span>
 		<?php }
+
 		} elseif($column_name === 'shortcode') {?>
             <input type="text" class="embed-code read-only campaign-shortcode" value="<?php echo esc_attr(self::get_campaign_form_shortcode($campaign->ID));?>">
         <?php }
 	}
 
-} //class
+} // class
 
 
 class Leyka_Campaign {
@@ -523,18 +528,20 @@ class Leyka_Campaign {
 
                 $this->_id = $campaign->ID;
                 $this->_post_object = $campaign;
-            } elseif(is_a($campaign, 'Leyka_Campaign')) {
+
+            } else if(is_a($campaign, 'Leyka_Campaign')) {
                 return $campaign;
             }
 
 		} elseif((int)$campaign > 0) {
+
 			$this->_id = (int)$campaign;
             $this->_post_object = get_post($this->_id);
+
 		}
 
         if( !$this->_post_object || $this->_post_object->post_type != Leyka_Campaign_Management::$post_type ) {
-            $this->_id = 0;
-            // throw new Leyka_Exception()
+            $this->_id = 0; /** @todo throw new Leyka_Exception() */
         }
 
         if( !$this->_campaign_meta ) {
@@ -544,13 +551,29 @@ class Leyka_Campaign {
             if(empty($meta['target_state'])) {
 
                 $this->target_state = $this->_get_calculated_target_state();
-                $meta['target_state'] = array($this->target_state); // [0] is just for uniformity :)
+                $meta['target_state'] = array($this->target_state);
+
+            }
+
+            if(empty($meta['_leyka_target_reaching_mailout_sent'])) {
+
+                $this->target_reaching_mailout_sent = false;
+                $meta['_leyka_target_reaching_mailout_sent'] = array(false);
+
+            }
+
+            if(empty($meta['_leyka_target_reaching_mailout_errors'])) {
+
+                $this->target_reaching_mailout_errors = false;
+                $meta['_leyka_target_reaching_mailout_errors'] = array(false);
+
             }
 
             if( !isset($meta['is_finished']) ) {
 
                 update_post_meta($this->_id, 'is_finished', 0);
-                $meta['is_finished'][0] = 0;
+                $meta['is_finished'] = array(0);
+
             }
 
             if( !isset($meta['total_funded']) ) { // If campaign total collected amount is not saved, save it
@@ -580,6 +603,8 @@ class Leyka_Campaign {
                     '' : $meta['ignore_global_template'][0] > 0,
                 'is_finished' => $meta['is_finished'] ? $meta['is_finished'][0] > 0 : 0,
                 'target_state' => $meta['target_state'][0],
+                'target_reaching_mailout_sent' => $meta['_leyka_target_reaching_mailout_sent'][0],
+                'target_reaching_mailout_errors' => $meta['_leyka_target_reaching_mailout_errors'][0],
                 'date_target_reached' => empty($meta['date_target_reached']) ? 0 : $meta['date_target_reached'][0],
                 'count_views' => empty($meta['count_views']) ? 0 : $meta['count_views'][0],
                 'count_submits' => empty($meta['count_submits']) ? 0 : $meta['count_submits'][0],
@@ -607,7 +632,7 @@ class Leyka_Campaign {
             case 'payment_title': return $this->_campaign_meta['payment_title'];
             case 'template':
             case 'campaign_template':
-                return $this->_campaign_meta['campaign_template'] == 'default' ?
+                return $this->_campaign_meta['campaign_template'] === 'default' ?
                     leyka_options()->opt('donation_form_template') : $this->_campaign_meta['campaign_template'];
             case 'campaign_target':
             case 'target': return $this->_campaign_meta['campaign_target'];
@@ -632,6 +657,8 @@ class Leyka_Campaign {
             case 'date_target_reached':
                 $date = $this->_campaign_meta['date_target_reached'];
                 return $date ? date(get_option('date_format'), $date) : 0;
+            case 'target_reaching_mailout_sent': return !!$this->_campaign_meta['target_reaching_mailout_sent'];
+            case 'target_reaching_mailout_errors': return !!$this->_campaign_meta['target_reaching_mailout_errors'];
             case 'views':
             case 'count_views':
             case 'views_count': return $this->_campaign_meta['count_views'];
@@ -652,8 +679,21 @@ class Leyka_Campaign {
 
         switch($field) {
             case 'target_state':
-                if(in_array($value, array_keys(leyka()->get_campaign_target_states())))
+                if( in_array($value, array_keys(leyka()->get_campaign_target_states())) ) {
+
+                    $this->_campaign_meta['target_state'] = $value;
                     update_post_meta($this->_id, 'target_state', $value);
+
+                }
+                break;
+            case 'target_reaching_mailout_sent':
+                $this->_campaign_meta['target_reaching_mailout_sent'] = !!$value;
+                update_post_meta($this->_id, '_leyka_target_reaching_mailout_sent', !!$value);
+                break;
+            case 'target_reaching_mailout_errors':
+                $this->_campaign_meta['target_reaching_mailout_errors'] = !!$value;
+                update_post_meta($this->_id, '_leyka_target_reaching_mailout_errors', !!$value);
+                break;
             default:
         }
     }

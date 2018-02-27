@@ -2,16 +2,29 @@
 
 $email_placeholders =
 "<span class='placeholders-help'>
-<code>#SITE_NAME#</code> — ".__('a title of the website', 'leyka')."<br>
-<code>#ORG_NAME#</code> — ".__('an official title of the organization', 'leyka')."<br>
+<code>#SITE_NAME#</code> — ".__('a website title', 'leyka')."<br>
+<code>#SITE_EMAIL#</code> — ".__('a website email', 'leyka')."<br>
+<code>#ORG_NAME#</code> — ".__('an organization official title', 'leyka')."<br>
 <code>#DONATION_ID#</code> — ".__('an ID of current donation', 'leyka')."<br>
-<code>#DONOR_NAME#</code> — ".__('a name of the donor', 'leyka')."<br>
-<code>#SUM#</code> — ".__('a full sum of donation (without taking into account some payment commissions)', 'leyka')."<br>
-<code>#PAYMENT_METHOD_NAME#</code> — ".__('a name of payment method used', 'leyka')."<br>
+<code>#DONOR_NAME#</code> — ".__('a donor name', 'leyka')."<br>
+<code>#SUM#</code> — ".__('a donation full amount (without payment commission)', 'leyka')."<br>
+<code>#PAYMENT_METHOD_NAME#</code> — ".__('a payment method used', 'leyka')."<br>
 <code>#CAMPAIGN_NAME#</code> — ".__('a campaign to which donation was made', 'leyka')."<br>
-<code>#CAMPAIGN_TARGET#</code> — ".__('a target amount of a campaign to which donation was made', 'leyka')."<br>
-<code>#PURPOSE#</code> — ".__('a campaign title meant for payment system (see campaign settings)', 'leyka')."<br>
-<code>#DATE#</code> — ".__('a date of donation', 'leyka')."<br>
+<code>#CAMPAIGN_TARGET#</code> — ".__('a campaign target amount', 'leyka')."<br>
+<code>#PURPOSE#</code> — ".__('a campaign title for payment systems (see campaign settings)', 'leyka')."<br>
+<code>#DATE#</code> — ".__('a donation date', 'leyka')."<br>
+</span>";
+
+$campaign_target_reaching_email_placeholders =
+"<span class='placeholders-help'>
+<code>#SITE_NAME#</code> — ".__('a website title', 'leyka')."<br>
+<code>#ORG_NAME#</code> — ".__('an organization official title', 'leyka')."<br>
+<code>#DONOR_NAME#</code> — ".__('a donor name', 'leyka')."<br>
+<code>#DONOR_EMAIL#</code> — ".__('a donor email', 'leyka')."<br>
+<code>#SUM#</code> — ".__('a full donations amount (without payment commission)', 'leyka')."<br>
+<code>#CAMPAIGN_NAME#</code> — ".__('a campaign to which donation was made', 'leyka')."<br>
+<code>#CAMPAIGN_TARGET#</code> — ".__('a campaign target amount', 'leyka')."<br>
+<code>#PURPOSE#</code> — ".__('a campaign title for payment systems (see campaign settings)', 'leyka')."<br>
 </span>";
 
 /** Possible field types are: text, html, rich_html, select, radio, checkbox, multi_checkbox, custom_XXX */
@@ -377,9 +390,9 @@ self::$_options_meta = array(
     ),
     'email_campaign_target_reaching_text' => array(
         'type' => 'html',
-        'default' => __("Hello, #DONOR_NAME#!<br><br>You donated #SUM# to the following campaign «#CAMPAIGN_NAME#».<br><br>We're glad to tell that, thanks to your support, this campaign successfully finished just now!<br><br>We heartfully thank you,<br>#ORG_NAME#", 'leyka'),
+        'default' => __("Hello, #DONOR_NAME#!<br><br>You've donated #SUM# totally to the campaign: «#CAMPAIGN_NAME#».<br><br>We're glad to tell that just now this campaign successfully finished!<br><br>We heartfully thank you for your support,<br>#ORG_NAME#", 'leyka'),
         'title' => __('A text of a notification email sent to each donor when campaign target reached', 'leyka'),
-        'description' => __('Enter the text of a notification email sent to each donor when campaign target reached. The text may include the following special entries:', 'leyka').$email_placeholders,
+        'description' => __('Enter the text of a notification email sent to each donor when campaign target reached. The text may include the following special entries:', 'leyka').$campaign_target_reaching_email_placeholders,
         'required' => 1,
     ),
     'notify_donations_managers' => array(
