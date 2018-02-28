@@ -245,13 +245,19 @@ class Leyka_Campaign_Management {
 			</div>
 
 			<?php if($campaign->target_state === 'is_reached') {?>
+
 			<p><?php printf(__('Reached at: %s', 'leyka'), '<b>'.$campaign->date_target_reached.'</b>');?></p>
+
+            <?php if(leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')) {?>
             <p><?php echo __('Donors mailout:', 'leyka');?>
                 <b><?php echo $campaign->target_reaching_mailout_sent ?
                     __('sent', 'leyka').' ('.($campaign->target_reaching_mailout_errors ? __('errors detected', 'leyka') : __('mailing succeeded', 'leyka')).')' :
                     __('not sent', 'leyka');?></b>
             </p>
-			<?php }?>
+
+			<?php }
+
+            }?>
 
 		<?php }?>
 		</fieldset>
@@ -778,15 +784,6 @@ class Leyka_Campaign {
             update_post_meta($this->_id, $key, $value);
         }
 
-        // Send donors notifications of campaign target reaching, if needed:
-        if(
-            $new_target_state !== $this->target_state &&
-            $new_target_state === 'is_reached' &&
-            leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')
-        ) {
-            do_action('leyka_do_campaigns_targets_reaching_mailout', $this->id);
-        }
-
         return $meta['target_state'];
 
     }
@@ -812,6 +809,7 @@ class Leyka_Campaign {
 
         $this->_campaign_meta['count_submits']++;
         update_post_meta($this->_id, 'count_submits', $this->_campaign_meta['count_submits']);
+
     }
 
     public function update_total_funded_amount($donation = false, $action = '', $old_sum = false) {

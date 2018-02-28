@@ -2008,34 +2008,35 @@ class Leyka_Donation {
     public function get_funded_date() {
 
         $last_date_funded = 0;
-        foreach((array)$this->status_log as $status_change) {
 
-            if($status_change['status'] == 'funded' && $status_change['date'] > $last_date_funded)
+        foreach((array)$this->status_log as $status_change) {
+            if($status_change['status'] == 'funded' && $status_change['date'] > $last_date_funded) {
                 $last_date_funded = $status_change['date'];
+            }
         }
 
         return $last_date_funded ? $last_date_funded : false;
+
     }
 
     public function delete($force = False) {
         wp_delete_post( $this->_id, $force );
     }
+
 }
 
 
 function leyka_cancel_recurrents_action() {
 
-    if(
-        empty($_POST['nonce'])
-     || !wp_verify_nonce($_POST['nonce'], 'leyka_recurrent_cancel')
-     || empty($_POST['donation_id'])
-    )
+    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_recurrent_cancel') || empty($_POST['donation_id'])) {
         die('-1');
+    }
 
     $_POST['donation_id'] = (int)$_POST['donation_id'];
 
     $donation = new Leyka_Donation($_POST['donation_id']);
     do_action('leyka_cancel_recurrents-'.$donation->gateway_id, $donation);
+
 }
 //add_action('wp_ajax_leyka_cancel_recurrents', 'leyka_cancel_recurrents_action');
 //add_action('wp_ajax_nopriv_leyka_cancel_recurrents', 'leyka_cancel_recurrents_action');

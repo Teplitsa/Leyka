@@ -74,8 +74,6 @@ if(leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')) {
 
         }
 
-//        die('<pre>'.print_r($mailout_list, 1).'</pre>');
-
 //        add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
         // Do the campaign mailout:
