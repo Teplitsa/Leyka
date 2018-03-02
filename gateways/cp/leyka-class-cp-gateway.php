@@ -31,18 +31,18 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 'title' => __('Public ID', 'leyka'),
                 'description' => __('Please, enter your CloudPayments public ID here. It can be found in your CloudPayments control panel.', 'leyka'),
                 'required' => true,
-                'placeholder' => __('Ex., 1234', 'leyka'),
+                'placeholder' => __('E.g., 1234', 'leyka'),
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
             'cp_ip' => array(
                 'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
                 'value' => '',
-                'default' => '130.193.70.192,185.98.85.109',
+                'default' => '',
                 'title' => __('CloudPayments IP', 'leyka'),
-                'description' => __('IP address to check for requests.', 'leyka'),
+                'description' => __('Comma-separated callback requests IP list. Leave empty to disable the check.', 'leyka'),
                 'required' => 1,
-                'placeholder' => __('Ex., 130.193.70.192,185.98.85.109', 'leyka'),
+                'placeholder' => __('E.g., 130.193.70.192,185.98.85.109', 'leyka'),
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
