@@ -87,7 +87,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway
     }
 
     /**
-     * What is MF????!!!!
+     * What is MF?!
      */
     protected function _initialize_pm_list()
     {
