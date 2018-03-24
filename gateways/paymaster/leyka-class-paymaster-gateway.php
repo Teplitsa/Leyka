@@ -134,11 +134,6 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway
         $donation = new Leyka_Donation($donation_id);
         $amount = number_format((float)$donation->amount, 2, '.', '');
 
-        //todo add in future
-//        $notify_url = get_site_url() . '/' . '?wc-api=wc_paymaster&paymaster=result';
-//        $success_url = get_site_url() . '/' . '?wc-api=wc_paymaster&paymaster=success';
-//        $fail_url = get_site_url() . '/' . '?wc-api=wc_paymaster&paymaster=fail';
-
 
         $sign_string = leyka_options()->opt('paymaster_merchant_id') . ':' . $amount . ':' . $donation_id . ':' . leyka_options()->opt('paymaster_secret');
 
@@ -155,11 +150,6 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway
         }
 
         $description = leyka_options()->opt('paymaster_description') . $donation_id;
-
-        //todo add in future
-//            'LMI_PAYMENT_NOTIFICATION_URL' => $notify_url,
-//            'LMI_SUCCESS_URL'              => $success_url,
-//            'LMI_FAILURE_URL'              => $fail_url,
 
 
         $form_data_vars = array(
