@@ -91,8 +91,8 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway
      */
     protected function _initialize_pm_list()
     {
-        if (empty($this->_payment_methods['Paymaster_all'])) {
-            $this->_payment_methods['Paymaster_all'] = Leyka_Paymaster_All::get_instance();
+        if (empty($this->_payment_methods['paymaster'])) {
+            $this->_payment_methods['paymaster'] = Leyka_Paymaster_All::get_instance();
         }
     }
 
@@ -146,13 +146,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway
 
         $pm_curr = $pm_id;
         switch ($pm_id) {
-            case 'rur':
-                $pm_curr = 'RUB';
-                break;
-            case 'RUR':
-                $pm_curr = 'RUB';
-                break;
-            case 'WMR':
+            case 'paymaster':
                 $pm_curr = 'RUB';
                 break;
             case 'Other':
@@ -169,13 +163,17 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway
 
 
         $form_data_vars = array(
-            'LMI_MERCHANT_ID'    => leyka_options()->opt('paymaster_shop_id'),
-            'LMI_PAYMENT_AMOUNT' => $amount,
-            'LMI_PAYMENT_NO'     => $donation_id,
-            'LMI_CURRENCY'       => $pm_curr,
-            'LMI_PAYMENT_DESC'   => $description,
-            'SIGN'               => $sign,
+            'LMI_MERCHANT_ID'              => leyka_options()->opt('paymaster_merchant_id'),
+            'LMI_PAYMENT_AMOUNT'           => $amount,
+            'LMI_PAYMENT_NO'               => $donation_id,
+            'LMI_CURRENCY'                 => $pm_curr,
+            'LMI_PAYMENT_DESC'             => $description,
+            'SIGN'                         => $sign,
+            'LMI_PAYMENT_NOTIFICATION_URL' => home_url('leyka/service/' . $this->_id . '/response/'), // URL for the gateway callbacks
+            'LMI_SUCCESS_URL'              => leyka_get_success_page_url(),
+            'LMI_FAILURE_URL'              => leyka_get_failure_page_url(),
         );
+
 
         return $form_data_vars;
     }
@@ -355,10 +353,11 @@ class Leyka_Paymaster_All extends Leyka_Payment_Method
     public function _set_attributes()
     {
 
-        $this->_id = 'Other';
+//        $this->_id = 'Other';
+        $this->_id = 'paymaster';
         $this->_gateway_id = 'paymaster';
 
-        $this->_label_backend = __('Use Paymaster payment method available', 'leyka');
+        $this->_label_backend = __('Use Paymaster payment method', 'leyka');
         $this->_label = __('Paymaster', 'leyka');
 
         // The description won't be setted here - it requires the PM option being configured at this time (which is not)
@@ -369,9 +368,9 @@ class Leyka_Paymaster_All extends Leyka_Payment_Method
             LEYKA_PLUGIN_BASE_URL . 'gateways/paymaster/icons/master.png',
         ));
 
-        $this->_supported_currencies[] = 'RUB';
+        $this->_supported_currencies[] = 'rur';
 
-        $this->_default_currency = 'RUB';
+        $this->_default_currency = 'rur';
     }
 
     protected function _set_options_defaults()
