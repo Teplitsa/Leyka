@@ -342,7 +342,7 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
             home_url("?page=leyka/service/cancel_recurring/{$donation->id}");
         $cancelling_url .= '/'.md5($donation->id.'_'.$init_recurrent_donation->id.'_leyka_cancel_recurring_subscription');
 
-        return sprintf(__('<a href="%s" target="_blank">click here</a>', 'leyka'), $cancelling_url);
+        return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
 
     }
 
