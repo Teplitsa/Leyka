@@ -129,11 +129,11 @@ var leykaValidateForm,
 
 				var $pm_selected = $_form.find('input[name="leyka_payment_method"]:checked');
 
-                if($pm_selected.data('processing') !== 'default') {
+                if(  -1 === ['default','redirect'].indexOf($pm_selected.data('processing')) ) {
 
-					if($pm_selected.data('processing') !== 'custom-process-submit-event') {
-						e.stopPropagation();
-					}
+                    if($pm_selected.data('processing') !== 'custom-process-submit-event') {
+                        e.stopPropagation();
+                    }
                     return;
 
                 }
