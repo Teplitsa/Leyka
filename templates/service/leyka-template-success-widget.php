@@ -4,14 +4,15 @@
  * Description: A template for the interactive actions block shown on the successful donation page.
  **/
 
-if(
-//    !leyka_options()->opt('revo_template_ask_donor_data') == 'success-page' &&
-    !leyka_options()->opt('show_success_widget_on_success')
-) {
-    exit();
+if( !leyka_options()->opt('show_success_widget_on_success') ) {
+    return;
 }
 
-$donation_id = leyka_remembered_data('donation_id');?>
+$donation_id = leyka_remembered_data('donation_id');
+
+if( !$donation_id ) {
+    return;
+}?>
 
 <div id="leyka-pf-" class="leyka-pf">
     <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
@@ -29,18 +30,7 @@ $donation_id = leyka_remembered_data('donation_id');?>
                 <input type="hidden" name="action" value="leyka_donor_subscription">
                 <?php wp_nonce_field('leyka_donor_subscription');?>
 
-                <?php /*if(leyka_options()->opt('revo_template_ask_donor_data') == 'success-page') {?>
-
-                    <div class="thankyou-email-field">
-                        <div class="donor__textfield">
-                            <input type="text" name="leyka_donor_name" class="required" placeholder="<?php _e('Your name', 'leyka');?>" value="<?php echo leyka_remembered_data('donor_name');?>">
-                        </div>
-                        <div class="donor__textfield">
-                            <input type="email" name="leyka_donor_email" class="required" placeholder="<?php _e('Your email', 'leyka');?>" value="<?php echo leyka_remembered_data('donor_email');?>">
-                        </div>
-                    </div>
-
-                <?php } else*/ if(leyka_options()->opt('show_success_widget_on_success')) {?>
+                <?php if(leyka_options()->opt('show_success_widget_on_success')) {?>
 
                     <div class="thankyou-email-field">
                         <div class="donor__textfield">

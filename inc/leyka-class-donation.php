@@ -284,6 +284,7 @@ class Leyka_Donation_Management {
                     '#PAYMENT_METHOD_NAME#',
                     '#CAMPAIGN_NAME#',
                     '#PURPOSE#',
+                    '#CAMPAIGN_TARGET#',
                     '#SUM#',
                     '#DATE#',
                     '#RECURRING_SUBSCRIPTION_CANCELLING_LINK#',
@@ -297,6 +298,7 @@ class Leyka_Donation_Management {
                     $donation->payment_method_label,
                     $campaign->title,
                     $campaign->payment_title,
+                    $campaign->target,
                     $donation->amount.' '.$donation->currency_label,
                     $donation->date,
                     apply_filters(
@@ -372,6 +374,7 @@ class Leyka_Donation_Management {
                     '#PAYMENT_METHOD_NAME#',
                     '#CAMPAIGN_NAME#',
                     '#PURPOSE#',
+                    '#CAMPAIGN_TARGET#',
                     '#SUM#',
                     '#DATE#',
                     '#RECURRING_SUBSCRIPTION_CANCELLING_LINK#',
@@ -386,6 +389,7 @@ class Leyka_Donation_Management {
                     $donation->payment_method_label,
                     $campaign->title,
                     $campaign->payment_title,
+                    $campaign->target,
                     $donation->amount.' '.$donation->currency_label,
                     $donation->date,
                     apply_filters(
@@ -463,6 +467,7 @@ class Leyka_Donation_Management {
                         '#PAYMENT_METHOD_NAME#',
                         '#CAMPAIGN_NAME#',
                         '#PURPOSE#',
+                        '#CAMPAIGN_TARGET#',
                         '#SUM#',
                         '#DATE#',
                     ),
@@ -474,6 +479,7 @@ class Leyka_Donation_Management {
                         $donation->payment_method_label,
                         $campaign->title,
                         $campaign->payment_title,
+                        $campaign->target,
                         $donation->amount.' '.$donation->currency_label,
                         $donation->date,
                     ),
@@ -676,7 +682,7 @@ class Leyka_Donation_Management {
         <div class="leyka-ddata-string">			
 			<label><?php echo _x('Campaign', 'In subjective case', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
-			<?php if($campaign->id && $campaign->status == 'publish') { ?>
+			<?php if($campaign->id && $campaign->status == 'publish') {?>
 			<span class="text-line">
             <span class="campaign-name"><?php echo htmlentities($campaign->title, ENT_QUOTES, 'UTF-8');?></span> <span class="campaign-actions"><a href="<?php echo admin_url('/post.php?action=edit&post='.$campaign->id);?>"><?php _e('Edit campaign', 'leyka');?></a> <a href="<?php echo $campaign->url;?>" target="_blank"><?php _e('Preview campaign', 'leyka');?></a></span></span>
 
@@ -1483,6 +1489,7 @@ class Leyka_Donation {
         );
 
         $amount = empty($params['amount']) ? leyka_pf_get_amount_value() : round((float)$params['amount'], 2);
+        $amount = $amount ? (float)$amount : 0.0;
         add_post_meta($id, 'leyka_donation_amount', $amount);
 
         if(
@@ -1498,8 +1505,8 @@ class Leyka_Donation {
         }
         add_post_meta($id, 'leyka_donation_currency', $currency);
 
-        $currency_rate = $currency == 'RUR' ? 1.0 : leyka_options()->opt("currency_rur2$currency");
-        if( !$currency_rate ) {
+        $currency_rate = $currency == 'RUR' ? 1.0 : leyka_options()->opt('currency_rur2'.mb_strtolower($currency));
+        if( !$currency_rate || (float)$currency_rate <= 0.0 ) {
             $currency_rate = 1.0;
         }
 
@@ -1579,16 +1586,22 @@ class Leyka_Donation {
             $donation = (int)$donation;
             $this->_post_object = get_post($donation);
 
-            if($this->_post_object) {
-                $this->_id = $donation;
-            } else {
+            if( !$this->_post_object || $this->_post_object->post_type !== Leyka_Donation_Management::$post_type ) {
                 return false;
             }
 
+            $this->_id = $donation;
+
         } elseif(is_a($donation, 'WP_Post')) {
+
             /** @var $donation WP_Post */
+            if($donation->post_type !== Leyka_Donation_Management::$post_type) {
+                return false;
+            }
+
             $this->_id = $donation->ID;
             $this->_post_object = $donation;
+
         } else {
             return false;
         }
@@ -1659,6 +1672,10 @@ class Leyka_Donation {
 
     public function __get($field) {
 
+        if( !$this->_id ) {
+            return false;
+        }
+
         switch($field) {
             case 'id':
             case 'ID': return $this->_id;
@@ -1696,15 +1713,21 @@ class Leyka_Donation {
             case 'pm_id':
                 return $this->_donation_meta['payment_method'];
             case 'pm_full_id':
-                return empty($this->_donation_meta['gateway']) || empty($this->_donation_meta['gateway']) ?
+                return empty($this->_donation_meta['gateway']) || empty($this->_donation_meta['payment_method']) ?
                     '' : $this->_donation_meta['gateway'].'-'.$this->_donation_meta['payment_method'];
             case 'gateway':
             case 'gateway_id':
             case 'gw_id':
-                return $this->_donation_meta['gateway'];
+                return empty($this->_donation_meta['gateway']) ? '' : $this->_donation_meta['gateway'];
             case 'gateway_label':
+
+                if(empty($this->_donation_meta['gateway'])) {
+                    return __('Unknown gateway', 'leyka');
+                }
+
                 $gateway = leyka_get_gateway_by_id($this->_donation_meta['gateway']);
-                return ($gateway ? $gateway->label : __('Unknown gateway', 'leyka'));
+                return $gateway ? $gateway->label : __('Unknown gateway', 'leyka');
+
             case 'pm_label':
             case 'payment_method_label':
                 $pm = leyka_get_pm_by_id($this->_donation_meta['payment_method']);
@@ -1791,6 +1814,10 @@ class Leyka_Donation {
     }
 
     public function __set($field, $value) {
+
+        if( !$this->_id ) {
+            return false;
+        }
 
         switch($field) {
             case 'title':
@@ -1981,34 +2008,35 @@ class Leyka_Donation {
     public function get_funded_date() {
 
         $last_date_funded = 0;
-        foreach((array)$this->status_log as $status_change) {
 
-            if($status_change['status'] == 'funded' && $status_change['date'] > $last_date_funded)
+        foreach((array)$this->status_log as $status_change) {
+            if($status_change['status'] == 'funded' && $status_change['date'] > $last_date_funded) {
                 $last_date_funded = $status_change['date'];
+            }
         }
 
         return $last_date_funded ? $last_date_funded : false;
+
     }
 
     public function delete($force = False) {
         wp_delete_post( $this->_id, $force );
     }
+
 }
 
 
 function leyka_cancel_recurrents_action() {
 
-    if(
-        empty($_POST['nonce'])
-     || !wp_verify_nonce($_POST['nonce'], 'leyka_recurrent_cancel')
-     || empty($_POST['donation_id'])
-    )
+    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_recurrent_cancel') || empty($_POST['donation_id'])) {
         die('-1');
+    }
 
     $_POST['donation_id'] = (int)$_POST['donation_id'];
 
     $donation = new Leyka_Donation($_POST['donation_id']);
     do_action('leyka_cancel_recurrents-'.$donation->gateway_id, $donation);
+
 }
 //add_action('wp_ajax_leyka_cancel_recurrents', 'leyka_cancel_recurrents_action');
 //add_action('wp_ajax_nopriv_leyka_cancel_recurrents', 'leyka_cancel_recurrents_action');

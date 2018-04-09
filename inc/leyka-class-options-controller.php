@@ -18,7 +18,6 @@ class Leyka_Options_Controller {
     }
 
     protected function __construct() {
-
         require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
     }
 
@@ -31,6 +30,7 @@ class Leyka_Options_Controller {
         $option_name = stristr($option_name, 'leyka_') !== false ? $option_name : 'leyka_'.$option_name;
 
         return apply_filters('leyka_option_value', get_option($option_name), $option_name);
+
     }
 
     /**
@@ -107,10 +107,15 @@ class Leyka_Options_Controller {
     public function get_value($option_name) {
 
         $option_name = str_replace('leyka_', '', $option_name);
+        if( !$this->_intialize_option($option_name, true) ) {
+            return false;
+        }
 
-        return $this->_intialize_option($option_name, true) ?
-            apply_filters('leyka_option_value', $this->_options[$option_name]['value'], $option_name) :
-            false;
+        if(in_array($this->_options[$option_name]['type'], array('text', 'html', 'rich_html'))) {
+            $this->_options[$option_name]['value'] = trim($this->_options[$option_name]['value']);
+        }
+
+        return apply_filters('leyka_option_value', $this->_options[$option_name]['value'], $option_name);
 
     }
 
@@ -190,6 +195,8 @@ class Leyka_Options_Controller {
         $option_name = str_replace('leyka_', '', $option_name);
 
         $this->_intialize_option($option_name, true);
+
+        $option_value = trim($option_value);
 
         if($this->option_exists($option_name) && $this->_validate_option($option_name, $option_value)) {
 
@@ -288,6 +295,11 @@ class Leyka_Options_Controller {
  */
 function leyka_options() {
     return Leyka_Options_Controller::instance();
+}
+
+add_filter('leyka_option_value', 'leyka_filter_option_values', 10, 2);
+function leyka_filter_option_values($value, $option_name) {
+    return $option_name == 'commission' ? maybe_unserialize($value) : $value;
 }
 
 /** Special field: gateway commission options */

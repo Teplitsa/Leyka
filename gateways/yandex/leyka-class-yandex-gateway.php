@@ -188,17 +188,11 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         $callback_type = $callback_type == 'co' ? 'checkOrderResponse' : 'paymentAvisoResponse';
 
         if($is_error) {
-            die('<?xml version="1.0" encoding="UTF-8"?>
-<'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'"
-code="1000" invoiceId="'.$_POST['invoiceId'].'"
-shopId="'.leyka_options()->opt('yandex_shop_id').'"
-message="'.$message.'"
+            die('<?xml version="1.0" encoding="UTF-8"?><'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'"
+code="1000" invoiceId="'.$_POST['invoiceId'].'" shopId="'.leyka_options()->opt('yandex_shop_id').'" message="'.$message.'"
 techMessage="'.$tech_message.'"/>');
         } else {
-            die('<?xml version="1.0" encoding="UTF-8"?>
-<'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'"
-code="0" invoiceId="'.$_POST['invoiceId'].'"
-shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
+            die('<?xml version="1.0" encoding="UTF-8"?><'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'" code="0" invoiceId="'.$_POST['invoiceId'].'" shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
         }
 
     }
