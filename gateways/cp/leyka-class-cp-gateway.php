@@ -345,7 +345,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => 'any',
             'meta_query' => array(
-                'RELATION' => 'AND',
+//                'RELATION' => 'AND',
                 array(
                     'key'     => '_cp_transaction_id',
                     'value'   => $cp_transaction_id,
