@@ -571,7 +571,7 @@ var leykaValidateForm,
 
 				// Remember payment option
                 $remembered_pm.closest('.leyka-js-another-step').attr('href', 'amount');
-                $recurring_option.attr('checked', true);
+                $recurring_option.prop('checked', true);
                 $remembered_pm.text($recurring_option.closest('.payment-opt').find('.payment-opt__label').text());
 
             } else {
