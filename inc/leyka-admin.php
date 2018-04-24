@@ -407,16 +407,16 @@ class Leyka_Admin_Setup {
             <h2><i></i><?php _e('Leyka', 'leyka');?></h2>
             <p><?php _e('Leyka is a simple donations management system', 'leyka');?></p>
             <p>
-                <?php _e('Developed by <a href="http://te-st.ru/" target="_blank">Teplitsa of social technologies</a>', 'leyka');?>
+                <?php _e('Developed by <a href="http://te-st.ru/" target="_blank" rel="noopener noreferrer">Teplitsa of social technologies</a>', 'leyka');?>
             </p>
             <p class="te-st">
                 <img src="//leyka.te-st.ru/wp-content/uploads/assets/tst-logo.svg" onerror="this.onerror=null;this.src='//leyka.te-st.ru/wp-content/uploads/assets/tst-logo.png'">
             </p>
             <ul class="leyka-ref-links">
-                <li><a href="https://leyka.te-st.ru" target='_blank'><?php _e('Plugin website', 'leyka');?></a></li>
-                <li><a href="https://leyka.te-st.ru/instruction/" target='_blank'><?php _e('Documentation', 'leyka');?></a></li>
+                <li><a href="https://leyka.te-st.ru" target='_blank' rel="noopener noreferrer"><?php _e('Plugin website', 'leyka');?></a></li>
+                <li><a href="https://leyka.te-st.ru/instruction/" target='_blank' rel="noopener noreferrer"><?php _e('Documentation', 'leyka');?></a></li>
                 <li><a href="<?php echo admin_url('admin.php?page=leyka_feedback');?>"><?php _e('Ask a question', 'leyka');?></a></li>
-                <li><a href="https://github.com/Teplitsa/Leyka/issues/new" target='_blank'><?php _e('Create issue at GitHub', 'leyka');?></a></li>
+                <li><a href="https://github.com/Teplitsa/Leyka/issues/new" target='_blank' rel="noopener noreferrer"><?php _e('Create issue at GitHub', 'leyka');?></a></li>
             </ul>
 		</div>
 
