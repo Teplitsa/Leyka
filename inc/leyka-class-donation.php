@@ -684,7 +684,7 @@ class Leyka_Donation_Management {
 			<div class="leyka-ddata-field">
 			<?php if($campaign->id && $campaign->status == 'publish') {?>
 			<span class="text-line">
-            <span class="campaign-name"><?php echo htmlentities($campaign->title, ENT_QUOTES, 'UTF-8');?></span> <span class="campaign-actions"><a href="<?php echo admin_url('/post.php?action=edit&post='.$campaign->id);?>"><?php _e('Edit campaign', 'leyka');?></a> <a href="<?php echo $campaign->url;?>" target="_blank"><?php _e('Preview campaign', 'leyka');?></a></span></span>
+            <span class="campaign-name"><?php echo htmlentities($campaign->title, ENT_QUOTES, 'UTF-8');?></span> <span class="campaign-actions"><a href="<?php echo admin_url('/post.php?action=edit&post='.$campaign->id);?>"><?php _e('Edit campaign', 'leyka');?></a> <a href="<?php echo $campaign->url;?>" target="_blank" rel="noopener noreferrer"><?php _e('Preview campaign', 'leyka');?></a></span></span>
 
 			<?php } else {
 				echo '<span class="text-line">'.__('the campaign has been removed or drafted', 'leyka').'</span>';
