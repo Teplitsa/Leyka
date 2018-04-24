@@ -196,7 +196,9 @@ class Leyka_Options_Controller {
 
         $this->_intialize_option($option_name, true);
 
-        $option_value = trim($option_value);
+        if(in_array($this->_options[$option_name]['type'], array('text', 'html', 'rich_html'))) {
+            $this->_options[$option_name]['value'] = trim($this->_options[$option_name]['value']);
+        }
 
         if($this->option_exists($option_name) && $this->_validate_option($option_name, $option_value)) {
 
