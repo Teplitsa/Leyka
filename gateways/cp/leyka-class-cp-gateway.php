@@ -31,18 +31,18 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 'title' => __('Public ID', 'leyka'),
                 'description' => __('Please, enter your CloudPayments public ID here. It can be found in your CloudPayments control panel.', 'leyka'),
                 'required' => true,
-                'placeholder' => __('Ex., 1234', 'leyka'),
+                'placeholder' => __('E.g., 1234', 'leyka'),
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
             'cp_ip' => array(
                 'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
                 'value' => '',
-                'default' => '130.193.70.192,185.98.85.109',
+                'default' => '',
                 'title' => __('CloudPayments IP', 'leyka'),
-                'description' => __('IP address to check for requests.', 'leyka'),
+                'description' => __('Comma-separated callback requests IP list. Leave empty to disable the check.', 'leyka'),
                 'required' => 1,
-                'placeholder' => __('Ex., 130.193.70.192,185.98.85.109', 'leyka'),
+                'placeholder' => __('E.g., 130.193.70.192,185.98.85.109', 'leyka'),
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
@@ -81,7 +81,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         if(Leyka_CP_Card::get_instance()->active) {
 
-            wp_enqueue_script('leyka-cp-widget', 'https://widget.cloudpayments.ru/bundles/cloudpayments');
+            wp_enqueue_script('leyka-cp-widget', 'https://widget.cloudpayments.ru/bundles/cloudpayments', array(), false, true);
             wp_enqueue_script(
                 'leyka-cp',
                 LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_CP_Gateway::get_instance()->id.'/js/leyka.cp.js',
@@ -251,14 +251,24 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                 // InvoiceId - leyka donation ID, SubscriptionId - CP recurring subscription ID
                 if(empty($_POST['InvoiceId']) && empty($_POST['SubscriptionId'])) {
-                    die(json_encode(array('code' => '10')));
+                    die(json_encode(array('code' => '0')));
                 }
 
                 if(empty($_POST['InvoiceId'])) { // Non-init recurring donation
 
                     $donation = $this->get_donation_by_transaction_id($_POST['TransactionId']);
 
+                    if( !$donation || is_wp_error($donation) ) {
+                        /** @todo Send some email to the admin */
+                        die(json_encode(array('code' => '0')));
+                    }
+
                     $init_recurring_donation = $this->get_init_recurrent_donation($_POST['SubscriptionId']);
+
+                    if( !$init_recurring_donation || is_wp_error($init_recurring_donation) ) {
+                        /** @todo Send some email to the admin */
+                        die(json_encode(array('code' => '0')));
+                    }
 
                     $donation->init_recurring_donation_id = $init_recurring_donation->id;
                     $donation->payment_title = $init_recurring_donation->title;
@@ -305,19 +315,16 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             case 'recurring_change':
             case 'recurrent_change':
 
-                if( !empty($_POST['Id']) ) { // Recurring subscription ID in the CP system
-
-	                $_POST['Id'] = trim($_POST['Id']);
-	                $init_recurring_donation = $this->get_init_recurrent_donation($_POST['Id']);
-
-	                if($init_recurring_donation && $init_recurring_donation->recurring_is_active) {
-
-		                $init_recurring_donation->recurring_is_active = false;
-
-		                die(json_encode(array('code' => '0')));
-
-                    }
-                }
+                /** @todo UNTESTED! The possible reason for CP recurring problems */
+//                if( !empty($_POST['Id']) ) { // Recurring subscription ID in the CP system
+//
+//	                $_POST['Id'] = trim($_POST['Id']);
+//	                $init_recurring_donation = $this->get_init_recurrent_donation($_POST['Id']);
+//
+//	                if($init_recurring_donation && $init_recurring_donation->recurring_is_active) {
+//		                $init_recurring_donation->recurring_is_active = false;
+//                    }
+//                }
 
             default:
         }
@@ -338,15 +345,13 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => 'any',
             'meta_query' => array(
-//                'RELATION' => 'AND',
+                'RELATION' => 'AND',
                 array(
                     'key'     => '_cp_transaction_id',
                     'value'   => $cp_transaction_id,
                     'compare' => '=',
                 ),
             ),
-            'orderby' => 'date',
-            'order' => 'ASC',
         ));
 
         if(count($donation)) {
@@ -388,8 +393,6 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     'compare' => '=',
                 ),
             ),
-            'orderby' => 'date',
-            'order' => 'ASC',
         ));
 
         return count($init_donation_post) ? new Leyka_Donation($init_donation_post[0]->ID) : false;

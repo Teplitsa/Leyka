@@ -188,17 +188,11 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         $callback_type = $callback_type == 'co' ? 'checkOrderResponse' : 'paymentAvisoResponse';
 
         if($is_error) {
-            die('<?xml version="1.0" encoding="UTF-8"?>
-<'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'"
-code="1000" invoiceId="'.$_POST['invoiceId'].'"
-shopId="'.leyka_options()->opt('yandex_shop_id').'"
-message="'.$message.'"
+            die('<?xml version="1.0" encoding="UTF-8"?><'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'"
+code="1000" invoiceId="'.$_POST['invoiceId'].'" shopId="'.leyka_options()->opt('yandex_shop_id').'" message="'.$message.'"
 techMessage="'.$tech_message.'"/>');
         } else {
-            die('<?xml version="1.0" encoding="UTF-8"?>
-<'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'"
-code="0" invoiceId="'.$_POST['invoiceId'].'"
-shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
+            die('<?xml version="1.0" encoding="UTF-8"?><'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'" code="0" invoiceId="'.$_POST['invoiceId'].'" shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
         }
 
     }
@@ -342,7 +336,7 @@ shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
             home_url("?page=leyka/service/cancel_recurring/{$donation->id}");
         $cancelling_url .= '/'.md5($donation->id.'_'.$init_recurrent_donation->id.'_leyka_cancel_recurring_subscription');
 
-        return sprintf(__('<a href="%s" target="_blank">click here</a>', 'leyka'), $cancelling_url);
+        return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
 
     }
 

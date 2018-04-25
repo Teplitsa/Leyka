@@ -1590,7 +1590,6 @@ color: #ffffff;
 }
 
 .leyka-tpl-neo .leyka-payment-option .submit {
-    position: relative;
     margin-top: 40px;
 }
 
@@ -1624,9 +1623,7 @@ height: auto;
 }
 
 .leyka-tpl-neo .leyka-payment-option .leyka-pm-icons {
-    position: absolute;
-    right: 0;
-    top: 6px;
+    float: right;
 }
 
 .leyka-pm-desc {
@@ -1638,6 +1635,10 @@ letter-spacing: normal;
 line-height: 1.5;
 font-size: 12px;
 margin: -10px 10px 0 10px;
+}
+
+.leyka-tpl-neo .leyka-pm-desc {
+  margin: 0 10px;
 }
 
 .leyka-tpl-neo .leyka-pm-desc a:visited,
@@ -1739,4 +1740,16 @@ color: rgba(0, 0, 0, 0.9);
 font-weight: normal;
 font-size: 15px;
 line-height: 1.5;
+}
+
+@media screen and (max-width: 480px) {
+  .leyka-tpl-neo #leyka_donation_submit {
+    width: 100%;
+  }
+
+  .leyka-tpl-neo .leyka-payment-option .leyka-pm-icons {
+    margin-top: 20px;
+    float: left;
+    width: 100%;
+  }
 }

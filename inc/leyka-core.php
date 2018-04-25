@@ -144,7 +144,11 @@ class Leyka {
 
         function leyka_success_page_widget_template($content) {
 
-            if(is_page(leyka_options()->opt('success_page')) && leyka_options()->opt('show_success_widget_on_success')) {
+            if(
+                is_page(leyka_options()->opt('success_page'))
+                && leyka_options()->opt('show_success_widget_on_success')
+                && is_main_query()
+            ) {
 
                 ob_start();
                 include(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-success-widget.php');
@@ -159,7 +163,11 @@ class Leyka {
 
         function leyka_failure_page_widget_template($content) {
 
-            if(is_page(leyka_options()->opt('failure_page')) && leyka_options()->opt('show_failure_widget_on_failure')) {
+            if(
+                is_page(leyka_options()->opt('failure_page'))
+                && leyka_options()->opt('show_failure_widget_on_failure')
+                && is_main_query()
+            ) {
 
                 ob_start();
                 include(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-failure-widget.php');
@@ -173,6 +181,7 @@ class Leyka {
         add_filter('the_content', 'leyka_failure_page_widget_template', 1);
         
         function reinstall_cssjs_in_giger() {
+
             $theme = wp_get_theme();
             if($theme && ($theme->template == 'giger' || $theme->template == 'giger-kms') && !is_singular('leyka_campaign')) {
         
@@ -196,7 +205,7 @@ class Leyka {
         
             }
         }
-        add_action('template_redirect', 'reinstall_cssjs_in_giger', 90); # is important, in giger problem code run with priority 80
+        add_action('template_redirect', 'reinstall_cssjs_in_giger', 90); // Important: in Giger problem code run with priority 80
         
         if( !is_admin() ) {
 
@@ -270,7 +279,7 @@ class Leyka {
                 wp_schedule_event(time(), 'daily', 'refresh_currencies_rates');
             }
 
-            add_action('refresh_currencies_rates', array($this, 'do_currencies_rates_refresh'));
+            add_action('refresh_currencies_rates', array($this, '_do_currencies_rates_refresh'));
 
             if( // Just in case..
                 !Leyka_Options_Controller::get_option_value('leyka_currency_rur2usd')
@@ -283,7 +292,17 @@ class Leyka {
             wp_clear_scheduled_hook('refresh_currencies_rates');
         }
 
+        /** Mailout for campaigns with successfully reached targets - default processing: */
+        if(class_exists('Leyka_Options_Controller') && leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')) {
+            add_action('leyka_do_campaigns_targets_reaching_mailout', array($this, '_do_campaigns_targets_reaching_mailout'));
+        }
+
         do_action('leyka_initiated');
+
+    }
+
+    /** @todo Create a procedure to get actual currencies rates and save them in the plugin options values */
+    public function do_currencies_rates_refresh() {
 
     }
     
@@ -301,9 +320,9 @@ class Leyka {
             $request = explode('leyka/service', $_SERVER['REQUEST_URI']);
             $request = explode('/', trim($request[1], '/'));
 
-            if($request[0] == 'do_recurring') { // Recurring payments processing URL
+            if($request[0] === 'do_recurring') { // Recurring payments processing URL
                 $this->_do_active_recurrents_rebilling();
-            } else if($request[0] == 'cancel_recurring' && !empty($request[1]) && !empty($request[2])) {
+            } else if($request[0] === 'cancel_recurring' && !empty($request[1]) && !empty($request[2])) {
 
                 $donation = new Leyka_Donation($request[1]);
                 $init_recurrent_donation = Leyka_Donation::get_init_recurrent_donation($donation);
@@ -313,10 +332,15 @@ class Leyka {
                     do_action("leyka_{$donation->gateway_id}_cancel_recurring_subscription", $donation);
                 }
 
+            } else if(
+                $request[0] === 'do_campaigns_targets_reaching_mailout' &&
+                leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')
+            ) {
+                do_action('leyka_do_campaigns_targets_reaching_mailout');
             } else { // Gateway callback URL
 
                 // Callback URLs are: some-website.org/leyka/service/{gateway_id}/{action_name}/
-                // For ex., some-website.org/leyka/service/yandex/check_order/
+                // E.g., some-website.org/leyka/service/yandex/check_order/
 
                 // $request[0] - Gateway ID, $request[1] - service action:
                 do_action('leyka_service_call-'.$request[0], empty($request[1]) ? '' : $request[1]);
@@ -371,10 +395,20 @@ class Leyka {
 
     }
 
-    protected function _do_currency_rates_refresh() {
+    public function _do_currency_rates_refresh() {
         foreach(leyka_get_actual_currency_rates() as $currency => $rate) {
             update_option('leyka_currency_rur2'.mb_strtolower($currency), $rate);
         }
+    }
+
+    public function _do_campaigns_targets_reaching_mailout($campaign_id = false) {
+
+        if((int)$campaign_id > 0) {
+            $_GET['mailout_campaign_id'] = (int)$campaign_id;
+        }
+
+        include(LEYKA_PLUGIN_DIR.'procedures/leyka-campaigns-targets-reaching-mailout.php');
+
     }
 
     /** Proceed the rebill requests for all recurring subsriptions. */
@@ -870,10 +904,13 @@ class Leyka {
             'email_invalid' => __('Enter an email in the some@email.com format', 'leyka'),
             'must_not_be_email' => __("You shouldn't enter an email here", 'leyka'),
             'value_too_long' => __('Entered value is too long', 'leyka'),
-//            'email_regexp' => '',
         ));
 
-        wp_localize_script(apply_filters('leyka_js_localized_script_id', $this->_plugin_slug.'-public'), 'leyka', $js_data);
+        $leyka_js_handle = wp_script_is($this->_plugin_slug.'-public') ?
+            $this->_plugin_slug.'-public' :
+            (wp_script_is($this->_plugin_slug.'-revo-public') ? $this->_plugin_slug.'-revo-public' : '');
+
+        wp_localize_script(apply_filters('leyka_js_localized_script_id', $leyka_js_handle   ), 'leyka', $js_data);
 
     }
 
@@ -895,23 +932,35 @@ class Leyka {
             'upload_files' => true, 'unfiltered_html' => true, 'leyka_manage_donations' => true,
         );
 
-        if(empty($role->capabilities['leyka_manage_donations'])) {
+//        if(empty($role->capabilities['leyka_manage_donations'])) {
 
             foreach($caps as $cap => $true) {
 
                 $cap_donation = str_replace('#base#', 'donation', $cap);
-                $role->add_cap($cap_donation, TRUE);
+
+                if(empty($role->capabilities[$cap_donation])) {
+                    $role->add_cap($cap_donation, TRUE);
+                }
+
                 $caps[$cap_donation] = TRUE;
 
                 $cap_campaign = str_replace('#base#', 'campaign', $cap);
-                $role->add_cap($cap_campaign, TRUE);
+
+                if(empty($role->capabilities[$cap_campaign])) {
+                    $role->add_cap($cap_campaign, TRUE);
+                }
+
                 $caps[$cap_campaign] = TRUE;
 
                 if(stristr($cap, '#base#') !== FALSE)
                     unset($caps[$cap]);
             }
-            $role->add_cap('leyka_manage_options', TRUE);
-        }
+
+            if(empty($role->capabilities['leyka_manage_options'])) {
+                $role->add_cap('leyka_manage_options', TRUE);
+            }
+//            $role->add_cap('leyka_manage_options', TRUE);
+//        }
 
         if( !get_role('donations_manager') ) {
             add_role('donations_manager', __('Donations Manager', 'leyka'), $caps);

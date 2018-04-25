@@ -500,7 +500,6 @@ var leykaValidateForm,
 
                 }
 
-//                e.preventDefault();
                 return false;
 
             }
@@ -573,7 +572,7 @@ var leykaValidateForm,
                     var redirect_form_html = '<form class="leyka-auto-submit" action="'+response.payment_url+'" method="post">';
 
                     $.each(response, function(field_name, value){
-                        if(field_name != 'payment_url') {
+                        if(field_name !== 'payment_url') {
                             redirect_form_html += '<input type="hidden" name="'+field_name+'" value="'+value+'">';
                         }
                     });
@@ -953,7 +952,7 @@ var leykaValidateForm,
 
 				// Remember payment option
                 $remembered_pm.closest('.leyka-js-another-step').attr('href', 'amount');
-                $recurring_option.attr('checked', true);
+                $recurring_option.prop('checked', true);
                 $remembered_pm.text($recurring_option.closest('.payment-opt').find('.payment-opt__label').text());
 
             } else {
@@ -988,18 +987,20 @@ var leykaValidateForm,
             $_step = $_opt.parents('.step'),
             $_form = $_opt.parents('.leyka-pf__form');
 
-        //remember
+        $('html').addClass('leyka-js--open-modal');
+
         $_form.find('.remembered-payment').text(name);
 
-        //move
         $_step.removeClass('step--active');
 
         var $step_static_step = $_form.find('.step--static.' + $_opt.val());
         if($step_static_step.length > 0) {
             $step_static_step.addClass('step--active');
-        }
-        else {
+        } else {
+
             $_form.find('.step--person').addClass('step--active');
+            $('html').removeClass('leyka-js--open-modal');
+
         }
 
     }
@@ -1020,6 +1021,7 @@ var leykaValidateForm,
         // $this.find('.leyka-pf__form').append($('#'+$this.data('form-id'))); // Get form HTML from cache
 
         $this.addClass('leyka-pf--active'); // Open the popup
+	    $('.leyka-js').addClass('leyka-js--open-modal');
 
         $('.amount_range input').change(); // Sync the coins picture with the amount
 
@@ -1060,6 +1062,7 @@ var leykaValidateForm,
             $pf.removeClass('leyka-pf--pd-open');
         } else { // close module
             $pf.removeClass('leyka-pf--active');
+	        $('.leyka-js').removeClass('leyka-js--open-modal');
         }
     }
 

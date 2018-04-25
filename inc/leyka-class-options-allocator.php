@@ -130,6 +130,15 @@ class Leyka_Options_Allocator {
                         )
                     ),),
                     array('section' => array(
+                        'name' => 'email_campaign_target_reaching',
+                        'title' => __('Campaign target reaching emails options', 'leyka'),
+                        'is_default_collapsed' => true,
+                        'options' => array(
+                            'send_donor_emails_on_campaign_target_reaching', 'email_campaign_target_reaching_title',
+                            'email_campaign_target_reaching_text',
+                        )
+                    ),),
+                    array('section' => array(
                         'name' => 'email_notify',
                         'title' => __('Website personnel notifications options', 'leyka'),
                         'is_default_collapsed' => true,

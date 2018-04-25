@@ -290,10 +290,10 @@ jQuery(document).ready(function($){
 
         var field_is_valid = true;
 
-        if($field.attr('type') == 'checkbox') {
+        if($field.attr('type') === 'checkbox') {
 
             var $required_checkbox_fields = $form.find('input[type="checkbox"].required:visible:not(:checked)');
-            if($field.attr('checked') !== 'checked' || $required_checkbox_fields.length) {
+            if( !$field.prop('checked') || $required_checkbox_fields.length ) {
 
                 field_is_valid = false;
                 $form.find('.'+$field.attr('name')+'-error').html(leyka.checkbox_check_required).show();
@@ -302,7 +302,7 @@ jQuery(document).ready(function($){
                 $form.find('.'+$field.attr('name')+'-error').html('').hide();
             }
 
-        } else if($field.attr('type') == 'text' && $field.attr('name') != 'leyka_donation_amount') {
+        } else if($field.attr('type') === 'text' && $field.attr('name') !== 'leyka_donation_amount') {
 
             if( !$field.val().length ) {
 
@@ -486,7 +486,13 @@ jQuery(document).ready(function($){
     $('.leyka-oferta-text').easyModal({
         top: 100,
         autoOpen: false,
-        closeButtonClass: '.leyka-modal-close'
+        closeButtonClass: '.leyka-modal-close',
+        onOpen: function() {
+            $('html').addClass('leyka-js--open-modal');
+        },
+        onClose: function() {
+            $('html').removeClass('leyka-js--open-modal');
+        }
     });
 
     $('.leyka-legal-terms-trigger').on('click.leyka', function(e){

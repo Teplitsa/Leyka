@@ -145,7 +145,7 @@ function leyka_get_gateways_pm_list($gateway_id = false) {
 }
 
 function leyka_get_pd_usage_info_links() {
-    return __('<a href="//te-st.ru/reports/personal-data-perm/" target="_blank">the Teplitsa article</a>.', 'leyka');
+    return __('<a href="//te-st.ru/reports/personal-data-perm/" target="_blank" rel="noopener noreferrer">the Teplitsa article</a>.', 'leyka');
 }
 
 function leyka_get_default_email_from() {
@@ -972,11 +972,11 @@ function leyka_itv_info_widget() {
     $itv_url = esc_url("https://itv.te-st.ru/?leyka=".$domain['host']);?>
 
 	<div id="itv-card">
-        <div class="itv-logo"><a href="<?php echo $itv_url;?>" target="_blank"><img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL.'img/logo-itv.png');?>"></a></div>
+        <div class="itv-logo"><a href="<?php echo $itv_url;?>" target="_blank" rel="noopener noreferrer"><img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL.'img/logo-itv.png');?>"></a></div>
 
-        <p>Вам нужна помощь в настройке пожертвований или подключении к платежным системам? Опубликуйте задачу на платформе <a href="<?php echo $itv_url;?>" target="_blank">it-волонтер</a></p>
+        <p>Вам нужна помощь в настройке пожертвований или подключении к платежным системам? Опубликуйте задачу на платформе <a href="<?php echo $itv_url;?>" target="_blank" rel="noopener noreferrer">it-волонтер</a></p>
 
-        <p><a href="<?php echo $itv_url;?>" target="_blank" class="button">Опубликовать задачу</a></p>
+        <p><a href="<?php echo $itv_url;?>" target="_blank" rel="noopener noreferrer" class="button">Опубликовать задачу</a></p>
     </div>
 <?php
 }
@@ -1143,6 +1143,10 @@ function leyka_remembered_data($name, $value = null, $delete = false) {
 function leyka_calculate_donation_total_amount($donation = false, $amount = 0.0, $pm_full_id = '') {
 
     $donation = leyka_get_validated_donation($donation);
+    if( !$donation ) {
+        return 0.0;
+    }
+
     $amount = $amount ? $amount : $donation->amount;
     $pm_full_id = $pm_full_id ? $pm_full_id : $donation->pm_full_id;
 

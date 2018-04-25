@@ -29,7 +29,7 @@ function leyka_render_text_field($option_name, $data){
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
             </span>
             <span class="field-component field">
-                <input type="<?php echo empty($data['is_password']) ? 'text' : 'password';?>" id="<?php echo $option_name.'-field';?>" name="<?php echo $option_name;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo esc_attr($data['placeholder']);?>" maxlength="<?php echo $data['length'];?>">
+                <input type="<?php echo empty($data['is_password']) ? 'text' : 'password';?>" id="<?php echo $option_name.'-field';?>" name="<?php echo $option_name;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo esc_attr($data['placeholder']);?>" maxlength="<?php echo empty($data['length']) ? '' : (int)$data['length'];?>">
             </span>
             <?php if( !empty($data['description']) ) {?>
             <span class="field-component help"><?php echo $data['description'];?></span>

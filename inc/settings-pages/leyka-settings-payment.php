@@ -102,7 +102,7 @@ foreach($gateways_by_columns as $admin_ui_column => $gateways) { // Add gateways
                 <div id="gateway-<?php echo $gateway->id;?>" class="gateway-settings" <?php echo in_array($gateway->id, $active_gateways) ? '' : 'style="display:none;"'?>>
                     <h3 class="accordion-section-title">
                         <?php echo leyka_gateway_admin_icon_markup($gateway).$gateway->title;?>
-                        <?php echo $gateway->docs_link ? ' <a class="doc-link" href="'.esc_url($gateway->docs_link).'" target="_blank">'.__('Setup Help', 'leyka').'</a>' : '';?>
+                        <?php echo $gateway->docs_link ? ' <a class="doc-link" href="'.esc_url($gateway->docs_link).'" target="_blank" rel="noopener noreferrer">'.__('Setup Help', 'leyka').'</a>' : '';?>
                     </h3>
                     <div class="accordion-section-content">
                         <?php foreach($gateway->get_options_names() as $option_id) {

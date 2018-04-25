@@ -1,4 +1,4 @@
-<?php
+<?php if( !defined('WPINC') ) die;
 function leyka_render_export_button() {
 
     if(get_current_screen()->id == 'edit-'.Leyka_Donation_Management::$post_type) {?>
