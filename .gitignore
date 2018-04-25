@@ -1,4 +1,6 @@
 !.gitignore
 node_modules
+paymaster
+.idea
 vendor
 php7cc.phar
