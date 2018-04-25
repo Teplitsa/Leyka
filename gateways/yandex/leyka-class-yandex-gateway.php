@@ -25,58 +25,38 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
         $this->_options = array(
             'yandex_shop_id' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox  
-                'value' => '',
-                'default' => '',
+                'type' => 'text',
                 'title' => __('Yandex shopId', 'leyka'),
                 'description' => __('Please, enter your Yandex.Kassa shop ID here. It can be found in your Yandex contract.', 'leyka'),
-                'required' => 1,
-                'placeholder' => __('Ex., 12345', 'leyka'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
+                'required' => true,
+                'placeholder' => __('E.g., 12345', 'leyka'),
             ),
             'yandex_scid' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox  
-                'value' => '',
-                'default' => '',
+                'type' => 'text',
                 'title' => __('Yandex scid', 'leyka'),
                 'description' => __('Please, enter your Yandex.Kassa shop showcase ID (SCID) here. It can be found in your Yandex contract.', 'leyka'),
                 'required' => 1,
-                'placeholder' => __('Ex., 12345', 'leyka'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
+                'placeholder' => __('E.g., 12345', 'leyka'),
             ),
             'yandex_shop_article_id' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
-                'default' => '',
+                'type' => 'text',
                 'title' => __('Yandex ShopArticleId', 'leyka'),
                 'description' => __('Please, enter your Yandex.Kassa shop article ID here, if it exists. It can be found in your Yandex contract, also you can ask your Yandex.Kassa manager for it.', 'leyka'),
-                'required' => 0,
-                'placeholder' => __('Ex., 12345', 'leyka'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
+                'placeholder' => __('E.g., 12345', 'leyka'),
             ),
             $this->full_id.'_secret_word' => array(
                 'type' => 'text',
-                'default' => '',
                 'title' => __('Yandex.Kassa shop secret word', 'leyka'),
                 'description' => __("Please, enter a secret word that you filled in Yandex.Kassa' technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
-                'placeholder' => __('Ex., 1^2@3#&84nDsOmE5h1T', 'leyka'),
+                'placeholder' => __('E.g., 1^2@3#&84nDsOmE5h1T', 'leyka'),
                 'is_password' => 1,
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
             ),
             'yandex_test_mode' => array(
-                'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
+                'type' => 'checkbox',
                 'default' => 1,
                 'title' => __('Payments testing mode', 'leyka'),
                 'description' => __('Check if the gateway integration is in test mode.', 'leyka'),
                 'required' => false,
-                'placeholder' => '',
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
             ),
         );
 
