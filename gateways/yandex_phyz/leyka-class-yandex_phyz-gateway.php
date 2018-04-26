@@ -43,6 +43,7 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
                 'validation_rules' => array(), // List of regexp?..
             ),
         );
+
     }
 
     protected function _initialize_pm_list() {
@@ -301,9 +302,9 @@ class Leyka_Yandex_Phyz_Card extends Leyka_Payment_Method {
         $this->_label_backend = $this->_label;
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-//            LEYKA_PLUGIN_BASE_URL.'gateways/yandex_phyz/icons/yandex_phyz_money_s.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex_phyz/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex_phyz/icons/master.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/yandex_phyz/icons/visa.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/yandex_phyz/icons/mir.png',
         ));
 
         $this->_supported_currencies[] = 'rur';

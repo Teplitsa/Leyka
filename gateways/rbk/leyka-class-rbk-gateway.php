@@ -280,6 +280,7 @@ class Leyka_Rbk_Card extends Leyka_Payment_Method {
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/rbk/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/rbk/icons/master.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/rbk/icons/mir.png',
         ));
 
         $this->_supported_currencies[] = 'rur';
@@ -371,6 +372,7 @@ class Leyka_Rbk_All extends Leyka_Payment_Method {
         $this->_supported_currencies[] = 'rur';
 
         $this->_default_currency = 'rur';
+
     }
 
     protected function _set_options_defaults() {

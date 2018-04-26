@@ -237,8 +237,9 @@ class Leyka_Robokassa_Card extends Leyka_Payment_Method {
         // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/master.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/mir.png',
         ));
 
         $this->_supported_currencies[] = 'rur';
@@ -280,8 +281,9 @@ class Leyka_Robokassa_Yandex_Money extends Leyka_Payment_Method {
         // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/master.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/mir.png',
         ));
 
         $this->_supported_currencies[] = 'rur';
@@ -323,8 +325,9 @@ class Leyka_Robokassa_Webmoney extends Leyka_Payment_Method {
         // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/master.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/mir.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/webmoney.png',
         ));
 
@@ -369,6 +372,7 @@ class Leyka_Robokassa_Qiwi extends Leyka_Payment_Method {
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/master.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/mir.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/qiwi.png',
         ));
 
@@ -414,6 +418,7 @@ class Leyka_Robokassa_All extends Leyka_Payment_Method {
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/master.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/mir.png',
         ));
 
         $this->_supported_currencies[] = 'rur';

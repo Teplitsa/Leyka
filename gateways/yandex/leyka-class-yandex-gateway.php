@@ -563,6 +563,7 @@ class Leyka_Yandex_All extends Leyka_Payment_Method {
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/master.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/mir.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
         ));
 
@@ -613,6 +614,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/master.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/mir.png',
         ));
 
         $this->_supported_currencies[] = 'rur';
@@ -789,7 +791,9 @@ class Leyka_Yandex_Sberbank_Online extends Leyka_Payment_Method {
         $this->_label_backend = __('Sberbank Online invoicing', 'leyka');
         $this->_label = __('Sberbank Online', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array());
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/sberbank-online.png',
+        ));
 
         $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 
@@ -832,7 +836,9 @@ class Leyka_Yandex_Alpha_Click extends Leyka_Payment_Method {
         $this->_label_backend = __('Alpha-Click invoicing', 'leyka');
         $this->_label = __('Alpha-Click', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array());
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/alfa-click.png',
+        ));
 
         $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 
@@ -876,9 +882,10 @@ class Leyka_Yandex_Promvzyazbank extends Leyka_Payment_Method {
         $this->_label = __('Promsvyazbank', 'leyka');
 
         // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-//        $this->_description = leyka_options()->opt_safe('yandex_wm_description');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array());
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/promsvyazbank.png',
+        ));
 
         $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 

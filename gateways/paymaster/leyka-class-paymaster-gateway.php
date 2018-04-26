@@ -237,6 +237,7 @@ class Leyka_Paymaster_All extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/paymaster_all.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/master.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/mir.png',
         ));
 
         $this->_supported_currencies[] = 'rur';
