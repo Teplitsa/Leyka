@@ -11,7 +11,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
         $this->_id = 'paymaster';
         $this->_title = __('Paymaster', 'leyka');
-        $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-paymaster/#paymaster-settings';
+        $this->_docs_link = '';
         $this->_admin_ui_column = 2;
         $this->_admin_ui_order = 40;
 
@@ -234,7 +234,7 @@ class Leyka_Paymaster_All extends Leyka_Payment_Method {
         // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/paymaster.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/paymaster_all.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/master.png',
         ));
