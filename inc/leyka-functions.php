@@ -850,8 +850,21 @@ function leyka_get_campaigns_select_options() {
 
 function leyka_get_campaigns_select_default() {
 
-    $campaigns_ids = array_keys(leyka_get_campaigns_select_options());
-    return reset($campaigns_ids);
+    $default_campaign = get_transient('leyka_default_campaign_id');
+
+    if( !$default_campaign ) {
+
+        $default_campaign = array_keys(
+            leyka_get_campaigns_list(array('orderby' => 'title', 'order' => 'ASC', 'posts_per_page' => 1,), true)
+        );
+        set_transient('leyka_default_campaign_id', reset($default_campaign));
+
+    }
+
+    /** @todo Add invalidation for this cache (on any campaigns list changing). */
+
+    return $default_campaign;
+
 }
 
 function leyka_is_widget_active() {
