@@ -844,10 +844,6 @@ function leyka_get_campaigns_list($params = array(), $simple_format = true) {
 
 }
 
-function leyka_get_campaigns_select_options() {
-    return leyka_get_campaigns_list(array('orderby' => 'title', 'order' => 'ASC'), true);
-}
-
 function leyka_get_campaigns_select_default() {
 
     $default_campaign = get_transient('leyka_default_campaign_id');
