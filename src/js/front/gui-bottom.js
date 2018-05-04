@@ -23,7 +23,7 @@ window.LeykaGUIBottom.prototype = {
                 .find('.amount__figure input.leyka_donation_amount')
                 .val( $this.parents('.leyka-pf-bottom').find('input[name="leyka_temp_amount"]').val() );
 
-            /** @todo Open the 2nd step! As amount is already chosen ATM. */
+            /** @todo Sync the amount value & the range control. */
             $bottomForm.leykaForm('openFromBottom');
 
         });
