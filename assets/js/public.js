@@ -138,22 +138,33 @@ Number.isInteger = Number.isInteger || function(value) {
 
 window.LeykaGUIBottom = function($) {
     this.$ = $;
-}
+};
 
 window.LeykaGUIBottom.prototype = {
-        
+
     bindEvents: function() {
+
         var self = this; var $ = self.$;
-        
+
         $('.leyka-js-open-form-bottom').on('click', function(e){
+
             e.preventDefault();
 
-            $(this).closest('.leyka-pf-bottom').leykaForm('openFromBottom');
+            var $this = $(this),
+                $bottomForm = $this.closest('.leyka-pf-bottom');
+
+            $('#'+$bottomForm.attr('data-target'))
+                .find('.amount__figure input.leyka_donation_amount')
+                .val( $this.parents('.leyka-pf-bottom').find('input[name="leyka_temp_amount"]').val() );
+
+            /** @todo Open the 2nd step! As amount is already chosen ATM. */
+            $bottomForm.leykaForm('openFromBottom');
+
         });
-        
+
     }
 
-}
+};
 
 jQuery(document).ready(function($){
     

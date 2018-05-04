@@ -48,7 +48,7 @@ function leyka_submit_donation() {
 add_action('wp_ajax_leyka_ajax_donation_submit', 'leyka_submit_donation');
 add_action('wp_ajax_nopriv_leyka_ajax_donation_submit', 'leyka_submit_donation');
 
-function leyka_ajax_get_campaigns_list() { // leyka_get_campaigns_list() is already taken
+function leyka_ajax_get_campaigns_list() {
 
     if(empty($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'leyka_get_campaigns_list_nonce')) {
         die(json_encode(array()));

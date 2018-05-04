@@ -51,7 +51,7 @@ function leyka_render_number_field($option_name, $data){
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
             </span>
             <span class="field-component field">
-                <input type="number" id="<?php echo $option_name.'-field';?>" name="<?php echo $option_name;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo esc_attr($data['placeholder']);?>" maxlength="<?php echo $data['length'];?>" <?php echo $data['max'] === false ? '' : 'max="'.(int)$data['max'].'"';?> <?php echo $data['min'] === false ? '' : 'min="'.(int)$data['min'].'"';?> <?php echo $data['step'] === false ? '' : 'step="'.(int)$data['step'].'"';?>>
+                <input type="number" id="<?php echo $option_name.'-field';?>" name="<?php echo $option_name;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo esc_attr($data['placeholder']);?>" <?php echo empty($data['length']) ? '' : 'maxlength="'.(int)$data['length'].'"';?> <?php echo empty($data['max']) ? '' : 'max="'.(int)$data['max'].'"';?> <?php echo empty($data['min']) ? '' : 'min="'.(int)$data['min'].'"';?> <?php echo $data['step'] === false ? '' : 'step="'.(int)$data['step'].'"';?>>
             </span>
             <?php if( !empty($data['description']) ) {?>
                 <span class="field-component help"><?php echo $data['description'];?></span>

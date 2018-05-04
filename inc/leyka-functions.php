@@ -846,7 +846,7 @@ function leyka_get_campaigns_list($params = array(), $simple_format = true) {
 
 function leyka_get_campaigns_select_default() {
 
-    $default_campaign = get_transient('leyka_default_campaign_id');
+    $default_campaign = get_transient('leyka_default_campaign_id'); // Default campaign ID cache
 
     if( !$default_campaign ) {
 
@@ -857,11 +857,24 @@ function leyka_get_campaigns_select_default() {
 
     }
 
-    /** @todo Add invalidation for this cache (on any campaigns list changing). */
-
     return $default_campaign;
 
 }
+
+/** Default campaign ID cache invalidation */
+function leyka_flush_cache_default_campaign_id($new_status, $old_status, WP_Post $campaign) {
+
+    if(
+        $campaign->post_type !== Leyka_Campaign_Management::$post_type ||
+        ($old_status !== 'publish'  &&  $new_status !== 'publish')
+    ) {
+        return;
+    }
+
+    delete_transient('leyka_default_campaign_id');
+
+}
+add_action('transition_post_status', 'leyka_flush_cache_default_campaign_id', 10, 3);
 
 function leyka_is_widget_active() {
 

@@ -294,7 +294,7 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
         'show_purpose' => 1,
         'show_name'    => 1,
         'show_date'    => 1,
-        'show_donation_comments' => leyka_options()->opt('show_donation_comments_in_frontend'),
+//        'show_donation_comments' => leyka_options()->opt('show_donation_comments_in_frontend'),
     ));
 
     if($campaign_id === 0) {
