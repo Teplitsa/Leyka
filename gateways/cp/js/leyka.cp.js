@@ -100,7 +100,7 @@ jQuery(document).ready(function($){
                 $errors.html('').hide();
 
             }, function(reason, options){ // fail callback
-                addError($errors, leyka.cp_donation_failure_reasons[reason]);
+                addError($errors, leyka.cp_donation_failure_reasons[reason] || reason);
             });
 
             if($form.hasClass('leyka-revo-form')) {
