@@ -5,8 +5,11 @@ jQuery(document).ready(function($){
         function addError($errors_block, error_html) {
 
             $errors_block.html(error_html).show();
-            $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
-                scrollTop: $errors_block.offset().top - 35
+
+            // Center the error block in the viewport
+            $('html, body').animate({
+                scrollTop: $errors_block.offset().top -
+                    ($(window).height() - $errors_block.outerHeight()) / 2
             }, 250);
 
         }
