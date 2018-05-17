@@ -5,23 +5,22 @@ if(defined('POLYLANG_VERSION')) {
 
     function leyka_pll_do_localization($slug, PLL_Language $cur_lang){
 
-        load_textdomain('leyka', apply_filters('leyka_l10n_mo_file', WP_CONTENT_DIR."/languages/plugins/leyka-{$cur_lang->locale}.mo"));
+        load_plugin_textdomain('leyka', false, apply_filters('leyka_l10n_mo_folder', WP_LANG_DIR.'/plugins'));
 
         // Localize options values:
         function leyka_localize_option_value($value, $option_name) {
 
-            if(in_array($option_name, array('success_page', 'failure_page', 'pd_terms_page'))) {
+            if(in_array($option_name, array('success_page', 'failure_page', 'terms_of_service_page', 'pd_terms_page'))) {
 
                 // Get ID of a localized page instead of originally set:
-                $localized_page_id = empty($_POST['cur_lang']) ? pll_get_post($value) : pll_get_post($value, $_POST['cur_lang']);
+                $localized_page_id = empty($_POST['cur_lang']) ?
+                    pll_get_post($value) : pll_get_post($value, $_POST['cur_lang']);
 
                 return $localized_page_id ? $localized_page_id : $value;
 
             }
 
-            $type = leyka_options()->get_type_of($option_name);
-
-            if($type == 'text' || $type == 'textarea' || $type == 'html' || $type == 'rich_html') {
+            if(in_array(leyka_options()->get_type_of($option_name), array('text', 'textarea', 'html', 'rich_html'))) {
                 $value = pll__($value);
             }
 
@@ -77,10 +76,7 @@ if(defined('POLYLANG_VERSION')) {
 
         function leyka_localize_gateway_redirect_page() {
 
-            load_textdomain('leyka', apply_filters(
-                'leyka_l10n_mo_file',
-                LEYKA_PLUGIN_DIR."lang/leyka-{$_POST['cur_locale']}.mo")
-            );
+            load_plugin_textdomain('leyka', false, apply_filters('leyka_l10n_mo_folder', WP_LANG_DIR.'/plugins'));
 
             function leyka_get_current_locale($locale){
                 return $_POST['cur_locale'];
@@ -102,11 +98,7 @@ if(defined('POLYLANG_VERSION')) {
 
                 if($option_data['type'] == 'text') {
                     pll_register_string($option_data['title'], $option_data['value'], 'leyka');
-                } elseif(
-                    $option_data['type'] == 'textarea' ||
-                    $option_data['type'] == 'html' ||
-                    $option_data['type'] == 'rich_html'
-                ) {
+                } elseif(in_array($option_data['type'], array('textarea', 'html', 'rich_html'))) {
                     pll_register_string($option_data['title'], leyka_options()->opt($option), 'leyka', true);
                 }
 
@@ -131,10 +123,10 @@ if(defined('POLYLANG_VERSION')) {
             }
             add_action('admin_notices', 'leyka_pll_admin_notices_error');
 
-            $locale = get_locale();
-            $locale = $locale ? $locale : 'ru_RU';
+//            $locale = get_locale();
+//            $locale = $locale ? $locale : 'ru_RU';
 
-            load_textdomain('leyka', apply_filters('leyka_l10n_mo_file', LEYKA_PLUGIN_DIR."lang/leyka-{$locale}.mo"));
+            load_plugin_textdomain('leyka', false, apply_filters('leyka_l10n_mo_folder', WP_LANG_DIR.'/plugins'));
 
             do_action('leyka_init_actions');
 
@@ -145,23 +137,19 @@ if(defined('POLYLANG_VERSION')) {
                 do_action('leyka_init_actions');
 
                 if(count(pll_languages_list()) > 1) {
-
-                    // Register user-defined strings:
-                    foreach(leyka_options()->get_options_names() as $option) {
+                    foreach(leyka_options()->get_options_names() as $option) { // Register user-defined strings
 
                         $option_data = leyka_options()->get_info_of($option);
 
                         if($option_data['type'] == 'text') {
                             pll_register_string($option_data['title'], $option_data['value'], 'leyka');
-                        } elseif(
-                            $option_data['type'] == 'textarea'
-                            || $option_data['type'] == 'html'
-                            || $option_data['type'] == 'rich_html'
-                        ) {
+                        } elseif(in_array($option_data['type'], array('textarea', 'html', 'rich_html'))) {
                             pll_register_string($option_data['title'], leyka_options()->opt($option), 'leyka', true);
                         }
+
                     }
                 }
+
             }
 
 //            add_action('leyka_default_success_page_created', function($page_id){

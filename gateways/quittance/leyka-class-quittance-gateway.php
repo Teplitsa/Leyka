@@ -42,8 +42,6 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
-        load_textdomain('leyka', LEYKA_PLUGIN_DIR.'lang/leyka-'.get_locale().'.mo'); // Localize a quittance first
-
         header('HTTP/1.1 200 OK');
         header('Content-Type: text/html; charset=utf-8');
 
