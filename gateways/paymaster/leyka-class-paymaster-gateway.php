@@ -45,7 +45,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
                 'type' => 'select',
                 'default' => 'md5',
                 'title' => __('Hash security method', 'leyka'),
-                'description' => __('Please find your hash method in merchant in PayMaster merchant Control Panel.', 'leyka'),
+                'description' => __('Please find your hash method in PayMaster merchant Control Panel.', 'leyka'),
                 'required' => true,
                 'list_entries' => array('md5' => 'md5', 'sha1' => 'sha1', 'sha256' => 'sha256'),
             ),
