@@ -172,10 +172,7 @@ function leyka_get_gateway_redirect_data() {
     } else { // Get payment vars without donation submit
         $payment_vars = array_merge(
             apply_filters('leyka_submission_form_data-'.$pm[0], $_POST, $pm[1], false),
-            array(
-                'status' => 0,
-                'payment_url' => apply_filters('leyka_submission_redirect_url-'.$pm[0], '', $pm[1]),
-            )
+            array('status' => 0, 'payment_url' => apply_filters('leyka_submission_redirect_url-'.$pm[0], '', $pm[1]),)
         );
     }
 
