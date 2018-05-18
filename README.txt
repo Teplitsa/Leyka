@@ -4,8 +4,8 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса,яндекс.деньги, миксплат, paypal
 Requires at least: 3.6.1
-Tested up to: 4.9.5
-Stable tag: 2.3.5
+Tested up to: 4.9.6
+Stable tag: 2.3.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,24 @@ PHP version required: 5.3+
 10. Google Analytics events
 
 == Changelog ==
+= 2.3.6 =
+* New: Paymaster gateway support added.
+* New: the "campaign finished" donors mailout feature added.
+* New: now all payment methods have both SVG & PNG icons.
+* Fix: now CloudPayments recurring works normally.
+* Fix: now Quittances work normally on Revo template.
+* Fix: different form templates fixes.
+* Fix: localization improved.
+* Fix: Polylang support module fixed.
+* Fix: success subscription widget submitting fixed.
+* Fix: now all plugin options values are trimmed before saving.
+* Fix: lots of small fixes.
+* Tweak: success & failure widgets output checks improved.
+* Tweak: now CP IPs list option has empty default value.
+* Tweak: plugin JS optimized.
+* Tweak: links security improved.
+* Tweak: obsolete code removed.
+
 = 2.3.5 =
 * New: in the donations export, donations amount and currency are separate columns now.
 * New: PayPal recurring donations added.
