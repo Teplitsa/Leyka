@@ -30,7 +30,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
             'paymaster_merchant_id' => array(
                 'type' => 'text',
                 'title' => __('Paymaster merchant ID', 'leyka'),
-                'description' => __('Please find your merchant id in merchant in PayMaster merchant Control Panel.', 'leyka'),
+                'description' => __('Please find your merchant id in PayMaster merchant Control Panel.', 'leyka'),
                 'required' => true,
                 'placeholder' => __('E.g., ct5b8f62-297f-4d19-b805-249cab7a37ed', 'leyka'),
             ),
