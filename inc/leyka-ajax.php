@@ -165,7 +165,7 @@ function leyka_get_gateway_redirect_data() {
         }
 
         $payment_vars = array_merge(
-            apply_filters('leyka_submission_form_data-'.$pm[0], $_POST, $pm[1], false),
+            apply_filters('leyka_submission_form_data-'.$pm[0], $_POST, $pm[1], $donation_id),
             $payment_vars
         );
 
