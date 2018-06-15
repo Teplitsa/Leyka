@@ -42,12 +42,14 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
+        load_textdomain('leyka', LEYKA_PLUGIN_DIR.'lang/leyka-'.get_locale().'.mo'); // Localize a quittance first
+
         header('HTTP/1.1 200 OK');
         header('Content-Type: text/html; charset=utf-8');
 
         $campaign = new Leyka_Campaign($form_data['leyka_campaign_id']);
         $quittance_html = str_replace(
-            array(
+            apply_filters('leyka_quittance_placeholders_list', array(
                 '#BACK_TO_DONATION_FORM_TEXT#',
                 '#PRINT_THE_QUITTANCE_TEXT#',
                 '#QUITTANCE_RECEIVED_TEXT#',
@@ -62,23 +64,23 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
                 '#RECEIVER_BANK_NAME#',
                 '#BIC#',
                 '#CORR#',
-            ),
-            array( // Form field values
-                __('Return to the donation form', 'leyka'),
-                __('Print the quittance', 'leyka'),
-                __("OK, I've received the quittance", 'leyka'),
-                get_permalink(leyka_options()->opt('quittance_redirect_page')),
-                $campaign->payment_title." (№ $donation_id)",
-                $form_data['leyka_donor_name'],
-                leyka_options()->opt('org_full_name'),
-                (int)$form_data['leyka_donation_amount'],
-                leyka_options()->opt('org_inn'),
-                leyka_options()->opt('org_kpp'),
-                leyka_options()->opt('org_bank_account'),
-                leyka_options()->opt('org_bank_name'),
-                leyka_options()->opt('org_bank_bic'),
-                leyka_options()->opt('org_bank_corr_account'),
-            ),
+            ), $pm_id, $donation_id, $form_data),
+            apply_filters('leyka_quittance_placeholders_values', array( // Form field values
+                '#BACK_TO_DONATION_FORM_TEXT#' => __('Return to the donation form', 'leyka'),
+                '#PRINT_THE_QUITTANCE_TEXT#' => __('Print the quittance', 'leyka'),
+                '#QUITTANCE_RECEIVED_TEXT#' => __("OK, I've received the quittance", 'leyka'),
+                '#SUCCESS_URL#' => get_permalink(leyka_options()->opt('quittance_redirect_page')),
+                '#PAYMENT_COMMENT#' => $campaign->payment_title." (№ $donation_id)",
+                '#PAYER_NAME#' => $form_data['leyka_donor_name'],
+                '#RECEIVER_NAME#' => leyka_options()->opt('org_full_name'),
+                '#SUM#' => (int)$form_data['leyka_donation_amount'],
+                '#INN#' => leyka_options()->opt('org_inn'),
+                '#KPP#' => leyka_options()->opt('org_kpp'),
+                '#ACC#' => leyka_options()->opt('org_bank_account'),
+                '#RECEIVER_BANK_NAME#' => leyka_options()->opt('org_bank_name'),
+                '#BIC#' => leyka_options()->opt('org_bank_bic'),
+                '#CORR#' => leyka_options()->opt('org_bank_corr_account'),
+            ), $pm_id, $donation_id, $form_data),
             $this->_payment_methods[$pm_id]->get_quittance_html()
         );
 
@@ -101,7 +103,10 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
             );
         }
 
+        do_action('leyka_before_quittance_output', $pm_id, $donation_id, $form_data);
+
         die($quittance_html);
+
     }
 
     /** Quittance don't use any specific redirects, so this method is empty. */
