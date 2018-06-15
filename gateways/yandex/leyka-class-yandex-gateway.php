@@ -58,6 +58,13 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'description' => __('Check if the gateway integration is in test mode.', 'leyka'),
                 'required' => false,
             ),
+            'yandex_outer_ip_to_inner' => array(
+                'type' => 'checkbox',
+                'default' => 0,
+                'title' => __('Set outer requests IP to inner one', 'leyka'),
+                'description' => __('Check if there are systematic errors on payments using the gateway.', 'leyka'),
+                'required' => false,
+            ),
         );
 
     }
@@ -373,7 +380,7 @@ techMessage="'.$tech_message.'"/>');
             WP_CONTENT_DIR.'/'.trim(leyka_options()->opt('yandex-yandex_card_private_key_path'), '/') : false;
 
         $ch = curl_init();
-        curl_setopt_array($ch, array(
+        $params = array(
             CURLOPT_URL => leyka_options()->opt('yandex_test_mode') ?
                 'https://penelope-demo.yamoney.ru/webservice/mws/api/repeatCardPayment' :
                 'https://penelope.yamoney.ru/webservice/mws/api/repeatCardPayment',
@@ -397,7 +404,11 @@ techMessage="'.$tech_message.'"/>');
             CURLOPT_SSLCERT => $certificate_path,
             CURLOPT_SSLKEY => $certificate_private_key_path,
             CURLOPT_SSLKEYPASSWD => leyka_options()->opt('yandex-yandex_card_private_key_password'),
-        ));
+        );
+        if(leyka_options()->opt('yandex_outer_ip_to_inner')) {
+            $params[CURLOPT_INTERFACE] = $_SERVER['SERVER_ADDR'];
+        }
+        curl_setopt_array($ch, $params);
 
         $answer = curl_exec($ch);
         $res = false;
