@@ -1164,13 +1164,16 @@ function leyka_remembered_data($name, $value = null, $delete = false) {
 
 function leyka_calculate_donation_total_amount($donation = false, $amount = 0.0, $pm_full_id = '') {
 
-    $donation = leyka_get_validated_donation($donation);
-    if( !$donation ) {
-        return 0.0;
+    if($donation) {
+        $donation = leyka_get_validated_donation($donation);
     }
 
-    $amount = $amount ? $amount : $donation->amount;
-    $pm_full_id = $pm_full_id ? $pm_full_id : $donation->pm_full_id;
+    $amount = $amount ? $amount : ($donation ? $donation->amount : (float)$amount);
+    $pm_full_id = $pm_full_id ? $pm_full_id : ($donation ? $donation->pm_full_id : false);
+
+    if( !$amount || !$pm_full_id ) {
+        return 0.0;
+    }
 
     $commission = leyka_options()->opt('commission');
     $commission = empty($commission[$pm_full_id]) ?
