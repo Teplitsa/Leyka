@@ -1,15 +1,12 @@
 jQuery(document).ready(function($){
 
-    $(document).on('submit.leyka', 'form.leyka-pm-form,form.leyka-revo-form', function(e){
+    $('body').on('submit.leyka', 'form.leyka-pm-form,form.leyka-revo-form', function(e){
 
         function addError($errors_block, error_html) {
 
             $errors_block.html(error_html).show();
-
-            // Center the error block in the viewport
-            $('html, body').animate({
-                scrollTop: $errors_block.offset().top -
-                    ($(window).height() - $errors_block.outerHeight()) / 2
+            $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
+                scrollTop: $errors_block.offset().top - 35
             }, 250);
 
         }
@@ -19,30 +16,32 @@ jQuery(document).ready(function($){
         var $form = $(this),
             $errors = $('#leyka-submit-errors');
 
+
+        // Selected PM don't belong to the CP gateway:
+        if($form.find('input[name="leyka_payment_method"]').val().indexOf('cp') < 0) {
+            return;
+        }
+
         var $revo_redirect_step = $form.closest('.leyka-pf').find('.leyka-pf__redirect');
         if($revo_redirect_step.length) {
             $revo_redirect_step.addClass('leyka-pf__redirect--open');
         }
 
         if($form.data('submit-in-process')) {
-            return false;
+            return;
         } else {
             $form.data('submit-in-process', 1);
         }
 
         // Donation form validation already passed in the main script (public.js)
 
-        var is_recurring = $form.find('.leyka-recurring').prop('checked') ||
-                           $form.find('.is-recurring-chosen').val() > 0, // For Revo template
+        var is_recurrent = $form.find('.leyka-recurring').attr('checked') ||
+                $form.find('.is-recurring-chosen').val() > 0, // For Revo template
             data_array = $form.serializeArray(),
             data = {action: 'leyka_ajax_donation_submit'};
 
         for(var i=0; i<data_array.length; i++) {
             data[data_array[i].name] = data_array[i].value;
-        }
-
-        if(data.leyka_payment_method.indexOf('cp') < 0) { // Selected PM don't belong to the CP gateway
-            return;
         }
 
         e.preventDefault();
@@ -70,7 +69,7 @@ jQuery(document).ready(function($){
                 return false;
 
             } else if( !response.public_id ) {
-				/** @todo Remove this check when more common gateways settings check will be added in leyka-ajax.php:leyka_submit_donation(). */
+                /** @todo Remove this check when more common gateways settings check will be added in leyka-ajax.php:leyka_submit_donation(). */
 
                 addError($errors, leyka.cp_not_set_up);
                 return false;
@@ -80,7 +79,7 @@ jQuery(document).ready(function($){
             var widget = new cp.CloudPayments(),
                 data = {};
 
-            if(is_recurring) {
+            if(is_recurrent) {
                 data.cloudPayments = {recurrent: {interval: 'Month', period: 1}};
             }
 
@@ -103,7 +102,7 @@ jQuery(document).ready(function($){
                 $errors.html('').hide();
 
             }, function(reason, options){ // fail callback
-                addError($errors, leyka.cp_donation_failure_reasons[reason] || reason);
+                addError($errors, leyka.cp_donation_failure_reasons[reason]);
             });
 
             if($form.hasClass('leyka-revo-form')) {
