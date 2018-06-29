@@ -35,8 +35,8 @@ jQuery(document).ready(function($){
 
         // Donation form validation already passed in the main script (public.js)
 
-        var is_recurrent = $form.find('.leyka-recurring').attr('checked') ||
-                $form.find('.is-recurring-chosen').val() > 0, // For Revo template
+        var is_recurring = $form.find('.leyka-recurring').prop('checked') ||
+                           $form.find('.is-recurring-chosen').val() > 0, // For Revo template
             data_array = $form.serializeArray(),
             data = {action: 'leyka_ajax_donation_submit'};
 
@@ -79,7 +79,7 @@ jQuery(document).ready(function($){
             var widget = new cp.CloudPayments(),
                 data = {};
 
-            if(is_recurrent) {
+            if(is_recurring) {
                 data.cloudPayments = {recurrent: {interval: 'Month', period: 1}};
             }
 
@@ -102,7 +102,7 @@ jQuery(document).ready(function($){
                 $errors.html('').hide();
 
             }, function(reason, options){ // fail callback
-                addError($errors, leyka.cp_donation_failure_reasons[reason]);
+                addError($errors, leyka.cp_donation_failure_reasons[reason] || reason);
             });
 
             if($form.hasClass('leyka-revo-form')) {
