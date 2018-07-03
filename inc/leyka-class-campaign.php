@@ -767,11 +767,11 @@ class Leyka_Campaign {
             $meta['target_state'] = $new_target_state;
 
             if($new_target_state === 'is_reached') {
-                $meta['date_target_reached'] = time();
+                $meta['date_target_reached'] = current_time('timestamp');
             }
 
         } elseif($new_target_state === 'is_reached' && !$this->date_target_reached) {
-            $meta['date_target_reached'] = time();
+            $meta['date_target_reached'] = current_time('timestamp');
         } elseif($new_target_state !== 'is_reached' && $this->date_target_reached) {
             $meta['date_target_reached'] = 0;
         }

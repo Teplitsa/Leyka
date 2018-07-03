@@ -331,7 +331,7 @@ class Leyka_Donation_Management {
         // Reset content-type to avoid conflicts (http://core.trac.wordpress.org/ticket/23578):
         remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
-        $res &= update_post_meta($donation->id, '_leyka_donor_email_date', time());
+        $res &= update_post_meta($donation->id, '_leyka_donor_email_date', current_time('timestamp'));
 
         if( !$res ) {
             $res = get_post_meta($donation->id, '_leyka_donor_email_date', true) > 0;
@@ -421,7 +421,7 @@ class Leyka_Donation_Management {
         );
 
         if($res) {
-            update_post_meta($donation->id, '_leyka_donor_email_date', time());
+            update_post_meta($donation->id, '_leyka_donor_email_date', current_time('timestamp'));
         }
 
         // Donations managers notifying emails:
@@ -513,7 +513,7 @@ class Leyka_Donation_Management {
         }
 
         if($res) {
-            update_post_meta($donation->id, '_leyka_managers_emails_date', time());
+            update_post_meta($donation->id, '_leyka_managers_emails_date', current_time('timestamp'));
         }
 
         // Reset content-type to avoid conflicts -- http://core.trac.wordpress.org/ticket/23578
@@ -956,7 +956,7 @@ class Leyka_Donation_Management {
 
             <?php if(current_user_can(get_post_type_object(self::$post_type)->cap->publish_posts)) {?>
 				<div class="save-action">
-			    <input name="original_funded" type="hidden" id="original_funded" value="<?php esc_attr_e(__('Update', 'leyka'));?>" />
+			    <input name="original_funded" type="hidden" id="original_funded" value="<?php esc_attr_e(__('Update', 'leyka'));?>">
                 <?php submit_button(
                     $is_adding_page ? __('Add the donation', 'leyka') : __('Update', 'leyka'),
                     'primary button-large', 'funded', false,
@@ -969,24 +969,27 @@ class Leyka_Donation_Management {
         <div class="leyka-status-section log">
             <?php $status_log = get_post_meta($donation->ID, '_status_log', true);
             if($status_log) {?>
+
                 <?php $last_status = end($status_log);
                 echo str_replace(
                     array('%status', '%date'),
                     array('<i>'.$this->get_status_labels($last_status['status']).'</i>', '<time>'.date(get_option('date_format').', H:i', $last_status['date']).'</time>'),
                     '<div class="leyka-ddata-string last-log">'.__('Last status change: to&nbsp;%status (at&nbsp;%date)', 'leyka').'</div>'
                 );?>
+
                 <div id="donation-status-log-toggle"><?php _e('Show/hide full status history', 'leyka');?></div>
                 <ul id="donation-status-log" style="display: none;">
                     <?php for($i=0; $i<count($status_log); $i++) {?>
                     <li><?php echo str_replace(
                         array('%status', '%date'),
-                        array('<i>'.$this->get_status_labels($status_log[$i]['status']).'</i>','<time>'.date(get_option('date_format').', H:i', $status_log[$i]['date']).'</time>'),
+                        array('<i>'.$this->get_status_labels($status_log[$i]['status']).'</i>','<time>'.date(get_option('date_format').', '.get_option('time_format'), $status_log[$i]['date']).'</time>'),
                         __('%date - %status', 'leyka')
                     );}?></li>
                 </ul>
-            <?php } else
-                echo '<div class="leyka-ddata-string last-log">'.__('Last status change: none logged', 'leyka').'</div>';
-            ?>
+
+            <?php } else {?>
+                <div class="leyka-ddata-string last-log"><?php _e('Last status change: none logged', 'leyka');?></div>
+            <?php }?>
         </div>
 	<?php }
 
@@ -1536,7 +1539,7 @@ class Leyka_Donation {
             add_post_meta($id, '_leyka_managers_emails_date', 0);
         }
 
-        add_post_meta($id, '_status_log', array(array('date' => time(), 'status' => $status)));
+        add_post_meta($id, '_status_log', array(array('date' => current_time('timestamp'), 'status' => $status)));
 
         $params['payment_type'] = empty($params['payment_type']) || $params['payment_type'] == 'single' ?
             'single' :
@@ -1565,7 +1568,7 @@ class Leyka_Donation {
         if( !empty($params['recurrents_cancel_date']) ) {
             add_post_meta($id, 'leyka_recurrents_cancel_date', $params['recurrents_cancel_date']);
         } elseif( !empty($params['recurrents_cancelled']) && $params['recurrents_cancelled']) {
-            add_post_meta($id, 'leyka_recurrents_cancel_date', time());
+            add_post_meta($id, 'leyka_recurrents_cancel_date', current_time('timestamp'));
         } else {
             add_post_meta($id, 'leyka_recurrents_cancel_date', 0);
         }
@@ -1851,9 +1854,9 @@ class Leyka_Donation {
 
                 $status_log = get_post_meta($this->_id, '_status_log', true);
                 if($status_log && is_array($status_log)) {
-	                $status_log[] = array('date' => time(), 'status' => $value);
+	                $status_log[] = array('date' => current_time('timestamp'), 'status' => $value);
                 } else {
-                    $status_log = array(array('date' => time(), 'status' => $value));
+                    $status_log = array(array('date' => current_time('timestamp'), 'status' => $value));
                 }
 
                 update_post_meta($this->_id, '_status_log', $status_log);
@@ -1977,17 +1980,17 @@ class Leyka_Donation {
 
                 if($value) {
 
-                    update_post_meta($this->_id, 'leyka_recurrents_cancelled', false);
-                    update_post_meta($this->_id, 'leyka_recurrents_cancel_date', 0);
                     $this->_donation_meta['recurrents_cancelled'] = false;
                     $this->_donation_meta['recurrents_cancel_date'] = 0;
+                    update_post_meta($this->_id, 'leyka_recurrents_cancelled', false);
+                    update_post_meta($this->_id, 'leyka_recurrents_cancel_date', 0);
 
                 } else {
 
-                    update_post_meta($this->_id, 'leyka_recurrents_cancelled', true);
-                    update_post_meta($this->_id, 'leyka_recurrents_cancel_date', time());
                     $this->_donation_meta['recurrents_cancelled'] = true;
-                    $this->_donation_meta['recurrents_cancel_date'] = time();
+                    $this->_donation_meta['recurrents_cancel_date'] = current_time('timestamp');
+                    update_post_meta($this->_id, 'leyka_recurrents_cancelled', true);
+                    update_post_meta($this->_id, 'leyka_recurrents_cancel_date', $this->_donation_meta['recurrents_cancel_date']);
 
                 }
                 break;

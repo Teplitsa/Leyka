@@ -1153,9 +1153,9 @@ function leyka_remembered_data($name, $value = null, $delete = false) {
     $name = stripos($name, 'leyka_') === false ? 'leyka_'.$name : $name;
 
     if($value) {
-        return setcookie($name, trim($value), time()+60*60, COOKIEPATH, COOKIE_DOMAIN, false);
+        return setcookie($name, trim($value), current_time('timestamp')+60*60, COOKIEPATH, COOKIE_DOMAIN, false);
     } else if( !!$delete ) {
-        return setcookie($name, '', time()-3600, COOKIEPATH, COOKIE_DOMAIN, false);
+        return setcookie($name, '', current_time('timestamp')-3600, COOKIEPATH, COOKIE_DOMAIN, false);
     } else {
         return empty($_COOKIE[$name]) ? '' : trim($_COOKIE[$name]);
     }

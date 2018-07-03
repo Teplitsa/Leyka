@@ -276,7 +276,7 @@ class Leyka {
         if(Leyka_Options_Controller::get_option_value('leyka_auto_refresh_currency_rates')) {
 
             if( !wp_next_scheduled('refresh_currencies_rates') ) {
-                wp_schedule_event(time(), 'daily', 'refresh_currencies_rates');
+                wp_schedule_event(current_time('timestamp'), 'daily', 'refresh_currencies_rates');
             }
 
             add_action('refresh_currencies_rates', array($this, '_do_currencies_rates_refresh'));
