@@ -8,7 +8,7 @@ $email_placeholders =
 <code>#DONATION_ID#</code> — ".__('an ID of current donation', 'leyka')."<br>
 <code>#DONATION_TYPE#</code> — ".__('a type of current donation (single or recurring)', 'leyka')."<br>
 <code>#DONOR_NAME#</code> — ".__("a donor's name", 'leyka')."<br>
-<code>#DONOR_#EMAIL#</code> — ".__("a donor's email", 'leyka')."<br>
+<code>#DONOR_EMAIL#</code> — ".__("a donor's email", 'leyka')."<br>
 <code>#SUM#</code> — ".__('a donation full amount (without payment commission)', 'leyka')."<br>
 <code>#PAYMENT_METHOD_NAME#</code> — ".__('a payment method used', 'leyka')."<br>
 <code>#CAMPAIGN_NAME#</code> — ".__('a campaign to which donation was made', 'leyka')."<br>
