@@ -95,8 +95,10 @@ function leyka_get_validated_donation($donation) {
 function leyka_get_validated_campaign($campaign) {
 
     if(is_int($campaign) && (int)$campaign > 0) {
-        $campaign = new Leyka_Campaign((int)$campaign);
-    } elseif(is_a($campaign, 'WP_Post')) {
+        $campaign = get_post((int)$campaign);
+    }
+
+    if(is_a($campaign, 'WP_Post') && $campaign->post_type === Leyka_Campaign_Management::$post_type) {
         $campaign = new Leyka_Campaign($campaign);
     } elseif( !is_a($campaign, 'Leyka_Campaign') ) {
         return false;
@@ -532,11 +534,10 @@ function leyka_get_campaign_collections($campaign) {
     }
 
     return array(
-        'amount' => $campaign->get_collected_amount(),
+        'amount' => $campaign->total_funded,
         'currency' => 'rur', // Currently, collections are all in RUR
     );
 }
-
 
 /**
  * Scale
@@ -546,18 +547,18 @@ function leyka_scale_compact($campaign) {
     if( !is_a($campaign, 'Leyka_Campaign') ) {
         $campaign = new Leyka_Campaign($campaign);
     }
-        
+
     $target = (float)$campaign->target;
     if($target <= 0.0) {
         return;
     }
 
     $curr_label = leyka_get_currency_label('rur');
-    $collected = $campaign->get_collected_amount();
 
-    $percentage = round(($collected/$target)*100);
-	if($percentage > 100)
-		$percentage = 100;?>
+    $percentage = round(($campaign->total_funded/$target)*100);
+	if($percentage > 100) {
+		$percentage = 100;
+    }?>
 
 <div class="leyka-scale-compact">
     <div class="leyka-scale-scale">
@@ -567,9 +568,9 @@ function leyka_scale_compact($campaign) {
     </div>
     <div class="leyka-scale-label">
     <?php $target_f = number_format($target, ($target - round($target) > 0.0 ? 2 : 0), '.', ' ');
-    $collected_f = number_format($collected, ($collected - round($collected) > 0.0 ? 2 : 0), '.', ' ');
+    $collected_f = number_format($campaign->total_funded, ($campaign->total_funded - round($campaign->total_funded) > 0.0 ? 2 : 0), '.', ' ');
 
-    if($collected == 0) {
+    if($campaign->total_funded == 0) {
         printf(__('Needed %s %s', 'leyka'), '<b>'.$target_f.'</b>', $curr_label);
     } else {
         printf(__('Collected %s of %s %s', 'leyka'), '<b>'.$collected_f.'</b>', '<b>'.$target_f.'</b>', $curr_label);
@@ -587,13 +588,12 @@ function leyka_scale_ultra($campaign) {
 
     $target = (float)$campaign->target;
     $curr_label = leyka_get_currency_label('rur');
-    $collected = $campaign->get_collected_amount();
    
     if($target == 0) {
         return;
     }
     
-    $percentage = round(($collected/$target)*100);
+    $percentage = round(($campaign->total_funded/$target)*100);
 	if($percentage > 100)
 		$percentage = 100;?>
 
@@ -606,7 +606,7 @@ function leyka_scale_ultra($campaign) {
     <div class="leyka-scale-label"><span>
 
     <?php $target_f = number_format($target, ($target - round($target) > 0.0 ? 2 : 0), '.', ' ');
-    $collected_f = number_format($collected, ($collected - round($collected) > 0.0 ? 2 : 0), '.', ' ');
+    $collected_f = number_format($campaign->total_funded, ($campaign->total_funded - round($campaign->total_funded) > 0.0 ? 2 : 0), '.', ' ');
 
     printf(_x('%s of %s %s', 'Label on ultra-compact scale', 'leyka'), '<b>'.$collected_f.'</b>', '<b>'.$target_f.'</b>', $curr_label);?>
     </span></div>
@@ -636,7 +636,6 @@ function leyka_fake_scale_ultra($campaign) {
 
 /** @return array An array of possible payment types with labels */
 function leyka_get_payment_types_list() {
-
     return array(
         'single'     => __('Single', 'leyka'),
         'rebill'     => __('Recurrent (rebill)', 'leyka'),
@@ -651,6 +650,7 @@ function leyka_get_payment_type_label($type) {
     }
 
     $types = leyka_get_payment_types_list();
+
     return in_array($type, array_keys($types)) ? $types[$type] : false;
 
 }
@@ -733,6 +733,7 @@ function leyka_get_actual_currency_rates() {
     }
 
     return $currencies;
+
 }
 
 function leyka_are_settings_complete($settings_tab) {
@@ -751,6 +752,7 @@ function leyka_are_settings_complete($settings_tab) {
     }
 
     return $settings_complete;
+
 }
 
 function leyka_is_min_payment_settings_complete() {
