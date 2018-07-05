@@ -145,6 +145,7 @@ class Leyka_Payment_Form {
             'leyka_campaign_id' => $campaign->id,
             'leyka_ga_campaign_title' => esc_attr($campaign->payment_title),
             'leyka_amount_field_type' => leyka_options()->opt('donation_sum_field_type'),
+            'leyka_honeypot' => '',
         ));
         $hiddens = $rewrite + $hiddens;
 
@@ -616,8 +617,12 @@ function leyka_pf_get_amount_field() {
 
 }
 
+function leyka_pf_get_honeypot_value() {
+    return empty($_POST['leyka_honeypot']) ? '' : $_POST['leyka_honeypot'];
+}
+
 function leyka_pf_get_amount_value() {
-    return empty($_POST['leyka_donation_amount']) ? '' : $_POST['leyka_donation_amount']; 
+    return empty($_POST['leyka_donation_amount']) ? '' : $_POST['leyka_donation_amount'];
 }
 
 function leyka_pf_get_currency_value() {

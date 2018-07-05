@@ -1171,9 +1171,25 @@ class Leyka {
 
         $this->clear_session_errors(); // Clear all previous submits errors, if there are some
 
+        /** @todo Incapsulate all main server-side checks */
+        if(leyka_pf_get_honeypot_value()) {
+
+            $error = new WP_Error('auto_submit_detected', __('Sorry, donations auto-submitting is prohibited', 'leyka'));
+            $this->add_payment_form_error($error);
+
+        }
+
         if( !wp_verify_nonce($_REQUEST['_wpnonce'], 'leyka_payment_form') ) {
 
             $error = new WP_Error('wrong_form_submission', __('Wrong nonce in submitted form data', 'leyka'));
+            $this->add_payment_form_error($error);
+
+        }
+
+        $amount = (float)leyka_pf_get_amount_value();
+        if( !$amount ) {
+
+            $error = new WP_Error('incorrect_amount_given', __('Empty or incorrect amount given while trying to add a donation', 'leyka'));
             $this->add_payment_form_error($error);
 
         }
@@ -1213,6 +1229,7 @@ class Leyka {
             }
 
         }
+        /** @todo Main server-side checks to incapsulate - fin... */
 
         if($this->payment_form_has_errors()) {
             return;

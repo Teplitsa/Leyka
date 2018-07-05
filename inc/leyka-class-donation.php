@@ -1453,7 +1453,13 @@ class Leyka_Donation {
 
     public static function add(array $params = array()) {
 
+        $amount = empty($params['amount']) ? leyka_pf_get_amount_value() : round((float)$params['amount'], 2);
+        if( !$amount ) {
+            return new WP_Error('incorrect_amount_given', __('Empty or incorrect amount given while trying to add a donation', 'leyka'));
+        }
+
         $status = empty($params['status']) ? 'submitted' : $params['status'];
+
         $id = wp_insert_post(array(
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => array_key_exists($status, leyka_get_donation_status_list()) ? $status : 'submitted',
@@ -1461,6 +1467,8 @@ class Leyka_Donation {
                 leyka_options()->opt('donation_purpose_text') : $params['purpose_text'],
             'post_parent' => empty($params['init_recurring_donation']) ? 0 : (int)$params['init_recurring_donation'],
         ));
+
+        add_post_meta($id, 'leyka_donation_amount', (float)$amount);
 
         $value = empty($params['donor_name']) ? leyka_pf_get_donor_name_value() : trim($params['donor_name']);
         if($value && !leyka_validate_donor_name($value)) { // Validate donor's name
@@ -1502,10 +1510,6 @@ class Leyka_Donation {
             $id, 'leyka_gateway',
             empty($params['gateway_id']) ? $pm_data['gateway_id'] : $params['gateway_id']
         );
-
-        $amount = empty($params['amount']) ? leyka_pf_get_amount_value() : round((float)$params['amount'], 2);
-        $amount = $amount ? (float)$amount : 0.0;
-        add_post_meta($id, 'leyka_donation_amount', $amount);
 
         if(
             (empty($params['amount_total']) || $params['amount_total'] == 'auto') &&

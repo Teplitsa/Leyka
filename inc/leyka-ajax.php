@@ -129,7 +129,7 @@ function leyka_get_gateway_redirect_data() {
         )));
     }
 
-    /** @todo Add this server-side checks for donor name & email */
+    /** @todo Add this server-side checks for donor name, email, amount & honeypot: */
 //    $donor_name = leyka_pf_get_donor_name_value();
 //    if($donor_name && !leyka_validate_donor_name($donor_name)) {
 //
@@ -150,9 +150,13 @@ function leyka_get_gateway_redirect_data() {
 
         $donation_id = leyka()->log_submission();
 
-        leyka_remember_donation_data(array('donation_id' => $donation_id));
+        if( !is_wp_error($donation_id) ) {
 
-        do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
+            leyka_remember_donation_data(array('donation_id' => $donation_id));
+
+            do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
+
+        }
 
         $payment_vars = array(
             'status' => $donation_id && !is_wp_error($donation_id) ? 0 : 1,
