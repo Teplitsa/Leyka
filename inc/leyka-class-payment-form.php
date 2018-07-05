@@ -36,6 +36,57 @@ class Leyka_Payment_Form {
 		return 'leyka-form-'.($this->_pm_name ? $this->_pm_name : '');
 	}
 
+    /**
+     * Main server-side fields validations.
+     * @return mixed True if form is valid, an array of WP_Error objects otherwise.
+     */
+	public static function is_form_fields_valid() {
+
+	    $errors = array();
+
+        if(leyka_pf_get_honeypot_value()) {
+            $errors[] = new WP_Error('auto_submit_detected', __('Sorry, donations auto-submitting is prohibited', 'leyka'));
+        }
+
+        if(empty($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'leyka_payment_form')) {
+            $errors[] = new WP_Error('wrong_form_submission', __('Wrong nonce in submitted form data', 'leyka'));
+        }
+
+        $amount = (float)leyka_pf_get_amount_value();
+        if( !$amount ) {
+            $errors[] = new WP_Error('incorrect_amount_given', __('Empty or incorrect amount given while trying to add a donation', 'leyka'));
+        }
+
+        $pm = leyka_pf_get_payment_method_value();
+        if( !$pm || count($pm) < 2 ) {
+            $errors[] = new WP_Error('wrong_gateway_pm_data', __('Wrong gateway or/and payment method in submitted form data', 'leyka'));
+        }
+
+        $donor_name = leyka_pf_get_donor_name_value();
+        if($donor_name && !leyka_validate_donor_name($donor_name)) {
+            $errors[] = new WP_Error('incorrect_donor_name', __('Incorrect donor name given while trying to add a donation', 'leyka'));
+        }
+
+        $donor_email = leyka_pf_get_donor_email_value();
+        if($donor_email && !leyka_validate_email($donor_email)) {
+            $errors[] = new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
+        }
+
+        if(leyka_options()->opt('show_donation_comment_field') && leyka_options()->opt('donation_comment_max_length')) {
+
+            $donor_comment = leyka_pf_get_donor_comment_value();
+            if($donor_comment && mb_strlen($donor_comment) > leyka_options()->opt('donation_comment_max_length')) {
+                $errors[] = new WP_Error('donor_comment_too_long', sprintf(__('Entered comment is too long (maximum %d characters allowed)', 'leyka'), leyka_options()->opt('donation_comment_max_length')));
+            }
+
+        }
+
+        $errors = apply_filters('leyka_validate_form_fields', $errors);
+
+        return $errors ? $errors : true;
+
+    }
+
     public static function get_form_action() {
 
         if( !self::$_form_action ) {
@@ -646,9 +697,11 @@ function leyka_pf_get_campaign_id_value() {
 }
 
 function leyka_pf_get_payment_method_value() {
+
     $pm = empty($_POST['leyka_payment_method']) ? '' : explode('-', $_POST['leyka_payment_method']);
 
-    return $pm ? array('gateway_id' => $pm[0], 'payment_method_id' => $pm[1]) : array();
+    return $pm ? array( 'gateway_id' => $pm[0], 'payment_method_id' => implode('-', array_slice($pm, 1)) ) : array();
+
 }
 
 function leyka_pf_get_name_field($value = '') {
@@ -656,6 +709,7 @@ function leyka_pf_get_name_field($value = '') {
 	global $leyka_current_pm;
 
 	return $leyka_current_pm->get_name_field($value);
+
 }
 
 function leyka_pf_get_email_field($value = '') {
@@ -663,12 +717,14 @@ function leyka_pf_get_email_field($value = '') {
 	global $leyka_current_pm;
 
 	return $leyka_current_pm->get_email_field($value);
+
 }
 function leyka_pf_get_comment_field($value = '') {
     /** @var Leyka_Payment_Form $leyka_current_pm */
 	global $leyka_current_pm;
 
 	return $leyka_current_pm->get_comment_field($value);
+
 }
 
 //function leyka_pf_get_recurring_field() {
@@ -683,6 +739,7 @@ function leyka_pf_get_agree_field() {
 	global $leyka_current_pm;
 
 	return $leyka_current_pm->get_agree_field();
+
 }
 
 function leyka_pf_get_submit_field() {
@@ -690,6 +747,7 @@ function leyka_pf_get_submit_field() {
 	global $leyka_current_pm;
 
 	return $leyka_current_pm->get_submit_field();
+
 }
 
 function leyka_pf_get_pm_label() {
@@ -697,6 +755,7 @@ function leyka_pf_get_pm_label() {
 	global $leyka_current_pm;
 
 	return $leyka_current_pm->get_pm_label();
+
 }
 
 function leyka_pf_get_pm_description() {
@@ -704,6 +763,7 @@ function leyka_pf_get_pm_description() {
 	global $leyka_current_pm;
 
 	return $leyka_current_pm->get_pm_description();
+
 }
 
 function leyka_pf_get_pm_fields() {
@@ -711,6 +771,7 @@ function leyka_pf_get_pm_fields() {
 	global $leyka_current_pm;
 
 	return $leyka_current_pm->get_pm_fields();
+
 }
 
 function leyka_pf_get_pm_icons() {
@@ -718,9 +779,12 @@ function leyka_pf_get_pm_icons() {
 	global $leyka_current_pm;
 
 	return $leyka_current_pm->get_pm_icons();
+
 }
 
-function leyka_pf_footer() { do_action('leyka_before_footer');?>
+function leyka_pf_footer() {
+
+    do_action('leyka_before_footer');?>
 
 <div class="leyka-form-footer">
 	<div id="leyka-copy">
@@ -728,6 +792,7 @@ function leyka_pf_footer() { do_action('leyka_before_footer');?>
 	</div>
 </div>
 <?php do_action('leyka_after_footer');
+
 }
 
 function leyka_share_campaign_block($campaign_id = null) {
@@ -757,6 +822,7 @@ function leyka_share_campaign_block($campaign_id = null) {
 			
 		</div>
 	</div>
+
 <?php
 }
 
@@ -774,6 +840,7 @@ function leyka_pf_submission_errors() {?>
         <?php leyka()->clear_session_errors();?>
     <?php }?>
     </div>
+
 <?php }
 
 add_action('leyka_single_campaign_sharing', 'leyka_share_campaign_block');

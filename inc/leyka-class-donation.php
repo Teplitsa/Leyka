@@ -1360,7 +1360,7 @@ class Leyka_Donation_Management {
 
         if(
             isset($_POST['donor-email'])
-            && $donation->donor_email != $_POST['donor-email']
+            && $donation->donor_email !== $_POST['donor-email']
             && filter_var($_POST['donor-email'], FILTER_VALIDATE_EMAIL)
         ) {
             $donation->donor_email = sanitize_email($_POST['donor-email']);
@@ -1375,10 +1375,10 @@ class Leyka_Donation_Management {
             ($donation->pm != $_POST['donation-pm'] || $_POST['donation-pm'] == 'custom')
         ) {
 
-            if($_POST['donation-pm'] == 'custom') {
+            if($_POST['donation-pm'] === 'custom') {
 
                 $donation->gateway_id = '';
-                if($donation->pm_id != $_POST['custom-payment-info']) {
+                if($donation->pm_id !== $_POST['custom-payment-info']) {
                     $donation->pm_id = $_POST['custom-payment-info'];
                 }
 

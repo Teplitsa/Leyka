@@ -38,7 +38,7 @@ jQuery(document).ready(function($){
         var is_recurring = $form.find('.leyka-recurring').prop('checked') ||
                            $form.find('.is-recurring-chosen').val() > 0, // For Revo template
             data_array = $form.serializeArray(),
-            data = {action: 'leyka_ajax_donation_submit'};
+            data = {action: 'leyka_ajax_get_gateway_redirect_data'};
 
         for(var i=0; i<data_array.length; i++) {
             data[data_array[i].name] = data_array[i].value;

@@ -1171,68 +1171,16 @@ class Leyka {
 
         $this->clear_session_errors(); // Clear all previous submits errors, if there are some
 
-        /** @todo Incapsulate all main server-side checks */
-        if(leyka_pf_get_honeypot_value()) {
+        $form_errors = Leyka_Payment_Form::is_form_fields_valid();
 
-            $error = new WP_Error('auto_submit_detected', __('Sorry, donations auto-submitting is prohibited', 'leyka'));
-            $this->add_payment_form_error($error);
+        if($form_errors) {
 
-        }
-
-        if( !wp_verify_nonce($_REQUEST['_wpnonce'], 'leyka_payment_form') ) {
-
-            $error = new WP_Error('wrong_form_submission', __('Wrong nonce in submitted form data', 'leyka'));
-            $this->add_payment_form_error($error);
-
-        }
-
-        $amount = (float)leyka_pf_get_amount_value();
-        if( !$amount ) {
-
-            $error = new WP_Error('incorrect_amount_given', __('Empty or incorrect amount given while trying to add a donation', 'leyka'));
-            $this->add_payment_form_error($error);
-
-        }
-
-        $pm = explode('-', $_POST['leyka_payment_method']);
-        if( !$pm || count($pm) < 2 ) {
-
-            $error = new WP_Error('wrong_gateway_pm_data', __('Wrong gateway or/and payment method in submitted form data', 'leyka'));
-            $this->add_payment_form_error($error);
-
-        }
-
-        $donor_name = leyka_pf_get_donor_name_value();
-        if($donor_name && !leyka_validate_donor_name($donor_name)) {
-
-            $error = new WP_Error('incorrect_donor_name', __('Incorrect donor name given while trying to add a donation', 'leyka'));
-            $this->add_payment_form_error($error);
-
-        }
-
-        $donor_email = leyka_pf_get_donor_email_value();
-        if($donor_email && !leyka_validate_email($donor_email)) {
-
-            $error = new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
-            $this->add_payment_form_error($error);
-
-        }
-
-        if(leyka_options()->opt('show_donation_comment_field') && leyka_options()->opt('donation_comment_max_length')) {
-
-            $donor_comment = leyka_pf_get_donor_comment_value();
-            if($donor_comment && mb_strlen($donor_comment) > leyka_options()->opt('donation_comment_max_length')) {
-
-                $error = new WP_Error('donor_comment_too_long', sprintf(__('Entered comment is too long (maximum %d characters allowed)', 'leyka'), leyka_options()->opt('donation_comment_max_length')));
+            foreach($form_errors as $error) { /** @var WP_Error $error */
                 $this->add_payment_form_error($error);
-
             }
 
-        }
-        /** @todo Main server-side checks to incapsulate - fin... */
-
-        if($this->payment_form_has_errors()) {
             return;
+
         }
 
         $donation_id = $this->log_submission();
@@ -1252,14 +1200,29 @@ class Leyka {
 
         leyka_remember_donation_data(array('donation_id' => $donation_id));
 
-        do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
+        $pm = leyka_pf_get_payment_method_value();
+
+        do_action(
+            'leyka_payment_form_submission-'.$pm['gateway_id'],
+            $pm['gateway_id'], $pm['payment_method_id'], $donation_id, $_POST
+        );
 
         $this->_submitted_donation_id = $donation_id;
-        $this->_payment_vars = apply_filters('leyka_submission_form_data-'.$pm[0], $this->_payment_vars, $pm[1], $donation_id);
 
-        $this->_payment_url = apply_filters('leyka_submission_redirect_url-'.$pm[0], $this->_payment_url, $pm[1]);
+        $this->_payment_vars = apply_filters(
+            'leyka_submission_form_data-'.$pm['gateway_id'],
+            $this->_payment_vars, $pm['payment_method_id'], $donation_id
+        );
 
-        $this->_auto_redirect = apply_filters('leyka_submission_auto_redirect-'.$pm[0], true, $pm[1], $donation_id);
+        $this->_payment_url = apply_filters(
+            'leyka_submission_redirect_url-'.$pm['gateway_id'],
+            $this->_payment_url, $pm['payment_method_id']
+        );
+
+        $this->_auto_redirect = apply_filters(
+            'leyka_submission_auto_redirect-'.$pm['gateway_id'],
+            true, $pm['payment_method_id'], $donation_id
+        );
 
     }
 

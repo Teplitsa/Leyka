@@ -96,7 +96,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
     }
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
-        if($pm_id == 'yandex_card' && !empty($form_data['leyka_recurring'])) {
+        if($pm_id === 'yandex_card' && !empty($form_data['leyka_recurring'])) {
 
             $donation = new Leyka_Donation($donation_id);
 
@@ -104,7 +104,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             $donation->rebilling_is_active = true; // So we could turn it on/off
 
         } else if(
-            $pm_id == 'yandex_sb' &&
+            $pm_id === 'yandex_sb' &&
             $form_data['leyka_donation_currency'] == 'rur' &&
             $form_data['leyka_donation_amount'] < 10.0
         ) {
@@ -150,8 +150,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             'shopSuccessURL' => leyka_get_success_page_url(),
             'shopFailURL' => leyka_get_failure_page_url(),
             'cps_email' => $donation->donor_email,
-            'cms_name' => 'wp-leyka', // Service parameter, added by Yandex' request
-//            '' => ,
+            'cms_name' => 'wp-leyka', // Service parameter, added by Yandex request
         );
         if(leyka_options()->opt('yandex_shop_article_id')) {
             $data['shopArticleId'] = leyka_options()->opt('yandex_shop_article_id');
@@ -529,7 +528,7 @@ techMessage="'.$tech_message.'"/>');
         }
     }
 
-    /** A service method to get Yandex' paymentType values by according pm_ids, and vice versa. */
+    /** A service method to get Yandex paymentType values by according pm_ids, and vice versa. */
     protected function _get_yandex_pm_id($pm_id) {
 
         $all_pm_ids = array(
@@ -540,8 +539,6 @@ techMessage="'.$tech_message.'"/>');
             'yandex_sb' => 'SB',
             'yandex_ab' => 'AB',
             'yandex_pb' => 'PB',
-//            '' => '',
-//            '' => '',
         );
 
         if(array_key_exists($pm_id, $all_pm_ids)) {
