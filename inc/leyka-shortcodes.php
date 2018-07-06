@@ -263,7 +263,7 @@ add_shortcode('leyka_donors_list', 'leyka_donors_list_screen' );
 function leyka_donors_list_screen($atts) {
 
     $atts = shortcode_atts(array(
-        'id'           => 'all', //could be also 0 (obtained from context) or real ID
+        'id'           => 'all', // Could be also 0 ("obtain from context") or real campaign ID
         'num'          => leyka_get_donors_list_per_page(),
         'show_purpose' => 1,
         'show_name'    => 1,
@@ -289,10 +289,10 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
         'show_purpose' => 1,
         'show_name'    => 1,
         'show_date'    => 1,
-//        'show_donation_comments' => leyka_options()->opt('show_donation_comments_in_frontend'),
+        'show_donation_comments' => false, // leyka_options()->opt('show_donation_comments_in_frontend'),
     ));
 
-    if($campaign_id === 0) {
+    if($campaign_id === 0 && get_post()->post_type === Leyka_Campaign_Management::$post_type) {
         $campaign_id = get_post()->ID;
     }
 
@@ -311,13 +311,14 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
         )
     );
 
-    if($campaign_id != 'all') {
+    if($campaign_id !== 'all') {
 
         $d_args['meta_query']['relation'] = 'AND';
         $d_args['meta_query'][] = array(
             'key'   => 'leyka_campaign_id',
             'value' => $campaign_id
         );
+
     }
 
     $donations = get_posts($d_args);
@@ -336,7 +337,7 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
         $amount_decimal_digits = (float)$donation->amount - (int)$donation->amount > 0.0 ? 2 : 0;
         $amount_total_decimal_digits = (float)$donation->amount_total - (int)$donation->amount_total > 0.0 ? 2 : 0;
 
-        if(leyka_options()->opt('widgets_total_amount_usage') == 'display-total') {
+        if(leyka_options()->opt('widgets_total_amount_usage') === 'display-total') {
 
             $amount = $donation->amount == $donation->amount_total ?
                 number_format($donation->amount, $amount_decimal_digits, '.', ' ') :
@@ -354,19 +355,19 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
         $html = "<div class='ldl-item'>";
         $html .= "<div class='amount'>".apply_filters('leyka_donations_list_amount_content', $amount.' '.$donation->currency_label, $donation)."</div>";
 
-        if($args['show_purpose'] == 1) {
+        if($args['show_purpose'] && $donation->campaign_id) {
             $html .= "<div class='purpose'><a href='".get_permalink($donation->campaign_id)."'>".$donation->campaign_payment_title."</a></div>";
         }
 
         $meta = array();
 
-        if($args['show_name'] == 1) {
+        if($args['show_name']) {
             $meta[] = '<span>'.($donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka')).'</span>';
         }
 
-        if($args['show_date'] == 1) {
+        if($args['show_date']) {
 
-            if($donation->type == 'correction') {
+            if($donation->type === 'correction') {
 
                 $time = date('H:i:s', $donation->date_timestamp) == '00:00:00' ? '' : date(' '.get_option('time_format'), $donation->date_timestamp);
                 $date = date(get_option('date_format').$time, $donation->date_timestamp);
@@ -378,6 +379,7 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
             if($date) {
                 $meta[] = '<time>'.$date.'</time>';
             }
+
         }
 
         if($meta) {
@@ -395,6 +397,7 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
         $html .= "</div>";
 
         echo apply_filters('leyka_donors_list_item_html', $html, $campaign_id, $args);
+
     }?>
     </div>
 

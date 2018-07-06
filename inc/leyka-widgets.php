@@ -395,13 +395,13 @@ class Leyka_Donations_List_Widget extends WP_Widget {
 
 		$title = apply_filters('widget_title', empty($instance['title']) ? '' : $instance['title']);
 
-		$campaign_id = ($instance['campaign_id'] == '') ? 'all' : (int)$instance['campaign_id'];
+		$campaign_id = empty($instance['campaign_id']) ? 'all' : (int)$instance['campaign_id'];
 
 		$args = array(
-			'num'          => empty($instance['limit']) ? 5 : (int)$instance['limit'],
+			'num' => empty($instance['limit']) ? 5 : (int)$instance['limit'],
 			'show_purpose' => !empty($instance['show_purpose']),
-			'show_name'    => !empty($instance['show_name']),
-			'show_date'    => !empty($instance['show_date']),
+			'show_name' => !empty($instance['show_name']),
+			'show_date' => !empty($instance['show_date']),
 		);
 
 		$html = leyka_get_donors_list($campaign_id, $args);
@@ -431,6 +431,7 @@ class Leyka_Donations_List_Widget extends WP_Widget {
 		$instance['show_date']    = !empty($new_instance['show_date']);
 
 		return $instance;
+
 	}
 
 	/** Widget setting */
