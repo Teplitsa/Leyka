@@ -4,7 +4,7 @@
 class Leyka {
 
     /**
-     * Unique identifier for your plugin.
+     * Unique identifier for the plugin.
      *
      * Use this value (not the variable name) as the text domain when internationalizing strings of text. It should
      * match the Text Domain file header in the main plugin file.
@@ -12,10 +12,7 @@ class Leyka {
      */
     protected $_plugin_slug = 'leyka';
 
-    /**
-     * Instance of this class.
-     * @var object
-     */
+    /** Singleton infractructure */
     protected static $_instance = null;
 
     /**
@@ -48,7 +45,9 @@ class Leyka {
     /** @var bool|null */
     protected $_form_is_screening = false;
 
-    /** Return a single instance of this class */
+    /**
+     * @return Leyka
+     */
     public static function get_instance() {
 
         if( !self::$_instance ) {
