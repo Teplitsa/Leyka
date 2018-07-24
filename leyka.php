@@ -1,4 +1,5 @@
 <?php if( !defined('WPINC') ) die; // If this file is called directly, abort
+
 /**
  * Plugin Name: Leyka
  * Plugin URI:  https://leyka.te-st.ru/
@@ -92,6 +93,9 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-ajax.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-shortcodes.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-widgets.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-hooks.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-wizard-step.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-wizard-section.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-wizard.php');
 
 /** Automatically include all sub-dirs of /leyka/gateways/ */
 $gateways_dir = dir(LEYKA_PLUGIN_DIR.'gateways/');
