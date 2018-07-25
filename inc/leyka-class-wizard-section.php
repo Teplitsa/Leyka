@@ -8,6 +8,8 @@ abstract class Leyka_Wizard_Section {
     protected $_id;
     protected $_title;
     protected $_steps;
+
+    /** @todo Check if this "special" steps needed. */
     protected $_init_step = false;
     protected $_terminal_step = false;
 
