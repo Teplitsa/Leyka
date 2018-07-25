@@ -93,6 +93,7 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-ajax.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-shortcodes.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-widgets.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-hooks.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-wizard-block.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-wizard-step.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-wizard-section.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-wizard.php');

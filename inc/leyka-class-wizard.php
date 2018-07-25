@@ -74,6 +74,10 @@ abstract class Leyka_Wizard { // Each descendant is a concrete wizard
 
     }
 
+    public function processStepSubmit() {
+
+    }
+
 //    public function getCurrentSection() {
 //
 //    }

@@ -3,81 +3,51 @@
  * Leyka Setup Wizard Step class.
  **/
 
-abstract class Leyka_Wizard_Step {
+class Leyka_Wizard_Step {
 
     protected $_id;
     protected $_title;
 
-    /** A Composite blocks structure object */
+    /** A Composite blocks structure object??? */
     protected $_blocks;
 
-    protected static $_instance = null;
+    public function __construct($id, $title = '' /*, array $params = array()*/) {
 
-    /**
-     * @return Leyka_Wizard_Step
-     */
-    public final static function get_instance() {
-
-        if(null == static::$_instance) {
-            static::$_instance = new static();
-        }
-
-        return static::$_instance;
+        $this->_id = trim($id);
+        $this->_title = trim($title);
 
     }
 
-    final protected function __clone() {}
-
-    protected function __construct() {
-
-        $this->_set_attributes();
-        $this->_set_blocks();
-
+    public function addBlock(Leyka_Wizard_Step_Block $block) {
+        $this->_blocks[] = $block;
     }
 
-    abstract protected function _set_attributes();
-    abstract protected function _set_blocks();
-    abstract protected function _processStep();
-
-    /** @return Leyka_Blocks_Composite */
     public function getBlocks() {
         return $this->_blocks;
     }
 
-    abstract public function stepIsValid();
-    abstract public function getStepErrors();
+    public function isValid() {
 
-}
+        foreach($this->_blocks as $block) { /** @var $block Leyka_Wizard_Step_Block */
+            if( !$block->isValid() ) {
+                return false;
+            }
+        }
 
-class Leyka_Init_AccountType_Step extends Leyka_Wizard_Step {
-
-    protected static $_instance = null;
-
-    protected function _set_attributes() {
-
-        $this->_id = 'account-type';
-        $this->_title = 'Step 1: Receiver account type';
-
-    }
-
-    protected function _set_blocks() {
-
-        $this->_blocks[] = 'Block 1'; /** @todo Real steps objects here */
-
-    }
-
-    protected function _processStep() {
-        /** @todo Save the step fields values */
-    }
-
-    public function stepIsValid() {
-        /** @todo Do the step fields validation */
         return true;
+
     }
 
-    public function getStepErrors() {
-        /** @todo If step isn't valid, return an array with validation errors */
-        return array();
+    public function getErrors() {
+
+        $errors = array();
+
+        foreach($this->_blocks as $block) { /** @var $block Leyka_Wizard_Step_Block */
+            $errors = array_merge($errors, $block->getErrors());
+        }
+
+        return $errors;
+
     }
 
 }

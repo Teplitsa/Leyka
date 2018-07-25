@@ -51,6 +51,7 @@ class Leyka_Options_Controller {
             if(empty($this->_options[$option_name])) {
                 return false;
             }
+
         }
 
         if(empty($this->_options[$option_name])) {
@@ -62,6 +63,7 @@ class Leyka_Options_Controller {
         }
 
         return true;
+
     }
 
     /**
@@ -229,11 +231,56 @@ class Leyka_Options_Controller {
         return $value ? $value : $this->get_default_of($option_name);
     }
 
+    /**
+     * @param $option_name string
+     * @param $option_value mixed
+     * @return boolean True if given option value is valid, false otherwise (or if option doesn't exists).
+     */
     protected function _validate_option($option_name, $option_value = '') {
 
 //        $option_name = str_replace('leyka_', '', $option_name);
         // use the $this->_options[$option_name]['validation_rules'], luke
         return true;
+
+    }
+
+    /**
+     * @param $option_name string
+     * @return array An array of option validation rules.
+     */
+    public function get_validation_rules($option_name) {
+
+        $option_name = str_replace('leyka_', '', $option_name);
+
+        $this->_intialize_option($option_name, true);
+
+        return empty($this->_options[$option_name]['validation_rules']) ?
+            array() : apply_filters('leyka_option_validation_rules',  $option_name);
+
+    }
+
+    /**
+     * @param $option_name string
+     * @return array
+     */
+    public function get_validation_errors($option_name) {
+
+        $option_name = str_replace('leyka_', '', $option_name);
+
+        if( !$this->option_exists($option_name)) {
+            return array();
+        }
+
+        $errors = array();
+
+        foreach($this->get_validation_rules($option_name) as $rule_regexp => $rule_invalid_message) {
+            if( !preg_match($rule_regexp, $this->opt_safe($option_name)) ) {
+                $errors[] = apply_filters('leyka_option_invalid_message', $rule_invalid_message, $rule_regexp, $option_name);
+            }
+        }
+
+        return $errors;
+
     }
 
     public function get_default_of($option_name) {

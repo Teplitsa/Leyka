@@ -52,6 +52,7 @@ $campaign_target_reaching_email_placeholders =
 // 'default' => '',
 // 'title' => '',
 // 'description' => '',
+// 'validation_rules' => array('regexp to check value against' => 'Check failure description text', ...)
 
 /** @var self Leyka_Options_Controller */
 self::$_options_meta = array(
