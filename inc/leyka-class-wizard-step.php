@@ -18,8 +18,23 @@ class Leyka_Wizard_Step {
 
     }
 
+    public function __get($name) {
+        switch($name) {
+            case 'id':
+                return $this->_id;
+            case 'title':
+                return $this->_title;
+            default:
+                return false; // Throw some Exception?
+        }
+    }
+
     public function addBlock(Leyka_Wizard_Step_Block $block) {
+
         $this->_blocks[] = $block;
+
+        return $this;
+
     }
 
     public function getBlocks() {

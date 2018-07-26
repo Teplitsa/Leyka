@@ -98,7 +98,7 @@ class Leyka_Init_Wizard extends Leyka_Wizard {
     protected function _set_sections() {
 
         $this->_sections[] = Leyka_Init_ReceiverData_Section::get_instance();
-//        $this->_sections[] = Leyka_Init_CampaignSettings_Section::get_instance();
+        $this->_sections[] = Leyka_Init_CampaignData_Section::get_instance();
 
     }
 
