@@ -104,6 +104,10 @@ class Leyka_Container_Block extends Leyka_Wizard_Step_Block {
 
     }
 
+    public function addBlock(Leyka_Wizard_Step_Block $block) {
+        $this->_blocks[] = $block;
+    }
+
     public function getContent() {
         return $this->_blocks;
     }

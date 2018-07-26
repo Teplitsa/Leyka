@@ -1214,3 +1214,27 @@ function leyka_manually_insert_page(array $post_data) {
     ));
 
 }
+
+abstract class Leyka_Singleton {
+
+    protected static $_instance = null;
+
+    /**
+     * @return static
+     */
+    public static function get_instance() {
+
+        if(null === static::$_instance) {
+            static::$_instance = new static();
+        }
+
+        return static::$_instance;
+
+    }
+
+    final protected function __clone() {}
+
+    protected function __construct() {
+    }
+
+}

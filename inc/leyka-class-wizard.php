@@ -3,7 +3,7 @@
  * Leyka Setup Wizard class.
  **/
 
-abstract class Leyka_Wizard { // Each descendant is a concrete wizard
+abstract class Leyka_Wizard extends Leyka_Singleton { // Each descendant is a concrete wizard
 
     protected $_id;
     protected $_title;
@@ -18,20 +18,20 @@ abstract class Leyka_Wizard { // Each descendant is a concrete wizard
     /**
      * @return Leyka_Wizard
      */
-    public final static function get_instance() {
-
-        if(null == static::$_instance) {
-
-            static::$_instance = new static();
-//            static::$_instance->_initialize_options();
-
-        }
-
-        return static::$_instance;
-
-    }
-
-    final protected function __clone() {}
+//    public final static function get_instance() {
+//
+//        if(null == static::$_instance) {
+//
+//            static::$_instance = new static();
+////            static::$_instance->_initialize_options();
+//
+//        }
+//
+//        return static::$_instance;
+//
+//    }
+//
+//    final protected function __clone() {}
 
     protected function __construct() {
 
@@ -60,9 +60,17 @@ abstract class Leyka_Wizard { // Each descendant is a concrete wizard
         return 'some-id';
     }
 
+    public function setRender(Leyka_Settings_Render $render) {
+
+        $this->_render = $render;
+
+        return $this;
+
+    }
+
     public function display() {
 
-        if( !$this->_sections ) {
+        if( !$this->_sections || !$this->_render ) {
             return;
         }
 

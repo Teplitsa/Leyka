@@ -3,7 +3,7 @@
  * Leyka Setup Wizard Section class.
  **/
 
-abstract class Leyka_Wizard_Section {
+abstract class Leyka_Wizard_Section extends Leyka_Singleton {
 
     protected $_id;
     protected $_title;
@@ -20,17 +20,17 @@ abstract class Leyka_Wizard_Section {
     /**
      * @return Leyka_Wizard_Section
      */
-    public final static function get_instance() {
-
-        if(null == static::$_instance) {
-            static::$_instance = new static();
-        }
-
-        return static::$_instance;
-
-    }
-
-    final protected function __clone() {}
+//    public final static function get_instance() {
+//
+//        if(null == static::$_instance) {
+//            static::$_instance = new static();
+//        }
+//
+//        return static::$_instance;
+//
+//    }
+//
+//    final protected function __clone() {}
 
     protected function __construct() {
 
