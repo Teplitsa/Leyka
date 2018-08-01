@@ -3,7 +3,7 @@
  * Leyka Setup Wizard Step class.
  **/
 
-class Leyka_Wizard_Step {
+class Leyka_Settings_Step {
 
     protected $_id;
     protected $_title;
@@ -24,12 +24,14 @@ class Leyka_Wizard_Step {
                 return $this->_id;
             case 'title':
                 return $this->_title;
+            case 'blocks':
+                return $this->_blocks;
             default:
                 return false; // Throw some Exception?
         }
     }
 
-    public function addBlock(Leyka_Wizard_Step_Block $block) {
+    public function addBlock(Leyka_Settings_Block $block) {
 
         $this->_blocks[] = $block;
 
@@ -38,12 +40,12 @@ class Leyka_Wizard_Step {
     }
 
     public function getBlocks() {
-        return $this->_blocks;
+        return $this->blocks;
     }
 
     public function isValid() {
 
-        foreach($this->_blocks as $block) { /** @var $block Leyka_Wizard_Step_Block */
+        foreach($this->_blocks as $block) { /** @var $block Leyka_Settings_Block */
             if( !$block->isValid() ) {
                 return false;
             }
@@ -57,7 +59,7 @@ class Leyka_Wizard_Step {
 
         $errors = array();
 
-        foreach($this->_blocks as $block) { /** @var $block Leyka_Wizard_Step_Block */
+        foreach($this->_blocks as $block) { /** @var $block Leyka_Settings_Block */
             $errors = array_merge($errors, $block->getErrors());
         }
 

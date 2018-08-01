@@ -4,7 +4,7 @@
  **/
 
 /** @todo Find some new name - closer to the reality. Step Content Row, mb */
-abstract class Leyka_Wizard_Step_Block {
+abstract class Leyka_Settings_Block {
 
     protected $_id;
 
@@ -22,7 +22,7 @@ abstract class Leyka_Wizard_Step_Block {
 
 }
 
-class Leyka_Text_Block extends Leyka_Wizard_Step_Block {
+class Leyka_Text_Block extends Leyka_Settings_Block {
 
     protected $_text = '';
 
@@ -50,7 +50,7 @@ class Leyka_Text_Block extends Leyka_Wizard_Step_Block {
 
 }
 
-class Leyka_Option_Block extends Leyka_Wizard_Step_Block {
+class Leyka_Option_Block extends Leyka_Settings_Block {
 
     protected $_option_id = '';
 
@@ -82,7 +82,7 @@ class Leyka_Option_Block extends Leyka_Wizard_Step_Block {
 
 }
 
-class Leyka_Container_Block extends Leyka_Wizard_Step_Block {
+class Leyka_Container_Block extends Leyka_Settings_Block {
 
     protected $_blocks;
 
@@ -93,7 +93,7 @@ class Leyka_Container_Block extends Leyka_Wizard_Step_Block {
         if( !empty($params['subblocks']) && is_array($params['subblocks']) ) {
 
             foreach($params['subblocks'] as $block) {
-                if( !is_a($block, 'Leyka_Wizard_Step_Block') ) {
+                if( !is_a($block, 'Leyka_Settings_Block') ) {
                     /** @todo Throw some Exception */
                 } else {
                     $this->_blocks[] = $block;
@@ -104,7 +104,7 @@ class Leyka_Container_Block extends Leyka_Wizard_Step_Block {
 
     }
 
-    public function addBlock(Leyka_Wizard_Step_Block $block) {
+    public function addBlock(Leyka_Settings_Block $block) {
         $this->_blocks[] = $block;
     }
 
@@ -114,7 +114,7 @@ class Leyka_Container_Block extends Leyka_Wizard_Step_Block {
 
     public function isValid() {
 
-        foreach($this->_blocks as $block) { /** @var $block Leyka_Wizard_Step_Block */
+        foreach($this->_blocks as $block) { /** @var $block Leyka_Settings_Block */
             if( !$block->isValid() ) {
                 return false;
             }
@@ -128,7 +128,7 @@ class Leyka_Container_Block extends Leyka_Wizard_Step_Block {
 
         $errors = array();
 
-        foreach($this->_blocks as $block) { /** @var $block Leyka_Wizard_Step_Block */
+        foreach($this->_blocks as $block) { /** @var $block Leyka_Settings_Block */
             $errors = array_merge($errors, $block->getErrors());
         }
 

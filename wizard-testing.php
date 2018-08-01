@@ -1,6 +1,6 @@
 <?php
 require_once '../../../wp-load.php';
 
-Leyka_Init_Wizard::get_instance()
-    ->setRender(Leyka_Wizard_Render::get_instance())
-    ->display();
+Leyka_Wizard_Render::get_instance()
+    ->setController(Leyka_Init_Wizard_Settings_Controller::get_instance())
+    ->renderPage();

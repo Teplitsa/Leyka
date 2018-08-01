@@ -3,58 +3,37 @@
  * Leyka Setup Wizard Section class.
  **/
 
-abstract class Leyka_Wizard_Section extends Leyka_Singleton {
+abstract class Leyka_Settings_Section extends Leyka_Singleton {
 
     protected $_id;
+    protected $_data_storage_key;
     protected $_title;
     protected $_steps;
 
-    /** @todo Check if this "special" steps needed. */
-    protected $_init_step = false;
-    protected $_terminal_step = false;
-
-//    protected $_current_step;
-
     protected static $_instance = null;
-
-    /**
-     * @return Leyka_Wizard_Section
-     */
-//    public final static function get_instance() {
-//
-//        if(null == static::$_instance) {
-//            static::$_instance = new static();
-//        }
-//
-//        return static::$_instance;
-//
-//    }
-//
-//    final protected function __clone() {}
 
     protected function __construct() {
 
         $this->_set_attributes();
         $this->_set_steps();
 
-        echo '<pre>'.print_r($this->_title.' instantiated!', 1).'</pre>';
-
     }
 
     abstract protected function _set_attributes();
     abstract protected function _set_steps();
 
-    /**
-     * @param $step mixed Either Leyka_Wizard_Step object ID or a whole object
-     * @return Leyka_Wizard_Step
-     */
-    protected function _get_next_step($step) {
-        /** @todo Incapsulate steps branching here. The result must be filterable. By default, it's next step in _steps array. */
+    public function __get($name) {
+        switch($name) {
+            case 'init_step':
+                return reset($this->_steps);
+            default:
+                return null;
+        }
     }
 
 }
 
-class Leyka_Init_ReceiverData_Section extends Leyka_Wizard_Section {
+class Leyka_Init_ReceiverData_Section extends Leyka_Settings_Section {
 
     protected static $_instance = null;
 
@@ -68,7 +47,7 @@ class Leyka_Init_ReceiverData_Section extends Leyka_Wizard_Section {
     protected function _set_steps() {
 
         // 0-step:
-        $step = new Leyka_Wizard_Step('init', 'Шаг 0: вступительное сообщение');
+        $step = new Leyka_Settings_Step('init', 'Шаг 0: вступительное сообщение');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'intro',
             'text' => 'Это будет первый абзац вступительного текста. Население перевозит органический мир. Коневодство постоянно. Приокеаническая пустыня вероятна. Приокеаническая пустыня параллельна.',
@@ -80,7 +59,7 @@ class Leyka_Init_ReceiverData_Section extends Leyka_Wizard_Section {
         $this->_steps[] = $step;
 
         // Receiver type step:
-        $step = new Leyka_Wizard_Step('account-type', 'Шаг 1: тип получателя');
+        $step = new Leyka_Settings_Step('account-type', 'Шаг 1: тип получателя');
         $step->addBlock(new Leyka_Option_Block(array(
             'id' => 'receiver-type', /** @todo Add this option to the meta array. */
             'option_id' => 'receiver_legal_type',
@@ -91,25 +70,11 @@ class Leyka_Init_ReceiverData_Section extends Leyka_Wizard_Section {
 
         $this->_steps[] = $step;
 
-        // ...
-
-//        $step = new Leyka_Wizard_Step('terminal', 'Шаг X: заключительное сообщение');
-//        $step->addBlock(new Leyka_Text_Block(array(
-//            'id' => 'outro',
-//            'text' => 'Это заключительный абзац первого раздела визарда. Здесь какой-то мотивирующий текст а ля вы супер-молодец и уже почти всё сделали, уии! И про ваш пирожок на полке не забудьте - это самое важное условие для валидации раздела.',
-//        )));
-//
-//        $this->_terminal_step = $step;
-
-    }
-
-    protected function _get_next_step($step) {
-        /** @todo Incapsulate steps branching here. The result must be filterable. */
     }
 
 }
 
-class Leyka_Init_CampaignData_Section extends Leyka_Wizard_Section {
+class Leyka_Init_CampaignData_Section extends Leyka_Settings_Section {
 
     protected static $_instance = null;
 
@@ -122,7 +87,7 @@ class Leyka_Init_CampaignData_Section extends Leyka_Wizard_Section {
 
     protected function _set_steps() {
 
-        $step = new Leyka_Wizard_Step('init', 'Шаг 0: настроим кампанию!');
+        $step = new Leyka_Settings_Step('init', 'Шаг 0: настроим кампанию!');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'intro',
             'text' => 'Осталось совсем немного и первая кампания будет запущена. Это будет первый абзац вступительного текста, и ещё немного о том, что дальше ещё нужно настроить платёжку.',
@@ -131,7 +96,7 @@ class Leyka_Init_CampaignData_Section extends Leyka_Wizard_Section {
         $this->_steps[] = $step;
 
         // Receiver type step:
-        $step = new Leyka_Wizard_Step('campaign-description', 'Шаг 1: описание вашей кампании');
+        $step = new Leyka_Settings_Step('campaign-description', 'Шаг 1: описание вашей кампании');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'campaign-desc-text',
             'text' => 'Текст, который идёт перед полями кампании на этом шаге. В нём может описываться, например, что вообще такое кампания.',
