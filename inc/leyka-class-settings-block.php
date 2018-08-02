@@ -16,6 +16,15 @@ abstract class Leyka_Settings_Block {
 
     }
 
+    public function __get($name) {
+        switch($name) {
+            case 'id':
+                return $this->_id;
+            default:
+                return null;
+        }
+    }
+
     abstract public function getContent();
     abstract public function isValid();
     abstract public function getErrors();
