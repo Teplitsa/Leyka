@@ -29,21 +29,13 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
     abstract protected function _set_attributes();
     abstract protected function _set_sections();
 
-    /** @todo */
-//    protected function getNavChain() {
-//        return array();
-//    }
-//
-//    /** @todo */
-//    protected function getCurrentStepBlocks() {
-//        return array();
-//    }
-
     /** @return Leyka_Settings_Step */
     abstract public function getCurrentStep();
 
     /** @return Leyka_Settings_Section */
     abstract public function getCurrentSection();
+
+    abstract public function getSubmitSettings($structure_element = null);
 
 }
 
@@ -257,6 +249,36 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         }
 
         return $next_step_full_id;
+
+    }
+
+    public function getSubmitSettings($structure_element = null) {
+
+        $step = $structure_element && is_a($structure_element, 'Leyka_Settings_Step') ? $structure_element : $this->current_step;
+        $submit_settings = array(
+            'next_label' => 'Продолжить',
+            'next_url' => true,
+            'prev_label' => 'Вернуться на предыдущий шаг',
+            'prev_url' => true,
+        );
+
+        if($step->section_id === 'rd') {
+
+            if($step->id === 'init') {
+
+                $submit_settings['next_label'] = 'Поехали!';
+                $submit_settings['prev_url'] = false; // Means that Wizard shouln't display the back link
+
+            }
+
+        } else if($step->section_id === 'final') {
+
+            $submit_settings['next_label'] = 'Перейти в Панель управления';
+            $submit_settings['next_url'] = admin_url();
+
+        }
+
+        return $submit_settings;
 
     }
 

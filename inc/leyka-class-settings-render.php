@@ -43,18 +43,6 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     protected static $_instance = null;
 
-    /**
-     * @param Leyka_Settings_Controller $controller
-     * @return Leyka_Settings_Render
-     */
-    public function setController(Leyka_Settings_Controller $controller) {
-
-        $this->_controller = $controller;
-
-        return $this;
-
-    }
-
     public function renderPage() {?>
 
         <div class="leyka-wizard">
@@ -75,37 +63,48 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         <div class="step-title"><h2><?php echo $current_step->title;?></h2></div>
 
-        <div class="step-content">
-        <?php foreach($current_step->getBlocks() as $block) { /** @var $block Leyka_Settings_Block */
+        <form id="leyka-step-form-<?php echo $current_step->full_id;?>" class="step-form" method="post">
+            <div class="step-content">
+            <?php foreach($current_step->getBlocks() as $block) { /** @var $block Leyka_Settings_Block */
 
-        /** @todo If-else here sucks. Make it a Factory Method */
+            /** @todo If-else here sucks. Make it a Factory Method */
 
-            if(is_a($block, 'Leyka_Container_Block')) {
+                if(is_a($block, 'Leyka_Container_Block')) {
 
-                echo '<pre>Container:'.print_r($block, 1).'</pre>';
+                    echo '<pre>Container:'.print_r($block, 1).'</pre>';
 
-            } else if(is_a($block, 'Leyka_Text_Block')) {?>
+                } else if(is_a($block, 'Leyka_Text_Block')) {?>
 
-            <div class="settings-block text-block"><?php echo $block->getContent();?></div>
+                <div class="settings-block text-block"><?php echo $block->getContent();?></div>
 
-            <?php } else if(is_a($block, 'Leyka_Option_Block')) {
+                <?php } else if(is_a($block, 'Leyka_Option_Block')) {
 
-                echo '<pre>Option:'.print_r($block, 1).'</pre>';
+                    echo '<pre>Option:'.print_r($block, 1).'</pre>';
 
-            }
+                }
 
-        }?>
-        </div>
+            }?>
+            </div>
 
-        <div class="step-submit">
-        <?php $this->renderSubmitArea();?>
-        </div>
+            <div class="step-submit">
+            <?php $this->renderSubmitArea();?>
+            </div>
+        </form>
 
     <?php }
 
-    public function renderSubmitArea() {?>
+    public function renderSubmitArea() {
 
-        <div class="submit"></div>
+        $submit_settings = $this->_controller->getSubmitSettings();
+        $current_step = $this->_controller->getCurrentStep();?>
+
+        <input type="submit" class="step-next" name="step-next" value="<?php echo $submit_settings['next_label'];?>">
+        <br>
+        <?php if( !empty($submit_settings['prev_url']) ) {?>
+        <a href="<?php echo esc_url($submit_settings['prev_url']);?>" class="step-prev">
+            <?php echo $submit_settings['prev_label'];?>
+        </a>
+        <?php }?>
 
     <?php }
 
