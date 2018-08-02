@@ -45,4 +45,13 @@ class Leyka_Settings_Section {
         return $this->_steps;
     }
 
+    /** @return Leyka_Settings_Step  */
+    public function getStepById($id) {
+
+        $id = trim($id);
+
+        return empty($this->_steps[$id]) ? null : $this->_steps[$id];
+
+    }
+
 }

@@ -26,12 +26,14 @@ class Leyka_Settings_Step {
                 return $this->_id;
             case 'section_id':
                 return $this->_section_id;
+            case 'full_id':
+                return $this->_section_id.'-'.$this->_id;
             case 'title':
                 return $this->_title;
             case 'blocks':
                 return $this->_blocks;
             default:
-                return false; // Throw some Exception?
+                return null; // Throw some Exception?
         }
     }
 
@@ -43,8 +45,9 @@ class Leyka_Settings_Step {
 
     }
 
+    /** @return array */
     public function getBlocks() {
-        return $this->blocks;
+        return $this->_blocks;
     }
 
     public function isValid() {

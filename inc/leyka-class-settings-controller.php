@@ -101,8 +101,8 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             case 'current_section_id': return empty($_SESSION[$this->_storage_key]['current_section']) ?
                 null : $this->current_section->id;
 
-            case 'next_step': return $this->_getNextStep();
-            case 'next_step_id': return $this->next_step->id;
+//            case 'next_step': return $this->_getNextStep();
+            case 'next_step_full_id': return $this->_getNextStepFullId();
             default:
                 return null;
         }
@@ -123,11 +123,10 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
     /**
      * Steps branching incapsulation method. The result must be filterable. By default, it's next step in _steps array.
      *
-     * @param $step Leyka_Settings_Step
-     * @param $data array
-     * @return Leyka_Settings_Step
+     * @param $step_from Leyka_Settings_Step
+     * @return mixed Either next step full ID, or false (if non-existent step given), or true (if last step given).
      */
-    abstract protected function _getNextStep(Leyka_Settings_Step $step = null);
+    abstract protected function _getNextStepFullId(Leyka_Settings_Step $step_from = null);
 
 }
 
@@ -160,12 +159,12 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $section->addStep($step);
 
         // Receiver type step:
-        $step = new Leyka_Settings_Step('account-type', $section->id, 'Шаг 1: тип получателя');
+        $step = new Leyka_Settings_Step('account_type', $section->id, 'Шаг 1: тип получателя');
         $step->addBlock(new Leyka_Option_Block(array(
-            'id' => 'receiver-type', /** @todo Add this option to the meta array. */
+            'id' => 'receiver_type', /** @todo Add this option to the meta array. */
             'option_id' => 'receiver_legal_type',
         )))->addBlock(new Leyka_Option_Block(array(
-            'id' => 'receiver-country', /** @todo Add this option to the meta array. */
+            'id' => 'receiver_country', /** @todo Add this option to the meta array. */
             'option_id' => 'receiver_country',
         )));
 
@@ -179,19 +178,19 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
         $step = new Leyka_Settings_Step('init', $section->id, 'Шаг 0: настроим кампанию!');
         $step->addBlock(new Leyka_Text_Block(array(
-            'id' => 'intro-text-1',
+            'id' => 'intro_text_1',
             'text' => 'Осталось совсем немного и первая кампания будет запущена. Это будет первый абзац вступительного текста, и ещё немного о том, что дальше ещё нужно настроить платёжку.',
         )));
 
         $section->addStep($step);
 
         // Receiver type step:
-        $step = new Leyka_Settings_Step('campaign-description',  $section->id, 'Шаг 1: описание вашей кампании');
+        $step = new Leyka_Settings_Step('campaign_description',  $section->id, 'Шаг 1: описание вашей кампании');
         $step->addBlock(new Leyka_Text_Block(array(
-            'id' => 'campaign-desc-text',
+            'id' => 'campaign_desc_text',
             'text' => 'Текст, который идёт перед полями кампании на этом шаге. В нём может описываться, например, что вообще такое кампания.',
         )))->addBlock(new Leyka_Option_Block(array(
-            'id' => 'campaign-title',
+            'id' => 'campaign_title',
             'option_id' => 'init-campaign-title',
             'option_data' => array(
                 'type' => 'text',
@@ -201,7 +200,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 'placeholder' => 'Например, «На уставную деятельность организации»',
             ),
         )))->addBlock(new Leyka_Option_Block(array(
-            'id' => 'campaign-lead',
+            'id' => 'campaign_lead',
             'option_id' => 'init-campaign-lead',
             'option_data' => array(
                 'type' => 'textarea',
@@ -210,7 +209,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 'placeholder' => 'Например, «Ваше пожертвование пойдёт на выполнение уставной деятельности в текущем году.»',
             ),
         )))->addBlock(new Leyka_Option_Block(array(
-            'id' => 'campaign-target',
+            'id' => 'campaign_target',
             'option_id' => 'init-campaign-target',
             'option_data' => array(
                 'type' => 'number',
@@ -221,7 +220,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 'step' => 1,
             ),
         )))->addBlock(new Leyka_Text_Block(array(
-            'id' => 'campaign-desc-finished',
+            'id' => 'campaign_desc_finished',
             'text' => 'Текст, которым визард завершается. Здесь слова о том, что настройки выполнены, и вэлкам вам в дэшборд.',
         )));
 
@@ -232,8 +231,33 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
     }
 
-    protected function _getNextStep(Leyka_Settings_Step $step = null) {
-        return $step;
+    protected function _getNextStepFullId(Leyka_Settings_Step $step_from = null) {
+
+        $step_from = $step_from && is_a($step_from, 'Leyka_Settings_Step') ? $step_from : $this->current_step;
+        $next_step_full_id = false;
+
+        if($step_from->section_id === 'rd') {
+
+            if($step_from->id === 'init') {
+                $next_step_full_id = 'account_type';
+            } else if($step_from->id === 'account_type') {
+                $next_step_full_id = 'cd-init';
+            }
+
+        } else if($step_from->section_id === 'cd') {
+
+            if($step_from->id === 'init') {
+                $next_step_full_id = 'campaign_description';
+            } else if($step_from->id === 'campaign_description') {
+                $next_step_full_id = 'final-init';
+            }
+
+        } else if($step_from->section_id === 'final') { // Final Section
+            $next_step_full_id = true;
+        }
+
+        return $next_step_full_id;
+
     }
 
 }

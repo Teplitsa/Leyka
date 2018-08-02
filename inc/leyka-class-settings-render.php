@@ -75,6 +75,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         <div class="step-title"><h2><?php echo $current_step->title;?></h2></div>
 
+        <div class="step-content">
         <?php foreach($current_step->getBlocks() as $block) { /** @var $block Leyka_Settings_Block */
 
         /** @todo If-else here sucks. Make it a Factory Method */
@@ -94,6 +95,11 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
             }
 
         }?>
+        </div>
+
+        <div class="step-submit">
+        <?php $this->renderSubmitArea();?>
+        </div>
 
     <?php }
 
