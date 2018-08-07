@@ -53,6 +53,19 @@ gulp.task('build-js', function() {
         .pipe(gulp.dest(basePaths.dest+'js')) //write results into file
 });
 
+gulp.task('build-admin-js', function() {
+    var vendorFiles = [/*basePaths.npm+'jquery.cookie/jquery.cookie.js'*/],
+        appFiles = [basePaths.src+'js/admin/*']; //our own JS files
+
+    return gulp.src(vendorFiles.concat(appFiles)) //join them
+        .pipe(plugins.filter('*.js'))//select only .js ones
+        .pipe(plugins.concat('admin.js'))//combine them into bundle.js
+        .pipe(isProduction ? plugins.uglify() : gutil.noop()) //minification
+        .pipe(plugins.size()) //print size for log
+        .on('error', console.log) //log
+        .pipe(gulp.dest(basePaths.dest+'js')) //write results into file
+});
+
 
 //sass
 gulp.task('build-css', function() {

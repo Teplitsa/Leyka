@@ -172,6 +172,9 @@ class Leyka_Admin_Setup {
         // Feedback:
         add_submenu_page('leyka', __('Connect to us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedback_screen'));
 
+        // Wizards pages group:
+        add_submenu_page(NULL, 'Some Leyka Wizard', 'Some Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', array($this, 'settings_new_screen'));
+
         do_action('leyka_admin_menu_setup');
 
         global $submenu;
@@ -311,8 +314,9 @@ class Leyka_Admin_Setup {
 		</tbody>
 		</table>		
 		<?php }
+
 	}
-	
+
 	public function history_metabox_screen() {
 		
 		$query = new WP_Query(array(
@@ -480,6 +484,38 @@ class Leyka_Admin_Setup {
 
 		</div><!-- close .wrap -->
 	<?php 
+	}
+
+	public function settings_new_screen() {
+
+	    if(empty($_GET['screen']) || !in_array($_GET['screen'], array('wizard_init',))) {
+
+	        $this->settings_screen();
+	        return;
+
+	    }
+
+	    $screen_full_id = explode('_', $_GET['screen']);
+
+	    // Normally, we'd constuct settings view based on
+	    // - view type ([0], e.g. 'wizard' or 'control-panel')
+	    // - settings area given ([1], e.g. 'init').
+
+	    if($screen_full_id[0] === 'wizard' && $screen_full_id[1] === 'init') {
+
+	        echo '<pre>'.print_r($_POST, 1).'</pre>';
+
+            Leyka_Wizard_Render::get_instance()
+                ->setController(Leyka_Init_Wizard_Settings_Controller::get_instance())
+                ->renderPage();
+
+            echo '<pre>'.print_r('Current step: '.Leyka_Init_Wizard_Settings_Controller::get_instance()->current_step->id, 1).'</pre>';
+            echo '<pre>'.print_r('Next step: '.Leyka_Init_Wizard_Settings_Controller::get_instance()->next_step_full_id, 1).'</pre>';
+
+	    }
+
+
+
 	}
 
 	public function get_default_settings_tab() {

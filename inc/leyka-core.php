@@ -846,7 +846,7 @@ class Leyka {
 
     }
 
-    /** Register and enqueues public-facing JavaScript files. */
+    /** Register and enqueue public-facing JavaScript files. */
     public function enqueue_scripts() {
 
         // Revo template or success/failure widgets JS:

@@ -24,10 +24,32 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
         $this->_set_attributes();
         $this->_set_sections();
 
+        add_action('parse_request', array($this, 'parse_request'));
+
     }
 
     abstract protected function _set_attributes();
     abstract protected function _set_sections();
+
+    public function __get($name) {
+        switch($name) {
+            case 'id': return $this->_id;
+            case 'title': return $this->_title;
+            default: return null;
+        }
+    }
+
+    public function parse_request() {
+
+        if(stristr($_SERVER['REQUEST_URI'], 'leyka/settings') !== FALSE) { // Leyka service URL
+
+            $request = explode('leyka/settings', $_SERVER['REQUEST_URI']);
+            $request = explode('/', trim($request[1], '/'));
+
+            exit();
+
+        }
+    }
 
     /** @return Leyka_Settings_Step */
     abstract public function getCurrentStep();
@@ -81,22 +103,27 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     public function __get($name) {
         switch($name) {
-            case 'current_step': return empty($_SESSION[$this->_storage_key]['current_step']) ?
-                null : $_SESSION[$this->_storage_key]['current_step'];
+            case 'current_step':
+                return empty($_SESSION[$this->_storage_key]['current_step']) ?
+                    null : $_SESSION[$this->_storage_key]['current_step'];
 
-            case 'current_step_id': return empty($_SESSION[$this->_storage_key]['current_step']) ?
-                null : $this->current_step->id;
+            case 'current_step_id':
+                return empty($_SESSION[$this->_storage_key]['current_step']) ?
+                    null : $this->current_step->id;
 
-            case 'current_section': return empty($_SESSION[$this->_storage_key]['current_section']) ?
-                null : $_SESSION[$this->_storage_key]['current_section'];
+            case 'current_section':
+                return empty($_SESSION[$this->_storage_key]['current_section']) ?
+                    null : $_SESSION[$this->_storage_key]['current_section'];
 
-            case 'current_section_id': return empty($_SESSION[$this->_storage_key]['current_section']) ?
-                null : $this->current_section->id;
+            case 'current_section_id':
+                return empty($_SESSION[$this->_storage_key]['current_section']) ?
+                    null : $this->current_section->id;
 
-//            case 'next_step': return $this->_getNextStep();
-            case 'next_step_full_id': return $this->_getNextStepFullId();
+            case 'next_step_full_id':
+                return $this->_getNextStepFullId();
+
             default:
-                return null;
+                return parent::__get($name);
         }
     }
 
@@ -106,6 +133,10 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     public function getCurrentStep() {
         return $this->current_step;
+    }
+
+    public function getNextStepFullId() {
+        return $this->next_step_full_id;
     }
 
     public function processStepSubmit() {
@@ -128,7 +159,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
     protected function _set_attributes() {
 
-        $this->_id = 'init';
+        $this->_id = 'init-wizard';
         $this->_title = 'The Init wizard';
 
     }
@@ -231,7 +262,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         if($step_from->section_id === 'rd') {
 
             if($step_from->id === 'init') {
-                $next_step_full_id = 'account_type';
+                $next_step_full_id = $step_from->section_id.'-account_type';
             } else if($step_from->id === 'account_type') {
                 $next_step_full_id = 'cd-init';
             }
@@ -239,7 +270,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         } else if($step_from->section_id === 'cd') {
 
             if($step_from->id === 'init') {
-                $next_step_full_id = 'campaign_description';
+                $next_step_full_id = $step_from->section_id.'-campaign_description';
             } else if($step_from->id === 'campaign_description') {
                 $next_step_full_id = 'final-init';
             }

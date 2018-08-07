@@ -405,7 +405,7 @@ techMessage="'.$tech_message.'"/>');
             CURLOPT_SSLKEYPASSWD => leyka_options()->opt('yandex-yandex_card_private_key_password'),
         );
         if(leyka_options()->opt('yandex_outer_ip_to_inner')) {
-            $params[CURLOPT_INTERFACE] = $_SERVER['SERVER_ADDR'];
+            $params[CURLOPT_INTERFACE] = gethostbyname(gethostname());
         }
         curl_setopt_array($ch, $params);
 

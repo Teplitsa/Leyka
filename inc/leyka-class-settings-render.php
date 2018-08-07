@@ -7,6 +7,10 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
 
     protected static $_instance = null;
 
+    protected function __construct() {
+        $this->_load_cssjs();
+    }
+
     /** @var Leyka_Settings_Controller */
     protected $_controller;
 
@@ -33,7 +37,29 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
     abstract public function renderOptionBlock(Leyka_Option_Block $block);
     abstract public function renderContainerBlock(Leyka_Container_Block $block);
 
+    abstract public function renderHiddenFields();
     abstract public function renderSubmitArea();
+
+    protected function _load_cssjs() {
+
+        add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts')); // wp_footer
+//        add_action('wp_enqueue_scripts', array($this, 'localize_scripts')); // wp_footer
+
+    }
+
+    public function enqueue_scripts() {
+
+        wp_enqueue_script(
+            'leyka-settings-render',
+            LEYKA_PLUGIN_BASE_URL.'assets/js/admin.js',
+            array('jquery',),
+            LEYKA_VERSION,
+            true
+        );
+
+        do_action('leyka_settings_enqueue_scripts');
+
+    }
 
 //    abstract public function renderNavChain(array $sections, Leyka_Wizard_Step $current_step);
 
@@ -58,12 +84,11 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     public function renderMainArea() {
 
-        echo '<pre>'.print_r('Main area here', 1).'</pre>';
         $current_step = $this->_controller->getCurrentStep();?>
 
         <div class="step-title"><h2><?php echo $current_step->title;?></h2></div>
 
-        <form id="leyka-step-form-<?php echo $current_step->full_id;?>" class="step-form" method="post">
+        <form id="leyka-settings-form-<?php echo $current_step->full_id;?>" class="leyka-settings-form leyka-wizard-step" method="post" action="<?php echo LEYKA_PLUGIN_BASE_URL.'wizard-testing.php?page='.$this->_controller->id;?>">
             <div class="step-content">
             <?php foreach($current_step->getBlocks() as $block) { /** @var $block Leyka_Settings_Block */
 
@@ -86,10 +111,18 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
             }?>
             </div>
 
+            <?php $this->renderHiddenFields();?>
+
             <div class="step-submit">
             <?php $this->renderSubmitArea();?>
             </div>
         </form>
+
+    <?php }
+
+    public function renderHiddenFields() {?>
+
+        <input type="hidden" name="next-step-full-id" value="<?php echo $this->_controller->next_step_full_id;?>">
 
     <?php }
 
@@ -109,9 +142,6 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
     <?php }
 
     public function renderNavigationArea() {
-
-        echo '<pre>'.print_r('Nav area here', 1).'</pre>';
-
     }
 
     public function renderNavChain() {
