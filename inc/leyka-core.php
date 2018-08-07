@@ -304,7 +304,7 @@ class Leyka {
     public function do_currencies_rates_refresh() {
 
     }
-    
+
     public function load_public_cssjs() {
         // Load public-facing style sheet and JavaScript:
         add_action('wp_enqueue_scripts', array($this, 'enqueue_styles')); // wp_footer

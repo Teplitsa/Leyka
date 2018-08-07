@@ -11,25 +11,18 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
     /** @var $_sections array of Leyka_Wizard_Section objects */
     protected $_sections;
 
-    /** @var $_current_section Leyka_Settings_Section */
-//    protected $_current_section;
-
-    /** @var $_current_step Leyka_Settings_Step */
-//    protected $_current_step;
-
     protected static $_instance = null;
 
     protected function __construct() {
 
-        $this->_set_attributes();
-        $this->_set_sections();
-
-        add_action('parse_request', array($this, 'parse_request'));
+        $this->_setAttributes();
+        $this->_setSections();
+        $this->_processSettingsSubmit();
 
     }
 
-    abstract protected function _set_attributes();
-    abstract protected function _set_sections();
+    abstract protected function _setAttributes();
+    abstract protected function _setSections();
 
     public function __get($name) {
         switch($name) {
@@ -39,16 +32,13 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
         }
     }
 
-    public function parse_request() {
+    protected function _processSettingsSubmit() {
 
-        if(stristr($_SERVER['REQUEST_URI'], 'leyka/settings') !== FALSE) { // Leyka service URL
-
-            $request = explode('leyka/settings', $_SERVER['REQUEST_URI']);
-            $request = explode('/', trim($request[1], '/'));
-
-            exit();
-
+        if( !empty($_POST['leyka_settings_submit_'.$this->_id]) ) {
+            echo '<pre>'.print_r('Submit the '.$this->_id, 1).'</pre>';
+//            do_action('leyka_settings_submit', );
         }
+
     }
 
     /** @return Leyka_Settings_Step */
@@ -157,14 +147,14 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
     protected static $_instance = null;
 
-    protected function _set_attributes() {
+    protected function _setAttributes() {
 
-        $this->_id = 'init-wizard';
+        $this->_id = 'init';
         $this->_title = 'The Init wizard';
 
     }
 
-    protected function _set_sections() {
+    protected function _setSections() {
 
         // Receiver's data Section:
         $section = new Leyka_Settings_Section('rd', 'Раздел 1: ваши данные');

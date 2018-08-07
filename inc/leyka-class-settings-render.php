@@ -7,12 +7,19 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
 
     protected static $_instance = null;
 
+    protected $_id;
+
     protected function __construct() {
-        $this->_load_cssjs();
+
+        $this->_loadCssJs();
+        $this->_setAttributes();
+
     }
 
     /** @var Leyka_Settings_Controller */
     protected $_controller;
+
+    abstract protected function _setAttributes();
 
     /**
      * @param Leyka_Settings_Controller $controller
@@ -40,14 +47,14 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
     abstract public function renderHiddenFields();
     abstract public function renderSubmitArea();
 
-    protected function _load_cssjs() {
+    protected function _loadCssJs() {
 
-        add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts')); // wp_footer
+        add_action('admin_enqueue_scripts', array($this, 'enqueueScripts')); // wp_footer
 //        add_action('wp_enqueue_scripts', array($this, 'localize_scripts')); // wp_footer
 
     }
 
-    public function enqueue_scripts() {
+    public function enqueueScripts() {
 
         wp_enqueue_script(
             'leyka-settings-render',
@@ -61,6 +68,15 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
 
     }
 
+    public function __get($name) {
+        switch($name) {
+            case 'id': return $this->_id;
+            case 'full_id': return $this->_id.'_'.$this->_controller->id;
+            default:
+                return null;
+        }
+    }
+
 //    abstract public function renderNavChain(array $sections, Leyka_Wizard_Step $current_step);
 
 }
@@ -68,6 +84,10 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
 class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     protected static $_instance = null;
+
+    protected function _setAttributes() {
+        $this->_id = 'wizard';
+    }
 
     public function renderPage() {?>
 
@@ -88,7 +108,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         <div class="step-title"><h2><?php echo $current_step->title;?></h2></div>
 
-        <form id="leyka-settings-form-<?php echo $current_step->full_id;?>" class="leyka-settings-form leyka-wizard-step" method="post" action="<?php echo LEYKA_PLUGIN_BASE_URL.'wizard-testing.php?page='.$this->_controller->id;?>">
+        <form id="leyka-settings-form-<?php echo $current_step->full_id;?>" class="leyka-settings-form leyka-wizard-step" method="post" action="<?php echo admin_url('admin.php?page=leyka_settings_new&screen='.$this->full_id);?>">
             <div class="step-content">
             <?php foreach($current_step->getBlocks() as $block) { /** @var $block Leyka_Settings_Block */
 
@@ -131,7 +151,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         $submit_settings = $this->_controller->getSubmitSettings();
         $current_step = $this->_controller->getCurrentStep();?>
 
-        <input type="submit" class="step-next" name="step-next" value="<?php echo $submit_settings['next_label'];?>">
+        <input type="submit" class="step-next" name="leyka_settings_submit_<?php echo $this->_controller->id;?>" value="<?php echo $submit_settings['next_label'];?>">
         <br>
         <?php if( !empty($submit_settings['prev_url']) ) {?>
         <a href="<?php echo esc_url($submit_settings['prev_url']);?>" class="step-prev">

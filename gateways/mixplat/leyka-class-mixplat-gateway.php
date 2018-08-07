@@ -293,7 +293,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                 $donation_id = Leyka_Donation::add(array(
                     'gateway_id' => $this->_id,
                     'payment_method_id' => 'mobile',
-                    'campaign_id' => leyka_options()->opt('mixplat-mobile_default_campaign_id'),
+                    'campaign_id' => leyka_options()->opt('mixplat-sms_default_campaign_id'),
                     'status' => 'funded',
                     'payment_type' => 'single',
                     'amount' => $response['amount']/100.0,
