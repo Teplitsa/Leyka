@@ -108,7 +108,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         <div class="step-title"><h2><?php echo $current_step->title;?></h2></div>
 
-        <form id="leyka-settings-form-<?php echo $current_step->full_id;?>" class="leyka-settings-form leyka-wizard-step" method="post" action="<?php echo admin_url('admin.php?page=leyka_settings_new&screen='.$this->full_id);?>">
+        <form id="leyka-settings-form-<?php echo $current_step->full_id;?>" class="leyka-settings-form leyka-wizard-step" method="post" action="<?php echo remove_query_arg('prev', admin_url('admin.php?page=leyka_settings_new&screen='.$this->full_id));?>">
             <div class="step-content">
             <?php foreach($current_step->getBlocks() as $block) { /** @var $block Leyka_Settings_Block */
 
@@ -149,7 +149,11 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
     public function renderSubmitArea() {
 
         $submit_settings = $this->_controller->getSubmitSettings();
-        $current_step = $this->_controller->getCurrentStep();?>
+//        $current_step = $this->_controller->getCurrentStep();
+
+        if($submit_settings['prev_url'] === true) {
+            $submit_settings['prev_url'] = admin_url('admin.php?page=leyka_settings_new&screen='.$this->full_id.'&prev=1');
+        }?>
 
         <input type="submit" class="step-next" name="leyka_settings_submit_<?php echo $this->_controller->id;?>" value="<?php echo $submit_settings['next_label'];?>">
         <br>

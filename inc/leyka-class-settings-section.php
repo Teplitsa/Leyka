@@ -54,4 +54,28 @@ class Leyka_Settings_Section {
 
     }
 
+    public function isValid() {
+
+        foreach($this->_steps as $step) { /** @var $step Leyka_Settings_Block */
+            if( !$step->isValid() ) {
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
+    public function getErrors() {
+
+        $errors = array();
+
+        foreach($this->_steps as $step) { /** @var $step Leyka_Settings_Step */
+            $errors = array_merge($errors, $step->getErrors());
+        }
+
+        return $errors;
+
+    }
+
 }

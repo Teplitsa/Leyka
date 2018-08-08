@@ -7,6 +7,7 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
     protected $_id;
     protected $_title;
+    protected $_errors = array();
 
     /** @var $_sections array of Leyka_Wizard_Section objects */
     protected $_sections;
@@ -17,7 +18,8 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
         $this->_setAttributes();
         $this->_setSections();
-        $this->_processSettingsSubmit();
+
+        add_action('leyka_settings_submit', array($this, 'handleSubmit'));
 
     }
 
@@ -32,13 +34,16 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
         }
     }
 
-    protected function _processSettingsSubmit() {
+    protected function _handleSettingsSubmit() {
 
         if( !empty($_POST['leyka_settings_submit_'.$this->_id]) ) {
-            echo '<pre>'.print_r('Submit the '.$this->_id, 1).'</pre>';
-//            do_action('leyka_settings_submit', );
+            do_action('leyka_settings_submit', $this->_id);
         }
 
+    }
+
+    protected function _addError(WP_Error $error) {
+        $this->_errors[] = $error;
     }
 
     /** @return Leyka_Settings_Step */
@@ -49,14 +54,14 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
     abstract public function getSubmitSettings($structure_element = null);
 
+    abstract public function handleSubmit();
+
 }
 
 abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controller {
 
     protected static $_instance = null;
     protected $_storage_key = '';
-
-    // Some methods to incapsulate $_SESSION or $_COOKIE access
 
     protected function __construct() {
 
@@ -80,6 +85,8 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             }
 
         }
+
+        $this->_handleSettingsSubmit();
 
     }
 
@@ -110,7 +117,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
                     null : $this->current_section->id;
 
             case 'next_step_full_id':
-                return $this->_getNextStepFullId();
+                return $this->_getNextStepId();
 
             default:
                 return parent::__get($name);
@@ -125,21 +132,86 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
         return $this->current_step;
     }
 
-    public function getNextStepFullId() {
-        return $this->next_step_full_id;
+    /**
+     * @param $component_id string
+     * @param  $is_full_id boolean
+     * @return Leyka_Settings_Step Or null, if given Step ID wasn't found
+     */
+    public function getComponentById($component_id, $is_full_id = true) {
+
+        if( !$is_full_id ) {
+
+            $section = $this->getCurrentSection();
+            $step_id = $component_id;
+
+        } else {
+
+            $component_id = explode('-', $component_id); // [0] is a Section ID, [1] is a Step ID
+
+            if(count($component_id) < 2) {
+                return null;
+            }
+
+            if(empty($this->_sections[$component_id[0]])) {
+                return null;
+            }
+
+            $section = $this->_sections[$component_id[0]];
+            $step_id = $component_id[1];
+
+        }
+
+        $step = $section->getStepById($step_id);
+
+        return $step;
+
     }
 
-    public function processStepSubmit() {
-        /** @todo */
+    public function handleSubmit() {
+
+        echo '<pre>Current step: '.print_r($this->getCurrentStep()->id.' (is valid: '.$this->getCurrentStep()->isValid().')', 1).'</pre>';
+
+        if( !$this->getCurrentStep()->isValid() ) {
+
+            foreach($this->getCurrentStep()->getErrors() as $error) {
+                $this->_addError($error);
+            }
+
+            return;
+
+        }
+
+        /** @todo Save the step data & fields in storage... */
+
+        $next_step_full_id = $this->_getNextStepId();
+        if($next_step_full_id && $next_step_full_id !== true) {
+
+            echo '<pre>Next step: '.print_r($next_step_full_id, 1).'</pre>';
+
+            $step = $this->getComponentById($this->_getNextStepId());
+
+            if( !$step ) { /** @todo Process the error somehow */
+                return;
+            }
+
+            $this->_setCurrentStep($step);
+
+        }
+
     }
+
+//    public function getNextStepFullId() {
+//        return $this->next_step_full_id;
+//    }
 
     /**
      * Steps branching incapsulation method. The result must be filterable. By default, it's next step in _steps array.
      *
      * @param $step_from Leyka_Settings_Step
-     * @return mixed Either next step full ID, or false (if non-existent step given), or true (if last step given).
+     * @param $return_full_id boolean
+     * @return mixed Either next step ID, or false (if non-existent step given), or true (if last step given).
      */
-    abstract protected function _getNextStepFullId(Leyka_Settings_Step $step_from = null);
+    abstract protected function _getNextStepId(Leyka_Settings_Step $step_from = null, $return_full_id = true);
 
 }
 
@@ -244,7 +316,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
     }
 
-    protected function _getNextStepFullId(Leyka_Settings_Step $step_from = null) {
+    protected function _getNextStepId(Leyka_Settings_Step $step_from = null, $return_full_id = true) {
 
         $step_from = $step_from && is_a($step_from, 'Leyka_Settings_Step') ? $step_from : $this->current_step;
         $next_step_full_id = false;
@@ -269,7 +341,15 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             $next_step_full_id = true;
         }
 
-        return $next_step_full_id;
+        if( !!$return_full_id || !is_string($next_step_full_id) ) {
+            return $next_step_full_id;
+        } else {
+
+            $next_step_full_id = explode('-', $next_step_full_id);
+
+            return array_pop($next_step_full_id);
+
+        }
 
     }
 
