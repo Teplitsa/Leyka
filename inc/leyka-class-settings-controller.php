@@ -7,7 +7,8 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
     protected $_id;
     protected $_title;
-    protected $_errors = array();
+    protected $_common_errors = array();
+    protected $_component_errors = array();
 
     /** @var $_sections array of Leyka_Wizard_Section objects */
     protected $_sections;
@@ -34,6 +35,21 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
         }
     }
 
+    /** @return array Of errors */
+    public function getCommonErrors() {
+        return $this->_common_errors;
+    }
+
+    /**
+     * @param string $component_id
+     * @return array Of errors
+     */
+    public function getComponentErrors($component_id = null) {
+        return empty($component_id) ?
+            $this->_component_errors :
+            (empty($this->_component_errors[$component_id]) ? array() : $this->_component_errors[$component_id]);
+    }
+
     protected function _handleSettingsSubmit() {
 
         if( !empty($_POST['leyka_settings_submit_'.$this->_id]) ) {
@@ -42,8 +58,12 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
     }
 
-    protected function _addError(WP_Error $error) {
-        $this->_errors[] = $error;
+    protected function _addCommonError(WP_Error $error) {
+        $this->_common_errors[] = $error;
+    }
+
+    protected function _addComponentError($component_id, WP_Error $error) {
+        $this->_component_errors[$component_id] = $error;
     }
 
     /** @return Leyka_Settings_Step */
@@ -87,13 +107,13 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
         }
 
         // Debug {
-        if(isset($_GET['reset'])) {
-
-            $_SESSION[$this->_storage_key]['current_section'] = reset($this->_sections);
-            $_SESSION[$this->_storage_key]['current_step'] = reset($this->_sections)->init_step;
-            $_SESSION[$this->_storage_key]['activity'] = array();
-
-        }
+//        if(isset($_GET['reset'])) {
+//
+//            $_SESSION[$this->_storage_key]['current_section'] = reset($this->_sections);
+//            $_SESSION[$this->_storage_key]['current_step'] = reset($this->_sections)->init_step;
+//            $_SESSION[$this->_storage_key]['activity'] = array();
+//
+//        }
         // } Debug
 
         if( !empty($_POST['leyka_settings_prev_'.$this->_id]) ) {
@@ -102,7 +122,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             $this->_handleSettingsSubmit();
         }
 
-        echo '<pre>Current activity: '.print_r($_SESSION[$this->_storage_key]['activity'], 1).'</pre>';
+//        echo '<pre>Current activity: '.print_r($_SESSION[$this->_storage_key]['activity'], 1).'</pre>';
 
     }
 
@@ -236,12 +256,12 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     public function handleSubmit() {
 
-        echo '<pre>Current step: '.print_r($this->getCurrentStep()->full_id.' (is valid: '.$this->getCurrentStep()->isValid().')', 1).'</pre>';
+//        echo '<pre>Current step: '.print_r($this->getCurrentStep()->full_id.' (is valid: '.$this->getCurrentStep()->isValid().')', 1).'</pre>';
 
         if( !$this->getCurrentStep()->isValid() ) {
 
-            foreach($this->getCurrentStep()->getErrors() as $error) {
-                $this->_addError($error);
+            foreach($this->getCurrentStep()->getErrors() as $component_id => $error) {
+                $this->_addComponentError($component_id, $error);
             }
 
             return;
@@ -255,7 +275,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
         $next_step_full_id = $this->_getNextStepId();
         if($next_step_full_id && $next_step_full_id !== true) {
 
-            echo '<pre>Next step: '.print_r($next_step_full_id, 1).'</pre>';
+//            echo '<pre>Next step: '.print_r($next_step_full_id, 1).'</pre>';
 
             $step = $this->getComponentById($this->_getNextStepId());
 
@@ -379,6 +399,23 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $this->_sections[$section->id] = $section;
         // Campaign data Section - End
 
+        // Final Section:
+        $section = new Leyka_Settings_Section('final', 'Раздел последний: все почти готово');
+
+        $step = new Leyka_Settings_Step('init',  $section->id, 'Шаг последний: напутственное сообщение');
+        $step->addBlock(new Leyka_Text_Block(array(
+            'id' => 'outro-text-1',
+            'text' => 'Это будет первый абзац прощального текста. Население перевозит органический мир. Коневодство постоянно. Приокеаническая пустыня вероятна. Приокеаническая пустыня параллельна.',
+        )))->addBlock(new Leyka_Text_Block(array(
+            'id' => 'intro-text-2',
+            'text' => 'А это второй абзац прощального текста последнего шага начального визарда. Путешествие в тысячу ли начинается с одного шага. Население перевозит органический мир. Коневодство постоянно. Приокеаническая пустыня вероятна. Приокеаническая пустыня параллельна.',
+        )));
+
+        $section->addStep($step);
+
+        $this->_sections[$section->id] = $section;
+        // Final Section - End
+
     }
 
     protected function _getNextStepId(Leyka_Settings_Step $step_from = null, $return_full_id = true) {
@@ -425,7 +462,6 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'next_label' => 'Продолжить',
             'next_url' => true,
             'prev' => 'Вернуться на предыдущий шаг',
-//            'prev_url' => true,
         );
 
         if($step->section_id === 'rd') {
@@ -440,7 +476,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         } else if($step->section_id === 'final') {
 
             $submit_settings['next_label'] = 'Перейти в Панель управления';
-            $submit_settings['next_url'] = admin_url();
+            $submit_settings['next_url'] = admin_url('admin.php?page=leyka');
 
         }
 

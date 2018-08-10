@@ -40,6 +40,8 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
 
     abstract public function renderStep();
 
+    abstract public function renderCommonErrorsArea();
+
     abstract public function renderTextBlock(Leyka_Text_Block $block);
     abstract public function renderOptionBlock(Leyka_Option_Block $block);
     abstract public function renderContainerBlock(Leyka_Container_Block $block);
@@ -102,9 +104,20 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     <?php }
 
+    public function renderCommonErrorsArea() {
+        foreach($this->_controller->getCommonErrors() as $error) { /** @var WP_Error $error */
+            echo '<pre>'.print_r($error->get_error_message(), 1).'</pre>';
+        }
+    }
+
     public function renderMainArea() {
 
-        $current_step = $this->_controller->getCurrentStep();?>
+        $current_step = $this->_controller->getCurrentStep();
+        $submits = $this->_controller->getSubmitSettings();?>
+
+        <div class="step-common-errors">
+            <?php $this->renderCommonErrorsArea();?>
+        </div>
 
         <div class="step-title"><h2><?php echo $current_step->title;?></h2></div>
 
@@ -142,18 +155,28 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     public function renderHiddenFields() {?>
 
-        <input type="hidden" name="next-step-full-id" value="<?php echo $this->_controller->next_step_full_id;?>">
+<!--        <input type="hidden" name="next-step-full-id" value="--><?php //echo $this->_controller->next_step_full_id;?><!--">-->
 
     <?php }
 
     public function renderSubmitArea() {
 
-        $submit_settings = $this->_controller->getSubmitSettings();?>
+        $submits = $this->_controller->getSubmitSettings();?>
 
-        <input type="submit" class="step-next" name="leyka_settings_submit_<?php echo $this->_controller->id;?>" value="<?php echo $submit_settings['next_label'];?>">
+        <?php if(empty($submits['next_url']) || $submits['next_url'] === true) {?>
+
+        <input type="submit" class="step-next" name="leyka_settings_submit_<?php echo $this->_controller->id;?>" value="<?php echo $submits['next_label'];?>">
+
+        <?php } else {?>
+
+        <a href="<?php echo esc_url($submits['next_url']);?>" class="wizard-custom-link"><?php echo $submits['next_label'];?></a>
+
+        <?php }?>
+
         <br>
-        <?php if( !empty($submit_settings['prev']) ) {?>
-        <input type="submit" class="step-prev" name="leyka_settings_prev_<?php echo $this->_controller->id;?>" value="<?php echo $submit_settings['prev'];?>">
+
+        <?php if( !empty($submits['prev']) ) {?>
+        <input type="submit" class="step-prev" name="leyka_settings_prev_<?php echo $this->_controller->id;?>" value="<?php echo $submits['prev'];?>">
         <?php }?>
 
     <?php }
