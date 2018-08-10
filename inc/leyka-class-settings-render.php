@@ -163,11 +163,11 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         $submits = $this->_controller->getSubmitSettings();?>
 
-        <?php if(empty($submits['next_url']) || $submits['next_url'] === true) {?>
+        <?php if($submits['next_url'] === true && $this->_controller->next_step_full_id !== true) {?>
 
         <input type="submit" class="step-next" name="leyka_settings_submit_<?php echo $this->_controller->id;?>" value="<?php echo $submits['next_label'];?>">
 
-        <?php } else {?>
+        <?php } else if($this->_controller->next_step_full_id === true && is_string($submits['next_url'])) {?>
 
         <a href="<?php echo esc_url($submits['next_url']);?>" class="wizard-custom-link"><?php echo $submits['next_label'];?></a>
 
