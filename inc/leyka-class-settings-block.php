@@ -1,9 +1,8 @@
 <?php if( !defined('WPINC') ) die;
 /**
- * Leyka Setup Wizard Block class.
+ * Leyka Settings Block class.
  **/
 
-/** @todo Find some new name - closer to the reality. Step Content Row, mb */
 abstract class Leyka_Settings_Block {
 
     protected $_id;
@@ -28,6 +27,7 @@ abstract class Leyka_Settings_Block {
     abstract public function getContent();
     abstract public function isValid();
     abstract public function getErrors();
+    abstract public function getFieldsValues();
 
 }
 
@@ -57,6 +57,10 @@ class Leyka_Text_Block extends Leyka_Settings_Block {
         return array();
     }
 
+    public function getFieldsValues() {
+        return array();
+    }
+
 }
 
 class Leyka_Option_Block extends Leyka_Settings_Block {
@@ -82,11 +86,28 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
     }
 
     public function isValid() {
-        return leyka_options()->is_valid($this->_option_id);
+
+        $value = isset($_POST['leyka_'.$this->_option_id]) ? $_POST['leyka_'.$this->_option_id] : false;
+
+        return leyka_options()->is_valid($this->_option_id, $value);
+
     }
 
     public function getErrors() {
-        return leyka_options()->get_validation_errors($this->_option_id);
+
+        $value = isset($_POST['leyka_'.$this->_option_id]) ? $_POST['leyka_'.$this->_option_id] : false;
+
+        return leyka_options()->get_validation_errors($this->_option_id, $value);
+
+    }
+
+    /** Get all options & values set on the step
+     * @return array
+     */
+    public function getFieldsValues() {
+        return array($this->_option_id => 'some value');
+//        return isset($_POST['leyka_'.$this->_option_id]) ?
+//            array($this->_option_id => $_POST['leyka_'.$this->_option_id]) : array();
     }
 
 }
@@ -99,9 +120,9 @@ class Leyka_Container_Block extends Leyka_Settings_Block {
 
         parent::__construct($params);
 
-        if( !empty($params['subblocks']) && is_array($params['subblocks']) ) {
+        if( !empty($params['entries']) && is_array($params['entries']) ) {
 
-            foreach($params['subblocks'] as $block) {
+            foreach($params['entries'] as $block) {
                 if( !is_a($block, 'Leyka_Settings_Block') ) {
                     /** @todo Throw some Exception */
                 } else {
@@ -142,6 +163,21 @@ class Leyka_Container_Block extends Leyka_Settings_Block {
         }
 
         return $errors;
+
+    }
+
+    /** Get all options & values set on the step
+     * @return array
+     */
+    public function getFieldsValues() {
+
+        $fields_values = array();
+
+        foreach($this->_blocks as $block) { /** @var $block Leyka_Settings_Block */
+            $fields_values = array_merge($fields_values, $block->getFieldsValues());
+        }
+
+        return $fields_values;
 
     }
 

@@ -261,11 +261,13 @@ class Leyka_Options_Controller {
 
     /**
      * @param $option_name string
+     * @param $value mixed
      * @return array
      */
-    public function get_validation_errors($option_name) {
+    public function get_validation_errors($option_name, $value = false) {
 
         $option_name = str_replace('leyka_', '', $option_name);
+        $value = $value === false ? $this->opt_safe($option_name) : $value;
 
         if( !$this->option_exists($option_name)) {
             return array();
@@ -274,7 +276,7 @@ class Leyka_Options_Controller {
         $errors = array();
 
         foreach($this->get_validation_rules($option_name) as $rule_regexp => $rule_invalid_message) {
-            if( !preg_match($rule_regexp, $this->opt_safe($option_name)) ) {
+            if( !preg_match($rule_regexp, $value) ) {
                 $errors[] = apply_filters('leyka_option_invalid_message', $rule_invalid_message, $rule_regexp, $option_name);
             }
         }
@@ -326,12 +328,12 @@ class Leyka_Options_Controller {
 
     }
 
-    public function is_valid($option_name) {
+    public function is_valid($option_name, $value = false) {
 
         $option_name = str_replace('leyka_', '', $option_name);
 
         $this->_intialize_option($option_name, true);
-        $value = $this->opt_safe($option_name);
+        $value = $value === false ? $this->opt_safe($option_name) : $value;
 
         return !(($this->is_required($option_name) && !$value) || ($value && !$this->_validate_option($option_name, $value)));
 

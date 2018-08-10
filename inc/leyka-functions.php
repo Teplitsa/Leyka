@@ -1215,6 +1215,18 @@ function leyka_manually_insert_page(array $post_data) {
 
 }
 
+if( !function_exists('array_key_last') ) {
+    function array_key_last($array) {
+
+        if( !is_array($array) || empty($array) ) {
+            return null;
+        }
+
+        return array_keys($array)[count($array) - 1];
+
+    }
+}
+
 abstract class Leyka_Singleton {
 
     protected static $_instance = null;

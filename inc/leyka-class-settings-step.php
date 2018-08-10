@@ -74,4 +74,19 @@ class Leyka_Settings_Step {
 
     }
 
+    /** Get all options & values set on the step
+     * @return array
+     */
+    public function getFieldsValues() {
+
+        $fields = array();
+
+        foreach($this->_blocks as $block) { /** @var $block Leyka_Settings_Block */
+            $fields = array_merge($fields, $block->getFieldsValues());
+        }
+
+        return $fields;
+
+    }
+
 }

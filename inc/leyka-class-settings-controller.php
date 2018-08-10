@@ -86,16 +86,83 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         }
 
-        $this->_handleSettingsSubmit();
+        // Debug {
+        if(isset($_GET['reset'])) {
+
+            $_SESSION[$this->_storage_key]['current_section'] = reset($this->_sections);
+            $_SESSION[$this->_storage_key]['current_step'] = reset($this->_sections)->init_step;
+            $_SESSION[$this->_storage_key]['activity'] = array();
+
+        }
+        // } Debug
+
+        if( !empty($_POST['leyka_settings_prev_'.$this->_id]) ) {
+            $this->_handleSettingsGoBack();
+        } else {
+            $this->_handleSettingsSubmit();
+        }
+
+        echo '<pre>Current activity: '.print_r($_SESSION[$this->_storage_key]['activity'], 1).'</pre>';
 
     }
 
     protected function _setCurrentStep(Leyka_Settings_Step $step) {
+
         $_SESSION[$this->_storage_key]['current_step'] = $step;
+
+        return $this;
+
     }
 
     protected function _setCurrentSection(Leyka_Settings_Section $section) {
+
         $_SESSION[$this->_storage_key]['current_section'] = $section;
+
+        return $this;
+
+    }
+
+    protected function _setCurrentStepById($step_full_id) {
+
+        if(empty($step_full_id)) {
+            return false;
+        }
+
+        $step = $this->getComponentById($step_full_id);
+        if( !$step ) {
+            return false;
+        }
+
+        $this->_setCurrentStep($step)
+            ->_setCurrentSection($this->getComponentById($step->section_id));
+
+        return true;
+
+    }
+
+    protected function _addActivityEntry() {
+
+        $_SESSION[$this->_storage_key]['activity'][$this->getCurrentStep()->full_id] = $this->getCurrentStep()->getFieldsValues();
+
+        return $this;
+
+    }
+
+    protected function _handleSettingsGoBack() {
+
+        $last_step_full_id = array_key_last($_SESSION[$this->_storage_key]['activity']);
+
+        if($last_step_full_id) {
+            $this->_setCurrentStepById($last_step_full_id);
+        } else {
+            $this->_setCurrentSection(reset($this->_sections))
+                ->_setCurrentStep($this->getCurrentSection()->init_step);
+        }
+
+        array_pop($_SESSION[$this->_storage_key]['activity']);
+
+        return $this;
+
     }
 
     public function __get($name) {
@@ -135,7 +202,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
     /**
      * @param $component_id string
      * @param  $is_full_id boolean
-     * @return Leyka_Settings_Step Or null, if given Step ID wasn't found
+     * @return mixed Leyka_Settings_Step, Leyka_Settings_Section or null, if given component ID wasn't found
      */
     public function getComponentById($component_id, $is_full_id = true) {
 
@@ -148,8 +215,8 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
             $component_id = explode('-', $component_id); // [0] is a Section ID, [1] is a Step ID
 
-            if(count($component_id) < 2) {
-                return null;
+            if(count($component_id) < 2 && $component_id[0]) {
+                return empty($this->_sections[ $component_id[0] ]) ? null : $this->_sections[ $component_id[0] ];
             }
 
             if(empty($this->_sections[$component_id[0]])) {
@@ -169,7 +236,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     public function handleSubmit() {
 
-        echo '<pre>Current step: '.print_r($this->getCurrentStep()->id.' (is valid: '.$this->getCurrentStep()->isValid().')', 1).'</pre>';
+        echo '<pre>Current step: '.print_r($this->getCurrentStep()->full_id.' (is valid: '.$this->getCurrentStep()->isValid().')', 1).'</pre>';
 
         if( !$this->getCurrentStep()->isValid() ) {
 
@@ -181,8 +248,10 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         }
 
-        /** @todo Save the step data & fields in storage... */
+        // Save the current step in the storage:
+        $this->_addActivityEntry();
 
+        // Proceed to the next step:
         $next_step_full_id = $this->_getNextStepId();
         if($next_step_full_id && $next_step_full_id !== true) {
 
@@ -199,10 +268,6 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
         }
 
     }
-
-//    public function getNextStepFullId() {
-//        return $this->next_step_full_id;
-//    }
 
     /**
      * Steps branching incapsulation method. The result must be filterable. By default, it's next step in _steps array.
@@ -359,8 +424,8 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $submit_settings = array(
             'next_label' => 'Продолжить',
             'next_url' => true,
-            'prev_label' => 'Вернуться на предыдущий шаг',
-            'prev_url' => true,
+            'prev' => 'Вернуться на предыдущий шаг',
+//            'prev_url' => true,
         );
 
         if($step->section_id === 'rd') {
@@ -368,7 +433,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             if($step->id === 'init') {
 
                 $submit_settings['next_label'] = 'Поехали!';
-                $submit_settings['prev_url'] = false; // Means that Wizard shouln't display the back link
+                $submit_settings['prev'] = false; // Means that Wizard shouln't display the back link
 
             }
 

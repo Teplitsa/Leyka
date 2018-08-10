@@ -488,30 +488,24 @@ class Leyka_Admin_Setup {
 
 	public function settings_new_screen() {
 
-	    if(empty($_GET['screen']) || !in_array($_GET['screen'], array('wizard_init',))) {
+	    if(empty($_GET['screen']) || !in_array($_GET['screen'], array('wizard-init',))) {
 
 	        $this->settings_screen();
 	        return;
 
 	    }
 
-	    $screen_full_id = explode('_', $_GET['screen']);
+	    $screen_full_id = explode('-', $_GET['screen']);
 
 	    // Normally, we'd constuct settings view based on
 	    // - view type ([0], e.g. 'wizard' or 'control-panel')
 	    // - settings area given ([1], e.g. 'init').
 
 	    if($screen_full_id[0] === 'wizard' && $screen_full_id[1] === 'init') {
-
-//	        echo '<pre>'.print_r($_POST, 1).'</pre>';
-
             Leyka_Wizard_Render::get_instance()
                 ->setController(Leyka_Init_Wizard_Settings_Controller::get_instance())
                 ->renderPage();
-
 	    }
-
-
 
 	}
 
