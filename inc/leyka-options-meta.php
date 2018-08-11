@@ -56,6 +56,23 @@ $campaign_target_reaching_email_placeholders =
 
 /** @var self Leyka_Options_Controller */
 self::$_options_meta = array(
+    'receiver_legal_type' => array(
+        'type' => 'radio',
+        'default' => 'popup',
+        'title' => __('The legal entity type', 'leyka'),
+        'required' => true,
+        'list_entries' => array(
+            'physical' => __('Physical entity', 'leyka'),
+            'legal' => __('Legal entity', 'leyka')
+        ),
+    ),
+    'receiver_country' => array(
+        'type' => 'select',
+        'default' => '-', // leyka_get_default_receiver_country(),
+        'title' => __('Country', 'leyka'),
+        'description' => __('Select a country of your residence.', 'leyka'),
+        'list_entries' => array('-' => __('Not set', 'leyka'), 'ru' => __('Russian Federation', 'leyka')), //'leyka_get_countries_list',
+    ),
     'org_full_name' => array(
         'type' => 'text',
         'title' => __('NGO name', 'leyka'),

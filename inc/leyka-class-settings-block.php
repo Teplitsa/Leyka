@@ -82,7 +82,7 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
     }
 
     public function getContent() {
-        return leyka_options()->get_info_of($this->_option_id);
+        return $this->_option_id; // leyka_options()->get_info_of($this->_option_id);
     }
 
     public function isValid() {

@@ -98,7 +98,7 @@ gulp.task('build-admin-css', function() {
 
     var paths = require('node-bourbon').includePaths,
 		vendorFiles = gulp.src([]),
-        appFiles = gulp.src(basePaths.src+'sass/admin-main.scss')
+        appFiles = gulp.src(basePaths.src+'sass/admin/admin.scss')
         .pipe(!isProduction ? plugins.sourcemaps.init() : gutil.noop())  //process the original sources for sourcemap
         .pipe(plugins.sass({
                 outputStyle: sassStyle, //SASS syntas
@@ -147,13 +147,11 @@ gulp.task('full-build', function(callback) {
 });
 
 gulp.task('full-build-css', function(callback) {
-    runSequence('build-css',
-        callback);
+    runSequence('build-css', callback);
 });
 
 gulp.task('full-build-js', function(callback) {
-    runSequence('build-js',
-        callback);
+    runSequence('build-js', callback);
 });
 
 
@@ -193,12 +191,21 @@ gulp.task('svg-opt', function() {
 
 //watchers
 gulp.task('watch', function(){
-    gulp.watch([basePaths.src+'sass/*.scss', basePaths.src+'sass/**/*.scss'], ['full-build-css']).on('change', function(evt) {
+    gulp.watch([basePaths.src+'sass/*.scss'], ['full-build-css']).on('change', function(evt) {
         changeEvent(evt);
     });
     gulp.watch([basePaths.src+'js/*.js', basePaths.src+'js/front/*.js'], ['full-build-js']).on('change', function(evt) {
         changeEvent(evt);
     });
+});
+
+gulp.task('watch-admin', function(){
+    gulp.watch([basePaths.src+'sass/admin/*.scss', basePaths.src+'sass/admin/**/*.scss'], ['build-admin-css']).on('change', function(evt) {
+        changeEvent(evt);
+    });
+    // gulp.watch([basePaths.src+'js/*.js', basePaths.src+'js/front/*.js'], ['full-build-js']).on('change', function(evt) {
+    //     changeEvent(evt);
+    // });
 });
 
 

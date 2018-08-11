@@ -469,6 +469,7 @@ class Leyka_Admin_Setup {
 
                             $option_info = leyka_options()->get_info_of($option);
                             do_action("leyka_render_{$option_info['type']}", $option, $option_info);
+
                         }
                     }
 
@@ -660,8 +661,9 @@ class Leyka_Admin_Setup {
 		wp_enqueue_style('leyka-icon', LEYKA_PLUGIN_BASE_URL.'css/admin-icon.css', array(), LEYKA_VERSION);
 
 		$screen = get_current_screen();
-		if(false === strpos($screen->base, 'leyka') && false === strpos($screen->id, 'leyka'))
+		if(false === strpos($screen->base, 'leyka') && false === strpos($screen->id, 'leyka')) {
 			return;
+        }
 
         // Base admin area js/css:
         wp_enqueue_style('leyka-admin', LEYKA_PLUGIN_BASE_URL.'css/admin.css', array(), LEYKA_VERSION);

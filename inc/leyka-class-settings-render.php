@@ -51,19 +51,20 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
 
     protected function _loadCssJs() {
 
-        add_action('admin_enqueue_scripts', array($this, 'enqueueScripts')); // wp_footer
-//        add_action('wp_enqueue_scripts', array($this, 'localize_scripts')); // wp_footer
-
-    }
-
-    public function enqueueScripts() {
-
         wp_enqueue_script(
             'leyka-settings-render',
             LEYKA_PLUGIN_BASE_URL.'assets/js/admin.js',
             array('jquery',),
             LEYKA_VERSION,
             true
+        );
+//        add_action('wp_enqueue_scripts', array($this, 'localize_scripts')); // wp_footer
+
+        wp_enqueue_style(
+            'leyka-settings',
+            LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css',
+            array(),
+            LEYKA_VERSION
         );
 
         do_action('leyka_settings_enqueue_scripts');
@@ -112,14 +113,13 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     public function renderMainArea() {
 
-        $current_step = $this->_controller->getCurrentStep();
-        $submits = $this->_controller->getSubmitSettings();?>
+        $current_step = $this->_controller->getCurrentStep();?>
+
+        <div class="step-title"><h2><?php echo $current_step->title;?></h2></div>
 
         <div class="step-common-errors">
             <?php $this->renderCommonErrorsArea();?>
         </div>
-
-        <div class="step-title"><h2><?php echo $current_step->title;?></h2></div>
 
         <form id="leyka-settings-form-<?php echo $current_step->full_id;?>" class="leyka-settings-form leyka-wizard-step" method="post" action="<?php echo admin_url('admin.php?page=leyka_settings_new&screen='.$this->full_id);?>">
             <div class="step-content">
@@ -133,13 +133,17 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
                 } else if(is_a($block, 'Leyka_Text_Block')) {?>
 
-                <div class="settings-block text-block"><?php echo $block->getContent();?></div>
+                <div class="settings-block text-block"><p><?php echo $block->getContent();?></p></div>
 
                 <?php } else if(is_a($block, 'Leyka_Option_Block')) {
 
-                    echo '<pre>Option:'.print_r($block, 1).'</pre>';
+                    $option_info = leyka_options()->get_info_of($block->getContent());?>
 
-                }
+                <div class="settings-block option-block">
+                    <?php do_action("leyka_render_{$option_info['type']}", $block->getContent(), $option_info);?>
+                </div>
+
+                <?php }
 
             }?>
             </div>
@@ -182,6 +186,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
     <?php }
 
     public function renderNavigationArea() {
+        echo 'Nav Chain here somewhere';
     }
 
     public function renderNavChain() {
