@@ -20,7 +20,7 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
         $this->_setAttributes();
         $this->_setSections();
 
-        add_action('leyka_settings_submit', array($this, 'handleSubmit'));
+        add_action('leyka_settings_submit_'.$this->_id, array($this, 'handleSubmit'));
 
     }
 
@@ -42,7 +42,7 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
     /**
      * @param string $component_id
-     * @return array Of errors
+     * @return WP_Error An object with the list of errors
      */
     public function getComponentErrors($component_id = null) {
         return empty($component_id) ?
@@ -51,12 +51,12 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
     }
 
     protected function _handleSettingsSubmit() {
-
         if( !empty($_POST['leyka_settings_submit_'.$this->_id]) ) {
-            do_action('leyka_settings_submit', $this->_id);
+            do_action('leyka_settings_submit_'.$this->_id);
         }
-
     }
+
+    abstract protected function _processSettingsValues();
 
     protected function _addCommonError(WP_Error $error) {
         $this->_common_errors[] = $error;
@@ -168,6 +168,16 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     }
 
+    protected function _processSettingsValues() {
+
+        foreach($this->getCurrentStep()->getBlocks() as $block) {
+            if(is_a($block, 'Leyka_Option_Block')) {
+                leyka_options()->opt($block->option_id, $_POST['leyka_'.$block->option_id]);
+            }
+        }
+
+    }
+
     protected function _handleSettingsGoBack() {
 
         $last_step_full_id = array_key_last($_SESSION[$this->_storage_key]['activity']);
@@ -268,8 +278,8 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         }
 
-        // Save the current step in the storage:
-        $this->_addActivityEntry();
+        $this->_addActivityEntry(); // Save the current step in the storage
+        $this->_processSettingsValues();
 
         // Proceed to the next step:
         $next_step_full_id = $this->_getNextStepId();

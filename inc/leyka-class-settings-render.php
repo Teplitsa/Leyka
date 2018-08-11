@@ -141,6 +141,14 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
                 <div class="settings-block option-block">
                     <?php do_action("leyka_render_{$option_info['type']}", $block->getContent(), $option_info);?>
+                    <div class="field-errors">
+                    <?php $block_errors = $this->_controller->getComponentErrors($block->id);
+                    if($block_errors) {
+                        foreach($block_errors->get_error_messages() as $error_message) {
+                            echo '<p>'.$error_message.'</p>';
+                        }
+                    }?>
+                    </div>
                 </div>
 
                 <?php }

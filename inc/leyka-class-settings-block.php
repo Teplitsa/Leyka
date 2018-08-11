@@ -81,6 +81,15 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
 
     }
 
+    public function __get($name) {
+
+        switch($name) {
+            case 'option_id': return $this->_option_id;
+            default: return parent::__get($name);
+        }
+
+    }
+
     public function getContent() {
         return $this->_option_id; // leyka_options()->get_info_of($this->_option_id);
     }
@@ -96,8 +105,24 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
     public function getErrors() {
 
         $value = isset($_POST['leyka_'.$this->_option_id]) ? $_POST['leyka_'.$this->_option_id] : false;
+        $error_messages = array();
 
-        return leyka_options()->get_validation_errors($this->_option_id, $value);
+        foreach(leyka_options()->get_validation_errors($this->_option_id, $value) as $error_message) {
+            $error_messages[] = $error_message;
+        }
+
+        if($error_messages) {
+
+            $error = new WP_Error();
+            foreach($error_messages as $error_message) {
+                $error->add('option_invalid', $error_message);
+            }
+
+            return $error;
+
+        } else {
+            return false;
+        }
 
     }
 

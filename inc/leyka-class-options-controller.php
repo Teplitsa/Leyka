@@ -202,7 +202,11 @@ class Leyka_Options_Controller {
             $this->_options[$option_name]['value'] = trim($this->_options[$option_name]['value']);
         }
 
-        if($this->option_exists($option_name) && $this->_validate_option($option_name, $option_value)) {
+        if(
+            $this->option_exists($option_name) &&
+            $this->_options[$option_name]['value'] !== $option_value &&
+            $this->_validate_option($option_name, $option_value)
+        ) {
 
             $old_value = $this->_options[$option_name]['value']; // Rollback to it if option update fails
             $this->_options[$option_name]['value'] = $option_value;
@@ -229,17 +233,25 @@ class Leyka_Options_Controller {
         $value = $this->get_value($option_name); 
 
         return $value ? $value : $this->get_default_of($option_name);
+
     }
 
     /**
      * @param $option_name string
-     * @param $option_value mixed
+     * @param $value mixed
      * @return boolean True if given option value is valid, false otherwise (or if option doesn't exists).
      */
-    protected function _validate_option($option_name, $option_value = '') {
+    protected function _validate_option($option_name, $value = null) {
 
-//        $option_name = str_replace('leyka_', '', $option_name);
-        // use the $this->_options[$option_name]['validation_rules'], luke
+        $option_name = str_replace('leyka_', '', $option_name);
+        $value = $value === NULL ? $this->get_value($option_name) : $value;
+
+        foreach($this->get_validation_rules($option_name) as $rule_regexp => $rule_invalid_message) {
+            if( !preg_match($rule_regexp, $value) ) {
+                return false;
+            }
+        }
+
         return true;
 
     }
@@ -274,6 +286,10 @@ class Leyka_Options_Controller {
         }
 
         $errors = array();
+
+        if($this->is_required($option_name) && !$value) {
+            $errors[] = __('The field value is required', 'leyka');
+        }
 
         foreach($this->get_validation_rules($option_name) as $rule_regexp => $rule_invalid_message) {
             if( !preg_match($rule_regexp, $value) ) {
