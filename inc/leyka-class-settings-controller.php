@@ -369,7 +369,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'campaign_desc_text',
             'text' => 'Текст, который идёт перед полями кампании на этом шаге. В нём может описываться, например, что вообще такое кампания.',
-        )))->addBlock(new Leyka_Option_Block(array(
+        )))->addBlock(new Leyka_Custom_Option_Block(array(
             'id' => 'campaign_title',
             'option_id' => 'init-campaign-title',
             'option_data' => array(
@@ -379,7 +379,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 'required' => 1,
                 'placeholder' => 'Например, «На уставную деятельность организации»',
             ),
-        )))->addBlock(new Leyka_Option_Block(array(
+        )))->addBlock(new Leyka_Custom_Option_Block(array(
             'id' => 'campaign_lead',
             'option_id' => 'init-campaign-lead',
             'option_data' => array(
@@ -388,7 +388,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 'required' => 0,
                 'placeholder' => 'Например, «Ваше пожертвование пойдёт на выполнение уставной деятельности в текущем году.»',
             ),
-        )))->addBlock(new Leyka_Option_Block(array(
+        )))->addBlock(new Leyka_Custom_Option_Block(array(
             'id' => 'campaign_target',
             'option_id' => 'init-campaign-target',
             'option_data' => array(
@@ -399,9 +399,6 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 'max' => 60000,
                 'step' => 1,
             ),
-        )))->addBlock(new Leyka_Text_Block(array(
-            'id' => 'campaign_desc_finished',
-            'text' => 'Текст, которым визард завершается. Здесь слова о том, что настройки выполнены, и вэлкам вам в дэшборд.',
         )));
 
         $section->addStep($step);

@@ -135,7 +135,11 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
                 <div class="settings-block text-block"><p><?php echo $block->getContent();?></p></div>
 
-                <?php } else if(is_a($block, 'Leyka_Option_Block')) {
+                <?php } else if(is_a($block, 'Leyka_Custom_Option_Block')) {
+
+                    echo '<p>'.$block->option_id.' custom option here</p>';
+
+                } else if(is_a($block, 'Leyka_Option_Block')) {
 
                     $option_info = leyka_options()->get_info_of($block->getContent());?>
 

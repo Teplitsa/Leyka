@@ -340,7 +340,7 @@ class Leyka_Options_Controller {
 
         $this->_intialize_option($option_name);
 
-        return empty($this->_options[$option_name]) ? false : !!$this->_options[$option_name]['required'];
+        return empty($this->_options[$option_name]) ? false : !empty($this->_options[$option_name]['required']);
 
     }
 
