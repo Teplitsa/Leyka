@@ -80,8 +80,6 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
         }
     }
 
-//    abstract public function renderNavChain(array $sections, Leyka_Wizard_Step $current_step);
-
 }
 
 class Leyka_Wizard_Render extends Leyka_Settings_Render {
@@ -177,7 +175,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     public function renderSubmitArea() {
 
-        $submits = $this->_controller->getSubmitSettings();?>
+        $submits = $this->_controller->getSubmitData();?>
 
         <?php if($submits['next_url'] === true && $this->_controller->next_step_full_id !== true) {?>
 
@@ -197,13 +195,15 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     <?php }
 
-    public function renderNavigationArea() {
-        echo 'Nav Chain here somewhere';
-    }
+    public function renderNavigationArea() {?>
 
-    public function renderNavChain() {
-        // TODO: Implement renderNavChain() method.
-    }
+        <div class="nav-chain">
+            <?php echo '<pre>'.print_r($this->_controller->getNavigationData(), 1).'</pre>';?>
+        </div>
+
+        <div class="leyka-logo">Leyka logo here</div>
+
+    <?php }
 
     public function renderStep() {
         // TODO: Implement renderStep() method.

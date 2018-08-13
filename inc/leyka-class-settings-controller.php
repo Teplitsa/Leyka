@@ -72,7 +72,9 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
     /** @return Leyka_Settings_Section */
     abstract public function getCurrentSection();
 
-    abstract public function getSubmitSettings($structure_element = null);
+    abstract public function getSubmitData($structure_element = null);
+
+    abstract public function getNavigationData();
 
     abstract public function handleSubmit();
 
@@ -82,6 +84,8 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     protected static $_instance = null;
     protected $_storage_key = '';
+    protected $_roadmap = array();
+    protected $_roadmap_position = null;
 
     protected function __construct() {
 
@@ -122,13 +126,15 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             $this->_handleSettingsSubmit();
         }
 
-//        echo '<pre>Current activity: '.print_r($_SESSION[$this->_storage_key]['activity'], 1).'</pre>';
+        echo '<pre>Current activity: '.print_r($_SESSION[$this->_storage_key]['activity'], 1).'</pre>';
 
     }
 
     protected function _setCurrentStep(Leyka_Settings_Step $step) {
 
         $_SESSION[$this->_storage_key]['current_step'] = $step;
+
+        $this->_setCurrentSection($this->_sections[$step->section_id]);
 
         return $this;
 
@@ -264,6 +270,57 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     }
 
+    /** Navigation data incapsulation method - Wizards default implementation. */
+    public function getNavigationData() {
+
+        if( !$this->_sections ) {
+            return array();
+        }
+
+        $nav_data = array();
+
+        foreach($this->_sections as $section) { /** @var Leyka_Settings_Section $section */
+
+            $steps = $section->getSteps();
+            if( !$steps ) {
+                continue;
+            }
+
+            $steps_data = array();
+            $all_steps_completed = true;
+            foreach($steps as $step) { /** @var Leyka_Settings_Step $step */
+
+                $step_completed = isset($_SESSION[$this->_storage_key]['activity'][$step->full_id]);
+
+                if($all_steps_completed && !$step_completed) {
+                    $all_steps_completed = false;
+                }
+
+                $steps_data[] = array(
+                    'roadmap_step_id' => $step->full_id,
+                    'title' => $step->title,
+                    'url' => $step_completed ? '&step='.$step->full_id : false,
+                    'is_current' => $this->current_step->full_id === $step->full_id,
+                    'is_completed' => $step_completed,
+                );
+
+            }
+
+            $nav_data[] = array(
+                'roadmap_section_id' => $section->id,
+                'title' => $section->title,
+                'url' => $all_steps_completed ? '&step='.$steps_data[0]['roadmap_step_id'] : false,
+                'is_current' => $this->current_section_id === $section->id, // True if the current Step belongs to the Section
+                'is_completed' => $all_steps_completed,
+                'steps' => $steps_data,
+            );
+
+        }
+
+        return $nav_data;
+
+    }
+
     public function handleSubmit() {
 
 //        echo '<pre>Current step: '.print_r($this->getCurrentStep()->full_id.' (is valid: '.$this->getCurrentStep()->isValid().')', 1).'</pre>';
@@ -300,7 +357,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
     }
 
     /**
-     * Steps branching incapsulation method. The result must be filterable. By default, it's next step in _steps array.
+     * Steps branching incapsulation method. By default, it's next step in _steps array.
      *
      * @param $step_from Leyka_Settings_Step
      * @param $return_full_id boolean
@@ -462,7 +519,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
     }
 
-    public function getSubmitSettings($structure_element = null) {
+    public function getSubmitData($structure_element = null) {
 
         $step = $structure_element && is_a($structure_element, 'Leyka_Settings_Step') ? $structure_element : $this->current_step;
         $submit_settings = array(
@@ -488,6 +545,14 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         }
 
         return $submit_settings;
+
+    }
+
+    public function getNavigationData() {
+
+//        if() {
+//
+//        }
 
     }
 
