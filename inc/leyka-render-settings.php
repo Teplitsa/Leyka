@@ -137,11 +137,12 @@ function leyka_render_radio_fields($option_name, $data){
 
             <?php }?>
 
-            <?php if( !empty($data['description']) ) {?>
-                <div class="field-description"><?php echo $data['description'];?></div>
-            <?php }?>
-
         </span>
+
+        <?php if( !empty($data['description']) ) {?>
+        <div class="field-component help"><?php echo $data['description'];?></div>
+        <?php }?>
+
     </div>
 <?php }
 
@@ -169,11 +170,11 @@ function leyka_render_select_field($option_name, $data) {
                     <?php }?>
                 </select>
 
-                <?php if( !empty($data['description']) ) {?>
-                <div class="field-description"><?php echo $data['description'];?></div>
-                <?php }?>
-
             </span>
+
+            <?php if( !empty($data['description']) ) {?>
+            <div class="field-component help"><?php echo $data['description'];?></div>
+            <?php }?>
         </label>
     </div>
 <?php }

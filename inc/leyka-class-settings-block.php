@@ -67,6 +67,7 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
 
     protected $_option_id = '';
     protected $_show_title = true;
+    protected $_show_description = true;
 
     public function __construct(array $params = array()) {
 
@@ -80,10 +81,12 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
 
         $params = wp_parse_args($params, array(
             'show_title' => true,
+            'show_description' => true,
         ));
 
         $this->_option_id = $params['option_id'];
         $this->_show_title = !!$params['show_title'];
+        $this->_show_description = !!$params['show_description'];
 
     }
 
@@ -92,6 +95,7 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
         switch($name) {
             case 'option_id': return $this->_option_id;
             case 'show_title': return !!$this->_show_title;
+            case 'show_description': return !!$this->_show_description;
             default: return parent::__get($name);
         }
 
@@ -137,9 +141,8 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
      * @return array
      */
     public function getFieldsValues() {
-        return array($this->_option_id => 'some value');
-//        return isset($_POST['leyka_'.$this->_option_id]) ?
-//            array($this->_option_id => $_POST['leyka_'.$this->_option_id]) : array();
+        return isset($_POST['leyka_'.$this->_option_id]) ?
+            array($this->_option_id => $_POST['leyka_'.$this->_option_id]) : array();
     }
 
 }
@@ -147,10 +150,20 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
 class Leyka_Container_Block extends Leyka_Settings_Block {
 
     protected $_blocks;
+    protected $_entry_width = false;
 
     public function __construct(array $params = array()) {
 
         parent::__construct($params);
+
+        if( !empty($params['entry_width']) ) {
+
+            $params['entry_width'] = (float)$params['entry_width'];
+            if($params['entry_width'] > 0.0 && $params['entry_width'] <= 1.0) {
+                $this->_entry_width = $params['entry_width'];
+            }
+
+        }
 
         if( !empty($params['entries']) && is_array($params['entries']) ) {
 
@@ -162,6 +175,17 @@ class Leyka_Container_Block extends Leyka_Settings_Block {
                 }
             }
 
+        }
+
+    }
+
+    public function __get($name) {
+
+        switch($name) {
+            case 'entry_width': return $this->_entry_width ?
+                $this->_entry_width :
+                (count($this->_blocks) ? round(1.0/count($this->_blocks), 1) : false);
+            default: return parent::__get($name);
         }
 
     }

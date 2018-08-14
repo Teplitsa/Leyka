@@ -38,10 +38,19 @@
                 &.option-title-hidden .field-component.title {
                     display: none;
                 }
+                &.option-description-hidden .field-component.help {
+                    display: none;
+                }
 
                 .field-component.title {
                     display: block;
                 }
+
+            }
+
+            &.container-block {
+
+                display: flex;
 
             }
 

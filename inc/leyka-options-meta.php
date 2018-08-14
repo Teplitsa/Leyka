@@ -88,12 +88,19 @@ self::$_options_meta = array(
         'required' => 1,
         'placeholder' => __('E.g., Eastern charity foundation', 'leyka'),
     ),
+    'org_short_name' => array(
+        'type' => 'text',
+        'title' => 'Сокращённое наименование организации', //__('NGO short name', 'leyka'),
+//        'description' => __('NGO full official name.', 'leyka'),
+        'required' => true,
+//        'placeholder' => __('E.g., Eastern charity foundation', 'leyka'),
+    ),
     'org_face_fio_ip' => array(
         'type' => 'text',
-        'title' => __('Full name of a person representing the NGO', 'leyka'),
-        'description' => __("Enter a person's full name in subjective case.", 'leyka'),
-        'required' => 1,
-        'placeholder' => __('E.g., John Frederic Dow', 'leyka'),
+        'title' => 'Ф.И.О. директора', // __('Full name of a person representing the NGO', 'leyka'),
+//        'description' => __("Enter a person's full name in subjective case.", 'leyka'),
+        'required' => true,
+//        'placeholder' => __('E.g., John Frederic Dow', 'leyka'),
     ),
     'org_face_fio_rp' => array(
         'type' => 'text',
@@ -105,8 +112,9 @@ self::$_options_meta = array(
     'org_face_position' => array(
         'type' => 'text',
         'title' => __('Position of a person representing the NGO', 'leyka'),
+        'default' => 'директор', // __('director', 'leyka'),
         'description' => __('Enter an official position of a person representing the NGO.', 'leyka'),
-        'required' => 1,
+        'required' => true,
         'placeholder' => __('E.g., director', 'leyka'),
     ),
     'org_address' => array(

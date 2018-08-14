@@ -125,11 +125,42 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
             /** @todo If-else here sucks. Make it a Factory Method */
 
-                if(is_a($block, 'Leyka_Container_Block')) {
+                if(is_a($block, 'Leyka_Container_Block')) {?>
 
-                    echo '<pre>Container:'.print_r($block, 1).'</pre>';
+                    <div id="<?php echo $block->id;?>" class="settings-block container-block">
 
-                } else if(is_a($block, 'Leyka_Text_Block')) {?>
+                    <?php $entry_width = $block->entry_width ? (100.0*$block->entry_width).'%' : false;
+
+                    foreach($block->getContent() as $sub_block) {?>
+
+                        <div class="container-entry" <?php echo $entry_width ? 'style="flex-basis: '.$entry_width.';"' : '';?>>
+
+                            <?php if(is_a($sub_block, 'Leyka_Option_Block')) {
+
+                                $option_info = leyka_options()->get_info_of($sub_block->getContent());?>
+
+                                <div id="<?php echo $sub_block->id;?>" class="settings-block option-block <?php echo $sub_block->show_title ? '' : 'option-title-hidden';?> <?php echo $sub_block->show_description ? '' : 'option-description-hidden';?>">
+                                    <?php do_action("leyka_render_{$option_info['type']}", $sub_block->getContent(), $option_info);?>
+                                    <div class="field-errors">
+                                        <?php $block_errors = $this->_controller->getComponentErrors($sub_block->id);
+                                        if($block_errors) {
+                                            foreach($block_errors->get_error_messages() as $error_message) {
+                                                echo '<p>'.$error_message.'</p>';
+                                            }
+                                        }?>
+                                    </div>
+                                </div>
+
+                            <?php }?>
+
+                        </div>
+
+                    <?php }?>
+
+                    </div>
+
+
+                <?php } else if(is_a($block, 'Leyka_Text_Block')) {?>
 
                 <div id="<?php echo $block->id;?>" class="settings-block text-block"><p><?php echo $block->getContent();?></p></div>
 
@@ -141,7 +172,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
                     $option_info = leyka_options()->get_info_of($block->getContent());?>
 
-                <div class="settings-block option-block <?php echo $block->show_title ? '' : 'option-title-hidden';?>">
+                <div id="<?php echo $block->id;?>" class="settings-block option-block <?php echo $block->show_title ? '' : 'option-title-hidden';?> <?php echo $block->show_description ? '' : 'option-description-hidden';?>">
                     <?php do_action("leyka_render_{$option_info['type']}", $block->getContent(), $option_info);?>
                     <div class="field-errors">
                     <?php $block_errors = $this->_controller->getComponentErrors($block->id);

@@ -126,7 +126,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             $this->_handleSettingsSubmit();
         }
 
-//        echo '<pre>Current activity: '.print_r($_SESSION[$this->_storage_key]['activity'], 1).'</pre>';
+        echo '<pre>Current activity: '.print_r($_SESSION[$this->_storage_key]['activity'], 1).'</pre>';
 
     }
 
@@ -396,7 +396,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $section->addStep($step);
 
         // Receiver type step:
-        $step = new Leyka_Settings_Step('account_type', $section->id, 'Получатель пожертвований');
+        $step = new Leyka_Settings_Step('receiver_type', $section->id, 'Получатель пожертвований');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => 'Вы должны определить, от имени кого вы будете собирать пожертвования. Как НКО (некоммерческая организация) — юридическое лицо или как обычный гражданин — физическое лицо.',
@@ -404,6 +404,52 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'id' => 'receiver_type',
             'option_id' => 'receiver_legal_type',
             'show_title' => false,
+        )));
+
+        $section->addStep($step);
+
+        // Legal receiver type - org. data step:
+        $step = new Leyka_Settings_Step('receiver_legal_data', $section->id, 'Название организации');
+        $step->addBlock(new Leyka_Text_Block(array(
+            'id' => 'step-intro-text',
+            'text' => 'Эти данные мы будем использовать для отчётных документов вашим донорам. Все данные вы сможете найти в учредительных документах.',
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'org_full_name',
+            'option_id' => 'org_full_name',
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'org_short_name',
+            'option_id' => 'org_short_name',
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'org_face_fio_ip',
+            'option_id' => 'org_face_fio_ip',
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'org_address',
+            'option_id' => 'org_address',
+            'show_description' => false,
+        )))->addBlock(new Leyka_Container_Block(array(
+            'id' => 'complex-row-1',
+            'entries' => array(
+                new Leyka_Option_Block(array(
+                    'id' => 'org_state_reg_number',
+                    'option_id' => 'org_state_reg_number',
+                    'show_description' => false,
+                )),
+                new Leyka_Option_Block(array(
+                    'id' => 'org_kpp',
+                    'option_id' => 'org_kpp',
+                    'show_description' => false,
+                )),
+            ),
+        )))->addBlock(new Leyka_Container_Block(array(
+            'id' => 'complex-row-2',
+            'entry_width' => 0.5,
+            'entries' => array(
+                new Leyka_Option_Block(array(
+                    'id' => 'org_inn',
+                    'option_id' => 'org_inn',
+                    'show_description' => false,
+                )),
+            ),
         )));
 
         $section->addStep($step);
@@ -490,9 +536,10 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         if($step_from->section_id === 'rd') {
 
             if($step_from->id === 'init') {
-                $next_step_full_id = $step_from->section_id.'-account_type';
-            } else if($step_from->id === 'account_type') {
-                $next_step_full_id = 'cd-init';
+                $next_step_full_id = $step_from->section_id.'-receiver_type';
+            } else if($step_from->id === 'receiver_type') {
+                $next_step_full_id =
+                    $_SESSION[$this->_storage_key]['activity'][$step_from->section_id.'-receiver_type']['receiver_legal_type'] === 'legal' ? $step_from->section_id.'-receiver_legal_data' : $step_from->section_id.'-receiver_physical_data';
             }
 
         } else if($step_from->section_id === 'cd') {
