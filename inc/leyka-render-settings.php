@@ -106,7 +106,7 @@ add_action('leyka_render_radio', 'leyka_render_radio_fields', 10, 2);
 function leyka_render_radio_fields($option_name, $data){
     $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;?>
 
-    <div id="<?php echo $option_name.'-wrapper';?>">
+    <div id="<?php echo $option_name.'-wrapper';?>" class="field-radio">
         <span class="field-component title">
             <?php echo $data['title'];?>
             <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
@@ -117,12 +117,30 @@ function leyka_render_radio_fields($option_name, $data){
                 $data['list_entries'] = $data['list_entries'](); // Call the callback to create an options
             }
 
-            foreach((array)$data['list_entries'] as $value => $label) { $field_id = $option_name.'-'.$value.'-field';?>
+            foreach((array)$data['list_entries'] as $value => $value_data) {
+
+                $field_id = $option_name.'-'.$value.'-field';?>
+
                 <label for="<?php echo $field_id;?>">
                     <input type="radio" id="<?php echo $field_id;?>" name="<?php echo $option_name;?>" value="<?php echo $value;?>" <?php echo $data['value'] == $value ? 'checked' : '';?>>
-                    &nbsp;<?php echo esc_attr($label);?>
+                    <?php if(is_string($value_data)) {
+                        echo esc_attr($value_data);
+                    } else if(is_array($value_data) && array_key_exists('title', $value_data)) {
+
+                        echo $value_data['title'];
+                        if( !empty($value_data['description']) ) {?>
+                            <span class="radio-entry-description"><?php echo $value_data['description']?></span>
+                        <?php }
+
+                    }?>
                 </label>
+
             <?php }?>
+
+            <?php if( !empty($data['description']) ) {?>
+                <div class="field-description"><?php echo $data['description'];?></div>
+            <?php }?>
+
         </span>
     </div>
 <?php }
@@ -138,17 +156,23 @@ function leyka_render_select_field($option_name, $data) {
                 <?php echo $data['title'];?>
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
             </span>
-            
-            <span class="field-component field">
-            <?php if(is_string($data['list_entries'])) {
-                $data['list_entries'] = $data['list_entries'](); // Call the callback to create select's options
-            }?>
 
-            <select id="<?php echo $option_name.'-field';?>" name="<?php echo $option_name;?>">
-                <?php foreach((array)$data['list_entries'] as $value => $label) {?>
-                    <option value="<?php echo $value;?>" <?php echo $value == $data['value'] ? 'selected' : '';?>><?php echo esc_attr($label);?></option>
+            <span class="field-component field">
+
+                <?php if(is_string($data['list_entries'])) {
+                    $data['list_entries'] = $data['list_entries'](); // Call the callback to create select's options
+                }?>
+
+                <select id="<?php echo $option_name.'-field';?>" name="<?php echo $option_name;?>">
+                    <?php foreach((array)$data['list_entries'] as $value => $label) {?>
+                        <option value="<?php echo $value;?>" <?php echo $value == $data['value'] ? 'selected' : '';?>><?php echo esc_attr($label);?></option>
+                    <?php }?>
+                </select>
+
+                <?php if( !empty($data['description']) ) {?>
+                <div class="field-description"><?php echo $data['description'];?></div>
                 <?php }?>
-            </select>
+
             </span>
         </label>
     </div>

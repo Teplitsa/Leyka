@@ -35,8 +35,24 @@
 
                 margin-bottom: 10px;
 
+                &.option-title-hidden .field-component.title {
+                    display: none;
+                }
+
                 .field-component.title {
                     display: block;
+                }
+
+            }
+
+            .field-radio {
+
+                label {
+                    display: block;
+                }
+
+                .radio-entry-description { /** @todo Make it a popup */
+                    display: none;
                 }
 
             }

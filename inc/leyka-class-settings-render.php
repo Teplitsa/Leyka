@@ -131,7 +131,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
                 } else if(is_a($block, 'Leyka_Text_Block')) {?>
 
-                <div class="settings-block text-block"><p><?php echo $block->getContent();?></p></div>
+                <div id="<?php echo $block->id;?>" class="settings-block text-block"><p><?php echo $block->getContent();?></p></div>
 
                 <?php } else if(is_a($block, 'Leyka_Custom_Option_Block')) {
 
@@ -141,7 +141,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
                     $option_info = leyka_options()->get_info_of($block->getContent());?>
 
-                <div class="settings-block option-block">
+                <div class="settings-block option-block <?php echo $block->show_title ? '' : 'option-title-hidden';?>">
                     <?php do_action("leyka_render_{$option_info['type']}", $block->getContent(), $option_info);?>
                     <div class="field-errors">
                     <?php $block_errors = $this->_controller->getComponentErrors($block->id);
@@ -167,11 +167,8 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     <?php }
 
-    public function renderHiddenFields() {?>
-
-<!--        <input type="hidden" name="next-step-full-id" value="--><?php //echo $this->_controller->next_step_full_id;?><!--">-->
-
-    <?php }
+    public function renderHiddenFields() {
+    }
 
     public function renderSubmitArea() {
 
@@ -198,7 +195,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
     public function renderNavigationArea() {?>
 
         <div class="nav-chain">
-            <?php echo '<pre>'.print_r($this->_controller->getNavigationData(), 1).'</pre>';?>
+<!--            --><?php //echo '<pre>'.print_r($this->_controller->getNavigationData(), 1).'</pre>';?>
         </div>
 
         <div class="leyka-logo">Leyka logo here</div>

@@ -56,19 +56,30 @@ $campaign_target_reaching_email_placeholders =
 
 /** @var self Leyka_Options_Controller */
 self::$_options_meta = array(
-    'receiver_legal_type' => array(
-        'type' => 'radio',
-//        'default' => 'legal',
-        'title' => __('The legal entity type', 'leyka'),
-        'required' => true,
-        'list_entries' => array('physical' => __('Physical entity', 'leyka'), 'legal' => __('Legal entity', 'leyka'),),
-    ),
     'receiver_country' => array(
         'type' => 'select',
         'default' => 'ru', // leyka_get_default_receiver_country(),
-        'title' => __('Country', 'leyka'),
-        'description' => __('Select a country of your residence.', 'leyka'),
-        'list_entries' => array('-' => __('Not set', 'leyka'), 'ru' => __('Russian Federation', 'leyka')), //'leyka_get_countries_list',
+        'title' => 'Выберите вашу страну', // __('Select your country:', 'leyka'),
+        'required' => true,
+        'list_entries' => array('-' => 'Не указано', 'ru' => 'Россия'), //'leyka_get_countries_list',
+        'description' => 'Архитектура Лейки позволяет вам собирать деньги и в других странах. Узнайте, как подключить вашу страну <a href="//leyka.te-st.ru/instruction/">здесь</a>.',
+    ),
+    'receiver_legal_type' => array(
+        'type' => 'radio',
+        'title' => 'Тип получателя пожертвований', // __('The legal entity type', 'leyka'),
+        'required' => true,
+        'list_entries' => array(
+            'legal' => array(
+                'title' => 'НКО — юридическое лицо', // __('Legal entity', 'leyka'),
+                'description' => 'Текст для описания данного пункта',
+            ),
+            'physical' => array(
+                'title' => 'Физическое лицо', // __('Physical entity', 'leyka'),
+                'description' => 'Текст для описания данного пункта',
+            ),
+        ),
+        'default' => 'legal',
+        'description' => 'Помните, что как физическое лицо, вы должны сдать декларацию и оплатить подоходный налог — 13% от всех поступлений.',
     ),
     'org_full_name' => array(
         'type' => 'text',

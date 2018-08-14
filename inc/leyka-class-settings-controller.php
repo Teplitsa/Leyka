@@ -111,13 +111,13 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
         }
 
         // Debug {
-//        if(isset($_GET['reset'])) {
-//
-//            $_SESSION[$this->_storage_key]['current_section'] = reset($this->_sections);
-//            $_SESSION[$this->_storage_key]['current_step'] = reset($this->_sections)->init_step;
-//            $_SESSION[$this->_storage_key]['activity'] = array();
-//
-//        }
+        if(isset($_GET['reset'])) {
+
+            $_SESSION[$this->_storage_key]['current_section'] = reset($this->_sections);
+            $_SESSION[$this->_storage_key]['current_step'] = reset($this->_sections)->init_step;
+            $_SESSION[$this->_storage_key]['activity'] = array();
+
+        }
         // } Debug
 
         if( !empty($_POST['leyka_settings_prev_'.$this->_id]) ) {
@@ -126,7 +126,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             $this->_handleSettingsSubmit();
         }
 
-        echo '<pre>Current activity: '.print_r($_SESSION[$this->_storage_key]['activity'], 1).'</pre>';
+//        echo '<pre>Current activity: '.print_r($_SESSION[$this->_storage_key]['activity'], 1).'</pre>';
 
     }
 
@@ -381,28 +381,29 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
     protected function _setSections() {
 
         // Receiver's data Section:
-        $section = new Leyka_Settings_Section('rd', 'Раздел 1: ваши данные');
+        $section = new Leyka_Settings_Section('rd', 'Ваши данные');
 
         // 0-step:
-        $step = new Leyka_Settings_Step('init',  $section->id, 'Шаг 0: вступительное сообщение');
+        $step = new Leyka_Settings_Step('init',  $section->id, 'Приветствуем вас!');
         $step->addBlock(new Leyka_Text_Block(array(
-            'id' => 'intro-text-1',
-            'text' => 'Это будет первый абзац вступительного текста. Население перевозит органический мир. Коневодство постоянно. Приокеаническая пустыня вероятна. Приокеаническая пустыня параллельна.',
-        )))->addBlock(new Leyka_Text_Block(array(
-            'id' => 'intro-text-2',
-            'text' => 'А это второй абзац вступительного текста начального шага начального же визарда. Путешествие в тысячу ли начинается с одного шага. Население перевозит органический мир. Коневодство постоянно. Приокеаническая пустыня вероятна. Приокеаническая пустыня параллельна.',
+            'id' => 'step-intro-text',
+            'text' => 'Вы установили плагин «Лейка», осталось его настроить. Мы проведём вас по всем шагам, поможем подсказками, а если нужна будет наша помощь, вы можете обратиться к нам через форму в правой части экрана.',
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'receiver_country',
+            'option_id' => 'receiver_country',
         )));
 
         $section->addStep($step);
 
         // Receiver type step:
-        $step = new Leyka_Settings_Step('account_type', $section->id, 'Шаг 1: тип получателя');
-        $step->addBlock(new Leyka_Option_Block(array(
-            'id' => 'receiver_type', /** @todo Add this option to the meta array. */
-            'option_id' => 'receiver_legal_type',
+        $step = new Leyka_Settings_Step('account_type', $section->id, 'Получатель пожертвований');
+        $step->addBlock(new Leyka_Text_Block(array(
+            'id' => 'step-intro-text',
+            'text' => 'Вы должны определить, от имени кого вы будете собирать пожертвования. Как НКО (некоммерческая организация) — юридическое лицо или как обычный гражданин — физическое лицо.',
         )))->addBlock(new Leyka_Option_Block(array(
-            'id' => 'receiver_country', /** @todo Add this option to the meta array. */
-            'option_id' => 'receiver_country',
+            'id' => 'receiver_type',
+            'option_id' => 'receiver_legal_type',
+            'show_title' => false,
         )));
 
         $section->addStep($step);
@@ -411,56 +412,55 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         // Receiver's data Section - End
 
         // Campaign data Section:
-        $section = new Leyka_Settings_Section('cd', 'Раздел 2: настройка кампании');
-
-        $step = new Leyka_Settings_Step('init', $section->id, 'Шаг 0: настроим кампанию!');
-        $step->addBlock(new Leyka_Text_Block(array(
-            'id' => 'intro_text_1',
-            'text' => 'Осталось совсем немного и первая кампания будет запущена. Это будет первый абзац вступительного текста, и ещё немного о том, что дальше ещё нужно настроить платёжку.',
-        )));
-
-        $section->addStep($step);
-
-        // Receiver type step:
-        $step = new Leyka_Settings_Step('campaign_description',  $section->id, 'Шаг 1: описание вашей кампании');
-        $step->addBlock(new Leyka_Text_Block(array(
-            'id' => 'campaign_desc_text',
-            'text' => 'Текст, который идёт перед полями кампании на этом шаге. В нём может описываться, например, что вообще такое кампания.',
-        )))->addBlock(new Leyka_Custom_Option_Block(array(
-            'id' => 'campaign_title',
-            'option_id' => 'init-campaign-title',
-            'option_data' => array(
-                'type' => 'text',
-                'title' => 'Название кампании',
-//                'description' => '',
-                'required' => 1,
-                'placeholder' => 'Например, «На уставную деятельность организации»',
-            ),
-        )))->addBlock(new Leyka_Custom_Option_Block(array(
-            'id' => 'campaign_lead',
-            'option_id' => 'init-campaign-lead',
-            'option_data' => array(
-                'type' => 'textarea',
-                'title' => 'Краткое описание кампании',
-                'required' => 0,
-                'placeholder' => 'Например, «Ваше пожертвование пойдёт на выполнение уставной деятельности в текущем году.»',
-            ),
-        )))->addBlock(new Leyka_Custom_Option_Block(array(
-            'id' => 'campaign_target',
-            'option_id' => 'init-campaign-target',
-            'option_data' => array(
-                'type' => 'number',
-                'title' => 'Целевая сумма',
-                'required' => 0,
-                'min' => 0,
-                'max' => 60000,
-                'step' => 1,
-            ),
-        )));
-
-        $section->addStep($step);
-
-        $this->_sections[$section->id] = $section;
+//        $section = new Leyka_Settings_Section('cd', 'Раздел 2: настройка кампании');
+//
+//        $step = new Leyka_Settings_Step('init', $section->id, 'Шаг 0: настроим кампанию!');
+//        $step->addBlock(new Leyka_Text_Block(array(
+//            'id' => 'intro_text_1',
+//            'text' => 'Осталось совсем немного и первая кампания будет запущена. Это будет первый абзац вступительного текста, и ещё немного о том, что дальше ещё нужно настроить платёжку.',
+//        )));
+//
+//        $section->addStep($step);
+//
+//        $step = new Leyka_Settings_Step('campaign_description',  $section->id, 'Шаг 1: описание вашей кампании');
+//        $step->addBlock(new Leyka_Text_Block(array(
+//            'id' => 'campaign_desc_text',
+//            'text' => 'Текст, который идёт перед полями кампании на этом шаге. В нём может описываться, например, что вообще такое кампания.',
+//        )))->addBlock(new Leyka_Custom_Option_Block(array(
+//            'id' => 'campaign_title',
+//            'option_id' => 'init-campaign-title',
+//            'option_data' => array(
+//                'type' => 'text',
+//                'title' => 'Название кампании',
+////                'description' => '',
+//                'required' => 1,
+//                'placeholder' => 'Например, «На уставную деятельность организации»',
+//            ),
+//        )))->addBlock(new Leyka_Custom_Option_Block(array(
+//            'id' => 'campaign_lead',
+//            'option_id' => 'init-campaign-lead',
+//            'option_data' => array(
+//                'type' => 'textarea',
+//                'title' => 'Краткое описание кампании',
+//                'required' => 0,
+//                'placeholder' => 'Например, «Ваше пожертвование пойдёт на выполнение уставной деятельности в текущем году.»',
+//            ),
+//        )))->addBlock(new Leyka_Custom_Option_Block(array(
+//            'id' => 'campaign_target',
+//            'option_id' => 'init-campaign-target',
+//            'option_data' => array(
+//                'type' => 'number',
+//                'title' => 'Целевая сумма',
+//                'required' => 0,
+//                'min' => 0,
+//                'max' => 60000,
+//                'step' => 1,
+//            ),
+//        )));
+//
+//        $section->addStep($step);
+//
+//        $this->_sections[$section->id] = $section;
         // Campaign data Section - End
 
         // Final Section:

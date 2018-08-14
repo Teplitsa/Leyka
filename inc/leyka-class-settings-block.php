@@ -66,6 +66,7 @@ class Leyka_Text_Block extends Leyka_Settings_Block {
 class Leyka_Option_Block extends Leyka_Settings_Block {
 
     protected $_option_id = '';
+    protected $_show_title = true;
 
     public function __construct(array $params = array()) {
 
@@ -77,7 +78,12 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
             /** @todo Throw some Exception */
         }
 
+        $params = wp_parse_args($params, array(
+            'show_title' => true,
+        ));
+
         $this->_option_id = $params['option_id'];
+        $this->_show_title = !!$params['show_title'];
 
     }
 
@@ -85,6 +91,7 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
 
         switch($name) {
             case 'option_id': return $this->_option_id;
+            case 'show_title': return !!$this->_show_title;
             default: return parent::__get($name);
         }
 
