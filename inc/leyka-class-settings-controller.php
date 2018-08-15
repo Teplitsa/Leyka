@@ -126,7 +126,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             $this->_handleSettingsSubmit();
         }
 
-        echo '<pre>Current activity: '.print_r($_SESSION[$this->_storage_key]['activity'], 1).'</pre>';
+//        echo '<pre>Current activity: '.print_r($_SESSION[$this->_storage_key]['activity'], 1).'</pre>';
 
     }
 
@@ -391,9 +391,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'receiver_country',
             'option_id' => 'receiver_country',
-        )));
-
-        $section->addStep($step);
+        )))->addTo($section);
 
         // Receiver type step:
         $step = new Leyka_Settings_Step('receiver_type', $section->id, 'Получатель пожертвований');
@@ -404,9 +402,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'id' => 'receiver_type',
             'option_id' => 'receiver_legal_type',
             'show_title' => false,
-        )));
-
-        $section->addStep($step);
+        )))->addTo($section);
 
         // Legal receiver type - org. data step:
         $step = new Leyka_Settings_Step('receiver_legal_data', $section->id, 'Название организации');
@@ -450,12 +446,121 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                     'show_description' => false,
                 )),
             ),
-        )));
+        )))->addTo($section);
 
-        $section->addStep($step);
+        // Physical receiver type - person's data step:
+        $step = new Leyka_Settings_Step('receiver_physical_data', $section->id, 'Ваши данные');
+        $step->addBlock(new Leyka_Text_Block(array(
+            'id' => 'step-intro-text',
+            'text' => 'Эти данные мы будем использовать для отчётных документов вашим донорам.',
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'person_full_name',
+            'option_id' => 'person_full_name',
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'person_address',
+            'option_id' => 'person_address',
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'person_inn',
+            'option_id' => 'person_inn',
+        )))->addTo($section);
+
+        // Legal receiver type - org. bank essentials step:
+        $step = new Leyka_Settings_Step('receiver_legal_bank_essentials', $section->id, 'Банковские реквизиты');
+        $step->addBlock(new Leyka_Text_Block(array(
+            'id' => 'step-intro-text',
+            'text' => 'Данные понадобятся для отчётных документов, а также для подключения оплаты с помощью квитанции.',
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'org_bank_name',
+            'option_id' => 'org_bank_name',
+            'show_description' => false,
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'org_bank_account',
+            'option_id' => 'org_bank_account',
+            'show_description' => false,
+        )))->addBlock(new Leyka_Container_Block(array(
+            'id' => 'complex-row-1',
+            'entries' => array(
+                new Leyka_Option_Block(array(
+                    'id' => 'org_bank_bic',
+                    'option_id' => 'org_bank_bic',
+                    'show_description' => false,
+                )),
+                new Leyka_Option_Block(array(
+                    'id' => 'org_bank_corr_account',
+                    'option_id' => 'org_bank_corr_account',
+                    'show_description' => false,
+                )),
+            ),
+        )))->addTo($section);
+
+        // Physical receiver type - person's bank essentials step:
+        $step = new Leyka_Settings_Step('receiver_physical_bank_essentials', $section->id, 'Банковские реквизиты');
+        $step->addBlock(new Leyka_Text_Block(array(
+            'id' => 'step-intro-text',
+            'text' => 'Данные понадобятся для отчётных документов, а также для подключения оплаты с помощью квитанции.',
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'person_bank_name',
+            'option_id' => 'person_bank_name',
+            'show_description' => false,
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'person_bank_account',
+            'option_id' => 'person_bank_account',
+            'show_description' => false,
+        )))->addBlock(new Leyka_Container_Block(array(
+            'id' => 'complex-row-1',
+            'entries' => array(
+                new Leyka_Option_Block(array(
+                    'id' => 'person_bank_bic',
+                    'option_id' => 'person_bank_bic',
+                    'show_description' => false,
+                )),
+                new Leyka_Option_Block(array(
+                    'id' => 'person_bank_corr_account',
+                    'option_id' => 'person_bank_corr_account',
+                    'show_description' => false,
+                )),
+            ),
+        )))->addTo($section);
+
+        // Section final (outro) step:
+        $step = new Leyka_Settings_Step('final', $section->id, 'Хорошая работа!');
+        $step->addBlock(new Leyka_Text_Block(array(
+            'id' => 'step-intro-text',
+            'text' => 'Вы успешно заполнили свои данные. Продолжим наше путешествие?',
+        )))->addTo($section);
 
         $this->_sections[$section->id] = $section;
-        // Receiver's data Section - End
+        // Receiver data Section - End
+
+        // Diagnostic data Section:
+        $section = new Leyka_Settings_Section('dd', 'Диагностические данные');
+
+        // The plugin usage stats collection step:
+        $step = new Leyka_Settings_Step('plugin_stats', $section->id, 'Диагностические данные');
+        $step->addBlock(new Leyka_Text_Block(array(
+            'id' => 'step-intro-text',
+            'text' => 'Мы просим вас подтвердить согласие на отправку <strong>анонимных данных</strong> о пожертвованиях и технических данных к нам, в Теплицу. Это позволит нам улучшить работу нашего плагина.',
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'send_plugin_stats',
+            'option_id' => 'send_plugin_stats',
+            'show_title' => false,
+        )))->addTo($section);
+
+        // The plugin usage stats collection - accepted:
+        $step = new Leyka_Settings_Step('plugin_stats_accepted', $section->id, 'Спасибо! %)');
+        $step->addBlock(new Leyka_Text_Block(array(
+            'id' => 'step-intro-text',
+            'text' => 'Осталось совсем немного и мы запустим вашу первую кампанию по сбору средств с помощью платёжки. Если вы захотите подключить другие способы платежа, мы поможем вам после завершения этого этапа.',
+        )))->addTo($section);
+
+        // The plugin usage stats collection - refused:
+        $step = new Leyka_Settings_Step('plugin_stats_refused', $section->id, 'Эхх... %(');
+        $step->addBlock(new Leyka_Text_Block(array(
+            'id' => 'step-intro-text',
+            'text' => 'Осталось совсем немного и мы запустим вашу первую кампанию по сбору средств с помощью платёжки. Если вы захотите подключить другие способы платежа, мы поможем вам после завершения этого этапа.',
+        )))->addTo($section);
+
+        $this->_sections[$section->id] = $section;
 
         // Campaign data Section:
 //        $section = new Leyka_Settings_Section('cd', 'Раздел 2: настройка кампании');
@@ -510,18 +615,13 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         // Campaign data Section - End
 
         // Final Section:
-        $section = new Leyka_Settings_Section('final', 'Раздел последний: все почти готово');
+        $section = new Leyka_Settings_Section('final', 'Завершение настройки');
 
-        $step = new Leyka_Settings_Step('init',  $section->id, 'Шаг последний: напутственное сообщение');
+        $step = new Leyka_Settings_Step('init',  $section->id, 'Поздравляем!');
         $step->addBlock(new Leyka_Text_Block(array(
-            'id' => 'outro-text-1',
-            'text' => 'Это будет первый абзац прощального текста. Население перевозит органический мир. Коневодство постоянно. Приокеаническая пустыня вероятна. Приокеаническая пустыня параллельна.',
-        )))->addBlock(new Leyka_Text_Block(array(
-            'id' => 'intro-text-2',
-            'text' => 'А это второй абзац прощального текста последнего шага начального визарда. Путешествие в тысячу ли начинается с одного шага. Население перевозит органический мир. Коневодство постоянно. Приокеаническая пустыня вероятна. Приокеаническая пустыня параллельна.',
-        )));
-
-        $section->addStep($step);
+            'id' => 'step-intro-text',
+            'text' => 'Хотите больше возможностей оплаты с помощью карточек, электронных денег или криптовалюты? Тогда давайте подключим ещё способ платежа.',
+        )))->addTo($section);
 
         $this->_sections[$section->id] = $section;
         // Final Section - End
@@ -538,11 +638,36 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             if($step_from->id === 'init') {
                 $next_step_full_id = $step_from->section_id.'-receiver_type';
             } else if($step_from->id === 'receiver_type') {
+
                 $next_step_full_id =
-                    $_SESSION[$this->_storage_key]['activity'][$step_from->section_id.'-receiver_type']['receiver_legal_type'] === 'legal' ? $step_from->section_id.'-receiver_legal_data' : $step_from->section_id.'-receiver_physical_data';
+                    $_SESSION[$this->_storage_key]['activity'][$step_from->section_id.'-receiver_type']['receiver_legal_type'] === 'legal' ?
+                        $step_from->section_id.'-receiver_legal_data' :
+                        $step_from->section_id.'-receiver_physical_data';
+
+            } else if($step_from->id === 'receiver_legal_data') {
+                $next_step_full_id = $step_from->section_id.'-receiver_legal_bank_essentials';
+            } else if($step_from->id === 'receiver_physical_data') {
+                $next_step_full_id = $step_from->section_id.'-receiver_physical_bank_essentials';
+            } else if(stripos($step_from->id, 'bank_essentials')) {
+                $next_step_full_id = $step_from->section_id.'-final';
+            } else if($step_from->id === 'final') {
+                $next_step_full_id = 'dd-plugin_stats';
             }
 
-        } else if($step_from->section_id === 'cd') {
+        } else if($step_from->section_id === 'dd') {
+
+            if($step_from->id === 'plugin_stats') {
+
+                $next_step_full_id =
+                    $_SESSION[$this->_storage_key]['activity'][$step_from->section_id.'-plugin_stats']['send_plugin_stats'] === 'n' ?
+                        $step_from->section_id.'-plugin_stats_refused' :
+                        $step_from->section_id.'-plugin_stats_accepted';
+
+            } else {
+                $next_step_full_id = 'final-init';
+            }
+
+        } /*else if($step_from->section_id === 'cd') {
 
             if($step_from->id === 'init') {
                 $next_step_full_id = $step_from->section_id.'-campaign_description';
@@ -550,7 +675,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 $next_step_full_id = 'final-init';
             }
 
-        } else if($step_from->section_id === 'final') { // Final Section
+        }*/ else if($step_from->section_id === 'final') { // Final Section
             $next_step_full_id = true;
         }
 
@@ -575,14 +700,15 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'prev' => 'Вернуться на предыдущий шаг',
         );
 
-        if($step->section_id === 'rd') {
+        if($step->section_id === 'rd' && $step->id === 'init') {
 
-            if($step->id === 'init') {
+            $submit_settings['next_label'] = 'Поехали!';
+            $submit_settings['prev'] = false; // Means that Wizard shouln't display the back link
 
-                $submit_settings['next_label'] = 'Поехали!';
-                $submit_settings['prev'] = false; // Means that Wizard shouln't display the back link
+        } else if($step->section_id === 'dd' && in_array($step->id, array('plugin_stats_accepted', 'plugin_stats_refused',))) {
 
-            }
+            $submit_settings['additional_label'] = 'Перейти в Панель управления';
+            $submit_settings['additional_url'] = admin_url('admin.php?page=leyka');
 
         } else if($step->section_id === 'final') {
 

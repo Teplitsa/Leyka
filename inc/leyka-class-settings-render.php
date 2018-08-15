@@ -213,6 +213,12 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         <a href="<?php echo esc_url($submits['next_url']);?>" class="wizard-custom-link"><?php echo $submits['next_label'];?></a>
 
+        <?php }
+
+        if( !empty($submits['additional_label']) && !empty($submits['additional_url']) ) {?>
+            <a href="<?php echo esc_url($submits['additional_url']);?>">
+                <?php echo esc_html($submits['additional_label']);?>
+            </a>
         <?php }?>
 
         <br>

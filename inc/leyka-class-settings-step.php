@@ -37,6 +37,14 @@ class Leyka_Settings_Step {
         }
     }
 
+    public function addTo(Leyka_Settings_Section $section) {
+
+        $section->addStep($this);
+
+        return $this;
+
+    }
+
     public function addBlock(Leyka_Settings_Block $block) {
 
         $this->_blocks[$block->id] = $block;

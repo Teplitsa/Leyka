@@ -86,8 +86,8 @@ class Leyka_Options_Controller {
         }
 
         if(
-            $this->_options[$option_name]['value'] && ($this->_options[$option_name]['type'] == 'html' ||
-            $this->_options[$option_name]['type'] == 'rich_html')
+            $this->_options[$option_name]['value'] && ($this->_options[$option_name]['type'] === 'html' ||
+            $this->_options[$option_name]['type'] === 'rich_html')
         ) {
 
             $this->_options[$option_name]['value'] =
