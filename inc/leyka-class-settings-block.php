@@ -116,24 +116,13 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
     public function getErrors() {
 
         $value = isset($_POST['leyka_'.$this->_option_id]) ? $_POST['leyka_'.$this->_option_id] : false;
-        $error_messages = array();
+        $errors = array();
 
         foreach(leyka_options()->get_validation_errors($this->_option_id, $value) as $error_message) {
-            $error_messages[] = $error_message;
+            $errors[] = new WP_Error('option_invalid', $error_message);
         }
 
-        if($error_messages) {
-
-            $error = new WP_Error();
-            foreach($error_messages as $error_message) {
-                $error->add('option_invalid', $error_message);
-            }
-
-            return $error;
-
-        } else {
-            return false;
-        }
+        return $errors;
 
     }
 
@@ -217,8 +206,7 @@ class Leyka_Container_Block extends Leyka_Settings_Block {
         foreach($this->_blocks as $sub_block) { /** @var $sub_block Leyka_Settings_Block */
 
             $sub_block_errors = $sub_block->getErrors();
-//            echo '<pre>'.print_r($sub_block_errors, 1).'</pre>';
-            $errors = $sub_block_errors ? array_merge($errors, $sub_block_errors) : $errors;
+            $errors = array_merge($errors, $sub_block_errors);
 
         }
 

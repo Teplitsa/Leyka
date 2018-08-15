@@ -78,7 +78,7 @@ class Leyka_Settings_Step {
 
             $block_errors = $block->getErrors();
 
-            if(is_wp_error($block_errors)) {
+            if($block_errors) {
                 $errors = array_merge($errors, array($block->id => $block_errors));
             }
 

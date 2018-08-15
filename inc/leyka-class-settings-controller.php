@@ -42,7 +42,7 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
     /**
      * @param string $component_id
-     * @return WP_Error An object with the list of errors
+     * @return array An array of WP_Error objects (each with one error message)
      */
     public function getComponentErrors($component_id = null) {
         return empty($component_id) ?
@@ -327,8 +327,10 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         if( !$this->getCurrentStep()->isValid() ) {
 
-            foreach($this->getCurrentStep()->getErrors() as $component_id => $error) {
-                $this->_addComponentError($component_id, $error);
+            foreach($this->getCurrentStep()->getErrors() as $component_id => $errors) {
+                foreach($errors as $error) {
+                    $this->_addComponentError($component_id, $error);
+                }
             }
 
             return;

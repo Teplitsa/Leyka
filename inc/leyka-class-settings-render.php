@@ -144,8 +144,8 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                                     <div class="field-errors">
                                         <?php $block_errors = $this->_controller->getComponentErrors($sub_block->id);
                                         if($block_errors) {
-                                            foreach($block_errors->get_error_messages() as $error_message) {
-                                                echo '<p>'.$error_message.'</p>';
+                                            foreach($block_errors as $error) { /** @var $error WP_Error */
+                                                echo '<p>'.$error->get_error_message().'</p>';
                                             }
                                         }?>
                                     </div>
@@ -177,8 +177,11 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                     <div class="field-errors">
                     <?php $block_errors = $this->_controller->getComponentErrors($block->id);
                     if($block_errors) {
-                        foreach($block_errors->get_error_messages() as $error_message) {
-                            echo '<p>'.$error_message.'</p>';
+                        foreach($block_errors as $error) { /** @var $error WP_Error */
+                            echo '<pre>'.print_r($error, 1).'</pre>';
+//                            if( !is_wp_error($error))
+//                                echo '<pre>'.print_r($error, 1).'</pre>';
+//                            echo '<p>'.$error->get_error_message().'</p>';
                         }
                     }?>
                     </div>
