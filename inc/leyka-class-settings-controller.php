@@ -126,7 +126,9 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             $this->_handleSettingsSubmit();
         }
 
-//        echo '<pre>Current activity: '.print_r($_SESSION[$this->_storage_key]['activity'], 1).'</pre>';
+        if(isset($_GET['debug'])) {
+            echo '<pre>The activity: '.print_r($_SESSION[$this->_storage_key]['activity'], 1).'</pre>';
+        }
 
     }
 
@@ -178,7 +180,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         foreach($this->getCurrentStep()->getBlocks() as $block) {
             if(is_a($block, 'Leyka_Option_Block')) {
-                leyka_options()->opt($block->option_id, $_POST['leyka_'.$block->option_id]);
+                leyka_save_setting($block->option_id);
             }
         }
 
@@ -322,8 +324,6 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
     }
 
     public function handleSubmit() {
-
-//        echo '<pre>Current step: '.print_r($this->getCurrentStep()->full_id.' (is valid: '.$this->getCurrentStep()->isValid().')', 1).'</pre>';
 
         if( !$this->getCurrentStep()->isValid() ) {
 

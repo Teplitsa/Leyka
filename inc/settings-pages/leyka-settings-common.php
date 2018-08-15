@@ -29,31 +29,7 @@ function leyka_save_settings($tab_name) {
     }
 
     foreach($options_names as $name) {
-
-        $option_type = leyka_options()->get_type_of($name);
-
-        if($option_type == 'checkbox') {
-            leyka_options()->opt($name, isset($_POST["leyka_$name"]) ? 1 : 0);
-        } elseif($option_type == 'multi_checkbox') {
-
-            if(isset($_POST["leyka_$name"]) && leyka_options()->opt($name) != $_POST["leyka_$name"]) {
-                leyka_options()->opt($name, (array)$_POST["leyka_$name"]);
-            }
-
-        } elseif($option_type == 'html' || $option_type == 'rich_html') {
-
-            if(isset($_POST["leyka_$name"]) && leyka_options()->opt($name) != $_POST["leyka_$name"]) {
-                leyka_options()->opt($name, esc_attr(stripslashes($_POST["leyka_$name"])));
-            }
-
-        } else if(stristr($option_type, 'custom_') !== false && isset($_POST["leyka_$name"])) { // Custom field types
-            do_action("leyka_save_custom_setting_$name", $_POST["leyka_$name"]);
-        } else { // Simple field types
-            if(isset($_POST["leyka_$name"]) && leyka_options()->opt($name) != $_POST["leyka_$name"]) {
-                leyka_options()->opt($name, esc_attr(stripslashes($_POST["leyka_$name"])));
-            }
-        }
-
+        leyka_save_setting($name);
     }
 
 }

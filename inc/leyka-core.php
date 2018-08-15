@@ -96,7 +96,7 @@ class Leyka {
         if(is_admin()) {
 
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-allocator.php');
-            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-render-settings.php');
+            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-render-settings-old.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-admin.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-donations-export.php');
 
