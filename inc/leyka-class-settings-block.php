@@ -214,8 +214,12 @@ class Leyka_Container_Block extends Leyka_Settings_Block {
 
         $errors = array();
 
-        foreach($this->_blocks as $block) { /** @var $block Leyka_Settings_Block */
-            $errors = array_merge($errors, $block->getErrors());
+        foreach($this->_blocks as $sub_block) { /** @var $sub_block Leyka_Settings_Block */
+
+            $sub_block_errors = $sub_block->getErrors();
+//            echo '<pre>'.print_r($sub_block_errors, 1).'</pre>';
+            $errors = $sub_block_errors ? array_merge($errors, $sub_block_errors) : $errors;
+
         }
 
         return $errors;
