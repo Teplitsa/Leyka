@@ -111,9 +111,10 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     public function renderMainArea() {
 
-        $current_step = $this->_controller->getCurrentStep();?>
+        $current_step = $this->_controller->getCurrentStep();
+        ?>
 
-        <div class="step-title"><h2><?php echo $current_step->title;?></h2></div>
+        <div class="step-title"><h2 id="step-title-<?php echo $current_step->full_id?>"><?php echo $current_step->title;?></h2></div>
 
         <div class="step-common-errors">
             <?php $this->renderCommonErrorsArea();?>
@@ -130,10 +131,12 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                     <div id="<?php echo $block->id;?>" class="settings-block container-block">
 
                     <?php $entry_width = $block->entry_width ? (100.0*$block->entry_width).'%' : false;
+                    
+                    $sub_blocks_list = $block->getContent();
 
-                    foreach($block->getContent() as $sub_block) {?>
+                    foreach($sub_blocks_list as $sub_block_index => $sub_block) {?>
 
-                        <div class="container-entry" <?php echo $entry_width ? 'style="flex-basis: '.$entry_width.';"' : '';?>>
+                        <div class="container-entry" <?php echo $entry_width ? 'style="flex-basis: '.($sub_block_index == count($sub_blocks_list) - 1 ? 'auto' : $entry_width).';"' : '';?>>
 
                             <?php if(is_a($sub_block, 'Leyka_Option_Block')) {
 
@@ -177,8 +180,28 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                     <div class="field-errors">
                     <?php $block_errors = $this->_controller->getComponentErrors($block->id);
                     if($block_errors) {
-                        foreach($block_errors as $error) { /** @var $error WP_Error */
-                            echo '<pre>'.print_r($error, 1).'</pre>';
+                        foreach($block_errors as $k => $error) { /** @var $error WP_Error */
+                            
+                            if(is_wp_error($error)) {
+                                echo "<span>".$error->get_error_message()."</span>";
+                            }
+                            elseif(is_array($error)) {
+                                foreach($error as $k1 => $error1) {
+                                    if(is_array($error)) {
+                                        foreach($error1 as $k2 => $error2) {
+                                            echo "<span>".$error2."</span>";
+                                        }
+                                    }
+                                    else {
+                                        echo "<span>".$error1."</span>";
+                                    }
+                                }
+                            }
+                            else {
+                                echo "<span>".$error."</span>";
+                            }
+                            
+                            //echo '<pre>'.print_r($error, 1).'</pre>';
 //                            if( !is_wp_error($error))
 //                                echo '<pre>'.print_r($error, 1).'</pre>';
 //                            echo '<p>'.$error->get_error_message().'</p>';
@@ -199,6 +222,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
             </div>
         </form>
         
+        <div style="display: none;">
         
         <h1>Приветствуем вас!</h1>
         <p>Вы установили плагин «Лейка», осталось его настроить. Мы проведём вас по всем шагам, поможем подсказками, а если нужна будет наша помощь, вы можете обратиться к нам через форму в правой части экрана</p>
@@ -272,6 +296,8 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
             </div>
         </div>
         
+        </div>
+        
     <?php }
 
     public function renderHiddenFields() {
@@ -307,59 +333,49 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     <?php }
 
-    public function renderNavigationArea() {?>
+    public function renderNavigationArea() {
+        $navigation_data = $this->_controller->getNavigationData();
+        ?>
+    
+        <?php# echo '<pre>'.print_r($this->_controller->getNavigationData(), 1).'</pre>';?>
 
         <div class="nav-chain">
-            
             <div class="nav-line">
-            
-                <div class="nav-section open">
+        
+            <?php foreach($navigation_data as $section_index => $section):?>
+                <div class="nav-section <?php if($section['is_current']):?>active<?php elseif($section['is_completed']):?>done<?php endif?>">
                     
                     <div class="nav-section-title">
-                        <div class="nav-section-marker">1</div>
-                        Ваши данные
+                        <div class="nav-section-marker">
+                        <?php if($section['is_completed']):?>
+                            <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-ok.svg" />
+                        <?php else:?>
+                            <?php echo $section_index + 1?>
+                        <?php endif?>
+                        </div>
+                        <?php echo $section['title']?>
                     </div>
                     
-                    <div class="nav-steps">
-                        <div class="nav-step done">Получатель пожертвований</div>
-                        <div class="nav-step done">Ваши данные<img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-i.svg" class="step-i" /></div>
-                        <div class="nav-step active">Банковские реквизиты</div>
-                        <div class="nav-step">Оферта</div>
-                        <div class="nav-step">Персональные данные</div>
-                    </div>
-                    
+                    <?php if(!empty($section['steps']) && count($section['steps']) > 1):?>
+                        <div class="nav-steps">
+                
+                            <?php foreach($section['steps'] as $step_index => $step):?>
+                                <?php if($step_index == 0) continue?>
+                                <div class="nav-step <?php if($step['is_current']):?>active<?php elseif($step['is_completed']):?>done<?php endif?>">
+                                    <?php echo $step['title']?>
+                                    <?php if($step['is_current']):?><img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-i.svg" class="step-i" /><?php endif?>
+                                </div>
+                            <?php endforeach?>
+                        
+                        </div>
+                    <?php endif?>
+                
                 </div>
                 
-                
-                <div class="nav-section active">
-                    
-                    <div class="nav-section-title">
-                        <div class="nav-section-marker">2</div>
-                        Диагностические данные
-                    </div>
-                    
-                </div>
-                
-                <div class="nav-section done">
-                    
-                    <div class="nav-section-title">
-                        <div class="nav-section-marker"><img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-ok.svg" /></div>
-                        Настройка кампании
-                    </div>
-                    
-                </div>
-                
-                <div class="nav-section">
-                    
-                    <div class="nav-section-title">
-                        <div class="nav-section-marker">4</div>
-                        Завершение настройки
-                    </div>
-                    
-                </div>
-            
+            <?php endforeach?>
+        
             </div>
-<!--            --><?php //echo '<pre>'.print_r($this->_controller->getNavigationData(), 1).'</pre>';?>
+                
         </div>
 
         <div class="leyka-logo">

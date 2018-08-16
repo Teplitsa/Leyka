@@ -14,7 +14,7 @@
 
         position: relative;
         background-color: $color-nav-area-bg;
-        width: 337px;
+        min-width: 293px;
         letter-spacing: -0.02em;
         padding: 18px 17px 0px 32px;
         margin-right: -1px;
@@ -145,9 +145,29 @@
     .main-area {
 
         width: 100%;
-        padding: 10px 20px;
+        padding: 0px 32px 49px 72px;
         color: $color-wizard-text;
-
+        
+        // wizard markup styles
+        h2#step-title-rd-init,
+        h2#step-title-dd-plugin_stats,
+        h2#step-title-final-init {
+            @extend h1;
+            margin-top: 49px;
+        }
+        
+        .step-title h2 {
+            margin-top: 41px;
+        }
+        
+        .step-content {
+            max-width: 520px;
+        }
+        
+        #step-intro-text p {
+            margin-bottom: 24px;
+        }
+        
         .settings-block {
 
             &.text-block {
@@ -156,7 +176,7 @@
 
             &.option-block {
 
-                margin-bottom: 10px;
+                margin-bottom: 16px;
 
                 &.option-title-hidden .field-component.title {
                     display: none;
@@ -165,15 +185,104 @@
                     display: none;
                 }
 
-                .field-component.title {
-                    display: block;
-                }
+                .field-component {
+                    
+                    &.title {
+                        @include wizard-field-label();
+                        display: block;
+                        margin-bottom: 5px;
+                        
+                        .required {
+                            @include wizard-field-label-required-sign();
+                            color: $color-wizard-required-sign;
+                            vertical-align: text-bottom;
+                            margin-right: 3px;
+                            float: left;
+                            
+                            &:after {
+                                clear: both;
+                                float: none;
+                            }
+                        }
+                    }
+                    
+                    &.field {
+                        
+                        // TODO: move colors to presets after comlete
+                        input[type=text], input[type=email], input[type=password], input[type=text], input[type=number], select, textarea {
+                            @include wizard-field-input-text();
+                            color: $color-wizard-text;
+                            @include placeholder {
+                                color: $color-wizard-placeholder;
+                            }                    
+                            margin-left: -1px;
+                            padding: 1px 6px 3px 6px;
+                            height: 25px;
+                            width: 248px;
+                            border: 1px solid #dddddd;
+                            
+                            &:active, &:focus {
+                                color: $color-wizard-text;
+                                border: 1px solid #bfbfbf;
+                                box-shadow: inset 0px 0px 3px rgba(0, 0, 0, 0.4);                        
+                            }
+                            
+                        }
+                        
+                        textarea {
+                            height: 111px;
+                            width: 400px;
+                        }
+                        
+                        input[type=checkbox], input[type=radio] {
+                        }
+                        
+                        label {
+                            @include wizard-field-label();
+                            display: block;
+                            margin-bottom: 8px;
+                            
+                            & > input {
+                                margin-right: 8px;
+                                vertical-align: middle;
+                            }
+                        }
 
+                    }
+                    
+                    &.help {
+                        @include wizard-field-explain();
+                        color: $color-wizard-field-explain;
+                        display: block;
+                        margin-top: 8px;
+                        margin-bottom: 0px;
+                    }
+                    
+                }
+                
+                .field-radio {
+                    .field-component.help {
+                        padding-left: 25px;
+                    }
+                }                
+                
+            }
+            
+            &#org_full_name,
+            &#org_face_fio_ip,
+            &#org_address,
+            &#org_short_name {
+                 .field {
+                    input[type=text] {
+                        width: 100%;
+                    }
+                 }
             }
 
             &.container-block {
 
                 display: flex;
+                justify-content: space-between;
 
             }
 
@@ -192,7 +301,11 @@
         }
 
         .field-errors {
-            background-color: transparentize(indianred, 0.65);
+            span {
+                @include wizard-field-message();
+                margin-bottom: 0px;
+                color: $color-wizard-error-message;
+            }
         }
 
         // general elements        
@@ -220,34 +333,31 @@
             color: $color-wizard-link;
             text-decoration: none;
             border-bottom: none;
-            padding-bottom: 3px;
+            padding-bottom: 2px;
+            border-bottom: 1px dashed $color-wizard-link-sec;
             
             &:hover {
                 color: $color-wizard-link-hover;
-                border-bottom: 1px dashed $color-wizard-link-sec;
             }
             
             &:focus, &:active {
                 color: $color-wizard-link-active;
-                border-bottom: 1px dashed $color-wizard-link-sec;
             }
         }
         
         a.link-sec {
             color: $color-wizard-link-sec;
             text-decoration: none;
-            padding-bottom: 3px;
+            padding-bottom: 2px;
             border-bottom: 1px solid $color-wizard-link-sec;
             
             &:hover {
                 color: $color-wizard-link-sec-hover;
                 text-decoration: none;
-                border-bottom: none;
             }
             
             &:focus, &:active {
                 color: $color-wizard-link-sec-active;
-                border-bottom: none;
             }
         }
         
@@ -419,9 +529,6 @@
         }
         // end general elements
         
-        .step-intro-text {
-        }
-
     }
 
 }
