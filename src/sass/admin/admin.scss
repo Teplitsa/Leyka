@@ -1,5 +1,6 @@
 @import 'presets';
 @import 'typo';
+@import 'mixins';
 
 .leyka-wizard {
 
@@ -7,23 +8,145 @@
     flex-direction: row;
 
     margin-left: -20px;
+    min-height: calc(100vh - 117px);
 
     .nav-area {
 
-        border: 1px solid lightgrey;
-        width: 400px;
-
-        padding: 10px 20px;
+        position: relative;
+        background-color: $color-nav-area-bg;
+        width: 337px;
+        letter-spacing: -0.02em;
+        padding: 18px 17px 0px 32px;
         margin-right: -1px;
+        
+        .leyka-logo {
+            position: absolute;
+            bottom: 30px;
+            left: calc(50% - 42px);
+        }
+        
+        .nav-chain {
+            border-left: 1px solid $color-nav-line;
+            margin-left: 21px;
+            
+            .nav-line {
+                margin-left: -21px;
+            }
+            
+            .nav-section {
+                margin-top: 22px;
+                
+                .nav-section-title {
+                    @include chain-section-title();
+                    color: $color-nav-section-text;
+                    vertical-align: middle;
+                    height: 40px;
+                    
+                    .nav-section-marker {
+                        @include chain-section-marker();
+                        background-color: $color-nav-section-marker-bg;
+                        color: $color-nav-section-marker-text;
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 20px;
+                        line-height: 40px;
+                        text-align: center;
+                        vertical-align: middle;
+                        display: inline-block;
+                        margin-right: 12px;
+                    }
+                    
+                }
+                
+                &.open {
+                    .nav-section-title {
+                        color: $color-nav-section-open-text;
+                        
+                        .nav-section-marker {
+                            color: $color-nav-section-marker-open-text;
+                        }
+                    }
+                }
+
+                &.active {
+                    .nav-section-title {
+                        color: $color-nav-section-active-text;
+                        
+                        .nav-section-marker {
+                            color: $color-nav-section-marker-active-text;
+                        }
+                    }
+                }
+                
+                &.done {
+                    .nav-section-title {
+                        color: $color-nav-section-active-text;
+                        
+                        .nav-section-marker {
+                            background-color: $color-nav-section-marker-done-bg;
+                            color: $color-nav-section-marker-done-text;
+                        }
+                    }
+                }
+
+                .nav-steps {
+                    
+                    padding-left: 16px;
+                    padding-top: 9px;
+                    margin-bottom: -2px;
+                    
+                    .nav-step {
+                        @include chain-step();
+                        color: $color-nav-step-text;
+                        height: 24px;
+                        padding-top: 10px;
+                        
+                        &:before {
+                            background-color: $color-nav-step-marker-bg;
+                            content: " ";
+                            display: inline-block;
+                            width: 9px;
+                            height: 9px;
+                            border-radius: 4.5px;
+                            margin-right: 28px;
+                        }
+
+                        &.done {
+                            color: $color-nav-step-done-text;
+                            &:before {
+                                background-color: $color-nav-step-marker-done-bg;
+                            }
+                            
+                            .step-i {
+                                margin-left: 3px;
+                                vertical-align: middle;
+                                cursor: pointer;
+                            }
+                        }
+                        
+                        &.active {
+                            color: $color-nav-step-active-text;
+                            &:before {
+                                background-color: $color-nav-step-marker-active-bg;
+                            }
+                        }
+                    }
+                    
+                }
+                
+            }
+            
+            
+        }
+        
 
     }
 
     .main-area {
 
-        border: 1px solid lightgrey;
         width: 100%;
-
         padding: 10px 20px;
+        color: $color-wizard-text;
 
         .settings-block {
 
@@ -72,8 +195,231 @@
             background-color: transparentize(indianred, 0.65);
         }
 
+        // general elements        
+        h1 {
+            @include wizard-h1();
+            margin-bottom: 18px;
+        }
+        
+        h2 {
+            @include wizard-h2();
+            margin-bottom: 8px;
+        }
+        
+        h3 {
+            @include wizard-h3();
+            margin-bottom: 8px;
+        }
+        
+        p {
+            @include wizard-text();
+            margin-top: 0px;
+        }
+        
+        a {
+            color: $color-wizard-link;
+            text-decoration: none;
+            border-bottom: none;
+            padding-bottom: 3px;
+            
+            &:hover {
+                color: $color-wizard-link-hover;
+                border-bottom: 1px dashed $color-wizard-link-sec;
+            }
+            
+            &:focus, &:active {
+                color: $color-wizard-link-active;
+                border-bottom: 1px dashed $color-wizard-link-sec;
+            }
+        }
+        
+        a.link-sec {
+            color: $color-wizard-link-sec;
+            text-decoration: none;
+            padding-bottom: 3px;
+            border-bottom: 1px solid $color-wizard-link-sec;
+            
+            &:hover {
+                color: $color-wizard-link-sec-hover;
+                text-decoration: none;
+                border-bottom: none;
+            }
+            
+            &:focus, &:active {
+                color: $color-wizard-link-sec-active;
+                border-bottom: none;
+            }
+        }
+        
+        .fields {
+            
+            .field {
+                
+                margin-bottom: 16px;
+                
+                label {
+                    @include wizard-field-label();
+                    display: block;
+                    margin-bottom: 5px;
+                    
+                    .field-q {
+                        margin-left: 3px;
+                        vertical-align: baseline;
+                        cursor: pointer;
+                    }
+                }
+                
+                // TODO: move colors to presets after comlete
+                input[type=text], input[type=email], input[type=password], input[type=text], input[type=number], select, textarea {
+                    @include wizard-field-input-text();
+                    color: $color-wizard-text;
+                    @include placeholder {
+                        color: $color-wizard-placeholder;
+                    }                    
+                    margin-left: -1px;
+                    padding: 1px 6px 3px 6px;
+                    height: 25px;
+                    width: 248px;
+                    border: 1px solid #dddddd;
+                    
+                    &:active, &:focus {
+                        color: $color-wizard-text;
+                        border: 1px solid #bfbfbf;
+                        box-shadow: inset 0px 0px 3px rgba(0, 0, 0, 0.4);                        
+                    }
+                    
+                }
+                
+                textarea {
+                    height: 111px;
+                    width: 400px;
+                }
+                
+                input[type=checkbox], input[type=radio] {
+                }
+                
+                &.field-error  {
+                    input, select, textarea {
+                        background: #f8ecef;
+                        border: 1px solid #f5c8d0;
+                    }
+                }
+
+                &.field-success  {
+                    input, select, textarea {
+                        background: #eff7f2;
+                        border: 1px solid #afdfc3;
+                    }
+                }
+
+                &.field-warning  {
+                    input, select, textarea {
+                        background: #f7f6ef;
+                        border: 1px solid #dedfaf;
+                    }
+                }
+                
+                .message {
+                    @include wizard-field-message();
+                    margin-bottom: 0px;
+                    
+                    &.message-error {
+                        color: $color-wizard-error-message;
+                    }
+                }
+                
+                .explain {
+                    @include wizard-field-explain();
+                    color: $color-wizard-field-explain;
+                    margin-top: 8px;
+                    margin-bottom: 0px;
+                }
+                
+                &.field-options {
+                    
+                    label {
+                        @include wizard-field-label();
+                        display: block;
+                        margin-bottom: 8px;
+                        
+                        & > input {
+                            margin-right: 8px;
+                            vertical-align: middle;
+                        }
+                    }
+                    
+                    &.required {
+                        label {
+                            &:before {
+                                display: none;
+                            }
+                        }
+                    }
+                    
+                    .explain {
+                        padding-left: 25px;
+                    }
+                }
+                
+                &.required {
+                    label {
+                        &:before {
+                            @include wizard-field-label-required-sign();
+                            content: "*";
+                            display: inline;
+                            color: $color-wizard-required-sign;
+                            vertical-align: text-bottom;
+                            margin-right: 3px;
+                        }
+                    }
+                }
+
+            }
+        }
+        
         .step-submit {
-            margin-top: 20px;
+            margin-top: 32px;
+            
+            .button-primary {
+                @include wizard-button-caption();
+                height: 40px;
+                width: 248px;
+            }
+            
+            .sec-action {
+                margin-top: 32px;
+                a, input[type=submit].link-sec {
+                    @include wizard-action-link();
+                }
+                
+                input[type=submit].link-sec {
+                    background: none;
+                    box-shadow: none;
+                    text-shadow: none;
+                    border: none;
+                    
+                    @extend a.link-sec;
+                    cursor: pointer;
+                    border-bottom: 1px solid $color-wizard-link-sec;
+                    box-sizing: border-box;
+                    height: 25px;
+                    padding: 0px;
+                    margin: 0px;
+                    
+                    &:hover {
+                        border-bottom: 1px solid transparent;
+                    }
+                    
+                    &:focus, &:active {
+                        border-bottom: 1px solid transparent;
+                    }
+                    
+                }
+            }
+        }
+        // end general elements
+        
+        .step-intro-text {
         }
 
     }

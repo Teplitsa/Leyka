@@ -198,7 +198,80 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
             <?php $this->renderSubmitArea();?>
             </div>
         </form>
+        
+        
+        <h1>Приветствуем вас!</h1>
+        <p>Вы установили плагин «Лейка», осталось его настроить. Мы проведём вас по всем шагам, поможем подсказками, а если нужна будет наша помощь, вы можете обратиться к нам через форму в правой части экрана</p>
+        
+        <h2>Получатель пожертвований</h2>
+        <p>Вы установили плагин «Лейка», осталось его настроить. Мы проведём вас по всем шагам, поможем подсказками, а если нужна будет наша помощь, вы можете обратиться к нам через форму в правой части экрана</p>
+        
+        <h3>Такого заголовка пока нет</h3>
+        <p>Вы установили плагин «Лейка», осталось его <a href="https://te-st.ru">настроить</a>. Мы проведём вас по всем шагам, поможем подсказками, а если нужна будет наша помощь, вы можете обратиться к нам через форму в правой части экрана</p>
+        
+        <div class="fields">
+            
+            <div class="field">
+                <label>Выберите вашу страну:<img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" class="field-q" /></label>
+                <input type="text" name="some" placeholder="Введите текст"/>
+                <p class="explain">Архитектура Лейки позволяет вам собирать деньги и в других странах. Узнайте, как подключить вашу страну <a href="https://te-st.ru">здесь</a>.</p>
+            </div>
 
+            <div class="field required">
+                <label>Выберите вашу страну:</label>
+                <select name="some">
+                    <option>Россия</option>
+                    <option>Китай</option>
+                </select>
+                <p class="explain">Архитектура Лейки позволяет вам собирать деньги и в других странах. Узнайте, как подключить вашу страну <a href="https://te-st.ru">здесь</a>.</p>
+            </div>
+
+            <div class="field field-options">
+                <label><input type="radio" name="some1"/>НКО – юридическое лицо</label>
+                <label><input type="radio" name="some1"/>Физическое лицо</label>
+                <p class="explain">Архитектура Лейки позволяет вам собирать деньги и в других странах. Узнайте, как подключить вашу страну <a href="https://te-st.ru">здесь</a>.</p>
+            </div>
+
+            <div class="field field-options">
+                <label><input type="checkbox" name="some2"/>НКО – юридическое лицо</label>
+                <label><input type="checkbox" name="some2"/>Физическое лицо</label>
+            </div>
+
+            <div class="field">
+                <label>Выберите вашу страну:</label>
+                <textarea name="some" placeholder="Введите текст"></textarea>
+                <p class="explain">Архитектура Лейки позволяет вам собирать деньги и в других странах. Узнайте, как подключить вашу страну <a href="https://te-st.ru">здесь</a>.</p>
+            </div>
+
+            <div class="field field-error">
+                <label>Выберите вашу страну:</label>
+                <input type="text" name="some" placeholder="Введите текст"/>
+                <p class="message message-error">В поле должны стоять числовые значения</p>
+                <p class="explain">Архитектура Лейки позволяет вам собирать деньги и в других странах. Узнайте, как подключить вашу страну <a href="https://te-st.ru">здесь</a>.</p>
+            </div>
+
+            <div class="field field-success">
+                <label>Выберите вашу страну:</label>
+                <input type="text" name="some" placeholder="Введите текст"/>
+            </div>
+
+            <div class="field field-warning">
+                <label>Выберите вашу страну:</label>
+                <input type="text" name="some" placeholder="Введите текст"/>
+            </div>
+            
+        </div>
+        
+        <div class="step-submit">
+            <input type="submit" class="button button-primary" />
+            <div class="sec-action">
+                <a class="link-sec" href="https://te-st.ru">Вернуться на предыдущий шаг</a>
+            </div>
+            <div class="sec-action">
+                <input type="submit" class="link-sec" value="Вернуться на предыдущий шаг"/>
+            </div>
+        </div>
+        
     <?php }
 
     public function renderHiddenFields() {
@@ -210,7 +283,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         <?php if($submits['next_url'] === true) {?>
 
-        <input type="submit" class="step-next" name="leyka_settings_submit_<?php echo $this->_controller->id;?>" value="<?php echo $submits['next_label'];?>">
+        <input type="submit" class="step-next button button-primary" name="leyka_settings_submit_<?php echo $this->_controller->id;?>" value="<?php echo $submits['next_label'];?>">
 
         <?php } else if(is_string($submits['next_url'])) {?>
 
@@ -227,7 +300,9 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         <br>
 
         <?php if( !empty($submits['prev']) ) {?>
-        <input type="submit" class="step-prev" name="leyka_settings_prev_<?php echo $this->_controller->id;?>" value="<?php echo $submits['prev'];?>">
+        <div class="sec-action">
+            <input type="submit" class="step-prev link-sec" name="leyka_settings_prev_<?php echo $this->_controller->id;?>" value="<?php echo $submits['prev'];?>">
+        </div>
         <?php }?>
 
     <?php }
@@ -235,10 +310,61 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
     public function renderNavigationArea() {?>
 
         <div class="nav-chain">
+            
+            <div class="nav-line">
+            
+                <div class="nav-section open">
+                    
+                    <div class="nav-section-title">
+                        <div class="nav-section-marker">1</div>
+                        Ваши данные
+                    </div>
+                    
+                    <div class="nav-steps">
+                        <div class="nav-step done">Получатель пожертвований</div>
+                        <div class="nav-step done">Ваши данные<img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-i.svg" class="step-i" /></div>
+                        <div class="nav-step active">Банковские реквизиты</div>
+                        <div class="nav-step">Оферта</div>
+                        <div class="nav-step">Персональные данные</div>
+                    </div>
+                    
+                </div>
+                
+                
+                <div class="nav-section active">
+                    
+                    <div class="nav-section-title">
+                        <div class="nav-section-marker">2</div>
+                        Диагностические данные
+                    </div>
+                    
+                </div>
+                
+                <div class="nav-section done">
+                    
+                    <div class="nav-section-title">
+                        <div class="nav-section-marker"><img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-ok.svg" /></div>
+                        Настройка кампании
+                    </div>
+                    
+                </div>
+                
+                <div class="nav-section">
+                    
+                    <div class="nav-section-title">
+                        <div class="nav-section-marker">4</div>
+                        Завершение настройки
+                    </div>
+                    
+                </div>
+            
+            </div>
 <!--            --><?php //echo '<pre>'.print_r($this->_controller->getNavigationData(), 1).'</pre>';?>
         </div>
 
-        <div class="leyka-logo">Leyka logo here</div>
+        <div class="leyka-logo">
+            <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/nav-logo.png" />
+        </div>
 
     <?php }
 
