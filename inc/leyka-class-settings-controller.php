@@ -723,12 +723,12 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
     }
 
-    public function getNavigationData() {
+//    public function getNavigationData() {
 
 //        if() {
 //
 //        }
 
-    }
+//    }
 
 }
