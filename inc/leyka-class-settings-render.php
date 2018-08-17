@@ -104,19 +104,20 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
     <?php }
 
     public function renderCommonErrorsArea() {
-        foreach($this->_controller->getCommonErrors() as $error) { /** @var WP_Error $error */
-            echo '<pre>'.print_r($error->get_error_message(), 1).'</pre>';
-        }
+        foreach($this->_controller->getCommonErrors() as $error) { /** @var WP_Error $error */ ?>
+            <span><?php echo $error->get_error_message();?></span>
+        <?php }
     }
 
     public function renderMainArea() {
 
-        $current_step = $this->_controller->getCurrentStep();
-        ?>
+        $current_step = $this->_controller->getCurrentStep();?>
 
-        <div class="step-title"><h2 id="step-title-<?php echo $current_step->full_id?>"><?php echo $current_step->title;?></h2></div>
+        <div class="step-title">
+            <h2 id="step-title-<?php echo $current_step->full_id?>"><?php echo $current_step->title;?></h2>
+        </div>
 
-        <div class="step-common-errors">
+        <div class="step-common-errors <?php echo $this->_controller->hasCommonErrors() ? 'has-errors' : '';?>">
             <?php $this->renderCommonErrorsArea();?>
         </div>
 
@@ -131,10 +132,10 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                     <div id="<?php echo $block->id;?>" class="settings-block container-block">
 
                     <?php $entry_width = $block->entry_width ? (100.0*$block->entry_width).'%' : false;
-                    
+
                     $sub_blocks_list = $block->getContent();
 
-                    foreach($sub_blocks_list as $sub_block_index => $sub_block) {?>
+                    foreach($sub_blocks_list as $sub_block_index => $sub_block) { /** @var Leyka_Settings_Block $sub_block */?>
 
                         <div class="container-entry" <?php echo $entry_width ? 'style="flex-basis: '.($sub_block_index == count($sub_blocks_list) - 1 ? 'auto' : $entry_width).';"' : '';?>>
 
@@ -144,13 +145,10 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
                                 <div id="<?php echo $sub_block->id;?>" class="settings-block option-block <?php echo $sub_block->show_title ? '' : 'option-title-hidden';?> <?php echo $sub_block->show_description ? '' : 'option-description-hidden';?>">
                                     <?php do_action("leyka_render_{$option_info['type']}", $sub_block->getContent(), $option_info);?>
-                                    <div class="field-errors">
-                                        <?php $block_errors = $this->_controller->getComponentErrors($sub_block->id);
-                                        if($block_errors) {
-                                            foreach($block_errors as $error) { /** @var $error WP_Error */
-                                                echo '<p>'.$error->get_error_message().'</p>';
-                                            }
-                                        }?>
+                                    <div class="field-errors <?php echo $this->_controller->hasComponentErrors($sub_block->id) ? 'has-errors' : '';?>">
+                                    <?php foreach($this->_controller->getComponentErrors($sub_block->id) as $error) { /** @var $error WP_Error */ ?>
+                                        <span><?php echo $error->get_error_message();?></span>
+                                    <?php }?>
                                     </div>
                                 </div>
 
@@ -169,7 +167,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
                 <?php } else if(is_a($block, 'Leyka_Custom_Option_Block')) {
 
-                    echo '<p>'.$block->option_id.' custom option here</p>';
+//                    echo '<p>'.$block->option_id.' custom option here</p>';
 
                 } else if(is_a($block, 'Leyka_Option_Block')) {
 
@@ -177,36 +175,10 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
                 <div id="<?php echo $block->id;?>" class="settings-block option-block <?php echo $block->show_title ? '' : 'option-title-hidden';?> <?php echo $block->show_description ? '' : 'option-description-hidden';?>">
                     <?php do_action("leyka_render_{$option_info['type']}", $block->getContent(), $option_info);?>
-                    <div class="field-errors">
-                    <?php $block_errors = $this->_controller->getComponentErrors($block->id);
-                    if($block_errors) {
-                        foreach($block_errors as $k => $error) { /** @var $error WP_Error */
-                            
-                            if(is_wp_error($error)) {
-                                echo "<span>".$error->get_error_message()."</span>";
-                            }
-                            elseif(is_array($error)) {
-                                foreach($error as $k1 => $error1) {
-                                    if(is_array($error)) {
-                                        foreach($error1 as $k2 => $error2) {
-                                            echo "<span>".$error2."</span>";
-                                        }
-                                    }
-                                    else {
-                                        echo "<span>".$error1."</span>";
-                                    }
-                                }
-                            }
-                            else {
-                                echo "<span>".$error."</span>";
-                            }
-                            
-                            //echo '<pre>'.print_r($error, 1).'</pre>';
-//                            if( !is_wp_error($error))
-//                                echo '<pre>'.print_r($error, 1).'</pre>';
-//                            echo '<p>'.$error->get_error_message().'</p>';
-                        }
-                    }?>
+                    <div class="field-errors <?php echo $this->_controller->hasComponentErrors($block->id) ? 'has-errors' : '';?>">
+                    <?php foreach($this->_controller->getComponentErrors($block->id) as $error) { /** @var $error WP_Error */?>
+                        <span><?php echo $error->get_error_message();?></span>
+                    <?php }?>
                     </div>
                 </div>
 
@@ -334,12 +306,8 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
     <?php }
 
     public function renderNavigationArea() {
-        $navigation_data = $this->_controller->getNavigationData();
-        ?>
-    
-        <?php
-            # echo '<pre>'.print_r($this->_controller->getNavigationData(), 1).'</pre>';
-        ?>
+
+        $navigation_data = $this->_controller->getNavigationData();?>
 
         <div class="nav-chain">
             <div class="nav-line">

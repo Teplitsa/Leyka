@@ -70,18 +70,15 @@ class Leyka_Settings_Step {
 
     }
 
+    /**
+     * @return array An array of (block_id => an array of WP_Error objects, with one field error in each)
+     */
     public function getErrors() {
 
         $errors = array();
 
         foreach($this->_blocks as $block) { /** @var $block Leyka_Settings_Block */
-
-            $block_errors = $block->getErrors();
-
-            if($block_errors) {
-                $errors = array_merge($errors, array($block->id => $block_errors));
-            }
-
+            $errors = array_merge($errors, $block->getErrors());
         }
 
         return $errors;

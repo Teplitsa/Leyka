@@ -122,7 +122,7 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
             $errors[] = new WP_Error('option_invalid', $error_message);
         }
 
-        return $errors;
+        return $errors ? array($this->_id => $errors) : array();
 
     }
 

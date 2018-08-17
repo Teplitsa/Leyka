@@ -35,9 +35,19 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
         }
     }
 
+    /** @return boolean */
+    public function hasCommonErrors() {
+        return !empty($this->getCommonErrors());
+    }
+
     /** @return array Of errors */
     public function getCommonErrors() {
         return $this->_common_errors;
+    }
+
+    /** @return boolean */
+    public function hasComponentErrors($component_id = null) {
+        return !empty($this->getComponentErrors($component_id));
     }
 
     /**
@@ -45,9 +55,11 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
      * @return array An array of WP_Error objects (each with one error message)
      */
     public function getComponentErrors($component_id = null) {
+
         return empty($component_id) ?
             $this->_component_errors :
             (empty($this->_component_errors[$component_id]) ? array() : $this->_component_errors[$component_id]);
+
     }
 
     protected function _handleSettingsSubmit() {
@@ -63,7 +75,11 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
     }
 
     protected function _addComponentError($component_id, WP_Error $error) {
-        $this->_component_errors[$component_id] = $error;
+        if(empty($this->_component_errors[$component_id])) {
+            $this->_component_errors[$component_id] = array($error);
+        } else {
+            $this->_component_errors[$component_id][] = $error;
+        }
     }
 
     /** @return Leyka_Settings_Step */
