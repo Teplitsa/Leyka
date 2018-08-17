@@ -337,7 +337,9 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         $navigation_data = $this->_controller->getNavigationData();
         ?>
     
-        <?php# echo '<pre>'.print_r($this->_controller->getNavigationData(), 1).'</pre>';?>
+        <?php
+            # echo '<pre>'.print_r($this->_controller->getNavigationData(), 1).'</pre>';
+        ?>
 
         <div class="nav-chain">
             <div class="nav-line">

@@ -218,7 +218,8 @@
                             margin-left: -1px;
                             padding: 1px 6px 3px 6px;
                             height: 25px;
-                            width: 248px;
+                            //width: 248px;
+                            width: 100%;
                             border: 1px solid #dddddd;
                             
                             &:active, &:focus {
@@ -268,21 +269,20 @@
                 
             }
             
-            &#org_full_name,
-            &#org_face_fio_ip,
-            &#org_address,
-            &#org_short_name {
-                 .field {
-                    input[type=text] {
-                        width: 100%;
-                    }
-                 }
-            }
-
             &.container-block {
 
                 display: flex;
                 justify-content: space-between;
+
+                .option-block {
+                    .field-component {
+                        &.field {
+                            input[type=text] {
+                                width: 248px;
+                            }
+                         }
+                    }
+                }
 
             }
 
