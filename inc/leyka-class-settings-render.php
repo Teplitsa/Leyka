@@ -307,49 +307,56 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     public function renderNavigationArea() {
 
-        $navigation_data = $this->_controller->getNavigationData();?>
+        $navigation_data = $this->_controller->getNavigationData();
+
+//        echo '<pre>'.print_r($navigation_data, 1).'</pre>';?>
 
         <div class="nav-chain">
             <div class="nav-line">
-        
-            <?php foreach($navigation_data as $section_index => $section):?>
-                <div class="nav-section <?php if($section['is_current']):?>active<?php elseif($section['is_completed']):?>done<?php endif?>">
-                    
+
+            <?php foreach($navigation_data as $section_index => $section) {?>
+
+                <div class="nav-section <?php if( !empty($section['is_current']) ) {?>active<?php } elseif($section['is_completed']) {?>done<?php }?>">
+
                     <div class="nav-section-title">
                         <div class="nav-section-marker">
-                        <?php if($section['is_completed']):?>
-                            <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-ok.svg" />
-                        <?php else:?>
-                            <?php echo $section_index + 1?>
-                        <?php endif?>
+                        <?php if( !empty($section['is_completed']) ) {?>
+                            <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-ok.svg">
+                        <?php } else {
+                            echo $section_index + 1;
+                        }?>
                         </div>
-                        <?php echo $section['title']?>
+                        <?php echo esc_html($section['title']);?>
                     </div>
-                    
-                    <?php if(!empty($section['steps']) && count($section['steps']) > 1):?>
+
+                    <?php if(empty($section['is_completed']) && !empty($section['steps']) && count($section['steps']) > 1) {?>
                         <div class="nav-steps">
-                
-                            <?php foreach($section['steps'] as $step_index => $step):?>
-                                <?php if($step_index == 0) continue?>
-                                <div class="nav-step <?php if($step['is_current']):?>active<?php elseif($step['is_completed']):?>done<?php endif?>">
-                                    <?php echo $step['title']?>
-                                    <?php if($step['is_current']):?><img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-i.svg" class="step-i" /><?php endif?>
+
+                            <?php foreach($section['steps'] as $step) {?>
+
+                                <div class="nav-step <?php if( !empty($step['is_current']) ) {?>active<?php } else if( !empty($step['is_completed']) ) {?>done<?php }?>">
+                                    <?php echo esc_html($step['title']);
+
+                                    if( !empty($step['is_current']) ) {?>
+                                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-i.svg" class="step-i">
+                                    <?php }?>
                                 </div>
-                            <?php endforeach?>
-                        
+
+                            <?php }?>
+
                         </div>
-                    <?php endif?>
-                
+                    <?php }?>
+
                 </div>
-                
-            <?php endforeach?>
-        
+
+            <?php }?>
+
             </div>
-                
+
         </div>
 
         <div class="leyka-logo">
-            <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/nav-logo.png" />
+            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/nav-logo.png" />
         </div>
 
     <?php }

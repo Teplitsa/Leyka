@@ -99,9 +99,11 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controller {
 
     protected static $_instance = null;
+
     protected $_storage_key = '';
-    protected $_roadmap = array();
-    protected $_roadmap_position = null;
+
+    protected $_navigation_data = array();
+//    protected $_navigation_position = null;
 
     protected function __construct() {
 
@@ -124,6 +126,10 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
                 $this->_setCurrentStep($init_step);
             }
 
+        }
+
+        if( !$this->_navigation_data ) {
+            $this->_initNavigationData();
         }
 
         // Debug {
@@ -219,6 +225,54 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     }
 
+    protected function _initNavigationData() {
+
+        if( !$this->_sections ) {
+            return;
+        }
+
+        $this->_navigation_data = array();
+
+        foreach($this->_sections as $section) { /** @var Leyka_Settings_Section $section */
+
+            $steps = $section->getSteps();
+            if( !$steps ) {
+                continue;
+            }
+
+            $steps_data = array();
+            $all_steps_completed = true;
+            foreach($steps as $step) { /** @var Leyka_Settings_Step $step */
+
+                $step_completed = isset($_SESSION[$this->_storage_key]['activity'][$step->full_id]);
+
+                if($all_steps_completed && !$step_completed) {
+                    $all_steps_completed = false;
+                }
+
+                $steps_data[] = array(
+                    'step_id' => $step->full_id,
+                    'title' => $step->title,
+                    'url' => $step_completed ? '&step='.$step->full_id : false,
+                    'is_current' => $this->current_step->full_id === $step->full_id,
+                    'is_completed' => $step_completed,
+                );
+
+            }
+
+            $this->_navigation_data[] = array(
+                'section_id' => $section->id,
+                'title' => $section->title,
+                'url' => $all_steps_completed ? '&step='.$steps_data[0]['step_id'] : false,
+                'is_current' => $this->current_section_id === $section->id, // True if the current Step belongs to the Section
+                'is_completed' => $all_steps_completed,
+                'steps' => $steps_data,
+            );
+
+        }
+
+    }
+
     public function __get($name) {
         switch($name) {
             case 'current_step':
@@ -288,55 +342,12 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     }
 
-    /** Navigation data incapsulation method - Wizards default implementation. */
+    /**
+     * Navigation data incapsulation method - Wizards default implementation.
+     * @return array
+     */
     public function getNavigationData() {
-
-        if( !$this->_sections ) {
-            return array();
-        }
-
-        $nav_data = array();
-
-        foreach($this->_sections as $section) { /** @var Leyka_Settings_Section $section */
-
-            $steps = $section->getSteps();
-            if( !$steps ) {
-                continue;
-            }
-
-            $steps_data = array();
-            $all_steps_completed = true;
-            foreach($steps as $step) { /** @var Leyka_Settings_Step $step */
-
-                $step_completed = isset($_SESSION[$this->_storage_key]['activity'][$step->full_id]);
-
-                if($all_steps_completed && !$step_completed) {
-                    $all_steps_completed = false;
-                }
-
-                $steps_data[] = array(
-                    'roadmap_step_id' => $step->full_id,
-                    'title' => $step->title,
-                    'url' => $step_completed ? '&step='.$step->full_id : false,
-                    'is_current' => $this->current_step->full_id === $step->full_id,
-                    'is_completed' => $step_completed,
-                );
-
-            }
-
-            $nav_data[] = array(
-                'roadmap_section_id' => $section->id,
-                'title' => $section->title,
-                'url' => $all_steps_completed ? '&step='.$steps_data[0]['roadmap_step_id'] : false,
-                'is_current' => $this->current_section_id === $section->id, // True if the current Step belongs to the Section
-                'is_completed' => $all_steps_completed,
-                'steps' => $steps_data,
-            );
-
-        }
-
-        return $nav_data;
-
+        return $this->_navigation_data;
     }
 
     public function handleSubmit() {
@@ -685,15 +696,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 $next_step_full_id = 'final-init';
             }
 
-        } /*else if($step_from->section_id === 'cd') {
-
-            if($step_from->id === 'init') {
-                $next_step_full_id = $step_from->section_id.'-campaign_description';
-            } else if($step_from->id === 'campaign_description') {
-                $next_step_full_id = 'final-init';
-            }
-
-        }*/ else if($step_from->section_id === 'final') { // Final Section
+        } else if($step_from->section_id === 'final') { // Final Section
             $next_step_full_id = true;
         }
 
@@ -706,6 +709,45 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             return array_pop($next_step_full_id);
 
         }
+
+    }
+
+    protected function _initNavigationData() {
+
+        $this->_navigation_data = array(
+            array(
+                'section_id' => 'rd',
+                'title' => 'Ваши данные',
+                'url' => '',
+                'steps' => array(
+                    array(
+                        'step_id' => 'receiver_type',
+                        'title' => 'Получатель пожертвований',
+                        'url' => '',
+                    ),
+                    array(
+                        'step_id' => 'receiver_data',
+                        'title' => 'Ваши данные',
+                        'url' => '',
+                    ),
+                    array(
+                        'step_id' => 'receiver_bank_essentials',
+                        'title' => 'Банковские реквизиты',
+                        'url' => '',
+                    ),
+                ),
+            ),
+            array(
+                'section_id' => 'dd',
+                'title' => 'Диагностические данные',
+                'url' => '',
+            ),
+            array(
+                'section_id' => 'final',
+                'title' => 'Завершение настройки',
+                'url' => '',
+            ),
+        );
 
     }
 
@@ -739,12 +781,76 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
     }
 
-//    public function getNavigationData() {
+    public function getNavigationData() {
 
-//        if() {
-//
-//        }
+        $current_navigation_data = $this->_navigation_data;
 
-//    }
+        switch($this->getCurrentStep()->full_id) {
+            case 'rd-init': $navigation_position = 'rd'; break;
+            case 'rd-receiver_type': $navigation_position = 'rd-receiver_type'; break;
+            case 'rd-receiver_legal_data':
+            case 'rd-receiver_physical_data':
+                $navigation_position = 'rd-receiver_data';
+                break;
+            case 'rd-receiver_legal_bank_essentials':
+            case 'rd-receiver_physical_bank_essentials':
+                $navigation_position = 'rd-receiver_bank_essentials';
+                break;
+            case 'rd-final': $navigation_position = 'rd--'; break;
+            case 'dd-plugin_stats': $navigation_position = 'dd'; break;
+            case 'dd-plugin_stats_accepted':
+            case 'dd-plugin_stats_refused':
+                $navigation_position = 'dd--';
+                break;
+            case 'final-init': $navigation_position = 'final--'; break;
+            default:
+                $navigation_position = false;
+        }
+
+        if( !$navigation_position ) {
+            return $current_navigation_data;
+        }
+
+        foreach($current_navigation_data as $section_index => &$section) {
+
+            $navigation_position_parts = explode('-', $navigation_position);
+
+            if($section['section_id'] === $navigation_position_parts[0]) {
+
+                if(count($navigation_position_parts) === 1) {
+
+                    $current_navigation_data[ $section_index ]['is_current'] = true;
+                    break;
+
+                }
+
+            }
+
+            foreach(empty($section['steps']) ? array() : $section['steps'] as $step_index => $step) {
+
+                if($navigation_position === $section['section_id'].'-'.$step['step_id']) {
+
+                    $current_navigation_data[$section_index]['steps'][$step_index]['is_current'] = true;
+                    $current_navigation_data[$section_index]['is_current'] = true;
+
+                    break 2;
+
+                } else {
+                    $current_navigation_data[$section_index]['steps'][$step_index]['is_completed'] = true;
+                }
+
+            }
+
+            $current_navigation_data[$section_index]['is_completed'] = true;
+
+            if($navigation_position === $section['section_id'].'--') {
+                break;
+            }
+
+        }
+
+        return $current_navigation_data;
+
+    }
 
 }
