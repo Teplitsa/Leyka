@@ -356,7 +356,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         </div>
 
         <div class="leyka-logo">
-            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/nav-logo.png" />
+            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/nav-logo.svg" />
         </div>
 
     <?php }
