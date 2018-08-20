@@ -90,7 +90,7 @@ class Leyka_Admin_Setup {
 
         }
 
-        if( !get_option('leyka_admin_notice_pd') ) {
+        if( !get_option('leyka_admin_notice_pd') && (empty($_GET['page']) || $_GET['page'] !== 'leyka_settings_new') ) {
 
             function leyka_admin_notice_pd() {?>
 

@@ -102,6 +102,19 @@ class Leyka {
 
             Leyka_Admin_Setup::get_instance();
 
+            if(get_option('leyka_init_wizard_redirect')) {
+
+                delete_option('leyka_init_wizard_redirect');
+
+                add_action('admin_init', function(){
+
+                    wp_redirect(admin_url('admin.php?page=leyka_settings_new&screen=wizard-init'));
+                    exit;
+
+                });
+
+            }
+
         }
 
         add_action('admin_bar_menu', array($this, 'add_toolbar_menu'), 999);
@@ -605,6 +618,10 @@ class Leyka {
             return;
         }
 
+        if( !$leyka_last_ver ) {
+            update_option('leyka_init_wizard_redirect', true);
+        }
+
         if( !$leyka_last_ver || $leyka_last_ver < '2.1' ) {
 
             /** Upgrade options structure in the DB */
@@ -781,6 +798,8 @@ class Leyka {
 
             }
         }
+
+
 
         /** Set a flag to flush permalinks (needs to be done a bit later, than this activation itself): */
         update_option('leyka_permalinks_flushed', 0);
