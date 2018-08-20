@@ -8,7 +8,8 @@
     flex-direction: row;
 
     margin-left: -20px;
-    min-height: calc(100vh - 117px);
+    min-height: calc(100vh - 32px);
+    height: 100%;
 
     .nav-area {
 
@@ -16,7 +17,7 @@
         background-color: $color-nav-area-bg;
         min-width: 293px;
         letter-spacing: -0.02em;
-        padding: 18px 17px 0px 32px;
+        padding: 18px 17px 159px 32px;
         margin-right: -1px;
         
         .leyka-logo {
@@ -94,6 +95,7 @@
                     padding-left: 16px;
                     padding-top: 9px;
                     margin-bottom: -2px;
+                    display: none;
                     
                     .nav-step {
                         @include chain-step();
@@ -132,6 +134,11 @@
                         }
                     }
                     
+                }
+                
+                &.active .nav-steps,
+                &.open .nav-steps {
+                    display: block;
                 }
                 
             }
@@ -237,6 +244,16 @@
                         }
                         
                         input[type=checkbox], input[type=radio] {
+                            width: 18px;
+                            height: 18px;
+                        }
+                        
+                        input[type=checkbox], input[type=radio] {
+                            &::before {
+                                width: 8px;
+                                height: 8px;
+                                line-height: 18px;
+                            }
                         }
                         
                         label {
@@ -335,7 +352,7 @@
             text-decoration: none;
             border-bottom: none;
             padding-bottom: 2px;
-            border-bottom: 1px dashed $color-wizard-link-sec;
+            border-bottom: 1px solid $color-wizard-link;
             
             &:hover {
                 color: $color-wizard-link-hover;
@@ -344,6 +361,10 @@
             &:focus, &:active {
                 color: $color-wizard-link-active;
             }
+        }
+        
+        a[href="#"] {
+            border-bottom: 1px dash $color-wizard-link;
         }
         
         a.link-sec {
@@ -407,6 +428,8 @@
                 }
                 
                 input[type=checkbox], input[type=radio] {
+                    width: 18px;
+                    height: 18px;
                 }
                 
                 &.field-error  {
@@ -495,6 +518,11 @@
                 @include wizard-button-caption();
                 height: 40px;
                 width: 248px;
+                margin-right: 22px;
+            }
+            
+            a {
+                line-height: 35px;
             }
             
             .sec-action {
@@ -532,4 +560,26 @@
         
     }
 
+}
+
+.admin_page_leyka_settings_new {
+    #wpbody-content {
+        padding-bottom: 0px;
+    }
+    
+    #wpfooter {
+        display: none;
+    }
+}
+
+#leyka-settings-form-dd-plugin_stats {
+    label {
+        font-weight: 400;
+    }
+    
+    label[for="leyka_send_plugin_stats-y-field"] {
+        @include wizard-h2();
+        font-size: 18px;
+        color: $color-wizard-text;
+    }
 }

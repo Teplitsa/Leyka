@@ -329,7 +329,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                         <?php echo esc_html($section['title']);?>
                     </div>
 
-                    <?php if(empty($section['is_completed']) && !empty($section['steps']) && count($section['steps']) > 1) {?>
+                    <?php if(empty($section['is_completed']) && !empty($section['steps'])) {?>
                         <div class="nav-steps">
 
                             <?php foreach($section['steps'] as $step) {?>
@@ -337,7 +337,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                                 <div class="nav-step <?php if( !empty($step['is_current']) ) {?>active<?php } else if( !empty($step['is_completed']) ) {?>done<?php }?>">
                                     <?php echo esc_html($step['title']);
 
-                                    if( !empty($step['is_current']) ) {?>
+                                    if( false && !empty($step['is_current']) ) {?>
                                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-i.svg" class="step-i">
                                     <?php }?>
                                 </div>
