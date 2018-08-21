@@ -114,7 +114,9 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         $current_step = $this->_controller->getCurrentStep();?>
 
         <div class="step-title">
-            <h2 id="step-title-<?php echo $current_step->full_id?>"><?php echo $current_step->title;?></h2>
+            <h1 id="step-title-<?php echo $current_step->full_id?>" class="<?php echo $current_step->header_classes ? esc_attr($current_step->header_classes) : '';?>">
+                <?php echo $current_step->title;?>
+            </h1>
         </div>
 
         <div class="step-common-errors <?php echo $this->_controller->hasCommonErrors() ? 'has-errors' : '';?>">
@@ -193,9 +195,9 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
             <?php $this->renderSubmitArea();?>
             </div>
         </form>
-        
+
         <div style="display: none;">
-        
+
         <h1>Приветствуем вас!</h1>
         <p>Вы установили плагин «Лейка», осталось его настроить. Мы проведём вас по всем шагам, поможем подсказками, а если нужна будет наша помощь, вы можете обратиться к нам через форму в правой части экрана</p>
         
@@ -255,9 +257,9 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                 <label>Выберите вашу страну:</label>
                 <input type="text" name="some" placeholder="Введите текст"/>
             </div>
-            
+
         </div>
-        
+
         <div class="step-submit">
             <input type="submit" class="button button-primary" />
             <div class="sec-action">
@@ -307,9 +309,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     public function renderNavigationArea() {
 
-        $navigation_data = $this->_controller->getNavigationData();
-
-//        echo '<pre>'.print_r($navigation_data, 1).'</pre>';?>
+        $navigation_data = $this->_controller->getNavigationData();?>
 
         <div class="nav-chain">
             <div class="nav-line">

@@ -472,7 +472,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $section = new Leyka_Settings_Section('rd', 'Ваши данные');
 
         // 0-step:
-        $step = new Leyka_Settings_Step('init',  $section->id, 'Приветствуем вас!');
+        $step = new Leyka_Settings_Step('init',  $section->id, 'Приветствуем вас!', array('header_classes' => 'greater',));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => 'Вы установили плагин «Лейка», осталось его настроить. Мы проведём вас по всем шагам, поможем подсказками, а если нужна будет наша помощь, вы можете обратиться к нам через форму в правой части экрана.',
@@ -705,7 +705,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         // Final Section:
         $section = new Leyka_Settings_Section('final', 'Завершение настройки');
 
-        $step = new Leyka_Settings_Step('init',  $section->id, 'Поздравляем!');
+        $step = new Leyka_Settings_Step('init', $section->id, 'Поздравляем!', array('header_classes' => 'greater',));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => 'Хотите больше возможностей оплаты с помощью карточек, электронных денег или криптовалюты? Тогда давайте подключим ещё способ платежа.',

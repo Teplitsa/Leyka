@@ -7,16 +7,21 @@ class Leyka_Settings_Step {
 
     protected $_id;
     protected $_section_id;
-    protected $_title;
+    protected $_title = '';
+    protected $_params = array();
 
     /** A Composite blocks structure object??? */
     protected $_blocks;
 
-    public function __construct($id, $section_id, $title = '' /*, array $params = array()*/) {
+    public function __construct($id, $section_id, $title = '', array $params = array()) {
 
         $this->_id = trim($id);
         $this->_section_id = trim($section_id);
         $this->_title = trim($title);
+
+        $this->_params = $params + array(
+            'header_classes' => '',
+        );
 
     }
 
@@ -33,7 +38,7 @@ class Leyka_Settings_Step {
             case 'blocks':
                 return $this->_blocks;
             default:
-                return null; // Throw some Exception?
+                return isset($this->_params[$name]) ? $this->_params[$name] : null; // Throw some Exception?
         }
     }
 
