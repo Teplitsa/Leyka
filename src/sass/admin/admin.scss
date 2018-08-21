@@ -279,11 +279,30 @@
                     
                 }
                 
+                &.has-errors {
+                    
+                    .field-component {
+                        &.field {
+                            input, select, textarea {
+                                background: #f8ecef;
+                                border: 1px solid #f5c8d0;
+                            }
+                        }
+                    }
+                    
+                }
+                    
                 .field-radio {
                     .field-component.help {
                         padding-left: 25px;
                     }
-                }                
+                }
+                
+                &#receiver_type {
+                    .field-errors {
+                        //padding-left: 25px;
+                    }
+                }
                 
             }
             
