@@ -68,7 +68,7 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
         }
     }
 
-    abstract protected function _processSettingsValues();
+    abstract protected function _processSettingsValues(array $blocks = null);
 
     protected function _addCommonError(WP_Error $error) {
         $this->_common_errors[] = $error;
@@ -88,7 +88,7 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
     /** @return Leyka_Settings_Section */
     abstract public function getCurrentSection();
 
-    abstract public function getSubmitData($structure_element = null);
+    abstract public function getSubmitData($component = null);
 
     abstract public function getNavigationData();
 
@@ -198,11 +198,15 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     }
 
-    protected function _processSettingsValues() {
+    protected function _processSettingsValues(array $blocks = null) {
 
-        foreach($this->getCurrentStep()->getBlocks() as $block) {
-            if(is_a($block, 'Leyka_Option_Block')) {
+        $blocks = $blocks ? $blocks : $this->getCurrentStep()->getBlocks();
+
+        foreach($blocks as $block) { /** @var $block Leyka_Option_Block */
+            if(is_a($block, 'Leyka_Option_Block') && $block->isValid()) {
                 leyka_save_setting($block->option_id);
+            } else if(is_a($block, 'Leyka_Container_Block')) {
+                $this->_processSettingsValues($block->getContent());
             }
         }
 
@@ -225,6 +229,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     }
 
+    /** The default implementation: the Wizard navigation roadmap created from existing Sections & Steps */
     protected function _initNavigationData() {
 
         if( !$this->_sections ) {
@@ -270,6 +275,59 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             );
 
         }
+
+    }
+
+    /**
+     * @param $navigation_data array
+     * @param $navigation_position string
+     * @return array
+     */
+    protected function _processNavigationData($navigation_position = null, array $navigation_data = null) {
+
+        $navigation_data = empty($navigation_data) ? $this->_navigation_data : $navigation_data;
+        $navigation_position = empty($navigation_position) ?
+            $this->current_step_full_id : trim($navigation_position);
+
+        foreach($navigation_data as $section_index => &$section) {
+
+            $navigation_position_parts = explode('-', $navigation_position);
+
+            if($section['section_id'] === $navigation_position_parts[0]) {
+
+                if(count($navigation_position_parts) === 1) {
+
+                    $navigation_data[$section_index]['is_current'] = true;
+                    break;
+
+                }
+
+            }
+
+            foreach(empty($section['steps']) ? array() : $section['steps'] as $step_index => $step) {
+
+                if($navigation_position === $section['section_id'].'-'.$step['step_id']) {
+
+                    $navigation_data[$section_index]['steps'][$step_index]['is_current'] = true;
+                    $navigation_data[$section_index]['is_current'] = true;
+
+                    break 2;
+
+                } else {
+                    $navigation_data[$section_index]['steps'][$step_index]['is_completed'] = true;
+                }
+
+            }
+
+            $navigation_data[$section_index]['is_completed'] = true;
+
+            if($navigation_position === $section['section_id'].'--') {
+                break;
+            }
+
+        }
+
+        return $navigation_data;
 
     }
 
@@ -352,6 +410,8 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     public function handleSubmit() {
 
+        $this->_processSettingsValues(); // Save all valid options on current step
+
         if( !$this->getCurrentStep()->isValid() ) {
 
             foreach($this->getCurrentStep()->getErrors() as $component_id => $errors) {
@@ -364,8 +424,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         }
 
-        $this->_addActivityEntry(); // Save the current step in the storage
-        $this->_processSettingsValues();
+        $this->_addActivityEntry(); // All Step is valid - save the step data in the storage
 
         // Proceed to the next step:
         $next_step_full_id = $this->_getNextStepId();
@@ -751,9 +810,9 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
     }
 
-    public function getSubmitData($structure_element = null) {
+    public function getSubmitData($component = null) {
 
-        $step = $structure_element && is_a($structure_element, 'Leyka_Settings_Step') ? $structure_element : $this->current_step;
+        $step = $component && is_a($component, 'Leyka_Settings_Step') ? $component : $this->current_step;
         $submit_settings = array(
             'next_label' => 'Продолжить',
             'next_url' => true,
@@ -807,49 +866,9 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 $navigation_position = false;
         }
 
-        if( !$navigation_position ) {
-            return $current_navigation_data;
-        }
-
-        foreach($current_navigation_data as $section_index => &$section) {
-
-            $navigation_position_parts = explode('-', $navigation_position);
-
-            if($section['section_id'] === $navigation_position_parts[0]) {
-
-                if(count($navigation_position_parts) === 1) {
-
-                    $current_navigation_data[ $section_index ]['is_current'] = true;
-                    break;
-
-                }
-
-            }
-
-            foreach(empty($section['steps']) ? array() : $section['steps'] as $step_index => $step) {
-
-                if($navigation_position === $section['section_id'].'-'.$step['step_id']) {
-
-                    $current_navigation_data[$section_index]['steps'][$step_index]['is_current'] = true;
-                    $current_navigation_data[$section_index]['is_current'] = true;
-
-                    break 2;
-
-                } else {
-                    $current_navigation_data[$section_index]['steps'][$step_index]['is_completed'] = true;
-                }
-
-            }
-
-            $current_navigation_data[$section_index]['is_completed'] = true;
-
-            if($navigation_position === $section['section_id'].'--') {
-                break;
-            }
-
-        }
-
-        return $current_navigation_data;
+        return $navigation_position ?
+            $this->_processNavigationData($navigation_position) :
+            $current_navigation_data;
 
     }
 
