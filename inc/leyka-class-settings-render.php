@@ -38,8 +38,6 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
     abstract public function renderNavigationArea();
     abstract public function renderMainArea();
 
-    abstract public function renderStep();
-
     abstract public function renderCommonErrorsArea();
 
     abstract public function renderTextBlock(Leyka_Text_Block $block);
@@ -129,62 +127,17 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
             /** @todo If-else here sucks. Make it a Factory Method */
 
-                if(is_a($block, 'Leyka_Container_Block')) {?>
-
-                    <div id="<?php echo $block->id;?>" class="settings-block container-block">
-
-                    <?php $entry_width = $block->entry_width ? (100.0*$block->entry_width).'%' : false;
-
-                    $sub_blocks_list = $block->getContent();
-
-                    foreach($sub_blocks_list as $sub_block_index => $sub_block) { /** @var Leyka_Settings_Block $sub_block */?>
-
-                        <div class="container-entry" <?php echo $entry_width ? 'style="flex-basis: '.($sub_block_index == count($sub_blocks_list) - 1 ? 'auto' : $entry_width).';"' : '';?>>
-
-                            <?php if(is_a($sub_block, 'Leyka_Option_Block')) {
-
-                                $option_info = leyka_options()->get_info_of($sub_block->getContent());?>
-
-                                <div id="<?php echo $sub_block->id;?>" class="settings-block option-block <?php echo $sub_block->show_title ? '' : 'option-title-hidden';?> <?php echo $sub_block->show_description ? '' : 'option-description-hidden';?> <?php echo $this->_controller->hasComponentErrors($sub_block->id) ? 'has-errors' : '';?>">
-                                    <?php do_action("leyka_render_{$option_info['type']}", $sub_block->getContent(), $option_info);?>
-                                    <div class="field-errors">
-                                    <?php foreach($this->_controller->getComponentErrors($sub_block->id) as $error) { /** @var $error WP_Error */ ?>
-                                        <span><?php echo $error->get_error_message();?></span>
-                                    <?php }?>
-                                    </div>
-                                </div>
-
-                            <?php }?>
-
-                        </div>
-
-                    <?php }?>
-
-                    </div>
-
-
-                <?php } else if(is_a($block, 'Leyka_Text_Block')) {?>
-
-                <div id="<?php echo $block->id;?>" class="settings-block text-block"><p><?php echo $block->getContent();?></p></div>
-
-                <?php } else if(is_a($block, 'Leyka_Custom_Option_Block')) {
+                if(is_a($block, 'Leyka_Container_Block')) { /** @var $block Leyka_Container_Block */
+                    $this->renderContainerBlock($block);
+                } else if(is_a($block, 'Leyka_Text_Block')) { /** @var $block Leyka_Text_Block */
+                    $this->renderTextBlock($block);
+                } else if(is_a($block, 'Leyka_Custom_Option_Block')) {
 
 //                    echo '<p>'.$block->option_id.' custom option here</p>';
 
-                } else if(is_a($block, 'Leyka_Option_Block')) {
-
-                    $option_info = leyka_options()->get_info_of($block->getContent());?>
-
-                <div id="<?php echo $block->id;?>" class="settings-block option-block <?php echo $block->show_title ? '' : 'option-title-hidden';?> <?php echo $block->show_description ? '' : 'option-description-hidden';?> <?php echo $this->_controller->hasComponentErrors($block->id) ? 'has-errors' : '';?>">
-                    <?php do_action("leyka_render_{$option_info['type']}", $block->getContent(), $option_info);?>
-                    <div class="field-errors">
-                    <?php foreach($this->_controller->getComponentErrors($block->id) as $error) { /** @var $error WP_Error */?>
-                        <span><?php echo $error->get_error_message();?></span>
-                    <?php }?>
-                    </div>
-                </div>
-
-                <?php }
+                } else if(is_a($block, 'Leyka_Option_Block')) { /** @var $block Leyka_Option_Block */
+                    $this->renderOptionBlock($block);
+                }
 
             }?>
             </div>
@@ -195,82 +148,6 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
             <?php $this->renderSubmitArea();?>
             </div>
         </form>
-
-        <div style="display: none;">
-
-        <h1>Приветствуем вас!</h1>
-        <p>Вы установили плагин «Лейка», осталось его настроить. Мы проведём вас по всем шагам, поможем подсказками, а если нужна будет наша помощь, вы можете обратиться к нам через форму в правой части экрана</p>
-        
-        <h2>Получатель пожертвований</h2>
-        <p>Вы установили плагин «Лейка», осталось его настроить. Мы проведём вас по всем шагам, поможем подсказками, а если нужна будет наша помощь, вы можете обратиться к нам через форму в правой части экрана</p>
-        
-        <h3>Такого заголовка пока нет</h3>
-        <p>Вы установили плагин «Лейка», осталось его <a href="https://te-st.ru">настроить</a>. Мы проведём вас по всем шагам, поможем подсказками, а если нужна будет наша помощь, вы можете обратиться к нам через форму в правой части экрана</p>
-        
-        <div class="fields">
-            
-            <div class="field">
-                <label>Выберите вашу страну:<img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" class="field-q" /></label>
-                <input type="text" name="some" placeholder="Введите текст"/>
-                <p class="explain">Архитектура Лейки позволяет вам собирать деньги и в других странах. Узнайте, как подключить вашу страну <a href="https://te-st.ru">здесь</a>.</p>
-            </div>
-
-            <div class="field required">
-                <label>Выберите вашу страну:</label>
-                <select name="some">
-                    <option>Россия</option>
-                    <option>Китай</option>
-                </select>
-                <p class="explain">Архитектура Лейки позволяет вам собирать деньги и в других странах. Узнайте, как подключить вашу страну <a href="https://te-st.ru">здесь</a>.</p>
-            </div>
-
-            <div class="field field-options">
-                <label><input type="radio" name="some1"/>НКО – юридическое лицо</label>
-                <label><input type="radio" name="some1"/>Физическое лицо</label>
-                <p class="explain">Архитектура Лейки позволяет вам собирать деньги и в других странах. Узнайте, как подключить вашу страну <a href="https://te-st.ru">здесь</a>.</p>
-            </div>
-
-            <div class="field field-options">
-                <label><input type="checkbox" name="some2"/>НКО – юридическое лицо</label>
-                <label><input type="checkbox" name="some2"/>Физическое лицо</label>
-            </div>
-
-            <div class="field">
-                <label>Выберите вашу страну:</label>
-                <textarea name="some" placeholder="Введите текст"></textarea>
-                <p class="explain">Архитектура Лейки позволяет вам собирать деньги и в других странах. Узнайте, как подключить вашу страну <a href="https://te-st.ru">здесь</a>.</p>
-            </div>
-
-            <div class="field field-error">
-                <label>Выберите вашу страну:</label>
-                <input type="text" name="some" placeholder="Введите текст"/>
-                <p class="message message-error">В поле должны стоять числовые значения</p>
-                <p class="explain">Архитектура Лейки позволяет вам собирать деньги и в других странах. Узнайте, как подключить вашу страну <a href="https://te-st.ru">здесь</a>.</p>
-            </div>
-
-            <div class="field field-success">
-                <label>Выберите вашу страну:</label>
-                <input type="text" name="some" placeholder="Введите текст"/>
-            </div>
-
-            <div class="field field-warning">
-                <label>Выберите вашу страну:</label>
-                <input type="text" name="some" placeholder="Введите текст"/>
-            </div>
-
-        </div>
-
-        <div class="step-submit">
-            <input type="submit" class="button button-primary" />
-            <div class="sec-action">
-                <a class="link-sec" href="https://te-st.ru">Вернуться на предыдущий шаг</a>
-            </div>
-            <div class="sec-action">
-                <input type="submit" class="link-sec" value="Вернуться на предыдущий шаг"/>
-            </div>
-        </div>
-        
-        </div>
         
     <?php }
 
@@ -283,11 +160,13 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         <?php if($submits['next_url'] === true) {?>
 
-        <input type="submit" class="step-next button button-primary" name="leyka_settings_submit_<?php echo $this->_controller->id;?>" value="<?php echo $submits['next_label'];?>">
+        <input type="submit" class="step-next button button-primary" name="leyka_settings_submit_<?php echo $this->_controller->id;?>" value="<?php echo esc_attr($submits['next_label']);?>">
 
         <?php } else if(is_string($submits['next_url'])) {?>
 
-        <a href="<?php echo esc_url($submits['next_url']);?>" class="wizard-custom-link"><?php echo $submits['next_label'];?></a>
+        <a href="<?php echo esc_url($submits['next_url']);?>" class="wizard-custom-link">
+            <?php echo esc_html($submits['next_label']);?>
+        </a>
 
         <?php }
 
@@ -301,7 +180,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         <?php if( !empty($submits['prev']) ) {?>
         <div class="sec-action">
-            <input type="submit" class="step-prev link-sec" name="leyka_settings_prev_<?php echo $this->_controller->id;?>" value="<?php echo $submits['prev'];?>">
+            <input type="submit" class="step-prev link-sec" name="leyka_settings_prev_<?php echo $this->_controller->id;?>" value="<?php echo esc_attr($submits['prev']);?>">
         </div>
         <?php }?>
 
@@ -361,20 +240,57 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     <?php }
 
-    public function renderStep() {
-        // TODO: Implement renderStep() method.
-    }
+    public function renderContainerBlock(Leyka_Container_Block $block) {?>
 
-    public function renderContainerBlock(Leyka_Container_Block $block) {
-        // TODO: Implement renderContainerBlock() method.
-    }
+        <div id="<?php echo $block->id;?>" class="settings-block container-block">
 
-    public function renderTextBlock(Leyka_Text_Block $block) {
-        // TODO: Implement renderTextBlock() method.
-    }
+            <?php $entry_width = $block->entry_width ? (100.0*$block->entry_width).'%' : false;
+
+            $sub_blocks_list = $block->getContent();
+
+            foreach($sub_blocks_list as $sub_block_index => $sub_block) {?>
+
+                <div class="container-entry" <?php echo $entry_width ? 'style="flex-basis: '.($sub_block_index == count($sub_blocks_list) - 1 ? 'auto' : $entry_width).';"' : '';?>>
+
+                <?php if(is_a($sub_block, 'Leyka_Text_Block')) { /** @var $sub_block Leyka_Text_Block */
+                    $this->renderTextBlock($sub_block);
+                } else if(is_a($sub_block, 'Leyka_Custom_Option_Block')) {
+
+//                    echo '<p>'.$sub_block->option_id.' custom option here</p>';
+
+                } else if(is_a($sub_block, 'Leyka_Option_Block')) { /** @var $sub_block Leyka_Option_Block */
+                    $this->renderOptionBlock($sub_block);
+                }?>
+
+                </div>
+
+            <?php }?>
+
+        </div>
+
+    <?php }
+
+    public function renderTextBlock(Leyka_Text_Block $block) {?>
+
+        <div id="<?php echo $block->id;?>" class="settings-block text-block">
+            <p><?php echo $block->getContent();?></p>
+        </div>
+
+    <?php }
 
     public function renderOptionBlock(Leyka_Option_Block $block) {
-        // TODO: Implement renderOptionBlock() method.
-    }
+
+        $option_info = leyka_options()->get_info_of($block->getContent());?>
+
+        <div id="<?php echo $block->id;?>" class="settings-block option-block <?php echo $block->show_title ? '' : 'option-title-hidden';?> <?php echo $block->show_description ? '' : 'option-description-hidden';?> <?php echo $this->_controller->hasComponentErrors($block->id) ? 'has-errors' : '';?>">
+            <?php do_action("leyka_render_{$option_info['type']}", $block->getContent(), $option_info);?>
+            <div class="field-errors">
+                <?php foreach($this->_controller->getComponentErrors($block->id) as $error) { /** @var $error WP_Error */?>
+                    <span><?php echo $error->get_error_message();?></span>
+                <?php }?>
+            </div>
+        </div>
+
+    <?php }
 
 }
