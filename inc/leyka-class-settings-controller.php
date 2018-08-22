@@ -515,7 +515,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step = new Leyka_Settings_Step('init',  $section->id, 'Приветствуем вас!', array('header_classes' => 'greater',));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Вы установили плагин «Лейка», осталось его настроить. Мы проведём вас по всем шагам, поможем подсказками, а если нужна будет наша помощь, вы можете обратиться к нам через форму в правой части экрана.',
+            'text' => 'Вы установили плагин «Лейка», осталось его настроить. Мы проведём вас по всем шагам, поможем подсказками.',
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'receiver_country',
             'option_id' => 'receiver_country',
@@ -536,7 +536,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step = new Leyka_Settings_Step('receiver_legal_data', $section->id, 'Название организации');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Эти данные мы будем использовать для отчётных документов вашим донорам. Все данные вы сможете найти в учредительных документах.',
+            'text' => 'Эти данные мы будем использовать для шаблонов договоров и отчётных документов вашим донорам. Все данные вы сможете найти в учредительных документах вашей организации.',
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'org_full_name',
             'option_id' => 'org_full_name',
@@ -601,7 +601,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step = new Leyka_Settings_Step('receiver_legal_bank_essentials', $section->id, 'Банковские реквизиты');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Данные понадобятся для отчётных документов, а также для подключения оплаты с помощью квитанции.',
+            'text' => 'Данные понадобятся для отчётных документов, а также для подключения оплаты с помощью бумажной банковской квитанции.',
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'org_bank_name',
             'option_id' => 'org_bank_name',
@@ -630,7 +630,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step = new Leyka_Settings_Step('receiver_physical_bank_essentials', $section->id, 'Банковские реквизиты');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Данные понадобятся для отчётных документов, а также для подключения оплаты с помощью квитанции.',
+            'text' => 'Данные понадобятся для отчётных документов, а также для подключения оплаты с помощью бумажной банковской квитанции.',
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'person_bank_name',
             'option_id' => 'person_bank_name',
@@ -659,7 +659,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step = new Leyka_Settings_Step('final', $section->id, 'Хорошая работа!');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Вы успешно заполнили свои данные. Продолжим наше путешествие?',
+            'text' => 'Вы успешно заполнили свои данные. Продолжим?',
         )))->addTo($section);
 
         $this->_sections[$section->id] = $section;
@@ -672,7 +672,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step = new Leyka_Settings_Step('plugin_stats', $section->id, 'Диагностические данные');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Мы просим вас подтвердить согласие на отправку <strong>анонимных данных</strong> о пожертвованиях и технических данных к нам, в Теплицу. Это позволит нам улучшить работу нашего плагина.',
+            'text' => 'Мы просим вас подтвердить согласие на отправку <strong>анонимных данных</strong> о пожертвованиях и технических данных к нам, в Теплицу. Это позволит нам улучшить работу плагина. Эти данные будут использоваться только нами.',
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'send_plugin_stats',
             'option_id' => 'send_plugin_stats',
@@ -683,14 +683,14 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step = new Leyka_Settings_Step('plugin_stats_accepted', $section->id, 'Спасибо! %)');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Осталось совсем немного и мы запустим вашу первую кампанию по сбору средств с помощью платёжки. Если вы захотите подключить другие способы платежа, мы поможем вам после завершения этого этапа.',
+            'text' => 'Спасибо! Ваши данные очень нам помогут! Теперь, давайте настроим и запустим вашу первую кампанию по сбору средств.',
         )))->addTo($section);
 
         // The plugin usage stats collection - refused:
         $step = new Leyka_Settings_Step('plugin_stats_refused', $section->id, 'Эхх... %(');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Осталось совсем немного и мы запустим вашу первую кампанию по сбору средств с помощью платёжки. Если вы захотите подключить другие способы платежа, мы поможем вам после завершения этого этапа.',
+            'text' => 'Жаль, что вы решили не делиться данными. Если вы передумаете, то изменить эти настройки вы сможете в разделе «Настройки». Давайте настроим и запустим вашу первую кампанию по сбору средств. ',
         )))->addTo($section);
 
         $this->_sections[$section->id] = $section;
@@ -753,7 +753,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step = new Leyka_Settings_Step('init', $section->id, 'Поздравляем!', array('header_classes' => 'greater',));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Хотите больше возможностей оплаты с помощью карточек, электронных денег или криптовалюты? Тогда давайте подключим ещё способ платежа.',
+            'text' => 'Вы успешно завершили тестовый мастер установки «Лейки».',
         )))->addTo($section);
 
         $this->_sections[$section->id] = $section;
