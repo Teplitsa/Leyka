@@ -156,16 +156,18 @@
         color: $color-wizard-text;
         
         // wizard markup styles
-        h2#step-title-rd-init,
-        h2#step-title-dd-plugin_stats,
-        h2#step-title-rd-final,
-        h2#step-title-final-init {
-            @extend h1;
-            margin-top: 49px;
-        }
-        
-        .step-title h2 {
-            margin-top: 41px;
+        .step-title {
+            h1 {
+                @include wizard-h2();
+                margin-top: 41px;
+                margin-bottom: 8px;
+                
+                &.greater {
+                    @include wizard-h1();
+                    margin-top: 49px;
+                    margin-bottom: 18px;
+                }
+            }
         }
         
         .step-content {
