@@ -66,8 +66,7 @@ class Leyka_Text_Block extends Leyka_Settings_Block {
 class Leyka_Option_Block extends Leyka_Settings_Block {
 
     protected $_option_id = '';
-    protected $_show_title = true;
-    protected $_show_description = true;
+    protected $_params = array();
 
     public function __construct(array $params = array()) {
 
@@ -79,14 +78,29 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
             /** @todo Throw some Exception */
         }
 
-        $params = wp_parse_args($params, array(
+        $this->_params = wp_parse_args($params, array(
+            'title' => null,
             'show_title' => true,
+            'description' => null,
             'show_description' => true,
+            'required' => null,
         ));
 
         $this->_option_id = $params['option_id'];
-        $this->_show_title = !!$params['show_title'];
-        $this->_show_description = !!$params['show_description'];
+
+        if($this->title) {
+            add_filter('leyka_option_title-'.$this->_option_id, function(){
+
+//                $option_data['title'] = $this->title;
+                return $this->title; //$option_data;
+
+            });
+        }
+        if( !is_null($this->required) ) {
+            add_filter('leyka_option_required-'.$this->_option_id, function(){
+                return $this->required;
+            });
+        }
 
     }
 
@@ -94,15 +108,18 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
 
         switch($name) {
             case 'option_id': return $this->_option_id;
-            case 'show_title': return !!$this->_show_title;
-            case 'show_description': return !!$this->_show_description;
+            case 'title': return empty($this->_params['title']) ? false : trim($this->_params['title']);
+            case 'show_title': return !!$this->_params['show_title'];
+            case 'description': return empty($this->_params['description']) ? false : trim($this->_params['description']);
+            case 'show_description': return !!$this->_params['show_description'];
+            case 'required': return is_null($this->_params['required']) ? null : !!$this->_params['required'];
             default: return parent::__get($name);
         }
 
     }
 
     public function getContent() {
-        return $this->_option_id; // leyka_options()->get_info_of($this->_option_id);
+        return $this->_option_id;
     }
 
     public function isValid() {

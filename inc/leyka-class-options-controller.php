@@ -309,30 +309,38 @@ class Leyka_Options_Controller {
 
     }
 
-    public function get_default_of($option_name) {
-
-        $option_name = str_replace('leyka_', '', $option_name);
-
-        $this->_intialize_option($option_name);
-
-        if(empty($this->_options[$option_name]) || empty($this->_options[$option_name]['default'])) {
-            return false;
-        } else {
-            return apply_filters(
-                'leyka_option_default-'.$option_name,
-                empty($this->_options[$option_name]['default']) ? '' : $this->_options[$option_name]['default']
-            );
-        }
-
-    }
-
     public function get_info_of($option_name) {
 
         $option_name = str_replace('leyka_', '', $option_name);
 
         $this->_intialize_option($option_name, true);
 
+        $this->_options[$option_name] = array(
+            'title' => apply_filters('leyka_option_title-'.$option_name, $this->_options[$option_name]['title']),
+            'type' => apply_filters('leyka_option_type-'.$option_name, $this->_options[$option_name]['type']),
+            'required' => apply_filters(
+                'leyka_option_required-'.$option_name,
+                empty($this->_options[$option_name]['required']) ? false : !!$this->_options[$option_name]['required']
+            ),
+            'default' => apply_filters(
+                'leyka_option_default-'.$option_name,
+                empty($option_data['default']) ? '' : $option_data['default']
+            ),
+        ) + $this->_options[$option_name];
+
         return apply_filters('leyka_option_info-'.$option_name, $this->_options[$option_name]);
+
+    }
+
+    public function get_default_of($option_name) {
+
+        $option_name = str_replace('leyka_', '', $option_name);
+
+        $this->_intialize_option($option_name);
+
+        $option_data = $this->get_info_of($option_name);
+
+        return $option_data['default'];
 
     }
 
@@ -342,7 +350,9 @@ class Leyka_Options_Controller {
 
         $this->_intialize_option($option_name);
 
-        return apply_filters('leyka_option_type-'.$option_name, $this->_options[$option_name]['type']);
+        $option_data = $this->get_info_of($option_name);
+
+        return $option_data['type'];
 
     }
 
@@ -352,9 +362,9 @@ class Leyka_Options_Controller {
 
         $this->_intialize_option($option_name);
 
-        $option_required = empty($this->_options[$option_name]) ? false : !empty($this->_options[$option_name]['required']);
+        $option_data = $this->get_info_of($option_name);
 
-        return apply_filters('leyka_option_required-'.$option_name, $option_required);
+        return $option_data['required'];
 
     }
 

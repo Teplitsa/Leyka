@@ -183,17 +183,15 @@ self::$_options_meta = array(
     ),
     'person_address' => array(
         'type' => 'text',
-        'title' => 'Ваш адрес', // __('The NGO official address', 'leyka'),
-//        'description' => __('Enter the NGO official address.', 'leyka'),
+        'title' => 'Ваш адрес регистрации', // __('Your official address', 'leyka'),
         'required' => false,
-//        'placeholder' => __('E.g., Malrose str., 4, Washington, DC, USA', 'leyka'),
+        'placeholder' => __('E.g., Malrose str., 4, Washington, DC, USA', 'leyka'),
     ),
     'person_inn' => array(
         'type' => 'text',
-        'title' => 'ИНН', // __('The NGO taxpayer individual number', 'leyka'),
-//        'description' => __('Enter the NGO individual number of a taxpayer.', 'leyka'),
+        'title' => 'ИНН', // __('The taxpayer individual number', 'leyka'),
         'required' => false,
-//        'placeholder' => __('E.g., 4283256127', 'leyka'),
+        'placeholder' => __('E.g., 4283256127', 'leyka'),
     ),
     'person_bank_name' => array(
         'type' => 'text',

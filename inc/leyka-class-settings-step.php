@@ -19,9 +19,9 @@ class Leyka_Settings_Step {
         $this->_section_id = trim($section_id);
         $this->_title = trim($title);
 
-        $this->_params = $params + array(
+        $this->_params = wp_parse_args($params, array(
             'header_classes' => '',
-        );
+        ));
 
     }
 

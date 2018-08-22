@@ -585,6 +585,11 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'id' => 'person_full_name',
             'option_id' => 'person_full_name',
         )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'person_email',
+            'option_id' => 'tech_support_email',
+            'title' => 'Email для связи', // __('Your email', 'leyka')
+            'required' => true,
+        )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'person_address',
             'option_id' => 'person_address',
         )))->addBlock(new Leyka_Option_Block(array(
