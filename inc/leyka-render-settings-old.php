@@ -1,6 +1,6 @@
 <?php if( !defined('WPINC') ) die; // If this file is called directly, abort
 
-/** Sections */
+// Sections:
 add_action('leyka_render_section', 'leyka_render_section_area');
 function leyka_render_section_area($section){?>
 
@@ -16,7 +16,7 @@ function leyka_render_section_area($section){?>
     </div>
 <?php }
 
-/** Text fields */
+// Text fields:
 add_action('leyka_render_text', 'leyka_render_text_field', 10, 2);
 function leyka_render_text_field($option_name, $data){
 
@@ -38,7 +38,7 @@ function leyka_render_text_field($option_name, $data){
     </div>
 <?php }
 
-/** Number fields */
+// Number fields:
 add_action('leyka_render_number', 'leyka_render_number_field', 10, 2);
 function leyka_render_number_field($option_name, $data){
 
@@ -69,13 +69,14 @@ function leyka_render_checkbox_field($option_name, $data){
     <div id="<?php echo $option_name.'-wrapper'?>">
         <label for="<?php echo $option_name.'-field';?>">
             <span class="field-component title"><?php echo $data['title'];?></span>
-            <span class="field-component field"><input type="checkbox" id="<?php echo $option_name.'-field';?>" name="<?php echo $option_name;?>" value="1" <?php echo intval($data['value']) >= 1 ? 'checked' : '';?> />&nbsp;
+            <span class="field-component field">
+                <input type="checkbox" id="<?php echo $option_name.'-field';?>" name="<?php echo $option_name;?>" value="1" <?php echo intval($data['value']) >= 1 ? 'checked' : '';?>>&nbsp;
             <?php echo $data['description'];?></span>
         </label>
     </div>
 <?php }
 
-/** Multicheckbox fields */
+// Multicheckbox fields:
 add_action('leyka_render_multi_checkbox', 'leyka_render_multi_checkboxes_fields', 10, 2);
 function leyka_render_multi_checkboxes_fields($option_name, $data){
     $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name; ?>
@@ -93,17 +94,18 @@ function leyka_render_multi_checkboxes_fields($option_name, $data){
 
             foreach((array)$data['list_entries'] as $value => $label) {?>
                 <label for="<?php echo $option_name.'-'.$value.'-field';?>">
-                    <input type="checkbox" id="<?php echo $option_name.'-'.$value.'-field';?>" name="<?php echo $option_name;?>[]" value="<?php echo $value;?>" <?php echo in_array($value, $data['value']) ? 'checked' : '';?> />
-                    &nbsp;<?php echo esc_attr($label);?>
+                    <input type="checkbox" id="<?php echo $option_name.'-'.$value.'-field';?>" name="<?php echo $option_name;?>[]" value="<?php echo $value;?>" <?php echo in_array($value, $data['value']) ? 'checked' : '';?>>&nbsp;
+                    <?php echo esc_attr($label);?>
                 </label>                
             <?php }?>
         </span>
     </div>
 <?php }
 
-/** Radio fields */
+// Radio fields:
 add_action('leyka_render_radio', 'leyka_render_radio_fields', 10, 2);
 function leyka_render_radio_fields($option_name, $data){
+
     $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;?>
 
     <div id="<?php echo $option_name.'-wrapper';?>" class="field-radio">
@@ -129,7 +131,7 @@ function leyka_render_radio_fields($option_name, $data){
 
                         echo $value_data['title'];
                         if( !empty($value_data['description']) ) {?>
-                            <span class="radio-entry-description"><?php echo $value_data['description']?></span>
+                        <span class="radio-entry-description"><?php echo $value_data['description']?></span>
                         <?php }
 
                     }?>
@@ -144,9 +146,10 @@ function leyka_render_radio_fields($option_name, $data){
         <?php }?>
 
     </div>
+
 <?php }
 
-/** Select fields */
+// Select fields:
 add_action('leyka_render_select', 'leyka_render_select_field', 10, 2);
 function leyka_render_select_field($option_name, $data) {
     $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;?>
@@ -179,7 +182,7 @@ function leyka_render_select_field($option_name, $data) {
     </div>
 <?php }
 
-/** Multi-select fields */
+// Multi-select fields:
 add_action('leyka_render_multi_select', 'leyka_render_multi_select_field', 10, 2);
 function leyka_render_multi_select_field($option_name, $data) {
     $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;?>
@@ -206,7 +209,7 @@ function leyka_render_multi_select_field($option_name, $data) {
     </div>
 <?php }
 
-/** Textarea fields */
+// Textarea fields:
 add_action('leyka_render_textarea', 'leyka_render_textarea_field', 10, 2);
 function leyka_render_textarea_field($option_name, $data){ 
     $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;?>
@@ -229,7 +232,7 @@ function leyka_render_textarea_field($option_name, $data){
     </div>
 <?php }
 
-/** Simple HTML fields */
+// Simple HTML fields:
 add_action('leyka_render_html', 'leyka_render_html_field', 10, 2);
 function leyka_render_html_field($option_name, $data){ 
     $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name; ?>
@@ -255,7 +258,7 @@ function leyka_render_html_field($option_name, $data){
     </div>
 <?php }
 
-/** Rich HTML fields */
+// Rich HTML fields:
 add_action('leyka_render_rich_html', 'leyka_render_rich_html_field', 10, 2);
 function leyka_render_rich_html_field($option_name, $data){
     $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;?>
@@ -280,7 +283,7 @@ function leyka_render_rich_html_field($option_name, $data){
     </div>
 <?php }
 
-/** Special field: gateways commission options */
+// Special field: gateways commission options:
 add_action('leyka_render_custom_gateways_commission', 'leyka_render_gateways_commission_field', 10, 2);
 function leyka_render_gateways_commission_field($option_name, $data){
 
@@ -314,4 +317,4 @@ function leyka_render_gateways_commission_field($option_name, $data){
     </div>
 
 <?php }
-/** Special field: gateways commission options - END */
+// Special field: gateways commission options - END

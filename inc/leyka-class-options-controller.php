@@ -117,6 +117,11 @@ class Leyka_Options_Controller {
             $this->_options[$option_name]['value'] = trim($this->_options[$option_name]['value']);
         }
 
+        $this->_options[$option_name]['value'] = apply_filters(
+            'leyka_option_value-'.$option_name,
+            $this->_options[$option_name]['value']
+        );
+
         return apply_filters('leyka_option_value', $this->_options[$option_name]['value'], $option_name);
 
     }
@@ -140,17 +145,18 @@ class Leyka_Options_Controller {
             $params['value'] = $params['default'];
         }
 
+        /** @var $params array Full option format description in the beginning of leyka-options-meta.php */
         $params = array_merge(array(
-            'type' => $type, // html, rich_html, select, radio, checkbox, multi_checkbox  
+            'type' => $type,
             'value' => '',
             'default' => '',
             'title' => $name,
             'description' => '',
             'required' => false,
-            'placeholder' => '', // For text fields
-            'length' => '', // For text fields
-            'list_entries' => array(), // For select, radio & checkbox fields
-            'validation_rules' => array(), // List of regexp?..
+            'placeholder' => '',
+            'length' => '',
+            'list_entries' => array(),
+            'validation_rules' => array(),
         ), $params);
 
         $option_added = $value_saved !== false ? true : add_option($name, $params['value']);
@@ -266,8 +272,10 @@ class Leyka_Options_Controller {
 
         $this->_intialize_option($option_name, true);
 
-        return empty($this->_options[$option_name]['validation_rules']) ?
-            array() : apply_filters('leyka_option_validation_rules',  $option_name);
+        $validation_rules = empty($this->_options[$option_name]['validation_rules']) ?
+            array() : $this->_options[$option_name]['validation_rules'];
+
+        return apply_filters('leyka_option_validation_rules-'.$option_name, $validation_rules);
 
     }
 
@@ -310,7 +318,10 @@ class Leyka_Options_Controller {
         if(empty($this->_options[$option_name]) || empty($this->_options[$option_name]['default'])) {
             return false;
         } else {
-            return empty($this->_options[$option_name]['default']) ? '' : $this->_options[$option_name]['default'];
+            return apply_filters(
+                'leyka_option_default-'.$option_name,
+                empty($this->_options[$option_name]['default']) ? '' : $this->_options[$option_name]['default']
+            );
         }
 
     }
@@ -321,7 +332,7 @@ class Leyka_Options_Controller {
 
         $this->_intialize_option($option_name, true);
 
-        return $this->_options[$option_name];
+        return apply_filters('leyka_option_info-'.$option_name, $this->_options[$option_name]);
 
     }
 
@@ -331,7 +342,8 @@ class Leyka_Options_Controller {
 
         $this->_intialize_option($option_name);
 
-        return $this->_options[$option_name]['type'];
+        return apply_filters('leyka_option_type-'.$option_name, $this->_options[$option_name]['type']);
+
     }
 
     public function is_required($option_name) {
@@ -340,7 +352,9 @@ class Leyka_Options_Controller {
 
         $this->_intialize_option($option_name);
 
-        return empty($this->_options[$option_name]) ? false : !empty($this->_options[$option_name]['required']);
+        $option_required = empty($this->_options[$option_name]) ? false : !empty($this->_options[$option_name]['required']);
+
+        return apply_filters('leyka_option_required-'.$option_name, $option_required);
 
     }
 
@@ -350,8 +364,11 @@ class Leyka_Options_Controller {
 
         $this->_intialize_option($option_name, true);
         $value = $value === false ? $this->opt_safe($option_name) : $value;
+        $option_valid = !(
+            ($this->is_required($option_name) && !$value) || ($value && !$this->_validate_option($option_name, $value))
+        );
 
-        return !(($this->is_required($option_name) && !$value) || ($value && !$this->_validate_option($option_name, $value)));
+        return apply_filters('leyka_option_valid-'.$option_name, $option_valid, $value);
 
     }
 
@@ -364,12 +381,12 @@ function leyka_options() {
     return Leyka_Options_Controller::instance();
 }
 
-add_filter('leyka_option_value', 'leyka_filter_option_values', 10, 2);
-function leyka_filter_option_values($value, $option_name) {
-    return $option_name == 'commission' ? maybe_unserialize($value) : $value;
+/** Special field: gateway commission options */
+add_filter('leyka_option_value-commission', 'leyka_get_commission_values');
+function leyka_get_commission_values($value) {
+    return maybe_unserialize($value);
 }
 
-/** Special field: gateway commission options */
 add_action('leyka_save_custom_setting_commission', 'leyka_save_custom_setting_commission');
 function leyka_save_custom_setting_commission($option_value) {
 
@@ -386,10 +403,5 @@ function leyka_save_custom_setting_commission($option_value) {
         leyka_options()->opt('commission', $option_value);
     }
 
-}
-
-add_filter('leyka_option_value', 'leyka_get_commission_values', 10, 2);
-function leyka_get_commission_values($value, $option_name) {
-    return $option_name == 'commission' ? maybe_unserialize($value) : $value;
 }
 /** Special field: gateway commission options - END */

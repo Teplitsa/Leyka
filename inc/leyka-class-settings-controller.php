@@ -111,6 +111,8 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         $this->_storage_key = 'leyka-wizard_'.$this->_id;
 
+        add_action('leyka_settings_wizard-'.$this->_id.'-_step_init', array($this, 'stepInit'));
+
         if( !$this->_sections ) {
             return;
         }
@@ -142,11 +144,14 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
         }
         // } Debug
 
-        if( !empty($_POST['leyka_settings_prev_'.$this->_id]) ) {
+        do_action('leyka_settings_wizard-'.$this->_id.'-_step_init');
+
+        if( !empty($_POST['leyka_settings_prev_'.$this->_id]) ) { // Step page loading after returning from further Step
             $this->_handleSettingsGoBack();
-        } else {
+        } else if( !empty($_POST['leyka_settings_submit_'.$this->_id]) ) { // Step page loading after previous Step submit
             $this->_handleSettingsSubmit();
-        }
+        } //else { // Normal Step page loading
+        //}
 
         if(isset($_GET['debug'])) {
             echo '<pre>The activity: '.print_r($_SESSION[$this->_storage_key]['activity'], 1).'</pre>';
@@ -158,9 +163,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         $_SESSION[$this->_storage_key]['current_step'] = $step;
 
-        $this->_setCurrentSection($this->_sections[$step->section_id]);
-
-        return $this;
+        return $this->_setCurrentSection($this->_sections[$step->section_id]);
 
     }
 
@@ -174,19 +177,54 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     protected function _setCurrentStepById($step_full_id) {
 
-        if(empty($step_full_id)) {
-            return false;
+        if( !$step_full_id ) {
+            return $this;
         }
 
         $step = $this->getComponentById($step_full_id);
         if( !$step ) {
-            return false;
+            return $this;
         }
 
-        $this->_setCurrentStep($step)
+        return $this->_setCurrentStep($step)
             ->_setCurrentSection($this->getComponentById($step->section_id));
 
-        return true;
+    }
+
+    /**
+     * @param $step_full_id string
+     * @return boolean
+     */
+    protected function _isStepCompleted($step_full_id) {
+
+        /** @todo Throw some Exception if the given Step doesn't exists. */
+        $step_full_id = trim($step_full_id);
+        return !empty($_SESSION[$this->_storage_key]['activity'][$step_full_id]);
+
+    }
+
+    protected function _getSettingValue($setting_name = null) {
+
+        if($setting_name) {
+
+            foreach($_SESSION[$this->_storage_key]['activity'] as $step_full_id => $step_settings) {
+                if(isset($step_settings[$setting_name])) {
+                    return $step_settings[$setting_name];
+                }
+            }
+
+            return null;
+
+        } else {
+
+            $res = array();
+            foreach($_SESSION[$this->_storage_key]['activity'] as $step_full_id => $step_settings) {
+                $res = array_merge($res, $step_settings);
+            }
+
+            return $res;
+
+        }
 
     }
 
@@ -249,7 +287,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             $all_steps_completed = true;
             foreach($steps as $step) { /** @var Leyka_Settings_Step $step */
 
-                $step_completed = isset($_SESSION[$this->_storage_key]['activity'][$step->full_id]);
+                $step_completed = $this->_isStepCompleted($step->full_id);
 
                 if($all_steps_completed && !$step_completed) {
                     $all_steps_completed = false;
@@ -424,24 +462,26 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         }
 
-        $this->_addActivityEntry(); // All Step is valid - save the step data in the storage
+        $this->_addActivityEntry(); // The Step is valid - save the step data in the storage
 
         // Proceed to the next step:
         $next_step_full_id = $this->_getNextStepId();
         if($next_step_full_id && $next_step_full_id !== true) {
 
-//            echo '<pre>Next step: '.print_r($next_step_full_id, 1).'</pre>';
-
             $step = $this->getComponentById($this->_getNextStepId());
-
             if( !$step ) { /** @todo Process the error somehow */
                 return;
             }
+
+            do_action('leyka_settings_wizard-'.$this->_id.'-_step_init');
 
             $this->_setCurrentStep($step);
 
         }
 
+    }
+
+    public function stepInit() {
     }
 
     /**
@@ -727,10 +767,9 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 $next_step_full_id = $step_from->section_id.'-receiver_type';
             } else if($step_from->id === 'receiver_type') {
 
-                $next_step_full_id =
-                    $_SESSION[$this->_storage_key]['activity'][$step_from->section_id.'-receiver_type']['receiver_legal_type'] === 'legal' ?
-                        $step_from->section_id.'-receiver_legal_data' :
-                        $step_from->section_id.'-receiver_physical_data';
+                $next_step_full_id = $this->_getSettingValue('receiver_legal_type') === 'legal' ?
+                    $step_from->section_id.'-receiver_legal_data' :
+                    $step_from->section_id.'-receiver_physical_data';
 
             } else if($step_from->id === 'receiver_legal_data') {
                 $next_step_full_id = $step_from->section_id.'-receiver_legal_bank_essentials';
@@ -746,10 +785,9 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
             if($step_from->id === 'plugin_stats') {
 
-                $next_step_full_id =
-                    $_SESSION[$this->_storage_key]['activity'][$step_from->section_id.'-plugin_stats']['send_plugin_stats'] === 'n' ?
-                        $step_from->section_id.'-plugin_stats_refused' :
-                        $step_from->section_id.'-plugin_stats_accepted';
+                $next_step_full_id = $this->_getSettingValue('send_plugin_stats') === 'n' ?
+                    $step_from->section_id.'-plugin_stats_refused' :
+                    $step_from->section_id.'-plugin_stats_accepted';
 
             } else {
                 $next_step_full_id = 'final-init';
@@ -807,6 +845,20 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 'url' => '',
             ),
         );
+
+    }
+
+    public function stepInit() {
+
+        if($this->_getSettingValue('receiver_country') === '-') {
+            add_filter('leyka_option_info-receiver_legal_type', function($option_data){
+
+                unset($option_data['list_entries']['legal']);
+
+                return $option_data;
+
+            });
+        }
 
     }
 
