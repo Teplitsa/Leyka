@@ -40,6 +40,7 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
 
     abstract public function renderCommonErrorsArea();
 
+    abstract public function renderSubtitleBlock(Leyka_Subtitle_Block $block);
     abstract public function renderTextBlock(Leyka_Text_Block $block);
     abstract public function renderOptionBlock(Leyka_Option_Block $block);
     abstract public function renderContainerBlock(Leyka_Container_Block $block);
@@ -131,6 +132,8 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                     $this->renderContainerBlock($block);
                 } else if(is_a($block, 'Leyka_Text_Block')) { /** @var $block Leyka_Text_Block */
                     $this->renderTextBlock($block);
+                } else if(is_a($block, 'Leyka_Subtitle_Block')) { /** @var $block Leyka_Subtitle_Block */
+                    $this->renderSubtitleBlock($block);
                 } else if(is_a($block, 'Leyka_Custom_Option_Block')) {
 
 //                    echo '<p>'.$block->option_id.' custom option here</p>';
@@ -148,7 +151,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
             <?php $this->renderSubmitArea();?>
             </div>
         </form>
-        
+
     <?php }
 
     public function renderHiddenFields() {
@@ -266,6 +269,14 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
             <?php }?>
 
+        </div>
+
+    <?php }
+
+    public function renderSubtitleBlock(Leyka_Subtitle_Block $block) {?>
+
+        <div id="<?php echo $block->id;?>" class="settings-block subtitle-block">
+            <h2><?php echo $block->getContent();?></h2>
         </div>
 
     <?php }

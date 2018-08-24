@@ -102,6 +102,13 @@ self::$_options_meta = array(
         'required' => true,
 //        'placeholder' => __('E.g., John Frederic Dow', 'leyka'),
     ),
+    'org_contact_person_name' => array(
+        'type' => 'text',
+        'title' => 'Имя контактного лица', // __('Full name of a person representing the NGO', 'leyka'),
+//        'description' => __("Enter a person's full name in subjective case.", 'leyka'),
+        'required' => false,
+//        'placeholder' => __('E.g., John Frederic Dow', 'leyka'),
+    ),
     'org_face_fio_rp' => array(
         'type' => 'text',
         'title' => __('Full name of a person representing the NGO, in genitive case', 'leyka'),

@@ -574,6 +574,22 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                     'show_description' => false,
                 )),
             ),
+        )))->addBlock(new Leyka_Subtitle_Block(array(
+            'id' => 'contact_person_data',
+            'text' => 'Контактное лицо',
+        )))->addBlock(new Leyka_Container_Block(array(
+            'id' => 'complex-row-3',
+            'entries' => array(
+                new Leyka_Option_Block(array(
+                    'id' => 'org_contact_person_name',
+                    'option_id' => 'org_contact_person_name',
+                )),
+                new Leyka_Option_Block(array(
+                    'id' => 'org_contact_email',
+                    'option_id' => 'tech_support_email',
+                    'show_description' => false,
+                )),
+            ),
         )))->addTo($section);
 
         // Physical receiver type - person's data step:

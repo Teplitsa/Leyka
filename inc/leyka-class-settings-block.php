@@ -63,6 +63,38 @@ class Leyka_Text_Block extends Leyka_Settings_Block {
 
 }
 
+class Leyka_Subtitle_Block extends Leyka_Settings_Block {
+
+    protected $_subtitle_text = '';
+
+    public function __construct(array $params = array()) {
+
+        parent::__construct($params);
+
+        if( !empty($params['text'] ) ) {
+            $this->_subtitle_text = $params['text'];
+        }
+
+    }
+
+    public function getContent() {
+        return $this->_subtitle_text;
+    }
+
+    public function isValid() {
+        return true;
+    }
+
+    public function getErrors() {
+        return array();
+    }
+
+    public function getFieldsValues() {
+        return array();
+    }
+
+}
+
 class Leyka_Option_Block extends Leyka_Settings_Block {
 
     protected $_option_id = '';
@@ -90,10 +122,7 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
 
         if($this->title) {
             add_filter('leyka_option_title-'.$this->_option_id, function(){
-
-//                $option_data['title'] = $this->title;
-                return $this->title; //$option_data;
-
+                return $this->title;
             });
         }
         if( !is_null($this->required) ) {
