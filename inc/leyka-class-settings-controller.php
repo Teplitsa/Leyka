@@ -671,6 +671,31 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             ),
         )))->addTo($section);
 
+        // Terms of service step:
+        $step = new Leyka_Settings_Step('terms_of_service', $section->id, 'Оферта');
+        $step->addBlock(new Leyka_Text_Block(array(
+            'id' => 'step-intro-text',
+            'text' => 'Для соблюдения всех формальных процедур вам необходимо предоставить оферту о заключении договора пожертвования. Мы подготовили для вас шаблонный вариант. Пожалуйста, проверьте.',
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'terms_of_service_text',
+            'option_id' => 'terms_of_service_text',
+        )))->addTo($section);
+
+        // Terms of service step:
+        $step = new Leyka_Settings_Step('pd_terms', $section->id, 'Соглашение о персональных данных');
+        $step->addBlock(new Leyka_Text_Block(array(
+            'id' => 'step-intro-text',
+            'text' => '<ul>
+<li>В рамках сбора пожертвований вы будете собирать персональные данные доноров.</li>
+<li>«Согласие на обработку персональных данных» — обязательный документ по закону ФЗ-152.</li>
+<li>Мы подготовили шаблон текста соглашения, вы можете отредактировать его под ваши требования.</li>
+<li>Все персональные данные хранятся на вашем сайте и никуда не отправляются.</li>
+</ul>',
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'pd_terms_text',
+            'option_id' => 'pd_terms_text',
+        )))->addTo($section);
+
         // Section final (outro) step:
         $step = new Leyka_Settings_Step('final', $section->id, 'Хорошая работа!');
         $step->addBlock(new Leyka_Text_Block(array(
@@ -797,6 +822,10 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             } else if($step_from->id === 'receiver_physical_data') {
                 $next_step_full_id = $step_from->section_id.'-receiver_physical_bank_essentials';
             } else if(stripos($step_from->id, 'bank_essentials')) {
+                $next_step_full_id = $step_from->section_id.'-terms_of_service';
+            } else if($step_from->id === 'terms_of_service') {
+                $next_step_full_id = $step_from->section_id.'-pd_terms';
+            } else if($step_from->id === 'pd_terms') {
                 $next_step_full_id = $step_from->section_id.'-final';
             } else if($step_from->id === 'final') {
                 $next_step_full_id = 'dd-plugin_stats';
@@ -853,6 +882,16 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                         'title' => 'Банковские реквизиты',
                         'url' => '',
                     ),
+                    array(
+                        'step_id' => 'receiver_terms_of_service',
+                        'title' => 'Оферта',
+                        'url' => '',
+                    ),
+                    array(
+                        'step_id' => 'receiver_pd_terms',
+                        'title' => 'Персональные данные',
+                        'url' => '',
+                    ),
                 ),
             ),
             array(
@@ -869,17 +908,36 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
     }
 
-    public function stepInit() {
+    public function getNavigationData() {
 
-        if($this->_getSettingValue('receiver_country') === '-') {
-            add_filter('leyka_option_info-receiver_legal_type', function($option_data){
+        $current_navigation_data = $this->_navigation_data;
 
-                unset($option_data['list_entries']['legal']);
-
-                return $option_data;
-
-            });
+        switch($this->getCurrentStep()->full_id) {
+            case 'rd-init': $navigation_position = 'rd'; break;
+            case 'rd-receiver_type': $navigation_position = 'rd-receiver_type'; break;
+            case 'rd-receiver_legal_data':
+            case 'rd-receiver_physical_data':
+                $navigation_position = 'rd-receiver_data';
+                break;
+            case 'rd-receiver_legal_bank_essentials':
+            case 'rd-receiver_physical_bank_essentials':
+                $navigation_position = 'rd-receiver_bank_essentials';
+                break;
+            case 'rd-terms_of_service': $navigation_position = 'rd-receiver_terms_of_service'; break;
+            case 'rd-pd_terms': $navigation_position = 'rd-receiver_pd_terms'; break;
+            case 'rd-final': $navigation_position = 'rd--'; break;
+            case 'dd-plugin_stats': $navigation_position = 'dd'; break;
+            case 'dd-plugin_stats_accepted':
+            case 'dd-plugin_stats_refused':
+                $navigation_position = 'dd--';
+                break;
+            case 'final-init': $navigation_position = 'final--'; break;
+            default: $navigation_position = false;
         }
+
+        return $navigation_position ?
+            $this->_processNavigationData($navigation_position) :
+            $current_navigation_data;
 
     }
 
@@ -913,35 +971,17 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
     }
 
-    public function getNavigationData() {
+    public function stepInit() {
 
-        $current_navigation_data = $this->_navigation_data;
+        if($this->_getSettingValue('receiver_country') === '-') {
+            add_filter('leyka_option_info-receiver_legal_type', function($option_data){
 
-        switch($this->getCurrentStep()->full_id) {
-            case 'rd-init': $navigation_position = 'rd'; break;
-            case 'rd-receiver_type': $navigation_position = 'rd-receiver_type'; break;
-            case 'rd-receiver_legal_data':
-            case 'rd-receiver_physical_data':
-                $navigation_position = 'rd-receiver_data';
-                break;
-            case 'rd-receiver_legal_bank_essentials':
-            case 'rd-receiver_physical_bank_essentials':
-                $navigation_position = 'rd-receiver_bank_essentials';
-                break;
-            case 'rd-final': $navigation_position = 'rd--'; break;
-            case 'dd-plugin_stats': $navigation_position = 'dd'; break;
-            case 'dd-plugin_stats_accepted':
-            case 'dd-plugin_stats_refused':
-                $navigation_position = 'dd--';
-                break;
-            case 'final-init': $navigation_position = 'final--'; break;
-            default:
-                $navigation_position = false;
+                unset($option_data['list_entries']['legal']);
+
+                return $option_data;
+
+            });
         }
-
-        return $navigation_position ?
-            $this->_processNavigationData($navigation_position) :
-            $current_navigation_data;
 
     }
 
