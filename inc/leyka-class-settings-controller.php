@@ -731,62 +731,68 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step = new Leyka_Settings_Step('plugin_stats_refused', $section->id, 'Эхх... %(');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Жаль, что вы решили не делиться данными. Если вы передумаете, то изменить эти настройки вы сможете в разделе «Настройки». Давайте настроим и запустим вашу первую кампанию по сбору средств. ',
+            'text' => 'Жаль, что вы решили не делиться данными. Если вы передумаете, то изменить эти настройки вы сможете в разделе «Настройки». Давайте настроим и запустим вашу первую кампанию по сбору средств.',
         )))->addTo($section);
 
         $this->_sections[$section->id] = $section;
 
         // Campaign data Section:
-//        $section = new Leyka_Settings_Section('cd', 'Раздел 2: настройка кампании');
-//
-//        $step = new Leyka_Settings_Step('init', $section->id, 'Шаг 0: настроим кампанию!');
-//        $step->addBlock(new Leyka_Text_Block(array(
-//            'id' => 'intro_text_1',
-//            'text' => 'Осталось совсем немного и первая кампания будет запущена. Это будет первый абзац вступительного текста, и ещё немного о том, что дальше ещё нужно настроить платёжку.',
-//        )));
-//
-//        $section->addStep($step);
-//
-//        $step = new Leyka_Settings_Step('campaign_description',  $section->id, 'Шаг 1: описание вашей кампании');
-//        $step->addBlock(new Leyka_Text_Block(array(
-//            'id' => 'campaign_desc_text',
-//            'text' => 'Текст, который идёт перед полями кампании на этом шаге. В нём может описываться, например, что вообще такое кампания.',
-//        )))->addBlock(new Leyka_Custom_Option_Block(array(
-//            'id' => 'campaign_title',
-//            'option_id' => 'init-campaign-title',
-//            'option_data' => array(
-//                'type' => 'text',
-//                'title' => 'Название кампании',
-////                'description' => '',
-//                'required' => 1,
-//                'placeholder' => 'Например, «На уставную деятельность организации»',
-//            ),
-//        )))->addBlock(new Leyka_Custom_Option_Block(array(
-//            'id' => 'campaign_lead',
-//            'option_id' => 'init-campaign-lead',
-//            'option_data' => array(
-//                'type' => 'textarea',
-//                'title' => 'Краткое описание кампании',
-//                'required' => 0,
-//                'placeholder' => 'Например, «Ваше пожертвование пойдёт на выполнение уставной деятельности в текущем году.»',
-//            ),
-//        )))->addBlock(new Leyka_Custom_Option_Block(array(
-//            'id' => 'campaign_target',
-//            'option_id' => 'init-campaign-target',
-//            'option_data' => array(
-//                'type' => 'number',
-//                'title' => 'Целевая сумма',
-//                'required' => 0,
-//                'min' => 0,
-//                'max' => 60000,
-//                'step' => 1,
-//            ),
-//        )));
-//
-//        $section->addStep($step);
-//
-//        $this->_sections[$section->id] = $section;
-        // Campaign data Section - End
+        $section = new Leyka_Settings_Section('cd', 'Настройка кампании');
+
+        $step = new Leyka_Settings_Step('campaign_description', $section->id, 'Описание вашей кампании');
+        $step->addBlock(new Leyka_Text_Block(array(
+            'id' => 'step-intro-text',
+            'text' => '<ul>
+<li>Кампания — это ключевое понятие Лейки.</li>
+<li>У кампаний по сбору пожертвований есть цель и, как правило, целевая сумма.</li>
+<li>Лейка позволяет создавать ежемесячные платежи, и чуть позже мы покажем, как их настраивать. Но, для начала, давайте создадим простую кампанию.</li>
+</ul>',
+        )))->addBlock(new Leyka_Custom_Setting_Block(array(
+            'id' => 'campaign-title',
+            'custom_setting_id' => 'campaign_title',
+        )))->addBlock(new Leyka_Custom_Setting_Block(array(
+            'id' => 'campaign-lead',
+            'custom_setting_id' => 'campaign_short_description',
+        )))->addBlock(new Leyka_Custom_Setting_Block(array(
+            'id' => 'campaign-target',
+            'custom_setting_id' => 'campaign_target',
+        )))->addTo($section);
+
+        $step = new Leyka_Settings_Step('campaign_decoration', $section->id, 'Оформление кампании');
+        $step->addBlock(new Leyka_Text_Block(array(
+            'id' => 'step-intro-text',
+            'text' => 'Выберите главное фото кампании и один из возможных шаблонов формы для пожертвования. И то, и другое очень важно для восприятия кампании донорами, и, следовательно, для её успешности.',
+        )))->addBlock(new Leyka_Custom_Setting_Block(array(
+            'id' => 'campaign-decoration',
+            'custom_setting_id' => 'campaign_decoration',
+        )))->addTo($section);
+
+        $step = new Leyka_Settings_Step('donors_communication', $section->id, 'Коммуникация с донором');
+        $step->addBlock(new Leyka_Text_Block(array(
+            'id' => 'step-intro-text-1',
+            'text' => 'После того, как донор внёс своё пожертвование, хорошим тоном считается показать ему страницу с благодарностью и отправить письмо.',
+        )))->addBlock(new Leyka_Text_Block(array(
+            'id' => 'step-intro-text-2',
+            'text' => 'Позже, в разделе «Настройки», вы сможете изменить текст страницы «Спасибо», которая показывается донору после успешного совершения пожертвования.',
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'email-from-name',
+            'option_id' => 'email_from_name',
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'email-from',
+            'option_id' => 'email_from',
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'email-thanks-text',
+            'option_id' => 'email_thanks_text',
+        )))->addTo($section);
+
+        $step = new Leyka_Settings_Step('campaign_completed', $section->id, 'Кампания настроена');
+        $step->addBlock(new Leyka_Custom_Setting_Block(array(
+            'id' => 'campaign-completed',
+            'custom_setting_id' => 'campaign_completed',
+        )))->addTo($section);
+
+        $this->_sections[$section->id] = $section;
+        // Campaign settings Section - End
 
         // Final Section:
         $section = new Leyka_Settings_Section('final', 'Завершение настройки');
@@ -807,6 +813,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step_from = $step_from && is_a($step_from, 'Leyka_Settings_Step') ? $step_from : $this->current_step;
         $next_step_full_id = false;
 
+        /** @todo To many if-elses sucks - try some wrapping pattern here */
         if($step_from->section_id === 'rd') {
 
             if($step_from->id === 'init') {
@@ -840,6 +847,18 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                     $step_from->section_id.'-plugin_stats_accepted';
 
             } else {
+                $next_step_full_id = 'cd-campaign_description';
+            }
+
+        } else if($step_from->section_id === 'cd') {
+
+            if($step_from->id === 'campaign_description') {
+                $next_step_full_id = $step_from->section_id.'-campaign_decoration';
+            } else if($step_from->id === 'campaign_decoration') {
+                $next_step_full_id = $step_from->section_id.'-donors_communication';
+            } else if($step_from->id === 'donors_communication') {
+                $next_step_full_id = $step_from->section_id.'-campaign_completed';
+            } else if($step_from->id === 'campaign_completed') {
                 $next_step_full_id = 'final-init';
             }
 
@@ -900,6 +919,28 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 'url' => '',
             ),
             array(
+                'section_id' => 'cd',
+                'title' => 'Настройка кампании',
+                'url' => '',
+                'steps' => array(
+                    array(
+                        'step_id' => 'campaign_description',
+                        'title' => 'Основные данные',
+                        'url' => '',
+                    ),
+                    array(
+                        'step_id' => 'campaign_decoration',
+                        'title' => 'Оформление кампании',
+                        'url' => '',
+                    ),
+                    array(
+                        'step_id' => 'donors_communication',
+                        'title' => 'Коммуникация с донором',
+                        'url' => '',
+                    ),
+                ),
+            ),
+            array(
                 'section_id' => 'final',
                 'title' => 'Завершение настройки',
                 'url' => '',
@@ -911,10 +952,11 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
     public function getNavigationData() {
 
         $current_navigation_data = $this->_navigation_data;
+        $current_step_full_id = $this->getCurrentStep()->full_id;
 
-        switch($this->getCurrentStep()->full_id) {
+        switch($current_step_full_id) {
             case 'rd-init': $navigation_position = 'rd'; break;
-            case 'rd-receiver_type': $navigation_position = 'rd-receiver_type'; break;
+            case 'rd-receiver_type': $navigation_position = $current_step_full_id; break;
             case 'rd-receiver_legal_data':
             case 'rd-receiver_physical_data':
                 $navigation_position = 'rd-receiver_data';
@@ -931,6 +973,12 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             case 'dd-plugin_stats_refused':
                 $navigation_position = 'dd--';
                 break;
+            case 'cd-campaign_description':
+            case 'cd-campaign_decoration':
+            case 'cd-donors_communication':
+                $navigation_position = $current_step_full_id; break;
+            case 'cd-campaign_completed':
+                $navigation_position = 'cd--'; break;
             case 'final-init': $navigation_position = 'final--'; break;
             default: $navigation_position = false;
         }

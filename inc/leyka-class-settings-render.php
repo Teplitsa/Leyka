@@ -43,6 +43,7 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
     abstract public function renderSubtitleBlock(Leyka_Subtitle_Block $block);
     abstract public function renderTextBlock(Leyka_Text_Block $block);
     abstract public function renderOptionBlock(Leyka_Option_Block $block);
+    abstract public function renderCustomSettingBlock(Leyka_Custom_Setting_Block $block);
     abstract public function renderContainerBlock(Leyka_Container_Block $block);
 
     abstract public function renderHiddenFields();
@@ -134,10 +135,8 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                     $this->renderTextBlock($block);
                 } else if(is_a($block, 'Leyka_Subtitle_Block')) { /** @var $block Leyka_Subtitle_Block */
                     $this->renderSubtitleBlock($block);
-                } else if(is_a($block, 'Leyka_Custom_Option_Block')) {
-
-//                    echo '<p>'.$block->option_id.' custom option here</p>';
-
+                } else if(is_a($block, 'Leyka_Custom_Setting_Block')) { /** @var $block Leyka_Custom_Setting_Block */
+                    $this->renderCustomSettingBlock($block);
                 } else if(is_a($block, 'Leyka_Option_Block')) { /** @var $block Leyka_Option_Block */
                     $this->renderOptionBlock($block);
                 }
@@ -257,10 +256,8 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
                 <?php if(is_a($sub_block, 'Leyka_Text_Block')) { /** @var $sub_block Leyka_Text_Block */
                     $this->renderTextBlock($sub_block);
-                } else if(is_a($sub_block, 'Leyka_Custom_Option_Block')) {
-
-//                    echo '<p>'.$sub_block->option_id.' custom option here</p>';
-
+                } else if(is_a($sub_block, 'Leyka_Custom_Setting_Block')) { /** @var $sub_block Leyka_Custom_Setting_Block */
+                    $this->renderCustomSettingBlock($sub_block);
                 } else if(is_a($sub_block, 'Leyka_Option_Block')) { /** @var $sub_block Leyka_Option_Block */
                     $this->renderOptionBlock($sub_block);
                 }?>
@@ -303,5 +300,11 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         </div>
 
     <?php }
+
+    public function renderCustomSettingBlock(Leyka_Custom_Setting_Block $block) {
+
+        echo '<pre>Custom setting here: '.print_r($block->getContent(), 1).'</pre>';
+
+    }
 
 }

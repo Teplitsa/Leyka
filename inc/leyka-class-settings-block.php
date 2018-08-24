@@ -277,35 +277,35 @@ class Leyka_Container_Block extends Leyka_Settings_Block {
 
 }
 
-class Leyka_Custom_Option_Block extends Leyka_Settings_Block {
+class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
 
-    protected $_option_id = '';
+    protected $_setting_id = '';
 
     public function __construct(array $params = array()) {
 
         parent::__construct($params);
 
-        if(empty($params['option_id'])) {
-            /** @todo Throw some Exception */
-        } else if( !leyka_options()->option_exists($params['option_id']) ) {
+        if(empty($params['custom_setting_id'])) {
             /** @todo Throw some Exception */
         }
 
-        $this->_option_id = $params['option_id'];
+        $this->_setting_id = $params['custom_setting_id'];
 
     }
 
     public function __get($name) {
 
         switch($name) {
-            case 'option_id': return $this->_option_id;
+            case 'custom_id':
+            case 'custom_setting_id':
+                return $this->_setting_id;
             default: return parent::__get($name);
         }
 
     }
 
     public function getContent() {
-        return $this->_option_id; // leyka_options()->get_info_of($this->_option_id);
+        return $this->_setting_id;
     }
 
     public function isValid() {
@@ -320,7 +320,7 @@ class Leyka_Custom_Option_Block extends Leyka_Settings_Block {
      * @return array
      */
     public function getFieldsValues() {
-        return array($this->_option_id => 'some value');
+        return array($this->_setting_id => 'some value');
 //        return isset($_POST['leyka_'.$this->_option_id]) ?
 //            array($this->_option_id => $_POST['leyka_'.$this->_option_id]) : array();
     }
