@@ -775,12 +775,29 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'campaign-title',
             'custom_setting_id' => 'campaign_title',
+            'field_type' => 'text',
+            'data' => array(
+                'title' => 'Название кампании',
+//                'description' => '',
+            ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'campaign-lead',
             'custom_setting_id' => 'campaign_short_description',
+            'field_type' => 'textarea',
+            'data' => array(
+                'title' => 'Краткое описание',
+//                'description' => '',
+            ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'campaign-target',
             'custom_setting_id' => 'campaign_target',
+            'field_type' => 'number',
+            'data' => array(
+                'title' => 'Целевая сумма',
+                'min' => 0,
+                'step' => 0.01,
+//                'validation_rules' => array()
+            ),
         )))->addTo($section);
 
         $step = new Leyka_Settings_Step('campaign_decoration', $section->id, 'Оформление кампании');
@@ -790,6 +807,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'campaign-decoration',
             'custom_setting_id' => 'campaign_decoration',
+            'field_type' => 'custom_campaign_thumbnail',
         )))->addTo($section);
 
         $step = new Leyka_Settings_Step('donors_communication', $section->id, 'Коммуникация с донором');
@@ -814,6 +832,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'campaign-completed',
             'custom_setting_id' => 'campaign_completed',
+            'field_type' => 'custom_campaign_completed',
         )))->addTo($section);
 
         $this->_sections[$section->id] = $section;

@@ -303,7 +303,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     public function renderCustomSettingBlock(Leyka_Custom_Setting_Block $block) {?>
 
-        <div id="<?php echo $block->id;?>" class="settings-block custom-block">
+        <div id="<?php echo $block->id;?>" class="settings-block custom-block <?php echo $block->is_standard_field_type ? 'option-block' : '';?>">
             <?php echo $block->getContent();?>
         </div>
 

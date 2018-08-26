@@ -20,7 +20,8 @@ function leyka_render_section_area($section){?>
 add_action('leyka_render_text', 'leyka_render_text_field', 10, 2);
 function leyka_render_text_field($option_id, $data){
 
-    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;?>
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
+    $data['value'] = isset($data['value']) ? $data['value'] : '';?>
 
     <div id="<?php echo $option_id.'-wrapper'?>">
         <label for="<?php echo $option_id.'-field';?>">
@@ -42,7 +43,8 @@ function leyka_render_text_field($option_id, $data){
 add_action('leyka_render_number', 'leyka_render_number_field', 10, 2);
 function leyka_render_number_field($option_id, $data){
 
-    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;?>
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
+    $data['value'] = isset($data['value']) ? $data['value'] : '';?>
 
     <div id="<?php echo $option_id.'-wrapper'?>">
         <label for="<?php echo $option_id.'-field';?>">
@@ -51,10 +53,10 @@ function leyka_render_number_field($option_id, $data){
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
             </span>
             <span class="field-component field">
-                <input type="number" id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo esc_attr($data['placeholder']);?>" <?php echo empty($data['length']) ? '' : 'maxlength="'.(int)$data['length'].'"';?> <?php echo empty($data['max']) ? '' : 'max="'.(int)$data['max'].'"';?> <?php echo empty($data['min']) ? '' : 'min="'.(int)$data['min'].'"';?> <?php echo $data['step'] === false ? '' : 'step="'.(int)$data['step'].'"';?>>
+                <input type="number" id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo empty($data['placeholder']) ? '' : esc_attr($data['placeholder']);?>" <?php echo empty($data['length']) ? '' : 'maxlength="'.(int)$data['length'].'"';?> <?php echo isset($data['max']) ? 'max="'.(int)$data['max'].'"' : '';?> <?php echo isset($data['min']) ? 'min="'.(int)$data['min'].'"' : '';?> <?php echo empty($data['step']) ? '' : 'step="'.(int)$data['step'].'"';?>>
             </span>
             <?php if( !empty($data['description']) ) {?>
-                <span class="field-component help"><?php echo $data['description'];?></span>
+            <span class="field-component help"><?php echo $data['description'];?></span>
             <?php }?>
         </label>
     </div>
@@ -217,7 +219,8 @@ function leyka_render_multi_select_field($option_id, $data){
 add_action('leyka_render_textarea', 'leyka_render_textarea_field', 10, 2);
 function leyka_render_textarea_field($option_id, $data){
 
-    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;?>
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
+    $data['value'] = isset($data['value']) ? $data['value'] : '';?>
 
     <div id="<?php echo $option_id.'-wrapper'?>">
         <label for="<?php echo $option_id.'-field';?>">
@@ -226,9 +229,7 @@ function leyka_render_textarea_field($option_id, $data){
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
             </span>
             <span class="field-component field">
-                <textarea id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" rows="" cols="">
-                    <?php echo esc_attr($data['value']);?>
-                </textarea>
+                <textarea id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" rows="" cols=""><?php echo esc_attr($data['value']);?></textarea>
             </span>
             <?php if( !empty($data['description']) ) {?>
             <span class="field-component help"><?php echo $data['description'];?></span>
@@ -242,7 +243,8 @@ function leyka_render_textarea_field($option_id, $data){
 add_action('leyka_render_html', 'leyka_render_html_field', 10, 2);
 function leyka_render_html_field($option_id, $data){
 
-    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id; ?>
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
+    $data['value'] = isset($data['value']) ? $data['value'] : '';?>
 
     <div id="<?php echo $option_id.'-wrapper';?>">
         <label for="<?php echo $option_id;?>">
@@ -270,7 +272,8 @@ function leyka_render_html_field($option_id, $data){
 add_action('leyka_render_rich_html', 'leyka_render_rich_html_field', 10, 2);
 function leyka_render_rich_html_field($option_id, $data){
 
-    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;?>
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
+    $data['value'] = isset($data['value']) ? $data['value'] : '';?>
 
     <div id="<?php echo $option_id.'-wrapper'?>">
         <label for="<?php echo $option_id;?>">

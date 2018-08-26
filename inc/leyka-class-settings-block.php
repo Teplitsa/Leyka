@@ -300,14 +300,14 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
 
         /**
          * @todo Add a check for possible field type:
-         * text, html, rich_html, select, radio, checkbox, multi_checkbox, custom_XXX.
+         * text, textarea, html, rich_html, select, radio, checkbox, multi_checkbox, custom_XXX.
          * If check is failed, throw some Exception.
          */
         $this->_field_type = $params['field_type'];
-        $this->_rendering_type = $params['rendering_type'];
+        $this->_rendering_type = empty($params['rendering_type']) ? 'custom' : $params['rendering_type'];
 
-        $this->_field_data = empty($params['data']) ? array() : array($params['data']);
-        $this->_fields_keys = empty($params['keys']) ? array() : array($params['keys']);
+        $this->_field_data = empty($params['data']) ? array() : (array)$params['data'];
+        $this->_fields_keys = empty($params['keys']) || !is_array($params['keys']) ? array($this->_setting_id) : $params['keys'];
 
     }
 
@@ -317,6 +317,10 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
             case 'custom_id':
             case 'custom_setting_id':
                 return $this->_setting_id;
+            case 'field_type':
+                return $this->_field_type;
+            case 'is_standard_field_type':
+                return in_array($this->_field_type, array('text', 'textarea', 'html', 'rich_html', 'select', 'radio', 'checkbox', 'multi_checkbox'));
             default: return parent::__get($name);
         }
 
