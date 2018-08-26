@@ -18,18 +18,18 @@ function leyka_render_section_area($section){?>
 
 // Text fields:
 add_action('leyka_render_text', 'leyka_render_text_field', 10, 2);
-function leyka_render_text_field($option_name, $data){
+function leyka_render_text_field($option_id, $data){
 
-    $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;?>
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;?>
 
-    <div id="<?php echo $option_name.'-wrapper'?>">
-        <label for="<?php echo $option_name.'-field';?>">
+    <div id="<?php echo $option_id.'-wrapper'?>">
+        <label for="<?php echo $option_id.'-field';?>">
             <span class="field-component title">
                 <?php echo $data['title'];?>
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
             </span>
             <span class="field-component field">
-                <input type="<?php echo empty($data['is_password']) ? 'text' : 'password';?>" id="<?php echo $option_name.'-field';?>" name="<?php echo $option_name;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo empty($data['placeholder']) ? '' : esc_attr($data['placeholder']);?>" maxlength="<?php echo empty($data['length']) ? '' : (int)$data['length'];?>">
+                <input type="<?php echo empty($data['is_password']) ? 'text' : 'password';?>" id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo empty($data['placeholder']) ? '' : esc_attr($data['placeholder']);?>" maxlength="<?php echo empty($data['length']) ? '' : (int)$data['length'];?>">
             </span>
             <?php if( !empty($data['description']) ) {?>
             <span class="field-component help"><?php echo $data['description'];?></span>
@@ -40,18 +40,18 @@ function leyka_render_text_field($option_name, $data){
 
 // Number fields:
 add_action('leyka_render_number', 'leyka_render_number_field', 10, 2);
-function leyka_render_number_field($option_name, $data){
+function leyka_render_number_field($option_id, $data){
 
-    $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;?>
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;?>
 
-    <div id="<?php echo $option_name.'-wrapper'?>">
-        <label for="<?php echo $option_name.'-field';?>">
+    <div id="<?php echo $option_id.'-wrapper'?>">
+        <label for="<?php echo $option_id.'-field';?>">
             <span class="field-component title">
                 <?php echo $data['title'];?>
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
             </span>
             <span class="field-component field">
-                <input type="number" id="<?php echo $option_name.'-field';?>" name="<?php echo $option_name;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo esc_attr($data['placeholder']);?>" <?php echo empty($data['length']) ? '' : 'maxlength="'.(int)$data['length'].'"';?> <?php echo empty($data['max']) ? '' : 'max="'.(int)$data['max'].'"';?> <?php echo empty($data['min']) ? '' : 'min="'.(int)$data['min'].'"';?> <?php echo $data['step'] === false ? '' : 'step="'.(int)$data['step'].'"';?>>
+                <input type="number" id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo esc_attr($data['placeholder']);?>" <?php echo empty($data['length']) ? '' : 'maxlength="'.(int)$data['length'].'"';?> <?php echo empty($data['max']) ? '' : 'max="'.(int)$data['max'].'"';?> <?php echo empty($data['min']) ? '' : 'min="'.(int)$data['min'].'"';?> <?php echo $data['step'] === false ? '' : 'step="'.(int)$data['step'].'"';?>>
             </span>
             <?php if( !empty($data['description']) ) {?>
                 <span class="field-component help"><?php echo $data['description'];?></span>
@@ -62,15 +62,15 @@ function leyka_render_number_field($option_name, $data){
 
 // Checkbox fields:
 add_action('leyka_render_checkbox', 'leyka_render_checkbox_field', 10, 2);
-function leyka_render_checkbox_field($option_name, $data){
+function leyka_render_checkbox_field($option_id, $data){
     
-    $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name; //var_dump($data);?>
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id; //var_dump($data);?>
 
-    <div id="<?php echo $option_name.'-wrapper'?>">
-        <label for="<?php echo $option_name.'-field';?>">
+    <div id="<?php echo $option_id.'-wrapper'?>">
+        <label for="<?php echo $option_id.'-field';?>">
             <span class="field-component title"><?php echo $data['title'];?></span>
             <span class="field-component field">
-                <input type="checkbox" id="<?php echo $option_name.'-field';?>" name="<?php echo $option_name;?>" value="1" <?php echo intval($data['value']) >= 1 ? 'checked' : '';?>>&nbsp;
+                <input type="checkbox" id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="1" <?php echo intval($data['value']) >= 1 ? 'checked' : '';?>>&nbsp;
             <?php echo $data['description'];?></span>
         </label>
     </div>
@@ -78,10 +78,10 @@ function leyka_render_checkbox_field($option_name, $data){
 
 // Multicheckbox fields:
 add_action('leyka_render_multi_checkbox', 'leyka_render_multi_checkboxes_fields', 10, 2);
-function leyka_render_multi_checkboxes_fields($option_name, $data){
-    $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name; ?>
+function leyka_render_multi_checkboxes_fields($option_id, $data){
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id; ?>
 
-    <div id="<?php echo $option_name.'-wrapper';?>">
+    <div id="<?php echo $option_id.'-wrapper';?>">
         <span class="field-component title">
             <?php echo $data['title'];?>
             <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
@@ -93,8 +93,8 @@ function leyka_render_multi_checkboxes_fields($option_name, $data){
             }
 
             foreach((array)$data['list_entries'] as $value => $label) {?>
-                <label for="<?php echo $option_name.'-'.$value.'-field';?>">
-                    <input type="checkbox" id="<?php echo $option_name.'-'.$value.'-field';?>" name="<?php echo $option_name;?>[]" value="<?php echo $value;?>" <?php echo in_array($value, $data['value']) ? 'checked' : '';?>>&nbsp;
+                <label for="<?php echo $option_id.'-'.$value.'-field';?>">
+                    <input type="checkbox" id="<?php echo $option_id.'-'.$value.'-field';?>" name="<?php echo $option_id;?>[]" value="<?php echo $value;?>" <?php echo in_array($value, $data['value']) ? 'checked' : '';?>>&nbsp;
                     <?php echo esc_attr($label);?>
                 </label>                
             <?php }?>
@@ -104,11 +104,11 @@ function leyka_render_multi_checkboxes_fields($option_name, $data){
 
 // Radio fields:
 add_action('leyka_render_radio', 'leyka_render_radio_fields', 10, 2);
-function leyka_render_radio_fields($option_name, $data){
+function leyka_render_radio_fields($option_id, $data){
 
-    $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;?>
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;?>
 
-    <div id="<?php echo $option_name.'-wrapper';?>" class="field-radio">
+    <div id="<?php echo $option_id.'-wrapper';?>" class="field-radio">
         <span class="field-component title">
             <?php echo $data['title'];?>
             <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
@@ -121,10 +121,10 @@ function leyka_render_radio_fields($option_name, $data){
 
             foreach((array)$data['list_entries'] as $value => $value_data) {
 
-                $field_id = $option_name.'-'.$value.'-field';?>
+                $field_id = $option_id.'-'.$value.'-field';?>
 
                 <label for="<?php echo $field_id;?>">
-                    <input type="radio" id="<?php echo $field_id;?>" name="<?php echo $option_name;?>" value="<?php echo $value;?>" <?php echo $data['value'] == $value ? 'checked' : '';?>>
+                    <input type="radio" id="<?php echo $field_id;?>" name="<?php echo $option_id;?>" value="<?php echo $value;?>" <?php echo $data['value'] == $value ? 'checked' : '';?>>
                     <?php if(is_string($value_data)) {
                         echo esc_attr($value_data);
                     } else if(is_array($value_data) && array_key_exists('title', $value_data)) {
@@ -151,11 +151,12 @@ function leyka_render_radio_fields($option_name, $data){
 
 // Select fields:
 add_action('leyka_render_select', 'leyka_render_select_field', 10, 2);
-function leyka_render_select_field($option_name, $data) {
-    $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;?>
+function leyka_render_select_field($option_id, $data){
 
-    <div id="<?php echo $option_name.'-wrapper';?>">
-        <label for="<?php echo $option_name.'-field';?>">
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;?>
+
+    <div id="<?php echo $option_id.'-wrapper';?>">
+        <label for="<?php echo $option_id.'-field';?>">
             <span class="field-component title">
                 <?php echo $data['title'];?>
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
@@ -167,7 +168,7 @@ function leyka_render_select_field($option_name, $data) {
                     $data['list_entries'] = $data['list_entries'](); // Call the callback to create select's options
                 }?>
 
-                <select id="<?php echo $option_name.'-field';?>" name="<?php echo $option_name;?>">
+                <select id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>">
                     <?php foreach((array)$data['list_entries'] as $value => $label) {?>
                         <option value="<?php echo $value;?>" <?php echo $value == $data['value'] ? 'selected' : '';?>><?php echo esc_attr($label);?></option>
                     <?php }?>
@@ -180,15 +181,17 @@ function leyka_render_select_field($option_name, $data) {
             <?php }?>
         </label>
     </div>
+
 <?php }
 
 // Multi-select fields:
 add_action('leyka_render_multi_select', 'leyka_render_multi_select_field', 10, 2);
-function leyka_render_multi_select_field($option_name, $data) {
-    $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;?>
+function leyka_render_multi_select_field($option_id, $data){
 
-    <div id="<?php echo $option_name.'-wrapper';?>">
-        <label for="<?php echo $option_name.'-field';?>">
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;?>
+
+    <div id="<?php echo $option_id.'-wrapper';?>">
+        <label for="<?php echo $option_id.'-field';?>">
             <span class="field-component title">
                 <?php echo $data['title'];?>
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
@@ -199,7 +202,7 @@ function leyka_render_multi_select_field($option_name, $data) {
                 $data['list_entries'] = $data['list_entries'](); // Call the callback to create select's options
             }?>
 
-            <select id="<?php echo $option_name.'-field';?>" name="<?php echo $option_name;?>" size="<?php echo $data['length'];?>">
+            <select id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" size="<?php echo $data['length'];?>">
                 <?php foreach((array)$data['list_entries'] as $value => $label) {?>
                     <option value="<?php echo $value;?>"><?php echo esc_attr($label);?></option>
                 <?php }?>
@@ -207,21 +210,23 @@ function leyka_render_multi_select_field($option_name, $data) {
             </span>
         </label>
     </div>
+
 <?php }
 
 // Textarea fields:
 add_action('leyka_render_textarea', 'leyka_render_textarea_field', 10, 2);
-function leyka_render_textarea_field($option_name, $data){ 
-    $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;?>
+function leyka_render_textarea_field($option_id, $data){
 
-    <div id="<?php echo $option_name.'-wrapper'?>">
-        <label for="<?php echo $option_name.'-field';?>">
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;?>
+
+    <div id="<?php echo $option_id.'-wrapper'?>">
+        <label for="<?php echo $option_id.'-field';?>">
             <span class="field-component title">
                 <?php echo $data['title'];?>
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
             </span>
             <span class="field-component field">
-                <textarea id="<?php echo $option_name.'-field';?>" name="<?php echo $option_name;?>" rows="" cols="">
+                <textarea id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" rows="" cols="">
                     <?php echo esc_attr($data['value']);?>
                 </textarea>
             </span>
@@ -230,48 +235,52 @@ function leyka_render_textarea_field($option_name, $data){
             <?php }?>
         </label>
     </div>
+
 <?php }
 
 // Simple HTML fields:
 add_action('leyka_render_html', 'leyka_render_html_field', 10, 2);
-function leyka_render_html_field($option_name, $data){ 
-    $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name; ?>
+function leyka_render_html_field($option_id, $data){
 
-    <div id="<?php echo $option_name.'-wrapper';?>">
-        <label for="<?php echo $option_name;?>">
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id; ?>
+
+    <div id="<?php echo $option_id.'-wrapper';?>">
+        <label for="<?php echo $option_id;?>">
             <span class="field-component title">
                 <?php echo $data['title'];?>
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
             </span>
-            <?php wp_editor(html_entity_decode(stripslashes($data['value'])), $option_name.'-field', array(
+            <?php wp_editor(html_entity_decode(stripslashes($data['value'])), $option_id.'-field', array(
                 'media_buttons' => false,
-                'textarea_name' => $option_name,
+                'textarea_name' => $option_id,
                 'tinymce' => false,
                 'textarea_rows' => 3,
                 'teeny' => true, // For little-functioned HTML editor
-//                    'dfw' => true,
+//                'dfw' => true,
             ));?>
             <?php if( !empty($data['description']) ) {?>
             <span class="field-component help"><?php echo $data['description'];?></span>
             <?php }?>
         </label>
     </div>
+
 <?php }
 
 // Rich HTML fields:
 add_action('leyka_render_rich_html', 'leyka_render_rich_html_field', 10, 2);
-function leyka_render_rich_html_field($option_name, $data){
-    $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;?>
+function leyka_render_rich_html_field($option_id, $data){
 
-    <div id="<?php echo $option_name.'-wrapper'?>">
-        <label for="<?php echo $option_name;?>">
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;?>
+
+    <div id="<?php echo $option_id.'-wrapper'?>">
+        <label for="<?php echo $option_id;?>">
             <span class="field-component title">
                 <?php echo $data['title'];?>
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
             </span>
-            <?php wp_editor(esc_attr($data['value']), $option_name.'-field', array(
+            <?php wp_editor(esc_attr($data['value']), $option_id.'-field', array(
                 'media_buttons' => false,
-                'textarea_name' => $option_name,
+                'textarea_name' => $option_id,
                 'tinymce' => false,
                 'teeny' => false, // For rich HTML editor
 //                    'dfw' => true,
@@ -281,6 +290,7 @@ function leyka_render_rich_html_field($option_name, $data){
             <?php }?>
         </label>
     </div>
+
 <?php }
 
 // Special field: gateways commission options:

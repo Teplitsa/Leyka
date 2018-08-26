@@ -280,6 +280,10 @@ class Leyka_Container_Block extends Leyka_Settings_Block {
 class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
 
     protected $_setting_id = '';
+    protected $_field_type = '';
+    protected $_rendering_type = 'callback';
+    protected $_field_data = array();
+    protected $_fields_keys = array();
 
     public function __construct(array $params = array()) {
 
@@ -288,8 +292,22 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
         if(empty($params['custom_setting_id'])) {
             /** @todo Throw some Exception */
         }
+        if(empty($params['field_type'])) {
+            /** @todo Throw some Exception */
+        }
 
         $this->_setting_id = $params['custom_setting_id'];
+
+        /**
+         * @todo Add a check for possible field type:
+         * text, html, rich_html, select, radio, checkbox, multi_checkbox, custom_XXX.
+         * If check is failed, throw some Exception.
+         */
+        $this->_field_type = $params['field_type'];
+        $this->_rendering_type = $params['rendering_type'];
+
+        $this->_field_data = empty($params['data']) ? array() : array($params['data']);
+        $this->_fields_keys = empty($params['keys']) ? array() : array($params['keys']);
 
     }
 
@@ -305,24 +323,45 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
     }
 
     public function getContent() {
-        return $this->_setting_id;
+
+        if(stripos($this->_field_type, 'custom_') === false || $this->_rendering_type === 'callback') {
+            // If the setting is either one of standard field types, or a custom one without template script,
+            // render it setting via callback:
+            do_action("leyka_render_{$this->_field_type}", $this->_setting_id, $this->_field_data);
+        } else if($this->_rendering_type === 'template') {
+            /** @todo Require some setting template file */
+        }
+
     }
 
     public function isValid() {
-        return true;
+        return apply_filters('leyka_custom_setting_valid-'.$this->_field_type, true, $this->_setting_id, $this->_field_data);
     }
 
     public function getErrors() {
-        return false;
+        return apply_filters(
+            'leyka_custom_setting_validation_errors-'.$this->_field_type,
+            false,
+            $this->_setting_id,
+            $this->_field_data
+        );
     }
 
     /** Get all options & values set on the step
      * @return array
      */
     public function getFieldsValues() {
-        return array($this->_setting_id => 'some value');
-//        return isset($_POST['leyka_'.$this->_option_id]) ?
-//            array($this->_option_id => $_POST['leyka_'.$this->_option_id]) : array();
+
+        $values = array();
+
+        foreach($this->_fields_keys as $key) {
+            if(isset($_POST['leyka_'.$key])) {
+                $values[$key] = $_POST['leyka_'.$key];
+            }
+        }
+
+        return $values;
+
     }
 
 }

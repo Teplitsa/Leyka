@@ -645,7 +645,7 @@ self::$_options_meta = array(
         'type' => 'text',
         'default' => __('Terms of the donation service', 'leyka'),
         'title' => __('Terms acception checkbox label - the second (link) part', 'leyka'),
-        'required' => 1,
+        'required' => true,
         'placeholder' => __('E.g., Terms of the donation service', 'leyka'),
     ),
     'terms_of_service_text' => array(
@@ -666,7 +666,13 @@ self::$_options_meta = array(
             <code>#BANK_BIC#</code> — ".__("the organization bank indentification code", 'leyka')."<br>
             <code>#BANK_CORR_ACCOUNT#</code> — ".__("the organization bank correspondent account", 'leyka')."<br>
             </span>",
-        'required' => 1,
+        'required' => true,
+    ),
+    'person_terms_of_service_text' => array(
+        'type' => 'rich_html',
+        'default' => __('Terms of donation service text. Use <br> for line-breaks, please.', 'leyka'),
+        'title' => __('A text of Terms of donation service', 'leyka'),
+        'required' => true,
     ),
     'terms_agreed_by_default' => array(
         'type' => 'checkbox',
@@ -723,6 +729,12 @@ self::$_options_meta = array(
             <code>#ADMIN_EMAIL#</code> — ".__("the website administrator email", 'leyka')."<br>
             </span>
             <span class='pd-warning'>".sprintf(__('WARNING! We strongly recommend you to revise this Terms text and fill the field with your own value according to the organization personal data policy. Read more about it: %s', 'leyka'), leyka_get_pd_usage_info_links())."</span>",
+        'required' => true,
+    ),
+    'person_pd_terms_text' => array(
+        'type' => 'rich_html',
+        'default' => __('Terms of personal data usage full text. Use <br> for line-breaks.', 'leyka'),
+        'title' => __('A text of personal data usage Terms', 'leyka'),
         'required' => true,
     ),
     'pd_terms_agreed_by_default' => array(

@@ -301,10 +301,12 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     <?php }
 
-    public function renderCustomSettingBlock(Leyka_Custom_Setting_Block $block) {
+    public function renderCustomSettingBlock(Leyka_Custom_Setting_Block $block) {?>
 
-        echo '<pre>Custom setting here: '.print_r($block->getContent(), 1).'</pre>';
+        <div id="<?php echo $block->id;?>" class="settings-block custom-block">
+            <?php echo $block->getContent();?>
+        </div>
 
-    }
+    <?php }
 
 }

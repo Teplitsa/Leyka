@@ -671,8 +671,8 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             ),
         )))->addTo($section);
 
-        // Terms of service step:
-        $step = new Leyka_Settings_Step('terms_of_service', $section->id, 'Оферта');
+        // Legal receiver type - Terms of service step:
+        $step = new Leyka_Settings_Step('receiver_legal_terms_of_service', $section->id, 'Оферта');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => 'Для соблюдения всех формальных процедур вам необходимо предоставить оферту о заключении договора пожертвования. Мы подготовили для вас шаблонный вариант. Пожалуйста, проверьте.',
@@ -681,8 +681,18 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'option_id' => 'terms_of_service_text',
         )))->addTo($section);
 
-        // Terms of service step:
-        $step = new Leyka_Settings_Step('pd_terms', $section->id, 'Соглашение о персональных данных');
+        // Physical receiver type - Terms of service step:
+        $step = new Leyka_Settings_Step('receiver_physical_terms_of_service', $section->id, 'Оферта');
+        $step->addBlock(new Leyka_Text_Block(array(
+            'id' => 'step-intro-text',
+            'text' => 'Для соблюдения всех формальных процедур вам необходимо предоставить оферту о заключении договора пожертвования. Мы подготовили для вас шаблонный вариант. Пожалуйста, проверьте.',
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'terms_of_service_text',
+            'option_id' => 'person_terms_of_service_text',
+        )))->addTo($section);
+
+        // Legal receiver type - personal data terms step:
+        $step = new Leyka_Settings_Step('receiver_legal_pd_terms', $section->id, 'Соглашение о персональных данных');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => '<ul>
@@ -694,6 +704,21 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'pd_terms_text',
             'option_id' => 'pd_terms_text',
+        )))->addTo($section);
+
+        // Physical receiver type - personal data terms step:
+        $step = new Leyka_Settings_Step('receiver_physical_pd_terms', $section->id, 'Соглашение о персональных данных');
+        $step->addBlock(new Leyka_Text_Block(array(
+            'id' => 'step-intro-text',
+            'text' => '<ul>
+<li>В рамках сбора пожертвований вы будете собирать персональные данные доноров.</li>
+<li>«Согласие на обработку персональных данных» — обязательный документ по закону ФЗ-152.</li>
+<li>Мы подготовили шаблон текста соглашения, вы можете отредактировать его под ваши требования.</li>
+<li>Все персональные данные хранятся на вашем сайте и никуда не отправляются.</li>
+</ul>',
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'pd_terms_text',
+            'option_id' => 'person_pd_terms_text',
         )))->addTo($section);
 
         // Section final (outro) step:
@@ -829,10 +854,18 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             } else if($step_from->id === 'receiver_physical_data') {
                 $next_step_full_id = $step_from->section_id.'-receiver_physical_bank_essentials';
             } else if(stripos($step_from->id, 'bank_essentials')) {
-                $next_step_full_id = $step_from->section_id.'-terms_of_service';
-            } else if($step_from->id === 'terms_of_service') {
-                $next_step_full_id = $step_from->section_id.'-pd_terms';
-            } else if($step_from->id === 'pd_terms') {
+
+                $next_step_full_id = $this->_getSettingValue('receiver_legal_type') === 'legal' ?
+                    $step_from->section_id.'-receiver_legal_terms_of_service' :
+                    $step_from->section_id.'-receiver_physical_terms_of_service';
+
+            } else if(stripos($step_from->id, 'terms_of_service')) {
+
+                $next_step_full_id = $this->_getSettingValue('receiver_legal_type') === 'legal' ?
+                    $step_from->section_id.'-receiver_legal_pd_terms' :
+                    $step_from->section_id.'-receiver_physical_pd_terms';
+
+            } else if(stripos($step_from->id, 'pd_terms')) {
                 $next_step_full_id = $step_from->section_id.'-final';
             } else if($step_from->id === 'final') {
                 $next_step_full_id = 'dd-plugin_stats';
@@ -965,8 +998,14 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             case 'rd-receiver_physical_bank_essentials':
                 $navigation_position = 'rd-receiver_bank_essentials';
                 break;
-            case 'rd-terms_of_service': $navigation_position = 'rd-receiver_terms_of_service'; break;
-            case 'rd-pd_terms': $navigation_position = 'rd-receiver_pd_terms'; break;
+            case 'rd-receiver_legal_terms_of_service':
+            case 'rd-receiver_physical_terms_of_service':
+                $navigation_position = 'rd-receiver_terms_of_service';
+                break;
+            case 'rd-receiver_legal_pd_terms':
+            case 'rd-receiver_physical_pd_terms':
+                $navigation_position = 'rd-receiver_terms_of_service';
+                break;
             case 'rd-final': $navigation_position = 'rd--'; break;
             case 'dd-plugin_stats': $navigation_position = 'dd'; break;
             case 'dd-plugin_stats_accepted':
