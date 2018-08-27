@@ -228,24 +228,54 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     }
 
-    protected function _addActivityEntry() {
+    protected function _addActivityEntry(array $data = array(), $step_full_id = false) {
 
-        $_SESSION[$this->_storage_key]['activity'][$this->getCurrentStep()->full_id] = $this->getCurrentStep()->getFieldsValues();
+        $data = empty($data) ? $this->getCurrentStep()->getFieldsValues() : $data;
+        $step_full_id = !$step_full_id ? $this->getCurrentStep()->full_id : trim($step_full_id);
+
+        if(empty($_SESSION[$this->_storage_key]['activity'][$step_full_id])) {
+            $_SESSION[$this->_storage_key]['activity'][$step_full_id] = $data;
+        } else {
+            $_SESSION[$this->_storage_key]['activity'][$step_full_id] =
+                $_SESSION[$this->_storage_key]['activity'][$step_full_id] + $data;
+        }
 
         return $this;
 
     }
 
-    protected function _processSettingsValues(array $blocks = null) {
+    protected function _processSettingsValues(array $blocks = null, $is_container = false) {
 
+        $is_container = !!$is_container;
         $blocks = $blocks ? $blocks : $this->getCurrentStep()->getBlocks();
 
-        foreach($blocks as $block) { /** @var $block Leyka_Option_Block */
-            if(is_a($block, 'Leyka_Option_Block') && $block->isValid()) {
-                leyka_save_setting($block->option_id);
-            } else if(is_a($block, 'Leyka_Container_Block')) {
-                $this->_processSettingsValues($block->getContent());
+        $settings_entered = array();
+
+        foreach($blocks as $block) { /** @var $block Leyka_Settings_Block */
+
+            $block_fields = $block->getFieldsValues();
+            if($block_fields && !$is_container) {
+                $settings_entered = $settings_entered + $block_fields;
             }
+
+            if(is_a($block, 'Leyka_Option_Block') && $block->isValid()) {
+                leyka_save_option($block->option_id);
+            } else if(is_a($block, 'Leyka_Custom_Setting_Block')) {
+                do_action("leyka_save_custom_option-{$block->setting_id}");
+            } else if(is_a($block, 'Leyka_Container_Block')) {
+                $this->_processSettingsValues($block->getContent(), true);
+            }
+
+        }
+
+        if( !$is_container ) {
+
+            if($this->getCurrentStep()->hasHandler()) {
+                call_user_func($this->getCurrentStep()->getHandler(), $settings_entered);
+            }
+
+            do_action("leyka_process_step_settings-{$this->getCurrentStep()->full_id}", $settings_entered);
+
         }
 
     }
@@ -462,7 +492,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         }
 
-        $this->_addActivityEntry(); // The Step is valid - save the step data in the storage
+        $this->_addActivityEntry(); // Save the step data in the storage
 
         // Proceed to the next step:
         $next_step_full_id = $this->_getNextStepId();
@@ -798,7 +828,8 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 'step' => 0.01,
 //                'validation_rules' => array()
             ),
-        )))->addTo($section);
+        )))->addHandler(array($this, 'handleCampaignDescriptionStep'))
+            ->addTo($section);
 
         $step = new Leyka_Settings_Step('campaign_decoration', $section->id, 'Оформление кампании');
         $step->addBlock(new Leyka_Text_Block(array(
@@ -1088,6 +1119,27 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
             });
         }
+
+    }
+
+    public function handleCampaignDescriptionStep(array $step_settings) {
+
+        $campaign_id = wp_insert_post(array(
+            'post_type' => Leyka_Campaign_Management::$post_type,
+            'post_title' => trim(esc_attr(wp_strip_all_tags($step_settings['campaign_title']))),
+            'post_excerpt' => trim(esc_textarea($step_settings['campaign_short_description'])),
+//            'post_status' => 'publish',
+            'post_content' => '',
+        ), true);
+
+        if(is_wp_error($campaign_id)) {
+            // ...
+            return;
+        }
+
+        update_post_meta($campaign_id, 'campaign_target', (float)$step_settings['campaign_target']);
+
+        $this->_addActivityEntry(array('campaign_id' => $campaign_id));
 
     }
 

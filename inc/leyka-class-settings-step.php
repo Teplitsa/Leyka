@@ -9,6 +9,7 @@ class Leyka_Settings_Step {
     protected $_section_id;
     protected $_title = '';
     protected $_params = array();
+    protected $_handler = false;
 
     /** A Composite blocks structure object??? */
     protected $_blocks;
@@ -37,6 +38,8 @@ class Leyka_Settings_Step {
                 return $this->_title;
             case 'blocks':
                 return $this->_blocks;
+            case 'handler':
+                return $this->_handler;
             default:
                 return isset($this->_params[$name]) ? $this->_params[$name] : null; // Throw some Exception?
         }
@@ -48,6 +51,30 @@ class Leyka_Settings_Step {
 
         return $this;
 
+    }
+
+    /**
+     * @param $handler mixed Either function name (string) of the function itself (callback)
+     * @return $this
+     */
+    public function addHandler($handler) {
+
+        if(is_callable($handler)) {
+            $this->_handler = $handler;
+        } else {
+            /** @todo Throw an Exception here */
+        }
+
+        return $this;
+
+    }
+
+    public function getHandler() {
+        return $this->_handler === false ? null : $this->_handler;
+    }
+
+    public function hasHandler() {
+        return !!$this->_handler;
     }
 
     public function addBlock(Leyka_Settings_Block $block) {

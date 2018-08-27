@@ -399,8 +399,8 @@ function leyka_get_commission_values($value) {
     return maybe_unserialize($value);
 }
 
-add_action('leyka_save_custom_setting_commission', 'leyka_save_custom_setting_commission');
-function leyka_save_custom_setting_commission($option_value) {
+add_action('leyka_save_custom_option-commission', 'leyka_save_custom_option_commission');
+function leyka_save_custom_option_commission($option_value) {
 
     foreach($option_value as $pm_full_id => $commission) {
 

@@ -250,10 +250,7 @@ class Leyka_Container_Block extends Leyka_Settings_Block {
         $errors = array();
 
         foreach($this->_blocks as $sub_block) { /** @var $sub_block Leyka_Settings_Block */
-
-            $sub_block_errors = $sub_block->getErrors();
-            $errors = array_merge($errors, $sub_block_errors);
-
+            $errors = array_merge($errors, $sub_block->getErrors());
         }
 
         return $errors;
@@ -314,7 +311,7 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
     public function __get($name) {
 
         switch($name) {
-            case 'custom_id':
+            case 'setting_id':
             case 'custom_setting_id':
                 return $this->_setting_id;
             case 'field_type':

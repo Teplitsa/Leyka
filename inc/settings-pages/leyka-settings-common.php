@@ -29,7 +29,7 @@ function leyka_save_settings($tab_name) {
     }
 
     foreach($options_names as $name) {
-        leyka_save_setting($name);
+        leyka_save_option($name);
     }
 
 }

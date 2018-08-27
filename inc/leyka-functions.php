@@ -1251,30 +1251,30 @@ abstract class Leyka_Singleton {
 
 }
 
-if( !function_exists('leyka_save_setting') ) {
-    function leyka_save_setting($setting_name) {
+if( !function_exists('leyka_save_option') ) {
+    function leyka_save_option($setting_id) {
 
-        $option_type = leyka_options()->get_type_of($setting_name);
+        $option_type = leyka_options()->get_type_of($setting_id);
 
         if($option_type === 'checkbox') {
-            leyka_options()->opt($setting_name, isset($_POST["leyka_$setting_name"]) ? 1 : 0);
+            leyka_options()->opt($setting_id, isset($_POST["leyka_$setting_id"]) ? 1 : 0);
         } elseif($option_type == 'multi_checkbox') {
 
-            if(isset($_POST["leyka_$setting_name"]) && leyka_options()->opt($setting_name) !== $_POST["leyka_$setting_name"]) {
-                leyka_options()->opt($setting_name, (array)$_POST["leyka_$setting_name"]);
+            if(isset($_POST["leyka_$setting_id"]) && leyka_options()->opt($setting_id) !== $_POST["leyka_$setting_id"]) {
+                leyka_options()->opt($setting_id, (array)$_POST["leyka_$setting_id"]);
             }
 
         } elseif($option_type === 'html' || $option_type === 'rich_html') {
 
-            if(isset($_POST["leyka_$setting_name"]) && leyka_options()->opt($setting_name) !== $_POST["leyka_$setting_name"]) {
-                leyka_options()->opt($setting_name, esc_attr(stripslashes($_POST["leyka_$setting_name"])));
+            if(isset($_POST["leyka_$setting_id"]) && leyka_options()->opt($setting_id) !== $_POST["leyka_$setting_id"]) {
+                leyka_options()->opt($setting_id, esc_attr(stripslashes($_POST["leyka_$setting_id"])));
             }
 
-        } else if(stristr($option_type, 'custom_') !== false && isset($_POST["leyka_$setting_name"])) { // Custom field types
-            do_action("leyka_save_custom_setting_$setting_name", $_POST["leyka_$setting_name"]);
+        } else if(stristr($option_type, 'custom_') !== false && isset($_POST["leyka_$setting_id"])) { // Custom field types
+            do_action("leyka_save_custom_option-$setting_id", $_POST["leyka_$setting_id"]);
         } else { // Simple field types
-            if(isset($_POST["leyka_$setting_name"]) && leyka_options()->opt($setting_name) != $_POST["leyka_$setting_name"]) {
-                leyka_options()->opt($setting_name, esc_attr(stripslashes($_POST["leyka_$setting_name"])));
+            if(isset($_POST["leyka_$setting_id"]) && leyka_options()->opt($setting_id) != $_POST["leyka_$setting_id"]) {
+                leyka_options()->opt($setting_id, esc_attr(stripslashes($_POST["leyka_$setting_id"])));
             }
         }
 
