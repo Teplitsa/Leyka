@@ -103,7 +103,6 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
     protected $_storage_key = '';
 
     protected $_navigation_data = array();
-//    protected $_navigation_position = null;
 
     protected function __construct() {
 
@@ -244,38 +243,18 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     }
 
-    protected function _processSettingsValues(array $blocks = null, $is_container = false) {
+    protected function _processSettingsValues(array $blocks = null) {
 
-        $is_container = !!$is_container;
         $blocks = $blocks ? $blocks : $this->getCurrentStep()->getBlocks();
 
-        $settings_entered = array();
-
         foreach($blocks as $block) { /** @var $block Leyka_Settings_Block */
-
-            $block_fields = $block->getFieldsValues();
-            if($block_fields && !$is_container) {
-                $settings_entered = $settings_entered + $block_fields;
-            }
-
             if(is_a($block, 'Leyka_Option_Block') && $block->isValid()) {
                 leyka_save_option($block->option_id);
             } else if(is_a($block, 'Leyka_Custom_Setting_Block')) {
                 do_action("leyka_save_custom_option-{$block->setting_id}");
             } else if(is_a($block, 'Leyka_Container_Block')) {
-                $this->_processSettingsValues($block->getContent(), true);
+                $this->_processSettingsValues($block->getContent());
             }
-
-        }
-
-        if( !$is_container ) {
-
-            if($this->getCurrentStep()->hasHandler()) {
-                call_user_func($this->getCurrentStep()->getHandler(), $settings_entered);
-            }
-
-            do_action("leyka_process_step_settings-{$this->getCurrentStep()->full_id}", $settings_entered);
-
         }
 
     }
@@ -491,6 +470,16 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             return;
 
         }
+
+        // Whole step settings handling:
+        $settings_entered = $this->getCurrentStep()->getFieldsValues();
+
+        if($this->getCurrentStep()->hasHandler()) {
+            call_user_func($this->getCurrentStep()->getHandler(), $settings_entered);
+        }
+
+        do_action("leyka_process_step_settings-{$this->getCurrentStep()->full_id}", $settings_entered);
+
 
         $this->_addActivityEntry(); // Save the step data in the storage
 
@@ -803,11 +792,13 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 <li>Лейка позволяет создавать ежемесячные платежи, и чуть позже мы покажем, как их настраивать. Но, для начала, давайте создадим простую кампанию.</li>
 </ul>',
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
-            'id' => 'campaign-title',
+            'id' => 'campaign_title',
             'custom_setting_id' => 'campaign_title',
             'field_type' => 'text',
             'data' => array(
                 'title' => 'Название кампании',
+                'required' => true,
+                'placeholder' => 'Например, «На уставную деятельность организации»',
 //                'description' => '',
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -1082,7 +1073,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
         $step = $component && is_a($component, 'Leyka_Settings_Step') ? $component : $this->current_step;
         $submit_settings = array(
-            'next_label' => 'Продолжить',
+            'next_label' => 'Сохранить и продолжить',
             'next_url' => true,
             'prev' => 'Вернуться на предыдущий шаг',
         );
@@ -1140,6 +1131,8 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         update_post_meta($campaign_id, 'campaign_target', (float)$step_settings['campaign_target']);
 
         $this->_addActivityEntry(array('campaign_id' => $campaign_id));
+
+        set_transient('leyka_main_campaign_id', $campaign_id);
 
     }
 

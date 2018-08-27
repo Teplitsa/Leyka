@@ -325,6 +325,8 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
 
     public function getContent() {
 
+        ob_start();
+
         if(stripos($this->_field_type, 'custom_') === false || $this->_rendering_type === 'callback') {
             // If the setting is either one of standard field types, or a custom one without template script,
             // render it setting via callback:
@@ -333,19 +335,57 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
             /** @todo Require some setting template file */
         }
 
+        return ob_get_clean();
+
     }
 
     public function isValid() {
-        return apply_filters('leyka_custom_setting_valid-'.$this->_field_type, true, $this->_setting_id, $this->_field_data);
+
+        $is_valid = true;
+
+        if( !empty($this->_field_data['required']) ) {
+            foreach($this->_fields_keys as $key) {
+                if(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
+
+                    $is_valid = false;
+                    break;
+
+                }
+            }
+        }
+
+        return apply_filters(
+            'leyka_custom_setting_valid-'.$this->_field_type,
+            $is_valid,
+            $this->_setting_id,
+            $this->_field_data,
+            $this->_fields_keys
+        );
+
     }
 
     public function getErrors() {
+
+        $errors = array();
+
+        if( !empty($this->_field_data['required']) ) {
+            foreach($this->_fields_keys as $key) {
+                if(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
+                    $errors[] = new WP_Error('option_invalid', 'Значение поля обязательно');
+                }
+            }
+        }
+
+        $errors = $errors ? array($this->_id => $errors) : array();
+
         return apply_filters(
             'leyka_custom_setting_validation_errors-'.$this->_field_type,
-            false,
+            $errors,
             $this->_setting_id,
-            $this->_field_data
+            $this->_field_data,
+            $this->_fields_keys
         );
+
     }
 
     /** Get all options & values set on the step
