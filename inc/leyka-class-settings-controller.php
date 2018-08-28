@@ -552,7 +552,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         )))->addTo($section);
 
         // Legal receiver type - org. data step:
-        $step = new Leyka_Settings_Step('receiver_legal_data', $section->id, 'Название организации');
+        $step = new Leyka_Settings_Step('receiver_legal_data', $section->id, 'Данные организации');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => 'Эти данные мы будем использовать для шаблонов договоров и отчётных документов вашим донорам. Все данные вы сможете найти в учредительных документах вашей организации.',
@@ -819,7 +819,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'custom_setting_id' => 'campaign_target',
             'field_type' => 'number',
             'data' => array(
-                'title' => 'Целевая сумма',
+                'title' => 'Целевая сумма (Укажите только цифру. Например, «10000»). ',
                 'min' => 0,
                 'step' => 0.01,
                 'value' => $init_campaign ? $init_campaign->target : '',
