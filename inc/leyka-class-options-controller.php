@@ -6,7 +6,7 @@ class Leyka_Options_Controller {
     protected static $_options_meta = array();
 
     protected $_options = array();
-    protected $_field_types = array('text', 'html', 'rich_html', 'select', 'radio', 'checkbox', 'multi_checkbox');
+    protected static $_field_types = array('text', 'textarea', 'number', 'html', 'rich_html', 'select', 'radio', 'checkbox', 'multi_checkbox');
 
     public static function instance() {
 
@@ -19,6 +19,10 @@ class Leyka_Options_Controller {
 
     protected function __construct() {
         require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
+    }
+
+    public function isStandardFieldType($type) {
+        return in_array($type, self::$_field_types);
     }
 
     /**
@@ -132,7 +136,7 @@ class Leyka_Options_Controller {
 
         $option_id = stristr($option_id, 'leyka_') !== false ? $option_id : 'leyka_'.$option_id;
 
-        if( !in_array($type, $this->_field_types) ) {
+        if( !in_array($type, self::$_field_types) ) {
             return false;
         }
         if( !empty($params['type']) ) { // Just in case

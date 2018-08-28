@@ -29,7 +29,7 @@ $campaign_target_reaching_email_placeholders =
 <code>#PURPOSE#</code> — ".__('a campaign title for payment systems (see campaign settings)', 'leyka')."<br>
 </span>";
 
-/** Possible field types are: text, textarea, html, rich_html, select, radio, checkbox, multi_checkbox, custom_XXX */
+/** Possible field types are: text, textarea, number, html, rich_html, select, radio, checkbox, multi_checkbox, custom_XXX */
 
 // For type='text':
 // 'length' => '',

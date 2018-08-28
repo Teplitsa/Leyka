@@ -783,6 +783,9 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         // Campaign data Section:
         $section = new Leyka_Settings_Section('cd', 'Настройка кампании');
 
+        $init_campaign = get_transient('leyka_init_campaign_id') ?
+            new Leyka_Campaign(get_transient('leyka_init_campaign_id')) : false;
+
         $step = new Leyka_Settings_Step('campaign_description', $section->id, 'Описание вашей кампании');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
@@ -799,6 +802,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 'title' => 'Название кампании',
                 'required' => true,
                 'placeholder' => 'Например, «На уставную деятельность организации»',
+                'value' => $init_campaign ? $init_campaign->title : '',
 //                'description' => '',
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -807,6 +811,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'field_type' => 'textarea',
             'data' => array(
                 'title' => 'Краткое описание',
+                'value' => $init_campaign ? $init_campaign->short_description : '',
 //                'description' => '',
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -817,6 +822,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 'title' => 'Целевая сумма',
                 'min' => 0,
                 'step' => 0.01,
+                'value' => $init_campaign ? $init_campaign->target : '',
 //                'validation_rules' => array()
             ),
         )))->addHandler(array($this, 'handleCampaignDescriptionStep'))
@@ -829,7 +835,9 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'campaign-decoration',
             'custom_setting_id' => 'campaign_decoration',
-            'field_type' => 'custom_campaign_thumbnail',
+            'field_type' => 'custom_campaign_view',
+            'keys' => array('campaign_thumbnail', 'campaign_template',),
+            'rendering_type' => 'template',
         )))->addTo($section);
 
         $step = new Leyka_Settings_Step('donors_communication', $section->id, 'Коммуникация с донором');
@@ -1115,13 +1123,20 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
     public function handleCampaignDescriptionStep(array $step_settings) {
 
-        $campaign_id = wp_insert_post(array(
+        $init_campaign_params = array(
             'post_type' => Leyka_Campaign_Management::$post_type,
             'post_title' => trim(esc_attr(wp_strip_all_tags($step_settings['campaign_title']))),
             'post_excerpt' => trim(esc_textarea($step_settings['campaign_short_description'])),
 //            'post_status' => 'publish',
             'post_content' => '',
-        ), true);
+        );
+
+        $existing_campaign_id = get_transient('leyka_init_campaign_id');
+        if($existing_campaign_id) {
+            $init_campaign_params['ID'] = $existing_campaign_id;
+        }
+
+        $campaign_id = wp_insert_post($init_campaign_params, true);
 
         if(is_wp_error($campaign_id)) {
             // ...
@@ -1130,9 +1145,12 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
         update_post_meta($campaign_id, 'campaign_target', (float)$step_settings['campaign_target']);
 
-        $this->_addActivityEntry(array('campaign_id' => $campaign_id));
+        if( !$existing_campaign_id ) {
 
-        set_transient('leyka_main_campaign_id', $campaign_id);
+            $this->_addActivityEntry(array('campaign_id' => $campaign_id));
+            set_transient('leyka_init_campaign_id', $campaign_id);
+
+        }
 
     }
 

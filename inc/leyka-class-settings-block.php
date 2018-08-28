@@ -301,7 +301,7 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
          * If check is failed, throw some Exception.
          */
         $this->_field_type = $params['field_type'];
-        $this->_rendering_type = empty($params['rendering_type']) ? 'custom' : $params['rendering_type'];
+        $this->_rendering_type = empty($params['rendering_type']) ? 'callback' : $params['rendering_type'];
 
         $this->_field_data = empty($params['data']) ? array() : (array)$params['data'];
         $this->_fields_keys = empty($params['keys']) || !is_array($params['keys']) ? array($this->_setting_id) : $params['keys'];
@@ -317,7 +317,7 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
             case 'field_type':
                 return $this->_field_type;
             case 'is_standard_field_type':
-                return in_array($this->_field_type, array('text', 'textarea', 'html', 'rich_html', 'select', 'radio', 'checkbox', 'multi_checkbox'));
+                return leyka_options()->isStandardFieldType($this->_field_type);
             default: return parent::__get($name);
         }
 
@@ -327,12 +327,13 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
 
         ob_start();
 
-        if(stripos($this->_field_type, 'custom_') === false || $this->_rendering_type === 'callback') {
+        if($this->is_standard_field_type || $this->_rendering_type === 'callback') {
             // If the setting is either one of standard field types, or a custom one without template script,
             // render it setting via callback:
             do_action("leyka_render_{$this->_field_type}", $this->_setting_id, $this->_field_data);
         } else if($this->_rendering_type === 'template') {
             /** @todo Require some setting template file */
+//            echo '<pre>'.print_r('HERE:'.$this->_field_type, 1).'</pre>';
         }
 
         return ob_get_clean();
