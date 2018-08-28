@@ -838,7 +838,8 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'field_type' => 'custom_campaign_view',
             'keys' => array('campaign_thumbnail', 'campaign_template',),
             'rendering_type' => 'template',
-        )))->addTo($section);
+        )))->addHandler(array($this, 'handleCampaignDecorationStep'))
+            ->addTo($section);
 
         $step = new Leyka_Settings_Step('donors_communication', $section->id, 'Коммуникация с донором');
         $step->addBlock(new Leyka_Text_Block(array(
@@ -1109,6 +1110,8 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
     public function stepInit() {
 
+        // Steps prerequisites:
+        // Show "legal" receiver type only if receiver country is set:
         if($this->_getSettingValue('receiver_country') === '-') {
             add_filter('leyka_option_info-receiver_legal_type', function($option_data){
 
@@ -1117,6 +1120,18 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 return $option_data;
 
             });
+        }
+
+        // If init campaign is not set or deleted on the campaign decoration step, return to the campaign data step:
+        if($this->getCurrentStep()->id === 'campaign_decoration') {
+
+            $init_campaign_id = get_transient('leyka_init_campaign_id');
+            $init_campaign = get_post($init_campaign_id);
+
+            if( !$init_campaign_id || !$init_campaign ) {
+                $this->_handleSettingsGoBack();
+            }
+
         }
 
     }
@@ -1151,6 +1166,15 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             set_transient('leyka_init_campaign_id', $campaign_id);
 
         }
+
+    }
+
+    public function handleCampaignDecorationStep(array $step_settings) {
+
+        $init_campaign_id = get_transient('leyka_init_campaign_id');
+        $init_campaign = get_post($init_campaign_id);
+
+        // Step custom field processing here...
 
     }
 
