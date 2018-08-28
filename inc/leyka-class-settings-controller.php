@@ -864,6 +864,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'id' => 'campaign-completed',
             'custom_setting_id' => 'campaign_completed',
             'field_type' => 'custom_campaign_completed',
+            'rendering_type' => 'template',
         )))->addTo($section);
 
         $this->_sections[$section->id] = $section;
