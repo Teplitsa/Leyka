@@ -765,14 +765,14 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         )))->addTo($section);
 
         // The plugin usage stats collection - accepted:
-        $step = new Leyka_Settings_Step('plugin_stats_accepted', $section->id, 'Спасибо! %)');
+        $step = new Leyka_Settings_Step('plugin_stats_accepted', $section->id, 'Спасибо!');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => 'Спасибо! Ваши данные очень нам помогут! Теперь, давайте настроим и запустим вашу первую кампанию по сбору средств.',
         )))->addTo($section);
 
         // The plugin usage stats collection - refused:
-        $step = new Leyka_Settings_Step('plugin_stats_refused', $section->id, 'Эхх... %(');
+        $step = new Leyka_Settings_Step('plugin_stats_refused', $section->id, 'Эхх...');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => 'Жаль, что вы решили не делиться данными. Если вы передумаете, то изменить эти настройки вы сможете в разделе «Настройки». Давайте настроим и запустим вашу первую кампанию по сбору средств.',
