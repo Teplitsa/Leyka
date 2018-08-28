@@ -252,7 +252,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
             foreach($sub_blocks_list as $sub_block_index => $sub_block) {?>
 
-                <div class="container-entry" <?php echo $entry_width ? 'style="flex-basis: '.($sub_block_index == count($sub_blocks_list) - 1 ? 'auto' : $entry_width).';"' : '';?>>
+                <div class="container-entry" <?php echo $entry_width ? 'style="flex-basis: '.($sub_block_index == count($sub_blocks_list) - 1 && count($sub_blocks_list) > 1 ? 'auto' : $entry_width).';"' : '';?>>
 
                 <?php if(is_a($sub_block, 'Leyka_Text_Block')) { /** @var $sub_block Leyka_Text_Block */
                     $this->renderTextBlock($sub_block);

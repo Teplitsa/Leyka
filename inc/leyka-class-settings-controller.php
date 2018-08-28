@@ -206,10 +206,14 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         if($setting_name) {
 
-            foreach($_SESSION[$this->_storage_key]['activity'] as $step_full_id => $step_settings) {
-                if(isset($step_settings[$setting_name])) {
-                    return $step_settings[$setting_name];
+            if(isset($_SESSION[$this->_storage_key]['activity'])) {
+                
+                foreach($_SESSION[$this->_storage_key]['activity'] as $step_full_id => $step_settings) {
+                    if(isset($step_settings[$setting_name])) {
+                        return $step_settings[$setting_name];
+                    }
                 }
+                
             }
 
             return null;
@@ -814,17 +818,25 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 'value' => $init_campaign ? $init_campaign->short_description : '',
 //                'description' => '',
             ),
-        )))->addBlock(new Leyka_Custom_Setting_Block(array(
-            'id' => 'campaign-target',
-            'custom_setting_id' => 'campaign_target',
-            'field_type' => 'number',
-            'data' => array(
-                'title' => 'Целевая сумма (Укажите только цифру. Например, «10000»). ',
-                'min' => 0,
-                'step' => 0.01,
-                'value' => $init_campaign ? $init_campaign->target : '',
-//                'validation_rules' => array()
-            ),
+        )))->addBlock(new Leyka_Container_Block(array(
+            'id' => 'complex-row-2',
+            'entry_width' => 0.5,
+            'entries' => array(
+                new Leyka_Custom_Setting_Block(array(
+                    'id' => 'campaign-target',
+                    'custom_setting_id' => 'campaign_target',
+                    'field_type' => 'number',
+                    'data' => array(
+                        'title' => 'Целевая сумма',
+                        'min' => 0,
+                        'step' => 0.01,
+                        'value' => $init_campaign ? $init_campaign->target : '',
+                        'show_description' => false,
+                        'description' => 'Укажите только цифру. Например, «10000».',
+        //                'validation_rules' => array()
+                    ),
+                )),
+            )
         )))->addHandler(array($this, 'handleCampaignDescriptionStep'))
             ->addTo($section);
 

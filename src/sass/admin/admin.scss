@@ -171,7 +171,7 @@
         }
         
         .step-content {
-            max-width: 520px;
+            max-width: 524px;
         }
         
         #step-intro-text p {
@@ -182,6 +182,26 @@
 
             &.text-block {
                 //margin-bottom: 10px;
+                
+                p:empty {
+                    display: none;
+                }
+                
+                ul {
+                    
+                    margin-top: 0px;
+                    margin-bottom: 32px;
+                    
+                    li {
+                        list-style-type: disc;
+                        margin-left: 18px;
+                        font-size: 14px;
+                        line-height: 21px;
+                        margin-top: 14px;
+                    }
+                    
+                }
+                
             }
 
             &.option-block {
@@ -241,8 +261,8 @@
                         }
                         
                         textarea {
-                            height: 111px;
-                            width: 400px;
+                            height: 62px;
+                            width: 100%;
                         }
                         
                         input[type=checkbox], input[type=radio] {
