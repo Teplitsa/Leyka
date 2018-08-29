@@ -727,7 +727,10 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         // Legal receiver type - personal data terms step:
         $step = new Leyka_Settings_Step('receiver_legal_pd_terms', $section->id, 'Соглашение о персональных данных');
         $step->addBlock(new Leyka_Text_Block(array(
-            'id' => 'step-intro-text',
+            'id' => 'step-intro-text-1',
+            'text' => sprintf(__('WARNING! We strongly recommend you to revise this Terms text and fill the field with your own value according to the organization personal data policy. Read more about it: %s', 'leyka'), leyka_get_pd_usage_info_links()),
+        )))->addBlock(new Leyka_Text_Block(array(
+            'id' => 'step-intro-text-2',
             'text' => '<ul>
 <li>В рамках сбора пожертвований вы будете собирать персональные данные доноров.</li>
 <li>«Согласие на обработку персональных данных» — обязательный документ по закону ФЗ-152.</li>
@@ -742,7 +745,10 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         // Physical receiver type - personal data terms step:
         $step = new Leyka_Settings_Step('receiver_physical_pd_terms', $section->id, 'Соглашение о персональных данных');
         $step->addBlock(new Leyka_Text_Block(array(
-            'id' => 'step-intro-text',
+            'id' => 'step-intro-text-1',
+            'text' => sprintf(__('WARNING! We strongly recommend you to revise this Terms text and fill the field with your own value according to the organization personal data policy. Read more about it: %s', 'leyka'), leyka_get_pd_usage_info_links()),
+        )))->addBlock(new Leyka_Text_Block(array(
+            'id' => 'step-intro-text-2',
             'text' => '<ul>
 <li>В рамках сбора пожертвований вы будете собирать персональные данные доноров.</li>
 <li>«Согласие на обработку персональных данных» — обязательный документ по закону ФЗ-152.</li>

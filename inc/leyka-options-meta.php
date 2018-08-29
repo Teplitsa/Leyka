@@ -727,8 +727,7 @@ self::$_options_meta = array(
             <code>#SITE_URL#</code> — ".__("the website homepage URL", 'leyka')."<br>
             <code>#PD_TERMS_PAGE_URL#</code> — ".__("the website personal data terms page URL", 'leyka')."<br>
             <code>#ADMIN_EMAIL#</code> — ".__("the website administrator email", 'leyka')."<br>
-            </span>
-            <span class='pd-warning'>".sprintf(__('WARNING! We strongly recommend you to revise this Terms text and fill the field with your own value according to the organization personal data policy. Read more about it: %s', 'leyka'), leyka_get_pd_usage_info_links())."</span>",
+            </span>",
         'required' => true,
     ),
     'person_pd_terms_text' => array(
