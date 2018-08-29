@@ -71,6 +71,24 @@ class Leyka_Admin_Setup {
 
         }
 
+        function leyka_admin_title($admin_title) {
+
+            if(isset($_GET['page']) && $_GET['page'] === 'leyka_settings_new' && isset($_GET['screen'])) {
+
+                $screen_full_id = explode('-', $_GET['screen']);
+
+                if(count($screen_full_id) > 1 && $screen_full_id[1] === 'init') {
+                    /** @todo Get the title from Settings Controller attr? */
+                    $admin_title = get_bloginfo('name').' &#8212; Мастер установки Лейки';
+                }
+
+            }
+
+            return $admin_title;
+
+        }
+        add_filter('admin_title', 'leyka_admin_title');
+
         // Leyka admin notices:
         if(isset($_GET['leyka_reset_msg'])) {
             update_option('leyka_admin_notice_'.$_GET['leyka_reset_msg'], 0);
