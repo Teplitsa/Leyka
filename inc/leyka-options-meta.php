@@ -105,7 +105,7 @@ self::$_options_meta = array(
     'org_contact_person_name' => array(
         'type' => 'text',
         'title' => 'Имя контактного лица', // __('Full name of a person representing the NGO', 'leyka'),
-//        'description' => __("Enter a person's full name in subjective case.", 'leyka'),
+        'description' => 'Контактное лицо – это человек, курирующий настройку и установку Лейки, а также подключение к платежным операторам.', // __("Enter a person's full name in subjective case.", 'leyka'),
         'required' => false,
 //        'placeholder' => __('E.g., John Frederic Dow', 'leyka'),
     ),

@@ -620,7 +620,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 new Leyka_Option_Block(array(
                     'id' => 'org_contact_email',
                     'option_id' => 'tech_support_email',
-                    'show_description' => false,
+//                    'show_description' => false,
                 )),
             ),
         )))->addTo($section);
