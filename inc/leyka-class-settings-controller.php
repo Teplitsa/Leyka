@@ -566,15 +566,25 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'org_short_name',
             'option_id' => 'org_short_name',
-        )))->addBlock(new Leyka_Option_Block(array(
-            'id' => 'org_face_fio_ip',
-            'option_id' => 'org_face_fio_ip',
+        )))->addBlock(new Leyka_Container_Block(array(
+            'id' => 'complex-row-1',
+            'entries' => array(
+                new Leyka_Option_Block(array(
+                    'id' => 'org_face_position',
+                    'option_id' => 'org_face_position',
+                    'show_description' => false,
+                )),
+                new Leyka_Option_Block(array(
+                    'id' => 'org_face_fio_ip',
+                    'option_id' => 'org_face_fio_ip',
+                )),
+            ),
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'org_address',
             'option_id' => 'org_address',
             'show_description' => false,
         )))->addBlock(new Leyka_Container_Block(array(
-            'id' => 'complex-row-1',
+            'id' => 'complex-row-2',
             'entries' => array(
                 new Leyka_Option_Block(array(
                     'id' => 'org_state_reg_number',
@@ -588,7 +598,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 )),
             ),
         )))->addBlock(new Leyka_Container_Block(array(
-            'id' => 'complex-row-2',
+            'id' => 'complex-row-3',
             'entry_width' => 0.5,
             'entries' => array(
                 new Leyka_Option_Block(array(
@@ -601,7 +611,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'id' => 'contact_person_data',
             'text' => 'Контактное лицо',
         )))->addBlock(new Leyka_Container_Block(array(
-            'id' => 'complex-row-3',
+            'id' => 'complex-row-4',
             'entries' => array(
                 new Leyka_Option_Block(array(
                     'id' => 'org_contact_person_name',

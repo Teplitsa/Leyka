@@ -97,7 +97,7 @@ self::$_options_meta = array(
     ),
     'org_face_fio_ip' => array(
         'type' => 'text',
-        'title' => 'Ф.И.О. директора', // __('Full name of a person representing the NGO', 'leyka'),
+        'title' => 'Ф.И.О. руководителя', // __('Full name of a person representing the NGO', 'leyka'),
 //        'description' => __("Enter a person's full name in subjective case.", 'leyka'),
         'required' => true,
 //        'placeholder' => __('E.g., John Frederic Dow', 'leyka'),
@@ -118,11 +118,11 @@ self::$_options_meta = array(
     ),
     'org_face_position' => array(
         'type' => 'text',
-        'title' => __('Position of a person representing the NGO', 'leyka'),
-        'default' => 'директор', // __('director', 'leyka'),
+        'title' => 'Название должности руководителя', //__('Position of a person representing the NGO', 'leyka'),
+        'default' => 'Директор', // __('director', 'leyka'),
         'description' => __('Enter an official position of a person representing the NGO.', 'leyka'),
         'required' => true,
-        'placeholder' => __('E.g., director', 'leyka'),
+        'placeholder' => __('E.g., «Director»', 'leyka'),
     ),
     'org_address' => array(
         'type' => 'text',
