@@ -32,8 +32,7 @@ class Leyka_Rbk_Gateway_Web_Hook
                 self::donation_failed($hook_data);
             }
         }
-
-        die();
+        wp_die($check->get_error_message());
     }
 
     public static function donation_failed($data)
