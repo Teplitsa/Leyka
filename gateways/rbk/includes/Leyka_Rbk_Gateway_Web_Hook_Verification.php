@@ -14,24 +14,9 @@ class Leyka_Rbk_Gateway_Web_Hook_Verification
     const SIGNATURE_DIGEST = 'digest';
     const SIGNATURE_PATTERN = "|alg=(\S+);\sdigest=(.*)|i";
 
-
-    public static function key_prepare($key)
+    public function verify_header_signature($content)
     {
-
-        if (false !== $key) {
-            $key = str_replace(array('-----BEGIN PUBLIC KEY-----', '-----END PUBLIC KEY-----'), '', $key);
-            $key = str_replace(' ', PHP_EOL, $key);
-            $key = '-----BEGIN PUBLIC KEY-----' . $key . '-----END PUBLIC KEY-----';
-
-            return $key;
-        }
-
-        return false;
-    }
-
-    public static function verify_header_signature($content)
-    {
-        $key = self::key_prepare(get_option('leyka_rbk_api_web_hook_key', false));
+        $key = $this->_key_prepare(get_option('leyka_rbk_api_web_hook_key', false));
 
         if (empty($_SERVER[self::SIGNATURE])) {
             new WP_Error(
@@ -40,7 +25,7 @@ class Leyka_Rbk_Gateway_Web_Hook_Verification
             );
         }
 
-        $params_signature = self::get_parameters_content_signature(
+        $params_signature = $this->_get_parameters_content_signature(
             $_SERVER[self::SIGNATURE]
         );
 
@@ -58,11 +43,11 @@ class Leyka_Rbk_Gateway_Web_Hook_Verification
             );
         }
 
-        $signature = self::urlsafe_b64decode(
+        $signature = $this->_urlsafe_b64decode(
             $params_signature[self::SIGNATURE_DIGEST]
         );
 
-        if (!self::verification_signature(
+        if (!$this->_verification_signature(
             $content, $signature, trim($key))) {
             return new WP_Error(
                 'Leyka_webhook_error',
@@ -74,7 +59,18 @@ class Leyka_Rbk_Gateway_Web_Hook_Verification
 
     }
 
-    public static function verification_signature($data = '', $signature = '', $public_key = '')
+    protected function _key_prepare($key)
+    {
+        if (false !== $key) {
+            $key = str_replace(array('-----BEGIN PUBLIC KEY-----', '-----END PUBLIC KEY-----'), '', $key);
+            $key = str_replace(' ', PHP_EOL, $key);
+            $key = '-----BEGIN PUBLIC KEY-----' . $key . '-----END PUBLIC KEY-----';
+            return $key;
+        }
+        return false;
+    }
+
+    protected function _verification_signature($data = '', $signature = '', $public_key = '')
     {
         if (empty($data) || empty($signature) || empty($public_key)) {
             return false;
@@ -88,7 +84,7 @@ class Leyka_Rbk_Gateway_Web_Hook_Verification
         return ($verify == static::OPENSSL_VERIFY_SIGNATURE_IS_CORRECT);
     }
 
-    public static function urlsafe_b64decode($string)
+    protected function _urlsafe_b64decode($string)
     {
         $data = str_replace(array('-', '_'), array('+', '/'), $string);
         $mod4 = strlen($data) % 4;
@@ -99,14 +95,14 @@ class Leyka_Rbk_Gateway_Web_Hook_Verification
         return base64_decode($data);
     }
 
-    public static function urlsafe_b64encode($string)
+    protected function _urlsafe_b64encode($string)
     {
         $data = base64_encode($string);
 
         return str_replace(array('+', '/'), array('-', '_'), $data);
     }
 
-    public static function get_parameters_content_signature($content_signature)
+    protected function _get_parameters_content_signature($content_signature)
     {
         preg_match_all(static::SIGNATURE_PATTERN, $content_signature, $matches, PREG_PATTERN_ORDER);
         $params = array();
