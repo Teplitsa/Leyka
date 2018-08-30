@@ -15,19 +15,22 @@ class Leyka_Rbk_Gateway_Web_Hook
     {
         $data = file_get_contents('php://input');
 
-        Leyka_Rbk_Gateway_Web_Hook_Verification::verify_header_signature($data);
+        $check = Leyka_Rbk_Gateway_Web_Hook_Verification::verify_header_signature($data);
 
-        $hook_data = json_decode($data, true);
+        if (!is_error($check)) {
 
-        if ('PaymentRefunded' == $hook_data['eventType']) {
-            self::change_donation_status($hook_data);
-        } else if ('InvoicePaid' == $hook_data['eventType']) {
-            self::change_donation_status($hook_data);
-        } else if ('PaymentProcessed' == $hook_data['eventType']) {
-            self::processed_log($hook_data);
-            self::invoice_capture($hook_data);
-        } else if (in_array($hook_data['eventType'], array('PaymentFailed', 'InvoiceCancelled', 'PaymentCancelled'))) {
-            self::donation_failed($hook_data);
+            $hook_data = json_decode($data, true);
+
+            if ('PaymentRefunded' == $hook_data['eventType']) {
+                self::change_donation_status($hook_data);
+            } else if ('InvoicePaid' == $hook_data['eventType']) {
+                self::change_donation_status($hook_data);
+            } else if ('PaymentProcessed' == $hook_data['eventType']) {
+                self::processed_log($hook_data);
+                self::invoice_capture($hook_data);
+            } else if (in_array($hook_data['eventType'], array('PaymentFailed', 'InvoiceCancelled', 'PaymentCancelled'))) {
+                self::donation_failed($hook_data);
+            }
         }
         die;
     }
