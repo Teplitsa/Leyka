@@ -203,9 +203,9 @@ gulp.task('watch-admin', function(){
     gulp.watch([basePaths.src+'sass/admin/*.scss', basePaths.src+'sass/admin/**/*.scss'], ['build-admin-css']).on('change', function(evt) {
         changeEvent(evt);
     });
-    // gulp.watch([basePaths.src+'js/*.js', basePaths.src+'js/front/*.js'], ['full-build-js']).on('change', function(evt) {
-    //     changeEvent(evt);
-    // });
+    gulp.watch([basePaths.src+'js/admin/*.js', basePaths.src+'js/admin/**/*.js'], ['build-admin-js']).on('change', function(evt) {
+        changeEvent(evt);
+    });
 });
 
 
