@@ -1227,10 +1227,10 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
     public function handleCampaignDecorationStep(array $step_settings) {
 
-        $init_campaign_id = get_transient('leyka_init_campaign_id');
-        $init_campaign = get_post($init_campaign_id);
+        //$init_campaign_id = get_transient('leyka_init_campaign_id');
+        //$init_campaign = get_post($init_campaign_id);
 
-        // Step custom field processing here...
+        // Campaign thumbnail and template already saved before this step. So do nothing
 
     }
 

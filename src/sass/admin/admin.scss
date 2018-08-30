@@ -1,6 +1,7 @@
 @import 'presets';
 @import 'typo';
 @import 'mixins';
+@import 'loader';
 
 .leyka-wizard {
 
@@ -657,11 +658,22 @@
                                 position: absolute;
                                 top: 0px;
                                 left: 0px;
-                                pointer-events: none;
+                                //pointer-events: none;
                                 outline: none;
                             }
 
                         }
+                    }
+                    
+                    #campaign-decoration-loading {
+                        display: none;
+                    }
+                    
+                    .loader-wrap {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        padding-top: 2rem;
                     }
                     
                 }
