@@ -8,7 +8,6 @@ var leyka_rbk_gateway = {
     }
 };
 
-
 $(document).ready(function () {
     leyka_rbk_gateway.run();
 });
