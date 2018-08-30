@@ -52,7 +52,7 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
     protected function _loadCssJs() {
 
         wp_enqueue_script(
-            'leyka-settings-render',
+            'leyka-settings',
             LEYKA_PLUGIN_BASE_URL.'assets/js/admin.js',
             array('jquery',),
             LEYKA_VERSION,
@@ -67,7 +67,7 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
             LEYKA_VERSION
         );
 
-        do_action('leyka_settings_enqueue_scripts');
+        do_action('leyka_settings_render_enqueue_scripts', $this->_id);
 
     }
 

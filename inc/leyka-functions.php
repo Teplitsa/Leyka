@@ -892,6 +892,10 @@ function leyka_is_widget_active() {
     return false;
 }
 
+function leyka_are_bank_essentials_set() {
+    return true;
+}
+
 function leyka_is_campaign_link_in_menu() {
 
 //    foreach(get_registered_nav_menus() as $menu_id => $menu_name) {

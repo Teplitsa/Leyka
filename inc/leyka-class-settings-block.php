@@ -334,7 +334,13 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
         } else if($this->_rendering_type === 'template') {
 
             $field_type = str_replace('custom_', '', $this->_field_type);
-            $template_file = LEYKA_PLUGIN_DIR."inc/settings-fields-templates/leyka-{$field_type}.php";
+            $template_file = apply_filters(
+                'leyka_setting_field_template-'.$field_type,
+                LEYKA_PLUGIN_DIR."inc/settings-fields-templates/leyka-{$field_type}.php",
+                $this->_setting_id,
+                $this->_field_data,
+                $this->_fields_keys
+            );
 
             if(file_exists($template_file)) {
                 require($template_file);

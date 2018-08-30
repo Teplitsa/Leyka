@@ -17,11 +17,16 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
     protected function __construct() {
 
+        $this->_loadCssJs();
         $this->_setAttributes();
         $this->_setSections();
 
         add_action('leyka_settings_submit_'.$this->_id, array($this, 'handleSubmit'));
 
+    }
+
+    protected function _loadCssJs() {
+        do_action('leyka_settings_controller_enqueue_scripts', $this->id);
     }
 
     abstract protected function _setAttributes();
@@ -525,7 +530,29 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
     protected function _setAttributes() {
 
         $this->_id = 'init';
-        $this->_title = 'The Init wizard';
+        $this->_title = 'Мастер настройки Лейки';
+
+    }
+
+    protected function _loadCssJs() {
+
+//        wp_enqueue_script(
+//            'leyka-settings',
+//            LEYKA_PLUGIN_BASE_URL.'assets/js/admin.js',
+//            array('jquery',),
+//            LEYKA_VERSION,
+//            true
+//        );
+////        add_action('wp_enqueue_scripts', array($this, 'localize_scripts')); // wp_footer
+//
+//        wp_enqueue_style(
+//            'leyka-settings',
+//            LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css',
+//            array(),
+//            LEYKA_VERSION
+//        );
+
+        parent::_loadCssJs();
 
     }
 
