@@ -27,8 +27,7 @@ class Leyka_Rbk_Gateway_Web_Hook
         } else if (in_array($hook_data['eventType'], array('PaymentFailed', 'InvoiceCancelled', 'PaymentCancelled'))) {
             self::donation_failed($hook_data);
         }
-
-        die();
+        die;
     }
 
     public static function donation_failed($data)
@@ -139,7 +138,7 @@ class Leyka_Rbk_Gateway_Web_Hook
                 'Leyka_webhook_error',
                 'Webhook notification signature missing'
             );
-            die();
+            die;
         }
 
         $params_signature = Leyka_Rbk_Gateway_Web_Hook_Verification::get_parameters_content_signature(
@@ -150,7 +149,7 @@ class Leyka_Rbk_Gateway_Web_Hook
                 'Leyka_webhook_error',
                 'Missing required parameter ' . Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE_ALG
             );
-            die();
+            die;
         }
 
         if (empty($params_signature[Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE_DIGEST])) {
@@ -158,7 +157,7 @@ class Leyka_Rbk_Gateway_Web_Hook
                 'Leyka_webhook_error',
                 'Missing required parameter ' . Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE_DIGEST
             );
-            die();
+            die;
         }
 
         $signature = Leyka_Rbk_Gateway_Web_Hook_Verification::urlsafe_b64decode(
@@ -172,7 +171,7 @@ class Leyka_Rbk_Gateway_Web_Hook
                 'Webhook notification signature mismatch'
             );
 
-            die();
+            die;
         }
 
     }
