@@ -1,0 +1,214 @@
+<?php
+
+class Leyka_Rbk_Gateway_Web_Hook
+{
+    public static $rbk_host = 'https://api.rbk.money';
+
+    public static function run()
+    {
+        if (false !== get_option('leyka_rbk_api_web_hook_key', false)) {
+            add_action('leyka_rbk_gateway_web_hook', array(__CLASS__, 'hook'));
+        }
+    }
+
+    public static function hook()
+    {
+        $data = file_get_contents('php://input');
+        self::verify_header_signature($data);
+        $hook_data = json_decode($data, true);
+
+        if ('PaymentRefunded' == $hook_data['eventType']) {
+            self::change_donation_status($hook_data);
+        } else if ('InvoicePaid' == $hook_data['eventType']) {
+            self::change_donation_status($hook_data);
+        } else if ('PaymentProcessed' == $hook_data['eventType']) {
+            self::processed_log($hook_data);
+            self::invoice_capture($hook_data);
+        } else if (in_array($hook_data['eventType'], array('PaymentFailed', 'InvoiceCancelled', 'PaymentCancelled'))) {
+            self::donation_failed($hook_data);
+        }
+
+        die();
+    }
+
+    public static function donation_failed($data)
+    {
+        $donation_id = self::get_payment_id_by_response_data($data);
+        $donation = new Leyka_Donation($donation_id);
+        $log = $donation->__get('gateway_response');
+        $log = maybe_unserialize($log);
+        $log['RBK_Hook_failed_data'] = $data;
+        $donation->add_gateway_response($log);
+
+        return wp_update_post(array('ID' => $donation_id, 'post_status' => 'failed'));
+    }
+
+    public static function processed_log($data)
+    {
+        $donation_id = self::get_payment_id_by_response_data($data);
+        $donation = new Leyka_Donation($donation_id);
+        $log = $donation->__get('gateway_response');
+        $log = maybe_unserialize($log);
+        $log['RBK_Hook_processed_data'] = $data;
+        $donation->add_gateway_response($log);
+    }
+
+    public static function get_payment_id_by_response_data($data)
+    {
+        global $wpdb;
+        return $wpdb->get_var("
+			SELECT post_id FROM 
+			{$wpdb->postmeta}
+			WHERE meta_key = '_leyka_donation_id_on_gateway_response'
+			AND meta_value  = '{$data['invoice']['id']}'
+			LIMIT 1
+		");
+    }
+
+    public static function invoice_capture($data)
+    {
+        $donation_id = self::get_payment_id_by_response_data($data);
+        $donation = new Leyka_Donation($donation_id);
+        $log = maybe_unserialize($donation->__get('gateway_response'));
+        $api_key = leyka_options()->opt('leyka_rbk_api_key');
+        $invoice_id = $log['RBK_Hook_processed_data']['invoice']['id'];
+        $payment_id = $log['RBK_Hook_processed_data']['payment']['id'];
+
+        $url = self::$rbk_host . "/v2/processing/invoices/{$invoice_id}/payments/{$payment_id}/capture";
+        $args = array(
+            'timeout' => 30,
+            'redirection' => 10,
+            'blocking' => true,
+            'httpversion' => '1.1',
+            'headers' => array(
+                'X-Request-ID' => uniqid(),
+                'Authorization' => "Bearer {$api_key}",
+                'Content-type' => 'application/json; charset=utf-8',
+                'Accept' => 'application/json'
+            ),
+            'body' => json_encode(array(
+                'reason' => 'Donation auto capture'
+            ))
+        );
+        return wp_remote_post($url, $args);
+    }
+
+    public static function change_donation_status($data)
+    {
+        global $wpdb;
+
+        $map_status = array(
+            'InvoicePaid' => 'funded',
+            'PaymentRefunded' => 'refunded'
+        );
+
+        $donation_id = $wpdb->get_var("
+			SELECT post_id FROM 
+			{$wpdb->postmeta}
+			WHERE meta_key = '_leyka_donation_id_on_gateway_response'
+			AND meta_value  = '{$data['invoice']['id']}'
+			LIMIT 1
+		");
+
+        if (is_numeric($donation_id) && array_key_exists($data['eventType'], $map_status)) {
+            $status = $map_status[$data['eventType']];
+            wp_update_post(array('ID' => $donation_id, 'post_status' => $status));
+        }
+    }
+
+    public static function key_prepare($key)
+    {
+
+        if (false !== $key) {
+            $key = str_replace(array('-----BEGIN PUBLIC KEY-----', '-----END PUBLIC KEY-----'), '', $key);
+            $key = str_replace(' ', PHP_EOL, $key);
+            $key = '-----BEGIN PUBLIC KEY-----' . $key . '-----END PUBLIC KEY-----';
+
+            return $key;
+        }
+
+        return false;
+    }
+
+    public static function verify_header_signature($content)
+    {
+        $key = self::key_prepare(get_option('leyka_rbk_api_web_hook_key', false));
+
+        if (empty($_SERVER[Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE])) {
+            new WP_Error(
+                'Leyka_webhook_error',
+                'Webhook notification signature missing'
+            );
+            die();
+        }
+
+        $params_signature = Leyka_Rbk_Gateway_Web_Hook_Verification::get_parameters_content_signature(
+            $_SERVER[Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE]
+        );
+        if (empty($params_signature[Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE_ALG])) {
+            new WP_Error(
+                'Leyka_webhook_error',
+                'Missing required parameter ' . Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE_ALG
+            );
+            die();
+        }
+
+        if (empty($params_signature[Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE_DIGEST])) {
+            new WP_Error(
+                'Leyka_webhook_error',
+                'Missing required parameter ' . Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE_DIGEST
+            );
+            die();
+        }
+
+        $signature = Leyka_Rbk_Gateway_Web_Hook_Verification::urlsafe_b64decode(
+            $params_signature[Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE_DIGEST]
+        );
+
+        if (!Leyka_Rbk_Gateway_Web_Hook_Verification::verification_signature(
+            $content, $signature, trim($key))) {
+            new WP_Error(
+                'Leyka_webhook_error',
+                'Webhook notification signature mismatch'
+            );
+
+            die();
+        }
+
+    }
+
+    public static function get_signature_from_header($contentSignature)
+    {
+        $contentSignature = trim($contentSignature);
+        $signature = preg_replace("/alg=(\S+);\sdigest=/", '', $contentSignature);
+
+
+        return $signature;
+    }
+
+    public static function verify_signature($data, $signature, $publicKey)
+    {
+        if (empty($data) || empty($signature) || empty($publicKey)) {
+            return false;
+        }
+
+        $publicKeyId = openssl_get_publickey($publicKey);
+        if (empty($publicKeyId)) {
+            return false;
+        }
+
+        $verify = openssl_verify($data, $signature, $publicKeyId, OPENSSL_ALGO_SHA256);
+
+        return ($verify == 1);
+    }
+
+    public static function urlsafe_base64decode($string)
+    {
+        $string = trim($string);
+
+        return base64_decode(strtr($string, '-_,', '+/='));
+    }
+
+}
+
+Leyka_Rbk_Gateway_Web_Hook::run();
