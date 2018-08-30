@@ -1,11 +1,11 @@
 === Leyka ===
-Contributors: Ahaenor, foralien, denis.cherniatev
+Contributors: Ahaenor, foralien, denis.cherniatev, petrozavodsky
 Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса,яндекс.деньги, миксплат, paypal
 Requires at least: 3.6.1
 Tested up to: 4.9.6
-Stable tag: 2.3.6.1
+Stable tag: 2.3.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,9 @@ PHP version required: 5.3+
 10. Google Analytics events
 
 == Changelog ==
+= 2.3.7 =
+* New: Paymaster API support added rbk.money.
+
 = 2.3.6.1 =
 * New: now Leyka may optionally syncronize outer IP for Yandex.Kassa requests with inner IP.
 * Fix: important fix for donation amount passing while using redirects-based gateways with Revo template.
