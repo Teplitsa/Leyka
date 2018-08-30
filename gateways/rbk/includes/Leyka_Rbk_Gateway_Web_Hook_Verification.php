@@ -14,6 +14,68 @@ class Leyka_Rbk_Gateway_Web_Hook_Verification
     const SIGNATURE_DIGEST = 'digest';
     const SIGNATURE_PATTERN = "|alg=(\S+);\sdigest=(.*)|i";
 
+
+    public static function key_prepare($key)
+    {
+
+        if (false !== $key) {
+            $key = str_replace(array('-----BEGIN PUBLIC KEY-----', '-----END PUBLIC KEY-----'), '', $key);
+            $key = str_replace(' ', PHP_EOL, $key);
+            $key = '-----BEGIN PUBLIC KEY-----' . $key . '-----END PUBLIC KEY-----';
+
+            return $key;
+        }
+
+        return false;
+    }
+
+    public static function verify_header_signature($content)
+    {
+        $key = self::key_prepare(get_option('leyka_rbk_api_web_hook_key', false));
+
+        if (empty($_SERVER[self::SIGNATURE])) {
+            new WP_Error(
+                'Leyka_webhook_error',
+                'Webhook notification signature missing'
+            );
+            die();
+        }
+
+        $params_signature = self::get_parameters_content_signature(
+            $_SERVER[self::SIGNATURE]
+        );
+        if (empty($params_signature[self::SIGNATURE_ALG])) {
+            new WP_Error(
+                'Leyka_webhook_error',
+                'Missing required parameter ' . self::SIGNATURE_ALG
+            );
+            die();
+        }
+
+        if (empty($params_signature[self::SIGNATURE_DIGEST])) {
+            new WP_Error(
+                'Leyka_webhook_error',
+                'Missing required parameter ' . self::SIGNATURE_DIGEST
+            );
+            die();
+        }
+
+        $signature = self::urlsafe_b64decode(
+            $params_signature[self::SIGNATURE_DIGEST]
+        );
+
+        if (!self::verification_signature(
+            $content, $signature, trim($key))) {
+            new WP_Error(
+                'Leyka_webhook_error',
+                'Webhook notification signature mismatch'
+            );
+
+            die();
+        }
+
+    }
+
     public static function verification_signature($data = '', $signature = '', $public_key = '')
     {
         if (empty($data) || empty($signature) || empty($public_key)) {

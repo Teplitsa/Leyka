@@ -14,7 +14,8 @@ class Leyka_Rbk_Gateway_Web_Hook
     public static function hook()
     {
         $data = file_get_contents('php://input');
-        self::verify_header_signature($data);
+        Leyka_Rbk_Gateway_Web_Hook_Verification::verify_header_signature($data);
+
         $hook_data = json_decode($data, true);
 
         if ('PaymentRefunded' == $hook_data['eventType']) {
@@ -114,99 +115,6 @@ class Leyka_Rbk_Gateway_Web_Hook
             $status = $map_status[$data['eventType']];
             wp_update_post(array('ID' => $donation_id, 'post_status' => $status));
         }
-    }
-
-    public static function key_prepare($key)
-    {
-
-        if (false !== $key) {
-            $key = str_replace(array('-----BEGIN PUBLIC KEY-----', '-----END PUBLIC KEY-----'), '', $key);
-            $key = str_replace(' ', PHP_EOL, $key);
-            $key = '-----BEGIN PUBLIC KEY-----' . $key . '-----END PUBLIC KEY-----';
-
-            return $key;
-        }
-
-        return false;
-    }
-
-    public static function verify_header_signature($content)
-    {
-        $key = self::key_prepare(get_option('leyka_rbk_api_web_hook_key', false));
-
-        if (empty($_SERVER[Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE])) {
-            new WP_Error(
-                'Leyka_webhook_error',
-                'Webhook notification signature missing'
-            );
-            die();
-        }
-
-        $params_signature = Leyka_Rbk_Gateway_Web_Hook_Verification::get_parameters_content_signature(
-            $_SERVER[Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE]
-        );
-        if (empty($params_signature[Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE_ALG])) {
-            new WP_Error(
-                'Leyka_webhook_error',
-                'Missing required parameter ' . Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE_ALG
-            );
-            die();
-        }
-
-        if (empty($params_signature[Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE_DIGEST])) {
-            new WP_Error(
-                'Leyka_webhook_error',
-                'Missing required parameter ' . Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE_DIGEST
-            );
-            die();
-        }
-
-        $signature = Leyka_Rbk_Gateway_Web_Hook_Verification::urlsafe_b64decode(
-            $params_signature[Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE_DIGEST]
-        );
-
-        if (!Leyka_Rbk_Gateway_Web_Hook_Verification::verification_signature(
-            $content, $signature, trim($key))) {
-            new WP_Error(
-                'Leyka_webhook_error',
-                'Webhook notification signature mismatch'
-            );
-
-            die();
-        }
-
-    }
-
-    public static function get_signature_from_header($contentSignature)
-    {
-        $contentSignature = trim($contentSignature);
-        $signature = preg_replace("/alg=(\S+);\sdigest=/", '', $contentSignature);
-
-
-        return $signature;
-    }
-
-    public static function verify_signature($data, $signature, $publicKey)
-    {
-        if (empty($data) || empty($signature) || empty($publicKey)) {
-            return false;
-        }
-
-        $publicKeyId = openssl_get_publickey($publicKey);
-        if (empty($publicKeyId)) {
-            return false;
-        }
-
-        $verify = openssl_verify($data, $signature, $publicKeyId, OPENSSL_ALGO_SHA256);
-
-        return ($verify == 1);
-    }
-
-    public static function urlsafe_base64decode($string)
-    {
-        $string = trim($string);
-
-        return base64_decode(strtr($string, '-_,', '+/='));
     }
 
 }
