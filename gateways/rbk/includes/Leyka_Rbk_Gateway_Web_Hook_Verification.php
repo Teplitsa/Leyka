@@ -14,6 +14,58 @@ class Leyka_Rbk_Gateway_Web_Hook_Verification
     const SIGNATURE_DIGEST = 'digest';
     const SIGNATURE_PATTERN = "|alg=(\S+);\sdigest=(.*)|i";
 
+    public static function key_prepare($key)
+    {
+        if (false !== $key) {
+            $key = str_replace(array('-----BEGIN PUBLIC KEY-----', '-----END PUBLIC KEY-----'), '', $key);
+            $key = str_replace(' ', PHP_EOL, $key);
+            $key = '-----BEGIN PUBLIC KEY-----' . $key . '-----END PUBLIC KEY-----';
+            return $key;
+        }
+    }
+
+    public static function verify_header_signature($content)
+    {
+        $key = self::key_prepare(get_option('leyka_rbk_api_web_hook_key', false));
+
+        if (empty($_SERVER[self::SIGNATURE])) {
+            return new WP_Error(
+                'Leyka_webhook_error',
+                'Webhook notification signature missing'
+            );
+        }
+
+        $params_signature = self::get_parameters_content_signature(
+            $_SERVER[self::SIGNATURE]
+        );
+        if (empty($params_signature[self::SIGNATURE_ALG])) {
+            return new WP_Error(
+                'Leyka_webhook_error',
+                'Missing required parameter ' . self::SIGNATURE_ALG
+            );
+        }
+
+        if (empty($params_signature[self::SIGNATURE_DIGEST])) {
+            return new WP_Error(
+                'Leyka_webhook_error',
+                'Missing required parameter ' . self::SIGNATURE_DIGEST
+            );
+        }
+
+        $signature = self::urlsafe_b64decode(
+            $params_signature[self::SIGNATURE_DIGEST]
+        );
+
+        if (!self::verification_signature(
+            $content, $signature, trim($key))) {
+            return new WP_Error(
+                'Leyka_webhook_error',
+                'Webhook notification signature mismatch'
+            );
+        }
+
+    }
+
     public static function verification_signature($data = '', $signature = '', $public_key = '')
     {
         if (empty($data) || empty($signature) || empty($public_key)) {
