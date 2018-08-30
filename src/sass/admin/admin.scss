@@ -624,3 +624,70 @@
         color: $color-wizard-text;
     }
 }
+
+.leyka-wizard {
+    .main-area {
+        .step-content {
+            
+            .campaign-decor-wrap {
+                display: flex;
+                justify-content: flex-start;
+                align-items: space-between;
+                
+                .decor-form {
+                    flex-basis: 248px;
+                    
+                    .upload-photo-field {
+                        .field {
+                            display: block;
+                            position: relative;
+                            
+                            input[type=file] {
+                                display: block;
+                                height: 40px;
+                                width: 248px;
+                                outline: none;
+                            }
+                            
+                            .upload-photo {
+                                @include wizard-button-caption();
+                                height: 40px;
+                                width: 248px;
+                                background-color: $color-white;
+                                position: absolute;
+                                top: 0px;
+                                left: 0px;
+                                pointer-events: none;
+                                outline: none;
+                            }
+
+                        }
+                    }
+                    
+                }
+                
+                .decor-preview {
+                    flex-basis: auto;
+                    border-left: 1px solid $color-wizard-preview-border;
+                    margin-left: 1.5rem;
+                    padding-left: 1.5rem;
+                    
+                    .title {
+                        @include wizard-preivew-title();
+                        color: $color-wizard-link-sec;
+                    }
+                    
+                    .preview-frame {
+                        margin-top: 13px;
+                        background-color: $color-white; 
+                        
+                        iframe {
+                            overflow: hidden;
+                        }
+                    }
+                }
+            }
+            
+        }
+    }
+}

@@ -150,7 +150,7 @@ $body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, 
 
 @mixin wizard-field-label {
 	font-size: 13px;
-	line-height: 15px;
+	line-height: normal;
 	font-weight: 500;
 }
 
@@ -181,4 +181,10 @@ $body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, 
 @mixin wizard-field-label-required-sign {
 	font-size: 14px;
 	font-weight: 600;
+}
+
+@mixin wizard-preivew-title {
+	font-size: 13px;
+	line-height: normal;
+	font-weight: 500;
 }
