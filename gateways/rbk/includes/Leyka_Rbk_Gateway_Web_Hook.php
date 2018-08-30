@@ -14,13 +14,11 @@ class Leyka_Rbk_Gateway_Web_Hook
     public static function hook()
     {
         $data = file_get_contents('php://input');
-
-        $check = Leyka_Rbk_Gateway_Web_Hook_Verification::verify_header_signature($data);
+        $verification = new Leyka_Rbk_Gateway_Web_Hook_Verification();
+        $check = $verification->verify_header_signature($data);
 
         if (!is_wp_error($check)) {
-
             $hook_data = json_decode($data, true);
-
             if ('PaymentRefunded' == $hook_data['eventType']) {
                 self::change_donation_status($hook_data);
             } else if ('InvoicePaid' == $hook_data['eventType']) {
