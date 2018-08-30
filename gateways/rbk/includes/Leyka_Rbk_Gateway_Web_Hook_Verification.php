@@ -38,26 +38,24 @@ class Leyka_Rbk_Gateway_Web_Hook_Verification
                 'Leyka_webhook_error',
                 'Webhook notification signature missing'
             );
-            die();
         }
 
         $params_signature = self::get_parameters_content_signature(
             $_SERVER[self::SIGNATURE]
         );
+
         if (empty($params_signature[self::SIGNATURE_ALG])) {
-            new WP_Error(
+            return new WP_Error(
                 'Leyka_webhook_error',
                 'Missing required parameter ' . self::SIGNATURE_ALG
             );
-            die();
         }
 
         if (empty($params_signature[self::SIGNATURE_DIGEST])) {
-            new WP_Error(
+            return new WP_Error(
                 'Leyka_webhook_error',
                 'Missing required parameter ' . self::SIGNATURE_DIGEST
             );
-            die();
         }
 
         $signature = self::urlsafe_b64decode(
@@ -66,13 +64,13 @@ class Leyka_Rbk_Gateway_Web_Hook_Verification
 
         if (!self::verification_signature(
             $content, $signature, trim($key))) {
-            new WP_Error(
+            return new WP_Error(
                 'Leyka_webhook_error',
                 'Webhook notification signature mismatch'
             );
-
-            die();
         }
+
+        return true;
 
     }
 
