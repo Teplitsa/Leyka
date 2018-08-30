@@ -14,25 +14,21 @@ class Leyka_Rbk_Gateway_Web_Hook
     public static function hook()
     {
         $data = file_get_contents('php://input');
+        self::verify_header_signature($data);
+        $hook_data = json_decode($data, true);
 
-        $check = Leyka_Rbk_Gateway_Web_Hook_Verification::verify_header_signature($data);
-
-        if (!is_error($check)) {
-
-            $hook_data = json_decode($data, true);
-
-            if ('PaymentRefunded' == $hook_data['eventType']) {
-                self::change_donation_status($hook_data);
-            } else if ('InvoicePaid' == $hook_data['eventType']) {
-                self::change_donation_status($hook_data);
-            } else if ('PaymentProcessed' == $hook_data['eventType']) {
-                self::processed_log($hook_data);
-                self::invoice_capture($hook_data);
-            } else if (in_array($hook_data['eventType'], array('PaymentFailed', 'InvoiceCancelled', 'PaymentCancelled'))) {
-                self::donation_failed($hook_data);
-            }
+        if ('PaymentRefunded' == $hook_data['eventType']) {
+            self::change_donation_status($hook_data);
+        } else if ('InvoicePaid' == $hook_data['eventType']) {
+            self::change_donation_status($hook_data);
+        } else if ('PaymentProcessed' == $hook_data['eventType']) {
+            self::processed_log($hook_data);
+            self::invoice_capture($hook_data);
+        } else if (in_array($hook_data['eventType'], array('PaymentFailed', 'InvoiceCancelled', 'PaymentCancelled'))) {
+            self::donation_failed($hook_data);
         }
-        die;
+
+        die();
     }
 
     public static function donation_failed($data)
@@ -118,6 +114,67 @@ class Leyka_Rbk_Gateway_Web_Hook
             $status = $map_status[$data['eventType']];
             wp_update_post(array('ID' => $donation_id, 'post_status' => $status));
         }
+    }
+
+    public static function key_prepare($key)
+    {
+
+        if (false !== $key) {
+            $key = str_replace(array('-----BEGIN PUBLIC KEY-----', '-----END PUBLIC KEY-----'), '', $key);
+            $key = str_replace(' ', PHP_EOL, $key);
+            $key = '-----BEGIN PUBLIC KEY-----' . $key . '-----END PUBLIC KEY-----';
+
+            return $key;
+        }
+
+        return false;
+    }
+
+    public static function verify_header_signature($content)
+    {
+        $key = self::key_prepare(get_option('leyka_rbk_api_web_hook_key', false));
+
+        if (empty($_SERVER[Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE])) {
+            new WP_Error(
+                'Leyka_webhook_error',
+                'Webhook notification signature missing'
+            );
+            die();
+        }
+
+        $params_signature = Leyka_Rbk_Gateway_Web_Hook_Verification::get_parameters_content_signature(
+            $_SERVER[Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE]
+        );
+        if (empty($params_signature[Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE_ALG])) {
+            new WP_Error(
+                'Leyka_webhook_error',
+                'Missing required parameter ' . Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE_ALG
+            );
+            die();
+        }
+
+        if (empty($params_signature[Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE_DIGEST])) {
+            new WP_Error(
+                'Leyka_webhook_error',
+                'Missing required parameter ' . Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE_DIGEST
+            );
+            die();
+        }
+
+        $signature = Leyka_Rbk_Gateway_Web_Hook_Verification::urlsafe_b64decode(
+            $params_signature[Leyka_Rbk_Gateway_Web_Hook_Verification::SIGNATURE_DIGEST]
+        );
+
+        if (!Leyka_Rbk_Gateway_Web_Hook_Verification::verification_signature(
+            $content, $signature, trim($key))) {
+            new WP_Error(
+                'Leyka_webhook_error',
+                'Webhook notification signature mismatch'
+            );
+
+            die();
+        }
+
     }
 
     public static function get_signature_from_header($contentSignature)
