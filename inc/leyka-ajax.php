@@ -228,32 +228,3 @@ function leyka_set_campaign_template() {
     
 }
 add_action('wp_ajax_leyka_set_campaign_template', 'leyka_set_campaign_template');
-
-function leyka_permalinks_on() {
-
-    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka-permalinks-on')) {
-        die(json_encode(array(
-            'status' => 'error',
-            'message' => __('Wrong nonce in the submitted data', 'leyka'),
-        )));
-    } else {
-
-        $res = update_option('permalinks_structure', '/%postname%/');
-        if($res) {
-
-            flush_rewrite_rules(true);
-
-            die(json_encode(array(
-                'status' => 'ok',
-            )));
-
-        } else {
-            die(json_encode(array(
-                'status' => 'error',
-                'message' => __('Error while saving the data', 'leyka'),
-            )));
-        }
-    }
-
-}
-add_action('wp_ajax_leyka_permalinks_on', 'leyka_permalinks_on');
