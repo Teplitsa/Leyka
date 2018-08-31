@@ -173,14 +173,11 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                         paymentFlowHold: true,
                         holdExpiration: 'capture',
                         opened: function () {
-                            console.log('Checkout opened');
                         },
                         closed: function () {
-                            console.log('Checkout closed');
                             return window.history.back();
                         },
                         finished: function () {
-                            console.log('Payment successful finished');
                             return window.location.href = '<?php echo $finished_page;?>';
                         }
                     });
