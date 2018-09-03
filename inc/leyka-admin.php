@@ -671,6 +671,7 @@ class Leyka_Admin_Setup {
         remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
         die($res ? '0' : '3');
+
     }
 
 	/** CSS/JS **/		
@@ -786,5 +787,83 @@ class Leyka_Admin_Setup {
 //            '' => __('', 'leyka'),
             ));
         }
+
 	}
-} //class end
+
+} // class end
+
+if( !function_exists('leyka_admin_get_slug_edit_field') ) {
+    function leyka_admin_get_slug_edit_field($campaign) {
+
+        $campaign = new Leyka_Campaign($campaign);
+        if($campaign->id <= 0) {
+            return '';
+        }
+
+        $permalinks_on = !!get_option('permalink_structure');
+
+        $campaign_permalink_parts = get_sample_permalink($campaign->id); // [0] - current URL template, [1] - current slug
+        $campaign_base_url = rtrim(str_replace('%pagename%', '', $campaign_permalink_parts[0]), '/');
+        $campaign_permalink_full = str_replace('%pagename%', $campaign_permalink_parts[1], $campaign_permalink_parts[0]);
+
+        ob_start();?>
+
+        <div class="leyka-campaign-permalink">
+
+        <?php if($permalinks_on) {?>
+
+            <span class="leyka-current-value">
+                <span class="base-url"><?php echo $campaign_base_url;?></span>/<span class="current-slug"><?php echo $campaign_permalink_parts[1];?></span>
+            </span>
+
+            <a href="<?php echo get_edit_post_link($campaign->id);?>" class="inline-action inline-edit-slug">Редактировать адрес</a>
+
+            <span class="inline-edit-slug-form" data-slug-original="<?php echo $campaign_permalink_parts[1];?>" data-campaign-id="<?php echo $campaign->id;?>" data-nonce="<?php echo wp_create_nonce('leyka-edit-campaign-slug');?>">
+                <label><input type="text" class="leyka-slug-field" value="<?php echo $campaign_permalink_parts[1];?>"></label>
+                <span class="slug-submit-buttons">
+                    <button class="inline-submit"><?php esc_html_e('OK');?></button>
+                    <button class="inline-reset"><?php esc_html_e('Cancel');?></button>
+                </span>
+            </span>
+
+        <?php } else {?>
+
+            <span class="base-url"><?php echo $campaign_permalink_full;?></span>
+            <a href="<?php echo admin_url('options-permalink.php');?>" class="permalink-action" target="_blank">Включить постоянные ссылки</a>
+
+        <?php }?>
+
+            <div class="edit-permalink-loading">
+                 <div class="loader-wrap">
+                    <span class="leyka-loader xs"></span>
+                 </div>
+            </div>
+
+        </div>
+
+    <?php return ob_get_clean();
+
+    }
+}
+
+if( !function_exists('leyka_admin_get_shortcode_field') ) {
+    function leyka_admin_get_shortcode_field($campaign) {
+
+        $campaign = new Leyka_Campaign($campaign);
+        if($campaign->id <= 0) {
+            return '';
+        }
+
+        $shortcode = Leyka_Campaign_Management::get_campaign_form_shortcode($campaign->id);
+        ob_start();?>
+
+        <span class="leyka-current-value"><?php echo esc_attr($shortcode);?></span>
+        <span class="leyka-campaign-shortcode-field">
+            <input type="text" class="embed-code read-only campaign-shortcode" id="campaign-shortcode" value="<?php echo esc_attr($shortcode);?>">
+            <button class="inline-reset"><?php esc_html_e('Cancel');?></button>
+        </span>
+
+    <?php return ob_get_clean();
+
+    }
+}

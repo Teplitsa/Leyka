@@ -125,38 +125,101 @@ jQuery(document).ready(function($){
 // Edit permalink:
 jQuery(document).ready(function($){
 
-    var $edit_permalink_wrap = $('.custom_campaign_completed'),
-        $loading = $edit_permalink_wrap.find('.edit-permalink-loading').hide();
+    var $edit_permalink_wrap = $('.leyka-campaign-permalink'),
+        $edit_link = $edit_permalink_wrap.find('.inline-edit-slug'),
+        $current_slug = $edit_permalink_wrap.find('.current-slug'),
+        $edit_form = $edit_permalink_wrap.find('.inline-edit-slug-form'),
+        $slug_field = $edit_form.find('.leyka-slug-field'),
+        $loading = $edit_permalink_wrap.find('.edit-permalink-loading');
 
-    $edit_permalink_wrap.find('.action-permalinks-on').on('click.leyka', function(e){
+    $edit_link.on('click.leyka', function(e){
 
         e.preventDefault();
 
-        var $this = $(this);
-
-        $loading.show();
-        $this.hide();
-
-        $.post(leyka.ajaxurl, {
-            action: 'leyka_permalinks_on',
-            nonce: $this.data('nonce')
-        })
-        //     .done(function(json) {
-        //
-        //     if(typeof json.status !== 'undefined' && json.status === 'error') {
-        //         alert('Ошибка!');
-        //     }
-        //
-        // }).fail(function() {
-        //     alert('Ошибка!');
-        // }).always(function() {
-        //     $loading.hide();
-        //     console.log('OK!');
-        //     // enableForm();
-        // });
+        $current_slug.hide();
+        $edit_link.hide();
+        $edit_form.show();
 
     });
 
-    // $('.settings-block.custom_campaign_completed')
+    $edit_permalink_wrap.find('.slug-submit-buttons')
+        .on('click.leyka', '.inline-reset', function(e){
+
+            e.preventDefault();
+
+            $edit_form.hide();
+            $slug_field.val($edit_form.data('slug-original'));
+
+            $edit_link.show();
+            $current_slug.show();
+
+        })
+        .on('click.leyka', '.inline-submit', function(e){
+
+            e.preventDefault();
+
+            $loading.show();
+            $edit_form.hide();
+
+            $.post(leyka.ajaxurl, {
+                action: 'leyka_edit_campaign_slug',
+                campaign_id: $edit_form.data('campaign-id'),
+                slug: $slug_field.val(),
+                nonce: $edit_form.data('nonce')
+            }, null, 'json')
+                .done(function(json) {
+
+                    if(typeof json.status === 'undefined') {
+                        alert('Ошибка!');
+                    } else if(json.status === 'ok' && typeof json.slug !== 'undefined') {
+
+                        $slug_field.val(json.slug);
+                        $edit_form.data('slug-original', json.slug);
+                        $current_slug.text(json.slug);
+
+                    } else {
+                        alert('Ошибка!');
+                    }
+
+                }).fail(function(){
+                    alert('Ошибка!');
+                }).always(function(){
+
+                    $loading.hide();
+                    $edit_link.show();
+                    $current_slug.show();
+
+                });
+
+        });
+
+});
+
+// Auto-copy campaign shortcode:
+jQuery(document).ready(function($){
+
+    var $shortcode_field_wrap = $('.leyka-campaign-shortcode-field'),
+        $copy_shortcode_link = $shortcode_field_wrap.siblings('.inline-copy-shortcode'),
+        $current_shortcode = $shortcode_field_wrap.siblings('.leyka-current-value');
+
+    $copy_shortcode_link.on('click.leyka', function(e){
+
+        e.preventDefault();
+
+        $copy_shortcode_link.hide();
+        $current_shortcode.hide();
+        $shortcode_field_wrap.show();
+
+    });
+
+    $shortcode_field_wrap.find('.inline-reset').on('click.leyka', function(e){
+
+        e.preventDefault();
+
+        $copy_shortcode_link.show();
+        $current_shortcode.show();
+        $shortcode_field_wrap.hide();
+
+    });
 
 });

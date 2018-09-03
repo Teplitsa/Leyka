@@ -202,29 +202,47 @@ function leyka_set_campaign_photo() {
 add_action('wp_ajax_leyka_set_campaign_photo', 'leyka_set_campaign_photo');
 
 function leyka_set_campaign_template() {
-    
+
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'set-campaign-template')) {
-        die(json_encode(array(
-            'status' => 'error',
-            'message' => __('Wrong nonce in the submitted data', 'leyka'),
-        )));
+        die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
     } else if(empty($_POST['campaign_id'])) {
-        die(json_encode(array(
-            'status' => 'error',
-            'message' => __('Error: campaign ID is missing', 'leyka'),
-        )));
+        die(json_encode(array('status' => 'error', 'message' => __('Error: campaign ID is missing', 'leyka'),)));
     }
-    
-    $template = $_POST['template'];
-    $campaign_id = (int)$_POST['campaign_id'];
-    
-    update_post_meta($campaign_id, 'campaign_template', $template);
+
+    update_post_meta((int)$_POST['campaign_id'], 'campaign_template', $_POST['template']);
     sleep(1);
-    
-    die(json_encode(array(
-        'status' => 'ok',
-        'post' => $_POST,
-    )));
-    
+
+    die(json_encode(array('status' => 'ok', 'post' => $_POST,)));
+
 }
 add_action('wp_ajax_leyka_set_campaign_template', 'leyka_set_campaign_template');
+
+function leyka_edit_campaign_slug() {
+
+    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka-edit-campaign-slug')) {
+        die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
+    } else if(empty($_POST['campaign_id']) || empty($_POST['slug'])) {
+        die(json_encode(array('status' => 'error', 'message' => __('Error: the campaign data needed are missing', 'leyka'),)));
+    }
+
+    $campaign = get_post($_POST['campaign_id']);
+    if( !$campaign || $campaign->post_type !== Leyka_Campaign_Management::$post_type ) {
+        die(json_encode(array('status' => 'error', 'message' => __('Error: wrong campaign ID given', 'leyka'),)));
+    }
+
+    $_POST['slug'] = wp_unique_post_slug(sanitize_title($_POST['slug']), $_POST['campaign_id'], $campaign->post_status, $campaign->post_type, null);
+
+    $res = wp_update_post(array(
+        'ID' => (int)$_POST['campaign_id'],
+        'post_name' => $_POST['slug'],
+    ));
+    sleep(1);
+
+    if($res) {
+        die(json_encode(array('status' => 'ok', 'slug' => $_POST['slug'],)));
+    } else {
+        die(json_encode(array('status' => 'error', 'message' => __("Error: the campaign slug wasn't updated", 'leyka'),)));
+    }
+
+}
+add_action('wp_ajax_leyka_edit_campaign_slug', 'leyka_edit_campaign_slug');

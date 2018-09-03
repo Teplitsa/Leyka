@@ -508,10 +508,8 @@ function leyka_get_campaign_target($campaign) {
         return false;
     }
 
-    return $campaign->target ? array(
-        'amount' => $campaign->target,
-        'currency' => 'rur', // Currently, target is always in RUR  
-    ) : 0;
+    // Currently, target is always in RUB:
+    return $campaign->target ? array('amount' => $campaign->target, 'currency' => 'rur',) : 0;
 
 }
 
@@ -533,10 +531,9 @@ function leyka_get_campaign_collections($campaign) {
         return false;
     }
 
-    return array(
-        'amount' => $campaign->total_funded,
-        'currency' => 'rur', // Currently, collections are all in RUR
-    );
+    // Currently, collections are all in RUB:
+    return array('amount' => $campaign->total_funded, 'currency' => 'rur',);
+
 }
 
 /**

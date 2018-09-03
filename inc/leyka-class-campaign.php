@@ -383,13 +383,14 @@ class Leyka_Campaign_Management {
 	</div>
     <?php }
 
-	static function get_card_embed_code($campaign_id, $increase_counters = false, $w = 300, $h = 400){
+	static function get_card_embed_code($campaign_id, $increase_counters = false, $width = 300, $height = 400) {
 
 		$link = get_permalink($campaign_id);
-        $link .= (stristr($link, '?') !== false ? '&' : '?').'embed_object=campaign_card';
-        $link .= '&increase_counters='.(int)!!$increase_counters;
+        $link .= (stristr($link, '?') !== false ? '&' : '?').'embed_object=campaign_card'
+            .'&increase_counters='.(int)!!$increase_counters;
 
-		return '<iframe width="'.(int)$w.'" height="'.(int)$h.'" src="'.$link.'"></iframe>';
+		return '<iframe width="'.(int)$width.'" height="'.(int)$height.'" src="'.$link.'"></iframe>';
+
 	}
 
     static function get_campaign_form_shortcode($campaign_id) {
@@ -402,6 +403,7 @@ class Leyka_Campaign_Management {
         /** @todo When [leyka_inline_campaign] could display any form template, change this. */
         return $campaign->template == 'revo' ?
             '[leyka_inline_campaign id="'.$campaign_id.'"]' : '[leyka_campaign_form id="'.$campaign_id.'"]';
+
     }
 
 	public function save_data($campaign_id, WP_Post $campaign) {
@@ -523,9 +525,9 @@ class Leyka_Campaign_Management {
 
 class Leyka_Campaign {
 
-	private $_id;
-	private $_post_object;
-    private $_campaign_meta;
+	protected $_id;
+    protected $_post_object;
+    protected $_campaign_meta;
 
 	public function __construct($campaign) {
 
@@ -627,6 +629,7 @@ class Leyka_Campaign {
         return empty($target) ?
             'no_target' :
             (Leyka_Campaign::get_campaign_collected_amount($this->_id) >= $target ? 'is_reached' : 'in_progress');
+
     }
 
     public function __get($field) {
@@ -676,11 +679,10 @@ class Leyka_Campaign {
             case 'total_funded':
             case 'total_collected':
             case 'total_donations_funded': return $this->_campaign_meta['total_funded'];
-            case '': return '';
-//            case '': return '';
             default:
                 return apply_filters('leyka_get_unknown_campaign_field', null, $field, $this);
         }
+
     }
 
     public function __set($field, $value) {

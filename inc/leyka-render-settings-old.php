@@ -11,6 +11,7 @@ function leyka_render_section_area($section){?>
 
                 $option_info = leyka_options()->get_info_of($option);
                 do_action("leyka_render_{$option_info['type']}", $option, $option_info);
+
             }?>
         </div>
     </div>
