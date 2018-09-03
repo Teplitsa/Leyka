@@ -8,35 +8,37 @@
 <div id="<?php echo $this->id;?>" class="settings-block custom-block <?php echo $this->field_type;?>">
 <?php if(leyka_are_bank_essentials_set()) { // Bank essentials are filled
 
-    $permalinks_on = !!get_option('permalink-structure');
-    $init_campaign = get_post(get_transient('leyka_init_campaign_id'));?>
+    $permalinks_on = !!get_option('permalink_structure');
+    $init_campaign = get_post(get_transient('leyka_init_campaign_id'));
+    $campaign_permalink_parts = get_sample_permalink($init_campaign->ID); // [0] - current URL template, [1] - current slug
+    $campaign_base_url = rtrim(str_replace('%pagename%', '', $campaign_permalink_parts[0]), '/');
+    $campaign_permalink_full = str_replace('%pagename%', $campaign_permalink_parts[1], $campaign_permalink_parts[0]);?>
 
-    <ul class="leyka-campaign-completed">
+    <ul class="leyka-campaign-completed" data-campaign-id="<?php echo $init_campaign->ID;?>">
         <li>
             <div class="item-text">Кампания настроена по адресу:</div>
             <div class="item-info">
-            <?php $sample_permalink_html = get_sample_permalink_html($init_campaign->ID);
+                <div class="campaign-permalink">
 
-            // As of 4.4, the Get Shortlink button is hidden by default.
-            if ( has_filter( 'pre_get_shortlink' ) || has_filter( 'get_shortlink' ) ) {
-                $shortlink = wp_get_shortlink($init_campaign->ID, 'post');
+                <?php if($permalinks_on) {?>
 
-                if ( !empty( $shortlink ) && $shortlink !== $permalink && $permalink !== home_url('?page_id=' . $post->ID) ) {
-                    $sample_permalink_html .= '<input id="shortlink" type="hidden" value="' . esc_attr( $shortlink ) . '" /><button type="button" class="button button-small" onclick="prompt(&#39;URL:&#39;, jQuery(\'#shortlink\').val());">' . __( 'Get Shortlink' ) . '</button>';
-                }
-            }
+                    <span class="base-url"><?php echo $campaign_base_url;?></span>/<span class="slug"><?php echo $campaign_permalink_parts[1];?></span>
 
-            if('pending' != $init_campaign->post_status) {
-                $has_sample_permalink = $sample_permalink_html && 'auto-draft' != $init_campaign->post_status;
-                ?>
-                <div id="edit-slug-box" class="hide-if-no-js">
-                    <?php
-                    if ( $has_sample_permalink )
-                        echo $sample_permalink_html;
-                    ?>
+                <?php } else {?>
+
+                    <span class="base-url"><?php echo $campaign_permalink_full;?></span>
+                    <a href="<?php echo admin_url('options-permalink.php');?>" class="permalink-action" target="_blank">Включить постоянные ссылки</a>
+
+                <?php }?>
+
+                    <div class="edit-permalink-loading">
+                         <div class="loader-wrap">
+                            <span class="leyka-loader xs"></span>
+                         </div>
+                    </div>
+
                 </div>
-                <?php
-            }?>
+
             </div>
         </li>
         <li>
