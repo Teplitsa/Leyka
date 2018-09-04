@@ -889,8 +889,48 @@ function leyka_is_widget_active() {
     return false;
 }
 
+/** @return boolean */
 function leyka_are_bank_essentials_set() {
-    return true;
+
+    if(leyka_options()->opt('receiver_legal_type') === 'legal') {
+        return !!leyka_options()->opt('org_full_name')
+            && !!leyka_options()->opt('org_inn')
+            && !!leyka_options()->opt('org_kpp')
+            && !!leyka_options()->opt('org_bank_account')
+            && !!leyka_options()->opt('org_bank_name')
+            && !!leyka_options()->opt('org_bank_bic')
+            && !!leyka_options()->opt('org_bank_corr_account')
+            && !!leyka_options()->opt('org_state_reg_number');
+    } else {
+        return !!leyka_options()->opt('person_full_name')
+            && !!leyka_options()->opt('person_inn')
+            && !!leyka_options()->opt('person_bank_name')
+            && !!leyka_options()->opt('person_bank_account')
+            && !!leyka_options()->opt('person_bank_bic')
+            && !!leyka_options()->opt('person_bank_corr_account');
+    }
+
+}
+
+function leyka_get_empty_bank_essentials_options() {
+
+    if(leyka_are_bank_essentials_set()) {
+        return array();
+    }
+
+    $bank_essentials_options = leyka_options()->opt('receiver_legal_type') === 'legal' ?
+        array('org_full_name', 'org_inn', 'org_kpp', 'org_bank_account', 'org_bank_name', 'org_bank_bic', 'org_bank_corr_account', 'org_state_reg_number') :
+        array('person_full_name', 'person_inn', 'person_bank_name', 'person_bank_account', 'person_bank_bic', 'person_bank_corr_account',);
+
+    $result = array();
+    foreach($bank_essentials_options as $option_id) {
+        if( !leyka_options()->opt($option_id) ) {
+            $result[] = $option_id;
+        }
+    }
+
+    return $result;
+
 }
 
 function leyka_is_campaign_link_in_menu() {

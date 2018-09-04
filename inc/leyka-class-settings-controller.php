@@ -268,7 +268,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     }
 
-    protected function _handleSettingsGoBack($step_full_id = false) {
+    protected function _handleSettingsGoBack($step_full_id = false, $delete_activity = true) {
 
         if( !$step_full_id ) {
             $step_full_id = array_key_last($_SESSION[$this->_storage_key]['activity']);
@@ -295,15 +295,17 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
                 ->_setCurrentStep($this->getCurrentSection()->init_step);
         }
 
-        // Remove already passed keys from the Activity:
-        foreach(array_reverse($_SESSION[$this->_storage_key]['activity'], true) as $passed_step_full_id => $data) {
+        if( !!$delete_activity ) {
+            // Remove already passed keys from the Activity:
+            foreach(array_reverse($_SESSION[$this->_storage_key]['activity'], true) as $passed_step_full_id => $data) {
 
-            unset($_SESSION[$this->_storage_key]['activity'][$passed_step_full_id]);
+                unset($_SESSION[$this->_storage_key]['activity'][$passed_step_full_id]);
 
-            if($passed_step_full_id === $step_full_id) {
-                break;
+                if($passed_step_full_id === $step_full_id) {
+                    break;
+                }
+
             }
-
         }
 
         return $this;
@@ -544,9 +546,9 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
             }
 
-            do_action('leyka_settings_wizard-'.$this->_id.'-_step_init');
-
             $this->_setCurrentStep($step);
+
+            do_action('leyka_settings_wizard-'.$this->_id.'-_step_init');
 
         }
 
@@ -1238,6 +1240,17 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
             if( !$init_campaign_id || !$init_campaign ) {
                 $this->_handleSettingsGoBack('cd-campaign_description');
+            }
+
+            $empty_bank_essentials_options = leyka_get_empty_bank_essentials_options();
+            if($empty_bank_essentials_options) {
+                foreach($empty_bank_essentials_options as $option_id) {
+                    $this->getCurrentStep()->addBlock(new Leyka_Option_Block(array(
+                        'id' => $option_id,
+                        'option_id' => $option_id,
+//                        'show_description' => false,
+                    )));
+                }
             }
 
         }
