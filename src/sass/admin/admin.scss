@@ -236,7 +236,7 @@
                             }
                         }
                     }
-                    
+
                     &.field {
                         
                         // TODO: move colors to presets after comlete
@@ -626,81 +626,137 @@
     }
 }
 
+// Custom step blocks:
 .leyka-wizard {
-    .main-area {
-        .step-content {
-            
-            .campaign-decor-wrap {
-                display: flex;
-                justify-content: flex-start;
-                align-items: space-between;
-                
-                .decor-form {
-                    flex-basis: 248px;
-                    
-                    .upload-photo-field {
-                        .field {
-                            display: block;
-                            position: relative;
-                            
-                            input[type=file] {
-                                display: block;
-                                height: 40px;
-                                width: 248px;
-                                outline: none;
-                            }
-                            
-                            .upload-photo {
-                                @include wizard-button-caption();
-                                height: 40px;
-                                width: 248px;
-                                background-color: $color-white;
-                                position: absolute;
-                                top: 0px;
-                                left: 0px;
-                                //pointer-events: none;
-                                outline: none;
-                            }
+    .main-area .step-content {
 
+        // Campaign decoration block:
+        .campaign-decor-wrap {
+
+            display: flex;
+            justify-content: flex-start;
+            align-items: space-between;
+
+            .decor-form {
+                flex-basis: 248px;
+
+                .upload-photo-field {
+                    .field {
+                        display: block;
+                        position: relative;
+
+                        input[type=file] {
+                            display: block;
+                            height: 40px;
+                            width: 248px;
+                            outline: none;
                         }
+
+                        .upload-photo {
+                            @include wizard-button-caption();
+                            height: 40px;
+                            width: 248px;
+                            background-color: $color-white;
+                            position: absolute;
+                            top: 0px;
+                            left: 0px;
+                            //pointer-events: none;
+                            outline: none;
+                        }
+
                     }
-                    
-                    #campaign-decoration-loading {
-                        display: none;
-                    }
-                    
-                    .loader-wrap {
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        padding-top: 2rem;
-                    }
-                    
                 }
-                
-                .decor-preview {
-                    flex-basis: auto;
-                    border-left: 1px solid $color-wizard-preview-border;
-                    margin-left: 1.5rem;
-                    padding-left: 1.5rem;
-                    
-                    .title {
-                        @include wizard-preivew-title();
-                        color: $color-wizard-link-sec;
-                    }
-                    
-                    .preview-frame {
-                        margin-top: 13px;
-                        background-color: $color-white; 
-                        
-                        iframe {
-                            overflow: hidden;
-                        }
+
+                #campaign-decoration-loading {
+                    display: none;
+                }
+
+                .loader-wrap {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    padding-top: 2rem;
+                }
+
+            }
+
+            .decor-preview {
+                flex-basis: auto;
+                border-left: 1px solid $color-wizard-preview-border;
+                margin-left: 1.5rem;
+                padding-left: 1.5rem;
+
+                .title {
+                    @include wizard-preivew-title();
+                    color: $color-wizard-link-sec;
+                }
+
+                .preview-frame {
+                    margin-top: 13px;
+                    background-color: $color-white;
+
+                    iframe {
+                        overflow: hidden;
                     }
                 }
             }
-            
         }
+
+        // Campaign completed block:
+        .custom_campaign_completed {
+
+            .leyka-campaign-completed li {
+
+                font-size: 14px;
+                line-height: 21px;
+
+                .item-text {
+
+                    &:before {
+                        content: '';
+                        display: block;
+                        width: 20px;
+                        height: 20px;
+                        float: left;
+                        background-image: url(../../src/svg/icon-ok-circled.svg);
+                        background-repeat: no-repeat;
+                        margin: 3px 12px 0 0;
+                    }
+
+                }
+
+                .item-info {
+
+                    .leyka-current-value {
+                        color: $color-wizard-link-sec;
+                    }
+
+                    .inline-action {
+
+                        font-size: 10px;
+                        line-height: 15px;
+                        border-bottom: 0;
+                        margin-left: 5px;
+
+                    }
+
+                    .inline-input {
+
+                        margin: 0 5px 0 0;
+                        padding: 0 5px;
+
+                    }
+
+                    .inline-submit,.inline-reset {
+                        margin-left: 5px;
+                    }
+
+                }
+
+            }
+
+        }
+
     }
 }
 
@@ -711,11 +767,11 @@
     }
 
     .inline-edit-slug-form {
-        display: none;
+        display: inline-flex;
     }
 
 }
 
 .leyka-campaign-shortcode-field {
-    display: none;
+    display: flex;
 }

@@ -818,8 +818,8 @@ if( !function_exists('leyka_admin_get_slug_edit_field') ) {
 
             <a href="<?php echo get_edit_post_link($campaign->id);?>" class="inline-action inline-edit-slug">Редактировать адрес</a>
 
-            <span class="inline-edit-slug-form" data-slug-original="<?php echo $campaign_permalink_parts[1];?>" data-campaign-id="<?php echo $campaign->id;?>" data-nonce="<?php echo wp_create_nonce('leyka-edit-campaign-slug');?>">
-                <label><input type="text" class="leyka-slug-field" value="<?php echo $campaign_permalink_parts[1];?>"></label>
+            <span class="inline-edit-slug-form" data-slug-original="<?php echo $campaign_permalink_parts[1];?>" data-campaign-id="<?php echo $campaign->id;?>" data-nonce="<?php echo wp_create_nonce('leyka-edit-campaign-slug');?>" style="display: none;">
+                <input type="text" class="leyka-slug-field inline-input" value="<?php echo $campaign_permalink_parts[1];?>">
                 <span class="slug-submit-buttons">
                     <button class="inline-submit"><?php esc_html_e('OK');?></button>
                     <button class="inline-reset"><?php esc_html_e('Cancel');?></button>
@@ -858,8 +858,8 @@ if( !function_exists('leyka_admin_get_shortcode_field') ) {
         ob_start();?>
 
         <span class="leyka-current-value"><?php echo esc_attr($shortcode);?></span>
-        <span class="leyka-campaign-shortcode-field">
-            <input type="text" class="embed-code read-only campaign-shortcode" id="campaign-shortcode" value="<?php echo esc_attr($shortcode);?>">
+        <span class="leyka-campaign-shortcode-field" style="display: none;">
+            <input type="text" class="embed-code read-only campaign-shortcode inline-input" id="campaign-shortcode" value="<?php echo esc_attr($shortcode);?>">
             <button class="inline-reset"><?php esc_html_e('Cancel');?></button>
         </span>
 
