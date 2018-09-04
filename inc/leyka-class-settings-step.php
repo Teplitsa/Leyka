@@ -69,6 +69,7 @@ class Leyka_Settings_Step {
 
     }
 
+    /** @return mixed */
     public function getHandler() {
         return $this->_handler === false ? null : $this->_handler;
     }

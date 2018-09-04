@@ -42,7 +42,7 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
     /** @return boolean */
     public function hasCommonErrors() {
-        return !empty($this->getCommonErrors());
+        return !empty($this->_common_errors);
     }
 
     /** @return array Of errors */
@@ -268,18 +268,43 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     }
 
-    protected function _handleSettingsGoBack() {
+    protected function _handleSettingsGoBack($step_full_id = false) {
 
-        $last_step_full_id = array_key_last($_SESSION[$this->_storage_key]['activity']);
+        if( !$step_full_id ) {
+            $step_full_id = array_key_last($_SESSION[$this->_storage_key]['activity']);
+        } else {
 
-        if($last_step_full_id) {
-            $this->_setCurrentStepById($last_step_full_id);
+            $step_found = false;
+            foreach($_SESSION[$this->_storage_key]['activity'] as $passed_step_full_id => $data) {
+                if($step_full_id === $passed_step_full_id) {
+
+                    $step_found = true;
+                    break;
+
+                }
+            }
+
+            $step_full_id = $step_found ? $step_full_id : false;
+
+        }
+
+        if($step_full_id) {
+            $this->_setCurrentStepById($step_full_id);
         } else {
             $this->_setCurrentSection(reset($this->_sections))
                 ->_setCurrentStep($this->getCurrentSection()->init_step);
         }
 
-        array_pop($_SESSION[$this->_storage_key]['activity']);
+        // Remove already passed keys from the Activity:
+        foreach(array_reverse($_SESSION[$this->_storage_key]['activity'], true) as $passed_step_full_id => $data) {
+
+            unset($_SESSION[$this->_storage_key]['activity'][$passed_step_full_id]);
+
+            if($passed_step_full_id === $step_full_id) {
+                break;
+            }
+
+        }
 
         return $this;
 
@@ -484,11 +509,26 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
         $settings_entered = $this->getCurrentStep()->getFieldsValues();
 
         if($this->getCurrentStep()->hasHandler()) {
-            call_user_func($this->getCurrentStep()->getHandler(), $settings_entered);
+
+            $result = call_user_func($this->getCurrentStep()->getHandler(), $settings_entered);
+
+            if(is_array($result)) {
+                foreach($result as $error) { /** @var $error WP_Error */
+                    if(is_wp_error($error)) {
+                        $this->_addCommonError($error);
+                    }
+                }
+            } else if(is_wp_error($result)) {
+                $this->_addCommonError($result);
+            }
+
         }
 
         do_action("leyka_process_step_settings-{$this->getCurrentStep()->full_id}", $settings_entered);
 
+        if($this->hasCommonErrors()) { // Stay on current step
+            return;
+        }
 
         $this->_addActivityEntry(); // Save the step data in the storage
 
@@ -497,8 +537,11 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
         if($next_step_full_id && $next_step_full_id !== true) {
 
             $step = $this->getComponentById($this->_getNextStepId());
-            if( !$step ) { /** @todo Process the error somehow */
+            if( !$step ) {
+
+                $this->_addCommonError(new WP_Error('next_step_not_found', 'Следующий шаг мастера не найден'));
                 return;
+
             }
 
             do_action('leyka_settings_wizard-'.$this->_id.'-_step_init');
@@ -1185,7 +1228,16 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             $init_campaign = get_post($init_campaign_id);
 
             if( !$init_campaign_id || !$init_campaign ) {
-                $this->_handleSettingsGoBack();
+                $this->_handleSettingsGoBack('cd-campaign_description');
+            }
+
+        } else if($this->getCurrentStep()->id === 'campaign_completed') {
+
+            $init_campaign_id = get_transient('leyka_init_campaign_id');
+            $init_campaign = get_post($init_campaign_id);
+
+            if( !$init_campaign_id || !$init_campaign ) {
+                $this->_handleSettingsGoBack('cd-campaign_description');
             }
 
         }
@@ -1198,20 +1250,27 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'post_type' => Leyka_Campaign_Management::$post_type,
             'post_title' => trim(esc_attr(wp_strip_all_tags($step_settings['campaign_title']))),
             'post_excerpt' => trim(esc_textarea($step_settings['campaign_short_description'])),
-//            'post_status' => 'publish',
             'post_content' => '',
         );
 
         $existing_campaign_id = get_transient('leyka_init_campaign_id');
         if($existing_campaign_id) {
-            $init_campaign_params['ID'] = $existing_campaign_id;
+
+            if(get_post($existing_campaign_id)) {
+                $init_campaign_params['ID'] = $existing_campaign_id;
+            } else {
+
+                $existing_campaign_id = false;
+                delete_transient('leyka_init_campaign_id');
+
+            }
+
         }
 
         $campaign_id = wp_insert_post($init_campaign_params, true);
 
         if(is_wp_error($campaign_id)) {
-            // ...
-            return;
+            return new WP_Error('init_campaign_insertion_error', 'Ошибка при создании кампании');
         }
 
         update_post_meta($campaign_id, 'campaign_target', (float)$step_settings['campaign_target']);
@@ -1223,14 +1282,29 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
         }
 
+        return true;
+
     }
 
     public function handleCampaignDecorationStep(array $step_settings) {
 
-        //$init_campaign_id = get_transient('leyka_init_campaign_id');
-        //$init_campaign = get_post($init_campaign_id);
+        // Publish the init campaign:
+        $campaign_id = get_transient('leyka_init_campaign_id');
+        $campaign = get_post($campaign_id);
+        $errors = array();
 
-        // Campaign thumbnail and template already saved before this step. So do nothing
+        if( !$campaign_id || !$campaign ) {
+            return new WP_Error('wrong_init_campaign_id', 'ID кампании неправильный или отсутствует');
+        }
+
+        if(
+            $campaign->post_type !== 'publish' &&
+            is_wp_error(wp_update_post(array('ID' => $campaign_id, 'post_status' => 'publish')))
+        ) {
+            return new WP_Error('init_campaign_publishing_error', 'Ошибка при публикации кампании');
+        }
+
+        return $errors ? $errors : true;
 
     }
 
