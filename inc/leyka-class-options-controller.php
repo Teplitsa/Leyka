@@ -15,6 +15,7 @@ class Leyka_Options_Controller {
         }
 
         return self::$_instance;
+
     }
 
     protected function __construct() {
@@ -160,6 +161,7 @@ class Leyka_Options_Controller {
             'description' => '',
             'required' => false,
             'placeholder' => '',
+            'comment' => '',
             'length' => '',
             'list_entries' => array(),
             'validation_rules' => array(),
