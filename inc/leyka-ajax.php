@@ -210,7 +210,6 @@ function leyka_set_campaign_template() {
     }
 
     update_post_meta((int)$_POST['campaign_id'], 'campaign_template', $_POST['template']);
-    sleep(1);
 
     die(json_encode(array('status' => 'ok', 'post' => $_POST,)));
 
@@ -236,7 +235,6 @@ function leyka_edit_campaign_slug() {
         'ID' => (int)$_POST['campaign_id'],
         'post_name' => $_POST['slug'],
     ));
-    sleep(1);
 
     if($res) {
         die(json_encode(array('status' => 'ok', 'slug' => $_POST['slug'],)));
@@ -246,3 +244,23 @@ function leyka_edit_campaign_slug() {
 
 }
 add_action('wp_ajax_leyka_edit_campaign_slug', 'leyka_edit_campaign_slug');
+
+function leyka_send_help_chat_message() {
+    
+    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'send-help-chat-message')) {
+        die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
+        
+    } else if(empty($_POST['name']) || empty($_POST['email']) || empty($_POST['message'])) {
+        die(json_encode(array('status' => 'error', 'message' => 'Неверные параметры запроса!',)));
+    }
+
+    sleep(1);
+    $res = 1;
+
+    if($res) {
+        die(json_encode(array('status' => 'ok')));
+    } else {
+        die(json_encode(array('status' => 'error', 'message' => "Ошибка! Сообщение не может быть отправлено!",)));
+    }
+}
+add_action('wp_ajax_leyka_send_help_chat_message', 'leyka_send_help_chat_message');

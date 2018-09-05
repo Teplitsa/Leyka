@@ -66,6 +66,18 @@ gulp.task('build-admin-js', function() {
         .pipe(gulp.dest(basePaths.dest+'js')) //write results into file
 });
 
+gulp.task('build-editor-js', function() {
+    var vendorFiles = [/*basePaths.npm+'jquery.cookie/jquery.cookie.js'*/],
+        appFiles = [basePaths.src+'js/editor/editor.js']; //our own JS files
+
+    return gulp.src(vendorFiles.concat(appFiles)) //join them
+        .pipe(plugins.filter('*.js'))//select only .js ones
+        .pipe(plugins.concat('editor.js'))//combine them into bundle.js
+        .pipe(isProduction ? plugins.uglify() : gutil.noop()) //minification
+        .pipe(plugins.size()) //print size for log
+        .on('error', console.log) //log
+        .pipe(gulp.dest(basePaths.dest+'js')) //write results into file
+});
 
 //sass
 gulp.task('build-css', function() {
@@ -120,6 +132,31 @@ gulp.task('build-admin-css', function() {
 
 });
 
+gulp.task('build-editor-css', function() {
+
+    var paths = require('node-bourbon').includePaths,
+		vendorFiles = gulp.src([]),
+        appFiles = gulp.src(basePaths.src+'sass/admin/editor.scss')
+        .pipe(!isProduction ? plugins.sourcemaps.init() : gutil.noop())  //process the original sources for sourcemap
+        .pipe(plugins.sass({
+                outputStyle: sassStyle, //SASS syntas
+                includePaths: paths //add bourbon + mdl
+            }).on('error', plugins.sass.logError))//sass own error log
+        .pipe(plugins.autoprefixer({ //autoprefixer
+                browsers: ['last 4 versions'],
+                cascade: false
+            }))
+        .pipe(!isProduction ? plugins.sourcemaps.write() : gutil.noop()) //add the map to modified source
+        .on('error', console.log); //log
+
+	return es.concat(appFiles, vendorFiles) //combine vendor CSS files and our files after-SASS
+        .pipe(plugins.concat('editor.css')) //combine into file
+        .pipe(isProduction ? plugins.cssmin() : gutil.noop()) //minification on production
+        .pipe(plugins.size()) //display size
+        .pipe(gulp.dest(basePaths.dest+'css')) //write file
+        .on('error', console.log); //log
+
+});
 
 //revision
 gulp.task('revision-clean', function(){
@@ -200,10 +237,13 @@ gulp.task('watch', function(){
 });
 
 gulp.task('watch-admin', function(){
-    gulp.watch([basePaths.src+'sass/admin/*.scss', basePaths.src+'sass/admin/**/*.scss'], ['build-admin-css']).on('change', function(evt) {
+    gulp.watch([basePaths.src+'sass/admin/*.scss', basePaths.src+'sass/admin/**/*.scss'], ['build-admin-css', 'build-editor-css']).on('change', function(evt) {
         changeEvent(evt);
     });
     gulp.watch([basePaths.src+'js/admin/*.js', basePaths.src+'js/admin/**/*.js'], ['build-admin-js']).on('change', function(evt) {
+        changeEvent(evt);
+    });
+    gulp.watch([basePaths.src+'js/editor/*.js'], ['build-editor-js']).on('change', function(evt) {
         changeEvent(evt);
     });
 });

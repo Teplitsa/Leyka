@@ -18,7 +18,7 @@ $campaign = new Leyka_Campaign(get_post());?>
 	<?php wp_head(); ?>
 
 </head>
-<body>
+<body style="background-color: transparent;">
     <div id="embedded-card">
     <?php echo leyka_inline_campaign(array(
 			'id' => $campaign->id,

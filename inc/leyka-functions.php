@@ -1321,3 +1321,10 @@ if( !function_exists('leyka_save_option') ) {
 
     }
 }
+
+if( !function_exists('leyka_add_editor_css') ) {
+	function leyka_add_editor_css() {
+		add_editor_style( LEYKA_PLUGIN_BASE_URL.'assets/css/editor.css' );
+	}
+}
+add_action( 'after_setup_theme', 'leyka_add_editor_css' );

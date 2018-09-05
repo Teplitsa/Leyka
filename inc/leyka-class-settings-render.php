@@ -86,6 +86,60 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     protected static $_instance = null;
 
+    protected function __construct() {
+
+        parent::__construct();
+        wp_localize_script( 'leyka-settings', 'leykaWizard', array(
+            'termsKeys' => array(
+                array(
+                    '#LEGAL_NAME#',
+                    '#LEGAL_FACE#',
+                    '#LEGAL_FACE_RP#',
+                    '#LEGAL_FACE_POSITION#',
+                    '#LEGAL_ADDRESS#',
+                    '#STATE_REG_NUMBER#',
+                    '#KPP#',
+                    '#INN#',
+                    '#BANK_ACCOUNT#',
+                    '#BANK_NAME#',
+                    '#BANK_BIC#',
+                    '#BANK_CORR_ACCOUNT#',
+                ),
+                array(
+                    leyka_options()->opt('org_full_name'),
+                    leyka_options()->opt('org_face_fio_ip'),
+                    leyka_options()->opt('org_face_fio_rp'),
+                    leyka_options()->opt('org_face_position'),
+                    leyka_options()->opt('org_address'),
+                    leyka_options()->opt('org_state_reg_number'),
+                    leyka_options()->opt('org_kpp'),
+                    leyka_options()->opt('org_inn'),
+                    leyka_options()->opt('org_bank_account'),
+                    leyka_options()->opt('org_bank_name'),
+                    leyka_options()->opt('org_bank_bic'),
+                    leyka_options()->opt('org_bank_corr_account'),
+                ),
+            ),
+            'pdKeys' => array(
+                array(
+                    '#LEGAL_NAME#',
+                    '#LEGAL_ADDRESS#',
+                    '#SITE_URL#',
+                    '#PD_TERMS_PAGE_URL#',
+                    '#ADMIN_EMAIL#',
+                ),
+                array(
+                    leyka_options()->opt('org_full_name'),
+                    leyka_options()->opt('org_address'),
+                    home_url(),
+                    leyka_get_pd_terms_page_url(),
+                    get_option('admin_email'),
+                ),
+            ),
+        ));
+
+    }
+    
     protected function _setAttributes() {
         $this->_id = 'wizard';
     }
@@ -110,7 +164,6 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
     }
 
     public function renderMainArea() {
-
         $current_step = $this->_controller->getCurrentStep();?>
 
         <div class="step-title">
@@ -150,8 +203,87 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
             <?php $this->renderSubmitArea();?>
             </div>
         </form>
+        
+        <?php echo $this->renderHelpChat()?>
 
     <?php }
+    
+    public function renderHelpChat() {
+        
+        $current_user = wp_get_current_user();
+        
+    ?>
+        <a class="help-chat-button" href="#"><img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-help-chat.svg"></a>
+        
+        <div class="help-chat fix-height">
+            <div class="chat-header">
+                <div class="title">Форма обратной связи</div>
+                <img class="close" src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-help-close.svg" />
+            </div>
+            
+            <div class="chat-body">
+                
+                <div class="leyka-loader md"></div>
+                
+                <div class="ok-message">
+                    <p>Ваше сообщение отправлено, постараемся ответить в течении суток.</p>
+                    <p>Спасибо!</p>
+                </div>
+                
+                <form action="" class="form">
+
+                    <?php wp_nonce_field( 'leyka_feedback_sending', 'leyka_feedback_sending_nonce' )?>
+
+                    <div class="settings-block option-block">
+                        <div>
+                            <label for="leyka-help-chat-name">
+                                <span class="field-component title">
+                                    Ваше имя
+                                </span>
+                                <span class="field-component field">
+                                    <input type="text" id="leyka-help-chat-name" value="<?php echo $current_user->display_name?>" maxlength="255" required="true"/>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="field-errors">Заполните это поле</div>
+                    </div>
+    
+                    <div class="settings-block option-block">
+                        <div>
+                            <label for="leyka-help-chat-email">
+                                <span class="field-component title">
+                                    E-mail
+                                </span>
+                                <span class="field-component field">
+                                    <input type="email" id="leyka-help-chat-email" value="<?php echo get_option('admin_email')?>" maxlength="255" required="true"/>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="field-errors">Заполните это поле</div>
+                    </div>
+    
+                    <div class="settings-block option-block">
+                        <div>
+                            <label for="leyka-help-chat-message">
+                                <span class="field-component title">
+                                    Опишите суть проблемы
+                                </span>
+                                <span class="field-component field">
+                                    <textarea id="leyka-help-chat-message" required="true"></textarea>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="field-errors">Заполните это поле</div>
+                    </div>
+                    
+                    <input type="submit" class="button button-primary" value="Отправить" />
+                    
+                </form>
+                
+            </div>
+        </div>        
+    <?php
+    }
 
     public function renderHiddenFields() {
     }

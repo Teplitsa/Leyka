@@ -282,11 +282,11 @@ function leyka_render_rich_html_field($option_id, $data){
                 <?php echo $data['title'];?>
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
             </span>
-            <?php wp_editor(esc_attr($data['value']), $option_id.'-field', array(
+            <?php wp_editor(str_replace("&lt;br&gt;", "\n", esc_attr($data['value'])), $option_id.'-field', array(
                 'media_buttons' => false,
                 'textarea_name' => $option_id,
-                'tinymce' => false,
-                'teeny' => false, // For rich HTML editor
+                'tinymce' => true,
+                'teeny' => true, // For rich HTML editor
 //                    'dfw' => true,
             ));?>
             <?php if( !empty($data['description']) ) {?>

@@ -226,3 +226,263 @@ jQuery(document).ready(function($){
     });
 
 });
+
+// Highlighted keys in rich edit
+jQuery(document).ready(function($){
+    
+    var isInitEditDocsDone = false;
+    var isEditContentLoadDone = false;
+    var isEditFieldTouched = false;
+    var originalDocHTML = null;
+    var $frameBody = null;
+    var isSkipDOMSubtreeModified = false;
+    var keysValues = [];
+    
+    function showRestoreOriginalDocHTMLLink() {
+        $('.wp-editor-wrap').find('.restore-original-doc').remove();
+        
+        var $link = $('<a>Вернуть первоначальный текст</a>')
+            .attr('href', '#')
+            .addClass("inner")
+            .addClass("restore-original-doc")
+            .click(restoreOriginalDocHTML);
+        
+        $('.wp-editor-wrap').append($link);
+    }
+    
+    function restoreOriginalDocHTML() {
+        if(originalDocHTML) {
+            $frameBody.html(originalDocHTML);
+        }
+        $('.wp-editor-wrap').find('.restore-original-doc').remove();
+        replaceKeysWithHTML();
+        handleChangeEvents();
+        $('.wp-editor-wrap').find('.restore-original-doc').remove();
+    }
+    
+    function replaceKeysValues(html, keysValues) {
+        for(var i in keysValues[0]) {
+            while(html.search(keysValues[0][i]) > -1) {
+                var $replacement = $("<span>");
+                $replacement.addClass("leyka-doc-key");
+                $replacement.text(keysValues[1][i]);
+                html = html.replace(keysValues[0][i], $replacement.get(0).outerHTML);
+            }
+        }
+        return html;
+    }
+    
+    function replaceKeysWithHTML() {
+        $frameBody.unbind("DOMSubtreeModified");
+        $frameBody.find(".leyka-doc-key").unbind("DOMSubtreeModified");
+        
+        originalDocHTML = $frameBody.html();
+        
+        if($('#pd_terms_text').length > 0) {
+            keysValues = leykaWizard.pdKeys;
+        }
+        else {
+            keysValues = leykaWizard.termsKeys;
+        }
+        
+        $frameBody.html(replaceKeysValues($frameBody.html(), keysValues));
+        
+        $frameBody.find(".leyka-doc-key").each(function(){
+            $(this).data('original-value', $(this).text());
+        });
+
+    }
+    
+    function handleChangeEvents() {
+        
+        $frameBody.unbind("click");
+        $frameBody.on('click', function(){
+            isEditFieldTouched = true;
+        });
+        
+        $frameBody.unbind("DOMSubtreeModified");
+        $frameBody.bind("DOMSubtreeModified", function(){
+            
+            if(!isEditContentLoadDone || !originalDocHTML || !isEditFieldTouched) {
+                return;
+            }
+        
+            showRestoreOriginalDocHTMLLink();
+        });
+        
+        $frameBody.find(".leyka-doc-key").unbind("DOMSubtreeModified");
+        $frameBody.find(".leyka-doc-key").bind("DOMSubtreeModified", function(){
+            $(this).removeClass("leyka-doc-key");
+            if($(this).text() == $(this).data('original-value') && !isSkipDOMSubtreeModified) {
+                $(this).addClass("leyka-doc-key");
+                isSkipDOMSubtreeModified = true;
+            }
+            else {
+                isSkipDOMSubtreeModified = false;
+            }
+        });
+        
+    }
+    
+    function initEditDocs($iframe) {
+        if(isInitEditDocsDone) {
+            console.log('initEditDocs already done');
+            return;
+        }
+        isInitEditDocsDone = true;
+        console.log('initEditDocs...');
+        
+        var $frameDocument = $iframe.contents();
+        
+        $frameDocument.find('body').bind("DOMSubtreeModified", function(){
+            if($frameDocument.find('body p').length > 0) {
+                if(isEditContentLoadDone) {
+                    return;
+                }
+                isEditContentLoadDone = true;
+                
+                $frameBody = $frameDocument.find('body');
+                restoreOriginalDocHTML();
+            }
+        });
+        
+    }
+    
+    function tryInitEditDocs($tinyMCEContainer) {
+        //console.log('changed');
+        
+        var $iframe = $tinyMCEContainer.find('iframe');
+        if($iframe.length) {
+            $iframe.on('load', function(){
+                initEditDocs($(this));
+            });
+        }
+    }
+    
+    $('.wp-editor-container').bind("DOMSubtreeModified", function(){
+        tryInitEditDocs($(this));
+    });
+    tryInitEditDocs($('.wp-editor-container'));
+    
+});
+
+// Help chat
+jQuery(document).ready(function($){
+    
+    var $chat = $('.help-chat');
+    var $chatButton = $('.help-chat-button');
+    
+    if( !$chat.length) {
+        return;
+    }
+    
+    var $loading = $chat.find('.leyka-loader');
+    
+    function disableForm() {
+        $chat.find('input[type=text]').prop('disabled', true);
+        $chat.find('textarea').prop('disabled', true);
+        $chat.find('.button').hide();
+    }
+    
+    function enableForm() {
+        $chat.find('input[type=text]').prop('disabled', false);
+        $chat.find('textarea').prop('disabled', false);
+        $chat.find('.button').show();
+    }
+    
+    function showLoading() {
+        $loading.show();
+    }
+    
+    function hideLoading() {
+        $loading.hide();
+    }
+    
+    function showOKMessage() {
+        $chat.find('.ok-message').show();
+        $chat.removeClass('fix-height');
+    }
+
+    function hideOKMessage() {
+        $chat.find('.ok-message').hide();
+        $chat.addClass('fix-height');
+    }
+    
+    function showForm() {
+        $chat.find('.form').show();
+    }
+
+    function hideForm() {
+        $chat.find('.form').hide();
+    }
+
+    function validateForm() {
+        return true;
+    }
+    
+    function showHelpChat() {
+        $chatButton.hide();
+        $chat.show();
+    }
+    
+    function hideHelpChat() {
+        $chat.hide();
+        $chatButton.show();
+    }
+
+    $chat.find('.form').submit(function(e) {
+        e.preventDefault();
+        
+        if(!validateForm()) {
+            return;
+        }
+        
+        //hideErrors();
+        hideForm();
+        showLoading();
+            
+        $.post(leyka.ajaxurl, {
+            action: 'leyka_send_feedback',
+            name: $chat.find('#leyka-help-chat-name').val(),
+            topic: "Сообщение из формы обратной связи Лейки",
+            email: $chat.find('#leyka-help-chat-email').val(),
+            text: $chat.find('#leyka-help-chat-message').val(),
+            nonce: $chat.find('#leyka_feedback_sending_nonce').val()
+        }, null)
+            .done(function(response) {
+    
+                if(response == '0') {
+                    showOKMessage();
+                    hideForm();
+                }
+                else {
+                    alert('Ошибка!');
+                    showForm();
+                }
+                
+            })
+            .fail(function() {
+                alert('Ошибка!');
+                showForm();
+            })
+            .always(function() {
+                hideLoading();
+            });
+            
+    });
+    
+    $chatButton.click(function(e){
+        e.preventDefault();
+        showHelpChat();
+        hideOKMessage();
+        showForm();
+    });
+
+    $chat.find('.close').click(function(e){
+        e.preventDefault();
+        hideHelpChat();
+        hideForm();
+        showOKMessage();
+    });
+    
+});
