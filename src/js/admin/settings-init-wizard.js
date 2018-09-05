@@ -257,16 +257,19 @@ jQuery(document).ready(function($){
         $('.wp-editor-wrap').find('.restore-original-doc').remove();
     }
     
-    function replaceKeysValues(html, keysValues) {
+    function replaceKeysValues(keysValues) {
         for(var i in keysValues[0]) {
-            while(html.search(keysValues[0][i]) > -1) {
+            while($frameBody.html().search(keysValues[0][i]) > -1) {
                 var $replacement = $("<span>");
+                $replacement.addClass("leyka-doc-key-wrap");
                 $replacement.addClass("leyka-doc-key");
+                $replacement.attr('data-key', keysValues[0][i].replace("#", "+"));
+                $replacement.attr('data-original-value', keysValues[1][i]);
                 $replacement.text(keysValues[1][i]);
-                html = html.replace(keysValues[0][i], $replacement.get(0).outerHTML);
+                $frameBody.html( $frameBody.html().replace(keysValues[0][i], "<span id='key-replacement'>") );
+                $frameBody.find('#key-replacement').replaceWith($replacement);
             }
         }
-        return html;
     }
     
     function replaceKeysWithHTML() {
@@ -282,11 +285,11 @@ jQuery(document).ready(function($){
             keysValues = leykaWizard.termsKeys;
         }
         
-        $frameBody.html(replaceKeysValues($frameBody.html(), keysValues));
+        replaceKeysValues(keysValues);
         
-        $frameBody.find(".leyka-doc-key").each(function(){
-            $(this).data('original-value', $(this).text());
-        });
+        //$frameBody.find(".leyka-doc-key").each(function(){
+        //    $(this).data('original-value', $(this).text());
+        //});
 
     }
     
@@ -355,6 +358,20 @@ jQuery(document).ready(function($){
             });
         }
     }
+    
+    $('.step-next.button').click(function(e){
+        $frameBody.unbind("DOMSubtreeModified");
+        $frameBody.find(".leyka-doc-key").unbind("DOMSubtreeModified");
+        $frameBody.find('.leyka-doc-key-wrap').each(function(index, el){
+            if($(el).hasClass('leyka-doc-key')) {
+                $(el).replaceWith($(el).data('key').replace("+", "#"));
+            }
+            else {
+                $(el).replaceWith($(el).html());
+            }
+        });
+        //e.preventDefault();
+    });
     
     $('.wp-editor-container').bind("DOMSubtreeModified", function(){
         tryInitEditDocs($(this));
