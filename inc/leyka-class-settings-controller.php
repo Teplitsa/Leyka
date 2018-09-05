@@ -895,7 +895,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 'required' => true,
                 'placeholder' => 'Например, «На уставную деятельность организации»',
                 'value' => $init_campaign ? $init_campaign->title : '',
-//                'description' => '',
+                'comment' => 'Комментарий к заголовку кампании',
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'campaign-lead',
@@ -904,7 +904,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'data' => array(
                 'title' => 'Краткое описание',
                 'value' => $init_campaign ? $init_campaign->short_description : '',
-//                'description' => '',
+                'comment' => 'Комментарий к лиду кампании',
             ),
         )))->addBlock(new Leyka_Container_Block(array(
             'id' => 'complex-row-2',
@@ -920,8 +920,8 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                         'step' => 0.01,
                         'value' => $init_campaign ? $init_campaign->target : '',
                         'show_description' => false,
-                        'description' => 'Укажите только цифру. Например, «10000».',
-        //                'validation_rules' => array()
+                        'placeholder' => 'Оставьте пустым, если нет ограничений по целевой сумме',
+                        'comment' => 'Комментарий к целевой сумме кампании',
                     ),
                 )),
             )

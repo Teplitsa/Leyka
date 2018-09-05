@@ -45,13 +45,17 @@ $campaign_target_reaching_email_placeholders =
 // 'step' => positive number,
 
 // For select, radio, checkbox & multi_checkbox fields:
-// 'list_entries' => array(),
+// 'list_entries' => array(
+//  'value_variant' => 'Variant title',
+//  or 'value_variant' => array('title' => 'Variant title', 'comment' => 'Variant comment')
+//),
 // 'required' => boolean / integer, // For multi_checkbox, any positive integer "N" means "at least N values"
 
 // For all:
 // 'default' => '',
 // 'title' => '',
 // 'description' => '',
+// 'comment' => '',
 // 'validation_rules' => array('regexp to check value against' => 'Check failure description text', ...)
 
 /** @var self Leyka_Options_Controller */
@@ -71,14 +75,13 @@ self::$_options_meta = array(
         'list_entries' => array(
             'legal' => array(
                 'title' => 'НКО — юридическое лицо', // __('Legal entity', 'leyka'),
-                'description' => 'Текст для описания данного пункта',
+                'comment' => '',
             ),
             'physical' => array(
                 'title' => 'Физическое лицо', // __('Physical entity', 'leyka'),
-                'description' => 'Текст для описания данного пункта',
+                'comment' => '',
             ),
         ),
-        'default' => '',
         'description' => 'Помните, что как физическое лицо, вы должны сдать декларацию и оплатить подоходный налог — 13% от всех поступлений.',
     ),
     'org_full_name' => array(
@@ -187,12 +190,14 @@ self::$_options_meta = array(
 //        'description' => __('NGO full official name.', 'leyka'),
         'required' => false,
 //        'placeholder' => __('E.g., John "the Unknown" Daw', 'leyka'),
+        'comment' => 'Мы ни в коем случае не будем собирать информацию о вашем имени сами или передавать её третьим лицам.',
     ),
     'person_address' => array(
         'type' => 'text',
         'title' => 'Ваш адрес регистрации', // __('Your official address', 'leyka'),
         'required' => false,
         'placeholder' => __('E.g., Malrose str., 4, Washington, DC, USA', 'leyka'),
+        'comment' => 'Мы ни в коем случае не будем собирать информацию о вашей почте сами или передавать её третьим лицам.',
     ),
     'person_inn' => array(
         'type' => 'text',
@@ -413,6 +418,7 @@ self::$_options_meta = array(
         'title' => __('Notification emails sender name', 'leyka'),
         'description' => __('Enter the name that would be used in all notification emails as «from whom» field', 'leyka'),
         'placeholder' => __('E.g., Daisy Foundation website', 'leyka'),
+        'comment' => 'Текст комментария к имени отправителя',
     ),
     'email_from' => array(
         'type' => 'text',
@@ -420,6 +426,7 @@ self::$_options_meta = array(
         'title' => __("Notification emails sender's email", 'leyka'),
         'description' => __('Enter the email from which all Leyka emails would be sended', 'leyka'),
         'placeholder' => __('E.g., donations@daisyfoundation.org', 'leyka'),
+        'comment' => 'Текст комментария к email отправителя',
     ),
     'email_thanks_title' => array(
         'type' => 'text',
@@ -435,6 +442,7 @@ self::$_options_meta = array(
         'title' => __('A text of after-donation notice sent to a donor', 'leyka'),
         'description' => __('Enter the text of the notification email that would be sended to each donor right after his donation is made. It may include the following special entries:', 'leyka').$email_placeholders,
         'required' => 1,
+        'comment' => 'Текст комментария к тексту спасибо-письма',
     ),
     'email_recurring_init_thanks_title' => array(
         'type' => 'text',
