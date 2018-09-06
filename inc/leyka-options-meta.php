@@ -538,7 +538,7 @@ self::$_options_meta = array(
     ),
     'donation_form_template' => array(
         'type' => 'radio',
-        'default' => 'radios',
+        'default' => 'revo',
         'title' => __('Select a default template for all your donation forms', 'leyka'),
         'description' => __('Select one of the form templates.', 'leyka'),
         'required' => 1,
