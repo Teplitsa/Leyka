@@ -13,7 +13,9 @@
 }
 
 body.leyka_person_terms_of_service_text-field,
-body.leyka_person_pd_terms_text-field {
+body.leyka_person_pd_terms_text-field,
+body.leyka_terms_of_service_text-field,
+body.leyka_pd_terms_text-field {
     @include editor-text();
     @include leyka-wizard-tiny-mce();
 }

@@ -660,20 +660,20 @@ self::$_options_meta = array(
         'type' => 'rich_html',
         'default' => __('Terms of donation service text. Use <br> for line-breaks, please.', 'leyka'),
         'title' => __('A text of Terms of donation service', 'leyka'),
-        'description' => __('Enter a Terms of Service text. The text may include following special entries:', 'leyka')."<span class='placeholders-help'>
-            <code>#LEGAL_NAME#</code> — ".__("the organization legal name", 'leyka')."<br>
-            <code>#LEGAL_FACE#</code> — ".__("the organization legal representative", 'leyka')."<br>
-            <code>#LEGAL_FACE_RP#</code> — ".__("the organization legal representative (in genitive case)", 'leyka')."<br>
-            <code>#LEGAL_FACE_POSITION#</code> — ".__("an official position of the organization legal representative", 'leyka')."<br>
-            <code>#LEGAL_ADDRESS#</code> — ".__("the organization legal address", 'leyka')."<br>
-            <code>#STATE_REG_NUMBER#</code> — ".__("the organization state registration number", 'leyka')."<br>
-            <code>#KPP#</code> — ".__("the organization statement of the account number", 'leyka')."<br>
-            <code>#INN#</code> — ".__("the organization individual taxpayer number", 'leyka')."<br>
-            <code>#BANK_ACCOUNT#</code> — ".__("the organization bank account number", 'leyka')."<br>
-            <code>#BANK_NAME#</code> — ".__("the organization bank name", 'leyka')."<br>
-            <code>#BANK_BIC#</code> — ".__("the organization bank indentification code", 'leyka')."<br>
-            <code>#BANK_CORR_ACCOUNT#</code> — ".__("the organization bank correspondent account", 'leyka')."<br>
-            </span>",
+        //'description' => __('Enter a Terms of Service text. The text may include following special entries:', 'leyka')."<span class='placeholders-help'>
+        //    <code>#LEGAL_NAME#</code> — ".__("the organization legal name", 'leyka')."<br>
+        //    <code>#LEGAL_FACE#</code> — ".__("the organization legal representative", 'leyka')."<br>
+        //    <code>#LEGAL_FACE_RP#</code> — ".__("the organization legal representative (in genitive case)", 'leyka')."<br>
+        //    <code>#LEGAL_FACE_POSITION#</code> — ".__("an official position of the organization legal representative", 'leyka')."<br>
+        //    <code>#LEGAL_ADDRESS#</code> — ".__("the organization legal address", 'leyka')."<br>
+        //    <code>#STATE_REG_NUMBER#</code> — ".__("the organization state registration number", 'leyka')."<br>
+        //    <code>#KPP#</code> — ".__("the organization statement of the account number", 'leyka')."<br>
+        //    <code>#INN#</code> — ".__("the organization individual taxpayer number", 'leyka')."<br>
+        //    <code>#BANK_ACCOUNT#</code> — ".__("the organization bank account number", 'leyka')."<br>
+        //    <code>#BANK_NAME#</code> — ".__("the organization bank name", 'leyka')."<br>
+        //    <code>#BANK_BIC#</code> — ".__("the organization bank indentification code", 'leyka')."<br>
+        //    <code>#BANK_CORR_ACCOUNT#</code> — ".__("the organization bank correspondent account", 'leyka')."<br>
+        //    </span>",
         'required' => true,
     ),
     'person_terms_of_service_text' => array(
@@ -729,13 +729,13 @@ self::$_options_meta = array(
         'type' => 'rich_html',
         'default' => __('Terms of personal data usage full text. Use <br> for line-breaks.', 'leyka'),
         'title' => __('A text of personal data usage Terms', 'leyka'),
-        'description' => __("Enter a donors' personal data usage Terms text. The text may include following special entries:", 'leyka')."<span class='placeholders-help'>
-            <code>#LEGAL_NAME#</code> — ".__("the organization legal name", 'leyka')."<br>
-            <code>#LEGAL_ADDRESS#</code> — ".__("the organization legal address", 'leyka')."<br>
-            <code>#SITE_URL#</code> — ".__("the website homepage URL", 'leyka')."<br>
-            <code>#PD_TERMS_PAGE_URL#</code> — ".__("the website personal data terms page URL", 'leyka')."<br>
-            <code>#ADMIN_EMAIL#</code> — ".__("the website administrator email", 'leyka')."<br>
-            </span>",
+        //'description' => __("Enter a donors' personal data usage Terms text. The text may include following special entries:", 'leyka')."<span class='placeholders-help'>
+        //    <code>#LEGAL_NAME#</code> — ".__("the organization legal name", 'leyka')."<br>
+        //    <code>#LEGAL_ADDRESS#</code> — ".__("the organization legal address", 'leyka')."<br>
+        //    <code>#SITE_URL#</code> — ".__("the website homepage URL", 'leyka')."<br>
+        //    <code>#PD_TERMS_PAGE_URL#</code> — ".__("the website personal data terms page URL", 'leyka')."<br>
+        //    <code>#ADMIN_EMAIL#</code> — ".__("the website administrator email", 'leyka')."<br>
+        //    </span>",
         'required' => true,
     ),
     'person_pd_terms_text' => array(
