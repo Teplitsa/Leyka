@@ -296,7 +296,7 @@ jQuery(document).ready(function($){
                 $replacement.addClass("leyka-doc-key");
                 $replacement.attr('data-key', keysValues[0][i].replace("#", "+"));
                 $replacement.attr('data-original-value', keysValues[1][i]);
-                $replacement.text(keysValues[1][i]);
+                $replacement.html(keysValues[1][i]);
                 $frameBody.html( $frameBody.html().replace(keysValues[0][i], "<span id='key-replacement'> </span>") );
                 $frameBody.find('#key-replacement').replaceWith($replacement);
             }
