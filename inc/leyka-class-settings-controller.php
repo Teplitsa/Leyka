@@ -105,15 +105,17 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     protected static $_instance = null;
 
-    protected $_storage_key = '';
-
+    protected $_activity = array('history' => array(), 'current_step' => false, 'current_section' => false,);
     protected $_navigation_data = array();
 
     protected function __construct() {
 
         parent::__construct();
 
-        $this->_storage_key = 'leyka-wizard_'.$this->_id;
+        $wizards_activities = get_transient('leyka_wizards_activities');
+        if( !empty($wizards_activities[$this->_id]) ) {
+            $this->_activity = $wizards_activities[$this->_id];
+        }
 
         add_action('leyka_settings_wizard-'.$this->_id.'-_step_init', array($this, 'stepInit'));
 
@@ -140,11 +142,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         // Debug {
         if(isset($_GET['reset'])) {
-
-            $_SESSION[$this->_storage_key]['current_section'] = reset($this->_sections);
-            $_SESSION[$this->_storage_key]['current_step'] = reset($this->_sections)->init_step;
-            $_SESSION[$this->_storage_key]['activity'] = array();
-
+            $this->_resetActivity();
         }
         // } Debug
 
@@ -158,24 +156,88 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
         //}
 
         if(isset($_GET['debug'])) {
-            echo '<pre>The activity: '.print_r($_SESSION[$this->_storage_key]['activity'], 1).'</pre>';
+            echo '<pre>The activity: '.print_r($this->_activity, 1).'</pre>';
         }
 
     }
 
+    public function __get($name) {
+        switch($name) {
+            case 'current_step':
+                return empty($this->_activity['current_step']) ? null : $this->_activity['current_step'];
+
+            case 'current_step_id':
+                return empty($this->_activity['current_step']) ? null : $this->_activity['current_step']->id;
+
+            case 'current_section':
+                return empty($this->_activity['current_section']) ? null : $this->_activity['current_section'];
+
+            case 'current_section_id':
+                return empty($this->_activity['current_section']) ? null : $this->_activity['current_section']->id;
+
+            case 'next_step_full_id':
+                return $this->_getNextStepId();
+
+            default:
+                return parent::__get($name);
+        }
+    }
+
+    public function __set($name, $value) {
+        switch($name) {
+            case 'current_step':
+                $this->_setCurrentStep($value);
+                break;
+            case 'current_section':
+                $this->_setCurrentSection($value);
+                break;
+            default:
+        }
+    }
+
+    protected function _resetActivity() {
+
+        $this->_activity = array('history' => array(), 'current_step' => false, 'current_section' => false,);
+        $this->current_step = reset($this->_sections)->init_step;
+
+        return $this->_saveActivity();
+
+    }
+
+    protected function _saveActivity() {
+
+        $wizards_activities = get_transient('leyka_wizards_activities');
+        $wizards_activities[$this->_id] = $this->_activity;
+
+        set_transient('leyka_wizards_activities', $wizards_activities);
+
+        return $this;
+
+    }
+
+    /** @return Leyka_Settings_Section */
+    public function getCurrentSection() {
+        return $this->current_section;
+    }
+
+    /** @return Leyka_Settings_Step */
+    public function getCurrentStep() {
+        return $this->current_step;
+    }
+
     protected function _setCurrentStep(Leyka_Settings_Step $step) {
 
-        $_SESSION[$this->_storage_key]['current_step'] = $step;
+        $this->_activity['current_step'] = $step;
 
-        return $this->_setCurrentSection($this->_sections[$step->section_id]);
+        return $this->_setCurrentSection($this->_sections[$step->section_id]); // Activity saved
 
     }
 
     protected function _setCurrentSection(Leyka_Settings_Section $section) {
 
-        $_SESSION[$this->_storage_key]['current_section'] = $section;
+        $this->_activity['current_section'] = $section;
 
-        return $this;
+        return $this->_saveActivity();
 
     }
 
@@ -203,7 +265,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         /** @todo Throw some Exception if the given Step doesn't exists. */
         $step_full_id = trim($step_full_id);
-        return !empty($_SESSION[$this->_storage_key]['activity'][$step_full_id]);
+        return !empty($this->_activity['history'][$step_full_id]);
 
     }
 
@@ -211,14 +273,12 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         if($setting_name) {
 
-            if(isset($_SESSION[$this->_storage_key]['activity'])) {
-                
-                foreach($_SESSION[$this->_storage_key]['activity'] as $step_full_id => $step_settings) {
+            if( !empty($this->_activity['history']) ) {
+                foreach($this->_activity['history'] as $step_full_id => $step_settings) {
                     if(isset($step_settings[$setting_name])) {
                         return $step_settings[$setting_name];
                     }
                 }
-                
             }
 
             return null;
@@ -226,7 +286,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
         } else {
 
             $res = array();
-            foreach($_SESSION[$this->_storage_key]['activity'] as $step_full_id => $step_settings) {
+            foreach($this->_activity['history'] as $step_full_id => $step_settings) {
                 $res = array_merge($res, $step_settings);
             }
 
@@ -236,19 +296,18 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     }
 
-    protected function _addActivityEntry(array $data = array(), $step_full_id = false) {
+    protected function _addHistoryEntry(array $data = array(), $step_full_id = false) {
 
         $data = empty($data) ? $this->getCurrentStep()->getFieldsValues() : $data;
         $step_full_id = !$step_full_id ? $this->getCurrentStep()->full_id : trim($step_full_id);
 
-        if(empty($_SESSION[$this->_storage_key]['activity'][$step_full_id])) {
-            $_SESSION[$this->_storage_key]['activity'][$step_full_id] = $data;
+        if(empty($this->_activity['history'][$step_full_id])) {
+            $this->_activity['history'][$step_full_id] = $data;
         } else {
-            $_SESSION[$this->_storage_key]['activity'][$step_full_id] =
-                $_SESSION[$this->_storage_key]['activity'][$step_full_id] + $data;
+            $this->_activity['history'][$step_full_id] = $this->_activity['history'][$step_full_id] + $data;
         }
 
-        return $this;
+        return $this->_saveActivity();
 
     }
 
@@ -268,14 +327,14 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     }
 
-    protected function _handleSettingsGoBack($step_full_id = false, $delete_activity = true) {
+    protected function _handleSettingsGoBack($step_full_id = false, $delete_history = true) {
 
         if( !$step_full_id ) {
-            $step_full_id = array_key_last($_SESSION[$this->_storage_key]['activity']);
+            $step_full_id = array_key_last($this->_activity['history']);
         } else {
 
             $step_found = false;
-            foreach($_SESSION[$this->_storage_key]['activity'] as $passed_step_full_id => $data) {
+            foreach($this->_activity['history'] as $passed_step_full_id => $data) {
                 if($step_full_id === $passed_step_full_id) {
 
                     $step_found = true;
@@ -295,11 +354,10 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
                 ->_setCurrentStep($this->getCurrentSection()->init_step);
         }
 
-        if( !!$delete_activity ) {
-            // Remove already passed keys from the Activity:
-            foreach(array_reverse($_SESSION[$this->_storage_key]['activity'], true) as $passed_step_full_id => $data) {
+        if( !!$delete_history ) { // Remove already passed keys from the Activity
+            foreach(array_reverse($this->_activity['history'], true) as $passed_step_full_id => $data) {
 
-                unset($_SESSION[$this->_storage_key]['activity'][$passed_step_full_id]);
+                unset($this->_activity['history'][$passed_step_full_id]);
 
                 if($passed_step_full_id === $step_full_id) {
                     break;
@@ -308,7 +366,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             }
         }
 
-        return $this;
+        return $this->_saveActivity();
 
     }
 
@@ -414,40 +472,6 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     }
 
-    public function __get($name) {
-        switch($name) {
-            case 'current_step':
-                return empty($_SESSION[$this->_storage_key]['current_step']) ?
-                    null : $_SESSION[$this->_storage_key]['current_step'];
-
-            case 'current_step_id':
-                return empty($_SESSION[$this->_storage_key]['current_step']) ?
-                    null : $this->current_step->id;
-
-            case 'current_section':
-                return empty($_SESSION[$this->_storage_key]['current_section']) ?
-                    null : $_SESSION[$this->_storage_key]['current_section'];
-
-            case 'current_section_id':
-                return empty($_SESSION[$this->_storage_key]['current_section']) ?
-                    null : $this->current_section->id;
-
-            case 'next_step_full_id':
-                return $this->_getNextStepId();
-
-            default:
-                return parent::__get($name);
-        }
-    }
-
-    public function getCurrentSection() {
-        return $this->current_section;
-    }
-
-    public function getCurrentStep() {
-        return $this->current_step;
-    }
-
     /**
      * @param $component_id string
      * @param  $is_full_id boolean
@@ -532,7 +556,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             return;
         }
 
-        $this->_addActivityEntry(); // Save the step data in the storage
+        $this->_addHistoryEntry(); // Save the step data in the storage
 
         // Proceed to the next step:
         $next_step_full_id = $this->_getNextStepId();
@@ -1315,7 +1339,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
         if( !$existing_campaign_id ) {
 
-            $this->_addActivityEntry(array('campaign_id' => $campaign_id));
+            $this->_addHistoryEntry(array('campaign_id' => $campaign_id));
             set_transient('leyka_init_campaign_id', $campaign_id);
 
         }
