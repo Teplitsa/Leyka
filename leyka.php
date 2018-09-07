@@ -37,7 +37,7 @@
 
 // Leyka plugin version:
 if( !defined('LEYKA_VERSION') ) {
-    define('LEYKA_VERSION', '2.3.7');
+    define('LEYKA_VERSION', '2.3.7.001');
 }
 
 // Plugin base file:
