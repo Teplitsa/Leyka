@@ -113,7 +113,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                     $is_legal ? leyka_options()->opt('org_face_fio_ip') : leyka_options()->opt('person_full_name'),
                     $is_legal ? leyka_options()->opt('org_face_fio_rp') : leyka_options()->opt('person_full_name'),
                     $is_legal ? leyka_options()->opt('org_face_position') : '',
-                    $is_legal ? leyka_options()->opt('org_address') : '',
+                    $is_legal ? leyka_options()->opt('org_address') : leyka_options()->opt('person_address'),
                     $is_legal ? leyka_options()->opt('org_state_reg_number') : '',
                     $is_legal ? leyka_options()->opt('org_kpp') : '',
                     $is_legal ? leyka_options()->opt('org_inn') : leyka_options()->opt('person_inn'),
@@ -133,7 +133,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                 ),
                 array(
                     $is_legal ? leyka_options()->opt('org_full_name') : leyka_options()->opt('person_full_name'),
-                    $is_legal ? leyka_options()->opt('org_address') : '',
+                    $is_legal ? leyka_options()->opt('org_address') : leyka_options()->opt('person_address'),
                     home_url(),
                     leyka_get_pd_terms_page_url(),
                     get_option('admin_email'),
