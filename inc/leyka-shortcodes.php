@@ -512,9 +512,9 @@ function leyka_inline_campaign(array $attributes = array()) {
                 <div class="inpage-card__content">
                     <div class="inpage-card_title"><?php echo get_the_title($campaign_id);?></div>
                     
-                    <?php if($attributes['show_preview']):?>
+                    <?php if($attributes['show_preview'] && $campaign->post_excerpt):?>
                     <div class="inpage-card_excerpt">
-                        <?php echo get_the_excerpt($campaign_id);?>
+                        <?php echo $campaign->post_excerpt?>
                     </div>
                     <?php endif?>
 
