@@ -646,6 +646,7 @@ class Leyka_Campaign {
                     leyka_options()->opt('donation_form_template') : $this->_campaign_meta['campaign_template'];
             case 'campaign_target':
             case 'target': return $this->_campaign_meta['campaign_target'];
+            case 'content':
             case 'description': return $this->_post_object ? $this->_post_object->post_content : '';
             case 'excerpt':
             case 'post_excerpt':

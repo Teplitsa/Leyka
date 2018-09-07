@@ -723,6 +723,10 @@ function leyka_inline_campaign_small($campaign_id) {
         return '';
     }
 
+    if(mb_strlen(strip_tags($campaign->content)) < 1500) {
+        return '';
+    }
+
     $currency_data = leyka_get_currencies_data(leyka_options()->opt('main_currency'));
 
     ob_start();?>
