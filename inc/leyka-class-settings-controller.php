@@ -920,8 +920,9 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                         'step' => 0.01,
                         'value' => $init_campaign ? $init_campaign->target : '',
                         'show_description' => false,
-                        'placeholder' => 'Оставьте пустым, если нет ограничений по целевой сумме',
-                        'comment' => 'Комментарий к целевой сумме кампании',
+                        'placeholder' => 'Например, 100000',
+                        'description' => 'Оставьте пустым, если нет ограничений по целевой сумме',
+//                        'comment' => 'Комментарий к целевой сумме кампании',
                     ),
                 )),
             )
