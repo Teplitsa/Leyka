@@ -918,7 +918,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                         'title' => 'Целевая сумма',
                         'min' => 0,
                         'step' => 0.01,
-                        'value' => $init_campaign ? $init_campaign->target : '',
+                        'value' => $init_campaign && $init_campaign->target ? $init_campaign->target : '',
                         'show_description' => false,
                         'placeholder' => 'Например, 100000',
                         'description' => 'Оставьте пустым, если нет ограничений по целевой сумме',
@@ -966,7 +966,8 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'custom_setting_id' => 'campaign_completed',
             'field_type' => 'custom_campaign_completed',
             'rendering_type' => 'template',
-        )))->addTo($section);
+        )))->addHandler(array($this, 'handleCampaignCompletedStep'))
+            ->addTo($section);
 
         $this->_sections[$section->id] = $section;
         // Campaign settings Section - End
@@ -1216,8 +1217,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
     public function stepInit() {
 
-        // Steps prerequisites:
-        // Show "legal" receiver type only if receiver country is set:
+        // Receiver type Step prerequisites - show "legal" receiver type only if receiver country is set:
         if($this->_getSettingValue('receiver_country') === '-') {
             add_filter('leyka_option_info-receiver_legal_type', function($option_data){
 
@@ -1248,14 +1248,34 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             }
 
             $empty_bank_essentials_options = leyka_get_empty_bank_essentials_options();
-            if($empty_bank_essentials_options) {
+            if($empty_bank_essentials_options) { // Show the fields
                 foreach($empty_bank_essentials_options as $option_id) {
                     $this->getCurrentStep()->addBlock(new Leyka_Option_Block(array(
                         'id' => $option_id,
                         'option_id' => $option_id,
-//                        'show_description' => false,
                     )));
                 }
+            } else { // Enable the Quittance PM
+
+                $pm_data = leyka_options()->opt('pm_available');
+                $quittance_pm_full_id = Leyka_Bank_Order::get_instance()->full_id;
+
+                if( !in_array($quittance_pm_full_id, $pm_data) ) {
+
+                    $pm_data[] = $quittance_pm_full_id;
+                    leyka_options()->opt('pm_available', $pm_data);
+
+                    $pm_order = array();
+                    foreach($pm_data as $pm_full_id) {
+                        if($pm_full_id) {
+                            $pm_order[] = "pm_order[]={$pm_full_id}";
+                        }
+                    }
+
+                    leyka_options()->opt('pm_order', implode('&', $pm_order));
+
+                }
+
             }
 
         }
@@ -1320,6 +1340,44 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             is_wp_error(wp_update_post(array('ID' => $campaign_id, 'post_status' => 'publish')))
         ) {
             return new WP_Error('init_campaign_publishing_error', 'Ошибка при публикации кампании');
+        }
+
+        return $errors ? $errors : true;
+
+    }
+
+    public function handleCampaignCompletedStep(array $step_settings) {
+
+        $campaign_id = get_transient('leyka_init_campaign_id');
+        $campaign = get_post($campaign_id);
+        $errors = array();
+
+        if( !$campaign_id || !$campaign ) {
+            return new WP_Error('wrong_init_campaign_id', 'ID кампании неправильный или отсутствует');
+        }
+
+        // Enable the Quittance PM, if all the needed fields are filled:
+        if(leyka_are_bank_essentials_set()) {
+
+            $pm_data = leyka_options()->opt('pm_available');
+            $quittance_pm_full_id = Leyka_Bank_Order::get_instance()->full_id;
+
+            if( !in_array($quittance_pm_full_id, $pm_data) ) {
+
+                $pm_data[] = $quittance_pm_full_id;
+                leyka_options()->opt('pm_available', $pm_data);
+
+                $pm_order = array();
+                foreach($pm_data as $pm_full_id) {
+                    if($pm_full_id) {
+                        $pm_order[] = "pm_order[]={$pm_full_id}";
+                    }
+                }
+
+                leyka_options()->opt('pm_order', implode('&', $pm_order));
+
+            }
+
         }
 
         return $errors ? $errors : true;

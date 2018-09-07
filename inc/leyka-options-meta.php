@@ -255,7 +255,7 @@ self::$_options_meta = array(
         'list_entries' => 'leyka_get_gateways_pm_list',
     ),
     'pm_order' => array(
-        'type' => 'text', // It's intentionally of text type :) Option contains a serialized string of an array
+        'type' => 'text', // It's intentionally of text type - the option contains a serialized array
         'default' => '', // PM will be ordered just as their gateways were added
         'title' => __('Payment methods order on donation forms', 'leyka'),
         'required' => 0,

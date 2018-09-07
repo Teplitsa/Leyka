@@ -121,7 +121,9 @@ class Leyka_Options_Controller {
         }
 
         if(in_array($this->_options[$option_id]['type'], array('text', 'html', 'rich_html'))) {
-            $this->_options[$option_id]['value'] = trim($this->_options[$option_id]['value']);
+            $this->_options[$option_id]['value'] = is_array($this->_options[$option_id]['value']) ?
+                $this->_options[$option_id]['value'] :
+                trim($this->_options[$option_id]['value']);
         }
 
         $this->_options[$option_id]['value'] = apply_filters(

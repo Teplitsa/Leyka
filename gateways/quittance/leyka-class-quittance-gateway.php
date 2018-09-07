@@ -9,8 +9,9 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
 
     protected function _set_options_defaults() {
 
-        if($this->_options) // Create Gateway options, if needed
+        if($this->_options) { // Create Gateway options, if needed
             return;
+        }
 
         $this->_options = array(
             'quittance_redirect_page' => array(
@@ -32,6 +33,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
         $this->_id = 'quittance';
         $this->_title = __('Quittances', 'leyka');
         $this->_docs_link = '//leyka.te-st.ru/docs/nastrojka-lejki/';
+
     }
 
     protected function _initialize_pm_list() {
