@@ -90,6 +90,32 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         parent::__construct();
         
+    }
+    
+    protected function _setAttributes() {
+        $this->_id = 'wizard';
+    }
+
+    public function renderPage() {?>
+
+        <div class="leyka-wizard">
+            <div class="nav-area">
+                <?php $this->renderNavigationArea();?>
+            </div>
+            <div class="main-area">
+                <?php $this->renderMainArea();?>
+            </div>
+        </div>
+
+    <?php }
+
+    public function renderCommonErrorsArea() {
+        foreach($this->_controller->getCommonErrors() as $error) { /** @var WP_Error $error */ ?>
+            <span><?php echo $error->get_error_message();?></span>
+        <?php }
+    }
+    
+    public function renderJSData() {
         $is_legal = leyka_options()->opt('receiver_legal_type') === 'legal';
         
         wp_localize_script( 'leyka-settings', 'leykaWizard', array(
@@ -140,33 +166,13 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                 ),
             ),
         ));
-
-    }
-    
-    protected function _setAttributes() {
-        $this->_id = 'wizard';
-    }
-
-    public function renderPage() {?>
-
-        <div class="leyka-wizard">
-            <div class="nav-area">
-                <?php $this->renderNavigationArea();?>
-            </div>
-            <div class="main-area">
-                <?php $this->renderMainArea();?>
-            </div>
-        </div>
-
-    <?php }
-
-    public function renderCommonErrorsArea() {
-        foreach($this->_controller->getCommonErrors() as $error) { /** @var WP_Error $error */ ?>
-            <span><?php echo $error->get_error_message();?></span>
-        <?php }
+                
     }
 
     public function renderMainArea() {
+        
+        $this->renderJSData();
+
         $current_step = $this->_controller->getCurrentStep();?>
 
         <div class="step-title">
