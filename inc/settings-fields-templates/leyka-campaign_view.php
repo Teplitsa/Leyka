@@ -13,6 +13,8 @@ $campaign_thumbnail_id = get_post_thumbnail_id($campaign_id);
 $cur_template = $campaign->template;
 if(!$cur_template || $cur_template == 'default') {
     $cur_template = 'revo';
+    update_post_meta($campaign_id, 'campaign_template', $cur_template);
+    $campaign->template = $cur_template;
 }
 
 $templates = leyka()->get_templates();
