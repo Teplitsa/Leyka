@@ -453,6 +453,7 @@ function leyka_inline_campaign(array $attributes = array()) {
         'id' => false,
         'template' => 'revo', // leyka_options()->opt('donation_form_template'),
         'show_thumbnail' => leyka_options()->opt('revo_template_show_thumbnail'),
+        'show_preview' => false,
     ), $attributes);
 
     $campaign_id = $attributes['id'] ? (int)$attributes['id'] : get_post()->ID;
@@ -496,7 +497,7 @@ function leyka_inline_campaign(array $attributes = array()) {
 
     ob_start();?>
 
-    <div id="<?php echo leyka_pf_get_form_id($campaign_id);?>" class="leyka-pf <?php echo leyka_pf_get_form_auto_open_class($campaign_id);?>" data-form-id="<?php echo leyka_pf_get_form_id($campaign->id).'-revo-form';?>">
+    <div id="<?php echo leyka_pf_get_form_id($campaign_id);?>" class="leyka-pf <?php echo leyka_pf_get_form_auto_open_class($campaign_id);?> <?php if($attributes['show_preview']):?>show-preview<?php endif?>" data-form-id="<?php echo leyka_pf_get_form_id($campaign->id).'-revo-form';?>">
         <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
         <div class="leyka-pf__overlay"></div>
 
@@ -510,6 +511,12 @@ function leyka_inline_campaign(array $attributes = array()) {
 
                 <div class="inpage-card__content">
                     <div class="inpage-card_title"><?php echo get_the_title($campaign_id);?></div>
+                    
+                    <?php if($attributes['show_preview']):?>
+                    <div class="inpage-card_excerpt">
+                        <?php echo get_the_excerpt($campaign_id);?>
+                    </div>
+                    <?php endif?>
 
 					<div class="inpage-card_scale">
                     <?php $collected = leyka_get_campaign_collections($campaign_id);
@@ -539,11 +546,25 @@ function leyka_inline_campaign(array $attributes = array()) {
                             </span>
                         </div>
 					<?php } else {  // Campaign doesn't have a target sum  - display empty scale ?>
-						<div class="scale"></div>
+						<div class="scale hide-scale"></div>
+                        
+                        <div class="target">
+                            <?php echo leyka_format_amount($collected['amount']);?>
+                            <span class="curr-mark">
+                                <?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?>
+                            </span>
+                            <span class="info">собрано</span>
+                        </div>
+
                     <?php }?>
 					</div>
 
-					<?php $supporters = leyka_get_campaign_supporters($campaign_id, 5); ?>
+					<?php
+                        $supporters = leyka_get_campaign_supporters($campaign_id, 5);
+                        if(!count($supporters['supporters']) && $attributes['show_preview']) {
+                            $supporters['supporters'] = array( "Дмитрий Белкин", "Екатерина Мышкина", "Людмила Лебедева", "Петр Гусев" );
+                        }
+                    ?>
 					<div class="inpage-card__note supporters">
 					<?php if(count($supporters['supporters'])) {?>
 

@@ -857,7 +857,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         )))->addTo($section);
 
         // The plugin usage stats collection - accepted:
-        $step = new Leyka_Settings_Step('plugin_stats_accepted', $section->id, 'Спасибо!');
+        $step = new Leyka_Settings_Step('plugin_stats_accepted', $section->id, 'Спасибо!', array('next_label' => 'Продолжить'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => 'Спасибо! Ваши данные очень нам помогут! Теперь, давайте настроим и запустим вашу первую кампанию по сбору средств.',
@@ -1155,7 +1155,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 break;
             case 'rd-receiver_legal_pd_terms':
             case 'rd-receiver_physical_pd_terms':
-                $navigation_position = 'rd-receiver_terms_of_service';
+                $navigation_position = 'rd-receiver_pd_terms';
                 break;
             case 'rd-final': $navigation_position = 'rd--'; break;
             case 'dd-plugin_stats': $navigation_position = 'dd'; break;
@@ -1187,6 +1187,10 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'next_url' => true,
             'prev' => 'Вернуться на предыдущий шаг',
         );
+        
+        if($step->next_label) {
+            $submit_settings['next_label'] = $step->next_label;
+        }
 
         if($step->section_id === 'rd' && $step->id === 'init') {
 

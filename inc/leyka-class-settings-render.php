@@ -378,13 +378,13 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         <div id="<?php echo $block->id;?>" class="settings-block container-block">
 
-            <?php $entry_width = $block->entry_width ? (100.0*$block->entry_width).'%' : false;
+            <?php $entry_width = $block->entry_width ? (100.0*($block->entry_width - 0.06 * $block->entry_width)).'%' : false;
 
             $sub_blocks_list = $block->getContent();
 
             foreach($sub_blocks_list as $sub_block_index => $sub_block) {?>
 
-                <div class="container-entry" <?php echo $entry_width ? 'style="flex-basis: '.($sub_block_index == count($sub_blocks_list) - 1 && count($sub_blocks_list) > 1 ? 'auto' : $entry_width).';"' : '';?>>
+                <div class="container-entry" <?php echo $entry_width ? 'style="flex-basis: '.$entry_width.';"' : '';?>>
 
                 <?php if(is_a($sub_block, 'Leyka_Text_Block')) { /** @var $sub_block Leyka_Text_Block */
                     $this->renderTextBlock($sub_block);
@@ -422,7 +422,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         $option_info = leyka_options()->get_info_of($block->getContent());?>
 
-        <div id="<?php echo $block->id;?>" class="settings-block option-block <?php echo $block->show_title ? '' : 'option-title-hidden';?> <?php echo $block->show_description ? '' : 'option-description-hidden';?> <?php echo $this->_controller->hasComponentErrors($block->id) ? 'has-errors' : '';?>">
+        <div id="<?php echo $block->id;?>" class="settings-block option-block type-<?php echo $option_info['type']?> <?php echo $block->show_title ? '' : 'option-title-hidden';?> <?php echo $block->show_description ? '' : 'option-description-hidden';?> <?php echo $this->_controller->hasComponentErrors($block->id) ? 'has-errors' : '';?>">
             <?php do_action("leyka_render_{$option_info['type']}", $block->getContent(), $option_info);?>
             <div class="field-errors">
                 <?php foreach($this->_controller->getComponentErrors($block->id) as $error) { /** @var $error WP_Error */?>

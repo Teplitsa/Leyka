@@ -11,6 +11,9 @@ $campaign_id = get_transient( 'leyka_init_campaign_id' );
 $campaign = new Leyka_Campaign($campaign_id);
 $campaign_thumbnail_id = get_post_thumbnail_id($campaign_id);
 $cur_template = $campaign->template;
+if(!$cur_template || $cur_template == 'default') {
+    $cur_template = 'revo';
+}
 
 $templates = leyka()->get_templates();
 
@@ -32,6 +35,7 @@ wp_enqueue_media();
                     <label for="leyka_campaign_photo-field">
                         <span class="field-component title">
                             Фото миниатюры кампании <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" class="field-q" />
+                            <span class="field-q-tooltip">Установите главную фотографию вашей кампании</span>
                         </span>
                         <span class="field-component field">
                             <input type="file" value="" />
@@ -51,14 +55,11 @@ wp_enqueue_media();
                     <label for="leyka_campaign_template-field">
                         <span class="field-component title">
                             Выбрать шаблон формы <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" class="field-q" />
+                            <span class="field-q-tooltip">Выберите шаблон формы кампании</span>
                         </span>
                         <span class="field-component field">
                             
                             <select id="leyka_campaign_template-field" name="campaign_template">
-                                <option value="default" <?php selected($cur_template, 'default')?>>
-                                    <?php _e('Default template', 'leyka')?>
-                                </option>
-                
                                 <?php 
                                 if($templates) {
                                     foreach($templates as $template) {?>
@@ -90,9 +91,9 @@ wp_enqueue_media();
             
             <div class="title">Как будет выглядеть на сайте</div>
             
-            <div class="preview-frame" id="leyka-preview-frame">
+            <div class="preview-frame <?php echo $cur_template?>" id="leyka-preview-frame">
                 <?php
-                    $embed_code = Leyka_Campaign_Management::get_card_embed_code($campaign_id, false, 300, 500);
+                    $embed_code = Leyka_Campaign_Management::get_card_embed_code($campaign_id, false, 300, 700);
                     $embed_code = str_replace('embed_object=campaign_card', 'embed_object=campaign_card_templated', $embed_code);
                     echo $embed_code;
                 ?>

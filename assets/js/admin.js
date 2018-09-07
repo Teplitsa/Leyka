@@ -10,9 +10,11 @@ jQuery(document).ready(function($){
     
     var campaignAttachmentId = 0;
     var $decorationControlsWrap = $('#campaign-decoration');
-    var $previewIframe = $decorationControlsWrap.find('#leyka-preview-frame iframe');
+    var $previewFrame = $('#leyka-preview-frame');
+    var $previewIframe = $previewFrame.find('iframe');
     var $loading = $decorationControlsWrap.find('#campaign-decoration-loading');
     var campaignId = $decorationControlsWrap.find('#leyka-decor-campaign-id').val();
+    var $selectTemplateControl = $('#leyka_campaign_template-field');
     
     function disableForm() {
         $decorationControlsWrap.find('#campaign_photo-upload-button').prop('disabled', true);
@@ -40,6 +42,10 @@ jQuery(document).ready(function($){
         href += '&rand=' + Math.random();
         previewLocation.href = href;
     }
+    
+    $previewIframe.on('load', function(){
+        $previewIframe.height($previewIframe.contents().find('body').height() + 10);
+    });
 
     $('#campaign_photo-upload-button').click(function(){
         
@@ -90,7 +96,7 @@ jQuery(document).ready(function($){
         frame.open();        
     });
     
-    $('#leyka_campaign_template-field').on('change', function(){
+    $selectTemplateControl.on('change', function(){
         
         disableForm();
         showLoading();
@@ -112,6 +118,7 @@ jQuery(document).ready(function($){
                 }
                 
                 reloadPreviewFrame();
+                //setFrameClass();
             })
             .fail(function() {
                 alert('Ошибка!');
@@ -122,6 +129,16 @@ jQuery(document).ready(function($){
             });            
             
     });
+    
+    function setFrameClass() {
+        $selectTemplateControl.find('option').each(function(i, el){
+            $previewFrame.removeClass($(el).val());
+        });
+        $previewFrame.addClass($selectTemplateControl.val());
+    }
+
+    // move next button
+    $('.step-submit').insertBefore($('#campaign-decoration-loading'));
 
 });
 
@@ -239,25 +256,37 @@ jQuery(document).ready(function($){
     var keysValues = [];
     
     function showRestoreOriginalDocHTMLLink() {
-        $('.wp-editor-wrap').find('.restore-original-doc').remove();
         
-        var $link = $('<a>Вернуть первоначальный текст</a>')
-            .attr('href', '#')
-            .addClass("inner")
-            .addClass("restore-original-doc")
-            .click(restoreOriginalDocHTML);
+        var $link = $('.wp-editor-wrap').closest('.option-block').find('.restore-original-doc');
         
-        $('.wp-editor-wrap').append($link);
+        if(!$link.length) {
+            
+            $link = $('<a>Вернуть первоначальный текст</a>')
+                .attr('href', '#')
+                .addClass("inner")
+                .addClass("restore-original-doc");
+            
+            $('.wp-editor-wrap').append($link);
+        }
+        
+        $link.unbind('click');
+        $link.click(restoreOriginalDocHTML);
+        $link.show();
+        
     }
     
     function restoreOriginalDocHTML() {
+        
         if(originalDocHTML) {
             $frameBody.html(originalDocHTML);
         }
-        $('.wp-editor-wrap').find('.restore-original-doc').remove();
+        
+        $('.wp-editor-wrap').closest('.option-block').find('.restore-original-doc').hide();
         replaceKeysWithHTML();
         handleChangeEvents();
-        $('.wp-editor-wrap').find('.restore-original-doc').remove();
+        $('.wp-editor-wrap').closest('.option-block').find('.restore-original-doc').hide(); // hack for FF
+        
+        return false;
     }
     
     function replaceKeysValues(keysValues) {
@@ -502,4 +531,21 @@ jQuery(document).ready(function($){
         showOKMessage();
     });
     
+});
+
+// show-hide available tags
+jQuery(document).ready(function($){
+    $('.hide-available-tags').click(function(e){
+        e.preventDefault();
+        $(this).hide();
+        $('.show-available-tags').show();
+        $('.placeholders-help').hide();
+    });
+    
+    $('.show-available-tags').click(function(e){
+        e.preventDefault();
+        $(this).hide();
+        $('.hide-available-tags').show();
+        $('.placeholders-help').show();
+    });
 });

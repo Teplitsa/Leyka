@@ -21,7 +21,7 @@
             <div class="item-text">Вы можете вставить на любые страницы вашего сайта шорт-код</div>
             <div class="item-info">
                 <?php echo leyka_admin_get_shortcode_field($init_campaign);?>
-                <a href="<?php echo get_edit_post_link($campaign->id);?>" class="inline-action inline-copy-shortcode">Копировать для вставки</a>
+                <a href="<?php echo get_edit_post_link($campaign->id);?>" class="inline-action inline-copy-shortcode">Скопировать</a>
             </div>
         </li>
         <li>

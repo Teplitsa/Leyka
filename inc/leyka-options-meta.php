@@ -2,20 +2,26 @@
 
 $email_placeholders =
 "<span class='placeholders-help'>
-<code>#SITE_NAME#</code> — ".__('a website title', 'leyka')."<br>
-<code>#SITE_EMAIL#</code> — ".__('a website email', 'leyka')."<br>
-<code>#ORG_NAME#</code> — ".__('an organization official title', 'leyka')."<br>
-<code>#DONATION_ID#</code> — ".__('an ID of current donation', 'leyka')."<br>
-<code>#DONATION_TYPE#</code> — ".__('a type of current donation (single or recurring)', 'leyka')."<br>
-<code>#DONOR_NAME#</code> — ".__("a donor's name", 'leyka')."<br>
-<code>#DONOR_EMAIL#</code> — ".__("a donor's email", 'leyka')."<br>
-<code>#SUM#</code> — ".__('a donation full amount (without payment commission)', 'leyka')."<br>
-<code>#PAYMENT_METHOD_NAME#</code> — ".__('a payment method used', 'leyka')."<br>
-<code>#CAMPAIGN_NAME#</code> — ".__('a campaign to which donation was made', 'leyka')."<br>
-<code>#CAMPAIGN_TARGET#</code> — ".__('a campaign target amount', 'leyka')."<br>
-<code>#PURPOSE#</code> — ".__('a campaign title for payment systems (see campaign settings)', 'leyka')."<br>
-<code>#DATE#</code> — ".__('a donation date', 'leyka')."<br>
-</span>";
+<span class='item'><code>#SITE_NAME#</code><span class='description'>Название сайта</span></span>
+<span class='item'><code>#SITE_EMAIL#</code><span class='description'>Email сайта</span></span>
+<span class='item'><code>#ORG_NAME#</code><span class='description'>Официальное название организации</span></span>
+<span class='item'><code>#DONATION_ID#</code><span class='description'>Идентификатор текущего пожертвования</span></span>
+<span class='item'><code>#DONATION_TYPE#</code><span class='description'>Тип пожертвования</span></span>
+<span class='item'><code>#DONOR_NAME#</code><span class='description'>Имя донора</span></span>
+<span class='item'><code>#DONOR_EMAIL#</code><span class='description'>Email донора</span></span>
+<span class='item'><code>#SUM#</code><span class='description'>Полная сумма пожертвования (без учёта комиссий)</span></span>
+<span class='item'><code>#PAYMENT_METHOD_NAME#</code><span class='description'>Название способа оплаты</span></span>
+<span class='item'><code>#CAMPAIGN_NAME#</code><span class='description'>Кампания, на которую было сделано пожертвование</span></span>
+<span class='item'><code>#CAMPAIGN_TARGET#</code><span class='description'>Официальная цель пожертвования (см. настройки кампании, опция «заголовок для платёжной системы»)</span></span>
+<span class='item'><code>#PURPOSE#</code><span class='description'>Название кампании для платежных систем</span></span>
+<span class='item'><code>#DATE#</code><span class='description'>Дата пожертвования</span></span>
+</span>
+<div class='placeholders-help-actions'>
+<a href=\"#\" class=\"inner hide-available-tags\">Свернуть доступные теги</a>
+<a href=\"#\" class=\"inner show-available-tags\">Посмотреть доступные теги</a>
+<a href=\"#\" class=\"inner restore-original-doc\">Вернуть первоначальный текст</a>
+</div>
+";
 
 $campaign_target_reaching_email_placeholders =
 "<span class='placeholders-help'>
@@ -415,16 +421,16 @@ self::$_options_meta = array(
     'email_from_name' => array(
         'type' => 'text',
         'default' => get_bloginfo('name'),
-        'title' => __('Notification emails sender name', 'leyka'),
-        'description' => __('Enter the name that would be used in all notification emails as «from whom» field', 'leyka'),
+        'title' => 'Отправитель',
+        //'description' => __('Enter the name that would be used in all notification emails as «from whom» field', 'leyka'),
         'placeholder' => __('E.g., Daisy Foundation website', 'leyka'),
         'comment' => 'Текст комментария к имени отправителя',
     ),
     'email_from' => array(
         'type' => 'text',
         'default' => leyka_get_default_email_from(),
-        'title' => __("Notification emails sender's email", 'leyka'),
-        'description' => __('Enter the email from which all Leyka emails would be sended', 'leyka'),
+        'title' => 'E-mail отправителя',
+        //'description' => __('Enter the email from which all Leyka emails would be sended', 'leyka'),
         'placeholder' => __('E.g., donations@daisyfoundation.org', 'leyka'),
         'comment' => 'Текст комментария к email отправителя',
     ),
@@ -437,10 +443,10 @@ self::$_options_meta = array(
         'placeholder' => __('E.g., Daisy Foundation thanks you for your kindness', 'leyka'),
     ),
     'email_thanks_text' => array(
-        'type' => 'html',
+        'type' => 'rich_html',
         'default' => __('Hello, #DONOR_NAME#!<br><br>You have chosed to make a #SUM# donation to the following charity campaign: #CAMPAIGN_NAME#, using #PAYMENT_METHOD_NAME#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
-        'title' => __('A text of after-donation notice sent to a donor', 'leyka'),
-        'description' => __('Enter the text of the notification email that would be sended to each donor right after his donation is made. It may include the following special entries:', 'leyka').$email_placeholders,
+        'title' => 'Текст письма',
+        'description' => $email_placeholders,
         'required' => 1,
         'comment' => 'Текст комментария к тексту спасибо-письма',
     ),

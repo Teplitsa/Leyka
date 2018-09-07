@@ -181,6 +181,19 @@
         .settings-block {
             
             max-width: 524px;
+            
+            &#email-from-name,
+            &#email-from {
+                max-width: 248px;
+            }
+            
+            &#campaign-completed {
+                max-width: 680px;
+            }
+            
+            &.type-rich_html {
+                max-width: 680px;
+            }
 
             &.text-block {
                 //margin-bottom: 10px;
@@ -216,13 +229,28 @@
                 &.option-description-hidden .field-component.help {
                     display: none;
                 }
-
+                
+                &.type-rich_html {
+                    
+                    .wp-editor-tabs {
+                        display: none;
+                    }
+                    
+                    label {
+                        .field-component.title {
+                            @include wizard-field-label-rich-edit();
+                            margin-bottom: 1rem;
+                        }
+                    }
+                }
+                
                 .field-component {
                     
                     &.title {
                         @include wizard-field-label();
                         display: block;
                         margin-bottom: 5px;
+                        position: relative;
                         
                         .required {
                             @include wizard-field-label-required-sign();
@@ -236,6 +264,48 @@
                                 float: none;
                             }
                         }
+                        
+                        .field-q {
+                            margin-left: 3px;
+                            vertical-align: baseline;
+                            cursor: pointer;
+                            
+                            &:hover + .field-q-tooltip {
+                                display: block;
+                            }
+                        }
+                        
+                        .field-q-tooltip {
+                            display: none;
+                            //display: block;
+                            position: absolute;
+                            color: $color-white;
+                            background-color: $color-wizard-tooltip-bg;
+                            border-radius: 6px;
+                            border: none;
+                            padding: 7px 8px 8px 8px;
+                            font-size: 10px;
+                            line-height: 15px;
+                            z-index: 11;
+                            top: 25px;
+                            left: -50px;
+                            
+                            min-width: 50px;
+                            
+                            &:before {
+                                content: "";
+                                display:block;
+                                width:0;
+                                height:0;
+                                position:absolute;
+                                border-left: 8px solid transparent;
+                                border-right: 8px solid transparent;
+                                border-bottom:8px solid $color-wizard-tooltip-bg;
+                                left:calc(50% - 4px);
+                                top:-7px;                            
+                            }
+                        }
+                        
                     }
 
                     &.field {
@@ -289,6 +359,7 @@
                                 margin-right: 8px;
                                 vertical-align: middle;
                             }
+                            
                         }
 
                     }
@@ -360,7 +431,7 @@
             }
 
         }
-
+        
         .field-errors {
             span {
                 @include wizard-field-message();
@@ -441,12 +512,6 @@
                     @include wizard-field-label();
                     display: block;
                     margin-bottom: 5px;
-                    
-                    .field-q {
-                        margin-left: 3px;
-                        vertical-align: baseline;
-                        cursor: pointer;
-                    }
                 }
                 
                 // TODO: move colors to presets after comlete
@@ -632,28 +697,52 @@
     }
 }
 
-#terms_of_service_text,
-#pd_terms_text {
+.placeholders-help {
+    font-size: 13px;
+    display: none;
+    cursor: default;
     
-    &.settings-block {
-        max-width: 680px;
+    span.item {
+        display: flex;
+        padding-bottom: 0.5rem;
     }
     
-    .wp-editor-tabs {
-        display: none;
+    code {
+        font-size: 13px;
+        display: block;
+        width: 177px;
+        margin-right: 1rem;
+        background: none;
+        padding-left: 0px;
     }
     
-    label {
-        .title {
-            @include wizard-field-label-rich-edit();
-            margin-bottom: 1rem;
+    span.description {
+        display: block;
+        max-width: 351px;
+        font-style: normal;
+        line-height: normal;
+        font-size: 13px;
+    }
+}
+
+.placeholders-help-actions {
+    a {
+        margin-right: 1rem;
+        
+        &.hide-available-tags {
+            display: none;
+        }
+        
+        &.restore-original-doc {
+            display: none;
         }
     }
 }
+
 // Custom step blocks:
 .leyka-wizard {
     .main-area .step-content {
-
+        
         // Campaign decoration block:
         .campaign-decor-wrap {
 
@@ -693,6 +782,10 @@
 
                 #campaign-decoration-loading {
                     display: none;
+                }
+                
+                .step-next.button {
+                    margin-right: 0px;
                 }
 
                 .loader-wrap {
@@ -735,6 +828,8 @@
                 line-height: 21px;
 
                 .item-text {
+                    
+                    padding-top: 10px;
 
                     &:before {
                         content: '';
@@ -744,18 +839,21 @@
                         float: left;
                         background-image: url(../../src/svg/icon-ok-circled.svg);
                         background-repeat: no-repeat;
-                        margin: 3px 12px 0 0;
+                        margin: 0px 12px 0 0;
                     }
 
                 }
 
                 .item-info {
+                    
+                    padding-left: 2rem;
 
                     .leyka-current-value {
                         color: $color-wizard-link-sec;
                     }
 
-                    .inline-action {
+                    .inline-action,
+                    .permalink-action {
 
                         font-size: 10px;
                         line-height: 15px;
@@ -763,7 +861,7 @@
                         margin-left: 5px;
 
                     }
-
+                    
                     .inline-input {
 
                         margin: 0 5px 0 0;
@@ -800,6 +898,7 @@
     display: flex;
 }
 
+// help chat
 .leyka-wizard {
     .main-area {
         .help-chat-button {

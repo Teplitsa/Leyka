@@ -24,6 +24,7 @@ $campaign = new Leyka_Campaign(get_post());?>
 			'id' => $campaign->id,
 			'template' => $campaign->template,
             'show_thumbnail' => leyka_options()->opt('revo_template_show_thumbnail'),
+			'show_preview' => true,
         ));
 	?>
     </div>

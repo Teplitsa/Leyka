@@ -21,7 +21,8 @@ $campaign = new Leyka_Campaign(get_post());?>
 	#embedded-card {
 		width: 100%;		
 		font: 14px/21px "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
-		color: #444;		
+		color: #444;
+		background-color: #ffffff;
 	}
 
 	a, a:visited {
@@ -149,7 +150,7 @@ $campaign = new Leyka_Campaign(get_post());?>
 	.leyka-scale-button a:active {
 		background: #189414;
 	}
-
+	
 </style>
 </head>
 <body>

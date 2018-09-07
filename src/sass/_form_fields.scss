@@ -107,6 +107,24 @@ div[id *="leyka-pf-"] { //aka namespace
 	.inpage-card_title {
 		display: none;
 		margin-bottom: $base*2;
+		font-weight: 500;
+		font-size: 1.2em;
+	}
+	
+	.inpage-card_excerpt {
+		display: none;
+		margin-bottom: $base*1.5;
+	}
+	
+	&.show-preview {
+		.inpage-card_title {
+			display: block;
+			margin-bottom: $base*0.5;
+		}
+		
+		.inpage-card_excerpt {
+			display: block;
+		}
 	}
 
 	.inpage-card_scale {
@@ -129,6 +147,10 @@ div[id *="leyka-pf-"] { //aka namespace
 				border-top-right-radius: 2.5px;
 				border-bottom-right-radius: 2.5px;
 			}
+		}
+		
+		&.hide-scale {
+			display: none;
 		}
 	}
 
