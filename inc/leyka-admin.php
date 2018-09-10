@@ -78,7 +78,7 @@ class Leyka_Admin_Setup {
                 $screen_full_id = explode('-', $_GET['screen']);
 
                 if(count($screen_full_id) > 1 && $screen_full_id[1] === 'init') {
-                    /** @todo Get the title from Settings Controller attr? */
+                    /** @todo Get the title from Settings Controller attr! */
                     $admin_title = get_bloginfo('name').' &#8212; Мастер установки Лейки';
                 }
 
@@ -507,7 +507,7 @@ class Leyka_Admin_Setup {
 
 	public function settings_new_screen() {
 
-	    if(empty($_GET['screen']) || !in_array($_GET['screen'], array('wizard-init',))) {
+	    if(empty($_GET['screen']) || count(explode('-', $_GET['screen'])) < 2) {
 
 	        $this->settings_screen();
 	        return;
@@ -517,13 +517,35 @@ class Leyka_Admin_Setup {
 	    $screen_full_id = explode('-', $_GET['screen']);
 
 	    // Normally, we'd constuct settings view based on
-	    // - view type ([0], e.g. 'wizard' or 'control-panel')
+	    // - view type ([0], e.g. 'wizard' or 'control_panel')
 	    // - settings area given ([1], e.g. 'init').
 
-	    if($screen_full_id[0] === 'wizard' && $screen_full_id[1] === 'init') {
+	    if($screen_full_id[0] !== 'wizard') {
+	        return;
+	    }
+
+	    require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-block.php');
+        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-step.php');
+        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-section.php');
+        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-controller.php');
+        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-render.php');
+
+	    if($screen_full_id[1] === 'init') {
+
+	        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-init-settings-controller.php');
+
             Leyka_Wizard_Render::get_instance()
                 ->setController(Leyka_Init_Wizard_Settings_Controller::get_instance())
                 ->renderPage();
+
+	    } else if($screen_full_id[1] === 'cp') {
+
+	        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-cp-settings-controller.php');
+
+	        Leyka_Wizard_Render::get_instance()
+                ->setController(Leyka_Cp_Wizard_Settings_Controller::get_instance())
+                ->renderPage();
+
 	    }
 
 	}

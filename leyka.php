@@ -93,11 +93,6 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-ajax.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-shortcodes.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-widgets.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-hooks.php');
-require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-settings-block.php');
-require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-settings-step.php');
-require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-settings-section.php');
-require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-settings-controller.php');
-require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-settings-render.php');
 
 /** Automatically include all sub-dirs of /leyka/gateways/ */
 $gateways_dir = dir(LEYKA_PLUGIN_DIR.'gateways/');
