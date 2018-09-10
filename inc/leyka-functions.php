@@ -936,12 +936,11 @@ function leyka_get_empty_bank_essentials_options() {
 function leyka_is_campaign_link_in_menu() {
 
 //    foreach(get_registered_nav_menus() as $menu_id => $menu_name) {
-//
-//        echo '<pre>' . print_r($menu_id.' - '.$menu_name, 1) . '</pre>';
-//        echo '<pre>' . print_r(wp_get_nav_menu_items($menu_id), 1) . '</pre>';
+//        wp_get_nav_menu_items($menu_id);
 //    }
 
     return false;
+
 }
 
 function leyka_get_shortcodes() {
