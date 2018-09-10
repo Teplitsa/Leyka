@@ -65,18 +65,17 @@ add_action('wp_ajax_nopriv_leyka_recalculate_total_funded_amount', 'leyka_recalc
 
 function leyka_get_gateway_redirect_data() {
 
-    $this->clear_session_errors(); // Clear all previous submits errors, if there are some
+    leyka()->clear_session_errors(); // Clear all previous submits errors, if there are some
 
-    $form_error = Leyka_Payment_Form::is_form_fields_valid();
+    $form_errors = Leyka_Payment_Form::is_form_fields_valid();
+    if(is_array($form_errors) && count($form_errors) > 0) {
 
-    if($form_error) {
+        $form_errors = reset($form_errors); // Return only the first error in the list
 
-        $form_error = reset($form_error); // Return only the first error in the list
-
-        /** @var WP_Error $form_error */
+        /** @var WP_Error $form_errors */
         die(json_encode(array(
             'status' => 1,
-            'message' => $form_error->get_error_message(),
+            'message' => $form_errors->get_error_message(),
         )));
 
     }

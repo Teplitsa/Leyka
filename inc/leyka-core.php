@@ -1193,7 +1193,7 @@ class Leyka {
 
         $form_errors = Leyka_Payment_Form::is_form_fields_valid();
 
-        if($form_errors) {
+        if(is_array($form_errors) && count($form_errors) > 0) {
 
             foreach($form_errors as $error) { /** @var WP_Error $error */
                 $this->add_payment_form_error($error);
