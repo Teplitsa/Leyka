@@ -19,7 +19,7 @@
         <td>12/99</td>
         <td>123</td>
         <td class="cp-payment-result">
-            <input type="button" class="do-payment sec-action" value="Сделать тестовый платёж">
+            <input type="button" class="do-payment sec-action" value="Сделать тестовый платёж" data-status="not-completed">
             <div class="result ok">Успешный результат</div>
         </td>
     </tr>
@@ -29,7 +29,7 @@
         <td>12/99</td>
         <td>123</td>
         <td class="cp-payment-result">
-            <input type="button" class="do-payment sec-action" value="Сделать тестовый платёж">
+            <input type="button" class="do-payment sec-action" value="Сделать тестовый платёж" data-status="not-completed">
             <div class="result fail">Недостаточно средств на карте</div>
         </td>
     </tr>
@@ -41,4 +41,5 @@
 <div class="payment-tryout-comment">Нажмите на кнопку «Начать тестовое пожертвование» и вам покажется форма приема пожертвований CloudPayments. Проверьте каждую из карт.</div>
 
 <div class="error-message"></div>
-<a href="mailto:'.LEYKA_SUPPORT_EMAIL.'" class="call-support">Написать в поддержку</a>
+
+<a href="mailto:<?php echo LEYKA_SUPPORT_EMAIL;?>" class="call-support">Написать в поддержку</a>

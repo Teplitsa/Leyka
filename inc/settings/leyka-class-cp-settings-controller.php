@@ -16,15 +16,8 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
 
     protected function _loadCssJs() {
 
-//        wp_enqueue_script(
-//            'leyka-settings',
-//            LEYKA_PLUGIN_BASE_URL.'assets/js/admin.js',
-//            array('jquery',),
-//            LEYKA_VERSION,
-//            true
-//        );
-////        add_action('wp_enqueue_scripts', array($this, 'localize_scripts')); // wp_footer
-//
+        wp_enqueue_script('leyka-cp-widget', 'https://widget.cloudpayments.ru/bundles/cloudpayments', array(), false, true);
+
 //        wp_enqueue_style(
 //            'leyka-settings',
 //            LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css',
@@ -151,7 +144,6 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         // Final Section - End
 
     }
-    
 
     protected function _initNavigationData() {
 
@@ -231,7 +223,6 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         );
 
     }
-
     
     public function getNavigationData() {
 
@@ -248,7 +239,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             $current_navigation_data;
 
     }
-    
+
     public function getSubmitData($component = null) {
 
         $step = $component && is_a($component, 'Leyka_Settings_Step') ? $component : $this->current_step;
@@ -277,13 +268,11 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
 
     public function handlePaymentTryoutStep(array $step_settings) {
 
-        $errors = array();
-
         if(empty($step_settings['payment_tryout_completed'])) {
-            return new WP_Error('cp_payment_tryout_incomplete', 'Проведение тестовых платежей не завершено');
+            return new WP_Error('cp_payment_tryout_incomplete', 'Необходимо выполнить все тестовые платежи');
         }
 
-        return $errors ? $errors : true;
+        return true;
 
     }
 
