@@ -591,10 +591,59 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
     protected function _getNextStepId(Leyka_Settings_Step $step_from = null, $return_full_id = true) {
 
         $step_from = $step_from && is_a($step_from, 'Leyka_Settings_Step') ? $step_from : $this->current_step;
-        $next_step_full_id = false;
+        $section_from = $this->_sections[$step_from->section_id];
 
-        /** @todo Return next step in _steps array (counting from $step_from arg.). */
-        return true;
+        $is_next_step_target = false;
+        $next_step = null;
+
+        foreach($section_from->steps as $step_id => $step) {
+
+            if($is_next_step_target) {
+
+                $next_step = $step;
+                break;
+
+            }
+
+            if($step_from->section_id == $section_from->id && $step_id == $step_from->id) {
+                $is_next_step_target = true;
+            }
+
+        }
+
+        $next_section = null;
+
+        if( !$next_step ) {
+
+            $is_next_section_target = false;
+
+            foreach($this->_sections as $section_id => $section) {
+
+                if($is_next_section_target) {
+
+                    $next_section = $section;
+                    $next_step = reset($section->steps);
+                    break;
+
+                }
+
+                if($section->id == $section_from->id) {
+                    $is_next_section_target = true;
+                }
+
+            }
+
+        }
+
+        if( !$next_step ) {
+            $next_step = $step_from;
+        }
+
+        if( !$next_section ) {
+            $next_section = $section_from;
+        }
+
+        return $next_section->id.'-'.$next_step->id;
 
     }
 

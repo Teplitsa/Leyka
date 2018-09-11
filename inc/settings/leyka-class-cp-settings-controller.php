@@ -40,88 +40,75 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
 
         // The main CP settings section:
         $section = new Leyka_Settings_Section('cp', 'CloudPayments');
-        
-        // 0-step:
+
         $step = new Leyka_Settings_Step('init',  $section->id, 'CloudPayments');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => 'Система CloudPayments является многопрофильным процессинговым центром для обработки платежей по банковским картам международных платежных систем Visa и MasterCard, а также по картам национальной платежной системы МИР.',
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'cp-payment-cards-icons',
-            'field_type' => 'custom_cp-payment-cards-icons',
+            'custom_setting_id' => 'payment_cards_icons',
+            'field_type' => 'custom_payment_cards_icons',
             'rendering_type' => 'template',
         )))->addTo($section);
 
-        // prepare_documents step:
-        $step = new Leyka_Settings_Step('prepare_documents',  $section->id, 'Подготовка документов', array('next_label' => 'Продолжить'));
+        $step = new Leyka_Settings_Step('prepare_documents',  $section->id, 'Подготовка документов');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => 'Подключение к CloudPayments начинается с подготовки документов. Скачайте и заполните необходимые документы.',
         )))->addTo($section);
 
-        // send_documents step:
         $step = new Leyka_Settings_Step('send_documents',  $section->id, 'Отправка документов', array('next_label' => 'Отправить письмо'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => wpautop('После подготовки документов, их необходимо отправить в CloudPayments. Форма ниже позволит вам отправить пакет документов не уходя с сайта.
-                              
-Вы также можете отправить эти документы из своей собственной почты на адрес: sales@cloudpayments.ru.
-
-Обратите внимание, что проверка документов может занять до 3 рабочих дней.
-
-Если вам нужно закрыть этот экран, мы запишем пройденные шаги и вы всегда сможете сюда вернуться.'),
+            'text' => '<p>После подготовки документов, их необходимо отправить в CloudPayments. Форма ниже позволит вам отправить пакет документов не уходя с сайта.</p>
+<p>Вы также можете отправить эти документы из своей собственной почты на адрес: <a href="mailto:sales@cloudpayments.ru">sales@cloudpayments.ru</a>.</p>
+<p>Обратите внимание, что проверка документов может занять до 3 рабочих дней.</p>
+<p>Если вам нужно закрыть этот экран, мы запишем пройденные шаги и вы всегда сможете сюда вернуться.</p>',
         )))->addTo($section);
 
-        // step:
-        $step = new Leyka_Settings_Step('signin_cp_account',  $section->id, 'Войдите в личный кабинет CloudPayments', array('next_label' => 'Продолжить'));
+        $step = new Leyka_Settings_Step('signin_cp_account',  $section->id, 'Войдите в личный кабинет CloudPayments');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => 'Используйте для входа логин, пароль и ссылку на личный кабинет из письма от CloudPayments.',
         )))->addTo($section);
-        
-        // step
-        $step = new Leyka_Settings_Step('copy_key',  $section->id, 'Копируем ключ', array('next_label' => 'Продолжить'));
+
+        $step = new Leyka_Settings_Step('copy_key',  $section->id, 'Копируем ключ');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => 'Скопируйте номер Public ID из личного кабинета CloudPayments, как на скриншоте ниже',
         )))->addTo($section);
 
-        // step
         $step = new Leyka_Settings_Step('paste_key',  $section->id, 'Вставляем ключ в Лейку');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => 'Вставьте скопированный ключ в поле ниже',
         )))->addTo($section);
 
-        // step:
-        $step = new Leyka_Settings_Step('check_payment_request',  $section->id, 'Добавление запроса на проверку пожертвования', array('next_label' => 'Продолжить'));
+        $step = new Leyka_Settings_Step('check_payment_request',  $section->id, 'Добавление запроса на проверку пожертвования');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => 'Используйте для входа логин, пароль и ссылку на личный кабинет из письма от CloudPayments.',
         )))->addTo($section);
 
-        // step
-        $step = new Leyka_Settings_Step('accepted_payment_notification',  $section->id, 'Добавление уведомления о принятом  пожертвовании', array('next_label' => 'Продолжить'));
+        $step = new Leyka_Settings_Step('accepted_payment_notification',  $section->id, 'Добавление уведомления о принятом  пожертвовании');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => 'Скопируйте адрес:',
         )))->addTo($section);
 
-        // step
-        $step = new Leyka_Settings_Step('rejected_payment_notification',  $section->id, 'Добавление уведомления об отклоненном пожертвовании', array('next_label' => 'Продолжить'));
+        $step = new Leyka_Settings_Step('rejected_payment_notification',  $section->id, 'Добавление уведомления об отклоненном пожертвовании');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => 'Скопируйте адрес:',
         )))->addTo($section);
-        
-        // step
-        $step = new Leyka_Settings_Step('notification_email',  $section->id, 'E-mail адрес для уведомлений об успешных пожертвованиях', array('next_label' => 'Продолжить'));
+
+        $step = new Leyka_Settings_Step('notification_email',  $section->id, 'E-mail адрес для уведомлений об успешных пожертвованиях');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => 'Скопируйте e-mail ниже:',
         )))->addTo($section);
-        
-        // Test payment tryout step:
+
         $step = new Leyka_Settings_Step('cp_payment_tryout', $section->id, 'Тестовое пожертвование');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
@@ -134,15 +121,13 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         )))->addHandler(array($this, 'handlePaymentTryoutStep'))
             ->addTo($section);
 
-        // step
-        $step = new Leyka_Settings_Step('cp_payment_production',  $section->id, 'Переключение в боевой режим', array('next_label' => 'Отправить и продолжить'));
+        $step = new Leyka_Settings_Step('cp_going_live',  $section->id, 'Переключение в боевой режим', array('next_label' => 'Отправить и продолжить'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => 'Вы успешно провели тестовое пожертвование. Для того, чтобы переключить ваш сайт в «боевой» режим, необходимо отправить письмо в службу поддержки CloudPayments. Ответы, как правило, приходит в течение суток.',
         )))->addTo($section);
 
-        // step
-        $step = new Leyka_Settings_Step('cp_payment_check',  $section->id, 'Проверка настоящего пожертвования', array('next_label' => 'Продолжить'));
+        $step = new Leyka_Settings_Step('cp_live_payment_tryout',  $section->id, 'Проверка настоящего пожертвования');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => 'Пора отправить письмо, чтобы вас подключили к системе и вы могли бы собирать деньги. Ответ приходит обычно в течение суток.',
@@ -166,69 +151,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
 
     }
     
-    /**
-     * Steps branching incapsulation method. By default, it's next step in _steps array.
-     * Probably should be moved into Leyka_Settings_Controller
-     *
-     * @param $step_from Leyka_Settings_Step
-     * @param $return_full_id boolean
-     * @return mixed Either next step ID, or false (if non-existent step given), or true (if last step given).
-     */    
-    protected function _getNextStepId(Leyka_Settings_Step $step_from = null, $return_full_id = true) {
 
-        $step_from = $step_from && is_a($step_from, 'Leyka_Settings_Step') ? $step_from : $this->current_step;
-        $next_step_full_id = false;
-        $section_from = $this->_sections[$step_from->section_id];
-        
-        //printf("%s-%s<br />", $section_from->id, $step_from->id);
-        
-        $is_next_step_target = false;
-        $next_step = null;
-        
-        foreach($section_from->steps as $step_id => $step) {
-            if($is_next_step_target) {
-                $next_step = $step;
-                break;
-            }
-            
-            if($step_from->section_id == $section_from->id && $step_id == $step_from->id) {
-                $is_next_step_target = true;
-            }
-        }
-
-        $next_section = null;
-        
-        if(!$next_step) {
-            $is_next_section_target = false;
-            foreach($this->_sections as $section_id => $section) {
-                if($is_next_section_target) {
-                    $next_section = $section;
-                    $next_step = reset($section->steps);
-                    break;
-                }
-                
-                if($section->id == $section_from->id) {
-                    $is_next_section_target = true;
-                }
-            }
-        }
-        
-        if(!$next_step) {
-            $next_step = $step_from;
-        }
-        
-        if(!$next_section) {
-            $next_section = $section_from;
-        }
-        
-        $next_step_full_id = sprintf("%s-%s", $next_section->id, $next_step->id);
-        //print_r($next_step_full_id);
-        //exit();
-
-        return $next_step_full_id;
-    }
-    
-    
     protected function _initNavigationData() {
 
         $this->_navigation_data = array(
@@ -313,9 +236,6 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
 
         $current_navigation_data = $this->_navigation_data;
         $current_step_full_id = $this->getCurrentStep()->full_id;
-        
-        //print_r($current_navigation_data);
-        //print_r($current_step_full_id);
 
         switch($current_step_full_id) {
             case 'cp-init': $navigation_position = 'cp'; break;
@@ -332,20 +252,17 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
 
         $step = $component && is_a($component, 'Leyka_Settings_Step') ? $component : $this->current_step;
         $submit_settings = array(
-            'next_label' => 'Сохранить и продолжить',
+            'next_label' => 'Продолжить',
             'next_url' => true,
             'prev' => 'Вернуться на предыдущий шаг',
         );
-        
+
         if($step->next_label) {
             $submit_settings['next_label'] = $step->next_label;
         }
 
         if($step->section_id === 'cp' && $step->id === 'init') {
-
-            $submit_settings['next_label'] = 'Продолжить';
             $submit_settings['prev'] = false; // I. e. the Wizard shouln't display the back link
-
         } else if($step->section_id === 'final') {
 
             $submit_settings['next_label'] = 'Перейти в Панель управления';
