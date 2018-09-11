@@ -111,12 +111,13 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
 
         $step = new Leyka_Settings_Step('cp_payment_tryout', $section->id, 'Тестовое пожертвование');
         $step->addBlock(new Leyka_Text_Block(array(
-            'id' => 'step-intro-text',
+            'id' => 'step-text-1',
             'text' => 'Давайте проверим, проходят ли пожертвования. Мы можем это сделать с помощью тестовых банковских карт, номера и данные которые находятся ниже.',
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'payment-tryout',
             'custom_setting_id' => 'cp_payment_tryout',
             'field_type' => 'custom_cp_payment_tryout',
+            'keys' => array('payment_tryout_completed'),
             'rendering_type' => 'template',
         )))->addHandler(array($this, 'handlePaymentTryoutStep'))
             ->addTo($section);
@@ -274,16 +275,13 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
 
     }
 
-    
     public function handlePaymentTryoutStep(array $step_settings) {
 
         $errors = array();
 
-        // ...
-
-//        if( !$campaign_id || !$campaign ) {
-//            return new WP_Error('wrong_init_campaign_id', 'ID кампании неправильный или отсутствует');
-//        }
+        if(empty($step_settings['payment_tryout_completed'])) {
+            return new WP_Error('cp_payment_tryout_incomplete', 'Проведение тестовых платежей не завершено');
+        }
 
         return $errors ? $errors : true;
 

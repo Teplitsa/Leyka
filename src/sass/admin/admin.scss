@@ -633,6 +633,14 @@
                 width: 248px;
                 margin-right: 22px;
             }
+
+            .button-secondary {
+                @include wizard-button-caption();
+                height: 40px;
+                margin-right: 22px;
+                font-weight: 600;
+                background-color: white;
+            }
             
             a {
                 line-height: 35px;
@@ -873,6 +881,23 @@
                         margin-left: 5px;
                     }
 
+                }
+
+            }
+
+        }
+
+        // CP payment tryout custom field:
+        .custom_cp_payment_tryout {
+
+            .call-support {
+                display: none;
+            }
+
+            .cp-payment-result {
+
+                .result {
+                    display: none;
                 }
 
             }
