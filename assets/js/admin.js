@@ -17,6 +17,8 @@ jQuery(document).ready(function($){
 
         var $payment_tryout_button = $(this);
 
+        console.log($payment_tryout_button, $payment_tryout_button.data('is-testing-passed'))
+
         if($payment_tryout_button.data('submit-in-process')) {
             return;
         } else {
@@ -46,7 +48,7 @@ jQuery(document).ready(function($){
 
             $cp_error_message.html('').hide();
             $payment_tryout_button
-                .hide().data('is-testing-passed', 1)
+                .data('is-testing-passed', 1).hide()
                 .siblings('.result.ok').show();
 
             if( !$cp_payment_tryout_field.find('.do-payment[data-is-testing-passed="0"]').length ) {
