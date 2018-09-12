@@ -36,8 +36,11 @@ wp_enqueue_media();
                 <div id="leyka_campaign_photo-wrapper">
                     <label for="leyka_campaign_photo-field">
                         <span class="field-component title">
-                            Фото миниатюры кампании <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" class="field-q" />
-                            <span class="field-q-tooltip">Установите главную фотографию вашей кампании</span>
+                            Фото миниатюры кампании
+                            <span class="field-q">
+                                <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" />
+                                <span class="field-q-tooltip">Установите главную фотографию вашей кампании</span>
+                            </span>
                         </span>
                         <span class="field-component field">
                             <input type="file" value="" />
@@ -56,8 +59,11 @@ wp_enqueue_media();
                 <div id="leyka_campaign_template-wrapper">
                     <label for="leyka_campaign_template-field">
                         <span class="field-component title">
-                            Выбрать шаблон формы <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" class="field-q" />
-                            <span class="field-q-tooltip">Выберите шаблон формы кампании</span>
+                            Выбрать шаблон формы
+                            <span class="field-q">
+                                <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" />
+                                <span class="field-q-tooltip">Выберите шаблон формы кампании</span>
+                            </span>
                         </span>
                         <span class="field-component field">
                             

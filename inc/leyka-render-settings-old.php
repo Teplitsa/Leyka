@@ -30,8 +30,10 @@ function leyka_render_text_field($option_id, $data){
                 <?php echo $data['title'];?>
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
                 <?php if(!empty($data['comment'])):?>
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" class="field-q" />
-                <span class="field-q-tooltip"><?php echo $data['comment']?></span>
+                <span class="field-q">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" />
+                    <span class="field-q-tooltip"><?php echo $data['comment']?></span>
+                </span>
                 <?php endif?>
             </span>
             <span class="field-component field">

@@ -1,7 +1,7 @@
 // Campaign decoration custom setting:
 jQuery(document).ready(function($){
     
-    if( !$('#leyka-settings-form-cd-campaign_decoration').length) {
+    if( !$('#leyka-settings-form-cd-campaign_decoration').length ) {
         return;
     }
     
@@ -243,6 +243,10 @@ jQuery(document).ready(function($){
 
 // Highlighted keys in rich edit
 jQuery(document).ready(function($){
+    
+    if(!$('.type-rich_html').length) {
+        return;
+    }
     
     var isInitEditDocsDone = false;
     var isEditContentLoadDone = false;
