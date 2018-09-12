@@ -375,7 +375,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     'CURRENCYCODE' => 'RUB',
                     'DESC' => $payment_description,
                     'BILLINGPERIOD' => 'Month',
-                    'BILLINGFREQUENCY' => '12',
+                    'BILLINGFREQUENCY' => '1',
                     'PROFILESTARTDATE' => Date(DateTime::ISO8601, strtotime("+1 Month")),
                 ), $donation);
 
