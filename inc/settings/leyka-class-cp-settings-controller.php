@@ -18,12 +18,14 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
 
         wp_enqueue_script('leyka-cp-widget', 'https://widget.cloudpayments.ru/bundles/cloudpayments', array(), false, true);
 
-//        wp_enqueue_style(
-//            'leyka-settings',
-//            LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css',
-//            array(),
-//            LEYKA_VERSION
-//        );
+        wp_localize_script('leyka-admin', 'leyka_wizard_cp', array(
+            'cp_public_id' => leyka_options()->opt('cp_public_id'),
+            'ajax_wrong_server_response' => __('Error in server response. Please report to the website tech support.', 'leyka'),
+            'cp_not_set_up' => __('Error in CloudPayments settings. Please report to the website tech support.', 'leyka'),
+            'cp_donation_failure_reasons' => array(
+                'User has cancelled' => __('You cancelled the payment', 'leyka'),
+            ),
+        ));
 
         parent::_loadCssJs();
 
