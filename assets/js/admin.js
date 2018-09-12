@@ -40,14 +40,19 @@ jQuery(document).ready(function($){
             publicId: leyka_wizard_cp.cp_public_id,
             description: 'Leyka - test payment',
             amount: 1.0,
-            currency: 'RUB',
+            currency: leyka_wizard_cp.main_currency,
             accountId: 'test-donor-email@test.ru',
             invoiceId: 'leyka-test-donation'
         }, function(options){ // success callback
 
             $cp_error_message.html('').hide();
-            $payment_tryout_button.hide()
+            $payment_tryout_button
+                .hide().data('is-testing-passed', 1)
                 .siblings('.result.ok').show();
+
+            if( !$cp_payment_tryout_field.find('.do-payment[data-is-testing-passed="0"]').length ) {
+                $cp_payment_tryout_field.find('input[name="payment_tryout_completed"]').val(1);
+            }
 
         }, function(reason, options){ // fail callback
             $cp_error_message.html(leyka_wizard_cp.cp_donation_failure_reasons[reason] || reason).show();

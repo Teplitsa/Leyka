@@ -20,6 +20,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
 
         wp_localize_script('leyka-admin', 'leyka_wizard_cp', array(
             'cp_public_id' => leyka_options()->opt('cp_public_id'),
+            'main_currency' => 'RUB',
             'ajax_wrong_server_response' => __('Error in server response. Please report to the website tech support.', 'leyka'),
             'cp_not_set_up' => __('Error in CloudPayments settings. Please report to the website tech support.', 'leyka'),
             'cp_donation_failure_reasons' => array(
