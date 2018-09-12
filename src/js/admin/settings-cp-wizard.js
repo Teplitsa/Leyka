@@ -2,8 +2,7 @@
 jQuery(document).ready(function($){
 
     var $cp_payment_tryout_field = $('.settings-block.custom_cp_payment_tryout'),
-        $step_submit = $('.step-submit input.step-next'),
-        $cp_error_message = $cp_payment_tryout_field.find('.error-message');
+        $cp_error_message = $cp_payment_tryout_field.find('.field-errors');
 
     if( !$cp_payment_tryout_field.length ) {
         return;
@@ -48,7 +47,9 @@ jQuery(document).ready(function($){
                 .siblings('.result.ok').show();
 
             if( !$cp_payment_tryout_field.find('.do-payment[data-is-testing-passed="0"]').length ) {
+                console.log('now switching the field!')
                 $cp_payment_tryout_field.find('input[name="payment_tryout_completed"]').val(1);
+                console.log($cp_payment_tryout_field.find('input[name="payment_tryout_completed"]'))
             }
 
         }, function(reason, options){ // fail callback
