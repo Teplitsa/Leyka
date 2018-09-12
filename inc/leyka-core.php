@@ -930,7 +930,7 @@ class Leyka {
             $this->_plugin_slug.'-public' :
             (wp_script_is($this->_plugin_slug.'-revo-public') ? $this->_plugin_slug.'-revo-public' : '');
 
-        wp_localize_script(apply_filters('leyka_js_localized_script_id', $leyka_js_handle   ), 'leyka', $js_data);
+        wp_localize_script(apply_filters('leyka_js_localized_script_id', $leyka_js_handle), 'leyka', $js_data);
 
     }
 

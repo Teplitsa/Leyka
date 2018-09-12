@@ -737,14 +737,13 @@ class Leyka_Admin_Setup {
 
         wp_enqueue_script('leyka-admin', LEYKA_PLUGIN_BASE_URL.'js/admin.js', $dependencies, LEYKA_VERSION, true);
 
-        $js_local = array(
+        $js_data = apply_filters('leyka_admin_js_localized_strings', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
             'ajax_loader_url' => LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif',
             'field_required' => __('This field is required to be filled', 'leyka'),
             'email_invalid' => __('You have entered an invalid email', 'leyka'),
-//            '' => __('', 'leyka'),
-        );
-        wp_localize_script('leyka-admin', 'leyka', $js_local);
+        ));
+        wp_localize_script('leyka-admin', 'leyka', $js_data);
 
         // Campaign editing page:
         if($screen->post_type == Leyka_Campaign_Management::$post_type && $screen->base == 'post' && !$screen->action) {
@@ -762,7 +761,7 @@ class Leyka_Admin_Setup {
                 LEYKA_PLUGIN_BASE_URL.'js/admin-edit-campaign.js',
                 array('jquery-dataTables', 'jquery'), LEYKA_VERSION, true
             );
-            wp_localize_script('leyka-admin-edit-campaign', 'leyka_dt', $js_local + array(
+            wp_localize_script('leyka-admin-edit-campaign', 'leyka_dt', $js_data + array(
                 'processing' => __('Processing...', 'leyka'),
                 'search' => __('Search:', 'leyka'),
                 'lengthMenu' => __('Show _MENU_ entries', 'leyka'),
@@ -799,7 +798,7 @@ class Leyka_Admin_Setup {
                 LEYKA_PLUGIN_BASE_URL.'js/admin-add-edit-donation.js',
                 array('jquery-ui-datepicker-locale'), LEYKA_VERSION, true
             );
-            wp_localize_script('leyka-admin-add-edit-donation', 'leyka', $js_local + array(
+            wp_localize_script('leyka-admin-add-edit-donation', 'leyka', $js_data + array(
                 'add_donation_button_text' => __('Add the donation', 'leyka'),
                 'field_required' => __('This field is required to be filled', 'leyka'),
                 'campaign_required' => __('Selecting a campaign is required', 'leyka'),

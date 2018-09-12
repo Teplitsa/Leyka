@@ -8,29 +8,29 @@
 <table class="payment-tryout-wrapper">
 
     <tr>
-        <th>Номер карты</th>
-        <th>Дата</th>
-        <th>CVV</th>
-        <th></th>
+        <th class="bank-card-data card-number">Номер карты</th>
+        <th class="bank-card-data card-date">Дата</th>
+        <th class="bank-card-data card-cvv">CVV</th>
+        <th class="cp-payment-result">Результат тестирования</th>
     </tr>
 
     <tr>
-        <td>5555&nbsp;5555&nbsp;5555&nbsp;4444</td>
-        <td>12/99</td>
-        <td>123</td>
+        <td class="bank-card-data card-number">5555&nbsp;5555&nbsp;5555&nbsp;4444</td>
+        <td class="bank-card-data card-date">12/99</td>
+        <td class="bank-card-data card-cvv">123</td>
         <td class="cp-payment-result">
-            <input type="button" class="do-payment sec-action" value="Сделать тестовый платёж" data-status="not-completed">
-            <div class="result ok">Успешный результат</div>
+            <input type="button" class="do-payment sec-action" value="Сделать тестовый платёж" data-is-testing-passed="0">
+            <div class="result ok">Тестирование успешно</div>
         </td>
     </tr>
 
     <tr>
-        <td>5105&nbsp;1051&nbsp;0510&nbsp;5100</td>
-        <td>12/99</td>
-        <td>123</td>
+        <td class="bank-card-data card-number">4242&nbsp;4242&nbsp;4242&nbsp;4242</td>
+        <td class="bank-card-data card-date">12/99</td>
+        <td class="bank-card-data card-cvv">123</td>
         <td class="cp-payment-result">
-            <input type="button" class="do-payment sec-action" value="Сделать тестовый платёж" data-status="not-completed">
-            <div class="result fail">Недостаточно средств на карте</div>
+            <input type="button" class="do-payment sec-action" value="Сделать тестовый платёж" data-is-testing-passed="0">
+            <div class="result ok">Тестирование успешно</div>
         </td>
     </tr>
 
@@ -39,7 +39,5 @@
 <input type="hidden" name="payment_tryout_completed" value="0">
 
 <div class="payment-tryout-comment">Нажмите на кнопку «Начать тестовое пожертвование» и вам покажется форма приема пожертвований CloudPayments. Проверьте каждую из карт.</div>
-
-<div class="error-message"></div>
 
 <a href="mailto:<?php echo LEYKA_SUPPORT_EMAIL;?>" class="call-support">Написать в поддержку</a>
