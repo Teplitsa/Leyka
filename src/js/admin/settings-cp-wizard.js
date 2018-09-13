@@ -58,7 +58,9 @@ jQuery(document).ready(function($){
         }, function(options){ // success callback
 
             $cp_error_message.html('').hide();
+            $cp_payment_tryout_field.find('.field-errors').html('').hide();
             $call_support_link.hide();
+
             $payment_tryout_button
                 .removeClass('not-tested').hide()
                 .siblings('.result.ok').show();
@@ -70,7 +72,7 @@ jQuery(document).ready(function($){
         }, function(reason, options){ // fail callback
 
             $call_support_link.show();
-            $payment_tryout_button //.hide()
+            $payment_tryout_button.hide()
                 .siblings('.result.error').show();
 
             $cp_error_message.html(leyka_wizard_cp.cp_donation_failure_reasons[reason] || reason).show();

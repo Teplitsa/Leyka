@@ -58,7 +58,7 @@
 
 </div>
 
-<div class="payment-tryout-comment"><span class="attention-needed">Внимание!</span> Необходимо будет ввести данные действующей карты, и с неё будут списаны реальные деньги.</div>
+<div class="payment-tryout-comment live-payment"><span class="attention-needed">Внимание!</span> Необходимо будет ввести данные действующей карты, и с неё будут списаны реальные деньги.</div>
 
 <?php }?>
 

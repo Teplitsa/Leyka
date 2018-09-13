@@ -983,6 +983,17 @@
 
             }
 
+            .payment-tryout-comment.live-payment {
+
+                width: 248px;
+                color: $color-text-light;
+
+                .attention-needed {
+                    color: $color-wizard-required-sign;
+                }
+
+            }
+
         }
         // CP payment tryout custom field - END
 
