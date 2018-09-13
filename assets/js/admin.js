@@ -53,10 +53,10 @@ jQuery(document).ready(function($){
         widget.charge({
             language: 'ru-RU',
             publicId: leyka_wizard_cp.cp_public_id,
-            description: 'Leyka - test payment',
+            description: 'Leyka - payment testing',
             amount: 1.0,
             currency: leyka_wizard_cp.main_currency,
-            accountId: 'test-donor-email@test.ru',
+            accountId: leyka_wizard_cp.test_donor_email,
             invoiceId: 'leyka-test-donation'
         }, function(options){ // success callback
 

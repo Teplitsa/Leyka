@@ -924,7 +924,12 @@
                     padding-right: 12px;
                 }
 
+                .cp-payment-result {
+                    width: 248px;
+                }
+
                 .sec-action {
+
                     @include wizard-button-caption();
                     color: $color-text-semi;
                     font-weight: 600;

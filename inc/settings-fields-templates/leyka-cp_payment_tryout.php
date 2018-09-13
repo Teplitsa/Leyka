@@ -5,6 +5,7 @@
 /** @var $this Leyka_Custom_Setting_Block A block for which the template is used. */
 ?>
 
+<?php if(empty($this->_field_data['is_live'])) { // CP integration is in the test mode, no real money involved ?>
 <table class="payment-tryout-wrapper">
 
     <tr>
@@ -42,8 +43,25 @@
 
 </table>
 
-<input type="hidden" name="payment_tryout_completed" value="0">
+<div class="payment-tryout-comment">Нажмите на кнопку «Сделать тестовый платёж» и вам покажется форма приема пожертвований CloudPayments. Проверьте каждую из карт.</div>
 
-<div class="payment-tryout-comment">Нажмите на кнопку «Начать тестовое пожертвование» и вам покажется форма приема пожертвований CloudPayments. Проверьте каждую из карт.</div>
+<?php } else { // Live payment testing ?>
+
+<div class="payment-tryout-wrapper">
+
+    <div class="cp-payment-result">
+        <input type="button" class="do-payment sec-action not-tested live-payment" value="Провести платёж">
+        <div class="result ok">Платёж успешен</div>
+        <div class="result fail">Произошла ошибка</div>
+    </div>
+    <div class="payment-tryout field-errors"></div>
+
+</div>
+
+<div class="payment-tryout-comment"><span class="attention-needed">Внимание!</span> Необходимо будет ввести данные действующей карты, и с неё будут списаны реальные деньги.</div>
+
+<?php }?>
+
+<input type="hidden" name="payment_tryout_completed" value="0">
 
 <a href="mailto:<?php echo LEYKA_SUPPORT_EMAIL;?>" class="call-support">Написать в поддержку</a>

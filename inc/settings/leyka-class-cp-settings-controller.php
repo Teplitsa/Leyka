@@ -21,6 +21,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         wp_localize_script('leyka-admin', 'leyka_wizard_cp', array(
             'cp_public_id' => leyka_options()->opt('cp_public_id'),
             'main_currency' => 'RUB',
+            'test_donor_email' => get_option('admin_email'),
             'ajax_wrong_server_response' => __('Error in server response. Please report to the website tech support.', 'leyka'),
             'cp_not_set_up' => __('Error in CloudPayments settings. Please report to the website tech support.', 'leyka'),
             'cp_donation_failure_reasons' => array(
@@ -115,6 +116,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             'field_type' => 'custom_cp_payment_tryout',
             'keys' => array('payment_tryout_completed'),
             'rendering_type' => 'template',
+            'data' => array('required' => 'Для продолжения необходимо выполнить все тестовые платежи'),
         )))->addHandler(array($this, 'handlePaymentTryoutStep'))
             ->addTo($section);
 
@@ -127,8 +129,16 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         $step = new Leyka_Settings_Step('cp_live_payment_tryout',  $section->id, 'Проверка настоящего пожертвования');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Пора отправить письмо, чтобы вас подключили к системе и вы могли бы собирать деньги. Ответ приходит обычно в течение суток.',
-        )))->addTo($section);
+            'text' => 'Пора проверить, что вас действительно переключили в «боевой режим», и реальные платежи будут проходить и зачисляться правильно.',
+        )))->addBlock(new Leyka_Custom_Setting_Block(array(
+            'id' => 'live-payment-tryout',
+            'custom_setting_id' => 'cp_payment_tryout',
+            'field_type' => 'custom_cp_payment_tryout',
+            'keys' => array('payment_tryout_completed'),
+            'rendering_type' => 'template',
+            'data' => array('required' => 'Для продолжения необходимо выполнить платёж.', 'is_live' => true)
+        )))->addHandler(array($this, 'handlePaymentTryoutStep'))
+            ->addTo($section);
             
         $this->_sections[$section->id] = $section;
         // The main CP settings section - End
@@ -271,9 +281,9 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
 
     public function handlePaymentTryoutStep(array $step_settings) {
 
-        if(empty($step_settings['payment_tryout_completed'])) {
-            return new WP_Error('cp_payment_tryout_incomplete', 'Для продолжения необходимо выполнить все тестовые платежи');
-        }
+//        if(empty($step_settings['payment_tryout_completed'])) {
+//            return new WP_Error('cp_payment_tryout_incomplete', 'Для продолжения необходимо выполнить все тестовые платежи');
+//        }
 
         return true;
 
