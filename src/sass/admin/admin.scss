@@ -153,7 +153,7 @@
     .main-area {
 
         width: 100%;
-        padding: 0px 32px 49px 72px;
+        padding: 0 32px 49px 72px;
         color: $color-wizard-text;
         
         // wizard markup styles
@@ -204,7 +204,7 @@
                 
                 ul {
                     
-                    margin-top: 0px;
+                    margin-top: 0;
                     margin-bottom: 32px;
                     
                     li {
@@ -288,7 +288,7 @@
                                 line-height: 15px;
                                 z-index: 11;
                                 top: 150%;
-                                left: 0px;
+                                left: 0;
                                 transform:translateX(-50%);
                                 
                                 width: 350px;
@@ -339,7 +339,7 @@
                             &:active, &:focus {
                                 color: $color-wizard-text;
                                 border: 1px solid #bfbfbf;
-                                box-shadow: inset 0px 0px 3px rgba(0, 0, 0, 0.4);                        
+                                box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
                             }
                             
                         }
@@ -381,7 +381,7 @@
                         color: $color-wizard-field-explain;
                         display: block;
                         margin-top: 8px;
-                        margin-bottom: 0px;
+                        margin-bottom: 0;
                     }
                     
                 }
@@ -447,7 +447,7 @@
         .field-errors {
             span {
                 @include wizard-field-message();
-                margin-bottom: 0px;
+                margin-bottom: 0;
                 color: $color-wizard-error-message;
             }
         }
@@ -470,7 +470,7 @@
         
         p {
             @include wizard-text();
-            margin-top: 0px;
+            margin-top: 0;
         }
         
         a {
@@ -542,7 +542,7 @@
                     &:active, &:focus {
                         color: $color-wizard-text;
                         border: 1px solid #bfbfbf;
-                        box-shadow: inset 0px 0px 3px rgba(0, 0, 0, 0.4);                        
+                        box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
                     }
                     
                 }
@@ -580,7 +580,7 @@
                 
                 .message {
                     @include wizard-field-message();
-                    margin-bottom: 0px;
+                    margin-bottom: 0;
                     
                     &.message-error {
                         color: $color-wizard-error-message;
@@ -591,7 +591,7 @@
                     @include wizard-field-explain();
                     color: $color-wizard-field-explain;
                     margin-top: 8px;
-                    margin-bottom: 0px;
+                    margin-bottom: 0;
                 }
                 
                 &.field-options {
@@ -657,35 +657,35 @@
             a {
                 line-height: 35px;
             }
-            
+
             .sec-action {
                 margin-top: 32px;
                 a, input[type=submit].link-sec {
                     @include wizard-action-link();
                 }
-                
+
                 input[type=submit].link-sec {
                     background: none;
                     box-shadow: none;
                     text-shadow: none;
                     border: none;
-                    
+
                     @extend a.link-sec;
                     cursor: pointer;
                     border-bottom: 1px solid $color-wizard-link-sec;
                     box-sizing: border-box;
                     height: 25px;
-                    padding: 0px;
-                    margin: 0px;
-                    
+                    padding: 0;
+                    margin: 0;
+
                     &:hover {
                         border-bottom: 1px solid transparent;
                     }
-                    
+
                     &:focus, &:active {
                         border-bottom: 1px solid transparent;
                     }
-                    
+
                 }
             }
         }
@@ -697,7 +697,7 @@
 
 .admin_page_leyka_settings_new {
     #wpbody-content {
-        padding-bottom: 0px;
+        padding-bottom: 0;
     }
     
     #wpfooter {
@@ -733,7 +733,7 @@
         width: 177px;
         margin-right: 1rem;
         background: none;
-        padding-left: 0px;
+        padding-left: 0;
     }
     
     span.description {
@@ -791,8 +791,8 @@
                             width: 248px;
                             background-color: $color-white;
                             position: absolute;
-                            top: 0px;
-                            left: 0px;
+                            top: 0;
+                            left: 0;
                             //pointer-events: none;
                             outline: none;
                         }
@@ -805,7 +805,7 @@
                 }
                 
                 .step-next.button {
-                    margin-right: 0px;
+                    margin-right: 0;
                 }
 
                 .loader-wrap {
@@ -852,14 +852,7 @@
                     padding-top: 7px;
 
                     &:before {
-                        content: '';
-                        display: block;
-                        width: 20px;
-                        height: 20px;
-                        float: left;
-                        background-image: url(../../src/svg/icon-ok-circled.svg);
-                        background-repeat: no-repeat;
-                        margin: 0px 12px 0 0;
+                        @include ok-icon();
                     }
 
                 }
@@ -902,6 +895,55 @@
         // CP payment tryout custom field:
         .custom_cp_payment_tryout {
 
+            margin-top: 24px;
+
+            .payment-tryout-wrapper {
+
+                border: 0;
+                border-collapse: collapse;
+                padding: 0;
+                width: 100%;
+                margin-bottom: 24px;
+
+                th {
+                    font-weight: 600;
+                    text-align: left;
+                    vertical-align: top;
+                    border-bottom: 1px solid $color-border-normal;
+                    height: 26px;
+                }
+
+                td {
+                    font-size: 14px;
+                    border-bottom: 1px solid $color-border-normal;
+                    height: 42px;
+                    padding: 7px 0;
+                }
+
+                th,td[class*="card-"] {
+                    padding-right: 12px;
+                }
+
+                .sec-action {
+                    @include wizard-button-caption();
+                    color: $color-text-semi;
+                    font-weight: 600;
+                    height: 40px;
+                    width: 100%;
+                    border-radius: 4px;
+                    border: 1px solid $color-border-normal;
+                    background-color: $color-white;
+                }
+
+            }
+
+            .payment-tryout.field-errors {
+
+                @include common-error-message();
+                display: none;
+
+            }
+
             .call-support {
                 display: none;
             }
@@ -911,9 +953,25 @@
                 .result {
 
                     display: none;
+                    font-size: 14px;
 
-                    .ok {
-                        // ...
+                    &.ok {
+
+                        color: $color-nav-step-done-text;
+
+                        &:before {
+                            @include ok-icon();
+                        }
+
+                    }
+                    &.fail {
+
+                        color: $color-wizard-error-message;
+
+                        &:before {
+                            @include error-icon();
+                        }
+
                     }
 
                 }
@@ -945,14 +1003,19 @@
 // help chat
 .leyka-wizard {
     .main-area {
+
+        .step-common-errors.has-errors {
+            @include common-error-message(settings-block);
+        }
+
         .help-chat-button {
             &[href='#'] {
                 border-bottom: none;
-                padding-bottom: 0px;
+                padding-bottom: 0;
             }
             
             border-bottom: none;
-            padding-bottom: 0px;
+            padding-bottom: 0;
             
             width: 64px;
             height: 64px;
@@ -1018,7 +1081,7 @@
                         color: $color-white;
                         text-align: center;
                         font-size: 14px;
-                        margin-bottom: 0px;
+                        margin-bottom: 0;
                     }
                     padding-bottom: 2rem;
                 }
@@ -1047,7 +1110,7 @@
                     }
                     
                     input, textarea {
-                        margin-left: 0px;
+                        margin-left: 0;
                     }
                 }
                 

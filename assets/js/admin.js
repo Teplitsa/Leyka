@@ -5,19 +5,33 @@ jQuery(document).ready(function($){
 jQuery(document).ready(function($){
 
     var $cp_payment_tryout_field = $('.settings-block.custom_cp_payment_tryout'),
-        $cp_error_message = $cp_payment_tryout_field.find('.field-errors');
+        $cp_error_message = $cp_payment_tryout_field.find('.payment-tryout.field-errors'),
+        $call_support_link = $cp_payment_tryout_field.find('.call-support');
 
     if( !$cp_payment_tryout_field.length ) {
         return;
     }
+
+    $call_support_link.click(function(e){
+
+        e.preventDefault();
+
+        $('#leyka-help-chat-message').val(
+            $('.current-wizard-title').val() + '\n'
+            + 'Раздел: ' + $('.current-section-title').val() + '\n'
+            + 'Шаг: ' + $('.current-step-title').val() + '\n\n'
+            + 'Ошибка:\n'
+            + $cp_error_message.text()
+        );
+        $('.help-chat-button').click();
+
+    });
 
     $('.do-payment').on('click.leyka', function(e){
 
         e.preventDefault();
 
         var $payment_tryout_button = $(this);
-
-        console.log($payment_tryout_button, 'Testing passed:', $payment_tryout_button.data('is-testing-passed'));
 
         if($payment_tryout_button.data('submit-in-process')) {
             return;
@@ -47,6 +61,7 @@ jQuery(document).ready(function($){
         }, function(options){ // success callback
 
             $cp_error_message.html('').hide();
+            $call_support_link.hide();
             $payment_tryout_button
                 .removeClass('not-tested').hide()
                 .siblings('.result.ok').show();
@@ -56,7 +71,14 @@ jQuery(document).ready(function($){
             }
 
         }, function(reason, options){ // fail callback
+
+            $call_support_link.show();
+            $payment_tryout_button //.hide()
+                .siblings('.result.error').show();
+
             $cp_error_message.html(leyka_wizard_cp.cp_donation_failure_reasons[reason] || reason).show();
+            $cp_payment_tryout_field.find('.payment-tryout-comment').hide();
+
         });
 
     });

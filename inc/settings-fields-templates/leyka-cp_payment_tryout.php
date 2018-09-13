@@ -21,6 +21,7 @@
         <td class="cp-payment-result">
             <input type="button" class="do-payment sec-action not-tested" value="Сделать тестовый платёж">
             <div class="result ok">Тестирование успешно</div>
+            <div class="result fail">Произошла ошибка</div>
         </td>
     </tr>
 
@@ -31,7 +32,12 @@
         <td class="cp-payment-result">
             <input type="button" class="do-payment sec-action not-tested" value="Сделать тестовый платёж">
             <div class="result ok">Тестирование успешно</div>
+            <div class="result fail">Произошла ошибка</div>
         </td>
+    </tr>
+
+    <tr>
+        <td colspan="4" class="payment-tryout field-errors"></td>
     </tr>
 
 </table>

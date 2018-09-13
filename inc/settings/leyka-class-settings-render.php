@@ -181,6 +181,10 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
             </h1>
         </div>
 
+        <input type="hidden" class="current-wizard-title" value="<?php echo $this->_controller->title;?>">
+        <input type="hidden" class="current-section-title" value="<?php echo $this->_controller->getCurrentSection()->title;?>">
+        <input type="hidden" class="current-step-title" value="<?php echo $current_step->title;?>">
+
         <div class="step-common-errors <?php echo $this->_controller->hasCommonErrors() ? 'has-errors' : '';?>">
             <?php $this->renderCommonErrorsArea();?>
         </div>

@@ -272,7 +272,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
     public function handlePaymentTryoutStep(array $step_settings) {
 
         if(empty($step_settings['payment_tryout_completed'])) {
-            return new WP_Error('cp_payment_tryout_incomplete', 'Необходимо выполнить все тестовые платежи');
+            return new WP_Error('cp_payment_tryout_incomplete', 'Для продолжения необходимо выполнить все тестовые платежи');
         }
 
         return true;
