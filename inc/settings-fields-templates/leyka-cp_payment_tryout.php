@@ -19,7 +19,7 @@
         <td class="bank-card-data card-date">12/99</td>
         <td class="bank-card-data card-cvv">123</td>
         <td class="cp-payment-result">
-            <input type="button" class="do-payment sec-action" value="Сделать тестовый платёж" data-is-testing-passed="0">
+            <input type="button" class="do-payment sec-action not-tested" value="Сделать тестовый платёж">
             <div class="result ok">Тестирование успешно</div>
         </td>
     </tr>
@@ -29,7 +29,7 @@
         <td class="bank-card-data card-date">12/99</td>
         <td class="bank-card-data card-cvv">123</td>
         <td class="cp-payment-result">
-            <input type="button" class="do-payment sec-action" value="Сделать тестовый платёж" data-is-testing-passed="0">
+            <input type="button" class="do-payment sec-action not-tested" value="Сделать тестовый платёж">
             <div class="result ok">Тестирование успешно</div>
         </td>
     </tr>

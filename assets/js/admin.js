@@ -17,7 +17,7 @@ jQuery(document).ready(function($){
 
         var $payment_tryout_button = $(this);
 
-        console.log($payment_tryout_button, $payment_tryout_button.data('is-testing-passed'))
+        console.log($payment_tryout_button, 'Testing passed:', $payment_tryout_button.data('is-testing-passed'));
 
         if($payment_tryout_button.data('submit-in-process')) {
             return;
@@ -48,13 +48,11 @@ jQuery(document).ready(function($){
 
             $cp_error_message.html('').hide();
             $payment_tryout_button
-                .data('is-testing-passed', 1).hide()
+                .removeClass('not-tested').hide()
                 .siblings('.result.ok').show();
 
-            if( !$cp_payment_tryout_field.find('.do-payment[data-is-testing-passed="0"]').length ) {
-                console.log('now switching the field!')
+            if( !$cp_payment_tryout_field.find('.do-payment.not-tested').length ) {
                 $cp_payment_tryout_field.find('input[name="payment_tryout_completed"]').val(1);
-                console.log($cp_payment_tryout_field.find('input[name="payment_tryout_completed"]'))
             }
 
         }, function(reason, options){ // fail callback
