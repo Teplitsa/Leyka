@@ -269,40 +269,52 @@
                             margin-left: 3px;
                             vertical-align: baseline;
                             cursor: pointer;
+                            position: relative;
                             
-                            &:hover + .field-q-tooltip {
-                                display: block;
+                            img {
+                                vertical-align: baseline;
                             }
-                        }
-                        
-                        .field-q-tooltip {
-                            display: none;
-                            //display: block;
-                            position: absolute;
-                            color: $color-white;
-                            background-color: $color-wizard-tooltip-bg;
-                            border-radius: 6px;
-                            border: none;
-                            padding: 7px 8px 8px 8px;
-                            font-size: 10px;
-                            line-height: 15px;
-                            z-index: 11;
-                            top: 25px;
-                            left: -50px;
                             
-                            min-width: 50px;
+                            .field-q-tooltip {
+                                display: none;
+                                //display: block;
+                                position: absolute;
+                                color: $color-white;
+                                background-color: $color-wizard-tooltip-bg;
+                                border-radius: 6px;
+                                border: none;
+                                padding: 7px 8px 8px 8px;
+                                font-size: 10px;
+                                line-height: 15px;
+                                z-index: 11;
+                                top: 150%;
+                                left: 0px;
+                                transform:translateX(-50%);
+                                
+                                width: 350px;
+                                overflow-wrap: break-word;
+                                word-wrap: break-word;
+                                white-space: pre-line;
+                                max-width: max-content;
+                                
+                                &:before {
+                                    content: "";
+                                    display:block;
+                                    width:0;
+                                    height:0;
+                                    position:absolute;
+                                    border-left: 8px solid transparent;
+                                    border-right: 8px solid transparent;
+                                    border-bottom:8px solid $color-wizard-tooltip-bg;
+                                    left:calc(50% - 4px);
+                                    top:-7px;                            
+                                }
+                            }
                             
-                            &:before {
-                                content: "";
-                                display:block;
-                                width:0;
-                                height:0;
-                                position:absolute;
-                                border-left: 8px solid transparent;
-                                border-right: 8px solid transparent;
-                                border-bottom:8px solid $color-wizard-tooltip-bg;
-                                left:calc(50% - 4px);
-                                top:-7px;                            
+                            &:hover {
+                                .field-q-tooltip {
+                                    display: block;
+                                }
                             }
                         }
                         

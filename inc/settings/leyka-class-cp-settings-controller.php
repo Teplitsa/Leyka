@@ -257,7 +257,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         }
 
         if($step->section_id === 'cp' && $step->id === 'init') {
-            $submit_settings['prev'] = false; // I. e. the Wizard shouln't display the back link
+            $submit_settings['prev'] = false;   // I. e. the Wizard shouln't display the back link
         } else if($step->section_id === 'final') {
 
             $submit_settings['next_label'] = 'Перейти в Панель управления';
