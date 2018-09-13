@@ -37,9 +37,7 @@
         </td>
     </tr>
 
-    <tr>
-        <td colspan="4" class="payment-tryout field-errors"></td>
-    </tr>
+<!--    <tr><td colspan="4" class="payment-tryout field-errors"></td></tr>-->
 
 </table>
 
@@ -54,7 +52,7 @@
         <div class="result ok">Платёж успешен</div>
         <div class="result fail">Произошла ошибка</div>
     </div>
-    <div class="payment-tryout field-errors"></div>
+<!--    <div class="payment-tryout field-errors"></div>-->
 
 </div>
 

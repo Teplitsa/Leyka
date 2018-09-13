@@ -254,7 +254,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                                     Ваше имя
                                 </span>
                                 <span class="field-component field">
-                                    <input type="text" id="leyka-help-chat-name" value="<?php echo $current_user->display_name?>" maxlength="255" required="true"/>
+                                    <input type="text" id="leyka-help-chat-name" value="<?php echo $current_user->display_name?>" maxlength="255" required="true">
                                 </span>
                             </label>
                         </div>
@@ -268,7 +268,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                                     E-mail
                                 </span>
                                 <span class="field-component field">
-                                    <input type="email" id="leyka-help-chat-email" value="<?php echo get_option('admin_email')?>" maxlength="255" required="true"/>
+                                    <input type="email" id="leyka-help-chat-email" value="<?php echo get_option('admin_email')?>" maxlength="255" required="true">
                                 </span>
                             </label>
                         </div>
@@ -289,8 +289,8 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                         <div class="field-errors">Заполните это поле</div>
                     </div>
                     
-                    <input type="submit" class="button button-primary" value="Отправить" />
-                    
+                    <input type="submit" class="button button-primary" value="Отправить">
+
                 </form>
                 
             </div>
@@ -437,7 +437,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         <div id="<?php echo $block->id;?>" class="settings-block option-block type-<?php echo $option_info['type']?> <?php echo $block->show_title ? '' : 'option-title-hidden';?> <?php echo $block->show_description ? '' : 'option-description-hidden';?> <?php echo $this->_controller->hasComponentErrors($block->id) ? 'has-errors' : '';?>">
             <?php do_action("leyka_render_{$option_info['type']}", $block->getContent(), $option_info);?>
-            <div class="field-errors">
+            <div class="field-errors <?php echo $this->_controller->hasComponentErrors($block->id) ? 'has-errors' : '';?>">
                 <?php foreach($this->_controller->getComponentErrors($block->id) as $error) { /** @var $error WP_Error */?>
                     <span><?php echo $error->get_error_message();?></span>
                 <?php }?>
@@ -451,7 +451,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         <div id="<?php echo $block->id;?>" class="settings-block custom-block <?php echo $block->is_standard_field_type ? 'option-block' : '';?> <?php echo $this->_controller->hasComponentErrors($block->id) ? 'has-errors' : '';?> <?php echo $block->field_type;?>">
 
             <?php echo $block->getContent();?>
-            <div class="field-errors">
+            <div class="field-errors <?php echo $this->_controller->hasComponentErrors($block->id) ? 'has-errors' : '';?>">
                 <?php foreach($this->_controller->getComponentErrors($block->id) as $error) { /** @var $error WP_Error */?>
                     <span><?php echo $error->get_error_message();?></span>
                 <?php }?>

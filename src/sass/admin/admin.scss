@@ -942,10 +942,28 @@
 
             }
 
-            .payment-tryout.field-errors {
+            //.payment-tryout.field-errors {
+            //
+            //    @include common-error-message();
+            //    display: none;
+            //
+            //}
+            .field-errors {
 
                 @include common-error-message();
+
                 display: none;
+                margin: 8px 0;
+
+                &.has-errors {
+
+                    display: block;
+
+                    span {
+                        font-size: 13px;
+                    }
+
+                }
 
             }
 

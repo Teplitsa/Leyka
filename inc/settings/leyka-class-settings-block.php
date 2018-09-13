@@ -384,11 +384,16 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
         $errors = array();
 
         if( !empty($this->_field_data['required']) ) {
+
+            $error_text = $this->_field_data['required'] === true ?
+                'Значение поля обязательно' : esc_attr__($this->_field_data['required']);
+
             foreach($this->_fields_keys as $key) {
                 if(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
-                    $errors[] = new WP_Error('option_invalid', 'Значение поля обязательно');
+                    $errors[] = new WP_Error('option_invalid', $error_text);
                 }
             }
+
         }
 
         $errors = $errors ? array($this->_id => $errors) : array();
