@@ -21,64 +21,64 @@
             
             <div class="field">
                 <label>Полное наименование организации</label>
-                <span class="field-text"><?php echo leyka_options()->opt('org_full_name')?></span>
+                <p class="field-text"><?php echo leyka_options()->opt('org_full_name')?></p>
                 <div class="field-errors"><span>Не заполнено</span></div>
             </div>
     
             <div class="field">
                 <label>Сокращенное наименование организации</label>
-                <span class="field-text"><?php echo leyka_options()->opt('org_short_name')?></span>
+                <p class="field-text"><?php echo leyka_options()->opt('org_short_name')?></p>
                 <div class="field-errors"><span>Не заполнено</span></div>
             </div>
     
             <div class="field">
                 <label>Ф.И.О. директора</label>
-                <span class="field-text"><?php echo leyka_options()->opt('org_face_fio_ip')?></span>
+                <p class="field-text"><?php echo leyka_options()->opt('org_face_fio_ip')?></p>
                 <div class="field-errors"><span>Не заполнено</span></div>
             </div>
     
             <div class="field">
                 <label>Юридический адрес организации</label>
-                <span class="text"><?php echo leyka_options()->opt('org_address')?></span>
+                <p class="text"><?php echo leyka_options()->opt('org_address')?></p>
                 <div class="field-errors"><span>Не заполнено</span></div>
             </div>
     
             <div class="inline-container">
                 <div class="field">
                     <label>ОГРН</label>
-                    <span class="field-text"><?php echo leyka_options()->opt('org_ogrn')?></span>
+                    <p class="field-text"><?php echo leyka_options()->opt('org_ogrn')?></p>
                     <div class="field-errors"><span>Не заполнено</span></div>
                 </div>
                 
                 <div class="field">
                     <label>КПП</label>
-                    <span class="field-text"><?php echo leyka_options()->opt('org_kpp')?></span>
+                    <p class="field-text"><?php echo leyka_options()->opt('org_kpp')?></p>
                     <div class="field-errors"><span>Не заполнено</span></div>
                 </div>
                 
                 <div class="field">
                     <label>ИНН</label>
-                    <span class="field-text"><?php echo leyka_options()->opt('org_inn')?></span>
+                    <p class="field-text"><?php echo leyka_options()->opt('org_inn')?></p>
                     <div class="field-errors"><span>Не заполнено</span></div>
                 </div>
             </div>
             
             <div class="field">
                 <label>Наименование банка</label>
-                <span class="text"><?php echo leyka_options()->opt('org_bank_name')?></span>
+                <p class="text"><?php echo leyka_options()->opt('org_bank_name')?></p>
                 <div class="field-errors"><span>Не заполнено</span></div>
             </div>
             
             <div class="inline-container">
                 <div class="field">
                     <label>Расчётный счёт</label>
-                    <span class="field-text"><?php echo leyka_options()->opt('org_bank_account')?></span>
+                    <p class="field-text"><?php echo leyka_options()->opt('org_bank_account')?></p>
                     <div class="field-errors"><span>Не заполнено</span></div>
                 </div>
                 
                 <div class="field">
                     <label>Корреспондентский счёт</label>
-                    <span class="field-text"><?php echo leyka_options()->opt('org_bank_corr_account')?></span>
+                    <p class="field-text"><?php echo leyka_options()->opt('org_bank_corr_account')?></p>
                     <div class="field-errors"><span>Не заполнено</span></div>
                 </div>
             </div>
@@ -86,13 +86,13 @@
             <div class="inline-container">
                 <div class="field">
                     <label>БИК банка</label>
-                    <span class="field-text"><?php echo leyka_options()->opt('org_bank_bic')?></span>
+                    <p class="field-text"><?php echo leyka_options()->opt('org_bank_bic')?></p>
                     <div class="field-errors"><span>Не заполнено</span></div>
                 </div>
                 
                 <div class="field">
                     <label>КПП банка</label>
-                    <span class="field-text"><?php echo leyka_options()->opt('org_bank_kpp')?></span>
+                    <p class="field-text"><?php echo leyka_options()->opt('org_bank_kpp')?></p>
                     <div class="field-errors"><span>Не заполнено</span></div>
                 </div>
             </div>

@@ -1193,6 +1193,8 @@
             
             .fields {
                 
+                margin-top: 1rem;
+                
                 .field {
                     
                     label {
@@ -1208,8 +1210,14 @@
                     
                     .field-text {
                         display: block;
+                        
+                        &:empty {
+                            display: none;
+                        }
+                        
                         &:empty + .field-errors {
                             display: block;
+                            line-height: 21px;
                         }
                     }
                 }
