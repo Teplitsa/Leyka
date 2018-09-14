@@ -89,12 +89,6 @@
                     <p class="field-text"><?php echo leyka_options()->opt('org_bank_bic')?></p>
                     <div class="field-errors"><span>Не заполнено</span></div>
                 </div>
-                
-                <div class="field">
-                    <label>КПП банка</label>
-                    <p class="field-text"><?php echo leyka_options()->opt('org_bank_kpp')?></p>
-                    <div class="field-errors"><span>Не заполнено</span></div>
-                </div>
             </div>
             
         </div>
