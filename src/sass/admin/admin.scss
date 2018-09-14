@@ -152,6 +152,7 @@
 
     .main-area {
 
+        @include body-text();
         width: 100%;
         padding: 0 32px 49px 72px;
         color: $color-wizard-text;
@@ -467,6 +468,11 @@
             @include wizard-h3();
             margin-bottom: 8px;
         }
+
+        h4 {
+            @include wizard-h4();
+            margin-bottom: 8px;
+        }
         
         p {
             @include wizard-text();
@@ -491,6 +497,10 @@
         
         a[href="#"] {
             border-bottom: 1px dashed $color-wizard-link;
+        }
+        
+        a.inline {
+            margin-right: 1rem;
         }
         
         a.link-sec {
@@ -892,129 +902,6 @@
 
         }
 
-        // CP payment tryout custom field:
-        .custom_cp_payment_tryout {
-
-            margin-top: 24px;
-
-            .payment-tryout-wrapper {
-
-                border: 0;
-                border-collapse: collapse;
-                padding: 0;
-                width: 100%;
-                margin-bottom: 24px;
-
-                th {
-                    font-weight: 600;
-                    text-align: left;
-                    vertical-align: top;
-                    border-bottom: 1px solid $color-border-normal;
-                    height: 26px;
-                }
-
-                td {
-                    font-size: 14px;
-                    border-bottom: 1px solid $color-border-normal;
-                    height: 42px;
-                    padding: 7px 0;
-                }
-
-                th,td[class*="card-"] {
-                    padding-right: 12px;
-                }
-
-                .cp-payment-result {
-                    width: 248px;
-                }
-
-                .sec-action {
-
-                    @include wizard-button-caption();
-                    color: $color-text-semi;
-                    font-weight: 600;
-                    height: 40px;
-                    width: 100%;
-                    border-radius: 4px;
-                    border: 1px solid $color-border-normal;
-                    background-color: $color-white;
-                }
-
-            }
-
-            //.payment-tryout.field-errors {
-            //
-            //    @include common-error-message();
-            //    display: none;
-            //
-            //}
-            .field-errors {
-
-                @include common-error-message();
-
-                display: none;
-                margin: 8px 0;
-
-                &.has-errors {
-
-                    display: block;
-
-                    span {
-                        font-size: 13px;
-                    }
-
-                }
-
-            }
-
-            .call-support {
-                display: none;
-            }
-
-            .cp-payment-result {
-
-                .result {
-
-                    display: none;
-                    font-size: 14px;
-
-                    &.ok {
-
-                        color: $color-nav-step-done-text;
-
-                        &:before {
-                            @include ok-icon();
-                        }
-
-                    }
-                    &.fail {
-
-                        color: $color-wizard-error-message;
-
-                        &:before {
-                            @include error-icon();
-                        }
-
-                    }
-
-                }
-
-            }
-
-            .payment-tryout-comment.live-payment {
-
-                width: 248px;
-                color: $color-text-light;
-
-                .attention-needed {
-                    color: $color-wizard-required-sign;
-                }
-
-            }
-
-        }
-        // CP payment tryout custom field - END
-
     }
 }
 
@@ -1156,5 +1043,241 @@
                 }
             }
         }
+        
     }
+}
+
+// CP wizard pages
+.leyka-wizard {
+    
+    .main-area {
+        
+        // CP payment tryout custom field:
+        .custom_cp_payment_tryout {
+
+            margin-top: 24px;
+
+            .payment-tryout-wrapper {
+
+                border: 0;
+                border-collapse: collapse;
+                padding: 0;
+                width: 100%;
+                margin-bottom: 24px;
+
+                th {
+                    font-weight: 600;
+                    text-align: left;
+                    vertical-align: top;
+                    border-bottom: 1px solid $color-border-normal;
+                    height: 26px;
+                }
+
+                td {
+                    font-size: 14px;
+                    border-bottom: 1px solid $color-border-normal;
+                    height: 42px;
+                    padding: 7px 0;
+                }
+
+                th,td[class*="card-"] {
+                    padding-right: 12px;
+                }
+
+                .cp-payment-result {
+                    width: 248px;
+                }
+
+                .sec-action {
+
+                    @include wizard-button-caption();
+                    color: $color-text-semi;
+                    font-weight: 600;
+                    height: 40px;
+                    width: 100%;
+                    border-radius: 4px;
+                    border: 1px solid $color-border-normal;
+                    background-color: $color-white;
+                }
+
+            }
+
+            //.payment-tryout.field-errors {
+            //
+            //    @include common-error-message();
+            //    display: none;
+            //
+            //}
+            .field-errors {
+
+                @include common-error-message();
+
+                display: none;
+                margin: 8px 0;
+
+                &.has-errors {
+
+                    display: block;
+
+                    span {
+                        font-size: 13px;
+                    }
+
+                }
+
+            }
+
+            .call-support {
+                display: none;
+            }
+
+            .cp-payment-result {
+
+                .result {
+
+                    display: none;
+                    font-size: 14px;
+
+                    &.ok {
+
+                        color: $color-nav-step-done-text;
+
+                        &:before {
+                            @include ok-icon();
+                        }
+
+                    }
+                    &.fail {
+
+                        color: $color-wizard-error-message;
+
+                        &:before {
+                            @include error-icon();
+                        }
+
+                    }
+
+                }
+
+            }
+
+            .payment-tryout-comment.live-payment {
+
+                width: 248px;
+                color: $color-text-light;
+
+                .attention-needed {
+                    color: $color-wizard-required-sign;
+                }
+
+            }
+
+        }
+        // CP payment tryout custom field - END        
+        
+        .custom-block-payment-cards-icons {
+            
+            .cp-supported-cards {
+                
+                img {
+                    vertical-align: middle;
+                    margin-right: 1rem;
+                }
+                
+            }
+            
+        }
+        
+        .settings-block.text-block .custom-block-cp-prepare-documents {
+            padding-bottom: 4px;
+            
+            .fields {
+                
+                .field {
+                    
+                    label {
+                        line-height: 15px;
+                    }
+                    
+                    .field-errors {
+                        display: none;
+                        span {
+                            font-size: inherit;
+                        }
+                    }
+                    
+                    .field-text {
+                        display: block;
+                        &:empty + .field-errors {
+                            display: block;
+                        }
+                    }
+                }
+                
+                .inline-container {
+                    display: flex;
+                    
+                    .field {
+                        justify-content: flex-start;
+                        margin-right: 1rem;
+                    }
+                }
+                
+            }
+            
+            ul {
+                margin-bottom: 0.5rem;
+                li {
+                    margin-bottom: 10px;
+                }
+            }
+            
+            .org-data {
+                margin-left: 1.1rem;
+            }
+            
+            .fill-explain {
+                @include wizard-field-explain();
+                color: $color-wizard-field-explain;
+                display: block;
+                margin-top: 10px;
+                margin-bottom: 6px;
+            }
+            
+        }
+    }
+    
+}
+
+// expandable-area
+.leyka-wizard {
+    
+    .main-area {
+        .expandable-area {
+            
+            &>*:first-child {
+                display: inherit;
+            }
+            
+            .expand {
+                display: none;
+            }
+            
+            &.collapsed {
+                *:first-child {
+                    display: none;
+                }
+                
+                .expand {
+                    display: unset;
+                }
+                
+                .collapse {
+                    display: none;
+                }
+            }
+            
+        }
+    }
+    
 }

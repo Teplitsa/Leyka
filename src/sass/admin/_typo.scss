@@ -1,6 +1,7 @@
-/** == Typography (_grid.scss) == **/
+/** == Typography (_typo.scss) == **/
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,400i,500,700,900&subset=cyrillic');
 
-$body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+$body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 
 // Typo
 @mixin body-text($mod: default) {
@@ -133,6 +134,12 @@ $body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, 
 @mixin wizard-h3 {
 	font-size: 16px;
 	line-height: 19px;
+	font-weight: 500;
+}
+
+@mixin wizard-h4 {
+	font-size: 14px;
+	line-height: 21px;
 	font-weight: 500;
 }
 

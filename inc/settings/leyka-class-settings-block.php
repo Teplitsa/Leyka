@@ -34,19 +34,47 @@ abstract class Leyka_Settings_Block {
 class Leyka_Text_Block extends Leyka_Settings_Block {
 
     protected $_text = '';
+    protected $_template = null;
 
     public function __construct(array $params = array()) {
 
         parent::__construct($params);
-
+        
         if( !empty($params['text'] ) ) {
             $this->_text = $params['text'];
         }
 
+        if( !empty($params['template']) ) {
+            $this->_template = $params['template'];
+        }
+        
     }
 
     public function getContent() {
-        return $this->_text;
+        if($this->_template) {
+            return $this->getTemplatedContent();
+        }
+        else {
+            return $this->_text;
+        }
+    }
+    
+    protected function getTemplatedContent() {
+        ob_start();
+
+        $template_file = apply_filters(
+            'leyka_text_field_template',
+            LEYKA_PLUGIN_DIR."inc/settings-fields-templates/leyka-{$this->_template}.php",
+            $this->_template
+        );
+        
+        if(file_exists($template_file)) {
+            require($template_file);
+        } else {
+            /** @todo Throw some Leyka_Exception */
+        }
+
+        return ob_get_clean();        
     }
 
     public function isValid() {

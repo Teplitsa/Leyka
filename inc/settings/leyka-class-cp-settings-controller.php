@@ -42,17 +42,18 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => 'Система CloudPayments является многопрофильным процессинговым центром для обработки платежей по банковским картам международных платежных систем Visa и MasterCard, а также по картам национальной платежной системы МИР.',
-        )))->addBlock(new Leyka_Custom_Setting_Block(array(
+        )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'cp-payment-cards-icons',
-            'custom_setting_id' => 'payment_cards_icons',
-            'field_type' => 'custom_payment_cards_icons',
-            'rendering_type' => 'template',
+            'template' => 'cp_payment_cards_icons',
         )))->addTo($section);
 
         $step = new Leyka_Settings_Step('prepare_documents',  $section->id, 'Подготовка документов');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Подключение к CloudPayments начинается с подготовки документов. Скачайте и заполните необходимые документы.',
+            'text' => 'Подключение к CloudPayments начинается с подготовки документов.<br />Скачайте и заполните необходимые документы.',
+        )))->addBlock(new Leyka_Text_Block(array(
+            'id' => 'cp-prepare-documents',
+            'template' => 'cp_prepare_documents',
         )))->addTo($section);
 
         $step = new Leyka_Settings_Step('send_documents',  $section->id, 'Отправка документов', array('next_label' => 'Отправить письмо'));
@@ -215,15 +216,16 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
                         'url' => '',
                     ),
                     array(
-                        'step_id' => 'cp_payment_production',
+                        'step_id' => 'cp_going_live',
                         'title' => 'Боевой режим',
                         'url' => '',
                     ),
                     array(
-                        'step_id' => 'cp_payment_check',
+                        'step_id' => 'cp_live_payment_tryout',
                         'title' => 'Проверка платежа',
                         'url' => '',
                     ),
+                    
                 ),
             ),
             array(
