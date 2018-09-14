@@ -10,8 +10,8 @@
     <h4>Скачайте документы</h4>
     
     <ul>
-        <li><a href="https://cloudpayments.ru/Docs/Oferta_scan.pdf">Оферту CloudPayments для ознакомления</a></li>
-        <li><a href="https://cloudpayments.ru/Docs/%D0%9F%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5%201.docx">Скачайте и заполните Приложение 1</a></li>
+        <li><a href="https://cloudpayments.ru/Docs/Oferta_scan.pdf" target="_blank">Оферту CloudPayments для ознакомления</a></li>
+        <li><a href="https://cloudpayments.ru/Docs/%D0%9F%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5%201.docx" target="_blank">Скачайте и заполните Приложение 1</a></li>
     </ul>
 
     <p class="org-data fill-explain">Вам необходимо будет внести данные вашей организации.</p>
