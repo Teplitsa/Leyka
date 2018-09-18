@@ -197,7 +197,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             'field_type' => 'custom_cp_payment_tryout',
             'keys' => array('payment_tryout_completed'),
             'rendering_type' => 'template',
-            //'data' => array('required' => 'Для продолжения необходимо выполнить все тестовые платежи'),
+            'data' => array('required' => 'Для продолжения необходимо выполнить все тестовые платежи'),
         )))->addTo($section);
 
         $step = new Leyka_Settings_Step('cp_going_live',  $section->id, 'Переключение в боевой режим', array('next_label' => 'Отправить и продолжить'));
@@ -252,7 +252,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             'field_type' => 'custom_cp_payment_tryout',
             'keys' => array('payment_tryout_completed'),
             'rendering_type' => 'template',
-            //'data' => array('required' => 'Для продолжения необходимо выполнить платёж.', 'is_live' => true)
+            'data' => array('required' => 'Для продолжения необходимо выполнить платёж.', 'is_live' => true)
         )))->addTo($section);
             
         $this->_sections[$section->id] = $section;
