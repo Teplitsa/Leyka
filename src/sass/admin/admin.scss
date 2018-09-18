@@ -175,10 +175,6 @@
         .step-content {
         }
         
-        #step-intro-text p {
-            margin-bottom: 24px;
-        }
-        
         .settings-block {
             
             max-width: 524px;
@@ -196,8 +192,13 @@
                 max-width: 680px;
             }
 
+            &.file {
+            }
+
             &.text-block {
-                //margin-bottom: 10px;
+                p {
+                    margin-bottom: 1rem;
+                }
                 
                 p:empty {
                     display: none;
@@ -345,9 +346,14 @@
                             
                         }
                         
+                        input[type=file] {
+                            width: 248px;
+                        }
+                        
                         textarea {
                             height: 62px;
                             width: 100%;
+                            line-height: 18px;
                         }
                         
                         input[type=checkbox], input[type=radio] {
@@ -411,7 +417,54 @@
                         //padding-left: 25px;
                     }
                 }
-                
+
+                &.file {
+                    label {
+                        display: inline-block;
+                        height: inherit;
+                    }
+                    
+                    .field-component {
+                        position: relative;
+                        display: inline-block;
+                        height: 40px;
+                        
+                        input[type=file] {
+                            height: inherit;
+                            width: 248px;
+                            display: inline-block;
+                            cursor: pointer;
+                            outline: none;
+                        }
+                        
+                        input[type=button] {
+                            @include wizard-button-caption();
+                            height: inherit;
+                            width: 248px;
+                            display: block;
+                            background-color: $color-white;
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            //pointer-events: none;
+                            cursor: pointer;
+                        }
+                        
+                        span.chosen-file {
+                            @include wizard-button-caption();
+                            display: inline-block;
+                            line-height: 40px;
+                            vertical-align: middle;
+                            padding-left: 1rem;
+                            cursor: default;
+                            
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            max-width: 254px;
+                        }
+                    }
+                }
+            
             }
             
             &.container-block {
@@ -568,7 +621,7 @@
                 }
                 
                 &.field-error  {
-                    input, select, textarea {
+                    input[type=file]:not(), select, textarea {
                         background: #f8ecef;
                         border: 1px solid #f5c8d0;
                     }
@@ -1255,6 +1308,44 @@
             }
             
         }
+        
+        .settings-block.custom-block.option-block.text {
+            #leyka_cp_public_id-field {
+                width: 248px;
+            }
+        }
+        
+        .settings-block.text-block {
+            .info2copy {
+                @include info2copy();
+            }
+        }
+        
+        #leyka-settings-form-final-cp_final {
+            .step-submit {
+                
+                .wizard-custom-link {
+                    margin-left: 1rem;
+                }
+                
+                .sec-action {
+                    display: none;
+                }
+            }
+            
+            .share-campaign {
+                float: left;
+                margin-top: 1rem;
+                
+                a {
+                    border-bottom: none;
+                    margin-right: 1.5rem;
+                    display: inline-block;
+                    line-height: 0px;
+                }
+            }
+        }
+        
     }
     
 }
@@ -1290,4 +1381,98 @@
         }
     }
     
+}
+
+// captioned screenshot
+.leyka-wizard {
+    
+    .main-area {
+        
+        .settings-block.text-block {
+            
+            .custom-block-captioned-screens {
+            }
+            
+            .captioned-screen {
+                
+                padding-top: 1.5rem;
+                
+                &:first-child {
+                    padding-top: 1rem;
+                }
+                
+                p {
+                    margin-bottom: 0.5rem;
+                }
+                
+                img.leyka-instructions-screen {
+                    max-width: 502px;
+                    border: 1px solid $color-wizard-link-sec;
+                }
+                
+                img.leyka-instructions-screen-full {
+                    max-height: 80%;
+                    display: none;
+                }
+                
+                .screen-wrapper {
+                    position: relative;
+                    line-height: 0px;
+                }
+                
+                img.zoom-screen {
+                    cursor: pointer;
+                    position: absolute;
+                    width: 40px;
+                    height: 40px;
+                    bottom: 1rem;
+                    left: calc(50% - 20px);
+                }
+                
+            }
+            
+        }
+        
+    }
+}
+
+// modal
+.leyka-wizard-modal {
+    border-radius: 6px;
+    
+    .ui-dialog-titlebar {
+        border-radius: 6px 6px 0 0;
+    }
+    
+    .ui-dialog-title {
+        display: none;
+    }
+    
+    .ui-dialog-content {
+        @include body-text();
+        text-align: center;
+        padding: 32px 0px;
+        
+        h3 {
+            @include wizard-h3();
+        }
+        
+        p {
+            @include body-text();
+            padding: 0px 70px;
+            margin: 1rem 0;
+        }
+        
+        .button {
+            @include wizard-button-caption();
+            height: 40px;
+            width: 248px;
+        }
+        
+        &#cp-documents-sent {
+            h3:first-child {
+                margin-top: 0px;
+            }
+        }
+    }
 }

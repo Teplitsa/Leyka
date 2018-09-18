@@ -49,6 +49,10 @@ class Leyka_Text_Block extends Leyka_Settings_Block {
         }
         
     }
+    
+    public function hasCustomTemplated() {
+        return !empty($this->_template);
+    }
 
     public function getContent() {
         if($this->_template) {
@@ -333,7 +337,7 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
 
         $this->_field_data = empty($params['data']) ? array() : (array)$params['data'];
         $this->_fields_keys = empty($params['keys']) || !is_array($params['keys']) ? array($this->_setting_id) : $params['keys'];
-
+        
     }
 
     public function __get($name) {
@@ -388,12 +392,22 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
 
         if( !empty($this->_field_data['required']) ) {
             foreach($this->_fields_keys as $key) {
-                if(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
+                
+                if($this->_field_type == 'file') {
+                    
+                    $is_valid = $this->isFileFieldValid();
+                    
+                }
+                elseif(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
 
                     $is_valid = false;
-                    break;
 
                 }
+                
+                if(!$is_valid) {
+                    break;
+                }
+                
             }
         }
 
@@ -406,6 +420,21 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
         );
 
     }
+    
+    public function isFileFieldValid() {
+        
+        if(!isset($_FILES[ 'leyka_' . $this->_setting_id ])) {
+            return false;
+        }
+        
+        $file = $_FILES[ 'leyka_' . $this->_setting_id ];
+        if(empty($file) || $file['error'] || !$file['size']) {
+            return false;
+        }
+        
+        return true;
+        
+    }
 
     public function getErrors() {
 
@@ -415,9 +444,14 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
 
             $error_text = $this->_field_data['required'] === true ?
                 'Значение поля обязательно' : esc_attr__($this->_field_data['required']);
-
+                
             foreach($this->_fields_keys as $key) {
-                if(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
+                if($this->_field_type == 'file') {
+                    if(!$this->isFileFieldValid()) {
+                        $errors[] = new WP_Error('option_invalid', $error_text);
+                    }
+                }
+                elseif(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
                     $errors[] = new WP_Error('option_invalid', $error_text);
                 }
             }

@@ -189,7 +189,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
             <?php $this->renderCommonErrorsArea();?>
         </div>
 
-        <form id="leyka-settings-form-<?php echo $current_step->full_id;?>" class="leyka-settings-form leyka-wizard-step" method="post" action="<?php echo admin_url('admin.php?page=leyka_settings_new&screen='.$this->full_id);?>">
+        <form id="leyka-settings-form-<?php echo $current_step->full_id;?>" <?php if($current_step->form_enctype):?>enctype="<?php echo $current_step->form_enctype?>"<?php endif?> class="leyka-settings-form leyka-wizard-step" method="post" action="<?php echo admin_url('admin.php?page=leyka_settings_new&screen='.$this->full_id);?>">
             <div class="step-content">
             <?php foreach($current_step->getBlocks() as $block) { /** @var $block Leyka_Settings_Block */
 
@@ -423,10 +423,17 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     <?php }
 
-    public function renderTextBlock(Leyka_Text_Block $block) {?>
+    public function renderTextBlock(Leyka_Text_Block $block) {
+        $content = $block->getContent();
+        ?>
 
         <div id="<?php echo $block->id;?>" class="settings-block text-block">
-            <p><?php echo $block->getContent();?></p>
+            
+            <?php if($block->hasCustomTemplated() || preg_match("/<p>/", $content)):?>
+                <?php echo $content?>
+            <?php else: ?>
+                <p><?php echo $content?></p>
+            <?php endif?>
         </div>
 
     <?php }

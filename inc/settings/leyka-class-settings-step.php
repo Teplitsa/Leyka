@@ -22,6 +22,7 @@ class Leyka_Settings_Step {
 
         $this->_params = wp_parse_args($params, array(
             'header_classes' => '',
+            'form_enctype' => '',
         ));
 
     }

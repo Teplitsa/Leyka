@@ -123,6 +123,7 @@ jQuery(document).ready(function($){
     
 });
 
+
 // expandable area
 jQuery(document).ready(function($){
     $('.expandable-area .expand, .expandable-area .collapse').click(function(e){
@@ -130,6 +131,77 @@ jQuery(document).ready(function($){
         $(this).parent().toggleClass('collapsed');
     });
 });
+
+
+// custom file input
+jQuery(document).ready(function($){
+    $('.settings-block.file .button').click(function(e){
+        e.preventDefault();
+        $(this).parent().find('input[type=file]').trigger('click');
+    });
+    
+    $('.settings-block.file input[type=file]').change(function(){
+        $(this).parent().find('.chosen-file').text(String($(this).val()).split(/(\\|\/)/g).pop());
+    });
+    
+    $('.settings-block.file input[type=file]').each(function(){
+        $(this).parent().find('.chosen-file').text(String($(this).val()).split(/(\\|\/)/g).pop());
+    });
+    
+});
+
+
+// image modal
+jQuery(document).ready(function($){
+    
+    $('.leyka-instructions-screen-full').easyModal({
+        top: 100,
+        autoOpen: false,
+    });
+    
+    $('.zoom-screen').on('click', function(e){
+        
+        e.preventDefault();
+        $(this).closest('.captioned-screen').find('.leyka-instructions-screen-full').css('display', 'block').trigger('openModal');
+    
+    });
+});
+
+// notif modal
+jQuery(document).ready(function($){
+    
+    $('.leyka-wizard-modal').dialog({
+      dialogClass: 'wp-dialog leyka-wizard-modal',
+      autoOpen: false,
+      draggable: false,
+      width: 'auto',
+      modal: true,
+      resizable: false,
+      closeOnEscape: true,
+      position: {
+        my: "center",
+        at: "center",
+        of: window
+      },
+      open: function () {
+        var $modal = $(this);
+        $('.ui-widget-overlay').bind('click', function(){
+          $modal.dialog('close');
+        })
+      },
+      create: function () {
+        $('.ui-dialog-titlebar-close').addClass('ui-button');
+        
+        var $modal = $(this);
+        $modal.find('.button-dialog-close').bind('click', function(){
+            $modal.dialog('close');
+        });
+      },
+    });
+  
+    $('#cp-documents-sent').dialog('open');
+  
+});  
 // CP payment tryout custom setting:
 jQuery(document).ready(function($){
 
