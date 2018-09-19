@@ -2,7 +2,7 @@
 jQuery(document).ready(function($){
 
     var $cp_payment_tryout_field = $('.settings-block.custom_cp_payment_tryout'),
-        $cp_error_message = $cp_payment_tryout_field.find('.payment-tryout.field-errors'),
+        $cp_error_message = $cp_payment_tryout_field.find('.field-errors'),
         $call_support_link = $cp_payment_tryout_field.find('.call-support');
 
     if( !$cp_payment_tryout_field.length ) {
@@ -58,7 +58,6 @@ jQuery(document).ready(function($){
         }, function(options){ // success callback
 
             $cp_error_message.html('').hide();
-            $cp_payment_tryout_field.find('.field-errors').html('').hide();
             $call_support_link.hide();
 
             $payment_tryout_button
@@ -72,8 +71,7 @@ jQuery(document).ready(function($){
         }, function(reason, options){ // fail callback
 
             $call_support_link.show();
-            $payment_tryout_button.hide()
-                .siblings('.result.error').show();
+            // $payment_tryout_button.siblings('.result.fail').show();
 
             $cp_error_message.html(leyka_wizard_cp.cp_donation_failure_reasons[reason] || reason).show();
             $cp_payment_tryout_field.find('.payment-tryout-comment').hide();
