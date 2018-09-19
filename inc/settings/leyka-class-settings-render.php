@@ -55,7 +55,7 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
             'leyka-settings',
             LEYKA_PLUGIN_BASE_URL.'assets/js/admin.js',
             array('jquery',),
-            LEYKA_VERSION,
+            rand(), //LEYKA_VERSION,
             true
         );
 //        add_action('wp_enqueue_scripts', array($this, 'localize_scripts')); // wp_footer
@@ -64,7 +64,7 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
             'leyka-settings',
             LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css',
             array(),
-            LEYKA_VERSION
+            rand() //LEYKA_VERSION
         );
 
         do_action('leyka_settings_render_enqueue_scripts', $this->_id);
@@ -181,11 +181,15 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
             </h1>
         </div>
 
+        <input type="hidden" class="current-wizard-title" value="<?php echo $this->_controller->title;?>">
+        <input type="hidden" class="current-section-title" value="<?php echo $this->_controller->getCurrentSection()->title;?>">
+        <input type="hidden" class="current-step-title" value="<?php echo $current_step->title;?>">
+
         <div class="step-common-errors <?php echo $this->_controller->hasCommonErrors() ? 'has-errors' : '';?>">
             <?php $this->renderCommonErrorsArea();?>
         </div>
 
-        <form id="leyka-settings-form-<?php echo $current_step->full_id;?>" class="leyka-settings-form leyka-wizard-step" method="post" action="<?php echo admin_url('admin.php?page=leyka_settings_new&screen='.$this->full_id);?>">
+        <form id="leyka-settings-form-<?php echo $current_step->full_id;?>" <?php if($current_step->form_enctype):?>enctype="<?php echo $current_step->form_enctype?>"<?php endif?> class="leyka-settings-form leyka-wizard-step" method="post" action="<?php echo admin_url('admin.php?page=leyka_settings_new&screen='.$this->full_id);?>">
             <div class="step-content">
             <?php foreach($current_step->getBlocks() as $block) { /** @var $block Leyka_Settings_Block */
 
@@ -250,7 +254,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                                     Ваше имя
                                 </span>
                                 <span class="field-component field">
-                                    <input type="text" id="leyka-help-chat-name" value="<?php echo $current_user->display_name?>" maxlength="255" required="true"/>
+                                    <input type="text" id="leyka-help-chat-name" value="<?php echo $current_user->display_name?>" maxlength="255" required="true">
                                 </span>
                             </label>
                         </div>
@@ -264,7 +268,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                                     E-mail
                                 </span>
                                 <span class="field-component field">
-                                    <input type="email" id="leyka-help-chat-email" value="<?php echo get_option('admin_email')?>" maxlength="255" required="true"/>
+                                    <input type="email" id="leyka-help-chat-email" value="<?php echo get_option('admin_email')?>" maxlength="255" required="true">
                                 </span>
                             </label>
                         </div>
@@ -285,8 +289,8 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                         <div class="field-errors">Заполните это поле</div>
                     </div>
                     
-                    <input type="submit" class="button button-primary" value="Отправить" />
-                    
+                    <input type="submit" class="button button-primary" value="Отправить">
+
                 </form>
                 
             </div>
@@ -419,10 +423,17 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     <?php }
 
-    public function renderTextBlock(Leyka_Text_Block $block) {?>
+    public function renderTextBlock(Leyka_Text_Block $block) {
+        $content = $block->getContent();
+        ?>
 
         <div id="<?php echo $block->id;?>" class="settings-block text-block">
-            <p><?php echo $block->getContent();?></p>
+            
+            <?php if($block->hasCustomTemplated() || preg_match("/<p>/", $content)):?>
+                <?php echo $content?>
+            <?php else: ?>
+                <p><?php echo $content?></p>
+            <?php endif?>
         </div>
 
     <?php }
@@ -433,7 +444,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         <div id="<?php echo $block->id;?>" class="settings-block option-block type-<?php echo $option_info['type']?> <?php echo $block->show_title ? '' : 'option-title-hidden';?> <?php echo $block->show_description ? '' : 'option-description-hidden';?> <?php echo $this->_controller->hasComponentErrors($block->id) ? 'has-errors' : '';?>">
             <?php do_action("leyka_render_{$option_info['type']}", $block->getContent(), $option_info);?>
-            <div class="field-errors">
+            <div class="field-errors <?php echo $this->_controller->hasComponentErrors($block->id) ? 'has-errors' : '';?>">
                 <?php foreach($this->_controller->getComponentErrors($block->id) as $error) { /** @var $error WP_Error */?>
                     <span><?php echo $error->get_error_message();?></span>
                 <?php }?>
@@ -444,10 +455,10 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     public function renderCustomSettingBlock(Leyka_Custom_Setting_Block $block) {?>
 
-        <div id="<?php echo $block->id;?>" class="settings-block custom-block <?php echo $block->is_standard_field_type ? 'option-block' : '';?> <?php echo $this->_controller->hasComponentErrors($block->id) ? 'has-errors' : '';?>">
+        <div id="<?php echo $block->id;?>" class="settings-block custom-block <?php echo $block->is_standard_field_type ? 'option-block' : '';?> <?php echo $this->_controller->hasComponentErrors($block->id) ? 'has-errors' : '';?> <?php echo $block->field_type;?>">
 
             <?php echo $block->getContent();?>
-            <div class="field-errors">
+            <div class="field-errors <?php echo $this->_controller->hasComponentErrors($block->id) ? 'has-errors' : '';?>">
                 <?php foreach($this->_controller->getComponentErrors($block->id) as $error) { /** @var $error WP_Error */?>
                     <span><?php echo $error->get_error_message();?></span>
                 <?php }?>

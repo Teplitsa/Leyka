@@ -205,3 +205,41 @@ $color-form-active:		var(--color-main-light);
 		@media screen and (max-width: $five - 1) { @content; }
 	}
 }
+
+@mixin ok-icon() {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 20px;
+    float: left;
+    background-image: url(../../src/svg/icon-ok-circled.svg);
+    background-repeat: no-repeat;
+    margin: 0 12px 0 0;
+}
+
+@mixin error-icon() {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 20px;
+    float: left;
+    background-image: url(../../src/svg/icon-error-circled.svg);
+    background-repeat: no-repeat;
+    margin: 0 12px 0 0;
+}
+
+@mixin common-error-message($max-width: default) {
+    padding: 8px 16px;
+
+    @if $max-width == default {
+        max-width: 100%;
+    } @else if $max-width == settings-block {
+        max-width: 490px; // 524px - 2*16px of paddings - 2*1px of borders
+        margin-bottom: 8px;
+    }
+
+    font-size: 13px;
+    color: $color-text-semi;
+    border: 1px solid transparentize($color-wizard-error-message, 0.6);
+    background-color: transparentize($color-wizard-error-message, 0.8);
+}

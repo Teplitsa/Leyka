@@ -215,7 +215,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step = new Leyka_Settings_Step('receiver_legal_terms_of_service', $section->id, 'Оферта');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Для соблюдения всех формальных процедур вам необходимо предоставить оферту о заключении договора пожертвования. Мы подготовили для вас шаблонный вариант. Пожалуйста, проверьте.',
+            'text' => 'Для соблюдения всех формальных процедур вам необходимо предоставить оферту о заключении договора пожертвования. Мы подготовили для вас шаблонный вариант. Пожалуйста, проверьте. При необходимости, скорректируйте текст оферты и нажмите «Сохранить и продолжить».',
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'terms_of_service_text',
             'option_id' => 'terms_of_service_text',
@@ -225,7 +225,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step = new Leyka_Settings_Step('receiver_physical_terms_of_service', $section->id, 'Оферта');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Для соблюдения всех формальных процедур вам необходимо предоставить оферту о заключении договора пожертвования. Мы подготовили для вас шаблонный вариант. Пожалуйста, проверьте.',
+            'text' => 'Для соблюдения всех формальных процедур вам необходимо предоставить оферту о заключении договора пожертвования. Мы подготовили для вас шаблонный вариант. Пожалуйста, проверьте. При необходимости, скорректируйте текст оферты и нажмите «Сохранить и продолжить».',
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'terms_of_service_text',
             'option_id' => 'person_terms_of_service_text',
@@ -271,7 +271,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step = new Leyka_Settings_Step('final', $section->id, 'Хорошая работа!');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Вы успешно заполнили свои данные. Продолжим?',
+            'text' => 'Вы успешно заполнили свои данные и теперь можете перейти к следующему этапу.',
         )))->addTo($section);
 
         $this->_sections[$section->id] = $section;
@@ -284,7 +284,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step = new Leyka_Settings_Step('plugin_stats', $section->id, 'Диагностические данные');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Мы просим вас подтвердить согласие на отправку <strong>анонимных данных</strong> о пожертвованиях и технических данных к нам, в Теплицу. Это позволит нам улучшить работу плагина. Эти данные будут использоваться только нами.',
+            'text' => 'Мы просим вас подтвердить согласие на отправку <strong>анонимных данных</strong> о пожертвованиях и технических данных к нам, в Теплицу. Это позволит нам улучшить работу плагина. Под анонимными данными понимаются следующие данные: 1) технические параметры сервера, на котором происходит сбор пожертвований, 2) данные о суммах сборов, данные о дате и времени сборов, 3) данные о выбранном методе оплаты. Контактные или платежные данные собираться не будут. Эти данные будут использоваться только разработчиками плагина и не будут передаваться третьим лицам.',
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'send_plugin_stats',
             'option_id' => 'send_plugin_stats',
@@ -316,11 +316,8 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step = new Leyka_Settings_Step('campaign_description', $section->id, 'Описание вашей кампании');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => '<ul>
-<li>Кампания — это ключевое понятие Лейки.</li>
-<li>У кампаний по сбору пожертвований есть цель и, как правило, целевая сумма.</li>
-<li>Лейка позволяет создавать ежемесячные платежи, и чуть позже мы покажем, как их настраивать. Но, для начала, давайте создадим простую кампанию.</li>
-</ul>',
+            'text' => 'Сбор пожертвований в Лейке осуществляется в рамках одной или нескольких кампаний,
+каждая из которых характеризуется наименованием, кратким описанием, изображением и целевой суммой. Настройте вашу первую кампанию.',
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'campaign_title',
             'custom_setting_id' => 'campaign_title',
@@ -377,10 +374,10 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         )))->addHandler(array($this, 'handleCampaignDecorationStep'))
             ->addTo($section);
 
-        $step = new Leyka_Settings_Step('donors_communication', $section->id, 'Коммуникация с донором');
+        $step = new Leyka_Settings_Step('donors_communication', $section->id, 'Благодарность донору');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text-1',
-            'text' => 'После того, как донор внёс своё пожертвование, хорошим тоном считается показать ему страницу с благодарностью и отправить письмо.',
+            'text' => 'После того, как донор внёс своё пожертвование, хорошим тоном считается показать ему страницу с благодарностью и отправить письмо. Вы можете изменить текст письма.',
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text-2',
             'text' => 'Позже, в разделе «Настройки», вы сможете изменить текст страницы «Спасибо», которая показывается донору после успешного совершения пожертвования.',
@@ -624,7 +621,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'next_url' => true,
             'prev' => 'Вернуться на предыдущий шаг',
         );
-        
+
         if($step->next_label) {
             $submit_settings['next_label'] = $step->next_label;
         }

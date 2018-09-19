@@ -6,7 +6,7 @@ class Leyka_Options_Controller {
     protected static $_options_meta = array();
 
     protected $_options = array();
-    protected static $_field_types = array('text', 'textarea', 'number', 'html', 'rich_html', 'select', 'radio', 'checkbox', 'multi_checkbox');
+    protected static $_field_types = array('text', 'textarea', 'number', 'html', 'rich_html', 'select', 'radio', 'checkbox', 'multi_checkbox', 'legend', 'file');
 
     public static function instance() {
 

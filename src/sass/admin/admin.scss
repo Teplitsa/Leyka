@@ -152,8 +152,9 @@
 
     .main-area {
 
+        @include body-text();
         width: 100%;
-        padding: 0px 32px 49px 72px;
+        padding: 0 32px 49px 72px;
         color: $color-wizard-text;
         
         // wizard markup styles
@@ -174,10 +175,6 @@
         .step-content {
         }
         
-        #step-intro-text p {
-            margin-bottom: 24px;
-        }
-        
         .settings-block {
             
             max-width: 524px;
@@ -195,8 +192,13 @@
                 max-width: 680px;
             }
 
+            &.file {
+            }
+
             &.text-block {
-                //margin-bottom: 10px;
+                p {
+                    margin-bottom: 1rem;
+                }
                 
                 p:empty {
                     display: none;
@@ -204,7 +206,7 @@
                 
                 ul {
                     
-                    margin-top: 0px;
+                    margin-top: 0;
                     margin-bottom: 32px;
                     
                     li {
@@ -269,40 +271,52 @@
                             margin-left: 3px;
                             vertical-align: baseline;
                             cursor: pointer;
+                            position: relative;
                             
-                            &:hover + .field-q-tooltip {
-                                display: block;
+                            img {
+                                vertical-align: baseline;
                             }
-                        }
-                        
-                        .field-q-tooltip {
-                            display: none;
-                            //display: block;
-                            position: absolute;
-                            color: $color-white;
-                            background-color: $color-wizard-tooltip-bg;
-                            border-radius: 6px;
-                            border: none;
-                            padding: 7px 8px 8px 8px;
-                            font-size: 10px;
-                            line-height: 15px;
-                            z-index: 11;
-                            top: 25px;
-                            left: -50px;
                             
-                            min-width: 50px;
+                            .field-q-tooltip {
+                                display: none;
+                                //display: block;
+                                position: absolute;
+                                color: $color-white;
+                                background-color: $color-wizard-tooltip-bg;
+                                border-radius: 6px;
+                                border: none;
+                                padding: 7px 8px 8px 8px;
+                                font-size: 10px;
+                                line-height: 15px;
+                                z-index: 11;
+                                top: 150%;
+                                left: 0;
+                                transform:translateX(-50%);
+                                
+                                width: 350px;
+                                overflow-wrap: break-word;
+                                word-wrap: break-word;
+                                white-space: pre-line;
+                                max-width: max-content;
+                                
+                                &:before {
+                                    content: "";
+                                    display:block;
+                                    width:0;
+                                    height:0;
+                                    position:absolute;
+                                    border-left: 8px solid transparent;
+                                    border-right: 8px solid transparent;
+                                    border-bottom:8px solid $color-wizard-tooltip-bg;
+                                    left:calc(50% - 4px);
+                                    top:-7px;                            
+                                }
+                            }
                             
-                            &:before {
-                                content: "";
-                                display:block;
-                                width:0;
-                                height:0;
-                                position:absolute;
-                                border-left: 8px solid transparent;
-                                border-right: 8px solid transparent;
-                                border-bottom:8px solid $color-wizard-tooltip-bg;
-                                left:calc(50% - 4px);
-                                top:-7px;                            
+                            &:hover {
+                                .field-q-tooltip {
+                                    display: block;
+                                }
                             }
                         }
                         
@@ -327,14 +341,19 @@
                             &:active, &:focus {
                                 color: $color-wizard-text;
                                 border: 1px solid #bfbfbf;
-                                box-shadow: inset 0px 0px 3px rgba(0, 0, 0, 0.4);                        
+                                box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
                             }
                             
+                        }
+                        
+                        input[type=file] {
+                            width: 248px;
                         }
                         
                         textarea {
                             height: 62px;
                             width: 100%;
+                            line-height: 18px;
                         }
                         
                         input[type=checkbox], input[type=radio] {
@@ -369,7 +388,7 @@
                         color: $color-wizard-field-explain;
                         display: block;
                         margin-top: 8px;
-                        margin-bottom: 0px;
+                        margin-bottom: 0;
                     }
                     
                 }
@@ -398,7 +417,54 @@
                         //padding-left: 25px;
                     }
                 }
-                
+
+                &.file {
+                    label {
+                        display: inline-block;
+                        height: inherit;
+                    }
+                    
+                    .field-component {
+                        position: relative;
+                        display: inline-block;
+                        height: 40px;
+                        
+                        input[type=file] {
+                            height: inherit;
+                            width: 248px;
+                            display: inline-block;
+                            cursor: pointer;
+                            outline: none;
+                        }
+                        
+                        input[type=button] {
+                            @include wizard-button-caption();
+                            height: inherit;
+                            width: 248px;
+                            display: block;
+                            background-color: $color-white;
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            //pointer-events: none;
+                            cursor: pointer;
+                        }
+                        
+                        span.chosen-file {
+                            @include wizard-button-caption();
+                            display: inline-block;
+                            line-height: 40px;
+                            vertical-align: middle;
+                            padding-left: 1rem;
+                            cursor: default;
+                            
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            max-width: 254px;
+                        }
+                    }
+                }
+            
             }
             
             &.container-block {
@@ -435,7 +501,7 @@
         .field-errors {
             span {
                 @include wizard-field-message();
-                margin-bottom: 0px;
+                margin-bottom: 0;
                 color: $color-wizard-error-message;
             }
         }
@@ -455,10 +521,15 @@
             @include wizard-h3();
             margin-bottom: 8px;
         }
+
+        h4 {
+            @include wizard-h4();
+            margin-bottom: 8px;
+        }
         
         p {
             @include wizard-text();
-            margin-top: 0px;
+            margin-top: 0;
         }
         
         a {
@@ -479,6 +550,10 @@
         
         a[href="#"] {
             border-bottom: 1px dashed $color-wizard-link;
+        }
+        
+        a.inline {
+            margin-right: 1rem;
         }
         
         a.link-sec {
@@ -530,7 +605,7 @@
                     &:active, &:focus {
                         color: $color-wizard-text;
                         border: 1px solid #bfbfbf;
-                        box-shadow: inset 0px 0px 3px rgba(0, 0, 0, 0.4);                        
+                        box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
                     }
                     
                 }
@@ -546,7 +621,7 @@
                 }
                 
                 &.field-error  {
-                    input, select, textarea {
+                    input[type=file]:not(), select, textarea {
                         background: #f8ecef;
                         border: 1px solid #f5c8d0;
                     }
@@ -568,7 +643,7 @@
                 
                 .message {
                     @include wizard-field-message();
-                    margin-bottom: 0px;
+                    margin-bottom: 0;
                     
                     &.message-error {
                         color: $color-wizard-error-message;
@@ -579,7 +654,7 @@
                     @include wizard-field-explain();
                     color: $color-wizard-field-explain;
                     margin-top: 8px;
-                    margin-bottom: 0px;
+                    margin-bottom: 0;
                 }
                 
                 &.field-options {
@@ -633,39 +708,47 @@
                 width: 248px;
                 margin-right: 22px;
             }
+
+            .button-secondary {
+                @include wizard-button-caption();
+                height: 40px;
+                margin-right: 22px;
+                font-weight: 600;
+                background-color: white;
+            }
             
             a {
                 line-height: 35px;
             }
-            
+
             .sec-action {
                 margin-top: 32px;
                 a, input[type=submit].link-sec {
                     @include wizard-action-link();
                 }
-                
+
                 input[type=submit].link-sec {
                     background: none;
                     box-shadow: none;
                     text-shadow: none;
                     border: none;
-                    
+
                     @extend a.link-sec;
                     cursor: pointer;
                     border-bottom: 1px solid $color-wizard-link-sec;
                     box-sizing: border-box;
                     height: 25px;
-                    padding: 0px;
-                    margin: 0px;
-                    
+                    padding: 0;
+                    margin: 0;
+
                     &:hover {
                         border-bottom: 1px solid transparent;
                     }
-                    
+
                     &:focus, &:active {
                         border-bottom: 1px solid transparent;
                     }
-                    
+
                 }
             }
         }
@@ -677,7 +760,7 @@
 
 .admin_page_leyka_settings_new {
     #wpbody-content {
-        padding-bottom: 0px;
+        padding-bottom: 0;
     }
     
     #wpfooter {
@@ -713,7 +796,7 @@
         width: 177px;
         margin-right: 1rem;
         background: none;
-        padding-left: 0px;
+        padding-left: 0;
     }
     
     span.description {
@@ -771,8 +854,8 @@
                             width: 248px;
                             background-color: $color-white;
                             position: absolute;
-                            top: 0px;
-                            left: 0px;
+                            top: 0;
+                            left: 0;
                             //pointer-events: none;
                             outline: none;
                         }
@@ -785,7 +868,7 @@
                 }
                 
                 .step-next.button {
-                    margin-right: 0px;
+                    margin-right: 0;
                 }
 
                 .loader-wrap {
@@ -832,14 +915,7 @@
                     padding-top: 7px;
 
                     &:before {
-                        content: '';
-                        display: block;
-                        width: 20px;
-                        height: 20px;
-                        float: left;
-                        background-image: url(../../src/svg/icon-ok-circled.svg);
-                        background-repeat: no-repeat;
-                        margin: 0px 12px 0 0;
+                        @include ok-icon();
                     }
 
                 }
@@ -901,14 +977,19 @@
 // help chat
 .leyka-wizard {
     .main-area {
+
+        .step-common-errors.has-errors {
+            @include common-error-message(settings-block);
+        }
+
         .help-chat-button {
             &[href='#'] {
                 border-bottom: none;
-                padding-bottom: 0px;
+                padding-bottom: 0;
             }
             
             border-bottom: none;
-            padding-bottom: 0px;
+            padding-bottom: 0;
             
             width: 64px;
             height: 64px;
@@ -974,7 +1055,7 @@
                         color: $color-white;
                         text-align: center;
                         font-size: 14px;
-                        margin-bottom: 0px;
+                        margin-bottom: 0;
                     }
                     padding-bottom: 2rem;
                 }
@@ -1003,7 +1084,7 @@
                     }
                     
                     input, textarea {
-                        margin-left: 0px;
+                        margin-left: 0;
                     }
                 }
                 
@@ -1013,6 +1094,384 @@
                     height: 40px;
                     width: 100%;
                 }
+            }
+        }
+        
+    }
+}
+
+// CP wizard pages
+.leyka-wizard {
+    
+    .main-area {
+        
+        // CP payment tryout custom field:
+        .custom_cp_payment_tryout {
+
+            margin-top: 24px;
+
+            .payment-tryout-wrapper {
+
+                border: 0;
+                border-collapse: collapse;
+                padding: 0;
+                width: 100%;
+                margin-bottom: 24px;
+
+                th {
+                    font-weight: 600;
+                    text-align: left;
+                    vertical-align: top;
+                    border-bottom: 1px solid $color-border-normal;
+                    height: 26px;
+                }
+
+                td {
+                    font-size: 14px;
+                    border-bottom: 1px solid $color-border-normal;
+                    height: 42px;
+                    padding: 7px 0;
+                }
+
+                th,td[class*="card-"] {
+                    padding-right: 12px;
+                }
+
+                .cp-payment-result {
+                    width: 248px;
+                }
+
+                .sec-action {
+
+                    @include wizard-button-caption();
+                    color: $color-text-semi;
+                    font-weight: 600;
+                    height: 40px;
+                    width: 100%;
+                    border-radius: 4px;
+                    border: 1px solid $color-border-normal;
+                    background-color: $color-white;
+                }
+
+            }
+
+            //.payment-tryout.field-errors {
+            //
+            //    @include common-error-message();
+            //    display: none;
+            //
+            //}
+            .field-errors {
+
+                @include common-error-message();
+
+                display: none;
+                margin: 8px 0;
+
+                &.has-errors {
+
+                    display: block;
+
+                    span {
+                        font-size: 13px;
+                    }
+
+                }
+
+            }
+
+            .call-support {
+                display: none;
+            }
+
+            .cp-payment-result {
+
+                .result {
+
+                    display: none;
+                    font-size: 14px;
+
+                    &.ok {
+
+                        color: $color-nav-step-done-text;
+
+                        &:before {
+                            @include ok-icon();
+                        }
+
+                    }
+                    &.fail {
+
+                        color: $color-wizard-error-message;
+
+                        &:before {
+                            @include error-icon();
+                        }
+
+                    }
+
+                }
+
+            }
+
+            .payment-tryout-comment.live-payment {
+
+                width: 248px;
+                color: $color-text-light;
+
+                .attention-needed {
+                    color: $color-wizard-required-sign;
+                }
+
+            }
+
+        }
+        // CP payment tryout custom field - END        
+        
+        .custom-block-payment-cards-icons {
+            
+            .cp-supported-cards {
+                
+                img {
+                    vertical-align: middle;
+                    margin-right: 1rem;
+                }
+                
+            }
+            
+        }
+        
+        .settings-block.text-block .custom-block-cp-prepare-documents {
+            padding-bottom: 4px;
+            
+            .fields {
+                
+                margin-top: 1rem;
+                
+                .field {
+                    margin-bottom: 12px;
+                    
+                    label {
+                        line-height: 15px;
+                        margin-bottom: 2px;
+                    }
+                    
+                    .field-errors {
+                        display: none;
+                        span {
+                            font-size: inherit;
+                        }
+                    }
+                    
+                    .field-text {
+                        margin-bottom: 0;
+                        
+                        &:empty {
+                            display: none;
+                        }
+                        
+                        &:empty + .field-errors {
+                            display: block;
+                            line-height: 21px;
+                        }
+                    }
+                }
+                
+                .inline-container {
+                    display: flex;
+                    
+                    .field {
+                        justify-content: flex-start;
+                        margin-right: 1rem;
+                    }
+                }
+                
+            }
+            
+            ul {
+                margin-bottom: 0.5rem;
+                li {
+                    margin-bottom: 10px;
+                }
+            }
+            
+            .org-data {
+                margin-left: 1.1rem;
+            }
+            
+            .fill-explain {
+                @include wizard-field-explain();
+                color: $color-wizard-field-explain;
+                display: block;
+                margin-top: 10px;
+                margin-bottom: 6px;
+            }
+            
+        }
+        
+        .settings-block.custom-block.option-block.text {
+            #leyka_cp_public_id-field {
+                width: 248px;
+            }
+        }
+        
+        .settings-block.text-block {
+            .info2copy {
+                @include info2copy();
+            }
+        }
+        
+        #leyka-settings-form-final-cp_final {
+            .step-submit {
+                
+                .wizard-custom-link {
+                    margin-left: 1rem;
+                }
+                
+                .sec-action {
+                    display: none;
+                }
+            }
+            
+            .share-campaign {
+                float: left;
+                margin-top: 1rem;
+                
+                a {
+                    border-bottom: none;
+                    margin-right: 1.5rem;
+                    display: inline-block;
+                    line-height: 0px;
+                }
+            }
+        }
+        
+    }
+    
+}
+
+// expandable-area
+.leyka-wizard {
+    
+    .main-area {
+        .expandable-area {
+            
+            &>*:first-child {
+                display: inherit;
+            }
+            
+            .expand {
+                display: none;
+            }
+            
+            &.collapsed {
+                *:first-child {
+                    display: none;
+                }
+                
+                .expand {
+                    display: unset;
+                }
+                
+                .collapse {
+                    display: none;
+                }
+            }
+            
+        }
+    }
+    
+}
+
+// captioned screenshot
+.leyka-wizard {
+    
+    .main-area {
+        
+        .settings-block.text-block {
+            
+            .custom-block-captioned-screens {
+            }
+            
+            .captioned-screen {
+                
+                padding-top: 1.5rem;
+                
+                &:first-child {
+                    padding-top: 1rem;
+                }
+                
+                p {
+                    margin-bottom: 0.5rem;
+                }
+                
+                img.leyka-instructions-screen {
+                    max-width: 502px;
+                    border: 1px solid $color-wizard-link-sec;
+                }
+                
+                img.leyka-instructions-screen-full {
+                    max-height: 80%;
+                    display: none;
+                }
+                
+                .screen-wrapper {
+                    position: relative;
+                    line-height: 0px;
+                }
+                
+                img.zoom-screen {
+                    cursor: pointer;
+                    position: absolute;
+                    width: 40px;
+                    height: 40px;
+                    bottom: 1rem;
+                    left: calc(50% - 20px);
+                }
+                
+            }
+            
+        }
+        
+    }
+}
+
+// modal
+.leyka-wizard-modal {
+    border-radius: 6px;
+    
+    .ui-dialog-titlebar {
+        border-radius: 6px 6px 0 0;
+    }
+    
+    .ui-dialog-title {
+        display: none;
+    }
+    
+    .ui-dialog-content {
+        @include body-text();
+        text-align: center;
+        padding: 32px 0px;
+        
+        h3 {
+            @include wizard-h3();
+        }
+        
+        p {
+            @include body-text();
+            padding: 0px 70px;
+            margin: 1rem 0;
+        }
+        
+        .button {
+            @include wizard-button-caption();
+            height: 40px;
+            width: 248px;
+        }
+        
+        &#cp-documents-sent {
+            h3:first-child {
+                margin-top: 0px;
             }
         }
     }

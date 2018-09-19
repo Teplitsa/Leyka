@@ -1,10 +1,297 @@
 jQuery(document).ready(function($){
     // console.log('Wizard here!');
 });
+
+// Help chat
+jQuery(document).ready(function($){
+    
+    var $chat = $('.help-chat');
+    var $chatButton = $('.help-chat-button');
+    
+    if( !$chat.length) {
+        return;
+    }
+    
+    var $loading = $chat.find('.leyka-loader');
+    
+    function disableForm() {
+        $chat.find('input[type=text]').prop('disabled', true);
+        $chat.find('textarea').prop('disabled', true);
+        $chat.find('.button').hide();
+    }
+    
+    function enableForm() {
+        $chat.find('input[type=text]').prop('disabled', false);
+        $chat.find('textarea').prop('disabled', false);
+        $chat.find('.button').show();
+    }
+    
+    function showLoading() {
+        $loading.show();
+    }
+    
+    function hideLoading() {
+        $loading.hide();
+    }
+    
+    function showOKMessage() {
+        $chat.find('.ok-message').show();
+        $chat.removeClass('fix-height');
+    }
+
+    function hideOKMessage() {
+        $chat.find('.ok-message').hide();
+        $chat.addClass('fix-height');
+    }
+    
+    function showForm() {
+        $chat.find('.form').show();
+    }
+
+    function hideForm() {
+        $chat.find('.form').hide();
+    }
+
+    function validateForm() {
+        return true;
+    }
+    
+    function showHelpChat() {
+        $chatButton.hide();
+        $chat.show();
+    }
+    
+    function hideHelpChat() {
+        $chat.hide();
+        $chatButton.show();
+    }
+
+    $chat.find('.form').submit(function(e) {
+        e.preventDefault();
+        
+        if(!validateForm()) {
+            return;
+        }
+        
+        //hideErrors();
+        hideForm();
+        showLoading();
+            
+        $.post(leyka.ajaxurl, {
+            action: 'leyka_send_feedback',
+            name: $chat.find('#leyka-help-chat-name').val(),
+            topic: "Сообщение из формы обратной связи Лейки",
+            email: $chat.find('#leyka-help-chat-email').val(),
+            text: $chat.find('#leyka-help-chat-message').val(),
+            nonce: $chat.find('#leyka_feedback_sending_nonce').val()
+        }, null)
+            .done(function(response) {
+    
+                if(response == '0') {
+                    showOKMessage();
+                    hideForm();
+                }
+                else {
+                    alert('Ошибка!');
+                    showForm();
+                }
+                
+            })
+            .fail(function() {
+                alert('Ошибка!');
+                showForm();
+            })
+            .always(function() {
+                hideLoading();
+            });
+            
+    });
+    
+    $chatButton.click(function(e){
+        e.preventDefault();
+        showHelpChat();
+        hideOKMessage();
+        showForm();
+    });
+
+    $chat.find('.close').click(function(e){
+        e.preventDefault();
+        hideHelpChat();
+        hideForm();
+        showOKMessage();
+    });
+    
+});
+
+
+// expandable area
+jQuery(document).ready(function($){
+    $('.expandable-area .expand, .expandable-area .collapse').click(function(e){
+        e.preventDefault();
+        $(this).parent().toggleClass('collapsed');
+    });
+});
+
+
+// custom file input
+jQuery(document).ready(function($){
+    $('.settings-block.file .button').click(function(e){
+        e.preventDefault();
+        $(this).parent().find('input[type=file]').trigger('click');
+    });
+    
+    $('.settings-block.file input[type=file]').change(function(){
+        $(this).parent().find('.chosen-file').text(String($(this).val()).split(/(\\|\/)/g).pop());
+    });
+    
+    $('.settings-block.file input[type=file]').each(function(){
+        $(this).parent().find('.chosen-file').text(String($(this).val()).split(/(\\|\/)/g).pop());
+    });
+    
+});
+
+
+// image modal
+jQuery(document).ready(function($){
+    
+    $('.leyka-instructions-screen-full').easyModal({
+        top: 100,
+        autoOpen: false,
+    });
+    
+    $('.zoom-screen').on('click', function(e){
+        
+        e.preventDefault();
+        $(this).closest('.captioned-screen').find('.leyka-instructions-screen-full').css('display', 'block').trigger('openModal');
+    
+    });
+});
+
+// notif modal
+jQuery(document).ready(function($){
+    
+    $('.leyka-wizard-modal').dialog({
+      dialogClass: 'wp-dialog leyka-wizard-modal',
+      autoOpen: false,
+      draggable: false,
+      width: 'auto',
+      modal: true,
+      resizable: false,
+      closeOnEscape: true,
+      position: {
+        my: "center",
+        at: "center",
+        of: window
+      },
+      open: function () {
+        var $modal = $(this);
+        $('.ui-widget-overlay').bind('click', function(){
+          $modal.dialog('close');
+        })
+      },
+      create: function () {
+        $('.ui-dialog-titlebar-close').addClass('ui-button');
+        
+        var $modal = $(this);
+        $modal.find('.button-dialog-close').bind('click', function(){
+            $modal.dialog('close');
+        });
+      },
+    });
+  
+    $('#cp-documents-sent').dialog('open');
+  
+});  
+// CP payment tryout custom setting:
+jQuery(document).ready(function($){
+
+    var $cp_payment_tryout_field = $('.settings-block.custom_cp_payment_tryout'),
+        $cp_error_message = $cp_payment_tryout_field.find('.payment-tryout.field-errors'),
+        $call_support_link = $cp_payment_tryout_field.find('.call-support');
+
+    if( !$cp_payment_tryout_field.length ) {
+        return;
+    }
+
+    $call_support_link.click(function(e){
+
+        e.preventDefault();
+
+        $('#leyka-help-chat-message').val(
+            $('.current-wizard-title').val() + '\n'
+            + 'Раздел: ' + $('.current-section-title').val() + '\n'
+            + 'Шаг: ' + $('.current-step-title').val() + '\n\n'
+            + 'Ошибка:\n'
+            + $cp_error_message.text()
+        );
+        $('.help-chat-button').click();
+
+    });
+
+    $('.do-payment').on('click.leyka', function(e){
+
+        e.preventDefault();
+
+        var $payment_tryout_button = $(this);
+
+        if($payment_tryout_button.data('submit-in-process')) {
+            return;
+        } else {
+            $payment_tryout_button.data('submit-in-process', 1);
+        }
+
+        // Do a test donation:
+        $payment_tryout_button.data('submit-in-process', 0);
+
+        if( !leyka_wizard_cp.cp_public_id ) {
+
+            $cp_error_message.html(leyka_wizard_cp.cp_not_set_up).show();
+            return false;
+
+        }
+
+        var widget = new cp.CloudPayments();
+        widget.charge({
+            language: 'ru-RU',
+            publicId: leyka_wizard_cp.cp_public_id,
+            description: 'Leyka - payment testing',
+            amount: 1.0,
+            currency: leyka_wizard_cp.main_currency,
+            accountId: leyka_wizard_cp.test_donor_email,
+            invoiceId: 'leyka-test-donation'
+        }, function(options){ // success callback
+
+            $cp_error_message.html('').hide();
+            $cp_payment_tryout_field.find('.field-errors').html('').hide();
+            $call_support_link.hide();
+
+            $payment_tryout_button
+                .removeClass('not-tested').hide()
+                .siblings('.result.ok').show();
+
+            if( !$cp_payment_tryout_field.find('.do-payment.not-tested').length ) {
+                $cp_payment_tryout_field.find('input[name="payment_tryout_completed"]').val(1);
+            }
+
+        }, function(reason, options){ // fail callback
+
+            $call_support_link.show();
+            $payment_tryout_button.hide()
+                .siblings('.result.error').show();
+
+            $cp_error_message.html(leyka_wizard_cp.cp_donation_failure_reasons[reason] || reason).show();
+            $cp_payment_tryout_field.find('.payment-tryout-comment').hide();
+
+        });
+
+    });
+
+});
+// CP payment tryout custom setting - END
 // Campaign decoration custom setting:
 jQuery(document).ready(function($){
     
-    if( !$('#leyka-settings-form-cd-campaign_decoration').length) {
+    if( !$('#leyka-settings-form-cd-campaign_decoration').length ) {
         return;
     }
     
@@ -247,6 +534,10 @@ jQuery(document).ready(function($){
 // Highlighted keys in rich edit
 jQuery(document).ready(function($){
     
+    if(!$('.type-rich_html').length) {
+        return;
+    }
+    
     var isInitEditDocsDone = false;
     var isEditContentLoadDone = false;
     var isEditFieldTouched = false;
@@ -411,127 +702,6 @@ jQuery(document).ready(function($){
         tryInitEditDocs($(this));
     });
     tryInitEditDocs($('.wp-editor-container'));
-    
-});
-
-// Help chat
-jQuery(document).ready(function($){
-    
-    var $chat = $('.help-chat');
-    var $chatButton = $('.help-chat-button');
-    
-    if( !$chat.length) {
-        return;
-    }
-    
-    var $loading = $chat.find('.leyka-loader');
-    
-    function disableForm() {
-        $chat.find('input[type=text]').prop('disabled', true);
-        $chat.find('textarea').prop('disabled', true);
-        $chat.find('.button').hide();
-    }
-    
-    function enableForm() {
-        $chat.find('input[type=text]').prop('disabled', false);
-        $chat.find('textarea').prop('disabled', false);
-        $chat.find('.button').show();
-    }
-    
-    function showLoading() {
-        $loading.show();
-    }
-    
-    function hideLoading() {
-        $loading.hide();
-    }
-    
-    function showOKMessage() {
-        $chat.find('.ok-message').show();
-        $chat.removeClass('fix-height');
-    }
-
-    function hideOKMessage() {
-        $chat.find('.ok-message').hide();
-        $chat.addClass('fix-height');
-    }
-    
-    function showForm() {
-        $chat.find('.form').show();
-    }
-
-    function hideForm() {
-        $chat.find('.form').hide();
-    }
-
-    function validateForm() {
-        return true;
-    }
-    
-    function showHelpChat() {
-        $chatButton.hide();
-        $chat.show();
-    }
-    
-    function hideHelpChat() {
-        $chat.hide();
-        $chatButton.show();
-    }
-
-    $chat.find('.form').submit(function(e) {
-        e.preventDefault();
-        
-        if(!validateForm()) {
-            return;
-        }
-        
-        //hideErrors();
-        hideForm();
-        showLoading();
-            
-        $.post(leyka.ajaxurl, {
-            action: 'leyka_send_feedback',
-            name: $chat.find('#leyka-help-chat-name').val(),
-            topic: "Сообщение из формы обратной связи Лейки",
-            email: $chat.find('#leyka-help-chat-email').val(),
-            text: $chat.find('#leyka-help-chat-message').val(),
-            nonce: $chat.find('#leyka_feedback_sending_nonce').val()
-        }, null)
-            .done(function(response) {
-    
-                if(response == '0') {
-                    showOKMessage();
-                    hideForm();
-                }
-                else {
-                    alert('Ошибка!');
-                    showForm();
-                }
-                
-            })
-            .fail(function() {
-                alert('Ошибка!');
-                showForm();
-            })
-            .always(function() {
-                hideLoading();
-            });
-            
-    });
-    
-    $chatButton.click(function(e){
-        e.preventDefault();
-        showHelpChat();
-        hideOKMessage();
-        showForm();
-    });
-
-    $chat.find('.close').click(function(e){
-        e.preventDefault();
-        hideHelpChat();
-        hideForm();
-        showOKMessage();
-    });
     
 });
 

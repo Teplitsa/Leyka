@@ -34,19 +34,51 @@ abstract class Leyka_Settings_Block {
 class Leyka_Text_Block extends Leyka_Settings_Block {
 
     protected $_text = '';
+    protected $_template = null;
 
     public function __construct(array $params = array()) {
 
         parent::__construct($params);
-
+        
         if( !empty($params['text'] ) ) {
             $this->_text = $params['text'];
         }
 
+        if( !empty($params['template']) ) {
+            $this->_template = $params['template'];
+        }
+        
+    }
+    
+    public function hasCustomTemplated() {
+        return !empty($this->_template);
     }
 
     public function getContent() {
-        return $this->_text;
+        if($this->_template) {
+            return $this->getTemplatedContent();
+        }
+        else {
+            return $this->_text;
+        }
+    }
+    
+    protected function getTemplatedContent() {
+        ob_start();
+
+        $template_file = apply_filters(
+            'leyka_text_field_template',
+            LEYKA_PLUGIN_DIR."inc/settings-fields-templates/leyka-{$this->_template}.php",
+            $this->_template
+        );
+        
+        if(file_exists($template_file)) {
+            require($template_file);
+        } else {
+            /** @todo Throw some Leyka_Exception */
+        }
+
+        return ob_get_clean();        
     }
 
     public function isValid() {
@@ -305,7 +337,7 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
 
         $this->_field_data = empty($params['data']) ? array() : (array)$params['data'];
         $this->_fields_keys = empty($params['keys']) || !is_array($params['keys']) ? array($this->_setting_id) : $params['keys'];
-
+        
     }
 
     public function __get($name) {
@@ -360,12 +392,22 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
 
         if( !empty($this->_field_data['required']) ) {
             foreach($this->_fields_keys as $key) {
-                if(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
+                
+                if($this->_field_type == 'file') {
+                    
+                    $is_valid = $this->isFileFieldValid();
+                    
+                }
+                elseif(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
 
                     $is_valid = false;
-                    break;
 
                 }
+                
+                if(!$is_valid) {
+                    break;
+                }
+                
             }
         }
 
@@ -378,17 +420,42 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
         );
 
     }
+    
+    public function isFileFieldValid() {
+        
+        if(!isset($_FILES[ 'leyka_' . $this->_setting_id ])) {
+            return false;
+        }
+        
+        $file = $_FILES[ 'leyka_' . $this->_setting_id ];
+        if(empty($file) || $file['error'] || !$file['size']) {
+            return false;
+        }
+        
+        return true;
+        
+    }
 
     public function getErrors() {
 
         $errors = array();
 
         if( !empty($this->_field_data['required']) ) {
+
+            $error_text = $this->_field_data['required'] === true ?
+                'Значение поля обязательно' : esc_attr__($this->_field_data['required']);
+                
             foreach($this->_fields_keys as $key) {
-                if(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
-                    $errors[] = new WP_Error('option_invalid', 'Значение поля обязательно');
+                if($this->_field_type == 'file') {
+                    if(!$this->isFileFieldValid()) {
+                        $errors[] = new WP_Error('option_invalid', $error_text);
+                    }
+                }
+                elseif(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
+                    $errors[] = new WP_Error('option_invalid', $error_text);
                 }
             }
+
         }
 
         $errors = $errors ? array($this->_id => $errors) : array();

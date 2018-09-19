@@ -46,17 +46,6 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
-            'cp_test_mode' => array(
-                'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
-                'default' => 1,
-                'title' => __('Payments testing mode', 'leyka'),
-                'description' => __('Check if the gateway integration is in test mode.', 'leyka'),
-                'required' => false,
-                'placeholder' => '',
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
-            ),
         );
 
     }
@@ -106,7 +95,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
     }
 
     public function submission_redirect_url($current_url, $pm_id) {
-        return leyka_options()->opt('cp_test_mode') ? '' : ''; // CP don't use redirection on payment
+        return ''; // CP doesn't use redirection on payment
     }
 
     public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
@@ -221,7 +210,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                         )));
                     }
 
-                } else { // Single or init recurring donation
+                } else if($_POST['InvoiceId'] !== 'leyka-test-donation') { // Single or init recurring donation
 
                     $donation = new Leyka_Donation((int)$_POST['InvoiceId']);
                     $donation->add_gateway_response($_POST);
