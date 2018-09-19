@@ -26,28 +26,35 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         $this->_options = array(
             'yandex_shop_id' => array(
                 'type' => 'text',
-                'title' => __('Yandex shopId', 'leyka'),
-                'description' => __('Please, enter your Yandex.Kassa shop ID here. It can be found in your Yandex contract.', 'leyka'),
+                'title' => __('ShopID', 'leyka'),
+                'description' => __('Please, enter your Yandex.Kassa shopID here. It can be found in your Yandex contract and in your .', 'leyka'),
                 'required' => true,
                 'placeholder' => __('E.g., 12345', 'leyka'),
             ),
             'yandex_scid' => array(
                 'type' => 'text',
-                'title' => __('Yandex scid', 'leyka'),
+                'title' => __('ScID', 'leyka'),
                 'description' => __('Please, enter your Yandex.Kassa shop showcase ID (SCID) here. It can be found in your Yandex contract.', 'leyka'),
-                'required' => 1,
+                'required' => true,
                 'placeholder' => __('E.g., 12345', 'leyka'),
             ),
             'yandex_shop_article_id' => array(
                 'type' => 'text',
-                'title' => __('Yandex ShopArticleId', 'leyka'),
+                'title' => __('ShopArticleID', 'leyka'),
                 'description' => __('Please, enter your Yandex.Kassa shop article ID here, if it exists. It can be found in your Yandex contract, also you can ask your Yandex.Kassa manager for it.', 'leyka'),
                 'placeholder' => __('E.g., 12345', 'leyka'),
             ),
-            $this->full_id.'_secret_word' => array(
+            'yandex_shop_password' => array(
                 'type' => 'text',
-                'title' => __('Yandex.Kassa shop secret word', 'leyka'),
-                'description' => __("Please, enter a secret word that you filled in Yandex.Kassa' technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
+                'title' => __('shopPassword', 'leyka'),
+                'description' => __("Please, enter a shopPassword parameter value that you filled in Yandex.Kassa technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
+                'placeholder' => __('E.g., 1^2@3#&84nDsOmE5h1T', 'leyka'),
+                'is_password' => 1,
+            ),
+            'yandex_secret_key' => array(
+                'type' => 'text',
+                'title' => __('Secret key for API', 'leyka'),
+                'description' => __("Please, enter a shopPassword parameter value that you filled in Yandex.Kassa technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
                 'placeholder' => __('E.g., 1^2@3#&84nDsOmE5h1T', 'leyka'),
                 'is_password' => 1,
             ),
