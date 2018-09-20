@@ -544,7 +544,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                     ),
                     array(
                         'step_id' => 'donors_communication',
-                        'title' => 'Коммуникация с донором',
+                        'title' => 'Благодарность донору',
                         'url' => '',
                     ),
                 ),
