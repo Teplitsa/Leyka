@@ -1,19 +1,51 @@
-jQuery(document).ready(function($){
-    // console.log('Wizard here!');
-});
+/** Gateways settings board */
 
-// Help chat
+// Yandex.Kassa settings:
 jQuery(document).ready(function($){
-    
-    var $chat = $('.help-chat');
-    var $chatButton = $('.help-chat-button');
-    
-    if( !$chat.length) {
+
+    var $gateway_settings = $('#payment-settings-area').find('#gateway-yandex');
+
+    if( !$gateway_settings.length ) {
         return;
     }
+
+    var $yandex_new_api_used = $gateway_settings.find('input[name="leyka_yandex_new_api"]');
+
+    if( !$yandex_new_api_used.length ) {
+        return;
+    }
+
+    $yandex_new_api_used.on('change.leyka', function(){
+
+        if($(this).prop('checked')) {
+
+            $gateway_settings.find('.new-api').show();
+            $gateway_settings.find('.old-api').hide();
+
+        } else {
+
+            $gateway_settings.find('.new-api').hide();
+            $gateway_settings.find('.old-api').show();
+
+        }
+
+    }).change();
+
+});
+/** Common wizards functions */
+
+// Help chat:
+jQuery(document).ready(function($){
     
+    var $chat = $('.help-chat'),
+        $chatButton = $('.help-chat-button');
+
+    if( !$chat.length ) {
+        return;
+    }
+
     var $loading = $chat.find('.leyka-loader');
-    
+
     function disableForm() {
         $chat.find('input[type=text]').prop('disabled', true);
         $chat.find('textarea').prop('disabled', true);
@@ -72,11 +104,11 @@ jQuery(document).ready(function($){
         if(!validateForm()) {
             return;
         }
-        
+
         //hideErrors();
         hideForm();
         showLoading();
-            
+
         $.post(leyka.ajaxurl, {
             action: 'leyka_send_feedback',
             name: $chat.find('#leyka-help-chat-name').val(),
@@ -84,26 +116,21 @@ jQuery(document).ready(function($){
             email: $chat.find('#leyka-help-chat-email').val(),
             text: $chat.find('#leyka-help-chat-message').val(),
             nonce: $chat.find('#leyka_feedback_sending_nonce').val()
-        }, null)
-            .done(function(response) {
+        }, null).done(function(response) {
     
-                if(response == '0') {
-                    showOKMessage();
-                    hideForm();
-                }
-                else {
-                    alert('Ошибка!');
-                    showForm();
-                }
-                
-            })
-            .fail(function() {
+            if(response === '0') {
+                showOKMessage();
+                hideForm();
+            } else {
                 alert('Ошибка!');
                 showForm();
-            })
-            .always(function() {
-                hideLoading();
-            });
+            }
+
+        }).fail(function() {
+            showForm();
+        }).always(function() {
+            hideLoading();
+        });
             
     });
     
@@ -123,8 +150,7 @@ jQuery(document).ready(function($){
     
 });
 
-
-// expandable area
+// Expandable areas:
 jQuery(document).ready(function($){
     $('.expandable-area .expand, .expandable-area .collapse').click(function(e){
         e.preventDefault();
@@ -132,8 +158,7 @@ jQuery(document).ready(function($){
     });
 });
 
-
-// custom file input
+// Custom file input field:
 jQuery(document).ready(function($){
     $('.settings-block.file .button').click(function(e){
         e.preventDefault();
@@ -151,56 +176,67 @@ jQuery(document).ready(function($){
 });
 
 
-// image modal
+// Image modal:
 jQuery(document).ready(function($){
-    
-    $('.leyka-instructions-screen-full').easyModal({
-        top: 100,
-        autoOpen: false,
-    });
-    
+
+    if(typeof easyModal !== 'undefined') {
+        $('.leyka-instructions-screen-full').easyModal({
+            top: 100,
+            autoOpen: false
+        });
+    }
+
     $('.zoom-screen').on('click', function(e){
-        
+
         e.preventDefault();
-        $(this).closest('.captioned-screen').find('.leyka-instructions-screen-full').css('display', 'block').trigger('openModal');
-    
+        $(this)
+            .closest('.captioned-screen')
+            .find('.leyka-instructions-screen-full')
+            .css('display', 'block')
+            .trigger('openModal');
+
     });
 });
 
-// notif modal
+// Notification modal:
 jQuery(document).ready(function($){
-    
+
+    if(typeof dialog === 'undefined') {
+        return;
+    }
+
     $('.leyka-wizard-modal').dialog({
-      dialogClass: 'wp-dialog leyka-wizard-modal',
-      autoOpen: false,
-      draggable: false,
-      width: 'auto',
-      modal: true,
-      resizable: false,
-      closeOnEscape: true,
-      position: {
-        my: "center",
-        at: "center",
-        of: window
-      },
-      open: function () {
-        var $modal = $(this);
-        $('.ui-widget-overlay').bind('click', function(){
-          $modal.dialog('close');
-        })
-      },
-      create: function () {
-        $('.ui-dialog-titlebar-close').addClass('ui-button');
-        
-        var $modal = $(this);
-        $modal.find('.button-dialog-close').bind('click', function(){
-            $modal.dialog('close');
-        });
-      },
+        dialogClass: 'wp-dialog leyka-wizard-modal',
+        autoOpen: false,
+        draggable: false,
+        width: 'auto',
+        modal: true,
+        resizable: false,
+        closeOnEscape: true,
+        position: {
+            my: 'center',
+            at: 'center',
+            of: window
+        },
+        open: function(){
+            var $modal = $(this);
+            $('.ui-widget-overlay').bind('click', function(){
+                $modal.dialog('close');
+            });
+        },
+        create: function () {
+            $('.ui-dialog-titlebar-close').addClass('ui-button');
+
+            var $modal = $(this);
+            $modal.find('.button-dialog-close').bind('click', function(){
+                $modal.dialog('close');
+            });
+        }
+
     });
-  
+
     $('#cp-documents-sent').dialog('open');
-  
+
 });  
 // CP payment tryout custom setting:
 jQuery(document).ready(function($){
@@ -275,7 +311,6 @@ jQuery(document).ready(function($){
         }, function(reason, options){ // fail callback
 
             $call_support_link.show();
-            // $payment_tryout_button.siblings('.result.fail').show();
 
             $cp_error_message.html(leyka_wizard_cp.cp_donation_failure_reasons[reason] || reason).show();
             $cp_payment_tryout_field.find('.payment-tryout-comment').hide();

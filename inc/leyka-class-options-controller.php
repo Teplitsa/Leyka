@@ -117,7 +117,7 @@ class Leyka_Options_Controller {
 
         $option_id = str_replace('leyka_', '', $option_id);
         if( !$this->_intialize_option($option_id, true) ) {
-            return false;
+            return null;
         }
 
         if(in_array($this->_options[$option_id]['type'], array('text', 'html', 'rich_html'))) {

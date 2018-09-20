@@ -24,50 +24,61 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         }
 
         $this->_options = array(
-            'yandex_shop_id' => array(
+            $this->_id.'_new_api' => array(
+                'type' => 'checkbox',
+                'default' => leyka_is_yandex_new_api_used(),
+                'title' => 'Новый API Яндекс.Кассы',
+                'description' => 'Отметьте, если ваше подключение к Яндекс.Кассе использует новый API',
+                'required' => false,
+            ),
+            $this->_id.'_shop_id' => array(
                 'type' => 'text',
                 'title' => __('ShopID', 'leyka'),
                 'description' => __('Please, enter your Yandex.Kassa shopID here. It can be found in your Yandex contract and in your .', 'leyka'),
                 'required' => true,
                 'placeholder' => __('E.g., 12345', 'leyka'),
             ),
-            'yandex_scid' => array(
+            $this->_id.'_scid' => array(
                 'type' => 'text',
                 'title' => __('ScID', 'leyka'),
                 'description' => __('Please, enter your Yandex.Kassa shop showcase ID (SCID) here. It can be found in your Yandex contract.', 'leyka'),
                 'required' => true,
                 'placeholder' => __('E.g., 12345', 'leyka'),
+                'field_classes' => array('old-api'),
             ),
-            'yandex_shop_article_id' => array(
+            $this->_id.'_shop_article_id' => array(
                 'type' => 'text',
                 'title' => __('ShopArticleID', 'leyka'),
                 'description' => __('Please, enter your Yandex.Kassa shop article ID here, if it exists. It can be found in your Yandex contract, also you can ask your Yandex.Kassa manager for it.', 'leyka'),
                 'placeholder' => __('E.g., 12345', 'leyka'),
+                'field_classes' => array('old-api'),
             ),
-            'yandex_shop_password' => array(
+            $this->_id.'_shop_password' => array(
                 'type' => 'text',
                 'title' => __('shopPassword', 'leyka'),
                 'description' => __("Please, enter a shopPassword parameter value that you filled in Yandex.Kassa technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
                 'placeholder' => __('E.g., 1^2@3#&84nDsOmE5h1T', 'leyka'),
-                'is_password' => 1,
+                'is_password' => true,
+                'field_classes' => array('old-api'),
             ),
-            'yandex_secret_key' => array(
+            $this->_id.'_secret_key' => array(
                 'type' => 'text',
                 'title' => __('Secret key for API', 'leyka'),
                 'description' => __("Please, enter a shopPassword parameter value that you filled in Yandex.Kassa technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
                 'placeholder' => __('E.g., 1^2@3#&84nDsOmE5h1T', 'leyka'),
-                'is_password' => 1,
+                'is_password' => true,
+                'field_classes' => array('new-api'),
             ),
-            'yandex_test_mode' => array(
+            $this->_id.'_test_mode' => array(
                 'type' => 'checkbox',
-                'default' => 1,
+                'default' => true,
                 'title' => __('Payments testing mode', 'leyka'),
                 'description' => __('Check if the gateway integration is in test mode.', 'leyka'),
                 'required' => false,
             ),
-            'yandex_outer_ip_to_inner' => array(
+            $this->_id.'_outer_ip_to_inner' => array(
                 'type' => 'checkbox',
-                'default' => 0,
+                'default' => true,
                 'title' => __('Set outer requests IP to inner one', 'leyka'),
                 'description' => __('Check if there are systematic errors on payments using the gateway.', 'leyka'),
                 'required' => false,
@@ -459,7 +470,7 @@ techMessage="'.$tech_message.'"/>');
 
             $donation = leyka_get_validated_donation($donation);
 
-            if($donation->type != 'rebill') {
+            if($donation->type !== 'rebill') {
                 return;
             }?>
 
@@ -597,7 +608,6 @@ class Leyka_Yandex_All extends Leyka_Payment_Method {
         }
 
         $this->_options = array(
-
             $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('Yandex.Kassa allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Kassa website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
@@ -646,33 +656,26 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
 
         $this->_options = array(
             $this->full_id.'_rebilling_available' => array(
-                'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
-                'default' => 0,
+                'type' => 'checkbox',
+                'default' => false,
                 'title' => __('Monthly recurring subscriptions are available', 'leyka'),
                 'description' => __('Check if Yandex.Kassa allows you to create recurrent subscriptions to do regular automatic payments.', 'leyka'),
-                'required' => 0,
-                'placeholder' => '',
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
             ),
             $this->full_id.'_certificate_path' => array(
                 'type' => 'text',
                 'default' => '',
                 'title' => __('Yandex.Kassa recurring payments certificate path', 'leyka'),
                 'description' => __("Please, enter the path to your SSL certificate given to you by Yandex.Kassa. <strong>Warning!</strong> The path should include the certificate's filename intself. Also it should be relative to wp-content directory.", 'leyka'),
-                'placeholder' => __('For ex., /uploads/leyka/your-cert-file.cer', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
+                'placeholder' => __('E.g., /uploads/leyka/your-cert-file.cer', 'leyka'),
+                'field_classes' => array('old-api'),
             ),
             $this->full_id.'_private_key_path' => array(
                 'type' => 'text',
                 'default' => '',
                 'title' => __("Yandex.Kassa recurring payments certificate's private key path", 'leyka'),
                 'description' => __("Please, enter the path to your SSL certificate's private key given to you by Yandex.Kassa.<li><li>The path should include the certificate's filename intself.</li><li>The path should be relative to wp-content directory. </li></ul>", 'leyka'),
-                'placeholder' => __('For ex., /uploads/leyka/your-private.key', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
+                'placeholder' => __('E.g., /uploads/leyka/your-private.key', 'leyka'),
+                'field_classes' => array('old-api'),
             ),
             $this->full_id.'_private_key_password' => array(
                 'type' => 'text',
@@ -680,17 +683,14 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
                 'title' => __("Yandex.Kassa recurring payments certificate's private key password", 'leyka'),
                 'description' => __("Please, enter a password for your SSL certificate's private key, if you set this password during the generation of your sertificate request file.", 'leyka'),
                 'placeholder' => __('Ex., fW!^12@3#&8A4', 'leyka'),
-                'is_password' => 1,
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
+                'is_password' => true,
+                'field_classes' => array('old-api'),
             ),
             $this->full_id.'_description' => array(
                 'type' => 'html',
                 'default' => __('Yandex.Kassa allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Kassa website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
                 'title' => __('Yandex bank card payment description', 'leyka'),
                 'description' => __('Please, enter Yandex.Kassa bank cards payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
             ),
         );
 

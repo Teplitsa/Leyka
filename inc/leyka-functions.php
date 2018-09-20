@@ -1327,3 +1327,8 @@ if( !function_exists('leyka_add_editor_css') ) {
 	}
 }
 add_action( 'after_setup_theme', 'leyka_add_editor_css' );
+
+// True if Leyka should use Yandex.Kassa new API by default, false otherwise:
+function leyka_is_yandex_new_api_used() {
+    return !leyka_options()->opt('yandex_scid');
+}

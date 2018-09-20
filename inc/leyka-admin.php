@@ -736,6 +736,7 @@ class Leyka_Admin_Setup {
         }
 
         wp_enqueue_script('leyka-admin', LEYKA_PLUGIN_BASE_URL.'js/admin.js', $dependencies, LEYKA_VERSION, true);
+        wp_enqueue_script('leyka-settings', LEYKA_PLUGIN_BASE_URL.'assets/js/admin.js', array('jquery',), LEYKA_VERSION, true);
 
         $js_data = apply_filters('leyka_admin_js_localized_strings', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
@@ -744,6 +745,7 @@ class Leyka_Admin_Setup {
             'email_invalid' => __('You have entered an invalid email', 'leyka'),
         ));
         wp_localize_script('leyka-admin', 'leyka', $js_data);
+        wp_localize_script('leyka-settings', 'leyka', $js_data);
 
         // Campaign editing page:
         if($screen->post_type == Leyka_Campaign_Management::$post_type && $screen->base == 'post' && !$screen->action) {

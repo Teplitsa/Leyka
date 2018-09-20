@@ -71,7 +71,6 @@ jQuery(document).ready(function($){
         }, function(reason, options){ // fail callback
 
             $call_support_link.show();
-            // $payment_tryout_button.siblings('.result.fail').show();
 
             $cp_error_message.html(leyka_wizard_cp.cp_donation_failure_reasons[reason] || reason).show();
             $cp_payment_tryout_field.find('.payment-tryout-comment').hide();
