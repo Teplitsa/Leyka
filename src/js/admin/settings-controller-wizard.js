@@ -154,6 +154,10 @@ jQuery(document).ready(function($){
 // image modal
 jQuery(document).ready(function($){
     
+    if(!$().easyModal) {
+        return;
+    }
+    
     $('.leyka-instructions-screen-full').easyModal({
         top: 100,
         autoOpen: false,
@@ -169,6 +173,10 @@ jQuery(document).ready(function($){
 
 // notif modal
 jQuery(document).ready(function($){
+    
+    if(!$().dialog) {
+        return;
+    }
     
     $('.leyka-wizard-modal').dialog({
       dialogClass: 'wp-dialog leyka-wizard-modal',
