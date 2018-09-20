@@ -75,7 +75,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 'leyka-cp',
                 LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_CP_Gateway::get_instance()->id.'/js/leyka.cp.js',
                 array('jquery', 'leyka-cp-widget', 'leyka-public'),
-                LEYKA_VERSION,
+                LEYKA_VERSION . ".001",
                 true
             );
         }
