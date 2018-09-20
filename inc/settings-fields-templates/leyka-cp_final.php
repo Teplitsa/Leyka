@@ -4,7 +4,7 @@
 
 /** @var $this Leyka_Custom_Setting_Block A block for which the template is used. */
 
-$campaigns = array(); get_posts(array(
+$campaigns = get_posts(array(
             'post_type' => Leyka_Campaign_Management::$post_type,
             'post_status' => array('publish', 'pending', 'draft'),
             'posts_per_page'   => 1,
