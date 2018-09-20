@@ -1,1 +1,1266 @@
-function is_email(e){return/^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test(e)}function leyka_get_ajax_url(){return"undefined"!=typeof leyka?leyka.ajaxurl:"undefined"!=typeof frontend?frontend.ajaxurl:"/"}!function(e){"function"==typeof define&&define.amd?define(["jquery"],e):e("object"==typeof exports?require("jquery"):jQuery)}(function(e){function n(e){return s.raw?e:encodeURIComponent(e)}function a(e){return s.raw?e:decodeURIComponent(e)}function t(e){return n(s.json?JSON.stringify(e):String(e))}function o(e){0===e.indexOf('"')&&(e=e.slice(1,-1).replace(/\\"/g,'"').replace(/\\\\/g,"\\"));try{return e=decodeURIComponent(e.replace(r," ")),s.json?JSON.parse(e):e}catch(n){}}function i(n,a){var t=s.raw?n:o(n);return e.isFunction(a)?a(t):t}var r=/\+/g,s=e.cookie=function(o,r,l){if(void 0!==r&&!e.isFunction(r)){if(l=e.extend({},s.defaults,l),"number"==typeof l.expires){var d=l.expires,f=l.expires=new Date;f.setTime(+f+864e5*d)}return document.cookie=[n(o),"=",t(r),l.expires?"; expires="+l.expires.toUTCString():"",l.path?"; path="+l.path:"",l.domain?"; domain="+l.domain:"",l.secure?"; secure":""].join("")}for(var c=o?void 0:{},p=document.cookie?document.cookie.split("; "):[],u=0,m=p.length;u<m;u++){var _=p[u].split("="),v=a(_.shift()),y=_.join("=");if(o&&o===v){c=i(y,r);break}o||void 0===(y=i(y))||(c[v]=y)}return c};s.defaults={},e.removeCookie=function(n,a){return void 0!==e.cookie(n)&&(e.cookie(n,"",e.extend({},a,{expires:-1})),!e.cookie(n))}}),Number.isInteger=Number.isInteger||function(e){return"number"==typeof e&&isFinite(e)&&Math.floor(e)===e},window.LeykaGUIBottom=function(e){this.$=e},window.LeykaGUIBottom.prototype={bindEvents:function(){var e=this,n=e.$;n(".leyka-js-open-form-bottom").on("click",function(e){e.preventDefault();var a=n(this),t=a.closest(".leyka-pf-bottom");n("#"+t.attr("data-target")).find(".amount__figure input.leyka_donation_amount").val(a.parents(".leyka-pf-bottom").find('input[name="leyka_temp_amount"]').val()),t.leykaForm("openFromBottom")})}},jQuery(document).ready(function(e){leykaGUIBottom=new LeykaGUIBottom(e),leykaGUIBottom.bindEvents()}),window.LeykaGUICard=function(e){this.$=e},window.LeykaGUICard.prototype={bindEvents:function(){var e=this;e.$}},jQuery(document).ready(function(e){leykaGUICard=new LeykaGUICard(e),leykaGUICard.bindEvents()}),window.LeykaGUIFinal=function(e){this.$=e,e(".leyka-pf__final-informyou .informyou-redirect-text").show()},window.LeykaGUIFinal.prototype={bindEvents:function(){function e(e,n,t){return n.length?a.cookie(e,n):t?a.cookie(e,""):a.cookie(e)?a.cookie(e):""}var n=this,a=n.$,t=a(".leyka-success-form"),o=e("leyka_donation_id","",!1);o&&t.each(function(e,n){var t=a(n),i=t.find('input[name="leyka_donation_id"]');i.val()||(i.val(o),t.show())}),t.on("submit",function(e){e.preventDefault(),n.validateForm(this)&&n.subscribeUser()}),a(".leyka-js-no-subscribe").on("click",function(e){e.preventDefault(),a(this).closest(".leyka-final-subscribe-form").slideUp(100);var t=a(".leyka-pf__final-thankyou");t.find(".informyou-redirect-text").slideDown(100),n.runRedirectProcess(t)})},validateForm:function(e){var n=this,a=n.$;e=a(e);var t=!1;return e.find(":input").each(function(){var n=a(this),o=n.attr("type"),i=n.attr("name"),r=n.val(),s=e.find("."+i+"-error");1==a.inArray(o,["text","email"])&&(n.hasClass("required")&&!r?(s.show(),n.closest(".donor__textfield").addClass("invalid")):"email"!=o||is_email(r)?(s.hide(),n.closest(".donor__textfield").removeClass("invalid"),t=!0):(s.show(),n.closest(".donor__textfield").addClass("invalid")))}),t},animateRedirectCountdown:function(e){var n=this,a=(n.$,e.find(".informyou-redirect-text .leyka-redirect-countdown")),t=a.text();t=parseInt(t,10),t-=1,t<=0&&clearInterval(n.countdownInterval),a.text(String(t))},runRedirectProcess:function(e){var n=this,a=(n.$,leyka_get_ajax_url());setTimeout(function(){var e;a?(e=a.replace(/\/core\/wp-admin\/.*/,""),e=e.replace(/\/wp-admin\/.*/,"")):e="/",window.location.href=e},4e3),n.countdownInterval=setInterval(n.animateRedirectCountdown.bind(null,e),1e3)},subscribeUser:function(){var e=this,n=e.$,a=n(".leyka-pf__final-informyou");n.post(leyka_get_ajax_url(),n("form.leyka-success-form").serializeArray(),"json").done(function(t){"undefined"!=typeof t.status&&0!=t.status&&"undefined"!=typeof t.message&&n(".leyka-pf__final-error-message").html(t.message).show(),a.show(),e.runRedirectProcess(a)}).always(function(){n(".leyka-pf__final-thankyou").hide()})}},jQuery(document).ready(function(e){leykaGUIFinal=new LeykaGUIFinal(e),leykaGUIFinal.bindEvents()});var leykaValidateForm,leyka;!function(e){function n(e){u(),x(),C(),a()}function a(){d(),f(),l(),o(),i(),r(),s(),t()}function t(){e(".leyka-pf__form").on("submit.leyka","form.leyka-revo-form",function(n){var a=e(this),t=a.find(".step.step--active");if(!t.hasClass("step--person")){if(t.hasClass("step--amount")){var o=a.find(".step.step--amount .step__action--amount a");o.length<2&&o.click()}return!1}if(n.preventDefault(),leykaValidateForm(a)){var i=a.find('input[name="leyka_payment_method"]:checked');if("default"!==i.data("processing"))return void("custom-process-submit-event"!==i.data("processing")&&n.stopPropagation());for(var r=a.closest(".leyka-pf").find(".leyka-pf__redirect"),s=a.serializeArray(),l={action:"leyka_ajax_get_gateway_redirect_data"},d=0;d<s.length;d++)l[s[d].name]=s[d].value;i.data("ajax-without-form-submission")&&(l.without_form_submission=!0),r.addClass("leyka-pf__redirect--open"),e.post(leyka_get_ajax_url(),l).done(function(n){if(n=e.parseJSON(n),!n||"undefined"==typeof n.status)return!1;if(0!==n.status&&"undefined"!=typeof n.message)return!1;if(!n.payment_url)return!1;var a='<form class="leyka-auto-submit" action="'+n.payment_url+'" method="post">';e.each(n,function(e,n){"payment_url"!==e&&(a+='<input type="hidden" name="'+e+'" value="'+n+'">')}),a+="</form>",r.append(a),r.find(".leyka-auto-submit").submit()})}else n.preventDefault(),n.stopPropagation()})}function o(){e(".donor__textfield--name").on("focus","input",function(){e(this).parents(".donor__textfield--name").removeClass("invalid").removeClass("valid").addClass("focus")}).on("blur",":input",function(){var n=e(this),a=n.val();n.parents(".donor__textfield--name").removeClass("focus"),a.length>0?n.parents(".donor__textfield--name").addClass("valid"):n.parents(".donor__textfield--name").addClass("invalid")}),e(".donor__textfield--email").on("focus","input",function(){e(this).parents(".donor__textfield--email").removeClass("invalid").removeClass("valid").addClass("focus")}).on("blur",":input",function(){var n=e(this),a=n.val();n.parents(".donor__textfield--email").removeClass("focus"),a.length>0&&is_email(a)?n.parents(".donor__textfield--email").addClass("valid"):n.parents(".donor__textfield--email").addClass("invalid")}),e(".donor__textfield--comment").on("focus",":input",function(){e(this).parents(".donor__textfield--comment").removeClass("invalid").removeClass("valid").addClass("focus")}).on("blur",":input",function(){var n=e(this),a=n.val();n.parents(".donor__textfield--comment").removeClass("focus"),a.length&&n.data("max-length")&&a.length>n.data("max-length")?n.parents(".donor__textfield--comment").addClass("invalid"):n.parents(".donor__textfield--comment").addClass("valid")})}function i(){e(".leyka-js-oferta-trigger").on("click.leyka",function(n){n.preventDefault(),e(this).parents(".leyka-pf").addClass("leyka-pf--oferta-open")}),e(".leyka-js-oferta-close").on("click.leyka",function(n){n.preventDefault(),e(this).parents(".leyka-pf").find(".donor__oferta").removeClass("invalid").find('input[name="leyka_agree"]').prop("checked",!0),e(this).parents(".leyka-pf").removeClass("leyka-pf--oferta-open")}),e(".donor__oferta").on("change.leyka","input:checkbox",function(){e(".donor__oferta").find("input:checkbox.required:not(:checked)").length?e(this).parents(".donor__oferta").addClass("invalid"):e(this).parents(".donor__oferta").removeClass("invalid")})}function r(){e(".leyka-js-pd-trigger").on("click.leyka",function(n){n.preventDefault(),e(this).parents(".leyka-pf").addClass("leyka-pf--pd-open")}),e(".leyka-js-pd-close").on("click.leyka",function(n){n.preventDefault(),e(this).parents(".leyka-pf").find(".donor__oferta").removeClass("invalid").find('input[name="leyka_agree_pd"]').prop("checked",!0),e(this).parents(".leyka-pf").removeClass("leyka-pf--pd-open")}),e(".donor__oferta").on("change.leyka","input:checkbox",function(){e(".donor__oferta").find("input:checkbox.required:not(:checked)").length?e(this).parents(".donor__oferta").addClass("invalid"):e(this).parents(".donor__oferta").removeClass("invalid")})}function s(){e(".leyka-js-history-close").on("click",function(n){n.preventDefault(),e(this).parents(".leyka-pf--history-open").removeClass("leyka-pf--history-open")}),e(".leyka-js-history-more").on("click",function(n){n.preventDefault(),e(this).parents(".leyka-pf, .leyka-pf-bottom").addClass("leyka-pf--history-open")})}function l(){e(".payment-opt__radio").change(function(){g(e(this))})}function d(){e(".leyka-js-another-step").on("click",function(n){n.preventDefault(),p(e(this))}),e(".leyka-js-complete-donation").click(function(){e(this).closest(".leyka-pf").leykaForm("close")}),e(".leyka-submit-errors").on("click",function(n){n.preventDefault();var a=e(this);a.hide(),c()})}function f(){e(".leyka-js-amount").on("click",function(n){n.preventDefault(),h(e(this))});var n=e(".amount_range").find("input"),a=e(".amount__figure").find("input.leyka_donation_amount");n.on("change input",m),a.on("change input",_),n.on("change input",y),n.on("change input",k),a.on("focus",function(){e(this).parents(".amount__figure").addClass("focus")}).on("blur",function(){e(this).parents(".amount__figure").removeClass("focus")})}function c(){var n=e(this).closest(".leyka-pf");n.find(".payment-opt__radio").prop("checked",!1),n.find(".step").removeClass("step--active"),n.find(".step:first").addClass("step--active"),n.find(".leyka-pf__redirect").removeClass("leyka-pf__redirect--open")}function p(e){var n=e.attr("href"),a=e.closest(".leyka-pf");"cards"===n&&a.find(".payment-opt__radio").prop("checked",!1),a.find(".step").removeClass("step--active"),a.find(".step--"+n).addClass("step--active"),a.find(".leyka-pf__final-screen").removeClass("leyka-pf__final--open").removeClass("leyka-pf__final--open-half")}function u(){e(".amount__figure input.leyka_donation_amount").each(function(){var n=e(this),a=n.parents(".step__fields").find(".amount_range input"),t=parseInt(e(this).val());(!Number.isInteger(t)||t<a.attr("min")||t>a.attr("max"))&&(t=a.data("default-value")),n.val(t),a.val(t);var o=n.closest(".leyka-pf").attr("id");e('div[data-target = "'+o+'"]').find("input").val(t)})}function m(n,a){var t=e(this).val();a&&a.skipSyncFigure||(e(this).parents(".step__fields").find(".amount__figure").find("input.leyka_donation_amount").val(t),e(this).parents(".step__fields").removeClass("invalid"))}function _(){var n=e(this),a=n.val(),t=n.parents(".leyka-pf__form");a||(a=0),t.find(".step--amount .step__fields").removeClass("invalid"),t.find(".amount_range input").val(a).trigger("change",{skipSyncFigure:!0})}function v(e){var n,a,t=e.val();try{n=parseInt(e.attr("min")),a=parseInt(e.attr("max"))}catch(o){n=0,a=0}var i=0;return a&&(i=100*(t-n)/(a-n)),i}function y(){var n=v(e(this)),a=1;for(var t in I)rangePercent=I[t],n>=rangePercent&&(a=parseInt(t)+2);var o=e(".amount__icon .svg-icon");o.find("use").attr("xlink:href","#icon-money-size"+a),o.addClass("icon-money-size"+a),1!=a&&o.removeClass("icon-money-size1");for(var t in I){var i=parseInt(t)+2;a!=i&&o.removeClass("icon-money-size"+i)}}function k(){var n=v(e(this)),a=(F-2*U)*n/100;e(".range-circle").css({left:a+"px"}),e(".range-color-wrapper").width(a+U)}function h(e){var n=e.attr("href"),a=e.parents(".step"),t=e.parents(".leyka-pf__form"),o=a.find(".amount__figure input.leyka_donation_amount"),i=parseInt(o.val());if(!Number.isInteger(i)||i<o.data("min-value")||i>o.data("max-value"))a.find(".step__fields").addClass("invalid");else{if(a.find(".step__fields").removeClass("invalid"),e.hasClass("monthly")){a.find("input.is-recurring-chosen").val(1),t.find(".remembered-amount").text(i),t.find(".remembered-monthly").show();var r=t.find('.payment-opt__radio[data-has-recurring="1"]:first'),s=t.find(".remembered-payment");s.closest(".leyka-js-another-step").attr("href","amount"),r.prop("checked",!0),s.text(r.closest(".payment-opt").find(".payment-opt__label").text())}else a.find("input.is-recurring-chosen").val(0),t.find(".remembered-amount").text(i),t.find(".remembered-monthly").hide(),t.find(".remembered-payment").parents(".leyka-js-another-step").attr("href","cards"),t.find(".payment-opt__radio").prop("checked",!1);a.removeClass("step--active"),t.find(".step--"+n).addClass("step--active")}}function x(){var n=e(".payments-grid");n.find(".payment-opt").length<=4&&n.css("overflow-y","hidden")}function g(n){var a=n.parents(".payment-opt").find(".payment-opt__label").text(),t=n.parents(".step"),o=n.parents(".leyka-pf__form");e("html").addClass("leyka-js--open-modal"),o.find(".remembered-payment").text(a),t.removeClass("step--active");var i=o.find(".step--static."+n.val());i.length>0?i.addClass("step--active"):(o.find(".step--person").addClass("step--active"),e("html").removeClass("leyka-js--open-modal"))}function C(){e(".donor__textfield--name").removeClass("invalid").removeClass("valid"),e(".donor__textfield--email").removeClass("invalid").removeClass("valid"),e(".donor__oferta").removeClass("invalid").removeClass("valid")}function b(){var n=e(this);n.addClass("leyka-pf--active"),e(".leyka-js").addClass("leyka-js--open-modal"),e(".amount_range input").change()}function w(){var n=e(this).attr("data-target"),a=e("#"+n),t=a.find(".amount__figure input"),o=parseInt(t.val());Number.isInteger(o)&&o>=t.attr("min")&&o<=t.attr("max")&&(a.find(".amount__figure input.leyka_donation_amount").val(o),a.find(".amount_range input").val(o)),a.find(".step").removeClass("step--active"),a.find(".step--amount").addClass("step--active"),a.addClass("leyka-pf--active")}function j(){var n=e(this);n.hasClass("leyka-pf--oferta-open")?n.removeClass("leyka-pf--oferta-open"):n.hasClass("leyka-pf--pd-open")?n.removeClass("leyka-pf--pd-open"):(n.removeClass("leyka-pf--active"),e(".leyka-js").removeClass("leyka-js--open-modal"))}var I=[25,50,75],F=200,U=17;leykaValidateForm=function(e){var n=!0,a=e.find(".donor__textfield--email input").val(),t=e.find(".amount__figure input.leyka_donation_amount"),o=parseInt(t.val().replace(/\s/g,"")),i=e.find(":input.leyka-donor-comment"),r=e.find('.donor__oferta input[name="leyka_agree"]'),s=e.find('.donor__oferta input[name="leyka_agree_pd"]');return 0===e.find(".donor__textfield--name input").val().length&&(n=!1,e.find(".donor__textfield--name").addClass("invalid")),0!==a.length&&is_email(a)||(n=!1,e.find(".donor__textfield--email").addClass("invalid")),i.length&&i.data("max-length")&&i.val().length>i.data("max-length")&&(n=!1,e.find(".donor__textfield--comment").addClass("invalid")),(r.length&&!r.prop("checked")||s.length&&!s.prop("checked"))&&(n=!1,e.find(".donor__oferta").addClass("invalid")),(o<=0||o<t.data("min-value")||o>t.data("max-value"))&&(n=!1),n};var D={defaults:{color:"green"},open:b,close:j,openFromBottom:w,init:n};e.fn.leykaForm=function(n){return D[n]?D[n].apply(this,Array.prototype.slice.call(arguments,1)):"object"!=typeof n&&n?void e.error("Method "+n+" does not exist on jQuery.leykaForm"):D.init.apply(this,arguments)}}(jQuery),window.LeykaPageMain=function(e){var n=this;n.$=e,n.setupNoScroll(),n.initForms(),n.inpageCardColumns(),n.setupCustomRangeControl(),n.bindEvents(),n.handleHashChange()},window.LeykaPageMain.prototype={bindEvents:function(){var e=this,n=e.$;n(".leyka-js-open-form").on("click.leyka",function(e){e.preventDefault(),n(this).closest(".leyka-pf").leykaForm("open")}),n(".leyka-js-close-form").on("click.leyka",function(e){e.preventDefault(),n(this).closest(".leyka-pf").leykaForm("close")}),n(window).resize(function(){e.inpageCardColumns()}),n(window).on("hashchange",function(){e.handleHashChange()})},setupNoScroll:function(){var e=this,n=e.$,a=n(window).scrollTop();n(window).scroll(function(){var e=n(window).scrollTop();n(".leyka-pf").hasClass("leyka-pf--active")?n(window).scrollTop(a):a=e})},initForms:function(){var e=this,n=e.$;n(".leyka-pf").leykaForm()},inpageCardColumns:function(){var e=this,n=e.$,a=n(".leyka-pf");a.each(function(){var e=n(".leyka-pf").width();e>=600?n(this).addClass("card-2col"):n(this).removeClass("card-2col")})},setupCustomRangeControl:function(){var e=this,n=e.$;n(".amount__range_overlay").addClass("amount__range_custom--visible"),n(".amount__range_custom").addClass("amount__range_custom--visible")},handleHashChange:function(){var e=this,n=e.$,a=window.location.hash.substr(1),t=a.split("|");if(t.length>0){var o=t[0],i=n("#"+o);if(i.length>0){i.leykaForm("open");for(var r in t){var s=t[r];e.handleFinalScreenParams(i,s)}}}},handleFinalScreenParams:function(e,n){if(n.search(/final-open/)>-1){e.find(".leyka-pf__final-screen").removeClass("leyka-pf__final--open").removeClass("leyka-pf__final--open-half");var a=n.split("_");try{var t=e.find(".leyka-pf__final-screen.leyka-pf__final-"+a[1]);t.addClass("leyka-pf__final--open"),a[2]&&t.addClass("leyka-pf__final--open-half")}catch(o){}}}},jQuery(document).ready(function(e){leykaPageMain=new LeykaPageMain(e)});
+/*!
+ * jQuery Cookie Plugin v1.4.1
+ * https://github.com/carhartl/jquery-cookie
+ *
+ * Copyright 2013 Klaus Hartl
+ * Released under the MIT license
+ */
+(function (factory) {
+	if (typeof define === 'function' && define.amd) {
+		// AMD
+		define(['jquery'], factory);
+	} else if (typeof exports === 'object') {
+		// CommonJS
+		factory(require('jquery'));
+	} else {
+		// Browser globals
+		factory(jQuery);
+	}
+}(function ($) {
+
+	var pluses = /\+/g;
+
+	function encode(s) {
+		return config.raw ? s : encodeURIComponent(s);
+	}
+
+	function decode(s) {
+		return config.raw ? s : decodeURIComponent(s);
+	}
+
+	function stringifyCookieValue(value) {
+		return encode(config.json ? JSON.stringify(value) : String(value));
+	}
+
+	function parseCookieValue(s) {
+		if (s.indexOf('"') === 0) {
+			// This is a quoted cookie as according to RFC2068, unescape...
+			s = s.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+		}
+
+		try {
+			// Replace server-side written pluses with spaces.
+			// If we can't decode the cookie, ignore it, it's unusable.
+			// If we can't parse the cookie, ignore it, it's unusable.
+			s = decodeURIComponent(s.replace(pluses, ' '));
+			return config.json ? JSON.parse(s) : s;
+		} catch(e) {}
+	}
+
+	function read(s, converter) {
+		var value = config.raw ? s : parseCookieValue(s);
+		return $.isFunction(converter) ? converter(value) : value;
+	}
+
+	var config = $.cookie = function (key, value, options) {
+
+		// Write
+
+		if (value !== undefined && !$.isFunction(value)) {
+			options = $.extend({}, config.defaults, options);
+
+			if (typeof options.expires === 'number') {
+				var days = options.expires, t = options.expires = new Date();
+				t.setTime(+t + days * 864e+5);
+			}
+
+			return (document.cookie = [
+				encode(key), '=', stringifyCookieValue(value),
+				options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
+				options.path    ? '; path=' + options.path : '',
+				options.domain  ? '; domain=' + options.domain : '',
+				options.secure  ? '; secure' : ''
+			].join(''));
+		}
+
+		// Read
+
+		var result = key ? undefined : {};
+
+		// To prevent the for loop in the first place assign an empty array
+		// in case there are no cookies at all. Also prevents odd result when
+		// calling $.cookie().
+		var cookies = document.cookie ? document.cookie.split('; ') : [];
+
+		for (var i = 0, l = cookies.length; i < l; i++) {
+			var parts = cookies[i].split('=');
+			var name = decode(parts.shift());
+			var cookie = parts.join('=');
+
+			if (key && key === name) {
+				// If second argument (value) is a function it's a converter...
+				result = read(cookie, value);
+				break;
+			}
+
+			// Prevent storing a cookie that we couldn't decode.
+			if (!key && (cookie = read(cookie)) !== undefined) {
+				result[name] = cookie;
+			}
+		}
+
+		return result;
+	};
+
+	config.defaults = {};
+
+	$.removeCookie = function (key, options) {
+		if ($.cookie(key) === undefined) {
+			return false;
+		}
+
+		// Must not alter options, thus extending a fresh object...
+		$.cookie(key, '', $.extend({}, options, { expires: -1 }));
+		return !$.cookie(key);
+	};
+
+}));
+
+
+function is_email(email) {
+    return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test(email);
+}
+
+function leyka_get_ajax_url() {
+    return typeof leyka != 'undefined' ? leyka.ajaxurl : typeof frontend != 'undefined' ? frontend.ajaxurl : '/';
+}
+
+//polyfill for unsupported Number.isInteger
+//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger
+Number.isInteger = Number.isInteger || function(value) {
+    return typeof value === "number" &&
+           isFinite(value) &&
+           Math.floor(value) === value;
+};
+/*
+ * Class to manipulate donation form from bottom
+ */
+
+window.LeykaGUIBottom = function($) {
+    this.$ = $;
+};
+
+window.LeykaGUIBottom.prototype = {
+
+    bindEvents: function() {
+
+        var self = this; var $ = self.$;
+
+        $('.leyka-js-open-form-bottom').on('click', function(e){
+
+            e.preventDefault();
+
+            var $this = $(this),
+                $bottomForm = $this.closest('.leyka-pf-bottom');
+
+            $('#'+$bottomForm.attr('data-target'))
+                .find('.amount__figure input.leyka_donation_amount')
+                .val( $this.parents('.leyka-pf-bottom').find('input[name="leyka_temp_amount"]').val() );
+
+            /** @todo Sync the amount value & the range control. */
+            $bottomForm.leykaForm('openFromBottom');
+
+        });
+
+    }
+
+};
+
+jQuery(document).ready(function($){
+    
+    leykaGUIBottom = new LeykaGUIBottom($);
+    leykaGUIBottom.bindEvents();
+    
+}); //jQuery
+
+/*
+ * Class to manipulate donation form from campaign carda
+ */
+
+window.LeykaGUICard = function($) {
+    this.$ = $;
+};
+
+window.LeykaGUICard.prototype = {
+
+    bindEvents: function() {
+        var self = this; var $ = self.$;
+    }
+
+};
+
+jQuery(document).ready(function($){
+
+    leykaGUICard = new LeykaGUICard($);
+    leykaGUICard.bindEvents();
+
+}); //jQuery
+/*
+ * Class to manipulate final page UI
+ */
+
+window.LeykaGUIFinal = function($) {
+    this.$ = $;
+    
+    $('.leyka-pf__final-informyou .informyou-redirect-text').show();
+};
+
+window.LeykaGUIFinal.prototype = {
+        
+    bindEvents: function(){
+
+        var self = this; var $ = self.$;
+
+        function leyka_remembered_data(data_name, data_value, data_delete) {
+
+            if(data_value.length) {
+                return $.cookie(data_name, data_value);
+            } else if(data_delete) {
+                return $.cookie(data_name, '');
+            } else {
+                return $.cookie(data_name) ? $.cookie(data_name) : '';
+                /** add local storage check... */
+            }
+        }
+
+        var $success_forms = $('.leyka-success-form'),
+            donation_id = leyka_remembered_data('leyka_donation_id', '', false);
+
+        if( !donation_id ) { // Hide the success form if there are no donation ID stored...
+            // $success_forms.hide();
+        } else { // ... or display them if there is one in the local storage
+            $success_forms.each(function(index, element) {
+
+                var $form = $(element),
+                    $donation_id_field = $form.find('input[name="leyka_donation_id"]');
+
+                if( !$donation_id_field.val() ) {
+
+                    $donation_id_field.val(donation_id);
+                    $form.show();
+
+                }
+
+            });
+        }
+
+        $success_forms.on('submit', function(e){
+
+            e.preventDefault();
+
+            if(self.validateForm(this)) {
+                self.subscribeUser();
+            }
+
+        });
+
+        $('.leyka-js-no-subscribe').on('click', function(e){
+            
+            e.preventDefault();
+
+            $(this).closest('.leyka-final-subscribe-form').slideUp(100);
+
+            var $thankyou_block = $('.leyka-pf__final-thankyou');
+
+            $thankyou_block.find('.informyou-redirect-text').slideDown(100);
+            self.runRedirectProcess($thankyou_block);
+
+        });
+
+    },
+
+    /** Subscription form validation */
+    validateForm: function($form){
+
+        var self = this; var $ = self.$;
+
+        $form = $($form); // Just in case
+        var form_valid = false;
+
+        $form.find(':input').each(function(){
+
+            var $input = $(this),
+                type = $input.attr('type'),
+                name = $input.attr('name'),
+                value = $input.val(),
+                $error_message = $form.find('.'+name+'-error');
+
+            if($.inArray(type, ['text', 'email']) == 1) {
+
+                if($input.hasClass('required') && !value) {
+
+                    $error_message.show();
+                    $input.closest('.donor__textfield').addClass('invalid');
+
+                } else if(type == 'email' && !is_email(value)) {
+
+                    $error_message.show();
+                    $input.closest('.donor__textfield').addClass('invalid');
+
+                } else {
+
+                    $error_message.hide();
+                    $input.closest('.donor__textfield').removeClass('invalid');
+                    form_valid = true;
+
+                }
+
+            }
+
+        });
+
+        return form_valid;
+    },
+    
+    animateRedirectCountdown: function($container){
+
+        var self = this; var $ = self.$;
+        
+        var $countdown_div = $container.find('.informyou-redirect-text .leyka-redirect-countdown'),
+        countdown = $countdown_div.text();
+
+        countdown = parseInt(countdown, 10);
+        countdown -= 1;
+        if(countdown <= 0) {
+            clearInterval(self.countdownInterval);
+        }
+        $countdown_div.text(String(countdown));
+
+    },
+
+    runRedirectProcess: function($container) {
+
+        var self = this; var $ = self.$;
+        
+        var ajax_url = leyka_get_ajax_url();
+        
+        setTimeout(function(){
+            
+            var redirect_url;
+
+            if( !ajax_url ) {
+                redirect_url = '/';
+            }
+            else {
+                redirect_url = ajax_url.replace(/\/core\/wp-admin\/.*/, '');
+                redirect_url = redirect_url.replace(/\/wp-admin\/.*/, '');
+            }
+
+            window.location.href = redirect_url;
+
+        }, 4000);
+
+        self.countdownInterval = setInterval(self.animateRedirectCountdown.bind(null, $container), 1000);
+
+    },
+
+    subscribeUser: function(){
+
+        var self = this; var $ = self.$;
+
+        var $informyou_block = $('.leyka-pf__final-informyou');
+
+        $.post(
+            leyka_get_ajax_url(),
+            $('form.leyka-success-form').serializeArray(),
+            'json'
+        ).done(function(response){
+
+            if(typeof response.status != 'undefined' && response.status != 0 && typeof response.message != 'undefined') {
+                $('.leyka-pf__final-error-message').html(response.message).show();
+            }
+
+            // leyka_remembered_data('leyka_donation_id', '', true); // Delete the donor data
+
+            $informyou_block.show();
+            self.runRedirectProcess($informyou_block);
+
+        }).always(function(){
+
+            $('.leyka-pf__final-thankyou').hide();
+
+        });
+
+    }
+};
+
+jQuery(document).ready(function($){
+
+    leykaGUIFinal = new LeykaGUIFinal($);
+    leykaGUIFinal.bindEvents();
+
+}); //jQuery
+/*
+ * Donation form inner functionality and handlers
+ */
+
+var leykaValidateForm,
+	leyka;
+
+(function($){
+
+	var amountIconMarks = [25, 50, 75],
+		inputRangeWidth = 200,
+		inputRangeButtonRadius = 17;
+
+	leykaValidateForm = function($_form){
+
+		var is_valid = true,
+			pEmail = $_form.find('.donor__textfield--email input').val(),
+			$amount_field = $_form.find('.amount__figure input.leyka_donation_amount'),
+			amount = parseInt($amount_field.val().replace(/\s/g, '')),
+			$comment_filed = $_form.find(':input.leyka-donor-comment'),
+			$agree_terms = $_form.find('.donor__oferta input[name="leyka_agree"]'),
+			$agree_pd = $_form.find('.donor__oferta input[name="leyka_agree_pd"]');
+
+		if($_form.find('.donor__textfield--name input').val().length === 0) {
+
+            is_valid = false;
+			$_form.find('.donor__textfield--name').addClass('invalid');
+
+		}
+
+		if(pEmail.length === 0 || !is_email(pEmail)) {
+
+            is_valid = false;
+			$_form.find('.donor__textfield--email').addClass('invalid');
+
+		}
+
+		if(
+			$comment_filed.length &&
+			$comment_filed.data('max-length') &&
+			$comment_filed.val().length > $comment_filed.data('max-length')
+		) {
+
+            is_valid = false;
+			$_form.find('.donor__textfield--comment').addClass('invalid');
+
+		}
+
+		if(
+			($agree_terms.length && !$agree_terms.prop('checked')) ||
+			($agree_pd.length && !$agree_pd.prop('checked'))
+		) {
+
+            is_valid = false;
+			$_form.find('.donor__oferta').addClass('invalid');
+
+		}
+
+		if(
+			amount <= 0 ||
+			amount < $amount_field.data('min-value') ||
+			amount > $amount_field.data('max-value')
+		) {
+            is_valid = false;
+		}
+
+		return is_valid;
+	};
+
+    var methods = {
+        'defaults': {
+            'color': 'green'
+        },
+        'open': open,
+        'close': close,
+        'openFromBottom': openFromBottom,
+        // 'redirectForm': redirectForm,
+        'init': init
+    };
+
+    function init(options) {
+
+        setupAmount();
+        setupPaymentsGrid();
+        setupDonorForm();
+        bindEvents();
+
+    }
+
+    /* event handlers */
+    function bindEvents() {
+
+        bindNavigationEvents();
+        bindAmountStepEvents();
+        bindPaymentStepEvents();
+        bindDonorStepEvents();
+        bindOfertaEvents();
+        bindPdEvents();
+        bindHistoryEvents();
+        bindSubmitPaymentFormEvent();
+
+    }
+
+    function bindSubmitPaymentFormEvent() {
+
+        $('.leyka-pf__form').on('submit.leyka', 'form.leyka-revo-form', function(e){
+
+            var $_form = $(this),
+                $active_step = $_form.find('.step.step--active');
+
+            if( !$active_step.hasClass('step--person') ) { // Do not validate + submit if donor's data step not reached yet
+
+                if($active_step.hasClass('step--amount')) {
+
+                    var $proceed_button = $_form.find('.step.step--amount .step__action--amount a');
+                    if($proceed_button.length < 2) {
+                        $proceed_button.click();
+                    }
+
+                }
+
+                return false;
+
+            }
+
+			e.preventDefault();
+
+            if(leykaValidateForm($_form)) { // Form is valid
+
+				var $pm_selected = $_form.find('input[name="leyka_payment_method"]:checked');
+
+                if($pm_selected.data('processing') !== 'default') {
+
+					if($pm_selected.data('processing') !== 'custom-process-submit-event') {
+						e.stopPropagation();
+					}
+                    return;
+
+                }
+
+                // Open "waiting" form step:
+                var $redirect_step = $_form.closest('.leyka-pf').find('.leyka-pf__redirect'),
+                    data_array = $_form.serializeArray(),
+                    data = {action: 'leyka_ajax_get_gateway_redirect_data'};
+
+                for(var i=0; i<data_array.length; i++) {
+                    data[data_array[i].name] = data_array[i].value;
+                }
+
+                if($pm_selected.data('ajax-without-form-submission')) {
+                	data['without_form_submission'] = true;
+				}
+
+                $redirect_step.addClass('leyka-pf__redirect--open');
+
+                // Get gateway redirection form and submit it manually:
+                $.post(leyka_get_ajax_url(), data).done(function(response){
+
+                    response = $.parseJSON(response);
+
+					// Wrong answer from ajax handler:
+                    if( !response || typeof response.status === 'undefined' ) {
+
+//                         $errors.html(leyka.ajax_wrong_server_response).show();
+//                         $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
+//                             scrollTop: $errors.offset().top - 35
+//                         }, 250);
+
+                        return false;
+
+                    } else if(response.status !== 0 && typeof response.message !== 'undefined') {
+
+                        // $errors.html(response.message).show();
+                        // $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
+                        //     scrollTop: $errors.offset().top - 35
+                        // }, 250);
+
+                        return false;
+
+                    } else if( !response.payment_url ) {
+
+                        // $errors.html(leyka.cp_not_set_up).show();
+                        // $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
+                        //     scrollTop: $errors.offset().top - 35
+                        // }, 250);
+
+                        return false;
+
+                    }
+
+                    var redirect_form_html = '<form class="leyka-auto-submit" action="'+response.payment_url+'" method="post">';
+
+                    $.each(response, function(field_name, value){
+                        if(field_name !== 'payment_url') {
+                            redirect_form_html += '<input type="hidden" name="'+field_name+'" value="'+value+'">';
+                        }
+                    });
+                    redirect_form_html += '</form>';
+
+                    $redirect_step.append(redirect_form_html);
+                    $redirect_step.find('.leyka-auto-submit').submit();
+
+                });
+
+            } else { // Errors exist
+
+                e.preventDefault();
+                e.stopPropagation();
+
+            }
+
+        });
+    }
+
+    function bindDonorStepEvents() {
+
+        $('.donor__textfield--name').on('focus', 'input', function(){
+            $(this).parents('.donor__textfield--name').removeClass('invalid').removeClass('valid').addClass('focus');
+        }).on('blur', ':input', function(){
+
+            // validate
+            var $this = $(this),
+                testVal = $this.val();
+
+            $this.parents('.donor__textfield--name').removeClass('focus');
+
+            if(testVal.length > 0){
+                $this.parents('.donor__textfield--name').addClass('valid');
+            } else {
+                $this.parents('.donor__textfield--name').addClass('invalid');
+            }
+
+        });
+
+        $('.donor__textfield--email').on('focus', 'input', function(){
+            $(this).parents('.donor__textfield--email').removeClass('invalid').removeClass('valid').addClass('focus');
+        }).on('blur', ':input', function(){
+
+            // validate
+            var $this = $(this),
+                testVal = $this.val();
+
+            $this.parents('.donor__textfield--email').removeClass('focus');
+
+            if(testVal.length > 0 && is_email(testVal)){
+                $this.parents('.donor__textfield--email').addClass('valid');
+            } else {
+                $this.parents('.donor__textfield--email').addClass('invalid');
+            }
+
+        });
+
+        $('.donor__textfield--comment').on('focus', ':input', function(){
+            $(this).parents('.donor__textfield--comment').removeClass('invalid').removeClass('valid').addClass('focus');
+        }).on('blur', ':input', function(){
+
+                // validate
+                var $this = $(this),
+                    testVal = $this.val();
+
+                $this.parents('.donor__textfield--comment').removeClass('focus');
+
+                if(testVal.length && $this.data('max-length') && testVal.length > $this.data('max-length')) {
+                    $this.parents('.donor__textfield--comment').addClass('invalid');
+                } else {
+                    $this.parents('.donor__textfield--comment').addClass('valid');
+                }
+            });
+
+    }
+
+    function bindOfertaEvents() {
+
+        $('.leyka-js-oferta-trigger').on('click.leyka', function(e){
+            e.preventDefault();
+
+            $(this).parents('.leyka-pf').addClass('leyka-pf--oferta-open');
+
+        });
+
+        $('.leyka-js-oferta-close').on('click.leyka', function(e){
+            e.preventDefault();
+
+            $(this)
+                .parents('.leyka-pf').find('.donor__oferta')
+                .removeClass('invalid').find('input[name="leyka_agree"]')
+                .prop('checked', true);
+
+            $(this).parents('.leyka-pf').removeClass('leyka-pf--oferta-open');
+
+        });
+
+        // agree
+        $('.donor__oferta').on('change.leyka', 'input:checkbox', function(){
+
+            if( $('.donor__oferta').find('input:checkbox.required:not(:checked)').length ) {
+                $(this).parents('.donor__oferta').addClass('invalid');
+            } else {
+                $(this).parents('.donor__oferta').removeClass('invalid');
+            }
+
+        });
+    }
+
+    function bindPdEvents() {
+
+        $('.leyka-js-pd-trigger').on('click.leyka', function(e){
+            e.preventDefault();
+
+            $(this).parents('.leyka-pf').addClass('leyka-pf--pd-open');
+
+        });
+
+        $('.leyka-js-pd-close').on('click.leyka', function(e){
+            e.preventDefault();
+
+            $(this)
+                .parents('.leyka-pf').find('.donor__oferta')
+                .removeClass('invalid').find('input[name="leyka_agree_pd"]')
+                .prop('checked', true);
+
+            $(this).parents('.leyka-pf').removeClass('leyka-pf--pd-open');
+
+        });
+
+        // agree
+        $('.donor__oferta').on('change.leyka', 'input:checkbox', function(){
+
+            if( $('.donor__oferta').find('input:checkbox.required:not(:checked)').length ) {
+                $(this).parents('.donor__oferta').addClass('invalid');
+            } else {
+                $(this).parents('.donor__oferta').removeClass('invalid');
+            }
+        });
+    }
+
+    function bindHistoryEvents() {
+
+        $('.leyka-js-history-close').on('click', function(e){
+            e.preventDefault();
+
+            $(this).parents('.leyka-pf--history-open').removeClass('leyka-pf--history-open');
+        });
+
+        $('.leyka-js-history-more').on('click', function(e){
+            e.preventDefault();
+            $(this).parents('.leyka-pf, .leyka-pf-bottom').addClass('leyka-pf--history-open');
+        });
+
+    }
+
+    function bindPaymentStepEvents() {
+        $('.payment-opt__radio').change(function(){
+            selectPaymentProvider($(this));
+        });
+    }
+
+    function bindNavigationEvents() {
+        
+        $('.leyka-js-another-step').on('click', function(e){
+            e.preventDefault();
+            goAnotherStep($(this));
+        });
+        
+        $('.leyka-js-complete-donation').click(function(){
+            $(this).closest('.leyka-pf').leykaForm('close');
+        });
+
+        //if it's should be here
+        $('.leyka-submit-errors').on('click', function(e){
+
+            e.preventDefault();
+
+            var $this = $(this);
+
+            $this.hide();
+            goFirstStep();
+
+        });
+
+    }
+
+    function bindAmountStepEvents() {
+
+        $('.leyka-js-amount').on('click', function(e){
+            e.preventDefault();
+            setChosenAmount($(this));
+        });
+
+        var $amount_range = $('.amount_range').find('input'),
+        $amount_figure = $('.amount__figure').find('input.leyka_donation_amount');
+
+        // Sync of amount field
+        $amount_range.on('change input', syncFigure);
+        $amount_figure.on('change input', syncRange);
+        $amount_range.on('change input', syncAmountIcon);
+        $amount_range.on('change input', syncCustomRangeInput);
+
+        $amount_figure
+            .on('focus', function(){
+                $(this).parents('.amount__figure').addClass('focus');
+            })
+            .on('blur', function(){
+                $(this).parents('.amount__figure').removeClass('focus');
+            });
+
+    }
+
+    function goFirstStep() {
+
+        var $_form = $(this).closest('.leyka-pf');
+
+        $_form.find('.payment-opt__radio').prop('checked', false); // Reset a chosen PM
+
+        $_form.find('.step').removeClass('step--active');
+        $_form.find('.step:first').addClass('step--active');
+        $_form.find('.leyka-pf__redirect').removeClass('leyka-pf__redirect--open');
+
+    }
+
+    function goAnotherStep($_link) {
+
+        var target = $_link.attr('href'),
+        $_form = $_link.closest('.leyka-pf');
+
+        if(target === 'cards') {
+            $_form.find('.payment-opt__radio').prop('checked', false); // Reset a chosen PM
+        }
+
+        $_form.find('.step').removeClass('step--active');
+        $_form.find('.step--'+target).addClass('step--active');
+        $_form.find('.leyka-pf__final-screen').removeClass('leyka-pf__final--open').removeClass('leyka-pf__final--open-half');
+
+    }
+
+    function setupAmount() {
+        $('.amount__figure input.leyka_donation_amount').each(function(){
+
+            var $this = $(this),
+				$amount_range = $this.parents('.step__fields').find('.amount_range input'),
+				value = parseInt($(this).val());
+
+            if(
+            	!Number.isInteger(value) ||
+				value < $amount_range.attr('min') ||
+				value > $amount_range.attr('max')
+			) {
+                value = $amount_range.data('default-value');
+            }
+
+			$this.val(value);
+            $amount_range.val(value);
+
+            // Sync with bottom
+            var formId = $this.closest('.leyka-pf').attr('id');
+            $('div[data-target = "'+formId+'"]').find('input').val(value);
+        });
+    }
+
+    function syncFigure(event, options) {
+        var val = $(this).val();
+        
+        if(options && options['skipSyncFigure']) {
+            // skip sync figure after range change trigger
+        }
+        else {
+            $(this).parents('.step__fields').find('.amount__figure').find('input.leyka_donation_amount').val(val);
+            $(this).parents('.step__fields').removeClass('invalid');
+        }
+    }
+
+    function syncRange() {
+
+        var $this = $(this),
+            val = $this.val(),
+            $form = $this.parents('.leyka-pf__form');
+
+        if(!val) {
+            val = 0;
+        }
+        
+        $form.find('.step--amount .step__fields').removeClass('invalid');
+        $form.find('.amount_range input').val(val).trigger('change', {'skipSyncFigure': true} );
+
+    }
+
+    function getAmountPercent($rangeInput) {
+        var val = $rangeInput.val();
+        var min, max;
+
+        try {
+            min = parseInt($rangeInput.attr('min'));
+            max = parseInt($rangeInput.attr('max'));
+        } catch(e) {
+            min = 0;
+            max = 0;
+        }
+
+        var percent = 0;
+        if(max) {
+            percent = 100 * (val - min) / (max - min);
+        }
+        return percent;
+    }
+
+    function syncAmountIcon() {
+        var percent = getAmountPercent($(this));
+
+        var amountIconIndex = 1;
+        for(var i in amountIconMarks) {
+            rangePercent = amountIconMarks[i];
+            if(percent >= rangePercent) {
+                amountIconIndex = parseInt(i) + 2;
+            }
+        }
+
+        var $svgIcon = $('.amount__icon .svg-icon');
+
+        // set icon class
+        $svgIcon.find('use').attr("xlink:href", "#icon-money-size" + amountIconIndex);
+
+        // set size class
+        $svgIcon.addClass('icon-money-size' + amountIconIndex);
+        if(amountIconIndex != 1) {
+            $svgIcon.removeClass('icon-money-size1')
+        }
+        for(var i in amountIconMarks) {
+            var size = parseInt(i) + 2;
+            if(amountIconIndex != size) {
+                $svgIcon.removeClass('icon-money-size' + size);
+            }
+        }
+    }
+
+    function syncCustomRangeInput() {
+
+        var percent = getAmountPercent($(this)),
+            leftOffset = (inputRangeWidth - 2 * inputRangeButtonRadius) * percent / 100;
+
+        $('.range-circle').css({'left': (leftOffset) + 'px'});
+        $('.range-color-wrapper').width(leftOffset + inputRangeButtonRadius);
+
+    }
+
+    function setChosenAmount($_link) {
+
+        var target = $_link.attr('href'),
+            $_step = $_link.parents('.step'),
+            $_form = $_link.parents('.leyka-pf__form'),
+			$amount_field = $_step.find('.amount__figure input.leyka_donation_amount'),
+			amount = parseInt($amount_field.val());
+
+        if(
+        	!Number.isInteger(amount) ||
+			amount < $amount_field.data('min-value') ||
+			amount > $amount_field.data('max-value')
+		) {
+            $_step.find('.step__fields').addClass('invalid');
+        } else {
+
+            $_step.find('.step__fields').removeClass('invalid');
+
+            if($_link.hasClass('monthly')) {
+
+                $_step.find('input.is-recurring-chosen').val(1);
+                $_form.find('.remembered-amount').text(amount);
+                $_form.find('.remembered-monthly').show();
+
+                var $recurring_option = $_form.find('.payment-opt__radio[data-has-recurring="1"]:first'),
+                    $remembered_pm = $_form.find('.remembered-payment');
+
+				// Remember payment option
+                $remembered_pm.closest('.leyka-js-another-step').attr('href', 'amount');
+                $recurring_option.prop('checked', true);
+                $remembered_pm.text($recurring_option.closest('.payment-opt').find('.payment-opt__label').text());
+
+            } else {
+
+                $_step.find('input.is-recurring-chosen').val(0);
+                $_form.find('.remembered-amount').text(amount);
+                $_form.find('.remembered-monthly').hide();
+                $_form.find('.remembered-payment').parents('.leyka-js-another-step').attr('href', 'cards');
+
+                $_form.find('.payment-opt__radio').prop('checked', false); // Reset payment option
+
+            }
+
+            $_step.removeClass('step--active');
+            $_form.find('.step--'+target).addClass('step--active');
+        }
+    }
+
+    /** payment step **/
+    function setupPaymentsGrid() {
+        
+        var $pg = $('.payments-grid');
+        if( $pg.find('.payment-opt').length <= 4 ) {
+            $pg.css('overflow-y', 'hidden');
+        }
+        
+    }
+    
+    function selectPaymentProvider($_opt) {
+
+        var name = $_opt.parents('.payment-opt').find('.payment-opt__label').text(),
+            $_step = $_opt.parents('.step'),
+            $_form = $_opt.parents('.leyka-pf__form');
+
+        $('html').addClass('leyka-js--open-modal');
+
+        $_form.find('.remembered-payment').text(name);
+
+        $_step.removeClass('step--active');
+
+        var $step_static_step = $_form.find('.step--static.' + $_opt.val());
+        if($step_static_step.length > 0) {
+            $step_static_step.addClass('step--active');
+        } else {
+
+            $_form.find('.step--person').addClass('step--active');
+            $('html').removeClass('leyka-js--open-modal');
+
+        }
+
+    }
+
+    /* donor step */
+    function setupDonorForm() {
+        $('.donor__textfield--name').removeClass('invalid').removeClass('valid');
+        $('.donor__textfield--email').removeClass('invalid').removeClass('valid');
+        $('.donor__oferta').removeClass('invalid').removeClass('valid');
+    }
+
+    /* open/close form */
+    function open() {
+
+        var $this = $(this);
+
+        /** @todo For the forms caching task */
+        // $this.find('.leyka-pf__form').append($('#'+$this.data('form-id'))); // Get form HTML from cache
+
+        $this.addClass('leyka-pf--active'); // Open the popup
+	    $('.leyka-js').addClass('leyka-js--open-modal');
+
+        $('.amount_range input').change(); // Sync the coins picture with the amount
+
+    }
+
+    function openFromBottom() {
+
+        var formId = $(this).attr('data-target'),
+            $form = $('#'+formId),
+			$amount_field = $form.find('.amount__figure input'),
+			amount = parseInt($amount_field.val());
+
+        //copy amount if it's correct
+        if(
+        	Number.isInteger(amount) &&
+			amount >= $amount_field.attr('min') &&
+			amount <= $amount_field.attr('max')
+		) {
+			$form.find('.amount__figure input.leyka_donation_amount').val(amount);
+			$form.find('.amount_range input').val(amount);
+        }
+
+        // Reset active steps
+		$form.find('.step').removeClass('step--active');
+		$form.find('.step--amount').addClass('step--active');
+
+		// Open a form
+		$form.addClass('leyka-pf--active');
+    }
+
+    function close() {
+
+        var $pf = $(this);
+
+        if($pf.hasClass('leyka-pf--oferta-open')) { // close only the Oferta terms window
+            $pf.removeClass('leyka-pf--oferta-open');
+        } else if($pf.hasClass('leyka-pf--pd-open')) { // close only the PD terms window
+            $pf.removeClass('leyka-pf--pd-open');
+        } else { // close module
+            $pf.removeClass('leyka-pf--active');
+	        $('.leyka-js').removeClass('leyka-js--open-modal');
+        }
+    }
+
+    $.fn.leykaForm = function(methodOrOptions) {
+        if(methods[methodOrOptions]) {
+            return methods[methodOrOptions].apply(this, Array.prototype.slice.call(arguments, 1));
+        } else if (typeof methodOrOptions === 'object' || !methodOrOptions) {
+            return methods.init.apply(this, arguments);
+        } else {
+            $.error('Method '+methodOrOptions+' does not exist on jQuery.leykaForm');
+        }
+    }
+
+}( jQuery ));
+
+/*
+ * Common functionaly for every page with Leyka donation forms
+ */
+
+window.LeykaPageMain = function($) {
+    var self = this; self.$ = $;
+    
+    self.setupNoScroll();
+    self.initForms();
+    self.inpageCardColumns();
+    self.setupCustomRangeControl();
+    
+    self.bindEvents();
+    
+    self.handleHashChange();
+}
+
+window.LeykaPageMain.prototype = {
+        
+    bindEvents: function(){
+
+        var self = this; var $ = self.$;
+   
+        $('.leyka-js-open-form').on('click.leyka', function(e){
+
+            e.preventDefault();
+            $(this).closest('.leyka-pf').leykaForm('open');
+
+        });
+
+        $('.leyka-js-close-form').on('click.leyka', function(e){
+
+            e.preventDefault();
+            $(this).closest('.leyka-pf').leykaForm('close');
+
+        });
+
+        $(window).resize(function(){
+            self.inpageCardColumns();
+        });
+
+        $(window).on('hashchange', function() {
+            self.handleHashChange();
+        });
+
+    },
+
+    setupNoScroll: function() {
+
+        var self = this; var $ = self.$;
+        var position = $(window).scrollTop();
+
+        $(window).scroll(function(){
+
+            var scroll = $(window).scrollTop();
+
+            if($('.leyka-pf').hasClass('leyka-pf--active')){
+                $(window).scrollTop(position);
+            } else {
+                position = scroll;
+            }
+
+        });
+    },
+
+    initForms: function() {
+
+        var self = this; var $ = self.$;
+
+        $('.leyka-pf').leykaForm();
+
+        /** Leyka success widget behavior - BEGIN */
+
+        // var $success_forms = $('.leyka-success-form'),
+        //     donation_id = leyka_remembered_data('leyka_donation_id');
+        //
+        // if( !donation_id ) { // Hide the success form if there are no donation ID stored...
+        //     // $success_forms.hide();
+        // } else { // ... or display them if there is one in the local storage
+        //     $success_forms.each(function(index, element) {
+        //
+        //         var $form = $(element),
+        //             $donation_id_field = $form.find('input[name="leyka_donation_id"]');
+        //
+        //         if( !$donation_id_field.val() ) {
+        //
+        //             $donation_id_field.val(donation_id);
+        //             $form.show();
+        //
+        //         }
+        //
+        //     });
+        // }
+        //
+        // $success_forms.on('submit', function(e){
+        //
+        //     e.preventDefault();
+        //
+        //     var $this = $(this);
+        //
+        // });
+
+        /** Leyka success widget behavior - END */
+
+    },
+    
+    inpageCardColumns: function() {
+        var self = this; var $ = self.$;
+        
+        var form = $('.leyka-pf');
+        form.each(function(){
+            var w = $('.leyka-pf').width();
+
+            if(w >= 600) {
+                $(this).addClass('card-2col');
+            }
+            else{
+                $(this).removeClass('card-2col');
+            }
+        });
+    },
+    
+    setupCustomRangeControl: function() {
+
+        var self = this; var $ = self.$;
+        
+//        $('.amount__range_overlay').show();
+//        $('.amount__range_custom').show();
+        $('.amount__range_overlay').addClass('amount__range_custom--visible');
+        $('.amount__range_custom').addClass('amount__range_custom--visible');
+    },
+    
+    handleHashChange: function() {
+        var self = this; var $ = self.$;
+        
+        var hash = window.location.hash.substr(1);
+        var parts = hash.split('|');
+        
+        if(parts.length > 0) {
+            var form_id = parts[0];
+            var $_form = $('#' + form_id);
+            
+            if($_form.length > 0) {
+                $_form.leykaForm('open');
+                
+                for(var i in parts) {
+                    var part = parts[i];
+                    self.handleFinalScreenParams($_form, part);
+                }
+            }
+        }
+    },
+    
+    handleFinalScreenParams: function($_form, part) {
+        if(part.search(/final-open/) > -1) {
+            $_form.find('.leyka-pf__final-screen').removeClass('leyka-pf__final--open').removeClass('leyka-pf__final--open-half');
+            var final_parts = part.split('_');
+            try {
+                var $final_screen = $_form.find('.leyka-pf__final-screen.leyka-pf__final-' + final_parts[1]);
+                $final_screen.addClass('leyka-pf__final--open');
+                if(final_parts[2]) {
+                    $final_screen.addClass('leyka-pf__final--open-half');
+                }
+            }
+            catch(ex) {
+            }
+        }
+    }
+}
+
+jQuery(document).ready(function($){
+
+    leykaPageMain = new LeykaPageMain($);
+    
+}); //jQuery
