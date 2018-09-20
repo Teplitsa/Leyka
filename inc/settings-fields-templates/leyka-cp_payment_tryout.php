@@ -39,7 +39,7 @@
 
 </table>
 
-<div class="payment-tryout-comment">Нажмите на кнопку «Сделать тестовый платёж» и вам покажется форма приема пожертвований CloudPayments. Проверьте каждую из карт.</div>
+<div class="payment-tryout-comment">Нажмите на кнопку «Сделать тестовое пожертвование» и вам покажется форма приема пожертвований CloudPayments. Проверьте каждую из карт.</div>
 
 <?php } else { // Live payment testing ?>
 
