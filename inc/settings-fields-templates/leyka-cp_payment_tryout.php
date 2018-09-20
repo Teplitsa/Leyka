@@ -20,7 +20,7 @@
         <td class="bank-card-data card-date">12/99</td>
         <td class="bank-card-data card-cvv">123</td>
         <td class="cp-payment-result">
-            <input type="button" class="do-payment sec-action not-tested" value="Сделать тестовый платёж">
+            <input type="button" class="do-payment sec-action not-tested" value="Сделать тестовое пожертвование">
             <div class="result ok">Тестирование успешно</div>
             <div class="result fail">Произошла ошибка</div>
         </td>
@@ -31,7 +31,7 @@
         <td class="bank-card-data card-date">12/99</td>
         <td class="bank-card-data card-cvv">123</td>
         <td class="cp-payment-result">
-            <input type="button" class="do-payment sec-action not-tested" value="Сделать тестовый платёж">
+            <input type="button" class="do-payment sec-action not-tested" value="Сделать тестовое пожертвование">
             <div class="result ok">Тестирование успешно</div>
             <div class="result fail">Произошла ошибка</div>
         </td>
@@ -39,14 +39,14 @@
 
 </table>
 
-<div class="payment-tryout-comment">Нажмите на кнопку «Сделать тестовый платёж» и вам покажется форма приема пожертвований CloudPayments. Проверьте каждую из карт.</div>
+<div class="payment-tryout-comment">Нажмите на кнопку «Сделать тестовое пожертвование» и вам покажется форма приема пожертвований CloudPayments. Проверьте каждую из карт.</div>
 
 <?php } else { // Live payment testing ?>
 
 <div class="payment-tryout-wrapper">
 
     <div class="cp-payment-result">
-        <input type="button" class="do-payment sec-action not-tested live-payment" value="Провести платёж">
+        <input type="button" class="do-payment sec-action not-tested live-payment" value="Сделать пожертвование">
         <div class="result ok">Платёж успешен</div>
         <div class="result fail">Произошла ошибка</div>
     </div>
