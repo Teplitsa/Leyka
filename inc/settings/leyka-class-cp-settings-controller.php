@@ -195,7 +195,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             'field_type' => 'custom_cp_payment_tryout',
             'keys' => array('payment_tryout_completed'),
             'rendering_type' => 'template',
-            'data' => array('required' => 'Для продолжения необходимо выполнить все тестовые платежи'),
+            //'data' => array('required' => 'Для продолжения необходимо выполнить все тестовые платежи'),
         )))->addTo($section);
 
         $step = new Leyka_Settings_Step('cp_going_live',  $section->id, 'Переключение в боевой режим', array('next_label' => 'Отправить и продолжить'));
@@ -250,7 +250,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             'field_type' => 'custom_cp_payment_tryout',
             'keys' => array('payment_tryout_completed'),
             'rendering_type' => 'template',
-            'data' => array('required' => 'Для продолжения необходимо выполнить платёж.', 'is_live' => true)
+            //'data' => array('required' => 'Для продолжения необходимо выполнить платёж.', 'is_live' => true)
         )))->addTo($section);
             
         $this->_sections[$section->id] = $section;
@@ -424,6 +424,18 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
     }
     
     public function handleGoingLive(array $step_settings) {
+        
+        $available_pms = leyka_options()->opt('pm_available');
+        $available_pms[] = 'cp-card';
+        $available_pms = array_unique($available_pms);
+        leyka_options()->opt('pm_available', $available_pms);
+
+        foreach($available_pms as $pm_full_id) {
+            if($pm_full_id) {
+                $pm_order[] = "pm_order[]={$pm_full_id}";
+            }
+        }
+        leyka_options()->opt('pm_order', implode('&', $pm_order));
         
         $headers = array();
         $headers[] = sprintf('From: %s <%s>', get_bloginfo('name'), $_POST['leyka_going_live_from']);
