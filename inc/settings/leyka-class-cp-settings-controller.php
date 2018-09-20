@@ -430,6 +430,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         $available_pms = array_unique($available_pms);
         leyka_options()->opt('pm_available', $available_pms);
 
+        $pm_order = array();
         foreach($available_pms as $pm_full_id) {
             if($pm_full_id) {
                 $pm_order[] = "pm_order[]={$pm_full_id}";
