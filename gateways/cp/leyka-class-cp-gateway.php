@@ -31,7 +31,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 'title' => __('Public ID', 'leyka'),
                 'description' => __('Please, enter your CloudPayments public ID here. It can be found in your CloudPayments control panel.', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., 1234', 'leyka'),
+                'placeholder' => 'Вставьте номер Public ID сюда', // __('E.g., 1234', 'leyka'),
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),

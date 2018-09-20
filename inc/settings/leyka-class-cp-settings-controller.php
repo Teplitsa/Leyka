@@ -139,16 +139,14 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => 'Вставьте скопированный ключ в поле ниже',
-        )))->addBlock(new Leyka_Custom_Setting_Block(array(
+        )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'cp_public_id',
             'option_id' => 'cp_public_id',
             'custom_setting_id' => 'cp_public_id',
+            'required' => true,
             'field_type' => 'text',
             'show_title' => false,
-            'data' => array(
-                'placeholder' => 'Вставьте номер Public ID сюда',
-                'value' => leyka_options()->opt('cp_public_id'),
-            ),
+            'show_description' => false,
         )))->addTo($section);
 
         $step = new Leyka_Settings_Step('check_payment_request',  $section->id, 'Добавление запроса на проверку пожертвования');
@@ -418,7 +416,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             $attachments = array();
             $attachments[] = $movefile['file'];
             
-            wp_mail( self::$cp_email, $_POST['[leyka_send_documents_email_subject'], $_POST['leyka_send_documents_email_text'], $headers, $attachments );
+            wp_mail( self::$cp_email, $_POST['leyka_send_documents_email_subject'], $_POST['leyka_send_documents_email_text'], $headers, $attachments );
             
             $_SESSION['leyka-cp-notif-documents-sent'] = true;
         }
@@ -431,7 +429,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         $headers = array();
         $headers[] = sprintf('From: %s <%s>', get_bloginfo('name'), $_POST['leyka_going_live_from']);
         
-        wp_mail( self::$cp_email, $_POST['[leyka_going_live_email_subject'], $_POST['leyka_going_live_email_text'], $headers );
+        wp_mail( self::$cp_email, $_POST['leyka_going_live_email_subject'], $_POST['leyka_going_live_email_text'], $headers );
         
         return true;
         
