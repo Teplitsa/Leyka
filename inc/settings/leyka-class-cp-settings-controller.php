@@ -262,8 +262,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         $step = new Leyka_Settings_Step('cp_final', $section->id, 'Поздравляем!', array('header_classes' => 'greater',));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => '<p>Вы подключили CloudPayments. Стали доступны платежи с помощью платежных систем Visa и MasterCard.</p>
-<p>Поделитесь вашей последней кампанией с друзьями и попросите их отправить пожертвование. Так вы сможете протестировать новый способ оплаты.</p>',
+            'text' => 'Вы подключили CloudPayments. Стали доступны платежи с помощью платежных систем Visa и MasterCard.',
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'cp-final',
             'template' => 'cp_final',

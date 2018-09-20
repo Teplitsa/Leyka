@@ -548,6 +548,17 @@
             }
         }
         
+        a.button-primary {
+            @include wizard-button-caption();
+            height: 40px;
+            line-height: 40px;
+            width: 248px;
+            margin-right: 22px;
+            color: $color-white;
+            display: inline-block;
+            text-align: center;
+        }
+        
         a[href="#"] {
             border-bottom: 1px dashed $color-wizard-link;
         }
@@ -1331,6 +1342,11 @@
                 .sec-action {
                     display: none;
                 }
+            }
+            
+            .final-button {
+                float: left;
+                margin-top: 1rem;
             }
             
             .share-campaign {
