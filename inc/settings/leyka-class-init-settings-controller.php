@@ -55,7 +55,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step = new Leyka_Settings_Step('receiver_type', $section->id, 'Получатель пожертвований');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Вы должны определить, от имени кого вы будете собирать пожертвования. Как НКО (некоммерческая организация) — юридическое лицо или как обычный гражданин — физическое лицо.',
+            'text' => 'Вы должны определить, от имени кого вы будете собирать пожертвования. Как НКО (некоммерческая организация) — юридическое лицо или как обычный гражданин — физическое лицо. Низовым инициативам будет удобнее собирать от имени физического лица (помните о налогах). При этом у юридических лиц больше возможностей для сбора.',
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'receiver_type',
             'option_id' => 'receiver_legal_type',
@@ -215,7 +215,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step = new Leyka_Settings_Step('receiver_legal_terms_of_service', $section->id, 'Оферта');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Для соблюдения всех формальных процедур вам необходимо предоставить оферту о заключении договора пожертвования. Мы подготовили для вас шаблонный вариант. Пожалуйста, проверьте. При необходимости, скорректируйте текст оферты и нажмите «Сохранить и продолжить».',
+            'text' => 'Для соблюдения всех формальных процедур вам необходимо предоставить оферту о заключении договора пожертвования. Мы подготовили для вас шаблонный вариант. Пожалуйста, проверьте. При необходимости, скорректируйте текст оферты. Текст, выделенный синим, подставлен автоматически, но вы также можете его поменять. После завершения всех правок нажмите «Сохранить и продолжить».',
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'terms_of_service_text',
             'option_id' => 'terms_of_service_text',
@@ -225,7 +225,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step = new Leyka_Settings_Step('receiver_physical_terms_of_service', $section->id, 'Оферта');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Для соблюдения всех формальных процедур вам необходимо предоставить оферту о заключении договора пожертвования. Мы подготовили для вас шаблонный вариант. Пожалуйста, проверьте. При необходимости, скорректируйте текст оферты и нажмите «Сохранить и продолжить».',
+            'text' => 'Для соблюдения всех формальных процедур вам необходимо предоставить оферту о заключении договора пожертвования. Мы подготовили для вас шаблонный вариант. Пожалуйста, проверьте. При необходимости, скорректируйте текст оферты. Текст, выделенный синим, подставлен автоматически, но вы также можете его поменять. После завершения всех правок нажмите «Сохранить и продолжить».',
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'terms_of_service_text',
             'option_id' => 'person_terms_of_service_text',
@@ -238,12 +238,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'text' => sprintf(__('WARNING! We strongly recommend you to revise this Terms text and fill the field with your own value according to the organization personal data policy. Read more about it: %s', 'leyka'), leyka_get_pd_usage_info_links()),
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text-2',
-            'text' => '<ul>
-<li>В рамках сбора пожертвований вы будете собирать персональные данные доноров.</li>
-<li>«Согласие на обработку персональных данных» — обязательный документ по закону ФЗ-152.</li>
-<li>Мы подготовили шаблон текста соглашения, вы можете отредактировать его под ваши требования.</li>
-<li>Все персональные данные хранятся на вашем сайте и никуда не отправляются.</li>
-</ul>',
+            'text' => 'В рамках сбора пожертвований вы будете собирать персональные данные доноров. «Согласие на обработку персональных данных» — обязательный документ по закону ФЗ-152. Мы подготовили шаблон текста соглашения, вы можете отредактировать его под ваши требования. Текст, выделенный синим, подставлен автоматически, но вы также можете его поменять. Все персональные данные хранятся на вашем сайте и никуда не отправляются.',
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'pd_terms_text',
             'option_id' => 'pd_terms_text',
@@ -256,12 +251,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'text' => sprintf(__('WARNING! We strongly recommend you to revise this Terms text and fill the field with your own value according to the organization personal data policy. Read more about it: %s', 'leyka'), leyka_get_pd_usage_info_links()),
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text-2',
-            'text' => '<ul>
-<li>В рамках сбора пожертвований вы будете собирать персональные данные доноров.</li>
-<li>«Согласие на обработку персональных данных» — обязательный документ по закону ФЗ-152.</li>
-<li>Мы подготовили шаблон текста соглашения, вы можете отредактировать его под ваши требования.</li>
-<li>Все персональные данные хранятся на вашем сайте и никуда не отправляются.</li>
-</ul>',
+            'text' => 'В рамках сбора пожертвований вы будете собирать персональные данные доноров. «Согласие на обработку персональных данных» — обязательный документ по закону ФЗ-152. Мы подготовили шаблон текста соглашения, вы можете отредактировать его под ваши требования. Текст, выделенный синим, подставлен автоматически, но вы также можете его поменять. Все персональные данные хранятся на вашем сайте и никуда не отправляются.',
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'pd_terms_text',
             'option_id' => 'person_pd_terms_text',
@@ -284,7 +274,8 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step = new Leyka_Settings_Step('plugin_stats', $section->id, 'Диагностические данные');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Мы просим вас подтвердить согласие на отправку <strong>анонимных данных</strong> о пожертвованиях и технических данных к нам, в Теплицу. Это позволит нам улучшить работу плагина. Под анонимными данными понимаются следующие данные: 1) технические параметры сервера, на котором происходит сбор пожертвований, 2) данные о суммах сборов, данные о дате и времени сборов, 3) данные о выбранном методе оплаты. Контактные или платежные данные собираться не будут. Эти данные будут использоваться только разработчиками плагина и не будут передаваться третьим лицам.',
+            'text' => 'Мы просим вас подтвердить согласие на отправку <strong>технических данных</strong>  к нам, в Теплицу, что
+позволит нам последовательно совершенствовать работу плагина, а также помочь быстрее разрешать технические проблемы работы с Лейкой, если таковые возникнут, у конкретных пользователей. Эти данные будут использоваться только разработчиками плагина и не будут передаваться третьим лицам.',
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'send_plugin_stats',
             'option_id' => 'send_plugin_stats',
@@ -327,7 +318,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 'required' => true,
                 'placeholder' => 'Например, «На уставную деятельность организации»',
                 'value' => $init_campaign ? $init_campaign->title : '',
-                'comment' => 'Комментарий к заголовку кампании',
+                'comment' => 'Краткое и прозрачное описание того, для чего собираются средства.',
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'campaign-lead',
@@ -336,7 +327,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'data' => array(
                 'title' => 'Краткое описание',
                 'value' => $init_campaign ? $init_campaign->short_description : '',
-                'comment' => 'Комментарий к лиду кампании',
+                'comment' => 'В кратком описании кампании в сжатой форме рассказывается, почему стоит пожертвовать.',
             ),
         )))->addBlock(new Leyka_Container_Block(array(
             'id' => 'complex-row-2',
@@ -377,7 +368,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step = new Leyka_Settings_Step('donors_communication', $section->id, 'Благодарность донору');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text-1',
-            'text' => 'После того, как донор внёс своё пожертвование, хорошим тоном считается показать ему страницу с благодарностью и отправить письмо. Вы можете изменить текст письма.',
+            'text' => 'После того, как донор внёс своё пожертвование, хорошим тоном считается показать ему страницу с благодарностью и отправить письмо. Ниже вы можете отредактировать то, что донор получит в своем почтовом ящике. Поле «Отправитель» обозначает, от кого придет письмо донору. Как правило, указывается название вашей организации. Поле «E-mail отправителя» обозначает, какой обратный адрес увидит донор. Наконец, в тексте письма вы можете сами составить адрес вашей искренней благодарности дарителю. Обратите внимание, что в вашем распоряжении специальные тэги для автоматической подстановки.',
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text-2',
             'text' => 'Позже, в разделе «Настройки», вы сможете изменить текст страницы «Спасибо», которая показывается донору после успешного совершения пожертвования.',

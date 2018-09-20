@@ -175,14 +175,14 @@ self::$_options_meta = array(
         'description' => __('Enter a full name for the NGO bank.', 'leyka'),
         'required' => true,
         'placeholder' => __('E.g., First Columbia Credit Bank', 'leyka'),
-    ), 
+    ),
     'org_bank_bic' => array(
         'type' => 'text',
         'title' => __('The NGO bank BIC number', 'leyka'),
         'description' => __("Enter a BIC of the NGO bank.", 'leyka'),
         'required' => true,
         'placeholder' => __('E.g., 044180293', 'leyka'),
-    ), 
+    ),
     'org_bank_corr_account' => array(
         'type' => 'text',
         'title' => __('The NGO correspondent bank account number', 'leyka'),
@@ -424,7 +424,7 @@ self::$_options_meta = array(
         'title' => 'Отправитель',
         //'description' => __('Enter the name that would be used in all notification emails as «from whom» field', 'leyka'),
         'placeholder' => __('E.g., Daisy Foundation website', 'leyka'),
-        'comment' => 'Текст комментария к имени отправителя',
+        'comment' => 'От кого придет письмо донору. Как правило, указывается название вашей организации',
     ),
     'email_from' => array(
         'type' => 'text',
@@ -432,7 +432,7 @@ self::$_options_meta = array(
         'title' => 'E-mail отправителя',
         //'description' => __('Enter the email from which all Leyka emails would be sended', 'leyka'),
         'placeholder' => __('E.g., donations@daisyfoundation.org', 'leyka'),
-        'comment' => 'Текст комментария к email отправителя',
+        'comment' => 'Чей адрес будет указан в обратном адресе письма. Как правило, ваш контактный адрес.',
     ),
     'email_thanks_title' => array(
         'type' => 'text',
@@ -448,7 +448,7 @@ self::$_options_meta = array(
         'title' => 'Текст письма',
         'description' => $email_placeholders,
         'required' => 1,
-        'comment' => 'Текст комментария к тексту спасибо-письма',
+        'comment' => 'Текст, который увидит донор. Вы можете воспользоваться специальными тэгами для его настройки.',
     ),
     'email_recurring_init_thanks_title' => array(
         'type' => 'text',
@@ -520,7 +520,7 @@ self::$_options_meta = array(
     ),
     'donations_managers_emails' => array(
         'type' => 'text',
-        'default' => leyka_get_default_dm_list(), 
+        'default' => leyka_get_default_dm_list(),
         'title' => __('A comma-separated emails to notify of incoming donation', 'leyka'),
         'placeholder' => __('E.g., admin@daisyfoundation.org,yourmail@domain.com', 'leyka'),
     ),
