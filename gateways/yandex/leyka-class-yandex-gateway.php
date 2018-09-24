@@ -7,6 +7,8 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
     protected static $_instance;
 
+    protected $_new_api_redirect_url = '';
+
     protected function _set_attributes() {
 
         $this->_id = 'yandex';
@@ -114,6 +116,38 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
     }
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
+
+        if(leyka_options()->opt('yandex_new_api')) {
+
+            require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
+
+            $client = new YandexCheckout\Client();
+            $client->setAuth(leyka_options()->opt('yandex_shop_id'), leyka_options()->opt('yandex_secret_key'));
+
+            $payment = $client->createPayment(
+                array(
+                    'amount' => array(
+                        'value' => round($form_data['leyka_donation_amount'], 2),
+                        'currency' => 'RUB', /** @todo Change to $form_data[leyka_donation_currency], but fix "rur" -> "RUB" */
+                    ),
+                    'payment_method_data' => array(
+                        'type' => $this->_get_yandex_pm_id($pm_id),
+                    ),
+                    'confirmation' => array(
+                        'type' => 'redirect',
+                        'return_url' => leyka_get_success_page_url(),
+                    ),
+                    'capture' => true,
+                    'description' => 'Заказ № TEST_NUMBER',
+                    'metadata' => array('donation_id' => $donation_id,)
+                ),
+                uniqid('', true)
+            );
+
+            $this->_new_api_redirect_url = $payment->confirmation->confirmation_url;
+
+        }
+
         if($pm_id === 'yandex_card' && !empty($form_data['leyka_recurring'])) {
 
             $donation = new Leyka_Donation($donation_id);
@@ -133,7 +167,16 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         }
     }
 
+    public function submission_auto_redirect($is_auto_redirect, $pm_id, $donation_id) {
+        return leyka_options()->opt('yandex_new_api') ? false : $is_auto_redirect;
+    }
+
     public function submission_redirect_url($current_url, $pm_id) {
+
+        if(leyka_options()->opt('yandex_new_api')) {
+            return $this->_new_api_redirect_url;
+        }
+
         switch($pm_id) {
             case 'yandex_all':
             case 'yandex_money':
@@ -148,9 +191,15 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             default:
                 return $current_url;
         }
+
     }
 
     public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
+
+        // New Yandex.Kassa API doesn't require the data to be sent with redirect:
+        if(leyka_options()->opt('yandex_new_api')) {
+            return apply_filters('leyka_yandex_custom_submission_data', array(), $pm_id);
+        }
 
         $donation = new Leyka_Donation($donation_id);
 
@@ -549,7 +598,12 @@ techMessage="'.$tech_message.'"/>');
     /** A service method to get Yandex paymentType values by according pm_ids, and vice versa. */
     protected function _get_yandex_pm_id($pm_id) {
 
-        $all_pm_ids = array(
+        $all_pm_ids = leyka_options()->opt('yandex_new_api') ? array(
+            'yandex_all' => '',
+            'yandex_card' => 'bank_card',
+            'yandex_money' => 'yandex_money',
+            'yandex_wm' => 'webmoney',
+        ) : array(
             'yandex_all' => '',
             'yandex_card' => 'AC',
             'yandex_money' => 'PC',
