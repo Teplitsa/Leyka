@@ -167,9 +167,9 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         }
     }
 
-    public function submission_auto_redirect($is_auto_redirect, $pm_id, $donation_id) {
-        return leyka_options()->opt('yandex_new_api') ? false : $is_auto_redirect;
-    }
+//    public function submission_auto_redirect($is_auto_redirect, $pm_id, $donation_id) {
+//        return leyka_options()->opt('yandex_new_api') ? false : $is_auto_redirect;
+//    }
 
     public function submission_redirect_url($current_url, $pm_id) {
 
