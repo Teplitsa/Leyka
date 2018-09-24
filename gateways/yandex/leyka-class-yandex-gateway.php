@@ -77,6 +77,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'title' => __('Payments testing mode', 'leyka'),
                 'description' => __('Check if the gateway integration is in test mode.', 'leyka'),
                 'required' => false,
+                'field_classes' => array('old-api'),
             ),
             $this->_id.'_outer_ip_to_inner' => array(
                 'type' => 'checkbox',
@@ -117,6 +118,15 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
+        $donation = new Leyka_Donation($donation_id);
+
+        if( !empty($form_data['leyka_recurring']) ) {
+
+            $donation->payment_type = 'rebill';
+            $donation->rebilling_is_active = true; // So we could turn it on/off
+
+        }
+
         if(leyka_options()->opt('yandex_new_api')) {
 
             require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
@@ -124,47 +134,49 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             $client = new YandexCheckout\Client();
             $client->setAuth(leyka_options()->opt('yandex_shop_id'), leyka_options()->opt('yandex_secret_key'));
 
-            $payment = $client->createPayment(
-                array(
-                    'amount' => array(
-                        'value' => round($form_data['leyka_donation_amount'], 2),
-                        'currency' => 'RUB', /** @todo Change to $form_data[leyka_donation_currency], but fix "rur" -> "RUB" */
-                    ),
-                    'payment_method_data' => array(
-                        'type' => $this->_get_yandex_pm_id($pm_id),
-                    ),
-                    'confirmation' => array(
-                        'type' => 'redirect',
-                        'return_url' => leyka_get_success_page_url(),
-                    ),
-                    'capture' => true,
-                    'description' => 'Заказ № TEST_NUMBER',
-                    'metadata' => array('donation_id' => $donation_id,)
-                ),
-                uniqid('', true)
-            );
+            try {
 
-            $this->_new_api_redirect_url = $payment->confirmation->confirmation_url;
+                $payment = $client->createPayment(
+                    array(
+                        'amount' => array(
+                            'value' => round($form_data['leyka_donation_amount'], 2),
+                            'currency' => 'RUB', /** @todo Change to $form_data[leyka_donation_currency], but fix "rur" -> "RUB" */
+                        ),
+                        'payment_method_data' => array(
+                            'type' => $this->_get_yandex_pm_id($pm_id),
+                        ),
+                        'confirmation' => array(
+                            'type' => 'redirect',
+                            'return_url' => leyka_get_success_page_url(),
+                        ),
+                        'capture' => true,
+                        'description' => $donation->payment_title." (№ $donation_id)",
+                        'metadata' => array('donation_id' => $donation_id,)
+                    ),
+                    uniqid('', true)
+                );
+
+                $this->_new_api_redirect_url = $payment->confirmation->confirmation_url;
+
+            } catch(Exception $ex) {
+                // ...
+            }
+
+        } else { // Old API - for backward compatibility
+
+            if(
+                $pm_id === 'yandex_sb' &&
+                $form_data['leyka_donation_currency'] == 'rur' &&
+                $form_data['leyka_donation_amount'] < 10.0
+            ) {
+
+                $error = new WP_Error('leyka_donation_amount_too_small', __('The amount of donations via Sberbank Online should be at least 10 RUR.', 'leyka'));
+                leyka()->add_payment_form_error($error);
+
+            }
 
         }
 
-        if($pm_id === 'yandex_card' && !empty($form_data['leyka_recurring'])) {
-
-            $donation = new Leyka_Donation($donation_id);
-
-            $donation->payment_type = 'rebill';
-            $donation->rebilling_is_active = true; // So we could turn it on/off
-
-        } else if(
-            $pm_id === 'yandex_sb' &&
-            $form_data['leyka_donation_currency'] == 'rur' &&
-            $form_data['leyka_donation_amount'] < 10.0
-        ) {
-
-            $error = new WP_Error('leyka_donation_amount_too_small', __('The amount of donations via Sberbank Online should be at least 10 RUR.', 'leyka'));
-            leyka()->add_payment_form_error($error);
-
-        }
     }
 
 //    public function submission_auto_redirect($is_auto_redirect, $pm_id, $donation_id) {
