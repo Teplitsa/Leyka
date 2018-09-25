@@ -453,7 +453,7 @@ function leyka_inline_campaign(array $attributes = array()) {
         'id' => false,
         'template' => 'revo', // leyka_options()->opt('donation_form_template'),
         'show_thumbnail' => leyka_options()->opt('revo_template_show_thumbnail'),
-        'show_preview' => false,
+        'show_preview' => true,
     ), $attributes);
 
     $campaign_id = $attributes['id'] ? (int)$attributes['id'] : get_post()->ID;
@@ -467,6 +467,7 @@ function leyka_inline_campaign(array $attributes = array()) {
     $template_id = $attributes['template'];
     $template_subdir = LEYKA_PLUGIN_DIR.'templates/leyka-'.$template_id;
     $template_file = LEYKA_PLUGIN_DIR.'templates/leyka-template-'.$template_id.'.php';
+    $ready = 0;
 
     if($template_id && file_exists($template_subdir) && file_exists($template_file)) {
         foreach(glob($template_subdir.'/leyka-'.$template_id.'-*.php') as $file) {
@@ -537,15 +538,15 @@ function leyka_inline_campaign(array $attributes = array()) {
                         </div>
 
                         <div class="target">
-                            <?php if($ready > 0):?>
+                            <?php if($ready == 100):?>
+                                <span>Сумма полностью собрана!</span>
+                            <?php elseif($ready > 0):?>
                                 <?php echo leyka_format_amount($collected['amount']);?>
                                 <span class="curr-mark">
                                     <?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?>
                                 </span>
                             <?php else:?>
-                                <span class="curr-mark">
-                                    Поддержите
-                                </span>
+                                <span>Поддержите</span>
                             <?php endif?>
                         </div>
 
@@ -611,6 +612,8 @@ function leyka_inline_campaign(array $attributes = array()) {
                     <div class="inpage-card__action">
 					<?php if($campaign->is_finished) { ?>
 						<div class="message-finished"><?php echo __('The fundraising campaign has been finished. Thank you for your support!', 'leyka');?></div>
+                    <?php } elseif($ready == 100) { ?>
+                        <div class="leyka-thankyou-button">Спасибо за поддержку!</div>
 					<?php } else { ?>
                         <button type="button" class="leyka-js-open-form">
                             <?php echo leyka_options()->opt('donation_submit_text');?>
