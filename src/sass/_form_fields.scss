@@ -291,10 +291,20 @@ div[id *="leyka-pf-"] { //aka namespace
 
 	.inpage-card__action {
 		margin-top: $base*3;
+		display: flex;
+		justify-content: center;
 
-		button {
+		button,
+		.leyka-thankyou-button {
 			border: none;
 			@include button();
+		}
+		
+		.leyka-thankyou-button {
+			background-color: $color-white;
+			color: $color-main;
+			border: 1px solid $color-border-light2;
+			line-height: 26px;
 		}
 	}
 }
