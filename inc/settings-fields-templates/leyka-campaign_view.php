@@ -101,7 +101,7 @@ wp_enqueue_media();
             
             <div class="preview-frame <?php echo $cur_template?>" id="leyka-preview-frame">
                 <?php
-                    $embed_code = Leyka_Campaign_Management::get_card_embed_code($campaign_id, false, 300, 700);
+                    $embed_code = Leyka_Campaign_Management::get_card_embed_code($campaign_id, false, 343, 700);
                     $embed_code = str_replace('embed_object=campaign_card', 'embed_object=campaign_card_templated', $embed_code);
                     echo $embed_code;
                 ?>

@@ -198,7 +198,7 @@ div[id *="leyka-pf-"] { //aka namespace
 		}
 	
 		.info {
-			color: $color-text-light;
+			color: $color-text-light3;
 			font-size: 13px;
 			line-height: 15px;
 			font-weight: 500;
@@ -213,14 +213,25 @@ div[id *="leyka-pf-"] { //aka namespace
 	
 		.inpage-card__action {
 			margin-top: 0;
+			display: flex;
+			justify-content: center;
 	
-			button {
+			button,
+			.leyka-thankyou-button {
 				border: none;
 				@include button();
 				font-size: 16px;
 				line-height: 19px;
 				width: 100%;
+				max-width: 279px;
 				height: 48px;
+			}
+			
+			.leyka-thankyou-button {
+				background-color: $color-white;
+				color: $color-main;
+				border: 1px solid $color-border-light2;
+				line-height: 26px;
 			}
 		}
 		
