@@ -453,7 +453,7 @@ function leyka_inline_campaign(array $attributes = array()) {
         'id' => false,
         'template' => 'revo', // leyka_options()->opt('donation_form_template'),
         'show_thumbnail' => leyka_options()->opt('revo_template_show_thumbnail'),
-        'show_preview' => false,
+        'show_preview' => true,
     ), $attributes);
 
     $campaign_id = $attributes['id'] ? (int)$attributes['id'] : get_post()->ID;
