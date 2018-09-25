@@ -34,11 +34,17 @@
     </form>
     <?php leyka_pf_footer();
 
-    if(leyka()->auto_redirect) {?>
+    if(leyka()->redirect_type === 'auto') {?>
 
     <script type="text/javascript">
         setTimeout(function(){ document.getElementById('leyka-auto-submit').submit(); }, <?php echo WP_DEBUG ? 10000 : 5000;?>);
     </script>
+
+    <?php } else if(leyka()->redirect_type === 'redirect') {?>
+
+        <script type="text/javascript">
+            setTimeout(function(){ document.getElementById('leyka-auto-submit').setAttribute('type', 'get').submit(); }, <?php echo WP_DEBUG ? 10000 : 5000;?>);
+        </script>
 
     <?php }
 
