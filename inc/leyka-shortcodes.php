@@ -539,14 +539,14 @@ function leyka_inline_campaign(array $attributes = array()) {
 
                         <div class="target">
                             <?php if($ready == 100):?>
-                                <span class="curr-mark">Сумма полностью собрана!</span>
+                                <span>Сумма полностью собрана!</span>
                             <?php elseif($ready > 0):?>
                                 <?php echo leyka_format_amount($collected['amount']);?>
                                 <span class="curr-mark">
                                     <?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?>
                                 </span>
                             <?php else:?>
-                                <span class="curr-mark">Поддержите</span>
+                                <span>Поддержите</span>
                             <?php endif?>
                         </div>
 
