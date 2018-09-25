@@ -298,6 +298,9 @@ div[id *="leyka-pf-"] { //aka namespace
 		.leyka-thankyou-button {
 			border: none;
 			@include button();
+			width: 100%;
+			max-width: 279px;
+			height: 48px;
 		}
 		
 		.leyka-thankyou-button {
