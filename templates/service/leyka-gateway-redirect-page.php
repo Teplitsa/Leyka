@@ -24,7 +24,6 @@
         }?>
 
         <noscript>
-
             <div>
                 <?php _e("If you weren't redirected to the payment page automatically, please press this button", 'leyka');?>
             </div>
@@ -43,7 +42,7 @@
     <?php } else if(leyka()->redirect_type === 'redirect') {?>
 
         <script type="text/javascript">
-            setTimeout(function(){ document.getElementById('leyka-auto-submit').setAttribute('type', 'get').submit(); }, <?php echo WP_DEBUG ? 10000 : 5000;?>);
+            setTimeout(function(){ window.location.href = document.getElementById('leyka-auto-submit').action; }, <?php echo WP_DEBUG ? 10000 : 5000;?>);
         </script>
 
     <?php }

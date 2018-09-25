@@ -451,6 +451,7 @@ function leyka_get_currencies_data($currency_id = false) {
             ),
         ),
     );
+    $currencies['rub'] = $currencies['rur'];
 
     return $currency_id && !empty($currencies[$currency_id]) ? $currencies[$currency_id] : $currencies;
 
@@ -470,9 +471,10 @@ function leyka_get_currency_data($currency_code) {
 
 function leyka_get_currency_label($currency_code) {
 
-    $currecies = leyka_get_currencies_data();
+    $currency_code = mb_strtolower($currency_code);
+    $currencies = leyka_get_currencies_data();
 
-    return isset($currecies[$currency_code]['label']) ? $currecies[$currency_code]['label'] : false;
+    return isset($currencies[$currency_code]['label']) ? $currencies[$currency_code]['label'] : false;
 }
 
 
@@ -1062,7 +1064,7 @@ function leyka_validate_donor_name($name) {
 }
 
 function leyka_validate_email($email) {
-    return $email ? filter_var($email, FILTER_VALIDATE_EMAIL) : true;
+    return $email ? preg_match("/^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|expert|[a-z]+)|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i", $email) : true;
 }
 
 /** @return string URL of a current page, according to permalinks stucture setting. */
@@ -1097,18 +1099,20 @@ if( !function_exists('wp_validate_redirect') ) {
         if ( isset($lp['scheme']) && !('http' == $lp['scheme'] || 'https' == $lp['scheme']) )
             return $default;
 
-        // Reject if scheme is set but host is not. This catches urls like https:host.com for which parse_url does not set the host field.
+        // Reject if scheme is set but host is not. This catches urls like https:host.com
+        // for which parse_url does not set the host field:
         if ( isset($lp['scheme'])  && !isset($lp['host']) )
             return $default;
 
         $wpp = parse_url(home_url());
+        $allowed_hosts = (array)apply_filters('allowed_redirect_hosts', array($wpp['host']), isset($lp['host']) ? $lp['host'] : '');
 
-        $allowed_hosts = (array) apply_filters('allowed_redirect_hosts', array($wpp['host']), isset($lp['host']) ? $lp['host'] : '');
-
-        if ( isset($lp['host']) && ( !in_array($lp['host'], $allowed_hosts) && $lp['host'] != strtolower($wpp['host'])) )
+        if( isset($lp['host']) && ( !in_array($lp['host'], $allowed_hosts) && $lp['host'] != strtolower($wpp['host'])) ) {
             $location = $default;
+        }
 
         return $location;
+
     }
 }
 
@@ -1331,4 +1335,20 @@ add_action( 'after_setup_theme', 'leyka_add_editor_css' );
 // True if Leyka should use Yandex.Kassa new API by default, false otherwise:
 function leyka_is_yandex_new_api_used() {
     return !leyka_options()->opt('yandex_scid');
+}
+
+if( !function_exists('leyka_get_l18n_date') ) {
+    function leyka_get_i18n_date($timestamp) {
+        return date_i18n(get_option('date_format'), (int)$timestamp);
+    }
+}
+if( !function_exists('leyka_get_l18n_time') ) {
+    function leyka_get_i18n_time($timestamp) {
+        return date_i18n(get_option('time_format'), (int)$timestamp);
+    }
+}
+if( !function_exists('leyka_get_l18n_datetime') ) {
+    function leyka_get_i18n_datetime($timestamp) {
+        return date_i18n(get_option('date_format').', '.get_option('time_format'), (int)$timestamp);
+    }
 }

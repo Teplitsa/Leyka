@@ -2012,6 +2012,7 @@ class Leyka_Donation {
         $this->_donation_meta['gateway_response'] = $resp_text;
 
         update_post_meta($this->_id, 'leyka_gateway_response', $this->_donation_meta['gateway_response']);
+
     }
 
     public function get_specific_data_admin_fields() {
@@ -2019,6 +2020,7 @@ class Leyka_Donation {
         $data_fields = leyka_get_gateway_by_id($this->gateway_id)->get_specific_data_admin_fields($this->id);
 
         return $data_fields ? $data_fields : array();
+
     }
 
     /**

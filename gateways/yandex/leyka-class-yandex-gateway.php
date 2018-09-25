@@ -265,7 +265,50 @@ techMessage="'.$tech_message.'"/>');
     public function _handle_service_calls($call_type = '') {
         switch($call_type) {
 
-            case 'check_order': // Gateway test before the payment - to check if it's correct
+            // New Yandex.Kassa API callbacks processing:
+            case 'process':
+
+                require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
+
+                $notification = json_decode(file_get_contents('php://input'), true);
+
+                if(empty($notification['event'])) {
+                    exit(500);
+                }
+
+                try {
+                    $notification = ($notification['event'] === YandexCheckout\Model\NotificationEventType::PAYMENT_SUCCEEDED) ?
+                        new YandexCheckout\Model\Notification\NotificationSucceeded($notification) :
+                        new YandexCheckout\Model\Notification\NotificationWaitingForCapture($notification);
+                } catch (Exception $e) {
+                    // ...
+                    exit(500);
+                }
+
+                $payment = $notification->getObject();
+                $donation = new Leyka_Donation($payment->metadata->donation_id);
+
+                if( !$donation ) {
+                    // ...
+                    exit(500);
+                }
+
+                $donation->add_gateway_response($payment);
+
+                switch($payment->status) {
+                    case 'succeeded':
+                        $donation->status = 'funded';
+                        break;
+                    case 'canceled':
+                        $donation->status = 'failed';
+                        break;
+                    default: // Also possible yandex payment statuses: 'pending', 'waiting_for_capture'
+                }
+
+                exit(200);
+
+            // Old Yandex.Kassa API callbacks processing:
+            case 'check_order':
 
                 if($_POST['action'] != 'checkOrder') { // Payment isn't correct, we're not allowing it
                     $this->_callback_answer(1, 'co', __('Wrong service operation', 'leyka'));
@@ -336,7 +379,7 @@ techMessage="'.$tech_message.'"/>');
                     $this->_callback_answer(1, 'pa', __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('Donation sum is unmatched', 'leyka'));
                 }
 
-                if($donation->status != 'funded') {
+                if($donation->status !== 'funded') {
 
                     $donation->add_gateway_response($_POST);
                     $donation->status = 'funded';
@@ -346,7 +389,7 @@ techMessage="'.$tech_message.'"/>');
                         $donation->pm_id = $this->_get_yandex_pm_id($_POST['paymentType']);
                     }
 
-                    if($donation->type == 'rebill' && !empty($_POST['invoiceId'])) {
+                    if($donation->type === 'rebill' && !empty($_POST['invoiceId'])) {
                         $donation->recurring_id = $_POST['invoiceId'];
                     }
 
@@ -370,26 +413,49 @@ techMessage="'.$tech_message.'"/>');
             return array();
         }
 
-        $response_vars = maybe_unserialize($donation->gateway_response);
-        if( !$response_vars ) {
-            return array();
-        } else if( !is_array($response_vars) ) {
-            return array('' => ucfirst($response_vars));
+        if(stristr($donation->gateway_response, 'PaymentResponse')) { // New API
+
+            require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
+
+            $response = maybe_unserialize($donation->gateway_response);
+            $response = array(
+                __('Yandex.Kassa payment ID:', 'leyka') => $response->id,
+                __('Yandex.Kassa payment status:', 'leyka') => $response->status,
+                __('Payment is done:', 'leyka') => !!$response->paid ? __('Yes') : __('No'),
+                __('Amount:', 'leyka') => round($response->amount->value, 2).' '
+                    .leyka_get_currency_label($response->amount->currency),
+                __('Created at:', 'leyka') => leyka_get_i18n_datetime(strtotime($response->created_at->date)),
+                __('Captured at:', 'leyka') => leyka_get_i18n_datetime(strtotime($response->captured_at->date)),
+                __('Description:', 'leyka') => $response->description,
+                __('Payment method:', 'leyka') => $response->payment_method->title,
+                __('Is test payment:', 'leyka') => !!$response->test ? __('Yes') : __('No'),
+//                __(':', 'leyka') => $response->,
+            );
+
+        } else { // Old API
+
+            $response = maybe_unserialize($donation->gateway_response);
+            if( !$response ) {
+                $response = array();
+            } else if( !is_array($response) ) {
+                $response = array('' => ucfirst($response));
+            }
+
+            $response = array(
+                __('Last response operation:', 'leyka') => $response['action'] == 'checkOrder' ?
+                    __('Donation confirmation', 'leyka') : __('Donation approval notice', 'leyka'),
+                __('Gateway invoice ID:', 'leyka') => $response['invoiceId'],
+                __('Full donation amount:', 'leyka') =>
+                    (float)$response['orderSumAmount'].' '.$donation->currency_label,
+                __('Donation amount after gateway commission:', 'leyka') =>
+                    (float)$response['shopSumAmount'].' '.$donation->currency_label,
+                __("Gateway's donor ID:", 'leyka') => $response['customerNumber'],
+                __('Response date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($response['requestDatetime'])),
+            );
+
         }
 
-        $action_label = $response_vars['action'] == 'checkOrder' ?
-            __('Donation confirmation', 'leyka') : __('Donation approval notice', 'leyka');
-
-        return array(
-            __('Last response operation:', 'leyka') => $action_label,
-            __('Gateway invoice ID:', 'leyka') => $response_vars['invoiceId'],
-            __('Full donation amount:', 'leyka') =>
-                (float)$response_vars['orderSumAmount'].' '.$donation->currency_label,
-            __('Donation amount after gateway commission:', 'leyka') =>
-                (float)$response_vars['shopSumAmount'].' '.$donation->currency_label,
-            __("Gateway's donor ID:", 'leyka') => $response_vars['customerNumber'],
-            __('Response date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($response_vars['requestDatetime'])),
-        );
+        return $response;
 
     }
 
