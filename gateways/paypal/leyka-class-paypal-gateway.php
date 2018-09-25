@@ -94,8 +94,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
      */
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
-        leyka()->auto_redirect = false;
-
         $donation = new Leyka_Donation($donation_id);
 
         $campaign_post = get_post($donation->campaign_id);
@@ -671,7 +669,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     }
 
     /** Override the auto-submit setting to send manual requests to PayPal. */
-    public function submission_auto_redirect($is_auto_redirect, $pm_id, $donation_id) {
+    public function submission_redirect_type($redirect_type, $pm_id, $donation_id) {
         return false;
     }
 
