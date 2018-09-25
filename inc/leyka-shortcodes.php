@@ -513,8 +513,12 @@ function leyka_inline_campaign(array $attributes = array()) {
                     <div class="inpage-card_title"><?php echo get_the_title($campaign_id);?></div>
                     
                     <?php if($attributes['show_preview'] && $campaign->post_excerpt):?>
-                    <div class="inpage-card_excerpt">
+                    <div class="inpage-card__excerpt">
                         <?php echo $campaign->post_excerpt?>
+                        <div class="inpage-card__toggle-excerpt-links">
+                            <a href="#" class="inpage-card__expand-excerpt">Подробнее</a>
+                            <a href="#" class="inpage-card__collapse-excerpt">Свернуть</a>
+                        </div>
                     </div>
                     <?php endif?>
 
@@ -533,13 +537,20 @@ function leyka_inline_campaign(array $attributes = array()) {
                         </div>
 
                         <div class="target">
-                            <?php echo leyka_format_amount($collected['amount']);?>
-                            <span class="curr-mark">
-                                <?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?>
-                            </span>
+                            <?php if($ready > 0):?>
+                                <?php echo leyka_format_amount($collected['amount']);?>
+                                <span class="curr-mark">
+                                    <?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?>
+                                </span>
+                            <?php else:?>
+                                <span class="curr-mark">
+                                    Поддержите
+                                </span>
+                            <?php endif?>
                         </div>
 
-                        <div class="info"><?php _e('collected of ', 'leyka');?>
+                        <div class="info">
+                            <?php echo $attributes['show_preview'] ? "Нужно собрать" : __('collected of ', 'leyka')?>
                             <?php echo leyka_format_amount($target['amount']);?>
                             <span class="curr-mark">
                                 <?php echo leyka_options()->opt("currency_{$target['currency']}_label");?>
@@ -565,7 +576,10 @@ function leyka_inline_campaign(array $attributes = array()) {
                             $supporters['supporters'] = array( "Дмитрий Белкин", "Екатерина Мышкина", "Людмила Лебедева", "Петр Гусев" );
                         }
                     ?>
-					<div class="inpage-card__note supporters">
+                    
+					<div class="supporter-and-button">
+                        
+                    <div class="inpage-card__note supporters">
 					<?php if(count($supporters['supporters'])) {?>
 
                         <strong><?php _e('Supporters:', 'leyka');?></strong>
@@ -602,6 +616,8 @@ function leyka_inline_campaign(array $attributes = array()) {
                             <?php echo leyka_options()->opt('donation_submit_text');?>
                         </button>
 					<?php } ?>
+                    </div>
+                    
                     </div>
 
                 </div>

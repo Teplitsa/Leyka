@@ -116,14 +116,117 @@ div[id *="leyka-pf-"] { //aka namespace
 		margin-bottom: $base*1.5;
 	}
 	
+	// new card design
 	&.show-preview {
+		
+		.inpage-card__content{
+			padding-top: 2rem;
+		}
+
 		.inpage-card_title {
 			display: block;
-			margin-bottom: $base*0.5;
+			margin-bottom: 1rem;
+			font-size: 20px;
+			line-height: 23px;
 		}
 		
-		.inpage-card_excerpt {
+		.inpage-card__excerpt {
+			position: relative;
 			display: block;
+			font-size: 16px;
+			line-height: 23px;
+			margin-bottom: 2rem;
+			padding-bottom: 0.5rem;
+			
+			.inpage-card__toggle-excerpt-links {
+				position: absolute;
+				left: 0px;
+				bottom: 0px;
+				width: 100%;
+				padding-top: 3.5rem;
+				
+				/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+67&0+0,1+67 */
+				background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 67%); /* FF3.6-15 */
+				background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 67%); /* Chrome10-25,Safari5.1-6 */
+				background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 67%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+				filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+				
+				.inpage-card__expand-excerpt,
+				.inpage-card__collapse-excerpt {
+					color: $color-main;
+					text-decoration: none;
+					border-bottom: 1px dashed $color-main;
+					padding-bottom: 2px;
+				}
+				
+				.inpage-card__collapse-excerpt {
+					display: none;
+				}
+			}
+			
+			&.expand {
+				
+				.inpage-card__toggle-excerpt-links {
+					padding-top: 0px;
+					position: relative;
+					
+					.inpage-card__expand-excerpt {
+						display: none;
+					}
+					
+					.inpage-card__collapse-excerpt {
+						display: inline;
+					}
+					
+				}
+			}
+			
+		}
+		
+		.inpage-card_scale {
+			margin-bottom: 2rem;
+		}
+		
+		.target {
+			font-size: 16px;
+			line-height: 19px;
+			font-weight: 500;
+		}
+	
+		.message-finished {
+			font-size: 1.15em;
+		}
+	
+		.info {
+			color: $color-text-light;
+			font-size: 13px;
+			line-height: 15px;
+			font-weight: 500;
+		}
+	
+		.inpage-card__note {
+			color: $color-text-light;
+			font-size: 14px;
+			line-height: 21px;
+			margin-top: 1rem;
+		}
+	
+		.inpage-card__action {
+			margin-top: 0;
+	
+			button {
+				border: none;
+				@include button();
+				font-size: 16px;
+				line-height: 19px;
+				width: 100%;
+				height: 48px;
+			}
+		}
+		
+		.supporter-and-button {
+			display: flex;
+			flex-direction: column-reverse;
 		}
 	}
 
