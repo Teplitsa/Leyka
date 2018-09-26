@@ -73,10 +73,7 @@ function leyka_get_gateway_redirect_data() {
         $form_errors = reset($form_errors); // Return only the first error in the list
 
         /** @var WP_Error $form_errors */
-        die(json_encode(array(
-            'status' => 1,
-            'message' => $form_errors->get_error_message(),
-        )));
+        die(json_encode(array('status' => 1, 'message' => $form_errors->get_error_message(),)));
 
     }
 
@@ -100,7 +97,12 @@ function leyka_get_gateway_redirect_data() {
         $payment_vars = array(
             'status' => $donation_id && !is_wp_error($donation_id) ? 0 : 1,
             'payment_url' => apply_filters('leyka_submission_redirect_url-'.$pm['gateway_id'], '', $pm['payment_method_id']),
+            'submission_redirect_type' => apply_filters(
+                'leyka_submission_redirect_type-'.$pm['gateway_id'],
+                'auto', $pm['payment_method_id'], $donation_id
+            ),
         );
+
         if($payment_vars['status'] == 0) {
             $payment_vars['donation_id'] = $donation_id;
         } else {
