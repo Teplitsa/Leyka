@@ -160,6 +160,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 );
 
                 $donation->recurring_id = $payment->id;
+                $donation->add_gateway_response($payment); // On callback the response will be re-written
 
                 $this->_new_api_redirect_url = $payment->confirmation->confirmation_url;
 
@@ -416,23 +417,32 @@ techMessage="'.$tech_message.'"/>');
             return array();
         }
 
-        if(stristr($donation->gateway_response, 'PaymentResponse')) { // New API
+        if(stristr($donation->gateway_response, 'YandexCheckout')) { // New API
 
             require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
 
             $response = maybe_unserialize($donation->gateway_response);
-            $response = array(
-                __('Yandex.Kassa payment ID:', 'leyka') => $response->id,
-                __('Yandex.Kassa payment status:', 'leyka') => $response->status,
-                __('Payment is done:', 'leyka') => !!$response->paid ? __('Yes') : __('No'),
-                __('Amount:', 'leyka') => round($response->amount->value, 2).' '
-                    .leyka_get_currency_label($response->amount->currency),
-                __('Created at:', 'leyka') => leyka_get_i18n_datetime(strtotime($response->created_at->date)),
-                __('Captured at:', 'leyka') => leyka_get_i18n_datetime(strtotime($response->captured_at->date)),
-                __('Description:', 'leyka') => $response->description,
-                __('Payment method:', 'leyka') => $response->payment_method->title,
-                __('Is test payment:', 'leyka') => !!$response->test ? __('Yes') : __('No'),
-            );
+
+            if(is_a($response, 'YandexCheckout\Request\Payments\PaymentResponse')) { // Payment proceeded normally
+                $response = array(
+                    __('Yandex.Kassa payment ID:', 'leyka') => $response->id,
+                    __('Yandex.Kassa payment status:', 'leyka') => $response->status,
+                    __('Payment is done:', 'leyka') => !!$response->paid ? __('Yes') : __('No'),
+                    __('Amount:', 'leyka') => round($response->amount->value, 2).' '
+                        .leyka_get_currency_label($response->amount->currency),
+                    __('Created at:', 'leyka') => leyka_get_i18n_datetime(strtotime($response->created_at->date)),
+                    __('Captured at:', 'leyka') => leyka_get_i18n_datetime(strtotime($response->captured_at->date)),
+                    __('Description:', 'leyka') => $response->description,
+                    __('Payment method:', 'leyka') => $response->payment_method->title,
+                    __('Is test payment:', 'leyka') => !!$response->test ? __('Yes') : __('No'),
+                );
+            } else if(is_a($response, 'Exception')) { // Exceptions were thrown
+                $response = array(
+                    __('Failure type:', 'leyka') => $response->type,
+                    __('Failure code:', 'leyka') => $response->getCode(),
+                    __('Failure message:', 'leyka') => $response->getMessage(),
+                );
+            }
 
         } else { // Old API
 
@@ -538,17 +548,21 @@ techMessage="'.$tech_message.'"/>');
                         'payment_method_id' => $this->_get_yandex_pm_id($new_recurring_donation->pm_id),
                         'capture' => true,
                         'description' =>
-                            ( !empty($form_data['leyka_recurring']) ? '['.__('Recurring', 'leyka').']' : '' )
+                            ( !empty($form_data['leyka_recurring']) ? '['.__('Recurring', 'leyka').'] ' : '' )
                             .$new_recurring_donation->payment_title." (№ $new_recurring_donation_id)",
                         'metadata' => array('donation_id' => $new_recurring_donation_id,),
                     ),
                     uniqid('', true)
                 );
 
+                $new_recurring_donation->add_gateway_response($payment); // On callback the response will be re-written
                 $new_recurring_donation->recurring_id = $payment->id;
 
             } catch(Exception $ex) {
-                // ...
+
+                $new_recurring_donation->status = 'failed';
+                $new_recurring_donation->add_gateway_response($ex);
+
             }
 
         } else {
