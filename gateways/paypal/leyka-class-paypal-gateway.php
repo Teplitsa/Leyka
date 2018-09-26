@@ -264,9 +264,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         return array();
     }
 
-    public function log_gateway_fields($donation_id) {
-    }
-
     public function _handle_service_calls($call_type = '') {
 
         switch($call_type) {

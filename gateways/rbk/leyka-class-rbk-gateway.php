@@ -153,16 +153,17 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway
 
         $response = wp_remote_post($url, $args);
         $this->_rbk_response = json_decode(wp_remote_retrieve_body($response));
+
         return $this->_rbk_response;
+
     }
 
-    public function submission_redirect_url($current_url, $pm_id)
-    {
+    public function submission_redirect_url($current_url, $pm_id) {
         return $current_url;
     }
 
-    public function submission_form_data($form_data_vars, $pm_id, $donation_id)
-    {
+    public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
+
         $donation = new Leyka_Donation($donation_id);
         $campaign = new Leyka_Campaign($donation->campaign_id);
         $name = apply_filters('leyka_yandex_rbk_custom_payment_comment', esc_attr(get_bloginfo('name') . ': ' . __('donation', 'leyka')));
@@ -170,15 +171,15 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway
         $invoiceTemplateAccessToken = $this->_rbk_response->invoiceAccessToken->payload;
         update_post_meta($donation_id, '_leyka_donation_id_on_gateway_response', $invoiceTemplateID);
 
-        $this->_rbk_log["RBK_Form"] = $_POST;
-        $this->_rbk_log["RBK_Response"] = $this->_rbk_response;
-        $donor_email = $donation->__get('donor_email');
+        $this->_rbk_log['RBK_Form'] = $_POST;
+        $this->_rbk_log['RBK_Response'] = $this->_rbk_response;
+        $donor_email = $donation->donor_email;
         $donation->add_gateway_response($this->_rbk_log);
         $description = $campaign->payment_title ? esc_attr($campaign->payment_title) : $name;
         $finished_page = get_permalink(leyka_options()->opt('quittance_redirect_page'));
 
-        if ('revo' !== $campaign->__get('campaign_template')) {
-            ?>
+        if('revo' !== $campaign->campaign_template) {?>
+
             <script src="https://checkout.rbk.money/checkout.js"></script>
             <script>
                 window.addEventListener('load', function () {
@@ -212,6 +213,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway
             <?php
             die;
         } else {
+
             $script = <<<JS
             checkout = RbkmoneyCheckout.configure( {
 			invoiceID : '{$invoiceTemplateID}',
@@ -237,15 +239,10 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway
     			checkout.close();
 			} );
 JS;
-            $script = trim($script);
+            die( wp_json_encode(array('status' => 0, 'script' => trim($script))) );
 
-            echo wp_json_encode(array('status' => 0, 'script' => $script));
-            die;
         }
-    }
 
-    public function log_gateway_fields($donation_id)
-    {
     }
 
     public function _handle_service_calls($call_type = '')

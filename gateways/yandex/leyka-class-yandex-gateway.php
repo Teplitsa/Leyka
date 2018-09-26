@@ -123,7 +123,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         if( !empty($form_data['leyka_recurring']) ) {
 
             $donation->payment_type = 'rebill';
-            $donation->rebilling_is_active = true; // So we could turn it on/off
+            $donation->rebilling_is_active = true; // So we could turn it on/off later
 
         }
 
@@ -149,12 +149,17 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                             'type' => 'redirect',
                             'return_url' => leyka_get_success_page_url(),
                         ),
-                        'capture' => true,
-                        'description' => $donation->payment_title." (№ $donation_id)",
-                        'metadata' => array('donation_id' => $donation_id,)
+                        'capture' => true, // Make payment at once, don't wait for shop confirmation
+                        'description' =>
+                            ( !empty($form_data['leyka_recurring']) ? '['.__('Recurring subscription', 'leyka').']' : '' )
+                            .$donation->payment_title." (№ $donation_id)",
+                        'metadata' => array('donation_id' => $donation_id,),
+                        'save_payment_method' => !empty($form_data['leyka_recurring']),
                     ),
                     uniqid('', true)
                 );
+
+                $donation->recurring_id = $payment->id;
 
                 $this->_new_api_redirect_url = $payment->confirmation->confirmation_url;
 
@@ -242,10 +247,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
     }
 
-    public function log_gateway_fields($donation_id) {
-    }
-
-    /** Wrapper method to answer checkOrder and paymentAviso service calls */
+    /** Wrapper method to answer the old API callbacks - checkOrder and paymentAviso type calls */
     private function _callback_answer($is_error = false, $callback_type = 'co', $message = '', $tech_message = '') {
 
         $is_error = !!$is_error;
@@ -273,6 +275,7 @@ techMessage="'.$tech_message.'"/>');
                 $notification = json_decode(file_get_contents('php://input'), true);
 
                 if(empty($notification['event'])) {
+                    /** @todo Process the error somehow */
                     exit(500);
                 }
 
@@ -281,7 +284,7 @@ techMessage="'.$tech_message.'"/>');
                         new YandexCheckout\Model\Notification\NotificationSucceeded($notification) :
                         new YandexCheckout\Model\Notification\NotificationWaitingForCapture($notification);
                 } catch (Exception $e) {
-                    // ...
+                    /** @todo Process the error somehow */
                     exit(500);
                 }
 
@@ -289,7 +292,7 @@ techMessage="'.$tech_message.'"/>');
                 $donation = new Leyka_Donation($payment->metadata->donation_id);
 
                 if( !$donation ) {
-                    // ...
+                    /** @todo Process the error somehow */
                     exit(500);
                 }
 
@@ -429,7 +432,6 @@ techMessage="'.$tech_message.'"/>');
                 __('Description:', 'leyka') => $response->description,
                 __('Payment method:', 'leyka') => $response->payment_method->title,
                 __('Is test payment:', 'leyka') => !!$response->test ? __('Yes') : __('No'),
-//                __(':', 'leyka') => $response->,
             );
 
         } else { // Old API
@@ -518,75 +520,108 @@ techMessage="'.$tech_message.'"/>');
             $new_recurring_donation->amount_total = leyka_calculate_donation_total_amount($new_recurring_donation);
         }
 
-        $certificate_path = leyka_options()->opt('yandex-yandex_card_certificate_path') ?
-            WP_CONTENT_DIR.'/'.trim(leyka_options()->opt('yandex-yandex_card_certificate_path'), '/') : false;
-        $certificate_private_key_path = leyka_options()->opt('yandex-yandex_card_private_key_path') ?
-            WP_CONTENT_DIR.'/'.trim(leyka_options()->opt('yandex-yandex_card_private_key_path'), '/') : false;
+        if(leyka_options()->opt('yandex_new_api')) {
 
-        $ch = curl_init();
-        $params = array(
-            CURLOPT_URL => leyka_options()->opt('yandex_test_mode') ?
-                'https://penelope-demo.yamoney.ru/webservice/mws/api/repeatCardPayment' :
-                'https://penelope.yamoney.ru/webservice/mws/api/repeatCardPayment',
-            CURLOPT_PORT => leyka_options()->opt('yandex_test_mode') ? 8083 : 443,
-            CURLOPT_HEADER => false,
-            CURLOPT_HTTPHEADER => array('Content-Type: application/x-www-form-urlencoded'),
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => http_build_query(array(
-                'clientOrderId' => $new_recurring_donation_id,
-                'invoiceId' => $init_recurring_donation->recurring_id,
-                'orderNumber' => 'recurring-'.$init_recurring_donation->id.'-'.$new_recurring_donation_id,
-                'amount' => $init_recurring_donation->amount,
-            )),
-            CURLOPT_VERBOSE => false,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CONNECTTIMEOUT => 60,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
-            CURLOPT_FORBID_REUSE => true,
-            CURLOPT_FRESH_CONNECT => true,
-            CURLOPT_SSLCERT => $certificate_path,
-            CURLOPT_SSLKEY => $certificate_private_key_path,
-            CURLOPT_SSLKEYPASSWD => leyka_options()->opt('yandex-yandex_card_private_key_password'),
-        );
-        if(leyka_options()->opt('yandex_outer_ip_to_inner')) {
-            $params[CURLOPT_INTERFACE] = gethostbyname(gethostname());
-        }
-        curl_setopt_array($ch, $params);
+            require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
 
-        $answer = curl_exec($ch);
-        $res = false;
+            $client = new YandexCheckout\Client();
+            $client->setAuth(leyka_options()->opt('yandex_shop_id'), leyka_options()->opt('yandex_secret_key'));
 
-        if($answer) {
+            try {
 
-            $p = xml_parser_create();
-            xml_parse_into_struct($p, $answer, $vals, $index);
-            xml_parser_free($p);
+                $payment = $client->createPayment(
+                    array(
+                        'amount' => array(
+                            'value' => round($new_recurring_donation->amount, 2),
+                            'currency' => 'RUB', /** @todo Change to $new_recurring_donation->currency_id, but fix "rur" -> "RUB" */
+                        ),
+                        'payment_method_id' => $this->_get_yandex_pm_id($new_recurring_donation->pm_id),
+                        'capture' => true,
+                        'description' =>
+                            ( !empty($form_data['leyka_recurring']) ? '['.__('Recurring', 'leyka').']' : '' )
+                            .$new_recurring_donation->payment_title." (№ $new_recurring_donation_id)",
+                        'metadata' => array('donation_id' => $new_recurring_donation_id,),
+                    ),
+                    uniqid('', true)
+                );
 
-            $new_recurring_donation->add_gateway_response($answer);
+                $new_recurring_donation->recurring_id = $payment->id;
 
-            if(isset($vals[0]['attributes']['STATUS']) && $vals[0]['attributes']['STATUS'] == 0) {
-
-                // Recurring payment isn't funded here yet! Only its possibility is confirmed.
-                // To fund a payment, we should wait for a normal callbacks.
-
-                $res = $new_recurring_donation;
-
-            } else { // Some error on payment test run
-
-                $error_num = empty($vals[0]['attributes']['error']) ? 'unknown' : $vals[0]['attributes']['error'];
-                $error_text = empty($vals[0]['attributes']['techMessage']) ?
-                    __('Some error while repeatCardPayment call. Please ask your Yandex.Kassa manager for details.', 'leyka') : $vals[0]['attributes']['techMessage'];
-
-                $new_recurring_donation->add_gateway_response('Error '.$error_num.': '.$error_text);
-
+            } catch(Exception $ex) {
+                // ...
             }
 
         } else {
-            $new_recurring_donation->add_gateway_response('Error '.curl_errno($ch).': '.curl_error($ch));
+
+            $ch = curl_init();
+            $params = array(
+                CURLOPT_URL => leyka_options()->opt('yandex_test_mode') ?
+                    'https://penelope-demo.yamoney.ru/webservice/mws/api/repeatCardPayment' :
+                    'https://penelope.yamoney.ru/webservice/mws/api/repeatCardPayment',
+                CURLOPT_PORT => leyka_options()->opt('yandex_test_mode') ? 8083 : 443,
+                CURLOPT_HEADER => false,
+                CURLOPT_HTTPHEADER => array('Content-Type: application/x-www-form-urlencoded'),
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => http_build_query(array(
+                    'clientOrderId' => $new_recurring_donation_id,
+                    'invoiceId' => $init_recurring_donation->recurring_id,
+                    'orderNumber' => 'recurring-'.$init_recurring_donation->id.'-'.$new_recurring_donation_id,
+                    'amount' => $init_recurring_donation->amount,
+                )),
+                CURLOPT_VERBOSE => false,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CONNECTTIMEOUT => 60,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYHOST => false,
+                CURLOPT_FORBID_REUSE => true,
+                CURLOPT_FRESH_CONNECT => true,
+                CURLOPT_SSLCERT => leyka_options()->opt('yandex-yandex_card_certificate_path') ?
+                    WP_CONTENT_DIR.'/'.trim(leyka_options()->opt('yandex-yandex_card_certificate_path'), '/') : false,
+                CURLOPT_SSLKEY => leyka_options()->opt('yandex-yandex_card_private_key_path') ?
+                    WP_CONTENT_DIR.'/'.trim(leyka_options()->opt('yandex-yandex_card_private_key_path'), '/') : false,
+                CURLOPT_SSLKEYPASSWD => leyka_options()->opt('yandex-yandex_card_private_key_password'),
+            );
+            if(leyka_options()->opt('yandex_outer_ip_to_inner')) {
+                $params[CURLOPT_INTERFACE] = gethostbyname(gethostname());
+            }
+            curl_setopt_array($ch, $params);
+
+            $answer = curl_exec($ch);
+            $res = false;
+
+            if($answer) {
+
+                $p = xml_parser_create();
+                xml_parse_into_struct($p, $answer, $vals, $index);
+                xml_parser_free($p);
+
+                $new_recurring_donation->add_gateway_response($answer);
+
+                if(isset($vals[0]['attributes']['STATUS']) && $vals[0]['attributes']['STATUS'] == 0) {
+
+                    // Recurring payment isn't funded here yet! Only its possibility is confirmed.
+                    // To fund a payment, we should wait for a normal callbacks.
+
+                    $res = $new_recurring_donation;
+
+                } else { // Some error on payment test run
+
+                    $error_num = empty($vals[0]['attributes']['error']) ? 'unknown' : $vals[0]['attributes']['error'];
+                    $error_text = empty($vals[0]['attributes']['techMessage']) ?
+                        __('Some error while repeatCardPayment call. Please ask your Yandex.Kassa manager for details.', 'leyka') : $vals[0]['attributes']['techMessage'];
+
+                    $new_recurring_donation->add_gateway_response('Error '.$error_num.': '.$error_text);
+
+                }
+
+            } else {
+                $new_recurring_donation->add_gateway_response('Error '.curl_errno($ch).': '.curl_error($ch));
+            }
+
+            curl_close($ch);
+
         }
 
-        curl_close($ch);
         return $res;
 
     }
@@ -634,9 +669,12 @@ techMessage="'.$tech_message.'"/>');
             case 'recurring_id':
             case 'recurrent_id':
             case 'invoice_id':
+            case 'payment_id':
             case 'yandex_recurrent_id':
             case 'yandex_recurring_id':
-            case 'yandex_invoice_id': return get_post_meta($donation->id, '_yandex_invoice_id', true);
+            case 'yandex_invoice_id':
+            case 'yandex_payment_id':
+                return get_post_meta($donation->id, '_yandex_invoice_id', true);
             default: return $value;
         }
     }
@@ -646,9 +684,11 @@ techMessage="'.$tech_message.'"/>');
             case 'recurring_id':
             case 'recurrent_id':
             case 'invoice_id':
+            case 'payment_id':
             case 'yandex_recurrent_id':
             case 'yandex_recurring_id':
             case 'yandex_invoice_id':
+            case 'yandex_payment_id':
                 return update_post_meta($donation->id, '_yandex_invoice_id', $value);
             default: return false;
         }

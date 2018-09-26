@@ -128,9 +128,6 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
         return array();
     }
 
-    /** Quittance don't use any specific fields, so this method is empty. */
-    public function log_gateway_fields($donation_id) {
-    }
 }
 
 class Leyka_Bank_Order extends Leyka_Payment_Method {

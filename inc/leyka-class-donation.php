@@ -1752,6 +1752,8 @@ class Leyka_Donation {
                 $pm = leyka_get_pm_by_id($this->_donation_meta['payment_method']);
                 return ($pm ? $pm->label : __('Unknown payment method', 'leyka'));
             case 'currency':
+            case 'currency_code':
+            case 'currency_id':
                 return $this->_donation_meta['currency'];
             case 'currency_label':
                 return leyka_options()->opt('leyka_currency_'.$this->_donation_meta['currency'].'_label');
