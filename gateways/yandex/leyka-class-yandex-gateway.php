@@ -151,7 +151,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                         ),
                         'capture' => true, // Make payment at once, don't wait for shop confirmation
                         'description' =>
-                            ( !empty($form_data['leyka_recurring']) ? '['.__('Recurring subscription', 'leyka').']' : '' )
+                            ( !empty($form_data['leyka_recurring']) ? '['.__('Recurring subscription', 'leyka').'] ' : '' )
                             .$donation->payment_title." (№ $donation_id)",
                         'metadata' => array('donation_id' => $donation_id,),
                         'save_payment_method' => !empty($form_data['leyka_recurring']),
@@ -159,13 +159,17 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                     uniqid('', true)
                 );
 
-                $donation->recurring_id = $payment->id;
                 $donation->add_gateway_response($payment); // On callback the response will be re-written
+
+                if( !empty($form_data['leyka_recurring']) ) {
+                    $donation->recurring_id = $payment->id;
+                }
 
                 $this->_new_api_redirect_url = $payment->confirmation->confirmation_url;
 
             } catch(Exception $ex) {
                 // ...
+                $donation->add_gateway_response($ex);
             }
 
         } else { // Old API - for backward compatibility
@@ -423,7 +427,10 @@ techMessage="'.$tech_message.'"/>');
 
             $response = maybe_unserialize($donation->gateway_response);
 
-            if(is_a($response, 'YandexCheckout\Request\Payments\PaymentResponse')) { // Payment proceeded normally
+            if(
+                is_a($response, 'YandexCheckout\Request\Payments\PaymentResponse')
+                || is_a($response, 'YandexCheckout\Request\Payments\CreatePaymentResponse')
+            ) { // Payment proceeded normally
                 $response = array(
                     __('Yandex.Kassa payment ID:', 'leyka') => $response->id,
                     __('Yandex.Kassa payment status:', 'leyka') => $response->status,
@@ -474,10 +481,10 @@ techMessage="'.$tech_message.'"/>');
     public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation $donation) {
 
         $init_recurrent_donation = Leyka_Donation::get_init_recurrent_donation($donation);
-        $cancelling_url = get_option('permalink_structure') ?
+        $cancelling_url = (get_option('permalink_structure') ?
             home_url("leyka/service/cancel_recurring/{$donation->id}") :
-            home_url("?page=leyka/service/cancel_recurring/{$donation->id}");
-        $cancelling_url .= '/'.md5($donation->id.'_'.$init_recurrent_donation->id.'_leyka_cancel_recurring_subscription');
+            home_url("?page=leyka/service/cancel_recurring/{$donation->id}"))
+            .'/'.md5($donation->id.'_'.$init_recurrent_donation->id.'_leyka_cancel_recurring_subscription');
 
         return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
 
@@ -545,7 +552,7 @@ techMessage="'.$tech_message.'"/>');
                             'value' => round($new_recurring_donation->amount, 2),
                             'currency' => 'RUB', /** @todo Change to $new_recurring_donation->currency_id, but fix "rur" -> "RUB" */
                         ),
-                        'payment_method_id' => $this->_get_yandex_pm_id($new_recurring_donation->pm_id),
+                        'payment_method_id' => $init_recurring_donation->recurring_id,
                         'capture' => true,
                         'description' =>
                             ( !empty($form_data['leyka_recurring']) ? '['.__('Recurring', 'leyka').'] ' : '' )
