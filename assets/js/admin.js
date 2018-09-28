@@ -178,13 +178,15 @@ jQuery(document).ready(function($){
 
 // Image modal:
 jQuery(document).ready(function($){
-
-    if(typeof easyModal !== 'undefined') {
-        $('.leyka-instructions-screen-full').easyModal({
-            top: 100,
-            autoOpen: false
-        });
+    
+    if(typeof($().easyModal) === 'undefined') {
+        return;
     }
+
+    $('.leyka-instructions-screen-full').easyModal({
+        top: 100,
+        autoOpen: false
+    });
 
     $('.zoom-screen').on('click', function(e){
 
@@ -201,7 +203,7 @@ jQuery(document).ready(function($){
 // Notification modal:
 jQuery(document).ready(function($){
 
-    if(typeof dialog === 'undefined') {
+    if(typeof($().dialog) === 'undefined') {
         return;
     }
 

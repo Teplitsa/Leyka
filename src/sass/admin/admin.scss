@@ -293,11 +293,12 @@
                                 left: 0;
                                 transform:translateX(-50%);
                                 
-                                width: 350px;
+                                width: 204px;
                                 overflow-wrap: break-word;
                                 word-wrap: break-word;
                                 white-space: pre-line;
                                 max-width: max-content;
+                                text-align: center;
                                 
                                 &:before {
                                     content: "";
@@ -1366,6 +1367,166 @@
     
 }
 
+// Yakassa wizard pages
+.leyka-wizard.wizard-yakassa {
+    
+    .custom-block-captioned-screens {
+        max-width: 502px;
+        margin-top: 2rem;
+    }
+    
+    // enumerated blocks
+    .main-area {
+        
+        .settings-block {
+            
+            counter-reset: block-separator-counter;
+            
+            .block-separator {
+                
+                display: flex;
+                height: 15px;
+                margin-bottom: 1rem;
+                margin-left: -2px;
+                
+                div {
+                    border-bottom: 1px dashed $color-wizard-preview-border;
+                    height: 7px;
+                    width: calc(100% - 15px - 0.5rem);
+                }
+                
+                &:before {
+                    content: counter(block-separator-counter);
+                    counter-increment: block-separator-counter;
+                    display: inline-block;
+                    background-color: $color-wizard-preview-border;
+                    color: $color-wizard-field-explain;
+                    margin-right: 0.5rem;
+                    width: 15px;
+                    height: 15px;
+                    border-radius: 15px;
+                    line-height: 15px;
+                    vertical-align: middle;
+                    text-align: center;
+                    font-size: 10px;
+                    padding: 0px;
+                }
+            }
+            
+            .enum-separated-block {
+                
+                padding-bottom: 1.5rem;
+                
+                &:last-child {
+                    padding-bottom: 0;
+                }
+
+                .caption {
+                    font-size: 14px;
+                    line-height: 21px;
+                    
+                    &.bold {
+                        font-weight: 500;
+                    }
+                }
+                
+                .captioned-screen {
+                    margin-top: 1rem;
+                }
+                
+                .option-block {
+                    
+                    .field-component.field {
+                        input[type=text] {
+                            width: 248px;
+                        }
+                    }
+                    
+                }
+                
+                .body {
+                    
+                    b {
+                        font-weight: 500;
+                    }
+                    
+                    p:last-child {
+                        margin-bottom: 0px;
+                    }
+                    
+                    a {
+                        text-decoration: none;
+                        border-bottom-width: 0;
+                        
+                        &:hover {
+                            border-bottom-width: 1px;
+                        }
+                        
+                        &[target=_blank] {
+                            &:after {
+                                content: " ";
+                                background-image: url('../../img/icon-link-out.svg');
+                                background-size: 12px 12px;
+                                width: 12px;
+                                height: 12px;
+                                margin-left: 0.5rem;
+                                display: inline-block;
+                            }
+                        }
+                    }
+                    
+                    &.value {
+                        margin-top: 0.5rem;
+                        
+                        a {
+                            font-size: 16px;
+                            font-weight: 19px;
+                            font-weight: 500;
+                        }
+                        
+                        b {
+                            font-size: 16px;
+                            font-weight: 19px;
+                            font-weight: 500;
+                        }
+                        
+                    }
+                }
+                
+            }
+            
+        }
+            
+    }
+    
+    .main-area {
+        
+        .settings-block.text-block {
+            
+            .custom-block-payment-cards-icons {
+                
+                h3 {
+                    line-height: 21px;
+                    font-size: 14px;
+                    margin-top: 2rem;
+                }
+                
+                ul {
+                    margin-top: 1rem;
+                    
+                    li:first {
+                        margin-top: 0;
+                    }
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+}
+
 // expandable-area
 .leyka-wizard {
     
@@ -1404,17 +1565,17 @@
     
     .main-area {
         
-        .settings-block.text-block {
+        .settings-block {
             
             .custom-block-captioned-screens {
             }
             
             .captioned-screen {
                 
-                padding-top: 1.5rem;
+                margin-top: 1.5rem;
                 
                 &:first-child {
-                    padding-top: 1rem;
+                    margin-top: 1rem;
                 }
                 
                 p {

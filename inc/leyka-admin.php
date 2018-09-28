@@ -524,6 +524,7 @@ class Leyka_Admin_Setup {
 	        return;
 	    }
 
+		require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-template-tags.php');
 	    require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-block.php');
         require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-step.php');
         require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-section.php');
@@ -544,6 +545,14 @@ class Leyka_Admin_Setup {
 
 	        Leyka_Wizard_Render::get_instance()
                 ->setController(Leyka_Cp_Wizard_Settings_Controller::get_instance())
+                ->renderPage();
+
+	    } else if($screen_full_id[1] === 'yakassa') {
+
+	        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-yakassa-settings-controller.php');
+
+	        Leyka_Wizard_Render::get_instance()
+                ->setController(Leyka_Yakassa_Wizard_Settings_Controller::get_instance())
                 ->renderPage();
 
 	    }

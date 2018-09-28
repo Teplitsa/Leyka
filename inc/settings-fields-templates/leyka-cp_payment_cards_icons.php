@@ -2,7 +2,7 @@
 
 /** Custom field group for the CP payments cards. */
 
-/** @var $this Leyka_Custom_Setting_Block A block for which the template is used. */
+/** @var $this Leyka_Text_Block A block for which the template is used. */
 ?>
 
 <div class="<?php echo $this->field_type;?> custom-block-payment-cards-icons">
