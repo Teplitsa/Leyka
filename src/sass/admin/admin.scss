@@ -533,6 +533,22 @@
             margin-top: 0;
         }
         
+        .button-primary {
+            @include wizard-button-caption();
+            height: 40px;
+            width: 248px;
+            margin-right: 22px;
+        }
+
+        .button-secondary {
+            @include wizard-button-caption();
+            height: 40px;
+            margin-right: 22px;
+            width: 248px;
+            font-weight: 500;
+            background-color: white;
+        }
+            
         a {
             color: $color-wizard-link;
             text-decoration: none;
@@ -713,21 +729,6 @@
         
         .step-submit {
             margin-top: 32px;
-            
-            .button-primary {
-                @include wizard-button-caption();
-                height: 40px;
-                width: 248px;
-                margin-right: 22px;
-            }
-
-            .button-secondary {
-                @include wizard-button-caption();
-                height: 40px;
-                margin-right: 22px;
-                font-weight: 600;
-                background-color: white;
-            }
             
             a {
                 line-height: 35px;
@@ -1112,6 +1113,69 @@
     }
 }
 
+// test payment
+.leyka-wizard {
+    
+    .main-area {
+        
+        .payment-tryout-wrapper {
+
+            border: 0;
+            border-collapse: collapse;
+            padding: 0;
+            width: 100%;
+            margin-bottom: 24px;
+            
+        }
+        
+        .payment-tryout-comment.live-payment {
+
+            width: 248px;
+            color: $color-text-light;
+            font-size: 13px;
+            line-height: 15px; 
+
+            .attention-needed {
+                color: $color-wizard-required-sign;
+            }
+
+        }
+        
+        #leyka-settings-form-final-cp_final,
+        #leyka-settings-form-final-yakassa_final {
+            
+            .step-submit {
+                
+                .wizard-custom-link {
+                    margin-left: 1rem;
+                }
+                
+                .sec-action {
+                    display: none;
+                }
+            }
+            
+            .final-button {
+                float: left;
+                margin-top: 1rem;
+            }
+            
+            .share-campaign {
+                float: left;
+                margin-top: 1rem;
+                
+                a {
+                    border-bottom: none;
+                    margin-right: 1.5rem;
+                    display: inline-block;
+                    line-height: 0px;
+                }
+            }
+        }
+        
+    }
+}
+
 // CP wizard pages
 .leyka-wizard {
     
@@ -1123,12 +1187,6 @@
             margin-top: 24px;
 
             .payment-tryout-wrapper {
-
-                border: 0;
-                border-collapse: collapse;
-                padding: 0;
-                width: 100%;
-                margin-bottom: 24px;
 
                 th {
                     font-weight: 600;
@@ -1154,7 +1212,6 @@
                 }
 
                 .sec-action {
-
                     @include wizard-button-caption();
                     color: $color-text-semi;
                     font-weight: 600;
@@ -1222,17 +1279,6 @@
 
                     }
 
-                }
-
-            }
-
-            .payment-tryout-comment.live-payment {
-
-                width: 248px;
-                color: $color-text-light;
-
-                .attention-needed {
-                    color: $color-wizard-required-sign;
                 }
 
             }
@@ -1333,36 +1379,6 @@
             }
         }
         
-        #leyka-settings-form-final-cp_final {
-            .step-submit {
-                
-                .wizard-custom-link {
-                    margin-left: 1rem;
-                }
-                
-                .sec-action {
-                    display: none;
-                }
-            }
-            
-            .final-button {
-                float: left;
-                margin-top: 1rem;
-            }
-            
-            .share-campaign {
-                float: left;
-                margin-top: 1rem;
-                
-                a {
-                    border-bottom: none;
-                    margin-right: 1.5rem;
-                    display: inline-block;
-                    line-height: 0px;
-                }
-            }
-        }
-        
     }
     
 }
@@ -1373,6 +1389,12 @@
     .custom-block-captioned-screens {
         max-width: 502px;
         margin-top: 2rem;
+    }
+    
+    &.step-online_kassa {
+        .custom-block-captioned-screens {
+            margin-top: 0;
+        }
     }
     
     // enumerated blocks
@@ -1455,7 +1477,6 @@
                     }
                     
                     a {
-                        text-decoration: none;
                         border-bottom-width: 0;
                         
                         &:hover {
@@ -1475,6 +1496,16 @@
                         }
                     }
                     
+                    .expandable-area {
+                        a {
+                            border-bottom-width: 1px;
+                            
+                            &:hover {
+                                border-bottom-width: 0;
+                            }
+                        }
+                    }
+                        
                     &.value {
                         margin-top: 0.5rem;
                         
@@ -1491,6 +1522,10 @@
                         }
                         
                     }
+                }
+                
+                .captioned-screen + .body {
+                    margin-top: 1rem;
                 }
                 
             }
@@ -1566,9 +1601,6 @@
     .main-area {
         
         .settings-block {
-            
-            .custom-block-captioned-screens {
-            }
             
             .captioned-screen {
                 

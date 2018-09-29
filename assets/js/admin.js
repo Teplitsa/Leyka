@@ -756,3 +756,38 @@ jQuery(document).ready(function($){
         $('.placeholders-help').show();
     });
 });
+
+// Yandex Kassa shopPassword generator:
+jQuery(document).ready(function($){
+
+    var $genBtn = $('#yakassa-generate-shop-password');
+    
+    if(!$genBtn.length) {
+        return;
+    }
+    
+    var $stepSubmit = $('.step-submit');
+    $stepSubmit.hide();
+    
+    $genBtn.click(function(){
+        var password = makePassword(10);
+        var $block = $genBtn.closest('.enum-separated-block');
+        $genBtn.hide();
+        $block.find('.caption').css('display', 'unset');
+        $block.find('.body b').css('display', 'unset').text(password);
+        $block.find('input[name=leyka_yandex_shop_password]').val(password);
+        $stepSubmit.show();
+    });
+
+});
+// Yandex Kassa shopPassword generator - END
+
+function makePassword(len) {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789^#@_%$-";
+
+  for (var i = 0; i < len; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}

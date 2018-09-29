@@ -102,12 +102,51 @@ class Leyka_Yakassa_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Con
             'template' => 'yakassa_sign_documents',
         )))->addTo($section);
         
-        $step = new Leyka_Settings_Step('settings',  $section->id, 'Настройки');
+        $step = new Leyka_Settings_Step('settings',  $section->id, 'Заполняем раздел Настройки');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'settings',
             'template' => 'yakassa_settings',
         )))->addTo($section);
         
+        $step = new Leyka_Settings_Step('parameters',  $section->id, 'Заполняем раздел Параметры');
+        $step->addBlock(new Leyka_Custom_Setting_Block(array(
+            'id' => 'parameters',
+            'custom_setting_id' => 'yakassa_parameters',
+            'field_type' => 'custom_yakassa_parameters',
+            'keys' => array('yandex_shop_password'),
+            'rendering_type' => 'template',
+        )))->addHandler(array($this, 'handleSaveOptions'))->addTo($section);
+        
+        $step = new Leyka_Settings_Step('online_kassa',  $section->id, 'Заполняем раздел Он-лайн касса');
+        $step->addBlock(new Leyka_Text_Block(array(
+            'id' => 'online-kassa',
+            'template' => 'yakassa_online_kassa',
+        )))->addHandler(array($this, 'handleSaveOptions'))->addTo($section);
+        
+        $step = new Leyka_Settings_Step('send2check',  $section->id, 'Отправляем данные на проверку');
+        $step->addBlock(new Leyka_Text_Block(array(
+            'id' => 'send2check',
+            'template' => 'yakassa_send2check',
+        )))->addHandler(array($this, 'handleSaveOptions'))->addTo($section);
+        
+        $step = new Leyka_Settings_Step('fill_leyka_data',  $section->id, 'Заполняем данные в Лейке', array('next_label' => 'Сохранить и продолжить'));
+        $step->addBlock(new Leyka_Custom_Setting_Block(array(
+            'id' => 'fill-leyka-data',
+            'custom_setting_id' => 'yakassa_fill_leyka_data',
+            'field_type' => 'custom_yakassa_fill_leyka_data',
+            'keys' => array('yandex_secret_key', 'yandex_shop_id'),
+            'rendering_type' => 'template',
+        )))->addHandler(array($this, 'handleSaveOptions'))->addTo($section);
+
+        $step = new Leyka_Settings_Step('test_payment',  $section->id, 'Проверка настоящего пожертвования');
+        $step->addBlock(new Leyka_Custom_Setting_Block(array(
+            'id' => 'test-payment',
+            'custom_setting_id' => 'yakassa_test_payment',
+            'field_type' => 'custom_yakassa_test_payment',
+            'keys' => array('payment_completed'),
+            'rendering_type' => 'template',
+        )))->addHandler(array($this, 'handleSaveOptions'))->addTo($section);
+
         $this->_sections[$section->id] = $section;
         
         // Final Section:
@@ -116,9 +155,9 @@ class Leyka_Yakassa_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Con
         $step = new Leyka_Settings_Step('yakassa_final', $section->id, 'Поздравляем!', array('header_classes' => 'greater',));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => '<p>Вы подключили Яндекс Деньги. Стали доступны платежи с помощью банковских карт, Яндекс.Деньги, Сбербанк Онлайн (интернет-банк Сбербанка), Альфа-Клик (интернет-банк Альфа-Банка), криптограмма Apple Pay, криптограмма Google Pay, QIWI Кошелек, Webmoney, баланс мобильного телефона</p>
-<p>Вы подключили Яндекс Деньги. Стали доступны платежи с помощью банковских карт, Яндекс.Деньги, Сбербанк Онлайн (интернет-банк Сбербанка), Альфа-Клик (интернет-банк Альфа-Банка), криптограмма Apple Pay, криптограмма Google Pay, QIWI Кошелек, Webmoney, баланс мобильного телефона
-Поделитесь последней вашей кампанией с друзьями и попросите их отправить пожертвование. Так вы сможете протестировать новый метод оплаты</p>',
+            'text' => '
+<p>Вы подключили Яндекс Деньги. Стали доступны платежи с помощью банковских карт, Яндекс.Деньги, Сбербанк Онлайн (интернет-банк Сбербанка), Альфа-Клик (интернет-банк Альфа-Банка), криптограмма Apple Pay, криптограмма Google Pay, QIWI Кошелек, Webmoney, баланс мобильного телефона</p>
+<p>Поделитесь последней вашей кампанией с друзьями и попросите их отправить пожертвование. Так вы сможете протестировать новый метод оплаты</p>',
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'yakassa-final',
             'template' => 'yakassa_final',
@@ -185,6 +224,31 @@ class Leyka_Yakassa_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Con
                     array(
                         'step_id' => 'settings',
                         'title' => 'Настройки',
+                        'url' => '',
+                    ),
+                    array(
+                        'step_id' => 'parameters',
+                        'title' => 'Параметры',
+                        'url' => '',
+                    ),
+                    array(
+                        'step_id' => 'online_kassa',
+                        'title' => 'Он-лайн касса',
+                        'url' => '',
+                    ),
+                    array(
+                        'step_id' => 'send2check',
+                        'title' => 'Проверка',
+                        'url' => '',
+                    ),
+                    array(
+                        'step_id' => 'fill_leyka_data',
+                        'title' => 'Данные в Лейке',
+                        'url' => '',
+                    ),
+                    array(
+                        'step_id' => 'test_payment',
+                        'title' => 'Тестируем платежи',
                         'url' => '',
                     ),
                 ),
