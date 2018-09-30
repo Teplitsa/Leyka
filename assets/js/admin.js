@@ -792,7 +792,6 @@ jQuery(document).ready(function($){
     }
     
     var $loading = $('.yakassa-make-live-payment-loader');
-    $loading.hide();
     
     $genBtn.click(function(){
         
@@ -805,8 +804,10 @@ jQuery(document).ready(function($){
                 console.log(json);
 
                 if(typeof json.status === 'undefined') {
+                    
                     alert('Ошибка!');
-                } else if(json.status === 'ok' && json.payment_url) {
+                    
+                } else if(json.status === 0 && json.payment_url) {
                     
                     window.location.href = json.payment_url;
 

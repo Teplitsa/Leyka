@@ -22,7 +22,7 @@ $is_payment_completed = $is_came_back_from_yandex && $test_payment && $test_paym
 ?>
 
 <div class="payment-tryout-wrapper">
-    <input type="button" class="button button-secondary" <?php if($is_payment_completed): ?>disabled<?php endif?> id="yakassa-make-live-payment" value="Реальное пожертвование"><span class="leyka-loader xs yakassa-make-live-payment-loader"></span>
+    <input type="button" class="button button-secondary" <?php if($is_payment_completed): ?>disabled<?php endif?> id="yakassa-make-live-payment" value="Реальное пожертвование"><span class="leyka-loader xs yakassa-make-live-payment-loader" style="display: none;"></span>
 </div>
 
 <?php if(!$is_came_back_from_yandex): ?>
