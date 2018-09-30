@@ -16,7 +16,7 @@ else {
 <div class="enum-separated-block">
     <div class="block-separator"><div></div></div>
     
-    <?php if(!empty($this->field_data['caption'])):?>
+    <?php if(!empty($this->field_data['caption']) && (empty($this->field_data['option_id']) || (!empty($this->field_data['show_text_if_set']) && $option_value))):?>
         <div class="caption"><?php echo $this->field_data['caption']?></div>
     <?php endif?>
     
@@ -38,12 +38,18 @@ else {
         
             <div class="body value">
                 <b><?php echo $option_value?></b>
+                <input type="hidden" name="leyka_<?php echo $this->field_data['option_id']?>" value="<?php echo $option_value?>" />
             </div>
             
         <?php else: ?>
     
-            <?php leyka_render_text_field($this->field_data['option_id'], array('title' => $this->field_data['option_title'], 'placeholder' => $this->field_data['option_placeholder'], 'value' => $option_value))?>
-            
+            <?php leyka_render_text_field($this->field_data['option_id'], array(
+                    'title' => $this->field_data['option_title'],
+                    'comment' => !empty($this->field_data['option_comment']) ? $this->field_data['option_comment'] : null,
+                    'placeholder' => !empty($this->field_data['option_placeholder']) ? $this->field_data['option_placeholder'] : null,
+                    'value' => $option_value)
+                )?>
+        
         <?php endif?>
         
     <?php elseif(!empty($this->field_data['screenshot'])):?>
@@ -51,4 +57,11 @@ else {
         <?php show_wizard_captioned_screenshot($this->field_data['screenshot'], !empty($this->field_data['screenshot_full']) ? $this->field_data['screenshot_full'] : null)?>
         
     <?php endif?>
+    
+    <?php if(!empty($this->field_data['text'])):?>
+        <div class="body">
+            <?php echo $this->field_data['text']?>
+        </div>
+    <?php endif?>
+    
 </div>

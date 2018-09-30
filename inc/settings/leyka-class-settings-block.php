@@ -480,8 +480,8 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
         $values = array();
 
         foreach($this->_fields_keys as $key) {
-            if(isset($_POST['leyka_'.$key])) {
-                $values[$key] = $_POST['leyka_'.$key];
+            if(isset($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
+                $values[$key] = $_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ];
             }
         }
 

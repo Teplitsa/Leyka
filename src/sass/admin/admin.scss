@@ -545,7 +545,7 @@
             @include wizard-button-caption();
             height: 40px;
             margin-right: 22px;
-            width: 248px;
+            min-width: 248px;
             font-weight: 500;
             background-color: white;
         }
@@ -1428,6 +1428,10 @@
         }
     }
     
+    #yakassa-generate-shop-password {
+        margin-top: 0.5rem;
+    }
+    
     // enumerated blocks
     .main-area {
         
@@ -1439,16 +1443,45 @@
             
             &.text-block {
                 margin-bottom: 2rem;
+                
+                .custom-block-captioned-screens {
+                    margin-top: 2rem;
+                }
             }
             
-            &.custom-block.custom_yakassa_enumerated_block {
-                max-width: 502px;
-                margin-bottom: 0px;
+            &.custom-block {
                 
-                &:last-child {
+                .custom-block-captioned-screens {
+                    margin-top: 2rem;
+                }
+                
+                &.custom_yakassa_enumerated_block {
+                    max-width: 502px;
+                    margin-bottom: 0px;
+                    padding-bottom: 1.5rem;
+                    
                     .enum-separated-block {
                         padding-bottom: 0;
                     }
+                    
+                    &:last-child {
+                        padding-bottom: 0;
+                    }
+                }
+                
+                &.custom_yakassa_screenshot {
+                    padding-bottom: 1.5rem;
+                    margin-top: -1.5rem;
+                }
+                
+                // custom styles for steps
+                &#online-kassa-send {
+                    padding-bottom: 0;
+                    margin-top: -0.5rem;
+                }
+                
+                &#send2check-send {
+                    margin-top: -0.5rem;
                 }
             }
             
@@ -1487,6 +1520,10 @@
                 
                 padding-bottom: 1.5rem;
                 
+                &:last-child {
+                    padding-bottom: 0;
+                }
+                
                 .caption {
                     font-size: 14px;
                     line-height: 21px;
@@ -1504,6 +1541,9 @@
                     
                     &.title {
                         display: block;
+                        font-weight: normal;
+                        font-size: 14px;
+                        line-height: 21px;
                     }
                     
                     &.field {
