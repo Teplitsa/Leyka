@@ -221,7 +221,8 @@
                 
             }
 
-            &.option-block {
+            &.option-block,
+            &.custom_yakassa_enumerated_block {
 
                 margin-bottom: 16px;
 
@@ -1141,6 +1142,36 @@
 
         }
         
+        .payment-result {
+
+            .result {
+
+                display: none;
+                font-size: 14px;
+
+                &.ok {
+
+                    color: $color-nav-step-done-text;
+
+                    &:before {
+                        @include ok-icon();
+                    }
+
+                }
+                &.fail {
+
+                    color: $color-wizard-error-message;
+
+                    &:before {
+                        @include error-icon();
+                    }
+
+                }
+
+            }
+
+        }
+        
         #leyka-settings-form-final-cp_final,
         #leyka-settings-form-final-yakassa_final {
             
@@ -1151,7 +1182,7 @@
                 }
                 
                 .sec-action {
-                    display: none;
+                    //display: none;
                 }
             }
             
@@ -1251,36 +1282,6 @@
 
             .call-support {
                 display: none;
-            }
-
-            .cp-payment-result {
-
-                .result {
-
-                    display: none;
-                    font-size: 14px;
-
-                    &.ok {
-
-                        color: $color-nav-step-done-text;
-
-                        &:before {
-                            @include ok-icon();
-                        }
-
-                    }
-                    &.fail {
-
-                        color: $color-wizard-error-message;
-
-                        &:before {
-                            @include error-icon();
-                        }
-
-                    }
-
-                }
-
             }
 
         }
@@ -1386,23 +1387,70 @@
 // Yakassa wizard pages
 .leyka-wizard.wizard-yakassa {
     
-    .custom-block-captioned-screens {
-        max-width: 502px;
-        margin-top: 2rem;
-    }
-    
     &.step-online_kassa {
         .custom-block-captioned-screens {
             margin-top: 0;
         }
     }
     
+    &.step-test_payment {
+        .main-area {
+            
+            .settings-block {
+                
+                .field-errors {
+    
+                    @include common-error-message();
+    
+                    display: none;
+                    margin: 8px 0;
+    
+                    &.has-errors {
+    
+                        display: block;
+                        margin-top: 1.5rem;
+    
+                        span {
+                            font-size: 13px;
+                        }
+    
+                    }
+    
+                }
+                
+                .payment-result {
+                    .result {
+                        display: block;
+                    }
+                }
+                
+            }
+        }
+    }
+    
     // enumerated blocks
     .main-area {
         
+        .step-content {
+            counter-reset: block-separator-counter;
+        }
+        
         .settings-block {
             
-            counter-reset: block-separator-counter;
+            &.text-block {
+                margin-bottom: 2rem;
+            }
+            
+            &.custom-block.custom_yakassa_enumerated_block {
+                max-width: 502px;
+                margin-bottom: 0px;
+                
+                &:last-child {
+                    .enum-separated-block {
+                        padding-bottom: 0;
+                    }
+                }
+            }
             
             .block-separator {
                 
@@ -1439,10 +1487,6 @@
                 
                 padding-bottom: 1.5rem;
                 
-                &:last-child {
-                    padding-bottom: 0;
-                }
-
                 .caption {
                     font-size: 14px;
                     line-height: 21px;
@@ -1456,9 +1500,13 @@
                     margin-top: 1rem;
                 }
                 
-                .option-block {
+                .field-component {
                     
-                    .field-component.field {
+                    &.title {
+                        display: block;
+                    }
+                    
+                    &.field {
                         input[type=text] {
                             width: 248px;
                         }
@@ -1530,6 +1578,10 @@
                 
             }
             
+        
+            .yakassa-make-live-payment-loader {
+                display: inline-block;
+            }
         }
             
     }

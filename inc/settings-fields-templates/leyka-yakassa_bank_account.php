@@ -31,7 +31,7 @@ $org_bank_account = leyka_options()->opt('org_bank_account');
         <?php else:?>
         
             <div class="settings-block custom-block option-block text">
-                <?php leyka_render_text_field('org_bank_bic', array('title' => 'Вставьте БИК банка вашей организации', 'comment' => 'Этих данных не оказалось в настройках. Заполните их, они еще пригодятся'))?>
+                <?php leyka_render_text_field('org_bank_bic', array('title' => 'Вставьте БИК банка вашей организации', 'comment' => 'Этих данных не оказалось в настройках. Заполните их, они еще пригодятся', 'value' => $org_bank_bic))?>
             </div>
             
         <?php endif?>
@@ -50,7 +50,7 @@ $org_bank_account = leyka_options()->opt('org_bank_account');
         <?php else:?>
         
             <div class="settings-block custom-block option-block text">
-                <?php leyka_render_text_field('org_bank_account', array('title' => 'Вставьте номер расчетного вашей организации', 'comment' => 'Этих данных не оказалось в настройках. Заполните их, они еще пригодятся'))?>
+                <?php leyka_render_text_field('org_bank_account', array('title' => 'Вставьте номер расчетного вашей организации', 'comment' => 'Этих данных не оказалось в настройках. Заполните их, они еще пригодятся', 'value' => $org_bank_account))?>
             </div>
             
         <?php endif?>

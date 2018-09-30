@@ -130,13 +130,57 @@ class Leyka_Yakassa_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Con
         )))->addHandler(array($this, 'handleSaveOptions'))->addTo($section);
         
         $step = new Leyka_Settings_Step('fill_leyka_data',  $section->id, 'Заполняем данные в Лейке', array('next_label' => 'Сохранить и продолжить'));
-        $step->addBlock(new Leyka_Custom_Setting_Block(array(
-            'id' => 'fill-leyka-data',
-            'custom_setting_id' => 'yakassa_fill_leyka_data',
-            'field_type' => 'custom_yakassa_fill_leyka_data',
-            'keys' => array('yandex_secret_key', 'yandex_shop_id'),
+        $step->addBlock(new Leyka_Text_Block(array(
+            'id' => 'fill_leyka_data-intro',
+            'text' => 'Переходим к техническому подключению Яндекс Кассы к Лейке.',
+        )))->addBlock(new Leyka_Custom_Setting_Block(array(
+            'id' => 'fill-leyka-data-follow-link',
+            'custom_setting_id' => 'yakassa_fill_leyka_data-follow-link',
+            'field_type' => 'custom_yakassa_enumerated_block',
             'rendering_type' => 'template',
-        )))->addHandler(array($this, 'handleSaveOptions'))->addTo($section);
+            'data' => array(
+                'caption' => 'Перейдите по адресу',
+                'value_url' => 'https://kassa.yandex.ru/joinups'
+            ),
+        )))->addBlock(new Leyka_Custom_Setting_Block(array(
+            'id' => 'fill-leyka-data-copy-shop-id',
+            'custom_setting_id' => 'yakassa_fill_leyka_data-copy-shop-id',
+            'field_type' => 'custom_yakassa_enumerated_block',
+            'rendering_type' => 'template',
+            'data' => array(
+                'caption' => 'Скопируйте параметр <b>«ShopID»</b>',
+                'screenshot' => 'yakassa/yakassa_fill_leyka_data-copy-shop-id.png'
+            ),
+        )))->addBlock(new Leyka_Custom_Setting_Block(array(
+            'id' => 'fill-leyka-data-paste-shop-id',
+            'custom_setting_id' => 'yakassa_fill_leyka_data-paste-shop-id',
+            'field_type' => 'custom_yakassa_enumerated_block',
+            'rendering_type' => 'template',
+            'data' => array(
+                'option_id' => 'yandex_shop_id',
+                'option_title' => 'Вставьте параметр в поле',
+                'option_placeholder' => 'Ваш ShopID',
+            ),
+        )))->addBlock(new Leyka_Custom_Setting_Block(array(
+            'id' => 'fill-leyka-data-copy-secret-key',
+            'custom_setting_id' => 'yakassa_fill_leyka_data-copy-secret-key',
+            'field_type' => 'custom_yakassa_enumerated_block',
+            'rendering_type' => 'template',
+            'data' => array(
+                'caption' => 'Скопируйте параметр <b>«Секретный ключ»</b>',
+                'screenshot' => 'yakassa/yakassa_fill_leyka_data-copy-secret-key.png'
+            ),
+        )))->addBlock(new Leyka_Custom_Setting_Block(array(
+            'id' => 'fill-leyka-data-paste-secret-key',
+            'custom_setting_id' => 'yakassa_fill_leyka_data-paste-secret-key',
+            'field_type' => 'custom_yakassa_enumerated_block',
+            'rendering_type' => 'template',
+            'data' => array(
+                'option_id' => 'yandex_secret_key',
+                'option_title' => 'Вставьте параметр в поле',
+                'option_placeholder' => 'Секретный ключ',
+            ),
+        )))->addHandler(array($this, 'handleSaveLeykaData'))->addTo($section);
 
         $step = new Leyka_Settings_Step('test_payment',  $section->id, 'Проверка настоящего пожертвования');
         $step->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -145,7 +189,8 @@ class Leyka_Yakassa_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Con
             'field_type' => 'custom_yakassa_test_payment',
             'keys' => array('payment_completed'),
             'rendering_type' => 'template',
-        )))->addHandler(array($this, 'handleSaveOptions'))->addTo($section);
+            'data' => array('required' => 'Для продолжения необходимо выполнить платёж.')
+        )))->addHandler(array($this, 'handleFinalTest'))->addTo($section);
 
         $this->_sections[$section->id] = $section;
         
@@ -314,6 +359,33 @@ class Leyka_Yakassa_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Con
         
         return !empty($errors) ? $errors : true;
     
+    }
+    
+    public function handleSaveLeykaData(array $step_settings) {
+        
+        if($this->handleSaveOptions($step_settings) === true) {
+
+            $available_pms = leyka_options()->opt('pm_available');
+            $available_pms[] = 'yandex-yandex_card';
+            $available_pms[] = 'yandex-yandex_money';
+            $available_pms[] = 'yandex-yandex_all';
+            $available_pms = array_unique($available_pms);
+            leyka_options()->opt('pm_available', $available_pms);
+    
+            $pm_order = array();
+            foreach($available_pms as $pm_full_id) {
+                if($pm_full_id) {
+                    $pm_order[] = "pm_order[]={$pm_full_id}";
+                }
+            }
+            leyka_options()->opt('pm_order', implode('&', $pm_order));        
+            
+        }
+        
+    }
+    
+    public function handleFinalTest() {
+        
     }
     
 }
