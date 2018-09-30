@@ -1420,7 +1420,14 @@
                 
                 .payment-result {
                     .result {
+                        
                         display: block;
+                        font-weight: 500;
+                        
+                        &:before {
+                            display: none;
+                        }                
+                        
                     }
                 }
                 

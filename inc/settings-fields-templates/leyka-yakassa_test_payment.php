@@ -21,19 +21,15 @@ $is_payment_completed = $is_came_back_from_yandex && $test_payment && $test_paym
 
 ?>
 
-<p>Давайте проверим работу Яндекс Кассы заплатив небольшую сумму сами себе. После проведения платежи деньги будут зачислены на расчетный счет, указанный ранее в Яндекс Кассе в течение 1 банковского дня</p>
-
-<div class="<?php echo $this->field_type;?> custom-block-captioned-screens">
-
-<?php if(!$is_came_back_from_yandex): ?>
 <div class="payment-tryout-wrapper">
-    <input type="button" class="button button-secondary" id="yakassa-make-live-payment" value="Реальное пожертвование"><span class="leyka-loader xs yakassa-make-live-payment-loader"></span>
+    <input type="button" class="button button-secondary" <?php if($is_payment_completed): ?>disabled<?php endif?> id="yakassa-make-live-payment" value="Реальное пожертвование"><span class="leyka-loader xs yakassa-make-live-payment-loader"></span>
 </div>
 
+<?php if(!$is_came_back_from_yandex): ?>
 <div class="payment-tryout-comment live-payment"><span class="attention-needed">Внимание!</span> Необходимо будет ввести данные действующей карты и деньги будут с нее списаны.</div>
 <?php elseif($is_payment_completed):?>
     <div class="payment-result">
-        <div class="result ok">Тестирование успешно</div>
+        <div class="result ok">Поздравляем! Ваш платёж успешно прошел</div>
     </div>
 <?php else:?>
     <div class="payment-result">
@@ -86,5 +82,3 @@ leyka_agree_pd: 1
     };
     
 </script>
-    
-</div>

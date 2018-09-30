@@ -515,7 +515,7 @@ class Leyka_Yakassa_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Con
         // fill_leyka_data
         $step = new Leyka_Settings_Step('fill_leyka_data',  $section->id, 'Заполняем данные в Лейке', array('next_label' => 'Сохранить и продолжить'));
         $step->addBlock(new Leyka_Text_Block(array(
-            'id' => 'fill_leyka_data-intro',
+            'id' => 'fill-leyka-data-intro',
             'text' => 'Переходим к техническому подключению Яндекс Кассы к Лейке.',
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'fill-leyka-data-follow-link',
@@ -568,7 +568,10 @@ class Leyka_Yakassa_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Con
 
         // test_payment
         $step = new Leyka_Settings_Step('test_payment',  $section->id, 'Проверка настоящего пожертвования');
-        $step->addBlock(new Leyka_Custom_Setting_Block(array(
+        $step->addBlock(new Leyka_Text_Block(array(
+            'id' => 'test-payment-intro',
+            'text' => 'Давайте проверим работу Яндекс Кассы заплатив небольшую сумму сами себе. После проведения платежи деньги будут зачислены на расчетный счет, указанный ранее в Яндекс Кассе в течение 1 банковского дня',
+        )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'test-payment',
             'custom_setting_id' => 'yakassa_test_payment',
             'field_type' => 'custom_yakassa_test_payment',
