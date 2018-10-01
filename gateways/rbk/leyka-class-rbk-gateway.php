@@ -106,8 +106,8 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 ),
                 'dueDate' => date('Y-m-d\TH:i:s\Z', strtotime('+15 minute', current_time('timestamp', 1))),
                 'currency' => 'RUB',
-                'product' => $form_data['leyka_ga_campaign_title'],
-                'description' => $description,
+                'product' => $description,
+                'description' => $form_data['leyka_ga_campaign_title'],
             ))
         );
 
