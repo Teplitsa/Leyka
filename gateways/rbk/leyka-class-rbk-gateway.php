@@ -104,7 +104,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 'metadata' => array(
                     'order_id' => __("Donation id:", 'leyka')." {$donation_id}"
                 ),
-                'dueDate' => date('Y-m-d\TH:i:s\Z', strtotime('+2 minute', current_time('timestamp', 1))),
+                'dueDate' => date('Y-m-d\TH:i:s\Z', strtotime('+15 minute', current_time('timestamp', 1))),
                 'currency' => 'RUB',
                 'product' => $form_data['leyka_ga_campaign_title'],
                 'description' => $description,
