@@ -571,10 +571,10 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
         )))->addHandler(array($this, 'handleSaveLeykaData'))->addTo($section);
 
         // test_payment
-        $step = new Leyka_Settings_Step('test_payment',  $section->id, 'Проверка настоящего пожертвования');
+        $step = new Leyka_Settings_Step('test_payment',  $section->id, 'Проверка условно настоящего пожертвования');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'test-payment-intro',
-            'text' => 'Давайте проверим работу Яндекс Кассы заплатив небольшую сумму сами себе. После проведения платежи деньги будут зачислены на расчетный счет, указанный ранее в Яндекс Кассе в течение 1 банковского дня',
+            'text' => 'Давайте проверим работу Яндекс.Кассы, заплатив 1 руб. сами себе. После проведения платежи деньги будут зачислены на расчетный счет, указанный ранее в Яндекс Кассе в течение 1 банковского дня',
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'test-payment',
             'custom_setting_id' => 'yandex_test_payment',

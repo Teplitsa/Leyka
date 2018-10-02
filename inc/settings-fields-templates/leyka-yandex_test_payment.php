@@ -26,12 +26,20 @@ $is_came_back_from_yandex = preg_match(
 $is_payment_completed = $is_came_back_from_yandex && $test_payment && $test_payment->get_funded_date();?>
 
 <div class="payment-tryout-wrapper">
-    <input type="button" class="button button-secondary" <?php echo $is_payment_completed ? 'disabled' : '';?> id="yandex-make-live-payment" value="Реальное пожертвование">
+    <input type="button" class="button button-secondary" <?php echo $is_payment_completed ? 'disabled' : '';?> id="yandex-make-live-payment" value="Условно реальное пожертвование">
     <span class="leyka-loader xs yandex-make-live-payment-loader" style="display: none;"></span>
 </div>
 
 <?php if( !$is_came_back_from_yandex ) {?>
-<div class="payment-tryout-comment live-payment"><span class="attention-needed">Внимание!</span> Необходимо будет ввести данные действующей карты и деньги будут с нее списаны.</div>
+<div class="payment-tryout-comment live-payment">
+<!--    <span class="attention-needed">Внимание!</span> Необходимо будет ввести данные действующей карты и деньги будут с нее списаны.</div>-->
+    <span class="attention-needed">Внимание!</span> Необходимо будет ввести данные тестовой банковской карты. Реальные деньги не будут с нее списаны.
+    <ul>
+        <li><strong>Номер карты:</strong> 5555 5555 5555 4444</li>
+        <li><strong>Дата:</strong> 12 / 20</li>
+        <li><strong>CVC:</strong> 000</li>
+    </ul>
+</div>
 <?php } elseif($is_payment_completed) {?>
     <div class="payment-result">
         <div class="result ok">Поздравляем! Ваш платёж успешно прошел</div>
