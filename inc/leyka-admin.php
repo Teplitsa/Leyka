@@ -547,12 +547,12 @@ class Leyka_Admin_Setup {
                 ->setController(Leyka_Cp_Wizard_Settings_Controller::get_instance())
                 ->renderPage();
 
-	    } else if($screen_full_id[1] === 'yakassa') {
+	    } else if($screen_full_id[1] === 'yandex') {
 
-	        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-yakassa-settings-controller.php');
+	        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-yandex-settings-controller.php');
 
 	        Leyka_Wizard_Render::get_instance()
-                ->setController(Leyka_Yakassa_Wizard_Settings_Controller::get_instance())
+                ->setController(Leyka_Yandex_Wizard_Settings_Controller::get_instance())
                 ->renderPage();
 
 	    }

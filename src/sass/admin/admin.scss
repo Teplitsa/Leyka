@@ -222,7 +222,7 @@
             }
 
             &.option-block,
-            &.custom_yakassa_enumerated_block {
+            &.custom_yandex_enumerated_block {
 
                 margin-bottom: 16px;
 
@@ -1173,7 +1173,7 @@
         }
         
         #leyka-settings-form-final-cp_final,
-        #leyka-settings-form-final-yakassa_final {
+        #leyka-settings-form-final-yandex_final {
             
             .step-submit {
                 
@@ -1384,8 +1384,8 @@
     
 }
 
-// Yakassa wizard pages
-.leyka-wizard.wizard-yakassa {
+// Yandex wizard pages
+.leyka-wizard.wizard-yandex {
     
     &.step-online_kassa {
         .custom-block-captioned-screens {
@@ -1435,7 +1435,7 @@
         }
     }
     
-    #yakassa-generate-shop-password {
+    #yandex-generate-shop-password {
         margin-top: 0.5rem;
     }
     
@@ -1462,7 +1462,7 @@
                     margin-top: 2rem;
                 }
                 
-                &.custom_yakassa_enumerated_block {
+                &.custom_yandex_enumerated_block {
                     max-width: 502px;
                     margin-bottom: 0px;
                     padding-bottom: 1.5rem;
@@ -1476,7 +1476,7 @@
                     }
                 }
                 
-                &.custom_yakassa_screenshot {
+                &.custom_yandex_screenshot {
                     padding-bottom: 1.5rem;
                     margin-top: -1.5rem;
                 }
@@ -1626,7 +1626,7 @@
             }
             
         
-            .yakassa-make-live-payment-loader {
+            .yandex-make-live-payment-loader {
                 display: inline-block;
                 margin-top: 16px;
             }

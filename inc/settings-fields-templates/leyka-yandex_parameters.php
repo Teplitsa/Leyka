@@ -18,7 +18,7 @@ $yandex_aviso_url = site_url('/leyka/service/yandex/payment_aviso/');
     <div class="enum-separated-block">
         <div class="block-separator"><div></div></div>
         <div class="caption">В выпадающем списке найдите и выберите пункт <b>«Wordpress (Лейка)»</b></div>
-        <?php show_wizard_captioned_screenshot("yakassa/yakassa_parameters-click.png")?>
+        <?php show_wizard_captioned_screenshot("yandex/yandex_parameters-click.png")?>
         <div class="body">
             <p>
                 Часть полей проставится автоматически. Вы можете проверить точность адресов
@@ -58,7 +58,7 @@ $yandex_aviso_url = site_url('/leyka/service/yandex/payment_aviso/');
         <div class="body value">
             <b <?php if(!$shop_password):?>style="display: none;"<?php endif?>><?php echo $shop_password?></b>
             <?php if(!$shop_password):?>
-            <input type="button" class="button button-secondary" id="yakassa-generate-shop-password" value="Сгенерируйте пароль «shopPassword»">
+            <input type="button" class="button button-secondary" id="yandex-generate-shop-password" value="Сгенерируйте пароль «shopPassword»">
             <?php endif?>
             <input type="hidden" name="leyka_yandex_shop_password" value="<?php echo $shop_password?>" />
         </div>
