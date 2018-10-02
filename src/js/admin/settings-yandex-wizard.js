@@ -26,17 +26,14 @@ jQuery(document).ready(function($){
 // Yandex.Kassa payment tryout:
 jQuery(document).ready(function($){
 
-    var $genBtn = $('#yandex-make-live-payment');
+    var $genBtn = $('#yandex-make-live-payment'),
+        $loading = $('.yandex-make-live-payment-loader');
     
-    if(!$genBtn.length) {
+    if( !$genBtn.length ) {
         return;
     }
-    
-    var $loading = $('.yakassa-make-live-payment-loader');
 
-    leykaYakassaPaymentData.leyka_success_page_url = window.location;
-
-    var $loading = $('.yandex-make-live-payment-loader');
+    leykaYandexPaymentData.leyka_success_page_url = window.location;
 
     $genBtn.click(function(){
         
