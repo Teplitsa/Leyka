@@ -13,11 +13,10 @@ $campaigns = get_posts(array(
 
 $campaign_id = count($campaigns) ? $campaigns[0] : null;
 $campaign_url = $campaign_id ? get_the_permalink($campaign_id) : null;
-$campaign_url_encoded = $campaign_url ? urlencode($campaign_url) : null;
 
 ?>
 
-<div class="<?php echo $this->field_type;?> cp-final-share-campaign">
+<div class="<?php echo $this->field_type;?>">
 
 <?php if($campaign_id):?>
     <p>Перейдите на страницу вашей кампании, чтобы протестировать ее.</p>

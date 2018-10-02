@@ -404,7 +404,6 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'rendering_type' => 'template',
             'data' => array(
                 'caption' => 'Все данные Анкеты заполнены. Нажмите на кнопку <b>«Отправить анкету»</b>',
-                'screenshot' => 'yandex/yandex_send_form.png',
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'send-form',
@@ -430,7 +429,6 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'rendering_type' => 'template',
             'data' => array(
                 'caption' => 'Скачайте документы из кабинета Яндекс.Кассы',
-                'screenshot' => 'yandex/yandex_sign_documents.png',
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'sign-documents-upload',

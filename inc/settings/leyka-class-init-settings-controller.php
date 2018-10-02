@@ -468,7 +468,8 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             } else if($step_from->id === 'donors_communication') {
                 $next_step_full_id = $step_from->section_id.'-campaign_completed';
             } else if($step_from->id === 'campaign_completed') {
-                $next_step_full_id = 'final-init';
+                #$next_step_full_id = 'final-init';
+                $next_step_full_id = 'cd-campaign_completed';
             }
 
         } else if($step_from->section_id === 'final') { // Final Section

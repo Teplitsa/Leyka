@@ -1173,6 +1173,7 @@
         }
         
         #leyka-settings-form-final-cp_final,
+        #leyka-settings-form-cd-campaign_completed,
         #leyka-settings-form-final-yandex_final {
             
             .step-submit {
@@ -1182,7 +1183,7 @@
                 }
                 
                 .sec-action {
-                    //display: none;
+                    display: none;
                 }
             }
             
@@ -1203,6 +1204,18 @@
                 }
             }
         }
+        
+        #leyka-settings-form-cd-campaign_completed {
+            
+            .init-final-step-go-campaign {
+                margin-top: 2rem;
+            }
+            
+            input[type=submit][name=leyka_settings_submit_init] {
+                display: none;
+            }
+        }
+        
         
     }
 }
