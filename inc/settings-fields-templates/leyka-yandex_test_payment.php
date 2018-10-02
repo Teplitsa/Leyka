@@ -23,8 +23,7 @@ $is_came_back_from_yandex = preg_match(
 $is_payment_completed = $is_came_back_from_yandex && $test_payment && $test_payment->get_funded_date();?>
 
 <div class="payment-tryout-wrapper">
-    <input type="button" class="button button-secondary" <?php echo $is_payment_completed ? 'disabled' : '';?> id="yakassa-make-live-payment" value="Реальное пожертвование">
-    <span class="leyka-loader xs yakassa-make-live-payment-loader" style="display: none;"></span>
+    <input type="button" class="button button-secondary" <?php if($is_payment_completed): ?>disabled<?php endif?> id="yandex-make-live-payment" value="Реальное пожертвование"><span class="leyka-loader xs yandex-make-live-payment-loader" style="display: none;"></span>
 </div>
 
 <?php if( !$is_came_back_from_yandex ) {?>
@@ -39,33 +38,11 @@ $is_payment_completed = $is_came_back_from_yandex && $test_payment && $test_paym
     </div>
 <?php }?>
 
-<!--
-action: leyka_ajax_get_gateway_redirect_data
-_wpnonce: e15af61957
-_wp_http_referer: /campaign/%d0%bd%d0%b0-%d1%83%d1%81%d1%82%d0%b0%d0%b2%d0%bd%d1%83%d1%8e-%d0%b4%d0%b5%d1%8f%d1%82%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d1%81%d1%82%d1%8c/
-leyka_template_id: revo
-leyka_amount_field_type: custom
-leyka_campaign_id: 11
-leyka_ga_campaign_title: На уставную деятельность
-leyka_honeypot: 
-top_rur: 30000
-bottom_rur: 100
-leyka_donation_amount: 100
-leyka_donation_currency: rur
-leyka_recurring: 0
-amount-range: 100
-leyka_payment_method: yandex-yandex_card
-leyka_donor_name: denis
-leyka_donor_email: test@ngo2.ru
-leyka_agree: 1
-leyka_agree_pd: 1
--->
-
-<input type="hidden" name="payment_completed" value="<?php echo (int)$is_payment_completed;?>">
+<input type="hidden" name="payment_completed" value="<?php echo (int)$is_payment_completed?>">
 
 <script>
     
-    var leykaYakassaPaymentData = {
+    var leykaYandexPaymentData = {
         action: 'leyka_ajax_get_gateway_redirect_data',
         leyka_template_id: 'revo',
         leyka_amount_field_type: 'custom',

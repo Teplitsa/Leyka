@@ -760,7 +760,7 @@ jQuery(document).ready(function($){
 // Yandex.Kassa shopPassword generator:
 jQuery(document).ready(function($){
 
-    var $genBtn = $('#yakassa-generate-shop-password');
+    var $genBtn = $('#yandex-generate-shop-password');
     
     if(!$genBtn.length) {
         return;
@@ -785,7 +785,7 @@ jQuery(document).ready(function($){
 // Yandex.Kassa payment tryout:
 jQuery(document).ready(function($){
 
-    var $genBtn = $('#yakassa-make-live-payment');
+    var $genBtn = $('#yandex-make-live-payment');
     
     if(!$genBtn.length) {
         return;
@@ -793,14 +793,14 @@ jQuery(document).ready(function($){
     
     var $loading = $('.yakassa-make-live-payment-loader');
 
-    leykaYakassaPaymentData.leyka_success_page_url = window.location;
+    leykaYandexPaymentData.leyka_success_page_url = window.location;
 
     $genBtn.click(function(){
         
         $loading.show();
         $genBtn.prop('disabled', true);
 
-        $.post(leyka.ajaxurl, leykaYakassaPaymentData, null, 'json')
+        $.post(leyka.ajaxurl, leykaYandexPaymentData, null, 'json')
             .done(function(json) {
                 
                 console.log(json);
