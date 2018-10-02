@@ -147,7 +147,8 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                         ),
                         'confirmation' => array(
                             'type' => 'redirect',
-                            'return_url' => leyka_get_success_page_url(),
+                            'return_url' => empty($form_data['leyka_success_page_url']) ?
+                                leyka_get_success_page_url() : $form_data['leyka_success_page_url'],
                         ),
                         'capture' => true, // Make payment at once, don't wait for shop confirmation
                         'description' =>

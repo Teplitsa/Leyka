@@ -17,13 +17,17 @@ $campaign_title = $campaign ? apply_filters('single_post_title', $campaign->titl
 
 $test_payment = !empty($_COOKIE['leyka_donation_id']) ? new Leyka_Donation($_COOKIE['leyka_donation_id']) : null;
 $is_came_back_from_yandex = preg_match(
-    '/^https:\/\/money.yandex.ru\/payments\/external\/confirmation?orderId=.*/',
+    '/^https:\/\/money.yandex.ru\/payments\/external\/success-sandbox?orderId=.*/',
+    wp_get_referer()
+) || preg_match(
+    '/^https:\/\/money.yandex.ru\/payments\/external\/success?orderId=.*/',
     wp_get_referer()
 );
 $is_payment_completed = $is_came_back_from_yandex && $test_payment && $test_payment->get_funded_date();?>
 
 <div class="payment-tryout-wrapper">
-    <input type="button" class="button button-secondary" <?php if($is_payment_completed): ?>disabled<?php endif?> id="yandex-make-live-payment" value="Реальное пожертвование"><span class="leyka-loader xs yandex-make-live-payment-loader" style="display: none;"></span>
+    <input type="button" class="button button-secondary" <?php echo $is_payment_completed ? 'disabled' : '';?> id="yandex-make-live-payment" value="Реальное пожертвование">
+    <span class="leyka-loader xs yandex-make-live-payment-loader" style="display: none;"></span>
 </div>
 
 <?php if( !$is_came_back_from_yandex ) {?>
@@ -41,7 +45,7 @@ $is_payment_completed = $is_came_back_from_yandex && $test_payment && $test_paym
 <input type="hidden" name="payment_completed" value="<?php echo (int)$is_payment_completed?>">
 
 <script>
-    
+
     var leykaYandexPaymentData = {
         action: 'leyka_ajax_get_gateway_redirect_data',
         leyka_template_id: 'revo',
@@ -58,7 +62,6 @@ $is_payment_completed = $is_came_back_from_yandex && $test_payment && $test_paym
         leyka_ga_campaign_title: '<?php echo $campaign_title ? $campaign_title : '';?>',
         leyka_donor_name: '<?php echo leyka_options()->opt('org_face_fio_ip');?>',
         leyka_donor_email: '<?php echo get_option('admin_email');?>',
-        //leyka_success_page_url: '<?php //echo '';?>//'
     };
 
 </script>

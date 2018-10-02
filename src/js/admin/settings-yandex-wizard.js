@@ -28,15 +28,15 @@ jQuery(document).ready(function($){
 
     var $genBtn = $('#yandex-make-live-payment'),
         $loading = $('.yandex-make-live-payment-loader');
-    
+
     if( !$genBtn.length ) {
         return;
     }
 
-    leykaYandexPaymentData.leyka_success_page_url = window.location;
+    leykaYandexPaymentData.leyka_success_page_url = window.location.href;
 
     $genBtn.click(function(){
-        
+
         $loading.show();
         $genBtn.prop('disabled', true);
 
