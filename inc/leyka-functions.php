@@ -1030,7 +1030,7 @@ function leyka_failure_widget_displayed() {
 function leyka_itv_info_widget() {
 
     $locale = get_locale();
-    if($locale != 'ru_RU') { // Only in Russian for now
+    if($locale !== 'ru_RU') { // Only in Russian for now
         return;
     }
 

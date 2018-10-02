@@ -1,4 +1,4 @@
-// Yandex Kassa shopPassword generator:
+// Yandex.Kassa shopPassword generator:
 jQuery(document).ready(function($){
 
     var $genBtn = $('#yakassa-generate-shop-password');
@@ -21,9 +21,9 @@ jQuery(document).ready(function($){
     });
 
 });
-// Yandex Kassa shopPassword generator - END
+// Yandex.Kassa shopPassword generator - END
 
-// Yandex Kassa payment tryout:
+// Yandex.Kassa payment tryout:
 jQuery(document).ready(function($){
 
     var $genBtn = $('#yakassa-make-live-payment');
@@ -33,7 +33,9 @@ jQuery(document).ready(function($){
     }
     
     var $loading = $('.yakassa-make-live-payment-loader');
-    
+
+    leykaYakassaPaymentData.leyka_success_page_url = window.location;
+
     $genBtn.click(function(){
         
         $loading.show();
@@ -66,4 +68,4 @@ jQuery(document).ready(function($){
     });
 
 });
-// Yandex Kassa payment tryout - END
+// Yandex.Kassa payment tryout - END

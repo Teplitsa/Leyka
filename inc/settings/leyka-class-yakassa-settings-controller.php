@@ -483,7 +483,7 @@ class Leyka_Yakassa_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Con
         $step = new Leyka_Settings_Step('online_kassa',  $section->id, 'Заполняем раздел Он-лайн касса');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'online-kassa-intro',
-            'text' => 'НКО не нужно использовать он-лайн кассу, поэтому выбираем пункт <b>«Самостоятельно»</b> и нажмите кнопку <b>«Отправить»</b>',
+            'text' => 'НКО не нужно использовать онлайн-кассу, поэтому выберите пункт <b>«Самостоятельно»</b> и нажмите кнопку <b>«Отправить»</b>.',
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'online-kassa-send',
             'custom_setting_id' => 'yakassa_online_kassa_send',
