@@ -17,11 +17,11 @@ $campaign_title = $campaign ? apply_filters('single_post_title', $campaign->titl
 
 $test_payment = !empty($_COOKIE['leyka_donation_id']) ? new Leyka_Donation($_COOKIE['leyka_donation_id']) : null;
 $is_came_back_from_yandex = preg_match(
-    '/^https:\/\/money.yandex.ru\/payments\/external\/success-sandbox?orderId=.*/',
-    wp_get_referer()
+    '/^https:\/\/money.yandex.ru\/payments\/external\/success-sandbox\\?orderId=.*/',
+    wp_get_raw_referer()
 ) || preg_match(
-    '/^https:\/\/money.yandex.ru\/payments\/external\/success?orderId=.*/',
-    wp_get_referer()
+    '/^https:\/\/money.yandex.ru\/payments\/external\/success\\?orderId=.*/',
+    wp_get_raw_referer()
 );
 $is_payment_completed = $is_came_back_from_yandex && $test_payment && $test_payment->get_funded_date();?>
 
@@ -42,7 +42,7 @@ $is_payment_completed = $is_came_back_from_yandex && $test_payment && $test_paym
     </div>
 <?php }?>
 
-<input type="hidden" name="payment_completed" value="<?php echo (int)$is_payment_completed?>">
+<input type="hidden" name="payment_completed" value="<?php echo (int)$is_payment_completed;?>">
 
 <script>
 
