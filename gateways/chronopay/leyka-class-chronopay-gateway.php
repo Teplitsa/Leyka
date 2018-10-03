@@ -160,17 +160,18 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             $message .= "Chronopay IP setting value: ".print_r(leyka_options()->opt('chronopay_ip'),true)."\n\r\n\r";
 
             wp_mail(get_option('admin_email'), __('Chronopay IP check failed!', 'leyka'), $message);
+
             status_header(200);
             die(1);
+
         }
 
         // Test for e-sign:
-        $sharedsec = leyka_options()->opt('chronopay_shared_sec');
         $customer_id = isset($_POST['customer_id'])? trim(stripslashes($_POST['customer_id'])) : '';
         $transaction_id = isset($_POST['transaction_id']) ? trim(stripslashes($_POST['transaction_id'])): '';
         $transaction_type = isset($_POST['transaction_type']) ? trim(stripslashes($_POST['transaction_type'])) : '';
         $total = isset($_POST['total']) ? trim(stripslashes($_POST['total'])) : '';
-        $sign = md5($sharedsec.$customer_id.$transaction_id.$transaction_type.$total);
+        $sign = md5(leyka_options()->opt('chronopay_shared_sec').$customer_id.$transaction_id.$transaction_type.$total);
 
         if(empty($_POST['sign']) || $sign != trim(stripslashes($_POST['sign']))) { // Security fail
 
@@ -181,8 +182,10 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
 
             wp_mail(get_option('admin_email'), __('Chronopay security key check failed!', 'leyka'), $message);
+
             status_header(200);
             die(2);
+
         }
 
         $_POST['cs2'] = (int)$_POST['cs2'];
@@ -198,8 +201,10 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             $message .= "Donation ID: ".$_POST['cs2']."\n\r\n\r";
 
             wp_mail(get_option('admin_email'), __('Chronopay gives unknown donation ID parameter!', 'leyka'), $message);
+
             status_header(200);
             die(3);
+
         }
 
         $_POST['currency'] = strtolower($_POST['currency']);
@@ -240,16 +245,26 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                     $donation->status = 'funded';
                     $donation->type = 'rebill';
 
-                    if( !$donation->donor_email && !empty($_POST['email']) )
+                    if( !$donation->donor_email && !empty($_POST['email']) ) {
                         $donation->donor_email = $_POST['email'];
+                    }
 
                     Leyka_Donation_Management::send_all_emails($donation->id);
 
-                    // Save donor's customer_id parameter to link this donation to all others in this recurrent chain:
                     $donation->chronopay_customer_id = $customer_id;
+                    $donation->chronopay_transaction_id = $transaction_id;
+
                 }
 
             } else if($transaction_type == 'Rebill') { // Rebill payment
+
+                // Callback is repeated (like when Chronopay didn't get an answer in prev. attempt):
+                if($this->_donation_exists($transaction_id)) {
+
+                    status_header(200);
+                    die(0);
+
+                }
 
                 $donation_id = Leyka_Donation::add(array(
                     'status' => 'funded',
@@ -263,6 +278,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
                 $donation->add_gateway_response($_POST);
                 $donation->chronopay_customer_id = $customer_id;
+                $donation->chronopay_transaction_id = $transaction_id;
                 $donation->payment_title = $init_recurring_payment->title;
                 $donation->campaign_id = $init_recurring_payment->campaign_id;
                 $donation->payment_method_id = $init_recurring_payment->pm_id;
@@ -282,14 +298,15 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 }
                 
 
-                if($donation->status != 'funded') {
+                if($donation->status !== 'funded') {
                     $donation->status = 'funded';
                 }
-                if($donation->type != 'rebill') {
+                if($donation->type !== 'rebill') {
                     $donation->type = 'rebill';
                 }
 
                 Leyka_Donation_Management::send_all_emails($donation_id);
+
             }
 
         } else if( // Single payment. For now, processing is just like initial rebills
@@ -301,13 +318,16 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
                 $donation->add_gateway_response($_POST);
                 $donation->status = 'funded';
-                if( !$donation->donor_email && !empty($_POST['email']) )
+
+                if( !$donation->donor_email && !empty($_POST['email']) ) {
                     $donation->donor_email = $_POST['email'];
+                }
 
                 Leyka_Donation_Management::send_all_emails($donation->id);
 
-                // Save donor's customer_id parameter.. just because we're scrupulous 0:)
                 $donation->chronopay_customer_id = $customer_id;
+                $donation->chronopay_transaction_id = $transaction_id;
+
             }
         }
 
@@ -347,6 +367,35 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         ));
 
         return count($init_donation_post) ? new Leyka_Donation($init_donation_post[0]->ID) : false;
+
+    }
+
+    /**
+     * Check if there is already a donation with transaction ID given.
+     *
+     * @param $transaction_id string Chronopay transaction ID value.
+     * @return boolean
+     */
+    protected function _donation_exists($transaction_id) {
+
+        $transaction_id = trim($transaction_id);
+
+        if(empty($transaction_id)) {
+            return false;
+        }
+
+        return count(get_posts(array( // Get init recurrent payment with customer_id given
+            'posts_per_page' => 1,
+            'post_type' => Leyka_Donation_Management::$post_type,
+            'post_status' => 'any',
+            'meta_query' => array(
+                array(
+                    'key' => '_chronopay_transaction_id',
+                    'value' => $transaction_id,
+                    'compare' => '=',
+                ),
+            ),
+        ))) > 0;
 
     }
 
@@ -459,6 +508,16 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 <?php }?>
             </div>
 
+            <label><?php _e('Chronopay transaction ID', 'leyka');?>:</label>
+            <div class="leyka-ddata-field">
+
+                <?php if($donation->type == 'correction') {?>
+                    <input type="text" id="chronopay-transaction-id" name="chronopay-transaction-id" placeholder="<?php _e('Enter Chronopay Transaction ID', 'leyka');?>" value="<?php echo $donation->chronopay_transaction_id;?>">
+                <?php } else {?>
+                    <span class="fake-input"><?php echo $donation->chronopay_transaction_id;?></span>
+                <?php }?>
+            </div>
+
         <?php } else { // New donation page displayed ?>
 
             <label for="chronopay-customer-id"><?php _e('Chronopay customer ID', 'leyka');?>:</label>
@@ -473,6 +532,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
     public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
         switch($field_name) {
             case 'chronopay_customer_id': return get_post_meta($donation->id, '_chronopay_customer_id', true);
+            case 'chronopay_transaction_id': return get_post_meta($donation->id, '_chronopay_transaction_id', true);
             default: return $value;
         }
     }
@@ -481,22 +541,36 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         switch($field_name) {
             case 'chronopay_customer_id':
                 return update_post_meta($donation->id, '_chronopay_customer_id', $value);
+            case 'chronopay_transaction_id':
+                return update_post_meta($donation->id, '_chronopay_transaction_id', $value);
             default: return false;
         }
     }
 
     public function save_donation_specific_data(Leyka_Donation $donation) {
+
         if(
             isset($_POST['chronopay-customer-id']) &&
             $donation->chronopay_customer_id != $_POST['chronopay-customer-id']
         ) {
             $donation->chronopay_customer_id = $_POST['chronopay-customer-id'];
         }
+
+        if(
+            isset($_POST['chronopay-transaction-id']) &&
+            $donation->chronopay_transaction_id != $_POST['chronopay-transaction-id']
+        ) {
+            $donation->chronopay_transaction_id = $_POST['chronopay-transaction-id'];
+        }
+
     }
 
     public function add_donation_specific_data($donation_id, array $donation_params) {
         if( !empty($donation_params['chronopay_customer_id']) ) {
             update_post_meta($donation_id, '_chronopay_customer_id', $donation_params['chronopay_customer_id']);
+        }
+        if( !empty($donation_params['chronopay_transaction_id']) ) {
+            update_post_meta($donation_id, '_chronopay_transaction_id', $donation_params['chronopay_transaction_id']);
         }
     }
 
