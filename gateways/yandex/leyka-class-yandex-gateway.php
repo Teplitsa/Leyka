@@ -311,6 +311,9 @@ techMessage="'.$tech_message.'"/>');
                     case 'canceled':
                         $donation->status = 'failed';
                         break;
+                    case 'refund.succeeded':
+                        $donation->status = 'refunded';
+                        break;
                     default: // Also possible yandex payment statuses: 'pending', 'waiting_for_capture'
                 }
 
