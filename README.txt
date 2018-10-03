@@ -5,7 +5,7 @@ Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса,яндекс.деньги, миксплат, mixplat, paypal, paymaster
 Requires at least: 3.6.1
 Tested up to: 4.9.8
-Stable tag: 2.3.7
+Stable tag: 2.3.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,11 @@ PHP version required: 5.3+
 10. Google Analytics events
 
 == Changelog ==
+= 2.3.8 =
+* New: Yandex.Kassa new API support added.
+* New: Chronopay callbacks handling are more stable now in the cases of DB low performance.
+* Fix: Now new Yandex.Kassa branding icons are in use.
+
 = 2.3.7 =
 * New: RBK Money new API support added. Now the gateway is operational again.
 
