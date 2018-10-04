@@ -60,6 +60,34 @@ jQuery(document).ready(function($){
     // Payment settings page:
     if($('#payment-settings-area').length) {
 
+        // Yandex.Kassa settings:
+        // jQuery(document).ready(function($){
+
+        // var $gateway_settings = $('#payment-settings-area').find('#gateway-yandex');
+        //
+        // if($gateway_settings.length) {
+        //
+        //     $gateway_settings.find('input[name="leyka_yandex_new_api"]')
+        //         .on('change.leyka', function(){
+        //
+        //             if($(this).prop('checked')) {
+        //
+        //                 $gateway_settings.find('.new-api').show();
+        //                 $gateway_settings.find('.old-api').hide();
+        //
+        //             } else {
+        //
+        //                 $gateway_settings.find('.new-api').hide();
+        //                 $gateway_settings.find('.old-api').show();
+        //
+        //             }
+        //
+        //         }).change();
+        //
+        // }
+
+        // });
+
         var $gateways_accordion = $('#pm-settings-wrapper');
         $gateways_accordion.accordion({
             heightStyle: 'content',
