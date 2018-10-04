@@ -1216,7 +1216,7 @@ function leyka_manually_insert_page(array $post_data) {
 
 // True if Leyka should use Yandex.Kassa new API by default, false otherwise:
 function leyka_is_yandex_new_api_used() {
-    return !leyka_options()->opt('yandex_scid');
+    return !get_option('leyka_yandex_scid');
 }
 
 if( !function_exists('leyka_get_l18n_date') ) {
