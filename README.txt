@@ -92,6 +92,8 @@ PHP version required: 5.3+
 = 2.3.8 =
 * New: Yandex.Kassa new API support added.
 * New: Chronopay callbacks handling are more stable now in the cases of DB low performance.
+* Fix: PayPal recurring frequency is 1 month now.
+* Fix: now commissions apply correctly.
 * Fix: Now new Yandex.Kassa branding icons are in use.
 
 = 2.3.7 =

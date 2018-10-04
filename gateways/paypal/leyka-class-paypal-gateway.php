@@ -668,7 +668,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     }
 
     /** Override the auto-submit setting to send manual requests to PayPal. */
-    public function submission_auto_redirect($is_auto_redirect, $pm_id, $donation_id) {
+    public function submission_redirect_type($redirect_type, $pm_id, $donation_id) {
         return false;
     }
 
