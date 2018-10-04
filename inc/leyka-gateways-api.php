@@ -339,7 +339,8 @@ abstract class Leyka_Gateway {
 
     abstract public function submission_form_data($form_data_vars, $pm_id, $donation_id);
 
-    abstract public function log_gateway_fields($donation_id);
+    public function log_gateway_fields($donation_id) {
+    }
 
     static public function process_form_default($gateway_id, $pm_id, $donation_id, $form_data) {
 

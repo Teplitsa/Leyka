@@ -99,9 +99,6 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
         );
     }
 
-    public function log_gateway_fields($donation_id) {
-    }
-
     /** Wrapper method to answer the checkOrder service calls */
     private function _check_order_answer($is_error = false, $message = '', $tech_message = '') {
 

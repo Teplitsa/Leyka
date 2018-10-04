@@ -37,9 +37,6 @@ class Leyka_Text_Gateway extends Leyka_Gateway {
         return $form_data_vars;
     }
 
-    public function log_gateway_fields($donation_id) {
-    }
-
     public function _handle_service_calls($call_type = '') {
     }
 
