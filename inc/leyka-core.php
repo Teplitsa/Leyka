@@ -30,8 +30,13 @@ class Leyka {
     /** @var string Gateway URL to process payment data. */
     protected $_payment_url = '';
 
-    /** @var string Gateway URL to process payment data. */
-    protected $_auto_redirect = true;
+    /** @var mixed Donation form submission redirect type.
+     * Possible values:
+     *  - 'auto' to submit via POST,
+     *  - 'redirect' to submit via GET,
+     *  - boolean false to turn off auto-submitting
+     */
+    protected $_submission_redirect_type = 'auto';
 
     /** @var integer Currently submitted donation ID. */
     protected $_submitted_donation_id = 0;
