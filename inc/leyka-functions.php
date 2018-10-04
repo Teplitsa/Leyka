@@ -1213,3 +1213,24 @@ function leyka_manually_insert_page(array $post_data) {
     ));
 
 }
+
+// True if Leyka should use Yandex.Kassa new API by default, false otherwise:
+function leyka_is_yandex_new_api_used() {
+    return !leyka_options()->opt('yandex_scid');
+}
+
+if( !function_exists('leyka_get_l18n_date') ) {
+    function leyka_get_i18n_date($timestamp) {
+        return date_i18n(get_option('date_format'), (int)$timestamp);
+    }
+}
+if( !function_exists('leyka_get_l18n_time') ) {
+    function leyka_get_i18n_time($timestamp) {
+        return date_i18n(get_option('time_format'), (int)$timestamp);
+    }
+}
+if( !function_exists('leyka_get_l18n_datetime') ) {
+    function leyka_get_i18n_datetime($timestamp) {
+        return date_i18n(get_option('date_format').', '.get_option('time_format'), (int)$timestamp);
+    }
+}
