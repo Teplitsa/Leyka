@@ -15,6 +15,19 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
     protected static $_instance = null;
 
+    public static function getController($controller_id) {
+
+        $controller_id = trim($controller_id);
+
+        switch($controller_id) {
+            case 'init': return Leyka_Init_Wizard_Settings_Controller::get_instance();
+            case 'cp': return Leyka_Cp_Wizard_Settings_Controller::get_instance();
+            case 'yandex': return Leyka_Yandex_Wizard_Settings_Controller::get_instance();
+            default: /** @throw some Exception */ return false;
+        }
+
+    }
+
     protected function __construct() {
 
         $this->_loadCssJs();

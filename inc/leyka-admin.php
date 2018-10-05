@@ -502,7 +502,7 @@ class Leyka_Admin_Setup {
             </div>
 
 		</div><!-- close .wrap -->
-	<?php 
+	<?php
 	}
 
 	public function settings_new_screen() {
@@ -520,42 +520,17 @@ class Leyka_Admin_Setup {
 	    // - view type ([0], e.g. 'wizard' or 'control_panel')
 	    // - settings area given ([1], e.g. 'init').
 
-	    if($screen_full_id[0] !== 'wizard') {
-	        return;
-	    }
+        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php');
 
-		require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-template-tags.php');
-	    require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-block.php');
-        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-step.php');
-        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-section.php');
-        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-controller.php');
-        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-render.php');
+        try {
 
-	    if($screen_full_id[1] === 'init') {
-
-	        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-init-settings-controller.php');
-
-            Leyka_Wizard_Render::get_instance()
-                ->setController(Leyka_Init_Wizard_Settings_Controller::get_instance())
+            Leyka_Settings_Factory::get_instance()->getRender($screen_full_id[0])
+                ->setController(Leyka_Settings_Factory::get_instance()->getController($screen_full_id[1]))
                 ->renderPage();
 
-	    } else if($screen_full_id[1] === 'cp') {
-
-	        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-cp-settings-controller.php');
-
-	        Leyka_Wizard_Render::get_instance()
-                ->setController(Leyka_Cp_Wizard_Settings_Controller::get_instance())
-                ->renderPage();
-
-	    } else if($screen_full_id[1] === 'yandex') {
-
-	        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-yandex-settings-controller.php');
-
-	        Leyka_Wizard_Render::get_instance()
-                ->setController(Leyka_Yandex_Wizard_Settings_Controller::get_instance())
-                ->renderPage();
-
-	    }
+        } catch(Exception $ex) {
+            echo '<pre>'.print_r('Settings page error (code '.$ex->getCode().'): '.$ex->getMessage(), 1).'</pre>';
+        }
 
 	}
 
