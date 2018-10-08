@@ -136,6 +136,10 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             return;
         }
 
+        if( !empty($_GET['return_to'])) {
+            $this->_setCurrentStepById(esc_attr($_GET['return_to']));
+        }
+
         if( !$this->current_section ) {
             $this->_setCurrentSection(reset($this->_sections));
         }
@@ -414,7 +418,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
                 $steps_data[] = array(
                     'step_id' => $step->full_id,
                     'title' => $step->title,
-                    'url' => $step_completed ? '&step='.$step->full_id : false,
+                    'url' => false,
                     'is_current' => $this->current_step->full_id === $step->full_id,
                     'is_completed' => $step_completed,
                 );
@@ -424,7 +428,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             $this->_navigation_data[] = array(
                 'section_id' => $section->id,
                 'title' => $section->title,
-                'url' => $all_steps_completed ? '&step='.$steps_data[0]['step_id'] : false,
+                'url' => false,
                 'is_current' => $this->current_section_id === $section->id, // True if the current Step belongs to the Section
                 'is_completed' => $all_steps_completed,
                 'steps' => $steps_data,
@@ -469,12 +473,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
                     break 2;
 
                 } else {
-
                     $navigation_data[$section_index]['steps'][$step_index]['is_completed'] = true;
-                    $navigation_data[$section_index]['steps'][$step_index]['url'] = add_query_arg(
-                        'return_to', $section['section_id'].'-'.$step['step_id'], remove_query_arg('return_to')
-                    );
-
                 }
 
             }
@@ -487,9 +486,31 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         }
 
-//        echo '<pre>'.print_r($navigation_data, 1).'</pre>';
-
         return $navigation_data;
+
+    }
+
+    protected function _saveStepNavigationPosition() {
+
+        foreach($this->_navigation_data as $section_index => &$section) {
+
+            if($section['section_id'] !== $this->getCurrentSection()->id) {
+                continue;
+            }
+
+            /** @todo If current section is completed, save it's URL */
+
+            foreach(empty($section['steps']) ? array() : $section['steps'] as $step_index => &$step) {
+                if($step['step_id'] === $this->getCurrentStep()->id) {
+
+                    $step['url'] = add_query_arg(
+                        'return_to', $section['section_id'].'-'.$step['step_id'], remove_query_arg('return_to')
+                    );
+
+                }
+            }
+
+        }
 
     }
 
@@ -578,6 +599,9 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
         }
 
         $this->_addHistoryEntry(); // Save the step data in the storage
+        $this->_saveStepNavigationPosition();
+
+        echo '<pre>'.print_r($this->_navigation_data[0], 1).'</pre>';
 
         // Proceed to the next step:
         $next_step_full_id = $this->_getNextStepId();
