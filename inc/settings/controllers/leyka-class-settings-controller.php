@@ -168,6 +168,8 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
         } //else { // Normal Step page loading
         //}
 
+//        echo '<pre>'.print_r($this->_activity['history'], 1).'</pre>';
+
         if(isset($_GET['debug'])) {
             echo '<pre>The activity: '.print_r($this->_activity, 1).'</pre>';
         }
@@ -440,8 +442,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
     protected function _processNavigationData($navigation_position = null, array $navigation_data = null) {
 
         $navigation_data = empty($navigation_data) ? $this->_navigation_data : $navigation_data;
-        $navigation_position = empty($navigation_position) ?
-            $this->current_step_full_id : trim($navigation_position);
+        $navigation_position = empty($navigation_position) ? $this->current_step_full_id : trim($navigation_position);
 
         foreach($navigation_data as $section_index => &$section) {
 
@@ -468,7 +469,12 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
                     break 2;
 
                 } else {
+
                     $navigation_data[$section_index]['steps'][$step_index]['is_completed'] = true;
+                    $navigation_data[$section_index]['steps'][$step_index]['url'] = add_query_arg(
+                        'return_to', $section['section_id'].'-'.$step['step_id'], remove_query_arg('return_to')
+                    );
+
                 }
 
             }
@@ -480,6 +486,8 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             }
 
         }
+
+//        echo '<pre>'.print_r($navigation_data, 1).'</pre>';
 
         return $navigation_data;
 

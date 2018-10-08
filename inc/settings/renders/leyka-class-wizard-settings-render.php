@@ -257,17 +257,28 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
             <?php foreach($navigation_data as $section_index => $section) {?>
 
-                <div class="nav-section <?php if( !empty($section['is_current']) ) {?>active<?php } elseif($section['is_completed']) {?>done<?php }?>">
+                <div class="nav-section <?php echo !empty($section['is_current']) ? 'active' : ($section['is_completed'] ? 'done' : '');?>">
 
                     <div class="nav-section-title">
-                        <div class="nav-section-marker">
+
                         <?php if( !empty($section['is_completed']) ) {?>
-                            <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-ok.svg">
-                        <?php } else {
-                            echo $section_index + 1;
-                        }?>
+                        <div class="nav-section-marker">
+                            <a href="<?php echo $section['url'];?>">
+                                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-ok.svg">
+                            </a>
                         </div>
-                        <?php echo esc_html($section['title']);?>
+
+                        <a href="<?php echo $section['url'];?>"><?php echo esc_html($section['title']);?></a>
+
+                        <?php } else {?>
+
+                        <div class="nav-section-marker">
+                            <?php echo $section_index + 1;?>
+                        </div>
+                            <?php echo esc_html($section['title']);
+
+                        }?>
+
                     </div>
 
                     <?php if(empty($section['is_completed']) && !empty($section['steps'])) {?>
@@ -276,11 +287,16 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                             <?php foreach($section['steps'] as $step) {?>
 
                                 <div class="nav-step <?php if( !empty($step['is_current']) ) {?>active<?php } else if( !empty($step['is_completed']) ) {?>done<?php }?>">
-                                    <?php echo esc_html($step['title']);
 
-                                    if( false && !empty($step['is_current']) ) {?>
-                                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-i.svg" class="step-i">
-                                    <?php }?>
+                                <?php if( !empty($step['is_completed']) ) {?>
+                                    <a href="<?php echo $step['url'];?>"><?php echo esc_html($step['title']);?></a>
+                                <?php } else {
+                                    echo esc_html($step['title']);
+                                }
+
+//                                    if( !empty($step['is_completed']) ) {?>
+<!--                                    <img src="--><?php //echo LEYKA_PLUGIN_BASE_URL;?><!--img/icon-i.svg" class="step-i">-->
+<!--                                    --><?php //}?>
                                 </div>
 
                             <?php }?>
