@@ -17,9 +17,8 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
     protected function _loadCssJs() {
 
         wp_enqueue_script('leyka-easy-modal', LEYKA_PLUGIN_BASE_URL . 'js/jquery.easyModal.min.js', array(), false, true);
-        
-        wp_localize_script('leyka-admin', 'leyka_wizard_yandex', array(
-        ));
+
+        wp_localize_script('leyka-admin', 'leyka_wizard_yandex', array());
 
         parent::_loadCssJs();
 
@@ -696,22 +695,33 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
         );
 
     }
-    
-    public function getNavigationData() {
 
-        $current_navigation_data = $this->_navigation_data;
-        $current_step_full_id = $this->getCurrentStep()->full_id;
+    protected function _getStepNavigationPosition($step_full_id = false) {
 
-        switch($current_step_full_id) {
-            case 'yandex-init': $navigation_position = 'yandex'; break;
-            default: $navigation_position = $current_step_full_id;
+        $step_full_id = $step_full_id ? trim(esc_attr($step_full_id)) : $this->getCurrentStep()->full_id;
+
+        switch($step_full_id) {
+            case 'yandex-init': return 'yandex'; break;
+            default: return $step_full_id;
         }
 
-        return $navigation_position ?
-            $this->_processNavigationData($navigation_position) :
-            $current_navigation_data;
-
     }
+    
+//    public function getNavigationData() {
+//
+//        $current_navigation_data = $this->_navigation_data;
+//        $current_step_full_id = $this->getCurrentStep()->full_id;
+//
+//        switch($current_step_full_id) {
+//            case 'yandex-init': $navigation_position = 'yandex'; break;
+//            default: $navigation_position = $current_step_full_id;
+//        }
+//
+//        return $navigation_position ?
+//            $this->_processNavigationData($navigation_position) :
+//            $current_navigation_data;
+//
+//    }
 
     public function getSubmitData($component = null) {
 

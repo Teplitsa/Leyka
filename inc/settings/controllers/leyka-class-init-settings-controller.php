@@ -561,7 +561,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
     protected function _getStepNavigationPosition($step_full_id = false) {
 
-        $step_full_id = $step_full_id ? trim($step_full_id) : $this->getCurrentStep()->full_id;
+        $step_full_id = $step_full_id ? trim(esc_attr($step_full_id)) : $this->getCurrentStep()->full_id;
 
         switch($step_full_id) {
             case 'rd-init': return 'rd';
@@ -592,17 +592,6 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             case 'final-init': return 'final--';
             default: return false;
         }
-
-    }
-
-    /** @todo Try to move the method in the parent class. */
-    public function getNavigationData() {
-
-        $navigation_position = $this->_getStepNavigationPosition();
-
-        return $navigation_position ?
-            $this->_processNavigationData($navigation_position) :
-            $this->_navigation_data;
 
     }
 
