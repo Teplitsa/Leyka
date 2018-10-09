@@ -559,49 +559,50 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
     }
 
-    public function getNavigationData() {
+    protected function _getStepNavigationPosition($step_full_id = false) {
 
-        $current_navigation_data = $this->_navigation_data;
-        $current_step_full_id = $this->getCurrentStep()->full_id;
+        $step_full_id = $step_full_id ? trim($step_full_id) : $this->getCurrentStep()->full_id;
 
-        switch($current_step_full_id) {
-            case 'rd-init': $navigation_position = 'rd'; break;
-            case 'rd-receiver_type': $navigation_position = $current_step_full_id; break;
+        switch($step_full_id) {
+            case 'rd-init': return 'rd';
+            case 'rd-receiver_type': return $step_full_id;
             case 'rd-receiver_legal_data':
             case 'rd-receiver_physical_data':
-                $navigation_position = 'rd-receiver_data';
-                break;
+                return 'rd-receiver_data';
             case 'rd-receiver_legal_bank_essentials':
             case 'rd-receiver_physical_bank_essentials':
-                $navigation_position = 'rd-receiver_bank_essentials';
-                break;
+                return 'rd-receiver_bank_essentials';
             case 'rd-receiver_legal_terms_of_service':
             case 'rd-receiver_physical_terms_of_service':
-                $navigation_position = 'rd-receiver_terms_of_service';
-                break;
+                return 'rd-receiver_terms_of_service';
             case 'rd-receiver_legal_pd_terms':
             case 'rd-receiver_physical_pd_terms':
-                $navigation_position = 'rd-receiver_pd_terms';
-                break;
-            case 'rd-final': $navigation_position = 'rd--'; break;
-            case 'dd-plugin_stats': $navigation_position = 'dd'; break;
+                return 'rd-receiver_pd_terms';
+            case 'rd-final': return 'rd--';
+            case 'dd-plugin_stats': return 'dd';
             case 'dd-plugin_stats_accepted':
             case 'dd-plugin_stats_refused':
-                $navigation_position = 'dd--';
-                break;
+                return 'dd--';
             case 'cd-campaign_description':
             case 'cd-campaign_decoration':
             case 'cd-donors_communication':
-                $navigation_position = $current_step_full_id; break;
+                return $step_full_id;
             case 'cd-campaign_completed':
-                $navigation_position = 'cd--'; break;
-            case 'final-init': $navigation_position = 'final--'; break;
-            default: $navigation_position = false;
+                return 'cd--';
+            case 'final-init': return 'final--';
+            default: return false;
         }
+
+    }
+
+    /** @todo Try to move the method in the parent class. */
+    public function getNavigationData() {
+
+        $navigation_position = $this->_getStepNavigationPosition();
 
         return $navigation_position ?
             $this->_processNavigationData($navigation_position) :
-            $current_navigation_data;
+            $this->_navigation_data;
 
     }
 

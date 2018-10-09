@@ -157,6 +157,8 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             $this->_initNavigationData();
         }
 
+//        echo '<pre>Constructor: '.print_r($this->_navigation_data[0], 1).'</pre>';
+
         // Debug {
         if(isset($_GET['reset'])) {
             $this->_resetActivity();
@@ -172,7 +174,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
         } //else { // Normal Step page loading
         //}
 
-//        echo '<pre>'.print_r($this->_activity['history'], 1).'</pre>';
+        echo '<pre>'.print_r($this->_activity['history'], 1).'</pre>';
 
         if(isset($_GET['debug'])) {
             echo '<pre>The activity: '.print_r($this->_activity, 1).'</pre>';
@@ -321,9 +323,15 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
         $step_full_id = !$step_full_id ? $this->getCurrentStep()->full_id : trim($step_full_id);
 
         if(empty($this->_activity['history'][$step_full_id])) {
-            $this->_activity['history'][$step_full_id] = $data;
+            $this->_activity['history'][$step_full_id] = array(
+                'navigation_position' => $this->_getStepNavigationPosition($step_full_id),
+                'data' => $data
+            );
         } else {
-            $this->_activity['history'][$step_full_id] = $this->_activity['history'][$step_full_id] + $data;
+            $this->_activity['history'][$step_full_id] = $this->_activity['history'][$step_full_id] + array(
+                'navigation_position' => $this->_getStepNavigationPosition($step_full_id),
+                'data' => $data
+            );
         }
 
         return $this->_saveActivity();
@@ -438,6 +446,11 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     }
 
+    /** By default, each Step navigation position equals to it's full ID. */
+    protected function _getStepNavigationPosition($step_full_id = false) {
+        return $step_full_id ? trim($step_full_id) : $this->getCurrentStep()->full_id;
+    }
+
     /**
      * @param $navigation_data array
      * @param $navigation_position string
@@ -473,7 +486,12 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
                     break 2;
 
                 } else {
+
                     $navigation_data[$section_index]['steps'][$step_index]['is_completed'] = true;
+                    foreach(empty($this->_activity['history']) ? array() : $this->_activity['history'] as $step_full_id => $data) {
+//                        if($data['navigation'])
+                    }
+
                 }
 
             }
@@ -498,7 +516,10 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
                 continue;
             }
 
-            /** @todo If current section is completed, save it's URL */
+            /**
+             * @todo If current section is completed, save it's URL?
+             * Mb, we shouldn't do it - the active navigation make sense only for steps, but not for sections.
+             */
 
             foreach(empty($section['steps']) ? array() : $section['steps'] as $step_index => &$step) {
                 if($step['step_id'] === $this->getCurrentStep()->id) {
@@ -601,7 +622,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
         $this->_addHistoryEntry(); // Save the step data in the storage
         $this->_saveStepNavigationPosition();
 
-        echo '<pre>'.print_r($this->_navigation_data[0], 1).'</pre>';
+        echo '<pre>Submit: '.print_r($this->_navigation_data[0], 1).'</pre>';
 
         // Proceed to the next step:
         $next_step_full_id = $this->_getNextStepId();
