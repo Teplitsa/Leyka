@@ -33,7 +33,7 @@ $is_payment_completed = $is_came_back_from_yandex && $test_payment && $test_paym
 <?php if( !$is_came_back_from_yandex ) {?>
 <div class="payment-tryout-comment live-payment">
 <!--    <span class="attention-needed">Внимание!</span> Необходимо будет ввести данные действующей карты и деньги будут с нее списаны.</div>-->
-    <span class="attention-needed">Внимание!</span> Необходимо будет ввести данные тестовой банковской карты. Реальные деньги не будут с нее списаны.
+    <span class="attention-needed">Внимание для тестировщиков!</span> Необходимо будет ввести данные тестовой банковской карты. Реальные деньги не будут с нее списаны.
     <ul>
         <li><strong>Номер карты:</strong> 5555 5555 5555 4444</li>
         <li><strong>Дата:</strong> 12 / 20</li>
@@ -42,7 +42,7 @@ $is_payment_completed = $is_came_back_from_yandex && $test_payment && $test_paym
 </div>
 <?php } elseif($is_payment_completed) {?>
     <div class="payment-result">
-        <div class="result ok">Поздравляем! Ваш платёж успешно прошел</div>
+        <div class="result ok">Поздравляем! Ваше пожертвование прошло успешно</div>
     </div>
 <?php } else {?>
     <div class="payment-result">
