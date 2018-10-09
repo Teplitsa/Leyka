@@ -1,4 +1,4 @@
-Яндекс.Касса<?php if( !defined('WPINC') ) die;
+<?php if( !defined('WPINC') ) die;
 /**
  * Leyka Init plugin setup Wizard class.
  **/
