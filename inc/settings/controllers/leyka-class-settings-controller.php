@@ -601,8 +601,6 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
         $this->_addHistoryEntry(); // Save the step data in the storage
         $this->_saveStepNavigationPosition();
 
-        echo '<pre>'.print_r($this->_navigation_data[0], 1).'</pre>';
-
         // Proceed to the next step:
         $next_step_full_id = $this->_getNextStepId();
         if($next_step_full_id && $next_step_full_id !== true) {
