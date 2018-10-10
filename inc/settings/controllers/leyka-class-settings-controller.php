@@ -142,12 +142,29 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             $history = empty($this->_activity['history']) ? array() : $this->_activity['history'];
 
             foreach($history as $step_full_id => $step_history_entry) {
-                if($step_history_entry['navigation_position'] === $_GET['return_to']) {
+
+                $target_nav_position_parts = explode('-', $_GET['return_to']);
+
+                if(count($target_nav_position_parts) > 1) { // Step nav. position given
+                    $target_navigation_position = $_GET['return_to'];
+                } else { // Section nav. position given - find the first of it's Steps
+
+                    $history_entry_nav_position_parts = explode('-', $step_history_entry['navigation_position']);
+                    if($history_entry_nav_position_parts[0] === $target_nav_position_parts[0]) {
+                        $target_navigation_position = $step_history_entry['navigation_position'];
+                    } else {
+                        continue;
+                    }
+
+                }
+
+                if($step_history_entry['navigation_position'] === $target_navigation_position) {
 
                     $this->_handleSettingsGoBack($step_full_id);
                     break;
 
                 }
+
             }
 
         }

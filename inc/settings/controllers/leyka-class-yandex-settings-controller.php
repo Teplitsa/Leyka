@@ -706,22 +706,6 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
         }
 
     }
-    
-//    public function getNavigationData() {
-//
-//        $current_navigation_data = $this->_navigation_data;
-//        $current_step_full_id = $this->getCurrentStep()->full_id;
-//
-//        switch($current_step_full_id) {
-//            case 'yandex-init': $navigation_position = 'yandex'; break;
-//            default: $navigation_position = $current_step_full_id;
-//        }
-//
-//        return $navigation_position ?
-//            $this->_processNavigationData($navigation_position) :
-//            $current_navigation_data;
-//
-//    }
 
     public function getSubmitData($component = null) {
 
