@@ -136,29 +136,30 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
             try {
 
-                $payment = $client->createPayment(
-                    array(
-                        'amount' => array(
-                            'value' => round($form_data['leyka_donation_amount'], 2),
-                            'currency' => 'RUB', /** @todo Change to $form_data[leyka_donation_currency], but fix "rur" -> "RUB" */
-                        ),
-                        'payment_method_data' => array(
-                            'type' => $this->_get_yandex_pm_id($pm_id),
-                        ),
-                        'confirmation' => array(
-                            'type' => 'redirect',
-                            'return_url' => empty($form_data['leyka_success_page_url']) ?
-                                leyka_get_success_page_url() : $form_data['leyka_success_page_url'],
-                        ),
-                        'capture' => true, // Make payment at once, don't wait for shop confirmation
-                        'description' =>
-                            ( !empty($form_data['leyka_recurring']) ? '['.__('Recurring subscription', 'leyka').'] ' : '' )
-                            .$donation->payment_title." (№ $donation_id)",
-                        'metadata' => array('donation_id' => $donation_id,),
-                        'save_payment_method' => !empty($form_data['leyka_recurring']),
+                $payment_data = array(
+                    'amount' => array(
+                        'value' => round($form_data['leyka_donation_amount'], 2),
+                        'currency' => 'RUB', /** @todo Change to $form_data[leyka_donation_currency], but fix "rur" -> "RUB" */
                     ),
-                    uniqid('', true)
+                    'confirmation' => array(
+                        'type' => 'redirect',
+                        'return_url' => empty($form_data['leyka_success_page_url']) ?
+                            leyka_get_success_page_url() : $form_data['leyka_success_page_url'],
+                    ),
+                    'capture' => true, // Make payment at once, don't wait for shop confirmation
+                    'description' =>
+                        ( !empty($form_data['leyka_recurring']) ? '['.__('Recurring subscription', 'leyka').'] ' : '' )
+                        .$donation->payment_title." (№ $donation_id)",
+                    'metadata' => array('donation_id' => $donation_id,),
+                    'save_payment_method' => !empty($form_data['leyka_recurring']),
                 );
+                if($pm_id !== 'yandex_all') {
+                    $payment_data['payment_method_data'] = array(
+                        'type' => $this->_get_yandex_pm_id($pm_id),
+                    );
+                }
+
+                $payment = $client->createPayment($payment_data, uniqid('', true));
 
                 $donation->add_gateway_response($payment); // On callback the response will be re-written
 
@@ -744,10 +745,12 @@ techMessage="'.$tech_message.'"/>');
     protected function _get_yandex_pm_id($pm_id) {
 
         $all_pm_ids = leyka_options()->opt('yandex_new_api') ? array(
-            'yandex_all' => '',
             'yandex_card' => 'bank_card',
             'yandex_money' => 'yandex_money',
             'yandex_wm' => 'webmoney',
+            'yandex_sb' => 'sberbank',
+            'yandex_ab' => 'alfabank',
+            'yandex_pb' => 'psb',
         ) : array(
             'yandex_all' => '',
             'yandex_card' => 'AC',
