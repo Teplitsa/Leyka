@@ -239,7 +239,33 @@ jQuery(document).ready(function($){
 
     $('#cp-documents-sent').dialog('open');
 
-});  
+});
+
+// Browser "back" handling for wizards:
+jQuery(document).ready(function($){
+
+    // if( !$('.leyka-wizard').length ) {
+    //     return;
+    // }
+
+    $(window).on('popstate', function(e) {
+
+        if( !$('.leyka-wizard').length ) {
+            return;
+        }
+
+        console.log('popping...');
+
+        e.preventDefault();
+
+        var state = e.originalEvent.state;
+        console.log(e.originalEvent);
+        if(state !== null) {
+
+        }
+    });
+
+});
 // CP payment tryout custom setting:
 jQuery(document).ready(function($){
 

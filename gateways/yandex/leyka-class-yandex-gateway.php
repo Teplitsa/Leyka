@@ -275,6 +275,8 @@ techMessage="'.$tech_message.'"/>');
 
             // New Yandex.Kassa API callbacks processing:
             case 'process':
+            case 'response':
+            case 'notify':
 
                 require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
 
@@ -449,7 +451,7 @@ techMessage="'.$tech_message.'"/>');
                 );
             } else if(is_a($response, 'Exception')) { // Exceptions were thrown
                 $response = array(
-                    __('Failure type:', 'leyka') => $response->type,
+                    __('Failure type:', 'leyka') => empty($response->type) ? __('unknown', 'leyka') : $response->type,
                     __('Failure code:', 'leyka') => $response->getCode(),
                     __('Failure message:', 'leyka') => $response->getMessage(),
                 );
