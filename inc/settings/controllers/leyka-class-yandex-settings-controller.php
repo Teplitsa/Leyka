@@ -6,11 +6,11 @@
 class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controller {
 
     protected static $_instance = null;
-    
+
     protected function _setAttributes() {
 
         $this->_id = 'yandex';
-        $this->_title = 'Мастер подключения Яндекс Кассе';
+        $this->_title = 'Мастер подключения к Яндекс.Кассе';
 
     }
 
@@ -27,13 +27,13 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
     protected function _setSections() {
 
         // The main Yandex Kassa settings section:
-        $section = new Leyka_Settings_Section('yandex', 'Яндекс Касса');
+        $section = new Leyka_Settings_Section('yandex', 'Яндекс.Касса');
 
         // init
-        $step = new Leyka_Settings_Step('init',  $section->id, 'Яндекс Касса');
+        $step = new Leyka_Settings_Step('init',  $section->id, 'Яндекс.Касса');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Приём электронных платежей. Платежи с банковских карт Mastercard, Maestro, Visa, «Мир» и другие способы.  Касса подходит для ИП и юрлиц, работает в России и за её пределами.',
+            'text' => 'Приём платежей с банковских карт Visa, Mastercard, Maestro, Мир и др. Комиссия от 2,8% за платежи с банковских карт, без оплаты за подключение и без абонентской платы. Яндекс.Касса подходит для ИП и юрлиц. Подробная информация <a rel="nofollow" href="https://kassa.yandex.ru/fees/">на сайте</a>. ',
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'yandex-payment-cards-icons',
             'template' => 'yandex_payment_cards_icons',
@@ -43,7 +43,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
         $step = new Leyka_Settings_Step('start_connection',  $section->id, 'Начало подключения');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'start-connection-intro',
-            'text' => 'В этом разделе заполняются общие данные об организации, которые собирает Яндекс Касса для принятия решения о сотрудничестве с вами.',
+            'text' => 'В этом разделе заполняются общие данные о подключаемой организации, которые собирает Яндекс.Касса для принятия решения о сотрудничестве с вами.',
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'start-connection-follow-link',
             'custom_setting_id' => 'yandex_start_connection_follow_link',
@@ -73,23 +73,23 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => 'Вставьте в форму ИНН и нажмите кнопку <b>«Продолжить»</b>',
+                'caption' => 'Вставьте в форму ИНН и нажмите кнопку <strong>«Продолжить»</strong>',
                 'screenshot' => 'yandex/yandex_start_connection-inn-input.png'
             ),
         )))->addHandler(array($this, 'handleSaveOptions'))->addTo($section);
-        
+
         // general_info
         $step = new Leyka_Settings_Step('general_info',  $section->id, 'Заполняем общие сведения');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'general-info-intro',
-            'text' => 'В этом разделе заполняются общие данные об организации, которые собирает Яндекс Касса для принятия решения о сотрудничестве с вами.',
+            'text' => 'В этом разделе заполняются общие данные об организации, которые собирает Яндекс.Касса для принятия решения о сотрудничестве с вами.',
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'general-info-click-fill',
             'custom_setting_id' => 'yandex_general_info_click_fill',
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => 'Кликните на кнопку <b>«Заполнить»</b>',
+                'caption' => 'Кликните на кнопку <strong>«Заполнить»</strong>',
                 'screenshot' => 'yandex/yandex_general_info-click-fill.png'
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -98,7 +98,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => 'Кликните на пункт <b>«Общие сведения»</b>',
+                'caption' => 'Кликните на пункт <strong>«Общие сведения»</strong>',
                 'screenshot' => 'yandex/yandex_general_info.png'
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -116,7 +116,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => 'Адрес сайта',
+                'caption' => 'Адрес сайта:',
                 'value_text' => preg_replace("/^http[s]?:\/\//", "", site_url())
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -125,8 +125,8 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => '<b>Примерный оборот онлайн-платежей в месяц</b>',
-                'text' => 'Если вам тяжело оценить оборот, то выберите <b>«До 1 млн Р»</b>'
+                'caption' => '<strong>Примерный оборот онлайн-платежей в месяц</strong>',
+                'text' => 'Если вам тяжело оценить оборот, то выберите <strong>«До 1 млн Р»</strong>.'
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'general-info-licence-required',
@@ -134,8 +134,8 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => '<b>Подлежит обязательному лицензированию</b>',
-                'text' => 'Пропускаем этот пункт, если у вас отсутствует лицензируемая деятельность'
+                'caption' => '<strong>Подлежит обязательному лицензированию</strong>',
+                'text' => 'Пропускаем этот пункт, если у вас отсутствует лицензируемая деятельность. В большинстве случаев некоммерческим организациям лицензия не нужна.'
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'general-info-has-benificiar-owner',
@@ -143,8 +143,8 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => '<b>У организации есть бенефициарный владелец</b>',
-                'text' => 'Не устанавливать признак того, что у организации есть бенефициарный владелец, в поле о причине отсутсвтвия бенефициарного владельца либо выбрать <b>«Юрлицо – госучреждение»</b>, либо выбрать <b>«Другое»</b> и вручную написать <b>«Благотворительная организация»</b>'
+                'caption' => '<strong>У организации есть бенефициарный владелец</strong>',
+                'text' => 'Если вы некоммерческая организация, то оставьте пустым, т.к. у некоммерческих организаций отсутствуют бенефициарные владельцы. В поле причины отсутствия бенефициарного владельца следует выбрать <strong>«Другое»</strong> и вручную написать <strong>«Некоммерческая организация»</strong>.'
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'general-info-has-benificiars',
@@ -153,7 +153,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'rendering_type' => 'template',
             'data' => array(
                 'caption' => '<b>Есть выгодоприобретатели</b>',
-                'text' => 'По умолчанию флаг с поля снят, пропускаем этот пункт'
+                'text' => 'По умолчанию флаг с поля снят, пропускаем этот пункт.'
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'general-info-not-bankrupt',
@@ -161,7 +161,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => '<b>Подтверждаю отсутствие производства по делу о несостоятельности (банкротстве)</b>',
+                'caption' => '<strong>Подтверждаю отсутствие производства по делу о несостоятельности (банкротстве)</strong>.',
                 'text' => 'Ставим галочку'
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -170,8 +170,8 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => '<b>Происхождение средств</b>',
-                'text' => 'Выбираем пункт <b>«Другое»</b> и в появившемся поле пишем <b>«Пожертвования»</b>'
+                'caption' => '<strong>Происхождение средств</strong>',
+                'text' => 'Выбираем пункт <strong>«Другое»</strong> и в появившемся поле пишем <strong>«Пожертвования»</strong>.'
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'general-info-reputation',
@@ -179,8 +179,8 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => '<b>Деловая репутация</b>',
-                'text' => 'Выбираем первый или второй пункт, который вам больше всего подходит'
+                'caption' => '<strong>Деловая репутация</strong>',
+                'text' => 'Выбираем первый или второй пункт, который вам больше всего подходит.'
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'general-info-click-save',
@@ -188,22 +188,22 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'text' => 'После заполнения, нажмите кнопку <b>«Сохранить»</b>'
+                'text' => 'После заполнения, нажмите кнопку <strong>«Сохранить»</strong>.'
             ),
         )))->addTo($section);
-        
+
         // contact_info
-        $step = new Leyka_Settings_Step('contact_info',  $section->id, 'Заполняем Контактную информацию');
+        $step = new Leyka_Settings_Step('contact_info',  $section->id, 'Заполняем контактную информацию');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'contact-info-intro',
-            'text' => 'В этом разделе заполняются общие данные об организации, которые собирает Яндекс Касса для принятия решения о сотрудничестве с вами.',
+            'text' => 'В этом разделе заполняются общие данные об организации, которые собирает Яндекс.Касса для принятия решения о сотрудничестве с вами.',
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'contact-info-click',
             'custom_setting_id' => 'yandex_contact_info_click',
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => 'Кликните на пункт <b>«Контактная информация»</b>',
+                'caption' => 'Кликните на пункт <strong>«Контактная информация»</strong>',
                 'screenshot' => 'yandex/yandex_contact_info-click.png'
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -212,7 +212,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => 'Добавьте тех, кто имеет отношение к подключению и работе с Яндекс.Кассой и после заполнения, нажмите кнопку <b>«Сохранить»</b>',
+                'caption' => '(по желанию) Добавьте тех, кто имеет отношение к подключению и работе с Яндекс.Кассой (например, программиста или бухгалтера). После заполнения, нажмите кнопку <strong>«Сохранить»</strong>',
                 'screenshot' => 'yandex/yandex_contact_info-save.png'
             ),
         )))->addTo($section);
@@ -221,14 +221,14 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
         $step = new Leyka_Settings_Step('gos_reg',  $section->id, 'Сведения о государственной регистрации');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'gos-reg-intro',
-            'text' => 'В этом разделе заполняются общие данные об организации, которые собирает Яндекс Касса для принятия решения о сотрудничестве с вами.',
+            'text' => 'В этом разделе заполняются общие данные об организации, которые собирает Яндекс.Касса для принятия решения о сотрудничестве с вами.',
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'gos-reg-click',
             'custom_setting_id' => 'yandex_gos_reg_click',
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => 'Кликните на пункт <b>«Государственная регистрация»</b>',
+                'caption' => 'Кликните на пункт <strong>«Государственная регистрация»</strong>',
                 'screenshot' => 'yandex/yandex_gos_reg-click.png'
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -259,7 +259,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'text' => 'Заполните поле фактического адреса, где находится ваша организация. Если фактический адрес совпадает с адресом регистрации, вставьте это адрес еще раз. После заполнения, нажмите кнопку <b>«Сохранить»</b>'
+                'text' => 'Заполните поле фактического адреса, где находится ваша организация. Если фактический адрес совпадает с адресом регистрации, вставьте этот адрес еще раз. После заполнения, нажмите кнопку <strong>«Сохранить»</strong>.'
             ),
         )))->addHandler(array($this, 'handleSaveOptions'))->addTo($section);
 
@@ -267,14 +267,14 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
         $step = new Leyka_Settings_Step('bank_account',  $section->id, 'Банковский счет');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'bank-account-intro',
-            'text' => 'В этом разделе заполняются общие данные об организации, которые собирает Яндекс Касса для принятия решения о сотрудничестве с вами.',
+            'text' => 'В этом разделе заполняются общие данные об организации, которые собирает Яндекс.Касса для принятия решения о сотрудничестве с вами.',
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'bank-account-click',
             'custom_setting_id' => 'yandex_bank_account_click',
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => 'Кликните на пункт <b>«Банковский счет»</b>',
+                'caption' => 'Кликните на пункт <strong>«Банковский счет»</strong>',
                 'screenshot' => 'yandex/yandex_bank_account-click.png'
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -319,22 +319,22 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'text' => 'После заполнения, нажмите кнопку <b>«Сохранить»</b>',
+                'text' => 'После заполнения, нажмите кнопку <strong>«Сохранить»</strong>',
             ),
         )))->addHandler(array($this, 'handleSaveOptions'))->addTo($section);
-        
+
         // boss_info
         $step = new Leyka_Settings_Step('boss_info',  $section->id, 'Заполняем Данные руководителя');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'boss-info-intro',
-            'text' => 'В этом разделе заполняются общие данные об организации, которые собирает Яндекс Касса для принятия решения о сотрудничестве с вами.',
+            'text' => 'В этом разделе заполняются общие данные об организации, которые собирает Яндекс.Касса для принятия решения о сотрудничестве с вами.',
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'boss-info-click',
             'custom_setting_id' => 'yandex_boss_info_click',
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => 'Кликните на пункт <b>«Данные руководителя»</b>',
+                'caption' => 'Кликните на пункт <strong>«Данные руководителя»</strong>',
                 'screenshot' => 'yandex/yandex_boss_info-click.png'
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -343,23 +343,23 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => 'У вас на руках сканы паспорта вашего руководителя. Введите все необходимые данные.  После заполнения, нажмите кнопку <b>«Сохранить»</b>',
+                'caption' => 'У вас на руках сканы паспорта вашего руководителя. Введите все необходимые данные. После заполнения, нажмите кнопку <strong>«Сохранить»</strong>',
                 'screenshot' => 'yandex/yandex_boss_info-fill-form.png'
             ),
         )))->addTo($section);
-        
+
         // upload_documents
         $step = new Leyka_Settings_Step('upload_documents',  $section->id, 'Загрузка документов');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'upload-documents-intro',
-            'text' => 'В этом разделе заполняются общие данные об организации, которые собирает Яндекс Касса для принятия решения о сотрудничестве с вами.',
+            'text' => 'В этом разделе заполняются общие данные об организации, которые собирает Яндекс.Касса для принятия решения о сотрудничестве с вами.',
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'upload-documents-click',
             'custom_setting_id' => 'yandex_upload_documents_click',
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => 'Кликните на пункт <b>«Загрузка документов»</b>',
+                'caption' => 'Кликните на пункт <strong>«Загрузка документов»</strong>',
                 'screenshot' => 'yandex/yandex_upload_documents-click.png'
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -368,7 +368,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => 'По очереди загрузите документы. Нажимайте на кнопку <b>«Выбрать файл»</b> и добавляйте файлы.',
+                'caption' => 'По очереди загрузите документы. Нажимайте на кнопку <strong>«Выбрать файл»</strong> и добавляйте файлы.',
                 'screenshot' => 'yandex/yandex_upload_documents-add-file.png'
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -378,7 +378,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'rendering_type' => 'template',
             'data' => array(
                 'text' => '
-                    <p>Если вы являетесь зарегистрированным НКО, то в поле «Другие документы» загрузите скан свидетельства о регистрации в министерстве юстиции РФ.</p>
+                    <p>Если вы представляете зарегистрированную некоммерческую организацию, то в поле «Другие документы» загрузите скан свидетельства о регистрации в Министерстве юстиции РФ.</p>
                     <p>Если такого документа у вас нет, пропустите этот пункт</p>',
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -387,22 +387,22 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'text' => 'После заполнения, нажмите кнопку <b>«Сохранить»</b>',
+                'text' => 'После заполнения, нажмите кнопку <strong>«Сохранить»</strong>',
             ),
         )))->addTo($section);
-        
+
         // send_form
         $step = new Leyka_Settings_Step('send_form',  $section->id, 'Отправляем анкету');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'send-form-intro',
-            'text' => 'В этом разделе заполняются общие данные об организации, которые собирает Яндекс Касса для принятия решения о сотрудничестве с вами.',
+            'text' => 'Отправка необходимых данных в Яндекс.Кассу',
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'send-form-send-form',
             'custom_setting_id' => 'yandex_send_form_send_form',
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => 'Все данные Анкеты заполнены. Нажмите на кнопку <b>«Отправить анкету»</b>',
+                'caption' => 'Когда все данные анкеты заполнены нажмите на кнопку <strong>«Отправить анкету»</strong>',
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'send-form',
@@ -411,7 +411,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'rendering_type' => 'template',
             'data' => array(
                 'text' => '
-                    <p>Процес проверки занимает 2-3 рабочих дня. Вам придет уведомление на почту о завершении проверки или вы можете узнать о завершении проверки <a href="https://kassa.yandex.ru/" target="_blank">в личном кабинете на Яндекс Кассы</a></p>
+                    <p>Процес проверки анкеты занимает 2-3 рабочих дня. Вам придет уведомление на почту о завершении проверки. Кроме того, вы сможете узнать о завершении проверки <a href="https://kassa.yandex.ru/" target="_blank">в личном кабинете на Яндекс.Кассы</a></p>
                     <p>Сейчас можно выйти из нашего мастера установки. Мы запомним, где вы прервали процесс.</p>',
             ),
         )))->addTo($section);
@@ -420,7 +420,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
         $step = new Leyka_Settings_Step('sign_documents',  $section->id, 'Подписываем документы');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'sign-documents-intro',
-            'text' => 'Менеджер кассы проверяет анкету и формирует заявление, которое станет доступным для скачивания в личном кабинете.',
+            'text' => 'Менеджер Яндекс.Кассы проверит анкету и сформирует заявление на подключение, которое станет доступным для скачивания в личном кабинете. Заявление будет считаться вашим договором с Яндекс.Кассой.',
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'sign-documents-download',
             'custom_setting_id' => 'yandex_sign_documents_download',
@@ -436,23 +436,23 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'rendering_type' => 'template',
             'data' => array(
                 'text' => '
-                    <p>Распечатайте все листы и на последнем листе документа указажите дату подписи, подпишите у руководителя и поставьте печать организации</p>
-                    <p>Загрузите сканы всех листов документа в личный кабинет Яндекс.Кассы</p>',
+                    <p>Распечатайте все страницы заявления. На последней странице заявления указажите дату подписи, подпишите у руководителя и поставьте печать организации</p>
+                    <p>Загрузите сканы всех страниц заявления в личный кабинет Яндекс.Кассы</p>',
             ),
         )))->addTo($section);
-        
+
         // settings
-        $step = new Leyka_Settings_Step('settings',  $section->id, 'Заполняем раздел Настройки');
+        $step = new Leyka_Settings_Step('settings',  $section->id, 'Заполняем раздел «Настройки»');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'settings-intro',
-            'text' => 'Переходим к техническому подключению Яндекс Кассы к Лейке.',
+            'text' => 'Переходим к техническому подключению Яндекс.Кассы к Лейке.',
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'settings-click-fill',
             'custom_setting_id' => 'yandex_settings_click_fill',
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => 'Кликните на пункт <b>«Заполнить»</b>',
+                'caption' => 'Кликните на пункт <strong>«Заполнить»</strong>',
                 'screenshot' => 'yandex/yandex_settings-click.png',
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -461,13 +461,13 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => 'Выберите пункт <b>«Платежный модуль»</b> кликнув на кружок напротив пункта и нажмите кнопку <b>«Продолжить»</b>',
+                'caption' => 'Выберите пункт <strong>«Платежный модуль»</strong> кликнув на кружок напротив пункта и нажмите кнопку <strong>«Продолжить»</strong>',
                 'screenshot' => 'yandex/yandex_settings-payment-module.png',
             ),
         )))->addTo($section);
-        
+
         // parameters
-        $step = new Leyka_Settings_Step('parameters',  $section->id, 'Заполняем раздел Параметры');
+        $step = new Leyka_Settings_Step('parameters',  $section->id, 'Заполняем раздел «Параметры»');
         $step->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'parameters',
             'custom_setting_id' => 'yandex_parameters',
@@ -475,12 +475,12 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'keys' => array('leyka_yandex_shop_password'),
             'rendering_type' => 'template',
         )))->addHandler(array($this, 'handleSaveOptions'))->addTo($section);
-        
+
         // online_kassa
-        $step = new Leyka_Settings_Step('online_kassa',  $section->id, 'Заполняем раздел Он-лайн касса');
+        $step = new Leyka_Settings_Step('online_kassa',  $section->id, 'Заполняем раздел «Он-лайн касса»');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'online-kassa-intro',
-            'text' => 'НКО не нужно использовать онлайн-кассу, поэтому выберите пункт <b>«Самостоятельно»</b> и нажмите кнопку <b>«Отправить»</b>.',
+            'text' => 'НКО не нужно использовать онлайн-кассу, поэтому выберите пункт <strong>«Самостоятельно»</strong> и нажмите кнопку <strong>«Отправить»</strong>.',
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'online-kassa-send',
             'custom_setting_id' => 'yandex_online_kassa_send',
@@ -490,12 +490,12 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
                 'screenshot' => 'yandex/yandex_online_kassa.png'
             ),
         )))->addTo($section);
-        
+
         // send2check
         $step = new Leyka_Settings_Step('send2check',  $section->id, 'Отправляем данные на проверку');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'send2check-intro',
-            'text' => 'Обычно этот процес занимает 2-3 рабочих дня. Вам придет уведомление на почту о завершении проверки.',
+            'text' => 'Обычно этот процесс занимает 2-3 рабочих дня. После завершения проверки вам на почту должно прийти уведомление.',
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'send2check-send',
             'custom_setting_id' => 'yandex_send2check_send',
@@ -508,19 +508,19 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'id' => 'send2check-outro',
             'text' => 'Вы можете выйти из мастера установки – мы запомним, где вы прервали процесс.',
         )))->addTo($section);
-        
+
         // fill_leyka_data
         $step = new Leyka_Settings_Step('fill_leyka_data',  $section->id, 'Заполняем данные в Лейке', array('next_label' => 'Сохранить и продолжить'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'fill-leyka-data-intro',
-            'text' => 'Переходим к техническому подключению Яндекс Кассы к Лейке.',
+            'text' => 'Осталось совсем немного! Необходимо завершить техническое подключение Яндекс.Кассы к Лейке.',
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'fill-leyka-data-follow-link',
             'custom_setting_id' => 'yandex_fill_leyka_data-follow-link',
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => 'Перейдите по адресу',
+                'caption' => 'Перейдите в административную панель Яндекс.Кассы',
                 'value_url' => 'https://kassa.yandex.ru/joinups'
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -529,7 +529,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => 'Скопируйте параметр <b>«ShopID»</b>',
+                'caption' => 'Скопируйте параметр <strong>«ShopID»</strong>',
                 'screenshot' => 'yandex/yandex_fill_leyka_data-copy-shop-id.png'
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -550,7 +550,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => 'Скопируйте параметр <b>«Секретный ключ»</b>',
+                'caption' => 'Скопируйте параметр <strong>«Секретный ключ»</strong>',
                 'screenshot' => 'yandex/yandex_fill_leyka_data-copy-secret-key.png'
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -571,18 +571,18 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
         $step = new Leyka_Settings_Step('test_payment',  $section->id, 'Проверка условно настоящего пожертвования');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'test-payment-intro',
-            'text' => 'Давайте проверим работу Яндекс.Кассы, заплатив 1 руб. сами себе. После проведения платежи деньги будут зачислены на расчетный счет, указанный ранее в Яндекс Кассе в течение 1 банковского дня',
+            'text' => 'Давайте проверим работу Яндекс.Кассы, пожертвовав 1 руб. сами себе. После проведения пожертвования деньги будут зачислены на расчетный счет, указанный ранее в Яндекс.Кассе в течение 1 банковского дня',
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'test-payment',
             'custom_setting_id' => 'yandex_test_payment',
             'field_type' => 'custom_yandex_test_payment',
             'keys' => array('payment_completed'),
             'rendering_type' => 'template',
-            'data' => array('required' => 'Для продолжения необходимо выполнить платёж.')
+            'data' => array('required' => 'Для продолжения необходимо осуществить пожертвование.')
         )))->addHandler(array($this, 'handleFinalTest'))->addTo($section);
 
         $this->_sections[$section->id] = $section;
-        
+
         // Final Section:
         $section = new Leyka_Settings_Section('final', 'Завершение');
 
@@ -590,8 +590,8 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => '
-<p>Вы подключили Яндекс Деньги. Стали доступны платежи с помощью банковских карт, Яндекс.Деньги, Сбербанк Онлайн (интернет-банк Сбербанка), Альфа-Клик (интернет-банк Альфа-Банка), криптограмма Apple Pay, криптограмма Google Pay, QIWI Кошелек, Webmoney, баланс мобильного телефона</p>
-<p>Поделитесь последней вашей кампанией с друзьями и попросите их отправить пожертвование. Так вы сможете протестировать новый метод оплаты</p>',
+<p>Вы подключили Яндекс.Кассу. Вам стали доступны пожертвования с помощью банковских карт, Яндекс.Денег и др. </p>
+<p>Протестируйте сами и поделитесь вашей кампанией по сбору средств с друзьями. Попросите их отправить вам небольшое пожертвование.</p>',
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'yandex-final',
             'template' => 'yandex_final',
@@ -607,7 +607,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
         $this->_navigation_data = array(
             array(
                 'section_id' => 'yandex',
-                'title' => 'Яндекс Касса',
+                'title' => 'Яндекс.Касса',
                 'url' => '',
                 'steps' => array(
                     array(
@@ -617,7 +617,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
                     ),
                     array(
                         'step_id' => 'general_info',
-                        'title' => 'Общие сведния',
+                        'title' => 'Общие сведения',
                         'url' => '',
                     ),
                     array(
@@ -732,21 +732,21 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
         return $submit_settings;
 
     }
-    
+
     public function handleSaveOptions(array $step_settings) {
-        
+
         $errors = array();
-        
+
         foreach($step_settings as $option_id => $value) {
             leyka_save_option(preg_replace("/^leyka_/", "", $option_id));
         }
-        
+
         return !empty($errors) ? $errors : true;
-    
+
     }
-    
+
     public function handleSaveLeykaData(array $step_settings) {
-        
+
         if($this->handleSaveOptions($step_settings) === true) {
 
             $available_pms = leyka_options()->opt('pm_available');
@@ -755,21 +755,21 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             $available_pms[] = 'yandex-yandex_all';
             $available_pms = array_unique($available_pms);
             leyka_options()->opt('pm_available', $available_pms);
-    
+
             $pm_order = array();
             foreach($available_pms as $pm_full_id) {
                 if($pm_full_id) {
                     $pm_order[] = "pm_order[]={$pm_full_id}";
                 }
             }
-            leyka_options()->opt('pm_order', implode('&', $pm_order));        
-            
+            leyka_options()->opt('pm_order', implode('&', $pm_order));
+
         }
-        
+
     }
-    
+
     public function handleFinalTest() {
-        
+
     }
-    
+
 }
