@@ -1,20 +1,11 @@
 <?php if( !defined('WPINC') ) die;
 
-class Leyka_Options_Allocator {
+class Leyka_Options_Allocator extends Leyka_Singleton {
 
-    private static $_instance = null;
+    protected static $_instance = null;
     protected $_tabs = array();
 
-    public static function instance() {
-
-        if(empty(self::$_instance))
-            self::$_instance = new self;
-
-        return self::$_instance;
-    }
-
-    private function __construct() {
-
+    protected function __construct() {
         $this->_tabs = apply_filters('leyka_settings_tabs', array(
             'beneficiary' => __('Beneficiary', 'leyka'),
             'payment'     => __('Payment options', 'leyka'),
@@ -252,5 +243,5 @@ class Leyka_Options_Allocator {
 }
 
 function leyka_opt_alloc() {
-    return Leyka_Options_Allocator::instance();
+    return Leyka_Options_Allocator::get_instance();
 }

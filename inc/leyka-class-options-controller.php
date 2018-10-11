@@ -1,22 +1,12 @@
 <?php if( !defined('WPINC') ) die;
 
-class Leyka_Options_Controller {
+class Leyka_Options_Controller extends Leyka_Singleton {
 
-    private static $_instance = null;
+    protected static $_instance = null;
     protected static $_options_meta = array();
 
     protected $_options = array();
     protected static $_field_types = array('text', 'textarea', 'number', 'html', 'rich_html', 'select', 'radio', 'checkbox', 'multi_checkbox', 'legend', 'file');
-
-    public static function instance() {
-
-        if( !self::$_instance ) {
-            self::$_instance = new self;
-        }
-
-        return self::$_instance;
-
-    }
 
     protected function __construct() {
         require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
@@ -398,7 +388,7 @@ class Leyka_Options_Controller {
  * @return Leyka_Options_Controller
  */
 function leyka_options() {
-    return Leyka_Options_Controller::instance();
+    return Leyka_Options_Controller::get_instance();
 }
 
 /** Special field: gateway commission options */
