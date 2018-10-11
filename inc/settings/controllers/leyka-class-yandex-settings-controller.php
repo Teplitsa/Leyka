@@ -34,7 +34,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
         $step = new Leyka_Settings_Step('init',  $section->id, 'Яндекс.Касса');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Приём платежей с банковских карт Mastercard, Maestro, Visa, «Мир» и др. Комиссия от 2,8% за платежи с банковских карт. Без оплаты за подключение и без абонентской платы. Яндекс.Касса подходит для ИП и юрлиц, работает в России и за её пределами. Подробная информация <a rel="nofollow" href="https://kassa.yandex.ru/fees/">на сайте</a>. ',
+            'text' => 'Приём платежей с банковских карт Visa, Mastercard, Maestro, Мир и др. Комиссия от 2,8% за платежи с банковских карт, без оплаты за подключение и без абонентской платы. Яндекс.Касса подходит для ИП и юрлиц. Подробная информация <a rel="nofollow" href="https://kassa.yandex.ru/fees/">на сайте</a>. ',
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'yandex-payment-cards-icons',
             'template' => 'yandex_payment_cards_icons',
@@ -618,7 +618,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
                     ),
                     array(
                         'step_id' => 'general_info',
-                        'title' => 'Общие сведния',
+                        'title' => 'Общие сведения',
                         'url' => '',
                     ),
                     array(
