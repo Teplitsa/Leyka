@@ -136,7 +136,7 @@ class Leyka_Sberbank_Order extends Leyka_Payment_Method {
 
         $this->_sberbank_html = file_get_contents(LEYKA_PLUGIN_DIR.'gateways/sberbank/bank_order.html');
 
-        $this->_id = 'bank_order';
+        $this->_id = 'acquiring';
         $this->_gateway_id = 'sberbank';
 
         $this->_label_backend = __('Bank order sberbank', 'leyka');
