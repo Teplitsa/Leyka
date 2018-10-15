@@ -35,8 +35,8 @@ class Leyka_Sberbank_Gateway extends Leyka_Gateway {
     }
 
     protected function _initialize_pm_list() {
-        if(empty($this->_payment_methods['sberbank_order'])) {
-            $this->_payment_methods['sberbank_order'] = Leyka_Sberbank_Order::get_instance();
+        if(empty($this->_payment_methods[Leyka_Sberbank_Acquiring::PAYMENT_METHOD_ID])) {
+            $this->_payment_methods[Leyka_Sberbank_Acquiring::PAYMENT_METHOD_ID] = Leyka_Sberbank_Acquiring::get_instance();
         }
     }
 
@@ -126,7 +126,9 @@ class Leyka_Sberbank_Gateway extends Leyka_Gateway {
     }
 }
 
-class Leyka_Sberbank_Order extends Leyka_Payment_Method {
+class Leyka_Sberbank_Acquiring extends Leyka_Payment_Method {
+
+    const PAYMENT_METHOD_ID = 'aberbank_acquiring';
 
     private $_sberbank_html = '';
 
@@ -136,7 +138,7 @@ class Leyka_Sberbank_Order extends Leyka_Payment_Method {
 
         $this->_sberbank_html = file_get_contents(LEYKA_PLUGIN_DIR.'gateways/sberbank/bank_order.html');
 
-        $this->_id = 'acquiring';
+        $this->_id = self::PAYMENT_METHOD_ID;
         $this->_gateway_id = 'sberbank';
 
         $this->_label_backend = __('Bank order sberbank', 'leyka');
