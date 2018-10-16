@@ -4,7 +4,7 @@
 
 /** @var $this Leyka_Custom_Setting_Block A block for which the template is used. */
 
-if($this->field_data['option_id']) {
+if(!empty($this->field_data['option_id'])) {
     $option_value = leyka_options()->opt($this->field_data['option_id']);
 }
 else {
