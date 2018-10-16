@@ -117,12 +117,21 @@ abstract class Leyka_Gateway {
     /** @var $_instance Leyka_Gateway Gateway is always a singleton */
     protected static $_instance;
 
-	protected $_id = ''; // A unique string, as "quittance", "yandex" or "chronopay"
-	protected $_title = ''; // A human-readable title of gateway, a "Bank quittances" or "Yandex.money"
-    protected $_icon = ''; // A gateway icon URL. Must have 25px on a bigger side
-    protected $_docs_link = ''; // A link to gateways user docs page
+	protected $_id = ''; // Must be a unique string, as "quittance", "yandex" or "chronopay"
+	protected $_title = ''; // A human-readable title of a gateway, like "Bank quittances" or "Yandex.Kassa"
+	protected $_description = ''; // A human-readable description of a gateway (for backoffice)
+    protected $_icon = ''; // A gateway icon URL
+    protected $_docs_link = ''; // Gateways user manual page URL
+    protected $_registration_link = ''; // Gateway registration page URL
+    protected $_has_wizard = false;
+
+    protected $_min_commission = 0.0;
+    protected $_receiver_types = array('legal'); // 'legal', 'physical'
+    protected $_has_recurring_support = false; // Whether recurring payments are possible via gateway at all
+
     protected $_admin_ui_column = 2; // 1 or 2. A number of the metaboxes columns, to which gateway belogns by default
     protected $_admin_ui_order = 100; // Default sorting index for gateway metabox in its column. Lower number = higher
+
     protected $_payment_methods = array(); // Supported PMs array
     protected $_options = array(); // Gateway configs
 
@@ -199,23 +208,42 @@ abstract class Leyka_Gateway {
             case 'title':
             case 'name':
             case 'label': return $this->_title;
-            case 'docs':
-            case 'docs_url':
-            case 'docs_href':
-            case 'docs_link': return $this->_docs_link ? $this->_docs_link : false;
-            case 'admin_column':
-            case 'admin_ui_column': return in_array($this->_admin_ui_column, array(1, 2)) ? $this->_admin_ui_column : 2;
-            case 'admin_order':
-            case 'admin_priority':
-            case 'admin_ui_order':
-            case 'admin_ui_priority': return (int)$this->_admin_ui_order;
-            case 'icon': $icon = false;
+            case 'description': return $this->_description;
+            case 'icon':
+            case 'icon_url':
+                $icon = false; /** "@todo Make all the gateways icons SVGs! */
                 if($this->_icon) {
                     $icon = $this->_icon;
                 } elseif(file_exists(LEYKA_PLUGIN_DIR."gateways/{$this->_id}/icons/{$this->_id}.png")) {
                     $icon = LEYKA_PLUGIN_BASE_URL."gateways/{$this->_id}/icons/{$this->_id}.png";
                 }
                 return $icon;
+
+            case 'has_recurring':
+            case 'has_recurring_support':
+                return !!$this->_has_recurring_support;
+
+            case 'min_commission': return $this->_min_commission ? round((float)$this->_min_commission, 2) : 0.0;
+            case 'receiver_types': return $this->_receiver_types ? (array)$this->_receiver_types : array('legal');
+
+            case 'docs':
+            case 'docs_url':
+            case 'docs_href':
+            case 'docs_link': return $this->_docs_link ? $this->_docs_link : false;
+            case 'registration_url':
+            case 'registration_href':
+            case 'registration_link': return $this->_registration_link ? $this->_registration_link : false;
+            case 'has_wizard': return !!$this->_has_wizard;
+            case 'wizard_url':
+            case 'wizard_href':
+            case 'wizard_link': return admin_url('admin.php?page=leyka_settings_new&screen=wizard-'.$this->_id);
+
+            case 'admin_column':
+            case 'admin_ui_column': return in_array($this->_admin_ui_column, array(1, 2)) ? $this->_admin_ui_column : 2;
+            case 'admin_order':
+            case 'admin_priority':
+            case 'admin_ui_order':
+            case 'admin_ui_priority': return (int)$this->_admin_ui_order;
             default:
                 return false;
         }

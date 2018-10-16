@@ -53,6 +53,29 @@
                 border-radius: 6px;
                 padding: 24px;
 
+                .gateway-settings-header {
+
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+
+                    margin: 0 0 13px 0;
+
+                    .gateway-header-element {
+                        margin-right: 12px;
+                    }
+
+                    h2 {
+                        font-size: 23px;
+                        margin: 0;
+                    }
+
+                    .gateway-wizard-link {
+                        margin-left: 10px;
+                    }
+
+                }
+
             }
 
         }

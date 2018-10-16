@@ -16,4 +16,4 @@
         <?php require_once LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-payment-pm-order.php';?>
     </div>
 
-</div><!-- #payment-settings-area-new -->
+</div>
