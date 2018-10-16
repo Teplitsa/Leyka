@@ -3,6 +3,73 @@
 @import 'mixins';
 @import 'loader';
 
+.leyka-settings-page {
+
+    margin: 41px 72px;
+
+    h1 {
+        margin-bottom: 4px;
+    }
+
+    #tab-container {
+
+        margin-top: 32px;
+
+    }
+
+    #payment-settings-area-new {
+
+        display: flex;
+        flex-direction: row;
+
+        .main-area-wrapper {
+
+            border-right: 1px solid $color-border-normal;
+            flex: 0 0 672px; // 640px of the main area + 32px of the it's right margin
+            padding-right: 32px;
+
+            .main-area-top {
+
+                margin-bottom: 32px;
+
+                .settings-return-link {
+
+                    font-size: 14px;
+                    text-decoration: none;
+
+                    &:before {
+                        content: "<-";
+                        display: inline;
+                        margin-right: 10px;
+                    }
+
+                }
+
+            }
+
+            .main-area.single-gateway-settings {
+
+                background-color: $color-white;
+                border-radius: 6px;
+                padding: 24px;
+
+            }
+
+        }
+
+        .side-area-wrapper {
+
+            border-left: 1px solid $color-border-normal;
+            flex: 1 1 auto;
+            padding-left: 32px;
+            margin-left: -1px;
+
+        }
+
+    }
+
+}
+
 .leyka-wizard {
 
     display: flex;
