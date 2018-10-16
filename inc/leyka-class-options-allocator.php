@@ -7,8 +7,8 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
 
     protected function __construct() {
         $this->_tabs = apply_filters('leyka_settings_tabs', array(
-            'beneficiary' => __('Beneficiary', 'leyka'),
             'payment'     => __('Payment options', 'leyka'),
+            'beneficiary' => __('Beneficiary', 'leyka'),
             'currency'    => __('Currency', 'leyka'),
             'email'       => __('Email', 'leyka'),
             'view'        => __('View', 'leyka'),
@@ -51,16 +51,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                 );
                 break;
 
-            case 'payment':
-                $options_allocated = array(
-                    array('section' => array(
-                        'name' => 'payment_common',
-                        'title' => __('Common options', 'leyka'),
-                        'is_default_collapsed' => false,
-                        'options' => array('pm_available', 'pm_order',)
-                    ),),
-                );
-                break;
+            case 'payment': break; // Custom settings page templates used
 
             case 'currency':
                 $options_allocated = array(
@@ -242,6 +233,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
     }
 }
 
+/** @return Leyka_Options_Allocator */
 function leyka_opt_alloc() {
     return Leyka_Options_Allocator::get_instance();
 }

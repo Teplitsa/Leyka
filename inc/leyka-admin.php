@@ -453,7 +453,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 			do_action("leyka_settings_submit", $current_stage);
 		}?>
 
-		<div class="wrap">
+		<div class="wrap leyka-settings-page">
+
+		    <h1>Настройки Лейки</h1>
 
             <h2 class="nav-tab-wrapper"><?php echo $this->settings_tabs_menu();?></h2>
 
@@ -680,11 +682,13 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }
 
         // Base admin area js/css:
-        if(empty($_GET['screen']) || count(explode('-', $_GET['screen'])) < 2) { // Old admin pages (before v3.0)
-	        wp_enqueue_style('leyka-admin', LEYKA_PLUGIN_BASE_URL.'css/admin.css', array(), LEYKA_VERSION);
-	    } else { // New settings pages (from v3.0)
-//            wp_enqueue_style('leyka-admin', LEYKA_PLUGIN_BASE_URL.'css/admin.css', array(), LEYKA_VERSION);
+        if( // New settings pages (from v3.0)
+            (isset($_GET['screen']) && count(explode('-', $_GET['screen'])) >= 2)
+            || (isset($_GET['page']) && $_GET['page'] === 'leyka_settings' && isset($_GET['stage']) && $_GET['stage'] === 'payment')
+        ) {
             wp_enqueue_style('leyka-admin', LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css', array(), LEYKA_VERSION);
+        } else { // Old admin pages (before v3.0)
+	        wp_enqueue_style('leyka-admin', LEYKA_PLUGIN_BASE_URL.'css/admin.css', array(), LEYKA_VERSION);
 	    }
 
         $current_screen = get_current_screen();

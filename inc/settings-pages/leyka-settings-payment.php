@@ -1,5 +1,12 @@
 <?php if( !defined('WPINC') ) die; // If this file is called directly, abort
 
+if(empty($_GET['old'])) {
+
+    require_once LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-payment-new.php';
+    return;
+
+}
+
 $current_screen_id = 'leyka_payment_settings_page';
 $pm_active = leyka_options()->opt('pm_available');
 
