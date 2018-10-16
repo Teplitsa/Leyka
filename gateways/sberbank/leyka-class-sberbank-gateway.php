@@ -8,21 +8,20 @@ class Leyka_Sberbank_Gateway extends Leyka_Gateway {
     protected static $_instance; // Gateway is always a singleton
 
     protected function _set_options_defaults() {
-
-        if($this->_options) // Create Gateway options, if needed
-            return;
-
         $this->_options = array(
-            'sberbank_redirect_page' => array(
-                'type' => 'select',
-                'default' => leyka_get_default_success_page(),
-                'title' => __('Page to redirect a donor after a donation', 'leyka'),
-                'description' => __('Select a page for donor to redirect to after he has acquired a sberbank.', 'leyka'),
-                'required' => 0, // 1 if field is required, 0 otherwise
-                'placeholder' => '', // For text fields
-                'length' => '', // For text fields
-                'list_entries' => leyka_get_pages_list(),
-                'validation_rules' => array(), // List of regexp?..
+            'login' => array(
+                'type' => 'text',
+                'default' => '',
+                'title' => __('Sberbank payment gateway login', 'leyka'),
+                'required' => 1,
+                'placeholder' => __('Sberbank payment gateway login', 'leyka'),
+            ),
+            'password' => array(
+                'type' => 'text',
+                'default' => '',
+                'title' => __('Sberbank payment gateway password', 'leyka'),
+                'required' => 1,
+                'placeholder' => __('Sberbank payment gateway password', 'leyka'),
             ),
         );
     }
@@ -31,7 +30,7 @@ class Leyka_Sberbank_Gateway extends Leyka_Gateway {
 
         $this->_id = 'sberbank';
         $this->_title = __('Sberbank', 'leyka');
-        $this->_docs_link = '//leyka.te-st.ru/docs/nastrojka-lejki/';
+        $this->_docs_link = 'http://nashideti.org/';
     }
 
     protected function _initialize_pm_list() {
@@ -42,66 +41,6 @@ class Leyka_Sberbank_Gateway extends Leyka_Gateway {
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
-        header('HTTP/1.1 200 OK');
-        header('Content-Type: text/html; charset=utf-8');
-
-        $campaign = new Leyka_Campaign($form_data['leyka_campaign_id']);
-        $sberbank_html = str_replace(
-            array(
-                '#BACK_TO_DONATION_FORM_TEXT#',
-                '#PRINT_THE_QUITTANCE_TEXT#',
-                '#QUITTANCE_RECEIVED_TEXT#',
-                '#SUCCESS_URL#',
-                '#PAYMENT_COMMENT#',
-                '#PAYER_NAME#',
-                '#RECEIVER_NAME#',
-                '#SUM#',
-                '#INN#',
-                '#KPP#',
-                '#ACC#',
-                '#RECEIVER_BANK_NAME#',
-                '#BIC#',
-                '#CORR#',
-            ),
-            array( // Form field values
-                __('Return to the donation form', 'leyka'),
-                __('Print the sberbank', 'leyka'),
-                __("OK, I've received the sberbank", 'leyka'),
-                get_permalink(leyka_options()->opt('sberbank_redirect_page')),
-                $campaign->payment_title." (№ $donation_id)",
-                $form_data['leyka_donor_name'],
-                leyka_options()->opt('org_full_name'),
-                (int)$form_data['leyka_donation_amount'],
-                leyka_options()->opt('org_inn'),
-                leyka_options()->opt('org_kpp'),
-                leyka_options()->opt('org_bank_account'),
-                leyka_options()->opt('org_bank_name'),
-                leyka_options()->opt('org_bank_bic'),
-                leyka_options()->opt('org_bank_corr_account'),
-            ),
-            $this->_payment_methods[$pm_id]->get_sberbank_html()
-        );
-
-        for($i=0; $i<10; $i++) {
-            $sberbank_html = str_replace("#INN_$i#", substr(leyka_options()->opt('org_inn'), $i, 1), $sberbank_html);
-        }
-        for($i=0; $i<20; $i++) {
-            $sberbank_html = str_replace(
-                "#ACC_$i#", substr(leyka_options()->opt('org_bank_account'), $i, 1), $sberbank_html
-            );
-        }
-        for($i=0; $i<9; $i++) {
-            $sberbank_html = str_replace(
-                "#BIC_$i#", substr(leyka_options()->opt('org_bank_bic'), $i, 1), $sberbank_html
-            );
-        }
-        for($i=0; $i<20; $i++) {
-            $sberbank_html = str_replace(
-                "#CORR_$i#", substr(leyka_options()->opt('org_bank_corr_account'), $i, 1), $sberbank_html
-            );
-        }
-
-        die($sberbank_html);
     }
 
     /** Quittance don't use any specific redirects, so this method is empty. */
@@ -128,15 +67,11 @@ class Leyka_Sberbank_Gateway extends Leyka_Gateway {
 
 class Leyka_Sberbank_Acquiring extends Leyka_Payment_Method {
 
-    const PAYMENT_METHOD_ID = 'aberbank_acquiring';
-
-    private $_sberbank_html = '';
+    const PAYMENT_METHOD_ID = 'sberbank_acquiring';
 
     protected static $_instance;
 
     protected function _set_attributes() {
-
-        $this->_sberbank_html = file_get_contents(LEYKA_PLUGIN_DIR.'gateways/sberbank/bank_order.html');
 
         $this->_id = self::PAYMENT_METHOD_ID;
         $this->_gateway_id = 'sberbank';
@@ -154,8 +89,6 @@ class Leyka_Sberbank_Acquiring extends Leyka_Payment_Method {
 
         $this->_default_currency = 'rur';
 
-	    // We should always redirect donors, even on ajax-based templates:
-//        $this->_processing_type = 'redirect';
         $this->_ajax_without_form_submission = true;
 
     }
@@ -178,9 +111,6 @@ class Leyka_Sberbank_Acquiring extends Leyka_Payment_Method {
         );
     }
 
-    function get_sberbank_html() {
-        return $this->_sberbank_html;
-    }
 }
 
 function leyka_add_gateway_sberbank() { // Use named function to leave a possibility to remove/replace it on the hook
