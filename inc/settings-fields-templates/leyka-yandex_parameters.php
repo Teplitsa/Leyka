@@ -28,12 +28,12 @@ $yandex_aviso_url = site_url('/leyka/service/yandex/payment_aviso/');
 
                     <div class="field">
                         <label>CheckURL</label>
-                        <p class="field-text"><?php echo $yandex_check_url?></p>
+                        <p class="field-text leyka-wizard-copy2clipboard"><?php echo $yandex_check_url?></p>
                     </div>
 
                     <div class="field">
                         <label>AvisoURL</label>
-                        <p class="field-text"><?php echo $yandex_aviso_url?></p>
+                        <p class="field-text leyka-wizard-copy2clipboard"><?php echo $yandex_aviso_url?></p>
                     </div>
 
                 </div>
@@ -47,15 +47,15 @@ $yandex_aviso_url = site_url('/leyka/service/yandex/payment_aviso/');
     <div class="enum-separated-block">
         <div class="block-separator"><div></div></div>
         <div class="caption">Вставьте в поле <strong>«Email для отправки реестров»</strong></div>
-        <div class="body value">
+        <div class="body value leyka-wizard-copy2clipboard">
             <b><?php echo $admin_email?></b>
         </div>
     </div>
 
     <div class="enum-separated-block">
         <div class="block-separator"><div></div></div>
-        <div class="caption" <?php if(!$shop_password):?>style="display: none;"<?php endif?>>Скопируйте пароль и вставьте в поле «shopPassword»</div>
-        <div class="body value">
+        <div class="caption" <?php if(!$shop_password):?>style="display: none;"<?php endif;?>>Скопируйте пароль и вставьте в поле «shopPassword»</div>
+        <div class="body value <?php if(!$shop_password):?>no-password<?php endif;?> leyka-wizard-copy2clipboard">
             <b <?php if(!$shop_password):?>style="display: none;"<?php endif?>><?php echo $shop_password?></b>
             <?php if(!$shop_password):?>
             <input type="button" class="button button-secondary" id="yandex-generate-shop-password" value="Сгенерируйте пароль «shopPassword»">

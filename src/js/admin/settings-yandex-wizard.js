@@ -18,6 +18,8 @@ jQuery(document).ready(function($){
         $block.find('.body b').css('display', 'unset').text(password);
         $block.find('input[name=leyka_yandex_shop_password]').val(password);
         $stepSubmit.show();
+        
+        $(this).closest('.body').removeClass('no-password');
     });
 
 });

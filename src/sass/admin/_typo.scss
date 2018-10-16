@@ -217,3 +217,11 @@ $body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial
 	font-size: 16px;
 	line-height: 19px;
 }
+
+@mixin copy2clipborad-link {
+    font-family: $body;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 10px;
+    line-height: 15px;
+}

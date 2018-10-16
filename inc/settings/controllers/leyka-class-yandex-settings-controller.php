@@ -65,6 +65,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
                 'option_title' => 'Вставьте ИНН вашей организации',
                 'option_comment' => 'Этих данных не оказалось в настройках. Заполните их, они еще пригодятся',
                 'show_text_if_set' => true,
+                'copy2clipboard' => true,
                 'required' => true,
             )
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -117,7 +118,8 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'rendering_type' => 'template',
             'data' => array(
                 'caption' => 'Адрес сайта:',
-                'value_text' => preg_replace("/^http[s]?:\/\//", "", site_url())
+                'value_text' => preg_replace("/^http[s]?:\/\//", "", site_url()),
+                'copy2clipboard' => true,
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'general-info-turnover',
@@ -244,6 +246,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
                 'option_comment' => 'Этих данных не оказалось в настройках. Заполните их, они еще пригодятся',
                 'show_text_if_set' => true,
                 'required' => true,
+                'copy2clipboard' => true,
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'gos-reg-fill-address_screenshot',
@@ -290,6 +293,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
                 'option_comment' => 'Этих данных не оказалось в настройках. Заполните их, они еще пригодятся',
                 'show_text_if_set' => true,
                 'required' => true,
+                'copy2clipboard' => true,
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'bank-account-fill-bank-bic',
@@ -312,6 +316,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
                 'option_comment' => 'Этих данных не оказалось в настройках. Заполните их, они еще пригодятся',
                 'show_text_if_set' => true,
                 'required' => true,
+                'copy2clipboard' => true,
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'bank-account-click-save',

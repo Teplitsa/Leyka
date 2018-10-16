@@ -431,3 +431,36 @@ jQuery(document).ready(function($){
         $('.placeholders-help').show();
     });
 });
+
+
+// org actual address
+jQuery(document).ready(function($){
+    
+    var $orgActualAddressInput = $('#leyka_org_actual_address-field');
+    var $orgActualAddressCheckbox = $('#leyka_org_actual_address_differs-field');
+    var $orgActualAddressWrapper = $('#leyka_org_actual_address-wrapper');
+
+    var orgActualAddress = $orgActualAddressInput.val();
+    orgActualAddress = $.trim(orgActualAddress);
+    
+    if(!orgActualAddress) {
+        $orgActualAddressWrapper.hide();
+        $orgActualAddressCheckbox.prop('checked', false);
+    }
+    else {
+        $orgActualAddressCheckbox.prop('checked', true);
+    }
+    
+    $orgActualAddressCheckbox.change(function(){
+        if($(this).prop('checked')) {
+            $orgActualAddressWrapper.show();
+            $orgActualAddressInput.val(orgActualAddress);
+        }
+        else {
+            $orgActualAddressWrapper.hide();
+            orgActualAddress = $orgActualAddressInput.val();
+            $orgActualAddressInput.val('');
+        }
+    });
+    
+});
