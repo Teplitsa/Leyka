@@ -4,41 +4,16 @@
 
     <div class="main-area-wrapper">
 
-        <?php if(isset($_GET['gateway'])) {?>
-
-            <div class="main-area-top">
-                <a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=payment');?>" class="settings-return-link">К списку платёжных операторов</a>
-            </div>
-
-            <?php $gateway = leyka_get_gateway_by_id($_GET['gateway']);
-            if( !$gateway ) {?>
-            <p class="error">Неизвестный платёжный оператор.</p>
-            <?php } else { // Gateway settings area ?>
-
-            <div class="main-area single-gateway-settings gateway-<?php echo $_GET['gateway'];?>">
-                Single gateway settings here: <?php echo $_GET['gateway'];?>
-            </div>
-
-            <?php }
-
-        } else {?>
-
-            <div class="main-area-top">
-                Gateways list filter here
-            </div>
-
-            <div class="main-area all-gateways-settings">
-                Gateways cards list here
-            </div>
-
-        <?php }?>
+        <?php if(isset($_GET['gateway'])) {
+            require_once LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-payment-gateway.php';
+        } else {
+            require_once LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-payment-gateways-list.php';
+        }?>
 
     </div>
 
     <div class="side-area-wrapper">
-        <div class="side-area">
-            PM order area here
-        </div>
+        <?php require_once LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-payment-pm-order.php';?>
     </div>
 
 </div><!-- #payment-settings-area-new -->
