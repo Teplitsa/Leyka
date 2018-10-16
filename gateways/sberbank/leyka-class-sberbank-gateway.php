@@ -1,4 +1,7 @@
-<?php if (!defined('WPINC')) die;
+<?php use Voronkovich\SberbankAcquiring\Client;
+use Voronkovich\SberbankAcquiring\Currency;
+
+if (!defined('WPINC')) die;
 
 /**
  * Leyka_Sberbank_Gateway class
@@ -44,12 +47,39 @@ class Leyka_Sberbank_Gateway extends Leyka_Gateway
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data)
     {
+        throw new ErrorException(
+            var_export(
+                $form_data,
+                true
+            )
+        );
+        $username = null;
+        $password = null;
+        $orderAmount = null;
+        $returnUrl = 'https://zadolba.li';
+        $client = new Client(
+            [
+                'userName' => $username,
+                'password' => $password
+            ]
+        );
+        $result = $client->registerOrder(
+            $donation_id,
+            $orderAmount,
+            $returnUrl,
+            [
+                'currency' => Currency::RUB,
+                'failUrl' => 'http://fail.com'
+            ]
+        );
+        $paymentFormUrl = $result['formUrl'];
+        header('Location: ' . $paymentFormUrl);
     }
 
     /** Quittance don't use any specific redirects, so this method is empty. */
     public function submission_redirect_url($current_url, $pm_id)
     {
-        return home_url('/leyka-process-donation');
+        return home_url('/пидор');
     }
 
     /** Quittance don't have some form data to send to the gateway site */
