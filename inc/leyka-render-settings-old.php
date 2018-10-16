@@ -130,7 +130,7 @@ function leyka_render_checkbox_field($option_id, $data){
             <span class="field-component title"><?php echo $data['title'];?></span>
             <span class="field-component field">
                 <input type="checkbox" id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="1" <?php echo !empty($data['value']) && intval($data['value']) >= 1 ? 'checked' : '';?>>&nbsp;
-            <?php echo $data['description'];?></span>
+            <?php echo !empty($data['description']) ?  $data['description'] : '';?></span>
         </label>
     </div>
 <?php }
