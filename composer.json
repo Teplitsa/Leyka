@@ -1,0 +1,45 @@
+{
+  "name": "smartsites/wordpress-composer",
+  "description": "Project template for WordPress projects with composer",
+  "type": "project",
+  "license": "GPL-2.0+",
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://wpackagist.org"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "sort-packages": true,
+    "vendor-dir": "www/vendor"
+  },
+  "require": {
+    "composer/installers": "^1.2",
+    "drupal-composer/preserve-paths": "0.1.*",
+    "johnpbloch/wordpress-core": "~4.9",
+    "johnpbloch/wordpress-core-installer": "^1.0",
+    "php-curl-class/php-curl-class": "^8.3",
+    "voronkovich/sberbank-acquiring-client": "^1.1",
+    "wp-cli/wp-cli": "^1.5"
+  },
+  "extra": {
+    "installer-paths": {
+      "www/wp-content/plugins/{$name}/": [
+        "type:wordpress-plugin"
+      ],
+      "www/wp-content/themes/{$name}/": [
+        "type:wordpress-theme"
+      ]
+    },
+    "preserve-paths": [
+      "www/wp-config.php",
+      "www/wp-content/uploads",
+      "www/wp-content/plugins/.gitignore",
+      "www/wp-content/themes/.gitignore",
+      "www/vendor"
+    ],
+    "wordpress-install-dir": "www"
+  }
+}
