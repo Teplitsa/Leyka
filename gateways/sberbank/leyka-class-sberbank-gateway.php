@@ -79,7 +79,15 @@ class Leyka_Sberbank_Gateway extends Leyka_Gateway
     /** Quittance don't use any specific redirects, so this method is empty. */
     public function submission_redirect_url($current_url, $pm_id)
     {
-        return home_url('/пидор');
+        throw new ErrorException(
+            var_export(
+                [
+                    $current_url,
+                    $pm_id
+                ],
+                true
+            )
+        );
     }
 
     /** Quittance don't have some form data to send to the gateway site */
