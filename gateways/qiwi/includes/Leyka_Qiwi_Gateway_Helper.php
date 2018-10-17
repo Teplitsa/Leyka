@@ -76,7 +76,7 @@ class Leyka_Qiwi_Gateway_Helper
                     "currency" => "RUB",
                     "value" => $amount
                 ),
-                "comment" => "Text comment",
+                "comment" => "",
                 "expirationDateTime" => self::date_formatter(strtotime('+1 day', current_time('timestamp', 1))),
                 "customer" => array(),
                 "customFields" => array()
