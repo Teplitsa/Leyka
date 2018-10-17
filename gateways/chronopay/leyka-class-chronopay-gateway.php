@@ -141,9 +141,6 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     }
 
-    public function log_gateway_fields($donation_id) {
-    }
-
     public function _handle_service_calls($call_type = '') {
 
         $client_ip = leyka_get_client_ip();

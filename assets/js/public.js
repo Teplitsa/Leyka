@@ -590,7 +590,12 @@ var leykaValidateForm,
                     redirect_form_html += '</form>';
 
                     $redirect_step.append(redirect_form_html);
-                    $redirect_step.find('.leyka-auto-submit').submit();
+
+                    if(typeof response.submission_redirect_type === 'undefined' || response.submission_redirect_type === 'auto') {
+                        $redirect_step.find('.leyka-auto-submit').submit();
+                    } else if(response.submission_redirect_type === 'redirect') {
+                        window.location.href = $redirect_step.find('.leyka-auto-submit').prop('action');
+                    }
 
                 });
 

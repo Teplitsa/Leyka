@@ -15,7 +15,7 @@ function leyka_remove_gateway($class_name) {
 }
 
 function leyka_get_gateways() {
-	return leyka()->get_gateways();
+    return leyka()->get_gateways();
 }
 
 /**
@@ -79,7 +79,7 @@ function leyka_get_pm_by_id($pm_id, $is_full_id = false) {
     $pm = false;
     if($is_full_id) {
 
-		$id = explode('-', $pm_id);
+        $id = explode('-', $pm_id);
         $gateway = leyka_get_gateway_by_id(reset($id)); // Otherwise error in PHP 5.4.0
         if( !$gateway ) {
             return false;
@@ -117,8 +117,8 @@ abstract class Leyka_Gateway {
     /** @var $_instance Leyka_Gateway Gateway is always a singleton */
     protected static $_instance;
 
-	protected $_id = ''; // A unique string, as "quittance", "yandex" or "chronopay"
-	protected $_title = ''; // A human-readable title of gateway, a "Bank quittances" or "Yandex.money"
+    protected $_id = ''; // A unique string, as "quittance", "yandex" or "chronopay"
+    protected $_title = ''; // A human-readable title of gateway, a "Bank quittances" or "Yandex.money"
     protected $_icon = ''; // A gateway icon URL. Must have 25px on a bigger side
     protected $_docs_link = ''; // A link to gateways user docs page
     protected $_admin_ui_column = 2; // 1 or 2. A number of the metaboxes columns, to which gateway belogns by default
@@ -182,7 +182,7 @@ abstract class Leyka_Gateway {
             add_action('leyka_log_donation-'.static::$_instance->id, array(static::$_instance, 'log_gateway_fields'));
 
             add_filter('leyka_submission_redirect_url-'.static::$_instance->id, array(static::$_instance, 'submission_redirect_url'), 10, 2);
-            add_filter('leyka_submission_auto_redirect-'.static::$_instance->id, array(static::$_instance, 'submission_auto_redirect'), 10, 3);
+            add_filter('leyka_submission_redirect_type-'.static::$_instance->id, array(static::$_instance, 'submission_redirect_type'), 10, 3);
             add_filter('leyka_submission_form_data-'.static::$_instance->id, array(static::$_instance, 'submission_form_data'), 10, 3);
             add_action('leyka_'.static::$_instance->id.'_redirect_page_content', array(static::$_instance, 'gateway_redirect_page_content'), 10, 2);
 
@@ -339,7 +339,12 @@ abstract class Leyka_Gateway {
 
     abstract public function submission_form_data($form_data_vars, $pm_id, $donation_id);
 
-    abstract public function log_gateway_fields($donation_id);
+    /**
+     * Save some gateway specific donation metadata. Default implementation is empty.
+     * @param $donation_id int
+     */
+    public function log_gateway_fields($donation_id) {
+    }
 
     static public function process_form_default($gateway_id, $pm_id, $donation_id, $form_data) {
 
@@ -465,9 +470,9 @@ abstract class Leyka_Gateway {
         return empty($this->_payment_methods[$pm_id]) ? false : $this->_payment_methods[$pm_id];
     }
 
-    /** Default filter for the donation page auto redirect parameter */
-    public function submission_auto_redirect($is_auto_redirect, $pm_id, $donation_id) {
-        return !!$is_auto_redirect;
+    /** Default filter for the donation page redirect type parameter */
+    public function submission_redirect_type($redirect_type, $pm_id, $donation_id) {
+        return 'auto';
     }
 
     /** Default action for the gateway redirect page content */

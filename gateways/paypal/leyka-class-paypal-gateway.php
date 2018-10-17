@@ -266,9 +266,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         return array();
     }
 
-    public function log_gateway_fields($donation_id) {
-    }
-
     public function _handle_service_calls($call_type = '') {
 
         switch($call_type) {
@@ -671,7 +668,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     }
 
     /** Override the auto-submit setting to send manual requests to PayPal. */
-    public function submission_auto_redirect($is_auto_redirect, $pm_id, $donation_id) {
+    public function submission_redirect_type($redirect_type, $pm_id, $donation_id) {
         return false;
     }
 

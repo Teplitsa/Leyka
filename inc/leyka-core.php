@@ -30,8 +30,13 @@ class Leyka {
     /** @var string Gateway URL to process payment data. */
     protected $_payment_url = '';
 
-    /** @var string Gateway URL to process payment data. */
-    protected $_auto_redirect = true;
+    /** @var mixed Donation form submission redirect type.
+     * Possible values:
+     *  - 'auto' to submit via POST,
+     *  - 'redirect' to submit via GET,
+     *  - boolean false to turn off auto-submitting
+     */
+    protected $_submission_redirect_type = 'auto';
 
     /** @var integer Currently submitted donation ID. */
     protected $_submitted_donation_id = 0;
@@ -466,7 +471,10 @@ class Leyka {
             case 'payment_vars': return $this->_payment_vars;
             case 'submitted_donation_id':
             case 'donation_id': return $this->_submitted_donation_id;
-            case 'auto_redirect': return !!$this->_auto_redirect;
+            case 'auto_redirect': return $this->_submission_redirect_type === 'auto';
+            case 'redirect_type':
+            case 'submission_redirect_type':
+                return $this->_submission_redirect_type;
             case 'form_is_screening': return !!$this->_form_is_screening;
             default:
                 return '';
@@ -1238,11 +1246,15 @@ class Leyka {
         do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
 
         $this->_submitted_donation_id = $donation_id;
+
         $this->_payment_vars = apply_filters('leyka_submission_form_data-'.$pm[0], $this->_payment_vars, $pm[1], $donation_id);
 
         $this->_payment_url = apply_filters('leyka_submission_redirect_url-'.$pm[0], $this->_payment_url, $pm[1]);
 
-        $this->_auto_redirect = apply_filters('leyka_submission_auto_redirect-'.$pm[0], true, $pm[1], $donation_id);
+        $this->_submission_redirect_type = apply_filters(
+            'leyka_submission_redirect_type-'.$pm[0],
+            'auto', $pm[1], $donation_id
+        );
 
     }
 

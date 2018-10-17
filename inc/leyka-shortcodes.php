@@ -393,13 +393,14 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
             );
         }
 
-        if($args['show_donation_comments'] && $donation->donor_comment) {
+        if( !empty($args['show_donation_comments']) && $donation->donor_comment ) {
             $html .= '<div class="donor-comment">'.apply_filters('leyka_donors_list_comment', $donation->donor_comment).'</div>';
         }
 
         $html .= "</div>";
 
         echo apply_filters('leyka_donors_list_item_html', $html, $campaign_id, $args);
+
     }?>
     </div>
 
