@@ -221,6 +221,30 @@
             padding-left: 32px;
             margin-left: -1px;
 
+            .pm-order-description {
+                font-size: 14px;
+            }
+
+            #pm-order-settings {
+
+                .pm-order {
+
+                    display: block;
+                    height: 83px;
+                    margin-bottom: 16px;
+
+                    border: 1px solid $color-border-light;
+                    border-radius: 4px;
+                    background-color: transparentize($color-white, 0.6);
+
+                    &:hover {
+                        cursor: grab;
+                    }
+
+                }
+
+            }
+
         }
 
     }
