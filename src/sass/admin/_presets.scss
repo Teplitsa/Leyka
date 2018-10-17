@@ -217,6 +217,19 @@ $color-form-active:		var(--color-main-light);
     margin: 0 12px 0 0;
 }
 
+@mixin arrow-left-icon() {
+
+    content: '';
+    display: inline;
+    width: 20px;
+    height: 8px;
+    float: left;
+    background-image: url(../../img/icon-arrow-left.svg);
+    background-repeat: no-repeat;
+    margin: 6px 6px 0 0;
+
+}
+
 @mixin error-icon() {
     content: '';
     display: block;

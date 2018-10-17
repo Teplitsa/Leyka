@@ -684,7 +684,13 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         // Base admin area js/css:
         if( // New settings pages (from v3.0)
             (isset($_GET['screen']) && count(explode('-', $_GET['screen'])) >= 2)
-            || (isset($_GET['page']) && $_GET['page'] === 'leyka_settings' && isset($_GET['stage']) && $_GET['stage'] === 'payment')
+            || (
+                isset($_GET['page'])
+                && $_GET['page'] === 'leyka_settings'
+                && isset($_GET['stage'])
+                && $_GET['stage'] === 'payment'
+                && empty($_GET['old'])
+            )
         ) {
             wp_enqueue_style('leyka-admin', LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css', array(), LEYKA_VERSION);
         } else { // Old admin pages (before v3.0)

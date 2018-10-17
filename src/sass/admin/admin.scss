@@ -17,6 +17,14 @@
 
     }
 
+    .button-primary {
+
+        @include wizard-button-caption();
+        height: 40px;
+        width: 248px;
+
+    }
+
     #payment-settings-area-new {
 
         display: flex;
@@ -38,9 +46,7 @@
                     text-decoration: none;
 
                     &:before {
-                        content: "<-";
-                        display: inline;
-                        margin-right: 10px;
+                        @include arrow-left-icon();
                     }
 
                 }
@@ -51,7 +57,6 @@
 
                 background-color: $color-white;
                 border-radius: 6px;
-                padding: 24px;
 
                 .gateway-settings-header {
 
@@ -59,20 +64,149 @@
                     flex-direction: row;
                     align-items: center;
 
-                    margin: 0 0 13px 0;
+                    padding: 24px;
 
-                    .gateway-header-element {
-                        margin-right: 12px;
+                    .gateway-title {
+
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        flex: 0 1 50%;
+
+                        .gateway-header-element {
+                            margin-right: 12px;
+                        }
+
+                        .gateway-logo {
+
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+
+                            position: relative;
+
+                            width: 40px;
+                            height: 40px;
+
+                            border: 1px solid $color-border-normal;
+                            border-radius: 50%;
+
+                            .gateway-description-icon {
+
+                                position: absolute;
+                                right: 0;
+                                top: -3px;
+
+                                img {
+                                    background-color: $color-white;
+                                }
+
+                            }
+
+                            .gateway-logo-pic {
+
+                                width: 28px;
+                                height: 28px;
+
+                            }
+
+                        }
+
+                        h2 {
+                            font-size: 23px;
+                            margin: 0;
+                        }
+
+                        .gateway-link {
+                            margin: 8px 4px 0 4px;
+                        }
+
                     }
 
-                    h2 {
-                        font-size: 23px;
-                        margin: 0;
+                    .gateway-details {
+
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-evenly;
+
+                        flex: 0 1 50%;
+
+                        font-size: 13px;
+
+                        .details-element {
+
+                            width: 100%;
+                            text-align: center;
+
+                            .details-pic {
+
+                                display: flex;
+                                flex-direction: row;
+                                justify-content: center;
+                                align-items: baseline;
+
+                                height: 27px;
+
+                                .commission-size {
+                                    font-size: 18px;
+                                    margin-left: 4px;
+                                    margin-top: 4px;
+                                }
+
+                            }
+
+                        }
+
                     }
 
-                    .gateway-wizard-link {
-                        margin-left: 10px;
+                }
+
+                .gateway-settings-wrapper {
+
+                    display: flex;
+                    flex-direction: row;
+
+                    padding: 0 24px;
+                    border-top: 1px solid $color-border-light;
+                    border-bottom: 1px solid $color-border-light;
+
+                    .gateway-settings {
+
+                        padding-right: 24px;
+                        border-right: 1px solid $color-border-light;
+                        flex: 0 1 50%;
+
+                        .gateway-wizard-link {
+
+                            display: block;
+                            margin-top: 32px;
+
+                        }
+
                     }
+
+                    .gateway-pm-list {
+
+                        flex: 0 1 50%;
+
+                        padding-left: 24px;
+                        margin-left: -1px;
+                        border-left: 1px solid $color-border-light;
+
+                    }
+
+                }
+
+                .gateway-settings-submit {
+
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: center;
+
+                    padding: 24px;
+
+                    font-size: 14px;
 
                 }
 

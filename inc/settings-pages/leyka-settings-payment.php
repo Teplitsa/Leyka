@@ -29,7 +29,6 @@ function leyka_add_gateway_metabox($post, $args) {
 }
 
 function leyka_gateway_admin_icon_markup($gateway) {
-
     return $gateway->icon ?
         "<span class='gw-icon'><img src='".esc_url($gateway->icon)."'></span>" :
         "<span class='dashicons dashicons-admin-page'></span>";
