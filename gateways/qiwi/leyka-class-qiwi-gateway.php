@@ -117,15 +117,22 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway
 
     public function _handle_service_calls($call_type = '')
     {
-        if ('redirect' === $call_type) {
-            $url = urldecode($_GET['url']);
-            $url = add_query_arg(
-                array('successUrl' => urlencode(get_permalink(leyka_options()->opt('quittance_redirect_page')))),
-                $url
-            );
-            wp_redirect($url, 302);
-        } else if ('check_order' === $call_type) {
-            do_action('leyka_qiwi_gateway_web_hook');
+
+        switch ($call_type) {
+            case 'notify':
+
+                do_action('leyka_qiwi_gateway_web_hook');
+            case 'process':
+
+                do_action('leyka_qiwi_gateway_web_hook');
+            case 'redirect':
+                $url = urldecode($_GET['url']);
+                $url = add_query_arg(
+                    array('successUrl' => urlencode(get_permalink(leyka_options()->opt('quittance_redirect_page')))),
+                    $url
+                );
+                wp_redirect($url, 302);
+            default:
         }
     }
 
