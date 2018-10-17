@@ -11,9 +11,33 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
         $this->_id = 'init';
         $this->_title = 'Мастер настройки Лейки';
+        
+        $options = array(
+            'org_actual_address' => array(
+                'type' => 'textarea',
+                'default' => '',
+                'title' => 'Фактический адрес организации',
+                'description' => '',
+                'required' => 0,
+                'validation_rules' => array(),
+            ),
+            'org_actual_address_differs' => array(
+                'type' => 'checkbox',
+                'default' => '',
+                'title' => 'Фактический адрес отличается от юридического',
+            ),
+        );
 
+        foreach($options as $option_name => $params) {
+
+            if( !leyka_options()->option_exists($option_name) ) {
+                leyka_options()->add_option($option_name, $params['type'], $params);
+            }
+            
+        }
+        
     }
-
+    
     protected function _loadCssJs() {
 
 //        wp_enqueue_script(
@@ -86,10 +110,37 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                     'option_id' => 'org_face_fio_ip',
                 )),
             ),
-        )))->addBlock(new Leyka_Option_Block(array(
+        )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'org_address',
             'option_id' => 'org_address',
+            'custom_setting_id' => 'org_address',
+            'field_type' => 'textarea',
+            'data' => array(
+                'title' => 'Юридический адрес организации',
+                'keys' => array('org_address',),
+                'value' => leyka_options()->opt('org_address'),
+                'required' => 'Значение поля обязательно',
+            ),
             'show_description' => false,
+        )))->addBlock(new Leyka_Custom_Setting_Block(array(
+            'id' => 'org_actual_address_differs',
+            'custom_setting_id' => 'org_actual_address_differs',
+            'field_type' => 'checkbox',
+            'data' => array(
+                'title' => 'Фактический адрес отличается от юридического',
+                'keys' => array(),
+                'field_classes' => array('single-control'),
+            ),
+        )))->addBlock(new Leyka_Custom_Setting_Block(array(
+            'id' => 'org_actual_address',
+            'option_id' => 'org_actual_address',
+            'custom_setting_id' => 'org_actual_address',
+            'field_type' => 'textarea',
+            'data' => array(
+                'title' => '',
+                'value' => leyka_options()->opt('org_actual_address'),
+                'keys' => array('org_actual_address',),
+            ),
         )))->addBlock(new Leyka_Container_Block(array(
             'id' => 'complex-row-2',
             'entries' => array(
@@ -130,7 +181,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 //                    'show_description' => false,
                 )),
             ),
-        )))->addTo($section);
+        )))->addHandler(array($this, 'handleSaveOptions'))->addTo($section);
 
         // Physical receiver type - person's data step:
         $step = new Leyka_Settings_Step('receiver_physical_data', $section->id, 'Ваши данные');
@@ -343,8 +394,8 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                         'step' => 0.01,
                         'value' => $init_campaign && $init_campaign->target ? $init_campaign->target : '',
                         'show_description' => false,
-                        'placeholder' => 'Например, 100000',
-                        'description' => 'Оставьте пустым, если нет ограничений по целевой сумме',
+                        'placeholder' => 'Пусто, если сумма неограниченна',
+                        //'description' => 'Оставьте пустым, если нет ограничений по целевой сумме',
 //                        'comment' => 'Комментарий к целевой сумме кампании',
                     ),
                 )),
@@ -795,6 +846,18 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         }
 
         return $errors ? $errors : true;
+
+    }
+
+    public function handleSaveOptions(array $step_settings) {
+
+        $errors = array();
+
+        foreach($step_settings as $option_id => $value) {
+            leyka_save_option(preg_replace("/^leyka_/", "", $option_id));
+        }
+
+        return !empty($errors) ? $errors : true;
 
     }
 

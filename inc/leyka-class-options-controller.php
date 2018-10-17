@@ -314,7 +314,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         $option_id = str_replace('leyka_', '', $option_id);
 
         $this->_intialize_option($option_id, true);
-
+        
         $this->_options[$option_id] = array(
             'title' => apply_filters('leyka_option_title-'.$option_id, $this->_options[$option_id]['title']),
             'type' => apply_filters('leyka_option_type-'.$option_id, $this->_options[$option_id]['type']),

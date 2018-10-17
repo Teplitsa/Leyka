@@ -20,11 +20,11 @@ function leyka_render_section_area($section){?>
 // Text fields:
 add_action('leyka_render_text', 'leyka_render_text_field', 10, 2);
 function leyka_render_text_field($option_id, $data){
-
+    
     $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
     $data['value'] = isset($data['value']) ? $data['value'] : '';?>
 
-    <div id="<?php echo $option_id.'-wrapper';?>" class="<?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
+    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-text-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
         <label for="<?php echo $option_id.'-field';?>">
             <span class="field-component title">
                 <?php echo $data['title'];?>
@@ -37,7 +37,7 @@ function leyka_render_text_field($option_id, $data){
                 <?php }?>
             </span>
             <span class="field-component field">
-                <input type="<?php echo empty($data['is_password']) ? 'text' : 'password';?>" id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo empty($data['placeholder']) ? '' : esc_attr($data['placeholder']);?>" maxlength="<?php echo empty($data['length']) ? '' : (int)$data['length'];?>">
+                <input type="<?php echo empty($data['is_password']) ? 'text' : 'password';?>" <?php echo !empty($data['mask']) ?  ' mask="'.$data['mask'].'"' : '';?> id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo empty($data['placeholder']) ? '' : esc_attr($data['placeholder']);?>" maxlength="<?php echo empty($data['length']) ? '' : (int)$data['length'];?>"  class="<?php echo !empty($data['mask']) ?  'leyka-wizard-mask' : '';?>">
             </span>
             <?php if( !empty($data['description']) ) {?>
             <span class="field-component help"><?php echo $data['description'];?></span>
@@ -129,8 +129,8 @@ function leyka_render_checkbox_field($option_id, $data){
         <label for="<?php echo $option_id.'-field';?>">
             <span class="field-component title"><?php echo $data['title'];?></span>
             <span class="field-component field">
-                <input type="checkbox" id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="1" <?php echo intval($data['value']) >= 1 ? 'checked' : '';?>>&nbsp;
-            <?php echo $data['description'];?></span>
+                <input type="checkbox" id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="1" <?php echo !empty($data['value']) && intval($data['value']) >= 1 ? 'checked' : '';?>>&nbsp;
+            <?php echo !empty($data['description']) ?  $data['description'] : '';?></span>
         </label>
     </div>
 <?php }

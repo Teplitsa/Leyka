@@ -54,38 +54,7 @@ wp_enqueue_media();
                 
             </div>
 
-            <div id="campaign_template" class="settings-block option-block upload-photo-field">
-                
-                <div id="leyka_campaign_template-wrapper">
-                    <label for="leyka_campaign_template-field">
-                        <span class="field-component title">
-                            Выбрать шаблон формы
-                            <span class="field-q">
-                                <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" />
-                                <span class="field-q-tooltip">Выберите шаблон формы кампании</span>
-                            </span>
-                        </span>
-                        <span class="field-component field">
-                            
-                            <select id="leyka_campaign_template-field" name="campaign_template">
-                                <?php 
-                                if($templates) {
-                                    foreach($templates as $template) {?>
-                                    <option value="<?php echo esc_attr($template['id']);?>" <?php selected($cur_template, $template['id'])?>>
-                                        <?php esc_html_e(esc_attr($template['name']), 'leyka')?>
-                                    </option>
-                                <?php }
-                                }?>
-                
-                            </select>
-                        </span>
-                    </label>
-                    <?php wp_nonce_field( 'set-campaign-template', 'set-campaign-template-nonce' )?>
-                    <input type="hidden" id="leyka-campaign_template" name="campaign_template" value="<?php echo $cur_template?>" />
-                </div>
-                <div class="field-errors"></div>
-                
-            </div>
+            <input name="campaign_template" type="hidden" style="display:none;" value="<?php echo $cur_template;?>"/>
             
             <div id="campaign-decoration-loading">
                  <div class="loader-wrap">

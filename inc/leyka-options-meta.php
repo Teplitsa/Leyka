@@ -161,6 +161,7 @@ self::$_options_meta = array(
         'description' => __('Enter the NGO individual number of a taxpayer.', 'leyka'),
         'required' => true,
         'placeholder' => __('E.g., 4283256127', 'leyka'),
+        'mask' => '9{10}',
     ),
     'org_bank_account' => array(
         'type' => 'text',

@@ -595,6 +595,11 @@
                             }
                         }
                         
+                        input[type=checkbox] {
+                            padding-top: 2px !important;
+                            padding-left: 1px !important;
+                        }
+                        
                         label {
                             @include wizard-field-label();
                             display: block;
@@ -1062,138 +1067,149 @@
 
 // Custom step blocks:
 .leyka-wizard {
-    .main-area .step-content {
+    
+    .main-area {
         
-        // Campaign decoration block:
-        .campaign-decor-wrap {
-
-            display: flex;
-            justify-content: flex-start;
-            align-items: space-between;
-
-            .decor-form {
-                flex-basis: 248px;
-
-                .upload-photo-field {
-                    .field {
-                        display: block;
-                        position: relative;
-
-                        input[type=file] {
-                            display: block;
-                            height: 40px;
-                            width: 248px;
-                            outline: none;
-                        }
-
-                        .upload-photo {
-                            @include wizard-button-caption();
-                            height: 40px;
-                            width: 248px;
-                            background-color: $color-white;
-                            position: absolute;
-                            top: 0;
-                            left: 0;
-                            //pointer-events: none;
-                            outline: none;
-                        }
-
-                    }
-                }
-
-                #campaign-decoration-loading {
-                    display: none;
-                }
-                
-                .step-next.button {
-                    margin-right: 0;
-                }
-
-                .loader-wrap {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    padding-top: 2rem;
-                }
-
-            }
-
-            .decor-preview {
-                flex-basis: auto;
-                border-left: 1px solid $color-wizard-preview-border;
-                margin-left: 1.5rem;
-                padding-left: 1.5rem;
-
-                .title {
-                    @include wizard-preivew-title();
-                    color: $color-wizard-link-sec;
-                }
-
-                .preview-frame {
-                    margin-top: 13px;
-                    background-color: transparent;
-
-                    iframe {
-                        overflow: hidden;
-                    }
-                }
+        #leyka-settings-form-rd-receiver_legal_data {
+            #org_actual_address_differs {
+                margin-bottom: 0;
             }
         }
-
-        // Campaign completed block:
-        .custom_campaign_completed {
-
-            .leyka-campaign-completed li {
-
-                font-size: 14px;
-                line-height: 21px;
-
-                .item-text {
-                    
-                    padding-top: 7px;
-
-                    &:before {
-                        @include ok-icon();
+        
+        .step-content {
+            
+            // Campaign decoration block:
+            .campaign-decor-wrap {
+    
+                display: flex;
+                justify-content: flex-start;
+                align-items: space-between;
+    
+                .decor-form {
+                    flex-basis: 248px;
+    
+                    .upload-photo-field {
+                        .field {
+                            display: block;
+                            position: relative;
+    
+                            input[type=file] {
+                                display: block;
+                                height: 40px;
+                                width: 248px;
+                                outline: none;
+                            }
+    
+                            .upload-photo {
+                                @include wizard-button-caption();
+                                height: 40px;
+                                width: 248px;
+                                background-color: $color-white;
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                //pointer-events: none;
+                                outline: none;
+                            }
+    
+                        }
                     }
-
-                }
-
-                .item-info {
+    
+                    #campaign-decoration-loading {
+                        display: none;
+                    }
                     
-                    padding-left: 2rem;
-
-                    .leyka-current-value {
+                    .step-next.button {
+                        margin-right: 0;
+                    }
+    
+                    .loader-wrap {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        padding-top: 2rem;
+                    }
+    
+                }
+    
+                .decor-preview {
+                    flex-basis: auto;
+                    border-left: 1px solid $color-wizard-preview-border;
+                    margin-left: 1.5rem;
+                    padding-left: 1.5rem;
+    
+                    .title {
+                        @include wizard-preivew-title();
                         color: $color-wizard-link-sec;
                     }
-
-                    .inline-action,
-                    .permalink-action {
-
-                        font-size: 10px;
-                        line-height: 15px;
-                        border-bottom: 0;
-                        margin-left: 5px;
-
+    
+                    .preview-frame {
+                        margin-top: 13px;
+                        background-color: transparent;
+    
+                        iframe {
+                            overflow: hidden;
+                        }
                     }
-                    
-                    .inline-input {
-
-                        margin: 0 5px 0 0;
-                        padding: 0 5px;
-
-                    }
-
-                    .inline-submit,.inline-reset {
-                        margin-left: 5px;
-                    }
-
                 }
-
             }
-
+    
+            // Campaign completed block:
+            .custom_campaign_completed {
+    
+                .leyka-campaign-completed li {
+    
+                    font-size: 14px;
+                    line-height: 21px;
+    
+                    .item-text {
+                        
+                        padding-top: 7px;
+    
+                        &:before {
+                            @include ok-icon();
+                        }
+    
+                    }
+    
+                    .item-info {
+                        
+                        padding-left: 2rem;
+    
+                        .leyka-current-value {
+                            color: $color-wizard-link-sec;
+                        }
+    
+                        .inline-action,
+                        .permalink-action {
+    
+                            font-size: 10px;
+                            line-height: 15px;
+                            border-bottom: 0;
+                            margin-left: 5px;
+    
+                        }
+                        
+                        .inline-input {
+    
+                            margin: 0 5px 0 0;
+                            padding: 0 5px;
+    
+                        }
+    
+                        .inline-submit,.inline-reset {
+                            margin-left: 5px;
+                        }
+    
+                    }
+    
+                }
+    
+            }
+    
         }
-
     }
+    
 }
 
 .leyka-campaign-permalink {
@@ -1441,6 +1457,21 @@
         }
         
         
+    }
+}
+
+// init wizard pages
+.leyka-wizard {
+
+    &.wizard-init {
+    
+        #leyka_pd_terms_text-field_ifr {
+            height: 300px !important;
+        }
+        
+        #leyka_email_thanks_text-field_ifr {
+            height: 200px !important;
+        }        
     }
 }
 
@@ -1800,6 +1831,8 @@
                 
                 .body {
                     
+                    width: max-content;
+                    
                     b {
                         font-weight: 500;
                     }
@@ -1895,6 +1928,16 @@
             
         }
         
+    }
+    
+    .main-area {
+        #leyka-settings-form-yandex-parameters {
+            .leyka-wizard-copy2clipboard.no-password {
+                .copy-link, .copy-done {
+                    display: none;
+                }
+            }
+        }
     }
     
 }
@@ -2021,4 +2064,97 @@
             }
         }
     }
+}
+
+// controls
+.leyka-wizard {
+    
+    .main-area {
+        
+        .settings-block {
+            
+            &.option-block {
+                
+                &.checkbox {
+                    
+                    .single-control {
+                        
+                        .field-component {
+                            
+                            &.title {
+                                display: inline-block;
+                                vertical-align: bottom;
+                            }
+                            
+                            &.field {
+                                float: left;
+                                
+                                input {
+                                    width: 18px;
+                                    height: 18px;
+                                }
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+}
+
+// copy2clipboard
+.leyka-wizard-copy2clipboard {
+    
+    &.field-text {
+        width: max-content;
+    }
+    
+    position: relative;
+    overflow: visible;
+    
+    .copy-link, .copy-done {
+        @include copy2clipborad-link();
+        color: $color-wizard-link;
+        width: 150px;
+        
+        position: absolute;
+        display: block;
+        top: calc(50%);
+        right: 0px;
+        transform: translate(100%, -50%);
+        height: 15px;
+        cursor: pointer;
+    
+        &:before {
+            @include copy2clipborad-link();
+            content: " ";
+            background-image: url('../../img/icon-copy2clipboard.svg');
+            background-size: 17px 15px;
+            background-repeat: no-repeat;
+            width: 17px;
+            height: 15px;
+            margin-left: 0.5rem;
+            margin-right: 5px;
+            display: inline-block;
+            vertical-align: text-bottom;
+        }
+        
+    }
+    
+    .copy-done {
+        display: none;
+        
+        &:before {
+                background-image: url('../../img/icon-copy2clipboard-done.svg');
+                background-size: 16px 16px;
+        }
+    }
+    
 }
