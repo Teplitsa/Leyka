@@ -411,6 +411,10 @@
         .step-submit {
             margin-top: 32px;
             
+            .button-primary {
+                @include leyka-button-primary();
+            }
+            
             a {
                 line-height: 35px;
             }
@@ -611,6 +615,10 @@
             .final-button {
                 float: left;
                 margin-top: 1rem;
+                
+                .button-primary {
+                    @include leyka-button-primary();
+                }
             }
             
             .share-campaign {

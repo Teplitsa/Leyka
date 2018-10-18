@@ -24,11 +24,7 @@
     }
 
     .button-primary {
-
-        @include wizard-button-caption();
-        height: 40px;
-        width: 248px;
-
+        @include leyka-button-primary();
     }
 
     #payment-settings-area-new {

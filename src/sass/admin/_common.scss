@@ -91,7 +91,7 @@ a {
     }
 }
 
-a.button-primary {
+.button-primary {
     @include wizard-button-caption();
     height: 40px;
     line-height: 40px;

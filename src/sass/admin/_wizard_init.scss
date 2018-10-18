@@ -109,11 +109,17 @@
     
             // Campaign completed block:
             .custom_campaign_completed {
+                
+                .leyka-campaign-completed {
+                    margin-top: 14px;
+                    margin-bottom: 14px;
+                }
     
                 .leyka-campaign-completed li {
     
-                    font-size: 14px;
-                    line-height: 21px;
+                    list-style-type: none;
+                    margin-left: 0;
+                    margin-top: 0;
     
                     .item-text {
                         

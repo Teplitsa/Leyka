@@ -205,3 +205,15 @@
     margin-top: 8px;
     margin-bottom: 0;
 }
+
+@mixin leyka-button-primary {
+    @include wizard-button-caption();
+    height: 40px;
+    line-height: 40px;
+    width: 248px;
+    margin-right: 22px;
+    color: $color-white;
+    display: inline-block;
+    text-align: center;
+}
+
