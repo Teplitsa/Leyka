@@ -200,6 +200,55 @@
     }
 }
 
+@mixin leyka-filed-file {
+  
+    label {
+        display: inline-block;
+        height: inherit;
+    }
+    
+    .field-component {
+        position: relative;
+        display: inline-block;
+        height: 40px;
+        
+        input[type=file] {
+            height: inherit;
+            width: 248px;
+            display: inline-block;
+            cursor: pointer;
+            outline: none;
+        }
+        
+        input[type=button] {
+            @include wizard-button-caption();
+            height: inherit;
+            width: 248px;
+            display: block;
+            background-color: $color-white;
+            position: absolute;
+            top: 0;
+            left: 0;
+            //pointer-events: none;
+            cursor: pointer;
+        }
+        
+        span.chosen-file {
+            @include wizard-button-caption();
+            display: inline-block;
+            line-height: 40px;
+            vertical-align: middle;
+            padding-left: 1rem;
+            cursor: default;
+            
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 254px;
+        }
+    }
+    
+}
+
 @mixin leyka-field-help {
     @include wizard-field-explain();
     color: $color-wizard-field-explain;
