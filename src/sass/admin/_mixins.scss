@@ -182,8 +182,20 @@
     }
 }
 
-@mixin leyka-field-control-checkbox {
-  
+@mixin leyka-field-checkbox {
+    &.title {
+        display: inline-block;
+        vertical-align: bottom;
+    }
+    
+    &.field {
+        float: left;
+        
+        //input {
+        //    width: 18px;
+        //    height: 18px;
+        //}
+    }
 }
 
 @mixin leyka-field-help {

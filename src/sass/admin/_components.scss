@@ -1,0 +1,218 @@
+// help chat
+.leyka-wizard {
+    .main-area {
+
+        .step-common-errors.has-errors {
+            @include common-error-message(settings-block);
+        }
+
+        .help-chat-button {
+            &[href='#'] {
+                border-bottom: none;
+                padding-bottom: 0;
+            }
+            
+            border-bottom: none;
+            padding-bottom: 0;
+            
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: $color-wizard-link;
+            border-radius: 32px;
+            position: fixed;
+            right: 40px;
+            bottom: 40px;
+            
+            img {
+                width: 34px;
+                height: 34px;
+            }
+        }
+        
+        .help-chat {
+            position: fixed;
+            right: 40px;
+            bottom: 40px;
+            width: 315px;
+            background-color: #006799;
+            border-radius: 6px;
+            display: none;
+            
+            &.fix-height {
+                height: 403px;
+            }
+            
+            .chat-header {
+                display:flex;
+                align-items: center;
+                justify-content: space-between;
+                padding-left: 1.5rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.24);
+                height: 51px;
+                
+                .title {
+                    font-family: $body;
+                    font-size: 16px;
+                    line-height: 19px;
+                    font-weight: 500;
+                    color: #f1f1f1;
+                }
+                
+                .close {
+                    margin-right: 1rem;
+                    cursor: pointer;
+                }
+            }
+            
+            .chat-body {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+                padding-top: 1.5rem;
+                
+                .ok-message {
+                    display: none;
+                    
+                    p {
+                        color: $color-white;
+                        text-align: center;
+                        font-size: 14px;
+                        margin-bottom: 0;
+                    }
+                    padding-bottom: 2rem;
+                }
+                
+                .leyka-loader {
+                    display: none;
+                }
+                
+                .form {
+                }
+                
+                .title {
+                    color: $color-white;
+                }
+                
+                .settings-block.option-block {
+                    margin-bottom: 0rem;
+                    
+                    .title {
+                        font-weight: 400;
+                    }
+                    
+                    .field-errors {
+                        color: $color-wizard-error-message;
+                        visibility: hidden;
+                    }
+                    
+                    input, textarea {
+                        margin-left: 0;
+                    }
+                }
+                
+                .button-primary {
+                    @include wizard-button-caption();
+                    margin-top: 0.5rem;
+                    height: 40px;
+                    width: 100%;
+                }
+            }
+        }
+        
+    }
+}
+
+
+// modal
+.leyka-wizard-modal {
+    border-radius: 6px;
+    
+    .ui-dialog-titlebar {
+        border-radius: 6px 6px 0 0;
+    }
+    
+    .ui-dialog-title {
+        display: none;
+    }
+    
+    .ui-dialog-content {
+        @include body-text();
+        text-align: center;
+        padding: 32px 0px;
+        
+        h3 {
+            @include wizard-h3();
+        }
+        
+        p {
+            @include body-text();
+            padding: 0px 70px;
+            margin: 1rem 0;
+        }
+        
+        .button {
+            @include wizard-button-caption();
+            height: 40px;
+            width: 248px;
+        }
+        
+        &#cp-documents-sent {
+            h3:first-child {
+                margin-top: 0px;
+            }
+        }
+    }
+}
+
+
+// copy2clipboard
+.leyka-wizard-copy2clipboard {
+    
+    &.field-text {
+        width: max-content;
+    }
+    
+    position: relative;
+    overflow: visible;
+    
+    .copy-link, .copy-done {
+        @include copy2clipborad-link();
+        color: $color-wizard-link;
+        width: 150px;
+        
+        position: absolute;
+        display: block;
+        top: calc(50%);
+        right: 0px;
+        transform: translate(100%, -50%);
+        height: 15px;
+        cursor: pointer;
+    
+        &:before {
+            @include copy2clipborad-link();
+            content: " ";
+            background-image: url('../../img/icon-copy2clipboard.svg');
+            background-size: 17px 15px;
+            background-repeat: no-repeat;
+            width: 17px;
+            height: 15px;
+            margin-left: 0.5rem;
+            margin-right: 5px;
+            display: inline-block;
+            vertical-align: text-bottom;
+        }
+        
+    }
+    
+    .copy-done {
+        display: none;
+        
+        &:before {
+                background-image: url('../../img/icon-copy2clipboard-done.svg');
+                background-size: 16px 16px;
+        }
+    }
+    
+}
