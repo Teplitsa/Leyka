@@ -352,15 +352,6 @@ jQuery(document).ready(function($){
         });
     });
 });
-
-// masking
-jQuery(document).ready(function($){
-    $('.leyka-wizard-mask').each(function(){
-        var maskPattern = $(this).attr('mask');
-        $(this).inputmask(maskPattern);
-    });
-});
-
 // CP payment tryout custom setting:
 jQuery(document).ready(function($){
 

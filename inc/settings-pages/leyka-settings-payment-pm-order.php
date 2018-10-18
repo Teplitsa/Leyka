@@ -1,17 +1,20 @@
 <?php if( !defined('WPINC') ) die; // If this file is called directly, abort
 
-function leyka_pm_sortable_option_html_new($is_hidden = false, $pm_full_id = '#FID#', $pm_label = '#L#') {?>
+function leyka_pm_sortable_option_html_new($is_hidden = false, $pm_full_id = '#FID#', $pm_label = '#L#') {
 
-    <li class="pm-order" data-pm-id="<?php echo $pm_full_id;?>" <?php echo !!$is_hidden ? 'style="display:none"' : '';?>>
+    $is_hidden = !!$is_hidden;
 
-        <div class="gateway-logo">
+    $pm = leyka_get_pm_by_id($pm_full_id, true);
+    $gateway = $pm ? $pm->gateway : false;?>
 
-        </div>
+    <li class="pm-order" data-pm-id="<?php echo $pm_full_id;?>" <?php echo $is_hidden ? 'style="display:none"' : '';?>>
+
+        <?php leyka_show_gateway_logo($gateway, false);?>
 
         <div class="pm-info">
 
         </div>
-
+<!---->
 <!--        <span class="pm-label" id="pm-label---><?php //echo $pm_full_id;?><!--">--><?php //echo $pm_label;?><!--</span>-->
 <!---->
 <!--        <span class="pm-label-fields" style="display:none;">-->

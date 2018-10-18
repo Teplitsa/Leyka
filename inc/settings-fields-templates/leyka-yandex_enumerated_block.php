@@ -62,7 +62,7 @@ else {
         
     <?php elseif(!empty($this->field_data['screenshot'])):?>
     
-        <?php show_wizard_captioned_screenshot($this->field_data['screenshot'], !empty($this->field_data['screenshot_full']) ? $this->field_data['screenshot_full'] : null)?>
+        <?php leyka_show_wizard_captioned_screenshot($this->field_data['screenshot'], !empty($this->field_data['screenshot_full']) ? $this->field_data['screenshot_full'] : null)?>
         
     <?php endif?>
     

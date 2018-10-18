@@ -586,6 +586,7 @@ abstract class Leyka_Payment_Method {
             case 'id': $param = $this->_id; break;
             case 'full_id': $param = $this->_gateway_id.'-'.$this->_id; break;
             case 'gateway_id': $param = $this->_gateway_id; break;
+            case 'gateway': $param = leyka_get_gateway_by_id($this->_gateway_id); break;
             case 'active':
             case 'is_active': $param = $this->_active; break;
             case 'label':
