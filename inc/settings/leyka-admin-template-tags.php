@@ -62,25 +62,34 @@ if( !function_exists('leyka_pm_sortable_option_html_new') ) {
 
         <li class="pm-order" data-pm-id="<?php echo $pm_full_id;?>" <?php echo $is_hidden ? 'style="display:none;"' : '';?>>
 
-            <?php leyka_show_gateway_logo($gateway, false);?>
+            <div class="gateway-logo-wrapper"><?php leyka_show_gateway_logo($gateway, false);?></div>
 
             <div class="pm-info">
+
+                <div class="pm-icons">PM icons here</div>
+
+                <div class="pm-label-wrapper">
+
+                    <span class="pm-label" id="pm-label-<?php echo $pm_full_id;?>"><?php echo $pm_label;?></span>
+
+                    <span class="pm-label-fields" style="display:none;">
+
+                        <input type="text" id="pm_labels[<?php echo $pm_full_id;?>]" value="<?php echo $pm_label;?>" placeholder="<?php esc_html_e('Enter some title for this payment method', 'leyka');?>">
+                        <input type="hidden" class="pm-label-field" name="leyka_<?php echo $pm_full_id;?>_label" value="<?php echo $pm_label;?>">
+                        <span class="new-pm-label-ok"><span class="dashicons dashicons-yes"></span></span>
+                        <span class="new-pm-label-cancel"><span class="dashicons dashicons-no"></span></span>
+
+                    </span>
+
+                    <span class="pm-change-label" data-pm-id="<?php echo $pm_full_id;?>">
+                        <span class="dashicons dashicons-edit"></span>
+                    </span>
+
+                </div>
 
             </div>
 
             <!---->
-            <!--        <span class="pm-label" id="pm-label---><?php //echo $pm_full_id;?><!--">--><?php //echo $pm_label;?><!--</span>-->
-            <!---->
-            <!--        <span class="pm-label-fields" style="display:none;">-->
-            <!--            <input type="text" id="pm_labels[--><?php //echo $pm_full_id;?><!--]" value="--><?php //echo $pm_label;?><!--" placeholder="--><?php //_e('Enter some title for this payment method', 'leyka');?><!--">-->
-            <!--            <input type="hidden" class="pm-label-field" name="leyka_--><?php //echo $pm_full_id;?><!--_label" value="--><?php //echo $pm_label;?><!--">-->
-            <!--            <span class="new-pm-label-ok"><span class="dashicons dashicons-yes"></span></span>-->
-            <!--            <span class="new-pm-label-cancel"><span class="dashicons dashicons-no"></span></span>-->
-            <!--        </span>-->
-            <!---->
-            <!--        <span class="pm-change-label" data-pm-id="--><?php //echo $pm_full_id;?><!--">-->
-            <!--            <span class="dashicons dashicons-edit"></span>-->
-            <!--        </span>-->
 
         </li>
 
