@@ -163,6 +163,13 @@
         padding: 0 32px 49px 72px;
         color: $color-wizard-text;
         
+        a {
+            border-bottom: none;
+            padding-bottom: 2px;
+            border-bottom: 1px solid $color-wizard-link;
+            text-decoration: none;
+        }
+    
         // wizard markup styles
         .step-content {
         }
@@ -181,7 +188,13 @@
             }
             
             &.option-block {
-
+                
+                &.type-rich_html {
+                    
+                    @include leyka-rich-html();
+                    
+                }
+        
             }
             
             &.container-block {
@@ -244,7 +257,7 @@
                     text-shadow: none;
                     border: none;
 
-                    @extend a.link-sec;
+                    @include leyka-link-sec();
                     cursor: pointer;
                     border-bottom: 1px solid $color-wizard-link-sec;
                     box-sizing: border-box;

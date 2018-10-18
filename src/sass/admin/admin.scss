@@ -22,6 +22,12 @@
         margin-top: 32px;
 
     }
+    
+    .nav-tab-wrapper {
+        a {
+            color: unset;
+        }
+    }
 
     .button-primary {
         @include leyka-button-primary();
