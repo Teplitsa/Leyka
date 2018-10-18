@@ -228,10 +228,6 @@
         .step-submit {
             margin-top: 32px;
             
-            .button-primary {
-                @include leyka-button-primary();
-            }
-            
             a {
                 line-height: 35px;
             }
