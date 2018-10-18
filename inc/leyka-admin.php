@@ -453,7 +453,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 			do_action("leyka_settings_submit", $current_stage);
 		}?>
 
-		<div class="wrap leyka-settings-page">
+		<div class="wrap leyka-admin leyka-settings-page">
 
 		    <h1>Настройки Лейки</h1>
 
