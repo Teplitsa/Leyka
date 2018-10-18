@@ -1,4 +1,6 @@
 
+.leyka30-admin {
+    
 // typo
 .step-title {
     h1 {
@@ -59,6 +61,8 @@ h4 {
     margin-bottom: 8px;
 }
 
+
+// controls
 .button-primary {
     @include wizard-button-caption();
     height: 40px;
@@ -188,3 +192,6 @@ a.link-sec {
     }
             
 }
+
+
+} // end of leyka30-admin
