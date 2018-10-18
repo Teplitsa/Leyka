@@ -1,39 +1,5 @@
 // Tmp - place it inside .leyka-admin
-.gateway-logo {
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    position: relative;
-
-    width: 40px;
-    height: 40px;
-
-    border: 1px solid $color-border-normal;
-    border-radius: 50%;
-    background-color: $color-white;
-
-    .gateway-description-icon {
-
-        position: absolute;
-        right: 0;
-        top: -3px;
-
-        img {
-            background-color: $color-white;
-        }
-
-    }
-
-    .gateway-logo-pic {
-
-        width: 28px;
-        height: 28px;
-
-    }
-
-}
 // Tmp end
 
 .leyka-admin {
@@ -193,7 +159,7 @@
                 padding-left: 25px;
             }
         }
-        
+
         &.checkbox {
             .single-control {
                 .field-component {
@@ -212,6 +178,44 @@
     
         }
                 
+    }
+
+    .gateway-logo {
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        position: relative;
+
+        width: 40px;
+        height: 40px;
+
+        border: 1px solid $color-border-normal;
+        border-radius: 50%;
+        background-color: $color-white;
+
+        .gateway-description-icon {
+
+            position: absolute;
+            right: 0;
+            top: -3px;
+
+            border: 0;
+
+            img {
+                background-color: $color-white;
+            }
+
+        }
+
+        .gateway-logo-pic {
+
+            width: 28px;
+            height: 28px;
+
+        }
+
     }
     
     
