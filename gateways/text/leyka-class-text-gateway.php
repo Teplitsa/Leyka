@@ -11,6 +11,7 @@ class Leyka_Text_Gateway extends Leyka_Gateway {
 
         $this->_id = 'text';
         $this->_title = __('Text information', 'leyka');
+
     }
 
     protected function _set_options_defaults() {

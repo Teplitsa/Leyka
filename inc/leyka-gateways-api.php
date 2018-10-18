@@ -214,6 +214,8 @@ abstract class Leyka_Gateway {
                 $icon = false; /** "@todo Make all the gateways icons SVGs! */
                 if($this->_icon) {
                     $icon = $this->_icon;
+                } elseif(file_exists(LEYKA_PLUGIN_DIR."gateways/{$this->_id}/icons/{$this->_id}.svg")) {
+                    $icon = LEYKA_PLUGIN_BASE_URL."gateways/{$this->_id}/icons/{$this->_id}.svg";
                 } elseif(file_exists(LEYKA_PLUGIN_DIR."gateways/{$this->_id}/icons/{$this->_id}.png")) {
                     $icon = LEYKA_PLUGIN_BASE_URL."gateways/{$this->_id}/icons/{$this->_id}.png";
                 }

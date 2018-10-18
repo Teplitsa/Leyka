@@ -19,31 +19,70 @@ if( !function_exists('leyka_show_wizard_captioned_screenshot')) {
 }
 
 if( !function_exists('leyka_show_gateway_logo')) {
-    function leyka_show_gateway_logo($gateway, $show_gateway_info = true, $wrapper_classes = array()) {
+    function leyka_show_gateway_logo($gateway, $show_gateway_info = true, $wrapper_classes = array(), $use_paceholders = false) {
 
-        if(is_string($gateway)) {
+        $use_paceholders = !!$use_paceholders;
 
-            $gateway = leyka_get_gateway_by_id($gateway);
-            if( !$gateway) {
+        if( !$use_paceholders ) {
+            if(is_string($gateway)) {
+
+                $gateway = leyka_get_gateway_by_id($gateway);
+                if( !$gateway) {
+                    return;
+                    /** @todo throw new Exception(esc_attr__(sprintf('Unknown gateway ID: %s', $gateway), 'leyka')); */
+                }
+
+            } else if( !is_a($gateway, 'Leyka_Gateway') ) {
                 return;
-                /** @todo throw new Exception(esc_attr__(sprintf('Unknown gateway ID: %s', $gateway), 'leyka')); */
+                /** @todo throw new Exception(esc_attr__(sprintf('Unknown gateway', $gateway), 'leyka')); */
             }
-
-        } else if( !is_a($gateway, 'Leyka_Gateway')) {
-            return;
-            /** @todo throw new Exception(esc_attr__(sprintf('Unknown gateway', $gateway), 'leyka')); */
-        } ?>
+        }?>
 
         <div class="<?php echo is_array($wrapper_classes) ? implode(' ', $wrapper_classes) : $wrapper_classes; ?> gateway-logo">
 
-            <img class="gateway-logo-pic" src="<?php echo $gateway->icon_url; ?>">
+            <img class="gateway-logo-pic" src="<?php echo $use_paceholders ? '#GATEWAY_LOGO_URL#' : $gateway->icon_url;?>">
 
-            <?php if( ! !$show_gateway_info) { ?>
-                <a href="#" class="gateway-description-icon" data-gateway-info="<?php echo esc_attr($gateway->description); ?>">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL; ?>img/icon-info.svg">
-                </a>
-            <?php } ?>
+            <?php if( !!$show_gateway_info ) {?>
+            <a href="#" class="gateway-description-icon" data-gateway-info="<?php echo $use_paceholders ? '#GATEWAY_DESCRIPTION#' : esc_attr($gateway->description);?>">
+                <img src="<?php echo LEYKA_PLUGIN_BASE_URL; ?>img/icon-info.svg">
+            </a>
+            <?php }?>
         </div>
+
+    <?php }
+}
+
+if( !function_exists('leyka_pm_sortable_option_html_new') ) {
+    function leyka_pm_sortable_option_html_new($is_hidden = false, $pm_full_id = '#FID#', $pm_label = '#L#') {
+
+        $is_hidden = !!$is_hidden;
+
+        $pm = leyka_get_pm_by_id($pm_full_id, true);
+        $gateway = $pm ? $pm->gateway : false;?>
+
+        <li class="pm-order" data-pm-id="<?php echo $pm_full_id;?>" <?php echo $is_hidden ? 'style="display:none;"' : '';?>>
+
+            <?php leyka_show_gateway_logo($gateway, false);?>
+
+            <div class="pm-info">
+
+            </div>
+
+            <!---->
+            <!--        <span class="pm-label" id="pm-label---><?php //echo $pm_full_id;?><!--">--><?php //echo $pm_label;?><!--</span>-->
+            <!---->
+            <!--        <span class="pm-label-fields" style="display:none;">-->
+            <!--            <input type="text" id="pm_labels[--><?php //echo $pm_full_id;?><!--]" value="--><?php //echo $pm_label;?><!--" placeholder="--><?php //_e('Enter some title for this payment method', 'leyka');?><!--">-->
+            <!--            <input type="hidden" class="pm-label-field" name="leyka_--><?php //echo $pm_full_id;?><!--_label" value="--><?php //echo $pm_label;?><!--">-->
+            <!--            <span class="new-pm-label-ok"><span class="dashicons dashicons-yes"></span></span>-->
+            <!--            <span class="new-pm-label-cancel"><span class="dashicons dashicons-no"></span></span>-->
+            <!--        </span>-->
+            <!---->
+            <!--        <span class="pm-change-label" data-pm-id="--><?php //echo $pm_full_id;?><!--">-->
+            <!--            <span class="dashicons dashicons-edit"></span>-->
+            <!--        </span>-->
+
+        </li>
 
     <?php }
 }

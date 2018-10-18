@@ -1,36 +1,4 @@
-<?php if( !defined('WPINC') ) die; // If this file is called directly, abort
-
-function leyka_pm_sortable_option_html_new($is_hidden = false, $pm_full_id = '#FID#', $pm_label = '#L#') {
-
-    $is_hidden = !!$is_hidden;
-
-    $pm = leyka_get_pm_by_id($pm_full_id, true);
-    $gateway = $pm ? $pm->gateway : false;?>
-
-    <li class="pm-order" data-pm-id="<?php echo $pm_full_id;?>" <?php echo $is_hidden ? 'style="display:none"' : '';?>>
-
-        <?php leyka_show_gateway_logo($gateway, false);?>
-
-        <div class="pm-info">
-
-        </div>
-<!---->
-<!--        <span class="pm-label" id="pm-label---><?php //echo $pm_full_id;?><!--">--><?php //echo $pm_label;?><!--</span>-->
-<!---->
-<!--        <span class="pm-label-fields" style="display:none;">-->
-<!--            <input type="text" id="pm_labels[--><?php //echo $pm_full_id;?><!--]" value="--><?php //echo $pm_label;?><!--" placeholder="--><?php //_e('Enter some title for this payment method', 'leyka');?><!--">-->
-<!--            <input type="hidden" class="pm-label-field" name="leyka_--><?php //echo $pm_full_id;?><!--_label" value="--><?php //echo $pm_label;?><!--">-->
-<!--            <span class="new-pm-label-ok"><span class="dashicons dashicons-yes"></span></span>-->
-<!--            <span class="new-pm-label-cancel"><span class="dashicons dashicons-no"></span></span>-->
-<!--        </span>-->
-<!---->
-<!--        <span class="pm-change-label" data-pm-id="--><?php //echo $pm_full_id;?><!--">-->
-<!--            <span class="dashicons dashicons-edit"></span>-->
-<!--        </span>-->
-
-    </li>
-
-<?php }?>
+<?php if( !defined('WPINC') ) die; // If this file is called directly, abort ?>
 
 <div class="side-area">
 
