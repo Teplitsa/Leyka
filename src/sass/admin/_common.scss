@@ -92,14 +92,7 @@ a {
 }
 
 .button-primary {
-    @include wizard-button-caption();
-    height: 40px;
-    line-height: 40px;
-    width: 248px;
-    margin-right: 22px;
-    color: $color-white;
-    display: inline-block;
-    text-align: center;
+    @include leyka-button-primary();
 }
 
 a[href="#"] {
