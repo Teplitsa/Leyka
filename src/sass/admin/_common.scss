@@ -121,3 +121,70 @@ a.link-sec {
 
 
 // forms
+.option-block {
+    margin-bottom: 16px;
+    
+    &.option-title-hidden .field-component.title {
+        display: none;
+    }
+    &.option-description-hidden .field-component.help {
+        display: none;
+    }
+    
+    &.type-rich_html {
+        
+        @include leyka-rich-html();
+        
+    }
+    
+    .field-component {
+        
+        &.title {
+            @include leyka-field-title();
+        }
+
+        &.field {
+            @include leyka-field-control();
+        }
+        
+        &.help {
+            @include leyka-field-help();
+        }
+        
+    }
+    
+    &.has-errors {
+        
+        .field-component {
+            &.field {
+                @include leyka-field-control-error();
+            }
+        }
+        
+    }
+        
+    .field-radio {
+        .field-component.help {
+            padding-left: 25px;
+        }
+    }
+    
+    &.checkbox {
+        .single-control {
+            .field-component {
+                @include leyka-field-checkbox();
+            }
+        }
+    }
+    
+    &.file {
+        @include leyka-field-file();
+    }
+    
+    &.field-radio {
+        
+        @include leyka-field-radio();
+
+    }
+            
+}

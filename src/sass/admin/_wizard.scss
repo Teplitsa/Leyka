@@ -152,6 +152,7 @@
     }
 }
 
+
 // main area
 .leyka-wizard {
     
@@ -179,85 +180,8 @@
                 max-width: 680px;
             }
             
-            &.type-rich_html {
-                max-width: 680px;
-            }
+            &.option-block {
 
-            &.file {
-            }
-
-            &.text-block {
-            }
-
-            &.option-block,
-            &.custom_yandex_enumerated_block {
-
-                margin-bottom: 16px;
-
-                &.option-title-hidden .field-component.title {
-                    display: none;
-                }
-                &.option-description-hidden .field-component.help {
-                    display: none;
-                }
-                
-                &.type-rich_html {
-                    
-                    @include leyka-rich-html();
-                    
-                }
-                
-                .field-component {
-                    
-                    &.title {
-                        @include leyka-field-title();
-                    }
-
-                    &.field {
-                        @include leyka-field-control();
-                    }
-                    
-                    &.help {
-                        @include leyka-field-help();
-                    }
-                    
-                }
-                
-                &.has-errors {
-                    
-                    .field-component {
-                        &.field {
-                            @include leyka-field-control-error();
-                        }
-                    }
-                    
-                }
-                    
-                .field-radio {
-                    .field-component.help {
-                        padding-left: 25px;
-                    }
-                }
-                
-                // inline checkbox
-                &.checkbox {
-                    .single-control {
-                        .field-component {
-                            @include leyka-field-checkbox();
-                        }
-                    }
-                }
-                
-                &#receiver_type {
-                    .field-errors {
-                        //padding-left: 25px;
-                    }
-                }
-
-                &.file {
-                    @include leyka-field-file();
-                }
-            
             }
             
             &.container-block {
@@ -273,18 +197,6 @@
                             }
                          }
                     }
-                }
-
-            }
-
-            .field-radio {
-
-                label {
-                    display: block;
-                }
-
-                .radio-entry-description { /** @todo Make it a popup */
-                    display: none;
                 }
 
             }
@@ -310,57 +222,6 @@
                 
                 margin-bottom: 16px;
                 
-                //TODO: remove after testing; not used, but present in designed symbols
-                //&.field-error  {
-                //    input[type=file]:not(), select, textarea {
-                //        background: #f8ecef;
-                //        border: 1px solid #f5c8d0;
-                //    }
-                //}
-                //
-                //&.field-success  {
-                //    input, select, textarea {
-                //        background: #eff7f2;
-                //        border: 1px solid #afdfc3;
-                //    }
-                //}
-                //
-                //&.field-warning  {
-                //    input, select, textarea {
-                //        background: #f7f6ef;
-                //        border: 1px solid #dedfaf;
-                //    }
-                //}
-                //
-                //.message {
-                //    @include wizard-field-message();
-                //    margin-bottom: 0;
-                //    
-                //    &.message-error {
-                //        color: $color-wizard-error-message;
-                //    }
-                //}
-                //
-                //.explain {
-                //    @include wizard-field-explain();
-                //    color: $color-wizard-field-explain;
-                //    margin-top: 8px;
-                //    margin-bottom: 0;
-                //}
-                
-                //&.required {
-                //    label {
-                //        &:before {
-                //            @include wizard-field-label-required-sign();
-                //            content: "*";
-                //            display: inline;
-                //            color: $color-wizard-required-sign;
-                //            vertical-align: text-bottom;
-                //            margin-right: 3px;
-                //        }
-                //    }
-                //}
-
             }
         }
         

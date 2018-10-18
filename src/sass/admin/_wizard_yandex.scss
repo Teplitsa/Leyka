@@ -13,6 +13,10 @@
             
             .settings-block {
                 
+                &.custom_yandex_enumerated_block {
+                    @extend .option-block;
+                }
+                
                 .field-errors {
     
                     @include common-error-message();

@@ -24,6 +24,9 @@
 
 // form fields
 @mixin leyka-rich-html {
+  
+    max-width: 680px;
+    
     .wp-editor-tabs {
         display: none;
     }
@@ -197,6 +200,16 @@
         //    width: 18px;
         //    height: 18px;
         //}
+    }
+}
+
+@mixin leyka-field-radio {
+    label {
+        display: block;
+    }
+    
+    .radio-entry-description { /** @todo Make it a popup */
+        display: none;
     }
 }
 
