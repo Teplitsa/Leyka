@@ -66,7 +66,17 @@ if( !function_exists('leyka_pm_sortable_option_html_new') ) {
 
             <div class="pm-info">
 
-                <div class="pm-icons">PM icons here</div>
+                <div class="pm-icons">
+                <?php if($pm) {
+                    if($pm->icons) {
+                        foreach($pm->icons as $icon_url) {?>
+                            <img class="pm-icon" src="<?php echo $icon_url;?>">
+                        <?php }?>
+                    <?php } else if($pm->main_icon) {?>
+                    <img class="pm-icon" src="<?php echo $pm->main_icon_url;?>">
+                    <?php }
+                }?>
+                </div>
 
                 <div class="pm-label-wrapper">
 
@@ -81,9 +91,9 @@ if( !function_exists('leyka_pm_sortable_option_html_new') ) {
 
                     </span>
 
-                    <span class="pm-change-label" data-pm-id="<?php echo $pm_full_id;?>">
-                        <span class="dashicons dashicons-edit"></span>
-                    </span>
+                    <img class="pm-control pm-change-label" data-pm-id="<?php echo $pm_full_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-edit-circled.svg" title="<?php esc_attr_e('Edit the payment method label', 'leyka');?>">
+
+                    <img class="pm-control pm-deactivate-label" data-pm-id="<?php echo $pm_full_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-delete-circled.svg" title="<?php esc_attr_e('Deactivate the payment method', 'leyka');?>">
 
                 </div>
 

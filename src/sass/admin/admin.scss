@@ -246,7 +246,7 @@
 
                         .pm-icons {
 
-                            flex: 0 0 50%;
+                            flex: 0 1 50%;
                             padding: 4px 16px;
 
                             display: flex;
@@ -254,11 +254,16 @@
                             justify-content: flex-start;
                             align-items: center;
 
+                            .pm-icon {
+                                height: 20px;
+                                margin-right: 12px;
+                            }
+
                         }
 
                         .pm-label-wrapper {
 
-                            flex: 0 0 50%;
+                            flex: 0 1 50%;
 
                             display: flex;
                             flex-direction: row;
@@ -273,6 +278,11 @@
                                 font-size: 10px;
                                 color: $color-wizard-field-explain;
 
+                            }
+
+                            .pm-control {
+                                margin-left: 6px;
+                                cursor: pointer;
                             }
 
                         }

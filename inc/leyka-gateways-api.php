@@ -609,6 +609,7 @@ abstract class Leyka_Payment_Method {
             case 'main_icon': /** @todo Mb, add a filter here to set a custom main icon */
                 $param = $this->_main_icon ? $this->_main_icon : 'pic-main-'.$this->full_id;
                 break;
+            case 'main_icon_url': $param = LEYKA_PLUGIN_BASE_URL."gateways/{$this->gateway_id}/icons/{$this->main_icon}.svg"; break;
             case 'submit_label': $param = $this->_submit_label; break;
             case 'currencies': $param = $this->_supported_currencies; break;
             case 'default_currency': $param = $this->_default_currency; break;
