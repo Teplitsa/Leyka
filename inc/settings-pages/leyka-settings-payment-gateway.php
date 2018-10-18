@@ -15,12 +15,7 @@ if( !$gateway ) {?>
 
         <div class="gateway-title">
 
-            <div class="gateway-header-element gateway-logo">
-                <img class="gateway-logo-pic" src="<?php echo $gateway->icon_url;?>">
-                <a href="#" class="gateway-description-icon" data-gateway-info="<?php echo esc_attr($gateway->description);?>">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-info.svg">
-                </a>
-            </div>
+            <?php leyka_show_gateway_logo($gateway, true, 'gateway-header-element');?>
 
             <h2 class="gateway-header-element"><?php echo $gateway->title;?></h2>
 

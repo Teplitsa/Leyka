@@ -444,6 +444,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         $current_stage = $this->get_current_settings_tab();
 
         require_once(LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-common.php');
+        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-admin-template-tags.php');
 
 		do_action('leyka_pre_settings_actions', $current_stage);
 

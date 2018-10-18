@@ -18,7 +18,7 @@ $yandex_aviso_url = site_url('/leyka/service/yandex/payment_aviso/');
     <div class="enum-separated-block">
         <div class="block-separator"><div></div></div>
         <div class="caption">В выпадающем списке найдите и выберите пункт <strong>«Wordpress (Лейка)»</strong></div>
-        <?php show_wizard_captioned_screenshot("yandex/yandex_parameters-click.png")?>
+        <?php leyka_show_wizard_captioned_screenshot("yandex/yandex_parameters-click.png")?>
         <div class="body">
             <p>
                 Часть полей проставится автоматически. Вы можете проверить точность адресов ниже:
