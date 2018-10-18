@@ -387,7 +387,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 new Leyka_Custom_Setting_Block(array(
                     'id' => 'campaign-target',
                     'custom_setting_id' => 'campaign_target',
-                    'field_type' => 'number',
+                    'field_type' => 'text',
                     'data' => array(
                         'title' => 'Целевая сумма',
                         'min' => 0,
@@ -395,6 +395,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                         'value' => $init_campaign && $init_campaign->target ? $init_campaign->target : '',
                         'show_description' => false,
                         'placeholder' => 'Пусто, если сумма неограниченна',
+                        'mask' => "'alias': 'numeric', 'groupSeparator': ' ', 'autoGroup': true, 'allowMinus': false, 'rightAlign': false, 'removeMaskOnSubmit': true",
                         //'description' => 'Оставьте пустым, если нет ограничений по целевой сумме',
 //                        'comment' => 'Комментарий к целевой сумме кампании',
                     ),

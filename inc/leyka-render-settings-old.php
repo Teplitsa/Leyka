@@ -37,7 +37,7 @@ function leyka_render_text_field($option_id, $data){
                 <?php }?>
             </span>
             <span class="field-component field">
-                <input type="<?php echo empty($data['is_password']) ? 'text' : 'password';?>" <?php echo !empty($data['mask']) ?  ' mask="'.$data['mask'].'"' : '';?> id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo empty($data['placeholder']) ? '' : esc_attr($data['placeholder']);?>" maxlength="<?php echo empty($data['length']) ? '' : (int)$data['length'];?>"  class="<?php echo !empty($data['mask']) ?  'leyka-wizard-mask' : '';?>">
+                <input type="<?php echo empty($data['is_password']) ? 'text' : 'password';?>" <?php echo !empty($data['mask']) ?  ' data-inputmask="'.$data['mask'].'"' : '';?> id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo empty($data['placeholder']) ? '' : esc_attr($data['placeholder']);?>" maxlength="<?php echo empty($data['length']) ? '' : (int)$data['length'];?>"  class="<?php echo !empty($data['mask']) ?  'leyka-wizard-mask' : '';?>">
             </span>
             <?php if( !empty($data['description']) ) {?>
             <span class="field-component help"><?php echo $data['description'];?></span>

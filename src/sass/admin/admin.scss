@@ -221,30 +221,6 @@
             padding-left: 32px;
             margin-left: -1px;
 
-            .pm-order-description {
-                font-size: 14px;
-            }
-
-            #pm-order-settings {
-
-                .pm-order {
-
-                    display: block;
-                    height: 83px;
-                    margin-bottom: 16px;
-
-                    border: 1px solid $color-border-light;
-                    border-radius: 4px;
-                    background-color: transparentize($color-white, 0.6);
-
-                    &:hover {
-                        cursor: grab;
-                    }
-
-                }
-
-            }
-
         }
 
     }
@@ -406,20 +382,6 @@
         color: $color-wizard-text;
         
         // wizard markup styles
-        .step-title {
-            h1 {
-                @include wizard-h2();
-                margin-top: 41px;
-                margin-bottom: 8px;
-                
-                &.greater {
-                    @include wizard-h1();
-                    margin-top: 49px;
-                    margin-bottom: 18px;
-                }
-            }
-        }
-        
         .step-content {
         }
         
@@ -444,29 +406,6 @@
             }
 
             &.text-block {
-                p {
-                    margin-bottom: 1rem;
-                }
-                
-                p:empty {
-                    display: none;
-                }
-                
-                ul {
-                    
-                    margin-top: 0;
-                    margin-bottom: 32px;
-                    
-                    li {
-                        list-style-type: disc;
-                        margin-left: 18px;
-                        font-size: 14px;
-                        line-height: 21px;
-                        margin-top: 14px;
-                    }
-                    
-                }
-                
             }
 
             &.option-block,
@@ -483,167 +422,22 @@
                 
                 &.type-rich_html {
                     
-                    .wp-editor-tabs {
-                        display: none;
-                    }
+                    @include leyka-rich-html();
                     
-                    label {
-                        .field-component.title {
-                            @include wizard-field-label-rich-edit();
-                            margin-bottom: 1rem;
-                        }
-                    }
                 }
                 
                 .field-component {
                     
                     &.title {
-                        @include wizard-field-label();
-                        display: block;
-                        margin-bottom: 5px;
-                        position: relative;
-                        
-                        .required {
-                            @include wizard-field-label-required-sign();
-                            color: $color-wizard-required-sign;
-                            vertical-align: text-bottom;
-                            margin-right: 3px;
-                            float: left;
-                            
-                            &:after {
-                                clear: both;
-                                float: none;
-                            }
-                        }
-                        
-                        .field-q {
-                            margin-left: 3px;
-                            vertical-align: baseline;
-                            cursor: pointer;
-                            position: relative;
-                            
-                            img {
-                                vertical-align: baseline;
-                            }
-                            
-                            .field-q-tooltip {
-                                display: none;
-                                //display: block;
-                                position: absolute;
-                                color: $color-white;
-                                background-color: $color-wizard-tooltip-bg;
-                                border-radius: 6px;
-                                border: none;
-                                padding: 7px 8px 8px 8px;
-                                font-size: 10px;
-                                line-height: 15px;
-                                z-index: 11;
-                                top: 150%;
-                                left: 0;
-                                transform:translateX(-50%);
-                                
-                                width: 204px;
-                                overflow-wrap: break-word;
-                                word-wrap: break-word;
-                                white-space: pre-line;
-                                max-width: max-content;
-                                text-align: center;
-                                
-                                &:before {
-                                    content: "";
-                                    display:block;
-                                    width:0;
-                                    height:0;
-                                    position:absolute;
-                                    border-left: 8px solid transparent;
-                                    border-right: 8px solid transparent;
-                                    border-bottom:8px solid $color-wizard-tooltip-bg;
-                                    left:calc(50% - 4px);
-                                    top:-7px;                            
-                                }
-                            }
-                            
-                            &:hover {
-                                .field-q-tooltip {
-                                    display: block;
-                                }
-                            }
-                        }
-                        
+                        @include leyka-field-title();
                     }
 
                     &.field {
-                        
-                        // TODO: move colors to presets after comlete
-                        input[type=text], input[type=email], input[type=password], input[type=text], input[type=number], select, textarea {
-                            @include wizard-field-input-text();
-                            color: $color-wizard-text;
-                            @include placeholder {
-                                color: $color-wizard-placeholder;
-                            }                    
-                            margin-left: -1px;
-                            padding: 1px 6px 3px 6px;
-                            height: 25px;
-                            //width: 248px;
-                            width: 100%;
-                            border: 1px solid #dddddd;
-                            
-                            &:active, &:focus {
-                                color: $color-wizard-text;
-                                border: 1px solid #bfbfbf;
-                                box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
-                            }
-                            
-                        }
-                        
-                        input[type=file] {
-                            width: 248px;
-                        }
-                        
-                        textarea {
-                            height: 62px;
-                            width: 100%;
-                            line-height: 18px;
-                        }
-                        
-                        input[type=checkbox], input[type=radio] {
-                            width: 18px;
-                            height: 18px;
-                        }
-                        
-                        input[type=checkbox], input[type=radio] {
-                            &::before {
-                                width: 8px;
-                                height: 8px;
-                                line-height: 18px;
-                            }
-                        }
-                        
-                        input[type=checkbox] {
-                            padding-top: 2px !important;
-                            padding-left: 1px !important;
-                        }
-                        
-                        label {
-                            @include wizard-field-label();
-                            display: block;
-                            margin-bottom: 8px;
-                            
-                            & > input {
-                                margin-right: 8px;
-                                vertical-align: middle;
-                            }
-                            
-                        }
-
+                        @include leyka-field-control();
                     }
                     
                     &.help {
-                        @include wizard-field-explain();
-                        color: $color-wizard-field-explain;
-                        display: block;
-                        margin-top: 8px;
-                        margin-bottom: 0;
+                        @include leyka-field-help();
                     }
                     
                 }
@@ -652,10 +446,7 @@
                     
                     .field-component {
                         &.field {
-                            input, select, textarea {
-                                background: #f8ecef;
-                                border: 1px solid #f5c8d0;
-                            }
+                            @include leyka-field-control-error();
                         }
                     }
                     
@@ -761,99 +552,6 @@
             }
         }
 
-        // general elements        
-        h1 {
-            @include wizard-h1();
-            margin-bottom: 18px;
-        }
-        
-        h2 {
-            @include wizard-h2();
-            margin-bottom: 8px;
-        }
-        
-        h3 {
-            @include wizard-h3();
-            margin-bottom: 8px;
-        }
-
-        h4 {
-            @include wizard-h4();
-            margin-bottom: 8px;
-        }
-        
-        p {
-            @include wizard-text();
-            margin-top: 0;
-        }
-        
-        .button-primary {
-            @include wizard-button-caption();
-            height: 40px;
-            width: 248px;
-            margin-right: 22px;
-        }
-
-        .button-secondary {
-            @include wizard-button-caption();
-            height: 40px;
-            margin-right: 22px;
-            min-width: 248px;
-            font-weight: 500;
-            background-color: white;
-        }
-            
-        a {
-            color: $color-wizard-link;
-            text-decoration: none;
-            border-bottom: none;
-            padding-bottom: 2px;
-            border-bottom: 1px solid $color-wizard-link;
-            
-            &:hover {
-                color: $color-wizard-link-hover;
-            }
-            
-            &:focus, &:active {
-                color: $color-wizard-link-active;
-            }
-        }
-        
-        a.button-primary {
-            @include wizard-button-caption();
-            height: 40px;
-            line-height: 40px;
-            width: 248px;
-            margin-right: 22px;
-            color: $color-white;
-            display: inline-block;
-            text-align: center;
-        }
-        
-        a[href="#"] {
-            border-bottom: 1px dashed $color-wizard-link;
-        }
-        
-        a.inline {
-            margin-right: 1rem;
-        }
-        
-        a.link-sec {
-            color: $color-wizard-link-sec;
-            text-decoration: none;
-            padding-bottom: 2px;
-            border-bottom: 1px solid $color-wizard-link-sec;
-            
-            &:hover {
-                color: $color-wizard-link-sec-hover;
-                text-decoration: none;
-            }
-            
-            &:focus, &:active {
-                color: $color-wizard-link-sec-active;
-            }
-        }
-        
         .restore-original-doc {
             display: inline-block;
             margin-top: 0.5rem;
@@ -1098,6 +796,10 @@
             #org_actual_address_differs {
                 margin-bottom: 0;
             }
+        }
+        
+        #leyka_campaign_target-field {
+            text-align: left !important;
         }
         
         .step-content {

@@ -21,3 +21,175 @@
     @content;
   }
 }
+
+@mixin leyka-rich-html {
+    .wp-editor-tabs {
+        display: none;
+    }
+    
+    label {
+        .field-component.title {
+            @include wizard-field-label-rich-edit();
+            margin-bottom: 1rem;
+        }
+    }
+}
+
+@mixin leyka-field-title {
+  
+    @include wizard-field-label();
+    display: block;
+    margin-bottom: 5px;
+    position: relative;
+    
+    .required {
+        @include wizard-field-label-required-sign();
+        color: $color-wizard-required-sign;
+        vertical-align: text-bottom;
+        margin-right: 3px;
+        float: left;
+        
+        &:after {
+            clear: both;
+            float: none;
+        }
+    }
+    
+    .field-q {
+        margin-left: 3px;
+        vertical-align: baseline;
+        cursor: pointer;
+        position: relative;
+        
+        img {
+            vertical-align: baseline;
+        }
+        
+        .field-q-tooltip {
+            display: none;
+            //display: block;
+            position: absolute;
+            color: $color-white;
+            background-color: $color-wizard-tooltip-bg;
+            border-radius: 6px;
+            border: none;
+            padding: 7px 8px 8px 8px;
+            font-size: 10px;
+            line-height: 15px;
+            z-index: 11;
+            top: 150%;
+            left: 0;
+            transform:translateX(-50%);
+            
+            width: 204px;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            white-space: pre-line;
+            max-width: max-content;
+            text-align: center;
+            
+            &:before {
+                content: "";
+                display:block;
+                width:0;
+                height:0;
+                position:absolute;
+                border-left: 8px solid transparent;
+                border-right: 8px solid transparent;
+                border-bottom:8px solid $color-wizard-tooltip-bg;
+                left:calc(50% - 4px);
+                top:-7px;                            
+            }
+        }
+        
+        &:hover {
+            .field-q-tooltip {
+                display: block;
+            }
+        }
+    }
+    
+}
+
+@mixin leyka-field-control {
+    // TODO: move colors to presets after comlete
+    input[type=text], input[type=email], input[type=password], input[type=text], input[type=number], select, textarea {
+        @include wizard-field-input-text();
+        color: $color-wizard-text;
+        @include placeholder {
+            color: $color-wizard-placeholder;
+        }                    
+        margin-left: -1px;
+        padding: 1px 6px 3px 6px;
+        height: 25px;
+        //width: 248px;
+        width: 100%;
+        border: 1px solid #dddddd;
+        
+        &:active, &:focus {
+            color: $color-wizard-text;
+            border: 1px solid #bfbfbf;
+            box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
+        }
+        
+    }
+    
+    input[type=file] {
+        width: 248px;
+    }
+    
+    textarea {
+        height: 62px;
+        width: 100%;
+        line-height: 18px;
+    }
+    
+    input[type=checkbox], input[type=radio] {
+        width: 18px;
+        height: 18px;
+    }
+    
+    input[type=checkbox], input[type=radio] {
+        &::before {
+            width: 8px;
+            height: 8px;
+            line-height: 18px;
+        }
+    }
+    
+    input[type=checkbox] {
+        padding-top: 2px !important;
+        padding-left: 1px !important;
+    }
+    
+    label {
+        @include wizard-field-label();
+        display: block;
+        margin-bottom: 8px;
+        
+        & > input {
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+    }  
+}
+
+@mixin leyka-field-control-error {
+    input, select, textarea {
+        background: #f8ecef;
+        border: 1px solid #f5c8d0;
+    }
+}
+
+@mixin leyka-field-control-checkbox {
+  
+}
+
+@mixin leyka-field-help {
+    @include wizard-field-explain();
+    color: $color-wizard-field-explain;
+    display: block;
+    margin-top: 8px;
+    margin-bottom: 0;
+}
