@@ -112,9 +112,8 @@ function leyka_get_gateway_by_id($gateway_id) {
 
 }
 
-abstract class Leyka_Gateway {
+abstract class Leyka_Gateway extends Leyka_Singleton {
 
-    /** @var $_instance Leyka_Gateway Gateway is always a singleton */
     protected static $_instance;
 
 	protected $_id = ''; // Must be a unique string, as "quittance", "yandex" or "chronopay"
@@ -173,33 +172,46 @@ abstract class Leyka_Gateway {
             array($this, 'cancel_recurring_subscription')
         );
 
-    }
+        $this->_initialize_options();
 
-    final protected function __clone() {}
+        add_action('leyka_enqueue_scripts', array($this, 'enqueue_gateway_scripts'));
 
-    public final static function get_instance() {
+        add_action('leyka_payment_form_submission-'.$this->id, array($this, 'process_form'), 10, 4);
+        add_action('leyka_payment_form_submission-'.$this->id, array($this, 'process_form_default'), 100, 4);
+        add_action('leyka_log_donation-'.$this->id, array($this, 'log_gateway_fields'));
 
-        if( !static::$_instance ) {
-
-            static::$_instance = new static();
-            static::$_instance->_initialize_options();
-
-            add_action('leyka_enqueue_scripts', array(static::$_instance, 'enqueue_gateway_scripts'));
-
-            add_action('leyka_payment_form_submission-'.static::$_instance->id, array(static::$_instance, 'process_form'), 10, 4);
-            add_action('leyka_payment_form_submission-'.static::$_instance->id, array(static::$_instance, 'process_form_default'), 100, 4);
-            add_action('leyka_log_donation-'.static::$_instance->id, array(static::$_instance, 'log_gateway_fields'));
-
-            add_filter('leyka_submission_redirect_url-'.static::$_instance->id, array(static::$_instance, 'submission_redirect_url'), 10, 2);
-            add_filter('leyka_submission_redirect_type-'.static::$_instance->id, array(static::$_instance, 'submission_redirect_type'), 10, 3);
-            add_filter('leyka_submission_form_data-'.static::$_instance->id, array(static::$_instance, 'submission_form_data'), 10, 3);
-            add_action('leyka_'.static::$_instance->id.'_redirect_page_content', array(static::$_instance, 'gateway_redirect_page_content'), 10, 2);
-
-        }
-
-        return static::$_instance;
+        add_filter('leyka_submission_redirect_url-'.$this->id, array($this, 'submission_redirect_url'), 10, 2);
+        add_filter('leyka_submission_redirect_type-'.$this->id, array($this, 'submission_redirect_type'), 10, 3);
+        add_filter('leyka_submission_form_data-'.$this->id, array($this, 'submission_form_data'), 10, 3);
+        add_action('leyka_'.$this->id.'_redirect_page_content', array($this, 'gateway_redirect_page_content'), 10, 2);
 
     }
+
+//    final protected function __clone() {}
+//
+//    public final static function get_instance() {
+//
+//        if( !static::$_instance ) {
+//
+//            static::$_instance = new static();
+//            static::$_instance->_initialize_options();
+//
+//            add_action('leyka_enqueue_scripts', array(static::$_instance, 'enqueue_gateway_scripts'));
+//
+//            add_action('leyka_payment_form_submission-'.static::$_instance->id, array(static::$_instance, 'process_form'), 10, 4);
+//            add_action('leyka_payment_form_submission-'.static::$_instance->id, array(static::$_instance, 'process_form_default'), 100, 4);
+//            add_action('leyka_log_donation-'.static::$_instance->id, array(static::$_instance, 'log_gateway_fields'));
+//
+//            add_filter('leyka_submission_redirect_url-'.static::$_instance->id, array(static::$_instance, 'submission_redirect_url'), 10, 2);
+//            add_filter('leyka_submission_redirect_type-'.static::$_instance->id, array(static::$_instance, 'submission_redirect_type'), 10, 3);
+//            add_filter('leyka_submission_form_data-'.static::$_instance->id, array(static::$_instance, 'submission_form_data'), 10, 3);
+//            add_action('leyka_'.static::$_instance->id.'_redirect_page_content', array(static::$_instance, 'gateway_redirect_page_content'), 10, 2);
+
+//        }
+//
+//        return static::$_instance;
+//
+//    }
 
     public function __get($param) {
 
@@ -534,9 +546,8 @@ abstract class Leyka_Gateway {
 /**
  * Class Leyka_Payment_Method
  */
-abstract class Leyka_Payment_Method {
+abstract class Leyka_Payment_Method extends Leyka_Singleton {
 
-    /** @var $_instance Leyka_Payment_Method PM is always a singleton */
     protected static $_instance;
 
     protected $_id = '';
@@ -557,20 +568,20 @@ abstract class Leyka_Payment_Method {
     protected $_processing_type = 'default';
     protected $_ajax_without_form_submission = false;
 
-    public final static function get_instance() {
-
-        if(null == static::$_instance) {
-
-            static::$_instance = new static();
-            static::$_instance->_initialize_options();
-
-        }
-
-        return static::$_instance;
-
-    }
-
-    final protected function __clone() {}
+//    public final static function get_instance() {
+//
+//        if(null == static::$_instance) {
+//
+//            static::$_instance = new static();
+////            static::$_instance->_initialize_options();
+//
+//        }
+//
+//        return static::$_instance;
+//
+//    }
+//
+//    final protected function __clone() {}
 
     protected function __construct() {
 
