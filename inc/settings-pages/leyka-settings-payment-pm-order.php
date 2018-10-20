@@ -7,7 +7,13 @@
         <div class="pm-order-description">Перетаскивайте мышью блоки, соответствующие способам платежа</div>
     </div>
 
-    <ul id="pm-order-settings">
+    <div class="pm-update-status">
+        <div class="result ok-message">Изменения сохранены</div>
+        <div class="result error-message"></div>
+        <div class="result leyka-loader xs"></div>
+    </div>
+
+    <ul id="pm-order-settings" data-pm-order="<?php echo leyka_options()->opt('pm_order');?>" data-nonce="<?php echo wp_create_nonce('leyka-update-pm-order');?>">
 
     <?php leyka_pm_sortable_option_html_new(true); // To clone the PM item structure when adding new items
 
@@ -29,7 +35,5 @@
     }?>
 
     </ul>
-
-    <input type="hidden" id="pm-order-field" name="leyka_pm_order" value="<?php echo leyka_options()->opt('pm_order');?>" data-nonce="<?php echo wp_create_nonce('leyka-update-pm-order');?>">
 
 </div>

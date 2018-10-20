@@ -210,6 +210,55 @@
 
             }
 
+            .pm-update-status {
+
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+
+                position: relative;
+
+                margin-top: 12px;
+                height: 16px;
+
+                .result {
+
+                    position: absolute;
+
+                    &.ok-message {
+
+                        display: flex;
+                        justify-content: flex-start;
+                        align-items: center;
+
+                        font-size: 10px;
+                        color: $color-wizard-link;
+
+                        &:before {
+                            @include ok-smile-icon();
+                        }
+
+                        &.leyka-loader {
+                            top: -13px;
+                        }
+
+                    }
+
+                    &.error-message {
+
+                        font-size: 10px;
+                        color: $color-wizard-error-message;
+
+                    }
+
+                    &.leyka-loader {
+                        top: -12px;
+                    }
+
+                }
+
+            }
+
             #pm-order-settings {
 
                 .pm-order {
@@ -227,6 +276,10 @@
                     box-shadow: 0 1px 4px 0 transparentize($color-text-black, 0.92);
 
                     cursor: grab;
+
+                    &.ui-sortable-helper {
+                        cursor: move;
+                    }
 
                     .gateway-logo-wrapper {
 
@@ -291,7 +344,7 @@
 
                         }
 
-                        .new-pm-label-ok {
+                        .new-pm-label-control {
                             cursor: pointer;
                         }
 

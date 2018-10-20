@@ -217,6 +217,17 @@ $color-form-active:		var(--color-main-light);
     margin: 0 12px 0 0;
 }
 
+@mixin ok-smile-icon() {
+    content: '';
+    display: block;
+    width: 16px;
+    height: 16px;
+    float: left;
+    background-image: url(../../img/icon-ok-smile.svg);
+    background-repeat: no-repeat;
+    margin: 0 6px 0 0;
+}
+
 @mixin arrow-left-icon() {
 
     content: '';

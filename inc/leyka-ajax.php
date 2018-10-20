@@ -246,21 +246,25 @@ function leyka_edit_campaign_slug() {
 }
 add_action('wp_ajax_leyka_edit_campaign_slug', 'leyka_edit_campaign_slug');
 
-function leyka_update_pm_order() {
+function leyka_update_pm_list() {
 
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka-update-pm-order')) {
         die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
     } else if(empty($_POST['pm_order'])) {
         die(json_encode(array('status' => 'error', 'message' => __('Error: PM order value is missing', 'leyka'),)));
+    } else if(empty($_POST['pm_labels'])) {
+        die(json_encode(array('status' => 'error', 'message' => __('Error: PM labels value is missing', 'leyka'),)));
     }
 
-    $res = leyka_options()->opt('pm_order', $_POST['pm_order']);
+    leyka_options()->opt('pm_order', $_POST['pm_order']);
 
-    if($res === false) {
-        die(json_encode(array('status' => 'error', 'message' => __("Error: PM order wasn't saved", 'leyka'),)));
-    } else {
-        die(json_encode(array('status' => 'ok',)));
+    if( !empty($_POST['pm_labels']) && is_array($_POST['pm_labels']) ) {
+        foreach($_POST['pm_labels'] as $pm_full_id => $pm_label) {
+            leyka_options()->opt($pm_full_id, $pm_label);
+        }
     }
+
+    die(json_encode(array('status' => 'ok',)));
 
 }
-add_action('wp_ajax_leyka_update_pm_order', 'leyka_update_pm_order');
+add_action('wp_ajax_leyka_update_pm_list', 'leyka_update_pm_list');

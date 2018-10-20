@@ -7,30 +7,52 @@ jQuery(document).ready(function($){
         return;
     }
 
+    var $pm_order = $('#pm-order-settings'),
+        $pm_update_status = $('.pm-update-status'),
+        $ok_message = $pm_update_status.find('.ok-message'),
+        $error_message = $pm_update_status.find('.error-message'),
+        $ajax_loading = $pm_update_status.find('.leyka-loader');
+
+    $pm_update_status.find('.result').hide();
+
     function leykaUpdatePmList($pm_order) {
 
-        $.post(leyka.ajaxurl, {
-            action: 'leyka_update_pm_order',
-            pm_order: $pm_order_field.val(),
-            nonce: $pm_order_field.data('nonce')
-        }, null, 'json')
+        var params = {
+            action: 'leyka_update_pm_list',
+            pm_order: $pm_order.data('pm-order'),
+            pm_labels: {},
+            nonce: $pm_order.data('nonce')
+        };
+
+        $pm_order.find('input.pm-label-field.submitable').each(function(){
+            params.pm_labels[$(this).prop('name')] = $(this).val();
+        });
+
+        $ok_message.hide();
+        $error_message.hide();
+        $ajax_loading.show();
+
+        $.post(leyka.ajaxurl, params, null, 'json')
             .done(function(json) {
 
                 if(typeof json.status !== 'undefined' && json.status === 'error') {
-                    // alert('Ошибка!');
+
+                    $ok_message.hide();
+                    $error_message.html(typeof json.message === 'undefined' ? leyka.common_error_message : json.message).show();
+
                     return;
+
                 }
 
-                alert('ok!');
-                // show success div
+                $ok_message.show();
+                $error_message.html('').hide();
 
             })
             .fail(function() {
-                alert('Ошибка!');
+                $error_message.html(leyka.common_error_message).show();
             })
             .always(function() {
-                // hideLoading();
-                // enableForm();
+                $ajax_loading.hide();
             });
 
     }
@@ -56,75 +78,68 @@ jQuery(document).ready(function($){
     // });
 
     // PM reordering:
-    var $pm_order = $('#pm-order-settings').sortable({placeholder: '', items: '> li:visible'});
-    $pm_order.on('sortupdate', function(event){
+    $pm_order
+        .sortable({placeholder: '', items: '> li:visible'})
+        .on('sortupdate', function(event){
 
-        var $pm_order_field = $('input#pm-order-field');
+            $pm_order.data('pm-order',
+                $(this).sortable('serialize', {key: 'pm_order[]', attribute: 'data-pm-id', expression: /(.+)/})
+            );
 
-        $pm_order_field.val(
-            $(this).sortable('serialize', {key: 'pm_order[]', attribute: 'data-pm-id', expression: /(.+)/})
-        );
+            leykaUpdatePmList($pm_order);
 
-        // disableForm();
-        // showLoading();
-
-        leykaUpdatePmList($pm_order_field);
-
-    });
-
-    // PM renaming & deactivation:
-    $pm_order.on('click', '.pm-deactivate', function(e){
+        }).on('click', '.pm-deactivate', function(e){ // PM renaming & deactivation
 
         // ...
 
         /** @todo AJAX to update PM list & labels */
 
-    }).on('click', '.pm-change-label', function(e){
-
-        e.preventDefault();
-
-        var $this = $(this),
-            $wrapper = $this.parents('li:first');
-
-        $this.hide();
-        $wrapper.find('.pm-label').hide();
-        $wrapper.find('.pm-label-fields').show();
-
-    }).on('click', '.new-pm-label-ok,.new-pm-label-cancel', function(e){
-
-        e.preventDefault();
-
-        var $this = $(this),
-            $wrapper = $this.parents('li:first'),
-            $pm_label_wrapper = $wrapper.find('.pm-label'),
-            new_pm_label = $wrapper.find('input[id*="pm_label"]').val();
-
-        if($this.hasClass('new-pm-label-ok')) {
-
-            $pm_label_wrapper.text(new_pm_label);
-            $wrapper.find('input.pm-label-field').val(new_pm_label);
-
-            /** @todo AJAX to update PM list & labels */
-
-        } else {
-            $wrapper.find('input[id*="pm_label"]').val($pm_label_wrapper.text());
-        }
-
-        $pm_label_wrapper.show();
-        $wrapper.find('.pm-label-fields').hide();
-        $wrapper.find('.pm-change-label').show();
-
-    }).on('keydown', 'input[id*="pm_label"]', function(e){
-
-        var keycode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
-        if(keycode == 13) { // Enter pressed - stop settings form from being submitted, but save PM custom label
+        }).on('click', '.pm-change-label', function(e){
 
             e.preventDefault();
-            $(this).parents('.pm-label-fields').find('.new-pm-label-ok').click();
 
-        }
+            var $this = $(this),
+                $wrapper = $this.parents('li:first');
 
-    });
+            $this.hide();
+            $wrapper.find('.pm-label').hide();
+            $wrapper.find('.pm-label-fields').show();
+
+        }).on('click', '.new-pm-label-ok,.new-pm-label-cancel', function(e){
+
+            e.preventDefault();
+
+            var $this = $(this),
+                $wrapper = $this.parents('li:first'),
+                $pm_label_wrapper = $wrapper.find('.pm-label'),
+                new_pm_label = $wrapper.find('input[id*="pm_label"]').val();
+
+            if($this.hasClass('new-pm-label-ok')) {
+
+                $pm_label_wrapper.text(new_pm_label);
+                $wrapper.find('input.pm-label-field').val(new_pm_label);
+
+                leykaUpdatePmList($pm_order);
+
+            } else {
+                $wrapper.find('input[id*="pm_label"]').val($pm_label_wrapper.text());
+            }
+
+            $pm_label_wrapper.show();
+            $wrapper.find('.pm-label-fields').hide();
+            $wrapper.find('.pm-change-label').show();
+
+        }).on('keydown', 'input[id*="pm_label"]', function(e){
+
+            var keycode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+            if(keycode == 13) { // Enter pressed - stop settings form from being submitted, but save PM custom label
+
+                e.preventDefault();
+                $(this).parents('.pm-label-fields').find('.new-pm-label-ok').click();
+
+            }
+
+        });
 
     $('.side-area').stick_in_parent({offset_top: 32}); // The adminbar height
 
