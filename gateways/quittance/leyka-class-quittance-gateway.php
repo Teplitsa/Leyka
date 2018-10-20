@@ -142,6 +142,7 @@ class Leyka_Bank_Order extends Leyka_Payment_Method {
 
         $this->_id = 'bank_order';
         $this->_gateway_id = 'quittance';
+        $this->_category = 'offline';
 
         $this->_label_backend = __('Bank order quittance', 'leyka');
         $this->_label = __('Bank order quittance', 'leyka');

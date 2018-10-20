@@ -224,6 +224,7 @@ class Leyka_Paymaster_All extends Leyka_Payment_Method {
 
         $this->_id = 'paymaster_all';
         $this->_gateway_id = 'paymaster';
+        $this->_category = 'misc';
 
         $this->_label_backend = __('Paymaster smart payment', 'leyka');
         $this->_label = __('Paymaster smart payment', 'leyka');

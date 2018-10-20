@@ -14,6 +14,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
         $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-robokassa/#robokassa-settings';
         $this->_admin_ui_column = 1;
         $this->_admin_ui_order = 40;
+
     }
 
     protected function _set_options_defaults() {
@@ -229,6 +230,7 @@ class Leyka_Robokassa_Card extends Leyka_Payment_Method {
 
         $this->_id = 'BANKOCEAN2';
         $this->_gateway_id = 'robokassa';
+        $this->_category = 'bank_cards';
 
         $this->_label_backend = __('Bank card', 'leyka');
         $this->_label = __('Bank card', 'leyka');
@@ -273,6 +275,7 @@ class Leyka_Robokassa_Yandex_Money extends Leyka_Payment_Method {
 
         $this->_id = 'YandexMerchantOcean';
         $this->_gateway_id = 'robokassa';
+        $this->_category = 'digital_currencies';
 
         $this->_label_backend = __('Payment with Yandex.Money', 'leyka');
         $this->_label = __('Yandex.Money', 'leyka');
@@ -317,6 +320,7 @@ class Leyka_Robokassa_Webmoney extends Leyka_Payment_Method {
 
         $this->_id = 'WMR';
         $this->_gateway_id = 'robokassa';
+        $this->_category = 'digital_currencies';
 
         $this->_label_backend = __('Payment with Webmoney', 'leyka');
         $this->_label = __('Webmoney', 'leyka');
@@ -362,6 +366,7 @@ class Leyka_Robokassa_Qiwi extends Leyka_Payment_Method {
 
         $this->_id = 'Qiwi30Ocean';
         $this->_gateway_id = 'robokassa';
+        $this->_category = 'digital_currencies';
 
         $this->_label_backend = __('Payment with Qiwi wallet', 'leyka');
         $this->_label = __('Qiwi wallet', 'leyka');
@@ -408,6 +413,7 @@ class Leyka_Robokassa_All extends Leyka_Payment_Method {
 
         $this->_id = 'Other';
         $this->_gateway_id = 'robokassa';
+        $this->_category = 'misc';
 
         $this->_label_backend = __('Use any Robokassa payment method available', 'leyka');
         $this->_label = __('Robokassa (any)', 'leyka');

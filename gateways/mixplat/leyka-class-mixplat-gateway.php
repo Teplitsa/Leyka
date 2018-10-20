@@ -410,6 +410,7 @@ class Leyka_Mixplat_Mobile extends Leyka_Payment_Method {
 
         $this->_id = 'mobile';
         $this->_gateway_id = 'mixplat';
+        $this->_category = 'mobile_payments';
 
         $this->_label_backend = __('Mobile payment', 'leyka');
         $this->_label = __('Mobile payment', 'leyka');
@@ -467,6 +468,7 @@ class Leyka_Mixplat_Text extends Leyka_Payment_Method {
 
         $this->_id = 'sms';
         $this->_gateway_id = 'mixplat';
+        $this->_category = 'mobile_payments';
 
         $this->_label_backend = __('Payments via SMS', 'leyka');
         $this->_label = __('Payments via SMS', 'leyka');

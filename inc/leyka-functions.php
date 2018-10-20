@@ -485,6 +485,26 @@ function leyka_get_donation_status_list() {
     return leyka()->get_donation_statuses();
 }
 
+function leyka_get_pm_categories_list() {
+    return apply_filters('leyka_pm_categories', array(
+        'bank_cards' => esc_attr__('Bank cards', 'leyka'),
+        'digital_currencies' => esc_attr__('Digital currrencies', 'leyka'),
+        'online_banking' => esc_attr__('Online banking', 'leyka'),
+        'mobile_payments' => esc_attr__('Mobile payments', 'leyka'),
+        'misc' => esc_attr__('Miscellaneous', 'leyka'),
+        'offline' => esc_attr__('Offline', 'leyka'),
+    ));
+}
+
+function leyka_get_pm_category_label($category_id) {
+
+    $category_id = esc_attr(trim($category_id));
+    $categories_list = leyka_get_pm_categories_list();
+
+    return $category_id && !empty($categories_list[$category_id]) ? $categories_list[$category_id] : false;
+
+}
+
 /**
  * Get all possible campaign target states.
  **/

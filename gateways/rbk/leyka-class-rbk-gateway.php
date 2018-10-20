@@ -9,28 +9,26 @@ include(LEYKA_PLUGIN_DIR . 'gateways/rbk/includes/Leyka_Rbk_Gateway_Helper.php')
 /**
  * Leyka_Rbk_Gateway class
  */
-class Leyka_Rbk_Gateway extends Leyka_Gateway
-{
+class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
     protected static $_rbk_api_path = '/v2/processing/invoices';
     protected $_rbk_response;
     protected $_rbk_log = array();
     protected static $_instance;
 
-    protected function _set_attributes()
-    {
+    protected function _set_attributes() {
+
         $this->_id = 'rbk';
         $this->_title = __('RBK Money', 'leyka');
         $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-rbk/';
         $this->_admin_ui_column = 1;
         $this->_admin_ui_order = 50;
+
     }
 
-    protected function _set_options_defaults()
-    {
+    protected function _set_options_defaults() {
 
-        if ($this->_options) // Create Gateway options, if needed
-        {
+        if($this->_options) {
             return;
         }
 
@@ -69,21 +67,18 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway
                 'validation_rules' => array(),
             )
         );
+
     }
 
-    protected function _initialize_pm_list()
-    {
-
-        if (empty($this->_payment_methods['bankcard'])) {
+    protected function _initialize_pm_list() {
+        if(empty($this->_payment_methods['bankcard'])) {
             $this->_payment_methods['bankcard'] = Leyka_Rbk_Card::get_instance();
         }
-
     }
 
-    public function enqueue_gateway_scripts()
-    {
+    public function enqueue_gateway_scripts() {
 
-        if (Leyka_Rbk_Card::get_instance()->active) {
+        if(Leyka_Rbk_Card::get_instance()->active) {
 
             wp_enqueue_script(
                 'leyka-rbk-checkout',
@@ -105,8 +100,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway
 
     }
 
-    public function process_form($gateway_id, $pm_id, $donation_id, $form_data)
-    {
+    public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
         $api_key = leyka_options()->opt('leyka_rbk_api_key');
         $shop_id = leyka_options()->opt('leyka_rbk_shop_id');
@@ -290,19 +284,19 @@ JS;
 
         return $out;
     }
-} // Gateway class end
+
+}
 
 
-class Leyka_Rbk_Card extends Leyka_Payment_Method
-{
+class Leyka_Rbk_Card extends Leyka_Payment_Method {
 
     protected static $_instance = null;
 
-    public function _set_attributes()
-    {
+    public function _set_attributes() {
 
         $this->_id = 'bankcard';
         $this->_gateway_id = 'rbk';
+        $this->_category = 'bank_cards';
 
         $this->_label_backend = __('Bank card via (RBK money)', 'leyka');
         $this->_label = __('Bank card', 'leyka');
@@ -315,14 +309,13 @@ class Leyka_Rbk_Card extends Leyka_Payment_Method
         ));
 
         $this->_supported_currencies[] = 'rur';
-
         $this->_default_currency = 'rur';
+
     }
 
-    protected function _set_options_defaults()
-    {
+    protected function _set_options_defaults() {
 
-        if ($this->_options) {
+        if($this->_options) {
             return;
         }
 
@@ -336,11 +329,12 @@ class Leyka_Rbk_Card extends Leyka_Payment_Method
                 'validation_rules' => array(), // List of regexp?..
             ),
         );
+
     }
+
 }
 
-function leyka_add_gateway_rbk()
-{
+function leyka_add_gateway_rbk() {
     leyka_add_gateway(Leyka_Rbk_Gateway::get_instance());
 }
 

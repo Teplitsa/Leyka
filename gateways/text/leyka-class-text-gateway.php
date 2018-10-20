@@ -56,6 +56,7 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
 
         $this->_id = 'text_box';
         $this->_gateway_id = 'text';
+        $this->_category = 'misc';
 
         $this->_label_backend = __('Additional ways to donate', 'leyka');
         $this->_label = __('Additional ways to donate', 'leyka');

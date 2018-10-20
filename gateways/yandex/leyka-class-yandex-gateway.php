@@ -791,6 +791,7 @@ class Leyka_Yandex_All extends Leyka_Payment_Method {
 
         $this->_id = 'yandex_all';
         $this->_gateway_id = 'yandex';
+        $this->_category = 'misc';
 
         $this->_label_backend = __('Yandex.Kassa smart payment', 'leyka');
         $this->_label = __('Yandex.Kassa smart payment', 'leyka');
@@ -807,7 +808,6 @@ class Leyka_Yandex_All extends Leyka_Payment_Method {
         $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 
         $this->_supported_currencies[] = 'rur';
-
         $this->_default_currency = 'rur';
 
     }
@@ -841,6 +841,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
 
         $this->_id = 'yandex_card';
         $this->_gateway_id = 'yandex';
+        $this->_category = 'bank_cards';
 
         $this->_label_backend = __('Bank card', 'leyka');
         $this->_label = __('Bank card', 'leyka');
@@ -921,6 +922,7 @@ class Leyka_Yandex_Money extends Leyka_Payment_Method {
 
         $this->_id = 'yandex_money';
         $this->_gateway_id = 'yandex';
+        $this->_category = 'digital_currencies';
 
         $this->_label_backend = __('Yandex.money', 'leyka');
         $this->_label = __('Yandex.money', 'leyka');
@@ -968,6 +970,7 @@ class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
 
         $this->_id = 'yandex_wm';
         $this->_gateway_id = 'yandex';
+        $this->_category = 'digital_currencies';
 
         $this->_label_backend = __('Webmoney', 'leyka');
         $this->_label = __('Webmoney', 'leyka');
@@ -1013,6 +1016,7 @@ class Leyka_Yandex_Sberbank_Online extends Leyka_Payment_Method {
 
         $this->_id = 'yandex_sb';
         $this->_gateway_id = 'yandex';
+        $this->_category = 'online_banking';
 
         $this->_label_backend = __('Sberbank Online invoicing', 'leyka');
         $this->_label = __('Sberbank Online', 'leyka');
@@ -1058,6 +1062,7 @@ class Leyka_Yandex_Alpha_Click extends Leyka_Payment_Method {
 
         $this->_id = 'yandex_ab';
         $this->_gateway_id = 'yandex';
+        $this->_category = 'online_banking';
 
         $this->_label_backend = __('Alpha-Click invoicing', 'leyka');
         $this->_label = __('Alpha-Click', 'leyka');
@@ -1103,6 +1108,7 @@ class Leyka_Yandex_Promvzyazbank extends Leyka_Payment_Method {
 
         $this->_id = 'yandex_pb';
         $this->_gateway_id = 'yandex';
+        $this->_category = 'online_banking';
 
         $this->_label_backend = __('Promsvyazbank invoicing', 'leyka');
         $this->_label = __('Promsvyazbank', 'leyka');
@@ -1116,7 +1122,6 @@ class Leyka_Yandex_Promvzyazbank extends Leyka_Payment_Method {
         $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 
         $this->_supported_currencies[] = 'rur';
-
         $this->_default_currency = 'rur';
 
     }

@@ -484,7 +484,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
      * @param mixed $currency
      * @return array Of Leyka_Payment_Method objects.
      */
-    public function get_payment_methods($activity = null, $currency = false) {
+    public function get_payment_methods($activity = null, $currency = false, $by_categories = false) {
 
         $pm_list = array();
         foreach($this->_payment_methods as $pm_name => $pm) {
@@ -501,7 +501,21 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             }
         }
 
+        if( !!$by_categories ) {
+
+            $tmp = array_map(function($value){ return array(); }, leyka_get_pm_categories_list());
+            foreach($pm_list as $pm) { /** @var $pm Leyka_Payment_Method */
+                if($pm->category) {
+                    $tmp[$pm->category][] = $pm;
+                }
+            }
+
+            $pm_list = $tmp;
+
+        }
+
         return $pm_list;
+
     }
 
     /**
@@ -552,19 +566,23 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
 
     protected $_id = '';
     protected $_gateway_id = '';
+    protected $_category = 'misc';
+
     protected $_active = true;
     protected $_label = '';
     protected $_label_backend = '';
     protected $_description = '';
-    protected $_global_fields = array();
-    protected $_support_global_fields = true;
-    protected $_custom_fields = array();
     protected $_icons = array();
     protected $_main_icon = '';
     protected $_submit_label = '';
+
+    protected $_global_fields = array();
+    protected $_support_global_fields = true;
+    protected $_custom_fields = array();
     protected $_supported_currencies = array();
     protected $_default_currency = '';
     protected $_options = array();
+
     protected $_processing_type = 'default';
     protected $_ajax_without_form_submission = false;
 
@@ -600,6 +618,13 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
             case 'full_id': $param = $this->_gateway_id.'-'.$this->_id; break;
             case 'gateway_id': $param = $this->_gateway_id; break;
             case 'gateway': $param = leyka_get_gateway_by_id($this->_gateway_id); break;
+            case 'category':
+            case 'category_id':
+                $param = array_key_exists($this->_category, leyka_get_pm_categories_list()) ? $this->_category : false;
+                break;
+            case 'category_label':
+                $param = $this->category ? leyka_get_pm_categories_list($this->category) : '';
+                break;
             case 'active':
             case 'is_active': $param = $this->_active; break;
             case 'label':

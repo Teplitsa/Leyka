@@ -4,7 +4,7 @@
     <a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=payment');?>" class="settings-return-link">К списку платёжных операторов</a>
 </div>
 
-<?php $gateway = leyka_get_gateway_by_id($_GET['gateway']);
+<?php $gateway = leyka_get_gateway_by_id($_GET['gateway']); /** @var $gateway Leyka_Gateway */
 if( !$gateway ) {?>
     <p class="error"><?php _e('Unknown gateway.', 'leyka');?></p>
 <?php } else { // Gateway settings area ?>
@@ -76,6 +76,8 @@ if( !$gateway ) {?>
 
         <div class="gateway-settings">
 
+            <h3>Настройки оператора</h3>
+
         <?php foreach($gateway->get_options_names() as $option_id) {
 
             $option_info = leyka_options()->get_info_of($option_id);?>
@@ -96,7 +98,28 @@ if( !$gateway ) {?>
         </div>
 
         <div class="gateway-pm-list">
-            [Список ПМов]
+
+            <h3>Способы платежа</h3>
+
+            <?php $pm_list_by_categories = $gateway->get_payment_methods(null, false, true);
+            $pm_active = leyka_options()->opt('pm_available');
+
+            foreach($pm_list_by_categories as $category_id => $pm_list) {
+
+                if( !$pm_list ) {
+                    continue;
+                }?>
+
+                <h4><?php echo leyka_get_pm_category_label($category_id);?></h4>
+
+                <?php foreach($pm_list as $pm) { /** @var $pm Leyka_Payment_Method */ ?>
+                <div id="<?php echo $pm->full_id;?>" class="settings-block option-block type-checkbox">
+                    <input type="checkbox" name="leyka_pm_available[]" value="<?php echo $pm->full_id;?>" class="pm-active" id="<?php echo $pm->full_id;?>" data-pm-label="<?php echo $pm->title_backend;?>" data-pm-label-backend="<?php echo $pm->label_backend;?>" <?php echo in_array($pm->full_id, $pm_active) ? 'checked="checked"' : '';?>>
+                    <label for="<?php echo $pm->full_id;?>"><?php echo $pm->title_backend;?></label>
+                </div>
+                <?php }?>
+
+            <?php }?>
         </div>
 
     </div>
