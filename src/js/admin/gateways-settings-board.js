@@ -101,7 +101,7 @@ jQuery(document).ready(function($){
             var $this = $(this),
                 $wrapper = $this.parents('li:first');
 
-            $this.hide();
+            $wrapper.find('.pm-control').hide();
             $wrapper.find('.pm-label').hide();
             $wrapper.find('.pm-label-fields').show();
 
@@ -127,7 +127,7 @@ jQuery(document).ready(function($){
 
             $pm_label_wrapper.show();
             $wrapper.find('.pm-label-fields').hide();
-            $wrapper.find('.pm-change-label').show();
+            $wrapper.find('.pm-control').show();
 
         }).on('keydown', 'input[id*="pm_label"]', function(e){
 
@@ -198,7 +198,7 @@ jQuery(document).ready(function($){
 // Yandex.Kassa settings:
 jQuery(document).ready(function($){
 
-    var $gateway_settings = $('#payment-settings-area').find('#gateway-yandex');
+    var $gateway_settings = $('.single-gateway-settings.gateway-yandex');
 
     if( !$gateway_settings.length ) {
         return;

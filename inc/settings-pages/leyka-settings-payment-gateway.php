@@ -78,14 +78,18 @@ if( !$gateway ) {?>
 
         <?php foreach($gateway->get_options_names() as $option_id) {
 
-            $option = leyka_options()->get_info_of($option_id);
-            do_action("leyka_render_{$option['type']}", $option_id, $option);
+            $option_info = leyka_options()->get_info_of($option_id);?>
 
-        }
+            <div id="<?php echo $option_id;?>" class="settings-block option-block type-<?php echo $option_info['type'];?>">
+                <?php do_action("leyka_render_{$option_info['type']}", $option_id, $option_info);?>
+                <div class="field-errors"></div>
+            </div>
+
+        <?php }
 
         if($gateway->has_wizard) {?>
             <a class="gateway-header-element gateway-wizard-link" href="<?php echo $gateway->wizard_url;?>" title="Открыть Мастер пошагового подключения к платёжному оператору">
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-wizard.svg">
+                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-wizard.svg"> Пошаговая установка
             </a>
         <?php }?>
 
