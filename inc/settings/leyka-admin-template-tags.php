@@ -5,7 +5,7 @@ if( !function_exists('leyka_show_wizard_captioned_screenshot')) {
 
         if( !$img_path_full) {
             $img_path_full = $img_path;
-        } ?>
+        }?>
 
         <div class="captioned-screen">
             <div class="screen-wrapper">
@@ -14,8 +14,8 @@ if( !function_exists('leyka_show_wizard_captioned_screenshot')) {
             </div>
             <img src="<?php echo LEYKA_PLUGIN_BASE_URL ?>img/<?php echo $img_path_full; ?>" class="leyka-instructions-screen-full">
         </div>
-        <?php
-    }
+
+    <?php }
 }
 
 if( !function_exists('leyka_show_gateway_logo')) {
@@ -93,13 +93,11 @@ if( !function_exists('leyka_pm_sortable_option_html_new') ) {
 
                     <img class="pm-control pm-change-label" data-pm-id="<?php echo $pm_full_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-edit-circled.svg" title="<?php esc_attr_e('Edit the payment method label', 'leyka');?>">
 
-                    <img class="pm-control pm-deactivate-label" data-pm-id="<?php echo $pm_full_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-delete-circled.svg" title="<?php esc_attr_e('Deactivate the payment method', 'leyka');?>">
+                    <img class="pm-control pm-deactivate" data-pm-id="<?php echo $pm_full_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-delete-circled.svg" title="<?php esc_attr_e('Deactivate the payment method', 'leyka');?>">
 
                 </div>
 
             </div>
-
-            <!---->
 
         </li>
 

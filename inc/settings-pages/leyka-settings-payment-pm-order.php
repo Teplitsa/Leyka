@@ -17,7 +17,7 @@
 
     foreach($pm_order as $i => &$pm_full_id) {
 
-        $pm_full_id = str_replace('&amp;', '', $pm_full_id);
+        $pm_full_id = str_replace(array('&amp;', '&'), '', $pm_full_id);
         $pm = leyka_get_pm_by_id($pm_full_id, true);
 
         if($pm && in_array($pm_full_id, $pm_available) ) {
@@ -29,5 +29,7 @@
     }?>
 
     </ul>
+
+    <input type="hidden" id="pm-order-field" name="leyka_pm_order" value="<?php echo leyka_options()->opt('pm_order');?>" data-nonce="<?php echo wp_create_nonce('leyka-update-pm-order');?>">
 
 </div>

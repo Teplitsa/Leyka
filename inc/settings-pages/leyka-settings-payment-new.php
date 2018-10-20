@@ -1,6 +1,6 @@
 <?php if( !defined('WPINC') ) die; // If this file is called directly, abort ?>
 
-<div id="payment-settings-area-new">
+<div id="payment-settings-area-new" class="<?php echo empty($_GET['stage']) ? 'stage-payment' : 'stage-'.esc_attr($_GET['stage']);?>">
 
     <div class="main-area-wrapper">
 
