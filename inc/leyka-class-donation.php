@@ -1444,12 +1444,12 @@ function leyka_donation_management() {
 
 class Leyka_Donation {
 
-	private $_id;
+	protected $_id;
 
     /** @var WP_Post */
 	private $_post_object;
 
-    private $_donation_meta = array();
+    protected $_donation_meta = array();
 
     public static function add(array $params = array()) {
 
@@ -2045,6 +2045,455 @@ class Leyka_Donation {
     public function delete($force = False) {
         wp_delete_post( $this->_id, $force );
     }
+
+}
+
+class Leyka_Donation_New extends Leyka_Donation {
+
+//    public static function add(array $params = array()) {
+//
+//
+//    }
+
+    public function __construct($donation) {
+
+        if((is_int($donation) || is_string($donation)) && (int)$donation > 0) {
+
+            $donation = (int)$donation;
+
+            global $wpdb;
+            $wpdb->get_row( $wpdb->prepare("SELECT * FROM {$wpdb->prefix}leyka_donations' WHERE ID=%d LIMIT 0,1", $donation) );
+
+//            if( !$this->_post_object || $this->_post_object->post_type !== Leyka_Donation_Management::$post_type ) {
+//                return false;
+//            }
+
+            $this->_id = $donation;
+
+        } else {
+            return false;
+        }
+
+//        if( !$this->_donation_meta ) {
+//
+//            $meta = get_post_meta($this->_id, '', true);
+//
+//            if( !empty($meta['leyka_campaign_id']) ) {
+//
+//                // Don't use Leyka_Campaign here to avoid loop dependency:
+//                $campaign = get_post((int)$meta['leyka_campaign_id'][0]);
+//                $payment_title = '';
+//
+//                if($campaign) {
+//
+//                    $payment_title = get_post_meta($campaign->ID, 'payment_title', true);
+//                    if( !$payment_title ) {
+//                        $payment_title = $campaign->post_title;
+//                    }
+//
+//                }
+//
+//            }
+//
+//            $donation_amount = empty($meta['leyka_donation_amount']) ? 0.0 : (float)$meta['leyka_donation_amount'][0];
+//            $donation_amount_total = empty($meta['leyka_donation_amount_total']) ?
+//                $donation_amount : (float)$meta['leyka_donation_amount_total'][0];
+//
+//            $this->_donation_meta = array(
+//                'payment_title' => empty($payment_title) ? $this->_post_object->post_title : $payment_title,
+//                'payment_type' => empty($meta['leyka_payment_type']) ? 'single' : $meta['leyka_payment_type'][0],
+//                'payment_method' => empty($meta['leyka_payment_method']) ? '' : $meta['leyka_payment_method'][0],
+//                'gateway' => empty($meta['leyka_gateway']) ? '' : $meta['leyka_gateway'][0],
+//                'currency' => empty($meta['leyka_donation_currency']) ? 'rur' : $meta['leyka_donation_currency'][0],
+//                'amount' => $donation_amount,
+//                'amount_total' => $donation_amount_total,
+//                'main_curr_amount' => !empty($meta['leyka_main_curr_amount'][0]) ?
+//                    (float)$meta['leyka_main_curr_amount'][0] : $donation_amount,
+//                'donor_name' => empty($meta['leyka_donor_name']) ? '' : $meta['leyka_donor_name'][0],
+//                'donor_email' => empty($meta['leyka_donor_email']) ? '' : $meta['leyka_donor_email'][0],
+//                'donor_comment' => empty($meta['leyka_donor_comment']) ? '' : $meta['leyka_donor_comment'][0],
+//                'donor_subscription_email' => empty($meta['leyka_donor_subscription_email']) ?
+//                    '' : $meta['leyka_donor_subscription_email'][0],
+//                'donor_email_date' => empty($meta['_leyka_donor_email_date']) ?
+//                    '' : $meta['_leyka_donor_email_date'][0],
+//                'managers_emails_date' => empty($meta['_leyka_managers_emails_date']) ?
+//                    '' : $meta['_leyka_managers_emails_date'][0],
+//                'campaign_id' => empty($meta['leyka_campaign_id']) ? 0 : $meta['leyka_campaign_id'][0],
+//                'donor_subscribed' => empty($meta['leyka_donor_subscribed']) ?
+//                    false : $meta['leyka_donor_subscribed'][0],
+//                'status_log' => empty($meta['_status_log']) ? '' : maybe_unserialize($meta['_status_log'][0]),
+//                'gateway_response' => empty($meta['leyka_gateway_response']) ? '' : $meta['leyka_gateway_response'][0],
+//
+//                'recurrents_cancelled' => isset($meta['leyka_recurrents_cancelled']) ?
+//                    $meta['leyka_recurrents_cancelled'][0] : false,
+//                'recurrents_cancel_date' => isset($meta['leyka_recurrents_cancel_date']) ?
+//                    $meta['leyka_recurrents_cancel_date'][0] : false,
+//
+//                // For active schemes of recurring donations:
+//                'rebilling_is_active' => !empty($meta['_rebilling_is_active'][0]),
+//            );
+//        }
+
+        return $this;
+
+    }
+
+//    public function __get($field) {
+//
+//        if( !$this->_id ) {
+//            return false;
+//        }
+//
+//        switch($field) {
+//            case 'id':
+//            case 'ID': return $this->_id;
+//            case 'title':
+//            case 'name': return $this->_post_object->post_title;
+//            case 'purpose':
+//            case 'purpose_text':
+//            case 'payment_title':
+//            case 'campaign_payment_title':
+//                return $this->_donation_meta['payment_title'];
+//            case 'status': return $this->_post_object->post_status;
+//            case 'status_label':
+//                $stati = leyka_get_donation_status_list();
+//                return $stati[$this->_post_object->post_status];
+//            case 'status_log':
+//                return $this->_donation_meta['status_log'];
+//            case 'date':
+//            case 'date_label':
+//                $date_format = get_option('date_format');
+//                $time_format = get_option('time_format');
+//                $donation_timestamp = strtotime($this->_post_object->post_date);
+//                return apply_filters(
+//                    'leyka_admin_donation_date',
+//                    date($date_format, $donation_timestamp),
+//                    $donation_timestamp, $date_format, $time_format
+//                );
+//            case 'date_timestamp': return strtotime($this->_post_object->post_date);
+//            case 'date_funded':
+//            case 'funded_date':
+//                $date_funded = $this->get_funded_date();
+//                return $date_funded ? date(get_option('date_format'), $date_funded) : 0;
+//            case 'payment_method':
+//            case 'payment_method_id':
+//            case 'pm':
+//            case 'pm_id':
+//                return $this->_donation_meta['payment_method'];
+//            case 'pm_full_id':
+//                return empty($this->_donation_meta['gateway']) || empty($this->_donation_meta['payment_method']) ?
+//                    '' : $this->_donation_meta['gateway'].'-'.$this->_donation_meta['payment_method'];
+//            case 'gateway':
+//            case 'gateway_id':
+//            case 'gw_id':
+//                return empty($this->_donation_meta['gateway']) ? '' : $this->_donation_meta['gateway'];
+//            case 'gateway_label':
+//
+//                if(empty($this->_donation_meta['gateway'])) {
+//                    return __('Unknown gateway', 'leyka');
+//                }
+//
+//                $gateway = leyka_get_gateway_by_id($this->_donation_meta['gateway']);
+//                return $gateway ? $gateway->label : __('Unknown gateway', 'leyka');
+//
+//            case 'pm_label':
+//            case 'payment_method_label':
+//                $pm = leyka_get_pm_by_id($this->_donation_meta['payment_method']);
+//                return ($pm ? $pm->label : __('Unknown payment method', 'leyka'));
+//            case 'currency':
+//            case 'currency_code':
+//            case 'currency_id':
+//                return $this->_donation_meta['currency'];
+//            case 'currency_label':
+//                return leyka_options()->opt('leyka_currency_'.$this->_donation_meta['currency'].'_label');
+//
+//            case 'sum':
+//            case 'amount':
+//                return empty($this->_donation_meta['amount']) ? 0.0 : $this->_donation_meta['amount'];
+//            case 'sum_total':
+//            case 'total_sum':
+//            case 'total_amount':
+//            case 'amount_total':
+//                return empty($this->_donation_meta['amount_total']) ? $this->amount : $this->_donation_meta['amount_total'];
+//
+//            case 'main_curr_amount':
+//            case 'amount_equiv':
+//                return $this->_donation_meta['main_curr_amount'];
+//
+//            case 'donor_name':
+//                return $this->_donation_meta['donor_name'];
+//            case 'donor_email':
+//                return $this->_donation_meta['donor_email'];
+//            case 'donor_email_date':
+//                return $this->_donation_meta['donor_email_date'];
+//            case 'donor_comment':
+//                return empty($this->_donation_meta['donor_comment']) ? '' : $this->_donation_meta['donor_comment'];
+//            case 'managers_emails_date':
+//                return $this->_donation_meta['managers_emails_date'];
+//            case 'campaign_id':
+//                return $this->_donation_meta['campaign_id'];
+//
+//            case 'donor_subscribed':
+//                return $this->_donation_meta['donor_subscribed'];
+//            case 'donor_subscription_email':
+//                return $this->_donation_meta['donor_subscription_email'] ?
+//                    $this->_donation_meta['donor_subscription_email'] :
+//                    ($this->_donation_meta['donor_email'] ? $this->_donation_meta['donor_email'] : '');
+//
+//            case 'gateway_response':
+//                return $this->_donation_meta['gateway_response'];
+//            case 'gateway_response_formatted':
+//                return $this->gateway ?
+//                    leyka_get_gateway_by_id($this->gateway)->get_gateway_response_formatted($this) : array();
+//
+//            case 'type':
+//            case 'payment_type': return $this->_donation_meta['payment_type'];
+//            case 'type_label':
+//            case 'payment_type_label': return __($this->_donation_meta['payment_type'], 'leyka');
+//
+//            case 'init_recurring_payment_id':
+//            case 'init_recurring_donation_id':
+//                return $this->payment_type == 'rebill' ?
+//                    ($this->_post_object->post_parent ? $this->_post_object->post_parent : $this->_id) : false;
+//            case 'init_recurring_payment':
+//            case 'init_recurring_donation':
+//                if($this->payment_type != 'rebill') {
+//                    return false;
+//                } else if($this->_post_object->post_parent) {
+//                    return new Leyka_Donation($this->_post_object->post_parent);
+//                } else {
+//                    return $this;
+//                }
+//            case 'recurring_subscription_is_active':
+//            case 'rebilling_on':
+//            case 'rebilling_is_on':
+//            case 'recurring_on':
+//            case 'recurring_is_on':
+//            case 'rebilling_is_active':
+//            case 'recurring_is_active': $tmp = $this->payment_type == 'rebill' ?
+//                !empty($this->_donation_meta['rebilling_is_active']) : NULL;
+//                return $tmp;
+//            case 'recurrents_cancel_date':
+//            case 'recurring_cancel_date': $tmp = $this->payment_type == 'rebill' ?
+//                !empty($this->_donation_meta['recurrents_cancel_date']) : NULL;
+//                return $tmp;
+//            default:
+//                return apply_filters('leyka_'.$this->gateway_id.'_get_unknown_donation_field', null, $field, $this);
+//        }
+//
+//    }
+
+//    public function __set($field, $value) {
+//
+//        if( !$this->_id ) {
+//            return false;
+//        }
+//
+//        switch($field) {
+//            case 'title':
+//            case 'payment_title':
+//            case 'purpose_text':
+//                if($value != $this->_post_object->post_title) {
+//                    wp_update_post(array('ID' => $this->_id, 'post_title' => $value));
+//                    $this->_post_object->post_title = $value;
+//                }
+//                break;
+//
+//            case 'status':
+//                if( !array_key_exists($value, leyka_get_donation_status_list()) || $value == $this->status ) {
+//                    return false;
+//                }
+//
+//                wp_update_post(array('ID' => $this->_id, 'post_status' => $value));
+//                $this->_post_object->post_status = $value;
+//
+//                $status_log = get_post_meta($this->_id, '_status_log', true);
+//                if($status_log && is_array($status_log)) {
+//                    $status_log[] = array('date' => current_time('timestamp'), 'status' => $value);
+//                } else {
+//                    $status_log = array(array('date' => current_time('timestamp'), 'status' => $value));
+//                }
+//
+//                update_post_meta($this->_id, '_status_log', $status_log);
+//                $this->_donation_meta['status_log'] = $status_log;
+//
+//                break;
+//
+//            case 'date':
+//                wp_update_post(array('ID' => $this->_id, 'post_date' => $value));
+//                break;
+//            case 'date_timestamp':
+//                wp_update_post(array('ID' => $this->_id, 'post_date' => date('Y-m-d H:i:s', $value)));
+//                break;
+//
+//            case 'donor_name':
+//                update_post_meta($this->_id, 'leyka_donor_name', $value);
+//                $this->_donation_meta['donor_name'] = $value;
+//                break;
+//            case 'donor_email':
+//                update_post_meta($this->_id, 'leyka_donor_email', $value);
+//                $this->_donation_meta['donor_email'] = $value;
+//                break;
+//            case 'donor_comment':
+//                $value = sanitize_textarea_field($value);
+//                update_post_meta($this->_id, 'leyka_donor_comment', $value);
+//                $this->_donation_meta['donor_comment'] = $value;
+//                break;
+//
+//            case 'sum':
+//            case 'amount':
+//            case 'donation_amount':
+//                update_post_meta($this->_id, 'leyka_donation_amount', $value);
+//                $this->_donation_meta['amount'] = $value;
+//                break;
+//
+//            case 'sum_total':
+//            case 'amount_total':
+//            case 'total_sum':
+//            case 'total_amount':
+//            case 'donation_amount_total':
+//                update_post_meta($this->_id, 'leyka_donation_amount_total', $value);
+//                $this->_donation_meta['amount_total'] = $value;
+//                break;
+//
+//            case 'currency':
+//            case 'donation_currency':
+//                update_post_meta($this->_id, 'leyka_donation_currency', $value);
+//                $this->_donation_meta['currency'] = $value;
+//                break;
+//
+//            case 'gw_id':
+//            case 'gateway_id':
+//                update_post_meta($this->_id, 'leyka_gateway', $value);
+//                $this->_donation_meta['gateway'] = $value;
+//                break;
+//
+//            case 'pm':
+//            case 'pm_id':
+//            case 'payment_method_id':
+//                update_post_meta($this->_id, 'leyka_payment_method', $value);
+//                $this->_donation_meta['payment_method'] = $value;
+//                break;
+//
+//            case 'type':
+//            case 'payment_type':
+//                $value = in_array($value, array_keys(leyka_get_payment_types_list())) ? $value : 'single';
+//                update_post_meta($this->_id, 'leyka_payment_type', $value);
+//                $this->_donation_meta['payment_type'] = $value;
+//                break;
+//
+//            case 'campaign':
+//            case 'campaign_id':
+//                $value = (int)$value > 0 ? (int)$value : $this->campaign_id;
+//                update_post_meta($this->_id, 'leyka_campaign_id', $value);
+//                $this->_donation_meta['campaign_id'] = $value;
+//                break;
+//
+//            case 'is_subscribed':
+//            case 'donor_subscribed':
+//                $value = $value === true || (int)$value > 0 ? $value : false;
+//                update_post_meta($this->_id, 'leyka_donor_subscribed', $value);
+//                $this->_donation_meta['donor_subscribed'] = $value;
+//                break;
+//
+//            case 'subscription_email':
+//            case 'donor_subscription_email':
+//                $value = leyka_validate_email($value) ? $value : $this->donor_email;
+//                update_post_meta($this->_id, 'leyka_donor_subscription_email', $value);
+//                $this->_donation_meta['donor_subscription_email'] = $value;
+//                break;
+//
+//            case 'init_recurring_payment':
+//            case 'init_recurring_payment_id':
+//            case 'init_recurring_donation':
+//            case 'init_recurring_donation_id':
+//                $value = (int)$value;
+//                if($value > 0 && $value != $this->_post_object->post_parent) {
+//                    wp_update_post(array('ID' => $this->_id, 'post_parent' => $value));
+//                    $this->_post_object->post_parent = $value;
+//                }
+//                break;
+//
+//            case 'rebilling_on':
+//            case 'rebilling_is_on':
+//            case 'recurring_on':
+//            case 'recurring_is_on':
+//            case 'rebilling_is_active':
+//            case 'recurring_is_active':
+//                $value = !!$value;
+//                if($this->type != 'rebill') {
+//                    break;
+//                }
+//
+//                $init_recurring_donation = $this->init_recurring_donation;
+//                if($init_recurring_donation->recurring_is_active != $value) {
+//
+//                    update_post_meta($init_recurring_donation->id, '_rebilling_is_active', $value);
+//                    $this->_donation_meta['rebilling_is_active'] = $value;
+//
+//                }
+//
+//                if($value) {
+//
+//                    $this->_donation_meta['recurrents_cancelled'] = false;
+//                    $this->_donation_meta['recurrents_cancel_date'] = 0;
+//                    update_post_meta($this->_id, 'leyka_recurrents_cancelled', false);
+//                    update_post_meta($this->_id, 'leyka_recurrents_cancel_date', 0);
+//
+//                } else {
+//
+//                    $this->_donation_meta['recurrents_cancelled'] = true;
+//                    $this->_donation_meta['recurrents_cancel_date'] = current_time('timestamp');
+//                    update_post_meta($this->_id, 'leyka_recurrents_cancelled', true);
+//                    update_post_meta($this->_id, 'leyka_recurrents_cancel_date', $this->_donation_meta['recurrents_cancel_date']);
+//
+//                }
+//                break;
+//
+//            default:
+//                do_action('leyka_'.$this->gateway_id.'_set_unknown_donation_field', $field, $value, $this);
+//        }
+//
+//        return true;
+//
+//    }
+//
+//    public function add_gateway_response($resp_text) {
+//
+//        $this->_donation_meta['gateway_response'] = $resp_text;
+//
+//        update_post_meta($this->_id, 'leyka_gateway_response', $this->_donation_meta['gateway_response']);
+//
+//    }
+
+    public function get_specific_data_admin_fields() {
+
+        $data_fields = leyka_get_gateway_by_id($this->gateway_id)->get_specific_data_admin_fields($this->id);
+
+        return $data_fields ? $data_fields : array();
+
+    }
+
+    /**
+     * @return mixed Last date when status was changed to "funded" in sec, or false if donation was never funded.
+     */
+    public function get_funded_date() {
+
+        $last_date_funded = 0;
+
+        foreach((array)$this->status_log as $status_change) {
+            if($status_change['status'] == 'funded' && $status_change['date'] > $last_date_funded) {
+                $last_date_funded = $status_change['date'];
+            }
+        }
+
+        return $last_date_funded ? $last_date_funded : false;
+
+    }
+
+//    public function delete($force = False) {
+//        wp_delete_post( $this->_id, $force );
+//    }
 
 }
 
