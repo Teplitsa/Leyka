@@ -32,6 +32,18 @@
             unset($pm_order[$i]);
         }
 
+    }
+
+    if( !empty($_GET['gateway']) ) { // We're on a gaeway settings page - show it's inactive PMs as hidden
+
+        $gateway = leyka_get_gateway_by_id($_GET['gateway']); /** @var $gateway Leyka_Gateway*/
+
+        foreach($gateway->get_payment_methods(false) as $pm_inactive) {
+            if( !in_array($pm_inactive->full_id, $pm_available) ) {
+                leyka_pm_sortable_option_html_new(true, $pm_inactive->full_id, $pm_inactive->label);
+            }
+        }
+
     }?>
 
     </ul>

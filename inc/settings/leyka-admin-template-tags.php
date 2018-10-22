@@ -84,15 +84,14 @@ if( !function_exists('leyka_pm_sortable_option_html_new') ) {
 
                     <span class="pm-label-fields" style="display:none;">
 
-                        <input type="text" id="pm_labels[<?php echo $pm_full_id;?>]" value="<?php echo $pm_label;?>" placeholder="<?php esc_html_e('Enter some title for this payment method', 'leyka');?>">
+                        <input type="text" id="pm_labels[<?php echo $pm_full_id;?>]" class="pm-label-input-field" value="<?php echo $pm_label;?>" placeholder="<?php esc_html_e('Enter some title for this payment method', 'leyka');?>">
                         <input type="hidden" class="pm-label-field <?php echo $is_hidden ? '' : 'submitable';?>" name="leyka_<?php echo $pm_full_id;?>_label" value="<?php echo $pm_label;?>">
-                        <span class="new-pm-label-control new-pm-label-ok"><span class="dashicons dashicons-yes"></span></span>
-                        <span class="new-pm-label-control new-pm-label-cancel"><span class="dashicons dashicons-no"></span></span>
+                        <span class="new-pm-label-control new-pm-label-ok dashicons dashicons-yes"></span>
+                        <span class="new-pm-label-control new-pm-label-cancel dashicons dashicons-no"></span>
 
                     </span>
 
                     <img class="pm-control pm-change-label" data-pm-id="<?php echo $pm_full_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-edit-circled.svg" title="<?php esc_attr_e('Edit the payment method label', 'leyka');?>">
-
                     <img class="pm-control pm-deactivate" data-pm-id="<?php echo $pm_full_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-delete-circled.svg" title="<?php esc_attr_e('Deactivate the payment method', 'leyka');?>">
 
                 </div>

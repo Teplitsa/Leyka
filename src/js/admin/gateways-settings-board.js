@@ -7,7 +7,8 @@ jQuery(document).ready(function($){
         return;
     }
 
-    var $pm_order = $('#pm-order-settings'),
+    var $pm_available_list = $('.pm-available'),
+        $pm_order = $('#pm-order-settings'),
         $pm_update_status = $('.pm-update-status'),
         $ok_message = $pm_update_status.find('.ok-message'),
         $error_message = $pm_update_status.find('.error-message'),
@@ -57,26 +58,6 @@ jQuery(document).ready(function($){
 
     }
 
-    // var $gateways_accordion = $('#pm-settings-wrapper');
-    // $gateways_accordion.accordion({
-    //     heightStyle: 'content',
-    //     header: '.gateway-settings > h3',
-    //     collapsible: true,
-    //     activate: function(event, ui){
-    //
-    //         var $header_clicked = $(this).find('.ui-state-active');
-    //         if($header_clicked.length) {
-    //             $('html, body').animate({ // 35px is a height of the WP admin bar:
-    //                 scrollTop: $header_clicked.parent().offset().top - 35
-    //             }, 250);
-    //         }
-    //     }
-    // });
-    //
-    // $gateways_accordion.find('.doc-link').click(function(e){
-    //     e.stopImmediatePropagation(); // Do not toggle the accordion panel when clicking on the docs link
-    // });
-
     // PM reordering:
     $pm_order
         .sortable({placeholder: '', items: '> li:visible'})
@@ -88,11 +69,16 @@ jQuery(document).ready(function($){
 
             leykaUpdatePmList($pm_order);
 
-        }).on('click', '.pm-deactivate', function(e){ // PM renaming & deactivation
+        }).on('click', '.pm-deactivate', function(e){ // PM deactivation
 
-        // ...
+            e.preventDefault();
 
-        /** @todo AJAX to update PM list & labels */
+            var $pm_sortable_item = $(this).parents('li:first');
+
+            $pm_sortable_item.hide(); // Remove a sortable block from the PM order settings
+            $pm_available_list.filter('#'+$pm_sortable_item.data('pm-id')).removeAttr('checked');
+
+            $pm_order.sortable('refresh').sortable('refreshPositions').trigger('sortupdate');
 
         }).on('click', '.pm-change-label', function(e){
 
@@ -114,7 +100,7 @@ jQuery(document).ready(function($){
                 $pm_label_wrapper = $wrapper.find('.pm-label'),
                 new_pm_label = $wrapper.find('input[id*="pm_label"]').val();
 
-            if($this.hasClass('new-pm-label-ok')) {
+            if($this.hasClass('new-pm-label-ok') && $pm_label_wrapper.text() !== new_pm_label) {
 
                 $pm_label_wrapper.text(new_pm_label);
                 $wrapper.find('input.pm-label-field').val(new_pm_label);
@@ -143,55 +129,25 @@ jQuery(document).ready(function($){
 
     $('.side-area').stick_in_parent({offset_top: 32}); // The adminbar height
 
-    // $('.pm-active').click(function(){
-    //
-    //     var $this = $(this),
-    //         $gateway_metabox = $this.parents('.postbox'),
-    //         gateway_id = $gateway_metabox.attr('id').replace('leyka_payment_settings_gateway_', ''),
-    //         $gateway_settings = $('#gateway-'+gateway_id);
-    //
-    //     // Show/hide a PM settings:
-    //     $('#pm-'+$this.attr('id')).toggle();
-    //
-    //     var $sortable_pm = $('.pm-order[data-pm-id="'+$this.attr('id')+'"]');
-    //
-    //     // Add/remove a sortable block from the PM order settings:
-    //     if($this.attr('checked')) {
-    //
-    //         if($sortable_pm.length) {
-    //             $sortable_pm.show();
-    //         } else {
-    //
-    //             $sortable_pm = $("<div />").append($pm_order.find('.pm-order[data-pm-id="#FID#"]').clone()).html()
-    //                 .replace(/#FID#/g, $this.attr('id'))
-    //                 .replace(/#L#/g, $this.data('pm-label'))
-    //                 .replace(/#LB#/g, $this.data('pm-label-backend'));
-    //             $sortable_pm = $($sortable_pm).removeAttr('style');
-    //
-    //             $pm_order.append($sortable_pm);
-    //         }
-    //     } else {
-    //         $sortable_pm.hide();
-    //     }
-    //     $pm_order.sortable('refresh').sortable('refreshPositions');
-    //     $pm_order.trigger('sortupdate');
-    //
-    //     // Show/hide a whole gateway settings if there are no PMs from it selected:
-    //     if( !$gateway_metabox.find('input:checked').length ) {
-    //
-    //         $gateway_settings.hide();
-    //         $gateways_accordion.accordion('refresh');
-    //
-    //     } else if( !$gateway_settings.is(':visible') ) {
-    //
-    //         $gateway_settings.show();
-    //         $gateways_accordion.accordion('refresh');
-    //
-    //         $sortable_pm.show();
-    //         $pm_order.sortable('refresh').sortable('refreshPositions');
-    //         $pm_order.trigger('sortupdate');
-    //     }
-    // });
+    $pm_available_list.click(function(){
+
+        var $pm_available_checkbox = $(this);
+
+        // Show/hide a PM settings:
+        $('#pm-'+$pm_available_checkbox.attr('id')).toggle();
+
+        var $sortable_pm = $('.pm-order[data-pm-id="'+$pm_available_checkbox.attr('id')+'"]');
+
+        // Add/remove a sortable block from the PM order settings:
+        if($pm_available_checkbox.attr('checked') && $sortable_pm.length) {
+            $sortable_pm.show();
+        } else {
+            $sortable_pm.hide();
+        }
+
+        $pm_order.sortable('refresh').sortable('refreshPositions').trigger('sortupdate');
+
+    });
 
 });
 

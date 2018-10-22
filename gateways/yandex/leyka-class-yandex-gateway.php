@@ -16,7 +16,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         $this->_description = 'Яндекс.Касса — сервис, который позволяет включить прием платежей на сайте и получать деньги на расчётный счёт компании. Комиссия берётся с успешных платежей.
 Способы приёма платежей: банковские карты, Яндекс.Деньги и QIWI, интернет-банки, наличные, баланс мобильного и другие.';
         $this->_docs_link = '//leyka.te-st.ru/docs/yandex-dengi/';
-        $this->_registration_link = 'https://https://kassa.yandex.ru/joinups';
+        $this->_registration_link = 'https://kassa.yandex.ru/joinups';
         $this->_has_wizard = true;
 
         $this->_min_commission = 2.1;
@@ -45,14 +45,14 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             $this->_id.'_shop_id' => array(
                 'type' => 'text',
                 'title' => __('ShopID', 'leyka'),
-                'description' => __('Please, enter your Yandex.Kassa shopID here. It can be found in your Yandex contract and in your .', 'leyka'),
+                'comment' => __('Please, enter your Yandex.Kassa shopID here. It can be found in your Yandex contract and in your .', 'leyka'),
                 'required' => true,
                 'placeholder' => __('E.g., 12345', 'leyka'),
             ),
             $this->_id.'_scid' => array(
                 'type' => 'text',
                 'title' => __('ScID', 'leyka'),
-                'description' => __('Please, enter your Yandex.Kassa shop showcase ID (SCID) here. It can be found in your Yandex contract.', 'leyka'),
+                'comment' => __('Please, enter your Yandex.Kassa shop showcase ID (SCID) here. It can be found in your Yandex contract.', 'leyka'),
                 'required' => true,
                 'placeholder' => __('E.g., 12345', 'leyka'),
                 'field_classes' => array('old-api'),
@@ -60,14 +60,14 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             $this->_id.'_shop_article_id' => array(
                 'type' => 'text',
                 'title' => __('ShopArticleID', 'leyka'),
-                'description' => __('Please, enter your Yandex.Kassa shop article ID here, if it exists. It can be found in your Yandex contract, also you can ask your Yandex.Kassa manager for it.', 'leyka'),
+                'comment' => __('Please, enter your Yandex.Kassa shop article ID here, if it exists. It can be found in your Yandex contract, also you can ask your Yandex.Kassa manager for it.', 'leyka'),
                 'placeholder' => __('E.g., 12345', 'leyka'),
                 'field_classes' => array('old-api'),
             ),
             $this->_id.'_shop_password' => array(
                 'type' => 'text',
                 'title' => __('shopPassword', 'leyka'),
-                'description' => __("Please, enter a shopPassword parameter value that you filled in Yandex.Kassa technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
+                'comment' => __("Please, enter a shopPassword parameter value that you filled in Yandex.Kassa technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
                 'placeholder' => __('E.g., 1^2@3#&84nDsOmE5h1T', 'leyka'),
                 'is_password' => true,
                 'field_classes' => array('old-api'),
@@ -75,8 +75,9 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             $this->_id.'_secret_key' => array(
                 'type' => 'text',
                 'title' => __('Secret key for API', 'leyka'),
-                'description' => __("Please, enter a shopPassword parameter value that you filled in Yandex.Kassa technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
-                'placeholder' => __('E.g., 1^2@3#&84nDsOmE5h1T', 'leyka'),
+                'comment' => __("Please, enter a shopPassword parameter value that you filled in Yandex.Kassa technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
+                'required' => true,
+                'placeholder' => __('E.g., test_OkT0flRaEnS0fWqMFZuTg01hu_8SxSkxZuAVIw7CMgB', 'leyka'),
                 'is_password' => true,
                 'field_classes' => array('new-api'),
             ),

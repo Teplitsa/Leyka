@@ -13,6 +13,19 @@
 
     margin: 41px 72px;
 
+    @include body-text();
+    font-size: 13px;
+
+    .field-q {
+
+        @include field-q();
+
+        .field-q-tooltip {
+            text-align: left !important;
+        }
+
+    }
+
     h1 {
         margin-bottom: 4px;
     }
@@ -145,11 +158,9 @@
 
                     h3 {
                         margin: 24px 0;
-                        font-weight: 600;
                     }
 
                     h4 {
-                        font-weight: 600;
                         font-size: 13px;
                     }
 
@@ -183,6 +194,10 @@
                         padding-left: 24px;
                         margin-left: -1px;
                         border-left: 1px solid $color-border-light;
+
+                        .option-block.type-checkbox input {
+                            margin-right: 8px;
+                        }
 
                     }
 
@@ -366,12 +381,32 @@
 
                         }
 
-                        .new-pm-label-control {
-                            cursor: pointer;
-                        }
+                        .pm-label-fields {
 
-                        .pm-label-fields input {
-                            font-size: 12px;
+                            display: flex;
+                            justify-content: flex-start;
+                            align-items: center;
+
+                            flex: 1 1 100%;
+
+                            .pm-label-input-field {
+
+                                flex: 1 1 100%;
+                                font-size: 12px;
+
+                            }
+
+                            .new-pm-label-control {
+
+                                cursor: pointer;
+                                color: $color-wizard-link;
+
+                                &:first-of-type {
+                                    margin-left: 4px;
+                                }
+
+                            }
+
                         }
 
                     }

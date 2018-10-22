@@ -623,7 +623,7 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
                 $param = array_key_exists($this->_category, leyka_get_pm_categories_list()) ? $this->_category : false;
                 break;
             case 'category_label':
-                $param = $this->category ? leyka_get_pm_categories_list($this->category) : '';
+                $param = $this->category ? leyka_get_pm_category_label($this->_category) : '';
                 break;
             case 'active':
             case 'is_active': $param = $this->_active; break;

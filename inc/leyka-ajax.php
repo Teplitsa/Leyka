@@ -252,11 +252,10 @@ function leyka_update_pm_list() {
         die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
     } else if(empty($_POST['pm_order'])) {
         die(json_encode(array('status' => 'error', 'message' => __('Error: PM order value is missing', 'leyka'),)));
-    } else if(empty($_POST['pm_labels'])) {
-        die(json_encode(array('status' => 'error', 'message' => __('Error: PM labels value is missing', 'leyka'),)));
     }
 
     leyka_options()->opt('pm_order', $_POST['pm_order']);
+    leyka_options()->opt('pm_available', explode('&', str_replace('pm_order[]=', '', $_POST['pm_order'])));
 
     if( !empty($_POST['pm_labels']) && is_array($_POST['pm_labels']) ) {
         foreach($_POST['pm_labels'] as $pm_full_id => $pm_label) {
