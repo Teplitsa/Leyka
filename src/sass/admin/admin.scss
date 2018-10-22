@@ -465,3 +465,86 @@
     display: flex;
 }
 
+// gateways cards
+.gateways-cards-list {
+    
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    
+    .gateway-card {
+    }
+}
+
+.leyka-admin-gateway-card {
+    &.gateway-card {
+        
+        background-color: $color-white;
+        border-radius: 6px;
+        width: 304px;
+        height: 267px;
+        display: block;
+        margin-right: 2rem;
+        margin-bottom: 2rem;
+        
+        &.active {
+            background-color: #effbff;
+            border-color: #d5e8ee;
+        }
+        
+        .gateway-card-header {
+            padding: 1rem;
+        }
+        
+        .gateway-card-icon {
+            margin-right: 12px;
+            position: relative;
+            width: auto;
+            display: inline-block;
+            
+            .gateway-logo {
+            }
+            
+            .field-q {
+                @include field-q();
+                position: absolute;
+                top: 0px;
+                right: 0px;
+                img {
+                    fill: #fff;
+                }
+            }
+            
+        }
+        
+        .gateway-card-title {
+            @include gateway-card-title();
+        }
+        
+        .gateway-card-status {
+            @include gateway-card-status();
+            
+            &.active {
+                
+            }
+            
+            &.activating {
+                color: #0085ba;
+            }
+        }
+        
+        .gateway-card-params {
+            
+        }
+        
+        .gateway-card-supported-pm-list {
+            
+        }
+        
+        .gateway-card-action {
+            
+        }
+        
+    }
+}
