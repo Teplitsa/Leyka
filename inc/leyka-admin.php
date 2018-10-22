@@ -461,7 +461,16 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             <h2 class="nav-tab-wrapper"><?php echo $this->settings_tabs_menu();?></h2>
 
             <div id="tab-container">
-                <form method="post" action="<?php echo admin_url(add_query_arg('stage', $current_stage, 'admin.php?page=leyka_settings'));?>" id="leyka-settings-form">
+
+                <?php $admin_page_args = array('stage' => $current_stage, 'gateway' => empty($_GET['gateway']) ? '' : $_GET['gateway']);
+                $admin_page = 'admin.php?page=leyka_settings';
+                foreach($admin_page_args as $arg_name => $value) {
+                    if($value) {
+                        $admin_page = add_query_arg($arg_name, $value, $admin_page);
+                    }
+                }?>
+
+                <form method="post" action="<?php echo admin_url($admin_page);?>" id="leyka-settings-form">
 
                 <?php wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
 
