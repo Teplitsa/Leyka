@@ -129,21 +129,40 @@ jQuery(document).ready(function($){
 
     $('.side-area').stick_in_parent({offset_top: 32}); // The adminbar height
 
-    $pm_available_list.click(function(){
+    $pm_available_list.change(function(){
 
         var $pm_available_checkbox = $(this);
 
         // Show/hide a PM settings:
-        $('#pm-'+$pm_available_checkbox.attr('id')).toggle();
+        $('#pm-'+$pm_available_checkbox.prop('id')).toggle();
 
         var $sortable_pm = $('.pm-order[data-pm-id="'+$pm_available_checkbox.attr('id')+'"]');
 
         // Add/remove a sortable block from the PM order settings:
-        if($pm_available_checkbox.attr('checked') && $sortable_pm.length) {
+        if($pm_available_checkbox.prop('checked') && $sortable_pm.length) {
             $sortable_pm.show();
         } else {
             $sortable_pm.hide();
         }
+
+        $pm_order.sortable('refresh').sortable('refreshPositions').trigger('sortupdate');
+
+    });
+
+    $('.gateway-turn-off').click(function(e){
+
+        e.preventDefault();
+
+        // Emulate a change() checkboxes event manually, to lessen the ajax requests to update the PM order:
+        $pm_available_list.filter(':checked').each(function(){
+
+            var $pm_available_checkbox = $(this);
+
+            $pm_available_checkbox.removeAttr('checked'); // Uncheck the active PM checkbox
+            $('#pm-'+$pm_available_checkbox.prop('id')).hide(); // Hide a PM settings
+            $('.pm-order[data-pm-id="'+$pm_available_checkbox.attr('id')+'"]').hide(); // Hide a PM sortable entry
+
+        });
 
         $pm_order.sortable('refresh').sortable('refreshPositions').trigger('sortupdate');
 
