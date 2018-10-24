@@ -12,14 +12,11 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
         $this->_id = 'paymaster';
         $this->_title = __('Paymaster', 'leyka');
         $this->_docs_link = '';
-        $this->_admin_ui_column = 2;
-        $this->_admin_ui_order = 40;
+
+        $this->_receiver_types = array('legal');
 
     }
 
-    /**
-     * Setter for setting form
-     */
     protected function _set_options_defaults() {
 
         if($this->_options) {
@@ -182,9 +179,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
         $sign_string = leyka_options()->opt('paymaster_merchant_id').':'.$request['LMI_PAYMENT_AMOUNT'].':' . $request['LMI_PAYMENT_NO'].':'.leyka_options()->opt('paymaster_secret_word');
 
-        $sign = md5($sign_string);
-
-        return $sign;
+        return md5($sign_string);
 
     }
 
@@ -237,8 +232,6 @@ class Leyka_Paymaster_All extends Leyka_Payment_Method {
         $this->_label_backend = __('Paymaster smart payment', 'leyka');
         $this->_label = __('Paymaster smart payment', 'leyka');
 
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/paymaster_all.png',
             LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/visa.png',
@@ -247,7 +240,6 @@ class Leyka_Paymaster_All extends Leyka_Payment_Method {
         ));
 
         $this->_supported_currencies[] = 'rur';
-
         $this->_default_currency = 'rur';
 
     }

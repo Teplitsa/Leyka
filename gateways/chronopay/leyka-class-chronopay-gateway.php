@@ -12,14 +12,14 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         $this->_id = 'chronopay';
         $this->_title = __('Chronopay', 'leyka');
         $this->_docs_link = '//leyka.te-st.ru/docs/chronopay/';
-        $this->_admin_ui_column = 1;
-        $this->_admin_ui_order = 20;
+
+        $this->_receiver_types = array('legal');
 
     }
 
     protected function _set_options_defaults() {
 
-        if($this->_options) { // Create Gateway options, if needed
+        if($this->_options) {
             return;
         }
 
@@ -538,6 +538,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
     }
 
     public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
+
         switch($field_name) {
             case 'chronopay_customer_id':
                 return update_post_meta($donation->id, '_chronopay_customer_id', $value);
@@ -545,6 +546,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 return update_post_meta($donation->id, '_chronopay_transaction_id', $value);
             default: return false;
         }
+
     }
 
     public function save_donation_specific_data(Leyka_Donation $donation) {
@@ -566,15 +568,18 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
     }
 
     public function add_donation_specific_data($donation_id, array $donation_params) {
+
         if( !empty($donation_params['chronopay_customer_id']) ) {
             update_post_meta($donation_id, '_chronopay_customer_id', $donation_params['chronopay_customer_id']);
         }
+
         if( !empty($donation_params['chronopay_transaction_id']) ) {
             update_post_meta($donation_id, '_chronopay_transaction_id', $donation_params['chronopay_transaction_id']);
         }
+
     }
 
-} // gateway class end
+}
 
 
 class Leyka_Chronopay_Card extends Leyka_Payment_Method {
@@ -587,10 +592,16 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
         $this->_gateway_id = 'chronopay';
         $this->_category = 'bank_cards';
 
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('Chronopay allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="http://www.chronopay.com/ru/">Chronopay</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
+
         $this->_label_backend = __('Bank card', 'leyka');
         $this->_label = __('Bank card', 'leyka');
-
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/chronopay/icons/visa.png',
@@ -599,7 +610,6 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
         ));
 
         $this->_submit_label = __('Donate', 'leyka');
-
         $this->_default_currency = 'rur';
 
     }
@@ -625,61 +635,41 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
         }
 
         $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('Chronopay allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="http://www.chronopay.com/ru/">Chronopay</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
-                'title' => __('Chronopay bank card payment description', 'leyka'),
-                'description' => __('Please, enter Chronopay gateway description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
             'chronopay_card_product_id_rur' => array(
                 'type' => 'text',
-                'default' => '',
                 'title' => __('Chronopay product_id for RUR', 'leyka'),
                 'description' => __('Please, enter Chronopay product_id for RUR currency.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
+                'required' => false,
             ),
             'chronopay_card_product_id_usd' => array(
                 'type' => 'text',
-                'default' => '',
                 'title' => __('Chronopay product_id for USD', 'leyka'),
                 'description' => __('Please, enter Chronopay product_id for USD currency.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
+                'required' => false,
             ),
             'chronopay_card_product_id_eur' => array(
                 'type' => 'text',
-                'default' => '',
                 'title' => __('Chronopay product_id for EUR', 'leyka'),
                 'description' => __('Please, enter Chronopay product_id for EUR currency.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
+                'required' => false,
             ),
             'chronopay_card_rebill_product_id_rur' => array(
                 'type' => 'text',
-                'default' => '',
                 'title' => __('Chronopay product_id for rebills in RUR', 'leyka'),
                 'description' => __('Please, enter Chronopay product_id for rebills in RUR currency.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
+                'required' => false,
             ),
             'chronopay_card_rebill_product_id_usd' => array(
                 'type' => 'text',
-                'default' => '',
                 'title' => __('Chronopay product_id for rebills in USD', 'leyka'),
                 'description' => __('Please, enter Chronopay product_id for rebills in USD currency.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
+                'required' => false,
             ),
             'chronopay_card_rebill_product_id_eur' => array(
                 'type' => 'text',
-                'default' => '',
                 'title' => __('Chronopay product_id for rebills in EUR', 'leyka'),
                 'description' => __('Please, enter Chronopay product_id for rebills in EUR currency.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
+                'required' => false,
             ),
         );
 

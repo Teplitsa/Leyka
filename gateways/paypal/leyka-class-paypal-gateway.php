@@ -12,8 +12,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         $this->_id = 'paypal';
         $this->_title = __('PayPal', 'leyka');
         $this->_docs_link = 'https://leyka.te-st.ru/docs/nastrojka-paypal/';
-        $this->_admin_ui_column = 1;
-        $this->_admin_ui_order = 10;
+
+        $this->_receiver_types = array('legal', 'physical');
 
     }
 
@@ -665,12 +665,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         exit(0);
     }
 
-    /** Override the auto-submit setting to send manual requests to PayPal. */
+    // Override the auto-submit setting to send manual requests to PayPal:
     public function submission_redirect_type($redirect_type, $pm_id, $donation_id) {
         return false;
-    }
-
-    public function gateway_redirect_page_content($pm_id, $donation_id) {
     }
 
     public function enqueue_gateway_scripts() {
@@ -704,7 +701,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     }
 
 	public function localize_js_strings(array $js_data) {
-
 		return array_merge($js_data, array(
 			'paypal_locale' => get_locale(),
             'paypal_client_id' => leyka_options()->opt('paypal_client_id'),
@@ -724,8 +720,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 	}
 
     public function get_gateway_submit($default_submit) {
-        return $default_submit.
-               '<div class="leyka-paypal-form-submit" style="display: none;"></div>';
+        return $default_submit.'<div class="leyka-paypal-form-submit" style="display: none;"></div>';
     }
 
     public function get_gateway_response_formatted(Leyka_Donation $donation) {
@@ -957,10 +952,16 @@ class Leyka_Paypal_All extends Leyka_Payment_Method {
         $this->_gateway_id = 'paypal';
         $this->_category = 'misc';
 
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('PayPal allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://www.paypal.com/">PayPal website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
+
         $this->_label_backend = __('PayPal', 'leyka');
         $this->_label = __('PayPal', 'leyka');
-
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/visa.png',
@@ -969,33 +970,12 @@ class Leyka_Paypal_All extends Leyka_Payment_Method {
         ));
 
         $this->_supported_currencies[] = 'rur';
-
         $this->_default_currency = 'rur';
-
-    }
-
-    protected function _set_options_defaults() {
-
-        if($this->_options) {
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('PayPal allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://www.paypal.com/">PayPal website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
-                'title' => __('PayPal payment description', 'leyka'),
-                'description' => __('Please, enter PayPal payment service description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
 
     }
 
     public function has_recurring_support() {
         return !!leyka_options()->opt('paypal_enable_recurring');
-        // return true;
     }
 
 }

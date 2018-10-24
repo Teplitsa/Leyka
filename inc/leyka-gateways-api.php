@@ -318,7 +318,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     abstract protected function _initialize_pm_list(); // PM list is specific for each Gateway
 
     // Handler for Gateway's service calls (activate the donations, etc.):
-    abstract public function _handle_service_calls($call_type = '');
+    public function _handle_service_calls($call_type = '') {}
 
     /** Default behavior, may be substituted in descendants: */
     public function get_init_recurrent_donation($donation) {
