@@ -1,0 +1,235 @@
+<?php if (!defined('WPINC')) die;
+
+include(LEYKA_PLUGIN_DIR . 'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Web_Hook_Verification.php');
+include(LEYKA_PLUGIN_DIR . 'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Web_Hook.php');
+include(LEYKA_PLUGIN_DIR . 'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Helper.php');
+
+/**
+ * Leyka_Qiwi_Gateway class
+ */
+class Leyka_Qiwi_Gateway extends Leyka_Gateway
+{
+    protected static $_instance;
+
+    protected $_qiwi_response;
+    protected $_qiwi_log = array();
+
+    protected function _set_attributes()
+    {
+
+        $this->_id = 'qiwi';
+        $this->_title = __('Qiwi', 'leyka');
+        $this->_docs_link = '//leyka.te-st.ru/docs/qiwi/';
+        $this->_admin_ui_column = 1;
+        $this->_admin_ui_order = 60;
+    }
+
+    protected function _set_options_defaults()
+    {
+        if ($this->_options) {
+            return;
+        }
+
+        $this->_options = array(
+            'qiwi_public_key' => array(
+                'type' => 'text',
+                'value' => '',
+                'default' => '',
+                'title' => __('Public key', 'leyka'),
+                'description' => __('Please, enter your public key.', 'leyka'),
+                'required' => true,
+                'placeholder' => __('PUBLIC_KEY', 'leyka'),
+                'list_entries' => array(), // For select, radio & checkbox fields
+                'validation_rules' => array(), // List of regexp?..
+            ),
+            'qiwi_secret_key' => array(
+                'type' => 'text',
+                'value' => '',
+                'default' => '',
+                'title' => __('Secret key', 'leyka'),
+                'description' => __('Please, enter your secret key.', 'leyka'),
+                'required' => true,
+                'placeholder' => __('SECRET_KEY', 'leyka'),
+                'list_entries' => array(), // For select, radio & checkbox fields
+                'validation_rules' => array(), // List of regexp?..
+            ),
+        );
+
+    }
+
+    public function enqueue_gateway_scripts()
+    {
+    }
+
+    public function process_form($gateway_id, $pm_id, $donation_id, $form_data)
+    {
+        $donation = new Leyka_Donation($donation_id);
+        $campaign = new Leyka_Campaign($form_data['leyka_campaign_id']);
+        $description = $campaign->short_description;
+
+        $bill = new Leyka_Qiwi_Gateway_Helper(leyka_options()->opt('leyka_qiwi_secret_key'));
+
+        $response = $bill->create_bill(
+            $donation_id,
+            $donation->amount,
+            array(
+                'customer' => array(
+                    'account' => $donation->__get('donor_name'),
+                    'email' => $donation->__get('donor_email')
+                ),
+                'comment' => $description
+            )
+        );
+
+        $this->_qiwi_response = json_decode(wp_remote_retrieve_body($response));
+
+        return $this->_qiwi_response;
+    }
+
+    public function submission_redirect_url($current_url, $pm_id)
+    {
+        $url = add_query_arg(
+            array('url' => urlencode($this->_qiwi_response->payUrl)),
+            site_url('/leyka/service/qiwi/redirect/')
+        );
+
+        return $url;
+    }
+
+    public function submission_form_data($form_data_vars, $pm_id, $donation_id)
+    {
+        $donation = new Leyka_Donation($donation_id);
+
+        $this->_qiwi_log['QIWI_Form'] = $_POST;
+        $this->_qiwi_log['QIWI_Response'] = $this->_qiwi_response;
+        $invoiceTemplateID = $this->_qiwi_log['QIWI_Response']->billId;
+
+        update_post_meta($donation_id, '_leyka_donation_id_on_gateway_response', $invoiceTemplateID);
+
+        $donation->add_gateway_response($this->_qiwi_log);
+
+        return $form_data_vars;
+    }
+
+    public function log_gateway_fields($donation_id)
+    {
+    }
+
+    public function _handle_service_calls($call_type = '')
+    {
+
+        switch ($call_type) {
+            case 'notify':
+
+                do_action('leyka_qiwi_gateway_web_hook');
+            case 'process':
+
+                do_action('leyka_qiwi_gateway_web_hook');
+            case 'redirect':
+                $url = urldecode($_GET['url']);
+                $url = add_query_arg(
+                    array('successUrl' => urlencode(get_permalink(leyka_options()->opt('quittance_redirect_page')))),
+                    $url
+                );
+                wp_redirect($url, 302);
+            default:
+        }
+    }
+
+    protected function _get_value_if_any($arr, $key, $val = false)
+    {
+        return empty($arr[$key]) ? '' : ($val ? $val : $arr[$key]);
+    }
+
+    public function get_gateway_response_formatted(Leyka_Donation $donation)
+    {
+
+        if (!$donation->gateway_response) {
+            return array();
+        }
+
+        $vars = maybe_unserialize($donation->gateway_response);
+        if (!$vars || !is_array($vars)) {
+            return array();
+        }
+
+        return array(
+            __('Operation date:', 'leyka') => $vars['QIWI_Response']->creationDateTime,
+            __('Shop Account:', 'leyka') => $vars['QIWI_Response']->siteId,
+            __('Shop bill ID:', 'leyka') => $vars['QIWI_Response']->billId,
+            __('Donation currency:', 'leyka') => $vars['QIWI_Response']->amount->currency,
+            __('Operation status:', 'leyka') => $vars['QIWI_Response']->status->value,
+            __('Donor name:', 'leyka') => $vars['QIWI_Form']['leyka_donor_name'],
+            __('Form url:', 'leyka') => $vars['QIWI_Response']->payUrl
+        );
+    }
+
+    protected function _initialize_pm_list()
+    {
+        if (empty($this->_payment_methods['card'])) {
+            $this->_payment_methods['card'] = Leyka_Qiwi_Card::get_instance();
+        }
+    }
+} // Gateway class end
+
+
+class Leyka_Qiwi_Card extends Leyka_Payment_Method
+{
+
+    protected static $_instance = null;
+
+    public function _set_attributes()
+    {
+
+        $this->_id = 'card';
+        $this->_gateway_id = 'qiwi';
+
+        $this->_label_backend = __('Bank card', 'leyka');
+        $this->_label = __('Bank card', 'leyka');
+
+        $this->_icons = apply_filters('leyka_icons_' . $this->_gateway_id . '_' . $this->_id, array(
+            LEYKA_PLUGIN_BASE_URL . 'gateways/qiwi/icons/visa.png',
+            LEYKA_PLUGIN_BASE_URL . 'gateways/qiwi/icons/master.png',
+            LEYKA_PLUGIN_BASE_URL . 'gateways/qiwi/icons/mir.png',
+        ));
+
+
+        $this->_supported_currencies[] = 'rur';
+
+        $this->_default_currency = 'rur';
+
+    }
+
+    protected function _set_options_defaults()
+    {
+
+        if ($this->_options) {
+            return;
+        }
+
+        $this->_options = array(
+            $this->full_id . '_description' => array(
+                'type' => 'html',
+                'default' => __('<a href="http://qiwi.com/">qiwi</a> is a Designer IT-solutions for the e-commerce market. Every partner receives the most comprehensive set of key technical options allowing to create a customer-centric payment system on site or in mobile application. Partners are allowed to receive payments in roubles and in other world currencies.', 'leyka'),
+                'title' => __('qiwi bank card payment description', 'leyka'),
+                'description' => __('Please, enter qiwi gateway description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
+                'required' => 0,
+                'validation_rules' => array(), // List of regexp?..
+            ),
+        );
+
+    }
+
+    public function has_recurring_support()
+    {
+        return false;
+    }
+
+} // Payment Method class end
+
+function leyka_add_gateway_qiwi()
+{
+    leyka_add_gateway(Leyka_Qiwi_Gateway::get_instance());
+}
+
+add_action('leyka_init_actions', 'leyka_add_gateway_qiwi');

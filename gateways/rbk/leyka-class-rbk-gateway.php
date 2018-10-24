@@ -38,14 +38,14 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 'title' => __('RBK Money shopID', 'leyka'),
                 'description' => __('Please, enter your shopID value here. It can be found in your contract with RBK Money or in your control panel there.', 'leyka'),
                 'required' => 1,
-                'placeholder' => __('Ex., 1234', 'leyka'),
+                'placeholder' => __('ShopID', 'leyka'),
             ),
             'rbk_api_key' => array(
                 'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
                 'title' => __('RBK Money apiKey', 'leyka'),
                 'description' => __('Please, enter your apiKey value here. It can be found in your RBK Money control panel.', 'leyka'),
                 'required' => 1,
-                'placeholder' => __('Ex., RU123456789', 'leyka'),
+                'placeholder' => __('ApiKey', 'leyka'),
             ),
             'rbk_api_web_hook_key' => array(
                 'type' => 'text',
@@ -104,10 +104,10 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 'metadata' => array(
                     'order_id' => __("Donation id:", 'leyka')." {$donation_id}"
                 ),
-                'dueDate' => date('Y-m-d\TH:i:s\Z', strtotime('+2 minute', current_time('timestamp', 1))),
+                'dueDate' => date('Y-m-d\TH:i:s\Z', strtotime('+15 minute', current_time('timestamp', 1))),
                 'currency' => 'RUB',
-                'product' => $form_data['leyka_ga_campaign_title'],
-                'description' => $description,
+                'product' => $description,
+                'description' => $form_data['leyka_ga_campaign_title'],
             ))
         );
 
