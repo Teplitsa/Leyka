@@ -11,9 +11,20 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         $this->_id = 'cp';
         $this->_title = __('CloudPayments', 'leyka');
-        $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-cloudpayments/';
 
+        $this->_description = apply_filters(
+            'leyka_gateway_description',
+            __('<a href="//cloudpayments.ru/">CloudPayments</a> is a Designer IT-solutions for the e-commerce market. Every partner receives the most comprehensive set of key technical options allowing to create a customer-centric payment system on site or in mobile application. Partners are allowed to receive payments in roubles and in other world currencies.', 'leyka'),
+            $this->_id
+        );
+
+        $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-cloudpayments/';
+        $this->_registration_link = '//cloudpayments.ru/connection';
+        $this->_has_wizard = true;
+
+        $this->_min_commission = 2.8;
         $this->_receiver_types = array('legal');
+        $this->_has_recurring_support = true;
 
     }
 

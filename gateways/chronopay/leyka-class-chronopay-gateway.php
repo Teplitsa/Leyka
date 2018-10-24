@@ -11,9 +11,19 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
         $this->_id = 'chronopay';
         $this->_title = __('Chronopay', 'leyka');
-        $this->_docs_link = '//leyka.te-st.ru/docs/chronopay/';
 
+        $this->_description = apply_filters(
+            'leyka_gateway_description',
+            __('Chronopay allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="http://www.chronopay.com/ru/">Chronopay</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
+            $this->_id
+        );
+
+        $this->_docs_link = '//leyka.te-st.ru/docs/chronopay/';
+        $this->_registration_link = '//chronopay.com/ru/connection/';
+
+        $this->_min_commission = 0.5;
         $this->_receiver_types = array('legal');
+        $this->_has_recurring_support = true;
 
     }
 

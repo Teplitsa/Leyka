@@ -11,8 +11,17 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         $this->_id = 'mixplat';
         $this->_title = __('MIXPLAT', 'leyka');
-        $this->_docs_link = '//leyka.te-st.ru/docs/nastrojka-mixplat/';
 
+        $this->_description = apply_filters(
+            'leyka_gateway_description',
+            __('MIXPLAT allows a simple and safe way to pay for goods and services with your mobile phone by sending SMS.', 'leyka'),
+            $this->_id
+        );
+
+        $this->_docs_link = '//leyka.te-st.ru/docs/nastrojka-mixplat/';
+        $this->_registration_link = '//mixplat.ru/#join';
+
+        $this->_min_commission = 3;
         $this->_receiver_types = array('legal');
 
     }

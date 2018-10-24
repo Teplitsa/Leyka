@@ -13,18 +13,21 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
         $this->_id = 'yandex';
         $this->_title = __('Yandex.Kassa', 'leyka');
-        $this->_description = 'Яндекс.Касса — сервис, который позволяет включить прием платежей на сайте и получать деньги на расчётный счёт компании. Комиссия берётся с успешных платежей.
-Способы приёма платежей: банковские карты, Яндекс.Деньги и QIWI, интернет-банки, наличные, баланс мобильного и другие.';
+
+        $this->_description = apply_filters(
+            'leyka_gateway_description',
+            __('Yandex.Kassa allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Kassa website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
+            $this->_id
+        ); // 'Яндекс.Касса — сервис, который позволяет включить прием платежей на сайте и получать деньги на расчётный счёт компании. Комиссия берётся с успешных платежей.
+//Способы приёма платежей: банковские карты, Яндекс.Деньги и QIWI, интернет-банки, наличные, баланс мобильного и другие.';
+
         $this->_docs_link = '//leyka.te-st.ru/docs/yandex-dengi/';
         $this->_registration_link = 'https://kassa.yandex.ru/joinups';
         $this->_has_wizard = true;
 
-        $this->_min_commission = 2.1;
+        $this->_min_commission = 2.8;
         $this->_receiver_types = array('legal');
         $this->_has_recurring_support = true;
-
-        $this->_admin_ui_column = 1;
-        $this->_admin_ui_order = 10;
 
     }
 
