@@ -39,34 +39,39 @@ if( !$gateway ) {?>
 
             <?php if($gateway->min_commission && $gateway->min_commission > 0.0) {?>
 
-                <div class="details-element gateway-commission">
-                    <div class="details-pic">
-                        от <span class="commission-size"><?php echo $gateway->min_commission;?>%</span>
-                    </div>
-                    <div class="details-label">комиссия</div>
+            <div class="details-element gateway-commission">
+                <div class="details-pic">
+                    от <span class="commission-size"><?php echo $gateway->min_commission;?>%</span>
                 </div>
+                <div class="details-label">комиссия</div>
+            </div>
 
-            <?php }
+            <?php }?>
 
-            if($gateway->has_recurring) {?>
+            <div class="details-element gateway-has-recurring">
 
-                <div class="details-element gateway-has-recurring">
-                    <div class="details-pic has-recurring-icon">
-                        <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-recurring.svg">
-                    </div>
-                    <div class="details-label">рекурренты</div>
+                <?php if($gateway->has_recurring) {?>
+                <div class="details-pic recurring-supported">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-recurring.svg">
                 </div>
-
-            <?php }
-
-            if($gateway->receiver_types) {?>
-
-                <div class="details-element gateway-receiver-types">
-                    <div class="details-pic receiver-type-icon">
-                        <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-receiver-type-<?php echo count($gateway->receiver_types) > 1 ? 'all' : $gateway->receiver_types[0];?>.svg">
-                    </div>
-                    <div class="details-label">получатель</div>
+                <?php } else {?>
+                <div class="details-pic recurring-not-supported">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-non-recurring.svg">
                 </div>
+                <?php }?>
+
+                <div class="details-label">рекурренты</div>
+
+            </div>
+
+            <?php if($gateway->receiver_types) {?>
+
+            <div class="details-element gateway-receiver-types">
+                <div class="details-pic receiver-type-icon">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-receiver-type-<?php echo count($gateway->receiver_types) > 1 ? 'all' : $gateway->receiver_types[0];?>.svg">
+                </div>
+                <div class="details-label">получатель</div>
+            </div>
 
             <?php }?>
 

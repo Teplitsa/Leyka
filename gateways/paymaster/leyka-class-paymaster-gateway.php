@@ -214,7 +214,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
     }
 
-} // Gateway class end
+}
 
 class Leyka_Paymaster_All extends Leyka_Payment_Method {
 
@@ -225,6 +225,14 @@ class Leyka_Paymaster_All extends Leyka_Payment_Method {
         $this->_id = 'paymaster_all';
         $this->_gateway_id = 'paymaster';
         $this->_category = 'misc';
+
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('Paymaster system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="https://www.paymaster.ru/">Paymaster</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
 
         $this->_label_backend = __('Paymaster smart payment', 'leyka');
         $this->_label = __('Paymaster smart payment', 'leyka');
@@ -241,23 +249,6 @@ class Leyka_Paymaster_All extends Leyka_Payment_Method {
         $this->_supported_currencies[] = 'rur';
 
         $this->_default_currency = 'rur';
-
-    }
-
-    protected function _set_options_defaults() {
-
-        if($this->_options) {
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('Paymaster system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="https://www.paymaster.ru/">Paymaster</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
-                'title' => __('Paymaster smart payment description', 'leyka'),
-                'description' => __('Please, enter Paymaster gateway description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-            ),
-        );
 
     }
 

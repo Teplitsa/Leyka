@@ -314,7 +314,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     }
 
     abstract protected function _set_attributes(); // Attributes are constant, like id, title, etc.
-    abstract protected function _set_options_defaults(); // Options are admin configurable parameters
+    protected function _set_options_defaults() {} // Options are admin configurable parameters
     abstract protected function _initialize_pm_list(); // PM list is specific for each Gateway
 
     // Handler for Gateway's service calls (activate the donations, etc.):
@@ -586,21 +586,6 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
     protected $_processing_type = 'default';
     protected $_ajax_without_form_submission = false;
 
-//    public final static function get_instance() {
-//
-//        if(null == static::$_instance) {
-//
-//            static::$_instance = new static();
-////            static::$_instance->_initialize_options();
-//
-//        }
-//
-//        return static::$_instance;
-//
-//    }
-//
-//    final protected function __clone() {}
-
     protected function __construct() {
 
         $this->_submit_label = leyka_options()->opt_safe('donation_submit_text');
@@ -688,7 +673,8 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
 
     }
 
-    abstract protected function _set_options_defaults();
+    /** To set PM specific options */
+    protected function _set_options_defaults() {}
 
     protected final function _add_options() {
         foreach($this->_options as $option_name => $params) {
@@ -706,14 +692,13 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
 
         /** PM frontend label is a special persistent option, universal for each PM */
         if( !leyka_options()->option_exists($this->full_id.'_label') ) {
-
             leyka_options()->add_option($this->full_id.'_label', 'text', array(
                 'value' => '',
                 'default' => $this->_label,
                 'title' => __('Payment method custom label', 'leyka'),
                 'description' => __('A label for this payment method that will appear on all donation forms.', 'leyka'),
                 'required' => false,
-                'placeholder' => '',
+                'placeholder' => sprintf(__('E.g., «%s»', 'leyka'), $this->_label),
                 'validation_rules' => array(), // List of regexp?..
             ));
         }
@@ -723,8 +708,6 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
             $custom_label : apply_filters('leyka_get_pm_label_original', $this->_label, $this);
 
         $this->_active = in_array($this->full_id, leyka_options()->opt('pm_available'));
-
-        $this->_description = leyka_options()->opt_safe($this->full_id.'_description');
 
         add_filter('leyka_payment_options_allocation', array($this, 'allocate_pm_options'), 10, 1);
 
@@ -738,6 +721,7 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
         }
 
         return $option_names;
+
     }
 
     /** Allocate gateway options, if needed */
@@ -772,6 +756,7 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
         }
 
         return $options;
+
     }
 
     /** For PM with a static processing type, this method should display some static data. Otherwise, it may stay empty. */

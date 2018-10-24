@@ -12,6 +12,9 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
         $this->_id = 'yandex_phyz';
         $this->_title = __('Yandex.Money for physical persons', 'leyka');
         $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-yandeks-dengi-dlya-fizicheskih-lits/';
+
+        $this->_receiver_types = array('physical');
+
     }
 
     protected function _set_options_defaults() {
@@ -25,9 +28,9 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
                 'value' => '',
                 'default' => '',
                 'title' => __('Yandex account ID', 'leyka'),
-                'description' => __("Please, enter your Yandex.Money account ID here. It's else known as Yandex.wallet number.", 'leyka'),
-                'required' => 1,
-                'placeholder' => __('Ex., 4100111111111111', 'leyka'),
+                'comment' => __("Please, enter your Yandex.Money account ID here. It's else known as Yandex.wallet number.", 'leyka'),
+                'required' => true,
+                'placeholder' => __('E.g., 4100111111111111', 'leyka'),
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
@@ -36,9 +39,9 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
                 'value' => '',
                 'default' => '',
                 'title' => __('Yandex account API secret', 'leyka'),
-                'description' => __('Please, enter your Yandex.Money account API secret string here.', 'leyka'),
-                'required' => 1,
-                'placeholder' => __('Ex., QweR+1TYUIo/p2aS3DFgHJ4K5', 'leyka'),
+                'comment' => __('Please, enter your Yandex.Money account API secret string here.', 'leyka'),
+                'required' => true,
+                'placeholder' => __('E.g., QweR+1TYUIo/p2aS3DFgHJ4K5', 'leyka'),
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
@@ -54,10 +57,10 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
         if(empty($this->_payment_methods['yandex_phyz_money'])) {
             $this->_payment_methods['yandex_phyz_money'] = Leyka_Yandex_Phyz_Money::get_instance();
         }
+
     }
 
-    public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
-    }
+    public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {}
 
     public function submission_redirect_url($current_url, $pm_id) {
 
@@ -68,6 +71,7 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
             default:
                 return $current_url;
         }
+
     }
 
     public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
@@ -97,17 +101,17 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
             'shopFailURL' => leyka_get_failure_page_url(),
             'cps_email' => $donation->donor_email,
         );
+
     }
 
-    /** Wrapper method to answer the checkOrder service calls */
+    // Wrapper method to answer the checkOrder service calls:
     private function _check_order_answer($is_error = false, $message = '', $tech_message = '') {
 
-        $is_error = !!$is_error;
         $tech_message = $tech_message ? $tech_message : $message;
 
         $_POST['operation_id'] = empty($_POST['operation_id']) ? 0 : (int)$_POST['operation_id'];
 
-        if($is_error) {
+        if( !!$is_error ) {
             die('<?xml version="1.0" encoding="UTF-8"?>
 <checkOrderResponse performedDatetime="'.date(DATE_ATOM).'"
 code="1000" operation_id="'.$_POST['operation_id'].'"
@@ -120,6 +124,7 @@ techMessage="'.$tech_message.'"/>');
 code="0" operation_id="'.$_POST['operation_id'].'"
 account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
         }
+
     }
 
     public function _handle_service_calls($call_type = '') {
@@ -239,50 +244,39 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
             __('Response date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($response_vars['datetime'])),
         );
     }
+
 }
 
 
 class Leyka_Yandex_Phyz_Money extends Leyka_Payment_Method {
 
     protected static $_instance = null;
-    
+
     public function _set_attributes() {
 
         $this->_id = 'yandex_phyz_money';
         $this->_gateway_id = 'yandex_phyz';
 
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __("Yandex.Money is a simple and safe payment system to pay for goods and services through internet. You will have to fill a payment form, you will be redirected to the <a href='https://money.yandex.ru/'>Yandex.Money website</a> to confirm your payment. If you haven't got a Yandex.Money account, you can create it there.", 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
+
         $this->_label_backend = __('Virtual cash Yandex.Money', 'leyka');
         $this->_label = __('Virtual cash Yandex.Money', 'leyka');
 
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex_phyz/icons/yandex_phyz_money_s.png',
-//            LEYKA_PLUGIN_BASE_URL.'gateways/quittance/icons/sber_s.png',
         ));
 
         $this->_supported_currencies[] = 'rur';
-
         $this->_default_currency = 'rur';
+
     }
 
-    protected function _set_options_defaults() {
-
-        if($this->_options){
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __("Yandex.Money is a simple and safe payment system to pay for goods and services through internet. You will have to fill a payment form, you will be redirected to the <a href='https://money.yandex.ru/'>Yandex.Money website</a> to confirm your payment. If you haven't got a Yandex.Money account, you can create it there.", 'leyka'),
-                'title' => __('Yandex.Money description', 'leyka'),
-                'description' => __('Please, enter Yandex.Money payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
-    }
 }
 
 
@@ -295,6 +289,14 @@ class Leyka_Yandex_Phyz_Card extends Leyka_Payment_Method {
         $this->_id = 'yandex_phyz_card';
         $this->_gateway_id = 'yandex_phyz';
 
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('Yandex.Money allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Money website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
+
         $this->_label = __('Bank card', 'leyka');
         $this->_label_backend = $this->_label;
 
@@ -305,27 +307,10 @@ class Leyka_Yandex_Phyz_Card extends Leyka_Payment_Method {
         ));
 
         $this->_supported_currencies[] = 'rur';
-
         $this->_default_currency = 'rur';
+
     }
 
-    protected function _set_options_defaults() {
-
-        if($this->_options){
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('Yandex.Money allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Money website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
-                'title' => __('Yandex bank card payment description', 'leyka'),
-                'description' => __('Please, enter Yandex.Money bank cards payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
-    }
 }
 
 function error_log_yandex_phyz($string) {
