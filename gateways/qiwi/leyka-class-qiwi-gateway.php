@@ -2,9 +2,9 @@
     die;
 }
 
-require_once LEYKA_PLUGIN_DIR . 'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Web_Hook_Verification.php';
-require_once LEYKA_PLUGIN_DIR . 'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Web_Hook.php';
-require_once LEYKA_PLUGIN_DIR . 'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Helper.php';
+require_once LEYKA_PLUGIN_DIR.'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Web_Hook_Verification.php';
+require_once LEYKA_PLUGIN_DIR.'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Web_Hook.php';
+require_once LEYKA_PLUGIN_DIR.'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Helper.php';
 
 /**
  * Leyka_Qiwi_Gateway class
@@ -57,7 +57,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
         $campaign = new Leyka_Campaign($form_data['leyka_campaign_id']);
         $description = $campaign->short_description;
 
-        $bill = new Leyka_Qiwi_Gateway_Helper(leyka_options()->opt('leyka_qiwi_secret_key'));
+        $bill = new Leyka_Qiwi_Gateway_Helper();
 
         $response = $bill->create_bill(
             $donation_id,
