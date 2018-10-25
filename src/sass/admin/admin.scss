@@ -311,7 +311,7 @@
                     background-color: transparentize($color-white, 0.6);
                     border-radius: 4px;
 
-                    box-shadow: 0 1px 4px 0 transparentize($color-text-black, 0.92);
+                    box-shadow: 0 2px 4px 0 transparentize($color-text-black, 0.87); // 0,92
 
                     cursor: grab;
 
