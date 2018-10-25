@@ -369,6 +369,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		<?php } else {?>
 			<p class="empty-notice"><?php _e('You have not received any donations yet', 'leyka');?></p>
 		<?php }
+
 	}
 
 	public function campaigns_metabox_screen() {
@@ -502,7 +503,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 </form>
             </div>
 
-		</div><!-- close .wrap -->
+		</div>
+
 	<?php
 	}
 
@@ -536,31 +538,27 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	}
 
 	public function get_default_settings_tab() {
-		return apply_filters('leyka_default_settings_tab', 'beneficiary');
+		return apply_filters('leyka_default_settings_tab', 'payment');
 	}
-	
+
 	public function get_current_settings_tab() {
 		return empty($_GET['stage']) ? $this->get_default_settings_tab() : trim($_GET['stage']);
 	}
 
-    /** Settings tabs menu **/
-	public function settings_tabs_menu(){
+	public function settings_tabs_menu() {
 
-		$tabs = Leyka_Options_Allocator::get_instance()->get_tabs();
-		$default_tab = $this->get_default_settings_tab();
-		$current_tab = $this->get_current_settings_tab();
 		$base_url = 'admin.php?page=leyka_settings';
+
 		$out = '';
-
-		foreach($tabs as $id => $label) {
-
-			$css = ($current_tab == $id) ? 'nav-tab nav-tab-active' : 'nav-tab';
-			$url = ($default_tab == $id) ? $base_url : add_query_arg('stage', $id, $base_url);
-			
-			$out .= "<a href='{$url}' class='{$css}'>{$label}</a>";		
+		foreach(Leyka_Options_Allocator::get_instance()->get_tabs() as $tab_id => $tab_label) {
+			$out .= '<a href="'
+			    .($this->get_default_settings_tab() === $tab_id ? $base_url : add_query_arg('stage', $tab_id, $base_url))
+			    .'" class="'.($this->get_current_settings_tab() === $tab_id ? 'nav-tab nav-tab-active' : 'nav-tab').'">'
+			    .$tab_label.'</a>';
 		}
 
 		return $out;
+
 	}
 
     /** Displaying feedback **/
@@ -697,8 +695,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             || (
                 isset($_GET['page'])
                 && $_GET['page'] === 'leyka_settings'
-                && isset($_GET['stage'])
-                && $_GET['stage'] === 'payment'
+                && (empty($_GET['stage']) || $_GET['stage'] === 'payment')
                 && empty($_GET['old'])
             )
         ) {
