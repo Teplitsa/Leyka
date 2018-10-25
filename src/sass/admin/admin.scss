@@ -99,6 +99,7 @@
 
                 background-color: $color-white;
                 border-radius: 6px;
+                margin-right: 2rem;
 
                 .gateway-settings-header {
 
@@ -484,7 +485,7 @@
 }
 
 // gateways cards
-.gateways-cards-list {
+.leyka-admin .gateways-cards-list {
     
     display: flex;
     justify-content: flex-start;
@@ -495,7 +496,7 @@
     }
 }
 
-.leyka-admin-gateway-card {
+.leyka-admin .leyka-admin-gateway-card {
     &.gateway-card {
         
         background-color: $color-white;
@@ -656,7 +657,7 @@
 }
 
 // gateways filter
-.filter-area {
+.leyka-admin .filter-area {
     
     display: flex;
     justify-content: flex-start;
