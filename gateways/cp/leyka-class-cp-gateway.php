@@ -24,7 +24,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         $this->_min_commission = 2.8;
         $this->_receiver_types = array('legal');
-        $this->_has_recurring_support = true;
+        $this->_may_support_recurring = true;
 
     }
 
@@ -36,26 +36,18 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         $this->_options = array(
             'cp_public_id' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox  
-                'value' => '',
-                'default' => '',
+                'type' => 'text',
                 'title' => __('Public ID', 'leyka'),
-                'description' => __('Please, enter your CloudPayments public ID here. It can be found in your CloudPayments control panel.', 'leyka'),
+                'comment' => __('Please, enter your CloudPayments public ID here. It can be found in your CloudPayments control panel.', 'leyka'),
                 'required' => true,
-                'placeholder' => 'Вставьте номер Public ID сюда', // __('E.g., 1234', 'leyka'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'pk_c5fcan980a7c38418932y476g4931'),
             ),
             'cp_ip' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
-                'default' => '',
+                'type' => 'text',
                 'title' => __('CloudPayments IP', 'leyka'),
-                'description' => __('Comma-separated callback requests IP list. Leave empty to disable the check.', 'leyka'),
-                'required' => 1,
-                'placeholder' => __('E.g., 130.193.70.192,185.98.85.109', 'leyka'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
+                'comment' => __('Comma-separated callback requests IP list. Leave empty to disable the check.', 'leyka'),
+                'required' => true,
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '130.193.70.192,185.98.85.109'),
             ),
         );
 

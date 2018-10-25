@@ -11,8 +11,17 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
         $this->_id = 'paymaster';
         $this->_title = __('Paymaster', 'leyka');
-        $this->_docs_link = '';
 
+        $this->_description = apply_filters(
+            'leyka_gateway_description',
+            __('Paymaster system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="https://www.paymaster.ru/">Paymaster</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
+            $this->_id
+        );
+
+        $this->_docs_link = '';
+        $this->_registration_link = '//info.paymaster.ru/check/';
+
+        $this->_min_commission = 2;
         $this->_receiver_types = array('legal');
 
     }
@@ -27,14 +36,14 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
             'paymaster_merchant_id' => array(
                 'type' => 'text',
                 'title' => __('Paymaster merchant ID', 'leyka'),
-                'description' => __('Please find your merchant id in PayMaster merchant Control Panel.', 'leyka'),
+                'comment' => __('Please find your merchant id in PayMaster merchant Control Panel.', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., ct5b8f62-297f-4d19-b805-249cab7a37ed', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'ct5b8f62-297f-4d19-b805-249cab7a37ed'),
             ),
             'paymaster_secret_word' => array(
                 'type' => 'text',
                 'title' => __('Secret word', 'leyka'),
-                'description' => __('Paymaster secret word, please set it also in PayMaster merchant backoffice.', 'leyka'),
+                'comment' => __('Paymaster secret word, please set it also in PayMaster merchant backoffice.', 'leyka'),
                 'required' => true,
                 'is_password' => true,
             ),
@@ -42,7 +51,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
                 'type' => 'select',
                 'default' => 'md5',
                 'title' => __('Hash security method', 'leyka'),
-                'description' => __('Please find your hash method in PayMaster merchant Control Panel.', 'leyka'),
+                'comment' => __('Please, find your hash method in PayMaster merchant Control Panel.', 'leyka'),
                 'required' => true,
                 'list_entries' => array('md5' => 'md5', 'sha1' => 'sha1', 'sha256' => 'sha256'),
             ),

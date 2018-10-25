@@ -190,7 +190,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     protected $_min_commission = 0.0;
     protected $_receiver_types = array('legal'); // 'legal', 'physical'
-    protected $_has_recurring_support = false; // Whether recurring payments are possible via gateway at all
+    protected $_may_support_recurring = false; // Whether recurring payments are possible via gateway at all
 
     protected $_admin_ui_column = 2; // 1 or 2. A number of the metaboxes columns, to which gateway belogns by default
     protected $_admin_ui_order = 100; // Default sorting index for gateway metabox in its column. Lower number = higher
@@ -251,32 +251,6 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     }
 
-//    final protected function __clone() {}
-//
-//    public final static function get_instance() {
-//
-//        if( !static::$_instance ) {
-//
-//            static::$_instance = new static();
-//            static::$_instance->_initialize_options();
-//
-//            add_action('leyka_enqueue_scripts', array(static::$_instance, 'enqueue_gateway_scripts'));
-//
-//            add_action('leyka_payment_form_submission-'.static::$_instance->id, array(static::$_instance, 'process_form'), 10, 4);
-//            add_action('leyka_payment_form_submission-'.static::$_instance->id, array(static::$_instance, 'process_form_default'), 100, 4);
-//            add_action('leyka_log_donation-'.static::$_instance->id, array(static::$_instance, 'log_gateway_fields'));
-//
-//            add_filter('leyka_submission_redirect_url-'.static::$_instance->id, array(static::$_instance, 'submission_redirect_url'), 10, 2);
-//            add_filter('leyka_submission_redirect_type-'.static::$_instance->id, array(static::$_instance, 'submission_redirect_type'), 10, 3);
-//            add_filter('leyka_submission_form_data-'.static::$_instance->id, array(static::$_instance, 'submission_form_data'), 10, 3);
-//            add_action('leyka_'.static::$_instance->id.'_redirect_page_content', array(static::$_instance, 'gateway_redirect_page_content'), 10, 2);
-
-//        }
-//
-//        return static::$_instance;
-//
-//    }
-
     public function __get($param) {
 
         switch($param) {
@@ -299,7 +273,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
             case 'has_recurring':
             case 'has_recurring_support':
-                return !!$this->_has_recurring_support;
+                return !!$this->_may_support_recurring;
 
             case 'min_commission': return $this->_min_commission ? round((float)$this->_min_commission, 2) : 0.0;
             case 'receiver_types': return $this->_receiver_types ? (array)$this->_receiver_types : array('legal');
@@ -563,6 +537,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
                 }
 
             }
+
         }
 
         if( !!$by_categories ) {
@@ -624,11 +599,15 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
      * @return array; list of possible values in leyka_get_gateways_filter_categories_list function
      */
     public function get_filter_categories() {
+
         $categories = $this->receiver_types;
+
         if($this->has_recurring) {
             $categories[] = 'recurring';
         }
+
         return $categories;
+
     }
     
     /**
@@ -638,18 +617,18 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
         
         global $wpdb;
         $status = 'inactive';
-        
+
         if(count($this->get_payment_methods(true))) {
             $status = 'active';
-        }
-        elseif((int)$wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}options WHERE option_name LIKE %s", '%leyka_'.$gateway->id.'_%') ) > 0) {
+        } elseif((int)$wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}options WHERE option_name LIKE %s", '%leyka_'.$gateway->id.'_%') ) > 0) {
             $status = 'activating';
         }
         
         return $status;
+
     }
     
-} //class end
+}
 
 /**
  * Class Leyka_Payment_Method
@@ -736,7 +715,6 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
                 $param = !!$this->_ajax_without_form_submission;
                 break;
             default:
-//                trigger_error('Error: unknown param "'.$param.'"');
                 $param = null;
         }
 
@@ -792,7 +770,7 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
                 'title' => __('Payment method custom label', 'leyka'),
                 'description' => __('A label for this payment method that will appear on all donation forms.', 'leyka'),
                 'required' => false,
-                'placeholder' => sprintf(__('E.g., «%s»', 'leyka'), $this->_label),
+                'placeholder' => sprintf(__('E.g., ï¿½%sï¿½', 'leyka'), $this->_label),
                 'validation_rules' => array(), // List of regexp?..
             ));
         }

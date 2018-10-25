@@ -36,16 +36,16 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             'mixplat_service_id' => array(
                 'type' => 'text',
                 'title' => __('MIXPLAT project ID', 'leyka'),
-                'description' => __('Please, enter your MIXPLAT project ID here. It can be found in your MIXPLAT project settings page on MIXPLAT site.', 'leyka'),
+                'comment' => __('Please, enter your MIXPLAT project ID here. It can be found in your MIXPLAT project settings page on MIXPLAT site.', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., 100359', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '100359'),
             ),
             'mixplat_secret_key' => array(
                 'type' => 'text',
                 'title' => __('MIXPLAT project secret key', 'leyka'),
-                'description' => __('Please, enter your MIXPLAT project secret key here. It can be found in your MIXPLAT project settings page on MIXPLAT site.', 'leyka'),
+                'comment' => __('Please, enter your MIXPLAT project secret key here. It can be found in your MIXPLAT project settings page on MIXPLAT site.', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., c23a4398db8ef7b3ae1f4b07aeeb7c54f8e3c7c9', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'c23a4398db8ef7b3ae1f4b07aeeb7c54f8e3c7c9'),
             ),
             'mixplat_test_mode' => array(
                 'type' => 'checkbox',
@@ -448,11 +448,9 @@ class Leyka_Mixplat_Mobile extends Leyka_Payment_Method {
         $this->_options = array(
             $this->full_id.'_details' => array(
                 'type' => 'html',
-                'default' => '',
                 'title' => __('Ways to donate via mobile payments', 'leyka'),
-                'description' => __('Please, set a text to describe a donation via mobile payments.', 'leyka'),
-                'required' => 1,
-                'validation_rules' => array(), // List of regexp?..
+                'comment' => __('Please, set a text to describe a donation via mobile payments.', 'leyka'),
+                'required' => true,
             ),
         );
 
@@ -511,28 +509,20 @@ class Leyka_Mixplat_Text extends Leyka_Payment_Method {
                 'type' => 'select',
                 'default' => leyka_get_campaigns_select_default(),
                 'title' => __('Campaign for SMS payments', 'leyka'),
-                'description' => __('Select a campaign to which SMS payments will be related by default.', 'leyka'),
-                'required' => 0,
-                'placeholder' => '', // For text fields
-                'length' => '', // For text fields
+                'comment' => __('Select a campaign to which SMS payments will be related by default.', 'leyka'),
                 'list_entries' => 'leyka_get_campaigns_list',
-                'validation_rules' => array(), // List of regexp?..
             ),
             $this->full_id.'_description' => array(
                 'type' => 'html',
-                'default' => '',
                 'title' => __('Comment to the message of donations via SMS', 'leyka'),
-                'description' => __('Please, set a text of payments via SMS description.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
+                'comment' => __('Please, set a text of payments via SMS description.', 'leyka'),
             ),
             $this->full_id.'_details' => array(
                 'type' => 'html',
                 'default' => __('You can make a donation by sending an SMS on the number XXXX.', 'leyka'),
                 'title' => __('Ways to donate via SMS', 'leyka'),
-                'description' => __('Please, set a text to describe a donation via SMS.', 'leyka'),
-                'required' => 1,
-                'validation_rules' => array(), // List of regexp?..
+                'comment' => __('Please, set a text to describe a donation via SMS.', 'leyka'),
+                'required' => true,
             ),
         );
 

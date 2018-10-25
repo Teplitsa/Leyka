@@ -27,7 +27,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
         $this->_min_commission = 2.8;
         $this->_receiver_types = array('legal');
-        $this->_has_recurring_support = true;
+        $this->_may_support_recurring = true;
 
     }
 
@@ -43,35 +43,34 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'default' => leyka_is_yandex_new_api_used(),
                 'title' => 'Новый API Яндекс.Кассы',
                 'description' => 'Отметьте, если ваше подключение к Яндекс.Кассе использует новый API',
-                'required' => false,
             ),
             $this->_id.'_shop_id' => array(
                 'type' => 'text',
                 'title' => __('ShopID', 'leyka'),
                 'comment' => __('Please, enter your Yandex.Kassa shopID here. It can be found in your Yandex contract and in your .', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., 12345', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '12345'),
             ),
             $this->_id.'_scid' => array(
                 'type' => 'text',
                 'title' => __('ScID', 'leyka'),
                 'comment' => __('Please, enter your Yandex.Kassa shop showcase ID (SCID) here. It can be found in your Yandex contract.', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., 12345', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '12345'),
                 'field_classes' => array('old-api'),
             ),
             $this->_id.'_shop_article_id' => array(
                 'type' => 'text',
                 'title' => __('ShopArticleID', 'leyka'),
                 'comment' => __('Please, enter your Yandex.Kassa shop article ID here, if it exists. It can be found in your Yandex contract, also you can ask your Yandex.Kassa manager for it.', 'leyka'),
-                'placeholder' => __('E.g., 12345', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '12345'),
                 'field_classes' => array('old-api'),
             ),
             $this->_id.'_shop_password' => array(
                 'type' => 'text',
                 'title' => __('shopPassword', 'leyka'),
                 'comment' => __("Please, enter a shopPassword parameter value that you filled in Yandex.Kassa technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
-                'placeholder' => __('E.g., 1^2@3#&84nDsOmE5h1T', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1^2@3#&84nDsOmE5h1T'),
                 'is_password' => true,
                 'field_classes' => array('old-api'),
             ),
@@ -80,7 +79,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'title' => __('Secret key for API', 'leyka'),
                 'comment' => __("Please, enter a shopPassword parameter value that you filled in Yandex.Kassa technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., test_OkT0flRaEnS0fWqMFZuTg01hu_8SxSkxZuAVIw7CMgB', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'test_OkT0flRaEnS0fWqMFZuTg01hu_8SxSkxZuAVIw7CMgB'),
                 'is_password' => true,
                 'field_classes' => array('new-api'),
             ),
@@ -89,7 +88,6 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'default' => true,
                 'title' => __('Payments testing mode', 'leyka'),
                 'description' => __('Check if the gateway integration is in test mode.', 'leyka'),
-                'required' => false,
                 'field_classes' => array('old-api'),
             ),
             $this->_id.'_outer_ip_to_inner' => array(
@@ -97,7 +95,6 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'default' => true,
                 'title' => __('Set outer requests IP to inner one', 'leyka'),
                 'description' => __('Check if there are systematic errors on payments using the gateway.', 'leyka'),
-                'required' => false,
             ),
         );
 
@@ -878,7 +875,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
                 'default' => '',
                 'title' => __('Yandex.Kassa recurring payments certificate path', 'leyka'),
                 'comment' => __("Please, enter the path to your SSL certificate given to you by Yandex.Kassa. <strong>Warning!</strong> The path should include the certificate's filename intself. Also it should be relative to wp-content directory.", 'leyka'),
-                'placeholder' => __('E.g., /uploads/leyka/your-cert-file.cer', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '/uploads/leyka/your-cert-file.cer'),
                 'field_classes' => array('old-api'),
             ),
             $this->full_id.'_private_key_path' => array(
@@ -886,7 +883,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
                 'default' => '',
                 'title' => __("Yandex.Kassa recurring payments certificate's private key path", 'leyka'),
                 'comment' => __("Please, enter the path to your SSL certificate's private key given to you by Yandex.Kassa.<li><li>The path should include the certificate's filename intself.</li><li>The path should be relative to wp-content directory. </li></ul>", 'leyka'),
-                'placeholder' => __('E.g., /uploads/leyka/your-private.key', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '/uploads/leyka/your-private.key'),
                 'field_classes' => array('old-api'),
             ),
             $this->full_id.'_private_key_password' => array(
@@ -894,7 +891,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
                 'default' => '',
                 'title' => __("Yandex.Kassa recurring payments certificate's private key password", 'leyka'),
                 'comment' => __("Please, enter a password for your SSL certificate's private key, if you set this password during the generation of your sertificate request file.", 'leyka'),
-                'placeholder' => __('Ex., fW!^12@3#&8A4', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'fW!^12@3#&8A4'),
                 'is_password' => true,
                 'field_classes' => array('old-api'),
             ),
@@ -928,8 +925,6 @@ class Leyka_Yandex_Money extends Leyka_Payment_Method {
 
         $this->_label_backend = __('Yandex.Money', 'leyka');
         $this->_label = __('Yandex.Money', 'leyka');
-
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
@@ -1066,8 +1061,6 @@ class Leyka_Yandex_Promvzyazbank extends Leyka_Payment_Method {
 
         $this->_label_backend = __('Promsvyazbank invoicing', 'leyka');
         $this->_label = __('Promsvyazbank', 'leyka');
-
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/promsvyazbank.png',
