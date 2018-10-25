@@ -202,6 +202,69 @@ jQuery(document).ready(function($){
     }).change();
 
 });
+
+// scroll pm icons
+jQuery(document).ready(function($){
+});
+
+// filter gateways
+jQuery(document).ready(function($){
+    var $filter = $('.leyka-gateways-filter');
+    var $gatewaysList = $('.gateways-cards-list');
+    var gatewaysFilter = {};
+    
+    $filter.find('.filter-toggle').click(function(){
+        $(this).closest('.filter-area').toggleClass('show');
+    });
+    
+    $filter.find('.filter-category-show-filter').click(function(e){
+        e.preventDefault();
+        $(this).closest('.filter-area').toggleClass('show');
+    });
+
+    $filter.find('.filter-category-reset-filter').click(function(e){
+        e.preventDefault();
+        resetFilter();
+    });
+
+    $filter.find('.filter-category-item').click(function(e){
+        e.preventDefault();
+        toggleFilterItem($(this));
+    });
+    
+    function resetFilter() {
+        gatewaysFilter = {};
+        $filter.find('.filter-category-item').removeClass('active');
+        applyFilter();
+    }
+    
+    function applyFilter() {
+        if(Object.keys(gatewaysFilter).length) {
+            $gatewaysList.find('.gateway-card').hide();
+            for(var filter in gatewaysFilter) {
+                $gatewaysList.find('.gateway-card.' + filter).show();
+            }
+        }
+        else {
+            $gatewaysList.find('.gateway-card').show();
+        }
+    }
+
+    function toggleFilterItem($filterItem) {
+        $filterItem.toggleClass('active');
+        
+        if($filterItem.hasClass('active')) {
+            gatewaysFilter[$filterItem.data('category')] = true;
+        }
+        else {
+            delete gatewaysFilter[$filterItem.data('category')];
+        }
+        
+        applyFilter();
+    }
+    
+});
+
 /*!
 * jquery.inputmask.bundle.js
 * https://github.com/RobinHerbots/Inputmask

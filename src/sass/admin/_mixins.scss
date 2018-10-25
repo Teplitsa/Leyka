@@ -85,11 +85,19 @@
             left:calc(50% - 4px);
             top:-7px;                            
         }
+        
+        &:empty {
+            display: none;
+        }
     }
     
     &:hover {
         .field-q-tooltip {
             display: block;
+            
+            &:empty {
+              display: none;
+            }
         }
     }
     
@@ -275,10 +283,15 @@
     height: 40px;
     line-height: 40px;
     width: 248px;
-    margin-right: 22px;
     color: $color-white;
     display: inline-block;
     text-align: center;
+    box-shadow: none;
+    
+    &:hover {
+      color: $color-white;
+      box-shadow: none;
+    }
 }
 
 @mixin leyka-link-sec {
@@ -294,5 +307,60 @@
     
     &:focus, &:active {
         color: $color-wizard-link-sec-active;
+    }
+}
+
+@mixin leyka-pm-icons {
+    flex: 0 1 50%;
+    padding: 4px 16px;
+  
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+  
+    .pm-icon {
+        height: 20px;
+        margin-right: 12px;
+    }
+}
+
+@mixin leyka-gateway-details {
+  
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    flex: 0 1 50%;
+
+    font-size: 13px;
+
+    .details-element {
+
+        width: fit-content;
+        text-align: center;
+        margin-right: 32px;
+        
+        &:last-child {
+          margin-right: 0;
+        }
+
+        .details-pic {
+
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: baseline;
+
+            height: 27px;
+
+            .commission-size {
+                font-size: 18px;
+                margin-left: 4px;
+                margin-top: 4px;
+            }
+
+        }
+
     }
 }

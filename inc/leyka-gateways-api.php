@@ -112,6 +112,70 @@ function leyka_get_gateway_by_id($gateway_id) {
 
 }
 
+/**
+ * @param Leyka_Gateway $gateway
+ * @return array
+ */
+function leyka_get_gateway_icons_list($gateway) {
+
+    $pm_list = $gateway->get_payment_methods();
+    $icons = array();
+    
+    foreach($pm_list as $pm) {
+        if($pm->icons) {
+            $icons = array_merge($icons, $pm->icons);
+        }
+        else {
+            $icons[] = $pm->main_icon_url;
+        }
+    }
+    
+    return array_unique($icons);
+
+}
+
+/**
+ * @param Leyka_Gateway $gateway
+ * @return string
+ */
+function leyka_get_gateway_settings_url($gateway) {
+    
+    $gateway_activation_status = $gateway ? $gateway->get_activation_status() : null;
+    
+    $url = '';
+    
+    if($gateway_activation_status == 'inactive' && $wizard = leyka_gateway_setup_wizard($gateway)) {
+        $url = admin_url('/admin.php?page=leyka_settings_new&screen=wizard-' . $wizard);
+    }
+    elseif($gateway_activation_status) {
+        $url = admin_url('/admin.php?page=leyka_settings&stage=payment&gateway=' . $gateway->id);
+    }
+    
+    return $url;
+}
+
+/**
+ * @param Leyka_Gateway $gateway
+ * @return mixed; string wizard suffix or false if wizard unavailable for gateway
+ */
+function leyka_gateway_setup_wizard($gateway) {
+    
+    $wizard = false;
+    
+    if(in_array($gateway->id, array('yandex', 'cp', 'quittance'))) {
+        
+        if($gateway->id == 'quittance') {
+            $wizard = 'init';
+        }
+        else {
+            $wizard = $gateway->id;
+        }
+        
+    }
+    
+    return $wizard;
+}
+
 abstract class Leyka_Gateway extends Leyka_Singleton {
 
     protected static $_instance;
@@ -555,6 +619,36 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     /** Action called when new donation (Leyka_Donation::add()) is being created to add gateway-specific fields. */
     public function add_donation_specific_data($donation_id, array $donation_params) {
     }
+    
+    /**
+     * @return array; list of possible values in leyka_get_gateways_filter_categories_list function
+     */
+    public function get_filter_categories() {
+        $categories = $this->receiver_types;
+        if($this->has_recurring) {
+            $categories[] = 'recurring';
+        }
+        return $categories;
+    }
+    
+    /**
+     * @return string: active inactive activating
+     */
+    public function get_activation_status() {
+        
+        global $wpdb;
+        $status = 'inactive';
+        
+        if(count($this->get_payment_methods(true))) {
+            $status = 'active';
+        }
+        elseif((int)$wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}options WHERE option_name LIKE %s", '%leyka_'.$gateway->id.'_%') ) > 0) {
+            $status = 'activating';
+        }
+        
+        return $status;
+    }
+    
 } //class end
 
 /**
@@ -698,7 +792,7 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
                 'title' => __('Payment method custom label', 'leyka'),
                 'description' => __('A label for this payment method that will appear on all donation forms.', 'leyka'),
                 'required' => false,
-                'placeholder' => sprintf(__('E.g., Â«%sÂ»', 'leyka'), $this->_label),
+                'placeholder' => sprintf(__('E.g., «%s»', 'leyka'), $this->_label),
                 'validation_rules' => array(), // List of regexp?..
             ));
         }
