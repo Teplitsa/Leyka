@@ -18,12 +18,8 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
                 'type' => 'select',
                 'default' => leyka_get_default_success_page(),
                 'title' => __('Page to redirect a donor after a donation', 'leyka'),
-                'description' => __('Select a page for donor to redirect to after he has acquired a quittance.', 'leyka'),
-                'required' => 0, // 1 if field is required, 0 otherwise
-                'placeholder' => '', // For text fields
-                'length' => '', // For text fields
+                'comment' => __('Select a page for donor to redirect to after he has acquired a quittance.', 'leyka'),
                 'list_entries' => leyka_get_pages_list(),
-                'validation_rules' => array(), // List of regexp?..
             ),
         );
 
@@ -33,8 +29,17 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
 
         $this->_id = 'quittance';
         $this->_title = __('Quittances', 'leyka');
-        $this->_docs_link = '//leyka.te-st.ru/docs/nastrojka-lejki/';
 
+        $this->_description = apply_filters(
+            'leyka_gateway_description',
+            __('Bank order payment allows you to make a donation through any bank. You can print out a bank order paper and bring it to the bank to make a payment.', 'leyka'),
+            $this->_id
+        );
+
+        $this->_docs_link = '//leyka.te-st.ru/docs/nastrojka-lejki/';
+        $this->_registration_link = '';
+
+        $this->_min_commission = 2.1;
         $this->_receiver_types = array('legal', 'physical');
 
     }

@@ -18,6 +18,10 @@ class Leyka_Text_Gateway extends Leyka_Gateway {
             $this->_id
         );
 
+        $this->_docs_link = '';
+        $this->_registration_link = '';
+
+        $this->_min_commission = 0;
         $this->_receiver_types = array('legal', 'physical',);
 
     }
@@ -38,9 +42,6 @@ class Leyka_Text_Gateway extends Leyka_Gateway {
 
     public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
         return $form_data_vars;
-    }
-
-    public function _handle_service_calls($call_type = '') {
     }
 
     public function get_gateway_response_formatted(Leyka_Donation $donation) {

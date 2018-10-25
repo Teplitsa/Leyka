@@ -132,11 +132,15 @@
                     }
 
                     .gateway-details {
+
                         @include leyka-gateway-details();
+
+                        justify-content: flex-end;
                         
                         .details-element:first-child {
                             margin-left: 24px;
                         }
+
                     }
 
                 }

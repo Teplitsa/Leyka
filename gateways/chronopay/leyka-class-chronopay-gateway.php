@@ -21,9 +21,9 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         $this->_docs_link = '//leyka.te-st.ru/docs/chronopay/';
         $this->_registration_link = '//chronopay.com/ru/connection/';
 
-        $this->_min_commission = 0.5;
+        $this->_min_commission = 2.1; // 0.5% officially, but NGOs reported to us otherwise
         $this->_receiver_types = array('legal');
-        $this->_has_recurring_support = true;
+        $this->_may_support_recurring = true;
 
     }
 
@@ -35,38 +35,26 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
         $this->_options = array(
             'chronopay_shared_sec' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
-                'default' => '',
-                'title' => __('Chronopay shared_sec', 'leyka'),
-                'description' => __('Please, enter your Chronopay shared_sec value here. It can be found in your contract.', 'leyka'),
-                'required' => 1,
+                'type' => 'text',
+                'title' => __('Shared Sec', 'leyka'),
+                'comment' => __('Please, enter your Chronopay shared_sec value here. It can be found in your contract.', 'leyka'),
+                'required' => true,
                 'is_password' => true,
-                'placeholder' => __('Ex., 4G0i8590sl5Da37I', 'leyka'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '4G0i8590sl5Da37I'),
             ),
             'chronopay_ip' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
+                'type' => 'text',
                 'default' => '185.30.16.166',
                 'title' => __('Chronopay IP', 'leyka'),
-                'description' => __('IP address to check for requests.', 'leyka'),
-                'required' => 1,
-                'placeholder' => __('Ex., 185.30.16.166', 'leyka'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
+                'comment' => __('IP address to check for requests.', 'leyka'),
+                'required' => true,
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '185.30.16.166'),
             ),
             'chronopay_use_payment_uniqueness_control' => array(
-                'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
-                'default' => 0,
+                'type' => 'checkbox',
+                'default' => false,
                 'title' => __('Use the payments uniqueness control', 'leyka'),
                 'description' => __('Check if you use Chronopay payment uniqueness control setting.', 'leyka'),
-                'required' => false,
-                'placeholder' => '',
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
             ),
         );
 
@@ -648,38 +636,38 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
             'chronopay_card_product_id_rur' => array(
                 'type' => 'text',
                 'title' => __('Chronopay product_id for RUR', 'leyka'),
-                'description' => __('Please, enter Chronopay product_id for RUR currency.', 'leyka'),
-                'required' => false,
+                'comment' => __('Please, enter Chronopay product_id for RUR currency.', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0001'),
             ),
             'chronopay_card_product_id_usd' => array(
                 'type' => 'text',
                 'title' => __('Chronopay product_id for USD', 'leyka'),
-                'description' => __('Please, enter Chronopay product_id for USD currency.', 'leyka'),
-                'required' => false,
+                'comment' => __('Please, enter Chronopay product_id for USD currency.', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0002'),
             ),
             'chronopay_card_product_id_eur' => array(
                 'type' => 'text',
                 'title' => __('Chronopay product_id for EUR', 'leyka'),
-                'description' => __('Please, enter Chronopay product_id for EUR currency.', 'leyka'),
-                'required' => false,
+                'comment' => __('Please, enter Chronopay product_id for EUR currency.', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0003'),
             ),
             'chronopay_card_rebill_product_id_rur' => array(
                 'type' => 'text',
                 'title' => __('Chronopay product_id for rebills in RUR', 'leyka'),
-                'description' => __('Please, enter Chronopay product_id for rebills in RUR currency.', 'leyka'),
-                'required' => false,
+                'comment' => __('Please, enter Chronopay product_id for rebills in RUR currency.', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0011'),
             ),
             'chronopay_card_rebill_product_id_usd' => array(
                 'type' => 'text',
                 'title' => __('Chronopay product_id for rebills in USD', 'leyka'),
-                'description' => __('Please, enter Chronopay product_id for rebills in USD currency.', 'leyka'),
-                'required' => false,
+                'comment' => __('Please, enter Chronopay product_id for rebills in USD currency.', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0012'),
             ),
             'chronopay_card_rebill_product_id_eur' => array(
                 'type' => 'text',
                 'title' => __('Chronopay product_id for rebills in EUR', 'leyka'),
-                'description' => __('Please, enter Chronopay product_id for rebills in EUR currency.', 'leyka'),
-                'required' => false,
+                'comment' => __('Please, enter Chronopay product_id for rebills in EUR currency.', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0013'),
             ),
         );
 

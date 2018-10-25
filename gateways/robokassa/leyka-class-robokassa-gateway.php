@@ -11,8 +11,17 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
 
         $this->_id = 'robokassa';
         $this->_title = __('Robokassa', 'leyka');
-        $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-robokassa/#robokassa-settings';
 
+        $this->_description = apply_filters(
+            'leyka_gateway_description',
+            __('Robokassa system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="http://www.robokassa.ru/ru/">Robokassa</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
+            $this->_id
+        );
+
+        $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-robokassa/#robokassa-settings';
+        $this->_registration_link = 'https://partner.robokassa.ru/reg/register';
+
+        $this->_min_commission = 3.7;
         $this->_receiver_types = array('legal');
 
     }
@@ -25,50 +34,33 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
 
         $this->_options = array(
             'robokassa_shop_id' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox  
-                'value' => '',
-                'default' => '',
+                'type' => 'text',
                 'title' => __('Shop ID', 'leyka'),
-                'description' => __('Please, enter your Robokassa shop ID here. It can be found in your Robokassa control panel (shop technical settings).', 'leyka'),
+                'comment' => __('Please, enter your Robokassa shop ID here. It can be found in your Robokassa control panel (shop technical settings).', 'leyka'),
                 'required' => true,
-                'placeholder' => __('Ex., 1234', 'leyka'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1234'),
             ),
             'robokassa_shop_password1' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
-                'default' => '',
+                'type' => 'text',
                 'title' => __('Shop password 1', 'leyka'),
-                'description' => __('Please, enter your Robokassa shop password 1 here. It can be found in your Robokassa control panel (shop technical settings, field "password 1").', 'leyka'),
+                'comment' => __('Please, enter your Robokassa shop password 1 here. It can be found in your Robokassa control panel (shop technical settings, field "password 1").', 'leyka'),
                 'required' => true,
                 'is_password' => true,
-                'placeholder' => __('Ex., 12abc34+', 'leyka'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '12abc34+'),
             ),
             'robokassa_shop_password2' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
-                'default' => '',
+                'type' => 'text',
                 'title' => __('Shop password 2', 'leyka'),
-                'description' => __('Please, enter your Robokassa shop password 2 here. It can be found in your Robokassa control panel (shop technical settings, field "password 2").', 'leyka'),
+                'comment' => __('Please, enter your Robokassa shop password 2 here. It can be found in your Robokassa control panel (shop technical settings, field "password 2").', 'leyka'),
                 'required' => true,
                 'is_password' => true,
-                'placeholder' => __('Ex., 12abc34+', 'leyka'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '12abc34+'),
             ),
             'robokassa_test_mode' => array(
-                'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
-                'default' => 1,
+                'type' => 'checkbox',
+                'default' => true,
                 'title' => __('Payments testing mode', 'leyka'),
                 'description' => __('Check if the gateway integration is in test mode.', 'leyka'),
-                'required' => false,
-                'placeholder' => '',
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
             ),
         );
 
@@ -361,7 +353,6 @@ class Leyka_Robokassa_Qiwi extends Leyka_Payment_Method {
     }
 
 }
-
 
 class Leyka_Robokassa_All extends Leyka_Payment_Method {
 

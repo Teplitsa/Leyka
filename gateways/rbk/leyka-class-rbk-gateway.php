@@ -21,8 +21,17 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
         $this->_id = 'rbk';
         $this->_title = __('RBK Money', 'leyka');
-        $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-rbk/';
 
+        $this->_description = apply_filters(
+            'leyka_gateway_description',
+            __('RBK Money allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="https://rbkmoney.ru/">RBK Money</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
+            $this->_id
+        );
+
+        $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-rbk/';
+        $this->_registration_link = '//auth.rbk.money/auth/realms/external/login-actions/registration?client_id=koffing';
+
+        $this->_min_commission = 2.9;
         $this->_receiver_types = array('legal');
 
     }
@@ -35,37 +44,25 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
         $this->_options = array(
             'rbk_shop_id' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
-                'default' => '',
+                'type' => 'text',
                 'title' => __('RBK Money shopID', 'leyka'),
                 'description' => __('Please, enter your shopID value here. It can be found in your contract with RBK Money or in your control panel there.', 'leyka'),
-                'required' => 1,
-                'placeholder' => __('Ex., 1234', 'leyka'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
+                'required' => true,
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1234'),
             ),
             'rbk_api_key' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
-                'default' => '',
+                'type' => 'text',
                 'title' => __('RBK Money apiKey', 'leyka'),
-                'description' => __('Please, enter your apiKey value here. It can be found in your RBK Money control panel.', 'leyka'),
-                'required' => 1,
-                'placeholder' => __('Ex., RU123456789', 'leyka'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
+                'comment' => __('Please, enter your apiKey value here. It can be found in your RBK Money control panel.', 'leyka'),
+                'required' => true,
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'RU123456789'),
             ),
             'rbk_api_web_hook_key' => array(
                 'type' => 'text',
-                'value' => '',
-                'default' => '',
                 'title' => __('RBK Money webhook public key', 'leyka'),
-                'description' => __('Please, enter your webhook public key value here.', 'leyka'),
-                'required' => 1,
+                'comment' => __('Please, enter your webhook public key value here.', 'leyka'),
+                'required' => true,
                 'placeholder' => __('-----BEGIN PUBLIC KEY----- ...', 'leyka'),
-                'list_entries' => array(),
-                'validation_rules' => array(),
             )
         );
 
@@ -305,9 +302,9 @@ class Leyka_Rbk_Card extends Leyka_Payment_Method {
         $this->_label_backend = __('Bank card via (RBK money)', 'leyka');
         $this->_label = __('Bank card', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_' . $this->_gateway_id . '_' . $this->_id, array(
-            LEYKA_PLUGIN_BASE_URL . 'gateways/rbk/icons/visa.png',
-            LEYKA_PLUGIN_BASE_URL . 'gateways/rbk/icons/master.png',
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_' . $this->_id, array(
+            LEYKA_PLUGIN_BASE_URL.'gateways/rbk/icons/visa.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/rbk/icons/master.png',
         ));
 
         $this->_supported_currencies[] = 'rur';
