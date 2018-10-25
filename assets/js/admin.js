@@ -541,11 +541,13 @@ jQuery(document).ready(function($){
     function addCopyControls($copyContainer) {
         
         var $copyLink = $('<span>');
+        $copyLink.addClass('copy-control');
         $copyLink.addClass('copy-link');
         $copyLink.text(leyka_wizard_common.copy2clipboard);
         $copyContainer.append($copyLink);
         
         var $copyDone = $('<span>');
+        $copyDone.addClass('copy-control');
         $copyDone.addClass('copy-done');
         $copyDone.text(leyka_wizard_common.copy2clipboard_done);
         $copyContainer.append($copyDone);

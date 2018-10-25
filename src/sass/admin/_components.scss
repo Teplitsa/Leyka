@@ -177,7 +177,7 @@
     position: relative;
     overflow: visible;
     
-    .copy-link, .copy-done {
+    .copy-control {
         @include copy2clipborad-link();
         color: $color-wizard-link;
         width: 150px;
@@ -194,7 +194,6 @@
             @include copy2clipborad-link();
             content: " ";
             background-image: url('../../img/icon-copy2clipboard.svg');
-            background-size: 17px 15px;
             background-repeat: no-repeat;
             width: 17px;
             height: 15px;
@@ -205,13 +204,35 @@
         }
         
     }
+
+    .copy-link {
+        &:before {
+            background-image: url('../../img/icon-copy2clipboard.svg');
+            background-size: 17px 15px;
+            width: 17px;
+            height: 15px;
+        }
+    }
     
     .copy-done {
         display: none;
         
         &:before {
-                background-image: url('../../img/icon-copy2clipboard-done.svg');
-                background-size: 16px 16px;
+            background-image: url('../../img/icon-copy2clipboard-done.svg');
+            background-size: 16px 16px;
+            width: 16px;
+            height: 16px;
+        }
+    }
+    
+    &.short {
+        .copy-control {
+            width: 25px !important;
+            overflow: hidden;
+            
+            &:before {
+                margin-left: 5px;
+            }
         }
     }
     

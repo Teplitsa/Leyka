@@ -241,6 +241,14 @@
         .step-submit {
             margin-top: 32px;
             
+            .button-primary {
+                margin-right: 22px;
+            }
+            
+            .button-secondary {
+                margin-right: 22px;
+            }
+                
             a {
                 line-height: 35px;
             }
@@ -428,14 +436,6 @@
         #leyka-settings-form-final-yandex_final {
             
             .step-submit {
-                
-                .button-primary {
-                    margin-right: 22px;
-                }
-                
-                .button-secondary {
-                    margin-right: 22px;
-                }
                 
                 .wizard-custom-link {
                     margin-left: 1rem;
