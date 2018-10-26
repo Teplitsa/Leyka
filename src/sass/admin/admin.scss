@@ -297,102 +297,117 @@
 
             }
 
-            #pm-order-settings {
+            .pm-order {
 
-                .pm-order {
+                display: flex;
+                flex-direction: row;
 
-                    display: flex;
-                    flex-direction: row;
+                list-style: none;
+                margin: 16px 0;
 
-                    list-style: none;
-                    margin: 16px 0;
+                height: 83px;
+                background-color: transparentize($color-white, 0.6);
+                border-radius: 4px;
 
-                    height: 83px;
-                    background-color: transparentize($color-white, 0.6);
-                    border-radius: 4px;
+                box-shadow: 0 2px 4px 0 transparentize($color-text-black, 0.87); // 0,92
 
-                    box-shadow: 0 2px 4px 0 transparentize($color-text-black, 0.87); // 0,92
+                cursor: grab;
 
-                    cursor: grab;
+                &.pm-list-empty {
 
-                    &.ui-sortable-helper {
-                        cursor: move;
+                    cursor: pointer;
+                    border: 1px dashed $color-nav-line;
+
+                    justify-content: center;
+                    align-items: center;
+
+                    font-size: 14px;
+                    color: $color-nav-section-active-text;
+
+                    padding: 6px 24px;
+
+                    &.comment-displayed {
+                        cursor: default;
                     }
 
-                    .gateway-logo-wrapper {
+                }
 
-                        flex: 0 0 56px;
+                &.ui-sortable-helper {
+                    cursor: move;
+                }
+
+                .gateway-logo-wrapper {
+
+                    flex: 0 0 56px;
+
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    border-right: 1px solid $color-border-normal;
+
+                }
+
+                .pm-info {
+
+                    flex: 1 0 200px;
+
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+
+                    .pm-icons {
+                        @include leyka-pm-icons();
+                    }
+
+                    .pm-label-wrapper {
+
+                        flex: 0 1 50%;
 
                         display: flex;
+                        flex-direction: row;
                         justify-content: center;
                         align-items: center;
 
-                        border-right: 1px solid $color-border-normal;
+                        border-top: 1px solid $color-border-normal;
+                        padding: 4px 16px;
+
+                        .pm-label {
+
+                            font-size: 10px;
+                            color: $color-wizard-field-explain;
+
+                        }
+
+                        .pm-control {
+                            margin-left: 6px;
+                            cursor: pointer;
+                        }
 
                     }
 
-                    .pm-info {
-
-                        flex: 1 0 200px;
+                    .pm-label-fields {
 
                         display: flex;
-                        flex-direction: column;
-                        justify-content: center;
+                        justify-content: flex-start;
+                        align-items: center;
 
-                        .pm-icons {
-                            @include leyka-pm-icons();
-                        }
+                        flex: 1 1 100%;
 
-                        .pm-label-wrapper {
-
-                            flex: 0 1 50%;
-
-                            display: flex;
-                            flex-direction: row;
-                            justify-content: center;
-                            align-items: center;
-
-                            border-top: 1px solid $color-border-normal;
-                            padding: 4px 16px;
-
-                            .pm-label {
-
-                                font-size: 10px;
-                                color: $color-wizard-field-explain;
-
-                            }
-
-                            .pm-control {
-                                margin-left: 6px;
-                                cursor: pointer;
-                            }
-
-                        }
-
-                        .pm-label-fields {
-
-                            display: flex;
-                            justify-content: flex-start;
-                            align-items: center;
+                        .pm-label-input-field {
 
                             flex: 1 1 100%;
+                            font-size: 12px;
 
-                            .pm-label-input-field {
+                        }
 
-                                flex: 1 1 100%;
-                                font-size: 12px;
+                        .new-pm-label-control {
 
-                            }
+                            cursor: pointer;
+                            color: $color-wizard-link;
 
-                            .new-pm-label-control {
-
-                                cursor: pointer;
-                                color: $color-wizard-link;
-
-                                &:first-of-type {
-                                    margin-left: 4px;
-                                }
-
+                            &:first-of-type {
+                                margin-left: 4px;
                             }
 
                         }
@@ -400,6 +415,7 @@
                     }
 
                 }
+
             }
 
         }

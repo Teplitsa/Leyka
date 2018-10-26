@@ -12,7 +12,8 @@ jQuery(document).ready(function($){
         $pm_update_status = $('.pm-update-status'),
         $ok_message = $pm_update_status.find('.ok-message'),
         $error_message = $pm_update_status.find('.error-message'),
-        $ajax_loading = $pm_update_status.find('.leyka-loader');
+        $ajax_loading = $pm_update_status.find('.leyka-loader'),
+        $pm_list_empty_block = $('.pm-list-empty');
 
     $pm_update_status.find('.result').hide();
 
@@ -34,7 +35,7 @@ jQuery(document).ready(function($){
         $ajax_loading.show();
 
         $.post(leyka.ajaxurl, params, null, 'json')
-            .done(function(json) {
+            .done(function(json){
 
                 if(typeof json.status !== 'undefined' && json.status === 'error') {
 
@@ -49,10 +50,10 @@ jQuery(document).ready(function($){
                 $error_message.html('').hide();
 
             })
-            .fail(function() {
+            .fail(function(){
                 $error_message.html(leyka.common_error_message).show();
             })
-            .always(function() {
+            .always(function(){
                 $ajax_loading.hide();
             });
 
@@ -68,6 +69,14 @@ jQuery(document).ready(function($){
             );
 
             leykaUpdatePmList($pm_order);
+
+            if($pm_order.find('.pm-order:visible').length) {
+                console.log('here 1', $pm_order.find('.pm-order:visible'));
+                $pm_list_empty_block.hide();
+            } else {
+                console.log('here 0');
+                $pm_list_empty_block.show();
+            }
 
         }).on('click', '.pm-deactivate', function(e){ // PM deactivation
 
@@ -118,7 +127,7 @@ jQuery(document).ready(function($){
         }).on('keydown', 'input[id*="pm_label"]', function(e){
 
             var keycode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
-            if(keycode == 13) { // Enter pressed - stop settings form from being submitted, but save PM custom label
+            if(keycode === 13) { // Enter pressed - stop settings form from being submitted, but save PM custom label
 
                 e.preventDefault();
                 $(this).parents('.pm-label-fields').find('.new-pm-label-ok').click();
@@ -146,6 +155,13 @@ jQuery(document).ready(function($){
         }
 
         $pm_order.sortable('refresh').sortable('refreshPositions').trigger('sortupdate');
+
+    });
+
+    $pm_list_empty_block.on('click.leyka', function(e){
+
+        $pm_list_empty_block.addClass('comment-displayed').find('.pm-list-empty-base-content').hide();
+        $pm_list_empty_block.find('.pm-list-empty-comment').show();
 
     });
 
