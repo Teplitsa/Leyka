@@ -27,7 +27,7 @@ if(php_sapi_name() !== 'cli') {
 }
 
 $options = getopt("", array('host:'));
-$tst_host = isset($options['host']) ? $options['host'] : 'local.host';
+$tst_host = empty($options['host']) ? 'local.host' : $options['host'];
 
 if(empty($tst_host)) {
 	throw new TstCLIHostNotSetException("Host must be defined!");
