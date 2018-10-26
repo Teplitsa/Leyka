@@ -7,11 +7,13 @@ jQuery(document).ready(function($){
         return;
     }
 
-    var $pm_order = $('#pm-order-settings'),
+    var $pm_available_list = $('.pm-available'),
+        $pm_order = $('#pm-order-settings'),
         $pm_update_status = $('.pm-update-status'),
         $ok_message = $pm_update_status.find('.ok-message'),
         $error_message = $pm_update_status.find('.error-message'),
-        $ajax_loading = $pm_update_status.find('.leyka-loader');
+        $ajax_loading = $pm_update_status.find('.leyka-loader'),
+        $pm_list_empty_block = $('.pm-list-empty');
 
     $pm_update_status.find('.result').hide();
 
@@ -33,7 +35,7 @@ jQuery(document).ready(function($){
         $ajax_loading.show();
 
         $.post(leyka.ajaxurl, params, null, 'json')
-            .done(function(json) {
+            .done(function(json){
 
                 if(typeof json.status !== 'undefined' && json.status === 'error') {
 
@@ -48,34 +50,14 @@ jQuery(document).ready(function($){
                 $error_message.html('').hide();
 
             })
-            .fail(function() {
+            .fail(function(){
                 $error_message.html(leyka.common_error_message).show();
             })
-            .always(function() {
+            .always(function(){
                 $ajax_loading.hide();
             });
 
     }
-
-    // var $gateways_accordion = $('#pm-settings-wrapper');
-    // $gateways_accordion.accordion({
-    //     heightStyle: 'content',
-    //     header: '.gateway-settings > h3',
-    //     collapsible: true,
-    //     activate: function(event, ui){
-    //
-    //         var $header_clicked = $(this).find('.ui-state-active');
-    //         if($header_clicked.length) {
-    //             $('html, body').animate({ // 35px is a height of the WP admin bar:
-    //                 scrollTop: $header_clicked.parent().offset().top - 35
-    //             }, 250);
-    //         }
-    //     }
-    // });
-    //
-    // $gateways_accordion.find('.doc-link').click(function(e){
-    //     e.stopImmediatePropagation(); // Do not toggle the accordion panel when clicking on the docs link
-    // });
 
     // PM reordering:
     $pm_order
@@ -88,11 +70,24 @@ jQuery(document).ready(function($){
 
             leykaUpdatePmList($pm_order);
 
-        }).on('click', '.pm-deactivate', function(e){ // PM renaming & deactivation
+            if($pm_order.find('.pm-order:visible').length) {
+                console.log('here 1', $pm_order.find('.pm-order:visible'));
+                $pm_list_empty_block.hide();
+            } else {
+                console.log('here 0');
+                $pm_list_empty_block.show();
+            }
 
-        // ...
+        }).on('click', '.pm-deactivate', function(e){ // PM deactivation
 
-        /** @todo AJAX to update PM list & labels */
+            e.preventDefault();
+
+            var $pm_sortable_item = $(this).parents('li:first');
+
+            $pm_sortable_item.hide(); // Remove a sortable block from the PM order settings
+            $pm_available_list.filter('#'+$pm_sortable_item.data('pm-id')).removeAttr('checked');
+
+            $pm_order.sortable('refresh').sortable('refreshPositions').trigger('sortupdate');
 
         }).on('click', '.pm-change-label', function(e){
 
@@ -114,7 +109,7 @@ jQuery(document).ready(function($){
                 $pm_label_wrapper = $wrapper.find('.pm-label'),
                 new_pm_label = $wrapper.find('input[id*="pm_label"]').val();
 
-            if($this.hasClass('new-pm-label-ok')) {
+            if($this.hasClass('new-pm-label-ok') && $pm_label_wrapper.text() !== new_pm_label) {
 
                 $pm_label_wrapper.text(new_pm_label);
                 $wrapper.find('input.pm-label-field').val(new_pm_label);
@@ -132,7 +127,7 @@ jQuery(document).ready(function($){
         }).on('keydown', 'input[id*="pm_label"]', function(e){
 
             var keycode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
-            if(keycode == 13) { // Enter pressed - stop settings form from being submitted, but save PM custom label
+            if(keycode === 13) { // Enter pressed - stop settings form from being submitted, but save PM custom label
 
                 e.preventDefault();
                 $(this).parents('.pm-label-fields').find('.new-pm-label-ok').click();
@@ -143,55 +138,51 @@ jQuery(document).ready(function($){
 
     $('.side-area').stick_in_parent({offset_top: 32}); // The adminbar height
 
-    // $('.pm-active').click(function(){
-    //
-    //     var $this = $(this),
-    //         $gateway_metabox = $this.parents('.postbox'),
-    //         gateway_id = $gateway_metabox.attr('id').replace('leyka_payment_settings_gateway_', ''),
-    //         $gateway_settings = $('#gateway-'+gateway_id);
-    //
-    //     // Show/hide a PM settings:
-    //     $('#pm-'+$this.attr('id')).toggle();
-    //
-    //     var $sortable_pm = $('.pm-order[data-pm-id="'+$this.attr('id')+'"]');
-    //
-    //     // Add/remove a sortable block from the PM order settings:
-    //     if($this.attr('checked')) {
-    //
-    //         if($sortable_pm.length) {
-    //             $sortable_pm.show();
-    //         } else {
-    //
-    //             $sortable_pm = $("<div />").append($pm_order.find('.pm-order[data-pm-id="#FID#"]').clone()).html()
-    //                 .replace(/#FID#/g, $this.attr('id'))
-    //                 .replace(/#L#/g, $this.data('pm-label'))
-    //                 .replace(/#LB#/g, $this.data('pm-label-backend'));
-    //             $sortable_pm = $($sortable_pm).removeAttr('style');
-    //
-    //             $pm_order.append($sortable_pm);
-    //         }
-    //     } else {
-    //         $sortable_pm.hide();
-    //     }
-    //     $pm_order.sortable('refresh').sortable('refreshPositions');
-    //     $pm_order.trigger('sortupdate');
-    //
-    //     // Show/hide a whole gateway settings if there are no PMs from it selected:
-    //     if( !$gateway_metabox.find('input:checked').length ) {
-    //
-    //         $gateway_settings.hide();
-    //         $gateways_accordion.accordion('refresh');
-    //
-    //     } else if( !$gateway_settings.is(':visible') ) {
-    //
-    //         $gateway_settings.show();
-    //         $gateways_accordion.accordion('refresh');
-    //
-    //         $sortable_pm.show();
-    //         $pm_order.sortable('refresh').sortable('refreshPositions');
-    //         $pm_order.trigger('sortupdate');
-    //     }
-    // });
+    $pm_available_list.change(function(){
+
+        var $pm_available_checkbox = $(this);
+
+        // Show/hide a PM settings:
+        $('#pm-'+$pm_available_checkbox.prop('id')).toggle();
+
+        var $sortable_pm = $('.pm-order[data-pm-id="'+$pm_available_checkbox.attr('id')+'"]');
+
+        // Add/remove a sortable block from the PM order settings:
+        if($pm_available_checkbox.prop('checked') && $sortable_pm.length) {
+            $sortable_pm.show();
+        } else {
+            $sortable_pm.hide();
+        }
+
+        $pm_order.sortable('refresh').sortable('refreshPositions').trigger('sortupdate');
+
+    });
+
+    $pm_list_empty_block.on('click.leyka', function(e){
+
+        $pm_list_empty_block.addClass('comment-displayed').find('.pm-list-empty-base-content').hide();
+        $pm_list_empty_block.find('.pm-list-empty-comment').show();
+
+    });
+
+    $('.gateway-turn-off').click(function(e){
+
+        e.preventDefault();
+
+        // Emulate a change() checkboxes event manually, to lessen the ajax requests to update the PM order:
+        $pm_available_list.filter(':checked').each(function(){
+
+            var $pm_available_checkbox = $(this);
+
+            $pm_available_checkbox.removeAttr('checked'); // Uncheck the active PM checkbox
+            $('#pm-'+$pm_available_checkbox.prop('id')).hide(); // Hide a PM settings
+            $('.pm-order[data-pm-id="'+$pm_available_checkbox.attr('id')+'"]').hide(); // Hide a PM sortable entry
+
+        });
+
+        $pm_order.sortable('refresh').sortable('refreshPositions').trigger('sortupdate');
+
+    });
 
 });
 
@@ -227,6 +218,69 @@ jQuery(document).ready(function($){
     }).change();
 
 });
+
+// scroll pm icons
+jQuery(document).ready(function($){
+});
+
+// filter gateways
+jQuery(document).ready(function($){
+    var $filter = $('.leyka-gateways-filter');
+    var $gatewaysList = $('.gateways-cards-list');
+    var gatewaysFilter = {};
+    
+    $filter.find('.filter-toggle').click(function(){
+        $(this).closest('.filter-area').toggleClass('show');
+    });
+    
+    $filter.find('.filter-category-show-filter').click(function(e){
+        e.preventDefault();
+        $(this).closest('.filter-area').toggleClass('show');
+    });
+
+    $filter.find('.filter-category-reset-filter').click(function(e){
+        e.preventDefault();
+        resetFilter();
+    });
+
+    $filter.find('.filter-category-item').click(function(e){
+        e.preventDefault();
+        toggleFilterItem($(this));
+    });
+    
+    function resetFilter() {
+        gatewaysFilter = {};
+        $filter.find('.filter-category-item').removeClass('active');
+        applyFilter();
+    }
+    
+    function applyFilter() {
+        if(Object.keys(gatewaysFilter).length) {
+            $gatewaysList.find('.gateway-card').hide();
+            for(var filter in gatewaysFilter) {
+                $gatewaysList.find('.gateway-card.' + filter).show();
+            }
+        }
+        else {
+            $gatewaysList.find('.gateway-card').show();
+        }
+    }
+
+    function toggleFilterItem($filterItem) {
+        $filterItem.toggleClass('active');
+        
+        if($filterItem.hasClass('active')) {
+            gatewaysFilter[$filterItem.data('category')] = true;
+        }
+        else {
+            delete gatewaysFilter[$filterItem.data('category')];
+        }
+        
+        applyFilter();
+    }
+    
+});
+
 /*!
 * jquery.inputmask.bundle.js
 * https://github.com/RobinHerbots/Inputmask
@@ -503,11 +557,13 @@ jQuery(document).ready(function($){
     function addCopyControls($copyContainer) {
         
         var $copyLink = $('<span>');
+        $copyLink.addClass('copy-control');
         $copyLink.addClass('copy-link');
         $copyLink.text(leyka_wizard_common.copy2clipboard);
         $copyContainer.append($copyLink);
         
         var $copyDone = $('<span>');
+        $copyDone.addClass('copy-control');
         $copyDone.addClass('copy-done');
         $copyDone.text(leyka_wizard_common.copy2clipboard_done);
         $copyContainer.append($copyDone);
@@ -1169,7 +1225,6 @@ jQuery(document).ready(function($){
 
 });
 // Yandex.Kassa payment tryout - END
-
 function makePassword(len) {
   var text = "";
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789^#@_%$-";

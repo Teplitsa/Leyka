@@ -29,6 +29,17 @@
                 th,td[class*="card-"] {
                     padding-right: 12px;
                 }
+                
+                .bank-card-data.card-number {
+                    width: 35%;
+                    white-space: nowrap;
+                    
+                    .leyka-wizard-copy2clipboard {
+                        .copy-control {
+                            top: calc(45%);
+                        }
+                    }
+                }
 
                 .cp-payment-result {
                     width: 248px;

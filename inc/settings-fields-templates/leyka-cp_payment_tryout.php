@@ -16,7 +16,7 @@
     </tr>
 
     <tr>
-        <td class="bank-card-data card-number">5555&nbsp;5555&nbsp;5555&nbsp;4444</td>
+        <td class="bank-card-data card-number"><span class="leyka-wizard-copy2clipboard short">5555 5555 5555 4444</span></td>
         <td class="bank-card-data card-date">12/99</td>
         <td class="bank-card-data card-cvv">123</td>
         <td class="cp-payment-result payment-result">
@@ -27,7 +27,7 @@
     </tr>
 
     <tr>
-        <td class="bank-card-data card-number">4242&nbsp;4242&nbsp;4242&nbsp;4242</td>
+        <td class="bank-card-data card-number"><span class="leyka-wizard-copy2clipboard short">4242 4242 4242 4242</span></td>
         <td class="bank-card-data card-date">12/99</td>
         <td class="bank-card-data card-cvv">123</td>
         <td class="cp-payment-result payment-result">
@@ -45,7 +45,7 @@
 
 <div class="payment-tryout-wrapper">
 
-    <div class="cp-payment-result">
+    <div class="cp-payment-result payment-result">
         <input type="button" class="do-payment sec-action not-tested live-payment" value="Провести платёж">
         <div class="result ok">Платёж успешен</div>
         <div class="result fail">Произошла ошибка</div>

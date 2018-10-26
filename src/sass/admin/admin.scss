@@ -13,8 +13,22 @@
 
     margin: 41px 72px;
 
+    @include body-text();
+    font-size: 13px;
+
+    .field-q {
+
+        @include field-q();
+
+        .field-q-tooltip {
+            text-align: left !important;
+        }
+
+    }
+
     h1 {
-        margin-bottom: 4px;
+        @include wizard-h2();
+        margin-bottom: 8px;
     }
 
     #tab-container {
@@ -24,8 +38,29 @@
     }
     
     .nav-tab-wrapper {
+        border-bottom: 1px solid #dddddd;
+        
         a {
             color: unset;
+            font-size: 16px;
+            line-height: 19px;
+            font-weight: 500;
+            
+            &.nav-tab {
+                background-color: #e5e5e5;
+                border-color: #dddddd;
+                color: #8f8f8f;
+                border-radius: 4px 4px 0px 0px;
+                padding: 10px 12px 7px 12px;
+                margin-left: 0px;
+                margin-right: 1.5em;
+                
+                &.nav-tab-active {
+                    background-color: #f1f1f1;
+                    color: $color-secondary-button;
+                    border-bottom: 1px solid #f1f1f1;
+                }
+            }
         }
     }
 
@@ -42,7 +77,6 @@
 
             border-right: 1px solid $color-border-normal;
             flex: 1 1 auto; // 640px of the main area + 32px of the it's right margin
-            padding-right: 32px;
 
             .main-area-top {
 
@@ -65,6 +99,7 @@
 
                 background-color: $color-white;
                 border-radius: 6px;
+                margin-right: 2rem;
 
                 .gateway-settings-header {
 
@@ -98,36 +133,12 @@
 
                     .gateway-details {
 
-                        display: flex;
-                        flex-direction: row;
-                        justify-content: space-evenly;
+                        @include leyka-gateway-details();
 
-                        flex: 0 1 50%;
-
-                        font-size: 13px;
-
-                        .details-element {
-
-                            width: 100%;
-                            text-align: center;
-
-                            .details-pic {
-
-                                display: flex;
-                                flex-direction: row;
-                                justify-content: center;
-                                align-items: baseline;
-
-                                height: 27px;
-
-                                .commission-size {
-                                    font-size: 18px;
-                                    margin-left: 4px;
-                                    margin-top: 4px;
-                                }
-
-                            }
-
+                        justify-content: flex-end;
+                        
+                        .details-element:first-child {
+                            margin-left: 24px;
                         }
 
                     }
@@ -145,11 +156,9 @@
 
                     h3 {
                         margin: 24px 0;
-                        font-weight: 600;
                     }
 
                     h4 {
-                        font-weight: 600;
                         font-size: 13px;
                     }
 
@@ -184,6 +193,10 @@
                         margin-left: -1px;
                         border-left: 1px solid $color-border-light;
 
+                        .option-block.type-checkbox input {
+                            margin-right: 8px;
+                        }
+
                     }
 
                 }
@@ -200,7 +213,10 @@
                     font-size: 14px;
 
                     .gateway-turn-off {
+
+                        line-height: 14px;
                         text-decoration: none;
+
                     }
 
                 }
@@ -281,102 +297,125 @@
 
             }
 
-            #pm-order-settings {
+            .pm-order {
 
-                .pm-order {
+                display: flex;
+                flex-direction: row;
 
-                    display: flex;
-                    flex-direction: row;
+                list-style: none;
+                margin: 16px 0;
 
-                    list-style: none;
-                    margin: 16px 0;
+                height: 83px;
+                background-color: transparentize($color-white, 0.6);
+                border-radius: 4px;
 
-                    height: 83px;
-                    background-color: transparentize($color-white, 0.6);
-                    border-radius: 4px;
+                box-shadow: 0 2px 4px 0 transparentize($color-text-black, 0.87); // 0,92
 
-                    box-shadow: 0 1px 4px 0 transparentize($color-text-black, 0.92);
+                cursor: grab;
 
-                    cursor: grab;
+                &.pm-list-empty {
 
-                    &.ui-sortable-helper {
-                        cursor: move;
+                    cursor: pointer;
+                    border: 1px dashed $color-nav-line;
+
+                    justify-content: center;
+                    align-items: center;
+
+                    font-size: 14px;
+                    color: $color-nav-section-active-text;
+
+                    padding: 6px 24px;
+
+                    &.comment-displayed {
+                        cursor: default;
                     }
 
-                    .gateway-logo-wrapper {
+                }
 
-                        flex: 0 0 56px;
+                &.ui-sortable-helper {
+                    cursor: move;
+                }
+
+                .gateway-logo-wrapper {
+
+                    flex: 0 0 56px;
+
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    border-right: 1px solid $color-border-normal;
+
+                }
+
+                .pm-info {
+
+                    flex: 1 0 200px;
+
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+
+                    .pm-icons {
+                        @include leyka-pm-icons();
+                    }
+
+                    .pm-label-wrapper {
+
+                        flex: 0 1 50%;
 
                         display: flex;
+                        flex-direction: row;
                         justify-content: center;
                         align-items: center;
 
-                        border-right: 1px solid $color-border-normal;
+                        border-top: 1px solid $color-border-normal;
+                        padding: 4px 16px;
 
-                    }
+                        .pm-label {
 
-                    .pm-info {
-
-                        flex: 1 0 200px;
-
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: center;
-
-                        .pm-icons {
-
-                            flex: 0 1 50%;
-                            padding: 4px 16px;
-
-                            display: flex;
-                            flex-direction: row;
-                            justify-content: flex-start;
-                            align-items: center;
-
-                            .pm-icon {
-                                height: 20px;
-                                margin-right: 12px;
-                            }
+                            font-size: 10px;
+                            color: $color-wizard-field-explain;
 
                         }
 
-                        .pm-label-wrapper {
+                        .pm-control {
+                            margin-left: 6px;
+                            cursor: pointer;
+                        }
 
-                            flex: 0 1 50%;
+                    }
 
-                            display: flex;
-                            flex-direction: row;
-                            justify-content: center;
-                            align-items: center;
+                    .pm-label-fields {
 
-                            border-top: 1px solid $color-border-normal;
-                            padding: 4px 16px;
+                        display: flex;
+                        justify-content: flex-start;
+                        align-items: center;
 
-                            .pm-label {
+                        flex: 1 1 100%;
 
-                                font-size: 10px;
-                                color: $color-wizard-field-explain;
+                        .pm-label-input-field {
 
-                            }
-
-                            .pm-control {
-                                margin-left: 6px;
-                                cursor: pointer;
-                            }
+                            flex: 1 1 100%;
+                            font-size: 12px;
 
                         }
 
                         .new-pm-label-control {
-                            cursor: pointer;
-                        }
 
-                        .pm-label-fields input {
-                            font-size: 12px;
+                            cursor: pointer;
+                            color: $color-wizard-link;
+
+                            &:first-of-type {
+                                margin-left: 4px;
+                            }
+
                         }
 
                     }
 
                 }
+
             }
 
         }
@@ -465,3 +504,270 @@
     display: flex;
 }
 
+// gateways cards
+.leyka-admin .gateways-cards-list {
+    
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    
+    .gateway-card {
+    }
+}
+
+.leyka-admin .leyka-admin-gateway-card {
+    &.gateway-card {
+        
+        background-color: $color-white;
+        border-radius: 6px;
+        width: 304px;
+        height: 272px;
+        display: block;
+        margin-right: 2rem;
+        margin-bottom: 2rem;
+        
+        &.active {
+            background-color: #effbff;
+            border-color: #d5e8ee;
+        }
+        
+        .gateway-card-header {
+            padding: 1rem;
+            display: flex;
+            justify-content: flex-start;
+        }
+        
+        .gateway-card-icon {
+            margin-right: 12px;
+            position: relative;
+            width: auto;
+            display: inline-block;
+            
+            .gateway-logo {
+            }
+            
+        }
+        
+        .gateway-card-title {
+            @include gateway-card-title();
+            padding-top: 3px;
+        }
+        
+        .gateway-card-status {
+            @include gateway-card-status();
+            color: $color-wizard-text;
+            padding-top: 2px;
+            
+            &.active {
+                
+            }
+            
+            &.activating {
+                color: $color-wizard-link;
+            }
+        }
+        
+        .gateway-card-params {
+            border-top: 1px solid $color-border-light-001;
+            padding: 14px 1rem 1rem 1rem;
+            
+            &:empty {
+                display: none;
+            }
+            
+            .gateway-details {
+                @include leyka-gateway-details();
+                
+                .details-element:first-child {
+                   margin-left: 2px;
+                }
+           }
+            
+        }
+        
+        .gateway-card-supported-pm-list {
+            border-top: 1px solid $color-border-light-001;
+            padding: 22px 1rem 22px 1rem;
+            
+            &:empty {
+                display: none;
+            }
+            
+            .pm-icons-scroll {
+                overflow: hidden;
+                position: relative;
+                padding-left: 11px;
+                padding-right: 11px;
+                
+                .scroll-arrow {
+                    width: 6px;
+                    height: 11px;
+                    display: none;
+                    position: absolute;
+                    cursor: pointer;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    
+                    &.left {
+                        left: 0;
+                    }
+                    
+                    &.right {
+                        right: 0;
+                    }
+                }
+                
+                &.scroll {
+                    .scroll-arrow {
+                        display: block;
+                    }
+                }
+                
+                .pm-icons-wrapper {
+                    width: calc(100% - 12px);
+                    overflow: hidden;
+                }
+            }
+                
+            .pm-icons {
+                @include leyka-pm-icons();
+                padding: 0px;
+                justify-content: center;
+                
+                overflow: hidden;
+                flex-basis: calc(100% - 12px);
+                
+                img.pm-icon {
+                    max-height: 40px;
+                    margin-left: 7px;
+                    margin-right: 7px;
+                }
+            }
+            
+        }
+        
+        .gateway-card-action {
+            display: flex;
+            justify-content: center;
+            
+            .button-primary {
+                width: 272px;
+                margin-right: 0;
+                
+                &.activation-button {
+                    background-repeat: no-repeat;
+                    background-position: left center;
+                
+                    &.inactive.wizard-available {
+                        background-image: url(../../img/icon-wizard-stick-only.svg);
+                        background-position: 4px center;
+                    }
+                }
+            
+            }
+            
+            .button-secondary {
+                width: 272px;
+                margin-right: 0;
+            }
+        }
+        
+    }
+}
+
+// gateways filter
+.leyka-admin .filter-area {
+    
+    display: flex;
+    justify-content: flex-start;
+    
+    .filter-toggle {
+        height: 40px;
+        
+        img {
+            cursor: pointer;
+            
+            &.show-filter {
+                
+            }
+            
+            &.hide-filter {
+                display: none;
+            }
+        }
+    }
+    
+    .filter-categories {
+        display: none;
+        justify-content: flex-start;
+        height: 40px;
+        
+        a.filter-category-item {
+            @include gateway-filter-item();
+            color: $color-wizard-link-sec;
+            background-color: $color-white;
+            border-color: $color-wizard-preview-border;
+            height: 40px;
+            line-height: 40px;
+            border-radius: 20px;
+            vertical-align: middle;
+            padding-left: 24px;
+            padding-right: 24px;
+            margin-left: 1rem;
+            text-decoration: none;
+            border-bottom-style: solid;
+            outline: none;
+            
+            &.active {
+                color: $color-white;
+                background-color: $color-wizard-link;
+                border-color: $color-wizard-link;
+            }
+        }
+    }
+    
+    a.filter-action {
+        @include gateway-filter-item();
+        color: $color-wizard-link-sec;
+        height: 40px;
+        line-height: 40px;
+        vertical-align: middle;
+        margin-left: 1rem;
+        text-decoration: none;
+        border-bottom: none;
+        
+        &.filter-category-reset-filter {
+            display: none;
+        }
+    }
+    
+    &.show {
+        .filter-toggle {
+            img {
+                &.hide-filter {
+                    display: unset;
+                }
+                
+                &.show-filter {
+                    display: none;
+                }
+            }
+        }
+        
+        .filter-categories {
+            display: flex;
+        }
+        
+        a.filter-action {
+            &.filter-category-show-filter {
+                display: none;
+            }
+            
+            &.filter-category-reset-filter {
+                display: unset;
+            }
+        }
+    }
+    
+}

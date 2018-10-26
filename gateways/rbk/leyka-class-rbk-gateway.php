@@ -2,9 +2,9 @@
     die;
 }
 
-include(LEYKA_PLUGIN_DIR . 'gateways/rbk/includes/Leyka_Rbk_Gateway_Web_Hook_Verification.php');
-include(LEYKA_PLUGIN_DIR . 'gateways/rbk/includes/Leyka_Rbk_Gateway_Web_Hook.php');
-include(LEYKA_PLUGIN_DIR . 'gateways/rbk/includes/Leyka_Rbk_Gateway_Helper.php');
+require_once LEYKA_PLUGIN_DIR.'gateways/rbk/includes/Leyka_Rbk_Gateway_Web_Hook_Verification.php';
+require_once LEYKA_PLUGIN_DIR.'gateways/rbk/includes/Leyka_Rbk_Gateway_Web_Hook.php';
+require_once LEYKA_PLUGIN_DIR.'gateways/rbk/includes/Leyka_Rbk_Gateway_Helper.php';
 
 /**
  * Leyka_Rbk_Gateway class
@@ -14,15 +14,25 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
     protected static $_rbk_api_path = '/v2/processing/invoices';
     protected $_rbk_response;
     protected $_rbk_log = array();
+
     protected static $_instance;
 
     protected function _set_attributes() {
 
         $this->_id = 'rbk';
         $this->_title = __('RBK Money', 'leyka');
+
+        $this->_description = apply_filters(
+            'leyka_gateway_description',
+            __('RBK Money allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="https://rbkmoney.ru/">RBK Money</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
+            $this->_id
+        );
+
         $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-rbk/';
-        $this->_admin_ui_column = 1;
-        $this->_admin_ui_order = 50;
+        $this->_registration_link = '//auth.rbk.money/auth/realms/external/login-actions/registration?client_id=koffing';
+
+        $this->_min_commission = 2.9;
+        $this->_receiver_types = array('legal');
 
     }
 
@@ -34,37 +44,25 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
         $this->_options = array(
             'rbk_shop_id' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
-                'default' => '',
+                'type' => 'text',
                 'title' => __('RBK Money shopID', 'leyka'),
                 'description' => __('Please, enter your shopID value here. It can be found in your contract with RBK Money or in your control panel there.', 'leyka'),
-                'required' => 1,
-                'placeholder' => __('Ex., 1234', 'leyka'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
+                'required' => true,
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1234'),
             ),
             'rbk_api_key' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
-                'default' => '',
+                'type' => 'text',
                 'title' => __('RBK Money apiKey', 'leyka'),
-                'description' => __('Please, enter your apiKey value here. It can be found in your RBK Money control panel.', 'leyka'),
-                'required' => 1,
-                'placeholder' => __('Ex., RU123456789', 'leyka'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
+                'comment' => __('Please, enter your apiKey value here. It can be found in your RBK Money control panel.', 'leyka'),
+                'required' => true,
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'RU123456789'),
             ),
             'rbk_api_web_hook_key' => array(
                 'type' => 'text',
-                'value' => '',
-                'default' => '',
                 'title' => __('RBK Money webhook public key', 'leyka'),
-                'description' => __('Please, enter your webhook public key value here.', 'leyka'),
-                'required' => 1,
+                'comment' => __('Please, enter your webhook public key value here.', 'leyka'),
+                'required' => true,
                 'placeholder' => __('-----BEGIN PUBLIC KEY----- ...', 'leyka'),
-                'list_entries' => array(),
-                'validation_rules' => array(),
             )
         );
 
@@ -239,9 +237,8 @@ JS;
 
     }
 
-    public function _handle_service_calls($call_type = '')
-    {
-        if ('check_order' == $call_type) {
+    public function _handle_service_calls($call_type = '') {
+        if('check_order' === $call_type) {
             // Callback URLs are: some-website.org/leyka/service/rbk/check_order/
             //require options:
 
@@ -253,25 +250,22 @@ JS;
         }
     }
 
-    protected function _get_value_if_any($arr, $key, $val = false)
-    {
-
+    protected function _get_value_if_any($arr, $key, $val = false) {
         return empty($arr[$key]) ? '' : ($val ? $val : $arr[$key]);
     }
 
-    public function get_gateway_response_formatted(Leyka_Donation $donation)
-    {
+    public function get_gateway_response_formatted(Leyka_Donation $donation) {
 
-        if (!$donation->gateway_response) {
+        if( !$donation->gateway_response ) {
             return array();
         }
 
         $vars = maybe_unserialize($donation->gateway_response);
-        if (!$vars || !is_array($vars)) {
+        if( !$vars || !is_array($vars) ) {
             return array();
         }
 
-        $out = array(
+        return array(
             __('Operation date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($vars['RBK_Response']->invoice->createdAt)),
             __('Shop Account:', 'leyka') => $vars['RBK_Response']->invoice->shopID,
             __('Full donation amount:', 'leyka') => $vars['RBK_Response']->invoice->amount / 100,
@@ -282,7 +276,6 @@ JS;
             __('Invoice ID:', 'leyka') => $vars['RBK_Response']->invoice->id,
         );
 
-        return $out;
     }
 
 }
@@ -298,37 +291,24 @@ class Leyka_Rbk_Card extends Leyka_Payment_Method {
         $this->_gateway_id = 'rbk';
         $this->_category = 'bank_cards';
 
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('RBK Money allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="https://rbkmoney.ru/">RBK Money</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
+
         $this->_label_backend = __('Bank card via (RBK money)', 'leyka');
         $this->_label = __('Bank card', 'leyka');
 
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-
-        $this->_icons = apply_filters('leyka_icons_' . $this->_gateway_id . '_' . $this->_id, array(
-            LEYKA_PLUGIN_BASE_URL . 'gateways/rbk/icons/visa.png',
-            LEYKA_PLUGIN_BASE_URL . 'gateways/rbk/icons/master.png',
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_' . $this->_id, array(
+            LEYKA_PLUGIN_BASE_URL.'gateways/rbk/icons/visa.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/rbk/icons/master.png',
         ));
 
         $this->_supported_currencies[] = 'rur';
         $this->_default_currency = 'rur';
-
-    }
-
-    protected function _set_options_defaults() {
-
-        if($this->_options) {
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id . '_description' => array(
-                'type' => 'html',
-                'default' => __('RBK Money allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="https://rbkmoney.ru/">RBK Money</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
-                'title' => __('RBK Money bank card payment description', 'leyka'),
-                'description' => __('Please, enter RBK Money gateway description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
 
     }
 

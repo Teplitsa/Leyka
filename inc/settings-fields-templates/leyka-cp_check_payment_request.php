@@ -7,7 +7,7 @@
 
 <div class="<?php echo $this->field_type;?> custom-block-captioned-screens">
 
-<span class="info2copy"><?php echo site_url('/leyka/service/cp/check/')?></span>
+<span class="info2copy leyka-wizard-copy2clipboard"><?php echo site_url('/leyka/service/cp/check/')?></span>
 
 <div class="captioned-screen">
     <p>Перевидите флажок у поля «Chek» в режим «Включено» и вставьте адрес  в поле, как на скриншоте:</p>

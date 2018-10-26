@@ -506,6 +506,62 @@ function leyka_get_pm_category_label($category_id) {
 }
 
 /**
+ * Gateways filter categories main source
+ * @return array
+ */
+function leyka_get_gateways_filter_categories_list() {
+
+    return apply_filters('leyka_gateways_filter_categories', array(
+        'legal' => 'Юр.лица',
+        'physical' => 'Физ.лица',
+        'recurring' => 'Рекурренты',
+    ));
+
+}
+
+function leyka_get_filter_category_label($category_id) {
+
+    $category_id = esc_attr(trim($category_id));
+    $categories_list = leyka_get_gateways_filter_categories_list();
+
+    return $category_id && !empty($categories_list[$category_id]) ? $categories_list[$category_id] : false;
+
+}
+
+function leyka_get_gateway_activation_status_label($activation_status) {
+
+    $activation_status_labels = array(
+        'active' => 'Подключен',
+        'inactive' => 'Не подключен',
+        'activating' => 'В процессе подключения',
+    );
+    
+    return $activation_status && !empty($activation_status_labels[$activation_status]) ? $activation_status_labels[$activation_status] : false;
+    
+}
+
+function leyka_get_gateway_activation_button_label($gateway) {
+    
+    $activation_status = $gateway->get_activation_status();
+
+    $activation_status_labels = array(
+        'active' => 'Настройки',
+        'inactive' => 'Пошаговая установка',
+        'activating' => 'Продолжить',
+    );
+    
+    if($activation_status == 'inactive' && !leyka_gateway_setup_wizard($gateway->id)) {
+        $label = 'Настроить';
+    }
+    else {
+        $label = $activation_status && !empty($activation_status_labels[$activation_status]) ? $activation_status_labels[$activation_status] : false;
+    }
+    
+    return $label;
+    
+}
+
+/**
  * Get all possible campaign target states.
  **/
 function leyka_get_campaign_target_states_list() {

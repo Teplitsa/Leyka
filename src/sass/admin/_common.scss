@@ -4,6 +4,8 @@
 
 .leyka-admin {
     
+    @include body-text();
+    
     // typo
     .step-title {
         h1 {
@@ -67,21 +69,23 @@
     
     // controls
     .button-primary {
-        @include wizard-button-caption();
-        height: 40px;
-        width: 248px;
-        margin-right: 22px;
+        @include leyka-button-primary();
     }
     
     .button-secondary {
-        @include wizard-button-caption();
-        height: 40px;
-        margin-right: 22px;
-        min-width: 248px;
-        font-weight: 500;
-        background-color: white;
-    }
+        @include leyka-button-primary();
+        background-color: $color-white;
+        border: 1px solid $color-border-secondary-button;
+        color: $color-secondary-button;
         
+        &:hover {
+            border: 1px solid $color-border-secondary-button;
+            color: $color-secondary-button;
+            background-color: $color-white;
+        }
+        
+    }
+    
     a {
         color: $color-wizard-link;
         
@@ -92,10 +96,6 @@
         &:focus, &:active {
             color: $color-wizard-link-active;
         }
-    }
-    
-    .button-primary {
-        @include leyka-button-primary();
     }
     
     a[href="#"] {
@@ -194,19 +194,17 @@
         border: 1px solid $color-border-normal;
         border-radius: 50%;
         background-color: $color-white;
-
-        .gateway-description-icon {
-
+        
+        .field-q {
+            @include field-q();
             position: absolute;
             right: 0;
             top: -3px;
-
-            border: 0;
-
+            border-radius: 5px;
+            
             img {
                 background-color: $color-white;
             }
-
         }
 
         .gateway-logo-pic {
@@ -218,5 +216,20 @@
 
     }
     
-    
 } // end of leyka-admin
+
+.wp-core-ui .leyka-admin {
+    .button-secondary {
+        @include leyka-button-primary();
+        background-color: $color-white;
+        border: 1px solid $color-border-secondary-button;
+        color: $color-secondary-button;
+        
+        &:hover {
+            border: 1px solid $color-border-secondary-button;
+            color: $color-secondary-button;
+            background-color: $color-white;
+        }
+        
+    }
+}

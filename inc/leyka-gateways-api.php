@@ -112,6 +112,70 @@ function leyka_get_gateway_by_id($gateway_id) {
 
 }
 
+/**
+ * @param Leyka_Gateway $gateway
+ * @return array
+ */
+function leyka_get_gateway_icons_list($gateway) {
+
+    $pm_list = $gateway->get_payment_methods();
+    $icons = array();
+    
+    foreach($pm_list as $pm) {
+        if($pm->icons) {
+            $icons = array_merge($icons, $pm->icons);
+        }
+        else {
+            $icons[] = $pm->main_icon_url;
+        }
+    }
+    
+    return array_unique($icons);
+
+}
+
+/**
+ * @param Leyka_Gateway $gateway
+ * @return string
+ */
+function leyka_get_gateway_settings_url($gateway) {
+    
+    $gateway_activation_status = $gateway ? $gateway->get_activation_status() : null;
+    
+    $url = '';
+    
+    if($gateway_activation_status == 'inactive' && $wizard = leyka_gateway_setup_wizard($gateway)) {
+        $url = admin_url('/admin.php?page=leyka_settings_new&screen=wizard-' . $wizard);
+    }
+    elseif($gateway_activation_status) {
+        $url = admin_url('/admin.php?page=leyka_settings&stage=payment&gateway=' . $gateway->id);
+    }
+    
+    return $url;
+}
+
+/**
+ * @param Leyka_Gateway $gateway
+ * @return mixed; string wizard suffix or false if wizard unavailable for gateway
+ */
+function leyka_gateway_setup_wizard($gateway) {
+    
+    $wizard = false;
+    
+    if(in_array($gateway->id, array('yandex', 'cp', 'quittance'))) {
+        
+        if($gateway->id == 'quittance') {
+            $wizard = 'init';
+        }
+        else {
+            $wizard = $gateway->id;
+        }
+        
+    }
+    
+    return $wizard;
+}
+
 abstract class Leyka_Gateway extends Leyka_Singleton {
 
     protected static $_instance;
@@ -126,7 +190,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     protected $_min_commission = 0.0;
     protected $_receiver_types = array('legal'); // 'legal', 'physical'
-    protected $_has_recurring_support = false; // Whether recurring payments are possible via gateway at all
+    protected $_may_support_recurring = false; // Whether recurring payments are possible via gateway at all
 
     protected $_admin_ui_column = 2; // 1 or 2. A number of the metaboxes columns, to which gateway belogns by default
     protected $_admin_ui_order = 100; // Default sorting index for gateway metabox in its column. Lower number = higher
@@ -187,32 +251,6 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     }
 
-//    final protected function __clone() {}
-//
-//    public final static function get_instance() {
-//
-//        if( !static::$_instance ) {
-//
-//            static::$_instance = new static();
-//            static::$_instance->_initialize_options();
-//
-//            add_action('leyka_enqueue_scripts', array(static::$_instance, 'enqueue_gateway_scripts'));
-//
-//            add_action('leyka_payment_form_submission-'.static::$_instance->id, array(static::$_instance, 'process_form'), 10, 4);
-//            add_action('leyka_payment_form_submission-'.static::$_instance->id, array(static::$_instance, 'process_form_default'), 100, 4);
-//            add_action('leyka_log_donation-'.static::$_instance->id, array(static::$_instance, 'log_gateway_fields'));
-//
-//            add_filter('leyka_submission_redirect_url-'.static::$_instance->id, array(static::$_instance, 'submission_redirect_url'), 10, 2);
-//            add_filter('leyka_submission_redirect_type-'.static::$_instance->id, array(static::$_instance, 'submission_redirect_type'), 10, 3);
-//            add_filter('leyka_submission_form_data-'.static::$_instance->id, array(static::$_instance, 'submission_form_data'), 10, 3);
-//            add_action('leyka_'.static::$_instance->id.'_redirect_page_content', array(static::$_instance, 'gateway_redirect_page_content'), 10, 2);
-
-//        }
-//
-//        return static::$_instance;
-//
-//    }
-
     public function __get($param) {
 
         switch($param) {
@@ -235,7 +273,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
             case 'has_recurring':
             case 'has_recurring_support':
-                return !!$this->_has_recurring_support;
+                return !!$this->_may_support_recurring;
 
             case 'min_commission': return $this->_min_commission ? round((float)$this->_min_commission, 2) : 0.0;
             case 'receiver_types': return $this->_receiver_types ? (array)$this->_receiver_types : array('legal');
@@ -314,11 +352,11 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     }
 
     abstract protected function _set_attributes(); // Attributes are constant, like id, title, etc.
-    abstract protected function _set_options_defaults(); // Options are admin configurable parameters
+    protected function _set_options_defaults() {} // Options are admin configurable parameters
     abstract protected function _initialize_pm_list(); // PM list is specific for each Gateway
 
     // Handler for Gateway's service calls (activate the donations, etc.):
-    abstract public function _handle_service_calls($call_type = '');
+    public function _handle_service_calls($call_type = '') {}
 
     /** Default behavior, may be substituted in descendants: */
     public function get_init_recurrent_donation($donation) {
@@ -499,6 +537,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
                 }
 
             }
+
         }
 
         if( !!$by_categories ) {
@@ -555,7 +594,41 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     /** Action called when new donation (Leyka_Donation::add()) is being created to add gateway-specific fields. */
     public function add_donation_specific_data($donation_id, array $donation_params) {
     }
-} //class end
+    
+    /**
+     * @return array; list of possible values in leyka_get_gateways_filter_categories_list function
+     */
+    public function get_filter_categories() {
+
+        $categories = $this->receiver_types;
+
+        if($this->has_recurring) {
+            $categories[] = 'recurring';
+        }
+
+        return $categories;
+
+    }
+    
+    /**
+     * @return string: active inactive activating
+     */
+    public function get_activation_status() {
+        
+        global $wpdb;
+        $status = 'inactive';
+
+        if(count($this->get_payment_methods(true))) {
+            $status = 'active';
+        } elseif((int)$wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}options WHERE option_name LIKE %s", '%leyka_'.$this->id.'_%') ) > 0) {
+            $status = 'activating';
+        }
+        
+        return $status;
+
+    }
+    
+}
 
 /**
  * Class Leyka_Payment_Method
@@ -586,21 +659,6 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
     protected $_processing_type = 'default';
     protected $_ajax_without_form_submission = false;
 
-//    public final static function get_instance() {
-//
-//        if(null == static::$_instance) {
-//
-//            static::$_instance = new static();
-////            static::$_instance->_initialize_options();
-//
-//        }
-//
-//        return static::$_instance;
-//
-//    }
-//
-//    final protected function __clone() {}
-
     protected function __construct() {
 
         $this->_submit_label = leyka_options()->opt_safe('donation_submit_text');
@@ -623,7 +681,7 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
                 $param = array_key_exists($this->_category, leyka_get_pm_categories_list()) ? $this->_category : false;
                 break;
             case 'category_label':
-                $param = $this->category ? leyka_get_pm_categories_list($this->category) : '';
+                $param = $this->category ? leyka_get_pm_category_label($this->_category) : '';
                 break;
             case 'active':
             case 'is_active': $param = $this->_active; break;
@@ -657,7 +715,6 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
                 $param = !!$this->_ajax_without_form_submission;
                 break;
             default:
-//                trigger_error('Error: unknown param "'.$param.'"');
                 $param = null;
         }
 
@@ -688,7 +745,8 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
 
     }
 
-    abstract protected function _set_options_defaults();
+    /** To set PM specific options */
+    protected function _set_options_defaults() {}
 
     protected final function _add_options() {
         foreach($this->_options as $option_name => $params) {
@@ -706,14 +764,13 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
 
         /** PM frontend label is a special persistent option, universal for each PM */
         if( !leyka_options()->option_exists($this->full_id.'_label') ) {
-
             leyka_options()->add_option($this->full_id.'_label', 'text', array(
                 'value' => '',
                 'default' => $this->_label,
                 'title' => __('Payment method custom label', 'leyka'),
                 'description' => __('A label for this payment method that will appear on all donation forms.', 'leyka'),
                 'required' => false,
-                'placeholder' => '',
+                'placeholder' => sprintf(__('E.g., �%s�', 'leyka'), $this->_label),
                 'validation_rules' => array(), // List of regexp?..
             ));
         }
@@ -723,8 +780,6 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
             $custom_label : apply_filters('leyka_get_pm_label_original', $this->_label, $this);
 
         $this->_active = in_array($this->full_id, leyka_options()->opt('pm_available'));
-
-        $this->_description = leyka_options()->opt_safe($this->full_id.'_description');
 
         add_filter('leyka_payment_options_allocation', array($this, 'allocate_pm_options'), 10, 1);
 
@@ -738,6 +793,7 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
         }
 
         return $option_names;
+
     }
 
     /** Allocate gateway options, if needed */
@@ -772,6 +828,7 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
         }
 
         return $options;
+
     }
 
     /** For PM with a static processing type, this method should display some static data. Otherwise, it may stay empty. */

@@ -39,6 +39,70 @@
     }
 }
 
+@mixin field-q {
+  
+    margin-left: 3px;
+    vertical-align: baseline;
+    cursor: pointer;
+    position: relative;
+    
+    img {
+        vertical-align: baseline;
+    }
+    
+    .field-q-tooltip {
+        display: none;
+        //display: block;
+        position: absolute;
+        color: $color-white;
+        background-color: $color-wizard-tooltip-bg;
+        border-radius: 6px;
+        border: none;
+        padding: 7px 8px 8px 8px;
+        font-size: 10px;
+        line-height: 15px;
+        z-index: 11;
+        top: 150%;
+        left: 0;
+        transform:translateX(-50%);
+        
+        width: 204px;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        white-space: pre-line;
+        max-width: max-content;
+        text-align: center;
+        
+        &:before {
+            content: "";
+            display:block;
+            width:0;
+            height:0;
+            position:absolute;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom:8px solid $color-wizard-tooltip-bg;
+            left:calc(50% - 4px);
+            top:-7px;                            
+        }
+        
+        &:empty {
+            display: none;
+        }
+    }
+    
+    &:hover {
+        .field-q-tooltip {
+            display: block;
+            
+            &:empty {
+              display: none;
+            }
+        }
+    }
+    
+}
+
 @mixin leyka-field-title {
   
     @include wizard-field-label();
@@ -60,57 +124,7 @@
     }
     
     .field-q {
-        margin-left: 3px;
-        vertical-align: baseline;
-        cursor: pointer;
-        position: relative;
-        
-        img {
-            vertical-align: baseline;
-        }
-        
-        .field-q-tooltip {
-            display: none;
-            //display: block;
-            position: absolute;
-            color: $color-white;
-            background-color: $color-wizard-tooltip-bg;
-            border-radius: 6px;
-            border: none;
-            padding: 7px 8px 8px 8px;
-            font-size: 10px;
-            line-height: 15px;
-            z-index: 11;
-            top: 150%;
-            left: 0;
-            transform:translateX(-50%);
-            
-            width: 204px;
-            overflow-wrap: break-word;
-            word-wrap: break-word;
-            white-space: pre-line;
-            max-width: max-content;
-            text-align: center;
-            
-            &:before {
-                content: "";
-                display:block;
-                width:0;
-                height:0;
-                position:absolute;
-                border-left: 8px solid transparent;
-                border-right: 8px solid transparent;
-                border-bottom:8px solid $color-wizard-tooltip-bg;
-                left:calc(50% - 4px);
-                top:-7px;                            
-            }
-        }
-        
-        &:hover {
-            .field-q-tooltip {
-                display: block;
-            }
-        }
+      @include field-q();
     }
     
 }
@@ -194,12 +208,6 @@
     
     &.field {
         float: left;
-        
-        //TODO: remove, probabbly not used
-        //input {
-        //    width: 18px;
-        //    height: 18px;
-        //}
     }
 }
 
@@ -275,10 +283,15 @@
     height: 40px;
     line-height: 40px;
     width: 248px;
-    margin-right: 22px;
     color: $color-white;
     display: inline-block;
     text-align: center;
+    box-shadow: none;
+    
+    &:hover {
+      color: $color-white;
+      box-shadow: none;
+    }
 }
 
 @mixin leyka-link-sec {
@@ -294,5 +307,60 @@
     
     &:focus, &:active {
         color: $color-wizard-link-sec-active;
+    }
+}
+
+@mixin leyka-pm-icons {
+    flex: 0 1 50%;
+    padding: 4px 16px;
+  
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+  
+    .pm-icon {
+        height: 20px;
+        margin-right: 12px;
+    }
+}
+
+@mixin leyka-gateway-details {
+  
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    flex: 0 1 50%;
+
+    font-size: 13px;
+
+    .details-element {
+
+        width: fit-content;
+        text-align: center;
+        margin-right: 32px;
+        
+        &:last-child {
+          margin-right: 0;
+        }
+
+        .details-pic {
+
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: baseline;
+
+            height: 27px;
+
+            .commission-size {
+                font-size: 18px;
+                margin-left: 4px;
+                margin-top: 4px;
+            }
+
+        }
+
     }
 }

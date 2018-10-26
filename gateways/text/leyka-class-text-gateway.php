@@ -12,12 +12,18 @@ class Leyka_Text_Gateway extends Leyka_Gateway {
         $this->_id = 'text';
         $this->_title = __('Text information', 'leyka');
 
-    }
+        $this->_description = apply_filters(
+            'leyka_gateway_description',
+            __('You can set a custom text information to display as one of the payment methods for donors.', 'leyka'),
+            $this->_id
+        );
 
-    protected function _set_options_defaults() {
-        if($this->_options) { // Create Gateway options, if needed
-            return;
-        }
+        $this->_docs_link = '';
+        $this->_registration_link = '';
+
+        $this->_min_commission = 0;
+        $this->_receiver_types = array('legal', 'physical',);
+
     }
 
     protected function _initialize_pm_list() {
@@ -38,14 +44,11 @@ class Leyka_Text_Gateway extends Leyka_Gateway {
         return $form_data_vars;
     }
 
-    public function _handle_service_calls($call_type = '') {
-    }
-
     public function get_gateway_response_formatted(Leyka_Donation $donation) {
         return array();
     }
 
-} // class end
+}
 
 
 class Leyka_Text_Box extends Leyka_Payment_Method {
@@ -58,10 +61,16 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
         $this->_gateway_id = 'text';
         $this->_category = 'misc';
 
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('You can set a custom text information to display as one of the payment methods for donors.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
+
         $this->_label_backend = __('Additional ways to donate', 'leyka');
         $this->_label = __('Additional ways to donate', 'leyka');
-
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_support_global_fields = false;
 
@@ -70,7 +79,6 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
         ));
 
         $this->_supported_currencies[] = 'rur';
-
         $this->_default_currency = 'rur';
 
         $this->_processing_type = 'static'; // We should display custom data instead of the donors data & submit step
@@ -94,19 +102,17 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
                 'type' => 'html',
                 'default' => __('With this ways you can make your donation.', 'leyka'),
                 'title' => __('Comment', 'leyka'),
-                'description' => __('Please, set a text of comment to describe an additional ways to donate.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
+                'comment' => __('Please, set a text of comment to describe an additional ways to donate.', 'leyka'),
+                'required' => false,
             ),
             'text_box_details' => array(
                 'type' => 'html',
-                'default' => '',
                 'title' => __('Ways to donate', 'leyka'),
                 'description' => __('Please, set a text to describe an additional ways to donate.', 'leyka'),
-                'required' => 1,
-                'validation_rules' => array(), // List of regexp?..
+                'required' => true,
             )
         );
+
     }
 
     public function display_static_data() {
@@ -120,7 +126,7 @@ function leyka_add_gateway_text() { // Use named function to leave a possibility
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_text');
 
-// Remove Text PM from payment forms if text doesn't set:
+// Remove Text PM from payment forms if the text isn't set:
 function leyka_remove_text_pm_if_empty($pm_list) {
 
     if(is_admin()) {
@@ -134,5 +140,6 @@ function leyka_remove_text_pm_if_empty($pm_list) {
     }
 
     return $pm_list;
+
 }
 add_filter('leyka_active_pm_list', 'leyka_remove_text_pm_if_empty');

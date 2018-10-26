@@ -42,10 +42,11 @@ if( !function_exists('leyka_show_gateway_logo')) {
 
             <img class="gateway-logo-pic" src="<?php echo $use_paceholders ? '#GATEWAY_LOGO_URL#' : $gateway->icon_url;?>">
 
-            <?php if( !!$show_gateway_info ) {?>
-            <a href="#" class="gateway-description-icon" data-gateway-info="<?php echo $use_paceholders ? '#GATEWAY_DESCRIPTION#' : esc_attr($gateway->description);?>">
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL; ?>img/icon-info.svg">
-            </a>
+            <?php if( !!$show_gateway_info && ($use_paceholders || $gateway->description) ) {?>
+            <span class="field-q">
+                <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-info.svg">
+                <span class="field-q-tooltip"><?php echo $use_paceholders ? '#GATEWAY_DESCRIPTION#' : esc_attr($gateway->description);?></span>
+            </span>
             <?php }?>
         </div>
 
@@ -84,15 +85,14 @@ if( !function_exists('leyka_pm_sortable_option_html_new') ) {
 
                     <span class="pm-label-fields" style="display:none;">
 
-                        <input type="text" id="pm_labels[<?php echo $pm_full_id;?>]" value="<?php echo $pm_label;?>" placeholder="<?php esc_html_e('Enter some title for this payment method', 'leyka');?>">
+                        <input type="text" id="pm_labels[<?php echo $pm_full_id;?>]" class="pm-label-input-field" value="<?php echo $pm_label;?>" placeholder="<?php esc_html_e('Enter some title for this payment method', 'leyka');?>">
                         <input type="hidden" class="pm-label-field <?php echo $is_hidden ? '' : 'submitable';?>" name="leyka_<?php echo $pm_full_id;?>_label" value="<?php echo $pm_label;?>">
-                        <span class="new-pm-label-control new-pm-label-ok"><span class="dashicons dashicons-yes"></span></span>
-                        <span class="new-pm-label-control new-pm-label-cancel"><span class="dashicons dashicons-no"></span></span>
+                        <span class="new-pm-label-control new-pm-label-ok dashicons dashicons-yes"></span>
+                        <span class="new-pm-label-control new-pm-label-cancel dashicons dashicons-no"></span>
 
                     </span>
 
                     <img class="pm-control pm-change-label" data-pm-id="<?php echo $pm_full_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-edit-circled.svg" title="<?php esc_attr_e('Edit the payment method label', 'leyka');?>">
-
                     <img class="pm-control pm-deactivate" data-pm-id="<?php echo $pm_full_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-delete-circled.svg" title="<?php esc_attr_e('Deactivate the payment method', 'leyka');?>">
 
                 </div>
@@ -101,5 +101,45 @@ if( !function_exists('leyka_pm_sortable_option_html_new') ) {
 
         </li>
 
+    <?php }
+}
+
+if( !function_exists('leyka_gateway_details_html') ) {
+    function leyka_gateway_details_html($gateway) {
+    ?>
+    
+        <div class="gateway-details">
+
+            <?php if($gateway->min_commission && $gateway->min_commission > 0.0) {?>
+            
+            <div class="details-element gateway-commission">
+                <div class="details-pic">
+                    от <span class="commission-size"><?php echo $gateway->min_commission;?>%</span>
+                </div>
+                <div class="details-label">комиссия</div>
+            </div>
+            
+            <?php }?>
+
+            <div class="details-element gateway-has-recurring">
+                <div class="details-pic has-recurring-icon">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-recurring<?php echo $gateway->has_recurring ? "" : "-no";?>.svg">
+                </div>
+                <div class="details-label">рекурренты</div>
+            </div>
+
+            <?php if($gateway->receiver_types) {?>
+            
+            <div class="details-element gateway-receiver-types">
+                <div class="details-pic receiver-type-icon">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-receiver-type-<?php echo count($gateway->receiver_types) > 1 ? 'all' : $gateway->receiver_types[0];?>.svg">
+                </div>
+                <div class="details-label">получатель</div>
+            </div>
+            
+            <?php }?>
+
+        </div>
+    
     <?php }
 }
