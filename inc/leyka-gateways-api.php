@@ -620,7 +620,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
         if(count($this->get_payment_methods(true))) {
             $status = 'active';
-        } elseif((int)$wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}options WHERE option_name LIKE %s", '%leyka_'.$gateway->id.'_%') ) > 0) {
+        } elseif((int)$wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}options WHERE option_name LIKE %s", '%leyka_'.$this->id.'_%') ) > 0) {
             $status = 'activating';
         }
         
