@@ -63,7 +63,7 @@ class Leyka_Qiwi_Gateway_Helper {
     }
 
     public function create_bill($billId, $amount, $args = array()) {
-
+        $amount = intval($amount);
         $amount = number_format($amount, 2, '.', '');
         $args = wp_parse_args(
             $args,
