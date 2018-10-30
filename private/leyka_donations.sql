@@ -1,37 +1,35 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.1
+-- version 4.5.4.1deb2ubuntu2.1
 -- http://www.phpmyadmin.net
 --
--- Хост: 127.0.0.1
--- Время создания: Окт 21 2018 г., 19:42
--- Версия сервера: 10.1.16-MariaDB
--- Версия PHP: 5.6.24
+-- Хост: localhost
+-- Время создания: Окт 30 2018 г., 15:40
+-- Версия сервера: 10.0.36-MariaDB-0ubuntu0.16.04.1
+-- Версия PHP: 7.0.32-0ubuntu0.16.04.1
 
+SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
 --
--- База данных: `leyka_local`
+-- База данных: `miloserdie_prev`
 --
 
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `qebgwmuu_leyka_donations`
+-- Структура таблицы `mlsd_leyka_donations`
 --
 
-DROP TABLE IF EXISTS `qebgwmuu_leyka_donations`;
-CREATE TABLE `qebgwmuu_leyka_donations` (
+-- DROP TABLE IF EXISTS `mlsd_leyka_donations`;
+CREATE TABLE `mlsd_leyka_donations` (
   `ID` bigint(20) UNSIGNED NOT NULL,
   `campaign_id` bigint(20) UNSIGNED NOT NULL,
   `status` varchar(20) NOT NULL,
-  `status_log` text,
   `payment_type` varchar(20) NOT NULL,
   `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
-  `date_funded` datetime DEFAULT NULL,
-  `date_refunded` datetime DEFAULT NULL,
   `gateway_id` varchar(30) NOT NULL,
   `pm_id` varchar(30) NOT NULL,
   `currency_id` varchar(10) NOT NULL,
@@ -40,53 +38,66 @@ CREATE TABLE `qebgwmuu_leyka_donations` (
   `amount_in_main_currency` float NOT NULL,
   `amount_total_in_main_currency` float NOT NULL,
   `donor_name` varchar(100) NOT NULL,
-  `donor_email` varchar(100) NOT NULL,
-  `donor_email_date` datetime DEFAULT NULL,
-  `donor_comment` text,
-  `donor_subscribed` tinyint(1) NOT NULL DEFAULT '0',
-  `donor_subscription_email` varchar(100) DEFAULT NULL,
-  `manangers_emails_date` datetime DEFAULT NULL,
-  `gateway_response` text,
-  `init_recurring_donation_id` bigint(20) DEFAULT NULL,
-  `recurring_active` tinyint(1) NOT NULL DEFAULT '0',
-  `recurring_cancel_date` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `donor_email` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
 
 --
--- Дамп данных таблицы `qebgwmuu_leyka_donations`
+-- Структура таблицы `mlsd_leyka_donations_meta`
 --
 
-INSERT INTO `qebgwmuu_leyka_donations` (`ID`, `campaign_id`, `status`, `status_log`, `payment_type`, `date_created`, `date_funded`, `date_refunded`, `gateway_id`, `pm_id`, `currency_id`, `amount`, `amount_total`, `amount_in_main_currency`, `amount_total_in_main_currency`, `donor_name`, `donor_email`, `donor_email_date`, `donor_comment`, `donor_subscribed`, `donor_subscription_email`, `manangers_emails_date`, `gateway_response`, `init_recurring_donation_id`, `recurring_active`, `recurring_cancel_date`) VALUES
-(13, 54, 'funded', '', 'single', '2018-10-21 20:41:28', '2018-10-21 00:00:00', NULL, 'yandex', 'yandex_card', 'RUB', 10, 8.9, 10, 8.9, 'Лео', 'ahaenor@gmail.com', NULL, NULL, 0, NULL, '2018-10-21 00:00:00', NULL, 0, 0, NULL);
+-- DROP TABLE IF EXISTS `mlsd_leyka_donations_meta`;
+CREATE TABLE `mlsd_leyka_donations_meta` (
+  `meta_id` bigint(20) UNSIGNED NOT NULL,
+  `donation_id` bigint(20) UNSIGNED NOT NULL,
+  `meta_key` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `meta_value` longtext COLLATE utf8_unicode_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Индексы сохранённых таблиц
 --
 
 --
--- Индексы таблицы `qebgwmuu_leyka_donations`
+-- Индексы таблицы `mlsd_leyka_donations`
 --
-ALTER TABLE `qebgwmuu_leyka_donations`
+ALTER TABLE `mlsd_leyka_donations`
   ADD PRIMARY KEY (`ID`),
-  ADD KEY `campaign_id` (`campaign_id`),
-  ADD KEY `init_recurring_donation_id` (`init_recurring_donation_id`);
+  ADD KEY `campaign_id` (`campaign_id`);
+
+--
+-- Индексы таблицы `mlsd_leyka_donations_meta`
+--
+ALTER TABLE `mlsd_leyka_donations_meta`
+  ADD PRIMARY KEY (`meta_id`),
+  ADD KEY `donation_id_fk` (`donation_id`),
+  ADD KEY `meta_key_index` (`meta_key`);
 
 --
 -- AUTO_INCREMENT для сохранённых таблиц
 --
 
 --
--- AUTO_INCREMENT для таблицы `qebgwmuu_leyka_donations`
+-- AUTO_INCREMENT для таблицы `mlsd_leyka_donations_meta`
 --
-ALTER TABLE `qebgwmuu_leyka_donations`
-  MODIFY `ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+ALTER TABLE `mlsd_leyka_donations_meta`
+  MODIFY `meta_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- Ограничения внешнего ключа сохраненных таблиц
 --
 
 --
--- Ограничения внешнего ключа таблицы `qebgwmuu_leyka_donations`
+-- Ограничения внешнего ключа таблицы `mlsd_leyka_donations`
 --
-ALTER TABLE `qebgwmuu_leyka_donations`
-  ADD CONSTRAINT `qebgwmuu_leyka_donations_ibfk_1` FOREIGN KEY (`campaign_id`) REFERENCES `qebgwmuu_posts` (`ID`);
+ALTER TABLE `mlsd_leyka_donations`
+  ADD CONSTRAINT `mlsd_leyka_donations_ibfk_1` FOREIGN KEY (`campaign_id`) REFERENCES `mlsd_posts` (`ID`);
+
+--
+-- Ограничения внешнего ключа таблицы `mlsd_leyka_donations_meta`
+--
+ALTER TABLE `mlsd_leyka_donations_meta`
+  ADD CONSTRAINT `mlsd_leyka_donations_meta_ibfk_1` FOREIGN KEY (`donation_id`) REFERENCES `mlsd_leyka_donations` (`ID`) ON DELETE CASCADE;
+
+SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
