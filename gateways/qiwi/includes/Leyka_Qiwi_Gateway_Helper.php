@@ -2,7 +2,8 @@
     die;
 }
 
-class Leyka_Qiwi_Gateway_Helper {
+class Leyka_Qiwi_Gateway_Helper
+{
 
     public static $map_status = array(
         'PAID' => 'funded',
@@ -15,9 +16,10 @@ class Leyka_Qiwi_Gateway_Helper {
 
     private $_key;
 
-    public function __construct($key = false) {
+    public function __construct($key = false)
+    {
 
-        if( !$key ) {
+        if (!$key) {
             $this->_key = leyka_options()->opt('leyka_qiwi_secret_key');
         }
 
@@ -25,8 +27,9 @@ class Leyka_Qiwi_Gateway_Helper {
 
     }
 
-    public function create_refund(WP_Post $donation) {
-        if(Leyka_Donation_Management::$post_type == $donation->post_type) {
+    public function create_refund(WP_Post $donation)
+    {
+        if (Leyka_Donation_Management::$post_type == $donation->post_type) {
 
             $donation = new Leyka_Donation($donation);
             $billId = get_post_meta($donation->id, '_leyka_donation_id_on_gateway_response', true);
@@ -36,7 +39,8 @@ class Leyka_Qiwi_Gateway_Helper {
         }
     }
 
-    public function refund($billId, $amount) {
+    public function refund($billId, $amount)
+    {
 
         $args = array(
             "amount" => array(
@@ -62,7 +66,8 @@ class Leyka_Qiwi_Gateway_Helper {
 
     }
 
-    public function create_bill($billId, $amount, $args = array()) {
+    public function create_bill($billId, $amount, $args = array())
+    {
         $amount = intval($amount);
         $amount = number_format($amount, 2, '.', '');
         $args = wp_parse_args(
@@ -75,7 +80,10 @@ class Leyka_Qiwi_Gateway_Helper {
                 "comment" => "",
                 "expirationDateTime" => self::date_formatter(strtotime('+1 day', current_time('timestamp', 1))),
                 "customer" => array(),
-                "customFields" => array()
+                "customFields" => array(
+                    "apiClient" => 'WordPress Leyka',
+                    "apiClientVersion" => LEYKA_VERSION
+                )
             )
         );
 
@@ -102,11 +110,13 @@ class Leyka_Qiwi_Gateway_Helper {
      * @param $timestamp integer UNIX timestamp.
      * @return string
      */
-    public static function date_formatter($timestamp) {
-        return str_replace(' ', 'T', date('Y-m-d H:i:s', $timestamp)).self::gtm_prefix();
+    public static function date_formatter($timestamp)
+    {
+        return str_replace(' ', 'T', date('Y-m-d H:i:s', $timestamp)) . self::gtm_prefix();
     }
 
-    private static function gtm_prefix() {
+    private static function gtm_prefix()
+    {
 
         $gmt = get_option('gmt_offset', 3);
 
@@ -130,7 +140,8 @@ class Leyka_Qiwi_Gateway_Helper {
 
     }
 
-    public static function get_payment_id_by_response_data($billId) {
+    public static function get_payment_id_by_response_data($billId)
+    {
 
         global $wpdb;
 
