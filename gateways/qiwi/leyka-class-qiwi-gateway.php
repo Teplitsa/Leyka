@@ -2,21 +2,23 @@
     die;
 }
 
-require_once LEYKA_PLUGIN_DIR.'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Web_Hook_Verification.php';
-require_once LEYKA_PLUGIN_DIR.'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Web_Hook.php';
-require_once LEYKA_PLUGIN_DIR.'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Helper.php';
+require_once LEYKA_PLUGIN_DIR . 'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Web_Hook_Verification.php';
+require_once LEYKA_PLUGIN_DIR . 'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Web_Hook.php';
+require_once LEYKA_PLUGIN_DIR . 'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Helper.php';
 
 /**
  * Leyka_Qiwi_Gateway class
  */
-class Leyka_Qiwi_Gateway extends Leyka_Gateway {
+class Leyka_Qiwi_Gateway extends Leyka_Gateway
+{
 
     protected static $_instance;
 
     protected $_qiwi_response;
     protected $_qiwi_log = array();
 
-    protected function _set_attributes() {
+    protected function _set_attributes()
+    {
 
         $this->_id = 'qiwi';
         $this->_title = __('Qiwi', 'leyka');
@@ -26,7 +28,8 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
 
     }
 
-    protected function _set_options_defaults() {
+    protected function _set_options_defaults()
+    {
 
         if ($this->_options) {
             return;
@@ -51,17 +54,18 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
 
     }
 
-    public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
+    public function process_form($gateway_id, $pm_id, $donation_id, $form_data)
+    {
 
         $donation = new Leyka_Donation($donation_id);
         $campaign = new Leyka_Campaign($form_data['leyka_campaign_id']);
         $description = $campaign->short_description;
-
+        $amount = (int)$donation->amount;
         $bill = new Leyka_Qiwi_Gateway_Helper();
 
         $response = $bill->create_bill(
             $donation_id,
-            $donation->amount,
+            $amount,
             array(
                 'customer' => array(
                     'account' => $donation->__get('donor_name'),
@@ -77,7 +81,8 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
 
     }
 
-    public function submission_redirect_url($current_url, $pm_id) {
+    public function submission_redirect_url($current_url, $pm_id)
+    {
 
         $url = add_query_arg(
             array('url' => urlencode($this->_qiwi_response->payUrl)),
@@ -88,7 +93,8 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
 
     }
 
-    public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
+    public function submission_form_data($form_data_vars, $pm_id, $donation_id)
+    {
 
         $donation = new Leyka_Donation($donation_id);
 
@@ -104,9 +110,10 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
 
     }
 
-    public function _handle_service_calls($call_type = '') {
+    public function _handle_service_calls($call_type = '')
+    {
 
-        switch($call_type) {
+        switch ($call_type) {
             case 'check_order':
             case 'notify':
             case 'process':
@@ -114,7 +121,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
                 break;
             case 'redirect':
                 $url = add_query_arg(
-                    array( 'successUrl' => urlencode(get_permalink(leyka_options()->opt('quittance_redirect_page'))) ),
+                    array('successUrl' => urlencode(get_permalink(leyka_options()->opt('quittance_redirect_page')))),
                     urldecode($_GET['url'])
                 );
                 wp_redirect($url, 302);
@@ -124,18 +131,20 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
 
     }
 
-    protected function _get_value_if_any($arr, $key, $val = false) {
+    protected function _get_value_if_any($arr, $key, $val = false)
+    {
         return empty($arr[$key]) ? '' : ($val ? $val : $arr[$key]);
     }
 
-    public function get_gateway_response_formatted(Leyka_Donation $donation) {
+    public function get_gateway_response_formatted(Leyka_Donation $donation)
+    {
 
-        if( !$donation->gateway_response ) {
+        if (!$donation->gateway_response) {
             return array();
         }
 
         $vars = maybe_unserialize($donation->gateway_response);
-        if( !$vars || !is_array($vars) ) {
+        if (!$vars || !is_array($vars)) {
             return array();
         }
 
@@ -151,19 +160,22 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
 
     }
 
-    protected function _initialize_pm_list() {
-        if(empty($this->_payment_methods['card'])) {
+    protected function _initialize_pm_list()
+    {
+        if (empty($this->_payment_methods['card'])) {
             $this->_payment_methods['card'] = Leyka_Qiwi_Card::get_instance();
         }
     }
 
 }
 
-class Leyka_Qiwi_Card extends Leyka_Payment_Method {
+class Leyka_Qiwi_Card extends Leyka_Payment_Method
+{
 
     protected static $_instance = null;
 
-    public function _set_attributes() {
+    public function _set_attributes()
+    {
 
         $this->_id = 'card';
         $this->_gateway_id = 'qiwi';
@@ -191,11 +203,14 @@ class Leyka_Qiwi_Card extends Leyka_Payment_Method {
 
     }
 
-    protected function _set_options_defaults() {}
+    protected function _set_options_defaults()
+    {
+    }
 
 }
 
-function leyka_add_gateway_qiwi() {
+function leyka_add_gateway_qiwi()
+{
     leyka_add_gateway(Leyka_Qiwi_Gateway::get_instance());
 }
 
