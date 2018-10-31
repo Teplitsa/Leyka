@@ -195,6 +195,7 @@ class Leyka_Qiwi_Card extends Leyka_Payment_Method
             LEYKA_PLUGIN_BASE_URL . 'gateways/qiwi/icons/visa.png',
             LEYKA_PLUGIN_BASE_URL . 'gateways/qiwi/icons/master.png',
             LEYKA_PLUGIN_BASE_URL . 'gateways/qiwi/icons/mir.png',
+            LEYKA_PLUGIN_BASE_URL . 'gateways/qiwi/icons/qiwi-full.png',
         ));
 
 
