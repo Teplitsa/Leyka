@@ -280,3 +280,63 @@ jQuery(document).ready(function($){
     }
     
 });
+
+// PM list scroll in gateways cards
+jQuery(document).ready(function($){
+    
+    var iconWidth = 40;
+    
+    if( !$('.gateways-cards-list').length ) {
+        return;
+    }
+    
+    function scrollPMIconsList($pmIconsList, moveStep) {
+        
+        var $movableWrapper = $pmIconsList.find('.pm-icons-wrapper');
+        var $iconsContainer = $pmIconsList.find('.pm-icons');
+        var $iconsScroll = $pmIconsList.find('.pm-icons-scroll');
+        
+        var currentLeftOffset = parseInt($.trim($movableWrapper.css('left').replace('px', '')));
+        var newLeftOffset = currentLeftOffset - moveStep;
+        
+        if(newLeftOffset >= 0) {
+            newLeftOffset = 0;
+            $pmIconsList.find('.scroll-arrow.left').hide();
+        }
+        else {
+            $pmIconsList.find('.scroll-arrow.left').show();
+        }
+        
+        if($iconsContainer.width() + newLeftOffset <= $iconsScroll.width()) {
+            newLeftOffset = -($iconsContainer.width() - $iconsScroll.width());
+            $pmIconsList.find('.scroll-arrow.right').hide();
+        }
+        else {
+            $pmIconsList.find('.scroll-arrow.right').show();
+        }
+        
+        $movableWrapper.css('left', String(newLeftOffset) + 'px');
+    }
+
+    $('.gateway-card-supported-pm-list').each(function(){
+        
+        var $pmIconsList = $(this);
+        
+        $(this).find('.scroll-arrow').click(function(){
+            if($(this).hasClass('left')) {
+                scrollPMIconsList( $pmIconsList, -iconWidth );
+            }
+            else {
+                scrollPMIconsList( $pmIconsList, iconWidth );
+            }
+        });
+        
+        var $iconsContainer = $pmIconsList.find('.pm-icons');
+        var iconsWidth = iconWidth * $iconsContainer.find('img').length;
+        
+        if(iconsWidth > $pmIconsList.width()) {
+            $pmIconsList.find('.scroll-arrow.right').show();
+        }
+    });
+    
+});

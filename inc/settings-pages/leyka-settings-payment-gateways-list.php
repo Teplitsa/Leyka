@@ -35,7 +35,7 @@ $gateways_categories = leyka_get_gateways_filter_categories_list();
             $gateway_activation_status = $gateway->get_activation_status();
         ?>
     
-        <div class="leyka-admin-gateway-card gateway-card <?php echo implode(" ", $gateway->get_filter_categories());?>">
+        <div class="leyka-admin-gateway-card gateway-card <?php echo implode(" ", $gateway->get_filter_categories());?> <?php echo $gateway_activation_status;?>">
             
             <div class="gateway-card-header">
                 
@@ -67,9 +67,10 @@ $gateways_categories = leyka_get_gateways_filter_categories_list();
                         ?>
                         </div>
                     </div>
-                    <img class="scroll-arrow left" src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-scroll-arrow-left.svg" />
-                    <img class="scroll-arrow right" src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-scroll-arrow-right.svg" />
                 </div>
+                
+                <img class="scroll-arrow left" src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-scroll-arrow-left.svg" />
+                <img class="scroll-arrow right" src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-scroll-arrow-right.svg" />
             
             </div>
             

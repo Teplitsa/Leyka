@@ -969,9 +969,9 @@ class Leyka_Paypal_All extends Leyka_Payment_Method {
         $this->_label = __('PayPal', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/visa.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/master.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/paypal/icons/paypal-frontend.png',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
+            LEYKA_PLUGIN_BASE_URL.'gateways/paypal/icons/paypal-frontend.svg',
         ));
 
         $this->_supported_currencies[] = 'rur';

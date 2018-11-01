@@ -45,7 +45,7 @@ if( !function_exists('leyka_show_gateway_logo')) {
             <?php if( !!$show_gateway_info && ($use_paceholders || $gateway->description) ) {?>
             <span class="field-q">
                 <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-info.svg">
-                <span class="field-q-tooltip"><?php echo $use_paceholders ? '#GATEWAY_DESCRIPTION#' : esc_attr($gateway->description);?></span>
+                <span class="field-q-tooltip"><?php echo $use_paceholders ? '#GATEWAY_DESCRIPTION#' : $gateway->description;?></span>
             </span>
             <?php }?>
         </div>
@@ -74,7 +74,7 @@ if( !function_exists('leyka_pm_sortable_option_html_new') ) {
                             <img class="pm-icon" src="<?php echo $icon_url;?>">
                         <?php }?>
                     <?php } else if($pm->main_icon) {?>
-                    <img class="pm-icon" src="<?php echo $pm->main_icon_url;?>">
+                        <img class="pm-icon" src="<?php echo $pm->main_icon_url;?>">
                     <?php }
                 }?>
                 </div>
@@ -110,31 +110,41 @@ if( !function_exists('leyka_gateway_details_html') ) {
     
         <div class="gateway-details">
 
-            <?php if($gateway->min_commission && $gateway->min_commission > 0.0) {?>
-            
-            <div class="details-element gateway-commission">
+            <div class="details-element gateway-commission field-q">
                 <div class="details-pic">
-                    от <span class="commission-size"><?php echo $gateway->min_commission;?>%</span>
+                    <?php if($gateway->min_commission && $gateway->min_commission > 0.0) {?>
+                        от <span class="commission-size"><?php echo $gateway->min_commission;?>%</span>
+                    <?php } else {?>
+                        <span class="commission-size">?</span>
+                    <?php }?>
                 </div>
                 <div class="details-label">комиссия</div>
+                
+                <span class="field-q-tooltip">
+                <?php if($gateway->min_commission && $gateway->min_commission > 0.0) {?>
+                    Комиссия от <?php echo $gateway->min_commission;?>%
+                <?php } else {?>
+                    Комиссия неизвестна
+                <?php }?>
+                </span>
             </div>
-            
-            <?php }?>
 
-            <div class="details-element gateway-has-recurring">
+            <div class="details-element gateway-has-recurring field-q">
                 <div class="details-pic has-recurring-icon">
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-recurring<?php echo $gateway->has_recurring ? "" : "-no";?>.svg">
                 </div>
                 <div class="details-label">рекурренты</div>
+                <span class="field-q-tooltip"><?php echo leyka_get_recurring_description($gateway->has_recurring);?></span>
             </div>
 
             <?php if($gateway->receiver_types) {?>
             
-            <div class="details-element gateway-receiver-types">
+            <div class="details-element gateway-receiver-types field-q"">
                 <div class="details-pic receiver-type-icon">
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-receiver-type-<?php echo count($gateway->receiver_types) > 1 ? 'all' : $gateway->receiver_types[0];?>.svg">
                 </div>
                 <div class="details-label">получатель</div>
+                <span class="field-q-tooltip"><?php echo leyka_get_receiver_description($gateway->receiver_types);?></span>
             </div>
             
             <?php }?>

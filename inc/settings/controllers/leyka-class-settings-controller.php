@@ -229,6 +229,9 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
             case 'next_step_full_id':
                 return $this->_getNextStepId();
+            
+            case 'history':
+                return empty($this->_activity['history']) ? array() : $this->_activity['history'];
 
             default:
                 return parent::__get($name);

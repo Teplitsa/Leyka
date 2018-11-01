@@ -58,9 +58,9 @@
         background-color: $color-wizard-tooltip-bg;
         border-radius: 6px;
         border: none;
-        padding: 7px 8px 8px 8px;
-        font-size: 10px;
-        line-height: 15px;
+        padding: 8px 8px 8px 8px;
+        font-size: 12px;
+        line-height: 17px;
         z-index: 11;
         top: 150%;
         left: 0;
@@ -69,9 +69,13 @@
         width: 204px;
         overflow-wrap: break-word;
         word-wrap: break-word;
-        white-space: pre-line;
+        //white-space: pre-line;
         max-width: max-content;
         text-align: center;
+        
+        a {
+          color: $color-white;
+        }
         
         &:before {
             content: "";
@@ -89,6 +93,7 @@
         &:empty {
             display: none;
         }
+        
     }
     
     &:hover {
@@ -320,8 +325,16 @@
     align-items: center;
   
     .pm-icon {
-        height: 20px;
-        margin-right: 12px;
+      
+        height: 40px;
+        margin: 0;
+        
+        &[src$=".png"] {
+            max-height: 20px;
+            width: 28px;
+            margin-right: 12px;
+        }
+        
     }
 }
 

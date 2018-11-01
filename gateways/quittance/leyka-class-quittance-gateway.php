@@ -161,7 +161,7 @@ class Leyka_Bank_Order extends Leyka_Payment_Method {
         $this->_label = __('Bank order quittance', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/quittance/icons/sber_s.png',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/sber.svg',
         ));
 
         $this->_submit_label = __('Get bank order quittance', 'leyka');

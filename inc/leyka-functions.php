@@ -528,6 +528,11 @@ function leyka_get_filter_category_label($category_id) {
 
 }
 
+
+/**
+ * Gateway activation status labels
+ * @return string
+ */
 function leyka_get_gateway_activation_status_label($activation_status) {
 
     $activation_status_labels = array(
@@ -540,6 +545,10 @@ function leyka_get_gateway_activation_status_label($activation_status) {
     
 }
 
+/**
+ * Gateway activation button labels
+ * @return string
+ */
 function leyka_get_gateway_activation_button_label($gateway) {
     
     $activation_status = $gateway->get_activation_status();
@@ -550,8 +559,8 @@ function leyka_get_gateway_activation_button_label($gateway) {
         'activating' => 'Продолжить',
     );
     
-    if($activation_status == 'inactive' && !leyka_gateway_setup_wizard($gateway->id)) {
-        $label = 'Настроить';
+    if($activation_status != 'active' && !leyka_gateway_setup_wizard($gateway)) {
+        $label = 'Подключить';
     }
     else {
         $label = $activation_status && !empty($activation_status_labels[$activation_status]) ? $activation_status_labels[$activation_status] : false;
@@ -560,6 +569,40 @@ function leyka_get_gateway_activation_button_label($gateway) {
     return $label;
     
 }
+
+/**
+ * Gateway recurring description
+ * @return string
+ */
+function leyka_get_recurring_description($recurring_status) {
+
+    $labels = array(
+        true => 'Рекуррентные платежи поддерживаются.',
+        false => 'Рекуррентные платежи не поддерживаются.',
+    );
+    
+    return !empty($labels[$recurring_status]) ? $labels[$recurring_status] : '';
+    
+}
+
+/**
+ * Gateway receiver description
+ * @return string
+ */
+function leyka_get_receiver_description($receiver_types) {
+    
+    $type = count($receiver_types) > 1 ? 'all' : $receiver_types[0];
+
+    $labels = array(
+        'all' => 'Доступно и для физических, и для юридических лиц.',
+        'legal' => 'Доступно только для юридических лиц.',
+        'physical' => 'Доступно только для физических лиц.',
+    );
+    
+    return $type && !empty($labels[$type]) ? $labels[$type] : '';
+    
+}
+
 
 /**
  * Get all possible campaign target states.
