@@ -16,7 +16,10 @@ try {
 
 	fwrite(STDOUT, "All done\n\n");
 	fwrite(STDOUT, 'Memory '.memory_get_usage(true).chr(10));
-	fwrite(STDOUT, 'Total execution time in seconds: ' . (microtime(true) - $time_start).chr(10).chr(10));
+
+	$total_time_sec = microtime(true) - $time_start;
+	$total_time_min = intval($total_time_sec/60);
+	fwrite(STDOUT, 'Total execution time: '.($total_time_min ? "$total_time_min min, ".($total_time_sec % $total_time_min)." sec" : $total_time_sec." sec")."\n\n");
 
 }
 catch (TstNotCLIRunException $ex) {

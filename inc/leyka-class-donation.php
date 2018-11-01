@@ -4,23 +4,13 @@
  * Leyka Donation History
  **/
 
-class Leyka_Donation_Management {
-	
-	private static $_instance = null;
+class Leyka_Donation_Management extends Leyka_Singleton {
+
+	protected static $_instance = null;
 
 	public static $post_type = 'leyka_donation';
 
-    public static function get_instance() {
-
-        // If the single instance hasn't been set, set it now.
-        if( !self::$_instance ) {
-            self::$_instance = new self;
-        }
-
-        return self::$_instance;
-    }
-
-	private function __construct() {
+	protected function __construct() {
 
 //        add_action('quick_edit_custom_box', array($this, 'display_quickedit_box'), 10, 2);
 
@@ -71,6 +61,7 @@ class Leyka_Donation_Management {
         );
 
         return $messages;
+
     }
 
     public function row_actions($actions, $donation) {
@@ -89,11 +80,12 @@ class Leyka_Donation_Management {
         unset($actions['inline hide-if-no-js']);
 
         return $actions;
+
     }
 
     public function donation_status_changed($new, $old, WP_Post $donation) {
 
-        if($new == $old || $donation->post_type != self::$post_type) {
+        if($new === $old || $donation->post_type !== self::$post_type) {
             return;
         }
 
@@ -105,6 +97,7 @@ class Leyka_Donation_Management {
 
             $campaign = new Leyka_Campaign($donation->campaign_id);
             $campaign->update_total_funded_amount($donation, $old == 'funded' ? 'remove' : 'add');
+
         }
 
     }
@@ -218,11 +211,12 @@ class Leyka_Donation_Management {
         if(leyka_options()->opt('donations_managers_emails')) {
 
             if(
-                ($donation->payment_type == 'single' && leyka_options()->opt('notify_donations_managers')) ||
-                ($donation->payment_type == 'rebill' && leyka_options()->opt('notify_managers_on_recurrents'))
+                ($donation->payment_type === 'single' && leyka_options()->opt('notify_donations_managers')) ||
+                ($donation->payment_type === 'rebill' && leyka_options()->opt('notify_managers_on_recurrents'))
             ) {
                 Leyka_Donation_Management::send_managers_notifications($donation);
             }
+
         }
 
         return true;
@@ -433,6 +427,7 @@ class Leyka_Donation_Management {
         remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
         return $res;
+
     }
 
     public static function send_managers_notifications($donation) {
@@ -519,6 +514,7 @@ class Leyka_Donation_Management {
         // Reset content-type to avoid conflicts -- http://core.trac.wordpress.org/ticket/23578
         remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
         return true;
+
     }
 
 	/** Donation metaboxes */
@@ -934,7 +930,7 @@ class Leyka_Donation_Management {
 
         wp_nonce_field('donation_status_metabox', '_donation_edit_nonce');
 
-        $is_adding_page = get_current_screen()->action == 'add';?>
+        $is_adding_page = get_current_screen()->action === 'add';?>
 
         <div class="leyka-status-section select">
             <label for="donation-status"><?php _e('Status', 'leyka');?></label>
@@ -1068,6 +1064,7 @@ class Leyka_Donation_Management {
             </div>
 
             <?php }
+
         }?>
 
         <div class="recurrent-cancel" data-donation-id="<?php echo $donation->id;?>" data-nonce="<?php echo wp_create_nonce('leyka_recurrent_cancel');?>" onclick="return confirm('<?php _e("You are about to cancel all future donations on this recurrent subscribe for this donor!\\n\\nDo you really want to do it?", "leyka");?>');"><?php _e('Cancel recurrent donations of this donor', 'leyka');?></div>
@@ -1077,6 +1074,7 @@ class Leyka_Donation_Management {
         </div>
         <div id="ajax-response" style="display: none;"></div>
         <div id="recurrent-cancel-retry" style="display: none;"><?php _e('Try again', 'leyka');?></div>
+
     <?php }
 
 	/**
@@ -1216,6 +1214,7 @@ class Leyka_Donation_Management {
                 break;
             default:
         }
+
 	}
 
     public function manage_sortable_columns($sortable_columns) {
@@ -1228,6 +1227,7 @@ class Leyka_Donation_Management {
 //        $sortable_columns['status'] = 'donation_status'; // Apparently, WP can't sort posts by status
 
         return $sortable_columns;
+
     }
 
     public function do_column_sorting($vars) {
@@ -1237,29 +1237,22 @@ class Leyka_Donation_Management {
         }
 
         if($vars['orderby'] == 'donation_date') {
-            $vars = array_merge($vars, array(
-                'orderby' => 'date',
-            ));
-        } elseif($vars['orderby'] == 'donor_name') {
-            $vars = array_merge($vars, array(
-                'meta_key' => 'leyka_donor_name',
-                'orderby' => 'meta_value',
-            ));
-        } elseif($vars['orderby'] == 'payment_type') {
-            $vars = array_merge($vars, array(
-                'meta_key' => 'leyka_payment_type',
-                'orderby' => 'meta_value',
-            ));
+            $vars = array_merge($vars, array('orderby' => 'date',));
+        } else if($vars['orderby'] == 'donor_name') {
+            $vars = array_merge($vars, array('meta_key' => 'leyka_donor_name', 'orderby' => 'meta_value',));
+        } else if($vars['orderby'] == 'payment_type') {
+            $vars = array_merge($vars, array('meta_key' => 'leyka_payment_type', 'orderby' => 'meta_value',));
         }
 
         return $vars;
+
     }
 
     /** Save donation data metabox */
     public function save_donation_data($donation_id) {
 
         // Maybe donation is inserted trough API:
-        if(empty($_POST['post_type']) || $_POST['post_type'] != Leyka_Donation_Management::$post_type) {
+        if(empty($_POST['post_type']) || $_POST['post_type'] !== Leyka_Donation_Management::$post_type) {
             return false;
         }
 
@@ -1283,7 +1276,7 @@ class Leyka_Donation_Management {
         $donation = new Leyka_Donation($donation_id);
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-        if($donation->status != $_POST['donation_status']) {
+        if($donation->status !== $_POST['donation_status']) {
             $donation->status = $_POST['donation_status'];
         }
 
@@ -1415,11 +1408,12 @@ class Leyka_Donation_Management {
 
         if(empty($status)) {
 		    return $labels;
-        } elseif($status == 'publish') {
+        } else if($status === 'publish') {
             return $labels['funded'];
         } else {
 		    return !empty($labels[$status]) ? $labels[$status] : false;
         }
+
 	}
 
 	static function get_status_descriptions($status = false) {
@@ -1428,14 +1422,15 @@ class Leyka_Donation_Management {
 
         if(empty($status)) {
 		    return $descriptions;
-        } elseif($status == 'publish') {
+        } else if($status == 'publish') {
             return $descriptions['funded'];
         } else {
 		    return !empty($descriptions[$status]) ? $descriptions[$status] : false;
         }
+
 	}
 
-} // class end
+}
 
 function leyka_donation_management() {
     return Leyka_Donation_Management::get_instance();
@@ -2050,11 +2045,13 @@ class Leyka_Donation {
 
 class Leyka_Donation_New extends Leyka_Donation {
 
+    /** @todo Implement the method */
 //    public static function add(array $params = array()) {
 //
 //
 //    }
 
+    /** @todo Implement the method */
     public function __construct($donation) {
 
         if((is_int($donation) || is_string($donation)) && (int)$donation > 0) {
@@ -2138,6 +2135,7 @@ class Leyka_Donation_New extends Leyka_Donation {
 
     }
 
+    /** @todo Implement the method */
 //    public function __get($field) {
 //
 //        if( !$this->_id ) {
@@ -2283,6 +2281,7 @@ class Leyka_Donation_New extends Leyka_Donation {
 //
 //    }
 
+    /** @todo Implement the method */
 //    public function __set($field, $value) {
 //
 //        if( !$this->_id ) {
@@ -2491,6 +2490,7 @@ class Leyka_Donation_New extends Leyka_Donation {
 
     }
 
+    /** @todo Implement the method */
 //    public function delete($force = False) {
 //        wp_delete_post( $this->_id, $force );
 //    }
