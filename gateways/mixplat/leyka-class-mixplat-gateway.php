@@ -424,7 +424,8 @@ class Leyka_Mixplat_Mobile extends Leyka_Payment_Method {
         $this->_label = __('Mobile payment', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/mixplat/icons/sms.png',
+            //LEYKA_PLUGIN_BASE_URL.'gateways/mixplat/icons/sms.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/mixplat/icons/sms.svg',
         ));
 
         $this->_custom_fields = array(
@@ -482,7 +483,8 @@ class Leyka_Mixplat_Text extends Leyka_Payment_Method {
         $this->_support_global_fields = false;
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/mixplat/icons/sms.png',
+            //LEYKA_PLUGIN_BASE_URL.'gateways/mixplat/icons/sms.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/mixplat/icons/sms.svg',
         ));
 
         $this->_supported_currencies[] = 'rur';

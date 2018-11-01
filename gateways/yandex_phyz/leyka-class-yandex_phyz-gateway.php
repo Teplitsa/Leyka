@@ -269,7 +269,7 @@ class Leyka_Yandex_Phyz_Money extends Leyka_Payment_Method {
         $this->_label = __('Virtual cash Yandex.Money', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex_phyz/icons/yandex_phyz_money_s.png',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/yandex-money.svg',
         ));
 
         $this->_supported_currencies[] = 'rur';
@@ -301,9 +301,9 @@ class Leyka_Yandex_Phyz_Card extends Leyka_Payment_Method {
         $this->_label_backend = $this->_label;
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex_phyz/icons/master.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex_phyz/icons/visa.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex_phyz/icons/mir.png',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ));
 
         $this->_supported_currencies[] = 'rur';

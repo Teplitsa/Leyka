@@ -242,10 +242,10 @@ class Leyka_Paymaster_All extends Leyka_Payment_Method {
         $this->_label = __('Paymaster smart payment', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/paymaster_all.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/visa.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/master.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/mir.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/paymaster_all.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ));
 
         $this->_supported_currencies[] = 'rur';

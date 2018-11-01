@@ -141,13 +141,14 @@ function leyka_get_gateway_icons_list($gateway) {
 function leyka_get_gateway_settings_url($gateway) {
     
     $gateway_activation_status = $gateway ? $gateway->get_activation_status() : null;
+    $wizard_id = leyka_gateway_setup_wizard($gateway);
     
     $url = '';
     
-    if($gateway_activation_status == 'inactive' && $wizard = leyka_gateway_setup_wizard($gateway)) {
-        $url = admin_url('/admin.php?page=leyka_settings_new&screen=wizard-' . $wizard);
+    if($gateway_activation_status != 'active' && $wizard_id) {
+        $url = admin_url('/admin.php?page=leyka_settings_new&screen=wizard-' . $wizard_id);
     }
-    elseif($gateway_activation_status) {
+    else {
         $url = admin_url('/admin.php?page=leyka_settings&stage=payment&gateway=' . $gateway->id);
     }
     
@@ -160,20 +161,24 @@ function leyka_get_gateway_settings_url($gateway) {
  */
 function leyka_gateway_setup_wizard($gateway) {
     
-    $wizard = false;
+    $wizard_id = false;
     
-    if(in_array($gateway->id, array('yandex', 'cp', 'quittance'))) {
-        
-        if($gateway->id == 'quittance') {
-            $wizard = 'init';
-        }
-        else {
-            $wizard = $gateway->id;
-        }
-        
+    if(in_array($gateway->id, Leyka_Gateway::$gateways_with_wizard)) {
+        $wizard_id = $gateway->id;
     }
     
-    return $wizard;
+    return $wizard_id;
+}
+
+/**
+ * @param string $gateway_wizard_name
+ * @return bool
+ */
+function leyka_wizard_started($gateway_wizard_name) {
+    
+    $wizard_controller = Leyka_Settings_Factory::get_instance()->getController($gateway_wizard_name);
+    return count($wizard_controller->history) > 0;
+    
 }
 
 abstract class Leyka_Gateway extends Leyka_Singleton {
@@ -197,6 +202,8 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     protected $_payment_methods = array(); // Supported PMs array
     protected $_options = array(); // Gateway configs
+    
+    public static $gateways_with_wizard = array('yandex', 'cp');
 
     protected function __construct() {
 
@@ -609,25 +616,26 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
         return $categories;
 
     }
-    
+
     /**
      * @return string: active inactive activating
      */
     public function get_activation_status() {
-        
-        global $wpdb;
+
         $status = 'inactive';
+
+        $wizard_id = leyka_gateway_setup_wizard($this);
 
         if(count($this->get_payment_methods(true))) {
             $status = 'active';
-        } elseif((int)$wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}options WHERE option_name LIKE %s", '%leyka_'.$this->id.'_%') ) > 0) {
+        } else if($wizard_id && leyka_wizard_started($wizard_id)) {
             $status = 'activating';
         }
-        
+
         return $status;
 
     }
-    
+
 }
 
 /**
