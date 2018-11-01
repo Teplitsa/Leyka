@@ -4,13 +4,13 @@
  * Leyka Donation Campaign Functionality
  **/
 
-class Leyka_Campaign_Management {
+class Leyka_Campaign_Management extends Leyka_Singleton {
 
-	private static $_instance = null;
+	protected static $_instance = null;
 
 	public static $post_type = 'leyka_campaign';
-	
-	private function __construct() {
+
+	protected function __construct() {
 
 		add_action('add_meta_boxes', array($this, 'set_metaboxes'));
 		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manage_columns_names'));
@@ -22,15 +22,6 @@ class Leyka_Campaign_Management {
 
 		add_filter('post_row_actions', array($this, 'row_actions'), 10, 2);
 
-	}
-	
-	public static function get_instance() {
-
-		if( !self::$_instance ) {
-			self::$_instance = new self;
-        }
-
-		return self::$_instance;
 	}
 
     public function set_admin_messages($messages) {
