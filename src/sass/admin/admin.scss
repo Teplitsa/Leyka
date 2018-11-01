@@ -151,6 +151,15 @@
                         .details-element:first-child {
                             margin-left: 24px;
                         }
+                        
+                        .field-q {
+                            
+                            .field-q-tooltip {
+                                top: 110%;
+                                left: 28px;
+                            }
+                            
+                        }
 
                     }
 
@@ -600,9 +609,8 @@
                     @include field-q();
                     
                     .field-q-tooltip {
-                        top: 100%;
+                        top: 110%;
                         left: 40%;
-                        transform:translateX(-50%);
                     }
                     
                 }

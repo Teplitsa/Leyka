@@ -1029,7 +1029,7 @@ class Leyka_Yandex_Alpha_Click extends Leyka_Payment_Method {
         $this->_label = __('Alpha-Click', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/alfa-click.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/alfa-click.svg',
         ));
 
         $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
@@ -1063,7 +1063,7 @@ class Leyka_Yandex_Promvzyazbank extends Leyka_Payment_Method {
         $this->_label = __('Promsvyazbank', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/promsvyazbank.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/promsvyazbank.svg',
         ));
 
         $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
