@@ -1008,7 +1008,7 @@ class Leyka {
      */
     function register_post_types(){
 
-        /** Donation CPT: */
+        // Donations:
         $args = array(
             'label' => __('Donations', 'leyka'),
             'labels' => array(
@@ -1036,15 +1036,16 @@ class Leyka {
             'has_archive' => 'donations',
             'capability_type' => array('donation', 'donations'),
             'map_meta_cap' => true,
-            'rewrite' => array('slug' => 'donation', 'with_front' => false)
+            'rewrite' => array('slug' => 'donation', 'with_front' => false),
+            'show_in_rest' => false, // True to use Gutenberg editor, false otherwise
         );
 
         register_post_type(Leyka_Donation_Management::$post_type, $args);
 
-        /** Donation editing messages */
+        // Donation editing messages:
         add_filter('post_updated_messages', array(Leyka_Donation_Management::get_instance(), 'set_admin_messages'));
 
-        /** Campaign CPT: */
+        // Campaigns:
         $args = array(
             'labels' => array(
                 'name'          => __('Campaigns', 'leyka'),
@@ -1072,7 +1073,8 @@ class Leyka {
             'has_archive' => true,
             'capability_type' => array('campaign', 'campaigns'),
             'map_meta_cap' => true,
-            'rewrite' => array('slug' => 'campaign', 'with_front' => false)
+            'rewrite' => array('slug' => 'campaign', 'with_front' => false),
+            'show_in_rest' => false, // True to use Gutenberg editor, false otherwise
         );
 
         register_post_type(Leyka_Campaign_Management::$post_type, $args);
