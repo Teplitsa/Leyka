@@ -616,28 +616,26 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
         return $categories;
 
     }
-    
+
     /**
      * @return string: active inactive activating
      */
     public function get_activation_status() {
-        
-        global $wpdb;
+
         $status = 'inactive';
-        
+
         $wizard_id = leyka_gateway_setup_wizard($this);
-        
+
         if(count($this->get_payment_methods(true))) {
             $status = 'active';
-        }
-        elseif($wizard_id && leyka_wizard_started($wizard_id)) {
+        } else if($wizard_id && leyka_wizard_started($wizard_id)) {
             $status = 'activating';
         }
-        
+
         return $status;
 
     }
-    
+
 }
 
 /**
