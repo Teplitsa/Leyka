@@ -36,13 +36,15 @@ class Leyka_Procedure_Convert_Donations_Format {
         global $wpdb;
 
         $query = $wpdb->prepare("SELECT ID FROM {$wpdb->prefix}posts WHERE post_type=%s", Leyka_Donation_Management::$post_type);
+//        $query .= " LIMIT 0,10000"; // For debugging only
+
         $donations_ids = $wpdb->get_col($query);
         $total_donations = count($donations_ids);
 
         echo '<pre>Total donations: '.print_r($total_donations, 1).'</pre>'."\n";
         ob_flush();
 
-        $process_completed = true;
+        $process_completed_totally = true;
         $donations_processed = 0;
 
         foreach($donations_ids as $donation_id) {
@@ -53,14 +55,16 @@ class Leyka_Procedure_Convert_Donations_Format {
             if(self::processDonation($donation_id)) {
 
                 $donations_processed++;
-                echo "donation inserted (".($donations_processed*100.0/$total_donations)."% finished).\n";
+                echo "donation inserted (".round($donations_processed*100.0/$total_donations, 3)."% finished).\n";
                 ob_flush();
 
+            } else {
+                $process_completed_totally = false;
             }
 
         }
 
-        if($process_completed) {
+        if($process_completed_totally) {
             update_option('leyka_donations_storage_type', 'sep');
         } else {
             update_option('leyka_donations_storage_type', 'sep-incompleted');
@@ -89,7 +93,7 @@ class Leyka_Procedure_Convert_Donations_Format {
 
          // Donation metas: status_log, donor_email_date, donor_comment, donor_subscribed, donor_subscription_email, manangers_emails_date, gateway_response, init_recurring_donation_id, recurring_active, recurring_cancel_date, + ALL EXISTING CUSTOM METAS
 
-        $query = "INSERT INTO {$wpdb->prefix}leyka_donations (`ID`, `campaign_id`, `status`, `status_log`, `payment_type`, `date_created`, `gateway_id`, `pm_id`, `currency_id`, `amount`, `amount_total`, `amount_in_main_currency`, `amount_total_in_main_currency`, `donor_name`, `donor_email`, `donor_email_date`, `donor_comment`, `donor_subscribed`, `donor_subscription_email`, `manangers_emails_date`, `gateway_response`, `init_recurring_donation_id`, `recurring_active`, `recurring_cancel_date`) VALUES ";
+        $query = "INSERT INTO {$wpdb->prefix}leyka_donations (`ID`, `campaign_id`, `status`, `payment_type`, `date_created`, `gateway_id`, `pm_id`, `currency_id`, `amount`, `amount_total`, `amount_in_main_currency`, `amount_total_in_main_currency`, `donor_name`, `donor_email`) VALUES ";
 
         $donation_post_meta = $wpdb->get_results($wpdb->prepare("SELECT `meta_key`,`meta_value` FROM {$wpdb->prefix}postmeta WHERE `post_id`=%d", $donation_post_data['ID']), ARRAY_A);
 
@@ -125,18 +129,12 @@ class Leyka_Procedure_Convert_Donations_Format {
             $donation_post_meta['donation_amount'] : round($donation_post_meta['main_curr_amount'], 2);
         $donation_post_meta['main_curr_amount_total'] = empty($donation_post_meta['main_curr_amount_total']) ?
             $donation_post_meta['donation_amount_total'] : round($donation_post_meta['main_curr_amount_total'], 2);
-        $donation_post_meta['donor_email_date'] = empty($donation_post_meta['donor_email_date']) ? 'NULL' : "'".$donation_post_meta['donor_email_date']."'";
-        $donation_post_meta['donor_comment'] = empty($donation_post_meta['donor_comment']) ? 'NULL' : "'".$donation_post_meta['donor_comment']."'";
-        $donation_post_meta['donor_subscribed'] = empty($donation_post_meta['donor_subscribed']) ? 0 : 1;
-        $donation_post_meta['donor_subscription_email'] = empty($donation_post_meta['donor_subscription_email']) ? 'NULL' : "'".$donation_post_meta['donor_subscription_email']."'";
-        $donation_post_meta['managers_emails_date'] = empty($donation_post_meta['managers_emails_date']) ? 'NULL' : "'".$donation_post_meta['managers_emails_date']."'";
-        $donation_post_meta['gateway_response'] = empty($donation_post_meta['gateway_response']) ? 'NULL' : "'".$donation_post_meta['gateway_response']."'";
-        $donation_post_data['post_parent'] = empty($donation_post_data['post_parent']) ?
-            'NULL' : $donation_post_meta['post_parent'];
-        $donation_post_meta['recurring_active'] = empty($donation_post_meta['_rebilling_is_active']) ? 0 : 1;
-        $donation_post_meta['recurrents_cancel_date'] = empty($donation_post_meta['recurrents_cancel_date']) ? 'NULL' : "'".$donation_post_meta['recurrents_cancel_date']."'";
 
-        $query_values = "\n({$donation_post_data['ID']},{$donation_post_meta['campaign_id']},'{$donation_post_data['post_status']}','{$donation_post_meta['_status_log']}','{$donation_post_meta['payment_type']}','{$donation_post_data['post_date']}',{$donation_post_meta['gateway']},'{$donation_post_meta['payment_method']}','{$donation_post_meta['donation_currency']}',{$donation_post_meta['donation_amount']},{$donation_post_meta['donation_amount_total']},{$donation_post_meta['main_curr_amount']},{$donation_post_meta['main_curr_amount_total']},'{$donation_post_meta['donor_name']}','{$donation_post_meta['donor_email']}',{$donation_post_meta['donor_email_date']},{$donation_post_meta['donor_comment']},{$donation_post_meta['donor_subscribed']},{$donation_post_meta['donor_subscription_email']},{$donation_post_meta['managers_emails_date']},{$donation_post_meta['gateway_response']},{$donation_post_data['post_parent']},{$donation_post_meta['recurring_active']},{$donation_post_meta['recurrents_cancel_date']})";
+        $query_values = "\n({$donation_post_data['ID']},{$donation_post_meta['campaign_id']},'{$donation_post_data['post_status']}','{$donation_post_meta['payment_type']}','{$donation_post_data['post_date']}',{$donation_post_meta['gateway']},'{$donation_post_meta['payment_method']}','{$donation_post_meta['donation_currency']}',{$donation_post_meta['donation_amount']},{$donation_post_meta['donation_amount_total']},{$donation_post_meta['main_curr_amount']},{$donation_post_meta['main_curr_amount_total']},'{$donation_post_meta['donor_name']}','{$donation_post_meta['donor_email']}')";
+
+        foreach(array('campaign_id','payment_type','gateway','payment_method','donation_currency','donation_amount','donation_amount_total','main_curr_amount','main_curr_amount_total','donor_name','donor_email',) as $key) {
+            unset($donation_post_meta[$key]);
+        }
 
         $query_values = rtrim($query.$query_values, ',');
         if($wpdb->query($query_values) === false) {
@@ -148,12 +146,38 @@ class Leyka_Procedure_Convert_Donations_Format {
 
             return false;
 
-        } else {
+        }
+        // Main donation inserted
 
-            fclose($err_log_fp);
-            return true;
+        // Donation meta insertion:
+        if(empty($donation_post_meta['recurrents_cancel_date'])) {
+            unset($donation_post_meta['recurrents_cancel_date']);
+        }
+        if(empty($donation_post_meta['_donor_email_date'])) {
+            unset($donation_post_meta['_donor_email_date']);
+        }
+        if(empty($donation_post_meta['_managers_emails_date'])) {
+            unset($donation_post_meta['_managers_emails_date']);
+        }
+        unset($donation_post_meta['_edit_last'], $donation_post_meta['_edit_lock']);
+
+        foreach($donation_post_meta as $key => $value) {
+
+            $query = "INSERT INTO {$wpdb->prefix}leyka_donations_meta (`donation_id`,`meta_key`, `meta_value`) VALUES ({$donation_post_data['ID']}, '{$key}', '{$value}')";
+
+            if($wpdb->query($query) === false) {
+
+                ob_start();
+                echo "META ERROR: ".$query."\n\n";
+                fputs($err_log_fp, "META ERROR: ".ob_get_clean());
+                fclose($err_log_fp);
+
+            }
 
         }
+
+        fclose($err_log_fp);
+        return true;
 
     }
 
