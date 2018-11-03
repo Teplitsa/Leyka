@@ -590,7 +590,7 @@ var leykaValidateForm,
                     redirect_form_html += '</form>';
 
                     $redirect_step.append(redirect_form_html);
-                    $redirect_step.find('.leyka-auto-submit').submit();
+                    // $redirect_step.find('.leyka-auto-submit').submit();
 
                 });
 
