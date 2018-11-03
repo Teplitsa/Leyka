@@ -104,6 +104,7 @@ class Leyka_Sberbank_Gateway extends Leyka_Gateway
 
     public function _handle_service_calls($call_type = '')
     {
+        file_put_contents(__DIR__.'/log', var_export($_POST));
     }
 
     public function get_gateway_response_formatted(Leyka_Donation $donation)
