@@ -76,8 +76,9 @@ class Leyka_Sberbank_Gateway extends Leyka_Gateway
         if (!isset($result['errorCode'])) {
             $donation->add_gateway_response(serialize($result));
             $this->redirectUrl = $result['formUrl'];
-            header('Location: ' . $this->redirectUrl);
-            exit();
+            $this->orderId = $result['orderId'];
+//            header('Location: ' . $this->redirectUrl);
+//            exit();
         }
     }
 
@@ -88,8 +89,8 @@ class Leyka_Sberbank_Gateway extends Leyka_Gateway
 
     public function submission_form_data($form_data_vars, $pm_id, $donation_id)
     {
-//        $donation = new Leyka_Donation($donation_id);
-//        $post = get_post($donation_id);
+        $donation = new Leyka_Donation($donation_id);
+        $post = get_post($donation_id);
 //        return [
 //            'userName' => leyka_options()->opt('sberbank-acquiring-login'),
 //            'password' => leyka_options()->opt('sberbank-acquiring-password'),
@@ -100,6 +101,9 @@ class Leyka_Sberbank_Gateway extends Leyka_Gateway
 //            'returnUrl' => leyka_get_success_page_url(),
 //            'failUrl' => leyka_get_failure_page_url(),
 //        ];
+        return [
+            'mdOrder' => $this->orderId
+        ];
     }
 
     public function _handle_service_calls($call_type = '')
@@ -109,9 +113,8 @@ class Leyka_Sberbank_Gateway extends Leyka_Gateway
 
     public function get_gateway_response_formatted(Leyka_Donation $donation)
     {
-        $response_vars = unserialize($donation->gateway_response);
         return array(
-            __('Order Id:', 'leyka') => $response_vars['orderId'],
+            __('Response:', 'leyka') => unserialize($donation->gateway_response)
         );
     }
 
