@@ -114,6 +114,9 @@ class Leyka_Sberbank_Gateway extends Leyka_Gateway
             if (isset($_GET['status']) && (int)$_GET['status'] === 1) {
                 $donation = new Leyka_Donation($_GET['orderNumber']);
                 $donation->add_gateway_response($_POST);
+                if ($donation->status !== 'funded') {
+                    $donation->status = 'funded';
+                }
             }
         }
         file_put_contents(__DIR__ . '/log', var_export($_POST, true));
