@@ -343,7 +343,7 @@ class Leyka {
                 // E.g., some-website.org/leyka/service/yandex/check_order/
 
                 // $request[0] - Gateway ID, $request[1] - service action:
-                do_action('leyka_service_call-'.$request[0], empty($request[1]) ? '' : $request[1]);
+//                do_action('leyka_service_call-'.$request[0], empty($request[1]) ? '' : $request[1]);
 
             }
 
