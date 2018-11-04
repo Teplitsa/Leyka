@@ -116,6 +116,7 @@ class Leyka_Sberbank_Gateway extends Leyka_Gateway
                 $donation->add_gateway_response($_POST);
             }
         }
+        echo 'ппрвет';
         file_put_contents(__DIR__ . '/log', var_export($_POST));
         return ['привет сук)'];
     }
