@@ -71,6 +71,7 @@ class Leyka_Sberbank_Gateway extends Leyka_Gateway
             [
                 'currency' => Currency::RUB,
                 'failUrl' => leyka_get_failure_page_url(),
+                'merchantOrderNumber' => $donation_id
             ]
         );
         if (!isset($result['errorCode'])) {
@@ -109,7 +110,14 @@ class Leyka_Sberbank_Gateway extends Leyka_Gateway
 
     public function _handle_service_calls($call_type = '')
     {
-        file_put_contents(__DIR__.'/log', var_export($_POST));
+        if (isset($_GET['operation']) && $_GET['operation'] === 'deposited') {
+            if (isset($_GET['status']) && (int)$_GET['status'] === 1) {
+                $donation = new Leyka_Donation($_GET['orderNumber']);
+                $donation->add_gateway_response($_POST);
+            }
+        }
+        throw new ErrorException("heh");
+        file_put_contents(__DIR__ . '/log', var_export($_POST));
         return ['привет сук)'];
     }
 
