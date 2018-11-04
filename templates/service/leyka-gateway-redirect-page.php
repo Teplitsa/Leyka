@@ -15,10 +15,14 @@
         do_action('leyka_'.$gateway_pm[0].'_redirect_page_content', $gateway_pm[1], leyka()->donation_id);?>
     </div>
 
-    <?php $httpMethod = 'get'; ?>
+    <?php
+    $payment_vars = leyka()->payment_vars;
+    $httpMethod = $payment_vars['http_method'];
+    unset($payment_vars['http_method']);
+    ?>
     <form id="leyka-auto-submit" action="<?php echo leyka()->payment_url;?>" method="<?php echo $httpMethod; ?>">
 
-        <?php foreach(leyka()->payment_vars as $name => $value) {
+        <?php foreach($payment_vars as $name => $value) {
             echo '<input type="hidden" name="'.$name.'" value="'.$value.'">'."\n";
         }?>
 

@@ -581,6 +581,7 @@ var leykaValidateForm,
                     }
                     console.log(response);
                     var http_method = (response.http_method === undefined) ? 'post' : response.http_method;
+                    delete response.http_method;
                     var redirect_form_html = '<form class="leyka-auto-submit" action="'+response.payment_url+'" method="'+http_method+'">';
 
                     $.each(response, function(field_name, value){

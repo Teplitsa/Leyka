@@ -102,7 +102,8 @@ class Leyka_Sberbank_Gateway extends Leyka_Gateway
 //            'failUrl' => leyka_get_failure_page_url(),
 //        ];
         return [
-            'mdOrder' => $this->orderId
+            'mdOrder' => $this->orderId,
+            'http_method' => 'get'
         ];
     }
 
