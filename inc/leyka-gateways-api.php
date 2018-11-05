@@ -787,7 +787,9 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
         $this->_label = $custom_label && $custom_label != $this->_label ?
             $custom_label : apply_filters('leyka_get_pm_label_original', $this->_label, $this);
 
-        $this->_active = in_array($this->full_id, leyka_options()->opt('pm_available'));
+        $this->_active = $this->_active = is_array(leyka_options()->opt('pm_available')) ?
+            in_array($this->full_id, leyka_options()->opt('pm_available')) : array();
+        //in_array($this->full_id, leyka_options()->opt('pm_available'));
 
         add_filter('leyka_payment_options_allocation', array($this, 'allocate_pm_options'), 10, 1);
 
