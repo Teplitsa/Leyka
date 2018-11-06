@@ -245,6 +245,7 @@ class Leyka_Paymaster_All extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/paymaster_all.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ));
 

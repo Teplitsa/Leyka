@@ -75,7 +75,7 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
         $this->_support_global_fields = false;
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/text/icons/box.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/text/icons/pm-text.svg',
         ));
 
         $this->_supported_currencies[] = 'rur';
