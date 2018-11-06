@@ -75,6 +75,14 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway
             )
         );
 
+        if (empty($response['body'])) {
+            $error = new WP_Error(
+                'gateway_settings_incorrect',
+                __('The gateway you used has incorrect or missing settings', 'leyka')
+            );
+            leyka()->add_payment_form_error($error);
+        }
+
         $this->_qiwi_response = json_decode(wp_remote_retrieve_body($response));
 
         return $this->_qiwi_response;
@@ -206,6 +214,20 @@ class Leyka_Qiwi_Card extends Leyka_Payment_Method
 
     protected function _set_options_defaults()
     {
+        if ($this->_options) {
+            return;
+        }
+
+        $this->_options = array(
+            $this->full_id . '_description' => array(
+                'type' => 'html',
+                'default' => __('<a href="https://kassa.qiwi.com">QIWI cashier</a> — payment with Bank cards, QIWI Wallet and the balance of the phone. Guarantee the security of your payments.', 'leyka'),
+                'title' => __('Qiwi Kassa payment description', 'leyka'),
+                'description' => __('Please, enter Qiwi Kassa gateway description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
+                'required' => 0,
+                'validation_rules' => array()
+            ),
+        );
     }
 
 }

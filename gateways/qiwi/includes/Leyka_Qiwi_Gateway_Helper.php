@@ -32,8 +32,11 @@ class Leyka_Qiwi_Gateway_Helper
         if (Leyka_Donation_Management::$post_type == $donation->post_type) {
 
             $donation = new Leyka_Donation($donation);
-            $billId = get_post_meta($donation->id, '_leyka_donation_id_on_gateway_response', true);
-
+            $billId = get_post_meta(
+                $donation->id . "-{$this->salt}",
+                '_leyka_donation_id_on_gateway_response',
+                true
+            );
             $this->refund($billId, $donation->amount);
 
         }
@@ -42,6 +45,7 @@ class Leyka_Qiwi_Gateway_Helper
     public function refund($billId, $amount)
     {
 
+        $billId = $billId . "-{$this->salt}";
         $args = array(
             "amount" => array(
                 "currency" => "RUB",
@@ -68,6 +72,7 @@ class Leyka_Qiwi_Gateway_Helper
 
     public function create_bill($billId, $amount, $args = array())
     {
+        $billId = $billId . "-{$this->salt}";
         $amount = intval($amount);
         $amount = number_format($amount, 2, '.', '');
         $args = wp_parse_args(
@@ -142,7 +147,6 @@ class Leyka_Qiwi_Gateway_Helper
 
     public static function get_payment_id_by_response_data($billId)
     {
-
         global $wpdb;
 
         return $wpdb->get_var("
