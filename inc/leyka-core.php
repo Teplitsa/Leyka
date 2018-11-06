@@ -1,7 +1,9 @@
 <?php if( !defined('WPINC') ) die;
 
 /** Core class. */
-class Leyka {
+class Leyka extends Leyka_Singleton {
+
+    protected static $_instance = null;
 
     /**
      * Unique identifier for the plugin.
@@ -11,9 +13,6 @@ class Leyka {
      * @var string
      */
     protected $_plugin_slug = 'leyka';
-
-    /** Singleton infractructure */
-    protected static $_instance = null;
 
     /**
      * Gateways list.
@@ -50,21 +49,8 @@ class Leyka {
     /** @var bool|null */
     protected $_form_is_screening = false;
 
-    /**
-     * @return Leyka
-     */
-    public static function get_instance() {
-
-        if( !self::$_instance ) {
-            self::$_instance = new self;
-        }
-
-        return self::$_instance;
-
-    }
-
     /** Initialize the plugin by setting up localization, filters, administration functions etc. */
-    private function __construct() {
+    protected function __construct() {
         
         if( !get_option('leyka_permalinks_flushed') ) {
 

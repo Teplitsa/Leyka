@@ -87,6 +87,7 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-core.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-gateways-api.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-campaign.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donation.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donations-factory.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-payment-form.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-template-controller.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-ajax.php');
@@ -118,3 +119,6 @@ add_action('plugins_loaded', array('Leyka', 'activate')); // Any update needed
 register_deactivation_hook(__FILE__, array('Leyka', 'deactivate')); // Deactivate
 
 leyka(); // All systems go
+
+echo '<pre>Option: '.print_r(get_option('leyka_donations_storage_type'), 1).'</pre>';
+echo '<pre>'.print_r(Leyka_Donations_Factory::get_instance(), 1).'</pre>';
