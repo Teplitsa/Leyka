@@ -95,7 +95,7 @@ function leyka_get_gateway_redirect_data() {
         }
 
         $payment_vars = array(
-            'status' => $donation_id && !is_wp_error($donation_id) ? 0 : 1,
+            'status' => $donation_id && !is_wp_error($donation_id) && empty(leyka()->payment_form_has_errors()) ? 0 : 1,
             'payment_url' => apply_filters('leyka_submission_redirect_url-'.$pm['gateway_id'], '', $pm['payment_method_id']),
             'submission_redirect_type' => apply_filters(
                 'leyka_submission_redirect_type-'.$pm['gateway_id'],
@@ -103,10 +103,20 @@ function leyka_get_gateway_redirect_data() {
             ),
         );
 
-        if($payment_vars['status'] == 0) {
+        if( !$payment_vars['status'] ) {
             $payment_vars['donation_id'] = $donation_id;
-        } else {
+        } else if(is_wp_error($donation_id)) {
+
             $payment_vars['errors'] = $donation_id;
+            $payment_vars['message'] = $donation_id->get_error_message();
+
+        } else if(leyka()->payment_form_has_errors()) {
+
+            $error = reset(leyka()->get_payment_form_errors());
+
+            $payment_vars['errors'] = $error;
+            $payment_vars['message'] = $error->get_error_message();
+
         }
 
         $payment_vars = array_merge(
@@ -175,7 +185,7 @@ add_action('wp_ajax_leyka_donor_subscription', 'leyka_process_success_form');
 add_action('wp_ajax_nopriv_leyka_donor_subscription', 'leyka_process_success_form');
 
 function leyka_set_campaign_photo() {
-    
+
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'set-campaign-photo')) {
         die(json_encode(array(
             'status' => 'error',
@@ -187,18 +197,18 @@ function leyka_set_campaign_photo() {
             'message' => __('Error: campaign ID is missing', 'leyka'),
         )));
     }
-    
+
     $attachment_id = (int)$_POST['attachment_id'];
     $campaign_id = (int)$_POST['campaign_id'];
-    
+
     update_post_meta($campaign_id, '_thumbnail_id', $attachment_id);
     sleep(1);
-    
+
     die(json_encode(array(
         'status' => 'ok',
         'post' => $_POST,
     )));
-    
+
 }
 add_action('wp_ajax_leyka_set_campaign_photo', 'leyka_set_campaign_photo');
 
