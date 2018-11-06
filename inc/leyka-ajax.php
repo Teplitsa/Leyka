@@ -129,23 +129,6 @@ function leyka_get_gateway_redirect_data() {
         )));
     }
 
-    /** @todo Add this server-side checks for donor name & email */
-//    $donor_name = leyka_pf_get_donor_name_value();
-//    if($donor_name && !leyka_validate_donor_name($donor_name)) {
-//
-////        $error = new WP_Error('incorrect_donor_name', __('Incorrect donor name given while trying to add a donation', 'leyka'));
-////        $this->add_payment_form_error($error);
-//
-//    }
-//
-//    $donor_email = leyka_pf_get_donor_email_value();
-//    if($donor_email && !leyka_validate_email($donor_email)) {
-//
-////        $error = new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
-////        $this->add_payment_form_error($error);
-//
-//    }
-
     if(empty($_POST['without_form_submission'])) { // Normal donation submit procedure
 
         $donation_id = leyka()->log_submission();
@@ -162,7 +145,7 @@ function leyka_get_gateway_redirect_data() {
         }
 
         $payment_vars = array(
-            'status' => $donation_id && !is_wp_error($donation_id) ? 0 : 1,
+            'status' => $donation_id && !is_wp_error($donation_id) && empty(leyka()->payment_form_has_errors()) ? 0 : 1,
             'payment_url' => apply_filters('leyka_submission_redirect_url-'.$pm[0], '', $pm[1]),
             'submission_redirect_type' => apply_filters(
                 'leyka_submission_redirect_type-'.$pm[0],
@@ -172,8 +155,15 @@ function leyka_get_gateway_redirect_data() {
 
         if($payment_vars['status'] == 0) {
             $payment_vars['donation_id'] = $donation_id;
-        } else {
+        } else if(is_wp_error($donation_id)) {
             $payment_vars['errors'] = $donation_id;
+        } else if(leyka()->payment_form_has_errors()) {
+
+            $error = reset(leyka()->get_payment_form_errors());
+
+            $payment_vars['errors'] = $error;
+            $payment_vars['message'] = $error->get_error_message();
+
         }
 
         $payment_vars = array_merge(
