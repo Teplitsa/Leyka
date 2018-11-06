@@ -1436,7 +1436,7 @@ function leyka_donation_management() {
     return Leyka_Donation_Management::get_instance();
 }
 
-
+/** Default donation class - WP_Post-based */
 class Leyka_Donation {
 
 	protected $_id;
@@ -2043,7 +2043,8 @@ class Leyka_Donation {
 
 }
 
-class Leyka_Donation_New extends Leyka_Donation {
+/** Separately stored donation class - the donation data is kept in the separated DB tables */
+class Leyka_Donation_Separated extends Leyka_Donation {
 
     /** @todo Implement the method */
 //    public static function add(array $params = array()) {
