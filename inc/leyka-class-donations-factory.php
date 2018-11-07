@@ -58,6 +58,37 @@ abstract class Leyka_Donations_Factory extends Leyka_Singleton {
      */
     abstract public function addDonation(array $params = array());
 
+    protected function _getMultipleFilterValues($values, array $possible_values_list) {
+
+        if(empty($values)) {
+            return null;
+        }
+
+        $values_to_filter = array();
+        if(is_array($values)) { // Values as an array
+
+            foreach($values as $value) {
+                if($value && array_key_exists(trim($value), $possible_values_list)) {
+                    $values_to_filter[] = trim($value);
+                }
+            }
+
+        } else if(stripos($values, ',') !== false) { // Comma-separated values list
+
+            foreach(explode(',', $values) as $value) {
+                if($value && array_key_exists(trim($value), $possible_values_list)) {
+                    $values_to_filter[] = trim($value);
+                }
+            }
+
+        } else if(array_key_exists(trim($values), $possible_values_list)) { // A single value
+            $values_to_filter = trim($values);
+        }
+
+        return $values_to_filter;
+
+    }
+
 }
 
 class Leyka_Posts_Donations_Factory extends Leyka_Donations_Factory {
@@ -99,77 +130,86 @@ class Leyka_Posts_Donations_Factory extends Leyka_Donations_Factory {
 
         if( !empty($params['status']) ) {
 
-            $donations_statuses = leyka_get_donation_status_list();
+            $values_list = $this->_getMultipleFilterValues($params['status'], leyka_get_donation_status_list());
 
-            if(is_array($params['status'])) { // Statuses list as an array
-
-                $statuses_to_filter = array();
-                foreach($params['status'] as $status) {
-                    if($status && array_key_exists(trim($status), $donations_statuses)) {
-                        $statuses_to_filter[] = trim($status);
-                    }
-                }
-
-                if($statuses_to_filter) {
-                    $query->set('post_status', $statuses_to_filter);
-                }
-
-            } else if(array_key_exists(trim($params['status']), $donations_statuses)) { // A single status
-                $query->set('post_status', trim($params['status']));
-            } else if(stripos($params['status'], ',') !== false) { // Comma-separated statuses list
-
-                $params['status'] = explode(',', $params['status']);
-                $statuses_to_filter = array();
-                foreach($params['status'] as $status) {
-                    if($status && array_key_exists(trim($status), $donations_statuses)) {
-                        $statuses_to_filter[] = trim($status);
-                    }
-                }
-
-                if($statuses_to_filter) {
-                    $query->set('post_status', $statuses_to_filter);
-                }
-
+            if($values_list) {
+                $query->set('post_status', $values_list);
             }
 
         }
 
-        if( !empty($params['posts_per_page']) ) {
+        if( !empty($params['results_limit']) && (int)$params['results_limit'] > 0 ) {
+            $query->set('posts_per_page', (int)$params['results_limit']);
+        }
 
+        if( !empty($params['page']) && (int)$params['posts_per_page'] > 1 ) {
+            $query->set('page', (int)$params['page']);
         }
-        if( !empty($params['page']) ) {
 
+        if(isset($params['year_month']) && (int)$params['year_month'] > 0) {
+            $query->set('m', (int)$params['year_month']);
         }
-        if(isset($params['recurring'])) {
-            // 'only_init', 'only_non_init',
-            // use 'post_parent' => 0,
+
+        if(isset($params['day']) && (int)$params['day'] >= 1 && (int)$params['day'] <= 31) {
+            $query->set('day', (int)$params['day']);
         }
-        if(isset($params['recurring_active'])) {
-            // true/false, default NULL
-            // use array('key' => '_rebilling_is_active', 'value' => '1', 'compare' => '=',),
+
+        if( !empty(trim($params['search_string'])) ) {
+            $query->set('s', trim($params['search_string']));
         }
-        if(isset($params['month'])) {
-            // use 'm' => $_GET['month-year']
-        }
-        if(isset($params['day'])) {
-            // use 'day' => (int)date('j')
-        }
-        if(isset($params['search_string'])) {
-            // use 's' => $_GET['search_string']
+
+        if( !empty($params['recurring_only_init']) ) {
+
+            $query->set('post_parent', 0);
+            $params['payment_type'] = 'rebill';
+
         }
 
         $meta_query = array('relation' => 'AND');
 
+        if(isset($params['recurring_active'])) {
+
+            $meta_query[] = array('key' => '_rebilling_is_active', 'value' => !!$params['recurring_active'] ? '1' : '0');
+            $params['payment_type'] = 'rebill';
+
+        }
+
         if( !empty($params['amount_filter']) ) {
-            // 'only+', 'only-', '>=SOME_AMOUNT'
+
+            $params['amount_filter'] = trim($params['amount_filter']);
+
+            if($params['amount_filter'] === 'only+') {
+                $meta_query[] = array('key' => 'leyka_donation_amount', 'value' => 0, 'compare' => '>');
+            } else if($params['amount_filter'] === 'only-') {
+                $meta_query[] = array('key' => 'leyka_donation_amount', 'value' => 0, 'compare' => '<');
+            } else if(stripos($params['amount_filter'], '>=')) {
+                $meta_query[] = array(
+                    'key' => 'leyka_donation_amount',
+                    'value' => (int)str_replace('>=', '', $params['amount_filter']),
+                    'compare' => '>=',
+                );
+            } else if(stripos($params['amount_filter'], '<=')) {
+                $meta_query[] = array(
+                    'key' => 'leyka_donation_amount',
+                    'value' => (int)str_replace('<=', '', $params['amount_filter']),
+                    'compare' => '<=',
+                );
+            }
+
         }
 
         if( !empty($params['campaign_id']) ) {
             $meta_query[] = array('key' => 'leyka_campaign_id', 'value' => (int)$params['campaign_id']);
         }
 
-        if( !empty($params['payment_type']) && array_key_exists($params['payment_type'], leyka_get_payment_types_list()) ) {
-            $meta_query[] = array('key' => 'leyka_payment_type', 'value' => $params['payment_type']);
+        if( !empty($params['payment_type']) ) {
+
+            $values_list = $this->_getMultipleFilterValues($params['payment_type'], leyka_get_payment_types_list());
+
+            if($values_list) {
+                $meta_query[] = array('key' => 'leyka_payment_type', 'value' => (array)$values_list, 'compare' => 'IN');
+            }
+
         }
 
         if( !empty($params['gateway_pm']) ) {
@@ -203,9 +243,12 @@ class Leyka_Posts_Donations_Factory extends Leyka_Donations_Factory {
 
         }
 
-        /** @todo $parameters:
-         * array('key' => '_cp_transaction_id', 'value'   => $cp_transaction_id, 'compare' => '=',), // Custom meta
-         */
+        // Custom donations meta filter. E.g. 'custom_meta__cp_transaction_id' => '12345':
+        foreach($params as $param_name => $value) {
+            if(stripos($param_name, 'custom_meta_') !== false) {
+                $meta_query[] = array('key' => trim(str_replace('custom_meta_', '', $param_name)), 'value' => $value,);
+            }
+        }
 
         if(count($meta_query) > 1) {
             $query->set('meta_query', $meta_query);
