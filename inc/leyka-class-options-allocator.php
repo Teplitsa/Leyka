@@ -217,6 +217,12 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         )
                     ),),
                     array('section' => array(
+                        'name' => 'upload_l10n',
+                        'title' => 'Загрузка перевода',
+                        'is_default_collapsed' => true,
+                        'options' => array('lang2upload',)
+                    ),),
+                    array('section' => array(
                         'name' => 'plugin_deletion',
                         'title' => __('Plugin data deletion', 'leyka'),
                         'is_default_collapsed' => true,

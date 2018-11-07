@@ -936,6 +936,18 @@ self::$_options_meta = array(
         'title' => __('Load plugin scripts only if necessary', 'leyka'),
         'description' => __("Check this to load Leyka scripts and styles only on an applicable pages. If this box is unchecked, plugin will load it's scripts on every website page.", 'leyka'),
     ),
+    'lang2upload' => array(
+        'type' => 'select',
+        'default' => 'ru',
+        'title' => 'Выберите язык для загрузки',
+        'description' => '
+<input type="button" class="button button-secondary" value="Загрузить" id="upload-l10n-button"/>
+<div class="field-errors"><span></span></div>
+        ',
+        'list_entries' => array(
+            'ru' => 'Русский',
+        ),
+    ),
     'delete_plugin_options' => array(
         'type' => 'checkbox',
         'default' => 0,
