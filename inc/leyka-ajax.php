@@ -185,7 +185,7 @@ add_action('wp_ajax_leyka_donor_subscription', 'leyka_process_success_form');
 add_action('wp_ajax_nopriv_leyka_donor_subscription', 'leyka_process_success_form');
 
 function leyka_set_campaign_photo() {
-    
+
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'set-campaign-photo')) {
         die(json_encode(array(
             'status' => 'error',
@@ -197,18 +197,18 @@ function leyka_set_campaign_photo() {
             'message' => __('Error: campaign ID is missing', 'leyka'),
         )));
     }
-    
+
     $attachment_id = (int)$_POST['attachment_id'];
     $campaign_id = (int)$_POST['campaign_id'];
-    
+
     update_post_meta($campaign_id, '_thumbnail_id', $attachment_id);
     sleep(1);
-    
+
     die(json_encode(array(
         'status' => 'ok',
         'post' => $_POST,
     )));
-    
+
 }
 add_action('wp_ajax_leyka_set_campaign_photo', 'leyka_set_campaign_photo');
 
