@@ -157,13 +157,17 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway
         }
 
         return array(
-            __('Operation date:', 'leyka') => $vars['QIWI_Response']->creationDateTime,
-            __('Shop Account:', 'leyka') => $vars['QIWI_Response']->siteId,
-            __('Shop bill ID:', 'leyka') => $vars['QIWI_Response']->billId,
-            __('Donation currency:', 'leyka') => $vars['QIWI_Response']->amount->currency,
-            __('Operation status:', 'leyka') => $vars['QIWI_Response']->status->value,
-            __('Donor name:', 'leyka') => $vars['QIWI_Form']['leyka_donor_name'],
-            __('Form url:', 'leyka') => $vars['QIWI_Response']->payUrl
+            __('Operation date:', 'leyka') => isset($vars['QIWI_Response']->creationDateTime) ?
+                $vars['QIWI_Response']->creationDateTime : '',
+            __('Shop Account:', 'leyka') => isset($vars['QIWI_Response']->siteId) ? $vars['QIWI_Response']->siteId : '',
+            __('Shop bill ID:', 'leyka') => isset($vars['QIWI_Response']->billId) ? $vars['QIWI_Response']->billId : '',
+            __('Donation currency:', 'leyka') => isset($vars['QIWI_Response']->amount->currency) ?
+                $vars['QIWI_Response']->amount->currency : '',
+            __('Operation status:', 'leyka') => isset($vars['QIWI_Response']->status->value) ?
+                $vars['QIWI_Response']->status->value : '',
+            __('Donor name:', 'leyka') => isset($vars['QIWI_Form']['leyka_donor_name']) ?
+                $vars['QIWI_Form']['leyka_donor_name'] : '',
+            __('Form url:', 'leyka') => isset($vars['QIWI_Response']->payUrl) ? $vars['QIWI_Response']->payUrl : '',
         );
 
     }
