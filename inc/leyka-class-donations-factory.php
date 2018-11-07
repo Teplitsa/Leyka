@@ -36,7 +36,13 @@ abstract class Leyka_Donations_Factory extends Leyka_Singleton {
      * @param string $data_field
      * @return mixed
      */
-    abstract public function getDonationData($donation, $data_field);
+    public function getDonationData($donation, $data_field) {
+
+        $donation = $this->getDonation($donation);
+
+        return $donation ? $donation->$data_field : null;
+
+    }
 
     /**
      * @param int|WP_Post|Leyka_Donation $donation
@@ -100,14 +106,6 @@ class Leyka_Posts_Donations_Factory extends Leyka_Donations_Factory {
         $donation = new Leyka_Donation($donation);
 
         return is_a($donation, 'Leyka_Donation') && $donation->id ? $donation : false;
-
-    }
-
-    public function getDonationData($donation, $data_field) {
-
-        $donation = $this->getDonation($donation);
-
-        return $donation ? $donation->$data_field : null;
 
     }
 
@@ -272,10 +270,6 @@ class Leyka_Separated_Donations_Factory extends Leyka_Donations_Factory {
 
         return is_a($donation, 'Leyka_Donation') && $donation->id ? $donation : false;
 
-    }
-
-    public function getDonationData($donation, $data_field) {
-        /** @todo Implement the method */
     }
 
     public function setDonationData($donation, $data_field, $data_value) {

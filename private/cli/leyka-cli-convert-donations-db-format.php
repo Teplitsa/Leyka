@@ -121,6 +121,8 @@ class Leyka_Procedure_Convert_Donations_Format {
 
         }
 
+        $donation_post_meta['donor_name'] = empty($donation_post_meta['donor_name']) ? '' : $donation_post_meta['donor_name'];
+        $donation_post_meta['donor_email'] = empty($donation_post_meta['donor_email']) ? '' : $donation_post_meta['donor_email'];
         $donation_post_meta['payment_type'] = empty($donation_post_meta['payment_type']) ? 'single' : $donation_post_meta['payment_type'];
         $donation_post_meta['gateway'] = empty($donation_post_meta['gateway']) ? "'correction'" : "'".$donation_post_meta['gateway']."'";
         $donation_post_meta['donation_currency'] = empty($donation_post_meta['donation_currency']) ?
@@ -153,6 +155,8 @@ class Leyka_Procedure_Convert_Donations_Format {
         // Main donation inserted
 
         // Donation meta insertion:
+        $donation_post_meta['payment_title'] = $donation_post_data['post_title'];
+
         if(empty($donation_post_meta['recurrents_cancel_date'])) {
             unset($donation_post_meta['recurrents_cancel_date']);
         }
@@ -162,11 +166,21 @@ class Leyka_Procedure_Convert_Donations_Format {
         if(empty($donation_post_meta['_managers_emails_date'])) {
             unset($donation_post_meta['_managers_emails_date']);
         }
-        unset($donation_post_meta['_edit_last'], $donation_post_meta['_edit_lock']);
+        unset( // Don't transfer the unneeded post meta:
+            $donation_post_meta['_edit_last'], $donation_post_meta['_edit_lock'], $donation_post_meta['_gapp_post_views'],
+            $donation_post_meta['_wp_desired_post_slug'], $donation_post_meta['_wp_trash_meta_status'],
+            $donation_post_meta['_wp_trash_meta_time'], $donation_post_meta['_yoast_wpseo_content_score'],
+            $donation_post_meta['_yoast_wpseo_is_cornerstone'], $donation_post_meta['_count_view'], $donation_post_meta['views'],
+            $donation_post_meta['_is_subscribed']
+        );
 
         foreach($donation_post_meta as $key => $value) {
 
-            $query = "INSERT INTO {$wpdb->prefix}leyka_donations_meta (`donation_id`,`meta_key`, `meta_value`) VALUES ({$donation_post_data['ID']}, '{$key}', '{$value}')";
+            if(stripos($key, '_') === 0) {
+                $key = mb_substr($key, 1);
+            }
+
+            $query = $wpdb->prepare("INSERT INTO {$wpdb->prefix}leyka_donations_meta (`donation_id`,`meta_key`,`meta_value`) VALUES (%d, %s, %s)", $donation_post_data['ID'], $key, $value);
 
             if($wpdb->query($query) === false) {
 
