@@ -356,6 +356,9 @@ class Leyka {
                 leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')
             ) {
                 do_action('leyka_do_campaigns_targets_reaching_mailout');
+            } else if($request[0] === 'get_usage_stats') {
+                echo json_encode($this->_get_usage_stats($_REQUEST));
+//                echo '<pre>'.print_r($this->_get_usage_stats($_REQUEST), 1).'</pre>';
             } else { // Gateway callback URL
 
                 // Callback URLs are: some-website.org/leyka/service/{gateway_id}/{action_name}/
@@ -474,6 +477,59 @@ class Leyka {
             }
 
         }
+
+    }
+
+    protected function _get_usage_stats(array $params = array()) {
+
+        $query_params = array(
+            'post_type' => Leyka_Donation_Management::$post_type,
+            'post_status' => 'any',
+            'meta_query' => array(
+                'relation' => 'AND',
+                array('key' => 'leyka_payment_type', 'value' => 'correction', 'compare' => '!='),
+            ),
+            'nopaging' => true,
+        );
+        if( !empty($params['year_month']) ) {
+
+            $params['year_month'] = explode('_', $params['year_month']);
+            if(count($params['year_month']) === 2 && (int)$params['year_month'][0] > 0 && (int)$params['year_month'][1] > 0) {
+                $query_params['m'] = (int)$params['year_month'][0].(int)$params['year_month'][1];
+            }
+
+        }
+
+        $stats = array();
+        foreach(get_posts($query_params) as $donation) {
+
+            $donation = new Leyka_Donation($donation);
+            $year_month = date('Y.m', $donation->date_timestamp);
+
+            $donations_by_status = array();
+            foreach(leyka_get_donation_status_list() as $status => $label) {
+                $donations_by_status[$status] = 0;
+            }
+
+            if(empty($stats[$year_month][$donation->gateway][$donation->pm])) {
+                $stats[$year_month][$donation->gateway][$donation->pm] = array(
+                    'main_currency' => 'RUB',
+                    'amount_collected' => 0.0, // In main currency
+                    'donations_count' => 0,
+                    'donations_by_status_count' => $donations_by_status,
+                );
+            }
+
+            if($donation->status === 'funded') {
+                $stats[$year_month][$donation->gateway][$donation->pm]['amount_collected'] += $donation->main_curr_amount;
+            }
+
+            $stats[$year_month][$donation->gateway][$donation->pm]['donations_count'] += 1;
+            $stats[$year_month][$donation->gateway][$donation->pm]['donations_by_status_count'][$donation->status] += 1;
+
+        }
+
+        return $stats;
 
     }
 
