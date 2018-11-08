@@ -21,7 +21,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway
     {
 
         $this->_id = 'qiwi';
-        $this->_title = __('Qiwi', 'leyka');
+        $this->_title = __('QIWI Kassa', 'leyka');
         $this->_docs_link = '//leyka.te-st.ru/docs/qiwi/';
         $this->_admin_ui_column = 1;
         $this->_admin_ui_order = 60;
@@ -200,8 +200,8 @@ class Leyka_Qiwi_Card extends Leyka_Payment_Method
             'bank_cards'
         );
 
-        $this->_label_backend = __('Bank card', 'leyka');
-        $this->_label = __('Bank card', 'leyka');
+        $this->_label_backend = __('QIWI Kassa smart payment', 'leyka');
+        $this->_label = __('QIWI Kassa', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_' . $this->_gateway_id . '_' . $this->_id, array(
             LEYKA_PLUGIN_BASE_URL . 'gateways/qiwi/icons/visa.png',
