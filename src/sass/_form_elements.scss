@@ -265,8 +265,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00f6f6f6', e
     }
 
     .amount__figure input {
-        height: 36px;
+        height: 45px;
+        //height: 36px;
         margin-bottom: 0;
+        vertical-align: bottom;				
     }
 
     .amount__icon .svg-icon {
