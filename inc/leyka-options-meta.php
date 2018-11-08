@@ -943,6 +943,7 @@ self::$_options_meta = array(
         'description' => '
 <input type="button" class="button button-secondary" value="Загрузить" id="upload-l10n-button"/>
 <div class="field-errors"><span></span></div>
+<div class="field-success"><span>Перевод успешно загружен. Идет перезагрузка страницы...</span></div>
         ',
         'list_entries' => array(
             'ru' => 'Русский',

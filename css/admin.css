@@ -900,7 +900,8 @@
     margin-top: 12px;
 }
 
-#leyka-settings-form div#leyka_lang2upload-wrapper .field-errors {
+#leyka-settings-form div#leyka_lang2upload-wrapper .field-errors,
+#leyka-settings-form div#leyka_lang2upload-wrapper .field-success {
     padding: 8px 16px;
     max-width: 100%;
     font-size: 13px;
@@ -913,12 +914,23 @@
     max-width: max-content;
 }
 
-#leyka-settings-form div#leyka_lang2upload-wrapper .field-errors span {
-    font-size: 13px;
-    line-height: 15px;
-    font-weight: 500;
-    margin-bottom: 0;
-    color: #d43c57;  
+#leyka-settings-form div#leyka_lang2upload-wrapper .field-errors span,
+#leyka-settings-form div#leyka_lang2upload-wrapper .field-success span {
+  font-size: 13px;
+  line-height: 15px;
+  font-weight: 500;
+  margin-bottom: 0;
+  color: #d43c57;  
+}
+
+#leyka-settings-form div#leyka_lang2upload-wrapper .field-success {
+  color: #248f24;
+  border: 1px solid #2eb82e;
+  background-color: #d6f5d6;
+}
+
+#leyka-settings-form div#leyka_lang2upload-wrapper .field-success span {
+  color: #248f24;
 }
 
 #leyka-settings-form div#leyka_lang2upload-wrapper .field-errors.has-errors {

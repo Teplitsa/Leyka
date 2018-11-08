@@ -445,6 +445,7 @@ jQuery(document).ready(function($){
         $btn.parent().append($loading);
         $btn.prop('disabled', true);
         $btn.siblings('.field-errors').removeClass('has-errors').find('span').empty();
+        $btn.siblings('.field-success').hide();
         
         var actionData = {
             action: 'leyka_upload_l10n'
@@ -458,8 +459,10 @@ jQuery(document).ready(function($){
                 console.log(json);
 
                 if(json.status === 'ok') {
-                    alert(json.message);
-                    location.reload();
+                    $btn.siblings('.field-success').show();
+                    setTimeout(function(){
+                            location.reload();
+                        }, 1500);
                 } else if(json.status === 'error' && json.message) {
                     $btn.siblings('.field-errors').addClass('has-errors').find('span').html(json.message);
                 } else {

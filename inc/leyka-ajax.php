@@ -286,19 +286,27 @@ function leyka_upload_l10n() {
     $res = null;
     
     if(is_wp_error($file)) {
-        $res = array('status' => 'error', 'message' => $file->get_error_message());
+        $res = array('status' => 'error', 'message' => "Ошибка! Не удалось скачать файл локализации. " . $file->get_error_message());
     }
     else {
-        try {
-            if(copy($file, WP_CONTENT_DIR . "/languages/plugins/leyka-ru_RU.mo")) {
-                unlink($file);
-            }
-            else {
-                $res = array('status' => 'error', 'message' => "Нет прав для записи в папку wp-content/languages/plugins");
-            }
+        if(!is_dir( WP_CONTENT_DIR . "/languages" ) ) {
+            $res = array('status' => 'error', 'message' => sprintf("Ошибка! Папка локализации не найдена: %s", WP_CONTENT_DIR . "/languages"));
         }
-        catch(Exception $ex) {
-            $res = array('status' => 'error', 'message' => $ex->getMessage());
+        elseif(!is_dir( WP_CONTENT_DIR . "/languages/plugins" ) ) {
+            $res = array('status' => 'error', 'message' => sprintf("Ошибка! Папка локализации плагинов не найдена: %s", WP_CONTENT_DIR . "/languages/plugins"));
+        }
+        else {
+            try {
+                if(copy($file, WP_CONTENT_DIR . "/languages/plugins/leyka-ru_RU.mo")) {
+                    unlink($file);
+                }
+                else {
+                    $res = array('status' => 'error', 'message' => sprintf("Ошибка! Нет прав для записи в папку %s", WP_CONTENT_DIR . "/languages/plugins"));
+                }
+            }
+            catch(Exception $ex) {
+                $res = array('status' => 'error', 'message' => "Ошибка! Не удалось установить файл локализации! " . $ex->getMessage());
+            }
         }
     }
     
@@ -306,10 +314,10 @@ function leyka_upload_l10n() {
         $res = array('status' => 'ok', 'message' => 'Перевод успешно загружен');
     }
     
-    $res = array_merge($res, array(
-        'file' => $file,
-        'res' => WP_CONTENT_DIR . "/languages/plugins/leyka-ru_RU.mo"
-    ));
+    //$res = array_merge($res, array(
+    //    'file' => $file,
+    //    'res' => WP_CONTENT_DIR . "/languages/plugins/leyka-ru_RU.mo"
+    //));
     
     die(json_encode($res));
 
