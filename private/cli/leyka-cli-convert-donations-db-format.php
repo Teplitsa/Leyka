@@ -107,7 +107,7 @@ class Leyka_Procedure_Convert_Donations_Format {
 
         }
 
-        foreach($donation_post_meta as $key => $meta) {
+        foreach($donation_post_meta as $key => $meta) { // Clean up meta fields names
 
             $donation_post_meta[ str_replace(array('leyka_', '_leyka_'), '', $meta['meta_key']) ] = $meta['meta_value'];
             unset($donation_post_meta[$key]);
@@ -137,6 +137,12 @@ class Leyka_Procedure_Convert_Donations_Format {
 
         $query_values = "\n({$donation_post_data['ID']},{$donation_post_meta['campaign_id']},'{$donation_post_data['post_status']}','{$donation_post_meta['payment_type']}','{$donation_post_data['post_date']}',{$donation_post_meta['gateway']},'{$donation_post_meta['payment_method']}','{$donation_post_meta['donation_currency']}',{$donation_post_meta['donation_amount']},{$donation_post_meta['donation_amount_total']},{$donation_post_meta['main_curr_amount']},{$donation_post_meta['main_curr_amount_total']},'{$donation_post_meta['donor_name']}','{$donation_post_meta['donor_email']}')";
 
+        // Save the init recurring donations links as meta field:
+        if($donation_post_meta['payment_type'] === 'rebill' && $donation_post_data['post_parent']) {
+            $donation_post_meta['init_recurring_donation_id'] = $donation_post_data['post_parent'];
+        }
+
+        // From now on, these data fields are not metas anymore, but main object attributes:
         foreach(array('campaign_id','payment_type','gateway','payment_method','donation_currency','donation_amount','donation_amount_total','main_curr_amount','main_curr_amount_total','donor_name','donor_email',) as $key) {
             unset($donation_post_meta[$key]);
         }
@@ -157,8 +163,43 @@ class Leyka_Procedure_Convert_Donations_Format {
         // Donation meta insertion:
         $donation_post_meta['payment_title'] = $donation_post_data['post_title'];
 
+        if(isset($donation_post_meta['_status_log'])) {
+
+            $last_date_funded = 0;
+            foreach((array)maybe_unserialize($donation_post_meta['_status_log']) as $status_change) {
+
+                echo '<pre>'.print_r($status_change, 1).'</pre>';
+                if(empty($status_change['status']) || empty($status_change['date'])) {
+                    break;
+                }
+
+                if($status_change['status'] === 'funded' && $status_change['date'] > $last_date_funded) {
+                    $last_date_funded = $status_change['date'];
+                }
+
+            }
+
+            if($last_date_funded) {
+                $donation_post_meta['date_funded'] = $last_date_funded;
+            }
+
+        }
+
+        if( !empty($donation_post_meta['rebilling_is_active']) ) { // Rename the "rebilling_is_active" meta to "recurring_active"
+
+            unset($donation_post_meta['rebilling_is_active']);
+            $donation_post_meta['recurring_active'] = 1;
+
+        }
+
+        // Don't insert empty meta fields:
         if(empty($donation_post_meta['recurrents_cancel_date'])) {
             unset($donation_post_meta['recurrents_cancel_date']);
+        } else { // Rename "recurrents_cancel_date" meta to "recurring_cancel_date"
+
+            $donation_post_meta['recurring_cancel_date'] = $donation_post_meta['recurrents_cancel_date'];
+            unset($donation_post_meta['recurrents_cancel_date']);
+
         }
         if(empty($donation_post_meta['_donor_email_date'])) {
             unset($donation_post_meta['_donor_email_date']);
@@ -166,7 +207,7 @@ class Leyka_Procedure_Convert_Donations_Format {
         if(empty($donation_post_meta['_managers_emails_date'])) {
             unset($donation_post_meta['_managers_emails_date']);
         }
-        unset( // Don't transfer the unneeded post meta:
+        unset( // Don't transfer the unneeded post meta
             $donation_post_meta['_edit_last'], $donation_post_meta['_edit_lock'], $donation_post_meta['_gapp_post_views'],
             $donation_post_meta['_wp_desired_post_slug'], $donation_post_meta['_wp_trash_meta_status'],
             $donation_post_meta['_wp_trash_meta_time'], $donation_post_meta['_yoast_wpseo_content_score'],
