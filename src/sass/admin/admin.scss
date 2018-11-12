@@ -91,7 +91,7 @@
 
             .main-area-top {
 
-                margin-bottom: 32px;
+                margin-bottom: 1rem;
 
                 .settings-return-link {
 
@@ -248,10 +248,11 @@
         .side-area-wrapper {
 
             border-left: 1px solid $color-border-normal;
-            flex: 0 0 376px;
-            padding-left: 32px;
             margin-left: -1px;
-
+            
+            flex: 0 0 376px;
+            padding-left: 2rem;
+            
             .pm-order-header {
 
                 h3 {
@@ -395,6 +396,7 @@
                         .pm-label {
 
                             font-size: 10px;
+                            line-height: 12px;
                             color: $color-wizard-field-explain;
 
                         }
@@ -544,9 +546,10 @@
         width: 304px;
         height: 268px;
         display: block;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
+
         margin-right: 2rem;
         margin-bottom: 2rem;
-        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
         
         &.inactive {
             background-color: #effbff;
@@ -715,9 +718,12 @@
     
     display: flex;
     justify-content: flex-start;
+    flex-wrap: wrap;
     
     .filter-toggle {
         height: 40px;
+        margin-right: 1rem;
+        margin-bottom: 1rem;
         
         img {
             cursor: pointer;
@@ -736,6 +742,8 @@
         display: none;
         justify-content: flex-start;
         height: 40px;
+        margin-bottom: 1rem;
+        margin-right: 12px;
         
         a.filter-category-item {
             @include gateway-filter-item();
@@ -748,7 +756,7 @@
             vertical-align: middle;
             padding-left: 24px;
             padding-right: 24px;
-            margin-left: 1rem;
+            margin-right: 1rem;
             text-decoration: none;
             border-bottom-style: solid;
             outline: none;
@@ -767,9 +775,13 @@
         height: 40px;
         line-height: 40px;
         vertical-align: middle;
-        margin-left: 1rem;
         text-decoration: none;
         border-bottom: none;
+        white-space: nowrap;
+        padding-left: 0;
+        padding-right: 0;
+        margin-right: 1rem;
+        margin-bottom: 1rem;
         
         &.filter-category-reset-filter {
             display: none;
@@ -802,6 +814,56 @@
                 display: unset;
             }
         }
+    }
+    
+}
+
+@media only screen and (max-width: 2080px) {
+
+    .leyka-settings-page {
+        
+        #payment-settings-area-new {
+            .main-area-wrapper {
+                flex: 0 0 1020px;
+            }
+        }
+        
+    }
+    
+}
+
+@media only screen and (max-width: 1740px) {
+
+    .leyka-settings-page {
+        
+        #payment-settings-area-new {
+            .main-area-wrapper {
+                flex: 0 0 680px;
+            }
+        }
+        
+    }
+    
+}
+
+@media only screen and (max-width: 1400px) {
+
+    .leyka-settings-page {
+        margin-left: 2rem;
+        
+        .leyka-admin .leyka-admin-gateway-card {
+            &.gateway-card {
+                margin-right: 1rem;
+                margin-bottom: 1rem;
+            }
+        }
+    
+        #payment-settings-area-new {
+            .main-area-wrapper {
+                flex: 0 0 340px;
+            }
+        }
+        
     }
     
 }

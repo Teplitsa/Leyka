@@ -8,6 +8,7 @@
  * Author:      Teplitsa of social technologies
  * Author URI:  https://te-st.ru
  * Text Domain: leyka
+ * Domain Path: /languages
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  * Contributors:
 	Lev "ahaenor" Zvyagintsev (ahaenor@gmail.com)
@@ -113,6 +114,11 @@ if( !$gateways_dir ) {
     $gateways_dir->close();
 
 }
+
+function leyka_load_plugin_textdomain() {
+    load_plugin_textdomain('leyka', false, basename( dirname( __FILE__ ) ) . '/languages/');
+}
+add_action( 'plugins_loaded', 'leyka_load_plugin_textdomain' );
 
 register_activation_hook(__FILE__, array('Leyka', 'activate')); // Activation
 add_action('plugins_loaded', array('Leyka', 'activate')); // Any update needed
