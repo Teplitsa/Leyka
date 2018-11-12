@@ -168,7 +168,6 @@ class Leyka_Procedure_Convert_Donations_Format {
             $last_date_funded = 0;
             foreach((array)maybe_unserialize($donation_post_meta['_status_log']) as $status_change) {
 
-                echo '<pre>'.print_r($status_change, 1).'</pre>';
                 if(empty($status_change['status']) || empty($status_change['date'])) {
                     break;
                 }
@@ -187,10 +186,14 @@ class Leyka_Procedure_Convert_Donations_Format {
 
         if( !empty($donation_post_meta['rebilling_is_active']) ) { // Rename the "rebilling_is_active" meta to "recurring_active"
 
+            // WARNING: ATM this field works only for active recurring scheme gateways
             unset($donation_post_meta['rebilling_is_active']);
             $donation_post_meta['recurring_active'] = 1;
 
         }
+
+        /** @todo Find and save $donation_post_meta['init_recurring_donation_id'] for each "rebill"-type donation */
+        // $donation_post_meta['init_recurring_donation_id'] = Leyka_Donation::get_init_recurrent_donation($donation_post_data['ID']);
 
         // Don't insert empty meta fields:
         if(empty($donation_post_meta['recurrents_cancel_date'])) {
