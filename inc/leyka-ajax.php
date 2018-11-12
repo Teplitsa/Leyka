@@ -95,7 +95,7 @@ function leyka_get_gateway_redirect_data() {
         }
 
         $payment_vars = array(
-            'status' => $donation_id && !is_wp_error($donation_id) && empty(leyka()->payment_form_has_errors()) ? 0 : 1,
+            'status' => $donation_id && !is_wp_error($donation_id) && !leyka()->payment_form_has_errors() ? 0 : 1,
             'payment_url' => apply_filters('leyka_submission_redirect_url-'.$pm['gateway_id'], '', $pm['payment_method_id']),
             'submission_redirect_type' => apply_filters(
                 'leyka_submission_redirect_type-'.$pm['gateway_id'],
