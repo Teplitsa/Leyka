@@ -2207,7 +2207,7 @@ class Leyka_Donation_Separated extends Leyka_Donation {
                     ($this->_getMeta('donor_email') ? $this->_getMeta('donor_email') : '');
 
             case 'gateway_response':
-                return $this->_getMeta('gateway_response'); // $this->_getMeta('');
+                return $this->_getMeta('gateway_response');
             case 'gateway_response_formatted':
                 return $this->gateway_id ?
                     leyka_get_gateway_by_id($this->gateway_id)->get_gateway_response_formatted($this) : array();
@@ -2218,44 +2218,44 @@ class Leyka_Donation_Separated extends Leyka_Donation {
             case 'type_label':
             case 'payment_type_label': return __($this->payment_type, 'leyka');
 
-//            case 'init_recurring_payment_id':
-//            case 'init_recurring_donation_id':
-//                return $this->payment_type === 'rebill' && $this->_getMeta('init_recurring_donation_id') ?
-//                    $this->_getMeta('init_recurring_donation_id') : false;
-//            case 'init_recurring_payment':
-//            case 'init_recurring_donation':
-//                if($this->payment_type !== 'rebill') {
-//                    return false;
-//                } else if($this->init_recurring_donation_id) {
-//                    return new Leyka_Donation_Separated($this->init_recurring_donation_id);
-//                } else {
-//                    return $this;
-//                }
-//            case 'recurring_subscription_is_active':
-//            case 'rebilling_on':
-//            case 'rebilling_is_on':
-//            case 'recurring_on':
-//            case 'recurring_is_on':
-//            case 'rebilling_is_active':
-//            case 'recurring_is_active': return $this->payment_type === 'rebill' ?
-//                $this->_getMeta('recurring_active') : NULL;
+            case 'init_recurring_payment_id':
+            case 'init_recurring_donation_id':
+                return $this->payment_type === 'rebill' && $this->_getMeta('init_recurring_donation_id') ?
+                    $this->_getMeta('init_recurring_donation_id') : false;
+            case 'init_recurring_payment':
+            case 'init_recurring_donation':
+                if($this->payment_type !== 'rebill') {
+                    return false;
+                } else if($this->init_recurring_donation_id) {
+                    return new Leyka_Donation_Separated($this->init_recurring_donation_id);
+                } else {
+                    return $this;
+                }
+            case 'recurring_subscription_is_active':
+            case 'rebilling_on':
+            case 'rebilling_is_on':
+            case 'recurring_on':
+            case 'recurring_is_on':
+            case 'rebilling_is_active':
+            case 'recurring_is_active':
+                return $this->payment_type === 'rebill' ? $this->_getMeta('recurring_active') : NULL;
             case 'recurrents_cancel_date':
-            case 'recurring_cancel_date': return $this->payment_type === 'rebill' ?
-                $this->_getMeta('recurring_cancel_date') : NULL;
-            default:
+            case 'recurring_cancel_date':
+                return $this->payment_type === 'rebill' ? $this->_getMeta('recurring_cancel_date') : NULL;
+            default: /** @todo WARNING! This action methods in gateways now should use the D-Factory method getDonationData(). */
                 return apply_filters('leyka_'.$this->gateway_id.'_get_unknown_donation_field', null, $field, $this);
         }
 
     }
 
     /** @todo Implement the method */
-//    public function __set($field, $value) {
-//
-//        if( !$this->_id ) {
-//            return false;
-//        }
-//
-//        switch($field) {
+    public function __set($field, $value) {
+
+        if( !$this->_id ) {
+            return false;
+        }
+
+        switch($field) {
 //            case 'title':
 //            case 'payment_title':
 //            case 'purpose_text':
@@ -2415,14 +2415,14 @@ class Leyka_Donation_Separated extends Leyka_Donation {
 //
 //                }
 //                break;
-//
-//            default:
-//                do_action('leyka_'.$this->gateway_id.'_set_unknown_donation_field', $field, $value, $this);
-//        }
-//
-//        return true;
-//
-//    }
+
+            default: /** @todo WARNING! This action methods in gateways now should use the D-Factory method setDonationData(). */
+                do_action('leyka_'.$this->gateway_id.'_set_unknown_donation_field', $field, $value, $this);
+        }
+
+        return true;
+
+    }
 //
 //    public function add_gateway_response($resp_text) {
 //

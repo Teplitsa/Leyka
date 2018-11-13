@@ -137,10 +137,7 @@ class Leyka_Procedure_Convert_Donations_Format {
 
         $query_values = "\n({$donation_post_data['ID']},{$donation_post_meta['campaign_id']},'{$donation_post_data['post_status']}','{$donation_post_meta['payment_type']}','{$donation_post_data['post_date']}',{$donation_post_meta['gateway']},'{$donation_post_meta['payment_method']}','{$donation_post_meta['donation_currency']}',{$donation_post_meta['donation_amount']},{$donation_post_meta['donation_amount_total']},{$donation_post_meta['main_curr_amount']},{$donation_post_meta['main_curr_amount_total']},'{$donation_post_meta['donor_name']}','{$donation_post_meta['donor_email']}')";
 
-        // Save the init recurring donations links as meta field:
-        if($donation_post_meta['payment_type'] === 'rebill' && $donation_post_data['post_parent']) {
-            $donation_post_meta['init_recurring_donation_id'] = $donation_post_data['post_parent'];
-        }
+        $donation_post_data['payment_type'] = $donation_post_meta['payment_type']; // Save the payment type for further usage
 
         // From now on, these data fields are not metas anymore, but main object attributes:
         foreach(array('campaign_id','payment_type','gateway','payment_method','donation_currency','donation_amount','donation_amount_total','main_curr_amount','main_curr_amount_total','donor_name','donor_email',) as $key) {
@@ -192,8 +189,17 @@ class Leyka_Procedure_Convert_Donations_Format {
 
         }
 
-        /** @todo Find and save $donation_post_meta['init_recurring_donation_id'] for each "rebill"-type donation */
-        // $donation_post_meta['init_recurring_donation_id'] = Leyka_Donation::get_init_recurrent_donation($donation_post_data['ID']);
+        // Find and save $donation_post_meta['init_recurring_donation_id'] for each "rebill"-type donation
+        if($donation_post_data['payment_type'] === 'rebill') {
+
+            $old_ver_donation = new Leyka_Donation($donation_post_data['ID']);
+            $init_recurring_donation = Leyka_Donation::get_init_recurrent_donation($old_ver_donation);
+
+            if($init_recurring_donation) {
+                $donation_post_meta['init_recurring_donation_id'] = $init_recurring_donation->id;
+            }
+
+        }
 
         // Don't insert empty meta fields:
         if(empty($donation_post_meta['recurrents_cancel_date'])) {
