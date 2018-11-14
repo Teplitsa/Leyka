@@ -224,7 +224,7 @@ JS;
     }
 
     public function _handle_service_calls($call_type = '') {
-        if('process' === $call_type) {
+        if('process' === $call_type || 'check_order' == $call_type) {
             do_action('leyka_rbk_gateway_web_hook');
         }
     }
