@@ -11,31 +11,24 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
         $this->_id = 'init';
         $this->_title = 'Мастер настройки Лейки';
-        
+
         $options = array(
             'org_actual_address' => array(
                 'type' => 'textarea',
-                'default' => '',
                 'title' => 'Фактический адрес организации',
-                'description' => '',
-                'required' => 0,
-                'validation_rules' => array(),
             ),
             'org_actual_address_differs' => array(
                 'type' => 'checkbox',
-                'default' => '',
                 'title' => 'Фактический адрес отличается от юридического',
             ),
         );
 
         foreach($options as $option_name => $params) {
-
             if( !leyka_options()->option_exists($option_name) ) {
                 leyka_options()->add_option($option_name, $params['type'], $params);
             }
-            
         }
-        
+
     }
     
     protected function _loadCssJs() {
@@ -194,7 +187,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'person_email',
             'option_id' => 'tech_support_email',
-            'title' => 'Email для связи', // __('Your email', 'leyka')
+            'title' => 'Email для связи',
             'required' => true,
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'person_address',
@@ -331,7 +324,8 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'id' => 'send_plugin_stats',
             'option_id' => 'send_plugin_stats',
             'show_title' => false,
-        )))->addTo($section);
+        )))->addHandler(array($this, 'handlePluginStatsStep'))
+            ->addTo($section);
 
         // The plugin usage stats collection - accepted:
         $step = new Leyka_Settings_Step('plugin_stats_accepted', $section->id, 'Спасибо!', array('next_label' => 'Продолжить'));
@@ -744,6 +738,51 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
             }
 
+        }
+
+    }
+
+    public function handlePluginStatsStep(array $step_settings) {
+
+        if(empty($step_settings['send_plugin_stats']) || $step_settings['send_plugin_stats'] !== 'y') {
+            return false;
+        }
+
+        $stats_server_base_url = defined('WP_DEBUG') && WP_DEBUG ?
+            rtrim(LEYKA_USAGE_STATS_DEV_SERVER_URL, '/') : rtrim(LEYKA_USAGE_STATS_PROD_SERVER_URL, '/');
+
+        $response = wp_remote_post($stats_server_base_url.'/add-installation.php', array(
+//            'method' => 'POST', // 'POST' by default
+            'timeout' => 10, // Max request time in seconds
+            'redirection' => 3, // A number of max times for request redirects
+            'httpversion' => '1.1',
+            'blocking' => true, // True for sync request, false otherwise
+            'body' => array(
+                'installation_url' => home_url(),
+                'plugin_install_date' => get_option('leyka_plugin_install_date'),
+                'collect_stats_from_date' => date('d.m.Y'),
+                'stats_collection_active' => true,
+            ),
+        ));
+
+        if(is_wp_error($response)) {
+            return new WP_Error(
+                'init_plugin_stats_error',
+                sprintf('Ошибка при сохранении данных о сборе статистики использования: %s', $response->get_error_message())
+            );
+        } else if(empty($response['response']['code']) || $response['response']['code'] != 200) {
+
+            $error_message = sprintf(
+                'Ошибка при сохранении данных о сборе статистики использования: %s',
+                empty($response['response']['code']) ?
+                    'данные о коде и статусе ответа не получены' :
+                    'код '.$response['response']['code'].(empty($response['response']['message']) ? '' : ' ('.$response['response']['message'].')')
+            );
+
+            return new WP_Error('init_plugin_stats_error', $error_message);
+
+        } else {
+            return true;
         }
 
     }
