@@ -453,7 +453,11 @@ function leyka_get_currencies_data($currency_id = false) {
     );
     $currencies['rub'] = $currencies['rur'];
 
-    return $currency_id && !empty($currencies[$currency_id]) ? $currencies[$currency_id] : $currencies;
+    if( !!$currency_id ) {
+        return $currency_id && !empty($currencies[$currency_id]) ? $currencies[$currency_id] : false;
+    } else {
+        return $currencies;
+    }
 
 }
 
