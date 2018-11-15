@@ -18,7 +18,7 @@ class Leyka_Rbk_Gateway_Web_Hook_Verification
     {
         $key = $this->_key_prepare(get_option('leyka_rbk_api_web_hook_key', false));
 
-        if (empty($_SERVER[self::SIGNATURE])) {
+        if (!isset($_SERVER[self::SIGNATURE])) {
             new WP_Error(
                 'Leyka_webhook_error',
                 'Webhook notification signature missing'
