@@ -744,16 +744,10 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
         if(empty($step_settings['send_plugin_stats'])) {
             return false;
-        } else {
-            $step_settings['send_plugin_stats'] = $step_settings['send_plugin_stats'] === 'y';
-        }
-
-        if($step_settings['send_plugin_stats'] === leyka_options()->opt('send_plugin_stats')) {
-            return true;
         }
 
         update_option('leyka_plugin_stats_option_needs_sync', time());
-        $stats_option_synch_res = leyka_synch_plugin_stats_option();
+        $stats_option_synch_res = leyka_sync_plugin_stats_option();
 
         if(is_wp_error($stats_option_synch_res)) {
             return $stats_option_synch_res;

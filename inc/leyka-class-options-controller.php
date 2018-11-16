@@ -424,7 +424,7 @@ function leyka_sync_plugin_stats_option() {
 
     if(get_option('leyka_installation_id') > 0) { // Update the installation (activate/deactivate)
         $params = array(
-            'stats_active' => !!leyka_options()->opt('send_plugin_stats'),
+            'stats_active' => (int)(leyka_options()->opt('send_plugin_stats') === 'y'),
             'installation_id' => (int)get_option('leyka_installation_id'),
         );
     } else { // Add new installation
@@ -461,14 +461,16 @@ function leyka_sync_plugin_stats_option() {
 
         return new WP_Error('init_plugin_stats_error', $error_message);
 
-    } else if(empty($response['body'])) {
-        return new WP_Error(
-            'plugin_stats_not_saved',
-            sprintf(__("The plugin stats collection status wasn't saved :( Please send a message about it to the <a href='mailto:".LEYKA_SUPPORT_EMAIL."' target='_blank'>plugin tech support</a>"), 'leyka')
-        );
     } else {
 
-        $response = maybe_unserialize($response['body']);
+        if(empty($response['body'])) {
+            return new WP_Error(
+                'plugin_stats_not_saved',
+                sprintf(__("The plugin stats collection status wasn't saved :( Please send a message about it to the <a href='mailto:".LEYKA_SUPPORT_EMAIL."' target='_blank'>plugin tech support</a>"), 'leyka')
+            );
+        }
+
+        $response = json_decode($response['body'], true);
         if(empty($response['installation_id']) || (int)$response['installation_id'] <= 0) {
             return new WP_Error(
                 'plugin_stats_not_saved',
