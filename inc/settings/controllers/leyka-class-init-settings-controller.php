@@ -655,7 +655,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         if($step->section_id === 'rd' && $step->id === 'init') {
 
             $submit_settings['next_label'] = 'Поехали!';
-            $submit_settings['prev'] = false; // Means that Wizard shouln't display the back link
+            $submit_settings['prev'] = false; // Means that the Wizard shouln't display the back link
 
         } else if($step->section_id === 'dd' && in_array($step->id, array('plugin_stats_accepted', 'plugin_stats_refused',))) {
 
