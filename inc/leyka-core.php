@@ -65,7 +65,7 @@ class Leyka {
 
     /** Initialize the plugin by setting up localization, filters, administration functions etc. */
     private function __construct() {
-        
+
         if( !get_option('leyka_permalinks_flushed') ) {
 
             function leyka_rewrite_rules() {
@@ -80,7 +80,7 @@ class Leyka {
 
         // By default, we'll assume some errors in the payment form, so redirect will get us back to it:
         $this->_payment_form_redirect_url = wp_get_referer();
-        
+
         $this->load_public_cssjs();
 
         add_action('init', array($this, 'register_post_types'), 1);
@@ -97,6 +97,24 @@ class Leyka {
             }
         }
         add_action('init', 'leyka_session_start', -2);
+
+        if(get_option('leyka_plugin_stats_option_needs_sync')) {
+
+            function leyka_sync_stats_option() {
+
+                $stats_option_synch_res = leyka_sync_plugin_stats_option();
+
+                if(is_wp_error($stats_option_synch_res)) {
+                    return $stats_option_synch_res;
+                } else {
+                    return delete_option('leyka_plugin_stats_option_needs_sync')
+                        && update_option('leyka_plugin_stats_option_sync_done', time());
+                }
+
+            }
+            add_action('admin_init', 'leyka_sync_stats_option');
+
+        }
 
         if(is_admin()) {
 
