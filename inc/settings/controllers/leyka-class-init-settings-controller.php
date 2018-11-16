@@ -760,7 +760,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'body' => array(
                 'installation_url' => home_url(),
                 'plugin_install_date' => get_option('leyka_plugin_install_date'),
-                'collect_stats_from_date' => date('d.m.Y'),
+                'collect_stats_from_date' => time(),
                 'stats_collection_active' => true,
             ),
         ));
@@ -782,6 +782,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             return new WP_Error('init_plugin_stats_error', $error_message);
 
         } else {
+			echo '<pre>'.print_r($response['body'], 1).'</pre>';
             return true;
         }
 
