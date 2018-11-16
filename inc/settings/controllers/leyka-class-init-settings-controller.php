@@ -390,8 +390,6 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                         'show_description' => false,
                         'placeholder' => 'Пусто, если сумма неограниченна',
                         'mask' => "'alias': 'numeric', 'groupSeparator': ' ', 'autoGroup': true, 'allowMinus': false, 'rightAlign': false, 'removeMaskOnSubmit': true",
-                        //'description' => 'Оставьте пустым, если нет ограничений по целевой сумме',
-//                        'comment' => 'Комментарий к целевой сумме кампании',
                     ),
                 )),
             )
@@ -744,46 +742,24 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
     public function handlePluginStatsStep(array $step_settings) {
 
-        if(empty($step_settings['send_plugin_stats']) || $step_settings['send_plugin_stats'] !== 'y') {
+        if(empty($step_settings['send_plugin_stats'])) {
             return false;
+        } else {
+            $step_settings['send_plugin_stats'] = $step_settings['send_plugin_stats'] === 'y';
         }
 
-        $stats_server_base_url = defined('WP_DEBUG') && WP_DEBUG ?
-            rtrim(LEYKA_USAGE_STATS_DEV_SERVER_URL, '/') : rtrim(LEYKA_USAGE_STATS_PROD_SERVER_URL, '/');
-
-        $response = wp_remote_post($stats_server_base_url.'/add-installation.php', array(
-//            'method' => 'POST', // 'POST' by default
-            'timeout' => 10, // Max request time in seconds
-            'redirection' => 3, // A number of max times for request redirects
-            'httpversion' => '1.1',
-            'blocking' => true, // True for sync request, false otherwise
-            'body' => array(
-                'installation_url' => home_url(),
-                'plugin_install_date' => get_option('leyka_plugin_install_date'),
-                'collect_stats_from_date' => time(),
-                'stats_collection_active' => true,
-            ),
-        ));
-
-        if(is_wp_error($response)) {
-            return new WP_Error(
-                'init_plugin_stats_error',
-                sprintf('Ошибка при сохранении данных о сборе статистики использования: %s', $response->get_error_message())
-            );
-        } else if(empty($response['response']['code']) || $response['response']['code'] != 200) {
-
-            $error_message = sprintf(
-                'Ошибка при сохранении данных о сборе статистики использования: %s',
-                empty($response['response']['code']) ?
-                    'данные о коде и статусе ответа не получены' :
-                    'код '.$response['response']['code'].(empty($response['response']['message']) ? '' : ' ('.$response['response']['message'].')')
-            );
-
-            return new WP_Error('init_plugin_stats_error', $error_message);
-
-        } else {
-			echo '<pre>'.print_r($response['body'], 1).'</pre>';
+        if($step_settings['send_plugin_stats'] === leyka_options()->opt('send_plugin_stats')) {
             return true;
+        }
+
+        update_option('leyka_plugin_stats_option_needs_sync', time());
+        $stats_option_synch_res = leyka_synch_plugin_stats_option();
+
+        if(is_wp_error($stats_option_synch_res)) {
+            return $stats_option_synch_res;
+        } else {
+            return delete_option('leyka_plugin_stats_option_needs_sync')
+                && update_option('leyka_plugin_stats_option_sync_done', time());
         }
 
     }

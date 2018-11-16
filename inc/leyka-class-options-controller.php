@@ -415,3 +415,69 @@ function leyka_save_custom_option_commission($option_value) {
 
 }
 /** Special field: gateway commission options - END */
+
+/** Save the basic site data in the plugin stats DB */
+function leyka_sync_plugin_stats_option() {
+
+    $stats_server_base_url = defined('WP_DEBUG') && WP_DEBUG ?
+        rtrim(LEYKA_USAGE_STATS_DEV_SERVER_URL, '/') : rtrim(LEYKA_USAGE_STATS_PROD_SERVER_URL, '/');
+
+    if(get_option('leyka_installation_id') > 0) { // Update the installation (activate/deactivate)
+        $params = array(
+            'stats_active' => !!leyka_options()->opt('send_plugin_stats'),
+            'installation_id' => (int)get_option('leyka_installation_id'),
+        );
+    } else { // Add new installation
+        $params = array(
+            'stats_active' => true,
+            'installation_url' => home_url(),
+            'plugin_install_date' => get_option('leyka_plugin_install_date'),
+            'collect_stats_from_date' => time(),
+            'stats_collection_active' => true,
+        );
+    }
+
+    $response = wp_remote_post($stats_server_base_url.'/sync-installation.php', array(
+        'timeout' => 10, // Max request time in seconds
+        'redirection' => 3, // A number of max times for request redirects
+        'httpversion' => '1.1',
+        'blocking' => true, // True for sync request, false otherwise
+        'body' => $params,
+    ));
+
+    if(is_wp_error($response)) {
+        return new WP_Error(
+            'init_plugin_stats_error',
+            sprintf('Ошибка при сохранении данных о сборе статистики использования: %s', $response->get_error_message())
+        );
+    } else if(empty($response['response']['code']) || $response['response']['code'] != 200) {
+
+        $error_message = sprintf(
+            'Ошибка при сохранении данных о сборе статистики использования: %s',
+            empty($response['response']['code']) ?
+                'данные о коде и статусе ответа не получены' :
+                'код '.$response['response']['code'].(empty($response['response']['message']) ? '' : ' ('.$response['response']['message'].')')
+        );
+
+        return new WP_Error('init_plugin_stats_error', $error_message);
+
+    } else if(empty($response['body'])) {
+        return new WP_Error(
+            'plugin_stats_not_saved',
+            sprintf(__("The plugin stats collection status wasn't saved :( Please send a message about it to the <a href='mailto:".LEYKA_SUPPORT_EMAIL."' target='_blank'>plugin tech support</a>"), 'leyka')
+        );
+    } else {
+
+        $response = maybe_unserialize($response['body']);
+        if(empty($response['installation_id']) || (int)$response['installation_id'] <= 0) {
+            return new WP_Error(
+                'plugin_stats_not_saved',
+                sprintf(__("The plugin stats collection status wasn't saved :( Please send a message about it to the <a href='mailto:".LEYKA_SUPPORT_EMAIL."' target='_blank'>plugin tech support</a>"), 'leyka')
+            );
+        }
+
+        return update_option('leyka_installation_id', (int)$response['installation_id']);
+
+    }
+
+}
