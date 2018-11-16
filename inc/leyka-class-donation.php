@@ -2193,14 +2193,25 @@ class Leyka_Donation_Separated extends Leyka_Donation {
 
         $params['date_created'] = empty($params['date_created']) ? date('Y-m-d H:i:s') : $params['date_created'];
 
-        $params['gateway_id'] = trim($params['gateway_id']);
-        if( !leyka_get_gateway_by_id($params['gateway_id']) ) {
-            /** @todo Throw an Ex? */
-        }
+        $pm_data = leyka_pf_get_payment_method_value();
+        if( !$pm_data ) {
 
-        $params['pm_id'] = trim($params['pm_id']);
-        if( !leyka_get_pm_by_id($params['pm_id']) ) {
-            /** @todo Throw an Ex? */
+            $params['pm_id'] = empty($pm_data['payment_method_id']) ?
+                (empty($params['pm_id']) ?
+                    (empty($params['payment_method_id']) ? '' : $params['payment_method_id']) :
+                    $params['pm_id']) :
+                $pm_data['payment_method_id'];
+            if($pm_data['pm_id'] && !leyka_get_pm_by_id($params['pm_id'])) {
+                /** @todo Throw an Ex? */
+            }
+
+            $params['gateway_id'] = empty($pm_data['gateway_id']) ?
+                (empty($params['gateway_id']) ? '' : $params['gateway_id']) :
+                $pm_data['gateway_id'];
+            if($params['gateway_id'] && !leyka_get_gateway_by_id($params['gateway_id'])) {
+                /** @todo Throw an Ex? */
+            }
+
         }
 
         $params['currency_id'] = trim(mb_strtolower($params['currency_id']));
