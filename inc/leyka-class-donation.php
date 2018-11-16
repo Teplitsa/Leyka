@@ -2247,6 +2247,12 @@ class Leyka_Donation_Separated extends Leyka_Donation {
             'donor_email' => $params['donor_email'],
         ), array('%d', '%s', '%s', '%s', '%s', '%s', '%s', '%f', '%f', '%f', '%f', '%s', '%s',));
 
+        if( !$res ) {
+            return new WP_Error('donation_addition_error', __('Error while trying to add a new donation', 'leyka'));
+        } else {
+            $donation_id = $wpdb->insert_id;
+        }
+
 //        $id = wp_insert_post(array(
 //            'post_type' => Leyka_Donation_Management::$post_type,
 //            'post_status' => array_key_exists($status, leyka_get_donation_status_list()) ? $status : 'submitted',
