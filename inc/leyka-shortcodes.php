@@ -540,7 +540,8 @@ function leyka_inline_campaign(array $attributes = array()) {
                     <?php }?>
 					</div>
 
-					<?php $supporters = leyka_get_campaign_supporters($campaign_id, 5); ?>
+					<?php $supporters = leyka_options()->opt('revo_template_show_donors_list') ?
+                        leyka_get_campaign_supporters($campaign_id, 5) : array('donations' => array(), 'supporters' => array());?>
 					<div class="inpage-card__note supporters">
 					<?php if(count($supporters['supporters'])) {?>
 
@@ -716,7 +717,8 @@ function leyka_inline_campaign_small($campaign_id) {
         </div>
 
 		<?php
-			$supporters = leyka_get_campaign_supporters($campaign_id, 5);
+			$supporters = leyka_options()->opt('revo_template_show_donors_list') ?
+                leyka_get_campaign_supporters($campaign_id, 5) : array('donations' => array(), 'supporters' => array());
 			if(count($supporters['supporters'])) { // There is at least one donor ?>
 
 			<div class="bottom-form__note supporters">
