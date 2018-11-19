@@ -768,11 +768,9 @@ function leyka_inline_campaign_small($campaign_id) {
 			if(count($supporters['supporters'])) { // There is at least one donor ?>
 
 			<div class="bottom-form__note supporters">
-			<?php if(count($supporters['supporters'])) { // There is at least one donor ?>
-                <strong><?php _e('Supporters:', 'leyka');?></strong>
-            <?php }
+            <strong><?php _e('Supporters:', 'leyka');?></strong>
 
-            if(count($supporters['donations']) <= count($supporters['supporters'])) { // Only names in the list
+            <?php if(count($supporters['donations']) <= count($supporters['supporters'])) { // Only names in the list
                 echo count($supporters['supporters']) == 1 ?
                     $supporters['supporters'][0] :
                     implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka').' '.
