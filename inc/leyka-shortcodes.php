@@ -571,12 +571,12 @@ function leyka_inline_campaign(array $attributes = array()) {
                     <?php }?>
 					</div>
 
-					<?php
-                        $supporters = leyka_get_campaign_supporters($campaign_id, 5);
-                        if(!count($supporters['supporters']) && $attributes['show_preview']) {
+					<?php $supporters = leyka_options()->opt('revo_template_show_donors_list') ?
+                        leyka_get_campaign_supporters($campaign_id, 5) : array('donations' => array(), 'supporters' => array());
+
+                    if(!count($supporters['supporters']) && $attributes['show_preview']) {
                             $supporters['supporters'] = array( "Дмитрий Белкин", "Екатерина Мышкина", "Людмила Лебедева", "Петр Гусев" );
-                        }
-                    ?>
+                    }?>
                     
 					<div class="supporter-and-button">
                         
@@ -762,8 +762,9 @@ function leyka_inline_campaign_small($campaign_id) {
             </div>
         </div>
 
-		<?php
-			$supporters = leyka_get_campaign_supporters($campaign_id, 5);
+		<?php $supporters = leyka_options()->opt('revo_template_show_donors_list') ?
+                leyka_get_campaign_supporters($campaign_id, 5) : array('donations' => array(), 'supporters' => array());
+
 			if(count($supporters['supporters'])) { // There is at least one donor ?>
 
 			<div class="bottom-form__note supporters">
