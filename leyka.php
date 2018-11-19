@@ -87,8 +87,10 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-polylang.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-core.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-gateways-api.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-campaign.php');
-require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donation.php');
-require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donations-factory.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donation-base.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donation-old.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donations-management.php'); /** @todo Make this class ADMIN ONLY. */
+require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donations-factory.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-payment-form.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-template-controller.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-ajax.php');

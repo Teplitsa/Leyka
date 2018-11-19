@@ -4,7 +4,7 @@ abstract class Leyka_Donations_Factory extends Leyka_Singleton {
 
     protected static $_instance = null;
 
-    /** @todo Make the factory a donations data storage (an object cache pattern). */
+    /** @todo Factory must be a donations objects data storage (an object cache pattern). */
 
     /**
      * @return static
@@ -14,9 +14,15 @@ abstract class Leyka_Donations_Factory extends Leyka_Singleton {
         if(null === static::$_instance) {
 
             if( in_array(get_option('leyka_donations_storage_type'), array('sep', 'sep-incompleted')) ) {
+
+                require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donation-separated.php');
                 static::$_instance = new Leyka_Separated_Donations_Factory();
+
             } else {
+
+                require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donation-post.php');
                 static::$_instance = new Leyka_Posts_Donations_Factory();
+
             }
 
         }
