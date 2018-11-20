@@ -95,7 +95,7 @@ function leyka_get_gateway_redirect_data() {
         }
 
         $payment_vars = array(
-            'status' => $donation_id && !is_wp_error($donation_id) && !leyka()->payment_form_has_errors() ? 0 : 1,
+            'status' => 0,
             'payment_url' => apply_filters('leyka_submission_redirect_url-'.$pm['gateway_id'], '', $pm['payment_method_id']),
             'submission_redirect_type' => apply_filters(
                 'leyka_submission_redirect_type-'.$pm['gateway_id'],
@@ -103,12 +103,11 @@ function leyka_get_gateway_redirect_data() {
             ),
         );
 
-        if( !$payment_vars['status'] ) {
-            $payment_vars['donation_id'] = $donation_id;
-        } else if(is_wp_error($donation_id)) {
+        if(is_wp_error($donation_id)) {
 
             $payment_vars['errors'] = $donation_id;
             $payment_vars['message'] = $donation_id->get_error_message();
+            $payment_vars['status'] = 1;
 
         } else if(leyka()->payment_form_has_errors()) {
 
@@ -116,7 +115,10 @@ function leyka_get_gateway_redirect_data() {
 
             $payment_vars['errors'] = $error;
             $payment_vars['message'] = $error->get_error_message();
+            $payment_vars['status'] = 1;
 
+        } else {
+            $payment_vars['donation_id'] = $donation_id;
         }
 
         $payment_vars = array_merge(

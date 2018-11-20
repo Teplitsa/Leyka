@@ -616,6 +616,12 @@ self::$_options_meta = array(
         'placeholder' => '3000',
         'length' => 6,
     ),
+    'revo_template_show_donors_list' => array(
+        'type' => 'checkbox',
+        'default' => true,
+        'title' => __("Display a donors names list on donation forms", 'leyka'),
+        'description' => __("Check to display a list of donors names on all donation forms", 'leyka'),
+    ),
     'show_donation_comment_field' => array(
         'type' => 'checkbox',
         'default' => false,
