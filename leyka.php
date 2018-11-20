@@ -127,5 +127,3 @@ add_action('plugins_loaded', array('Leyka', 'activate')); // Any update needed
 register_deactivation_hook(__FILE__, array('Leyka', 'deactivate')); // Deactivate
 
 leyka(); // All systems go
-
-//echo '<pre>'.print_r(Leyka_Donations_Factory::get_instance()->getDonationData(35156, 'payment_title'), 1).'</pre>';
