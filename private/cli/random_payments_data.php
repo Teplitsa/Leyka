@@ -10,12 +10,12 @@ $LEYKA_TEST_DATA['config'] = array(
         'pm_count' => 5,
     ),
     'children' => array(
-        'payments_count' => random_int(10, 20),
-        'pm_count' => random_int(1, 2),
+        'payments_count' => 300,
+        'pm_count' => 5,
     ),
     'forest' => array(
-        'payments_count' => random_int(10, 20),
-        'pm_count' => random_int(3, 5),
+        'payments_count' => 300,
+        'pm_count' => 5,
     ),
 );
 
