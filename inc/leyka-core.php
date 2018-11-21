@@ -375,8 +375,9 @@ class Leyka {
             ) {
                 do_action('leyka_do_campaigns_targets_reaching_mailout');
             } else if($request[0] === 'get_usage_stats') {
-//                echo json_encode($this->_get_usage_stats($_REQUEST));
-                echo '<pre>'.print_r($this->_get_usage_stats($_REQUEST), 1).'</pre>';
+                echo empty($_GET['tst']) ?
+                    json_encode($this->_get_usage_stats($_REQUEST)) :
+                    '<pre>'.print_r($this->_get_usage_stats($_REQUEST), 1).'</pre>';
             } else { // Gateway callback URL
 
                 // Callback URLs are: some-website.org/leyka/service/{gateway_id}/{action_name}/
