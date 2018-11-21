@@ -510,9 +510,9 @@ class Leyka {
             ),
             'nopaging' => true,
         );
-        if( !empty($params['date_from']) && (int)$params['date_from'] > 0 ) { // 'date_from' must be a timestamp
+        if( !empty($params['timestamp_from']) && (int)$params['timestamp_from'] > 0 ) { // 'date_from' must be a timestamp
 
-            $query_params['date_query']['after'] = date('Y-m-d H:i:s', (int)$params['date_from']);
+            $query_params['date_query']['after'] = date('Y-m-d H:i:s', (int)$params['timestamp_from']);
             $query_params['date_query']['inclusive'] = true;
 
             if( !empty($params['period']) ) { // Must be strtotime()-compatible string w/o sign (1 hour, 2 weeks, 3 months, ...)
@@ -526,6 +526,8 @@ class Leyka {
             }
 
         }
+
+//        echo '<pre>Date from: '.print_r($query_params['date_query']['after'], 1).'</pre>';
 
         if( !empty($query_params['date_query']) ) {
             $query_params['date_query'] = array($query_params['date_query']);
