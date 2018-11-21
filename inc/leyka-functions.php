@@ -1434,6 +1434,9 @@ function leyka_get_env() {
     $res['wp_theme'] = implode(" ", array($theme->Name, $theme->Version));
     $res['wp_theme_template'] = $theme->template;
     
+    $res['wp_theme_parent'] = $theme->parent ? implode(" ", array($theme->parent->Name, $theme->parent->Version)) : "";
+    $res['wp_theme_parent_template'] = $theme->parent ? $theme->parent->template : "";
+    
     return $res;
 }
 
