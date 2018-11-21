@@ -1380,83 +1380,99 @@ function leyka_manually_insert_page(array $post_data) {
 
 /** @return array An assoc array of all Leyka options from leyka-option-meta file and some environment data */
 function leyka_get_env_and_options() {
-    $res = leyka_get_all_options();
-    
-    $hide_options = array('leyka_person_pd_terms_text', 'leyka_person_terms_of_service_text', 'leyka_pd_terms_text', 'leyka_terms_of_service_text', 'leyka_email_thanks_text');
-    foreach($hide_options as $option_name) {
-        unset($res[$option_name]);
-    }
-    
-    $res = array_merge($res, leyka_get_env());
-    return $res;
+    return array_merge(leyka_get_all_options(), leyka_get_env());
 }
 
 /** @return array An assoc array of some environment data */
 function leyka_get_env() {
+
+    if( !function_exists('get_plugins') ) {
+        require_once ABSPATH.'wp-admin/includes/plugin.php';
+    }
+
     global $wp_version;
-    
-    $res = array();
-    
-    // server data
-    foreach($_SERVER as $k => $v) {
-        $res['server_' . $k] = strip_tags($v);
+
+    $res = array(
+        'wp_core' => $wp_version,
+        'env' => array('php_version' => phpversion(), 'php_extensions' => get_loaded_extensions()),
+    );
+
+    // Server data:
+    $forbidden_data = array(
+        'MIBDIRS', 'OPENSSL_CONF', 'HTTP_COOKIE', 'PATH', 'SystemRoot', 'COMSPEC', 'WINDIR', 'DOCUMENT_ROOT',
+        'CONTEXT_DOCUMENT_ROOT', 'SCRIPT_FILENAME',
+    );
+    foreach($_SERVER as $key => $value) {
+
+        if(in_array($key, $forbidden_data)) {
+            continue;
+        }
+
+        $res['env']['server_'.$key] = strip_tags($value);
+
     }
-    
-    foreach($_ENV as $k => $v) {
-        $res['env_' . $k] = $v;
+    foreach($_ENV as $key => $value) {
+
+        if(in_array($key, $forbidden_data)) {
+            continue;
+        }
+
+        $res['env']['env_'.$key] = $value;
+
     }
 
-    // php data
-    $res['php_version'] = phpversion();
-    $res['php_extensions'] = implode(", ", get_loaded_extensions());
-    
-    // wp data
-    $active_plugins = get_option('active_plugins');
-    $plugins = get_plugins();
-    
-    $wp_plugins_active = array();
-    $wp_plugins_inactive = array();
-    foreach ($plugins as $k => $p){           
-        if(in_array($k, $active_plugins)){
-            array_push($wp_plugins_active, join(" ", array($p['Name'], $p['Version'])));
-        }
-        else {
-            array_push($wp_plugins_inactive, join(" ", array($p['Name'], $p['Version'])));
-        }
-    }    
+    // WP core/Theme/plugins data:
+    $res['plugins'] = array('active' => array(), 'inactive' => array(),);
 
-    $res['wp_plugins_active'] = join(", ", $wp_plugins_active);
-    $res['wp_plugins_inactive'] = join(", ", $wp_plugins_inactive);
-    
-    $res['wp_version'] = $wp_version;
-    
+    foreach(get_plugins() as $key => $plugin_data) {
+        if(in_array($key, get_option('active_plugins'))) {
+            $res['plugins']['active'][] = array('name' => $plugin_data['Name'], 'ver' => $plugin_data['Version']);
+        } else {
+            $res['plugins']['inactive'][] = array('name' => $plugin_data['Name'], 'ver' => $plugin_data['Version']);
+        }
+    }
+
     $theme = wp_get_theme();
-    $res['wp_theme'] = implode(" ", array($theme->Name, $theme->Version));
-    $res['wp_theme_template'] = $theme->template;
-    
-    $res['wp_theme_parent'] = $theme->parent ? implode(" ", array($theme->parent->Name, $theme->parent->Version)) : "";
-    $res['wp_theme_parent_template'] = $theme->parent ? $theme->parent->template : "";
-    
+    $res['theme'] = array(
+        'name' => $theme->Name,
+        'ver' => $theme->Version,
+        'template' => $theme->template,
+        'parent' => $theme->parent ?
+            array('name' => $theme->Name, 'ver' => $theme->Version, 'template' => $theme->parent->template,) : array(),
+    );
+
     return $res;
+
 }
 
-/** @return array An assoc array of all Leyka options from leyka-option-meta file */
+/** @return array An assoc array of all Leyka options (from leyka-options-meta) & settings (other "leyka_something"-named options) */
 function leyka_get_all_options() {
-    $leyka_options = array();
-    $options_keys = leyka_options()->get_all_options_keys();
-    
-    for($i = 0; $i < count($options_keys); $i++) {
-        $options_keys[$i] = 'leyka_' . $options_keys[$i];
-    }
-    
-    $all_options = wp_load_alloptions();
-    foreach($all_options as $name => $value) {
-        if(in_array($name, $options_keys)) {
-            $leyka_options[$name] = $value;
+
+    $res = array('options' => array(), 'settings' => array());
+    $leyka_options_keys = leyka_options()->get_options_names();
+
+    $forbidden_options = array(
+        'person_pd_terms_text', 'person_terms_of_service_text', 'pd_terms_text', 'terms_of_service_text',
+        'email_thanks_text', 'org_face_fio_ip', 'org_face_fio_rp', 'org_address', 'person_full_name', 'person_address',
+        '_transient_leyka_wizards_activities',
+    );
+
+    foreach(wp_load_alloptions() as $name => $value) {
+
+        $name_clear = strpos($name, 'leyka_') === 0 ? substr_replace($name, '', 0, strlen('leyka_')) : $name;
+
+        if(in_array($name_clear, $forbidden_options)) {
+            continue;
+        } else if(in_array($name_clear, $leyka_options_keys)) {
+            $res['options'][$name_clear] = $value;
+        } else if(stristr($name, 'leyka_') !== false && !preg_match('/^(leyka_)(.+)(_description)$/i', $name)) {
+            $res['settings'][$name] = $value;
         }
+
     }
-    
-    return $leyka_options;
+
+    return $res;
+
 }
 
 if( !function_exists('array_key_last') ) {

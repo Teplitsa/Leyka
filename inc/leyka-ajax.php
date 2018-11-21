@@ -281,46 +281,56 @@ function leyka_update_pm_list() {
 add_action('wp_ajax_leyka_update_pm_list', 'leyka_update_pm_list');
 
 function leyka_upload_l10n() {
-    
+
     $url = 'https://translate.wordpress.org/projects/wp-plugins/leyka/stable/ru/default/export-translations?format=mo';
     $file = download_url($url, 60);
-    
+
     $res = null;
-    
+
     if(is_wp_error($file)) {
-        $res = array('status' => 'error', 'message' => "Ошибка! Не удалось скачать файл локализации. " . $file->get_error_message());
-    }
-    else {
-        if(!is_dir( WP_CONTENT_DIR . "/languages" ) ) {
+        $res = array(
+            'status' => 'error',
+            'message' => "Ошибка! Не удалось скачать файл локализации. ".$file->get_error_message()
+        );
+    } else {
+
+        if( !is_dir(WP_CONTENT_DIR."/languages") ) {
             $res = array('status' => 'error', 'message' => sprintf("Ошибка! Папка локализации не найдена: %s", WP_CONTENT_DIR . "/languages"));
-        }
-        elseif(!is_dir( WP_CONTENT_DIR . "/languages/plugins" ) ) {
-            $res = array('status' => 'error', 'message' => sprintf("Ошибка! Папка локализации плагинов не найдена: %s", WP_CONTENT_DIR . "/languages/plugins"));
-        }
-        else {
+        } elseif( !is_dir(WP_CONTENT_DIR.'/languages/plugins') ) {
+            $res = array(
+                'status' => 'error',
+                'message' => sprintf("Ошибка! Папка локализации плагинов не найдена: %s", WP_CONTENT_DIR.'/languages/plugins')
+            );
+        } else {
+
             try {
-                if(copy($file, WP_CONTENT_DIR . "/languages/plugins/leyka-ru_RU.mo")) {
+                if(copy($file, WP_CONTENT_DIR.'/languages/plugins/leyka-ru_RU.mo')) {
                     unlink($file);
+                } else {
+                    $res = array(
+                        'status' => 'error',
+                        'message' => sprintf("Ошибка! Нет прав для записи в папку %s", WP_CONTENT_DIR . "/languages/plugins")
+                    );
                 }
-                else {
-                    $res = array('status' => 'error', 'message' => sprintf("Ошибка! Нет прав для записи в папку %s", WP_CONTENT_DIR . "/languages/plugins"));
-                }
-            }
-            catch(Exception $ex) {
-                $res = array('status' => 'error', 'message' => "Ошибка! Не удалось установить файл локализации! " . $ex->getMessage());
+            } catch(Exception $ex) {
+                $res = array(
+                    'status' => 'error',
+                    'message' => "Ошибка! Не удалось установить файл локализации! ".$ex->getMessage()
+                );
             }
         }
+
     }
-    
-    if(empty($res)) {
+
+    if( !$res ) {
         $res = array('status' => 'ok', 'message' => 'Перевод успешно загружен');
     }
-    
+
     //$res = array_merge($res, array(
     //    'file' => $file,
     //    'res' => WP_CONTENT_DIR . "/languages/plugins/leyka-ru_RU.mo"
     //));
-    
+
     die(json_encode($res));
 
 }

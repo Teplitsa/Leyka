@@ -375,8 +375,8 @@ class Leyka {
             ) {
                 do_action('leyka_do_campaigns_targets_reaching_mailout');
             } else if($request[0] === 'get_usage_stats') {
-                echo json_encode($this->_get_usage_stats($_REQUEST));
-//                echo '<pre>'.print_r($this->_get_usage_stats($_REQUEST), 1).'</pre>';
+//                echo json_encode($this->_get_usage_stats($_REQUEST));
+                echo '<pre>'.print_r($this->_get_usage_stats($_REQUEST), 1).'</pre>';
             } else { // Gateway callback URL
 
                 // Callback URLs are: some-website.org/leyka/service/{gateway_id}/{action_name}/
@@ -530,11 +530,7 @@ class Leyka {
             $query_params['date_query'] = array($query_params['date_query']);
         }
 
-        $stats = array(
-            'donations' => array(), // Donations list
-            'components' => array(), // Plugins/ver. list
-            'environment' => array(), // Env. params list
-        );
+        $stats = array('donations' => array(),) + leyka_get_env_and_options();
 
         foreach(get_posts($query_params) as $donation) {
 
