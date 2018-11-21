@@ -1397,6 +1397,7 @@ function leyka_get_env() {
     
     $res = array();
     
+    // server data
     foreach($_SERVER as $k => $v) {
         $res['server_' . $k] = strip_tags($v);
     }
@@ -1405,9 +1406,11 @@ function leyka_get_env() {
         $res['env_' . $k] = $v;
     }
 
+    // php data
     $res['php_version'] = phpversion();
     $res['php_extensions'] = implode(", ", get_loaded_extensions());
     
+    // wp data
     $active_plugins = get_option('active_plugins');
     $plugins = get_plugins();
     
@@ -1426,6 +1429,9 @@ function leyka_get_env() {
     $res['wp_plugins_inactive'] = join(", ", $wp_plugins_inactive);
     
     $res['wp_version'] = $wp_version;
+    
+    $theme = wp_get_theme();
+    $res['wp_theme'] = implode(" ", array($theme->Name, $theme->Version));
     
     return $res;
 }
