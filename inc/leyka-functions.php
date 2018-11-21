@@ -1378,6 +1378,77 @@ function leyka_manually_insert_page(array $post_data) {
 
 }
 
+/** @return array An assoc array of all Leyka options from leyka-option-meta file and some environment data */
+function leyka_get_env_and_options() {
+    $res = leyka_get_all_options();
+    
+    $hide_options = array('leyka_person_pd_terms_text', 'leyka_person_terms_of_service_text', 'leyka_pd_terms_text', 'leyka_terms_of_service_text', 'leyka_email_thanks_text');
+    foreach($hide_options as $option_name) {
+        unset($res[$option_name]);
+    }
+    
+    $res = array_merge($res, leyka_get_env());
+    return $res;
+}
+
+/** @return array An assoc array of some environment data */
+function leyka_get_env() {
+    global $wp_version;
+    
+    $res = array();
+    
+    foreach($_SERVER as $k => $v) {
+        $res['server_' . $k] = strip_tags($v);
+    }
+    
+    foreach($_ENV as $k => $v) {
+        $res['env_' . $k] = $v;
+    }
+
+    $res['php_version'] = phpversion();
+    $res['php_extensions'] = implode(", ", get_loaded_extensions());
+    
+    $active_plugins = get_option('active_plugins');
+    $plugins = get_plugins();
+    
+    $wp_plugins_active = array();
+    $wp_plugins_inactive = array();
+    foreach ($plugins as $k => $p){           
+        if(in_array($k, $active_plugins)){
+            array_push($wp_plugins_active, join(" ", array($p['Name'], $p['Version'])));
+        }
+        else {
+            array_push($wp_plugins_inactive, join(" ", array($p['Name'], $p['Version'])));
+        }
+    }    
+
+    $res['wp_plugins_active'] = join(", ", $wp_plugins_active);
+    $res['wp_plugins_inactive'] = join(", ", $wp_plugins_inactive);
+    
+    $res['wp_version'] = $wp_version;
+    
+    return $res;
+}
+
+/** @return array An assoc array of all Leyka options from leyka-option-meta file */
+function leyka_get_all_options() {
+    $leyka_options = array();
+    $options_keys = leyka_options()->get_all_options_keys();
+    
+    for($i = 0; $i < count($options_keys); $i++) {
+        $options_keys[$i] = 'leyka_' . $options_keys[$i];
+    }
+    
+    $all_options = wp_load_alloptions();
+    foreach($all_options as $name => $value) {
+        if(in_array($name, $options_keys)) {
+            $leyka_options[$name] = $value;
+        }
+    }
+    
+    return $leyka_options;
+}
+
 if( !function_exists('array_key_last') ) {
     function array_key_last($array) {
 

@@ -381,6 +381,13 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         return apply_filters('leyka_option_valid-'.$option_id, $option_valid, $value);
 
     }
+    
+    /**
+     * @return array
+     */
+    public function get_all_options_keys() {
+        return array_keys(self::$_options_meta);
+    }
 
 }
 

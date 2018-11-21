@@ -325,3 +325,9 @@ function leyka_upload_l10n() {
 
 }
 add_action('wp_ajax_leyka_upload_l10n', 'leyka_upload_l10n');
+
+function leyka_ajax_get_env_and_options() {
+    print_r(leyka_get_env_and_options());
+    exit();
+}
+add_action('wp_ajax_leyka_get_env_and_options', 'leyka_ajax_get_env_and_options');
