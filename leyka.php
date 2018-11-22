@@ -113,9 +113,10 @@ if( !$gateways_dir ) {
 
         $file_addr = LEYKA_PLUGIN_DIR."gateways/$gateway_id/leyka-class-$gateway_id-gateway.php";
 
-        if($gateway_id != '.' && $gateway_id != '..' && file_exists($file_addr)) {
+        if($gateway_id !== '.' && $gateway_id !== '..' && file_exists($file_addr)) {
             require_once($file_addr);
         }
+
     }
 
     $gateways_dir->close();
