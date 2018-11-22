@@ -432,6 +432,7 @@ function leyka_sync_plugin_stats_option() {
     if(get_option('leyka_installation_id') > 0) { // Update the installation (activate/deactivate)
         $params = array(
             'stats_active' => (int)(leyka_options()->opt('send_plugin_stats') === 'y'),
+            'installation_url' => home_url(), // Just in case
             'installation_id' => (int)get_option('leyka_installation_id'),
         );
     } else { // Add new installation
