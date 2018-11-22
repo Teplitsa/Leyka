@@ -30,12 +30,12 @@ try {
     if($payments_limit) {
         $count_payment_time_start = microtime(true);
         $payments_count = $installer->count_payments();
-        fwrite(STDOUT, 'Count payemnts time in seconds: ' . (microtime(true) - $count_payment_time_start).chr(10).chr(10));
+        fwrite(STDOUT, 'Count payemnts time in seconds: ' . (microtime(true) - $count_payment_time_start).chr(10));
         fwrite(STDOUT, 'payments_count: '.$payments_count.chr(10).chr(10));
         
         if($payments_count >= $payments_limit) {
             $is_need_more_data = false;
-            fwrite(STDOUT, 'Enough payments'.chr(10).chr(10));
+            fwrite(STDOUT, 'Enough payments'.chr(10));
         }
     }
     
@@ -44,7 +44,7 @@ try {
     }
     else {
         $installation_result = false;
-        fwrite(STDOUT, 'Enough data'.chr(10).chr(10));
+        fwrite(STDOUT, 'Enough data'.chr(10));
     }
     
     if(is_wp_error($installation_result)) {
@@ -114,12 +114,9 @@ class LeykaRandomPaymentsInstaller {
         
         $this->is_random_campaigns_installed = $this->is_append_data ? $this->is_random_campaigns_data_exist() : false;
         
-        fwrite(STDOUT, "is_append_data: ".$this->is_append_data."\n");
-        fwrite(STDOUT, "is_random_campaigns_installed: ".$this->is_random_campaigns_installed."\n");
-        
         if($this->is_append_data && $this->is_random_campaigns_installed) {
             $this->load_installed_data();
-            fwrite(STDOUT, "Installed loaded\n");
+            fwrite(STDOUT, "Installed capmaigns and payment methods loaded\n");
         }
         else {
             # run installation 
@@ -196,8 +193,6 @@ class LeykaRandomPaymentsInstaller {
                 break;
             }
         }
-        
-        fwrite(STDOUT, "is_any_campaign_exist: ".$is_any_campaign_exist."\n");
         
         if($is_any_campaign_exist) {
             $available_pm = get_option('leyka_pm_available', true);
