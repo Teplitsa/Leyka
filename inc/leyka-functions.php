@@ -1380,7 +1380,31 @@ function leyka_manually_insert_page(array $post_data) {
 
 /** @return array An assoc array of all Leyka options from leyka-option-meta file and some environment data */
 function leyka_get_env_and_options() {
-    return array_merge(leyka_get_all_options(), leyka_get_env());
+    return array_merge(leyka_get_all_options(), leyka_get_env(), leyka_get_db_stats());
+}
+
+function leyka_get_db_stats() {
+    global $wpdb;
+    
+    $query_time_start = microtime(true);
+    
+    $sql = "SELECT COUNT(*) FROM $wpdb->posts WHERE post_type = %s";
+    $payments_count = $wpdb->get_var( $wpdb->prepare($sql, Leyka_Donation_Management::$post_type) );
+
+    $sql = "SELECT COUNT(*) FROM $wpdb->posts";
+    $all_posts_count = $wpdb->get_var( $sql );
+    
+    $query_exec_time = sprintf("%.10f", microtime(true) - $query_time_start);
+    
+    $db_stats = array(
+        'db_stats' =>array(
+            'all_posts_count' => $all_posts_count,
+            'payments_count' => $payments_count,
+            'query_exec_time' => $query_exec_time,
+        ),
+    );
+    
+    return $db_stats;
 }
 
 /** @return array An assoc array of some environment data */

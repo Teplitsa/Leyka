@@ -641,6 +641,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
         $res = true;
+		$site_env = leyka_get_env_and_options();
+		
         foreach((array)explode(',', LEYKA_SUPPORT_EMAIL) as $email) {
 
             $email = trim($email);
@@ -663,12 +665,16 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 <strong>Параметр admin_email:</strong> %s<br>
                 <strong>Язык:</strong> %s (кодировка: %s)<br>
                 <strong>ПО веб-сервера:</strong> %s<br>
-                <strong>Браузер пользователя:</strong> %s",
+                <strong>Браузер пользователя:</strong> %s
+				---------------------------------------------------------------------<br><br>
+				<pre>%s</pre>
+				",
                     $_POST['topic'], $_POST['name'], $_POST['email'], nl2br($_POST['text']),
                     home_url(), get_bloginfo('name'), $_SERVER['SERVER_ADDR'],
                     get_bloginfo('version'), LEYKA_VERSION, get_bloginfo('admin_email'),
                     get_bloginfo('language'), get_bloginfo('charset'),
-                    $_SERVER['SERVER_SOFTWARE'], $_SERVER['HTTP_USER_AGENT']
+                    $_SERVER['SERVER_SOFTWARE'], $_SERVER['HTTP_USER_AGENT'],
+					print_r($site_env, true)
                 ),
                 array('From: '.get_bloginfo('name').' <no_reply@leyka.te-st.ru>',)
             );

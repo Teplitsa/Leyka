@@ -30,7 +30,7 @@ try {
     if($payments_limit) {
         $count_payment_time_start = microtime(true);
         $payments_count = $installer->count_payments();
-        fwrite(STDOUT, 'Count payemnts time in seconds: ' . (microtime(true) - $count_payment_time_start).chr(10));
+        fwrite(STDOUT, 'Count payemnts time in seconds: ' . sprintf("%.10f", microtime(true) - $count_payment_time_start).chr(10));
         fwrite(STDOUT, 'payments_count: '.$payments_count.chr(10).chr(10));
         
         if($payments_count >= $payments_limit) {
