@@ -666,7 +666,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 <strong>Язык:</strong> %s (кодировка: %s)<br>
                 <strong>ПО веб-сервера:</strong> %s<br>
                 <strong>Браузер пользователя:</strong> %s<br>
-				---------------------------------------------------------------------<br><br>
+				---------------------------------------------------------------------<br>
 				<pre>%s</pre>
 				",
                     $_POST['topic'], $_POST['name'], $_POST['email'], nl2br($_POST['text']),
