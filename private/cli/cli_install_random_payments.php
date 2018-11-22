@@ -13,15 +13,39 @@ try {
 
 	global $LEYKA_TEST_DATA;
     
-    $options = getopt("", array('ngo:'));
+    $options = getopt("", array('ngo:', 'payments_limit:'));
     $ngo_name = isset($options['ngo']) ? $options['ngo'] : '';
+    $payments_limit = isset($options['payments_limit']) ? (int)$options['payments_limit'] : 0;
+    if($payments_limit < 0) {
+        $payments_limit = 0;
+    }
     
     if(empty($ngo_name)) {
         throw new Exception("ngo_name must be defined");
     }
     
-    $installer = new LeykaRandomPaymentsInstaller($LEYKA_TEST_DATA);
-    $installation_result = $installer->install_data($ngo_name);
+    $is_need_more_data = True;
+    $installer = new LeykaRandomPaymentsInstaller($LEYKA_TEST_DATA, $payments_limit);
+    
+    if($payments_limit) {
+        $count_payment_time_start = microtime(true);
+        $payments_count = $installer->count_payments();
+        fwrite(STDOUT, 'Count payemnts time in seconds: ' . (microtime(true) - $count_payment_time_start).chr(10).chr(10));
+        fwrite(STDOUT, 'payments_count: '.$payments_count.chr(10).chr(10));
+        
+        if($payments_count >= $payments_limit) {
+            $is_need_more_data = false;
+            fwrite(STDOUT, 'Enough payments'.chr(10).chr(10));
+        }
+    }
+    
+    if($is_need_more_data) {
+        $installation_result = $installer->install_data($ngo_name);
+    }
+    else {
+        $installation_result = false;
+        fwrite(STDOUT, 'Enough data'.chr(10).chr(10));
+    }
     
     if(is_wp_error($installation_result)) {
         fwrite(STDOUT, "ERROR: " . $installation_result->get_error_message());
@@ -55,8 +79,14 @@ class LeykaRandomPaymentsInstaller {
     private $installed_campaigns = array();
     private $installed_gateways = array();
     
-    public function __construct($test_data) {
+    private $payments_limit = 0;
+    private $is_append_data = false;
+    private $is_random_campaigns_installed = false;
+    
+    public function __construct($test_data, $payments_limit) {
         $this->test_data = $test_data;
+        $this->payments_limit = $payments_limit;
+        $this->is_append_data = $this->payments_limit > 0;
     }
     
     public function install_data($ngo_name) {
@@ -82,22 +112,109 @@ class LeykaRandomPaymentsInstaller {
         $this->gateways_payment_methods  = $this->test_data['payment_methods'];
         $this->gateways_options  = $this->test_data['gateways_options'];
         
-        # run installation 
-        $this->install_settings();
-        fwrite(STDOUT, "Settings installed\n");
-    
-        $this->install_payment_methods();
-        fwrite(STDOUT, "Payment methods installed\n");
-        //fwrite(STDOUT, sprintf("gateways: %s\n", print_r($this->installed_gateways, true)));
+        $this->is_random_campaigns_installed = $this->is_append_data ? $this->is_random_campaigns_data_exist() : false;
         
-        $this->install_campaigns();
-        fwrite(STDOUT, "Campaigns installed\n");
+        fwrite(STDOUT, "is_append_data: ".$this->is_append_data."\n");
+        fwrite(STDOUT, "is_random_campaigns_installed: ".$this->is_random_campaigns_installed."\n");
+        
+        if($this->is_append_data && $this->is_random_campaigns_installed) {
+            $this->load_installed_data();
+            fwrite(STDOUT, "Installed loaded\n");
+        }
+        else {
+            # run installation 
+            $this->install_settings();
+            fwrite(STDOUT, "Settings installed\n");
+        
+            $this->install_payment_methods();
+            fwrite(STDOUT, "Payment methods installed\n");
+            //fwrite(STDOUT, sprintf("gateways: %s\n", print_r($this->installed_gateways, true)));
+            
+            $this->install_campaigns();
+            fwrite(STDOUT, "Campaigns installed\n");
+        }
         
         $this->install_donations();
         fwrite(STDOUT, "Donations installed\n");
         
         LeykaDummyDataUtils::reset_default_pages();
         fwrite(STDOUT, "Accessory pages reset to default\n");
+    }
+    
+    private function load_installed_data() {
+        $campaigns = get_posts(array('post_type' => Leyka_Campaign_Management::$post_type, 'numberposts' => -1));
+        foreach($campaigns as $campaign_post) {
+            $campaign = new Leyka_Campaign($campaign_post);
+            $this->installed_campaigns[] = $campaign;
+        }
+        
+        $installed_payment_methods = get_option('leyka_pm_available');
+        $gw_list = $this->gateways_payment_methods;
+        $installed_gateways = array();
+        
+        foreach($gw_list as $gw_id => $pm_list) {
+            foreach($pm_list as $pm_id) {
+                if(!in_array($pm_id, $installed_payment_methods)) {
+                    continue;
+                }
+                
+                if(empty($installed_gateways[$gw_id])) {
+                    $installed_gateways[$gw_id] = array();
+                }
+                
+                $installed_gateways[$gw_id][$pm_id] = true;
+            }
+        }
+        
+        foreach($installed_gateways as $gw_id => $pm_dict) {
+            $installed_gateways[$gw_id] = array_keys($pm_dict);
+        }
+        
+        $this->installed_gateways = $installed_gateways;
+    }
+    
+    private function is_random_campaigns_data_exist() {
+        global $wpdb;
+        
+        $is_random_campaigns_data_exist = false;
+        $is_any_campaign_exist = false;
+        
+        foreach($this->test_data['campaigns'] as $ngo => $campaigns) {
+            if($ngo != $this->ngo_name) {
+                continue;
+            }
+            
+            foreach($campaigns as $campaign_data) {
+                $campaign_post = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->posts} WHERE post_type = %s AND post_name = %s", Leyka_Campaign_Management::$post_type, $campaign_data['name']));
+                if($campaign_post) {
+                    $is_any_campaign_exist = true;
+                    break;
+                }
+            }
+            
+            if($is_any_campaign_exist) {
+                break;
+            }
+        }
+        
+        fwrite(STDOUT, "is_any_campaign_exist: ".$is_any_campaign_exist."\n");
+        
+        if($is_any_campaign_exist) {
+            $available_pm = get_option('leyka_pm_available', true);
+            fwrite(STDOUT, "count available_pm: ".count($available_pm)."\n");
+            
+            if(count($available_pm) > 0) {
+                $is_random_campaigns_data_exist = true;
+            }
+        }
+        
+        return $is_random_campaigns_data_exist;
+    }
+    
+    public function count_payments() {
+        global $wpdb;
+        $sql = "SELECT COUNT(*) FROM $wpdb->posts WHERE post_type = %s";
+        return $wpdb->get_var( $wpdb->prepare($sql, Leyka_Donation_Management::$post_type) );
     }
 
     private function install_settings() {
