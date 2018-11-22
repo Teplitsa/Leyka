@@ -665,7 +665,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 <strong>Параметр admin_email:</strong> %s<br>
                 <strong>Язык:</strong> %s (кодировка: %s)<br>
                 <strong>ПО веб-сервера:</strong> %s<br>
-                <strong>Браузер пользователя:</strong> %s
+                <strong>Браузер пользователя:</strong> %s<br>
 				---------------------------------------------------------------------<br><br>
 				<pre>%s</pre>
 				",
