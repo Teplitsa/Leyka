@@ -72,7 +72,7 @@ if( !defined('LEYKA_SUPPORT_EMAIL') ) {
 }
 
 if( !defined('LEYKA_USAGE_STATS_DEV_SERVER_URL') ) {
-    define('LEYKA_USAGE_STATS_DEV_SERVER_URL', 'http://leyka-usage-stats.local/'); // http://ngo2.ru/leyka-usage-stats/
+    define('LEYKA_USAGE_STATS_DEV_SERVER_URL', 'https://ngo2.ru/leyka-usage-stats/'); // http://leyka-usage-stats.local/
 }
 
 if( !defined('LEYKA_USAGE_STATS_PROD_SERVER_URL') ) {
