@@ -56,7 +56,14 @@ abstract class Leyka_Donations_Factory extends Leyka_Singleton {
      * @param string $data_value
      * @return mixed
      */
-    abstract public function setDonationData($donation, $data_field, $data_value);
+    public function setDonationData($donation, $data_field, $data_value) {
+
+        $data_field = trim($data_field);
+        $donation = $this->getDonation($donation);
+
+        return $donation ? ($donation->$data_field = $data_value) : false;
+
+    }
 
     /**
      * @param $params array
@@ -112,15 +119,6 @@ class Leyka_Posts_Donations_Factory extends Leyka_Donations_Factory {
         $donation = new Leyka_Donation_Post($donation);
 
         return is_a($donation, 'Leyka_Donation_Base') && $donation->id ? $donation : false;
-
-    }
-
-    public function setDonationData($donation, $data_field, $data_value) {
-
-        $data_field = trim($data_field);
-        $donation = $this->getDonation($donation);
-
-        return $donation ? ($donation->$data_field = $data_value) : false;
 
     }
 
@@ -317,17 +315,16 @@ class Leyka_Separated_Donations_Factory extends Leyka_Donations_Factory {
 
     }
 
-    public function setDonationData($donation, $data_field, $data_value) {
-        /** @todo Implement the method */
-    }
-
     // $params:
     // campaign_id, status, payment_type, results_limit, get_single, page, year_month, day, search_string,
     // recurring_only_init, recurring_active, amount_filter (only+, only-, >=SUM, <=SUM),
     // gateway_pm (gateway__someid, pm__someid), gateway_id, pm_id, pm_full_id,
     // custom_meta_somemetaname, orderby (ID, date, amount, status), order (asc, desc)
     public function getDonations(array $params = array()) {
-        /** @todo Implement the method */
+
+        global $wpdb;
+
+
     }
 
     public function addDonation(array $params = array()) {
