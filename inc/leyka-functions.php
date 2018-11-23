@@ -1383,6 +1383,49 @@ function leyka_get_env_and_options() {
     return array_merge(leyka_get_all_options(), leyka_get_env(), leyka_get_db_stats());
 }
 
+function humanaize_debug_data($debug_data) {
+    $humanized_options = array();
+    foreach($debug_data['options'] as $k => $v) {
+        $option_info = leyka_options()->get_info_of($k);
+        $option_title = empty($option_info['title']) || $option_info['title'] == $k ? $k : $option_info['title'];
+        $humanized_options[$option_title] = $v;
+    }
+    $debug_data['options'] = $humanized_options;
+    
+    foreach(array_keys($debug_data['plugins']) as $status) {
+        $humanized_options = array();
+        
+        foreach($debug_data['plugins'][$status] as $plugin) {
+            $humanized_options[] = sprintf("%s %s", $plugin['name'], $plugin['ver']);
+        }
+        
+        $debug_data['plugins'][$status] = $humanized_options;
+    }
+    
+    return $debug_data;
+}
+
+function format_debug_data($list, $level = 0) {
+    $fomatted_ret = "";
+    
+    if($level > 0) {
+        ksort($list);
+    }
+    
+    foreach($list as $k => $v) {
+        $fomatted_ret .= str_repeat("    ", $level) . "<strong>$k:</strong> ";
+        if(is_array($v)) {
+            $fomatted_ret .= "\n" . format_debug_data($v, $level + 1) . ($level == 0 ? "\n" : "");
+        }
+        else {
+            $fomatted_ret .= trim($v) . "\n";
+        }
+    }
+    
+    return $fomatted_ret;
+}
+
+/** @return array An assoc array of some db stats */
 function leyka_get_db_stats() {
     global $wpdb;
     
@@ -1485,7 +1528,7 @@ function leyka_get_all_options() {
 
         $name_clear = strpos($name, 'leyka_') === 0 ? substr_replace($name, '', 0, strlen('leyka_')) : $name;
 
-        if(in_array($name_clear, $forbidden_options)) {
+        if(in_array($name_clear, $forbidden_options) || preg_match("/^knd_val_hash_leyka_/", $name)) {
             continue;
         } else if(in_array($name_clear, $leyka_options_keys)) {
             $res['options'][$name_clear] = $value;

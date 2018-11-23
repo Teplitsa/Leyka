@@ -641,7 +641,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
         $res = true;
-		$site_env = leyka_get_env_and_options();
+		$site_env = format_debug_data(humanaize_debug_data(leyka_get_env_and_options()));
 		
         foreach((array)explode(',', LEYKA_SUPPORT_EMAIL) as $email) {
 
@@ -674,7 +674,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                     get_bloginfo('version'), LEYKA_VERSION, get_bloginfo('admin_email'),
                     get_bloginfo('language'), get_bloginfo('charset'),
                     $_SERVER['SERVER_SOFTWARE'], $_SERVER['HTTP_USER_AGENT'],
-					print_r($site_env, true)
+					$site_env
                 ),
                 array('From: '.get_bloginfo('name').' <no_reply@leyka.te-st.ru>',)
             );
@@ -686,7 +686,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         die($res ? '0' : '3');
 
     }
-
+	
 	/** CSS/JS **/
 	public function loadFrontendScripts() {
 
