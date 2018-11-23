@@ -109,7 +109,7 @@ class Leyka_Posts_Donations_Factory extends Leyka_Donations_Factory {
 
     public function getDonation($donation) {
 
-        $donation = new Leyka_Donation($donation);
+        $donation = new Leyka_Donation_Post($donation);
 
         return is_a($donation, 'Leyka_Donation') && $donation->id ? $donation : false;
 
