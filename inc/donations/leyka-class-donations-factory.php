@@ -32,13 +32,13 @@ abstract class Leyka_Donations_Factory extends Leyka_Singleton {
     }
 
     /**
-     * @param int|WP_Post|Leyka_Donation $donation
+     * @param int|WP_Post|Leyka_Donation_Base $donation
      * @return Leyka_Donation|null
      */
     abstract public function getDonation($donation);
 
     /**
-     * @param int|WP_Post|Leyka_Donation $donation
+     * @param int|WP_Post|Leyka_Donation_Base $donation
      * @param string $data_field
      * @return mixed
      */
@@ -60,7 +60,7 @@ abstract class Leyka_Donations_Factory extends Leyka_Singleton {
 
     /**
      * @param $params array
-     * @return array Of Leyka_Donation objects
+     * @return array|Leyka_Donation_Base|boolean Either an array of Leyka_Donation_Base objects, or single object (if get_single param is set), or false if no donations found.
      */
     abstract public function getDonations(array $params = array());
 
@@ -111,7 +111,7 @@ class Leyka_Posts_Donations_Factory extends Leyka_Donations_Factory {
 
         $donation = new Leyka_Donation_Post($donation);
 
-        return is_a($donation, 'Leyka_Donation') && $donation->id ? $donation : false;
+        return is_a($donation, 'Leyka_Donation_Base') && $donation->id ? $donation : false;
 
     }
 
@@ -146,7 +146,9 @@ class Leyka_Posts_Donations_Factory extends Leyka_Donations_Factory {
             $query->set('posts_per_page', (int)$params['results_limit']);
         }
 
-        if( !empty($params['page']) && (int)$params['posts_per_page'] > 1 ) {
+        if( !empty($params['get_single']) ) {
+            $query->set('posts_per_page', 1);
+        } else if( !empty($params['page']) && (int)$params['posts_per_page'] > 1 ) {
             $query->set('page', (int)$params['page']);
         }
 
@@ -186,13 +188,13 @@ class Leyka_Posts_Donations_Factory extends Leyka_Donations_Factory {
                 $meta_query[] = array('key' => 'leyka_donation_amount', 'value' => 0, 'compare' => '>');
             } else if($params['amount_filter'] === 'only-') {
                 $meta_query[] = array('key' => 'leyka_donation_amount', 'value' => 0, 'compare' => '<');
-            } else if(stripos($params['amount_filter'], '>=')) {
+            } else if(stripos($params['amount_filter'], '>=') !== false) {
                 $meta_query[] = array(
                     'key' => 'leyka_donation_amount',
                     'value' => (int)str_replace('>=', '', $params['amount_filter']),
                     'compare' => '>=',
                 );
-            } else if(stripos($params['amount_filter'], '<=')) {
+            } else if(stripos($params['amount_filter'], '<=') !== false) {
                 $meta_query[] = array(
                     'key' => 'leyka_donation_amount',
                     'value' => (int)str_replace('<=', '', $params['amount_filter']),
@@ -258,10 +260,47 @@ class Leyka_Posts_Donations_Factory extends Leyka_Donations_Factory {
             $query->set('meta_query', $meta_query);
         }
 
+        $status_filter = function(){ return 'post_status ASC'; }; // For status ordering
+
+        if( !empty($params['orderby']) ) {
+            switch($params['orderby']) {
+                case 'ID': $query->set('orderby', 'ID'); break;
+                case 'date': $query->set('orderby', 'date'); break;
+                case 'amount':
+                    $query->set('meta_key', 'leyka_donation_amount');
+                    $query->set('orderby', 'meta_value_num');
+                    break;
+                case 'status':
+                    add_filter('posts_orderby', $status_filter);
+                    $query->set('suppress_filters', false);
+                    break;
+                default:
+            }
+        }
+        if( !empty($params['order']) && in_array($params['order'], array('asc', 'desc',)) ) {
+            $query->set('order', mb_strtoupper($params['order']));
+        }
+
+        $res = $query->get_posts();
+
+        if( !empty($params['orderby']) && $params['orderby'] === 'status' ) {
+            remove_filter('posts_orderby', $status_filter);
+        }
+
+        if( !empty($params['get_single']) && $res ) {
+            $res = $this->getDonation($res[0]);
+        } else {
+            foreach($res as $key => $donation_post) { /** @var $donation_post WP_Post */
+                $res[$key] = $this->getDonation($donation_post);
+            }
+        }
+
+        return $res ? $res : false;
+
     }
 
     public function addDonation(array $params = array()) {
-        return Leyka_Donation::add($params);
+        return Leyka_Donation_Post::add($params);
     }
 
 }
@@ -274,7 +313,7 @@ class Leyka_Separated_Donations_Factory extends Leyka_Donations_Factory {
 
         $donation = new Leyka_Donation_Separated($donation);
 
-        return is_a($donation, 'Leyka_Donation') && $donation->id ? $donation : false;
+        return is_a($donation, 'Leyka_Donation_Base') && $donation->id ? $donation : false;
 
     }
 
@@ -282,6 +321,11 @@ class Leyka_Separated_Donations_Factory extends Leyka_Donations_Factory {
         /** @todo Implement the method */
     }
 
+    // $params:
+    // campaign_id, status, payment_type, results_limit, get_single, page, year_month, day, search_string,
+    // recurring_only_init, recurring_active, amount_filter (only+, only-, >=SUM, <=SUM),
+    // gateway_pm (gateway__someid, pm__someid), gateway_id, pm_id, pm_full_id,
+    // custom_meta_somemetaname, orderby (ID, date, amount, status), order (asc, desc)
     public function getDonations(array $params = array()) {
         /** @todo Implement the method */
     }
