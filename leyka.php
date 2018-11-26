@@ -80,9 +80,9 @@ if( !defined('LEYKA_USAGE_STATS_PROD_SERVER_URL') ) {
 }
 
 // Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
-if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.3.0', '<') ) {
+if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.6.0', '<') ) {
 
-    echo '<div id="message" class="error"><p><strong>Внимание:</strong> версия PHP ниже <strong>5.3.0</strong>. Лейка нуждается в PHP хотя бы <strong>версии 5.3.0</strong>, чтобы работать корректно. Плагин будет деактивирован.<br /><br />Пожалуйста, направьте вашему хостинг-провайдеру запрос на повышение версии PHP для этого сайта.</p> <p><strong>Warning:</strong> your PHP version is below <strong>5.3.0</strong>. Leyka needs PHP <strong>v5.3.0</strong> or later to work. Plugin will be deactivated.<br /><br />Please contact your hosting provider to upgrade your PHP version.</p></div>';
+    echo '<div id="message" class="error"><p><strong>Внимание:</strong> версия PHP ниже <strong>5.6.0</strong>. Лейка нуждается в PHP хотя бы <strong>версии 5.6.0</strong>, чтобы работать корректно. Плагин будет деактивирован.<br /><br />Пожалуйста, направьте вашему хостинг-провайдеру запрос на повышение версии PHP для этого сайта.</p> <p><strong>Warning:</strong> your PHP version is below <strong>5.6.0</strong>. Leyka needs PHP <strong>v5.6.0</strong> or later to work. Plugin will be deactivated.<br /><br />Please contact your hosting provider to upgrade your PHP version.</p></div>';
 
     die();
 
