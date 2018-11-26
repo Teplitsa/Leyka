@@ -72,7 +72,7 @@ if( !defined('LEYKA_SUPPORT_EMAIL') ) {
 }
 
 if( !defined('LEYKA_USAGE_STATS_DEV_SERVER_URL') ) {
-    define('LEYKA_USAGE_STATS_DEV_SERVER_URL', 'https://ngo2.ru/leyka-usage-stats/');
+    define('LEYKA_USAGE_STATS_DEV_SERVER_URL', 'https://ngo2.ru/leyka-usage-stats/'); // http://leyka-usage-stats.local/
 }
 
 if( !defined('LEYKA_USAGE_STATS_PROD_SERVER_URL') ) {
@@ -113,9 +113,10 @@ if( !$gateways_dir ) {
 
         $file_addr = LEYKA_PLUGIN_DIR."gateways/$gateway_id/leyka-class-$gateway_id-gateway.php";
 
-        if($gateway_id != '.' && $gateway_id != '..' && file_exists($file_addr)) {
+        if($gateway_id !== '.' && $gateway_id !== '..' && file_exists($file_addr)) {
             require_once($file_addr);
         }
+
     }
 
     $gateways_dir->close();

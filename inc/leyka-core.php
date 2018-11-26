@@ -375,7 +375,9 @@ class Leyka {
             ) {
                 do_action('leyka_do_campaigns_targets_reaching_mailout');
             } else if($request[0] === 'get_usage_stats') {
-                echo json_encode($this->_get_usage_stats($_REQUEST));
+                echo empty($_GET['tst']) ?
+                    json_encode($this->_get_usage_stats($_REQUEST)) :
+                    '<pre>'.print_r($this->_get_usage_stats($_REQUEST), 1).'</pre>';
             } else { // Gateway callback URL
 
                 // Callback URLs are: some-website.org/leyka/service/{gateway_id}/{action_name}/
@@ -508,28 +510,42 @@ class Leyka {
             ),
             'nopaging' => true,
         );
-        if( !empty($params['year_month']) ) {
+        if( !empty($params['timestamp_from']) && (int)$params['timestamp_from'] > 0 ) { // 'date_from' must be a timestamp
 
-            $params['year_month'] = explode('_', $params['year_month']);
-            if(count($params['year_month']) === 2 && (int)$params['year_month'][0] > 0 && (int)$params['year_month'][1] > 0) {
-                $query_params['m'] = (int)$params['year_month'][0].(int)$params['year_month'][1];
+            $query_params['date_query']['after'] = date('Y-m-d H:i:s', (int)$params['timestamp_from']);
+            $query_params['date_query']['inclusive'] = true;
+
+            if( !empty($params['period']) ) { // Must be strtotime()-compatible string w/o sign (1 hour, 2 weeks, 3 months, ...)
+
+                $params['period'] = str_replace(array('+', '-'), '', $params['period']);
+
+                $query_params['date_query']['before'] = date(
+                    'Y-m-d H:i:s', strtotime($query_params['date_query']['after'].' +'.$params['period'])
+                );
+
             }
 
         }
 
-        $stats = array();
+//        echo '<pre>Date from: '.print_r($query_params['date_query']['after'], 1).'</pre>';
+
+        if( !empty($query_params['date_query']) ) {
+            $query_params['date_query'] = array($query_params['date_query']);
+        }
+
+        $stats = array('donations' => array(),) + leyka_get_env_and_options();
+
         foreach(get_posts($query_params) as $donation) {
 
             $donation = new Leyka_Donation($donation);
-            $year_month = date('Y.m', $donation->date_timestamp);
 
             $donations_by_status = array();
             foreach(leyka_get_donation_status_list() as $status => $label) {
                 $donations_by_status[$status] = 0;
             }
 
-            if(empty($stats[$year_month][$donation->gateway][$donation->pm])) {
-                $stats[$year_month][$donation->gateway][$donation->pm] = array(
+            if(empty($stats['donations'][$donation->gateway][$donation->pm])) {
+                $stats['donations'][$donation->gateway][$donation->pm] = array(
                     'main_currency' => 'RUB',
                     'amount_collected' => 0.0, // In main currency
                     'donations_count' => 0,
@@ -538,11 +554,11 @@ class Leyka {
             }
 
             if($donation->status === 'funded') {
-                $stats[$year_month][$donation->gateway][$donation->pm]['amount_collected'] += $donation->main_curr_amount;
+                $stats['donations'][$donation->gateway][$donation->pm]['amount_collected'] += $donation->main_curr_amount;
             }
 
-            $stats[$year_month][$donation->gateway][$donation->pm]['donations_count'] += 1;
-            $stats[$year_month][$donation->gateway][$donation->pm]['donations_by_status_count'][$donation->status] += 1;
+            $stats['donations'][$donation->gateway][$donation->pm]['donations_count'] += 1;
+            $stats['donations'][$donation->gateway][$donation->pm]['donations_by_status_count'][$donation->status] += 1;
 
         }
 

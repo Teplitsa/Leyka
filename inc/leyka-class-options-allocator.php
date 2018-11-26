@@ -150,6 +150,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'is_default_collapsed' => false,
                         'options' => array(
                             'revo_template_slider_max_sum', 'revo_template_show_thumbnail', 'revo_donation_complete_button_text',
+                            'revo_template_show_donors_list',
                         )
                     ),),
                     array('section' => array(

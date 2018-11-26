@@ -17,6 +17,12 @@
                     @extend .option-block;
                 }
                 
+                &.custom_yandex_test_payment {
+                    .button-secondary {
+                        width: auto;
+                    }
+                }
+                
                 .field-errors {
     
                     @include common-error-message();

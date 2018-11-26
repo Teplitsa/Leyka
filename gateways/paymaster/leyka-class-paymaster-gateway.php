@@ -127,7 +127,12 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
         $sign = $this->_get_signature($_REQUEST);
         $hash = $this->_get_hash($_REQUEST);
 
-        if (empty($_REQUEST['SIGN']) || empty($_REQUEST['LMI_HASH']) || ($_REQUEST['SIGN'] != $sign) || ($_REQUEST['LMI_HASH'] != $hash)) {
+        if(
+            empty($_REQUEST['SIGN'])
+            || empty($_REQUEST['LMI_HASH'])
+            || $_REQUEST['SIGN'] !== $sign
+            || $_REQUEST['LMI_HASH'] !== $hash
+        ) {
 
             $message = __('This message has been sent because a call to your Paymaster callback was called with wrong digital signature. It may mean that someone is trying to hack your payment website. The details of the call are below:', 'leyka') . "\n\r\n\r";
 
@@ -142,13 +147,12 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
         }
 
-        if($donation->status != 'funded') {
+        if($donation->status !== 'funded') {
 
             $donation->add_gateway_response($_REQUEST);
             $donation->status = 'funded';
 
-            $_REQUEST['IncCurrLabel'] = empty($_REQUEST['IncCurrLabel']) ?
-                '' : substr_replace($_REQUEST['IncCurrLabel'], '', -1);
+            $_REQUEST['IncCurrLabel'] = empty($_REQUEST['IncCurrLabel']) ? '' : substr_replace($_REQUEST['IncCurrLabel'], '', -1);
 
             if(
                 $donation->pm_id != $_REQUEST['IncCurrLabel'] &&
