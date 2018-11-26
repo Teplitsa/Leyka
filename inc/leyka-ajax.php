@@ -30,7 +30,7 @@ function leyka_submit_donation() {
 
     /** @todo Check if selected gateway set up completely. If it's not, return the error */
 
-    $payment_vars = array('status' => $donation_id && (int)is_wp_error($donation_id),);
+    $payment_vars = array('status' => (int)($donation_id && is_wp_error($donation_id)),);
     if($payment_vars['status'] == 0) {
         $payment_vars['donation_id'] = $donation_id;
     } else {
@@ -145,7 +145,7 @@ function leyka_get_gateway_redirect_data() {
         }
 
         $payment_vars = array(
-            'status' => $donation_id && !is_wp_error($donation_id) && !leyka()->payment_form_has_errors() ? 0 : 1,
+            'status' => 0,
             'payment_url' => apply_filters('leyka_submission_redirect_url-'.$pm[0], '', $pm[1]),
             'submission_redirect_type' => apply_filters(
                 'leyka_submission_redirect_type-'.$pm[0],
@@ -153,17 +153,21 @@ function leyka_get_gateway_redirect_data() {
             ),
         );
 
-        if($payment_vars['status'] == 0) {
-            $payment_vars['donation_id'] = $donation_id;
-        } else if(is_wp_error($donation_id)) {
+        if(is_wp_error($donation_id)) {
+
             $payment_vars['errors'] = $donation_id;
+            $payment_vars['status'] = 1;
+
         } else if(leyka()->payment_form_has_errors()) {
 
             $error = reset(leyka()->get_payment_form_errors());
 
             $payment_vars['errors'] = $error;
             $payment_vars['message'] = $error->get_error_message();
+            $payment_vars['status'] = 1;
 
+        } else {
+            $payment_vars['donation_id'] = $donation_id;
         }
 
         $payment_vars = array_merge(
