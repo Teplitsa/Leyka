@@ -66,7 +66,7 @@ class Leyka extends Leyka_Singleton {
 
         // By default, we'll assume some errors in the payment form, so redirect will get us back to it:
         $this->_payment_form_redirect_url = wp_get_referer();
-        
+
         $this->load_public_cssjs();
 
         add_action('init', array($this, 'register_post_types'), 1);
@@ -83,6 +83,24 @@ class Leyka extends Leyka_Singleton {
             }
         }
         add_action('init', 'leyka_session_start', -2);
+
+        if(get_option('leyka_plugin_stats_option_needs_sync')) {
+
+            function leyka_sync_stats_option() {
+
+                $stats_option_synch_res = leyka_sync_plugin_stats_option();
+
+                if(is_wp_error($stats_option_synch_res)) {
+                    return $stats_option_synch_res;
+                } else {
+                    return delete_option('leyka_plugin_stats_option_needs_sync')
+                        && update_option('leyka_plugin_stats_option_sync_done', time());
+                }
+
+            }
+            add_action('admin_init', 'leyka_sync_stats_option');
+
+        }
 
         if(is_admin()) {
 
@@ -342,6 +360,10 @@ class Leyka extends Leyka_Singleton {
                 leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')
             ) {
                 do_action('leyka_do_campaigns_targets_reaching_mailout');
+            } else if($request[0] === 'get_usage_stats') {
+                echo empty($_GET['tst']) ?
+                    json_encode($this->_get_usage_stats($_REQUEST)) :
+                    '<pre>'.print_r($this->_get_usage_stats($_REQUEST), 1).'</pre>';
             } else { // Gateway callback URL
 
                 // Callback URLs are: some-website.org/leyka/service/{gateway_id}/{action_name}/
@@ -460,6 +482,73 @@ class Leyka extends Leyka_Singleton {
             }
 
         }
+
+    }
+
+    protected function _get_usage_stats(array $params = array()) {
+
+        $query_params = array(
+            'post_type' => Leyka_Donation_Management::$post_type,
+            'post_status' => 'any',
+            'meta_query' => array(
+                'relation' => 'AND',
+                array('key' => 'leyka_payment_type', 'value' => 'correction', 'compare' => '!='),
+            ),
+            'nopaging' => true,
+        );
+        if( !empty($params['timestamp_from']) && (int)$params['timestamp_from'] > 0 ) { // 'date_from' must be a timestamp
+
+            $query_params['date_query']['after'] = date('Y-m-d H:i:s', (int)$params['timestamp_from']);
+            $query_params['date_query']['inclusive'] = true;
+
+            if( !empty($params['period']) ) { // Must be strtotime()-compatible string w/o sign (1 hour, 2 weeks, 3 months, ...)
+
+                $params['period'] = str_replace(array('+', '-'), '', $params['period']);
+
+                $query_params['date_query']['before'] = date(
+                    'Y-m-d H:i:s', strtotime($query_params['date_query']['after'].' +'.$params['period'])
+                );
+
+            }
+
+        }
+
+//        echo '<pre>Date from: '.print_r($query_params['date_query']['after'], 1).'</pre>';
+
+        if( !empty($query_params['date_query']) ) {
+            $query_params['date_query'] = array($query_params['date_query']);
+        }
+
+        $stats = array('donations' => array(),) + leyka_get_env_and_options();
+
+        foreach(get_posts($query_params) as $donation) {
+
+            $donation = new Leyka_Donation($donation);
+
+            $donations_by_status = array();
+            foreach(leyka_get_donation_status_list() as $status => $label) {
+                $donations_by_status[$status] = 0;
+            }
+
+            if(empty($stats['donations'][$donation->gateway][$donation->pm])) {
+                $stats['donations'][$donation->gateway][$donation->pm] = array(
+                    'main_currency' => 'RUB',
+                    'amount_collected' => 0.0, // In main currency
+                    'donations_count' => 0,
+                    'donations_by_status_count' => $donations_by_status,
+                );
+            }
+
+            if($donation->status === 'funded') {
+                $stats['donations'][$donation->gateway][$donation->pm]['amount_collected'] += $donation->main_curr_amount;
+            }
+
+            $stats['donations'][$donation->gateway][$donation->pm]['donations_count'] += 1;
+            $stats['donations'][$donation->gateway][$donation->pm]['donations_by_status_count'][$donation->status] += 1;
+
+        }
+
+        return $stats;
 
     }
 

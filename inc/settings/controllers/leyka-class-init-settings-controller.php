@@ -11,31 +11,24 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
         $this->_id = 'init';
         $this->_title = 'Мастер настройки Лейки';
-        
+
         $options = array(
             'org_actual_address' => array(
                 'type' => 'textarea',
-                'default' => '',
                 'title' => 'Фактический адрес организации',
-                'description' => '',
-                'required' => 0,
-                'validation_rules' => array(),
             ),
             'org_actual_address_differs' => array(
                 'type' => 'checkbox',
-                'default' => '',
                 'title' => 'Фактический адрес отличается от юридического',
             ),
         );
 
         foreach($options as $option_name => $params) {
-
             if( !leyka_options()->option_exists($option_name) ) {
                 leyka_options()->add_option($option_name, $params['type'], $params);
             }
-            
         }
-        
+
     }
     
     protected function _loadCssJs() {
@@ -194,7 +187,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'person_email',
             'option_id' => 'tech_support_email',
-            'title' => 'Email для связи', // __('Your email', 'leyka')
+            'title' => 'Email для связи',
             'required' => true,
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'person_address',
@@ -331,7 +324,8 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'id' => 'send_plugin_stats',
             'option_id' => 'send_plugin_stats',
             'show_title' => false,
-        )))->addTo($section);
+        )))->addHandler(array($this, 'handlePluginStatsStep'))
+            ->addTo($section);
 
         // The plugin usage stats collection - accepted:
         $step = new Leyka_Settings_Step('plugin_stats_accepted', $section->id, 'Спасибо!', array('next_label' => 'Продолжить'));
@@ -396,8 +390,6 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                         'show_description' => false,
                         'placeholder' => 'Пусто, если сумма неограниченна',
                         'mask' => "'alias': 'numeric', 'groupSeparator': ' ', 'autoGroup': true, 'allowMinus': false, 'rightAlign': false, 'removeMaskOnSubmit': true",
-                        //'description' => 'Оставьте пустым, если нет ограничений по целевой сумме',
-//                        'comment' => 'Комментарий к целевой сумме кампании',
                     ),
                 )),
             )
@@ -663,7 +655,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         if($step->section_id === 'rd' && $step->id === 'init') {
 
             $submit_settings['next_label'] = 'Поехали!';
-            $submit_settings['prev'] = false; // Means that Wizard shouln't display the back link
+            $submit_settings['prev'] = false; // Means that the Wizard shouln't display the back link
 
         } else if($step->section_id === 'dd' && in_array($step->id, array('plugin_stats_accepted', 'plugin_stats_refused',))) {
 
@@ -744,6 +736,24 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
             }
 
+        }
+
+    }
+
+    public function handlePluginStatsStep(array $step_settings) {
+
+        if(empty($step_settings['send_plugin_stats'])) {
+            return false;
+        }
+
+        update_option('leyka_plugin_stats_option_needs_sync', time());
+        $stats_option_synch_res = leyka_sync_plugin_stats_option();
+
+        if(is_wp_error($stats_option_synch_res)) {
+            return $stats_option_synch_res;
+        } else {
+            return delete_option('leyka_plugin_stats_option_needs_sync')
+                && update_option('leyka_plugin_stats_option_sync_done', time());
         }
 
     }

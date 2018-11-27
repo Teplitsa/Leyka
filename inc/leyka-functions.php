@@ -1382,6 +1382,170 @@ function leyka_manually_insert_page(array $post_data) {
 
 }
 
+/** @return array An assoc array of all Leyka options from leyka-option-meta file and some environment data */
+function leyka_get_env_and_options() {
+    return array_merge(leyka_get_all_options(), leyka_get_env(), leyka_get_db_stats());
+}
+
+function humanaize_debug_data($debug_data) {
+    $humanized_options = array();
+    foreach($debug_data['options'] as $k => $v) {
+        $option_info = leyka_options()->get_info_of($k);
+        $option_title = empty($option_info['title']) || $option_info['title'] == $k ? $k : $option_info['title'];
+        $humanized_options[$option_title] = $v;
+    }
+    $debug_data['options'] = $humanized_options;
+    
+    foreach(array_keys($debug_data['plugins']) as $status) {
+        $humanized_options = array();
+        
+        foreach($debug_data['plugins'][$status] as $plugin) {
+            $humanized_options[] = sprintf("%s %s", $plugin['name'], $plugin['ver']);
+        }
+        
+        $debug_data['plugins'][$status] = $humanized_options;
+    }
+    
+    return $debug_data;
+}
+
+function format_debug_data($list, $level = 0) {
+    $fomatted_ret = "";
+    
+    if($level > 0) {
+        ksort($list);
+    }
+    
+    foreach($list as $k => $v) {
+        $fomatted_ret .= str_repeat("    ", $level) . "<strong>$k:</strong> ";
+        if(is_array($v)) {
+            $fomatted_ret .= "\n" . format_debug_data($v, $level + 1) . ($level == 0 ? "\n" : "");
+        }
+        else {
+            $fomatted_ret .= trim($v) . "\n";
+        }
+    }
+    
+    return $fomatted_ret;
+}
+
+/** @return array An assoc array of some db stats */
+function leyka_get_db_stats() {
+    global $wpdb;
+    
+    $query_time_start = microtime(true);
+    
+    $sql = "SELECT COUNT(*) FROM $wpdb->posts WHERE post_type = %s";
+    $payments_count = $wpdb->get_var( $wpdb->prepare($sql, Leyka_Donation_Management::$post_type) );
+
+    $sql = "SELECT COUNT(*) FROM $wpdb->posts";
+    $all_posts_count = $wpdb->get_var( $sql );
+    
+    $query_exec_time = sprintf("%.10f", microtime(true) - $query_time_start);
+    
+    $db_stats = array(
+        'db_stats' =>array(
+            'all_posts_count' => $all_posts_count,
+            'payments_count' => $payments_count,
+            'query_exec_time' => $query_exec_time,
+        ),
+    );
+    
+    return $db_stats;
+}
+
+/** @return array An assoc array of some environment data */
+function leyka_get_env() {
+
+    if( !function_exists('get_plugins') ) {
+        require_once ABSPATH.'wp-admin/includes/plugin.php';
+    }
+
+    global $wp_version;
+
+    $res = array(
+        'wp_core' => $wp_version,
+        'env' => array('php_version' => phpversion(), 'php_extensions' => get_loaded_extensions()),
+    );
+
+    // Server data:
+    $forbidden_data = array(
+        'MIBDIRS', 'OPENSSL_CONF', 'HTTP_COOKIE', 'PATH', 'SystemRoot', 'COMSPEC', 'WINDIR', 'DOCUMENT_ROOT',
+        'CONTEXT_DOCUMENT_ROOT', 'SCRIPT_FILENAME',
+    );
+    foreach($_SERVER as $key => $value) {
+
+        if(in_array($key, $forbidden_data)) {
+            continue;
+        }
+
+        $res['env']['server_'.$key] = is_array($value) ? serialize($value) : strip_tags($value);
+
+    }
+    foreach($_ENV as $key => $value) {
+
+        if(in_array($key, $forbidden_data)) {
+            continue;
+        }
+
+        $res['env']['env_'.$key] = is_array($value) ? serialize($value) : strip_tags($value);
+
+    }
+
+    // WP core/Theme/plugins data:
+    $res['plugins'] = array('active' => array(), 'inactive' => array(),);
+
+    foreach(get_plugins() as $key => $plugin_data) {
+        if(in_array($key, get_option('active_plugins'))) {
+            $res['plugins']['active'][] = array('name' => $plugin_data['Name'], 'ver' => $plugin_data['Version']);
+        } else {
+            $res['plugins']['inactive'][] = array('name' => $plugin_data['Name'], 'ver' => $plugin_data['Version']);
+        }
+    }
+
+    $theme = wp_get_theme();
+    $res['theme'] = array(
+        'name' => $theme->Name,
+        'ver' => $theme->Version,
+        'template' => $theme->template,
+        'parent' => $theme->parent ?
+            array('name' => $theme->Name, 'ver' => $theme->Version, 'template' => $theme->parent->template,) : array(),
+    );
+
+    return $res;
+
+}
+
+/** @return array An assoc array of all Leyka options (from leyka-options-meta) & settings (other "leyka_something"-named options) */
+function leyka_get_all_options() {
+
+    $res = array('options' => array(), 'settings' => array());
+    $leyka_options_keys = leyka_options()->get_options_names();
+
+    $forbidden_options = array(
+        'person_pd_terms_text', 'person_terms_of_service_text', 'pd_terms_text', 'terms_of_service_text',
+        'email_thanks_text', 'org_face_fio_ip', 'org_face_fio_rp', 'org_address', 'person_full_name', 'person_address',
+        '_transient_leyka_wizards_activities',
+    );
+
+    foreach(wp_load_alloptions() as $name => $value) {
+
+        $name_clear = strpos($name, 'leyka_') === 0 ? substr_replace($name, '', 0, strlen('leyka_')) : $name;
+
+        if(in_array($name_clear, $forbidden_options) || preg_match("/^knd_val_hash_leyka_/", $name)) {
+            continue;
+        } else if(in_array($name_clear, $leyka_options_keys)) {
+            $res['options'][$name_clear] = $value;
+        } else if(stristr($name, 'leyka_') !== false && !preg_match('/^(leyka_)(.+)(_description)$/i', $name)) {
+            $res['settings'][$name] = $value;
+        }
+
+    }
+
+    return $res;
+
+}
+
 if( !function_exists('array_key_last') ) {
     function array_key_last($array) {
 

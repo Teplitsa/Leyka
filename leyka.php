@@ -71,10 +71,18 @@ if( !defined('LEYKA_SUPPORT_EMAIL') ) {
     define('LEYKA_SUPPORT_EMAIL', 'support@te-st.ru,sidorenko.a@gmail.com');
 }
 
-// Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
-if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.3.0', '<') ) {
+if( !defined('LEYKA_USAGE_STATS_DEV_SERVER_URL') ) {
+    define('LEYKA_USAGE_STATS_DEV_SERVER_URL', 'https://ngo2.ru/leyka-usage-stats/'); // http://leyka-usage-stats.local/
+}
 
-    echo '<div id="message" class="error"><p><strong>Внимание:</strong> версия PHP ниже <strong>5.3.0</strong>. Лейка нуждается в PHP хотя бы <strong>версии 5.3.0</strong>, чтобы работать корректно. Плагин будет деактивирован.<br /><br />Пожалуйста, направьте вашему хостинг-провайдеру запрос на повышение версии PHP для этого сайта.</p> <p><strong>Warning:</strong> your PHP version is below <strong>5.3.0</strong>. Leyka needs PHP <strong>v5.3.0</strong> or later to work. Plugin will be deactivated.<br /><br />Please contact your hosting provider to upgrade your PHP version.</p></div>';
+if( !defined('LEYKA_USAGE_STATS_PROD_SERVER_URL') ) {
+    define('LEYKA_USAGE_STATS_PROD_SERVER_URL', 'https://usage-stats.te-st.ru/leyka/');
+}
+
+// Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
+if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.6.0', '<') ) {
+
+    echo '<div id="message" class="error"><p><strong>Внимание:</strong> версия PHP ниже <strong>5.6.0</strong>. Лейка нуждается в PHP хотя бы <strong>версии 5.6.0</strong>, чтобы работать корректно. Плагин будет деактивирован.<br /><br />Пожалуйста, направьте вашему хостинг-провайдеру запрос на повышение версии PHP для этого сайта.</p> <p><strong>Warning:</strong> your PHP version is below <strong>5.6.0</strong>. Leyka needs PHP <strong>v5.6.0</strong> or later to work. Plugin will be deactivated.<br /><br />Please contact your hosting provider to upgrade your PHP version.</p></div>';
 
     die();
 
@@ -108,9 +116,10 @@ if( !$gateways_dir ) {
 
         $file_addr = LEYKA_PLUGIN_DIR."gateways/$gateway_id/leyka-class-$gateway_id-gateway.php";
 
-        if($gateway_id != '.' && $gateway_id != '..' && file_exists($file_addr)) {
+        if($gateway_id !== '.' && $gateway_id !== '..' && file_exists($file_addr)) {
             require_once($file_addr);
         }
+
     }
 
     $gateways_dir->close();
