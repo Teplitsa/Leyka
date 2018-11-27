@@ -267,6 +267,24 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             $donation_meta_fields['recurring_cancel_date'] = current_time('timestamp');
         }
 
+        foreach($donation_meta_fields as $key => $value) {
+
+            $res = $wpdb->insert($wpdb->prefix.'leyka_donations_meta', array(
+                'donation_id' => $donation_id,
+                'meta_key' => $key,
+                'meta_value' => $value,
+            ), array('%d', '%s', '%s',));
+
+            if( !$res ) {
+
+                $wpdb->delete($wpdb->prefix.'leyka_donations', array('ID' => $donation_id), array('%d'));
+
+                return new WP_Error('donation_addition_error', __('Error while trying to add a new donation', 'leyka'));
+
+            }
+
+        }
+
         return $donation_id;
 
     }

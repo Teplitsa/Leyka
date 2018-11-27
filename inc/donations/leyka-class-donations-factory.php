@@ -101,7 +101,7 @@ abstract class Leyka_Donations_Factory extends Leyka_Singleton {
             }
 
         } else if(array_key_exists(trim($values), $possible_values_list)) { // A single value
-            $values_to_filter = trim($values);
+            $values_to_filter = array(trim($values));
         }
 
         return $values_to_filter;
@@ -146,7 +146,7 @@ class Leyka_Posts_Donations_Factory extends Leyka_Donations_Factory {
 
         if( !empty($params['get_single']) ) {
             $query->set('posts_per_page', 1);
-        } else if( !empty($params['page']) && (int)$params['posts_per_page'] > 1 ) {
+        } else if( !empty($params['page']) && (int)$params['results_limit'] > 1 ) {
             $query->set('page', (int)$params['page']);
         }
 
@@ -242,8 +242,9 @@ class Leyka_Posts_Donations_Factory extends Leyka_Donations_Factory {
 
         if( !empty($params['pm_full_id']) && leyka_get_pm_by_id($params['pm_full_id'], true) ) {
 
-            $meta_query[] = array('key' => 'leyka_gateway', 'value' => $params['gateway_id']);
-            $meta_query[] = array('key' => 'leyka_payment_method', 'value' => $params['pm_id']);
+            $params['pm_full_id'] = explode('-', $params['pm_full_id']);
+            $meta_query[] = array('key' => 'leyka_gateway', 'value' => $params['pm_full_id'][0]);
+            $meta_query[] = array('key' => 'leyka_payment_method', 'value' => $params['pm_full_id'][1]);
 
         }
 
@@ -316,14 +317,161 @@ class Leyka_Separated_Donations_Factory extends Leyka_Donations_Factory {
     }
 
     // $params:
-    // campaign_id, status, payment_type, results_limit, get_single, page, year_month, day, search_string,
-    // recurring_only_init, recurring_active, amount_filter (only+, only-, >=SUM, <=SUM),
-    // gateway_pm (gateway__someid, pm__someid), gateway_id, pm_id, pm_full_id,
+    // recurring_only_init, recurring_active,
     // custom_meta_somemetaname, orderby (ID, date, amount, status), order (asc, desc)
+    // search_string
     public function getDonations(array $params = array()) {
 
         global $wpdb;
 
+        $where = array();
+        $limit = '';
+        $orderby = '';
+        $order = '';
+
+        $params['strict'] = isset($params['strict']) ? !!$params['strict'] : true;
+
+        if( !empty($params['status']) ) {
+
+            $values_list = $this->_getMultipleFilterValues($params['status'], leyka_get_donation_status_list());
+
+            if($values_list) {
+
+                $where_status = "`status` IN (";
+                foreach($values_list as $status) {
+                    $where_status .= '%s,';
+                }
+                $where_status = rtrim($where_status, ',').')';
+
+                $where[] = $wpdb->prepare($where_status, $values_list);
+
+            }
+
+        }
+
+        if( !empty($params['payment_type']) ) {
+
+            $values_list = $this->_getMultipleFilterValues($params['payment_type'], leyka_get_payment_types_list());
+
+            if($values_list) {
+
+                $where_payment_type = "`payment_type` IN (";
+                foreach($values_list as $type) {
+                    $where_payment_type .= '%s,';
+                }
+                $where_payment_type = rtrim($where_payment_type, ',').')';
+
+                $where[] = $wpdb->prepare($where_payment_type, $values_list);
+
+            }
+
+        }
+
+        if( !empty($params['campaign_id']) ) {
+            $where[] = $wpdb->prepare("`campaign_id` = %d", (int)$params['campaign_id']);
+        }
+
+        if( !empty($params['get_single']) ) {
+            $limit = ' LIMIT 0,1';
+        } else if( !empty($params['page']) && (int)$params['page'] > 0 && (int)$params['results_limit'] > 0 ) {
+            $limit = ' LIMIT '.((int)$params['page']*(int)$params['results_limit']).','.(int)$params['results_limit'];
+        } else if( !empty($params['results_limit']) && (int)$params['results_limit'] > 0 ) {
+            $limit = ' LIMIT 0,'.(int)$params['results_limit'];
+        }
+
+        if(isset($params['year_month']) && (int)$params['year_month'] > 0 && mb_strlen($params['year_month']) >= 6) {
+
+            $year = mb_substr($params['year_month'], 0, 4);
+            $month = mb_substr($params['year_month'], 4, 2);
+
+            try {
+
+                $date = new DateTime("$year-$month-01");
+                $where[] = $wpdb->prepare(
+                    '(`date_created` >= %s AND `date_created` <= %s)',
+                    $date->format('Y-m-01'), $date->format('Y-m-t')
+                );
+
+            } catch(Exception $ex) {
+                // ...
+            }
+
+        }
+
+        if(isset($params['day']) && (int)$params['day'] >= 1 && (int)$params['day'] <= 31) {
+            $where[] = $wpdb->prepare("DAYOFMONTH(`date_created`) = %d", (int)$params['day']);
+        }
+
+        if( !empty($params['gateway_pm']) ) {
+
+            if(strpos($params['gateway_pm'], 'gateway__') !== false) {
+
+                $params['gateway_pm'] = str_replace('gateway__', '', $params['gateway_pm']);
+                if( ($params['strict'] && leyka_get_gateway_by_id($params['gateway_pm'])) || !$params['strict'] ) {
+                    $where[] = $wpdb->prepare("`gateway_id` = %s", $params['gateway_pm']);
+                }
+
+            } else if(strpos($params['gateway_pm'], 'pm__') !== false) {
+
+                $params['gateway_pm'] = str_replace('pm__', '', $params['gateway_pm']);
+                if( ($params['strict'] && leyka_get_pm_by_id($params['gateway_pm'])) || !$params['strict'] ) {
+                    $where[] = $wpdb->prepare("`pm_id` = %s", $params['gateway_pm']);
+                }
+
+            }
+
+        }
+
+        if( !empty($params['gateway_id']) ) {
+            if( ($params['strict'] && leyka_get_gateway_by_id($params['gateway_id'])) || !$params['strict'] ) {
+                $where[] = $wpdb->prepare("`gateway_id` = %s", $params['gateway_id']);
+            }
+        }
+
+        if( !empty($params['pm_id']) ) {
+            if( ($params['strict'] && leyka_get_pm_by_id($params['pm_id'])) || !$params['strict'] ) {
+                $where[] = $wpdb->prepare("`pm_id` = %s", $params['pm_id']);
+            }
+        }
+
+        if( !empty($params['pm_full_id']) ) {
+            if( ($params['strict'] && leyka_get_pm_by_id($params['pm_full_id'], true)) || !$params['strict'] ) {
+
+                $params['pm_full_id'] = explode('-', $params['pm_full_id']);
+                $where[] = $wpdb->prepare("`gateway_id` = %s", $params['pm_full_id'][0]);
+                $where[] = $wpdb->prepare("`pm_id` = %s", $params['pm_full_id'][1]);
+
+            }
+        }
+
+        if( !empty($params['amount_filter']) ) {
+
+            $params['amount_filter'] = trim($params['amount_filter']);
+
+            if($params['amount_filter'] === 'only+') {
+                $where[] = "`amount` > 0.0";
+            } else if($params['amount_filter'] === 'only-') {
+                $where[] = "`amount` < 0.0";
+            } else if(stripos($params['amount_filter'], '>=') !== false) {
+                $where[] = $wpdb->prepare("`amount` >= %f", round(str_replace('>=', '', $params['amount_filter']), 2));
+            } else if(stripos($params['amount_filter'], '<=') !== false) {
+                $where[] = $wpdb->prepare("`amount` <= %f", round(str_replace('<=', '', $params['amount_filter']), 2));
+            }
+
+        }
+
+        $where = $where ? ' WHERE '.implode(' AND ', $where) : '';
+        $limit = $limit ? $limit : '';
+
+        $donations = array();
+        $query = $wpdb->prepare("SELECT `ID` FROM {$wpdb->prefix}leyka_donations $where $limit", array());
+        echo '<pre>'.print_r($query, 1).'</pre>';
+
+//        foreach($wpdb->get_col($query) as $donation) {
+//            $donations[] = $this->getDonation($donation->ID);
+//        }
+
+        return $donations;
 
     }
 

@@ -136,3 +136,19 @@ add_action('plugins_loaded', array('Leyka', 'activate')); // Any update needed
 register_deactivation_hook(__FILE__, array('Leyka', 'deactivate')); // Deactivate
 
 leyka(); // All systems go
+
+//add_action('init', function(){
+//    Leyka_Donations_Factory::get_instance()->getDonations(array(
+//        'status' => 'submitted,funded',
+//        'campaign_id' => 34035,
+//        'results_limit' => 20,
+//        'payment_type' => 'single,rebill',
+//        'gateway_id' => 'yandex',
+//
+////        'amount_filter' => '>=100',
+////        'year_month' => 201506,
+////        'day' => 02,
+////        'get_single' => true,
+////        'page' => 2,
+//    ));
+//}, 100);
