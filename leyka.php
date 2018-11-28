@@ -129,7 +129,7 @@ if( !$gateways_dir ) {
 function leyka_load_plugin_textdomain() {
     load_plugin_textdomain('leyka', false, basename( dirname( __FILE__ ) ) . '/languages/');
 }
-add_action( 'plugins_loaded', 'leyka_load_plugin_textdomain' );
+add_action('plugins_loaded', 'leyka_load_plugin_textdomain');
 
 register_activation_hook(__FILE__, array('Leyka', 'activate')); // Activation
 add_action('plugins_loaded', array('Leyka', 'activate')); // Any update needed
@@ -144,11 +144,14 @@ leyka(); // All systems go
 //        'results_limit' => 20,
 //        'payment_type' => 'single,rebill',
 //        'gateway_id' => 'yandex',
-//
-////        'amount_filter' => '>=100',
-////        'year_month' => 201506,
-////        'day' => 02,
-////        'get_single' => true,
-////        'page' => 2,
+//        'amount_filter' => '>=100',
+//        'year_month' => 201506,
+//        'day' => 02,
+//        'get_single' => true,
+//        'page' => 2,
+//        'recurring_only_init' => true,
+//        'custom_meta_chronopay_customer_id' => '005797-100038035',
+//        'orderby' => 'date',
+//        'order' => 'desc',
 //    ));
 //}, 100);
