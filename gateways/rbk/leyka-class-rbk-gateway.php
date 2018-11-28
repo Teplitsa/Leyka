@@ -170,8 +170,6 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                         description: '<?php echo $description;?>',
                         email: '<?php echo $donation->__get('donor_email');?>',
                         initialPaymentMethod: 'bankCard',
-                        paymentFlowHold: true,
-                        holdExpiration: 'capture',
                         opened: function () {
                         },
                         closed: function () {
@@ -198,8 +196,6 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 			description : '{$description}',
 			email : '{$donation->donor_email}',
 			initialPaymentMethod : 'bankCard',
-			paymentFlowHold : true,
-			holdExpiration : 'capture',
     		opened : function () {
 	    		jQuery('.leyka-pf__redirect').removeClass('leyka-pf__redirect--open');
 			},
@@ -224,7 +220,7 @@ JS;
     }
 
     public function _handle_service_calls($call_type = '') {
-        if('process' === $call_type) {
+        if('process' === $call_type || 'check_order' == $call_type) {
             do_action('leyka_rbk_gateway_web_hook');
         }
     }
