@@ -22,9 +22,9 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
         global $wpdb;
         $query = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}leyka_donations` WHERE `ID`=%d LIMIT 0,1", $this->_id);
-        $this->_post_object = $wpdb->get_row($query);
+        $this->_main_data = $wpdb->get_row($query);
 
-        if( !$this->_post_object ) {
+        if( !$this->_main_data ) {
             return false;
         }
 
@@ -105,11 +105,11 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
         $value = is_array($value) || is_object($value) ? serialize($value) : trim($value);
 
-        if( !isset($this->_post_object->$data_name) ) {
+        if( !isset($this->_main_data->$data_name) ) {
             /** @todo Throw some Ex? */
         } else {
 
-            if($this->_post_object->$data_name != $value) {
+            if($this->_main_data->$data_name != $value) {
 
                 global $wpdb;
                 $res = $wpdb->update(
@@ -121,7 +121,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 );
 
                 if($res) {
-                    $this->_post_object->$data_name = $value;
+                    $this->_main_data->$data_name = $value;
                 } else {
                     return false;
                 }
@@ -301,7 +301,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
         switch($field) {
             case 'campaign_id':
-                return $this->_post_object->campaign_id;
+                return $this->_main_data->campaign_id;
             case 'id':
             case 'ID': return $this->_id;
             case 'title':
@@ -311,22 +311,22 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'payment_title':
             case 'campaign_payment_title':
                 return $this->_getMeta('payment_title');
-            case 'status': return $this->_post_object->status;
+            case 'status': return $this->_main_data->status;
             case 'status_label':
                 $statuses = leyka_get_donation_status_list();
-                return $statuses[$this->_post_object->status];
+                return $statuses[$this->_main_data->status];
             case 'status_log':
                 return $this->_getMeta('status_log');
             case 'date':
             case 'date_label':
                 $date_format = get_option('date_format');
-                $donation_timestamp = strtotime($this->_post_object->date_created);
+                $donation_timestamp = strtotime($this->_main_data->date_created);
                 return apply_filters(
                     'leyka_admin_donation_date',
                     date($date_format, $donation_timestamp),
                     $donation_timestamp, $date_format, get_option('time_format')
                 );
-            case 'date_timestamp': return strtotime($this->_post_object->date_created);
+            case 'date_timestamp': return strtotime($this->_main_data->date_created);
             case 'date_funded':
             case 'date_funded_label':
             case 'funded_date':
@@ -339,55 +339,55 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'payment_method_id':
             case 'pm':
             case 'pm_id':
-                return $this->_post_object->pm_id ? $this->_post_object->pm_id : false;
+                return $this->_main_data->pm_id ? $this->_main_data->pm_id : false;
             case 'pm_full_id':
-                return $this->_post_object->gateway_id && $this->_post_object->pm_id ?
-                    $this->_post_object->gateway_id.'-'.$this->_post_object->pm_id : '';
+                return $this->_main_data->gateway_id && $this->_main_data->pm_id ?
+                    $this->_main_data->gateway_id.'-'.$this->_main_data->pm_id : '';
             case 'gateway':
             case 'gateway_id':
             case 'gw_id':
-                return $this->_post_object->gateway_id ? false : $this->_post_object->gateway_id;
+                return $this->_main_data->gateway_id ? false : $this->_main_data->gateway_id;
             case 'gateway_label':
 
-                if(empty($this->_post_object->gateway_id)) {
+                if(empty($this->_main_data->gateway_id)) {
                     return __('Unknown gateway', 'leyka');
                 }
 
-                $gateway = leyka_get_gateway_by_id($this->_post_object->gateway_id);
+                $gateway = leyka_get_gateway_by_id($this->_main_data->gateway_id);
 
                 return $gateway ? $gateway->label : __('Unknown gateway', 'leyka');
 
             case 'pm_label':
             case 'payment_method_label':
-                $pm = leyka_get_pm_by_id($this->_post_object->pm_id);
+                $pm = leyka_get_pm_by_id($this->_main_data->pm_id);
 
                 return ($pm ? $pm->label : __('Unknown payment method', 'leyka'));
 
             case 'currency':
             case 'currency_code':
             case 'currency_id':
-                return $this->_post_object->currency_id;
+                return $this->_main_data->currency_id;
             case 'currency_label':
-                return leyka_get_currency_label($this->_post_object->currency_id);
+                return leyka_get_currency_label($this->_main_data->currency_id);
 
             case 'sum':
             case 'amount':
-                return $this->_post_object->amount ? $this->_post_object->amount : 0.0;
+                return $this->_main_data->amount ? $this->_main_data->amount : 0.0;
             case 'sum_total':
             case 'total_sum':
             case 'total_amount':
             case 'amount_total':
-                return $this->_post_object->amount_total ? $this->_post_object->amount_total : $this->amount;
+                return $this->_main_data->amount_total ? $this->_main_data->amount_total : $this->amount;
 
             case 'main_curr_amount':
             case 'amount_equiv':
-                return $this->_post_object->amount_in_main_currency ?
-                    $this->_post_object->amount_in_main_currency : $this->amount;
+                return $this->_main_data->amount_in_main_currency ?
+                    $this->_main_data->amount_in_main_currency : $this->amount;
 
             case 'donor_name':
-                return $this->_post_object->donor_name;
+                return $this->_main_data->donor_name;
             case 'donor_email':
-                return $this->_post_object->donor_email;
+                return $this->_main_data->donor_email;
             case 'donor_email_date':
                 return $this->_getMeta('donor_email_date');
             case 'donor_comment':
@@ -411,7 +411,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                     leyka_get_gateway_by_id($this->gateway_id)->get_gateway_response_formatted($this) : array();
 
             case 'type':
-            case 'payment_type': return $this->_post_object->payment_type;
+            case 'payment_type': return $this->_main_data->payment_type;
 
             case 'type_label':
             case 'payment_type_label': return __($this->payment_type, 'leyka');

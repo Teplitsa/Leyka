@@ -316,8 +316,6 @@ class Leyka_Separated_Donations_Factory extends Leyka_Donations_Factory {
 
     }
 
-    // $params:
-    // search_string
     public function getDonations(array $params = array()) {
 
         global $wpdb;
@@ -327,6 +325,8 @@ class Leyka_Separated_Donations_Factory extends Leyka_Donations_Factory {
         $orderby = '';
         $joins = array();
         $join_meta = false;
+
+        /** @todo $params['search_string'] */
 
         $params['strict'] = isset($params['strict']) ? !!$params['strict'] : true;
 
@@ -511,11 +511,11 @@ class Leyka_Separated_Donations_Factory extends Leyka_Donations_Factory {
 
         $donations = array();
         $query = $wpdb->prepare("SELECT d.`ID` FROM {$wpdb->prefix}leyka_donations d $joins $where $orderby $limit", array());
-        echo '<pre>'.print_r($query, 1).'</pre>';
+//        echo '<pre>'.print_r($query, 1).'</pre>';
 
-//        foreach($wpdb->get_col($query) as $donation) {
-//            $donations[] = $this->getDonation($donation->ID);
-//        }
+        foreach($wpdb->get_col($query) as $donation) {
+            $donations[] = $this->getDonation($donation->ID);
+        }
 
         return $donations;
 
