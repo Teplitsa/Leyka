@@ -11,7 +11,7 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
 
     protected function __construct() {
 
-        $this->_loadCssJs();
+        $this->_loadScripts();
         $this->_setAttributes();
 
     }
@@ -49,26 +49,11 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
     abstract public function renderHiddenFields();
     abstract public function renderSubmitArea();
 
-    protected function _loadCssJs() {
-
-        wp_enqueue_script(
-            'leyka-settings',
-            LEYKA_PLUGIN_BASE_URL.'assets/js/admin.js',
-            array('jquery',),
-            rand(), //LEYKA_VERSION,
-            true
-        );
-//        add_action('wp_enqueue_scripts', array($this, 'localize_scripts')); // wp_footer
-
-        wp_enqueue_style(
-            'leyka-settings',
-            LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css',
-            array(),
-            rand() //LEYKA_VERSION
-        );
-
+    protected function _loadScripts() {
+//        wp_enqueue_script('leyka-settings-XXX', 'some/URL', array('jquery',), LEYKA_VERSION, true);
+//        wp_localize_script('leyka-settings-XXX', 'leyka-settings-XXX', array());
+        /** WARNING: CSS files loaded here will appear only in page footer. */
         do_action('leyka_settings_render_enqueue_scripts', $this->_id);
-
     }
 
     public function __get($name) {

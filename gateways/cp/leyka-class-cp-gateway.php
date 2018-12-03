@@ -11,9 +11,20 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         $this->_id = 'cp';
         $this->_title = __('CloudPayments', 'leyka');
+
+        $this->_description = apply_filters(
+            'leyka_gateway_description',
+            __('<a href="//cloudpayments.ru/">CloudPayments</a> is a Designer IT-solutions for the e-commerce market. Every partner receives the most comprehensive set of key technical options allowing to create a customer-centric payment system on site or in mobile application. Partners are allowed to receive payments in roubles and in other world currencies.', 'leyka'),
+            $this->_id
+        );
+
         $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-cloudpayments/';
-        $this->_admin_ui_column = 1;
-        $this->_admin_ui_order = 30;
+        $this->_registration_link = '//cloudpayments.ru/connection';
+        $this->_has_wizard = true;
+
+        $this->_min_commission = 2.8;
+        $this->_receiver_types = array('legal');
+        $this->_may_support_recurring = true;
 
     }
 
@@ -25,26 +36,18 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         $this->_options = array(
             'cp_public_id' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox  
-                'value' => '',
-                'default' => '',
+                'type' => 'text',
                 'title' => __('Public ID', 'leyka'),
-                'description' => __('Please, enter your CloudPayments public ID here. It can be found in your CloudPayments control panel.', 'leyka'),
+                'comment' => __('Please, enter your CloudPayments public ID here. It can be found in your CloudPayments control panel.', 'leyka'),
                 'required' => true,
-                'placeholder' => 'Вставьте номер Public ID сюда', // __('E.g., 1234', 'leyka'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'pk_c5fcan980a7c38418932y476g4931'),
             ),
             'cp_ip' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
-                'default' => '',
+                'type' => 'text',
                 'title' => __('CloudPayments IP', 'leyka'),
-                'description' => __('Comma-separated callback requests IP list. Leave empty to disable the check.', 'leyka'),
-                'required' => 1,
-                'placeholder' => __('E.g., 130.193.70.192,185.98.85.109', 'leyka'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
+                'comment' => __('Comma-separated callback requests IP list. Leave empty to disable the check.', 'leyka'),
+                'required' => true,
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '130.193.70.192,185.98.85.109'),
             ),
         );
 
@@ -491,10 +494,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
     }
 
     public function save_donation_specific_data(Leyka_Donation $donation) {
-        if(
-            isset($_POST['cp-recurring-id']) &&
-            $donation->recurring_id != $_POST['cp-recurring-id']
-        ) {
+        if(isset($_POST['cp-recurring-id']) && $donation->recurring_id != $_POST['cp-recurring-id']) {
             $donation->recurring_id = $_POST['cp-recurring-id'];
         }
     }
@@ -504,14 +504,14 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         if( !empty($donation_params['recurring_id']) ) {
             update_post_meta($donation_id, '_cp_recurring_id', $donation_params['recurring_id']);
         }
+
         if( !empty($donation_params['transaction_id']) ) {
             update_post_meta($donation_id, '_cp_transaction_id', $donation_params['transaction_id']);
         }
 
     }
 
-} // Gateway class end
-
+}
 
 class Leyka_CP_Card extends Leyka_Payment_Method {
 
@@ -521,41 +521,31 @@ class Leyka_CP_Card extends Leyka_Payment_Method {
 
         $this->_id = 'card';
         $this->_gateway_id = 'cp';
+        $this->_category = 'bank_cards';
+
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('<a href="//cloudpayments.ru/">CloudPayments</a> is a Designer IT-solutions for the e-commerce market. Every partner receives the most comprehensive set of key technical options allowing to create a customer-centric payment system on site or in mobile application. Partners are allowed to receive payments in roubles and in other world currencies.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
 
         $this->_label_backend = __('Bank card', 'leyka');
         $this->_label = __('Bank card', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/cp/icons/visa.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/cp/icons/master.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/cp/icons/mir.png',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ));
 //        $this->_main_icon = '';
 
         $this->_supported_currencies[] = 'rur';
-
         $this->_default_currency = 'rur';
 
         $this->_processing_type = 'custom-process-submit-event';
-
-    }
-
-    protected function _set_options_defaults() {
-
-        if($this->_options) {
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('<a href="//cloudpayments.ru/">CloudPayments</a> is a Designer IT-solutions for the e-commerce market. Every partner receives the most comprehensive set of key technical options allowing to create a customer-centric payment system on site or in mobile application. Partners are allowed to receive payments in roubles and in other world currencies.', 'leyka'),
-                'title' => __('CloudPayments bank card payment description', 'leyka'),
-                'description' => __('Please, enter CloudPayments gateway description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
 
     }
 

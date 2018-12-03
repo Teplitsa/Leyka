@@ -571,12 +571,12 @@ function leyka_inline_campaign(array $attributes = array()) {
                     <?php }?>
 					</div>
 
-					<?php
-                        $supporters = leyka_get_campaign_supporters($campaign_id, 5);
-                        if(!count($supporters['supporters']) && $attributes['show_preview']) {
+					<?php $supporters = leyka_options()->opt('revo_template_show_donors_list') ?
+                        leyka_get_campaign_supporters($campaign_id, 5) : array('donations' => array(), 'supporters' => array());
+
+                    if(!count($supporters['supporters']) && $attributes['show_preview']) {
                             $supporters['supporters'] = array( "Дмитрий Белкин", "Екатерина Мышкина", "Людмила Лебедева", "Петр Гусев" );
-                        }
-                    ?>
+                    }?>
                     
 					<div class="supporter-and-button">
                         
@@ -762,16 +762,15 @@ function leyka_inline_campaign_small($campaign_id) {
             </div>
         </div>
 
-		<?php
-			$supporters = leyka_get_campaign_supporters($campaign_id, 5);
+		<?php $supporters = leyka_options()->opt('revo_template_show_donors_list') ?
+                leyka_get_campaign_supporters($campaign_id, 5) : array('donations' => array(), 'supporters' => array());
+
 			if(count($supporters['supporters'])) { // There is at least one donor ?>
 
 			<div class="bottom-form__note supporters">
-			<?php if(count($supporters['supporters'])) { // There is at least one donor ?>
-                <strong><?php _e('Supporters:', 'leyka');?></strong>
-            <?php }
+            <strong><?php _e('Supporters:', 'leyka');?></strong>
 
-            if(count($supporters['donations']) <= count($supporters['supporters'])) { // Only names in the list
+            <?php if(count($supporters['donations']) <= count($supporters['supporters'])) { // Only names in the list
                 echo count($supporters['supporters']) == 1 ?
                     $supporters['supporters'][0] :
                     implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka').' '.

@@ -1,4 +1,3 @@
-
 function makePassword(len) {
   var text = "";
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789^#@_%$-";

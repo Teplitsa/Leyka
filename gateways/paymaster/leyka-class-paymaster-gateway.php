@@ -11,15 +11,21 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
         $this->_id = 'paymaster';
         $this->_title = __('Paymaster', 'leyka');
+
+        $this->_description = apply_filters(
+            'leyka_gateway_description',
+            __('Paymaster system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="https://www.paymaster.ru/">Paymaster</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
+            $this->_id
+        );
+
         $this->_docs_link = '';
-        $this->_admin_ui_column = 2;
-        $this->_admin_ui_order = 40;
+        $this->_registration_link = '//info.paymaster.ru/check/';
+
+        $this->_min_commission = 2;
+        $this->_receiver_types = array('legal');
 
     }
 
-    /**
-     * Setter for setting form
-     */
     protected function _set_options_defaults() {
 
         if($this->_options) {
@@ -30,14 +36,14 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
             'paymaster_merchant_id' => array(
                 'type' => 'text',
                 'title' => __('Paymaster merchant ID', 'leyka'),
-                'description' => __('Please find your merchant id in PayMaster merchant Control Panel.', 'leyka'),
+                'comment' => __('Please find your merchant id in PayMaster merchant Control Panel.', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., ct5b8f62-297f-4d19-b805-249cab7a37ed', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'ct5b8f62-297f-4d19-b805-249cab7a37ed'),
             ),
             'paymaster_secret_word' => array(
                 'type' => 'text',
                 'title' => __('Secret word', 'leyka'),
-                'description' => __('Paymaster secret word, please set it also in PayMaster merchant backoffice.', 'leyka'),
+                'comment' => __('Paymaster secret word, please set it also in PayMaster merchant backoffice.', 'leyka'),
                 'required' => true,
                 'is_password' => true,
             ),
@@ -45,7 +51,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
                 'type' => 'select',
                 'default' => 'md5',
                 'title' => __('Hash security method', 'leyka'),
-                'description' => __('Please find your hash method in PayMaster merchant Control Panel.', 'leyka'),
+                'comment' => __('Please, find your hash method in PayMaster merchant Control Panel.', 'leyka'),
                 'required' => true,
                 'list_entries' => array('md5' => 'md5', 'sha1' => 'sha1', 'sha256' => 'sha256'),
             ),
@@ -121,7 +127,12 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
         $sign = $this->_get_signature($_REQUEST);
         $hash = $this->_get_hash($_REQUEST);
 
-        if (empty($_REQUEST['SIGN']) || empty($_REQUEST['LMI_HASH']) || ($_REQUEST['SIGN'] != $sign) || ($_REQUEST['LMI_HASH'] != $hash)) {
+        if(
+            empty($_REQUEST['SIGN'])
+            || empty($_REQUEST['LMI_HASH'])
+            || $_REQUEST['SIGN'] !== $sign
+            || $_REQUEST['LMI_HASH'] !== $hash
+        ) {
 
             $message = __('This message has been sent because a call to your Paymaster callback was called with wrong digital signature. It may mean that someone is trying to hack your payment website. The details of the call are below:', 'leyka') . "\n\r\n\r";
 
@@ -136,13 +147,12 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
         }
 
-        if($donation->status != 'funded') {
+        if($donation->status !== 'funded') {
 
             $donation->add_gateway_response($_REQUEST);
             $donation->status = 'funded';
 
-            $_REQUEST['IncCurrLabel'] = empty($_REQUEST['IncCurrLabel']) ?
-                '' : substr_replace($_REQUEST['IncCurrLabel'], '', -1);
+            $_REQUEST['IncCurrLabel'] = empty($_REQUEST['IncCurrLabel']) ? '' : substr_replace($_REQUEST['IncCurrLabel'], '', -1);
 
             if(
                 $donation->pm_id != $_REQUEST['IncCurrLabel'] &&
@@ -182,9 +192,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
         $sign_string = leyka_options()->opt('paymaster_merchant_id').':'.$request['LMI_PAYMENT_AMOUNT'].':' . $request['LMI_PAYMENT_NO'].':'.leyka_options()->opt('paymaster_secret_word');
 
-        $sign = md5($sign_string);
-
-        return $sign;
+        return md5($sign_string);
 
     }
 
@@ -214,7 +222,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
     }
 
-} // Gateway class end
+}
 
 class Leyka_Paymaster_All extends Leyka_Payment_Method {
 
@@ -224,39 +232,29 @@ class Leyka_Paymaster_All extends Leyka_Payment_Method {
 
         $this->_id = 'paymaster_all';
         $this->_gateway_id = 'paymaster';
+        $this->_category = 'misc';
+
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('Paymaster system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="https://www.paymaster.ru/">Paymaster</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
 
         $this->_label_backend = __('Paymaster smart payment', 'leyka');
         $this->_label = __('Paymaster smart payment', 'leyka');
 
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/paymaster_all.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/visa.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/master.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/mir.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/paymaster_all.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ));
 
         $this->_supported_currencies[] = 'rur';
-
         $this->_default_currency = 'rur';
-
-    }
-
-    protected function _set_options_defaults() {
-
-        if($this->_options) {
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('Paymaster system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="https://www.paymaster.ru/">Paymaster</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
-                'title' => __('Paymaster smart payment description', 'leyka'),
-                'description' => __('Please, enter Paymaster gateway description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-            ),
-        );
 
     }
 

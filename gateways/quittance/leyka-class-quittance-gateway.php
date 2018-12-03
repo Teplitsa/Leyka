@@ -5,11 +5,11 @@
 
 class Leyka_Quittance_Gateway extends Leyka_Gateway {
 
-    protected static $_instance; // Gateway is always a singleton
+    protected static $_instance;
 
     protected function _set_options_defaults() {
 
-        if($this->_options) { // Create Gateway options, if needed
+        if($this->_options) {
             return;
         }
 
@@ -18,21 +18,29 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
                 'type' => 'select',
                 'default' => leyka_get_default_success_page(),
                 'title' => __('Page to redirect a donor after a donation', 'leyka'),
-                'description' => __('Select a page for donor to redirect to after he has acquired a quittance.', 'leyka'),
-                'required' => 0, // 1 if field is required, 0 otherwise
-                'placeholder' => '', // For text fields
-                'length' => '', // For text fields
+                'comment' => __('Select a page for donor to redirect to after he has acquired a quittance.', 'leyka'),
                 'list_entries' => leyka_get_pages_list(),
-                'validation_rules' => array(), // List of regexp?..
             ),
         );
+
     }
     
     protected function _set_attributes() {
 
         $this->_id = 'quittance';
         $this->_title = __('Quittances', 'leyka');
+
+        $this->_description = apply_filters(
+            'leyka_gateway_description',
+            __('Bank order payment allows you to make a donation through any bank. You can print out a bank order paper and bring it to the bank to make a payment.', 'leyka'),
+            $this->_id
+        );
+
         $this->_docs_link = '//leyka.te-st.ru/docs/nastrojka-lejki/';
+        $this->_registration_link = '';
+
+        $this->_min_commission = 2.1;
+        $this->_receiver_types = array('legal', 'physical');
 
     }
 
@@ -111,18 +119,15 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
 
     }
 
-    /** Quittance don't use any specific redirects, so this method is empty. */
+    // Quittance don't use any specific redirects, so this method is empty:
     public function submission_redirect_url($current_url, $pm_id) {
         return home_url('/leyka-process-donation');
     }
     
-    /** Quittance don't have some form data to send to the gateway site */
+    // Quittance don't have some form data to send to the gateway site:
     public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
         return $form_data_vars;
     }
-
-    /** Quittance don't have any of gateway service calls */
-    public function _handle_service_calls($call_type = '') {}
 
     public function get_gateway_response_formatted(Leyka_Donation $donation) {
         return array();
@@ -142,47 +147,36 @@ class Leyka_Bank_Order extends Leyka_Payment_Method {
 
         $this->_id = 'bank_order';
         $this->_gateway_id = 'quittance';
+        $this->_category = 'offline';
+
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('Bank order payment allows you to make a donation through any bank. You can print out a bank order paper and bring it to the bank to make a payment.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
 
         $this->_label_backend = __('Bank order quittance', 'leyka');
         $this->_label = __('Bank order quittance', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/quittance/icons/sber_s.png',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/sber.svg',
         ));
 
         $this->_submit_label = __('Get bank order quittance', 'leyka');
 
         $this->_supported_currencies = array('rur');
-
         $this->_default_currency = 'rur';
 
-	    // We should always redirect donors, even on ajax-based templates:
-//        $this->_processing_type = 'redirect';
         $this->_ajax_without_form_submission = true;
 
     }
 
-    protected function _set_options_defaults() {
-
-        if($this->_options) {
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('Bank order payment allows you to make a donation through any bank. You can print out a bank order paper and bring it to the bank to make a payment.', 'leyka'),
-                'title' => __('Bank order payment description', 'leyka'),
-                'description' => __('Please, enter Bank order description that will be shown to the donor when this payment method will be selected to make a donation.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(),
-            ),
-        );
-    }
-
-    function get_quittance_html() {
+    public function get_quittance_html() {
         return $this->_quittance_html;
     }
+
 }
 
 function leyka_add_gateway_quittance() { // Use named function to leave a possibility to remove/replace it on the hook

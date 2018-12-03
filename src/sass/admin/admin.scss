@@ -1,773 +1,447 @@
 @import 'presets';
 @import 'typo';
 @import 'mixins';
+@import 'common';
+@import 'components';
+@import 'wizard';
+@import 'wizard_init';
+@import 'wizard_cp';
+@import 'wizard_yandex';
 @import 'loader';
 
-.leyka-wizard {
+.leyka-settings-page {
 
-    display: flex;
-    flex-direction: row;
+    margin: 41px 72px;
 
-    margin-left: -20px;
-    min-height: calc(100vh - 32px);
-    height: 100%;
+    @include body-text();
+    font-size: 13px;
 
-    .nav-area {
+    .field-q {
 
-        position: relative;
-        background-color: $color-nav-area-bg;
-        min-width: 293px;
-        letter-spacing: -0.02em;
-        padding: 18px 17px 159px 32px;
-        margin-right: -1px;
-        
-        .leyka-logo {
-            position: absolute;
-            bottom: 30px;
-            left: calc(50% - 42px);
+        @include field-q();
+
+        .field-q-tooltip {
+            text-align: left !important;
         }
-        
-        .nav-chain {
-            border-left: 1px solid $color-nav-line;
-            margin-left: 21px;
-            
-            .nav-line {
-                margin-left: -21px;
-            }
-            
-            .nav-section {
-                margin-top: 22px;
-                
-                .nav-section-title {
-                    @include chain-section-title();
-                    color: $color-nav-section-text;
-                    vertical-align: middle;
-                    height: 40px;
-                    
-                    .nav-section-marker {
-                        @include chain-section-marker();
-                        background-color: $color-nav-section-marker-bg;
-                        color: $color-nav-section-marker-text;
-                        width: 40px;
-                        height: 40px;
-                        border-radius: 20px;
-                        line-height: 40px;
-                        text-align: center;
-                        vertical-align: middle;
-                        display: inline-block;
-                        margin-right: 12px;
-                    }
-                    
-                }
-                
-                &.open {
-                    .nav-section-title {
-                        color: $color-nav-section-open-text;
-                        
-                        .nav-section-marker {
-                            color: $color-nav-section-marker-open-text;
-                        }
-                    }
-                }
-
-                &.active {
-                    .nav-section-title {
-                        color: $color-nav-section-active-text;
-                        
-                        .nav-section-marker {
-                            color: $color-nav-section-marker-active-text;
-                        }
-                    }
-                }
-                
-                &.done {
-                    .nav-section-title {
-                        color: $color-nav-section-active-text;
-                        
-                        .nav-section-marker {
-                            background-color: $color-nav-section-marker-done-bg;
-                            color: $color-nav-section-marker-done-text;
-                        }
-                    }
-                }
-
-                .nav-steps {
-                    
-                    padding-left: 16px;
-                    padding-top: 9px;
-                    margin-bottom: -2px;
-                    display: none;
-                    
-                    .nav-step {
-                        @include chain-step();
-                        color: $color-nav-step-text;
-                        height: 24px;
-                        padding-top: 10px;
-                        
-                        &:before {
-                            background-color: $color-nav-step-marker-bg;
-                            content: " ";
-                            display: inline-block;
-                            width: 9px;
-                            height: 9px;
-                            border-radius: 4.5px;
-                            margin-right: 28px;
-                        }
-
-                        &.done {
-                            color: $color-nav-step-done-text;
-                            &:before {
-                                background-color: $color-nav-step-marker-done-bg;
-                            }
-                            
-                            .step-i {
-                                margin-left: 3px;
-                                vertical-align: middle;
-                                cursor: pointer;
-                            }
-                        }
-                        
-                        &.active {
-                            color: $color-nav-step-active-text;
-                            &:before {
-                                background-color: $color-nav-step-marker-active-bg;
-                            }
-                        }
-                    }
-                    
-                }
-                
-                &.active .nav-steps,
-                &.open .nav-steps {
-                    display: block;
-                }
-                
-            }
-            
-            
-        }
-        
 
     }
 
-    .main-area {
+    h1 {
+        @include wizard-h2();
+        margin-bottom: 8px;
+    }
 
-        @include body-text();
-        width: 100%;
-        padding: 0 32px 49px 72px;
-        color: $color-wizard-text;
+    #tab-container {
+
+        margin-top: 32px;
+
+    }
+    
+    .nav-tab-wrapper {
+        border-bottom: 1px solid #dddddd;
         
-        // wizard markup styles
-        .step-title {
-            h1 {
-                @include wizard-h2();
-                margin-top: 41px;
-                margin-bottom: 8px;
+        a {
+            color: unset;
+            font-size: 16px;
+            line-height: 19px;
+            font-weight: 500;
+            
+            &.nav-tab {
+                background-color: #e5e5e5;
+                border-color: #dddddd;
+                color: #8f8f8f;
+                border-radius: 4px 4px 0px 0px;
+                padding: 10px 12px 7px 12px;
                 
-                &.greater {
-                    @include wizard-h1();
-                    margin-top: 49px;
-                    margin-bottom: 18px;
+                margin-left: 0.5em;
+                margin-right: 0.5em;
+                
+                &:first-child {
+                    margin-left:0;
+                }
+                
+                &.nav-tab-active {
+                    margin-right: 1.5em;
+                    margin-left: 1.5em;
+                    background-color: #f1f1f1;
+                    color: $color-secondary-button;
+                    border-bottom: 1px solid #f1f1f1;
+                    
+                    &:first-child {
+                        margin-left:0;
+                    }
                 }
             }
         }
-        
-        .step-content {
-        }
-        
-        .settings-block {
-            
-            max-width: 524px;
-            
-            &#email-from-name,
-            &#email-from {
-                max-width: 248px;
-            }
-            
-            &#campaign-completed {
-                max-width: 680px;
-            }
-            
-            &.type-rich_html {
-                max-width: 680px;
-            }
+    }
 
-            &.file {
-            }
+    .button-primary {
+        @include leyka-button-primary();
+    }
 
-            &.text-block {
-                p {
-                    margin-bottom: 1rem;
-                }
-                
-                p:empty {
-                    display: none;
-                }
-                
-                ul {
-                    
-                    margin-top: 0;
-                    margin-bottom: 32px;
-                    
-                    li {
-                        list-style-type: disc;
-                        margin-left: 18px;
-                        font-size: 14px;
-                        line-height: 21px;
-                        margin-top: 14px;
+    #payment-settings-area-new {
+
+        display: flex;
+        flex-direction: row;
+
+        .main-area-wrapper {
+
+            border-right: 1px solid $color-border-normal;
+            flex: 1 1 auto; // 640px of the main area + 32px of the it's right margin
+
+            .main-area-top {
+
+                margin-bottom: 1rem;
+
+                .settings-return-link {
+
+                    font-size: 14px;
+                    text-decoration: none;
+
+                    &:before {
+                        @include arrow-left-icon();
                     }
-                    
+
                 }
-                
+
             }
 
-            &.option-block,
-            &.custom_yandex_enumerated_block {
+            .main-area.single-gateway-settings {
 
-                margin-bottom: 16px;
+                background-color: $color-white;
+                border-radius: 6px;
+                margin-right: 2rem;
 
-                &.option-title-hidden .field-component.title {
-                    display: none;
-                }
-                &.option-description-hidden .field-component.help {
-                    display: none;
-                }
-                
-                &.type-rich_html {
-                    
-                    .wp-editor-tabs {
-                        display: none;
-                    }
-                    
-                    label {
-                        .field-component.title {
-                            @include wizard-field-label-rich-edit();
-                            margin-bottom: 1rem;
+                .gateway-settings-header {
+
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+
+                    padding: 24px;
+
+                    .gateway-title {
+
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        flex: 0 1 50%;
+
+                        .gateway-header-element {
+                            margin-right: 12px;
                         }
+
+                        h2 {
+                            font-size: 23px;
+                            margin: 0;
+                        }
+
+                        .gateway-link {
+                            margin: 8px 4px 0 4px;
+                        }
+
                     }
-                }
-                
-                .field-component {
-                    
-                    &.title {
-                        @include wizard-field-label();
-                        display: block;
-                        margin-bottom: 5px;
-                        position: relative;
+
+                    .gateway-details {
+
+                        @include leyka-gateway-details();
+
+                        justify-content: flex-end;
                         
-                        .required {
-                            @include wizard-field-label-required-sign();
-                            color: $color-wizard-required-sign;
-                            vertical-align: text-bottom;
-                            margin-right: 3px;
-                            float: left;
-                            
-                            &:after {
-                                clear: both;
-                                float: none;
-                            }
+                        .details-element:first-child {
+                            margin-left: 24px;
                         }
                         
                         .field-q {
-                            margin-left: 3px;
-                            vertical-align: baseline;
-                            cursor: pointer;
-                            position: relative;
-                            
-                            img {
-                                vertical-align: baseline;
-                            }
                             
                             .field-q-tooltip {
-                                display: none;
-                                //display: block;
-                                position: absolute;
-                                color: $color-white;
-                                background-color: $color-wizard-tooltip-bg;
-                                border-radius: 6px;
-                                border: none;
-                                padding: 7px 8px 8px 8px;
-                                font-size: 10px;
-                                line-height: 15px;
-                                z-index: 11;
-                                top: 150%;
-                                left: 0;
-                                transform:translateX(-50%);
-                                
-                                width: 204px;
-                                overflow-wrap: break-word;
-                                word-wrap: break-word;
-                                white-space: pre-line;
-                                max-width: max-content;
-                                text-align: center;
-                                
-                                &:before {
-                                    content: "";
-                                    display:block;
-                                    width:0;
-                                    height:0;
-                                    position:absolute;
-                                    border-left: 8px solid transparent;
-                                    border-right: 8px solid transparent;
-                                    border-bottom:8px solid $color-wizard-tooltip-bg;
-                                    left:calc(50% - 4px);
-                                    top:-7px;                            
-                                }
-                            }
-                            
-                            &:hover {
-                                .field-q-tooltip {
-                                    display: block;
-                                }
-                            }
-                        }
-                        
-                    }
-
-                    &.field {
-                        
-                        // TODO: move colors to presets after comlete
-                        input[type=text], input[type=email], input[type=password], input[type=text], input[type=number], select, textarea {
-                            @include wizard-field-input-text();
-                            color: $color-wizard-text;
-                            @include placeholder {
-                                color: $color-wizard-placeholder;
-                            }                    
-                            margin-left: -1px;
-                            padding: 1px 6px 3px 6px;
-                            height: 25px;
-                            //width: 248px;
-                            width: 100%;
-                            border: 1px solid #dddddd;
-                            
-                            &:active, &:focus {
-                                color: $color-wizard-text;
-                                border: 1px solid #bfbfbf;
-                                box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
-                            }
-                            
-                        }
-                        
-                        input[type=file] {
-                            width: 248px;
-                        }
-                        
-                        textarea {
-                            height: 62px;
-                            width: 100%;
-                            line-height: 18px;
-                        }
-                        
-                        input[type=checkbox], input[type=radio] {
-                            width: 18px;
-                            height: 18px;
-                        }
-                        
-                        input[type=checkbox], input[type=radio] {
-                            &::before {
-                                width: 8px;
-                                height: 8px;
-                                line-height: 18px;
-                            }
-                        }
-                        
-                        label {
-                            @include wizard-field-label();
-                            display: block;
-                            margin-bottom: 8px;
-                            
-                            & > input {
-                                margin-right: 8px;
-                                vertical-align: middle;
+                                top: 110%;
+                                left: 28px;
                             }
                             
                         }
 
                     }
-                    
-                    &.help {
-                        @include wizard-field-explain();
-                        color: $color-wizard-field-explain;
-                        display: block;
-                        margin-top: 8px;
-                        margin-bottom: 0;
-                    }
-                    
-                }
-                
-                &.has-errors {
-                    
-                    .field-component {
-                        &.field {
-                            input, select, textarea {
-                                background: #f8ecef;
-                                border: 1px solid #f5c8d0;
-                            }
-                        }
-                    }
-                    
-                }
-                    
-                .field-radio {
-                    .field-component.help {
-                        padding-left: 25px;
-                    }
-                }
-                
-                &#receiver_type {
-                    .field-errors {
-                        //padding-left: 25px;
-                    }
+
                 }
 
-                &.file {
-                    label {
-                        display: inline-block;
-                        height: inherit;
+                .gateway-settings-wrapper {
+
+                    display: flex;
+                    flex-direction: row;
+
+                    padding: 0 24px;
+                    border-top: 1px solid $color-border-light;
+                    border-bottom: 1px solid $color-border-light;
+
+                    h3 {
+                        margin: 24px 0;
                     }
-                    
-                    .field-component {
-                        position: relative;
-                        display: inline-block;
-                        height: 40px;
-                        
-                        input[type=file] {
-                            height: inherit;
-                            width: 248px;
-                            display: inline-block;
-                            cursor: pointer;
-                            outline: none;
-                        }
-                        
-                        input[type=button] {
-                            @include wizard-button-caption();
-                            height: inherit;
-                            width: 248px;
-                            display: block;
-                            background-color: $color-white;
-                            position: absolute;
-                            top: 0;
-                            left: 0;
-                            //pointer-events: none;
-                            cursor: pointer;
-                        }
-                        
-                        span.chosen-file {
-                            @include wizard-button-caption();
-                            display: inline-block;
-                            line-height: 40px;
-                            vertical-align: middle;
-                            padding-left: 1rem;
-                            cursor: default;
-                            
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                            max-width: 254px;
-                        }
+
+                    h4 {
+                        font-size: 13px;
                     }
+
+                    .gateway-settings {
+
+                        padding-right: 24px;
+                        border-right: 1px solid $color-border-light;
+                        flex: 1 1 50%;
+
+                        .gateway-wizard-link {
+
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+
+                            margin: 32px 0;
+                            font-size: 16px;
+
+                            img {
+                                margin-right: 12px;
+                            }
+
+                        }
+
+                    }
+
+                    .gateway-pm-list {
+
+                        flex: 1 1 50%;
+
+                        padding-left: 24px;
+                        margin-left: -1px;
+                        border-left: 1px solid $color-border-light;
+
+                        .option-block.type-checkbox input {
+                            margin-right: 8px;
+                        }
+
+                    }
+
                 }
-            
+
+                .gateway-settings-submit {
+
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: center;
+
+                    padding: 24px;
+
+                    font-size: 14px;
+
+                    .gateway-turn-off {
+
+                        line-height: 14px;
+                        text-decoration: none;
+
+                    }
+
+                }
+
             }
+
+        }
+
+        .side-area-wrapper {
+
+            border-left: 1px solid $color-border-normal;
+            margin-left: -1px;
             
-            &.container-block {
+            flex: 0 0 376px;
+            padding-left: 2rem;
+            
+            .pm-order-header {
+
+                h3 {
+
+                    font-size: 16px;
+                    margin-top: 0;
+                    margin-bottom: 12px;
+
+                }
+
+                .pm-order-description {
+                    font-size: 14px;
+                }
+
+            }
+
+            .pm-update-status {
 
                 display: flex;
-                justify-content: space-between;
+                flex-direction: row;
+                justify-content: center;
 
-                .option-block {
-                    .field-component {
-                        &.field {
-                            input[type=text] {
-                                width: 248px;
-                            }
-                         }
-                    }
-                }
+                position: relative;
 
-            }
+                margin-top: 12px;
+                height: 16px;
 
-            .field-radio {
+                .result {
 
-                label {
-                    display: block;
-                }
+                    position: absolute;
 
-                .radio-entry-description { /** @todo Make it a popup */
-                    display: none;
-                }
+                    &.ok-message {
 
-            }
+                        display: flex;
+                        justify-content: flex-start;
+                        align-items: center;
 
-        }
-        
-        .field-errors {
-            span {
-                @include wizard-field-message();
-                margin-bottom: 0;
-                color: $color-wizard-error-message;
-            }
-        }
+                        font-size: 10px;
+                        color: $color-wizard-link;
 
-        // general elements        
-        h1 {
-            @include wizard-h1();
-            margin-bottom: 18px;
-        }
-        
-        h2 {
-            @include wizard-h2();
-            margin-bottom: 8px;
-        }
-        
-        h3 {
-            @include wizard-h3();
-            margin-bottom: 8px;
-        }
-
-        h4 {
-            @include wizard-h4();
-            margin-bottom: 8px;
-        }
-        
-        p {
-            @include wizard-text();
-            margin-top: 0;
-        }
-        
-        .button-primary {
-            @include wizard-button-caption();
-            height: 40px;
-            width: 248px;
-            margin-right: 22px;
-        }
-
-        .button-secondary {
-            @include wizard-button-caption();
-            height: 40px;
-            margin-right: 22px;
-            min-width: 248px;
-            font-weight: 500;
-            background-color: white;
-        }
-            
-        a {
-            color: $color-wizard-link;
-            text-decoration: none;
-            border-bottom: none;
-            padding-bottom: 2px;
-            border-bottom: 1px solid $color-wizard-link;
-            
-            &:hover {
-                color: $color-wizard-link-hover;
-            }
-            
-            &:focus, &:active {
-                color: $color-wizard-link-active;
-            }
-        }
-        
-        a.button-primary {
-            @include wizard-button-caption();
-            height: 40px;
-            line-height: 40px;
-            width: 248px;
-            margin-right: 22px;
-            color: $color-white;
-            display: inline-block;
-            text-align: center;
-        }
-        
-        a[href="#"] {
-            border-bottom: 1px dashed $color-wizard-link;
-        }
-        
-        a.inline {
-            margin-right: 1rem;
-        }
-        
-        a.link-sec {
-            color: $color-wizard-link-sec;
-            text-decoration: none;
-            padding-bottom: 2px;
-            border-bottom: 1px solid $color-wizard-link-sec;
-            
-            &:hover {
-                color: $color-wizard-link-sec-hover;
-                text-decoration: none;
-            }
-            
-            &:focus, &:active {
-                color: $color-wizard-link-sec-active;
-            }
-        }
-        
-        .restore-original-doc {
-            display: inline-block;
-            margin-top: 0.5rem;
-        }
-        
-        .fields {
-            
-            .field {
-                
-                margin-bottom: 16px;
-                
-                label {
-                    @include wizard-field-label();
-                    display: block;
-                    margin-bottom: 5px;
-                }
-                
-                // TODO: move colors to presets after comlete
-                input[type=text], input[type=email], input[type=password], input[type=text], input[type=number], select, textarea {
-                    @include wizard-field-input-text();
-                    color: $color-wizard-text;
-                    @include placeholder {
-                        color: $color-wizard-placeholder;
-                    }                    
-                    margin-left: -1px;
-                    padding: 1px 6px 3px 6px;
-                    height: 25px;
-                    width: 248px;
-                    border: 1px solid #dddddd;
-                    
-                    &:active, &:focus {
-                        color: $color-wizard-text;
-                        border: 1px solid #bfbfbf;
-                        box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
-                    }
-                    
-                }
-                
-                textarea {
-                    height: 111px;
-                    width: 400px;
-                }
-                
-                input[type=checkbox], input[type=radio] {
-                    width: 18px;
-                    height: 18px;
-                }
-                
-                &.field-error  {
-                    input[type=file]:not(), select, textarea {
-                        background: #f8ecef;
-                        border: 1px solid #f5c8d0;
-                    }
-                }
-
-                &.field-success  {
-                    input, select, textarea {
-                        background: #eff7f2;
-                        border: 1px solid #afdfc3;
-                    }
-                }
-
-                &.field-warning  {
-                    input, select, textarea {
-                        background: #f7f6ef;
-                        border: 1px solid #dedfaf;
-                    }
-                }
-                
-                .message {
-                    @include wizard-field-message();
-                    margin-bottom: 0;
-                    
-                    &.message-error {
-                        color: $color-wizard-error-message;
-                    }
-                }
-                
-                .explain {
-                    @include wizard-field-explain();
-                    color: $color-wizard-field-explain;
-                    margin-top: 8px;
-                    margin-bottom: 0;
-                }
-                
-                &.field-options {
-                    
-                    label {
-                        @include wizard-field-label();
-                        display: block;
-                        margin-bottom: 8px;
-                        
-                        & > input {
-                            margin-right: 8px;
-                            vertical-align: middle;
-                        }
-                    }
-                    
-                    &.required {
-                        label {
-                            &:before {
-                                display: none;
-                            }
-                        }
-                    }
-                    
-                    .explain {
-                        padding-left: 25px;
-                    }
-                }
-                
-                &.required {
-                    label {
                         &:before {
-                            @include wizard-field-label-required-sign();
-                            content: "*";
-                            display: inline;
-                            color: $color-wizard-required-sign;
-                            vertical-align: text-bottom;
-                            margin-right: 3px;
+                            @include ok-smile-icon();
                         }
+
+                        &.leyka-loader {
+                            top: -13px;
+                        }
+
                     }
+
+                    &.error-message {
+
+                        font-size: 10px;
+                        color: $color-wizard-error-message;
+
+                    }
+
+                    &.leyka-loader {
+                        top: -12px;
+                    }
+
                 }
 
             }
-        }
-        
-        .step-submit {
-            margin-top: 32px;
-            
-            a {
-                line-height: 35px;
-            }
 
-            .sec-action {
-                margin-top: 32px;
-                a, input[type=submit].link-sec {
-                    @include wizard-action-link();
-                }
+            .pm-order {
 
-                input[type=submit].link-sec {
-                    background: none;
-                    box-shadow: none;
-                    text-shadow: none;
-                    border: none;
+                display: flex;
+                flex-direction: row;
 
-                    @extend a.link-sec;
+                list-style: none;
+                margin: 16px 0;
+
+                height: 83px;
+                background-color: transparentize($color-white, 0.6);
+                border-radius: 4px;
+
+                box-shadow: 0 2px 4px 0 transparentize($color-text-black, 0.87); // 0,92
+
+                cursor: grab;
+
+                &.pm-list-empty {
+
                     cursor: pointer;
-                    border-bottom: 1px solid $color-wizard-link-sec;
-                    box-sizing: border-box;
-                    height: 25px;
-                    padding: 0;
-                    margin: 0;
+                    border: 1px dashed $color-nav-line;
 
-                    &:hover {
-                        border-bottom: 1px solid transparent;
-                    }
+                    justify-content: center;
+                    align-items: center;
 
-                    &:focus, &:active {
-                        border-bottom: 1px solid transparent;
+                    font-size: 14px;
+                    color: $color-nav-section-active-text;
+
+                    padding: 6px 24px;
+
+                    &.comment-displayed {
+                        cursor: default;
                     }
 
                 }
+
+                &.ui-sortable-helper {
+                    cursor: move;
+                }
+
+                .gateway-logo-wrapper {
+
+                    flex: 0 0 56px;
+
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    border-right: 1px solid $color-border-normal;
+
+                }
+
+                .pm-info {
+
+                    flex: 1 0 200px;
+
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+
+                    .pm-icons {
+                        @include leyka-pm-icons();
+                    }
+
+                    .pm-label-wrapper {
+
+                        flex: 0 1 50%;
+
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: center;
+                        align-items: center;
+
+                        border-top: 1px solid $color-border-normal;
+                        padding: 4px 16px;
+
+                        .pm-label {
+
+                            font-size: 10px;
+                            line-height: 12px;
+                            color: $color-wizard-field-explain;
+
+                        }
+
+                        .pm-control {
+                            margin-left: 6px;
+                            cursor: pointer;
+                        }
+
+                    }
+
+                    .pm-label-fields {
+
+                        display: flex;
+                        justify-content: flex-start;
+                        align-items: center;
+
+                        flex: 1 1 100%;
+
+                        .pm-label-input-field {
+
+                            flex: 1 1 100%;
+                            font-size: 12px;
+
+                        }
+
+                        .new-pm-label-control {
+
+                            cursor: pointer;
+                            color: $color-wizard-link;
+
+                            &:first-of-type {
+                                margin-left: 4px;
+                            }
+
+                        }
+
+                    }
+
+                }
+
             }
+
         }
-        // end general elements
-        
+
     }
 
 }
@@ -836,142 +510,6 @@
     }
 }
 
-// Custom step blocks:
-.leyka-wizard {
-    .main-area .step-content {
-        
-        // Campaign decoration block:
-        .campaign-decor-wrap {
-
-            display: flex;
-            justify-content: flex-start;
-            align-items: space-between;
-
-            .decor-form {
-                flex-basis: 248px;
-
-                .upload-photo-field {
-                    .field {
-                        display: block;
-                        position: relative;
-
-                        input[type=file] {
-                            display: block;
-                            height: 40px;
-                            width: 248px;
-                            outline: none;
-                        }
-
-                        .upload-photo {
-                            @include wizard-button-caption();
-                            height: 40px;
-                            width: 248px;
-                            background-color: $color-white;
-                            position: absolute;
-                            top: 0;
-                            left: 0;
-                            //pointer-events: none;
-                            outline: none;
-                        }
-
-                    }
-                }
-
-                #campaign-decoration-loading {
-                    display: none;
-                }
-                
-                .step-next.button {
-                    margin-right: 0;
-                }
-
-                .loader-wrap {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    padding-top: 2rem;
-                }
-
-            }
-
-            .decor-preview {
-                flex-basis: auto;
-                border-left: 1px solid $color-wizard-preview-border;
-                margin-left: 1.5rem;
-                padding-left: 1.5rem;
-
-                .title {
-                    @include wizard-preivew-title();
-                    color: $color-wizard-link-sec;
-                }
-
-                .preview-frame {
-                    margin-top: 13px;
-                    background-color: transparent;
-
-                    iframe {
-                        overflow: hidden;
-                    }
-                }
-            }
-        }
-
-        // Campaign completed block:
-        .custom_campaign_completed {
-
-            .leyka-campaign-completed li {
-
-                font-size: 14px;
-                line-height: 21px;
-
-                .item-text {
-                    
-                    padding-top: 7px;
-
-                    &:before {
-                        @include ok-icon();
-                    }
-
-                }
-
-                .item-info {
-                    
-                    padding-left: 2rem;
-
-                    .leyka-current-value {
-                        color: $color-wizard-link-sec;
-                    }
-
-                    .inline-action,
-                    .permalink-action {
-
-                        font-size: 10px;
-                        line-height: 15px;
-                        border-bottom: 0;
-                        margin-left: 5px;
-
-                    }
-                    
-                    .inline-input {
-
-                        margin: 0 5px 0 0;
-                        padding: 0 5px;
-
-                    }
-
-                    .inline-submit,.inline-reset {
-                        margin-left: 5px;
-                    }
-
-                }
-
-            }
-
-        }
-
-    }
-}
-
 .leyka-campaign-permalink {
 
     .edit-permalink-loading {
@@ -988,813 +526,344 @@
     display: flex;
 }
 
-// help chat
-.leyka-wizard {
-    .main-area {
+// gateways cards
+.leyka-admin .gateways-cards-list {
+    
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    
+    .gateway-card {
+    }
+}
 
-        .step-common-errors.has-errors {
-            @include common-error-message(settings-block);
+.leyka-admin .leyka-admin-gateway-card {
+    &.gateway-card {
+        
+        background-color: $color-white;
+        border-radius: 6px;
+        width: 304px;
+        height: 268px;
+        display: block;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
+
+        margin-right: 2rem;
+        margin-bottom: 2rem;
+        
+        &.inactive {
+            background-color: #effbff;
+            border-color: #d5e8ee;
         }
-
-        .help-chat-button {
-            &[href='#'] {
-                border-bottom: none;
-                padding-bottom: 0;
-            }
-            
-            border-bottom: none;
-            padding-bottom: 0;
-            
-            width: 64px;
-            height: 64px;
+        
+        .gateway-card-header {
+            padding: 1rem;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: $color-wizard-link;
-            border-radius: 32px;
-            position: fixed;
-            right: 40px;
-            bottom: 40px;
-            
-            img {
-                width: 34px;
-                height: 34px;
-            }
+            justify-content: flex-start;
         }
         
-        .help-chat {
-            position: fixed;
-            right: 40px;
-            bottom: 40px;
-            width: 315px;
-            background-color: #006799;
-            border-radius: 6px;
-            display: none;
+        .gateway-card-icon {
+            margin-right: 12px;
+            position: relative;
+            width: auto;
+            display: inline-block;
             
-            &.fix-height {
-                height: 403px;
+            .gateway-logo {
             }
-            
-            .chat-header {
-                display:flex;
-                align-items: center;
-                justify-content: space-between;
-                padding-left: 1.5rem;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.24);
-                height: 51px;
-                
-                .title {
-                    font-family: $body;
-                    font-size: 16px;
-                    line-height: 19px;
-                    font-weight: 500;
-                    color: #f1f1f1;
-                }
-                
-                .close {
-                    margin-right: 1rem;
-                    cursor: pointer;
-                }
-            }
-            
-            .chat-body {
-                padding-left: 1.5rem;
-                padding-right: 1.5rem;
-                padding-top: 1.5rem;
-                
-                .ok-message {
-                    display: none;
-                    
-                    p {
-                        color: $color-white;
-                        text-align: center;
-                        font-size: 14px;
-                        margin-bottom: 0;
-                    }
-                    padding-bottom: 2rem;
-                }
-                
-                .leyka-loader {
-                    display: none;
-                }
-                
-                .form {
-                }
-                
-                .title {
-                    color: $color-white;
-                }
-                
-                .settings-block.option-block {
-                    margin-bottom: 0rem;
-                    
-                    .title {
-                        font-weight: 400;
-                    }
-                    
-                    .field-errors {
-                        color: $color-wizard-error-message;
-                        visibility: hidden;
-                    }
-                    
-                    input, textarea {
-                        margin-left: 0;
-                    }
-                }
-                
-                .button-primary {
-                    @include wizard-button-caption();
-                    margin-top: 0.5rem;
-                    height: 40px;
-                    width: 100%;
-                }
-            }
-        }
-        
-    }
-}
-
-// test payment
-.leyka-wizard {
-    
-    .main-area {
-        
-        .payment-tryout-wrapper {
-
-            border: 0;
-            border-collapse: collapse;
-            padding: 0;
-            width: 100%;
-            margin-bottom: 24px;
             
         }
         
-        .payment-tryout-comment.live-payment {
-
-            width: 248px;
-            color: $color-text-light;
-            font-size: 13px;
-            line-height: 15px; 
-
-            .attention-needed {
-                color: $color-wizard-required-sign;
-            }
-
+        .gateway-card-title {
+            @include gateway-card-title();
+            padding-top: 3px;
         }
         
-        .payment-result {
-
-            .result {
-
-                display: none;
-                font-size: 14px;
-
-                &.ok {
-
-                    color: $color-nav-step-done-text;
-
-                    &:before {
-                        @include ok-icon();
-                    }
-
-                }
-                &.fail {
-
-                    color: $color-wizard-error-message;
-
-                    &:before {
-                        @include error-icon();
-                    }
-
-                }
-
-            }
-
-        }
-        
-        #leyka-settings-form-final-cp_final,
-        #leyka-settings-form-cd-campaign_completed,
-        #leyka-settings-form-final-yandex_final {
+        .gateway-card-status {
+            @include gateway-card-status();
+            color: $color-wizard-text;
+            padding-top: 2px;
             
-            .step-submit {
+            &.active {
                 
-                .wizard-custom-link {
-                    margin-left: 1rem;
-                }
-                
-                .sec-action {
-                    display: none;
-                }
             }
             
-            .final-button {
-                float: left;
-                margin-top: 1rem;
-            }
-            
-            .share-campaign {
-                float: left;
-                margin-top: 1rem;
-                
-                a {
-                    border-bottom: none;
-                    margin-right: 1.5rem;
-                    display: inline-block;
-                    line-height: 0px;
-                }
+            &.activating {
+                color: $color-wizard-link;
             }
         }
         
-        #leyka-settings-form-cd-campaign_completed {
+        .gateway-card-params {
+            border-top: 1px solid $color-border-light-001;
+            padding: 14px 1rem 1rem 1rem;
             
-            .init-final-step-go-campaign {
-                margin-top: 2rem;
-            }
-            
-            input[type=submit][name=leyka_settings_submit_init] {
+            &:empty {
                 display: none;
             }
-        }
-        
-        
-    }
-}
-
-// CP wizard pages
-.leyka-wizard {
-    
-    .main-area {
-        
-        // CP payment tryout custom field:
-        .custom_cp_payment_tryout {
-
-            margin-top: 24px;
-
-            .payment-tryout-wrapper {
-
-                th {
-                    font-weight: 600;
-                    text-align: left;
-                    vertical-align: top;
-                    border-bottom: 1px solid $color-border-normal;
-                    height: 26px;
-                }
-
-                td {
-                    font-size: 14px;
-                    border-bottom: 1px solid $color-border-normal;
-                    height: 42px;
-                    padding: 7px 0;
-                }
-
-                th,td[class*="card-"] {
-                    padding-right: 12px;
-                }
-
-                .cp-payment-result {
-                    width: 248px;
-                }
-
-                .sec-action {
-                    @include wizard-button-caption();
-                    color: $color-text-semi;
-                    font-weight: 600;
-                    height: 40px;
-                    width: 100%;
-                    border-radius: 4px;
-                    border: 1px solid $color-border-normal;
-                    background-color: $color-white;
-                }
-
-            }
-
-            //.payment-tryout.field-errors {
-            //
-            //    @include common-error-message();
-            //    display: none;
-            //
-            //}
-            .field-errors {
-
-                @include common-error-message();
-
-                display: none;
-                margin: 8px 0;
-
-                &.has-errors {
-
-                    display: block;
-
-                    span {
-                        font-size: 13px;
-                    }
-
-                }
-
-            }
-
-            .call-support {
-                display: none;
-            }
-
-        }
-        // CP payment tryout custom field - END        
-        
-        .custom-block-payment-cards-icons {
             
-            .cp-supported-cards {
+            .gateway-details {
+                @include leyka-gateway-details();
                 
-                img {
-                    vertical-align: middle;
-                    margin-right: 1rem;
-                }
-                
-            }
-            
-        }
-        
-        .settings-block.text-block .custom-block-cp-prepare-documents {
-            padding-bottom: 4px;
-            
-            .fields {
-                
-                margin-top: 1rem;
-                
-                .field {
-                    margin-bottom: 12px;
-                    
-                    label {
-                        line-height: 15px;
-                        margin-bottom: 2px;
-                    }
-                    
-                    .field-errors {
-                        display: none;
-                        span {
-                            font-size: inherit;
-                        }
-                    }
-                    
-                    .field-text {
-                        margin-bottom: 0;
-                        
-                        &:empty {
-                            display: none;
-                        }
-                        
-                        &:empty + .field-errors {
-                            display: block;
-                            line-height: 21px;
-                        }
-                    }
-                }
-                
-                .inline-container {
-                    display: flex;
-                    
-                    .field {
-                        justify-content: flex-start;
-                        margin-right: 1rem;
-                    }
-                }
-                
-            }
-            
-            ul {
-                margin-bottom: 0.5rem;
-                li {
-                    margin-bottom: 10px;
-                }
-            }
-            
-            .org-data {
-                margin-left: 1.1rem;
-            }
-            
-            .fill-explain {
-                @include wizard-field-explain();
-                color: $color-wizard-field-explain;
-                display: block;
-                margin-top: 10px;
-                margin-bottom: 6px;
-            }
-            
-        }
-        
-        .settings-block.option-block.type-text {
-            #leyka_cp_public_id-field {
-                width: 248px;
-            }
-        }
-        
-        .settings-block.text-block {
-            .info2copy {
-                @include info2copy();
-            }
-        }
-        
-    }
-    
-}
-
-// Yandex wizard pages
-.leyka-wizard.wizard-yandex {
-    
-    &.step-online_kassa {
-        .custom-block-captioned-screens {
-            margin-top: 0;
-        }
-    }
-    
-    &.step-test_payment {
-        .main-area {
-            
-            .settings-block {
-                
-                .field-errors {
-    
-                    @include common-error-message();
-    
-                    display: none;
-                    margin: 8px 0;
-    
-                    &.has-errors {
-    
-                        display: block;
-                        margin-top: 1.5rem;
-    
-                        span {
-                            font-size: 13px;
-                        }
-    
-                    }
-    
-                }
-                
-                .payment-result {
-                    .result {
-                        
-                        display: block;
-                        font-weight: 500;
-                        
-                        &:before {
-                            display: none;
-                        }                
-                        
-                    }
-                }
-                
-            }
-        }
-    }
-    
-    #yandex-generate-shop-password {
-        margin-top: 0.5rem;
-    }
-    
-    // enumerated blocks
-    .main-area {
-        
-        .step-content {
-            counter-reset: block-separator-counter;
-        }
-        
-        .settings-block {
-            
-            &.text-block {
-                margin-bottom: 2rem;
-                
-                .custom-block-captioned-screens {
-                    margin-top: 2rem;
-                }
-            }
-            
-            &.custom-block {
-                
-                .custom-block-captioned-screens {
-                    margin-top: 2rem;
-                }
-                
-                &.custom_yandex_enumerated_block {
-                    max-width: 502px;
-                    margin-bottom: 0px;
-                    padding-bottom: 1.5rem;
-                    
-                    .enum-separated-block {
-                        padding-bottom: 0;
-                    }
-                    
-                    &:last-child {
-                        padding-bottom: 0;
-                    }
-                }
-                
-                &.custom_yandex_screenshot {
-                    padding-bottom: 1.5rem;
-                    margin-top: -1.5rem;
-                }
-                
-                // custom styles for steps
-                &#online-kassa-send {
-                    padding-bottom: 0;
-                    margin-top: -0.5rem;
-                }
-                
-                &#send2check-send {
-                    margin-top: -0.5rem;
-                }
-            }
-            
-            .block-separator {
-                
-                display: flex;
-                height: 15px;
-                margin-bottom: 1rem;
-                margin-left: -2px;
-                
-                div {
-                    border-bottom: 1px dashed $color-wizard-preview-border;
-                    height: 7px;
-                    width: calc(100% - 15px - 0.5rem);
-                }
-                
-                &:before {
-                    content: counter(block-separator-counter);
-                    counter-increment: block-separator-counter;
-                    display: inline-block;
-                    background-color: $color-wizard-preview-border;
-                    color: $color-wizard-field-explain;
-                    margin-right: 0.5rem;
-                    width: 15px;
-                    height: 15px;
-                    border-radius: 15px;
+                .details-label {
                     line-height: 15px;
-                    vertical-align: middle;
-                    text-align: center;
-                    font-size: 10px;
-                    padding: 0px;
-                }
-            }
-            
-            .enum-separated-block {
-                
-                padding-bottom: 1.5rem;
-                
-                &:last-child {
-                    padding-bottom: 0;
                 }
                 
-                .caption {
-                    font-size: 14px;
-                    line-height: 21px;
+                .field-q {
                     
-                    &.bold {
-                        font-weight: 500;
-                    }
-                }
-                
-                .captioned-screen {
-                    margin-top: 1rem;
-                }
-                
-                .field-component {
+                    @include field-q();
                     
-                    &.title {
-                        display: block;
-                        font-weight: normal;
-                        font-size: 14px;
-                        line-height: 21px;
-                    }
-                    
-                    &.field {
-                        input[type=text] {
-                            width: 248px;
-                        }
+                    .field-q-tooltip {
+                        top: 110%;
+                        left: 40%;
                     }
                     
                 }
                 
-                .body {
-                    
-                    b {
-                        font-weight: 500;
-                    }
-                    
-                    p:last-child {
-                        margin-bottom: 0px;
-                    }
-                    
-                    a {
-                        border-bottom-width: 0;
-                        
-                        &:hover {
-                            border-bottom-width: 1px;
-                        }
-                        
-                        &[target=_blank] {
-                            &:after {
-                                content: " ";
-                                background-image: url('../../img/icon-link-out.svg');
-                                background-size: 12px 12px;
-                                width: 12px;
-                                height: 12px;
-                                margin-left: 0.5rem;
-                                display: inline-block;
-                            }
-                        }
-                    }
-                    
-                    .expandable-area {
-                        a {
-                            border-bottom-width: 1px;
-                            
-                            &:hover {
-                                border-bottom-width: 0;
-                            }
-                        }
-                    }
-                        
-                    &.value {
-                        margin-top: 0.5rem;
-                        
-                        a {
-                            font-size: 16px;
-                            font-weight: 19px;
-                            font-weight: 500;
-                        }
-                        
-                        b {
-                            font-size: 16px;
-                            font-weight: 19px;
-                            font-weight: 500;
-                        }
-                        
-                    }
+                .details-element:first-child {
+                   margin-left: 2px;
                 }
-                
-                .captioned-screen + .body {
-                    margin-top: 1rem;
-                }
-                
-            }
-            
-        
-            .yandex-make-live-payment-loader {
-                display: inline-block;
-                margin-top: 16px;
-            }
-        }
-            
-    }
-    
-    .main-area {
-        
-        .settings-block.text-block {
-            
-            .custom-block-payment-cards-icons {
-                
-                h3 {
-                    line-height: 21px;
-                    font-size: 14px;
-                    margin-top: 2rem;
-                }
-                
-                ul {
-                    margin-top: 1rem;
-                    
-                    li:first {
-                        margin-top: 0;
-                    }
-                }
-                
-            }
+           }
             
         }
         
-    }
-    
-}
-
-// expandable-area
-.leyka-wizard {
-    
-    .main-area {
-        .expandable-area {
+        .gateway-card-supported-pm-list {
+            border-top: 1px solid $color-border-light-001;
+            padding: 12px 32px 12px 32px;
+            position: relative;
             
-            &>*:first-child {
-                display: inherit;
-            }
-            
-            .expand {
+            &:empty {
                 display: none;
             }
             
-            &.collapsed {
-                *:first-child {
-                    display: none;
+            .pm-icons-scroll {
+                overflow: hidden;
+                position: relative;
+                width: 100%;
+                height: 40px;
+                
+                .pm-icons-wrapper {
+                    left: 0px;
+                    top: 0px;
+                    position: absolute;
+                    width: max-content;
+                    min-width: 100%;
+                }
+            }
+            
+            .scroll-arrow {
+                width: 6px;
+                height: 11px;
+                display: none;
+                position: absolute;
+                cursor: pointer;
+                top: 50%;
+                transform: translateY(-50%);
+                
+                &.left {
+                    left: 20px;
                 }
                 
-                .expand {
+                &.right {
+                    right: 20px;
+                }
+            }
+            
+            &.scroll {
+                .scroll-arrow {
+                    display: block;
+                }
+            }
+                
+            .pm-icons {
+                @include leyka-pm-icons();
+                padding: 0px;
+                justify-content: center;
+                align-items: center;
+                flex-basis: calc(100% - 12px);
+                height: 40px;
+            }
+            
+        }
+        
+        .gateway-card-action {
+            display: flex;
+            justify-content: center;
+            
+            .button-primary {
+                width: 272px;
+                margin-right: 0;
+                
+                &.activation-button {
+                    background-repeat: no-repeat;
+                    background-position: left center;
+                
+                    &.inactive.wizard-available {
+                        background-image: url(../../img/icon-wizard-stick-only.svg);
+                        background-position: 4px center;
+                    }
+                }
+            
+            }
+            
+            .button-secondary {
+                width: 272px;
+                margin-right: 0;
+            }
+        }
+        
+    }
+}
+
+// gateways filter
+.leyka-admin .filter-area {
+    
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    
+    .filter-toggle {
+        height: 40px;
+        margin-right: 1rem;
+        margin-bottom: 1rem;
+        
+        img {
+            cursor: pointer;
+            
+            &.show-filter {
+                
+            }
+            
+            &.hide-filter {
+                display: none;
+            }
+        }
+    }
+    
+    .filter-categories {
+        display: none;
+        justify-content: flex-start;
+        height: 40px;
+        margin-bottom: 1rem;
+        margin-right: 12px;
+        
+        a.filter-category-item {
+            @include gateway-filter-item();
+            color: $color-wizard-link-sec;
+            background-color: $color-white;
+            border-color: $color-wizard-preview-border;
+            height: 40px;
+            line-height: 40px;
+            border-radius: 20px;
+            vertical-align: middle;
+            padding-left: 24px;
+            padding-right: 24px;
+            margin-right: 1rem;
+            text-decoration: none;
+            border-bottom-style: solid;
+            outline: none;
+            
+            &.active {
+                color: $color-white;
+                background-color: $color-wizard-link;
+                border-color: $color-wizard-link;
+            }
+        }
+    }
+    
+    a.filter-action {
+        @include gateway-filter-item();
+        color: $color-wizard-link-sec;
+        height: 40px;
+        line-height: 40px;
+        vertical-align: middle;
+        text-decoration: none;
+        border-bottom: none;
+        white-space: nowrap;
+        padding-left: 0;
+        padding-right: 0;
+        margin-right: 1rem;
+        margin-bottom: 1rem;
+        
+        &.filter-category-reset-filter {
+            display: none;
+        }
+    }
+    
+    &.show {
+        .filter-toggle {
+            img {
+                &.hide-filter {
                     display: unset;
                 }
                 
-                .collapse {
+                &.show-filter {
                     display: none;
                 }
             }
+        }
+        
+        .filter-categories {
+            display: flex;
+        }
+        
+        a.filter-action {
+            &.filter-category-show-filter {
+                display: none;
+            }
             
+            &.filter-category-reset-filter {
+                display: unset;
+            }
         }
     }
     
 }
 
-// captioned screenshot
-.leyka-wizard {
-    
-    .main-area {
+@media only screen and (max-width: 2080px) {
+
+    .leyka-settings-page {
         
-        .settings-block {
-            
-            .captioned-screen {
-                
-                margin-top: 1.5rem;
-                
-                &:first-child {
-                    margin-top: 1rem;
-                }
-                
-                p {
-                    margin-bottom: 0.5rem;
-                }
-                
-                img.leyka-instructions-screen {
-                    max-width: 502px;
-                    border: 1px solid $color-wizard-link-sec;
-                }
-                
-                img.leyka-instructions-screen-full {
-                    max-height: 80%;
-                    display: none;
-                }
-                
-                .screen-wrapper {
-                    position: relative;
-                    line-height: 0px;
-                }
-                
-                img.zoom-screen {
-                    cursor: pointer;
-                    position: absolute;
-                    width: 40px;
-                    height: 40px;
-                    bottom: 1rem;
-                    left: calc(50% - 20px);
-                }
-                
+        #payment-settings-area-new {
+            .main-area-wrapper {
+                flex: 0 0 1020px;
             }
-            
         }
         
     }
+    
 }
 
-// modal
-.leyka-wizard-modal {
-    border-radius: 6px;
-    
-    .ui-dialog-titlebar {
-        border-radius: 6px 6px 0 0;
-    }
-    
-    .ui-dialog-title {
-        display: none;
-    }
-    
-    .ui-dialog-content {
-        @include body-text();
-        text-align: center;
-        padding: 32px 0px;
+@media only screen and (max-width: 1740px) {
+
+    .leyka-settings-page {
         
-        h3 {
-            @include wizard-h3();
-        }
-        
-        p {
-            @include body-text();
-            padding: 0px 70px;
-            margin: 1rem 0;
-        }
-        
-        .button {
-            @include wizard-button-caption();
-            height: 40px;
-            width: 248px;
-        }
-        
-        &#cp-documents-sent {
-            h3:first-child {
-                margin-top: 0px;
+        #payment-settings-area-new {
+            .main-area-wrapper {
+                flex: 0 0 680px;
             }
         }
+        
     }
+    
+}
+
+@media only screen and (max-width: 1400px) {
+
+    .leyka-settings-page {
+        margin-left: 2rem;
+        
+        .leyka-admin .leyka-admin-gateway-card {
+            &.gateway-card {
+                margin-right: 1rem;
+                margin-bottom: 1rem;
+            }
+        }
+    
+        #payment-settings-area-new {
+            .main-area-wrapper {
+                flex: 0 0 340px;
+            }
+        }
+        
+    }
+    
 }

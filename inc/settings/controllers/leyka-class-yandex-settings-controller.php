@@ -18,8 +18,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
 
         wp_enqueue_script('leyka-easy-modal', LEYKA_PLUGIN_BASE_URL . 'js/jquery.easyModal.min.js', array(), false, true);
 
-        wp_localize_script('leyka-admin', 'leyka_wizard_yandex', array(
-        ));
+        wp_localize_script('leyka-admin', 'leyka_wizard_yandex', array());
 
         parent::_loadCssJs();
 
@@ -34,7 +33,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
         $step = new Leyka_Settings_Step('init',  $section->id, 'Яндекс.Касса');
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Приём платежей с банковских карт Mastercard, Maestro, Visa, «Мир» и др. Комиссия от 2,8% за платежи с банковских карт. Без оплаты за подключение и без абонентской платы. Яндекс.Касса подходит для ИП и юрлиц, работает в России и за её пределами. Подробная информация <a rel="nofollow" href="https://kassa.yandex.ru/fees/">на сайте</a>. ',
+            'text' => 'Приём платежей с банковских карт Visa, Mastercard, Maestro, Мир и др. Комиссия от 2,8% за платежи с банковских карт, без оплаты за подключение и без абонентской платы. Яндекс.Касса подходит для ИП и юрлиц. Подробная информация <a rel="nofollow" href="https://kassa.yandex.ru/fees/">на сайте</a>. ',
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'yandex-payment-cards-icons',
             'template' => 'yandex_payment_cards_icons',
@@ -66,6 +65,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
                 'option_title' => 'Вставьте ИНН вашей организации',
                 'option_comment' => 'Этих данных не оказалось в настройках. Заполните их, они еще пригодятся',
                 'show_text_if_set' => true,
+                'copy2clipboard' => true,
                 'required' => true,
             )
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -118,7 +118,8 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'rendering_type' => 'template',
             'data' => array(
                 'caption' => 'Адрес сайта:',
-                'value_text' => preg_replace("/^http[s]?:\/\//", "", site_url())
+                'value_text' => preg_replace("/^http[s]?:\/\//", "", site_url()),
+                'copy2clipboard' => true,
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'general-info-turnover',
@@ -245,6 +246,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
                 'option_comment' => 'Этих данных не оказалось в настройках. Заполните их, они еще пригодятся',
                 'show_text_if_set' => true,
                 'required' => true,
+                'copy2clipboard' => true,
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'gos-reg-fill-address_screenshot',
@@ -291,6 +293,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
                 'option_comment' => 'Этих данных не оказалось в настройках. Заполните их, они еще пригодятся',
                 'show_text_if_set' => true,
                 'required' => true,
+                'copy2clipboard' => true,
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'bank-account-fill-bank-bic',
@@ -313,6 +316,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
                 'option_comment' => 'Этих данных не оказалось в настройках. Заполните их, они еще пригодятся',
                 'show_text_if_set' => true,
                 'required' => true,
+                'copy2clipboard' => true,
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'bank-account-click-save',
@@ -618,7 +622,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
                     ),
                     array(
                         'step_id' => 'general_info',
-                        'title' => 'Общие сведния',
+                        'title' => 'Общие сведения',
                         'url' => '',
                     ),
                     array(
@@ -697,19 +701,14 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
 
     }
 
-    public function getNavigationData() {
+    protected function _getStepNavigationPosition($step_full_id = false) {
 
-        $current_navigation_data = $this->_navigation_data;
-        $current_step_full_id = $this->getCurrentStep()->full_id;
+        $step_full_id = $step_full_id ? trim(esc_attr($step_full_id)) : $this->getCurrentStep()->full_id;
 
-        switch($current_step_full_id) {
-            case 'yandex-init': $navigation_position = 'yandex'; break;
-            default: $navigation_position = $current_step_full_id;
+        switch($step_full_id) {
+            case 'yandex-init': return 'yandex'; break;
+            default: return $step_full_id;
         }
-
-        return $navigation_position ?
-            $this->_processNavigationData($navigation_position) :
-            $current_navigation_data;
 
     }
 

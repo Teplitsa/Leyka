@@ -1,5 +1,12 @@
 <?php if( !defined('WPINC') ) die; // If this file is called directly, abort
 
+if(empty($_GET['old'])) {
+
+    require_once LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-payment-new.php';
+    return;
+
+}
+
 $current_screen_id = 'leyka_payment_settings_page';
 $pm_active = leyka_options()->opt('pm_available');
 
@@ -22,7 +29,6 @@ function leyka_add_gateway_metabox($post, $args) {
 }
 
 function leyka_gateway_admin_icon_markup($gateway) {
-
     return $gateway->icon ?
         "<span class='gw-icon'><img src='".esc_url($gateway->icon)."'></span>" :
         "<span class='dashicons dashicons-admin-page'></span>";

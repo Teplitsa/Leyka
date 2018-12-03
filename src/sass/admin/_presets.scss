@@ -76,11 +76,15 @@ $color-text-black:		#000000;
 $color-text-semi:		#666666;
 $color-text-light:		#999999;
 $color-text-light2:		#b2b2b2;
+$color-secondary-button: #44444a;
 
 $color-border-normal:	#cccccc;
 $color-border-light:	#eeeeee;
 $color-border-tiny:		#f6f6f6;
 $color-border-dark:		#353d3f;
+$color-border-secondary-button: #dddddd;
+
+$color-border-light-001: #f1f1f1;
 
 $color-form-invalid:	#D0011B;
 $color-form-active:		var(--color-main-light);
@@ -215,6 +219,30 @@ $color-form-active:		var(--color-main-light);
     background-image: url(../../src/svg/icon-ok-circled.svg);
     background-repeat: no-repeat;
     margin: 0 12px 0 0;
+}
+
+@mixin ok-smile-icon() {
+    content: '';
+    display: block;
+    width: 16px;
+    height: 16px;
+    float: left;
+    background-image: url(../../img/icon-ok-smile.svg);
+    background-repeat: no-repeat;
+    margin: 0 6px 0 0;
+}
+
+@mixin arrow-left-icon() {
+
+    content: '';
+    display: inline;
+    width: 20px;
+    height: 8px;
+    float: left;
+    background-image: url(../../img/icon-arrow-left.svg);
+    background-repeat: no-repeat;
+    margin: 6px 6px 0 0;
+
 }
 
 @mixin error-icon() {

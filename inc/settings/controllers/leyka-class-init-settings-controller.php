@@ -12,8 +12,25 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $this->_id = 'init';
         $this->_title = 'Мастер настройки Лейки';
 
-    }
+        $options = array(
+            'org_actual_address' => array(
+                'type' => 'textarea',
+                'title' => 'Фактический адрес организации',
+            ),
+            'org_actual_address_differs' => array(
+                'type' => 'checkbox',
+                'title' => 'Фактический адрес отличается от юридического',
+            ),
+        );
 
+        foreach($options as $option_name => $params) {
+            if( !leyka_options()->option_exists($option_name) ) {
+                leyka_options()->add_option($option_name, $params['type'], $params);
+            }
+        }
+
+    }
+    
     protected function _loadCssJs() {
 
 //        wp_enqueue_script(
@@ -86,10 +103,37 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                     'option_id' => 'org_face_fio_ip',
                 )),
             ),
-        )))->addBlock(new Leyka_Option_Block(array(
+        )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'org_address',
             'option_id' => 'org_address',
+            'custom_setting_id' => 'org_address',
+            'field_type' => 'textarea',
+            'data' => array(
+                'title' => 'Юридический адрес организации',
+                'keys' => array('org_address',),
+                'value' => leyka_options()->opt('org_address'),
+                'required' => 'Значение поля обязательно',
+            ),
             'show_description' => false,
+        )))->addBlock(new Leyka_Custom_Setting_Block(array(
+            'id' => 'org_actual_address_differs',
+            'custom_setting_id' => 'org_actual_address_differs',
+            'field_type' => 'checkbox',
+            'data' => array(
+                'title' => 'Фактический адрес отличается от юридического',
+                'keys' => array(),
+                'field_classes' => array('single-control'),
+            ),
+        )))->addBlock(new Leyka_Custom_Setting_Block(array(
+            'id' => 'org_actual_address',
+            'option_id' => 'org_actual_address',
+            'custom_setting_id' => 'org_actual_address',
+            'field_type' => 'textarea',
+            'data' => array(
+                'title' => '',
+                'value' => leyka_options()->opt('org_actual_address'),
+                'keys' => array('org_actual_address',),
+            ),
         )))->addBlock(new Leyka_Container_Block(array(
             'id' => 'complex-row-2',
             'entries' => array(
@@ -130,7 +174,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 //                    'show_description' => false,
                 )),
             ),
-        )))->addTo($section);
+        )))->addHandler(array($this, 'handleSaveOptions'))->addTo($section);
 
         // Physical receiver type - person's data step:
         $step = new Leyka_Settings_Step('receiver_physical_data', $section->id, 'Ваши данные');
@@ -143,7 +187,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'person_email',
             'option_id' => 'tech_support_email',
-            'title' => 'Email для связи', // __('Your email', 'leyka')
+            'title' => 'Email для связи',
             'required' => true,
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'person_address',
@@ -280,7 +324,8 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'id' => 'send_plugin_stats',
             'option_id' => 'send_plugin_stats',
             'show_title' => false,
-        )))->addTo($section);
+        )))->addHandler(array($this, 'handlePluginStatsStep'))
+            ->addTo($section);
 
         // The plugin usage stats collection - accepted:
         $step = new Leyka_Settings_Step('plugin_stats_accepted', $section->id, 'Спасибо!', array('next_label' => 'Продолжить'));
@@ -336,16 +381,15 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 new Leyka_Custom_Setting_Block(array(
                     'id' => 'campaign-target',
                     'custom_setting_id' => 'campaign_target',
-                    'field_type' => 'number',
+                    'field_type' => 'text',
                     'data' => array(
                         'title' => 'Целевая сумма',
                         'min' => 0,
                         'step' => 0.01,
                         'value' => $init_campaign && $init_campaign->target ? $init_campaign->target : '',
                         'show_description' => false,
-                        'placeholder' => 'Например, 100000',
-                        'description' => 'Оставьте пустым, если нет ограничений по целевой сумме',
-//                        'comment' => 'Комментарий к целевой сумме кампании',
+                        'placeholder' => 'Пусто, если сумма неограниченна',
+                        'mask' => "'alias': 'numeric', 'groupSeparator': ' ', 'autoGroup': true, 'allowMinus': false, 'rightAlign': false, 'removeMaskOnSubmit': true",
                     ),
                 )),
             )
@@ -559,49 +603,39 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
     }
 
-    public function getNavigationData() {
+    protected function _getStepNavigationPosition($step_full_id = false) {
 
-        $current_navigation_data = $this->_navigation_data;
-        $current_step_full_id = $this->getCurrentStep()->full_id;
+        $step_full_id = $step_full_id ? trim(esc_attr($step_full_id)) : $this->getCurrentStep()->full_id;
 
-        switch($current_step_full_id) {
-            case 'rd-init': $navigation_position = 'rd'; break;
-            case 'rd-receiver_type': $navigation_position = $current_step_full_id; break;
+        switch($step_full_id) {
+            case 'rd-init': return 'rd';
+            case 'rd-receiver_type': return $step_full_id;
             case 'rd-receiver_legal_data':
             case 'rd-receiver_physical_data':
-                $navigation_position = 'rd-receiver_data';
-                break;
+                return 'rd-receiver_data';
             case 'rd-receiver_legal_bank_essentials':
             case 'rd-receiver_physical_bank_essentials':
-                $navigation_position = 'rd-receiver_bank_essentials';
-                break;
+                return 'rd-receiver_bank_essentials';
             case 'rd-receiver_legal_terms_of_service':
             case 'rd-receiver_physical_terms_of_service':
-                $navigation_position = 'rd-receiver_terms_of_service';
-                break;
+                return 'rd-receiver_terms_of_service';
             case 'rd-receiver_legal_pd_terms':
             case 'rd-receiver_physical_pd_terms':
-                $navigation_position = 'rd-receiver_pd_terms';
-                break;
-            case 'rd-final': $navigation_position = 'rd--'; break;
-            case 'dd-plugin_stats': $navigation_position = 'dd'; break;
+                return 'rd-receiver_pd_terms';
+            case 'rd-final': return 'rd--';
+            case 'dd-plugin_stats': return 'dd';
             case 'dd-plugin_stats_accepted':
             case 'dd-plugin_stats_refused':
-                $navigation_position = 'dd--';
-                break;
+                return 'dd--';
             case 'cd-campaign_description':
             case 'cd-campaign_decoration':
             case 'cd-donors_communication':
-                $navigation_position = $current_step_full_id; break;
+                return $step_full_id;
             case 'cd-campaign_completed':
-                $navigation_position = 'cd--'; break;
-            case 'final-init': $navigation_position = 'final--'; break;
-            default: $navigation_position = false;
+                return 'cd--';
+            case 'final-init': return 'final--';
+            default: return false;
         }
-
-        return $navigation_position ?
-            $this->_processNavigationData($navigation_position) :
-            $current_navigation_data;
 
     }
 
@@ -621,7 +655,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         if($step->section_id === 'rd' && $step->id === 'init') {
 
             $submit_settings['next_label'] = 'Поехали!';
-            $submit_settings['prev'] = false; // Means that Wizard shouln't display the back link
+            $submit_settings['prev'] = false; // Means that the Wizard shouln't display the back link
 
         } else if($step->section_id === 'dd' && in_array($step->id, array('plugin_stats_accepted', 'plugin_stats_refused',))) {
 
@@ -702,6 +736,24 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
             }
 
+        }
+
+    }
+
+    public function handlePluginStatsStep(array $step_settings) {
+
+        if(empty($step_settings['send_plugin_stats'])) {
+            return false;
+        }
+
+        update_option('leyka_plugin_stats_option_needs_sync', time());
+        $stats_option_synch_res = leyka_sync_plugin_stats_option();
+
+        if(is_wp_error($stats_option_synch_res)) {
+            return $stats_option_synch_res;
+        } else {
+            return delete_option('leyka_plugin_stats_option_needs_sync')
+                && update_option('leyka_plugin_stats_option_sync_done', time());
         }
 
     }
@@ -805,6 +857,18 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         }
 
         return $errors ? $errors : true;
+
+    }
+
+    public function handleSaveOptions(array $step_settings) {
+
+        $errors = array();
+
+        foreach($step_settings as $option_id => $value) {
+            leyka_save_option(preg_replace("/^leyka_/", "", $option_id));
+        }
+
+        return !empty($errors) ? $errors : true;
 
     }
 

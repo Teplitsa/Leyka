@@ -3,10 +3,6 @@
  * Fired when the plugin is uninstalled.
  */
 
-//if( !get_option('leyka_delete_plugin_options') && !get_option('leyka_delete_plugin_data') ) {
-//    exit;
-//}
-
 if(get_option('leyka_delete_plugin_data')) { // Completely remove all campaigns & donations data
 
     global $wpdb;
@@ -40,3 +36,6 @@ if(get_option('leyka_delete_plugin_options')) {
         }
     }
 }
+
+remove_role('donations_manager');
+remove_role('donations_administrator');

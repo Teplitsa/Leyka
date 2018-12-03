@@ -223,7 +223,8 @@ div[id *="leyka-pf-"] { //aka namespace
 				font-size: 16px;
 				line-height: 19px;
 				width: 100%;
-				max-width: 279px;
+				//max-width: 279px;
+				max-width: unset;
 				height: 48px;
 			}
 			

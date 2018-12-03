@@ -4,7 +4,7 @@
 
 /** @var $this Leyka_Custom_Setting_Block A block for which the template is used. */
 
-if($this->field_data['option_id']) {
+if(!empty($this->field_data['option_id'])) {
     $option_value = leyka_options()->opt($this->field_data['option_id']);
 }
 else {
@@ -28,7 +28,7 @@ else {
     
     <?php elseif(!empty($this->field_data['value_text'])):?>
     
-        <div class="body value">
+        <div class="body value <?php if($this->field_data['copy2clipboard']):?>leyka-wizard-copy2clipboard<?php endif;?>">
             <b><?php echo $this->field_data['value_text']?></b>
         </div>
     
@@ -36,17 +36,25 @@ else {
     
         <?php if(!empty($this->field_data['show_text_if_set']) && $option_value):?>
         
-            <div class="body value">
+            <div class="body value <?php if($this->field_data['copy2clipboard']):?>leyka-wizard-copy2clipboard<?php endif;?>">
                 <b><?php echo $option_value?></b>
                 <input type="hidden" name="leyka_<?php echo $this->field_data['option_id']?>" value="<?php echo $option_value?>" />
             </div>
             
         <?php else: ?>
     
-            <?php leyka_render_text_field($this->field_data['option_id'], array(
+            <?php
+            
+            $field_classes = array();
+            if($this->field_data['copy2clipboard']) {
+                $field_classes[] = 'leyka-wizard-copy2clipboard';
+            }
+            
+            leyka_render_text_field($this->field_data['option_id'], array(
                     'title' => $this->field_data['option_title'],
                     'comment' => !empty($this->field_data['option_comment']) ? $this->field_data['option_comment'] : null,
                     'placeholder' => !empty($this->field_data['option_placeholder']) ? $this->field_data['option_placeholder'] : null,
+                    'field_classes' => $field_classes,
                     'value' => $option_value)
                 )?>
         
@@ -54,7 +62,7 @@ else {
         
     <?php elseif(!empty($this->field_data['screenshot'])):?>
     
-        <?php show_wizard_captioned_screenshot($this->field_data['screenshot'], !empty($this->field_data['screenshot_full']) ? $this->field_data['screenshot_full'] : null)?>
+        <?php leyka_show_wizard_captioned_screenshot($this->field_data['screenshot'], !empty($this->field_data['screenshot_full']) ? $this->field_data['screenshot_full'] : null)?>
         
     <?php endif?>
     

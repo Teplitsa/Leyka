@@ -205,4 +205,109 @@ jQuery(document).ready(function($){
 
     $('#cp-documents-sent').dialog('open');
 
-});  
+});
+
+// Browser "back" handling for wizards:
+jQuery(document).ready(function($){
+
+    // if( !$('.leyka-wizard').length ) {
+    //     return;
+    // }
+
+    // $(window).on('popstate', function(e) {
+    //
+    //     if( !$('.leyka-wizard').length ) {
+    //         return;
+    //     }
+    //
+    //     console.log('popping...');
+    //
+    //     e.preventDefault();
+    //
+    //     var state = e.originalEvent.state;
+    //     console.log(e.originalEvent);
+    //     if(state !== null) {
+    //
+    //     }
+    // });
+
+});
+
+// copy2clipboard
+jQuery(document).ready(function($){
+    
+    function copyText2Clipboard(copyText) {
+        var $copyBufferInput = $('<input>');
+        $("body").append($copyBufferInput);
+        $copyBufferInput.val(copyText).select();
+        document.execCommand("copy");
+        $copyBufferInput.remove();
+    }
+    
+    function collectText2Copy($copyLink) {
+        var $clone = $copyLink.parent().clone();
+        $clone.find('.copy-link').remove();
+        $clone.find('.copy-done').remove();
+        
+        var text = '';
+        var $innerControl = $clone.find('input[type=text], input[type=color], input[type=date], input[type=datetime-local], input[type=month], input[type=email], input[type=number], input[type=search], input[type=range], input[type=search], input[type=tel], input[type=time], input[type=url], input[type=week], textarea');
+        
+        if($innerControl.length > 0) {
+            text = $innerControl.val();
+        }
+        else {
+            text = $clone.text();
+        }
+        
+        return $.trim(text);
+    }
+    
+    function addCopyControls($copyContainer) {
+        
+        var $copyLink = $('<span>');
+        $copyLink.addClass('copy-control');
+        $copyLink.addClass('copy-link');
+        $copyLink.text(leyka_wizard_common.copy2clipboard);
+        $copyContainer.append($copyLink);
+        
+        var $copyDone = $('<span>');
+        $copyDone.addClass('copy-control');
+        $copyDone.addClass('copy-done');
+        $copyDone.text(leyka_wizard_common.copy2clipboard_done);
+        $copyContainer.append($copyDone);
+        
+    }
+    
+    $('.leyka-wizard-copy2clipboard').each(function(){
+        
+        var $formFieldInside = $(this).find('.field-component.field');
+        
+        if($formFieldInside.length) {
+            $(this).removeClass('leyka-wizard-copy2clipboard');
+            $formFieldInside.addClass('leyka-wizard-copy2clipboard');
+            addCopyControls($formFieldInside);
+        }
+        else {
+            addCopyControls($(this));
+        }
+        
+        $(this).find('.copy-link').click(function(){
+            
+            var $copyLink = $(this);
+            
+            var copyText = collectText2Copy($copyLink);
+            console.log(copyText);
+            copyText2Clipboard(copyText);
+            
+            $copyLink.fadeOut(function(){
+                $copyLink.siblings('.copy-done').show();
+                
+                setTimeout(function(){
+                    $copyLink.siblings('.copy-done').hide();
+                    $copyLink.show();
+                }, 2000);
+            });
+            
+        });
+    });
+});

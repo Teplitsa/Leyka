@@ -7,7 +7,7 @@
 
 <div class="<?php echo $this->field_type;?> custom-block-captioned-screens">
 
-<span class="info2copy"><?php echo get_option('admin_email')?></span>
+<span class="info2copy leyka-wizard-copy2clipboard"><?php echo get_option('admin_email')?></span>
 
 <div class="captioned-screen">
     <p>Перевидите флажок у поля «Fail» в режим «Включено» и вставьте адрес  в поле, как на скриншоте:</p>

@@ -161,6 +161,7 @@ self::$_options_meta = array(
         'description' => __('Enter the NGO individual number of a taxpayer.', 'leyka'),
         'required' => true,
         'placeholder' => __('E.g., 4283256127', 'leyka'),
+        'mask' => "'mask': '9{10}'",
     ),
     'org_bank_account' => array(
         'type' => 'text',
@@ -210,6 +211,7 @@ self::$_options_meta = array(
         'title' => 'ИНН', // __('The taxpayer individual number', 'leyka'),
         'required' => false,
         'placeholder' => __('E.g., 4283256127', 'leyka'),
+        'mask' => "'mask': '9{12}'",
     ),
     'person_bank_name' => array(
         'type' => 'text',
@@ -614,6 +616,12 @@ self::$_options_meta = array(
         'placeholder' => '3000',
         'length' => 6,
     ),
+    'revo_template_show_donors_list' => array(
+        'type' => 'checkbox',
+        'default' => true,
+        'title' => __("Display a donors names list on donation forms", 'leyka'),
+        'description' => __("Check to display a list of donors names on all donation forms", 'leyka'),
+    ),
     'show_donation_comment_field' => array(
         'type' => 'checkbox',
         'default' => false,
@@ -626,8 +634,7 @@ self::$_options_meta = array(
         'title' => __('The maximum length of a donation comment value', 'leyka'),
         'description' => __('Set the maximum number of symbols allowed for donation comments. You may set "0" for the unlimited values length.', 'leyka'),
         'placeholder' => __('E.g., 140', 'leyka'),
-        'min' => 0,
-        'max' => false,
+        'min' => 1,
         'step' => 1,
     ),
     'show_donation_comments_in_frontend' => array(
@@ -933,6 +940,19 @@ self::$_options_meta = array(
         'default' => true,
         'title' => __('Load plugin scripts only if necessary', 'leyka'),
         'description' => __("Check this to load Leyka scripts and styles only on an applicable pages. If this box is unchecked, plugin will load it's scripts on every website page.", 'leyka'),
+    ),
+    'lang2upload' => array(
+        'type' => 'select',
+        'default' => 'ru',
+        'title' => 'Выберите язык для загрузки',
+        'description' => '
+<input type="button" class="button button-secondary" value="Загрузить" id="upload-l10n-button"/>
+<div class="field-errors"><span></span></div>
+<div class="field-success"><span>Перевод успешно загружен. Идет перезагрузка страницы...</span></div>
+        ',
+        'list_entries' => array(
+            'ru' => 'Русский',
+        ),
     ),
     'delete_plugin_options' => array(
         'type' => 'checkbox',

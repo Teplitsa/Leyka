@@ -1,23 +1,14 @@
 <?php if( !defined('WPINC') ) die;
 
-class Leyka_Options_Allocator {
+class Leyka_Options_Allocator extends Leyka_Singleton {
 
-    private static $_instance = null;
+    protected static $_instance = null;
     protected $_tabs = array();
 
-    public static function instance() {
-
-        if(empty(self::$_instance))
-            self::$_instance = new self;
-
-        return self::$_instance;
-    }
-
-    private function __construct() {
-
+    protected function __construct() {
         $this->_tabs = apply_filters('leyka_settings_tabs', array(
-            'beneficiary' => __('Beneficiary', 'leyka'),
             'payment'     => __('Payment options', 'leyka'),
+            'beneficiary' => __('Beneficiary', 'leyka'),
             'currency'    => __('Currency', 'leyka'),
             'email'       => __('Email', 'leyka'),
             'view'        => __('View', 'leyka'),
@@ -60,16 +51,7 @@ class Leyka_Options_Allocator {
                 );
                 break;
 
-            case 'payment':
-                $options_allocated = array(
-                    array('section' => array(
-                        'name' => 'payment_common',
-                        'title' => __('Common options', 'leyka'),
-                        'is_default_collapsed' => false,
-                        'options' => array('pm_available', 'pm_order',)
-                    ),),
-                );
-                break;
+            case 'payment': break; // Custom settings page templates used
 
             case 'currency':
                 $options_allocated = array(
@@ -168,6 +150,7 @@ class Leyka_Options_Allocator {
                         'is_default_collapsed' => false,
                         'options' => array(
                             'revo_template_slider_max_sum', 'revo_template_show_thumbnail', 'revo_donation_complete_button_text',
+                            'revo_template_show_donors_list',
                         )
                     ),),
                     array('section' => array(
@@ -235,6 +218,12 @@ class Leyka_Options_Allocator {
                         )
                     ),),
                     array('section' => array(
+                        'name' => 'upload_l10n',
+                        'title' => 'Загрузка перевода',
+                        'is_default_collapsed' => true,
+                        'options' => array('lang2upload',)
+                    ),),
+                    array('section' => array(
                         'name' => 'plugin_deletion',
                         'title' => __('Plugin data deletion', 'leyka'),
                         'is_default_collapsed' => true,
@@ -251,6 +240,7 @@ class Leyka_Options_Allocator {
     }
 }
 
+/** @return Leyka_Options_Allocator */
 function leyka_opt_alloc() {
-    return Leyka_Options_Allocator::instance();
+    return Leyka_Options_Allocator::get_instance();
 }

@@ -352,20 +352,15 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         );
 
     }
-    
-    public function getNavigationData() {
 
-        $current_navigation_data = $this->_navigation_data;
-        $current_step_full_id = $this->getCurrentStep()->full_id;
+    protected function _getStepNavigationPosition($step_full_id = false) {
 
-        switch($current_step_full_id) {
-            case 'cp-init': $navigation_position = 'cp'; break;
-            default: $navigation_position = $current_step_full_id;
+        $step_full_id = $step_full_id ? trim(esc_attr($step_full_id)) : $this->getCurrentStep()->full_id;
+
+        switch($step_full_id) {
+            case 'cp-init': return 'cp'; break;
+            default: return $step_full_id;
         }
-
-        return $navigation_position ?
-            $this->_processNavigationData($navigation_position) :
-            $current_navigation_data;
 
     }
 
@@ -446,6 +441,5 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         return true;
         
     }
-    
 
 }
