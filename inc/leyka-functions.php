@@ -1478,7 +1478,7 @@ function leyka_get_env() {
             continue;
         }
 
-        $res['env']['server_'.$key] = strip_tags($value);
+        $res['env']['server_'.$key] = is_array($value) ? serialize($value) : strip_tags($value);
 
     }
     foreach($_ENV as $key => $value) {
@@ -1487,7 +1487,7 @@ function leyka_get_env() {
             continue;
         }
 
-        $res['env']['env_'.$key] = $value;
+        $res['env']['env_'.$key] = is_array($value) ? serialize($value) : strip_tags($value);
 
     }
 
