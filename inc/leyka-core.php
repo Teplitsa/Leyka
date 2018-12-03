@@ -292,8 +292,6 @@ class Leyka {
             if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type) && !empty($_GET['embed_object'])) {
 
                 $new_template = leyka_get_current_template_data(false, 'embed_'.$_GET['embed_object'], true);
-                //print_r($new_template);
-                //exit();
                 if($new_template && !empty($new_template['file'])) {
                     $template = $new_template['file'];
                 }

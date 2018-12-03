@@ -4,7 +4,7 @@
 
 **Scroll down for english description, please**
 
-Лейка - плагин для краудфандинга, фандрайзинга и сбора пожертвований на сайте для физических и юридических лиц. Поддерживаются платежи банковскими картами Visa и MasterCard через **Cloudpayments, Chronopay, PayPal и RBK money**, также подключаются **WebMoney, Яндекс.Деньги (Yandex.Money), ROBOKASSA, SMS-платежи через стороннего провайдера** и традиционные квитанции.
+Лейка - плагин для краудфандинга, фандрайзинга и сбора пожертвований на сайте для физических и юридических лиц. Поддерживаются платежи банковскими картами Visa и MasterCard через **Cloudpayments, Chronopay, PayPal, Qiwi и RBK money**, также подключаются **WebMoney, Яндекс.Деньги (Yandex.Money), ROBOKASSA, SMS-платежи через стороннего провайдера** и традиционные квитанции.
 
 Плагин разработан и поддерживается [Теплицей социальных технологий](//te-st.ru/).
 
@@ -21,7 +21,7 @@
 
 **Основные функции**
 
-* Широкий набор платежных операторов и опций (включая Яндекс.Кассу, CloudPayments, PayPal, Chronopay, RBK Money, ROBOKASSA, MIXPLAT и печать банковских квитанций)
+* Широкий набор платежных операторов и опций (включая Яндекс.Кассу, CloudPayments, PayPal, Chronopay, RBK Money, ROBOKASSA, Qiwi, MIXPLAT и печать банковских квитанций)
 * Подходит для физических и юридических лиц
 * Автоматическая рассылка email-сообщений донорам
 * Поддержка нескольких языков
@@ -77,7 +77,7 @@
 
 ## In English ##
 
-Leyka is a plugin for fundraising and donations collection via WordPress website. Supported payment methods includes bank cards Visa and MasterCard through **Cloudpayments, Chronopay, PayPal and RBK money** operators, mobile and SMS payments via MIXPLAT, also **WebMoney, ROBOKASSA and Yandex.Money** are supported. You can also use a traditional bank payment orders (quittances).
+Leyka is a plugin for fundraising and donations collection via WordPress website. Supported payment methods includes bank cards Visa and MasterCard through **Cloudpayments, Chronopay, PayPal, Qiwi and RBK Money** operators, mobile and SMS payments via **MIXPLAT**, also **WebMoney, ROBOKASSA and Yandex.Money** are supported. You can also use a traditional bank payment orders (quittances).
 
 This plugin developed and supported by [Teplitsa of social technologies](//te-st.ru/).
 

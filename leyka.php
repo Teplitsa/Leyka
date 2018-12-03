@@ -8,13 +8,13 @@
  * Author:      Teplitsa of social technologies
  * Author URI:  https://te-st.ru
  * Text Domain: leyka
- * Domain Path: /languages
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  * Contributors:
 	Lev "ahaenor" Zvyagintsev (ahaenor@gmail.com)
 	Anna "foralien" Ladoshkina (webdev@foralien.com)
 	Denis Cherniatev (denis.cherniatev@gmail.com)
     Marie Borisyonok (pro100mary@gmail.com)
+    Vladimir Petrozavodsky (petrozavodsky@gmail.com)
 
  * License: GPLv2 or later
 	Copyright (C) 2012-2018 by Teplitsa of Social Technologies (http://te-st.ru).
