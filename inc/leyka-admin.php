@@ -97,60 +97,24 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         }
 
-        if( !get_option('leyka_admin_notice_pd') && (empty($_GET['page']) || $_GET['page'] !== 'leyka_settings_new') ) {
+        if( !get_option('leyka_admin_notice_v3_update') && (empty($_GET['page']) || $_GET['page'] !== 'leyka_settings_new') ) {
 
-            function leyka_admin_notice_pd() {?>
+            function leyka_admin_notice_v3_update() {?>
 
                 <div id="message" class="updated leyka-message">
-                <a class="leyka-message-close notice-dismiss" href="<?php echo esc_url(wp_nonce_url(remove_query_arg('leyka_reset_msg', add_query_arg('leyka-hide-notice', 'pd')), 'leyka_hide_notice_nonce', '_leyka_notice_nonce'));?>">
-                    <?php _e('Dismiss', 'leyka');?>
+                <a class="leyka-message-close notice-dismiss" href="<?php echo esc_url(wp_nonce_url(remove_query_arg('leyka_reset_msg', add_query_arg('leyka-hide-notice', 'v3_update')), 'leyka_hide_notice_nonce', '_leyka_notice_nonce'));?>">
+                    <?php esc_html_e('Dismiss', 'leyka');?>
                 </a>
-                <p><?php printf(esc_html__('Hello! Thank you for updating Leyka. Please make sure you reviewed %snecessary personal data usage settings%s.', 'leyka'), '<a href="'.admin_url('admin.php?page=leyka_settings&stage=additional#terms_of_pd').'">', '</a>');?></p>
-                <p class="submit">
-                    <a class="button-secondary" href="<?php echo admin_url('admin.php?page=leyka_settings&stage=additional#terms_of_pd');?>">
-                        <?php _e('Open personal data usage settings', 'leyka');?>
-                    </a>
-                </p>
+                <p><?php printf(esc_html__('Hello! Thank you for updating Leyka plugin to the 3rd version. Please read about all new features %shere%s.', 'leyka'), '<a href="//te-st.ru/" target="_blank">', '</a>');?></p>
+<!--                <p class="submit"><a class="button-secondary" href="#"></a></p>-->
             </div>
             <?php
             }
-            add_action('admin_notices', 'leyka_admin_notice_pd');
+            add_action('admin_notices', 'leyka_admin_notice_v3_update');
 
         }
 
     }
-
-    /*
-    function display_custom_quickedit_donation($column_name, $post_type) {
-        if($post_type != Leyka_Donation_Management::$post_type)
-            return;
-
-        static $printNonce = TRUE;
-        if ( $printNonce ) {
-            $printNonce = FALSE;
-            wp_nonce_field( plugin_basename( __FILE__ ), 'book_edit_nonce' );
-        }
-
-        ?>
-        <fieldset class="inline-edit-col-right inline-edit-book">
-            <div class="inline-edit-col column-<?php echo $column_name;?>">
-                <label class="inline-edit-group">
-                <?php
-                    switch($column_name) {
-                        case 'donor':
-                            ?><span class="title">Donor</span><input name="donor" /><?php
-                            break;
-//                        case '':
-//                            ?><!--<span class="title">In Print</span><input name="inprint" type="checkbox" />--><?php
-//                            break;
-                    }
-                ?>
-                </label>
-            </div>
-        </fieldset>
-    <?php
-    }
-    */
 
 	/** Admin Menu **/
     public function adminMenuSetup() {

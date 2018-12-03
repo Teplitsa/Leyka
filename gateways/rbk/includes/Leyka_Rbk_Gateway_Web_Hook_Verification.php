@@ -17,17 +17,18 @@ class Leyka_Rbk_Gateway_Web_Hook_Verification
     public function verify_header_signature($content)
     {
         $key = $this->_key_prepare(get_option('leyka_rbk_api_web_hook_key', false));
+        $params_signature =false;
 
-        if (empty($_SERVER[self::SIGNATURE])) {
+        if (!isset($_SERVER[self::SIGNATURE])) {
             new WP_Error(
                 'Leyka_webhook_error',
                 'Webhook notification signature missing'
             );
         }
 
-        $params_signature = $this->_get_parameters_content_signature(
-            $_SERVER[self::SIGNATURE]
-        );
+        if(isset($_SERVER[self::SIGNATURE])) {
+            $params_signature = $this->_get_parameters_content_signature($_SERVER[self::SIGNATURE]);
+        }
 
         if (empty($params_signature[self::SIGNATURE_ALG])) {
             return new WP_Error(
