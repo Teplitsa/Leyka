@@ -7,7 +7,7 @@ array_shift($pm_order);?>
 <div class="side-area">
 
     <div class="pm-order-header">
-        <h3><?php esc_html_e('In what order will payment methods be displayed on the website', 'leyka');?></h3>
+        <h3><?php esc_html_e('The order for payment methods display on the website', 'leyka');?></h3>
         <div class="pm-order-description"><?php esc_html_e('Drag & drop the payment method blocks', 'leyka');?></div>
     </div>
 

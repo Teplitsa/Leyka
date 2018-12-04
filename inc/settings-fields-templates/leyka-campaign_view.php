@@ -3,27 +3,25 @@
 /** Custom field group for the Campaign decoration Step of the Init wizard. */
 
 /** @var $this Leyka_Custom_Setting_Block A block for which the template is used. */
-?>
-
-<?php
 
 $campaign_id = get_transient( 'leyka_init_campaign_id' );
 $campaign = new Leyka_Campaign($campaign_id);
 $campaign_thumbnail_id = get_post_thumbnail_id($campaign_id);
 $cur_template = $campaign->template;
-if(!$cur_template || $cur_template == 'default') {
+
+if( !$cur_template || $cur_template === 'default' ) {
+
     $cur_template = 'revo';
     update_post_meta($campaign_id, 'campaign_template', $cur_template);
     $campaign->template = $cur_template;
+
 }
 
 $templates = leyka()->get_templates();
 
-wp_enqueue_media();
+wp_enqueue_media();?>
 
-?>
-
-<input type="hidden" value="<?php echo $campaign_id?>" id="leyka-decor-campaign-id" />
+<input type="hidden" value="<?php echo $campaign_id?>" id="leyka-decor-campaign-id">
 
 <div id="<?php echo $this->id;?>" class="settings-block custom-block <?php echo $this->field_type;?>">
     
@@ -36,25 +34,27 @@ wp_enqueue_media();
                 <div id="leyka_campaign_photo-wrapper">
                     <label for="leyka_campaign_photo-field">
                         <span class="field-component title">
-                            Фото миниатюры кампании
+                            <?php esc_html_e('The campaign thumbnail picture', 'leyka');?>
                             <span class="field-q">
-                                <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" />
-                                <span class="field-q-tooltip">Установите главную фотографию вашей кампании</span>
+                                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
+                                <span class="field-q-tooltip">
+                                    <?php esc_html_e('Set the main picture for your campaign', 'leyka');?>
+                                </span>
                             </span>
                         </span>
                         <span class="field-component field">
-                            <input type="file" value="" />
-                            <input type="button" class="button upload-photo" id="campaign_photo-upload-button" value="Выбрать фотографию" />
+                            <input type="file" value="">
+                            <input type="button" class="button upload-photo" id="campaign_photo-upload-button" value="<?php esc_attr_e('Select a picture', 'leyka');?>">
                         </span>
                     </label>
-                    <?php wp_nonce_field( 'set-campaign-photo', 'set-campaign-photo-nonce' )?>
-                    <input type="hidden" id="leyka-campaign_thumbnail" name="campaign_thumbnail" value="<?php echo $campaign_thumbnail_id?>" />
+                    <?php wp_nonce_field('set-campaign-photo', 'set-campaign-photo-nonce');?>
+                    <input type="hidden" id="leyka-campaign_thumbnail" name="campaign_thumbnail" value="<?php echo $campaign_thumbnail_id;?>">
                 </div>
                 <div class="field-errors"></div>
                 
             </div>
 
-            <input name="campaign_template" type="hidden" style="display:none;" value="<?php echo $cur_template;?>"/>
+            <input name="campaign_template" type="hidden" style="display:none;" value="<?php echo $cur_template;?>">
             
             <div id="campaign-decoration-loading">
                  <div class="loader-wrap">
@@ -66,19 +66,15 @@ wp_enqueue_media();
         
         <div class="decor-preview">
             
-            <div class="title">Как будет выглядеть на сайте</div>
-            
+            <div class="title"><?php esc_html_e('How it will look on the website', 'leyka');?></div>
+
             <div class="preview-frame <?php echo $cur_template?>" id="leyka-preview-frame">
-                <?php
-                    $embed_code = Leyka_Campaign_Management::get_card_embed_code($campaign_id, false, 343, 700);
-                    $embed_code = str_replace('embed_object=campaign_card', 'embed_object=campaign_card_templated', $embed_code);
-                    echo $embed_code;
-                ?>
+            <?php $embed_code = Leyka_Campaign_Management::get_card_embed_code($campaign_id, false, 343, 700);
+                echo str_replace('embed_object=campaign_card', 'embed_object=campaign_card_templated', $embed_code);?>
             </div>
-            
+
         </div>
         
     </div>
-            
-    
+
 </div>
