@@ -396,20 +396,15 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
             foreach($this->_fields_keys as $key) {
                 
                 if($this->_field_type == 'file') {
-                    
                     $is_valid = $this->isFileFieldValid();
-                    
-                }
-                elseif(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
-
+                } elseif(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
                     $is_valid = false;
-
                 }
-                
-                if(!$is_valid) {
+
+                if( !$is_valid ) {
                     break;
                 }
-                
+
             }
         }
 
@@ -424,18 +419,15 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
     }
     
     public function isFileFieldValid() {
-        
-        if(!isset($_FILES[ 'leyka_' . $this->_setting_id ])) {
+
+        if( !isset($_FILES['leyka_' . $this->_setting_id ]) ) {
             return false;
         }
-        
-        $file = $_FILES[ 'leyka_' . $this->_setting_id ];
-        if(empty($file) || $file['error'] || !$file['size']) {
-            return false;
-        }
-        
-        return true;
-        
+
+        $file = $_FILES['leyka_' . $this->_setting_id];
+
+        return $file && empty($file['error']) && !empty($file['size']);
+
     }
 
     public function getErrors() {
@@ -445,15 +437,14 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
         if( !empty($this->_field_data['required']) ) {
 
             $error_text = $this->_field_data['required'] === true ?
-                'Значение поля обязательно' : esc_attr__($this->_field_data['required']);
-                
+                esc_attr__('The field value is required', 'leyka') : esc_attr__($this->_field_data['required']);
+
             foreach($this->_fields_keys as $key) {
-                if($this->_field_type == 'file') {
+                if($this->_field_type === 'file') {
                     if(!$this->isFileFieldValid()) {
                         $errors[] = new WP_Error('option_invalid', $error_text);
                     }
-                }
-                elseif(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
+                } else if(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
                     $errors[] = new WP_Error('option_invalid', $error_text);
                 }
             }

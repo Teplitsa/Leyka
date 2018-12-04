@@ -1,4 +1,4 @@
-<?php if( !defined('WPINC') ) die; // If this file is called directly, abort
+<?php if( !defined('WPINC') ) die;
 
 if(empty($_GET['old'])) {
 
@@ -11,8 +11,6 @@ $current_screen_id = 'leyka_payment_settings_page';
 $pm_active = leyka_options()->opt('pm_available');
 
 function leyka_add_gateway_metabox($post, $args) {
-
-    // $post is always null
 
     /** @var Leyka_Gateway $gateway */
     $gateway = $args['args']['gateway'];
@@ -30,7 +28,7 @@ function leyka_add_gateway_metabox($post, $args) {
 
 function leyka_gateway_admin_icon_markup($gateway) {
     return $gateway->icon ?
-        "<span class='gw-icon'><img src='".esc_url($gateway->icon)."'></span>" :
+        "<span class='gw-icon'><img src='".esc_url($gateway->icon)."' alt=''></span>" :
         "<span class='dashicons dashicons-admin-page'></span>";
 }
 
@@ -55,7 +53,7 @@ foreach($gateways_by_columns as $admin_ui_column => $gateways) { // Add gateways
                     $test = explode('-', $pm_id);
                     if(trim($test[0]) == $gateway->id) {
 
-                        $active = " <span class='active'>".__('active', 'leyka')."</span>";
+                        $active = " <span class='active'>".esc_html__('active', 'leyka')."</span>";
                         break;
                     }
                 }
