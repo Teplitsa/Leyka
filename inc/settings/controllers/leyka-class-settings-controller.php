@@ -41,8 +41,8 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
     protected function _loadCssJs() {
         
         wp_localize_script('leyka-admin', 'leyka_wizard_common', array(
-            'copy2clipboard' => 'Копировать',
-            'copy2clipboard_done' => 'Скопировано в буфер!',
+            'copy2clipboard' => esc_html__('Copy', 'leyka'),
+            'copy2clipboard_done' => esc_html__('Copied to the clipboard!', 'leyka'),
         ));
         
         do_action('leyka_settings_controller_enqueue_scripts', $this->id);
@@ -648,7 +648,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             $step = $this->getComponentById($this->_getNextStepId());
             if( !$step ) {
 
-                $this->_addCommonError(new WP_Error('next_step_not_found', 'Следующий шаг мастера не найден'));
+                $this->_addCommonError(new WP_Error('next_step_not_found', esc_html__('The Wizard next step is not found', 'leyka')));
                 return;
 
             }
