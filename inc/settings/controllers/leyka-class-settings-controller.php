@@ -705,7 +705,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
                 if($is_next_section_target) {
 
                     $next_section = $section;
-                    $next_step = reset($section->steps);
+                    $next_step = $section->steps ? $section->steps[0] : false;
                     break;
 
                 }
