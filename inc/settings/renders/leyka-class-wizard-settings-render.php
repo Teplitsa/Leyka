@@ -31,6 +31,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
     }
     
     public function renderJSData() {
+
         $is_legal = leyka_options()->opt('receiver_legal_type') === 'legal';
         
         wp_localize_script( 'leyka-settings', 'leykaWizard', array(
@@ -38,7 +39,6 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                 array(
                     '#LEGAL_NAME#',
                     '#LEGAL_FACE#',
-                    // '#LEGAL_FACE_RP#',
                     '#LEGAL_FACE_POSITION#',
                     '#LEGAL_ADDRESS#',
                     '#STATE_REG_NUMBER#',
@@ -52,7 +52,6 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                 array(
                     $is_legal ? leyka_options()->opt('org_full_name') : leyka_options()->opt('person_full_name'),
                     $is_legal ? leyka_options()->opt('org_face_fio_ip') : leyka_options()->opt('person_full_name'),
-                    // $is_legal ? leyka_options()->opt('org_face_fio_rp') : leyka_options()->opt('person_full_name'),
                     $is_legal ? leyka_options()->opt('org_face_position') : '',
                     $is_legal ? leyka_options()->opt('org_address') : leyka_options()->opt('person_address'),
                     $is_legal ? leyka_options()->opt('org_state_reg_number') : '',
@@ -131,87 +130,84 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
             <?php $this->renderSubmitArea();?>
             </div>
         </form>
-        
-        <?php echo $this->renderHelpChat()?>
+
+        <?php echo $this->renderHelpChat();?>
 
     <?php }
-    
-    public function renderHelpChat() {
-        
-        $current_user = wp_get_current_user();
-        
-    ?>
-        <a class="help-chat-button" href="#"><img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-help-chat.svg"></a>
-        
-        <div class="help-chat fix-height">
-            <div class="chat-header">
-                <div class="title">Форма обратной связи</div>
-                <img class="close" src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-help-close.svg" />
-            </div>
-            
-            <div class="chat-body">
-                
-                <div class="leyka-loader md"></div>
-                
-                <div class="ok-message">
-                    <p>Ваше сообщение отправлено, постараемся ответить в течении суток.</p>
-                    <p>Спасибо!</p>
-                </div>
-                
-                <form action="" class="form">
 
-                    <?php wp_nonce_field( 'leyka_feedback_sending', 'leyka_feedback_sending_nonce' )?>
+    public function renderHelpChat() {
+
+        $current_user = wp_get_current_user();?>
+
+        <a class="help-chat-button" href="#"><img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-help-chat.svg" alt=""></a>
+
+        <div class="help-chat fix-height">
+
+            <div class="chat-header">
+                <div class="title"><?php esc_html_e('Feedback form', 'leyka');?></div>
+                <img class="close" src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-help-close.svg" alt="">
+            </div>
+
+            <div class="chat-body">
+
+                <div class="leyka-loader md"></div>
+
+                <div class="ok-message">
+                    <p><?php esc_html_e('Your message sent. We will try to answer in one day.', 'leyka');?></p>
+                    <p><?php esc_html_e('Thank you!', 'leyka');?></p>
+                </div>
+
+                <form action="#" class="form">
+
+                    <?php wp_nonce_field('leyka_feedback_sending', 'leyka_feedback_sending_nonce');?>
 
                     <div class="settings-block option-block">
                         <div>
                             <label for="leyka-help-chat-name">
-                                <span class="field-component title">
-                                    Ваше имя
-                                </span>
+                                <span class="field-component title"><?php esc_html_e('Your name', 'leyka');?></span>
                                 <span class="field-component field">
-                                    <input type="text" id="leyka-help-chat-name" value="<?php echo $current_user->display_name?>" maxlength="255" required="true">
+                                    <input type="text" id="leyka-help-chat-name" value="<?php echo $current_user->display_name;?>" maxlength="255" required="required">
                                 </span>
                             </label>
                         </div>
-                        <div class="field-errors">Заполните это поле</div>
+                        <div class="field-errors"><?php esc_html_e('This field is required', 'leyka');?></div>
                     </div>
-    
+
                     <div class="settings-block option-block">
                         <div>
                             <label for="leyka-help-chat-email">
-                                <span class="field-component title">
-                                    E-mail
-                                </span>
+                                <span class="field-component title"><?php esc_html_e('Your email', 'leyka');?></span>
                                 <span class="field-component field">
-                                    <input type="email" id="leyka-help-chat-email" value="<?php echo get_option('admin_email')?>" maxlength="255" required="true">
+                                    <input type="email" id="leyka-help-chat-email" value="<?php echo get_option('admin_email');?>" maxlength="255" required="required">
                                 </span>
                             </label>
                         </div>
-                        <div class="field-errors">Заполните это поле</div>
+                        <div class="field-errors"><?php esc_html_e('This field is required', 'leyka');?></div>
                     </div>
-    
+
                     <div class="settings-block option-block">
                         <div>
                             <label for="leyka-help-chat-message">
                                 <span class="field-component title">
-                                    Опишите суть проблемы
+                                    <?php esc_html_e('Describe the problem', 'leyka');?>
                                 </span>
                                 <span class="field-component field">
-                                    <textarea id="leyka-help-chat-message" required="true"></textarea>
+                                    <textarea id="leyka-help-chat-message" required="required"></textarea>
                                 </span>
                             </label>
                         </div>
-                        <div class="field-errors">Заполните это поле</div>
+                        <div class="field-errors"><?php esc_html_e('This field is required', 'leyka');?></div>
                     </div>
-                    
-                    <input type="submit" class="button button-primary" value="Отправить">
+
+                    <input type="submit" class="button button-primary" value="<?php esc_attr_e('Submit', 'leyka');?>">
 
                 </form>
-                
+
             </div>
-        </div>        
-    <?php
-    }
+
+        </div>
+
+    <?php }
 
     public function renderHiddenFields() {
     }
@@ -264,7 +260,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                         <?php if( !empty($section['is_completed']) ) {?>
                         <div class="nav-section-marker">
                             <a href="<?php echo $section['url'];?>">
-                                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-ok.svg">
+                                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-ok.svg" alt="">
                             </a>
                         </div>
 
@@ -284,22 +280,19 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                     <?php if(empty($section['is_completed']) && !empty($section['steps'])) {?>
                         <div class="nav-steps">
 
-                            <?php foreach($section['steps'] as $step) {?>
+                        <?php foreach($section['steps'] as $step) {?>
 
-                                <div class="nav-step <?php if( !empty($step['is_current']) ) {?>active<?php } else if( !empty($step['is_completed']) ) {?>done<?php }?>">
+                            <div class="nav-step <?php if( !empty($step['is_current']) ) {?>active<?php } else if( !empty($step['is_completed']) ) {?>done<?php }?>">
 
-                                <?php if( !empty($step['is_completed']) ) {?>
-                                    <a href="<?php echo $step['url'];?>"><?php echo esc_html($step['title']);?></a>
-                                <?php } else {
-                                    echo esc_html($step['title']);
-                                }
+                            <?php if( !empty($step['is_completed']) ) {?>
+                                <a href="<?php echo $step['url'];?>"><?php echo esc_html($step['title']);?></a>
+                            <?php } else {
+                                echo esc_html($step['title']);
+                            }?>
 
-//                                    if( !empty($step['is_completed']) ) {?>
-<!--                                    <img src="--><?php //echo LEYKA_PLUGIN_BASE_URL;?><!--img/icon-i.svg" class="step-i">-->
-<!--                                    --><?php //}?>
-                                </div>
+                            </div>
 
-                            <?php }?>
+                        <?php }?>
 
                         </div>
                     <?php }?>
@@ -313,7 +306,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         </div>
 
         <div class="leyka-logo">
-            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/nav-logo.svg" />
+            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/nav-logo.svg" alt="">
         </div>
 
     <?php }
@@ -355,8 +348,8 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
     <?php }
 
     public function renderTextBlock(Leyka_Text_Block $block) {
-        $content = $block->getContent();
-        ?>
+
+        $content = $block->getContent();?>
 
         <div id="<?php echo $block->id;?>" class="settings-block text-block">
             

@@ -6,14 +6,13 @@
 class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controller {
 
     protected static $_instance = null;
-    
-    //protected static $cp_email = 'sales@cloudpayments.ru';
-    protected static $cp_email = 'denis.cherniatev@gmail.com';
+    protected $_cp_email = '';
 
     protected function _setAttributes() {
 
         $this->_id = 'cp';
-        $this->_title = 'Мастер подключения CloudPayments';
+        $this->_title = esc_attr__('CloudPayments setup Wizard', 'leyka');
+        $this->_cp_email = defined('WP_DEBUG') && WP_DEBUG ? 'support@te-st.ru' : 'sales@cloudpayments.ru';
 
     }
 
@@ -46,53 +45,53 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         // The main CP settings section:
         $section = new Leyka_Settings_Section('cp', 'CloudPayments');
 
-        $step = new Leyka_Settings_Step('init',  $section->id, 'CloudPayments');
+        $step = new Leyka_Settings_Step('init',  $section->id, esc_html__('CloudPayments', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Система CloudPayments является многопрофильным процессинговым центром для обработки платежей по банковским картам международных платежных систем Visa и MasterCard, а также по картам национальной платежной системы МИР.',
+            'text' => esc_html__('CloudPayments system is a multi-profile processing center for handling payments via Visa, MasterCard and MIR payment systems.', 'leyka'),
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'cp-payment-cards-icons',
             'template' => 'cp_payment_cards_icons',
         )))->addTo($section);
 
-        $step = new Leyka_Settings_Step('prepare_documents',  $section->id, 'Подготовка документов');
+        $step = new Leyka_Settings_Step('prepare_documents',  $section->id, esc_html__('Preparing the documents', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Подключение к CloudPayments начинается с подготовки документов.<br />Скачайте и заполните необходимые документы.',
+            'text' => esc_html__('CloudPayments setup starts with documents preparation.<br>Download and fill the needed documents.', 'leyka'),
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'cp-prepare-documents',
             'template' => 'cp_prepare_documents',
         )))->addTo($section);
 
-        $step = new Leyka_Settings_Step('send_documents',  $section->id, 'Отправка документов', array('next_label' => 'Отправить письмо', 'form_enctype' => 'multipart/form-data'));
+        $step = new Leyka_Settings_Step('send_documents',  $section->id, esc_html__('Sending the documents', 'leyka'), array('next_label' => esc_html__('Send the email', 'leyka'), 'form_enctype' => 'multipart/form-data'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => '<p>После подготовки документов, их необходимо отправить в CloudPayments. Форма ниже позволит вам отправить пакет документов не уходя с сайта.</p>
-<p>Вы также можете отправить эти документы из своей собственной почты на адрес: sales@cloudpayments.ru.</p>
-<p>Обратите внимание, что проверка документов может занять до 3 рабочих дней.</p>
-<p>Если вам нужно закрыть этот экран, мы запишем пройденные шаги и вы всегда сможете сюда вернуться.</p>',
+            'text' => esc_html__('<p>When the documents are prepared, they have to be sent to CloudPayments. The form below allows you to send the documents right from the website.</p>
+<p>Also you may send the documents from your own email to the CloudPayments email: sales@cloudpayments.ru.</p>
+<p>Please note that documents checkup may take until 3 working days.</p>
+<p>If you have to close this page, we are going to remember the passed steps and you may always return here.</p>', 'leyka'),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'send_documents_file',
             'custom_setting_id' => 'send_documents_file',
             'field_type' => 'file',
             'data' => array(
-                'title' => 'Прикрепить Приложение 1',
-                'required' => "Выберите файл",
+                'title' => esc_html__('Attach the Annex #1', 'leyka'),
+                'required' => esc_html__('Select a file', 'leyka'),
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'send_documents_to',
             'custom_setting_id' => 'send_documents_to',
             'field_type' => 'legend',
             'data' => array(
-                'title' => 'Кому',
-                'text' => self::$cp_email,
+                'title' => esc_html__('To whom', 'leyka'),
+                'text' => $this->_cp_email,
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'send_documents_from',
             'custom_setting_id' => 'send_documents_from',
             'field_type' => 'text',
             'data' => array(
-                'title' => 'От кого',
+                'title' => esc_html__('From whom', 'leyka'),
                 'value' => get_option('admin_email'),
                 'required' => true,
             ),
@@ -102,8 +101,8 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             'custom_setting_id' => 'send_documents_email_subject',
             'field_type' => 'text',
             'data' => array(
-                'title' => 'Тема письма',
-                'value' => 'Прошу подключить нас к вашей системе',
+                'title' => esc_html__('Email topic', 'leyka'),
+                'value' => esc_html__('Please connect me to CloudPayments system', 'leyka'),
                 'required' => true,
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -111,34 +110,34 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             'custom_setting_id' => 'send_documents_email_text',
             'field_type' => 'textarea',
             'data' => array(
-                'title' => 'Текст письма',
-                'value' => 'Деньги переводятся в рублях на следующий рабочий день после совершения операции на счет юридического лица или ИП в любом российском банке за вычетом комиссии.',
+                'title' => esc_html__('Email text', 'leyka'),
+                'value' => esc_html__('Money transfers in rubles on the next business day after the transaction to the account of the legal entity or entrepreneur in any Russian bank, net of commission.', 'leyka'),
                 'required' => true,
             ),
         )))->addHandler(array($this, 'handleSendDocuments'))->addTo($section);
 
-        $step = new Leyka_Settings_Step('signin_cp_account',  $section->id, 'Войдите в личный кабинет CloudPayments');
+        $step = new Leyka_Settings_Step('signin_cp_account',  $section->id, esc_html__('Login to your CloudPayments dashboard', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Используйте для входа логин, пароль и ссылку на личный кабинет из письма от CloudPayments.',
+            'text' => esc_html__('Use the login, password and a link to the dashboard from the CloudPayments email.', 'leyka'),
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'cp-account-setup-instructions',
             'template' => 'cp_account_setup_instructions',
         )))->addTo($section);
 
-        $step = new Leyka_Settings_Step('copy_key',  $section->id, 'Копируем ключ');
+        $step = new Leyka_Settings_Step('copy_key',  $section->id, esc_html__('Copy the ID', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Скопируйте номер Public ID из личного кабинета CloudPayments, как на скриншоте ниже',
+            'text' => esc_html__('Copy the public ID of your CloudPayments account, as in the screenshot below', 'leyka'),
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'cp-copy-key',
             'template' => 'cp_copy_key',
         )))->addTo($section);
 
-        $step = new Leyka_Settings_Step('paste_key',  $section->id, 'Вставляем ключ в Лейку', array('next_label' => 'Продолжить и сохранить'));
+        $step = new Leyka_Settings_Step('paste_key',  $section->id, esc_html__('Enter the ID to the plugin', 'leyka'), array('next_label' => esc_html__('Save & continue', 'leyka')));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Вставьте скопированный ключ в поле ниже',
+            'text' => esc_html__('Paste the copied public ID to the field below', 'leyka'),
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'cp_public_id',
             'option_id' => 'cp_public_id',
@@ -149,73 +148,73 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             'show_description' => false,
         )))->addTo($section);
 
-        $step = new Leyka_Settings_Step('check_payment_request',  $section->id, 'Добавление запроса на проверку пожертвования');
+        $step = new Leyka_Settings_Step('check_payment_request',  $section->id, esc_html__('Add a request to check donations', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Скопируйте адрес:',
+            'text' => esc_html__('Copy the address:', 'leyka'),
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'cp-check-payment-request',
             'template' => 'cp_check_payment_request',
         )))->addTo($section);
 
-        $step = new Leyka_Settings_Step('accepted_payment_notification',  $section->id, 'Добавление уведомления о принятом  пожертвовании');
+        $step = new Leyka_Settings_Step('accepted_payment_notification',  $section->id, esc_html__('Add a request to complete donations', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Скопируйте адрес:',
+            'text' => esc_html__('Copy the address:', 'leyka'),
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'cp-accepted-payment-notification',
             'template' => 'cp_accepted_payment_notification',
         )))->addTo($section);
 
-        $step = new Leyka_Settings_Step('rejected_payment_notification',  $section->id, 'Добавление уведомления об отклоненном пожертвовании');
+        $step = new Leyka_Settings_Step('rejected_payment_notification',  $section->id, esc_html__('Add a request to reject donations', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Скопируйте адрес:',
+            'text' => esc_html__('Copy the address:', 'leyka'),
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'cp-rejected-payment-notification',
             'template' => 'cp_rejected_payment_notification',
         )))->addTo($section);
 
-        $step = new Leyka_Settings_Step('notification_email',  $section->id, 'E-mail адрес для уведомлений об успешных пожертвованиях');
+        $step = new Leyka_Settings_Step('notification_email',  $section->id, esc_html__('E-mail for successful donations notifications', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Скопируйте e-mail ниже:',
+            'text' => esc_html__('Copy the email:', 'leyka'),
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'cp-notification-email',
             'template' => 'cp_notification_email',
         )))->addTo($section);
 
-        $step = new Leyka_Settings_Step('cp_payment_tryout', $section->id, 'Тестовое пожертвование');
+        $step = new Leyka_Settings_Step('cp_payment_tryout', $section->id, esc_html__('Test donation', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-text-1',
-            'text' => 'Давайте проверим, проходят ли пожертвования. Мы можем это сделать с помощью тестовых банковских карт, номера и данные которые находятся ниже.',
+            'text' => esc_html__("Let's see if donations work completely. We can do this by using the test bank card numbers and data below.", 'leyka'),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'payment-tryout',
             'custom_setting_id' => 'cp_payment_tryout',
             'field_type' => 'custom_cp_payment_tryout',
             'keys' => array('payment_tryout_completed'),
             'rendering_type' => 'template',
-            'data' => array('required' => 'Для продолжения необходимо выполнить все тестовые платежи'),
+            'data' => array('required' => esc_html__('You must make all of the test donations to proceed', 'leyka')),
         )))->addTo($section);
 
-        $step = new Leyka_Settings_Step('cp_going_live',  $section->id, 'Переключение в боевой режим', array('next_label' => 'Отправить и продолжить'));
+        $step = new Leyka_Settings_Step('cp_going_live',  $section->id, esc_html__('Going live', 'leyka'), array('next_label' => esc_html__('Send & continue', 'leyka')));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Вы успешно провели тестовое пожертвование. Для того, чтобы переключить ваш сайт в «боевой» режим, необходимо отправить письмо в службу поддержки CloudPayments. Ответ, как правило, приходит в течение суток.',
+            'text' => esc_html__('You made test donations successfully. To switch your payments to the "live" mode, you must send an email to CloudPayments support. The answer usually comes in during the following day.', 'leyka'),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'going_live_to',
             'custom_setting_id' => 'going_live_to',
             'field_type' => 'legend',
             'data' => array(
-                'title' => 'Кому',
-                'text' => self::$cp_email,
+                'title' => esc_html__('To whom', 'leyka'),
+                'text' => $this->_cp_email,
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'going_live_from',
             'custom_setting_id' => 'going_live_from',
             'field_type' => 'text',
             'data' => array(
-                'title' => 'От кого',
+                'title' => esc_html__('From whom', 'leyka'),
                 'value' => get_option('admin_email'),
                 'required' => true,
             ),
@@ -225,8 +224,8 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             'custom_setting_id' => 'going_live_email_subject',
             'field_type' => 'text',
             'data' => array(
-                'title' => 'Тема письма',
-                'value' => sprintf('Прошу переключить %s в боевой режим', preg_replace("/^http[s]?:\/\//", "", site_url())),
+                'title' => esc_html__('Email topic', 'leyka'),
+                'value' => sprintf(esc_html__('Please switch %s to the live mode', 'leyka'), preg_replace("/^http[s]?:\/\//", "", site_url())),
                 'required' => true,
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -234,35 +233,35 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             'custom_setting_id' => 'going_live_email_text',
             'field_type' => 'textarea',
             'data' => array(
-                'title' => 'Текст письма',
-                'value' => "Я все проверил. Тестовые пожертвования проходят. Сайт соответствует техническим требованиям. Мы готовы принимать деньги.\nСпасибо!",
+                'title' => esc_html__('Email text', 'leyka'),
+                'value' => esc_html__("We checked everything. Test donations work normally. The site meets specifications. We are ready to receive money.\nThanks!", 'leyka'),
                 'required' => true,
             ),
         )))->addHandler(array($this, 'handleGoingLive'))->addTo($section);
 
-        $step = new Leyka_Settings_Step('cp_live_payment_tryout',  $section->id, 'Проверка настоящего пожертвования');
+        $step = new Leyka_Settings_Step('cp_live_payment_tryout',  $section->id, esc_html__('Live donation check', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Пора проверить, что вас действительно переключили в «боевой режим», и реальные платежи будут проходить и зачисляться правильно.',
+            'text' => esc_html__('Time to check that you really have switched into "live mode", and the real money payments would work properly.', 'leyka'),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'live-payment-tryout',
             'custom_setting_id' => 'cp_payment_tryout',
             'field_type' => 'custom_cp_payment_tryout',
             'keys' => array('payment_tryout_completed'),
             'rendering_type' => 'template',
-            'data' => array('required' => 'Для продолжения необходимо выполнить платёж.', 'is_live' => true)
+            'data' => array('required' => esc_html__('Perform the payment to continue.', 'leyka'), 'is_live' => true)
         )))->addTo($section);
             
         $this->_sections[$section->id] = $section;
         // The main CP settings section - End
 
         // Final Section:
-        $section = new Leyka_Settings_Section('final', 'Завершение');
+        $section = new Leyka_Settings_Section('final', esc_html__('Finish', 'leyka'));
 
-        $step = new Leyka_Settings_Step('cp_final', $section->id, 'Поздравляем!', array('header_classes' => 'greater',));
+        $step = new Leyka_Settings_Step('cp_final', $section->id, esc_html__('Congratulations!', 'leyka'), array('header_classes' => 'greater',));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Вы подключили CloudPayments. Стали доступны платежи с помощью платежных систем Visa и MasterCard.',
+            'text' => esc_html__('You have completed CloudPayments setup. Donations via Visa, MasterCard and MIR bank cards are available now.', 'leyka'),
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'cp-final',
             'template' => 'cp_final',
@@ -278,67 +277,67 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         $this->_navigation_data = array(
             array(
                 'section_id' => 'cp',
-                'title' => 'CLOUDPAYMENTS',
+                'title' => mb_strtoupper(esc_html__('CloudPayments', 'leyka')),
                 'url' => '',
                 'steps' => array(
                     array(
                         'step_id' => 'prepare_documents',
-                        'title' => 'Подготовка документов',
+                        'title' => esc_html__('Preparing the documents', 'leyka'),
                         'url' => '',
                     ),
                     array(
                         'step_id' => 'send_documents',
-                        'title' => 'Отправка документов',
+                        'title' => esc_html__('Sending the documents', 'leyka'),
                         'url' => '',
                     ),
                     array(
                         'step_id' => 'signin_cp_account',
-                        'title' => 'Вход в ЛК CloudPayments',
+                        'title' => esc_html__('Logging in CloudPayments dashboard', 'leyka'),
                         'url' => '',
                     ),
                     array(
                         'step_id' => 'copy_key',
-                        'title' => 'Копируем ключ',
+                        'title' => esc_html__('Copy the connection ID', 'leyka'),
                         'url' => '',
                     ),
                     array(
                         'step_id' => 'paste_key',
-                        'title' => 'Вставляем ключ',
+                        'title' => esc_html__('Saving the connection ID', 'leyka'),
                         'url' => '',
                     ),
                     array(
                         'step_id' => 'check_payment_request',
-                        'title' => 'Запрос',
+                        'title' => esc_html__('Request', 'leyka'),
                         'url' => '',
                     ),
                     array(
                         'step_id' => 'accepted_payment_notification',
-                        'title' => 'Уведомление 1',
+                        'title' => sprintf(esc_html__('Notification #%d', 'leyka'), 1),
                         'url' => '',
                     ),
                     array(
                         'step_id' => 'rejected_payment_notification',
-                        'title' => 'Уведомление 2',
+                        'title' => sprintf(esc_html__('Notification #%d', 'leyka'), 2),
                         'url' => '',
                     ),
                     array(
                         'step_id' => 'notification_email',
-                        'title' => 'E-mail адрес уведомлений',
+                        'title' => esc_html__('Notifications email', 'leyka'),
                         'url' => '',
                     ),
                     array(
                         'step_id' => 'cp_payment_tryout',
-                        'title' => 'Тестовое пожертвование',
+                        'title' => esc_html__('Test donation', 'leyka'),
                         'url' => '',
                     ),
                     array(
                         'step_id' => 'cp_going_live',
-                        'title' => 'Боевой режим',
+                        'title' => esc_html__('Live mode', 'leyka'),
                         'url' => '',
                     ),
                     array(
                         'step_id' => 'cp_live_payment_tryout',
-                        'title' => 'Проверка платежа',
+                        'title' => esc_html__('Live payment testing', 'leyka'),
                         'url' => '',
                     ),
                     
@@ -346,7 +345,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             ),
             array(
                 'section_id' => 'final',
-                'title' => 'Завершение',
+                'title' => esc_html__('Finish', 'leyka'),
                 'url' => '',
             ),
         );
@@ -368,9 +367,9 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
 
         $step = $component && is_a($component, 'Leyka_Settings_Step') ? $component : $this->current_step;
         $submit_settings = array(
-            'next_label' => 'Продолжить',
+            'next_label' => esc_html__('Continue', 'leyka'),
             'next_url' => true,
-            'prev' => 'Вернуться на предыдущий шаг',
+            'prev' => esc_html__('Back to the previous step', 'leyka'),
         );
 
         if($step->next_label) {
@@ -381,7 +380,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             $submit_settings['prev'] = false;   // I. e. the Wizard shouln't display the back link
         } else if($step->section_id === 'final') {
 
-            $submit_settings['next_label'] = 'Перейти в Панель управления';
+            $submit_settings['next_label'] = esc_html__('Go to the Dashboard', 'leyka');
             $submit_settings['next_url'] = admin_url('admin.php?page=leyka');
 
         }
@@ -394,28 +393,31 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         
         $errors = array();
         
-        if(!isset($_FILES['leyka_send_documents_file'])) {
+        if( !isset($_FILES['leyka_send_documents_file']) ) {
             $errors[] = new WP_Error('application_file_not_selected', 'Файл не выбран!');
         }
         
-        $movefile = wp_handle_upload( $_FILES['leyka_send_documents_file'], array( 'test_form' => false ) );
-        if(isset( $movefile['error'] ) ) {
-            $errors[] = new WP_Error('application_file_upload_error', $movefile['error']);
+        $moved_file = wp_handle_upload( $_FILES['leyka_send_documents_file'], array( 'test_form' => false ) );
+        if(isset($moved_file['error'])) {
+            $errors[] = new WP_Error('application_file_upload_error', $moved_file['error']);
         }
         
-        if(!count($errors)) {
+        if( !$errors ) {
+
             $headers = array();
             $headers[] = sprintf('From: %s <%s>', get_bloginfo('name'), $_POST['leyka_send_documents_from']);
-            
+
             $attachments = array();
-            $attachments[] = $movefile['file'];
+            $attachments[] = $moved_file['file'];
             
-            wp_mail( self::$cp_email, $_POST['leyka_send_documents_email_subject'], $_POST['leyka_send_documents_email_text'], $headers, $attachments );
+            wp_mail( $this->_cp_email, $_POST['leyka_send_documents_email_subject'], $_POST['leyka_send_documents_email_text'], $headers, $attachments );
             
             $_SESSION['leyka-cp-notif-documents-sent'] = true;
+
         }
-        
-        return !empty($errors) ? $errors : true;
+
+        return $errors ? $errors : true;
+
     }
     
     public function handleGoingLive(array $step_settings) {
@@ -436,7 +438,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         $headers = array();
         $headers[] = sprintf('From: %s <%s>', get_bloginfo('name'), $_POST['leyka_going_live_from']);
         
-        wp_mail( self::$cp_email, $_POST['leyka_going_live_email_subject'], $_POST['leyka_going_live_email_text'], $headers );
+        wp_mail( $this->_cp_email, $_POST['leyka_going_live_email_subject'], $_POST['leyka_going_live_email_text'], $headers );
         
         return true;
         
