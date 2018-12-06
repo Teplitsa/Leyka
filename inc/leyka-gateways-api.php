@@ -778,7 +778,7 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
                 'title' => __('Payment method custom label', 'leyka'),
                 'description' => __('A label for this payment method that will appear on all donation forms.', 'leyka'),
                 'required' => false,
-                'placeholder' => sprintf(__('E.g., �%s�', 'leyka'), $this->_label),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), $this->_label),
                 'validation_rules' => array(), // List of regexp?..
             ));
         }

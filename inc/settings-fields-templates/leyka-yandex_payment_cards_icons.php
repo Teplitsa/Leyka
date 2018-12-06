@@ -16,7 +16,7 @@
 
     <ul>
         <li><?php esc_html_e("Organization head's passport - the full main page and the registration page.", 'leyka');?></li>
-        <li><?php esc_html_e('The the organization state registration certificate.', 'leyka');?></li>
+        <li><?php esc_html_e('The organization state registration certificate.', 'leyka');?></li>
     </ul>
 
 </div>

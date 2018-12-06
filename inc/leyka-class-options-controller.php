@@ -475,7 +475,7 @@ function leyka_sync_plugin_stats_option() {
         if(empty($response['body'])) {
             return new WP_Error(
                 'plugin_stats_not_saved',
-                sprintf(__("The plugin stats collection status wasn't saved :( Please send a message about it to the <a href='mailto:".LEYKA_SUPPORT_EMAIL."' target='_blank'>plugin tech support</a>"), 'leyka')
+                sprintf(__("The plugin stats collection status wasn't saved :( Please send a message about it to the <a href='mailto:%s' target='_blank'>plugin tech support</a>", LEYKA_SUPPORT_EMAIL), 'leyka')
             );
         }
 
@@ -483,7 +483,7 @@ function leyka_sync_plugin_stats_option() {
         if(empty($response['installation_id']) || (int)$response['installation_id'] <= 0) {
             return new WP_Error(
                 'plugin_stats_not_saved',
-                sprintf(__("The plugin stats collection status wasn't saved :( Please send a message about it to the <a href='mailto:".LEYKA_SUPPORT_EMAIL."' target='_blank'>plugin tech support</a>"), 'leyka')
+                sprintf(__("The plugin stats collection status wasn't saved :( Please send a message about it to the <a href='mailto:%s' target='_blank'>plugin tech support</a>", LEYKA_SUPPORT_EMAIL), 'leyka')
             );
         }
 

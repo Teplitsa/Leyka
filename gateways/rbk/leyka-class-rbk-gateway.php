@@ -299,7 +299,7 @@ class Leyka_Rbk_Card extends Leyka_Payment_Method {
             $this->_category
         );
 
-        $this->_label_backend = __('Bank card via (RBK money)', 'leyka');
+        $this->_label_backend = __('Bank card (RBK Money)', 'leyka');
         $this->_label = __('Bank card', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_' . $this->_id, array(
