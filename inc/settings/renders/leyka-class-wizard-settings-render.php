@@ -31,56 +31,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
     }
     
     public function renderJSData() {
-
-        $is_legal = leyka_options()->opt('receiver_legal_type') === 'legal';
-        
-        wp_localize_script( 'leyka-settings', 'leykaWizard', array(
-            'termsKeys' => array(
-                array(
-                    '#LEGAL_NAME#',
-                    '#LEGAL_FACE#',
-                    '#LEGAL_FACE_POSITION#',
-                    '#LEGAL_ADDRESS#',
-                    '#STATE_REG_NUMBER#',
-                    '#KPP#',
-                    '#INN#',
-                    '#BANK_ACCOUNT#',
-                    '#BANK_NAME#',
-                    '#BANK_BIC#',
-                    '#BANK_CORR_ACCOUNT#',
-                ),
-                array(
-                    $is_legal ? leyka_options()->opt('org_full_name') : leyka_options()->opt('person_full_name'),
-                    $is_legal ? leyka_options()->opt('org_face_fio_ip') : leyka_options()->opt('person_full_name'),
-                    $is_legal ? leyka_options()->opt('org_face_position') : '',
-                    $is_legal ? leyka_options()->opt('org_address') : leyka_options()->opt('person_address'),
-                    $is_legal ? leyka_options()->opt('org_state_reg_number') : '',
-                    $is_legal ? leyka_options()->opt('org_kpp') : '',
-                    $is_legal ? leyka_options()->opt('org_inn') : leyka_options()->opt('person_inn'),
-                    $is_legal ? leyka_options()->opt('org_bank_account') : leyka_options()->opt('person_bank_account'),
-                    $is_legal ? leyka_options()->opt('org_bank_name') : leyka_options()->opt('person_bank_name'),
-                    $is_legal ? leyka_options()->opt('org_bank_bic') : leyka_options()->opt('person_bank_bic'),
-                    $is_legal ? leyka_options()->opt('org_bank_corr_account') : leyka_options()->opt('person_bank_corr_account'),
-                ),
-            ),
-            'pdKeys' => array(
-                array(
-                    '#LEGAL_NAME#',
-                    '#LEGAL_ADDRESS#',
-                    '#SITE_URL#',
-                    '#PD_TERMS_PAGE_URL#',
-                    '#ADMIN_EMAIL#',
-                ),
-                array(
-                    $is_legal ? leyka_options()->opt('org_full_name') : leyka_options()->opt('person_full_name'),
-                    $is_legal ? leyka_options()->opt('org_address') : leyka_options()->opt('person_address'),
-                    home_url(),
-                    leyka_get_pd_terms_page_url(),
-                    get_option('admin_email'),
-                ),
-            ),
-        ));
-                
+        leyka_localize_rich_html_text_tags();
     }
 
     public function renderMainArea() {
@@ -305,6 +256,13 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         </div>
 
+        <a href="<?php echo admin_url('/admin.php?page=leyka_settings');?>" class="nav-section nav-exit">
+            <div class="nav-section-title">
+                <div class="nav-section-marker"></div>
+                <?php _e('Exit installation', 'leyka');?>
+            </div>
+        </a>
+        
         <div class="leyka-logo">
             <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/nav-logo.svg" alt="">
         </div>

@@ -433,7 +433,7 @@ self::$_options_meta = array(
         'placeholder' => __('E.g., Daisy Foundation thanks you for your kindness', 'leyka'),
     ),
     'email_thanks_text' => array(
-        'type' => 'rich_html',
+        'type' => 'textarea',
         'default' => __('Hello, #DONOR_NAME#!<br><br>You have chosed to make a #SUM# donation to the following charity campaign: #CAMPAIGN_NAME#, using #PAYMENT_METHOD_NAME#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
         'title' => __('Email text', 'leyka'),
         'description' => $email_placeholders,
@@ -449,7 +449,7 @@ self::$_options_meta = array(
         'placeholder' => __('E.g., Daisy Foundation thanks you for your kindness', 'leyka'),
     ),
     'email_recurring_init_thanks_text' => array(
-        'type' => 'html',
+        'type' => 'textarea',
         'default' => __('Hello, #DONOR_NAME#!<br><br>We just took a #SUM# from your account as a regular donation to the campaign «#CAMPAIGN_NAME#», using #PAYMENT_METHOD_NAME#.<br><br>If you, regretfully, wish to stop future regular donations to this campaign, please #RECURRING_SUBSCRIPTION_CANCELLING_LINK#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
         'title' => __('A text of a recurring subscription donation notice sent to a donor', 'leyka'),
         'description' => __('Enter the text of the notification email that would be sended to each donor on each rebill donation. It may include the following special entries:', 'leyka').$email_placeholders,
@@ -463,7 +463,7 @@ self::$_options_meta = array(
         'required' => true,
     ),
     'email_recurring_ongoing_thanks_text' => array(
-        'type' => 'html',
+        'type' => 'textarea',
         'default' => __('Hello, #DONOR_NAME#!<br><br>We just took a #SUM# from your account as a regular donation to the campaign «#CAMPAIGN_NAME#», using #PAYMENT_METHOD_NAME#.<br><br>If you, regretfully, wish to stop future regular donations to this campaign, please #RECURRING_SUBSCRIPTION_CANCELLING_LINK#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
         'title' => __('A text of after-rebill donation notice sent to a donor', 'leyka'),
         'description' => __('Enter the text of the notification email that would be sended to each donor on each rebill donation. It may include the following special entries:', 'leyka').$email_placeholders,
@@ -490,7 +490,7 @@ self::$_options_meta = array(
         'placeholder' => __('E.g., Thanks to you, the campaign succeeded!', 'leyka'),
     ),
     'email_campaign_target_reaching_text' => array(
-        'type' => 'html',
+        'type' => 'textarea',
         'default' => __("Hello, #DONOR_NAME#!<br><br>You've donated #SUM# totally to the campaign: «#CAMPAIGN_NAME#».<br><br>We're glad to tell that just now this campaign successfully finished!<br><br>We heartfully thank you for your support,<br>#ORG_NAME#", 'leyka'),
         'title' => __('A text of a notification email sent to each donor when campaign target reached', 'leyka'),
         'description' => __('Enter the text of a notification email sent to each donor when campaign target reached. The text may include the following special entries:', 'leyka').$campaign_target_reaching_email_placeholders,
@@ -521,7 +521,7 @@ self::$_options_meta = array(
         'placeholder' => __('E.g., new donation incoming', 'leyka'),
     ),
     'email_notification_text' => array(
-        'type' => 'html',
+        'type' => 'textarea',
         'default' => __('Hello!<br><br>A new donation has been made on a #SITE_NAME#:<br><ul><li>Campaign: #CAMPAIGN_NAME#.</li><li>Donation purpose: #PURPOSE#</li><li>Amount: #SUM#.</li><li>Payment method: #PAYMENT_METHOD_NAME#.</li><li>Date: #DATE#</li></ul><br><br>Your Leyka', 'leyka'),
         'title' => __('A text of after-donation notification sended to a website personnel', 'leyka'),
         'description' => __("Enter the text of the notification email that would be sended to each email stated before right after donation is made. It may include the following special entries:", 'leyka').$email_placeholders,
@@ -720,6 +720,7 @@ self::$_options_meta = array(
         //    <code>#BANK_CORR_ACCOUNT#</code> — ".__("the organization bank correspondent account", 'leyka')."<br>
         //    </span>",
         'required' => true,
+        'field_classes' => array('type-rich_html'),
     ),
     'person_terms_of_service_text' => array(
         'type' => 'rich_html',
@@ -767,6 +768,7 @@ self::$_options_meta = array(
 #LEGAL_FACE#',
         'title' => __('A text of Terms of donation service', 'leyka'),
         'required' => true,
+        'field_classes' => array('type-rich_html'),
     ),
     'terms_agreed_by_default' => array(
         'type' => 'checkbox',
@@ -823,6 +825,7 @@ self::$_options_meta = array(
         //    <code>#ADMIN_EMAIL#</code> — ".__("the website administrator email", 'leyka')."<br>
         //    </span>",
         'required' => true,
+        'field_classes' => array('type-rich_html'),
     ),
     'person_pd_terms_text' => array(
         'type' => 'rich_html',
@@ -850,7 +853,7 @@ self::$_options_meta = array(
         'required' => true,
         'list_entries' => array(
             'popup' => __('Opens the Terms text in popup window', 'leyka'),
-            'page' => __('Opens the page of Terms text', 'leyka')
+            'page' => __('Opens the page of Terms text', 'leyka'),
         ),
     ),
     'donation_submit_text' => array(
@@ -933,7 +936,7 @@ self::$_options_meta = array(
         'type' => 'select',
         'default' => 'ru',
         'title' => __('Select a language to load', 'leyka'),
-        'description' => '<input type="button" class="button button-secondary" value="Download" id="upload-l10n-button"/><div class="field-errors"><span></span></div><div class="field-success"><span>The translation downloaded successfully. Reloading the page...</span></div>',
+        'description' => '<div class="field-errors"><span></span></div><div class="field-success"><span>The translation downloaded successfully. Reloading the page...</span></div>',
         'list_entries' => array(
             'ru' => __('Russian', 'leyka'),
         ),
