@@ -68,7 +68,7 @@ The plugin manual is avaliable at [official website](//leyka.te-st.ru/instructio
 * [basic features](//leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/),
 * [extended features](//leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/).
 
-PHP version required: 5.3+
+PHP version required: 5.6+
 
 
 == Frequently Asked Questions ==
@@ -89,6 +89,13 @@ PHP version required: 5.3+
 10. Google Analytics events
 
 == Changelog ==
+= 3.0.0 =
+* New: plugin settings UI updated.
+* New: Setup Wizards added: initial, Yandex.Kassa, CloudPayments.
+* New: settings Controllers & Renders framework added.
+* New: now PHP v5.6 is the min. supported version.
+* Fix: small fixes.
+
 = 2.3.9 =
 * New: Paymaster gateway support added.
 * Fix: server-side errors handling improved for Revo template.
