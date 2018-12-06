@@ -387,6 +387,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 	<?php leyka_itv_info_widget();
 	}
+	
+	public function isSectionsFormsV3($stage) {
+		return in_array($stage, array('payment', 'email', 'beneficiary', 'technical'));
+	}
 
 	/** Displaying settings **/
 	public function settingsScreen() {
@@ -396,6 +400,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }
 
         $current_stage = $this->get_current_settings_tab();
+		$is_separate_sections_forms = $this->isSectionsFormsV3($current_stage);
 
 		// Basic Controller class:
 		require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php');
@@ -424,11 +429,14 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                     if($value) {
                         $admin_page = add_query_arg($arg_name, $value, $admin_page);
                     }
-                }?>
+                }
 
-                <form method="post" action="<?php echo admin_url($admin_page);?>" id="leyka-settings-form">
-
-                <?php wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
+                if(!$is_separate_sections_forms) {
+					?>
+					<form method="post" action="<?php echo admin_url($admin_page);?>" id="leyka-settings-form">
+					<?php
+					wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
+				}
 
                 if(file_exists(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-$current_stage.php")) {
                     require_once(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-$current_stage.php");
@@ -438,7 +446,17 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
                     foreach(leyka_opt_alloc()->get_tab_options($current_stage) as $option) { // Render each option/section
 
+						if($is_separate_sections_forms) {
+						?>
+							<form method="post" action="<?php echo admin_url($admin_page);?>" id="leyka-settings-form">
+						<?php
+							wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
+							do_action("leyka_settings_pre_{$current_stage}_fields");
+						}
+
                         if(is_array($option) && !empty($option['section'])) {
+							$option['section']['is_separate_sections_forms'] = $is_separate_sections_forms;
+							$option['section']['current_stage'] = $current_stage;
                             do_action('leyka_render_section', $option['section']);
                         } else { // is this case even possible?
 
@@ -446,16 +464,25 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                             do_action("leyka_render_{$option_info['type']}", $option, $option_info);
 
                         }
+						
+						if($is_separate_sections_forms) { ?>
+						</form>
+						<?php }
                     }
 
                     do_action("leyka_settings_post_{$current_stage}_fields");?>
 
-                    <p class="submit">
+                    <?php if(!$is_separate_sections_forms) {?>
+					<p class="submit">
                         <input type="submit" name="<?php echo "leyka_settings_{$current_stage}";?>_submit" value="<?php _e('Save settings', 'leyka');?>" class="button-primary">
                     </p>
+					<?php } ?>
+					
                 <?php }?>
-
+				
+				<?php if(!$is_separate_sections_forms) {?>
                 </form>
+				<?php } ?>
             </div>
 
 		</div>
@@ -512,6 +539,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 			    .$tab_label.'</a>';
 		}
 
+		$out .= '<a href="'.admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init').'" class="init-wizard-tab"></a>';
+				
 		return $out;
 
 	}
@@ -656,7 +685,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             || (
                 isset($_GET['page'])
                 && $_GET['page'] === 'leyka_settings'
-                && (empty($_GET['stage']) || $_GET['stage'] === 'payment')
+                && (empty($_GET['stage']) || $this->isSectionsFormsV3($_GET['stage']))
                 && empty($_GET['old'])
             )
         ) {
@@ -700,6 +729,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         ));
         wp_localize_script('leyka-admin', 'leyka', $js_data);
         wp_localize_script('leyka-settings', 'leyka', $js_data);
+		leyka_localize_rich_html_text_tags();
 
         // Campaign editing page:
         if($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post' && !$screen->action) {
