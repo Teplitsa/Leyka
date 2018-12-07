@@ -504,9 +504,12 @@ class Leyka {
 
     protected function _outerRequestAllowed() {
 
+        $date = date('d.m.Y');
+        $home_url_clear = rtrim(home_url(), '/');
+
         return isset($_SERVER['PHP_AUTH_USER'])
             && $_SERVER['PHP_AUTH_USER'] === 'stats-collector'
-            && $_SERVER['PHP_AUTH_PW'] === md5('stats-'.date('d.m.Y').'-'.home_url());
+            && $_SERVER['PHP_AUTH_PW'] === md5('stats-'.$date.'-'.$home_url_clear);
 
     }
 
@@ -538,8 +541,6 @@ class Leyka {
             }
 
         }
-
-//        echo '<pre>Date from: '.print_r($query_params['date_query']['after'], 1).'</pre>';
 
         if( !empty($query_params['date_query']) ) {
             $query_params['date_query'] = array($query_params['date_query']);
