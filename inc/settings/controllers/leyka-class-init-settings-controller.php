@@ -745,12 +745,8 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         update_option('leyka_plugin_stats_option_needs_sync', time());
         $stats_option_synch_res = leyka_sync_plugin_stats_option();
 
-        if(is_wp_error($stats_option_synch_res)) {
-            return $stats_option_synch_res;
-        } else {
-            return delete_option('leyka_plugin_stats_option_needs_sync')
-                && update_option('leyka_plugin_stats_option_sync_done', time());
-        }
+        return delete_option('leyka_plugin_stats_option_needs_sync')
+            && update_option('leyka_plugin_stats_option_sync_done', time());
 
     }
 
