@@ -436,15 +436,15 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         // Campaign settings Section - End
 
         // Final Section:
-        $section = new Leyka_Settings_Section('final', esc_html__('Setup completed', 'leyka'));
-
-        $step = new Leyka_Settings_Step('init', $section->id, esc_html__('Congratulations!', 'leyka'), array('header_classes' => 'greater',));
-        $step->addBlock(new Leyka_Text_Block(array(
-            'id' => 'step-intro-text',
-            'text' => esc_html__('You have successfully completed the Leyka setup Wizard.', 'leyka'),
-        )))->addTo($section);
-
-        $this->_sections[$section->id] = $section;
+//        $section = new Leyka_Settings_Section('final', esc_html__('Setup completed', 'leyka'));
+//
+//        $step = new Leyka_Settings_Step('init', $section->id, esc_html__('Congratulations!', 'leyka'), array('header_classes' => 'greater',));
+//        $step->addBlock(new Leyka_Text_Block(array(
+//            'id' => 'step-intro-text',
+//            'text' => esc_html__('You have successfully completed the Leyka setup Wizard.', 'leyka'),
+//        )))->addTo($section);
+//
+//        $this->_sections[$section->id] = $section;
         // Final Section - End
 
     }
@@ -508,13 +508,14 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             } else if($step_from->id === 'donors_communication') {
                 $next_step_full_id = $step_from->section_id.'-campaign_completed';
             } else if($step_from->id === 'campaign_completed') {
-                #$next_step_full_id = 'final-init';
-                $next_step_full_id = 'cd-campaign_completed';
+                $next_step_full_id = 'cd-campaign_completed'; // $next_step_full_id = 'final-init';
+
             }
 
-        } else if($step_from->section_id === 'final') { // Final Section
-            $next_step_full_id = true;
         }
+//        else if($step_from->section_id === 'final') { // Final Section
+//            $next_step_full_id = true;
+//        }
 
         if( !!$return_full_id || !is_string($next_step_full_id) ) {
             return $next_step_full_id;
@@ -590,11 +591,11 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                     ),
                 ),
             ),
-            array(
-                'section_id' => 'final',
-                'title' => esc_html__('Setup completed', 'leyka'),
-                'url' => '',
-            ),
+//            array(
+//                'section_id' => 'final',
+//                'title' => esc_html__('Setup completed', 'leyka'),
+//                'url' => '',
+//            ),
         );
 
     }
