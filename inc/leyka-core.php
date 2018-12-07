@@ -793,20 +793,21 @@ class Leyka {
 
             }
 
-            // Remove an unneeded scripts for settings pages:
+            /** @todo Check if this code is needed! */
+            // Remove unneeded scripts for settings pages:
             $settings_pages_dir = dir(LEYKA_PLUGIN_DIR.'inc/settings-pages/');
             while(false !== ($script = $settings_pages_dir->read())) {
 
                 if(
-                    $script != '.' && $script != '..' &&
+                    $script !== '.' && $script !== '..' &&
                     !in_array($script, array(
-                                             'leyka-settings-common.php',
-                                             'leyka-settings-payment.php',
-                                             'leyka-settings-payment-gateway.php',
-                                             'leyka-settings-payment-gateways-list.php',
-                                             'leyka-settings-payment-new.php',
-                                             'leyka-settings-payment-pm-order.php',
-                                            ))
+                         'leyka-settings-common.php',
+                         'leyka-settings-payment.php',
+                         'leyka-settings-payment-gateway.php',
+                         'leyka-settings-payment-gateways-list.php',
+                         'leyka-settings-payment-new.php',
+                         'leyka-settings-payment-pm-order.php',
+                    ))
                 ) {
                     unlink(LEYKA_PLUGIN_DIR.'inc/settings-pages/'.$script);
                 }
