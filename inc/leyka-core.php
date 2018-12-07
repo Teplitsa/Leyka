@@ -373,6 +373,7 @@ class Leyka {
             ) {
                 do_action('leyka_do_campaigns_targets_reaching_mailout');
             } else if($request[0] === 'get_usage_stats') {
+                if(isset($_GET['tst'])) echo '<pre>'.print_r($_SERVER, 1).'</pre>';
                 echo empty($_GET['tst']) ?
                     json_encode($this->_get_usage_stats($_REQUEST)) :
                     '<pre>'.print_r($this->_get_usage_stats($_REQUEST), 1).'</pre>';
@@ -499,6 +500,7 @@ class Leyka {
 
     protected function _get_usage_stats(array $params = array()) {
 
+        /** @todo Use Donations_Factory here */
         $query_params = array(
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => 'any',
