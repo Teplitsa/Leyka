@@ -40,7 +40,8 @@ function leyka_render_text_field($option_id, $data){
         <label for="<?php echo $option_id.'-field';?>">
             <span class="field-component title">
 
-                <?php echo $data['title'].(empty($data['required']) ? '' : '<span class="required">*</span>');
+                <span class="text"><?php echo $data['title'];?></span>
+                <?php echo (empty($data['required']) ? '' : '<span class="required">*</span>');
 
                 if( !empty($data['comment']) ) {?>
                 <span class="field-q">
@@ -93,7 +94,7 @@ function leyka_render_legend_field($option_id, $data){
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-legend-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
         <label for="<?php echo $option_id.'-field';?>">
             <span class="field-component title">
-                <?php echo $data['title'];?>
+                <span class="text"><?php echo $data['title'];?></span>
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
                 <?php if( !empty($data['comment'])) {?>
                 <span class="field-q">
@@ -122,7 +123,7 @@ function leyka_render_number_field($option_id, $data){
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-number-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
         <label for="<?php echo $option_id.'-field';?>">
             <span class="field-component title">
-                <?php echo $data['title'];?>
+                <span class="text"><?php echo $data['title'];?></span>
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
                 <?php if( !empty($data['comment'])) {?>
                     <span class="field-q">
@@ -151,7 +152,7 @@ function leyka_render_checkbox_field($option_id, $data){
         <label for="<?php echo $option_id.'-field';?>">
             <span class="field-component title">
 
-                <?php echo $data['title'];?>
+                <span class="text"><?php echo $data['title'];?></span>
                 <?php if( !empty($data['comment'])) {?>
                     <span class="field-q">
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg">
@@ -175,7 +176,7 @@ function leyka_render_multi_checkboxes_fields($option_id, $data){
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-multi-checkboxes-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
         <span class="field-component title">
-            <?php echo $data['title'];?>
+            <span class="text"><?php echo $data['title'];?></span>
             <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
             <?php if( !empty($data['comment'])) {?>
                 <span class="field-q">
@@ -208,7 +209,7 @@ function leyka_render_radio_fields($option_id, $data){
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-radio-field-wrapper field-radio <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
         <span class="field-component title">
-            <?php echo $data['title'];?>
+            <span class="text"><?php echo $data['title'];?></span>
             <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
             <?php if( !empty($data['comment'])) {?>
                 <span class="field-q">
@@ -275,7 +276,7 @@ function leyka_render_select_field($option_id, $data){
         <label for="<?php echo $option_id.'-field';?>">
 
             <span class="field-component title">
-                <?php echo $data['title'];?>
+                <span class="text"><?php echo $data['title'];?></span>
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
                 <?php if( !empty($data['comment'])) {?>
                     <span class="field-q">
@@ -320,7 +321,7 @@ function leyka_render_multi_select_field($option_id, $data){
         <label for="<?php echo $option_id.'-field';?>">
 
             <span class="field-component title">
-                <?php echo $data['title'];?>
+                <span class="text"><?php echo $data['title'];?></span>
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
                 <?php if( !empty($data['comment'])) {?>
                     <span class="field-q">
@@ -360,7 +361,7 @@ function leyka_render_textarea_field($option_id, $data){
         <label for="<?php echo $option_id.'-field';?>">
 
             <span class="field-component title">
-                <?php echo $data['title'];?>
+                <span class="text"><?php echo $data['title'];?></span>
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
                 <?php if( !empty($data['comment'])) {?>
                     <span class="field-q">
@@ -396,7 +397,7 @@ function leyka_render_html_field($option_id, $data){
         <label for="<?php echo $option_id;?>">
 
             <span class="field-component title">
-                <?php echo $data['title'];?>
+                <span class="text"><?php echo $data['title'];?></span>
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
                 <?php if( !empty($data['comment'])) {?>
                     <span class="field-q">
@@ -436,7 +437,7 @@ function leyka_render_rich_html_field($option_id, $data){
         <label for="<?php echo $option_id;?>">
 
             <span class="field-component title">
-                <?php echo $data['title'];?>
+                <span class="text"><?php echo $data['title'];?></span>
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
                 <?php if( !empty($data['comment'])) {?>
                     <span class="field-q">

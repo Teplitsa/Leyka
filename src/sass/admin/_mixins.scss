@@ -111,25 +111,29 @@
 @mixin leyka-field-title {
   
     @include wizard-field-label();
-    display: block;
+    display: flex;
     margin-bottom: 5px;
     position: relative;
+    align-items: flex-start;
+    
+    .text {
+        order: 1;
+    }
     
     .required {
         @include wizard-field-label-required-sign();
         color: $color-wizard-required-sign;
-        vertical-align: text-bottom;
+        order: 0;
         margin-right: 3px;
-        float: left;
-        
-        &:after {
-            clear: both;
-            float: none;
-        }
+        display: block;
+        height: 14px;
     }
     
     .field-q {
       @include field-q();
+      order: 2;
+      display: block;
+      height: 15px;
     }
     
 }
