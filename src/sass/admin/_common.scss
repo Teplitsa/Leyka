@@ -478,10 +478,6 @@
     margin-left: 72px;
 }    
 
-#message {
-    margin-left: 72px;
-}
-
 .admin_page_leyka_settings_new {
     .update-nag {
         margin-left: -20px;
@@ -490,8 +486,19 @@
     }
 }
 
+#message {
+    margin-left: 72px;
+}
+
+.leyka-admin {
+    #message {
+        margin-left: 0px;
+    }
+}
+
 // connect stats option
 .wp-core-ui .leyka-admin {
+    
     .leyka-options-section {
         #leyka_send_plugin_stats-wrapper {
             display: none;
