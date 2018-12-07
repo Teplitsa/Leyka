@@ -210,17 +210,16 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'id' => 'org_bank_account',
             'option_id' => 'org_bank_account',
             'show_description' => false,
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'org_bank_corr_account',
+            'option_id' => 'org_bank_corr_account',
+            'show_description' => false,
         )))->addBlock(new Leyka_Container_Block(array(
             'id' => 'complex-row-1',
             'entries' => array(
                 new Leyka_Option_Block(array(
                     'id' => 'org_bank_bic',
                     'option_id' => 'org_bank_bic',
-                    'show_description' => false,
-                )),
-                new Leyka_Option_Block(array(
-                    'id' => 'org_bank_corr_account',
-                    'option_id' => 'org_bank_corr_account',
                     'show_description' => false,
                 )),
             ),
@@ -239,17 +238,16 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'id' => 'person_bank_account',
             'option_id' => 'person_bank_account',
             'show_description' => false,
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'person_bank_corr_account',
+            'option_id' => 'person_bank_corr_account',
+            'show_description' => false,
         )))->addBlock(new Leyka_Container_Block(array(
             'id' => 'complex-row-1',
             'entries' => array(
                 new Leyka_Option_Block(array(
                     'id' => 'person_bank_bic',
                     'option_id' => 'person_bank_bic',
-                    'show_description' => false,
-                )),
-                new Leyka_Option_Block(array(
-                    'id' => 'person_bank_corr_account',
-                    'option_id' => 'person_bank_corr_account',
                     'show_description' => false,
                 )),
             ),
