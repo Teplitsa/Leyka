@@ -726,6 +726,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'field_required' => __('This field is required to be filled', 'leyka'),
             'email_invalid' => __('You have entered an invalid email', 'leyka'),
             'common_error_message' => esc_html__('Error while saving the data', 'leyka'),
+			'error_message' => esc_html__('Error!', 'leyka'),
+			'disconnect_stats' => esc_html__('Disconnect statistics', 'leyka'),
         ));
         wp_localize_script('leyka-admin', 'leyka', $js_data);
         wp_localize_script('leyka-settings', 'leyka', $js_data);

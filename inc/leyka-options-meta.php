@@ -936,7 +936,7 @@ self::$_options_meta = array(
         'type' => 'select',
         'default' => 'ru',
         'title' => __('Select a language to load', 'leyka'),
-        'description' => '<div class="field-errors"><span></span></div><div class="field-success"><span>The translation downloaded successfully. Reloading the page...</span></div>',
+        'description' => '<div class="field-errors"><span></span></div><div class="field-success"><span>'.esc_html__('The translation downloaded successfully. Reloading the page...', 'leyka').'</span></div>',
         'list_entries' => array(
             'ru' => __('Russian', 'leyka'),
         ),

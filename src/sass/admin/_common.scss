@@ -472,3 +472,37 @@
     margin-top: 6px;
     
 }
+
+.update-nag {
+    margin-left: 72px;
+}    
+
+.admin_page_leyka_settings_new {
+    .update-nag {
+        margin-left: -20px;
+        margin-top: 0px;
+        width: 100%;
+    }    
+}
+
+// connect stats option
+.wp-core-ui .leyka-admin {
+    .leyka-options-section {
+        #leyka_send_plugin_stats-wrapper {
+            display: none;
+        }
+        
+        .submit {
+            .disconnect-stats {
+                color: $color-wizard-link;
+                border:none;
+                background: none;        
+                border-bottom: 1px dashed $color-wizard-link;
+                margin-right: 1rem;
+                padding-left: 0px;
+                padding-right: 0px;
+                cursor: pointer;
+            }
+        }
+    }
+}

@@ -317,7 +317,7 @@ function initRichHTMLTagsReplace($, $controlContainer) {
         
         originalDocHTML = $frameBody.html();
         
-        if($controlContainer.find('#leyka_pd_terms_text-field').length > 0) {
+        if($controlContainer.find('#leyka_pd_terms_text-field').length > 0 || $controlContainer.find('#leyka_person_pd_terms_text-field').length > 0) {
             keysValues = leykaRichHTMLTags.pdKeys;
         }
         else {

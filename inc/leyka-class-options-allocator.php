@@ -104,7 +104,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                     array('section' => array(
                         'name' => 'change_receiver_legal_type',
                         'title' => __('Change of ownership form', 'leyka'),
-                        'description' => __('<span class="alert">WARNING!</span> These actions may affect the performance of the plugin.', 'leyka'),
+                        'description' => __('<span class="attention">WARNING!</span> These actions may affect the performance of the plugin.', 'leyka'),
                         'is_default_collapsed' => false,
                         'options' => array(
                             'receiver_legal_type',
@@ -285,6 +285,16 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'action_button' => array( 'title' => __('Download', 'leyka'), 'id' => 'upload-l10n-button'),
                         'options' => array(
                             'lang2upload',
+                        )
+                    ),),
+                    array('section' => array(
+                        'name' => 'stats_connections',
+                        'title' => __('Statistics connection', 'leyka'),
+                        'description' => __('Connect to statistics to send plugin data to us, Teplitsa of Social technologies. It will allow us to consistently improve the plugin work as well as help you quickly resolve technical issues with it. These data will be used only by plugin developers and will not be shared with any third party.', 'leyka'),
+                        'is_default_collapsed' => false,
+                        'action_button' => array( 'title' => __('Connect statistics', 'leyka'), 'id' => 'connect-stats-button'),
+                        'options' => array(
+                            'send_plugin_stats',
                         )
                     ),),
                     array('section' => array(

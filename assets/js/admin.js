@@ -420,8 +420,6 @@ jQuery(document).ready(function($){
             action: 'leyka_upload_l10n'
         };
 
-        console.log(leyka.ajaxurl);
-        
         $.post(leyka.ajaxurl, actionData, null, 'json')
             .done(function(json) {
                 
@@ -435,11 +433,11 @@ jQuery(document).ready(function($){
                 } else if(json.status === 'error' && json.message) {
                     $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html(json.message);
                 } else {
-                    $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html('Ошибка!');
+                    $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html(leyka.error_message);
                 }
 
             }).fail(function(){
-                $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html('Ошибка!');
+                $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html(leyka.error_message);
             }).always(function(){
                 $loading.remove();
                 $btn.prop('disabled', false);
@@ -447,6 +445,24 @@ jQuery(document).ready(function($){
     
     });
 
+});
+
+
+// connect to stats
+jQuery(document).ready(function($){
+    if($('#leyka_send_plugin_stats-y-field').prop('checked')) {
+        var $sectionWrapper = $('.leyka-options-section#stats_connections');
+        $sectionWrapper.find('.submit input').removeClass('button-primary').addClass('disconnect-stats').val(leyka.disconnect_stats);
+    }
+    
+    $('#connect-stats-button').click(function(){
+        if($(this).hasClass('disconnect-stats')) {
+            $('#leyka_send_plugin_stats-n-field').prop('checked', true);
+        }
+        else {
+            $('#leyka_send_plugin_stats-y-field').prop('checked', true);
+        }
+    });
 });
 /** Common wizards functions */
 
@@ -1163,7 +1179,7 @@ function initRichHTMLTagsReplace($, $controlContainer) {
         
         originalDocHTML = $frameBody.html();
         
-        if($controlContainer.find('#leyka_pd_terms_text-field').length > 0) {
+        if($controlContainer.find('#leyka_pd_terms_text-field').length > 0 || $controlContainer.find('#leyka_person_pd_terms_text-field').length > 0) {
             keysValues = leykaRichHTMLTags.pdKeys;
         }
         else {

@@ -88,6 +88,8 @@ if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.6.0', '<') ) {
 
 }
 
+load_plugin_textdomain('leyka', false, basename( dirname( __FILE__ ) ) . '/languages/');
+
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-tmp-translations.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-functions.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-controller.php');
