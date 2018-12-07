@@ -44,7 +44,7 @@ $campaign_url = $campaign_id ? get_the_permalink($campaign_id) : null;?>
     <div class="<?php echo $this->field_type;?> init-final-step-go-campaign">
 
     <?php if($campaign_id) {?>
-        <p><?php esc_html_e('Proceed to your campaign page to test it out.');?></p>
+        <p><?php esc_html_e('Proceed to your campaign page to test it out.', 'leyka');?></p>
     <?php } else {?>
         <p><?php esc_html_e('Create a campaign to start donations collection.', 'leyka');?></p>
     <?php }?>
