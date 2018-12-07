@@ -123,7 +123,7 @@ if( !function_exists('leyka_gateway_details_html') ) {
                 
                 <span class="field-q-tooltip">
                 <?php if($gateway->min_commission && $gateway->min_commission > 0.0) {
-                    printf(esc_html__('Commission from %s%%'), $gateway->min_commission);
+                    printf(esc_html__('Commission from %s%%', 'leyka'), $gateway->min_commission);
                 } else {
                     esc_html_e('Commission is unknown', 'leyka');
                 }?>
