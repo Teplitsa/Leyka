@@ -373,6 +373,11 @@ class Leyka {
             ) {
                 do_action('leyka_do_campaigns_targets_reaching_mailout');
             } else if($request[0] === 'get_usage_stats') {
+
+                if( !$this->_outerRequestAllowed() ) {
+                    exit;
+                }
+//                if(isset($_GET['tst'])) echo '<pre>'.print_r($_SERVER, 1).'</pre>';
                 echo empty($_GET['tst']) ?
                     json_encode($this->_get_usage_stats($_REQUEST)) :
                     '<pre>'.print_r($this->_get_usage_stats($_REQUEST), 1).'</pre>';
@@ -497,8 +502,17 @@ class Leyka {
 
     }
 
+    protected function _outerRequestAllowed() {
+
+        return isset($_SERVER['PHP_AUTH_USER'])
+            && $_SERVER['PHP_AUTH_USER'] === 'stats-collector'
+            && $_SERVER['PHP_AUTH_PW'] === md5('stats-'.date('d.m.Y').'-'.home_url());
+
+    }
+
     protected function _get_usage_stats(array $params = array()) {
 
+        /** @todo Use Donations_Factory here */
         $query_params = array(
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => 'any',
@@ -791,20 +805,21 @@ class Leyka {
 
             }
 
-            // Remove an unneeded scripts for settings pages:
+            /** @todo Check if this code is needed! */
+            // Remove unneeded scripts for settings pages:
             $settings_pages_dir = dir(LEYKA_PLUGIN_DIR.'inc/settings-pages/');
             while(false !== ($script = $settings_pages_dir->read())) {
 
                 if(
-                    $script != '.' && $script != '..' &&
+                    $script !== '.' && $script !== '..' &&
                     !in_array($script, array(
-                                             'leyka-settings-common.php',
-                                             'leyka-settings-payment.php',
-                                             'leyka-settings-payment-gateway.php',
-                                             'leyka-settings-payment-gateways-list.php',
-                                             'leyka-settings-payment-new.php',
-                                             'leyka-settings-payment-pm-order.php',
-                                            ))
+                         'leyka-settings-common.php',
+                         'leyka-settings-payment.php',
+                         'leyka-settings-payment-gateway.php',
+                         'leyka-settings-payment-gateways-list.php',
+                         'leyka-settings-payment-new.php',
+                         'leyka-settings-payment-pm-order.php',
+                    ))
                 ) {
                     unlink(LEYKA_PLUGIN_DIR.'inc/settings-pages/'.$script);
                 }
