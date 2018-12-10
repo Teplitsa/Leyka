@@ -71,10 +71,8 @@ jQuery(document).ready(function($){
             leykaUpdatePmList($pm_order);
 
             if($pm_order.find('.pm-order:visible').length) {
-                console.log('here 1', $pm_order.find('.pm-order:visible'));
                 $pm_list_empty_block.hide();
             } else {
-                console.log('here 0');
                 $pm_list_empty_block.show();
             }
 

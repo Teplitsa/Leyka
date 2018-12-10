@@ -207,32 +207,6 @@ jQuery(document).ready(function($){
 
 });
 
-// Browser "back" handling for wizards:
-jQuery(document).ready(function($){
-
-    // if( !$('.leyka-wizard').length ) {
-    //     return;
-    // }
-
-    // $(window).on('popstate', function(e) {
-    //
-    //     if( !$('.leyka-wizard').length ) {
-    //         return;
-    //     }
-    //
-    //     console.log('popping...');
-    //
-    //     e.preventDefault();
-    //
-    //     var state = e.originalEvent.state;
-    //     console.log(e.originalEvent);
-    //     if(state !== null) {
-    //
-    //     }
-    // });
-
-});
-
 // copy2clipboard
 jQuery(document).ready(function($){
     
@@ -296,7 +270,6 @@ jQuery(document).ready(function($){
             var $copyLink = $(this);
             
             var copyText = collectText2Copy($copyLink);
-            console.log(copyText);
             copyText2Clipboard(copyText);
             
             $copyLink.fadeOut(function(){

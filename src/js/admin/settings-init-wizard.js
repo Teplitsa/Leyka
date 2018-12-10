@@ -4,7 +4,7 @@ jQuery(document).ready(function($){
     if( !$('#leyka-settings-form-cd-campaign_decoration').length ) {
         return;
     }
-    
+
     var campaignAttachmentId = 0;
     var $decorationControlsWrap = $('#campaign-decoration');
     var $previewFrame = $('#leyka-preview-frame');
@@ -388,14 +388,14 @@ function initRichHTMLTagsReplace($, $controlContainer) {
     }
     
     function tryInitEditDocs($tinyMCEContainer) {
-        //console.log('changed');
-        
+
         var $iframe = $tinyMCEContainer.find('iframe');
         if($iframe.length) {
             $iframe.on('load', function(){
                 initEditDocs($(this));
             });
         }
+
     }
     
     $('.step-next.button, input[name=leyka_settings_beneficiary_submit]').click(function(e){
