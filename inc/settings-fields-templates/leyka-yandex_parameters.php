@@ -57,7 +57,7 @@ $yandex_aviso_url = site_url('/leyka/service/yandex/payment_aviso/');?>
         <div class="body value <?php if( !$shop_password ) {?>no-password<?php }?> leyka-wizard-copy2clipboard">
             <b <?php if( !$shop_password) {?>style="display: none;"<?php }?>><?php echo $shop_password;?></b>
             <?php if( !$shop_password ) {?>
-            <input type="button" class="button button-secondary" id="yandex-generate-shop-password" value="Сгенерируйте пароль «shopPassword»">
+            <input type="button" class="button button-secondary" id="yandex-generate-shop-password" value="<?php esc_attr_e('Generate the "shopPassword"', 'leyka');?>">
             <?php }?>
             <input type="hidden" name="leyka_yandex_shop_password" value="<?php echo $shop_password;?>">
         </div>
