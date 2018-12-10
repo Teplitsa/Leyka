@@ -170,6 +170,9 @@
         
         &.file {
             @include leyka-field-file();
+            .field-errors {
+                margin-top: 2px;
+            }
         }
         
         &.field-radio {
@@ -242,11 +245,12 @@
         width: 723px;
         
         &.collapsed {
-            height: 34px;
             padding-bottom: 24px;
             
             .header {
                 h3 {
+                    margin-bottom: 0px;
+                    
                     &:before {
                         background-image: url(../../img/icon-accord-collapsed.svg);
                         cursor: pointer;
@@ -269,19 +273,22 @@
                 color: $color-wizard-text;
                 margin-top: 0px;
                 pointer-events: none;
+                display: flex;
                 
                 &:before {
                     width: 22px;
                     height: 22px;
                     margin-right: 8px;
-                    margin-top: -3px;
+                    margin-top: 5px;
                     content: " ";
-                    display: inline-block;
+                    display: block;
                     background-image: url(../../img/icon-accord-expanded.svg);
+                    background-position: left center;
+                    background-repeat: no-repeat;
                     background-size: auto;
-                    vertical-align: middle;
                     cursor: pointer;
                     pointer-events: all;
+                    flex-shrink: 0;
                 }
             }
         }
@@ -385,6 +392,24 @@
             
             .field-success {
                 display: none;
+            }
+            
+            #leyka_email_thanks_text-wrapper,
+            #leyka_email_recurring_init_thanks_text-wrapper,
+            #leyka_email_recurring_ongoing_thanks_text-wrapper,
+            #leyka_email_campaign_target_reaching_text-wrapper,
+            #leyka_email_notification_text-wrapper {
+                .field-component.help {
+                    margin-top: 0.5rem;
+                }
+            }
+            
+            #leyka_email_thanks_text-field_ifr,
+            #leyka_email_recurring_init_thanks_text-field_ifr,
+            #leyka_email_recurring_ongoing_thanks_text-field_ifr,
+            #leyka_email_campaign_target_reaching_text-field_ifr,
+            #leyka_email_notification_text-field_ifr {
+                height: 250px !important;
             }
             
             #leyka_notify_donations_managers-wrapper,

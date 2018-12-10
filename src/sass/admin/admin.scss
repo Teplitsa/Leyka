@@ -760,11 +760,19 @@
             text-decoration: none;
             border-bottom-style: solid;
             outline: none;
+            overflow:hidden;
             
             &.active {
                 color: $color-white;
                 background-color: $color-wizard-link;
                 border-color: $color-wizard-link;
+            }
+        }
+        
+        @media only screen and (max-width: 1270px) {
+            a.filter-category-item {
+                padding-left: 8px;
+                padding-right: 8px;
             }
         }
     }
@@ -826,6 +834,12 @@
             .main-area-wrapper {
                 flex: 0 0 984px;
             }
+            
+            .side-area-wrapper {
+                flex-grow: 0;
+                flex-shrink: unset;
+                flex-basis: auto;
+            }
         }
         
     }
@@ -840,13 +854,19 @@
             .main-area-wrapper {
                 flex: 0 0 656px;
             }
+            
+            .side-area-wrapper {
+                flex-grow: 0;
+                flex-shrink: unset;
+                flex-basis: auto;
+            }
         }
         
     }
     
 }
 
-@media only screen and (max-width: 1000px) {
+@media only screen and (max-width: 1270px) {
 
     .leyka-settings-page {
         margin-left: 2rem;
@@ -859,6 +879,12 @@
         #payment-settings-area-new {
             .main-area-wrapper {
                 flex: 0 0 328px;
+            }
+            
+            .side-area-wrapper {
+                flex-grow: 0;
+                flex-shrink: unset;
+                flex-basis: auto;
             }
         }
         

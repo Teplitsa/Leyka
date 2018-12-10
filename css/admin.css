@@ -69,7 +69,7 @@
 
 /** Options **/
 .leyka-options-section {
-  margin: 40px 0 30px; }
+  margin: 40px 0 30px;}
 
 #leyka-settings-form div[id*=wrapper] {
   margin: 15px 0; }
@@ -114,7 +114,7 @@
   display: block;
   padding-top: 4px;
   line-height: 1.8; }
-
+  
 .placeholders-help code {
   color: #333;
   font-size: 12px; }

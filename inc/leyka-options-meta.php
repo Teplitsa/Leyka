@@ -33,7 +33,13 @@ $campaign_target_reaching_email_placeholders =
 <code>#CAMPAIGN_NAME#</code> — ".__('a campaign to which donation was made', 'leyka')."<br>
 <code>#CAMPAIGN_TARGET#</code> — ".__('a campaign target amount', 'leyka')."<br>
 <code>#PURPOSE#</code> — ".__('a campaign title for payment systems (see campaign settings)', 'leyka')."<br>
-</span>";
+</span>
+<div class='placeholders-help-actions'>
+<a href=\"#\" class=\"inner hide-available-tags\">Свернуть доступные теги</a>
+<a href=\"#\" class=\"inner show-available-tags\">Посмотреть доступные теги</a>
+<a href=\"#\" class=\"inner restore-original-doc\">Вернуть первоначальный текст</a>
+</div>
+";
 
 /** Possible field types are: text, textarea, number, html, rich_html, select, radio, checkbox, multi_checkbox, custom_XXX */
 
@@ -433,12 +439,13 @@ self::$_options_meta = array(
         'placeholder' => __('E.g., Daisy Foundation thanks you for your kindness', 'leyka'),
     ),
     'email_thanks_text' => array(
-        'type' => 'textarea',
+        'type' => 'rich_html',
         'default' => __('Hello, #DONOR_NAME#!<br><br>You have chosed to make a #SUM# donation to the following charity campaign: #CAMPAIGN_NAME#, using #PAYMENT_METHOD_NAME#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
         'title' => __('Email text', 'leyka'),
         'description' => $email_placeholders,
         'required' => true,
         'comment' => __('An email text that your donor will see. You may use the special tags in the text.'),
+        'field_classes' => array('type-rich_html'),
     ),
     'email_recurring_init_thanks_title' => array(
         'type' => 'text',
@@ -449,11 +456,12 @@ self::$_options_meta = array(
         'placeholder' => __('E.g., Daisy Foundation thanks you for your kindness', 'leyka'),
     ),
     'email_recurring_init_thanks_text' => array(
-        'type' => 'textarea',
+        'type' => 'rich_html',
         'default' => __('Hello, #DONOR_NAME#!<br><br>We just took a #SUM# from your account as a regular donation to the campaign «#CAMPAIGN_NAME#», using #PAYMENT_METHOD_NAME#.<br><br>If you, regretfully, wish to stop future regular donations to this campaign, please #RECURRING_SUBSCRIPTION_CANCELLING_LINK#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
         'title' => __('A text of a recurring subscription donation notice sent to a donor', 'leyka'),
         'description' => __('Enter the text of the notification email that would be sended to each donor on each rebill donation. It may include the following special entries:', 'leyka').$email_placeholders,
         'required' => true,
+        'field_classes' => array('type-rich_html'),
     ),
     'email_recurring_ongoing_thanks_title' => array(
         'type' => 'text',
@@ -463,11 +471,12 @@ self::$_options_meta = array(
         'required' => true,
     ),
     'email_recurring_ongoing_thanks_text' => array(
-        'type' => 'textarea',
+        'type' => 'rich_html',
         'default' => __('Hello, #DONOR_NAME#!<br><br>We just took a #SUM# from your account as a regular donation to the campaign «#CAMPAIGN_NAME#», using #PAYMENT_METHOD_NAME#.<br><br>If you, regretfully, wish to stop future regular donations to this campaign, please #RECURRING_SUBSCRIPTION_CANCELLING_LINK#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
         'title' => __('A text of after-rebill donation notice sent to a donor', 'leyka'),
         'description' => __('Enter the text of the notification email that would be sended to each donor on each rebill donation. It may include the following special entries:', 'leyka').$email_placeholders,
         'required' => true,
+        'field_classes' => array('type-rich_html'),
     ),
     'send_donor_thanking_emails' => array(
         'type' => 'checkbox',
@@ -490,11 +499,12 @@ self::$_options_meta = array(
         'placeholder' => __('E.g., Thanks to you, the campaign succeeded!', 'leyka'),
     ),
     'email_campaign_target_reaching_text' => array(
-        'type' => 'textarea',
+        'type' => 'rich_html',
         'default' => __("Hello, #DONOR_NAME#!<br><br>You've donated #SUM# totally to the campaign: «#CAMPAIGN_NAME#».<br><br>We're glad to tell that just now this campaign successfully finished!<br><br>We heartfully thank you for your support,<br>#ORG_NAME#", 'leyka'),
         'title' => __('A text of a notification email sent to each donor when campaign target reached', 'leyka'),
         'description' => __('Enter the text of a notification email sent to each donor when campaign target reached. The text may include the following special entries:', 'leyka').$campaign_target_reaching_email_placeholders,
         'required' => true,
+        'field_classes' => array('type-rich_html'),
     ),
     'notify_donations_managers' => array(
         'type' => 'checkbox',
@@ -521,10 +531,11 @@ self::$_options_meta = array(
         'placeholder' => __('E.g., new donation incoming', 'leyka'),
     ),
     'email_notification_text' => array(
-        'type' => 'textarea',
-        'default' => __('Hello!<br><br>A new donation has been made on a #SITE_NAME#:<br><ul><li>Campaign: #CAMPAIGN_NAME#.</li><li>Donation purpose: #PURPOSE#</li><li>Amount: #SUM#.</li><li>Payment method: #PAYMENT_METHOD_NAME#.</li><li>Date: #DATE#</li></ul><br><br>Your Leyka', 'leyka'),
+        'type' => 'rich_html',
+        'default' => __('Hello!<br><br>A new donation has been made on a #SITE_NAME#:<br><br>Campaign: #CAMPAIGN_NAME#.<br>Donation purpose: #PURPOSE#<br>Amount: #SUM#.<br>Payment method: #PAYMENT_METHOD_NAME#.<br>Date: #DATE#<br><br>Your Leyka', 'leyka'),
         'title' => __('A text of after-donation notification sended to a website personnel', 'leyka'),
         'description' => __("Enter the text of the notification email that would be sended to each email stated before right after donation is made. It may include the following special entries:", 'leyka').$email_placeholders,
+        'field_classes' => array('type-rich_html'),
     ),
     'tech_support_email' => array(
         'type' => 'text',

@@ -1686,6 +1686,8 @@ if( !function_exists('leyka_localize_rich_html_text_tags') ) {
                     '#BANK_NAME#',
                     '#BANK_BIC#',
                     '#BANK_CORR_ACCOUNT#',
+                    '#SITE_NAME#',
+                    '#ORG_NAME#',
                 ),
                 array(
                     $is_legal ? leyka_options()->opt('org_full_name') : leyka_options()->opt('person_full_name'),
@@ -1700,6 +1702,8 @@ if( !function_exists('leyka_localize_rich_html_text_tags') ) {
                     $is_legal ? leyka_options()->opt('org_bank_name') : leyka_options()->opt('person_bank_name'),
                     $is_legal ? leyka_options()->opt('org_bank_bic') : leyka_options()->opt('person_bank_bic'),
                     $is_legal ? leyka_options()->opt('org_bank_corr_account') : leyka_options()->opt('person_bank_corr_account'),
+                    get_bloginfo('name'),
+                    $is_legal ? leyka_options()->opt('org_full_name') : leyka_options()->opt('person_full_name'),
                 ),
             ),
             'pdKeys' => array(
