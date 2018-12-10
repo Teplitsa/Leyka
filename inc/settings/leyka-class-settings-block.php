@@ -55,15 +55,11 @@ class Leyka_Text_Block extends Leyka_Settings_Block {
     }
 
     public function getContent() {
-        if($this->_template) {
-            return $this->getTemplatedContent();
-        }
-        else {
-            return $this->_text;
-        }
+        return $this->_template ? $this->getTemplatedContent() : $this->_text;
     }
     
     protected function getTemplatedContent() {
+
         ob_start();
 
         $template_file = apply_filters(
@@ -71,14 +67,15 @@ class Leyka_Text_Block extends Leyka_Settings_Block {
             LEYKA_PLUGIN_DIR."inc/settings-fields-templates/leyka-{$this->_template}.php",
             $this->_template
         );
-        
+
         if(file_exists($template_file)) {
             require($template_file);
         } else {
             /** @todo Throw some Leyka_Exception */
         }
 
-        return ob_get_clean();        
+        return ob_get_clean();
+
     }
 
     public function isValid() {
@@ -395,7 +392,7 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
         if( !empty($this->_field_data['required']) ) {
             foreach($this->_fields_keys as $key) {
                 
-                if($this->_field_type == 'file') {
+                if($this->_field_type === 'file') {
                     $is_valid = $this->isFileFieldValid();
                 } elseif(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
                     $is_valid = false;
