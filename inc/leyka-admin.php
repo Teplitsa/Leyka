@@ -675,7 +675,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		wp_enqueue_style('leyka-icon', LEYKA_PLUGIN_BASE_URL.'css/admin-icon.css', array(), LEYKA_VERSION);
 
 		$screen = get_current_screen();
-		if(false === strpos($screen->base, 'leyka') && false === strpos($screen->id, 'leyka')) {
+		if(false === stripos($screen->base, 'leyka') && false === stripos($screen->id, 'leyka')) {
 			return;
         }
 
@@ -721,7 +721,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         }
 
-        echo '<pre>'.print_r('Enqueueing...', 1).'</pre>';
+//        echo '<pre>'.print_r('Enqueueing...', 1).'</pre>';
         $js_data = apply_filters('leyka_admin_js_localized_strings', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
             'ajax_loader_url' => LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif',

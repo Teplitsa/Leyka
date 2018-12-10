@@ -40,13 +40,17 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
     protected function _loadCssJs() {
 
-        echo '<pre>'.print_r('Localizing...', 1).'</pre>';
-        wp_localize_script('leyka-settings', 'leyka_wizard_common', array(
-            'copy2clipboard' => esc_html__('Copy', 'leyka'),
-            'copy2clipboard_done' => esc_html__('Copied to the clipboard!', 'leyka'),
-        ));
-        
+        add_action('admin_enqueue_scripts', function(){
+
+            wp_localize_script('leyka-settings', 'leyka_wizard_common', array(
+                'copy2clipboard' => esc_html__('Copy', 'leyka'),
+                'copy2clipboard_done' => esc_html__('Copied to the clipboard!', 'leyka'),
+            ));
+
+        }, 11);
+
         do_action('leyka_settings_controller_enqueue_scripts', $this->id);
+
     }
 
     abstract protected function _setAttributes();
@@ -62,7 +66,7 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
     /** @return boolean */
     public function hasCommonErrors() {
-        return !empty($this->_common_errors);
+        return !!$this->_common_errors;
     }
 
     /** @return array Of errors */
@@ -72,7 +76,7 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
     /** @return boolean */
     public function hasComponentErrors($component_id = null) {
-        return !empty($this->getComponentErrors($component_id));
+        return !!$this->getComponentErrors($component_id);
     }
 
     /**

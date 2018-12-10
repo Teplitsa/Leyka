@@ -19,22 +19,26 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
     protected function _loadCssJs() {
 
         wp_enqueue_script('leyka-cp-widget', 'https://widget.cloudpayments.ru/bundles/cloudpayments', array(), false, true);
-        
+
         wp_enqueue_script('leyka-easy-modal', LEYKA_PLUGIN_BASE_URL . 'js/jquery.easyModal.min.js', array(), false, true);
-        
+
         wp_enqueue_script( 'jquery-ui-dialog' );
         wp_enqueue_style( 'wp-jquery-ui-dialog' );
 
-        wp_localize_script('leyka-settings', 'leyka_wizard_cp', array(
-            'cp_public_id' => leyka_options()->opt('cp_public_id'),
-            'main_currency' => 'RUB',
-            'test_donor_email' => get_option('admin_email'),
-            'ajax_wrong_server_response' => __('Error in server response. Please report to the website tech support.', 'leyka'),
-            'cp_not_set_up' => __('Error in CloudPayments settings. Please report to the website tech support.', 'leyka'),
-            'cp_donation_failure_reasons' => array(
-                'User has cancelled' => __('You cancelled the payment', 'leyka'),
-            ),
-        ));
+        add_action('admin_enqueue_scripts', function(){
+
+            wp_localize_script('leyka-settings', 'leyka_wizard_cp', array(
+                'cp_public_id' => leyka_options()->opt('cp_public_id'),
+                'main_currency' => 'RUB',
+                'test_donor_email' => get_option('admin_email'),
+                'ajax_wrong_server_response' => __('Error in server response. Please report to the website tech support.', 'leyka'),
+                'cp_not_set_up' => __('Error in CloudPayments settings. Please report to the website tech support.', 'leyka'),
+                'cp_donation_failure_reasons' => array(
+                    'User has cancelled' => __('You cancelled the payment', 'leyka'),
+                ),
+            ));
+
+        });
 
         parent::_loadCssJs();
 

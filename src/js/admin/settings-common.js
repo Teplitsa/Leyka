@@ -22,9 +22,6 @@ jQuery(document).ready(function($){
         return;
     }
     
-    console.log('ules of the dependence of the set of fields on the legal type ON');
-    console.log($('input[type=radio][name=leyka_receiver_legal_type]:checked').val());
-    
     leyka_toggle_sections_dependent_on_legal_type($('input[type=radio][name=leyka_receiver_legal_type]:checked').val());
     $('input[type=radio][name=leyka_receiver_legal_type]').change(function(){
         leyka_toggle_sections_dependent_on_legal_type($('input[type=radio][name=leyka_receiver_legal_type]:checked').val());
@@ -70,14 +67,12 @@ jQuery(document).ready(function($){
 
         $.post(leyka.ajaxurl, actionData, null, 'json')
             .done(function(json) {
-                
-                console.log(json);
 
                 if(json.status === 'ok') {
                     $btn.closest('.content').find('.field-success').show();
                     setTimeout(function(){
-                            location.reload();
-                        }, 500);
+                        location.reload();
+                    }, 500);
                 } else if(json.status === 'error' && json.message) {
                     $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html(json.message);
                 } else {

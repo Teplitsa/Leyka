@@ -150,7 +150,7 @@ self::$_options_meta = array(
         'description' => __('Enter the organization state registration number.', 'leyka'),
         'required' => true,
         'placeholder' => __('E.g., 1023400056789', 'leyka'),
-        'validation_rules' => array(),
+        'mask' => "'mask': '9{13}'",
     ),
     'org_kpp' => array(
         'type' => 'text',

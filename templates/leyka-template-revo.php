@@ -196,7 +196,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
                         <label for="leyka_agree">
                         <?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';
 
-                        if(leyka_options()->opt('agree_to_terms_link_action') == 'popup') {?>
+                        if(leyka_options()->opt('agree_to_terms_link_action') === 'popup') {?>
                             <a href="#" class="leyka-js-oferta-trigger">
                         <?php } else {?>
                             <a target="_blank" href="<?php echo leyka_get_terms_of_service_page_url();?>">
