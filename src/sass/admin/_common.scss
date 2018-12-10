@@ -170,6 +170,9 @@
         
         &.file {
             @include leyka-field-file();
+            .field-errors {
+                margin-top: 2px;
+            }
         }
         
         &.field-radio {

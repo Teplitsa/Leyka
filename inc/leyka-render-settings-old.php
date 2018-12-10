@@ -73,7 +73,7 @@ function leyka_render_file_field($option_id, $data){
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-file-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
         <label for="<?php echo $option_id.'-field';?>">
             <span class="field-component field">
-                <input type="file" id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="" <?php echo empty($data['required']) ? '' : 'required';?>>
+                <input type="file" id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="">
                 <span class="chosen-file"> </span>
                 <input type="button" href="#" class="button" value="<?php echo $data['title'];?>">
             </span>
