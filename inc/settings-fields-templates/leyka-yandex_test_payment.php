@@ -26,7 +26,7 @@ $is_came_back_from_yandex = preg_match(
 $is_payment_completed = $is_came_back_from_yandex && $test_payment && $test_payment->get_funded_date();?>
 
 <div class="payment-tryout-wrapper">
-    <input type="button" class="button button-secondary" <?php echo $is_payment_completed ? 'disabled' : '';?> id="yandex-make-live-payment" value="Условно реальное пожертвование">
+    <input type="button" class="button button-secondary" <?php echo $is_payment_completed ? 'disabled' : '';?> id="yandex-make-live-payment" value="<?php esc_attr_e('"Almost real" donation', 'leyka');?>">
     <span class="leyka-loader xs yandex-make-live-payment-loader" style="display: none;"></span>
 </div>
 

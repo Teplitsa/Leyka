@@ -33,22 +33,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
     
     protected function _loadCssJs() {
 
-//        wp_enqueue_script(
-//            'leyka-settings',
-//            LEYKA_PLUGIN_BASE_URL.'assets/js/admin.js',
-//            array('jquery',),
-//            LEYKA_VERSION,
-//            true
-//        );
-////        add_action('wp_enqueue_scripts', array($this, 'localize_scripts')); // wp_footer
-//
-//        wp_enqueue_style(
-//            'leyka-settings',
-//            LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css',
-//            array(),
-//            LEYKA_VERSION
-//        );
-
+//        wp_enqueue_script() || wp_enqueue_style()
         parent::_loadCssJs();
 
     }

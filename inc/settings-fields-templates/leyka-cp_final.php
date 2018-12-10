@@ -25,7 +25,7 @@ $campaign_url = $campaign_id ? get_the_permalink($campaign_id) : null;
 
     <div class="final-button">
     <?php if($campaign_id) {?>
-        <a class="step-next button button-primary" href="<?php echo $campaign_url;?>" target="_blank">Протестировать кампанию</a>
+        <a class="step-next button button-primary" href="<?php echo $campaign_url;?>" target="_blank"><?php esc_html_e('Test the campaign', 'leyka');?></a>
     <?php } else {?>
         <a class="step-next button button-primary" href="<?php echo admin_url("/admin.php?page=leyka_settings_new&screen=wizard-init");?>"><?php esc_html_e('Create a campaign', 'leyka');?></a>
     <?php }?>

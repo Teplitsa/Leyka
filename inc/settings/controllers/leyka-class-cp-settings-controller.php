@@ -25,7 +25,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         wp_enqueue_script( 'jquery-ui-dialog' );
         wp_enqueue_style( 'wp-jquery-ui-dialog' );
 
-        wp_localize_script('leyka-admin', 'leyka_wizard_cp', array(
+        wp_localize_script('leyka-settings', 'leyka_wizard_cp', array(
             'cp_public_id' => leyka_options()->opt('cp_public_id'),
             'main_currency' => 'RUB',
             'test_donor_email' => get_option('admin_email'),
@@ -57,7 +57,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         $step = new Leyka_Settings_Step('prepare_documents',  $section->id, esc_html__('Preparing the documents', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => esc_html__('CloudPayments setup starts with documents preparation.<br>Download and fill the needed documents.', 'leyka'),
+            'text' => __('CloudPayments setup starts with documents preparation.<br>Download and fill the needed documents.', 'leyka'),
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'cp-prepare-documents',
             'template' => 'cp_prepare_documents',
