@@ -45,7 +45,7 @@
             <div class="inline-container">
                 <div class="field">
                     <label><?php esc_html_e('The organization state registration number', 'leyka');?></label>
-                    <p class="field-text"><?php echo leyka_options()->opt('org_ogrn');?></p>
+                    <p class="field-text"><?php echo leyka_options()->opt('org_state_reg_number');?></p>
                     <div class="field-errors"><span><?php esc_html_e('Not filled', 'leyka');?></span></div>
                 </div>
                 
