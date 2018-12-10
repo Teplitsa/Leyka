@@ -25,7 +25,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         wp_enqueue_script( 'jquery-ui-dialog' );
         wp_enqueue_style( 'wp-jquery-ui-dialog' );
 
-        wp_localize_script('leyka-admin', 'leyka_wizard_cp', array(
+        wp_localize_script('leyka-settings', 'leyka_wizard_cp', array(
             'cp_public_id' => leyka_options()->opt('cp_public_id'),
             'main_currency' => 'RUB',
             'test_donor_email' => get_option('admin_email'),

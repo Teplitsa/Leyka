@@ -18,7 +18,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
 
         wp_enqueue_script('leyka-easy-modal', LEYKA_PLUGIN_BASE_URL.'js/jquery.easyModal.min.js', array(), false, true);
 
-        wp_localize_script('leyka-admin', 'leyka_wizard_yandex', array());
+        wp_localize_script('leyka-settings', 'leyka_wizard_yandex', array());
 
         parent::_loadCssJs();
 

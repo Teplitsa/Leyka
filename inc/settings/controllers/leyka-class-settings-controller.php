@@ -39,8 +39,9 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
     }
 
     protected function _loadCssJs() {
-        
-        wp_localize_script('leyka-admin', 'leyka_wizard_common', array(
+
+        echo '<pre>'.print_r('Localizing...', 1).'</pre>';
+        wp_localize_script('leyka-settings', 'leyka_wizard_common', array(
             'copy2clipboard' => esc_html__('Copy', 'leyka'),
             'copy2clipboard_done' => esc_html__('Copied to the clipboard!', 'leyka'),
         ));
