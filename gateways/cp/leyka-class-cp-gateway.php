@@ -46,7 +46,6 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 'type' => 'text',
                 'title' => __('CloudPayments IP', 'leyka'),
                 'comment' => __('Comma-separated callback requests IP list. Leave empty to disable the check.', 'leyka'),
-                'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '130.193.70.192,185.98.85.109'),
             ),
         );
