@@ -74,9 +74,9 @@
 
     <h3><?php esc_html_e('Your email sent!', 'leyka');?></h3>
 
-    <p><?php esc_html_e("Your will receive a confirmation for your CloudPayments access on your administrator's email. It takes 1-2 days normally.");?></p>
+    <p><?php esc_html_e("Your will receive a confirmation for your CloudPayments access on your administrator's email. It takes 1-2 days normally.", 'leyka');?></p>
     <p><?php esc_html_e('You may pause the setup process now, and in 2 days continue from the next step.', 'leyka');?></p>
-    <input type="button" class="button button-primary button-dialog-close" value="Продолжить">
+    <input type="button" class="button button-primary button-dialog-close" value="<?php esc_attr_e('Continue', 'leyka');?>">
 
 </div>
 
