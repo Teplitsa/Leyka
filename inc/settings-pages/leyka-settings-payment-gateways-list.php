@@ -5,7 +5,7 @@ $gateways_categories = leyka_get_gateways_filter_categories_list();?>
 
 <div class="main-area-top">
     
-    <div class="filter-area leyka-gateways-filter">
+    <div class="filter-area leyka-gateways-filter show">
         
         <div class="filter-toggle">
             <img class="show-filter" src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-gateway-filter-off.svg" alt="">

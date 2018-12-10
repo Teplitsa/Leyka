@@ -447,7 +447,7 @@ function leyka_render_rich_html_field($option_id, $data){
                 <?php }?>
             </span>
 
-            <?php wp_editor(str_replace("&lt;br&gt;", "\n", esc_attr($data['value'])), $option_id.'-field', array(
+            <?php wp_editor($data['value'], $option_id.'-field', array(
                 'media_buttons' => false,
                 'textarea_name' => $option_id,
                 'tinymce' => true,

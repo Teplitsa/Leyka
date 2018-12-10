@@ -243,16 +243,18 @@
         height: 40px;
         
         input[type=file] {
-            height: inherit;
+            height: 40px;
             width: 248px;
             display: inline-block;
             cursor: pointer;
             outline: none;
+            overflow: hidden;
+            vertical-align: middle;
         }
         
         input[type=button] {
             @include wizard-button-caption();
-            height: inherit;
+            height: 40px;
             width: 248px;
             display: block;
             background-color: $color-white;
@@ -274,6 +276,8 @@
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 254px;
+            height: 40px;
+            white-space: nowrap;
         }
     }
     

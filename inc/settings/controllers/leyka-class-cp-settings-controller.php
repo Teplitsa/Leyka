@@ -66,7 +66,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         $step = new Leyka_Settings_Step('send_documents',  $section->id, esc_html__('Sending the documents', 'leyka'), array('next_label' => esc_html__('Send the email', 'leyka'), 'form_enctype' => 'multipart/form-data'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => esc_html__('<p>When the documents are prepared, they have to be sent to CloudPayments. The form below allows you to send the documents right from the website.</p>
+            'text' => __('<p>When the documents are prepared, they have to be sent to CloudPayments. The form below allows you to send the documents right from the website.</p>
 <p>Also you may send the documents from your own email to the CloudPayments email: sales@cloudpayments.ru.</p>
 <p>Please note that documents checkup may take until 3 working days.</p>
 <p>If you have to close this page, we are going to remember the passed steps and you may always return here.</p>', 'leyka'),
