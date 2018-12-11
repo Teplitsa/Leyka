@@ -1080,6 +1080,11 @@
 #message {
     margin-left: 32px;
 }
+
+.leyka-admin #message {
+    margin-left: 0px;
+}
+
 /* end wp messages */
 
 /* helpchat -- should be removed after move all pages to new design */
