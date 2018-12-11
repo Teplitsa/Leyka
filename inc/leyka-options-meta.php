@@ -541,7 +541,7 @@ self::$_options_meta = array(
         'type' => 'text',
         'title' => __('Website technical support email', 'leyka'),
         'description' => __('E-mail that you want to use to collect technical support requests from the donors.', 'leyka'),
-        'placeholder' => __('E.g. «techsupport@email.com»', 'leyka'),
+        'placeholder' => __('E.g., techsupport@email.com', 'leyka'),
     ),
     'donation_form_template' => array(
         'type' => 'radio',
@@ -556,7 +556,7 @@ self::$_options_meta = array(
         'default' => 'flexible',
         'title' => __('Select a type of the sum field for all your donation forms', 'leyka'),
         'description' => __('Select a type of the sum field. «Fixed» means a set of stable sum variants, while «flexible» is a free input field.', 'leyka'),
-        'required' => 1,
+        'required' => true,
         'list_entries' => array(
             'flexible' => __('Flexible', 'leyka'),
             'fixed' => __('Fixed', 'leyka'),
@@ -565,16 +565,15 @@ self::$_options_meta = array(
     ),
     'donation_form_mode' => array(
         'type' => 'checkbox',
-        'default' => 1,
+        'default' => true,
         'title' => __('Display all payment elements on campaign page automatically', 'leyka'),
         'description' => __("When unchecked, all payment elements like donation forms or target completion level widgets will not be displayed automatically. To output them manually, use shortcodes inside campaign content or template tags in campaign template file.", 'leyka'),
-        'required' => true,
     ),
     'scale_widget_place' => array(
         'type' => 'radio',
         'default' => 'top',
         'title' => __('Select where Target completion widget will be placed at campaign pages', 'leyka'),
-        'required' => 1,
+        'required' => true,
         'list_entries' => array(
             'top' => __('Above page content', 'leyka'),
             'bottom' => __('Below page content', 'leyka'),
@@ -584,7 +583,7 @@ self::$_options_meta = array(
     ),
     'donations_history_under_forms' => array(
         'type' => 'checkbox',
-        'default' => 1,
+        'default' => true,
         'title' => __('Donations history widget below donation forms', 'leyka'),
         'description' => __('Display the widget automatically', 'leyka'),
     ),
@@ -602,7 +601,7 @@ self::$_options_meta = array(
     ),
     'show_failure_widget_on_failure' => array(
         'type' => 'checkbox',
-        'default' => 1,
+        'default' => true,
         'title' => __('Show a failure notification widget on the donation page', 'leyka'),
         'description' => __('Display the widget automatically', 'leyka'),
     ),
@@ -644,7 +643,7 @@ self::$_options_meta = array(
     ),
     'revo_template_show_thumbnail' => array(
         'type' => 'checkbox',
-        'default' => 1,
+        'default' => true,
         'title' => __('Display a thumbnail in inline page blocks', 'leyka'),
         'description' => __('Check if you need to show a campaign thumbnail in inline page blocks.', 'leyka'),
     ),
@@ -659,7 +658,7 @@ self::$_options_meta = array(
         'default' => __('I agree with', 'leyka'),
         'title' => __('Terms acception checkbox label - the first (text) part', 'leyka'),
         'required' => true,
-        'placeholder' => __('E.g., «I agree with»', 'leyka'),
+        'placeholder' => __('E.g., I agree with', 'leyka'),
     ),
     'agree_to_terms_text_link_part' => array(
         'type' => 'text',
@@ -716,20 +715,6 @@ self::$_options_meta = array(
 #LEGAL_FACE_POSITION#<br>
 #LEGAL_FACE#',
         'title' => __('A text of Terms of donation service', 'leyka'),
-        //'description' => __('Enter a Terms of Service text. The text may include following special entries:', 'leyka')."<span class='placeholders-help'>
-        //    <code>#LEGAL_NAME#</code> — ".__("the organization legal name", 'leyka')."<br>
-        //    <code>#LEGAL_FACE#</code> — ".__("the organization legal representative", 'leyka')."<br>
-        //    <code>#LEGAL_FACE_RP#</code> — ".__("the organization legal representative (in genitive case)", 'leyka')."<br>
-        //    <code>#LEGAL_FACE_POSITION#</code> — ".__("an official position of the organization legal representative", 'leyka')."<br>
-        //    <code>#LEGAL_ADDRESS#</code> — ".__("the organization legal address", 'leyka')."<br>
-        //    <code>#STATE_REG_NUMBER#</code> — ".__("the organization state registration number", 'leyka')."<br>
-        //    <code>#KPP#</code> — ".__("the organization statement of the account number", 'leyka')."<br>
-        //    <code>#INN#</code> — ".__("the organization individual taxpayer number", 'leyka')."<br>
-        //    <code>#BANK_ACCOUNT#</code> — ".__("the organization bank account number", 'leyka')."<br>
-        //    <code>#BANK_NAME#</code> — ".__("the organization bank name", 'leyka')."<br>
-        //    <code>#BANK_BIC#</code> — ".__("the organization bank indentification code", 'leyka')."<br>
-        //    <code>#BANK_CORR_ACCOUNT#</code> — ".__("the organization bank correspondent account", 'leyka')."<br>
-        //    </span>",
         'required' => true,
         'field_classes' => array('type-rich_html'),
     ),
@@ -801,7 +786,7 @@ self::$_options_meta = array(
         'required' => true,
         'list_entries' => array(
             'popup' => __('Opens the Terms text in popup window', 'leyka'),
-            'page' => __('Opens the page of Terms text', 'leyka')
+            'page' => __('Opens the page of Terms text', 'leyka'),
         ),
     ),
     'agree_to_pd_terms_needed' => array(
@@ -828,13 +813,6 @@ self::$_options_meta = array(
         'type' => 'rich_html',
         'default' => __('Terms of personal data usage full text. Use <br> for line-breaks.', 'leyka'),
         'title' => __('A text of personal data usage Terms', 'leyka'),
-        //'description' => __("Enter a donors' personal data usage Terms text. The text may include following special entries:", 'leyka')."<span class='placeholders-help'>
-        //    <code>#LEGAL_NAME#</code> — ".__("the organization legal name", 'leyka')."<br>
-        //    <code>#LEGAL_ADDRESS#</code> — ".__("the organization legal address", 'leyka')."<br>
-        //    <code>#SITE_URL#</code> — ".__("the website homepage URL", 'leyka')."<br>
-        //    <code>#PD_TERMS_PAGE_URL#</code> — ".__("the website personal data terms page URL", 'leyka')."<br>
-        //    <code>#ADMIN_EMAIL#</code> — ".__("the website administrator email", 'leyka')."<br>
-        //    </span>",
         'required' => true,
         'field_classes' => array('type-rich_html'),
     ),
@@ -872,7 +850,7 @@ self::$_options_meta = array(
         'default' => __('Donate', 'leyka'),
         'title' => __('Label of the button to submit a donation form', 'leyka'),
         'description' => __('Enter the text for a submit buttons on a donation forms.', 'leyka'),
-        'required' => 1,
+        'required' => true,
         'placeholder' => __('E.g., "Donate" or "Support"', 'leyka'),
     ),
     'revo_donation_complete_button_text' => array(
@@ -880,22 +858,22 @@ self::$_options_meta = array(
         'default' => __('Complete donation', 'leyka'),
         'title' => __('Label of the button to complete a donation', 'leyka'),
         'description' => __('Enter the text for a complete donation buttons on a donation forms.', 'leyka'),
-        'required' => 1,
+        'required' => true,
         'placeholder' => __('E.g., "Complete the donation" or "Close the form"', 'leyka'),
     ),
     'revo_thankyou_text' => array(
         'type' => 'text',
         'default' => __('Thank you! We appreciate your help! Let\'s stay in touch.', 'leyka'),
         'title' => __('Text on "Thank you" screen', 'leyka'),
-        'required' => 1,
+        'required' => true,
         'placeholder' => __('E.g., "Thank you! We appreciate your help! Let\'s stay in touch."', 'leyka'),
     ),
     'revo_thankyou_email_result_text' => array(
         'type' => 'text',
         'default' => __('We will inform you about the result by email', 'leyka'),
         'title' => __('Text on "Donation process complete" page', 'leyka'),
-        'required' => 1,
-        'placeholder' => __('E.g., We will inform you about the result by email', 'leyka'),
+        'required' => true,
+        'placeholder' => __('E.g., "We will inform you about the result by email"', 'leyka'),
     ),
     'commission' => array(
         'type' => 'custom_gateways_commission', // Special option type
@@ -954,7 +932,7 @@ self::$_options_meta = array(
     ),
     'delete_plugin_options' => array(
         'type' => 'checkbox',
-        'default' => 0,
+        'default' => false,
         'title' => __('Remove all plugin settings upon plugin uninstall', 'leyka'),
         'description' => __('WARNING: checking this checkbox will cause loss of all Leyka settings upon plugin uninstall. Please, proceed with caution.', 'leyka'),
     ),

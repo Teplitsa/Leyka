@@ -734,10 +734,6 @@ class Leyka {
             return;
         }
 
-        if( !$leyka_last_ver ) {
-            update_option('leyka_init_wizard_redirect', true);
-        }
-
         if( !$leyka_last_ver || $leyka_last_ver < '2.1' ) {
 
             /** Upgrade options structure in the DB */
@@ -923,7 +919,13 @@ class Leyka {
             }
         }
 
+        if( !$leyka_last_ver || $leyka_last_ver < '3.0' ) {
 
+            update_option('leyka_init_wizard_redirect', true);
+            update_option('leyka_receiver_country', 'ru');
+            update_option('leyka_receiver_legal_type', 'legal');
+
+        }
 
         /** Set a flag to flush permalinks (needs to be done a bit later, than this activation itself): */
         update_option('leyka_permalinks_flushed', 0);
