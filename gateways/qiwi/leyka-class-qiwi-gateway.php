@@ -1,10 +1,8 @@
-<?php if (!defined('WPINC')) {
-    die;
-}
+<?php if( !defined('WPINC') ) { die; }
 
-require_once LEYKA_PLUGIN_DIR . 'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Web_Hook_Verification.php';
-require_once LEYKA_PLUGIN_DIR . 'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Web_Hook.php';
-require_once LEYKA_PLUGIN_DIR . 'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Helper.php';
+require_once LEYKA_PLUGIN_DIR.'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Web_Hook_Verification.php';
+require_once LEYKA_PLUGIN_DIR.'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Web_Hook.php';
+require_once LEYKA_PLUGIN_DIR.'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Helper.php';
 
 /**
  * Leyka_Qiwi_Gateway class

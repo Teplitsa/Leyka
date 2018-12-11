@@ -1,6 +1,4 @@
-<?php if (!defined('WPINC')) {
-    die;
-}
+<?php if( !defined('WPINC') ) { die; }
 
 require_once LEYKA_PLUGIN_DIR.'gateways/rbk/includes/Leyka_Rbk_Gateway_Web_Hook_Verification.php';
 require_once LEYKA_PLUGIN_DIR.'gateways/rbk/includes/Leyka_Rbk_Gateway_Web_Hook.php';
@@ -11,11 +9,11 @@ require_once LEYKA_PLUGIN_DIR.'gateways/rbk/includes/Leyka_Rbk_Gateway_Helper.ph
  */
 class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
+    protected static $_instance;
+
     protected static $_rbk_api_path = '/v2/processing/invoices';
     protected $_rbk_response;
     protected $_rbk_log = array();
-
-    protected static $_instance;
 
     protected function _set_attributes() {
 
@@ -283,7 +281,7 @@ JS;
 
 class Leyka_Rbk_Card extends Leyka_Payment_Method {
 
-    protected static $_instance = null;
+    protected static $_instance;
 
     public function _set_attributes() {
 

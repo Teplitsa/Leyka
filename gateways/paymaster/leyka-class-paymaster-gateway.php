@@ -21,7 +21,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
         $this->_docs_link = '';
         $this->_registration_link = '//info.paymaster.ru/check/';
 
-        $this->_min_commission = 2;
+        $this->_min_commission = 2.8;
         $this->_receiver_types = array('legal');
 
     }
