@@ -388,8 +388,12 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	<?php leyka_itv_info_widget();
 	}
 	
-	public function isSectionsFormsV3($stage) {
+	public function isV3SettingsPage($stage) {
 		return in_array($stage, array('payment', 'email', 'beneficiary', 'technical'));
+	}
+
+	public function isSeparateFormsStage($stage) {
+		return in_array($stage, array('email', 'beneficiary', 'technical'));
 	}
 
 	/** Displaying settings **/
@@ -400,7 +404,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }
 
         $current_stage = $this->get_current_settings_tab();
-		$is_separate_sections_forms = $this->isSectionsFormsV3($current_stage);
+		$is_separate_sections_forms = $this->isSeparateFormsStage($current_stage);
 
 		require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php'); // Basic Controller class
         require_once(LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-common.php');
@@ -409,8 +413,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		do_action('leyka_pre_settings_actions', $current_stage);
 
         // Process settings change:
-	    if(
-	        !empty($_POST["leyka_settings_{$current_stage}_submit"])
+	    if( (!empty($_POST["leyka_settings_{$current_stage}_submit"])
+			|| !empty($_POST["leyka_settings_stage-{$current_stage}_submit"]))
 	        /** @todo Find what's wrong with the nonce check below: */
 //	        && wp_verify_nonce('_leyka_nonce', "leyka_settings_{$current_stage}")
         ) {
@@ -691,7 +695,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             || (
                 isset($_GET['page'])
                 && $_GET['page'] === 'leyka_settings'
-                && (empty($_GET['stage']) || $this->isSectionsFormsV3($_GET['stage']))
+                && (empty($_GET['stage']) || $this->isV3SettingsPage($_GET['stage']))
                 && empty($_GET['old'])
             );
 

@@ -1260,7 +1260,7 @@ function initRichHTMLTagsReplace($, $controlContainer) {
 
     }
     
-    $('.step-next.button, input[name=leyka_settings_beneficiary_submit]').click(function(e){
+    $('.step-next.button, input[name=leyka_settings_beneficiary_submit], input[name=leyka_settings_email_submit]').click(function(e){
         $frameBody.unbind("DOMSubtreeModified");
         $frameBody.find(".leyka-doc-key").unbind("DOMSubtreeModified");
         $frameBody.find('.leyka-doc-key-wrap').each(function(index, el){
