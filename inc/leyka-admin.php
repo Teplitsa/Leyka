@@ -495,6 +495,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 </form>
 				<?php }?>
             </div>
+			
+			<?php include(LEYKA_PLUGIN_DIR.'inc/settings-fields-templates/leyka-helpchat.php');?>
 
 		</div>
 
@@ -751,6 +753,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         } else {
 
             wp_enqueue_script('leyka-admin', LEYKA_PLUGIN_BASE_URL.'js/admin.js', $dependencies, LEYKA_VERSION, true);
+			wp_enqueue_script('leyka-admin-helpchat', LEYKA_PLUGIN_BASE_URL.'src/js/admin/settings-helpchat.js', $dependencies, LEYKA_VERSION, true);
             wp_localize_script('leyka-admin', 'leyka', $js_data);
 
         }

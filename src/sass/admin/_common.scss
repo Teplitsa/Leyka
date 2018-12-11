@@ -507,7 +507,8 @@
     .update-nag {
         margin-left: -20px;
         margin-top: 0px;
-        width: 100%;
+        margin-right: 0px;
+        width: calc(100% - 14px);
     }
 }
 
