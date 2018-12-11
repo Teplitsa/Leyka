@@ -16,7 +16,7 @@ function leyka_save_settings($tab_name) {
 
         if(is_array($entry)) {
             foreach($entry as $key => $option) {
-                if($key == 'section') {
+                if($key === 'section') {
                     $options_names = array_merge($options_names, $option['options']);
                 } else {
                     $options_names[] = $option;
