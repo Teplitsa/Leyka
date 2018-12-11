@@ -1096,7 +1096,7 @@ div[id*="leyka_donors_list"] {
       background: #fff; }
     div[id*="leyka_donors_list"] .ldl-item .amount {
       font-weight: bold;
-      color: darkent(#444, 5%);
+      color: darken(#444, 5%);
       margin-bottom: 5px; }
     div[id*="leyka_donors_list"] .ldl-item .purpose {
       font-size: 12px;
