@@ -186,7 +186,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         </div>
 
-        <a href="<?php echo admin_url('/admin.php?page=leyka_settings');?>" class="nav-section nav-exit">
+        <a href="<?php echo $this->getExitURL();?>" class="nav-section nav-exit">
             <div class="nav-section-title">
                 <div class="nav-section-marker"></div>
                 <?php _e('Exit installation', 'leyka');?>
@@ -279,5 +279,17 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         </div>
 
     <?php }
+    
+    private function getExitURL() {
+        
+        if($this->_controller->id && $this->_controller->id != 'init') {
+            $exit_url = admin_url('/admin.php?page=leyka_settings&stage=payment&gateway=' . $this->_controller->id);
+        }
+        else {
+            $exit_url = admin_url('/admin.php?page=leyka_settings');
+        }
+        
+        return $exit_url;
+    }
 
 }
