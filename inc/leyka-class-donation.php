@@ -247,7 +247,12 @@ class Leyka_Donation_Management {
 
     }
 
-    /** Send a donor thanking email, including the case of initializing a recurring subscription */
+    /**
+     * Send a donor thanking email, including the case of initializing a recurring subscription.
+     *
+     * @param $donation Leyka_Donation|integer|WP_Post
+     * @return boolean
+     */
     public static function send_donor_thanking_email($donation) {
 
         if( !leyka_options()->opt('send_donor_thanking_emails') ) {

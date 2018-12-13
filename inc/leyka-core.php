@@ -1,7 +1,9 @@
 <?php if( !defined('WPINC') ) die;
 
 /** Core class. */
-class Leyka {
+class Leyka extends Leyka_Singleton {
+
+    protected static $_instance;
 
     /**
      * Unique identifier for the plugin.
@@ -11,9 +13,6 @@ class Leyka {
      * @var string
      */
     protected $_plugin_slug = 'leyka';
-
-    /** Singleton infractructure */
-    protected static $_instance = null;
 
     /**
      * Gateways list.
@@ -50,21 +49,8 @@ class Leyka {
     /** @var bool|null */
     protected $_form_is_screening = false;
 
-    /**
-     * @return Leyka
-     */
-    public static function get_instance() {
-
-        if( !self::$_instance ) {
-            self::$_instance = new self;
-        }
-
-        return self::$_instance;
-
-    }
-
     /** Initialize the plugin by setting up localization, filters, administration functions etc. */
-    private function __construct() {
+    protected function __construct() {
 
         if( !get_option('leyka_permalinks_flushed') ) {
 
@@ -248,9 +234,7 @@ class Leyka {
             function leyka_inline_scripts(){
 
 //                $colors = array('#07C7FD', '#05A6D3', '#8CE4FD'); // Leyka blue
-                $colors = array('#1db318', '#1aa316', '#acebaa'); // Leyka green
-
-                // detect if we have JS at all... ?>
+                $colors = array('#1db318', '#1aa316', '#acebaa'); // Leyka green?>
 
                 <script>
                     document.documentElement.classList.add("leyka-js");
@@ -262,6 +246,7 @@ class Leyka {
                         --color-main-light: <?php echo $colors[2];?>;
                     }
                 </style>
+
                 <?php
             }
 
@@ -373,6 +358,28 @@ class Leyka {
             ) {
                 do_action('leyka_do_campaigns_targets_reaching_mailout');
             } else if($request[0] === 'get_usage_stats') {
+
+                require_once LEYKA_PLUGIN_DIR.'bin/sodium-compat.phar';
+
+//                if( !ParagonIE_Sodium_Compat::polyfill_is_fast() ) {
+//                }
+
+//                // On te-st stats server:
+//                $stats_keypair = \Sodium\crypto_box_keypair();
+//                $stats_skey = \Sodium\crypto_box_secretkey($stats_keypair);
+//                $stats_pkey = \Sodium\crypto_box_publickey($stats_keypair);
+//
+//                // On Leyka - siphering:
+//                $stats_to_send = 'Hi there! Hohoho! :)';
+//                $stats_encrypted = sodium_crypto_box_seal($stats_to_send, $stats_pkey);
+//
+//                echo '<pre>Encrypted: '.print_r($stats_encrypted, 1).'</pre>';
+//
+//                // On te-st stats server again:
+//                $stats_decrypted = \Sodium\crypto_box_seal_open($stats_encrypted, $stats_keypair);
+//                echo '<pre>Decrypted: '.print_r($stats_decrypted, 1).'</pre>';
+
+                exit;
 
                 if( !$this->_outerRequestAllowed() ) {
                     exit;
@@ -980,7 +987,7 @@ class Leyka {
         if( !leyka_form_is_screening() ) {
             return;
         }
-        
+
         // Enqueue the normal Leyka CSS just in case some other plugin elements exist on page:
         wp_enqueue_style(
             $this->_plugin_slug.'-plugin-styles',
