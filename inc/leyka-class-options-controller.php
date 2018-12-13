@@ -429,25 +429,33 @@ function leyka_sync_plugin_stats_option() {
     $stats_server_base_url = defined('WP_DEBUG') && WP_DEBUG ?
         rtrim(LEYKA_USAGE_STATS_DEV_SERVER_URL, '/') : rtrim(LEYKA_USAGE_STATS_PROD_SERVER_URL, '/');
 
-    if(get_option('leyka_installation_id') > 0) { // Update the installation (activate/deactivate)
+    $leyka_installation_id = (int)get_option('leyka_installation_id');
+
+    if($leyka_installation_id) { // Update the installation (activate/deactivate)
+
+        require_once LEYKA_PLUGIN_DIR.'bin/sodium-compat.phar';
 
         $sipher_public_key = get_option('leyka_stats_sipher_public_key');
         $params = array(
             'stats_active' => (int)(leyka_options()->opt('send_plugin_stats') === 'y'),
             'installation_url' => home_url(), // Just in case
-            'installation_id' => (int)get_option('leyka_installation_id'),
+            'installation_id' => $leyka_installation_id,
         );
 
         if($sipher_public_key) {
+
+            $sipher_public_key = \Sodium\hex2bin($sipher_public_key);
+
             foreach($params as $key => $value) {
 
                 if($key === 'installation_id') {
                     continue;
                 }
 
-                $params[$key] = \Sodium\crypto_box_seal($value, $sipher_public_key);
+                $params[$key] = \Sodium\crypto_box_seal((string)$value, $sipher_public_key);
 
             }
+
         }
 
     } else { // Add new installation
