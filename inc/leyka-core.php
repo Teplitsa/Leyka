@@ -379,8 +379,6 @@ class Leyka extends Leyka_Singleton {
 //                $stats_decrypted = \Sodium\crypto_box_seal_open($stats_encrypted, $stats_keypair);
 //                echo '<pre>Decrypted: '.print_r($stats_decrypted, 1).'</pre>';
 
-                exit;
-
                 if( !$this->_outerRequestAllowed() ) {
                     exit;
                 }
@@ -511,12 +509,11 @@ class Leyka extends Leyka_Singleton {
 
     protected function _outerRequestAllowed() {
 
-        $date = date('d.m.Y');
         $home_url_clear = rtrim(home_url(), '/');
 
         return isset($_SERVER['PHP_AUTH_USER'])
             && $_SERVER['PHP_AUTH_USER'] === 'stats-collector'
-            && $_SERVER['PHP_AUTH_PW'] === md5('stats-'.$date.'-'.$home_url_clear);
+            && $_SERVER['PHP_AUTH_PW'] === md5($home_url_clear.'-'.get_option('leyka_stats_sipher_public_key'));
 
     }
 
