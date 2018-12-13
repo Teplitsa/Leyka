@@ -88,7 +88,9 @@ if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.6.0', '<') ) {
 
 }
 
-load_textdomain('leyka', dirname( realpath(__FILE__) ) . '/languages/leyka-ru_RU.mo'); // load included lang pack
+if(get_locale() == 'ru_RU') {
+    load_textdomain('leyka', dirname( realpath(__FILE__) ) . '/languages/leyka-ru_RU.mo'); // load included lang pack
+}
 load_plugin_textdomain('leyka', false, basename( dirname( __FILE__ ) ) . '/languages/'); // load langpack by priority
 
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-tmp-translations.php');

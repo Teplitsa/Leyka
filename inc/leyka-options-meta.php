@@ -158,6 +158,7 @@ self::$_options_meta = array(
         'description' => __("Enter the organization statement of the account number.", 'leyka'),
         'required' => true,
         'placeholder' => __('E.g., 780302015', 'leyka'),
+        'mask' => "'mask': '9{9}'",
     ),
     'org_inn' => array(
         'type' => 'text',
@@ -173,6 +174,7 @@ self::$_options_meta = array(
         'description' => __('Enter a bank account number of the organization', 'leyka'),
         'required' => true,
         'placeholder' => __('E.g., 40123840529627089012', 'leyka'),
+        'mask' => "'mask': '9{20}'",
     ),
     'org_bank_name' => array(
         'type' => 'text',
@@ -187,6 +189,7 @@ self::$_options_meta = array(
         'description' => __("Enter a BIC of the organization bank.", 'leyka'),
         'required' => true,
         'placeholder' => __('E.g., 044180293', 'leyka'),
+        'mask' => "'mask': '9{9}'",
     ),
     'org_bank_corr_account' => array(
         'type' => 'text',
@@ -194,6 +197,7 @@ self::$_options_meta = array(
         'description' => __('Enter a correspondent account number of the organization.', 'leyka'),
         'required' => true,
         'placeholder' => __('E.g., 30101810270902010595', 'leyka'),
+        'mask' => "'mask': '9{20}'",
     ),
     'person_full_name' => array(
         'type' => 'text',
@@ -225,16 +229,19 @@ self::$_options_meta = array(
         'type' => 'text',
         'title' => _x('Your bank account number', 'For a physical person', 'leyka'),
         'placeholder' => _x('E.g., 40123840529627089012', 'For a physical person', 'leyka'),
+        'mask' => "'mask': '9{20}'",
     ),
     'person_bank_bic' => array(
         'type' => 'text',
         'title' => _x('Your bank BIC number', 'For a physical person', 'leyka'),
         'placeholder' => _x('E.g., 044180293', 'For a physical person', 'leyka'),
+        'mask' => "'mask': '9{9}'",
     ),
     'person_bank_corr_account' => array(
         'type' => 'text',
         'title' => _x('Your correspondent bank account number', 'For a physical person', 'leyka'),
         'placeholder' => _x('E.g., 30101810270902010595', 'For a physical person', 'leyka'),
+        'mask' => "'mask': '9{20}'",
     ),
     'send_plugin_stats' => array(
         'type' => 'radio',
