@@ -430,11 +430,26 @@ function leyka_sync_plugin_stats_option() {
         rtrim(LEYKA_USAGE_STATS_DEV_SERVER_URL, '/') : rtrim(LEYKA_USAGE_STATS_PROD_SERVER_URL, '/');
 
     if(get_option('leyka_installation_id') > 0) { // Update the installation (activate/deactivate)
+
+        $sipher_public_key = get_option('leyka_stats_sipher_public_key');
         $params = array(
             'stats_active' => (int)(leyka_options()->opt('send_plugin_stats') === 'y'),
             'installation_url' => home_url(), // Just in case
             'installation_id' => (int)get_option('leyka_installation_id'),
         );
+
+        if($sipher_public_key) {
+            foreach($params as $key => $value) {
+
+                if($key === 'installation_id') {
+                    continue;
+                }
+
+                $params[$key] = \Sodium\crypto_box_seal($value, $sipher_public_key);
+
+            }
+        }
+
     } else { // Add new installation
         $params = array(
             'stats_active' => true,
@@ -480,14 +495,16 @@ function leyka_sync_plugin_stats_option() {
         }
 
         $response = json_decode($response['body'], true);
-        if(empty($response['installation_id']) || (int)$response['installation_id'] <= 0) {
+        if(empty($response['installation_id']) || (int)$response['installation_id'] <= 0 || empty($response['public_key'])) {
             return new WP_Error(
                 'plugin_stats_not_saved',
                 sprintf(__("The plugin stats collection status wasn't saved :( Please send a message about it to the <a href='mailto:%s' target='_blank'>plugin tech support</a>", LEYKA_SUPPORT_EMAIL), 'leyka')
             );
         }
 
-        return update_option('leyka_installation_id', (int)$response['installation_id']);
+        return
+            update_option('leyka_installation_id', (int)$response['installation_id']) &&
+            update_option('leyka_stats_sipher_public_key', $response['public_key']);
 
     }
 

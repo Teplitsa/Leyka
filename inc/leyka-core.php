@@ -368,10 +368,10 @@ class Leyka extends Leyka_Singleton {
 //                $stats_keypair = \Sodium\crypto_box_keypair();
 //                $stats_skey = \Sodium\crypto_box_secretkey($stats_keypair);
 //                $stats_pkey = \Sodium\crypto_box_publickey($stats_keypair);
-//
+
 //                // On Leyka - siphering:
 //                $stats_to_send = 'Hi there! Hohoho! :)';
-//                $stats_encrypted = sodium_crypto_box_seal($stats_to_send, $stats_pkey);
+//                $stats_encrypted = \Sodium\crypto_box_seal($stats_to_send, $stats_pkey);
 //
 //                echo '<pre>Encrypted: '.print_r($stats_encrypted, 1).'</pre>';
 //
