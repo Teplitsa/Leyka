@@ -503,7 +503,10 @@ function leyka_sync_plugin_stats_option() {
         }
 
         $response = json_decode($response['body'], true);
-        if(empty($response['installation_id']) || (int)$response['installation_id'] <= 0 || empty($response['public_key'])) {
+        if(
+            empty($response['installation_id']) || (int)$response['installation_id'] <= 0
+            || ( !$leyka_installation_id && empty($response['public_key']) )
+        ) {
             return new WP_Error(
                 'plugin_stats_not_saved',
                 sprintf(__("The plugin stats collection status wasn't saved :( Please send a message about it to the <a href='mailto:%s' target='_blank'>plugin tech support</a>", LEYKA_SUPPORT_EMAIL), 'leyka')
