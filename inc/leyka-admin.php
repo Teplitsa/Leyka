@@ -183,7 +183,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 		$row['step_1'] = array(
 			'txt'    => __('Fill in information about your organisation', 'leyka'),
-			'action' => leyka_are_settings_complete('beneficiary') ? false : admin_url('admin.php?page=leyka_settings'),
+			'action' => leyka_are_settings_complete('beneficiary') ? false : admin_url('admin.php?page=leyka_settings&stage=beneficiary'),
 			'docs'   => 'https://leyka.te-st.ru/docs/nastrojka-lejki/'
 		);
 		$row['step_2'] = array(

@@ -480,15 +480,15 @@ function leyka_sync_plugin_stats_option() {
     if(is_wp_error($response)) {
         return new WP_Error(
             'init_plugin_stats_error',
-            sprintf('Ошибка при сохранении данных о сборе статистики использования: %s', $response->get_error_message())
+            sprintf(__('Error while saving the plugin usage data: %s', 'leyka'), $response->get_error_message())
         );
     } else if(empty($response['response']['code']) || $response['response']['code'] != 200) {
 
         $error_message = sprintf(
-            'Ошибка при сохранении данных о сборе статистики использования: %s',
+            __('Error while saving the plugin usage data: %s', 'leyka'),
             empty($response['response']['code']) ?
-                'данные о коде и статусе ответа не получены' :
-                'код '.$response['response']['code'].(empty($response['response']['message']) ? '' : ' ('.$response['response']['message'].')')
+                __("the response code & status data weren't received", 'leyka') :
+                sprintf(__('code %d', 'leyka'), $response['response']['code']).(empty($response['response']['message']) ? '' : ' ('.$response['response']['message'].(empty($response['body']) ? '' : ' - '.trim($response['body'], '.')).')')
         );
 
         return new WP_Error('init_plugin_stats_error', $error_message);

@@ -451,7 +451,7 @@ self::$_options_meta = array(
         'title' => __('Email text', 'leyka'),
         'description' => $email_placeholders,
         'required' => true,
-        'comment' => __('An email text that your donor will see. You may use the special tags in the text.'),
+        'comment' => __('An email text that your donor will see. You may use the special tags in the text.', 'leyka'),
         'field_classes' => array('type-rich_html'),
     ),
     'email_recurring_init_thanks_title' => array(
