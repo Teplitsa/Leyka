@@ -361,30 +361,15 @@ class Leyka extends Leyka_Singleton {
 
                 require_once LEYKA_PLUGIN_DIR.'bin/sodium-compat.phar';
 
-//                if( !ParagonIE_Sodium_Compat::polyfill_is_fast() ) {
-//                }
-
-//                // On te-st stats server:
-//                $stats_keypair = \Sodium\crypto_box_keypair();
-//                $stats_skey = \Sodium\crypto_box_secretkey($stats_keypair);
-//                $stats_pkey = \Sodium\crypto_box_publickey($stats_keypair);
-
-//                // On Leyka - siphering:
-//                $stats_to_send = 'Hi there! Hohoho! :)';
-//                $stats_encrypted = \Sodium\crypto_box_seal($stats_to_send, $stats_pkey);
-//
-//                echo '<pre>Encrypted: '.print_r($stats_encrypted, 1).'</pre>';
-//
-//                // On te-st stats server again:
-//                $stats_decrypted = \Sodium\crypto_box_seal_open($stats_encrypted, $stats_keypair);
-//                echo '<pre>Decrypted: '.print_r($stats_decrypted, 1).'</pre>';
-
                 if( !$this->_outerRequestAllowed() ) {
                     exit;
                 }
-//                if(isset($_GET['tst'])) echo '<pre>'.print_r($_SERVER, 1).'</pre>';
+
                 echo empty($_GET['tst']) ?
-                    json_encode($this->_get_usage_stats($_REQUEST)) :
+                    \Sodium\crypto_box_seal(
+                        json_encode($this->_get_usage_stats($_REQUEST)),
+                        \Sodium\hex2bin(get_option('leyka_stats_sipher_public_key'))
+                    ) :
                     '<pre>'.print_r($this->_get_usage_stats($_REQUEST), 1).'</pre>';
             } else { // Gateway callback URL
 
