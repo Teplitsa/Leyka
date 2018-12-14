@@ -27,6 +27,20 @@ if( !function_exists('mb_strtoupper') ) {
     }
 }
 
+if( !function_exists('array_key_first') ) {
+    function array_key_first(array $array) {
+        if(count($array)) {
+
+            reset($array);
+            return key($array);
+
+        }
+
+        return null;
+
+    }
+}
+
 if( !function_exists('leyka_strip_string_by_words') ) {
     function leyka_strip_string_by_words($string, $length = 350, $strip_tags_shortcodes = true) {
 
