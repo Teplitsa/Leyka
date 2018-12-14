@@ -78,7 +78,7 @@ self::$_options_meta = array(
         'title' => __('Select your country', 'leyka'),
         'required' => true,
         'list_entries' => array('-' => __('Not set', 'leyka'), 'ru' => __('Russia', 'leyka')),
-        'description' => __('Leyka architecture allows you to collect funds even in other countries. Read more about it <a href="//leyka.te-st.ru/instruction/">here</a>.', 'leyka'),
+        'description' => __('Leyka architecture allows you to collect funds even in other countries. Read more about it <a href="//leyka.te-st.ru/instruction/" target="_blank">here</a>.', 'leyka'),
     ),
     'receiver_legal_type' => array(
         'type' => 'radio',

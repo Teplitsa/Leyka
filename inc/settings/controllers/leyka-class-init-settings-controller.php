@@ -191,14 +191,24 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'id' => 'org_bank_name',
             'option_id' => 'org_bank_name',
             'show_description' => false,
-        )))->addBlock(new Leyka_Option_Block(array(
-            'id' => 'org_bank_account',
-            'option_id' => 'org_bank_account',
-            'show_description' => false,
-        )))->addBlock(new Leyka_Option_Block(array(
-            'id' => 'org_bank_corr_account',
-            'option_id' => 'org_bank_corr_account',
-            'show_description' => false,
+        )))->addBlock(new Leyka_Container_Block(array(
+            'id' => 'complex-row-2',
+            'entries' => array(
+                new Leyka_Option_Block(array(
+                    'id' => 'org_bank_account',
+                    'option_id' => 'org_bank_account',
+                    'show_description' => false,
+                )),
+            ),
+        )))->addBlock(new Leyka_Container_Block(array(
+            'id' => 'complex-row-3',
+            'entries' => array(
+                new Leyka_Option_Block(array(
+                    'id' => 'org_bank_corr_account',
+                    'option_id' => 'org_bank_corr_account',
+                    'show_description' => false,
+                )),
+            ),
         )))->addBlock(new Leyka_Container_Block(array(
             'id' => 'complex-row-1',
             'entries' => array(
@@ -408,6 +418,12 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'option_id' => 'email_thanks_text',
         )))->addTo($section);
 
+        $this->_sections[$section->id] = $section;
+        // Campaign settings Section - End
+
+        // Final Section:
+        $section = new Leyka_Settings_Section('final', esc_html__('Setup completed', 'leyka'));
+
         $step = new Leyka_Settings_Step('campaign_completed', $section->id, esc_html__('The campaign is set up', 'leyka'));
         $step->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'campaign-completed',
@@ -415,21 +431,15 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'field_type' => 'custom_campaign_completed',
             'rendering_type' => 'template',
         )))->addHandler(array($this, 'handleCampaignCompletedStep'))
-            ->addTo($section);
+        ->addTo($section);
 
-        $this->_sections[$section->id] = $section;
-        // Campaign settings Section - End
-
-        // Final Section:
-//        $section = new Leyka_Settings_Section('final', esc_html__('Setup completed', 'leyka'));
-//
 //        $step = new Leyka_Settings_Step('init', $section->id, esc_html__('Congratulations!', 'leyka'), array('header_classes' => 'greater',));
 //        $step->addBlock(new Leyka_Text_Block(array(
 //            'id' => 'step-intro-text',
 //            'text' => esc_html__('You have successfully completed the Leyka setup Wizard.', 'leyka'),
 //        )))->addTo($section);
 //
-//        $this->_sections[$section->id] = $section;
+        $this->_sections[$section->id] = $section;
         // Final Section - End
 
     }
@@ -491,16 +501,18 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             } else if($step_from->id === 'campaign_decoration') {
                 $next_step_full_id = $step_from->section_id.'-donors_communication';
             } else if($step_from->id === 'donors_communication') {
-                $next_step_full_id = $step_from->section_id.'-campaign_completed';
-            } else if($step_from->id === 'campaign_completed') {
-                $next_step_full_id = 'cd-campaign_completed'; // $next_step_full_id = 'final-init';
-
+                //$next_step_full_id = $step_from->section_id.'-campaign_completed';
+                $next_step_full_id = 'final-campaign_completed';
             }
 
         }
-//        else if($step_from->section_id === 'final') { // Final Section
-//            $next_step_full_id = true;
-//        }
+        else if($step_from->section_id === 'final') { // Final Section
+            if($step_from->id === 'campaign_completed') {
+                $next_step_full_id = 'final-campaign_completed'; // $next_step_full_id = 'final-init';
+
+            }            
+            //$next_step_full_id = true;
+        }
 
         if( !!$return_full_id || !is_string($next_step_full_id) ) {
             return $next_step_full_id;
@@ -576,11 +588,11 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                     ),
                 ),
             ),
-//            array(
-//                'section_id' => 'final',
-//                'title' => esc_html__('Setup completed', 'leyka'),
-//                'url' => '',
-//            ),
+            array(
+                'section_id' => 'final',
+                'title' => esc_html__('Setup completed', 'leyka'),
+                'url' => '',
+            ),
         );
 
     }
@@ -615,6 +627,8 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 return $step_full_id;
             case 'cd-campaign_completed':
                 return 'cd--';
+            case 'final-campaign_completed':
+                return $step_full_id;
             case 'final-init': return 'final--';
             default: return false;
         }
