@@ -868,17 +868,27 @@ function leyka_are_settings_complete($settings_tab) {
 
     $settings_complete = true;
     $tab_options = leyka_opt_alloc()->get_tab_options($settings_tab); // Specially to support PHP strict standards
-    $option_section = reset($tab_options);
-
-    foreach($option_section['section']['options'] as $option_name) {
-
-        if( !leyka_options()->opt_safe($option_name) && leyka_options()->is_required($option_name) ) {
-
-            $settings_complete = false;
-            break;
+    
+    $receiver_legal_type = leyka_options()->opt_safe('receiver_legal_type');
+    
+    $exclude_legal_type_fields_regex = array(
+        'legal' => "/^person_/",
+        'physical' => "/^org_/",
+    );
+    
+    foreach($tab_options as $option_section) {
+        foreach($option_section['section']['options'] as $option_name) {
+            if(empty($exclude_legal_type_fields_regex[$receiver_legal_type]) || preg_match($exclude_legal_type_fields_regex[$receiver_legal_type], $option_name)) {
+                continue;
+            }
+            
+            if(!leyka_options()->opt_safe($option_name) && leyka_options()->is_required($option_name) ) {
+                $settings_complete = false;
+                break;
+            }
         }
     }
-
+    
     return $settings_complete;
 
 }
