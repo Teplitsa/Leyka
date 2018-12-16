@@ -1230,46 +1230,46 @@ msgstr "Приём платежей с банковских карт Visa, Maste
 msgid "Yandex.Kassa setup Wizard"
 msgstr "Мастер подключения к Яндекс.Кассе"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:796
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:814
 msgid "Error when publishing the campaign"
 msgstr "Ошибка при публикации кампании"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:789
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:810
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:807
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:828
 msgid "Campaign ID is wrong or missing"
 msgstr "ID кампании неправильный или отсутствует"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:765
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:783
 msgid "Error while creating the campaign"
 msgstr "Ошибка при создании кампании"
 
 #: inc/settings/controllers/leyka-class-yandex-settings-controller.php:708
 #: inc/settings/controllers/leyka-class-cp-settings-controller.php:387
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:644
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:649
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:658
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:663
 msgid "Go to the Dashboard"
 msgstr "Перейти в Панель управления"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:639
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:653
 msgid "Let's go!"
 msgstr "Поехали!"
 
 #: inc/settings/controllers/leyka-class-cp-settings-controller.php:376
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:630
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:644
 msgid "Back to the previous step"
 msgstr "Вернуться на предыдущий шаг"
 
 #: inc/settings/controllers/leyka-class-yandex-settings-controller.php:497
 #: inc/settings/controllers/leyka-class-cp-settings-controller.php:141
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:628
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:642
 msgid "Save & continue"
 msgstr "Продолжить и сохранить"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:564
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:576
 msgid "Main data"
 msgstr "Основные сведения"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:547
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:559
 msgid "Personal data"
 msgstr "Персональные данные"
 
@@ -1277,135 +1277,140 @@ msgstr "Персональные данные"
 msgid "Congratulations!"
 msgstr "Поздравляем!"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:411
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:425
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:593
+msgid "Setup completed"
+msgstr "Завершение настройки"
+
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:427
 msgid "The campaign is set up"
 msgstr "Кампания настроена"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:399
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:409
 msgid "Later, in the plugin Settings, you can change the text on the \"Thank you\" page, which is displayed after the successful completion of donation."
 msgstr "Позже, в разделе «Настройки», вы сможете изменить текст страницы «Спасибо», которая показывается донору после успешного совершения пожертвования."
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:396
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:406
 msgid "Once a donor has made his donation, it is considered a good practive to show him a page with words of gratitude and to send an thanking email. Below you can edit what the donor will receive in such email. The \"Sender\" field means \"from whom\" (most of the time it is a name of your organization). The \"Sender e-mail\" field means a return address that donor will see. Finally, you can verbalise your sincere gratitude to your donor in the text of an email. Note the special tags you can use for automatic substitution."
 msgstr "После того, как донор внёс своё пожертвование, хорошим тоном считается показать ему страницу с благодарностью и отправить письмо. Ниже вы можете отредактировать то, что донор получит в своем почтовом ящике. Поле «Отправитель» обозначает, от кого придет письмо донору. Как правило, указывается название вашей организации. Поле «E-mail отправителя» обозначает, какой обратный адрес увидит донор. Наконец, в тексте письма вы можете сами выразить вашу искреннюю благодарность дарителю. Обратите внимание, что в вашем распоряжении специальные тэги для автоматической подстановки."
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:393
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:574
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:403
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:586
 msgid "Thanks to donor"
 msgstr "Благодарность донору"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:383
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:393
 msgid "Select the campaign main photo and one of the possible donation forms templates. Both are very important for campaign perception by donors, and therefore to its success."
 msgstr "Выберите главное фото кампании и один из возможных шаблонов формы для пожертвования. И то, и другое очень важно для восприятия кампании донорами, и, следовательно, для её успешности."
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:380
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:569
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:390
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:581
 msgid "Campaign decoration"
 msgstr "Оформление кампании"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:372
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:382
 msgid "Leave empty, if the target amount is unlimited"
 msgstr "Пусто, если нет ограничений по целевой сумме"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:367
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:377
 msgid "Target amount"
 msgstr "Целевая сумма"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:356
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:366
 msgid "A brief description of the campaign concisely explains why donors should donate."
 msgstr "В кратком описании кампании в сжатой форме рассказывается, почему стоит пожертвовать."
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:354
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:364
 msgctxt "[of a campaign]"
 msgid "Short description"
 msgstr "Краткое описание"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:347
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:357
 msgid "A brief and clear description of a purpose for which funds are collected."
 msgstr "Краткое и прозрачное описание того, для чего собираются средства."
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:345
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:355
 msgid "E.g., \"For the authorized activities of the organization\""
 msgstr "Например, «На уставную деятельность организации»"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:343
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:353
 msgid "Campaign title"
 msgstr "Название кампании"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:337
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:347
 msgid "Leyka fundraising is carried out using one or more campaigns, each is characterized by a title, a brief description, an image and a target amount. Set up your first campaign."
 msgstr "Сбор пожертвований в Лейке осуществляется в рамках одной или нескольких кампаний, каждая из которых характеризуется наименованием, кратким описанием, изображением и целевой суммой. Настройте вашу первую кампанию."
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:334
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:344
 msgid "Your campaign description"
 msgstr "Описание вашей кампании"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:329
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:559
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:339
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:571
 msgid "Campaign setup"
 msgstr "Настройка кампании"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:323
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:333
 msgid "A pity that you have decided not to share data. If you change your mind, you may change these settings in the plugin settings. Let's get up and running your first campaign fundraising."
 msgstr "Жаль, что вы решили не делиться данными. Если вы передумаете, то изменить эти настройки вы сможете в разделе «Настройки». Давайте настроим и запустим вашу первую кампанию по сбору средств."
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:320
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:330
 msgid "Ehh..."
 msgstr "Эхх..."
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:316
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:326
 msgid "Thanks a lot! Your data will help us very much. Now, let's get up and running your first fundraising campaign."
 msgstr "Спасибо! Ваши данные очень нам помогут! Теперь, давайте настроим и запустим вашу первую кампанию по сбору средств."
 
 #: inc/settings/controllers/leyka-class-yandex-settings-controller.php:695
 #: inc/settings/controllers/leyka-class-cp-settings-controller.php:374
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:313
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:323
 #: inc/settings-fields-templates/leyka-cp_account_setup_instructions.php:79
 msgid "Continue"
 msgstr "Продолжить"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:304
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:314
 msgid "We ask you to confirm your agreement to send <strong>technical data</strong> to us, Teplitsa of Social technologies. It will allow us to consistently improve the plugin work as well as help you quickly resolve technical issues with it. These data will be used only by plugin developers and will not be shared with any third party."
 msgstr "Мы просим вас подтвердить согласие на отправку <strong>технических данных</strong>  к нам, в Теплицу, что позволит нам последовательно совершенствовать работу плагина, а также помочь быстрее разрешать технические проблемы работы с Лейкой, если таковые возникнут, у конкретных пользователей. Эти данные будут использоваться только разработчиками плагина и не будут передаваться третьим лицам."
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:298
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:301
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:554
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:308
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:311
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:566
 msgid "Diagnostic data"
 msgstr "Диагностические данные"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:291
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:301
 msgid "You have successfully filled your data and can now proceed to the next step."
 msgstr "Вы успешно заполнили свои данные и теперь можете перейти к следующему этапу."
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:288
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:298
 msgid "Good job!"
 msgstr "Хорошая работа!"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:268
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:281
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:278
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:291
 msgid "As part of your fundraising you will collect the donors personal data. \"Consent to the processing of personal data\" - binding instrument on the federal law FZ-152. We have prepared the text of the agreement template, you can edit it to your needs. Text parts highlighted in blue are replaced automatically, but you can also change them. All personal data is stored on your site and will not be sent anywhere."
 msgstr "В рамках сбора пожертвований вы будете собирать персональные данные доноров. «Согласие на обработку персональных данных» — обязательный документ по закону ФЗ-152. Мы подготовили шаблон текста соглашения, вы можете отредактировать его под ваши требования. Текст, выделенный синим, подставлен автоматически, но вы также можете его поменять. Все персональные данные хранятся на вашем сайте и никуда не отправляются."
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:245
 #: inc/settings/controllers/leyka-class-init-settings-controller.php:255
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:265
 msgid "To comply with all the formalities you need to provide a Terms of service document to conclude a donation agreement. We have prepared a template option - please check it out. If necessary, adjust the document text. Text parts highlighted in blue are replaced automatically, but you can also change them. After completion of all of the changes, click \"Save & continue\"."
 msgstr "Для соблюдения всех формальных процедур вам необходимо предоставить оферту о заключении договора пожертвования. Мы подготовили для вас шаблонный вариант. Пожалуйста, проверьте. При необходимости, скорректируйте текст оферты. Текст, выделенный синим, подставлен автоматически, но вы также можете его поменять. После завершения всех правок нажмите «Сохранить и продолжить»."
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:242
 #: inc/settings/controllers/leyka-class-init-settings-controller.php:252
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:542
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:262
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:554
 msgid "Terms of service"
 msgstr "Оферта"
 
 #: inc/settings/controllers/leyka-class-init-settings-controller.php:189
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:217
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:227
 msgid "These data needed for accounting documents, as well as to use bank order donations."
 msgstr "Данные понадобятся для отчётных документов, а также для подключения оплаты с помощью бумажной банковской квитанции."
 
 #: inc/settings/controllers/leyka-class-init-settings-controller.php:186
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:214
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:537
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:224
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:549
 msgid "Bank essentials"
 msgstr "Банковские реквизиты"
 
@@ -1439,7 +1444,7 @@ msgid "You need to determine on whose behalf you will collect donations. As NGOs
 msgstr "Вы должны определить, от имени кого вы будете собирать пожертвования. Как НКО (некоммерческая организация) — юридическое лицо или как обычный гражданин — физическое лицо. Низовым инициативам будет удобнее собирать от имени физического лица (помните о налогах). При этом у юридических лиц больше возможностей для сбора."
 
 #: inc/settings/controllers/leyka-class-init-settings-controller.php:57
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:527
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:539
 msgid "Donations receiver"
 msgstr "Получатель пожертвований"
 
@@ -1453,8 +1458,8 @@ msgstr "Приветствуем вас!"
 
 #: inc/settings/controllers/leyka-class-init-settings-controller.php:44
 #: inc/settings/controllers/leyka-class-init-settings-controller.php:165
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:522
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:532
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:534
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:544
 #: inc/leyka-class-options-allocator.php:47
 msgid "Your data"
 msgstr "Ваши данные"
@@ -2479,8 +2484,8 @@ msgstr "Поле согласия с условиями использовани
 msgid "Donor is agreed with personal data usage Terms by default"
 msgstr "По умолчанию, донор согласен с условиями использования персональных данных"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:265
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:278
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:275
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:288
 msgid "WARNING! We strongly recommend you to revise this Terms text and fill the field with your own value according to the organization personal data policy. Read more about it: %s"
 msgstr "<strong>ВНИМАНИЕ!</strong> Мы рекомендуем вам просмотреть и дополнить текст Условий согласно политике использования персональных данных, принятых в вашей организации. Подробнее: %s"
 
@@ -2534,8 +2539,8 @@ msgstr ""
 msgid "E.g., Terms of personal data usage"
 msgstr "Например, «условиями использования персональных данных»"
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:262
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:275
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:272
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:285
 msgid "Terms of personal data usage"
 msgstr "Условия использования персональных данных"
 
@@ -2655,7 +2660,7 @@ msgstr "Выводить специальный блок уведомления 
 msgid "E-mail that you want to use to collect technical support requests from the donors."
 msgstr "Email для сообщений доноров о проблемах при платежах."
 
-#: inc/settings/controllers/leyka-class-init-settings-controller.php:313
+#: inc/settings/controllers/leyka-class-init-settings-controller.php:323
 #: inc/settings-fields-templates/leyka-helpchat.php:23
 msgid "Thank you!"
 msgstr "Спасибо!"
