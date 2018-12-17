@@ -903,6 +903,7 @@ jQuery(document).ready(function($){
     
     $previewIframe.on('load', function(){
         $previewIframe.height($previewIframe.contents().find('body').height() + 10);
+        $previewIframe.contents().find('body').addClass('wizard-init-campaign-preview');
     });
 
     $('#campaign_photo-upload-button').click(function(){
