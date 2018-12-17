@@ -115,7 +115,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             'field_type' => 'textarea',
             'data' => array(
                 'title' => esc_html__('Email text', 'leyka'),
-                'value' => esc_html__('Money transfers in rubles on the next business day after the transaction to the account of the legal entity or entrepreneur in any Russian bank, net of commission.', 'leyka'),
+                'value' => esc_html__("Hello! We'd like to connect to CloudPayments. Our Annex #1 is filled and attached to the email.", 'leyka'),
                 'required' => true,
             ),
         )))->addHandler(array($this, 'handleSendDocuments'))->addTo($section);

@@ -403,7 +403,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $step = new Leyka_Settings_Step('donors_communication', $section->id, esc_html__('Thanks to donor', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text-1',
-            'text' => esc_html__('Once a donor has made his donation, it is considered a good practive to show him a page with words of gratitude and to send an thanking email. Below you can edit what the donor will receive in such email. The "Sender" field means "from whom" (most of the time it is a name of your organization). The "Sender e-mail" field means a return address that donor will see. Finally, you can verbalise your sincere gratitude to your donor in the text of an email. Note the special tags you can use for automatic substitution.', 'leyka'),
+            'text' => esc_html__('Thank your donor. Below are settings of thankful email, that would be sent to every donor once donation is complete.', 'leyka'),
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text-2',
             'text' => esc_html__('Later, in the plugin Settings, you can change the text on the "Thank you" page, which is displayed after the successful completion of donation.', 'leyka'),
