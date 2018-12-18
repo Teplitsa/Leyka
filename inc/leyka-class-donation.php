@@ -30,7 +30,7 @@ class Leyka_Donation_Management {
         add_action('add_meta_boxes', array($this, 'addMetaboxes')); // Add Donation PT metaboxes
         add_action('add_meta_boxes', array($this, 'removeMetaboxes'), 100); // Remove unneeded metaboxes
 
-        add_action('save_post', array($this, 'saveDonationData'));
+        add_action('save_post_'.self::$post_type, array($this, 'saveDonationData'));
 
 		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manageColumnsNames'));
 		add_action('manage_'.self::$post_type.'_posts_custom_column', array($this, 'manageColumnsContent'), 2, 2);
@@ -1302,7 +1302,7 @@ class Leyka_Donation_Management {
             return $donation_id;
         }
 
-        remove_action('save_post', array($this, 'saveDonationData'));
+        remove_action('save_post_'.self::$post_type, array($this, 'saveDonationData'));
 
         $donation = new Leyka_Donation($donation_id);
         $campaign = new Leyka_Campaign($donation->campaign_id);
@@ -1425,7 +1425,7 @@ class Leyka_Donation_Management {
 
         do_action("leyka_{$donation->gateway_id}_save_donation_data", $donation);
 
-        add_action('save_post', array($this, 'saveDonationData'));
+        add_action('save_post_'.self::$post_type, array($this, 'saveDonationData'));
 
         return true;
 
@@ -1484,6 +1484,7 @@ class Leyka_Donation {
 
         $status = empty($params['status']) ? 'submitted' : $params['status'];
 
+        remove_all_actions('save_post'); // To speed up the post insertion
         $id = wp_insert_post(array(
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => array_key_exists($status, leyka_get_donation_status_list()) ? $status : 'submitted',
