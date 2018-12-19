@@ -319,6 +319,8 @@ techMessage="'.$tech_message.'"/>');
                 switch($payment->status) {
                     case 'succeeded':
                         $donation->status = 'funded';
+                        $res = Leyka_Donation_Management::send_all_emails($donation->id);
+                        /** @todo Handle the case of $res === false */
                         break;
                     case 'canceled':
                         $donation->status = 'failed';

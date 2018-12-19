@@ -99,8 +99,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                     <a class="leyka-message-close notice-dismiss" href="<?php echo esc_url(wp_nonce_url(remove_query_arg('leyka_reset_msg', add_query_arg('leyka-hide-notice', 'v3_update')), 'leyka_hide_notice_nonce', '_leyka_notice_nonce'));?>">
                         <?php esc_html_e('Dismiss', 'leyka');?>
                     </a>
-                    <p><?php printf(esc_html__('Hello! Thank you for updating Leyka plugin to the 3rd version. Please read about all new features %shere%s.', 'leyka'), '<a href="//te-st.ru/" target="_blank">', '</a>');?></p>
-    <!--                <p class="submit"><a class="button-secondary" href="#"></a></p>-->
+                    <p><?php printf(esc_html__('Hello! Thank you for updating Leyka plugin to the 3rd version. Please read about all new features %shere%s.', 'leyka'), '<a href="//te-st.ru/2018/12/18/leyka-3-update/" target="_blank">', '</a>');?></p>
                 </div>
             <?php
             }
