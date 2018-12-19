@@ -4,7 +4,7 @@ jQuery(document).ready(function($){
     if( !$('#leyka-settings-form-cd-campaign_decoration').length ) {
         return;
     }
-    
+
     var campaignAttachmentId = 0;
     var $decorationControlsWrap = $('#campaign-decoration');
     var $previewFrame = $('#leyka-preview-frame');
@@ -42,6 +42,7 @@ jQuery(document).ready(function($){
     
     $previewIframe.on('load', function(){
         $previewIframe.height($previewIframe.contents().find('body').height() + 10);
+        $previewIframe.contents().find('body').addClass('wizard-init-campaign-preview');
     });
 
     $('#campaign_photo-upload-button').click(function(){
@@ -244,10 +245,14 @@ jQuery(document).ready(function($){
 // Highlighted keys in rich edit
 jQuery(document).ready(function($){
     
-    if(!$('.type-rich_html').length) {
-        return;
-    }
+    $('.type-rich_html').each(function(){
+        initRichHTMLTagsReplace($, $(this));
+    });
     
+});
+
+function initRichHTMLTagsReplace($, $controlContainer) {
+
     var isInitEditDocsDone = false;
     var isEditContentLoadDone = false;
     var isEditFieldTouched = false;
@@ -258,7 +263,7 @@ jQuery(document).ready(function($){
     
     function showRestoreOriginalDocHTMLLink() {
         
-        var $link = $('.wp-editor-wrap').closest('.option-block').find('.restore-original-doc');
+        var $link = $controlContainer.find('.restore-original-doc');
         
         if(!$link.length) {
             
@@ -267,7 +272,7 @@ jQuery(document).ready(function($){
                 .addClass("inner")
                 .addClass("restore-original-doc");
             
-            $('.wp-editor-wrap').append($link);
+            $controlContainer.find('.wp-editor-wrap').append($link);
         }
         
         $link.unbind('click');
@@ -282,10 +287,10 @@ jQuery(document).ready(function($){
             $frameBody.html(originalDocHTML);
         }
         
-        $('.wp-editor-wrap').closest('.option-block').find('.restore-original-doc').hide();
+        $controlContainer.find('.restore-original-doc').hide();
         replaceKeysWithHTML();
         handleChangeEvents();
-        $('.wp-editor-wrap').closest('.option-block').find('.restore-original-doc').hide(); // hack for FF
+        $controlContainer.find('.restore-original-doc').hide(); // hack for FF
         
         return false;
     }
@@ -313,11 +318,11 @@ jQuery(document).ready(function($){
         
         originalDocHTML = $frameBody.html();
         
-        if($('#pd_terms_text').length > 0) {
-            keysValues = leykaWizard.pdKeys;
+        if($controlContainer.find('#leyka_pd_terms_text-field').length > 0 || $controlContainer.find('#leyka_person_pd_terms_text-field').length > 0) {
+            keysValues = leykaRichHTMLTags.pdKeys;
         }
         else {
-            keysValues = leykaWizard.termsKeys;
+            keysValues = leykaRichHTMLTags.termsKeys;
         }
         
         replaceKeysValues(keysValues);
@@ -384,17 +389,17 @@ jQuery(document).ready(function($){
     }
     
     function tryInitEditDocs($tinyMCEContainer) {
-        //console.log('changed');
-        
+
         var $iframe = $tinyMCEContainer.find('iframe');
         if($iframe.length) {
             $iframe.on('load', function(){
                 initEditDocs($(this));
             });
         }
+
     }
     
-    $('.step-next.button').click(function(e){
+    $('.step-next.button, input[name=leyka_settings_beneficiary_submit], input[name=leyka_settings_email_submit]').click(function(e){
         $frameBody.unbind("DOMSubtreeModified");
         $frameBody.find(".leyka-doc-key").unbind("DOMSubtreeModified");
         $frameBody.find('.leyka-doc-key-wrap').each(function(index, el){
@@ -408,27 +413,28 @@ jQuery(document).ready(function($){
         //e.preventDefault();
     });
     
-    $('.wp-editor-container').bind("DOMSubtreeModified", function(){
+    $controlContainer.find('.wp-editor-container').bind("DOMSubtreeModified", function(){
         tryInitEditDocs($(this));
     });
-    tryInitEditDocs($('.wp-editor-container'));
+    tryInitEditDocs($controlContainer.find('.wp-editor-container'));
     
-});
+}
+
 
 // show-hide available tags
 jQuery(document).ready(function($){
     $('.hide-available-tags').click(function(e){
         e.preventDefault();
         $(this).hide();
-        $('.show-available-tags').show();
-        $('.placeholders-help').hide();
+        $(this).closest('.field-component').find('.show-available-tags').show();
+        $(this).closest('.field-component').find('.placeholders-help').hide();
     });
     
     $('.show-available-tags').click(function(e){
         e.preventDefault();
         $(this).hide();
-        $('.hide-available-tags').show();
-        $('.placeholders-help').show();
+        $(this).closest('.field-component').find('.hide-available-tags').show();
+        $(this).closest('.field-component').find('.placeholders-help').show();
     });
 });
 

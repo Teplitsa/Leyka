@@ -27,6 +27,20 @@ if( !function_exists('mb_strtoupper') ) {
     }
 }
 
+if( !function_exists('array_key_first') ) {
+    function array_key_first(array $array) {
+        if(count($array)) {
+
+            reset($array);
+            return key($array);
+
+        }
+
+        return null;
+
+    }
+}
+
 if( !function_exists('leyka_strip_string_by_words') ) {
     function leyka_strip_string_by_words($string, $length = 350, $strip_tags_shortcodes = true) {
 
@@ -73,7 +87,7 @@ function leyka_current_user_has_role($role, $user_id = false) {
 
 /**
  * @param $donation mixed
- * @return Leyka_Donation A donation object, if parameter is valid in one way or another; false otherwise.
+ * @return Leyka_Donation|false A donation object, if parameter is valid in one way or another; false otherwise.
  */
 function leyka_get_validated_donation($donation) {
 
@@ -90,7 +104,7 @@ function leyka_get_validated_donation($donation) {
 
 /**
  * @param $campaign mixed
- * @return mixed A Leyka_Campaign instance if parameter is valid in one way or another; false otherwise.
+ * @return Leyka_Campaign|false A Leyka_Campaign instance if parameter is valid in one way or another; false otherwise.
  */
 function leyka_get_validated_campaign($campaign) {
 
@@ -125,25 +139,31 @@ function leyka_get_pages_list() {
     }
 
     return $pages;
+
 }
 
-/** A callback for the default gateway select field. */
+/**
+ * A callback for the default gateway select field.
+ *
+ * @param $gateway_id string|false
+ * @return array
+ */
 function leyka_get_gateways_pm_list($gateway_id = false) {
 
     $options = array();
     foreach(leyka_get_pm_list(null, false, false) as $pm) {
 
-        if( !empty($gateway_id) && $pm->gateway_id != $gateway_id ) {
+        if($gateway_id && $pm->gateway_id !== $gateway_id) {
             continue;
         }
 
         $gateway_title = leyka_get_gateway_by_id($pm->gateway_id)->title;
-        $options[$pm->full_id] = $pm->label_backend
-            .($gateway_title == $pm->label_backend ? '' : ' ('.$gateway_title.')');
+        $options[$pm->full_id] = $pm->label_backend.($gateway_title == $pm->label_backend ? '' : ' ('.$gateway_title.')');
 
     }
 
     return $options;
+
 }
 
 function leyka_get_pd_usage_info_links() {
@@ -516,9 +536,9 @@ function leyka_get_pm_category_label($category_id) {
 function leyka_get_gateways_filter_categories_list() {
 
     return apply_filters('leyka_gateways_filter_categories', array(
-        'legal' => 'Юр.лица',
-        'physical' => 'Физ.лица',
-        'recurring' => 'Рекурренты',
+        'legal' => esc_attr__('Legal persons', 'leyka'),
+        'physical' => esc_attr__('Physical persons', 'leyka'),
+        'recurring' => mb_ucfirst(esc_html_x('recurring', 'a "recurring donations" in one word (like "recurrings")', 'leyka')),
     ));
 
 }
@@ -550,63 +570,50 @@ function leyka_get_gateway_activation_status_label($activation_status) {
 }
 
 /**
- * Gateway activation button labels
- * @return string
+ * Get current activation button label fro the given gateway.
+ *
+ * @param $gateway Leyka_Gateway
+ * @return string|false
  */
-function leyka_get_gateway_activation_button_label($gateway) {
-    
+function leyka_get_gateway_activation_button_label(Leyka_Gateway $gateway) {
+
     $activation_status = $gateway->get_activation_status();
 
     $activation_status_labels = array(
-        'active' => 'Настройки',
-        'inactive' => 'Пошаговая установка',
-        'activating' => 'Продолжить',
+        'active' => esc_attr_x('Settings', '[of the gateway]', 'leyka'),
+        'inactive' => esc_attr_x('Step-by-step setup', '[of the gateway]', 'leyka'),
+        'activating' => esc_attr_x('Continue', '[the gateway step-by-step setup]', 'leyka'),
     );
-    
+
     if($activation_status != 'active' && !leyka_gateway_setup_wizard($gateway)) {
-        $label = 'Подключить';
-    }
-    else {
+        $label = esc_attr_x('Setup', '[the gateway]', 'leyka');
+    } else {
         $label = $activation_status && !empty($activation_status_labels[$activation_status]) ? $activation_status_labels[$activation_status] : false;
     }
-    
+
     return $label;
-    
+
 }
 
 /**
- * Gateway recurring description
- * @return string
- */
-function leyka_get_recurring_description($recurring_status) {
-
-    $labels = array(
-        true => 'Рекуррентные платежи поддерживаются.',
-        false => 'Рекуррентные платежи не поддерживаются.',
-    );
-    
-    return !empty($labels[$recurring_status]) ? $labels[$recurring_status] : '';
-    
-}
-
-/**
- * Gateway receiver description
+ * Gateway receiver description.
+ *
+ * @param $receiver_types array Receiver types array.
  * @return string
  */
 function leyka_get_receiver_description($receiver_types) {
-    
+
     $type = count($receiver_types) > 1 ? 'all' : $receiver_types[0];
 
     $labels = array(
-        'all' => 'Доступно и для физических, и для юридических лиц.',
-        'legal' => 'Доступно только для юридических лиц.',
-        'physical' => 'Доступно только для физических лиц.',
+        'all' => esc_attr__('Legal & physical persons allowed as a receiver.', 'leyka'),
+        'legal' => esc_attr__('Only legal persons allowed as a receiver.', 'leyka'),
+        'physical' => esc_attr__('Only physical persons allowed as a receiver.', 'leyka'),
     );
-    
+
     return $type && !empty($labels[$type]) ? $labels[$type] : '';
     
 }
-
 
 /**
  * Get all possible campaign target states.
@@ -693,9 +700,9 @@ function leyka_scale_compact($campaign) {
     $collected_f = number_format($campaign->total_funded, ($campaign->total_funded - round($campaign->total_funded) > 0.0 ? 2 : 0), '.', ' ');
 
     if($campaign->total_funded == 0) {
-        printf(__('Needed %s %s', 'leyka'), '<b>'.$target_f.'</b>', $curr_label);
+        printf(esc_html__('Needed %s %s', 'leyka'), '<b>'.$target_f.'</b>', $curr_label);
     } else {
-        printf(__('Collected %s of %s %s', 'leyka'), '<b>'.$collected_f.'</b>', '<b>'.$target_f.'</b>', $curr_label);
+        printf(esc_html__('Collected %s of %s %s', 'leyka'), '<b>'.$collected_f.'</b>', '<b>'.$target_f.'</b>', $curr_label);
     }?>
     </div>
 </div>
@@ -716,8 +723,7 @@ function leyka_scale_ultra($campaign) {
     }
     
     $percentage = round(($campaign->total_funded/$target)*100);
-	if($percentage > 100)
-		$percentage = 100;?>
+	$percentage = $percentage > 100 ? 100 : $percentage;?>
 
 <div class="leyka-scale-ultra">
     <div class="leyka-scale-scale">
@@ -725,13 +731,16 @@ function leyka_scale_ultra($campaign) {
             <div style="width:<?php echo $percentage;?>%" class="collected">&nbsp;</div>
         </div>
     </div>
-    <div class="leyka-scale-label"><span>
+    <div class="leyka-scale-label">
+        <span>
 
-    <?php $target_f = number_format($target, ($target - round($target) > 0.0 ? 2 : 0), '.', ' ');
-    $collected_f = number_format($campaign->total_funded, ($campaign->total_funded - round($campaign->total_funded) > 0.0 ? 2 : 0), '.', ' ');
+        <?php $target_f = number_format($target, ($target - round($target) > 0.0 ? 2 : 0), '.', ' ');
+        $collected_f = number_format($campaign->total_funded, ($campaign->total_funded - round($campaign->total_funded) > 0.0 ? 2 : 0), '.', ' ');
 
-    printf(_x('%s of %s %s', 'Label on ultra-compact scale', 'leyka'), '<b>'.$collected_f.'</b>', '<b>'.$target_f.'</b>', $curr_label);?>
-    </span></div>
+        printf(esc_html_x('%s of %s %s', 'Label on ultra-compact scale', 'leyka'), '<b>'.$collected_f.'</b>', '<b>'.$target_f.'</b>', $curr_label);?>
+
+        </span>
+    </div>
 </div>
 <?php  
 }
@@ -753,21 +762,22 @@ function leyka_fake_scale_ultra($campaign) {
         <?php printf(_x('Collected: %s', 'Label on ultra-compact fake scale', 'leyka'), "<b>{$collected_f}</b> {$curr_label}");?>
     </span></div>
 </div>
+
 <?php
 }
 
 /** @return array An array of possible payment types with labels */
 function leyka_get_payment_types_list() {
     return array(
-        'single'     => __('Single', 'leyka'),
-        'rebill'     => __('Recurrent (rebill)', 'leyka'),
-        'correction' => __('Correction', 'leyka')
+        'single'     => esc_attr__('Single', 'leyka'),
+        'rebill'     => esc_attr__('Recurrent (rebill)', 'leyka'),
+        'correction' => esc_attr__('Correction', 'leyka')
     );
 }
 
 function leyka_get_payment_type_label($type) {
 
-    if(empty($type)) {
+    if( !$type ) {
         return false;
     }
 
@@ -861,18 +871,28 @@ function leyka_get_actual_currency_rates() {
 function leyka_are_settings_complete($settings_tab) {
 
     $settings_complete = true;
-    $tab_options = leyka_opt_alloc()->get_tab_options($settings_tab); // Special 4 strict standards
-    $option_section = reset($tab_options);
-
-    foreach($option_section['section']['options'] as $option_name) {
-
-        if( !leyka_options()->opt_safe($option_name) && leyka_options()->is_required($option_name) ) {
-
-            $settings_complete = false;
-            break;
+    $tab_options = leyka_opt_alloc()->get_tab_options($settings_tab); // Specially to support PHP strict standards
+    
+    $receiver_legal_type = leyka_options()->opt_safe('receiver_legal_type');
+    
+    $exclude_legal_type_fields_regex = array(
+        'legal' => "/^person_/",
+        'physical' => "/^org_/",
+    );
+    
+    foreach($tab_options as $option_section) {
+        foreach($option_section['section']['options'] as $option_name) {
+            if(empty($exclude_legal_type_fields_regex[$receiver_legal_type]) || preg_match($exclude_legal_type_fields_regex[$receiver_legal_type], $option_name)) {
+                continue;
+            }
+            
+            if(!leyka_options()->opt_safe($option_name) && leyka_options()->is_required($option_name) ) {
+                $settings_complete = false;
+                break;
+            }
         }
     }
-
+    
     return $settings_complete;
 
 }
@@ -925,6 +945,7 @@ function leyka_is_min_payment_settings_complete() {
     }
 
     return false;
+
 }
 
 function leyka_is_campaign_published() {
@@ -935,6 +956,7 @@ function leyka_is_campaign_published() {
       FROM $wpdb->posts
       WHERE post_type='".Leyka_Campaign_Management::$post_type."' AND post_status = 'publish' LIMIT 0,1"
     ) > 0;
+
 }
 
 function leyka_get_campaigns_list($params = array(), $simple_format = true) {
@@ -1161,7 +1183,11 @@ function leyka_itv_info_widget() {
     $itv_url = esc_url("https://itv.te-st.ru/?leyka=".$domain['host']);?>
 
 	<div id="itv-card">
-        <div class="itv-logo"><a href="<?php echo $itv_url;?>" target="_blank" rel="noopener noreferrer"><img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL.'img/logo-itv.png');?>"></a></div>
+        <div class="itv-logo">
+            <a href="<?php echo $itv_url;?>" target="_blank" rel="noopener noreferrer">
+                <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL.'img/logo-itv.png');?>" alt="">
+            </a>
+        </div>
 
         <p>Вам нужна помощь в настройке пожертвований или подключении к платежным системам? Опубликуйте задачу на платформе <a href="<?php echo $itv_url;?>" target="_blank" rel="noopener noreferrer">it-волонтер</a></p>
 
@@ -1360,7 +1386,12 @@ function leyka_get_pm_commission($pm_full_id) {
 
 }
 
-/** A helper function to insert posts manually. Used only when wp_insert_post() leads to notices & fatal errors. */
+/**
+ * A helper function to insert posts manually. Used only when wp_insert_post() leads to notices & fatal errors.
+ *
+ * @param $post_data array New page data.
+ * @return integer|false
+ */
 function leyka_manually_insert_page(array $post_data) {
 
     global $wpdb;
@@ -1379,6 +1410,8 @@ function leyka_manually_insert_page(array $post_data) {
         'post_modified' => $post_date,
         'post_modified_gmt' => get_gmt_from_date($post_date),
     ));
+
+    return $wpdb->insert_id;
 
 }
 
@@ -1471,7 +1504,10 @@ function leyka_get_env() {
     // Server data:
     $forbidden_data = array(
         'MIBDIRS', 'OPENSSL_CONF', 'HTTP_COOKIE', 'PATH', 'SystemRoot', 'COMSPEC', 'WINDIR', 'DOCUMENT_ROOT',
-        'CONTEXT_DOCUMENT_ROOT', 'SCRIPT_FILENAME',
+        'CONTEXT_DOCUMENT_ROOT', 'SCRIPT_FILENAME', 'APACHE_LOG_DIR', 'APACHE_RUN_GROUP', 'APACHE_RUN_USER', 'LANG', 'PWD',
+        'APACHE_LOCK_DIR', 'APACHE_PID_FILE', 'APACHE_RUN_DIR', 'APACHE_CONFDIR', 'argc', 'argv', 'PHP_SELF', 'SCRIPT_NAME',
+        'REDIRECT_URL', 'REMOTE_PORT', 'REQUEST_SCHEME', 'SERVER_PORT', 'SERVER_ADDR', 'SERVER_SIGNATURE', 'CONTENT_TYPE',
+        'HTTP_ACCEPT', 'CONTENT_LENGTH', 'HTTP_CONNECTION', 'REQUEST_URI', 'REMOTE_ADDR',
     );
     foreach($_SERVER as $key => $value) {
 
@@ -1516,16 +1552,28 @@ function leyka_get_env() {
 
 }
 
-/** @return array An assoc array of all Leyka options (from leyka-options-meta) & settings (other "leyka_something"-named options) */
+/** @return array An assoc array of Leyka options (from leyka-options-meta) & settings (other "leyka_something"-named options) */
 function leyka_get_all_options() {
 
     $res = array('options' => array(), 'settings' => array());
     $leyka_options_keys = leyka_options()->get_options_names();
 
     $forbidden_options = array(
-        'person_pd_terms_text', 'person_terms_of_service_text', 'pd_terms_text', 'terms_of_service_text',
+        'person_pd_terms_text', 'person_terms_of_service_text', 'pd_terms_text', 'terms_of_service_text', 'org_bank_account',
         'email_thanks_text', 'org_face_fio_ip', 'org_face_fio_rp', 'org_address', 'person_full_name', 'person_address',
-        '_transient_leyka_wizards_activities',
+        '_transient_leyka_wizards_activities', '_transient_leyka_default_campaign_id', 'permalinks_flushed', 'org_bank_name',
+        'org_actual_address_differs', 'plugin_stats_option_sync_done', 'widget_leyka_donations_list', 'org_bank_bic', 'org_inn',
+        'widget_leyka_campaigns_list', 'paypal_client_id', 'paypal_api_signature', 'paypal_api_password', 'paypal_api_username',
+        'quittance_redirect_page', 'rbk_api_web_hook_key', 'rbk_api_key', 'rbk_shop_id', 'chronopay_ip', 'chronopay_shared_sec',
+        'chronopay_use_payment_uniqueness_control', 'chronopay_card_rebill_product_id_eur', 'org_bank_corr_account', 'org_kpp',
+        'chronopay_card_rebill_product_id_usd', 'chronopay_card_rebill_product_id_rur', 'yandex-yandex_card_private_key_password',
+        'yandex-yandex_card_private_key_path', 'yandex-yandex_card_certificate_path', 'org_face_position', 'yandex_secret_key',
+        'yandex_shop_password', 'yandex_shop_article_id', 'yandex_scid', 'yandex_shop_id', 'cp_ip', 'cp_public_id',
+        'options:robokassa_shop_password2', 'robokassa_shop_password1', 'robokassa_shop_id', 'chronopay_card_product_id_rur',
+        'chronopay_card_product_id_usd', 'chronopay_card_product_id_eur', 'text_box_details', 'yandex_money_account',
+        'yandex_money_secret', 'mixplat-mobile_details', 'mixplat-sms_default_campaign_id', 'mixplat-sms_description',
+        'mixplat-sms_details', 'mixplat_service_id', 'mixplat_secret_key', 'paymaster_merchant_id', 'paymaster_secret_word',
+        'paymaster_hash_method', 'failure_page', 'success_page', 'pd_terms_page', 'terms_of_service_page',
     );
 
     foreach(wp_load_alloptions() as $name => $value) {
@@ -1604,8 +1652,14 @@ if( !function_exists('leyka_save_option') ) {
         } else if(stristr($option_type, 'custom_') !== false && isset($_POST["leyka_$setting_id"])) { // Custom field types
             do_action("leyka_save_custom_option-$setting_id", $_POST["leyka_$setting_id"]);
         } else { // Simple field types
-            if(isset($_POST["leyka_$setting_id"]) && leyka_options()->opt($setting_id) != $_POST["leyka_$setting_id"]) {
-                leyka_options()->opt($setting_id, esc_attr(stripslashes($_POST["leyka_$setting_id"])));
+            if(isset($_POST["leyka_$setting_id"])) {
+                $old_value = leyka_options()->opt($setting_id);
+                
+                if($old_value != $_POST["leyka_$setting_id"]) {
+                    leyka_options()->opt($setting_id, esc_attr(stripslashes($_POST["leyka_$setting_id"])));
+                }
+                
+                do_action("leyka_after_save_option-$setting_id", $old_value, $_POST["leyka_$setting_id"]);
             }
         }
 
@@ -1637,5 +1691,65 @@ if( !function_exists('leyka_get_l18n_time') ) {
 if( !function_exists('leyka_get_l18n_datetime') ) {
     function leyka_get_i18n_datetime($timestamp) {
         return date_i18n(get_option('date_format').', '.get_option('time_format'), (int)$timestamp);
+    }
+}
+
+// localize tags to replace in js
+if( !function_exists('leyka_localize_rich_html_text_tags') ) {
+    function leyka_localize_rich_html_text_tags() {
+        $is_legal = leyka_options()->opt('receiver_legal_type') === 'legal';
+        
+        wp_localize_script( 'leyka-settings', 'leykaRichHTMLTags', array(
+            'termsKeys' => array(
+                array(
+                    '#LEGAL_NAME#',
+                    '#LEGAL_FACE#',
+                    // '#LEGAL_FACE_RP#',
+                    '#LEGAL_FACE_POSITION#',
+                    '#LEGAL_ADDRESS#',
+                    '#STATE_REG_NUMBER#',
+                    '#KPP#',
+                    '#INN#',
+                    '#BANK_ACCOUNT#',
+                    '#BANK_NAME#',
+                    '#BANK_BIC#',
+                    '#BANK_CORR_ACCOUNT#',
+                    '#SITE_NAME#',
+                    '#ORG_NAME#',
+                ),
+                array(
+                    $is_legal ? leyka_options()->opt('org_full_name') : leyka_options()->opt('person_full_name'),
+                    $is_legal ? leyka_options()->opt('org_face_fio_ip') : leyka_options()->opt('person_full_name'),
+                    // $is_legal ? leyka_options()->opt('org_face_fio_rp') : leyka_options()->opt('person_full_name'),
+                    $is_legal ? leyka_options()->opt('org_face_position') : '',
+                    $is_legal ? leyka_options()->opt('org_address') : leyka_options()->opt('person_address'),
+                    $is_legal ? leyka_options()->opt('org_state_reg_number') : '',
+                    $is_legal ? leyka_options()->opt('org_kpp') : '',
+                    $is_legal ? leyka_options()->opt('org_inn') : leyka_options()->opt('person_inn'),
+                    $is_legal ? leyka_options()->opt('org_bank_account') : leyka_options()->opt('person_bank_account'),
+                    $is_legal ? leyka_options()->opt('org_bank_name') : leyka_options()->opt('person_bank_name'),
+                    $is_legal ? leyka_options()->opt('org_bank_bic') : leyka_options()->opt('person_bank_bic'),
+                    $is_legal ? leyka_options()->opt('org_bank_corr_account') : leyka_options()->opt('person_bank_corr_account'),
+                    get_bloginfo('name'),
+                    $is_legal ? leyka_options()->opt('org_full_name') : leyka_options()->opt('person_full_name'),
+                ),
+            ),
+            'pdKeys' => array(
+                array(
+                    '#LEGAL_NAME#',
+                    '#LEGAL_ADDRESS#',
+                    '#SITE_URL#',
+                    '#PD_TERMS_PAGE_URL#',
+                    '#ADMIN_EMAIL#',
+                ),
+                array(
+                    $is_legal ? leyka_options()->opt('org_full_name') : leyka_options()->opt('person_full_name'),
+                    $is_legal ? leyka_options()->opt('org_address') : leyka_options()->opt('person_address'),
+                    home_url(),
+                    leyka_get_pd_terms_page_url(),
+                    get_option('admin_email'),
+                ),
+            ),
+        ));
     }
 }

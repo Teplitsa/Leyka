@@ -2,10 +2,10 @@
 Contributors: Ahaenor, foralien, denis.cherniatev
 Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
-Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса,яндекс.деньги, миксплат, mixplat, paypal, paymaster
+Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса, яндекс.деньги, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
-Tested up to: 4.9.8
-Stable tag: 2.3.8
+Tested up to: 5.0.0
+Stable tag: 2.3.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -68,7 +68,7 @@ The plugin manual is avaliable at [official website](//leyka.te-st.ru/instructio
 * [basic features](//leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/),
 * [extended features](//leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/).
 
-PHP version required: 5.3+
+PHP version required: 5.6+
 
 
 == Frequently Asked Questions ==
@@ -89,6 +89,17 @@ PHP version required: 5.3+
 10. Google Analytics events
 
 == Changelog ==
+= 3.0.0 =
+* New: plugin settings UI updated.
+* New: Setup Wizards added: initial, Yandex.Kassa, CloudPayments.
+* New: settings Controllers & Renders framework added.
+* New: now PHP v5.6 is the min. supported version.
+* Fix: small fixes.
+
+= 2.3.9 =
+* New: Paymaster gateway support added.
+* Fix: server-side errors handling improved for Revo template.
+
 = 2.3.8 =
 * New: Yandex.Kassa new API support added.
 * New: Chronopay callbacks handling are more stable now in the cases of DB low performance.

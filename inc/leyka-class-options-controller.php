@@ -429,12 +429,35 @@ function leyka_sync_plugin_stats_option() {
     $stats_server_base_url = defined('WP_DEBUG') && WP_DEBUG ?
         rtrim(LEYKA_USAGE_STATS_DEV_SERVER_URL, '/') : rtrim(LEYKA_USAGE_STATS_PROD_SERVER_URL, '/');
 
-    if(get_option('leyka_installation_id') > 0) { // Update the installation (activate/deactivate)
+    $leyka_installation_id = (int)get_option('leyka_installation_id');
+
+    if($leyka_installation_id) { // Update the installation (activate/deactivate)
+
+        require_once LEYKA_PLUGIN_DIR.'bin/sodium-compat.phar';
+
+        $sipher_public_key = get_option('leyka_stats_sipher_public_key');
         $params = array(
             'stats_active' => (int)(leyka_options()->opt('send_plugin_stats') === 'y'),
             'installation_url' => home_url(), // Just in case
-            'installation_id' => (int)get_option('leyka_installation_id'),
+            'installation_id' => $leyka_installation_id,
         );
+
+        if($sipher_public_key) {
+
+            $sipher_public_key = \Sodium\hex2bin($sipher_public_key);
+
+            foreach($params as $key => $value) {
+
+                if($key === 'installation_id') {
+                    continue;
+                }
+
+                $params[$key] = \Sodium\crypto_box_seal((string)$value, $sipher_public_key);
+
+            }
+
+        }
+
     } else { // Add new installation
         $params = array(
             'stats_active' => true,
@@ -457,15 +480,15 @@ function leyka_sync_plugin_stats_option() {
     if(is_wp_error($response)) {
         return new WP_Error(
             'init_plugin_stats_error',
-            sprintf('Ошибка при сохранении данных о сборе статистики использования: %s', $response->get_error_message())
+            sprintf(__('Error while saving the plugin usage data: %s', 'leyka'), $response->get_error_message())
         );
     } else if(empty($response['response']['code']) || $response['response']['code'] != 200) {
 
         $error_message = sprintf(
-            'Ошибка при сохранении данных о сборе статистики использования: %s',
+            __('Error while saving the plugin usage data: %s', 'leyka'),
             empty($response['response']['code']) ?
-                'данные о коде и статусе ответа не получены' :
-                'код '.$response['response']['code'].(empty($response['response']['message']) ? '' : ' ('.$response['response']['message'].')')
+                __("the response code & status data weren't received", 'leyka') :
+                sprintf(__('code %d', 'leyka'), $response['response']['code']).(empty($response['response']['message']) ? '' : ' ('.$response['response']['message'].(empty($response['body']) ? '' : ' - '.trim($response['body'], '.')).')')
         );
 
         return new WP_Error('init_plugin_stats_error', $error_message);
@@ -475,19 +498,24 @@ function leyka_sync_plugin_stats_option() {
         if(empty($response['body'])) {
             return new WP_Error(
                 'plugin_stats_not_saved',
-                sprintf(__("The plugin stats collection status wasn't saved :( Please send a message about it to the <a href='mailto:".LEYKA_SUPPORT_EMAIL."' target='_blank'>plugin tech support</a>"), 'leyka')
+                sprintf(__("The plugin stats collection status wasn't saved :( Please send a message about it to the <a href='mailto:%s' target='_blank'>plugin tech support</a>", LEYKA_SUPPORT_EMAIL), 'leyka')
             );
         }
 
         $response = json_decode($response['body'], true);
-        if(empty($response['installation_id']) || (int)$response['installation_id'] <= 0) {
+        if(
+            empty($response['installation_id']) || (int)$response['installation_id'] <= 0
+            || ( !$leyka_installation_id && empty($response['public_key']) )
+        ) {
             return new WP_Error(
                 'plugin_stats_not_saved',
-                sprintf(__("The plugin stats collection status wasn't saved :( Please send a message about it to the <a href='mailto:".LEYKA_SUPPORT_EMAIL."' target='_blank'>plugin tech support</a>"), 'leyka')
+                sprintf(__("The plugin stats collection status wasn't saved :( Please send a message about it to the <a href='mailto:%s' target='_blank'>plugin tech support</a>", LEYKA_SUPPORT_EMAIL), 'leyka')
             );
         }
 
-        return update_option('leyka_installation_id', (int)$response['installation_id']);
+        return
+            update_option('leyka_installation_id', (int)$response['installation_id']) &&
+            update_option('leyka_stats_sipher_public_key', $response['public_key']);
 
     }
 

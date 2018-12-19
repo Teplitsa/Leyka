@@ -69,7 +69,7 @@
 
 /** Options **/
 .leyka-options-section {
-  margin: 40px 0 30px; }
+  margin: 40px 0 30px;}
 
 #leyka-settings-form div[id*=wrapper] {
   margin: 15px 0; }
@@ -114,7 +114,7 @@
   display: block;
   padding-top: 4px;
   line-height: 1.8; }
-
+  
 .placeholders-help code {
   color: #333;
   font-size: 12px; }
@@ -181,7 +181,7 @@
     font-weight: normal;
     font-size: 12px;
     margin-left: 12px;
-    text-decoration: uderline; }
+    text-decoration: underline; }
   #payment-settings-area .pm-active-panel {
     background: #fff;
     border: 1px solid #d6d6d6;
@@ -995,3 +995,289 @@
     box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
   }
 }
+
+/* imported from v3 SCSS */
+
+/* nav */
+.leyka-settings-page #tab-container {
+  margin-top: 32px;
+}
+
+.leyka-settings-page .nav-tab-wrapper {
+  border-bottom: 1px solid #dddddd;
+}
+
+.leyka-settings-page .nav-tab-wrapper a {
+  color: unset;
+  font-size: 16px;
+  line-height: 19px;
+  font-weight: 500;
+}
+
+.leyka-settings-page .nav-tab-wrapper a.nav-tab {
+  background-color: #e5e5e5;
+  border-color: #dddddd;
+  color: #8f8f8f;
+  border-radius: 4px 4px 0px 0px;
+  padding: 10px 12px 7px 12px;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+.leyka-settings-page .nav-tab-wrapper a.nav-tab:first-child {
+  margin-left: 0;
+}
+
+.leyka-settings-page .nav-tab-wrapper a.nav-tab.nav-tab-active {
+  margin-right: 1.5em;
+  margin-left: 1.5em;
+  background-color: #f1f1f1;
+  color: #44444a;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.leyka-settings-page .nav-tab-wrapper a.nav-tab.nav-tab-active:first-child {
+  margin-left: 0;
+}
+
+/* settings page */
+.leyka-settings-page {
+  margin: 41px 72px;
+  margin-left: 2rem;
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
+  line-height: 21px;
+  font-size: 13px;
+}
+
+.leyka-settings-page h1 {
+  font-size: 23px;
+  line-height: 34px;
+  font-weight: 400;
+  margin-bottom: 8px;
+}
+
+.init-wizard-tab {
+    float: right;
+    background-image: url(../img/icon-wizard-stick-only.svg);
+    background-size: cover;
+    background-color: #0085ba;
+    background-position: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin-top: 6px;
+    
+}
+
+/* wp messages -- should be removed after move all pages to new design */
+.update-nag {
+    margin-left: 30px;
+}    
+
+#message {
+    margin-left: 32px;
+}
+
+.leyka-admin #message {
+    margin-left: 0px;
+}
+
+/* end wp messages */
+
+/* helpchat -- should be removed after move all pages to new design */
+.leyka-wizard .step-common-errors.has-errors, .leyka-admin .step-common-errors.has-errors {
+  padding: 8px 16px;
+  max-width: 490px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: #666666;
+  border: 1px solid rgba(212, 60, 87, 0.4);
+  background-color: rgba(212, 60, 87, 0.2);
+}
+
+.leyka-wizard .help-chat-button, .leyka-admin .help-chat-button {
+  border-bottom: none;
+  padding-bottom: 0;
+  width: 64px;
+  height: 64px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  background-color: #0085ba;
+  border-radius: 32px;
+  position: fixed;
+  right: 40px;
+  bottom: 40px;
+}
+
+.leyka-wizard .help-chat-button[href='#'], .leyka-admin .help-chat-button[href='#'] {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.leyka-wizard .help-chat-button img, .leyka-admin .help-chat-button img {
+  width: 34px;
+  height: 34px;
+}
+
+.leyka-wizard .help-chat, .leyka-admin .help-chat {
+  position: fixed;
+  right: 40px;
+  bottom: 40px;
+  width: 315px;
+  background-color: #006799;
+  border-radius: 6px;
+  display: none;
+}
+
+.leyka-wizard .help-chat.fix-height, .leyka-admin .help-chat.fix-height {
+  height: 403px;
+}
+
+.leyka-wizard .help-chat .chat-header, .leyka-admin .help-chat .chat-header {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding-left: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.24);
+  height: 51px;
+}
+
+.leyka-wizard .help-chat .chat-header .title, .leyka-admin .help-chat .chat-header .title {
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 16px;
+  line-height: 19px;
+  font-weight: 500;
+  color: #f1f1f1;
+}
+
+.leyka-wizard .help-chat .chat-header .close, .leyka-admin .help-chat .chat-header .close {
+  margin-right: 1rem;
+  cursor: pointer;
+}
+
+.leyka-wizard .help-chat .chat-body, .leyka-admin .help-chat .chat-body {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-top: 1.5rem;
+}
+
+.leyka-wizard .help-chat .chat-body .ok-message, .leyka-admin .help-chat .chat-body .ok-message {
+  display: none;
+  padding-bottom: 2rem;
+}
+
+.leyka-wizard .help-chat .chat-body .ok-message p, .leyka-admin .help-chat .chat-body .ok-message p {
+  color: #ffffff;
+  text-align: center;
+  font-size: 14px;
+  margin-bottom: 0;
+}
+
+.leyka-wizard .help-chat .chat-body .leyka-loader, .leyka-admin .help-chat .chat-body .leyka-loader {
+  display: none;
+}
+
+.leyka-wizard .help-chat .chat-body .title, .leyka-admin .help-chat .chat-body .title {
+  color: #ffffff;
+  display: block;
+}
+
+.leyka-wizard .help-chat .chat-body .settings-block.option-block, .leyka-wizard.wizard-yandex.step-test_payment .help-chat .chat-body .main-area .settings-block.custom_yandex_enumerated_block, .leyka-wizard.wizard-yandex.step-test_payment .main-area .help-chat .chat-body .settings-block.custom_yandex_enumerated_block, .leyka-admin .help-chat .chat-body .settings-block.option-block, .leyka-admin .help-chat .chat-body .leyka-wizard.wizard-yandex.step-test_payment .main-area .settings-block.custom_yandex_enumerated_block, .leyka-wizard.wizard-yandex.step-test_payment .main-area .leyka-admin .help-chat .chat-body .settings-block.custom_yandex_enumerated_block {
+  margin-bottom: 0rem;
+}
+
+.leyka-wizard .help-chat .chat-body .settings-block.option-block .title, .leyka-wizard.wizard-yandex.step-test_payment .help-chat .chat-body .main-area .settings-block.custom_yandex_enumerated_block .title, .leyka-wizard.wizard-yandex.step-test_payment .main-area .help-chat .chat-body .settings-block.custom_yandex_enumerated_block .title, .leyka-admin .help-chat .chat-body .settings-block.option-block .title, .leyka-admin .help-chat .chat-body .leyka-wizard.wizard-yandex.step-test_payment .main-area .settings-block.custom_yandex_enumerated_block .title, .leyka-wizard.wizard-yandex.step-test_payment .main-area .leyka-admin .help-chat .chat-body .settings-block.custom_yandex_enumerated_block .title {
+  font-weight: 400;
+}
+
+.leyka-wizard .help-chat .chat-body .settings-block.option-block .field-errors, .leyka-wizard.wizard-yandex.step-test_payment .help-chat .chat-body .main-area .settings-block.custom_yandex_enumerated_block .field-errors, .leyka-wizard.wizard-yandex.step-test_payment .main-area .help-chat .chat-body .settings-block.custom_yandex_enumerated_block .field-errors, .leyka-admin .help-chat .chat-body .settings-block.option-block .field-errors, .leyka-admin .help-chat .chat-body .leyka-wizard.wizard-yandex.step-test_payment .main-area .settings-block.custom_yandex_enumerated_block .field-errors, .leyka-wizard.wizard-yandex.step-test_payment .main-area .leyka-admin .help-chat .chat-body .settings-block.custom_yandex_enumerated_block .field-errors {
+  color: #d43c57;
+  visibility: hidden;
+}
+
+.leyka-wizard .help-chat .chat-body .settings-block.option-block input, .leyka-wizard.wizard-yandex.step-test_payment .help-chat .chat-body .main-area .settings-block.custom_yandex_enumerated_block input, .leyka-wizard.wizard-yandex.step-test_payment .main-area .help-chat .chat-body .settings-block.custom_yandex_enumerated_block input, .leyka-wizard .help-chat .chat-body .settings-block.option-block textarea, .leyka-wizard.wizard-yandex.step-test_payment .help-chat .chat-body .main-area .settings-block.custom_yandex_enumerated_block textarea, .leyka-wizard.wizard-yandex.step-test_payment .main-area .help-chat .chat-body .settings-block.custom_yandex_enumerated_block textarea, .leyka-admin .help-chat .chat-body .settings-block.option-block input, .leyka-admin .help-chat .chat-body .leyka-wizard.wizard-yandex.step-test_payment .main-area .settings-block.custom_yandex_enumerated_block input, .leyka-wizard.wizard-yandex.step-test_payment .main-area .leyka-admin .help-chat .chat-body .settings-block.custom_yandex_enumerated_block input, .leyka-admin .help-chat .chat-body .settings-block.option-block textarea, .leyka-admin .help-chat .chat-body .leyka-wizard.wizard-yandex.step-test_payment .main-area .settings-block.custom_yandex_enumerated_block textarea, .leyka-wizard.wizard-yandex.step-test_payment .main-area .leyka-admin .help-chat .chat-body .settings-block.custom_yandex_enumerated_block textarea {
+  margin-left: 0;
+  width: 267px;
+}
+
+.leyka-wizard .help-chat .chat-body .button-primary, .leyka-admin .help-chat .chat-body .button-primary {
+  font-size: 16px;
+  line-height: 19px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  height: 40px;
+  width: 100%;
+}
+
+.leyka-loader {
+  color: #0085ba;
+  font-size: 20px;
+  margin: 100px auto;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  position: relative;
+  text-indent: -9999em;
+  animation: load4 1.3s infinite linear;
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+.leyka-loader.xs {
+  font-size: 4px;
+  margin: 20px auto;
+}
+
+.leyka-loader.sm {
+  font-size: 8px;
+  margin: 40px auto;
+}
+
+.leyka-loader.md {
+  font-size: 12px;
+  margin: 60px auto;
+}
+
+.help-chat .leyka-loader {
+  color: #ffffff;
+}
+
+@keyframes load4 {
+  0%,
+  100% {
+    box-shadow: 0 -3em 0 0.2em, 2em -2em 0 0em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 0;
+  }
+  12.5% {
+    box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em, 3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+  }
+  25% {
+    box-shadow: 0 -3em 0 -0.5em, 2em -2em 0 0, 3em 0 0 0.2em, 2em 2em 0 0, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+  }
+  37.5% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em, -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
+  }
+  50% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em, -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
+  }
+  62.5% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0, -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
+  }
+  75% {
+    box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
+  }
+  87.5% {
+    box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
+  }
+}
+/* end helpchat */

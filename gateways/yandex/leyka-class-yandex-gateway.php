@@ -18,8 +18,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             'leyka_gateway_description',
             __('Yandex.Kassa allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Kassa website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
             $this->_id
-        ); // 'Яндекс.Касса — сервис, который позволяет включить прием платежей на сайте и получать деньги на расчётный счёт компании. Комиссия берётся с успешных платежей.
-//Способы приёма платежей: банковские карты, Яндекс.Деньги и QIWI, интернет-банки, наличные, баланс мобильного и другие.';
+        );
 
         $this->_docs_link = '//leyka.te-st.ru/docs/yandex-dengi/';
         $this->_registration_link = 'https://kassa.yandex.ru/joinups';
@@ -320,6 +319,8 @@ techMessage="'.$tech_message.'"/>');
                 switch($payment->status) {
                     case 'succeeded':
                         $donation->status = 'funded';
+                        $res = Leyka_Donation_Management::send_all_emails($donation->id);
+                        /** @todo Handle the case of $res === false */
                         break;
                     case 'canceled':
                         $donation->status = 'failed';
@@ -845,8 +846,6 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
         $this->_label_backend = __('Bank card', 'leyka');
         $this->_label = __('Bank card', 'leyka');
 
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
@@ -1011,7 +1010,7 @@ class Leyka_Yandex_Sberbank_Online extends Leyka_Payment_Method {
 
 class Leyka_Yandex_Alpha_Click extends Leyka_Payment_Method {
 
-    protected static $_instance = null;
+    protected static $_instance;
 
     public function _set_attributes() {
 

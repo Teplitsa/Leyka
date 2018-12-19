@@ -51,7 +51,7 @@ class Leyka extends Leyka_Singleton {
 
     /** Initialize the plugin by setting up localization, filters, administration functions etc. */
     protected function __construct() {
-        
+
         if( !get_option('leyka_permalinks_flushed') ) {
 
             function leyka_rewrite_rules() {
@@ -234,9 +234,7 @@ class Leyka extends Leyka_Singleton {
             function leyka_inline_scripts(){
 
 //                $colors = array('#07C7FD', '#05A6D3', '#8CE4FD'); // Leyka blue
-                $colors = array('#1db318', '#1aa316', '#acebaa'); // Leyka green
-
-                // detect if we have JS at all... ?>
+                $colors = array('#1db318', '#1aa316', '#acebaa'); // Leyka green?>
 
                 <script>
                     document.documentElement.classList.add("leyka-js");
@@ -248,6 +246,7 @@ class Leyka extends Leyka_Singleton {
                         --color-main-light: <?php echo $colors[2];?>;
                     }
                 </style>
+
                 <?php
             }
 
@@ -278,8 +277,6 @@ class Leyka extends Leyka_Singleton {
             if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type) && !empty($_GET['embed_object'])) {
 
                 $new_template = leyka_get_current_template_data(false, 'embed_'.$_GET['embed_object'], true);
-                //print_r($new_template);
-                //exit();
                 if($new_template && !empty($new_template['file'])) {
                     $template = $new_template['file'];
                 }
@@ -361,8 +358,18 @@ class Leyka extends Leyka_Singleton {
             ) {
                 do_action('leyka_do_campaigns_targets_reaching_mailout');
             } else if($request[0] === 'get_usage_stats') {
+
+                require_once LEYKA_PLUGIN_DIR.'bin/sodium-compat.phar';
+
+                if( !$this->_outerRequestAllowed() ) {
+                    exit;
+                }
+
                 echo empty($_GET['tst']) ?
-                    json_encode($this->_get_usage_stats($_REQUEST)) :
+                    \Sodium\crypto_box_seal(
+                        json_encode($this->_get_usage_stats($_REQUEST)),
+                        \Sodium\hex2bin(get_option('leyka_stats_sipher_public_key'))
+                    ) :
                     '<pre>'.print_r($this->_get_usage_stats($_REQUEST), 1).'</pre>';
             } else { // Gateway callback URL
 
@@ -485,8 +492,19 @@ class Leyka extends Leyka_Singleton {
 
     }
 
+    protected function _outerRequestAllowed() {
+
+        $home_url_clear = rtrim(home_url(), '/');
+
+        return isset($_SERVER['PHP_AUTH_USER'])
+            && $_SERVER['PHP_AUTH_USER'] === 'stats-collector'
+            && $_SERVER['PHP_AUTH_PW'] === md5($home_url_clear.'-'.get_option('leyka_stats_sipher_public_key'));
+
+    }
+
     protected function _get_usage_stats(array $params = array()) {
 
+        /** @todo Use Donations_Factory here */
         $query_params = array(
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => 'any',
@@ -512,8 +530,6 @@ class Leyka extends Leyka_Singleton {
             }
 
         }
-
-//        echo '<pre>Date from: '.print_r($query_params['date_query']['after'], 1).'</pre>';
 
         if( !empty($query_params['date_query']) ) {
             $query_params['date_query'] = array($query_params['date_query']);
@@ -707,10 +723,6 @@ class Leyka extends Leyka_Singleton {
             return;
         }
 
-        if( !$leyka_last_ver ) {
-            update_option('leyka_init_wizard_redirect', true);
-        }
-
         if( !$leyka_last_ver || $leyka_last_ver < '2.1' ) {
 
             /** Upgrade options structure in the DB */
@@ -779,13 +791,21 @@ class Leyka extends Leyka_Singleton {
 
             }
 
-            // Remove an unneeded scripts for settings pages:
+            /** @todo Check if this code is needed! */
+            // Remove unneeded scripts for settings pages:
             $settings_pages_dir = dir(LEYKA_PLUGIN_DIR.'inc/settings-pages/');
             while(false !== ($script = $settings_pages_dir->read())) {
 
                 if(
-                    $script != '.' && $script != '..' &&
-                    !in_array($script, array('leyka-settings-common.php', 'leyka-settings-payment.php',))
+                    $script !== '.' && $script !== '..' &&
+                    !in_array($script, array(
+                        'leyka-settings-common.php',
+                        'leyka-settings-payment.php',
+                        'leyka-settings-payment-old.php',
+                        'leyka-settings-payment-gateway.php',
+                        'leyka-settings-payment-gateways-list.php',
+                        'leyka-settings-payment-pm-order.php',
+                    ))
                 ) {
                     unlink(LEYKA_PLUGIN_DIR.'inc/settings-pages/'.$script);
                 }
@@ -888,7 +908,13 @@ class Leyka extends Leyka_Singleton {
             }
         }
 
+        if( !$leyka_last_ver || $leyka_last_ver < '3.0' ) {
 
+            update_option('leyka_init_wizard_redirect', true);
+            update_option('leyka_receiver_country', 'ru');
+            update_option('leyka_receiver_legal_type', 'legal');
+
+        }
 
         /** Set a flag to flush permalinks (needs to be done a bit later, than this activation itself): */
         update_option('leyka_permalinks_flushed', 0);
@@ -943,7 +969,7 @@ class Leyka extends Leyka_Singleton {
         if( !leyka_form_is_screening() ) {
             return;
         }
-        
+
         // Enqueue the normal Leyka CSS just in case some other plugin elements exist on page:
         wp_enqueue_style(
             $this->_plugin_slug.'-plugin-styles',

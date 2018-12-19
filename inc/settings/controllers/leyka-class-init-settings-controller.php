@@ -10,16 +10,16 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
     protected function _setAttributes() {
 
         $this->_id = 'init';
-        $this->_title = 'Мастер настройки Лейки';
+        $this->_title = esc_html__('Leyka setup Wizard', 'leyka');
 
         $options = array(
             'org_actual_address' => array(
                 'type' => 'textarea',
-                'title' => 'Фактический адрес организации',
+                'title' => esc_html__('Organization actual address', 'leyka'),
             ),
             'org_actual_address_differs' => array(
                 'type' => 'checkbox',
-                'title' => 'Фактический адрес отличается от юридического',
+                'title' => esc_html__('The actual address is different from the legal', 'leyka'),
             ),
         );
 
@@ -30,25 +30,10 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         }
 
     }
-    
+
     protected function _loadCssJs() {
 
-//        wp_enqueue_script(
-//            'leyka-settings',
-//            LEYKA_PLUGIN_BASE_URL.'assets/js/admin.js',
-//            array('jquery',),
-//            LEYKA_VERSION,
-//            true
-//        );
-////        add_action('wp_enqueue_scripts', array($this, 'localize_scripts')); // wp_footer
-//
-//        wp_enqueue_style(
-//            'leyka-settings',
-//            LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css',
-//            array(),
-//            LEYKA_VERSION
-//        );
-
+        // ...
         parent::_loadCssJs();
 
     }
@@ -56,23 +41,23 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
     protected function _setSections() {
 
         // Receiver's data Section:
-        $section = new Leyka_Settings_Section('rd', 'Ваши данные');
+        $section = new Leyka_Settings_Section('rd', esc_html__('Your data', 'leyka'));
 
         // 0-step:
-        $step = new Leyka_Settings_Step('init',  $section->id, 'Приветствуем вас!', array('header_classes' => 'greater',));
+        $step = new Leyka_Settings_Step('init',  $section->id, esc_html__('Hello!', 'leyka'), array('header_classes' => 'greater',));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Вы установили плагин «Лейка», осталось его настроить. Мы проведём вас по всем шагам, поможем подсказками.',
+            'text' => esc_html__("You installed the Leyka plugin, all that's left is to set it up. We will guide you through all the steps and help with tips.", 'leyka'),
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'receiver_country',
             'option_id' => 'receiver_country',
         )))->addTo($section);
 
         // Receiver type step:
-        $step = new Leyka_Settings_Step('receiver_type', $section->id, 'Получатель пожертвований');
+        $step = new Leyka_Settings_Step('receiver_type', $section->id, esc_html__('Donations receiver', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Вы должны определить, от имени кого вы будете собирать пожертвования. Как НКО (некоммерческая организация) — юридическое лицо или как обычный гражданин — физическое лицо. Низовым инициативам будет удобнее собирать от имени физического лица (помните о налогах). При этом у юридических лиц больше возможностей для сбора.',
+            'text' => esc_html__('You need to determine on whose behalf you will collect donations. As NGOs (non-profit organization) - a legal entity, or as an ordinary citizen - a physical person. Grassroots initiatives will be easier to collect on behalf of the individual (but remember about taxes). That being said, legal entities will have more opportunities to collect.', 'leyka'),
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'receiver_type',
             'option_id' => 'receiver_legal_type',
@@ -80,10 +65,10 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         )))->addTo($section);
 
         // Legal receiver type - org. data step:
-        $step = new Leyka_Settings_Step('receiver_legal_data', $section->id, 'Данные организации');
+        $step = new Leyka_Settings_Step('receiver_legal_data', $section->id, esc_html__('Organization data', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Эти данные мы будем использовать для шаблонов договоров и отчётных документов вашим донорам. Все данные вы сможете найти в учредительных документах вашей организации.',
+            'text' => esc_html__('These data we will use for the templates of Terms of service contracts and accounting documents for your donors. All data can be found in the founding documents of your organization.', 'leyka'),
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'org_full_name',
             'option_id' => 'org_full_name',
@@ -109,10 +94,10 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'custom_setting_id' => 'org_address',
             'field_type' => 'textarea',
             'data' => array(
-                'title' => 'Юридический адрес организации',
+                'title' => esc_html__('The organization official address', 'leyka'),
                 'keys' => array('org_address',),
                 'value' => leyka_options()->opt('org_address'),
-                'required' => 'Значение поля обязательно',
+                'required' => esc_html__('The field value is required', 'leyka'),
             ),
             'show_description' => false,
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
@@ -120,7 +105,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'custom_setting_id' => 'org_actual_address_differs',
             'field_type' => 'checkbox',
             'data' => array(
-                'title' => 'Фактический адрес отличается от юридического',
+                'title' => esc_html__('The actual address is different from the legal', 'leyka'),
                 'keys' => array(),
                 'field_classes' => array('single-control'),
             ),
@@ -160,7 +145,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             ),
         )))->addBlock(new Leyka_Subtitle_Block(array(
             'id' => 'contact_person_data',
-            'text' => 'Контактное лицо',
+            'text' => esc_html__('Contact person', 'leyka'),
         )))->addBlock(new Leyka_Container_Block(array(
             'id' => 'complex-row-4',
             'entries' => array(
@@ -177,17 +162,17 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         )))->addHandler(array($this, 'handleSaveOptions'))->addTo($section);
 
         // Physical receiver type - person's data step:
-        $step = new Leyka_Settings_Step('receiver_physical_data', $section->id, 'Ваши данные');
+        $step = new Leyka_Settings_Step('receiver_physical_data', $section->id, esc_html__('Your data', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Эти данные мы будем использовать для отчётных документов вашим донорам.',
+            'text' => esc_html__('We will use these data for accounting documents to your donors.', 'leyka'),
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'person_full_name',
             'option_id' => 'person_full_name',
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'person_email',
             'option_id' => 'tech_support_email',
-            'title' => 'Email для связи',
+            'title' => esc_html__('Contact email', 'leyka'),
             'required' => true,
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'person_address',
@@ -198,18 +183,32 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         )))->addTo($section);
 
         // Legal receiver type - org. bank essentials step:
-        $step = new Leyka_Settings_Step('receiver_legal_bank_essentials', $section->id, 'Банковские реквизиты');
+        $step = new Leyka_Settings_Step('receiver_legal_bank_essentials', $section->id, esc_html__('Bank essentials', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Данные понадобятся для отчётных документов, а также для подключения оплаты с помощью бумажной банковской квитанции.',
+            'text' => esc_html__('These data needed for accounting documents, as well as to use bank order donations.', 'leyka'),
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'org_bank_name',
             'option_id' => 'org_bank_name',
             'show_description' => false,
-        )))->addBlock(new Leyka_Option_Block(array(
-            'id' => 'org_bank_account',
-            'option_id' => 'org_bank_account',
-            'show_description' => false,
+        )))->addBlock(new Leyka_Container_Block(array(
+            'id' => 'complex-row-2',
+            'entries' => array(
+                new Leyka_Option_Block(array(
+                    'id' => 'org_bank_account',
+                    'option_id' => 'org_bank_account',
+                    'show_description' => false,
+                )),
+            ),
+        )))->addBlock(new Leyka_Container_Block(array(
+            'id' => 'complex-row-3',
+            'entries' => array(
+                new Leyka_Option_Block(array(
+                    'id' => 'org_bank_corr_account',
+                    'option_id' => 'org_bank_corr_account',
+                    'show_description' => false,
+                )),
+            ),
         )))->addBlock(new Leyka_Container_Block(array(
             'id' => 'complex-row-1',
             'entries' => array(
@@ -218,19 +217,14 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                     'option_id' => 'org_bank_bic',
                     'show_description' => false,
                 )),
-                new Leyka_Option_Block(array(
-                    'id' => 'org_bank_corr_account',
-                    'option_id' => 'org_bank_corr_account',
-                    'show_description' => false,
-                )),
             ),
         )))->addTo($section);
 
         // Physical receiver type - person's bank essentials step:
-        $step = new Leyka_Settings_Step('receiver_physical_bank_essentials', $section->id, 'Банковские реквизиты');
+        $step = new Leyka_Settings_Step('receiver_physical_bank_essentials', $section->id, esc_html__('Bank essentials', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Данные понадобятся для отчётных документов, а также для подключения оплаты с помощью бумажной банковской квитанции.',
+            'text' => esc_html__('These data needed for accounting documents, as well as to use bank order donations.', 'leyka'),
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'person_bank_name',
             'option_id' => 'person_bank_name',
@@ -238,6 +232,10 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'person_bank_account',
             'option_id' => 'person_bank_account',
+            'show_description' => false,
+        )))->addBlock(new Leyka_Option_Block(array(
+            'id' => 'person_bank_corr_account',
+            'option_id' => 'person_bank_corr_account',
             'show_description' => false,
         )))->addBlock(new Leyka_Container_Block(array(
             'id' => 'complex-row-1',
@@ -247,79 +245,73 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                     'option_id' => 'person_bank_bic',
                     'show_description' => false,
                 )),
-                new Leyka_Option_Block(array(
-                    'id' => 'person_bank_corr_account',
-                    'option_id' => 'person_bank_corr_account',
-                    'show_description' => false,
-                )),
             ),
         )))->addTo($section);
 
         // Legal receiver type - Terms of service step:
-        $step = new Leyka_Settings_Step('receiver_legal_terms_of_service', $section->id, 'Оферта');
+        $step = new Leyka_Settings_Step('receiver_legal_terms_of_service', $section->id, esc_html__('Terms of service', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Для соблюдения всех формальных процедур вам необходимо предоставить оферту о заключении договора пожертвования. Мы подготовили для вас шаблонный вариант. Пожалуйста, проверьте. При необходимости, скорректируйте текст оферты. Текст, выделенный синим, подставлен автоматически, но вы также можете его поменять. После завершения всех правок нажмите «Сохранить и продолжить».',
+            'text' => esc_html__('To comply with all the formalities you need to provide a Terms of service document to conclude a donation agreement. We have prepared a template option - please check it out. If necessary, adjust the document text. Text parts highlighted in blue are replaced automatically, but you can also change them. After completion of all of the changes, click "Save & continue".', 'leyka'),
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'terms_of_service_text',
             'option_id' => 'terms_of_service_text',
         )))->addTo($section);
 
         // Physical receiver type - Terms of service step:
-        $step = new Leyka_Settings_Step('receiver_physical_terms_of_service', $section->id, 'Оферта');
+        $step = new Leyka_Settings_Step('receiver_physical_terms_of_service', $section->id, esc_html__('Terms of service', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Для соблюдения всех формальных процедур вам необходимо предоставить оферту о заключении договора пожертвования. Мы подготовили для вас шаблонный вариант. Пожалуйста, проверьте. При необходимости, скорректируйте текст оферты. Текст, выделенный синим, подставлен автоматически, но вы также можете его поменять. После завершения всех правок нажмите «Сохранить и продолжить».',
+            'text' => esc_html__('To comply with all the formalities you need to provide a Terms of service document to conclude a donation agreement. We have prepared a template option - please check it out. If necessary, adjust the document text. Text parts highlighted in blue are replaced automatically, but you can also change them. After completion of all of the changes, click "Save & continue".', 'leyka'),
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'terms_of_service_text',
             'option_id' => 'person_terms_of_service_text',
         )))->addTo($section);
 
         // Legal receiver type - personal data terms step:
-        $step = new Leyka_Settings_Step('receiver_legal_pd_terms', $section->id, 'Соглашение о персональных данных');
+        $step = new Leyka_Settings_Step('receiver_legal_pd_terms', $section->id, esc_html__('Terms of personal data usage', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text-1',
             'text' => sprintf(__('WARNING! We strongly recommend you to revise this Terms text and fill the field with your own value according to the organization personal data policy. Read more about it: %s', 'leyka'), leyka_get_pd_usage_info_links()),
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text-2',
-            'text' => 'В рамках сбора пожертвований вы будете собирать персональные данные доноров. «Согласие на обработку персональных данных» — обязательный документ по закону ФЗ-152. Мы подготовили шаблон текста соглашения, вы можете отредактировать его под ваши требования. Текст, выделенный синим, подставлен автоматически, но вы также можете его поменять. Все персональные данные хранятся на вашем сайте и никуда не отправляются.',
+            'text' => esc_html__('As part of your fundraising you will collect the donors personal data. "Consent to the processing of personal data" - binding instrument on the federal law FZ-152. We have prepared the text of the agreement template, you can edit it to your needs. Text parts highlighted in blue are replaced automatically, but you can also change them. All personal data is stored on your site and will not be sent anywhere.', 'leyka'),
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'pd_terms_text',
             'option_id' => 'pd_terms_text',
         )))->addTo($section);
 
         // Physical receiver type - personal data terms step:
-        $step = new Leyka_Settings_Step('receiver_physical_pd_terms', $section->id, 'Соглашение о персональных данных');
+        $step = new Leyka_Settings_Step('receiver_physical_pd_terms', $section->id, esc_html__('Terms of personal data usage', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text-1',
             'text' => sprintf(__('WARNING! We strongly recommend you to revise this Terms text and fill the field with your own value according to the organization personal data policy. Read more about it: %s', 'leyka'), leyka_get_pd_usage_info_links()),
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text-2',
-            'text' => 'В рамках сбора пожертвований вы будете собирать персональные данные доноров. «Согласие на обработку персональных данных» — обязательный документ по закону ФЗ-152. Мы подготовили шаблон текста соглашения, вы можете отредактировать его под ваши требования. Текст, выделенный синим, подставлен автоматически, но вы также можете его поменять. Все персональные данные хранятся на вашем сайте и никуда не отправляются.',
+            'text' => esc_html__('As part of your fundraising you will collect the donors personal data. "Consent to the processing of personal data" - binding instrument on the federal law FZ-152. We have prepared the text of the agreement template, you can edit it to your needs. Text parts highlighted in blue are replaced automatically, but you can also change them. All personal data is stored on your site and will not be sent anywhere.', 'leyka'),
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'pd_terms_text',
             'option_id' => 'person_pd_terms_text',
         )))->addTo($section);
 
         // Section final (outro) step:
-        $step = new Leyka_Settings_Step('final', $section->id, 'Хорошая работа!');
+        $step = new Leyka_Settings_Step('final', $section->id, esc_html__('Good job!', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Вы успешно заполнили свои данные и теперь можете перейти к следующему этапу.',
+            'text' => esc_html__('You have successfully filled your data and can now proceed to the next step.', 'leyka'),
         )))->addTo($section);
 
         $this->_sections[$section->id] = $section;
         // Receiver data Section - End
 
         // Diagnostic data Section:
-        $section = new Leyka_Settings_Section('dd', 'Диагностические данные');
+        $section = new Leyka_Settings_Section('dd', esc_html__('Diagnostic data', 'leyka'));
 
         // The plugin usage stats collection step:
-        $step = new Leyka_Settings_Step('plugin_stats', $section->id, 'Диагностические данные');
+        $step = new Leyka_Settings_Step('plugin_stats', $section->id, esc_html__('Diagnostic data', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Мы просим вас подтвердить согласие на отправку <strong>технических данных</strong>  к нам, в Теплицу, что
-позволит нам последовательно совершенствовать работу плагина, а также помочь быстрее разрешать технические проблемы работы с Лейкой, если таковые возникнут, у конкретных пользователей. Эти данные будут использоваться только разработчиками плагина и не будут передаваться третьим лицам.',
+            'text' => __('We ask you to confirm your agreement to send <strong>technical data</strong> to us, Teplitsa of Social technologies. It will allow us to consistently improve the plugin work as well as help you quickly resolve technical issues with it. These data will be used only by plugin developers and will not be shared with any third party.', 'leyka'),
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'send_plugin_stats',
             'option_id' => 'send_plugin_stats',
@@ -328,51 +320,50 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             ->addTo($section);
 
         // The plugin usage stats collection - accepted:
-        $step = new Leyka_Settings_Step('plugin_stats_accepted', $section->id, 'Спасибо!', array('next_label' => 'Продолжить'));
+        $step = new Leyka_Settings_Step('plugin_stats_accepted', $section->id, esc_html__('Thank you!', 'leyka'), array('next_label' => esc_html__('Continue', 'leyka')));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Спасибо! Ваши данные очень нам помогут! Теперь, давайте настроим и запустим вашу первую кампанию по сбору средств.',
+            'text' => esc_html__("Thanks a lot! Your data will help us very much. Now, let's get up and running your first fundraising campaign.", 'leyka'),
         )))->addTo($section);
 
         // The plugin usage stats collection - refused:
-        $step = new Leyka_Settings_Step('plugin_stats_refused', $section->id, 'Эхх...');
+        $step = new Leyka_Settings_Step('plugin_stats_refused', $section->id, esc_html__('Ehh...', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Жаль, что вы решили не делиться данными. Если вы передумаете, то изменить эти настройки вы сможете в разделе «Настройки». Давайте настроим и запустим вашу первую кампанию по сбору средств.',
+            'text' => esc_html__("A pity that you have decided not to share data. If you change your mind, you may change these settings in the plugin settings. Let's get up and running your first campaign fundraising.", 'leyka'),
         )))->addTo($section);
 
         $this->_sections[$section->id] = $section;
 
         // Campaign data Section:
-        $section = new Leyka_Settings_Section('cd', 'Настройка кампании');
+        $section = new Leyka_Settings_Section('cd', esc_html__('Campaign setup', 'leyka'));
 
         $init_campaign = get_transient('leyka_init_campaign_id') ?
             new Leyka_Campaign(get_transient('leyka_init_campaign_id')) : false;
 
-        $step = new Leyka_Settings_Step('campaign_description', $section->id, 'Описание вашей кампании');
+        $step = new Leyka_Settings_Step('campaign_description', $section->id, esc_html__('Your campaign description', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Сбор пожертвований в Лейке осуществляется в рамках одной или нескольких кампаний,
-каждая из которых характеризуется наименованием, кратким описанием, изображением и целевой суммой. Настройте вашу первую кампанию.',
+            'text' => esc_html__('Leyka fundraising is carried out using one or more campaigns, each is characterized by a title, a brief description, an image and a target amount. Set up your first campaign.', 'leyka'),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'campaign_title',
             'custom_setting_id' => 'campaign_title',
             'field_type' => 'text',
             'data' => array(
-                'title' => 'Название кампании',
+                'title' => esc_html__('Campaign title', 'leyka'),
                 'required' => true,
-                'placeholder' => 'Например, «На уставную деятельность организации»',
+                'placeholder' => esc_html__('E.g., "For the authorized activities of the organization"', 'leyka'),
                 'value' => $init_campaign ? $init_campaign->title : '',
-                'comment' => 'Краткое и прозрачное описание того, для чего собираются средства.',
+                'comment' => esc_html__('A brief and clear description of a purpose for which funds are collected.', 'leyka'),
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'campaign-lead',
             'custom_setting_id' => 'campaign_short_description',
             'field_type' => 'textarea',
             'data' => array(
-                'title' => 'Краткое описание',
+                'title' => esc_html_x('Short description', '[of a campaign]', 'leyka'),
                 'value' => $init_campaign ? $init_campaign->short_description : '',
-                'comment' => 'В кратком описании кампании в сжатой форме рассказывается, почему стоит пожертвовать.',
+                'comment' => esc_html__('A brief description of the campaign concisely explains why donors should donate.', 'leyka'),
             ),
         )))->addBlock(new Leyka_Container_Block(array(
             'id' => 'complex-row-2',
@@ -383,12 +374,12 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                     'custom_setting_id' => 'campaign_target',
                     'field_type' => 'text',
                     'data' => array(
-                        'title' => 'Целевая сумма',
+                        'title' => esc_html__('Target amount', 'leyka'),
                         'min' => 0,
                         'step' => 0.01,
                         'value' => $init_campaign && $init_campaign->target ? $init_campaign->target : '',
                         'show_description' => false,
-                        'placeholder' => 'Пусто, если сумма неограниченна',
+                        'placeholder' => esc_html__('Leave empty, if the target amount is unlimited', 'leyka'),
                         'mask' => "'alias': 'numeric', 'groupSeparator': ' ', 'autoGroup': true, 'allowMinus': false, 'rightAlign': false, 'removeMaskOnSubmit': true",
                     ),
                 )),
@@ -396,10 +387,10 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         )))->addHandler(array($this, 'handleCampaignDescriptionStep'))
             ->addTo($section);
 
-        $step = new Leyka_Settings_Step('campaign_decoration', $section->id, 'Оформление кампании');
+        $step = new Leyka_Settings_Step('campaign_decoration', $section->id, esc_html__('Campaign decoration', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
-            'text' => 'Выберите главное фото кампании и один из возможных шаблонов формы для пожертвования. И то, и другое очень важно для восприятия кампании донорами, и, следовательно, для её успешности.',
+            'text' => esc_html__('Select the campaign main photo and one of the possible donation forms templates. Both are very important for campaign perception by donors, and therefore to its success.', 'leyka'),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'campaign-decoration',
             'custom_setting_id' => 'campaign_decoration',
@@ -409,13 +400,13 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         )))->addHandler(array($this, 'handleCampaignDecorationStep'))
             ->addTo($section);
 
-        $step = new Leyka_Settings_Step('donors_communication', $section->id, 'Благодарность донору');
+        $step = new Leyka_Settings_Step('donors_communication', $section->id, esc_html__('Thanks to donor', 'leyka'));
         $step->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text-1',
-            'text' => 'После того, как донор внёс своё пожертвование, хорошим тоном считается показать ему страницу с благодарностью и отправить письмо. Ниже вы можете отредактировать то, что донор получит в своем почтовом ящике. Поле «Отправитель» обозначает, от кого придет письмо донору. Как правило, указывается название вашей организации. Поле «E-mail отправителя» обозначает, какой обратный адрес увидит донор. Наконец, в тексте письма вы можете сами составить адрес вашей искренней благодарности дарителю. Обратите внимание, что в вашем распоряжении специальные тэги для автоматической подстановки.',
+            'text' => esc_html__('Thank your donor. Below are settings of thankful email, that would be sent to every donor once donation is complete.', 'leyka'),
         )))->addBlock(new Leyka_Text_Block(array(
             'id' => 'step-intro-text-2',
-            'text' => 'Позже, в разделе «Настройки», вы сможете изменить текст страницы «Спасибо», которая показывается донору после успешного совершения пожертвования.',
+            'text' => esc_html__('Later, in the plugin Settings, you can change the text on the "Thank you" page, which is displayed after the successful completion of donation.', 'leyka'),
         )))->addBlock(new Leyka_Option_Block(array(
             'id' => 'email-from-name',
             'option_id' => 'email_from_name',
@@ -427,27 +418,27 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'option_id' => 'email_thanks_text',
         )))->addTo($section);
 
-        $step = new Leyka_Settings_Step('campaign_completed', $section->id, 'Кампания настроена');
+        $this->_sections[$section->id] = $section;
+        // Campaign settings Section - End
+
+        // Final Section:
+        $section = new Leyka_Settings_Section('final', esc_html__('Setup completed', 'leyka'));
+
+        $step = new Leyka_Settings_Step('campaign_completed', $section->id, esc_html__('The campaign is set up', 'leyka'));
         $step->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'campaign-completed',
             'custom_setting_id' => 'campaign_completed',
             'field_type' => 'custom_campaign_completed',
             'rendering_type' => 'template',
         )))->addHandler(array($this, 'handleCampaignCompletedStep'))
-            ->addTo($section);
+        ->addTo($section);
 
-        $this->_sections[$section->id] = $section;
-        // Campaign settings Section - End
-
-        // Final Section:
-        $section = new Leyka_Settings_Section('final', 'Завершение настройки');
-
-        $step = new Leyka_Settings_Step('init', $section->id, 'Поздравляем!', array('header_classes' => 'greater',));
-        $step->addBlock(new Leyka_Text_Block(array(
-            'id' => 'step-intro-text',
-            'text' => 'Вы успешно завершили тестовый мастер установки «Лейки».',
-        )))->addTo($section);
-
+//        $step = new Leyka_Settings_Step('init', $section->id, esc_html__('Congratulations!', 'leyka'), array('header_classes' => 'greater',));
+//        $step->addBlock(new Leyka_Text_Block(array(
+//            'id' => 'step-intro-text',
+//            'text' => esc_html__('You have successfully completed the Leyka setup Wizard.', 'leyka'),
+//        )))->addTo($section);
+//
         $this->_sections[$section->id] = $section;
         // Final Section - End
 
@@ -510,14 +501,17 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             } else if($step_from->id === 'campaign_decoration') {
                 $next_step_full_id = $step_from->section_id.'-donors_communication';
             } else if($step_from->id === 'donors_communication') {
-                $next_step_full_id = $step_from->section_id.'-campaign_completed';
-            } else if($step_from->id === 'campaign_completed') {
-                #$next_step_full_id = 'final-init';
-                $next_step_full_id = 'cd-campaign_completed';
+                //$next_step_full_id = $step_from->section_id.'-campaign_completed';
+                $next_step_full_id = 'final-campaign_completed';
             }
 
-        } else if($step_from->section_id === 'final') { // Final Section
-            $next_step_full_id = true;
+        }
+        else if($step_from->section_id === 'final') { // Final Section
+            if($step_from->id === 'campaign_completed') {
+                $next_step_full_id = 'final-campaign_completed'; // $next_step_full_id = 'final-init';
+
+            }            
+            //$next_step_full_id = true;
         }
 
         if( !!$return_full_id || !is_string($next_step_full_id) ) {
@@ -537,66 +531,66 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $this->_navigation_data = array(
             array(
                 'section_id' => 'rd',
-                'title' => 'Ваши данные',
+                'title' => esc_html__('Your data', 'leyka'),
                 'url' => '',
                 'steps' => array(
                     array(
                         'step_id' => 'receiver_type',
-                        'title' => 'Получатель пожертвований',
+                        'title' => esc_html__('Donations receiver', 'leyka'),
                         'url' => '',
                     ),
                     array(
                         'step_id' => 'receiver_data',
-                        'title' => 'Ваши данные',
+                        'title' => esc_html__('Your data', 'leyka'),
                         'url' => '',
                     ),
                     array(
                         'step_id' => 'receiver_bank_essentials',
-                        'title' => 'Банковские реквизиты',
+                        'title' => esc_html__('Bank essentials', 'leyka'),
                         'url' => '',
                     ),
                     array(
                         'step_id' => 'receiver_terms_of_service',
-                        'title' => 'Оферта',
+                        'title' => esc_html__('Terms of service', 'leyka'),
                         'url' => '',
                     ),
                     array(
                         'step_id' => 'receiver_pd_terms',
-                        'title' => 'Персональные данные',
+                        'title' => esc_html__('Personal data', 'leyka'),
                         'url' => '',
                     ),
                 ),
             ),
             array(
                 'section_id' => 'dd',
-                'title' => 'Диагностические данные',
+                'title' => esc_html__('Diagnostic data', 'leyka'),
                 'url' => '',
             ),
             array(
                 'section_id' => 'cd',
-                'title' => 'Настройка кампании',
+                'title' => esc_html__('Campaign setup', 'leyka'),
                 'url' => '',
                 'steps' => array(
                     array(
                         'step_id' => 'campaign_description',
-                        'title' => 'Основные данные',
+                        'title' => esc_html__('Main data', 'leyka'),
                         'url' => '',
                     ),
                     array(
                         'step_id' => 'campaign_decoration',
-                        'title' => 'Оформление кампании',
+                        'title' => esc_html__('Campaign decoration', 'leyka'),
                         'url' => '',
                     ),
                     array(
                         'step_id' => 'donors_communication',
-                        'title' => 'Благодарность донору',
+                        'title' => esc_html__('Thanks to donor', 'leyka'),
                         'url' => '',
                     ),
                 ),
             ),
             array(
                 'section_id' => 'final',
-                'title' => 'Завершение настройки',
+                'title' => esc_html__('Setup completed', 'leyka'),
                 'url' => '',
             ),
         );
@@ -633,6 +627,8 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                 return $step_full_id;
             case 'cd-campaign_completed':
                 return 'cd--';
+            case 'final-campaign_completed':
+                return $step_full_id;
             case 'final-init': return 'final--';
             default: return false;
         }
@@ -643,9 +639,9 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
         $step = $component && is_a($component, 'Leyka_Settings_Step') ? $component : $this->current_step;
         $submit_settings = array(
-            'next_label' => 'Сохранить и продолжить',
+            'next_label' => esc_html__('Save & continue', 'leyka'),
             'next_url' => true,
-            'prev' => 'Вернуться на предыдущий шаг',
+            'prev' => esc_html__('Back to the previous step', 'leyka'),
         );
 
         if($step->next_label) {
@@ -654,17 +650,17 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
         if($step->section_id === 'rd' && $step->id === 'init') {
 
-            $submit_settings['next_label'] = 'Поехали!';
+            $submit_settings['next_label'] = esc_html__("Let's go!", 'leyka');
             $submit_settings['prev'] = false; // Means that the Wizard shouln't display the back link
 
         } else if($step->section_id === 'dd' && in_array($step->id, array('plugin_stats_accepted', 'plugin_stats_refused',))) {
 
-            $submit_settings['additional_label'] = 'Перейти в Панель управления';
+            $submit_settings['additional_label'] = esc_html__('Go to the Dashboard', 'leyka');
             $submit_settings['additional_url'] = admin_url('admin.php?page=leyka');
 
         } else if($step->section_id === 'final') {
 
-            $submit_settings['next_label'] = 'Перейти в Панель управления';
+            $submit_settings['next_label'] = esc_html__('Go to the Dashboard', 'leyka');
             $submit_settings['next_url'] = admin_url('admin.php?page=leyka');
 
         }
@@ -749,7 +745,8 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         update_option('leyka_plugin_stats_option_needs_sync', time());
         $stats_option_synch_res = leyka_sync_plugin_stats_option();
 
-        if(is_wp_error($stats_option_synch_res)) {
+        // DO NOT return WP_Error in production!!!! We should save option and go next step anyway
+        if(is_wp_error($stats_option_synch_res) && defined('WP_DEBUG') && WP_DEBUG) {
             return $stats_option_synch_res;
         } else {
             return delete_option('leyka_plugin_stats_option_needs_sync')
@@ -784,7 +781,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $campaign_id = wp_insert_post($init_campaign_params, true);
 
         if(is_wp_error($campaign_id)) {
-            return new WP_Error('init_campaign_insertion_error', 'Ошибка при создании кампании');
+            return new WP_Error('init_campaign_insertion_error', esc_html__('Error while creating the campaign', 'leyka'));
         }
 
         update_post_meta($campaign_id, 'campaign_target', (float)$step_settings['campaign_target']);
@@ -808,14 +805,14 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $errors = array();
 
         if( !$campaign_id || !$campaign ) {
-            return new WP_Error('wrong_init_campaign_id', 'ID кампании неправильный или отсутствует');
+            return new WP_Error('wrong_init_campaign_id', esc_html__('Campaign ID is wrong or missing', 'leyka'));
         }
 
         if(
             $campaign->post_type !== 'publish' &&
             is_wp_error(wp_update_post(array('ID' => $campaign_id, 'post_status' => 'publish')))
         ) {
-            return new WP_Error('init_campaign_publishing_error', 'Ошибка при публикации кампании');
+            return new WP_Error('init_campaign_publishing_error', esc_html__('Error when publishing the campaign', 'leyka'));
         }
 
         return $errors ? $errors : true;
@@ -829,7 +826,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $errors = array();
 
         if( !$campaign_id || !$campaign ) {
-            return new WP_Error('wrong_init_campaign_id', 'ID кампании неправильный или отсутствует');
+            return new WP_Error('wrong_init_campaign_id', esc_html__('Campaign ID is wrong or missing', 'leyka'));
         }
 
         // Enable the Quittance PM, if all the needed fields are filled:

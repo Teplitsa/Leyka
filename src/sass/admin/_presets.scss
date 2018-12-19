@@ -22,25 +22,25 @@ $three : 800px;
 $color-nav-area-bg: #dddddd;
 $color-nav-line: #8f8f8f;
 $color-nav-section-marker-bg: #ffffff;
-$color-nav-section-marker-done-bg: #0085ba;
+$color-nav-section-marker-done-bg: #8f8f8f;
 
 $color-nav-section-marker-text: #8f8f8f;
 $color-nav-section-marker-open-text: #44444a;
-$color-nav-section-marker-active-text: #0085ba;
+$color-nav-section-marker-active-text: #44444a;
 $color-nav-section-marker-done-text: #ffffff;
 
 $color-nav-section-text: #8f8f8f;
-$color-nav-section-open-text: #44444A;
-$color-nav-section-active-text: #0085ba;
+$color-nav-section-open-text: #44444a;
+$color-nav-section-active-text: #44444a;
 $color-nav-section-done-text: #0085ba;
 
 $color-nav-step-text: #8f8f8f;
-$color-nav-step-active-text: #44444a;
-$color-nav-step-done-text: #0085ba;
+$color-nav-step-active-text: #0085ba;
+$color-nav-step-done-text: #44444a;
 
 $color-nav-step-marker-bg: #8f8f8f;
-$color-nav-step-marker-active-bg: #44444a;
-$color-nav-step-marker-done-bg: #0085ba;
+$color-nav-step-marker-active-bg: #0085ba;
+$color-nav-step-marker-done-bg: #44444a;
 
 // main area
 $color-wizard-text: #44444a;
@@ -216,7 +216,7 @@ $color-form-active:		var(--color-main-light);
     width: 20px;
     height: 20px;
     float: left;
-    background-image: url(../../src/svg/icon-ok-circled.svg);
+    background-image: url(../../img/icon-ok-circled.svg);
     background-repeat: no-repeat;
     margin: 0 12px 0 0;
 }
@@ -251,7 +251,7 @@ $color-form-active:		var(--color-main-light);
     width: 20px;
     height: 20px;
     float: left;
-    background-image: url(../../src/svg/icon-error-circled.svg);
+    background-image: url(../../img/icon-error-circled.svg);
     background-repeat: no-repeat;
     margin: 0 12px 0 0;
 }

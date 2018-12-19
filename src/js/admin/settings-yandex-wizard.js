@@ -48,13 +48,9 @@ jQuery(document).ready(function($){
                 console.log(json);
 
                 if(typeof json.status === 'undefined') {
-                    
                     alert('Ошибка!');
-                    
                 } else if(json.status === 0 && json.payment_url) {
-                    
                     window.location.href = json.payment_url;
-
                 } else {
                     alert('Ошибка!');
                 }

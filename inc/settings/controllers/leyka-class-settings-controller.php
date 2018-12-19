@@ -39,13 +39,18 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
     }
 
     protected function _loadCssJs() {
-        
-        wp_localize_script('leyka-admin', 'leyka_wizard_common', array(
-            'copy2clipboard' => 'Копировать',
-            'copy2clipboard_done' => 'Скопировано в буфер!',
-        ));
-        
+
+        add_action('admin_enqueue_scripts', function(){
+
+            wp_localize_script('leyka-settings', 'leyka_wizard_common', array(
+                'copy2clipboard' => esc_html__('Copy', 'leyka'),
+                'copy2clipboard_done' => esc_html__('Copied to the clipboard!', 'leyka'),
+            ));
+
+        }, 11);
+
         do_action('leyka_settings_controller_enqueue_scripts', $this->id);
+
     }
 
     abstract protected function _setAttributes();
@@ -61,7 +66,7 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
     /** @return boolean */
     public function hasCommonErrors() {
-        return !empty($this->_common_errors);
+        return !!$this->_common_errors;
     }
 
     /** @return array Of errors */
@@ -71,7 +76,7 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
     /** @return boolean */
     public function hasComponentErrors($component_id = null) {
-        return !empty($this->getComponentErrors($component_id));
+        return !!$this->getComponentErrors($component_id);
     }
 
     /**
@@ -648,7 +653,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             $step = $this->getComponentById($this->_getNextStepId());
             if( !$step ) {
 
-                $this->_addCommonError(new WP_Error('next_step_not_found', 'Следующий шаг мастера не найден'));
+                $this->_addCommonError(new WP_Error('next_step_not_found', esc_html__('The Wizard next step is not found', 'leyka')));
                 return;
 
             }
@@ -705,7 +710,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
                 if($is_next_section_target) {
 
                     $next_section = $section;
-                    $next_step = $section->steps ? $section->steps[0] : false;
+                    $next_step = $section->steps ? $section->steps[ array_key_first($section->steps) ] : false;
                     break;
 
                 }

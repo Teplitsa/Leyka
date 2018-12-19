@@ -71,10 +71,8 @@ jQuery(document).ready(function($){
             leykaUpdatePmList($pm_order);
 
             if($pm_order.find('.pm-order:visible').length) {
-                console.log('here 1', $pm_order.find('.pm-order:visible'));
                 $pm_list_empty_block.hide();
             } else {
-                console.log('here 0');
                 $pm_list_empty_block.show();
             }
 
@@ -246,6 +244,7 @@ jQuery(document).ready(function($){
     $filter.find('.filter-category-item').click(function(e){
         e.preventDefault();
         toggleFilterItem($(this));
+        applyFilter();
     });
     
     function resetFilter() {
@@ -257,9 +256,7 @@ jQuery(document).ready(function($){
     function applyFilter() {
         if(Object.keys(gatewaysFilter).length) {
             $gatewaysList.find('.gateway-card').hide();
-            for(var filter in gatewaysFilter) {
-                $gatewaysList.find('.gateway-card.' + filter).show();
-            }
+            $gatewaysList.find('.gateway-card.' + Object.keys(gatewaysFilter).join(".")).show();
         }
         else {
             $gatewaysList.find('.gateway-card').show();
@@ -275,8 +272,6 @@ jQuery(document).ready(function($){
         else {
             delete gatewaysFilter[$filterItem.data('category')];
         }
-        
-        applyFilter();
     }
     
 });

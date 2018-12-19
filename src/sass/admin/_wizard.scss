@@ -28,6 +28,162 @@
             left: calc(50% - 42px);
         }
         
+        .nav-section {
+            margin-top: 22px;
+            
+            a {
+                color: $color-nav-section-text;
+                text-decoration: none;
+            }
+            
+            .nav-section-title {
+                @include chain-section-title();
+                color: $color-nav-section-text;
+                vertical-align: middle;
+                height: 40px;
+                
+                .nav-section-marker {
+                    @include chain-section-marker();
+                    font-weight: normal;                    
+                    background-color: $color-nav-section-marker-bg;
+                    border: 4px solid $color-white;
+                    color: $color-nav-section-text;
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 50%;
+                    line-height: 32px;
+                    text-align: center;
+                    vertical-align: middle;
+                    display: inline-block;
+                    margin-right: 12px;
+                }
+                
+            }
+            
+            &.open {
+                a {
+                    color: $color-nav-section-open-text;
+                }
+                
+                .nav-section-title {
+                    color: $color-nav-section-open-text;
+                    
+                    .nav-section-marker {
+                        color: $color-nav-section-marker-open-text;
+                        font-weight: 500;
+                        border: 4px solid $color-nav-line;
+                    }
+                }
+            }
+
+            &.active {
+                a {
+                    color: $color-nav-section-active-text;
+                }
+                    
+                .nav-section-title {
+                    color: $color-nav-section-active-text;
+                    
+                    .nav-section-marker {
+                        color: $color-nav-section-marker-active-text;
+                        font-weight: 500;
+                        border: 4px solid $color-nav-line;
+                    }
+                }
+            }
+            
+            &.done {
+                a {
+                    color: $color-nav-section-active-text;
+                }
+                
+                .nav-section-title {
+                    color: $color-nav-section-active-text;
+                    
+                    .nav-section-marker {
+                        background-color: $color-nav-section-marker-done-bg;
+                        color: $color-nav-section-marker-done-text;
+                        border: 4px solid $color-nav-section-marker-done-bg;
+                    }
+                }
+            }
+
+            .nav-steps {
+                
+                padding-left: 16px;
+                padding-top: 9px;
+                margin-bottom: -2px;
+                display: none;
+                
+                .nav-step {
+                    @include chain-step();
+                    color: $color-nav-step-text;
+                    height: 24px;
+                    padding-top: 10px;
+                    
+                    &:before {
+                        background-color: $color-nav-step-marker-bg;
+                        content: " ";
+                        display: inline-block;
+                        width: 9px;
+                        height: 9px;
+                        border-radius: 4.5px;
+                        margin-right: 28px;
+                    }
+
+                    &.done {
+                        color: $color-nav-step-done-text;
+                        &:before {
+                            background-color: $color-nav-step-marker-done-bg;
+                        }
+                        
+                        .step-i {
+                            margin-left: 3px;
+                            vertical-align: middle;
+                            cursor: pointer;
+                        }
+                    }
+                    
+                    &.active {
+                        color: $color-nav-step-active-text;
+                        &:before {
+                            background-color: $color-nav-step-marker-active-bg;
+                        }
+                    }
+                }
+                
+            }
+            
+            &.active .nav-steps,
+            &.open .nav-steps {
+                display: block;
+            }
+            
+        }
+
+        .nav-section.nav-exit {
+            display: block;
+            margin-top: 40px;
+            text-decoration: none;
+            
+            .nav-section-title {
+                color: $color-nav-section-open-text;
+                
+                .nav-section-marker {
+                    @include chain-section-marker();
+                    background-repeat: no-repeat;
+                    background-position: 55% center;
+                    background-image: url(../../img/nav-exit.svg);
+                    background-color: transparent;
+                    background-size: auto;
+                    border: 1px solid rgba(143, 143, 143, 0.32);
+                    width: 40px;
+                    height: 40px;
+                    line-height: 40px;
+                }
+            }
+        }
+
         .nav-chain {
             border-left: 1px solid $color-nav-line;
             margin-left: 21px;
@@ -35,116 +191,6 @@
             .nav-line {
                 margin-left: -21px;
             }
-            
-            .nav-section {
-                margin-top: 22px;
-                
-                .nav-section-title {
-                    @include chain-section-title();
-                    color: $color-nav-section-text;
-                    vertical-align: middle;
-                    height: 40px;
-                    
-                    .nav-section-marker {
-                        @include chain-section-marker();
-                        background-color: $color-nav-section-marker-bg;
-                        color: $color-nav-section-marker-text;
-                        width: 40px;
-                        height: 40px;
-                        border-radius: 20px;
-                        line-height: 40px;
-                        text-align: center;
-                        vertical-align: middle;
-                        display: inline-block;
-                        margin-right: 12px;
-                    }
-                    
-                }
-                
-                &.open {
-                    .nav-section-title {
-                        color: $color-nav-section-open-text;
-                        
-                        .nav-section-marker {
-                            color: $color-nav-section-marker-open-text;
-                        }
-                    }
-                }
-
-                &.active {
-                    .nav-section-title {
-                        color: $color-nav-section-active-text;
-                        
-                        .nav-section-marker {
-                            color: $color-nav-section-marker-active-text;
-                        }
-                    }
-                }
-                
-                &.done {
-                    .nav-section-title {
-                        color: $color-nav-section-active-text;
-                        
-                        .nav-section-marker {
-                            background-color: $color-nav-section-marker-done-bg;
-                            color: $color-nav-section-marker-done-text;
-                        }
-                    }
-                }
-
-                .nav-steps {
-                    
-                    padding-left: 16px;
-                    padding-top: 9px;
-                    margin-bottom: -2px;
-                    display: none;
-                    
-                    .nav-step {
-                        @include chain-step();
-                        color: $color-nav-step-text;
-                        height: 24px;
-                        padding-top: 10px;
-                        
-                        &:before {
-                            background-color: $color-nav-step-marker-bg;
-                            content: " ";
-                            display: inline-block;
-                            width: 9px;
-                            height: 9px;
-                            border-radius: 4.5px;
-                            margin-right: 28px;
-                        }
-
-                        &.done {
-                            color: $color-nav-step-done-text;
-                            &:before {
-                                background-color: $color-nav-step-marker-done-bg;
-                            }
-                            
-                            .step-i {
-                                margin-left: 3px;
-                                vertical-align: middle;
-                                cursor: pointer;
-                            }
-                        }
-                        
-                        &.active {
-                            color: $color-nav-step-active-text;
-                            &:before {
-                                background-color: $color-nav-step-marker-active-bg;
-                            }
-                        }
-                    }
-                    
-                }
-                
-                &.active .nav-steps,
-                &.open .nav-steps {
-                    display: block;
-                }
-                
-            }
-            
             
         }
         
@@ -433,6 +479,7 @@
         
         #leyka-settings-form-final-cp_final,
         #leyka-settings-form-cd-campaign_completed,
+        #leyka-settings-form-final-campaign_completed,
         #leyka-settings-form-final-yandex_final {
             
             .step-submit {

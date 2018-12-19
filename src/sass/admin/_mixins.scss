@@ -111,25 +111,29 @@
 @mixin leyka-field-title {
   
     @include wizard-field-label();
-    display: block;
+    display: flex;
     margin-bottom: 5px;
     position: relative;
+    align-items: flex-start;
+    
+    .text {
+        order: 1;
+    }
     
     .required {
         @include wizard-field-label-required-sign();
         color: $color-wizard-required-sign;
-        vertical-align: text-bottom;
+        order: 0;
         margin-right: 3px;
-        float: left;
-        
-        &:after {
-            clear: both;
-            float: none;
-        }
+        display: block;
+        height: 14px;
     }
     
     .field-q {
       @include field-q();
+      order: 2;
+      display: block;
+      height: 15px;
     }
     
 }
@@ -239,16 +243,18 @@
         height: 40px;
         
         input[type=file] {
-            height: inherit;
+            height: 40px;
             width: 248px;
             display: inline-block;
             cursor: pointer;
             outline: none;
+            overflow: hidden;
+            vertical-align: middle;
         }
         
         input[type=button] {
             @include wizard-button-caption();
-            height: inherit;
+            height: 40px;
             width: 248px;
             display: block;
             background-color: $color-white;
@@ -270,6 +276,8 @@
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 254px;
+            height: 40px;
+            white-space: nowrap;
         }
     }
     
