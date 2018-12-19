@@ -320,11 +320,13 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'date':
             case 'date_label':
                 $date_format = get_option('date_format');
-                $donation_timestamp = strtotime($this->_main_data->date_created);
+                $time_format = get_option('time_format');
+                $donation_timestamp = $this->date_timestamp;
+
                 return apply_filters(
                     'leyka_admin_donation_date',
-                    date($date_format, $donation_timestamp),
-                    $donation_timestamp, $date_format, get_option('time_format')
+                    date("$date_format, $time_format", $donation_timestamp),
+                    $donation_timestamp, $date_format, $time_format
                 );
             case 'date_timestamp': return strtotime($this->_main_data->date_created);
             case 'date_funded':
