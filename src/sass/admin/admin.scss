@@ -576,6 +576,11 @@
         .gateway-card-title {
             @include gateway-card-title();
             padding-top: 3px;
+
+            .gateway-settings-link {
+                text-decoration: none;
+                color: inherit;
+            }
         }
         
         .gateway-card-status {

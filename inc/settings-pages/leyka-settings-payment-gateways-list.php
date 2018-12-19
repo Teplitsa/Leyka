@@ -46,8 +46,14 @@ $gateways_categories = leyka_get_gateways_filter_categories_list();?>
                 <div class="gateway-card-icon"><?php leyka_show_gateway_logo($gateway, true);?></div>
 
                 <div>
-                    <div class="gateway-card-title"><?php echo $gateway->title;?></div>
-                    <div class="gateway-card-status <?php echo $gateway_activation_status;?>"><?php echo leyka_get_gateway_activation_status_label($gateway_activation_status);?></div>
+                    <div class="gateway-card-title">
+                        <a class="gateway-settings-link" href="<?php echo admin_url('admin.php?page=leyka_settings&stage=payment&gateway='.$gateway->id);?>">
+                            <?php echo $gateway->title;?>
+                        </a>
+                    </div>
+                    <div class="gateway-card-status <?php echo $gateway_activation_status;?>">
+                        <?php echo leyka_get_gateway_activation_status_label($gateway_activation_status);?>
+                    </div>
                 </div>
                 
             </div>

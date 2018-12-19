@@ -142,17 +142,15 @@ function leyka_get_gateway_settings_url($gateway) {
     
     $gateway_activation_status = $gateway ? $gateway->get_activation_status() : null;
     $wizard_id = leyka_gateway_setup_wizard($gateway);
-    
-    $url = '';
-    
-    if($gateway_activation_status != 'active' && $wizard_id) {
+
+    if($gateway_activation_status !== 'active' && $wizard_id) {
         $url = admin_url('/admin.php?page=leyka_settings_new&screen=wizard-' . $wizard_id);
-    }
-    else {
+    } else {
         $url = admin_url('/admin.php?page=leyka_settings&stage=payment&gateway=' . $gateway->id);
     }
-    
+
     return $url;
+
 }
 
 /**

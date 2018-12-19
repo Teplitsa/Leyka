@@ -21,7 +21,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         $this->_docs_link = '//leyka.te-st.ru/docs/chronopay/';
         $this->_registration_link = '//chronopay.com/ru/connection/';
 
-        $this->_min_commission = 2.1; // 0.5% officially, but NGOs reported to us otherwise
+        $this->_min_commission = 2.7;
         $this->_receiver_types = array('legal');
         $this->_may_support_recurring = true;
 
