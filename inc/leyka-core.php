@@ -916,6 +916,10 @@ class Leyka extends Leyka_Singleton {
 
         }
 
+        if( !$leyka_last_ver || $leyka_last_ver < '4.0' ) {
+            require_once(LEYKA_PLUGIN_DIR.'procedures/leyka-db-updates.php');
+        }
+
         /** Set a flag to flush permalinks (needs to be done a bit later, than this activation itself): */
         update_option('leyka_permalinks_flushed', 0);
 
