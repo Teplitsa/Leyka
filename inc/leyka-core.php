@@ -88,6 +88,7 @@ class Leyka extends Leyka_Singleton {
 
             function leyka_sync_stats_option() {
 
+                update_option('leyka_plugin_stats_option_needs_sync', time());
                 $stats_option_synch_res = leyka_sync_plugin_stats_option();
 
                 if(is_wp_error($stats_option_synch_res)) {
