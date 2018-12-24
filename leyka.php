@@ -81,7 +81,7 @@ if( !defined('LEYKA_USAGE_STATS_DEV_SERVER_URL') ) {
 }
 
 if( !defined('LEYKA_USAGE_STATS_PROD_SERVER_URL') ) {
-    define('LEYKA_USAGE_STATS_PROD_SERVER_URL', 'https://ls.te-st.ru/leyka/');
+    define('LEYKA_USAGE_STATS_PROD_SERVER_URL', 'https://ls.te-st.ru/');
 }
 
 // Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
