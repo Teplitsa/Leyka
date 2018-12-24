@@ -4,8 +4,8 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса, яндекс.деньги, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
-Tested up to: 5.0.0
-Stable tag: 2.3.9
+Tested up to: 5.0.2
+Stable tag: 3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,7 +13,7 @@ Leyka is a plugin for crowdfunding and donations collection via WordPress websit
 
 == Description ==
 
-Supported payment methods includes bank cards Visa and MasterCard through **Cloudpayments, PayPal, Chronopay and RBK Money** systems, mobile and SMS payments via MIXPLAT, also **WebMoney, ROBOKASSA and Yandex.Money** are supported. You can also use a traditional bank payment orders (quittances).
+Supported payment methods includes bank cards Visa and MasterCard through **Cloudpayments**, **PayPal**, **Chronopay**, **QIWI Kassa**, **ROBOKASSA**, **Yandex.Kassa** and **RBK Money** systems, mobile and SMS payments via **MIXPLAT**, also **WebMoney** are supported. You can also use a **traditional bank payment orders** (quittances).
 
 This plugin developed and supported by [Teplitsa of social technologies](//te-st.ru/).
 
@@ -89,12 +89,13 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
-= 3.0.0 =
+= 3.0 =
 * New: plugin settings UI updated.
 * New: Setup Wizards added: initial, Yandex.Kassa, CloudPayments.
 * New: settings Controllers & Renders framework added.
 * New: now PHP v5.6 is the min. supported version.
-* Fix: small fixes.
+* Tweak: small optimizations.
+* Fix: small bugfixes.
 
 = 2.3.9 =
 * New: Paymaster gateway support added.
