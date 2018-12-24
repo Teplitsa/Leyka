@@ -904,3 +904,10 @@ if( !function_exists('leyka_admin_get_shortcode_field') ) {
 
     }
 }
+
+if( !function_exists('leyka_sync_plugin_stats_option_action') ) {
+	function leyka_sync_plugin_stats_option_action($old_value, $new_value) {
+		leyka_sync_plugin_stats_option();
+	}
+	add_action("leyka_after_save_option-send_plugin_stats", "leyka_sync_plugin_stats_option_action", 10, 2);
+}
