@@ -71,12 +71,17 @@ if( !defined('LEYKA_SUPPORT_EMAIL') ) {
     define('LEYKA_SUPPORT_EMAIL', 'support@te-st.ru,sidorenko.a@gmail.com');
 }
 
+// Plugin support email:
+if( !defined('LEYKA_DEBUG') ) {
+    define('LEYKA_DEBUG', false);
+}
+
 if( !defined('LEYKA_USAGE_STATS_DEV_SERVER_URL') ) {
     define('LEYKA_USAGE_STATS_DEV_SERVER_URL', 'https://ngo2.ru/leyka-usage-stats/'); // http://leyka-usage-stats.local/
 }
 
 if( !defined('LEYKA_USAGE_STATS_PROD_SERVER_URL') ) {
-    define('LEYKA_USAGE_STATS_PROD_SERVER_URL', 'https://usage-stats.te-st.ru/leyka/');
+    define('LEYKA_USAGE_STATS_PROD_SERVER_URL', 'https://ls.te-st.ru/leyka/');
 }
 
 // Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:

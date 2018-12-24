@@ -426,7 +426,7 @@ function leyka_save_custom_option_commission($option_value) {
 /** Save the basic site data in the plugin stats DB */
 function leyka_sync_plugin_stats_option() {
 
-    $stats_server_base_url = defined('WP_DEBUG') && WP_DEBUG ?
+    $stats_server_base_url = defined('LEYKA_DEBUG') && LEYKA_DEBUG ?
         rtrim(LEYKA_USAGE_STATS_DEV_SERVER_URL, '/') : rtrim(LEYKA_USAGE_STATS_PROD_SERVER_URL, '/');
 
     $leyka_installation_id = (int)get_option('leyka_installation_id');
