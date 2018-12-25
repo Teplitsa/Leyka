@@ -11,9 +11,19 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
 
         $this->_id = 'robokassa';
         $this->_title = __('Robokassa', 'leyka');
+
+        $this->_description = apply_filters(
+            'leyka_gateway_description',
+            __('Robokassa system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="http://www.robokassa.ru/ru/">Robokassa</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
+            $this->_id
+        );
+
         $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-robokassa/#robokassa-settings';
-        $this->_admin_ui_column = 1;
-        $this->_admin_ui_order = 40;
+        $this->_registration_link = 'https://partner.robokassa.ru/reg/register';
+
+        $this->_min_commission = 3.7;
+        $this->_receiver_types = array('legal');
+
     }
 
     protected function _set_options_defaults() {
@@ -24,52 +34,36 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
 
         $this->_options = array(
             'robokassa_shop_id' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox  
-                'value' => '',
-                'default' => '',
+                'type' => 'text',
                 'title' => __('Shop ID', 'leyka'),
-                'description' => __('Please, enter your Robokassa shop ID here. It can be found in your Robokassa control panel (shop technical settings).', 'leyka'),
+                'comment' => __('Please, enter your Robokassa shop ID here. It can be found in your Robokassa control panel (shop technical settings).', 'leyka'),
                 'required' => true,
-                'placeholder' => __('Ex., 1234', 'leyka'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1234'),
             ),
             'robokassa_shop_password1' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
-                'default' => '',
+                'type' => 'text',
                 'title' => __('Shop password 1', 'leyka'),
-                'description' => __('Please, enter your Robokassa shop password 1 here. It can be found in your Robokassa control panel (shop technical settings, field "password 1").', 'leyka'),
+                'comment' => __('Please, enter your Robokassa shop password 1 here. It can be found in your Robokassa control panel (shop technical settings, field "password 1").', 'leyka'),
                 'required' => true,
                 'is_password' => true,
-                'placeholder' => __('Ex., 12abc34+', 'leyka'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '12abc34+'),
             ),
             'robokassa_shop_password2' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
-                'default' => '',
+                'type' => 'text',
                 'title' => __('Shop password 2', 'leyka'),
-                'description' => __('Please, enter your Robokassa shop password 2 here. It can be found in your Robokassa control panel (shop technical settings, field "password 2").', 'leyka'),
+                'comment' => __('Please, enter your Robokassa shop password 2 here. It can be found in your Robokassa control panel (shop technical settings, field "password 2").', 'leyka'),
                 'required' => true,
                 'is_password' => true,
-                'placeholder' => __('Ex., 12abc34+', 'leyka'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '12abc34+'),
             ),
             'robokassa_test_mode' => array(
-                'type' => 'checkbox', // html, rich_html, select, radio, checkbox, multi_checkbox
-                'value' => '',
-                'default' => 1,
+                'type' => 'checkbox',
+                'default' => true,
                 'title' => __('Payments testing mode', 'leyka'),
                 'description' => __('Check if the gateway integration is in test mode.', 'leyka'),
-                'required' => false,
-                'placeholder' => '',
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
             ),
         );
+
     }
 
     protected function _initialize_pm_list() {
@@ -89,6 +83,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
         if(empty($this->_payment_methods['Other'])) {
             $this->_payment_methods['Other'] = Leyka_Robokassa_All::get_instance();
         }
+
     }
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
@@ -131,6 +126,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
         }
 
 		return $form_data_vars;
+
     }
 
     public function _handle_service_calls($call_type = '') {
@@ -191,10 +187,10 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
         } else {
             die();
         }
+
     }
 
     protected function _get_value_if_any($arr, $key, $val = false) {
-
         return empty($arr[$key]) ? '' : ($val ? $val : $arr[$key]);
     }
 
@@ -215,9 +211,10 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
             __('Payment method:', 'leyka') => $this->_get_value_if_any($vars, 'PaymentMethod'),
             __('Robokassa currency label:', 'leyka') => $this->_get_value_if_any($vars, 'IncCurrLabel'),
         );
-    }
-} // Gateway class end
 
+    }
+
+}
 
 class Leyka_Robokassa_Card extends Leyka_Payment_Method {
 
@@ -227,16 +224,24 @@ class Leyka_Robokassa_Card extends Leyka_Payment_Method {
 
         $this->_id = 'BANKOCEAN2';
         $this->_gateway_id = 'robokassa';
+        $this->_category = 'bank_cards';
+
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('Robokassa system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="http://www.robokassa.ru/ru/">Robokassa</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
 
         $this->_label_backend = __('Bank card', 'leyka');
         $this->_label = __('Bank card', 'leyka');
 
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/master.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/mir.png',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ));
 
         $this->_supported_currencies[] = 'rur';
@@ -244,23 +249,6 @@ class Leyka_Robokassa_Card extends Leyka_Payment_Method {
         $this->_default_currency = 'rur';
     }
 
-    protected function _set_options_defaults() {
-
-        if($this->_options) {
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('Robokassa system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="http://www.robokassa.ru/ru/">Robokassa</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
-                'title' => __('Robokassa bank card payment description', 'leyka'),
-                'description' => __('Please, enter Robokassa gateway description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
-    }
 }
 
 class Leyka_Robokassa_Yandex_Money extends Leyka_Payment_Method {
@@ -271,40 +259,31 @@ class Leyka_Robokassa_Yandex_Money extends Leyka_Payment_Method {
 
         $this->_id = 'YandexMerchantOcean';
         $this->_gateway_id = 'robokassa';
+        $this->_category = 'digital_currencies';
+
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __("Yandex.Money is a simple and safe payment system to pay for goods and services through internet. You will have to fill a payment form, you will be redirected to the <a href='https://money.yandex.ru/'>Yandex.Money website</a> to confirm your payment. If you haven't aquired a Yandex.Money account yet, you can create it there.", 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
 
         $this->_label_backend = __('Payment with Yandex.Money', 'leyka');
         $this->_label = __('Yandex.Money', 'leyka');
 
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/master.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/mir.png',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ));
 
         $this->_supported_currencies[] = 'rur';
-
         $this->_default_currency = 'rur';
+
     }
 
-    protected function _set_options_defaults() {
-
-        if($this->_options) {
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('Robokassa system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="http://www.robokassa.ru/ru/">Robokassa</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
-                'title' => __('Robokassa Yandex.Money payment description', 'leyka'),
-                'description' => __('Please, enter Robokassa gateway description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
-    }
 }
 
 class Leyka_Robokassa_Webmoney extends Leyka_Payment_Method {
@@ -315,41 +294,32 @@ class Leyka_Robokassa_Webmoney extends Leyka_Payment_Method {
 
         $this->_id = 'WMR';
         $this->_gateway_id = 'robokassa';
+        $this->_category = 'digital_currencies';
+
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('<a href="http://www.webmoney.ru/">WebMoney Transfer</a> is an international financial transactions system and an environment for a business in Internet, founded in 1988. Up until now, WebMoney clients counts at more than 25 million people around the world. WebMoney system includes a services to account and exchange funds, attract new funding, solve quarrels and make a safe deals.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
 
         $this->_label_backend = __('Payment with Webmoney', 'leyka');
         $this->_label = __('Webmoney', 'leyka');
 
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/master.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/mir.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/webmoney.png',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/webmoney.svg',
         ));
 
         $this->_supported_currencies[] = 'rur';
-
         $this->_default_currency = 'rur';
+
     }
 
-    protected function _set_options_defaults() {
-
-        if($this->_options){
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('Robokassa system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="http://www.robokassa.ru/ru/">Robokassa</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
-                'title' => __('Robokassa Webmoney payment description', 'leyka'),
-                'description' => __('Please, enter Robokassa gateway description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
-    }
 }
 
 class Leyka_Robokassa_Qiwi extends Leyka_Payment_Method {
@@ -360,43 +330,33 @@ class Leyka_Robokassa_Qiwi extends Leyka_Payment_Method {
 
         $this->_id = 'Qiwi30Ocean';
         $this->_gateway_id = 'robokassa';
+        $this->_category = 'digital_currencies';
+
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('Robokassa system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="http://www.robokassa.ru/ru/">Robokassa</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
 
         $this->_label_backend = __('Payment with Qiwi wallet', 'leyka');
         $this->_label = __('Qiwi wallet', 'leyka');
 
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/master.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/mir.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/qiwi.png',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
+            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/qiwi.svg',
         ));
 
         $this->_supported_currencies[] = 'rur';
-
         $this->_default_currency = 'rur';
+
     }
 
-    protected function _set_options_defaults() {
-
-        if($this->_options) {
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('Robokassa system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="http://www.robokassa.ru/ru/">Robokassa</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
-                'title' => __('Robokassa Qiwi wallet payment description', 'leyka'),
-                'description' => __('Please, enter Robokassa gateway description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
-    }
 }
-
 
 class Leyka_Robokassa_All extends Leyka_Payment_Method {
 
@@ -406,40 +366,31 @@ class Leyka_Robokassa_All extends Leyka_Payment_Method {
 
         $this->_id = 'Other';
         $this->_gateway_id = 'robokassa';
+        $this->_category = 'misc';
+
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('Robokassa system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="http://www.robokassa.ru/ru/">Robokassa</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
 
         $this->_label_backend = __('Use any Robokassa payment method available', 'leyka');
         $this->_label = __('Robokassa (any)', 'leyka');
 
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/visa.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/master.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/mir.png',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ));
 
         $this->_supported_currencies[] = 'rur';
-
         $this->_default_currency = 'rur';
+
     }
 
-    protected function _set_options_defaults() {
-
-        if($this->_options) {
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('Robokassa system allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="http://www.robokassa.ru/ru/">Robokassa</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
-                'title' => __('Robokassa all possible payment types description', 'leyka'),
-                'description' => __('Please, enter Robokassa gateway description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
-    }
 }
 
 function leyka_add_gateway_robokassa() { // Use named function to leave a possibility to remove/replace it on the hook

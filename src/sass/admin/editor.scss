@@ -1,0 +1,18 @@
+@import 'typo';
+@import 'presets';
+
+@mixin leyka-wizard-tiny-mce {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    
+    .leyka-doc-key {
+        background-color: $color-editor-leyka-key;
+        line-height: 21px;
+    }
+    
+}
+
+body.mce-content-body {
+    @include editor-text();
+    @include leyka-wizard-tiny-mce();
+}

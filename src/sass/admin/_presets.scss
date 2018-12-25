@@ -1,0 +1,273 @@
+/** == Seetings and variables (_presets.scss)  == **/
+
+
+//sizes
+$base :  8px;
+
+$one : 420px;
+$two : 640px;
+$three : 800px;
+
+
+//colors
+
+//declare CSS variables - this will be inlined in PHP
+/*:root {
+  --color-main: 		#1db318;
+  --color-main-dark: 	#1aa316;
+  --color-main-light: 	#8ae724;
+}*/
+
+// nav chain
+$color-nav-area-bg: #dddddd;
+$color-nav-line: #8f8f8f;
+$color-nav-section-marker-bg: #ffffff;
+$color-nav-section-marker-done-bg: #8f8f8f;
+
+$color-nav-section-marker-text: #8f8f8f;
+$color-nav-section-marker-open-text: #44444a;
+$color-nav-section-marker-active-text: #44444a;
+$color-nav-section-marker-done-text: #ffffff;
+
+$color-nav-section-text: #8f8f8f;
+$color-nav-section-open-text: #44444a;
+$color-nav-section-active-text: #44444a;
+$color-nav-section-done-text: #0085ba;
+
+$color-nav-step-text: #8f8f8f;
+$color-nav-step-active-text: #0085ba;
+$color-nav-step-done-text: #44444a;
+
+$color-nav-step-marker-bg: #8f8f8f;
+$color-nav-step-marker-active-bg: #0085ba;
+$color-nav-step-marker-done-bg: #44444a;
+
+// main area
+$color-wizard-text: #44444a;
+$color-wizard-placeholder: #8f8f8f;
+$color-wizard-field-explain: #8f8f8f;
+
+$color-wizard-link: #0085ba;
+$color-wizard-link-hover: #25a0d1;
+$color-wizard-link-active: #006799;
+
+$color-wizard-link-sec: #8f8f8f;
+$color-wizard-link-sec-hover: #aaaaaa;
+$color-wizard-link-sec-active: #44444a;
+
+$color-wizard-error-message: #d43c57;
+$color-wizard-required-sign: #d43c57;
+$color-wizard-preview-border: #dddddd;
+
+$color-wizard-tooltip-bg: #006799;
+
+// editor special colors
+$color-editor-leyka-key: #80c2dc;
+
+//SASS variables
+$color-main: 		var(--color-main);
+$color-main-dark: 	var(--color-main-dark);
+
+$color-link :	#2963E8;
+$color-text:	#333333;
+$color-white:	#ffffff;
+
+$color-text-black:		#000000;
+$color-text-semi:		#666666;
+$color-text-light:		#999999;
+$color-text-light2:		#b2b2b2;
+$color-secondary-button: #44444a;
+
+$color-border-normal:	#cccccc;
+$color-border-light:	#eeeeee;
+$color-border-tiny:		#f6f6f6;
+$color-border-dark:		#353d3f;
+$color-border-secondary-button: #dddddd;
+
+$color-border-light-001: #f1f1f1;
+
+$color-form-invalid:	#D0011B;
+$color-form-active:		var(--color-main-light);
+
+
+
+@function color($color-name) {
+  @return var(--color-#{$color-name});
+}
+
+
+/** == Elements == **/
+@mixin button($mod: default){
+	@include body-text();
+	display: inline-block;
+
+	text-transform: uppercase;
+	color: $color-white;
+	background: $color-main;
+	padding: 10px 26px;
+	text-align: center;
+	border: none;
+    box-shadow: none;
+	border-radius: 23px;
+	transition: all 0.35s;
+	cursor: pointer;
+
+	&:visited {
+		color: $color-white;
+	}
+	&:hover, &:focus {
+		background: $color-main-dark;
+	}
+
+	@if $mod == small {
+		text-transform: none;
+		padding: 6px 24px;
+		border-radius: 18px;
+	}
+    @else if $mod == medium {
+        text-transform: none;
+        padding: 8px 24px 12px 24px;
+    }
+	@else if $mod == action {
+		border-radius: 27px;
+        padding: 12px 26px;
+		min-width: 200px;
+		font-size: 14px;
+    }
+	
+}
+
+@mixin supporters() {
+
+	strong { font-weight: bold; }
+	color: $color-text;
+
+	a {
+		@include internal-sublink();
+	}
+}
+
+@mixin internal-link() {
+	color: $color-link;
+	text-decoration: underline;
+	border: none;
+    box-shadow: none;
+	font-weight: normal;
+
+	&:visited {
+		color: $color-link;
+	}
+	&:hover, &:focus, &:active {
+		color: darken($color-link, 10%);
+	}
+}
+
+@mixin internal-sublink() {
+	color: $color-text-light;
+	&:visited {
+		color: $color-text-light;
+	}
+	text-decoration: underline;
+	border: none;
+    box-shadow: none;
+}
+
+/** == Mq == **/
+
+@mixin for($media) {
+	@if $media == small-screens {
+		@media screen and (min-width: $one) { @content; }
+	}
+	@else if $media == medium-screens {
+		@media screen and (min-width: $two) { @content; }
+	}
+	@else if $media == large-screens {
+		@media screen and (min-width: $three) { @content; }
+	}
+	@else if $media == exlarge-screens {
+		@media screen and (min-width: $four) { @content; }
+	}
+	@else if $media == xxlarge-screens {
+		@media screen and (min-width: $five) { @content; }
+	}
+}
+
+@mixin upto($media) {
+	@if $media == small-screens {
+		@media screen and (max-width: $one - 1) { @content; }
+	}
+	@else if $media == medium-screens {
+		@media screen and (max-width: $two - 1) { @content; }
+	}
+	@else if $media == large-screens {
+		@media screen and (max-width: $three - 1) { @content; }
+	}
+	@else if $media == exlarge-screens {
+		@media screen and (max-width: $four - 1) { @content; }
+	}
+	@else if $media == xxlarge-screens {
+		@media screen and (max-width: $five - 1) { @content; }
+	}
+}
+
+@mixin ok-icon() {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 20px;
+    float: left;
+    background-image: url(../../img/icon-ok-circled.svg);
+    background-repeat: no-repeat;
+    margin: 0 12px 0 0;
+}
+
+@mixin ok-smile-icon() {
+    content: '';
+    display: block;
+    width: 16px;
+    height: 16px;
+    float: left;
+    background-image: url(../../img/icon-ok-smile.svg);
+    background-repeat: no-repeat;
+    margin: 0 6px 0 0;
+}
+
+@mixin arrow-left-icon() {
+
+    content: '';
+    display: inline;
+    width: 20px;
+    height: 8px;
+    float: left;
+    background-image: url(../../img/icon-arrow-left.svg);
+    background-repeat: no-repeat;
+    margin: 6px 6px 0 0;
+
+}
+
+@mixin error-icon() {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 20px;
+    float: left;
+    background-image: url(../../img/icon-error-circled.svg);
+    background-repeat: no-repeat;
+    margin: 0 12px 0 0;
+}
+
+@mixin common-error-message($max-width: default) {
+    padding: 8px 16px;
+
+    @if $max-width == default {
+        max-width: 100%;
+    } @else if $max-width == settings-block {
+        max-width: 490px; // 524px - 2*16px of paddings - 2*1px of borders
+        margin-bottom: 8px;
+    }
+
+    font-size: 13px;
+    color: $color-text-semi;
+    border: 1px solid transparentize($color-wizard-error-message, 0.6);
+    background-color: transparentize($color-wizard-error-message, 0.8);
+}

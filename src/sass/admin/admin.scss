@@ -1,0 +1,898 @@
+@import 'presets';
+@import 'typo';
+@import 'mixins';
+@import 'common';
+@import 'components';
+@import 'wizard';
+@import 'wizard_init';
+@import 'wizard_cp';
+@import 'wizard_yandex';
+@import 'loader';
+
+.leyka-settings-page {
+
+    margin: 41px 72px;
+
+    @include body-text();
+    font-size: 13px;
+
+    .field-q {
+
+        @include field-q();
+
+        .field-q-tooltip {
+            text-align: left !important;
+        }
+
+    }
+
+    h1 {
+        @include wizard-h2();
+        margin-bottom: 8px;
+    }
+
+    #tab-container {
+
+        margin-top: 32px;
+
+    }
+    
+    .nav-tab-wrapper {
+        border-bottom: 1px solid #dddddd;
+        
+        a {
+            color: unset;
+            font-size: 16px;
+            line-height: 19px;
+            font-weight: 500;
+            
+            &.nav-tab {
+                background-color: #e5e5e5;
+                border-color: #dddddd;
+                color: #8f8f8f;
+                border-radius: 4px 4px 0px 0px;
+                padding: 10px 12px 7px 12px;
+                
+                margin-left: 0.5em;
+                margin-right: 0.5em;
+                
+                &:first-child {
+                    margin-left:0;
+                }
+                
+                &.nav-tab-active {
+                    margin-right: 1.5em;
+                    margin-left: 1.5em;
+                    background-color: #f1f1f1;
+                    color: $color-secondary-button;
+                    border-bottom: 1px solid #f1f1f1;
+                    
+                    &:first-child {
+                        margin-left:0;
+                    }
+                }
+            }
+        }
+    }
+
+    .button-primary {
+        @include leyka-button-primary();
+    }
+
+    #payment-settings-area-new {
+
+        display: flex;
+        flex-direction: row;
+
+        .main-area-wrapper {
+
+            border-right: 1px solid $color-border-normal;
+            flex: 1 1 auto; // 640px of the main area + 32px of the it's right margin
+
+            .main-area-top {
+
+                margin-bottom: 1rem;
+
+                .settings-return-link {
+
+                    font-size: 14px;
+                    text-decoration: none;
+
+                    &:before {
+                        @include arrow-left-icon();
+                    }
+
+                }
+
+            }
+
+            .main-area.single-gateway-settings {
+
+                background-color: $color-white;
+                border-radius: 6px;
+                margin-right: 2rem;
+
+                .gateway-settings-header {
+
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+
+                    padding: 24px;
+
+                    .gateway-title {
+
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        flex: 0 1 50%;
+
+                        .gateway-header-element {
+                            margin-right: 12px;
+                        }
+
+                        h2 {
+                            font-size: 23px;
+                            margin: 0;
+                        }
+
+                        .gateway-link {
+                            margin: 8px 4px 0 4px;
+                        }
+
+                    }
+
+                    .gateway-details {
+
+                        @include leyka-gateway-details();
+
+                        justify-content: flex-end;
+                        
+                        .details-element:first-child {
+                            margin-left: 24px;
+                        }
+                        
+                        .field-q {
+                            
+                            .field-q-tooltip {
+                                top: 110%;
+                                left: 28px;
+                            }
+                            
+                        }
+
+                    }
+
+                }
+
+                .gateway-settings-wrapper {
+
+                    display: flex;
+                    flex-direction: row;
+
+                    padding: 0 24px;
+                    border-top: 1px solid $color-border-light;
+                    border-bottom: 1px solid $color-border-light;
+
+                    h3 {
+                        margin: 24px 0;
+                    }
+
+                    h4 {
+                        font-size: 13px;
+                    }
+
+                    .gateway-settings {
+
+                        padding-right: 24px;
+                        border-right: 1px solid $color-border-light;
+                        flex: 1 1 50%;
+
+                        .gateway-wizard-link {
+
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+
+                            margin: 32px 0;
+                            font-size: 16px;
+
+                            img {
+                                margin-right: 12px;
+                            }
+
+                        }
+
+                    }
+
+                    .gateway-pm-list {
+
+                        flex: 1 1 50%;
+
+                        padding-left: 24px;
+                        margin-left: -1px;
+                        border-left: 1px solid $color-border-light;
+
+                        .option-block.type-checkbox input {
+                            margin-right: 8px;
+                        }
+
+                    }
+
+                }
+
+                .gateway-settings-submit {
+
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: center;
+
+                    padding: 24px;
+
+                    font-size: 14px;
+
+                    .gateway-turn-off {
+
+                        line-height: 14px;
+                        text-decoration: none;
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        .side-area-wrapper {
+
+            border-left: 1px solid $color-border-normal;
+            margin-left: -1px;
+            
+            flex: 0 0 376px;
+            padding-left: 1.5rem;
+            
+            .pm-order-header {
+
+                h3 {
+
+                    font-size: 16px;
+                    margin-top: 0;
+                    margin-bottom: 12px;
+
+                }
+
+                .pm-order-description {
+                    font-size: 14px;
+                }
+
+            }
+
+            .pm-update-status {
+
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+
+                position: relative;
+
+                margin-top: 12px;
+                height: 16px;
+
+                .result {
+
+                    position: absolute;
+
+                    &.ok-message {
+
+                        display: flex;
+                        justify-content: flex-start;
+                        align-items: center;
+
+                        font-size: 10px;
+                        color: $color-wizard-link;
+
+                        &:before {
+                            @include ok-smile-icon();
+                        }
+
+                        &.leyka-loader {
+                            top: -13px;
+                        }
+
+                    }
+
+                    &.error-message {
+
+                        font-size: 10px;
+                        color: $color-wizard-error-message;
+
+                    }
+
+                    &.leyka-loader {
+                        top: -12px;
+                    }
+
+                }
+
+            }
+
+            .pm-order {
+
+                display: flex;
+                flex-direction: row;
+
+                list-style: none;
+                margin: 16px 0;
+
+                height: 83px;
+                background-color: transparentize($color-white, 0.6);
+                border-radius: 4px;
+
+                box-shadow: 0 2px 4px 0 transparentize($color-text-black, 0.87); // 0,92
+
+                cursor: grab;
+
+                &.pm-list-empty {
+
+                    cursor: pointer;
+                    border: 1px dashed $color-nav-line;
+
+                    justify-content: center;
+                    align-items: center;
+
+                    font-size: 14px;
+                    color: $color-nav-section-active-text;
+
+                    padding: 6px 24px;
+
+                    &.comment-displayed {
+                        cursor: default;
+                    }
+
+                }
+
+                &.ui-sortable-helper {
+                    cursor: move;
+                }
+
+                .gateway-logo-wrapper {
+
+                    flex: 0 0 56px;
+
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    border-right: 1px solid $color-border-normal;
+
+                }
+
+                .pm-info {
+
+                    flex: 1 0 200px;
+
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+
+                    .pm-icons {
+                        @include leyka-pm-icons();
+                    }
+
+                    .pm-label-wrapper {
+
+                        flex: 0 1 50%;
+
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: center;
+                        align-items: center;
+
+                        border-top: 1px solid $color-border-normal;
+                        padding: 4px 16px;
+
+                        .pm-label {
+
+                            font-size: 10px;
+                            line-height: 12px;
+                            color: $color-wizard-field-explain;
+
+                        }
+
+                        .pm-control {
+                            margin-left: 6px;
+                            cursor: pointer;
+                        }
+
+                    }
+
+                    .pm-label-fields {
+
+                        display: flex;
+                        justify-content: flex-start;
+                        align-items: center;
+
+                        flex: 1 1 100%;
+
+                        .pm-label-input-field {
+
+                            flex: 1 1 100%;
+                            font-size: 12px;
+
+                        }
+
+                        .new-pm-label-control {
+
+                            cursor: pointer;
+                            color: $color-wizard-link;
+
+                            &:first-of-type {
+                                margin-left: 4px;
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+.admin_page_leyka_settings_new {
+    #wpbody-content {
+        padding-bottom: 0;
+    }
+    
+    #wpfooter {
+        display: none;
+    }
+}
+
+#leyka-settings-form-dd-plugin_stats {
+    label {
+        font-weight: 400;
+    }
+    
+    label[for="leyka_send_plugin_stats-y-field"] {
+        @include wizard-h2();
+        font-size: 18px;
+        color: $color-wizard-text;
+    }
+}
+
+.placeholders-help {
+    font-size: 13px;
+    display: none;
+    cursor: default;
+    
+    span.item {
+        display: flex;
+        padding-bottom: 0.5rem;
+    }
+    
+    code {
+        font-size: 13px;
+        display: block;
+        width: 177px;
+        margin-right: 1rem;
+        background: none;
+        padding-left: 0;
+    }
+    
+    span.description {
+        display: block;
+        max-width: 351px;
+        font-style: normal;
+        line-height: normal;
+        font-size: 13px;
+    }
+}
+
+.placeholders-help-actions {
+    a {
+        margin-right: 1rem;
+        
+        &.hide-available-tags {
+            display: none;
+        }
+        
+        &.restore-original-doc {
+            display: none;
+        }
+    }
+}
+
+.leyka-campaign-permalink {
+
+    .edit-permalink-loading {
+        display: none;
+    }
+
+    .inline-edit-slug-form {
+        display: inline-flex;
+    }
+
+}
+
+.leyka-campaign-shortcode-field {
+    display: flex;
+}
+
+// gateways cards
+.leyka-admin .gateways-cards-list {
+    
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    
+    .gateway-card {
+    }
+}
+
+.leyka-admin .leyka-admin-gateway-card {
+    &.gateway-card {
+        
+        background-color: $color-white;
+        border-radius: 6px;
+        width: 304px;
+        height: 268px;
+        display: block;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
+
+        margin-right: 1.5rem;
+        margin-bottom: 1.5rem;
+        
+        &.inactive {
+            background-color: #effbff;
+            border-color: #d5e8ee;
+        }
+        
+        .gateway-card-header {
+            padding: 1rem;
+            display: flex;
+            justify-content: flex-start;
+        }
+        
+        .gateway-card-icon {
+            margin-right: 12px;
+            position: relative;
+            width: auto;
+            display: inline-block;
+            
+            .gateway-logo {
+            }
+            
+        }
+        
+        .gateway-card-title {
+            @include gateway-card-title();
+            padding-top: 3px;
+
+            .gateway-settings-link {
+                text-decoration: none;
+                color: inherit;
+            }
+        }
+        
+        .gateway-card-status {
+            @include gateway-card-status();
+            color: $color-wizard-text;
+            padding-top: 2px;
+            
+            &.active {
+                
+            }
+            
+            &.activating {
+                color: $color-wizard-link;
+            }
+        }
+        
+        .gateway-card-params {
+            border-top: 1px solid $color-border-light-001;
+            padding: 14px 1rem 1rem 1rem;
+            
+            &:empty {
+                display: none;
+            }
+            
+            .gateway-details {
+                @include leyka-gateway-details();
+                
+                .details-label {
+                    line-height: 15px;
+                }
+                
+                .field-q {
+                    
+                    @include field-q();
+                    
+                    .field-q-tooltip {
+                        top: 110%;
+                        left: 40%;
+                    }
+                    
+                }
+                
+                .details-element:first-child {
+                   margin-left: 2px;
+                }
+           }
+            
+        }
+        
+        .gateway-card-supported-pm-list {
+            border-top: 1px solid $color-border-light-001;
+            padding: 12px 32px 12px 32px;
+            position: relative;
+            
+            &:empty {
+                display: none;
+            }
+            
+            .pm-icons-scroll {
+                overflow: hidden;
+                position: relative;
+                width: 100%;
+                height: 40px;
+                
+                .pm-icons-wrapper {
+                    left: 0px;
+                    top: 0px;
+                    position: absolute;
+                    width: max-content;
+                    min-width: 100%;
+                }
+            }
+            
+            .scroll-arrow {
+                width: 6px;
+                height: 11px;
+                display: none;
+                position: absolute;
+                cursor: pointer;
+                top: 50%;
+                transform: translateY(-50%);
+                
+                &.left {
+                    left: 20px;
+                }
+                
+                &.right {
+                    right: 20px;
+                }
+            }
+            
+            &.scroll {
+                .scroll-arrow {
+                    display: block;
+                }
+            }
+                
+            .pm-icons {
+                @include leyka-pm-icons();
+                padding: 0px;
+                justify-content: center;
+                align-items: center;
+                flex-basis: calc(100% - 12px);
+                height: 40px;
+            }
+            
+        }
+        
+        .gateway-card-action {
+            display: flex;
+            justify-content: center;
+            
+            .button-primary {
+                width: 272px;
+                margin-right: 0;
+                
+                &.activation-button {
+                    background-repeat: no-repeat;
+                    background-position: left center;
+                
+                    &.inactive.wizard-available {
+                        background-image: url(../../img/icon-wizard-stick-only.svg);
+                        background-position: 4px center;
+                    }
+                }
+            
+            }
+            
+            .button-secondary {
+                width: 272px;
+                margin-right: 0;
+            }
+        }
+        
+    }
+}
+
+// gateways filter
+.leyka-admin .filter-area {
+    
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    
+    .filter-toggle {
+        height: 40px;
+        margin-right: 1rem;
+        margin-bottom: 1rem;
+        
+        img {
+            cursor: pointer;
+            
+            &.show-filter {
+                
+            }
+            
+            &.hide-filter {
+                display: none;
+            }
+        }
+    }
+    
+    .filter-categories {
+        display: none;
+        justify-content: flex-start;
+        height: 40px;
+        margin-bottom: 1rem;
+        margin-right: 12px;
+        
+        a.filter-category-item {
+            @include gateway-filter-item();
+            color: $color-wizard-link-sec;
+            background-color: $color-white;
+            border-color: $color-wizard-preview-border;
+            height: 40px;
+            line-height: 40px;
+            border-radius: 20px;
+            vertical-align: middle;
+            padding-left: 24px;
+            padding-right: 24px;
+            margin-right: 1rem;
+            text-decoration: none;
+            border-bottom-style: solid;
+            outline: none;
+            overflow:hidden;
+            
+            &.active {
+                color: $color-white;
+                background-color: $color-wizard-link;
+                border-color: $color-wizard-link;
+            }
+        }
+        
+        @media only screen and (max-width: 1270px) {
+            a.filter-category-item {
+                padding-left: 8px;
+                padding-right: 8px;
+            }
+        }
+    }
+    
+    a.filter-action {
+        @include gateway-filter-item();
+        color: $color-wizard-link-sec;
+        height: 40px;
+        line-height: 40px;
+        vertical-align: middle;
+        text-decoration: none;
+        border-bottom: none;
+        white-space: nowrap;
+        padding-left: 0;
+        padding-right: 0;
+        margin-right: 1rem;
+        margin-bottom: 1rem;
+        
+        &.filter-category-reset-filter {
+            display: none;
+        }
+    }
+    
+    &.show {
+        .filter-toggle {
+            img {
+                &.hide-filter {
+                    display: unset;
+                }
+                
+                &.show-filter {
+                    display: none;
+                }
+            }
+        }
+        
+        .filter-categories {
+            display: flex;
+        }
+        
+        a.filter-action {
+            &.filter-category-show-filter {
+                display: none;
+            }
+            
+            &.filter-category-reset-filter {
+                display: unset;
+            }
+        }
+    }
+    
+}
+
+@media only screen and (max-width: 1980px) {
+
+    .leyka-settings-page {
+        
+        #payment-settings-area-new {
+            .main-area-wrapper {
+                flex: 0 0 984px;
+            }
+            
+            .side-area-wrapper {
+                flex-grow: 0;
+                flex-shrink: unset;
+                flex-basis: auto;
+            }
+        }
+        
+    }
+    
+}
+
+@media only screen and (max-width: 1600px) {
+
+    .leyka-settings-page {
+        
+        #payment-settings-area-new {
+            .main-area-wrapper {
+                flex: 0 0 656px;
+            }
+            
+            .side-area-wrapper {
+                flex-grow: 0;
+                flex-shrink: unset;
+                flex-basis: auto;
+            }
+        }
+        
+    }
+    
+}
+
+@media only screen and (max-width: 1270px) {
+
+    .leyka-settings-page {
+        margin-left: 2rem;
+        
+        .leyka-admin .leyka-admin-gateway-card {
+            &.gateway-card {
+            }
+        }
+    
+        #payment-settings-area-new {
+            .main-area-wrapper {
+                flex: 0 0 328px;
+            }
+            
+            .side-area-wrapper {
+                flex-grow: 0;
+                flex-shrink: unset;
+                flex-basis: auto;
+            }
+        }
+        
+    }
+    
+}

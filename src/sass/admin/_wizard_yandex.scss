@@ -1,0 +1,300 @@
+
+// Yandex wizard pages
+.leyka-wizard.wizard-yandex {
+    
+    &.step-online_kassa {
+        .custom-block-captioned-screens {
+            margin-top: 0;
+        }
+    }
+    
+    &.step-test_payment {
+        .main-area {
+            
+            .settings-block {
+                
+                &.custom_yandex_enumerated_block {
+                    @extend .option-block;
+                }
+                
+                &.custom_yandex_test_payment {
+                    .button-secondary {
+                        width: auto;
+                    }
+                }
+                
+                .field-errors {
+    
+                    @include common-error-message();
+    
+                    display: none;
+                    margin: 8px 0;
+    
+                    &.has-errors {
+    
+                        display: block;
+                        margin-top: 1.5rem;
+    
+                        span {
+                            font-size: 13px;
+                        }
+    
+                    }
+    
+                }
+                
+                .payment-result {
+                    .result {
+                        
+                        display: block;
+                        font-weight: 500;
+                        
+                        &:before {
+                            display: none;
+                        }                
+                        
+                    }
+                }
+                
+            }
+        }
+    }
+    
+    #yandex-generate-shop-password {
+        margin-top: 0.5rem;
+    }
+    
+    // enumerated blocks
+    .main-area {
+        
+        .step-content {
+            counter-reset: block-separator-counter;
+        }
+        
+        .settings-block {
+            
+            &.text-block {
+                margin-bottom: 2rem;
+                
+                .custom-block-captioned-screens {
+                    margin-top: 2rem;
+                }
+            }
+            
+            &.custom-block {
+                
+                .custom-block-captioned-screens {
+                    margin-top: 2rem;
+                }
+                
+                &.custom_yandex_enumerated_block {
+                    max-width: 502px;
+                    margin-bottom: 0px;
+                    padding-bottom: 1.5rem;
+                    
+                    .enum-separated-block {
+                        padding-bottom: 0;
+                    }
+                    
+                    &:last-child {
+                        padding-bottom: 0;
+                    }
+                }
+                
+                &.custom_yandex_screenshot {
+                    padding-bottom: 1.5rem;
+                    margin-top: -1.5rem;
+                }
+                
+                // custom styles for steps
+                &#online-kassa-send {
+                    padding-bottom: 0;
+                    margin-top: -0.5rem;
+                }
+                
+                &#send2check-send {
+                    margin-top: -0.5rem;
+                }
+            }
+            
+            .block-separator {
+                
+                display: flex;
+                height: 15px;
+                margin-bottom: 1rem;
+                margin-left: -2px;
+                
+                div {
+                    border-bottom: 1px dashed $color-wizard-preview-border;
+                    height: 7px;
+                    width: calc(100% - 15px - 0.5rem);
+                }
+                
+                &:before {
+                    content: counter(block-separator-counter);
+                    counter-increment: block-separator-counter;
+                    display: inline-block;
+                    background-color: $color-wizard-preview-border;
+                    color: $color-wizard-field-explain;
+                    margin-right: 0.5rem;
+                    width: 15px;
+                    height: 15px;
+                    border-radius: 15px;
+                    line-height: 15px;
+                    vertical-align: middle;
+                    text-align: center;
+                    font-size: 10px;
+                    padding: 0px;
+                }
+            }
+            
+            .enum-separated-block {
+                
+                padding-bottom: 1.5rem;
+                
+                &:last-child {
+                    padding-bottom: 0;
+                }
+                
+                .caption {
+                    font-size: 14px;
+                    line-height: 21px;
+                    
+                    &.bold {
+                        font-weight: 500;
+                    }
+                }
+                
+                .captioned-screen {
+                    margin-top: 1rem;
+                }
+                
+                .field-component {
+                    
+                    &.title {
+                        display: block;
+                        font-weight: normal;
+                        font-size: 14px;
+                        line-height: 21px;
+                    }
+                    
+                    &.field {
+                        input[type=text] {
+                            width: 248px;
+                        }
+                    }
+                    
+                }
+                
+                .body {
+                    
+                    width: max-content;
+                    
+                    b {
+                        font-weight: 500;
+                    }
+                    
+                    p:last-child {
+                        margin-bottom: 0px;
+                    }
+                    
+                    a {
+                        border-bottom-width: 0;
+                        
+                        &:hover {
+                            border-bottom-width: 1px;
+                        }
+                        
+                        &[target=_blank] {
+                            &:after {
+                                content: " ";
+                                background-image: url('../../img/icon-link-out.svg');
+                                background-size: 12px 12px;
+                                width: 12px;
+                                height: 12px;
+                                margin-left: 0.5rem;
+                                display: inline-block;
+                            }
+                        }
+                    }
+                    
+                    .expandable-area {
+                        a {
+                            border-bottom-width: 1px;
+                            
+                            &:hover {
+                                border-bottom-width: 0;
+                            }
+                        }
+                    }
+                        
+                    &.value {
+                        margin-top: 0.5rem;
+                        
+                        a {
+                            font-size: 16px;
+                            font-weight: 19px;
+                            font-weight: 500;
+                        }
+                        
+                        b {
+                            font-size: 16px;
+                            font-weight: 19px;
+                            font-weight: 500;
+                        }
+                        
+                    }
+                }
+                
+                .captioned-screen + .body {
+                    margin-top: 1rem;
+                }
+                
+            }
+            
+        
+            .yandex-make-live-payment-loader {
+                display: inline-block;
+                margin-top: 16px;
+            }
+        }
+            
+    }
+    
+    .main-area {
+        
+        .settings-block.text-block {
+            
+            .custom-block-payment-cards-icons {
+                
+                h3 {
+                    line-height: 21px;
+                    font-size: 14px;
+                    margin-top: 2rem;
+                }
+                
+                ul {
+                    margin-top: 1rem;
+                    
+                    li:first {
+                        margin-top: 0;
+                    }
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    .main-area {
+        #leyka-settings-form-yandex-parameters {
+            .leyka-wizard-copy2clipboard.no-password {
+                .copy-link, .copy-done {
+                    display: none;
+                }
+            }
+        }
+    }
+    
+}

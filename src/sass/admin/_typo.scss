@@ -1,0 +1,247 @@
+/** == Typography (_typo.scss) == **/
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,400i,500,700,900&subset=cyrillic');
+
+$body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+
+// Typo
+@mixin body-text($mod: default) {
+	font-family: $body;
+	font-weight: 400;
+	font-style: normal;
+	font-size: 14px;
+	line-height: 21px;
+
+	@if $mod == strong {
+		font-weight: 700;
+	}
+	@else if $mod == italic {
+		font-style: italic;
+	}
+}
+
+@mixin amount-input {
+	font-family: $body;
+	font-weight: 100;
+	font-style: normal;
+	font-size: 38px;
+	line-height: 42px;
+}
+
+@mixin step-back($mod: default) {
+	font-family: $body;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 14px;
+	line-height: 16px;
+}
+
+@mixin step-title($mod: default) {
+	font-family: $body;
+	font-weight: 500;
+	font-style: normal;
+	font-size: 16px;
+	line-height: 18px;
+}
+
+@mixin input-text($mod: default) {
+	font-family: $body;
+	font-weight: 500;
+	font-style: normal;
+	font-size: 16px;
+	line-height: 18px;
+}
+
+@mixin input-label($mod: default) {
+	font-family: $body;
+	font-weight: 400;
+	font-style: normal;
+	font-size: 14px;
+	line-height: 18px;
+}
+
+@mixin note-text($mod: default) {
+	font-family: $body;
+	font-weight: 300;
+	font-style: normal;
+	font-size: 12px;
+	line-height: 18px;
+}
+
+@mixin thankyou-title($mod: default) {
+    font-family: $body;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 18px;
+    line-height: 30px;
+}
+
+@mixin no-thankyou-link($mod: default) {
+    font-family: $body;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 18px;
+}
+
+@mixin informyou-text($mod: default) {
+    font-family: $body;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 22px;
+}
+
+@mixin error-text($mod: default) {
+    font-family: $body;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 15px;
+    line-height: 21px;
+}
+
+// nav chain
+@mixin chain-section-marker {
+	font-family: $body;
+	font-size: 14px;
+}
+
+@mixin chain-section-title {
+	font-family: $body;
+	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+@mixin chain-step {
+	font-family: $body;
+	font-size: 12px;
+	font-weight: 500;
+}
+
+// main area
+@mixin wizard-h1 {
+	font-size: 48px;
+	line-height: 56px;
+	font-weight: 300;
+}
+
+@mixin wizard-h2 {
+	font-size: 23px;
+	line-height: 34px;
+	font-weight: 400;
+}
+
+@mixin wizard-h3 {
+	font-size: 16px;
+	line-height: 19px;
+	font-weight: 500;
+}
+
+@mixin wizard-h4 {
+	font-size: 14px;
+	line-height: 21px;
+	font-weight: 500;
+}
+
+@mixin wizard-text {
+	font-size: 14px;
+	line-height: 21px;
+	font-weight: 400;
+}
+
+@mixin wizard-button-caption {
+	font-size: 16px;
+	line-height: 19px;
+	font-weight: 500;
+    cursor: pointer;
+}
+
+@mixin wizard-field-label {
+	font-size: 13px;
+	line-height: normal;
+	font-weight: 500;
+}
+
+@mixin wizard-field-label-rich-edit {
+	font-size: 16px;
+	line-height: normal;
+	font-weight: 500;
+}
+
+@mixin wizard-field-input-text {
+	font-size: 13px;
+	line-height: 15px;
+	font-weight: 400;
+}
+
+@mixin wizard-field-explain {
+	font-size: 13px;
+	line-height: 15px;
+	font-weight: 400;
+}
+
+@mixin wizard-action-link {
+	font-size: 14px;
+	line-height: 21px;
+	font-weight: 400;
+}
+
+@mixin wizard-field-message {
+	font-size: 10px;
+	line-height: 15px;
+	font-weight: 500;
+}
+
+@mixin wizard-field-label-required-sign {
+	font-size: 14px;
+	font-weight: 600;
+}
+
+@mixin wizard-preivew-title {
+	font-size: 13px;
+	line-height: normal;
+	font-weight: 500;
+}
+
+@mixin editor-text() {
+	font-family: $body;
+	font-weight: 400;
+	font-style: normal;
+	font-size: 14px;
+	line-height: normal;
+}
+
+@mixin info2copy() {
+	font-family: $body;
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 19px;
+}
+
+@mixin copy2clipborad-link {
+    font-family: $body;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 10px;
+    line-height: 15px;
+}
+
+// gateway card
+@mixin gateway-card-title {
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 19px;
+}
+
+@mixin gateway-card-status {
+	font-weight: 400;
+	font-size: 13px;
+	line-height: 15px;
+}
+
+// gateway filter
+@mixin gateway-filter-item {
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 21px;
+}

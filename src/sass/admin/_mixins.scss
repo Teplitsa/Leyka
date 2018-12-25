@@ -1,0 +1,387 @@
+@mixin optional-at-root($sel) {
+  @at-root #{if(not &, $sel, selector-append(&, $sel))} {
+    @content;
+  }
+}
+
+@mixin placeholder {
+  @include optional-at-root('::-webkit-input-placeholder') {
+    @content;
+  }
+
+  @include optional-at-root(':-moz-placeholder') {
+    @content;
+  }
+
+  @include optional-at-root('::-moz-placeholder') {
+    @content;
+  }
+
+  @include optional-at-root(':-ms-input-placeholder') {
+    @content;
+  }
+}
+
+// form fields
+@mixin leyka-rich-html {
+  
+    max-width: 680px;
+    
+    .wp-editor-tabs {
+        display: none;
+    }
+    
+    label {
+        .field-component.title {
+            @include wizard-field-label-rich-edit();
+            margin-bottom: 1rem;
+        }
+    }
+}
+
+@mixin field-q {
+  
+    margin-left: 3px;
+    vertical-align: baseline;
+    cursor: pointer;
+    position: relative;
+    
+    img {
+        vertical-align: baseline;
+    }
+    
+    .field-q-tooltip {
+        display: none;
+        //display: block;
+        position: absolute;
+        color: $color-white;
+        background-color: $color-wizard-tooltip-bg;
+        border-radius: 6px;
+        border: none;
+        padding: 8px 8px 8px 8px;
+        font-size: 12px;
+        line-height: 17px;
+        z-index: 11;
+        top: 150%;
+        left: 0;
+        transform:translateX(-50%);
+        
+        width: 204px;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        //white-space: pre-line;
+        max-width: max-content;
+        text-align: center;
+        
+        a {
+          color: $color-white;
+        }
+        
+        &:before {
+            content: "";
+            display:block;
+            width:0;
+            height:0;
+            position:absolute;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom:8px solid $color-wizard-tooltip-bg;
+            left:calc(50% - 4px);
+            top:-7px;                            
+        }
+        
+        &:empty {
+            display: none;
+        }
+        
+    }
+    
+    &:hover {
+        .field-q-tooltip {
+            display: block;
+            
+            &:empty {
+              display: none;
+            }
+        }
+    }
+    
+}
+
+@mixin leyka-field-title {
+  
+    @include wizard-field-label();
+    display: flex;
+    margin-bottom: 5px;
+    position: relative;
+    align-items: flex-start;
+    
+    .text {
+        order: 1;
+    }
+    
+    .required {
+        @include wizard-field-label-required-sign();
+        color: $color-wizard-required-sign;
+        order: 0;
+        margin-right: 3px;
+        display: block;
+        height: 14px;
+    }
+    
+    .field-q {
+      @include field-q();
+      order: 2;
+      display: block;
+      height: 15px;
+    }
+    
+}
+
+@mixin leyka-field-control {
+    // TODO: move colors to presets after comlete
+    input[type=text], input[type=email], input[type=password], input[type=text], input[type=number], select, textarea {
+        @include wizard-field-input-text();
+        color: $color-wizard-text;
+        @include placeholder {
+            color: $color-wizard-placeholder;
+        }                    
+        margin-left: -1px;
+        padding: 1px 6px 3px 6px;
+        height: 25px;
+        //width: 248px;
+        width: 100%;
+        border: 1px solid #dddddd;
+        
+        &:active, &:focus {
+            color: $color-wizard-text;
+            border: 1px solid #bfbfbf;
+            box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
+        }
+        
+    }
+    
+    input[type=file] {
+        width: 248px;
+    }
+    
+    textarea {
+        height: 62px;
+        width: 100%;
+        line-height: 18px;
+    }
+    
+    input[type=checkbox], input[type=radio] {
+        width: 18px;
+        height: 18px;
+    }
+    
+    input[type=checkbox], input[type=radio] {
+        &::before {
+            width: 8px;
+            height: 8px;
+            line-height: 18px;
+        }
+    }
+    
+    input[type=checkbox] {
+        padding-top: 2px !important;
+        padding-left: 1px !important;
+    }
+    
+    label {
+        @include wizard-field-label();
+        display: block;
+        margin-bottom: 8px;
+        
+        & > input {
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+    }  
+}
+
+@mixin leyka-field-control-error {
+    input, select, textarea {
+        background: #f8ecef;
+        border: 1px solid #f5c8d0;
+    }
+}
+
+@mixin leyka-field-checkbox {
+    &.title {
+        display: inline-block;
+        vertical-align: bottom;
+    }
+    
+    &.field {
+        float: left;
+    }
+}
+
+@mixin leyka-field-radio {
+    label {
+        display: block;
+    }
+    
+    .radio-entry-description { /** @todo Make it a popup */
+        display: none;
+    }
+}
+
+@mixin leyka-field-file {
+  
+    label {
+        display: inline-block;
+        height: inherit;
+    }
+    
+    .field-component {
+        position: relative;
+        display: inline-block;
+        height: 40px;
+        
+        input[type=file] {
+            height: 40px;
+            width: 248px;
+            display: inline-block;
+            cursor: pointer;
+            outline: none;
+            overflow: hidden;
+            vertical-align: middle;
+        }
+        
+        input[type=button] {
+            @include wizard-button-caption();
+            height: 40px;
+            width: 248px;
+            display: block;
+            background-color: $color-white;
+            position: absolute;
+            top: 0;
+            left: 0;
+            //pointer-events: none;
+            cursor: pointer;
+        }
+        
+        span.chosen-file {
+            @include wizard-button-caption();
+            display: inline-block;
+            line-height: 40px;
+            vertical-align: middle;
+            padding-left: 1rem;
+            cursor: default;
+            
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 254px;
+            height: 40px;
+            white-space: nowrap;
+        }
+    }
+    
+}
+
+@mixin leyka-field-help {
+    @include wizard-field-explain();
+    color: $color-wizard-field-explain;
+    display: block;
+    margin-top: 8px;
+    margin-bottom: 0;
+}
+
+@mixin leyka-button-primary {
+    @include wizard-button-caption();
+    height: 40px;
+    line-height: 40px;
+    width: 248px;
+    color: $color-white;
+    display: inline-block;
+    text-align: center;
+    box-shadow: none;
+    
+    &:hover {
+      color: $color-white;
+      box-shadow: none;
+    }
+}
+
+@mixin leyka-link-sec {
+    color: $color-wizard-link-sec;
+    text-decoration: none;
+    padding-bottom: 2px;
+    border-bottom: 1px solid $color-wizard-link-sec;
+    
+    &:hover {
+        color: $color-wizard-link-sec-hover;
+        text-decoration: none;
+    }
+    
+    &:focus, &:active {
+        color: $color-wizard-link-sec-active;
+    }
+}
+
+@mixin leyka-pm-icons {
+    flex: 0 1 50%;
+    padding: 4px 16px;
+  
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+  
+    .pm-icon {
+      
+        height: 40px;
+        margin: 0;
+        
+        &[src$=".png"] {
+            max-height: 20px;
+            width: 28px;
+            margin-right: 12px;
+        }
+        
+    }
+}
+
+@mixin leyka-gateway-details {
+  
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    flex: 0 1 50%;
+
+    font-size: 13px;
+
+    .details-element {
+
+        width: fit-content;
+        text-align: center;
+        margin-right: 32px;
+        
+        &:last-child {
+          margin-right: 0;
+        }
+
+        .details-pic {
+
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: baseline;
+
+            height: 27px;
+
+            .commission-size {
+                font-size: 18px;
+                margin-left: 4px;
+                margin-top: 4px;
+            }
+
+        }
+
+    }
+}

@@ -1,0 +1,531 @@
+
+.leyka-wizard {
+
+    display: flex;
+    flex-direction: row;
+
+    margin-left: -20px;
+    min-height: calc(100vh - 32px);
+    height: 100%;
+    
+}
+
+// navigation
+.leyka-wizard {
+
+    .nav-area {
+
+        position: relative;
+        background-color: $color-nav-area-bg;
+        min-width: 293px;
+        letter-spacing: -0.02em;
+        padding: 18px 17px 159px 32px;
+        margin-right: -1px;
+        
+        .leyka-logo {
+            position: absolute;
+            bottom: 30px;
+            left: calc(50% - 42px);
+        }
+        
+        .nav-section {
+            margin-top: 22px;
+            
+            a {
+                color: $color-nav-section-text;
+                text-decoration: none;
+            }
+            
+            .nav-section-title {
+                @include chain-section-title();
+                color: $color-nav-section-text;
+                vertical-align: middle;
+                height: 40px;
+                
+                .nav-section-marker {
+                    @include chain-section-marker();
+                    font-weight: normal;                    
+                    background-color: $color-nav-section-marker-bg;
+                    border: 4px solid $color-white;
+                    color: $color-nav-section-text;
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 50%;
+                    line-height: 32px;
+                    text-align: center;
+                    vertical-align: middle;
+                    display: inline-block;
+                    margin-right: 12px;
+                }
+                
+            }
+            
+            &.open {
+                a {
+                    color: $color-nav-section-open-text;
+                }
+                
+                .nav-section-title {
+                    color: $color-nav-section-open-text;
+                    
+                    .nav-section-marker {
+                        color: $color-nav-section-marker-open-text;
+                        font-weight: 500;
+                        border: 4px solid $color-nav-line;
+                    }
+                }
+            }
+
+            &.active {
+                a {
+                    color: $color-nav-section-active-text;
+                }
+                    
+                .nav-section-title {
+                    color: $color-nav-section-active-text;
+                    
+                    .nav-section-marker {
+                        color: $color-nav-section-marker-active-text;
+                        font-weight: 500;
+                        border: 4px solid $color-nav-line;
+                    }
+                }
+            }
+            
+            &.done {
+                a {
+                    color: $color-nav-section-active-text;
+                }
+                
+                .nav-section-title {
+                    color: $color-nav-section-active-text;
+                    
+                    .nav-section-marker {
+                        background-color: $color-nav-section-marker-done-bg;
+                        color: $color-nav-section-marker-done-text;
+                        border: 4px solid $color-nav-section-marker-done-bg;
+                    }
+                }
+            }
+
+            .nav-steps {
+                
+                padding-left: 16px;
+                padding-top: 9px;
+                margin-bottom: -2px;
+                display: none;
+                
+                .nav-step {
+                    @include chain-step();
+                    color: $color-nav-step-text;
+                    height: 24px;
+                    padding-top: 10px;
+                    
+                    &:before {
+                        background-color: $color-nav-step-marker-bg;
+                        content: " ";
+                        display: inline-block;
+                        width: 9px;
+                        height: 9px;
+                        border-radius: 4.5px;
+                        margin-right: 28px;
+                    }
+
+                    &.done {
+                        color: $color-nav-step-done-text;
+                        &:before {
+                            background-color: $color-nav-step-marker-done-bg;
+                        }
+                        
+                        .step-i {
+                            margin-left: 3px;
+                            vertical-align: middle;
+                            cursor: pointer;
+                        }
+                    }
+                    
+                    &.active {
+                        color: $color-nav-step-active-text;
+                        &:before {
+                            background-color: $color-nav-step-marker-active-bg;
+                        }
+                    }
+                }
+                
+            }
+            
+            &.active .nav-steps,
+            &.open .nav-steps {
+                display: block;
+            }
+            
+        }
+
+        .nav-section.nav-exit {
+            display: block;
+            margin-top: 40px;
+            text-decoration: none;
+            
+            .nav-section-title {
+                color: $color-nav-section-open-text;
+                
+                .nav-section-marker {
+                    @include chain-section-marker();
+                    background-repeat: no-repeat;
+                    background-position: 55% center;
+                    background-image: url(../../img/nav-exit.svg);
+                    background-color: transparent;
+                    background-size: auto;
+                    border: 1px solid rgba(143, 143, 143, 0.32);
+                    width: 40px;
+                    height: 40px;
+                    line-height: 40px;
+                }
+            }
+        }
+
+        .nav-chain {
+            border-left: 1px solid $color-nav-line;
+            margin-left: 21px;
+            
+            .nav-line {
+                margin-left: -21px;
+            }
+            
+        }
+        
+
+    }
+}
+
+
+// main area
+.leyka-wizard {
+    
+    .main-area {
+
+        @include body-text();
+        width: 100%;
+        padding: 0 32px 49px 72px;
+        color: $color-wizard-text;
+        
+        a {
+            border-bottom: none;
+            padding-bottom: 2px;
+            border-bottom: 1px solid $color-wizard-link;
+            text-decoration: none;
+        }
+    
+        // wizard markup styles
+        .step-content {
+        }
+        
+        .settings-block {
+            
+            max-width: 524px;
+            
+            &#email-from-name,
+            &#email-from {
+                max-width: 248px;
+            }
+            
+            &#campaign-completed {
+                max-width: 680px;
+            }
+            
+            &.option-block {
+                
+                &.type-rich_html {
+                    
+                    @include leyka-rich-html();
+                    
+                }
+        
+            }
+            
+            &.container-block {
+
+                display: flex;
+                justify-content: space-between;
+
+                .option-block {
+                    .field-component {
+                        &.field {
+                            input[type=text] {
+                                width: 248px;
+                            }
+                         }
+                    }
+                }
+
+            }
+
+        }
+
+        .field-errors {
+            span {
+                @include wizard-field-message();
+                margin-bottom: 0;
+                color: $color-wizard-error-message;
+            }
+        }
+
+        .restore-original-doc {
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+        
+        .fields {
+            
+            .field {
+                
+                margin-bottom: 16px;
+                
+            }
+        }
+        
+        .step-submit {
+            margin-top: 32px;
+            
+            .button-primary {
+                margin-right: 22px;
+            }
+            
+            .button-secondary {
+                margin-right: 22px;
+            }
+                
+            a {
+                line-height: 35px;
+            }
+
+            .sec-action {
+                margin-top: 32px;
+                a, input[type=submit].link-sec {
+                    @include wizard-action-link();
+                }
+
+                input[type=submit].link-sec {
+                    background: none;
+                    box-shadow: none;
+                    text-shadow: none;
+                    border: none;
+
+                    @include leyka-link-sec();
+                    cursor: pointer;
+                    border-bottom: 1px solid $color-wizard-link-sec;
+                    box-sizing: border-box;
+                    height: 25px;
+                    padding: 0;
+                    margin: 0;
+
+                    &:hover {
+                        border-bottom: 1px solid transparent;
+                    }
+
+                    &:focus, &:active {
+                        border-bottom: 1px solid transparent;
+                    }
+
+                }
+            }
+        }
+        // end general elements
+        
+    }
+
+}
+
+// expandable-area
+.leyka-wizard {
+    
+    .main-area {
+        .expandable-area {
+            
+            &>*:first-child {
+                display: inherit;
+            }
+            
+            .expand {
+                display: none;
+            }
+            
+            &.collapsed {
+                *:first-child {
+                    display: none;
+                }
+                
+                .expand {
+                    display: unset;
+                }
+                
+                .collapse {
+                    display: none;
+                }
+            }
+            
+        }
+    }
+    
+}
+
+// captioned screenshot
+.leyka-wizard {
+    
+    .main-area {
+        
+        .settings-block {
+            
+            .captioned-screen {
+                
+                margin-top: 1.5rem;
+                
+                &:first-child {
+                    margin-top: 1rem;
+                }
+                
+                p {
+                    margin-bottom: 0.5rem;
+                }
+                
+                img.leyka-instructions-screen {
+                    max-width: 502px;
+                    border: 1px solid $color-wizard-link-sec;
+                }
+                
+                img.leyka-instructions-screen-full {
+                    max-height: 80%;
+                    display: none;
+                }
+                
+                .screen-wrapper {
+                    position: relative;
+                    line-height: 0px;
+                }
+                
+                img.zoom-screen {
+                    cursor: pointer;
+                    position: absolute;
+                    width: 40px;
+                    height: 40px;
+                    bottom: 1rem;
+                    left: calc(50% - 20px);
+                }
+                
+            }
+            
+        }
+        
+    }
+}
+
+// test payment
+.leyka-wizard {
+    
+    .main-area {
+        
+        .payment-tryout-wrapper {
+
+            border: 0;
+            border-collapse: collapse;
+            padding: 0;
+            width: 100%;
+            margin-bottom: 24px;
+            
+        }
+        
+        .payment-tryout-comment.live-payment {
+
+            width: 248px;
+            color: $color-text-light;
+            font-size: 13px;
+            line-height: 15px; 
+
+            .attention-needed {
+                color: $color-wizard-required-sign;
+            }
+
+        }
+        
+        .payment-result {
+
+            .result {
+
+                display: none;
+                font-size: 14px;
+
+                &.ok {
+
+                    color: $color-nav-step-done-text;
+
+                    &:before {
+                        @include ok-icon();
+                    }
+
+                }
+                &.fail {
+
+                    color: $color-wizard-error-message;
+
+                    &:before {
+                        @include error-icon();
+                    }
+
+                }
+
+            }
+
+        }
+        
+        #leyka-settings-form-final-cp_final,
+        #leyka-settings-form-cd-campaign_completed,
+        #leyka-settings-form-final-campaign_completed,
+        #leyka-settings-form-final-yandex_final {
+            
+            .step-submit {
+                
+                .wizard-custom-link {
+                    margin-left: 1rem;
+                }
+                
+                .sec-action {
+                    display: none;
+                }
+            }
+            
+            .final-button {
+                float: left;
+                margin-top: 1rem;
+                
+                .button-primary {
+                    @include leyka-button-primary();
+                }
+            }
+            
+            .share-campaign {
+                float: left;
+                margin-top: 1rem;
+                
+                a {
+                    border-bottom: none;
+                    margin-right: 1.5rem;
+                    display: inline-block;
+                    line-height: 0px;
+                }
+            }
+        }
+        
+        #leyka-settings-form-cd-campaign_completed {
+            
+            .init-final-step-go-campaign {
+                margin-top: 2rem;
+            }
+            
+            input[type=submit][name=leyka_settings_submit_init] {
+                display: none;
+            }
+        }
+        
+        
+    }
+}

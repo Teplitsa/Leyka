@@ -222,10 +222,10 @@ div[id*="leyka-pf-"] { // Leyka namespace
 
 		.leyka-pf__module {
 
-            @include module-height(480px);
+            @include module-height(570px);
 
             &.leyka-with-comment {
-                @include module-height(570px);
+                @include module-height(660px);
             }
 
 			position: fixed;
@@ -306,6 +306,17 @@ div[id*="leyka-pf-"] { // Leyka namespace
 			.inpage-card__thumb {
 				border-top-right-radius: 0;
 			}
+            
+            .inpage-card_title {
+                height: 23px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;                
+            }
+            
+            .inpage-card__excerpt {
+                display: none;
+            }
 		}
 
 		.leyka-pf__form {
@@ -430,7 +441,7 @@ div[id*="leyka-pf-"] { // Leyka namespace
 	.leyka-pf__form {
 		.step {
 
-            @include module-height(480px);
+            @include module-height(570px);
 
 			position: absolute;
 			top: 0;
@@ -449,7 +460,7 @@ div[id*="leyka-pf-"] { // Leyka namespace
 		}
 
         &.leyka-with-comment .step {
-            @include module-height(585px);
+            @include module-height(675px);
         }
 
 		.step--person {
@@ -548,10 +559,10 @@ div[id*="leyka-pf-"] { // Leyka namespace
 	}
 
 	.leyka-pf--history-open {
-		&.leyka-pf-bottom { @include module-height(505px); }
+		&.leyka-pf-bottom { @include module-height(595px); }
 
             .inpage-card {
-                @include module-height(505px);
+                @include module-height(595px);
             }
 
 		.bottom-form__history ,
@@ -611,7 +622,7 @@ div[id*="leyka-pf-"] { // Leyka namespace
 
     .leyka-pf--history-open .leyka-with-comment .inpage-card {
 
-        @include module-height(570px);
+        @include module-height(660px);
 
         //max-height: 505px;
         //height: 97vh;

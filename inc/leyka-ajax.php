@@ -1,53 +1,6 @@
 <?php if( !defined('WPINC') ) die;
 /** Different ajax handler functions */
 
-function leyka_submit_donation() {
-
-    if(empty($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'leyka_payment_form')) {
-        die(json_encode(array(
-            'status' => 1,
-            'message' => __('Wrong nonce in submitted form data', 'leyka'),
-        )));
-    }
-
-    leyka()->clear_session_errors(); // Clear all previous submits errors, if there are some
-
-    $pm = explode('-', $_POST['leyka_payment_method']);
-    if( !$pm || count($pm) < 2 ) {
-        die(json_encode(array(
-            'status' => 1,
-            'message' => __('Wrong gateway or/and payment method in submitted form data', 'leyka'),
-        )));
-    }
-
-    $donation_id = leyka()->log_submission();
-
-    leyka_remember_donation_data(array('donation_id' => $donation_id));
-
-    if(empty($_POST['without_form_submission'])) {
-        do_action('leyka_payment_form_submission-'.$pm[0], $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST);
-    }
-
-    /** @todo Check if selected gateway set up completely. If it's not, return the error */
-
-    $payment_vars = array('status' => (int)($donation_id && is_wp_error($donation_id)),);
-    if($payment_vars['status'] == 0) {
-        $payment_vars['donation_id'] = $donation_id;
-    } else {
-        $payment_vars['errors'] = $donation_id;
-    }
-
-    $payment_vars = array_merge(
-        apply_filters('leyka_submission_form_data-'.$pm[0], $_POST, $pm[1], $donation_id),
-        $payment_vars
-    );
-
-    die(json_encode($payment_vars));
-
-}
-add_action('wp_ajax_leyka_ajax_donation_submit', 'leyka_submit_donation');
-add_action('wp_ajax_nopriv_leyka_ajax_donation_submit', 'leyka_submit_donation');
-
 function leyka_ajax_get_campaigns_list() {
 
     if(empty($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'leyka_get_campaigns_list_nonce')) {
@@ -112,22 +65,19 @@ add_action('wp_ajax_nopriv_leyka_recalculate_total_funded_amount', 'leyka_recalc
 
 function leyka_get_gateway_redirect_data() {
 
-    if(empty($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'leyka_payment_form')) {
-        die(json_encode(array(
-            'status' => 1,
-            'message' => __('Wrong nonce in submitted form data', 'leyka'),
-        )));
-    }
-
     leyka()->clear_session_errors(); // Clear all previous submits errors, if there are some
 
-    $pm = explode('-', $_POST['leyka_payment_method']);
-    if( !$pm || count($pm) < 2 ) {
-        die(json_encode(array(
-            'status' => 1,
-            'message' => __('Wrong gateway or/and payment method in submitted form data', 'leyka'),
-        )));
+    $form_errors = Leyka_Payment_Form::is_form_fields_valid();
+    if(is_array($form_errors) && count($form_errors) > 0) {
+
+        $form_errors = reset($form_errors); // Return only the first error in the list
+
+        /** @var WP_Error $form_errors */
+        die(json_encode(array('status' => 1, 'message' => $form_errors->get_error_message(),)));
+
     }
+
+    $pm = leyka_pf_get_payment_method_value();
 
     if(empty($_POST['without_form_submission'])) { // Normal donation submit procedure
 
@@ -138,24 +88,25 @@ function leyka_get_gateway_redirect_data() {
             leyka_remember_donation_data(array('donation_id' => $donation_id));
 
             do_action(
-                'leyka_payment_form_submission-'.$pm[0],
-                $pm[0], implode('-', array_slice($pm, 1)), $donation_id, $_POST
+                'leyka_payment_form_submission-'.$pm['gateway_id'],
+                $pm['gateway_id'], implode('-', array_slice($pm, 1)), $donation_id, $_POST
             );
 
         }
 
         $payment_vars = array(
             'status' => 0,
-            'payment_url' => apply_filters('leyka_submission_redirect_url-'.$pm[0], '', $pm[1]),
+            'payment_url' => apply_filters('leyka_submission_redirect_url-'.$pm['gateway_id'], '', $pm['payment_method_id']),
             'submission_redirect_type' => apply_filters(
-                'leyka_submission_redirect_type-'.$pm[0],
-                'auto', $pm[1], $donation_id
+                'leyka_submission_redirect_type-'.$pm['gateway_id'],
+                'auto', $pm['payment_method_id'], $donation_id
             ),
         );
 
         if(is_wp_error($donation_id)) {
 
             $payment_vars['errors'] = $donation_id;
+            $payment_vars['message'] = $donation_id->get_error_message();
             $payment_vars['status'] = 1;
 
         } else if(leyka()->payment_form_has_errors()) {
@@ -171,14 +122,17 @@ function leyka_get_gateway_redirect_data() {
         }
 
         $payment_vars = array_merge(
-            apply_filters('leyka_submission_form_data-'.$pm[0], $_POST, $pm[1], $donation_id),
+            apply_filters('leyka_submission_form_data-'.$pm['gateway_id'], $_POST, $pm['payment_method_id'], $donation_id),
             $payment_vars
         );
 
     } else { // Get payment vars without donation submit
         $payment_vars = array_merge(
-            apply_filters('leyka_submission_form_data-'.$pm[0], $_POST, $pm[1], false),
-            array('status' => 0, 'payment_url' => apply_filters('leyka_submission_redirect_url-'.$pm[0], '', $pm[1]),)
+            apply_filters('leyka_submission_form_data-'.$pm['gateway_id'], $_POST, $pm['payment_method_id'], false),
+            array(
+                'status' => 0,
+                'payment_url' => apply_filters('leyka_submission_redirect_url-'.$pm['gateway_id'], '', $pm['payment_method_id']),
+            )
         );
     }
 
@@ -187,7 +141,6 @@ function leyka_get_gateway_redirect_data() {
 }
 add_action('wp_ajax_leyka_ajax_get_gateway_redirect_data', 'leyka_get_gateway_redirect_data');
 add_action('wp_ajax_nopriv_leyka_ajax_get_gateway_redirect_data', 'leyka_get_gateway_redirect_data');
-
 
 function leyka_process_success_form() {
 
@@ -232,3 +185,160 @@ function leyka_process_success_form() {
 }
 add_action('wp_ajax_leyka_donor_subscription', 'leyka_process_success_form');
 add_action('wp_ajax_nopriv_leyka_donor_subscription', 'leyka_process_success_form');
+
+function leyka_set_campaign_photo() {
+
+    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'set-campaign-photo')) {
+        die(json_encode(array(
+            'status' => 'error',
+            'message' => __('Wrong nonce in the submitted data', 'leyka'),
+        )));
+    } else if(empty($_POST['campaign_id'])) {
+        die(json_encode(array(
+            'status' => 'error',
+            'message' => __('Error: campaign ID is missing', 'leyka'),
+        )));
+    }
+
+    $attachment_id = (int)$_POST['attachment_id'];
+    $campaign_id = (int)$_POST['campaign_id'];
+
+    update_post_meta($campaign_id, '_thumbnail_id', $attachment_id);
+    sleep(1);
+
+    die(json_encode(array(
+        'status' => 'ok',
+        'post' => $_POST,
+    )));
+
+}
+add_action('wp_ajax_leyka_set_campaign_photo', 'leyka_set_campaign_photo');
+
+function leyka_set_campaign_template() {
+
+    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'set-campaign-template')) {
+        die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
+    } else if(empty($_POST['campaign_id'])) {
+        die(json_encode(array('status' => 'error', 'message' => __('Error: campaign ID is missing', 'leyka'),)));
+    }
+
+    update_post_meta((int)$_POST['campaign_id'], 'campaign_template', $_POST['template']);
+
+    die(json_encode(array('status' => 'ok', 'post' => $_POST,)));
+
+}
+add_action('wp_ajax_leyka_set_campaign_template', 'leyka_set_campaign_template');
+
+function leyka_edit_campaign_slug() {
+
+    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka-edit-campaign-slug')) {
+        die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
+    } else if(empty($_POST['campaign_id']) || empty($_POST['slug'])) {
+        die(json_encode(array('status' => 'error', 'message' => __('Error: the campaign data needed are missing', 'leyka'),)));
+    }
+
+    $campaign = get_post($_POST['campaign_id']);
+    if( !$campaign || $campaign->post_type !== Leyka_Campaign_Management::$post_type ) {
+        die(json_encode(array('status' => 'error', 'message' => __('Error: wrong campaign ID given', 'leyka'),)));
+    }
+
+    $_POST['slug'] = wp_unique_post_slug(sanitize_title($_POST['slug']), $_POST['campaign_id'], $campaign->post_status, $campaign->post_type, null);
+
+    $res = wp_update_post(array(
+        'ID' => (int)$_POST['campaign_id'],
+        'post_name' => $_POST['slug'],
+    ));
+
+    if($res) {
+        die(json_encode(array('status' => 'ok', 'slug' => $_POST['slug'],)));
+    } else {
+        die(json_encode(array('status' => 'error', 'message' => __("Error: the campaign slug wasn't updated", 'leyka'),)));
+    }
+
+}
+add_action('wp_ajax_leyka_edit_campaign_slug', 'leyka_edit_campaign_slug');
+
+function leyka_update_pm_list() {
+
+    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka-update-pm-order')) {
+        die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
+    } else if(empty($_POST['pm_order'])) {
+        die(json_encode(array('status' => 'error', 'message' => __('Error: PM order value is missing', 'leyka'),)));
+    }
+
+    leyka_options()->opt('pm_order', $_POST['pm_order']);
+    leyka_options()->opt('pm_available', explode('&', str_replace('pm_order[]=', '', $_POST['pm_order'])));
+
+    if( !empty($_POST['pm_labels']) && is_array($_POST['pm_labels']) ) {
+        foreach($_POST['pm_labels'] as $pm_full_id => $pm_label) {
+            leyka_options()->opt($pm_full_id, $pm_label);
+        }
+    }
+
+    die(json_encode(array('status' => 'ok',)));
+
+}
+add_action('wp_ajax_leyka_update_pm_list', 'leyka_update_pm_list');
+
+function leyka_upload_l10n() {
+
+    $url = 'https://translate.wordpress.org/projects/wp-plugins/leyka/stable/ru/default/export-translations?format=mo';
+    $file = download_url($url, 60);
+
+    $res = null;
+
+    if(is_wp_error($file)) {
+        $res = array(
+            'status' => 'error',
+            'message' => "Ошибка! Не удалось скачать файл локализации. ".$file->get_error_message()
+        );
+    } else {
+
+        if( !is_dir(WP_CONTENT_DIR."/languages") ) {
+            $res = array('status' => 'error', 'message' => sprintf("Ошибка! Папка локализации не найдена: %s", WP_CONTENT_DIR . "/languages"));
+        } elseif( !is_dir(WP_CONTENT_DIR.'/languages/plugins') ) {
+            $res = array(
+                'status' => 'error',
+                'message' => sprintf("Ошибка! Папка локализации плагинов не найдена: %s", WP_CONTENT_DIR.'/languages/plugins')
+            );
+        } else {
+
+            try {
+                if(copy($file, WP_CONTENT_DIR.'/languages/plugins/leyka-ru_RU.mo')) {
+                    unlink($file);
+                } else {
+                    $res = array(
+                        'status' => 'error',
+                        'message' => sprintf("Ошибка! Нет прав для записи в папку %s", WP_CONTENT_DIR . "/languages/plugins")
+                    );
+                }
+            } catch(Exception $ex) {
+                $res = array(
+                    'status' => 'error',
+                    'message' => "Ошибка! Не удалось установить файл локализации! ".$ex->getMessage()
+                );
+            }
+        }
+
+    }
+
+    if( !$res ) {
+        $res = array('status' => 'ok', 'message' => 'Перевод успешно загружен');
+    }
+
+    //$res = array_merge($res, array(
+    //    'file' => $file,
+    //    'res' => WP_CONTENT_DIR . "/languages/plugins/leyka-ru_RU.mo"
+    //));
+
+    die(json_encode($res));
+
+}
+add_action('wp_ajax_leyka_upload_l10n', 'leyka_upload_l10n');
+
+function leyka_ajax_get_env_and_options() {
+    //print_r(leyka_get_env_and_options());
+    echo "<pre>".format_debug_data(humanaize_debug_data(leyka_get_env_and_options()))."</pre>";
+    exit();
+}
+add_action('wp_ajax_leyka_get_env_and_options', 'leyka_ajax_get_env_and_options');

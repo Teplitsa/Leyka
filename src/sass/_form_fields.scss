@@ -107,6 +107,160 @@ div[id *="leyka-pf-"] { //aka namespace
 	.inpage-card_title {
 		display: none;
 		margin-bottom: $base*2;
+		font-weight: 500;
+		font-size: 1.2em;
+	}
+	
+	.inpage-card_excerpt {
+		display: none;
+		margin-bottom: $base*1.5;
+	}
+	
+	// new card design
+	&.show-preview {
+		
+		.inpage-card__content{
+			padding-top: 2rem;
+		}
+
+		.inpage-card_title {
+			display: block;
+			margin-bottom: 1rem;
+			font-size: 20px;
+			line-height: 23px;
+		}
+		
+		.inpage-card__excerpt {
+			position: relative;
+			display: block;
+			font-size: 16px;
+			line-height: 23px;
+			margin-bottom: 2rem;
+			padding-bottom: 0.5rem;
+			
+			.inpage-card__toggle-excerpt-links {
+				position: absolute;
+				left: 0px;
+				bottom: 0px;
+				width: 100%;
+				padding-top: 3.5rem;
+				
+				/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+67&0+0,1+67 */
+				background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 67%); /* FF3.6-15 */
+				background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 67%); /* Chrome10-25,Safari5.1-6 */
+				background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 67%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+				filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+				
+				a {
+					text-decoration: none;
+					outline: none;
+					box-shadow: none;
+					
+					&:hover, &:active, &:focus {
+						text-decoration: none;
+						outline: none;
+					}
+				}
+					
+				.inpage-card__expand-excerpt,
+				.inpage-card__collapse-excerpt {
+					color: $color-main;
+					text-decoration: none;
+					border-bottom: 1px dashed $color-main;
+					padding-bottom: 2px;
+				}
+				
+				.inpage-card__collapse-excerpt {
+					display: none;
+				}
+			}
+			
+			&.expand {
+				
+				.inpage-card__toggle-excerpt-links {
+					padding-top: 0px;
+					position: relative;
+					
+					.inpage-card__expand-excerpt {
+						display: none;
+					}
+					
+					.inpage-card__collapse-excerpt {
+						display: inline;
+					}
+					
+				}
+			}
+			
+		}
+		
+		.inpage-card_scale {
+			margin-bottom: 2rem;
+		}
+		
+		.target {
+			font-size: 16px;
+			line-height: 19px;
+			font-weight: 500;
+		}
+	
+		.message-finished {
+			font-size: 1.15em;
+		}
+	
+		.info {
+			color: $color-text-light3;
+			font-size: 13px;
+			line-height: 15px;
+			font-weight: 500;
+		}
+	
+		.inpage-card__note {
+			color: $color-text-light;
+			font-size: 14px;
+			line-height: 21px;
+			margin-top: 1rem;
+		}
+	
+		.inpage-card__action {
+			margin-top: 0;
+			display: flex;
+			justify-content: center;
+	
+			button,
+			.leyka-thankyou-button {
+				border: none;
+				@include button();
+				font-size: 16px;
+				line-height: 19px;
+				width: 100%;
+				//max-width: 279px;
+				max-width: unset;
+				height: auto;
+				
+				@include for(medium-screens) {
+					height: 48px;
+				}
+			}
+			
+			.leyka-thankyou-button {
+				background-color: $color-white;
+				color: $color-main;
+				border: 1px solid $color-border-light2;
+				line-height: 26px;
+				
+				&:active, &:focus, &:hover {
+					background-color: $color-white;
+					color: $color-main;
+					border: 1px solid $color-border-light2;
+				}
+			}
+		}
+		
+		.supporter-and-button {
+			display: flex;
+			flex-direction: column-reverse;
+		}
 	}
 
 	.inpage-card_scale {
@@ -129,6 +283,10 @@ div[id *="leyka-pf-"] { //aka namespace
 				border-top-right-radius: 2.5px;
 				border-bottom-right-radius: 2.5px;
 			}
+		}
+		
+		&.hide-scale {
+			display: none;
 		}
 	}
 
@@ -155,14 +313,62 @@ div[id *="leyka-pf-"] { //aka namespace
 
 	.inpage-card__action {
 		margin-top: $base*3;
+		display: flex;
+		justify-content: center;
 
-		button {
+		button,
+		.leyka-thankyou-button {
 			border: none;
 			@include button();
+			font-size: 16px;
+			line-height: 19px;
+			width: 100%;
+			max-width: 279px;
+			height: 48px;
+		}
+		
+		.leyka-thankyou-button {
+			background-color: $color-white;
+			color: $color-main;
+			border: 1px solid $color-border-light2;
+			line-height: 26px;
 		}
 	}
 }
 
+body.wizard-init-campaign-preview {
+	div[id *="leyka-pf-"] {
+		&.show-preview {
+			.inpage-card__excerpt {
+				.inpage-card__toggle-excerpt-links {
+					a {
+						cursor: default;
+					}
+				}
+			}
+			
+			.inpage-card__action {
+				.leyka-thankyou-button {
+					cursor: default;
+				}
+				
+				button {
+					cursor: default;
+				}
+			}
+			
+			.supporter-and-button {
+				.inpage-card__note {
+					&.supporters {
+						.leyka-js-history-more {
+							cursor: default;
+						}
+					}
+				}
+			}
+		}
+	}
+}
 
 // STEPS COMMONS
 div[id *="leyka-pf-"] {

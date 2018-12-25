@@ -13,9 +13,20 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
         $this->_id = 'yandex';
         $this->_title = __('Yandex.Kassa', 'leyka');
+
+        $this->_description = apply_filters(
+            'leyka_gateway_description',
+            __('Yandex.Kassa allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Kassa website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
+            $this->_id
+        );
+
         $this->_docs_link = '//leyka.te-st.ru/docs/yandex-dengi/';
-        $this->_admin_ui_column = 1;
-        $this->_admin_ui_order = 10;
+        $this->_registration_link = 'https://kassa.yandex.ru/joinups';
+        $this->_has_wizard = true;
+
+        $this->_min_commission = 2.8;
+        $this->_receiver_types = array('legal');
+        $this->_may_support_recurring = true;
 
     }
 
@@ -31,43 +42,43 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'default' => leyka_is_yandex_new_api_used(),
                 'title' => 'Новый API Яндекс.Кассы',
                 'description' => 'Отметьте, если ваше подключение к Яндекс.Кассе использует новый API',
-                'required' => false,
             ),
             $this->_id.'_shop_id' => array(
                 'type' => 'text',
                 'title' => __('ShopID', 'leyka'),
-                'description' => __('Please, enter your Yandex.Kassa shopID here. It can be found in your Yandex contract and in your .', 'leyka'),
+                'comment' => __('Please, enter your Yandex.Kassa shopID here. It can be found in your Yandex contract and in your .', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., 12345', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '12345'),
             ),
             $this->_id.'_scid' => array(
                 'type' => 'text',
                 'title' => __('ScID', 'leyka'),
-                'description' => __('Please, enter your Yandex.Kassa shop showcase ID (SCID) here. It can be found in your Yandex contract.', 'leyka'),
+                'comment' => __('Please, enter your Yandex.Kassa shop showcase ID (SCID) here. It can be found in your Yandex contract.', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., 12345', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '12345'),
                 'field_classes' => array('old-api'),
             ),
             $this->_id.'_shop_article_id' => array(
                 'type' => 'text',
                 'title' => __('ShopArticleID', 'leyka'),
-                'description' => __('Please, enter your Yandex.Kassa shop article ID here, if it exists. It can be found in your Yandex contract, also you can ask your Yandex.Kassa manager for it.', 'leyka'),
-                'placeholder' => __('E.g., 12345', 'leyka'),
+                'comment' => __('Please, enter your Yandex.Kassa shop article ID here, if it exists. It can be found in your Yandex contract, also you can ask your Yandex.Kassa manager for it.', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '12345'),
                 'field_classes' => array('old-api'),
             ),
             $this->_id.'_shop_password' => array(
                 'type' => 'text',
                 'title' => __('shopPassword', 'leyka'),
-                'description' => __("Please, enter a shopPassword parameter value that you filled in Yandex.Kassa technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
-                'placeholder' => __('E.g., 1^2@3#&84nDsOmE5h1T', 'leyka'),
+                'comment' => __("Please, enter a shopPassword parameter value that you filled in Yandex.Kassa technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1^2@3#&84nDsOmE5h1T'),
                 'is_password' => true,
                 'field_classes' => array('old-api'),
             ),
             $this->_id.'_secret_key' => array(
                 'type' => 'text',
                 'title' => __('Secret key for API', 'leyka'),
-                'description' => __("Please, enter a shopPassword parameter value that you filled in Yandex.Kassa technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
-                'placeholder' => __('E.g., 1^2@3#&84nDsOmE5h1T', 'leyka'),
+                'comment' => __("Please, enter a shopPassword parameter value that you filled in Yandex.Kassa technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
+                'required' => true,
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'test_OkT0flRaEnS0fWqMFZuTg01hu_8SxSkxZuAVIw7CMgB'),
                 'is_password' => true,
                 'field_classes' => array('new-api'),
             ),
@@ -76,7 +87,6 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'default' => true,
                 'title' => __('Payments testing mode', 'leyka'),
                 'description' => __('Check if the gateway integration is in test mode.', 'leyka'),
-                'required' => false,
                 'field_classes' => array('old-api'),
             ),
             $this->_id.'_outer_ip_to_inner' => array(
@@ -84,7 +94,6 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'default' => true,
                 'title' => __('Set outer requests IP to inner one', 'leyka'),
                 'description' => __('Check if there are systematic errors on payments using the gateway.', 'leyka'),
-                'required' => false,
             ),
         );
 
@@ -136,29 +145,30 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
             try {
 
-                $payment = $client->createPayment(
-                    array(
-                        'amount' => array(
-                            'value' => round($form_data['leyka_donation_amount'], 2),
-                            'currency' => 'RUB', /** @todo Change to $form_data[leyka_donation_currency], but fix "rur" -> "RUB" */
-                        ),
-                        'payment_method_data' => array(
-                            'type' => $this->_get_yandex_pm_id($pm_id),
-                        ),
-                        'confirmation' => array(
-                            'type' => 'redirect',
-                            'return_url' => empty($form_data['leyka_success_page_url']) ?
-                                leyka_get_success_page_url() : $form_data['leyka_success_page_url'],
-                        ),
-                        'capture' => true, // Make payment at once, don't wait for shop confirmation
-                        'description' =>
-                            ( !empty($form_data['leyka_recurring']) ? '['.__('Recurring subscription', 'leyka').'] ' : '' )
-                            .$donation->payment_title." (№ $donation_id)",
-                        'metadata' => array('donation_id' => $donation_id,),
-                        'save_payment_method' => !empty($form_data['leyka_recurring']),
+                $payment_data = array(
+                    'amount' => array(
+                        'value' => round($form_data['leyka_donation_amount'], 2),
+                        'currency' => 'RUB', /** @todo Change to $form_data[leyka_donation_currency], but fix "rur" -> "RUB" */
                     ),
-                    uniqid('', true)
+                    'confirmation' => array(
+                        'type' => 'redirect',
+                        'return_url' => empty($form_data['leyka_success_page_url']) ?
+                            leyka_get_success_page_url() : $form_data['leyka_success_page_url'],
+                    ),
+                    'capture' => true, // Make payment at once, don't wait for shop confirmation
+                    'description' =>
+                        ( !empty($form_data['leyka_recurring']) ? '['.__('Recurring subscription', 'leyka').'] ' : '' )
+                        .$donation->payment_title." (№ $donation_id)",
+                    'metadata' => array('donation_id' => $donation_id,),
+                    'save_payment_method' => !empty($form_data['leyka_recurring']),
                 );
+                if($pm_id !== 'yandex_all') {
+                    $payment_data['payment_method_data'] = array(
+                        'type' => $this->_get_yandex_pm_id($pm_id),
+                    );
+                }
+
+                $payment = $client->createPayment($payment_data, uniqid('', true));
 
                 $donation->add_gateway_response($payment); // On callback the response will be re-written
 
@@ -275,6 +285,8 @@ techMessage="'.$tech_message.'"/>');
 
             // New Yandex.Kassa API callbacks processing:
             case 'process':
+            case 'response':
+            case 'notify':
 
                 require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
 
@@ -307,6 +319,8 @@ techMessage="'.$tech_message.'"/>');
                 switch($payment->status) {
                     case 'succeeded':
                         $donation->status = 'funded';
+                        $res = Leyka_Donation_Management::send_all_emails($donation->id);
+                        /** @todo Handle the case of $res === false */
                         break;
                     case 'canceled':
                         $donation->status = 'failed';
@@ -449,7 +463,7 @@ techMessage="'.$tech_message.'"/>');
                 );
             } else if(is_a($response, 'Exception')) { // Exceptions were thrown
                 $response = array(
-                    __('Failure type:', 'leyka') => $response->type,
+                    __('Failure type:', 'leyka') => empty($response->type) ? __('unknown', 'leyka') : $response->type,
                     __('Failure code:', 'leyka') => $response->getCode(),
                     __('Failure message:', 'leyka') => $response->getMessage(),
                 );
@@ -742,10 +756,12 @@ techMessage="'.$tech_message.'"/>');
     protected function _get_yandex_pm_id($pm_id) {
 
         $all_pm_ids = leyka_options()->opt('yandex_new_api') ? array(
-            'yandex_all' => '',
             'yandex_card' => 'bank_card',
             'yandex_money' => 'yandex_money',
             'yandex_wm' => 'webmoney',
+            'yandex_sb' => 'sberbank',
+            'yandex_ab' => 'alfabank',
+            'yandex_pb' => 'psb',
         ) : array(
             'yandex_all' => '',
             'yandex_card' => 'AC',
@@ -777,6 +793,15 @@ class Leyka_Yandex_All extends Leyka_Payment_Method {
 
         $this->_id = 'yandex_all';
         $this->_gateway_id = 'yandex';
+        $this->_category = 'misc';
+
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('Yandex.Kassa allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Kassa website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
 
         $this->_label_backend = __('Yandex.Kassa smart payment', 'leyka');
         $this->_label = __('Yandex.Kassa smart payment', 'leyka');
@@ -784,36 +809,17 @@ class Leyka_Yandex_All extends Leyka_Payment_Method {
         // The description won't be setted here - it requires the PM option being configured at this time (which is not)
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/visa.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/master.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/mir.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/yandex-money.svg',
         ));
 
         $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 
         $this->_supported_currencies[] = 'rur';
-
         $this->_default_currency = 'rur';
-
-    }
-
-    protected function _set_options_defaults() {
-
-        if($this->_options) {
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('Yandex.Kassa allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Kassa website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
-                'title' => __('Yandex Smart Payment description', 'leyka'),
-                'description' => __('Please, enter Yandex.Kassa smart payment service description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
 
     }
 
@@ -827,20 +833,27 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
 
         $this->_id = 'yandex_card';
         $this->_gateway_id = 'yandex';
+        $this->_category = 'bank_cards';
+
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('Yandex.Kassa allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Kassa website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
 
         $this->_label_backend = __('Bank card', 'leyka');
         $this->_label = __('Bank card', 'leyka');
 
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/visa.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/master.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/mir.png',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ));
 
         $this->_supported_currencies[] = 'rur';
-
         $this->_default_currency = 'rur';
 
     }
@@ -862,32 +875,26 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
                 'type' => 'text',
                 'default' => '',
                 'title' => __('Yandex.Kassa recurring payments certificate path', 'leyka'),
-                'description' => __("Please, enter the path to your SSL certificate given to you by Yandex.Kassa. <strong>Warning!</strong> The path should include the certificate's filename intself. Also it should be relative to wp-content directory.", 'leyka'),
-                'placeholder' => __('E.g., /uploads/leyka/your-cert-file.cer', 'leyka'),
+                'comment' => __("Please, enter the path to your SSL certificate given to you by Yandex.Kassa. <strong>Warning!</strong> The path should include the certificate's filename intself. Also it should be relative to wp-content directory.", 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '/uploads/leyka/your-cert-file.cer'),
                 'field_classes' => array('old-api'),
             ),
             $this->full_id.'_private_key_path' => array(
                 'type' => 'text',
                 'default' => '',
                 'title' => __("Yandex.Kassa recurring payments certificate's private key path", 'leyka'),
-                'description' => __("Please, enter the path to your SSL certificate's private key given to you by Yandex.Kassa.<li><li>The path should include the certificate's filename intself.</li><li>The path should be relative to wp-content directory. </li></ul>", 'leyka'),
-                'placeholder' => __('E.g., /uploads/leyka/your-private.key', 'leyka'),
+                'comment' => __("Please, enter the path to your SSL certificate's private key given to you by Yandex.Kassa.<li><li>The path should include the certificate's filename intself.</li><li>The path should be relative to wp-content directory. </li></ul>", 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '/uploads/leyka/your-private.key'),
                 'field_classes' => array('old-api'),
             ),
             $this->full_id.'_private_key_password' => array(
                 'type' => 'text',
                 'default' => '',
                 'title' => __("Yandex.Kassa recurring payments certificate's private key password", 'leyka'),
-                'description' => __("Please, enter a password for your SSL certificate's private key, if you set this password during the generation of your sertificate request file.", 'leyka'),
-                'placeholder' => __('Ex., fW!^12@3#&8A4', 'leyka'),
+                'comment' => __("Please, enter a password for your SSL certificate's private key, if you set this password during the generation of your sertificate request file.", 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'fW!^12@3#&8A4'),
                 'is_password' => true,
                 'field_classes' => array('old-api'),
-            ),
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('Yandex.Kassa allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Kassa website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
-                'title' => __('Yandex bank card payment description', 'leyka'),
-                'description' => __('Please, enter Yandex.Kassa bank cards payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
             ),
         );
 
@@ -907,40 +914,27 @@ class Leyka_Yandex_Money extends Leyka_Payment_Method {
 
         $this->_id = 'yandex_money';
         $this->_gateway_id = 'yandex';
+        $this->_category = 'digital_currencies';
 
-        $this->_label_backend = __('Yandex.money', 'leyka');
-        $this->_label = __('Yandex.money', 'leyka');
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __("Yandex.Kassa is a simple and safe payment system to pay for goods and services through internet. You will have to fill a payment form, you will be redirected to the <a href='https://money.yandex.ru/'>Yandex.Kassa website</a> to confirm your payment. If you haven't aquired a Yandex.Money account yet, you can create it there.", 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
 
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
+        $this->_label_backend = __('Yandex.Money', 'leyka');
+        $this->_label = __('Yandex.Money', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/yandex_money_s.png',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/yandex-money.svg',
         ));
 
         $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 
         $this->_supported_currencies[] = 'rur';
-
         $this->_default_currency = 'rur';
-
-    }
-
-    protected function _set_options_defaults() {
-
-        if($this->_options) {
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __("Yandex.Kassa is a simple and safe payment system to pay for goods and services through internet. You will have to fill a payment form, you will be redirected to the <a href='https://money.yandex.ru/'>Yandex.Kassa website</a> to confirm your payment. If you haven't got a Yandex.Money account, you can create it there.", 'leyka'),
-                'title' => __('Yandex.Money description', 'leyka'),
-                'description' => __('Please, enter Yandex.Money payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
 
     }
 
@@ -954,38 +948,27 @@ class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
 
         $this->_id = 'yandex_wm';
         $this->_gateway_id = 'yandex';
+        $this->_category = 'digital_currencies';
+
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('<a href="http://www.webmoney.ru/">WebMoney Transfer</a> is an international financial transactions system and an environment for a business in Internet, founded in 1988. Up until now, WebMoney clients counts at more than 25 million people around the world. WebMoney system includes a services to account and exchange funds, attract new funding, solve quarrels and make a safe deals.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
 
         $this->_label_backend = __('Webmoney', 'leyka');
         $this->_label = __('Webmoney', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/webmoney.png',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/webmoney.svg',
         ));
 
         $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 
         $this->_supported_currencies[] = 'rur';
-
         $this->_default_currency = 'rur';
-
-    }
-
-    protected function _set_options_defaults() {
-
-        if($this->_options) {
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('<a href="http://www.webmoney.ru/">WebMoney Transfer</a> is an international financial transactions system and an invironment for a business in Internet, founded in 1988. Up until now, WebMoney clients counts at more than 25 million people around the world. WebMoney system includes a services to account and exchange funds, attract new funding, solve quarrels and make a safe deals.', 'leyka'),
-                'title' => __('WebMoney description', 'leyka'),
-                'description' => __('Please, enter WebMoney payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
 
     }
 
@@ -999,38 +982,27 @@ class Leyka_Yandex_Sberbank_Online extends Leyka_Payment_Method {
 
         $this->_id = 'yandex_sb';
         $this->_gateway_id = 'yandex';
+        $this->_category = 'online_banking';
+
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('<a href="https://online.sberbank.ru/CSAFront/index.do">Sberbank Online</a> is an Internet banking service of Sberbank. It allows you to make many banking operations at any moment without applying to the bank department, using your computer.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
 
         $this->_label_backend = __('Sberbank Online invoicing', 'leyka');
         $this->_label = __('Sberbank Online', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/sberbank-online.png',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/sber.svg',
         ));
 
         $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 
         $this->_supported_currencies[] = 'rur';
-
         $this->_default_currency = 'rur';
-
-    }
-
-    protected function _set_options_defaults() {
-
-        if($this->_options){
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('<a href="https://online.sberbank.ru/CSAFront/index.do">Sberbank Online</a> is an Internet banking service of Sberbank. It allows you to make many banking operations at any moment without applying to the bank department, using your computer.', 'leyka'),
-                'title' => __('Sberbank Online description', 'leyka'),
-                'description' => __('Please, enter Sberbank Online payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
 
     }
 
@@ -1038,44 +1010,33 @@ class Leyka_Yandex_Sberbank_Online extends Leyka_Payment_Method {
 
 class Leyka_Yandex_Alpha_Click extends Leyka_Payment_Method {
 
-    protected static $_instance = null;
+    protected static $_instance;
 
     public function _set_attributes() {
 
         $this->_id = 'yandex_ab';
         $this->_gateway_id = 'yandex';
+        $this->_category = 'online_banking';
+
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('<a href="https://alfabank.ru/retail/internet/">Alfa-Click</a> is an Internet banking service of Alfa bank. It allows you to make many banking operations at any moment without applying to the bank department, using your computer.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
 
         $this->_label_backend = __('Alpha-Click invoicing', 'leyka');
         $this->_label = __('Alpha-Click', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/alfa-click.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/alfa-click.svg',
         ));
 
         $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 
         $this->_supported_currencies[] = 'rur';
-
         $this->_default_currency = 'rur';
-
-    }
-
-    protected function _set_options_defaults() {
-
-        if($this->_options){
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('<a href="https://alfabank.ru/retail/internet/">Alfa-Click</a> is an Internet banking service of Alfa bank. It allows you to make many banking operations at any moment without applying to the bank department, using your computer.', 'leyka'),
-                'title' => __('Alpha-Click description', 'leyka'),
-                'description' => __('Please, enter Alpha-Click payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
 
     }
 
@@ -1089,40 +1050,27 @@ class Leyka_Yandex_Promvzyazbank extends Leyka_Payment_Method {
 
         $this->_id = 'yandex_pb';
         $this->_gateway_id = 'yandex';
+        $this->_category = 'online_banking';
+
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('<a href="http://www.psbank.ru/Personal/Everyday/Remote/">PSB-Retail</a> is an Internet banking service of Promsvyazbank. It allows you to make many banking operations at any moment without applying to the bank department, using your computer.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
 
         $this->_label_backend = __('Promsvyazbank invoicing', 'leyka');
         $this->_label = __('Promsvyazbank', 'leyka');
 
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/promsvyazbank.png',
+            LEYKA_PLUGIN_BASE_URL.'gateways/yandex/icons/promsvyazbank.svg',
         ));
 
         $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 
         $this->_supported_currencies[] = 'rur';
-
         $this->_default_currency = 'rur';
-
-    }
-
-    protected function _set_options_defaults() {
-
-        if($this->_options){
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id.'_description' => array(
-                'type' => 'html',
-                'default' => __('<a href="http://www.psbank.ru/Personal/Everyday/Remote/">PSB-Retail</a> is an Internet banking service of Promsvyazbank. It allows you to make many banking operations at any moment without applying to the bank department, using your computer.', 'leyka'),
-                'title' => __('Promsvyazbank description', 'leyka'),
-                'description' => __('Please, enter Promsvyazbank payment description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
 
     }
 

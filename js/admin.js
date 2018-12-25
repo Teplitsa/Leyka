@@ -57,6 +57,160 @@ jQuery(document).ready(function($){
         });
     }
 
+    // // Payment settings page:
+    // if($('#payment-settings-area').length) {
+
+    // Yandex.Kassa settings:
+    // jQuery(document).ready(function($){
+
+    // var $gateway_settings = $('#payment-settings-area').find('#gateway-yandex');
+    //
+    // if($gateway_settings.length) {
+    //
+    //     $gateway_settings.find('input[name="leyka_yandex_new_api"]')
+    //         .on('change.leyka', function(){
+    //
+    //             if($(this).prop('checked')) {
+    //
+    //                 $gateway_settings.find('.new-api').show();
+    //                 $gateway_settings.find('.old-api').hide();
+    //
+    //             } else {
+    //
+    //                 $gateway_settings.find('.new-api').hide();
+    //                 $gateway_settings.find('.old-api').show();
+    //
+    //             }
+    //
+    //         }).change();
+    //
+    // }
+
+    // });
+    //
+    //     var $gateways_accordion = $('#pm-settings-wrapper');
+    //     $gateways_accordion.accordion({
+    //         heightStyle: 'content',
+    //         header: '.gateway-settings > h3',
+    //         collapsible: true,
+    //         activate: function(event, ui){
+    //
+    //             var $header_clicked = $(this).find('.ui-state-active');
+    //             if($header_clicked.length) {
+    //                 $('html, body').animate({ // 35px is a height of the WP admin bar:
+    //                     scrollTop: $header_clicked.parent().offset().top - 35
+    //                 }, 250);
+    //             }
+    //         }
+    //     });
+    //
+    //     $gateways_accordion.find('.doc-link').click(function(e){
+    //         e.stopImmediatePropagation(); // Do not toggle the accordion panel when clicking on the docs link
+    //     });
+    //
+    //     /** Gateways & PM folding on click by the active PM checkboxes. Also PM ordering */
+    //     var $pm_order = $('#pm-order-settings').sortable({placeholder: '', items: '> li:visible'});
+    //     $pm_order.on('sortupdate', function(event){
+    //
+    //         $('input[name="leyka_pm_order"]').val( $(this).sortable('serialize', {
+    //             key: 'pm_order[]', attribute: 'data-pm-id', expression: /(.+)/
+    //         }) );
+    //     });
+    //
+    //     $('.pm-active').click(function(){
+    //
+    //         var $this = $(this),
+    //             $gateway_metabox = $this.parents('.postbox'),
+    //             gateway_id = $gateway_metabox.attr('id').replace('leyka_payment_settings_gateway_', ''),
+    //             $gateway_settings = $('#gateway-'+gateway_id);
+    //
+    //         // Show/hide a PM settings:
+    //         $('#pm-'+$this.attr('id')).toggle();
+    //
+    //         var $sortable_pm = $('.pm-order[data-pm-id="'+$this.attr('id')+'"]');
+    //
+    //         // Add/remove a sortable block from the PM order settings:
+    //         if($this.attr('checked')) {
+    //
+    //             if($sortable_pm.length) {
+    //                 $sortable_pm.show();
+    //             } else {
+    //
+    //                 $sortable_pm = $("<div />").append($pm_order.find('.pm-order[data-pm-id="#FID#"]').clone()).html()
+    //                     .replace(/#FID#/g, $this.attr('id'))
+    //                     .replace(/#L#/g, $this.data('pm-label'))
+    //                     .replace(/#LB#/g, $this.data('pm-label-backend'));
+    //                 $sortable_pm = $($sortable_pm).removeAttr('style');
+    //
+    //                 $pm_order.append($sortable_pm);
+    //             }
+    //         } else {
+    //             $sortable_pm.hide();
+    //         }
+    //         $pm_order.sortable('refresh').sortable('refreshPositions');
+    //         $pm_order.trigger('sortupdate');
+    //
+    //         // Show/hide a whole gateway settings if there are no PMs from it selected:
+    //         if( !$gateway_metabox.find('input:checked').length ) {
+    //
+    //             $gateway_settings.hide();
+    //             $gateways_accordion.accordion('refresh');
+    //
+    //         } else if( !$gateway_settings.is(':visible') ) {
+    //
+    //             $gateway_settings.show();
+    //             $gateways_accordion.accordion('refresh');
+    //
+    //             $sortable_pm.show();
+    //             $pm_order.sortable('refresh').sortable('refreshPositions');
+    //             $pm_order.trigger('sortupdate');
+    //         }
+    //     });
+    //
+    //     // PM renaming (changing labels) fields:
+    //     $pm_order.on('click', '.pm-change-label', function(e){
+    //
+    //         e.preventDefault();
+    //
+    //         var $this = $(this),
+    //             $wrapper = $this.parents('li:first');
+    //
+    //         $this.hide();
+    //         $wrapper.find('.pm-label').hide();
+    //         $wrapper.find('.pm-label-fields').show();
+    //     });
+    //     $pm_order.on('click', '.new-pm-label-ok,.new-pm-label-cancel', function(e){
+    //
+    //         e.preventDefault();
+    //
+    //         var $this = $(this),
+    //             $wrapper = $this.parents('li:first'),
+    //             $pm_label_wrapper = $wrapper.find('.pm-label'),
+    //             new_pm_label = $wrapper.find('input[id*="pm_label"]').val();
+    //
+    //         if($this.hasClass('new-pm-label-ok')) {
+    //             $pm_label_wrapper.text(new_pm_label);
+    //             $wrapper.find('input.pm-label-field').val(new_pm_label);
+    //         } else {
+    //             $wrapper.find('input[id*="pm_label"]').val($pm_label_wrapper.text());
+    //         }
+    //
+    //         $pm_label_wrapper.show();
+    //         $wrapper.find('.pm-label-fields').hide();
+    //         $wrapper.find('.pm-change-label').show();
+    //
+    //     }).on('keydown', 'input[id*="pm_label"]', function(e){
+    //
+    //         var keycode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+    //         if(keycode == 13) { // Enter pressed - stop settings form from being submitted, but save PM custom label
+    //
+    //             e.preventDefault();
+    //             $(this).parents('.pm-label-fields').find('.new-pm-label-ok').click();
+    //         }
+    //     });
+    //
+    //     $('.pm-order-panel').stick_in_parent({offset_top: 0});
+    // }
     // Payment settings page:
     if($('#payment-settings-area').length) {
 

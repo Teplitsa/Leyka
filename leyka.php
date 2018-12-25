@@ -1,9 +1,10 @@
 <?php if( !defined('WPINC') ) die; // If this file is called directly, abort
+
 /**
  * Plugin Name: Leyka
  * Plugin URI:  https://leyka.te-st.ru/
  * Description: The donations management system for your WP site
- * Version:     2.3.9
+ * Version:     3.0
  * Author:      Teplitsa of social technologies
  * Author URI:  https://te-st.ru
  * Text Domain: leyka
@@ -37,7 +38,7 @@
 
 // Leyka plugin version:
 if( !defined('LEYKA_VERSION') ) {
-    define('LEYKA_VERSION', '2.3.9');
+    define('LEYKA_VERSION', '3.0');
 }
 
 // Plugin base file:
@@ -70,14 +71,32 @@ if( !defined('LEYKA_SUPPORT_EMAIL') ) {
     define('LEYKA_SUPPORT_EMAIL', 'support@te-st.ru,sidorenko.a@gmail.com');
 }
 
-// Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
-if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.3.0', '<') ) {
+// Plugin support email:
+if( !defined('LEYKA_DEBUG') ) {
+    define('LEYKA_DEBUG', false);
+}
 
-    echo '<div id="message" class="error"><p><strong>Внимание:</strong> версия PHP ниже <strong>5.3.0</strong>. Лейка нуждается в PHP хотя бы <strong>версии 5.3.0</strong>, чтобы работать корректно. Плагин будет деактивирован.<br /><br />Пожалуйста, направьте вашему хостинг-провайдеру запрос на повышение версии PHP для этого сайта.</p> <p><strong>Warning:</strong> your PHP version is below <strong>5.3.0</strong>. Leyka needs PHP <strong>v5.3.0</strong> or later to work. Plugin will be deactivated.<br /><br />Please contact your hosting provider to upgrade your PHP version.</p></div>';
+if( !defined('LEYKA_USAGE_STATS_DEV_SERVER_URL') ) {
+    define('LEYKA_USAGE_STATS_DEV_SERVER_URL', 'https://ngo2.ru/leyka-usage-stats/'); // http://leyka-usage-stats.local/
+}
+
+if( !defined('LEYKA_USAGE_STATS_PROD_SERVER_URL') ) {
+    define('LEYKA_USAGE_STATS_PROD_SERVER_URL', 'https://ls.te-st.ru/');
+}
+
+// Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
+if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.6.0', '<') ) {
+
+    echo '<div id="message" class="error"><p><strong>Внимание:</strong> версия PHP ниже <strong>5.6.0</strong>. Лейка нуждается в PHP хотя бы <strong>версии 5.6.0</strong>, чтобы работать корректно. Плагин будет деактивирован.<br /><br />Пожалуйста, направьте вашему хостинг-провайдеру запрос на повышение версии PHP для этого сайта.</p> <p><strong>Warning:</strong> your PHP version is below <strong>5.6.0</strong>. Leyka needs PHP <strong>v5.6.0</strong> or later to work. Plugin will be deactivated.<br /><br />Please contact your hosting provider to upgrade your PHP version.</p></div>';
 
     die();
 
 }
+
+if(get_locale() == 'ru_RU') {
+    load_textdomain('leyka', dirname( realpath(__FILE__) ) . '/languages/leyka-ru_RU.mo'); // load included lang pack
+}
+load_plugin_textdomain('leyka', false, basename( dirname( __FILE__ ) ) . '/languages/'); // load langpack by priority
 
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-tmp-translations.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-functions.php');
@@ -104,14 +123,20 @@ if( !$gateways_dir ) {
 
         $file_addr = LEYKA_PLUGIN_DIR."gateways/$gateway_id/leyka-class-$gateway_id-gateway.php";
 
-        if($gateway_id != '.' && $gateway_id != '..' && file_exists($file_addr)) {
+        if($gateway_id !== '.' && $gateway_id !== '..' && file_exists($file_addr)) {
             require_once($file_addr);
         }
+
     }
 
     $gateways_dir->close();
 
 }
+
+function leyka_load_plugin_textdomain() {
+    load_plugin_textdomain('leyka', false, basename( dirname( __FILE__ ) ) . '/languages/');
+}
+add_action( 'plugins_loaded', 'leyka_load_plugin_textdomain' );
 
 register_activation_hook(__FILE__, array('Leyka', 'activate')); // Activation
 add_action('plugins_loaded', array('Leyka', 'activate')); // Any update needed

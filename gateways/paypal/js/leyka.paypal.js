@@ -110,7 +110,7 @@
 			var donation_amount = parseFloat($form.find('.amount__figure input').val()) + '.00',
 				donation_currency = $form.find('input.leyka_donation_currency').val(),
 				donor_info = {email: $form.find('input[name="leyka_donor_email"]').val()},
-                tmp_donation_data = {action: 'leyka_ajax_donation_submit', without_form_submission: true},
+                tmp_donation_data = {action: 'leyka_ajax_get_gateway_redirect_data', without_form_submission: true},
                 tmp_donation_data_array = $form.serializeArray(),
                 new_donation_id = false;
 
