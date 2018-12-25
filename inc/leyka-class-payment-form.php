@@ -901,7 +901,7 @@ function leyka_get_current_template_data($campaign = null, $template = null, $is
 
 	if( !$campaign ) {
 		$campaign = get_post();
-    } elseif(is_int($campaign)) {
+    } elseif(is_numeric($campaign)) {
 		$campaign = get_post($campaign);
     }
 
@@ -931,7 +931,7 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
 
 	if( !$campaign ) {
         $campaign = new Leyka_Campaign(get_post());
-	} elseif(is_int($campaign) || is_a($campaign, 'WP_Post')) {
+	} elseif(is_numeric($campaign) || is_a($campaign, 'WP_Post')) {
         $campaign = new Leyka_Campaign($campaign);
 	} elseif( !is_a($campaign, 'Leyka_Campaign') ) {
         return false;

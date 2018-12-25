@@ -5,7 +5,7 @@
  **/
 
 $campaign = Leyka_Revo_Template_Controller::get_instance()->get_current_campaign();
-$template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_data();?>
+$template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_data($campaign);?>
 
 <form id="<?php echo leyka_pf_get_form_id($campaign->id).'-revo-form';?>" class="leyka-inline-campaign-form leyka-revo-form" data-template="revo" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
 

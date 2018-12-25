@@ -91,7 +91,7 @@ function leyka_current_user_has_role($role, $user_id = false) {
  */
 function leyka_get_validated_donation($donation) {
 
-    if(is_int($donation) && (int)$donation > 0) {
+    if(is_numeric($donation) && (int)$donation > 0) {
         $donation = new Leyka_Donation((int)$donation);
     } elseif(is_a($donation, 'WP_Post')) {
         $donation = new Leyka_Donation($donation);
@@ -108,7 +108,7 @@ function leyka_get_validated_donation($donation) {
  */
 function leyka_get_validated_campaign($campaign) {
 
-    if(is_int($campaign) && (int)$campaign > 0) {
+    if(is_numeric($campaign) && (int)$campaign > 0) {
         $campaign = get_post((int)$campaign);
     }
 

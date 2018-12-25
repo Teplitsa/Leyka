@@ -261,6 +261,12 @@ div[id *="leyka-pf-"] { //aka namespace
 			display: flex;
 			flex-direction: column-reverse;
 		}
+		
+		&.leyka-pf--active {
+			.inpage-card__action {
+				display: none;
+			}
+		}
 	}
 
 	.inpage-card_scale {

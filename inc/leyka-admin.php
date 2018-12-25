@@ -388,11 +388,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	}
 	
 	public function isV3SettingsPage($stage) {
-		return in_array($stage, array('payment', 'email', 'beneficiary', 'technical'));
+		return in_array($stage, array('payment', 'email', 'beneficiary', 'technical', 'view', 'additional'));
 	}
 
 	public function isSeparateFormsStage($stage) {
-		return in_array($stage, array('email', 'beneficiary', 'technical'));
+		return in_array($stage, array('email', 'beneficiary', 'technical', 'view', 'additional'));
 	}
 
 	/** Displaying settings **/

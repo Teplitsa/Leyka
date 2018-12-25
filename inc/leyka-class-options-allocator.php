@@ -117,41 +117,6 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
 
             case 'currency':
                 $options_allocated = array(
-                    array('section' => array(
-                        'name' => 'currency_rates',
-                        'title' => __('Currency rates options', 'leyka'),
-                        'is_default_collapsed' => false,
-                        'options' => array(
-                            'auto_refresh_currency_rates', 'currency_rur2usd', 'currency_rur2eur',
-                        )
-                    ),),
-                    array('section' => array(
-                        'name' => 'rur_currency',
-                        'title' => __('RUR currency options', 'leyka'),
-                        'is_default_collapsed' => false,
-                        'options' => array(
-                            'currency_rur_label', 'currency_rur_min_sum', 'currency_rur_max_sum', 
-                            'currency_rur_flexible_default_amount', 'currency_rur_fixed_amounts',
-                        )
-                    ),),
-                    array('section' => array(
-                        'name' => 'usd_currency',
-                        'title' => __('USD currency options', 'leyka'),
-                        'is_default_collapsed' => false,
-                        'options' => array(
-                            'currency_usd_label', 'currency_usd_min_sum', 'currency_usd_max_sum',
-                            'currency_usd_flexible_default_amount', 'currency_usd_fixed_amounts',
-                        )
-                    ),),
-                    array('section' => array(
-                        'name' => 'eur_currency',
-                        'title' => __('EUR currency options', 'leyka'),
-                        'is_default_collapsed' => false,
-                        'options' => array(
-                            'currency_eur_label', 'currency_eur_min_sum', 'currency_eur_max_sum',
-                            'currency_eur_flexible_default_amount', 'currency_eur_fixed_amounts',
-                        )
-                    ),),
                 );
                 break;
 
@@ -244,6 +209,44 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
 //                            'show_donation_comments_in_frontend',
                         )
                     ),),
+                    
+                    // currency
+                    array('section' => array(
+                        'name' => 'currency_rates',
+                        'title' => __('Currency rates options', 'leyka'),
+                        'is_default_collapsed' => false,
+                        'options' => array(
+                            'auto_refresh_currency_rates', 'currency_rur2usd', 'currency_rur2eur',
+                        )
+                    ),),
+                    array('section' => array(
+                        'name' => 'rur_currency',
+                        'title' => __('RUR currency options', 'leyka'),
+                        'is_default_collapsed' => false,
+                        'options' => array(
+                            'currency_rur_label', 'currency_rur_min_sum', 'currency_rur_max_sum', 
+                            'currency_rur_flexible_default_amount', 'currency_rur_fixed_amounts',
+                        )
+                    ),),
+                    array('section' => array(
+                        'name' => 'usd_currency',
+                        'title' => __('USD currency options', 'leyka'),
+                        'is_default_collapsed' => false,
+                        'options' => array(
+                            'currency_usd_label', 'currency_usd_min_sum', 'currency_usd_max_sum',
+                            'currency_usd_flexible_default_amount', 'currency_usd_fixed_amounts',
+                        )
+                    ),),
+                    array('section' => array(
+                        'name' => 'eur_currency',
+                        'title' => __('EUR currency options', 'leyka'),
+                        'is_default_collapsed' => false,
+                        'options' => array(
+                            'currency_eur_label', 'currency_eur_min_sum', 'currency_eur_max_sum',
+                            'currency_eur_flexible_default_amount', 'currency_eur_fixed_amounts',
+                        )
+                    ),),
+                    
                 );
                 break;
 

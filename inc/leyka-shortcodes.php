@@ -114,7 +114,7 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
 
     if( !$campaign ) {
         $campaign = get_post();
-    } else if(is_int($campaign)) {
+    } else if(is_numeric($campaign)) {
         $campaign = get_post($campaign);
     }
 
@@ -215,7 +215,7 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
 add_shortcode('leyka_payment_form', 'leyka_payment_form_screen');
 add_shortcode('leyka_campaign_form', 'leyka_payment_form_screen');
 function leyka_payment_form_screen($atts) {
-
+    
     $atts = shortcode_atts(array(
         'id' => 0,
         'template' => null,
@@ -235,7 +235,7 @@ function leyka_get_payment_form($campaign = null, $args = array()) {
 
     if( !$campaign ) {
         $campaign = get_post();
-    } elseif(is_int($campaign)){
+    } elseif(is_numeric($campaign)){
         $campaign = get_post($campaign);
     }
 
@@ -460,9 +460,11 @@ function leyka_inline_campaign(array $attributes = array()) {
     $campaign = leyka_get_validated_campaign($campaign_id);
     if( !$campaign ) {
         return is_super_admin() ? leyka_get_wrong_campaign_message($campaign) : '';
-    } else if($campaign->is_finished) {
-        return '';
     }
+    // v3.0 hotfix
+    //else if($campaign->is_finished) {
+    //    return '';
+    //}
 
     $template_id = $attributes['template'];
     $template_subdir = LEYKA_PLUGIN_DIR.'templates/leyka-'.$template_id;
