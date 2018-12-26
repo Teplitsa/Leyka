@@ -733,7 +733,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         }
 
-//        echo '<pre>'.print_r('Enqueueing...', 1).'</pre>';
         $js_data = apply_filters('leyka_admin_js_localized_strings', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
             'ajax_loader_url' => LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif',

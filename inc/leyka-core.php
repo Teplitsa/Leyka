@@ -910,7 +910,7 @@ class Leyka extends Leyka_Singleton {
 
         if( !$leyka_last_ver || $leyka_last_ver < '3.0' ) {
 
-            update_option('leyka_init_wizard_redirect', true);
+            update_option('leyka_init_wizard_redirect', !$leyka_last_ver);
             update_option('leyka_receiver_country', 'ru');
             update_option('leyka_receiver_legal_type', 'legal');
 
