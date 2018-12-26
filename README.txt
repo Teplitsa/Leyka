@@ -89,6 +89,9 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.0.1 =
+* Fix: different bugfixes.
+
 = 3.0 =
 * New: plugin settings UI updated.
 * New: Setup Wizards added: initial, Yandex.Kassa, CloudPayments.
