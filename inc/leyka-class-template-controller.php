@@ -74,10 +74,9 @@ abstract class Leyka_Template_Controller {
     public function get_template_data($campaign = false) {
 
         if( !$campaign ) {
-            $campaign = get_post();
+            $campaign = $this->get_current_campaign();
         }
 
-        $campaign = leyka_get_validated_campaign($campaign);
         if( !$campaign ) {
             return array(); /** @todo There is no such campaign. Mb, throw some exception here. */
         }
