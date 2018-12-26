@@ -39,8 +39,6 @@ function leyka_get_scale($campaign = null, $args = array()) {
         return '';
     }
 
-    $campaign = new Leyka_Campaign($campaign);
-
     $css_class = 'leyka-scale';
     if($args['show_button'] == 1 && !$campaign->target ) {
         $css_class .= ' has-button-alone';
