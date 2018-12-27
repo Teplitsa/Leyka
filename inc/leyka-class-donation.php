@@ -274,8 +274,21 @@ class Leyka_Donation_Management {
 
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-        $email_title = $donation->type == 'rebill' ?
-            leyka_options()->opt('email_recurring_init_thanks_title') : leyka_options()->opt('email_thanks_title');
+        $email_title = $donation->type === 'rebill' ?
+            (
+                $donation->init_recurring_payment_id === $donation->id ?
+                    leyka_options()->opt('email_recurring_init_thanks_title') :
+                    leyka_options()->opt('email_recurring_ongoing_thanks_title')
+            ) :
+            leyka_options()->opt('email_thanks_title');
+
+        $email_text = $donation->type === 'rebill' ?
+            (
+                $donation->init_recurring_payment_id === $donation->id ?
+                    leyka_options()->opt('email_recurring_init_thanks_text') :
+                    leyka_options()->opt('email_recurring_ongoing_thanks_text')
+            ) :
+            leyka_options()->opt('email_thanks_text');
 
         $res = wp_mail(
             $donor_email,
@@ -317,14 +330,7 @@ class Leyka_Donation_Management {
                         $donation
                     ),
                 ),
-                apply_filters(
-                    'leyka_email_thanks_text',
-                    $donation->type == 'rebill' ?
-                        leyka_options()->opt('email_recurring_init_thanks_text') :
-                        leyka_options()->opt('email_thanks_text'),
-                    $donation,
-                    $campaign
-                )
+                apply_filters('leyka_email_thanks_text', $email_text, $donation, $campaign)
             )),
             array('From: '.apply_filters(
                 'leyka_email_from_name',
@@ -1477,8 +1483,8 @@ class Leyka_Donation {
 
     public static function add(array $params = array()) {
 
-        $amount = empty($params['amount']) ? leyka_pf_get_amount_value() : round((float)$params['amount'], 2);
-        if( !$amount ) {
+        $amount = isset($params['amount']) ? round((float)$params['amount'], 2) : leyka_pf_get_amount_value();
+        if( !$amount && empty($params['force_insert']) ) {
             return new WP_Error('incorrect_amount_given', __('Empty or incorrect amount given while trying to add a donation', 'leyka'));
         }
 
@@ -1497,7 +1503,7 @@ class Leyka_Donation {
         add_post_meta($id, 'leyka_donation_amount', (float)$amount);
 
         $value = empty($params['donor_name']) ? leyka_pf_get_donor_name_value() : trim($params['donor_name']);
-        if($value && !leyka_validate_donor_name($value)) { // Validate donor's name
+        if($value && !leyka_validate_donor_name($value) && empty($params['force_insert'])) { // Validate donor's name
 
             wp_delete_post($id, true);
             return new WP_Error('incorrect_donor_name', __('Incorrect donor name given while trying to add a donation', 'leyka'));
@@ -1509,7 +1515,7 @@ class Leyka_Donation {
         add_post_meta($id, 'leyka_donor_name', htmlentities($value, ENT_QUOTES, 'UTF-8'));
 
         $value = empty($params['donor_email']) ? leyka_pf_get_donor_email_value() : $params['donor_email'];
-        if($value && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+        if($value && !filter_var($value, FILTER_VALIDATE_EMAIL) && empty($params['force_insert'])) {
 
             wp_delete_post($id, true);
             return new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));

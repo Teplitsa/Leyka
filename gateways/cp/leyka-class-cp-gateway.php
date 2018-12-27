@@ -248,14 +248,14 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                     if( !$donation || is_wp_error($donation) ) {
                         /** @todo Send some email to the admin */
-                        die(json_encode(array('code' => '0')));
+                        die(json_encode(array('code' => '13')));
                     }
 
                     $init_recurring_donation = $this->get_init_recurrent_donation($_POST['SubscriptionId']);
 
                     if( !$init_recurring_donation || is_wp_error($init_recurring_donation) ) {
                         /** @todo Send some email to the admin */
-                        die(json_encode(array('code' => '0')));
+                        die(json_encode(array('code' => '13')));
                     }
 
                     $donation->init_recurring_donation_id = $init_recurring_donation->id;
@@ -348,6 +348,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             $donation = new Leyka_Donation(Leyka_Donation::add(array(
                 'status' => 'submitted',
                 'transaction_id' => $cp_transaction_id,
+                'force_insert' => true, // Turn off donation fields validity checks
             )));
         }
 
