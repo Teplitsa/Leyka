@@ -2,7 +2,8 @@
 
 class Leyka_Options_Allocator extends Leyka_Singleton {
 
-    protected static $_instance = null;
+    protected static $_instance;
+
     protected $_tabs = array();
 
     protected function __construct() {
@@ -13,16 +14,15 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
             'email'       => __('Notifications', 'leyka'),
             'technical'   => __('Tech settings', 'leyka'),
             'additional'  => __('Misc', 'leyka'),
-            //'currency'    => __('Currency', 'leyka'),
             //'commission'  => __('Commission', 'leyka'),
         ));
     }
 
-    public function get_tabs() {
+    public function getTabs() {
         return $this->_tabs;
     }
 
-    public function get_tab_options($tab_name) {
+    public function getTabOptions($tab_name) {
 
         if(empty($this->_tabs[$tab_name])) {
             return false;
@@ -88,7 +88,6 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                             'person_terms_of_service_text', 'agree_to_terms_link_action',
                         )
                     ),),
-                    
                     array('section' => array(
                         'name' => 'terms_of_pd',
                         'title' => __('Agreement on personal data', 'leyka'),
@@ -110,13 +109,6 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                             'receiver_legal_type',
                         )
                     )),
-                );
-                break;
-
-            case 'payment': break; // Custom settings page templates used
-
-            case 'currency':
-                $options_allocated = array(
                 );
                 break;
 
@@ -250,26 +242,26 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                 );
                 break;
 
-            case 'commission':
-                $options_allocated = array(
-                    array('section' => array(
-                        'name' => 'payment_operators_commission_options',
-                        'title' => __('Payments operators commission', 'leyka'),
-                        'is_default_collapsed' => false,
-                        'options' => array(
-                            'commission',
-                        )
-                    ),),
-                    array('section' => array(
-                        'name' => 'donations_total_amount_usage_options',
-                        'title' => __('Total amount usage', 'leyka'),
-                        'is_default_collapsed' => false,
-                        'options' => array(
-                            'admin_donations_list_display', 'widgets_total_amount_usage', /*'archive_page_total_amount_usage',*/
-                        )
-                    ),),
-                );
-                break;
+//            case 'commission':
+//                $options_allocated = array(
+//                    array('section' => array(
+//                        'name' => 'payment_operators_commission_options',
+//                        'title' => __('Payments operators commission', 'leyka'),
+//                        'is_default_collapsed' => false,
+//                        'options' => array(
+//                            'commission',
+//                        )
+//                    ),),
+//                    array('section' => array(
+//                        'name' => 'donations_total_amount_usage_options',
+//                        'title' => __('Total amount usage', 'leyka'),
+//                        'is_default_collapsed' => false,
+//                        'options' => array(
+//                            'admin_donations_list_display', 'widgets_total_amount_usage', /*'archive_page_total_amount_usage',*/
+//                        )
+//                    ),),
+//                );
+//                break;
             
             case 'technical':
                 $options_allocated = array(

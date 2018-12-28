@@ -801,7 +801,7 @@ class Leyka extends Leyka_Singleton {
                     !in_array($script, array(
                         'leyka-settings-common.php',
                         'leyka-settings-payment.php',
-                        'leyka-settings-payment-old.php',
+//                        'leyka-settings-payment-old.php',
                         'leyka-settings-payment-gateway.php',
                         'leyka-settings-payment-gateways-list.php',
                         'leyka-settings-payment-pm-order.php',

@@ -235,7 +235,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 	public function statusMetaboxScreen(){
 
-		$tabs = Leyka_Options_Allocator::getInstance()->get_tabs();
+		$tabs = Leyka_Options_Allocator::getInstance()->getTabs();
 		if($tabs) {?>
 
 		<table class="leyka-widget-table status">
@@ -417,7 +417,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	        /** @todo Find what's wrong with the nonce check below: */
 //	        && wp_verify_nonce('_leyka_nonce', "leyka_settings_{$current_stage}")
         ) {
+
 			do_action('leyka_settings_submit', $current_stage);
+			do_action("leyka_settings_{$current_stage}_submit");
+
 		}?>
 
 		<div class="wrap leyka-admin leyka-settings-page">
@@ -452,7 +455,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
                     do_action("leyka_settings_pre_{$current_stage}_fields");
 
-                    foreach(leyka_opt_alloc()->get_tab_options($current_stage) as $option) { // Render each option/section
+                    foreach(leyka_opt_alloc()->getTabOptions($current_stage) as $option) { // Render each option/section
 
 						if($is_separate_sections_forms) {?>
 
@@ -544,7 +547,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		$base_url = 'admin.php?page=leyka_settings';
 
 		$out = '';
-		foreach(Leyka_Options_Allocator::getInstance()->get_tabs() as $tab_id => $tab_label) {
+		foreach(Leyka_Options_Allocator::getInstance()->getTabs() as $tab_id => $tab_label) {
 			$out .= '<a href="'
 			    .($this->get_default_settings_tab() === $tab_id ? $base_url : add_query_arg('stage', $tab_id, $base_url))
 			    .'" class="'.($this->get_current_settings_tab() === $tab_id ? 'nav-tab nav-tab-active' : 'nav-tab').'">'

@@ -1,7 +1,3 @@
-// Tmp - place it inside .leyka-admin
-
-// Tmp end
-
 .leyka-admin {
     
     @include body-text();
@@ -506,8 +502,8 @@
 .admin_page_leyka_settings_new {
     .update-nag {
         margin-left: -20px;
-        margin-top: 0px;
-        margin-right: 0px;
+        margin-top: 0;
+        margin-right: 0;
         width: calc(100% - 14px);
     }
 }
@@ -518,7 +514,7 @@
 
 .leyka-admin {
     #message {
-        margin-left: 0px;
+        margin-left: 0;
     }
 }
 

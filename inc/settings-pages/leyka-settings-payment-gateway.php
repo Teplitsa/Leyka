@@ -24,21 +24,21 @@ if( !$gateway ) {?>
             <h2 class="gateway-header-element"><?php echo $gateway->title;?></h2>
 
             <?php if($gateway->registration_url) {?>
-                <a href="<?php echo $gateway->registration_url;?>" class="gateway-link gateway-registration-link" target="_blank">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-outer-link.svg" alt="">
-                </a>
+            <a href="<?php echo $gateway->registration_url;?>" class="gateway-link gateway-registration-link" target="_blank">
+                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-outer-link.svg" alt="">
+            </a>
             <?php }?>
 
             <?php if($gateway->docs_url) {?>
-                <a href="<?php echo $gateway->docs_url;?>" class="gateway-link gateway-docs-link" target="_blank">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-docs-link.svg" alt="">
-                </a>
+            <a href="<?php echo $gateway->docs_url;?>" class="gateway-link gateway-docs-link" target="_blank">
+                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-docs-link.svg" alt="">
+            </a>
             <?php }?>
 
         </div>
 
         <?php leyka_gateway_details_html($gateway);?>
-        
+
     </div>
 
     <div class="gateway-settings-wrapper">
@@ -90,6 +90,7 @@ if( !$gateway ) {?>
             <h3><?php esc_html_e('Payment methods', 'leyka');?></h3>
 
             <?php $pm_list_by_categories = $gateway->get_payment_methods(null, false, true);
+            $commissions = leyka_options()->opt('commission');
 
             foreach($pm_list_by_categories as $category_id => $pm_list) {
 
@@ -107,8 +108,7 @@ if( !$gateway ) {?>
 
                         <label>
                             <span class="field-component field">
-                                <input type="checkbox" id="<?php echo $pm->full_id;?>" class="pm-available" name="leyka_pm_available[]" value="<?php echo $pm->full_id;?>" data-pm-label="<?php echo $pm->title_backend;?>" data-pm-label-backend="<?php echo $pm->label_backend;?>" <?php echo in_array($pm->full_id, $pm_available) ? 'checked="checked"' : '';?>>
-                                <?php echo $pm->title_backend;?>
+                                <input type="checkbox" id="<?php echo $pm->full_id;?>" class="pm-available" name="leyka_pm_available[]" value="<?php echo $pm->full_id;?>" data-pm-label="<?php echo $pm->title_backend;?>" data-pm-label-backend="<?php echo $pm->label_backend;?>" <?php echo in_array($pm->full_id, $pm_available) ? 'checked="checked"' : '';?>> <?php echo $pm->title_backend;?>
                             </span>
                         </label>
 
@@ -119,6 +119,12 @@ if( !$gateway ) {?>
                         </span>
                         <?php }?>
 
+                    </div>
+
+                    <div id="<?php echo $pm->full_id.'-commission-wrapper';?>" class="pm-commission-wrapper" <?php echo in_array($pm->full_id, $pm_available) ? '' : 'style="display:none;"';?>>
+                        <label>
+                            <input type="number" class="leyka-commission-field" name="leyka_commission[<?php echo $pm->full_id;?>]" value="<?php echo empty($commissions[$pm->full_id]) ? '' : (float)$commissions[$pm->full_id];?>" step="0.01" min="0.0" max="100.0" id="leyka_commission_<?php echo $pm->full_id;?>" pattern="[0-9]+(,[0-9]+)?" placeholder="<?php esc_attr_e('Commission size', 'leyka')?>">%
+                        </label>
                     </div>
 
                 </div>

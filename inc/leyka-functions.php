@@ -867,7 +867,7 @@ function leyka_get_actual_currency_rates() {
 function leyka_are_settings_complete($settings_tab) {
 
     $settings_complete = true;
-    $tab_options = leyka_opt_alloc()->get_tab_options($settings_tab); // Specially to support PHP strict standards
+    $tab_options = leyka_opt_alloc()->getTabOptions($settings_tab); // Specially to support PHP strict standards
     
     $receiver_legal_type = leyka_options()->opt_safe('receiver_legal_type');
     
@@ -1647,16 +1647,15 @@ if( !function_exists('leyka_save_option') ) {
 
         } else if(stristr($option_type, 'custom_') !== false && isset($_POST["leyka_$setting_id"])) { // Custom field types
             do_action("leyka_save_custom_option-$setting_id", $_POST["leyka_$setting_id"]);
-        } else { // Simple field types
-            if(isset($_POST["leyka_$setting_id"])) {
-                $old_value = leyka_options()->opt($setting_id);
-                
-                if($old_value != $_POST["leyka_$setting_id"]) {
-                    leyka_options()->opt($setting_id, esc_attr(stripslashes($_POST["leyka_$setting_id"])));
-                }
-                
-                do_action("leyka_after_save_option-$setting_id", $old_value, $_POST["leyka_$setting_id"]);
+        } else if(isset($_POST["leyka_$setting_id"])) { // Simple field types
+
+            $old_value = leyka_options()->opt($setting_id);
+            if($old_value != $_POST["leyka_$setting_id"]) {
+                leyka_options()->opt($setting_id, esc_attr(stripslashes($_POST["leyka_$setting_id"])));
             }
+
+            do_action("leyka_after_save_option-$setting_id", $old_value, $_POST["leyka_$setting_id"]);
+
         }
 
     }

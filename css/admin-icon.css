@@ -9,7 +9,7 @@
 #adminmenu #toplevel_page_leyka div.wp-menu-image:before {
 	display: none; }
 	
-#adminmenu #toplevel_page_leyka div.wp-menu-image:after  {
+#adminmenu #toplevel_page_leyka div.wp-menu-image:after {
 	content: '';
 	display: block;
 	width: 18px;
@@ -19,7 +19,7 @@
 	position: absolute;
 	top: 8px;
 	left: 8px;
-    }
+}
 
 #adminmenu #toplevel_page_leyka:hover .wp-menu-image:after,
 #adminmenu #toplevel_page_leyka .wp-has-current-submenu .wp-menu-image:after {
@@ -78,44 +78,4 @@ span.dashicons-editor-help.has-tooltip {
     -webkit-transition: all .1s ease-in-out;
     transition: all .1s ease-in-out;
 }
-
-/* Gateway commissions field */
-.leyka-commission-container {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-
-    margin-bottom: -1px;
-    border-bottom: 1px solid black;
-}
-
-.leyka-commission-container h4 {
-    padding: 10px 5px;
-    width: 180px;
-}
-
-.leyka-commission-container .leyka-commission-pm-list-container {
-    display: flex;
-    flex-flow: row wrap;
-    flex-basis: 90%;
-}
-
-.leyka-commission-container .leyka-commission-pm {
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: flex-start;
-
-    flex-basis: 250px;
-
-    margin-bottom: -1px;
-    padding: 10px;
-}
-
-.leyka-commission-container .leyka-commission-pm:hover {
-    background-color: #8aed87;
-}
-
-.leyka-commission-container .leyka-commission-field {
-    width: 80px;
-}
-/* Gateway commissions field - END */
+/** Admin notices - END */

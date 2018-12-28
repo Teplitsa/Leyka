@@ -407,17 +407,19 @@ function leyka_get_commission_values($value) {
 add_action('leyka_save_custom_option-commission', 'leyka_save_custom_option_commission');
 function leyka_save_custom_option_commission($option_value) {
 
+    $all_pm_commissions = leyka_options()->opt('commission');
+
     foreach($option_value as $pm_full_id => $commission) {
 
         $commission = trim($commission);
-        $commission = (float)str_replace(',', '.', $commission);
+        $commission = $commission ? (float)str_replace(array(',', ' ', '-'), array('.', '', ''), $commission) : 0.0;
 
-        $option_value[$pm_full_id] = $commission < 0.0 ? -$commission : $commission;
+        $all_pm_commissions[$pm_full_id] = $commission;
 
     }
 
-    if($option_value != leyka_options()->opt('commission')) {
-        leyka_options()->opt('commission', $option_value);
+    if($all_pm_commissions != leyka_options()->opt('commission')) {
+        leyka_options()->opt('commission', $all_pm_commissions);
     }
 
 }
