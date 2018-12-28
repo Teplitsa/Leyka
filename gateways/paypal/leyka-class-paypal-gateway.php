@@ -89,7 +89,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
         if(empty($this->_payment_methods['paypal_all'])) {
-            $this->_payment_methods['paypal_all'] = Leyka_Paypal_All::get_instance();
+            $this->_payment_methods['paypal_all'] = Leyka_Paypal_All::getInstance();
         }
     }
 
@@ -677,7 +677,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
     public function enqueue_gateway_scripts() {
 
-        if( !Leyka_Paypal_All::get_instance()->active ) {
+        if( !Leyka_Paypal_All::getInstance()->active ) {
             return;
         }
 
@@ -694,7 +694,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
         wp_enqueue_script(
             'leyka-paypal-front',
-            LEYKA_PLUGIN_BASE_URL.'gateways/'.self::get_instance()->id.'/js/leyka.paypal.js',
+            LEYKA_PLUGIN_BASE_URL.'gateways/'.self::getInstance()->id.'/js/leyka.paypal.js',
 	        $dependencies,
             LEYKA_VERSION,
             true
@@ -987,6 +987,6 @@ class Leyka_Paypal_All extends Leyka_Payment_Method {
 }
 
 function leyka_add_gateway_paypal() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka()->add_gateway(Leyka_Paypal_Gateway::get_instance());
+    leyka()->add_gateway(Leyka_Paypal_Gateway::getInstance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_paypal');

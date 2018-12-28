@@ -1609,7 +1609,7 @@ abstract class Leyka_Singleton {
     /**
      * @return static
      */
-    public static function get_instance() {
+    public static function getInstance() {
 
         if(null === static::$_instance) {
             static::$_instance = new static();

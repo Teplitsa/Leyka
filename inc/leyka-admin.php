@@ -63,7 +63,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
                 $admin_title = get_bloginfo('name')
                     .' &#8212; '
-                    .Leyka_Settings_Factory::get_instance()->getController($screen_full_id[1])->title;
+                    .Leyka_Settings_Factory::getInstance()->getController($screen_full_id[1])->title;
 
             }
 
@@ -235,7 +235,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 	public function statusMetaboxScreen(){
 
-		$tabs = Leyka_Options_Allocator::get_instance()->get_tabs();
+		$tabs = Leyka_Options_Allocator::getInstance()->get_tabs();
 		if($tabs) {?>
 
 		<table class="leyka-widget-table status">
@@ -521,8 +521,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         try {
 
-            Leyka_Settings_Factory::get_instance()->getRender($screen_full_id[0])
-                ->setController(Leyka_Settings_Factory::get_instance()->getController($screen_full_id[1]))
+            Leyka_Settings_Factory::getInstance()->getRender($screen_full_id[0])
+                ->setController(Leyka_Settings_Factory::getInstance()->getController($screen_full_id[1]))
                 ->renderPage();
 
         } catch(Exception $ex) {
@@ -544,7 +544,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		$base_url = 'admin.php?page=leyka_settings';
 
 		$out = '';
-		foreach(Leyka_Options_Allocator::get_instance()->get_tabs() as $tab_id => $tab_label) {
+		foreach(Leyka_Options_Allocator::getInstance()->get_tabs() as $tab_id => $tab_label) {
 			$out .= '<a href="'
 			    .($this->get_default_settings_tab() === $tab_id ? $base_url : add_query_arg('stage', $tab_id, $base_url))
 			    .'" class="'.($this->get_current_settings_tab() === $tab_id ? 'nav-tab nav-tab-active' : 'nav-tab').'">'

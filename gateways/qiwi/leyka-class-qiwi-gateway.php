@@ -172,7 +172,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
         if(empty($this->_payment_methods['card'])) {
-            $this->_payment_methods['card'] = Leyka_Qiwi_Card::get_instance();
+            $this->_payment_methods['card'] = Leyka_Qiwi_Card::getInstance();
         }
     }
 
@@ -214,6 +214,6 @@ class Leyka_Qiwi_Card extends Leyka_Payment_Method {
 }
 
 function leyka_add_gateway_qiwi() {
-    leyka_add_gateway(Leyka_Qiwi_Gateway::get_instance());
+    leyka_add_gateway(Leyka_Qiwi_Gateway::getInstance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_qiwi');

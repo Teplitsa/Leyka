@@ -109,7 +109,7 @@ class Leyka extends Leyka_Singleton {
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-admin.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-donations-export.php');
 
-            Leyka_Admin_Setup::get_instance();
+            Leyka_Admin_Setup::getInstance();
 
             if(get_option('leyka_init_wizard_redirect')) {
 
@@ -1181,7 +1181,7 @@ class Leyka extends Leyka_Singleton {
         register_post_type(Leyka_Campaign_Management::$post_type, $args);
 
         /** Campaign editing messages */
-        add_filter('post_updated_messages', array(Leyka_Campaign_Management::get_instance(), 'set_admin_messages'));
+        add_filter('post_updated_messages', array(Leyka_Campaign_Management::getInstance(), 'set_admin_messages'));
 
         register_post_status('submitted', array(
             'label'                     => _x('Submitted', '«Submitted» donation status', 'leyka'),
@@ -1479,7 +1479,7 @@ class Leyka extends Leyka_Singleton {
  * @return Leyka Core object
  */
 function leyka() {
-    return Leyka::get_instance();
+    return Leyka::getInstance();
 }
 
 /** Orphan strings to localize */

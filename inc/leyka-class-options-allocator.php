@@ -353,5 +353,5 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
 
 /** @return Leyka_Options_Allocator */
 function leyka_opt_alloc() {
-    return Leyka_Options_Allocator::get_instance();
+    return Leyka_Options_Allocator::getInstance();
 }

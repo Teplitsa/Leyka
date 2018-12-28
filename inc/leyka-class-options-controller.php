@@ -395,7 +395,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
  * @return Leyka_Options_Controller
  */
 function leyka_options() {
-    return Leyka_Options_Controller::get_instance();
+    return Leyka_Options_Controller::getInstance();
 }
 
 /** Special field: gateway commission options */

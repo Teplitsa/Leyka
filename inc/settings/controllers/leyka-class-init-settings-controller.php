@@ -712,7 +712,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             } else { // Enable the Quittance PM
 
                 $pm_data = leyka_options()->opt('pm_available');
-                $quittance_pm_full_id = Leyka_Bank_Order::get_instance()->full_id;
+                $quittance_pm_full_id = Leyka_Bank_Order::getInstance()->full_id;
 
                 if( !in_array($quittance_pm_full_id, $pm_data) ) {
 
@@ -833,7 +833,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         if(leyka_are_bank_essentials_set()) {
 
             $pm_data = leyka_options()->opt('pm_available');
-            $quittance_pm_full_id = Leyka_Bank_Order::get_instance()->full_id;
+            $quittance_pm_full_id = Leyka_Bank_Order::getInstance()->full_id;
 
             if( !in_array($quittance_pm_full_id, $pm_data) ) {
 
