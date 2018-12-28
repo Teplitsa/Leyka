@@ -123,7 +123,7 @@ if( !$gateway ) {?>
 
                     <div id="<?php echo $pm->full_id.'-commission-wrapper';?>" class="pm-commission-wrapper" <?php echo in_array($pm->full_id, $pm_available) ? '' : 'style="display:none;"';?>>
                         <label>
-                            <input type="number" class="leyka-commission-field" name="leyka_commission[<?php echo $pm->full_id;?>]" value="<?php echo empty($commissions[$pm->full_id]) ? '' : (float)$commissions[$pm->full_id];?>" step="0.01" min="0.0" max="100.0" id="leyka_commission_<?php echo $pm->full_id;?>" pattern="[0-9]+(,[0-9]+)?" placeholder="<?php esc_attr_e('Commission size', 'leyka')?>">%
+                            <input type="text" class="leyka-commission-field" name="leyka_commission[<?php echo $pm->full_id;?>]" value="<?php echo empty($commissions[$pm->full_id]) ? '' : (float)$commissions[$pm->full_id];?>" id="leyka_commission_<?php echo $pm->full_id;?>" data-inputmask="'alias': 'percentage'" placeholder="<?php esc_attr_e('Commission size', 'leyka')?>">
                         </label>
                     </div>
 
