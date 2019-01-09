@@ -18,10 +18,9 @@ jQuery(document).ready(function($){
 
         // Selected PM don't belong to the CP gateway:
 
-        var $pm_field = $form.find('input[name="leyka_payment_method"]');
-        $pm_field = $pm_field.length === 1 ? $pm_field : $pm_field.find(':checked');
+        var $pm_field = $form.find('input[name="leyka_payment_method"][value*="cp-"]');
 
-        if($pm_field.length <= 0 || $pm_field.val().indexOf('cp') < 0) {
+        if($pm_field.length <= 0 || $pm_field.val().indexOf('cp') < 0 || !$pm_field.prop('checked')) {
             return;
         }
 
