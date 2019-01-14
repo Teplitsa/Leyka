@@ -746,8 +746,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 			'disconnect_stats' => esc_html__('Disconnect statistics', 'leyka'),
         ));
 
-        if($leyka_admin_new) {
-
+		if($leyka_admin_new) {
+			
             wp_enqueue_script('leyka-settings', LEYKA_PLUGIN_BASE_URL.'assets/js/admin.js', array('jquery',), LEYKA_VERSION, true);
             wp_localize_script('leyka-settings', 'leyka', $js_data);
 

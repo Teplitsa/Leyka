@@ -385,3 +385,11 @@
 
     }
 }
+
+@mixin leyka-outline-none {
+    outline: 0 !important;
+    -webkit-appearance:none;
+    box-shadow: none;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+}

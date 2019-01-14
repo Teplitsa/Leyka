@@ -4,22 +4,27 @@
 add_action('leyka_render_section', 'leyka_render_section_area');
 function leyka_render_section_area($section){?>
 
-    <div class="leyka-options-section <?php echo $section['is_default_collapsed'] ? 'collapsed' : '';?>" id="<?php echo $section['name'];?>">
+    <div class="leyka-options-section <?php echo $section['is_default_collapsed'] ? 'collapsed' : '';?> <?php echo !empty($section['tabs']) ? 'with-tabs' : '';?>" id="<?php echo $section['name'];?>">
         <div class="header"><h3><?php echo esc_attr($section['title']);?></h3></div>
         <div class="content">
             
             <?php if(!empty($section['description'])) {?>
                 <div class="section-description"><?php echo $section['description'];?></div>
-            <?php } ?>
+            <?php }
             
-            <?php foreach($section['options'] as $option) {
-
-                $option_info = leyka_options()->get_info_of($option);
-                do_action("leyka_render_{$option_info['type']}", $option, $option_info);
-
-            }?>
+            if(!empty($section['content_area_render']) && function_exists($section['content_area_render'])) {
+                call_user_func($section['content_area_render'], $section);
+            }
+            else {
+                foreach($section['options'] as $option) {
+    
+                    $option_info = leyka_options()->get_info_of($option);
+                    do_action("leyka_render_{$option_info['type']}", $option, $option_info);
+    
+                }
+            }
             
-            <?php if(!empty($section['is_separate_sections_forms'])) { ?>
+            if(!empty($section['is_separate_sections_forms'])) { ?>
                 <p class="submit">
                     <input type="submit" name="<?php echo "leyka_settings_" . $section['current_stage'];?>_submit" <?php if(!empty($section['action_button']['id'])) { printf(' id="%s" ', $section['action_button']['id']); } ?>" value="<?php echo !empty($section['action_button']['title']) ? $section['action_button']['title'] : __('Save', 'leyka');?>" class="button-primary">
                 </p>
@@ -503,3 +508,72 @@ function leyka_render_gateways_commission_field($option_name, $data){
 
 <?php }
 // [Special field] Gateways commission options - END
+
+function leyka_render_tabbed_section_options_area($section) {
+    $default_active_tab_index = 0;
+    
+    if(!empty($section['tabs'])) {
+        ?>
+        <div class="section-tabs-wrapper">
+        <div class="section-tab-nav">
+            
+        <?php
+        $counter = 0;
+        foreach($section['tabs'] as $tab_name => $tab) {
+            ?>
+            <a class="section-tab-nav-item <?php echo $counter === $default_active_tab_index ? 'active' : '';?>" href="#" data-target="<?php echo $tab_name;?>"><?php echo $tab['title'];?></a>
+            <?php
+            $counter += 1;
+        }?>
+        
+        </div>
+        <?php
+        
+        $counter = 0;
+        foreach($section['tabs'] as $tab_name => $tab) {
+            ?>
+            <div class="section-tab-content tab-<?php echo $tab_name;?> <?php echo $counter === $default_active_tab_index ? 'active' : '';?> <?php echo !empty($tab['screenshots']) ? 'with-sidebar' : '';?>">
+                <div class="tab-content-options-wrapper">
+                    
+                    <?php foreach($tab['options'] as $option) {
+                        $option_info = leyka_options()->get_info_of($option);
+                        do_action("leyka_render_{$option_info['type']}", $option, $option_info);
+                    }?>
+                    
+                    <?php if(!empty($tab['extra_options_title'])) {?>
+                    <div class="extra-options">
+                        <div id="leyka_scale_widget_place-wrapper" class="leyka-radio-field-wrapper field-radio ">
+                            <span class="field-component title extra-options-title">
+                                <span class="text"><?php echo $tab['extra_options_title'];?></span>
+                            </span>
+                        </div>
+                        
+                        <?php foreach($tab['extra_options'] as $option) {
+                            $option_info = leyka_options()->get_info_of($option);
+                            do_action("leyka_render_{$option_info['type']}", $option, $option_info);
+                        }?>
+                    </div>
+                    <?php } ?>
+                </div>
+
+                <?php if(!empty($tab['screenshots'])) {?>
+                <div class="tab-screenshots">
+                    <?php foreach($tab['screenshots'] as $screenshot) {?>
+                    <div class="tab-screenshot-nav left"></div>
+                    <div class="tab-screenshot-item">
+                        <img src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/' . $screenshot;?>" />
+                    </div>
+                    <div class="tab-screenshot-nav right"></div>
+                    <?php }?>
+                </div>
+                <?php }?>
+                
+            </div>
+            <?php
+            $counter += 1;
+        }?>
+        
+        </div><!-- end section-tabs-wrapper -->
+        <?php
+    }
+}

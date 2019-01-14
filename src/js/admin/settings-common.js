@@ -107,3 +107,17 @@ jQuery(document).ready(function($){
         }
     });
 });
+
+// section tabs
+jQuery(document).ready(function($){
+    $('.section-tab-nav-item').click(function(e){
+        e.preventDefault();
+        var $tabs = $(this).closest('.section-tabs-wrapper');
+        
+        $tabs.find('.section-tab-nav-item').removeClass('active');
+        $tabs.find('.section-tab-content').removeClass('active');
+        
+        $(this).addClass('active');
+        $tabs.find('.section-tab-content.tab-' + $(this).data('target')).addClass('active');
+    });
+});

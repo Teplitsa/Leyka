@@ -1,0 +1,100 @@
+.leyka-admin .leyka-options-section {
+    
+    &.with-tabs .content > div {
+        max-width: inherit;
+    }
+    
+    .section-tabs-wrapper {
+        .section-tab-nav {
+            display: flex;
+            border-bottom: 1px solid $color-section-tabs-line;
+            height: 2rem;
+            justify-content: flex-start;
+            
+            a.section-tab-nav-item {
+                @include wizard-text();
+                color: $color-section-tabs-text;
+                height: 2rem;
+                margin-right: 2rem;
+                border-bottom: 1px solid $color-section-tabs-line;
+                text-decoration: none;
+                
+                &:active, &:focus {
+                    @include leyka-outline-none();
+                }
+                
+                &.active, &:hover {
+                    color: $color-section-tabs-text-active;
+                    border-bottom: 1px solid $color-section-tabs-line-active;
+                }
+                
+                &:first-child {
+                    margin-right: 1.5rem;
+                }
+            }
+        }
+        
+        .section-tab-content {
+            display: none;
+            padding-top: .3em;
+            
+            &.with-sidebar .tab-content-options-wrapper {
+                width: 335px;
+            }
+            
+            &.active {
+                display: flex;
+            }
+            
+            .extra-options {
+                .field-component.title {
+                    display: none;
+                    
+                    &.extra-options-title {
+                        display: inline-block;
+                        margin-bottom: 0.5rem;
+                    }
+                }
+                
+                & > div {
+                    margin-bottom: 0.5rem;
+                }
+            }
+            
+            .tab-content-options-wrapper {
+                & > div {
+                    margin-top: 1.2rem;
+                }
+            }
+            
+            .tab-screenshots {
+                padding-left: 44px;
+                display: flex;
+                justify-content: center;
+                margin-top: 1.2rem;
+                
+                .tab-screenshot-nav {
+                    width: 18px;
+                    
+                    &.left {
+                        margin-right: 1rem;
+                    }
+                    
+                    &.right {
+                        margin-left: 1rem;
+                    }
+                }
+            }
+            
+            .field-component.title .required {
+                display: none;
+            }
+            
+            .field-component.field {
+                label {
+                    font-weight: 400;
+                }
+            }
+        }
+    }
+}
