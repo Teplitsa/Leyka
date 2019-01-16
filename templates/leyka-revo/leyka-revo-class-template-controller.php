@@ -5,10 +5,9 @@
 
 class Leyka_Revo_Template_Controller extends Leyka_Template_Controller {
 
-    /** @var $_instance Leyka_Template_Controller */
     protected static $_instance;
 
-    protected function _generate_template_data(Leyka_Campaign $campaign) {
+    protected function _generateTemplateData(Leyka_Campaign $campaign) {
 
         if( !empty($this->_template_data[$campaign->id]) ) {
             return;
@@ -25,9 +24,8 @@ class Leyka_Revo_Template_Controller extends Leyka_Template_Controller {
             'amount_max' => leyka_options()->opt('revo_template_slider_max_sum'),
             'amount_max_total' => leyka_options()->opt('leyka_currency_'.$main_currency_id.'_max_sum'),
             'pm_list' => leyka_get_pm_list(true, $main_currency_id),
-//            '' => ,
         );
 
     }
 
-} //class end
+}
