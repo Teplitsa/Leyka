@@ -1410,9 +1410,9 @@ class Leyka extends Leyka_Singleton {
             $custom_templates = glob(STYLESHEETPATH.'/leyka-template-*.php');
             $custom_templates = $custom_templates ? $custom_templates : array();
 
-            $this->templates = array_merge(
-                $custom_templates,
-                glob(LEYKA_PLUGIN_DIR.'templates/leyka-template-*.php')
+            $this->templates = apply_filters(
+                'leyka_templates_list',
+                array_merge($custom_templates, glob(LEYKA_PLUGIN_DIR.'templates/leyka-template-*.php'))
             );
 
         }
