@@ -9,8 +9,8 @@
     <h4><?php esc_html_e('Download the documents:', 'leyka');?></h4>
     
     <ul>
-        <li><a href="https://cloudpayments.ru/Docs/Oferta_scan.pdf" target="_blank"><?php esc_html_e('CloudPayments terms of usе - for your information', 'leyka');?></a></li>
-        <li><a href="https://cloudpayments.ru/Docs/%D0%9F%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5%201.docx" target="_blank"><?php esc_html_e('Download and fill out the Annex #1', 'leyka');?></a></li>
+        <li><a href="https://cloudpayments.ru/wiki/podkluchenie/poryadok_podkluchenia/oferta" target="_blank"><?php esc_html_e('CloudPayments terms of usе - for your information', 'leyka');?></a></li>
+        <li><a href="https://static.cloudpayments.ru/docs/%D0%9F%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5%201.docx" target="_blank"><?php esc_html_e('Download and fill out the Annex #1', 'leyka');?></a></li>
     </ul>
 
     <p class="org-data fill-explain"><?php esc_html_e('You will have to use your organization data.', 'leyka');?></p>
