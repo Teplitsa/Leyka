@@ -46,18 +46,28 @@
                 display: flex;
             }
             
-            .extra-options {
+            .tab-section-options {
                 .field-component.title {
                     display: none;
                     
-                    &.extra-options-title {
-                        display: inline-block;
-                        margin-bottom: 0.5rem;
+                    &.tab-section-options-title {
+                        display: block;
+                        font-size: 14px;
+                        line-height: 21px;
+                        margin-bottom: 1rem;
+                    }
+                }
+                
+                #leyka_donation_submit_text-wrapper, #leyka_revo_template_slider_max_sum-wrapper,
+                #leyka_revo_donation_complete_button_text-wrapper {
+                    .field-component.title {
+                        display: block;
+                        padding-top: 6px;
                     }
                 }
                 
                 & > div {
-                    margin-bottom: 0.5rem;
+                    margin-bottom: 0.9rem;
                 }
             }
             
@@ -73,8 +83,43 @@
                 justify-content: center;
                 margin-top: 1.2rem;
                 
+                .tab-screenshot-item {
+                    display: none;
+                    align-items: flex-start;                    
+                    &.active {
+                        display: flex;
+                    }
+                }
+                
+                .captioned-screen {
+                    @include leyka-zoom-image();
+                    
+                    img.leyka-instructions-screen {
+                        max-width: 201px;
+                        border: 1px solid $color-section-screenshot-border;
+                    }
+                }                
+                
                 .tab-screenshot-nav {
                     width: 18px;
+                    position: relative;
+                    
+                    img {
+                        width: 13px;
+                        height: 24px;
+                        cursor: pointer;
+                        outline: 0 !important;
+                        position: absolute;
+                        top: 205px;
+                        left: 3px;
+                        display: none;
+                    }
+                    
+                    &.active {
+                        img {
+                            display: block;
+                        }
+                    }
                     
                     &.left {
                         margin-right: 1rem;
@@ -82,6 +127,7 @@
                     
                     &.right {
                         margin-left: 1rem;
+                        left: 2px;
                     }
                 }
             }
@@ -96,5 +142,40 @@
                 }
             }
         }
+    }
+    
+    &#currency_options {
+        .section-tabs-wrapper {
+            .section-tab-content {
+                .tab-content-options-wrapper {
+                    .tab-section-options {
+                        
+                        .field-component.field {
+                            input:not([type=checkbox]):not([type=radio]), select, textarea {
+                                width: 248px;
+                            }
+                        }
+                        
+                        .field-component.title {
+                            display: block;
+                        }
+                        
+                        #leyka_auto_refresh_currency_rates-wrapper,
+                        #leyka_currency_rur2usd-wrapper, #leyka_currency_rur2eur-wrapper,
+                        #leyka_auto_refresh_currency_rate_usd-wrapper, #leyka_auto_refresh_currency_rate_eur-wrapper {
+                            .field-component.title {
+                                display: none;
+                            }
+                        }
+                        
+                        //#leyka_currency_rur2usd-wrapper {
+                        //    display: none;
+                        //}
+                        
+                    }
+                }
+            }
+        }
+        
     }
 }

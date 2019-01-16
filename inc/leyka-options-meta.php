@@ -272,6 +272,18 @@ self::$_options_meta = array(
         'title' => __('Automatically refresh currency rates', 'leyka'),
         'description' => __('Check to enable auto-refresh of currency rates. It will be performed every 24 hours and will require connection with http://cbr.ru website.', 'leyka'),
     ),
+    /* // disabled, waithing for multicurrency system 
+    'auto_refresh_currency_rate_usd' => array(
+        'type' => 'radio',
+        'default' => 'y',
+        'title' => __('Automatically refresh currency rates', 'leyka'),
+        'description' => __('Check to enable auto-refresh of currency rates. It will be performed every 24 hours and will require connection with http://cbr.ru website.', 'leyka'),
+        'list_entries' => array(
+            'y' => __('Automatically refresh currency rates using central bank rate', 'leyka'),
+            'n' => __("Manual currency rate input", 'leyka'),
+        ),
+    ),
+    */
     'currency_rur2usd' => array(
         'type' => 'text',
         'title' => __('RUR to USD currency rate', 'leyka'),

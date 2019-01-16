@@ -7,9 +7,21 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     protected $_options = array();
     protected static $_field_types = array('text', 'textarea', 'number', 'html', 'rich_html', 'select', 'radio', 'checkbox', 'multi_checkbox', 'legend', 'file');
+    
+    protected $_common_options = array(
+        'template_options_neo' => array('donation_sum_field_type'),
+        'template_options_radios' => array('donation_sum_field_type'),
+        'template_options_toggles' => array('donation_sum_field_type'),
+    );
 
     protected function __construct() {
         require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
+        
+        foreach($this->_common_options as $prefix => $options) {
+            foreach($options as $option) {
+                self::$_options_meta[$this->get_common_option_full_name($prefix, $option)] = self::$_options_meta[$option];
+            }
+        }
     }
 
     public function isStandardFieldType($type) {
@@ -387,6 +399,35 @@ class Leyka_Options_Controller extends Leyka_Singleton {
      */
     public function get_all_options_keys() {
         return array_keys(self::$_options_meta);
+    }
+
+    /**
+     * @return string or null
+     */
+    public function get_common_option_prefix($option_name, $guess_prefix) {
+        foreach($this->_common_options as $prefix => $options) {
+            if($prefix == $guess_prefix && in_array($option_name, $options)) {
+                return $prefix;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * @return string
+     */
+    public function get_common_option_full_name($prefix, $option) {
+        return $prefix . '_' . $option;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function get_common_option($option) {
+        $val = $this->opt($option);
+        print_r($val);
+        exit();
+        return $val;
     }
 
 }

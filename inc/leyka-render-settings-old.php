@@ -510,7 +510,7 @@ function leyka_render_gateways_commission_field($option_name, $data){
 // [Special field] Gateways commission options - END
 
 function leyka_render_tabbed_section_options_area($section) {
-    $default_active_tab_index = 0;
+    $default_active_tab_index = 1;
     
     if(!empty($section['tabs'])) {
         ?>
@@ -534,37 +534,55 @@ function leyka_render_tabbed_section_options_area($section) {
             ?>
             <div class="section-tab-content tab-<?php echo $tab_name;?> <?php echo $counter === $default_active_tab_index ? 'active' : '';?> <?php echo !empty($tab['screenshots']) ? 'with-sidebar' : '';?>">
                 <div class="tab-content-options-wrapper">
-                    
-                    <?php foreach($tab['options'] as $option) {
-                        $option_info = leyka_options()->get_info_of($option);
-                        do_action("leyka_render_{$option_info['type']}", $option, $option_info);
-                    }?>
-                    
-                    <?php if(!empty($tab['extra_options_title'])) {?>
-                    <div class="extra-options">
-                        <div id="leyka_scale_widget_place-wrapper" class="leyka-radio-field-wrapper field-radio ">
-                            <span class="field-component title extra-options-title">
-                                <span class="text"><?php echo $tab['extra_options_title'];?></span>
-                            </span>
-                        </div>
+                    <?php foreach($tab['sections'] as $tab_section) { ?>
+                        <div class="tab-section-options">
+                            
+                            <?php if(!empty($tab_section['title'])) { ?>
+                            <div class="field-component title tab-section-options-title">
+                                <?php echo $tab_section['title'];?>
+                            </div>
+                            <?php } ?>
+                            
+                            <?php foreach($tab_section['options'] as $option) {
+                                $prefix = leyka_options()->get_common_option_prefix($option, $tab_name);
+                                
+                                if($prefix) {
+                                    $option = leyka_options()->get_common_option_full_name($prefix, $option);
+                                }
+                                
+                                $option_info = leyka_options()->get_info_of($option);
+                                do_action("leyka_render_{$option_info['type']}", $option, $option_info);
+                            }?>
                         
-                        <?php foreach($tab['extra_options'] as $option) {
-                            $option_info = leyka_options()->get_info_of($option);
-                            do_action("leyka_render_{$option_info['type']}", $option, $option_info);
-                        }?>
-                    </div>
+                        </div>
                     <?php } ?>
                 </div>
 
                 <?php if(!empty($tab['screenshots'])) {?>
                 <div class="tab-screenshots">
-                    <?php foreach($tab['screenshots'] as $screenshot) {?>
-                    <div class="tab-screenshot-nav left"></div>
-                    <div class="tab-screenshot-item">
-                        <img src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/' . $screenshot;?>" />
+                    <div class="tab-screenshot-nav left <?php echo !empty($tab['screenshots']) && count($tab['screenshots'] > 1) ? 'active' : '';?>">
+                        <img src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/icon-gallery-nav-arrow-left.svg';?>" />
                     </div>
-                    <div class="tab-screenshot-nav right"></div>
-                    <?php }?>
+                    <?php
+                    $counter = 0;
+                    foreach($tab['screenshots'] as $screenshot) {?>
+                    
+                    <div class="tab-screenshot-item <?php echo !$counter ? 'active' : '';?>">
+                        <div class="captioned-screen">
+                            <div class="screen-wrapper">
+                                <img src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/theme-screenshots/' . $screenshot;?>" class="leyka-instructions-screen" />
+                                <img src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/icon-zoom-screen.svg';?>" class="zoom-screen" alt="">
+                            </div>
+                            <img src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/theme-screenshots/' . $screenshot;?>" class="leyka-instructions-screen-full" alt="" style="display: none; position: fixed; z-index: 0; left: 50%; top: 100px;" />
+                        </div>
+                    </div>
+                    
+                    <?php
+                        $counter += 1;
+                    }?>
+                    <div class="tab-screenshot-nav right <?php echo !empty($tab['screenshots']) && count($tab['screenshots'] > 1) ? 'active' : '';?>">
+                        <img src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/icon-gallery-nav-arrow-right.svg';?>" />
+                    </div>
                 </div>
                 <?php }?>
                 

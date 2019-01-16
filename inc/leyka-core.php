@@ -293,24 +293,28 @@ class Leyka extends Leyka_Singleton {
         $this->apply_formatting_filters(); // Internal formatting filters
 
         /** Currency rates auto refreshment: */
+        // disable for now
+        /*
         if(Leyka_Options_Controller::get_option_value('leyka_auto_refresh_currency_rates')) {
 
             if( !wp_next_scheduled('refresh_currencies_rates') ) {
                 wp_schedule_event(current_time('timestamp'), 'daily', 'refresh_currencies_rates');
             }
 
-            add_action('refresh_currencies_rates', array($this, '_do_currencies_rates_refresh'));
+            //add_action('refresh_currencies_rates', array($this, '_do_currencies_rates_refresh')); // old, may be buggy
+            add_action('refresh_currencies_rates', array($this, '_do_currency_rates_refresh')); // fixed callback name
 
             if( // Just in case..
                 !Leyka_Options_Controller::get_option_value('leyka_currency_rur2usd')
                 || !Leyka_Options_Controller::get_option_value('leyka_currency_rur2eur')
             ) {
-                $this->_do_currency_rates_refresh();
+                //$this->_do_currency_rates_refresh();
             }
 
         } else {
             wp_clear_scheduled_hook('refresh_currencies_rates');
         }
+        */
 
         /** Mailout for campaigns with successfully reached targets - default processing: */
         if(class_exists('Leyka_Options_Controller') && leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')) {
