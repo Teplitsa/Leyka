@@ -299,7 +299,7 @@ class Leyka extends Leyka_Singleton {
                 wp_schedule_event(current_time('timestamp'), 'daily', 'refresh_currencies_rates');
             }
 
-            add_action('refresh_currencies_rates', array($this, '_do_currencies_rates_refresh'));
+            add_action('refresh_currencies_rates', array($this, 'do_currencies_rates_refresh'));
 
             if( // Just in case..
                 !Leyka_Options_Controller::get_option_value('leyka_currency_rur2usd')
@@ -323,7 +323,6 @@ class Leyka extends Leyka_Singleton {
 
     /** @todo Create a procedure to get actual currencies rates and save them in the plugin options values */
     public function do_currencies_rates_refresh() {
-
     }
 
     public function load_public_cssjs() {
