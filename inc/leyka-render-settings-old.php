@@ -510,7 +510,7 @@ function leyka_render_gateways_commission_field($option_name, $data){
 // [Special field] Gateways commission options - END
 
 function leyka_render_tabbed_section_options_area($section) {
-    $default_active_tab_index = 1;
+    $default_active_tab_index = 0;
     
     if(!empty($section['tabs'])) {
         ?>
@@ -544,10 +544,8 @@ function leyka_render_tabbed_section_options_area($section) {
                             <?php } ?>
                             
                             <?php foreach($tab_section['options'] as $option) {
-                                $prefix = leyka_options()->get_common_option_prefix($option, $tab_name);
-                                
-                                if($prefix) {
-                                    $option = leyka_options()->get_common_option_full_name($prefix, $option);
+                                if(leyka_options()->is_template_option($option)) {
+                                    $option = leyka_options()->get_tab_option_full_name($tab_name, $option);
                                 }
                                 
                                 $option_info = leyka_options()->get_info_of($option);
@@ -560,9 +558,11 @@ function leyka_render_tabbed_section_options_area($section) {
 
                 <?php if(!empty($tab['screenshots'])) {?>
                 <div class="tab-screenshots">
-                    <div class="tab-screenshot-nav left <?php echo !empty($tab['screenshots']) && count($tab['screenshots'] > 1) ? 'active' : '';?>">
+                    
+                    <div class="tab-screenshot-nav left <?php echo !empty($tab['screenshots']) && count($tab['screenshots']) > 1 ? 'active' : '';?>">
                         <img src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/icon-gallery-nav-arrow-left.svg';?>" />
                     </div>
+                
                     <?php
                     $counter = 0;
                     foreach($tab['screenshots'] as $screenshot) {?>
@@ -579,8 +579,9 @@ function leyka_render_tabbed_section_options_area($section) {
                     
                     <?php
                         $counter += 1;
-                    }?>
-                    <div class="tab-screenshot-nav right <?php echo !empty($tab['screenshots']) && count($tab['screenshots'] > 1) ? 'active' : '';?>">
+                    } ?>
+                    
+                    <div class="tab-screenshot-nav right <?php echo !empty($tab['screenshots']) && count($tab['screenshots']) > 1 ? 'active' : '';?>">
                         <img src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/icon-gallery-nav-arrow-right.svg';?>" />
                     </div>
                 </div>

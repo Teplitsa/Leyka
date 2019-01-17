@@ -125,6 +125,7 @@ class Leyka_Payment_Form {
         }
 
 		$mode = leyka_options()->opt('donation_sum_field_type'); // fixed/flexible/mixed
+		
 		$supported_curr = leyka_get_currencies_data();
 		$current_curr = $this->get_current_currency();
 

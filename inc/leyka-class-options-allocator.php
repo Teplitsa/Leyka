@@ -235,7 +235,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                 'title' => __('Revo', 'leyka'),
                                 'sections' => array(
                                     array(
-                                        'options' => array('revo_template_slider_max_sum', 'revo_donation_complete_button_text',),
+                                        'options' => array('revo_template_slider_max_sum', 'donation_submit_text', 'revo_donation_complete_button_text'),
                                     ),
                                     array(
                                         'title' => __('Additional settings', 'leyka'),
@@ -266,7 +266,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                             ),
                         ),
                         //'options' => array(
-                        //    'show_donation_comments_in_frontend',
+                        //    'show_donation_comments_in_frontend', 'donation_form_mode'
                         //)
                     ),),
                     
@@ -409,6 +409,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'title' => __('Additional', 'leyka'),
                         'is_default_collapsed' => true,
                         'options' => array(
+                            'show_donation_comments_in_frontend', 'donation_form_mode',
                             'send_donor_thanking_emails',
                             'success_page', 'failure_page', 'load_scripts_if_need', 'donors_data_editable', 'revo_thankyou_text',
                             'revo_thankyou_email_result_text'

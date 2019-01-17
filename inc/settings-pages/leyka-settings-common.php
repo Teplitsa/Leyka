@@ -25,9 +25,8 @@ function leyka_save_settings($tab_name) {
                             foreach($tab['sections'] as $tab_section_name => $tab_section) {
                                 foreach($tab_section['options'] as $tab_section_option) {
                                     
-                                    $prefix = leyka_options()->get_common_option_prefix($tab_section_option, $tab_name);
-                                    if($prefix) {
-                                        $tab_section_option = leyka_options()->get_common_option_full_name($prefix, $tab_section_option);
+                                    if(leyka_options()->is_template_option($tab_section_option)) {
+                                        $tab_section_option = leyka_options()->get_tab_option_full_name($tab_name, $tab_section_option);
                                     }
                                     
                                     $options_names[] = $tab_section_option;

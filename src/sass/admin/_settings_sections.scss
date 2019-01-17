@@ -58,8 +58,12 @@
                     }
                 }
                 
-                #leyka_donation_submit_text-wrapper, #leyka_revo_template_slider_max_sum-wrapper,
-                #leyka_revo_donation_complete_button_text-wrapper {
+                #leyka_template_options_neo_donation_submit_text-wrapper,
+                #leyka_template_options_radios_donation_submit_text-wrapper,
+                #leyka_template_options_toggles_donation_submit_text-wrapper,
+                #leyka_revo_template_slider_max_sum-wrapper,
+                #leyka_revo_donation_complete_button_text-wrapper,
+                #leyka_template_options_revo_donation_submit_text-wrapper {
                     .field-component.title {
                         display: block;
                         padding-top: 6px;
