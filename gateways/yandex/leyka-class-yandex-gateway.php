@@ -153,7 +153,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                     'confirmation' => array(
                         'type' => 'redirect',
                         'return_url' => empty($form_data['leyka_success_page_url']) ?
-                            leyka_get_success_page_url() : $form_data['leyka_success_page_url'],
+                            leyka_get_campaign_success_page_url($donation->campaign_id) : $form_data['leyka_success_page_url'],
                     ),
                     'capture' => true, // Make payment at once, don't wait for shop confirmation
                     'description' =>
@@ -247,8 +247,8 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             'orderNumber' => $donation_id,
             'orderDetails' => $donation->payment_title." (№ $donation_id)",
             'paymentType' => $payment_type,
-            'shopSuccessURL' => leyka_get_success_page_url(),
-            'shopFailURL' => leyka_get_failure_page_url(),
+            'shopSuccessURL' => leyka_get_campaign_success_page_url($donation->campaign_id),
+            'shopFailURL' => leyka_get_campaign_failure_page_url($donation->campaign_id),
             'cps_email' => $donation->donor_email,
             'cms_name' => 'wp-leyka', // Service parameter, added by Yandex request
         );
