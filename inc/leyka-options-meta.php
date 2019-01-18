@@ -588,6 +588,12 @@ self::$_options_meta = array(
         'title' => __('Display all payment elements on campaign page automatically', 'leyka'),
         'description' => __("When unchecked, all payment elements like donation forms or target completion level widgets will not be displayed automatically. To output them manually, use shortcodes inside campaign content or template tags in campaign template file.", 'leyka'),
     ),
+    'do_not_display_donation_form' => array(
+        'type' => 'checkbox',
+        'default' => false,
+        'title' => __('Do not display payment form on campaign page automatically', 'leyka'),
+        'description' => __("Do not display payment form", 'leyka'),
+    ),
     'scale_widget_place' => array(
         'type' => 'radio',
         'default' => 'top',

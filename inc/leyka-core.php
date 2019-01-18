@@ -167,7 +167,7 @@ class Leyka extends Leyka_Singleton {
 
             if(
                 is_page(leyka_options()->opt('success_page'))
-                && leyka_options()->opt('show_success_widget_on_success')
+                && leyka_options()->opt_template('show_success_widget_on_success')
                 && is_main_query()
             ) {
 
@@ -186,7 +186,7 @@ class Leyka extends Leyka_Singleton {
 
             if(
                 is_page(leyka_options()->opt('failure_page'))
-                && leyka_options()->opt('show_failure_widget_on_failure')
+                && leyka_options()->opt_template('show_failure_widget_on_failure')
                 && is_main_query()
             ) {
 

@@ -619,7 +619,7 @@ class Leyka_Donation_Management {
             </div>
         </div>
 
-        <?php if(leyka_options()->opt('show_donation_comment_field')) {?>
+        <?php if(leyka_options()->opt_template('show_donation_comment_field')) {?>
         <div class="leyka-ddata-string">
             <label for="donor-comment"><?php _e("Donor's comment", 'leyka');?>:</label>
             <div class="leyka-ddata-field">
@@ -794,12 +794,12 @@ class Leyka_Donation_Management {
             </div>
         </div>
 
-        <?php if(leyka_options()->opt('show_donation_comment_field') || $donation->donor_comment) {?>
+        <?php if(leyka_options()->opt_template('show_donation_comment_field') || $donation->donor_comment) {?>
         <div class="leyka-ddata-string">
             <label for="donor-comment"><?php _e('Comment', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
             <?php if(
-                leyka_options()->opt('show_donation_comment_field') &&
+                leyka_options()->opt_template('show_donation_comment_field') &&
                 ($donation->type == 'correction' || leyka_options()->opt('donors_data_editable'))
             ) {?>
 
@@ -1136,7 +1136,7 @@ class Leyka_Donation_Management {
         unset($unsort['date']);
 
 		$columns['donor'] = __('Donor', 'leyka');
-        if(leyka_options()->opt('show_donation_comment_field')) {
+        if(leyka_options()->opt_template('show_donation_comment_field')) {
             $columns['donor_comment'] = __("Donor's comment", 'leyka');
         }
 

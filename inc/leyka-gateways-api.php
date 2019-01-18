@@ -666,8 +666,8 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
     protected $_ajax_without_form_submission = false;
 
     protected function __construct() {
-
-        $this->_submit_label = leyka_options()->opt_safe('donation_submit_text');
+        //$this->_submit_label = leyka_options()->opt_template('donation_submit_text');
+        $this->_submit_label = '';
 
         $this->_set_attributes();
         $this->_initialize_options();

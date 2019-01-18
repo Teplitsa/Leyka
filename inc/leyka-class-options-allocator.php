@@ -205,7 +205,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                         'title' => __('Additional settings', 'leyka'),
                                         'options' => array('donations_history_under_forms', 'show_success_widget_on_success',
                                                     'show_donation_comment_field', 'donation_comment_max_length',
-                                                    'show_campaign_sharing', 'show_failure_widget_on_failure',),
+                                                    'show_campaign_sharing', 'show_failure_widget_on_failure', 'do_not_display_donation_form'),
                                     ),
                                 ),
                                 
@@ -226,7 +226,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                         'title' => __('Additional settings', 'leyka'),
                                         'options' => array('donations_history_under_forms', 'show_success_widget_on_success',
                                                     'show_donation_comment_field', 'donation_comment_max_length',
-                                                    'show_campaign_sharing', 'show_failure_widget_on_failure',),
+                                                    'show_campaign_sharing', 'show_failure_widget_on_failure', 'do_not_display_donation_form'),
                                     ),
                                 ),
                             ),
@@ -260,14 +260,11 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                         'title' => __('Additional settings', 'leyka'),
                                         'options' => array('donations_history_under_forms', 'show_success_widget_on_success',
                                                     'show_donation_comment_field', 'donation_comment_max_length',
-                                                    'show_campaign_sharing', 'show_failure_widget_on_failure',),
+                                                    'show_campaign_sharing', 'show_failure_widget_on_failure', 'do_not_display_donation_form'),
                                     ),
                                 ),
                             ),
                         ),
-                        //'options' => array(
-                        //    'show_donation_comments_in_frontend', 'donation_form_mode'
-                        //)
                     ),),
                     
                     // currency
@@ -409,7 +406,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'title' => __('Additional', 'leyka'),
                         'is_default_collapsed' => true,
                         'options' => array(
-                            'show_donation_comments_in_frontend', 'donation_form_mode',
+                            'show_donation_comments_in_frontend',
                             'send_donor_thanking_emails',
                             'success_page', 'failure_page', 'load_scripts_if_need', 'donors_data_editable', 'revo_thankyou_text',
                             'revo_thankyou_email_result_text'

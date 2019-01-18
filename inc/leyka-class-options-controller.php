@@ -11,7 +11,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     protected $_templates_common_options = array('donation_sum_field_type', 'scale_widget_place', 'donation_submit_text',
                                                 'donations_history_under_forms', 'show_success_widget_on_success',
                                                 'show_donation_comment_field', 'donation_comment_max_length',
-                                                'show_campaign_sharing', 'show_failure_widget_on_failure');
+                                                'show_campaign_sharing', 'show_failure_widget_on_failure', 'do_not_display_donation_form');
     protected $_template_options = array(
         'neo' => array(),
         'radios' => array(),
@@ -242,31 +242,38 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     }
 
-    public function opt($option_id, $new_value = null) {
+    public function opt_template($option_id, $template_id=null) {
+        $option_id = str_replace('leyka_', '', $option_id);
+        
+        $val = False;
         # template options
         if(leyka_options()->is_template_option($option_id)) {
-            $current_template_data = leyka_get_current_template_data();
-            if(!empty($current_template_data['id'])) {
-                return $new_value === null ? leyka_options()->get_template_option($option_id, $current_template_data['id']) : $this->set_value($option_id, $new_value);
+            if(!$template_id) {
+                $template_id = leyka_template_from_query_arg();
+            }
+            
+            if(!$template_id) {
+                $current_template_data = leyka_get_current_template_data();
+                $template_id = !empty($current_template_data['id']) ? $current_template_data['id'] : null;
+            }
+            
+            //echo "**$template_id**";
+            
+            if($template_id) {
+                $val = leyka_options()->get_template_option($option_id, $template_id);
             }
         }
         
+        return $val === False ? $this->opt_safe($option_id) : $val;
+    }
+
+    public function opt($option_id, $new_value = null) {
         return $new_value === null ? $this->get_value($option_id) : $this->set_value($option_id, $new_value);
     }
 
     public function opt_safe($option_name) {
-        $value = null;
-        
-        # template options
-        if(leyka_options()->is_template_option($option_name)) {
-            $current_template_data = leyka_get_current_template_data();
-            if(!empty($current_template_data['id'])) {
-                $value = leyka_options()->get_template_option($option_name, $current_template_data['id']);
-            }
-        }
-        else {
-            $value = $this->get_value($option_name); 
-        }
+
+        $value = $this->get_value($option_name); 
 
         return $value ? $value : $this->get_default_of($option_name);
 
@@ -473,7 +480,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
                 $prefix = $this->get_template_options_prefix($template_id);
                 if(strpos($option, $prefix) === 0) {
                     $old_common_option_name = str_replace($prefix . '_', '', $option);
-                    $val = $this->get_value($old_common_option_name);
+                    $val = $this->opt_safe($old_common_option_name);
                 }
             }
         }

@@ -4,7 +4,7 @@
  * Description: A template for the interactive actions block shown on the successful donation page.
  **/
 
-if( !leyka_options()->opt('show_success_widget_on_success') ) {
+if( !leyka_options()->opt_template('show_success_widget_on_success') ) {
     return;
 }
 
@@ -30,7 +30,7 @@ if( !$donation_id ) {
                 <input type="hidden" name="action" value="leyka_donor_subscription">
                 <?php wp_nonce_field('leyka_donor_subscription');?>
 
-                <?php if(leyka_options()->opt('show_success_widget_on_success')) {?>
+                <?php if(leyka_options()->opt_template('show_success_widget_on_success')) {?>
 
                     <div class="thankyou-email-field">
                         <div class="donor__textfield">
