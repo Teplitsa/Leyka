@@ -280,8 +280,8 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                 'sections' => array(
                                     array(
                                         'title' => __('View', 'leyka'),
-                                        'options' => array('currency_usd_label', 'currency_usd_min_sum', 'currency_usd_max_sum',
-                                                        'currency_usd_flexible_default_amount', 'currency_usd_fixed_amounts',),
+                                        'options' => array('currency_rur_label', 'currency_rur_min_sum', 'currency_rur_max_sum', 
+                                                        'currency_rur_flexible_default_amount', 'currency_rur_fixed_amounts',),
                                     ),
                                 ),
                             ),
