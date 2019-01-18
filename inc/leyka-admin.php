@@ -460,6 +460,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 						if($is_separate_sections_forms) {?>
 
                         <form method="post" action="<?php echo admin_url($admin_page);?>" id="leyka-settings-form">
+							<?php if(isset($option['section']['name'])):?>
+							<input type="hidden" name="leyka_options_section" value="<?php echo $option['section']['name'];?>" />
+							<?php endif;?>
 
 						<?php wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
 							do_action("leyka_settings_pre_{$current_stage}_fields");

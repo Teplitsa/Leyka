@@ -15,6 +15,12 @@ class Leyka extends Leyka_Singleton {
     protected $_plugin_slug = 'leyka';
 
     /**
+     * Templates order.
+     * @var array
+     */
+    protected $_templates_order = array('revo', 'neo', 'toggles', 'radios');
+    
+    /**
      * Gateways list.
      * @var array
      */
@@ -48,7 +54,7 @@ class Leyka extends Leyka_Singleton {
 
     /** @var bool|null */
     protected $_form_is_screening = false;
-
+    
     /** Initialize the plugin by setting up localization, filters, administration functions etc. */
     protected function __construct() {
 
@@ -1424,11 +1430,35 @@ class Leyka extends Leyka_Singleton {
         if( !$this->templates ) {
             $this->templates = array();
         }
-
+        
         $this->templates = array_map(array($this, 'get_template_data'), $this->templates);
+        
+        // sorting templates
+        $sorted_templates = array();
+        $order = $this->get_templates_order();
+        
+        foreach($order as $ordered_template) {
+            foreach($this->templates as $template_data) {
+                if($template_data['id'] == $ordered_template) {
+                    $sorted_templates[] = $template_data;
+                }
+            }
+        }
+        
+        foreach($this->templates as $template_data) {
+            if(!in_array($template_data['id'], $order)) {
+                $sorted_templates[] = $template_data;
+            }
+        }
+        $this->templates = $sorted_templates;
+        // end sorting
 
         return (array)$this->templates;
 
+    }
+    
+    public function get_templates_order() {
+        return $this->_templates_order;
     }
 
     public function get_template_data($file) {

@@ -189,6 +189,20 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                     ),
                                 ),
                             ),
+                            'template_options_revo' => array(
+                                'screenshots' => array('screen-revo-001.png', 'screen-revo-002.png', 'screen-revo-003.png', 'screen-revo-004.png'),
+                                'title' => __('Revo', 'leyka'),
+                                'sections' => array(
+                                    array(
+                                        'options' => array('revo_template_slider_max_sum', 'donation_submit_text', 'revo_donation_complete_button_text'),
+                                    ),
+                                    array(
+                                        'title' => __('Additional settings', 'leyka'),
+                                        'options' => array('revo_template_show_donors_list', 'revo_template_show_thumbnail',
+                                                    'show_donation_comment_field', 'donation_comment_max_length'),
+                                    ),
+                                ),
+                            ),
                             'template_options_neo' => array(
                                 'title' => __('Neo', 'leyka'),
                                 'screenshots' => array('screen-neo-001.png', 'screen-neo-002.png'),
@@ -210,9 +224,9 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                 ),
                                 
                             ),
-                            'template_options_radios' => array(
-                                'title' => __('Radios', 'leyka'),
-                                'screenshots' => array('screen-radios-001.png'),//, 'screen-radios-002.png'
+                            'template_options_toggles' => array(
+                                'title' => __('Toggles', 'leyka'),
+                                'screenshots' => array('screen-toggles-001.png', 'screen-toggles-002.png'),
                                 'sections' => array(
                                     array(
                                         'title' => __('Donation sum field type', 'leyka'),
@@ -230,23 +244,9 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                     ),
                                 ),
                             ),
-                            'template_options_revo' => array(
-                                'screenshots' => array('screen-revo-001.png', 'screen-revo-002.png', 'screen-revo-003.png', 'screen-revo-004.png'),
-                                'title' => __('Revo', 'leyka'),
-                                'sections' => array(
-                                    array(
-                                        'options' => array('revo_template_slider_max_sum', 'donation_submit_text', 'revo_donation_complete_button_text'),
-                                    ),
-                                    array(
-                                        'title' => __('Additional settings', 'leyka'),
-                                        'options' => array('revo_template_show_donors_list', 'revo_template_show_thumbnail',
-                                                    'show_donation_comment_field', 'donation_comment_max_length'),
-                                    ),
-                                ),
-                            ),
-                            'template_options_toggles' => array(
-                                'title' => __('Toggles', 'leyka'),
-                                'screenshots' => array('screen-toggles-001.png', 'screen-toggles-002.png'),
+                            'template_options_radios' => array(
+                                'title' => __('Radios', 'leyka'),
+                                'screenshots' => array('screen-radios-001.png'),//, 'screen-radios-002.png'
                                 'sections' => array(
                                     array(
                                         'title' => __('Donation sum field type', 'leyka'),

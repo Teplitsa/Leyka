@@ -363,13 +363,9 @@ function leyka_get_success_page_url() {
     }
     
     $leyla_template_data = leyka_get_current_template_data();
-    //print_r($leyla_template_data);
-    
     if(!empty($leyla_template_data['id'])) {
         $url = leyka_template_to_query_arg( $leyla_template_data['id'], $url );
     }
-    
-    //echo $url;
     
     return $url;
 
@@ -428,6 +424,11 @@ function leyka_get_failure_page_url() {
         $url = home_url();
     }
 
+    $leyla_template_data = leyka_get_current_template_data();
+    if(!empty($leyla_template_data['id'])) {
+        $url = leyka_template_to_query_arg( $leyla_template_data['id'], $url );
+    }
+    
     return $url;
 
 }
