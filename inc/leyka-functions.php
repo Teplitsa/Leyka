@@ -371,6 +371,23 @@ function leyka_get_success_page_url() {
 
 }
 
+function leyka_get_campaign_success_page_url($campaign_id) {
+
+    $url = leyka_options()->opt('success_page') ? get_permalink(leyka_options()->opt('success_page')) : home_url();
+
+    if( !$url ) { // It can be in case when "last posts" is selected for homepage
+        $url = home_url();
+    }
+    
+    $leyla_template_data = leyka_get_current_template_data($campaign_id);
+    if(!empty($leyla_template_data['id'])) {
+        $url = leyka_template_to_query_arg( $leyla_template_data['id'], $url );
+    }
+    
+    return $url;
+    
+}
+
 function leyka_get_default_failure_page() {
 
     $default_page = get_option('leyka_failure_page');
@@ -425,6 +442,23 @@ function leyka_get_failure_page_url() {
     }
 
     $leyla_template_data = leyka_get_current_template_data();
+    if(!empty($leyla_template_data['id'])) {
+        $url = leyka_template_to_query_arg( $leyla_template_data['id'], $url );
+    }
+    
+    return $url;
+
+}
+
+function leyka_get_campaign_failure_page_url($campaign_id) {
+
+    $url = leyka_options()->opt('failure_page') ? get_permalink(leyka_options()->opt('failure_page')) : home_url();
+
+    if( !$url ) { // It can be in case when "last posts" is selected for homepage
+        $url = home_url();
+    }
+
+    $leyla_template_data = leyka_get_current_template_data($campaign_id);
     if(!empty($leyla_template_data['id'])) {
         $url = leyka_template_to_query_arg( $leyla_template_data['id'], $url );
     }
