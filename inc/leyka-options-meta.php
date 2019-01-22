@@ -98,8 +98,7 @@ self::$_options_meta = array(
     ),
     'org_full_name' => array(
         'type' => 'text',
-        'title' => __('The organization name', 'leyka'),
-        'description' => __('The organization full official name.', 'leyka'),
+        'title' => __('The organization full name', 'leyka'),
         'required' => true,
         'placeholder' => __('E.g., Eastern charity foundation of st. John the Merciful', 'leyka'),
     ),
@@ -545,7 +544,7 @@ self::$_options_meta = array(
         'field_classes' => array('type-rich_html'),
     ),
     'tech_support_email' => array(
-        'type' => 'text',
+        'type' => 'email',
         'title' => __('Website technical support email', 'leyka'),
         'description' => __('E-mail that you want to use to collect technical support requests from the donors.', 'leyka'),
         'placeholder' => __('E.g., techsupport@email.com', 'leyka'),
