@@ -460,6 +460,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 						if($is_separate_sections_forms) {?>
 
                         <form method="post" action="<?php echo admin_url($admin_page);?>" id="leyka-settings-form">
+							<?php if(isset($option['section']['name'])):?>
+							<input type="hidden" name="leyka_options_section" value="<?php echo $option['section']['name'];?>" />
+							<?php endif;?>
 
 						<?php wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
 							do_action("leyka_settings_pre_{$current_stage}_fields");
@@ -746,8 +749,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 			'disconnect_stats' => esc_html__('Disconnect statistics', 'leyka'),
         ));
 
-        if($leyka_admin_new) {
-
+		if($leyka_admin_new) {
+			wp_enqueue_script('leyka-easy-modal', LEYKA_PLUGIN_BASE_URL . 'js/jquery.easyModal.min.js', array(), false, true);
             wp_enqueue_script('leyka-settings', LEYKA_PLUGIN_BASE_URL.'assets/js/admin.js', array('jquery',), LEYKA_VERSION, true);
             wp_localize_script('leyka-settings', 'leyka', $js_data);
 

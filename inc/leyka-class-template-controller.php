@@ -71,7 +71,7 @@ abstract class Leyka_Template_Controller extends Leyka_Singleton {
         return empty($this->_template_data[$campaign->id]) ? array() : $this->_template_data[$campaign->id];
 
     }
-
+    
     /**
      * Get all template data from DB, do some calculations, create a array.
      * @param $campaign Leyka_Campaign

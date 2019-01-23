@@ -61,7 +61,7 @@ leyka_pf_submission_errors();?>
 </div>
 <?php }?>
 
-<?php if(leyka_options()->opt('show_campaign_sharing')) {
+<?php if(leyka_options()->opt_template('show_campaign_sharing')) {
     leyka_share_campaign_block(empty($campaign) ? false : $campaign->id);
 }
 

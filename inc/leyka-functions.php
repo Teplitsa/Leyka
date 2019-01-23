@@ -362,8 +362,30 @@ function leyka_get_success_page_url() {
         $url = home_url();
     }
     
+    $leyla_template_data = leyka_get_current_template_data();
+    if(!empty($leyla_template_data['id'])) {
+        $url = leyka_template_to_query_arg( $leyla_template_data['id'], $url );
+    }
+    
     return $url;
 
+}
+
+function leyka_get_campaign_success_page_url($campaign_id) {
+
+    $url = leyka_options()->opt('success_page') ? get_permalink(leyka_options()->opt('success_page')) : home_url();
+
+    if( !$url ) { // It can be in case when "last posts" is selected for homepage
+        $url = home_url();
+    }
+    
+    $leyla_template_data = leyka_get_current_template_data($campaign_id);
+    if(!empty($leyla_template_data['id'])) {
+        $url = leyka_template_to_query_arg( $leyla_template_data['id'], $url );
+    }
+    
+    return $url;
+    
 }
 
 function leyka_get_default_failure_page() {
@@ -419,6 +441,28 @@ function leyka_get_failure_page_url() {
         $url = home_url();
     }
 
+    $leyla_template_data = leyka_get_current_template_data();
+    if(!empty($leyla_template_data['id'])) {
+        $url = leyka_template_to_query_arg( $leyla_template_data['id'], $url );
+    }
+    
+    return $url;
+
+}
+
+function leyka_get_campaign_failure_page_url($campaign_id) {
+
+    $url = leyka_options()->opt('failure_page') ? get_permalink(leyka_options()->opt('failure_page')) : home_url();
+
+    if( !$url ) { // It can be in case when "last posts" is selected for homepage
+        $url = home_url();
+    }
+
+    $leyla_template_data = leyka_get_current_template_data($campaign_id);
+    if(!empty($leyla_template_data['id'])) {
+        $url = leyka_template_to_query_arg( $leyla_template_data['id'], $url );
+    }
+    
     return $url;
 
 }
@@ -1160,11 +1204,11 @@ function leyka_revo_template_displayed() {
 }
 
 function leyka_success_widget_displayed() {
-    return leyka_options()->opt('show_success_widget_on_success') && is_page(leyka_options()->opt('success_page'));
+    return leyka_options()->opt_template('show_success_widget_on_success') && is_page(leyka_options()->opt('success_page'));
 }
 
 function leyka_failure_widget_displayed() {
-    return leyka_options()->opt('show_failure_widget_on_failure') && is_page(leyka_options()->opt('failure_page'));
+    return leyka_options()->opt_template('show_failure_widget_on_failure') && is_page(leyka_options()->opt('failure_page'));
 }
 
 /** ITV info-widget **/
@@ -1748,3 +1792,16 @@ if( !function_exists('leyka_localize_rich_html_text_tags') ) {
         ));
     }
 }
+
+function leyka_template_to_query_arg($template_id, $url) {
+    return add_query_arg('leyka_ctpl', $template_id, $url);
+}
+
+function leyka_template_from_query_arg() {
+    if(!empty($_GET['leyka_ctpl'])) {
+        return $_GET['leyka_ctpl'];
+    }
+    
+    return null;
+}
+

@@ -107,3 +107,68 @@ jQuery(document).ready(function($){
         }
     });
 });
+
+// section tabs
+jQuery(document).ready(function($){
+    $('.section-tab-nav-item').click(function(e){
+        e.preventDefault();
+        var $tabs = $(this).closest('.section-tabs-wrapper');
+        
+        $tabs.find('.section-tab-nav-item').removeClass('active');
+        $tabs.find('.section-tab-content').removeClass('active');
+        
+        $(this).addClass('active');
+        $tabs.find('.section-tab-content.tab-' + $(this).data('target')).addClass('active');
+    });
+});
+
+// screenshots nav
+jQuery(document).ready(function($){
+    $('.tab-screenshot-nav img').click(function(e){
+        e.preventDefault();
+        var $currentScreenshots = $(this).closest('.tab-screenshots');
+        var $currentVisibleScreenshot = $currentScreenshots.find('.tab-screenshot-item.active');
+        var $nextScreenshot = null;
+        
+        if($(this).closest('.tab-screenshot-nav').hasClass('left')) {
+            $nextScreenshot = $currentVisibleScreenshot.prev();
+            if(!$nextScreenshot.hasClass('tab-screenshot-item')) {
+                $nextScreenshot = $currentScreenshots.find('.tab-screenshot-item').last();
+            }
+        }
+        else {
+            $nextScreenshot = $currentVisibleScreenshot.next();
+            if(!$nextScreenshot.hasClass('tab-screenshot-item')) {
+                $nextScreenshot = $currentScreenshots.find('.tab-screenshot-item').first();
+            }
+        }
+        
+        if($nextScreenshot) {
+            $currentVisibleScreenshot.removeClass('active');
+            $nextScreenshot.addClass('active');
+        }
+    });
+});
+
+// currence rate setup
+/*
+jQuery(document).ready(function($){
+    $('#leyka_auto_refresh_currency_rate_usd-wrapper input[type=radio]').change(leykaToggleRefreshCurrencyRateAutomatically);
+    leykaToggleRefreshCurrencyRateAutomatically();
+    leykaAppendCurrencyRateToOptionLabel();
+    
+    function leykaToggleRefreshCurrencyRateAutomatically() {
+        //alert(leyka.eurCBRate);
+        //alert(leyka.usdCBRate);
+    }
+    
+    function leykaToggleRefreshCurrencyRateAutomatically() {
+        if($('#leyka_auto_refresh_currency_rate_usd-n-field').prop('checked')) {
+            $('#leyka_currency_rur2usd-wrapper').show();
+        }
+        else {
+            $('#leyka_currency_rur2usd-wrapper').hide();
+        }
+    }
+});
+*/

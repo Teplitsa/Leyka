@@ -84,7 +84,7 @@ $template_data = Leyka_Revo_Template_Controller::getInstance()->getTemplateData(
 
         <div class="step__fields payments-grid">
 
-        <?php $max_pm_number = leyka_options()->opt('show_donation_comment_field') ? 6 : 4;
+        <?php $max_pm_number = leyka_options()->opt_template('show_donation_comment_field') ? 6 : 4;
         foreach($template_data['pm_list'] as $number => $pm) { /** @var $pm Leyka_Payment_Method */
 
 
@@ -174,18 +174,18 @@ $template_data = Leyka_Revo_Template_Controller::getInstance()->getTemplateData(
                     <input type="email" id="<?php echo $field_id;?>" name="leyka_donor_email" value="" autocomplete="off">
                 </div>
 
-                <?php if(leyka_options()->opt('show_donation_comment_field')) { $field_id = 'leyka-'.wp_rand();?>
+                <?php if(leyka_options()->opt_template('show_donation_comment_field')) { $field_id = 'leyka-'.wp_rand();?>
                 <div class="donor__textfield donor__textfield--comment leyka-field">
                     <label for="<?php echo $field_id;?>">
-                        <span class="donor__textfield-label leyka_donor_comment-label"><?php echo leyka_options()->opt('donation_comment_max_length') ? sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt('donation_comment_max_length')) : __('Your comment', 'leyka');?></span>
+                        <span class="donor__textfield-label leyka_donor_comment-label"><?php echo leyka_options()->opt_template('donation_comment_max_length') ? sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length')) : __('Your comment', 'leyka');?></span>
                         <span class="donor__textfield-error leyka_donor_comment-error"><?php _e('Entered value is too long', 'leyka');?></span>
                     </label>
-                    <textarea id="<?php echo $field_id;?>" class="leyka-donor-comment" name="leyka_donor_comment" data-max-length="<?php echo leyka_options()->opt('donation_comment_max_length');?>"></textarea>
+                    <textarea id="<?php echo $field_id;?>" class="leyka-donor-comment" name="leyka_donor_comment" data-max-length="<?php echo leyka_options()->opt_template('donation_comment_max_length');?>"></textarea>
                 </div>
                 <?php }?>
 
                 <div class="donor__submit">
-                    <?php echo apply_filters('leyka_revo_template_final_submit', '<input type="submit" class="leyka-default-submit" value="'.leyka_options()->opt_safe('donation_submit_text').'">');?>
+                    <?php echo apply_filters('leyka_revo_template_final_submit', '<input type="submit" class="leyka-default-submit" value="'.leyka_options()->opt_template('donation_submit_text').'">');?>
                 </div>
 
                 <?php if(leyka_options()->opt('agree_to_terms_needed') || leyka_options()->opt('agree_to_pd_terms_needed')) {?>

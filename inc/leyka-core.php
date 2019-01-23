@@ -15,6 +15,12 @@ class Leyka extends Leyka_Singleton {
     protected $_plugin_slug = 'leyka';
 
     /**
+     * Templates order.
+     * @var array
+     */
+    protected $_templates_order = array('revo', 'neo', 'toggles', 'radios');
+
+    /**
      * Gateways list.
      * @var array
      */
@@ -167,7 +173,7 @@ class Leyka extends Leyka_Singleton {
 
             if(
                 is_page(leyka_options()->opt('success_page'))
-                && leyka_options()->opt('show_success_widget_on_success')
+                && leyka_options()->opt_template('show_success_widget_on_success')
                 && is_main_query()
             ) {
 
@@ -186,7 +192,7 @@ class Leyka extends Leyka_Singleton {
 
             if(
                 is_page(leyka_options()->opt('failure_page'))
-                && leyka_options()->opt('show_failure_widget_on_failure')
+                && leyka_options()->opt_template('show_failure_widget_on_failure')
                 && is_main_query()
             ) {
 
@@ -293,24 +299,28 @@ class Leyka extends Leyka_Singleton {
         $this->apply_formatting_filters(); // Internal formatting filters
 
         /** Currency rates auto refreshment: */
+        // disable for now
+        /*
         if(Leyka_Options_Controller::get_option_value('leyka_auto_refresh_currency_rates')) {
 
             if( !wp_next_scheduled('refresh_currencies_rates') ) {
                 wp_schedule_event(current_time('timestamp'), 'daily', 'refresh_currencies_rates');
             }
 
-            add_action('refresh_currencies_rates', array($this, 'do_currencies_rates_refresh'));
+            //add_action('refresh_currencies_rates', array($this, '_do_currencies_rates_refresh')); // old, may be buggy
+            add_action('refresh_currencies_rates', array($this, '_do_currency_rates_refresh')); // fixed callback name
 
             if( // Just in case..
                 !Leyka_Options_Controller::get_option_value('leyka_currency_rur2usd')
                 || !Leyka_Options_Controller::get_option_value('leyka_currency_rur2eur')
             ) {
-                $this->_do_currency_rates_refresh();
+                //$this->_do_currency_rates_refresh();
             }
 
         } else {
             wp_clear_scheduled_hook('refresh_currencies_rates');
         }
+        */
 
         /** Mailout for campaigns with successfully reached targets - default processing: */
         if(class_exists('Leyka_Options_Controller') && leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')) {
@@ -1422,8 +1432,32 @@ class Leyka extends Leyka_Singleton {
 
         $this->templates = array_map(array($this, 'get_template_data'), $this->templates);
 
+        // sorting templates
+        $sorted_templates = array();
+        $order = $this->get_templates_order();
+
+        foreach($order as $ordered_template) {
+            foreach($this->templates as $template_data) {
+                if($template_data['id'] == $ordered_template) {
+                    $sorted_templates[] = $template_data;
+                }
+            }
+        }
+
+        foreach($this->templates as $template_data) {
+            if(!in_array($template_data['id'], $order)) {
+                $sorted_templates[] = $template_data;
+            }
+        }
+        $this->templates = $sorted_templates;
+        // end sorting
+
         return (array)$this->templates;
 
+    }
+
+    public function get_templates_order() {
+        return $this->_templates_order;
     }
 
     public function get_template_data($file) {

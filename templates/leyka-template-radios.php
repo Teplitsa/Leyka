@@ -70,7 +70,7 @@ $campaign = leyka_get_validated_campaign($campaign);?>
         </div>
 
         <div id="leyka-pm-data" class="changeable-fields form-part">
-
+            
         <?php foreach($active_pm_list as $pm) {?>
 
             <div class="leyka-pm-fields <?php echo esc_attr($pm->full_id);?>" <?php echo $curr_pm->full_id == $pm->full_id ? '' : 'style="display:none;"';?>>
@@ -103,7 +103,7 @@ $campaign = leyka_get_validated_campaign($campaign);?>
     </form>
 </div><!-- .leyka-payment-option -->
 
-<?php if(leyka_options()->opt('show_campaign_sharing')) {
+<?php if(leyka_options()->opt_template('show_campaign_sharing')) {
     leyka_share_campaign_block(empty($campaign) ? false : $campaign->id);
 }
 

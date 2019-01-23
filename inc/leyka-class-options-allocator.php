@@ -174,69 +174,148 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
             case 'view':
                 $options_allocated = array(
                     array('section' => array(
-                        'name' => 'global_campaign_templates_options',
-                        'title' => __('Campaign page template', 'leyka'),
+                        'name' => 'campaign_templates_options',
+                        'content_area_render' => 'leyka_render_tabbed_section_options_area',
+                        'title' => __('Campaign templates', 'leyka'),
+                        'description' => __('Here you can change donation forms view', 'leyka'),
                         'is_default_collapsed' => false,
-                        'options' => array(
-                            'donation_form_template', 'donation_sum_field_type', 'donation_form_mode',
-                            'scale_widget_place', 'donations_history_under_forms', 'show_campaign_sharing',
-                            'show_success_widget_on_success', 'show_failure_widget_on_failure',
-                        )
-                    ),),
-                    array('section' => array(
-                        'name' => 'revo_template_options',
-                        'title' => __('Revo template', 'leyka'),
-                        'is_default_collapsed' => false,
-                        'options' => array(
-                            'revo_template_slider_max_sum', 'revo_template_show_thumbnail', 'revo_donation_complete_button_text',
-                            'revo_template_show_donors_list',
-                        )
-                    ),),
-                    array('section' => array(
-                        'name' => 'donation_form_options',
-                        'title' => __('Donation form options', 'leyka'),
-                        'is_default_collapsed' => false,
-                        'options' => array(
-                            'donation_submit_text', 'show_donation_comment_field', 'donation_comment_max_length',
-//                            'show_donation_comments_in_frontend',
-                        )
+                        'tabs' => array(
+                            'main_template' => array(
+                                'title' => __('Main tamplate', 'leyka'),
+                                'sections' => array(
+                                    array(
+                                        'options' => array('donation_form_template'),
+                                        'title' => __('Which campaign tamplate is default?', 'leyka'),
+                                    ),
+                                ),
+                            ),
+                            'template_options_revo' => array(
+                                'screenshots' => array('screen-revo-001.png', 'screen-revo-002.png', 'screen-revo-003.png', 'screen-revo-004.png'),
+                                'title' => __('Revo', 'leyka'),
+                                'sections' => array(
+                                    array(
+                                        'options' => array('revo_template_slider_max_sum', 'donation_submit_text', 'revo_donation_complete_button_text'),
+                                    ),
+                                    array(
+                                        'title' => __('Additional settings', 'leyka'),
+                                        'options' => array('revo_template_show_donors_list', 'revo_template_show_thumbnail',
+                                                    'show_donation_comment_field', 'donation_comment_max_length'),
+                                    ),
+                                ),
+                            ),
+                            'template_options_neo' => array(
+                                'title' => __('Neo', 'leyka'),
+                                'screenshots' => array('screen-neo-001.png', 'screen-neo-002.png'),
+                                'sections' => array(
+                                    array(
+                                        'title' => __('Donation sum field type', 'leyka'),
+                                        'options' => array('donation_sum_field_type'),
+                                    ),
+                                    array(
+                                        'title' => __('Progress scale location', 'leyka'),
+                                        'options' => array('scale_widget_place', 'donation_submit_text',),
+                                    ),
+                                    array(
+                                        'title' => __('Additional settings', 'leyka'),
+                                        'options' => array('donations_history_under_forms', 'show_success_widget_on_success',
+                                                    'show_donation_comment_field', 'donation_comment_max_length',
+                                                    'show_campaign_sharing', 'show_failure_widget_on_failure', 'do_not_display_donation_form'),
+                                    ),
+                                ),
+                                
+                            ),
+                            'template_options_toggles' => array(
+                                'title' => __('Toggles', 'leyka'),
+                                'screenshots' => array('screen-toggles-001.png', 'screen-toggles-002.png'),
+                                'sections' => array(
+                                    array(
+                                        'title' => __('Donation sum field type', 'leyka'),
+                                        'options' => array('donation_sum_field_type'),
+                                    ),
+                                    array(
+                                        'title' => __('Progress scale location', 'leyka'),
+                                        'options' => array('scale_widget_place', 'donation_submit_text',),
+                                    ),
+                                    array(
+                                        'title' => __('Additional settings', 'leyka'),
+                                        'options' => array('donations_history_under_forms', 'show_success_widget_on_success',
+                                                    'show_donation_comment_field', 'donation_comment_max_length',
+                                                    'show_campaign_sharing', 'show_failure_widget_on_failure', 'do_not_display_donation_form'),
+                                    ),
+                                ),
+                            ),
+                            'template_options_radios' => array(
+                                'title' => __('Radios', 'leyka'),
+                                'screenshots' => array('screen-radios-001.png'),//, 'screen-radios-002.png'
+                                'sections' => array(
+                                    array(
+                                        'title' => __('Donation sum field type', 'leyka'),
+                                        'options' => array('donation_sum_field_type'),
+                                    ),
+                                    array(
+                                        'title' => __('Progress scale location', 'leyka'),
+                                        'options' => array('scale_widget_place', 'donation_submit_text',),
+                                    ),
+                                    array(
+                                        'title' => __('Additional settings', 'leyka'),
+                                        'options' => array('donations_history_under_forms', 'show_success_widget_on_success',
+                                                    'show_donation_comment_field', 'donation_comment_max_length',
+                                                    'show_campaign_sharing', 'show_failure_widget_on_failure', 'do_not_display_donation_form'),
+                                    ),
+                                ),
+                            ),
+                        ),
                     ),),
                     
                     // currency
                     array('section' => array(
-                        'name' => 'currency_rates',
-                        'title' => __('Currency rates options', 'leyka'),
+                        'name' => 'currency_options',
+                        'content_area_render' => 'leyka_render_tabbed_section_options_area',
+                        'title' => __('Currency settings', 'leyka'),
+                        'description' => __('Here you can change currency options', 'leyka'),
                         'is_default_collapsed' => false,
-                        'options' => array(
-                            'auto_refresh_currency_rates', 'currency_rur2usd', 'currency_rur2eur',
-                        )
-                    ),),
-                    array('section' => array(
-                        'name' => 'rur_currency',
-                        'title' => __('RUR currency options', 'leyka'),
-                        'is_default_collapsed' => false,
-                        'options' => array(
-                            'currency_rur_label', 'currency_rur_min_sum', 'currency_rur_max_sum', 
-                            'currency_rur_flexible_default_amount', 'currency_rur_fixed_amounts',
-                        )
-                    ),),
-                    array('section' => array(
-                        'name' => 'usd_currency',
-                        'title' => __('USD currency options', 'leyka'),
-                        'is_default_collapsed' => false,
-                        'options' => array(
-                            'currency_usd_label', 'currency_usd_min_sum', 'currency_usd_max_sum',
-                            'currency_usd_flexible_default_amount', 'currency_usd_fixed_amounts',
-                        )
-                    ),),
-                    array('section' => array(
-                        'name' => 'eur_currency',
-                        'title' => __('EUR currency options', 'leyka'),
-                        'is_default_collapsed' => false,
-                        'options' => array(
-                            'currency_eur_label', 'currency_eur_min_sum', 'currency_eur_max_sum',
-                            'currency_eur_flexible_default_amount', 'currency_eur_fixed_amounts',
-                        )
+                        'tabs' => array(
+                            'rur_currency' => array(
+                                'title' => __('Rubles', 'leyka'),
+                                'sections' => array(
+                                    array(
+                                        'title' => __('View', 'leyka'),
+                                        'options' => array('currency_rur_label', 'currency_rur_min_sum', 'currency_rur_max_sum', 
+                                                        'currency_rur_flexible_default_amount', 'currency_rur_fixed_amounts',),
+                                    ),
+                                ),
+                            ),
+                            'usd_currency' => array(
+                                'title' => __('Dollars', 'leyka'),
+                                'sections' => array(
+                                    array(
+                                        'title' => __('Exchange rate', 'leyka'),
+                                        #TODO: auto_refresh_currency_rates change to auto_refresh_currency_rate_usd
+                                        'options' => array('currency_rur2usd',), //'auto_refresh_currency_rate_usd'
+                                    ),
+                                    array(
+                                        'title' => __('Additional settings', 'leyka'),
+                                        'options' => array('currency_usd_label', 'currency_usd_min_sum', 'currency_usd_max_sum',
+                                                        'currency_usd_flexible_default_amount', 'currency_usd_fixed_amounts',),
+                                    ),
+                                ),
+                            ),
+                            'eur_currency' => array(
+                                'title' => __('Euro', 'leyka'),
+                                'sections' => array(
+                                    array(
+                                        'title' => __('Exchange rate', 'leyka'),
+                                        #TODO: auto_refresh_currency_rates change to auto_refresh_currency_rate_eur
+                                        'options' => array('currency_rur2eur',), // 'auto_refresh_currency_rates'
+                                    ),
+                                    array(
+                                        'title' => __('Additional settings', 'leyka'),
+                                        'options' => array('currency_eur_label', 'currency_eur_min_sum', 'currency_eur_max_sum',
+                                                        'currency_eur_flexible_default_amount', 'currency_eur_fixed_amounts',),
+                                    ),
+                                ),
+                            ),
+                        ),
                     ),),
                     
                 );
@@ -327,6 +406,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'title' => __('Additional', 'leyka'),
                         'is_default_collapsed' => true,
                         'options' => array(
+                            'show_donation_comments_in_frontend',
                             'send_donor_thanking_emails',
                             'success_page', 'failure_page', 'load_scripts_if_need', 'donors_data_editable', 'revo_thankyou_text',
                             'revo_thankyou_email_result_text'

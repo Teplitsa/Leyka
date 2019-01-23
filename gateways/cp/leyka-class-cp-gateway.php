@@ -133,8 +133,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             'currency' => $cp_currency,
             'payment_title' => $donation->payment_title,
             'donor_email' => $donation->donor_email,
-            'success_page' => get_permalink(leyka_options()->opt('success_page')),
-            'failure_page' => get_permalink(leyka_options()->opt('failure_page')),
+            'success_page' => leyka_get_campaign_success_page_url($donation->campaign_id),
+            'failure_page' => leyka_get_campaign_failure_page_url($donation->campaign_id),
         );
 
 		return $form_data_vars;

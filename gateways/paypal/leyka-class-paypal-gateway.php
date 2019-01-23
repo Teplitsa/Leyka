@@ -125,7 +125,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     'leyka_paypal_process_payment_callback_url',
                     home_url('?p=leyka/service/'.$this->_id.'/process_payment/')
                 ),
-                'CANCELURL' => leyka_get_failure_page_url(),
+                'CANCELURL' => leyka_get_campaign_failure_page_url($donation->campaign_id),
                 'PAYMENTREQUEST_0_NOTIFYURL' => apply_filters(
                     'leyka_paypal_ipn_callback_url',
                     home_url('?p=leyka/service/'.$this->_id.'/ipn/')
@@ -166,7 +166,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     'leyka_paypal_recurring_process_payment_callback_url',
                     home_url('?p=leyka/service/'.$this->_id.'/process_payment/')
                 ),
-                'CANCELURL' => leyka_get_failure_page_url(),
+                'CANCELURL' => leyka_get_campaign_failure_page_url($donation->campaign_id),
                 'PAYMENTREQUEST_0_NOTIFYURL' => apply_filters(
                     'leyka_paypal_recurring_ipn_callback_url',
                     home_url('?p=leyka/service/'.$this->_id.'/ipn/')
@@ -498,7 +498,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                     $donation->add_gateway_response($result);
                     $this->_add_to_payment_log($donation, 'DoECPayment', $data, $result);
-                    wp_redirect(leyka_get_success_page_url());
+                    wp_redirect(leyka_get_campaign_success_page_url($donation->campaign_id));
 
                     // Do not fund a donation here! Wait for it's approval and IPN callback
 
@@ -517,7 +517,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     Leyka_Donation_Management::send_all_emails($donation->id);
 
                     $this->_add_to_payment_log($donation, 'DoECPayment', $data, $result);
-                    wp_redirect(leyka_get_success_page_url());
+                    wp_redirect(leyka_get_campaign_success_page_url($donation->campaign_id));
 
                 }
 
@@ -929,7 +929,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         wp_mail(get_option('admin_email'), $title, $text."\n\r\n\r");
 
         if( !!$do_redirect ) {
-            wp_redirect(leyka_get_failure_page_url());
+            wp_redirect($donation ? leyka_get_campaign_failure_page_url($donation->campaign_id) : leyka_get_failure_page_url());
         }
 
         exit(0);

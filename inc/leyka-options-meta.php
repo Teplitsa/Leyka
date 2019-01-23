@@ -271,6 +271,18 @@ self::$_options_meta = array(
         'title' => __('Automatically refresh currency rates', 'leyka'),
         'description' => __('Check to enable auto-refresh of currency rates. It will be performed every 24 hours and will require connection with http://cbr.ru website.', 'leyka'),
     ),
+    /* // disabled, waithing for multicurrency system 
+    'auto_refresh_currency_rate_usd' => array(
+        'type' => 'radio',
+        'default' => 'y',
+        'title' => __('Automatically refresh currency rates', 'leyka'),
+        'description' => __('Check to enable auto-refresh of currency rates. It will be performed every 24 hours and will require connection with http://cbr.ru website.', 'leyka'),
+        'list_entries' => array(
+            'y' => __('Automatically refresh currency rates using central bank rate', 'leyka'),
+            'n' => __("Manual currency rate input", 'leyka'),
+        ),
+    ),
+    */
     'currency_rur2usd' => array(
         'type' => 'text',
         'title' => __('RUR to USD currency rate', 'leyka'),
@@ -575,6 +587,12 @@ self::$_options_meta = array(
         'title' => __('Display all payment elements on campaign page automatically', 'leyka'),
         'description' => __("When unchecked, all payment elements like donation forms or target completion level widgets will not be displayed automatically. To output them manually, use shortcodes inside campaign content or template tags in campaign template file.", 'leyka'),
     ),
+    'do_not_display_donation_form' => array(
+        'type' => 'checkbox',
+        'default' => false,
+        'title' => __('Do not display payment form on campaign page automatically', 'leyka'),
+        'description' => __("Do not display payment form", 'leyka'),
+    ),
     'scale_widget_place' => array(
         'type' => 'radio',
         'default' => 'top',
@@ -591,25 +609,25 @@ self::$_options_meta = array(
         'type' => 'checkbox',
         'default' => true,
         'title' => __('Donations history widget below donation forms', 'leyka'),
-        'description' => __('Display the widget automatically', 'leyka'),
+        'description' => __('Display donations history below donation forms', 'leyka'),
     ),
     'show_campaign_sharing' => array(
         'type' => 'checkbox',
         'default' => 1,
         'title' => __('Campaign sharing widget below donation forms', 'leyka'),
-        'description' => __('Display the widget automatically', 'leyka'),
+        'description' => __('Display sharing widget below donation forms', 'leyka'),
     ),
     'show_success_widget_on_success' => array(
         'type' => 'checkbox',
         'default' => 1,
         'title' => __('Show an email subscription widget on the successful donation page', 'leyka'),
-        'description' => __('Display the widget automatically', 'leyka'),
+        'description' => __('Show subscription form on donation page', 'leyka'),
     ),
     'show_failure_widget_on_failure' => array(
         'type' => 'checkbox',
         'default' => true,
         'title' => __('Show a failure notification widget on the donation page', 'leyka'),
-        'description' => __('Display the widget automatically', 'leyka'),
+        'description' => __('Display failure notification on the donation page', 'leyka'),
     ),
     'revo_template_slider_max_sum' => array(
         'type' => 'text',
@@ -630,14 +648,14 @@ self::$_options_meta = array(
         'type' => 'checkbox',
         'default' => false,
         'title' => __('Display a comment textarea field on donation forms', 'leyka'),
-        'description' => __("Check to include an additional textarea field (a donor's comment) on all donation forms", 'leyka'),
+        'description' => __("Display comment field on donation form", 'leyka'),
     ),
     'donation_comment_max_length' => array(
         'type' => 'number',
         'default' => 140,
         'title' => __('The maximum length of a donation comment value', 'leyka'),
         'description' => __('Set the maximum number of symbols allowed for donation comments. You may set "0" for the unlimited values length.', 'leyka'),
-        'placeholder' => __('E.g., 140', 'leyka'),
+        'placeholder' => __('Maximum number of symbols', 'leyka'),
         'min' => 1,
         'step' => 1,
     ),
