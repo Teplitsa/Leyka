@@ -242,29 +242,30 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     }
 
-    public function opt_template($option_id, $template_id=null) {
+    public function opt_template($option_id, $template_id = false) {
+
         $option_id = str_replace('leyka_', '', $option_id);
         
-        $val = False;
-        # template options
+        $val = false;
         if(leyka_options()->is_template_option($option_id)) {
-            if(!$template_id) {
-                $template_id = leyka_template_from_query_arg();
-            }
+
+            $template_id = $template_id ? $template_id : leyka_template_from_query_arg();
             
-            if(!$template_id) {
+            if( !$template_id ) {
+
                 $current_template_data = leyka_get_current_template_data();
                 $template_id = !empty($current_template_data['id']) ? $current_template_data['id'] : null;
+
             }
-            
-            //echo "**$template_id**";
-            
+
             if($template_id) {
                 $val = leyka_options()->get_template_option($option_id, $template_id);
             }
+
         }
-        
-        return $val === False ? $this->opt_safe($option_id) : $val;
+
+        return $val === false ? $this->opt_safe($option_id) : $val;
+
     }
 
     public function opt($option_id, $new_value = null) {
@@ -427,65 +428,82 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     }
 
     /**
+     * @param $option_name
      * @return bool
      */
     public function is_template_option($option_name) {
+
         foreach($this->_template_options as $prefix => $options) {
             if(in_array($option_name, $options)) {
                 return true;
             }
         }
-        return null;
+
+        return false;
+
     }
-    
+
     /**
      * @return string
      */
     public function get_tab_option_full_name($prefix, $option) {
-        return $prefix . '_' . $option;
+        return $prefix.'_'.$option;
     }
 
     /**
      * @return string
      */
     public function get_template_options_prefix($template_id) {
-        return 'template_options_' . $template_id;
+        return 'template_options_'.$template_id;
     }
     
     /**
      */
     public function add_template_options() {
         foreach($this->_template_options as $template_id => $options) {
+
             $options = array_merge($options, $this->_templates_common_options);
             $this->_template_options[$template_id] = $options;
         
             $prefix = $this->get_template_options_prefix($template_id);
             foreach($options as $option) {
+
                 self::$_options_meta[$this->get_tab_option_full_name($prefix, $option)] = self::$_options_meta[$option];
                 $this->_intialize_option($this->get_tab_option_full_name($prefix, $option));
+
             }
+
         }
     }
 
     /**
+     * @param $common_option
+     * @param $template_id
      * @return mixed
      */
     public function get_template_option($common_option, $template_id) {
+
         $option = $this->get_tab_option_full_name($this->get_template_options_prefix($template_id), $common_option);
         
         $val = Leyka_Options_Controller::get_option_value($option);
         
-        if($val === False) {
+        if($val === false) {
             foreach($this->_template_options as $template_id => $options) {
+
                 $prefix = $this->get_template_options_prefix($template_id);
+
                 if(strpos($option, $prefix) === 0) {
-                    $old_common_option_name = str_replace($prefix . '_', '', $option);
+
+                    $old_common_option_name = str_replace($prefix.'_', '', $option);
                     $val = $this->opt_safe($old_common_option_name);
+
                 }
+
             }
         }
         
         return $val;
+
     }
 
 }
