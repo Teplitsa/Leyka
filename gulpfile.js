@@ -250,4 +250,4 @@ gulp.task('watch-admin', function(){
 
 
 //default
-gulp.task('default', ['full-build', 'watch']);
+gulp.task('default', gulp.series('full-build', 'watch'));
