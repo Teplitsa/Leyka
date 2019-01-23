@@ -18,10 +18,12 @@ jQuery(document).ready(function($){
 
         // Selected PM don't belong to the CP gateway:
 
-        var $pm_field = $form.find('input[name="leyka_payment_method"][value*="cp-"]');
+        var $pm_field = $form.find('input[name="leyka_payment_method"][value*="cp-"]'),
+            cp_chosen = $pm_field.prop('type') === 'hidden' ?
+                $pm_field.val().indexOf('cp') >= 0 : !!$pm_field.prop('checked');
 
-        if($pm_field.length <= 0 || $pm_field.val().indexOf('cp') < 0 || !$pm_field.prop('checked')) {
-            return;
+        if($pm_field.length <= 0 || !cp_chosen) {
+            return; /** @todo Add some error to the form! Or at least do some console.logging */
         }
 
         var $revo_redirect_step = $form.closest('.leyka-pf').find('.leyka-pf__redirect');
