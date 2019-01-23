@@ -81,6 +81,7 @@ function leyka_campaign_card_screen($atts) {
         'show_thumb' => 1,
         'show_excerpt' => 1,
         'show_scale' => 1,
+        'show_finished' => 0,
         'show_button' => 1,
     ), $atts);
 
@@ -106,6 +107,7 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
         'show_excerpt' => 1,
         'show_scale' => 1,
         'show_button' => 1,
+        'show_finished' => 0,
         'increase_counters' => 0,
         'embed_mode' => 0,
     ));
@@ -125,11 +127,11 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
         return is_super_admin() ? leyka_get_wrong_campaign_message($campaign) : '';
     }
 
-    if($campaign->is_finished) {
+    if($campaign->is_finished && !$args['show_finished']) {
         return '';
     }
 
-    $target = $args['embed_mode'] == 1 ? 'target="_blank"' : '';
+    $target = !!$args['embed_mode'] ? 'target="_blank"' : '';
     $thumbnail_size = apply_filters('leyka_campaign_card_thumbnail_size', 'post-thumbnail', $campaign_obj, $args);
     $css_class = apply_filters('leyka_campaign_card_class', 'leyka-campaign-card', $campaign_obj, $args);
     if($args['show_thumb'] == 1 && has_post_thumbnail($campaign_obj->ID)) {
