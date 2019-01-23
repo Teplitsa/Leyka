@@ -1432,42 +1432,31 @@ class Leyka extends Leyka_Singleton {
 
         $this->templates = array_map(array($this, 'get_template_data'), $this->templates);
 
-        // sorting templates
-        $sorted_templates = array();
-        $order = $this->get_templates_order();
+        // Templates ordering:
+        $ordered_templates = array();
 
-        foreach($order as $ordered_template) {
+        foreach($this->_templates_order as $ordered_template) {
             foreach($this->templates as $template_data) {
                 if($template_data['id'] == $ordered_template) {
-                    $sorted_templates[] = $template_data;
+                    $ordered_templates[] = $template_data;
                 }
             }
         }
 
         foreach($this->templates as $template_data) {
-            if(!in_array($template_data['id'], $order)) {
-                $sorted_templates[] = $template_data;
+            if( !in_array($template_data['id'], $this->_templates_order) ) {
+                $ordered_templates[] = $template_data;
             }
         }
-        $this->templates = $sorted_templates;
-        // end sorting
+        $this->templates = $ordered_templates;
 
         return (array)$this->templates;
 
     }
 
-    public function get_templates_order() {
-        return $this->_templates_order;
-    }
-
     public function get_template_data($file) {
 
-        $headers = array(
-            'name' => 'Leyka Template',
-            'description' => 'Description',
-        );
-
-        $data = get_file_data($file, $headers);
+        $data = get_file_data($file, array('name' => 'Leyka Template', 'description' => 'Description',));
         $data['file'] = $file;
         $data['basename'] = basename($file);
         $id = explode('-', str_replace('.php', '', $data['basename']));
