@@ -1,7 +1,7 @@
 require('chromedriver');
 require('geckodriver');
 
-const {Browser, By, Key, until} = require('selenium-webdriver');
+const {Browser, By, Key, until, Condition} = require('selenium-webdriver');
 const {suite} = require('selenium-webdriver/testing');
 const assert = require('assert');
 
@@ -25,34 +25,43 @@ suite(function(env) {
 
         it('Admin logged in', async function(){
 
-            let wp_login_form = await driver.findElements(By.id('loginform'));
+            await page.loginIntoWizardPage();
 
-            if(wp_login_form.length > 0) { // Login needed - checking
-
-                let login_field = await driver.wait(until.elementLocated(By.id('user_login'))),
-                    pass_field = await driver.wait(until.elementLocated(By.id('user_pass'))),
-                    submit = await driver.wait(until.elementLocated(By.id('wp-submit')));
-
-                await login_field.sendKeys('leyka_tester');
-                await pass_field.sendKeys('19851308cdCDyENT,leyka-test');
-                await submit.click();
-
-                let wizard_page = await driver.findElements(By.css('.wizard-init')); // await driver.wait(until.elementLocated()
-                assert(wizard_page.length > 0);
-
-            }
+            let wizard_page = await driver.findElements(By.css('.wizard-init'));
+            assert(wizard_page.length > 0);
 
         });
 
         it('Country selection step', async function(){
 
+            let is_navigation_area_correct = await page.isNavigationAreaInState('ВАШИ ДАННЫЕ', false);
+            assert(is_navigation_area_correct);
+
             await page.selectReceiverCountry('ru');
-            await page.submit();
+            await page.submitStep();
 
             let receiver_type_step_title = await driver.findElements(By.id('step-title-rd-receiver_type'));
             assert(receiver_type_step_title.length > 0);
 
         });
+
+        it('Receiver type step - choosing "legal"', async function(){
+
+            let is_navigation_area_correct = await page.isNavigationAreaInState('ВАШИ ДАННЫЕ', 'Получатель пожертвований');
+            assert(is_navigation_area_correct);
+
+            await page.selectReceiverType('legal');
+            await page.submitStep();
+
+        });
+
+        // it('', async function(){
+        //
+        // });
+        //
+        // it('', async function(){
+        //
+        // });
 
         after(async function(){
             driver.quit();
