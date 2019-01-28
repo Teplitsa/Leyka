@@ -39,11 +39,11 @@ class InitWizardPage {
                 submit = await this.driver.wait(until.elementLocated(this.locators.wp_login_submit));
 
             await login_field.sendKeys(this.test_account_login);
-            await this.driver.sleep(100);
+            await this.driver.sleep(250);
             await pass_field.sendKeys(this.test_account_pass);
-            await this.driver.sleep(100);
+            await this.driver.sleep(250);
             await submit.click();
-            await this.driver.sleep(100);
+            await this.driver.sleep(250);
 
         }
 
@@ -107,6 +107,94 @@ class InitWizardPage {
 
     async submitStep() {
         await this.driver.findElement(this.locators.wizard_step_submit).click();
+    }
+
+    async unsetRequiredFields(fields_names) {
+
+        if( !fields_names.length ) {
+            return;
+        }
+
+        for(let i = 0; i < fields_names.length; i++) {
+
+            let field = await this.driver.findElement(By.css('input[name="leyka_' + fields_names[i] + '"]'));
+            await field.clear();
+
+        }
+
+    }
+
+    async requiredFieldsErrorsShown(fields_names) {
+
+        if( !fields_names.length ) {
+            return;
+        }
+
+        let all_errors_shown = true;
+
+        for(let i = 0; i < fields_names.length; i++) {
+
+            let field_wrapper = await this.driver.findElement(By.id(fields_names[i]));
+
+            let class_to_check = await field_wrapper.getAttribute('class');
+            if( !class_to_check.includes('has-errors') ) {
+                all_errors_shown = false;
+                break;
+            }
+
+            let field_error = field_wrapper.findElement(By.css('.field-errors'));
+
+            class_to_check = await field_error.getAttribute('class');
+            if( !class_to_check.includes('has-errors') ) {
+                all_errors_shown = false;
+                break;
+            }
+
+            let error_inner_text = await field_error.getText();
+            if( !error_inner_text.length ) {
+                all_errors_shown = false;
+                break;
+            }
+
+        }
+
+        return all_errors_shown;
+
+    }
+
+    async checkFieldMask(field_name, value_incorrect, value_correct) {
+
+        let field = await this.driver.findElement(By.css('input[name="leyka_' + field_name + '"]'));
+
+        await field.clear();
+
+        await field.sendKeys(value_incorrect);
+        let value = await field.getAttribute('value');
+        if(value.length) {
+            return false;
+        }
+
+        await field.sendKeys(value_correct);
+        value = await field.getAttribute('value');
+
+        return value.length && value === value_correct;
+
+    }
+
+    async setTextFields(fields) {
+
+        if( !fields ) {
+            return;
+        }
+
+        for(let field_name in fields) {
+
+            let field = await this.driver.findElement(By.css('[name="leyka_'+field_name+'"]'));
+            await field.clear();
+            await field.sendKeys(fields[field_name]);
+
+        }
+
     }
 
 }
