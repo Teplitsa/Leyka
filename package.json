@@ -39,9 +39,8 @@
     "jquery.cookie": "^1.4.1",
     "main-bower-files": "^2.13.1",
     "node-bourbon": "^4.2.8",
-    "relative-path": "^1.1.0"
-  },
-  "dependencies": {
+    "relative-path": "^1.1.0",
     "selenium-webdriver": "^4.0.0-alpha.1"
-  }
+  },
+  "dependencies": {}
 }
