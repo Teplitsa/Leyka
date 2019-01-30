@@ -31,6 +31,11 @@ class InitWizardPage {
             },
             wizard_step_title: By.css('.step-title h1'),
             wizard_step_submit: By.css('.step-submit input[name="leyka_settings_submit_init"]'),
+            edit_slug_wrapper: By.css('.inline-edit-slug-form'),
+            edit_slug_field: By.css('input.leyka-slug-field'),
+            edit_slug_button_ok: By.css('.inline-edit-slug-form .inline-submit'),
+            edit_slug_button_cancel: By.css('.inline-edit-slug-form .inline-reset'),
+            campaign_shortcode: By.css('.leyka-wizard-copy2clipboard .leyka-current-value')
         };
 
     }
@@ -318,7 +323,8 @@ class InitWizardPage {
 
         await this.useCustomIframe(By.css('#leyka-preview-frame iframe'));
 
-        /** @todo Check the campaign card thumbnail, title & preview */
+        await this.driver.wait(until.elementLocated(By.css('.inpage-card__thumb'))); // Wait for the card to reload
+
         let card_thumb_url = await this.driver.findElement(By.css('.inpage-card__thumb')).getAttribute('style');
         if(
             !card_thumb_url.includes('http://leyka-test.kandinsky.tmweb.ru/wp-content/uploads/') ||
@@ -357,6 +363,90 @@ class InitWizardPage {
         await this.useMainIframe();
 
         return campaign_card_preview_ok;
+
+    }
+
+    async checkCampaignPermalinkDisplayed(campaign_slug) {
+
+        if(typeof campaign_slug === 'undefined' || !campaign_slug.length) {
+            return false;
+        }
+
+        let base_url = await this.driver.findElement(By.css('.leyka-campaign-permalink .base-url')).getText();
+        if( !base_url.includes('campaign') ) {
+            return false;
+        }
+
+        let permalink = await this.driver.findElement(By.css('.leyka-campaign-permalink .current-slug')).getText();
+        return permalink === campaign_slug;
+
+    }
+    
+    async openCampaignSlugEditForm() {
+
+        let edit_slug_action = await this.driver.findElement(By.css('.inline-edit-slug')),
+            is_displayed = await edit_slug_action.isDisplayed();
+
+        if( !is_displayed ) {
+            return;
+        }
+
+        await edit_slug_action.click();
+
+    }
+
+    async closeCampaignSlugEditForm(close_type) {
+
+        close_type = typeof close_type === 'undefined' || !close_type.length ? 'cancel' : 'ok';
+
+        if(close_type === 'ok') {
+            await this.driver.findElement(this.locators.edit_slug_button_ok).click();
+        } else {
+            await this.driver.findElement(this.locators.edit_slug_button_cancel).click();
+        }
+
+    }
+
+    async campaignSlugEditFormInState(state) {
+
+        if(typeof state === 'undefined' || !state.length) {
+            return false;
+        }
+
+        let real_state = await this.driver.findElement(By.css('.inline-edit-slug-form')).isDisplayed();
+
+        if(state === 'opened') {
+            return !!real_state;
+        } else if(state === 'closed') {
+            return !real_state;
+        } else {
+            return false;
+        }
+
+    }
+
+    async changeCampaignSlugTo(value) {
+
+        if(typeof value === 'undefined' || !value.length) {
+            return false;
+        }
+
+        await this.openCampaignSlugEditForm();
+
+        let slug_field = await this.driver.findElement(this.locators.edit_slug_field);
+        await slug_field.clear();
+        await slug_field.sendKeys(value);
+
+        await this.closeCampaignSlugEditForm('ok');
+
+    }
+
+    async checkCampaignShortcode() {
+
+        let campaign_id = await this.driver.findElement(this.locators.edit_slug_wrapper).getAttribute('data-campaign-id'),
+            shortcode = await this.driver.findElement(this.locators.campaign_shortcode).getText();
+
+        return shortcode === '[leyka_inline_campaign id="'+campaign_id+'"]';
 
     }
 

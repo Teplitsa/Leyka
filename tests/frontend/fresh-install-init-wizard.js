@@ -300,7 +300,31 @@ suite(function(env){
 
             await testNavigationAreaState('Завершение настройки', true);
 
+            let campaign_default_slug = 'na-ustavnuyu-deyatelnost',
+                campaign_url_correct = await page.checkCampaignPermalinkDisplayed(campaign_default_slug);
+            assert(campaign_url_correct);
 
+            await page.openCampaignSlugEditForm();
+
+            let campaign_slug_edit_form_opened = await page.campaignSlugEditFormInState('opened');
+            assert(campaign_slug_edit_form_opened);
+
+            await page.closeCampaignSlugEditForm('cancel');
+
+            let campaign_slug_edit_form_closed = await page.campaignSlugEditFormInState('closed');
+            await assert(campaign_slug_edit_form_closed);
+
+            await driver.sleep(250);
+
+            await page.changeCampaignSlugTo('main-#$%^&!-campaign');
+
+            await driver.sleep(1000);
+
+            campaign_url_correct = await page.checkCampaignPermalinkDisplayed('main-campaign');
+            assert(campaign_url_correct);
+
+            let campaign_shortcode_correct = page.checkCampaignShortcode();
+            assert(campaign_shortcode_correct);
 
         });
 
