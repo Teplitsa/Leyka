@@ -139,13 +139,13 @@ suite(function(env){
             let terms_option_id = 'terms_of_service_text';
 
             // Initial field value test:
-            let terms_text_set = await page.isTermsTextSet(terms_option_id);
+            let terms_text_set = await page.isPlaceholderFieldTextSet(terms_option_id);
             assert(terms_text_set);
 
-            let terms_text_includes_placeholders = await page.isTermsTextWithPlaceholders(terms_option_id);
+            let terms_text_includes_placeholders = await page.isFieldTextWithPlaceholders(terms_option_id);
             assert( !terms_text_includes_placeholders );
 
-            await page.unsetTermsText(terms_option_id);
+            await page.unsetPlaceholderFieldText(terms_option_id);
 
             await page.submitStep();
 
@@ -154,10 +154,10 @@ suite(function(env){
             // Initial test finished
 
             // Re-test field value (after the incorrect submit):
-            terms_text_set = await page.isTermsTextSet(terms_option_id);
+            terms_text_set = await page.isPlaceholderFieldTextSet(terms_option_id);
             assert(terms_text_set);
 
-            terms_text_includes_placeholders = await page.isTermsTextWithPlaceholders(terms_option_id);
+            terms_text_includes_placeholders = await page.isFieldTextWithPlaceholders(terms_option_id);
             assert( !terms_text_includes_placeholders );
             // Re-test finished
 
@@ -172,13 +172,13 @@ suite(function(env){
             let terms_option_id = 'pd_terms_text';
 
             // Initial field value test:
-            let terms_text_set = await page.isTermsTextSet(terms_option_id);
+            let terms_text_set = await page.isPlaceholderFieldTextSet(terms_option_id);
             assert(terms_text_set);
 
-            let terms_text_includes_placeholders = await page.isTermsTextWithPlaceholders(terms_option_id);
+            let terms_text_includes_placeholders = await page.isFieldTextWithPlaceholders(terms_option_id);
             assert( !terms_text_includes_placeholders );
 
-            await page.unsetTermsText(terms_option_id);
+            await page.unsetPlaceholderFieldText(terms_option_id);
 
             await page.submitStep();
 
@@ -187,10 +187,10 @@ suite(function(env){
             // Initial test finished
 
             // Re-test field value (after the incorrect submit):
-            terms_text_set = await page.isTermsTextSet(terms_option_id);
+            terms_text_set = await page.isPlaceholderFieldTextSet(terms_option_id);
             assert(terms_text_set);
 
-            terms_text_includes_placeholders = await page.isTermsTextWithPlaceholders(terms_option_id);
+            terms_text_includes_placeholders = await page.isFieldTextWithPlaceholders(terms_option_id);
             assert( !terms_text_includes_placeholders );
             // Re-test finished
 
@@ -256,10 +256,51 @@ suite(function(env){
 
             await page.setFileUploadField('campaign_photo', 'D:\\downloads\\browsers\\leyka-campaign-thumb-example.jpg');
 
-            let campaign_preview_correct = page.checkCampaignCardPreview();
+            let campaign_preview_correct = await page.checkCampaignCardPreview();
             assert(campaign_preview_correct);
 
             await page.submitStep();
+
+        });
+
+        it('Donor thankful emails step - fields validation testing', async function(){
+
+            await testNavigationAreaState('Настройка кампании', 'Благодарность донору');
+
+            let field_option_id = 'email_thanks_text';
+
+            // Initial field value test:
+            let email_text_set = await page.isPlaceholderFieldTextSet(field_option_id);
+            assert(email_text_set);
+
+            let email_text_includes_placeholders = await page.isFieldTextWithPlaceholders(field_option_id, ['#SITE_NAME#']);
+            assert( !email_text_includes_placeholders );
+
+            await page.unsetPlaceholderFieldText(field_option_id);
+
+            await page.submitStep();
+
+            let error_messages_shown = await page.requiredFieldsErrorsShown([field_option_id]);
+            assert(error_messages_shown);
+            // Initial test finished
+
+            // Re-test field value (after the incorrect submit):
+            email_text_set = await page.isPlaceholderFieldTextSet(field_option_id);
+            assert(email_text_set);
+
+            email_text_includes_placeholders = await page.isFieldTextWithPlaceholders(field_option_id, ['#SITE_NAME#']);
+            assert( !email_text_includes_placeholders );
+            // Re-test finished
+
+            await page.submitStep();
+
+        });
+
+        it('Settings complete step - campaign slug field testing', async function(){
+
+            await testNavigationAreaState('Завершение настройки', true);
+
+
 
         });
 

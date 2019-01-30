@@ -408,13 +408,13 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'id' => 'step-intro-text-2',
             'text' => esc_html__('Later, in the plugin Settings, you can change the text on the "Thank you" page, which is displayed after the successful completion of donation.', 'leyka'),
         )))->addBlock(new Leyka_Option_Block(array(
-            'id' => 'email-from-name',
+            'id' => 'email_from_name',
             'option_id' => 'email_from_name',
         )))->addBlock(new Leyka_Option_Block(array(
-            'id' => 'email-from',
+            'id' => 'email_from',
             'option_id' => 'email_from',
         )))->addBlock(new Leyka_Option_Block(array(
-            'id' => 'email-thanks-text',
+            'id' => 'email_thanks_text',
             'option_id' => 'email_thanks_text',
         )))->addTo($section);
 

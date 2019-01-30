@@ -23,7 +23,7 @@ class InitWizardPage {
             receiver_type_field: function(type_value){
                 return By.css('input[name="leyka_receiver_legal_type"][value="'+type_value+'"]');
             },
-            terms_text_field: function(option_name){
+            placeholder_text_field: function(option_name){
                 return By.css('.leyka_'+option_name+'-field');
             },
             sending_plugin_stats_agreement_field: function(type_value){
@@ -210,7 +210,7 @@ class InitWizardPage {
 
     }
 
-    async useTermsTextFieldIframe(field_name) {
+    async usePlaceholderFieldIframe(field_name) {
 
         let terms_field_iframe = await this.driver.findElement(By.id('leyka_' + field_name + '-field_ifr'));
         await this.driver.switchTo().frame(terms_field_iframe);
@@ -228,11 +228,11 @@ class InitWizardPage {
         await this.driver.switchTo().defaultContent();
     }
 
-    async isTermsTextSet(field_name) {
+    async isPlaceholderFieldTextSet(field_name) {
 
-        await this.useTermsTextFieldIframe(field_name);
+        await this.usePlaceholderFieldIframe(field_name);
 
-        let terms_text = await this.driver.findElement(this.locators.terms_text_field(field_name)).getText();
+        let terms_text = await this.driver.findElement(this.locators.placeholder_text_field(field_name)).getText();
 
         await this.useMainIframe();
 
@@ -240,17 +240,21 @@ class InitWizardPage {
 
     }
 
-    async isTermsTextWithPlaceholders(field_name) {
+    async isFieldTextWithPlaceholders(field_name, placeholders_to_check) {
 
-        await this.useTermsTextFieldIframe(field_name);
+        placeholders_to_check = typeof placeholders_to_check === 'undefined' ? [] : placeholders_to_check;
 
-        let terms_text = await this.driver.findElement(this.locators.terms_text_field(field_name)).getText(),
-            terms_text_includes_placeholders = false;
+        await this.usePlaceholderFieldIframe(field_name);
 
-        for(let i=0; i < this.terms_placeholders.length; i++) {
-            if(terms_text.includes(this.terms_placeholders[i])) {
+        let field_value = await this.driver.findElement(this.locators.placeholder_text_field(field_name)).getText(),
+            field_value_includes_placeholders = false;
 
-                terms_text_includes_placeholders = true;
+        placeholders_to_check = placeholders_to_check.length ? placeholders_to_check : this.terms_placeholders;
+
+        for(let i=0; i < placeholders_to_check.length; i++) {
+            if(field_value.includes(placeholders_to_check[i])) {
+
+                field_value_includes_placeholders = true;
                 break;
 
             }
@@ -258,17 +262,17 @@ class InitWizardPage {
 
         await this.useMainIframe();
 
-        return terms_text_includes_placeholders;
+        return field_value_includes_placeholders;
 
     }
 
-    async unsetTermsText(field_name) {
+    async unsetPlaceholderFieldText(field_name) {
 
-        await this.useTermsTextFieldIframe(field_name);
+        await this.usePlaceholderFieldIframe(field_name);
 
-        let terms_text_element = await this.driver.findElement(this.locators.terms_text_field(field_name));
+        let text_field_element = await this.driver.findElement(this.locators.placeholder_text_field(field_name));
 
-        await this.driver.executeScript("var ele=arguments[0]; ele.innerHTML = '';", terms_text_element);
+        await this.driver.executeScript("var ele=arguments[0]; ele.innerHTML = '';", text_field_element);
 
         await this.useMainIframe();
 
@@ -315,6 +319,40 @@ class InitWizardPage {
         await this.useCustomIframe(By.css('#leyka-preview-frame iframe'));
 
         /** @todo Check the campaign card thumbnail, title & preview */
+        let card_thumb_url = await this.driver.findElement(By.css('.inpage-card__thumb')).getAttribute('style');
+        if(
+            !card_thumb_url.includes('http://leyka-test.kandinsky.tmweb.ru/wp-content/uploads/') ||
+            !card_thumb_url.includes('leyka-campaign-thumb-example')
+        ) {
+            campaign_card_preview_ok = false;
+        }
+
+        if(campaign_card_preview_ok) {
+
+            let card_title = await this.driver.findElement(By.css('.inpage-card_title')).getText();
+            if( !card_title.includes('На уставную деятельность') ) {
+                campaign_card_preview_ok = false;
+            }
+
+        }
+
+        if(campaign_card_preview_ok) {
+
+            let card_excerpt = await this.driver.findElement(By.css('.inpage-card__excerpt')).getText();
+            if( !card_excerpt.includes('Краткое описание того, почему жертвовать нам важно и нужно') ) {
+                campaign_card_preview_ok = false;
+            }
+
+        }
+
+        if(campaign_card_preview_ok) {
+
+            let card_target = await this.driver.findElement(By.css('.inpage-card_scale .info')).getText();
+            if( !card_target.includes('50 000') ) {
+                campaign_card_preview_ok = false;
+            }
+
+        }
 
         await this.useMainIframe();
 
