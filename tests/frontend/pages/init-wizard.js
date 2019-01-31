@@ -485,6 +485,16 @@ class InitWizardPage {
 
     }
 
+    async checkCampaignFrontPageLink() {
+
+        let campaign_page_url = await this.driver
+            .findElement(By.css('.init-final-step-go-campaign a.step-next'))
+            .getAttribute('href');
+
+        return campaign_page_url.includes('na-ustavnuyu-deyatelnost') && campaign_page_url.includes('campaign');
+
+    }
+
     async openCampaignFrontPage() {
 
         await this.driver.findElement(By.css('.final-button .step-next')).click();

@@ -1,4 +1,4 @@
-// require('geckodriver');
+require('geckodriver');
 require('chromedriver');
 
 const {Browser, By, Key, until, Condition} = require('selenium-webdriver');
@@ -339,19 +339,29 @@ suite(function(env){
 
         it('Settings complete step - campaign page link testing', async function(){
 
-            await page.openCampaignFrontPage();
-
-            let campaign_page_title_correct = await page.checkCampaignFrontPageTitle();
-            assert(campaign_page_title_correct);
-
-            let campaign_page_url_correct = await page.checkCampaignFrontPageUrl();
+            let campaign_page_url_correct = page.checkCampaignFrontPageLink();
             assert(campaign_page_url_correct);
 
-            let campaign_view_correct = await page.checkCampaignCardDisplay();
-            assert(campaign_view_correct);
+            let driver_capabilities = await driver.getCapabilities();
 
-            await page.closeCampaignFrontPage();
-            await page.returnToMainPage();
+            // ATM Firefox driver explicitly doesn't support tabs via WindowHandles at all :(
+            if(driver_capabilities.getBrowserName() === 'chrome') {
+
+                await page.openCampaignFrontPage();
+
+                let campaign_page_title_correct = await page.checkCampaignFrontPageTitle();
+                assert(campaign_page_title_correct);
+
+                let campaign_page_url_correct = await page.checkCampaignFrontPageUrl();
+                assert(campaign_page_url_correct);
+
+                let campaign_view_correct = await page.checkCampaignCardDisplay();
+                assert(campaign_view_correct);
+
+                await page.closeCampaignFrontPage();
+                await page.returnToMainPage();
+
+            }
 
         });
 
@@ -365,7 +375,7 @@ suite(function(env){
         });
 
         after(async function(){
-            // await driver.quit();
+            await driver.quit();
         });
 
         async function testNavigationAreaState(section_name, step_name) {
