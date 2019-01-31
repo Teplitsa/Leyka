@@ -554,6 +554,13 @@ function leyka_sync_plugin_stats_option() {
 
         require_once LEYKA_PLUGIN_DIR.'bin/sodium-compat.phar';
 
+        if( !function_exists('Sodium\hex2bin') ) {
+            return new WP_Error(
+                'plugin_stats_sync_error',
+                __('Plugin stats sync error: Sodium syphering module is not included', 'leyka')
+            );
+        }
+
         $sipher_public_key = get_option('leyka_stats_sipher_public_key');
         $params = array(
             'stats_active' => (int)(leyka_options()->opt('send_plugin_stats') === 'y'),

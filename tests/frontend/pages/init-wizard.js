@@ -13,6 +13,7 @@ class InitWizardPage {
             '#SITE_NAME#', '#SITE_EMAIL#', '#ORG_NAME#', '#DONATION_ID#', '#DONATION_TYPE#', '#DONOR_NAME#', '#DONOR_EMAIL#',
             '#SUM#', '#PAYMENT_METHOD_NAME#', '#CAMPAIGN_NAME#', '#CAMPAIGN_TARGET#', '#PURPOSE#', '#DATE#',
         ];
+
         this.locators = {
             wp_login_form: By.id('loginform'),
             wp_login: By.id('user_login'),
@@ -185,17 +186,31 @@ class InitWizardPage {
         let field = await this.driver.findElement(By.css('input[name="leyka_' + field_name + '"]'));
 
         await field.clear();
+        await this.setMaskedField(field, value_incorrect); // this.setTextField() doesn't work due to masked field behavior
 
-        await field.sendKeys(value_incorrect);
         let value = await field.getAttribute('value');
         if(value.length) {
             return false;
         }
 
-        await field.sendKeys(value_correct);
+        await field.clear();
+        await this.setMaskedField(field, value_correct);
+
         value = await field.getAttribute('value');
 
         return value.length && value === value_correct;
+
+    }
+
+    async setTextField(field_name, value) {
+
+        if( !field_name || typeof value === 'undefined' ) {
+            return;
+        }
+
+        let field = await this.driver.findElement(By.css('[name="leyka_'+field_name+'"]'));
+        await field.clear();
+        await field.sendKeys(value);
 
     }
 
@@ -206,12 +221,20 @@ class InitWizardPage {
         }
 
         for(let field_name in fields) {
-
-            let field = await this.driver.findElement(By.css('[name="leyka_'+field_name+'"]'));
-            await field.clear();
-            await field.sendKeys(fields[field_name]);
-
+            await this.setTextField(field_name, fields[field_name]);
+            await this.driver.sleep(100);
         }
+
+    }
+
+    /** In FF masked fields do not set correctly with just sendKeys() */
+    async setMaskedField(field_web_element, value) {
+
+        if(typeof field_web_element === 'string') {
+            field_web_element = this.driver.findElement(By.css('[name="leyka_'+field_web_element+'"]'));
+        }
+
+        await this.driver.executeScript("arguments[0].value='" + value + "';", field_web_element);
 
     }
 
@@ -219,6 +242,7 @@ class InitWizardPage {
 
         let terms_field_iframe = await this.driver.findElement(By.id('leyka_' + field_name + '-field_ifr'));
         await this.driver.switchTo().frame(terms_field_iframe);
+        await this.driver.sleep(250);
 
     }
 
@@ -226,6 +250,7 @@ class InitWizardPage {
 
         let iframe = await this.driver.findElement(iframe_locator);
         await this.driver.switchTo().frame(iframe);
+        await this.driver.sleep(250);
 
     }
 
@@ -314,55 +339,65 @@ class InitWizardPage {
 
         await this.driver.wait(until.elementIsEnabled(upload_button));
         await upload_button.click();
+        await this.driver.sleep(1000);
 
     }
 
     async checkCampaignCardPreview() {
 
-        let campaign_card_preview_ok = true;
-
         await this.useCustomIframe(By.css('#leyka-preview-frame iframe'));
 
-        await this.driver.wait(until.elementLocated(By.css('.inpage-card__thumb'))); // Wait for the card to reload
+        // Wait for the card to reload:
+        await this.driver.wait(until.elementLocated(By.css('.inpage-card__thumb')), 5000);
+        await this.driver.wait(until.elementLocated(By.css('.inpage-card_title')), 5000);
 
-        let card_thumb_url = await this.driver.findElement(By.css('.inpage-card__thumb')).getAttribute('style');
-        if(
-            !card_thumb_url.includes('http://leyka-test.kandinsky.tmweb.ru/wp-content/uploads/') ||
-            !card_thumb_url.includes('leyka-campaign-thumb-example')
-        ) {
-            campaign_card_preview_ok = false;
-        }
-
-        if(campaign_card_preview_ok) {
-
-            let card_title = await this.driver.findElement(By.css('.inpage-card_title')).getText();
-            if( !card_title.includes('На уставную деятельность') ) {
-                campaign_card_preview_ok = false;
-            }
-
-        }
-
-        if(campaign_card_preview_ok) {
-
-            let card_excerpt = await this.driver.findElement(By.css('.inpage-card__excerpt')).getText();
-            if( !card_excerpt.includes('Краткое описание того, почему жертвовать нам важно и нужно') ) {
-                campaign_card_preview_ok = false;
-            }
-
-        }
-
-        if(campaign_card_preview_ok) {
-
-            let card_target = await this.driver.findElement(By.css('.inpage-card_scale .info')).getText();
-            if( !card_target.includes('50 000') ) {
-                campaign_card_preview_ok = false;
-            }
-
-        }
+        let campaign_card_preview_ok = await this.checkCampaignCardDisplay();
 
         await this.useMainIframe();
 
         return campaign_card_preview_ok;
+
+    }
+
+    async checkCampaignCardDisplay() {
+
+        let campaign_card_display_ok = true,
+            card_thumb_url = await this.driver.findElement(By.css('.inpage-card__thumb')).getAttribute('style');
+        if(
+            !card_thumb_url.includes('http://leyka-test.kandinsky.tmweb.ru/wp-content/uploads/') ||
+            !card_thumb_url.includes('leyka-campaign-thumb-example')
+        ) {
+            campaign_card_display_ok = false;
+        }
+
+        if(campaign_card_display_ok) {
+
+            let card_title = await this.driver.findElement(By.css('.inpage-card_title')).getText();
+            if( !card_title.includes('На уставную деятельность') ) {
+                campaign_card_display_ok = false;
+            }
+
+        }
+
+        if(campaign_card_display_ok) {
+
+            let card_excerpt = await this.driver.findElement(By.css('.inpage-card__excerpt')).getText();
+            if( !card_excerpt.includes('Краткое описание того, почему жертвовать нам важно и нужно') ) {
+                campaign_card_display_ok = false;
+            }
+
+        }
+
+        if(campaign_card_display_ok) {
+
+            let card_target = await this.driver.findElement(By.css('.inpage-card_scale .info')).getText();
+            if( !card_target.includes('50 000') ) {
+                campaign_card_display_ok = false;
+            }
+
+        }
+
+        return campaign_card_display_ok;
 
     }
 
@@ -447,6 +482,60 @@ class InitWizardPage {
             shortcode = await this.driver.findElement(this.locators.campaign_shortcode).getText();
 
         return shortcode === '[leyka_inline_campaign id="'+campaign_id+'"]';
+
+    }
+
+    async openCampaignFrontPage() {
+
+        await this.driver.findElement(By.css('.final-button .step-next')).click();
+
+        this.browser_tabs = await this.driver.getAllWindowHandles();
+        this.browser_main_tab = await this.driver.getWindowHandle();
+
+        await this.driver.switchTo().window(this.browser_tabs[1]);
+
+    }
+
+    async closeCampaignFrontPage() {
+        await this.driver.close();
+    }
+
+    async returnToMainPage() {
+        await this.driver.switchTo().window(this.browser_main_tab);
+    }
+
+    async checkCampaignFrontPageTitle() {
+
+        let campaign_page_title = await this.driver.getTitle();
+        return !!campaign_page_title.includes('На уставную деятельность');
+
+    }
+
+    async checkCampaignFrontPageUrl() {
+
+        let campaign_page_url = await this.driver.getCurrentUrl();
+        return campaign_page_url.includes('na-ustavnuyu-deyatelnost') && campaign_page_url.includes('campaign');
+
+    }
+
+    async quitWizard() {
+        await this.driver.findElement(By.css('.nav-exit')).click();
+    }
+
+    async checkDefaultSettingsPage() {
+
+        let page_title = await this.driver.getTitle();
+        if( !page_title.includes('Настройки') ) {
+            return false;
+        }
+
+        let page_url = await this.driver.getCurrentUrl();
+        if( !page_url.includes('admin.php?page=leyka_settings') ) {
+            return false;
+        }
+
+        page_title = await this.driver.findElement(By.css('.leyka-settings-page h1')).getText();
+        return !!page_title.includes('Настройки');
 
     }
 

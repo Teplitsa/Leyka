@@ -1,5 +1,5 @@
-require('chromedriver');
 // require('geckodriver');
+require('chromedriver');
 
 const {Browser, By, Key, until, Condition} = require('selenium-webdriver');
 const {suite} = require('selenium-webdriver/testing');
@@ -82,7 +82,7 @@ suite(function(env){
 
         it('Legal receiver data step - OGRN masked field validation testing', async function(){
 
-            let field_mask_correct = await page.checkFieldMask('org_state_reg_number', 'not#an-ogrn', '1234567890123');
+            let field_mask_correct = await page.checkFieldMask('org_state_reg_number', 'not#an-ogrn', '1023400056789');
             assert(field_mask_correct);
 
             await page.setTextFields({
@@ -91,12 +91,12 @@ suite(function(env){
                 'org_face_position': 'Директор',
                 'org_face_fio_ip': 'Котов-Пёсов Аристарх Евграфович',
                 'org_address': 'Москва, ул. Добра и Правды, д. 666, офис 13',
-                'org_state_reg_number': '1023400056789',
-                'org_kpp': '780302015',
-                'org_inn': '4283256127',
                 'org_contact_person_name': 'Иван Петрович Сидоров',
                 'tech_support_email': 'support@ak.barsik'
             });
+            await page.setMaskedField('org_state_reg_number', '1023400056789');
+            await page.setMaskedField('org_kpp', '780302015');
+            await page.setMaskedField('org_inn', '4283256127');
 
             await page.submitStep();
 
@@ -121,12 +121,10 @@ suite(function(env){
             let field_mask_correct = await page.checkFieldMask('org_bank_account', 'not#an-account-number', '40123840529627089012');
             assert(field_mask_correct);
 
-            await page.setTextFields({
-                'org_bank_name': 'Первый кредитный банк',
-                'org_bank_account': '40123840529627089012',
-                'org_bank_corr_account': '30101810270902010595',
-                'org_bank_bic': '044180293'
-            });
+            await page.setTextField('org_bank_name', 'Первый кредитный банк');
+            await page.setMaskedField('org_bank_account', '40123840529627089012');
+            await page.setMaskedField('org_bank_corr_account', '30101810270902010595');
+            await page.setMaskedField('org_bank_bic', '044180293');
 
             await page.submitStep();
 
@@ -230,6 +228,7 @@ suite(function(env){
 
         it('Main campaign settings step - required fields validation testing', async function(){
 
+            await driver.sleep(500);
             await testNavigationAreaState('Настройка кампании', 'Основные сведения');
 
             let required_fields_to_check = ['campaign_title'];
@@ -242,9 +241,9 @@ suite(function(env){
 
             await page.setTextFields({
                 'campaign_title': 'На уставную деятельность',
-                'campaign_short_description': 'Краткое описание того, почему жертвовать нам важно и нужно, и на что мы потратим пожертвования. Можно одно-два предложения.',
-                'campaign_target': '50000'
+                'campaign_short_description': 'Краткое описание того, почему жертвовать нам важно и нужно, и на что мы потратим пожертвования. Можно одно-два предложения.'
             });
+            await page.setMaskedField('campaign_target', '50000');
 
             await page.submitStep();
 
@@ -253,6 +252,11 @@ suite(function(env){
         it('Campaign decoration step - thumbnail uploading field testing', async function(){
 
             await testNavigationAreaState('Настройка кампании', 'Оформление кампании');
+
+            /**
+             * @todo Check if campaign thumbnail already set. If it is, delete it from the medialib & upload anew.
+             * Reason: FF Front-testing bugs with an unexpected alert.
+             **/
 
             await page.setFileUploadField('campaign_photo', 'D:\\downloads\\browsers\\leyka-campaign-thumb-example.jpg');
 
@@ -265,6 +269,7 @@ suite(function(env){
 
         it('Donor thankful emails step - fields validation testing', async function(){
 
+            await driver.sleep(500);
             await testNavigationAreaState('Настройка кампании', 'Благодарность донору');
 
             let field_option_id = 'email_thanks_text';
@@ -317,20 +322,47 @@ suite(function(env){
             await driver.sleep(250);
 
             await page.changeCampaignSlugTo('main-#$%^&!-campaign');
-
-            await driver.sleep(1000);
+            await driver.sleep(250);
 
             campaign_url_correct = await page.checkCampaignPermalinkDisplayed('main-campaign');
             assert(campaign_url_correct);
 
-            let campaign_shortcode_correct = page.checkCampaignShortcode();
+            await driver.sleep(250);
+
+            await page.changeCampaignSlugTo(campaign_default_slug); // To easy up the re-testing
+            await driver.sleep(250);
+
+            let campaign_shortcode_correct = await page.checkCampaignShortcode();
             assert(campaign_shortcode_correct);
 
         });
 
-        // it('', async function(){
-        //
-        // });
+        it('Settings complete step - campaign page link testing', async function(){
+
+            await page.openCampaignFrontPage();
+
+            let campaign_page_title_correct = await page.checkCampaignFrontPageTitle();
+            assert(campaign_page_title_correct);
+
+            let campaign_page_url_correct = await page.checkCampaignFrontPageUrl();
+            assert(campaign_page_url_correct);
+
+            let campaign_view_correct = await page.checkCampaignCardDisplay();
+            assert(campaign_view_correct);
+
+            await page.closeCampaignFrontPage();
+            await page.returnToMainPage();
+
+        });
+
+        it('Settings complete step - quitting the wizard testing', async function(){
+
+            await page.quitWizard();
+
+            let default_settings_page_correct = page.checkDefaultSettingsPage();
+            assert(default_settings_page_correct);
+
+        });
 
         after(async function(){
             // await driver.quit();
