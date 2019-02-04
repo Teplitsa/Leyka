@@ -94,13 +94,13 @@ class Leyka_Donation_Management {
 
     public function donation_status_changed($new, $old, WP_Post $donation) {
 
-        if($new == $old || $donation->post_type != self::$post_type) {
+        if($new === $old || $donation->post_type !== self::$post_type) {
             return;
         }
 
-        if($old == 'new' && $new != 'trash') {
+        if($old === 'new' && $new !== 'trash') {
             $this->new_donation_added($donation);
-        } elseif($new == 'funded' || $old == 'funded') {
+        } elseif($new === 'funded' || $old === 'funded') {
 
             $donation = new Leyka_Donation($donation);
 
