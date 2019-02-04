@@ -1782,8 +1782,8 @@ class Leyka_Donation {
 
             case 'pm_label':
             case 'payment_method_label':
-                $pm = leyka_get_pm_by_id($this->_donation_meta['payment_method']);
-                return ($pm ? $pm->label : __('Unknown payment method', 'leyka'));
+                $pm = leyka_get_pm_by_id($this->_donation_meta['gateway'].'-'.$this->_donation_meta['payment_method'], true);
+                return $pm ? $pm->label : __('Unknown payment method', 'leyka');
             case 'currency':
             case 'currency_code':
             case 'currency_id':

@@ -453,7 +453,7 @@ function leyka_inline_campaign(array $atts = array()) {
         'id' => false,
         'template' => 'revo', // leyka_options()->opt('donation_form_template'),
         'show_thumbnail' => leyka_options()->opt('revo_template_show_thumbnail'),
-        'show_finished' => 1,
+        'show_finished' => true,
         'show_preview' => true,
     ), $atts);
 
