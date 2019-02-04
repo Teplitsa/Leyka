@@ -670,7 +670,7 @@ function leyka_inline_campaign(array $atts = array()) {
 
             <div class="leyka-pf__form <?php echo leyka_options()->opt_template('show_donation_comment_field') ? 'leyka-with-comment' : '';?>">
             <?php // Pass the curr. campaign to the template:
-                Leyka_Revo_Template_Controller::get_instance()->current_campaign = $campaign;
+                Leyka_Revo_Template_Controller::getInstance()->current_campaign = $campaign;
 
                 require($template_file); /** @todo For the forms caching task comment this require out */
             ?>
