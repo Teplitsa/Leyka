@@ -219,8 +219,8 @@ class Leyka_Donation_Management {
         if(leyka_options()->opt('donations_managers_emails')) {
 
             if(
-                ($donation->payment_type == 'single' && leyka_options()->opt('notify_donations_managers')) ||
-                ($donation->payment_type == 'rebill' && leyka_options()->opt('notify_managers_on_recurrents'))
+                ($donation->payment_type === 'single' && leyka_options()->opt('notify_donations_managers')) ||
+                ($donation->payment_type === 'rebill' && leyka_options()->opt('notify_managers_on_recurrents'))
             ) {
                 Leyka_Donation_Management::send_managers_notifications($donation);
             }

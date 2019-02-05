@@ -575,10 +575,10 @@ function leyka_inline_campaign(array $atts = array()) {
 					<?php $supporters = leyka_options()->opt('revo_template_show_donors_list') ?
                         leyka_get_campaign_supporters($campaign_id, 5) : array('donations' => array(), 'supporters' => array());
 
-                    if( !count($supporters['supporters']) && $atts['show_preview'] ) {
-                            $supporters['supporters'] = array('Дмитрий Белкин', 'Екатерина Мышкина', 'Людмила Лебедева', 'Петр Гусев');
-                    }?>
-                    
+//                    if( !count($supporters['supporters']) && $atts['show_preview'] ) { // Demo-donors
+//                            $supporters['supporters'] = array('Дмитрий Белкин', 'Екатерина Мышкина', 'Людмила Лебедева', 'Петр Гусев');
+//                    }?>
+
 					<div class="supporter-and-button">
                         
                     <div class="inpage-card__note supporters">
