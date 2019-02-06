@@ -255,10 +255,6 @@ class Leyka_Donation_Management {
      */
     public static function send_donor_thanking_email($donation) {
 
-        if( !leyka_options()->opt('send_donor_thanking_emails') ) {
-            return false;
-        }
-
         $donation = leyka_get_validated_donation($donation);
 
         $donor_email = $donation->donor_email;
@@ -267,6 +263,14 @@ class Leyka_Donation_Management {
         }
 
         if( !$donation || !$donor_email || $donation->donor_email_date ) {
+            return false;
+        }
+
+
+        if(
+            ($donation->type === 'single' && !leyka_options()->opt('send_donor_thanking_emails'))
+            || ($donation->type === 'rebill' && !leyka_options()->opt('send_donor_thanking_emails_on_recurring_init'))
+        ) {
             return false;
         }
 
@@ -356,6 +360,10 @@ class Leyka_Donation_Management {
     /** Send all emails in case of a recurring auto-payment */
     public static function send_all_recurring_emails($donation) {
 
+        if( !leyka_options()->opt('send_donor_thanking_emails_on_recurring_ongoing') ) {
+            return false;
+        }
+
         $donation = leyka_get_validated_donation($donation);
 
         $donor_email = $donation->donor_email;
@@ -363,7 +371,7 @@ class Leyka_Donation_Management {
             $donor_email = leyka_pf_get_donor_email_value();
         }
 
-        if( !$donation || !$donor_email || $donation->type != 'rebill' ) {
+        if( !$donation || !$donor_email || $donation->type !== 'rebill' ) {
             return false;
         }
 
@@ -449,9 +457,10 @@ class Leyka_Donation_Management {
 
     public static function send_managers_notifications($donation) {
 
-        if( !leyka_options()->opt('donations_managers_emails') ) {
+        if( !leyka_options()->opt('notify_donations_managers') || !leyka_options()->opt('donations_managers_emails') ) {
             return false;
         }
+        /** @todo Managers emails list should be made from 1. donations_managers_emails option value, 2. emails of all "donation managers" WP accounts. */
 
         $donation = leyka_get_validated_donation($donation);
 

@@ -226,41 +226,52 @@ gulp.task('svg-opt', function(){
 // watchers
 gulp.task('watch', function(done){
 
+    // Frontend:
     gulp.watch([basePaths.src + 'sass/*.scss'], gulp.series('build-front-css'));
     gulp.watch([basePaths.src + 'js/*.js', basePaths.src + 'js/front/*.js'], gulp.series('build-front-js'));
 
     // gulp.watch([basePaths.src + 'sass/*.scss'], gulp.series('build-front-css'));
     // gulp.watch([basePaths.src + 'js/*.js', basePaths.src + 'js/front/*.js'], gulp.series('build-front-js'));
 
-    done();
-
-});
-
-gulp.task('watch-admin', function(done){
-
+    // Backend:
     gulp.watch(
         [basePaths.src+'sass/admin/*.scss', basePaths.src+'sass/admin/**/*.scss'],
         gulp.series('build-admin-css', 'build-editor-css')
-    ).on('change', function(evt){
-        changeEvent(evt);
-    });
+    );
 
     gulp.watch(
         [basePaths.src+'js/admin/*.js', basePaths.src+'js/admin/**/*.js'],
         gulp.series('build-admin-js')
-    ).on('change', function(evt){
-        changeEvent(evt);
-    });
+    );
 
     gulp.watch(
         [basePaths.src+'js/editor/*.js'],
         gulp.series('build-editor-js')
-    ).on('change', function(evt){
-        changeEvent(evt);
-    });
+    );
 
     done();
 
 });
+
+// gulp.task('watch-admin', function(done){
+//
+//     gulp.watch(
+//         [basePaths.src+'sass/admin/*.scss', basePaths.src+'sass/admin/**/*.scss'],
+//         gulp.series('build-admin-css', 'build-editor-css')
+//     );
+//
+//     gulp.watch(
+//         [basePaths.src+'js/admin/*.js', basePaths.src+'js/admin/**/*.js'],
+//         gulp.series('build-admin-js')
+//     );
+//
+//     gulp.watch(
+//         [basePaths.src+'js/editor/*.js'],
+//         gulp.series('build-editor-js')
+//     );
+//
+//     done();
+//
+// });
 
 gulp.task('default', gulp.series('full-build', 'watch'));

@@ -245,7 +245,7 @@
             
             .header {
                 h3 {
-                    margin-bottom: 0px;
+                    margin-bottom: 0;
                     
                     &:before {
                         background-image: url(../../img/icon-accord-collapsed.svg);
@@ -267,7 +267,7 @@
                 line-height: 34px;
                 font-size: 23px;
                 color: $color-wizard-text;
-                margin-top: 0px;
+                margin-top: 0;
                 pointer-events: none;
                 display: flex;
                 
@@ -288,45 +288,45 @@
                 }
             }
         }
-        
+
         .content {
-            
+
             .section-description {
                 font-style: normal;
                 font-weight: normal;
                 line-height: 21px;
                 font-size: 14px;
-                padding-top: 0px;
+                padding-top: 0;
                 padding-bottom: 8px;
-                margin-top: 0px;
-                
+                margin-top: 0;
+
                 ul {
-                    margin-bottom: 0px;
+                    margin-bottom: 0;
                     
                     li:first-child {
-                        margin-top: 0px;
+                        margin-top: 0;
                     }
                 }
-                
+
                 .attention {
                     color: $color-wizard-error-message;
                     font-weight: normal;
                 }
             }
-            
+
             & > div {
                 max-width: 544px;
                 margin-top: 1rem;
             }
-            
+
             .submit {
-                padding-bottom: 0px;
-                margin-bottom: 0px;
+                padding-bottom: 0;
+                margin-bottom: 0;
                 padding-top: 2rem;
             }
-            
+
             .leyka-rich-html-field-wrapper {
-                margin-bottom: 2rem;
+                //margin-bottom: 2rem;
                 max-width: unset;
                 
                 .wp-editor-tools {
@@ -338,58 +338,58 @@
                     margin-bottom: 1rem;
                 }
             }
-            
+
             .leyka-radio-field-wrapper {
                 .field-component.title {
                     font-size: 14px;
                     margin-bottom: 1.5rem;
                 }
-                
+
                 .field-component.field {
                     & > label {
                         margin-bottom: 1rem;
                         
                         &:last-child {
-                            margin-bottom: 0px;
+                            margin-bottom: 0;
                         }
                     }
                 }
             }
-            
+
             .field-component.help {
-                margin-top: 0px;
+                margin-top: 0;
                 
                 .placeholders-help {
                     code {
-                        padding-top: 0px;
+                        padding-top: 0;
                     }
                     
                     &:before {
                         content: " ";
                         display: block;
-                        margin-top: 0px;
+                        margin-top: 0;
                     }
                 }
                 
                 .placeholders-help-actions {
-                    margin-top: 0px;
+                    margin-top: 0;
                     
                     a, a:active, a:hover, a:focus {
                         text-decoration: none;
                     }
                 }
             }
-            
+
             .field-component {
                 &.field textarea {
                     height: 134px;
                 }
             }
-            
+
             .field-success {
                 display: none;
             }
-            
+
             #leyka_email_thanks_text-wrapper,
             #leyka_email_recurring_init_thanks_text-wrapper,
             #leyka_email_recurring_ongoing_thanks_text-wrapper,
@@ -399,7 +399,7 @@
                     margin-top: 0.5rem;
                 }
             }
-            
+
             #leyka_email_thanks_text-field_ifr,
             #leyka_email_recurring_init_thanks_text-field_ifr,
             #leyka_email_recurring_ongoing_thanks_text-field_ifr,
@@ -442,7 +442,7 @@
             #leyka_org_inn-wrapper {
                 width: 248px;
                 padding-top: 1rem;
-                margin-top: 0px;
+                margin-top: 0;
                 float: none;
                 clear: both;
             }
@@ -533,8 +533,8 @@
                 background: none;        
                 border-bottom: 1px dashed $color-wizard-link;
                 margin-right: 1rem;
-                padding-left: 0px;
-                padding-right: 0px;
+                padding-left: 0;
+                padding-right: 0;
                 cursor: pointer;
             }
         }

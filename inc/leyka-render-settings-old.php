@@ -7,15 +7,14 @@ function leyka_render_section_area($section){?>
     <div class="leyka-options-section <?php echo $section['is_default_collapsed'] ? 'collapsed' : '';?> <?php echo !empty($section['tabs']) ? 'with-tabs' : '';?>" id="<?php echo $section['name'];?>">
         <div class="header"><h3><?php echo esc_attr($section['title']);?></h3></div>
         <div class="content">
-            
-            <?php if(!empty($section['description'])) {?>
+
+            <?php if( !empty($section['description']) ) {?>
                 <div class="section-description"><?php echo $section['description'];?></div>
             <?php }
-            
-            if(!empty($section['content_area_render']) && function_exists($section['content_area_render'])) {
+
+            if( !empty($section['content_area_render']) && function_exists($section['content_area_render']) ) {
                 call_user_func($section['content_area_render'], $section);
-            }
-            else {
+            } else {
                 foreach($section['options'] as $option) {
     
                     $option_info = leyka_options()->get_info_of($option);
@@ -23,13 +22,13 @@ function leyka_render_section_area($section){?>
     
                 }
             }
-            
-            if(!empty($section['is_separate_sections_forms'])) { ?>
+
+            if( !empty($section['is_separate_sections_forms']) ) { ?>
                 <p class="submit">
-                    <input type="submit" name="<?php echo "leyka_settings_" . $section['current_stage'];?>_submit" <?php if(!empty($section['action_button']['id'])) { printf(' id="%s" ', $section['action_button']['id']); } ?>" value="<?php echo !empty($section['action_button']['title']) ? $section['action_button']['title'] : __('Save', 'leyka');?>" class="button-primary">
+                    <input type="submit" name="leyka_settings_<?php echo $section['current_stage'];?>_submit" class="button-primary" <?php if(!empty($section['action_button']['id'])) { printf(' id="%s" ', $section['action_button']['id']); } ?>" value="<?php echo !empty($section['action_button']['title']) ? $section['action_button']['title'] : __('Save', 'leyka');?>">
                 </p>
-            <?php } ?>
-            
+            <?php }?>
+
         </div>
     </div>
 <?php }
@@ -155,22 +154,34 @@ function leyka_render_checkbox_field($option_id, $data){
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-checkbox-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
         <label for="<?php echo $option_id.'-field';?>">
+
+            <?php if(empty($data['short_description'])) {?>
             <span class="field-component title">
 
                 <span class="text"><?php echo $data['title'];?></span>
+
                 <?php if( !empty($data['comment'])) {?>
                 <span class="field-q">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" alt="">
-                    <span class="field-q-tooltip"><?php echo $data['comment']?></span>
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
+                    <span class="field-q-tooltip"><?php echo $data['comment'];?></span>
                 </span>
                 <?php }?>
 
             </span>
+            <?php }?>
+
             <span class="field-component field">
-                <input type="checkbox" id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="1" <?php echo !empty($data['value']) && intval($data['value']) >= 1 ? 'checked' : '';?>>&nbsp;
-            <?php echo !empty($data['description']) ?  $data['description'] : '';?></span>
+                <input type="checkbox" id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="1" <?php echo !empty($data['value']) && (int)$data['value'] >= 1 ? 'checked' : '';?>>&nbsp;
+            <?php if( !empty($data['short_description']) ) {
+                echo $data['short_description'];
+            } else {
+                echo !empty($data['description']) ?  $data['description'] : '';
+            }?>
+            </span>
+
         </label>
     </div>
+
 <?php }
 
 // Multicheckbox fields:
@@ -180,6 +191,7 @@ function leyka_render_multi_checkboxes_fields($option_id, $data){
     $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id; ?>
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-multi-checkboxes-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
+
         <span class="field-component title">
             <span class="text"><?php echo $data['title'];?></span>
             <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
@@ -190,7 +202,7 @@ function leyka_render_multi_checkboxes_fields($option_id, $data){
                 </span>
             <?php }?>
         </span>
-        
+
         <span class="field-component field">
             <?php if(is_string($data['list_entries'])) {
                 $data['list_entries'] = $data['list_entries'](); // Call the callback to create an options
@@ -203,6 +215,7 @@ function leyka_render_multi_checkboxes_fields($option_id, $data){
                 </label>                
             <?php }?>
         </span>
+
     </div>
 <?php }
 

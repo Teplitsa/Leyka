@@ -14,7 +14,6 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
             'email'       => __('Notifications', 'leyka'),
             'technical'   => __('Tech settings', 'leyka'),
             'additional'  => __('Misc', 'leyka'),
-            //'commission'  => __('Commission', 'leyka'),
         ));
     }
 
@@ -126,9 +125,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'title' => __('Grateful emails options', 'leyka'),
                         'description' => __('Dispatched after making a one-time donation.', 'leyka'),
                         'is_default_collapsed' => false,
-                        'options' => array(
-                            'email_thanks_title', 'email_thanks_text',
-                        )
+                        'options' => array('email_thanks_title', 'email_thanks_text', 'send_donor_thanking_emails',)
                     ),),
                     array('section' => array(
                         'name' => 'email_recurring_init_thanks',
@@ -137,6 +134,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'is_default_collapsed' => false,
                         'options' => array(
                             'email_recurring_init_thanks_title', 'email_recurring_init_thanks_text',
+                            'send_donor_thanking_emails_on_recurring_init',
                         )
                     ),),
                     array('section' => array(
@@ -146,6 +144,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'is_default_collapsed' => false,
                         'options' => array(
                             'email_recurring_ongoing_thanks_title', 'email_recurring_ongoing_thanks_text',
+                            'send_donor_thanking_emails_on_recurring_ongoing',
                         )
                     ),),
                     array('section' => array(
@@ -154,8 +153,8 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'description' => __('After the completion of the campaign, sent to all donors', 'leyka'),
                         'is_default_collapsed' => false,
                         'options' => array(
-                            'send_donor_emails_on_campaign_target_reaching', 'email_campaign_target_reaching_title',
-                            'email_campaign_target_reaching_text',
+                            'email_campaign_target_reaching_title', 'email_campaign_target_reaching_text',
+                            'send_donor_emails_on_campaign_target_reaching',
                         )
                     ),),
                     array('section' => array(
@@ -190,16 +189,23 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                 ),
                             ),
                             'template_options_revo' => array(
-                                'screenshots' => array('screen-revo-001.png', 'screen-revo-002.png', 'screen-revo-003.png', 'screen-revo-004.png'),
+                                'screenshots' => array(
+                                    'screen-revo-001.png', 'screen-revo-002.png', 'screen-revo-003.png', 'screen-revo-004.png',
+                                ),
                                 'title' => __('Revo', 'leyka'),
                                 'sections' => array(
                                     array(
-                                        'options' => array('revo_template_slider_max_sum', 'donation_submit_text', 'revo_donation_complete_button_text'),
+                                        'options' => array(
+                                            'revo_template_slider_max_sum', 'donation_submit_text',
+                                            'revo_donation_complete_button_text',
+                                        ),
                                     ),
                                     array(
                                         'title' => __('Additional settings', 'leyka'),
-                                        'options' => array('revo_template_show_donors_list', 'revo_template_show_thumbnail',
-                                                    'show_donation_comment_field', 'donation_comment_max_length'),
+                                        'options' => array(
+                                            'revo_template_show_donors_list', 'revo_template_show_thumbnail',
+                                            'show_donation_comment_field', 'donation_comment_max_length',
+                                        ),
                                     ),
                                 ),
                             ),
@@ -217,9 +223,12 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                     ),
                                     array(
                                         'title' => __('Additional settings', 'leyka'),
-                                        'options' => array('donations_history_under_forms', 'show_success_widget_on_success',
-                                                    'show_donation_comment_field', 'donation_comment_max_length',
-                                                    'show_campaign_sharing', 'show_failure_widget_on_failure', 'do_not_display_donation_form'),
+                                        'options' => array(
+                                            'donations_history_under_forms', 'show_success_widget_on_success',
+                                            'show_donation_comment_field', 'donation_comment_max_length',
+                                            'show_campaign_sharing', 'show_failure_widget_on_failure',
+                                            'do_not_display_donation_form',
+                                        ),
                                     ),
                                 ),
                                 
@@ -238,9 +247,12 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                     ),
                                     array(
                                         'title' => __('Additional settings', 'leyka'),
-                                        'options' => array('donations_history_under_forms', 'show_success_widget_on_success',
-                                                    'show_donation_comment_field', 'donation_comment_max_length',
-                                                    'show_campaign_sharing', 'show_failure_widget_on_failure', 'do_not_display_donation_form'),
+                                        'options' => array(
+                                            'donations_history_under_forms', 'show_success_widget_on_success',
+                                            'show_donation_comment_field', 'donation_comment_max_length',
+                                            'show_campaign_sharing', 'show_failure_widget_on_failure',
+                                            'do_not_display_donation_form',
+                                        ),
                                     ),
                                 ),
                             ),
@@ -258,16 +270,19 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                     ),
                                     array(
                                         'title' => __('Additional settings', 'leyka'),
-                                        'options' => array('donations_history_under_forms', 'show_success_widget_on_success',
-                                                    'show_donation_comment_field', 'donation_comment_max_length',
-                                                    'show_campaign_sharing', 'show_failure_widget_on_failure', 'do_not_display_donation_form'),
+                                        'options' => array(
+                                            'donations_history_under_forms', 'show_success_widget_on_success',
+                                            'show_donation_comment_field', 'donation_comment_max_length',
+                                            'show_campaign_sharing', 'show_failure_widget_on_failure',
+                                            'do_not_display_donation_form',
+                                        ),
                                     ),
                                 ),
                             ),
                         ),
                     ),),
                     
-                    // currency
+                    // Currency settings:
                     array('section' => array(
                         'name' => 'currency_options',
                         'content_area_render' => 'leyka_render_tabbed_section_options_area',
@@ -320,27 +335,6 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                     
                 );
                 break;
-
-//            case 'commission':
-//                $options_allocated = array(
-//                    array('section' => array(
-//                        'name' => 'payment_operators_commission_options',
-//                        'title' => __('Payments operators commission', 'leyka'),
-//                        'is_default_collapsed' => false,
-//                        'options' => array(
-//                            'commission',
-//                        )
-//                    ),),
-//                    array('section' => array(
-//                        'name' => 'donations_total_amount_usage_options',
-//                        'title' => __('Total amount usage', 'leyka'),
-//                        'is_default_collapsed' => false,
-//                        'options' => array(
-//                            'admin_donations_list_display', 'widgets_total_amount_usage', /*'archive_page_total_amount_usage',*/
-//                        )
-//                    ),),
-//                );
-//                break;
             
             case 'technical':
                 $options_allocated = array(
@@ -348,18 +342,14 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'name' => 'technical_support',
                         'title' => __('Technical support', 'leyka'),
                         'is_default_collapsed' => false,
-                        'options' => array(
-                            'tech_support_email',
-                        )
+                        'options' => array('tech_support_email',)
                     ),),
                     array('section' => array(
                         'name' => 'upload_l10n',
                         'title' => __('Load translation', 'leyka'),
                         'is_default_collapsed' => false,
                         'action_button' => array( 'title' => __('Download', 'leyka'), 'id' => 'upload-l10n-button'),
-                        'options' => array(
-                            'lang2upload',
-                        )
+                        'options' => array('lang2upload',)
                     ),),
                     array('section' => array(
                         'name' => 'stats_connections',
@@ -367,9 +357,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'description' => __('Connect to statistics to send plugin data to us, Teplitsa of Social technologies. It will allow us to consistently improve the plugin work as well as help you quickly resolve technical issues with it. These data will be used only by plugin developers and will not be shared with any third party.', 'leyka'),
                         'is_default_collapsed' => false,
                         'action_button' => array( 'title' => __('Connect statistics', 'leyka'), 'id' => 'connect-stats-button'),
-                        'options' => array(
-                            'send_plugin_stats',
-                        )
+                        'options' => array('send_plugin_stats',)
                     ),),
                     array('section' => array(
                         'name' => 'plugin_deletion',
@@ -406,10 +394,8 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'title' => __('Additional', 'leyka'),
                         'is_default_collapsed' => true,
                         'options' => array(
-                            'show_donation_comments_in_frontend',
-                            'send_donor_thanking_emails',
-                            'success_page', 'failure_page', 'load_scripts_if_need', 'donors_data_editable', 'revo_thankyou_text',
-                            'revo_thankyou_email_result_text'
+                            'show_donation_comments_in_frontend', 'success_page', 'failure_page', 'load_scripts_if_need',
+                            'donors_data_editable', 'revo_thankyou_text', 'revo_thankyou_email_result_text',
                         )
                     ),),
                 );

@@ -499,14 +499,30 @@ self::$_options_meta = array(
     'send_donor_thanking_emails' => array(
         'type' => 'checkbox',
         'default' => '1',
-        'title' => __('Send a thankful email to a donor on each funded donation', 'leyka'),
+        'title' => __('Send the emails thankful email to a donor on each funded donation', 'leyka'),
         'description' => __('Check to send a thankful email to a donor on each funded donation', 'leyka'),
+        'short_description' => __('Send the emails', 'leyka'),
+    ),
+    'send_donor_thanking_emails_on_recurring_init' => array(
+        'type' => 'checkbox',
+        'default' => '1',
+        'title' => __('Send a thankful email to a donor on a recurring subscription', 'leyka'),
+        'description' => __('Check to send a thankful email to a donor on each recurring donations subscription', 'leyka'),
+        'short_description' => __('Send the emails', 'leyka'),
+    ),
+    'send_donor_thanking_emails_on_recurring_ongoing' => array(
+        'type' => 'checkbox',
+        'default' => '1',
+        'title' => __('Send a thankful email to a donor on a recurring donation', 'leyka'),
+        'description' => __('Check to send a thankful email to a donor on each non-initial recurring donation', 'leyka'),
+        'short_description' => __('Send the emails', 'leyka'),
     ),
     'send_donor_emails_on_campaign_target_reaching' => array(
         'type' => 'checkbox',
         'default' => '1',
         'title' => __("Send campaign reaching email notifications to all it's donors", 'leyka'),
         'description' => __('Check to send a special thankful email to each donor when campaign target reached', 'leyka'),
+        'short_description' => __('Send the emails', 'leyka'),
     ),
     'email_campaign_target_reaching_title' => array(
         'type' => 'text',
@@ -527,14 +543,16 @@ self::$_options_meta = array(
     'notify_donations_managers' => array(
         'type' => 'checkbox',
         'default' => '1',
-        'title' => __('Notify website personal of each incoming donation', 'leyka'),
+        'title' => __('Notify website personal of each single donation funded', 'leyka'),
         'description' => __('Check to notify some website personnel (donations managers) of each incoming donation', 'leyka'),
+        'short_description' => __('Send the emails on single donations', 'leyka'),
     ),
     'notify_managers_on_recurrents' => array(
         'type' => 'checkbox',
         'default' => '1',
         'title' => __('Notify website personal of each incoming recurrent donation', 'leyka'),
         'description' => __('Check to notify some website personnel (donations managers) of each incoming recurrent donation', 'leyka'),
+        'short_description' => __('Send the emails on recurring donations', 'leyka'),
     ),
     'donations_managers_emails' => array(
         'type' => 'text',
