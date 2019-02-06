@@ -1,4 +1,4 @@
-<?php if( !defined('WPINC') ) die; // If this file is called directly, abort
+<?php if( !defined('WPINC') ) die;
 
 $pm_available = leyka_options()->opt('pm_available');
 $pm_order = explode('pm_order[]=', leyka_options()->opt('pm_order'));
@@ -7,12 +7,12 @@ array_shift($pm_order);?>
 <div class="side-area">
 
     <div class="pm-order-header">
-        <h3>В каком порядке отобразятся способы платежа на сайте</h3>
-        <div class="pm-order-description">Перетаскивайте мышью блоки, соответствующие способам платежа</div>
+        <h3><?php esc_html_e('The order for payment methods display on the website', 'leyka');?></h3>
+        <div class="pm-order-description"><?php esc_html_e('Drag & drop the payment method blocks', 'leyka');?></div>
     </div>
 
     <div class="pm-update-status">
-        <div class="result ok-message" style="display: none;">Изменения сохранены</div>
+        <div class="result ok-message" style="display: none;"><?php esc_html_e('Changes saved', 'leyka');?></div>
         <div class="result error-message"></div>
         <div class="result leyka-loader xs" style="display: none;"></div>
     </div>
@@ -24,7 +24,7 @@ array_shift($pm_order);?>
         </div>
 
         <div class="pm-list-empty-comment" style="display: none;">
-            <?php _e('Select a gateway in the list on the left, then proceed to gateway settings. There, check the checkboxes of needed payment methods.', 'leyka');?>
+            <?php esc_html_e('Select a gateway in the list on the left, then proceed to gateway settings. There, check the checkboxes of needed payment methods.', 'leyka');?>
         </div>
 
     </div>

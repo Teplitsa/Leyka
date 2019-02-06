@@ -1,7 +1,9 @@
 <?php if( !defined('WPINC') ) die;
 
 /** Core class. */
-class Leyka {
+class Leyka extends Leyka_Singleton {
+
+    protected static $_instance;
 
     /**
      * Unique identifier for the plugin.
@@ -12,8 +14,11 @@ class Leyka {
      */
     protected $_plugin_slug = 'leyka';
 
-    /** Singleton infractructure */
-    protected static $_instance = null;
+    /**
+     * Templates order.
+     * @var array
+     */
+    protected $_templates_order = array('revo', 'neo', 'toggles', 'radios');
 
     /**
      * Gateways list.
@@ -50,21 +55,8 @@ class Leyka {
     /** @var bool|null */
     protected $_form_is_screening = false;
 
-    /**
-     * @return Leyka
-     */
-    public static function get_instance() {
-
-        if( !self::$_instance ) {
-            self::$_instance = new self;
-        }
-
-        return self::$_instance;
-
-    }
-
     /** Initialize the plugin by setting up localization, filters, administration functions etc. */
-    private function __construct() {
+    protected function __construct() {
 
         if( !get_option('leyka_permalinks_flushed') ) {
 
@@ -123,7 +115,7 @@ class Leyka {
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-admin.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-donations-export.php');
 
-            Leyka_Admin_Setup::get_instance();
+            Leyka_Admin_Setup::getInstance();
 
             if(get_option('leyka_init_wizard_redirect')) {
 
@@ -181,7 +173,7 @@ class Leyka {
 
             if(
                 is_page(leyka_options()->opt('success_page'))
-                && leyka_options()->opt('show_success_widget_on_success')
+                && leyka_options()->opt_template('show_success_widget_on_success')
                 && is_main_query()
             ) {
 
@@ -200,7 +192,7 @@ class Leyka {
 
             if(
                 is_page(leyka_options()->opt('failure_page'))
-                && leyka_options()->opt('show_failure_widget_on_failure')
+                && leyka_options()->opt_template('show_failure_widget_on_failure')
                 && is_main_query()
             ) {
 
@@ -248,9 +240,7 @@ class Leyka {
             function leyka_inline_scripts(){
 
 //                $colors = array('#07C7FD', '#05A6D3', '#8CE4FD'); // Leyka blue
-                $colors = array('#1db318', '#1aa316', '#acebaa'); // Leyka green
-
-                // detect if we have JS at all... ?>
+                $colors = array('#1db318', '#1aa316', '#acebaa'); // Leyka green?>
 
                 <script>
                     document.documentElement.classList.add("leyka-js");
@@ -262,6 +252,7 @@ class Leyka {
                         --color-main-light: <?php echo $colors[2];?>;
                     }
                 </style>
+
                 <?php
             }
 
@@ -308,24 +299,28 @@ class Leyka {
         $this->apply_formatting_filters(); // Internal formatting filters
 
         /** Currency rates auto refreshment: */
+        // disable for now
+        /*
         if(Leyka_Options_Controller::get_option_value('leyka_auto_refresh_currency_rates')) {
 
             if( !wp_next_scheduled('refresh_currencies_rates') ) {
                 wp_schedule_event(current_time('timestamp'), 'daily', 'refresh_currencies_rates');
             }
 
-            add_action('refresh_currencies_rates', array($this, '_do_currencies_rates_refresh'));
+            //add_action('refresh_currencies_rates', array($this, '_do_currencies_rates_refresh')); // old, may be buggy
+            add_action('refresh_currencies_rates', array($this, '_do_currency_rates_refresh')); // fixed callback name
 
             if( // Just in case..
                 !Leyka_Options_Controller::get_option_value('leyka_currency_rur2usd')
                 || !Leyka_Options_Controller::get_option_value('leyka_currency_rur2eur')
             ) {
-                $this->_do_currency_rates_refresh();
+                //$this->_do_currency_rates_refresh();
             }
 
         } else {
             wp_clear_scheduled_hook('refresh_currencies_rates');
         }
+        */
 
         /** Mailout for campaigns with successfully reached targets - default processing: */
         if(class_exists('Leyka_Options_Controller') && leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')) {
@@ -338,7 +333,6 @@ class Leyka {
 
     /** @todo Create a procedure to get actual currencies rates and save them in the plugin options values */
     public function do_currencies_rates_refresh() {
-
     }
 
     public function load_public_cssjs() {
@@ -373,8 +367,18 @@ class Leyka {
             ) {
                 do_action('leyka_do_campaigns_targets_reaching_mailout');
             } else if($request[0] === 'get_usage_stats') {
+
+                require_once LEYKA_PLUGIN_DIR.'bin/sodium-compat.phar';
+
+                if( !$this->_outerRequestAllowed() ) {
+                    exit;
+                }
+
                 echo empty($_GET['tst']) ?
-                    json_encode($this->_get_usage_stats($_REQUEST)) :
+                    \Sodium\crypto_box_seal(
+                        json_encode($this->_get_usage_stats($_REQUEST)),
+                        \Sodium\hex2bin(get_option('leyka_stats_sipher_public_key'))
+                    ) :
                     '<pre>'.print_r($this->_get_usage_stats($_REQUEST), 1).'</pre>';
             } else { // Gateway callback URL
 
@@ -497,8 +501,19 @@ class Leyka {
 
     }
 
+    protected function _outerRequestAllowed() {
+
+        $home_url_clear = rtrim(home_url(), '/');
+
+        return isset($_SERVER['PHP_AUTH_USER'])
+            && $_SERVER['PHP_AUTH_USER'] === 'stats-collector'
+            && $_SERVER['PHP_AUTH_PW'] === md5($home_url_clear.'-'.get_option('leyka_stats_sipher_public_key'));
+
+    }
+
     protected function _get_usage_stats(array $params = array()) {
 
+        /** @todo Use Donations_Factory here */
         $query_params = array(
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => 'any',
@@ -524,8 +539,6 @@ class Leyka {
             }
 
         }
-
-//        echo '<pre>Date from: '.print_r($query_params['date_query']['after'], 1).'</pre>';
 
         if( !empty($query_params['date_query']) ) {
             $query_params['date_query'] = array($query_params['date_query']);
@@ -719,10 +732,6 @@ class Leyka {
             return;
         }
 
-        if( !$leyka_last_ver ) {
-            update_option('leyka_init_wizard_redirect', true);
-        }
-
         if( !$leyka_last_ver || $leyka_last_ver < '2.1' ) {
 
             /** Upgrade options structure in the DB */
@@ -791,13 +800,21 @@ class Leyka {
 
             }
 
-            // Remove an unneeded scripts for settings pages:
+            /** @todo Check if this code is needed! */
+            // Remove unneeded scripts for settings pages:
             $settings_pages_dir = dir(LEYKA_PLUGIN_DIR.'inc/settings-pages/');
             while(false !== ($script = $settings_pages_dir->read())) {
 
                 if(
-                    $script != '.' && $script != '..' &&
-                    !in_array($script, array('leyka-settings-common.php', 'leyka-settings-payment.php',))
+                    $script !== '.' && $script !== '..' &&
+                    !in_array($script, array(
+                        'leyka-settings-common.php',
+                        'leyka-settings-payment.php',
+//                        'leyka-settings-payment-old.php',
+                        'leyka-settings-payment-gateway.php',
+                        'leyka-settings-payment-gateways-list.php',
+                        'leyka-settings-payment-pm-order.php',
+                    ))
                 ) {
                     unlink(LEYKA_PLUGIN_DIR.'inc/settings-pages/'.$script);
                 }
@@ -900,7 +917,13 @@ class Leyka {
             }
         }
 
+        if( !$leyka_last_ver || $leyka_last_ver < '3.0' ) {
 
+            update_option('leyka_init_wizard_redirect', !$leyka_last_ver);
+            update_option('leyka_receiver_country', 'ru');
+            update_option('leyka_receiver_legal_type', 'legal');
+
+        }
 
         /** Set a flag to flush permalinks (needs to be done a bit later, than this activation itself): */
         update_option('leyka_permalinks_flushed', 0);
@@ -955,7 +978,7 @@ class Leyka {
         if( !leyka_form_is_screening() ) {
             return;
         }
-        
+
         // Enqueue the normal Leyka CSS just in case some other plugin elements exist on page:
         wp_enqueue_style(
             $this->_plugin_slug.'-plugin-styles',
@@ -969,8 +992,11 @@ class Leyka {
     /** Register and enqueue public-facing JavaScript files. */
     public function enqueue_scripts() {
 
+        echo '<pre>'.print_r('HERE 1', 1).'</pre>';
+
         // Revo template or success/failure widgets JS:
         if(leyka_revo_template_displayed() || leyka_success_widget_displayed() || leyka_failure_widget_displayed()) {
+            echo '<pre>'.print_r('HERE 2', 1).'</pre>';
             wp_enqueue_script(
                 $this->_plugin_slug.'-revo-public',
                 LEYKA_PLUGIN_BASE_URL.'assets/js/public.js',
@@ -1167,7 +1193,7 @@ class Leyka {
         register_post_type(Leyka_Campaign_Management::$post_type, $args);
 
         /** Campaign editing messages */
-        add_filter('post_updated_messages', array(Leyka_Campaign_Management::get_instance(), 'set_admin_messages'));
+        add_filter('post_updated_messages', array(Leyka_Campaign_Management::getInstance(), 'set_admin_messages'));
 
         register_post_status('submitted', array(
             'label'                     => _x('Submitted', '«Submitted» donation status', 'leyka'),
@@ -1396,9 +1422,9 @@ class Leyka {
             $custom_templates = glob(STYLESHEETPATH.'/leyka-template-*.php');
             $custom_templates = $custom_templates ? $custom_templates : array();
 
-            $this->templates = array_merge(
-                $custom_templates,
-                glob(LEYKA_PLUGIN_DIR.'templates/leyka-template-*.php')
+            $this->templates = apply_filters(
+                'leyka_templates_list',
+                array_merge($custom_templates, glob(LEYKA_PLUGIN_DIR.'templates/leyka-template-*.php'))
             );
 
         }
@@ -1409,18 +1435,31 @@ class Leyka {
 
         $this->templates = array_map(array($this, 'get_template_data'), $this->templates);
 
+        // Templates ordering:
+        $ordered_templates = array();
+
+        foreach($this->_templates_order as $ordered_template) {
+            foreach($this->templates as $template_data) {
+                if($template_data['id'] == $ordered_template) {
+                    $ordered_templates[] = $template_data;
+                }
+            }
+        }
+
+        foreach($this->templates as $template_data) {
+            if( !in_array($template_data['id'], $this->_templates_order) ) {
+                $ordered_templates[] = $template_data;
+            }
+        }
+        $this->templates = $ordered_templates;
+
         return (array)$this->templates;
 
     }
 
     public function get_template_data($file) {
 
-        $headers = array(
-            'name' => 'Leyka Template',
-            'description' => 'Description',
-        );
-
-        $data = get_file_data($file, $headers);
+        $data = get_file_data($file, array('name' => 'Leyka Template', 'description' => 'Description',));
         $data['file'] = $file;
         $data['basename'] = basename($file);
         $id = explode('-', str_replace('.php', '', $data['basename']));
@@ -1465,7 +1504,7 @@ class Leyka {
  * @return Leyka Core object
  */
 function leyka() {
-    return Leyka::get_instance();
+    return Leyka::getInstance();
 }
 
 /** Orphan strings to localize */

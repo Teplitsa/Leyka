@@ -18,8 +18,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             'leyka_gateway_description',
             __('Yandex.Kassa allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://money.yandex.ru/">Yandex.Kassa website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
             $this->_id
-        ); // 'Яндекс.Касса — сервис, который позволяет включить прием платежей на сайте и получать деньги на расчётный счёт компании. Комиссия берётся с успешных платежей.
-//Способы приёма платежей: банковские карты, Яндекс.Деньги и QIWI, интернет-банки, наличные, баланс мобильного и другие.';
+        );
 
         $this->_docs_link = '//leyka.te-st.ru/docs/yandex-dengi/';
         $this->_registration_link = 'https://kassa.yandex.ru/joinups';
@@ -103,25 +102,25 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
     protected function _initialize_pm_list() {
 
         if(empty($this->_payment_methods['yandex_all'])) {
-            $this->_payment_methods['yandex_all'] = Leyka_Yandex_All::get_instance();
+            $this->_payment_methods['yandex_all'] = Leyka_Yandex_All::getInstance();
         }
         if(empty($this->_payment_methods['yandex_card'])) {
-            $this->_payment_methods['yandex_card'] = Leyka_Yandex_Card::get_instance();
+            $this->_payment_methods['yandex_card'] = Leyka_Yandex_Card::getInstance();
         }
         if(empty($this->_payment_methods['yandex_money'])) {
-            $this->_payment_methods['yandex_money'] = Leyka_Yandex_Money::get_instance();
+            $this->_payment_methods['yandex_money'] = Leyka_Yandex_Money::getInstance();
         }
         if(empty($this->_payment_methods['yandex_wm'])) {
-            $this->_payment_methods['yandex_wm'] = Leyka_Yandex_Webmoney::get_instance();
+            $this->_payment_methods['yandex_wm'] = Leyka_Yandex_Webmoney::getInstance();
         }
         if(empty($this->_payment_methods['yandex_sb'])) {
-            $this->_payment_methods['yandex_sb'] = Leyka_Yandex_Sberbank_Online::get_instance();
+            $this->_payment_methods['yandex_sb'] = Leyka_Yandex_Sberbank_Online::getInstance();
         }
         if(empty($this->_payment_methods['yandex_ab'])) {
-            $this->_payment_methods['yandex_ab'] = Leyka_Yandex_Alpha_Click::get_instance();
+            $this->_payment_methods['yandex_ab'] = Leyka_Yandex_Alpha_Click::getInstance();
         }
         if(empty($this->_payment_methods['yandex_pb'])) {
-            $this->_payment_methods['yandex_pb'] = Leyka_Yandex_Promvzyazbank::get_instance();
+            $this->_payment_methods['yandex_pb'] = Leyka_Yandex_Promvzyazbank::getInstance();
         }
 
     }
@@ -154,7 +153,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                     'confirmation' => array(
                         'type' => 'redirect',
                         'return_url' => empty($form_data['leyka_success_page_url']) ?
-                            leyka_get_success_page_url() : $form_data['leyka_success_page_url'],
+                            leyka_get_campaign_success_page_url($donation->campaign_id) : $form_data['leyka_success_page_url'],
                     ),
                     'capture' => true, // Make payment at once, don't wait for shop confirmation
                     'description' =>
@@ -248,8 +247,8 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             'orderNumber' => $donation_id,
             'orderDetails' => $donation->payment_title." (№ $donation_id)",
             'paymentType' => $payment_type,
-            'shopSuccessURL' => leyka_get_success_page_url(),
-            'shopFailURL' => leyka_get_failure_page_url(),
+            'shopSuccessURL' => leyka_get_campaign_success_page_url($donation->campaign_id),
+            'shopFailURL' => leyka_get_campaign_failure_page_url($donation->campaign_id),
             'cps_email' => $donation->donor_email,
             'cms_name' => 'wp-leyka', // Service parameter, added by Yandex request
         );
@@ -320,6 +319,8 @@ techMessage="'.$tech_message.'"/>');
                 switch($payment->status) {
                     case 'succeeded':
                         $donation->status = 'funded';
+                        $res = Leyka_Donation_Management::send_all_emails($donation->id);
+                        /** @todo Handle the case of $res === false */
                         break;
                     case 'canceled':
                         $donation->status = 'failed';
@@ -845,8 +846,6 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
         $this->_label_backend = __('Bank card', 'leyka');
         $this->_label = __('Bank card', 'leyka');
 
-        // The description won't be setted here - it requires the PM option being configured at this time (which is not)
-
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
@@ -1011,7 +1010,7 @@ class Leyka_Yandex_Sberbank_Online extends Leyka_Payment_Method {
 
 class Leyka_Yandex_Alpha_Click extends Leyka_Payment_Method {
 
-    protected static $_instance = null;
+    protected static $_instance;
 
     public function _set_attributes() {
 
@@ -1078,6 +1077,6 @@ class Leyka_Yandex_Promvzyazbank extends Leyka_Payment_Method {
 }
 
 function leyka_add_gateway_yandex() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka()->add_gateway(Leyka_Yandex_Gateway::get_instance());
+    leyka()->add_gateway(Leyka_Yandex_Gateway::getInstance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_yandex');

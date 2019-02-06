@@ -21,7 +21,7 @@
 
 **Основные функции**
 
-* Широкий набор платежных операторов и опций (включая Яндекс.Кассу, CloudPayments, PayPal, Chronopay, RBK Money, ROBOKASSA, Qiwi, MIXPLAT и печать банковских квитанций)
+* Широкий набор платежных операторов и опций (включая Яндекс.Кассу, CloudPayments, PayPal, Chronopay, RBK Money, ROBOKASSA, Qiwi, MIXPLAT, Paymaster и печать банковских квитанций)
 * Подходит для физических и юридических лиц
 * Автоматическая рассылка email-сообщений донорам
 * Поддержка нескольких языков
@@ -41,7 +41,7 @@
 * [настройка и базовые функции плагина](//leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/)
 * [использование популярных функций (виджетов, шорткодов и т.п.)](//leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/)
 
-Для корректной работы плагина необходим PHP версии не ниже 5.3.
+Для корректной работы плагина необходим PHP версии не ниже 5.6.
 
 Если вам нужна помощь волонтеров в установке и настройке, создайте задачу на сайте нашего проекта [it-волонтёр](//itv.te-st.ru/).
 
@@ -116,7 +116,7 @@ The plugin manual is avaliable at [official website](https://leyka.te-st.ru/inst
 * [basic features](https://leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/)
 * [extended features](https://leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/)
 
-PHP at least 5.3 is required.
+PHP at least 5.6 is required.
 
 ## Help the project ##
 

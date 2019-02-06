@@ -55,15 +55,11 @@ class Leyka_Text_Block extends Leyka_Settings_Block {
     }
 
     public function getContent() {
-        if($this->_template) {
-            return $this->getTemplatedContent();
-        }
-        else {
-            return $this->_text;
-        }
+        return $this->_template ? $this->getTemplatedContent() : $this->_text;
     }
     
     protected function getTemplatedContent() {
+
         ob_start();
 
         $template_file = apply_filters(
@@ -71,14 +67,15 @@ class Leyka_Text_Block extends Leyka_Settings_Block {
             LEYKA_PLUGIN_DIR."inc/settings-fields-templates/leyka-{$this->_template}.php",
             $this->_template
         );
-        
+
         if(file_exists($template_file)) {
             require($template_file);
         } else {
             /** @todo Throw some Leyka_Exception */
         }
 
-        return ob_get_clean();        
+        return ob_get_clean();
+
     }
 
     public function isValid() {
@@ -395,21 +392,16 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
         if( !empty($this->_field_data['required']) ) {
             foreach($this->_fields_keys as $key) {
                 
-                if($this->_field_type == 'file') {
-                    
+                if($this->_field_type === 'file') {
                     $is_valid = $this->isFileFieldValid();
-                    
-                }
-                elseif(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
-
+                } elseif(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
                     $is_valid = false;
-
                 }
-                
-                if(!$is_valid) {
+
+                if( !$is_valid ) {
                     break;
                 }
-                
+
             }
         }
 
@@ -424,18 +416,15 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
     }
     
     public function isFileFieldValid() {
-        
-        if(!isset($_FILES[ 'leyka_' . $this->_setting_id ])) {
+
+        if( !isset($_FILES['leyka_' . $this->_setting_id ]) ) {
             return false;
         }
-        
-        $file = $_FILES[ 'leyka_' . $this->_setting_id ];
-        if(empty($file) || $file['error'] || !$file['size']) {
-            return false;
-        }
-        
-        return true;
-        
+
+        $file = $_FILES['leyka_' . $this->_setting_id];
+
+        return $file && empty($file['error']) && !empty($file['size']);
+
     }
 
     public function getErrors() {
@@ -445,15 +434,14 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
         if( !empty($this->_field_data['required']) ) {
 
             $error_text = $this->_field_data['required'] === true ?
-                'Значение поля обязательно' : esc_attr__($this->_field_data['required']);
-                
+                esc_attr__('The field value is required', 'leyka') : esc_attr__($this->_field_data['required']);
+
             foreach($this->_fields_keys as $key) {
-                if($this->_field_type == 'file') {
+                if($this->_field_type === 'file') {
                     if(!$this->isFileFieldValid()) {
                         $errors[] = new WP_Error('option_invalid', $error_text);
                     }
-                }
-                elseif(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
+                } else if(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
                     $errors[] = new WP_Error('option_invalid', $error_text);
                 }
             }

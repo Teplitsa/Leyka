@@ -142,17 +142,15 @@ function leyka_get_gateway_settings_url($gateway) {
     
     $gateway_activation_status = $gateway ? $gateway->get_activation_status() : null;
     $wizard_id = leyka_gateway_setup_wizard($gateway);
-    
-    $url = '';
-    
-    if($gateway_activation_status != 'active' && $wizard_id) {
+
+    if($gateway_activation_status !== 'active' && $wizard_id) {
         $url = admin_url('/admin.php?page=leyka_settings_new&screen=wizard-' . $wizard_id);
-    }
-    else {
+    } else {
         $url = admin_url('/admin.php?page=leyka_settings&stage=payment&gateway=' . $gateway->id);
     }
-    
+
     return $url;
+
 }
 
 /**
@@ -176,7 +174,7 @@ function leyka_gateway_setup_wizard($gateway) {
  */
 function leyka_wizard_started($gateway_wizard_name) {
     
-    $wizard_controller = Leyka_Settings_Factory::get_instance()->getController($gateway_wizard_name);
+    $wizard_controller = Leyka_Settings_Factory::getInstance()->getController($gateway_wizard_name);
     return count($wizard_controller->history) > 0;
     
 }
@@ -351,7 +349,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     /** Register a gateway in the plugin */
     public function add_gateway() {
-        leyka()->add_gateway(self::get_instance());
+        leyka()->add_gateway(self::getInstance());
     }
 
     /** Register a gateway's scripts in the plugin */
@@ -668,8 +666,8 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
     protected $_ajax_without_form_submission = false;
 
     protected function __construct() {
-
-        $this->_submit_label = leyka_options()->opt_safe('donation_submit_text');
+        //$this->_submit_label = leyka_options()->opt_template('donation_submit_text');
+        $this->_submit_label = '';
 
         $this->_set_attributes();
         $this->_initialize_options();
@@ -778,7 +776,7 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
                 'title' => __('Payment method custom label', 'leyka'),
                 'description' => __('A label for this payment method that will appear on all donation forms.', 'leyka'),
                 'required' => false,
-                'placeholder' => sprintf(__('E.g., �%s�', 'leyka'), $this->_label),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), $this->_label),
                 'validation_rules' => array(), // List of regexp?..
             ));
         }

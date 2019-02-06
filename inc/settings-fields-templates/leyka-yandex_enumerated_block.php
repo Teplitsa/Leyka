@@ -4,14 +4,11 @@
 
 /** @var $this Leyka_Custom_Setting_Block A block for which the template is used. */
 
-if(!empty($this->field_data['option_id'])) {
+if( !empty($this->field_data['option_id']) ) {
     $option_value = leyka_options()->opt($this->field_data['option_id']);
-}
-else {
+} else {
     $option_value = '';
-}
-
-?>
+}?>
 
 <div class="enum-separated-block">
     <div class="block-separator"><div></div></div>

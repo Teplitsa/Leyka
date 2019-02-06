@@ -21,7 +21,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         $this->_docs_link = '//leyka.te-st.ru/docs/chronopay/';
         $this->_registration_link = '//chronopay.com/ru/connection/';
 
-        $this->_min_commission = 2.1; // 0.5% officially, but NGOs reported to us otherwise
+        $this->_min_commission = 2.7;
         $this->_receiver_types = array('legal');
         $this->_may_support_recurring = true;
 
@@ -62,7 +62,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
         if(empty($this->_payment_methods['chronopay_card'])) {
-            $this->_payment_methods['chronopay_card'] = Leyka_Chronopay_Card::get_instance();
+            $this->_payment_methods['chronopay_card'] = Leyka_Chronopay_Card::getInstance();
         }
     }
 
@@ -113,8 +113,8 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             'order_id' => $donation_id,
             'cb_url' => home_url('leyka/service/'.$this->_id.'/response/'), // URL for the gateway callbacks
             'cb_type' => 'P',
-            'success_url' => leyka_get_success_page_url(),
-            'decline_url' => leyka_get_failure_page_url(),
+            'success_url' => leyka_get_campaign_success_page_url($donation->campaign_id),
+            'decline_url' => leyka_get_campaign_failure_page_url($donation->campaign_id),
 
             'sign' => md5($chronopay_product_id.'-'.$price
                 .(leyka_options()->opt('chronopay_use_payment_uniqueness_control') ? '-'.$donation_id : '')
@@ -683,6 +683,6 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
 }
 
 function leyka_add_gateway_chronopay() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka()->add_gateway(Leyka_Chronopay_Gateway::get_instance());
+    leyka()->add_gateway(Leyka_Chronopay_Gateway::getInstance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_chronopay');

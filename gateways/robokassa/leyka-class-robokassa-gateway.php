@@ -69,19 +69,19 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
     protected function _initialize_pm_list() {
 
         if(empty($this->_payment_methods['BANKOCEAN2'])) {
-            $this->_payment_methods['BANKOCEAN2'] = Leyka_Robokassa_Card::get_instance();
+            $this->_payment_methods['BANKOCEAN2'] = Leyka_Robokassa_Card::getInstance();
         }
         if(empty($this->_payment_methods['YandexMerchantOcean'])) {
-            $this->_payment_methods['YandexMerchantOcean'] = Leyka_Robokassa_Yandex_Money::get_instance();
+            $this->_payment_methods['YandexMerchantOcean'] = Leyka_Robokassa_Yandex_Money::getInstance();
         }
         if(empty($this->_payment_methods['WMR'])) {
-            $this->_payment_methods['WMR'] = Leyka_Robokassa_Webmoney::get_instance();
+            $this->_payment_methods['WMR'] = Leyka_Robokassa_Webmoney::getInstance();
         }
         if(empty($this->_payment_methods['Qiwi30Ocean'])) {
-            $this->_payment_methods['Qiwi30Ocean'] = Leyka_Robokassa_Qiwi::get_instance();
+            $this->_payment_methods['Qiwi30Ocean'] = Leyka_Robokassa_Qiwi::getInstance();
         }
         if(empty($this->_payment_methods['Other'])) {
-            $this->_payment_methods['Other'] = Leyka_Robokassa_All::get_instance();
+            $this->_payment_methods['Other'] = Leyka_Robokassa_All::getInstance();
         }
 
     }
@@ -394,6 +394,6 @@ class Leyka_Robokassa_All extends Leyka_Payment_Method {
 }
 
 function leyka_add_gateway_robokassa() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka_add_gateway(Leyka_Robokassa_Gateway::get_instance());
+    leyka_add_gateway(Leyka_Robokassa_Gateway::getInstance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_robokassa');

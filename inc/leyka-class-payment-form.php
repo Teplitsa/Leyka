@@ -72,11 +72,11 @@ class Leyka_Payment_Form {
             $errors[] = new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
         }
 
-        if(leyka_options()->opt('show_donation_comment_field') && leyka_options()->opt('donation_comment_max_length')) {
+        if(leyka_options()->opt_template('show_donation_comment_field') && leyka_options()->opt_template('donation_comment_max_length')) {
 
             $donor_comment = leyka_pf_get_donor_comment_value();
-            if($donor_comment && mb_strlen($donor_comment) > leyka_options()->opt('donation_comment_max_length')) {
-                $errors[] = new WP_Error('donor_comment_too_long', sprintf(__('Entered comment is too long (maximum %d characters allowed)', 'leyka'), leyka_options()->opt('donation_comment_max_length')));
+            if($donor_comment && mb_strlen($donor_comment) > leyka_options()->opt_template('donation_comment_max_length')) {
+                $errors[] = new WP_Error('donor_comment_too_long', sprintf(__('Entered comment is too long (maximum %d characters allowed)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length')));
             }
 
         }
@@ -124,7 +124,8 @@ class Leyka_Payment_Form {
 			return '';
         }
 
-		$mode = leyka_options()->opt('donation_sum_field_type'); // fixed/flexible/mixed
+		$mode = leyka_options()->opt_template('donation_sum_field_type'); // fixed/flexible/mixed
+		
 		$supported_curr = leyka_get_currencies_data();
 		$current_curr = $this->get_current_currency();
 
@@ -195,7 +196,7 @@ class Leyka_Payment_Form {
             'leyka_template_id' => $template['id'],
             'leyka_campaign_id' => $campaign->id,
             'leyka_ga_campaign_title' => esc_attr($campaign->payment_title),
-            'leyka_amount_field_type' => leyka_options()->opt('donation_sum_field_type'),
+            'leyka_amount_field_type' => leyka_options()->opt_template('donation_sum_field_type'),
             'leyka_honeypot' => '',
         ));
         $hiddens = $rewrite + $hiddens;
@@ -315,7 +316,7 @@ class Leyka_Payment_Form {
 
     public function get_comment_field($value = '') {
 
-        if( !$this->is_field_supported('comment') || !leyka_options()->opt('show_donation_comment_field') ) {
+        if( !$this->is_field_supported('comment') || !leyka_options()->opt_template('show_donation_comment_field') ) {
             return '';
         }
 
@@ -323,10 +324,10 @@ class Leyka_Payment_Form {
 
         <label for="leyka_donor_commment" class="leyka-screen-reader-text"><?php _e('Your comment', 'leyka');?></label>
         <label class="input">
-            <textarea class="comment leyka-donor-comment" name="leyka_donor_comment" data-max-length="<?php echo leyka_options()->opt('donation_comment_max_length');?>"><?php echo $value;?></textarea>
+            <textarea class="comment leyka-donor-comment" name="leyka_donor_comment" data-max-length="<?php echo leyka_options()->opt_template('donation_comment_max_length');?>"><?php echo $value;?></textarea>
         </label>
         <p class="field-comment">
-            <?php echo leyka_options()->opt('donation_comment_max_length') ? sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt('donation_comment_max_length')) : __('Your comment', 'leyka');?>
+            <?php echo leyka_options()->opt_template('donation_comment_max_length') ? sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length')) : __('Your comment', 'leyka');?>
         </p>
         <p class="leyka_donor_comment-error field-error"></p>
 
@@ -431,7 +432,7 @@ class Leyka_Payment_Form {
 		if( !$this->is_field_supported('submit') ) {
 			return '';
         }
-
+		
 		ob_start();?>
 		<input type="submit" id="leyka_donation_submit" name="leyka_donation_submit" value="<?php echo esc_attr($this->get_submit_label());?>">
 
@@ -515,7 +516,7 @@ class Leyka_Payment_Form {
 	}
 
     public function get_submit_label(){
-		return $this->_pm && $this->_pm->submit_label ? $this->_pm->submit_label : leyka_options()->opt('donation_submit_text');
+		return $this->_pm && $this->_pm->submit_label ? $this->_pm->submit_label : leyka_options()->opt_template('donation_submit_text');
 	}
 
     public function get_pm_icons() {
@@ -854,7 +855,9 @@ function leyka_print_donation_elements($content) {
 
 	$current_campaign_post = get_post();
 
-	$autoprint = leyka_options()->opt('donation_form_mode');
+	//$autoprint = leyka_options()->opt('donation_form_mode');
+	$autoprint = !(bool)leyka_options()->opt_template('do_not_display_donation_form');
+	
 	if( !is_singular(Leyka_Campaign_Management::$post_type) || !$autoprint ) {
         return $content;
     }
@@ -867,15 +870,15 @@ function leyka_print_donation_elements($content) {
 	$post_content = $content;
 	$content = '';
 
-	// Scale on top of form:	
-	if(leyka_options()->opt('scale_widget_place') == 'top' || leyka_options()->opt('scale_widget_place') == 'both') {
+	// Scale on top of form:
+	if(leyka_options()->opt_template('scale_widget_place') == 'top' || leyka_options()->opt_template('scale_widget_place') == 'both') {
         $content .= do_shortcode("[leyka_scale show_button='1']");
     }
 
 	$content .= $post_content;
 
 	// Scale below form:
-	if($campaign->target && (leyka_options()->opt('scale_widget_place') == 'bottom' || leyka_options()->opt('scale_widget_place') == 'both')) {
+	if($campaign->target && (leyka_options()->opt_template('scale_widget_place') == 'bottom' || leyka_options()->opt_template('scale_widget_place') == 'both')) {
         $content .= do_shortcode("[leyka_scale show_button='0']");
     }
 
@@ -884,7 +887,7 @@ function leyka_print_donation_elements($content) {
     $campaign->increase_views_counter(); // Increase campaign views counter
 
 	// Donations list:
-    if(leyka_options()->opt('leyka_donations_history_under_forms')) {
+    if(leyka_options()->opt_template('leyka_donations_history_under_forms')) {
 
 		$list = leyka_get_donors_list($current_campaign_post->ID);
 		if($list) {
@@ -901,7 +904,7 @@ function leyka_get_current_template_data($campaign = null, $template = null, $is
 
 	if( !$campaign ) {
 		$campaign = get_post();
-    } elseif(is_int($campaign)) {
+    } elseif(is_numeric($campaign)) {
 		$campaign = get_post($campaign);
     }
 
@@ -931,7 +934,7 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
 
 	if( !$campaign ) {
         $campaign = new Leyka_Campaign(get_post());
-	} elseif(is_int($campaign) || is_a($campaign, 'WP_Post')) {
+	} elseif(is_numeric($campaign) || is_a($campaign, 'WP_Post')) {
         $campaign = new Leyka_Campaign($campaign);
 	} elseif( !is_a($campaign, 'Leyka_Campaign') ) {
         return false;

@@ -1,6 +1,4 @@
-<?php if (!defined('WPINC')) {
-    die;
-}
+<?php if( !defined('WPINC') ) { die; }
 
 require_once LEYKA_PLUGIN_DIR.'gateways/rbk/includes/Leyka_Rbk_Gateway_Web_Hook_Verification.php';
 require_once LEYKA_PLUGIN_DIR.'gateways/rbk/includes/Leyka_Rbk_Gateway_Web_Hook.php';
@@ -11,11 +9,11 @@ require_once LEYKA_PLUGIN_DIR.'gateways/rbk/includes/Leyka_Rbk_Gateway_Helper.ph
  */
 class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
+    protected static $_instance;
+
     protected static $_rbk_api_path = '/v2/processing/invoices';
     protected $_rbk_response;
     protected $_rbk_log = array();
-
-    protected static $_instance;
 
     protected function _set_attributes() {
 
@@ -70,13 +68,13 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
         if(empty($this->_payment_methods['bankcard'])) {
-            $this->_payment_methods['bankcard'] = Leyka_Rbk_Card::get_instance();
+            $this->_payment_methods['bankcard'] = Leyka_Rbk_Card::getInstance();
         }
     }
 
     public function enqueue_gateway_scripts() {
 
-        if(Leyka_Rbk_Card::get_instance()->active) {
+        if(Leyka_Rbk_Card::getInstance()->active) {
 
             wp_enqueue_script(
                 'leyka-rbk-checkout',
@@ -88,7 +86,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
             wp_enqueue_script(
                 'leyka-revo-rbk',
-                LEYKA_PLUGIN_BASE_URL . 'gateways/' . Leyka_Rbk_Gateway::get_instance()->id . '/js/leyka.rbk.js',
+                LEYKA_PLUGIN_BASE_URL . 'gateways/' . Leyka_Rbk_Gateway::getInstance()->id . '/js/leyka.rbk.js',
                 array('jquery', 'leyka-revo-public', 'leyka-rbk-checkout'),
                 LEYKA_VERSION,
                 true
@@ -283,7 +281,7 @@ JS;
 
 class Leyka_Rbk_Card extends Leyka_Payment_Method {
 
-    protected static $_instance = null;
+    protected static $_instance;
 
     public function _set_attributes() {
 
@@ -299,7 +297,7 @@ class Leyka_Rbk_Card extends Leyka_Payment_Method {
             $this->_category
         );
 
-        $this->_label_backend = __('Bank card via (RBK money)', 'leyka');
+        $this->_label_backend = __('Bank card (RBK Money)', 'leyka');
         $this->_label = __('Bank card', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_' . $this->_id, array(
@@ -317,7 +315,7 @@ class Leyka_Rbk_Card extends Leyka_Payment_Method {
 }
 
 function leyka_add_gateway_rbk() {
-    leyka_add_gateway(Leyka_Rbk_Gateway::get_instance());
+    leyka_add_gateway(Leyka_Rbk_Gateway::getInstance());
 }
 
 add_action('leyka_init_actions', 'leyka_add_gateway_rbk');

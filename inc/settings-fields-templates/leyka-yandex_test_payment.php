@@ -26,27 +26,21 @@ $is_came_back_from_yandex = preg_match(
 $is_payment_completed = $is_came_back_from_yandex && $test_payment && $test_payment->get_funded_date();?>
 
 <div class="payment-tryout-wrapper">
-    <input type="button" class="button button-secondary" <?php echo $is_payment_completed ? 'disabled' : '';?> id="yandex-make-live-payment" value="Условно реальное пожертвование">
+    <input type="button" class="button button-secondary" <?php echo $is_payment_completed ? 'disabled' : '';?> id="yandex-make-live-payment" value="<?php esc_attr_e('"Almost real" donation', 'leyka');?>">
     <span class="leyka-loader xs yandex-make-live-payment-loader" style="display: none;"></span>
 </div>
 
 <?php if( !$is_came_back_from_yandex ) {?>
 <div class="payment-tryout-comment live-payment">
-<!--    <span class="attention-needed">Внимание!</span> Необходимо будет ввести данные действующей карты и деньги будут с нее списаны.</div>-->
-    <span class="attention-needed">Внимание для тестировщиков!</span> Необходимо будет ввести данные тестовой банковской карты. Реальные деньги не будут с нее списаны.
-    <ul>
-        <li><strong>Номер карты:</strong> 5555 5555 5555 4444</li>
-        <li><strong>Дата:</strong> 12 / 20</li>
-        <li><strong>CVC:</strong> 000</li>
-    </ul>
+    <span class="attention-needed"><?php esc_html_e('Warning!', 'leyka');?></span> <?php esc_html_e('You will have to enter the real and working bank card, and the real money will be taken from it.', 'leyka');?>
 </div>
-<?php } elseif($is_payment_completed) {?>
+<?php } else if($is_payment_completed) {?>
     <div class="payment-result">
-        <div class="result ok">Поздравляем! Ваше пожертвование прошло успешно</div>
+        <div class="result ok"><?php esc_html_e('Congratulations! Your donation is successful', 'leyka');?></div>
     </div>
 <?php } else {?>
     <div class="payment-result">
-        <div class="result fail">Произошла ошибка</div>
+        <div class="result fail"><?php esc_html_e('An error occured', 'leyka');?></div>
     </div>
 <?php }?>
 

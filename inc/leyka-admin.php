@@ -63,7 +63,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
                 $admin_title = get_bloginfo('name')
                     .' &#8212; '
-                    .Leyka_Settings_Factory::get_instance()->getController($screen_full_id[1])->title;
+                    .Leyka_Settings_Factory::getInstance()->getController($screen_full_id[1])->title;
 
             }
 
@@ -99,8 +99,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                     <a class="leyka-message-close notice-dismiss" href="<?php echo esc_url(wp_nonce_url(remove_query_arg('leyka_reset_msg', add_query_arg('leyka-hide-notice', 'v3_update')), 'leyka_hide_notice_nonce', '_leyka_notice_nonce'));?>">
                         <?php esc_html_e('Dismiss', 'leyka');?>
                     </a>
-                    <p><?php printf(esc_html__('Hello! Thank you for updating Leyka plugin to the 3rd version. Please read about all new features %shere%s.', 'leyka'), '<a href="//te-st.ru/" target="_blank">', '</a>');?></p>
-    <!--                <p class="submit"><a class="button-secondary" href="#"></a></p>-->
+                    <p><?php printf(esc_html__('Hello! Thank you for updating Leyka plugin to the 3rd version. Please read about all new features %shere%s.', 'leyka'), '<a href="//te-st.ru/2018/12/18/leyka-3-update/" target="_blank">', '</a>');?></p>
                 </div>
             <?php
             }
@@ -183,7 +182,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 		$row['step_1'] = array(
 			'txt'    => __('Fill in information about your organisation', 'leyka'),
-			'action' => leyka_are_settings_complete('beneficiary') ? false : admin_url('admin.php?page=leyka_settings'),
+			'action' => leyka_are_settings_complete('beneficiary') ? false : admin_url('admin.php?page=leyka_settings&stage=beneficiary'),
 			'docs'   => 'https://leyka.te-st.ru/docs/nastrojka-lejki/'
 		);
 		$row['step_2'] = array(
@@ -236,7 +235,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 	public function statusMetaboxScreen(){
 
-		$tabs = Leyka_Options_Allocator::get_instance()->get_tabs();
+		$tabs = Leyka_Options_Allocator::getInstance()->getTabs();
 		if($tabs) {?>
 
 		<table class="leyka-widget-table status">
@@ -387,6 +386,14 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 	<?php leyka_itv_info_widget();
 	}
+	
+	public function isV3SettingsPage($stage) {
+		return in_array($stage, array('payment', 'email', 'beneficiary', 'technical', 'view', 'additional'));
+	}
+
+	public function isSeparateFormsStage($stage) {
+		return in_array($stage, array('email', 'beneficiary', 'technical', 'view', 'additional'));
+	}
 
 	/** Displaying settings **/
 	public function settingsScreen() {
@@ -396,67 +403,105 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }
 
         $current_stage = $this->get_current_settings_tab();
+		$is_separate_sections_forms = $this->isSeparateFormsStage($current_stage);
 
-		// Basic Controller class:
-		require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php');
+		require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php'); // Basic Controller class
         require_once(LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-common.php');
         require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-admin-template-tags.php');
 
 		do_action('leyka_pre_settings_actions', $current_stage);
 
         // Process settings change:
-	    if( !empty($_POST["leyka_settings_{$current_stage}_submit"]) ) {
-	        /*&& wp_verify_nonce('_leyka_nonce', "leyka_settings_{$current_stage}")*/
-			do_action("leyka_settings_submit", $current_stage);
+	    if( (!empty($_POST["leyka_settings_{$current_stage}_submit"])
+			|| !empty($_POST["leyka_settings_stage-{$current_stage}_submit"]))
+	        /** @todo Find what's wrong with the nonce check below: */
+//	        && wp_verify_nonce('_leyka_nonce', "leyka_settings_{$current_stage}")
+        ) {
+
+			do_action('leyka_settings_submit', $current_stage);
+			do_action("leyka_settings_{$current_stage}_submit");
+
 		}?>
 
 		<div class="wrap leyka-admin leyka-settings-page">
 
-		    <h1>Настройки Лейки</h1>
+		    <h1><?php esc_html_e('Leyka settings', 'leyka');?></h1>
 
             <h2 class="nav-tab-wrapper"><?php echo $this->settingsTabsMenu();?></h2>
 
             <div id="tab-container">
 
-                <?php $admin_page_args = array('stage' => $current_stage, 'gateway' => empty($_GET['gateway']) ? '' : $_GET['gateway']);
+                <?php $admin_page_args = array(
+                    'stage' => $current_stage,
+                    'gateway' => empty($_GET['gateway']) ? '' : $_GET['gateway']
+                );
                 $admin_page = 'admin.php?page=leyka_settings';
                 foreach($admin_page_args as $arg_name => $value) {
                     if($value) {
                         $admin_page = add_query_arg($arg_name, $value, $admin_page);
                     }
-                }?>
+                }
+
+                if( !$is_separate_sections_forms ) {?>
 
                 <form method="post" action="<?php echo admin_url($admin_page);?>" id="leyka-settings-form">
-
                 <?php wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
 
-                if(file_exists(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-$current_stage.php")) {
-                    require_once(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-$current_stage.php");
+				}
+
+                if(file_exists(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-{$current_stage}.php")) {
+                    require_once(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-{$current_stage}.php");
                 } else {
 
                     do_action("leyka_settings_pre_{$current_stage}_fields");
 
-                    foreach(leyka_opt_alloc()->get_tab_options($current_stage) as $option) { // Render each option/section
+                    foreach(leyka_opt_alloc()->getTabOptions($current_stage) as $option) { // Render each option/section
+
+						if($is_separate_sections_forms) {?>
+
+                        <form method="post" action="<?php echo admin_url($admin_page);?>" id="leyka-settings-form">
+							<?php if(isset($option['section']['name'])):?>
+							<input type="hidden" name="leyka_options_section" value="<?php echo $option['section']['name'];?>" />
+							<?php endif;?>
+
+						<?php wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
+							do_action("leyka_settings_pre_{$current_stage}_fields");
+
+						}
 
                         if(is_array($option) && !empty($option['section'])) {
+
+							$option['section']['is_separate_sections_forms'] = $is_separate_sections_forms;
+							$option['section']['current_stage'] = $current_stage;
                             do_action('leyka_render_section', $option['section']);
+
                         } else { // is this case even possible?
 
                             $option_info = leyka_options()->get_info_of($option);
                             do_action("leyka_render_{$option_info['type']}", $option, $option_info);
 
                         }
+
+						if($is_separate_sections_forms) { ?>
+                        </form>
+						<?php }
                     }
 
                     do_action("leyka_settings_post_{$current_stage}_fields");?>
 
-                    <p class="submit">
+                    <?php if(!$is_separate_sections_forms) {?>
+					<p class="submit">
                         <input type="submit" name="<?php echo "leyka_settings_{$current_stage}";?>_submit" value="<?php _e('Save settings', 'leyka');?>" class="button-primary">
                     </p>
-                <?php }?>
+					<?php }
+                }?>
 
+				<?php if(!$is_separate_sections_forms) {?>
                 </form>
+				<?php }?>
             </div>
+			
+			<?php include(LEYKA_PLUGIN_DIR.'inc/settings-fields-templates/leyka-helpchat.php');?>
 
 		</div>
 
@@ -482,8 +527,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         try {
 
-            Leyka_Settings_Factory::get_instance()->getRender($screen_full_id[0])
-                ->setController(Leyka_Settings_Factory::get_instance()->getController($screen_full_id[1]))
+            Leyka_Settings_Factory::getInstance()->getRender($screen_full_id[0])
+                ->setController(Leyka_Settings_Factory::getInstance()->getController($screen_full_id[1]))
                 ->renderPage();
 
         } catch(Exception $ex) {
@@ -505,13 +550,15 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		$base_url = 'admin.php?page=leyka_settings';
 
 		$out = '';
-		foreach(Leyka_Options_Allocator::get_instance()->get_tabs() as $tab_id => $tab_label) {
+		foreach(Leyka_Options_Allocator::getInstance()->getTabs() as $tab_id => $tab_label) {
 			$out .= '<a href="'
 			    .($this->get_default_settings_tab() === $tab_id ? $base_url : add_query_arg('stage', $tab_id, $base_url))
 			    .'" class="'.($this->get_current_settings_tab() === $tab_id ? 'nav-tab nav-tab-active' : 'nav-tab').'">'
 			    .$tab_label.'</a>';
 		}
 
+		$out .= '<a href="'.admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init').'" class="init-wizard-tab"></a>';
+				
 		return $out;
 
 	}
@@ -646,34 +693,37 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		wp_enqueue_style('leyka-icon', LEYKA_PLUGIN_BASE_URL.'css/admin-icon.css', array(), LEYKA_VERSION);
 
 		$screen = get_current_screen();
-		if(false === strpos($screen->base, 'leyka') && false === strpos($screen->id, 'leyka')) {
+		if(false === stripos($screen->base, 'leyka') && false === stripos($screen->id, 'leyka')) {
 			return;
         }
 
         // Base admin area js/css:
-        if( // New settings pages (from v3.0)
-            (isset($_GET['screen']) && count(explode('-', $_GET['screen'])) >= 2)
+        $leyka_admin_new = (isset($_GET['screen']) && count(explode('-', $_GET['screen'])) >= 2) // New settings pages (from v3.0)
             || (
                 isset($_GET['page'])
                 && $_GET['page'] === 'leyka_settings'
-                && (empty($_GET['stage']) || $_GET['stage'] === 'payment')
+                && (empty($_GET['stage']) || $this->isV3SettingsPage($_GET['stage']))
                 && empty($_GET['old'])
-            )
-        ) {
-            wp_enqueue_style('leyka-admin', LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css', array(), LEYKA_VERSION);
-        } else { // Old admin pages (before v3.0)
-	        wp_enqueue_style('leyka-admin', LEYKA_PLUGIN_BASE_URL.'css/admin.css', array(), LEYKA_VERSION);
-	    }
+            );
 
         $current_screen = get_current_screen();
         $dependencies = array('jquery',);
 
-        if($current_screen->id === 'toplevel_page_leyka') {
+        if($leyka_admin_new) {
+            wp_enqueue_style('leyka-settings', LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css', array(), LEYKA_VERSION);
+        } else { // Old admin pages (before v3.0)
+	        wp_enqueue_style('leyka-admin', LEYKA_PLUGIN_BASE_URL.'css/admin.css', array(), LEYKA_VERSION);
+	    }
+
+        if( !$leyka_admin_new && $current_screen->id === 'toplevel_page_leyka' ) {
             $dependencies[] = 'postbox';
         }
         if(stristr($current_screen->id, '_page_leyka_settings') !== false) {
 
-            $dependencies[] = 'postbox';
+            if( !$leyka_admin_new ) {
+                $dependencies[] = 'postbox';
+            }
+
             $dependencies[] = 'jquery-ui-accordion';
             $dependencies[] = 'jquery-ui-sortable';
 
@@ -681,6 +731,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             $dependencies[] = 'leyka-sticky';
 
         }
+
         if($current_screen->post_type === Leyka_Donation_Management::$post_type) {
 
             $dependencies[] = 'jquery-ui-autocomplete';
@@ -688,18 +739,30 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         }
 
-        wp_enqueue_script('leyka-admin', LEYKA_PLUGIN_BASE_URL.'js/admin.js', $dependencies, LEYKA_VERSION, true);
-        wp_enqueue_script('leyka-settings', LEYKA_PLUGIN_BASE_URL.'assets/js/admin.js', array('jquery',), LEYKA_VERSION, true);
-
         $js_data = apply_filters('leyka_admin_js_localized_strings', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
             'ajax_loader_url' => LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif',
             'field_required' => __('This field is required to be filled', 'leyka'),
             'email_invalid' => __('You have entered an invalid email', 'leyka'),
             'common_error_message' => esc_html__('Error while saving the data', 'leyka'),
+			'error_message' => esc_html__('Error!', 'leyka'),
+			'disconnect_stats' => esc_html__('Disconnect statistics', 'leyka'),
         ));
-        wp_localize_script('leyka-admin', 'leyka', $js_data);
-        wp_localize_script('leyka-settings', 'leyka', $js_data);
+
+		if($leyka_admin_new) {
+			wp_enqueue_script('leyka-easy-modal', LEYKA_PLUGIN_BASE_URL . 'js/jquery.easyModal.min.js', array(), false, true);
+            wp_enqueue_script('leyka-settings', LEYKA_PLUGIN_BASE_URL.'assets/js/admin.js', array('jquery',), LEYKA_VERSION, true);
+            wp_localize_script('leyka-settings', 'leyka', $js_data);
+
+        } else {
+
+            wp_enqueue_script('leyka-admin', LEYKA_PLUGIN_BASE_URL.'js/admin.js', $dependencies, LEYKA_VERSION, true);
+			wp_enqueue_script('leyka-admin-helpchat', LEYKA_PLUGIN_BASE_URL.'js/settings-helpchat.js', $dependencies, LEYKA_VERSION, true);
+            wp_localize_script('leyka-admin', 'leyka', $js_data);
+
+        }
+
+		leyka_localize_rich_html_text_tags();
 
         // Campaign editing page:
         if($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post' && !$screen->action) {
@@ -845,4 +908,11 @@ if( !function_exists('leyka_admin_get_shortcode_field') ) {
     <?php return ob_get_clean();
 
     }
+}
+
+if( !function_exists('leyka_sync_plugin_stats_option_action') ) {
+	function leyka_sync_plugin_stats_option_action($old_value, $new_value) {
+		leyka_sync_plugin_stats_option();
+	}
+	add_action("leyka_after_save_option-send_plugin_stats", "leyka_sync_plugin_stats_option_action", 10, 2);
 }

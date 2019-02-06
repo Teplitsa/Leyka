@@ -46,7 +46,6 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 'type' => 'text',
                 'title' => __('CloudPayments IP', 'leyka'),
                 'comment' => __('Comma-separated callback requests IP list. Leave empty to disable the check.', 'leyka'),
-                'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '130.193.70.192,185.98.85.109'),
             ),
         );
@@ -55,7 +54,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
         if(empty($this->_payment_methods['card'])) {
-            $this->_payment_methods['card'] = Leyka_CP_Card::get_instance();
+            $this->_payment_methods['card'] = Leyka_CP_Card::getInstance();
         }
     }
 
@@ -71,12 +70,12 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     public function enqueue_gateway_scripts() {
 
-        if(Leyka_CP_Card::get_instance()->active) {
+        if(Leyka_CP_Card::getInstance()->active) {
 
             wp_enqueue_script('leyka-cp-widget', 'https://widget.cloudpayments.ru/bundles/cloudpayments', array(), false, true);
             wp_enqueue_script(
                 'leyka-cp',
-                LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_CP_Gateway::get_instance()->id.'/js/leyka.cp.js',
+                LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_CP_Gateway::getInstance()->id.'/js/leyka.cp.js',
                 array('jquery', 'leyka-cp-widget', 'leyka-public'),
                 LEYKA_VERSION . ".001",
                 true
@@ -134,8 +133,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             'currency' => $cp_currency,
             'payment_title' => $donation->payment_title,
             'donor_email' => $donation->donor_email,
-            'success_page' => get_permalink(leyka_options()->opt('success_page')),
-            'failure_page' => get_permalink(leyka_options()->opt('failure_page')),
+            'success_page' => leyka_get_campaign_success_page_url($donation->campaign_id),
+            'failure_page' => leyka_get_campaign_failure_page_url($donation->campaign_id),
         );
 
 		return $form_data_vars;
@@ -249,14 +248,14 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                     if( !$donation || is_wp_error($donation) ) {
                         /** @todo Send some email to the admin */
-                        die(json_encode(array('code' => '0')));
+                        die(json_encode(array('code' => '13')));
                     }
 
                     $init_recurring_donation = $this->get_init_recurrent_donation($_POST['SubscriptionId']);
 
                     if( !$init_recurring_donation || is_wp_error($init_recurring_donation) ) {
                         /** @todo Send some email to the admin */
-                        die(json_encode(array('code' => '0')));
+                        die(json_encode(array('code' => '13')));
                     }
 
                     $donation->init_recurring_donation_id = $init_recurring_donation->id;
@@ -349,6 +348,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             $donation = new Leyka_Donation(Leyka_Donation::add(array(
                 'status' => 'submitted',
                 'transaction_id' => $cp_transaction_id,
+                'force_insert' => true, // Turn off donation fields validity checks
             )));
         }
 
@@ -556,6 +556,6 @@ class Leyka_CP_Card extends Leyka_Payment_Method {
 }
 
 function leyka_add_gateway_cp() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka_add_gateway(Leyka_CP_Gateway::get_instance());
+    leyka_add_gateway(Leyka_CP_Gateway::getInstance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_cp');

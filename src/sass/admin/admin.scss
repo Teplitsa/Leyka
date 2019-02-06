@@ -8,6 +8,7 @@
 @import 'wizard_cp';
 @import 'wizard_yandex';
 @import 'loader';
+@import 'settings_sections';
 
 .leyka-settings-page {
 
@@ -217,6 +218,18 @@
                             margin-right: 8px;
                         }
 
+                        .pm-commission-wrapper {
+
+                            margin-top: 8px;
+
+                            input.leyka-commission-field {
+                                margin-left: 0;
+                                font-size: 13px;
+                                width: 140px;
+                            }
+
+                        }
+
                     }
 
                 }
@@ -251,7 +264,7 @@
             margin-left: -1px;
             
             flex: 0 0 376px;
-            padding-left: 2rem;
+            padding-left: 1.5rem;
             
             .pm-order-header {
 
@@ -548,8 +561,8 @@
         display: block;
         box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
 
-        margin-right: 2rem;
-        margin-bottom: 2rem;
+        margin-right: 1.5rem;
+        margin-bottom: 1.5rem;
         
         &.inactive {
             background-color: #effbff;
@@ -576,6 +589,11 @@
         .gateway-card-title {
             @include gateway-card-title();
             padding-top: 3px;
+
+            .gateway-settings-link {
+                text-decoration: none;
+                color: inherit;
+            }
         }
         
         .gateway-card-status {
@@ -760,11 +778,19 @@
             text-decoration: none;
             border-bottom-style: solid;
             outline: none;
+            overflow:hidden;
             
             &.active {
                 color: $color-white;
                 background-color: $color-wizard-link;
                 border-color: $color-wizard-link;
+            }
+        }
+        
+        @media only screen and (max-width: 1270px) {
+            a.filter-category-item {
+                padding-left: 8px;
+                padding-right: 8px;
             }
         }
     }
@@ -818,13 +844,19 @@
     
 }
 
-@media only screen and (max-width: 2080px) {
+@media only screen and (max-width: 1980px) {
 
     .leyka-settings-page {
         
         #payment-settings-area-new {
             .main-area-wrapper {
-                flex: 0 0 1020px;
+                flex: 0 0 984px;
+            }
+            
+            .side-area-wrapper {
+                flex-grow: 0;
+                flex-shrink: unset;
+                flex-basis: auto;
             }
         }
         
@@ -832,13 +864,19 @@
     
 }
 
-@media only screen and (max-width: 1740px) {
+@media only screen and (max-width: 1600px) {
 
     .leyka-settings-page {
         
         #payment-settings-area-new {
             .main-area-wrapper {
-                flex: 0 0 680px;
+                flex: 0 0 656px;
+            }
+            
+            .side-area-wrapper {
+                flex-grow: 0;
+                flex-shrink: unset;
+                flex-basis: auto;
             }
         }
         
@@ -846,21 +884,25 @@
     
 }
 
-@media only screen and (max-width: 1400px) {
+@media only screen and (max-width: 1270px) {
 
     .leyka-settings-page {
         margin-left: 2rem;
         
         .leyka-admin .leyka-admin-gateway-card {
             &.gateway-card {
-                margin-right: 1rem;
-                margin-bottom: 1rem;
             }
         }
     
         #payment-settings-area-new {
             .main-area-wrapper {
-                flex: 0 0 340px;
+                flex: 0 0 328px;
+            }
+            
+            .side-area-wrapper {
+                flex-grow: 0;
+                flex-shrink: unset;
+                flex-basis: auto;
             }
         }
         

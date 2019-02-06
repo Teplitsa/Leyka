@@ -30,7 +30,7 @@ class Leyka_Donation_Management {
         add_action('add_meta_boxes', array($this, 'addMetaboxes')); // Add Donation PT metaboxes
         add_action('add_meta_boxes', array($this, 'removeMetaboxes'), 100); // Remove unneeded metaboxes
 
-        add_action('save_post', array($this, 'saveDonationData'));
+        add_action('save_post_'.self::$post_type, array($this, 'saveDonationData'));
 
 		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manageColumnsNames'));
 		add_action('manage_'.self::$post_type.'_posts_custom_column', array($this, 'manageColumnsContent'), 2, 2);
@@ -247,7 +247,12 @@ class Leyka_Donation_Management {
 
     }
 
-    /** Send a donor thanking email, including the case of initializing a recurring subscription */
+    /**
+     * Send a donor thanking email, including the case of initializing a recurring subscription.
+     *
+     * @param $donation Leyka_Donation|integer|WP_Post
+     * @return boolean
+     */
     public static function send_donor_thanking_email($donation) {
 
         if( !leyka_options()->opt('send_donor_thanking_emails') ) {
@@ -269,8 +274,21 @@ class Leyka_Donation_Management {
 
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-        $email_title = $donation->type == 'rebill' ?
-            leyka_options()->opt('email_recurring_init_thanks_title') : leyka_options()->opt('email_thanks_title');
+        $email_title = $donation->type === 'rebill' ?
+            (
+                $donation->init_recurring_payment_id === $donation->id ?
+                    leyka_options()->opt('email_recurring_init_thanks_title') :
+                    leyka_options()->opt('email_recurring_ongoing_thanks_title')
+            ) :
+            leyka_options()->opt('email_thanks_title');
+
+        $email_text = $donation->type === 'rebill' ?
+            (
+                $donation->init_recurring_payment_id === $donation->id ?
+                    leyka_options()->opt('email_recurring_init_thanks_text') :
+                    leyka_options()->opt('email_recurring_ongoing_thanks_text')
+            ) :
+            leyka_options()->opt('email_thanks_text');
 
         $res = wp_mail(
             $donor_email,
@@ -312,14 +330,7 @@ class Leyka_Donation_Management {
                         $donation
                     ),
                 ),
-                apply_filters(
-                    'leyka_email_thanks_text',
-                    $donation->type == 'rebill' ?
-                        leyka_options()->opt('email_recurring_init_thanks_text') :
-                        leyka_options()->opt('email_thanks_text'),
-                    $donation,
-                    $campaign
-                )
+                apply_filters('leyka_email_thanks_text', $email_text, $donation, $campaign)
             )),
             array('From: '.apply_filters(
                 'leyka_email_from_name',
@@ -608,7 +619,7 @@ class Leyka_Donation_Management {
             </div>
         </div>
 
-        <?php if(leyka_options()->opt('show_donation_comment_field')) {?>
+        <?php if(leyka_options()->opt_template('show_donation_comment_field')) {?>
         <div class="leyka-ddata-string">
             <label for="donor-comment"><?php _e("Donor's comment", 'leyka');?>:</label>
             <div class="leyka-ddata-field">
@@ -783,12 +794,12 @@ class Leyka_Donation_Management {
             </div>
         </div>
 
-        <?php if(leyka_options()->opt('show_donation_comment_field') || $donation->donor_comment) {?>
+        <?php if(leyka_options()->opt_template('show_donation_comment_field') || $donation->donor_comment) {?>
         <div class="leyka-ddata-string">
             <label for="donor-comment"><?php _e('Comment', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
             <?php if(
-                leyka_options()->opt('show_donation_comment_field') &&
+                leyka_options()->opt_template('show_donation_comment_field') &&
                 ($donation->type == 'correction' || leyka_options()->opt('donors_data_editable'))
             ) {?>
 
@@ -1125,7 +1136,7 @@ class Leyka_Donation_Management {
         unset($unsort['date']);
 
 		$columns['donor'] = __('Donor', 'leyka');
-        if(leyka_options()->opt('show_donation_comment_field')) {
+        if(leyka_options()->opt_template('show_donation_comment_field')) {
             $columns['donor_comment'] = __("Donor's comment", 'leyka');
         }
 
@@ -1297,7 +1308,7 @@ class Leyka_Donation_Management {
             return $donation_id;
         }
 
-        remove_action('save_post', array($this, 'saveDonationData'));
+        remove_action('save_post_'.self::$post_type, array($this, 'saveDonationData'));
 
         $donation = new Leyka_Donation($donation_id);
         $campaign = new Leyka_Campaign($donation->campaign_id);
@@ -1420,7 +1431,7 @@ class Leyka_Donation_Management {
 
         do_action("leyka_{$donation->gateway_id}_save_donation_data", $donation);
 
-        add_action('save_post', array($this, 'saveDonationData'));
+        add_action('save_post_'.self::$post_type, array($this, 'saveDonationData'));
 
         return true;
 
@@ -1472,25 +1483,27 @@ class Leyka_Donation {
 
     public static function add(array $params = array()) {
 
-        $amount = empty($params['amount']) ? leyka_pf_get_amount_value() : round((float)$params['amount'], 2);
-        if( !$amount ) {
+        $amount = isset($params['amount']) ? round((float)$params['amount'], 2) : leyka_pf_get_amount_value();
+        if( !$amount && empty($params['force_insert']) ) {
             return new WP_Error('incorrect_amount_given', __('Empty or incorrect amount given while trying to add a donation', 'leyka'));
         }
 
         $status = empty($params['status']) ? 'submitted' : $params['status'];
 
+        remove_all_actions('save_post'); // To speed up the post insertion
         $id = wp_insert_post(array(
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => array_key_exists($status, leyka_get_donation_status_list()) ? $status : 'submitted',
             'post_title' => empty($params['purpose_text']) ?
                 leyka_options()->opt('donation_purpose_text') : $params['purpose_text'],
+            'post_name' => uniqid('donation-', true), // For fast WP_Post creation when DB already has lots of donations
             'post_parent' => empty($params['init_recurring_donation']) ? 0 : (int)$params['init_recurring_donation'],
         ));
 
         add_post_meta($id, 'leyka_donation_amount', (float)$amount);
 
         $value = empty($params['donor_name']) ? leyka_pf_get_donor_name_value() : trim($params['donor_name']);
-        if($value && !leyka_validate_donor_name($value)) { // Validate donor's name
+        if($value && !leyka_validate_donor_name($value) && empty($params['force_insert'])) { // Validate donor's name
 
             wp_delete_post($id, true);
             return new WP_Error('incorrect_donor_name', __('Incorrect donor name given while trying to add a donation', 'leyka'));
@@ -1502,7 +1515,7 @@ class Leyka_Donation {
         add_post_meta($id, 'leyka_donor_name', htmlentities($value, ENT_QUOTES, 'UTF-8'));
 
         $value = empty($params['donor_email']) ? leyka_pf_get_donor_email_value() : $params['donor_email'];
-        if($value && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+        if($value && !filter_var($value, FILTER_VALIDATE_EMAIL) && empty($params['force_insert'])) {
 
             wp_delete_post($id, true);
             return new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
@@ -1734,10 +1747,11 @@ class Leyka_Donation {
             case 'date_label':
                 $date_format = get_option('date_format');
                 $time_format = get_option('time_format');
-                $donation_timestamp = strtotime($this->_post_object->post_date);
+                $donation_timestamp = $this->date_timestamp;
+
                 return apply_filters(
                     'leyka_admin_donation_date',
-                    date($date_format, $donation_timestamp),
+                    date("$date_format, $time_format", $donation_timestamp),
                     $donation_timestamp, $date_format, $time_format
                 );
             case 'date_timestamp': return strtotime($this->_post_object->post_date);

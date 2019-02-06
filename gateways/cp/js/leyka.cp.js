@@ -16,10 +16,14 @@ jQuery(document).ready(function($){
         var $form = $(this),
             $errors = $('#leyka-submit-errors');
 
-
         // Selected PM don't belong to the CP gateway:
-        if($form.find('input[name="leyka_payment_method"]:checked').val().indexOf('cp') < 0) {
-            return;
+
+        var $pm_field = $form.find('input[name="leyka_payment_method"][value*="cp-"]'),
+            cp_chosen = $pm_field.prop('type') === 'hidden' ?
+                $pm_field.val().indexOf('cp') >= 0 : !!$pm_field.prop('checked');
+
+        if($pm_field.length <= 0 || !cp_chosen) {
+            return; /** @todo Add some error to the form! Or at least do some console.logging */
         }
 
         var $revo_redirect_step = $form.closest('.leyka-pf').find('.leyka-pf__redirect');

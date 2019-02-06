@@ -1,37 +1,41 @@
-<?php if (!defined('WPINC')) {
-    die;
-}
+<?php if( !defined('WPINC') ) { die; }
 
-require_once LEYKA_PLUGIN_DIR . 'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Web_Hook_Verification.php';
-require_once LEYKA_PLUGIN_DIR . 'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Web_Hook.php';
-require_once LEYKA_PLUGIN_DIR . 'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Helper.php';
+require_once LEYKA_PLUGIN_DIR.'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Web_Hook_Verification.php';
+require_once LEYKA_PLUGIN_DIR.'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Web_Hook.php';
+require_once LEYKA_PLUGIN_DIR.'gateways/qiwi/includes/Leyka_Qiwi_Gateway_Helper.php';
 
 /**
  * Leyka_Qiwi_Gateway class
  */
-class Leyka_Qiwi_Gateway extends Leyka_Gateway
-{
+class Leyka_Qiwi_Gateway extends Leyka_Gateway {
 
     protected static $_instance;
 
     protected $_qiwi_response;
     protected $_qiwi_log = array();
 
-    protected function _set_attributes()
-    {
+    protected function _set_attributes() {
 
         $this->_id = 'qiwi';
         $this->_title = __('QIWI Kassa', 'leyka');
+
+        $this->_description = apply_filters(
+            'leyka_gateway_description',
+            __('<a href="http://qiwi.com/">qiwi</a> is a Designer IT-solutions for the e-commerce market. Every partner receives the most comprehensive set of key technical options allowing to create a customer-centric payment system on site or in mobile application. Partners are allowed to receive payments in roubles and in other world currencies.', 'leyka'),
+            $this->_id
+        );
+
         $this->_docs_link = '//leyka.te-st.ru/docs/qiwi/';
-        $this->_admin_ui_column = 1;
-        $this->_admin_ui_order = 60;
+        $this->_registration_link = 'https://kassa.qiwi.com/pay/';
+
+        $this->_min_commission = 2.9;
+        $this->_receiver_types = array('legal');
 
     }
 
-    protected function _set_options_defaults()
-    {
+    protected function _set_options_defaults() {
 
-        if ($this->_options) {
+        if($this->_options) {
             return;
         }
 
@@ -54,8 +58,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway
 
     }
 
-    public function process_form($gateway_id, $pm_id, $donation_id, $form_data)
-    {
+    public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
         $donation = new Leyka_Donation($donation_id);
         $campaign = new Leyka_Campaign($form_data['leyka_campaign_id']);
@@ -89,8 +92,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway
 
     }
 
-    public function submission_redirect_url($current_url, $pm_id)
-    {
+    public function submission_redirect_url($current_url, $pm_id) {
 
         $url = add_query_arg(
             array('url' => urlencode($this->_qiwi_response->payUrl)),
@@ -101,8 +103,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway
 
     }
 
-    public function submission_form_data($form_data_vars, $pm_id, $donation_id)
-    {
+    public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
 
         $donation = new Leyka_Donation($donation_id);
 
@@ -118,8 +119,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway
 
     }
 
-    public function _handle_service_calls($call_type = '')
-    {
+    public function _handle_service_calls($call_type = '') {
 
         switch ($call_type) {
             case 'check_order':
@@ -139,20 +139,18 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway
 
     }
 
-    protected function _get_value_if_any($arr, $key, $val = false)
-    {
+    protected function _get_value_if_any($arr, $key, $val = false) {
         return empty($arr[$key]) ? '' : ($val ? $val : $arr[$key]);
     }
 
-    public function get_gateway_response_formatted(Leyka_Donation $donation)
-    {
+    public function get_gateway_response_formatted(Leyka_Donation $donation) {
 
-        if (!$donation->gateway_response) {
+        if( !$donation->gateway_response ) {
             return array();
         }
 
         $vars = maybe_unserialize($donation->gateway_response);
-        if (!$vars || !is_array($vars)) {
+        if(!$vars || !is_array($vars)) {
             return array();
         }
 
@@ -172,73 +170,50 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway
 
     }
 
-    protected function _initialize_pm_list()
-    {
-        if (empty($this->_payment_methods['card'])) {
-            $this->_payment_methods['card'] = Leyka_Qiwi_Card::get_instance();
+    protected function _initialize_pm_list() {
+        if(empty($this->_payment_methods['card'])) {
+            $this->_payment_methods['card'] = Leyka_Qiwi_Card::getInstance();
         }
     }
 
 }
 
-class Leyka_Qiwi_Card extends Leyka_Payment_Method
-{
+class Leyka_Qiwi_Card extends Leyka_Payment_Method {
 
-    protected static $_instance = null;
+    protected static $_instance;
 
-    public function _set_attributes()
-    {
+    public function _set_attributes() {
 
         $this->_id = 'card';
         $this->_gateway_id = 'qiwi';
+        $this->_category = 'bank_cards';
 
         $this->_description = apply_filters(
             'leyka_pm_description',
             __('<a href="http://qiwi.com/">qiwi</a> is a Designer IT-solutions for the e-commerce market. Every partner receives the most comprehensive set of key technical options allowing to create a customer-centric payment system on site or in mobile application. Partners are allowed to receive payments in roubles and in other world currencies.', 'leyka'),
             $this->_id,
             $this->_gateway_id,
-            'bank_cards'
+            $this->_category
         );
 
         $this->_label_backend = __('QIWI Kassa smart payment', 'leyka');
         $this->_label = __('QIWI Kassa', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_' . $this->_gateway_id . '_' . $this->_id, array(
-            LEYKA_PLUGIN_BASE_URL . 'gateways/qiwi/icons/visa.png',
-            LEYKA_PLUGIN_BASE_URL . 'gateways/qiwi/icons/master.png',
-            LEYKA_PLUGIN_BASE_URL . 'gateways/qiwi/icons/mir.png',
-            LEYKA_PLUGIN_BASE_URL . 'gateways/qiwi/icons/qiwi-full.png',
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ));
-
 
         $this->_supported_currencies[] = 'rur';
         $this->_default_currency = 'rur';
 
     }
 
-    protected function _set_options_defaults()
-    {
-        if ($this->_options) {
-            return;
-        }
-
-        $this->_options = array(
-            $this->full_id . '_description' => array(
-                'type' => 'html',
-                'default' => __('<a href="https://kassa.qiwi.com">QIWI cashier</a> — payment with Bank cards, QIWI Wallet and the balance of the phone. Guarantee the security of your payments.', 'leyka'),
-                'title' => __('Qiwi Kassa payment description', 'leyka'),
-                'description' => __('Please, enter Qiwi Kassa gateway description that will be shown to the donor when this payment method will be selected for using.', 'leyka'),
-                'required' => 0,
-                'validation_rules' => array()
-            ),
-        );
-    }
-
 }
 
-function leyka_add_gateway_qiwi()
-{
-    leyka_add_gateway(Leyka_Qiwi_Gateway::get_instance());
+function leyka_add_gateway_qiwi() {
+    leyka_add_gateway(Leyka_Qiwi_Gateway::getInstance());
 }
-
 add_action('leyka_init_actions', 'leyka_add_gateway_qiwi');

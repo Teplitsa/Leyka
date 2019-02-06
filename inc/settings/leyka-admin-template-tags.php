@@ -9,10 +9,10 @@ if( !function_exists('leyka_show_wizard_captioned_screenshot')) {
 
         <div class="captioned-screen">
             <div class="screen-wrapper">
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL; ?>img/<?php echo $img_path; ?>" class="leyka-instructions-screen">
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL; ?>img/icon-zoom-screen.svg" class="zoom-screen">
+                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/<?php echo $img_path;?>" class="leyka-instructions-screen" alt="">
+                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-zoom-screen.svg" class="zoom-screen" alt="">
             </div>
-            <img src="<?php echo LEYKA_PLUGIN_BASE_URL ?>img/<?php echo $img_path_full; ?>" class="leyka-instructions-screen-full">
+            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/<?php echo $img_path_full;?>" class="leyka-instructions-screen-full" alt="">
         </div>
 
     <?php }
@@ -40,11 +40,11 @@ if( !function_exists('leyka_show_gateway_logo')) {
 
         <div class="<?php echo is_array($wrapper_classes) ? implode(' ', $wrapper_classes) : $wrapper_classes; ?> gateway-logo">
 
-            <img class="gateway-logo-pic" src="<?php echo $use_paceholders ? '#GATEWAY_LOGO_URL#' : $gateway->icon_url;?>">
+            <img class="gateway-logo-pic" src="<?php echo $use_paceholders ? '#GATEWAY_LOGO_URL#' : $gateway->icon_url;?>" alt="">
 
             <?php if( !!$show_gateway_info && ($use_paceholders || $gateway->description) ) {?>
             <span class="field-q">
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-info.svg">
+                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-info.svg" alt="">
                 <span class="field-q-tooltip"><?php echo $use_paceholders ? '#GATEWAY_DESCRIPTION#' : $gateway->description;?></span>
             </span>
             <?php }?>
@@ -71,10 +71,10 @@ if( !function_exists('leyka_pm_sortable_option_html_new') ) {
                 <?php if($pm) {
                     if($pm->icons) {
                         foreach($pm->icons as $icon_url) {?>
-                            <img class="pm-icon" src="<?php echo $icon_url;?>">
-                        <?php }?>
-                    <?php } else if($pm->main_icon) {?>
-                        <img class="pm-icon" src="<?php echo $pm->main_icon_url;?>">
+                            <img class="pm-icon" src="<?php echo $icon_url;?>" alt="">
+                        <?php }
+                    } else if($pm->main_icon) {?>
+                        <img class="pm-icon" src="<?php echo $pm->main_icon_url;?>" alt="">
                     <?php }
                 }?>
                 </div>
@@ -92,8 +92,8 @@ if( !function_exists('leyka_pm_sortable_option_html_new') ) {
 
                     </span>
 
-                    <img class="pm-control pm-change-label" data-pm-id="<?php echo $pm_full_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-edit-circled.svg" title="<?php esc_attr_e('Edit the payment method label', 'leyka');?>">
-                    <img class="pm-control pm-deactivate" data-pm-id="<?php echo $pm_full_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-delete-circled.svg" title="<?php esc_attr_e('Deactivate the payment method', 'leyka');?>">
+                    <img class="pm-control pm-change-label" data-pm-id="<?php echo $pm_full_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-edit-circled.svg" title="<?php esc_attr_e('Edit the payment method label', 'leyka');?>" alt="">
+                    <img class="pm-control pm-deactivate" data-pm-id="<?php echo $pm_full_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-delete-circled.svg" title="<?php esc_attr_e('Deactivate the payment method', 'leyka');?>" alt="">
 
                 </div>
 
@@ -105,45 +105,51 @@ if( !function_exists('leyka_pm_sortable_option_html_new') ) {
 }
 
 if( !function_exists('leyka_gateway_details_html') ) {
-    function leyka_gateway_details_html($gateway) {
-    ?>
+    function leyka_gateway_details_html($gateway) {?>
     
         <div class="gateway-details">
 
             <div class="details-element gateway-commission field-q">
+
                 <div class="details-pic">
-                    <?php if($gateway->min_commission && $gateway->min_commission > 0.0) {?>
-                        от <span class="commission-size"><?php echo $gateway->min_commission;?>%</span>
-                    <?php } else {?>
-                        <span class="commission-size">?</span>
-                    <?php }?>
+                <?php if($gateway->min_commission && $gateway->min_commission > 0.0) {?>
+                    <?php esc_html_e('from', 'leyka');?>&nbsp;<span class="commission-size"><?php echo $gateway->min_commission;?>%</span>
+                <?php } else {?>
+                    <span class="commission-size">?</span>
+                <?php }?>
                 </div>
-                <div class="details-label">комиссия</div>
+
+                <div class="details-label"><?php esc_html_e('commission', 'leyka');?></div>
                 
                 <span class="field-q-tooltip">
-                <?php if($gateway->min_commission && $gateway->min_commission > 0.0) {?>
-                    Комиссия от <?php echo $gateway->min_commission;?>%
-                <?php } else {?>
-                    Комиссия неизвестна
-                <?php }?>
+                <?php if($gateway->min_commission && $gateway->min_commission > 0.0) {
+                    printf(esc_html__('Commission from %s%%', 'leyka'), $gateway->min_commission);
+                } else {
+                    esc_html_e('Commission is unknown', 'leyka');
+                }?>
                 </span>
             </div>
 
             <div class="details-element gateway-has-recurring field-q">
                 <div class="details-pic has-recurring-icon">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-recurring<?php echo $gateway->has_recurring ? "" : "-no";?>.svg">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-recurring<?php echo $gateway->has_recurring ? '' : '-no';?>.svg" alt="">
                 </div>
-                <div class="details-label">рекурренты</div>
-                <span class="field-q-tooltip"><?php echo leyka_get_recurring_description($gateway->has_recurring);?></span>
+                <div class="details-label">
+                    <?php echo mb_strtolower(esc_html_x('recurring', 'a "recurring donations" in one word (like "recurrings")', 'leyka'));?>
+                </div>
+                <span class="field-q-tooltip">
+                    <?php echo $gateway->has_recurring ?
+                        esc_attr__('Recurring supported.', 'leyka') : esc_attr__('Recurring not supported.', 'leyka');?>
+                </span>
             </div>
 
             <?php if($gateway->receiver_types) {?>
             
-            <div class="details-element gateway-receiver-types field-q"">
+            <div class="details-element gateway-receiver-types field-q">
                 <div class="details-pic receiver-type-icon">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-receiver-type-<?php echo count($gateway->receiver_types) > 1 ? 'all' : $gateway->receiver_types[0];?>.svg">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-receiver-type-<?php echo count($gateway->receiver_types) > 1 ? 'all' : $gateway->receiver_types[0];?>.svg" alt="">
                 </div>
-                <div class="details-label">получатель</div>
+                <div class="details-label"><?php esc_html_e('receiver', 'leyka');?></div>
                 <span class="field-q-tooltip"><?php echo leyka_get_receiver_description($gateway->receiver_types);?></span>
             </div>
             
