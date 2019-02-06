@@ -132,6 +132,7 @@ Number.isInteger = Number.isInteger || function(value) {
            isFinite(value) &&
            Math.floor(value) === value;
 };
+
 /*
  * Class to manipulate donation form from bottom
  */
@@ -280,18 +281,17 @@ window.LeykaGUIFinal.prototype = {
     /** Subscription form validation */
     validateForm: function($form){
 
-        var self = this,
-            $ = self.$,
-            form_valid = false;
+        var self = this; var $ = self.$;
 
         $form = $($form); // Just in case
+        var form_valid = false;
 
         $form.find(':input').each(function(){
 
             var $input = $(this),
                 type = $input.attr('type'),
                 name = $input.attr('name'),
-                value = $.trim($input.val()),
+                value = $input.val(),
                 $error_message = $form.find('.'+name+'-error');
 
             if($.inArray(type, ['text', 'email']) == 1) {
@@ -301,7 +301,7 @@ window.LeykaGUIFinal.prototype = {
                     $error_message.show();
                     $input.closest('.donor__textfield').addClass('invalid');
 
-                } else if(type === 'email' && !is_email(value)) {
+                } else if(type == 'email' && !is_email(value)) {
 
                     $error_message.show();
                     $input.closest('.donor__textfield').addClass('invalid');
@@ -319,7 +319,6 @@ window.LeykaGUIFinal.prototype = {
         });
 
         return form_valid;
-
     },
     
     animateRedirectCountdown: function($container){
@@ -416,7 +415,7 @@ var leykaValidateForm,
 	leykaValidateForm = function($_form){
 
 		var is_valid = true,
-			email = $.trim($_form.find('.donor__textfield--email input').val()),
+			pEmail = $_form.find('.donor__textfield--email input').val(),
 			$amount_field = $_form.find('.amount__figure input.leyka_donation_amount'),
 			amount = parseInt($amount_field.val().replace(/\s/g, '')),
 			$comment_filed = $_form.find(':input.leyka-donor-comment'),
@@ -430,7 +429,7 @@ var leykaValidateForm,
 
 		}
 
-		if(email.length === 0 || !is_email(email)) {
+		if(pEmail.length === 0 || !is_email(pEmail)) {
 
             is_valid = false;
 			$_form.find('.donor__textfield--email').addClass('invalid');
@@ -458,12 +457,15 @@ var leykaValidateForm,
 
 		}
 
-		if(amount <= 0 || amount < $amount_field.data('min-value') || amount > $amount_field.data('max-value')) {
+		if(
+			amount <= 0 ||
+			amount < $amount_field.data('min-value') ||
+			amount > $amount_field.data('max-value')
+		) {
             is_valid = false;
 		}
 
 		return is_valid;
-
 	};
 
     var methods = {
@@ -618,7 +620,7 @@ var leykaValidateForm,
 
     function bindDonorStepEvents() {
 
-        $('.donor__textfield--name').on('focus.leyka', 'input', function(){
+        $('.donor__textfield--name').on('focus', 'input', function(){
             $(this).parents('.donor__textfield--name').removeClass('invalid').removeClass('valid').addClass('focus');
         }).on('blur', ':input', function(){
 
@@ -636,17 +638,17 @@ var leykaValidateForm,
 
         });
 
-        $('.donor__textfield--email').on('focus.leyka', ':input', function(){
+        $('.donor__textfield--email').on('focus', 'input', function(){
             $(this).parents('.donor__textfield--email').removeClass('invalid').removeClass('valid').addClass('focus');
         }).on('blur', ':input', function(){
 
-            // Validate:
+            // validate
             var $this = $(this),
-                test_val = $.trim($this.val());
+                testVal = $this.val();
 
             $this.parents('.donor__textfield--email').removeClass('focus');
 
-            if(test_val.length > 0 && is_email(test_val)){
+            if(testVal.length > 0 && is_email(testVal)){
                 $this.parents('.donor__textfield--email').addClass('valid');
             } else {
                 $this.parents('.donor__textfield--email').addClass('invalid');
@@ -654,13 +656,13 @@ var leykaValidateForm,
 
         });
 
-        $('.donor__textfield--comment').on('focus.leyka', ':input', function(){
+        $('.donor__textfield--comment').on('focus', ':input', function(){
             $(this).parents('.donor__textfield--comment').removeClass('invalid').removeClass('valid').addClass('focus');
         }).on('blur', ':input', function(){
 
                 // validate
                 var $this = $(this),
-                    testVal = $.trim($this.val());
+                    testVal = $this.val();
 
                 $this.parents('.donor__textfield--comment').removeClass('focus');
 

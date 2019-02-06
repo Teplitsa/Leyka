@@ -89,7 +89,8 @@
                 
                 .tab-screenshot-item {
                     display: none;
-                    align-items: flex-start;                    
+                    align-items: center;
+                    
                     &.active {
                         display: flex;
                     }
