@@ -670,7 +670,7 @@ self::$_options_meta = array(
     ),
     'donation_comment_max_length' => array(
         'type' => 'number',
-        'default' => 140,
+        'default' => '',
         'title' => __('The maximum length of a donation comment value', 'leyka'),
         'description' => __('Set the maximum number of symbols allowed for donation comments. You may set "0" for the unlimited values length.', 'leyka'),
         'placeholder' => __('Maximum number of symbols', 'leyka'),
