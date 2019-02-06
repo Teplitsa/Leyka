@@ -98,7 +98,9 @@ if( !$gateway ) {?>
                     continue;
                 }?>
 
+                <?php if(count($pm_list_by_categories) > 1) {?>
                 <h4><?php echo leyka_get_pm_category_label($category_id);?></h4>
+                <?php }?>
 
                 <?php foreach($pm_list as $pm) { /** @var $pm Leyka_Payment_Method */ ?>
 
