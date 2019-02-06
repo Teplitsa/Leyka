@@ -284,19 +284,19 @@ self::$_options_meta = array(
     ),
     */
     'currency_rur2usd' => array(
-        'type' => 'text',
-        'title' => __('RUR to USD currency rate', 'leyka'),
+        'type' => 'number',
+        'title' => __('Exchange rate', 'leyka'),
         'description' => __('Please set the RUR to USD currency rate here.', 'leyka'),
         'required' => true,
-        'placeholder' => '70.01',
+        'placeholder' => __('Enter rate value (ex.: 70)', 'leyka'),
         'length' => 6,
     ),
     'currency_rur2eur' => array(
-        'type' => 'text',
-        'title' => __('RUR to EUR currency rate', 'leyka'),
+        'type' => 'number',
+        'title' => __('Exchange rate', 'leyka'),
         'description' => __('Please set the RUR to EUR currency rate here.', 'leyka'),
         'required' => true,
-        'placeholder' => '80.81',
+        'placeholder' => __('Enter rate value (ex.: 80)', 'leyka'),
         'length' => 6,
     ),
     'currency_rur_label' => array(
@@ -309,7 +309,7 @@ self::$_options_meta = array(
         'length' => 6,
     ),
     'currency_rur_min_sum' => array(
-        'type' => 'text',
+        'type' => 'number',
         'default' => 100,
         'title' => __('Minimum sum available for RUB', 'leyka'),
         'description' => __('Please set minimum sum available for RUB donations.', 'leyka'),
@@ -318,7 +318,7 @@ self::$_options_meta = array(
         'length' => 6,
     ),
     'currency_rur_max_sum' => array(
-        'type' => 'text',
+        'type' => 'number',
         'default' => 30000,
         'title' => __('Maximum sum available for RUB', 'leyka'),
         'description' => __('Please set maximum sum available for RUB donations.', 'leyka'),
@@ -327,7 +327,7 @@ self::$_options_meta = array(
         'length' => 6,
     ),
     'currency_rur_flexible_default_amount' => array(
-        'type' => 'text',
+        'type' => 'number',
         'default' => 500,
         'title' => __('Default amount of donation in RUB (for "flexible" donation type)', 'leyka'),
         'description' => __('Please, set a default amount of donation when RUB selected as currency.', 'leyka'),
@@ -354,7 +354,7 @@ self::$_options_meta = array(
         'length' => 6,
     ),
     'currency_usd_min_sum' => array(
-        'type' => 'text',
+        'type' => 'number',
         'default' => 10,
         'title' => __('Minimum sum available for USD', 'leyka'),
         'description' => __('Please set minimum sum available for USD donations.', 'leyka'),
@@ -363,7 +363,7 @@ self::$_options_meta = array(
         'length' => 6,
     ),
     'currency_usd_max_sum' => array(
-        'type' => 'text',
+        'type' => 'number',
         'default' => 1000,
         'title' => __('Maximum sum available for USD', 'leyka'),
         'description' => __('Please set maximum sum available for USD donations.', 'leyka'),
@@ -372,7 +372,7 @@ self::$_options_meta = array(
         'length' => 6,
     ),
     'currency_usd_flexible_default_amount' => array(
-        'type' => 'text',
+        'type' => 'number',
         'default' => 10,
         'title' => __('Default amount of donation in USD (for "flexible" donation type)', 'leyka'),
         'description' => __('Please, set a default amount of donation when RUR selected as currency.', 'leyka'),
@@ -399,7 +399,7 @@ self::$_options_meta = array(
         'length' => 6,
     ),
     'currency_eur_min_sum' => array(
-        'type' => 'text',
+        'type' => 'number',
         'default' => 3,
         'title' => __('Minimum sum available for EUR', 'leyka'),
         'description' => __('Please set minimum sum available for EUR donations.', 'leyka'),
@@ -408,7 +408,7 @@ self::$_options_meta = array(
         'length' => 6,
     ),
     'currency_eur_max_sum' => array(
-        'type' => 'text',
+        'type' => 'number',
         'default' => 650,
         'title' => __('Maximum sum available for EUR', 'leyka'),
         'description' => __('Please set maximum sum available for EUR donations.', 'leyka'),
@@ -417,7 +417,7 @@ self::$_options_meta = array(
         'length' => 6,
     ),
     'currency_eur_flexible_default_amount' => array(
-        'type' => 'text',
+        'type' => 'number',
         'default' => 5,
         'title' => __('Default amount of donation in EUR (for «flexible» donation type)', 'leyka'),
         'description' => __('Please, set a default amount of donation when EUR selected as currency.', 'leyka'),

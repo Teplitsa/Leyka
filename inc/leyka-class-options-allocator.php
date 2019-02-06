@@ -304,7 +304,6 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                 'title' => __('Dollars', 'leyka'),
                                 'sections' => array(
                                     array(
-                                        'title' => __('Exchange rate', 'leyka'),
                                         #TODO: auto_refresh_currency_rates change to auto_refresh_currency_rate_usd
                                         'options' => array('currency_rur2usd',), //'auto_refresh_currency_rate_usd'
                                     ),
@@ -319,7 +318,6 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                 'title' => __('Euro', 'leyka'),
                                 'sections' => array(
                                     array(
-                                        'title' => __('Exchange rate', 'leyka'),
                                         #TODO: auto_refresh_currency_rates change to auto_refresh_currency_rate_eur
                                         'options' => array('currency_rur2eur',), // 'auto_refresh_currency_rates'
                                     ),
