@@ -4,13 +4,11 @@
  * The default procedure of mailout to all donors for campaigns with reached targets.
  */
 
-/** @todo WARNING: do each campaign mailout only once!!! Use special meta for it ("target_reaching_mailout_sent"). */
-
 if(leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')) {
 
     $reached_targets_campaigns = get_posts(array(
         'post_type' => Leyka_Campaign_Management::$post_type,
-        // By default, only published campaigns will be fetched
+        'post_status' => 'publish',
         'posts_per_page' => -1,
         'post__in' => empty($_GET['mailout_campaign_id']) ? false : array((int)$_GET['mailout_campaign_id']),
         'meta_query' => array(
@@ -49,7 +47,8 @@ if(leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')) {
                             'currency_label' => $donation->currency_label,
                             'gateway_label' => $donation->gateway_label,
                             'pm_label' => $donation->pm_label,
-                            'date' => $donation->date_label,
+                            'date_label' => $donation->date_label,
+                            'date' => $donation->date_timestamp,
                         )
                     )
                 );
@@ -116,12 +115,13 @@ if(leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')) {
                 array(
                     'Content-Type: text/html; charset=UTF-8',
                     'From: '.apply_filters( // Email additional headers
-                    'leyka_campaign_taget_reaching_email_from_name',
-                    leyka_options()->opt_safe('email_from_name'),
-                    $donor_email,
-                    $donor_data,
-                    $campaign
-                ).' <'.leyka_options()->opt_safe('email_from').'>',)
+                        'leyka_campaign_target_reaching_email_from_name',
+                        leyka_options()->opt_safe('email_from_name'),
+                        $donor_email,
+                        $donor_data,
+                        $campaign
+                    ).' <'.leyka_options()->opt_safe('email_from').'>',
+                )
             );
 
         }
