@@ -873,14 +873,23 @@ function leyka_print_donation_elements($content) {
 	$content = '';
 
 	// Scale on top of form:
-	if(leyka_options()->opt_template('scale_widget_place') == 'top' || leyka_options()->opt_template('scale_widget_place') == 'both') {
+	if(
+	    leyka_options()->opt_template('scale_widget_place') === 'top'
+        || leyka_options()->opt_template('scale_widget_place') === 'both'
+    ) {
         $content .= do_shortcode("[leyka_scale show_button='1']");
     }
 
 	$content .= $post_content;
 
 	// Scale below form:
-	if($campaign->target && (leyka_options()->opt_template('scale_widget_place') == 'bottom' || leyka_options()->opt_template('scale_widget_place') == 'both')) {
+	if(
+	    $campaign->target
+        && (
+            leyka_options()->opt_template('scale_widget_place') === 'bottom'
+            || leyka_options()->opt_template('scale_widget_place') === 'both'
+        )
+    ) {
         $content .= do_shortcode("[leyka_scale show_button='0']");
     }
 

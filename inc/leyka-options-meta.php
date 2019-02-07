@@ -599,12 +599,6 @@ self::$_options_meta = array(
             'mixed' => __('Fixed sum variants + flexible field', 'leyka')
         ),
     ),
-    'donation_form_mode' => array(
-        'type' => 'checkbox',
-        'default' => true,
-        'title' => __('Display all payment elements on campaign page automatically', 'leyka'),
-        'description' => __("When unchecked, all payment elements like donation forms or target completion level widgets will not be displayed automatically. To output them manually, use shortcodes inside campaign content or template tags in campaign template file.", 'leyka'),
-    ),
     'do_not_display_donation_form' => array(
         'type' => 'checkbox',
         'default' => false,
@@ -995,5 +989,12 @@ self::$_options_meta = array(
         'title' => __('Primary currency', 'leyka'),
         'required' => true,
         'list_entries' => array('rur' => __('RUB', 'leyka'), 'usd' => __('$', 'leyka'), 'eur' => __('euro', 'leyka'),),
+    ),
+    'plugin_demo_mode' => array(
+        'type' => 'checkbox',
+        'default' => false,
+        'title' => __('The plugin is in demo mode', 'leyka'),
+        'comment' => __('Check to turn on the plugin dempnstration mode. While in it, no emails will be sent to the payment gateways.', 'leyka'),
+        'short_description' => __('Demo mode on', 'leyka'),
     ),
 );
