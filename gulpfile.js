@@ -32,14 +32,6 @@ if(gutil.env.prod === true) {
     sourceMap = false;
 }
 
-// var changeEvent = function(changed_file) {
-//     gutil.log(
-//         'File',
-//         gutil.colors.cyan(changed_file.replace(new RegExp('/.*(?=/' + basePaths.src + ')/'), '')),
-//         'was', gutil.colors.magenta(changed_file.type)
-//     );
-// };
-
 //js
 gulp.task('build-front-js', function(){
 
@@ -252,26 +244,5 @@ gulp.task('watch', function(done){
     done();
 
 });
-
-// gulp.task('watch-admin', function(done){
-//
-//     gulp.watch(
-//         [basePaths.src+'sass/admin/*.scss', basePaths.src+'sass/admin/**/*.scss'],
-//         gulp.series('build-admin-css', 'build-editor-css')
-//     );
-//
-//     gulp.watch(
-//         [basePaths.src+'js/admin/*.js', basePaths.src+'js/admin/**/*.js'],
-//         gulp.series('build-admin-js')
-//     );
-//
-//     gulp.watch(
-//         [basePaths.src+'js/editor/*.js'],
-//         gulp.series('build-editor-js')
-//     );
-//
-//     done();
-//
-// });
 
 gulp.task('default', gulp.series('full-build', 'watch'));
