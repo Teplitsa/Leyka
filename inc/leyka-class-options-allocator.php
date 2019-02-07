@@ -180,11 +180,11 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'is_default_collapsed' => false,
                         'tabs' => array(
                             'main_template' => array(
-                                'title' => __('Main tamplate', 'leyka'),
+                                'title' => __('Main template', 'leyka'),
                                 'sections' => array(
                                     array(
                                         'options' => array('donation_form_template'),
-                                        'title' => __('Which campaign tamplate is default?', 'leyka'),
+                                        'title' => __('Which campaign template is default?', 'leyka'),
                                     ),
                                 ),
                             ),
