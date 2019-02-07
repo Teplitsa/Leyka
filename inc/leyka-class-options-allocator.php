@@ -205,6 +205,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                         'options' => array(
                                             'revo_template_show_donors_list', 'revo_template_show_thumbnail',
                                             'show_donation_comment_field', 'donation_comment_max_length',
+                                            'do_not_display_donation_form',
                                         ),
                                     ),
                                 ),
