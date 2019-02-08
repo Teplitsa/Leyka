@@ -45,19 +45,14 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'name' => 'beneficiary_person_name',
                         'title' => __("Your data", 'leyka'),
                         'is_default_collapsed' => false,
-                        'options' => array(
-                            'person_full_name', 'person_address', 'person_inn', 
-                        )
+                        'options' => array('person_full_name', 'person_address', 'person_inn',)
                     )),
                     array('section' => array(
                         'name' => 'org_bank_essentials',
                         'title' => __("Organization's bank essentials", 'leyka'),
                         'description' => __('Data needed for accounting documents, as well as to connect the payment with receipt', 'leyka'),
                         'is_default_collapsed' => false,
-                        'options' => array(
-                            'org_bank_name', 'org_bank_account', 'org_bank_corr_account',
-                            'org_bank_bic',
-                        )
+                        'options' => array('org_bank_name', 'org_bank_account', 'org_bank_corr_account', 'org_bank_bic',)
                     )),
                     array('section' => array(
                         'name' => 'person_bank_essentials',
@@ -65,8 +60,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'description' => __('Data needed for accounting documents, as well as to connect the payment with receipt', 'leyka'),
                         'is_default_collapsed' => false,
                         'options' => array(
-                            'person_bank_name', 'person_bank_account', 'person_bank_corr_account',
-                            'person_bank_bic',
+                            'person_bank_name', 'person_bank_account', 'person_bank_corr_account', 'person_bank_bic',
                         )
                     )),
                     array('section' => array(
@@ -74,18 +68,14 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'title' => __('Offer', 'leyka'),
                         'description' => __('To comply with all the formalities, you need to provide an offer to conclude a donation agreement. We have prepared a template option. Please check.', 'leyka'),
                         'is_default_collapsed' => false,
-                        'options' => array(
-                            'terms_of_service_text', 'agree_to_terms_link_action',
-                        )
+                        'options' => array('terms_of_service_text', 'agree_to_terms_link_action',)
                     ),),
                     array('section' => array(
                         'name' => 'person_terms_of_service',
                         'title' => __('Offer', 'leyka'),
                         'description' => __('To comply with all the formalities, you need to provide an offer to conclude a donation agreement. We have prepared a template option. Please check.', 'leyka'),
                         'is_default_collapsed' => false,
-                        'options' => array(
-                            'person_terms_of_service_text', 'agree_to_terms_link_action',
-                        )
+                        'options' => array('person_terms_of_service_text', 'agree_to_terms_link_action',)
                     ),),
                     array('section' => array(
                         'name' => 'terms_of_pd',
@@ -95,18 +85,14 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
 <li>We have prepared the text of the agreement template, but you can edit it to your needs.</li>
 <li>All personal data is stored on your site and will not be sent.</li></ul>', 'leyka'),
                         'is_default_collapsed' => false,
-                        'options' => array(
-                            'pd_terms_text', 'agree_to_pd_terms_link_action',
-                        )
+                        'options' => array('pd_terms_text', 'agree_to_pd_terms_link_action',)
                     )),
                     array('section' => array(
                         'name' => 'change_receiver_legal_type',
                         'title' => __('Change of ownership form', 'leyka'),
                         'description' => __('<span class="attention">WARNING!</span> These actions may affect the performance of the plugin.', 'leyka'),
                         'is_default_collapsed' => false,
-                        'options' => array(
-                            'receiver_legal_type',
-                        )
+                        'options' => array('receiver_legal_type',)
                     )),
                 );
                 break;
@@ -296,22 +282,26 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                 'sections' => array(
                                     array(
                                         'title' => __('View', 'leyka'),
-                                        'options' => array('currency_rur_label', 'currency_rur_min_sum', 'currency_rur_max_sum', 
-                                                        'currency_rur_flexible_default_amount', 'currency_rur_fixed_amounts',),
+                                        'options' => array(
+                                            'currency_rur_label', 'currency_rur_min_sum', 'currency_rur_max_sum',
+                                            'currency_rur_flexible_default_amount', 'currency_rur_fixed_amounts',
+                                        ),
                                     ),
                                 ),
                             ),
                             'usd_currency' => array(
-                                'title' => __('Dollars', 'leyka'),
+                                'title' => __('US Dollars', 'leyka'),
                                 'sections' => array(
                                     array(
-                                        #TODO: auto_refresh_currency_rates change to auto_refresh_currency_rate_usd
+                                        /** @todo auto_refresh_currency_rates change to auto_refresh_currency_rate_usd */
                                         'options' => array('currency_rur2usd',), //'auto_refresh_currency_rate_usd'
                                     ),
                                     array(
                                         'title' => __('Additional settings', 'leyka'),
-                                        'options' => array('currency_usd_label', 'currency_usd_min_sum', 'currency_usd_max_sum',
-                                                        'currency_usd_flexible_default_amount', 'currency_usd_fixed_amounts',),
+                                        'options' => array(
+                                            'currency_usd_label', 'currency_usd_min_sum', 'currency_usd_max_sum',
+                                            'currency_usd_flexible_default_amount', 'currency_usd_fixed_amounts',
+                                        ),
                                     ),
                                 ),
                             ),
@@ -319,13 +309,15 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                 'title' => __('Euro', 'leyka'),
                                 'sections' => array(
                                     array(
-                                        #TODO: auto_refresh_currency_rates change to auto_refresh_currency_rate_eur
+                                        /** @todo auto_refresh_currency_rates change to auto_refresh_currency_rate_eur */
                                         'options' => array('currency_rur2eur',), // 'auto_refresh_currency_rates'
                                     ),
                                     array(
                                         'title' => __('Additional settings', 'leyka'),
-                                        'options' => array('currency_eur_label', 'currency_eur_min_sum', 'currency_eur_max_sum',
-                                                        'currency_eur_flexible_default_amount', 'currency_eur_fixed_amounts',),
+                                        'options' => array(
+                                            'currency_eur_label', 'currency_eur_min_sum', 'currency_eur_max_sum',
+                                            'currency_eur_flexible_default_amount', 'currency_eur_fixed_amounts',
+                                        ),
                                     ),
                                 ),
                             ),
