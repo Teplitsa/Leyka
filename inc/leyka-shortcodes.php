@@ -520,8 +520,8 @@ function leyka_inline_campaign(array $atts = array()) {
                     <div class="inpage-card__excerpt">
                         <?php echo $campaign->post_excerpt?>
                         <div class="inpage-card__toggle-excerpt-links">
-                            <a href="#" class="inpage-card__expand-excerpt"><?php _e('More', 'leyka');?></a><!--Подробнее-->
-                            <a href="#" class="inpage-card__collapse-excerpt"><?php _e('Hide', 'leyka');?></a><!--Свернуть-->
+                            <a href="#" class="inpage-card__expand-excerpt"><?php _e('More', 'leyka');?></a>
+                            <a href="#" class="inpage-card__collapse-excerpt"><?php _e('Hide', 'leyka');?></a>
                         </div>
                     </div>
                     <?php }?>
@@ -542,19 +542,19 @@ function leyka_inline_campaign(array $atts = array()) {
 
                         <div class="target">
                         <?php if($ready == 100) {?>
-                            <span><?php _e('The amount collected completely!', 'leyka');?></span> <!--Сумма полностью собрана!-->
+                            <span><?php _e('The amount collected completely!', 'leyka');?></span>
                         <?php } else if($ready > 0) {?>
                             <?php echo leyka_format_amount($collected['amount']);?>
                             <span class="curr-mark">
                                 <?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?>
                             </span>
                         <?php } else {?>
-                            <span><?php _e('Support', 'leyka');?></span> <!--Поддержите-->
+                            <span><?php _e('Support', 'leyka');?></span>
                         <?php }?>
                         </div>
 
                         <div class="info">
-                            <?php echo $atts['show_preview'] ? __('Amount needed', 'leyka')/*'Нужно собрать'*/ : __('collected of ', 'leyka')?>
+                            <?php echo $atts['show_preview'] ? __('Amount needed', 'leyka') : __('collected of ', 'leyka')?>
                             <?php echo leyka_format_amount($target['amount']);?>
                             <span class="curr-mark">
                                 <?php echo leyka_options()->opt("currency_{$target['currency']}_label");?>
@@ -569,7 +569,7 @@ function leyka_inline_campaign(array $atts = array()) {
                             <span class="curr-mark">
                                 <?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?>
                             </span>
-                            <span class="info"><?php _e('collected', 'leyka');?></span> <!--собрано-->
+                            <span class="info"><?php _e('collected', 'leyka');?></span>
                         </div>
 
                     <?php }?>
@@ -612,7 +612,7 @@ function leyka_inline_campaign(array $atts = array()) {
 					<?php if($campaign->is_finished) { ?>
 						<div class="message-finished"><?php echo __('The fundraising campaign has been finished. Thank you for your support!', 'leyka');?></div>
                     <?php } elseif($ready == 100) { ?>
-                        <div class="leyka-thankyou-button"><?php _e('Thank you for your support!', 'leyka');?></div> <!--Спасибо за поддержку!-->
+                        <div class="leyka-thankyou-button"><?php _e('Thank you for your support!', 'leyka');?></div>
 					<?php } else { ?>
                         <button type="button" class="leyka-js-open-form">
                             <?php echo leyka_options()->opt_template('donation_submit_text');?>

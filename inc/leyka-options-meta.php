@@ -288,7 +288,7 @@ self::$_options_meta = array(
         'title' => __('Exchange rate', 'leyka'),
         'description' => __('Please set the RUR to USD currency rate here.', 'leyka'),
         'required' => true,
-        'placeholder' => __('Enter rate value (ex.: 70)', 'leyka'),
+        'placeholder' => __('Enter rate value (e.g., 70)', 'leyka'),
         'length' => 6,
     ),
     'currency_rur2eur' => array(
@@ -296,7 +296,7 @@ self::$_options_meta = array(
         'title' => __('Exchange rate', 'leyka'),
         'description' => __('Please set the RUR to EUR currency rate here.', 'leyka'),
         'required' => true,
-        'placeholder' => __('Enter rate value (ex.: 80)', 'leyka'),
+        'placeholder' => __('Enter rate value (e.g., 80)', 'leyka'),
         'length' => 6,
     ),
     'currency_rur_label' => array(
@@ -499,7 +499,7 @@ self::$_options_meta = array(
     'send_donor_thanking_emails' => array(
         'type' => 'checkbox',
         'default' => '1',
-        'title' => __('Send the emails thankful email to a donor on each funded donation', 'leyka'),
+        'title' => __('Send a thankful email to a donor on each funded donation', 'leyka'),
         'description' => __('Check to send a thankful email to a donor on each funded donation', 'leyka'),
         'short_description' => __('Send the emails', 'leyka'),
     ),
@@ -633,13 +633,13 @@ self::$_options_meta = array(
         'type' => 'checkbox',
         'default' => 1,
         'title' => __('Show an email subscription widget on the successful donation page', 'leyka'),
-        'description' => __('Show subscription form on donation page', 'leyka'),
+        'description' => __('Show a subscription form on the successful donation page', 'leyka'),
     ),
     'show_failure_widget_on_failure' => array(
         'type' => 'checkbox',
         'default' => true,
-        'title' => __('Show a failure notification widget on the donation page', 'leyka'),
-        'description' => __('Display failure notification on the donation page', 'leyka'),
+        'title' => __('Show a failure notification widget on the donation failure page', 'leyka'),
+        'description' => __('Display a failure notification widget on the donation failure page', 'leyka'),
     ),
     'revo_template_slider_max_sum' => array(
         'type' => 'text',
@@ -994,7 +994,7 @@ self::$_options_meta = array(
         'type' => 'checkbox',
         'default' => false,
         'title' => __('The plugin is in demo mode', 'leyka'),
-        'comment' => __('Check to turn on the plugin dempnstration mode. While in it, no emails will be sent to the payment gateways.', 'leyka'),
+        'comment' => __('Check to turn on the plugin demonstration mode. While in it, no emails will be sent to the payment gateways.', 'leyka'),
         'short_description' => __('Demo mode on', 'leyka'),
     ),
 );

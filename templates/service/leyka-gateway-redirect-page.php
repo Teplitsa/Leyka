@@ -36,19 +36,19 @@
     if(leyka()->redirect_type === 'auto') {?>
 
         <script type="text/javascript">
-            setTimeout(function(){ document.getElementById('leyka-auto-submit').submit(); }, <?php echo WP_DEBUG ? 10000 : 5000;?>);
+            setTimeout(function(){ document.getElementById('leyka-auto-submit').submit(); }, <?php echo LEYKA_DEBUG ? 10000 : 5000;?>);
         </script>
 
     <?php } else if(leyka()->redirect_type === 'redirect') {?>
 
         <script type="text/javascript">
-            setTimeout(function(){ window.location.href = document.getElementById('leyka-auto-submit').action; }, <?php echo WP_DEBUG ? 10000 : 5000;?>);
+            setTimeout(function(){ window.location.href = document.getElementById('leyka-auto-submit').action; }, <?php echo LEYKA_DEBUG ? 10000 : 5000;?>);
         </script>
 
     <?php } else if(leyka()->redirect_type === 'redirect') {?>
 
         <script type="text/javascript">
-            setTimeout(function(){ window.location.href = document.getElementById('leyka-auto-submit').action; }, <?php echo WP_DEBUG ? 10000 : 5000;?>);
+            setTimeout(function(){ window.location.href = document.getElementById('leyka-auto-submit').action; }, <?php echo LEYKA_DEBUG ? 10000 : 5000;?>);
         </script>
 
     <?php }
