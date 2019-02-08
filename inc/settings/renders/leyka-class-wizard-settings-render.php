@@ -134,7 +134,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
             <?php foreach($navigation_data as $section_index => $section) {?>
 
-                <div class="nav-section <?php echo !empty($section['is_current']) ? 'active' : ($section['is_completed'] ? 'done' : '');?>" data-section-title="<?php echo esc_attr($section['title']);?>">
+                <div class="nav-section <?php echo !empty($section['is_current']) ? 'active' : (empty($section['is_completed']) ? '' : 'done');?>" data-section-title="<?php echo esc_attr($section['title']);?>">
 
                     <div class="nav-section-title">
 
