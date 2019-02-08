@@ -12,7 +12,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
 
         $this->_id = 'cp';
         $this->_title = esc_attr__('CloudPayments setup Wizard', 'leyka');
-        $this->_cp_email = defined('WP_DEBUG') && WP_DEBUG ? 'support@te-st.ru' : 'sales@cloudpayments.ru';
+        $this->_cp_email = defined('LEYKA_DEBUG') && LEYKA_DEBUG ? /*'support@te-st.ru'*/ 'avdeeva.nataliya@gmail.com' : 'sales@cloudpayments.ru';
 
     }
 
