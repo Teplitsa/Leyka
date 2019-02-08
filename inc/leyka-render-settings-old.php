@@ -67,6 +67,41 @@ function leyka_render_text_field($option_id, $data){
     </div>
 <?php }
 
+
+// Email text fields:
+add_action('leyka_render_email', 'leyka_render_email_field', 10, 2);
+function leyka_render_email_field($option_id, $data){
+
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
+    $data['value'] = isset($data['value']) ? $data['value'] : '';?>
+
+    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-text-field-wrapper leyka-email-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
+        <label for="<?php echo $option_id.'-field';?>">
+            <span class="field-component title">
+
+                <span class="text"><?php echo $data['title'];?></span>
+                <?php echo (empty($data['required']) ? '' : '<span class="required">*</span>');
+
+                if( !empty($data['comment']) ) {?>
+                    <span class="field-q">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" alt="">
+                    <span class="field-q-tooltip"><?php echo $data['comment'];?></span>
+                </span>
+                <?php }?>
+
+            </span>
+            <span class="field-component field">
+                <input type="<?php echo empty($data['is_password']) ? 'text' : 'password';?>" <?php echo !empty($data['mask']) ?  'data-inputmask="'.$data['mask'].'"' : '';?> id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo empty($data['placeholder']) ? '' : esc_attr($data['placeholder']);?>" maxlength="<?php echo empty($data['length']) ? '' : (int)$data['length'];?>"  class="<?php echo !empty($data['mask']) ?  'leyka-wizard-mask' : '';?>">
+            </span>
+
+            <?php if( !empty($data['description']) ) {?>
+                <span class="field-component help"><?php echo $data['description'];?></span>
+            <?php }?>
+
+        </label>
+    </div>
+<?php }
+
 // File fields:
 add_action('leyka_render_file', 'leyka_render_file_field', 10, 2);
 function leyka_render_file_field($option_id, $data){
