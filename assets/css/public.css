@@ -51,18 +51,24 @@ div[id*="leyka-pf-"] .leyka-submit-errors {
   height: 56px;
   padding: 8px 24px;
   position: relative;
+  text-align: center;
+  font-size: 14px;
+  text-transform: uppercase;
+  padding-top: 18px;
 }
 
 div[id*="leyka-pf-"] .leyka-submit-errors:after {
   content: 'x';
   display: block;
   color: currentColor;
-  font-weight: bold;
+  font-weight: normal;
   font-size: 16px;
   position: absolute;
-  top: 4px;
+  top: 18px;
   right: 16px;
   cursor: pointer;
+  font-weight: normal;
+  font-size: 12px;		
 }
 
 /** == Form fields styles == */

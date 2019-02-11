@@ -305,7 +305,7 @@ self::$_options_meta = array(
         'title' => __('RUB label', 'leyka'),
         'description' => __('Please set the RUB currency label here.', 'leyka'),
         'required' => true,
-        'placeholder' => 'E.g., roub.',
+        'placeholder' => __('E.g., roub.', 'leyka'),
         'length' => 6,
     ),
     'currency_rur_min_sum' => array(
@@ -350,7 +350,7 @@ self::$_options_meta = array(
         'title' => __('USD label', 'leyka'),
         'description' => __('Please set the USD currency label here.', 'leyka'),
         'required' => true,
-        'placeholder' => 'E.g., USD',
+        'placeholder' => __('E.g., USD', 'leyka'),
         'length' => 6,
     ),
     'currency_usd_min_sum' => array(
@@ -395,7 +395,7 @@ self::$_options_meta = array(
         'title' => __('EUR label', 'leyka'),
         'description' => __('Please set the EUR currency label here.', 'leyka'),
         'required' => true,
-        'placeholder' => 'E.g., euro',
+        'placeholder' => __('E.g., euro', 'leyka'),
         'length' => 6,
     ),
     'currency_eur_min_sum' => array(

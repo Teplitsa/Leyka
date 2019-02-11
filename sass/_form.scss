@@ -295,10 +295,22 @@
 
 .entry-content .leyka-submit-errors, //overwrite for some themes 
 .leyka-submit-errors {
+	
 	@include error-area;
 	
 	display: block;
 	padding: 10px 20px;
+	
+    text-align: center;
+    font-size: 14px;
+    text-transform: uppercase;
+    padding-top: 18px;
+	
+	&:after {
+		font-weight: normal;
+	    top: 18px;
+		font-size: 12px;		
+	}
 	
 	ul {
 		margin: 5px 0;
