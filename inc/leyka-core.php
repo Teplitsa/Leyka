@@ -897,7 +897,7 @@ class Leyka extends Leyka_Singleton {
 
         if( !$leyka_last_ver || $leyka_last_ver < '3.0' ) {
             
-            if(class_exists( 'TGM_Plugin_Activation' )) {
+            if(defined('KND_VERSION') && class_exists( 'TGM_Plugin_Activation' )) {
               update_option('leyka_init_wizard_redirect', false);
             }
             else {
