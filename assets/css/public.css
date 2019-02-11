@@ -52,9 +52,9 @@ div[id*="leyka-pf-"] .leyka-submit-errors {
   padding: 8px 24px;
   position: relative;
   text-align: center;
-  font-size: 14px;
+  font-size: 16px;
   text-transform: uppercase;
-  padding-top: 18px;
+  padding-top: 17px;
 }
 
 div[id*="leyka-pf-"] .leyka-submit-errors:after {
