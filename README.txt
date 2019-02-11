@@ -4,8 +4,8 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса, яндекс.деньги, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
-Tested up to: 5.0.2
-Stable tag: 3.0.2
+Tested up to: 5.0.3
+Stable tag: 3.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,7 +13,7 @@ Leyka is a plugin for crowdfunding and donations collection via WordPress websit
 
 == Description ==
 
-Supported payment methods includes bank cards Visa and MasterCard through **Cloudpayments**, **PayPal**, **Chronopay**, **QIWI Kassa**, **ROBOKASSA**, **Yandex.Kassa** and **RBK Money** systems, mobile and SMS payments via **MIXPLAT**, also **WebMoney** are supported. You can also use a **traditional bank payment orders** (quittances).
+Supported payment methods include Visa and MasterCard bank cards payments via **Cloudpayments**, **PayPal**, **Chronopay**, **QIWI Kassa**, **ROBOKASSA**, **Yandex.Kassa** and **RBK Money** systems, mobile and SMS payments via **MIXPLAT**, also **WebMoney** are supported. You can also use a **traditional bank payment orders** (quittances).
 
 This plugin developed and supported by [Teplitsa of social technologies](//te-st.ru/).
 
@@ -89,6 +89,31 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.0.3 =
+* New: new design of Campaign View settings area added.
+* New: now plugin features debug mode switches on/off based on LEYKA_DEBUG instead of WP_DEBUG.
+* New: settings render feature - email field rendering function added.
+* New: demo mode plugin option added.
+* New: donation form templates filter added.
+* New: Dashboard commission fields feature added.
+* Fix: incorrect symbols in Yandex.Kassa shopPassword value generator removed.
+* Fix: Kandinsky theme compatibility fixes.
+* Fix: frontend dependencies versions updated.
+* Fix: l10n fixes.
+* Fix: Wizard settings render - PHP notice fix.
+* Fix: small fix in the "campaign target reached" mailout procedure.
+* Fix: now PM category on gateway settings page doesn't display when there is only one of them.
+* Fix: donor emails sending/not sending checkboxes returned to the Notifications settings area.
+* Fix: now thankful emails sended correctly.
+* Fix: now donor data fields values on donation forms are trimmed before forms validation.
+* Fix: Mixplat SMS PM label & campaign total collected amount auto-refresh bugfixes.
+* Fix: CP card PM label display bugfix.
+* Fix: plugin options saving bugfix.
+* Fix: CP documents links fixed.
+* Fix: Revo + CP forms submitting bugfix.
+* Fix: small bugfixes.
+* Removed: now demo donors on Revo template removed.
+
 = 3.0.2 =
 * Fix: important CloudPayments bugfixes.
 * Fix: recurring emails titles & texts bugfix.
