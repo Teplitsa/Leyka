@@ -837,7 +837,7 @@ function leyka_pf_submission_errors() {?>
         <span><?php _e('Errors', 'leyka');?>: </span>
         <ul>
             <?php foreach(leyka()->get_session_errors() as $wp_error) { /** @var $wp_error WP_Error */?>
-                <li><?php echo $wp_error->get_error_message();?></li>
+                <li><?php echo __('Error!', 'leyka');?> <?php echo $wp_error->get_error_message();?></li>
             <?php }?>
         </ul>
         <?php leyka()->clear_session_errors();?>
