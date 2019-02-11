@@ -59,23 +59,26 @@ div[id *="leyka-pf-"] { //aka namespace
 	}
 
 	.leyka-submit-errors {
+		@include error-text-in-footer();
+		
 		border: none;
 		border-radius: 0 0 10px 10px;
 		color: $color-white;
 		background: $color-form-invalid;
 		margin: -10px -1px 0;
-		height: $base*7;
-		padding: $base $base*3;
+		height: auto;
+		padding: $base * 2 $base*4;
 		position: relative;
+		text-align: center;
 
 		&:after {
+			@include error-text-dismiss();
+			
 			content: 'x';
 			display: block;
 			color: currentColor;
-			font-weight: bold;
-			font-size: 16px;
 			position: absolute;
-			top: 4px;
+			top: 19px;
 			right: 16px;
 			cursor: pointer;
 		}
