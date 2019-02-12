@@ -1011,19 +1011,15 @@ div[id *="leyka-pf-"] {  //aka namespace
 
 			.static__complete-donation {
 				text-align: center;
-				margin-top: $base*1.5;
-				margin-bottom: $base*1.5;
-				position:absolute;
-				bottom:0px;
+				margin: $base*1.5 auto;
 
-				margin-left: auto;
-				margin-right: auto;
+				position:absolute;
+				bottom: 0;
 				left: 0;
 				right: 0;
 
 			    input {
 			        @include button(action);
-					
 			    }
 			}
 

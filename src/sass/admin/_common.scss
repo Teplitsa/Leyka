@@ -234,10 +234,7 @@
         background-color: $color-white;
         border-radius: 6px;
         margin-bottom: 2rem;
-        padding-left: 24px;
-        padding-right: 24px;
-        padding-top: 24px;
-        padding-bottom: 32px;
+        padding: 24px 24px 32px 24px;
         width: 675px;
         
         &.collapsed {
