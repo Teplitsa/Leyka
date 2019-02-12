@@ -859,7 +859,7 @@ function leyka_print_donation_elements($content) {
 
 	if(
 	    !is_singular(Leyka_Campaign_Management::$post_type)
-        || !leyka_options()->opt_template('do_not_display_donation_form')
+        || leyka_options()->opt_template('do_not_display_donation_form')
     ) {
         return $content;
     }
