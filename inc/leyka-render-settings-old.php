@@ -206,7 +206,9 @@ function leyka_render_checkbox_field($option_id, $data){
             <?php }?>
 
             <span class="field-component field">
-                <input type="checkbox" id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="1" <?php echo !empty($data['value']) && (int)$data['value'] >= 1 ? 'checked' : '';?>>&nbsp;
+
+                <input type="checkbox" id="<?php echo esc_attr($option_id.'-field');?>" name="<?php echo esc_attr($option_id);?>" value="1" <?php echo !empty($data['value']) && (int)$data['value'] >= 1 ? 'checked' : '';?>>&nbsp;
+
             <?php if( !empty($data['short_description']) ) {
 
                 echo $data['short_description'];
