@@ -1499,7 +1499,8 @@ class Leyka_Donation {
 
         $status = empty($params['status']) ? 'submitted' : $params['status'];
 
-        remove_all_actions('save_post'); // To speed up the post insertion
+        remove_all_actions('save_post_' . Leyka_Donation_Management::$post_type);
+        
         $id = wp_insert_post(array(
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => array_key_exists($status, leyka_get_donation_status_list()) ? $status : 'submitted',

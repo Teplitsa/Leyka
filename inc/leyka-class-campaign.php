@@ -619,7 +619,7 @@ class Leyka_Campaign {
         $target = get_post_meta($this->_id, 'campaign_target', true);
         return empty($target) ?
             'no_target' :
-            (Leyka_Campaign::get_campaign_collected_amount($this->_id) >= $target ? 'is_reached' : 'in_progress');
+            ($this->total_funded >= $target ? 'is_reached' : 'in_progress');
 
     }
 
