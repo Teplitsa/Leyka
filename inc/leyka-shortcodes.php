@@ -541,9 +541,7 @@ function leyka_inline_campaign(array $atts = array()) {
                         </div>
 
                         <div class="target">
-                        <?php if($ready == 100) {?>
-                            <span><?php _e('The amount collected completely!', 'leyka');?></span>
-                        <?php } else if($ready > 0) {?>
+                        <?php if($ready > 0) {?>
                             <?php echo leyka_format_amount($collected['amount']);?>
                             <span class="curr-mark">
                                 <?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?>
@@ -579,46 +577,44 @@ function leyka_inline_campaign(array $atts = array()) {
                         leyka_get_campaign_supporters($campaign_id, 5) : array('donations' => array(), 'supporters' => array());?>
 
 					<div class="supporter-and-button">
-                        
-                    <div class="inpage-card__note supporters">
-					<?php if(count($supporters['supporters'])) {?>
 
-                        <strong><?php _e('Supporters:', 'leyka');?></strong>
+                        <div class="inpage-card__note supporters">
+                        <?php if(count($supporters['supporters'])) {?>
 
-                        <?php if(count($supporters['donations']) <= count($supporters['supporters'])) { // Only names
+                            <strong><?php _e('Supporters:', 'leyka');?></strong>
 
-                            echo count($supporters['supporters']) === 1 ?
-                                reset($supporters['supporters']) :
-                                implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka').' '.end($supporters['supporters']);
-                        } else { // Names and the number of the rest of donors
+                            <?php if(count($supporters['donations']) <= count($supporters['supporters'])) { // Only names
 
-                            echo implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka');?>
+                                echo count($supporters['supporters']) === 1 ?
+                                    reset($supporters['supporters']) :
+                                    implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka').' '.end($supporters['supporters']);
+                            } else { // Names and the number of the rest of donors
 
-                            <a href="#" class="leyka-js-history-more">
-                                <?php echo sprintf(__('%d more', 'leyka'), count($supporters['donations']) - count($supporters['supporters']));?>
-                            </a>
+                                echo implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka');?>
 
-                        <?php }
+                                <a href="#" class="leyka-js-history-more">
+                                    <?php echo sprintf(__('%d more', 'leyka'), count($supporters['donations']) - count($supporters['supporters']));?>
+                                </a>
 
-					} else if( !$thumb_url ) {?>
-                        <div class="no-supporters">
-    					    <svg class="svg-icon pic-first-step"><use xlink:href="#pic-first-step" /></svg>
-                            <div class="lets-do-first-step-text"><?php _e('Every campaign is a journey. Be the one to make the first step.', 'leyka');?></div>
+                            <?php }
+
+                        } else if( !$thumb_url ) {?>
+                            <div class="no-supporters">
+                                <svg class="svg-icon pic-first-step"><use xlink:href="#pic-first-step" /></svg>
+                                <div class="lets-do-first-step-text"><?php _e('Every campaign is a journey. Be the one to make the first step.', 'leyka');?></div>
+                            </div>
+                        <?php }?>
                         </div>
-                    <?php }?>
-                    </div>
 
-                    <div class="inpage-card__action">
-					<?php if($campaign->is_finished) { ?>
-						<div class="message-finished"><?php echo __('The fundraising campaign has been finished. Thank you for your support!', 'leyka');?></div>
-                    <?php } elseif($ready == 100) { ?>
-                        <div class="leyka-thankyou-button"><?php _e('Thank you for your support!', 'leyka');?></div>
-					<?php } else { ?>
-                        <button type="button" class="leyka-js-open-form">
-                            <?php echo leyka_options()->opt_template('donation_submit_text');?>
-                        </button>
-					<?php } ?>
-                    </div>
+                        <div class="inpage-card__action">
+                        <?php if($campaign->is_finished) {?>
+                            <div class="message-finished"><?php echo __('The fundraising campaign has been finished. Thank you for your support!', 'leyka');?></div>
+                        <?php } else { ?>
+                            <button type="button" class="leyka-js-open-form">
+                                <?php echo leyka_options()->opt_template('donation_submit_text');?>
+                            </button>
+                        <?php } ?>
+                        </div>
                     
                     </div>
 
