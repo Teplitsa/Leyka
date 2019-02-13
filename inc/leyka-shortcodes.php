@@ -61,6 +61,7 @@ function leyka_get_scale($campaign = null, $args = array()) {
     <?php $out = ob_get_clean();
 
     return apply_filters('leyka_scale_html', $out, $campaign, $args);
+
 }
 
 function leyka_get_scale_button_label(){
@@ -182,14 +183,12 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
             </div>
         <?php }
 
-        if($args['show_scale'] == 1) {
-
+        if( !!$args['show_scale'] ) {
             echo leyka_get_scale($campaign_obj,	array(
                 'show_button' => $args['show_button'],
                 'embed_mode' => $args['embed_mode'],
             ));
-
-        } elseif($args['show_button'] == 1) {
+        } else if( !!$args['show_button'] ) {
 
             $url = trailingslashit(get_permalink($campaign_obj->ID)).'#leyka-payment-form'.
                 ( !!$args['increase_counters'] ? '?increase_counters=1' : '' );?>
