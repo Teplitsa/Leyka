@@ -1798,10 +1798,5 @@ function leyka_template_to_query_arg($template_id, $url) {
 }
 
 function leyka_template_from_query_arg() {
-    if(!empty($_GET['leyka_ctpl'])) {
-        return $_GET['leyka_ctpl'];
-    }
-    
-    return null;
+    return empty($_GET['leyka_ctpl']) ? null : trim($_GET['leyka_ctpl']);
 }
-

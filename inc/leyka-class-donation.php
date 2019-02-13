@@ -94,13 +94,13 @@ class Leyka_Donation_Management {
 
     public function donation_status_changed($new, $old, WP_Post $donation) {
 
-        if($new == $old || $donation->post_type != self::$post_type) {
+        if($new === $old || $donation->post_type !== self::$post_type) {
             return;
         }
 
-        if($old == 'new' && $new != 'trash') {
+        if($old === 'new' && $new !== 'trash') {
             $this->new_donation_added($donation);
-        } elseif($new == 'funded' || $old == 'funded') {
+        } elseif($new === 'funded' || $old === 'funded') {
 
             $donation = new Leyka_Donation($donation);
 
@@ -219,8 +219,8 @@ class Leyka_Donation_Management {
         if(leyka_options()->opt('donations_managers_emails')) {
 
             if(
-                ($donation->payment_type == 'single' && leyka_options()->opt('notify_donations_managers')) ||
-                ($donation->payment_type == 'rebill' && leyka_options()->opt('notify_managers_on_recurrents'))
+                ($donation->payment_type === 'single' && leyka_options()->opt('notify_donations_managers')) ||
+                ($donation->payment_type === 'rebill' && leyka_options()->opt('notify_managers_on_recurrents'))
             ) {
                 Leyka_Donation_Management::send_managers_notifications($donation);
             }
@@ -255,10 +255,6 @@ class Leyka_Donation_Management {
      */
     public static function send_donor_thanking_email($donation) {
 
-        if( !leyka_options()->opt('send_donor_thanking_emails') ) {
-            return false;
-        }
-
         $donation = leyka_get_validated_donation($donation);
 
         $donor_email = $donation->donor_email;
@@ -267,6 +263,14 @@ class Leyka_Donation_Management {
         }
 
         if( !$donation || !$donor_email || $donation->donor_email_date ) {
+            return false;
+        }
+
+
+        if(
+            ($donation->type === 'single' && !leyka_options()->opt('send_donor_thanking_emails'))
+            || ($donation->type === 'rebill' && !leyka_options()->opt('send_donor_thanking_emails_on_recurring_init'))
+        ) {
             return false;
         }
 
@@ -356,6 +360,10 @@ class Leyka_Donation_Management {
     /** Send all emails in case of a recurring auto-payment */
     public static function send_all_recurring_emails($donation) {
 
+        if( !leyka_options()->opt('send_donor_thanking_emails_on_recurring_ongoing') ) {
+            return false;
+        }
+
         $donation = leyka_get_validated_donation($donation);
 
         $donor_email = $donation->donor_email;
@@ -363,7 +371,7 @@ class Leyka_Donation_Management {
             $donor_email = leyka_pf_get_donor_email_value();
         }
 
-        if( !$donation || !$donor_email || $donation->type != 'rebill' ) {
+        if( !$donation || !$donor_email || $donation->type !== 'rebill' ) {
             return false;
         }
 
@@ -449,9 +457,10 @@ class Leyka_Donation_Management {
 
     public static function send_managers_notifications($donation) {
 
-        if( !leyka_options()->opt('donations_managers_emails') ) {
+        if( !leyka_options()->opt('notify_donations_managers') || !leyka_options()->opt('donations_managers_emails') ) {
             return false;
         }
+        /** @todo Managers emails list should be made from 1. donations_managers_emails option value, 2. emails of all "donation managers" WP accounts. */
 
         $donation = leyka_get_validated_donation($donation);
 
@@ -1782,8 +1791,8 @@ class Leyka_Donation {
 
             case 'pm_label':
             case 'payment_method_label':
-                $pm = leyka_get_pm_by_id($this->_donation_meta['payment_method']);
-                return ($pm ? $pm->label : __('Unknown payment method', 'leyka'));
+                $pm = leyka_get_pm_by_id($this->_donation_meta['gateway'].'-'.$this->_donation_meta['payment_method'], true);
+                return $pm ? $pm->label : __('Unknown payment method', 'leyka');
             case 'currency':
             case 'currency_code':
             case 'currency_id':

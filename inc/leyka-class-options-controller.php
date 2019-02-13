@@ -6,12 +6,15 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     protected static $_options_meta = array();
 
     protected $_options = array();
-    protected static $_field_types = array('text', 'textarea', 'number', 'html', 'rich_html', 'select', 'radio', 'checkbox', 'multi_checkbox', 'legend', 'file');
-    
-    protected $_templates_common_options = array('donation_sum_field_type', 'scale_widget_place', 'donation_submit_text',
-                                                'donations_history_under_forms', 'show_success_widget_on_success',
-                                                'show_donation_comment_field', 'donation_comment_max_length',
-                                                'show_campaign_sharing', 'show_failure_widget_on_failure', 'do_not_display_donation_form');
+    protected static $_field_types = array(
+        'text', 'textarea', 'number', 'html', 'rich_html', 'select', 'radio', 'checkbox', 'multi_checkbox', 'legend', 'file'
+    );
+
+    protected $_templates_common_options = array(
+        'donation_sum_field_type', 'scale_widget_place', 'donation_submit_text', 'donations_history_under_forms',
+        'show_success_widget_on_success', 'show_donation_comment_field', 'donation_comment_max_length',
+        'show_campaign_sharing', 'show_failure_widget_on_failure', 'do_not_display_donation_form',
+    );
     protected $_template_options = array(
         'neo' => array(),
         'radios' => array(),
@@ -254,7 +257,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
             if( !$template_id ) {
 
                 $current_template_data = leyka_get_current_template_data();
-                $template_id = !empty($current_template_data['id']) ? $current_template_data['id'] : null;
+                $template_id = empty($current_template_data['id']) ? null : $current_template_data['id'];
 
             }
 
@@ -456,9 +459,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     public function get_template_options_prefix($template_id) {
         return 'template_options_'.$template_id;
     }
-    
-    /**
-     */
+
     public function add_template_options() {
         foreach($this->_template_options as $template_id => $options) {
 
@@ -639,9 +640,8 @@ function leyka_sync_plugin_stats_option() {
             );
         }
 
-        return
-            update_option('leyka_installation_id', (int)$response['installation_id']) &&
-            update_option('leyka_stats_sipher_public_key', $response['public_key']);
+        return update_option('leyka_installation_id', (int)$response['installation_id'])
+            && update_option('leyka_stats_sipher_public_key', $response['public_key']);
 
     }
 

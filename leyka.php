@@ -4,7 +4,7 @@
  * Plugin Name: Leyka
  * Plugin URI:  https://leyka.te-st.ru/
  * Description: The donations management system for your WP site
- * Version:     3.0.2
+ * Version:     3.0.3
  * Author:      Teplitsa of social technologies
  * Author URI:  https://te-st.ru
  * Text Domain: leyka
@@ -38,7 +38,7 @@
 
 // Leyka plugin version:
 if( !defined('LEYKA_VERSION') ) {
-    define('LEYKA_VERSION', '3.0.2');
+    define('LEYKA_VERSION', '3.0.3');
 }
 
 // Plugin base file:
@@ -73,7 +73,7 @@ if( !defined('LEYKA_SUPPORT_EMAIL') ) {
 
 // Plugin support email:
 if( !defined('LEYKA_DEBUG') ) {
-    define('LEYKA_DEBUG', false);
+    define('LEYKA_DEBUG', true);
 }
 
 if( !defined('LEYKA_USAGE_STATS_DEV_SERVER_URL') ) {
@@ -94,9 +94,9 @@ if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.6.0', '<') ) {
 }
 
 if(get_locale() == 'ru_RU') {
-    load_textdomain('leyka', dirname( realpath(__FILE__) ) . '/languages/leyka-ru_RU.mo'); // load included lang pack
+    load_textdomain('leyka', dirname(realpath(__FILE__)).'/languages/leyka-ru_RU.mo'); // Load the lang. pack included
 }
-load_plugin_textdomain('leyka', false, basename( dirname( __FILE__ ) ) . '/languages/'); // load langpack by priority
+load_plugin_textdomain('leyka', false, basename(dirname(__FILE__)).'/languages/'); // Load the lang. pack by priority
 
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-tmp-translations.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-functions.php');

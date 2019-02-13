@@ -547,10 +547,18 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
         if( !!$by_categories ) {
 
+            // Get the PM categories in the right order:
             $tmp = array_map(function($value){ return array(); }, leyka_get_pm_categories_list());
+
             foreach($pm_list as $pm) { /** @var $pm Leyka_Payment_Method */
                 if($pm->category) {
                     $tmp[$pm->category][] = $pm;
+                }
+            }
+
+            foreach($tmp as $category => $pm_list_in_category) { // Remove empty PM categories
+                if( !$pm_list_in_category ) {
+                    unset($tmp[$category]);
                 }
             }
 

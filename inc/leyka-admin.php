@@ -285,37 +285,37 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		if($query->have_posts()) {?>
 
 		<table class="leyka-widget-table history">
-		<thead>
-			<tr>
-                <th class="date"><?php _e('Date', 'leyka');?></th>
-                <th class="title"><?php _e('Purpose', 'leyka');?></th>
-                <th class="donor"><?php _e('Donor', 'leyka');?></th>
-                <th class="amount"><?php _e('Amount', 'leyka');?></th>
-                <th class="status"><?php _e('Status', 'leyka');?></th>
-                <th class="details">&nbsp;</th>
-			</tr>
-		</thead>
-		<tbody>
-		<?php foreach($query->posts as $cp) {
+            <thead>
+                <tr>
+                    <th class="date"><?php esc_html_e('Date', 'leyka');?></th>
+                    <th class="title"><?php esc_html_e('Purpose', 'leyka');?></th>
+                    <th class="donor"><?php esc_html_e('Donor', 'leyka');?></th>
+                    <th class="amount"><?php esc_html_e('Amount', 'leyka');?></th>
+                    <th class="status"><?php esc_html_e('Status', 'leyka');?></th>
+                    <th class="details">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach($query->posts as $cp) {
 
-            $donation = new Leyka_Donation($cp);
-            $url = get_edit_post_link($donation->ID);?>
+                $donation = new Leyka_Donation($cp);
+                $url = get_edit_post_link($donation->ID);?>
 
-            <tr>
-                <td><?php echo $donation->date;?></td>
-                <td><?php echo $donation->title;?></td>
-                <td>
-                    <?php echo ($donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka'))
-                        .($donation->donor_email ? ' ('.$donation->donor_email.')' : '');?>
-                </td>
-                <td><?php echo $donation->amount.' '.$donation->currency_label;?></td>
-                <td><?php echo $donation->status_label;?></td>
-                <td><a href="<?php echo esc_url($url); ?>"><?php _e('Details', 'leyka'); ?></a></td>
-            </tr>
+                <tr>
+                    <td><?php echo $donation->date;?></td>
+                    <td><?php echo $donation->title;?></td>
+                    <td>
+                        <?php echo ($donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka'))
+                            .($donation->donor_email ? ' ('.$donation->donor_email.')' : '');?>
+                    </td>
+                    <td><?php echo $donation->amount.' '.$donation->currency_label;?></td>
+                    <td><?php echo $donation->status_label;?></td>
+                    <td><a href="<?php echo esc_url($url); ?>"><?php esc_html_e('Details', 'leyka'); ?></a></td>
+                </tr>
 
-		<?php }?>
+            <?php }?>
 
-		</tbody>
+            </tbody>
 		</table>
 
 		<?php } else {?>
@@ -331,60 +331,67 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 			'post_status' => 'any',
 			'posts_per_page' => 5,
 		));
-		
+
 		if($query->have_posts()) {?>
 
 		<table class="leyka-widget-table campaigns">
-		<thead>
-			<tr>
-			<th class="title"><?php _e('Title', 'leyka');?></th>
-			<th class="payment"><?php _e('Purpose', 'leyka');?></th>			
-			<th class="details">&nbsp;</th>
-			</tr>
-		</thead>
-		<tbody>
-		<?php
-			foreach($query->posts as $cp){
-				$camp = new Leyka_Campaign($cp);
-				$url = get_edit_post_link($camp->ID);?>
+            <thead>
+                <tr>
+                    <th class="title"><?php esc_html_e('Title', 'leyka');?></th>
+                    <th class="payment"><?php esc_html_e('Purpose', 'leyka');?></th>
+                    <th class="details">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach($query->posts as $cp) {
 
-		<tr>
-			<td><?php echo $camp->title;?></td>
-			<td><?php echo $camp->payment_title; ?></td>			
-			<td><a href="<?php echo esc_url($url); ?>"><?php _e('Edit', 'leyka'); ?></a></td>
-		</tr>
-		<?php }?>
-		</tbody>
+                $camp = new Leyka_Campaign($cp);
+                $url = get_edit_post_link($camp->ID);?>
+
+            <tr>
+                <td><?php echo $camp->title;?></td>
+                <td><?php echo $camp->payment_title; ?></td>
+                <td><a href="<?php echo esc_url($url); ?>"><?php esc_html_e('Edit', 'leyka');?></a></td>
+            </tr>
+
+            <?php }?>
+
+            </tbody>
 		</table>
 
 		<?php } else {
+
 			$url = admin_url('post-new.php?post_type=leyka_campaign');?>
 
-			<p class="empty-notice"><?php _e('You don\'t have any campaign yet.', 'leyka');?> <a href="<?php echo esc_url($url); ?>"><?php _e('Create first one', 'leyka'); ?></a></p>
-		<?php
-		}
+			<p class="empty-notice"><?php _e('You don\'t have any campaign yet.', 'leyka');?>
+			    <a href="<?php echo esc_url($url); ?>"><?php esc_html_e('Create first one', 'leyka'); ?></a>
+            </p>
+
+		<?php }
+
 	}
 
 	public function dashboardSidebarScreen() {?>
 
 		<div id="leyka-card">
-            <h2><i></i><?php _e('Leyka', 'leyka');?></h2>
-            <p><?php _e('Leyka is a simple donations management system', 'leyka');?></p>
+            <h2><i></i><?php esc_html_e('Leyka', 'leyka');?></h2>
+            <p><?php esc_html_e('Leyka is a simple donations management system', 'leyka');?></p>
             <p>
-                <?php _e('Developed by <a href="http://te-st.ru/" target="_blank" rel="noopener noreferrer">Teplitsa of social technologies</a>', 'leyka');?>
+                <?php esc_html_e('Developed by <a href="http://te-st.ru/" target="_blank" rel="noopener noreferrer">Teplitsa of social technologies</a>', 'leyka');?>
             </p>
             <p class="te-st">
-                <img src="//leyka.te-st.ru/wp-content/uploads/assets/tst-logo.svg" onerror="this.onerror=null;this.src='//leyka.te-st.ru/wp-content/uploads/assets/tst-logo.png'">
+                <img src="//leyka.te-st.ru/wp-content/uploads/assets/tst-logo.svg" onerror="this.onerror=null;this.src='//leyka.te-st.ru/wp-content/uploads/assets/tst-logo.png'" alt="">
             </p>
             <ul class="leyka-ref-links">
-                <li><a href="https://leyka.te-st.ru" target='_blank' rel="noopener noreferrer"><?php _e('Plugin website', 'leyka');?></a></li>
-                <li><a href="https://leyka.te-st.ru/instruction/" target='_blank' rel="noopener noreferrer"><?php _e('Documentation', 'leyka');?></a></li>
-                <li><a href="<?php echo admin_url('admin.php?page=leyka_feedback');?>"><?php _e('Ask a question', 'leyka');?></a></li>
+                <li><a href="https://leyka.te-st.ru" target='_blank' rel="noopener noreferrer"><?php esc_html_e('Plugin website', 'leyka');?></a></li>
+                <li><a href="https://leyka.te-st.ru/instruction/" target='_blank' rel="noopener noreferrer"><?php esc_html_e('Documentation', 'leyka');?></a></li>
+                <li><a href="<?php echo admin_url('admin.php?page=leyka_feedback');?>"><?php esc_html_e('Ask a question', 'leyka');?></a></li>
                 <li><a href="https://github.com/Teplitsa/Leyka/issues/new" target='_blank' rel="noopener noreferrer"><?php _e('Create issue at GitHub', 'leyka');?></a></li>
             </ul>
 		</div>
 
 	<?php leyka_itv_info_widget();
+
 	}
 	
 	public function isV3SettingsPage($stage) {
@@ -412,8 +419,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		do_action('leyka_pre_settings_actions', $current_stage);
 
         // Process settings change:
-	    if( (!empty($_POST["leyka_settings_{$current_stage}_submit"])
-			|| !empty($_POST["leyka_settings_stage-{$current_stage}_submit"]))
+	    if((
+                !empty($_POST["leyka_settings_{$current_stage}_submit"])
+                || !empty($_POST["leyka_settings_stage-{$current_stage}_submit"])
+            )
 	        /** @todo Find what's wrong with the nonce check below: */
 //	        && wp_verify_nonce('_leyka_nonce', "leyka_settings_{$current_stage}")
         ) {
@@ -460,9 +469,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 						if($is_separate_sections_forms) {?>
 
                         <form method="post" action="<?php echo admin_url($admin_page);?>" id="leyka-settings-form">
-							<?php if(isset($option['section']['name'])):?>
+
+							<?php if(isset($option['section']['name'])) {?>
 							<input type="hidden" name="leyka_options_section" value="<?php echo $option['section']['name'];?>" />
-							<?php endif;?>
+							<?php }?>
 
 						<?php wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
 							do_action("leyka_settings_pre_{$current_stage}_fields");
@@ -482,18 +492,20 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
                         }
 
-						if($is_separate_sections_forms) { ?>
+						if($is_separate_sections_forms) {?>
                         </form>
 						<?php }
+
                     }
 
                     do_action("leyka_settings_post_{$current_stage}_fields");?>
 
                     <?php if(!$is_separate_sections_forms) {?>
 					<p class="submit">
-                        <input type="submit" name="<?php echo "leyka_settings_{$current_stage}";?>_submit" value="<?php _e('Save settings', 'leyka');?>" class="button-primary">
+                        <input type="submit" name="<?php echo "leyka_settings_{$current_stage}";?>_submit" value="<?php esc_html_e('Save settings', 'leyka');?>" class="button-primary">
                     </p>
 					<?php }
+
                 }?>
 
 				<?php if(!$is_separate_sections_forms) {?>
@@ -558,7 +570,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		}
 
 		$out .= '<a href="'.admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init').'" class="init-wizard-tab"></a>';
-				
+
 		return $out;
 
 	}
@@ -582,7 +594,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 		<div class="feedback-columns">
 			<div class="leyka-feedback-form">
-				<img id="feedback-loader" style="display: none;" src="<?php echo LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif';?>" />
+				<img id="feedback-loader" style="display: none;" src="<?php echo LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif';?>" alt="">
 				<form id="feedback" action="#" method="post">
 					<fieldset class="leyka-ff-field">
 						<label for="feedback-topic"><?php _e('Message topic:', 'leyka');?></label>

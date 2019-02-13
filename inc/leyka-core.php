@@ -298,29 +298,7 @@ class Leyka extends Leyka_Singleton {
 
         $this->apply_formatting_filters(); // Internal formatting filters
 
-        /** Currency rates auto refreshment: */
-        // disable for now
-        /*
-        if(Leyka_Options_Controller::get_option_value('leyka_auto_refresh_currency_rates')) {
-
-            if( !wp_next_scheduled('refresh_currencies_rates') ) {
-                wp_schedule_event(current_time('timestamp'), 'daily', 'refresh_currencies_rates');
-            }
-
-            //add_action('refresh_currencies_rates', array($this, '_do_currencies_rates_refresh')); // old, may be buggy
-            add_action('refresh_currencies_rates', array($this, '_do_currency_rates_refresh')); // fixed callback name
-
-            if( // Just in case..
-                !Leyka_Options_Controller::get_option_value('leyka_currency_rur2usd')
-                || !Leyka_Options_Controller::get_option_value('leyka_currency_rur2eur')
-            ) {
-                //$this->_do_currency_rates_refresh();
-            }
-
-        } else {
-            wp_clear_scheduled_hook('refresh_currencies_rates');
-        }
-        */
+        // Currency rates auto refreshment - disabled for now
 
         /** Mailout for campaigns with successfully reached targets - default processing: */
         if(class_exists('Leyka_Options_Controller') && leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')) {
@@ -918,8 +896,14 @@ class Leyka extends Leyka_Singleton {
         }
 
         if( !$leyka_last_ver || $leyka_last_ver < '3.0' ) {
-
-            update_option('leyka_init_wizard_redirect', !$leyka_last_ver);
+            
+            if(defined('KND_VERSION') && class_exists( 'TGM_Plugin_Activation' )) {
+              update_option('leyka_init_wizard_redirect', false);
+            }
+            else {
+               update_option('leyka_init_wizard_redirect', !$leyka_last_ver);
+            }
+            
             update_option('leyka_receiver_country', 'ru');
             update_option('leyka_receiver_legal_type', 'legal');
 
@@ -964,7 +948,7 @@ class Leyka extends Leyka_Singleton {
             return;
 
         }
-        
+
         // Revo template or success/failure widgets styles:
         if(leyka_revo_template_displayed() || leyka_success_widget_displayed() || leyka_failure_widget_displayed()) {
             wp_enqueue_style(
@@ -992,11 +976,8 @@ class Leyka extends Leyka_Singleton {
     /** Register and enqueue public-facing JavaScript files. */
     public function enqueue_scripts() {
 
-        echo '<pre>'.print_r('HERE 1', 1).'</pre>';
-
         // Revo template or success/failure widgets JS:
         if(leyka_revo_template_displayed() || leyka_success_widget_displayed() || leyka_failure_widget_displayed()) {
-            echo '<pre>'.print_r('HERE 2', 1).'</pre>';
             wp_enqueue_script(
                 $this->_plugin_slug.'-revo-public',
                 LEYKA_PLUGIN_BASE_URL.'assets/js/public.js',

@@ -746,7 +746,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $stats_option_synch_res = leyka_sync_plugin_stats_option();
 
         // DO NOT return WP_Error in production!!!! We should save option and go next step anyway
-        if(is_wp_error($stats_option_synch_res) && defined('WP_DEBUG') && WP_DEBUG) {
+        if(is_wp_error($stats_option_synch_res) && defined('LEYKA_DEBUG') && LEYKA_DEBUG) {
             return $stats_option_synch_res;
         } else {
             return delete_option('leyka_plugin_stats_option_needs_sync')

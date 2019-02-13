@@ -789,7 +789,9 @@ function leyka_pf_footer() {
 
 <div class="leyka-form-footer">
 	<div id="leyka-copy">
-		<p><?php printf(__('Proudly powered by %s', 'leyka'), '<a href="//leyka.te-st.ru" target="_blank" rel="noopener noreferrer">'._x('Leyka', 'Plugin name in preposotional case', 'leyka').'</a>');?></p>
+		<p>
+            <?php printf(__('Proudly powered by %s', 'leyka'), '<a href="//leyka.te-st.ru" target="_blank" rel="noopener noreferrer">'._x('Leyka', 'Plugin name in preposotional case', 'leyka').'</a>');?>
+        </p>
 	</div>
 </div>
 <?php do_action('leyka_after_footer');
@@ -855,10 +857,10 @@ function leyka_print_donation_elements($content) {
 
 	$current_campaign_post = get_post();
 
-	//$autoprint = leyka_options()->opt('donation_form_mode');
-	$autoprint = !(bool)leyka_options()->opt_template('do_not_display_donation_form');
-	
-	if( !is_singular(Leyka_Campaign_Management::$post_type) || !$autoprint ) {
+	if(
+	    !is_singular(Leyka_Campaign_Management::$post_type)
+        || leyka_options()->opt_template('do_not_display_donation_form')
+    ) {
         return $content;
     }
 
@@ -871,14 +873,23 @@ function leyka_print_donation_elements($content) {
 	$content = '';
 
 	// Scale on top of form:
-	if(leyka_options()->opt_template('scale_widget_place') == 'top' || leyka_options()->opt_template('scale_widget_place') == 'both') {
+	if(
+	    leyka_options()->opt_template('scale_widget_place') === 'top'
+        || leyka_options()->opt_template('scale_widget_place') === 'both'
+    ) {
         $content .= do_shortcode("[leyka_scale show_button='1']");
     }
 
 	$content .= $post_content;
 
 	// Scale below form:
-	if($campaign->target && (leyka_options()->opt_template('scale_widget_place') == 'bottom' || leyka_options()->opt_template('scale_widget_place') == 'both')) {
+	if(
+	    $campaign->target
+        && (
+            leyka_options()->opt_template('scale_widget_place') === 'bottom'
+            || leyka_options()->opt_template('scale_widget_place') === 'both'
+        )
+    ) {
         $content .= do_shortcode("[leyka_scale show_button='0']");
     }
 
@@ -898,6 +909,7 @@ function leyka_print_donation_elements($content) {
     }
 
 	return $content;
+
 }
 
 function leyka_get_current_template_data($campaign = null, $template = null, $is_service = false) {

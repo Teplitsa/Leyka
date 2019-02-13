@@ -16,7 +16,7 @@
     "url": "https://github.com/Teplitsa/testpack.git"
   },
   "devDependencies": {
-    "chromedriver": "^2.45.0",
+    "chromedriver": "^2.46.0",
     "del": "^3.0.0",
     "event-stream": "^4.0.1",
     "geckodriver": "^1.14.1",
@@ -33,7 +33,7 @@
     "gulp-size": "^3.0.0",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-svgmin": "^2.1.0",
-    "gulp-svgstore": "^7.1.0",
+    "gulp-svgstore": "^7.0.1",
     "gulp-uglify": "^3.0.1",
     "gulp-util": "^3.0.6",
     "jquery.cookie": "^1.4.1",

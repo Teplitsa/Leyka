@@ -463,28 +463,6 @@ jQuery(document).ready(function($){
         };
     }
 
-    //$('#leyka_donation_form_mode-field').change(function(e){
-    //
-    //    if($(this).attr('checked')) {
-    //        $('#leyka_scale_widget_place-wrapper, #leyka_donations_history_under_forms-wrapper')
-    //            .find(':input').removeAttr('disabled');
-    //    } else {
-    //        $('#leyka_scale_widget_place-wrapper, #leyka_donations_history_under_forms-wrapper')
-    //            .find(':input').attr('disabled', 'disabled');
-    //    }
-    //
-    //}).change();
-
-    //$('#leyka_auto_refresh_currency_rates-field').change(function(e){
-    //    if($(this).attr('checked')) {
-    //        $('#leyka_currency_rur2usd-wrapper, #leyka_currency_rur2eur-wrapper')
-    //            .find(':input').attr('disabled', 'disabled');
-    //    } else {
-    //        $('#leyka_currency_rur2usd-wrapper, #leyka_currency_rur2eur-wrapper')
-    //            .find(':input').removeAttr('disabled');
-    //    }
-    //}).change();
-
     /** Feedback form */
     var $form = $('#feedback'),
         $loader = $('#feedback-loader'),

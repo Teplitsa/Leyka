@@ -75,17 +75,18 @@ window.LeykaGUIFinal.prototype = {
     /** Subscription form validation */
     validateForm: function($form){
 
-        var self = this; var $ = self.$;
+        var self = this,
+            $ = self.$,
+            form_valid = false;
 
         $form = $($form); // Just in case
-        var form_valid = false;
 
         $form.find(':input').each(function(){
 
             var $input = $(this),
                 type = $input.attr('type'),
                 name = $input.attr('name'),
-                value = $input.val(),
+                value = $.trim($input.val()),
                 $error_message = $form.find('.'+name+'-error');
 
             if($.inArray(type, ['text', 'email']) == 1) {
@@ -95,7 +96,7 @@ window.LeykaGUIFinal.prototype = {
                     $error_message.show();
                     $input.closest('.donor__textfield').addClass('invalid');
 
-                } else if(type == 'email' && !is_email(value)) {
+                } else if(type === 'email' && !is_email(value)) {
 
                     $error_message.show();
                     $input.closest('.donor__textfield').addClass('invalid');
@@ -113,6 +114,7 @@ window.LeykaGUIFinal.prototype = {
         });
 
         return form_valid;
+
     },
     
     animateRedirectCountdown: function($container){

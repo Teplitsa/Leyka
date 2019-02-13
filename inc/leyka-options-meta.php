@@ -284,19 +284,19 @@ self::$_options_meta = array(
     ),
     */
     'currency_rur2usd' => array(
-        'type' => 'text',
-        'title' => __('RUR to USD currency rate', 'leyka'),
+        'type' => 'number',
+        'title' => __('Exchange rate', 'leyka'),
         'description' => __('Please set the RUR to USD currency rate here.', 'leyka'),
         'required' => true,
-        'placeholder' => '70.01',
+        'placeholder' => __('Enter rate value (e.g., 70)', 'leyka'),
         'length' => 6,
     ),
     'currency_rur2eur' => array(
-        'type' => 'text',
-        'title' => __('RUR to EUR currency rate', 'leyka'),
+        'type' => 'number',
+        'title' => __('Exchange rate', 'leyka'),
         'description' => __('Please set the RUR to EUR currency rate here.', 'leyka'),
         'required' => true,
-        'placeholder' => '80.81',
+        'placeholder' => __('Enter rate value (e.g., 80)', 'leyka'),
         'length' => 6,
     ),
     'currency_rur_label' => array(
@@ -305,11 +305,11 @@ self::$_options_meta = array(
         'title' => __('RUB label', 'leyka'),
         'description' => __('Please set the RUB currency label here.', 'leyka'),
         'required' => true,
-        'placeholder' => 'E.g., roub.',
+        'placeholder' => __('E.g., roub.', 'leyka'),
         'length' => 6,
     ),
     'currency_rur_min_sum' => array(
-        'type' => 'text',
+        'type' => 'number',
         'default' => 100,
         'title' => __('Minimum sum available for RUB', 'leyka'),
         'description' => __('Please set minimum sum available for RUB donations.', 'leyka'),
@@ -318,7 +318,7 @@ self::$_options_meta = array(
         'length' => 6,
     ),
     'currency_rur_max_sum' => array(
-        'type' => 'text',
+        'type' => 'number',
         'default' => 30000,
         'title' => __('Maximum sum available for RUB', 'leyka'),
         'description' => __('Please set maximum sum available for RUB donations.', 'leyka'),
@@ -327,7 +327,7 @@ self::$_options_meta = array(
         'length' => 6,
     ),
     'currency_rur_flexible_default_amount' => array(
-        'type' => 'text',
+        'type' => 'number',
         'default' => 500,
         'title' => __('Default amount of donation in RUB (for "flexible" donation type)', 'leyka'),
         'description' => __('Please, set a default amount of donation when RUB selected as currency.', 'leyka'),
@@ -350,11 +350,11 @@ self::$_options_meta = array(
         'title' => __('USD label', 'leyka'),
         'description' => __('Please set the USD currency label here.', 'leyka'),
         'required' => true,
-        'placeholder' => 'E.g., USD',
+        'placeholder' => __('E.g., USD', 'leyka'),
         'length' => 6,
     ),
     'currency_usd_min_sum' => array(
-        'type' => 'text',
+        'type' => 'number',
         'default' => 10,
         'title' => __('Minimum sum available for USD', 'leyka'),
         'description' => __('Please set minimum sum available for USD donations.', 'leyka'),
@@ -363,7 +363,7 @@ self::$_options_meta = array(
         'length' => 6,
     ),
     'currency_usd_max_sum' => array(
-        'type' => 'text',
+        'type' => 'number',
         'default' => 1000,
         'title' => __('Maximum sum available for USD', 'leyka'),
         'description' => __('Please set maximum sum available for USD donations.', 'leyka'),
@@ -372,7 +372,7 @@ self::$_options_meta = array(
         'length' => 6,
     ),
     'currency_usd_flexible_default_amount' => array(
-        'type' => 'text',
+        'type' => 'number',
         'default' => 10,
         'title' => __('Default amount of donation in USD (for "flexible" donation type)', 'leyka'),
         'description' => __('Please, set a default amount of donation when RUR selected as currency.', 'leyka'),
@@ -395,11 +395,11 @@ self::$_options_meta = array(
         'title' => __('EUR label', 'leyka'),
         'description' => __('Please set the EUR currency label here.', 'leyka'),
         'required' => true,
-        'placeholder' => 'E.g., euro',
+        'placeholder' => __('E.g., euro', 'leyka'),
         'length' => 6,
     ),
     'currency_eur_min_sum' => array(
-        'type' => 'text',
+        'type' => 'number',
         'default' => 3,
         'title' => __('Minimum sum available for EUR', 'leyka'),
         'description' => __('Please set minimum sum available for EUR donations.', 'leyka'),
@@ -408,7 +408,7 @@ self::$_options_meta = array(
         'length' => 6,
     ),
     'currency_eur_max_sum' => array(
-        'type' => 'text',
+        'type' => 'number',
         'default' => 650,
         'title' => __('Maximum sum available for EUR', 'leyka'),
         'description' => __('Please set maximum sum available for EUR donations.', 'leyka'),
@@ -417,7 +417,7 @@ self::$_options_meta = array(
         'length' => 6,
     ),
     'currency_eur_flexible_default_amount' => array(
-        'type' => 'text',
+        'type' => 'number',
         'default' => 5,
         'title' => __('Default amount of donation in EUR (for «flexible» donation type)', 'leyka'),
         'description' => __('Please, set a default amount of donation when EUR selected as currency.', 'leyka'),
@@ -501,12 +501,28 @@ self::$_options_meta = array(
         'default' => '1',
         'title' => __('Send a thankful email to a donor on each funded donation', 'leyka'),
         'description' => __('Check to send a thankful email to a donor on each funded donation', 'leyka'),
+        'short_description' => __('Send the emails', 'leyka'),
+    ),
+    'send_donor_thanking_emails_on_recurring_init' => array(
+        'type' => 'checkbox',
+        'default' => '1',
+        'title' => __('Send a thankful email to a donor on a recurring subscription', 'leyka'),
+        'description' => __('Check to send a thankful email to a donor on each recurring donations subscription', 'leyka'),
+        'short_description' => __('Send the emails', 'leyka'),
+    ),
+    'send_donor_thanking_emails_on_recurring_ongoing' => array(
+        'type' => 'checkbox',
+        'default' => '1',
+        'title' => __('Send a thankful email to a donor on a recurring donation', 'leyka'),
+        'description' => __('Check to send a thankful email to a donor on each non-initial recurring donation', 'leyka'),
+        'short_description' => __('Send the emails', 'leyka'),
     ),
     'send_donor_emails_on_campaign_target_reaching' => array(
         'type' => 'checkbox',
         'default' => '1',
         'title' => __("Send campaign reaching email notifications to all it's donors", 'leyka'),
         'description' => __('Check to send a special thankful email to each donor when campaign target reached', 'leyka'),
+        'short_description' => __('Send the emails', 'leyka'),
     ),
     'email_campaign_target_reaching_title' => array(
         'type' => 'text',
@@ -527,14 +543,16 @@ self::$_options_meta = array(
     'notify_donations_managers' => array(
         'type' => 'checkbox',
         'default' => '1',
-        'title' => __('Notify website personal of each incoming donation', 'leyka'),
+        'title' => __('Notify website personal of each single donation funded', 'leyka'),
         'description' => __('Check to notify some website personnel (donations managers) of each incoming donation', 'leyka'),
+        'short_description' => __('Send the emails on single donations', 'leyka'),
     ),
     'notify_managers_on_recurrents' => array(
         'type' => 'checkbox',
         'default' => '1',
         'title' => __('Notify website personal of each incoming recurrent donation', 'leyka'),
         'description' => __('Check to notify some website personnel (donations managers) of each incoming recurrent donation', 'leyka'),
+        'short_description' => __('Send the emails on recurring donations', 'leyka'),
     ),
     'donations_managers_emails' => array(
         'type' => 'text',
@@ -581,12 +599,6 @@ self::$_options_meta = array(
             'mixed' => __('Fixed sum variants + flexible field', 'leyka')
         ),
     ),
-    'donation_form_mode' => array(
-        'type' => 'checkbox',
-        'default' => true,
-        'title' => __('Display all payment elements on campaign page automatically', 'leyka'),
-        'description' => __("When unchecked, all payment elements like donation forms or target completion level widgets will not be displayed automatically. To output them manually, use shortcodes inside campaign content or template tags in campaign template file.", 'leyka'),
-    ),
     'do_not_display_donation_form' => array(
         'type' => 'checkbox',
         'default' => false,
@@ -621,13 +633,13 @@ self::$_options_meta = array(
         'type' => 'checkbox',
         'default' => 1,
         'title' => __('Show an email subscription widget on the successful donation page', 'leyka'),
-        'description' => __('Show subscription form on donation page', 'leyka'),
+        'description' => __('Show a subscription form on the successful donation page', 'leyka'),
     ),
     'show_failure_widget_on_failure' => array(
         'type' => 'checkbox',
         'default' => true,
-        'title' => __('Show a failure notification widget on the donation page', 'leyka'),
-        'description' => __('Display failure notification on the donation page', 'leyka'),
+        'title' => __('Show a failure notification widget on the donation failure page', 'leyka'),
+        'description' => __('Display a failure notification widget on the donation failure page', 'leyka'),
     ),
     'revo_template_slider_max_sum' => array(
         'type' => 'text',
@@ -652,7 +664,7 @@ self::$_options_meta = array(
     ),
     'donation_comment_max_length' => array(
         'type' => 'number',
-        'default' => 140,
+        'default' => '',
         'title' => __('The maximum length of a donation comment value', 'leyka'),
         'description' => __('Set the maximum number of symbols allowed for donation comments. You may set "0" for the unlimited values length.', 'leyka'),
         'placeholder' => __('Maximum number of symbols', 'leyka'),
@@ -977,5 +989,12 @@ self::$_options_meta = array(
         'title' => __('Primary currency', 'leyka'),
         'required' => true,
         'list_entries' => array('rur' => __('RUB', 'leyka'), 'usd' => __('$', 'leyka'), 'eur' => __('euro', 'leyka'),),
+    ),
+    'plugin_demo_mode' => array(
+        'type' => 'checkbox',
+        'default' => false,
+        'title' => __('The plugin is in demo mode', 'leyka'),
+        'comment' => __('Check to turn on the plugin demonstration mode. While in it, no emails will be sent to the payment gateways.', 'leyka'),
+        'short_description' => __('Demo mode on', 'leyka'),
     ),
 );
