@@ -16,13 +16,13 @@ function leyka_save_settings($tab_name) {
 
                     if(isset($option['tabs'])) { // Section with tabs
                         
-                        foreach($option['tabs'] as $tab) { // $tab_name => $tab
-                            foreach($tab['sections'] as $tab_section) { // $tab_section_name => $tab_section
+                        foreach($option['tabs'] as $option_tab_name => $tab) {
+                            foreach($tab['sections'] as $tab_section) {
                                 foreach($tab_section['options'] as $tab_section_option) {
 
                                     if(leyka_options()->is_template_option($tab_section_option)) {
                                         $tab_section_option = leyka_options()->get_tab_option_full_name(
-                                            $tab_name,
+                                            $option_tab_name,
                                             $tab_section_option
                                         );
                                     }
@@ -33,12 +33,16 @@ function leyka_save_settings($tab_name) {
                             }
                         }
                         
-                    } else if($submitted_options_section && $submitted_options_section === $option['name']) {
-                        $options_names = array_merge($options_names, $option['options']);
-                    } else {
+                    }
+                    elseif($submitted_options_section) {
+                        if($submitted_options_section == $option['name']) {
+                            $options_names = array_merge($options_names, $option['options']);
+                        }
+                    }
+                    else {
                         $options_names = array_merge($options_names, $option['options']);
                     }
-
+                    
                 } else {
                     $options_names[] = $option;
                 }
