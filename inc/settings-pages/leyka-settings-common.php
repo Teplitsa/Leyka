@@ -25,10 +25,10 @@ function leyka_save_settings($tab_name) {
                                             $option_tab_name,
                                             $tab_section_option
                                         );
+                                        
+                                        $options_names[] = $tab_section_option;
                                     }
                                     
-                                    $options_names[] = $tab_section_option;
-
                                 }
                             }
                         }
