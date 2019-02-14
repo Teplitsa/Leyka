@@ -1,0 +1,12 @@
+/** == Seetings and variables (_presets.scss)  == **/
+
+:root {
+    --leyka-color-main: #ff510d;
+    --leyka-color-main-dark: #ff510d;
+    --leyka-color-main-light: rgba(255,81,13, 0.5); // #ff510d with 0.5 opacity
+}
+
+$star-color: 		    var(--leyka-color-main);
+$star-color-dark: 	var(--leyka-color-main-dark);
+$star-color-light: 	var(--leyka-color-main-light);
+
