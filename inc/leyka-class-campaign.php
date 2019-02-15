@@ -511,7 +511,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         <?php }
 	}
 
-} // class
+}
 
 
 class Leyka_Campaign {
@@ -533,7 +533,7 @@ class Leyka_Campaign {
                 return $campaign;
             }
 
-		} elseif((int)$campaign > 0) {
+		} else if((int)$campaign > 0) {
 
 			$this->_id = (int)$campaign;
             $this->_post_object = get_post($this->_id);
@@ -544,7 +544,7 @@ class Leyka_Campaign {
             $this->_id = 0; /** @todo throw new Leyka_Exception() */
         }
 
-        if( !$this->_campaign_meta ) {
+        if($this->_id && !$this->_campaign_meta) {
 
             $meta = get_post_meta($this->_id, '', true);
 
@@ -709,7 +709,7 @@ class Leyka_Campaign {
      */
     public function get_donations(array $status = null) {
 
-        if( !did_action('leyka_cpt_registered') ) { // Leyka PT statuses isn't there yet
+        if( !did_action('leyka_cpt_registered') || !$this->_id ) { // Leyka PT statuses isn't there yet
             return array();
         }
 
