@@ -190,7 +190,7 @@ function leyka_render_checkbox_field($option_id, $data){
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-checkbox-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
         <label for="<?php echo $option_id.'-field';?>">
 
-            <?php if(empty($data['short_description'])) {?>
+            <?php if(empty($data['short_format'])) {?>
             <span class="field-component title">
 
                 <span class="text"><?php echo $data['title'];?></span>
@@ -209,9 +209,9 @@ function leyka_render_checkbox_field($option_id, $data){
 
                 <input type="checkbox" id="<?php echo esc_attr($option_id.'-field');?>" name="<?php echo esc_attr($option_id);?>" value="1" <?php echo !empty($data['value']) && (int)$data['value'] >= 1 ? 'checked' : '';?>>&nbsp;
 
-            <?php if( !empty($data['short_description']) ) {
+            <?php if( !empty($data['short_format']) ) {
 
-                echo $data['short_description'];
+                echo $data['title'];
 
                 if( !empty($data['comment'])) {?>
                     <span class="field-q">

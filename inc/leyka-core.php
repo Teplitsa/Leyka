@@ -334,8 +334,18 @@ class Leyka extends Leyka_Singleton {
         }?>
 
         <script>
-            dataLayer = [{
+            dataLayer = [{ /** @todo Fill the blanks with $donation data */
+                'donationId': '',
+                'donationCampaignId': '',
+                'donationCampaignTitle': '',
+                'donationCampaignPaymentTitle': '',
+                'donationFundedDate': '',
+                'donationGateway': '',
+                'donationPm': '',
+                'donationType': '',
                 'donationAmount': '',
+                'donationAmountTotal': '',
+                'donationCurrency': '',
             }];
         </script>
 
