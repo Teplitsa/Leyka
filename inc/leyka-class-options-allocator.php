@@ -268,7 +268,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                             ),
                         ),
                     ),),
-                    
+
                     // Currency settings:
                     array('section' => array(
                         'name' => 'currency_options',
@@ -379,6 +379,12 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                             'agree_to_pd_terms_needed', 'agree_to_pd_terms_text_text_part',
                             'agree_to_pd_terms_text_link_part', 'pd_terms_agreed_by_default', 'pd_terms_page',
                         )
+                    ),),
+                    array('section' => array(
+                        'name' => 'web_analytics_integrations',
+                        'title' => __('Web analysis services integration options', 'leyka'),
+                        'is_default_collapsed' => true,
+                        'options' => array('show_gtm_dataLayer_on_success',)
                     ),),
                     array('section' => array(
                         'name' => 'misc',

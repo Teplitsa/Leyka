@@ -30,18 +30,14 @@ if( !$donation_id ) {
                 <input type="hidden" name="action" value="leyka_donor_subscription">
                 <?php wp_nonce_field('leyka_donor_subscription');?>
 
-                <?php if(leyka_options()->opt_template('show_success_widget_on_success')) {?>
-
-                    <div class="thankyou-email-field">
-                        <div class="donor__textfield">
-                            <input type="email" name="leyka_donor_email" class="required" placeholder="<?php _e('Your email', 'leyka');?>" value="<?php echo leyka_remembered_data('donor_email');?>">
-                            <span class="donor__textfield-error leyka_donor_email-error">
-                                <?php _e('Enter an email in the some@email.com format', 'leyka');?>
-                            </span>
-                        </div>
+                <div class="thankyou-email-field">
+                    <div class="donor__textfield">
+                        <input type="email" name="leyka_donor_email" class="required" placeholder="<?php _e('Your email', 'leyka');?>" value="<?php echo leyka_remembered_data('donor_email');?>">
+                        <span class="donor__textfield-error leyka_donor_email-error">
+                            <?php _e('Enter an email in the some@email.com format', 'leyka');?>
+                        </span>
                     </div>
-
-                <?php }?>
+                </div>
 
                 <div class="thankyou-email-me-button">
                     <input type="submit" class="leyka-success-submit" name="leyka_success_submit" value="<?php _e('Yes, keep me in touch', 'leyka');?>">

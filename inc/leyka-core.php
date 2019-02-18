@@ -71,7 +71,9 @@ class Leyka extends Leyka_Singleton {
         }
 
         // By default, we'll assume some errors in the payment form, so redirect will get us back to it:
-        $this->_payment_form_redirect_url = wp_get_referer();
+        $this->_payment_url = wp_get_referer();
+
+        add_action('wp_head', array($this, 'addGtmDataLayer'), -1000);
 
         $this->load_public_cssjs();
 
@@ -277,7 +279,7 @@ class Leyka extends Leyka_Singleton {
 
         }
 
-        /** Embed campaign URL handler: */
+        // Embed campaign URL handler:
         function leyka_template_include($template) {
 
             if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type) && !empty($_GET['embed_object'])) {
@@ -300,7 +302,7 @@ class Leyka extends Leyka_Singleton {
 
         // Currency rates auto refreshment - disabled for now
 
-        /** Mailout for campaigns with successfully reached targets - default processing: */
+        // Mailout for campaigns with successfully reached targets - default processing:
         if(class_exists('Leyka_Options_Controller') && leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')) {
             add_action('leyka_do_campaigns_targets_reaching_mailout', array($this, '_do_campaigns_targets_reaching_mailout'));
         }
@@ -309,15 +311,46 @@ class Leyka extends Leyka_Singleton {
 
     }
 
+    public function addGtmDataLayer() {
+
+        if(
+            !leyka_options()->opt('show_gtm_dataLayer_on_success')
+            || !is_main_query()
+            || !is_page(leyka_options()->opt('success_page'))
+        ) {
+            return;
+        }
+
+        $donation_id = leyka_remembered_data('donation_id');
+        $campaign = null;
+        $campaign_id = null;
+
+        if($donation_id) {
+
+            $donation = new Leyka_Donation($donation_id);
+            $campaign_id = $donation ? $donation->campaign_id : null;
+            $campaign = new Leyka_Campaign($campaign_id);
+
+        }?>
+
+        <script>
+            dataLayer = [{
+                'donationAmount': '',
+            }];
+        </script>
+
+    <?php }
+
     /** @todo Create a procedure to get actual currencies rates and save them in the plugin options values */
     public function do_currencies_rates_refresh() {
     }
 
     public function load_public_cssjs() {
-        // Load public-facing style sheet and JavaScript:
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_styles')); // wp_footer
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts')); // wp_footer
-        add_action('wp_enqueue_scripts', array($this, 'localize_scripts')); // wp_footer
+
+        add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
+        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
+        add_action('wp_enqueue_scripts', array($this, 'localize_scripts'));
+
     }
 
     public function parse_request() {

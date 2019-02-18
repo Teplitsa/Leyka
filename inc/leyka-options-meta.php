@@ -641,6 +641,12 @@ self::$_options_meta = array(
         'title' => __('Show a failure notification widget on the donation failure page', 'leyka'),
         'description' => __('Display a failure notification widget on the donation failure page', 'leyka'),
     ),
+    'show_gtm_dataLayer_on_success' => array(
+        'type' => 'checkbox',
+        'default' => 1,
+        // 'comment' => __('', 'leyka'),
+        'short_description' => __('Show the GTM dataLayer on the successful donation page', 'leyka'),
+    ),
     'revo_template_slider_max_sum' => array(
         'type' => 'text',
         'default' => 3000,
