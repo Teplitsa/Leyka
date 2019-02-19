@@ -609,9 +609,11 @@ class Leyka_Campaign {
                 'count_views' => empty($meta['count_views']) ? 0 : $meta['count_views'][0],
                 'count_submits' => empty($meta['count_submits']) ? 0 : $meta['count_submits'][0],
                 'total_funded' => empty($meta['total_funded']) ? 0.0 : $meta['total_funded'][0],
-//                '' => '',
             );
         }
+
+        return $this;
+
 	}
 
     protected function _get_calculated_target_state() {

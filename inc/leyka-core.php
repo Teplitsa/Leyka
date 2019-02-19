@@ -325,27 +325,31 @@ class Leyka extends Leyka_Singleton {
         $campaign = null;
         $campaign_id = null;
 
-        if($donation_id) {
+        if( !$donation_id ) {
+            return;
+        }
 
-            $donation = new Leyka_Donation($donation_id);
-            $campaign_id = $donation ? $donation->campaign_id : null;
-            $campaign = new Leyka_Campaign($campaign_id);
+        $donation = new Leyka_Donation($donation_id);
+        $campaign_id = $donation ? $donation->campaign_id : null;
+        $campaign = new Leyka_Campaign($campaign_id);
 
+        if( !$campaign->id ) {
+            return;
         }?>
 
         <script>
-            dataLayer = [{ /** @todo Fill the blanks with $donation data */
-                'donationId': '',
-                'donationCampaignId': '',
-                'donationCampaignTitle': '',
-                'donationCampaignPaymentTitle': '',
-                'donationFundedDate': '',
-                'donationGateway': '',
-                'donationPm': '',
-                'donationType': '',
-                'donationAmount': '',
-                'donationAmountTotal': '',
-                'donationCurrency': '',
+            dataLayer = [{
+                'donationId': '<?php echo (int)$donation_id;?>',
+                'donationCampaignId': '<?php echo (int)$campaign_id;?>',
+                'donationCampaignTitle': '<?php echo esc_attr($campaign->title);?>',
+                'donationCampaignPaymentTitle': '<?php echo esc_attr($campaign->payment_title);?>',
+                'donationFundedDate': '<?php echo esc_attr($donation->date_funded);?>',
+                'donationGateway': '<?php echo esc_attr($donation->gateway_label);?>',
+                'donationPm': '<?php echo esc_attr($donation->pm_label);?>',
+                'donationType': '<?php echo esc_attr($donation->type_label);?>',
+                'donationAmount': '<?php echo esc_attr($donation->amount);?>',
+                'donationAmountTotal': '<?php echo esc_attr($donation->amount_total);?>',
+                'donationCurrency': '<?php echo esc_attr($donation->currency_label);?>',
             }];
         </script>
 
