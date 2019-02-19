@@ -1274,7 +1274,7 @@ class Leyka extends Leyka_Singleton {
         register_post_type(Leyka_Donation_Management::$post_type, $args);
 
         // Donation editing messages:
-        add_filter('post_updated_messages', array(Leyka_Donation_Management::get_instance(), 'set_admin_messages'));
+        add_filter('post_updated_messages', array(Leyka_Donation_Management::getInstance(), 'set_admin_messages'));
 
         // Campaigns:
         $args = array(
