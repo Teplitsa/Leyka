@@ -167,20 +167,19 @@ gulp.task('revision', function(){
 });
 
 // Builds
-gulp.task('full-build', async function(callback) {
-    await gulp.series('build-css', 'build-js', 'svg-opt', callback);
+gulp.task('full-build', async function(){
+    await gulp.parallel('full-build-css', 'full-build-js', 'svg-opt');
 });
 
-gulp.task('full-build-css', async function(callback) {
-    await gulp.series('build-css', callback);
+gulp.task('full-build-css', async function(){
+    await gulp.series('build-front-css', 'build-admin-css');
 });
 
 gulp.task('full-build-js', async function(){
-    await gulp.series('build-js');
+    await gulp.series('build-front-js', 'build-admin-js');
 });
 
-
-//svg - combine and clear svg assets
+// SVG - combine and clear svg assets
 gulp.task('svg-opt', function(){
 
     var icons = gulp.src([basePaths.src+'svg/icon-*.svg'])
@@ -219,7 +218,7 @@ gulp.task('svg-opt', function(){
 gulp.task('watch', function(done){
 
     // Frontend:
-    gulp.watch([basePaths.src + 'sass/*.scss'], gulp.series('build-front-css'));
+    gulp.watch([basePaths.src + 'sass/*.scss', basePaths.src + 'sass/form_templates/*/*.scss'], gulp.series('build-front-css'));
     gulp.watch([basePaths.src + 'js/*.js', basePaths.src + 'js/front/*.js'], gulp.series('build-front-js'));
 
     // gulp.watch([basePaths.src + 'sass/*.scss'], gulp.series('build-front-css'));

@@ -81,7 +81,7 @@ div[id*="leyka-pf-"] { // Leyka namespace
 }
 
 /** Card layout **/
-.leyka-pf.card-2col:not(.leyka-pf--active) {
+.leyka-pf:not(.leyka-pf--active) {
 	.inpage-card {
 		display: flex;
 		flex-flow: row wrap;
@@ -183,10 +183,10 @@ div[id*="leyka-pf-"] { // Leyka namespace
                 text-align:center;
                 
                 .pic-first-step {
-                    margin:20% auto 0px auto;
-                    display:block;
-                    fill:$color_main;
-                    max-width:50%;
+                    margin: auto auto 0 auto;
+                    display: block;
+                    fill: $color_main;
+                    max-width: 50%;
                     height: 200px;
                 }
                 
