@@ -1084,7 +1084,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <div id="hide-recurrent-metabox"></div>
             <?php return; } else {
 
-            $init_recurrent_donation = Leyka_Donation::get_init_recurrent_donation($donation);
+            $init_recurrent_donation = Leyka_Donation::getInitRecurringDonation($donation);
             if( !$init_recurrent_donation->recurring_is_active ) {?>
 
                 <div class="">

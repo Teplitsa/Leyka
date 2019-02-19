@@ -199,7 +199,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                 if(empty($_POST['InvoiceId'])) { // Non-init recurring donation
 
-                    if( !$this->get_init_recurrent_donation($_POST['SubscriptionId']) ) {
+                    if( !$this->getInitRecurringDonation($_POST['SubscriptionId']) ) {
                         die(json_encode(array(
                             'code' => '11',
                             'reason' => sprintf(
@@ -251,7 +251,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                         die(json_encode(array('code' => '13')));
                     }
 
-                    $init_recurring_donation = $this->get_init_recurrent_donation($_POST['SubscriptionId']);
+                    $init_recurring_donation = $this->getInitRecurringDonation($_POST['SubscriptionId']);
 
                     if( !$init_recurring_donation || is_wp_error($init_recurring_donation) ) {
                         /** @todo Send some email to the admin */
@@ -356,7 +356,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_init_recurrent_donation($recurring) {
+    public function getInitRecurringDonation($recurring) {
 
         if(is_a($recurring, 'Leyka_Donation')) {
             $recurring = $recurring->recurring_id;

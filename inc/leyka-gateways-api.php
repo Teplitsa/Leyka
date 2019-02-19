@@ -88,17 +88,18 @@ function leyka_get_pm_by_id($pm_id, $is_full_id = false) {
         $pm = $gateway->get_payment_method_by_id(end($id));
 
     } else {
-
         foreach(leyka()->get_gateways() as $gateway) { /** @var Leyka_Gateway $gateway */
 
             $pm = $gateway->get_payment_method_by_id($pm_id);
             if($pm) {
                 break;
             }
+
         }
     }
 
     return $pm;
+
 }
 
 /**
@@ -124,8 +125,7 @@ function leyka_get_gateway_icons_list($gateway) {
     foreach($pm_list as $pm) {
         if($pm->icons) {
             $icons = array_merge($icons, $pm->icons);
-        }
-        else {
+        } else {
             $icons[] = $pm->main_icon_url;
         }
     }
@@ -164,8 +164,9 @@ function leyka_gateway_setup_wizard($gateway) {
     if(in_array($gateway->id, Leyka_Gateway::$gateways_with_wizard)) {
         $wizard_id = $gateway->id;
     }
-    
+
     return $wizard_id;
+
 }
 
 /**
@@ -173,7 +174,7 @@ function leyka_gateway_setup_wizard($gateway) {
  * @return bool
  */
 function leyka_wizard_started($gateway_wizard_name) {
-    
+
     $wizard_controller = Leyka_Settings_Factory::getInstance()->getController($gateway_wizard_name);
     return count($wizard_controller->history) > 0;
     
@@ -363,8 +364,12 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     // Handler for Gateway's service calls (activate the donations, etc.):
     public function _handle_service_calls($call_type = '') {}
 
-    /** Default behavior, may be substituted in descendants: */
-    public function get_init_recurrent_donation($donation) {
+    /**
+     * Default behavior, may be substituted in descendants.
+     * @param $donation mixed
+     * @return Leyka_Donation_Base|false
+     */
+    public function getInitRecurringDonation($donation) {
 
         if(is_a($donation, 'Leyka_Donation')) {
             return new Leyka_Donation($donation->init_recurring_donation_id);
@@ -379,20 +384,28 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
         }
 
     }
-
-    public function cancel_recurring_subscription(Leyka_Donation $donation) {
+    /**
+     * @deprecated
+     * @param $donation mixed
+     * @return Leyka_Donation_Base|false
+     */
+    public function get_init_recurrent_donation($donation) {
+        return $this->getInitRecurringDonation($donation);
     }
 
-    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation $donation) {
+    public function cancel_recurring_subscription(Leyka_Donation_Base $donation) {
+    }
+
+    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) {
         return $link_text;
     }
 
-    public function do_recurring_donation(Leyka_Donation $init_recurring_donation) {
+    public function do_recurring_donation(Leyka_Donation_Base $init_recurring_donation) {
         return false;
     }
 
     // Handler to use Gateway's responses in Leyka UI:
-    abstract public function get_gateway_response_formatted(Leyka_Donation $donation);
+    abstract public function get_gateway_response_formatted(Leyka_Donation_Base $donation);
 
     protected function _get_gateway_pm_list($pm_id = false) {
         return $pm_id ? array_keys($this->_payment_methods, $pm_id) : array_keys($this->_payment_methods);
@@ -850,4 +863,4 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
     /** For PM with a static processing type, this method should display some static data. Otherwise, it may stay empty. */
     public function display_static_data() {}
 
-} // Leyka_Payment_Method end
+}

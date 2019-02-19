@@ -193,7 +193,7 @@ class Leyka_Procedure_Convert_Donations_Format {
         if($donation_post_data['payment_type'] === 'rebill') {
 
             $old_ver_donation = new Leyka_Donation($donation_post_data['ID']);
-            $init_recurring_donation = Leyka_Donation::get_init_recurrent_donation($old_ver_donation);
+            $init_recurring_donation = Leyka_Donation::getInitRecurringDonation($old_ver_donation);
 
             $donation_post_meta['init_recurring_donation_id'] = $init_recurring_donation ? $init_recurring_donation->id : 0;
 

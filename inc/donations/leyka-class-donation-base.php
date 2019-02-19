@@ -34,7 +34,7 @@ abstract class Leyka_Donation_Base {
      * @param mixed $donation
      * @return mixed Leyka_Donation or false if param is wrong or nothing foundd.
      */
-    public static function get_init_recurrent_donation($donation) {
+    public static function getInitRecurringDonation($donation) {
 
         $donation = leyka_get_validated_donation($donation);
 
@@ -44,6 +44,10 @@ abstract class Leyka_Donation_Base {
 
         return leyka_get_gateway_by_id($donation->gateway_id)->get_init_recurrent_donation($donation);
 
+    }
+    /** @deprecated */
+    public static function get_init_recurrent_donation($donation) {
+        return static::getInitRecurringDonation($donation);
     }
 
     abstract public function delete($force = false);
