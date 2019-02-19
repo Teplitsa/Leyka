@@ -1,11 +1,11 @@
 <?php if( !defined('WPINC') ) die; // If this file is called directly, abort
 
-if( !empty($_GET['old']) ) {
-
-    require_once LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-payment-old.php';
-    return;
-
-}
+//if( !empty($_GET['old']) ) {
+//
+//    require_once LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-payment-old.php';
+//    return;
+//
+//}
 
 $_GET['stage'] = empty($_GET['stage']) ? 'stage-payment' : 'stage-'.esc_attr($_GET['stage']);?>
 

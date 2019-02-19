@@ -1,3 +1,121 @@
+/*!
+ * jQuery Cookie Plugin v1.4.1
+ * https://github.com/carhartl/jquery-cookie
+ *
+ * Copyright 2013 Klaus Hartl
+ * Released under the MIT license
+ */
+(function (factory) {
+	if (typeof define === 'function' && define.amd) {
+		// AMD
+		define(['jquery'], factory);
+	} else if (typeof exports === 'object') {
+		// CommonJS
+		factory(require('jquery'));
+	} else {
+		// Browser globals
+		factory(jQuery);
+	}
+}(function ($) {
+
+	var pluses = /\+/g;
+
+	function encode(s) {
+		return config.raw ? s : encodeURIComponent(s);
+	}
+
+	function decode(s) {
+		return config.raw ? s : decodeURIComponent(s);
+	}
+
+	function stringifyCookieValue(value) {
+		return encode(config.json ? JSON.stringify(value) : String(value));
+	}
+
+	function parseCookieValue(s) {
+		if (s.indexOf('"') === 0) {
+			// This is a quoted cookie as according to RFC2068, unescape...
+			s = s.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+		}
+
+		try {
+			// Replace server-side written pluses with spaces.
+			// If we can't decode the cookie, ignore it, it's unusable.
+			// If we can't parse the cookie, ignore it, it's unusable.
+			s = decodeURIComponent(s.replace(pluses, ' '));
+			return config.json ? JSON.parse(s) : s;
+		} catch(e) {}
+	}
+
+	function read(s, converter) {
+		var value = config.raw ? s : parseCookieValue(s);
+		return $.isFunction(converter) ? converter(value) : value;
+	}
+
+	var config = $.cookie = function (key, value, options) {
+
+		// Write
+
+		if (value !== undefined && !$.isFunction(value)) {
+			options = $.extend({}, config.defaults, options);
+
+			if (typeof options.expires === 'number') {
+				var days = options.expires, t = options.expires = new Date();
+				t.setTime(+t + days * 864e+5);
+			}
+
+			return (document.cookie = [
+				encode(key), '=', stringifyCookieValue(value),
+				options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
+				options.path    ? '; path=' + options.path : '',
+				options.domain  ? '; domain=' + options.domain : '',
+				options.secure  ? '; secure' : ''
+			].join(''));
+		}
+
+		// Read
+
+		var result = key ? undefined : {};
+
+		// To prevent the for loop in the first place assign an empty array
+		// in case there are no cookies at all. Also prevents odd result when
+		// calling $.cookie().
+		var cookies = document.cookie ? document.cookie.split('; ') : [];
+
+		for (var i = 0, l = cookies.length; i < l; i++) {
+			var parts = cookies[i].split('=');
+			var name = decode(parts.shift());
+			var cookie = parts.join('=');
+
+			if (key && key === name) {
+				// If second argument (value) is a function it's a converter...
+				result = read(cookie, value);
+				break;
+			}
+
+			// Prevent storing a cookie that we couldn't decode.
+			if (!key && (cookie = read(cookie)) !== undefined) {
+				result[name] = cookie;
+			}
+		}
+
+		return result;
+	};
+
+	config.defaults = {};
+
+	$.removeCookie = function (key, options) {
+		if ($.cookie(key) === undefined) {
+			return false;
+		}
+
+		// Must not alter options, thus extending a fresh object...
+		$.cookie(key, '', $.extend({}, options, { expires: -1 }));
+		return !$.cookie(key);
+	};
+
+}));
+
 /** Gateways settings board */
 
 // Payment settings page:
@@ -140,8 +258,8 @@ jQuery(document).ready(function($){
 
         var $pm_available_checkbox = $(this);
 
-        // Show/hide a PM settings:
-        $('#pm-'+$pm_available_checkbox.prop('id')).toggle();
+        $('#pm-'+$pm_available_checkbox.prop('id')).toggle(); // Show/hide a PM settings
+        $('#'+$pm_available_checkbox.prop('id')+'-commission-wrapper').toggle(); // Show/hide a PM commission field
 
         var $sortable_pm = $('.pm-order[data-pm-id="'+$pm_available_checkbox.attr('id')+'"]');
 
@@ -488,6 +606,110 @@ jQuery(document).ready(function($){
         }
     });
 });
+
+// section tabs
+jQuery(document).ready(function($){
+    $('.section-tab-nav-item').click(function(e){
+        e.preventDefault();
+        var $tabs = $(this).closest('.section-tabs-wrapper');
+        
+        $tabs.find('.section-tab-nav-item').removeClass('active');
+        $tabs.find('.section-tab-content').removeClass('active');
+        
+        $(this).addClass('active');
+        $tabs.find('.section-tab-content.tab-' + $(this).data('target')).addClass('active');
+    });
+});
+
+// screenshots nav
+jQuery(document).ready(function($){
+    $('.tab-screenshot-nav img').click(function(e){
+        e.preventDefault();
+        var $currentScreenshots = $(this).closest('.tab-screenshots');
+        var $currentVisibleScreenshot = $currentScreenshots.find('.tab-screenshot-item.active');
+        var $nextScreenshot = null;
+        
+        if($(this).closest('.tab-screenshot-nav').hasClass('left')) {
+            $nextScreenshot = $currentVisibleScreenshot.prev();
+            if(!$nextScreenshot.hasClass('tab-screenshot-item')) {
+                $nextScreenshot = $currentScreenshots.find('.tab-screenshot-item').last();
+            }
+        }
+        else {
+            $nextScreenshot = $currentVisibleScreenshot.next();
+            if(!$nextScreenshot.hasClass('tab-screenshot-item')) {
+                $nextScreenshot = $currentScreenshots.find('.tab-screenshot-item').first();
+            }
+        }
+        
+        if($nextScreenshot) {
+            $currentVisibleScreenshot.removeClass('active');
+            $nextScreenshot.addClass('active');
+        }
+    });
+});
+
+// screenshots nav
+jQuery(document).ready(function($){
+    var $templateCheckboxField = $('#leyka_template_options_revo_show_donation_comment_field-field');
+    $templateCheckboxField.change(function(){
+        leykaToggleCommentMaxLenField(this);
+    });
+    $templateCheckboxField.change();
+    
+    $templateCheckboxField = $('#leyka_template_options_neo_show_donation_comment_field-field');
+    $templateCheckboxField.change(function(){
+        leykaToggleCommentMaxLenField(this);
+    });
+    $templateCheckboxField.change();
+    
+    $templateCheckboxField = $('#leyka_template_options_toggles_show_donation_comment_field-field');
+    $templateCheckboxField.change(function(){
+        leykaToggleCommentMaxLenField(this);
+    });
+    $templateCheckboxField.change();
+    
+    $templateCheckboxField = $('#leyka_template_options_radios_show_donation_comment_field-field');
+    $templateCheckboxField.change(function(){
+        leykaToggleCommentMaxLenField(this);
+    });
+    $templateCheckboxField.change();
+    
+    function leykaToggleCommentMaxLenField(checkbox) {
+        var checkboxId = $(checkbox).attr('id');
+        var lenFieldWrapperID = checkboxId.replace('_show_donation_comment_field-field', '_donation_comment_max_length-wrapper');
+        
+        if($(checkbox).prop('checked')) {
+            $('#' + lenFieldWrapperID).show();
+        }
+        else {
+            $('#' + lenFieldWrapperID).hide();
+        }
+    }
+});
+
+// currence rate setup
+/*
+jQuery(document).ready(function($){
+    $('#leyka_auto_refresh_currency_rate_usd-wrapper input[type=radio]').change(leykaToggleRefreshCurrencyRateAutomatically);
+    leykaToggleRefreshCurrencyRateAutomatically();
+    leykaAppendCurrencyRateToOptionLabel();
+    
+    function leykaToggleRefreshCurrencyRateAutomatically() {
+        //alert(leyka.eurCBRate);
+        //alert(leyka.usdCBRate);
+    }
+    
+    function leykaToggleRefreshCurrencyRateAutomatically() {
+        if($('#leyka_auto_refresh_currency_rate_usd-n-field').prop('checked')) {
+            $('#leyka_currency_rur2usd-wrapper').show();
+        }
+        else {
+            $('#leyka_currency_rur2usd-wrapper').hide();
+        }
+    }
+});
+*/
 /** Common wizards functions */
 
 // Expandable areas:
@@ -1403,7 +1625,7 @@ jQuery(document).ready(function($){
 function makePassword(len) {
 
     var text = '',
-        possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789^#@_%$-";
+        possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#_%$-";
 
     for(var i = 0; i < len; i++) {
         text += possible.charAt(Math.floor(Math.random() * possible.length));

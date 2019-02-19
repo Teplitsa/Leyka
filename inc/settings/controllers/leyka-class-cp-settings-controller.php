@@ -12,7 +12,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
 
         $this->_id = 'cp';
         $this->_title = esc_attr__('CloudPayments setup Wizard', 'leyka');
-        $this->_cp_email = defined('WP_DEBUG') && WP_DEBUG ? 'support@te-st.ru' : 'sales@cloudpayments.ru';
+        $this->_cp_email = defined('LEYKA_DEBUG') && LEYKA_DEBUG ? 'support@te-st.ru' : 'sales@cloudpayments.ru';
 
     }
 
@@ -392,9 +392,13 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         return $submit_settings;
 
     }
-    
+
     public function handleSendDocuments(array $step_settings) {
-        
+
+        if(leyka_options()->opt('plugin_demo_mode')) { // Don't send emails to the gateway when in demo mode
+            return true;
+        }
+
         $errors = array();
         
         if( !isset($_FILES['leyka_send_documents_file']) ) {
@@ -405,7 +409,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         if(isset($moved_file['error'])) {
             $errors[] = new WP_Error('application_file_upload_error', $moved_file['error']);
         }
-        
+
         if( !$errors ) {
 
             $headers = array();
@@ -414,7 +418,14 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             $attachments = array();
             $attachments[] = $moved_file['file'];
             
-            wp_mail( $this->_cp_email, $_POST['leyka_send_documents_email_subject'], $_POST['leyka_send_documents_email_text'], $headers, $attachments );
+            $res = wp_mail(
+                $this->_cp_email,
+                $_POST['leyka_send_documents_email_subject'],
+                $_POST['leyka_send_documents_email_text'],
+                $headers,
+                $attachments
+            );
+            /** @todo Debug if( !$res ) { return array(new WP_Error('email_not_sent', 'Email не отправлен!')); } */
             
             $_SESSION['leyka-cp-notif-documents-sent'] = true;
 
@@ -425,7 +436,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
     }
     
     public function handleGoingLive(array $step_settings) {
-        
+
         $available_pms = leyka_options()->opt('pm_available');
         $available_pms[] = 'cp-card';
         $available_pms = array_unique($available_pms);
@@ -438,11 +449,21 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             }
         }
         leyka_options()->opt('pm_order', implode('&', $pm_order));
+
+        if(leyka_options()->opt('plugin_demo_mode')) { // Don't send emails to the gateway when in demo mode
+            return true;
+        }
         
         $headers = array();
         $headers[] = sprintf('From: %s <%s>', get_bloginfo('name'), $_POST['leyka_going_live_from']);
         
-        wp_mail( $this->_cp_email, $_POST['leyka_going_live_email_subject'], $_POST['leyka_going_live_email_text'], $headers );
+        $res = wp_mail(
+            $this->_cp_email,
+            $_POST['leyka_going_live_email_subject'],
+            $_POST['leyka_going_live_email_text'],
+            $headers
+        );
+        /** @todo Debug if( !$res ) { return array(new WP_Error('email_not_sent', 'Email не отправлен!')); } */
         
         return true;
         

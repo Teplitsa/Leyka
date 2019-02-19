@@ -8,17 +8,15 @@ var basePaths = {
 };
 
 //require plugins
-var gulp = require('gulp');
-
-var es          = require('event-stream'),
-    gutil       = require('gulp-util'),
-    bourbon     = require('node-bourbon'),
-    path        = require('relative-path'),
-    runSequence = require('run-sequence'),
-    del         = require('del');
+var gulp = require('gulp'),
+    es = require('event-stream'),
+    gutil = require('gulp-util'),
+    bourbon = require('node-bourbon'),
+    path = require('relative-path'),
+    del = require('del');
 
 //plugins - load gulp-* plugins without direct calls
-var plugins = require("gulp-load-plugins")({
+var plugins = require('gulp-load-plugins')({
     pattern: ['gulp-*', 'gulp.*'],
     replaceString: /\bgulp[\-.]/
 });
@@ -34,39 +32,36 @@ if(gutil.env.prod === true) {
     sourceMap = false;
 }
 
-//log
-var changeEvent = function(evt) {
-    gutil.log('File', gutil.colors.cyan(evt.path.replace(new RegExp('/.*(?=/' + basePaths.src + ')/'), '')), 'was', gutil.colors.magenta(evt.type));
-};
-
 //js
-gulp.task('build-js', function() {
+gulp.task('build-front-js', function(){
+
+    var vendorFiles = [basePaths.npm + 'jquery.cookie/jquery.cookie.js'],
+        appFiles = [basePaths.src + 'js/*.js', basePaths.src + 'js/front/*.js'];
+
+    return gulp.src(vendorFiles.concat(appFiles))
+        .pipe(plugins.concat('public.js'))
+        .pipe(isProduction ? plugins.uglify() : gutil.noop()) // Minification
+        .pipe(plugins.size()) // Print size for log
+        .on('error', console.log)
+        .pipe(gulp.dest(basePaths.dest + 'js'));
+
+});
+
+gulp.task('build-admin-js', function(){
+
     var vendorFiles = [basePaths.npm+'jquery.cookie/jquery.cookie.js'],
-        appFiles = [basePaths.src+'js/*', basePaths.src+'js/front/*']; //our own JS files
+        appFiles = [basePaths.src+'js/admin/*.js'];
 
-    return gulp.src(vendorFiles.concat(appFiles)) //join them
-        .pipe(plugins.filter('*.js'))//select only .js ones
-        .pipe(plugins.concat('public.js'))//combine them into bundle.js
-        .pipe(isProduction ? plugins.uglify() : gutil.noop()) //minification
-        .pipe(plugins.size()) //print size for log
-        .on('error', console.log) //log
-        .pipe(gulp.dest(basePaths.dest+'js')) //write results into file
+    return gulp.src(vendorFiles.concat(appFiles))
+        .pipe(plugins.concat('admin.js'))
+        .pipe(isProduction ? plugins.uglify() : gutil.noop()) // Minification
+        .pipe(plugins.size())
+        .on('error', console.log)
+        .pipe(gulp.dest(basePaths.dest + 'js'));
+
 });
 
-gulp.task('build-admin-js', function() {
-    var vendorFiles = [/*basePaths.npm+'jquery.cookie/jquery.cookie.js'*/],
-        appFiles = [basePaths.src+'js/admin/*']; //our own JS files
-
-    return gulp.src(vendorFiles.concat(appFiles)) //join them
-        .pipe(plugins.filter('*.js'))//select only .js ones
-        .pipe(plugins.concat('admin.js'))//combine them into bundle.js
-        .pipe(isProduction ? plugins.uglify() : gutil.noop()) //minification
-        .pipe(plugins.size()) //print size for log
-        .on('error', console.log) //log
-        .pipe(gulp.dest(basePaths.dest+'js')) //write results into file
-});
-
-gulp.task('build-editor-js', function() {
+gulp.task('build-editor-js', function(){
     var vendorFiles = [/*basePaths.npm+'jquery.cookie/jquery.cookie.js'*/],
         appFiles = [basePaths.src+'js/editor/editor.js']; //our own JS files
 
@@ -76,40 +71,39 @@ gulp.task('build-editor-js', function() {
         .pipe(isProduction ? plugins.uglify() : gutil.noop()) //minification
         .pipe(plugins.size()) //print size for log
         .on('error', console.log) //log
-        .pipe(gulp.dest(basePaths.dest+'js')) //write results into file
+        .pipe(gulp.dest(basePaths.dest+'js')); //write results into file
 });
 
-//sass
-gulp.task('build-css', function() {
+gulp.task('build-front-css', function(){
 
-    //paths for bourbon
-    var paths = require('node-bourbon').includePaths;
-    var vendorFiles = gulp.src([]), //components
-        appFiles = gulp.src(basePaths.src+'sass/front-main.scss') //our main file with @import-s
-        .pipe(!isProduction ? plugins.sourcemaps.init() : gutil.noop())  //process the original sources for sourcemap
+    var paths = require('node-bourbon').includePaths,
+    // vendorFiles = gulp.src([]), //components
+        appFiles = gulp.src(basePaths.src+'sass/front-main.scss') // our main file with @import-s
+        .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.init()) // process the original sources for sourcemap
         .pipe(plugins.sass({
-                outputStyle: sassStyle, //SASS syntas
-                includePaths: paths //add bourbon
-            }).on('error', plugins.sass.logError))//sass own error log
-        .pipe(plugins.autoprefixer({ //autoprefixer
-                browsers: ['last 4 versions'],
-                cascade: false
-            }))
-        .pipe(!isProduction ? plugins.sourcemaps.write() : gutil.noop()) //add the map to modified source
-        .on('error', console.log); //log
+            outputStyle: sassStyle, // SASS syntax
+            includePaths: paths // Add Bourbon
+        }).on('error', plugins.sass.logError))// Sass' own error log
+        .pipe(plugins.autoprefixer({
+            browsers: ['last 4 versions'],
+            cascade: false
+        }))
+        .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.write()) //add the map to modified source
+        .on('error', console.log);
 
-    return es.concat(appFiles, vendorFiles) //combine vendor CSS files and our files after-SASS
-        .pipe(plugins.concat('public.css')) //combine into file
-        .pipe(isProduction ? plugins.cssmin() : gutil.noop()) //minification on production
-        .pipe(plugins.size()) //display size
-        .pipe(gulp.dest(basePaths.dest+'css')) //write file
-        .on('error', console.log); //log
+    return es.concat(appFiles /*, vendorFiles*/)
+        .pipe(plugins.concat('public.css'))
+        .pipe(isProduction ? plugins.cssmin() : gutil.noop()) // Minification on production
+        .pipe(plugins.size())
+        .pipe(gulp.dest(basePaths.dest + 'css'))
+        .on('error', console.log);
+
 });
 
 gulp.task('build-admin-css', function() {
 
     var paths = require('node-bourbon').includePaths,
-		vendorFiles = gulp.src([]),
+		// vendorFiles = gulp.src([]),
         appFiles = gulp.src(basePaths.src+'sass/admin/admin.scss')
         .pipe(!isProduction ? plugins.sourcemaps.init() : gutil.noop())  //process the original sources for sourcemap
         .pipe(plugins.sass({
@@ -123,7 +117,7 @@ gulp.task('build-admin-css', function() {
         .pipe(!isProduction ? plugins.sourcemaps.write() : gutil.noop()) //add the map to modified source
         .on('error', console.log); //log
 
-	return es.concat(appFiles, vendorFiles) //combine vendor CSS files and our files after-SASS
+	return es.concat(appFiles /*, vendorFiles*/) //combine vendor CSS files and our files after-SASS
         .pipe(plugins.concat('admin.css')) //combine into file
         .pipe(isProduction ? plugins.cssmin() : gutil.noop()) //minification on production
         .pipe(plugins.size()) //display size
@@ -135,7 +129,7 @@ gulp.task('build-admin-css', function() {
 gulp.task('build-editor-css', function() {
 
     var paths = require('node-bourbon').includePaths,
-		vendorFiles = gulp.src([]),
+		// vendorFiles = gulp.src([]),
         appFiles = gulp.src(basePaths.src+'sass/admin/editor.scss')
         .pipe(!isProduction ? plugins.sourcemaps.init() : gutil.noop())  //process the original sources for sourcemap
         .pipe(plugins.sass({
@@ -149,7 +143,7 @@ gulp.task('build-editor-css', function() {
         .pipe(!isProduction ? plugins.sourcemaps.write() : gutil.noop()) //add the map to modified source
         .on('error', console.log); //log
 
-	return es.concat(appFiles, vendorFiles) //combine vendor CSS files and our files after-SASS
+	return es.concat(appFiles /*, vendorFiles*/) //combine vendor CSS files and our files after-SASS
         .pipe(plugins.concat('editor.css')) //combine into file
         .pipe(isProduction ? plugins.cssmin() : gutil.noop()) //minification on production
         .pipe(plugins.size()) //display size
@@ -158,14 +152,12 @@ gulp.task('build-editor-css', function() {
 
 });
 
-//revision
+// Revision
 gulp.task('revision-clean', function(){
-    // clean folder https://github.com/gulpjs/gulp/blob/master/docs/recipes/delete-files-folder.md
     return del([basePaths.dest+'rev/**/*']);
 });
 
 gulp.task('revision', function(){
-
     return gulp.src([basePaths.dest+'css/*.css', basePaths.dest+'js/*.js'])
         .pipe(plugins.rev())
         .pipe(gulp.dest( basePaths.dest+'rev' ))
@@ -174,26 +166,22 @@ gulp.task('revision', function(){
         .on('error', console.log); //log
 });
 
-
-//builds
-gulp.task('full-build', function(callback) {
-    runSequence('build-css',
-        'build-js',
-		'svg-opt',
-        callback);
+// Builds
+gulp.task('full-build', async function(callback) {
+    await gulp.series('build-css', 'build-js', 'svg-opt', callback);
 });
 
-gulp.task('full-build-css', function(callback) {
-    runSequence('build-css', callback);
+gulp.task('full-build-css', async function(callback) {
+    await gulp.series('build-css', callback);
 });
 
-gulp.task('full-build-js', function(callback) {
-    runSequence('build-js', callback);
+gulp.task('full-build-js', async function(){
+    await gulp.series('build-js');
 });
 
 
 //svg - combine and clear svg assets
-gulp.task('svg-opt', function() {
+gulp.task('svg-opt', function(){
 
     var icons = gulp.src([basePaths.src+'svg/icon-*.svg'])
         .pipe(plugins.svgmin({
@@ -203,7 +191,7 @@ gulp.task('svg-opt', function() {
                 removeEditorsNSData: true,
                 removeComments: true
             }]
-        })) //minification
+        }))
         .pipe(plugins.cheerio({
             run: function ($) { //remove fill from icons
                 $('[fill]').removeAttr('fill');
@@ -219,35 +207,42 @@ gulp.task('svg-opt', function() {
                 removeEditorsNSData: true,
                 removeComments: true
             }]
-        })); //minification
+        })); // minification
 
     return es.concat(icons, pics)
         .pipe(plugins.svgstore({ inlineSvg: true })) //combine for inline usage
         .pipe(gulp.dest(basePaths.dest+'svg'));
+
 });
 
-//watchers
-gulp.task('watch', function(){
-    gulp.watch([basePaths.src+'sass/*.scss'], ['full-build-css']).on('change', function(evt) {
-        changeEvent(evt);
-    });
-    gulp.watch([basePaths.src+'js/*.js', basePaths.src+'js/front/*.js'], ['full-build-js']).on('change', function(evt) {
-        changeEvent(evt);
-    });
+// watchers
+gulp.task('watch', function(done){
+
+    // Frontend:
+    gulp.watch([basePaths.src + 'sass/*.scss'], gulp.series('build-front-css'));
+    gulp.watch([basePaths.src + 'js/*.js', basePaths.src + 'js/front/*.js'], gulp.series('build-front-js'));
+
+    // gulp.watch([basePaths.src + 'sass/*.scss'], gulp.series('build-front-css'));
+    // gulp.watch([basePaths.src + 'js/*.js', basePaths.src + 'js/front/*.js'], gulp.series('build-front-js'));
+
+    // Backend:
+    gulp.watch(
+        [basePaths.src+'sass/admin/*.scss', basePaths.src+'sass/admin/**/*.scss'],
+        gulp.series('build-admin-css', 'build-editor-css')
+    );
+
+    gulp.watch(
+        [basePaths.src+'js/admin/*.js', basePaths.src+'js/admin/**/*.js'],
+        gulp.series('build-admin-js')
+    );
+
+    gulp.watch(
+        [basePaths.src+'js/editor/*.js'],
+        gulp.series('build-editor-js')
+    );
+
+    done();
+
 });
 
-gulp.task('watch-admin', function(){
-    gulp.watch([basePaths.src+'sass/admin/*.scss', basePaths.src+'sass/admin/**/*.scss'], ['build-admin-css', 'build-editor-css']).on('change', function(evt) {
-        changeEvent(evt);
-    });
-    gulp.watch([basePaths.src+'js/admin/*.js', basePaths.src+'js/admin/**/*.js'], ['build-admin-js']).on('change', function(evt) {
-        changeEvent(evt);
-    });
-    gulp.watch([basePaths.src+'js/editor/*.js'], ['build-editor-js']).on('change', function(evt) {
-        changeEvent(evt);
-    });
-});
-
-
-//default
-gulp.task('default', ['full-build', 'watch']);
+gulp.task('default', gulp.series('full-build', 'watch'));

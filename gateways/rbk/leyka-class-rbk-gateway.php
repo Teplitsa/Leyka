@@ -68,13 +68,13 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
         if(empty($this->_payment_methods['bankcard'])) {
-            $this->_payment_methods['bankcard'] = Leyka_Rbk_Card::get_instance();
+            $this->_payment_methods['bankcard'] = Leyka_Rbk_Card::getInstance();
         }
     }
 
     public function enqueue_gateway_scripts() {
 
-        if(Leyka_Rbk_Card::get_instance()->active) {
+        if(Leyka_Rbk_Card::getInstance()->active) {
 
             wp_enqueue_script(
                 'leyka-rbk-checkout',
@@ -86,7 +86,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
             wp_enqueue_script(
                 'leyka-revo-rbk',
-                LEYKA_PLUGIN_BASE_URL . 'gateways/' . Leyka_Rbk_Gateway::get_instance()->id . '/js/leyka.rbk.js',
+                LEYKA_PLUGIN_BASE_URL . 'gateways/' . Leyka_Rbk_Gateway::getInstance()->id . '/js/leyka.rbk.js',
                 array('jquery', 'leyka-revo-public', 'leyka-rbk-checkout'),
                 LEYKA_VERSION,
                 true
@@ -315,7 +315,7 @@ class Leyka_Rbk_Card extends Leyka_Payment_Method {
 }
 
 function leyka_add_gateway_rbk() {
-    leyka_add_gateway(Leyka_Rbk_Gateway::get_instance());
+    leyka_add_gateway(Leyka_Rbk_Gateway::getInstance());
 }
 
 add_action('leyka_init_actions', 'leyka_add_gateway_rbk');

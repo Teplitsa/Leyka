@@ -91,7 +91,7 @@ function leyka_current_user_has_role($role, $user_id = false) {
  */
 function leyka_get_validated_donation($donation) {
 
-    if(is_int($donation) && (int)$donation > 0) {
+    if(is_numeric($donation) && (int)$donation > 0) {
         $donation = new Leyka_Donation((int)$donation);
     } elseif(is_a($donation, 'WP_Post')) {
         $donation = new Leyka_Donation($donation);
@@ -108,7 +108,7 @@ function leyka_get_validated_donation($donation) {
  */
 function leyka_get_validated_campaign($campaign) {
 
-    if(is_int($campaign) && (int)$campaign > 0) {
+    if(is_numeric($campaign) && (int)$campaign > 0) {
         $campaign = get_post((int)$campaign);
     }
 
@@ -362,8 +362,30 @@ function leyka_get_success_page_url() {
         $url = home_url();
     }
     
+    $leyla_template_data = leyka_get_current_template_data();
+    if(!empty($leyla_template_data['id'])) {
+        $url = leyka_template_to_query_arg( $leyla_template_data['id'], $url );
+    }
+    
     return $url;
 
+}
+
+function leyka_get_campaign_success_page_url($campaign_id) {
+
+    $url = leyka_options()->opt('success_page') ? get_permalink(leyka_options()->opt('success_page')) : home_url();
+
+    if( !$url ) { // It can be in case when "last posts" is selected for homepage
+        $url = home_url();
+    }
+    
+    $leyla_template_data = leyka_get_current_template_data($campaign_id);
+    if(!empty($leyla_template_data['id'])) {
+        $url = leyka_template_to_query_arg( $leyla_template_data['id'], $url );
+    }
+    
+    return $url;
+    
 }
 
 function leyka_get_default_failure_page() {
@@ -419,6 +441,28 @@ function leyka_get_failure_page_url() {
         $url = home_url();
     }
 
+    $leyla_template_data = leyka_get_current_template_data();
+    if(!empty($leyla_template_data['id'])) {
+        $url = leyka_template_to_query_arg( $leyla_template_data['id'], $url );
+    }
+    
+    return $url;
+
+}
+
+function leyka_get_campaign_failure_page_url($campaign_id) {
+
+    $url = leyka_options()->opt('failure_page') ? get_permalink(leyka_options()->opt('failure_page')) : home_url();
+
+    if( !$url ) { // It can be in case when "last posts" is selected for homepage
+        $url = home_url();
+    }
+
+    $leyla_template_data = leyka_get_current_template_data($campaign_id);
+    if(!empty($leyla_template_data['id'])) {
+        $url = leyka_template_to_query_arg( $leyla_template_data['id'], $url );
+    }
+    
     return $url;
 
 }
@@ -427,7 +471,7 @@ function leyka_get_failure_page_url() {
 function leyka_get_form_templates_list() {
 
     $list = array();
-    foreach(leyka()->get_templates() as $template) {
+    foreach(leyka()->getTemplates() as $template) {
 
         $name = $template['name'] == __($template['name'], 'leyka') ? $template['name'] : __($template['name'], 'leyka');
         $description = $template['description'] == __($template['description'], 'leyka') ?
@@ -506,7 +550,7 @@ function leyka_get_currency_label($currency_code) {
  * Get possible leyka_donation post type's status list as an array.
  **/
 function leyka_get_donation_status_list() {
-    return leyka()->get_donation_statuses();
+    return leyka()->getDonationStatuses();
 }
 
 function leyka_get_pm_categories_list() {
@@ -619,7 +663,7 @@ function leyka_get_receiver_description($receiver_types) {
  * Get all possible campaign target states.
  **/
 function leyka_get_campaign_target_states_list() {
-    return leyka()->get_campaign_target_states();
+    return leyka()->getCampaignTargetStates();
 }
 
 /**
@@ -871,7 +915,7 @@ function leyka_get_actual_currency_rates() {
 function leyka_are_settings_complete($settings_tab) {
 
     $settings_complete = true;
-    $tab_options = leyka_opt_alloc()->get_tab_options($settings_tab); // Specially to support PHP strict standards
+    $tab_options = leyka_opt_alloc()->getTabOptions($settings_tab); // Specially to support PHP strict standards
     
     $receiver_legal_type = leyka_options()->opt_safe('receiver_legal_type');
     
@@ -1164,11 +1208,11 @@ function leyka_revo_template_displayed() {
 }
 
 function leyka_success_widget_displayed() {
-    return leyka_options()->opt('show_success_widget_on_success') && is_page(leyka_options()->opt('success_page'));
+    return leyka_options()->opt_template('show_success_widget_on_success') && is_page(leyka_options()->opt('success_page'));
 }
 
 function leyka_failure_widget_displayed() {
-    return leyka_options()->opt('show_failure_widget_on_failure') && is_page(leyka_options()->opt('failure_page'));
+    return leyka_options()->opt_template('show_failure_widget_on_failure') && is_page(leyka_options()->opt('failure_page'));
 }
 
 /** ITV info-widget **/
@@ -1613,7 +1657,7 @@ abstract class Leyka_Singleton {
     /**
      * @return static
      */
-    public static function get_instance() {
+    public static function getInstance() {
 
         if(null === static::$_instance) {
             static::$_instance = new static();
@@ -1621,6 +1665,14 @@ abstract class Leyka_Singleton {
 
         return static::$_instance;
 
+    }
+
+    /**
+     * @deprecated
+     * @return static
+     */
+    public static function get_instance() {
+        return static::getInstance();
     }
 
     final protected function __clone() {}
@@ -1651,16 +1703,15 @@ if( !function_exists('leyka_save_option') ) {
 
         } else if(stristr($option_type, 'custom_') !== false && isset($_POST["leyka_$setting_id"])) { // Custom field types
             do_action("leyka_save_custom_option-$setting_id", $_POST["leyka_$setting_id"]);
-        } else { // Simple field types
-            if(isset($_POST["leyka_$setting_id"])) {
-                $old_value = leyka_options()->opt($setting_id);
-                
-                if($old_value != $_POST["leyka_$setting_id"]) {
-                    leyka_options()->opt($setting_id, esc_attr(stripslashes($_POST["leyka_$setting_id"])));
-                }
-                
-                do_action("leyka_after_save_option-$setting_id", $old_value, $_POST["leyka_$setting_id"]);
+        } else if(isset($_POST["leyka_$setting_id"])) { // Simple field types
+
+            $old_value = leyka_options()->opt($setting_id);
+            if($old_value != $_POST["leyka_$setting_id"]) {
+                leyka_options()->opt($setting_id, esc_attr(stripslashes($_POST["leyka_$setting_id"])));
             }
+
+            do_action("leyka_after_save_option-$setting_id", $old_value, $_POST["leyka_$setting_id"]);
+
         }
 
     }
@@ -1752,4 +1803,12 @@ if( !function_exists('leyka_localize_rich_html_text_tags') ) {
             ),
         ));
     }
+}
+
+function leyka_template_to_query_arg($template_id, $url) {
+    return add_query_arg('leyka_ctpl', $template_id, $url);
+}
+
+function leyka_template_from_query_arg() {
+    return empty($_GET['leyka_ctpl']) ? null : trim($_GET['leyka_ctpl']);
 }

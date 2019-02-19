@@ -7,11 +7,11 @@
  * Functions to register and deregister a gateway
  **/
 function leyka_add_gateway($class_name) {
-    leyka()->add_gateway($class_name);
+    leyka()->addGateway($class_name);
 }
 
 function leyka_remove_gateway($class_name) {
-    leyka()->remove_gateway($class_name);
+    leyka()->removeGateway($class_name);
 }
 
 function leyka_get_gateways() {
@@ -174,7 +174,7 @@ function leyka_gateway_setup_wizard($gateway) {
  */
 function leyka_wizard_started($gateway_wizard_name) {
     
-    $wizard_controller = Leyka_Settings_Factory::get_instance()->getController($gateway_wizard_name);
+    $wizard_controller = Leyka_Settings_Factory::getInstance()->getController($gateway_wizard_name);
     return count($wizard_controller->history) > 0;
     
 }
@@ -349,7 +349,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     /** Register a gateway in the plugin */
     public function add_gateway() {
-        leyka()->add_gateway(self::get_instance());
+        leyka()->addGateway(self::getInstance());
     }
 
     /** Register a gateway's scripts in the plugin */
@@ -439,7 +439,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
                 'wrong_donation_amount',
                 __('Donation amount must be specified to submit the form', 'leyka')
             );
-            leyka()->add_payment_form_error($error);
+            leyka()->addPaymentFormError($error);
 
         }
 
@@ -450,7 +450,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
                 'wrong_donation_currency',
                 __('Wrong donation currency in submitted form data', 'leyka')
             );
-            leyka()->add_payment_form_error($error);
+            leyka()->addPaymentFormError($error);
 
         }
 
@@ -463,7 +463,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
                     $form_data['top_'.$currency].' '.leyka_options()->opt("currency_{$currency}_label")
                 )
             );
-            leyka()->add_payment_form_error($error);
+            leyka()->addPaymentFormError($error);
 
         }
 
@@ -477,14 +477,14 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
                     $bottom_amount_allowed.' '.leyka_options()->opt("currency_{$currency}_label")
                 )
             );
-            leyka()->add_payment_form_error($error);
+            leyka()->addPaymentFormError($error);
 
         }
 
         if(empty($form_data['leyka_agree']) && leyka_options()->opt('agree_to_terms_needed')) {
 
             $error = new WP_Error('terms_not_agreed', __('You must agree to the terms of donation service', 'leyka'));
-            leyka()->add_payment_form_error($error);
+            leyka()->addPaymentFormError($error);
 
         }
 
@@ -547,10 +547,18 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
         if( !!$by_categories ) {
 
+            // Get the PM categories in the right order:
             $tmp = array_map(function($value){ return array(); }, leyka_get_pm_categories_list());
+
             foreach($pm_list as $pm) { /** @var $pm Leyka_Payment_Method */
                 if($pm->category) {
                     $tmp[$pm->category][] = $pm;
+                }
+            }
+
+            foreach($tmp as $category => $pm_list_in_category) { // Remove empty PM categories
+                if( !$pm_list_in_category ) {
+                    unset($tmp[$category]);
                 }
             }
 
@@ -666,8 +674,8 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
     protected $_ajax_without_form_submission = false;
 
     protected function __construct() {
-
-        $this->_submit_label = leyka_options()->opt_safe('donation_submit_text');
+        //$this->_submit_label = leyka_options()->opt_template('donation_submit_text');
+        $this->_submit_label = '';
 
         $this->_set_attributes();
         $this->_initialize_options();

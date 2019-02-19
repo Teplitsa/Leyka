@@ -9,22 +9,22 @@ function leyka_custom_widgets(){
 	register_widget('Leyka_Campaign_Card_Widget');
 	register_widget('Leyka_Campaigns_List_Widget');
 	register_widget('Leyka_Donations_List_Widget');
+
 }
 
-/** Campaign card widget **/
 class Leyka_Campaign_Card_Widget extends WP_Widget {
 
-	/** Widget setup */
 	public function __construct() {
 
 		$widget_ops = array(
 			'classname'   => 'leyka_campaign_card',
 			'description' => __('Campaign informer with configurable elements', 'leyka')
 		);
+
 		parent::__construct('leyka_campaign_card',  __('Leyka: Campaign Card', 'leyka'), $widget_ops);
+
 	}
 
-	/** Display widget */
 	public function widget($args, $instance) {
 
 		extract($args, EXTR_SKIP);
@@ -81,9 +81,9 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 
 		/** @var $after_widget */
 		echo $after_widget;
+
 	}
 
-	/** Update widget */
 	public function update($new_instance, $old_instance) {
 
 		$instance = $old_instance;
@@ -98,39 +98,42 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 		$instance['show_button'] = !empty($new_instance['show_button']);
 
 		return $instance;
+
 	}
 
-	/** Widget setting */
 	public function form($instance) {
 
-		/* Set up some default widget settings. */
 		$defaults = array(
-			'title'        => '',
-			'campaign_id'  => '',
-			'show_title'   => 1,
-			'show_thumb'   => 1,
+			'title' => '',
+			'campaign_id' => '',
+			'show_title' => 1,
+			'show_thumb' => 1,
 			'show_excerpt' => 1,
-			'show_scale'   => 1,
-			'show_button'  => 1,
+			'show_scale' => 1,
+			'show_button' => 1,
 		);
 
 		$instance = wp_parse_args((array)$instance, $defaults);?>
 
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php _e('Title', 'leyka');?>:</label>
+            <label for="<?php echo esc_attr($this->get_field_id('title')); ?>">
+                <?php esc_html_e('Title', 'leyka');?>:
+            </label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('title')); ?>" name="<?php echo esc_attr($this->get_field_name('title')); ?>" type="text" value="<?php echo esc_attr($instance['title']);?>">
         </p>
 
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('campaign_id'));?>"><?php _e('Campaign ID', 'leyka');?>:</label>
+            <label for="<?php echo esc_attr($this->get_field_id('campaign_id'));?>">
+                <?php esc_html_e('Campaign ID', 'leyka');?>:
+            </label>
 
 			<?php $current_value = $instance['campaign_id'];?>
             <select id="<?php echo $this->get_field_id('campaign_id');?>" name="<?php echo $this->get_field_name( 'campaign_id');?>" class="widefat">
                 <option value="-" <?php echo $current_value == '-' ? 'selected="selected"' : '';?>>
-					<?php _e('The most recent campaign', 'leyka');?>
+					<?php esc_html_e('The most recent campaign', 'leyka');?>
                 </option>
                 <option value="0" <?php echo $current_value == '0' ? 'selected="selected"' : '';?>>
-					<?php _e('Campaign based on a context', 'leyka');?>
+					<?php esc_html_e('Campaign based on a context', 'leyka');?>
                 </option>
 
 				<?php foreach(get_posts(array('post_type' => Leyka_Campaign_Management::$post_type, 'nopaging' => true)) as $campaign) {?>
@@ -140,54 +143,54 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 				<?php }?>
 
             </select>
-            <br />
+            <br>
             <small class="help"><?php _e('Copy-paste ID of the campaign to output, state "0" to detect it from context or leave the field blank to display the most recent campaign', 'leyka');?></small>
         </p>
 
         <p>
             <label for="<?php echo esc_attr($this->get_field_id('show_title'));?>">
-                <input id="<?php echo $this->get_field_id('show_title');?>" name="<?php echo $this->get_field_name('show_title');?>" value="1" type="checkbox" <?php checked( !!$instance['show_title'], 1 );?> />
-				<?php _e('Show title', 'leyka');?>
+                <input id="<?php echo $this->get_field_id('show_title');?>" name="<?php echo $this->get_field_name('show_title');?>" value="1" type="checkbox" <?php checked( !!$instance['show_title'], 1 );?>>
+				<?php esc_html_e('Show title', 'leyka');?>
             </label>
-            <br />
+            <br>
             <label for="<?php echo esc_attr($this->get_field_id('show_thumb')); ?>">
-                <input id="<?php echo $this->get_field_id( 'show_thumb' ); ?>" name="<?php echo $this->get_field_name('show_thumb');?>" value="1" type="checkbox" <?php checked( !!$instance['show_thumb'], 1 );?> />
-				<?php _e('Show thumbnail', 'leyka');?>
+                <input id="<?php echo $this->get_field_id( 'show_thumb' ); ?>" name="<?php echo $this->get_field_name('show_thumb');?>" value="1" type="checkbox" <?php checked( !!$instance['show_thumb'], 1 );?>>
+				<?php esc_html_e('Show thumbnail', 'leyka');?>
             </label>
-            <br />
+            <br>
             <label for="<?php echo esc_attr($this->get_field_id('show_excerpt'));?>">
                 <input id="<?php echo $this->get_field_id( 'show_excerpt' ); ?>" name="<?php echo $this->get_field_name( 'show_excerpt' ); ?>" value="1" type="checkbox" <?php checked( !!$instance['show_excerpt'], 1 );?>>
-				<?php _e('Show excerpt', 'leyka');?>
+				<?php esc_html_e('Show excerpt', 'leyka');?>
             </label>
-            <br />
+            <br>
             <label for="<?php echo esc_attr($this->get_field_id('show_scale'));?>">
-                <input id="<?php echo $this->get_field_id( 'show_scale' ); ?>" name="<?php echo $this->get_field_name( 'show_scale' ); ?>" value="1" type="checkbox" <?php checked( !!$instance['show_scale'], 1 );?> />
-				<?php _e('Show scale', 'leyka');?>
+                <input id="<?php echo $this->get_field_id( 'show_scale' ); ?>" name="<?php echo $this->get_field_name( 'show_scale' ); ?>" value="1" type="checkbox" <?php checked( !!$instance['show_scale'], 1 );?>>
+				<?php esc_html_e('Show scale', 'leyka');?>
             </label>
-            <br />
+            <br>
             <label for="<?php echo esc_attr($this->get_field_id('show_button')); ?>">
-                <input id="<?php echo $this->get_field_id( 'show_button' ); ?>" name="<?php echo $this->get_field_name( 'show_button' ); ?>" value="1" type="checkbox" <?php checked( !!$instance['show_button'], 1 );?> />
-				<?php _e('Show «support» button', 'leyka');?>
+                <input id="<?php echo $this->get_field_id( 'show_button' ); ?>" name="<?php echo $this->get_field_name( 'show_button' ); ?>" value="1" type="checkbox" <?php checked( !!$instance['show_button'], 1 );?>>
+				<?php esc_html_e('Show «support» button', 'leyka');?>
             </label>
         </p>
 
 	<?php }
-} //class end
 
-/** Campaign list widget **/
+}
+
 class Leyka_Campaigns_List_Widget extends WP_Widget {
 
-	/** Widget setup */
 	public function __construct() {
 
 		$widget_ops = array(
 			'classname'   => 'leyka_campaigns_list',
-			'description' => __('List of recent campaigns with configurable attributes', 'leyka')
+			'description' => esc_html__('List of recent campaigns with configurable attributes', 'leyka'),
 		);
-		parent::__construct('leyka_campaigns_list',  __('Leyka: Campaigns List', 'leyka'), $widget_ops);
+
+		parent::__construct('leyka_campaigns_list',  esc_html__('Leyka: Campaigns List', 'leyka'), $widget_ops);
+
 	}
 
-	/** Display widget */
 	public function widget($args, $instance) {
 
 		extract($args, EXTR_SKIP);
@@ -266,7 +269,6 @@ class Leyka_Campaigns_List_Widget extends WP_Widget {
 		return 'leyka-campaign-list-item';
 	}
 
-	/** Update widget */
 	public function update($new_instance, $old_instance) {
 
 		$instance = $old_instance;
@@ -286,12 +288,11 @@ class Leyka_Campaigns_List_Widget extends WP_Widget {
 		$instance['exclude_finished'] = !empty($new_instance['exclude_finished']);
 
 		return $instance;
+
 	}
 
-	/** Widget setting */
 	public function form($instance) {
 
-		/* Set up some default widget settings. */
 		$defaults = array(
 			'title' => '',
 			'limit' => 3,
@@ -373,22 +374,21 @@ class Leyka_Campaigns_List_Widget extends WP_Widget {
         </p>
 
 	<?php }
-} //class end
 
-/** Donations list widget **/
+}
+
 class Leyka_Donations_List_Widget extends WP_Widget {
 
-	/** Widget setup */
 	public function __construct() {
 
 		$widget_ops = array(
 			'classname'   => 'leyka_donations_list',
-			'description' => __('Recent donations list, optionally filtered by campaign', 'leyka')
+			'description' => esc_html__('Recent donations list, optionally filtered by campaign', 'leyka')
 		);
-		parent::__construct('leyka_donations_list',  __('Leyka: Donations List', 'leyka'), $widget_ops);
+		parent::__construct('leyka_donations_list',  esc_html__('Leyka: Donations List', 'leyka'), $widget_ops);
+
 	}
 
-	/** Display widget */
 	public function widget($args, $instance) {
 
 		extract($args, EXTR_SKIP);
@@ -416,84 +416,85 @@ class Leyka_Donations_List_Widget extends WP_Widget {
 		 * @var $after_widget
 		 */
 		echo $before_widget.($title ? $before_title.$title.$after_title : '').$html.$after_widget;
+
 	}
 
-	/** Update widget */
 	public function update($new_instance, $old_instance) {
 
 		$instance = $old_instance;
 
-		$instance['title']        = sanitize_text_field($new_instance['title']);
-		$instance['limit']        = empty($new_instance['limit']) ? 5 : (int)$new_instance['limit'];
-		$instance['campaign_id']  = sanitize_text_field($new_instance['campaign_id']);
+		$instance['title'] = sanitize_text_field($new_instance['title']);
+		$instance['limit'] = empty($new_instance['limit']) ? 5 : (int)$new_instance['limit'];
+		$instance['campaign_id'] = sanitize_text_field($new_instance['campaign_id']);
 		$instance['show_purpose'] = !empty($new_instance['show_purpose']);
-		$instance['show_name']    = !empty($new_instance['show_name']);
-		$instance['show_date']    = !empty($new_instance['show_date']);
+		$instance['show_name'] = !empty($new_instance['show_name']);
+		$instance['show_date'] = !empty($new_instance['show_date']);
 
 		return $instance;
 
 	}
 
-	/** Widget setting */
 	public function form($instance) {
 
-		/* Set up some default widget settings. */
 		$defaults = array(
-			'title'        => '',
-			'limit'        => 5,
-			'campaign_id'  => '',
+			'title' => '',
+			'limit' => 5,
+			'campaign_id' => '',
 			'show_purpose' => 1,
-			'show_name'    => 1,
-			'show_date'    => 1,
+			'show_name' => 1,
+			'show_date' => 1,
 		);
 
-		$instance = wp_parse_args((array)$instance, $defaults);
-
-		$title        = esc_attr($instance['title']);
-		$limit        = (int)$instance['limit'];
-		$campaign_id  = esc_attr($instance['campaign_id']);
-		$show_purpose = !!$instance['show_purpose'];
-		$show_name    = !!$instance['show_name'];
-		$show_date    = !!$instance['show_date'];?>
+		$instance = wp_parse_args((array)$instance, $defaults);?>
 
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php _e('Title', 'leyka');?>:</label>
-            <input class="widefat" id="<?php echo esc_attr($this->get_field_id('title')); ?>" name="<?php echo esc_attr($this->get_field_name('title')); ?>" type="text" value="<?php echo $title; ?>" />
+            <label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php esc_html_e('Title', 'leyka');?>:</label>
+            <input class="widefat" id="<?php echo esc_attr($this->get_field_id('title'));?>" name="<?php echo esc_attr($this->get_field_name('title'));?>" type="text" value="<?php echo esc_attr($instance['title']);?>">
         </p>
 
         <p>
             <label for="<?php echo esc_attr($this->get_field_id('limit'));?>"><?php _e('Donations number', 'leyka');?>:</label>
             <select class="widefat" name="<?php echo $this->get_field_name('limit');?>" id="<?php echo $this->get_field_id('limit');?>">
-				<?php for($i=5; $i<=25; $i+= 5) {?>
-                    <option <?php selected($limit, $i) ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+				<?php for($i = 5; $i <= 25; $i += 5) {?>
+                    <option <?php selected((int)$instance['limit'], $i) ?> value="<?php echo esc_attr($i); ?>"><?php echo $i;?></option>
 				<?php }?>
             </select>
         </p>
 
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('campaign_id'));?>"><?php _e('Campaign ID', 'leyka');?>:</label>
-            <input id="<?php echo $this->get_field_id('campaign_id'); ?>" name="<?php echo $this->get_field_name('campaign_id');?>" value="<?php echo $campaign_id;?>" type="text" /><br />
-            <small class="help"><?php _e('Copy-paste ID of the campaign to filter donations in the list, state "0" to detect it from context or leave the field blank to display recent entries', 'leyka');?></small>
+
+            <label for="<?php echo esc_attr($this->get_field_id('campaign_id'));?>">
+                <?php esc_html_e('Campaign ID', 'leyka');?>:
+            </label>
+            <input id="<?php echo esc_attr($this->get_field_id('campaign_id'));?>" name="<?php echo esc_attr($this->get_field_name('campaign_id'));?>" value="<?php echo esc_attr($instance['campaign_id']);?>" type="text"><br>
+
+            <small class="help">
+                <?php esc_html_e('Copy-paste ID of the campaign to filter donations in the list, state "0" to detect it from context or leave the field blank to display recent entries', 'leyka');?>
+            </small>
+
         </p>
 
-        <h4><?php _e('Donation item settings', 'leyka');?></h4>
+        <h4><?php esc_html_e('Donation item settings', 'leyka');?></h4>
 
         <p>
+
             <label for="<?php echo esc_attr($this->get_field_id('show_purpose'));?>">
-                <input id="<?php echo $this->get_field_id('show_purpose'); ?>" name="<?php echo $this->get_field_name('show_purpose');?>" value="1" type="checkbox" <?php checked($show_purpose, 1);?> />
-				<?php _e('Show donation purpose', 'leyka');?>
+                <input id="<?php echo esc_attr($this->get_field_id('show_purpose'));?>" name="<?php echo esc_attr($this->get_field_name('show_purpose'));?>" value="1" type="checkbox" <?php checked( !!$instance['show_purpose'], 1 );?>>
+				<?php esc_html_e('Show donation purpose', 'leyka');?>
             </label>
-            <br />
+            <br>
             <label for="<?php echo esc_attr($this->get_field_id('show_name'));?>">
-                <input id="<?php echo $this->get_field_id('show_name');?>" name="<?php echo $this->get_field_name('show_name');?>" value="1" type="checkbox" <?php checked($show_name, 1);?> />
-				<?php _e("Show donor's name", 'leyka');?>
+                <input id="<?php echo esc_attr($this->get_field_id('show_name'));?>" name="<?php echo esc_attr($this->get_field_name('show_name'));?>" value="1" type="checkbox" <?php checked( !!$instance['show_name'], 1 );?>>
+				<?php esc_html_e("Show donor's name", 'leyka');?>
             </label>
-            <br />
+            <br>
             <label for="<?php echo esc_attr($this->get_field_id('show_date'));?>">
-                <input id="<?php echo $this->get_field_id('show_date');?>" name="<?php echo $this->get_field_name('show_date');?>" value="1" type="checkbox" <?php checked($show_date, 1);?> />
-				<?php _e('Show donation date', 'leyka');?>
+                <input id="<?php echo esc_attr($this->get_field_id('show_date'));?>" name="<?php echo esc_attr($this->get_field_name('show_date'));?>" value="1" type="checkbox" <?php checked( !!$instance['show_date'], 1 );?>>
+				<?php esc_html_e('Show donation date', 'leyka');?>
             </label>
+
         </p>
 
 	<?php }
-} //class end
+
+}

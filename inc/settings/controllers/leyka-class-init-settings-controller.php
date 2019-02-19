@@ -408,13 +408,13 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'id' => 'step-intro-text-2',
             'text' => esc_html__('Later, in the plugin Settings, you can change the text on the "Thank you" page, which is displayed after the successful completion of donation.', 'leyka'),
         )))->addBlock(new Leyka_Option_Block(array(
-            'id' => 'email-from-name',
+            'id' => 'email_from_name',
             'option_id' => 'email_from_name',
         )))->addBlock(new Leyka_Option_Block(array(
-            'id' => 'email-from',
+            'id' => 'email_from',
             'option_id' => 'email_from',
         )))->addBlock(new Leyka_Option_Block(array(
-            'id' => 'email-thanks-text',
+            'id' => 'email_thanks_text',
             'option_id' => 'email_thanks_text',
         )))->addTo($section);
 
@@ -712,7 +712,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             } else { // Enable the Quittance PM
 
                 $pm_data = leyka_options()->opt('pm_available');
-                $quittance_pm_full_id = Leyka_Bank_Order::get_instance()->full_id;
+                $quittance_pm_full_id = Leyka_Bank_Order::getInstance()->full_id;
 
                 if( !in_array($quittance_pm_full_id, $pm_data) ) {
 
@@ -746,7 +746,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         $stats_option_synch_res = leyka_sync_plugin_stats_option();
 
         // DO NOT return WP_Error in production!!!! We should save option and go next step anyway
-        if(is_wp_error($stats_option_synch_res) && defined('WP_DEBUG') && WP_DEBUG) {
+        if(is_wp_error($stats_option_synch_res) && defined('LEYKA_DEBUG') && LEYKA_DEBUG) {
             return $stats_option_synch_res;
         } else {
             return delete_option('leyka_plugin_stats_option_needs_sync')
@@ -833,7 +833,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         if(leyka_are_bank_essentials_set()) {
 
             $pm_data = leyka_options()->opt('pm_available');
-            $quittance_pm_full_id = Leyka_Bank_Order::get_instance()->full_id;
+            $quittance_pm_full_id = Leyka_Bank_Order::getInstance()->full_id;
 
             if( !in_array($quittance_pm_full_id, $pm_data) ) {
 

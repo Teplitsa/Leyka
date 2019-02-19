@@ -6,10 +6,25 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     protected static $_options_meta = array();
 
     protected $_options = array();
-    protected static $_field_types = array('text', 'textarea', 'number', 'html', 'rich_html', 'select', 'radio', 'checkbox', 'multi_checkbox', 'legend', 'file');
+    protected static $_field_types = array(
+        'text', 'textarea', 'number', 'html', 'rich_html', 'select', 'radio', 'checkbox', 'multi_checkbox', 'legend', 'file'
+    );
+
+    protected $_templates_common_options = array(
+        'donation_sum_field_type', 'scale_widget_place', 'donation_submit_text', 'donations_history_under_forms',
+        'show_success_widget_on_success', 'show_donation_comment_field', 'donation_comment_max_length',
+        'show_campaign_sharing', 'show_failure_widget_on_failure', 'do_not_display_donation_form',
+    );
+    protected $_template_options = array(
+        'neo' => array(),
+        'radios' => array(),
+        'toggles' => array(),
+        'revo' => array(),
+    );
 
     protected function __construct() {
         require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
+        $this->add_template_options();
     }
 
     public function isStandardFieldType($type) {
@@ -230,6 +245,32 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     }
 
+    public function opt_template($option_id, $template_id = false) {
+
+        $option_id = str_replace('leyka_', '', $option_id);
+        
+        $val = false;
+        if(leyka_options()->is_template_option($option_id)) {
+
+            $template_id = $template_id ? $template_id : leyka_template_from_query_arg();
+            
+            if( !$template_id ) {
+
+                $current_template_data = leyka_get_current_template_data();
+                $template_id = empty($current_template_data['id']) ? null : $current_template_data['id'];
+
+            }
+
+            if($template_id) {
+                $val = leyka_options()->get_template_option($option_id, $template_id);
+            }
+
+        }
+
+        return $val === false ? $this->opt_safe($option_id) : $val;
+
+    }
+
     public function opt($option_id, $new_value = null) {
         return $new_value === null ? $this->get_value($option_id) : $this->set_value($option_id, $new_value);
     }
@@ -389,13 +430,90 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         return array_keys(self::$_options_meta);
     }
 
+    /**
+     * @param $option_name
+     * @return bool
+     */
+    public function is_template_option($option_name) {
+
+        foreach($this->_template_options as $prefix => $options) {
+            if(in_array($option_name, $options)) {
+                return true;
+            }
+        }
+
+        return false;
+
+    }
+
+    /**
+     * @return string
+     */
+    public function get_tab_option_full_name($prefix, $option) {
+        return $prefix.'_'.$option;
+    }
+
+    /**
+     * @return string
+     */
+    public function get_template_options_prefix($template_id) {
+        return 'template_options_'.$template_id;
+    }
+
+    public function add_template_options() {
+        foreach($this->_template_options as $template_id => $options) {
+
+            $options = array_merge($options, $this->_templates_common_options);
+            $this->_template_options[$template_id] = $options;
+        
+            $prefix = $this->get_template_options_prefix($template_id);
+            foreach($options as $option) {
+
+                self::$_options_meta[$this->get_tab_option_full_name($prefix, $option)] = self::$_options_meta[$option];
+                $this->_intialize_option($this->get_tab_option_full_name($prefix, $option));
+
+            }
+
+        }
+    }
+
+    /**
+     * @param $common_option
+     * @param $template_id
+     * @return mixed
+     */
+    public function get_template_option($common_option, $template_id) {
+
+        $option = $this->get_tab_option_full_name($this->get_template_options_prefix($template_id), $common_option);
+        
+        $val = Leyka_Options_Controller::get_option_value($option);
+        
+        if($val === false) {
+            foreach($this->_template_options as $template_id => $options) {
+
+                $prefix = $this->get_template_options_prefix($template_id);
+
+                if(strpos($option, $prefix) === 0) {
+
+                    $old_common_option_name = str_replace($prefix.'_', '', $option);
+                    $val = $this->opt_safe($old_common_option_name);
+
+                }
+
+            }
+        }
+        
+        return $val;
+
+    }
+
 }
 
 /**
  * @return Leyka_Options_Controller
  */
 function leyka_options() {
-    return Leyka_Options_Controller::get_instance();
+    return Leyka_Options_Controller::getInstance();
 }
 
 /** Special field: gateway commission options */
@@ -407,17 +525,19 @@ function leyka_get_commission_values($value) {
 add_action('leyka_save_custom_option-commission', 'leyka_save_custom_option_commission');
 function leyka_save_custom_option_commission($option_value) {
 
+    $all_pm_commissions = leyka_options()->opt('commission');
+
     foreach($option_value as $pm_full_id => $commission) {
 
         $commission = trim($commission);
-        $commission = (float)str_replace(',', '.', $commission);
+        $commission = $commission ? (float)str_replace(array(',', ' ', '-'), array('.', '', ''), $commission) : 0.0;
 
-        $option_value[$pm_full_id] = $commission < 0.0 ? -$commission : $commission;
+        $all_pm_commissions[$pm_full_id] = $commission;
 
     }
 
-    if($option_value != leyka_options()->opt('commission')) {
-        leyka_options()->opt('commission', $option_value);
+    if($all_pm_commissions != leyka_options()->opt('commission')) {
+        leyka_options()->opt('commission', $all_pm_commissions);
     }
 
 }
@@ -426,7 +546,7 @@ function leyka_save_custom_option_commission($option_value) {
 /** Save the basic site data in the plugin stats DB */
 function leyka_sync_plugin_stats_option() {
 
-    $stats_server_base_url = defined('WP_DEBUG') && WP_DEBUG ?
+    $stats_server_base_url = defined('LEYKA_DEBUG') && LEYKA_DEBUG ?
         rtrim(LEYKA_USAGE_STATS_DEV_SERVER_URL, '/') : rtrim(LEYKA_USAGE_STATS_PROD_SERVER_URL, '/');
 
     $leyka_installation_id = (int)get_option('leyka_installation_id');
@@ -434,6 +554,13 @@ function leyka_sync_plugin_stats_option() {
     if($leyka_installation_id) { // Update the installation (activate/deactivate)
 
         require_once LEYKA_PLUGIN_DIR.'bin/sodium-compat.phar';
+
+        if( !function_exists('Sodium\hex2bin') ) {
+            return new WP_Error(
+                'plugin_stats_sync_error',
+                __('Plugin stats sync error: Sodium syphering module is not included', 'leyka')
+            );
+        }
 
         $sipher_public_key = get_option('leyka_stats_sipher_public_key');
         $params = array(
@@ -513,9 +640,8 @@ function leyka_sync_plugin_stats_option() {
             );
         }
 
-        return
-            update_option('leyka_installation_id', (int)$response['installation_id']) &&
-            update_option('leyka_stats_sipher_public_key', $response['public_key']);
+        return update_option('leyka_installation_id', (int)$response['installation_id'])
+            && update_option('leyka_stats_sipher_public_key', $response['public_key']);
 
     }
 

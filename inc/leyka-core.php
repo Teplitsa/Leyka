@@ -15,6 +15,12 @@ class Leyka extends Leyka_Singleton {
     protected $_plugin_slug = 'leyka';
 
     /**
+     * Templates order.
+     * @var array
+     */
+    protected $_templates_order = array('revo', 'neo', 'toggles', 'radios');
+
+    /**
      * Gateways list.
      * @var array
      */
@@ -65,17 +71,19 @@ class Leyka extends Leyka_Singleton {
         }
 
         // By default, we'll assume some errors in the payment form, so redirect will get us back to it:
-        $this->_payment_form_redirect_url = wp_get_referer();
+        $this->_payment_url = wp_get_referer();
 
-        $this->load_public_cssjs();
+        add_action('wp_head', array($this, 'addGtmDataLayer'), -1000);
 
-        add_action('init', array($this, 'register_post_types'), 1);
+        $this->loadPublicCssJs();
 
-        add_action('init', array($this, 'register_user_capabilities'), 1);
+        add_action('init', array($this, 'registerPostTypes'), 1);
+
+        add_action('init', array($this, 'registerUserCapabilities'), 1);
 
         // Add/modify the rewrite rules:
-        add_filter('rewrite_rules_array', array($this, 'insert_rewrite_rules'));
-        add_filter('query_vars', array($this, 'insert_rewrite_query_vars'));
+        add_filter('rewrite_rules_array', array($this, 'insertRewriteRules'));
+        add_filter('query_vars', array($this, 'insertRewriteQueryVars'));
 
         function leyka_session_start() {
             if( !session_id() ) {
@@ -109,7 +117,7 @@ class Leyka extends Leyka_Singleton {
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-admin.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-donations-export.php');
 
-            Leyka_Admin_Setup::get_instance();
+            Leyka_Admin_Setup::getInstance();
 
             if(get_option('leyka_init_wizard_redirect')) {
 
@@ -126,10 +134,10 @@ class Leyka extends Leyka_Singleton {
 
         }
 
-        add_action('admin_bar_menu', array($this, 'add_toolbar_menu'), 999);
+        add_action('admin_bar_menu', array($this, 'addToolbarMenu'), 999);
 
         /** Service URLs handler: */
-        add_action('parse_request', array($this, 'parse_request'));
+        add_action('parse_request', array($this, 'parseRequest'));
 
         function leyka_get_posts(WP_Query $query) {
 
@@ -167,7 +175,7 @@ class Leyka extends Leyka_Singleton {
 
             if(
                 is_page(leyka_options()->opt('success_page'))
-                && leyka_options()->opt('show_success_widget_on_success')
+                && leyka_options()->opt_template('show_success_widget_on_success')
                 && is_main_query()
             ) {
 
@@ -186,7 +194,7 @@ class Leyka extends Leyka_Singleton {
 
             if(
                 is_page(leyka_options()->opt('failure_page'))
-                && leyka_options()->opt('show_failure_widget_on_failure')
+                && leyka_options()->opt_template('show_failure_widget_on_failure')
                 && is_main_query()
             ) {
 
@@ -220,7 +228,7 @@ class Leyka extends Leyka_Singleton {
                     
                     if($leyla_template_data['id'] == 'revo') {
                         $leyka = leyka();
-                        $leyka->load_public_cssjs(); // force add leyka cssjs in giger for revo leyka theme
+                        $leyka->loadPublicCssJs(); // force add leyka cssjs in giger for revo leyka theme
                     }
                 }
         
@@ -234,7 +242,7 @@ class Leyka extends Leyka_Singleton {
             function leyka_inline_scripts(){
 
 //                $colors = array('#07C7FD', '#05A6D3', '#8CE4FD'); // Leyka blue
-                $colors = array('#1db318', '#1aa316', '#acebaa'); // Leyka green?>
+                $colors = array('#1db318', '#1aa316', '#acebaa'); // Leyka green ?>
 
                 <script>
                     document.documentElement.classList.add("leyka-js");
@@ -271,7 +279,7 @@ class Leyka extends Leyka_Singleton {
 
         }
 
-        /** Embed campaign URL handler: */
+        // Embed campaign URL handler:
         function leyka_template_include($template) {
 
             if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type) && !empty($_GET['embed_object'])) {
@@ -290,29 +298,11 @@ class Leyka extends Leyka_Singleton {
 
         add_action('template_redirect', array($this, 'gateway_redirect_page'), 1, 1);
 
-        $this->apply_formatting_filters(); // Internal formatting filters
+        $this->applyContentFormatting(); // Internal formatting filters
 
-        /** Currency rates auto refreshment: */
-        if(Leyka_Options_Controller::get_option_value('leyka_auto_refresh_currency_rates')) {
+        // Currency rates auto refreshment - disabled for now
 
-            if( !wp_next_scheduled('refresh_currencies_rates') ) {
-                wp_schedule_event(current_time('timestamp'), 'daily', 'refresh_currencies_rates');
-            }
-
-            add_action('refresh_currencies_rates', array($this, '_do_currencies_rates_refresh'));
-
-            if( // Just in case..
-                !Leyka_Options_Controller::get_option_value('leyka_currency_rur2usd')
-                || !Leyka_Options_Controller::get_option_value('leyka_currency_rur2eur')
-            ) {
-                $this->_do_currency_rates_refresh();
-            }
-
-        } else {
-            wp_clear_scheduled_hook('refresh_currencies_rates');
-        }
-
-        /** Mailout for campaigns with successfully reached targets - default processing: */
+        // Mailout for campaigns with successfully reached targets - default processing:
         if(class_exists('Leyka_Options_Controller') && leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')) {
             add_action('leyka_do_campaigns_targets_reaching_mailout', array($this, '_do_campaigns_targets_reaching_mailout'));
         }
@@ -321,19 +311,99 @@ class Leyka extends Leyka_Singleton {
 
     }
 
+    public function __get($param) {
+        switch($param) {
+            case 'version': return LEYKA_VERSION;
+            case 'plugin_slug': return $this->_plugin_slug;
+            case 'payment_url': return $this->_payment_url;
+            case 'payment_vars': return $this->_payment_vars;
+            case 'submitted_donation_id':
+            case 'donation_id': return $this->_submitted_donation_id;
+            case 'auto_redirect': return $this->_submission_redirect_type === 'auto';
+            case 'redirect_type':
+            case 'submission_redirect_type':
+                return $this->_submission_redirect_type;
+            case 'form_is_screening': return !!$this->_form_is_screening;
+            default: return '';
+        }
+    }
+
+    public function __set($name, $value) {
+        switch($name) {
+            case 'form_is_screening':
+
+                $value = !!$value;
+
+                if( !$this->_form_is_screening && $value ) {
+                    $this->_form_is_screening = $value;
+                }
+                break;
+
+            default:
+        }
+    }
+
+    public function addGtmDataLayer() {
+
+        if(
+            !leyka_options()->opt('show_gtm_dataLayer_on_success')
+            || !is_main_query()
+            || !is_page(leyka_options()->opt('success_page'))
+        ) {
+            return;
+        }
+
+        $donation_id = leyka_remembered_data('donation_id');
+        $campaign = null;
+        $campaign_id = null;
+
+        if( !$donation_id ) {
+            return;
+        }
+
+        $donation = new Leyka_Donation($donation_id);
+        $campaign_id = $donation ? $donation->campaign_id : null;
+        $campaign = new Leyka_Campaign($campaign_id);
+
+        if( !$campaign->id ) {
+            return;
+        }?>
+
+        <script>
+            dataLayer = [{
+                'donationId': '<?php echo (int)$donation_id;?>',
+                'donationCampaignId': '<?php echo (int)$campaign_id;?>',
+                'donationCampaignTitle': '<?php echo esc_attr($campaign->title);?>',
+                'donationCampaignPaymentTitle': '<?php echo esc_attr($campaign->payment_title);?>',
+                'donationFundedDate': '<?php echo esc_attr($donation->date_funded);?>',
+                'donationGateway': '<?php echo esc_attr($donation->gateway_label);?>',
+                'donationPm': '<?php echo esc_attr($donation->pm_label);?>',
+                'donationType': '<?php echo esc_attr($donation->type_label);?>',
+                'donationAmount': '<?php echo esc_attr($donation->amount);?>',
+                'donationAmountTotal': '<?php echo esc_attr($donation->amount_total);?>',
+                'donationCurrency': '<?php echo esc_attr($donation->currency_label);?>',
+            }];
+        </script>
+
+    <?php }
+
     /** @todo Create a procedure to get actual currencies rates and save them in the plugin options values */
-    public function do_currencies_rates_refresh() {
-
+    public function doCurrenciesRatesRefresh() {
     }
 
+    public function loadPublicCssJs() {
+
+        add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
+        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
+        add_action('wp_enqueue_scripts', array($this, 'localizeScripts'));
+
+    }
+    /** @deprecated */
     public function load_public_cssjs() {
-        // Load public-facing style sheet and JavaScript:
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_styles')); // wp_footer
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts')); // wp_footer
-        add_action('wp_enqueue_scripts', array($this, 'localize_scripts')); // wp_footer
+        $this->loadPublicCssJs();
     }
 
-    public function parse_request() {
+    public function parseRequest() {
 
         if(stristr($_SERVER['REQUEST_URI'], 'leyka/service') !== FALSE) { // Leyka service URL
 
@@ -386,53 +456,68 @@ class Leyka extends Leyka_Singleton {
         }
 
     }
+    /** @deprecated */
+    public function parse_request() {
+        return $this->parseRequest();
+    }
 
-    public function add_toolbar_menu(WP_Admin_Bar $wp_admin_bar) {
+    public function addToolbarMenu(WP_Admin_Bar $wp_admin_bar) {
 
         if( !current_user_can('leyka_manage_donations') ) {
             return;
         }
 
         $wp_admin_bar->add_node(array(
-            'id' => 'leyka-toolbar-menu',
+            'id'    => 'leyka-toolbar-menu',
             'title' => __('Leyka', 'leyka'),
-            'href' => admin_url('admin.php?page=leyka'),
+            'href'  => admin_url('admin.php?page=leyka'),
         ));
 
         $wp_admin_bar->add_node(array(
             'id'     => 'leyka-toolbar-desktop',
             'title'  => __('Desktop', 'leyka'),
             'parent' => 'leyka-toolbar-menu',
-            'href' => admin_url('admin.php?page=leyka'),
+            'href'   => admin_url('admin.php?page=leyka'),
         ));
         $wp_admin_bar->add_node(array(
-            'id'     => 'leyka-toolbar-donations',
-            'title'  => __('Donations', 'leyka'),
-            'parent' => 'leyka-toolbar-menu',
-            'href' => admin_url('edit.php?post_type='.Leyka_Donation_Management::$post_type),
+            'id'        => 'leyka-toolbar-donations',
+            'title'     => __('Donations', 'leyka'),
+            'parent'    => 'leyka-toolbar-menu',
+            'href'      => admin_url('edit.php?post_type='.Leyka_Donation_Management::$post_type),
         ));
         $wp_admin_bar->add_node(array(
-            'id'     => 'leyka-toolbar-campaigns',
-            'title'  => __('Campaigns', 'leyka'),
-            'parent' => 'leyka-toolbar-menu',
-            'href' => admin_url('edit.php?post_type='.Leyka_Campaign_Management::$post_type),
+            'id'        => 'leyka-toolbar-campaigns',
+            'title'     => __('Campaigns', 'leyka'),
+            'parent'    => 'leyka-toolbar-menu',
+            'href'      => admin_url('edit.php?post_type='.Leyka_Campaign_Management::$post_type),
         ));
 
         if(current_user_can('leyka_manage_options')) {
             $wp_admin_bar->add_node(array(
-                'id'     => 'leyka-toolbar-settings',
-                'title'  => __('Settings', 'leyka'),
-                'parent' => 'leyka-toolbar-menu',
-                'href' => admin_url('admin.php?page=leyka_settings'),
+                'id'        => 'leyka-toolbar-settings',
+                'title'     => __('Settings', 'leyka'),
+                'parent'    => 'leyka-toolbar-menu',
+                'href'      => admin_url('admin.php?page=leyka_settings'),
             ));
         }
 
     }
+    /**
+     * @deprecated
+     * @param $wp_admin_bar WP_Admin_Bar
+     */
+    public function add_toolbar_menu(WP_Admin_Bar $wp_admin_bar) {
+        return $this->addToolbarMenu($wp_admin_bar);
+    }
 
-    public function _do_currency_rates_refresh() {
+    public function _doCurrencyRatesRefresh() {
         foreach(leyka_get_actual_currency_rates() as $currency => $rate) {
             update_option('leyka_currency_rur2'.mb_strtolower($currency), $rate);
         }
+    }
+    /** @deprecated */
+    public function _do_currency_rates_refresh() {
+        return $this->_doCurrencyRatesRefresh();
     }
 
     public function _do_campaigns_targets_reaching_mailout($campaign_id = false) {
@@ -568,75 +653,78 @@ class Leyka extends Leyka_Singleton {
 
     }
 
-    public function __get($param) {
-        switch($param) {
-            case 'version': return LEYKA_VERSION;
-            case 'plugin_slug': return $this->_plugin_slug;
-            case 'payment_url': return $this->_payment_url;
-            case 'payment_vars': return $this->_payment_vars;
-            case 'submitted_donation_id':
-            case 'donation_id': return $this->_submitted_donation_id;
-            case 'auto_redirect': return $this->_submission_redirect_type === 'auto';
-            case 'redirect_type':
-            case 'submission_redirect_type':
-                return $this->_submission_redirect_type;
-            case 'form_is_screening': return !!$this->_form_is_screening;
-            default: return '';
-        }
-    }
-
-    public function __set($name, $value) {
-        switch($name) {
-            case 'form_is_screening':
-
-                $value = !!$value;
-
-                if( !$this->_form_is_screening && $value ) {
-                    $this->_form_is_screening = $value;
-                }
-                break;
-
-            default:
-        }
-    }
-
-    public function add_payment_form_error(WP_Error $error) {
+    public function addPaymentFormError(WP_Error $error) {
         $this->_form_errors[] = $error;
+    }
+    /**
+     * @deprecated
+     * @param $error WP_Error
+     */
+    public function add_payment_form_error(WP_Error $error) {
+        return $this->addPaymentFormError($error);
     }
 
     /** @return bool */
-    public function payment_form_has_errors() {
+    public function paymentFormHasErrors() {
         return count($this->_form_errors) > 0;
+    }
+    /** @deprecated */
+    public function payment_form_has_errors() {
+        return $this->paymentFormHasErrors();
     }
 
     /** @return array Of WP_Error instances, if any. */
-    public function get_payment_form_errors() {
+    public function getPaymentFormErrors() {
         return $this->_form_errors;
+    }
+    /** @deprecated */
+    public function get_payment_form_errors() {
+        return $this->getPaymentFormErrors();
     }
 
     /**
      * Wrapper to work with leyka_errors session var.
      * @param bool $anew
      */
+    private function _addSessionErrors($anew = false) {
+        if(empty($_SESSION['leyka_errors']) || $anew) {
+            $_SESSION['leyka_errors'] = $this->getPaymentFormErrors();
+        } else {
+            $_SESSION['leyka_errors'] = array_merge($_SESSION['leyka_errors'], $this->getPaymentFormErrors());
+        }
+    }
+    /**
+     * @deprecated
+     * @param $anew boolean
+     */
     private function _add_session_errors($anew = false) {
-        if(empty($_SESSION['leyka_errors']) || $anew)
-            $_SESSION['leyka_errors'] = $this->get_payment_form_errors();
-        else
-            $_SESSION['leyka_errors'] = array_merge($_SESSION['leyka_errors'], $this->get_payment_form_errors());
+        return $this->_addSessionErrors($anew);
     }
 
     /** @return bool */
-    public function has_session_errors() {
+    public function hasSessionErrors() {
         return !empty($_SESSION['leyka_errors']) && count($_SESSION['leyka_errors']);
+    }
+    /** @deprecated */
+    public function has_session_errors() {
+        return $this->hasSessionErrors();
     }
 
     /** @return array */
-    public function get_session_errors() {
+    public function getSessionErrors() {
         return empty($_SESSION['leyka_errors']) ? array() : $_SESSION['leyka_errors'];
     }
+    /** @deprecated */
+    public function get_session_errors() {
+        return $this->getSessionErrors();
+    }
 
-    public function clear_session_errors() {
+    public function clearSessionErrors() {
         $_SESSION['leyka_errors'] = array();
+    }
+    /** @deprecated */
+    public function clear_session_errors() {
+        return $this->clearSessionErrors();
     }
 
     /**
@@ -644,7 +732,7 @@ class Leyka extends Leyka_Singleton {
      *
      * @return array of status_id => status label pairs
      */
-    public function get_donation_statuses() {
+    public function getDonationStatuses() {
         return apply_filters('leyka_donation_statuses', array(
             'submitted' => _x('Submitted', '«Submitted» donation status', 'leyka'),
             'funded'    => _x('Funded', '«Completed» donation status', 'leyka'),
@@ -653,12 +741,17 @@ class Leyka extends Leyka_Singleton {
             'trash'     => _x('Trash', '«Deleted» donation status', 'leyka'),
         ));
     }
+    /** @deprecated */
+    public function get_donation_statuses() {
+        return $this->getDonationStatuses();
+    }
+
     /**
      * Retrieve all available payment/donation statuses' descriptions.
      *
      * @return array of status_id => status_description pairs
      */
-    public function get_donation_statuses_descriptions() {
+    public function getDonationStatusesDescriptions() {
         return apply_filters('leyka_donation_statuses_descriptions', array(
             'submitted' => _x("Donation attempt was made, but the payment itself wasn't sent.", '«Submitted» donation status description', 'leyka'),
             'funded' => _x('Donation was finished, the funds were made to your account.', '«Completed» donation status description', 'leyka'),
@@ -667,32 +760,47 @@ class Leyka extends Leyka_Singleton {
             'trash' => _x('Donation information was deleted.', '«Trash» donation status description', 'leyka'),
         ));
     }
+    /** @deprecated */
+    public function get_donation_statuses_descriptions() {
+        return $this->getDonationStatusesDescriptions();
+    }
 
     /**
      * Retrieve all available campaign target states.
      *
      * @return array of state_id => state label pairs
      */
-    public function get_campaign_target_states() {
+    public function getCampaignTargetStates() {
         return apply_filters('leyka_campaign_target_states', array(
             'no_target'   => _x('No target', 'Campaign state when target is not set', 'leyka'),
             'is_reached'  => _x('Reached', 'Campaign state when target is reached', 'leyka'),
             'in_progress' => _x('In progress', 'Campaign state when target is not reached yet', 'leyka'),
         ));
     }
+    /** @deprecated */
+    public function get_campaign_target_states() {
+        return $this->getCampaignTargetStates();
+    }
 
     /**
      * @return array Of Leyka_Gateway objects.
      */
-    public function get_gateways() {
+    public function getGateways() {
         return $this->_gateways;
+    }
+    /**
+     * @deprecated
+     * @return array Of Leyka_Gateway objects.
+     */
+    public function get_gateways() {
+        return $this->getGateways();
     }
 
     /**
      * @param Leyka_Gateway $gateway
      * @return bool
      */
-    public function add_gateway(Leyka_Gateway $gateway) {
+    public function addGateway(Leyka_Gateway $gateway) {
 
         if(empty($this->_gateways[$gateway->id])) {
 
@@ -704,17 +812,26 @@ class Leyka extends Leyka_Singleton {
         }
 
     }
+    /**
+     * @deprecated
+     * @param Leyka_Gateway $gateway
+     * @return bool
+     */
+    public function add_gateway(Leyka_Gateway $gateway) {
+        return $this->addGateway($gateway);
+    }
 
-    /** Just in case */
-    public function remove_gateway($gateway_id) {
+    public function removeGateway($gateway_id) {
         if( !empty($this->_gateways[$gateway_id]) ) {
             unset($this->_gateways[$gateway_id]);
         }
     }
+    /** @deprecated */
+    public function remove_gateway($gateway_id) {
+        $this->removeGateway($gateway_id);
+    }
 
-    /**
-     * Fired when the plugin is activated or when an update is needed.
-     */
+    /** Fired when the plugin is activated or when an update is needed. */
     public static function activate() {
 
         $leyka_last_ver = get_option('leyka_last_ver');
@@ -801,7 +918,7 @@ class Leyka extends Leyka_Singleton {
                     !in_array($script, array(
                         'leyka-settings-common.php',
                         'leyka-settings-payment.php',
-                        'leyka-settings-payment-old.php',
+//                        'leyka-settings-payment-old.php',
                         'leyka-settings-payment-gateway.php',
                         'leyka-settings-payment-gateways-list.php',
                         'leyka-settings-payment-pm-order.php',
@@ -909,8 +1026,14 @@ class Leyka extends Leyka_Singleton {
         }
 
         if( !$leyka_last_ver || $leyka_last_ver < '3.0' ) {
-
-            update_option('leyka_init_wizard_redirect', true);
+            
+            if(defined('KND_VERSION') && class_exists( 'TGM_Plugin_Activation' )) {
+              update_option('leyka_init_wizard_redirect', false);
+            }
+            else {
+               update_option('leyka_init_wizard_redirect', !$leyka_last_ver);
+            }
+            
             update_option('leyka_receiver_country', 'ru');
             update_option('leyka_receiver_legal_type', 'legal');
 
@@ -927,22 +1050,21 @@ class Leyka extends Leyka_Singleton {
 
     }
 
-    /**
-     * Fired when the plugin is deactivated.
-     * @param boolean $network_wide True if WPMU superadmin uses "Network Deactivate" action,
-     * false if WPMU is disabled or plugin is deactivated on an individual blog.
-     */
     public static function deactivate() {
         delete_option('leyka_permalinks_flushed');
     }
 
-    public function apply_formatting_filters() {
+    public function applyContentFormatting() {
 
         add_filter('leyka_the_content', 'wptexturize');
         add_filter('leyka_the_content', 'convert_smilies');
         add_filter('leyka_the_content', 'convert_chars');
         add_filter('leyka_the_content', 'wpautop');
 
+    }
+    /** @deprecated */
+    public function apply_formatting_filters() {
+        $this->applyContentFormatting();
     }
 
     /** Register and enqueue public-facing style sheet. */
@@ -959,7 +1081,7 @@ class Leyka extends Leyka_Singleton {
             return;
 
         }
-        
+
         // Revo template or success/failure widgets styles:
         if(leyka_revo_template_displayed() || leyka_success_widget_displayed() || leyka_failure_widget_displayed()) {
             wp_enqueue_style(
@@ -1023,7 +1145,7 @@ class Leyka extends Leyka_Singleton {
 
     }
 
-    public function localize_scripts() {
+    public function localizeScripts() {
 
         $js_data = apply_filters('leyka_js_localized_strings', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
@@ -1050,16 +1172,20 @@ class Leyka extends Leyka_Singleton {
         wp_localize_script(apply_filters('leyka_js_localized_script_id', $leyka_js_handle), 'leyka', $js_data);
 
     }
+    /** @deprecated */
+    public function localize_scripts() {
+        $this->localizeScripts();
+    }
 
     /** Register leyka user roles and caps. */
-    function register_user_capabilities() {
+    public function registerUserCapabilities() {
 
         $role = get_role('administrator'); // Just in case. There were some exotic cases..
         if( !$role ) {
             return;
         }
 
-        /** Create all roles and capabilities: */
+        // Create all roles and capabilities:
         $caps = array(
             'read' => true, 'edit_#base#' => true, 'read_#base#' => true, 'delete_#base#' => true,
             'edit_#base#s' => true, 'edit_others_#base#s' => true, 'publish_#base#s' => true,
@@ -1069,35 +1195,31 @@ class Leyka extends Leyka_Singleton {
             'upload_files' => true, 'unfiltered_html' => true, 'leyka_manage_donations' => true,
         );
 
-//        if(empty($role->capabilities['leyka_manage_donations'])) {
+        foreach($caps as $cap => $true) {
 
-            foreach($caps as $cap => $true) {
+            $cap_donation = str_replace('#base#', 'donation', $cap);
 
-                $cap_donation = str_replace('#base#', 'donation', $cap);
-
-                if(empty($role->capabilities[$cap_donation])) {
-                    $role->add_cap($cap_donation, TRUE);
-                }
-
-                $caps[$cap_donation] = TRUE;
-
-                $cap_campaign = str_replace('#base#', 'campaign', $cap);
-
-                if(empty($role->capabilities[$cap_campaign])) {
-                    $role->add_cap($cap_campaign, TRUE);
-                }
-
-                $caps[$cap_campaign] = TRUE;
-
-                if(stristr($cap, '#base#') !== FALSE)
-                    unset($caps[$cap]);
+            if(empty($role->capabilities[$cap_donation])) {
+                $role->add_cap($cap_donation, TRUE);
             }
 
-            if(empty($role->capabilities['leyka_manage_options'])) {
-                $role->add_cap('leyka_manage_options', TRUE);
+            $caps[$cap_donation] = TRUE;
+
+            $cap_campaign = str_replace('#base#', 'campaign', $cap);
+
+            if(empty($role->capabilities[$cap_campaign])) {
+                $role->add_cap($cap_campaign, TRUE);
             }
-//            $role->add_cap('leyka_manage_options', TRUE);
-//        }
+
+            $caps[$cap_campaign] = TRUE;
+
+            if(stristr($cap, '#base#') !== FALSE)
+                unset($caps[$cap]);
+        }
+
+        if(empty($role->capabilities['leyka_manage_options'])) {
+            $role->add_cap('leyka_manage_options', TRUE);
+        }
 
         if( !get_role('donations_manager') ) {
             add_role('donations_manager', __('Donations Manager', 'leyka'), $caps);
@@ -1107,11 +1229,15 @@ class Leyka extends Leyka_Singleton {
         }
 
     }
+    /** @deprecated */
+    public function register_user_capabilities() {
+        $this->registerUserCapabilities();
+    }
 
     /**
      * Register leyka post types.
      */
-    function register_post_types(){
+    public function registerPostTypes(){
 
         // Donations:
         $args = array(
@@ -1185,7 +1311,7 @@ class Leyka extends Leyka_Singleton {
         register_post_type(Leyka_Campaign_Management::$post_type, $args);
 
         /** Campaign editing messages */
-        add_filter('post_updated_messages', array(Leyka_Campaign_Management::get_instance(), 'set_admin_messages'));
+        add_filter('post_updated_messages', array(Leyka_Campaign_Management::getInstance(), 'set_admin_messages'));
 
         register_post_status('submitted', array(
             'label'                     => _x('Submitted', '«Submitted» donation status', 'leyka'),
@@ -1226,18 +1352,30 @@ class Leyka extends Leyka_Singleton {
         do_action('leyka_cpt_registered');
 
     }
+    /** @deprecated */
+    public function register_post_types() {
+        $this->registerPostTypes();
+    }
 
     /**
      * Add the plugin's rules themselves.
      * @var $rules array
      * @return array
      */
-    public function insert_rewrite_rules(array $rules) {
+    public function insertRewriteRules(array $rules) {
         return array(
             'campaign/([^/]+)/donations/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter=$matches[1]',
             'campaign/([^/]+)/donations/page/([1-9]{1,})/?$' =>
                 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter=$matches[1]&paged=$matches[2]',
         ) + $rules; // The rules' order is important
+    }
+    /**
+     * @deprecated
+     * @param array $rules
+     * @return array
+     */
+    public function insert_rewrite_rules(array $rules) {
+        return $this->insertRewriteRules($rules);
     }
 
     /**
@@ -1245,11 +1383,19 @@ class Leyka extends Leyka_Singleton {
      * @var $vars array
      * @return array
      */
-    public function insert_rewrite_query_vars(array $vars) {
+    public function insertRewriteQueryVars(array $vars) {
 
         $vars[] = 'leyka_campaign_filter';
         return $vars;
 
+    }
+    /**
+     * @deprecated
+     * @var $vars array
+     * @return array
+     */
+    public function insert_rewrite_query_vars(array $vars) {
+        return $this->insertRewriteQueryVars($vars);
     }
 
     /**
@@ -1265,7 +1411,7 @@ class Leyka extends Leyka_Singleton {
                 exit();
 
             }
-			
+
 			if(is_admin_bar_showing()) { // Hide adminbar (toolbar) if needed
 				add_filter('show_admin_bar', '__return_false');
 			}
@@ -1280,11 +1426,11 @@ class Leyka extends Leyka_Singleton {
 
             do_action('leyka_init_gateway_redirect_page');
 
-            $this->_do_payment_form_submission();
+            $this->_handlePaymentFormSubmit();
 
-            if($this->payment_form_has_errors() || !$this->_payment_url) {
+            if($this->paymentFormHasErrors() || !$this->_payment_url) {
 
-                $this->_add_session_errors(); // Error handling
+                $this->_addSessionErrors(); // Error handling
 
                 $referer = wp_get_referer();
                 if(strstr($referer, '#') !== false) {
@@ -1304,18 +1450,18 @@ class Leyka extends Leyka_Singleton {
 
         }
 
-    } // template_redirect
+    }
 
-    public function _do_payment_form_submission() {
+    public function _handlePaymentFormSubmit() {
 
-        $this->clear_session_errors(); // Clear all previous submits errors, if there are some
+        $this->clearSessionErrors(); // Clear all previous submits errors, if there are some
 
         $form_errors = Leyka_Payment_Form::is_form_fields_valid();
 
         if(is_array($form_errors) && count($form_errors) > 0) {
 
             foreach($form_errors as $error) { /** @var WP_Error $error */
-                $this->add_payment_form_error($error);
+                $this->addPaymentFormError($error);
             }
 
             return;
@@ -1326,13 +1472,13 @@ class Leyka extends Leyka_Singleton {
 
         if(is_wp_error($donation_id)) { /** @var WP_Error $donation_id */
 
-            $this->add_payment_form_error($donation_id);
+            $this->addPaymentFormError($donation_id);
             return;
 
         } else if( !$donation_id ) {
 
             $error = new WP_Error('unknown_donation_submit_error', __('The donation was not created due to error.', 'leyka'));
-            $this->add_payment_form_error($error);
+            $this->addPaymentFormError($error);
             return;
 
         }
@@ -1364,8 +1510,12 @@ class Leyka extends Leyka_Singleton {
         );
 
     }
+    /** @deprecated */
+    public function _do_payment_form_submission() {
+        return $this->_handlePaymentFormSubmit();
+    }
 
-    /** Save a base submission info and return new donation ID, so gateway can add it's specific data to the logs. */
+    /** Save the basic donation data and return new donation ID, so gateway can add it's specific data to the logs. */
     public function log_submission() {
 
         if(empty($_POST['leyka_campaign_id']) || (int)$_POST['leyka_campaign_id'] <= 0) {
@@ -1401,7 +1551,7 @@ class Leyka extends Leyka_Singleton {
      * @param $is_service boolean True if templates is of service group, false otherwise.
      * @return array Template files.
      **/
-    public function get_templates($is_service = false) {
+    public function getTemplates($is_service = false) {
 
         if( !$this->templates ) {
             $this->templates = array();
@@ -1414,9 +1564,9 @@ class Leyka extends Leyka_Singleton {
             $custom_templates = glob(STYLESHEETPATH.'/leyka-template-*.php');
             $custom_templates = $custom_templates ? $custom_templates : array();
 
-            $this->templates = array_merge(
-                $custom_templates,
-                glob(LEYKA_PLUGIN_DIR.'templates/leyka-template-*.php')
+            $this->templates = apply_filters(
+                'leyka_templates_list',
+                array_merge($custom_templates, glob(LEYKA_PLUGIN_DIR.'templates/leyka-template-*.php'))
             );
 
         }
@@ -1425,20 +1575,42 @@ class Leyka extends Leyka_Singleton {
             $this->templates = array();
         }
 
-        $this->templates = array_map(array($this, 'get_template_data'), $this->templates);
+        $this->templates = array_map(array($this, 'getTemplateData'), $this->templates);
+
+        // Templates ordering:
+        $ordered_templates = array();
+
+        foreach($this->_templates_order as $ordered_template) {
+            foreach($this->templates as $template_data) {
+                if($template_data['id'] == $ordered_template) {
+                    $ordered_templates[] = $template_data;
+                }
+            }
+        }
+
+        foreach($this->templates as $template_data) {
+            if( !in_array($template_data['id'], $this->_templates_order) ) {
+                $ordered_templates[] = $template_data;
+            }
+        }
+        $this->templates = $ordered_templates;
 
         return (array)$this->templates;
 
     }
+    /**
+     * @deprecated
+     * @param $is_service boolean
+     * @return array
+     */
+    public function get_templates($is_service = false) {
+        return $this->getTemplates($is_service);
+    }
 
-    public function get_template_data($file) {
 
-        $headers = array(
-            'name' => 'Leyka Template',
-            'description' => 'Description',
-        );
+    public function getTemplateData($file) {
 
-        $data = get_file_data($file, $headers);
+        $data = get_file_data($file, array('name' => 'Leyka Template', 'description' => 'Description',));
         $data['file'] = $file;
         $data['basename'] = basename($file);
         $id = explode('-', str_replace('.php', '', $data['basename']));
@@ -1451,10 +1623,18 @@ class Leyka extends Leyka_Singleton {
         return $data;
 
     }
+    /**
+     * @deprecated
+     * @param $file string
+     * @return array
+     */
+    public function get_template_data($file) {
+        return $this->getTemplateData($file);
+    }
 
-    public function get_template($basename, $is_service = false) {
+    public function getTemplate($basename, $is_service = false) {
 
-        $templates = $this->get_templates($is_service);
+        $templates = $this->getTemplates($is_service);
         if( !$templates ) {
             return false;
         }
@@ -1475,15 +1655,23 @@ class Leyka extends Leyka_Singleton {
         return $active;
 
     }
+    /**
+     * @deprecated
+     * @param $basename string
+     * @param $is_service boolean
+     * @return string
+     */
+    public function get_template($basename, $is_service = false) {
+        return $this->getTemplate($basename, $is_service);
+    }
 
-} // Leyka class end
+}
 
-// Shorthands for singletons instances:
 /**
  * @return Leyka Core object
  */
 function leyka() {
-    return Leyka::get_instance();
+    return Leyka::getInstance();
 }
 
 /** Orphan strings to localize */

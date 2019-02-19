@@ -8,6 +8,7 @@
 @import 'wizard_cp';
 @import 'wizard_yandex';
 @import 'loader';
+@import 'settings_sections';
 
 .leyka-settings-page {
 
@@ -215,6 +216,18 @@
 
                         .option-block.type-checkbox input {
                             margin-right: 8px;
+                        }
+
+                        .pm-commission-wrapper {
+
+                            margin-top: 8px;
+
+                            input.leyka-commission-field {
+                                margin-left: 0;
+                                font-size: 13px;
+                                width: 140px;
+                            }
+
                         }
 
                     }

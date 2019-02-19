@@ -39,8 +39,6 @@ function leyka_get_scale($campaign = null, $args = array()) {
         return '';
     }
 
-    $campaign = new Leyka_Campaign($campaign);
-
     $css_class = 'leyka-scale';
     if($args['show_button'] == 1 && !$campaign->target ) {
         $css_class .= ' has-button-alone';
@@ -63,6 +61,7 @@ function leyka_get_scale($campaign = null, $args = array()) {
     <?php $out = ob_get_clean();
 
     return apply_filters('leyka_scale_html', $out, $campaign, $args);
+
 }
 
 function leyka_get_scale_button_label(){
@@ -83,6 +82,7 @@ function leyka_campaign_card_screen($atts) {
         'show_thumb' => 1,
         'show_excerpt' => 1,
         'show_scale' => 1,
+        'show_finished' => 1,
         'show_button' => 1,
     ), $atts);
 
@@ -108,13 +108,14 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
         'show_excerpt' => 1,
         'show_scale' => 1,
         'show_button' => 1,
+        'show_finished' => 1,
         'increase_counters' => 0,
         'embed_mode' => 0,
     ));
 
     if( !$campaign ) {
         $campaign = get_post();
-    } else if(is_int($campaign)) {
+    } else if(is_numeric($campaign)) {
         $campaign = get_post($campaign);
     }
 
@@ -127,11 +128,11 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
         return is_super_admin() ? leyka_get_wrong_campaign_message($campaign) : '';
     }
 
-    if($campaign->is_finished) {
+    if($campaign->is_finished && !$args['show_finished']) {
         return '';
     }
 
-    $target = $args['embed_mode'] == 1 ? 'target="_blank"' : '';
+    $target = !!$args['embed_mode'] ? 'target="_blank"' : '';
     $thumbnail_size = apply_filters('leyka_campaign_card_thumbnail_size', 'post-thumbnail', $campaign_obj, $args);
     $css_class = apply_filters('leyka_campaign_card_class', 'leyka-campaign-card', $campaign_obj, $args);
     if($args['show_thumb'] == 1 && has_post_thumbnail($campaign_obj->ID)) {
@@ -182,14 +183,12 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
             </div>
         <?php }
 
-        if($args['show_scale'] == 1) {
-
+        if( !!$args['show_scale'] ) {
             echo leyka_get_scale($campaign_obj,	array(
                 'show_button' => $args['show_button'],
                 'embed_mode' => $args['embed_mode'],
             ));
-
-        } elseif($args['show_button'] == 1) {
+        } else if( !!$args['show_button'] ) {
 
             $url = trailingslashit(get_permalink($campaign_obj->ID)).'#leyka-payment-form'.
                 ( !!$args['increase_counters'] ? '?increase_counters=1' : '' );?>
@@ -215,7 +214,7 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
 add_shortcode('leyka_payment_form', 'leyka_payment_form_screen');
 add_shortcode('leyka_campaign_form', 'leyka_payment_form_screen');
 function leyka_payment_form_screen($atts) {
-
+    
     $atts = shortcode_atts(array(
         'id' => 0,
         'template' => null,
@@ -235,7 +234,7 @@ function leyka_get_payment_form($campaign = null, $args = array()) {
 
     if( !$campaign ) {
         $campaign = get_post();
-    } elseif(is_int($campaign)){
+    } elseif(is_numeric($campaign)){
         $campaign = get_post($campaign);
     }
 
@@ -446,25 +445,26 @@ function leyka_get_campaign_supporters($campaign_id, $max_names = 5) {
 }
 
 add_shortcode('leyka_inline_campaign', 'leyka_inline_campaign');
-function leyka_inline_campaign(array $attributes = array()) {
+function leyka_inline_campaign(array $atts = array()) {
 
     /** @todo Make the shortcode work not only with Revo, but with the rest of form templates */
-    $attributes = shortcode_atts(array(
+    $atts = shortcode_atts(array(
         'id' => false,
         'template' => 'revo', // leyka_options()->opt('donation_form_template'),
         'show_thumbnail' => leyka_options()->opt('revo_template_show_thumbnail'),
+        'show_finished' => true,
         'show_preview' => true,
-    ), $attributes);
+    ), $atts);
 
-    $campaign_id = $attributes['id'] ? (int)$attributes['id'] : get_post()->ID;
+    $campaign_id = $atts['id'] ? (int)$atts['id'] : get_post()->ID;
     $campaign = leyka_get_validated_campaign($campaign_id);
     if( !$campaign ) {
         return is_super_admin() ? leyka_get_wrong_campaign_message($campaign) : '';
-    } else if($campaign->is_finished) {
+    } else if($campaign->is_finished && !$atts['show_finished']) {
         return '';
     }
 
-    $template_id = $attributes['template'];
+    $template_id = $atts['template'];
     $template_subdir = LEYKA_PLUGIN_DIR.'templates/leyka-'.$template_id;
     $template_file = LEYKA_PLUGIN_DIR.'templates/leyka-template-'.$template_id.'.php';
     $ready = 0;
@@ -479,8 +479,8 @@ function leyka_inline_campaign(array $attributes = array()) {
         return false;
     }
 
-    $attributes['show_thumbnail'] = !!$attributes['show_thumbnail'];
-    $thumb_url = $attributes['show_thumbnail'] ? get_the_post_thumbnail_url($campaign_id, 'post-thumbnail') : false;
+    $atts['show_thumbnail'] = !!$atts['show_thumbnail'];
+    $thumb_url = $atts['show_thumbnail'] ? get_the_post_thumbnail_url($campaign_id, 'post-thumbnail') : false;
 
     /** @todo For the forms caching task */
 //    global $test; // USE A COLLECTION/FACTORY OBJECT INSTEAD OF GLOBAL!
@@ -498,11 +498,12 @@ function leyka_inline_campaign(array $attributes = array()) {
 
     ob_start();?>
 
-    <div id="<?php echo leyka_pf_get_form_id($campaign_id);?>" class="leyka-pf <?php echo leyka_pf_get_form_auto_open_class($campaign_id);?> <?php if($attributes['show_preview']):?>show-preview<?php endif?>" data-form-id="<?php echo leyka_pf_get_form_id($campaign->id).'-revo-form';?>">
+    <div id="<?php echo leyka_pf_get_form_id($campaign_id);?>" class="leyka-pf <?php echo leyka_pf_get_form_auto_open_class($campaign_id);?> <?php if($atts['show_preview']):?>show-preview<?php endif?>" data-form-id="<?php echo leyka_pf_get_form_id($campaign->id).'-revo-form';?>">
+
         <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
         <div class="leyka-pf__overlay"></div>
 
-        <div class="leyka-pf__module <?php echo leyka_options()->opt('show_donation_comment_field') ? 'leyka-with-comment' : '';?>">
+        <div class="leyka-pf__module <?php echo leyka_options()->opt_template('show_donation_comment_field') ? 'leyka-with-comment' : '';?>">
             <div class="leyka-pf__close leyka-js-close-form">x</div>
             <div class="leyka-pf__card inpage-card">
 
@@ -511,26 +512,27 @@ function leyka_inline_campaign(array $attributes = array()) {
             <?php }?>
 
                 <div class="inpage-card__content">
+
                     <div class="inpage-card_title"><?php echo get_the_title($campaign_id);?></div>
-                    
-                    <?php if($attributes['show_preview'] && $campaign->post_excerpt):?>
+
+                    <?php if($atts['show_preview'] && $campaign->post_excerpt) {?>
                     <div class="inpage-card__excerpt">
                         <?php echo $campaign->post_excerpt?>
                         <div class="inpage-card__toggle-excerpt-links">
-                            <a href="#" class="inpage-card__expand-excerpt">Подробнее</a>
-                            <a href="#" class="inpage-card__collapse-excerpt">Свернуть</a>
+                            <a href="#" class="inpage-card__expand-excerpt"><?php _e('More', 'leyka');?></a>
+                            <a href="#" class="inpage-card__collapse-excerpt"><?php _e('Hide', 'leyka');?></a>
                         </div>
                     </div>
-                    <?php endif?>
+                    <?php }?>
 
 					<div class="inpage-card_scale">
+
                     <?php $collected = leyka_get_campaign_collections($campaign_id);
 						$target = leyka_get_campaign_target($campaign_id);
 
 						if($target) { // Campaign target set
 
-							$ready = isset($target['amount']) ?
-                                round(100.0*$collected['amount']/$target['amount'], 1) : 0;
+							$ready = isset($target['amount']) ? round(100.0*$collected['amount']/$target['amount'], 1) : 0;
 							$ready = $ready >= 100.0 ? 100.0 : $ready;?>
 
                         <div class="scale">
@@ -538,26 +540,25 @@ function leyka_inline_campaign(array $attributes = array()) {
                         </div>
 
                         <div class="target">
-                            <?php if($ready == 100):?>
-                                <span>Сумма полностью собрана!</span>
-                            <?php elseif($ready > 0):?>
-                                <?php echo leyka_format_amount($collected['amount']);?>
-                                <span class="curr-mark">
-                                    <?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?>
-                                </span>
-                            <?php else:?>
-                                <span>Поддержите</span>
-                            <?php endif?>
+                        <?php if($ready > 0) {?>
+                            <?php echo leyka_format_amount($collected['amount']);?>
+                            <span class="curr-mark">
+                                <?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?>
+                            </span>
+                        <?php } else {?>
+                            <span><?php _e('Support', 'leyka');?></span>
+                        <?php }?>
                         </div>
 
                         <div class="info">
-                            <?php echo $attributes['show_preview'] ? "Нужно собрать" : __('collected of ', 'leyka')?>
+                            <?php echo $atts['show_preview'] ? __('Amount needed', 'leyka') : __('collected of ', 'leyka')?>
                             <?php echo leyka_format_amount($target['amount']);?>
                             <span class="curr-mark">
                                 <?php echo leyka_options()->opt("currency_{$target['currency']}_label");?>
                             </span>
                         </div>
 					<?php } else {  // Campaign doesn't have a target sum  - display empty scale ?>
+
 						<div class="scale hide-scale"></div>
                         
                         <div class="target">
@@ -565,61 +566,54 @@ function leyka_inline_campaign(array $attributes = array()) {
                             <span class="curr-mark">
                                 <?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?>
                             </span>
-                            <span class="info">собрано</span>
+                            <span class="info"><?php _e('collected', 'leyka');?></span>
                         </div>
 
                     <?php }?>
 					</div>
 
 					<?php $supporters = leyka_options()->opt('revo_template_show_donors_list') ?
-                        leyka_get_campaign_supporters($campaign_id, 5) : array('donations' => array(), 'supporters' => array());
+                        leyka_get_campaign_supporters($campaign_id, 5) : array('donations' => array(), 'supporters' => array());?>
 
-                    if(!count($supporters['supporters']) && $attributes['show_preview']) {
-                            $supporters['supporters'] = array( "Дмитрий Белкин", "Екатерина Мышкина", "Людмила Лебедева", "Петр Гусев" );
-                    }?>
-                    
 					<div class="supporter-and-button">
-                        
-                    <div class="inpage-card__note supporters">
-					<?php if(count($supporters['supporters'])) {?>
 
-                        <strong><?php _e('Supporters:', 'leyka');?></strong>
+                        <div class="inpage-card__note supporters">
+                        <?php if(count($supporters['supporters'])) {?>
 
-                        <?php if(count($supporters['donations']) <= count($supporters['supporters'])) { // Only names
+                            <strong><?php _e('Supporters:', 'leyka');?></strong>
 
-                            echo count($supporters['supporters']) === 1 ?
-                                reset($supporters['supporters']) :
-                                implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka').' '.end($supporters['supporters']);
-                        } else { // Names and the number of the rest of donors
+                            <?php if(count($supporters['donations']) <= count($supporters['supporters'])) { // Only names
 
-                            echo implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka');?>
+                                echo count($supporters['supporters']) === 1 ?
+                                    reset($supporters['supporters']) :
+                                    implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka').' '.end($supporters['supporters']);
+                            } else { // Names and the number of the rest of donors
 
-                            <a href="#" class="leyka-js-history-more">
-                                <?php echo sprintf(__('%d more', 'leyka'), count($supporters['donations']) - count($supporters['supporters']));?>
-                            </a>
+                                echo implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka');?>
 
-                        <?php }
+                                <a href="#" class="leyka-js-history-more">
+                                    <?php echo sprintf(__('%d more', 'leyka'), count($supporters['donations']) - count($supporters['supporters']));?>
+                                </a>
 
-					} else if( !$thumb_url ) {?>
-                        <div class="no-supporters">
-    					    <svg class="svg-icon pic-first-step"><use xlink:href="#pic-first-step" /></svg>
-                            <div class="lets-do-first-step-text"><?php _e("Every campaign is a journey. Be the one to make the first step.", 'leyka');?></div>
+                            <?php }
+
+                        } else if( !$thumb_url ) {?>
+                            <div class="no-supporters">
+                                <svg class="svg-icon pic-first-step"><use xlink:href="#pic-first-step" /></svg>
+                                <div class="lets-do-first-step-text"><?php _e('Every campaign is a journey. Be the one to make the first step.', 'leyka');?></div>
+                            </div>
+                        <?php }?>
                         </div>
-                        <?php
-					}?>
-                    </div>
 
-                    <div class="inpage-card__action">
-					<?php if($campaign->is_finished) { ?>
-						<div class="message-finished"><?php echo __('The fundraising campaign has been finished. Thank you for your support!', 'leyka');?></div>
-                    <?php } elseif($ready == 100) { ?>
-                        <div class="leyka-thankyou-button">Спасибо за поддержку!</div>
-					<?php } else { ?>
-                        <button type="button" class="leyka-js-open-form">
-                            <?php echo leyka_options()->opt('donation_submit_text');?>
-                        </button>
-					<?php } ?>
-                    </div>
+                        <div class="inpage-card__action">
+                        <?php if($campaign->is_finished) {?>
+                            <div class="message-finished"><?php echo __('The fundraising campaign has been finished. Thank you for your support!', 'leyka');?></div>
+                        <?php } else { ?>
+                            <button type="button" class="leyka-js-open-form">
+                                <?php echo leyka_options()->opt_template('donation_submit_text');?>
+                            </button>
+                        <?php } ?>
+                        </div>
                     
                     </div>
 
@@ -667,9 +661,9 @@ function leyka_inline_campaign(array $attributes = array()) {
 				<?php }?>
             </div>
 
-            <div class="leyka-pf__form <?php echo leyka_options()->opt('show_donation_comment_field') ? 'leyka-with-comment' : '';?>">
+            <div class="leyka-pf__form <?php echo leyka_options()->opt_template('show_donation_comment_field') ? 'leyka-with-comment' : '';?>">
             <?php // Pass the curr. campaign to the template:
-                Leyka_Revo_Template_Controller::get_instance()->current_campaign = $campaign;
+                Leyka_Revo_Template_Controller::getInstance()->current_campaign = $campaign;
 
                 require($template_file); /** @todo For the forms caching task comment this require out */
             ?>
@@ -722,7 +716,7 @@ function leyka_inline_campaign(array $attributes = array()) {
             </div>
             <?php }?>
 
-        </div><!-- columnt -->
+        </div>
     </div>
 
     <?php $out = ob_get_contents();
@@ -758,7 +752,7 @@ function leyka_inline_campaign_small($campaign_id) {
                 <span class="curr-mark"><?php echo $currency_data['label'];?></span>
             </div>
             <div class="bottom-form__button">
-                <button type="button" class="leyka-js-open-form-bottom"><?php echo leyka_options()->opt('donation_submit_text');?></button>
+                <button type="button" class="leyka-js-open-form-bottom"><?php echo leyka_options()->opt_template('donation_submit_text');?></button>
             </div>
         </div>
 
@@ -834,9 +828,10 @@ function leyka_inline_campaign_small($campaign_id) {
 
 }
 
+/** @todo For the forms caching task: */
 //add_action('wp_footer', function(){
 //
-//    global $test;
+//    global $test; // USE A COLLECTION/FACTORY OBJECT INSTEAD OF GLOBAL!
 //    if(empty($test)) {
 //        return;
 //    }

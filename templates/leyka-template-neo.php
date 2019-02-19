@@ -6,7 +6,7 @@
 
 $active_pm = apply_filters('leyka_form_pm_order', leyka_get_pm_list(true));
 $supported_curr = leyka_get_currencies_data();
-$mode = leyka_options()->opt('donation_sum_field_type'); // fixed/flexible/mixed
+$mode = leyka_options()->opt_template('donation_sum_field_type'); // fixed/flexible/mixed
 
 /** @var Leyka_Payment_Form $leyka_current_pm */
 global $leyka_current_pm; /** @todo Make it a Leyka_Payment_Form class singleton */
@@ -109,12 +109,12 @@ leyka_pf_submission_errors();?>
 
                     <?php }
 
-                    if($leyka_current_pm->is_field_supported('comment') && leyka_options()->opt('show_donation_comment_field')) {?>
+                    if($leyka_current_pm->is_field_supported('comment') && leyka_options()->opt_template('show_donation_comment_field')) {?>
                         <div class="rdc-textfield leyka-field comment">
-                            <textarea id="leyka_donor_comment" name="leyka_donor_comment" class="comment leyka-donor-comment rdc-textfield__input" data-max-length="<?php echo leyka_options()->opt('donation_comment_max_length');?>"></textarea>
+                            <textarea id="leyka_donor_comment" name="leyka_donor_comment" class="comment leyka-donor-comment rdc-textfield__input" data-max-length="<?php echo leyka_options()->opt_template('donation_comment_max_length');?>"></textarea>
                             <label class="leyka-screen-reader-text rdc-textfield__label" for="leyka_donor_comment"><?php _e('Your comments', 'leyka');?></label>
                             <p class="field-comment">
-                                <?php echo leyka_options()->opt('donation_comment_max_length') ? sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt('donation_comment_max_length')) : __('Your comment', 'leyka');?>
+                                <?php echo leyka_options()->opt_template('donation_comment_max_length') ? sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length')) : __('Your comment', 'leyka');?>
                             </p>
                             <span class="leyka_donor_comment-error field-error rdc-textfield__error" id="leyka_donor_comment-error"></span>
                         </div>
@@ -128,7 +128,7 @@ leyka_pf_submission_errors();?>
 
                     <div class="leyka-field submit">
                         <?php if($leyka_current_pm->is_field_supported('submit') ) { ?>
-                            <input type="submit" class="rdc-submit-button" id="leyka_donation_submit" name="leyka_donation_submit" value="<?php echo leyka_options()->opt('donation_submit_text');?>">
+                            <input type="submit" class="rdc-submit-button" id="leyka_donation_submit" name="leyka_donation_submit" value="<?php echo leyka_options()->opt_template('donation_submit_text');?>">
                         <?php }
 
                         $icons = leyka_pf_get_pm_icons();
@@ -156,7 +156,7 @@ leyka_pf_submission_errors();?>
     <?php }?>
 </div><!-- #leyka-payment-form -->
 
-<?php if(leyka_options()->opt('show_campaign_sharing')) {
+<?php if(leyka_options()->opt_template('show_campaign_sharing')) {
     leyka_share_campaign_block(empty($campaign) ? false : $campaign->id);
 }
 

@@ -3,33 +3,13 @@
  * Leyka Templates Controller class.
  **/
 
-abstract class Leyka_Template_Controller {
+abstract class Leyka_Template_Controller extends Leyka_Singleton {
 
-    /** @var $_instance Leyka_Template_Controller is always a singleton */
     protected static $_instance;
 
     protected $_global_template_data = array();
     protected $_template_data = array();
     protected $_campaigns = array();
-
-    protected function __construct() {
-    }
-
-    final protected function __clone() {}
-
-    public final static function get_instance() {
-
-        if( !static::$_instance ) {
-
-            static::$_instance = new static();
-
-            // some constructor business here ...
-
-        }
-
-        return static::$_instance;
-
-    }
 
     public function __get($name) {
         return empty($this->_global_template_data[$name]) ? null : $this->_global_template_data[$name];
@@ -40,7 +20,7 @@ abstract class Leyka_Template_Controller {
     }
 
     /** A wrapper for templates to get current campaign object without direct using of global vars. */
-    public function get_current_campaign() {
+    public function getCurrentCampaign() {
 
         if($this->current_campaign) {
 
@@ -71,13 +51,12 @@ abstract class Leyka_Template_Controller {
      * @param $campaign mixed
      * @return array
      */
-    public function get_template_data($campaign = false) {
+    public function getTemplateData($campaign = false) {
 
         if( !$campaign ) {
-            $campaign = get_post();
+            $campaign = $this->getCurrentCampaign();
         }
 
-        $campaign = leyka_get_validated_campaign($campaign);
         if( !$campaign ) {
             return array(); /** @todo There is no such campaign. Mb, throw some exception here. */
         }
@@ -86,18 +65,18 @@ abstract class Leyka_Template_Controller {
             $this->_campaigns[$campaign->id] = $campaign;
         }
         if(empty($this->_template_data[$campaign->id])) {
-            $this->_generate_template_data($campaign);
+            $this->_generateTemplateData($campaign);
         }
 
         return empty($this->_template_data[$campaign->id]) ? array() : $this->_template_data[$campaign->id];
 
     }
-
+    
     /**
      * Get all template data from DB, do some calculations, create a array.
      * @param $campaign Leyka_Campaign
      * @return null
      */
-    abstract protected function _generate_template_data(Leyka_Campaign $campaign);
+    abstract protected function _generateTemplateData(Leyka_Campaign $campaign);
 
-} //class end
+}

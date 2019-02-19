@@ -134,7 +134,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
             <?php foreach($navigation_data as $section_index => $section) {?>
 
-                <div class="nav-section <?php echo !empty($section['is_current']) ? 'active' : ($section['is_completed'] ? 'done' : '');?>">
+                <div class="nav-section <?php echo !empty($section['is_current']) ? 'active' : (empty($section['is_completed']) ? '' : 'done');?>" data-section-title="<?php echo esc_attr($section['title']);?>">
 
                     <div class="nav-section-title">
 
@@ -205,9 +205,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
             <?php $entry_width = $block->entry_width ? (100.0*($block->entry_width - 0.06 * $block->entry_width)).'%' : false;
 
-            $sub_blocks_list = $block->getContent();
-
-            foreach($sub_blocks_list as $sub_block_index => $sub_block) {?>
+            foreach($block->getContent() as $sub_block) { // $sub_block_index => $sub_block ?>
 
                 <div class="container-entry" <?php echo $entry_width ? 'style="flex-basis: '.$entry_width.';"' : '';?>>
 

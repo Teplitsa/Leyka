@@ -385,3 +385,38 @@
 
     }
 }
+
+@mixin leyka-outline-none {
+    outline: 0 !important;
+    -webkit-appearance:none;
+    box-shadow: none;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+@mixin leyka-zoom-image {
+  
+  img.leyka-instructions-screen {
+      border: 1px solid $color-wizard-link-sec;
+  }
+  
+  img.leyka-instructions-screen-full {
+      max-height: 80%;
+      display: none;
+  }
+  
+  .screen-wrapper {
+      position: relative;
+      line-height: 0px;
+  }
+  
+  img.zoom-screen {
+      cursor: pointer;
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      bottom: 1rem;
+      left: calc(50% - 20px);
+  }
+  
+}

@@ -140,8 +140,8 @@ jQuery(document).ready(function($){
 
         var $pm_available_checkbox = $(this);
 
-        // Show/hide a PM settings:
-        $('#pm-'+$pm_available_checkbox.prop('id')).toggle();
+        $('#pm-'+$pm_available_checkbox.prop('id')).toggle(); // Show/hide a PM settings
+        $('#'+$pm_available_checkbox.prop('id')+'-commission-wrapper').toggle(); // Show/hide a PM commission field
 
         var $sortable_pm = $('.pm-order[data-pm-id="'+$pm_available_checkbox.attr('id')+'"]');
 
