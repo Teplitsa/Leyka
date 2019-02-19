@@ -85,6 +85,8 @@ class Leyka extends Leyka_Singleton {
         add_filter('rewrite_rules_array', array($this, 'insertRewriteRules'));
         add_filter('query_vars', array($this, 'insertRewriteQueryVars'));
 
+        add_action('parse_request', array($this, 'parseRequest')); // Service URLs handlers
+
         function leyka_session_start() {
             if( !session_id() ) {
                 session_start();
@@ -110,7 +112,9 @@ class Leyka extends Leyka_Singleton {
 
         }
 
-        if(is_admin()) {
+        add_action('admin_bar_menu', array($this, 'addToolbarMenu'), 999);
+
+        if(is_admin()) { // Admin area only
 
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-allocator.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-render-settings-old.php');
@@ -132,111 +136,104 @@ class Leyka extends Leyka_Singleton {
 
             }
 
-        }
+        } else { // Public (non-admin) area only
 
-        add_action('admin_bar_menu', array($this, 'addToolbarMenu'), 999);
+            function leyka_get_posts(WP_Query $query) {
 
-        /** Service URLs handler: */
-        add_action('parse_request', array($this, 'parseRequest'));
+                if(is_admin() || !$query->is_main_query()) {
+                    return;
+                }
 
-        function leyka_get_posts(WP_Query $query) {
+                if($query->is_post_type_archive(Leyka_Donation_Management::$post_type)) {
 
-            if(is_admin() || !$query->is_main_query()) {
-                return;
-            }
+                    $query->set('post_status', 'funded');
 
-            if($query->is_post_type_archive(Leyka_Donation_Management::$post_type)) {
+                    if(get_query_var('leyka_campaign_filter')) {
 
-                $query->set('post_status', 'funded');
+                        $campaign = get_posts(array(
+                                'post_type' => Leyka_Campaign_Management::$post_type,
+                                'name' => get_query_var('leyka_campaign_filter'))
+                        );
+                        if( !$campaign ) {
+                            return;
+                        }
+                        $campaign = reset($campaign);
 
-                if(get_query_var('leyka_campaign_filter')) {
-
-                    $campaign = get_posts(array(
-                        'post_type' => Leyka_Campaign_Management::$post_type,
-                        'name' => get_query_var('leyka_campaign_filter'))
-                    );
-                    if( !$campaign ) {
-                        return;
+                        $query->set('meta_query', array(array(
+                            'key'     => 'leyka_campaign_id',
+                            'value'   => $campaign->ID,
+                        ),));
                     }
-                    $campaign = reset($campaign);
 
-                    $query->set('meta_query', array(array(
-                        'key'     => 'leyka_campaign_id',
-                        'value'   => $campaign->ID,
-                    ),));
                 }
 
             }
+            add_action('pre_get_posts', 'leyka_get_posts', 1);
 
-        }
-        add_action('pre_get_posts', 'leyka_get_posts', 1);
+            function leyka_success_page_widget_template($content) {
 
-        function leyka_success_page_widget_template($content) {
+                if(
+                    is_page(leyka_options()->opt('success_page'))
+                    && leyka_options()->opt_template('show_success_widget_on_success')
+                    && is_main_query()
+                ) {
 
-            if(
-                is_page(leyka_options()->opt('success_page'))
-                && leyka_options()->opt_template('show_success_widget_on_success')
-                && is_main_query()
-            ) {
+                    ob_start();
+                    include(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-success-widget.php');
+                    $content = ob_get_clean();
 
-                ob_start();
-                include(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-success-widget.php');
-                $content = ob_get_clean();
+                }
+
+                return $content;
 
             }
+            add_filter('the_content', 'leyka_success_page_widget_template', 1);
 
-            return $content;
+            function leyka_failure_page_widget_template($content) {
 
-        }
-        add_filter('the_content', 'leyka_success_page_widget_template', 1);
+                if(
+                    is_page(leyka_options()->opt('failure_page'))
+                    && leyka_options()->opt_template('show_failure_widget_on_failure')
+                    && is_main_query()
+                ) {
 
-        function leyka_failure_page_widget_template($content) {
+                    ob_start();
+                    include(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-failure-widget.php');
+                    $content = ob_get_clean();
 
-            if(
-                is_page(leyka_options()->opt('failure_page'))
-                && leyka_options()->opt_template('show_failure_widget_on_failure')
-                && is_main_query()
-            ) {
+                }
 
-                ob_start();
-                include(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-failure-widget.php');
-                $content = ob_get_clean();
+                return $content;
 
             }
+            add_filter('the_content', 'leyka_failure_page_widget_template', 1);
 
-            return $content;
+            function reinstall_cssjs_in_giger() {
 
-        }
-        add_filter('the_content', 'leyka_failure_page_widget_template', 1);
-        
-        function reinstall_cssjs_in_giger() {
+                $theme = wp_get_theme();
+                if($theme && ($theme->template == 'giger' || $theme->template == 'giger-kms') && !is_singular('leyka_campaign')) {
 
-            $theme = wp_get_theme();
-            if($theme && ($theme->template == 'giger' || $theme->template == 'giger-kms') && !is_singular('leyka_campaign')) {
-        
-                $is_cssjs_reqiured = false;
-                
-                if(get_the_ID() == leyka_options()->opt('failure_page') || get_the_ID() == leyka_options()->opt('success_page')) {
-                    $is_cssjs_reqiured = true;
-                }
-                elseif(leyka_form_is_screening()) {
-                    $is_cssjs_reqiured = true;
-                }
-                
-                if($is_cssjs_reqiured) {
-                    $leyla_template_data = leyka_get_current_template_data();
-                    
-                    if($leyla_template_data['id'] == 'revo') {
-                        $leyka = leyka();
-                        $leyka->loadPublicCssJs(); // force add leyka cssjs in giger for revo leyka theme
+                    $is_cssjs_reqiured = false;
+
+                    if(get_the_ID() == leyka_options()->opt('failure_page') || get_the_ID() == leyka_options()->opt('success_page')) {
+                        $is_cssjs_reqiured = true;
                     }
+                    elseif(leyka_form_is_screening()) {
+                        $is_cssjs_reqiured = true;
+                    }
+
+                    if($is_cssjs_reqiured) {
+                        $leyla_template_data = leyka_get_current_template_data();
+
+                        if($leyla_template_data['id'] == 'revo') {
+                            $leyka = leyka();
+                            $leyka->loadPublicCssJs(); // force add leyka cssjs in giger for revo leyka theme
+                        }
+                    }
+
                 }
-        
             }
-        }
-        add_action('template_redirect', 'reinstall_cssjs_in_giger', 90); // Important: in Giger problem code run with priority 80
-        
-        if( !is_admin() ) {
+            add_action('template_redirect', 'reinstall_cssjs_in_giger', 90); // Important: in Giger problem code run with priority 80
 
             add_action('wp_head', 'leyka_inline_scripts');
             function leyka_inline_scripts(){
@@ -277,26 +274,26 @@ class Leyka extends Leyka_Singleton {
             }
             add_action('wp_head', 'leyka_template_init_include');
 
-        }
+            // Embed campaign URL handler:
+            function leyka_template_include($template) {
 
-        // Embed campaign URL handler:
-        function leyka_template_include($template) {
+                if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type) && !empty($_GET['embed_object'])) {
 
-            if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type) && !empty($_GET['embed_object'])) {
+                    $new_template = leyka_get_current_template_data(false, 'embed_'.$_GET['embed_object'], true);
+                    if($new_template && !empty($new_template['file'])) {
+                        $template = $new_template['file'];
+                    }
 
-                $new_template = leyka_get_current_template_data(false, 'embed_'.$_GET['embed_object'], true);
-                if($new_template && !empty($new_template['file'])) {
-                    $template = $new_template['file'];
                 }
 
-            }
+                return $template;
 
-            return $template;
+            }
+            add_filter('template_include', 'leyka_template_include', 100);
+
+            add_action('template_redirect', array($this, 'gateway_redirect_page'), 1, 1);
 
         }
-        add_filter('template_include', 'leyka_template_include', 100);
-
-        add_action('template_redirect', array($this, 'gateway_redirect_page'), 1, 1);
 
         $this->applyContentFormatting(); // Internal formatting filters
 
