@@ -5,25 +5,28 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
     public static function add(array $params = array()) {
 
-        $amount = empty($params['amount']) ? leyka_pf_get_amount_value() : round((float)$params['amount'], 2);
-        if( !$amount ) {
+        $amount = isset($params['amount']) ? round((float)$params['amount'], 2) : leyka_pf_get_amount_value();
+        if( !$amount && empty($params['force_insert']) ) {
             return new WP_Error('incorrect_amount_given', __('Empty or incorrect amount given while trying to add a donation', 'leyka'));
         }
 
         $status = empty($params['status']) ? 'submitted' : $params['status'];
+
+        remove_all_actions('save_post_'.Leyka_Donation_Management::$post_type);
 
         $id = wp_insert_post(array(
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => array_key_exists($status, leyka_get_donation_status_list()) ? $status : 'submitted',
             'post_title' => empty($params['purpose_text']) ?
                 leyka_options()->opt('donation_purpose_text') : $params['purpose_text'],
+            'post_name' => uniqid('donation-', true), // For fast WP_Post creation when DB already has lots of donations
             'post_parent' => empty($params['init_recurring_donation']) ? 0 : (int)$params['init_recurring_donation'],
         ));
 
         add_post_meta($id, 'leyka_donation_amount', (float)$amount);
 
         $value = empty($params['donor_name']) ? leyka_pf_get_donor_name_value() : trim($params['donor_name']);
-        if($value && !leyka_validate_donor_name($value)) { // Validate donor's name
+        if($value && !leyka_validate_donor_name($value) && empty($params['force_insert'])) { // Validate donor's name
 
             wp_delete_post($id, true);
             return new WP_Error('incorrect_donor_name', __('Incorrect donor name given while trying to add a donation', 'leyka'));
@@ -35,7 +38,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         add_post_meta($id, 'leyka_donor_name', htmlentities($value, ENT_QUOTES, 'UTF-8'));
 
         $value = empty($params['donor_email']) ? leyka_pf_get_donor_email_value() : $params['donor_email'];
-        if($value && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+        if($value && !filter_var($value, FILTER_VALIDATE_EMAIL) && empty($params['force_insert'])) {
 
             wp_delete_post($id, true);
             return new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
@@ -285,8 +288,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
             case 'pm_label':
             case 'payment_method_label':
-                $pm = leyka_get_pm_by_id($this->_donation_meta['payment_method']);
-                return ($pm ? $pm->label : __('Unknown payment method', 'leyka'));
+                $pm = leyka_get_pm_by_id($this->_donation_meta['gateway'].'-'.$this->_donation_meta['payment_method'], true);
+                return $pm ? $pm->label : __('Unknown payment method', 'leyka');
             case 'currency':
             case 'currency_code':
             case 'currency_id':
@@ -347,7 +350,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 if($this->payment_type != 'rebill') {
                     return false;
                 } else if($this->_main_data->post_parent) {
-                    return new Leyka_Donation($this->_main_data->post_parent);
+                    return new Leyka_Donation_Post($this->_main_data->post_parent);
                 } else {
                     return $this;
                 }
@@ -511,7 +514,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'rebilling_is_active':
             case 'recurring_is_active':
                 $value = !!$value;
-                if($this->type !== 'rebill') {
+                if($this->type != 'rebill') {
                     break;
                 }
 
