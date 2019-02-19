@@ -192,7 +192,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             ) {
 
                 $error = new WP_Error('leyka_donation_amount_too_small', __('The amount of donations via Sberbank Online should be at least 10 RUR.', 'leyka'));
-                leyka()->add_payment_form_error($error);
+                leyka()->addPaymentFormError($error);
 
             }
 
@@ -1077,6 +1077,6 @@ class Leyka_Yandex_Promvzyazbank extends Leyka_Payment_Method {
 }
 
 function leyka_add_gateway_yandex() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka()->add_gateway(Leyka_Yandex_Gateway::getInstance());
+    leyka()->addGateway(Leyka_Yandex_Gateway::getInstance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_yandex');

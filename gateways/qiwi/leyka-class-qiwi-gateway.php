@@ -83,7 +83,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
                 'gateway_settings_incorrect',
                 __('The gateway you used has incorrect or missing settings', 'leyka')
             );
-            leyka()->add_payment_form_error($error);
+            leyka()->addPaymentFormError($error);
         }
 
         $this->_qiwi_response = json_decode(wp_remote_retrieve_body($response));

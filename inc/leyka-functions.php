@@ -471,7 +471,7 @@ function leyka_get_campaign_failure_page_url($campaign_id) {
 function leyka_get_form_templates_list() {
 
     $list = array();
-    foreach(leyka()->get_templates() as $template) {
+    foreach(leyka()->getTemplates() as $template) {
 
         $name = $template['name'] == __($template['name'], 'leyka') ? $template['name'] : __($template['name'], 'leyka');
         $description = $template['description'] == __($template['description'], 'leyka') ?
@@ -546,7 +546,7 @@ function leyka_get_currency_label($currency_code) {
  * Get possible leyka_donation post type's status list as an array.
  **/
 function leyka_get_donation_status_list() {
-    return leyka()->get_donation_statuses();
+    return leyka()->getDonationStatuses();
 }
 
 function leyka_get_pm_categories_list() {
@@ -659,7 +659,7 @@ function leyka_get_receiver_description($receiver_types) {
  * Get all possible campaign target states.
  **/
 function leyka_get_campaign_target_states_list() {
-    return leyka()->get_campaign_target_states();
+    return leyka()->getCampaignTargetStates();
 }
 
 /**
@@ -1661,6 +1661,14 @@ abstract class Leyka_Singleton {
 
         return static::$_instance;
 
+    }
+
+    /**
+     * @deprecated
+     * @return static
+     */
+    public static function get_instance() {
+        return static::getInstance();
     }
 
     final protected function __clone() {}

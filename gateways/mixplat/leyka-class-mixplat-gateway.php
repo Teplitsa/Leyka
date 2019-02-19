@@ -105,7 +105,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         if(empty($form_data['leyka_donor_phone']) || !preg_match('/^[\d+ -.]+$/i', $form_data['leyka_donor_phone'])) {
 
             $error = new WP_Error('leyka_mixplat_phone_is_empty', __('Valid phone number is required.', 'leyka'));
-            leyka()->add_payment_form_error($error);
+            leyka()->addPaymentFormError($error);
 
             return;
         }

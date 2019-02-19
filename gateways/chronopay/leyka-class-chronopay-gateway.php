@@ -683,6 +683,6 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
 }
 
 function leyka_add_gateway_chronopay() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka()->add_gateway(Leyka_Chronopay_Gateway::getInstance());
+    leyka()->addGateway(Leyka_Chronopay_Gateway::getInstance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_chronopay');

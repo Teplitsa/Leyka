@@ -96,7 +96,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                     - <?php _e('Target', 'leyka');?> -
                 </option>
 
-                <?php foreach(leyka()->get_campaign_target_states() as $state => $label) {?>
+                <?php foreach(leyka()->getCampaignTargetStates() as $state => $label) {?>
                 <option value="<?php echo $state;?>" <?php echo !empty($_GET['target_state']) && $_GET['target_state'] == $state ? 'selected="selected"' : '';?>>
                     <?php echo $label;?>
                 </option>
@@ -182,7 +182,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                     <?php _e('Default template', 'leyka');?>
                 </option>
 
-            <?php $templates = leyka()->get_templates(); 
+            <?php $templates = leyka()->getTemplates();
             if($templates) {
                 foreach($templates as $template) {?>
                 <option value="<?php echo esc_attr($template['id']);?>" <?php selected($cur_template, $template['id']);?>>
@@ -683,7 +683,7 @@ class Leyka_Campaign {
 
         switch($field) {
             case 'target_state':
-                if( in_array($value, array_keys(leyka()->get_campaign_target_states())) ) {
+                if( in_array($value, array_keys(leyka()->getCampaignTargetStates())) ) {
 
                     $this->_campaign_meta['target_state'] = $value;
                     update_post_meta($this->_id, 'target_state', $value);
@@ -787,7 +787,7 @@ class Leyka_Campaign {
 	
 	static function get_target_state_label($state = false) {
 
-        $labels = leyka()->get_campaign_target_states();
+        $labels = leyka()->getCampaignTargetStates();
 
         if( !$state ) {
             return $labels;

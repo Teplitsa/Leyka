@@ -7,11 +7,11 @@
  * Functions to register and deregister a gateway
  **/
 function leyka_add_gateway($class_name) {
-    leyka()->add_gateway($class_name);
+    leyka()->addGateway($class_name);
 }
 
 function leyka_remove_gateway($class_name) {
-    leyka()->remove_gateway($class_name);
+    leyka()->removeGateway($class_name);
 }
 
 function leyka_get_gateways() {
@@ -349,7 +349,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     /** Register a gateway in the plugin */
     public function add_gateway() {
-        leyka()->add_gateway(self::getInstance());
+        leyka()->addGateway(self::getInstance());
     }
 
     /** Register a gateway's scripts in the plugin */
@@ -439,7 +439,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
                 'wrong_donation_amount',
                 __('Donation amount must be specified to submit the form', 'leyka')
             );
-            leyka()->add_payment_form_error($error);
+            leyka()->addPaymentFormError($error);
 
         }
 
@@ -450,7 +450,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
                 'wrong_donation_currency',
                 __('Wrong donation currency in submitted form data', 'leyka')
             );
-            leyka()->add_payment_form_error($error);
+            leyka()->addPaymentFormError($error);
 
         }
 
@@ -463,7 +463,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
                     $form_data['top_'.$currency].' '.leyka_options()->opt("currency_{$currency}_label")
                 )
             );
-            leyka()->add_payment_form_error($error);
+            leyka()->addPaymentFormError($error);
 
         }
 
@@ -477,14 +477,14 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
                     $bottom_amount_allowed.' '.leyka_options()->opt("currency_{$currency}_label")
                 )
             );
-            leyka()->add_payment_form_error($error);
+            leyka()->addPaymentFormError($error);
 
         }
 
         if(empty($form_data['leyka_agree']) && leyka_options()->opt('agree_to_terms_needed')) {
 
             $error = new WP_Error('terms_not_agreed', __('You must agree to the terms of donation service', 'leyka'));
-            leyka()->add_payment_form_error($error);
+            leyka()->addPaymentFormError($error);
 
         }
 
