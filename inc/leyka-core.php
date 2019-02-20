@@ -401,7 +401,7 @@ class Leyka extends Leyka_Singleton {
                 'donationGateway': '<?php echo esc_attr($donation->gateway_label);?>',
                 'donationPm': '<?php echo esc_attr($donation->pm_label);?>',
                 'donationType': '<?php echo esc_attr($donation->type_label);?>',
-                'donationAmount': '<?php echo esc_attr($donation->amount);?>',
+                'donationAmount': <?php echo esc_attr($donation->amount);?>,
                 'donationCurrency': '<?php echo esc_attr($donation->currency_label);?>'
             });
         </script>
