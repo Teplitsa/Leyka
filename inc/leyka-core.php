@@ -391,7 +391,7 @@ class Leyka extends Leyka_Singleton {
                 'transactionProducts': [{
                     'sku': '<?php echo (int)$campaign_id;?>',
                     'name': '<?php echo esc_attr($campaign->title);?>',
-                    'category': 'Leyka Campaign',
+                    'category': '<?php echo esc_attr($donation->type_label);?>',
                     'price': <?php echo $donation_amount_total;?>,
                     'quantity': 1
                 }],
