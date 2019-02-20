@@ -394,7 +394,7 @@ class Leyka extends Leyka_Singleton {
                     'category': 'Leyka Campaign',
                     'price': <?php echo $donation_amount_total;?>,
                     'quantity': 1
-                }]
+                }],
                 <?php /** @todo Check if the following params can be passed from the dataLayer to GA somehow. */?>
                 'donationCampaignPaymentTitle': '<?php echo esc_attr($campaign->payment_title);?>',
                 'donationFundedDate': '<?php echo esc_attr($donation->date_funded);?>',
