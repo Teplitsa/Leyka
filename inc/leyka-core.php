@@ -386,7 +386,7 @@ class Leyka extends Leyka_Singleton {
                 'transactionId': '<?php echo (int)$donation_id;?>',
                 'transactionAffiliation': '<?php echo get_bloginfo('name');?>',
                 'transactionTotal': <?php echo $donation_amount_total;?>,
-                'transactionTax': 0.0,
+                'transactionTax': <?php echo round($donation->amount - $donation->amount_total, 2);?>,
                 'transactionShipping': 0.0,
                 'transactionProducts': [{
                     'sku': '<?php echo (int)$campaign_id;?>',
@@ -395,8 +395,7 @@ class Leyka extends Leyka_Singleton {
                     'price': <?php echo $donation_amount_total;?>,
                     'quantity': 1
                 }]
-                <?php /** @todo Check if the following params can be passed from the dataLayer to GA somehow. */
-                /* ?>
+                <?php /** @todo Check if the following params can be passed from the dataLayer to GA somehow. */?>
                 'donationCampaignPaymentTitle': '<?php echo esc_attr($campaign->payment_title);?>',
                 'donationFundedDate': '<?php echo esc_attr($donation->date_funded);?>',
                 'donationGateway': '<?php echo esc_attr($donation->gateway_label);?>',
@@ -404,7 +403,6 @@ class Leyka extends Leyka_Singleton {
                 'donationType': '<?php echo esc_attr($donation->type_label);?>',
                 'donationAmount': '<?php echo esc_attr($donation->amount);?>',
                 'donationCurrency': '<?php echo esc_attr($donation->currency_label);?>'
-                <?php */ ?>
             });
         </script>
 
