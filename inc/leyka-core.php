@@ -382,6 +382,7 @@ class Leyka extends Leyka_Singleton {
             window.dataLayer = window.dataLayer || [];
 
             dataLayer.push({
+                'donorEmail': '<?php echo $donation->donor_email;?>',
                 'transactionId': '<?php echo (int)$donation_id;?>',
                 'transactionAffiliation': '<?php echo get_bloginfo('name');?>',
                 'transactionTotal': <?php echo $donation_amount_total;?>,
