@@ -498,7 +498,7 @@ function leyka_inline_campaign(array $atts = array()) {
 
     ob_start();?>
 
-    <div id="<?php echo leyka_pf_get_form_id($campaign_id);?>" class="leyka-pf <?php echo leyka_pf_get_form_auto_open_class($campaign_id);?> <?php if($atts['show_preview']):?>show-preview<?php endif?>" data-form-id="<?php echo leyka_pf_get_form_id($campaign->id).'-revo-form';?>">
+    <div id="<?php echo leyka_pf_get_form_id($campaign_id);?>" class="leyka-pf leyka-pf-<?php echo $template_id;?> <?php echo leyka_pf_get_form_auto_open_class($campaign_id);?> <?php if($atts['show_preview']):?>show-preview<?php endif?>" data-form-id="<?php echo leyka_pf_get_form_id($campaign->id).'-revo-form';?>">
 
         <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
         <div class="leyka-pf__overlay"></div>
@@ -663,7 +663,7 @@ function leyka_inline_campaign(array $atts = array()) {
 
             <div class="leyka-pf__form <?php echo leyka_options()->opt_template('show_donation_comment_field') ? 'leyka-with-comment' : '';?>">
             <?php // Pass the curr. campaign to the template:
-                Leyka_Revo_Template_Controller::getInstance()->current_campaign = $campaign;
+                #Leyka_Revo_Template_Controller::getInstance()->current_campaign = $campaign;
 
                 require($template_file); /** @todo For the forms caching task comment this require out */
             ?>

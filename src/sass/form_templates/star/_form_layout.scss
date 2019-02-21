@@ -1,1 +1,35 @@
 /** == Form layout and states (_form_layout.scss) == **/
+
+div[id*="leyka-pf-"].leyka-pf-star {
+    @include star-text();
+    
+    .leyka-pf__module {
+        border: none;
+        
+        .leyka-pf__card {
+            display: none;
+        }
+        
+        .leyka-pf__form {
+            display: block;
+            
+            .leyka-inline-campaign-form {
+                
+                .step {
+                    display: block;
+                    position: relative;
+                    height: auto;
+                    visibility: visible;
+                    opacity: unset;
+                    margin-bottom: 1.5em;
+                    
+                    .step__fields {
+                        visibility: visible;
+                        padding: 0px;
+                    }
+                }
+                
+            }
+        }
+    }
+}

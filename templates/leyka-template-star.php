@@ -1,90 +1,70 @@
 <?php if( !defined('WPINC') ) die;
 /**
- * Leyka Template: Revo
- * Description: A modern and lightweight step-by-step form template
- *
+ * Leyka Template: Star
+ * Description: A modern and lightweight form template
+ * 
  * $campaign - current campaign
  * 
  **/
 
-$template_data = Leyka_Revo_Template_Controller::getInstance()->getTemplateData($campaign);?>
+$template_data = Leyka_Star_Template_Controller::getInstance()->getTemplateData($campaign);
+?>
 
-<form id="<?php echo leyka_pf_get_form_id($campaign->id).'-revo-form';?>" class="leyka-inline-campaign-form leyka-revo-form" data-template="revo" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
+<form id="<?php echo leyka_pf_get_form_id($campaign->id).'-star-form';?>" class="leyka-inline-campaign-form leyka-star-form" data-template="star" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
 
-	<!-- Step 1: amount -->
-    <div class="step step--amount step--active">
+    <div class="step step--periodicity">
+    
+        <?php if(true || leyka_is_recurring_supported()) {?>
+            <div class="step__fields periodicity">
+                <a href="#" class="active" data-periodicity="monthly">Ежемесячно</a>
+                <a href="#" class="" data-periodicity="once">Разово</a>
+            </div>
+        <?php }?>
+        
+    </div>
 
-        <div class="step__title step__title--amount"><?php _e('Donation amount', 'leyka');?></div>
 
+    <div class="step step--amount">
+        
         <div class="step__fields amount">
 
         <?php echo Leyka_Payment_Form::get_common_hidden_fields($campaign, array(
-            'leyka_template_id' => 'revo',
+            'leyka_template_id' => 'star',
             'leyka_amount_field_type' => 'custom',
         ));
 
         $form_api = new Leyka_Payment_Form();
         echo $form_api->get_hidden_amount_fields();?>
 
-            <div class="amount__figure">
+            <div class="amount__figure star-swiper">
+                <a class="swiper-arrow swipe-left"></a>
+                <a class="swiper-arrow swipe-right"></a>
+                
+                <?php foreach($template_data['amount_variants'] as $i => $amount) {?>
+                    <div class="swiper-item" data-value="<?php echo (int)$amount;?>"><span class="amount"><?php echo (int)$amount;?></span><span class="currency"><?php echo $template_data['currency_label'];?></span></div>
+                <?php }?>
 
-                <input type="text" class="leyka_donation_amount" name="leyka_donation_amount" value="<?php echo $template_data['amount_default'];?>" autocomplete="off" placeholder="<?php echo apply_filters('leyka_form_free_amount_placeholder', $template_data['amount_default']);?>" data-default-value="<?php echo $template_data['amount_default'];?>" data-min-value="<?php echo $template_data['amount_min'];?>" data-max-value="<?php echo $template_data['amount_max_total'];?>">
-                <span class="curr-mark"><?php echo $template_data['currency_label'];?></span>
-
-                <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $template_data['currency_label'];?>" value="<?php echo leyka_options()->opt('main_currency');?>">
-
+                <?php if($template_data['amount_mode'] != 'fixed') {?>
+                    <div class="swiper-item">
+                        <input type="text" title="Введите вашу сумму" name="leyka_donation_amount" class="donate_amount_flex" value="<?php echo esc_attr($template_data['amount_default']);?>" maxlength="6">
+                    </div>
+                <?php }?>
             </div>
-
+            
+            <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $template_data['currency_label'];?>" value="<?php echo leyka_options()->opt('main_currency');?>">
             <input type="hidden" name="leyka_recurring" class="is-recurring-chosen" value="0">
 
-            <div class="amount__icon">
-                <svg class="svg-icon icon-money-size3"><use xlink:href="#icon-money-size3" /></svg>
-                <div class="leyka_donation_amount-error field-error amount__error"><?php printf(__('Please enter valid amount <br />from %s to %s %s', 'leyka'), $template_data['amount_min'], $template_data['amount_max_total'], $template_data['currency_label'] )?></div>
-            </div>
-
-            <div class="amount__range_wrapper">
-                <div class="amount__range_custom">
-                    <svg class="svg-icon range-bg"><use xlink:href="#icon-input-range-gray" /></svg>
-                    <div class="range-color-wrapper">
-                    	<svg class="svg-icon range-color"><use xlink:href="#icon-input-range-green" /></svg>
-                    </div>
-                    <svg class="svg-icon range-circle"><use xlink:href="#pic-input-range-circle" /></svg>
-                </div>
-                <div class="amount__range_overlay"></div>
-
-                <div class="amount_range">
-                    <input name="amount-range" type="range" min="<?php echo $template_data['amount_min'];?>" max="<?php echo $template_data['amount_max'];?>" step="10" data-default-value="<?php echo $template_data['amount_default'];?>" value="<?php echo $template_data['amount_default'];?>">
-                </div>
-            </div>
-
         </div>
 
-        <div class="step__action step__action--amount">
-        <?php if(leyka_is_recurring_supported()) {?>
-
-            <a href="cards" class="leyka-js-amount"><?php _e('Support once', 'leyka');?></a>
-            <a href="person" class="leyka-js-amount monthly">
-                <svg class="svg-icon icon-card"><use xlink:href="#icon-card"></svg><?php _e('Support monthly', 'leyka');?>
-            </a>
-
-        <?php } else {?>
-            <a href="cards" class="leyka-js-amount"><?php _e('Proceed', 'leyka');?></a>
-        <?php }?>
-        </div>
     </div>
+    
 
-    <!-- Step 2: PM -->
     <div class="step step--cards">
 
-        <div class="step__selection">
-            <a href="amount" class="leyka-js-another-step">
-                <span class="remembered-amount">#SUM#</span><span class="curr-mark"><?php echo $template_data['currency_label'];?></span><span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span>
-            </a>
-        </div>
-
-        <div class="step__title"><?php _e('Payment method', 'leyka');?></div>
-
         <div class="step__fields payments-grid">
+            <div class="star-swiper">
+                <a class="swiper-arrow swipe-left"></a>
+                <a class="swiper-arrow swipe-right"></a>
 
         <?php $max_pm_number = leyka_options()->opt_template('show_donation_comment_field') ? 6 : 4;
         foreach($template_data['pm_list'] as $number => $pm) { /** @var $pm Leyka_Payment_Method */
@@ -95,34 +75,32 @@ $template_data = Leyka_Revo_Template_Controller::getInstance()->getTemplateData(
                 break;
             }?>
 
-            <div class="payment-opt">
+            <div class="payment-opt swiper-item">
                 <label class="payment-opt__button">
                     <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>" data-has-recurring="<?php echo $pm->has_recurring_support() ? '1' : '0';?>" data-ajax-without-form-submission="<?php echo $pm->ajax_without_form_submission ? '1' : '0';?>">
                     <span class="payment-opt__icon">
-                        <svg class="svg-icon <?php echo esc_attr($pm->main_icon);?>"><use xlink:href="#<?php echo esc_attr($pm->main_icon);?>" /></svg>
+                        <?php foreach($pm->icons ? $pm->icons : array($pm->main_icon_url) as $icon_url) {?>
+                            <img class="pm-icon" src="<?php echo $icon_url;?>" alt="">
+                        <?php }?>
                     </span>
                 </label>
                 <span class="payment-opt__label"><?php echo $pm->label;?></span>
             </div>
         <?php }?>
-
+        
+            </div>
         </div>
 
     </div>
+
 
     <?php foreach($template_data['pm_list'] as $pm) { /** @var $pm Leyka_Payment_Method */
 
         if($pm->processing_type != 'static') {
             continue;
         }?>
+        
     <div class="step step--static <?php echo $pm->full_id;?>">
-        <div class="step__selection">
-            <a href="amount" class="leyka-js-another-step">
-                <span class="remembered-amount">#SUM#</span><span class="curr-mark"><?php echo $template_data['currency_label'];?></span><span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span>
-            </a>
-            <a href="cards" class="leyka-js-another-step"><span class="remembered-payment">#PM_LABEL#</span></a>
-        </div>
-
         <div class="step__border">
 
         	<div class="step__fields static-text">
@@ -139,19 +117,11 @@ $template_data = Leyka_Revo_Template_Controller::getInstance()->getTemplateData(
 
     <?php }?>
 
-<!--    --><?php //if(leyka_options()->opt('revo_template_ask_donor_data') == 'during-donation') {?>
-    <!-- Maybe, step 3: donor data -->
+
+    <!-- donor data -->
     <div class="step step--person">
 
-        <div class="step__selection">
-            <a href="amount" class="leyka-js-another-step">
-                <span class="remembered-amount">#SUM#</span><span class="curr-mark"><?php echo $template_data['currency_label'];?></span><span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span>
-            </a>
-            <a href="cards" class="leyka-js-another-step"><span class="remembered-payment">#PM_LABEL#</span></a>
-        </div>
-
         <div class="step__border">
-            <div class="step__title"><?php _e('Whom should we thank?', 'leyka');?></div>
             <div class="step__fields donor">
 
                 <?php $field_id = 'leyka-'.wp_rand();?>
@@ -233,5 +203,5 @@ $template_data = Leyka_Revo_Template_Controller::getInstance()->getTemplateData(
         </div>
 
     </div>
-<!--    --><?php //}?>
+
 </form>

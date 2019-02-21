@@ -1,6 +1,7 @@
 /** == Typography (_typo.scss) == **/
 
 @mixin star-text($mod: default) {
+	font-family: unset;
 	font-weight: 400;
 	font-style: normal;
 	line-height: normal;
@@ -14,37 +15,57 @@
 	}
 }
 
-@mixin star-text-caption($mod: default) {
+@mixin star-text-ui-main($mod: default) {
+	@include star-text($mod);
+}
+
+@mixin star-text-ui-second($mod: default) {
+	@include star-text($mod);
+	font-size: 12px;
+}
+
+@mixin star-h1 {
+	@include star-text();
+	font-size: 24px;
+}
+
+@mixin star-h2 {
+	@include star-text();
+	font-size: 20px;
+}
+
+@mixin star-text-ui-caption($mod: default) {
 	@include star-text($mod);
 	text-transform: uppercase;
 }
 
-@mixin star-text-input($mod: default) {
-	@include star-text-caption($mod);
+@mixin star-text-input {
+	@include star-text();
 }
 
-@mixin star-text-field-title($mod: default) {
-	@include star-text($mod);
-	line-height: 26px;
+@mixin star-text-field-title() {
+	@include star-text();
+	font-size: 12px;
+	line-height: normal;
 }
 
-@mixin star-text-description($mod: default) {
-	@include star-text($mod);
+@mixin star-text-description() {
+	@include star-text();
 	font-size: 14px;
 	line-height: 22px;
 }
 
-@mixin star-text-check-label($mod: default) {
-	@include star-text($mod);
+@mixin star-text-check-label() {
+	@include star-text();
 	font-size: 12px;
 }
 
-@mixin star-text-check-label($mod: default) {
-	@include star-text($mod);
+@mixin star-text-pm-label() {
+	@include star-text();
 	font-size: 12px;
 }
 
-@mixin star-text-pm-label($mod: default) {
-	@include star-text($mod);
-	font-size: 12px;
+@mixin star-amount {
+	@include star-text();
+	font-size: 24px;
 }

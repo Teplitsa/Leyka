@@ -1,1 +1,188 @@
 /** == Form elements (_form_elements.scss) == **/
+
+.leyka-pf-star .leyka-pf__module .leyka-pf__form .leyka-inline-campaign-form .step .step__fields {
+    
+    // periodicity
+    &.periodicity {
+        display: flex;
+        font-family: unset;
+        
+        a {
+            @include star-control-frame();
+            @include star-text-ui-caption();
+            
+            display: flex;
+            box-shadow: none;
+            background-color: $leyka-star-color-white;
+            color: $leyka-star-color-gray-light;
+            text-decoration: none;
+            width: 328px;
+            height: 56px;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            
+            &:active, &:hover, &:focus {
+                text-decoration: none;
+            }
+            
+            &:last-of-type {
+                margin-left: -8px;
+            }
+            
+            &.active {
+                background-color: $leyka-star-color-main;
+                color: $leyka-star-color-white;
+                border-color: $leyka-star-color-main;
+                z-index: 11;
+            }
+        }
+    }
+
+    // amount
+    .amount__figure span {
+        font-family: unset;
+    }
+    
+    .star-swiper {
+        @include star-swiper();
+    }
+    
+    // payment methods
+    &.payments-grid {
+        .star-swiper {
+            .swiper-item {
+                flex-direction: column;
+                margin: -5px 0px 0px 0px;
+                
+                .payment-opt__button {
+                    display: block;
+                }
+                
+                span.payment-opt__label {
+                    @include star-text-pm-label();
+                    text-transform: none;
+                    color: $leyka-star-color-gray-light;
+                    display: block;
+                    margin-top: -11px;
+                }
+                
+            }
+        }
+    }
+    
+    // donor data
+    &.donor {
+        
+        .donor__textfield {
+            @include star-control-frame();
+            padding: 0.5rem 1rem 0.75rem 1rem;
+            overflow-y: visible;
+            margin-bottom: 2rem;
+            background-image: none;
+            background-position: calc(100% - 1rem) center;
+            background-repeat: no-repeat;
+            
+            &.donor__textfield--comment {
+                height: 114px;
+                
+                label {
+                    span.donor__textfield-error {
+                        top: 108px;
+                    }
+                }
+            }
+            
+            label {
+                @include star-text-field-title();
+                overflow: visible;
+
+                span.donor__textfield-label {
+                    @include star-text-input();
+                    display: block;
+                    margin-top: 10px;                    
+                    color: $leyka-star-color-gray;
+                }
+                
+                span.donor__textfield-error {
+                    color: $leyka-star-color-error;
+                    position: absolute;
+                    top: 50px;
+                    height: 15px;
+                    width: 100%;
+                }
+            }
+            
+            &.valid {
+                background-image: url(../../img/star-field-marker-ok.svg);
+                
+                label {
+                    .donor__textfield-label {
+                        @include star-text-field-title();
+                        color: $leyka-star-color-main;
+                        margin-top: 0px;
+                    }
+                }
+            }
+
+            &.invalid {
+                background-image: url(../../img/star-field-marker-error.svg);
+                background-color: $leyka-star-color-error-third;
+                
+                label {
+                    color: $leyka-star-color-error;
+                    
+                    span.donor__textfield-label {
+                        @include star-text-field-title();
+                        color: $leyka-star-color-error;
+                        margin-top: 0px;
+                    }
+                }
+                
+                input, textarea {
+                    color: $leyka-star-color-error;
+                }
+            }
+            
+            &.focus {
+                background-color: $leyka-star-color-main-third;
+                
+                label {
+                    span.donor__textfield-label {
+                        @include star-text-field-title();
+                        color: $leyka-star-color-main;
+                        margin-top: 0px;
+                    }
+                }
+                
+            }
+            
+            input, textarea {
+                @include star-text-input();
+                color: $leyka-star-color-gray-dark;
+                border-bottom: none;
+                width: calc(100% - 1rem - 24px);
+            }
+            
+            input {
+                height: 16px;
+                padding: 0px;
+            }
+            
+            textarea {
+                height: 76px;
+                padding: 0px;
+            }
+        }
+    }
+    
+    .donor__submit {
+        input {
+            background-color: $leyka-star-color-main;
+            color: $leyka-star-color-white;
+            border-radius: 4px;
+            width: 100%;
+        }
+    }
+}

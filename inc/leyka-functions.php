@@ -1203,6 +1203,31 @@ function leyka_revo_template_displayed() {
 
 }
 
+function leyka_modern_template_displayed() {
+
+    $modern_template_displayed = false;
+    $modern_templates = array('revo', 'star');
+
+    if(is_singular(Leyka_Campaign_Management::$post_type)) {
+
+        $campaign = new Leyka_Campaign(get_post());
+        if($campaign->template == 'default') {
+
+            $leyka_template_data = leyka_get_current_template_data();
+            $modern_template_displayed = in_array($leyka_template_data['id'], $modern_templates);
+
+        } else {
+            $modern_template_displayed = in_array($campaign->template, $modern_templates);
+        }
+
+    } else if(get_post() && has_shortcode(get_post()->post_content, 'leyka_inline_campaign')) {
+        $modern_template_displayed = true;
+    }
+
+    return apply_filters('leyka_modern_template_displayed', $modern_template_displayed);
+
+}
+
 function leyka_success_widget_displayed() {
     return leyka_options()->opt_template('show_success_widget_on_success') && is_page(leyka_options()->opt('success_page'));
 }
