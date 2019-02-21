@@ -386,7 +386,7 @@ class Leyka extends Leyka_Singleton {
                 'transactionId': '<?php echo (int)$donation_id;?>',
                 'transactionAffiliation': '<?php echo get_bloginfo('name');?>',
                 'transactionTotal': <?php echo $donation_amount_total;?>,
-                'transactionTax': <?php echo round($donation->amount - $donation->amount_total, 2);?>,
+                'transactionTax': 0,
                 'transactionShipping': 0,
                 'transactionProducts': [{
                     'sku': '<?php echo (int)$campaign_id;?>',
