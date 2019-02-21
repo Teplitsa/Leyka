@@ -340,6 +340,16 @@ class Leyka extends Leyka_Singleton {
         }
     }
 
+    /**
+     * A shorthand wrapper for the options getter method.
+     * @param $option_id string
+     * @param $new_value mixed
+     * @return mixed
+     */
+    public function opt($option_id, $new_value = null) {
+        return leyka_options()->opt($option_id, $new_value);
+    }
+
     public function addGtmDataLayer() {
 
         if(
@@ -364,22 +374,36 @@ class Leyka extends Leyka_Singleton {
 
         if( !$campaign->id ) {
             return;
-        }?>
+        }
+
+        $donation_amount_total = round((float)$donation->amount_total, 2);?>
 
         <script>
-            dataLayer = [{
-                'donationId': '<?php echo (int)$donation_id;?>',
-                'donationCampaignId': '<?php echo (int)$campaign_id;?>',
-                'donationCampaignTitle': '<?php echo esc_attr($campaign->title);?>',
+            window.dataLayer = window.dataLayer || [];
+
+            dataLayer.push({
+                'donorEmail': '<?php echo $donation->donor_email;?>',
+                'transactionId': '<?php echo (int)$donation_id;?>',
+                'transactionAffiliation': '<?php echo get_bloginfo('name');?>',
+                'transactionTotal': <?php echo $donation_amount_total;?>,
+                'transactionTax': 0,
+                'transactionShipping': 0,
+                'transactionProducts': [{
+                    'sku': '<?php echo (int)$campaign_id;?>',
+                    'name': '<?php echo esc_attr($campaign->title);?>',
+                    'category': '<?php echo esc_attr($donation->type_label);?>',
+                    'price': <?php echo $donation_amount_total;?>,
+                    'quantity': 1
+                }],
+                <?php /** @todo Check if the following params can be passed from the dataLayer to GA somehow. */?>
                 'donationCampaignPaymentTitle': '<?php echo esc_attr($campaign->payment_title);?>',
                 'donationFundedDate': '<?php echo esc_attr($donation->date_funded);?>',
                 'donationGateway': '<?php echo esc_attr($donation->gateway_label);?>',
                 'donationPm': '<?php echo esc_attr($donation->pm_label);?>',
                 'donationType': '<?php echo esc_attr($donation->type_label);?>',
-                'donationAmount': '<?php echo esc_attr($donation->amount);?>',
-                'donationAmountTotal': '<?php echo esc_attr($donation->amount_total);?>',
-                'donationCurrency': '<?php echo esc_attr($donation->currency_label);?>',
-            }];
+                'donationAmount': <?php echo esc_attr($donation->amount);?>,
+                'donationCurrency': '<?php echo esc_attr($donation->currency_label);?>'
+            });
         </script>
 
     <?php }
