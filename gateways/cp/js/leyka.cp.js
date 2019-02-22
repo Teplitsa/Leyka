@@ -1,6 +1,6 @@
 jQuery(document).ready(function($){
 
-    $('body').on('submit.leyka', 'form.leyka-pm-form,form.leyka-revo-form', function(e){
+    $(document).on('submit.leyka', 'form.leyka-pm-form,form.leyka-revo-form', function(e){
 
         function addError($errors_block, error_html) {
 

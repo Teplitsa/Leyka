@@ -1512,7 +1512,8 @@ class Leyka_Donation {
 
         add_post_meta($id, 'leyka_donation_amount', (float)$amount);
 
-        $value = empty($params['donor_name']) ? leyka_pf_get_donor_name_value() : trim($params['donor_name']);
+        $value = empty($params['donor_name']) ? leyka_pf_get_donor_name_value() : $params['donor_name'];
+        $value = trim($value);
         if($value && !leyka_validate_donor_name($value) && empty($params['force_insert'])) { // Validate donor's name
 
             wp_delete_post($id, true);
@@ -1525,14 +1526,20 @@ class Leyka_Donation {
         add_post_meta($id, 'leyka_donor_name', htmlentities($value, ENT_QUOTES, 'UTF-8'));
 
         $value = empty($params['donor_email']) ? leyka_pf_get_donor_email_value() : $params['donor_email'];
+        $value = trim($value);
         if($value && !filter_var($value, FILTER_VALIDATE_EMAIL) && empty($params['force_insert'])) {
 
             wp_delete_post($id, true);
-            return new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
+            return new WP_Error(
+                'incorrect_donor_email',
+                __('Incorrect donor email given while trying to add a donation', 'leyka')
+            );
+
         }
         add_post_meta($id, 'leyka_donor_email', $value);
 
         $value = empty($params['donor_comment']) ? leyka_pf_get_donor_comment_value() : $params['donor_comment'];
+        $value = trim($value);
         if($value) {
             add_post_meta($id, 'leyka_donor_comment', sanitize_textarea_field($value));
         }

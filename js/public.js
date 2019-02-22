@@ -347,7 +347,7 @@ jQuery(document).ready(function($){
 
             if(field_is_valid) { // Validate the other field requirements
 
-                if($field.attr('type') == 'text' && $field.hasClass('email')) {
+                if($field.prop('type') === 'text' && $field.hasClass('email')) {
 
                     if( !$field.val().length ) {
 
@@ -356,7 +356,9 @@ jQuery(document).ready(function($){
 
                     } else {
 
-                        if( !is_email($field.val()) ) {
+                        var value_tmp = $.trim($field.val());
+
+                        if( !is_email(value_tmp) ) {
 
                             field_is_valid = false;
                             $form.find('.'+$field.attr('name')+'-error').html(leyka.email_invalid).show();
@@ -364,9 +366,10 @@ jQuery(document).ready(function($){
                         } else {
                             $form.find('.'+$field.attr('name')+'-error').html('').hide();
                         }
+
                     }
 
-                } else if($field.attr('type') == 'text' && $field.hasClass('non-email')) {
+                } else if($field.attr('type') === 'text' && $field.hasClass('non-email')) {
 
                     if( !$field.val().length ) {
 
@@ -396,9 +399,10 @@ jQuery(document).ready(function($){
                 }
             }
 
-            if(is_valid && !field_is_valid) {
+            if( !field_is_valid ) {
                 is_valid = false;
             }
+
         });
 
         var amount_is_valid = true;
@@ -451,6 +455,7 @@ jQuery(document).ready(function($){
         }
 
         return is_valid;
+
     }
 
     $(document).on('submit.leyka', 'form.leyka-pm-form', function(e){
@@ -464,22 +469,37 @@ jQuery(document).ready(function($){
 
         } else {
 
-            if(typeof ga == 'function') { // GA Events on form submit
+            $(':input:visible', $form).each(function() {
+
+                var $field = $(this);
+
+                if($field.prop('type') === 'text' || $field.prop('type') === 'email') {
+                    $field.val( $.trim($field.val()) );
+                } else if($field.prop('tagName') === 'textarea') {
+                    $field.text( $.trim($field.text()) );
+                }
+
+            });
+
+            if(typeof ga === 'function') { // GA Events on form submit
 
                 var label = 'undefined_payment_method',
                     action = 'undefined_campaign';
 
                 if($form.find('[name="leyka_ga_payment_method"]').length) {
-                    label = $form.find('[name="leyka_ga_payment_method"]').attr('value');
+                    label = $form.find('[name="leyka_ga_payment_method"]').prop('value');
                 }
 
                 if($form.find('[name="leyka_ga_campaign_title"]').length) {
-                    action = $form.find('[name="leyka_ga_campaign_title"]').attr('value');
+                    action = $form.find('[name="leyka_ga_campaign_title"]').prop('value');
                 }
 
                 ga('send', 'event', 'click_donation_button', action, label, 1);
+
             }
+
         }
+
     });
 
     // Terms of Agreement modal:
@@ -503,7 +523,7 @@ jQuery(document).ready(function($){
     });
 
     // Donors list width detection:
-    function leykaWidths() {
+    function leyka_widths() {
         $('.leyka-donors-list').each(function(){
 
             var w = $(this).width();
@@ -549,9 +569,9 @@ jQuery(document).ready(function($){
         });
     }
 
-    leykaWidths();
+    leyka_widths();
     $(window).resize(function(){
-        leykaWidths();
+        leyka_widths();
     });
 
     // Scroll:

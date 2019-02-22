@@ -62,19 +62,22 @@ class Leyka_Payment_Form {
             $errors[] = new WP_Error('wrong_gateway_pm_data', __('Wrong gateway or/and payment method in submitted form data', 'leyka'));
         }
 
-        $donor_name = leyka_pf_get_donor_name_value();
+        $donor_name = trim(leyka_pf_get_donor_name_value());
         if($donor_name && !leyka_validate_donor_name($donor_name)) {
             $errors[] = new WP_Error('incorrect_donor_name', __('Incorrect donor name given while trying to add a donation', 'leyka'));
         }
 
-        $donor_email = leyka_pf_get_donor_email_value();
+        $donor_email = trim(leyka_pf_get_donor_email_value());
         if($donor_email && !leyka_validate_email($donor_email)) {
             $errors[] = new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
         }
 
-        if(leyka_options()->opt_template('show_donation_comment_field') && leyka_options()->opt_template('donation_comment_max_length')) {
+        if(
+            leyka_options()->opt_template('show_donation_comment_field')
+            && leyka_options()->opt_template('donation_comment_max_length')
+        ) {
 
-            $donor_comment = leyka_pf_get_donor_comment_value();
+            $donor_comment = trim(leyka_pf_get_donor_comment_value());
             if($donor_comment && mb_strlen($donor_comment) > leyka_options()->opt_template('donation_comment_max_length')) {
                 $errors[] = new WP_Error('donor_comment_too_long', sprintf(__('Entered comment is too long (maximum %d characters allowed)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length')));
             }
