@@ -33,12 +33,14 @@ if(gutil.env.prod === true) {
 }
 
 //js
-gulp.task('build-front-js', function(){
+gulp.task('build-front-js', async function(){
+
+    console.log('HERE FRONT')
 
     var vendorFiles = [basePaths.npm + 'jquery.cookie/jquery.cookie.js'],
         appFiles = [basePaths.src + 'js/*.js', basePaths.src + 'js/front/*.js'];
 
-    return gulp.src(vendorFiles.concat(appFiles))
+    return await gulp.src(vendorFiles.concat(appFiles))
         .pipe(plugins.concat('public.js'))
         .pipe(isProduction ? plugins.uglify() : gutil.noop()) // Minification
         .pipe(plugins.size()) // Print size for log
