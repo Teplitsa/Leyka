@@ -432,7 +432,7 @@ class Leyka extends Leyka_Singleton {
             $request = explode('/', trim($request[1], '/'));
 
             if($request[0] === 'do_recurring') { // Recurring payments processing URL
-                $this->_do_active_recurrents_rebilling();
+                $this->_doActiveRecurring();
             } else if($request[0] === 'cancel_recurring' && !empty($request[1]) && !empty($request[2])) {
 
                 $donation = new Leyka_Donation($request[1]);
@@ -551,14 +551,20 @@ class Leyka extends Leyka_Singleton {
 
     }
 
-    /** Proceed the rebill requests for all recurring subsriptions. */
-    protected function _do_active_recurrents_rebilling() {
+    /** Make active rebill requests for all recurring subsriptions for the current day of month. */
+    protected function _doActiveRecurring() {
 
         ini_set('max_execution_time', 0);
         set_time_limit(0);
         ini_set('memory_limit', 268435456); // 256 Mb, just in case
 
         // Get all active initial donations for the recurring subscriptions:
+        $current_day = (int)date('j');
+        $max_days_in_month = (int)date('t');
+        $current_day_param = $max_days_in_month < 31 && $max_days_in_month === $current_day ? // Last day of short month
+            array(array('day' => $current_day, 'compare' => '>='), array('day' => 31, 'compare' => '<=')) :
+            array(array('day' => (int)date('j')));
+
         $params = array(
             'post_type' => Leyka_Donation_Management::$post_type,
             'nopaging' => true,
@@ -578,6 +584,7 @@ class Leyka extends Leyka_Singleton {
                     'compare' => '=',
                 ),
             ),
+            'date_query' => $current_day_param,
         );
 
         foreach(get_posts($params) as $donation) {
