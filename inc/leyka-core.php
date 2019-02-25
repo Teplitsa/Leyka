@@ -1634,9 +1634,15 @@ class Leyka extends Leyka_Singleton {
 
     public function getTemplateData($file) {
 
-        $data = get_file_data($file, array('name' => 'Leyka Template', 'description' => 'Description',));
+        $data = get_file_data($file, array(
+            'name' => 'Leyka Template',
+            'description' => 'Description',
+            'debug_only' => 'Debug only',
+        ));
+
         $data['file'] = $file;
         $data['basename'] = basename($file);
+
         $id = explode('-', str_replace('.php', '', $data['basename']));
         $data['id'] = end($id); // Otherwise error appears in php 5.4.x
 
