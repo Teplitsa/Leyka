@@ -8,8 +8,62 @@
  **/
 
 $template_data = Leyka_Star_Template_Controller::getInstance()->getTemplateData($campaign);
+$leyka_screen = !empty($_GET['leyka-screen']) ? $_GET['leyka-screen'] : '';
 ?>
 
+<?php if($leyka_screen == 'cancel-subscription') { ?>
+    
+    <form class="leyka-screen-form">
+        
+        <h2>Мы были бы вам благодарны, если вы поделитесь почему вы решили отменить подписку?</h2>
+        
+        <div class="leyka-cancel-subscription-reason">
+            <span>
+                <input type="checkbox" name="leyka_cancel_subscription_reason" id="leyka_cancel_subscription_reason_uncomfortable_pm" class="required" value="uncomfortable_pm">
+                <label for="leyka_cancel_subscription_reason_uncomfortable_pm">Неудобный способ оплаты</label>
+            </span>
+            <span>
+                <input type="checkbox" name="leyka_cancel_subscription_reason" id="leyka_cancel_subscription_reason_too_much" class="required" value="too_much">
+                <label for="leyka_cancel_subscription_reason_too_much">Слишком большая сумма пожертвования</label>
+            </span>
+            <span>
+                <input type="checkbox" name="leyka_cancel_subscription_reason" id="leyka_cancel_subscription_reason_not_match" class="required" value="not_match">
+                <label for="leyka_cancel_subscription_reason_not_match">Издание не отражает мои интересы</label>
+            </span>
+            <span>
+                <input type="checkbox" name="leyka_cancel_subscription_reason" id="leyka_cancel_subscription_reason_better_use" class="required" value="better_use">
+                <label for="leyka_cancel_subscription_reason_better_use">Нашел лучшее применение деньгам</label>
+            </span>
+            <span>
+                <input type="checkbox" name="leyka_cancel_subscription_reason" id="leyka_cancel_subscription_reason_other" class="required" value="other">
+                <label for="leyka_cancel_subscription_reason_other">Другая причина</label>
+            </span>
+        </div>
+    
+        <div class="leyka-cancel-subscription-submit">
+            <input type="submit" class="leyka-star-btn" value="Отключить">
+            <input type="submit" class="leyka-star-btn btn-secondary" value="Не отключать">
+        </div>
+        
+    </form>
+    
+<?php } elseif($leyka_screen == 'thankyou') { ?>
+
+    <form class="leyka-screen-form">
+        
+        <h2>Спасибо за ваше пожертвование!</h2>
+        
+        <p>Мы будем рады небольшой, но ежемесячной помощи, это дает нам уверенность в завтрашнем дне и возможность планировать нашу деятельность.</p>
+    
+        <div class="leyka-thankyou-submit">
+            <a href="#" class="leyka-star-btn">На главную</a>
+        </div>
+        
+    </form>
+    
+<?php } elseif($leyka_screen == 'history') { ?>
+
+<?php } else { ?>
 <form id="<?php echo leyka_pf_get_form_id($campaign->id).'-star-form';?>" class="leyka-inline-campaign-form leyka-star-form" data-template="star" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
 
     <div class="step step--periodicity">
@@ -125,40 +179,48 @@ $template_data = Leyka_Star_Template_Controller::getInstance()->getTemplateData(
             <div class="step__fields donor">
 
                 <?php $field_id = 'leyka-'.wp_rand();?>
-                <div class="donor__textfield donor__textfield--name ">
-                    <label for="<?php echo $field_id;?>">
-                        <span class="donor__textfield-label leyka_donor_name-label"><?php _e('Your name', 'leyka');?></span>
+                <div class="donor__textfield donor__textfield--name required">
+                    <div class="leyka-star-field-frame">
+                        <label for="<?php echo $field_id;?>">
+                            <span class="donor__textfield-label leyka_donor_name-label"><?php _e('Your name', 'leyka');?></span>
+                        </label>
+                        <input id="<?php echo $field_id;?>" type="text" name="leyka_donor_name" value="" autocomplete="off">
+                    </div>
+                    <div class="leyka-star-field-error-frame">
                         <span class="donor__textfield-error leyka_donor_name-error">
                             <?php _e('Enter your name', 'leyka');?>
                         </span>
-                    </label>
-                    <input id="<?php echo $field_id;?>" type="text" name="leyka_donor_name" value="" autocomplete="off">
+                    </div>
                 </div>
 
                 <?php $field_id = 'leyka-'.wp_rand();?>
-                <div class="donor__textfield donor__textfield--email">
-                    <label for="<?php echo $field_id;?>">
-                        <span class="donor__textfield-label leyka_donor_name-label"><?php _e('Your email', 'leyka');?></span>
+                <div class="donor__textfield donor__textfield--email required">
+                    <div class="leyka-star-field-frame">
+                        <label for="<?php echo $field_id;?>">
+                            <span class="donor__textfield-label leyka_donor_name-label"><?php _e('Your email', 'leyka');?></span>
+                        </label>
+                        <input type="email" id="<?php echo $field_id;?>" name="leyka_donor_email" value="" autocomplete="off">
+                    </div>
+                    <div class="leyka-star-field-error-frame">
                         <span class="donor__textfield-error leyka_donor_email-error">
                             <?php _e('Enter an email in the some@email.com format', 'leyka');?>
                         </span>
-                    </label>
-                    <input type="email" id="<?php echo $field_id;?>" name="leyka_donor_email" value="" autocomplete="off">
+                    </div>
                 </div>
 
                 <?php if(leyka_options()->opt_template('show_donation_comment_field')) { $field_id = 'leyka-'.wp_rand();?>
                 <div class="donor__textfield donor__textfield--comment leyka-field">
-                    <label for="<?php echo $field_id;?>">
-                        <span class="donor__textfield-label leyka_donor_comment-label"><?php echo leyka_options()->opt_template('donation_comment_max_length') ? sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length')) : __('Your comment', 'leyka');?></span>
+                    <div class="leyka-star-field-frame">
+                        <label for="<?php echo $field_id;?>">
+                            <span class="donor__textfield-label leyka_donor_comment-label"><?php echo leyka_options()->opt_template('donation_comment_max_length') ? sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length')) : __('Your comment', 'leyka');?></span>
+                        </label>
+                        <textarea id="<?php echo $field_id;?>" class="leyka-donor-comment" name="leyka_donor_comment" data-max-length="<?php echo leyka_options()->opt_template('donation_comment_max_length');?>"></textarea>
+                    </div>
+                    <div class="leyka-star-field-error-frame">
                         <span class="donor__textfield-error leyka_donor_comment-error"><?php _e('Entered value is too long', 'leyka');?></span>
-                    </label>
-                    <textarea id="<?php echo $field_id;?>" class="leyka-donor-comment" name="leyka_donor_comment" data-max-length="<?php echo leyka_options()->opt_template('donation_comment_max_length');?>"></textarea>
+                    </div>
                 </div>
                 <?php }?>
-
-                <div class="donor__submit">
-                    <?php echo apply_filters('leyka_revo_template_final_submit', '<input type="submit" class="leyka-default-submit" value="'.leyka_options()->opt_template('donation_submit_text').'">');?>
-                </div>
 
                 <?php if(leyka_options()->opt('agree_to_terms_needed') || leyka_options()->opt('agree_to_pd_terms_needed')) {?>
                 <div class="donor__oferta">
@@ -195,13 +257,15 @@ $template_data = Leyka_Star_Template_Controller::getInstance()->getTemplateData(
                 </div>
                 <?php }?>
 
-            </div>
-        </div>
+                <div class="donor__submit">
+                    <?php echo apply_filters('leyka_revo_template_final_submit', '<input type="submit" class="leyka-default-submit" value="'.leyka_options()->opt_template('donation_submit_text').'">');?>
+                </div>
 
-        <div class="step__note">
-			<p><?php _e('We will send the donation success notice to this address', 'leyka');?></p>
+            </div>
         </div>
 
     </div>
 
 </form>
+
+<?php } ?>

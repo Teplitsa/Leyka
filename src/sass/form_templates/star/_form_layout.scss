@@ -12,6 +12,7 @@ div[id*="leyka-pf-"].leyka-pf-star {
         
         .leyka-pf__form {
             display: block;
+            max-width: none;
             
             .leyka-inline-campaign-form {
                 
@@ -22,6 +23,14 @@ div[id*="leyka-pf-"].leyka-pf-star {
                     visibility: visible;
                     opacity: unset;
                     margin-bottom: 1.5em;
+                    
+                    .step__border {
+                        width: 100%;
+                        border-image: none;
+                        border-width: unset;
+                        border-style: unset;
+                        padding-top: unset;
+                    }
                     
                     .step__fields {
                         visibility: visible;

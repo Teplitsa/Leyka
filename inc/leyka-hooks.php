@@ -69,3 +69,12 @@ function leyka_terms_of_pd_usage_page_text($page_content) {
         apply_filters('leyka_terms_of_pd_usage_text', do_shortcode($page_content)) : $page_content;
 }
 add_filter('the_content', 'leyka_terms_of_pd_usage_page_text');
+
+function leyka_star_body_classes($classes) {
+    if(!empty($_GET['leyka-screen'])) {
+        $classes[] = 'leyka-screen-' . $_GET['leyka-screen'];
+    }
+    
+    return $classes;
+}
+add_filter('body_class', 'leyka_star_body_classes');
