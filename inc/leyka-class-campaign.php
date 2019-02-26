@@ -126,7 +126,6 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         }
     }
 
-	/** Metaboxes: */
 	public function set_metaboxes() {
 
         add_meta_box(
@@ -138,7 +137,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         // Metaboxes are only for campaign editing page:
         $screen = get_current_screen();
-        if($screen->post_type == self::$post_type && $screen->base == 'post' && !$screen->action) {
+        if($screen->post_type == self::$post_type && $screen->base === 'post' && !$screen->action) {
 
             add_meta_box(
                 self::$post_type.'_embed', __('Campaign embedding', 'leyka'),
@@ -154,6 +153,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 self::$post_type.'_statistics', __('Campaign statistics', 'leyka'),
                 array($this, 'statistics_meta_box'), self::$post_type, 'side', 'low'
             );
+
         }
 	}
 
