@@ -4,8 +4,8 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса, яндекс.деньги, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
-Tested up to: 5.0.3
-Stable tag: 3.0.3
+Tested up to: 5.1
+Stable tag: 3.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,21 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.0.4 =
+* New: DataLayer support added for GA e-commerce integration.
+* New: now Revo campaigns must be explicitly "finished" to disallow further donations.
+* New: the plugin options API improved.
+* Fix: the "502 error" bug fixed.
+* Fix: a bugfix for non-Revo forms output.
+* Fix: now plugin options save correctly.
+* Fix: styles for PHP version error message fixed.
+* Fix: now Yandex.Kassa Smart payment PM is removed when new YK API is in use.
+* Fix: now active recurring scheme for the last days in the short months works correctly.
+* Tweak: form templates screenshots tinified.
+* Tweak: CSS optimizations.
+* Tweak: plugin loading sequence optimizations.
+* Tweak: optimizations in the Campaign class for large databases.
+
 = 3.0.3 =
 * New: new design of Campaign View settings area added.
 * New: now plugin features debug mode switches on/off based on LEYKA_DEBUG instead of WP_DEBUG.
