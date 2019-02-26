@@ -2,6 +2,7 @@
 /**
  * Leyka Template: Star
  * Description: A modern and lightweight form template
+ * Debug only: true
  * 
  * $campaign - current campaign
  * 

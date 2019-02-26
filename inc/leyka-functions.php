@@ -473,6 +473,10 @@ function leyka_get_form_templates_list() {
     $list = array();
     foreach(leyka()->getTemplates() as $template) {
 
+        if( !LEYKA_DEBUG && !empty($template['debug_only']) ) {
+            continue;
+        }
+
         $name = $template['name'] == __($template['name'], 'leyka') ? $template['name'] : __($template['name'], 'leyka');
         $description = $template['description'] == __($template['description'], 'leyka') ?
             $template['description'] : __($template['description'], 'leyka');
