@@ -150,7 +150,7 @@
             }
             
             &.valid .leyka-star-field-frame {
-                background-image: url(../../img/star-field-marker-ok.svg);
+                background-image: url(../../img/star-icon-ok.svg);
                 
                 label {
                     .donor__textfield-label {
@@ -160,7 +160,7 @@
             }
 
             &.invalid .leyka-star-field-frame {
-                background-image: url(../../img/star-field-marker-error.svg);
+                background-image: url(../../img/star-icon-error.svg);
                 background-color: $leyka-star-color-error-third;
                 
                 label {
@@ -287,10 +287,13 @@
     &.leyka-pf--pd-open .pd__flow {
         @include star-text();
         
-        p:first-child {
-            @include star-h2();
+        p {
             margin-bottom: 1rem;
-            text-align: center;
+            
+            &:first-child {
+                @include star-h2();
+                text-align: center;
+            }
         }
     }
 
@@ -341,8 +344,9 @@
         }
     }
     
-    .leyka-cancel-subscription-submit {
+    .leyka-star-submit {
         margin-top: 3em;
+        padding-top: 6px;
         
         .leyka-star-btn {
             @include leyka-star-btn();
@@ -356,31 +360,107 @@
     
 }
 
-.leyka-screen-thankyou .leyka-pf-star .leyka-screen-form {
+.leyka-screen-history .leyka-pf-star .leyka-screen-form {
     h2 {
         @include star-h2();
         margin-bottom: 1.5rem;
         text-align: center;
     }
     
-    & > p {
+    p {
         @include star-text-rare();
         text-align: center;
         margin-bottom: 1.5rem;
     }
     
-    .leyka-thankyou-submit {
-        .leyka-star-btn {
-            @include leyka-star-btn(link);
-            text-align: center;
-            text-decoration: none;
-            box-shadow: none;
-            border: none;
+    .leyka-star-history {
+        .item {
+            text-align: left;
+            margin-bottom: 1.5rem;
+            position: relative;
+            border-bottom: 1px solid $leyka-star-color-gray-superlight;
             
-            &:focus, &:active, &:hover {
+            h2 {
+                color: $leyka-star-color-black;
+                text-align: left;
+                margin-bottom: 0;
+                vertical-align: text-top;
+                
+                &:before {
+                    content: " ";
+                    display: block;
+                    margin-right: 0.5rem;
+                    width: 24px;
+                    height: 24px;
+                    background-size: cover;
+                    background-position: center center;
+                    background-repeat: no-repeat;
+                    float: left;
+                    margin-top: -1px;                    
+                }
+                &:after {
+                    float: none;
+                    clear: both;
+                }
+            }
+            
+            &.break h2:before {
+                background-image: url(../../img/star-icon-disconnect.svg);
+            }
+
+            &.pay h2:before {
+                background-image: url(../../img/star-icon-renew.svg);
+            }
+            
+            &.no-pay h2:before {
+                background-image: url(../../img/star-icon-no-renew.svg);
+            }
+
+            &.error h2:before {
+                background-image: url(../../img/star-icon-error.svg);
+            }
+            
+            .date {
+                @include star-text-ui-second();
+                color: $leyka-star-color-gray;
+                position: absolute;
+                top: 0px;
+                right: 0px;
+            }
+            
+            p {
+                @include star-text();
+                color: $leyka-star-color-gray;
+                text-align: left;
+                margin-top: 5px;
+            }
+        }
+    }
+    
+    .leyka-star-submit {
+        text-align: center;
+        padding-top: 6px;
+        
+        .leyka-star-btn {
+            @include leyka-star-single-link();
+            border-bottom: 1px dashed $leyka-star-color-main;
+            
+            &:hover {
                 text-decoration: none;
-                box-shadow: none;
-                border: none;
+                border-bottom: 1px solid transparent;
+            }
+        }
+    }
+    
+    .leyka-we-need-you {
+        margin-top: 2rem;
+        
+        a {
+            @include star-clean-a();
+            color: $leyka-star-color-main;
+            
+            &:hover {
+                text-decoration: underline;
             }
         }
     }

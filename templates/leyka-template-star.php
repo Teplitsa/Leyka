@@ -40,7 +40,7 @@ $leyka_screen = !empty($_GET['leyka-screen']) ? $_GET['leyka-screen'] : '';
             </span>
         </div>
     
-        <div class="leyka-cancel-subscription-submit">
+        <div class="leyka-star-submit">
             <input type="submit" class="leyka-star-btn" value="Отключить">
             <input type="submit" class="leyka-star-btn btn-secondary" value="Не отключать">
         </div>
@@ -55,13 +55,55 @@ $leyka_screen = !empty($_GET['leyka-screen']) ? $_GET['leyka-screen'] : '';
         
         <p>Мы будем рады небольшой, но ежемесячной помощи, это дает нам уверенность в завтрашнем дне и возможность планировать нашу деятельность.</p>
     
-        <div class="leyka-thankyou-submit">
+        <div class="leyka-star-submit">
             <a href="#" class="leyka-star-btn">На главную</a>
         </div>
         
     </form>
     
 <?php } elseif($leyka_screen == 'history') { ?>
+
+    <form class="leyka-screen-form">
+        
+        <h2>История пожертвований</h2>
+        
+        <p>Мы благодарны вам за оказываемую поддержку!</p>
+        
+        <div class="leyka-star-history">
+            <div class="item break">
+                <h2>Отключение</h2>
+                <span class="date">12.01.2019</span>
+                <p>«Помогите изданию оставаться независимым источником информации»</p>
+            </div>
+            <div class="item no-pay">
+                <h2>300 Р.</h2>
+                <span class="date">12.01.2019</span>
+                <p>«Помогите изданию оставаться независимым источником информации»</p>
+            </div>
+            <div class="item error">
+                <h2>300 Р.</h2>
+                <span class="date">12.01.2019</span>
+                <p>«Помогите изданию оставаться независимым источником информации»</p>
+            </div>
+            <div class="item pay">
+                <h2>300 Р.</h2>
+                <span class="date">12.01.2019</span>
+                <p>«Помогите изданию оставаться независимым источником информации»</p>
+            </div>
+            <div class="item break">
+                <h2>Отключение</h2>
+                <span class="date">12.01.2019</span>
+                <p>«Помогите изданию оставаться независимым источником информации»</p>
+            </div>
+        </div>
+    
+        <div class="leyka-star-submit">
+            <a href="#" class="leyka-star-btn">Загрузить еще</a>
+        </div>
+        
+        <p class="leyka-we-need-you">Вы всегда можете <a href="?leyka-screen=cancel-subscription">отключить ваше ежемесячное пожертвование.</a><br />Но нам будет без вас трудно.</p>
+        
+    </form>
 
 <?php } else { ?>
 <form id="<?php echo leyka_pf_get_form_id($campaign->id).'-star-form';?>" class="leyka-inline-campaign-form leyka-star-form" data-template="star" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">

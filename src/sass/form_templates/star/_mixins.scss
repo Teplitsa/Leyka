@@ -14,11 +14,13 @@
     text-decoration: none;
     border: none;
     box-shadow: none;
+    outline: none;
     
     &:active, &:focus, &:hover {
         text-decoration: none;
         border: none;
         box-shadow: none;
+        outline: none;
     }
 }
 
@@ -172,10 +174,23 @@
         color: $leyka-star-color-gray;
         border: 1px solid $leyka-star-color-gray-superlight;
 	}
-	@else if $mod == link {
-		background-color: transparent;
-        color: $leyka-star-color-main;
-        border: none;
-	}
+}
+
+@mixin leyka-star-single-link($mod: default) {
+    @include star-text-ui-caption();
+    display: inline-block;
+    color: $leyka-star-color-white;
+    width: auto;
     
+    background-color: transparent;
+    color: $leyka-star-color-main;
+    border: none;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    
+    @include star-clean-a();
+    
+    &:hover {
+        text-decoration: underline;
+    }
 }
