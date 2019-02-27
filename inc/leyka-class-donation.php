@@ -151,19 +151,28 @@ class Leyka_Donation_Management {
 
         <?php $campaign_title = '';
         if( !empty($_GET['campaign']) && (int)$_GET['campaign'] > 0) {
+
             $campaign = get_post((int)$_GET['campaign']);
             if($campaign) {
                 $campaign_title = $campaign->post_title;
             }
+
         }?>
 
         <label for="campaign-select"></label>
         <input id="campaign-select" type="text" data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>" placeholder="<?php _e('Select a campaign', 'leyka');?>" value="<?php echo $campaign_title;?>">
         <input id="campaign-id" type="hidden" name="campaign" value="<?php echo !empty($_GET['campaign']) ? (int)$_GET['campaign'] : '';?>">
 
-        <?php }
+        <?php }?>
 
-    }
+        <label for="donor-subscribed-select"></label>
+        <select id="donor-subscribed-select" name="donor_subscribed">
+            <option value="-" <?php echo !isset($_GET['donor_subscribed']) ? 'selected="selected"' : '';?>><?php _e('Donors subscription', 'leyka');?></option>
+            <option value="1" <?php echo isset($_GET['donor_subscribed']) && $_GET['donor_subscribed'] ? 'selected="selected"' : '';?>><?php _e('Subscribed donors', 'leyka');?></option>
+            <option value="0" <?php echo isset($_GET['donor_subscribed']) && !$_GET['donor_subscribed'] ? 'selected="selected"' : '';?>><?php _e('Unsubscribed donors', 'leyka');?></option>
+        </select>
+
+    <?php }
 
     public function doFiltering(WP_Query $query) {
 
@@ -171,23 +180,28 @@ class Leyka_Donation_Management {
 
             $meta_query = array('relation' => 'AND');
 
-            if( !empty($_REQUEST['campaign']) )
+            if( !empty($_REQUEST['campaign']) ) {
                 $meta_query[] = array('key' => 'leyka_campaign_id', 'value' => (int)$_REQUEST['campaign']);
+            }
 
-            if( !empty($_REQUEST['payment_type']) )
+            if( !empty($_REQUEST['payment_type']) ) {
                 $meta_query[] = array('key' => 'leyka_payment_type', 'value' => $_REQUEST['payment_type']);
+            }
 
             if( !empty($_REQUEST['gateway_pm']) ) {
-
-                if(strpos($_REQUEST['gateway_pm'], 'gateway__') !== false)
+                if(strpos($_REQUEST['gateway_pm'], 'gateway__') !== false) {
                     $meta_query[] = array(
                         'key' => 'leyka_gateway', 'value' => str_replace('gateway__', '', $_REQUEST['gateway_pm'])
                     );
-
-                elseif(strpos($_REQUEST['gateway_pm'], 'pm__') !== false)
+                } else if(strpos($_REQUEST['gateway_pm'], 'pm__') !== false) {
                     $meta_query[] = array(
                         'key' => 'leyka_payment_method', 'value' => str_replace('pm__', '', $_REQUEST['gateway_pm'])
                     );
+                }
+            }
+
+            if( isset($_REQUEST['donor_subscribed']) && $_REQUEST['donor_subscribed'] !== '-' ) {
+                $meta_query[] = array('key' => 'leyka_donor_subscribed', 'value' => !!$_REQUEST['donor_subscribed']);
             }
 
             if(count($meta_query) > 1) {
@@ -1500,7 +1514,7 @@ class Leyka_Donation {
         $status = empty($params['status']) ? 'submitted' : $params['status'];
 
         remove_all_actions('save_post_'.Leyka_Donation_Management::$post_type);
-        
+
         $id = wp_insert_post(array(
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => array_key_exists($status, leyka_get_donation_status_list()) ? $status : 'submitted',
@@ -1616,6 +1630,14 @@ class Leyka_Donation {
 
         if( !empty($params['recurrents_cancelled']) ) {
             add_post_meta($id, 'leyka_recurrents_cancelled', $params['recurrents_cancelled']);
+        }
+
+        if( !empty($params['donor_subscribed']) ) {
+            add_post_meta($id, 'leyka_donor_subscribed', true);
+        }
+
+        if( !empty($params['donor_subscribed']) ) {
+            add_post_meta($id, 'leyka_donor_subscribed', true);
         }
 
         if( !empty($params['recurrents_cancel_date']) ) {
