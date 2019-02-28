@@ -570,7 +570,6 @@ class Leyka extends Leyka_Singleton {
             'nopaging' => true,
             'post_status' => 'funded',
             'post_parent' => 0,
-            'day' => (int)date('j'),
             'meta_query' => array(
                 'relation' => 'AND',
                 array(
