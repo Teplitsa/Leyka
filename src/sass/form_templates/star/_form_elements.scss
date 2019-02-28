@@ -361,6 +361,36 @@
     
 }
 
+.leyka-screen-thankyou .leyka-pf-star .leyka-screen-form {
+    h2 {
+        @include star-h2();
+        margin-bottom: 1.5 * $leyka-star-base;
+        text-align: center;
+    }
+    
+    p {
+        @include star-text-rare();
+        text-align: center;
+        margin-bottom: 1.5 * $leyka-star-base;
+    }
+    
+    .leyka-star-submit {
+        text-align: center;
+        padding-top: 6px;
+        
+        .leyka-star-btn {
+            @include leyka-star-single-link();
+            border-bottom: 1px dashed $leyka-star-color-main;
+            
+            &:hover {
+                text-decoration: none;
+                border-bottom: 1px solid transparent;
+            }
+        }
+    }
+    
+}
+
 .leyka-screen-history .leyka-pf-star .leyka-screen-form {
     h2 {
         @include star-h2();
@@ -472,6 +502,10 @@
 .single-leyka_campaign.leyka-screen-thankyou,
 .single-leyka_campaign.leyka-screen-history {
     .entry-header {
+        display: none;
+    }
+    
+    .entry-header-single {
         display: none;
     }
 }
