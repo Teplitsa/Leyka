@@ -133,16 +133,17 @@ $leyka_screen = !empty($_GET['leyka-screen']) ? $_GET['leyka-screen'] : '';
         echo $form_api->get_hidden_amount_fields();?>
 
             <div class="amount__figure star-swiper">
-                <a class="swiper-arrow swipe-left"></a>
-                <a class="swiper-arrow swipe-right"></a>
+                <a class="swiper-arrow swipe-left" href="#"></a>
+                <a class="swiper-arrow swipe-right" href="#"></a>
                 
                 <?php foreach($template_data['amount_variants'] as $i => $amount) {?>
-                    <div class="swiper-item" data-value="<?php echo (int)$amount;?>"><span class="amount"><?php echo (int)$amount;?></span><span class="currency"><?php echo $template_data['currency_label'];?></span></div>
+                    <div class="swiper-item <?php echo $i ? "" : "active";?>" data-value="<?php echo (int)$amount;?>"><span class="amount"><?php echo (int)$amount;?></span><span class="currency"><?php echo $template_data['currency_label'];?></span></div>
                 <?php }?>
 
                 <?php if($template_data['amount_mode'] != 'fixed') {?>
                     <div class="swiper-item">
                         <input type="text" title="Введите вашу сумму" name="leyka_donation_amount" class="donate_amount_flex" value="<?php echo esc_attr($template_data['amount_default']);?>" maxlength="6">
+                        <span class="currency"><?php echo $template_data['currency_label'];?></span>
                     </div>
                 <?php }?>
             </div>
@@ -159,8 +160,8 @@ $leyka_screen = !empty($_GET['leyka-screen']) ? $_GET['leyka-screen'] : '';
 
         <div class="step__fields payments-grid">
             <div class="star-swiper">
-                <a class="swiper-arrow swipe-left"></a>
-                <a class="swiper-arrow swipe-right"></a>
+                <a class="swiper-arrow swipe-left" href="#"></a>
+                <a class="swiper-arrow swipe-right" href="#"></a>
 
         <?php $max_pm_number = leyka_options()->opt_template('show_donation_comment_field') ? 6 : 4;
         foreach($template_data['pm_list'] as $number => $pm) { /** @var $pm Leyka_Payment_Method */
@@ -171,7 +172,7 @@ $leyka_screen = !empty($_GET['leyka-screen']) ? $_GET['leyka-screen'] : '';
                 break;
             }?>
 
-            <div class="payment-opt swiper-item">
+            <div class="payment-opt swiper-item <?php echo $number ? "" : "active";?>">
                 <label class="payment-opt__button">
                     <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>" data-has-recurring="<?php echo $pm->has_recurring_support() ? '1' : '0';?>" data-ajax-without-form-submission="<?php echo $pm->ajax_without_form_submission ? '1' : '0';?>">
                     <span class="payment-opt__icon">

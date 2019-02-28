@@ -74,18 +74,25 @@
             }
         }
         
-        span {
+        span, input[type=text] {
             @include star-text-amount();
             color: $leyka-star-color-main;
             background-color: transparent;
+            text-align: right;
         
             &:before {
                 content: " ";
-                margin-left: 0.5rem;
+                margin-left: 0.5 * $leyka-star-base;
             }
         }
         
-        &:first-of-type {
+        input[type=text] {
+            padding: 0;
+            flex-grow: 0;
+            width: auto;
+        }
+        
+        &.active {
             display: flex;
         }
     }
@@ -114,10 +121,10 @@
     label {
         @include star-text-check-label();
         color: $leyka-star-color-gray-dark;
-        display: inline-block;
+        display: block;
         position: relative;
         z-index: 2;
-        margin-bottom: 1.5em;
+        margin-bottom: 1.5 * $leyka-star-base;
         
         &:last-of-type {
             margin-bottom: 0;

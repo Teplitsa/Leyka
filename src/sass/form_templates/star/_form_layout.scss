@@ -3,6 +3,11 @@
 div[id*="leyka-pf-"].leyka-pf-star {
     @include star-text();
     
+    &.card-2col {
+        margin-left: 0px !important;
+        margin-right: 0px !important;
+    }
+    
     .leyka-pf__module {
         border: none;
         
@@ -22,7 +27,7 @@ div[id*="leyka-pf-"].leyka-pf-star {
                     height: auto;
                     visibility: visible;
                     opacity: unset;
-                    margin-bottom: 1.5em;
+                    margin-bottom: 1.5 * $leyka-star-base;
                     
                     .step__border {
                         width: 100%;

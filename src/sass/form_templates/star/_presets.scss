@@ -1,5 +1,7 @@
 /** == Seetings and variables (_presets.scss)  == **/
 
+$leyka-star-base:   16px;
+
 :root {
     --leyka-color-main: #ff510d;
     --leyka-color-main-second: #ffc29f;
@@ -13,6 +15,8 @@
     --leyka-color-ok: #1aa316;
     --leyka-color-ok-second: #9adc98;
     --leyka-color-ok-third: #f3fcf2;
+    
+    --leyka-star-base: 16px;
 }
 
 $leyka-star-color-main:             var(--leyka-color-main);
