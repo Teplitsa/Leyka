@@ -34,9 +34,18 @@
 	font-size: 20px;
 }
 
+@mixin star-text-rare {
+	@include star-text();
+	line-height: 26px;
+}
+
 @mixin star-text-ui-caption($mod: default) {
 	@include star-text($mod);
 	text-transform: uppercase;
+	
+	@media screen and (max-width: 320px) {
+		font-size: 12px;
+	}
 }
 
 @mixin star-text-input {
@@ -57,7 +66,12 @@
 
 @mixin star-text-check-label() {
 	@include star-text();
-	font-size: 12px;
+	line-height: 21px;
+}
+
+// special typo
+@mixin star-text-periodicity() {
+	@include star-text-ui-caption();
 }
 
 @mixin star-text-pm-label() {
@@ -65,7 +79,12 @@
 	font-size: 12px;
 }
 
-@mixin star-amount {
+@mixin star-text-amount {
 	@include star-text();
 	font-size: 24px;
+	
+	@media screen and (max-width: 320px) {
+		font-size: 16px;
+	}
+	
 }
