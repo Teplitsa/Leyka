@@ -78,7 +78,6 @@
             @include star-text-amount();
             color: $leyka-star-color-main;
             background-color: transparent;
-            text-align: right;
         
             &:before {
                 content: " ";
