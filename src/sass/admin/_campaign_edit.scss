@@ -29,10 +29,51 @@
 
             .field-wrapper {
 
+                &.flex {
+                    display: flex;
+                    align-items: center;
+                }
+
                 .field-label {
                     display: block;
                     margin-bottom: 8px;
                 }
+
+            }
+
+        }
+
+        #campaign-template {
+            margin-right: 8px;
+        }
+
+        /** @todo Made it a mixin, mb? */
+        .form-template-demo {
+            display: inline-block;
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            background-image: url(../../src/svg/icon-screen-demo.svg);
+        }
+
+        .css-editor {
+
+            textarea {
+                width: 100%;
+                height: 200px;
+                border: 1px solid $color-border-secondary-button;
+                overflow: hidden;
+            }
+
+            .css-editor-reset-value {
+                display: inline-block;
+                cursor: pointer;
+
+                font-size: 14px;
+                //line-height: 24px;
+                color: $color-wizard-link;
+
+                border-bottom: 1px dashed $color-wizard-link;
             }
 
         }

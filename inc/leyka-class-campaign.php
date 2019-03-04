@@ -247,30 +247,36 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 </span>
             </h3>
 
-            <select id="campaign-template" name="campaign_template">
+            <div class="field-wrapper flex">
 
-                <option value="default" <?php selected($cur_template, 'default');?>>
-                    <?php _e('Default template', 'leyka');?>
-                </option>
+                <select id="campaign-template" name="campaign_template">
 
-                <?php $templates = leyka()->getTemplates();
-                if($templates) {
-                    foreach($templates as $template) {
+                    <?php $default_template = leyka()->getTemplate(leyka_options()->opt('donation_form_template'));
+                    echo '<pre>'.print_r($default_template, 1).'</pre>';?>
 
-                        $template_id = esc_attr($template['id']);?>
+                    <option value="default" <?php selected($cur_template, 'default');?>>
+                        <?php echo sprintf(__('Default template (%s)', 'leyka'), __($default_template['name'], 'leyka'));?>
+                    </option>
 
-                        <option value="<?php echo $template_id;?>" <?php selected($cur_template, $template_id);?>>
+                    <?php $templates = leyka()->getTemplates();
+                    if($templates) {
+                        foreach($templates as $template) {
 
-                            <?php esc_html_e($template['name'], 'leyka');?>
-                            <img class="form-template-screenshot <?php echo $template_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/theme-screenshots/screen-'.$template_id.'-002.png';?>" alt="" style="display: none;">
+                            $template_id = esc_attr($template['id']);?>
 
-                        </option>
-                    <?php }
-                }?>
+                            <option value="<?php echo $template_id;?>" <?php selected($cur_template, $template_id);?>>
 
-            </select>
+                                <?php esc_html_e($template['name'], 'leyka');?>
+                                <img class="form-template-screenshot <?php echo $template_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/theme-screenshots/screen-'.$template_id.'-002.png';?>" alt="" style="display: none;">
 
-            <div class="form-template-demo"></div>
+                            </option>
+                        <?php }
+                    }?>
+
+                </select>
+                <div class="form-template-demo"></div>
+
+            </div>
 
         </fieldset>
 
@@ -298,7 +304,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 </span>
             </h3>
 
-            <input type="text" name="payment_title" id="payment_title" value="<?php echo $campaign->payment_title ? $campaign->payment_title : $campaign->title;?>">
+            <input type="text" name="payment_title" id="payment_title" value="<?php echo $campaign->payment_title ? $campaign->payment_title : $campaign->title;?>" placeholder="<?php _e("If the field is empty, the campaign title will be used", 'leyka');?>">
 
         </fieldset>
 
@@ -311,6 +317,50 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             </label>
         </fieldset>
 	    <?php }?>
+
+        <fieldset id="campaign-css" class="metabox-field campaign-field campaign-css persistent-campaign-field">
+
+            <h3 class="field-title">
+                <?php _e('Campaign CSS-styling', 'leyka');?>
+                <span class="field-q">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
+                    <span class="field-q-tooltip">
+                        <?php _e('Make your changes in the campaign page styles via this field. You can always get back to the original set of styles.', 'leyka');?>
+                    </span>
+                </span>
+            </h3>
+
+            <div class="field-wrapper css-editor">
+
+                <?php $campaign_css_original = '/* Style 1 */ /* Style 1 comment */
+/* Style 2 */ /* Style 2 comment */
+/* Style 3 */ /* Style 3 comment */';
+                $campaign_css_value = $campaign->additional_css ? $campaign->additional_css : $campaign_css_original;?>
+
+                <label for="campaign-css"></label>
+                <textarea id="campaign-css" name="campaign_css" class="css-editor-field"><?php echo $campaign_css_value;?></textarea>
+                <div class="css-editor-reset-value"><?php _e('Return original styles', 'leyka');?></div>
+                <input type="hidden" class="campaign-css-original" value="<?php echo $campaign_css_original;?>">
+
+            </div>
+
+        </fieldset>
+
+        <fieldset id="campaign-images" class="metabox-field campaign-field persistent-campaign-field">
+
+            <h3 class="field-title">
+                <?php _e('The campaign decoration images', 'leyka');?>
+                <span class="field-q">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
+                    <span class="field-q-tooltip">
+                        <?php esc_html_e('Some text here.', 'leyka');?>
+                    </span>
+                </span>
+            </h3>
+
+<!--        Image uploading fields here    -->
+
+        </fieldset>
 
     <?php }
     /**
