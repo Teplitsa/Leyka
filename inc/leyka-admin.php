@@ -716,7 +716,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 && $_GET['page'] === 'leyka_settings'
                 && (empty($_GET['stage']) || $this->isV3SettingsPage($_GET['stage']))
                 && empty($_GET['old'])
-            );
+            )
+            || ($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post' && !$screen->action);
 
         $current_screen = get_current_screen();
         $dependencies = array('jquery',);

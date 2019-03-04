@@ -1,0 +1,51 @@
+//.leyka-metabox {
+.postbox {
+
+    h2 span {
+        font-size: 15px;
+        color: $color-metabox-title;
+    }
+
+    .inside { // Metaboxes content
+
+        .metabox-field {
+
+            &:first-child {
+                margin-top: -4px;
+            }
+
+            &.without-title {
+                margin: 15px 0;
+            }
+
+            h3.field-title {
+                font-size: 13px;
+                line-height: 16px;
+                margin-bottom: 8px;
+                font-family: $body;
+                color: $color-metabox-title;
+                font-weight: 500;
+            }
+
+            .field-wrapper {
+
+                .field-label {
+                    display: block;
+                    margin-bottom: 8px;
+                }
+            }
+
+        }
+
+        .field-q {
+            @include field-q();
+            border-radius: 5px;
+
+            img {
+                background-color: $color-white;
+            }
+        }
+
+    }
+
+}

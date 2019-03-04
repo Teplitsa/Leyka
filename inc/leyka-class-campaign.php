@@ -168,7 +168,8 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 		$cur_template = $campaign->template ? $campaign->template : 'default';?>
 
         <fieldset id="campaign-type" class="metabox-field campaign-field campaign-type">
-            <label class="field-title">
+
+            <h3 class="field-title">
                 <?php _e('Campaign type', 'leyka');?>
                 <span class="field-q">
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
@@ -176,18 +177,21 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                         <?php esc_html_e('Some campaign type parameter description text.', 'leyka');?>
                     </span>
                 </span>
-            </label>
+            </h3>
 
-            <label class="field-label">
-                <input type="radio" name="campaign_type" value="-" checked="checked"><?php _e('Temporary', 'leyka');?>
-            </label>
-            <label class="field-label">
-                <input type="radio" name="campaign_type" value="persistent"><?php _e('Persistent', 'leyka');?>
-            </label>
+            <div class="field-wrapper">
+                <label class="field-label">
+                    <input type="radio" name="campaign_type" value="-" checked="checked"><?php _e('Temporary', 'leyka');?>
+                </label>
+                <label class="field-label">
+                    <input type="radio" name="campaign_type" value="persistent"><?php _e('Persistent', 'leyka');?>
+                </label>
+            </div>
         </fieldset>
 
         <fieldset id="donations-types" class="metabox-field campaign-field donaitons-types">
-            <label class="field-title">
+
+            <h3 class="field-title">
                 <?php _e('Donations types available', 'leyka');?>
                 <span class="field-q">
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
@@ -195,18 +199,22 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                         <?php esc_html_e('Some donations types parameter description text.', 'leyka');?>
                     </span>
                 </span>
-            </label>
+            </h3>
 
-            <label class="field-label">
-                <input type="checkbox" name="donations_type" value="recurring" checked="checked"><?php echo _x('Recurring', 'In mult., like "recurring donations"', 'leyka');?>
-            </label>
-            <label class="field-label">
-                <input type="checkbox" name="donations_type" value="single" checked="checked"><?php echo _x('Single', 'In mult., like "single donations"', 'leyka');?>
-            </label>
+            <div class="field-wrapper">
+                <label class="field-label">
+                    <input type="checkbox" name="donations_type" value="recurring" checked="checked"><?php echo _x('Recurring', 'In mult., like "recurring donations"', 'leyka');?>
+                </label>
+                <label class="field-label">
+                    <input type="checkbox" name="donations_type" value="single" checked="checked"><?php echo _x('Single', 'In mult., like "single donations"', 'leyka');?>
+                </label>
+            </div>
+
         </fieldset>
 
         <fieldset id="donation-type-default" class="metabox-field campaign-field donaiton-type-default">
-            <label class="field-title">
+
+            <h3 class="field-title">
                 <?php _e('Donation type by default', 'leyka');?>
                 <span class="field-q">
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
@@ -214,25 +222,32 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                         <?php esc_html_e('What donation type is going to be used when donor sees a campaign form firsthand? The default type may influence number of the single & recurring donations.', 'leyka');?>
                     </span>
                 </span>
-            </label>
+            </h3>
 
-            <label class="field-label">
-                <input type="radio" name="donations_type_default" value="recurring"><?php echo _x('Recurring', 'In single, like "recurring donation"', 'leyka');?>
-            </label>
-            <label class="field-label">
-                <input type="radio" name="donations_type_default" value="single" checked="checked"><?php echo _x('Single', 'In single, like "single donation"', 'leyka');?>
-            </label>
+            <div class="field-wrapper">
+                <label class="field-label">
+                    <input type="radio" name="donations_type_default" value="recurring"><?php echo _x('Recurring', 'In single, like "recurring donation"', 'leyka');?>
+                </label>
+                <label class="field-label">
+                    <input type="radio" name="donations_type_default" value="single" checked="checked"><?php echo _x('Single', 'In single, like "single donation"', 'leyka');?>
+                </label>
+            </div>
+
         </fieldset>
 
         <fieldset id="campaign-template" class="metabox-field campaign-field campaign-template">
-            <label for="campaign_template"><?php _e('Template for payment form', 'leyka');?></label>
-            <span class="field-q">
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
-                <span class="field-q-tooltip">
-                    <?php esc_html_e('Some text here.', 'leyka');?>
+
+            <h3 class="field-title">
+                <label for="campaign-template"><?php _e('Template for payment form', 'leyka');?></label>
+                <span class="field-q">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
+                    <span class="field-q-tooltip">
+                        <?php esc_html_e('Some text here.', 'leyka');?>
+                    </span>
                 </span>
-            </span>
-            <select id="campaign_template" name="campaign_template">
+            </h3>
+
+            <select id="campaign-template" name="campaign_template">
 
                 <option value="default" <?php selected($cur_template, 'default');?>>
                     <?php _e('Default template', 'leyka');?>
@@ -256,40 +271,48 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             </select>
 
             <div class="form-template-demo"></div>
+
         </fieldset>
 
         <fieldset id="target-amount" class="metabox-field campaign-field campaign-target">
-            <label for="campaign_target">
-                <?php echo sprintf(__('Target (%s)', 'leyka'), leyka_options()->opt('currency_rur_label'));?>
-            </label>
-            <input type="text" name="campaign_target" id="campaign_target" value="<?php echo $campaign->target;?>" class="widefat">
+
+            <h3 class="field-title">
+                <label for="campaign-target">
+                    <?php echo sprintf(__('Target (%s)', 'leyka'), leyka_options()->opt('currency_rur_label'));?>
+                </label>
+            </h3>
+
+            <input type="text" name="campaign_target" id="campaign-target" value="<?php echo $campaign->target;?>">
+
         </fieldset>
 
         <fieldset id="payment-title" class="metabox-field campaign-field campaign-purpose">
-            <label for="payment_title">
-                <?php _e('Payment purpose', 'leyka');?>
-            </label>
-            <span class="field-q">
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
-                <span class="field-q-tooltip">
-                    <?php esc_html_e('Some text here.', 'leyka');?>
-                </span>
-            </span>
 
-            <input type="text" class="widefat" name="payment_title" id="payment_title" value="<?php echo $campaign->payment_title ? $campaign->payment_title : $campaign->title;?>">
+            <h3 class="field-title">
+                <label for="payment_title"><?php _e('Payment purpose', 'leyka');?></label>
+                <span class="field-q">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
+                    <span class="field-q-tooltip">
+                        <?php esc_html_e('Some text here.', 'leyka');?>
+                    </span>
+                </span>
+            </h3>
+
+            <input type="text" name="payment_title" id="payment_title" value="<?php echo $campaign->payment_title ? $campaign->payment_title : $campaign->title;?>">
+
         </fieldset>
 
         <?php $curr_page = get_current_screen();
         if($curr_page->action !== 'add') {?>
 
-        <fieldset id="campaign-finished" class="metabox-field campaign-field campaign-finished">
+        <fieldset id="campaign-finished" class="metabox-field without-title campaign-field campaign-finished">
             <label for="is-finished">
                 <input type="checkbox" id="is-finished" name="is_finished" value="1" <?php echo $campaign->is_finished ? 'checked' : '';?>> <?php _e('Donations collection stopped', 'leyka');?>
             </label>
         </fieldset>
-	    <?php }
+	    <?php }?>
 
-    }
+    <?php }
     /**
      * @deprecated
      * @param $campaign WP_Post
