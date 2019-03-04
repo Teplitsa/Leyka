@@ -12,7 +12,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
 	protected function __construct() {
 
-		add_action('add_meta_boxes', array($this, 'set_metaboxes'));
+		add_action('add_meta_boxes', array($this, 'setMetaboxes'));
 		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manage_columns_names'));
 		add_action('manage_'.self::$post_type.'_posts_custom_column', array($this, 'manage_columns_content'), 2, 2);
 		add_action('save_post', array($this, 'save_data'), 2, 2);
@@ -106,7 +106,6 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
     }
 
     public function do_filtering(WP_Query $query) {
-
         if(is_admin() && $query->is_main_query() && get_current_screen()->id == 'edit-'.self::$post_type) {
 
             $meta_query = array('relation' => 'AND');
@@ -115,25 +114,25 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 $meta_query[] = array('key' => 'is_finished', 'value' => $_REQUEST['campaign_state'] == 'is_finished' ? 1 : 0);
             }
 
-            if( !empty($_REQUEST['target_state']) )
+            if( !empty($_REQUEST['target_state']) ) {
                 $meta_query[] = array('key' => 'target_state', 'value' => $_REQUEST['target_state']);
-
-            //...
+            }
 
             if(count($meta_query) > 1) {
                 $query->set('meta_query', $meta_query);
             }
+
         }
     }
 
-	public function set_metaboxes() {
+	public function setMetaboxes() {
 
         add_meta_box(
             self::$post_type.'_excerpt', __('Annotation', 'leyka'),
-            array($this, 'annotation_meta_box'), self::$post_type, 'normal', 'high'
+            array($this, 'annotationMetaBox'), self::$post_type, 'normal', 'high'
         );
 
-        add_meta_box(self::$post_type.'_data', __('Campaign settings', 'leyka'), array($this, 'data_meta_box'), self::$post_type, 'normal', 'high');
+        add_meta_box(self::$post_type.'_data', __('Campaign settings', 'leyka'), array($this, 'dataMetaBox'), self::$post_type, 'normal', 'high');
 
         // Metaboxes are only for campaign editing page:
         $screen = get_current_screen();
@@ -141,117 +140,144 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             add_meta_box(
                 self::$post_type.'_embed', __('Campaign embedding', 'leyka'),
-                array($this, 'embedding_meta_box'), self::$post_type, 'normal', 'high'
+                array($this, 'embeddingMetaBox'), self::$post_type, 'normal', 'high'
             );
 
 		    add_meta_box(
                 self::$post_type.'_donations', __('Donations history', 'leyka'),
-                array($this, 'donations_meta_box'), self::$post_type, 'normal', 'high'
+                array($this, 'donationsMetaBox'), self::$post_type, 'normal', 'high'
             );
 
             add_meta_box(
                 self::$post_type.'_statistics', __('Campaign statistics', 'leyka'),
-                array($this, 'statistics_meta_box'), self::$post_type, 'side', 'low'
+                array($this, 'statisticsMetaBox'), self::$post_type, 'side', 'low'
             );
 
         }
+
 	}
+	/** @deprecated */
+    public function set_metaboxes() {
+        $this->setMetaboxes();
+    }
 
-    public function data_meta_box($post) {
+    public function dataMetaBox(WP_Post $campaign) {
 
-		$campaign = new Leyka_Campaign($post);
+		$campaign = new Leyka_Campaign($campaign);
 
 		$cur_template = $campaign->template ? $campaign->template : 'default';?>
 
-        <fieldset id="payment-title" class="metabox-field campaign-field campaign-purpose">
-            <label for="payment_title">
-                <?php _e('Campaign title meant for payment system', 'leyka');?>
-                <br>
-                <small><?php echo __('If empty, main campaign title will be used', 'leyka');?></small>
+        <fieldset id="campaign-type" class="metabox-field campaign-field campaign-type">
+            <label class="field-title">
+                <?php _e('Campaign type', 'leyka');?>
+                <span class="field-q">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
+                    <span class="field-q-tooltip">
+                        <?php esc_html_e('Some campaign type parameter description text.', 'leyka');?>
+                    </span>
+                </span>
             </label>
 
-            <input type="text" class="widefat" name="payment_title" id="payment_title" value="<?php echo $campaign->payment_title ? $campaign->payment_title : $campaign->title;?>">
+            <label class="field-label">
+                <input type="radio" name="campaign_type" value="-" checked="checked"><?php _e('Temporary', 'leyka');?>
+            </label>
+            <label class="field-label">
+                <input type="radio" name="campaign_type" value="persistent"><?php _e('Persistent', 'leyka');?>
+            </label>
         </fieldset>
 
-		<h4 class="metabox-field-title campaign-template"><?php _e('Template settings', 'leyka');?></h4>
+        <fieldset id="donations-types" class="metabox-field campaign-field donaitons-types">
+            <label class="field-title">
+                <?php _e('Donations types available', 'leyka');?>
+                <span class="field-q">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
+                    <span class="field-q-tooltip">
+                        <?php esc_html_e('Some donations types parameter description text.', 'leyka');?>
+                    </span>
+                </span>
+            </label>
 
-		<fieldset id="campaign-template" class="metabox-field campaign-field campaign-template">
-			<label for="campaign_template"><?php _e('Template for payment form', 'leyka');?></label>
-			<select id="campaign_template" name="campaign_template">
-				<option value="default" <?php selected($cur_template, 'default');?>>
+            <label class="field-label">
+                <input type="checkbox" name="donations_type" value="recurring" checked="checked"><?php echo _x('Recurring', 'In mult., like "recurring donations"', 'leyka');?>
+            </label>
+            <label class="field-label">
+                <input type="checkbox" name="donations_type" value="single" checked="checked"><?php echo _x('Single', 'In mult., like "single donations"', 'leyka');?>
+            </label>
+        </fieldset>
+
+        <fieldset id="donation-type-default" class="metabox-field campaign-field donaiton-type-default">
+            <label class="field-title">
+                <?php _e('Donation type by default', 'leyka');?>
+                <span class="field-q">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
+                    <span class="field-q-tooltip">
+                        <?php esc_html_e('What donation type is going to be used when donor sees a campaign form firsthand? The default type may influence number of the single & recurring donations.', 'leyka');?>
+                    </span>
+                </span>
+            </label>
+
+            <label class="field-label">
+                <input type="radio" name="donations_type_default" value="recurring"><?php echo _x('Recurring', 'In single, like "recurring donation"', 'leyka');?>
+            </label>
+            <label class="field-label">
+                <input type="radio" name="donations_type_default" value="single" checked="checked"><?php echo _x('Single', 'In single, like "single donation"', 'leyka');?>
+            </label>
+        </fieldset>
+
+        <fieldset id="campaign-template" class="metabox-field campaign-field campaign-template">
+            <label for="campaign_template"><?php _e('Template for payment form', 'leyka');?></label>
+            <span class="field-q">
+                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
+                <span class="field-q-tooltip">
+                    <?php esc_html_e('Some text here.', 'leyka');?>
+                </span>
+            </span>
+            <select id="campaign_template" name="campaign_template">
+
+                <option value="default" <?php selected($cur_template, 'default');?>>
                     <?php _e('Default template', 'leyka');?>
                 </option>
 
-            <?php $templates = leyka()->getTemplates();
-            if($templates) {
-                foreach($templates as $template) {?>
-                <option value="<?php echo esc_attr($template['id']);?>" <?php selected($cur_template, $template['id']);?>>
-                    <?php _e(esc_attr($template['name']), 'leyka');?>
-                </option>
-            <?php }
-            }?>
+                <?php $templates = leyka()->getTemplates();
+                if($templates) {
+                    foreach($templates as $template) {
 
-			</select>
-		</fieldset>
+                        $template_id = esc_attr($template['id']);?>
 
-		<fieldset id="ignore-global-template" class="metabox-field campaign-field campaign-ignorance">
-			<label for="ignore_global_template">
-			<input type="checkbox" name="ignore_global_template" id="ignore_global_template" value="1" <?php checked($campaign->ignore_global_template_settings, 1);?>>&nbsp;
-			<?php _e('Ignore global template settings', 'leyka');?></label>
-		</fieldset>
+                        <option value="<?php echo $template_id;?>" <?php selected($cur_template, $template_id);?>>
 
-		<h4 class="metabox-field-title campaign-target"><?php _e('Campaign target', 'leyka');?></h4>
+                            <?php esc_html_e($template['name'], 'leyka');?>
+                            <img class="form-template-screenshot <?php echo $template_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/theme-screenshots/screen-'.$template_id.'-002.png';?>" alt="" style="display: none;">
 
-		<fieldset id="target-amount" class="metabox-field campaign-field campaign-target">
-			<label for="campaign_target">
+                        </option>
+                    <?php }
+                }?>
+
+            </select>
+
+            <div class="form-template-demo"></div>
+        </fieldset>
+
+        <fieldset id="target-amount" class="metabox-field campaign-field campaign-target">
+            <label for="campaign_target">
                 <?php echo sprintf(__('Target (%s)', 'leyka'), leyka_options()->opt('currency_rur_label'));?>
             </label>
-			<input type="text" name="campaign_target" id="campaign_target" value="<?php echo $campaign->target;?>" class="widefat">
-		</fieldset>
-		
-		<fieldset id="collected-amount" class="metabox-field campaign-field campaign-target-collected">
-			<label for="collected_target">
-                <?php echo sprintf(__('Collected (%s)', 'leyka'), leyka_get_currency_label('rur'));?>
-            </label>			
-			<input type="text" id="collected_target" disabled="disabled" value="<?php echo $campaign->total_funded;?>" class="widefat">
-            <?php if(get_current_screen()->action != 'add') {?>
-            <div class="recalculate-total-funded">
-                <a href="<?php echo add_query_arg(array('recalculate_total_funded' => 1,));?>" id="recalculate_total_funded" data-nonce="<?php echo wp_create_nonce('leyka_recalculate_total_funded_amount');?>" data-campaign-id="<?php echo $campaign->id;?>"><?php _e('Recalculate the collected amount', 'leyka');?></a>
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/ajax-loader-h.gif';?>" id="recalculate_total_funded_loader" style="display: none;">
-                <div class="message error-message" id="recalculate_message"></div>
-            </div>
-            <?php }?>
-		</fieldset>
+            <input type="text" name="campaign_target" id="campaign_target" value="<?php echo $campaign->target;?>" class="widefat">
+        </fieldset>
 
-		<fieldset id="d-scale-demo" class="metabox-field campaign-field campaign-target-scale">
-		<?php if($campaign->target > 0) {
+        <fieldset id="payment-title" class="metabox-field campaign-field campaign-purpose">
+            <label for="payment_title">
+                <?php _e('Payment purpose', 'leyka');?>
+            </label>
+            <span class="field-q">
+                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
+                <span class="field-q-tooltip">
+                    <?php esc_html_e('Some text here.', 'leyka');?>
+                </span>
+            </span>
 
-			$percentage = round(100*$campaign->total_funded/$campaign->target);
-            $percentage = $percentage > 100 ? 100 : $percentage;?>
-
-			<div class="d-scale-scale">
-				<div class="target">
-					<div style="width:<?php echo $percentage;?>%" class="collected">&nbsp;</div>
-				</div>
-			</div>
-
-			<?php if($campaign->target_state === 'is_reached') {?>
-
-			<p><?php printf(__('Reached at: %s', 'leyka'), '<b>'.$campaign->date_target_reached.'</b>');?></p>
-
-            <?php if(leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')) {?>
-            <p><?php echo __('Donors mailout:', 'leyka');?>
-                <b><?php echo $campaign->target_reaching_mailout_sent ?
-                    __('sent', 'leyka').' ('.($campaign->target_reaching_mailout_errors ? __('errors detected', 'leyka') : __('mailing succeeded', 'leyka')).')' :
-                    __('not sent', 'leyka');?></b>
-            </p>
-
-			<?php }
-
-            }?>
-
-		<?php }?>
-		</fieldset>
+            <input type="text" class="widefat" name="payment_title" id="payment_title" value="<?php echo $campaign->payment_title ? $campaign->payment_title : $campaign->title;?>">
+        </fieldset>
 
         <?php $curr_page = get_current_screen();
         if($curr_page->action !== 'add') {?>
@@ -264,8 +290,15 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 	    <?php }
 
     }
+    /**
+     * @deprecated
+     * @param $campaign WP_Post
+     */
+    public function data_meta_box(WP_Post $campaign) {
+	    $this->dataMetaBox($campaign);
+    }
 
-    public function statistics_meta_box(WP_Post $campaign) { $campaign = new Leyka_Campaign($campaign);?>
+    public function statisticsMetaBox(WP_Post $campaign) { $campaign = new Leyka_Campaign($campaign);?>
 
         <div class="stats-block">
             <span class="stats-label"><?php _e('Views:', 'leyka');?></span>
@@ -278,16 +311,30 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
     <?php
     }
+    /**
+     * @deprecated
+     * @param $campaign WP_Post
+     */
+    public function statistics_meta_box(WP_Post $campaign) {
+        $this->statisticsMetaBox($campaign);
+    }
 
-    public function annotation_meta_box(WP_Post $campaign) {?>
+    public function annotationMetaBox(WP_Post $campaign) {?>
 
         <label for="excerpt"></label>
         <textarea id="excerpt" name="excerpt" cols="40" rows="1"><?php echo $campaign->post_excerpt;?></textarea>
         <p><?php _e('Annotation is an optional summary of campaign description that can be used in templates.', 'leyka');?></p>
 
     <?php }
+    /**
+     * @deprecated
+     * @param $campaign WP_Post
+     */
+    public function annotation_meta_box(WP_Post $campaign) {
+        $this->annotationMetaBox($campaign);
+    }
 
-    public function donations_meta_box(WP_Post $campaign) { $campaign = new Leyka_Campaign($campaign);?>
+    public function donationsMetaBox(WP_Post $campaign) { $campaign = new Leyka_Campaign($campaign);?>
 
         <div>
             <a class="button" href="<?php echo admin_url('/post-new.php?post_type=leyka_donation&campaign_id='.$campaign->id);?>"><?php _e('Add correctional donation', 'leyka');?></a>
@@ -338,8 +385,15 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         </table>
     <?php
     }
+    /**
+     * @deprecated
+     * @param $campaign WP_Post
+     */
+    public function donations_meta_box(WP_Post $campaign) {
+        $this->donationsMetaBox($campaign);
+    }
 
-    public function embedding_meta_box(WP_Post $campaign) {?>
+    public function embeddingMetaBox(WP_Post $campaign) {?>
 
 	<div class="embed-block">
 
@@ -373,6 +427,13 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
 	</div>
     <?php }
+    /**
+     * @deprecated
+     * @param $campaign WP_Post
+     */
+    public function embedding_meta_box(WP_Post $campaign) {
+        $this->embeddingMetaBox($campaign);
+    }
 
 	static function get_card_embed_code($campaign_id, $increase_counters = false, $width = 300, $height = 400) {
 
@@ -594,13 +655,21 @@ class Leyka_Campaign {
                 $meta['total_funded'][0] = $sum;
             }
 
+            $ignore_view_settings = empty($meta['ignore_global_template']) ?
+                '' : $meta['ignore_global_template'][0] > 0;
+            $ignore_view_settings = apply_filters(
+                'leyka_campaign_ignore_view_settings',
+                $ignore_view_settings,
+                $this->_id,
+                $this->_post_object
+            );
+
             $this->_campaign_meta = array(
                 'payment_title' => empty($meta['payment_title']) ?
                     (empty($this->_post_object) ? '' : $this->_post_object->post_title) : $meta['payment_title'][0],
                 'campaign_template' => empty($meta['campaign_template']) ? '' :  $meta['campaign_template'][0],
                 'campaign_target' => empty($meta['campaign_target']) ? 0 : $meta['campaign_target'][0],
-                'ignore_global_template' => empty($meta['ignore_global_template']) ?
-                    '' : $meta['ignore_global_template'][0] > 0,
+                'ignore_global_template' => $ignore_view_settings,
                 'is_finished' => $meta['is_finished'] ? $meta['is_finished'][0] > 0 : 0,
                 'target_state' => $meta['target_state'][0],
                 'target_reaching_mailout_sent' => $meta['_leyka_target_reaching_mailout_sent'][0],
@@ -652,6 +721,7 @@ class Leyka_Campaign {
 			case 'is_finished':
 			case 'is_closed':
 				return $this->_campaign_meta['is_finished'];
+            case 'ignore_view_settings':
             case 'ignore_global_template':
             case 'ignore_global_template_settings':
 				return $this->_campaign_meta['ignore_global_template'];
