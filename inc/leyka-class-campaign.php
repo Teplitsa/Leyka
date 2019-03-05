@@ -358,30 +358,48 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 </span>
             </h3>
 
-            <div class="field-wrapper flex">
+            <div class="field-wrapper flex margin-top">
                 <span class="field-component field">
                     <input type="file" value="">
-                    <input type="button" class="button upload-photo" id="campaign_photo-upload-button" value="<?php esc_attr_e('Select a picture', 'leyka');?>">
+                    <input type="button" class="button upload-photo" id="campaign_cover-upload-button" value="<?php _e('Upload the page cover', 'leyka');?>">
                 </span>
                 <span class="upload-field-description">
                     <?php echo sprintf(__('.jpg or .png file, no more than %s sized, recommended width: %s', 'leyka'), leyka_get_upload_max_filesize(), '1920 px'); //'Файл в формате .jpg, вес файла не больше 2МБ, желательная ширина изображения – 1920 px';?>
                 </span>
 
-                <?php wp_nonce_field('set-campaign-photo', 'set-campaign-photo-nonce');?>
-                <input type="hidden" id="leyka-campaign_thumbnail" name="campaign_thumbnail" value="<?php echo '#VAR_HERE#';// $campaign_thumbnail_id;?>">
+                <?php wp_nonce_field('set-campaign-cover', 'set-campaign-cover-nonce');?>
+                <input type="hidden" id="leyka-campaign_cover" name="campaign_cover" value="<?php echo '#VAR_HERE#';// $campaign_thumbnail_id;?>">
+            </div>
+            <div class="field-errors"></div>
+
+            <div class="field-wrapper flex margin-top">
+                <span class="field-component field">
+                    <input type="file" value="">
+                    <input type="button" class="button upload-photo" id="campaign_logo-upload-button" value="<?php _e('Upload the logo', 'leyka');?>">
+                </span>
+                <span class="upload-field-description">
+                    <?php echo sprintf(__('.jpg or .png file, no more than %s sized', 'leyka'), leyka_get_upload_max_filesize()); //'Файл в формате .jpg, вес файла не больше 2МБ';?>
+                </span>
+
+                <?php wp_nonce_field('set-campaign-logo', 'set-campaign-logo-nonce');?>
+                <input type="hidden" id="leyka-campaign_logo" name="campaign_logo" value="<?php echo '#VAR_HERE#';// $campaign_thumbnail_id;?>">
             </div>
             <div class="field-errors"></div>
 
         </fieldset>
 
-        <div id="campaign-data-setup-howto">
-            <strong><?php _e('Recommendations', 'leyka');?></strong>
-            <ul>
-                <li><a href="<?php echo '#';?>" target="_blank"><?php _e('How to set up recurring payments support', 'leyka');?></li>
-                <li><a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=beneficiary#terms_of_service');?>" target="_blank"><?php _e('I want to change the Terms of service text', 'leyka');?></li>
-                <li><a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=beneficiary#terms_of_pd');?>" target="_blank"><?php _e('I want to change the Personal data usage terms text', 'leyka');?></li>
-            </ul>
-        </div>
+        <fieldset id="campaign-data-setup-howto" class="metabox-field campaign-field info-field">
+
+            <h3 class="field-title"><?php _e('Recommendations', 'leyka');?></h3>
+            <div class="field-wrapper">
+                <ul>
+                    <li><a href="<?php echo '#';?>" target="_blank"><?php _e('How to set up recurring payments support', 'leyka');?></li>
+                    <li><a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=beneficiary#terms_of_service');?>" target="_blank"><?php _e('I want to change the Terms of service text', 'leyka');?></li>
+                    <li><a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=beneficiary#terms_of_pd');?>" target="_blank"><?php _e('I want to change the Personal data usage terms text', 'leyka');?></li>
+                </ul>
+            </div>
+
+        </fieldset>
 
     <?php }
     /**

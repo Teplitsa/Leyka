@@ -34,6 +34,10 @@
                     align-items: center;
                 }
 
+                &.margin-top {
+                    margin-top: 24px;
+                }
+
                 .field-label {
                     display: block;
                     margin-bottom: 8px;
@@ -43,13 +47,18 @@
 
         }
 
-        #campaign-data-setup-howto {
+        .info-field {
 
-            padding: 12px 16px;
+            padding: 12px 16px 10px 16px;
+            margin-top: 24px;
             background-color: $color-border-secondary-button;
 
             font-size: 12px;
             line-height: 16px;
+
+            h3 {
+                margin: 0;
+            }
 
             ul {
 
@@ -72,6 +81,7 @@
         }
 
         .upload-photo-field {
+
             .field {
 
                 display: block;
@@ -88,15 +98,31 @@
                     @include wizard-button-caption();
                     height: 40px;
                     width: 248px;
-                    background-color: $color-white;
+
                     position: absolute;
                     top: 0;
                     left: 0;
-                    //pointer-events: none;
                     outline: none;
+
+                    background-color: $color-border-light-001;
+                    border: 1px dashed $color-wizard-link-sec;
+                    color: $color-wizard-text;
+                    font-size: 13px;
+
                 }
 
             }
+
+            .upload-field-description {
+
+                margin-left: 22px;
+
+                color: $color-wizard-link-sec;
+                font-size: 10px;
+                font-weight: 500;
+
+            }
+
         }
 
         #campaign-template {
