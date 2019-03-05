@@ -251,8 +251,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                 <select id="campaign-template" name="campaign_template">
 
-                    <?php $default_template = leyka()->getTemplate(leyka_options()->opt('donation_form_template'));
-                    echo '<pre>'.print_r($default_template, 1).'</pre>';?>
+                    <?php $default_template = leyka()->getTemplate(leyka_options()->opt('donation_form_template'));?>
 
                     <option value="default" <?php selected($cur_template, 'default');?>>
                         <?php echo sprintf(__('Default template (%s)', 'leyka'), __($default_template['name'], 'leyka'));?>
@@ -280,7 +279,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         </fieldset>
 
-        <fieldset id="target-amount" class="metabox-field campaign-field campaign-target">
+        <fieldset id="target-amount" class="metabox-field campaign-field campaign-target temporary-campaign-fields">
 
             <h3 class="field-title">
                 <label for="campaign-target">
@@ -393,9 +392,9 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             <h3 class="field-title"><?php _e('Recommendations', 'leyka');?></h3>
             <div class="field-wrapper">
                 <ul>
-                    <li><a href="<?php echo '#';?>" target="_blank"><?php _e('How to set up recurring payments support', 'leyka');?></li>
-                    <li><a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=beneficiary#terms_of_service');?>" target="_blank"><?php _e('I want to change the Terms of service text', 'leyka');?></li>
-                    <li><a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=beneficiary#terms_of_pd');?>" target="_blank"><?php _e('I want to change the Personal data usage terms text', 'leyka');?></li>
+                    <li><a href="<?php echo '#';?>" target="_blank"><?php _e('How to set up recurring payments support', 'leyka');?></a></li>
+                    <li><a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=beneficiary#terms_of_service');?>" target="_blank"><?php _e('I want to change the Terms of service text', 'leyka');?></a></li>
+                    <li><a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=beneficiary#terms_of_pd');?>" target="_blank"><?php _e('I want to change the Personal data usage terms text', 'leyka');?></a></li>
                 </ul>
             </div>
 
