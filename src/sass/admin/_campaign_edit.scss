@@ -43,6 +43,62 @@
 
         }
 
+        #campaign-data-setup-howto {
+
+            padding: 12px 16px;
+            background-color: $color-border-secondary-button;
+
+            font-size: 12px;
+            line-height: 16px;
+
+            ul {
+
+                margin: 6px 0 0 0;
+                color: $color-wizard-link;
+                list-style: none;
+
+                li:before {
+                    content: '—';
+                    display: inline-block;
+                    padding-right: 4px;
+                }
+
+                a {
+                    text-decoration: none;
+                }
+
+            }
+
+        }
+
+        .upload-photo-field {
+            .field {
+
+                display: block;
+                position: relative;
+
+                input[type=file] {
+                    display: block;
+                    height: 40px;
+                    width: 248px;
+                    outline: none;
+                }
+
+                .upload-photo {
+                    @include wizard-button-caption();
+                    height: 40px;
+                    width: 248px;
+                    background-color: $color-white;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    //pointer-events: none;
+                    outline: none;
+                }
+
+            }
+        }
+
         #campaign-template {
             margin-right: 8px;
         }

@@ -40,7 +40,8 @@
     
                 .decor-form {
                     flex-basis: 248px;
-    
+
+                    /** @todo Try to move it in a mixin */
                     .upload-photo-field {
                         .field {
                             display: block;

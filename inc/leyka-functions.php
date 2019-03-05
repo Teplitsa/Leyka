@@ -1837,3 +1837,15 @@ function leyka_template_to_query_arg($template_id, $url) {
 function leyka_template_from_query_arg() {
     return empty($_GET['leyka_ctpl']) ? null : trim($_GET['leyka_ctpl']);
 }
+
+function leyka_get_upload_max_filesize() {
+
+    if(defined('WP_MEMORY_LIMIT')) {
+        $max_filesize = WP_MEMORY_LIMIT;
+    } else {
+        $max_filesize = ini_get('upload_max_filesize');
+    }
+
+    return $max_filesize;
+
+}

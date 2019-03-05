@@ -346,7 +346,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         </fieldset>
 
-        <fieldset id="campaign-images" class="metabox-field campaign-field persistent-campaign-field">
+        <fieldset id="campaign-images" class="metabox-field campaign-field upload-photo-field persistent-campaign-field">
 
             <h3 class="field-title">
                 <?php _e('The campaign decoration images', 'leyka');?>
@@ -358,9 +358,30 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 </span>
             </h3>
 
-<!--        Image uploading fields here    -->
+            <div class="field-wrapper flex">
+                <span class="field-component field">
+                    <input type="file" value="">
+                    <input type="button" class="button upload-photo" id="campaign_photo-upload-button" value="<?php esc_attr_e('Select a picture', 'leyka');?>">
+                </span>
+                <span class="upload-field-description">
+                    <?php echo sprintf(__('.jpg or .png file, no more than %s sized, recommended width: %s', 'leyka'), leyka_get_upload_max_filesize(), '1920 px'); //'Файл в формате .jpg, вес файла не больше 2МБ, желательная ширина изображения – 1920 px';?>
+                </span>
+
+                <?php wp_nonce_field('set-campaign-photo', 'set-campaign-photo-nonce');?>
+                <input type="hidden" id="leyka-campaign_thumbnail" name="campaign_thumbnail" value="<?php echo '#VAR_HERE#';// $campaign_thumbnail_id;?>">
+            </div>
+            <div class="field-errors"></div>
 
         </fieldset>
+
+        <div id="campaign-data-setup-howto">
+            <strong><?php _e('Recommendations', 'leyka');?></strong>
+            <ul>
+                <li><a href="<?php echo '#';?>" target="_blank"><?php _e('How to set up recurring payments support', 'leyka');?></li>
+                <li><a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=beneficiary#terms_of_service');?>" target="_blank"><?php _e('I want to change the Terms of service text', 'leyka');?></li>
+                <li><a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=beneficiary#terms_of_pd');?>" target="_blank"><?php _e('I want to change the Personal data usage terms text', 'leyka');?></li>
+            </ul>
+        </div>
 
     <?php }
     /**
