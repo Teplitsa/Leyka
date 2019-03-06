@@ -54,7 +54,7 @@ function leyka_recalculate_total_funded_action() {
     }
 
     $campaign = new Leyka_Campaign((int)$_GET['campaign_id']);
-    $campaign->update_total_funded_amount();
+    $campaign->updateTotalFundedAmount();
 
     wp_die($campaign->total_funded);
 

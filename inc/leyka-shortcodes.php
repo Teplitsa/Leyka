@@ -93,7 +93,7 @@ function leyka_campaign_card_screen($atts) {
     }
 
     $campaign = new Leyka_Campaign($campaign_post);
-    $campaign->increase_views_counter();
+    $campaign->increaseViewsCounter();
 
     return '<div id="'.esc_attr('leyka_campaign_card_standalone-'.uniqid()).'">'
         .leyka_get_campaign_card($campaign_post, $atts).'</div>';
@@ -248,7 +248,7 @@ function leyka_get_payment_form($campaign = null, $args = array()) {
 
     }
 
-    $campaign->increase_views_counter();
+    $campaign->increaseViewsCounter();
 
     return get_leyka_payment_form_template_html($campaign, $args['template']);
 

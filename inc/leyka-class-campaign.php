@@ -181,10 +181,10 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <div class="field-wrapper">
                 <label class="field-label">
-                    <input type="radio" name="campaign_type" value="-" checked="checked"><?php _e('Temporary', 'leyka');?>
+                    <input type="radio" name="campaign_type" value="temporary" <?php echo $campaign->type === 'temporary' ? 'checked="checked"' : '';?>><?php _e('Temporary', 'leyka');?>
                 </label>
                 <label class="field-label">
-                    <input type="radio" name="campaign_type" value="persistent"><?php _e('Persistent', 'leyka');?>
+                    <input type="radio" name="campaign_type" value="persistent" <?php echo $campaign->type === 'persistent' ? 'checked="checked"' : '';?>><?php _e('Persistent', 'leyka');?>
                 </label>
             </div>
         </fieldset>
@@ -203,10 +203,10 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <div class="field-wrapper">
                 <label class="field-label">
-                    <input type="checkbox" name="donations_type" value="recurring" checked="checked"><?php echo _x('Recurring', 'In mult., like "recurring donations"', 'leyka');?>
+                    <input type="checkbox" name="donations_type[]" value="recurring" <?php echo in_array('recurring', $campaign->donations_types_available) ? 'checked="checked"' : '';?>><?php echo _x('Recurring', 'In mult., like "recurring donations"', 'leyka');?>
                 </label>
                 <label class="field-label">
-                    <input type="checkbox" name="donations_type" value="single" checked="checked"><?php echo _x('Single', 'In mult., like "single donations"', 'leyka');?>
+                    <input type="checkbox" name="donations_type[]" value="single" <?php echo in_array('single', $campaign->donations_types_available) ? 'checked="checked"' : '';?>><?php echo _x('Single', 'In mult., like "single donations"', 'leyka');?>
                 </label>
             </div>
 
@@ -235,10 +235,10 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         </fieldset>
 
-        <fieldset id="campaign-template" class="metabox-field campaign-field campaign-template">
+        <fieldset id="campaign-form-template" class="metabox-field campaign-field campaign-template">
 
             <h3 class="field-title">
-                <label for="campaign-template"><?php _e('Template for payment form', 'leyka');?></label>
+                <label for="campaign-form-template-field"><?php _e('Template for payment form', 'leyka');?></label>
                 <span class="field-q">
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
                     <span class="field-q-tooltip">
@@ -249,11 +249,10 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <div class="field-wrapper flex">
 
-                <?php $templates = leyka()->getTemplates();?>
+                <?php $templates = leyka()->getTemplates();
+                $default_template = leyka()->getTemplate(leyka_options()->opt('donation_form_template'));?>
 
-                <select id="campaign-template" name="campaign_template">
-
-                    <?php $default_template = leyka()->getTemplate(leyka_options()->opt('donation_form_template'));?>
+                <select id="campaign-form-template-field" name="campaign_template" data-default-template-id="<?php echo empty($default_template['id']) ? '' : esc_attr($default_template['id']);?>">
 
                     <option value="default" <?php selected($cur_template, 'default');?>>
                         <?php echo sprintf(__('Default template (%s)', 'leyka'), __($default_template['name'], 'leyka'));?>
@@ -325,7 +324,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         <fieldset id="campaign-css" class="metabox-field campaign-field campaign-css persistent-campaign-field">
 
             <h3 class="field-title">
-                <?php _e('Campaign CSS-styling', 'leyka');?>
+                <label for="campaign-css-field"><?php _e('Campaign CSS-styling', 'leyka');?></label>
                 <span class="field-q">
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
                     <span class="field-q-tooltip">
@@ -336,15 +335,13 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <div class="field-wrapper css-editor">
 
-                <?php $campaign_css_original = '/* Style 1 */ /* Style 1 comment */
-/* Style 2 */ /* Style 2 comment */
-/* Style 3 */ /* Style 3 comment */';
-                $campaign_css_value = $campaign->additional_css ? $campaign->additional_css : $campaign_css_original;?>
+                <?php $campaign_css_original = '/* Some style 1 */ '.__('/* Style 1 comment */', 'leyka')."\n".
+                    '/* Some style 2 */ '.__('/* Style 2 comment */', 'leyka')."\n".
+                    '/* Some style 3 */ '.__('/* Style 3 comment */', 'leyka');?>
 
-                <label for="campaign-css"></label>
-                <textarea id="campaign-css" name="campaign_css" class="css-editor-field"><?php echo $campaign_css_value;?></textarea>
+                <textarea id="campaign-css-field" name="campaign_css" class="css-editor-field"><?php echo $campaign->additional_css ? $campaign->additional_css : $campaign_css_original;?></textarea>
                 <div class="css-editor-reset-value"><?php _e('Return original styles', 'leyka');?></div>
-                <input type="hidden" class="campaign-css-original" value="<?php echo $campaign_css_original;?>">
+                <input type="hidden" class="css-editor-original-value" value="<?php echo $campaign_css_original;?>">
 
             </div>
 
@@ -479,7 +476,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             </tfoot>
 
             <tbody>
-            <?php foreach($campaign->get_donations(array('submitted', 'funded', 'refunded', 'failed')) as $donation) {
+            <?php foreach($campaign->getDonations(array('submitted', 'funded', 'refunded', 'failed')) as $donation) {
 
                 $gateway_label = $donation->gateway_id ? $donation->gateway_label : __('Custom payment info', 'leyka');
                 $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;
@@ -580,6 +577,25 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         $meta = array();
 
+        if( !empty($_REQUEST['campaign_type']) && $campaign->type != $_REQUEST['campaign_type'] ) {
+            $meta['campaign_type'] = esc_attr($_REQUEST['campaign_type']);
+        }
+
+        if(isset($_REQUEST['donations_type']) && $campaign->donations_types_available != $_REQUEST['donations_type']) {
+            $meta['donations_type'] = (array)$_REQUEST['donations_type'];
+        }
+
+        if(
+            isset($_REQUEST['donations_type_default'])
+            && $campaign->donations_type_default != $_REQUEST['donations_type_default']
+        ) {
+            $meta['donations_type_default'] = esc_attr($_REQUEST['donations_type_default']);
+        }
+
+        if(isset($_REQUEST['campaign_css']) && $campaign->css != $_REQUEST['campaign_css']) {
+            $meta['campaign_css'] = esc_textarea($_REQUEST['campaign_css']);
+        }
+
         if( !empty($_REQUEST['campaign_template']) && $campaign->template != $_REQUEST['campaign_template'] ) {
             $meta['campaign_template'] = trim($_REQUEST['campaign_template']);
         }
@@ -595,10 +611,10 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             $meta['is_finished'] = $_REQUEST['is_finished'];
         }
 
-        $_REQUEST['ignore_global_template'] = !empty($_REQUEST['ignore_global_template']) ? 1 : 0;
-        if($_REQUEST['ignore_global_template'] != $campaign->ignore_global_template_settings) {
-            $meta['ignore_global_template'] = $_REQUEST['ignore_global_template'];
-        }
+//        $_REQUEST['ignore_global_template'] = !empty($_REQUEST['ignore_global_template']) ? 1 : 0;
+//        if($_REQUEST['ignore_global_template'] != $campaign->ignore_global_template_settings) {
+//            $meta['ignore_global_template'] = $_REQUEST['ignore_global_template'];
+//        }
 
         if(isset($_REQUEST['campaign_target']) && $_REQUEST['campaign_target'] != $campaign->target) {
 
@@ -607,13 +623,15 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             update_post_meta($campaign->id, 'campaign_target', $_REQUEST['campaign_target']);
 
-            $campaign->refresh_target_state();
+            $campaign->refreshTargetState();
 
         }
 
         foreach($meta as $key => $value) {
             update_post_meta($campaign->id, $key, $value);
         }
+
+//        die('<pre>'.print_r($meta, 1).'</pre>');
 	}
 
 	/** Campaigns list table columns: */
@@ -727,7 +745,7 @@ class Leyka_Campaign {
 
             if(empty($meta['target_state'])) {
 
-                $this->target_state = $this->_get_calculated_target_state();
+                $this->target_state = $this->_getCalculatedTargetState();
                 $meta['target_state'] = array($this->target_state);
 
             }
@@ -756,7 +774,7 @@ class Leyka_Campaign {
             if( !isset($meta['total_funded']) ) { // If campaign total collected amount is not saved, save it
 
                 $sum = 0.0;
-                foreach($this->get_donations(array('funded')) as $donation) {
+                foreach($this->getDonations(array('funded')) as $donation) {
 
                     $donation_amount = $donation->main_curr_amount ? $donation->main_curr_amount : $donation->amount;
                     if(is_array($donation_amount) && !empty($donation_amount[0]) && (float)$donation_amount[0] >= 0.0) {
@@ -764,15 +782,53 @@ class Leyka_Campaign {
                     }
 
                     $sum += $donation_amount;
+
                 }
 
                 update_post_meta($this->_id, 'total_funded', $sum);
-
                 $meta['total_funded'][0] = $sum;
+
+            }
+
+            if( !isset($meta['campaign_type']) ) {
+
+                update_post_meta($this->_id, 'campaign_type', 'temporary');
+                $meta['campaign_type'] = array('temporary');
+
+            }
+            if( !isset($meta['donations_type']) ) {
+
+                update_post_meta($this->_id, 'donations_type', array());
+                $meta['donations_type'] = array();
+
+            }
+            if( !isset($meta['donations_type_default']) ) {
+
+                update_post_meta($this->_id, 'donations_type_default', array());
+                $meta['donations_type_default'] = array();
+
+            }
+            if( !isset($meta['campaign_css']) ) {
+
+                update_post_meta($this->_id, 'campaign_css', array(''));
+                $meta['campaign_css'] = array('');
+
+            }
+            if( !isset($meta['campaign_cover']) ) {
+
+                update_post_meta($this->_id, 'campaign_cover', array());
+                $meta['campaign_cover'] = array();
+
+            }
+            if( !isset($meta['campaign_logo']) ) {
+
+                update_post_meta($this->_id, 'campaign_logo', array());
+                $meta['campaign_logo'] = array();
+
             }
 
             $ignore_view_settings = empty($meta['ignore_global_template']) ?
-                '' : $meta['ignore_global_template'][0] > 0;
+                false : $meta['ignore_global_template'][0] > 0;
             $ignore_view_settings = apply_filters(
                 'leyka_campaign_ignore_view_settings',
                 $ignore_view_settings,
@@ -783,7 +839,13 @@ class Leyka_Campaign {
             $this->_campaign_meta = array(
                 'payment_title' => empty($meta['payment_title']) ?
                     (empty($this->_post_object) ? '' : $this->_post_object->post_title) : $meta['payment_title'][0],
-                'campaign_template' => empty($meta['campaign_template']) ? '' :  $meta['campaign_template'][0],
+                'campaign_type' => empty($meta['campaign_type']) ? '-' : $meta['campaign_type'][0],
+                'donations_type' => empty($meta['donations_type']) ? array() : $meta['donations_type'][0],
+                'donations_type_default' => empty($meta['donations_type_default']) ? false : $meta['donations_type_default'][0],
+                'campaign_template' => empty($meta['campaign_template']) ? '' : $meta['campaign_template'][0],
+                'campaign_css' => empty($meta['campaign_css']) ? '' : $meta['campaign_css'][0],
+                'campaign_cover' => empty($meta['campaign_cover']) ? '' : $meta['campaign_cover'][0],
+                'campaign_logo' => empty($meta['campaign_logo']) ? '' : $meta['campaign_logo'][0],
                 'campaign_target' => empty($meta['campaign_target']) ? 0 : $meta['campaign_target'][0],
                 'ignore_global_template' => $ignore_view_settings,
                 'is_finished' => $meta['is_finished'] ? $meta['is_finished'][0] > 0 : 0,
@@ -795,19 +857,24 @@ class Leyka_Campaign {
                 'count_submits' => empty($meta['count_submits']) ? 0 : $meta['count_submits'][0],
                 'total_funded' => empty($meta['total_funded']) ? 0.0 : $meta['total_funded'][0],
             );
+
         }
 
         return $this;
 
 	}
 
-    protected function _get_calculated_target_state() {
+    protected function _getCalculatedTargetState() {
 
         $target = get_post_meta($this->_id, 'campaign_target', true);
         return empty($target) ?
             'no_target' :
             ($this->total_funded >= $target ? 'is_reached' : 'in_progress');
 
+    }
+    /** @deprecated */
+    protected function _get_calculated_target_state() {
+	    return $this->_getCalculatedTargetState();
     }
 
     public function __get($field) {
@@ -818,10 +885,36 @@ class Leyka_Campaign {
             case 'title':
             case 'name': return $this->_post_object ? $this->_post_object->post_title : '';
             case 'payment_title': return $this->_campaign_meta['payment_title'];
+            case 'type':
+            case 'campaign_type':
+                return empty($this->_campaign_meta['campaign_type']) ? 'temporary' : $this->_campaign_meta['campaign_type'];
+            case 'donations_type':
+            case 'donations_type_available':
+            case 'donations_types':
+            case 'donations_types_available':
+                return $this->_campaign_meta['donations_type'] ?
+                    maybe_unserialize($this->_campaign_meta['donations_type']) : array('single', 'recurring');
+            case 'donations_type_default':
+                return count($this->donations_types_available) > 1
+                    && $this->_campaign_meta['donations_type_default']
+                    && in_array($this->_campaign_meta['donations_type_default'], array_keys(leyka()->getDonationTypes())) ?
+                        $this->_campaign_meta['donations_type_default'] :
+                        ($this->donations_types_available ? reset($this->donations_types_available) : 'single');
             case 'template':
             case 'campaign_template':
                 return $this->_campaign_meta['campaign_template'] === 'default' ?
                     leyka_options()->opt('donation_form_template') : $this->_campaign_meta['campaign_template'];
+            case 'css':
+            case 'campaign_css':
+            case 'additional_css':
+            case 'additional_campaign_css':
+                return $this->_campaign_meta['campaign_css'] ? $this->_campaign_meta['campaign_css'] : '';
+            case 'cover':
+            case 'campaign_cover':
+                return $this->_campaign_meta['campaign_cover'] ? $this->_campaign_meta['campaign_cover'] : '';
+            case 'logo':
+            case 'campaign_logo':
+                return $this->_campaign_meta['campaign_logo'] ? $this->_campaign_meta['campaign_logo'] : '';
             case 'campaign_target':
             case 'target': return $this->_campaign_meta['campaign_target'];
             case 'content':
@@ -895,7 +988,7 @@ class Leyka_Campaign {
      * @param $status array Of leyka donation statuses.
      * @return array Of Leyka_Donation objects.
      */
-    public function get_donations(array $status = null) {
+    public function getDonations(array $status = array()) {
 
         if( !did_action('leyka_cpt_registered') || !$this->_id ) { // Leyka PT statuses isn't there yet
             return array();
@@ -917,8 +1010,16 @@ class Leyka_Campaign {
         return $donations;
 
     }
+    /**
+     * @deprecated
+     * @param $status array
+     * @return array
+     */
+    public function get_donations(array $status = array()) {
+        return $this->getDonations($status);
+    }
 
-    public static function get_campaign_collected_amount($campaign_id) {
+    public static function getCampaignCollectedAmount($campaign_id) {
 
         $campaign_id = (int)$campaign_id;
         if($campaign_id <= 0) {
@@ -930,19 +1031,27 @@ class Leyka_Campaign {
         return $campaign->total_funded > 0.0 ? $campaign->total_funded : 0.0;
 
     }
+    /**
+     * @deprecated
+     * @param $campaign_id integer
+     * @return float
+     */
+    public static function get_campaign_collected_amount($campaign_id) {
+        return static::getCampaignCollectedAmount($campaign_id);
+    }
 
     /** @deprecated Use $campaign->total_funded instead. */
     public function get_collected_amount() {
         return $this->total_funded > 0.0 ? $this->total_funded : 0.0;
     }
 
-    public function refresh_target_state() {
+    public function refreshTargetState() {
 
         if( !$this->target ) {
             return false;
         }
 
-        $new_target_state = $this->_get_calculated_target_state();
+        $new_target_state = $this->_getCalculatedTargetState();
         $meta = array();
 
         if($new_target_state !== $this->target_state) {
@@ -970,8 +1079,12 @@ class Leyka_Campaign {
         return $meta['target_state'];
 
     }
-	
-	static function get_target_state_label($state = false) {
+    /** @deprecated */
+    public function refresh_target_state() {
+        return $this->refreshTargetState();
+    }
+
+	static function getTargetStateLabel($state = false) {
 
         $labels = leyka()->getCampaignTargetStates();
 
@@ -980,27 +1093,49 @@ class Leyka_Campaign {
         } else {
             return !empty($labels[$state]) ? $labels[$state] : false;
         }
-	}
 
-    public function increase_views_counter() {
+	}
+	/**
+     * @deprecated
+     * @param $state string|false
+     * @return string|false
+     */
+    static function get_target_state_label($state = false) {
+        return static::getTargetStateLabel($state);
+    }
+
+    public function increaseViewsCounter() {
 
         $this->_campaign_meta['count_views']++;
         update_post_meta($this->_id, 'count_views', $this->_campaign_meta['count_views']);
+
+        return $this;
+
+    }
+    /** @deprecated */
+    public function increase_views_counter() {
+        return $this->increaseViewsCounter();
     }
 
-    public function increase_submits_counter() {
+    public function increaseSubmitsCounter() {
 
         $this->_campaign_meta['count_submits']++;
         update_post_meta($this->_id, 'count_submits', $this->_campaign_meta['count_submits']);
 
+        return $this;
+
+    }
+    /** @deprecated */
+    public function increase_submits_counter() {
+        return $this->increaseSubmitsCounter();
     }
 
-    public function update_total_funded_amount($donation = false, $action = '', $old_sum = false) {
+    public function updateTotalFundedAmount($donation = false, $action = '', $old_sum = false) {
 
         if( !$donation ) { // Recalculate total collected amount for a campaign and recache it
 
             $sum = 0.0;
-            foreach($this->get_donations(array('funded')) as $donation) {
+            foreach($this->getDonations(array('funded')) as $donation) {
                 $sum += $donation->sum_total;
             }
 
@@ -1018,24 +1153,37 @@ class Leyka_Campaign {
                 $sum = -$donation->sum_total;
             } else { // Add given donation's sum to campaign's total_funded
 
-                if($action == 'update_sum' && (int)$old_sum) { // If donation sum was changed, subtract it from total_funded first
+                $old_sum = $old_sum && (float)$old_sum ? round($old_sum, 2) : 0.0;
+                if($action == 'update_sum' && $old_sum) { // If donation sum was changed, subtract it from total_funded first
                     $this->_campaign_meta['total_funded'] -= (int)$old_sum;
                 }
 
                 $sum = ($donation->status != 'funded' || $donation->campaign_id != $this->_id) && $donation->sum_total > 0 ?
                     -$donation->sum_total : $donation->sum_total;
                 $sum = $donation->status == 'trash' ? -$sum : $sum;
+
             }
 
             $this->_campaign_meta['total_funded'] += $sum;
 
             update_post_meta($this->_id, 'total_funded', $this->_campaign_meta['total_funded']);
+
         }
 
-        $this->refresh_target_state();
+        $this->refreshTargetState();
 
         return $this;
 
+    }
+    /**
+     * @deprecated
+     * @param $donation Leyka_Donation|integer|false
+     * @param $action string
+     * @param $old_sum float|false
+     * @return $this
+     */
+    public function update_total_funded_amount($donation = false, $action = '', $old_sum = false) {
+        return $this->updateTotalFundedAmount($donation, $action, $old_sum);
     }
 
     public function delete($force = False) {

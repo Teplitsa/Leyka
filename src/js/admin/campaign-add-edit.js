@@ -41,8 +41,8 @@ jQuery(document).ready(function($){
     }).change();
 
     // Donation types field change:
-    let $donations_types_fields = $(':input[name="donations_type"]'),
-        $default_donation_type_field = $('#donation-type-default');
+    let $donations_types_fields = $(':input[name="donations_type[]"]'),
+        $default_donation_type_field_block = $('#donation-type-default');
     $donations_types_fields.on('change.leyka', function(e){
 
         e.preventDefault();
@@ -53,9 +53,9 @@ jQuery(document).ready(function($){
         });
 
         if(donations_types_selected.length > 1) {
-            $default_donation_type_field.show();
+            $default_donation_type_field_block.show();
         } else {
-            $default_donation_type_field.hide();
+            $default_donation_type_field_block.hide();
         }
 
     }).change();
@@ -72,7 +72,8 @@ jQuery(document).ready(function($){
 
         let $this = $(this), // Demo icon
             $template_field = $this.siblings(':input[name="campaign_template"]'),
-            selected_template_id = $template_field.val();
+            selected_template_id = $template_field.val() === 'default' ?
+                $template_field.data('default-template-id'): $template_field.val();
 
         $this
             .find('.form-template-screenshot.'+selected_template_id)
@@ -81,5 +82,16 @@ jQuery(document).ready(function($){
 
     });
     // Form templates screens demo - end
+
+    // Additional CSS value reset:
+    $('.css-editor-reset-value').on('click.leyka', function(e){
+
+        e.preventDefault();
+
+        let $this = $(this);
+
+        $this.siblings('.css-editor-field').text($this.siblings('.css-editor-original-value').val());
+
+    });
 
 });

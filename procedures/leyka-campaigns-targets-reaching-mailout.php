@@ -25,7 +25,7 @@ if(leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')) {
     foreach($reached_targets_campaigns as $campaign) {
 
         $campaign = new Leyka_Campaign($campaign);
-        $donations = $campaign->get_donations(array('funded'));
+        $donations = $campaign->getDonations(array('funded'));
 
         $mailout_list = array();
 

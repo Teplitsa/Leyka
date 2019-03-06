@@ -754,6 +754,14 @@ class Leyka extends Leyka_Singleton {
         return $this->clearSessionErrors();
     }
 
+    public function getDonationTypes() {
+        return apply_filters('leyka_donation_types', array(
+            'single' => _x('Single', '"Single" donation type name', 'leyka'),
+            'recurring' => _x('Recurring', '"Recurring" donation type name', 'leyka'),
+            'correction' => _x('Correction', '"Correction" donation type name', 'leyka'),
+        ));
+    }
+
     /**
      * Retrieve all available payment/donation statuses.
      *
@@ -1009,7 +1017,7 @@ class Leyka extends Leyka_Singleton {
                 foreach($campaigns as $campaign) {
 
                     $campaign = new Leyka_Campaign($campaign);
-                    $campaign->update_total_funded_amount();
+                    $campaign->updateTotalFundedAmount();
                 }
 
                 wp_suspend_cache_addition(false);
@@ -1557,7 +1565,7 @@ class Leyka extends Leyka_Singleton {
             return $donation_id;
         } else {
 
-            $campaign->increase_submits_counter();
+            $campaign->increaseSubmitsCounter();
 
             do_action('leyka_log_donation', $pm_data['gateway_id'], $pm_data['payment_method_id'], $donation_id);
             do_action('leyka_log_donation-'.$pm_data['gateway_id'], $donation_id);

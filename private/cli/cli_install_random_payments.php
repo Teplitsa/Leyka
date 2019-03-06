@@ -308,7 +308,7 @@ class LeykaRandomPaymentsInstaller {
             update_post_meta($campaign_id, 'campaign_template', 'revo');
             $campaign = new Leyka_Campaign($campaign_id);
 
-            $campaign->refresh_target_state();
+            $campaign->refreshTargetState();
 
 			//finished campaign
 			if(preg_match("/.*-done$/", $campaign->post_name)) {
