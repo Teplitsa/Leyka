@@ -38,7 +38,7 @@ jQuery(document).ready(function($){
         autoOpen: false
     });
 
-    $('.zoom-screen').on('click', function(e){
+    $('.zoom-screen').on('click.leyka', function(e){
 
         e.preventDefault();
         $(this)
@@ -48,6 +48,7 @@ jQuery(document).ready(function($){
             .trigger('openModal');
 
     });
+
 });
 
 // Notification modal:

@@ -249,6 +249,8 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <div class="field-wrapper flex">
 
+                <?php $templates = leyka()->getTemplates();?>
+
                 <select id="campaign-template" name="campaign_template">
 
                     <?php $default_template = leyka()->getTemplate(leyka_options()->opt('donation_form_template'));?>
@@ -257,23 +259,26 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                         <?php echo sprintf(__('Default template (%s)', 'leyka'), __($default_template['name'], 'leyka'));?>
                     </option>
 
-                    <?php $templates = leyka()->getTemplates();
-                    if($templates) {
-                        foreach($templates as $template) {
+                    <?php foreach($templates as $template) {
 
-                            $template_id = esc_attr($template['id']);?>
+                        $template_id = esc_attr($template['id']);?>
 
-                            <option value="<?php echo $template_id;?>" <?php selected($cur_template, $template_id);?>>
+                        <option value="<?php echo $template_id;?>" <?php selected($cur_template, $template_id);?>>
+                            <?php esc_html_e($template['name'], 'leyka');?>
+                        </option>
 
-                                <?php esc_html_e($template['name'], 'leyka');?>
-                                <img class="form-template-screenshot <?php echo $template_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/theme-screenshots/screen-'.$template_id.'-002.png';?>" alt="" style="display: none;">
-
-                            </option>
-                        <?php }
-                    }?>
+                    <?php }?>
 
                 </select>
-                <div class="form-template-demo"></div>
+                <div class="form-template-demo">
+                <?php foreach($templates as $template) {
+
+                    $template_id = esc_attr($template['id']);?>
+
+                    <img class="form-template-screenshot <?php echo $template_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/theme-screenshots/screen-'.$template_id.'-002.png';?>" alt="" style="display: none;">
+
+                <?php }?>
+                </div>
 
             </div>
 

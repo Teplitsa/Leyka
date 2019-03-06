@@ -60,4 +60,26 @@ jQuery(document).ready(function($){
 
     }).change();
 
+    // Form templates screens demo:
+    $('.form-template-screenshot').easyModal({
+        top: 100,
+        autoOpen: false
+    });
+
+    $('.form-template-demo').on('click.leyka', function(e){
+
+        e.preventDefault();
+
+        let $this = $(this), // Demo icon
+            $template_field = $this.siblings(':input[name="campaign_template"]'),
+            selected_template_id = $template_field.val();
+
+        $this
+            .find('.form-template-screenshot.'+selected_template_id)
+            .css('display', 'block')
+            .trigger('openModal');
+
+    });
+    // Form templates screens demo - end
+
 });
