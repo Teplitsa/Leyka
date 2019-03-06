@@ -347,7 +347,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         </fieldset>
 
-        <fieldset id="campaign-images" class="metabox-field campaign-field upload-photo-field persistent-campaign-field">
+        <fieldset id="campaign-images" class="metabox-field campaign-field persistent-campaign-field">
 
             <h3 class="field-title">
                 <?php _e('The campaign decoration images', 'leyka');?>
@@ -359,7 +359,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 </span>
             </h3>
 
-            <div class="field-wrapper flex margin-top">
+            <div class="upload-photo-field upload-attachment-field field-wrapper flex margin-top" data-upload-title="<?php _e('The campaign page cover image', 'leyka');?>" data-field-name="campaign_cover" data-campaign-id="<?php echo $campaign->id;?>" data-ajax-action="leyka_set_campaign_attachment">
                 <span class="field-component field">
                     <input type="file" value="">
                     <input type="button" class="button upload-photo" id="campaign_cover-upload-button" value="<?php _e('Upload the page cover', 'leyka');?>">
@@ -368,12 +368,16 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                     <?php echo sprintf(__('.jpg or .png file, no more than %s sized, recommended width: %s', 'leyka'), leyka_get_upload_max_filesize(), '1920 px'); //'Файл в формате .jpg, вес файла не больше 2МБ, желательная ширина изображения – 1920 px';?>
                 </span>
 
-                <?php wp_nonce_field('set-campaign-cover', 'set-campaign-cover-nonce');?>
-                <input type="hidden" id="leyka-campaign_cover" name="campaign_cover" value="<?php echo '#VAR_HERE#';// $campaign_thumbnail_id;?>">
+                <?php wp_nonce_field('set-campaign-attachment', 'campaign-cover-nonce');?>
+                <input type="hidden" id="leyka-campaign_cover" name="campaign_cover" value="<?php echo $campaign->cover_id;?>">
+
+                <div class="loading-indicator-wrap" style="display: none;">
+                    <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
+                </div>
             </div>
             <div class="field-errors"></div>
 
-            <div class="field-wrapper flex margin-top">
+            <div class="upload-photo-field upload-attachment-field field-wrapper flex margin-top" data-upload-title="<?php _e('Your logo on the campaign page', 'leyka');?>" data-field-name="campaign_logo" data-campaign-id="<?php echo $campaign->id;?>" data-ajax-action="leyka_set_campaign_attachment">
                 <span class="field-component field">
                     <input type="file" value="">
                     <input type="button" class="button upload-photo" id="campaign_logo-upload-button" value="<?php _e('Upload the logo', 'leyka');?>">
@@ -382,8 +386,12 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                     <?php echo sprintf(__('.jpg or .png file, no more than %s sized', 'leyka'), leyka_get_upload_max_filesize()); //'Файл в формате .jpg, вес файла не больше 2МБ';?>
                 </span>
 
-                <?php wp_nonce_field('set-campaign-logo', 'set-campaign-logo-nonce');?>
-                <input type="hidden" id="leyka-campaign_logo" name="campaign_logo" value="<?php echo '#VAR_HERE#';// $campaign_thumbnail_id;?>">
+                <?php wp_nonce_field('set-campaign-attachment', 'campaign-logo-nonce');?>
+                <input type="hidden" id="leyka-campaign_logo" name="campaign_logo" value="<?php echo $campaign->logo_id;?>">
+
+                <div class="loading-indicator-wrap" style="display: none;">
+                    <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
+                </div>
             </div>
             <div class="field-errors"></div>
 
@@ -910,10 +918,14 @@ class Leyka_Campaign {
             case 'additional_campaign_css':
                 return $this->_campaign_meta['campaign_css'] ? $this->_campaign_meta['campaign_css'] : '';
             case 'cover':
+            case 'cover_id':
             case 'campaign_cover':
+            case 'campaign_cover_id':
                 return $this->_campaign_meta['campaign_cover'] ? $this->_campaign_meta['campaign_cover'] : '';
             case 'logo':
+            case 'logo_id':
             case 'campaign_logo':
+            case 'campaign_logo_id':
                 return $this->_campaign_meta['campaign_logo'] ? $this->_campaign_meta['campaign_logo'] : '';
             case 'campaign_target':
             case 'target': return $this->_campaign_meta['campaign_target'];

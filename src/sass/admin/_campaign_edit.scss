@@ -169,6 +169,14 @@
             }
         }
 
+        /** @todo Made it a mixin, mb? */
+        .loader-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 2rem;
+        }
+
     }
 
 }
