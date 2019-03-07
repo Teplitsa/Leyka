@@ -1,16 +1,16 @@
 /** == Persistent campaign page styles (_persistent_campaign.scss) == **/
-html[lang="be"] .site.leyka-persistant-campaign *,
-html[lang="bg-BG"] .site.leyka-persistant-campaign *,
-html[lang="kk"] .site.leyka-persistant-campaign *,
-html[lang="mk-MK"] .site.leyka-persistant-campaign *,
-html[lang="mn"] .site.leyka-persistant-campaign *,
-html[lang="ru-RU"] .site.leyka-persistant-campaign *,
-html[lang="sah"] .site.leyka-persistant-campaign *,
-html[lang="sr-RS"] .site.leyka-persistant-campaign *,
-html[lang="tt-RU"] .site.leyka-persistant-campaign *,
-html[lang="uk"] .site.leyka-persistant-campaign * {
-    font-family: Journal Sans New Web !important;
-}
+//html[lang="be"] .site.leyka-persistant-campaign *,
+//html[lang="bg-BG"] .site.leyka-persistant-campaign *,
+//html[lang="kk"] .site.leyka-persistant-campaign *,
+//html[lang="mk-MK"] .site.leyka-persistant-campaign *,
+//html[lang="mn"] .site.leyka-persistant-campaign *,
+//html[lang="ru-RU"] .site.leyka-persistant-campaign *,
+//html[lang="sah"] .site.leyka-persistant-campaign *,
+//html[lang="sr-RS"] .site.leyka-persistant-campaign *,
+//html[lang="tt-RU"] .site.leyka-persistant-campaign *,
+//html[lang="uk"] .site.leyka-persistant-campaign * {
+//    font-family: Journal Sans New Web !important;
+//}
 
 .leyka-persistant-campaign {
     @include leyka-pc-text();
