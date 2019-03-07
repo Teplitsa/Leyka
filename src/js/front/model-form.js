@@ -273,14 +273,14 @@ var leykaValidateForm,
 
     function bindOfertaEvents() {
 
-        $('.leyka-js-oferta-trigger').on('click.leyka', function(e){
+        $('.leyka-pf-revo .leyka-js-oferta-trigger').on('click.leyka', function(e){
             e.preventDefault();
 
             $(this).parents('.leyka-pf').addClass('leyka-pf--oferta-open');
 
         });
 
-        $('.leyka-js-oferta-close').on('click.leyka', function(e){
+        $('.leyka-pf-revo .leyka-js-oferta-close').on('click.leyka', function(e){
             e.preventDefault();
 
             $(this)
@@ -293,9 +293,9 @@ var leykaValidateForm,
         });
 
         // agree
-        $('.donor__oferta').on('change.leyka', 'input:checkbox', function(){
+        $('.leyka-pf-revo .donor__oferta').on('change.leyka', 'input:checkbox', function(){
 
-            if( $('.donor__oferta').find('input:checkbox.required:not(:checked)').length ) {
+            if( $(this).parents('.donor__oferta').find('input:checkbox.required:not(:checked)').length ) {
                 $(this).parents('.donor__oferta').addClass('invalid');
             } else {
                 $(this).parents('.donor__oferta').removeClass('invalid');
@@ -306,14 +306,14 @@ var leykaValidateForm,
 
     function bindPdEvents() {
 
-        $('.leyka-js-pd-trigger').on('click.leyka', function(e){
+        $('.leyka-pf-revo .leyka-js-pd-trigger').on('click.leyka', function(e){
             e.preventDefault();
 
             $(this).parents('.leyka-pf').addClass('leyka-pf--pd-open');
 
         });
 
-        $('.leyka-js-pd-close').on('click.leyka', function(e){
+        $('.leyka-pf-revo .leyka-js-pd-close').on('click.leyka', function(e){
             e.preventDefault();
 
             $(this)
@@ -326,9 +326,9 @@ var leykaValidateForm,
         });
 
         // agree
-        $('.donor__oferta').on('change.leyka', 'input:checkbox', function(){
+        $('.leyka-pf-revo .donor__oferta').on('change.leyka', 'input:checkbox', function(){
 
-            if( $('.donor__oferta').find('input:checkbox.required:not(:checked)').length ) {
+            if( $(this).parents('.donor__oferta').find('input:checkbox.required:not(:checked)').length ) {
                 $(this).parents('.donor__oferta').addClass('invalid');
             } else {
                 $(this).parents('.donor__oferta').removeClass('invalid');

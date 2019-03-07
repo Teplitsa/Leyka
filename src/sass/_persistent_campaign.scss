@@ -1,0 +1,168 @@
+/** == Persistent campaign page styles (_persistent_campaign.scss) == **/
+html[lang="be"] .site.leyka-persistant-campaign *,
+html[lang="bg-BG"] .site.leyka-persistant-campaign *,
+html[lang="kk"] .site.leyka-persistant-campaign *,
+html[lang="mk-MK"] .site.leyka-persistant-campaign *,
+html[lang="mn"] .site.leyka-persistant-campaign *,
+html[lang="ru-RU"] .site.leyka-persistant-campaign *,
+html[lang="sah"] .site.leyka-persistant-campaign *,
+html[lang="sr-RS"] .site.leyka-persistant-campaign *,
+html[lang="tt-RU"] .site.leyka-persistant-campaign *,
+html[lang="uk"] .site.leyka-persistant-campaign * {
+    font-family: Journal Sans New Web !important;
+}
+
+.leyka-persistant-campaign {
+    @include leyka-pc-text();
+}
+
+.leyka-persistant-campaign .leyka-campaign-header {
+    background-image: url(../../img/persistent_campaign_header_bg.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-bottom: 2 * $leyka-star-base;
+    
+    @include for(medium-screens) {
+        padding-bottom: 145px;
+    }
+    
+    .leyka-campaign-logo {
+        @include star-clean-a();
+        display: block;
+        background-image: url(../../img/persistent_campaign_header_logo.png);
+        width: 280px;
+        height: 50px;
+    }
+    
+    h1 {
+        @include leyka-pc-h1();
+        display: block;
+        color: $leyka-star-color-white;
+        max-width: 746px;
+        text-align: center;
+        margin-top: 2 * $leyka-star-base;
+
+        @include for(medium-screens) {
+            margin-top: 2.5 * $leyka-star-base;
+        }
+        
+        &:before {
+            display: none;
+        }
+    }
+}
+
+.leyka-persistant-campaign .leyka-campaign-content {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    
+    &.site-content {
+        margin-top: 0;
+        padding-top: 0;
+        background-color: $leyka-star-color-gray-superlight;
+    }
+    
+    .content-area {
+        max-width: 600px;
+        width: 100%;
+        
+        .entry-content {
+            color: $leyka-star-color-gray-dark;
+            margin: 0px;
+            padding: 0px $leyka-star-base $leyka-star-base $leyka-star-base;
+            width: 100%;
+            max-width: unset;
+            
+            @include for(medium-screens) {
+                padding: 0px 2 * $leyka-star-base 4 * $leyka-star-base 2 * $leyka-star-base;
+            }
+            
+            p {
+                margin-bottom: $leyka-star-base;
+            }
+            
+            .leyka-pf-star {
+                background-color: $leyka-star-color-white;
+                border-radius: 4px;
+                box-shadow: 0px 0px 8px 2px $leyka-star-color-gray;
+                margin-top: 0px;
+                margin-left: - $leyka-star-base;
+                margin-right: - $leyka-star-base;
+                padding: 2 * $leyka-star-base $leyka-star-base $leyka-star-base $leyka-star-base;
+                
+                @include for(medium-screens) {                
+                    margin-top: -120px;
+                    margin-left: - 2 * $leyka-star-base;
+                    margin-right: - 2 * $leyka-star-base;
+                    padding: 2 * $leyka-star-base 2 * $leyka-star-base;
+                }
+            }
+        }
+    }
+    
+}
+
+.leyka-persistant-campaign .leyka-campaign-footer {
+    @include leyka-pc-footer();
+    color: $leyka-star-color-white;
+    background-color: $leyka-pc-color-main;
+    padding: $leyka-star-base;
+    
+    @include for(medium-screens) {
+        padding-bottom: $leyka-star-base;
+    }
+    
+    .leyka-footer-links {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 12px;
+        
+        a {
+            @include star-clean-a();
+            color: $leyka-star-color-white;
+            display: inline-block;
+            margin-right: 18px;
+            font-size: 16px;
+            
+            @include for(medium-screens) {
+                font-size: 18px;
+            }
+            
+            &:hover {
+                text-decoration: underline;
+            }
+            
+            &:last-of-type {
+                margin-right: 0;
+            }
+        }
+    }
+    
+    .leyka-footer-info {
+        text-align: center;
+        
+        p {
+            font-size: 12px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            display: inline;
+            
+            &:last-child {
+                display: block;
+            }
+            
+            @include for(medium-screens) {
+                display: block;
+                font-size: 16px;
+                //margin-top: 6px;
+                //margin-bottom: 6px;
+            }
+        }
+    }
+}

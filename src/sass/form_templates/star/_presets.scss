@@ -16,6 +16,8 @@ $leyka-star-base:   16px;
     --leyka-color-ok-second: #9adc98;
     --leyka-color-ok-third: #f3fcf2;
     
+    --leyka-color-pc-bg: #ff6347;
+    
     --leyka-star-base: 16px;
 }
 
@@ -38,3 +40,6 @@ $leyka-star-color-gray:             #8f8f8f;
 $leyka-star-color-gray-light:       #c0c0c0;
 $leyka-star-color-gray-superlight:  #ededed;
 $leyka-star-color-white:            #ffffff;
+
+
+$leyka-pc-color-main:   var(--leyka-color-pc-bg);

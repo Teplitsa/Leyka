@@ -1849,3 +1849,19 @@ function leyka_get_upload_max_filesize() {
     return $max_filesize;
 
 }
+
+function leyka_use_leyka_campaign_template($template) {
+    
+    if( !is_singular(Leyka_Campaign_Management::$post_type) ) {
+        return $template;
+    }
+    
+    $campaign_id = get_post()->ID;
+    $campaign = leyka_get_validated_campaign($campaign_id);
+    if($campaign && $campaign->template == 'star') {
+        $template = LEYKA_PLUGIN_DIR . 'templates/campaign_templates/persistent_campaign.php';
+    }
+    
+    return $template;
+}
+add_filter('single_template', 'leyka_use_leyka_campaign_template', 10, 1);

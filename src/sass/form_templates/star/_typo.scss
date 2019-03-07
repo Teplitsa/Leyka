@@ -2,7 +2,7 @@
 
 @mixin star-text($mod: default) {
 	font-family: unset;
-	font-weight: 400;
+	font-weight: 300;
 	font-style: normal;
 	line-height: normal;
 	font-size: 16px;
@@ -87,4 +87,37 @@
 		font-size: 16px;
 	}
 	
+}
+
+// persistent campaign
+@mixin leyka-pc-text($mod: default) {
+	font-family: Journal Sans New Web !important;
+	font-weight: 400;
+	font-style: normal;
+	line-height: normal;
+	font-size: 16px;
+	
+	@include for(medium-screens) {
+		font-size: 18px;
+	}
+
+	@if $mod == strong {
+		font-weight: 700;
+	}
+	@else if $mod == italic {
+		font-style: italic;
+	}
+}
+
+@mixin leyka-pc-h1() {
+    @include leyka-pc-text();
+	font-size: 24px;
+	
+	@include for(medium-screens) {
+		font-size: 40px;
+	}
+}
+
+@mixin leyka-pc-footer() {
+    @include leyka-pc-text();
 }

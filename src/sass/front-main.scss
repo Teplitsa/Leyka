@@ -10,13 +10,16 @@
 @import 'account';
 @import 'campaign';
 
+@import 'form_templates/star/presets';
+@import 'form_templates/star/typo';
+@import 'form_templates/star/mixins';
+
+@import 'persistent_campaign';
+
 @import 'form_templates/revo/form_fields';
 @import 'form_templates/revo/form_layout';
 @import 'form_templates/revo/form_elements';
 
-@import 'form_templates/star/presets';
-@import 'form_templates/star/typo';
-@import 'form_templates/star/mixins';
 @import 'form_templates/star/form_fields';
 @import 'form_templates/star/form_layout';
 @import 'form_templates/star/form_elements';

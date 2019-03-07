@@ -3,7 +3,7 @@
  * Leyka Star Template code to load during page initialization.
  **/
 
-// Revo campaigns have different elements order:
+// Campaigns have different elements order:
 if( !is_admin() && is_main_query() && is_singular(Leyka_Campaign_Management::$post_type) ) {
 
     remove_filter('the_content', 'leyka_print_donation_elements');

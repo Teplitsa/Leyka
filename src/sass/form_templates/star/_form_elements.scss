@@ -1,6 +1,6 @@
 /** == Form elements (_form_elements.scss) == **/
 
-.leyka-pf-star .leyka-pf__module .leyka-pf__form .leyka-inline-campaign-form .step .step__fields {
+.leyka-tpl-star-form .section .section__fields {
     
     // periodicity
     &.periodicity {
@@ -49,8 +49,19 @@
     .star-swiper {
         @include star-swiper();
         
-        .swiper-item {
-            white-space: nowrap;
+        &.amount__figure {
+            .swiper-item {
+                &.selected {
+                    @include for(medium-screens) {
+                        background-color: $leyka-star-color-main;
+                        border-color: $leyka-star-color-main;
+                        
+                        span, input {
+                            color: $leyka-star-color-white;
+                        }
+                    }
+                }
+            }
         }
     }
     
@@ -59,7 +70,8 @@
         .star-swiper {
             .swiper-item {
                 flex-direction: column;
-                margin: 0px;
+                margin-top: 0px;
+                margin-bottom: 0px;
                 
                 .payment-opt__button {
                     display: block;
@@ -77,9 +89,16 @@
                 span.payment-opt__label {
                     @include star-text-pm-label();
                     text-transform: none;
-                    color: $leyka-star-color-gray-light;
+                    color: $leyka-star-color-gray;
                     display: block;
                     margin-top: -5px;
+                }
+                
+                &.selected {
+                    @include for(medium-screens) {
+                        background-color: $leyka-star-color-main-third;
+                        border-color: $leyka-star-color-main;
+                    }
                 }
                 
             }
@@ -89,21 +108,57 @@
     // donor data
     &.donor {
         
+        .leyka-star-compact-fields {
+            
+            @include for(medium-screens) {
+                &:after {
+                    float: none;
+                    clear: both;
+                }
+            }
+            
+            .donor__textfield {
+                @include for(medium-screens) {
+                    float: left;
+                    width: 48.5%;
+                    margin-right: 3%;
+                    
+                    &:last-child {
+                        margin-right: 0px;
+                    }
+                }
+            }
+        }
+        
         .donor__textfield {
             overflow-y: visible;
             margin-bottom: 3px;
             
             .leyka-star-field-frame {
                 @include star-control-frame();
-                padding: 0.5 * $leyka-star-base 1 * $leyka-star-base 0.75 * $leyka-star-base 1 * $leyka-star-base;
+                padding: 0.4 * $leyka-star-base 1 * $leyka-star-base 0.75 * $leyka-star-base 1 * $leyka-star-base;
                 background-image: none;
                 background-position: calc(100% - var(--leyka-star-base)) center;
                 background-repeat: no-repeat;
+                overflow: hidden;
             }
             
             &.donor__textfield--comment {
                 .leyka-star-field-frame {
                     height: 114px;
+                }
+            }
+            
+            &.required {
+                label {
+                    span.donor__textfield-label {
+                        &:after {
+                            content: "*";
+                            display: inline-block;
+                            color: $leyka-star-color-error;
+                            margin-left: 3px;
+                        }
+                    }
                 }
             }
             
@@ -215,7 +270,7 @@
         padding-bottom: 0.5 * $leyka-star-base;
 
 		@include leyka-star-checkbox();
-
+		
 		.donor__oferta-error {
 			visibility: hidden;
 			@include input-label();
@@ -223,7 +278,7 @@
 			padding-top: 6px;
 			color: $color-form-invalid;
 		}
-
+		
 		&.invalid {
 			.donor__oferta-error { visibility: visible; }
 		}
@@ -231,42 +286,25 @@
 
     // submit
     .donor__submit {
+        margin-bottom: 0px;
+        
         input {
             @include leyka-star-btn();
         }
     }
 }
 
-.leyka-pf-star {
+.leyka-tpl-star-form {
+    position: relative;
     
-    //oferta modal
-    &.leyka-pf--oferta-open,
-    &.leyka-pf--pd-open {
-
-		.leyka-pf__overlay {
-			display: block;
-			position: fixed;
-			width: 100%;
-			height: 100%;
-			left: 0;
-			top: 0;
-			transform: translateZ(0);
-			background: transparentize($leyka-star-color-black, 0.5);
-			z-index: 10000;
-			opacity: 1;
-		}
-
-        .leyka-pf__module {
-            position: relative;
-            max-width: 900px;
-            max-height: unset;
-        }
-        
-    }
+    .leyka-pf__overlay {
+		display: none;
+		opacity: 0;
+		transition: opacity 0.35s;
+	}
     
-    &.leyka-pf--oferta-open .leyka-pf__oferta,
-    &.leyka-pf--pd-open .leyka-pf__pd {
-        display: block;
+    .leyka-pf__agreement {
+        display: none;
         position: absolute;
         top: 0;
         left: 0;
@@ -274,59 +312,85 @@
         height: auto;
         z-index: 10015;
         border-radius: 4px;
-        padding: 2.5 * $leyka-star-base 1 * $leyka-star-base 2 * $leyka-star-base 1 * $leyka-star-base;
+        padding: 2.5 * $leyka-star-base 1 * $leyka-star-base 1 * $leyka-star-base 1 * $leyka-star-base;
         margin-bottom: 2 * $leyka-star-base;
-    }
-
-    &.leyka-pf--oferta-open .oferta__frame,
-    &.leyka-pf--pd-open .pd__frame {
-        width: 100%;
-        height: 100%;
-    }
-
-    &.leyka-pf--oferta-open .oferta__flow,
-    &.leyka-pf--pd-open .pd__flow {
-        @include star-text();
+        background: $color-white;
         
-        p {
-            margin-bottom: 1 * $leyka-star-base;
-            
-            &:first-child {
-                @include star-h2();
-                text-align: center;
-            }
-        }
-    }
-
-    &.leyka-pf--oferta-open .oferta__action,
-    &.leyka-pf--pd-open .pd__action {
-        position: absolute;
-        top: 0.5 * $leyka-star-base;
-        right: 0.5 * $leyka-star-base;
-        background-image: url(../../img/star-icon-close.svg);
-        background-position: center center;
-        background-repeat: no-repeat;
-        display: block;
-        width: 24px;
-        height: 24px;
-        z-index: 10120;
-        text-align: center;
-
-        a {
-            display: block;
+        .agreement__frame {
             width: 100%;
             height: 100%;
-            color: transparent;
-            background-color: transparent;
-            text-decoration: none;
-            outline: none;
-            box-shadow: none;
+            padding: 0;
+            overflow-y: auto;
+        }
+        
+        .agreement__flow {
+            @include star-text();
+            padding-bottom: 0;
             
-            &:hover, &:active, &:focus {
-                text-decoration: none;
+            p {
+                margin-bottom: 1 * $leyka-star-base;
+                
+                &:first-child {
+                    @include star-h2();
+                    text-align: center;
+                }
             }
         }
+    
+        .agreement__close {
+            @include star-clean-a();
+            
+            position: absolute;
+            top: 0.5 * $leyka-star-base;
+            right: 0.5 * $leyka-star-base;
+            display: block;
+            background-image: url(../../img/star-icon-close.svg);
+            background-position: center center;
+            background-repeat: no-repeat;
+            display: block;
+            color: transparent;
+            width: 24px;
+            height: 24px;
+            z-index: 10120;
+            text-align: center;
+        }
     }
+    
+    &.leyka-pf--oferta-open {
+        .leyka-pf__agreement.oferta {
+            display: block;
+        }
+    }
+
+    &.leyka-pf--pd-open {
+        .leyka-pf__agreement.pd {
+            display: block;
+        }
+    }
+    
+    //oferta modal
+    &.leyka-pf--oferta-open,
+    &.leyka-pf--pd-open {
+        
+        .leyka-pf__module {
+            max-height: unset;
+        }
+    
+        .leyka-pf__overlay {
+            display: block;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            transform: translateZ(0);
+            background: transparentize($leyka-star-color-black, 0.5);
+            z-index: 10000;
+            opacity: 1;
+        }
+        
+    }
+
 }
 
 .leyka-screen-cancel-subscription .leyka-pf-star .leyka-screen-form {
@@ -510,7 +574,14 @@
     }
 }
 
-// kandinsky workaround
+// kandinsky optimization
 .single-leyka_campaign .main-content.leyka-campaign {
     overflow: visible;
+}
+
+.leyka-payment-form.leyka-tpl-star-form {
+    a:link {
+        -webkit-tap-highlight-color: unset;
+        -webkit-tap-highlight-color : unset; 
+    }
 }

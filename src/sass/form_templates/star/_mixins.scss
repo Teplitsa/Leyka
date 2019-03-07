@@ -26,8 +26,56 @@
 
 @mixin star-swiper {
     @include star-control-frame();
-    @include star-text-ui-caption();
-    display: flex;
+    position: relative;
+    display: block;
+    overflow: hidden;
+    
+    @include for(medium-screens) {
+        border: none;
+        
+        &.show-right-arrow {
+            .arrow-gradient.right {
+                display: block;
+            }
+            
+            .swiper-arrow.swipe-right {
+                display: flex;
+            }
+        }
+        
+        &.show-left-arrow {
+            .arrow-gradient.left {
+                display: block;
+            }
+            
+            .swiper-arrow.swipe-left {
+                display: flex;
+            }
+        }
+    }
+    
+    .arrow-gradient {
+        display: none;
+        
+        @include for(medium-screens) {
+            width: 45px;
+            height: 100%;
+            position: absolute;
+            top: 0px;
+            z-index: 12;
+            pointer-events: none;
+            background: linear-gradient(270deg, #FFFFFF 30%, rgba(255, 255, 255, 0) 100%);
+    
+            &.right {
+                right: 46px;
+            }
+            
+            &.left {
+                transform: matrix(-1, 0, 0, 1, 0, 0);
+                left: 46px;
+            }
+        }
+    }
     
     .swiper-arrow {
         @include star-clean-a();
@@ -37,6 +85,14 @@
         align-items: center;
         background-position: center center;
         background-repeat: no-repeat;
+        background-color: $leyka-star-color-white;
+        position: absolute;
+        top: 0px;
+        z-index: 10;
+        
+        @include for(medium-screens) {
+            display: none;
+        }
 
         &:after {
             content: " ";
@@ -49,52 +105,139 @@
         &.swipe-left {
             background-image: url(../../img/icon-gallery-nav-arrow-left-001.svg);
             justify-content: flex-end;                
+            left: 0px;
         }
         
         &.swipe-right {
             background-image: url(../../img/icon-gallery-nav-arrow-right-001.svg);
             justify-content: flex-start;
-            order: 100;
+            right: 0px;
+        }
+    }
+    
+    .swiper-list {
+        display: flex;
+        position: absolute;
+        width: calc(100% - 100px);
+        left: 50px;
+        overflow: hidden;
+        z-index: 8;
+        
+        @include for(medium-screens) {
+            justify-content: space-between;
+            left: 0px;
+            width: auto;
         }
     }
     
     .swiper-item {
-        @include star-text-amount();
-        color: $leyka-star-color-main;
         background-color: transparent;
         display: none;
-        width: calc(100% - 100px);
+        width: 100%;
         height: 56px;
         align-items: center;
         justify-content: center;
         overflow: hidden;
+        white-space: nowrap;
         
-        label {
-            span {
+        @include for(medium-screens) {
+            display: flex;
+            border: 2px solid $leyka-star-color-gray-superlight;
+            border-radius: 4px;
+            width: auto;
+            min-width: 250px;//90px;
+            padding-left: 1.5 * $leyka-star-base;
+            padding-right: 1.5 * $leyka-star-base;
+            cursor: pointer;
+            margin-right: $leyka-star-base;
+            
+            &:last-of-type {
+                margin-right: 0;
             }
         }
         
-        span, input[type=text] {
+        span, input {
             @include star-text-amount();
             color: $leyka-star-color-main;
             background-color: transparent;
         
-            &:before {
+            @include for(medium-screens) {
+                @include star-text-ui-caption();
+                color: $leyka-star-color-gray;
+                
+                &.amount {
+                    width: auto;
+                }
+            }
+        }
+        
+        span {
+            &.currency:before {
                 content: " ";
                 margin-left: 0.5 * $leyka-star-base;
             }
         }
         
-        input[type=text] {
+        input[type=text], input[type=number] {
             padding: 0;
             flex-grow: 0;
             width: auto;
+            outline: none;
+            text-align: right;
+            
+            &.show-ph {
+                margin-bottom: 7px;
+                text-align: center;
+                
+                @include for(medium-screens) {
+                    margin-bottom: 0px;
+                    min-width: 105px;
+                    &.empty {
+                        min-width: 105px;
+                    }
+                }
+            }
+
+            &.empty {
+                @include for(medium-screens) {
+                    min-width: 50px;
+                }
+            }
+            
+            &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+                @include leyka-star-swiper-input-placeholder();
+            }
+            &::-moz-placeholder { /* Firefox 19+ */
+                @include leyka-star-swiper-input-placeholder();
+            }
+            &:-ms-input-placeholder { /* IE 10+ */
+                @include leyka-star-swiper-input-placeholder();
+            }
+            &:-moz-placeholder { /* Firefox 18- */
+                @include leyka-star-swiper-input-placeholder();
+            }
         }
         
-        &.active {
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        input[type=number] {
+            -moz-appearance:textfield;
+        }
+        
+        &.selected {
             display: flex;
         }
     }
+}
+
+@mixin leyka-star-swiper-input-placeholder() {
+    @include star-text();
+    color: $leyka-star-color-gray;
+    vertical-align: top;
 }
 
 @mixin leyka-star-checkbox() {
@@ -103,20 +246,20 @@
         padding-left: 26px;
         position: relative;
     }
-
+    
     input {
         margin: 0;
         padding: 0;
         position: absolute;
-        top: -1000px; // 4px
+        //top: -1000px; // 4px
+        top: unset;
         left: 0;
-
         border: none;
         opacity: 0;
         z-index: 10;
         cursor: pointer;
     }
-
+    
     label {
         @include star-text-check-label();
         color: $leyka-star-color-gray-dark;
@@ -128,7 +271,7 @@
         &:last-of-type {
             margin-bottom: 0;
         }
-
+    
         &:before {
             content: '';
             display: block;
@@ -142,13 +285,13 @@
             left: -26px;
             cursor: pointer;
         }
-
+    
         a {
             @include star-text-check-label();
             color: $leyka-star-color-gray-dark;
         }
     }
-
+    
     input:checked + label {
         &:before {
             background-color: transparent;

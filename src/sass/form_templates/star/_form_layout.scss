@@ -19,9 +19,9 @@ div[id*="leyka-pf-"].leyka-pf-star {
             display: block;
             max-width: none;
             
-            .leyka-inline-campaign-form {
+            .leyka-tpl-star-form {
                 
-                .step {
+                .section {
                     display: block;
                     position: relative;
                     height: auto;
@@ -29,7 +29,7 @@ div[id*="leyka-pf-"].leyka-pf-star {
                     opacity: unset;
                     margin-bottom: 1.5 * $leyka-star-base;
                     
-                    .step__border {
+                    .section__border {
                         width: 100%;
                         border-image: none;
                         border-width: unset;
@@ -37,13 +37,22 @@ div[id*="leyka-pf-"].leyka-pf-star {
                         padding-top: unset;
                     }
                     
-                    .step__fields {
+                    .section__fields {
                         visibility: visible;
                         padding: 0px;
+                    }
+                    
+                    &.section--person {
+                        margin-bottom: 0px;
                     }
                 }
                 
             }
         }
     }
+}
+
+.single-leyka_campaign .site-content {
+    overflow: visible;
+    margin-top: 2 * $leyka-star-base;
 }
