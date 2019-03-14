@@ -177,8 +177,14 @@
         .star-swiper {
             .swiper-item {
                 flex-direction: column;
-                margin-top: 0px;
-                margin-bottom: 0px;
+                
+                &.payment-opt {
+                    margin: 0px 8px 0px 0px;
+                    
+                    &:not(.disabled):last-of-type {
+                        margin-right: 0px;
+                    }
+                }
                 
                 .payment-opt__button {
                     display: block;

@@ -101,7 +101,23 @@
             if(!$.trim($(this).val())) {
                 $(this).parent().addClass('empty');
             }
-            checkFormFillCompletion($(this).closest('form.leyka-pm-form'));
+        });
+        
+        var keypressTimeout = null;
+        $('.leyka-tpl-star-form .flex-amount-item').on('keyup', 'input', function(){
+            var $_form = $(this).closest('form.leyka-pm-form');
+            
+            if(keypressTimeout) {
+                clearTimeout(keypressTimeout);
+                keypressTimeout = null;
+            }
+            
+            if(!keypressTimeout) {
+                keypressTimeout = setTimeout(function(){
+                    checkFormFillCompletion($_form);
+                    keypressTimeout = null;
+                }, 500);
+            }
         });
         
         $('.leyka-tpl-star-form .flex-amount-item input').each(function(i, el){
@@ -439,8 +455,21 @@
     }
     
     function bindDonorDataEvents() {
-        $('.leyka-tpl-star-form .donor__textfield').on('blur', 'input,textarea', function(){
-            checkFormFillCompletion($(this).closest('form.leyka-pm-form'));
+        var keypressTimeout = null;
+        $('.leyka-tpl-star-form .donor__textfield').on('keyup', 'input,textarea', function(){
+            var $_form = $(this).closest('form.leyka-pm-form');
+            
+            if(keypressTimeout) {
+                clearTimeout(keypressTimeout);
+                keypressTimeout = null;
+            }
+            
+            if(!keypressTimeout) {
+                keypressTimeout = setTimeout(function(){
+                    checkFormFillCompletion($_form);
+                    keypressTimeout = null;
+                }, 500);
+            }
         });
     }
     

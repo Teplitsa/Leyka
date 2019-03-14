@@ -106,13 +106,15 @@ $leyka_screen = !empty($_GET['leyka-screen']) ? $_GET['leyka-screen'] : '';
     </form>
 
 <?php } else { ?>
+<div id="leyka-pf-<?php echo $campaign->id;?>" class="leyka-pf leyka-pf-star" data-form-id="leyka-pf-<?php echo $campaign->id;?>-star-form">
+    
 <div class="leyka-inline-campaign-form leyka-payment-form leyka-tpl-star-form" data-template="star">
     
     <form id="<?php echo leyka_pf_get_form_id($campaign->id).'-star-form';?>" class="leyka-pm-form" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
     
         <div class="section section--periodicity">
         
-            <?php if(true || leyka_is_recurring_supported()) {?>
+            <?php if(leyka_is_recurring_supported()) {?>
                 <div class="section__fields periodicity">
                     <a href="#" class="active" data-periodicity="monthly">Ежемесячно</a>
                     <a href="#" class="" data-periodicity="once">Разово</a>
@@ -171,14 +173,7 @@ $leyka_screen = !empty($_GET['leyka-screen']) ? $_GET['leyka-screen'] : '';
                     <div class="arrow-gradient right"></div><a class="swiper-arrow swipe-right" href="#"></a>
                     <div class="swiper-list">
     
-                    <?php $max_pm_number = leyka_options()->opt_template('show_donation_comment_field') ? 6 : 4;
-                    foreach($template_data['pm_list'] as $number => $pm) { /** @var $pm Leyka_Payment_Method */
-            
-            
-                        // Max. 4 PM blocks for forms without comment field, or max. 6 PM blocks otherwise:
-                        if($number > $max_pm_number) {
-                            break;
-                        }?>
+                    <?php foreach($template_data['pm_list'] as $number => $pm) { /** @var $pm Leyka_Payment_Method */?>
             
                         <div class="payment-opt swiper-item <?php echo $number ? "" : "selected";?>">
                             <label class="payment-opt__button">
@@ -341,6 +336,8 @@ $leyka_screen = !empty($_GET['leyka-screen']) ? $_GET['leyka-screen'] : '';
         </a>
     </div>
     <?php }?>
+
+</div>
 
 </div>
 

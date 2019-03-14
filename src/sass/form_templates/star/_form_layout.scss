@@ -3,52 +3,34 @@
 div[id*="leyka-pf-"].leyka-pf-star {
     @include star-text();
     
-    &.card-2col {
-        margin-left: 0px !important;
-        margin-right: 0px !important;
-    }
-    
-    .leyka-pf__module {
-        border: none;
+    .leyka-tpl-star-form {
         
-        .leyka-pf__card {
-            display: none;
-        }
-        
-        .leyka-pf__form {
+        .section {
             display: block;
-            max-width: none;
+            position: relative;
+            height: auto;
+            visibility: visible;
+            opacity: unset;
+            margin-bottom: 1.5 * $leyka-star-base;
             
-            .leyka-tpl-star-form {
-                
-                .section {
-                    display: block;
-                    position: relative;
-                    height: auto;
-                    visibility: visible;
-                    opacity: unset;
-                    margin-bottom: 1.5 * $leyka-star-base;
-                    
-                    .section__border {
-                        width: 100%;
-                        border-image: none;
-                        border-width: unset;
-                        border-style: unset;
-                        padding-top: unset;
-                    }
-                    
-                    .section__fields {
-                        visibility: visible;
-                        padding: 0px;
-                    }
-                    
-                    &.section--person {
-                        margin-bottom: 0px;
-                    }
-                }
-                
+            .section__border {
+                width: 100%;
+                border-image: none;
+                border-width: unset;
+                border-style: unset;
+                padding-top: unset;
+            }
+            
+            .section__fields {
+                visibility: visible;
+                padding: 0px;
+            }
+            
+            &.section--person {
+                margin-bottom: 0px;
             }
         }
+        
     }
 }
 

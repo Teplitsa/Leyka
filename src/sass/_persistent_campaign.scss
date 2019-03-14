@@ -5,7 +5,8 @@
 }
 
 .leyka-persistant-campaign .leyka-campaign-header {
-    background-image: url(../../img/persistent_campaign_header_bg.jpg);
+    //background-image: url(../../img/persistent_campaign_header_bg.jpg);
+    background-image: none;
     background-size: cover;
     background-repeat: no-repeat;
     width: 100%;
@@ -22,7 +23,8 @@
     .leyka-campaign-logo {
         @include star-clean-a();
         display: block;
-        background-image: url(../../img/persistent_campaign_header_logo.png);
+        //background-image: url(../../img/persistent_campaign_header_logo.png);
+        background-image: none;
         width: 280px;
         height: 50px;
     }

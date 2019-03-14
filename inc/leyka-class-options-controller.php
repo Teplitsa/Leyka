@@ -20,6 +20,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         'radios' => array(),
         'toggles' => array(),
         'revo' => array(),
+        'star' => array(),
     );
 
     protected function __construct() {

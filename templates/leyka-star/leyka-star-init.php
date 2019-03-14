@@ -20,10 +20,8 @@ function leyka_star_template_campaign_page($content) {
     }
 
     $campaign_id = get_queried_object_id();
+    $before = leyka_payment_form_screen(array('id' => $campaign_id, 'template' => 'star'));
 
-    $before = leyka_inline_campaign(array('id' => $campaign_id, 'template' => 'star'));
-    $after = leyka_inline_campaign_small($campaign_id);
-
-    return $before.$content.$after;
+    return $before.$content;
 
 }

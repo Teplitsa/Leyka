@@ -266,6 +266,29 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                     ),
                                 ),
                             ),
+                            'template_options_star' => array(
+                                'title' => __('Star', 'leyka'),
+                                'screenshots' => array('screen-star-001.png'),
+                                'sections' => array(
+                                    array(
+                                        'title' => __('Donation sum field type', 'leyka'),
+                                        'options' => array('donation_sum_field_type',),
+                                    ),
+                                    array(
+                                        'title' => __('Enter the text for a submit buttons on a donation forms.', 'leyka'),
+                                        'options' => array('donation_submit_text',),
+                                    ),
+                                    array(
+                                        'title' => __('Additional settings', 'leyka'),
+                                        'options' => array(
+                                            //'show_success_widget_on_success',
+                                            'show_donation_comment_field', 'donation_comment_max_length',
+                                            //'show_campaign_sharing', 'show_failure_widget_on_failure',
+                                            'do_not_display_donation_form',
+                                        ),
+                                    ),
+                                ),
+                            ),
                         ),
                     ),),
 

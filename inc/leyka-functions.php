@@ -1858,7 +1858,10 @@ function leyka_use_leyka_campaign_template($template) {
     
     $campaign_id = get_post()->ID;
     $campaign = leyka_get_validated_campaign($campaign_id);
-    if($campaign && $campaign->template == 'star') {
+    
+    $campaign_type = get_post_meta($campaign_id, 'campaign_type', true);
+    
+    if($campaign && $campaign_type == 'persistent' && $campaign->template == 'star') {
         $template = LEYKA_PLUGIN_DIR . 'templates/campaign_templates/persistent_campaign.php';
     }
     
