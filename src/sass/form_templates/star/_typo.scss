@@ -43,7 +43,7 @@
 	@include star-text($mod);
 	text-transform: uppercase;
 	
-	@media screen and (max-width: 320px) {
+	@media screen and (max-width: 319px) {
 		font-size: 12px;
 	}
 }
@@ -83,7 +83,7 @@
 	@include star-text();
 	font-size: 24px;
 	
-	@media screen and (max-width: 320px) {
+	@media screen and (max-width: 319px) {
 		font-size: 16px;
 	}
 	
@@ -91,8 +91,6 @@
 
 // persistent campaign
 @mixin leyka-pc-text($mod: default) {
-	font-family: unset;
-	//font-family: Journal Sans New Web !important;
 	font-weight: 400;
 	font-style: normal;
 	line-height: normal;
@@ -116,6 +114,15 @@
 	
 	@include for(medium-screens) {
 		font-size: 40px;
+	}
+}
+
+@mixin leyka-pc-text-content() {
+    @include leyka-pc-text();
+	line-height: 26px;
+	
+	@include for(medium-screens) {
+		line-height: 29px;
 	}
 }
 

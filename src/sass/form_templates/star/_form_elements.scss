@@ -14,7 +14,7 @@
             display: flex;
             box-shadow: none;
             background-color: $leyka-star-color-white;
-            color: $leyka-star-color-gray-light;
+            color: $leyka-star-color-gray;
             text-decoration: none;
             width: calc(50% + 8px);
             height: 56px;
@@ -41,29 +41,136 @@
         }
     }
 
-    // amount
-    .amount__figure span {
-        font-family: unset;
-    }
-    
+    // swiper
     .star-swiper {
         @include star-swiper();
         
-        &.amount__figure {
-            .swiper-item {
-                &.selected {
-                    @include for(medium-screens) {
-                        background-color: $leyka-star-color-main;
-                        border-color: $leyka-star-color-main;
-                        
-                        span, input {
-                            color: $leyka-star-color-white;
-                        }
+        .swiper-item {
+            &.selected {
+                @include for(medium-screens) {
+                    background-color: $leyka-star-color-main-third;
+                    border-color: $leyka-star-color-main-second;
+                    
+                    span, input {
+                        //color: $leyka-star-color-white;
                     }
                 }
             }
         }
+        
     }
+    
+    // amount swiper
+    .amount__figure.star-swiper {
+        span {
+            font-family: unset;
+        }
+        
+        .swiper-item {
+            
+            &.flex-amount-item {
+                padding: 8px $leyka-star-base 0 56px;
+                background-image: none;
+                overflow: hidden;
+                text-transform: none;
+                width: 100%;
+                
+                @include for(medium-screens) {
+                    @include star-control-frame();
+                    padding: 8px $leyka-star-base 0 $leyka-star-base;
+                    display: block;
+                    min-width: 248px;
+                    width: unset;
+                }
+                
+                label {
+                    @include star-text-field-title();
+                    overflow: visible;
+                    display: block;
+                    height: 16px;
+
+                    span.textfield-label {
+                        @include star-text-field-title();
+                        display: block;
+                        margin-top: 0px;
+                        color: $leyka-star-color-gray;
+                        text-transform: none;
+                        
+                        span.currency {
+                            @include star-text-field-title();
+                            color: $leyka-star-color-gray;
+                            text-transform: uppercase;
+                            
+                            &:before {
+                                content: "";
+                                display: none;
+                                margin-left: 0;
+                            }
+                        }
+                    }
+                }
+
+                &.empty {
+                    background-color: $leyka-star-color-white;
+                    padding-left: 16px;
+                    padding-top: $leyka-star-base;
+                    
+                    @include for(medium-screens) {
+                        padding-top: $leyka-star-base;
+                        padding-left: 16px;
+                    }
+                    
+                    label {
+                        display: none;
+                    }
+                    
+                    input {
+                        text-align: center;
+                    }
+                }
+    
+                &.selected {
+                    display: block;
+                    border-color: $leyka-star-color-main-second;
+                    background-color: $leyka-star-color-white;
+                    
+                    &.empty {
+                        border-color: $leyka-star-color-main-second;
+                    }
+                    
+                    label {
+                        .textfield-label {
+                            @include star-text-field-title();
+                            color: $leyka-star-color-gray;
+                        }
+                    }
+                }
+                
+                &.focus {
+                    background-color: $leyka-star-color-white;
+                    border-color: $leyka-star-color-main-second;
+                    
+                    label {
+                        span.textfield-label {
+                            @include star-text-field-title();
+                            color: $leyka-star-color-gray;
+                            margin-top: 0px;
+                        }
+                    }
+                }
+                
+                input {
+                    @include star-text-input();
+                    color: $leyka-star-color-gray-dark;
+                    border-bottom: none;
+                    width: 100%;
+                    text-align: left;
+                    height: 20px;
+                    padding: 0px;
+                }
+            }
+        }
+    }    
     
     // payment methods
     &.payments-grid {
@@ -83,6 +190,7 @@
                         display: block;
                         border-radius: none;
                         background-color: transparent;
+                        width: auto;
                     }
                 }
                 
@@ -97,8 +205,12 @@
                 &.selected {
                     @include for(medium-screens) {
                         background-color: $leyka-star-color-main-third;
-                        border-color: $leyka-star-color-main;
+                        border-color: $leyka-star-color-main-second;
                     }
+                }
+                
+                &.disabled {
+                    display: none;
                 }
                 
             }
@@ -155,7 +267,7 @@
                         &:after {
                             content: "*";
                             display: inline-block;
-                            color: $leyka-star-color-error;
+                            color: $leyka-star-color-main;
                             margin-left: 3px;
                         }
                     }
@@ -165,6 +277,7 @@
             label {
                 @include star-text-field-title();
                 overflow: visible;
+                height: 16px;
 
                 span.donor__textfield-label {
                     @include star-text-input();
@@ -206,24 +319,34 @@
             }
             
             &.valid .leyka-star-field-frame {
-                background-image: url(../../img/star-icon-ok.svg);
+                //background-image: url(../../img/star-icon-ok.svg);
+                background-image: none;
+                background-color: $leyka-star-color-main-third;
+                border-color: $leyka-star-color-main-second;
                 
                 label {
                     .donor__textfield-label {
-                        color: $leyka-star-color-main;
+                        &:after {
+                            display: none;
+                        }
                     }
                 }
             }
 
             &.invalid .leyka-star-field-frame {
                 background-image: url(../../img/star-icon-error.svg);
-                background-color: $leyka-star-color-error-third;
+                background-color: $leyka-star-color-white;
                 
                 label {
                     color: $leyka-star-color-error;
                     
                     span.donor__textfield-label {
                         color: $leyka-star-color-error;
+                        
+                        &:after {
+                            display: inline-block;
+                            color: $leyka-star-color-error;
+                        }
                     }
                 }
                 
@@ -233,11 +356,12 @@
             }
             
             &.focus .leyka-star-field-frame {
-                background-color: $leyka-star-color-main-third;
+                background-color: $leyka-star-color-white;
+                border-color: $leyka-star-color-main-second;
                 
                 label {
                     span.donor__textfield-label {
-                        color: $leyka-star-color-main;
+                        color: $leyka-star-color-gray;
                     }
                 }
                 
@@ -251,7 +375,7 @@
             }
             
             input {
-                height: 16px;
+                height: 20px;
                 padding: 0px;
             }
             
@@ -290,6 +414,9 @@
         
         input {
             @include leyka-star-btn();
+            &:disabled {
+                background-color: $leyka-star-color-main-inactive;
+            }
         }
     }
 }

@@ -108,7 +108,7 @@ $leyka_screen = !empty($_GET['leyka-screen']) ? $_GET['leyka-screen'] : '';
 <?php } else { ?>
 <div class="leyka-inline-campaign-form leyka-payment-form leyka-tpl-star-form" data-template="star">
     
-    <form id="<?php echo leyka_pf_get_form_id($campaign->id).'-star-form';?>" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
+    <form id="<?php echo leyka_pf_get_form_id($campaign->id).'-star-form';?>" class="leyka-pm-form" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
     
         <div class="section section--periodicity">
         
@@ -145,17 +145,19 @@ $leyka_screen = !empty($_GET['leyka-screen']) ? $_GET['leyka-screen'] : '';
                         <?php }?>
         
                         <?php if($template_data['amount_mode'] != 'fixed') {?>
-                            <div class="swiper-item">
-                                <input type="number" title="Введите вашу сумму" placeholder="Введите вашу сумму" data-desktop-ph="Другая сумма" data-mobile-ph="Введите вашу сумму" name="leyka_donation_amount" class="donate_amount_flex" value="<?php echo esc_attr($template_data['amount_default']);?>" min="1" max="999999">
-                                <span class="currency"><?php echo $template_data['currency_label'];?></span>
+                            <div class="swiper-item flex-amount-item">
+                                <label for="leyka-flex-amount">
+                                    <span class="textfield-label">Другая сумма, <span class="currency"><?php echo $template_data['currency_label'];?></span></span>
+                                </label>
+                                <input type="number" title="Введите вашу сумму" placeholder="Введите вашу сумму" data-desktop-ph="Другая сумма" data-mobile-ph="Введите вашу сумму" name="donate_amount_flex" class="donate_amount_flex" value="<?php echo esc_attr($template_data['amount_default']);?>" min="1" max="999999">
                             </div>
                         <?php }?>
                     </div>
+                    <input type="hidden" class="leyka_donation_amount" name="leyka_donation_amount" value="">
                 </div>
                 
                 <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $template_data['currency_label'];?>" value="<?php echo leyka_options()->opt('main_currency');?>">
                 <input type="hidden" name="leyka_recurring" class="is-recurring-chosen" value="0">
-    
             </div>
     
         </div>
@@ -240,13 +242,11 @@ $leyka_screen = !empty($_GET['leyka-screen']) ? $_GET['leyka-screen'] : '';
                     </div>
                 </div>
 
-                <div class="leyka-star-compact-fields">
-                    
                 <?php $field_id = 'leyka-'.wp_rand();?>
                 <div class="donor__textfield donor__textfield--name required">
                     <div class="leyka-star-field-frame">
                         <label for="<?php echo $field_id;?>">
-                            <span class="donor__textfield-label leyka_donor_name-label"><?php _e('Your name', 'leyka');?></span>
+                            <span class="donor__textfield-label leyka_donor_name-label">Имя и фамилия</span>
                         </label>
                         <input id="<?php echo $field_id;?>" type="text" name="leyka_donor_name" value="" autocomplete="off">
                     </div>
@@ -255,23 +255,6 @@ $leyka_screen = !empty($_GET['leyka-screen']) ? $_GET['leyka-screen'] : '';
                             <?php _e('Enter your name', 'leyka');?>
                         </span>
                     </div>
-                </div>
-
-                <?php $field_id = 'leyka-'.wp_rand();?>
-                <div class="donor__textfield donor__textfield--name required">
-                    <div class="leyka-star-field-frame">
-                        <label for="<?php echo $field_id;?>">
-                            <span class="donor__textfield-label leyka_donor_name-label">Фамилия</span>
-                        </label>
-                        <input id="<?php echo $field_id;?>" type="text" name="leyka_donor_name" value="" autocomplete="off">
-                    </div>
-                    <div class="leyka-star-field-error-frame">
-                        <span class="donor__textfield-error leyka_donor_name-error">
-                            Введите фамилию
-                        </span>
-                    </div>
-                </div>
-                
                 </div>
 
                 <?php if(leyka_options()->opt_template('show_donation_comment_field')) { $field_id = 'leyka-'.wp_rand();?>
@@ -324,7 +307,7 @@ $leyka_screen = !empty($_GET['leyka-screen']) ? $_GET['leyka-screen'] : '';
                 <?php }?>
 
                 <div class="donor__submit">
-                    <?php echo apply_filters('leyka_revo_template_final_submit', '<input type="submit" class="leyka-default-submit" value="'.leyka_options()->opt_template('donation_submit_text').'">');?>
+                    <?php echo apply_filters('leyka_revo_template_final_submit', '<input type="submit" disabled="disabled" class="leyka-default-submit" value="'.leyka_options()->opt_template('donation_submit_text').'">');?>
                 </div>
 
             </div>

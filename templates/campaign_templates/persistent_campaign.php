@@ -24,7 +24,7 @@
 
 		<header id="masthead" class="leyka-campaign-header">
             <a href="#" class="leyka-campaign-logo"></a>
-            <h1>Помогите изданию оставаться независымым источником информации<?php #echo get_the_title();?></h1>
+            <h1><?php echo get_the_title();?></h1>
         </header><!-- #masthead -->
 
 	<div id="content" class="site-content leyka-campaign-content">
