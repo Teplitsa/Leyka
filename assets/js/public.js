@@ -1546,11 +1546,16 @@ jQuery(document).ready(function($){
     function swipeList($swiper, $activeItem) {
         
         var $list = $swiper.find('.swiper-list');
+        
+        console.log($list.width());
+        console.log($swiper.width());
+        
         var dif = $list.width() - $swiper.width();
         
         if(dif <= 0) {
             $list.width($swiper.width());
             $list.css('left', 0);
+            console.log($list.width());
             return;
         }
         
@@ -1574,11 +1579,15 @@ jQuery(document).ready(function($){
     function toggleSwiperArrows($swiper) {
         var $list = $swiper.find('.swiper-list');
         
+        console.log($list.width());
+        console.log($swiper.width());
+        
         if($list.width() <= $swiper.width()) {
             $swiper.removeClass('show-left-arrow');
             $swiper.removeClass('show-right-arrow');
             $list.width($swiper.width());
             $list.css('left', 0);
+            console.log($list.width());
             return;
         }
         

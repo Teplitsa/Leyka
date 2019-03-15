@@ -191,13 +191,17 @@
                     display: block;
                     
                     .payment-opt__icon {
-                        height: 40px;
-                        margin-top: -9px;
+                        height: 30px;
+                        margin-top: -6px;
                         overflow: hidden;
                         display: block;
-                        border-radius: none;
+                        border-radius: unset;
                         background-color: transparent;
                         width: auto;
+                        
+                        img.pm-icon {
+                            max-height: 40px;
+                        }
                     }
                 }
                 
@@ -206,7 +210,8 @@
                     text-transform: none;
                     color: $leyka-star-color-gray;
                     display: block;
-                    margin-top: -11px;
+                    margin-top: 2px;
+                    z-index: 20;
                 }
                 
                 &.selected {
@@ -719,13 +724,18 @@ div[id*="leyka-pf-"].leyka-pf-star {
     .leyka-submit-errors {
         border-radius: 4px;
         margin: $leyka-star-base 0px 0px 0px;
-        //color: $leyka-star-color-error;
-        //border: 2px solid $leyka-star-color-error;
-        //background-color: transparent;
     }
 }
 
 // kandinsky optimization
+div[id*="leyka-pf-"].leyka-pf-star {
+    &.card-2col {
+        margin-left: 0px !important;
+        margin-right: 0px !important;
+    }
+    
+}
+
 .single-leyka_campaign .main-content.leyka-campaign {
     overflow: visible;
 }
