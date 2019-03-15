@@ -5,20 +5,18 @@
 (function($){
 
     function init() {
-		
 		bindEvents();
-		
     }
 
     /* event handlers */
     function bindEvents() {
-
         bindModeEvents();
         bindAgreeEvents();
         bindSwiperEvents();
 		bindAmountEvents();
         bindDonorDataEvents();
         bindSubmitPaymentFormEvent();
+        bindPMEvents();
     }
 	
 	function resize(e, el, k) {
@@ -160,6 +158,10 @@
     }
     
     function setupPeriodicity($activePeriodicityTab) {
+        if(!$activePeriodicityTab.length) {
+            return;
+        }
+        
         var $form = $activePeriodicityTab.closest('.leyka-tpl-star-form');
         if($activePeriodicityTab.data('periodicity') == 'monthly') {
             $form.find('input.is-recurring-chosen').val("1");
@@ -195,9 +197,10 @@
     }
 
     function bindSwiperEvents() {
-        $('.leyka-tpl-star-form .star-swiper').on('click', '.swiper-item', function(e){
+        $('.leyka-tpl-star-form .star-swiper').on('click', '.swiper-item', function(){
             $(this).siblings('.swiper-item.selected').removeClass('selected');
             $(this).addClass('selected');
+            $(this).find('input[type=radio]').prop('checked', true).change();
             
             var $swiper = $(this).closest('.star-swiper');
             swipeList($swiper, $(this));
@@ -211,6 +214,8 @@
             setAmountInputValue($(this).closest('.leyka-tpl-star-form'), getAmountValueFromControl($(this)));
             checkFormFillCompletion($swiper.closest('form.leyka-pm-form'));
         });
+        
+        $('.leyka-tpl-star-form .star-swiper .swiper-item.selected').find('input[type=radio]').prop('checked', true).change();
             
         $('.leyka-tpl-star-form .star-swiper').on('click', 'a.swiper-arrow', function(e){
 			e.preventDefault();
@@ -238,6 +243,7 @@
 			if($nextItem.length) {
 				$activeItem.removeClass('selected');
 				$nextItem.addClass('selected');
+                $nextItem.find('input[type=radio]').prop('checked', true).change();
 			}
             
             swipeList($swiper, $nextItem);
@@ -278,7 +284,11 @@
         else {
             left = $swiper.width() / 2 - ($activeItem.offset().left - $list.offset().left) - $activeItem.width() / 2;
         }
-        $list.css('left', left);
+        
+        $list.animate({
+            'left': left
+        });
+        //$list.css('left', left);
     }
     
     function toggleSwiperArrows($swiper) {
@@ -380,14 +390,11 @@
 
 				var $pm_selected = $_form.find('input[name="leyka_payment_method"]:checked');
                 
-                console.log($pm_selected);
-
                 if($pm_selected.data('processing') !== 'default') {
 
 					if($pm_selected.data('processing') !== 'custom-process-submit-event') {
 						e.stopPropagation();
 					}
-                    console.log('return nothing');
                     return;
 
                 }
@@ -405,7 +412,6 @@
                 	data['without_form_submission'] = true;
 				}
 
-                console.log('open redirect...');
                 $redirect_section.addClass('leyka-pf__redirect--open');
 
                 // Get gateway redirection form and submit it manually:
@@ -478,6 +484,7 @@
     }
     
     function isFormFill($_form) {
+        
 		var is_filled = true,
 			email = $.trim($_form.find('.donor__textfield--email input').val()),
 			$amount_field = $_form.find('.amount__figure input.leyka_donation_amount'),
@@ -504,11 +511,34 @@
             is_filled = false;
 		}
         
-        if(!parseInt($_form.find('input[name=leyka_donation_amount]').val())) {
-            is_filled = false;
-        }
-        
         return is_filled;
+    }
+    
+    function bindPMEvents() {
+        $('.leyka-tpl-star-form form.leyka-pm-form').each(function(){
+            var $_form = $(this);
+            toggleStaticPMForm($_form);
+            
+            $(this).find('input.payment-opt__radio').change(function(){
+                console.log('pm change...');
+                toggleStaticPMForm($_form);
+            });
+        });
+    }
+    
+    function toggleStaticPMForm($_form) {
+        var $pmRadio = $_form.find('.payment-opt.swiper-item.selected input.payment-opt__radio');
+        console.log($pmRadio.val());
+        console.log($pmRadio.data('processing'));
+        
+        if($pmRadio.data('processing') == 'static') {
+            $_form.find('.section--static.' + $pmRadio.val()).show();
+            $_form.find('.section--person').hide();
+        }
+        else {
+            $_form.find('.section--static').hide();
+            $_form.find('.section--person').show();
+        }
     }
 
 	init();

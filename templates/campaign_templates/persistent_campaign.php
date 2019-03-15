@@ -8,19 +8,27 @@
  * @since 1.0.0
  */
 
+$campaign_id = null;
+if( is_singular(Leyka_Campaign_Management::$post_type) ) {
+    $campaign_id = get_the_ID();
+}
+elseif(is_page(leyka_options()->opt('success_page')) || is_page(leyka_options()->opt('failure_page'))) {
+    $campaign_id = leyka_campaign_id_from_query_arg();
+}
+ 
 $cover_url = null;
-$cover_att_id = get_post_meta(get_the_ID() , 'campaign_cover', true);
+$cover_att_id = get_post_meta($campaign_id, 'campaign_cover', true);
 if($cover_att_id) {
     $cover_url = wp_get_attachment_url( $cover_att_id );
 }
 
 $logo_url = null;
-$logo_att_id = get_post_meta(get_the_ID() , 'campaign_logo', true);
+$logo_att_id = get_post_meta($campaign_id, 'campaign_logo', true);
 if($logo_att_id) {
     $logo_url = wp_get_attachment_url( $logo_att_id );
 }
 
-$custom_css = get_post_meta(get_the_ID() , 'campaign_css', true);
+$custom_css = get_post_meta($campaign_id, 'campaign_css', true);
 ?>
 
 <!doctype html>
@@ -91,24 +99,4 @@ $custom_css = get_post_meta(get_the_ID() , 'campaign_css', true);
 
 	</div><!-- #content -->
 
-	<footer class="site-footer leyka-campaign-footer">
-		<div class="site-info">
-            <div class="leyka-footer-links">
-                <a href="#">О проекте</a>
-                <a href="#">Реклама</a>
-            </div>
-            <div class="leyka-footer-info">
-                <p>Свидетельство о регистрации СМИ ЭЛ № ФС77-64494 от 31.12.2015 года.</p>
-                <p>Выдано Федеральной службой по надзору в сфере связи, информационных технологий и массовых коммуникаций.</p>
-                <p>Учредитель ЗАО "Проектное финансирование"</p>
-                <p><b>18+</b></p>
-            </div>
-		</div><!-- .site-info -->
-	</footer><!-- #colophon -->
-
-</div><!-- #page -->
-
-<?php wp_footer(); ?>
-
-</body>
-</html>
+<?php get_footer(); ?>

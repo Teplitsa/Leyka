@@ -382,6 +382,7 @@ function leyka_get_campaign_success_page_url($campaign_id) {
     $leyla_template_data = leyka_get_current_template_data($campaign_id);
     if(!empty($leyla_template_data['id'])) {
         $url = leyka_template_to_query_arg( $leyla_template_data['id'], $url );
+        $url = add_query_arg('leyka_cid', $campaign_id, $url);
     }
     
     return $url;
@@ -461,6 +462,7 @@ function leyka_get_campaign_failure_page_url($campaign_id) {
     $leyla_template_data = leyka_get_current_template_data($campaign_id);
     if(!empty($leyla_template_data['id'])) {
         $url = leyka_template_to_query_arg( $leyla_template_data['id'], $url );
+        $url = add_query_arg('leyka_cid', $campaign_id, $url);
     }
     
     return $url;
@@ -1838,6 +1840,10 @@ function leyka_template_from_query_arg() {
     return empty($_GET['leyka_ctpl']) ? null : trim($_GET['leyka_ctpl']);
 }
 
+function leyka_campaign_id_from_query_arg() {
+    return empty($_GET['leyka_cid']) ? null : trim($_GET['leyka_cid']);
+}
+
 function leyka_get_upload_max_filesize() {
 
     if(defined('WP_MEMORY_LIMIT')) {
@@ -1852,19 +1858,24 @@ function leyka_get_upload_max_filesize() {
 
 function leyka_use_leyka_campaign_template($template) {
     
-    if( !is_singular(Leyka_Campaign_Management::$post_type) ) {
-        return $template;
+    $campaign_id = null;
+    if( is_singular(Leyka_Campaign_Management::$post_type) ) {
+        $campaign_id = get_post()->ID;
+    }
+    elseif(is_page(leyka_options()->opt('success_page')) || is_page(leyka_options()->opt('failure_page'))) {
+        $campaign_id = leyka_campaign_id_from_query_arg();
     }
     
-    $campaign_id = get_post()->ID;
-    $campaign = leyka_get_validated_campaign($campaign_id);
-    
-    $campaign_type = get_post_meta($campaign_id, 'campaign_type', true);
-    
-    if($campaign && $campaign_type == 'persistent' && $campaign->template == 'star') {
-        $template = LEYKA_PLUGIN_DIR . 'templates/campaign_templates/persistent_campaign.php';
+    if($campaign_id) {
+        $campaign = leyka_get_validated_campaign($campaign_id);
+        $campaign_type = get_post_meta($campaign_id, 'campaign_type', true);
+        
+        if($campaign && $campaign_type == 'persistent' && $campaign->template == 'star') {
+            $template = LEYKA_PLUGIN_DIR . 'templates/campaign_templates/persistent_campaign.php';
+        }
     }
     
     return $template;
 }
 add_filter('single_template', 'leyka_use_leyka_campaign_template', 10, 1);
+add_filter('page_template', 'leyka_use_leyka_campaign_template', 10, 1);

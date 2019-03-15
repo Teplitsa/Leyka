@@ -9,115 +9,33 @@
  **/
 
 $template_data = Leyka_Star_Template_Controller::getInstance()->getTemplateData($campaign);
-$leyka_screen = !empty($_GET['leyka-screen']) ? $_GET['leyka-screen'] : '';
+
+$is_recurring_campaign = false;
+if(count($campaign->donations_types_available) > 1) {
+    if('recurring' == $campaign->donations_type_default) {
+        $is_recurring_campaign = true;
+    }
+}
+elseif(count($campaign->donations_types_available) == 1) {
+    if(in_array('recurring', $campaign->donations_types_available)) {
+        $is_recurring_campaign = true;
+    }
+}
+
 ?>
 
-<?php if($leyka_screen == 'cancel-subscription') { ?>
-<form class="leyka-screen-form">
-        
-        <h2>Мы были бы вам благодарны, если вы поделитесь почему вы решили отменить подписку?</h2>
-        
-        <div class="leyka-cancel-subscription-reason">
-            <span>
-                <input type="checkbox" name="leyka_cancel_subscription_reason" id="leyka_cancel_subscription_reason_uncomfortable_pm" class="required" value="uncomfortable_pm">
-                <label for="leyka_cancel_subscription_reason_uncomfortable_pm">Неудобный способ оплаты</label>
-            </span>
-            <span>
-                <input type="checkbox" name="leyka_cancel_subscription_reason" id="leyka_cancel_subscription_reason_too_much" class="required" value="too_much">
-                <label for="leyka_cancel_subscription_reason_too_much">Слишком большая сумма пожертвования</label>
-            </span>
-            <span>
-                <input type="checkbox" name="leyka_cancel_subscription_reason" id="leyka_cancel_subscription_reason_not_match" class="required" value="not_match">
-                <label for="leyka_cancel_subscription_reason_not_match">Издание не отражает мои интересы</label>
-            </span>
-            <span>
-                <input type="checkbox" name="leyka_cancel_subscription_reason" id="leyka_cancel_subscription_reason_better_use" class="required" value="better_use">
-                <label for="leyka_cancel_subscription_reason_better_use">Нашел лучшее применение деньгам</label>
-            </span>
-            <span>
-                <input type="checkbox" name="leyka_cancel_subscription_reason" id="leyka_cancel_subscription_reason_other" class="required" value="other">
-                <label for="leyka_cancel_subscription_reason_other">Другая причина</label>
-            </span>
-        </div>
-    
-        <div class="leyka-star-submit">
-            <input type="submit" class="leyka-star-btn" value="Отключить">
-            <input type="submit" class="leyka-star-btn btn-secondary" value="Не отключать">
-        </div>
-        
-    </form>
-    
-<?php } elseif($leyka_screen == 'thankyou') { ?>
-
-    <form class="leyka-screen-form">
-        
-        <h2>Спасибо за ваше пожертвование!</h2>
-        
-        <p>Мы будем рады небольшой, но ежемесячной помощи, это дает нам уверенность в завтрашнем дне и возможность планировать нашу деятельность.</p>
-    
-        <div class="leyka-star-submit">
-            <a href="#" class="leyka-star-btn">На главную</a>
-        </div>
-        
-    </form>
-    
-<?php } elseif($leyka_screen == 'history') { ?>
-
-    <form class="leyka-screen-form">
-        
-        <h2>История пожертвований</h2>
-        
-        <p>Мы благодарны вам за оказываемую поддержку!</p>
-        
-        <div class="leyka-star-history">
-            <div class="item break">
-                <h2>Отключение</h2>
-                <span class="date">12.01.2019</span>
-                <p>«Помогите изданию оставаться независимым источником информации»</p>
-            </div>
-            <div class="item no-pay">
-                <h2>300 Р.</h2>
-                <span class="date">12.01.2019</span>
-                <p>«Помогите изданию оставаться независимым источником информации»</p>
-            </div>
-            <div class="item error">
-                <h2>300 Р.</h2>
-                <span class="date">12.01.2019</span>
-                <p>«Помогите изданию оставаться независимым источником информации»</p>
-            </div>
-            <div class="item pay">
-                <h2>300 Р.</h2>
-                <span class="date">12.01.2019</span>
-                <p>«Помогите изданию оставаться независимым источником информации»</p>
-            </div>
-            <div class="item break">
-                <h2>Отключение</h2>
-                <span class="date">12.01.2019</span>
-                <p>«Помогите изданию оставаться независимым источником информации»</p>
-            </div>
-        </div>
-    
-        <div class="leyka-star-submit">
-            <a href="#" class="leyka-star-btn">Загрузить еще</a>
-        </div>
-        
-        <p class="leyka-we-need-you">Вы всегда можете <a href="?leyka-screen=cancel-subscription">отключить ваше ежемесячное пожертвование.</a><br />Но нам будет без вас трудно.</p>
-        
-    </form>
-
-<?php } else { ?>
 <div id="leyka-pf-<?php echo $campaign->id;?>" class="leyka-pf leyka-pf-star" data-form-id="leyka-pf-<?php echo $campaign->id;?>-star-form">
     
-<div class="leyka-inline-campaign-form leyka-payment-form leyka-tpl-star-form" data-template="star">
+<div class="leyka-payment-form leyka-tpl-star-form" data-template="star">
     
     <form id="<?php echo leyka_pf_get_form_id($campaign->id).'-star-form';?>" class="leyka-pm-form" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
     
         <div class="section section--periodicity">
         
-            <?php if(leyka_is_recurring_supported()) {?>
+            <?php if(leyka_is_recurring_supported() && count($campaign->donations_types_available) > 1) {?>
                 <div class="section__fields periodicity">
-                    <a href="#" class="active" data-periodicity="monthly">Ежемесячно</a>
-                    <a href="#" class="" data-periodicity="once">Разово</a>
+                    <a href="#" class="<?php echo 'recurring' == $campaign->donations_type_default ? 'active' : '';?>" data-periodicity="monthly"><?php esc_html_e('Monthly', 'leyka');?></a>
+                    <a href="#" class="<?php echo 'single' == $campaign->donations_type_default ? 'active' : '';?>" data-periodicity="once"><?php esc_html_e('Once', 'leyka');?></a>
                 </div>
             <?php }?>
             
@@ -149,9 +67,9 @@ $leyka_screen = !empty($_GET['leyka-screen']) ? $_GET['leyka-screen'] : '';
                         <?php if($template_data['amount_mode'] != 'fixed') {?>
                             <div class="swiper-item flex-amount-item">
                                 <label for="leyka-flex-amount">
-                                    <span class="textfield-label">Другая сумма, <span class="currency"><?php echo $template_data['currency_label'];?></span></span>
+                                    <span class="textfield-label"><?php esc_html_e('Another amount', 'leyka');?>, <span class="currency"><?php echo $template_data['currency_label'];?></span></span>
                                 </label>
-                                <input type="number" title="Введите вашу сумму" placeholder="Введите вашу сумму" data-desktop-ph="Другая сумма" data-mobile-ph="Введите вашу сумму" name="donate_amount_flex" class="donate_amount_flex" value="<?php echo esc_attr($template_data['amount_default']);?>" min="1" max="999999">
+                                <input type="number" title="<?php esc_html_e('Enter amount', 'leyka');?>" placeholder="<?php esc_html_e('Enter amount', 'leyka');?>" data-desktop-ph="<?php esc_html_e('Another amount', 'leyka');?>" data-mobile-ph="<?php esc_html_e('Enter amount', 'leyka');?>" name="donate_amount_flex" class="donate_amount_flex" value="<?php echo esc_attr($template_data['amount_default']);?>" min="1" max="999999">
                             </div>
                         <?php }?>
                     </div>
@@ -159,7 +77,7 @@ $leyka_screen = !empty($_GET['leyka-screen']) ? $_GET['leyka-screen'] : '';
                 </div>
                 
                 <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $template_data['currency_label'];?>" value="<?php echo leyka_options()->opt('main_currency');?>">
-                <input type="hidden" name="leyka_recurring" class="is-recurring-chosen" value="0">
+                <input type="hidden" name="leyka_recurring" class="is-recurring-chosen" value="<?php echo $is_recurring_campaign ? "1" : "0";?>">
             </div>
     
         </div>
@@ -205,11 +123,6 @@ $leyka_screen = !empty($_GET['leyka-screen']) ? $_GET['leyka-screen'] : '';
     
             <div class="section__fields static-text">
                 <?php $pm->display_static_data();?>
-
-                <div class="static__complete-donation">
-                    <input class="leyka-js-complete-donation" value="<?php echo leyka_options()->opt_safe('revo_donation_complete_button_text');?>">
-                </div>
-
             </div>
     
         </div>
@@ -241,7 +154,7 @@ $leyka_screen = !empty($_GET['leyka-screen']) ? $_GET['leyka-screen'] : '';
                 <div class="donor__textfield donor__textfield--name required">
                     <div class="leyka-star-field-frame">
                         <label for="<?php echo $field_id;?>">
-                            <span class="donor__textfield-label leyka_donor_name-label">Имя и фамилия</span>
+                            <span class="donor__textfield-label leyka_donor_name-label"><?php _e('First and second name', 'leyka');?></span>
                         </label>
                         <input id="<?php echo $field_id;?>" type="text" name="leyka_donor_name" value="" autocomplete="off">
                     </div>
@@ -294,15 +207,17 @@ $leyka_screen = !empty($_GET['leyka-screen']) ? $_GET['leyka-screen'] : '';
 
                     <?php }?>
                     </span>
-                    <div class="donor__oferta-error leyka_agree-error leyka_agree_pd-error">
-                        <?php _e('You should accept Terms of Service to donate', 'leyka');?>
+                    <div class="leyka-star-field-error-frame">
+                        <div class="donor__oferta-error leyka_agree-error leyka_agree_pd-error">
+                            <?php _e('You should accept Terms of Service to donate', 'leyka');?>
+                        </div>
                     </div>
                     <?php }?>
                 </div>
                 <?php }?>
 
                 <div class="donor__submit">
-                    <?php echo apply_filters('leyka_revo_template_final_submit', '<input type="submit" disabled="disabled" class="leyka-default-submit" value="'.leyka_options()->opt_template('donation_submit_text').'">');?>
+                    <?php echo apply_filters('leyka_star_template_final_submit', '<input type="submit" disabled="disabled" class="leyka-default-submit" value="'.leyka_options()->opt_template('donation_submit_text').'">');?>
                 </div>
 
             </div>
@@ -339,6 +254,22 @@ $leyka_screen = !empty($_GET['leyka-screen']) ? $_GET['leyka-screen'] : '';
 
 </div>
 
+<div id="leyka-submit-errors" class="leyka-submit-errors" style="display:none">
 </div>
 
-<?php } ?>
+<div class="leyka-pf__redirect">
+    <div class="waiting">
+        <div class="waiting__card">
+            <div class="loading">
+                <div class="spinner">
+                    <div class="bounce1"></div>
+                    <div class="bounce2"></div>
+                    <div class="bounce3"></div>
+                </div>
+            </div>
+            <div class="waiting__card-text">Перенаправление на безопасную страницу платежа...</div>
+        </div>
+    </div>
+</div>
+
+</div>

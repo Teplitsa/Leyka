@@ -68,7 +68,7 @@
             color: $leyka-star-color-gray-dark;
             margin: 0px;
             padding: 0px $leyka-star-base $leyka-star-base $leyka-star-base;
-            width: 100%;
+            width: 100% !important;
             max-width: unset;
             
             @include for(medium-screens) {

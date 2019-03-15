@@ -160,6 +160,7 @@
                 }
                 
                 input {
+                    @include star-clean-input();
                     @include star-text-input();
                     color: $leyka-star-color-gray-dark;
                     border-bottom: none;
@@ -191,7 +192,7 @@
                     
                     .payment-opt__icon {
                         height: 40px;
-                        margin-top: -12px;
+                        margin-top: -9px;
                         overflow: hidden;
                         display: block;
                         border-radius: none;
@@ -205,7 +206,7 @@
                     text-transform: none;
                     color: $leyka-star-color-gray;
                     display: block;
-                    margin-top: -5px;
+                    margin-top: -11px;
                 }
                 
                 &.selected {
@@ -374,6 +375,7 @@
             }
             
             input, textarea {
+                @include star-clean-input();
                 @include star-text-input();
                 color: $leyka-star-color-gray-dark;
                 border-bottom: none;
@@ -401,6 +403,11 @@
 
 		@include leyka-star-checkbox();
 		
+        .leyka-star-field-error-frame {
+            min-height: 24px;
+            height: auto;
+        }
+            
 		.donor__oferta-error {
 			visibility: hidden;
 			@include input-label();
@@ -558,7 +565,8 @@
     
 }
 
-.leyka-screen-thankyou .leyka-pf-star .leyka-screen-form {
+.leyka-screen-thankyou .leyka-pf-star .leyka-screen-form,
+.leyka-pf-star .leyka-screen-form.leyka-screen-thankyou {
     h2 {
         @include star-h2();
         margin-bottom: 1.5 * $leyka-star-base;
@@ -577,11 +585,11 @@
         
         .leyka-star-btn {
             @include leyka-star-single-link();
-            border-bottom: 1px dashed $leyka-star-color-main;
-            
+            border-bottom: 1px solid transparent;
+
             &:hover {
                 text-decoration: none;
-                border-bottom: 1px solid transparent;
+                border-bottom: 1px solid $leyka-star-color-main;
             }
         }
     }
@@ -707,6 +715,16 @@
     }
 }
 
+div[id*="leyka-pf-"].leyka-pf-star {
+    .leyka-submit-errors {
+        border-radius: 4px;
+        margin: $leyka-star-base 0px 0px 0px;
+        //color: $leyka-star-color-error;
+        //border: 2px solid $leyka-star-color-error;
+        //background-color: transparent;
+    }
+}
+
 // kandinsky optimization
 .single-leyka_campaign .main-content.leyka-campaign {
     overflow: visible;
@@ -716,5 +734,16 @@
     a:link {
         -webkit-tap-highlight-color: unset;
         -webkit-tap-highlight-color : unset; 
+    }
+}
+
+.section--static {
+    margin-top: $leyka-star-base;
+    
+    .static-text {
+        p {
+            @include leyka-pc-text-content();
+            margin-bottom: $leyka-star-base;
+        }
     }
 }

@@ -177,10 +177,17 @@ class Leyka extends Leyka_Singleton {
                     && leyka_options()->opt_template('show_success_widget_on_success')
                     && is_main_query()
                 ) {
+                    
+                    $form_template = leyka_template_from_query_arg();
+                    $form_template_suffix = $form_template === 'star' ? '-' . $form_template : '';
 
                     ob_start();
-                    include(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-success-widget.php');
+                    include(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-success-widget'.$form_template_suffix.'.php');
                     $content = ob_get_clean();
+                    
+                    if($form_template === 'star') {
+                        $content .= get_the_content();
+                    }
 
                 }
 
@@ -1725,3 +1732,5 @@ __('rebill', 'leyka');
 __('correction', 'leyka');
 __('The donations management system for your WP site', 'leyka');
 __('Teplitsa of Social Technologies', 'leyka');
+__('Star', 'leyka');
+__('A modern and lightweight form template', 'leyka');

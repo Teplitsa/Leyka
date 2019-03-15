@@ -171,7 +171,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <h3 class="field-title">
                 <?php _e('Campaign type', 'leyka');?>
-                <span class="field-q">
+                <span class="field-q" style="display: none;">
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
                     <span class="field-q-tooltip">
                         <?php esc_html_e('Some campaign type parameter description text.', 'leyka');?>
@@ -193,7 +193,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <h3 class="field-title">
                 <?php _e('Donations types available', 'leyka');?>
-                <span class="field-q">
+                <span class="field-q" style="display: none;">
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
                     <span class="field-q-tooltip">
                         <?php esc_html_e('Some donations types parameter description text.', 'leyka');?>
@@ -226,10 +226,10 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <div class="field-wrapper">
                 <label class="field-label">
-                    <input type="radio" name="donations_type_default" value="recurring"><?php echo _x('Recurring', 'In single, like "recurring donation"', 'leyka');?>
+                    <input type="radio" name="donations_type_default" value="recurring" <?php echo 'recurring' == $campaign->donations_type_default ? 'checked="checked"' : '';?>><?php echo _x('Recurring', 'In single, like "recurring donation"', 'leyka');?>
                 </label>
                 <label class="field-label">
-                    <input type="radio" name="donations_type_default" value="single" checked="checked"><?php echo _x('Single', 'In single, like "single donation"', 'leyka');?>
+                    <input type="radio" name="donations_type_default" value="single" <?php echo 'single' == $campaign->donations_type_default ? 'checked="checked"' : '';?>><?php echo _x('Single', 'In single, like "single donation"', 'leyka');?>
                 </label>
             </div>
 
@@ -239,7 +239,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <h3 class="field-title">
                 <label for="campaign-form-template-field"><?php _e('Template for payment form', 'leyka');?></label>
-                <span class="field-q">
+                <span class="field-q" style="display: none;">
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
                     <span class="field-q-tooltip">
                         <?php esc_html_e('Some text here.', 'leyka');?>
@@ -269,7 +269,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                     <?php }?>
 
                 </select>
-                <div class="form-template-demo">
+                <div class="form-template-demo" style="display: none;">
                 <?php foreach($templates as $template) {
 
                     $template_id = esc_attr($template['id']);?>
@@ -299,7 +299,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <h3 class="field-title">
                 <label for="payment_title"><?php _e('Payment purpose', 'leyka');?></label>
-                <span class="field-q">
+                <span class="field-q" style="display: none;">
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
                     <span class="field-q-tooltip">
                         <?php esc_html_e('Some text here.', 'leyka');?>
@@ -351,7 +351,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <h3 class="field-title">
                 <?php _e('The campaign decoration images', 'leyka');?>
-                <span class="field-q">
+                <span class="field-q" style="display: none;">
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
                     <span class="field-q-tooltip">
                         <?php esc_html_e('Some text here.', 'leyka');?>
@@ -639,7 +639,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             update_post_meta($campaign->id, $key, $value);
         }
 
-//        die('<pre>'.print_r($meta, 1).'</pre>');
+        //die('<pre>'.print_r($meta, 1).'</pre>');
 	}
 
 	/** Campaigns list table columns: */
@@ -907,7 +907,7 @@ class Leyka_Campaign {
                     && $this->_campaign_meta['donations_type_default']
                     && in_array($this->_campaign_meta['donations_type_default'], array_keys(leyka()->getDonationTypes())) ?
                         $this->_campaign_meta['donations_type_default'] :
-                        ($this->donations_types_available ? reset($this->donations_types_available) : 'single');
+                        ($this->donations_types_available ? $this->donations_types_available : 'single');
             case 'template':
             case 'campaign_template':
                 return $this->_campaign_meta['campaign_template'] === 'default' ?

@@ -24,6 +24,20 @@
     }
 }
 
+@mixin star-clean-input() {
+    text-decoration: none;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    
+    &:active, &:focus, &:hover {
+        text-decoration: none;
+        border: none;
+        box-shadow: none;
+        outline: none;
+    }
+}
+
 @mixin star-swiper {
     @include star-control-frame();
     position: relative;
