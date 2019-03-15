@@ -170,7 +170,9 @@
             isRecurring = parseInt($_form.find('input.is-recurring-chosen').val()) == 1;
         }
         
+        $_form.find('.section__fields.periodicity a').removeClass('active');
         if(isRecurring) {
+            $_form.find('.section__fields.periodicity a[data-periodicity=monthly]').addClass('active');
             $_form.find('input.is-recurring-chosen').val("1");
             $_form.find('.payments-grid .swiper-item').each(function(i, el){
                 if($(el).find('input[data-has-recurring=0]').length > 0) {
@@ -180,6 +182,7 @@
             });
         }
         else {
+            $_form.find('.section__fields.periodicity a[data-periodicity=once]').addClass('active');
             $_form.find('input.is-recurring-chosen').val("0");
             $_form.find('.payments-grid .swiper-item').each(function(i, el){
                 if($(el).find('input[data-has-recurring=0]').length > 0) {
