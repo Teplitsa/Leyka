@@ -1226,7 +1226,7 @@ function leyka_modern_template_displayed() {
             $modern_template_displayed = in_array($campaign->template, $modern_templates);
         }
 
-    } else if(get_post() && has_shortcode(get_post()->post_content, 'leyka_inline_campaign')) {
+    } else if(get_post() && (has_shortcode(get_post()->post_content, 'leyka_inline_campaign') || has_shortcode(get_post()->post_content, 'knd_leyka_inline_campaign'))) {
         $modern_template_displayed = true;
     }
 
