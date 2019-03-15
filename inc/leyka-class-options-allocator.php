@@ -275,7 +275,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                         'options' => array('donation_sum_field_type',),
                                     ),
                                     array(
-                                        'title' => __('Enter the text for a submit buttons on a donation forms.', 'leyka'),
+                                        'title' => __('Label of the button to submit a donation form', 'leyka'),
                                         'options' => array('donation_submit_text',),
                                     ),
                                     array(

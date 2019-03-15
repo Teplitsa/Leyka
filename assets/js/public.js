@@ -1320,22 +1320,6 @@ jQuery(document).ready(function($){
             $(el).removeClass('show-ph');
         }
         
-        var newWidth = 0;
-        try {
-            var mel = document.createElement('canvas');
-            var ctx = mel.getContext("2d");
-            ctx.font = $(el).css('font-size') + " " + $(el).css('font-family');
-            newWidth = ctx.measureText(val).width;
-        }
-        catch(ex) {
-            newWidth = (val.length + 1) * k;
-        }
-        
-        if(newWidth < 10) {
-            newWidth = 10;
-        }
-        
-        //$(el).width(newWidth);
         setAmountInputValue($(el).closest('.leyka-tpl-star-form'), $(el).val());
 	}
     
