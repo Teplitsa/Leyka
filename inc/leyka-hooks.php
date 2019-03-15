@@ -75,6 +75,28 @@ function leyka_star_body_classes($classes) {
         $classes[] = 'leyka-screen-' . $_GET['leyka-screen'];
     }
     
+    $campaign_id = null;
+    if( is_singular(Leyka_Campaign_Management::$post_type) ) {
+        $campaign_id = get_post()->ID;
+    }
+    elseif(is_page(leyka_options()->opt('success_page')) || is_page(leyka_options()->opt('failure_page'))) {
+        $campaign_id = leyka_campaign_id_from_query_arg();
+    }
+    
+    if($campaign_id) {
+        $campaign = leyka_get_validated_campaign($campaign_id);
+        $campaign_type = get_post_meta($campaign_id, 'campaign_type', true);
+        
+        if($campaign && $campaign_type == 'persistent' && $campaign->template == 'star') {
+            $pos = array_search('leyka_campaign-template-default', $classes);
+            if($pos !== false) {
+                array_splice($classes, $pos, 1);
+            }
+            
+            $classes[] = 'leyka_campaign-template-persistent';
+        }
+    }
+    
     return $classes;
 }
 add_filter('body_class', 'leyka_star_body_classes');

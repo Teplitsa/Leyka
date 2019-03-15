@@ -211,7 +211,9 @@
                 $(this).addClass('focus').removeClass('empty');
             }
             
-            setAmountInputValue($(this).closest('.leyka-tpl-star-form'), getAmountValueFromControl($(this)));
+            if($swiper.hasClass('amount__figure')) {
+                setAmountInputValue($(this).closest('.leyka-tpl-star-form'), getAmountValueFromControl($(this)));
+            }
             checkFormFillCompletion($swiper.closest('form.leyka-pm-form'));
         });
         
@@ -254,7 +256,9 @@
                 $nextItem.addClass('focus').removeClass('empty');
             }
             
-            setAmountInputValue($nextItem.closest('.leyka-tpl-star-form'), getAmountValueFromControl($nextItem));
+            if($swiper.hasClass('amount__figure')) {
+                setAmountInputValue($nextItem.closest('.leyka-tpl-star-form'), getAmountValueFromControl($nextItem));
+            }
             checkFormFillCompletion($swiper.closest('form.leyka-pm-form'));
         });
         
@@ -267,15 +271,11 @@
         
         var $list = $swiper.find('.swiper-list');
         
-        console.log($list.width());
-        console.log($swiper.width());
-        
         var dif = $list.width() - $swiper.width();
         
         if(dif <= 0) {
             $list.width($swiper.width());
             $list.css('left', 0);
-            console.log($list.width());
             return;
         }
         
@@ -293,21 +293,16 @@
         $list.animate({
             'left': left
         });
-        //$list.css('left', left);
     }
     
     function toggleSwiperArrows($swiper) {
         var $list = $swiper.find('.swiper-list');
-        
-        console.log($list.width());
-        console.log($swiper.width());
         
         if($list.width() <= $swiper.width()) {
             $swiper.removeClass('show-left-arrow');
             $swiper.removeClass('show-right-arrow');
             $list.width($swiper.width());
             $list.css('left', 0);
-            console.log($list.width());
             return;
         }
         
@@ -529,7 +524,6 @@
             toggleStaticPMForm($_form);
             
             $(this).find('input.payment-opt__radio').change(function(){
-                console.log('pm change...');
                 toggleStaticPMForm($_form);
             });
         });
@@ -537,8 +531,6 @@
     
     function toggleStaticPMForm($_form) {
         var $pmRadio = $_form.find('.payment-opt.swiper-item.selected input.payment-opt__radio');
-        console.log($pmRadio.val());
-        console.log($pmRadio.data('processing'));
         
         if($pmRadio.data('processing') == 'static') {
             $_form.find('.section--static.' + $pmRadio.val()).show();

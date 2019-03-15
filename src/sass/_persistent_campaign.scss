@@ -1,5 +1,20 @@
 /** == Persistent campaign page styles (_persistent_campaign.scss) == **/
 
+.leyka_campaign-template-persistent {
+    &:before {
+        display: none;
+    }
+    
+    .site-content.leyka-campaign-content {
+        margin-left: 0px;
+    }
+    
+    .site-footer {
+        margin-left: 0px;
+        width: 100%;
+    }
+}
+
 .leyka-persistant-campaign {
     @include leyka-pc-text();
 }
@@ -62,6 +77,7 @@
     .content-area {
         max-width: 600px;
         width: 100%;
+        margin: 0px;
         
         .entry-content {
             @include leyka-pc-text-content();
