@@ -22,6 +22,8 @@ elseif(count($campaign->donations_types_available) == 1) {
     }
 }
 
+$anotherAmountTitle = count($template_data['amount_variants']) > 0 ? esc_html__('Another amount', 'leyka') : esc_html__('Enter amount', 'leyka');
+
 ?>
 
 <div id="leyka-pf-<?php echo $campaign->id;?>" class="leyka-pf leyka-pf-star" data-form-id="leyka-pf-<?php echo $campaign->id;?>-star-form">
@@ -65,11 +67,11 @@ elseif(count($campaign->donations_types_available) == 1) {
                         <?php }?>
         
                         <?php if($template_data['amount_mode'] != 'fixed') {?>
-                            <div class="swiper-item flex-amount-item">
+                            <div class="swiper-item flex-amount-item <?php if(!count($template_data['amount_variants'])):?>selected<?php endif;?>">
                                 <label for="leyka-flex-amount">
-                                    <span class="textfield-label"><?php esc_html_e('Another amount', 'leyka');?>, <span class="currency"><?php echo $template_data['currency_label'];?></span></span>
+                                    <span class="textfield-label"><?php echo $anotherAmountTitle;?>, <span class="currency"><?php echo $template_data['currency_label'];?></span></span>
                                 </label>
-                                <input type="number" title="<?php esc_html_e('Enter amount', 'leyka');?>" placeholder="<?php esc_html_e('Enter amount', 'leyka');?>" data-desktop-ph="<?php esc_html_e('Another amount', 'leyka');?>" data-mobile-ph="<?php esc_html_e('Enter amount', 'leyka');?>" name="donate_amount_flex" class="donate_amount_flex" value="<?php echo esc_attr($template_data['amount_default']);?>" min="1" max="999999">
+                                <input type="number" title="<?php esc_html_e('Enter your amount', 'leyka');?>" placeholder="<?php esc_html_e('Enter your amount', 'leyka');?>" data-desktop-ph="<?php echo $anotherAmountTitle;?>" data-mobile-ph="<?php esc_html_e('Enter your amount', 'leyka');?>" name="donate_amount_flex" class="donate_amount_flex" value="<?php echo esc_attr($template_data['amount_default']);?>" min="1" max="999999">
                             </div>
                         <?php }?>
                     </div>
