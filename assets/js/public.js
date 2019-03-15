@@ -1431,21 +1431,28 @@ jQuery(document).ready(function($){
 			$(this).closest('.section__fields').find('a').removeClass('active');
 			$(this).addClass('active');
             
-            setupPeriodicity($(this));
+            setupPeriodicity($(this).closest('form.leyka-pm-form'));
         });
         
-        setupPeriodicity($('.leyka-tpl-star-form .section__fields.periodicity a.active'));
+        $('.leyka-tpl-star-form form.leyka-pm-form').each(function(){
+            setupPeriodicity($(this));
+        });
     }
     
-    function setupPeriodicity($activePeriodicityTab) {
-        if(!$activePeriodicityTab.length) {
-            return;
+    function setupPeriodicity($_form) {
+        var isRecurring = false;
+        var $activePeriodicityTab = $_form.find('.section__fields.periodicity a.active');
+
+        if($activePeriodicityTab.length) {
+            isRecurring = $activePeriodicityTab.data('periodicity') == 'monthly';
+        }
+        else {
+            isRecurring = parseInt($_form.find('input.is-recurring-chosen').val()) == 1;
         }
         
-        var $form = $activePeriodicityTab.closest('.leyka-tpl-star-form');
-        if($activePeriodicityTab.data('periodicity') == 'monthly') {
-            $form.find('input.is-recurring-chosen').val("1");
-            $form.find('.payments-grid .swiper-item').each(function(i, el){
+        if(isRecurring) {
+            $_form.find('input.is-recurring-chosen').val("1");
+            $_form.find('.payments-grid .swiper-item').each(function(i, el){
                 if($(el).find('input[data-has-recurring=0]').length > 0) {
                     $(el).addClass('disabled').removeClass('selected');
                     $(el).find('input[type=radio]').prop('checked', false);
@@ -1453,15 +1460,15 @@ jQuery(document).ready(function($){
             });
         }
         else {
-            $activePeriodicityTab.closest('.leyka-tpl-star-form').find('input.is-recurring-chosen').val("0");
-            $form.find('.payments-grid .swiper-item').each(function(i, el){
+            $_form.find('input.is-recurring-chosen').val("0");
+            $_form.find('.payments-grid .swiper-item').each(function(i, el){
                 if($(el).find('input[data-has-recurring=0]').length > 0) {
                     $(el).removeClass('disabled');
                 }
             });
         }
         
-        var $swiper = $form.find('.payments-grid .star-swiper');
+        var $swiper = $_form.find('.payments-grid .star-swiper');
         var $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)').first();
         if($activeItem.length == 0) {
             $swiper.find('.swiper-item:not(.disabled)').first().addClass('selected');
