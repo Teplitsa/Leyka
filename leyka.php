@@ -4,7 +4,7 @@
  * Plugin Name: Leyka
  * Plugin URI:  https://leyka.te-st.ru/
  * Description: The donations management system for your WP site
- * Version:     3.0.4
+ * Version:     3.1.0b
  * Author:      Teplitsa of social technologies
  * Author URI:  https://te-st.ru
  * Text Domain: leyka
@@ -38,7 +38,7 @@
 
 // Leyka plugin version:
 if( !defined('LEYKA_VERSION') ) {
-    define('LEYKA_VERSION', '3.0.4');
+    define('LEYKA_VERSION', '3.1.0b');
 }
 
 // Plugin base file:
@@ -73,7 +73,7 @@ if( !defined('LEYKA_SUPPORT_EMAIL') ) {
 
 // Plugin support email:
 if( !defined('LEYKA_DEBUG') ) {
-    define('LEYKA_DEBUG', true);
+    define('LEYKA_DEBUG', false);
 }
 
 if( !defined('LEYKA_USAGE_STATS_DEV_SERVER_URL') ) {
