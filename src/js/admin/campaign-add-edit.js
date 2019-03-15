@@ -90,7 +90,7 @@ jQuery(document).ready(function($){
 
         let $this = $(this);
 
-        $this.siblings('.css-editor-field').text($this.siblings('.css-editor-original-value').val());
+        $this.siblings('.css-editor-field').val($this.siblings('.css-editor-original-value').val());
 
     });
 

@@ -591,6 +591,8 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         if(isset($_REQUEST['donations_type']) && $campaign->donations_types_available != $_REQUEST['donations_type']) {
             $meta['donations_type'] = (array)$_REQUEST['donations_type'];
+        } else if( !isset($_REQUEST['donations_type']) && !$campaign->donations_types_available ) {
+            $meta['donations_type'] = array('single');
         }
 
         if(
@@ -619,11 +621,6 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             $meta['is_finished'] = $_REQUEST['is_finished'];
         }
 
-//        $_REQUEST['ignore_global_template'] = !empty($_REQUEST['ignore_global_template']) ? 1 : 0;
-//        if($_REQUEST['ignore_global_template'] != $campaign->ignore_global_template_settings) {
-//            $meta['ignore_global_template'] = $_REQUEST['ignore_global_template'];
-//        }
-
         if(isset($_REQUEST['campaign_target']) && $_REQUEST['campaign_target'] != $campaign->target) {
 
             $_REQUEST['campaign_target'] = (float)$_REQUEST['campaign_target'];
@@ -639,7 +636,6 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             update_post_meta($campaign->id, $key, $value);
         }
 
-        //die('<pre>'.print_r($meta, 1).'</pre>');
 	}
 
 	/** Campaigns list table columns: */
@@ -812,25 +808,25 @@ class Leyka_Campaign {
             }
             if( !isset($meta['donations_type_default']) ) {
 
-                update_post_meta($this->_id, 'donations_type_default', array());
-                $meta['donations_type_default'] = array();
+                update_post_meta($this->_id, 'donations_type_default', 'single');
+                $meta['donations_type_default'] = array('single');
 
             }
             if( !isset($meta['campaign_css']) ) {
 
-                update_post_meta($this->_id, 'campaign_css', array(''));
+                update_post_meta($this->_id, 'campaign_css', '');
                 $meta['campaign_css'] = array('');
 
             }
             if( !isset($meta['campaign_cover']) ) {
 
-                update_post_meta($this->_id, 'campaign_cover', array());
+                update_post_meta($this->_id, 'campaign_cover', '');
                 $meta['campaign_cover'] = array();
 
             }
             if( !isset($meta['campaign_logo']) ) {
 
-                update_post_meta($this->_id, 'campaign_logo', array());
+                update_post_meta($this->_id, 'campaign_logo', '');
                 $meta['campaign_logo'] = array();
 
             }
