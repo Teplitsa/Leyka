@@ -42,12 +42,12 @@ if( !defined('LEYKA_VERSION') ) {
 }
 
 // Plugin base file:
-if( !defined('LEYKA_PLUGIN_BASE_FILE') ) { // "leyka.php"
+if( !defined('LEYKA_PLUGIN_BASE_FILE') ) {
     define('LEYKA_PLUGIN_BASE_FILE', basename(__FILE__));
 }
 
 // Plugin base directory:
-if( !defined('LEYKA_PLUGIN_DIR_NAME') ) { // Most commonly, "leyka"
+if( !defined('LEYKA_PLUGIN_DIR_NAME') ) {
     define('LEYKA_PLUGIN_DIR_NAME', basename(dirname(__FILE__)));
 }
 

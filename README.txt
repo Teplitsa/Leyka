@@ -49,7 +49,7 @@ The plugin manual is avaliable at [official website](//leyka.te-st.ru/instructio
 * [basic features](//leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/)
 * [extended features](//leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/)
 
-PHP at least 5.3 is required for plugin to work correctly.
+PHP at least 5.6 is required for plugin to work correctly.
 
 **Help the project**
 
