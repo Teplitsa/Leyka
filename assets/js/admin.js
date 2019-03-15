@@ -828,41 +828,21 @@ jQuery(document).ready(function($){
 
 // screenshots nav
 jQuery(document).ready(function($){
-    var $templateCheckboxField = $('#leyka_template_options_revo_show_donation_comment_field-field');
-    $templateCheckboxField.change(function(){
-        leykaToggleCommentMaxLenField(this);
-    });
-    $templateCheckboxField.change();
-    
-    $templateCheckboxField = $('#leyka_template_options_neo_show_donation_comment_field-field');
-    $templateCheckboxField.change(function(){
-        leykaToggleCommentMaxLenField(this);
-    });
-    $templateCheckboxField.change();
-    
-    $templateCheckboxField = $('#leyka_template_options_toggles_show_donation_comment_field-field');
-    $templateCheckboxField.change(function(){
-        leykaToggleCommentMaxLenField(this);
-    });
-    $templateCheckboxField.change();
-    
-    $templateCheckboxField = $('#leyka_template_options_radios_show_donation_comment_field-field');
-    $templateCheckboxField.change(function(){
-        leykaToggleCommentMaxLenField(this);
-    });
-    $templateCheckboxField.change();
-    
-    function leykaToggleCommentMaxLenField(checkbox) {
-        var checkboxId = $(checkbox).attr('id');
-        var lenFieldWrapperID = checkboxId.replace('_show_donation_comment_field-field', '_donation_comment_max_length-wrapper');
-        
-        if($(checkbox).prop('checked')) {
+
+    $('[name*="show_donation_comment"]').on('change.leyka', function(){
+
+        var $this = $(this),
+            checkboxId = $this.attr('id'),
+            lenFieldWrapperID = checkboxId.replace('_show_donation_comment_field-field', '_donation_comment_max_length-wrapper');
+
+        if($this.prop('checked')) {
             $('#' + lenFieldWrapperID).show();
-        }
-        else {
+        } else {
             $('#' + lenFieldWrapperID).hide();
         }
-    }
+
+    }).change();
+
 });
 
 // currence rate setup
