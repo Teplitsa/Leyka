@@ -132,7 +132,6 @@ Number.isInteger = Number.isInteger || function(value) {
            isFinite(value) &&
            Math.floor(value) === value;
 };
-
 /*
  * Class to manipulate donation form from bottom
  */
