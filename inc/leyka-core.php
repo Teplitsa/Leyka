@@ -1349,7 +1349,7 @@ class Leyka extends Leyka_Singleton {
         register_post_type(Leyka_Campaign_Management::$post_type, $args);
 
         /** Campaign editing messages */
-        add_filter('post_updated_messages', array(Leyka_Campaign_Management::getInstance(), 'set_admin_messages'));
+        add_filter('post_updated_messages', array(Leyka_Campaign_Management::getInstance(), 'setAdminMessages'));
 
         register_post_status('submitted', array(
             'label'                     => _x('Submitted', '«Submitted» donation status', 'leyka'),

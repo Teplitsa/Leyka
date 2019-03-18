@@ -13,18 +13,18 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 	protected function __construct() {
 
 		add_action('add_meta_boxes', array($this, 'setMetaboxes'));
-		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manage_columns_names'));
-		add_action('manage_'.self::$post_type.'_posts_custom_column', array($this, 'manage_columns_content'), 2, 2);
-		add_action('save_post', array($this, 'save_data'), 2, 2);
+		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manageColumnsNames'));
+		add_action('manage_'.self::$post_type.'_posts_custom_column', array($this, 'manageColumnsContent'), 2, 2);
+		add_action('save_post', array($this, 'saveData'), 2, 2);
 
-        add_action('restrict_manage_posts', array($this, 'manage_filters'));
-        add_action('pre_get_posts', array($this, 'do_filtering'));
+        add_action('restrict_manage_posts', array($this, 'manageFilters'));
+        add_action('pre_get_posts', array($this, 'doFiltering'));
 
-		add_filter('post_row_actions', array($this, 'row_actions'), 10, 2);
+		add_filter('post_row_actions', array($this, 'rowActions'), 10, 2);
 
 	}
 
-    public function set_admin_messages($messages) {
+    public function setAdminMessages($messages) {
 
         $current_post = get_post();
 
@@ -61,9 +61,18 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         );
 
         return $messages;
+
+    }
+    /**
+     * @deprecated
+     * @param $messages array
+     * @return array
+     */
+    public function set_admin_messages($messages) {
+	    return $this->setAdminMessages($messages);
     }
 
-    public function row_actions($actions, $campaign) {
+    public function rowActions($actions, $campaign) {
 
         $current_screen = get_current_screen();
 
@@ -75,8 +84,17 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         return $actions;
 
     }
+    /**
+     * @deprecated
+     * @param $actions array
+     * @param $campaign WP_Post
+     * @return array
+     */
+    public function row_actions($actions, $campaign) {
+        return $this->rowActions($actions, $campaign);
+    }
 
-    public function manage_filters() {
+    public function manageFilters() {
 
         if(get_current_screen()->id == 'edit-'.self::$post_type && current_user_can('leyka_manage_donations')) {?>
 
@@ -104,8 +122,12 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             </select>
     <?php }
     }
+    /** @deprecated */
+    public function manage_filters() {
+	    $this->manageFilters();
+    }
 
-    public function do_filtering(WP_Query $query) {
+    public function doFiltering(WP_Query $query) {
         if(is_admin() && $query->is_main_query() && get_current_screen()->id == 'edit-'.self::$post_type) {
 
             $meta_query = array('relation' => 'AND');
@@ -124,8 +146,15 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         }
     }
+    /**
+     * @deprecated
+     * @param $query WP_Query
+     */
+    public function do_filtering(WP_Query $query) {
+	    $this->doFiltering($query);
+    }
 
-	public function setMetaboxes() {
+    public function setMetaboxes() {
 
         add_meta_box(
             self::$post_type.'_excerpt', __('Annotation', 'leyka'),
@@ -574,18 +603,18 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         $campaign = new Leyka_Campaign($campaign_id);
 
         /** @todo When [leyka_inline_campaign] could display any form template, change this. */
-        return $campaign->template == 'revo' ?
+        return $campaign->template === 'revo' ?
             '[leyka_inline_campaign id="'.$campaign_id.'"]' : '[leyka_campaign_form id="'.$campaign_id.'"]';
 
     }
 
-	public function save_data($campaign_id, WP_Post $campaign) {
+	public function saveData($campaign_id, WP_Post $campaign) {
 
 		$campaign = new Leyka_Campaign($campaign);
 
         $meta = array();
 
-        if( !empty($_REQUEST['campaign_type']) && $campaign->type != $_REQUEST['campaign_type'] ) {
+        if( !empty($_REQUEST['campaign_type']) && $campaign->type !== $_REQUEST['campaign_type'] ) {
             $meta['campaign_type'] = esc_attr($_REQUEST['campaign_type']);
         }
 
@@ -602,21 +631,27 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             $meta['donations_type_default'] = esc_attr($_REQUEST['donations_type_default']);
         }
 
-        if(isset($_REQUEST['campaign_css']) && $campaign->css != $_REQUEST['campaign_css']) {
+        if(isset($_REQUEST['campaign_css']) && $campaign->css !== $_REQUEST['campaign_css']) {
             $meta['campaign_css'] = esc_textarea($_REQUEST['campaign_css']);
         }
 
         if( !empty($_REQUEST['campaign_template']) && $campaign->template != $_REQUEST['campaign_template'] ) {
             $meta['campaign_template'] = trim($_REQUEST['campaign_template']);
+        } else if(
+            (isset($meta['campaign_type']) && $meta['campaign_type'] === 'persistent')
+            || (isset($_REQUEST['campaign_type']) && $_REQUEST['campaign_type'] === 'persistent')
+        ) {
+            $meta['campaign_template'] = 'star';
         }
 
-        if( !empty($_REQUEST['payment_title']) && $campaign->payment_title != $_REQUEST['payment_title'] ) {
+        if( !empty($_REQUEST['payment_title']) && $campaign->payment_title !== $_REQUEST['payment_title'] ) {
 
             $meta['payment_title'] = trim($_REQUEST['payment_title']);
             $meta['payment_title'] = esc_attr(htmlentities($meta['payment_title'], ENT_QUOTES, 'UTF-8'));
+
         }
 
-        $_REQUEST['is_finished'] = !empty($_REQUEST['is_finished']) ? 1 : 0;
+        $_REQUEST['is_finished'] = empty($_REQUEST['is_finished']) ? 0 : 1;
         if($_REQUEST['is_finished'] != $campaign->is_finished) {
             $meta['is_finished'] = $_REQUEST['is_finished'];
         }
@@ -637,9 +672,16 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         }
 
 	}
+	/**
+     * @deprecated
+     * @param $campaign_id integer
+     * @param $campaign WP_Post
+     */
+    public function save_data($campaign_id, WP_Post $campaign) {
+        $this->saveData($campaign_id, $campaign);
+    }
 
-	/** Campaigns list table columns: */
-    public function manage_columns_names($columns){
+    public function manageColumnsNames($columns) {
 
 		$unsort = $columns;
 		$columns = array();
@@ -677,25 +719,34 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         }
 
 		return $columns;
-	}
 
-    public function manage_columns_content($column_name, $campaign_id){
+	}
+	/**
+     * @deprecated
+     * @param $columns array
+     * @return array
+     */
+	public function manage_columns_names($columns) {
+	    return $this->manageColumnsNames($columns);
+    }
+
+    public function manageColumnsContent($column_name, $campaign_id) {
 
 		$campaign = new Leyka_Campaign($campaign_id);
 
 		if($column_name === 'ID') {
 			echo (int)$campaign->id;
-		} elseif($column_name === 'payment_title') {
+		} else if($column_name === 'payment_title') {
             echo $campaign->payment_title;
-        } elseif($column_name === 'coll_state') {
+        } else if($column_name === 'coll_state') {
 
 			echo $campaign->is_finished == 1 ?
 				'<span class="c-closed">'.__('Closed', 'leyka').'</span>' :
 				'<span class="c-opened">'.__('Opened', 'leyka').'</span>';
 
-		} elseif($column_name == 'target') {
+		} else if($column_name === 'target') {
 
-			if($campaign->target_state == 'no_target') {
+			if($campaign->target_state === 'no_target') {
 				leyka_fake_scale_ultra($campaign);			
 			} else {
 				leyka_scale_ultra($campaign);
@@ -705,10 +756,19 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 		    <span class='c-reached'><?php printf(__('Reached at: %s', 'leyka'), '<time>'.$campaign->date_target_reached.'</time>'); ?></span>
 		<?php }
 
-		} elseif($column_name === 'shortcode') {?>
+		} else if($column_name === 'shortcode') {?>
             <input type="text" class="embed-code read-only campaign-shortcode" value="<?php echo esc_attr(self::get_campaign_form_shortcode($campaign->ID));?>">
         <?php }
+
 	}
+	/**
+     * @deprecated
+     * @param $column_name string
+     * @param $campaign_id integer
+     */
+    public function manage_columns_content($column_name, $campaign_id) {
+	    $this->manageColumnsContent($column_name, $campaign_id);
+    }
 
 }
 
