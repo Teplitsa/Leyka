@@ -60,39 +60,27 @@ $custom_css = get_post_meta($campaign_id, 'campaign_css', true);
 	<section id="primary" class="content-area">
 		<main id="main" class="site-main">
 
-			<?php
+        <?php while ( have_posts() ) {
 
-			/* Start the Loop */
-			while ( have_posts() ) :
-				the_post();
-            ?>
-            
+            the_post();?>
+
             <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
             
                 <div class="entry-content">
-                    <?php
-                    the_content(
+                    <?php the_content(
                         sprintf(
                             wp_kses(
-                                /* translators: %s: Name of current post. Only visible to screen readers */
-                                __( 'Continue reading<span class="screen-reader-text"> "%s"</span>', 'twentynineteen' ),
-                                array(
-                                    'span' => array(
-                                        'class' => array(),
-                                    ),
-                                )
+                                _x('Continue reading<span class="screen-reader-text"> "%s"</span>', '%s is a current post title. Only visible to screen readers', 'leyka'),
+                                array('span' => array('class' => array(),),)
                             ),
                             get_the_title()
                         )
-                    );
-                    ?>
+                    );?>
                 </div><!-- .entry-content -->
             
             </article><!-- #post-${ID} -->
             
-            <?php
-			endwhile; // End of the loop.
-			?>
+            <?php }?>
 
 		</main><!-- #main -->
 	</section><!-- #primary -->

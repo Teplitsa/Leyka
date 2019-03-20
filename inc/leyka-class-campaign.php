@@ -200,12 +200,12 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <h3 class="field-title">
                 <?php _e('Campaign type', 'leyka');?>
-                <span class="field-q" style="display: none;">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
-                    <span class="field-q-tooltip">
-                        <?php esc_html_e('Some campaign type parameter description text.', 'leyka');?>
-                    </span>
-                </span>
+<!--                <span class="field-q" style="display: none;">-->
+<!--                    <img src="--><?php //echo LEYKA_PLUGIN_BASE_URL;?><!--img/icon-q.svg" alt="">-->
+<!--                    <span class="field-q-tooltip">-->
+<!--                        --><?php //esc_html_e('Some campaign type parameter description text.', 'leyka');?>
+<!--                    </span>-->
+<!--                </span>-->
             </h3>
 
             <div class="field-wrapper">
@@ -222,12 +222,12 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <h3 class="field-title">
                 <?php _e('Donations types available', 'leyka');?>
-                <span class="field-q" style="display: none;">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
-                    <span class="field-q-tooltip">
-                        <?php esc_html_e('Some donations types parameter description text.', 'leyka');?>
-                    </span>
-                </span>
+<!--                <span class="field-q" style="display: none;">-->
+<!--                    <img src="--><?php //echo LEYKA_PLUGIN_BASE_URL;?><!--img/icon-q.svg" alt="">-->
+<!--                    <span class="field-q-tooltip">-->
+<!--                        --><?php //esc_html_e('Some donations types parameter description text.', 'leyka');?>
+<!--                    </span>-->
+<!--                </span>-->
             </h3>
 
             <div class="field-wrapper">
@@ -268,12 +268,12 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <h3 class="field-title">
                 <label for="campaign-form-template-field"><?php _e('Template for payment form', 'leyka');?></label>
-                <span class="field-q" style="display: none;">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
-                    <span class="field-q-tooltip">
-                        <?php esc_html_e('Some text here.', 'leyka');?>
-                    </span>
-                </span>
+<!--                <span class="field-q" style="display: none;">-->
+<!--                    <img src="--><?php //echo LEYKA_PLUGIN_BASE_URL;?><!--img/icon-q.svg" alt="">-->
+<!--                    <span class="field-q-tooltip">-->
+<!--                        --><?php //esc_html_e('Some text here.', 'leyka');?>
+<!--                    </span>-->
+<!--                </span>-->
             </h3>
 
             <div class="field-wrapper flex">
@@ -328,12 +328,12 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <h3 class="field-title">
                 <label for="payment_title"><?php _e('Payment purpose', 'leyka');?></label>
-                <span class="field-q" style="display: none;">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
-                    <span class="field-q-tooltip">
-                        <?php esc_html_e('Some text here.', 'leyka');?>
-                    </span>
-                </span>
+<!--                <span class="field-q" style="display: none;">-->
+<!--                    <img src="--><?php //echo LEYKA_PLUGIN_BASE_URL;?><!--img/icon-q.svg" alt="">-->
+<!--                    <span class="field-q-tooltip">-->
+<!--                        --><?php //esc_html_e('Some text here.', 'leyka');?>
+<!--                    </span>-->
+<!--                </span>-->
             </h3>
 
             <input type="text" name="payment_title" id="payment_title" value="<?php echo $campaign->payment_title ? $campaign->payment_title : $campaign->title;?>" placeholder="<?php _e("If the field is empty, the campaign title will be used", 'leyka');?>">
@@ -380,12 +380,12 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <h3 class="field-title">
                 <?php _e('The campaign decoration images', 'leyka');?>
-                <span class="field-q" style="display: none;">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
-                    <span class="field-q-tooltip">
-                        <?php esc_html_e('Some text here.', 'leyka');?>
-                    </span>
-                </span>
+<!--                <span class="field-q" style="display: none;">-->
+<!--                    <img src="--><?php //echo LEYKA_PLUGIN_BASE_URL;?><!--img/icon-q.svg" alt="">-->
+<!--                    <span class="field-q-tooltip">-->
+<!--                        --><?php //esc_html_e('Some text here.', 'leyka');?>
+<!--                    </span>-->
+<!--                </span>-->
             </h3>
 
             <div class="upload-photo-field upload-attachment-field field-wrapper flex margin-top" data-upload-title="<?php _e('The campaign page cover image', 'leyka');?>" data-field-name="campaign_cover" data-campaign-id="<?php echo $campaign->id;?>" data-ajax-action="leyka_set_campaign_attachment">
@@ -394,7 +394,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                     <input type="button" class="button upload-photo" id="campaign_cover-upload-button" value="<?php _e('Upload the page cover', 'leyka');?>">
                 </span>
                 <span class="upload-field-description">
-                    <?php echo sprintf(__('.jpg or .png file, no more than %s sized, recommended width: %s', 'leyka'), leyka_get_upload_max_filesize(), '1920 px'); //'Файл в формате .jpg, вес файла не больше 2МБ, желательная ширина изображения – 1920 px';?>
+                    <?php echo sprintf(__('.jpg or .png file, no more than %s sized, recommended width: %s', 'leyka'), leyka_get_upload_max_filesize(), '1920 px');?>
                 </span>
 
                 <?php wp_nonce_field('set-campaign-attachment', 'campaign-cover-nonce');?>
@@ -412,7 +412,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                     <input type="button" class="button upload-photo" id="campaign_logo-upload-button" value="<?php _e('Upload the logo', 'leyka');?>">
                 </span>
                 <span class="upload-field-description">
-                    <?php echo sprintf(__('.jpg or .png file, no more than %s sized', 'leyka'), leyka_get_upload_max_filesize()); //'Файл в формате .jpg, вес файла не больше 2МБ';?>
+                    <?php echo sprintf(__('.jpg or .png file, no more than %s sized', 'leyka'), leyka_get_upload_max_filesize());?>
                 </span>
 
                 <?php wp_nonce_field('set-campaign-attachment', 'campaign-logo-nonce');?>
