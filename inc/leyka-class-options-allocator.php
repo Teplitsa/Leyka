@@ -411,6 +411,12 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'options' => array('show_gtm_dataLayer_on_success',)
                     ),),
                     array('section' => array(
+                        'name' => 'donor_accounts',
+                        'title' => __('Donors accounts options', 'leyka'),
+                        'is_default_collapsed' => true,
+                        'options' => array('donor_accounts_available',)
+                    ),),
+                    array('section' => array(
                         'name' => 'misc',
                         'title' => __('Additional', 'leyka'),
                         'is_default_collapsed' => true,

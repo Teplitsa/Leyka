@@ -958,6 +958,13 @@ self::$_options_meta = array(
         'description' => __('Select a page for donor to redirect to when payment is failed for some reason.', 'leyka'),
         'list_entries' => 'leyka_get_pages_list',
     ),
+    'donor_accounts_available' => array(
+        'type' => 'checkbox',
+        'default' => false,
+        'title' => __('Donor accounts available', 'leyka'),
+        'comment' => __("Check to turn on the donors accounts features. It include donor's personal desktop pages and recurring donations management functions.", 'leyka'),
+        'short_format' => true,
+    ),
     'load_scripts_if_need' => array(
         'type' => 'checkbox',
         'default' => true,

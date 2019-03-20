@@ -114,6 +114,14 @@ class Leyka extends Leyka_Singleton {
 
         add_action('admin_bar_menu', array($this, 'addToolbarMenu'), 999);
 
+        if(get_option('leyka_donor_accounts_available')) {
+            add_action('init', function(){
+                if(leyka_current_user_has_role('donor')) {
+                    add_filter('show_admin_bar', '__return_false');
+                }
+            }, 9);
+        }
+
         if(is_admin()) { // Admin area only
 
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-allocator.php');
@@ -1238,32 +1246,44 @@ class Leyka extends Leyka_Singleton {
             $cap_donation = str_replace('#base#', 'donation', $cap);
 
             if(empty($role->capabilities[$cap_donation])) {
-                $role->add_cap($cap_donation, TRUE);
+                $role->add_cap($cap_donation, true);
             }
 
-            $caps[$cap_donation] = TRUE;
+            $caps[$cap_donation] = true;
 
             $cap_campaign = str_replace('#base#', 'campaign', $cap);
 
             if(empty($role->capabilities[$cap_campaign])) {
-                $role->add_cap($cap_campaign, TRUE);
+                $role->add_cap($cap_campaign, true);
             }
 
-            $caps[$cap_campaign] = TRUE;
+            $caps[$cap_campaign] = true;
 
-            if(stristr($cap, '#base#') !== FALSE)
+            if(stristr($cap, '#base#') !== false) {
                 unset($caps[$cap]);
+            }
+
         }
 
         if(empty($role->capabilities['leyka_manage_options'])) {
-            $role->add_cap('leyka_manage_options', TRUE);
+            $role->add_cap('leyka_manage_options', true);
         }
 
         if( !get_role('donations_manager') ) {
             add_role('donations_manager', __('Donations Manager', 'leyka'), $caps);
         }
         if( !get_role('donations_administrator') ) {
-            add_role('donations_administrator', __('Donations Administrator', 'leyka'), array_merge($caps, array('leyka_manage_options' => true,)));
+            add_role(
+                'donations_administrator',
+                __('Donations Administrator', 'leyka'),
+                array_merge($caps, array('leyka_manage_options' => true,))
+            );
+        }
+
+        if(leyka_options()->opt('donor_accounts_available')) { // Donor role
+            if( !get_role('donor') ) {
+                add_role('donor', __('Donor', 'leyka'), array('access_donor_account_desktop'));
+            }
         }
 
     }
