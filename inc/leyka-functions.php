@@ -488,6 +488,7 @@ function leyka_get_form_templates_list() {
     }
 
     return $list;
+
 }
 
 function leyka_get_currencies_data($currency_id = false) {
@@ -606,11 +607,11 @@ function leyka_get_filter_category_label($category_id) {
 function leyka_get_gateway_activation_status_label($activation_status) {
 
     $activation_status_labels = array(
-        'active' => 'Подключен',
-        'inactive' => 'Не подключен',
-        'activating' => 'В процессе подключения',
+        'active' => __('Active', 'leyka'), // 'Подключен',
+        'inactive' => __('Inactive', 'leyka'), // 'Не подключен',
+        'activating' => __('Connection is in process', 'leyka'), // 'В процессе подключения',
     );
-    
+
     return $activation_status && !empty($activation_status_labels[$activation_status]) ? $activation_status_labels[$activation_status] : false;
     
 }

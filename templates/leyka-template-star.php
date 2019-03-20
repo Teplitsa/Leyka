@@ -2,7 +2,6 @@
 /**
  * Leyka Template: Star
  * Description: A modern and lightweight form template
- * Debug only: true
  * 
  * $campaign - current campaign
  * 
@@ -111,13 +110,12 @@ $anotherAmountTitle = count($template_data['amount_variants']) > 0 ? esc_html__(
                     </div>
                 </div>
             </div>
-    
+
         </div>
-    
     
         <?php foreach($template_data['pm_list'] as $pm) { /** @var $pm Leyka_Payment_Method */
     
-            if($pm->processing_type != 'static') {
+            if($pm->processing_type !== 'static') {
                 continue;
             }?>
             

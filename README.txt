@@ -5,7 +5,7 @@ Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса, яндекс.деньги, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
 Tested up to: 5.1.1
-Stable tag: 3.1.0b
+Stable tag: 3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,15 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.1 =
+* New: Star template added.
+* New: Persistent campaigns settings & page template added.
+* New: New fields added to the Donations export.
+* Fix: short month active recurring problem fixed.
+* Fix: "Donor subscribed" filter added to the Donations list admin page.
+* Fix: Revo template markup fixed for some small screen cases.
+* Tweak: plugin frontoffice & backoffice images optimized.
+
 = 3.0.4 =
 * New: DataLayer support added for GA e-commerce integration.
 * New: now Revo campaigns must be explicitly "finished" to disallow further donations.
