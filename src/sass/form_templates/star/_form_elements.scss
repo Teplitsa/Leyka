@@ -193,6 +193,7 @@
         .star-swiper {
             .swiper-item {
                 flex-direction: column;
+                justify-content: flex-start;
                 
                 &.payment-opt {
                     margin: 0px;
@@ -211,7 +212,7 @@
                     
                     .payment-opt__icon {
                         height: 30px;
-                        margin-top: -9px;
+                        margin-top: -3px;
                         overflow: hidden;
                         display: block;
                         border-radius: unset;
