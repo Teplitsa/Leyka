@@ -221,6 +221,11 @@
                         
                         img.pm-icon {
                             max-height: 40px;
+                            
+                            &[src$="pic-main-text-text_box.svg"] {
+                                max-height: 35px;
+                                margin-top: 5px;
+                            }
                         }
                     }
                 }
@@ -230,7 +235,7 @@
                     text-transform: none;
                     color: $leyka-star-color-gray;
                     display: block;
-                    margin-top: -3px;
+                    margin-top: 5px;
                     z-index: 20;
                 }
                 
