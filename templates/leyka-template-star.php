@@ -22,7 +22,6 @@ elseif(count($campaign->donations_types_available) == 1) {
 }
 
 $anotherAmountTitle = count($template_data['amount_variants']) > 0 ? esc_html__('Another amount', 'leyka') : esc_html__('Enter amount', 'leyka');
-
 ?>
 
 <div id="leyka-pf-<?php echo $campaign->id;?>" class="leyka-pf leyka-pf-star" data-form-id="leyka-pf-<?php echo $campaign->id;?>-star-form">
@@ -33,12 +32,10 @@ $anotherAmountTitle = count($template_data['amount_variants']) > 0 ? esc_html__(
     
         <div class="section section--periodicity">
         
-            <?php if(leyka_is_recurring_supported() && count($campaign->donations_types_available) > 1) {?>
-                <div class="section__fields periodicity">
-                    <a href="#" class="<?php echo 'recurring' == $campaign->donations_type_default ? 'active' : '';?>" data-periodicity="monthly"><?php esc_html_e('Monthly', 'leyka');?></a>
-                    <a href="#" class="<?php echo 'single' == $campaign->donations_type_default ? 'active' : '';?>" data-periodicity="once"><?php esc_html_e('Once', 'leyka');?></a>
-                </div>
-            <?php }?>
+            <div class="section__fields periodicity">
+                <a href="#" class="<?php echo 'recurring' == $campaign->donations_type_default ? 'active' : '';?> <?php echo !in_array('recurring', $campaign->donations_types_available) ? "invisible" : "";?>" data-periodicity="monthly"><?php esc_html_e('Monthly', 'leyka');?></a>
+                <a href="#" class="<?php echo 'single' == $campaign->donations_type_default ? 'active' : '';?> <?php echo !in_array('single', $campaign->donations_types_available) ? "invisible" : "";?>" data-periodicity="once"><?php esc_html_e('Once', 'leyka');?></a>
+            </div>
             
         </div>
     

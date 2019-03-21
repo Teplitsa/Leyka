@@ -175,6 +175,10 @@
             });
         }
         
+        // amount swiper setup
+        $('.amount__figure.star-swiper .swiper-item').last().css('margin-right', '0px');
+        
+        // pm swiper setup
         var $swiper = $_form.find('.payments-grid .star-swiper');
         var $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)').first();
         if($activeItem.length == 0) {
@@ -295,7 +299,6 @@
         var $list = $swiper.find('.swiper-list');
         
         if($list.find('.swiper-item:not(.disabled)').length <= 1) {
-            console.log('hide arrows - one item');
             $swiper.addClass('only-one-item');
         }
         else {
@@ -303,7 +306,6 @@
         }
         
         if($list.width() <= $swiper.width()) {
-            console.log('hide arrows - short list');
             $swiper.removeClass('show-left-arrow');
             $swiper.removeClass('show-right-arrow');
             $list.width($swiper.width());

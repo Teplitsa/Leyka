@@ -38,6 +38,12 @@
                 border-color: $leyka-star-color-main;
                 z-index: 11;
             }
+            
+            &.invisible {
+                pointer-events: none;
+                color: $leyka-star-color-gray-superlight;
+                border-color: $leyka-star-color-gray-superlight;
+            }
         }
     }
 
