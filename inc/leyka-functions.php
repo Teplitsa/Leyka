@@ -1214,12 +1214,13 @@ function leyka_modern_template_displayed() {
 
     $modern_template_displayed = false;
     $modern_templates = array('revo', 'star');
+    
+    $post = get_post();
 
     if(is_singular(Leyka_Campaign_Management::$post_type)) {
 
         $campaign = new Leyka_Campaign(get_post());
         if($campaign->template == 'default') {
-
             $leyka_template_data = leyka_get_current_template_data();
             $modern_template_displayed = in_array($leyka_template_data['id'], $modern_templates);
 
@@ -1227,12 +1228,41 @@ function leyka_modern_template_displayed() {
             $modern_template_displayed = in_array($campaign->template, $modern_templates);
         }
 
-    } else if(get_post() && (has_shortcode(get_post()->post_content, 'leyka_inline_campaign') || has_shortcode(get_post()->post_content, 'knd_leyka_inline_campaign'))) {
-        $modern_template_displayed = true;
+    } elseif($post) {
+        
+        if(has_shortcode($post->post_content, 'leyka_inline_campaign') || has_shortcode($post->post_content, 'knd_leyka_inline_campaign')) {
+            $modern_template_displayed = true;
+        }
+        elseif(has_shortcode($post->post_content, 'leyka_campaign_form')) {
+            $pattern = get_shortcode_regex();
+            if(preg_match_all( '/'. $pattern .'/s', $post->post_content, $matches)) {
+                $attr_id_match = array();                
+                foreach( $matches[2] as $key => $value) {
+                    if($value == 'leyka_campaign_form') {
+                        $get = str_replace(" ", "&" , $matches[3][$key] );
+                        parse_str($get, $atts);
+                        
+                        if(array_key_exists('id', $atts)) {
+                            $campaign_id = preg_match_all("/(\d+)/", $atts['id'], $attr_id_match);
+                            $campaign_id = isset($attr_id_match[1][0]) ? (int)$attr_id_match[1][0] : 0;
+                            if(!$campaign_id) {
+                                continue;
+                            }
+                            
+                            $campaign = new Leyka_Campaign($campaign_id);
+                            if($campaign && in_array($campaign->template, $modern_templates)) {
+                                $modern_template_displayed = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            
+        }
     }
-
+    
     return apply_filters('leyka_modern_template_displayed', $modern_template_displayed);
-
 }
 
 function leyka_success_widget_displayed() {
