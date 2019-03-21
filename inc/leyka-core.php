@@ -1643,10 +1643,17 @@ class Leyka extends Leyka_Singleton {
             'display_name' => $donation->donor_name ? $donation->donor_name : $donor_email_first_part,
         );
 
-        $donor_account_id = wp_insert_user($donor_account_data);
+        $donor_user_id = wp_insert_user($donor_account_data);
+        if( !is_wp_error($donor_user_id) ) {
+
+            $donor_user = new WP_User($donor_user_id);
+            $donor_user->set_role('donor');
+
+        }
+
         /** @todo Set the "is_inactive" user meta if needed */
 
-        return $donor_account_id;
+        return $donor_user_id;
 
     }
 
