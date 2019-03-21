@@ -207,11 +207,6 @@ $anotherAmountTitle = count($template_data['amount_variants']) > 0 ? esc_html__(
 
                     <?php }?>
                     </span>
-                    <div class="leyka-star-field-error-frame">
-                        <div class="donor__oferta-error leyka_agree-error leyka_agree_pd-error">
-                            <?php _e('You should accept Terms of Service to donate', 'leyka');?>
-                        </div>
-                    </div>
                     <?php }?>
                 </div>
                 <?php }?>

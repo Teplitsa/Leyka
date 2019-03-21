@@ -132,6 +132,7 @@ Number.isInteger = Number.isInteger || function(value) {
            isFinite(value) &&
            Math.floor(value) === value;
 };
+
 /*
  * Class to manipulate donation form from bottom
  */
@@ -1461,6 +1462,8 @@ jQuery(document).ready(function($){
             $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)').first();
             $activeItem.find('input[type=radio]').prop('checked', true);
         }
+        $swiper.find('.swiper-item:not(.disabled)').last().css('margin-right', '0px');
+        
         var $list = $swiper.find('.swiper-list');
         $list.css('width', '');
         
@@ -1571,7 +1574,16 @@ jQuery(document).ready(function($){
     function toggleSwiperArrows($swiper) {
         var $list = $swiper.find('.swiper-list');
         
+        if($list.find('.swiper-item:not(.disabled)').length <= 1) {
+            console.log('hide arrows - one item');
+            $swiper.addClass('only-one-item');
+        }
+        else {
+            $swiper.removeClass('only-one-item');
+        }
+        
         if($list.width() <= $swiper.width()) {
+            console.log('hide arrows - short list');
             $swiper.removeClass('show-left-arrow');
             $swiper.removeClass('show-right-arrow');
             $list.width($swiper.width());
@@ -1620,6 +1632,9 @@ jQuery(document).ready(function($){
             var $form = $(this).parents('.leyka-tpl-star-form');
             $form.addClass('leyka-pf--oferta-open');
             $form.find('.leyka-pf__agreement').css('top', getAgreeModalTop($form));
+            $([document.documentElement, document.body]).animate({
+                scrollTop: $form.offset().top - 64
+            });
         });
 
         $('.leyka-tpl-star-form .leyka-pf__agreement.oferta .agreement__close').on('click.leyka', function(e){
@@ -1635,6 +1650,9 @@ jQuery(document).ready(function($){
             var $form = $(this).parents('.leyka-tpl-star-form');
             $form.addClass('leyka-pf--pd-open');
             $form.find('.leyka-pf__agreement').css('top', getAgreeModalTop($form));
+            $([document.documentElement, document.body]).animate({
+                scrollTop: $form.offset().top - 64
+            });
         });
 
         $('.leyka-tpl-star-form .leyka-pf__agreement.pd .agreement__close').on('click.leyka', function(e){
@@ -1645,13 +1663,7 @@ jQuery(document).ready(function($){
     }
     
     function getAgreeModalTop($form) {
-        
-        var modalTop = $(window).scrollTop() - $form.offset().top;
-        if(modalTop < 0) {
-            modalTop = 0;
-        }
-        modalTop += 16;
-        
+        var modalTop = -32;
         return modalTop + 'px';
     }
     

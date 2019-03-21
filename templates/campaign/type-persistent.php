@@ -51,8 +51,10 @@ $custom_css = get_post_meta($campaign_id, 'campaign_css', true);
 	<a class="skip-link screen-reader-text" href="#content"><?php _e( 'Skip to content', 'twentynineteen' ); ?></a>
 
 		<header id="masthead" class="leyka-campaign-header" style="<?php if($cover_url):?>background-image:url('<?php echo $cover_url;?>');<?php endif;?>">
-            <a href="#" class="leyka-campaign-logo" style="<?php if($logo_url):?>background-image:url('<?php echo $logo_url;?>');<?php endif;?>"></a>
-            <h1><?php echo get_the_title();?></h1>
+            <div class="header-tint">
+                <a href="#" class="leyka-campaign-logo" style="<?php if($logo_url):?>background-image:url('<?php echo $logo_url;?>');<?php endif;?>"></a>
+                <h1><?php echo get_the_title();?></h1>
+            </div>
         </header><!-- #masthead -->
 
 	<div id="content" class="site-content leyka-campaign-content">

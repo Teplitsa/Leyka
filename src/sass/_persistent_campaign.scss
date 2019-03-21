@@ -24,14 +24,20 @@
     background-size: cover;
     background-repeat: no-repeat;
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    padding-bottom: 2 * $leyka-star-base;
     
-    @include for(medium-screens) {
-        padding-bottom: 145px;
+    .header-tint {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding-bottom: 2 * $leyka-star-base;
+        background-color: rgba(46, 16, 5, 0.75);
+        
+        @include for(medium-screens) {
+            padding-bottom: 145px;
+        }
     }
     
     .leyka-campaign-logo {
