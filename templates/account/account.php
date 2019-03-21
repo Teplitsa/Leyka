@@ -8,40 +8,19 @@
  * @since 1.0.0
  */
 
-$campaign_id = null;
-if( is_singular(Leyka_Campaign_Management::$post_type) ) {
-    $campaign_id = get_the_ID();
-}
-elseif(is_page(leyka_options()->opt('success_page')) || is_page(leyka_options()->opt('failure_page'))) {
-    $campaign_id = leyka_campaign_id_from_query_arg();
-}
- 
-$cover_url = null;
-$cover_att_id = get_post_meta($campaign_id, 'campaign_cover', true);
-if($cover_att_id) {
-    $cover_url = wp_get_attachment_url( $cover_att_id );
-}
-
-$logo_url = null;
-$logo_att_id = get_post_meta($campaign_id, 'campaign_logo', true);
-if($logo_att_id) {
-    $logo_url = wp_get_attachment_url( $logo_att_id );
-}
-
-include(LEYKA_PLUGIN_DIR . 'templates/cabinet/header.php'); ?>
+include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 
 	<div id="content" class="site-content leyka-campaign-content">
         
 	<section id="primary" class="content-area">
 		<main id="main" class="site-main">
-            <h1>my donations</h1>
 
 <div id="leyka-pf-<?php echo $campaign_id;?>" class="leyka-pf leyka-pf-star" data-form-id="leyka-pf-<?php echo $campaign_id;?>-star-form">
 <div class="leyka-payment-form leyka-tpl-star-form" data-template="star">
 
             <form class="leyka-screen-form">
                 
-                <h2>История пожертвований</h2>
+                <h2>Личынй кабинет</h2>
                 
                 <p>Мы благодарны вам за оказываемую поддержку!</p>
                 

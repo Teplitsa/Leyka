@@ -7,10 +7,20 @@
  * @package Leyka
  * @since 1.0.0
  * 
- * $campaign_id
- * $cover_url
- * $logo_url
  */
+
+$campaign_id = null;
+$cover_url = null;
+$cover_att_id = get_post_meta($campaign_id, 'campaign_cover', true);
+if($cover_att_id) {
+    $cover_url = wp_get_attachment_url( $cover_att_id );
+}
+
+$logo_url = null;
+$logo_att_id = get_post_meta($campaign_id, 'campaign_logo', true);
+if($logo_att_id) {
+    $logo_url = wp_get_attachment_url( $logo_att_id );
+}
 
 $custom_css = get_post_meta($campaign_id, 'campaign_css', true);
 ?>
