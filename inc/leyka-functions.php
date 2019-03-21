@@ -1916,28 +1916,19 @@ add_filter('page_template', 'leyka_use_leyka_campaign_template', 10, 1);
 
 
 function leyka_use_leyka_donations_list_template($archive_template) {
+    $leykaScreen = get_query_var('leyka-screen');
     if(is_post_type_archive(Leyka_Donation_Management::$post_type)) {
         
-        if(get_query_var('leyka_campaign_filter')) {
-        
-            $posts = get_posts(array(
-                    'post_type' => Leyka_Campaign_Management::$post_type,
-                    'name' => get_query_var('leyka_campaign_filter'))
-            );
-            
-            if( !$posts ) {
-                return $archive_template;
-            }
-            
-            setup_postdata( $posts );
-
-            $campaign = reset($posts);
-        }        
-        $campaign_id = $campaign->ID;
-        $campaign = $campaign_id ? leyka_get_validated_campaign($campaign_id) : null;
-        
-        if($campaign && $campaign->campaign_type == 'persistent') {
-            $archive_template = LEYKA_PLUGIN_DIR . 'templates/cabinet/my-donations.php';
+        switch($leykaScreen) {
+            case 'account':
+                $archive_template = LEYKA_PLUGIN_DIR . 'templates/account/account.php';
+                break;
+            case 'login':
+                $archive_template = LEYKA_PLUGIN_DIR . 'templates/account/login.php';
+                break;
+            case 'reset-password':
+                $archive_template = LEYKA_PLUGIN_DIR . 'templates/account/reset-password.php';
+                break;
         }
     }
     
