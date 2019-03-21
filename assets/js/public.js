@@ -1466,6 +1466,7 @@ jQuery(document).ready(function($){
             $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)').first();
             $activeItem.find('input[type=radio]').prop('checked', true);
         }
+        $swiper.find('.swiper-item:not(.disabled)').css('margin-right', '');
         $swiper.find('.swiper-item:not(.disabled)').last().css('margin-right', '0px');
         
         var $list = $swiper.find('.swiper-list');
