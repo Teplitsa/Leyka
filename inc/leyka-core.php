@@ -1425,6 +1425,7 @@ class Leyka extends Leyka_Singleton {
             'campaign/([^/]+)/donations/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter=$matches[1]',
             'campaign/([^/]+)/donations/page/([1-9]{1,})/?$' =>
                 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter=$matches[1]&paged=$matches[2]',
+            'campaign/([^/]+)/cabinet/my-donations/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter=$matches[1]&leyka-screen=history',
         ) + $rules; // The rules' order is important
     }
     /**
@@ -1444,6 +1445,7 @@ class Leyka extends Leyka_Singleton {
     public function insertRewriteQueryVars(array $vars) {
 
         $vars[] = 'leyka_campaign_filter';
+        $vars[] = 'leyka-screen';
         return $vars;
 
     }

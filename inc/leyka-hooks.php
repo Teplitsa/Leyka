@@ -71,8 +71,8 @@ function leyka_terms_of_pd_usage_page_text($page_content) {
 add_filter('the_content', 'leyka_terms_of_pd_usage_page_text');
 
 function leyka_star_body_classes($classes) {
-    if(!empty($_GET['leyka-screen'])) {
-        $classes[] = 'leyka-screen-' . $_GET['leyka-screen'];
+    if(!empty(get_query_var('leyka-screen'))) {
+        $classes[] = 'leyka-screen-' . get_query_var('leyka-screen');
     }
     
     $campaign_id = null;

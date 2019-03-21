@@ -488,7 +488,6 @@ function leyka_get_form_templates_list() {
     }
 
     return $list;
-
 }
 
 function leyka_get_currencies_data($currency_id = false) {
@@ -1214,12 +1213,16 @@ function leyka_modern_template_displayed() {
 
     $modern_template_displayed = false;
     $modern_templates = array('revo', 'star');
-
-    if(is_singular(Leyka_Campaign_Management::$post_type)) {
+    
+    $post = get_post();
+    
+    if(get_query_var('leyka-screen')) {
+        $modern_template_displayed = true;
+    }
+    elseif(is_singular(Leyka_Campaign_Management::$post_type)) {
 
         $campaign = new Leyka_Campaign(get_post());
         if($campaign->template == 'default') {
-
             $leyka_template_data = leyka_get_current_template_data();
             $modern_template_displayed = in_array($leyka_template_data['id'], $modern_templates);
 
@@ -1227,12 +1230,41 @@ function leyka_modern_template_displayed() {
             $modern_template_displayed = in_array($campaign->template, $modern_templates);
         }
 
-    } else if(get_post() && (has_shortcode(get_post()->post_content, 'leyka_inline_campaign') || has_shortcode(get_post()->post_content, 'knd_leyka_inline_campaign'))) {
-        $modern_template_displayed = true;
+    } elseif($post) {
+        
+        if(has_shortcode($post->post_content, 'leyka_inline_campaign') || has_shortcode($post->post_content, 'knd_leyka_inline_campaign')) {
+            $modern_template_displayed = true;
+        }
+        elseif(has_shortcode($post->post_content, 'leyka_campaign_form')) {
+            $pattern = get_shortcode_regex();
+            if(preg_match_all( '/'. $pattern .'/s', $post->post_content, $matches)) {
+                $attr_id_match = array();                
+                foreach( $matches[2] as $key => $value) {
+                    if($value == 'leyka_campaign_form') {
+                        $get = str_replace(" ", "&" , $matches[3][$key] );
+                        parse_str($get, $atts);
+                        
+                        if(array_key_exists('id', $atts)) {
+                            $campaign_id = preg_match_all("/(\d+)/", $atts['id'], $attr_id_match);
+                            $campaign_id = isset($attr_id_match[1][0]) ? (int)$attr_id_match[1][0] : 0;
+                            if(!$campaign_id) {
+                                continue;
+                            }
+                            
+                            $campaign = new Leyka_Campaign($campaign_id);
+                            if($campaign && in_array($campaign->template, $modern_templates)) {
+                                $modern_template_displayed = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            
+        }
     }
-
+    
     return apply_filters('leyka_modern_template_displayed', $modern_template_displayed);
-
 }
 
 function leyka_success_widget_displayed() {
@@ -1869,9 +1901,8 @@ function leyka_use_leyka_campaign_template($template) {
     if($campaign_id) {
 
         $campaign = leyka_get_validated_campaign($campaign_id);
-        $campaign_type = get_post_meta($campaign_id, 'campaign_type', true);
         
-        if($campaign && $campaign_type === 'persistent' && $campaign->template === 'star') {
+        if($campaign && $campaign->campaign_type == 'persistent') {
             $template = LEYKA_PLUGIN_DIR . 'templates/campaign/type-persistent.php';
         }
 
@@ -1882,3 +1913,34 @@ function leyka_use_leyka_campaign_template($template) {
 }
 add_filter('single_template', 'leyka_use_leyka_campaign_template', 10, 1);
 add_filter('page_template', 'leyka_use_leyka_campaign_template', 10, 1);
+
+
+function leyka_use_leyka_donations_list_template($archive_template) {
+    if(is_post_type_archive(Leyka_Donation_Management::$post_type)) {
+        
+        if(get_query_var('leyka_campaign_filter')) {
+        
+            $posts = get_posts(array(
+                    'post_type' => Leyka_Campaign_Management::$post_type,
+                    'name' => get_query_var('leyka_campaign_filter'))
+            );
+            
+            if( !$posts ) {
+                return $archive_template;
+            }
+            
+            setup_postdata( $posts );
+
+            $campaign = reset($posts);
+        }        
+        $campaign_id = $campaign->ID;
+        $campaign = $campaign_id ? leyka_get_validated_campaign($campaign_id) : null;
+        
+        if($campaign && $campaign->campaign_type == 'persistent') {
+            $archive_template = LEYKA_PLUGIN_DIR . 'templates/cabinet/my-donations.php';
+        }
+    }
+    
+    return $archive_template;
+}
+add_filter('archive_template', 'leyka_use_leyka_donations_list_template') ;
