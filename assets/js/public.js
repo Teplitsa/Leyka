@@ -132,6 +132,7 @@ Number.isInteger = Number.isInteger || function(value) {
            isFinite(value) &&
            Math.floor(value) === value;
 };
+
 /*
  * Class to manipulate donation form from bottom
  */
@@ -1454,6 +1455,10 @@ jQuery(document).ready(function($){
             });
         }
         
+        // amount swiper setup
+        $('.amount__figure.star-swiper .swiper-item').last().css('margin-right', '0px');
+        
+        // pm swiper setup
         var $swiper = $_form.find('.payments-grid .star-swiper');
         var $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)').first();
         if($activeItem.length == 0) {
@@ -1461,11 +1466,14 @@ jQuery(document).ready(function($){
             $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)').first();
             $activeItem.find('input[type=radio]').prop('checked', true);
         }
+        $swiper.find('.swiper-item:not(.disabled)').css('margin-right', '16px');
+        $swiper.find('.swiper-item:not(.disabled)').last().css('margin-right', '0px');
+        
         var $list = $swiper.find('.swiper-list');
         $list.css('width', '');
         
-        swipeList($swiper, $activeItem);
         toggleSwiperArrows($swiper);
+        swipeList($swiper, $activeItem);
         checkFormFillCompletion($swiper.closest('form.leyka-pm-form'));
     }
 
@@ -1571,6 +1579,19 @@ jQuery(document).ready(function($){
     function toggleSwiperArrows($swiper) {
         var $list = $swiper.find('.swiper-list');
         
+        var listWidth = 0;
+        $list.find('.swiper-item:not(.disabled)').each(function(){
+            listWidth += $(this).outerWidth(true);
+        });
+        $list.width(listWidth);
+        
+        if($list.find('.swiper-item:not(.disabled)').length <= 1) {
+            $swiper.addClass('only-one-item');
+        }
+        else {
+            $swiper.removeClass('only-one-item');
+        }
+        
         if($list.width() <= $swiper.width()) {
             $swiper.removeClass('show-left-arrow');
             $swiper.removeClass('show-right-arrow');
@@ -1620,6 +1641,9 @@ jQuery(document).ready(function($){
             var $form = $(this).parents('.leyka-tpl-star-form');
             $form.addClass('leyka-pf--oferta-open');
             $form.find('.leyka-pf__agreement').css('top', getAgreeModalTop($form));
+            $([document.documentElement, document.body]).animate({
+                scrollTop: $form.offset().top - 64
+            });
         });
 
         $('.leyka-tpl-star-form .leyka-pf__agreement.oferta .agreement__close').on('click.leyka', function(e){
@@ -1635,6 +1659,9 @@ jQuery(document).ready(function($){
             var $form = $(this).parents('.leyka-tpl-star-form');
             $form.addClass('leyka-pf--pd-open');
             $form.find('.leyka-pf__agreement').css('top', getAgreeModalTop($form));
+            $([document.documentElement, document.body]).animate({
+                scrollTop: $form.offset().top - 64
+            });
         });
 
         $('.leyka-tpl-star-form .leyka-pf__agreement.pd .agreement__close').on('click.leyka', function(e){
@@ -1645,13 +1672,7 @@ jQuery(document).ready(function($){
     }
     
     function getAgreeModalTop($form) {
-        
-        var modalTop = $(window).scrollTop() - $form.offset().top;
-        if(modalTop < 0) {
-            modalTop = 0;
-        }
-        modalTop += 16;
-        
+        var modalTop = -32;
         return modalTop + 'px';
     }
     
