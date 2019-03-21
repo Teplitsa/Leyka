@@ -192,8 +192,8 @@
         var $list = $swiper.find('.swiper-list');
         $list.css('width', '');
         
-        swipeList($swiper, $activeItem);
         toggleSwiperArrows($swiper);
+        swipeList($swiper, $activeItem);
         checkFormFillCompletion($swiper.closest('form.leyka-pm-form'));
     }
 
@@ -298,6 +298,12 @@
     
     function toggleSwiperArrows($swiper) {
         var $list = $swiper.find('.swiper-list');
+        
+        var listWidth = 0;
+        $list.find('.swiper-item:not(.disabled)').each(function(){
+            listWidth += $(this).outerWidth(true);
+        });
+        $list.width(listWidth);
         
         if($list.find('.swiper-item:not(.disabled)').length <= 1) {
             $swiper.addClass('only-one-item');
