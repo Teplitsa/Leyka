@@ -1606,6 +1606,8 @@ class Leyka extends Leyka_Singleton {
                 /** @todo Donation is created, but donor account wasn't - do something about it */
             }
 
+            do_action('leyka_donor_account_created', $donor_account_id, $donation_id);
+
             return $donation_id;
 
         }
