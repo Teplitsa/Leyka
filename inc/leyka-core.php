@@ -1526,7 +1526,7 @@ class Leyka extends Leyka_Singleton {
 
         }
 
-        $donation_id = $this->log_submission();
+        $donation_id = $this->logSubmission();
 
         if(is_wp_error($donation_id)) { /** @var WP_Error $donation_id */
 
@@ -1574,7 +1574,7 @@ class Leyka extends Leyka_Singleton {
     }
 
     /** Save the basic donation data and return new donation ID, so gateway can add it's specific data to the logs. */
-    public function log_submission() {
+    public function logSubmission() {
 
         if(empty($_POST['leyka_campaign_id']) || (int)$_POST['leyka_campaign_id'] <= 0) {
             return false;
@@ -1597,9 +1597,36 @@ class Leyka extends Leyka_Singleton {
             do_action('leyka_log_donation', $pm_data['gateway_id'], $pm_data['payment_method_id'], $donation_id);
             do_action('leyka_log_donation-'.$pm_data['gateway_id'], $donation_id);
 
+            $this->_registerDonorAccount($donation_id);
+
             return $donation_id;
 
         }
+
+    }
+    /** @deprecated  */
+    public function log_submission() {
+        $this->logSubmission();
+    }
+
+    protected function _registerDonorAccount($donation) {
+
+        if( !leyka_options()->opt('donor_accounts_available') ) {
+            return false;
+        }
+
+        $donation = leyka_get_validated_donation($donation);
+
+        // Register a new donor's account only for init recurring donations and if it's not registered yet:
+        if($donation->type !== 'rebill' || $donation->init_recurring_donation_id || get_user_by_email($donation->donor_email)) {
+            return false;
+        }
+
+        $donor_account_data = array(
+            /** @todo */
+        );
+
+        return wp_insert_user($donor_account_data);
 
     }
 

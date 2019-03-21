@@ -293,61 +293,75 @@ class Leyka_Donation_Management {
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
         $email_title = $donation->type === 'rebill' ?
-            (
-                $donation->init_recurring_payment_id === $donation->id ?
-                    leyka_options()->opt('email_recurring_init_thanks_title') :
-                    leyka_options()->opt('email_recurring_ongoing_thanks_title')
-            ) :
+            ($donation->init_recurring_payment_id === $donation->id ?
+                leyka_options()->opt('email_recurring_init_thanks_title') :
+                leyka_options()->opt('email_recurring_ongoing_thanks_title')) :
             leyka_options()->opt('email_thanks_title');
 
         $email_text = $donation->type === 'rebill' ?
-            (
-                $donation->init_recurring_payment_id === $donation->id ?
-                    leyka_options()->opt('email_recurring_init_thanks_text') :
-                    leyka_options()->opt('email_recurring_ongoing_thanks_text')
-            ) :
+            ($donation->init_recurring_payment_id === $donation->id ?
+                leyka_options()->opt('email_recurring_init_thanks_text') :
+                leyka_options()->opt('email_recurring_ongoing_thanks_text')) :
             leyka_options()->opt('email_thanks_text');
+
+        $email_placeholders = array(
+            '#SITE_NAME#',
+            '#SITE_EMAIL#',
+            '#ORG_NAME#',
+            '#DONATION_ID#',
+            '#DONATION_TYPE#',
+            '#DONOR_NAME#',
+            '#DONOR_EMAIL#',
+            '#PAYMENT_METHOD_NAME#',
+            '#CAMPAIGN_NAME#',
+            '#PURPOSE#',
+            '#CAMPAIGN_TARGET#',
+            '#SUM#',
+            '#DATE#',
+            '#RECURRING_SUBSCRIPTION_CANCELLING_LINK#',
+        );
+        $email_placeholder_values = array(
+            get_bloginfo('name'),
+            get_bloginfo('admin_email'),
+            leyka_options()->opt('org_full_name'),
+            $donation->id,
+            leyka_get_payment_type_label($donation->type),
+            $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
+            $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
+            $donation->payment_method_label,
+            $campaign->title,
+            $campaign->payment_title,
+            $campaign->target,
+            $donation->amount.' '.$donation->currency_label,
+            $donation->date,
+            apply_filters(
+                'leyka_'.$donation->gateway_id.'_recurring_subscription_cancelling_link',
+                sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_options()->opt('tech_support_email')),
+                $donation
+            ),
+        );
+
+        // Donor account login link:
+        if(leyka_options()->opt('donor_accounts_available')) {
+
+            $email_placeholders[] = '#DONOR_ACCOUNT_LOGIN_LINK#';
+
+            $donor_account_login_url = '//some-url.here/fsDfsfSeF'; /** @todo Add the real account login URL here */
+            $email_placeholder_values[] = apply_filters(
+                'leyka_email_donor_acccount_link',
+                '<a href="'.$donor_account_login_url.'" target="_blank">'.$donor_account_login_url.'</a>',
+                $donation,
+                $campaign
+            );
+
+        }
 
         $res = wp_mail(
             $donor_email,
             apply_filters('leyka_email_thanks_title', $email_title, $donation, $campaign),
             wpautop(str_replace(
-                array(
-                    '#SITE_NAME#',
-                    '#SITE_EMAIL#',
-                    '#ORG_NAME#',
-                    '#DONATION_ID#',
-                    '#DONATION_TYPE#',
-                    '#DONOR_NAME#',
-                    '#DONOR_EMAIL#',
-                    '#PAYMENT_METHOD_NAME#',
-                    '#CAMPAIGN_NAME#',
-                    '#PURPOSE#',
-                    '#CAMPAIGN_TARGET#',
-                    '#SUM#',
-                    '#DATE#',
-                    '#RECURRING_SUBSCRIPTION_CANCELLING_LINK#',
-                ),
-                array(
-                    get_bloginfo('name'),
-                    get_bloginfo('admin_email'),
-                    leyka_options()->opt('org_full_name'),
-                    $donation->id,
-                    leyka_get_payment_type_label($donation->type),
-                    $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
-                    $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
-                    $donation->payment_method_label,
-                    $campaign->title,
-                    $campaign->payment_title,
-                    $campaign->target,
-                    $donation->amount.' '.$donation->currency_label,
-                    $donation->date,
-                    apply_filters(
-                        'leyka_'.$donation->gateway_id.'_recurring_subscription_cancelling_link',
-                        sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_options()->opt('tech_support_email')),
-                        $donation
-                    ),
-                ),
+                $email_placeholders,
+                $email_placeholder_values,
                 apply_filters('leyka_email_thanks_text', $email_text, $donation, $campaign)
             )),
             array('From: '.apply_filters(
@@ -393,6 +407,45 @@ class Leyka_Donation_Management {
 
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
+        $email_placeholders = array(
+            '#SITE_NAME#',
+            '#SITE_EMAIL#',
+            '#SITE_TECH_SUPPORT_EMAIL#',
+            '#ORG_NAME#',
+            '#DONATION_ID#',
+            '#DONATION_TYPE#',
+            '#DONOR_NAME#',
+            '#DONOR_EMAIL#',
+            '#PAYMENT_METHOD_NAME#',
+            '#CAMPAIGN_NAME#',
+            '#PURPOSE#',
+            '#CAMPAIGN_TARGET#',
+            '#SUM#',
+            '#DATE#',
+            '#RECURRING_SUBSCRIPTION_CANCELLING_LINK#',
+        );
+        $email_placeholder_values = array(
+            get_bloginfo('name'),
+            get_bloginfo('admin_email'),
+            leyka_options()->opt('tech_support_email'),
+            leyka_options()->opt('org_full_name'),
+            $donation->id,
+            leyka_get_payment_type_label($donation->type),
+            $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
+            $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
+            $donation->payment_method_label,
+            $campaign->title,
+            $campaign->payment_title,
+            $campaign->target,
+            $donation->amount.' '.$donation->currency_label,
+            $donation->date,
+            apply_filters(
+                'leyka_'.$donation->gateway_id.'_recurring_subscription_cancelling_link',
+                sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_options()->opt('tech_support_email')),
+                $donation
+            ),
+        );
+
         // Donor thanking email:
         $res = wp_mail(
             $donor_email,
@@ -402,44 +455,8 @@ class Leyka_Donation_Management {
                 $donation, $campaign
             ),
             wpautop(str_replace(
-                array(
-                    '#SITE_NAME#',
-                    '#SITE_EMAIL#',
-                    '#SITE_TECH_SUPPORT_EMAIL#',
-                    '#ORG_NAME#',
-                    '#DONATION_ID#',
-                    '#DONATION_TYPE#',
-                    '#DONOR_NAME#',
-                    '#DONOR_EMAIL#',
-                    '#PAYMENT_METHOD_NAME#',
-                    '#CAMPAIGN_NAME#',
-                    '#PURPOSE#',
-                    '#CAMPAIGN_TARGET#',
-                    '#SUM#',
-                    '#DATE#',
-                    '#RECURRING_SUBSCRIPTION_CANCELLING_LINK#',
-                ),
-                array(
-                    get_bloginfo('name'),
-                    get_bloginfo('admin_email'),
-                    leyka_options()->opt('tech_support_email'),
-                    leyka_options()->opt('org_full_name'),
-                    $donation->id,
-                    leyka_get_payment_type_label($donation->type),
-                    $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
-                    $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
-                    $donation->payment_method_label,
-                    $campaign->title,
-                    $campaign->payment_title,
-                    $campaign->target,
-                    $donation->amount.' '.$donation->currency_label,
-                    $donation->date,
-                    apply_filters(
-                        'leyka_'.$donation->gateway_id.'_recurring_subscription_cancelling_link',
-                        sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_options()->opt('tech_support_email')),
-                        $donation
-                    ),
-                ),
+                $email_placeholders,
+                $email_placeholder_values,
                 apply_filters(
                     'leyka_email_thanks_recurring_ongoing_text',
                     leyka_options()->opt('email_recurring_ongoing_thanks_text'),
@@ -1876,7 +1893,7 @@ class Leyka_Donation {
 
             case 'init_recurring_payment_id':
             case 'init_recurring_donation_id':
-                return $this->payment_type == 'rebill' ?
+                return $this->payment_type === 'rebill' ?
                     ($this->_post_object->post_parent ? $this->_post_object->post_parent : $this->_id) : false;
             case 'init_recurring_payment':
             case 'init_recurring_donation':

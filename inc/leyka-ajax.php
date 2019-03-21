@@ -81,7 +81,7 @@ function leyka_get_gateway_redirect_data() {
 
     if(empty($_POST['without_form_submission'])) { // Normal donation submit procedure
 
-        $donation_id = leyka()->log_submission();
+        $donation_id = leyka()->logSubmission();
 
         if( !is_wp_error($donation_id) ) {
 
