@@ -1599,7 +1599,10 @@ class Leyka extends Leyka_Singleton {
             do_action('leyka_log_donation', $pm_data['gateway_id'], $pm_data['payment_method_id'], $donation_id);
             do_action('leyka_log_donation-'.$pm_data['gateway_id'], $donation_id);
 
-            $this->_registerDonorAccount($donation_id);
+            $donor_account_id = $this->_registerDonorAccount($donation_id);
+            if(is_wp_error($donor_account_id)) {
+                /** @todo Donation is created, but donor account wasn't - do something about it */
+            }
 
             return $donation_id;
 
@@ -1611,6 +1614,10 @@ class Leyka extends Leyka_Singleton {
         $this->logSubmission();
     }
 
+    /**
+     * @param $donation int|WP_Post|Leyka_Donation
+     * @return int|WP_Error
+     */
     protected function _registerDonorAccount($donation) {
 
         if( !leyka_options()->opt('donor_accounts_available') ) {
@@ -1624,11 +1631,18 @@ class Leyka extends Leyka_Singleton {
             return false;
         }
 
+        $donor_email_first_part = reset(explode('@', $donation->donor_email));
         $donor_account_data = array(
-            /** @todo */
+            'user_email' => $donation->donor_email,
+            'user_login' => $donation->donor_email,
+            'user_pass' => '',
+            'display_name' => $donation->donor_name ? $donation->donor_name : $donor_email_first_part,
         );
 
-        return wp_insert_user($donor_account_data);
+        $donor_account_id = wp_insert_user($donor_account_data);
+        /** @todo Set the "is_inactive" user meta if needed */
+
+        return $donor_account_id;
 
     }
 
