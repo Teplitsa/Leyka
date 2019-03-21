@@ -1,0 +1,182 @@
+//.leyka-metabox {
+.postbox {
+
+    h2 span {
+        font-size: 15px;
+        color: $color-metabox-title;
+    }
+
+    .inside { // Metaboxes content
+
+        .metabox-field {
+
+            &:first-child {
+                margin-top: -4px;
+            }
+
+            &.without-title {
+                margin: 15px 0;
+            }
+
+            h3.field-title {
+                font-size: 13px;
+                line-height: 16px;
+                margin-bottom: 8px;
+                font-family: $body;
+                color: $color-metabox-title;
+                font-weight: 500;
+            }
+
+            .field-wrapper {
+
+                &.flex {
+                    display: flex;
+                    align-items: center;
+                }
+
+                &.margin-top {
+                    margin-top: 24px;
+                }
+
+                .field-label {
+                    display: block;
+                    margin-bottom: 8px;
+                }
+
+            }
+
+        }
+
+        .info-field {
+
+            padding: 12px 16px 10px 16px;
+            margin-top: 24px;
+            background-color: $color-border-secondary-button;
+
+            font-size: 12px;
+            line-height: 16px;
+
+            h3 {
+                margin: 0;
+            }
+
+            ul {
+
+                margin: 6px 0 0 0;
+                color: $color-wizard-link;
+                list-style: none;
+
+                li:before {
+                    content: '—';
+                    display: inline-block;
+                    padding-right: 4px;
+                }
+
+                a {
+                    text-decoration: none;
+                }
+
+            }
+
+        }
+
+        .upload-photo-field {
+
+            .field {
+
+                display: block;
+                position: relative;
+
+                input[type=file] {
+                    display: block;
+                    height: 40px;
+                    width: 248px;
+                    outline: none;
+                }
+
+                .upload-photo {
+                    @include wizard-button-caption();
+                    height: 40px;
+                    width: 248px;
+
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    outline: none;
+
+                    background-color: $color-border-light-001;
+                    border: 1px dashed $color-wizard-link-sec;
+                    color: $color-wizard-text;
+                    font-size: 13px;
+
+                }
+
+            }
+
+            .upload-field-description {
+
+                margin-left: 22px;
+
+                color: $color-wizard-link-sec;
+                font-size: 10px;
+                font-weight: 500;
+
+            }
+
+        }
+
+        #campaign-form-template-field {
+            margin-right: 8px;
+        }
+
+        /** @todo Made it a mixin, mb? */
+        .form-template-demo {
+            display: inline-block;
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            background-image: url(../../src/svg/icon-screen-demo.svg);
+        }
+
+        .css-editor {
+
+            textarea {
+                width: 100%;
+                height: 200px;
+                border: 1px solid $color-border-secondary-button;
+                overflow: hidden;
+            }
+
+            .css-editor-reset-value {
+                display: inline-block;
+                cursor: pointer;
+
+                font-size: 14px;
+                //line-height: 24px;
+                color: $color-wizard-link;
+
+                border-bottom: 1px dashed $color-wizard-link;
+            }
+
+        }
+
+        .field-q {
+            @include field-q();
+            border-radius: 5px;
+
+            img {
+                background-color: $color-white;
+            }
+        }
+
+        /** @todo Made it a mixin, mb? */
+        .loader-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 2rem;
+        }
+
+    }
+
+}

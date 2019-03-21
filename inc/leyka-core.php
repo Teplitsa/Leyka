@@ -177,10 +177,17 @@ class Leyka extends Leyka_Singleton {
                     && leyka_options()->opt_template('show_success_widget_on_success')
                     && is_main_query()
                 ) {
+                    
+                    $form_template = leyka_template_from_query_arg();
+                    $form_template_suffix = $form_template === 'star' ? '-' . $form_template : '';
 
                     ob_start();
-                    include(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-success-widget.php');
+                    include(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-success-widget'.$form_template_suffix.'.php');
                     $content = ob_get_clean();
+                    
+                    if($form_template === 'star') {
+                        $content .= get_the_content();
+                    }
 
                 }
 
@@ -754,6 +761,14 @@ class Leyka extends Leyka_Singleton {
         return $this->clearSessionErrors();
     }
 
+    public function getDonationTypes() {
+        return apply_filters('leyka_donation_types', array(
+            'single' => _x('Single', '"Single" donation type name', 'leyka'),
+            'recurring' => _x('Recurring', '"Recurring" donation type name', 'leyka'),
+            'correction' => _x('Correction', '"Correction" donation type name', 'leyka'),
+        ));
+    }
+
     /**
      * Retrieve all available payment/donation statuses.
      *
@@ -1009,7 +1024,7 @@ class Leyka extends Leyka_Singleton {
                 foreach($campaigns as $campaign) {
 
                     $campaign = new Leyka_Campaign($campaign);
-                    $campaign->update_total_funded_amount();
+                    $campaign->updateTotalFundedAmount();
                 }
 
                 wp_suspend_cache_addition(false);
@@ -1334,7 +1349,7 @@ class Leyka extends Leyka_Singleton {
         register_post_type(Leyka_Campaign_Management::$post_type, $args);
 
         /** Campaign editing messages */
-        add_filter('post_updated_messages', array(Leyka_Campaign_Management::getInstance(), 'set_admin_messages'));
+        add_filter('post_updated_messages', array(Leyka_Campaign_Management::getInstance(), 'setAdminMessages'));
 
         register_post_status('submitted', array(
             'label'                     => _x('Submitted', '«Submitted» donation status', 'leyka'),
@@ -1557,7 +1572,7 @@ class Leyka extends Leyka_Singleton {
             return $donation_id;
         } else {
 
-            $campaign->increase_submits_counter();
+            $campaign->increaseSubmitsCounter();
 
             do_action('leyka_log_donation', $pm_data['gateway_id'], $pm_data['payment_method_id'], $donation_id);
             do_action('leyka_log_donation-'.$pm_data['gateway_id'], $donation_id);
@@ -1717,3 +1732,5 @@ __('rebill', 'leyka');
 __('correction', 'leyka');
 __('The donations management system for your WP site', 'leyka');
 __('Teplitsa of Social Technologies', 'leyka');
+__('Star', 'leyka');
+__('A modern and lightweight form template', 'leyka');

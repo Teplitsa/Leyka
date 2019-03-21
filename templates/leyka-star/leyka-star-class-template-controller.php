@@ -16,13 +16,13 @@ class Leyka_Star_Template_Controller extends Leyka_Template_Controller {
         $currencies = leyka_get_currencies_data();
         $main_currency_id = leyka_options()->opt('main_currency');
         
-        $amount_mode = leyka_options()->opt_template('donation_sum_field_type');
+        $amount_mode = leyka_options()->opt_template('donation_sum_field_type', 'star');
         if($amount_mode == 'fixed' || $amount_mode == 'mixed') {
             $amount_variants = explode(',', $currencies[$main_currency_id]['amount_settings']['fixed']);
         } else {
             $amount_variants = array();
         }
-
+        
         $this->_template_data[$campaign->id] = array(
         	'currency_id' => $main_currency_id,
             'currency_label' => $currencies[$main_currency_id]['label'],

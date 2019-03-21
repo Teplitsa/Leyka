@@ -161,7 +161,7 @@ $campaign = new Leyka_Campaign(get_post());?>
         ));
 
         if( !empty($_GET['increase_counters']) ) {
-            $campaign->increase_views_counter();
+            $campaign->increaseViewsCounter();
         }?>
     </div>
 </body>

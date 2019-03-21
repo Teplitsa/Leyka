@@ -2,164 +2,179 @@
 /**
  * Leyka Template: Star
  * Description: A modern and lightweight form template
- * Debug only: true
  * 
  * $campaign - current campaign
  * 
  **/
 
 $template_data = Leyka_Star_Template_Controller::getInstance()->getTemplateData($campaign);
+
+$is_recurring_campaign = false;
+if(count($campaign->donations_types_available) > 1) {
+    if('recurring' == $campaign->donations_type_default) {
+        $is_recurring_campaign = true;
+    }
+}
+elseif(count($campaign->donations_types_available) == 1) {
+    if(in_array('recurring', $campaign->donations_types_available)) {
+        $is_recurring_campaign = true;
+    }
+}
+
+$anotherAmountTitle = count($template_data['amount_variants']) > 0 ? esc_html__('Another amount', 'leyka') : esc_html__('Enter amount', 'leyka');
 ?>
 
-<form id="<?php echo leyka_pf_get_form_id($campaign->id).'-star-form';?>" class="leyka-inline-campaign-form leyka-star-form" data-template="star" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
-
-    <div class="step step--periodicity">
+<div id="leyka-pf-<?php echo $campaign->id;?>" class="leyka-pf leyka-pf-star" data-form-id="leyka-pf-<?php echo $campaign->id;?>-star-form">
     
-        <?php if(true || leyka_is_recurring_supported()) {?>
-            <div class="step__fields periodicity">
-                <a href="#" class="active" data-periodicity="monthly">Ежемесячно</a>
-                <a href="#" class="" data-periodicity="once">Разово</a>
-            </div>
-        <?php }?>
+<div class="leyka-payment-form leyka-tpl-star-form" data-template="star">
+    
+    <form id="<?php echo leyka_pf_get_form_id($campaign->id).'-star-form';?>" class="leyka-pm-form" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
+    
+        <div class="section section--periodicity">
         
-    </div>
-
-
-    <div class="step step--amount">
-        
-        <div class="step__fields amount">
-
-        <?php echo Leyka_Payment_Form::get_common_hidden_fields($campaign, array(
-            'leyka_template_id' => 'star',
-            'leyka_amount_field_type' => 'custom',
-        ));
-
-        $form_api = new Leyka_Payment_Form();
-        echo $form_api->get_hidden_amount_fields();?>
-
-            <div class="amount__figure star-swiper">
-                <a class="swiper-arrow swipe-left"></a>
-                <a class="swiper-arrow swipe-right"></a>
-                
-                <?php foreach($template_data['amount_variants'] as $i => $amount) {?>
-                    <div class="swiper-item" data-value="<?php echo (int)$amount;?>"><span class="amount"><?php echo (int)$amount;?></span><span class="currency"><?php echo $template_data['currency_label'];?></span></div>
-                <?php }?>
-
-                <?php if($template_data['amount_mode'] != 'fixed') {?>
-                    <div class="swiper-item">
-                        <input type="text" title="Введите вашу сумму" name="leyka_donation_amount" class="donate_amount_flex" value="<?php echo esc_attr($template_data['amount_default']);?>" maxlength="6">
-                    </div>
-                <?php }?>
+            <div class="section__fields periodicity">
+                <a href="#" class="<?php echo 'recurring' == $campaign->donations_type_default ? 'active' : '';?> <?php echo !in_array('recurring', $campaign->donations_types_available) ? "invisible" : "";?>" data-periodicity="monthly"><?php esc_html_e('Monthly', 'leyka');?></a>
+                <a href="#" class="<?php echo 'single' == $campaign->donations_type_default ? 'active' : '';?> <?php echo !in_array('single', $campaign->donations_types_available) ? "invisible" : "";?>" data-periodicity="once"><?php esc_html_e('Once', 'leyka');?></a>
             </div>
             
-            <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $template_data['currency_label'];?>" value="<?php echo leyka_options()->opt('main_currency');?>">
-            <input type="hidden" name="leyka_recurring" class="is-recurring-chosen" value="0">
-
         </div>
-
-    </div>
     
-
-    <div class="step step--cards">
-
-        <div class="step__fields payments-grid">
-            <div class="star-swiper">
-                <a class="swiper-arrow swipe-left"></a>
-                <a class="swiper-arrow swipe-right"></a>
-
-        <?php $max_pm_number = leyka_options()->opt_template('show_donation_comment_field') ? 6 : 4;
-        foreach($template_data['pm_list'] as $number => $pm) { /** @var $pm Leyka_Payment_Method */
-
-
-            // Max. 4 PM blocks for forms without comment field, or max. 6 PM blocks otherwise:
-            if($number > $max_pm_number) {
-                break;
-            }?>
-
-            <div class="payment-opt swiper-item">
-                <label class="payment-opt__button">
-                    <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>" data-has-recurring="<?php echo $pm->has_recurring_support() ? '1' : '0';?>" data-ajax-without-form-submission="<?php echo $pm->ajax_without_form_submission ? '1' : '0';?>">
-                    <span class="payment-opt__icon">
-                        <?php foreach($pm->icons ? $pm->icons : array($pm->main_icon_url) as $icon_url) {?>
-                            <img class="pm-icon" src="<?php echo $icon_url;?>" alt="">
+    
+        <div class="section section--amount">
+            
+            <div class="section__fields amount">
+    
+            <?php echo Leyka_Payment_Form::get_common_hidden_fields($campaign, array(
+                'leyka_template_id' => 'star',
+                'leyka_amount_field_type' => 'custom',
+            ));
+    
+            $form_api = new Leyka_Payment_Form();
+            echo $form_api->get_hidden_amount_fields();?>
+    
+                <div class="amount__figure star-swiper">
+                    <div class="arrow-gradient left"></div><a class="swiper-arrow swipe-left" href="#"></a>
+                    <div class="arrow-gradient right"></div><a class="swiper-arrow swipe-right" href="#"></a>
+                    
+                    <div class="swiper-list">
+                    
+                        <?php foreach($template_data['amount_variants'] as $i => $amount) {?>
+                            <div class="swiper-item <?php echo $i ? "" : "selected";?>" data-value="<?php echo (int)$amount;?>"><span class="amount"><?php echo (int)$amount;?></span><span class="currency"><?php echo $template_data['currency_label'];?></span></div>
                         <?php }?>
-                    </span>
-                </label>
-                <span class="payment-opt__label"><?php echo $pm->label;?></span>
-            </div>
-        <?php }?>
         
+                        <?php if($template_data['amount_mode'] != 'fixed') {?>
+                            <div class="swiper-item flex-amount-item <?php if(!count($template_data['amount_variants'])):?>selected<?php endif;?>">
+                                <label for="leyka-flex-amount">
+                                    <span class="textfield-label"><?php echo $anotherAmountTitle;?>, <span class="currency"><?php echo $template_data['currency_label'];?></span></span>
+                                </label>
+                                <input type="number" title="<?php esc_html_e('Enter your amount', 'leyka');?>" placeholder="<?php esc_html_e('Enter your amount', 'leyka');?>" data-desktop-ph="<?php echo $anotherAmountTitle;?>" data-mobile-ph="<?php esc_html_e('Enter your amount', 'leyka');?>" name="donate_amount_flex" class="donate_amount_flex" value="<?php echo esc_attr($template_data['amount_default']);?>" min="1" max="999999">
+                            </div>
+                        <?php }?>
+                    </div>
+                    <input type="hidden" class="leyka_donation_amount" name="leyka_donation_amount" value="">
+                </div>
+                
+                <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $template_data['currency_label'];?>" value="<?php echo leyka_options()->opt('main_currency');?>">
+                <input type="hidden" name="leyka_recurring" class="is-recurring-chosen" value="<?php echo $is_recurring_campaign ? "1" : "0";?>">
             </div>
+    
         </div>
-
-    </div>
-
-
-    <?php foreach($template_data['pm_list'] as $pm) { /** @var $pm Leyka_Payment_Method */
-
-        if($pm->processing_type != 'static') {
-            continue;
-        }?>
         
-    <div class="step step--static <?php echo $pm->full_id;?>">
-        <div class="step__border">
-
-        	<div class="step__fields static-text">
-        		<?php $pm->display_static_data();?>
-
-                <div class="static__complete-donation">
-                    <input class="leyka-js-complete-donation" value="<?php echo leyka_options()->opt_safe('revo_donation_complete_button_text');?>">
+    
+        <div class="section section--cards">
+    
+            <div class="section__fields payments-grid">
+                <div class="star-swiper">
+                    <div class="arrow-gradient left"></div><a class="swiper-arrow swipe-left" href="#"></a>
+                    <div class="arrow-gradient right"></div><a class="swiper-arrow swipe-right" href="#"></a>
+                    <div class="swiper-list">
+    
+                    <?php foreach($template_data['pm_list'] as $number => $pm) { /** @var $pm Leyka_Payment_Method */?>
+            
+                        <div class="payment-opt swiper-item <?php echo $number ? "" : "selected";?>">
+                            <label class="payment-opt__button">
+                                <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>" data-has-recurring="<?php echo $pm->has_recurring_support() ? '1' : '0';?>" data-ajax-without-form-submission="<?php echo $pm->ajax_without_form_submission ? '1' : '0';?>">
+                                <span class="payment-opt__icon">
+                                    <?php foreach($pm->icons ? $pm->icons : array($pm->main_icon_url) as $icon_url) {?>
+                                        <img class="pm-icon" src="<?php echo $icon_url;?>" alt="">
+                                    <?php }?>
+                                </span>
+                            </label>
+                            <span class="payment-opt__label"><?php echo $pm->label;?></span>
+                        </div>
+                    <?php }?>
+            
+                    </div>
                 </div>
+            </div>
 
-        	</div>
-
-    	</div>
-    </div>
-
-    <?php }?>
-
-
-    <!-- donor data -->
-    <div class="step step--person">
-
-        <div class="step__border">
-            <div class="step__fields donor">
+        </div>
+    
+        <?php foreach($template_data['pm_list'] as $pm) { /** @var $pm Leyka_Payment_Method */
+    
+            if($pm->processing_type !== 'static') {
+                continue;
+            }?>
+            
+        <div class="section section--static <?php echo $pm->full_id;?>">
+    
+            <div class="section__fields static-text">
+                <?php $pm->display_static_data();?>
+            </div>
+    
+        </div>
+    
+        <?php }?>
+    
+    
+        <!-- donor data -->
+        <div class="section section--person">
+    
+            <div class="section__fields donor">
 
                 <?php $field_id = 'leyka-'.wp_rand();?>
-                <div class="donor__textfield donor__textfield--name ">
-                    <label for="<?php echo $field_id;?>">
-                        <span class="donor__textfield-label leyka_donor_name-label"><?php _e('Your name', 'leyka');?></span>
-                        <span class="donor__textfield-error leyka_donor_name-error">
-                            <?php _e('Enter your name', 'leyka');?>
-                        </span>
-                    </label>
-                    <input id="<?php echo $field_id;?>" type="text" name="leyka_donor_name" value="" autocomplete="off">
-                </div>
-
-                <?php $field_id = 'leyka-'.wp_rand();?>
-                <div class="donor__textfield donor__textfield--email">
-                    <label for="<?php echo $field_id;?>">
-                        <span class="donor__textfield-label leyka_donor_name-label"><?php _e('Your email', 'leyka');?></span>
+                <div class="donor__textfield donor__textfield--email required">
+                    <div class="leyka-star-field-frame">
+                        <label for="<?php echo $field_id;?>">
+                            <span class="donor__textfield-label leyka_donor_name-label"><?php _e('Your email', 'leyka');?></span>
+                        </label>
+                        <input type="email" id="<?php echo $field_id;?>" name="leyka_donor_email" value="" autocomplete="off">
+                    </div>
+                    <div class="leyka-star-field-error-frame">
                         <span class="donor__textfield-error leyka_donor_email-error">
                             <?php _e('Enter an email in the some@email.com format', 'leyka');?>
                         </span>
-                    </label>
-                    <input type="email" id="<?php echo $field_id;?>" name="leyka_donor_email" value="" autocomplete="off">
+                    </div>
+                </div>
+
+                <?php $field_id = 'leyka-'.wp_rand();?>
+                <div class="donor__textfield donor__textfield--name required">
+                    <div class="leyka-star-field-frame">
+                        <label for="<?php echo $field_id;?>">
+                            <span class="donor__textfield-label leyka_donor_name-label"><?php _e('First and second name', 'leyka');?></span>
+                        </label>
+                        <input id="<?php echo $field_id;?>" type="text" name="leyka_donor_name" value="" autocomplete="off">
+                    </div>
+                    <div class="leyka-star-field-error-frame">
+                        <span class="donor__textfield-error leyka_donor_name-error">
+                            <?php _e('Enter your name', 'leyka');?>
+                        </span>
+                    </div>
                 </div>
 
                 <?php if(leyka_options()->opt_template('show_donation_comment_field')) { $field_id = 'leyka-'.wp_rand();?>
                 <div class="donor__textfield donor__textfield--comment leyka-field">
-                    <label for="<?php echo $field_id;?>">
-                        <span class="donor__textfield-label leyka_donor_comment-label"><?php echo leyka_options()->opt_template('donation_comment_max_length') ? sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length')) : __('Your comment', 'leyka');?></span>
+                    <div class="leyka-star-field-frame">
+                        <label for="<?php echo $field_id;?>">
+                            <span class="donor__textfield-label leyka_donor_comment-label"><?php echo leyka_options()->opt_template('donation_comment_max_length') ? sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length')) : __('Your comment', 'leyka');?></span>
+                        </label>
+                        <textarea id="<?php echo $field_id;?>" class="leyka-donor-comment" name="leyka_donor_comment" data-max-length="<?php echo leyka_options()->opt_template('donation_comment_max_length');?>"></textarea>
+                    </div>
+                    <div class="leyka-star-field-error-frame">
                         <span class="donor__textfield-error leyka_donor_comment-error"><?php _e('Entered value is too long', 'leyka');?></span>
-                    </label>
-                    <textarea id="<?php echo $field_id;?>" class="leyka-donor-comment" name="leyka_donor_comment" data-max-length="<?php echo leyka_options()->opt_template('donation_comment_max_length');?>"></textarea>
+                    </div>
                 </div>
                 <?php }?>
-
-                <div class="donor__submit">
-                    <?php echo apply_filters('leyka_revo_template_final_submit', '<input type="submit" class="leyka-default-submit" value="'.leyka_options()->opt_template('donation_submit_text').'">');?>
-                </div>
 
                 <?php if(leyka_options()->opt('agree_to_terms_needed') || leyka_options()->opt('agree_to_pd_terms_needed')) {?>
                 <div class="donor__oferta">
@@ -189,20 +204,64 @@ $template_data = Leyka_Star_Template_Controller::getInstance()->getTemplateData(
 
                     <?php }?>
                     </span>
-                    <div class="donor__oferta-error leyka_agree-error leyka_agree_pd-error">
-                        <?php _e('You should accept Terms of Service to donate', 'leyka');?>
-                    </div>
                     <?php }?>
                 </div>
                 <?php }?>
 
+                <div class="donor__submit">
+                    <?php echo apply_filters('leyka_star_template_final_submit', '<input type="submit" disabled="disabled" class="leyka-default-submit" value="'.leyka_options()->opt_template('donation_submit_text').'">');?>
+                </div>
+
+            </div>
+                
+        </div>
+    </form>
+
+    <div class="leyka-pf__overlay"></div>
+    <?php if(leyka_options()->opt('agree_to_terms_needed')) {?>
+    <div class="leyka-pf__agreement oferta">
+        <div class="agreement__frame">
+            <div class="agreement__flow">
+                <?php echo apply_filters('leyka_terms_of_service_text', do_shortcode(leyka_options()->opt('terms_of_service_text')));?>
             </div>
         </div>
-
-        <div class="step__note">
-			<p><?php _e('We will send the donation success notice to this address', 'leyka');?></p>
-        </div>
-
+        <a href="#" class="agreement__close">
+            <?php echo leyka_options()->opt('leyka_agree_to_terms_text_text_part').' '.leyka_options()->opt('leyka_agree_to_terms_text_link_part');?>
+        </a>
     </div>
+    <?php }?>
 
-</form>
+    <?php if(leyka_options()->opt('agree_to_pd_terms_needed')) {?>
+    <div class="leyka-pf__agreement pd">
+        <div class="agreement__frame">
+            <div class="agreement__flow">
+                <?php echo apply_filters('leyka_terms_of_pd_usage_text', do_shortcode(leyka_options()->opt('pd_terms_text')));?>
+            </div>
+        </div>
+        <a href="#" class="agreement__close">
+            <?php echo leyka_options()->opt('agree_to_pd_terms_text_text_part').' '.leyka_options()->opt('agree_to_pd_terms_text_link_part');?>
+        </a>
+    </div>
+    <?php }?>
+
+</div>
+
+<div id="leyka-submit-errors" class="leyka-submit-errors" style="display:none">
+</div>
+
+<div class="leyka-pf__redirect">
+    <div class="waiting">
+        <div class="waiting__card">
+            <div class="loading">
+                <div class="spinner">
+                    <div class="bounce1"></div>
+                    <div class="bounce2"></div>
+                    <div class="bounce3"></div>
+                </div>
+            </div>
+            <div class="waiting__card-text">Перенаправление на безопасную страницу платежа...</div>
+        </div>
+    </div>
+</div>
+
+</div>

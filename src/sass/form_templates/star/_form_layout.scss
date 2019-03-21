@@ -3,33 +3,38 @@
 div[id*="leyka-pf-"].leyka-pf-star {
     @include star-text();
     
-    .leyka-pf__module {
-        border: none;
+    .leyka-tpl-star-form {
         
-        .leyka-pf__card {
-            display: none;
-        }
-        
-        .leyka-pf__form {
+        .section {
             display: block;
+            position: relative;
+            height: auto;
+            visibility: visible;
+            opacity: unset;
+            margin-bottom: 1.5 * $leyka-star-base;
             
-            .leyka-inline-campaign-form {
-                
-                .step {
-                    display: block;
-                    position: relative;
-                    height: auto;
-                    visibility: visible;
-                    opacity: unset;
-                    margin-bottom: 1.5em;
-                    
-                    .step__fields {
-                        visibility: visible;
-                        padding: 0px;
-                    }
-                }
-                
+            .section__border {
+                width: 100%;
+                border-image: none;
+                border-width: unset;
+                border-style: unset;
+                padding-top: unset;
+            }
+            
+            .section__fields {
+                visibility: visible;
+                padding: 0px;
+            }
+            
+            &.section--person {
+                margin-bottom: 0px;
             }
         }
+        
     }
+}
+
+.single-leyka_campaign .site-content {
+    overflow: visible;
+    margin-top: 2 * $leyka-star-base;
 }

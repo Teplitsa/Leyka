@@ -1,5 +1,7 @@
 /** == Seetings and variables (_presets.scss)  == **/
 
+$leyka-star-base:   16px;
+
 :root {
     --leyka-color-main: #ff510d;
     --leyka-color-main-second: #ffc29f;
@@ -13,6 +15,10 @@
     --leyka-color-ok: #1aa316;
     --leyka-color-ok-second: #9adc98;
     --leyka-color-ok-third: #f3fcf2;
+    
+    --leyka-color-pc-bg: #ff6347;
+    
+    --leyka-star-base: 16px;
 }
 
 $leyka-star-color-main:             var(--leyka-color-main);
@@ -30,7 +36,11 @@ $leyka-star-color-ok-third:         var(--leyka-color-ok-third);
 
 $leyka-star-color-black:            #000000;
 $leyka-star-color-gray-dark:        #474747;
+$leyka-star-color-gray-semi-dark:   #656565;
 $leyka-star-color-gray:             #8f8f8f;
 $leyka-star-color-gray-light:       #c0c0c0;
 $leyka-star-color-gray-superlight:  #ededed;
 $leyka-star-color-white:            #ffffff;
+
+
+$leyka-pc-color-main:   var(--leyka-color-pc-bg);

@@ -462,7 +462,7 @@ jQuery(document).ready(function($){
 
         var $form = $(this);
 
-        if( !leyka_validate_donation_form($form) ) {
+        if( !$form.hasClass('leyka-no-validation') && !leyka_validate_donation_form($form) ) {
 
             e.preventDefault();
             e.stopImmediatePropagation();

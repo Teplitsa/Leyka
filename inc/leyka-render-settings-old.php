@@ -569,28 +569,29 @@ function leyka_render_gateways_commission_field($option_name, $data){
 // [Special field] Gateways commission options - END
 
 function leyka_render_tabbed_section_options_area($section) {
+
     $default_active_tab_index = 0;
     
-    if(!empty($section['tabs'])) {
-        ?>
+    if( !empty($section['tabs']) ) {?>
+
         <div class="section-tabs-wrapper">
         <div class="section-tab-nav">
             
         <?php
         $counter = 0;
-        foreach($section['tabs'] as $tab_name => $tab) {
-            ?>
+        foreach($section['tabs'] as $tab_name => $tab) {?>
+
             <a class="section-tab-nav-item <?php echo $counter === $default_active_tab_index ? 'active' : '';?>" href="#" data-target="<?php echo $tab_name;?>"><?php echo $tab['title'];?></a>
-            <?php
-            $counter += 1;
+
+            <?php $counter += 1;
+
         }?>
         
         </div>
-        <?php
-        
-        $counter = 0;
-        foreach($section['tabs'] as $tab_name => $tab) {
-            ?>
+
+        <?php $counter = 0;
+        foreach($section['tabs'] as $tab_name => $tab) {?>
+
             <div class="section-tab-content tab-<?php echo $tab_name;?> <?php echo $counter === $default_active_tab_index ? 'active' : '';?> <?php echo !empty($tab['screenshots']) ? 'with-sidebar' : '';?>">
                 <div class="tab-content-options-wrapper">
                     <?php foreach($tab['sections'] as $tab_section) { ?>
@@ -619,20 +620,19 @@ function leyka_render_tabbed_section_options_area($section) {
                 <div class="tab-screenshots">
                     
                     <div class="tab-screenshot-nav left <?php echo !empty($tab['screenshots']) && count($tab['screenshots']) > 1 ? 'active' : '';?>">
-                        <img src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/icon-gallery-nav-arrow-left.svg';?>" />
+                        <img src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/icon-gallery-nav-arrow-left.svg';?>" alt="">
                     </div>
                 
-                    <?php
-                    $counter = 0;
+                    <?php $counter = 0;
                     foreach($tab['screenshots'] as $screenshot) {?>
                     
                     <div class="tab-screenshot-item <?php echo !$counter ? 'active' : '';?>">
                         <div class="captioned-screen">
                             <div class="screen-wrapper">
-                                <img src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/theme-screenshots/' . $screenshot;?>" class="leyka-instructions-screen" />
+                                <img src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/theme-screenshots/' . $screenshot;?>" class="leyka-instructions-screen" alt="">
                                 <img src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/icon-zoom-screen.svg';?>" class="zoom-screen" alt="">
                             </div>
-                            <img src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/theme-screenshots/' . $screenshot;?>" class="leyka-instructions-screen-full" alt="" style="display: none; position: fixed; z-index: 0; left: 50%; top: 100px;" />
+                            <img src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/theme-screenshots/' . $screenshot;?>" class="leyka-instructions-screen-full" style="display: none; position: fixed; z-index: 0; left: 50%; top: 100px;" alt="">
                         </div>
                     </div>
                     
@@ -647,11 +647,11 @@ function leyka_render_tabbed_section_options_area($section) {
                 <?php }?>
                 
             </div>
-            <?php
-            $counter += 1;
+            <?php $counter += 1;
+
         }?>
         
-        </div><!-- end section-tabs-wrapper -->
+        </div>
         <?php
     }
 }

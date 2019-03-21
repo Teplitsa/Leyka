@@ -512,7 +512,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 </form>
 				<?php }?>
             </div>
-			
+
 			<?php include(LEYKA_PLUGIN_DIR.'inc/settings-fields-templates/leyka-helpchat.php');?>
 
 		</div>
@@ -590,7 +590,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		<div class="leyka-feedback-description">
 			<p><?php _e('Found a bug? Need a feature?', 'leyka'); ?></p>
 			<p><?php _e('Please, <a href="https://github.com/Teplitsa/Leyka/issues/new">create an issue on Github</a> or send us a message with the following form', 'leyka'); ?></p>
-		</div>    
+		</div>
 
 		<div class="feedback-columns">
 			<div class="leyka-feedback-form">
@@ -716,7 +716,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 && $_GET['page'] === 'leyka_settings'
                 && (empty($_GET['stage']) || $this->isV3SettingsPage($_GET['stage']))
                 && empty($_GET['old'])
-            );
+            )
+            || ($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post');
 
         $current_screen = get_current_screen();
         $dependencies = array('jquery',);

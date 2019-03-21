@@ -14,18 +14,105 @@
     text-decoration: none;
     border: none;
     box-shadow: none;
+    outline: none;
     
     &:active, &:focus, &:hover {
         text-decoration: none;
         border: none;
         box-shadow: none;
+        outline: none;
+    }
+}
+
+@mixin star-clean-input() {
+    text-decoration: none;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    
+    &:active, &:focus, &:hover {
+        text-decoration: none;
+        border: none;
+        box-shadow: none;
+        outline: none;
     }
 }
 
 @mixin star-swiper {
     @include star-control-frame();
-    @include star-text-ui-caption();
-    display: flex;
+    position: relative;
+    display: block;
+    overflow: hidden;
+    
+    @include for(medium-screens) {
+        border: none;
+        
+        &.show-right-arrow {
+            .arrow-gradient.right {
+                display: block;
+            }
+            
+            .swiper-arrow.swipe-right {
+                display: flex;
+            }
+        }
+        
+        &.show-left-arrow {
+            .arrow-gradient.left {
+                display: block;
+            }
+            
+            .swiper-arrow.swipe-left {
+                display: flex;
+            }
+        }
+    }
+    
+    &.only-one-item {
+        .arrow-gradient.right {
+            display: none;
+        }
+        
+        .swiper-arrow.swipe-right {
+            display: none;
+        }
+        
+        .arrow-gradient.left {
+            display: none;
+        }
+        
+        .swiper-arrow.swipe-left {
+            display: none;
+        }
+        
+        .swiper-list {
+            width: 100%;
+            left: 0px;
+        }
+    }
+    
+    .arrow-gradient {
+        display: none;
+        
+        @include for(medium-screens) {
+            width: 45px;
+            height: 100%;
+            position: absolute;
+            top: 0px;
+            z-index: 12;
+            pointer-events: none;
+            background: linear-gradient(270deg, #FFFFFF 30%, rgba(255, 255, 255, 0) 100%);
+    
+            &.right {
+                right: 46px;
+            }
+            
+            &.left {
+                transform: matrix(-1, 0, 0, 1, 0, 0);
+                left: 46px;
+            }
+        }
+    }
     
     .swiper-arrow {
         @include star-clean-a();
@@ -35,6 +122,14 @@
         align-items: center;
         background-position: center center;
         background-repeat: no-repeat;
+        background-color: $leyka-star-color-white;
+        position: absolute;
+        top: 0px;
+        z-index: 10;
+        
+        @include for(medium-screens) {
+            display: none;
+        }
 
         &:after {
             content: " ";
@@ -47,42 +142,256 @@
         &.swipe-left {
             background-image: url(../../img/icon-gallery-nav-arrow-left-001.svg);
             justify-content: flex-end;                
+            left: 0px;
         }
         
         &.swipe-right {
             background-image: url(../../img/icon-gallery-nav-arrow-right-001.svg);
             justify-content: flex-start;
-            order: 100;
+            right: 0px;
+        }
+    }
+    
+    .swiper-list {
+        display: flex;
+        position: absolute;
+        width: calc(100% - 100px);
+        left: 50px;
+        overflow: hidden;
+        z-index: 8;
+        
+        @include for(medium-screens) {
+            justify-content: space-between;
+            left: 0px;
+            width: max-content;
+            overflow: auto;
         }
     }
     
     .swiper-item {
-        @include star-amount();
-        color: $leyka-star-color-main;
+        background-color: transparent;
         display: none;
-        width: calc(100% - 100px);
-        height: 100%;
+        width: 100%;
+        height: 56px;
         align-items: center;
         justify-content: center;
+        overflow: hidden;
+        white-space: nowrap;
         
-        label {
-            all: unset;
-            
-            span {
-                all: unset;
+        @include for(medium-screens) {
+            display: flex;
+            border: 2px solid $leyka-star-color-gray-superlight;
+            border-radius: 4px;
+            width: 100%;
+            min-width: max-content;
+            padding-left: 1.5 * $leyka-star-base;
+            padding-right: 1.5 * $leyka-star-base;
+            cursor: pointer;
+            margin-right: $leyka-star-base;
+            flex-grow: 2;
+        }
+        
+        span, input {
+            @include star-text-amount();
+            color: $leyka-star-color-main;
+            background-color: transparent;
+
+            @include for(medium-screens) {
+                @include star-text-ui-caption();
+                color: $leyka-star-color-gray;
+                
+                &.amount {
+                    width: auto;
+                }
+            }
+        }
+        
+        &.selected {
+            @include for(medium-screens) {
+                span, input {
+                    color: $leyka-star-color-gray-dark;
+                }
+            }
+        }
+        
+        &:not(.selected) {
+            @include for(medium-screens) {
+                span, input {
+                    color: $leyka-star-color-gray-semi-dark;
+                }
             }
         }
         
         span {
-            all: unset;
-            &:before {
+            &.currency:before {
                 content: " ";
-                margin-left: 0.5rem;
+                margin-left: 0.5 * $leyka-star-base;
             }
         }
         
-        &:first-of-type {
+        input[type=text], input[type=number] {
+            padding: 0;
+            flex-grow: 0;
+            width: auto;
+            outline: none;
+            text-align: right;
+            
+            &.show-ph {
+                margin-bottom: 7px;
+                text-align: center;
+                
+                @include for(medium-screens) {
+                    margin-bottom: 0px;
+                    min-width: 105px;
+                    &.empty {
+                        min-width: 105px;
+                    }
+                }
+            }
+
+            &.empty {
+                @include for(medium-screens) {
+                    min-width: 50px;
+                }
+            }
+            
+            &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+                @include leyka-star-swiper-input-placeholder();
+            }
+            &::-moz-placeholder { /* Firefox 19+ */
+                @include leyka-star-swiper-input-placeholder();
+            }
+            &:-ms-input-placeholder { /* IE 10+ */
+                @include leyka-star-swiper-input-placeholder();
+            }
+            &:-moz-placeholder { /* Firefox 18- */
+                @include leyka-star-swiper-input-placeholder();
+            }
+        }
+        
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        input[type=number] {
+            -moz-appearance:textfield;
+        }
+        
+        &.selected {
             display: flex;
         }
+    }
+}
+
+@mixin leyka-star-swiper-input-placeholder() {
+    @include star-text();
+    color: $leyka-star-color-gray;
+    vertical-align: top;
+}
+
+@mixin leyka-star-checkbox() {
+    span {
+        display: inline-block;
+        padding-left: 26px;
+        position: relative;
+        margin-bottom: 1.5 * $leyka-star-base;
+    }
+    
+    input {
+        margin: 0;
+        padding: 0;
+        position: absolute;
+        //top: -1000px; // 4px
+        top: unset;
+        left: 0;
+        border: none;
+        opacity: 0;
+        z-index: 10;
+        cursor: pointer;
+    }
+    
+    label {
+        @include star-text-check-label();
+        color: $leyka-star-color-gray-dark;
+        display: block;
+        position: relative;
+        z-index: 2;
+        margin-bottom: 14px;
+        
+        &:last-of-type {
+            margin-bottom: 0;
+        }
+    
+        &:before {
+            content: '';
+            display: block;
+            width: 18px;
+            height: 18px;
+            border-radius: 2px;
+            background: $color-white;
+            border: 2px solid $leyka-star-color-gray-superlight;
+            position: absolute;
+            top: 1px;
+            left: -26px;
+            cursor: pointer;
+        }
+    
+        a {
+            @include star-text-check-label();
+            color: $leyka-star-color-gray-dark;
+        }
+    }
+    
+    input:checked + label {
+        &:before {
+            background-color: transparent;
+            border: none;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAADaSURBVHgBxdOvDsIwEAbw75Y9wB4BjcVg0PgloEiQaLAzQ2AJFgMPQDKPXbCT0wyeYCFBQukN1gD7A+tI+JJLd0v7y1WUxG41xJUWACzoJYIhXBL+ei+bBuolNlNEtGzohAKPF8vAj6IFkTdPqhaUALIEakykEHsCcOlAZUgWOobAIayMZCDyN6BZ7wVTyMAtRDjmc8Ob6XxKMOFINNjekZHEOn2UxXz/wYdoKSdxuqr/hORCCuO12f4KKYRSrEr++0TywleLZVmPV6wXgcjABWP+gG6EHIQwvQGWxVG/n7Uq8AAAAABJRU5ErkJggg==');
+            background-repeat: no-repeat;
+            background-size: 18px 18px;
+            background-position: 0 0px;
+        }
+    }    
+}
+
+@mixin leyka-star-btn($mod: default) {
+    @include star-text-ui-caption();
+    background-color: $leyka-star-color-main;
+    display: block;
+    color: $leyka-star-color-white;
+    border-radius: 4px;
+    width: 100%;
+    padding-top: 19px;
+    padding-bottom: 19px;
+    
+	@if $mod == inactive {
+		background-color: $leyka-star-color-main-inactive;
+        color: $leyka-star-color-white;
+	}
+	@else if $mod == secondary {
+		background-color: $leyka-star-color-white;
+        color: $leyka-star-color-gray;
+        border: 1px solid $leyka-star-color-gray-superlight;
+	}
+}
+
+@mixin leyka-star-single-link($mod: default) {
+    @include star-text-ui-caption();
+    display: inline-block;
+    color: $leyka-star-color-white;
+    width: auto;
+    
+    background-color: transparent;
+    color: $leyka-star-color-main;
+    border: none;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    
+    @include star-clean-a();
+    
+    &:hover {
+        text-decoration: underline;
     }
 }

@@ -382,6 +382,7 @@ function leyka_get_campaign_success_page_url($campaign_id) {
     $leyla_template_data = leyka_get_current_template_data($campaign_id);
     if(!empty($leyla_template_data['id'])) {
         $url = leyka_template_to_query_arg( $leyla_template_data['id'], $url );
+        $url = add_query_arg('leyka_cid', $campaign_id, $url);
     }
     
     return $url;
@@ -461,6 +462,7 @@ function leyka_get_campaign_failure_page_url($campaign_id) {
     $leyla_template_data = leyka_get_current_template_data($campaign_id);
     if(!empty($leyla_template_data['id'])) {
         $url = leyka_template_to_query_arg( $leyla_template_data['id'], $url );
+        $url = add_query_arg('leyka_cid', $campaign_id, $url);
     }
     
     return $url;
@@ -486,6 +488,7 @@ function leyka_get_form_templates_list() {
     }
 
     return $list;
+
 }
 
 function leyka_get_currencies_data($currency_id = false) {
@@ -604,11 +607,11 @@ function leyka_get_filter_category_label($category_id) {
 function leyka_get_gateway_activation_status_label($activation_status) {
 
     $activation_status_labels = array(
-        'active' => 'Подключен',
-        'inactive' => 'Не подключен',
-        'activating' => 'В процессе подключения',
+        'active' => __('Active', 'leyka'), // 'Подключен',
+        'inactive' => __('Inactive', 'leyka'), // 'Не подключен',
+        'activating' => __('Connection is in process', 'leyka'), // 'В процессе подключения',
     );
-    
+
     return $activation_status && !empty($activation_status_labels[$activation_status]) ? $activation_status_labels[$activation_status] : false;
     
 }
@@ -1211,12 +1214,13 @@ function leyka_modern_template_displayed() {
 
     $modern_template_displayed = false;
     $modern_templates = array('revo', 'star');
+    
+    $post = get_post();
 
     if(is_singular(Leyka_Campaign_Management::$post_type)) {
 
         $campaign = new Leyka_Campaign(get_post());
         if($campaign->template == 'default') {
-
             $leyka_template_data = leyka_get_current_template_data();
             $modern_template_displayed = in_array($leyka_template_data['id'], $modern_templates);
 
@@ -1224,12 +1228,41 @@ function leyka_modern_template_displayed() {
             $modern_template_displayed = in_array($campaign->template, $modern_templates);
         }
 
-    } else if(get_post() && has_shortcode(get_post()->post_content, 'leyka_inline_campaign')) {
-        $modern_template_displayed = true;
+    } elseif($post) {
+        
+        if(has_shortcode($post->post_content, 'leyka_inline_campaign') || has_shortcode($post->post_content, 'knd_leyka_inline_campaign')) {
+            $modern_template_displayed = true;
+        }
+        elseif(has_shortcode($post->post_content, 'leyka_campaign_form')) {
+            $pattern = get_shortcode_regex();
+            if(preg_match_all( '/'. $pattern .'/s', $post->post_content, $matches)) {
+                $attr_id_match = array();                
+                foreach( $matches[2] as $key => $value) {
+                    if($value == 'leyka_campaign_form') {
+                        $get = str_replace(" ", "&" , $matches[3][$key] );
+                        parse_str($get, $atts);
+                        
+                        if(array_key_exists('id', $atts)) {
+                            $campaign_id = preg_match_all("/(\d+)/", $atts['id'], $attr_id_match);
+                            $campaign_id = isset($attr_id_match[1][0]) ? (int)$attr_id_match[1][0] : 0;
+                            if(!$campaign_id) {
+                                continue;
+                            }
+                            
+                            $campaign = new Leyka_Campaign($campaign_id);
+                            if($campaign && in_array($campaign->template, $modern_templates)) {
+                                $modern_template_displayed = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            
+        }
     }
-
+    
     return apply_filters('leyka_modern_template_displayed', $modern_template_displayed);
-
 }
 
 function leyka_success_widget_displayed() {
@@ -1837,3 +1870,45 @@ function leyka_template_to_query_arg($template_id, $url) {
 function leyka_template_from_query_arg() {
     return empty($_GET['leyka_ctpl']) ? null : trim($_GET['leyka_ctpl']);
 }
+
+function leyka_campaign_id_from_query_arg() {
+    return empty($_GET['leyka_cid']) ? null : trim($_GET['leyka_cid']);
+}
+
+function leyka_get_upload_max_filesize() {
+
+    if(defined('WP_MEMORY_LIMIT')) {
+        $max_filesize = WP_MEMORY_LIMIT;
+    } else {
+        $max_filesize = ini_get('upload_max_filesize');
+    }
+
+    return $max_filesize;
+
+}
+
+function leyka_use_leyka_campaign_template($template) {
+
+    $campaign_id = null;
+    if( is_singular(Leyka_Campaign_Management::$post_type) ) {
+        $campaign_id = get_post()->ID;
+    } else if(is_page(leyka_options()->opt('success_page')) || is_page(leyka_options()->opt('failure_page'))) {
+        $campaign_id = leyka_campaign_id_from_query_arg();
+    }
+
+    if($campaign_id) {
+
+        $campaign = leyka_get_validated_campaign($campaign_id);
+        $campaign_type = get_post_meta($campaign_id, 'campaign_type', true);
+        
+        if($campaign && $campaign_type === 'persistent' && $campaign->template === 'star') {
+            $template = LEYKA_PLUGIN_DIR . 'templates/campaign/type-persistent.php';
+        }
+
+    }
+    
+    return $template;
+
+}
+add_filter('single_template', 'leyka_use_leyka_campaign_template', 10, 1);
+add_filter('page_template', 'leyka_use_leyka_campaign_template', 10, 1);
