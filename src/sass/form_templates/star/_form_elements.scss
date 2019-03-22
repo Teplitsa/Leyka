@@ -1,6 +1,7 @@
 /** == Form elements (_form_elements.scss) == **/
 
-.leyka-tpl-star-form .section .section__fields {
+.leyka-tpl-star-form .section .section__fields,
+.leyka-screen-form .section .section__fields {
     
     // periodicity
     &.periodicity {
@@ -614,8 +615,20 @@
 
 .leyka-screen-thankyou .leyka-pf-star .leyka-screen-form,
 .leyka-pf-star .leyka-screen-form.leyka-screen-thankyou {
+    h1 {
+        @include star-h1();
+        color: $leyka-star-color-black;
+        margin-bottom: 1.5 * $leyka-star-base;
+        text-align: center;
+        
+        &:before {
+            display: none;
+        }
+    }
+
     h2 {
         @include star-h2();
+        color: $leyka-star-color-black;
         margin-bottom: 1.5 * $leyka-star-base;
         text-align: center;
     }
@@ -624,11 +637,40 @@
         @include star-text-rare();
         text-align: center;
         margin-bottom: 1.5 * $leyka-star-base;
+        
+        br {
+            display: none;
+        }
+    }
+    
+    .section--person {
+        text-align: left;
+        br {
+            display: none;
+        }
+    }
+    
+    .thankyou-email-me-button {
+        margin-top: -$leyka-star-base;
+        padding-top: 0px;
+        
+        input[type=submit].leyka-success-submit {
+            @include leyka-star-btn();
+        }
+    }
+    
+    .leyka-pf__final-informyou {
+        .text {
+            @include star-h2();
+            color: $leyka-star-color-black;
+            margin-bottom: 1.5 * $leyka-star-base;
+            text-align: center;
+        }
     }
     
     .leyka-star-submit {
         text-align: center;
-        padding-top: 6px;
+        margin-top: 1.5 * $leyka-star-base;
         
         .leyka-star-btn {
             @include leyka-star-single-link();

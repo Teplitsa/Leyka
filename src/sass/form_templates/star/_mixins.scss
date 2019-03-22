@@ -379,6 +379,7 @@
 
 @mixin leyka-star-single-link($mod: default) {
     @include star-text-ui-caption();
+    font-weight: normal;
     display: inline-block;
     color: $leyka-star-color-white;
     width: auto;
