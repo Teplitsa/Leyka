@@ -114,12 +114,17 @@ class Leyka extends Leyka_Singleton {
 
         add_action('admin_bar_menu', array($this, 'addToolbarMenu'), 999);
 
+        // Donor accounts related hooks:
         if(get_option('leyka_donor_accounts_available')) {
+
             add_action('init', function(){
                 if(leyka_current_user_has_role('donor')) {
                     add_filter('show_admin_bar', '__return_false');
                 }
             }, 9);
+
+            add_action('leyka_donor_account_not_created', array($this, 'handle_donor_account_creation_error'), 10, 2);
+
         }
 
         if(is_admin()) { // Admin area only
@@ -1603,10 +1608,10 @@ class Leyka extends Leyka_Singleton {
 
             $donor_account_id = $this->_registerDonorAccount($donation_id);
             if(is_wp_error($donor_account_id)) {
-                /** @todo Donation is created, but donor account wasn't - do something about it */
+                do_action('leyka_donor_account_not_created', $donor_account_id, $donation_id);
+            } else {
+                do_action('leyka_donor_account_created', $donor_account_id, $donation_id);
             }
-
-            do_action('leyka_donor_account_created', $donor_account_id, $donation_id);
 
             return $donation_id;
 
@@ -1649,11 +1654,63 @@ class Leyka extends Leyka_Singleton {
             $donor_user = new WP_User($donor_user_id);
             $donor_user->set_role('donor');
 
+            /** @todo Set the "is_inactive" user meta if needed */
+
         }
 
-        /** @todo Set the "is_inactive" user meta if needed */
-
         return $donor_user_id;
+
+    }
+
+    /**
+     * @param $donor_account_error WP_Error
+     * @param $donation_id integer
+     */
+    public function handle_donor_account_creation_error(WP_Error $donor_account_error, $donation_id) {
+
+        $donation = new Leyka_Donation($donation_id);
+        $donation->donor_account = $donor_account_error;
+
+        // Notify website tech. support:
+        $email_to = leyka_options()->opt('tech_support_email') ?
+            leyka_options()->opt('tech_support_email') : get_option('admin_email');
+
+        if( !$email_to ) {
+            return;
+        }
+
+        wp_mail(
+            $email_to,
+            apply_filters(
+                'leyka_donor_account_error_email_title',
+                __("Warning: donor account wasn't created", 'leyka'),
+                $donor_account_error,
+                $donation
+            ),
+            wpautop(apply_filters(
+                'leyka_donor_account_error_email_text',
+                sprintf(
+                    __("Hello,\n\n this is a technical notification from the <a href='%s'>%s</a> website.\n\nJust now Leyka plugin encountered an error while creating donor's personal account on initial recurring donation. The details are below.\n\nDonation ID: %d\nDonor: %s\nDonor's email: %s\nAccount creation error: %s\n\nThe <a href='%s'>recurring donation itself</a> was created successfully.", 'leyka'),
+                    home_url(),
+                    get_bloginfo('name'),
+                    $donation_id,
+                    $donation->donor_name,
+                    $donation->donor_email,
+                    $donor_account_error->get_error_message(),
+                    admin_url('post.php?post='.$donation_id.'&action=edit')
+                ),
+                $donor_account_error,
+                $donation
+            )),
+            array(
+                'From: '.apply_filters(
+                    'leyka_email_from_name',
+                    leyka_options()->opt_safe('email_from_name'),
+                    $donor_account_error,
+                    $donation
+                ).' <'.leyka_options()->opt_safe('email_from').'>',
+            )
+        );
 
     }
 
