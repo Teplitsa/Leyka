@@ -24,7 +24,7 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/account-header.php'); ?>
 				
 						<form class="leyka-screen-form">
 							
-							<h2>Личынй кабинет</h2>
+							<h2>Личный кабинет</h2>
 							
 							<p>Мы благодарны вам за оказываемую поддержку!</p>
 							

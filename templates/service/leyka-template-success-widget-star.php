@@ -14,6 +14,15 @@ if( !$donation_id ) {
     return;
 }?>
 
+<div id="content" class="site-content leyka-campaign-content">
+    
+<section id="primary" class="content-area">
+    <main id="main" class="site-main">
+        <div class="entry-content">
+
+
+
+
 <div id="leyka-pf-" class="leyka-pf leyka-pf-star">
 
     <div class="leyka-pf__final-screen">
@@ -79,4 +88,10 @@ if( !$donation_id ) {
         
     </div>
     
+</div>
+
+
+        </div>
+    </main>
+</section>
 </div>
