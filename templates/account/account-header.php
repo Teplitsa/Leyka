@@ -8,10 +8,11 @@
  * @since 1.0.0
  *
  * $leyka_account_page_title
- * $leyka_account_cover_url
- * $leyka_account_logo_url
  * 
  */
+
+$leyka_account_cover_url = '';
+$leyka_account_logo_url = '';
 
 ?>
 
