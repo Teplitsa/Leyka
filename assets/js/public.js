@@ -1474,6 +1474,7 @@ jQuery(document).ready(function($){
         
         toggleSwiperArrows($swiper);
         swipeList($swiper, $activeItem);
+        $activeItem.find('input[name="leyka_payment_method"]').click();
         checkFormFillCompletion($swiper.closest('form.leyka-pm-form'));
     }
 
@@ -1818,15 +1819,18 @@ jQuery(document).ready(function($){
             toggleStaticPMForm($_form);
             
             $(this).find('input.payment-opt__radio').change(function(){
-                toggleStaticPMForm($_form);
+                if($(this).prop('checked')) {
+                    toggleStaticPMForm($_form);
+                }
             });
         });
     }
     
     function toggleStaticPMForm($_form) {
-        var $pmRadio = $_form.find('.payment-opt.swiper-item.selected input.payment-opt__radio');
+        var $pmRadio = $_form.find('input[name="leyka_payment_method"]:checked');
+        var processing = $pmRadio.attr('data-processing');
         
-        if($pmRadio.data('processing') == 'static') {
+        if(processing == 'static') {
             $_form.find('.section--static.' + $pmRadio.val()).show();
             $_form.find('.section--person').hide();
         }

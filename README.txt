@@ -93,10 +93,10 @@ PHP version required: 5.6+
 * New: Star template added.
 * New: Persistent campaigns settings & page template added.
 * New: New fields added to the Donations export.
-* Fix: short month active recurring problem fixed.
+* Fix: Short month active recurring problem fixed.
 * Fix: "Donor subscribed" filter added to the Donations list admin page.
 * Fix: Revo template markup fixed for some small screen cases.
-* Tweak: plugin frontoffice & backoffice images optimized.
+* Tweak: Plugin frontoffice & backoffice images optimized.
 
 = 3.0.4 =
 * New: DataLayer support added for GA e-commerce integration.

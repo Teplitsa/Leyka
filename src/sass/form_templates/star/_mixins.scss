@@ -358,6 +358,10 @@
 
 @mixin leyka-star-btn($mod: default) {
     @include star-text-ui-caption();
+    text-decoration: none;
+    border: none;
+    box-shadow: none;
+    outline: none;
     background-color: $leyka-star-color-main;
     display: block;
     color: $leyka-star-color-white;
@@ -379,6 +383,7 @@
 
 @mixin leyka-star-single-link($mod: default) {
     @include star-text-ui-caption();
+    font-weight: normal;
     display: inline-block;
     color: $leyka-star-color-white;
     width: auto;

@@ -621,7 +621,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         if(isset($_REQUEST['donations_type']) && $campaign->donations_types_available != $_REQUEST['donations_type']) {
             $meta['donations_type'] = (array)$_REQUEST['donations_type'];
         } else if( !isset($_REQUEST['donations_type']) && !$campaign->donations_types_available ) {
-            $meta['donations_type'] = array('single');
+            $meta['donations_type'] = array('single', 'recurring');
         }
 
         if(
@@ -952,18 +952,31 @@ class Leyka_Campaign {
             case 'type':
             case 'campaign_type':
                 return empty($this->_campaign_meta['campaign_type']) ? 'temporary' : $this->_campaign_meta['campaign_type'];
+
+            // Donation types checked in campaign settings:
             case 'donations_type':
-            case 'donations_type_available':
             case 'donations_types':
-            case 'donations_types_available':
                 return $this->_campaign_meta['donations_type'] ?
                     maybe_unserialize($this->_campaign_meta['donations_type']) : array('single', 'recurring');
+
+            // Donation types really available for campaign:
+            case 'donations_type_available':
+            case 'donations_types_available':
+                $types_available = $this->donations_types;
+                if(in_array('recurring', $types_available) && !leyka_is_recurring_supported()) {
+                    unset( $types_available[array_search('recurring', $types_available)] );
+                }
+                return $types_available;
+
             case 'donations_type_default':
-                return count($this->donations_types_available) > 1
+                $types_available = $this->donations_types_available;
+
+                return count($types_available) > 1
                     && $this->_campaign_meta['donations_type_default']
                     && in_array($this->_campaign_meta['donations_type_default'], array_keys(leyka()->getDonationTypes())) ?
                         $this->_campaign_meta['donations_type_default'] :
-                        ($this->donations_types_available ? $this->donations_types_available : 'single');
+                        ($types_available ? reset($types_available) : 'single');
+
             case 'template':
             case 'campaign_template':
                 return $this->_campaign_meta['campaign_template'] === 'default' ?

@@ -8,7 +8,9 @@
  * @since 1.0.0
  */
 
-include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
+$leyka_account_page_title = esc_html__('Personal account', 'leyka');
+
+include(LEYKA_PLUGIN_DIR . 'templates/account/account-header.php'); ?>
 
 	<div id="content" class="site-content leyka-campaign-content">
         
