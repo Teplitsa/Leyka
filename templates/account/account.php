@@ -61,9 +61,10 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
             </form>
 </div>
 </div>
-            
+
 		</main><!-- #main -->
 	</section><!-- #primary -->
+
 
 	</div><!-- #content -->
 

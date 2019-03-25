@@ -100,3 +100,13 @@ function leyka_star_body_classes($classes) {
     return $classes;
 }
 add_filter('body_class', 'leyka_star_body_classes');
+
+function leyka_star_suppress_main_query( $request, $query ){
+    if( $query->is_main_query() && !empty(get_query_var('leyka-screen')) ) {
+        return false;
+    }
+    else {
+        return $request;
+    }
+}
+add_filter('posts_request', 'leyka_star_suppress_main_query', 10, 2);
