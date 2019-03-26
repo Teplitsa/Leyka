@@ -1652,9 +1652,11 @@ class Leyka extends Leyka_Singleton {
         if( !is_wp_error($donor_user_id) ) {
 
             $donor_user = new WP_User($donor_user_id);
-            $donor_user->set_role('donor');
 
-            /** @todo Set the "is_inactive" user meta if needed */
+            $donor_user->set_role('donor');
+            update_user_meta($donor_user_id, 'leyka_account_activation_code', wp_generate_password(20, false, false));
+
+            $donation->donor_account = $donor_user_id;
 
         }
 

@@ -345,11 +345,27 @@ class Leyka_Donation_Management {
         if(leyka_options()->opt('donor_accounts_available')) {
 
             $email_placeholders[] = '#DONOR_ACCOUNT_LOGIN_LINK#';
+            $donor_account_login_text = '';
 
-            $donor_account_login_url = '//some-url.here/fsDfsfSeF'; /** @todo Add the real account login URL here */
+            if($donation->donor_account_error) { // Donor account wasn't created due to some error
+                $donor_account_login_text = sprintf(__('To control your recurring subscriptions please contact the <a href="mailto:%s">website administration</a>.', 'leyka'), get_option('admin_email'));
+            } else if($donation->donor_account_id) {
+
+                $donor_account_activation_code = get_user_meta(
+                    $donation->donor_account_id,
+                    'leyka_account_activation_code',
+                    true
+                );
+
+                $donor_account_login_text = $donor_account_activation_code ?
+                    sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>', 'leyka'), home_url('/donor-account/login/?activate='.$donor_account_activation_code)) : // Вы можете управлять вашими пожертвованиями в вашем (link)личном кабинете(/link).
+                    sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>', 'leyka'), home_url('/donor-account/login/?u='.$donation->donor_account_id));
+
+            }
+
             $email_placeholder_values[] = apply_filters(
                 'leyka_email_donor_acccount_link',
-                '<a href="'.$donor_account_login_url.'" target="_blank">'.$donor_account_login_url.'</a>',
+                $donor_account_login_text,
                 $donation,
                 $campaign
             );
@@ -1678,7 +1694,7 @@ class Leyka_Donation {
 
         $donation = leyka_get_validated_donation($donation);
 
-        if($donation->type != 'rebill') {
+        if($donation->type !== 'rebill') {
             return false;
         }
 
@@ -1974,7 +1990,7 @@ class Leyka_Donation {
                 wp_update_post(array('ID' => $this->_id, 'post_date' => $value));
                 break;
             case 'date_timestamp':
-                    wp_update_post(array('ID' => $this->_id, 'post_date' => date('Y-m-d H:i:s', $value)));
+                wp_update_post(array('ID' => $this->_id, 'post_date' => date('Y-m-d H:i:s', $value)));
                 break;
 
             case 'donor_name':
