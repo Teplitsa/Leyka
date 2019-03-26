@@ -358,8 +358,8 @@ class Leyka_Donation_Management {
                 );
 
                 $donor_account_login_text = $donor_account_activation_code ?
-                    sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>', 'leyka'), home_url('/donor-account/login/?activate='.$donor_account_activation_code)) : // Вы можете управлять вашими пожертвованиями в вашем (link)личном кабинете(/link).
-                    sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>', 'leyka'), home_url('/donor-account/login/?u='.$donation->donor_account_id));
+                    sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?activate='.$donor_account_activation_code)) : // Вы можете управлять вашими пожертвованиями в вашем (link)личном кабинете(/link).
+                    sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?u='.$donation->donor_account_id));
 
             }
 
@@ -806,9 +806,8 @@ class Leyka_Donation_Management {
                        type="text"
                        data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>"
                        placeholder="<?php _e('Select a campaign', 'leyka');?>"
-                       value="<?php echo htmlentities($campaign->title, ENT_QUOTES, 'UTF-8');?>"
-                    />
-                <input id="campaign-id" type="hidden" name="campaign-id" value="<?php echo $campaign->id;?>" />
+                       value="<?php echo htmlentities($campaign->title, ENT_QUOTES, 'UTF-8');?>">
+                <input id="campaign-id" type="hidden" name="campaign-id" value="<?php echo $campaign->id;?>">
                 <div id="cancel-campaign-select" class="button"><?php _e('Cancel', 'leyka');?></div>
             </div>
 		</div> <!-- .set-action -->
@@ -968,6 +967,7 @@ class Leyka_Donation_Management {
                 <span class="fake-input"><?php echo leyka_get_payment_type_label($donation->payment_type); // "single", "rebill", "correction" ?></span>
             </div>
         </div>
+
         <?php if($donation->init_recurring_donation_id) {?>
         <div class="leyka-ddata-string">
             <label><?php _e('Initial donation of the recurring subscription', 'leyka');?>:</label>
@@ -1896,15 +1896,17 @@ class Leyka_Donation {
                 return $this->_donation_meta['donor_subscription_email'] ?
                     $this->_donation_meta['donor_subscription_email'] :
                     ($this->_donation_meta['donor_email'] ? $this->_donation_meta['donor_email'] : '');
-            
+
+            case 'donor_user_id':
             case 'donor_account_id':
                 $donor_account = isset($this->_donation_meta['donor_account']) ?
-                    maybe_unserialize(isset($this->_donation_meta['donor_account'])) : false;
+                    maybe_unserialize($this->_donation_meta['donor_account']) : false;
                 return $donor_account && !is_wp_error($donor_account) ? (int)$donor_account : false;
 
+            case 'donor_user_error':
             case 'donor_account_error':
                 $donor_account_error = isset($this->_donation_meta['donor_account']) ?
-                    maybe_unserialize(isset($this->_donation_meta['donor_account'])) : false;
+                    maybe_unserialize($this->_donation_meta['donor_account']) : false;
                 return $donor_account_error && is_wp_error($donor_account_error) ? $donor_account_error : false;
 
             case 'gateway_response':

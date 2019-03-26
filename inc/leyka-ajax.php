@@ -117,7 +117,7 @@ function leyka_get_gateway_redirect_data() {
             $payment_vars['message'] = $error->get_error_message();
             $payment_vars['status'] = 1;
 
-        } else {
+        } else { // Donation created
             $payment_vars['donation_id'] = $donation_id;
         }
 
@@ -125,6 +125,10 @@ function leyka_get_gateway_redirect_data() {
             apply_filters('leyka_submission_form_data-'.$pm['gateway_id'], $_POST, $pm['payment_method_id'], $donation_id),
             $payment_vars
         );
+
+        if(is_int($donation_id)) {
+            leyka()->register_donor_account($donation_id);
+        }
 
     } else { // Get payment vars without donation submit
         $payment_vars = array_merge(
