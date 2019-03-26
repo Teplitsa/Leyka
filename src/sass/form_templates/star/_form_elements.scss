@@ -748,6 +748,7 @@
                 text-align: left;
                 margin-bottom: 0;
                 margin-top: 0px;
+                position: relative;
                 
                 &:before {
                     content: " ";
@@ -787,6 +788,16 @@
             
             &.error .item-title:before {
                 background-image: url(../../img/star-icon-error.svg);
+            }
+            
+            .field-q {
+                @include field-q();
+                display: block;
+                position: absolute;
+                width: 24px;
+                height: 24px;
+                left: -2px;
+                top: -3px;
             }
             
             .date {

@@ -49,32 +49,50 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 								<h3 class="list-title">История пожертвований</h3>
 								<div class="items">
 									<div class="item break">
-										<h4 class="item-title">Отключение</h4>
+										<h4 class="item-title">
+											<span class="field-q"><span class="field-q-tooltip">Описание операции, представленной значком</span></span>
+											Отключение
+										</h4>
 										<span class="date">12.01.2019</span>
 										<p>«Помогите изданию оставаться независимым источником информации»</p>
 									</div>
 									<div class="item no-pay">
-										<h4 class="item-title">300 Р.</h4>
+										<h4 class="item-title">
+											<span class="field-q"><span class="field-q-tooltip">Описание операции, представленной значком</span></span>
+											300 Р.
+										</h4>
 										<span class="date">12.01.2019</span>
 										<p>«Помогите изданию оставаться независимым источником информации»</p>
 									</div>
 									<div class="item error">
-										<h4 class="item-title">300 Р.</h4>
+										<h4 class="item-title">
+											<span class="field-q"><span class="field-q-tooltip">Описание операции, представленной значком</span></span>
+											300 Р.
+										</h4>
 										<span class="date">12.01.2019</span>
 										<p>«Помогите изданию оставаться независимым источником информации»</p>
 									</div>
 									<div class="item pay">
-										<h4 class="item-title">300 Р.</h4>
+										<h4 class="item-title">
+											<span class="field-q"><span class="field-q-tooltip">Описание операции, представленной значком</span></span>
+											300 Р.
+										</h4>
 										<span class="date">12.01.2019</span>
 										<p>«Помогите изданию оставаться независимым источником информации»</p>
 									</div>
 									<div class="item break">
-										<h4 class="item-title">Отключение</h4>
+										<h4 class="item-title">
+											<span class="field-q"><span class="field-q-tooltip">Описание операции, представленной значком</span></span>
+											Отключение
+										</h4>
 										<span class="date">12.01.2019</span>
 										<p>«Помогите изданию оставаться независимым источником информации»</p>
 									</div>
 									<div class="item refund">
-										<h4 class="item-title">Отключение</h4>
+										<h4 class="item-title">
+											<span class="field-q"><span class="field-q-tooltip">Описание операции, представленной значком</span></span>
+											Отключение
+										</h4>
 										<span class="date">12.01.2019</span>
 										<p>«Помогите изданию оставаться независимым источником информации»</p>
 									</div>
