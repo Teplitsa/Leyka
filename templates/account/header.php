@@ -1,28 +1,19 @@
 <?php
 /**
- * The template for displaying leyka persistent campaign
+ * The template for displaying leyka account screens
  *
  * @link https://leyka.te-st.ru/campaign/demo-kampaniya/
  *
  * @package Leyka
  * @since 1.0.0
+ *
+ * $leyka_account_page_title
  * 
  */
 
-$campaign_id = null;
-$cover_url = null;
-$cover_att_id = get_post_meta($campaign_id, 'campaign_cover', true);
-if($cover_att_id) {
-    $cover_url = wp_get_attachment_url( $cover_att_id );
-}
+$leyka_account_cover_url = '';
+$leyka_account_logo_url = '';
 
-$logo_url = null;
-$logo_att_id = get_post_meta($campaign_id, 'campaign_logo', true);
-if($logo_att_id) {
-    $logo_url = wp_get_attachment_url( $logo_att_id );
-}
-
-$custom_css = get_post_meta($campaign_id, 'campaign_css', true);
 ?>
 
 <!doctype html>
@@ -32,19 +23,15 @@ $custom_css = get_post_meta($campaign_id, 'campaign_css', true);
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<link rel="profile" href="https://gmpg.org/xfn/11" />
 	<?php wp_head(); ?>
-	
-	<?php if($custom_css):?>
-		<style type="text/css">
-			<?php echo $custom_css;?>
-		</style>
-	<?php endif;?>
 </head>
 
 <body <?php body_class(); ?>>
-<div id="page" class="site leyka-persistant-campaign">
+<div id="page" class="site leyka-persistant-campaign leyka-account">
 	<a class="skip-link screen-reader-text" href="#content"><?php _e( 'Skip to content', 'twentynineteen' ); ?></a>
 
-    <header id="masthead" class="leyka-campaign-header" style="<?php if($cover_url):?>background-image:url('<?php echo $cover_url;?>');<?php endif;?>">
-        <a href="#" class="leyka-campaign-logo" style="<?php if($logo_url):?>background-image:url('<?php echo $logo_url;?>');<?php endif;?>"></a>
-        <h1><?php echo get_the_title();?></h1>
+    <header id="masthead" class="leyka-campaign-header" style="<?php if(!empty($leyka_account_cover_url)):?>background-image:url('<?php echo $leyka_account_cover_url;?>');<?php endif;?>">
+        <div class="header-tint">
+            <a href="#" class="leyka-campaign-logo" style="<?php if(!empty($leyka_account_logo_url)):?>background-image:url('<?php echo $leyka_account_logo_url;?>');<?php endif;?>"></a>
+            <h1><?php echo !empty($leyka_account_page_title) ? $leyka_account_page_title : esc_html__('Leyka account', 'leyka');?></h1>
+        </div>
     </header><!-- #masthead -->

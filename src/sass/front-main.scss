@@ -7,7 +7,6 @@
 @import 'common';
 
 @import 'banners';
-@import 'account';
 @import 'campaign';
 
 @import 'form_templates/star/presets';
@@ -15,6 +14,7 @@
 @import 'form_templates/star/mixins';
 
 @import 'persistent_campaign';
+@import 'account';
 
 @import 'form_templates/revo/form_fields';
 @import 'form_templates/revo/form_layout';

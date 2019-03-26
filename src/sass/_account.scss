@@ -1,1 +1,54 @@
 /** == Account page styles (_account.scss) == **/
+
+.leyka-account .leyka-pf-star .leyka-screen-form {
+    
+    h2 {
+        @include star-h1();
+        margin-bottom: 1.5 * $leyka-star-base;
+        margin-top: 0px;
+        text-align: center;
+        color: $leyka-star-color-black;
+    }
+    
+    p {
+        @include star-text-rare();
+        text-align: center;
+        margin-bottom: 1.5 * $leyka-star-base;
+    }
+    
+    .leyka-star-submit {
+        margin-top: 4 * $leyka-star-base;
+        
+        .leyka-star-btn {
+            @include leyka-star-btn();
+        }
+    }
+    
+    .leyka-extra-links {
+        a {
+            @include leyka-star-link();
+        }
+    }
+    
+}
+
+.leyka-account div[id*="leyka-pf-"].leyka-pf-star .leyka-tpl-star-form .section {
+    margin-bottom: 0px;
+    margin-top: 4 * $leyka-star-base;
+}
+
+.leyka-screen-login .leyka-account,
+.leyka-screen-reset-password .leyka-account {
+    .leyka-pf {
+        display: flex;
+        justify-content: center;
+        
+        .leyka-payment-form {
+            max-width: 328px;
+            
+            @include for(medium-screens) {
+                min-width: 328px;
+            }
+        }        
+    }
+}

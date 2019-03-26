@@ -10,17 +10,16 @@
 
 $leyka_account_page_title = esc_html__('Personal account', 'leyka');
 
-include(LEYKA_PLUGIN_DIR . 'templates/account/account-header.php'); ?>
+include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 
-	<div id="content" class="site-content leyka-campaign-content">
+<div id="content" class="site-content leyka-campaign-content">
         
 	<section id="primary" class="content-area">
 		<main id="main" class="site-main">
 			<div class="entry-content">
 			
-
 				<div class="leyka-pf leyka-pf-star">
-					<div class="leyka-payment-form leyka-tpl-star-form" data-template="star">
+					<div class="leyka-payment-form leyka-tpl-star-form">
 				
 						<form class="leyka-screen-form">
 							
@@ -98,6 +97,6 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/account-header.php'); ?>
 	</section><!-- #primary -->
 
 
-	</div><!-- #content -->
+</div><!-- #content -->
 
 <?php get_footer(); ?>

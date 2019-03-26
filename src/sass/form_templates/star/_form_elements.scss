@@ -686,19 +686,6 @@
 }
 
 .leyka-screen-account .leyka-pf-star .leyka-screen-form {
-    h2 {
-        @include star-h1();
-        margin-bottom: 1.5 * $leyka-star-base;
-        margin-top: 0px;
-        text-align: center;
-        color: $leyka-star-color-black;
-    }
-    
-    p {
-        @include star-text-rare();
-        text-align: center;
-        margin-bottom: 1.5 * $leyka-star-base;
-    }
     
     .list {
         border-top: 1px solid $leyka-star-color-gray-superlight;
