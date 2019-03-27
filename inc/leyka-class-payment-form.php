@@ -835,15 +835,15 @@ function leyka_share_campaign_block($campaign_id = null) {
 /* previous submission errors */
 function leyka_pf_submission_errors() {?>
 
-    <div id="leyka-submit-errors" class="leyka-submit-errors" <?php echo leyka()->hasSessionErrors() ? '' : 'style="display:none"';?>>
-    <?php if(leyka()->hasSessionErrors()) {?>
+    <div id="leyka-submit-errors" class="leyka-submit-errors" <?php echo leyka()->has_session_errors() ? '' : 'style="display:none"';?>>
+    <?php if(leyka()->has_session_errors()) {?>
         <span><?php _e('Errors', 'leyka');?>: </span>
         <ul>
-            <?php foreach(leyka()->getSessionErrors() as $wp_error) { /** @var $wp_error WP_Error */?>
+            <?php foreach(leyka()->get_session_errors() as $wp_error) { /** @var $wp_error WP_Error */?>
                 <li><?php echo $wp_error->get_error_message();?></li>
             <?php }?>
         </ul>
-        <?php leyka()->clearSessionErrors();?>
+        <?php leyka()->clear_session_errors();?>
     <?php }?>
     </div>
 
@@ -937,7 +937,7 @@ function leyka_get_current_template_data($campaign = null, $template = null, $is
         $template = leyka_options()->opt('donation_form_template');
     }
 
-    $template = leyka()->getTemplate($template, !!$is_service);
+    $template = leyka()->get_template($template, !!$is_service);
    
     return $template ? $template : false;
 

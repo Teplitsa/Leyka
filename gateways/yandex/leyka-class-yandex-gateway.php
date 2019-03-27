@@ -102,25 +102,25 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
     protected function _initialize_pm_list() {
 
         if(empty($this->_payment_methods['yandex_all'])) {
-            $this->_payment_methods['yandex_all'] = Leyka_Yandex_All::getInstance();
+            $this->_payment_methods['yandex_all'] = Leyka_Yandex_All::get_instance();
         }
         if(empty($this->_payment_methods['yandex_card'])) {
-            $this->_payment_methods['yandex_card'] = Leyka_Yandex_Card::getInstance();
+            $this->_payment_methods['yandex_card'] = Leyka_Yandex_Card::get_instance();
         }
         if(empty($this->_payment_methods['yandex_money'])) {
-            $this->_payment_methods['yandex_money'] = Leyka_Yandex_Money::getInstance();
+            $this->_payment_methods['yandex_money'] = Leyka_Yandex_Money::get_instance();
         }
         if(empty($this->_payment_methods['yandex_wm'])) {
-            $this->_payment_methods['yandex_wm'] = Leyka_Yandex_Webmoney::getInstance();
+            $this->_payment_methods['yandex_wm'] = Leyka_Yandex_Webmoney::get_instance();
         }
         if(empty($this->_payment_methods['yandex_sb'])) {
-            $this->_payment_methods['yandex_sb'] = Leyka_Yandex_Sberbank_Online::getInstance();
+            $this->_payment_methods['yandex_sb'] = Leyka_Yandex_Sberbank_Online::get_instance();
         }
         if(empty($this->_payment_methods['yandex_ab'])) {
-            $this->_payment_methods['yandex_ab'] = Leyka_Yandex_Alpha_Click::getInstance();
+            $this->_payment_methods['yandex_ab'] = Leyka_Yandex_Alpha_Click::get_instance();
         }
         if(empty($this->_payment_methods['yandex_pb'])) {
-            $this->_payment_methods['yandex_pb'] = Leyka_Yandex_Promvzyazbank::getInstance();
+            $this->_payment_methods['yandex_pb'] = Leyka_Yandex_Promvzyazbank::get_instance();
         }
 
     }
@@ -192,7 +192,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             ) {
 
                 $error = new WP_Error('leyka_donation_amount_too_small', __('The amount of donations via Sberbank Online should be at least 10 RUR.', 'leyka'));
-                leyka()->addPaymentFormError($error);
+                leyka()->add_payment_form_error($error);
 
             }
 
@@ -1077,6 +1077,6 @@ class Leyka_Yandex_Promvzyazbank extends Leyka_Payment_Method {
 }
 
 function leyka_add_gateway_yandex() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka()->addGateway(Leyka_Yandex_Gateway::getInstance());
+    leyka()->add_gateway(Leyka_Yandex_Gateway::get_instance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_yandex');

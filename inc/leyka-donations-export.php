@@ -60,7 +60,7 @@ function leyka_do_donations_export() {
     $args = array(
         'post_type' => Leyka_Donation_Management::$post_type,
         'post_status' =>
-            isset($_GET['post_status']) && in_array($_GET['post_status'], array_keys(leyka()->getDonationStatuses())) ?
+            isset($_GET['post_status']) && in_array($_GET['post_status'], array_keys(leyka()->get_donation_statuses())) ?
                 $_GET['post_status'] : 'any',
         'm' => $_GET['month-year'],
         's' => $_GET['search_string'],

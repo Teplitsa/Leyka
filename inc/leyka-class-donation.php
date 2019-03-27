@@ -1497,7 +1497,7 @@ class Leyka_Donation_Management {
 
 	static function get_status_labels($status = false) {
 
-        $labels = leyka()->getDonationStatuses();
+        $labels = leyka()->get_donation_statuses();
 
         if(empty($status)) {
 		    return $labels;
@@ -1510,7 +1510,7 @@ class Leyka_Donation_Management {
 
 	static function get_status_descriptions($status = false) {
 
-        $descriptions = leyka()->getDonationStatusesDescriptions();
+        $descriptions = leyka()->get_donation_statuses_descriptions();
 
         if(empty($status)) {
 		    return $descriptions;

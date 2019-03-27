@@ -83,7 +83,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
                 'gateway_settings_incorrect',
                 __('The gateway you used has incorrect or missing settings', 'leyka')
             );
-            leyka()->addPaymentFormError($error);
+            leyka()->add_payment_form_error($error);
         }
 
         $this->_qiwi_response = json_decode(wp_remote_retrieve_body($response));
@@ -172,7 +172,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
         if(empty($this->_payment_methods['card'])) {
-            $this->_payment_methods['card'] = Leyka_Qiwi_Card::getInstance();
+            $this->_payment_methods['card'] = Leyka_Qiwi_Card::get_instance();
         }
     }
 
@@ -214,6 +214,6 @@ class Leyka_Qiwi_Card extends Leyka_Payment_Method {
 }
 
 function leyka_add_gateway_qiwi() {
-    leyka_add_gateway(Leyka_Qiwi_Gateway::getInstance());
+    leyka_add_gateway(Leyka_Qiwi_Gateway::get_instance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_qiwi');

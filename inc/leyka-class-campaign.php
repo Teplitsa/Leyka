@@ -114,7 +114,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                     - <?php _e('Target', 'leyka');?> -
                 </option>
 
-                <?php foreach(leyka()->getCampaignTargetStates() as $state => $label) {?>
+                <?php foreach(leyka()->get_campaign_target_states() as $state => $label) {?>
                 <option value="<?php echo $state;?>" <?php echo !empty($_GET['target_state']) && $_GET['target_state'] == $state ? 'selected="selected"' : '';?>>
                     <?php echo $label;?>
                 </option>
@@ -278,8 +278,8 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <div class="field-wrapper flex">
 
-                <?php $templates = leyka()->getTemplates();
-                $default_template = leyka()->getTemplate(leyka_options()->opt('donation_form_template'));?>
+                <?php $templates = leyka()->get_templates();
+                $default_template = leyka()->get_template(leyka_options()->opt('donation_form_template'));?>
 
                 <select id="campaign-form-template-field" name="campaign_template" data-default-template-id="<?php echo empty($default_template['id']) ? '' : esc_attr($default_template['id']);?>">
 
@@ -973,7 +973,7 @@ class Leyka_Campaign {
 
                 return count($types_available) > 1
                     && $this->_campaign_meta['donations_type_default']
-                    && in_array($this->_campaign_meta['donations_type_default'], array_keys(leyka()->getDonationTypes())) ?
+                    && in_array($this->_campaign_meta['donations_type_default'], array_keys(leyka()->get_donation_types())) ?
                         $this->_campaign_meta['donations_type_default'] :
                         ($types_available ? reset($types_available) : 'single');
 
@@ -1043,7 +1043,7 @@ class Leyka_Campaign {
 
         switch($field) {
             case 'target_state':
-                if( in_array($value, array_keys(leyka()->getCampaignTargetStates())) ) {
+                if( in_array($value, array_keys(leyka()->get_campaign_target_states())) ) {
 
                     $this->_campaign_meta['target_state'] = $value;
                     update_post_meta($this->_id, 'target_state', $value);
@@ -1167,7 +1167,7 @@ class Leyka_Campaign {
 
 	static function getTargetStateLabel($state = false) {
 
-        $labels = leyka()->getCampaignTargetStates();
+        $labels = leyka()->get_campaign_target_states();
 
         if( !$state ) {
             return $labels;

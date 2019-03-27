@@ -399,7 +399,7 @@
     
     function bindSubmitPaymentFormEvent() {
 
-        $('.leyka-tpl-star-form').on('submit.leyka', 'form', function(e){
+        $('.leyka-tpl-star-form').on('submit.leyka', 'form.leyka-pm-form', function(e){
 
             var $_form = $(this);
 
