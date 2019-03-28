@@ -45,11 +45,11 @@
 	}
     
     function setAmountPlaceholder(el) {
-        if($(document).width() >= 640) {
-            $(el).prop('placeholder', $(el).data('desktop-ph'));
+        if(isMobileScreen()) {
+            $(el).prop('placeholder', $(el).data('mobile-ph'));
         }
         else {
-            $(el).prop('placeholder', $(el).data('mobile-ph'));
+            $(el).prop('placeholder', $(el).data('desktop-ph'));
         }
     }
 	
@@ -301,10 +301,15 @@
         var $list = $swiper.find('.swiper-list');
         
         var listWidth = 0;
-        $list.find('.swiper-item:not(.disabled)').each(function(){
-            listWidth += $(this).outerWidth(true);
-        });
-        $list.width(listWidth);
+        if(isMobileScreen()) {
+            $list.width($swiper.width());
+        }
+        else {
+            $list.find('.swiper-item:not(.disabled)').each(function(){
+                listWidth += $(this).outerWidth(true);
+            });
+            $list.width(listWidth);
+        }
         
         if($list.find('.swiper-item:not(.disabled)').length <= 1) {
             $swiper.addClass('only-one-item');
@@ -558,6 +563,10 @@
             $_form.find('.section--static').hide();
             $_form.find('.section--person').show();
         }
+    }
+    
+    function isMobileScreen() {
+        return $(document).width() < 640;
     }
 
 	init();
