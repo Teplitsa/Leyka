@@ -28,7 +28,7 @@ class Leyka_Text_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
         if(empty($this->_payment_methods['text_box'])) {
-            $this->_payment_methods['text_box'] = Leyka_Text_Box::getInstance();
+            $this->_payment_methods['text_box'] = Leyka_Text_Box::get_instance();
         }
     }
 
@@ -122,7 +122,7 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
 }
 
 function leyka_add_gateway_text() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka_add_gateway(Leyka_Text_Gateway::getInstance());
+    leyka_add_gateway(Leyka_Text_Gateway::get_instance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_text');
 

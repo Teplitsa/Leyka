@@ -62,7 +62,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
         if(empty($this->_payment_methods['chronopay_card'])) {
-            $this->_payment_methods['chronopay_card'] = Leyka_Chronopay_Card::getInstance();
+            $this->_payment_methods['chronopay_card'] = Leyka_Chronopay_Card::get_instance();
         }
     }
 
@@ -683,6 +683,6 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
 }
 
 function leyka_add_gateway_chronopay() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka()->addGateway(Leyka_Chronopay_Gateway::getInstance());
+    leyka()->add_gateway(Leyka_Chronopay_Gateway::get_instance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_chronopay');

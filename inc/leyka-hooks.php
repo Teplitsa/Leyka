@@ -101,12 +101,18 @@ function leyka_star_body_classes($classes) {
 }
 add_filter('body_class', 'leyka_star_body_classes');
 
-function leyka_star_suppress_main_query( $request, $query ){
-    if( $query->is_main_query() && !empty(get_query_var('leyka-screen')) ) {
+/**
+ * @param $request
+ * @param $query WP_Query
+ * @return mixed
+ */
+function leyka_star_suppress_main_query($request, $query){
+
+    if($query->is_main_query() && get_query_var('leyka-screen')) {
         return false;
-    }
-    else {
+    } else {
         return $request;
     }
+
 }
 add_filter('posts_request', 'leyka_star_suppress_main_query', 10, 2);

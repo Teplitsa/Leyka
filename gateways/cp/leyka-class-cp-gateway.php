@@ -54,7 +54,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
         if(empty($this->_payment_methods['card'])) {
-            $this->_payment_methods['card'] = Leyka_CP_Card::getInstance();
+            $this->_payment_methods['card'] = Leyka_CP_Card::get_instance();
         }
     }
 
@@ -70,12 +70,12 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     public function enqueue_gateway_scripts() {
 
-        if(Leyka_CP_Card::getInstance()->active) {
+        if(Leyka_CP_Card::get_instance()->active) {
 
             wp_enqueue_script('leyka-cp-widget', 'https://widget.cloudpayments.ru/bundles/cloudpayments', array(), false, true);
             wp_enqueue_script(
                 'leyka-cp',
-                LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_CP_Gateway::getInstance()->id.'/js/leyka.cp.js',
+                LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_CP_Gateway::get_instance()->id.'/js/leyka.cp.js',
                 array('jquery', 'leyka-cp-widget', 'leyka-public'),
                 LEYKA_VERSION . ".001",
                 true
@@ -556,6 +556,6 @@ class Leyka_CP_Card extends Leyka_Payment_Method {
 }
 
 function leyka_add_gateway_cp() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka_add_gateway(Leyka_CP_Gateway::getInstance());
+    leyka_add_gateway(Leyka_CP_Gateway::get_instance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_cp');

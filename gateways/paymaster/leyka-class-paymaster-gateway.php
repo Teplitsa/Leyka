@@ -61,7 +61,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
         if(empty($this->_payment_methods['paymaster_all'])) {
-            $this->_payment_methods['paymaster_all'] = Leyka_Paymaster_All::getInstance();
+            $this->_payment_methods['paymaster_all'] = Leyka_Paymaster_All::get_instance();
         }
     }
 
@@ -264,7 +264,7 @@ class Leyka_Paymaster_All extends Leyka_Payment_Method {
  * Paymaster method add
  */
 function leyka_add_gateway_paymaster() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka_add_gateway(Leyka_Paymaster_Gateway::getInstance());
+    leyka_add_gateway(Leyka_Paymaster_Gateway::get_instance());
 }
 
 add_action('leyka_init_actions', 'leyka_add_gateway_paymaster');

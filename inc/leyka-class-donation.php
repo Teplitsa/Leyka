@@ -345,11 +345,27 @@ class Leyka_Donation_Management {
         if(leyka_options()->opt('donor_accounts_available')) {
 
             $email_placeholders[] = '#DONOR_ACCOUNT_LOGIN_LINK#';
+            $donor_account_login_text = '';
 
-            $donor_account_login_url = '//some-url.here/fsDfsfSeF'; /** @todo Add the real account login URL here */
+            if($donation->donor_account_error) { // Donor account wasn't created due to some error
+                $donor_account_login_text = sprintf(__('To control your recurring subscriptions please contact the <a href="mailto:%s">website administration</a>.', 'leyka'), get_option('admin_email'));
+            } else if($donation->donor_account_id) {
+
+                $donor_account_activation_code = get_user_meta(
+                    $donation->donor_account_id,
+                    'leyka_account_activation_code',
+                    true
+                );
+
+                $donor_account_login_text = $donor_account_activation_code ?
+                    sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?activate='.$donor_account_activation_code)) : // Вы можете управлять вашими пожертвованиями в вашем (link)личном кабинете(/link).
+                    sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?u='.$donation->donor_account_id));
+
+            }
+
             $email_placeholder_values[] = apply_filters(
                 'leyka_email_donor_acccount_link',
-                '<a href="'.$donor_account_login_url.'" target="_blank">'.$donor_account_login_url.'</a>',
+                $donor_account_login_text,
                 $donation,
                 $campaign
             );
@@ -790,9 +806,8 @@ class Leyka_Donation_Management {
                        type="text"
                        data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>"
                        placeholder="<?php _e('Select a campaign', 'leyka');?>"
-                       value="<?php echo htmlentities($campaign->title, ENT_QUOTES, 'UTF-8');?>"
-                    />
-                <input id="campaign-id" type="hidden" name="campaign-id" value="<?php echo $campaign->id;?>" />
+                       value="<?php echo htmlentities($campaign->title, ENT_QUOTES, 'UTF-8');?>">
+                <input id="campaign-id" type="hidden" name="campaign-id" value="<?php echo $campaign->id;?>">
                 <div id="cancel-campaign-select" class="button"><?php _e('Cancel', 'leyka');?></div>
             </div>
 		</div> <!-- .set-action -->
@@ -952,6 +967,7 @@ class Leyka_Donation_Management {
                 <span class="fake-input"><?php echo leyka_get_payment_type_label($donation->payment_type); // "single", "rebill", "correction" ?></span>
             </div>
         </div>
+
         <?php if($donation->init_recurring_donation_id) {?>
         <div class="leyka-ddata-string">
             <label><?php _e('Initial donation of the recurring subscription', 'leyka');?>:</label>
@@ -1481,7 +1497,7 @@ class Leyka_Donation_Management {
 
 	static function get_status_labels($status = false) {
 
-        $labels = leyka()->getDonationStatuses();
+        $labels = leyka()->get_donation_statuses();
 
         if(empty($status)) {
 		    return $labels;
@@ -1494,7 +1510,7 @@ class Leyka_Donation_Management {
 
 	static function get_status_descriptions($status = false) {
 
-        $descriptions = leyka()->getDonationStatusesDescriptions();
+        $descriptions = leyka()->get_donation_statuses_descriptions();
 
         if(empty($status)) {
 		    return $descriptions;
@@ -1678,7 +1694,7 @@ class Leyka_Donation {
 
         $donation = leyka_get_validated_donation($donation);
 
-        if($donation->type != 'rebill') {
+        if($donation->type !== 'rebill') {
             return false;
         }
 
@@ -1880,15 +1896,17 @@ class Leyka_Donation {
                 return $this->_donation_meta['donor_subscription_email'] ?
                     $this->_donation_meta['donor_subscription_email'] :
                     ($this->_donation_meta['donor_email'] ? $this->_donation_meta['donor_email'] : '');
-            
+
+            case 'donor_user_id':
             case 'donor_account_id':
                 $donor_account = isset($this->_donation_meta['donor_account']) ?
-                    maybe_unserialize(isset($this->_donation_meta['donor_account'])) : false;
+                    maybe_unserialize($this->_donation_meta['donor_account']) : false;
                 return $donor_account && !is_wp_error($donor_account) ? (int)$donor_account : false;
 
+            case 'donor_user_error':
             case 'donor_account_error':
                 $donor_account_error = isset($this->_donation_meta['donor_account']) ?
-                    maybe_unserialize(isset($this->_donation_meta['donor_account'])) : false;
+                    maybe_unserialize($this->_donation_meta['donor_account']) : false;
                 return $donor_account_error && is_wp_error($donor_account_error) ? $donor_account_error : false;
 
             case 'gateway_response':
@@ -1974,7 +1992,7 @@ class Leyka_Donation {
                 wp_update_post(array('ID' => $this->_id, 'post_date' => $value));
                 break;
             case 'date_timestamp':
-                    wp_update_post(array('ID' => $this->_id, 'post_date' => date('Y-m-d H:i:s', $value)));
+                wp_update_post(array('ID' => $this->_id, 'post_date' => date('Y-m-d H:i:s', $value)));
                 break;
 
             case 'donor_name':

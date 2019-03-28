@@ -473,7 +473,7 @@ function leyka_get_campaign_failure_page_url($campaign_id) {
 function leyka_get_form_templates_list() {
 
     $list = array();
-    foreach(leyka()->getTemplates() as $template) {
+    foreach(leyka()->get_templates() as $template) {
 
         if( !LEYKA_DEBUG && !empty($template['debug_only']) ) {
             continue;
@@ -553,7 +553,7 @@ function leyka_get_currency_label($currency_code) {
  * Get possible leyka_donation post type's status list as an array.
  **/
 function leyka_get_donation_status_list() {
-    return leyka()->getDonationStatuses();
+    return leyka()->get_donation_statuses();
 }
 
 function leyka_get_pm_categories_list() {
@@ -666,7 +666,7 @@ function leyka_get_receiver_description($receiver_types) {
  * Get all possible campaign target states.
  **/
 function leyka_get_campaign_target_states_list() {
-    return leyka()->getCampaignTargetStates();
+    return leyka()->get_campaign_target_states();
 }
 
 /**
@@ -1733,7 +1733,7 @@ abstract class Leyka_Singleton {
     /**
      * @return static
      */
-    public static function getInstance() {
+    public static function get_instance() {
 
         if(null === static::$_instance) {
             static::$_instance = new static();
@@ -1741,14 +1741,6 @@ abstract class Leyka_Singleton {
 
         return static::$_instance;
 
-    }
-
-    /**
-     * @deprecated
-     * @return static
-     */
-    public static function get_instance() {
-        return static::getInstance();
     }
 
     final protected function __clone() {}

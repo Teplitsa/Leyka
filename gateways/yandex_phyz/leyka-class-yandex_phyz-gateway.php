@@ -52,10 +52,10 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
     protected function _initialize_pm_list() {
 
         if(empty($this->_payment_methods['yandex_phyz_card'])) {
-            $this->_payment_methods['yandex_phyz_card'] = Leyka_Yandex_Phyz_Card::getInstance();
+            $this->_payment_methods['yandex_phyz_card'] = Leyka_Yandex_Phyz_Card::get_instance();
         }
         if(empty($this->_payment_methods['yandex_phyz_money'])) {
-            $this->_payment_methods['yandex_phyz_money'] = Leyka_Yandex_Phyz_Money::getInstance();
+            $this->_payment_methods['yandex_phyz_money'] = Leyka_Yandex_Phyz_Money::get_instance();
         }
 
     }
@@ -319,6 +319,6 @@ function error_log_yandex_phyz($string) {
 }
 
 function leyka_add_gateway_yandex_phyz() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka_add_gateway(Leyka_Yandex_Phyz_Gateway::getInstance());
+    leyka_add_gateway(Leyka_Yandex_Phyz_Gateway::get_instance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_yandex_phyz');
