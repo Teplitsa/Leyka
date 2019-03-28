@@ -1527,7 +1527,7 @@ class Leyka extends Leyka_Singleton {
             do_action('leyka_donor_account_not_created', $donor_user_id, $donation);
         } else {
 
-            update_user_meta($donor_user_id, 'leyka_account_activation_code', wp_generate_password(40, false, false));
+            update_user_meta($donor_user_id, 'leyka_account_activation_code', wp_generate_password(60, false, false));
             $donation->donor_account = $donor_user_id;
 
             do_action('leyka_donor_account_created', $donor_user_id, $donation);
