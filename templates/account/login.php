@@ -1,14 +1,12 @@
-<?php
+<?php if( !defined('WPINC') ) die;
 /**
- * The template for displaying leyka persistent campaign
- *
- * @link https://leyka.te-st.ru/campaign/demo-kampaniya/
+ * The template for displaying donor's account login page.
  *
  * @package Leyka
  * @since 1.0.0
  */
 
-include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
+include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
 
 <div id="content" class="site-content leyka-campaign-content">
     
@@ -142,10 +140,6 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
                                     </div>
 
                                 <?php } else { // Password setup form
-
-                                    if(is_user_logged_in()) { // Just in case
-                                        wp_redirect(home_url('/donor-account/'));
-                                    }
 
                                     $donor_account = reset($donor_account);?>
 
