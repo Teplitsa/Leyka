@@ -149,4 +149,4 @@ function leyka_set_donor_account_page_title($title_parts) {
     
     return $title_parts;
 }
-add_filter('document_title_parts', 'leyka_set_donor_account_page_title');
+add_filter('document_title_parts', 'leyka_set_donor_account_page_title', 99);
