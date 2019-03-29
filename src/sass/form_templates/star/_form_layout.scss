@@ -3,7 +3,8 @@
 div[id*="leyka-pf-"].leyka-pf-star {
     @include star-text();
     
-    .leyka-tpl-star-form {
+    .leyka-tpl-star-form,
+    .leyka-account-form {
         
         .section {
             display: block;

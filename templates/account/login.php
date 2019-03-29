@@ -16,8 +16,8 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
         <main id="main" class="site-main">
             <div class="entry-content">
 
-                <div class="leyka-pf leyka-login">
-                    <div class="leyka-payment-form leyka-tpl-donor-login-form">
+                <div id="leyka-pf-" class="leyka-pf leyka-pf-star leyka-login">
+                    <div class="leyka-account-form">
         
                         <?php if(empty($_GET['activate'])) { // Normal login ?>
         

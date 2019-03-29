@@ -19,7 +19,7 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 			<div class="entry-content">
 			
 				<div class="leyka-pf leyka-pf-star">
-					<div class="leyka-payment-form leyka-tpl-star-form">
+					<div class="leyka-account-form">
 				
 						<form class="leyka-screen-form">
 							

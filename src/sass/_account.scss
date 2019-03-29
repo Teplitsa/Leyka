@@ -152,8 +152,12 @@
 }
 
 // overrdie styles    
-.leyka-account div[id*="leyka-pf-"].leyka-pf-star .leyka-tpl-star-form .section {
-    margin-bottom: 0px;
-    margin-top: 4 * $leyka-star-base;
+.leyka-account div[id*="leyka-pf-"].leyka-pf-star .leyka-account-form {
+    min-width: 328px;
+    
+    .section {
+        margin-bottom: 0px;
+        margin-top: 4 * $leyka-star-base;
+    }
 }
   
