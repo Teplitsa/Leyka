@@ -413,10 +413,7 @@ function leyka_setup_donor_password() {
             ));
 
             if(is_wp_error($donor_user)) {
-                $res = array(
-                    'status' => 'error',
-                    'message' => sprintf(__('We cannot log you in :( The reason is: %s. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), $donor_user->get_error_message(), leyka()->opt('tech_support_email'))
-                );
+                $res = array('status' => 'error', 'message' => strip_tags($donor_user->get_error_message()),);
             }
 
         }
@@ -428,3 +425,50 @@ function leyka_setup_donor_password() {
 }
 add_action('wp_ajax_leyka_setup_donor_password', 'leyka_setup_donor_password');
 add_action('wp_ajax_nopriv_leyka_setup_donor_password', 'leyka_setup_donor_password');
+
+
+
+function leyka_donor_login() {
+
+    $res = array('status' => 'ok', 'message' => __('You are logged in and will be redirected in a moment. Welcome to your personal account :)', 'leyka'));
+
+    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_donor_login')) {
+        $res = array(
+            'status' => 'error',
+            'message' => sprintf(__('Wrong request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka()->opt('tech_support_email'))
+        );
+    } else if(
+        empty($_POST['leyka_donor_email'])
+        || !is_email($_POST['leyka_donor_email'])
+        || empty($_POST['leyka_donor_pass'])
+    ) {
+        $res = array(
+            'status' => 'error',
+            'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka()->opt('tech_support_email'))
+        );
+    } else {
+
+        $donor = get_user_by_email($_POST['leyka_donor_email']);
+        if( !$donor ) {
+            $res = array('status' => 'error', 'message' => __('Incorrect login or password.', 'leyka'),);
+        } else {
+
+            $donor_user = wp_signon(array(
+                'user_login' => $donor->user_login,
+                'user_password' => esc_sql($_POST['leyka_donor_pass']),
+                'remember' => true,
+            ));
+
+            if(is_wp_error($donor_user)) {
+                $res = array('status' => 'error', 'message' => strip_tags($donor_user->get_error_message()),);
+            }
+
+        }
+
+    }
+
+    die(json_encode($res));
+
+}
+add_action('wp_ajax_leyka_donor_login', 'leyka_donor_login');
+add_action('wp_ajax_nopriv_leyka_donor_login', 'leyka_donor_login');

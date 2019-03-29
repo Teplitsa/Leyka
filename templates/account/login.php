@@ -21,7 +21,7 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
         
                         <?php if(empty($_GET['activate'])) { // Normal login ?>
         
-                        <form class="leyka-screen-form">
+                        <form class="leyka-screen-form leyka-account-login" action="<?php echo home_url('/donor_account/login/');?>" method="post">
         
                             <h2><?php _e('Personal account login', 'leyka');?></h2>
         
@@ -47,21 +47,23 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
                                     </div>
         
                                     <?php $field_id = 'leyka-'.wp_rand();?>
-                                    <div class="donor__textfield donor__textfield--name required">
+                                    <div class="donor__textfield donor__textfield--pass required">
                                         <div class="leyka-star-field-frame">
                                             <label for="<?php echo $field_id;?>">
-                                                <span class="donor__textfield-label leyka_donor_name-label">
+                                                <span class="donor__textfield-label leyka_donor_pass-label">
                                                     <?php _e('Your password', 'leyka');?>
                                                 </span>
                                             </label>
-                                            <input id="<?php echo $field_id;?>" type="password" name="leyka_donor_name" value="" autocomplete="off">
+                                            <input id="<?php echo $field_id;?>" type="password" name="leyka_donor_pass" value="" autocomplete="off">
                                         </div>
                                         <div class="leyka-star-field-error-frame">
-                                            <span class="donor__textfield-error leyka_donor_name-error">
+                                            <span class="donor__textfield-error leyka_donor_pass-error">
                                                 <?php _e('Enter your password' , 'leyka');?>
                                             </span>
                                         </div>
                                     </div>
+
+                                    <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('leyka_donor_login');?>">
 
                                 </div>
 
@@ -81,10 +83,12 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
                             </div>
                             
                             <div class="leyka-extra-links">
-                                <a href="#"><?php esc_html_e('Reset password', 'leyka');?></a>
+                                <a href="<?php echo home_url('/donor-account/reset-password/');?>">
+                                    <?php esc_html_e('Reset password', 'leyka');?>
+                                </a>
                             </div>
         
-                            <div class="leyka-star-submit">
+                            <div class="leyka-star-submit login-submit">
                                 <input type="submit" class="leyka-star-btn" value="<?php _e('Log in' , 'leyka');?>">
                             </div>
         
@@ -92,7 +96,7 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 
                         <?php } else { // Account activation/password setting ?>
 
-                        <form class="leyka-screen-form account-activation" action="<?php echo home_url('/donor_account/login/');?>" method="post">
+                        <form class="leyka-screen-form leyka-account-activation" action="<?php echo home_url('/donor_account/login/');?>" method="post">
 
                             <h2><?php _e('Set up your password', 'leyka');?></h2>
         

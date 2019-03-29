@@ -26,6 +26,10 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 							<h2>Личный кабинет</h2>
 							
 							<p>Мы благодарны вам за оказываемую поддержку!</p>
+
+                            <?php if(is_user_logged_in()) {?>
+                            <p><a href="<?php echo home_url('/wp-login.php?action=logout');?>">Logout</a></p>
+                            <?php }?>
 							
 							<div class="list subscribed-campaigns-list">
 								<h3 class="list-title">Кампании с ежемесячными пожертвованиями</h3>
