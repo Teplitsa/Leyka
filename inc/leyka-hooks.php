@@ -149,4 +149,15 @@ function leyka_set_donor_account_page_title($title_parts) {
     
     return $title_parts;
 }
-add_filter('document_title_parts', 'leyka_set_donor_account_page_title');
+add_filter('document_title_parts', 'leyka_set_donor_account_page_title', 9999, 1);
+
+function leyka_yoast_seo_title_workaround($title) {
+    $leyka_screen = get_query_var('leyka-screen');
+    
+    if(empty($leyka_screen)) {
+        return $title;
+    }
+    
+    return '';
+}
+add_filter('pre_get_document_title', 'leyka_yoast_seo_title_workaround', 999, 1);
