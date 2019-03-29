@@ -110,15 +110,26 @@ add_filter('body_class', 'leyka_star_body_classes');
  * @param $query WP_Query
  * @return mixed
  */
-function leyka_star_suppress_main_query($request, $query){
-    if($query->is_main_query() && get_query_var('leyka-screen')) {
-        return false;
-    } else {
-        return $request;
+function leyka_donor_account_suppress_main_query($request, $query) {
+    return $query->is_main_query() && get_query_var('leyka-screen') ? false : $request;
+}
+add_filter('posts_request', 'leyka_donor_account_suppress_main_query', 10, 2);
+
+function leyka_donor_account_redirects() {
+
+    $donor_account_page = get_query_var('leyka-screen');
+    if( !$donor_account_page ) {
+        return;
+    }
+
+    if($donor_account_page === 'login' && is_user_logged_in()) { /** @todo $donor_account_page === 'reset-password' also? */
+        wp_redirect(home_url('/donor-account/')); exit;
+    } else if($donor_account_page !== 'login' && $donor_account_page !== 'reset-password' && !is_user_logged_in()) {
+        wp_redirect(home_url('/donor-account/login/')); exit;
     }
 
 }
-add_filter('posts_request', 'leyka_star_suppress_main_query', 10, 2);
+add_filter('template_redirect', 'leyka_donor_account_redirects');
 
 /**
  * @param $title_parts array
