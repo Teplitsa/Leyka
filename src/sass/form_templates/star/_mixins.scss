@@ -24,6 +24,16 @@
     }
 }
 
+@mixin leyka-star-link {
+    @include star-clean-a();
+    @include star-text();
+    color: $leyka-star-color-main;
+    
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
 @mixin star-clean-input() {
     text-decoration: none;
     border: none;
@@ -402,16 +412,6 @@
     }
 }
 
-@mixin leyka-star-link {
-    @include star-clean-a();
-    @include star-text();
-    color: $leyka-star-color-main;
-    
-    &:hover {
-        text-decoration: underline;
-    }
-}
-
 @mixin field-q {
   
     margin-left: 3px;
@@ -479,4 +479,46 @@
         }
     }
     
+}
+
+@mixin account-list {
+    margin-top: 32px;
+    
+    .list-title {
+        @include star-h2();
+        color: $leyka-star-color-black;
+        margin-bottom: 0px;
+        margin-top: 0px;
+        border-bottom: 2px solid $leyka-star-color-gray-superlight;
+        padding-bottom: 0.75 * $leyka-star-base;
+    }
+    
+    .items {
+        .item {
+            @include star-text();
+            margin-top: 0.75 * $leyka-star-base;
+            display: flex;
+            justify-content: space-between;
+            
+            text-align: left;
+            margin-bottom: 0.75 * $leyka-star-base;
+            position: relative;
+            border-bottom: 1px solid $leyka-star-color-gray-superlight;
+            padding-bottom: 0.6 * $leyka-star-base;
+            
+            &:last-child {
+                margin-bottom: 0;
+                border-bottom: none;
+            }
+        }
+    }
+}
+
+@mixin campain-single-line-title {
+    @include star-text();
+    display: block;
+    color: $leyka-star-color-gray-dark;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

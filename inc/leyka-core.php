@@ -1330,6 +1330,8 @@ class Leyka extends Leyka_Singleton {
             'donor-account/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka-screen=account',
             'donor-account/login/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka-screen=login',
             'donor-account/reset-password/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka-screen=reset-password',
+            'donor-account/unsubscribe-campaigns/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka-screen=unsubscribe-campaigns',
+            'donor-account/cancel-subscription/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka-screen=cancel-subscription',
             'campaign/([^/]+)/donations/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter=$matches[1]',
             'campaign/([^/]+)/donations/page/([1-9]{1,})/?$' =>
                 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter=$matches[1]&paged=$matches[2]',

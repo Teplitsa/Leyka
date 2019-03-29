@@ -581,38 +581,6 @@
 
 }
 
-.leyka-screen-cancel-subscription .leyka-pf-star .leyka-screen-form {
-    
-    h2 {
-        @include star-h2();
-        margin-bottom: 1.5 * $leyka-star-base;
-        text-align: center;
-    }
-    
-    .leyka-cancel-subscription-reason {
-        @include leyka-star-checkbox();
-        span {
-            display: block;
-            margin-bottom: 1.5 * $leyka-star-base;
-        }
-    }
-    
-    .leyka-star-submit {
-        margin-top: 3 * $leyka-star-base;
-        padding-top: 6px;
-        
-        .leyka-star-btn {
-            @include leyka-star-btn();
-            margin-bottom: 1.5 * $leyka-star-base;
-            
-            &.btn-secondary {
-                @include leyka-star-btn(secondary);
-            }
-        }
-    }
-    
-}
-
 .leyka-screen-thankyou .leyka-pf-star .leyka-screen-form,
 .leyka-pf-star .leyka-screen-form.leyka-screen-thankyou {
     h1 {
@@ -688,43 +656,18 @@
 .leyka-screen-account .leyka-pf-star .leyka-screen-form {
     
     .list {
-        border-top: 1px solid $leyka-star-color-gray-superlight;
-        padding-top: 0.5 * $leyka-star-base;
-        
-        .list-title {
-            @include star-h2();
-            color: $leyka-star-color-black;
-            margin-bottom: 2 * $leyka-star-base;
-        }
-        
-        .items {
-            
-            .item {
-                
-            }
-        }
+        @include account-list();
     }
     
     .list.subscribed-campaigns-list {
-        padding-bottom: 2 * $leyka-star-base;
         
         .items {
             .item {
-                margin-top: 2 * $leyka-star-base;
-                display: flex;
-                justify-content: space-between;
-                
                 .campaign-title {
-                    @include star-text();
-                    display: block;
-                    color: $leyka-star-color-gray-dark;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
+                    @include campain-single-line-title();
                 }
                 
                 .amount {
-                    @include star-text();
                     display: block;
                     color: $leyka-star-color-black;
                     text-align: right;
@@ -735,12 +678,16 @@
         }
     }
     
-    .leyka-star-history {
+    .list.leyka-star-history {
+        
+        .items {
+            border-bottom: 1px solid $leyka-star-color-gray-superlight;
+        }
+        
         .item {
             text-align: left;
-            margin-bottom: 1.5 * $leyka-star-base;
+            display: block;
             position: relative;
-            border-bottom: 1px solid $leyka-star-color-gray-superlight;
             
             .item-title {
                 @include star-h3();
@@ -812,30 +759,21 @@
                 @include star-text();
                 color: $leyka-star-color-gray;
                 text-align: left;
-                margin-top: 8px;
-                margin-left: 32px;
-                margin-bottom: 0.5 * $leyka-star-base;
+                margin-top: 12px;
+                margin-bottom: 0px;
             }
         }
     }
     
     .leyka-star-submit {
-        text-align: center;
-        padding-top: 6px;
-        
-        .leyka-star-btn {
-            @include leyka-star-single-link();
-            border-bottom: 1px dashed $leyka-star-color-main;
-            
-            &:hover {
-                text-decoration: none;
-                border-bottom: 1px solid transparent;
-            }
+        .leyka-star-single-link {
+            margin-top: 1.5 * $leyka-star-base;
         }
     }
     
-    .leyka-we-need-you {
-        margin-top: 2 * $leyka-star-base;
+    p.leyka-we-need-you {
+        margin-top: 0px;
+        margin-bottom: 2 * $leyka-star-base;
         
         a {
             @include star-clean-a();

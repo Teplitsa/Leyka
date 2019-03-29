@@ -1936,6 +1936,12 @@ function leyka_use_leyka_donations_list_template($archive_template) {
             case 'reset-password':
                 $archive_template = LEYKA_PLUGIN_DIR . 'templates/account/reset-password.php';
                 break;
+            case 'unsubscribe-campaigns':
+                $archive_template = LEYKA_PLUGIN_DIR . 'templates/account/unsubscribe-campaigns.php';
+                break;
+            case 'cancel-subscription':
+                $archive_template = LEYKA_PLUGIN_DIR . 'templates/account/cancel-subscription.php';
+                break;
         }
     }
     

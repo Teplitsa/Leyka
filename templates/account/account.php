@@ -99,7 +99,7 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 								</div>
 								
 								<div class="leyka-star-submit">
-									<a href="#" class="leyka-star-btn">Загрузить еще</a>
+									<a href="#" class="leyka-star-single-link internal">Загрузить еще</a>
 								</div>
 							</div>
 						

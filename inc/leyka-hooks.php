@@ -70,6 +70,10 @@ function leyka_terms_of_pd_usage_page_text($page_content) {
 }
 add_filter('the_content', 'leyka_terms_of_pd_usage_page_text');
 
+/**
+ * @param $classes array
+ * @return array
+ */
 function leyka_star_body_classes($classes) {
     if(!empty(get_query_var('leyka-screen'))) {
         $classes[] = 'leyka-screen-' . get_query_var('leyka-screen');
@@ -107,7 +111,6 @@ add_filter('body_class', 'leyka_star_body_classes');
  * @return mixed
  */
 function leyka_star_suppress_main_query($request, $query){
-
     if($query->is_main_query() && get_query_var('leyka-screen')) {
         return false;
     } else {
@@ -116,3 +119,34 @@ function leyka_star_suppress_main_query($request, $query){
 
 }
 add_filter('posts_request', 'leyka_star_suppress_main_query', 10, 2);
+
+/**
+ * @param $title_parts array
+ * @return array
+ */
+function leyka_set_donor_account_page_title($title_parts) {
+    $leyka_screen = get_query_var('leyka-screen');
+    
+    if(empty($leyka_screen)) {
+        return $title_parts;
+    }
+    
+    switch($leyka_screen) {
+        case 'account':
+            $title_parts['title'] = esc_html__('Donor account', 'leyka');
+            break;
+        case 'login':
+            $title_parts['title'] = esc_html__('Sign in donor account', 'leyka');
+            break;
+        case 'reset-password':
+            $title_parts['title'] = esc_html__('Reset account password', 'leyka');
+            break;
+        case 'unsubscribe-campaigns':
+            $title_parts['title'] = esc_html__('Unsubscribe persistent campaign', 'leyka');
+            break;
+        default:
+    }
+    
+    return $title_parts;
+}
+add_filter('document_title_parts', 'leyka_set_donor_account_page_title');
