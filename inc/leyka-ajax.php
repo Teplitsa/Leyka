@@ -363,19 +363,68 @@ function leyka_upload_l10n() {
         $res = array('status' => 'ok', 'message' => 'Перевод успешно загружен');
     }
 
-    //$res = array_merge($res, array(
-    //    'file' => $file,
-    //    'res' => WP_CONTENT_DIR . "/languages/plugins/leyka-ru_RU.mo"
-    //));
-
     die(json_encode($res));
 
 }
 add_action('wp_ajax_leyka_upload_l10n', 'leyka_upload_l10n');
 
 function leyka_ajax_get_env_and_options() {
-    //print_r(leyka_get_env_and_options());
-    echo "<pre>".format_debug_data(humanaize_debug_data(leyka_get_env_and_options()))."</pre>";
-    exit();
+    die('<pre>'.format_debug_data(humanaize_debug_data(leyka_get_env_and_options())).'</pre>');
 }
 add_action('wp_ajax_leyka_get_env_and_options', 'leyka_ajax_get_env_and_options');
+
+function leyka_setup_donor_password() {
+
+    $res = array('status' => 'ok', 'message' => __('The password is set. Welcome to your personal account!', 'leyka'));
+
+    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_activate_donor_account')) {
+        $res = array(
+            'status' => 'error',
+            'message' => sprintf(__('Wrong request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka()->opt('tech_support_email'))
+        );
+    } else if(
+        empty($_POST['leyka_donor_pass'])
+        || empty($_POST['leyka_donor_pass2'])
+        || $_POST['leyka_donor_pass2'] !== $_POST['leyka_donor_pass2']
+        || empty($_POST['donor_account_id'])
+        || (int)$_POST['donor_account_id'] <= 0
+    ) {
+        $res = array(
+            'status' => 'error',
+            'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka()->opt('tech_support_email'))
+        );
+    } else {
+
+        $donor_id = wp_update_user(array('ID' => (int)$_POST['donor_account_id'], 'user_pass' => $_POST['leyka_donor_pass']));
+        if(is_wp_error($donor_id)) {
+            $res = array(
+                'status' => 'error',
+                'message' => sprintf(__('The password cannot be updated. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka()->opt('tech_support_email'))
+            );
+        } else {
+
+            $donor_user = new WP_User($donor_id);
+            update_user_meta($donor_user->ID, 'leyka_account_activation_code', false);
+
+            $donor_user = wp_signon(array(
+                'user_login' => $donor_user->user_login,
+                'user_password' => $_POST['leyka_donor_pass'],
+                'remember' => true,
+            ));
+
+            if(is_wp_error($donor_user)) {
+                $res = array(
+                    'status' => 'error',
+                    'message' => sprintf(__('We cannot log you in :( The reason is: %s. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), $donor_user->get_error_message(), leyka()->opt('tech_support_email'))
+                );
+            }
+
+        }
+
+    }
+
+    die(json_encode($res));
+
+}
+add_action('wp_ajax_leyka_setup_donor_password', 'leyka_setup_donor_password');
+add_action('wp_ajax_nopriv_leyka_setup_donor_password', 'leyka_setup_donor_password');

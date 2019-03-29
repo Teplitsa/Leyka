@@ -16,8 +16,8 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
         <main id="main" class="site-main">
             <div class="entry-content">
 
-                <div id="leyka-pf-" class="leyka-pf leyka-pf-star">
-                    <div class="leyka-payment-form leyka-tpl-star-form">
+                <div class="leyka-pf leyka-login">
+                    <div class="leyka-payment-form leyka-tpl-donor-login-form">
         
                         <?php if(empty($_GET['activate'])) { // Normal login ?>
         
@@ -62,8 +62,22 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
                                             </span>
                                         </div>
                                     </div>
-        
+
                                 </div>
+
+                                <div class="form-ajax-indicator" style="display: none;">
+                                    <div class="loading">
+                                        <div class="spinner">
+                                            <div class="bounce1"></div>
+                                            <div class="bounce2"></div>
+                                            <div class="bounce3"></div>
+                                        </div>
+                                    </div>
+                                    <div class="waiting__card-text"><?php _e('Logging you in, please wait a bit...', 'leyka');?></div>
+                                </div>
+
+                                <div class="form-message" style="display: none;"></div>
+
                             </div>
                             
                             <div class="leyka-extra-links">
@@ -125,6 +139,10 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 
                                 <?php } else { // Password setup form
 
+                                    if(is_user_logged_in()) { // Just in case
+                                        wp_redirect(home_url('/donor-account/'));
+                                    }
+
                                     $donor_account = reset($donor_account);?>
 
                                 <div class="section__fields donor">
@@ -163,6 +181,19 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
                                     <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('leyka_activate_donor_account');?>">
 
                                 </div>
+
+                                <div class="form-ajax-indicator" style="display: none;">
+                                    <div class="loading">
+                                        <div class="spinner">
+                                            <div class="bounce1"></div>
+                                            <div class="bounce2"></div>
+                                            <div class="bounce3"></div>
+                                        </div>
+                                    </div>
+                                    <div class="waiting__card-text"><?php _e('Setting up your password...', 'leyka');?></div>
+                                </div>
+
+                                <div class="form-message" style="display: none;"></div>
 
                                 <div class="leyka-star-submit activation-submit">
                                     <input type="submit" class="leyka-star-btn" value="<?php _e('Set up the password', 'leyka');?>">
