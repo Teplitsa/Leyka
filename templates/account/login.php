@@ -85,7 +85,7 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
                             </div>
         
                             <div class="leyka-star-submit">
-                                <a href="#" class="leyka-star-btn"><?php _e('Log in' , 'leyka');?></a>
+                                <input type="submit" class="leyka-star-btn" value="<?php _e('Log in' , 'leyka');?>">
                             </div>
         
                         </form>

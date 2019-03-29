@@ -53,19 +53,33 @@
         }
         
         &.double {
-            display: flex;
-            justify-content: space-between;
-            
+
             a, input, button {
                 &.leyka-star-btn,
                 &.leyka-star-single-link {
-                    width: calc(50% - 12px);
-                    margin-right: 24px;
-                    padding-left: 0px;
-                    padding-right: 0px;
+                    margin-bottom: 1.5 * $leyka-star-base;
                     
                     &.last {
-                        margin-right: 0px;
+                        margin-bottom: $leyka-star-base;
+                    }
+                }
+            }
+            
+            @include for(medium-screens) {
+                display: flex;
+                justify-content: space-between;
+                
+                a, input, button {
+                    &.leyka-star-btn,
+                    &.leyka-star-single-link {
+                        width: calc(50% - 12px);
+                        margin-right: 24px;
+                        padding-left: 0px;
+                        padding-right: 0px;
+                        
+                        &.last {
+                            margin-right: 0px;
+                        }
                     }
                 }
             }
@@ -93,6 +107,14 @@
                 min-width: 328px;
             }
         }        
+    }
+}
+
+.leyka-screen-reset-password .leyka-account .leyka-pf-star .leyka-screen-form {
+    .leyka-star-submit {
+        .leyka-star-btn {
+            margin-top: 40px;
+        }
     }
 }
 
@@ -153,7 +175,9 @@
 
 // overrdie styles    
 .leyka-account div[id*="leyka-pf-"].leyka-pf-star .leyka-account-form {
-    min-width: 328px;
+    @include for(medium-screens) {
+        min-width: 328px;
+    }
     
     .section {
         margin-bottom: 0px;

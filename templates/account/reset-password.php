@@ -47,7 +47,7 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 							</div>
 						
 							<div class="leyka-star-submit">
-								<a href="#" class="leyka-star-btn">Прислать новый пароль</a>
+                                <input type="submit" class="leyka-star-btn" value="<?php _e('Send new password' , 'leyka');?>">
 							</div>
 							
 						</form>
