@@ -137,7 +137,7 @@ EOT
             $campaign = new Leyka_Campaign($campaign_id);
 
             self::install_campaign_donations($campaign);
-            $campaign->refreshTargetState();
+            $campaign->refresh_target_state();
 
 			//finished campaign
 			if($campaign->post_name == 'treat-pets-fin') {

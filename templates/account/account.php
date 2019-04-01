@@ -23,30 +23,34 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 				
 						<form class="leyka-screen-form">
 							
-							<h2>Личный кабинет</h2>
+							<h2><?php _e('Personal account', 'leyka'); // Личный кабинет?></h2>
 							
-							<p>Мы благодарны вам за оказываемую поддержку!</p>
+							<p><?php _e('We are grateful for your support!', 'leyka'); // Мы благодарны вам за оказываемую поддержку!?></p>
 
-                            <?php if(is_user_logged_in()) {?>
-                            <p><a href="<?php echo home_url('/wp-login.php?action=logout');?>">Logout</a></p>
-                            <?php }?>
-							
 							<div class="list subscribed-campaigns-list">
-								<h3 class="list-title">Кампании с ежемесячными пожертвованиями</h3>
-								<div class="items">
+								<h3 class="list-title"><?php _e('Recurring donations campaigns', 'leyka'); // Кампании с ежемесячными пожертвованиями?></h3>
+                                <?php $recurring_subscriptions = leyka_get_init_recurring_donations();
+
+                                if($recurring_subscriptions) {?>
+
+                                <div class="items">
+
+                                    <?php foreach($recurring_subscriptions as $init_donation) {?>
 									<div class="item">
-										<span class="campaign-title">Помогите изданию оставаться независимым источником информации</span>
-										<span class="amount">300 Р./мес.</span>
+										<span class="campaign-title">
+                                            <?php echo $init_donation->campaign_payment_title;?>
+                                        </span>
+										<span class="amount">
+                                            <?php echo $init_donation->amount.' '.$init_donation->currency_label;?>/<?php echo _x('month', 'Recurring interval, as in "[XX Rub in] month"', 'leyka');?>.
+                                        </span>
 									</div>
-									<div class="item">
-										<span class="campaign-title">На погашение штрафа от Роскомнадзора</span>
-										<span class="amount">1800 Р./мес.</span>
-									</div>
-									<div class="item">
-										<span class="campaign-title">Поможем Григорию переехать </span>
-										<span class="amount">210 Р./мес.</span>
-									</div>
+                                    <?php }?>
+
 								</div>
+
+                                <?php } else {?>
+                                <div class="no-recurring"><?php _e('There are no active recurring subscriptions.', 'leyka');?></div>
+                                <?php }?>
 							</div>
 							
 							<div class="list leyka-star-history">

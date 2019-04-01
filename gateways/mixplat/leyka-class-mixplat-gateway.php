@@ -305,7 +305,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                 $donation->add_gateway_response($response);
 
                 $campaign = new Leyka_Campaign($donation->campaign_id);
-                $campaign->updateTotalFundedAmount();
+                $campaign->update_total_funded_amount();
 
                 Leyka_Donation_Management::send_all_emails($donation->id);
 

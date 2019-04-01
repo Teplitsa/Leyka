@@ -12,19 +12,23 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
 	protected function __construct() {
 
-		add_action('add_meta_boxes', array($this, 'setMetaboxes'));
-		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manageColumnsNames'));
-		add_action('manage_'.self::$post_type.'_posts_custom_column', array($this, 'manageColumnsContent'), 2, 2);
-		add_action('save_post', array($this, 'saveData'), 2, 2);
+		add_action('add_meta_boxes', array($this, 'set_metaboxes'));
+		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manage_columns_names'));
+		add_action('manage_'.self::$post_type.'_posts_custom_column', array($this, 'manage_columns_content'), 2, 2);
+		add_action('save_post', array($this, 'save_data'), 2, 2);
 
-        add_action('restrict_manage_posts', array($this, 'manageFilters'));
-        add_action('pre_get_posts', array($this, 'doFiltering'));
+        add_action('restrict_manage_posts', array($this, 'manage_filters'));
+        add_action('pre_get_posts', array($this, 'do_filtering'));
 
-		add_filter('post_row_actions', array($this, 'rowActions'), 10, 2);
+		add_filter('post_row_actions', array($this, 'row_actions'), 10, 2);
 
 	}
 
-    public function setAdminMessages($messages) {
+    /**
+     * @param $messages array
+     * @return array
+     */
+    public function set_admin_messages($messages) {
 
         $current_post = get_post();
 
@@ -63,16 +67,13 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         return $messages;
 
     }
+
     /**
-     * @deprecated
-     * @param $messages array
+     * @param $actions array
+     * @param $campaign WP_Post
      * @return array
      */
-    public function set_admin_messages($messages) {
-	    return $this->setAdminMessages($messages);
-    }
-
-    public function rowActions($actions, $campaign) {
+    public function row_actions($actions, $campaign) {
 
         $current_screen = get_current_screen();
 
@@ -84,17 +85,8 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         return $actions;
 
     }
-    /**
-     * @deprecated
-     * @param $actions array
-     * @param $campaign WP_Post
-     * @return array
-     */
-    public function row_actions($actions, $campaign) {
-        return $this->rowActions($actions, $campaign);
-    }
 
-    public function manageFilters() {
+    public function manage_filters() {
 
         if(get_current_screen()->id == 'edit-'.self::$post_type && current_user_can('leyka_manage_donations')) {?>
 
@@ -122,12 +114,11 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             </select>
     <?php }
     }
-    /** @deprecated */
-    public function manage_filters() {
-	    $this->manageFilters();
-    }
 
-    public function doFiltering(WP_Query $query) {
+    /**
+     * @param $query WP_Query
+     */
+    public function do_filtering(WP_Query $query) {
         if(is_admin() && $query->is_main_query() && get_current_screen()->id == 'edit-'.self::$post_type) {
 
             $meta_query = array('relation' => 'AND');
@@ -146,22 +137,15 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         }
     }
-    /**
-     * @deprecated
-     * @param $query WP_Query
-     */
-    public function do_filtering(WP_Query $query) {
-	    $this->doFiltering($query);
-    }
 
-    public function setMetaboxes() {
+    public function set_metaboxes() {
 
         add_meta_box(
             self::$post_type.'_excerpt', __('Annotation', 'leyka'),
-            array($this, 'annotationMetaBox'), self::$post_type, 'normal', 'high'
+            array($this, 'annotation_meta_box'), self::$post_type, 'normal', 'high'
         );
 
-        add_meta_box(self::$post_type.'_data', __('Campaign settings', 'leyka'), array($this, 'dataMetaBox'), self::$post_type, 'normal', 'high');
+        add_meta_box(self::$post_type.'_data', __('Campaign settings', 'leyka'), array($this, 'data_meta_box'), self::$post_type, 'normal', 'high');
 
         // Metaboxes are only for campaign editing page:
         $screen = get_current_screen();
@@ -169,28 +153,27 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             add_meta_box(
                 self::$post_type.'_embed', __('Campaign embedding', 'leyka'),
-                array($this, 'embeddingMetaBox'), self::$post_type, 'normal', 'high'
+                array($this, 'embedding_meta_box'), self::$post_type, 'normal', 'high'
             );
 
 		    add_meta_box(
                 self::$post_type.'_donations', __('Donations history', 'leyka'),
-                array($this, 'donationsMetaBox'), self::$post_type, 'normal', 'high'
+                array($this, 'donations_meta_box'), self::$post_type, 'normal', 'high'
             );
 
             add_meta_box(
                 self::$post_type.'_statistics', __('Campaign statistics', 'leyka'),
-                array($this, 'statisticsMetaBox'), self::$post_type, 'side', 'low'
+                array($this, 'statistics_meta_box'), self::$post_type, 'side', 'low'
             );
 
         }
 
 	}
-	/** @deprecated */
-    public function set_metaboxes() {
-        $this->setMetaboxes();
-    }
 
-    public function dataMetaBox(WP_Post $campaign) {
+    /**
+     * @param $campaign WP_Post
+     */
+    public function data_meta_box(WP_Post $campaign) {
 
 		$campaign = new Leyka_Campaign($campaign);
 
@@ -440,15 +423,13 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         </fieldset>
 
     <?php }
+
     /**
-     * @deprecated
      * @param $campaign WP_Post
      */
-    public function data_meta_box(WP_Post $campaign) {
-	    $this->dataMetaBox($campaign);
-    }
+    public function statistics_meta_box(WP_Post $campaign) {
 
-    public function statisticsMetaBox(WP_Post $campaign) { $campaign = new Leyka_Campaign($campaign);?>
+        $campaign = new Leyka_Campaign($campaign);?>
 
         <div class="stats-block">
             <span class="stats-label"><?php _e('Views:', 'leyka');?></span>
@@ -461,30 +442,22 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
     <?php
     }
+
     /**
-     * @deprecated
      * @param $campaign WP_Post
      */
-    public function statistics_meta_box(WP_Post $campaign) {
-        $this->statisticsMetaBox($campaign);
-    }
-
-    public function annotationMetaBox(WP_Post $campaign) {?>
+    public function annotation_meta_box(WP_Post $campaign) {?>
 
         <label for="excerpt"></label>
         <textarea id="excerpt" name="excerpt" cols="40" rows="1"><?php echo $campaign->post_excerpt;?></textarea>
         <p><?php _e('Annotation is an optional summary of campaign description that can be used in templates.', 'leyka');?></p>
 
     <?php }
+
     /**
-     * @deprecated
      * @param $campaign WP_Post
      */
-    public function annotation_meta_box(WP_Post $campaign) {
-        $this->annotationMetaBox($campaign);
-    }
-
-    public function donationsMetaBox(WP_Post $campaign) { $campaign = new Leyka_Campaign($campaign);?>
+    public function donations_meta_box(WP_Post $campaign) { $campaign = new Leyka_Campaign($campaign);?>
 
         <div>
             <a class="button" href="<?php echo admin_url('/post-new.php?post_type=leyka_donation&campaign_id='.$campaign->id);?>"><?php _e('Add correctional donation', 'leyka');?></a>
@@ -513,7 +486,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             </tfoot>
 
             <tbody>
-            <?php foreach($campaign->getDonations(array('submitted', 'funded', 'refunded', 'failed')) as $donation) {
+            <?php foreach($campaign->get_donations(array('submitted', 'funded', 'refunded', 'failed')) as $donation) {
 
                 $gateway_label = $donation->gateway_id ? $donation->gateway_label : __('Custom payment info', 'leyka');
                 $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;
@@ -535,15 +508,11 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         </table>
     <?php
     }
+
     /**
-     * @deprecated
      * @param $campaign WP_Post
      */
-    public function donations_meta_box(WP_Post $campaign) {
-        $this->donationsMetaBox($campaign);
-    }
-
-    public function embeddingMetaBox(WP_Post $campaign) {?>
+    public function embedding_meta_box(WP_Post $campaign) {?>
 
 	<div class="embed-block">
 
@@ -577,13 +546,6 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
 	</div>
     <?php }
-    /**
-     * @deprecated
-     * @param $campaign WP_Post
-     */
-    public function embedding_meta_box(WP_Post $campaign) {
-        $this->embeddingMetaBox($campaign);
-    }
 
 	static function get_card_embed_code($campaign_id, $increase_counters = false, $width = 300, $height = 400) {
 
@@ -608,7 +570,11 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
     }
 
-	public function saveData($campaign_id, WP_Post $campaign) {
+    /**
+     * @param $campaign_id integer
+     * @param $campaign WP_Post
+     */
+	public function save_data($campaign_id, WP_Post $campaign) {
 
 		$campaign = new Leyka_Campaign($campaign);
 
@@ -663,7 +629,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             update_post_meta($campaign->id, 'campaign_target', $_REQUEST['campaign_target']);
 
-            $campaign->refreshTargetState();
+            $campaign->refresh_target_state();
 
         }
 
@@ -672,16 +638,12 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         }
 
 	}
-	/**
-     * @deprecated
-     * @param $campaign_id integer
-     * @param $campaign WP_Post
-     */
-    public function save_data($campaign_id, WP_Post $campaign) {
-        $this->saveData($campaign_id, $campaign);
-    }
 
-    public function manageColumnsNames($columns) {
+    /**
+     * @param $columns array
+     * @return array
+     */
+    public function manage_columns_names($columns) {
 
 		$unsort = $columns;
 		$columns = array();
@@ -721,16 +683,12 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 		return $columns;
 
 	}
-	/**
-     * @deprecated
-     * @param $columns array
-     * @return array
-     */
-	public function manage_columns_names($columns) {
-	    return $this->manageColumnsNames($columns);
-    }
 
-    public function manageColumnsContent($column_name, $campaign_id) {
+    /**
+     * @param $column_name string
+     * @param $campaign_id integer
+     */
+    public function manage_columns_content($column_name, $campaign_id) {
 
 		$campaign = new Leyka_Campaign($campaign_id);
 
@@ -761,14 +719,6 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         <?php }
 
 	}
-	/**
-     * @deprecated
-     * @param $column_name string
-     * @param $campaign_id integer
-     */
-    public function manage_columns_content($column_name, $campaign_id) {
-	    $this->manageColumnsContent($column_name, $campaign_id);
-    }
 
 }
 
@@ -809,7 +759,7 @@ class Leyka_Campaign {
 
             if(empty($meta['target_state'])) {
 
-                $this->target_state = $this->_getCalculatedTargetState();
+                $this->target_state = $this->_get_calculated_target_state();
                 $meta['target_state'] = array($this->target_state);
 
             }
@@ -838,7 +788,7 @@ class Leyka_Campaign {
             if( !isset($meta['total_funded']) ) { // If campaign total collected amount is not saved, save it
 
                 $sum = 0.0;
-                foreach($this->getDonations(array('funded')) as $donation) {
+                foreach($this->get_donations(array('funded')) as $donation) {
 
                     $donation_amount = $donation->main_curr_amount ? $donation->main_curr_amount : $donation->amount;
                     if(is_array($donation_amount) && !empty($donation_amount[0]) && (float)$donation_amount[0] >= 0.0) {
@@ -928,17 +878,13 @@ class Leyka_Campaign {
 
 	}
 
-    protected function _getCalculatedTargetState() {
+    protected function _get_calculated_target_state() {
 
         $target = get_post_meta($this->_id, 'campaign_target', true);
         return empty($target) ?
             'no_target' :
             ($this->total_funded >= $target ? 'is_reached' : 'in_progress');
 
-    }
-    /** @deprecated */
-    protected function _get_calculated_target_state() {
-	    return $this->_getCalculatedTargetState();
     }
 
     public function __get($field) {
@@ -1069,7 +1015,7 @@ class Leyka_Campaign {
      * @param $status array Of leyka donation statuses.
      * @return array Of Leyka_Donation objects.
      */
-    public function getDonations(array $status = array()) {
+    public function get_donations(array $status = array()) {
 
         if( !did_action('leyka_cpt_registered') || !$this->_id ) { // Leyka PT statuses isn't there yet
             return array();
@@ -1091,16 +1037,12 @@ class Leyka_Campaign {
         return $donations;
 
     }
-    /**
-     * @deprecated
-     * @param $status array
-     * @return array
-     */
-    public function get_donations(array $status = array()) {
-        return $this->getDonations($status);
-    }
 
-    public static function getCampaignCollectedAmount($campaign_id) {
+    /**
+     * @param $campaign_id integer
+     * @return float
+     */
+    public static function get_campaign_collected_amount($campaign_id) {
 
         $campaign_id = (int)$campaign_id;
         if($campaign_id <= 0) {
@@ -1112,27 +1054,19 @@ class Leyka_Campaign {
         return $campaign->total_funded > 0.0 ? $campaign->total_funded : 0.0;
 
     }
-    /**
-     * @deprecated
-     * @param $campaign_id integer
-     * @return float
-     */
-    public static function get_campaign_collected_amount($campaign_id) {
-        return static::getCampaignCollectedAmount($campaign_id);
-    }
 
     /** @deprecated Use $campaign->total_funded instead. */
     public function get_collected_amount() {
         return $this->total_funded > 0.0 ? $this->total_funded : 0.0;
     }
 
-    public function refreshTargetState() {
+    public function refresh_target_state() {
 
         if( !$this->target ) {
             return false;
         }
 
-        $new_target_state = $this->_getCalculatedTargetState();
+        $new_target_state = $this->_get_calculated_target_state();
         $meta = array();
 
         if($new_target_state !== $this->target_state) {
@@ -1160,12 +1094,12 @@ class Leyka_Campaign {
         return $meta['target_state'];
 
     }
-    /** @deprecated */
-    public function refresh_target_state() {
-        return $this->refreshTargetState();
-    }
 
-	static function getTargetStateLabel($state = false) {
+    /**
+     * @param $state string|false
+     * @return string|array|false
+     */
+	static function get_target_state_label($state = false) {
 
         $labels = leyka()->get_campaign_target_states();
 
@@ -1176,16 +1110,8 @@ class Leyka_Campaign {
         }
 
 	}
-	/**
-     * @deprecated
-     * @param $state string|false
-     * @return string|false
-     */
-    static function get_target_state_label($state = false) {
-        return static::getTargetStateLabel($state);
-    }
 
-    public function increaseViewsCounter() {
+    public function increase_views_counter() {
 
         $this->_campaign_meta['count_views']++;
         update_post_meta($this->_id, 'count_views', $this->_campaign_meta['count_views']);
@@ -1193,12 +1119,8 @@ class Leyka_Campaign {
         return $this;
 
     }
-    /** @deprecated */
-    public function increase_views_counter() {
-        return $this->increaseViewsCounter();
-    }
 
-    public function increaseSubmitsCounter() {
+    public function increase_submits_counter() {
 
         $this->_campaign_meta['count_submits']++;
         update_post_meta($this->_id, 'count_submits', $this->_campaign_meta['count_submits']);
@@ -1206,17 +1128,19 @@ class Leyka_Campaign {
         return $this;
 
     }
-    /** @deprecated */
-    public function increase_submits_counter() {
-        return $this->increaseSubmitsCounter();
-    }
 
-    public function updateTotalFundedAmount($donation = false, $action = '', $old_sum = false) {
+    /**
+     * @param $donation Leyka_Donation|integer|false
+     * @param $action string
+     * @param $old_sum float|false
+     * @return $this|false
+     */
+    public function update_total_funded_amount($donation = false, $action = '', $old_sum = false) {
 
         if( !$donation ) { // Recalculate total collected amount for a campaign and recache it
 
             $sum = 0.0;
-            foreach($this->getDonations(array('funded')) as $donation) {
+            foreach($this->get_donations(array('funded')) as $donation) {
                 $sum += $donation->sum_total;
             }
 
@@ -1251,20 +1175,10 @@ class Leyka_Campaign {
 
         }
 
-        $this->refreshTargetState();
+        $this->refresh_target_state();
 
         return $this;
 
-    }
-    /**
-     * @deprecated
-     * @param $donation Leyka_Donation|integer|false
-     * @param $action string
-     * @param $old_sum float|false
-     * @return $this
-     */
-    public function update_total_funded_amount($donation = false, $action = '', $old_sum = false) {
-        return $this->updateTotalFundedAmount($donation, $action, $old_sum);
     }
 
     public function delete($force = False) {

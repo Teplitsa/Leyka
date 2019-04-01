@@ -898,7 +898,7 @@ function leyka_print_donation_elements($content) {
 
     $content .= get_leyka_payment_form_template_html($current_campaign_post); // Payment form
 
-    $campaign->increaseViewsCounter(); // Increase campaign views counter
+    $campaign->increase_views_counter(); // Increase campaign views counter
 
 	// Donations list:
     if(leyka_options()->opt_template('leyka_donations_history_under_forms')) {

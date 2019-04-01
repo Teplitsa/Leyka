@@ -1441,6 +1441,27 @@ function leyka_get_campaign_donations($campaign, $limit = false) {
 
 }
 
+function leyka_get_init_recurring_donations() {
+
+    $recurring_subscriptions = get_posts(array(
+        'post_type' => Leyka_Donation_Management::$post_type,
+        'post_status' => 'funded',
+        'post_parent' => 0,
+        'meta_query' => array(array('key' => 'leyka_payment_type', 'value' => 'rebill')),
+    ));
+
+    if( !$recurring_subscriptions ) {
+        return array();
+    }
+
+    foreach($recurring_subscriptions as &$init_donation) { /** @var $init_donation WP_Post */
+        $init_donation = new Leyka_Donation($init_donation);
+    }
+
+    return $recurring_subscriptions;
+
+}
+
 function leyka_get_donations_archive_url($campaign_id = false) {
 
     if((int)$campaign_id > 0) {

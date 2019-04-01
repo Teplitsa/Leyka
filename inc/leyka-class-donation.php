@@ -105,7 +105,7 @@ class Leyka_Donation_Management {
             $donation = new Leyka_Donation($donation);
 
             $campaign = new Leyka_Campaign($donation->campaign_id);
-            $campaign->updateTotalFundedAmount($donation, $old == 'funded' ? 'remove' : 'add');
+            $campaign->update_total_funded_amount($donation, $old == 'funded' ? 'remove' : 'add');
         }
 
     }
@@ -1400,7 +1400,7 @@ class Leyka_Donation_Management {
 
                 // If we're adding a correctional donation, $donation->campaign_id == 0:
                 if($donation->campaign_id && $donation->status == 'funded') {
-                    $campaign->updateTotalFundedAmount($donation, 'update_sum', $old_amount);
+                    $campaign->update_total_funded_amount($donation, 'update_sum', $old_amount);
                 }
 
             }
@@ -1415,14 +1415,14 @@ class Leyka_Donation_Management {
 
             // If we're adding a correctional donation, $donation->campaign_id == 0:
             if($donation->campaign_id && $donation->status == 'funded') {
-                $campaign->updateTotalFundedAmount($donation, 'remove'); // Old campaign
+                $campaign->update_total_funded_amount($donation, 'remove'); // Old campaign
             }
 
             $donation->campaign_id = (int)$_POST['campaign-id'];
             $campaign = new Leyka_Campaign($donation->campaign_id); // New campaign
 
             if($donation->status == 'funded') {
-                $campaign->updateTotalFundedAmount($donation);
+                $campaign->update_total_funded_amount($donation);
             }
 
         }

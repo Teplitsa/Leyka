@@ -953,7 +953,7 @@ class Leyka extends Leyka_Singleton {
                 foreach($campaigns as $campaign) {
 
                     $campaign = new Leyka_Campaign($campaign);
-                    $campaign->updateTotalFundedAmount();
+                    $campaign->update_total_funded_amount();
                 }
 
                 wp_suspend_cache_addition(false);
@@ -1278,7 +1278,7 @@ class Leyka extends Leyka_Singleton {
         register_post_type(Leyka_Campaign_Management::$post_type, $args);
 
         /** Campaign editing messages */
-        add_filter('post_updated_messages', array(Leyka_Campaign_Management::get_instance(), 'setAdminMessages'));
+        add_filter('post_updated_messages', array(Leyka_Campaign_Management::get_instance(), 'set_admin_messages'));
 
         register_post_status('submitted', array(
             'label'                     => _x('Submitted', '«Submitted» donation status', 'leyka'),
@@ -1483,7 +1483,7 @@ class Leyka extends Leyka_Singleton {
 
         if( !is_wp_error($donation_id) ) {
 
-            $campaign->increaseSubmitsCounter();
+            $campaign->increase_submits_counter();
 
             do_action('leyka_log_donation', $pm_data['gateway_id'], $pm_data['payment_method_id'], $donation_id);
             do_action('leyka_log_donation-'.$pm_data['gateway_id'], $donation_id);
