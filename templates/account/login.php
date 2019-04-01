@@ -94,7 +94,7 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
 
                         <?php } else { // Account activation/password setting ?>
 
-                        <form class="leyka-screen-form leyka-account-activation" action="<?php echo home_url('/donor_account/login/');?>" method="post">
+                        <form class="leyka-screen-form leyka-account-pass-setup" action="<?php echo home_url('/donor_account/login/');?>" method="post" data-account-activation="1">
 
                             <h2><?php _e('Set up your password', 'leyka');?></h2>
         
@@ -176,7 +176,7 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
                                     </div>
 
                                     <input type="hidden" name="donor_account_id" value="<?php echo $donor_account->ID;?>">
-                                    <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('leyka_activate_donor_account');?>">
+                                    <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('leyka_account_password_setup');?>">
 
                                 </div>
 

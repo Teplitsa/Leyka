@@ -34,7 +34,7 @@ jQuery(document).ready(function($){
 
     }
 
-    $('.leyka-account-activation').on('submit.leyka', function(e){
+    $('.leyka-account-pass-setup').on('submit.leyka', function(e){
 
         e.preventDefault();
 
@@ -49,6 +49,9 @@ jQuery(document).ready(function($){
                 $submit = $form.find('.activation-submit');
 
             params.push({name: 'action', value: 'leyka_setup_donor_password'});
+            if($form.data('account-activation')) {
+                params.push({name: 'auto-login', value: true});
+            }
 
             $ajax_indicator.show();
             $message.hide();
@@ -62,9 +65,11 @@ jQuery(document).ready(function($){
                     $message.removeClass('error-message').addClass('success-message');
                     $extra_links.hide();
 
-                    setTimeout(function(){
-                        window.location.href = leyka.homeurl + '/donor-account/';
-                    }, 3000);
+                    if($form.data('account-activation')) {
+                        setTimeout(function () {
+                            window.location.href = leyka.homeurl + '/donor-account/';
+                        }, 3000);
+                    }
 
                 } else if(response.message) {
 

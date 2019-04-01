@@ -17,9 +17,11 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
                 <div id="leyka-pf-" class="leyka-pf leyka-pf-star">
                     <div class="leyka-account-form">
 
+                        <?php if(empty($_GET['code']) || empty($_GET['donor'])) { // Account reset initial form (email confirmation) ?>
+
 						<form class="leyka-screen-form leyka-reset-password" method="post" action="#">
-							
-							<h2>Восстановление пароля</h2>
+
+							<h2><?php _e('Account password reset', 'leyka');?></h2>
 
 							<div class="section section--person">
 						
@@ -65,6 +67,105 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
 							</div>
 
 						</form>
+
+                        <?php } else { // Account password resetting ?>
+
+                            <form class="leyka-screen-form leyka-account-pass-setup" action="<?php echo home_url('/donor_account/login/');?>" method="post">
+
+                                <h2><?php _e('Set up your new password', 'leyka');?></h2>
+
+                                <div class="section">
+
+                                    <?php $_GET['code'] = esc_sql($_GET['code']);
+                                    $_GET['donor'] = esc_sql($_GET['donor']);
+
+                                    $donor_account = get_user_by('email', $_GET['donor']);
+
+                                    if(
+                                        !$donor_account
+                                        || !$donor_account->user_login
+                                        || !is_a(check_password_reset_key($_GET['code'], $donor_account->user_login), 'WP_User')
+                                    ) {?>
+
+                                        <div class="section__fields error">
+
+                                            <div class="error-message">
+                                                <?php _e("No account found to reset it's password :( Try to log in.", 'leyka');?>
+                                            </div>
+
+                                            <div class="leyka-star-submit">
+                                                <a href="<?php echo home_url('/donor-account/login/');?>" class="leyka-star-btn">
+                                                    <?php _e('Log in', 'leyka');?>
+                                                </a>
+                                            </div>
+
+                                        </div>
+
+                                    <?php } else { // Password setup form
+
+                                        $donor_account = reset($donor_account);?>
+
+                                        <div class="section__fields donor">
+
+                                            <?php $field_id = 'leyka-'.wp_rand();?>
+                                            <div class="donor__textfield donor__textfield--pass required">
+                                                <div class="leyka-star-field-frame">
+                                                    <label for="<?php echo $field_id;?>">
+                                                        <span class="donor__textfield-label leyka_donor_pass-label">
+                                                            <?php _e('Your password', 'leyka');?>
+                                                        </span>
+                                                    </label>
+                                                    <input id="<?php echo $field_id;?>" type="password" name="leyka_donor_pass" value="" autocomplete="off">
+                                                </div>
+                                                <div class="leyka-star-field-error-frame">
+                                                    <span class="donor__textfield-error leyka_donor_pass-error"></span>
+                                                </div>
+                                            </div>
+
+                                            <?php $field_id = 'leyka-'.wp_rand();?>
+                                            <div class="donor__textfield donor__textfield--pass2 required">
+                                                <div class="leyka-star-field-frame">
+                                                    <label for="<?php echo $field_id;?>">
+                                                        <span class="donor__textfield-label leyka_donor_pass2-label">
+                                                            <?php _e('Repeat your password', 'leyka');?>
+                                                        </span>
+                                                    </label>
+                                                    <input id="<?php echo $field_id;?>" type="password" name="leyka_donor_pass2" value="" autocomplete="off">
+                                                </div>
+                                                <div class="leyka-star-field-error-frame">
+                                                    <span class="donor__textfield-error leyka_donor_pass2-error"></span>
+                                                </div>
+                                            </div>
+
+                                            <input type="hidden" name="donor_account_id" value="<?php echo $donor_account->ID;?>">
+                                            <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('leyka_account_password_setup');?>">
+
+                                        </div>
+
+                                        <div class="form-ajax-indicator" style="display: none;">
+                                            <div class="loading">
+                                                <div class="spinner">
+                                                    <div class="bounce1"></div>
+                                                    <div class="bounce2"></div>
+                                                    <div class="bounce3"></div>
+                                                </div>
+                                            </div>
+                                            <div class="waiting__card-text"><?php _e('Setting up your password...', 'leyka');?></div>
+                                        </div>
+
+                                        <div class="form-message" style="display: none;"></div>
+
+                                        <div class="leyka-star-submit activation-submit">
+                                            <input type="submit" class="leyka-star-btn" value="<?php _e('Set up the password', 'leyka');?>">
+                                        </div>
+
+                                    <?php }?>
+
+                                </div>
+
+                            </form>
+
+                        <?php }?>
 
                     </div>
                 </div>
