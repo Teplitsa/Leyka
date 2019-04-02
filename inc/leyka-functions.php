@@ -556,6 +556,26 @@ function leyka_get_donation_status_list() {
     return leyka()->get_donation_statuses();
 }
 
+function leyka_get_donation_status_description($status) {
+
+    $status_descriptions = leyka()->get_donation_statuses_descriptions();
+    return $status && isset($status_descriptions[$status]) ? $status_descriptions[$status] : '';
+
+}
+
+function leyka_get_donation_types() {
+    return leyka()->get_donation_types();
+}
+
+function leyka_get_donation_type_description($type) {
+
+    $type = $type === 'rebill' ? 'recurring' : $type;
+    $types = leyka()->get_donation_types_descriptions();
+
+    return $type && isset($types[$type]) ? $types[$type] : '';
+
+}
+
 function leyka_get_pm_categories_list() {
     return apply_filters('leyka_pm_categories', array(
         'bank_cards' => esc_attr__('Bank cards', 'leyka'),
@@ -1441,13 +1461,29 @@ function leyka_get_campaign_donations($campaign, $limit = false) {
 
 }
 
-function leyka_get_init_recurring_donations() {
+function leyka_get_init_recurring_donations($donor_id = false) {
+
+    $donor_id = (int)$donor_id ? (int)$donor_id : get_current_user_id();
+    $donor_email = get_user_option('user_email', $donor_id);
+
+    if( !$donor_id || !$donor_email ) {
+        return array();
+    }
 
     $recurring_subscriptions = get_posts(array(
         'post_type' => Leyka_Donation_Management::$post_type,
         'post_status' => 'funded',
         'post_parent' => 0,
-        'meta_query' => array(array('key' => 'leyka_payment_type', 'value' => 'rebill')),
+        'meta_query' => array(
+            'relation' => 'AND',
+            array('key' => 'leyka_payment_type', 'value' => 'rebill'),
+            array(
+                'relation' => 'OR',
+                array('key' => 'leyka_donor_email', 'value' => $donor_email),
+                array('key' => 'leyka_donor_account', 'value' => $donor_id),
+            ),
+        ),
+        'posts_per_page' => -1,
     ));
 
     if( !$recurring_subscriptions ) {
@@ -1459,6 +1495,49 @@ function leyka_get_init_recurring_donations() {
     }
 
     return $recurring_subscriptions;
+
+}
+
+function leyka_get_donor_donations($donor_id = false, $page_number = false) {
+
+    $donor_id = (int)$donor_id ? (int)$donor_id : get_current_user_id();
+    $donor_email = get_user_option('user_email', $donor_id);
+
+    $page_number = (int)$page_number > 0 ? (int)$page_number : 1;
+
+    if( !$donor_id || !$donor_email ) {
+        return array();
+    }
+
+    $donations = get_posts(array(
+        'post_type' => Leyka_Donation_Management::$post_type,
+        'post_status' => array('funded', 'refunded', 'failed'),
+        'meta_query' => array(
+            'relation' => 'AND',
+            array(
+                'relation' => 'OR',
+                array('key' => 'leyka_payment_type', 'value' => 'single'),
+                array('key' => 'leyka_payment_type', 'value' => 'rebill'),
+            ),
+            array(
+                'relation' => 'OR',
+                array('key' => 'leyka_donor_email', 'value' => $donor_email),
+                array('key' => 'leyka_donor_account', 'value' => $donor_id),
+            ),
+        ),
+        'posts_per_page' => LEYKA_DONOR_ACCOUNT_DONATIONS_PER_PAGE,
+        'paged' => $page_number,
+    ));
+
+    if( !$donations ) {
+        return array();
+    }
+
+    foreach($donations as &$donation) { /** @var $donation WP_Post */
+        $donation = new Leyka_Donation($donation);
+    }
+
+    return $donations;
 
 }
 
@@ -1968,4 +2047,4 @@ function leyka_use_leyka_donations_list_template($archive_template) {
     
     return $archive_template;
 }
-add_filter('archive_template', 'leyka_use_leyka_donations_list_template') ;
+add_filter('archive_template', 'leyka_use_leyka_donations_list_template');

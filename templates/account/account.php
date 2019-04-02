@@ -49,69 +49,60 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 								</div>
 
                                 <?php } else {?>
-                                <div class="no-recurring"><?php _e('There are no active recurring subscriptions.', 'leyka');?></div>
+                                <div class="donations-history-empty"><?php _e('There are no active recurring subscriptions.', 'leyka');?></div>
                                 <?php }?>
 							</div>
-							
+
 							<div class="list leyka-star-history">
-								<h3 class="list-title">История пожертвований</h3>
-								<div class="items">
-									<div class="item break">
-										<h4 class="item-title">
-											<span class="field-q"><span class="field-q-tooltip">Описание операции, представленной значком</span></span>
-											Отключение
-										</h4>
-										<span class="date">12.01.2019</span>
-										<p>«Помогите изданию оставаться независимым источником информации»</p>
-									</div>
-									<div class="item no-pay">
-										<h4 class="item-title">
-											<span class="field-q"><span class="field-q-tooltip">Описание операции, представленной значком</span></span>
-											300 Р.
-										</h4>
-										<span class="date">12.01.2019</span>
-										<p>«Помогите изданию оставаться независимым источником информации»</p>
-									</div>
-									<div class="item error">
-										<h4 class="item-title">
-											<span class="field-q"><span class="field-q-tooltip">Описание операции, представленной значком</span></span>
-											300 Р.
-										</h4>
-										<span class="date">12.01.2019</span>
-										<p>«Помогите изданию оставаться независимым источником информации»</p>
-									</div>
-									<div class="item pay">
-										<h4 class="item-title">
-											<span class="field-q"><span class="field-q-tooltip">Описание операции, представленной значком</span></span>
-											300 Р.
-										</h4>
-										<span class="date">12.01.2019</span>
-										<p>«Помогите изданию оставаться независимым источником информации»</p>
-									</div>
-									<div class="item break">
-										<h4 class="item-title">
-											<span class="field-q"><span class="field-q-tooltip">Описание операции, представленной значком</span></span>
-											Отключение
-										</h4>
-										<span class="date">12.01.2019</span>
-										<p>«Помогите изданию оставаться независимым источником информации»</p>
-									</div>
-									<div class="item refund">
-										<h4 class="item-title">
-											<span class="field-q"><span class="field-q-tooltip">Описание операции, представленной значком</span></span>
-											Отключение
-										</h4>
-										<span class="date">12.01.2019</span>
-										<p>«Помогите изданию оставаться независимым источником информации»</p>
-									</div>
-								</div>
-								
-								<div class="leyka-star-submit">
-									<a href="#" class="leyka-star-single-link internal">Загрузить еще</a>
-								</div>
+
+								<h3 class="list-title"><?php _e('Donations history', 'leyka') // История пожертвований?></h3>
+
+                                <?php $donations = leyka_get_donor_donations();
+
+                                if($donations) {?>
+
+                                <div class="items">
+
+                                <?php foreach($donations as $donation) {
+
+                                    if($donation->status === 'failed') { $item_class = 'error'; $tooltip_class = 'error'; }
+                                    else if($donation->status === 'refunded') { $item_class = 'refund'; $tooltip_class = 'notice'; }
+                                    else if($donation->type === 'single') { $item_class = 'no-pay'; $tooltip_class = 'funded'; }
+                                    else if($donation->type === 'rebill') { $item_class = 'pay'; $tooltip_class = 'funded'; }?>
+
+                                    <div class="item <?php echo $donation->status;?> <?php echo $donation->type;?> <?php echo $item_class;?>">
+                                        <h4 class="item-title">
+                                            <span class="field-q"><span class="field-q-tooltip <?php echo 'status-'.$donation->status;?> <?php echo 'type-'.$donation->type;?> <?php echo $tooltip_class;?>">
+                                                <?php echo $donation->type_description;?>
+                                                <br><br>
+                                                <?php echo $donation->status_description;?>
+                                            </span></span>
+                                            <?php echo $donation->amount.' '.$donation->currency_label;?>
+                                        </h4>
+                                        <span class="date"><?php echo $donation->date;?></span>
+                                        <p><?php echo '«'.$donation->campaign_title.'»';?></p>
+                                    </div>
+                                <?php }?>
+
+                                </div>
+
+                                <?php } else {?>
+                                    <div class="donations-history-empty"><?php _e('There are no donations yet.', 'leyka');?></div>
+                                <?php }?>
+
+                                <?php if(count($donations) > LEYKA_DONOR_ACCOUNT_DONATIONS_PER_PAGE) {?>
+                                    <div class="leyka-star-submit">
+                                        <a href="#" class="leyka-star-single-link internal donations-history-more" data-donations-history-page="2">
+                                            <?php _e('Load more', 'leyka');?>
+                                        </a>
+                                    </div>
+                                <?php }?>
+
 							</div>
 						
-							<p class="leyka-we-need-you">Вы всегда можете <a href="?leyka-screen=cancel-subscription">отключить ваше ежемесячное пожертвование.</a><br />Но нам будет без вас трудно.</p>
+							<p class="leyka-we-need-you">
+                                <?php echo sprintf(__('You can always <a href="%s">cancel your recurring donations</a>.<br>But we will struggle without your support.', 'leyka'), home_url('/donor-account/?leyka-screen=cancel-subscription')); // Вы всегда можете <a href="?leyka-screen=cancel-subscription">отключить ваше ежемесячное пожертвование.</a><br />Но нам будет без вас трудно.?>
+                            </p>
 							
 						</form>
 						

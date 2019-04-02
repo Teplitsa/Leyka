@@ -22,22 +22,22 @@ class Leyka_Donation_Management {
 
 	private function __construct() {
 
-        add_filter('post_row_actions', array($this, 'rowActions'), 10, 2);
+        add_filter('post_row_actions', array($this, 'row_actions'), 10, 2);
 
-        add_action('restrict_manage_posts', array($this, 'manageFilters'));
-        add_action('pre_get_posts', array($this, 'doFiltering'));
+        add_action('restrict_manage_posts', array($this, 'manage_filters'));
+        add_action('pre_get_posts', array($this, 'do_filtering'));
 
-        add_action('add_meta_boxes', array($this, 'addMetaboxes')); // Add Donation PT metaboxes
-        add_action('add_meta_boxes', array($this, 'removeMetaboxes'), 100); // Remove unneeded metaboxes
+        add_action('add_meta_boxes', array($this, 'add_metaboxes')); // Add Donation PT metaboxes
+        add_action('add_meta_boxes', array($this, 'remove_metaboxes'), 100); // Remove unneeded metaboxes
 
-        add_action('save_post_'.self::$post_type, array($this, 'saveDonationData'));
+        add_action('save_post_'.self::$post_type, array($this, 'save_donation_data'));
 
-		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manageColumnsNames'));
-		add_action('manage_'.self::$post_type.'_posts_custom_column', array($this, 'manageColumnsContent'), 2, 2);
-        add_filter('manage_edit-'.self::$post_type.'_columns', array($this, 'removeColumns')); // Remove unneeded columns
+		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manage_columns_names'));
+		add_action('manage_'.self::$post_type.'_posts_custom_column', array($this, 'manage_columns_content'), 2, 2);
+        add_filter('manage_edit-'.self::$post_type.'_columns', array($this, 'remove_columns')); // Remove unneeded columns
 
-        add_filter('manage_edit-'.self::$post_type.'_sortable_columns', array($this, 'manageSortableColumns'));
-        add_filter('request', array($this, 'doColumnSorting'));
+        add_filter('manage_edit-'.self::$post_type.'_sortable_columns', array($this, 'manage_sortable_columns'));
+        add_filter('request', array($this, 'do_column_sorting'));
 
         /** Donation status transitions */
         add_action('transition_post_status',  array($this, 'donation_status_changed'), 10, 3);
@@ -74,7 +74,7 @@ class Leyka_Donation_Management {
         return $messages;
     }
 
-    public function rowActions($actions, $donation) {
+    public function row_actions($actions, $donation) {
 
         $current_screen = get_current_screen();
 
@@ -90,6 +90,7 @@ class Leyka_Donation_Management {
         unset($actions['inline hide-if-no-js']);
 
         return $actions;
+
     }
 
     public function donation_status_changed($new, $old, WP_Post $donation) {
@@ -110,7 +111,7 @@ class Leyka_Donation_Management {
 
     }
 
-    public function manageFilters() {
+    public function manage_filters() {
 
         if(get_current_screen()->id == 'edit-'.self::$post_type && current_user_can('leyka_manage_donations')) {?>
 
@@ -174,7 +175,7 @@ class Leyka_Donation_Management {
 
     <?php }
 
-    public function doFiltering(WP_Query $query) {
+    public function do_filtering(WP_Query $query) {
 
         if(is_admin() && $query->is_main_query() && get_current_screen()->id == 'edit-'.self::$post_type) {
 
@@ -589,13 +590,13 @@ class Leyka_Donation_Management {
         return true;
     }
 
-    public function removeMetaboxes() {
+    public function remove_metaboxes() {
         if(get_post_type() === Leyka_Donation_Management::$post_type) {
             remove_meta_box('wpseo_meta', Leyka_Donation_Management::$post_type, 'normal');
         }
     }
 
-    public function removeColumns($columns) {
+    public function remove_columns($columns) {
 
         unset(
             $columns['wpseo-score'], $columns['wpseo-score-readability'], $columns['wpseo-title'], $columns['wpseo-metadesc'],
@@ -606,7 +607,7 @@ class Leyka_Donation_Management {
 
     }
 
-    public function addMetaboxes() {
+    public function add_metaboxes() {
 
 		remove_meta_box('submitdiv', self::$post_type, 'side'); // Remove default status/publish metabox
 
@@ -614,22 +615,22 @@ class Leyka_Donation_Management {
 
         if($curr_page->action === 'add') { // New donation page
 
-            add_meta_box(self::$post_type.'_new_data', __('New donation data', 'leyka'), array($this, 'newDonationDataMetabox'), self::$post_type, 'normal', 'high');
-            add_meta_box(self::$post_type.'_status', __('Donation status', 'leyka'), array($this, 'donationStatusMetabox'), self::$post_type, 'side', 'high');
+            add_meta_box(self::$post_type.'_new_data', __('New donation data', 'leyka'), array($this, 'new_donation_data_metabox'), self::$post_type, 'normal', 'high');
+            add_meta_box(self::$post_type.'_status', __('Donation status', 'leyka'), array($this, 'donation_status_metabox'), self::$post_type, 'side', 'high');
 
         } else { // View/edit donation page
 
-            add_meta_box(self::$post_type.'_data', __('Donation data', 'leyka'), array($this, 'donationDataMetabox'), self::$post_type, 'normal', 'high');
-            add_meta_box(self::$post_type.'_status', __('Donation status', 'leyka'), array($this, 'donationStatusMetabox'), self::$post_type, 'side', 'high');
-            add_meta_box(self::$post_type.'_emails_status', __('Emails status', 'leyka'), array($this, 'emailsStatusMetabox'), self::$post_type, 'normal', 'high');
-            add_meta_box(self::$post_type.'_gateway_response', __('Gateway responses text', 'leyka'), array($this, 'gatewayResponseMetabox'), self::$post_type, 'normal', 'low');
+            add_meta_box(self::$post_type.'_data', __('Donation data', 'leyka'), array($this, 'donation_data_metabox'), self::$post_type, 'normal', 'high');
+            add_meta_box(self::$post_type.'_status', __('Donation status', 'leyka'), array($this, 'donation_status_metabox'), self::$post_type, 'side', 'high');
+            add_meta_box(self::$post_type.'_emails_status', __('Emails status', 'leyka'), array($this, 'emails_status_metabox'), self::$post_type, 'normal', 'high');
+            add_meta_box(self::$post_type.'_gateway_response', __('Gateway responses text', 'leyka'), array($this, 'gateway_response_metabox'), self::$post_type, 'normal', 'low');
 //        add_meta_box(self::$post_type.'_recurrent_cancel', __('Cancel recurrent donations', 'leyka'), array($this, 'recurrent_cancel_metabox'), self::$post_type, 'normal', 'low');
 
         }
 
 	}
 
-    public function newDonationDataMetabox() {
+    public function new_donation_data_metabox() {
 
         $campaign_id = empty($_GET['campaign_id']) ? '' : (int)$_GET['campaign_id'];
         $campaign = new Leyka_Campaign($campaign_id);?>
@@ -769,7 +770,7 @@ class Leyka_Donation_Management {
 	</fieldset>
     <?php }
 
-    public function donationDataMetabox(WP_Post $donation) {
+    public function donation_data_metabox(WP_Post $donation) {
 
         $donation = new Leyka_Donation($donation);
         $campaign = new Leyka_Campaign($donation->campaign_id);?>
@@ -1016,7 +1017,7 @@ class Leyka_Donation_Management {
 
 	<?php }
 
-    public function donationStatusMetabox($donation) {
+    public function donation_status_metabox($donation) {
 
         wp_nonce_field('donation_status_metabox', '_donation_edit_nonce');
 
@@ -1079,7 +1080,7 @@ class Leyka_Donation_Management {
         </div>
 	<?php }
 
-    public function emailsStatusMetabox($donation) {
+    public function emails_status_metabox($donation) {
 
         $donor_thanks_date = get_post_meta($donation->ID, '_leyka_donor_email_date', true);
         $manager_notification_date = get_post_meta($donation->ID, '_leyka_managers_emails_date', true);
@@ -1117,7 +1118,7 @@ class Leyka_Donation_Management {
     /**
      * @param $donation WP_Post
      */
-    public function gatewayResponseMetabox($donation) { $donation = new Leyka_Donation($donation);?>
+    public function gateway_response_metabox($donation) { $donation = new Leyka_Donation($donation);?>
 
         <div>
             <?php if( !$donation->gateway_response_formatted ) {
@@ -1170,7 +1171,7 @@ class Leyka_Donation_Management {
      * @param array $columns An array of id => name pairs.
      * @return array
      */
-	function manageColumnsNames($columns) {
+	function manage_columns_names($columns) {
 
 		$unsort = $columns;
 		$columns = array();
@@ -1216,7 +1217,7 @@ class Leyka_Donation_Management {
 
 	}
 
-	function manageColumnsContent($column_name, $donation_id) {
+	function manage_columns_content($column_name, $donation_id) {
 
 		$donation = new Leyka_Donation($donation_id);
 
@@ -1253,7 +1254,7 @@ class Leyka_Donation_Management {
                 echo "<b>{$donation->payment_type_label}:</b> $pm_label <small>/ $gateway_label</small>";
                 break;
             case 'donation_date':
-                echo $donation->date;
+                echo $donation->date_time;
                 break;
             case 'status':
                 echo '<i class="'.esc_attr($donation->status).'">'
@@ -1302,9 +1303,10 @@ class Leyka_Donation_Management {
                 break;
             default:
         }
+
 	}
 
-    public function manageSortableColumns($sortable_columns) {
+    public function manage_sortable_columns($sortable_columns) {
 
         $sortable_columns['ID'] = 'ID';
         $sortable_columns['donation_date'] = 'donation_date';
@@ -1316,7 +1318,7 @@ class Leyka_Donation_Management {
         return $sortable_columns;
     }
 
-    public function doColumnSorting($vars) {
+    public function do_column_sorting($vars) {
 
         if(empty($vars['orderby'])) {
             return $vars;
@@ -1342,7 +1344,7 @@ class Leyka_Donation_Management {
     }
 
     /** Save donation data metabox */
-    public function saveDonationData($donation_id) {
+    public function save_donation_data($donation_id) {
 
         // Maybe donation is inserted trough API:
         if(empty($_POST['post_type']) || $_POST['post_type'] != Leyka_Donation_Management::$post_type) {
@@ -1364,7 +1366,7 @@ class Leyka_Donation_Management {
             return $donation_id;
         }
 
-        remove_action('save_post_'.self::$post_type, array($this, 'saveDonationData'));
+        remove_action('save_post_'.self::$post_type, array($this, 'save_donation_data'));
 
         $donation = new Leyka_Donation($donation_id);
         $campaign = new Leyka_Campaign($donation->campaign_id);
@@ -1487,7 +1489,7 @@ class Leyka_Donation_Management {
 
         do_action("leyka_{$donation->gateway_id}_save_donation_data", $donation);
 
-        add_action('save_post_'.self::$post_type, array($this, 'saveDonationData'));
+        add_action('save_post_'.self::$post_type, array($this, 'save_donation_data'));
 
         return true;
 
@@ -1802,48 +1804,80 @@ class Leyka_Donation {
 
         switch($field) {
             case 'id':
-            case 'ID': return $this->_id;
+            case 'ID':
+                return $this->_id;
+
             case 'title':
-            case 'name': return $this->_post_object->post_title;
+            case 'name':
+                return $this->_post_object->post_title;
+
             case 'purpose':
             case 'purpose_text':
             case 'payment_title':
             case 'campaign_payment_title':
                 return $this->_donation_meta['payment_title'];
+
+            case 'campaign_title':
+                $campaign = new Leyka_Campaign($this->_donation_meta['campaign_id']);
+                return $campaign ? $campaign->title : $this->payment_title;
+
             case 'status': return $this->_post_object->post_status;
             case 'status_label':
-                $stati = leyka_get_donation_status_list();
-                return $stati[$this->_post_object->post_status];
+                $status_list = leyka_get_donation_status_list();
+                return $status_list[$this->_post_object->post_status];
+
+            case 'status_desc':
+            case 'status_description':
+                return leyka_get_donation_status_description($this->status);
+
             case 'status_log':
                 return $this->_donation_meta['status_log'];
+
             case 'date':
             case 'date_label':
+                $date_format = get_option('date_format');
+                $donation_timestamp = $this->date_timestamp;
+
+                return apply_filters(
+                    'leyka_admin_donation_date',
+                    date($date_format, $donation_timestamp),
+                    $donation_timestamp, $date_format
+                );
+
+            case 'date_time':
+            case 'date_time_label':
                 $date_format = get_option('date_format');
                 $time_format = get_option('time_format');
                 $donation_timestamp = $this->date_timestamp;
 
                 return apply_filters(
-                    'leyka_admin_donation_date',
+                    'leyka_admin_donation_date_time',
                     date("$date_format, $time_format", $donation_timestamp),
                     $donation_timestamp, $date_format, $time_format
                 );
+
             case 'date_timestamp': return strtotime($this->_post_object->post_date);
+
             case 'date_funded':
             case 'funded_date':
                 $date_funded = $this->get_funded_date();
                 return $date_funded ? date(get_option('date_format'), $date_funded) : 0;
+
             case 'payment_method':
             case 'payment_method_id':
             case 'pm':
             case 'pm_id':
                 return $this->_donation_meta['payment_method'];
+
             case 'pm_full_id':
                 return empty($this->_donation_meta['gateway']) || empty($this->_donation_meta['payment_method']) ?
                     '' : $this->_donation_meta['gateway'].'-'.$this->_donation_meta['payment_method'];
+
             case 'gateway':
             case 'gateway_id':
             case 'gw_id':
                 return empty($this->_donation_meta['gateway']) ? '' : $this->_donation_meta['gateway'];
+
             case 'gateway_label':
 
                 if(empty($this->_donation_meta['gateway'])) {
@@ -1857,16 +1891,19 @@ class Leyka_Donation {
             case 'payment_method_label':
                 $pm = leyka_get_pm_by_id($this->_donation_meta['gateway'].'-'.$this->_donation_meta['payment_method'], true);
                 return $pm ? $pm->label : __('Unknown payment method', 'leyka');
+
             case 'currency':
             case 'currency_code':
             case 'currency_id':
                 return $this->_donation_meta['currency'];
+
             case 'currency_label':
                 return leyka_options()->opt('leyka_currency_'.$this->_donation_meta['currency'].'_label');
 
             case 'sum':
             case 'amount':
                 return empty($this->_donation_meta['amount']) ? 0.0 : $this->_donation_meta['amount'];
+
             case 'sum_total':
             case 'total_sum':
             case 'total_amount':
@@ -1919,6 +1956,12 @@ class Leyka_Donation {
             case 'payment_type': return $this->_donation_meta['payment_type'];
             case 'type_label':
             case 'payment_type_label': return __($this->_donation_meta['payment_type'], 'leyka');
+
+            case 'type_desc':
+            case 'payment_type_desc':
+            case 'type_description':
+            case 'payment_type_description':
+                return leyka_get_donation_type_description($this->type);
 
             case 'init_recurring_payment_id':
             case 'init_recurring_donation_id':

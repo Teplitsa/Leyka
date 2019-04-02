@@ -729,6 +729,14 @@ class Leyka extends Leyka_Singleton {
         ));
     }
 
+    public function get_donation_types_descriptions() {
+        return apply_filters('leyka_donation_types_descriptions', array(
+            'single' => _x("A one-time donation.", '«Single» donation type description', 'leyka'),
+            'recurring' => _x('A monthly recurring donation.', '«Recurring» donation type description', 'leyka'),
+            'correction' => _x('A donation manually added by the website administration.', '«Refunded» donation status description', 'leyka'),
+        ));
+    }
+
     /**
      * Retrieve all available payment/donation statuses.
      *
