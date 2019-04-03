@@ -94,6 +94,22 @@
     
 }
 
+.leyka-screen-account .leyka-account .leyka-pf-star .leyka-screen-form {
+    .leyka-star-submit {
+        text-align: center;
+        
+        .leyka-star-btn {
+            margin-bottom: 0px;
+        }
+
+    }
+
+	p.leyka-we-need-you {
+		margin-top: 2 * $leyka-star-base;
+	}
+    
+}
+
 .leyka-screen-login .leyka-account,
 .leyka-screen-reset-password .leyka-account {
     .leyka-pf {

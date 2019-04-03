@@ -8,6 +8,8 @@
  * @since 1.0.0
  */
 
+$recurring_subscriptions = leyka_get_init_recurring_donations();
+
 include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 
 <div id="content" class="site-content leyka-campaign-content">
@@ -21,24 +23,26 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
         
                         <form class="leyka-screen-form">
                             
+                            <?php if($recurring_subscriptions) {?>
+                            
                             <h2><?php esc_html_e('Which campaign you want to unsubscibe from?', 'leyka');?></h2>
                             
                             <div class="list">
                                 <div class="items">
+                                	<?php foreach($recurring_subscriptions as $init_donation) {?>
                                     <div class="item">
-                                        <span class="campaign-title">Помогите изданию оставаться независимым источником информации</span>
-                                        <a href="#" class="action-disconnect">Отключить</a>
+                                        <span class="campaign-title"><?php echo $init_donation->campaign_payment_title;?></span>
+                                        <a href="#" class="action-disconnect"><?php esc_html_e('Disable');?></a>
                                     </div>
-                                    <div class="item">
-                                        <span class="campaign-title">На погашение штрафа от Роскомнадзора</span>
-                                        <a href="#" class="action-disconnect">Отключить</a>
-                                    </div>
-                                    <div class="item">
-                                        <span class="campaign-title">Поможем Григорию переехать</span>
-                                        <a href="#" class="action-disconnect">Отключить</a>
-                                    </div>
+                                	<?php } ?>
                                 </div>
                             </div>
+                            
+                            <?php } else {?>
+                            
+                            <h2><?php esc_html_e('You have no active recurring subscriptions.', 'leyka');?></h2>
+                            
+                            <?php } ?>
         
                             <div class="leyka-star-submit">
                                 <a href="<?php echo site_url('/donor-account/');?>" class="leyka-star-single-link"><?php esc_html_e('To main' , 'leyka');?></a>
