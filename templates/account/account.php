@@ -10,7 +10,9 @@
 
 $leyka_account_page_title = esc_html__('Personal account', 'leyka');
 
-include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
+include(LEYKA_PLUGIN_DIR . 'templates/account/header.php');
+
+$donor_id = get_current_user_id();?>
 
 <div id="content" class="site-content leyka-campaign-content">
         
@@ -29,7 +31,7 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 
 							<div class="list subscribed-campaigns-list">
 								<h3 class="list-title"><?php _e('Recurring donations campaigns', 'leyka'); // Кампании с ежемесячными пожертвованиями?></h3>
-                                <?php $recurring_subscriptions = leyka_get_init_recurring_donations();
+                                <?php $recurring_subscriptions = leyka_get_init_recurring_donations($donor_id);
 
                                 if($recurring_subscriptions) {?>
 
@@ -57,8 +59,8 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 
 								<h3 class="list-title"><?php _e('Donations history', 'leyka') // История пожертвований?></h3>
 
-                                <?php $donations = leyka_get_donor_donations();
-                                $donor_donations_count = leyka_get_donor_donations_count();
+                                <?php $donations = leyka_get_donor_donations($donor_id);
+                                $donor_donations_count = leyka_get_donor_donations_count($donor_id);
 
                                 $donations_list_pages_count = $donor_donations_count/LEYKA_DONOR_ACCOUNT_DONATIONS_PER_PAGE;
                                 if($donations_list_pages_count > (int)$donations_list_pages_count) {
@@ -67,33 +69,10 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 
                                 if($donations) {?>
 
-                                <div class="donations-history items" data-donations-total-pages="<?php echo $donations_list_pages_count;?>" data-donations-current-page="1">
+                                <div class="donations-history items" data-donations-total-pages="<?php echo $donations_list_pages_count;?>" data-donations-current-page="1" data-donor-id="<?php echo $donor_id;?>">
 
-                                <?php leyka_donor_account_donations_list_item_html(true);
-
-                                foreach($donations as $donation) {
-
-                                    if($donation->status === 'failed') { $item_class = 'error'; $tooltip_class = 'error'; }
-                                    else if($donation->status === 'refunded') { $item_class = 'refund'; $tooltip_class = 'notice'; }
-                                    else if($donation->type === 'single') { $item_class = 'no-pay'; $tooltip_class = 'funded'; }
-                                    else if($donation->type === 'rebill') { $item_class = 'pay'; $tooltip_class = 'funded'; }?>
-
-
-                                <?php leyka_donor_account_donations_list_item_html(false, array(
-                                        'donation_status' => $donation->status,
-                                        'donation_status_description' => $donation->status_description,
-                                        'donation_type' => $donation->type,
-                                        'donation_type_description' => $donation->type_description,
-                                        'item_classes' => $item_class,
-                                        'tooltip classes' => $tooltip_class,
-                                        'amount' => $donation->amount,
-                                        'currency_label' => $donation->currency_label,
-                                        'gateway_label' => $donation->gateway_label,
-                                        'pm_label' => $donation->pm_label,
-                                        'date' => $donation->date,
-                                        'campaign_title' => $donation->campaign_title,
-                                    ));
-
+                                <?php foreach($donations as $donation) {
+                                    echo leyka_get_donor_account_donations_list_item_html(false, $donation)."\n";
                                 }?>
 
                                 </div>

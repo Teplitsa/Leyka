@@ -536,3 +536,27 @@ function leyka_donor_password_reset_request() {
 }
 add_action('wp_ajax_leyka_donor_password_reset_request', 'leyka_donor_password_reset_request');
 add_action('wp_ajax_nopriv_leyka_donor_password_reset_request', 'leyka_donor_password_reset_request');
+
+function leyka_get_donations_history_page() {
+
+    $res = array('status' => 'ok', 'items_html' => '');
+
+    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_get_donor_donations_history')) {
+        die(json_encode(array('status' => 'error',)));
+    }
+
+    if(empty($_POST['donor_id']) || empty($_POST['page'])) {
+        die(json_encode(array('status' => 'error',)));
+    }
+
+    $donations = leyka_get_donor_donations((int)$_POST['donor_id'], (int)$_POST['page']);
+
+    foreach($donations as $donation) {
+        $res['items_html'] .= leyka_get_donor_account_donations_list_item_html(false, $donation)."\n";
+    }
+
+    die(json_encode($res));
+
+}
+add_action('wp_ajax_leyka_get_donations_history_page', 'leyka_get_donations_history_page');
+add_action('wp_ajax_nopriv_leyka_get_donations_history_page', 'leyka_get_donations_history_page');

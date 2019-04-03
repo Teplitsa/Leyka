@@ -1201,7 +1201,7 @@ class Leyka extends Leyka_Singleton {
             );
         }
 
-        if(leyka_options()->opt('donor_accounts_available')) { // Donor role
+        if(leyka()->opt('donor_accounts_available')) { // Donor role
             if( !get_role('donor') ) {
                 add_role('donor', __('Donor', 'leyka'), array('access_donor_account_desktop'));
             }
@@ -1508,7 +1508,7 @@ class Leyka extends Leyka_Singleton {
      */
     public function register_donor_account($donation) {
 
-        if( !leyka_options()->opt('donor_accounts_available') ) {
+        if( !leyka()->opt('donor_accounts_available') ) {
             return false;
         }
 

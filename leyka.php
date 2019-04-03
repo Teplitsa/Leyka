@@ -137,7 +137,7 @@ if( !$gateways_dir ) {
 
 }
 
-if(leyka_is_donor_account()) {
+if(leyka()->opt('donor_accounts_available')) {
     require_once(LEYKA_PLUGIN_DIR.'templates/account/template-tags.php');
 }
 

@@ -3,11 +3,11 @@
  * Donor's account template tags & helpers
  **/
 
-if( !function_exists('leyka_donor_account_donations_list_item_html') ) {
-    function leyka_donor_account_donations_list_item_html($is_hidden = false, $placeholders = array()) {
+if( !function_exists('leyka_get_donor_account_donations_list_item_html') ) {
+    function leyka_get_donor_account_donations_list_item_html($is_hidden = false, $donation = false) {
 
         $is_hidden = !!$is_hidden;
-        $placeholders = wp_parse_args($placeholders, array(
+        $placeholders = array(
             'donation_status' => '#STATUS#',
             'donation_status_description' => '#STATUS_DESCR#',
             'donation_type' => '#TYPE#',
@@ -20,7 +20,36 @@ if( !function_exists('leyka_donor_account_donations_list_item_html') ) {
             'pm_label' => '#PM#',
             'date' => '#DATE#',
             'campaign_title' => '#CAMPAIGN_TITLE#',
-        ));?>
+        );
+
+        if($donation) {
+
+            $donation = leyka_get_validated_donation($donation);
+
+            $item_class = $tooltip_class = '';
+            if($donation->status === 'failed') { $item_class = 'error'; $tooltip_class = 'error'; }
+            else if($donation->status === 'refunded') { $item_class = 'refund'; $tooltip_class = 'notice'; }
+            else if($donation->type === 'single') { $item_class = 'no-pay'; $tooltip_class = 'funded'; }
+            else if($donation->type === 'rebill') { $item_class = 'pay'; $tooltip_class = 'funded'; }
+
+            $placeholders = array(
+                'donation_status' => $donation->status,
+                'donation_status_description' => $donation->status_description,
+                'donation_type' => $donation->type,
+                'donation_type_description' => $donation->type_description,
+                'item_classes' => $item_class,
+                'tooltip classes' => $tooltip_class,
+                'amount' => $donation->amount,
+                'currency_label' => $donation->currency_label,
+                'gateway_label' => $donation->gateway_label,
+                'pm_label' => $donation->pm_label,
+                'date' => $donation->date,
+                'campaign_title' => $donation->campaign_title,
+            );
+
+        }
+
+        ob_start();?>
 
         <div class="item <?php echo $placeholders['donation_status'];?> <?php echo $placeholders['donation_type'];?> <?php echo $placeholders['item_classes'];?>" <?php echo $is_hidden ? 'style="display:none;"' : '';?>>
             <h4 class="item-title">
@@ -42,5 +71,10 @@ if( !function_exists('leyka_donor_account_donations_list_item_html') ) {
 
         </div>
 
-    <?php }
+    <?php $out = ob_get_contents();
+        ob_end_clean();
+
+        return apply_filters('leyka_donor_account_donations_history_item_html', $out, $donation);
+
+    }
 }
