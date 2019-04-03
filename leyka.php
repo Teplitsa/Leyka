@@ -137,6 +137,10 @@ if( !$gateways_dir ) {
 
 }
 
+if(leyka_is_donor_account()) {
+    require_once(LEYKA_PLUGIN_DIR.'templates/account/template-tags.php');
+}
+
 function leyka_load_plugin_textdomain() {
     load_plugin_textdomain('leyka', false, basename( dirname( __FILE__ ) ) . '/languages/');
 }

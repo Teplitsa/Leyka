@@ -2017,6 +2017,16 @@ function leyka_campaign_id_from_query_arg() {
     return empty($_GET['leyka_cid']) ? null : trim($_GET['leyka_cid']);
 }
 
+function leyka_is_donor_account() {
+
+    if( !leyka()->opt('donor_accounts_available') ) {
+        return false;
+    }
+
+    return stristr($_SERVER['REQUEST_URI'], 'donor-account') !== false;
+
+}
+
 function leyka_get_upload_max_filesize() {
 
     if(defined('WP_MEMORY_LIMIT')) {
@@ -2053,30 +2063,31 @@ function leyka_use_leyka_campaign_template($template) {
 add_filter('single_template', 'leyka_use_leyka_campaign_template', 10, 1);
 add_filter('page_template', 'leyka_use_leyka_campaign_template', 10, 1);
 
-
 function leyka_use_leyka_donations_list_template($archive_template) {
-    $leykaScreen = get_query_var('leyka-screen');
+
+    $leyka_screen = get_query_var('leyka-screen');
     if(is_post_type_archive(Leyka_Donation_Management::$post_type)) {
-        
-        switch($leykaScreen) {
+        switch($leyka_screen) {
             case 'account':
-                $archive_template = LEYKA_PLUGIN_DIR . 'templates/account/account.php';
+                $archive_template = LEYKA_PLUGIN_DIR.'templates/account/account.php';
                 break;
             case 'login':
-                $archive_template = LEYKA_PLUGIN_DIR . 'templates/account/login.php';
+                $archive_template = LEYKA_PLUGIN_DIR.'templates/account/login.php';
                 break;
             case 'reset-password':
-                $archive_template = LEYKA_PLUGIN_DIR . 'templates/account/reset-password.php';
+                $archive_template = LEYKA_PLUGIN_DIR.'templates/account/reset-password.php';
                 break;
             case 'unsubscribe-campaigns':
-                $archive_template = LEYKA_PLUGIN_DIR . 'templates/account/unsubscribe-campaigns.php';
+                $archive_template = LEYKA_PLUGIN_DIR.'templates/account/unsubscribe-campaigns.php';
                 break;
             case 'cancel-subscription':
-                $archive_template = LEYKA_PLUGIN_DIR . 'templates/account/cancel-subscription.php';
+                $archive_template = LEYKA_PLUGIN_DIR.'templates/account/cancel-subscription.php';
                 break;
+            default:
         }
     }
-    
+
     return $archive_template;
+
 }
 add_filter('archive_template', 'leyka_use_leyka_donations_list_template');

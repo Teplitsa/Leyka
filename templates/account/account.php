@@ -69,33 +69,32 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 
                                 <div class="donations-history items" data-donations-total-pages="<?php echo $donations_list_pages_count;?>" data-donations-current-page="1">
 
-                                <?php foreach($donations as $donation) {
+                                <?php leyka_donor_account_donations_list_item_html(true);
+
+                                foreach($donations as $donation) {
 
                                     if($donation->status === 'failed') { $item_class = 'error'; $tooltip_class = 'error'; }
                                     else if($donation->status === 'refunded') { $item_class = 'refund'; $tooltip_class = 'notice'; }
                                     else if($donation->type === 'single') { $item_class = 'no-pay'; $tooltip_class = 'funded'; }
                                     else if($donation->type === 'rebill') { $item_class = 'pay'; $tooltip_class = 'funded'; }?>
 
-                                    <div class="item <?php echo $donation->status;?> <?php echo $donation->type;?> <?php echo $item_class;?>">
-                                        <h4 class="item-title">
-                                            <span class="field-q"><span class="field-q-tooltip <?php echo 'status-'.$donation->status;?> <?php echo 'type-'.$donation->type;?> <?php echo $tooltip_class;?>">
-                                                <?php echo $donation->type_description;?>
-                                                <br><br>
-                                                <?php echo $donation->status_description;?>
-                                            </span></span>
-                                            <?php echo $donation->amount.' '.$donation->currency_label;?>
-                                        </h4>
-                                        <span class="date"><?php echo $donation->date;?></span>
-                                        <p><?php echo '«'.$donation->campaign_title.'»';?></p>
 
-                                        <div class="donation-gateway-pm">
-                                            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-info.svg" alt="">
-                                            <span class="gateway"><?php echo $donation->gateway_label;?></span> /
-                                            <span class="pm"><?php echo $donation->pm_label;?></span>
-                                        </div>
+                                <?php leyka_donor_account_donations_list_item_html(false, array(
+                                        'donation_status' => $donation->status,
+                                        'donation_status_description' => $donation->status_description,
+                                        'donation_type' => $donation->type,
+                                        'donation_type_description' => $donation->type_description,
+                                        'item_classes' => $item_class,
+                                        'tooltip classes' => $tooltip_class,
+                                        'amount' => $donation->amount,
+                                        'currency_label' => $donation->currency_label,
+                                        'gateway_label' => $donation->gateway_label,
+                                        'pm_label' => $donation->pm_label,
+                                        'date' => $donation->date,
+                                        'campaign_title' => $donation->campaign_title,
+                                    ));
 
-                                    </div>
-                                <?php }?>
+                                }?>
 
                                 </div>
 
@@ -128,16 +127,16 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
                                 <?php }?>
 
 							</div>
-						
+
 							<p class="leyka-we-need-you">
                                 <?php echo sprintf(__('You can always <a href="%s">cancel your recurring donations</a>.<br>But we will struggle without your support.', 'leyka'), home_url('/donor-account/?leyka-screen=cancel-subscription')); // Вы всегда можете <a href="?leyka-screen=cancel-subscription">отключить ваше ежемесячное пожертвование.</a><br />Но нам будет без вас трудно.?>
                             </p>
-							
+
 						</form>
-						
+
 					</div>
 				</div>
-			
+
 			</div>
 		</main><!-- #main -->
 	</section><!-- #primary -->
