@@ -881,9 +881,7 @@ class Leyka_Campaign {
     protected function _get_calculated_target_state() {
 
         $target = get_post_meta($this->_id, 'campaign_target', true);
-        return empty($target) ?
-            'no_target' :
-            ($this->total_funded >= $target ? 'is_reached' : 'in_progress');
+        return empty($target) ? 'no_target' : ($this->total_funded >= $target ? 'is_reached' : 'in_progress');
 
     }
 
@@ -943,7 +941,8 @@ class Leyka_Campaign {
             case 'campaign_logo_id':
                 return $this->_campaign_meta['campaign_logo'] ? $this->_campaign_meta['campaign_logo'] : '';
             case 'campaign_target':
-            case 'target': return $this->_campaign_meta['campaign_target'];
+            case 'target':
+                return isset($this->_campaign_meta['campaign_target']) ? $this->_campaign_meta['campaign_target'] : 0;
             case 'content':
             case 'description': return $this->_post_object ? $this->_post_object->post_content : '';
             case 'excerpt':
@@ -1169,6 +1168,8 @@ class Leyka_Campaign {
 
             }
 
+            $this->_campaign_meta['total_funded'] = isset($this->_campaign_meta['total_funded']) ?
+                $this->_campaign_meta['total_funded'] : 0.0;
             $this->_campaign_meta['total_funded'] += $sum;
 
             update_post_meta($this->_id, 'total_funded', $this->_campaign_meta['total_funded']);
