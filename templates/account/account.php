@@ -67,7 +67,7 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 
                                 if($donations) {?>
 
-                                <div class="items" data-total-donations-pages="<?php echo $donations_list_pages_count;?>" data-donations-current-page="<?php echo $donor_donations_count;?>">
+                                <div class="donations-history items" data-donations-total-pages="<?php echo $donations_list_pages_count;?>" data-donations-current-page="1">
 
                                 <?php foreach($donations as $donation) {
 
@@ -100,14 +100,30 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
                                 </div>
 
                                 <?php } else {?>
-                                    <div class="donations-history-empty"><?php _e('There are no donations yet.', 'leyka');?></div>
+                                    <div class="donations-history-empty">
+                                        <?php _e('There are no donations yet.', 'leyka');?>
+                                    </div>
                                 <?php }
 
                                 if($donor_donations_count > LEYKA_DONOR_ACCOUNT_DONATIONS_PER_PAGE) {?>
                                     <div class="leyka-star-submit">
-                                        <a href="#" class="leyka-star-single-link internal donations-history-more" data-donations-history-page="2">
+
+                                        <a href="#" class="leyka-star-single-link internal donations-history-more">
                                             <?php _e('Load more', 'leyka');?>
                                         </a>
+
+                                        <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('leyka_get_donor_donations_history');?>">
+
+                                        <div class="form-ajax-indicator" style="display: none;">
+                                            <div class="loading">
+                                                <div class="spinner">
+                                                    <div class="bounce1"></div>
+                                                    <div class="bounce2"></div>
+                                                    <div class="bounce3"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 <?php }?>
 

@@ -261,4 +261,54 @@ jQuery(document).ready(function($){
 
     });
 
+    // Donations history:
+    $('.donations-history-more').click(function(e){
+
+        e.preventDefault();
+
+        let $load_more = $(this),
+            $ajax_indicator = $load_more.siblings('.form-ajax-indicator'),
+            $donations_list = $('.donations-history.items'),
+            current_page = $donations_list.data('donations-current-page'),
+            total_pages = $donations_list.data('donations-total-pages'),
+            params = {
+                page: current_page + 1,
+                nonce: $load_more.siblings(':input[name="nonce"]'),
+                action: 'leyka_get_donations_history_page',
+            };
+
+        $ajax_indicator.show();
+        $load_more.hide();
+
+        $.post(leyka_get_ajax_url(), params, null, 'json').done(function(response){
+
+            $ajax_indicator.hide();
+
+            console.log(response);
+            if(response.status === 'ok') {
+
+                $.each(response.items, function(index, value){
+
+                });
+
+                if(current_page < total_pages) {
+
+                    $donations_list.data('donations-current-page', current_page + 1);
+                    $load_more.show();
+
+                }
+
+            } else { // Show some error message
+                // $message.show();
+            }
+
+        }).error(function(){
+
+            $ajax_indicator.hide();
+            $load_more.show();
+
+        });
+
+    });
+
 });
