@@ -1245,6 +1245,8 @@ class Leyka_Campaign {
 
             }
 
+            $this->_campaign_meta['total_funded'] = isset($this->_campaign_meta['total_funded']) ?
+                $this->_campaign_meta['total_funded'] : 0.0;
             $this->_campaign_meta['total_funded'] += $sum;
 
             update_post_meta($this->_id, 'total_funded', $this->_campaign_meta['total_funded']);
