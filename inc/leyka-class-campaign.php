@@ -931,9 +931,7 @@ class Leyka_Campaign {
     protected function _getCalculatedTargetState() {
 
         $target = get_post_meta($this->_id, 'campaign_target', true);
-        return empty($target) ?
-            'no_target' :
-            ($this->total_funded >= $target ? 'is_reached' : 'in_progress');
+        return empty($target) ? 'no_target' : ($this->total_funded >= $target ? 'is_reached' : 'in_progress');
 
     }
     /** @deprecated */
@@ -997,7 +995,8 @@ class Leyka_Campaign {
             case 'campaign_logo_id':
                 return $this->_campaign_meta['campaign_logo'] ? $this->_campaign_meta['campaign_logo'] : '';
             case 'campaign_target':
-            case 'target': return $this->_campaign_meta['campaign_target'];
+            case 'target':
+                return isset($this->_campaign_meta['campaign_target']) ? $this->_campaign_meta['campaign_target'] : 0;
             case 'content':
             case 'description': return $this->_post_object ? $this->_post_object->post_content : '';
             case 'excerpt':
