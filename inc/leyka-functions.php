@@ -1541,6 +1541,38 @@ function leyka_get_donor_donations($donor_id = false, $page_number = false) {
 
 }
 
+function leyka_get_donor_donations_count($donor_id = false) {
+
+    $donor_id = (int)$donor_id ? (int)$donor_id : get_current_user_id();
+    $donor_email = get_user_option('user_email', $donor_id);
+
+    if( !$donor_id || !$donor_email ) {
+        return array();
+    }
+
+    $donations = new WP_Query(array(
+        'post_type' => Leyka_Donation_Management::$post_type,
+        'post_status' => array('funded', 'refunded', 'failed'),
+        'meta_query' => array(
+            'relation' => 'AND',
+            array(
+                'relation' => 'OR',
+                array('key' => 'leyka_payment_type', 'value' => 'single'),
+                array('key' => 'leyka_payment_type', 'value' => 'rebill'),
+            ),
+            array(
+                'relation' => 'OR',
+                array('key' => 'leyka_donor_email', 'value' => $donor_email),
+                array('key' => 'leyka_donor_account', 'value' => $donor_id),
+            ),
+        ),
+        'posts_per_page' => -1,
+    ));
+
+    return $donations->found_posts;
+
+}
+
 function leyka_get_donations_archive_url($campaign_id = false) {
 
     if((int)$campaign_id > 0) {

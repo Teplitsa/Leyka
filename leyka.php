@@ -73,7 +73,7 @@ if( !defined('LEYKA_SUPPORT_EMAIL') ) {
 
 // Plugin support email:
 if( !defined('LEYKA_DEBUG') ) {
-    define('LEYKA_DEBUG', false);
+    define('LEYKA_DEBUG', true);
 }
 
 if( !defined('LEYKA_USAGE_STATS_DEV_SERVER_URL') ) {
@@ -85,7 +85,7 @@ if( !defined('LEYKA_USAGE_STATS_PROD_SERVER_URL') ) {
 }
 
 if( !defined('LEYKA_DONOR_ACCOUNT_DONATIONS_PER_PAGE') ) {
-    define('LEYKA_DONOR_ACCOUNT_DONATIONS_PER_PAGE', 6);
+    define('LEYKA_DONOR_ACCOUNT_DONATIONS_PER_PAGE', 3);
 }
 
 // Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:

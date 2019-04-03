@@ -58,10 +58,16 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 								<h3 class="list-title"><?php _e('Donations history', 'leyka') // История пожертвований?></h3>
 
                                 <?php $donations = leyka_get_donor_donations();
+                                $donor_donations_count = leyka_get_donor_donations_count();
+
+                                $donations_list_pages_count = $donor_donations_count/LEYKA_DONOR_ACCOUNT_DONATIONS_PER_PAGE;
+                                if($donations_list_pages_count > (int)$donations_list_pages_count) {
+                                    $donations_list_pages_count = (int)$donations_list_pages_count + 1;
+                                }
 
                                 if($donations) {?>
 
-                                <div class="items">
+                                <div class="items" data-total-donations-pages="<?php echo $donations_list_pages_count;?>" data-donations-current-page="<?php echo $donor_donations_count;?>">
 
                                 <?php foreach($donations as $donation) {
 
@@ -81,6 +87,13 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
                                         </h4>
                                         <span class="date"><?php echo $donation->date;?></span>
                                         <p><?php echo '«'.$donation->campaign_title.'»';?></p>
+
+                                        <div class="donation-gateway-pm">
+                                            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-info.svg" alt="">
+                                            <span class="gateway"><?php echo $donation->gateway_label;?></span> /
+                                            <span class="pm"><?php echo $donation->pm_label;?></span>
+                                        </div>
+
                                     </div>
                                 <?php }?>
 
@@ -88,9 +101,9 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 
                                 <?php } else {?>
                                     <div class="donations-history-empty"><?php _e('There are no donations yet.', 'leyka');?></div>
-                                <?php }?>
+                                <?php }
 
-                                <?php if(count($donations) > LEYKA_DONOR_ACCOUNT_DONATIONS_PER_PAGE) {?>
+                                if($donor_donations_count > LEYKA_DONOR_ACCOUNT_DONATIONS_PER_PAGE) {?>
                                     <div class="leyka-star-submit">
                                         <a href="#" class="leyka-star-single-link internal donations-history-more" data-donations-history-page="2">
                                             <?php _e('Load more', 'leyka');?>
