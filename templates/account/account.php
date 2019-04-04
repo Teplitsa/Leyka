@@ -43,7 +43,7 @@ $donor_id = get_current_user_id();?>
                                             <?php echo $init_donation->campaign_payment_title;?>
                                         </span>
 										<span class="amount">
-                                            <?php echo $init_donation->amount.' '.$init_donation->currency_label;?>/<?php echo _x('month', 'Recurring interval, as in "[XX Rub in] month"', 'leyka');?>.
+                                            <?php echo $init_donation->amount.' '.$init_donation->currency_label;?>/<?php echo _x('month', 'Recurring interval, as in "[XX Rub in] month"', 'leyka');?>
                                         </span>
 									</div>
                                     <?php }?>
@@ -92,15 +92,7 @@ $donor_id = get_current_user_id();?>
 
                                         <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('leyka_get_donor_donations_history');?>">
 
-                                        <div class="form-ajax-indicator" style="display: none;">
-                                            <div class="loading">
-                                                <div class="spinner">
-                                                    <div class="bounce1"></div>
-                                                    <div class="bounce2"></div>
-                                                    <div class="bounce3"></div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <?php echo leyka_get_ajax_indicator();?>
 
                                     </div>
                                 <?php }?>

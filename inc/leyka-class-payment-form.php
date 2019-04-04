@@ -1002,13 +1002,15 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
     ob_end_clean();
 
 	return $out;
+
 }
 
 /**
- * Template tag for indirect filtering
- * 
- * should be probably marked as deprecated
- * use leyka_get_payment_form instead
+ * Template tag for indirect filtering.
+ *
+ * @param $echo boolean
+ * @return mixed Form markup code if $echo is false, true otherwise.
+ * @deprecated Use leyka_get_payment_form() instead.
  **/
 function leyka_get_donation_form($echo = true) {
 
@@ -1024,6 +1026,23 @@ function leyka_get_donation_form($echo = true) {
     } else {
         return get_leyka_payment_form_template_html();
     }
+
+}
+
+/**
+ * @param $echo boolean
+ * @param $css_classes string
+ * @return string|null Ajax indicator markup code if $echo is false, null otherwise.
+ **/
+function leyka_get_ajax_indicator($echo = false, $css_classes = '') {
+
+    $markup = '<span class="leyka-spinner-border form-ajax-indicator '.$css_classes.'" style="display: none;"></span>';
+    if( !!$echo ) {
+        return print($markup);
+    } else {
+        return $markup;
+    }
+
 }
 
 function leyka_remember_donation_data(array $additional_data = array()) {

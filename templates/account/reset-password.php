@@ -49,16 +49,7 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
 
                             <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('leyka_donor_password_reset');?>">
 
-                            <div class="form-ajax-indicator" style="display: none;">
-                                <div class="loading">
-                                    <div class="spinner">
-                                        <div class="bounce1"></div>
-                                        <div class="bounce2"></div>
-                                        <div class="bounce3"></div>
-                                    </div>
-                                </div>
-                                <div class="waiting__card-text"><?php _e('Preparing to reset your password...', 'leyka');?></div>
-                            </div>
+                            <?php echo leyka_get_ajax_indicator();?>
 
                             <div class="form-message" style="display: none;"></div>
 
@@ -142,16 +133,7 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
 
                                         </div>
 
-                                        <div class="form-ajax-indicator" style="display: none;">
-                                            <div class="loading">
-                                                <div class="spinner">
-                                                    <div class="bounce1"></div>
-                                                    <div class="bounce2"></div>
-                                                    <div class="bounce3"></div>
-                                                </div>
-                                            </div>
-                                            <div class="waiting__card-text"><?php _e('Setting up your password...', 'leyka');?></div>
-                                        </div>
+                                        <?php echo leyka_get_ajax_indicator();?>
 
                                         <div class="form-message" style="display: none;"></div>
 
