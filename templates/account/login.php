@@ -65,16 +65,7 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
 
                                 </div>
 
-                                <div class="form-ajax-indicator" style="display: none;">
-                                    <div class="loading">
-                                        <div class="spinner">
-                                            <div class="bounce1"></div>
-                                            <div class="bounce2"></div>
-                                            <div class="bounce3"></div>
-                                        </div>
-                                    </div>
-                                    <div class="waiting__card-text"><?php _e('Logging you in, please wait a bit...', 'leyka');?></div>
-                                </div>
+                                <?php echo leyka_get_ajax_indicator();?>
 
                                 <div class="form-message" style="display: none;"></div>
 
@@ -132,7 +123,7 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
                                         </div>
 
                                         <div class="leyka-star-submit">
-                                            <a href="mailto:<?php echo leyka()->opt('tech_support_email');?>" target="_blank" class="leyka-star-btn">
+                                            <a href="mailto:<?php echo leyka_get_website_tech_support_email();?>" target="_blank" class="leyka-star-btn">
                                                 <?php _e('Email to the tech. support', 'leyka');?>
                                             </a>
                                         </div>
@@ -180,16 +171,7 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
 
                                 </div>
 
-                                <div class="form-ajax-indicator" style="display: none;">
-                                    <div class="loading">
-                                        <div class="spinner">
-                                            <div class="bounce1"></div>
-                                            <div class="bounce2"></div>
-                                            <div class="bounce3"></div>
-                                        </div>
-                                    </div>
-                                    <div class="waiting__card-text"><?php _e('Setting up your password...', 'leyka');?></div>
-                                </div>
+                                <?php echo leyka_get_ajax_indicator();?>
 
                                 <div class="form-message" style="display: none;"></div>
 

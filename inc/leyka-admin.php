@@ -10,25 +10,25 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 	protected function __construct() {
 
-		add_action('admin_menu', array($this, 'adminMenuSetup'), 9);
+		add_action('admin_menu', array($this, 'admin_menu_setup'), 9);
 
 		add_action('admin_enqueue_scripts', array($this, 'loadFrontendScripts'));
 
-        add_action('admin_init', array($this, 'preAdminActions'));
+        add_action('admin_init', array($this, 'pre_admin_actions'));
 
         add_action('wp_ajax_leyka_send_feedback', array($this, 'ajaxSendFeedback'));
 
-        add_filter('plugin_row_meta', array($this, 'setPluginMeta'), 10, 2);
+        add_filter('plugin_row_meta', array($this, 'set_plugin_meta'), 10, 2);
 
-		add_filter('plugin_action_links_'.LEYKA_PLUGIN_INNER_SHORT_NAME, array($this, 'addPluginsListLinks'));
+		add_filter('plugin_action_links_'.LEYKA_PLUGIN_INNER_SHORT_NAME, array($this, 'add_plugins_list_links'));
 
         // Metaboxes support where it is needed:
-        add_action('leyka_pre_settings_actions', array($this, 'fullMetaboxesSupport'));
-        add_action('leyka_dashboard_actions', array($this, 'fullMetaboxesSupport'));
+        add_action('leyka_pre_settings_actions', array($this, 'full_metaboxes_support'));
+        add_action('leyka_dashboard_actions', array($this, 'full_metaboxes_support'));
 
     }
 
-    public function setPluginMeta($links, $file) {
+    public function set_plugin_meta($links, $file) {
 
         if($file == LEYKA_PLUGIN_INNER_SHORT_NAME) {
             $links[] = '<a href="https://github.com/Teplitsa/Leyka/">GitHub</a>';
@@ -39,18 +39,19 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
     }
 
     // A little function to support the full abilities of the metaboxes on any plugin's page:
-    public function fullMetaboxesSupport($current_stage = false) {?>
+    public function full_metaboxes_support($current_stage = false) {?>
 
         <!-- Metaboxes reordering and folding support -->
         <form style="display:none" method="get" action="#">
             <?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false); ?>
             <?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false); ?>
         </form>
+
     <?php }
 
-    public function preAdminActions() {
+    public function pre_admin_actions() {
 
-        function leykaAdminTitle($admin_title) {
+        function leyka_admin_title($admin_title) {
 
             if(isset($_GET['page']) && $_GET['page'] === 'leyka_settings_new' && isset($_GET['screen'])) {
 
@@ -70,7 +71,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             return $admin_title;
 
         }
-        add_filter('admin_title', 'leykaAdminTitle');
+        add_filter('admin_title', 'leyka_admin_title');
 
         // Leyka admin notices:
         if(isset($_GET['leyka_reset_msg'])) {
@@ -110,12 +111,12 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
     }
 
 	/** Admin Menu **/
-    public function adminMenuSetup() {
+    public function admin_menu_setup() {
 
         // Leyka menu root:
-        add_menu_page(__('Leyka Dashboard', 'leyka'), __('Leyka', 'leyka'), 'leyka_manage_donations', 'leyka', array($this, 'dashboardScreen'));
+        add_menu_page(__('Leyka Dashboard', 'leyka'), __('Leyka', 'leyka'), 'leyka_manage_donations', 'leyka', array($this, 'dashboard_screen'));
 
-        add_submenu_page('leyka', __('Leyka Dashboard', 'leyka'), __('Dashboard', 'leyka'), 'leyka_manage_donations', 'leyka', array($this, 'dashboardScreen'));
+        add_submenu_page('leyka', __('Leyka Dashboard', 'leyka'), __('Dashboard', 'leyka'), 'leyka_manage_donations', 'leyka', array($this, 'dashboard_screen'));
 
         add_submenu_page('leyka', __('Donations', 'leyka'), __('Donations', 'leyka'), 'leyka_manage_donations', 'edit.php?post_type='.Leyka_Donation_Management::$post_type);
 
@@ -125,12 +126,12 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         add_submenu_page('leyka', __('New campaign', 'leyka'), _x('Add new', 'campaign', 'leyka'), 'leyka_manage_donations', 'post-new.php?post_type='.Leyka_Campaign_Management::$post_type);
 
-        add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), 'leyka_manage_options', 'leyka_settings', array($this, 'settingsScreen'));
+        add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), 'leyka_manage_options', 'leyka_settings', array($this, 'settings_screen'));
 
         add_submenu_page('leyka', __('Connect to us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedbackScreen'));
 
         // Wizards pages group:
-        add_submenu_page(NULL, 'Some Leyka Wizard', 'Some Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', array($this, 'settingsNewScreen'));
+        add_submenu_page(NULL, 'Some Leyka Wizard', 'Some Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', array($this, 'settings_new_screen'));
 
         do_action('leyka_admin_menu_setup');
 
@@ -142,17 +143,20 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
     }
 
-	/** Settings link in plugin list table **/
-	public function addPluginsListLinks($links) {
+	/**
+     * Settings link in plugin list table.
+     *
+     * @param $links array
+     * @return array
+     */
+	public function add_plugins_list_links($links) {
 
 		$links[] = '<a href="'.admin_url('admin.php?page=leyka_settings').'">'.__( 'Settings', 'leyka').'</a>';
-
 		return $links;
 
 	}
 
-	/** Displaying dashboard **/
-	public function dashboardScreen() {
+	public function dashboard_screen() {
 
 		if( !current_user_can('leyka_manage_donations') ) {
             wp_die(__('Sorry, but you do not have permissions to access this page.', 'leyka'));
@@ -160,9 +164,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 		do_action('leyka_dashboard_actions'); // Collapsible
 
-		add_meta_box('leyka_guide', __('First steps', 'leyka'), array($this, 'guideMetaboxScreen'), 'toplevel_page_leyka', 'normal');
-		add_meta_box('leyka_status', __('Settings', 'leyka'), array($this, 'statusMetaboxScreen'), 'toplevel_page_leyka', 'normal');
-		add_meta_box('leyka_history', __('Recent donations', 'leyka'), array($this, 'historyMetaboxScreen'), 'toplevel_page_leyka', 'normal');
+		add_meta_box('leyka_guide', __('First steps', 'leyka'), array($this, 'guide_metabox_screen'), 'toplevel_page_leyka', 'normal');
+		add_meta_box('leyka_status', __('Settings', 'leyka'), array($this, 'status_metabox_screen'), 'toplevel_page_leyka', 'normal');
+		add_meta_box('leyka_history', __('Recent donations', 'leyka'), array($this, 'history_metabox_screen'), 'toplevel_page_leyka', 'normal');
 		add_meta_box('leyka_campaigns', __('Recent campaings', 'leyka'), array($this, 'campaignsMetaboxScreen'), 'toplevel_page_leyka', 'normal');?>
 
 		<div class="wrap">
@@ -172,13 +176,13 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                     <?php do_meta_boxes('toplevel_page_leyka', 'normal', null);?>
                 </div>
                 <div class="postbox-container" id="postbox-container-2">
-                    <?php $this->dashboardSidebarScreen();?>
+                    <?php $this->dashboard_sidebar_screen();?>
                 </div>
 		</div>
 	<?php
 	}
 
-    public function guideMetaboxScreen() {
+    public function guide_metabox_screen() {
 
 		$row['step_1'] = array(
 			'txt'    => __('Fill in information about your organisation', 'leyka'),
@@ -230,10 +234,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		<?php }?>
 		</tbody>
 	</table>
-    <?php
-    }
 
-	public function statusMetaboxScreen(){
+    <?php }
+
+	public function status_metabox_screen(){
 
 		$tabs = Leyka_Options_Allocator::get_instance()->getTabs();
 		if($tabs) {?>
@@ -274,8 +278,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 	}
 
-	public function historyMetaboxScreen() {
-		
+	public function history_metabox_screen() {
+
 		$query = new WP_Query(array(
 			'post_type' => Leyka_Donation_Management::$post_type,
 			'post_status' => 'any',
@@ -371,13 +375,13 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 	}
 
-	public function dashboardSidebarScreen() {?>
+	public function dashboard_sidebar_screen() {?>
 
 		<div id="leyka-card">
             <h2><i></i><?php esc_html_e('Leyka', 'leyka');?></h2>
-            <p><?php esc_html_e('Leyka is a simple donations management system', 'leyka');?></p>
+            <p><?php _e('Leyka is a simple donations management system', 'leyka');?></p>
             <p>
-                <?php esc_html_e('Developed by <a href="http://te-st.ru/" target="_blank" rel="noopener noreferrer">Teplitsa of social technologies</a>', 'leyka');?>
+                <?php _e('Developed by <a href="http://te-st.ru/" target="_blank" rel="noopener noreferrer">Teplitsa of social technologies</a>', 'leyka');?>
             </p>
             <p class="te-st">
                 <img src="//leyka.te-st.ru/wp-content/uploads/assets/tst-logo.svg" onerror="this.onerror=null;this.src='//leyka.te-st.ru/wp-content/uploads/assets/tst-logo.png'" alt="">
@@ -394,23 +398,22 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 	}
 	
-	public function isV3SettingsPage($stage) {
+	public function is_v3_settings_page($stage) {
 		return in_array($stage, array('payment', 'email', 'beneficiary', 'technical', 'view', 'additional'));
 	}
 
-	public function isSeparateFormsStage($stage) {
+	public function is_separate_forms_stage($stage) {
 		return in_array($stage, array('email', 'beneficiary', 'technical', 'view', 'additional'));
 	}
 
-	/** Displaying settings **/
-	public function settingsScreen() {
+	public function settings_screen() {
 
 		if( !current_user_can('leyka_manage_options') ) {
             wp_die(__('You do not have permissions to access this page.', 'leyka'));
         }
 
         $current_stage = $this->get_current_settings_tab();
-		$is_separate_sections_forms = $this->isSeparateFormsStage($current_stage);
+		$is_separate_sections_forms = $this->is_separate_forms_stage($current_stage);
 
 		require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php'); // Basic Controller class
         require_once(LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-common.php');
@@ -436,7 +439,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 		    <h1><?php esc_html_e('Leyka settings', 'leyka');?></h1>
 
-            <h2 class="nav-tab-wrapper"><?php echo $this->settingsTabsMenu();?></h2>
+            <h2 class="nav-tab-wrapper"><?php echo $this->settings_tabs_menu();?></h2>
 
             <div id="tab-container">
 
@@ -520,11 +523,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	<?php
 	}
 
-	public function settingsNewScreen() {
+	public function settings_new_screen() {
 
 	    if(empty($_GET['screen']) || count(explode('-', $_GET['screen'])) < 2) {
 
-	        $this->settingsScreen();
+	        $this->settings_screen();
 	        return;
 
 	    }
@@ -557,7 +560,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		return empty($_GET['stage']) ? $this->get_default_settings_tab() : trim($_GET['stage']);
 	}
 
-	public function settingsTabsMenu() {
+	public function settings_tabs_menu() {
 
 		$base_url = 'admin.php?page=leyka_settings';
 
@@ -714,7 +717,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             || (
                 isset($_GET['page'])
                 && $_GET['page'] === 'leyka_settings'
-                && (empty($_GET['stage']) || $this->isV3SettingsPage($_GET['stage']))
+                && (empty($_GET['stage']) || $this->is_v3_settings_page($_GET['stage']))
                 && empty($_GET['old'])
             )
             || ($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post');

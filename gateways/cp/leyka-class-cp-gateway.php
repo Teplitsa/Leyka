@@ -285,6 +285,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                     $donation->payment_type = 'rebill';
                     $donation->recurring_id = $_POST['SubscriptionId'];
+                    $donation->recurring_is_active = true;
+
                 }
 
                 $donation->add_gateway_response($_POST);
@@ -304,18 +306,67 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             case 'recurrent_change':
 
                 /** @todo UNTESTED! The possible reason for CP recurring problems */
-//                if( !empty($_POST['Id']) ) { // Recurring subscription ID in the CP system
-//
-//	                $_POST['Id'] = trim($_POST['Id']);
-//	                $init_recurring_donation = $this->get_init_recurrent_donation($_POST['Id']);
-//
-//	                if($init_recurring_donation && $init_recurring_donation->recurring_is_active) {
-//		                $init_recurring_donation->recurring_is_active = false;
-//                    }
-//                }
+                if( !empty($_POST['Id']) ) { // Recurring subscription ID in the CP system
+
+	                $_POST['Id'] = trim($_POST['Id']);
+	                $init_recurring_donation = $this->get_init_recurrent_donation($_POST['Id']);
+
+	                if($init_recurring_donation && $init_recurring_donation->recurring_is_active) {
+		                $init_recurring_donation->recurring_is_active = false;
+                    }
+
+                }
 
             default:
         }
+
+    }
+
+    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation $donation) {
+
+        $init_recurrent_donation = Leyka_Donation::get_init_recurring_donation($donation);
+        $cancelling_url = (get_option('permalink_structure') ?
+                home_url("leyka/service/cancel_recurring/{$donation->id}") :
+                home_url("?page=leyka/service/cancel_recurring/{$donation->id}"))
+            .'/'.md5($donation->id.'_'.$init_recurrent_donation->id.'_leyka_cancel_recurring_subscription');
+
+        return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
+
+    }
+
+    public function cancel_recurring_subscription(Leyka_Donation $donation) {
+
+        if($donation->type != 'rebill') {
+            die();
+        }
+
+        header('Content-type: text/html; charset=utf-8');
+
+        $recurring_manual_cancel_link = 'https://my.cloudpayments.ru/ru/unsubscribe';
+
+        if( !$donation->recurring_id ) {
+            die(sprintf(__('<strong>Error:</strong> unknown Subscription ID for donation #%d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
+        }
+
+        $response = wp_remote_post('https://api.cloudpayments.ru/subscriptions/cancel', array(
+            'timeout' => 10,
+            'redirection' => 5,
+            'body' => array('Id' => $donation->recurring_id),
+        ));
+
+        if(empty($response['body'])) {
+            die(sprintf(__('<strong>Error:</strong> the recurring subsciption cancelling request returned unexpected result. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
+        }
+
+        $response['body'] = json_decode($response['body']);
+        if(empty($response['body']['Success']) || $response['body']['Success'] != 'true') {
+            die(sprintf(__('<strong>Error:</strong> we cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
+        }
+
+        $init_recurrent_donation = Leyka_Donation::get_init_recurring_donation($donation);
+        $init_recurrent_donation->recurring_is_active = false;
+
+        die(__('Recurring subscription cancelled.', 'leyka'));
 
     }
 
@@ -436,9 +487,14 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         if($donation) { // Edit donation page displayed
 
-            $donation = leyka_get_validated_donation($donation);?>
+            $donation = leyka_get_validated_donation($donation);
+
+            if($donation->type !== 'rebill') {
+                return;
+            }?>
 
             <label><?php _e('CloudPayments subscription ID', 'leyka');?>:</label>
+
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type == 'correction') {?>
@@ -448,11 +504,18 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 <?php }?>
             </div>
 
+            <?php $init_recurring_donation = $donation->init_recurring_donation;?>
+
+            <label for="yandex-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka');?></label>
+            <div class="leyka-ddata-field">
+                <?php echo $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka'); ?>
+            </div>
+
         <?php } else { // New donation page displayed ?>
 
             <label for="cp-recurring-id"><?php _e('CloudPayments subscription ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php _e('Enter CloudPayments subscription ID', 'leyka');?>" value="" />
+                <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php _e('Enter CloudPayments subscription ID', 'leyka');?>" value="">
             </div>
         <?php
         }

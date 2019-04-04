@@ -231,34 +231,37 @@ class Leyka extends Leyka_Singleton {
             function reinstall_cssjs_in_giger() {
 
                 $theme = wp_get_theme();
-                if($theme && ($theme->template == 'giger' || $theme->template == 'giger-kms') && !is_singular('leyka_campaign')) {
+                if(
+                    $theme
+                    && in_array($theme->template, array('giger', 'giger-kms'))
+                    && !is_singular(Leyka_Campaign_Management::$post_type)
+                ) {
 
                     $is_cssjs_reqiured = false;
 
-                    if(get_the_ID() == leyka_options()->opt('failure_page') || get_the_ID() == leyka_options()->opt('success_page')) {
+                    if(in_array(get_the_ID(), array(leyka()->opt('failure_page'), leyka_options()->opt('success_page')))) {
                         $is_cssjs_reqiured = true;
-                    }
-                    elseif(leyka_form_is_screening()) {
+                    } else if(leyka_form_is_screening()) {
                         $is_cssjs_reqiured = true;
                     }
 
                     if($is_cssjs_reqiured) {
-                        $leyla_template_data = leyka_get_current_template_data();
 
-                        if($leyla_template_data['id'] == 'revo') {
-                            $leyka = leyka();
-                            $leyka->load_public_cssjs(); // force add leyka cssjs in giger for revo leyka theme
+                        $leyka_template_data = leyka_get_current_template_data();
+
+                        if($leyka_template_data['id'] == 'revo') {
+                            leyka()->load_public_cssjs(); // Forcibly add Leyka cssjs in giger for Revo templates
                         }
+
                     }
 
                 }
             }
-            add_action('template_redirect', 'reinstall_cssjs_in_giger', 90); // Important: in Giger problem code run with priority 80
+            add_action('template_redirect', 'reinstall_cssjs_in_giger', 90); // 90 is important (Giger priority is 80)
 
             add_action('wp_head', 'leyka_inline_scripts');
             function leyka_inline_scripts(){
 
-//                $colors = array('#07C7FD', '#05A6D3', '#8CE4FD'); // Leyka blue
                 $colors = array('#1db318', '#1aa316', '#acebaa'); // Leyka green ?>
 
                 <script>
@@ -330,6 +333,7 @@ class Leyka extends Leyka_Singleton {
 
     public function __get($param) {
         switch($param) {
+            case 'v':
             case 'version': return LEYKA_VERSION;
             case 'plugin_slug': return $this->_plugin_slug;
             case 'payment_url': return $this->_payment_url;
@@ -554,6 +558,13 @@ class Leyka extends Leyka_Singleton {
 
     /** Make active rebill requests for all recurring subsriptions for the current day of month. */
     protected function _do_active_recurring() {
+
+        // The method should be called no more than once per day:
+        if(get_transient('leyka_last_active_recurring_date') === date('d.m.Y')) {
+            return;
+        } else {
+            set_transient('leyka_last_active_recurring_date', date('d.m.Y'), 60*60*24);
+        }
 
         ini_set('max_execution_time', 0);
         set_time_limit(0);
@@ -1203,7 +1214,7 @@ class Leyka extends Leyka_Singleton {
             );
         }
 
-        if(leyka_options()->opt('donor_accounts_available')) { // Donor role
+        if(leyka()->opt('donor_accounts_available')) { // Donor role
             if( !get_role('donor') ) {
                 add_role('donor', __('Donor', 'leyka'), array('access_donor_account_desktop'));
             }
@@ -1510,7 +1521,7 @@ class Leyka extends Leyka_Singleton {
      */
     public function register_donor_account($donation) {
 
-        if( !leyka_options()->opt('donor_accounts_available') ) {
+        if( !leyka()->opt('donor_accounts_available') ) {
             return false;
         }
 
@@ -1560,9 +1571,7 @@ class Leyka extends Leyka_Singleton {
         $donation->donor_account = $donor_account_error;
 
         // Notify website tech. support:
-        $email_to = leyka_options()->opt('tech_support_email') ?
-            leyka_options()->opt('tech_support_email') : get_option('admin_email');
-
+        $email_to = leyka_get_website_tech_support_email();
         if( !$email_to ) {
             return;
         }

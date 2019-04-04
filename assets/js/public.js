@@ -403,12 +403,13 @@ jQuery(document).ready(function($){
 
         let $load_more = $(this),
             $ajax_indicator = $load_more.siblings('.form-ajax-indicator'),
-            $donations_list = $('.donations-history.items'),
+            $donations_list = $('.donations-history'),
             current_page = $donations_list.data('donations-current-page'),
             total_pages = $donations_list.data('donations-total-pages'),
             params = {
+                donor_id: $donations_list.data('donor-id'),
                 page: current_page + 1,
-                nonce: $load_more.siblings(':input[name="nonce"]'),
+                nonce: $load_more.siblings(':input[name="nonce"]').val(),
                 action: 'leyka_get_donations_history_page',
             };
 
@@ -419,14 +420,13 @@ jQuery(document).ready(function($){
 
             $ajax_indicator.hide();
 
-            console.log(response);
             if(response.status === 'ok') {
 
-                $.each(response.items, function(index, value){
+                if(response.items_html) {
+                    $donations_list.append(response.items_html);
+                }
 
-                });
-
-                if(current_page < total_pages) {
+                if(current_page + 1 < total_pages) {
 
                     $donations_list.data('donations-current-page', current_page + 1);
                     $load_more.show();
