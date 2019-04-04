@@ -132,7 +132,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         if( !empty($form_data['leyka_recurring']) ) {
 
             $donation->payment_type = 'rebill';
-            $donation->rebilling_is_active = true; // So we could turn it on/off later
+            $donation->recurring_is_active = true; // So we could turn it on/off later
 
         }
 
@@ -512,7 +512,7 @@ techMessage="'.$tech_message.'"/>');
 
         if($donation->type == 'rebill') {
 
-            $init_recurrent_donation = Leyka_Donation::get_init_recurrent_donation($donation);
+            $init_recurrent_donation = Leyka_Donation::get_init_recurring_donation($donation);
             $init_recurrent_donation->recurring_is_active = false;
 
         }

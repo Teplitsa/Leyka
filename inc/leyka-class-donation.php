@@ -2148,7 +2148,7 @@ class Leyka_Donation {
             case 'rebilling_is_active':
             case 'recurring_is_active':
                 $value = !!$value;
-                if($this->type != 'rebill') {
+                if($this->type !== 'rebill') {
                     break;
                 }
 

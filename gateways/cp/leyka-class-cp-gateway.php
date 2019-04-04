@@ -285,6 +285,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                     $donation->payment_type = 'rebill';
                     $donation->recurring_id = $_POST['SubscriptionId'];
+                    $donation->recurring_is_active = true;
+
                 }
 
                 $donation->add_gateway_response($_POST);
@@ -304,15 +306,16 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             case 'recurrent_change':
 
                 /** @todo UNTESTED! The possible reason for CP recurring problems */
-//                if( !empty($_POST['Id']) ) { // Recurring subscription ID in the CP system
-//
-//	                $_POST['Id'] = trim($_POST['Id']);
-//	                $init_recurring_donation = $this->get_init_recurrent_donation($_POST['Id']);
-//
-//	                if($init_recurring_donation && $init_recurring_donation->recurring_is_active) {
-//		                $init_recurring_donation->recurring_is_active = false;
-//                    }
-//                }
+                if( !empty($_POST['Id']) ) { // Recurring subscription ID in the CP system
+
+	                $_POST['Id'] = trim($_POST['Id']);
+	                $init_recurring_donation = $this->get_init_recurrent_donation($_POST['Id']);
+
+	                if($init_recurring_donation && $init_recurring_donation->recurring_is_active) {
+		                $init_recurring_donation->recurring_is_active = false;
+                    }
+
+                }
 
             default:
         }
@@ -484,9 +487,14 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         if($donation) { // Edit donation page displayed
 
-            $donation = leyka_get_validated_donation($donation);?>
+            $donation = leyka_get_validated_donation($donation);
+
+            if($donation->type !== 'rebill') {
+                return;
+            }?>
 
             <label><?php _e('CloudPayments subscription ID', 'leyka');?>:</label>
+
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type == 'correction') {?>
@@ -496,11 +504,18 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 <?php }?>
             </div>
 
+            <?php $init_recurring_donation = $donation->init_recurring_donation;?>
+
+            <label for="yandex-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka');?></label>
+            <div class="leyka-ddata-field">
+                <?php echo $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka'); ?>
+            </div>
+
         <?php } else { // New donation page displayed ?>
 
             <label for="cp-recurring-id"><?php _e('CloudPayments subscription ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php _e('Enter CloudPayments subscription ID', 'leyka');?>" value="" />
+                <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php _e('Enter CloudPayments subscription ID', 'leyka');?>" value="">
             </div>
         <?php
         }
