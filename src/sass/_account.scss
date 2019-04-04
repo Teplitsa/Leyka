@@ -91,6 +91,28 @@
             @include leyka-star-link();
         }
     }
+
+	.leyka-hidden-controls {
+		display: none;
+	}
+	
+	.leyka-form-spinner {
+		text-align: center;
+		padding-bottom: $leyka-star-base;
+		padding-top: $leyka-star-base;
+	}
+	
+	.form-message {
+		display: none;
+	}
+
+    .leyka-star-field-error-frame {
+		@include leyka-star-field-error-frame();
+
+		.donor__textfield-error {
+			display: none;
+		}
+    }
     
 }
 
@@ -150,7 +172,7 @@
     }
 }
 
-.leyka-screen-cancel-subscription div[id*="leyka-pf-"].leyka-pf-star .leyka-screen-form {
+.leyka-screen-unsubscribe-campaigns div[id*="leyka-pf-"].leyka-pf-star .leyka-screen-form.leyka-cancel-subscription-form {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -189,6 +211,32 @@
     
 }
 
+.leyka-screen-unsubscribe-campaigns div[id*="leyka-pf-"].leyka-pf-star .leyka-unsubscribe-campains-forms {
+	.leyka-cancel-subscription-form, 
+	.leyka-confirm-unsubscribe-request-form,
+	.leyka-unsubscribe-request-accepted-form {
+		display: none;
+	}
+	
+	.leyka-confirm-unsubscribe-request-form {
+		.leyka-form-spinner {
+			display: none;
+		}
+	}
+	
+	.leyka-confirm-unsubscribe-request-form {
+		p {
+			text-align: left;
+		}
+		
+		.leyka-star-submit {
+			.leyka-star-btn {
+				margin-top: 3 * $leyka-star-base;
+			}
+		}
+	}
+}
+
 // overrdie styles    
 .leyka-account div[id*="leyka-pf-"].leyka-pf-star .leyka-account-form {
     @include for(medium-screens) {
@@ -200,4 +248,37 @@
         margin-top: 4 * $leyka-star-base;
     }
 }
-  
+
+// logout button
+.leyka-account {
+	.leyka-logout {
+		display: none;
+		position: absolute;
+		top: $leyka-star-base;
+		right: $leyka-star-base;
+		background-image: url(../../img/account-icon-logout.svg);
+		background-size: cover;
+		width: 24px;
+		height: 24px;
+	}
+}
+
+.admin-bar {
+	.leyka-account {
+		.leyka-logout {
+			top: 3.8 * $leyka-star-base;
+			
+			@include for(medium-screens) {
+				top: 3 * $leyka-star-base;
+			}
+		}
+	}	
+}
+
+.logged-in {
+	.leyka-account {
+		.leyka-logout {
+			display: block;
+		}
+	}	
+}

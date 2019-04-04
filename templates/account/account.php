@@ -130,7 +130,7 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 							</div>
 						
 							<p class="leyka-we-need-you">
-                                <?php echo sprintf(__('You can always <a href="%s">cancel your recurring donations</a>.<br>But we will struggle without your support.', 'leyka'), home_url('/donor-account/?leyka-screen=cancel-subscription')); // Вы всегда можете <a href="?leyka-screen=cancel-subscription">отключить ваше ежемесячное пожертвование.</a><br />Но нам будет без вас трудно.?>
+                                <?php echo sprintf(__('You can always <a href="%s">cancel your recurring donations</a>.<br>But we will struggle without your support.', 'leyka'), home_url('/donor-account/unsubscribe-campaigns/')); // Вы всегда можете <a href="?leyka-screen=cancel-subscription">отключить ваше ежемесячное пожертвование.</a><br />Но нам будет без вас трудно.?>
                             </p>
 							
 						</form>

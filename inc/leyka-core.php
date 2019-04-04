@@ -1134,6 +1134,8 @@ class Leyka extends Leyka_Singleton {
             'email_invalid' => __('Enter an email in the some@email.com format', 'leyka'),
             'must_not_be_email' => __("You shouldn't enter an email here", 'leyka'),
             'value_too_long' => __('Entered value is too long', 'leyka'),
+            'error_while_unsibscribe' => __('Error while requesting unsubscription', 'leyka'),
+            'default_error_msg' => __('Error', 'leyka'),
         ));
 
         $leyka_js_handle = wp_script_is($this->_plugin_slug.'-public') ?

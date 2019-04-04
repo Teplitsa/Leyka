@@ -19,9 +19,9 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
             <div class="entry-content">
 
                 <div id="leyka-pf-" class="leyka-pf leyka-pf-star">
-                    <div class="leyka-account-form">
+                    <div class="leyka-account-form leyka-unsubscribe-campains-forms">
         
-                        <form class="leyka-screen-form">
+                        <form class="leyka-screen-form leyka-unsubscribe-campains-form">
                             
                             <?php if($recurring_subscriptions) {?>
                             
@@ -32,7 +32,7 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
                                 	<?php foreach($recurring_subscriptions as $init_donation) {?>
                                     <div class="item">
                                         <span class="campaign-title"><?php echo $init_donation->campaign_payment_title;?></span>
-                                        <a href="#" class="action-disconnect"><?php esc_html_e('Disable');?></a>
+                                        <a data-campaign-id="<?php echo $init_donation->campaign_id;?>" href="#" class="action-disconnect"><?php esc_html_e('Disable');?></a>
                                     </div>
                                 	<?php } ?>
                                 </div>
@@ -49,6 +49,8 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
                             </div>
         
                         </form>
+                        
+                        <?php include(LEYKA_PLUGIN_DIR . 'templates/account/cancel-subscription.php');?>
 
                     </div>
                 </div>

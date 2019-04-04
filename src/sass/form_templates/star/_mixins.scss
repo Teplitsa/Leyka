@@ -540,3 +540,15 @@
         padding: 2 * $leyka-star-base 2 * $leyka-star-base;
     }
 }
+
+@mixin leyka-star-field-error-frame {
+	min-height: 21px;
+	height: auto;
+	padding-top: 1px;
+	margin-left: 1 * $leyka-star-base;
+	vertical-align: bottom;
+	
+	span.donor__textfield-error {
+	    color: $leyka-star-color-error;
+	}
+}
