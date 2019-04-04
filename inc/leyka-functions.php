@@ -2091,3 +2091,7 @@ function leyka_use_leyka_donations_list_template($archive_template) {
 
 }
 add_filter('archive_template', 'leyka_use_leyka_donations_list_template');
+
+function leyka_get_website_tech_support_email() {
+    return leyka()->opt('tech_support_email') ? leyka()->opt('tech_support_email') : get_option('admin_email');
+}

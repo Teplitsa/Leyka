@@ -1558,9 +1558,7 @@ class Leyka extends Leyka_Singleton {
         $donation->donor_account = $donor_account_error;
 
         // Notify website tech. support:
-        $email_to = leyka_options()->opt('tech_support_email') ?
-            leyka_options()->opt('tech_support_email') : get_option('admin_email');
-
+        $email_to = leyka_get_website_tech_support_email();
         if( !$email_to ) {
             return;
         }

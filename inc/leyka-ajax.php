@@ -380,7 +380,7 @@ function leyka_setup_donor_password() {
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_account_password_setup')) {
         $res = array(
             'status' => 'error',
-            'message' => sprintf(__('Wrong request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka()->opt('tech_support_email'))
+            'message' => sprintf(__('Wrong request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
         );
     } else if(
         empty($_POST['leyka_donor_pass'])
@@ -391,7 +391,7 @@ function leyka_setup_donor_password() {
     ) {
         $res = array(
             'status' => 'error',
-            'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka()->opt('tech_support_email'))
+            'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
         );
     } else {
 
@@ -399,7 +399,7 @@ function leyka_setup_donor_password() {
         if(is_wp_error($donor_id)) {
             $res = array(
                 'status' => 'error',
-                'message' => sprintf(__('The password cannot be updated. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka()->opt('tech_support_email'))
+                'message' => sprintf(__('The password cannot be updated. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
             );
         } else {
 
@@ -437,7 +437,7 @@ function leyka_donor_login() {
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_donor_login')) {
         $res = array(
             'status' => 'error',
-            'message' => sprintf(__('Wrong request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka()->opt('tech_support_email'))
+            'message' => sprintf(__('Wrong request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
         );
     } else if(
         empty($_POST['leyka_donor_email'])
@@ -446,7 +446,7 @@ function leyka_donor_login() {
     ) {
         $res = array(
             'status' => 'error',
-            'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka()->opt('tech_support_email'))
+            'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
         );
     } else {
 
@@ -482,12 +482,12 @@ function leyka_donor_password_reset_request() {
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_donor_password_reset')) {
         $res = array(
             'status' => 'error',
-            'message' => sprintf(__('Wrong request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka()->opt('tech_support_email'))
+            'message' => sprintf(__('Wrong request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
         );
     } else if(empty($_POST['leyka_donor_email']) || !is_email($_POST['leyka_donor_email'])) {
         $res = array(
             'status' => 'error',
-            'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka()->opt('tech_support_email'))
+            'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
         );
     } else {
 
@@ -521,7 +521,7 @@ function leyka_donor_password_reset_request() {
             if( !$email_sent ) {
                 $res = array(
                     'status' => 'error',
-                    'message' => sprintf(__('Sorry, we could not send the password resetting email to you. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka()->opt('tech_support_email'))
+                    'message' => sprintf(__('Sorry, we could not send the password resetting email to you. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
                 );
             }
 

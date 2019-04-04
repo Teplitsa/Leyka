@@ -123,7 +123,7 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
                                         </div>
 
                                         <div class="leyka-star-submit">
-                                            <a href="mailto:<?php echo leyka()->opt('tech_support_email');?>" target="_blank" class="leyka-star-btn">
+                                            <a href="mailto:<?php echo leyka_get_website_tech_support_email();?>" target="_blank" class="leyka-star-btn">
                                                 <?php _e('Email to the tech. support', 'leyka');?>
                                             </a>
                                         </div>

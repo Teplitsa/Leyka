@@ -337,7 +337,7 @@ class Leyka_Donation_Management {
             $donation->date,
             apply_filters(
                 'leyka_'.$donation->gateway_id.'_recurring_subscription_cancelling_link',
-                sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_options()->opt('tech_support_email')),
+                sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_get_website_tech_support_email()),
                 $donation
             ),
         );
@@ -444,8 +444,8 @@ class Leyka_Donation_Management {
         $email_placeholder_values = array(
             get_bloginfo('name'),
             get_bloginfo('admin_email'),
-            leyka_options()->opt('tech_support_email'),
-            leyka_options()->opt('org_full_name'),
+            leyka()->opt('tech_support_email'),
+            leyka()->opt('org_full_name'),
             $donation->id,
             leyka_get_payment_type_label($donation->type),
             $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
@@ -1689,10 +1689,11 @@ class Leyka_Donation {
 
     /**
      * A wrapper to access gateway's method to get init recurrent donation.
+     *
      * @param mixed $donation
-     * @return mixed Leyka_Donation or false if param is wrong or nothing foundd.
+     * @return mixed Leyka_Donation or false if param is wrong or nothing found.
      */
-    public static function get_init_recurrent_donation($donation) {
+    public static function get_init_recurring_donation($donation) {
 
         $donation = leyka_get_validated_donation($donation);
 
@@ -1702,6 +1703,14 @@ class Leyka_Donation {
 
         return leyka_get_gateway_by_id($donation->gateway_id)->get_init_recurrent_donation($donation);
 
+    }
+    /**
+     * @deprecated Use self::get_init_recurring_donation($donation) instead.
+     * @param mixed $donation
+     * @return mixed Leyka_Donation or false if param is wrong or nothing found.
+     */
+    public static function get_init_recurrent_donation($donation) {
+        self::get_init_recurring_donation($donation);
     }
 
 	public function __construct($donation) {

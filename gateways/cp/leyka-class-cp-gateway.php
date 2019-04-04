@@ -319,6 +319,40 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     }
 
+    public function cancel_recurring_subscription(Leyka_Donation $donation) {
+
+        if($donation->type != 'rebill') {
+            die();
+        }
+
+        header('Content-type: text/html; charset=utf-8');
+
+        if( !$donation->recurring_id ) {
+            die(sprintf(__('<strong>Error:</strong> unknown Subscription ID for donation #%d. We cannot cancel the recurring subscription automatically - please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.', 'leyka'), $donation->id, leyka_get_website_tech_support_email()));
+        }
+
+        $response = wp_remote_post('https://api.cloudpayments.ru/subscriptions/cancel', array(
+            'timeout' => 10,
+            'redirection' => 5,
+            'body' => array('Id' => $donation->recurring_id),
+        ));
+
+        if(empty($response['body'])) {
+            die(sprintf(__('<strong>Error:</strong> the recurring subsciption cancelling request returned unexpected result. We cannot cancel the recurring subscription automatically - please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.', 'leyka'), $donation->id, leyka_get_website_tech_support_email()));
+        }
+
+        $response['body'] = json_decode($response['body']);
+        if(empty($response['body']['Success']) || $response['body']['Success'] != 'true') {
+            die(sprintf(__('<strong>Error:</strong> we cannot cancel the recurring subscription automatically - please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.', 'leyka'), $donation->id, leyka_get_website_tech_support_email()));
+        }
+
+        $init_recurrent_donation = Leyka_Donation::get_init_recurring_donation($donation);
+        $init_recurrent_donation->recurring_is_active = false;
+
+        die(__('Recurring subscription cancelled.', 'leyka'));
+
+    }
+
     /**
      * It is possible for CP to call a callback several times for one donation.
      * This donation must be created only once and then updated. It can be identified with CP transaction id.
