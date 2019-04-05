@@ -323,8 +323,12 @@ class Leyka extends Leyka_Singleton {
         // Currency rates auto refreshment - disabled for now
 
         // Mailout for campaigns with successfully reached targets - default processing:
-        if(class_exists('Leyka_Options_Controller') && leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')) {
-            add_action('leyka_do_campaigns_targets_reaching_mailout', array($this, '_do_campaigns_targets_reaching_mailout'));
+//        if(class_exists('Leyka_Options_Controller') && leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')) {
+//            add_action('leyka_do_campaigns_targets_reaching_mailout', array($this, '_do_campaigns_targets_reaching_mailout'));
+//        }
+
+        if(class_exists('Leyka_Options_Controller')) {
+            add_action('leyka_do_procedure', array($this, '_do_procedure'), 10, 2);
         }
 
         do_action('leyka_initiated');
@@ -352,14 +356,10 @@ class Leyka extends Leyka_Singleton {
     public function __set($name, $value) {
         switch($name) {
             case 'form_is_screening':
-
-                $value = !!$value;
-
-                if( !$this->_form_is_screening && $value ) {
-                    $this->_form_is_screening = $value;
+                if( !$this->_form_is_screening && !!$value ) {
+                    $this->_form_is_screening = !!$value;
                 }
                 break;
-
             default:
         }
     }
@@ -376,11 +376,7 @@ class Leyka extends Leyka_Singleton {
 
     public function add_gtm_data_layer() {
 
-        if(
-            !leyka_options()->opt('show_gtm_dataLayer_on_success')
-            || !is_main_query()
-            || !is_page(leyka_options()->opt('success_page'))
-        ) {
+        if( !leyka()->opt('show_gtm_dataLayer_on_success') || !is_main_query() || !is_page(leyka()->opt('success_page')) ) {
             return;
         }
 
@@ -451,23 +447,33 @@ class Leyka extends Leyka_Singleton {
             $request = explode('leyka/service', $_SERVER['REQUEST_URI']);
             $request = explode('/', trim($request[1], '/'));
 
-            if($request[0] === 'do_recurring') { // Recurring payments processing URL
-                $this->_do_active_recurring();
+            if($request[0] === 'do_recurring') { // Active recurring shortcut URL
+                do_action('leyka_do_procedure', 'active-recurring');
             } else if($request[0] === 'cancel_recurring' && !empty($request[1]) && !empty($request[2])) {
 
                 $donation = new Leyka_Donation($request[1]);
-                $init_recurrent_donation = Leyka_Donation::get_init_recurrent_donation($donation);
+                $init_recurrent_donation = Leyka_Donation::get_init_recurring_donation($donation);
                 $hash = md5($donation->id.'_'.$init_recurrent_donation->id.'_leyka_cancel_recurring_subscription');
 
                 if($donation && $hash == $request[2]) {
                     do_action("leyka_{$donation->gateway_id}_cancel_recurring_subscription", $donation);
                 }
 
-            } else if(
-                $request[0] === 'do_campaigns_targets_reaching_mailout' &&
-                leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')
-            ) {
-                do_action('leyka_do_campaigns_targets_reaching_mailout');
+            } else if($request[0] === 'do_campaigns_targets_reaching_mailout') { // Campaigns targets reached mailout shortcut URL
+                do_action(
+                    'leyka_do_procedure',
+                    'campaigns-targets-reaching-mailout',
+                    empty($request[1]) ? array() : array((int)$request[1])
+                );
+            } else if(isset($request[0], $request[1]) && $request[0] === 'procedure') { // A procedure call URL
+
+                // Procedure URLs are: some-website.org/leyka/service/procedure/{procedure_name}[/{param_1}/{param_2}/...]
+                // E.g.:
+                // * some-website.org/leyka/service/procedure/active-recurring
+                // * some-website.org/leyka/service/procedure/campaigns-targets-reaching-mailout/123
+
+                do_action('leyka_do_procedure', $request[1], array_slice($request, 2));
+
             } else if($request[0] === 'get_usage_stats') {
 
                 require_once LEYKA_PLUGIN_DIR.'bin/sodium-compat.phar';
@@ -505,114 +511,61 @@ class Leyka extends Leyka_Singleton {
         }
 
         $wp_admin_bar->add_node(array(
-            'id'    => 'leyka-toolbar-menu',
+            'id' => 'leyka-toolbar-menu',
             'title' => __('Leyka', 'leyka'),
-            'href'  => admin_url('admin.php?page=leyka'),
+            'href' => admin_url('admin.php?page=leyka'),
         ));
 
         $wp_admin_bar->add_node(array(
-            'id'     => 'leyka-toolbar-desktop',
-            'title'  => __('Desktop', 'leyka'),
+            'id'  => 'leyka-toolbar-desktop',
+            'title' => __('Desktop', 'leyka'),
             'parent' => 'leyka-toolbar-menu',
-            'href'   => admin_url('admin.php?page=leyka'),
+            'href' => admin_url('admin.php?page=leyka'),
         ));
         $wp_admin_bar->add_node(array(
-            'id'        => 'leyka-toolbar-donations',
-            'title'     => __('Donations', 'leyka'),
-            'parent'    => 'leyka-toolbar-menu',
-            'href'      => admin_url('edit.php?post_type='.Leyka_Donation_Management::$post_type),
+            'id' => 'leyka-toolbar-donations',
+            'title' => __('Donations', 'leyka'),
+            'parent' => 'leyka-toolbar-menu',
+            'href' => admin_url('edit.php?post_type='.Leyka_Donation_Management::$post_type),
         ));
         $wp_admin_bar->add_node(array(
-            'id'        => 'leyka-toolbar-campaigns',
-            'title'     => __('Campaigns', 'leyka'),
-            'parent'    => 'leyka-toolbar-menu',
-            'href'      => admin_url('edit.php?post_type='.Leyka_Campaign_Management::$post_type),
+            'id' => 'leyka-toolbar-campaigns',
+            'title' => __('Campaigns', 'leyka'),
+            'parent' => 'leyka-toolbar-menu',
+            'href' => admin_url('edit.php?post_type='.Leyka_Campaign_Management::$post_type),
         ));
 
         if(current_user_can('leyka_manage_options')) {
             $wp_admin_bar->add_node(array(
-                'id'        => 'leyka-toolbar-settings',
-                'title'     => __('Settings', 'leyka'),
-                'parent'    => 'leyka-toolbar-menu',
-                'href'      => admin_url('admin.php?page=leyka_settings'),
+                'id' => 'leyka-toolbar-settings',
+                'title' => __('Settings', 'leyka'),
+                'parent' => 'leyka-toolbar-menu',
+                'href' => admin_url('admin.php?page=leyka_settings'),
             ));
         }
 
     }
 
+    /** @todo make it a procedure */
     public function _do_currency_rates_refresh() {
         foreach(leyka_get_actual_currency_rates() as $currency => $rate) {
             update_option('leyka_currency_rur2'.mb_strtolower($currency), $rate);
         }
     }
 
-    public function _do_campaigns_targets_reaching_mailout($campaign_id = false) {
+    public function _do_procedure($procedure_id, $params = array()) {
 
-        if((int)$campaign_id > 0) {
-            $_GET['mailout_campaign_id'] = (int)$campaign_id;
-        }
+        do_action('leyka_before_procedure', $procedure_id, $params);
 
-        include(LEYKA_PLUGIN_DIR.'procedures/leyka-campaigns-targets-reaching-mailout.php');
+        $procedure_script = LEYKA_PLUGIN_DIR.'procedures/leyka-'.$procedure_id.'.php';
+        if(file_exists($procedure_script)) {
 
-    }
-
-    /** Make active rebill requests for all recurring subsriptions for the current day of month. */
-    protected function _do_active_recurring() {
-
-        // The method should be called no more than once per day:
-        if(get_transient('leyka_last_active_recurring_date') === date('d.m.Y')) {
-            return;
-        } else {
-            set_transient('leyka_last_active_recurring_date', date('d.m.Y'), 60*60*24);
-        }
-
-        ini_set('max_execution_time', 0);
-        set_time_limit(0);
-        ini_set('memory_limit', 268435456); // 256 Mb, just in case
-
-        // Get all active initial donations for the recurring subscriptions:
-        $current_day = (int)date('j');
-        $max_days_in_month = (int)date('t');
-        $current_day_param = $max_days_in_month < 31 && $max_days_in_month === $current_day ? // Last day of short month
-            array(array('day' => $current_day, 'compare' => '>='), array('day' => 31, 'compare' => '<=')) :
-            array(array('day' => (int)date('j')));
-
-        $params = array(
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'nopaging' => true,
-            'post_status' => 'funded',
-            'post_parent' => 0,
-            'meta_query' => array(
-                'relation' => 'AND',
-                array(
-                    'key' => 'leyka_payment_type',
-                    'value' => 'rebill',
-                    'compare' => '=',
-                ),
-                array(
-                    'key' => '_rebilling_is_active',
-                    'value' => '1',
-                    'compare' => '=',
-                ),
-            ),
-            'date_query' => $current_day_param,
-        );
-
-        foreach(get_posts($params) as $donation) {
-
-            $donation = new Leyka_Donation($donation);
-
-            $gateway = leyka_get_gateway_by_id($donation->gateway_id);
-            if($gateway) {
-
-                $new_recurring_donation = $gateway->do_recurring_donation($donation);
-                if($new_recurring_donation && is_a($new_recurring_donation, 'Leyka_Donation')) {
-                    Leyka_Donation_Management::send_all_recurring_emails($new_recurring_donation);
-                }
-
-            }
+            $_POST['procedure_params'] = $params;
+            require $procedure_script;
 
         }
+
+        do_action('leyka_after_procedure', $procedure_id, $params);
 
     }
 

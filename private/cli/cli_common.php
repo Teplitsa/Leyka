@@ -7,17 +7,20 @@ class TstCLIHostNotSetException extends Exception {
 }
 
 
-function find_wordpress_base_path() {
+function leyka_get_wordpress_base_path() {
+
 	$dir = dirname(__FILE__);
 	do {
-		if( file_exists($dir."/wp-config.php") ) {
+		if(file_exists($dir.'/wp-load.php')) {
 			return $dir;
 		}
-	} while( $dir = realpath("$dir/..") );
+	} while($dir = realpath("$dir/.."));
+
 	return null;
+
 }
 
-define('BASE_PATH', find_wordpress_base_path()."/");
+define('BASE_PATH', leyka_get_wp_core_path()."/");
 define('WP_USE_THEMES', false);
 define('WP_CURRENT_THEME', 'teplitsa');
 
