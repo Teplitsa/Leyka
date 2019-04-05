@@ -462,9 +462,34 @@
 		top: $leyka-star-base;
 		right: $leyka-star-base;
 		background-image: url(../../img/account-icon-logout.svg);
-		background-size: cover;
-		width: 24px;
-		height: 24px;
+        background-size: 24px 24px;
+        background-repeat: no-repeat;
+        background-position: right top;
+        width: 24px;
+        height: 24px;
+
+        span {
+            @include star-text-logout();
+            display: none;
+            width: 150px;
+            margin-left: -125px;
+            text-transform: lowercase;
+            color: $leyka-star-color-white; 
+            text-align: right;
+            padding-right: 32px;
+            padding-top: 4px;
+            overflow: hidden;
+        }
+        
+        &:hover {
+            background-image: url(../../img/account-icon-logout-white.svg);
+
+            span {
+                display: block;
+            }
+
+            overflow: visible;
+        }
 	}
 }
 
