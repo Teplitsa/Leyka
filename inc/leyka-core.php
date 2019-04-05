@@ -376,7 +376,7 @@ class Leyka extends Leyka_Singleton {
 
     public function add_gtm_data_layer() {
 
-        if( !leyka()->opt('show_gtm_dataLayer_on_success') || !is_main_query() || !is_page(leyka()->opt('success_page')) ) {
+        if( !leyka()->opt('use_gtm_ua_integration') || !is_main_query() || !is_page(leyka()->opt('success_page')) ) {
             return;
         }
 
@@ -980,6 +980,12 @@ class Leyka extends Leyka_Singleton {
             update_option('leyka_receiver_country', 'ru');
             update_option('leyka_receiver_legal_type', 'legal');
 
+        }
+
+        if( !$leyka_last_ver || $leyka_last_ver < '3.1.1' ) {
+            if(get_option('show_gtm_dataLayer_on_success')) {
+                update_option('use_gtm_ua_integration', 'simple');
+            }
         }
 
         /** Set a flag to flush permalinks (needs to be done a bit later, than this activation itself): */

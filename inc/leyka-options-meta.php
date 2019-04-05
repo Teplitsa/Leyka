@@ -641,12 +641,17 @@ self::$_options_meta = array(
         'title' => __('Show a failure notification widget on the donation failure page', 'leyka'),
         'description' => __('Display a failure notification widget on the donation failure page', 'leyka'),
     ),
-    'show_gtm_dataLayer_on_success' => array(
-        'type' => 'checkbox',
-        'default' => 1,
+//    'show_gtm_dataLayer_on_success'
+    'use_gtm_ua_integration' => array(
+        'type' => 'radio',
         'title' => __('Show the GTM dataLayer on the successful donation page', 'leyka'),
+        'list_entries' => array(
+            '-' => __("Don't use GTM & UA e-commerce integration", 'leyka'),
+            'simple' => __('Use the GTM & simple UA e-commerce integration', 'leyka'),
+            'enchanced' => __('Use the GTM & UA enchanced e-commerce integration', 'leyka'),
+        ),
+        'default' => '-',
         // 'comment' => __('', 'leyka'),
-        'short_format' => true,
     ),
     'revo_template_slider_max_sum' => array(
         'type' => 'text',
