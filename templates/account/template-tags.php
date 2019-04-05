@@ -32,7 +32,7 @@ if( !function_exists('leyka_get_donor_account_donations_list_item_html') ) {
                 'donation_type' => $donation->type,
                 'donation_type_description' => $donation->type_description,
                 'recurring_is_active' => $donation->recurring_is_active ? 'recurring-is-active' : '',
-                'init_recurring_donation' => ($donation->init_recurring_donation_id == $donation->id ? 'init-recurring-donation' : '') . ' ' . ($donation->init_recurring_donation_id . '---' . $donation->id),
+                'init_recurring_donation' => ($donation->is_init_recurring_donation ? 'init-recurring-donation' : '') . ' ' . ($donation->init_recurring_donation_id . '---' . $donation->id),
                 'amount' => $donation->amount,
                 'currency_label' => $donation->currency_label,
                 'gateway_label' => $donation->gateway_label,

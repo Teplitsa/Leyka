@@ -1976,6 +1976,8 @@ class Leyka_Donation {
             case 'init_recurring_donation_id':
                 return $this->payment_type === 'rebill' ?
                     ($this->_post_object->post_parent ? $this->_post_object->post_parent : $this->_id) : false;
+            case 'is_init_recurring_donation':
+                return $this->payment_type === 'rebill' ? !!$this->_post_object->post_parent : false;
             case 'init_recurring_payment':
             case 'init_recurring_donation':
                 if($this->payment_type != 'rebill') {
