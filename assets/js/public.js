@@ -1757,7 +1757,7 @@ jQuery(document).ready(function($){
         bindModeEvents();
         bindAgreeEvents();
         bindSwiperEvents();
-		bindAmountEvents();
+        bindAmountEvents();
         bindDonorDataEvents();
         bindSubmitPaymentFormEvent();
         bindPMEvents();
@@ -2292,6 +2292,10 @@ jQuery(document).ready(function($){
                     toggleStaticPMForm($_form);
                 }
             });
+        });
+
+        $('.leyka-tpl-star-form .payments-grid .swiper-item.selected').each(function(i, el){
+            $(this).click();
         });
     }
     
