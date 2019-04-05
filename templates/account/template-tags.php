@@ -13,7 +13,7 @@ if( !function_exists('leyka_get_donor_account_donations_list_item_html') ) {
             'donation_type' => '#TYPE#',
             'donation_type_description' => '#TYPE_DESCR#',
             'recurring_is_active' => '#RECURRING_IS_ACTIVE#',
-            'init_recurring_payment' => '#INIT_RECURRING_PAYMENT#',
+            'init_recurring_donation' => '#INIT_RECURRING_DONATION#',
             'amount' => '#AMOUNT#',
             'currency_label' => '#CURR#',
             'gateway_label' => '#GATEWAY#',
@@ -32,7 +32,7 @@ if( !function_exists('leyka_get_donor_account_donations_list_item_html') ) {
                 'donation_type' => $donation->type,
                 'donation_type_description' => $donation->type_description,
                 'recurring_is_active' => $donation->recurring_is_active ? 'recurring-is-active' : '',
-                'init_recurring_payment' => $donation->init_recurring_donation_id == $donation->id ? 'init-recurring-payment' : '',
+                'init_recurring_donation' => ($donation->init_recurring_donation_id == $donation->id ? 'init-recurring-donation' : '') . ' ' . ($donation->init_recurring_donation_id . '---' . $donation->id),
                 'amount' => $donation->amount,
                 'currency_label' => $donation->currency_label,
                 'gateway_label' => $donation->gateway_label,
@@ -45,7 +45,7 @@ if( !function_exists('leyka_get_donor_account_donations_list_item_html') ) {
 
         ob_start();?>
 
-        <div class="item <?php echo $placeholders['donation_status'];?> <?php echo $placeholders['donation_type'];?> <?php echo $placeholders['recurring_is_active'];?>" <?php echo $is_hidden ? 'style="display:none;"' : '';?>>
+        <div class="item <?php echo $placeholders['donation_status'];?> <?php echo $placeholders['donation_type'];?> <?php echo $placeholders['recurring_is_active'];?> <?php echo $placeholders['init_recurring_donation'];?>" <?php echo $is_hidden ? 'style="display:none;"' : '';?>>
             <h4 class="item-title">
                 <span class="field-q"><span class="field-q-tooltip <?php echo 'status-'.$placeholders['donation_status'];?> <?php echo 'type-'.$placeholders['donation_type'];?>">
                     <?php echo $placeholders['donation_type_description'];?>

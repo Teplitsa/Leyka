@@ -227,8 +227,8 @@
                     .item-title:before {
                         background-image: url(../../img/star-icon-renew.svg);
                     }
-                    
-                    &.init-recurring-payment {
+
+                    &.init-recurring-donation {
                         // cancel subscription case
                         .item-title:before {
                             background-image: url(../../img/star-icon-disconnect.svg);
