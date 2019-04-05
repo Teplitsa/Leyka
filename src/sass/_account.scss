@@ -346,7 +346,14 @@
             @include for(medium-screens) {
                 min-width: 328px;
             }
-        }        
+        }
+        
+        .leyka-form-spinner {
+            .form-ajax-indicator {
+                margin-top: 0px;
+                margin-bottom: 2 * $leyka-star-base;
+            }
+        }
     }
 }
 

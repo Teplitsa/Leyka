@@ -597,6 +597,47 @@ jQuery(function($){
     }
 	
 });
+
+
+jQuery(function($){
+	
+    $('.donor__textfield--pass').on('focus.leyka', 'input', function(){
+        $(this).parents('.donor__textfield--pass').removeClass('invalid').removeClass('valid').addClass('focus');
+    }).on('blur', ':input', function(){
+
+        // validate
+        var $this = $(this),
+            testVal = $this.val();
+
+        $this.parents('.donor__textfield--name').removeClass('focus');
+
+        if(testVal.length > 0){
+            $this.parents('.donor__textfield--name').addClass('valid');
+        } else {
+            $this.parents('.donor__textfield--name').addClass('invalid');
+        }
+
+    });
+
+    $('.donor__textfield--pass2').on('focus.leyka', 'input', function(){
+        $(this).parents('.donor__textfield--pass2').removeClass('invalid').removeClass('valid').addClass('focus');
+    }).on('blur', ':input', function(){
+
+        // validate
+        var $this = $(this),
+            testVal = $this.val();
+
+        $this.parents('.donor__textfield--name').removeClass('focus');
+
+        if(testVal.length > 0){
+            $this.parents('.donor__textfield--name').addClass('valid');
+        } else {
+            $this.parents('.donor__textfield--name').addClass('invalid');
+        }
+
+    });
+    
+});
 /*
  * Class to manipulate donation form from bottom
  */

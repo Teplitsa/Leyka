@@ -65,7 +65,9 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
 
                                 </div>
 
-                                <?php echo leyka_get_ajax_indicator();?>
+                                <div class="leyka-form-spinner">
+                                	<?php echo leyka_get_ajax_indicator();?>
+                                </div>
 
                                 <div class="form-message" style="display: none;"></div>
 
@@ -171,7 +173,9 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
 
                                 </div>
 
-                                <?php echo leyka_get_ajax_indicator();?>
+                                <div class="leyka-form-spinner">
+                                	<?php echo leyka_get_ajax_indicator();?>
+                                </div>
 
                                 <div class="form-message" style="display: none;"></div>
 
