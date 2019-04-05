@@ -73,7 +73,10 @@ class Leyka extends Leyka_Singleton {
         // By default, we'll assume some errors in the payment form, so redirect will get us back to it:
         $this->_payment_url = wp_get_referer();
 
-        add_action('wp_head', array($this, 'add_gtm_data_layer'), -1000);
+        // Add GTM & UA e-commerce dataLayer if needed:
+        if(leyka()->opt('use_gtm_ua_integration') !== '-') {
+            add_action('wp_head', array($this, 'add_gtm_data_layer_ua_'.leyka()->opt('use_gtm_ua_integration')), -1000);
+        }
 
         $this->load_public_cssjs();
 
@@ -322,11 +325,6 @@ class Leyka extends Leyka_Singleton {
 
         // Currency rates auto refreshment - disabled for now
 
-        // Mailout for campaigns with successfully reached targets - default processing:
-//        if(class_exists('Leyka_Options_Controller') && leyka_options()->opt('send_donor_emails_on_campaign_target_reaching')) {
-//            add_action('leyka_do_campaigns_targets_reaching_mailout', array($this, '_do_campaigns_targets_reaching_mailout'));
-//        }
-
         if(class_exists('Leyka_Options_Controller')) {
             add_action('leyka_do_procedure', array($this, '_do_procedure'), 10, 2);
         }
@@ -374,9 +372,9 @@ class Leyka extends Leyka_Singleton {
         return leyka_options()->opt($option_id, $new_value);
     }
 
-    public function add_gtm_data_layer() {
+    public function add_gtm_data_layer_ua_simple() {
 
-        if( !leyka()->opt('use_gtm_ua_integration') || !is_main_query() || !is_page(leyka()->opt('success_page')) ) {
+        if( !is_main_query() || !is_page(leyka()->opt('success_page')) ) {
             return;
         }
 
@@ -427,6 +425,92 @@ class Leyka extends Leyka_Singleton {
         </script>
 
     <?php }
+
+    public function add_gtm_data_layer_ua_enchanced() {
+
+        if( !is_main_query() ) {
+            return;
+        }
+
+        if(is_singular(Leyka_Campaign_Management::$post_type)) {
+
+            // Single campaign display - use "detail" e-commerce measurement:
+
+            $campaign = new Leyka_Campaign(get_the_ID());
+            if( !$campaign->id ) {
+                return;
+            }?>
+
+        <script>
+            window.dataLayer = window.dataLayer || [];
+
+            dataLayer.push({
+                'ecommerce': {
+                    'detail': {
+                        'products': [{
+                            'name': '<?php echo $campaign->title;?>',
+                            'id': '<?php echo $campaign->id;?>',
+                            // 'price': '',
+                            // 'variant': 'Gray',
+                            'brand': '<?php echo get_bloginfo('name');?>',
+                            'category': '<?php _e('Donations', 'leyka');?>'
+                        }]
+                    }
+                }
+            });
+        </script>
+
+        <?php } else if(is_page(leyka()->opt('success_page'))) {
+
+            // Success page display - use "purchase" e-commerce measurement:
+
+            $donation_id = leyka_remembered_data('donation_id');
+            $campaign = null;
+            $campaign_id = null;
+
+            if( !$donation_id ) {
+                return;
+            }
+
+            $donation = new Leyka_Donation($donation_id);
+            $campaign_id = $donation ? $donation->campaign_id : null;
+            $campaign = new Leyka_Campaign($campaign_id);
+
+            if( !$campaign->id ) {
+                return;
+            }
+
+            $donation_amount_total = round((float)$donation->amount_total, 2);?>
+
+        <script>
+            dataLayer.push({
+                'ecommerce': {
+                    'purchase': {
+                        'actionField': {
+                            'id': '<?php echo $donation->id;?>',
+                            'affiliation': '<?php echo $campaign->title;?>',
+                            'revenue': '<?php echo $donation_amount_total;?>',
+                            'tax': 0,
+                            'shipping': 0
+                        },
+                        'products': [{
+                            'name': '<?php echo $campaign->title;?>',
+                            'id': '<?php echo $donation->id;?>',
+                            'price': '<?php echo $donation_amount_total;?>',
+                            'brand': '<?php echo get_bloginfo('name');?>',
+                            'category': '<?php _e('Donations', 'leyka');?>',
+                            'quantity': 1,
+                        }]
+                    }
+                }
+            });
+        </script>
+        <?php }
+
+        // Donation form submit click - use "add" e-commerce measurement:
+
+
+    }
 
     /** @todo Create a procedure to get actual currencies rates and save them in the plugin options values */
     public function do_currencies_rates_refresh() {
