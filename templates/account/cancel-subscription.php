@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 
-$recurring_subscriptions = leyka_get_init_recurring_donations(false, true);
+$recurring_subscriptions = leyka_get_init_recurring_donations(false);
 
 include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 

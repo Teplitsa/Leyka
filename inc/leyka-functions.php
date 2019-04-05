@@ -1462,7 +1462,7 @@ function leyka_get_campaign_donations($campaign, $limit = false) {
 
 }
 
-function leyka_get_init_recurring_donations($donor_id = false, $only_active = false) {
+function leyka_get_init_recurring_donations($donor_id = false, $only_active = true) {
 
     $donor_id = (int)$donor_id ? (int)$donor_id : get_current_user_id();
     $donor_email = get_user_option('user_email', $donor_id);
