@@ -609,12 +609,12 @@ jQuery(function($){
         var $this = $(this),
             testVal = $this.val();
 
-        $this.parents('.donor__textfield--name').removeClass('focus');
+        $this.parents('.donor__textfield--pass').removeClass('focus');
 
         if(testVal.length > 0){
-            $this.parents('.donor__textfield--name').addClass('valid');
+            $this.parents('.donor__textfield--pass').addClass('valid');
         } else {
-            $this.parents('.donor__textfield--name').addClass('invalid');
+            $this.parents('.donor__textfield--pass').addClass('invalid');
         }
 
     });
@@ -627,12 +627,12 @@ jQuery(function($){
         var $this = $(this),
             testVal = $this.val();
 
-        $this.parents('.donor__textfield--name').removeClass('focus');
+        $this.parents('.donor__textfield--pass2').removeClass('focus');
 
         if(testVal.length > 0){
-            $this.parents('.donor__textfield--name').addClass('valid');
+            $this.parents('.donor__textfield--pass2').addClass('valid');
         } else {
-            $this.parents('.donor__textfield--name').addClass('invalid');
+            $this.parents('.donor__textfield--pass2').addClass('invalid');
         }
 
     });
