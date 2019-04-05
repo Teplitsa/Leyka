@@ -224,15 +224,21 @@
                 }
 
                 &.rebill {
-                    // cancel subscription case
                     .item-title:before {
-                        background-image: url(../../img/star-icon-disconnect.svg);
+                        background-image: url(../../img/star-icon-renew.svg);
                     }
-
-                    // active subscription case:
-                    &.recurring-is-active {
+                    
+                    &.init-recurring-payment {
+                        // cancel subscription case
                         .item-title:before {
-                            background-image: url(../../img/star-icon-renew.svg);
+                            background-image: url(../../img/star-icon-disconnect.svg);
+                        }
+
+                        // active subscription case
+                        &.recurring-is-active {
+                            .item-title:before {
+                                background-image: url(../../img/star-icon-info.svg);
+                            }
                         }
                     }
                 }

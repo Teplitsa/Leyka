@@ -12,8 +12,8 @@ if( !function_exists('leyka_get_donor_account_donations_list_item_html') ) {
             'donation_status_description' => '#STATUS_DESCR#',
             'donation_type' => '#TYPE#',
             'donation_type_description' => '#TYPE_DESCR#',
-            'item_classes' => '#ITEM_CLASS#',
-            'tooltip classes' => '#TOOLTIP_CLASS#',
+            'recurring_is_active' => '#RECURRING_IS_ACTIVE#',
+            'init_recurring_payment' => '#INIT_RECURRING_PAYMENT#',
             'amount' => '#AMOUNT#',
             'currency_label' => '#CURR#',
             'gateway_label' => '#GATEWAY#',
@@ -26,20 +26,13 @@ if( !function_exists('leyka_get_donor_account_donations_list_item_html') ) {
 
             $donation = leyka_get_validated_donation($donation);
 
-            $item_class = $tooltip_class = '';
-            if($donation->status === 'failed') { $item_class = 'error'; $tooltip_class = 'error'; }
-            else if($donation->status === 'refunded') { $item_class = 'refund'; $tooltip_class = 'notice'; }
-            else if($donation->type === 'single') { $item_class = 'no-pay'; $tooltip_class = 'funded'; }
-            else if($donation->type === 'rebill') { $item_class = 'pay'; $tooltip_class = 'funded'; }
-            
             $placeholders = array(
                 'donation_status' => $donation->status,
                 'donation_status_description' => $donation->status_description,
                 'donation_type' => $donation->type,
                 'donation_type_description' => $donation->type_description,
                 'recurring_is_active' => $donation->recurring_is_active ? 'recurring-is-active' : '',
-                'item_classes' => $item_class,
-                'tooltip classes' => $tooltip_class,
+                'init_recurring_payment' => $donation->init_recurring_donation_id == $donation->id ? 'init-recurring-payment' : '',
                 'amount' => $donation->amount,
                 'currency_label' => $donation->currency_label,
                 'gateway_label' => $donation->gateway_label,
@@ -52,9 +45,9 @@ if( !function_exists('leyka_get_donor_account_donations_list_item_html') ) {
 
         ob_start();?>
 
-        <div class="item <?php echo $placeholders['donation_status'];?> <?php echo $placeholders['donation_type'];?> <?php echo $placeholders['recurring_is_active'];?> <?php echo $placeholders['item_classes'];?>" <?php echo $is_hidden ? 'style="display:none;"' : '';?>>
+        <div class="item <?php echo $placeholders['donation_status'];?> <?php echo $placeholders['donation_type'];?> <?php echo $placeholders['recurring_is_active'];?>" <?php echo $is_hidden ? 'style="display:none;"' : '';?>>
             <h4 class="item-title">
-                <span class="field-q"><span class="field-q-tooltip <?php echo 'status-'.$placeholders['donation_status'];?> <?php echo 'type-'.$placeholders['donation_type'];?> <?php echo $placeholders['tooltip_classes'];?>">
+                <span class="field-q"><span class="field-q-tooltip <?php echo 'status-'.$placeholders['donation_status'];?> <?php echo 'type-'.$placeholders['donation_type'];?>">
                     <?php echo $placeholders['donation_type_description'];?>
                     <br><br>
                     <?php echo $placeholders['donation_status_description'];?>
