@@ -649,7 +649,6 @@ function leyka_unsubscribe_persistent_campaign() {
                         ).' <'.leyka_options()->opt_safe('email_from').'>',)
                     );
                 
-                $email_sent = true;
                 if( !$email_sent ) {
                     $res = array(
                         'status' => 'error',
