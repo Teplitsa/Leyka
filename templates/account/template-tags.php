@@ -52,7 +52,10 @@ if( !function_exists('leyka_get_donor_account_donations_list_item_html') ) {
                     <br><br>
                     <?php echo $placeholders['donation_status_description'];?>
                 </span></span>
-                <?php echo $placeholders['amount'].' '.$placeholders['currency_label'];?>
+
+                <?php echo ($donation->status === 'refunded' ? __('Refunding:', 'leyka').' ' : '')
+                    .$placeholders['amount'].' '.$placeholders['currency_label'];?>
+
             </h4>
             <span class="date"><?php echo $placeholders['date'];?></span>
             <p><?php echo '«'.$placeholders['campaign_title'].'»';?></p>
