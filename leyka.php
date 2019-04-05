@@ -85,7 +85,7 @@ if( !defined('LEYKA_USAGE_STATS_PROD_SERVER_URL') ) {
 }
 
 if( !defined('LEYKA_DONOR_ACCOUNT_DONATIONS_PER_PAGE') ) {
-    define('LEYKA_DONOR_ACCOUNT_DONATIONS_PER_PAGE', 3);
+    define('LEYKA_DONOR_ACCOUNT_DONATIONS_PER_PAGE', 6);
 }
 
 // Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
