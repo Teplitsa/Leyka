@@ -231,7 +231,8 @@
                     &.init-recurring-donation {
                         // cancel subscription case
                         .item-title:before {
-                            background-image: url(../../img/star-icon-disconnect.svg);
+                            // background-image: url(../../img/star-icon-disconnect.svg); // temporary disabled
+                            background-image: url(../../img/star-icon-info.svg);
                         }
 
                         // active subscription case
