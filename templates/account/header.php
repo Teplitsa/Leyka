@@ -33,5 +33,6 @@ $leyka_account_logo_url = '';
         <div class="header-tint">
             <a href="#" class="leyka-campaign-logo" style="<?php if(!empty($leyka_account_logo_url)):?>background-image:url('<?php echo $leyka_account_logo_url;?>');<?php endif;?>"></a>
             <h1><?php echo !empty($leyka_account_page_title) ? $leyka_account_page_title : esc_html__('Leyka account', 'leyka');?></h1>
+            <a href="<?php echo wp_logout_url( home_url() );?>" class="leyka-logout" title="<?php esc_html_e('Logout', 'leyka');?>"><span><?php esc_html_e('Logout', 'leyka');?></span></a>
         </div>
     </header><!-- #masthead -->

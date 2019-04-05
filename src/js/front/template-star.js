@@ -13,7 +13,7 @@
         bindModeEvents();
         bindAgreeEvents();
         bindSwiperEvents();
-		bindAmountEvents();
+        bindAmountEvents();
         bindDonorDataEvents();
         bindSubmitPaymentFormEvent();
         bindPMEvents();
@@ -548,6 +548,10 @@
                     toggleStaticPMForm($_form);
                 }
             });
+        });
+
+        $('.leyka-tpl-star-form .payments-grid .swiper-item.selected').each(function(i, el){
+            $(this).click();
         });
     }
     

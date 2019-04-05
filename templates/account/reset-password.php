@@ -49,7 +49,9 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
 
                             <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('leyka_donor_password_reset');?>">
 
-                            <?php echo leyka_get_ajax_indicator();?>
+                            <div class="leyka-form-spinner">
+                            	<?php echo leyka_get_ajax_indicator();?>
+                            </div>
 
                             <div class="form-message" style="display: none;"></div>
 

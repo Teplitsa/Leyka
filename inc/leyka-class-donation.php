@@ -2151,6 +2151,9 @@ class Leyka_Donation {
                 if($this->type !== 'rebill') {
                     break;
                 }
+                
+                error_log('updating meta: ' . $this->_id);
+                error_log(sprintf("value: %s", $value));
 
                 $init_recurring_donation = $this->init_recurring_donation;
                 if($init_recurring_donation->recurring_is_active != $value) {

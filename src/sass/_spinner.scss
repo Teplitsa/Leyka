@@ -1,0 +1,34 @@
+@keyframes leyka-spinner-border {
+  to { transform: rotate(360deg); }
+}
+
+.leyka-spinner-border {
+	display: inline-block;
+	vertical-align: text-bottom;
+	border: 5px solid $leyka-star-color-main;
+	border-right-color: transparent;
+	border-radius: 50%;
+	animation: leyka-spinner-border .75s linear infinite;
+	
+	width: 4 * $leyka-star-base;
+	height: 4 * $leyka-star-base;
+
+	&.xs {
+		width: $leyka-star-base;
+		height: $leyka-star-base;
+		border-width: 2px;
+	}
+  
+	&.sm {
+		width: 2 * $leyka-star-base;
+		height: 2 * $leyka-star-base;
+		border-width: 3px;
+	}
+  
+	&.lg {
+		width: 6 * $leyka-star-base;
+		height: 6 * $leyka-star-base;
+		border-width: 7px;
+	}
+  
+}

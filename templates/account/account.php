@@ -92,7 +92,7 @@ $donor_id = get_current_user_id();?>
 
                                         <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('leyka_get_donor_donations_history');?>">
 
-                                        <?php echo leyka_get_ajax_indicator();?>
+                                		<?php echo leyka_get_ajax_indicator();?>
 
                                     </div>
                                 <?php }?>
@@ -100,7 +100,7 @@ $donor_id = get_current_user_id();?>
 							</div>
 
 							<p class="leyka-we-need-you">
-                                <?php echo sprintf(__('You can always <a href="%s">cancel your recurring donations</a>.<br>But we will struggle without your support.', 'leyka'), home_url('/donor-account/?leyka-screen=cancel-subscription')); // Вы всегда можете <a href="?leyka-screen=cancel-subscription">отключить ваше ежемесячное пожертвование.</a><br />Но нам будет без вас трудно.?>
+                                <?php echo sprintf(__('You can always <a href="%s">cancel your recurring donations</a>.<br>But we will struggle without your support.', 'leyka'), home_url('/donor-account/cancel-subscription/')); // Вы всегда можете <a href="?leyka-screen=cancel-subscription">отключить ваше ежемесячное пожертвование.</a><br />Но нам будет без вас трудно.?>
                             </p>
 
 						</form>

@@ -44,6 +44,11 @@
 	line-height: 26px;
 }
 
+@mixin star-text-logout {
+	@include star-text();
+	font-size: 12px;
+}
+
 @mixin star-text-ui-caption($mod: default) {
 	@include star-text($mod);
 	text-transform: uppercase;

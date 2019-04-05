@@ -1,4 +1,5 @@
 <?php if( !defined('WPINC') ) die;
+
 /**
  * Leyka functions and template tags, irrelevant to a donation form.
  **/
@@ -1461,7 +1462,7 @@ function leyka_get_campaign_donations($campaign, $limit = false) {
 
 }
 
-function leyka_get_init_recurring_donations($donor_id = false) {
+function leyka_get_init_recurring_donations($donor_id = false, $only_active = false) {
 
     $donor_id = (int)$donor_id ? (int)$donor_id : get_current_user_id();
     $donor_email = get_user_option('user_email', $donor_id);
@@ -1469,20 +1470,30 @@ function leyka_get_init_recurring_donations($donor_id = false) {
     if( !$donor_id || !$donor_email ) {
         return array();
     }
+    
+    $meta_params = array(
+        'relation' => 'AND',
+        array('key' => 'leyka_payment_type', 'value' => 'rebill'),
+        array(
+            'relation' => 'OR',
+            array('key' => 'leyka_donor_email', 'value' => $donor_email),
+            array('key' => 'leyka_donor_account', 'value' => $donor_id),
+        ),
+    );
+    
+    if($only_active) {
+        $meta_params[] = array(
+            'relation' => 'OR',
+            array('key' => 'leyka_recurrents_cancelled', 'value' => false),
+            array('key' => 'leyka_recurrents_cancelled', 'compare' => 'NOT EXISTS'),
+        );
+    }
 
     $recurring_subscriptions = get_posts(array(
         'post_type' => Leyka_Donation_Management::$post_type,
         'post_status' => 'funded',
         'post_parent' => 0,
-        'meta_query' => array(
-            'relation' => 'AND',
-            array('key' => 'leyka_payment_type', 'value' => 'rebill'),
-            array(
-                'relation' => 'OR',
-                array('key' => 'leyka_donor_email', 'value' => $donor_email),
-                array('key' => 'leyka_donor_account', 'value' => $donor_id),
-            ),
-        ),
+        'meta_query' => $meta_params,
         'posts_per_page' => -1,
     ));
 
@@ -2077,9 +2088,6 @@ function leyka_use_leyka_donations_list_template($archive_template) {
             case 'reset-password':
                 $archive_template = LEYKA_PLUGIN_DIR.'templates/account/reset-password.php';
                 break;
-            case 'unsubscribe-campaigns':
-                $archive_template = LEYKA_PLUGIN_DIR.'templates/account/unsubscribe-campaigns.php';
-                break;
             case 'cancel-subscription':
                 $archive_template = LEYKA_PLUGIN_DIR.'templates/account/cancel-subscription.php';
                 break;
@@ -2094,4 +2102,45 @@ add_filter('archive_template', 'leyka_use_leyka_donations_list_template');
 
 function leyka_get_website_tech_support_email() {
     return leyka()->opt('tech_support_email') ? leyka()->opt('tech_support_email') : get_option('admin_email');
+}
+
+function leyka_get_cancel_subscription_reasons() {
+    return array(
+        'uncomfortable_pm' => esc_html__('Unconfortable payment method', 'leyka'),
+        'too_much' => esc_html__('Too much donation', 'leyka'),
+        'not_match' => esc_html__('Does not meet my interests', 'leyka'),
+        'better_use' => esc_html__('I have found better use of money', 'leyka'),
+        'other' => esc_html__('Other reason', 'leyka'),
+    );
+}
+
+function get_donor_init_recurring_donation_for_campaign($donor_user, $campaign_id) {
+    
+    $donations = new WP_Query(array(
+        'post_type' => Leyka_Donation_Management::$post_type,
+        'post_status' => 'funded',
+        'post_parent' => 0,
+        'meta_query' => array(
+            'relation' => 'AND',
+            array('key' => 'leyka_payment_type', 'value' => 'rebill'),
+            array('key' => 'leyka_campaign_id', 'value' => $campaign_id),
+            array(
+                'relation' => 'OR',
+                array('key' => 'leyka_recurrents_cancelled', 'value' => false),
+                array('key' => 'leyka_recurrents_cancelled', 'compare' => 'NOT EXISTS'),
+            ),
+            array(
+                'relation' => 'OR',
+                array('key' => 'leyka_donor_email', 'value' => $donor_user->user_email),
+                array('key' => 'leyka_donor_account', 'value' => $donor_user->ID),
+            ),
+        ),
+        'posts_per_page' => 1,
+        'orderby' => 'ID',
+        'order'   => 'ASC',
+    ));
+    
+    $recurring_donation = $donations->have_posts() ? new Leyka_Donation($donations->posts[0]) : null;
+    
+    return $recurring_donation;
 }

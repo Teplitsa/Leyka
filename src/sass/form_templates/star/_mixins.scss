@@ -427,8 +427,8 @@
         display: none;
         //display: block;
         position: absolute;
-        color: $color-white;
-        background-color: $leyka-star-color-error;
+        color: $leyka-star-color-tooltip-text;
+        background-color: $leyka-star-color-tooltip-bg;
         border-radius: 6px;
         border: none;
         padding: 8px 8px 8px 8px;
@@ -447,7 +447,7 @@
         text-align: center;
         
         a {
-          color: $leyka-star-color-white;
+          color: $leyka-star-color-tooltip-text;
         }
         
         &:before {
@@ -458,7 +458,7 @@
             position:absolute;
             border-left: 8px solid transparent;
             border-right: 8px solid transparent;
-            border-bottom:8px solid $leyka-star-color-error;
+            border-bottom:8px solid $leyka-star-color-tooltip-bg;
             left:calc(50% - 4px);
             top:-7px;                            
         }
@@ -539,4 +539,17 @@
         margin-right: - 2 * $leyka-star-base;
         padding: 2 * $leyka-star-base 2 * $leyka-star-base;
     }
+}
+
+@mixin leyka-star-field-error-frame {
+	min-height: 21px;
+	height: auto;
+	padding-top: 1px;
+	margin-left: 1 * $leyka-star-base;
+	vertical-align: bottom;
+	
+	span.donor__textfield-error {
+		@include star-text-field-title();
+	    color: $leyka-star-color-error;
+	}
 }
