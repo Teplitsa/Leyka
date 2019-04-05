@@ -214,13 +214,13 @@
 
             &.submitted {
                 .item-title:before {
-                    background-image: url(../../img/star-icon-no-renew.svg);
+                    background-image: url(../../img/star-icon-info.svg);		
                 }
             }
 
             &.funded {
                 .item-title:before {
-                    background-image: url(../../img/star-icon-renew.svg);
+                    background-image: url(../../img/star-icon-no-renew.svg);
                 }
 
                 &.rebill {
@@ -232,7 +232,7 @@
                     // active subscription case:
                     &.recurring-is-active {
                         .item-title:before {
-                            background-image: url(../../img/star-icon-info.svg);
+                            background-image: url(../../img/star-icon-renew.svg);
                         }
                     }
                 }
