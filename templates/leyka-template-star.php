@@ -251,13 +251,9 @@ $anotherAmountTitle = count($template_data['amount_variants']) > 0 ? esc_html__(
     <div class="waiting">
         <div class="waiting__card">
             <div class="loading">
-                <div class="spinner">
-                    <div class="bounce1"></div>
-                    <div class="bounce2"></div>
-                    <div class="bounce3"></div>
-                </div>
+            	<?php echo leyka_get_ajax_indicator();?>
             </div>
-            <div class="waiting__card-text">Перенаправление на безопасную страницу платежа...</div>
+            <div class="waiting__card-text"><?php esc_html_e('Redirecting to secure payment page...', 'leyka')?></div>
         </div>
     </div>
 </div>

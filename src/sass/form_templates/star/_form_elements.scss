@@ -645,139 +645,6 @@
     
 }
 
-.leyka-screen-account .leyka-pf-star .leyka-screen-form {
-    
-    .list {
-        @include account-list();
-    }
-    
-    .list.subscribed-campaigns-list {
-        
-        .items {
-            .item {
-                .campaign-title {
-                    @include campain-single-line-title();
-                }
-                
-                .amount {
-                    display: block;
-                    color: $leyka-star-color-black;
-                    text-align: right;
-                    white-space: nowrap;
-                    margin-left: 1.5 * $leyka-star-base;
-                }
-            }
-        }
-    }
-    
-    .list.leyka-star-history {
-        
-        .items {
-            border-bottom: 1px solid $leyka-star-color-gray-superlight;
-        }
-        
-        .item {
-            text-align: left;
-            display: block;
-            position: relative;
-            
-            .item-title {
-                @include star-h3();
-                color: $leyka-star-color-black;
-                text-align: left;
-                margin-bottom: 0;
-                margin-top: 0px;
-                position: relative;
-                
-                &:before {
-                    content: " ";
-                    display: block;
-                    margin-right: 0.5 * $leyka-star-base;
-                    width: 24px;
-                    height: 24px;
-                    background-color: unset;
-                    background-size: cover;
-                    background-position: center center;
-                    background-repeat: no-repeat;
-                    float: left;
-                    margin-top: -3px;                    
-                }
-                
-                &:after {
-                    float: none;
-                    clear: both;
-                }
-            }
-            
-            &.break .item-title:before {
-                background-image: url(../../img/star-icon-disconnect.svg);
-            }
-
-            &.pay .item-title:before {
-                background-image: url(../../img/star-icon-renew.svg);
-            }
-            
-            &.no-pay .item-title:before {
-                background-image: url(../../img/star-icon-no-renew.svg);
-            }
-
-            &.refund .item-title:before {
-                background-image: url(../../img/star-icon-refund.svg);
-            }
-            
-            &.error .item-title:before {
-                background-image: url(../../img/star-icon-error.svg);
-            }
-            
-            .field-q {
-                @include field-q();
-                display: block;
-                position: absolute;
-                width: 24px;
-                height: 24px;
-                left: -2px;
-                top: -3px;
-            }
-            
-            .date {
-                @include star-text-ui-second();
-                color: $leyka-star-color-gray;
-                position: absolute;
-                top: 0px;
-                right: 0px;
-            }
-            
-            p {
-                @include star-text();
-                color: $leyka-star-color-gray;
-                text-align: left;
-                margin-top: 12px;
-                margin-bottom: 0px;
-            }
-        }
-    }
-    
-    .leyka-star-submit {
-        .leyka-star-single-link {
-            margin-top: 1.5 * $leyka-star-base;
-        }
-    }
-    
-    p.leyka-we-need-you {
-        margin-top: 0px;
-        margin-bottom: 2 * $leyka-star-base;
-        
-        a {
-            @include star-clean-a();
-            color: $leyka-star-color-main;
-            
-            &:hover {
-                text-decoration: underline;
-            }
-        }
-    }
-}
-
 .single-leyka_campaign.leyka-screen-cancel-subscription,
 .single-leyka_campaign.leyka-screen-thankyou,
 .single-leyka_campaign.leyka-screen-history {
@@ -792,8 +659,24 @@
 
 div[id*="leyka-pf-"].leyka-pf-star {
     .leyka-submit-errors {
+        @include star-text-ui-caption();
         border-radius: 4px;
         margin: $leyka-star-base 0px 0px 0px;
+
+        &::after {
+            content: " ";
+            position: absolute;
+            top: 0.75 * $leyka-star-base;
+            right: 0.5 * $leyka-star-base;
+            display: block;
+            background-image: url(../../img/star-icon-close-white.svg);
+            background-position: center center;
+            background-repeat: no-repeat;
+            display: block;
+            color: transparent;
+            width: 24px;
+            height: 24px;
+        }
     }
 }
 

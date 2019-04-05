@@ -457,28 +457,20 @@ jQuery(function($){
         
         $form.find('.donor__textfield-error').hide();
         
-        if( !$form.find('input[name="leyka_cancel_subscription_reason"]:checked').length ) {
+        if( !$form.find('input[name="leyka_cancel_subscription_reason[]"]:checked').length ) {
 
             $form.find('.leyka-star-field-error-frame .choose-reason').show();
             form_is_valid = false;
 
-        } else if( $form.find('input[name="leyka_cancel_subscription_reason"]:checked').val() == 'other' && !$.trim($form.find('textarea[name="leyka_donor_comment"]').val()) ) {
+        } else if( $form.find('input[name="leyka_cancel_subscription_reason[]"][value="other"]:checked').length && !$.trim($form.find('textarea[name="leyka_donor_custom_reason"]').val()) ) {
 
             $form.find('.leyka-star-field-error-frame .give-details').show();
             form_is_valid = false;
 
         }
         
-        console.log(form_is_valid);
-        
-        if(!form_is_valid) {
-        	$form.find('.leyka-star-field-error-frame').show();
-        } else {
-        	$form.find('.leyka-star-field-error-frame').hide();
-        }
-
         return form_is_valid;
-
+        
     }
 	
     var $forms = $('.leyka-unsubscribe-campains-forms').first();
@@ -487,8 +479,27 @@ jQuery(function($){
 		e.preventDefault();
     	$forms.find('form.leyka-screen-form').css('display', 'none');
     	$forms.find('form.leyka-cancel-subscription-form').css('display', 'flex');
-    	$forms.find('form.leyka-cancel-subscription-form input[name=leyka_campaign_id]').val($(this).data('campaign_id'));
+    	$forms.find('form.leyka-cancel-subscription-form input[name=leyka_campaign_id]').val($(this).data('campaign-id'));
+    	$forms.find('form.leyka-cancel-subscription-form input[name=leyka_campaign_permalink]').val($(this).attr('href'));
 	});
+	
+	$forms.find('input[name="leyka_cancel_subscription_reason[]"]').on('change.leyka', function(e){
+		if($(this).val() == 'other') {
+			if($(this).prop('checked')) {
+				$forms.find('.unsubscribe-comment').show();
+			}
+			else {
+				$forms.find('.unsubscribe-comment').hide();
+			}
+		}
+	});
+	
+	if($forms.find('input[name="leyka_cancel_subscription_reason[]"][value="other"]:checked').length) {
+		$forms.find('.unsubscribe-comment').show();
+	}
+	else {
+		$forms.find('.unsubscribe-comment textarea').val('');
+	}
 	
     $forms.find('.leyka-do-not-unsubscribe').on('click.leyka', function(e){
     	e.preventDefault();
@@ -500,65 +511,90 @@ jQuery(function($){
 		e.preventDefault();
 		
         var $form = $(this);
-		
-    	$forms.find('form.leyka-screen-form').css('display', 'none');
-    	$forms.find('form.leyka-confirm-unsubscribe-request-form').css('display', 'block');
+        
+        if(leyka_validate_unsubscribe_form($form)) {
+	    	$forms.find('form.leyka-screen-form').css('display', 'none');
+	    	if($form.find('input[name="leyka_cancel_subscription_reason[]"][value="uncomfortable_pm"]:checked, input[name="leyka_cancel_subscription_reason[]"][value="too_much"]:checked').length) {
+	    		$forms.find('form.leyka-confirm-go-resubscribe-form').css('display', 'block');
+	    	}
+	    	else {
+		    	$forms.find('form.leyka-confirm-unsubscribe-request-form').css('display', 'block');
+	    	}
+        }
 	});
 
     $forms.find('form.leyka-confirm-unsubscribe-request-form').on('submit.leyka', function(e){
         e.preventDefault();
-
-        var $form = $(this),
-        	$valueForm = $form.siblings('form.leyka-cancel-subscription-form');
-		
-        if(leyka_validate_unsubscribe_form($valueForm)) {
-
-            let params = $form.serializeArray(),
-                $message = $form.find('.form-message'),
-                $ajax_indicator = $form.find('.leyka-form-spinner'),
-                $submit = $form.find('.confirm-unsubscribe-submit');
-
-            params.push({name: 'action', value: 'leyka_unsubscribe_persistent_campaign'});
-
-            $ajax_indicator.show();
-            $message.hide();
-            $submit.hide();
-
-            $.post(leyka_get_ajax_url(), params, null, 'json').done(function(response){
-
-                $ajax_indicator.hide();
-                response.message = response.message.length ? response.message : leyka.default_error_msg;
-                
-                if(response.status === 'ok') {
-
-                	$forms.find('form.leyka-screen-form').css('display', 'none');
-                	$forms.find('form.leyka-unsubscribe-request-accepted-form').css('display', 'block');
-                    $message.removeClass('error-message');
-
-                } else if(response.message) {
-
-                    $message.removeClass('success-message').addClass('error-message');
-                    $submit.show();
-
-                }
-
-                $message.html(response.message).show();
-
-            }).error(function(){
-
-                $ajax_indicator.hide();
-                $message
-                    .removeClass('success-message').addClass('error-message')
-                    .html(leyka.error_while_unsibscribe)
-                    .show();
-
-                $submit.show();
-
-            });
-
-        }
-
+        leykaCancelSubscription($(this));
     });    
+
+    $forms.find('form.leyka-confirm-go-resubscribe-form').on('submit.leyka', function(e){
+        e.preventDefault();
+        leykaCancelSubscription($(this));
+    });    
+    
+    function leykaCancelSubscription($form) {
+    	
+        var $valueForm = $form.siblings('form.leyka-cancel-subscription-form'),
+	        params = $valueForm.serializeArray(),
+	        $message = $form.find('.form-message'),
+	        $ajax_indicator = $form.find('.form-ajax-indicator'),
+	        $submit = $form.find('.confirm-unsubscribe-submit');
+	
+	    params.push({name: 'action', value: 'leyka_unsubscribe_persistent_campaign'});
+	    console.log(params);
+	
+	    $ajax_indicator.show();
+	    $message.hide();
+	    $submit.hide();
+	
+	    $.post(leyka_get_ajax_url(), params, null, 'json').done(function(response){
+	
+	        $ajax_indicator.hide();
+	        response.message = response.message.length ? response.message : leyka.default_error_msg;
+	        
+	        if(response.status === 'ok') {
+	        	
+	        	$(':input', $valueForm)
+	        	  .not(':button, :submit, :reset, :hidden')
+	        	  .val('')
+	        	  .removeAttr('checked')
+	        	  .removeAttr('selected');
+	
+	        	var campaignPermalink = $forms.find('form.leyka-cancel-subscription-form input[name=leyka_campaign_permalink]').val();
+	        	
+	        	if($form.hasClass('leyka-confirm-go-resubscribe-form') && campaignPermalink) {
+	        		window.location.href = campaignPermalink;
+	        	}
+	        	else {
+		        	$forms.find('form.leyka-screen-form').css('display', 'none');
+		        	$forms.find('form.leyka-unsubscribe-request-accepted-form').css('display', 'block');
+	        	}
+	        	
+	            $message.removeClass('error-message').addClass('success-message');
+	
+	        } else if(response.message) {
+	
+	            $message.removeClass('success-message').addClass('error-message');
+	            $submit.show();
+	
+	        }
+	
+	        $message.html(response.message).show();
+	
+	    }).error(function(){
+	
+	        $ajax_indicator.hide();
+	        $message
+	            .removeClass('success-message').addClass('error-message')
+	            .html(leyka.error_while_unsibscribe)
+	            .show();
+	
+	        $submit.show();
+	
+	    });
+	
+    }
 	
 });
 /*
