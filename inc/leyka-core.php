@@ -59,15 +59,10 @@ class Leyka extends Leyka_Singleton {
     protected function __construct() {
 
         if( !get_option('leyka_permalinks_flushed') ) {
-
-            function leyka_rewrite_rules() {
-
+            add_action('init', function(){
                 flush_rewrite_rules(false);
                 update_option('leyka_permalinks_flushed', 1);
-
-            }
-            add_action('init', 'leyka_rewrite_rules');
-
+            });
         }
 
         // By default, we'll assume some errors in the payment form, so redirect will get us back to it:
