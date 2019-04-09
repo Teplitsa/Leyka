@@ -442,14 +442,12 @@ class Leyka extends Leyka_Singleton {
             window.dataLayer = window.dataLayer || [];
 
             dataLayer.push({
-                'event': 'eec.detail',
+                // 'event': 'eec.detail',
                 'ecommerce': {
                     'detail': {
                         'products': [{
                             'name': '<?php echo $campaign->title;?>',
                             'id': '<?php echo $campaign->id;?>',
-                            // 'price': '',
-                            // 'variant': 'Gray',
                             'brand': '<?php echo get_bloginfo('name');?>',
                             'category': '<?php _e('Donations', 'leyka');?>'
                         }]
@@ -484,7 +482,7 @@ class Leyka extends Leyka_Singleton {
             window.dataLayer = window.dataLayer || [];
 
             dataLayer.push({
-                'event': 'eec.purchase',
+                // 'event': 'eec.purchase',
                 'ecommerce': {
                     'purchase': {
                         'actionField': {
@@ -499,7 +497,7 @@ class Leyka extends Leyka_Singleton {
                             'id': '<?php echo $donation->id;?>',
                             'price': '<?php echo $donation_amount_total;?>',
                             'brand': '<?php echo get_bloginfo('name');?>',
-                            'category': '<?php _e('Donations', 'leyka');?>',
+                            'category': '<?php echo $donation->type_label;?>',
                             'quantity': 1
                         }]
                     }
@@ -525,7 +523,7 @@ class Leyka extends Leyka_Singleton {
                                     'id': '<?php echo $donation->id;?>',
                                     'price': '<?php echo $donation_amount_total;?>',
                                     'brand': '<?php echo get_bloginfo('name');?>',
-                                    'category': '<?php _e('Donations', 'leyka');?>',
+                                    'category': '<?php echo $donation->type_label;?>',
                                     'quantity': 1
                                 }]
                             }

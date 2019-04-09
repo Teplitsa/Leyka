@@ -22,8 +22,7 @@ $email_placeholders =
 <a href=\"#\" class=\"inner hide-available-tags\">Свернуть доступные теги</a>
 <a href=\"#\" class=\"inner show-available-tags\">Посмотреть доступные теги</a>
 <a href=\"#\" class=\"inner restore-original-doc\">Вернуть первоначальный текст</a>
-</div>
-";
+</div>";
 
 $campaign_target_reaching_email_placeholders =
 "<span class='placeholders-help'>
