@@ -442,6 +442,7 @@ class Leyka extends Leyka_Singleton {
             window.dataLayer = window.dataLayer || [];
 
             dataLayer.push({
+                'event': 'eec.detail',
                 'ecommerce': {
                     'detail': {
                         'products': [{
@@ -483,6 +484,7 @@ class Leyka extends Leyka_Singleton {
             window.dataLayer = window.dataLayer || [];
 
             dataLayer.push({
+                'event': 'eec.purchase',
                 'ecommerce': {
                     'purchase': {
                         'actionField': {
@@ -512,34 +514,12 @@ class Leyka extends Leyka_Singleton {
 
             jQuery(document).ready(function($) {
 
-                $(document).on('submit.leyka', 'form.leyka-pm-form,form.leyka-revo-form', function (e) {
+                $(document).on('submit.leyka', 'form.leyka-pm-form,form.leyka-revo-form', function(e){
                     dataLayer.push({
-                        'event': 'addToCart',
+                        'event': 'addToCart', // eec.addToCart ?
                         'ecommerce': {
                             'currencyCode': '<?php echo mb_strtoupper($donation->currency);?>',
                             'add': {
-                                'products': [{
-                                    'name': '<?php echo $campaign->title;?>',
-                                    'id': '<?php echo $donation->id;?>',
-                                    'price': '<?php echo $donation_amount_total;?>',
-                                    'brand': '<?php echo get_bloginfo('name');?>',
-                                    'category': '<?php _e('Donations', 'leyka');?>',
-                                    'quantity': 1
-                                }]
-                            }
-                        }
-                    });
-
-                    dataLayer.push({
-                        'ecommerce': {
-                            'purchase': {
-                                'actionField': {
-                                    'id': '<?php echo $donation->id;?>',
-                                    'affiliation': '<?php echo $campaign->title;?>',
-                                    'revenue': '<?php echo $donation_amount_total;?>',
-                                    'tax': 0,
-                                    'shipping': 0
-                                },
                                 'products': [{
                                     'name': '<?php echo $campaign->title;?>',
                                     'id': '<?php echo $donation->id;?>',
