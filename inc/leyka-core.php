@@ -480,6 +480,8 @@ class Leyka extends Leyka_Singleton {
             $donation_amount_total = round((float)$donation->amount_total, 2);?>
 
         <script>
+            window.dataLayer = window.dataLayer || [];
+
             dataLayer.push({
                 'ecommerce': {
                     'purchase': {
@@ -496,7 +498,7 @@ class Leyka extends Leyka_Singleton {
                             'price': '<?php echo $donation_amount_total;?>',
                             'brand': '<?php echo get_bloginfo('name');?>',
                             'category': '<?php _e('Donations', 'leyka');?>',
-                            'quantity': 1,
+                            'quantity': 1
                         }]
                     }
                 }
@@ -504,10 +506,57 @@ class Leyka extends Leyka_Singleton {
         </script>
         <?php }
 
-        // Donation form submit click - use "add" e-commerce measurement:
-        // ...
+        // Donation form submit click - use "add" e-commerce measurement: ?>
+        <script>
+            window.dataLayer = window.dataLayer || [];
 
-    }
+            jQuery(document).ready(function($) {
+
+                $(document).on('submit.leyka', 'form.leyka-pm-form,form.leyka-revo-form', function (e) {
+                    dataLayer.push({
+                        'event': 'addToCart',
+                        'ecommerce': {
+                            'currencyCode': '<?php echo mb_strtoupper($donation->currency);?>',
+                            'add': {
+                                'products': [{
+                                    'name': '<?php echo $campaign->title;?>',
+                                    'id': '<?php echo $donation->id;?>',
+                                    'price': '<?php echo $donation_amount_total;?>',
+                                    'brand': '<?php echo get_bloginfo('name');?>',
+                                    'category': '<?php _e('Donations', 'leyka');?>',
+                                    'quantity': 1
+                                }]
+                            }
+                        }
+                    });
+
+                    dataLayer.push({
+                        'ecommerce': {
+                            'purchase': {
+                                'actionField': {
+                                    'id': '<?php echo $donation->id;?>',
+                                    'affiliation': '<?php echo $campaign->title;?>',
+                                    'revenue': '<?php echo $donation_amount_total;?>',
+                                    'tax': 0,
+                                    'shipping': 0
+                                },
+                                'products': [{
+                                    'name': '<?php echo $campaign->title;?>',
+                                    'id': '<?php echo $donation->id;?>',
+                                    'price': '<?php echo $donation_amount_total;?>',
+                                    'brand': '<?php echo get_bloginfo('name');?>',
+                                    'category': '<?php _e('Donations', 'leyka');?>',
+                                    'quantity': 1
+                                }]
+                            }
+                        }
+                    });
+                });
+
+            });
+        </script>
+
+    <?php }
 
     /** @todo Create a procedure to get actual currencies rates and save them in the plugin options values */
     public function do_currencies_rates_refresh() {
@@ -866,7 +915,7 @@ class Leyka extends Leyka_Singleton {
 
         if( !$leyka_last_ver || $leyka_last_ver < '2.1' ) {
 
-            /** Upgrade options structure in the DB */
+            // Upgrade the options structure in the DB:
             if(get_option('leyka_modules')) {
                 delete_option('leyka_modules');
             }
@@ -884,7 +933,7 @@ class Leyka extends Leyka_Singleton {
 
             }
 
-            /** Upgrade gateway and PM options structure in the DB */
+            // Upgrade the gateways and PM options structure in the DB:
             foreach(leyka_get_gateways() as $gateway) {
 
                 /** @var $gateway Leyka_Gateway */
@@ -1072,7 +1121,7 @@ class Leyka extends Leyka_Singleton {
             }
         }
 
-        /** Set a flag to flush permalinks (needs to be done a bit later, than this activation itself): */
+        // Set a flag to flush permalinks (needs to be done a bit later, than this activation itself):
         update_option('leyka_permalinks_flushed', 0);
 
         update_option('leyka_last_ver', LEYKA_VERSION);
