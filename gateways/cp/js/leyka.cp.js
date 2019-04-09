@@ -80,6 +80,29 @@ jQuery(document).ready(function($){
 
             }
 
+            if(leyka.gtm_ga_eec_available) {
+
+                window.dataLayer = window.dataLayer || [];
+
+                dataLayer.push({
+                    'event': 'eec.add', // eec.addToCart ?
+                    'ecommerce': {
+                        // 'currencyCode': response.currency,
+                        'add': {
+                            'products': [{
+                                'name': response.payment_title,
+                                'id': response.donation_id,
+                                'price': response.amount,
+                                // 'brand': // bloginfo('name') here,
+                                // 'category': '<?php echo $donation->type_label;?>' // $donation->type_label here,
+                                'quantity': 1
+                            }]
+                        }
+                    }
+                });
+
+            }
+
             var widget = new cp.CloudPayments(),
                 data = {};
 

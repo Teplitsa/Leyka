@@ -39,8 +39,7 @@ $campaign_target_reaching_email_placeholders =
 <a href=\"#\" class=\"inner hide-available-tags\">Свернуть доступные теги</a>
 <a href=\"#\" class=\"inner show-available-tags\">Посмотреть доступные теги</a>
 <a href=\"#\" class=\"inner restore-original-doc\">Вернуть первоначальный текст</a>
-</div>
-";
+</div>";
 
 /** Possible field types are: text, textarea, number, html, rich_html, select, radio, checkbox, multi_checkbox, custom_XXX */
 

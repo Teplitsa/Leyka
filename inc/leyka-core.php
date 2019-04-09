@@ -442,7 +442,10 @@ class Leyka extends Leyka_Singleton {
             window.dataLayer = window.dataLayer || [];
 
             dataLayer.push({
-                // 'event': 'eec.detail',
+                'event': 'eec.detail',
+                'actionField': {
+                    list: '<?php _e('Campaign page view', 'leyka');?>'
+                },
                 'ecommerce': {
                     'detail': {
                         'products': [{
@@ -482,8 +485,9 @@ class Leyka extends Leyka_Singleton {
             window.dataLayer = window.dataLayer || [];
 
             dataLayer.push({
-                // 'event': 'eec.purchase',
+                'event': 'eec.purchase',
                 'ecommerce': {
+                    //'currencyCode': <?php //echo 'RUB';//$donation->currency;?>//,
                     'purchase': {
                         'actionField': {
                             'id': '<?php echo $donation->id;?>',
@@ -506,33 +510,7 @@ class Leyka extends Leyka_Singleton {
         </script>
         <?php }
 
-        // Donation form submit click - use "add" e-commerce measurement: ?>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-
-            jQuery(document).ready(function($) {
-
-                $(document).on('submit.leyka', 'form.leyka-pm-form,form.leyka-revo-form', function(e){
-                    dataLayer.push({
-                        'event': 'addToCart', // eec.addToCart ?
-                        'ecommerce': {
-                            'currencyCode': '<?php echo mb_strtoupper($donation->currency);?>',
-                            'add': {
-                                'products': [{
-                                    'name': '<?php echo $campaign->title;?>',
-                                    'id': '<?php echo $donation->id;?>',
-                                    'price': '<?php echo $donation_amount_total;?>',
-                                    'brand': '<?php echo get_bloginfo('name');?>',
-                                    'category': '<?php echo $donation->type_label;?>',
-                                    'quantity': 1
-                                }]
-                            }
-                        }
-                    });
-                });
-
-            });
-        </script>
+        // Donation form submit click - "add" e-commerce measurement used in JS 'submit.leyka' handlers ?>
 
     <?php }
 
@@ -1202,6 +1180,8 @@ class Leyka extends Leyka_Singleton {
         $js_data = apply_filters('leyka_js_localized_strings', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
             'homeurl' => home_url('/'),
+            'gtm_ga_eec_available' => (int)(leyka()->opt('use_gtm_ua_integration') === 'enchanced'),
+
             'correct_donation_amount_required' => __('Donation amount must be specified to submit the form', 'leyka'),
             'donation_amount_too_great' => __('Donation amount you entered is too great (maximum %s allowed)', 'leyka'),
             'donation_amount_too_small' => __('Donation amount you entered is too small (minimum %s allowed)', 'leyka'),
