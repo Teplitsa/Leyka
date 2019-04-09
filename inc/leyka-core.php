@@ -60,8 +60,10 @@ class Leyka extends Leyka_Singleton {
 
         if( !get_option('leyka_permalinks_flushed') ) {
             add_action('init', function(){
+
                 flush_rewrite_rules(false);
                 update_option('leyka_permalinks_flushed', 1);
+
             });
         }
 
@@ -69,8 +71,8 @@ class Leyka extends Leyka_Singleton {
         $this->_payment_url = wp_get_referer();
 
         // Add GTM & UA e-commerce dataLayer if needed:
-        if(leyka()->opt('use_gtm_ua_integration') !== '-') {
-            add_action('wp_head', array($this, 'add_gtm_data_layer_ua_'.leyka()->opt('use_gtm_ua_integration')), -1000);
+        if(leyka_options()->opt('use_gtm_ua_integration') !== '-') {
+            add_action('wp_head', array($this, 'add_gtm_data_layer_ua_'.leyka_options()->opt('use_gtm_ua_integration')), -1000);
         }
 
         $this->load_public_cssjs();
@@ -188,14 +190,14 @@ class Leyka extends Leyka_Singleton {
                     && leyka_options()->opt_template('show_success_widget_on_success')
                     && is_main_query()
                 ) {
-                    
+
                     $form_template = leyka_template_from_query_arg();
                     $form_template_suffix = $form_template === 'star' ? '-' . $form_template : '';
 
                     ob_start();
                     include(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-success-widget'.$form_template_suffix.'.php');
                     $content = ob_get_clean();
-                    
+
                     if($form_template === 'star') {
                         $content .= get_the_content();
                     }
@@ -237,7 +239,7 @@ class Leyka extends Leyka_Singleton {
 
                     $is_cssjs_reqiured = false;
 
-                    if(in_array(get_the_ID(), array(leyka()->opt('failure_page'), leyka_options()->opt('success_page')))) {
+                    if(in_array(get_the_ID(), array(leyka_options()->opt('failure_page'), leyka_options()->opt('success_page')))) {
                         $is_cssjs_reqiured = true;
                     } else if(leyka_form_is_screening()) {
                         $is_cssjs_reqiured = true;
@@ -503,7 +505,7 @@ class Leyka extends Leyka_Singleton {
         <?php }
 
         // Donation form submit click - use "add" e-commerce measurement:
-
+        // ...
 
     }
 
@@ -1048,22 +1050,25 @@ class Leyka extends Leyka_Singleton {
         }
 
         if( !$leyka_last_ver || $leyka_last_ver < '3.0' ) {
-            
+
             if(defined('KND_VERSION') && class_exists( 'TGM_Plugin_Activation' )) {
               update_option('leyka_init_wizard_redirect', false);
             }
             else {
                update_option('leyka_init_wizard_redirect', !$leyka_last_ver);
             }
-            
+
             update_option('leyka_receiver_country', 'ru');
             update_option('leyka_receiver_legal_type', 'legal');
 
         }
 
         if( !$leyka_last_ver || $leyka_last_ver < '3.1.1' ) {
-            if(get_option('show_gtm_dataLayer_on_success')) {
-                update_option('use_gtm_ua_integration', 'simple');
+            if(get_option('leyka_show_gtm_dataLayer_on_success')) {
+
+                update_option('leyka_use_gtm_ua_integration', 'simple');
+                delete_option('leyka_show_gtm_dataLayer_on_success');
+
             }
         }
 
