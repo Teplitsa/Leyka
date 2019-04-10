@@ -296,7 +296,7 @@ jQuery(document).ready(function($){
             if( !$field.prop('checked') || $required_checkbox_fields.length ) {
 
                 field_is_valid = false;
-                $form.find('.'+$field.attr('name')+'-error').html(leyka.checkbox_check_required).show();
+                $form.find('.'+$field.attr('name')+'-error').html(leyka.checkbox_check_required_msg).show();
 
             } else if( !$required_checkbox_fields.length ) {
                 $form.find('.'+$field.attr('name')+'-error').html('').hide();
@@ -307,7 +307,7 @@ jQuery(document).ready(function($){
             if( !$field.val().length ) {
 
                 field_is_valid = false;
-                $form.find('.'+$field.attr('name')+'-error').html(leyka.text_required).show();
+                $form.find('.'+$field.attr('name')+'-error').html(leyka.text_required_msg).show();
 
             } else {
                 $form.find('.'+$field.attr('name')+'-error').html('').hide();
@@ -352,7 +352,7 @@ jQuery(document).ready(function($){
                     if( !$field.val().length ) {
 
                         field_is_valid = false;
-                        $form.find('.'+$field.attr('name')+'-error').html(leyka.email_required).show();
+                        $form.find('.'+$field.attr('name')+'-error').html(leyka.email_required_msg).show();
 
                     } else {
 
@@ -361,7 +361,7 @@ jQuery(document).ready(function($){
                         if( !is_email(value_tmp) ) {
 
                             field_is_valid = false;
-                            $form.find('.'+$field.attr('name')+'-error').html(leyka.email_invalid).show();
+                            $form.find('.'+$field.attr('name')+'-error').html(leyka.email_invalid_msg).show();
 
                         } else {
                             $form.find('.'+$field.attr('name')+'-error').html('').hide();
@@ -374,12 +374,12 @@ jQuery(document).ready(function($){
                     if( !$field.val().length ) {
 
                         field_is_valid = false;
-                        $form.find('.'+$field.attr('name')+'-error').html(leyka.text_required).show();
+                        $form.find('.'+$field.attr('name')+'-error').html(leyka.text_required_msg).show();
 
                     } else if(is_email($field.val())) {
 
                         field_is_valid = false;
-                        $form.find('.'+$field.attr('name')+'-error').html(leyka.must_not_be_email).show();
+                        $form.find('.'+$field.attr('name')+'-error').html(leyka.must_not_be_email_msg).show();
 
                     } else {
                         $form.find('.'+$field.attr('name')+'-error').html('').hide();
@@ -390,7 +390,7 @@ jQuery(document).ready(function($){
                     if($field.val().length > $field.data('max-length')) {
 
                         field_is_valid = false;
-                        $form.find('.'+$field.attr('name')+'-error').html(leyka.value_too_long).show();
+                        $form.find('.'+$field.attr('name')+'-error').html(leyka.value_too_long_msg).show();
 
                     } else {
                         $form.find('.'+$field.attr('name')+'-error').html('').hide();
@@ -410,7 +410,7 @@ jQuery(document).ready(function($){
         if( !$amount_field.val() || parseInt($amount_field.val()) <= 0 || isNaN($amount_field.val()) ) {
 
             amount_is_valid = is_valid = false;
-            $error.html(leyka.correct_donation_amount_required).show();
+            $error.html(leyka.correct_donation_amount_required_msg).show();
 
         } else {
             $error.html('').hide();
@@ -436,12 +436,12 @@ jQuery(document).ready(function($){
         if(amount_is_valid && $amount_field.val() > top_amount) {
 
             is_valid = false;
-            $error.html(leyka.donation_amount_too_great.replace('%s', top_amount+' '+currency_label)).show();
+            $error.html(leyka.donation_amount_too_great_msg.replace('%s', top_amount+' '+currency_label)).show();
 
         } else if(amount_is_valid && $amount_field.val() < bottom_amount) {
 
             is_valid = false;
-            $error.html(leyka.donation_amount_too_small.replace('%s', bottom_amount+' '+currency_label)).show();
+            $error.html(leyka.donation_amount_too_small_msg.replace('%s', bottom_amount+' '+currency_label)).show();
 
         } else if(amount_is_valid) {
             $error.html('').hide();

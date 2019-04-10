@@ -759,7 +759,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'ajaxurl' => admin_url('admin-ajax.php'),
             'ajax_loader_url' => LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif',
             'field_required' => __('This field is required to be filled', 'leyka'),
-            'email_invalid' => __('You have entered an invalid email', 'leyka'),
+            'email_invalid_msg' => __('You have entered an invalid email', 'leyka'),
             'common_error_message' => esc_html__('Error while saving the data', 'leyka'),
 			'error_message' => esc_html__('Error!', 'leyka'),
 			'disconnect_stats' => esc_html__('Disconnect statistics', 'leyka'),
@@ -839,8 +839,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 'add_donation_button_text' => __('Add the donation', 'leyka'),
                 'field_required' => __('This field is required to be filled', 'leyka'),
                 'campaign_required' => __('Selecting a campaign is required', 'leyka'),
-                'email_invalid' => __('You have entered an invalid email', 'leyka'),
-                'amount_incorrect' => __('The amount must be filled with non-zero, non-negative number', 'leyka'),
+                'email_invalid_msg' => __('You have entered an invalid email', 'leyka'),
+                'amount_incorrect_msg' => __('The amount must be filled with non-zero, non-negative number', 'leyka'),
                 'donation_source_required' => __('Please, set one of a payment methods or just type a few words to describe a source for this donation', 'leyka'),
             ));
 

@@ -34,7 +34,7 @@ jQuery(document).ready(function($){
         if($field.val() && !is_email($field.val())) {
 
             is_valid = false;
-            $form.find('#donor_email-error').html(leyka.email_invalid).show();
+            $form.find('#donor_email-error').html(leyka.email_invalid_msg).show();
 
         } else {
             $form.find('#donor_email-error').html('').hide();
@@ -47,7 +47,7 @@ jQuery(document).ready(function($){
             console.log( !$field.val(), parseFloat($field.val().replace(',', '.')), isNaN($field.val()))
 
             is_valid = false;
-            $form.find('#donation_amount-error').html(leyka.amount_incorrect).show();
+            $form.find('#donation_amount-error').html(leyka.amount_incorrect_msg).show();
 
         } else {
             $form.find('#donation_amount-error').html('').hide();

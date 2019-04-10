@@ -532,7 +532,7 @@ jQuery(document).ready(function($){
         } else if( !is_email($field.val()) ) {
 
             is_valid = false;
-            $form.find('#'+$field.attr('id')+'-error').html(leyka.email_invalid).show();
+            $form.find('#'+$field.attr('id')+'-error').html(leyka.email_invalid_msg).show();
 
         } else
             $form.find('#'+$field.attr('id')+'-error').html('').hide();

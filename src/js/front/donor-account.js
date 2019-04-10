@@ -452,7 +452,7 @@ jQuery(function($){
 	        $ajax_indicator.hide();
 	        $message
 	            .removeClass('success-message').addClass('error-message')
-	            .html(leyka.error_while_unsibscribe)
+	            .html(leyka.error_while_unsibscribe_msg)
 	            .show();
 	
 	        $submit.show();

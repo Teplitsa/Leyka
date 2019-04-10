@@ -165,8 +165,8 @@ class Leyka extends Leyka_Singleton {
                     if(get_query_var('leyka_campaign_filter')) {
 
                         $campaign = get_posts(array(
-                                'post_type' => Leyka_Campaign_Management::$post_type,
-                                'name' => get_query_var('leyka_campaign_filter'))
+                            'post_type' => Leyka_Campaign_Management::$post_type,
+                            'name' => get_query_var('leyka_campaign_filter'))
                         );
                         if( !$campaign ) {
                             return;
@@ -1183,20 +1183,20 @@ class Leyka extends Leyka_Singleton {
             'homeurl' => home_url('/'),
             'gtm_ga_eec_available' => (int)(leyka()->opt('use_gtm_ua_integration') === 'enchanced'),
 
-            'correct_donation_amount_required' => __('Donation amount must be specified to submit the form', 'leyka'),
-            'donation_amount_too_great' => __('Donation amount you entered is too great (maximum %s allowed)', 'leyka'),
-            'donation_amount_too_small' => __('Donation amount you entered is too small (minimum %s allowed)', 'leyka'),
-            'amount_incorrect' => __('Set an amount from %s to %s <span class="curr-mark">%s</span>', 'leyka'),
-            'donor_name_required' => __('Enter your name', 'leyka'),
-            'oferta_agreement_required' => __('You have to agree with the terms of the donation service', 'leyka'),
+            'correct_donation_amount_required_msg' => __('Donation amount must be specified to submit the form', 'leyka'),
+            'donation_amount_too_great_msg' => __('Donation amount you entered is too great (maximum %s allowed)', 'leyka'),
+            'donation_amount_too_small_msg' => __('Donation amount you entered is too small (minimum %s allowed)', 'leyka'),
+            'amount_incorrect_msg' => __('Set an amount from %s to %s <span class="curr-mark">%s</span>', 'leyka'),
+            'donor_name_required_msg' => __('Enter your name', 'leyka'),
+            'oferta_agreement_required_msg' => __('You have to agree with the terms of the donation service', 'leyka'),
 
-            'checkbox_check_required' => __('This checkbox must be checked to submit the form', 'leyka'),
-            'text_required' => __('This field must be filled to submit the form', 'leyka'),
-            'email_required' => __('Email must be filled to submit the form', 'leyka'),
-            'email_invalid' => __('Enter an email in the some@email.com format', 'leyka'),
-            'must_not_be_email' => __("You shouldn't enter an email here", 'leyka'),
-            'value_too_long' => __('Entered value is too long', 'leyka'),
-            'error_while_unsibscribe' => __('Error while requesting unsubscription', 'leyka'),
+            'checkbox_check_required_msg' => __('This checkbox must be checked to submit the form', 'leyka'),
+            'text_required_msg' => __('This field must be filled to submit the form', 'leyka'),
+            'email_required_msg' => __('Email must be filled to submit the form', 'leyka'),
+            'email_invalid_msg' => __('Enter an email in the some@email.com format', 'leyka'),
+            'must_not_be_email_msg' => __("You shouldn't enter an email here", 'leyka'),
+            'value_too_long_msg' => __('Entered value is too long', 'leyka'),
+            'error_while_unsibscribe_msg' => __('Error while requesting unsubscription', 'leyka'),
             'default_error_msg' => __('Error', 'leyka'),
         ));
 
