@@ -641,8 +641,6 @@ techMessage="'.$tech_message.'"/>');
                     // Recurring payment isn't funded here yet! Only its possibility is confirmed.
                     // To fund a payment, we should wait for a normal callbacks.
 
-                    $res = $new_recurring_donation;
-
                 } else { // Some error on payment test run
 
                     $error_num = empty($vals[0]['attributes']['error']) ? 'unknown' : $vals[0]['attributes']['error'];
@@ -661,7 +659,7 @@ techMessage="'.$tech_message.'"/>');
 
         }
 
-        return $res;
+        return $new_recurring_donation;
 
     }
 
