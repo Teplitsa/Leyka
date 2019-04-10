@@ -546,15 +546,19 @@ class Leyka extends Leyka_Singleton {
                     do_action("leyka_{$donation->gateway_id}_cancel_recurring_subscription", $donation);
                 }
 
-            } else if($request[0] === 'do_campaigns_targets_reaching_mailout') { // Campaigns targets reached mailout shortcut URL
+            } else if($request[0] === 'do_campaigns_targets_reaching_mailout') {
+
+                // Campaigns targets reached mailout shortcut URL:
                 do_action(
                     'leyka_do_procedure',
                     'campaigns-targets-reaching-mailout',
                     empty($request[1]) ? array() : array((int)$request[1])
                 );
-            } else if(isset($request[0], $request[1]) && $request[0] === 'procedure') { // A procedure call URL
 
-                // Procedure URLs are: some-website.org/leyka/service/procedure/{procedure_name}[/{param_1}/{param_2}/...]
+            } else if(isset($request[0], $request[1]) && stristr($request[0], 'procedure') !== false) {
+
+                // Common procedure call URL,
+                // like some-website.org/leyka/service/procedure/{procedure_name}[/{param_1}/{param_2}/...]
                 // E.g.:
                 // * some-website.org/leyka/service/procedure/active-recurring
                 // * some-website.org/leyka/service/procedure/campaigns-targets-reaching-mailout/123
