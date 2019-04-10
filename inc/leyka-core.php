@@ -133,6 +133,7 @@ class Leyka extends Leyka_Singleton {
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-render-settings-old.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-admin.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-donations-export.php');
+            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-usage-stats-functions.php');
 
             Leyka_Admin_Setup::get_instance();
 
@@ -487,7 +488,7 @@ class Leyka extends Leyka_Singleton {
             dataLayer.push({
                 'event': 'eec.purchase',
                 'ecommerce': {
-                    //'currencyCode': <?php //echo 'RUB';//$donation->currency;?>//,
+                    //'currencyCode': <?php //echo $donation->currency;?>//, // For some reason i doesn't work
                     'purchase': {
                         'actionField': {
                             'id': '<?php echo $donation->id;?>',

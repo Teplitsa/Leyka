@@ -87,7 +87,7 @@ jQuery(document).ready(function($){
                 dataLayer.push({
                     'event': 'eec.add', // eec.addToCart ?
                     'ecommerce': {
-                        // 'currencyCode': response.currency,
+                        // 'currencyCode': response.currency, // For some reason it doesn't work
                         'add': {
                             'products': [{
                                 'name': response.payment_title,
