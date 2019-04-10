@@ -98,10 +98,10 @@ class Leyka extends Leyka_Singleton {
 
             function leyka_sync_stats_option() {
 
-                $stats_option_synch_res = leyka_sync_plugin_stats_option();
+                $stats_option_synch_result = leyka_sync_plugin_stats_option();
 
-                if(is_wp_error($stats_option_synch_res)) {
-                    return $stats_option_synch_res;
+                if(is_wp_error($stats_option_synch_result)) {
+                    return $stats_option_synch_result;
                 } else {
                     return delete_option('leyka_plugin_stats_option_needs_sync')
                         && update_option('leyka_plugin_stats_option_sync_done', time());
@@ -637,7 +637,7 @@ class Leyka extends Leyka_Singleton {
 
     }
 
-    /** @todo make it a procedure */
+    /** @todo Make it a procedure */
     public function _do_currency_rates_refresh() {
         foreach(leyka_get_actual_currency_rates() as $currency => $rate) {
             update_option('leyka_currency_rur2'.mb_strtolower($currency), $rate);
