@@ -496,15 +496,19 @@
     .items {
         .item {
             @include star-text();
-            margin-top: 0.75 * $leyka-star-base;
+            margin-top: $leyka-star-base;
             display: flex;
             justify-content: space-between;
             
             text-align: left;
-            margin-bottom: 0.75 * $leyka-star-base;
+            margin-bottom: $leyka-star-base;
             position: relative;
             border-bottom: 1px solid $leyka-star-color-gray-superlight;
             padding-bottom: 0.6 * $leyka-star-base;
+
+            .item-title {
+                color: $leyka-star-color-gray;
+            }
             
             &:last-child {
                 margin-bottom: 0;

@@ -685,9 +685,11 @@ techMessage="'.$tech_message.'"/>');
 
         <?php $init_recurring_donation = $donation->init_recurring_donation;?>
 
-            <label for="yandex-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka');?></label>
-            <div class="leyka-ddata-field">
-                <input type="checkbox" id="yandex-recurring-is-active" name="yandex-recurring-is-active" value="1" <?php echo $init_recurring_donation->recurring_is_active ? 'checked="checked"' : '';?>>
+            <div class="recurring-is-active-field">
+                <label for="yandex-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka');?>:</label>
+                <div class="leyka-ddata-field">
+                    <input type="checkbox" id="yandex-recurring-is-active" name="yandex-recurring-is-active" value="1" <?php echo $init_recurring_donation->recurring_is_active ? 'checked="checked"' : '';?>>
+                </div>
             </div>
 
         <?php } else { // New donation page displayed ?>

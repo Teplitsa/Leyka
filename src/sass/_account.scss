@@ -186,8 +186,8 @@
                     content: " ";
                     display: block;
                     margin-right: 0.5 * $leyka-star-base;
-                    width: 24px;
-                    height: 24px;
+                    width: 20px;
+                    height: 20px;
                     background-color: unset;
                     background-size: cover;
                     background-position: center center;
@@ -275,7 +275,8 @@
             }
             
             .date {
-                @include star-text-ui-second();
+                //@include star-text-ui-second();
+                @include star-h3();
                 color: $leyka-star-color-gray;
                 position: absolute;
                 top: 0px;

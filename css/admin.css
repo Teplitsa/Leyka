@@ -534,6 +534,21 @@
     .leyka-set .leyka-ddata-field input, .leyka-set .leyka-ddata-field textarea {
       width: 98%;
       max-width: 700px; }
+
+    .leyka-set .leyka-ddata-field input[type=checkbox], .leyka-set .leyka-ddata-field input[type=radio] {
+      width: unset;
+      max-width: 700px; }
+
+    .leyka-set .recurring-is-active-field {
+      width: 100%;
+      float: none;
+      clear: both;
+    }
+
+    .leyka-set .recurring-is-active-field .leyka-ddata-field {
+      padding-top: 10px;
+    }
+
     .leyka-set .leyka-ddata-field .fake-input {
       display: inline-block;
       -moz-box-sizing: border-box;
