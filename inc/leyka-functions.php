@@ -2139,6 +2139,11 @@ function get_donor_init_recurring_donation_for_campaign($donor_user, $campaign_i
             ),
             array(
                 'relation' => 'OR',
+                array('key' => 'leyka_cancel_recurring_requested', 'value' => false),
+                array('key' => 'leyka_cancel_recurring_requested', 'compare' => 'NOT EXISTS'),
+            ),            
+            array(
+                'relation' => 'OR',
                 array('key' => 'leyka_donor_email', 'value' => $donor_user->user_email),
                 array('key' => 'leyka_donor_account', 'value' => $donor_user->ID),
             ),
