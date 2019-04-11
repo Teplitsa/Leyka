@@ -1864,6 +1864,8 @@ class Leyka_Donation {
             case 'campaign_payment_title':
                 return $this->_donation_meta['payment_title'];
 
+            case 'campaign_id':
+                return $this->_donation_meta['campaign_id'];
             case 'campaign_title':
                 $campaign = new Leyka_Campaign($this->_donation_meta['campaign_id']);
                 return $campaign ? $campaign->title : $this->payment_title;
@@ -1971,8 +1973,6 @@ class Leyka_Donation {
                 return empty($this->_donation_meta['donor_comment']) ? '' : $this->_donation_meta['donor_comment'];
             case 'managers_emails_date':
                 return $this->_donation_meta['managers_emails_date'];
-            case 'campaign_id':
-                return $this->_donation_meta['campaign_id'];
 
             case 'donor_subscribed':
                 return $this->_donation_meta['donor_subscribed'];
