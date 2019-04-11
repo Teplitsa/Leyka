@@ -35,7 +35,7 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
                                     <div class="item">
 										<div class="subscription-details">
     										<div class="campaign-title">
-                                                <?php echo $init_donation->campaign_payment_title;?>
+                                                <?php echo $init_donation->campaign_title;?>
                                             </div>
                                             <div class="subscription-payment-details">
         										<div class="amount">
