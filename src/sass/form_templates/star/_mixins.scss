@@ -517,7 +517,7 @@
 @mixin campain-single-line-title {
     @include star-text();
     display: block;
-    color: $leyka-star-color-gray-dark;
+    color: $leyka-star-color-gray;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -552,4 +552,53 @@
 		@include star-text-field-title();
 	    color: $leyka-star-color-error;
 	}
+}
+
+@mixin leyka-donation-gateway-pm {
+    @include star-text-pm-label();
+    color: $leyka-star-color-text;
+    margin-top: 0.5 * $leyka-star-base;
+
+    img {
+        width: 16px;
+        height: 16px;
+        margin-right: 4px;
+        vertical-align: bottom;
+    }
+}
+
+@mixin leyka-subscription-list-item {
+    &.subscription-canceling {
+        opacity: 0.5;
+    }
+
+    .subscription-details {
+        max-width: calc(100% - 90px);
+    }
+
+    .subscription-status {
+        max-width: 90px;
+
+        .canceling {
+            color: $leyka-star-color-gray;
+        }
+    }
+
+    .campaign-title {
+        @include campain-single-line-title();
+    }
+
+    .amount {
+        display: inline-block;
+        color: $leyka-star-color-black;
+        text-align: left;
+        white-space: nowrap;
+        margin-right: 0.5 * $leyka-star-base;
+        @include star-text-pm-label();
+    }
+
+    .donation-gateway-pm {
+        @include leyka-donation-gateway-pm();
+        display: inline-block;
+    }
 }

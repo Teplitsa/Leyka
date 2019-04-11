@@ -1798,6 +1798,8 @@ class Leyka_Donation {
 
                 // For active schemes of recurring donations:
                 'rebilling_is_active' => !empty($meta['_rebilling_is_active'][0]),
+                'cancel_recurring_requested' => isset($meta['leyka_cancel_recurring_requested']) ?
+                    $meta['leyka_cancel_recurring_requested'][0] : false,
             );
         }
 
@@ -1978,6 +1980,8 @@ class Leyka_Donation {
                     ($this->_post_object->post_parent ? $this->_post_object->post_parent : $this->_id) : false;
             case 'is_init_recurring_donation':
                 return $this->payment_type === 'rebill' ? !$this->_post_object->post_parent : false;
+            case 'cancel_recurring_requested':
+                return $this->payment_type === 'rebill' ? $this->_donation_meta['cancel_recurring_requested'] : false;
             case 'init_recurring_payment':
             case 'init_recurring_donation':
                 if($this->payment_type != 'rebill') {
@@ -2182,6 +2186,10 @@ class Leyka_Donation {
                 }
                 break;
 
+            case 'cancel_recurring_requested':
+                update_post_meta($this->_id, 'leyka_cancel_recurring_requested', !!$value);
+                break;
+                
             default:
                 do_action('leyka_'.$this->gateway_id.'_set_unknown_donation_field', $field, $value, $this);
         }

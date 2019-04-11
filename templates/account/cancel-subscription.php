@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 
-$recurring_subscriptions = leyka_get_init_recurring_donations(false);
+$recurring_subscriptions = leyka_get_init_recurring_donations();
 
 include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 
@@ -33,7 +33,21 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
                                 	    $donation_campaign = new Leyka_Campaign($init_donation->campaign_id);
                                 	?>
                                     <div class="item">
-                                        <span class="campaign-title"><?php echo $init_donation->campaign_payment_title;?></span>
+										<div class="subscription-details">
+    										<div class="campaign-title">
+                                                <?php echo $init_donation->campaign_payment_title;?>
+                                            </div>
+                                            <div class="subscription-payment-details">
+        										<div class="amount">
+                                                    <?php echo $init_donation->amount.' '.$init_donation->currency_label;?>/<?php echo _x('month', 'Recurring interval, as in "[XX Rub in] month"', 'leyka');?>
+                                                </div>
+                                                <div class="donation-gateway-pm">
+                                                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/star-icon-info-small.svg" alt="">
+                                                    <span class="gateway"><?php echo $init_donation->gateway_label;?></span> /
+                                                    <span class="pm"><?php echo $init_donation->pm_label;?></span>
+                                                </div>
+                                            </div>
+										</div>
                                         <a data-campaign-id="<?php echo $init_donation->campaign_id;?>" href="<?php echo $donation_campaign->permalink;?>" class="action-disconnect"><?php esc_html_e('Disable');?></a>
                                     </div>
                                 	<?php } ?>

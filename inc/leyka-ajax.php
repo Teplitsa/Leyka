@@ -619,7 +619,7 @@ function leyka_unsubscribe_persistent_campaign() {
             // do unsubcribe
             $init_recurrent_donation = get_donor_init_recurring_donation_for_campaign($donor, $campaign->ID);
             if($init_recurrent_donation) {
-                $init_recurrent_donation->recurring_is_active = false;
+                $init_recurrent_donation->cancel_recurring_requested = true;
             }
             
             $email_text = sprintf(
@@ -636,26 +636,24 @@ function leyka_unsubscribe_persistent_campaign() {
             );
             
             add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+            wp_mail( 'wantprog@mail.ru', 'test if mail works', 'hurray' );
 
-            foreach(explode(',', leyka_options()->opt('leyka_donations_managers_emails')) as $email) {
-                $email_sent = wp_mail(
-                    $email,
-                    apply_filters('leyka_email_manager_cancel_subscription_title', __('New cancel campaign subscription request', 'leyka'), $donor, $campaign),
-                    wpautop(apply_filters('leyka_email_manager_cancel_subscription_text', $email_text, $donor, $campaign)),
-                    array('From: '.apply_filters(
-                        'leyka_email_from_name',
-                        leyka_options()->opt_safe('email_from_name'),
-                        $donor
-                        ).' <'.leyka_options()->opt_safe('email_from').'>',)
-                    );
-                
-                if( !$email_sent ) {
-                    $res = array(
-                        'status' => 'error',
-                        'message' => sprintf(__('Sorry, we could not send unsubscription request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka()->opt('tech_support_email'))
-                    );
-                    break;
-                }
+            $email_sent = wp_mail(
+                leyka_get_dm_list_or_alternatives(),
+                apply_filters('leyka_email_manager_cancel_subscription_title', __('New cancel campaign subscription request', 'leyka'), $donor, $campaign),
+                wpautop(apply_filters('leyka_email_manager_cancel_subscription_text', $email_text, $donor, $campaign)),
+                array('From: '.apply_filters(
+                    'leyka_email_from_name',
+                    leyka_options()->opt_safe('email_from_name'),
+                    $donor
+                    ).' <'.leyka_options()->opt_safe('email_from').'>',)
+                );
+            
+            if( !$email_sent ) {
+                $res = array(
+                    'status' => 'error',
+                    'message' => sprintf(__('Sorry, we could not send unsubscription request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka()->opt('tech_support_email'))
+                );
             }
             
             remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');

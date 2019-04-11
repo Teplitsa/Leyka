@@ -1482,10 +1482,15 @@ function leyka_get_init_recurring_donations($donor_id = false, $only_active = tr
     );
     
     if($only_active) {
+//         $meta_params[] = array(
+//             'relation' => 'OR',
+//             array('key' => 'leyka_recurrents_cancelled', 'value' => false),
+//             array('key' => 'leyka_recurrents_cancelled', 'compare' => 'NOT EXISTS'),
+//         );
         $meta_params[] = array(
             'relation' => 'OR',
-            array('key' => 'leyka_recurrents_cancelled', 'value' => false),
-            array('key' => 'leyka_recurrents_cancelled', 'compare' => 'NOT EXISTS'),
+            array('key' => 'leyka_cancel_recurring_requested', 'value' => false),
+            array('key' => 'leyka_cancel_recurring_requested', 'compare' => 'NOT EXISTS'),
         );
     }
 
@@ -2143,4 +2148,33 @@ function get_donor_init_recurring_donation_for_campaign($donor_user, $campaign_i
     $recurring_donation = $donations->have_posts() ? new Leyka_Donation($donations->posts[0]) : null;
     
     return $recurring_donation;
+}
+
+function leyka_get_dm_list_or_alternatives() {
+    $dm_list = array();
+    
+    foreach(explode(',', leyka_options()->opt('leyka_donations_managers_emails')) as $email) {
+        if(!$email) {
+            continue;
+        }
+        
+        $dm_list[] = $email;
+    }
+    
+    if(empty($dm_list)) {
+        $alt_emails = array(
+            leyka()->opt('tech_support_email'),
+            get_bloginfo('admin_email'),
+        );
+        
+        foreach($alt_emails as $alt_email) {
+            $alt_email = trim($alt_email);
+            if($alt_email) {
+                $dm_list[] = $alt_email;
+                break;
+            }
+        }
+    }
+    
+    return $dm_list;
 }
