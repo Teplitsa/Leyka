@@ -617,7 +617,7 @@ function leyka_unsubscribe_persistent_campaign() {
             
         } else {
             
-            // do unsubcribe
+            // save unsubcribe request flag
             $init_recurrent_donation = get_donor_init_recurring_donation_for_campaign($donor, $campaign->ID);
             if($init_recurrent_donation) {
                 $init_recurrent_donation->cancel_recurring_requested = true;
@@ -636,10 +636,7 @@ function leyka_unsubscribe_persistent_campaign() {
                 admin_url('/post.php?post='.$init_recurrent_donation->id.'&action=edit'),
                 $reason_text
             );
-            error_log($email_text);
-            
             add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
-            wp_mail( 'wantprog@mail.ru', 'test if mail works', 'hurray' );
 
             $email_sent = wp_mail(
                 leyka_get_dm_list_or_alternatives(),
