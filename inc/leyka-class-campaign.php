@@ -319,7 +319,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 <!--                </span>-->
             </h3>
 
-            <input type="text" name="payment_title" id="payment_title" value="<?php echo $campaign->payment_title ? $campaign->payment_title : $campaign->title;?>" placeholder="<?php _e("If the field is empty, the campaign title will be used", 'leyka');?>">
+            <input type="text" name="payment_title" id="payment_title" class="leyka-field-wide" value="<?php echo $campaign->payment_title ? $campaign->payment_title : $campaign->title;?>" placeholder="<?php _e("If the field is empty, the campaign title will be used", 'leyka');?>">
 
         </fieldset>
 
