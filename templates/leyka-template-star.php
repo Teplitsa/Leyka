@@ -29,7 +29,7 @@ $anotherAmountTitle = count($template_data['amount_variants']) > 0 ? esc_html__(
 
     <form id="<?php echo leyka_pf_get_form_id($campaign->id).'-star-form';?>" class="leyka-pm-form" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
     
-        <div class="section section--periodicity">
+        <div class="section section--periodicity <?php if(!in_array('recurring', $campaign->donations_types_available)){?>hidden<?php }?>">
 
             <div class="section__fields periodicity">
                 <a href="#" class="<?php echo 'recurring' === $campaign->donations_type_default ? 'active' : '';?> <?php echo !in_array('recurring', $campaign->donations_types_available) ? "invisible" : "";?>" data-periodicity="monthly"><?php esc_html_e('Monthly', 'leyka');?></a>

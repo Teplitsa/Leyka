@@ -710,3 +710,10 @@ div[id*="leyka-pf-"].leyka-pf-star {
         }
     }
 }
+
+// hide periodicity selection
+.leyka-payment-form.leyka-tpl-star-form .section.section--periodicity {
+    &.hidden {
+        display: none;
+    }
+}
