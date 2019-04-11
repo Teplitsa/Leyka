@@ -167,7 +167,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		add_meta_box('leyka_guide', __('First steps', 'leyka'), array($this, 'guide_metabox_screen'), 'toplevel_page_leyka', 'normal');
 		add_meta_box('leyka_status', __('Settings', 'leyka'), array($this, 'status_metabox_screen'), 'toplevel_page_leyka', 'normal');
 		add_meta_box('leyka_history', __('Recent donations', 'leyka'), array($this, 'history_metabox_screen'), 'toplevel_page_leyka', 'normal');
-		add_meta_box('leyka_campaigns', __('Recent campaings', 'leyka'), array($this, 'campaignsMetaboxScreen'), 'toplevel_page_leyka', 'normal');?>
+		add_meta_box('leyka_campaigns', __('Recent campaings', 'leyka'), array($this, 'campaigns_metabox_screen'), 'toplevel_page_leyka', 'normal');?>
 
 		<div class="wrap">
             <h2><?php _e('Leyka Dashboard', 'leyka');?></h2>
@@ -328,7 +328,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 	}
 
-	public function campaignsMetaboxScreen() {
+	public function campaigns_metabox_screen() {
 		
 		$query = new WP_Query(array(
 			'post_type' => Leyka_Campaign_Management::$post_type,

@@ -17,7 +17,7 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
                 <div id="leyka-pf-" class="leyka-pf leyka-pf-star">
                     <div class="leyka-account-form">
 
-                        <?php if(empty($_GET['code']) || empty($_GET['donor'])) { // Account reset initial form (email confirmation) ?>
+                        <?php if(empty($_GET['code']) || empty($_GET['donor'])) { // 1-st reset step form (email confirmation ?>
 
 						<form class="leyka-screen-form leyka-reset-password" method="post" action="#">
 
@@ -61,7 +61,7 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
 
 						</form>
 
-                        <?php } else { // Account password resetting ?>
+                        <?php } else { // 2-nd reset step form - Account password resetting ?>
 
                             <form class="leyka-screen-form leyka-account-pass-setup" action="<?php echo home_url('/donor_account/login/');?>" method="post">
 
