@@ -604,6 +604,7 @@ function leyka_unsubscribe_persistent_campaign() {
         else {
             $reason_text = '';
         }
+        error_log($reason_text);
         
         if( !$donor ) {
             $res = array('status' => 'error', 'message' => __('Operation allowed only for registered donors.', 'leyka'),);
@@ -623,17 +624,19 @@ function leyka_unsubscribe_persistent_campaign() {
             }
             
             $email_text = sprintf(
-                __("Hello!\n\nDonor %s with email %s and ID %s would like to unsubscribe from campaign <a href='%s'>%s</a> with ID %s on the <a href='%s'>%s</a> website.\n\nThe reasons are:\n%s", 'leyka'),
+                __("Hello!\n\nDonor %s with email %s and ID %s would like to unsubscribe from campaign <a href='%s'>%s</a> with ID %s on the <a href='%s'>%s</a> website.\n\nLink to subscription: %s\n\nThe reasons are:\n%s", 'leyka'),
                 $donor->display_name,
                 $donor->user_email,
                 $donor->ID,
                 $campaign->permalink,
                 $campaign->title,
                 $campaign->ID,
-                $reason_text,
                 home_url(),
-                get_bloginfo('name')
+                get_bloginfo('name'),
+                admin_url('/post.php?post='.$init_recurrent_donation->id.'&action=edit'),
+                $reason_text
             );
+            error_log($email_text);
             
             add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
             wp_mail( 'wantprog@mail.ru', 'test if mail works', 'hurray' );
