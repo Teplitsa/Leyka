@@ -31,7 +31,7 @@ $donor_id = get_current_user_id();?>
 
 							<div class="list subscribed-campaigns-list">
 								<h3 class="list-title"><?php _e('Recurring donations campaigns', 'leyka'); // Кампании с ежемесячными пожертвованиями?></h3>
-                                <?php $recurring_subscriptions = leyka_get_init_recurring_donations($donor_id, false);
+                                <?php $recurring_subscriptions = leyka_get_init_recurring_donations($donor_id, true);
 
                                 if($recurring_subscriptions) {?>
 

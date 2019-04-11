@@ -1462,7 +1462,7 @@ function leyka_get_campaign_donations($campaign, $limit = false) {
 
 }
 
-function leyka_get_init_recurring_donations($donor_id = false, $only_active = true) {
+function leyka_get_init_recurring_donations($donor_id = false, $only_active = true, $show_cancel_requested = true) {
 
     $donor_id = (int)$donor_id ? (int)$donor_id : get_current_user_id();
     $donor_email = get_user_option('user_email', $donor_id);
@@ -1482,11 +1482,14 @@ function leyka_get_init_recurring_donations($donor_id = false, $only_active = tr
     );
     
     if($only_active) {
-//         $meta_params[] = array(
-//             'relation' => 'OR',
-//             array('key' => 'leyka_recurrents_cancelled', 'value' => false),
-//             array('key' => 'leyka_recurrents_cancelled', 'compare' => 'NOT EXISTS'),
-//         );
+        $meta_params[] = array(
+            'relation' => 'OR',
+            array('key' => 'leyka_recurrents_cancelled', 'value' => false),
+            array('key' => 'leyka_recurrents_cancelled', 'compare' => 'NOT EXISTS'),
+        );
+    }
+    
+    if(!$show_cancel_requested) {
         $meta_params[] = array(
             'relation' => 'OR',
             array('key' => 'leyka_cancel_recurring_requested', 'value' => false),
