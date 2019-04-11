@@ -158,17 +158,7 @@
         
         .items {
             .item {
-                .campaign-title {
-                    @include campain-single-line-title();
-                }
-                
-                .amount {
-                    display: block;
-                    color: $leyka-star-color-black;
-                    text-align: right;
-                    white-space: nowrap;
-                    margin-left: 1.5 * $leyka-star-base;
-                }
+                @include leyka-subscription-list-item();
             }
         }
     }
@@ -302,16 +292,7 @@
             }
 
             .donation-gateway-pm {
-                @include star-text-pm-label();
-                color: $leyka-star-color-text;
-                margin-top: 0.5 * $leyka-star-base;
-
-                img {
-                    width: 12px;
-                    height: 12px;
-                    margin-right: 4px;
-                    vertical-align: middle;
-                }
+                @include leyka-donation-gateway-pm();
             }
         }
     }
@@ -376,9 +357,7 @@
     .list {
         .items {
             .item {
-                .campaign-title {
-                    @include campain-single-line-title();
-                }
+                @include leyka-subscription-list-item();
                 
                 .action-disconnect {
                     margin-left: 1.5 * $leyka-star-base;
