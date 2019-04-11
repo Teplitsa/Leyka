@@ -41,7 +41,7 @@ $donor_id = get_current_user_id();?>
 									<div class="item <?php if($init_donation->cancel_recurring_requested) {?>subscription-canceling<?php }?>">
 										<div class="subscription-details">
     										<div class="campaign-title">
-                                                <?php echo $init_donation->campaign_payment_title;?>
+                                                <?php echo $init_donation->campaign_title;?>
                                             </div>
                                             <div class="subscription-payment-details">
         										<div class="amount">
