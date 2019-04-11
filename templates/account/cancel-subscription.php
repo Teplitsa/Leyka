@@ -48,7 +48,7 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
                                                 </div>
                                             </div>
 										</div>
-                                        <a data-campaign-id="<?php echo $init_donation->campaign_id;?>" href="<?php echo $donation_campaign->permalink;?>" class="action-disconnect"><?php esc_html_e('Disable');?></a>
+                                        <a data-campaign-id="<?php echo $init_donation->campaign_id;?>" data-donation-id="<?php echo $init_donation->id;?>" href="<?php echo $donation_campaign->permalink;?>" class="action-disconnect"><?php esc_html_e('Disable');?></a>
                                     </div>
                                 	<?php } ?>
                                 </div>
@@ -101,6 +101,7 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
                         
                                 <div class="leyka-hidden-controls">
                                 	<input type="hidden" name="leyka_campaign_id" value="">
+                                	<input type="hidden" name="leyka_donation_id" value="">
                                 	<input type="hidden" name="leyka_campaign_permalink" value="">
                                 	<?php wp_nonce_field( 'leyka_cancel_subscription' );?>
                                 </div>

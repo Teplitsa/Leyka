@@ -570,7 +570,7 @@ function leyka_unsubscribe_persistent_campaign() {
             'status' => 'error',
             'message' => sprintf(__('Wrong request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka()->opt('tech_support_email'))
         );
-    } else if(empty($_POST['leyka_cancel_subscription_reason']) || empty($_POST['leyka_campaign_id'])) {
+    } else if(empty($_POST['leyka_cancel_subscription_reason']) || empty($_POST['leyka_campaign_id']) || empty($_POST['leyka_donation_id'])) {
         $res = array(
             'status' => 'error',
             'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka()->opt('tech_support_email'))
@@ -578,9 +578,11 @@ function leyka_unsubscribe_persistent_campaign() {
     } else {
         
         $campaign_id = (int)$_POST['leyka_campaign_id'];
+        $donation_id = (int)$_POST['leyka_donation_id'];
         
         $donor = get_user_by('id', get_current_user_id());
         $campaign = new Leyka_Campaign($campaign_id);
+        $init_recurrent_donation = new Leyka_Donation($donation_id);
 
         if(!empty($_POST['leyka_cancel_subscription_reason'])) {
             $reasons = is_array($_POST['leyka_cancel_subscription_reason']) ? $_POST['leyka_cancel_subscription_reason'] : array($_POST['leyka_cancel_subscription_reason']);
@@ -615,13 +617,16 @@ function leyka_unsubscribe_persistent_campaign() {
                 'message' => sprintf(__('Campaign with ID %s not found. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), $campaign_id, leyka()->opt('tech_support_email'))
             );
             
+        } elseif(!$init_recurrent_donation) {
+            $res = array(
+                'status' => 'error',
+                'message' => sprintf(__('Donation with ID %s not found. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), $donation_id, leyka()->opt('tech_support_email'))
+            );
+            
         } else {
             
             // save unsubcribe request flag
-            $init_recurrent_donation = get_donor_init_recurring_donation_for_campaign($donor, $campaign->ID);
-            if($init_recurrent_donation) {
-                $init_recurrent_donation->cancel_recurring_requested = true;
-            }
+            $init_recurrent_donation->cancel_recurring_requested = true;
             
             $email_text = sprintf(
                 __("Hello!\n\nDonor %s with email %s and ID %s would like to unsubscribe from campaign <a href='%s'>%s</a> with ID %s on the <a href='%s'>%s</a> website.\n\nLink to subscription: %s\n\nThe reasons are:\n%s", 'leyka'),
