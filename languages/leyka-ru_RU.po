@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Leyka - Development (trunk) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2019-04-12 12:26:58+0000\n"
+"PO-Revision-Date: 2019-04-12 15:53:47+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -392,7 +392,7 @@ msgstr "Отмена рекуррентной подписки"
 #: templates/account/cancel-subscription.php:144
 #: templates/account/cancel-subscription.php:168
 msgid "Cancel subscription"
-msgstr "Отменить рекурретную подписку"
+msgstr "Отменить"
 
 #: templates/account/cancel-subscription.php:142
 #: templates/account/cancel-subscription.php:166
