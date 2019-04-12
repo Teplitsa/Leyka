@@ -144,16 +144,16 @@ function leyka_set_donor_account_page_title($title_parts) {
     
     switch($leyka_screen) {
         case 'account':
-            $title_parts['title'] = esc_html__('Donor account', 'leyka');
+            $title_parts['title'] = __('Donor account', 'leyka');
             break;
         case 'login':
-            $title_parts['title'] = esc_html__('Sign in donor account', 'leyka');
+            $title_parts['title'] = __('Sign in donor account', 'leyka');
             break;
         case 'reset-password':
-            $title_parts['title'] = esc_html__('Reset account password', 'leyka');
+            $title_parts['title'] = __('Reset account password', 'leyka');
             break;
         case 'unsubscribe-campaigns':
-            $title_parts['title'] = esc_html__('Unsubscribe persistent campaign', 'leyka');
+            $title_parts['title'] = __('Unsubscribe persistent campaign', 'leyka');
             break;
         default:
     }

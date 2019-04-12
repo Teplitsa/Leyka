@@ -25,12 +25,12 @@ $donor_id = get_current_user_id();?>
 				
 						<form class="leyka-screen-form">
 							
-							<h2><?php _e('Personal account', 'leyka'); // Личный кабинет?></h2>
+							<h2><?php _e('Personal account', 'leyka');?></h2>
 							
-							<p><?php _e('We are grateful for your support!', 'leyka'); // Мы благодарны вам за оказываемую поддержку!?></p>
+							<p><?php _e('We are grateful for your support!', 'leyka');?></p>
 
 							<div class="list subscribed-campaigns-list">
-								<h3 class="list-title"><?php _e('Recurring donations campaigns', 'leyka'); // Кампании с ежемесячными пожертвованиями?></h3>
+								<h3 class="list-title"><?php _e('Recurring donations campaigns', 'leyka');?></h3>
                                 <?php $recurring_subscriptions = leyka_get_init_recurring_donations($donor_id, true);
 
                                 if($recurring_subscriptions) {?>
@@ -114,7 +114,7 @@ $donor_id = get_current_user_id();?>
 							</div>
 
 							<p class="leyka-we-need-you">
-                                <?php echo sprintf(__('You can always <a href="%s">cancel your recurring donations</a>.<br>But we will struggle without your support.', 'leyka'), home_url('/donor-account/cancel-subscription/')); // Вы всегда можете <a href="?leyka-screen=cancel-subscription">отключить ваше ежемесячное пожертвование.</a><br />Но нам будет без вас трудно.?>
+                                <?php echo sprintf(__('You can always <a href="%s">cancel your recurring donations</a>.<br>But we will struggle without your support.', 'leyka'), home_url('/donor-account/cancel-subscription/'));?>
                             </p>
 
 						</form>
