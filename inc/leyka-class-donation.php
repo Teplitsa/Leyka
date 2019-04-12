@@ -349,7 +349,7 @@ class Leyka_Donation_Management {
             $donor_account_login_text = '';
 
             if($donation->donor_account_error) { // Donor account wasn't created due to some error
-                $donor_account_login_text = sprintf(__('To control your recurring subscriptions please contact the <a href="mailto:%s">website administration</a>.', 'leyka'), get_option('admin_email'));
+                $donor_account_login_text = sprintf(__('To control your recurring subscriptions please contact the <a href="mailto:%s">website administration</a>.', 'leyka'), leyka_get_website_tech_support_email());
             } else if($donation->donor_account_id) {
 
                 $donor_account_activation_code = get_user_meta(

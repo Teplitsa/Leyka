@@ -1589,25 +1589,36 @@ class Leyka extends Leyka_Singleton {
             return false;
         }
 
-        $donor_email_first_part = reset(explode('@', $donation->donor_email));
+        $donor_user = get_user_by('email', $donation->donor_email);
+        if($donor_user && is_a($donor_user, 'WP_User')) { // Account already exists
 
-        $donor_user_id = wp_insert_user(array(
-            'user_email' => $donation->donor_email,
-            'user_login' => $donation->donor_email,
-            'user_pass' => wp_generate_password(16, true, false),
-            'display_name' => $donation->donor_name ? $donation->donor_name : $donor_email_first_part,
-            'show_admin_bar_front' => false,
-            'role' => 'donor',
-        ));
-
-        if(is_wp_error($donor_user_id)) {
-            do_action('leyka_donor_account_not_created', $donor_user_id, $donation);
-        } else {
-
-            update_user_meta($donor_user_id, 'leyka_account_activation_code', wp_generate_password(60, false, false));
+            $donor_user_id = $donor_user->ID;
             $donation->donor_account = $donor_user_id;
+            $donor_user->add_role('donor');
 
-            do_action('leyka_donor_account_created', $donor_user_id, $donation);
+        } else { // Create account anew
+
+            $donor_email_first_part = reset(explode('@', $donation->donor_email));
+
+            $donor_user_id = wp_insert_user(array(
+                'user_email' => $donation->donor_email,
+                'user_login' => $donation->donor_email,
+                'user_pass' => wp_generate_password(16, true, false),
+                'display_name' => $donation->donor_name ? $donation->donor_name : $donor_email_first_part,
+                'show_admin_bar_front' => false,
+                'role' => 'donor',
+            ));
+
+            if(is_wp_error($donor_user_id)) {
+                do_action('leyka_donor_account_not_created', $donor_user_id, $donation);
+            } else {
+
+                update_user_meta($donor_user_id, 'leyka_account_activation_code', wp_generate_password(60, false, false));
+                $donation->donor_account = $donor_user_id;
+
+                do_action('leyka_donor_account_created', $donor_user_id, $donation);
+
+            }
 
         }
 
