@@ -89,6 +89,16 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.2 =
+* New: Donors personal accounts feature added.
+* New: auto-cancelling recurring subscriptions for CloudPayments is possible now.
+* New: now it's possible to call procedures as server scripts.
+* New: Google UA & GTM integration now supports Enchanced e-commerce.
+* Fix: plugin usage statistics synchronization & collection fixed.
+* Fix: now active recurring procedure may be called only once per day.
+* Fix: recurring support display on the Star template fixed.
+* Fix: small bugfixes.
+
 = 3.1 =
 * New: Star template added.
 * New: Persistent campaigns settings & page template added.
