@@ -357,7 +357,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
         $this->_intialize_option($option_id, true);
         
-        $this->_options[$option_id] = array(
+        $filtered_options = array(
             'title' => apply_filters('leyka_option_title-'.$option_id, $this->_options[$option_id]['title']),
             'type' => apply_filters('leyka_option_type-'.$option_id, $this->_options[$option_id]['type']),
             'required' => apply_filters(
@@ -368,7 +368,8 @@ class Leyka_Options_Controller extends Leyka_Singleton {
                 'leyka_option_default-'.$option_id,
                 empty($option_data['default']) ? '' : $option_data['default']
             ),
-        ) + $this->_options[$option_id];
+        );
+        $this->_options[$option_id] = array_merge($filtered_options, $this->_options[$option_id]);
 
         return apply_filters('leyka_option_info-'.$option_id, $this->_options[$option_id]);
 
