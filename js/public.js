@@ -462,8 +462,11 @@ jQuery(document).ready(function($){
 
         var $form = $(this);
 
+        console.log('OLD submit handler called');
+
         if( !$form.hasClass('leyka-no-validation') && !leyka_validate_donation_form($form) ) {
 
+            console.log('OLD submit handler call preventDefault');
             e.preventDefault();
             e.stopImmediatePropagation();
 
