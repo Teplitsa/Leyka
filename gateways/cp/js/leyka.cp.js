@@ -23,6 +23,7 @@ jQuery(document).ready(function($){
                 $pm_field.val().indexOf('cp') >= 0 : !!$pm_field.prop('checked');
 
         if($pm_field.length <= 0 || !cp_chosen) {
+            console.log('Leyka error: not CP form');
             return; /** @todo Add some error to the form! Or at least do some console.logging */
         }
 
@@ -32,8 +33,10 @@ jQuery(document).ready(function($){
         }
 
         if($form.data('submit-in-process')) {
+            console.log('submit already in process');
             return;
         } else {
+            console.log('SET submit already in process');
             $form.data('submit-in-process', 1);
         }
 
@@ -49,6 +52,9 @@ jQuery(document).ready(function($){
         }
 
         e.preventDefault();
+
+        console.log('CP submit: ' + leyka.ajaxurl);
+        console.log(data);
 
         $.ajax({
             type: 'post',
