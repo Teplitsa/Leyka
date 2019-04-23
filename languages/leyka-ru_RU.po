@@ -2,14 +2,17 @@
 # This file is distributed under the same license as the Plugins - Leyka - Development (trunk) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2019-04-12 15:53:47+0000\n"
+"PO-Revision-Date: 2019-04-23 10:25+0200\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: GlotPress/2.4.0-alpha\n"
+"X-Generator: Poedit 2.0.5\n"
 "Language: ru\n"
 "Project-Id-Version: Plugins - Leyka - Development (trunk)\n"
+"POT-Creation-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
 
 #: inc/leyka-class-options-allocator.php:415
 msgid "Donors accounts options"
@@ -451,7 +454,7 @@ msgstr "Возврат средств:"
 
 #: templates/service/leyka-template-success-widget-star.php:62
 msgid "Subscribe on news"
-msgstr "Подписка на новости кампании"
+msgstr "Подписаться на новости"
 
 #: templates/service/leyka-template-success-widget-star.php:34
 msgid "Let's stay in touch."

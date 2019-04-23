@@ -616,6 +616,11 @@
         
         input[type=submit].leyka-success-submit {
             @include leyka-star-btn();
+
+            @include upto(medium-screens) {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
         }
     }
     
