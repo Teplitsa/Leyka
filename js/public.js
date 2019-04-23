@@ -404,6 +404,7 @@ jQuery(document).ready(function($){
             }
 
         });
+        console.log('is_valid: ' + is_valid);
 
         var amount_is_valid = true;
         $error = $form.find('.leyka_donation_amount-error', '.leyka-pm-fields.'+pm_full_id);
@@ -437,11 +438,13 @@ jQuery(document).ready(function($){
 
             is_valid = false;
             $error.html(leyka.donation_amount_too_great_msg.replace('%s', top_amount+' '+currency_label)).show();
+            console.log(leyka.donation_amount_too_great_msg.replace('%s', top_amount+' '+currency_label));
 
         } else if(amount_is_valid && $amount_field.val() < bottom_amount) {
 
             is_valid = false;
             $error.html(leyka.donation_amount_too_small_msg.replace('%s', bottom_amount+' '+currency_label)).show();
+            console.log(leyka.donation_amount_too_small_msg.replace('%s', bottom_amount+' '+currency_label));
 
         } else if(amount_is_valid) {
             $error.html('').hide();
