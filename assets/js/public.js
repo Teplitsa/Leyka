@@ -2197,8 +2197,11 @@ jQuery(document).ready(function($){
 			e.preventDefault();
 
             if(leykaValidateForm($_form)) { // Form is valid
+                console.log('form valid');
 
-				var $pm_selected = $_form.find('input[name="leyka_payment_method"]:checked');
+                var $pm_selected = $_form.find('input[name="leyka_payment_method"]:checked');
+                
+                console.log('processing: ' + $pm_selected.data('processing'));
                 
                 if($pm_selected.data('processing') !== 'default') {
 
@@ -2218,12 +2221,17 @@ jQuery(document).ready(function($){
                     data[data_array[i].name] = data_array[i].value;
                 }
 
+                console.log('without_form_submission: ' + $pm_selected.data('ajax-without-form-submission'));
+
                 if($pm_selected.data('ajax-without-form-submission')) {
                 	data['without_form_submission'] = true;
 				}
 
                 $redirect_section.addClass('leyka-pf__redirect--open');
 
+                console.log('gateway redirection: ' + leyka_get_ajax_url());
+                console.log(data);
+                
                 // Get gateway redirection form and submit it manually:
                 $.post(leyka_get_ajax_url(), data).done(function(response){
 
@@ -2261,6 +2269,7 @@ jQuery(document).ready(function($){
                 });
 
             } else { // Errors exist
+                console.log('form invalid!');
 
                 e.preventDefault();
                 e.stopPropagation();
