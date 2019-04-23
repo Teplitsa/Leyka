@@ -420,6 +420,7 @@
                 if($pm_selected.data('processing') !== 'default') {
 
 					if($pm_selected.data('processing') !== 'custom-process-submit-event') {
+                        console.log('do stopPropagation');
 						e.stopPropagation();
 					}
                     return;
@@ -445,7 +446,7 @@
 
                 console.log('gateway redirection: ' + leyka_get_ajax_url());
                 console.log(data);
-                
+
                 // Get gateway redirection form and submit it manually:
                 $.post(leyka_get_ajax_url(), data).done(function(response){
 

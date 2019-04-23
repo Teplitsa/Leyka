@@ -1,6 +1,10 @@
 jQuery(document).ready(function($){
     console.log('CP submit handler added');
 
+    $('form.leyka-pm-form').on('submit.leyka', function(e){
+        console.log('CP direct form submit handler called');
+    });
+
     $(document).on('submit.leyka', 'form.leyka-pm-form,form.leyka-revo-form', function(e){
         console.log('CP submit handler called OK');
 
