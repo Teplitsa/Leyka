@@ -1,6 +1,8 @@
 jQuery(document).ready(function($){
+    console.log('CP submit handler added');
 
     $(document).on('submit.leyka', 'form.leyka-pm-form,form.leyka-revo-form', function(e){
+        console.log('CP submit handler called OK');
 
         function addError($errors_block, error_html) {
 
