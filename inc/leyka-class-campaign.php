@@ -151,10 +151,10 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         $screen = get_current_screen();
         if($screen->post_type == self::$post_type && $screen->base === 'post' && !$screen->action) {
 
-            add_meta_box(
-                self::$post_type.'_embed', __('Campaign embedding', 'leyka'),
-                array($this, 'embedding_meta_box'), self::$post_type, 'normal', 'high'
-            );
+//            add_meta_box(
+//                self::$post_type.'_embed', __('Campaign embedding', 'leyka'),
+//                array($this, 'embedding_meta_box'), self::$post_type, 'normal', 'high'
+//            );
 
 		    add_meta_box(
                 self::$post_type.'_donations', __('Donations history', 'leyka'),
@@ -512,7 +512,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
     /**
      * @param $campaign WP_Post
      */
-    public function embedding_meta_box(WP_Post $campaign) {?>
+    /*public function embedding_meta_box(WP_Post $campaign) {?>
 
 	<div class="embed-block">
 
@@ -555,19 +555,10 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
 		return '<iframe width="'.(int)$width.'" height="'.(int)$height.'" src="'.$link.'"></iframe>';
 
-	}
+	}*/
 
     static function get_campaign_form_shortcode($campaign_id) {
-
-        // Right now, Revo template only works through [leyka_inline_campaign] shortcode,
-        // and all other templates need [leyka_campaign_form] shortcode:
-
-        $campaign = new Leyka_Campaign($campaign_id);
-
-        /** @todo When [leyka_inline_campaign] could display any form template, change this. */
-        return $campaign->template === 'revo' ?
-            '[leyka_inline_campaign id="'.$campaign_id.'"]' : '[leyka_campaign_form id="'.$campaign_id.'"]';
-
+        return '[leyka_campaign_form id="'.$campaign_id.'"]';
     }
 
     /**

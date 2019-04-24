@@ -214,11 +214,21 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
 add_shortcode('leyka_payment_form', 'leyka_payment_form_screen');
 add_shortcode('leyka_campaign_form', 'leyka_payment_form_screen');
 function leyka_payment_form_screen($atts) {
-    
-    $atts = shortcode_atts(array(
-        'id' => 0,
-        'template' => null,
-    ), $atts);
+
+    $campaign_id = !empty($atts['id']) ? (int)$atts['id'] : get_post()->ID;
+    $campaign = leyka_get_validated_campaign($campaign_id);
+
+    if( !$campaign ) {
+        return is_super_admin() ? leyka_get_wrong_campaign_message($campaign) : '';
+    } else if($campaign->is_finished && !$atts['show_finished']) {
+        return '';
+    }
+
+    if($campaign->template === 'revo') {
+        return leyka_inline_campaign($atts);
+    }
+
+    $atts = shortcode_atts(array('id' => false, 'template' => null,), $atts);
 
     $campaign = leyka_get_validated_campaign($atts['id']);
 
@@ -228,9 +238,7 @@ function leyka_payment_form_screen($atts) {
 
 function leyka_get_payment_form($campaign = null, $args = array()) {
 
-    $args = wp_parse_args($args, array(
-        'template'  => null, // Ex. "radios" or "toggles"
-    ));
+    $args = wp_parse_args($args, array('template'  => null,));
 
     if( !$campaign ) {
         $campaign = get_post();
@@ -447,6 +455,19 @@ function leyka_get_campaign_supporters($campaign_id, $max_names = 5) {
 add_shortcode('leyka_inline_campaign', 'leyka_inline_campaign');
 function leyka_inline_campaign(array $atts = array()) {
 
+    $campaign_id = !empty($atts['id']) ? (int)$atts['id'] : get_post()->ID;
+    $campaign = leyka_get_validated_campaign($campaign_id);
+
+    if( !$campaign ) {
+        return is_super_admin() ? leyka_get_wrong_campaign_message($campaign) : '';
+    } else if($campaign->is_finished && !$atts['show_finished']) {
+        return '';
+    }
+
+    if($campaign->template !== 'revo') {
+        return leyka_payment_form_screen($atts);
+    }
+
     /** @todo Make the shortcode work not only with Revo, but with the rest of form templates */
     $atts = shortcode_atts(array(
         'id' => false,
@@ -455,14 +476,6 @@ function leyka_inline_campaign(array $atts = array()) {
         'show_finished' => true,
         'show_preview' => true,
     ), $atts);
-
-    $campaign_id = $atts['id'] ? (int)$atts['id'] : get_post()->ID;
-    $campaign = leyka_get_validated_campaign($campaign_id);
-    if( !$campaign ) {
-        return is_super_admin() ? leyka_get_wrong_campaign_message($campaign) : '';
-    } else if($campaign->is_finished && !$atts['show_finished']) {
-        return '';
-    }
 
     $template_id = $atts['template'];
     $template_subdir = LEYKA_PLUGIN_DIR.'templates/leyka-'.$template_id;

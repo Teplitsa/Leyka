@@ -996,7 +996,7 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
             }
         }
 
-    } // Campaign finished
+    }
 
     $out = ob_get_contents();
     ob_end_clean();
