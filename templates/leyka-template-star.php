@@ -20,11 +20,11 @@ if(count($campaign->donations_types_available) > 1) {
     }
 }
 
-$anotherAmountTitle = count($template_data['amount_variants']) > 0 ? esc_html__('Another amount', 'leyka') : esc_html__('Enter amount', 'leyka');
-?>
+$another_amount_title = count($template_data['amount_variants']) > 0 ?
+    esc_html__('Another amount', 'leyka') : esc_html__('Enter amount', 'leyka');?>
 
 <div id="leyka-pf-<?php echo $campaign->id;?>" class="leyka-pf leyka-pf-star" data-form-id="leyka-pf-<?php echo $campaign->id;?>-star-form">
-    
+
 <div class="leyka-payment-form leyka-tpl-star-form" data-template="star">
 
     <form id="<?php echo leyka_pf_get_form_id($campaign->id).'-star-form';?>" class="leyka-pm-form" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
@@ -39,14 +39,14 @@ $anotherAmountTitle = count($template_data['amount_variants']) > 0 ? esc_html__(
         </div>
 
         <div class="section section--amount">
-            
+
             <div class="section__fields amount">
-    
+
             <?php echo Leyka_Payment_Form::get_common_hidden_fields($campaign, array(
                 'leyka_template_id' => 'star',
                 'leyka_amount_field_type' => 'custom',
             ));
-    
+
             $form_api = new Leyka_Payment_Form();
             echo $form_api->get_hidden_amount_fields();?>
     
@@ -55,7 +55,7 @@ $anotherAmountTitle = count($template_data['amount_variants']) > 0 ? esc_html__(
                     <div class="arrow-gradient right"></div><a class="swiper-arrow swipe-right" href="#"></a>
                     
                     <div class="swiper-list">
-                    
+
                         <?php foreach($template_data['amount_variants'] as $i => $amount) {?>
                             <div class="swiper-item <?php echo $i ? "" : "selected";?>" data-value="<?php echo (int)$amount;?>"><span class="amount"><?php echo (int)$amount;?></span><span class="currency"><?php echo $template_data['currency_label'];?></span></div>
                         <?php }?>
@@ -63,9 +63,9 @@ $anotherAmountTitle = count($template_data['amount_variants']) > 0 ? esc_html__(
                         <?php if($template_data['amount_mode'] != 'fixed') {?>
                             <div class="swiper-item flex-amount-item <?php if(!count($template_data['amount_variants'])):?>selected<?php endif;?>">
                                 <label for="leyka-flex-amount">
-                                    <span class="textfield-label"><?php echo $anotherAmountTitle;?>, <span class="currency"><?php echo $template_data['currency_label'];?></span></span>
+                                    <span class="textfield-label"><?php echo $another_amount_title;?>, <span class="currency"><?php echo $template_data['currency_label'];?></span></span>
                                 </label>
-                                <input type="number" title="<?php esc_html_e('Enter your amount', 'leyka');?>" placeholder="<?php esc_html_e('Enter your amount', 'leyka');?>" data-desktop-ph="<?php echo $anotherAmountTitle;?>" data-mobile-ph="<?php esc_html_e('Enter your amount', 'leyka');?>" name="donate_amount_flex" class="donate_amount_flex" value="<?php echo esc_attr($template_data['amount_default']);?>" min="1" max="999999">
+                                <input type="number" title="<?php esc_html_e('Enter your amount', 'leyka');?>" placeholder="<?php esc_html_e('Enter your amount', 'leyka');?>" data-desktop-ph="<?php echo $another_amount_title;?>" data-mobile-ph="<?php esc_html_e('Enter your amount', 'leyka');?>" name="donate_amount_flex" class="donate_amount_flex" value="<?php echo esc_attr($template_data['amount_default']);?>" min="1" max="999999">
                             </div>
                         <?php }?>
                     </div>
@@ -160,7 +160,10 @@ $anotherAmountTitle = count($template_data['amount_variants']) > 0 ? esc_html__(
                     </div>
                 </div>
 
-                <?php if(leyka_options()->opt_template('show_donation_comment_field')) { $field_id = 'leyka-'.wp_rand();?>
+                <?php if(leyka_options()->opt_template('show_donation_comment_field')) {
+
+                    $field_id = 'leyka-'.wp_rand();?>
+
                 <div class="donor__textfield donor__textfield--comment leyka-field">
                     <div class="leyka-star-field-frame">
                         <label for="<?php echo $field_id;?>">
@@ -172,14 +175,21 @@ $anotherAmountTitle = count($template_data['amount_variants']) > 0 ? esc_html__(
                         <span class="donor__textfield-error leyka_donor_comment-error"><?php _e('Entered value is too long', 'leyka');?></span>
                     </div>
                 </div>
+
                 <?php }?>
 
                 <?php if(leyka_options()->opt('agree_to_terms_needed') || leyka_options()->opt('agree_to_pd_terms_needed')) {?>
+
                 <div class="donor__oferta">
                     <span>
-                    <?php if(leyka_options()->opt('agree_to_terms_needed')) {?>
-                        <input type="checkbox" name="leyka_agree" id="leyka_agree" class="required" value="1" <?php echo leyka_options()->opt('terms_agreed_by_default') ? 'checked="checked"' : '';?>>
-                        <label for="leyka_agree">
+
+                    <?php if(leyka_options()->opt('agree_to_terms_needed')) {
+
+                        $field_id = 'leyka-'.wp_rand();?>
+
+                        <input type="checkbox" name="leyka_agree" id="<?php echo $field_id;?>" class="required" value="1" <?php echo leyka_options()->opt('terms_agreed_by_default') ? 'checked="checked"' : '';?>>
+
+                        <label for="<?php echo $field_id;?>">
                         <?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';
 
                         if(leyka_options()->opt('agree_to_terms_link_action') === 'popup') {?>
@@ -190,10 +200,14 @@ $anotherAmountTitle = count($template_data['amount_variants']) > 0 ? esc_html__(
                                 <?php echo apply_filters('agree_to_terms_text_link_part', leyka_options()->opt('agree_to_terms_text_link_part'));?>
                             </a>
                         </label>
-                    <?php if(leyka_options()->opt('agree_to_pd_terms_needed')) {?>
 
-                        <input type="checkbox" name="leyka_agree_pd" id="leyka_agree_pd" class="required" value="1" <?php echo leyka_options()->opt('pd_terms_agreed_by_default') ? 'checked="checked"' : '';?>>
-                        <label for="leyka_agree_pd">
+                    <?php if(leyka_options()->opt('agree_to_pd_terms_needed')) {
+
+                        $field_id = 'leyka-'.wp_rand();?>
+
+                        <input type="checkbox" name="leyka_agree_pd" id="<?php echo $field_id;?>" class="required" value="1" <?php echo leyka_options()->opt('pd_terms_agreed_by_default') ? 'checked="checked"' : '';?>>
+
+                        <label for="<?php echo $field_id;?>">
                         <?php echo apply_filters('agree_to_pd_terms_text_text_part', leyka_options()->opt('agree_to_pd_terms_text_text_part')).' ';?>
                             <a href="#" class="leyka-js-pd-trigger">
                                 <?php echo apply_filters('agree_to_pd_terms_text_link_part', leyka_options()->opt('agree_to_pd_terms_text_link_part'));?>
@@ -201,9 +215,12 @@ $anotherAmountTitle = count($template_data['amount_variants']) > 0 ? esc_html__(
                         </label>
 
                     <?php }?>
+
                     </span>
                     <?php }?>
+
                 </div>
+
                 <?php }?>
 
                 <div class="donor__submit">
