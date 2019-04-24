@@ -814,7 +814,7 @@ class Leyka extends Leyka_Singleton {
      */
     public function get_donation_statuses_descriptions() {
         return apply_filters('leyka_donation_statuses_descriptions', array(
-            'submitted' => _x("Donation attempt was made, but the payment itself wasn't sent.", '«Submitted» donation status description', 'leyka'),
+            'submitted' => _x("Donation attempt was made, but the payment itself wasn't sent.\n\nOr, maybe, the payment was completed, but Leyka wasn't notified of it. If that is the case, you should check if your payment gateway callbacks are set up correctly.", '«Submitted» donation status description', 'leyka'),
             'funded' => _x('Donation was finished, the funds were made to your account.', '«Completed» donation status description', 'leyka'),
             'refunded' => _x('Donation funds were returned to the donor.', '«Refunded» donation status description', 'leyka'),
             'failed' => _x("Donation payment was finished with an error. The funds weren't sent.", '«Failed» donation status description', 'leyka'),
