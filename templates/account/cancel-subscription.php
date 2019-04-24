@@ -48,21 +48,19 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
                                                 </div>
                                             </div>
 										</div>
-                                        <a data-campaign-id="<?php echo $init_donation->campaign_id;?>" data-donation-id="<?php echo $init_donation->id;?>" href="<?php echo $donation_campaign->permalink;?>" class="action-disconnect"><?php esc_html_e('Disable');?></a>
+                                        <a data-campaign-id="<?php echo $init_donation->campaign_id;?>" data-donation-id="<?php echo $init_donation->id;?>" href="<?php echo $donation_campaign->permalink;?>" class="action-disconnect"><?php _e('Disable', 'leyka');?></a>
                                     </div>
                                 	<?php } ?>
                                 </div>
                             </div>
                             
                             <?php } else {?>
-                            
-                            <h2><?php esc_html_e('You have no active recurring subscriptions.', 'leyka');?></h2>
-                            
+                            <h2><?php _e('You have no active recurring subscriptions.', 'leyka');?></h2>
                             <?php } ?>
         
                             <div class="leyka-star-submit">
                                 <a href="<?php echo site_url('/donor-account/');?>" class="leyka-star-single-link">
-                                    <?php esc_html_e('To main' , 'leyka');?>
+                                    <?php _e('To main' , 'leyka');?>
                                 </a>
                             </div>
         

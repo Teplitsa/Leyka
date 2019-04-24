@@ -5,7 +5,7 @@ Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса, яндекс.деньги, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
 Tested up to: 5.1.1
-Stable tag: 3.1
+Stable tag: 3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,16 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.2 =
+* New: Donors personal accounts feature added.
+* New: auto-cancelling recurring subscriptions for CloudPayments is possible now.
+* New: now it's possible to call procedures as server scripts.
+* New: Google UA & GTM integration now supports Enchanced e-commerce.
+* Fix: plugin usage statistics synchronization & collection fixed.
+* Fix: now active recurring procedure may be called only once per day.
+* Fix: recurring support display on the Star template fixed.
+* Fix: small bugfixes.
+
 = 3.1 =
 * New: Star template added.
 * New: Persistent campaigns settings & page template added.
