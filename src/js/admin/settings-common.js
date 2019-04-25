@@ -153,16 +153,16 @@ jQuery(document).ready(function($){
 // screenshots nav
 jQuery(document).ready(function($){
 
-    $('[name*="show_donation_comment"]').on('change.leyka', function(){
+    $('[name*="show_donation_comment_field"]').on('change.leyka', function(){
 
         var $this = $(this),
-            checkboxId = $this.attr('id'),
-            lenFieldWrapperID = checkboxId.replace('_show_donation_comment_field-field', '_donation_comment_max_length-wrapper');
+            checkbox_id = $this.attr('id'),
+            length_field_wrapper_id = checkbox_id.replace('_show_donation_comment_field-field', '_donation_comment_max_length-wrapper');
 
         if($this.prop('checked')) {
-            $('#' + lenFieldWrapperID).show();
+            $('#'+length_field_wrapper_id).show();
         } else {
-            $('#' + lenFieldWrapperID).hide();
+            $('#'+length_field_wrapper_id).hide();
         }
 
     }).change();
