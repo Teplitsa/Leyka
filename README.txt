@@ -5,7 +5,7 @@ Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса, яндекс.деньги, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
 Tested up to: 5.1.1
-Stable tag: 3.2
+Stable tag: 3.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,15 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.2.1 =
+* New: now [leyka_campaign_form] and [leyka_inline_campaign] shortcodes may be used interchangeably.
+* Fix: "submitted" donations status description changed.
+* Fix: now Terms agreement checkboxes for Revo & Star templates are independent across different forms on same page.
+* Fix: CloudPayments recurring subscription engine is temporarily changed to the default one.
+* Fix: Star template markup fixes.
+* Fix: now CloudPayments donations work correctly on mobile screens.
+* Fix: small bugfixes.
+
 = 3.2 =
 * New: Donors personal accounts feature added.
 * New: auto-cancelling recurring subscriptions for CloudPayments is possible now.
