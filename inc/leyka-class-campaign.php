@@ -545,7 +545,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 		</div>
 
 	</div>
-    <?php }
+    <?php }*/
 
 	static function get_card_embed_code($campaign_id, $increase_counters = false, $width = 300, $height = 400) {
 
@@ -555,7 +555,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
 		return '<iframe width="'.(int)$width.'" height="'.(int)$height.'" src="'.$link.'"></iframe>';
 
-	}*/
+	}
 
     static function get_campaign_form_shortcode($campaign_id) {
         return '[leyka_campaign_form id="'.$campaign_id.'"]';
