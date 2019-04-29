@@ -347,9 +347,28 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <div class="field-wrapper css-editor">
 
-                <?php $campaign_css_original = '/* Some style 1 */ '.__('/* Style 1 comment */', 'leyka')."\n".
-                    '/* Some style 2 */ '.__('/* Style 2 comment */', 'leyka')."\n".
-                    '/* Some style 3 */ '.__('/* Style 3 comment */', 'leyka');?>
+                <?php $campaign_css_original = '/* :root { --leyka-color-main: #ff510d; } */ '
+                    .__('/* Active buttons & switches background color */', 'leyka')."\n". // Цвет фона активных кнопок и переключателей
+                    '/* :root { --leyka-color-main-second: #ffc29f; } */ '
+                    .__('/* Controls borders color */', 'leyka')."\n". // Цвет рамок элементов управления
+                    '/* :root { --leyka-color-main-third: #fef5f1; } */ '
+                    .__('/* Selected payment method background color */', 'leyka')."\n". // Цвет фона выбранного ПМа
+                    '/* :root { --leyka-color-main-inactive: rgba(255,81,13, 0.5); } */ '
+                    .__('/* Inactive main submit background color */', 'leyka')."\n". // Цвет фона неактивного сабмита
+                    '/* :root { --leyka-color-error: #d43c57; } */ '
+                    .__('/* Error messages text color */', 'leyka')."\n". // Цвет текста сообщений об ошибках (напр, валидации)
+                    '/* :root { --leyka-color-gray-dark: #474747; } */ '
+                    .__('/* The main text color (controls & content) */', 'leyka')."\n". // Основной цвет текста контента и элементов управления
+                    '/* :root { --leyka-color-gray-semi-dark: #656565; } */ '
+                    .__('/* Single/recurring switch inactive variant text color */', 'leyka')."\n". // Цвет текста на неактивном варианте переключателя "разово/рекуррентно"
+                    '/* :root { --leyka-color-gray: #666666; } */ '
+                    .__('/* Form fields labels color */', 'leyka')."\n". // Цвет подписей к полям и названий способов оплаты
+                    '/* :root { --leyka-color-gray-superlight: #ededed; } */ '
+                    .__('/* Checkboxes & other fields borders color */', 'leyka')."\n". // Цвет бордеров полей и границ чекбоксов
+                    '/* :root { --leyka-color-white: #ffffff; } */ '
+                    .__('/* The main form background color */', 'leyka')."\n". // Основной цвет фона формы
+                    '/* :root { --leyka-font-main: unset; } */ '
+                    .__('/* The main form color */', 'leyka')."\n";?>
 
                 <textarea id="campaign-css-field" name="campaign_css" class="css-editor-field"><?php echo $campaign->additional_css ? $campaign->additional_css : $campaign_css_original;?></textarea>
                 <div class="css-editor-reset-value"><?php _e('Return original styles', 'leyka');?></div>

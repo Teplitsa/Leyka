@@ -6,7 +6,7 @@
     // periodicity
     &.periodicity {
         display: flex;
-        font-family: unset;
+        font-family: $leyka-font-main;
         
         a {
             @include star-control-frame();
@@ -70,7 +70,7 @@
     // amount swiper
     .amount__figure.star-swiper {
         span {
-            font-family: unset;
+            font-family: $leyka-font-main;
         }
         
         &.only-one-item {

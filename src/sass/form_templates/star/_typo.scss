@@ -1,7 +1,7 @@
 /** == Typography (_typo.scss) == **/
 
 @mixin star-text($mod: default) {
-	font-family: unset;
+	font-family: $leyka-font-main;
 	font-weight: normal;
 	font-style: normal;
 	line-height: normal;
