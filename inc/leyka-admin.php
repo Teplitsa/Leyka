@@ -12,11 +12,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 		add_action('admin_menu', array($this, 'admin_menu_setup'), 9);
 
-		add_action('admin_enqueue_scripts', array($this, 'loadFrontendScripts'));
+		add_action('admin_enqueue_scripts', array($this, 'load_frontend_scripts'));
 
         add_action('admin_init', array($this, 'pre_admin_actions'));
 
-        add_action('wp_ajax_leyka_send_feedback', array($this, 'ajaxSendFeedback'));
+        add_action('wp_ajax_leyka_send_feedback', array($this, 'ajax_send_feedback'));
 
         add_filter('plugin_row_meta', array($this, 'set_plugin_meta'), 10, 2);
 
@@ -128,7 +128,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), 'leyka_manage_options', 'leyka_settings', array($this, 'settings_screen'));
 
-        add_submenu_page('leyka', __('Connect to us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedbackScreen'));
+        add_submenu_page('leyka', __('Connect to us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedback_screen'));
 
         // Wizards pages group:
         add_submenu_page(NULL, 'Some Leyka Wizard', 'Some Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', array($this, 'settings_new_screen'));
@@ -579,7 +579,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	}
 
     /** Displaying feedback **/
-    public function feedbackScreen() {
+    public function feedback_screen() {
 
         if( !current_user_can('leyka_manage_donations') ) {
             wp_die(__('You do not have permissions to access this page.', 'leyka'));
@@ -638,7 +638,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
     <?php }
 
     /** Feedback page processing */
-    public function ajaxSendFeedback() {
+    public function ajax_send_feedback() {
 
         if( !wp_verify_nonce($_POST['nonce'], 'leyka_feedback_sending') ) {
             die('1');
@@ -701,9 +701,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         die($res ? '0' : '3');
 
     }
-	
+
 	/** CSS/JS **/
-	public function loadFrontendScripts() {
+	public function load_frontend_scripts() {
 
 		wp_enqueue_style('leyka-icon', LEYKA_PLUGIN_BASE_URL.'css/admin-icon.css', array(), LEYKA_VERSION);
 
@@ -815,6 +815,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 'aria_sortAsc' => __(': activate to sort column ascending', 'leyka'),
                 'aria_sortDesc' => __(': activate to sort column descending', 'leyka'),
             ));
+
+            wp_enqueue_code_editor(array('type' => 'text/css')); // Add the code editor lib
 
         }
 

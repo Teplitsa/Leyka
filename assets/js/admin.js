@@ -268,6 +268,21 @@ jQuery(document).ready(function($){
 
     });
 
+    // Custom CSS editor:
+    let $css_editor = $('.css-editor-field');
+    if($css_editor.length) {
+
+        var editor_settings = wp.codeEditor.defaultSettings ? _.clone( wp.codeEditor.defaultSettings ) : {};
+        editor_settings.codemirror = _.extend({
+            },
+            editor_settings.codemirror, {
+            indentUnit: 2,
+            tabSize: 2,
+            mode: 'css',
+        });
+        var editor = wp.codeEditor.initialize($css_editor, editor_settings);
+    }
+
 });
 /** Gateways settings board */
 
