@@ -174,7 +174,7 @@ function leyka_gateway_setup_wizard($gateway) {
  */
 function leyka_wizard_started($gateway_wizard_name) {
     
-    $wizard_controller = Leyka_Settings_Factory::get_instance()->getController($gateway_wizard_name);
+    $wizard_controller = Leyka_Settings_Factory::get_instance()->get_controller($gateway_wizard_name);
     return count($wizard_controller->history) > 0;
     
 }

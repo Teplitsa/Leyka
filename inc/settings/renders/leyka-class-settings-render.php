@@ -25,7 +25,7 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
      * @param Leyka_Settings_Controller $controller
      * @return Leyka_Settings_Render
      */
-    public function setController(Leyka_Settings_Controller $controller) {
+    public function set_controller(Leyka_Settings_Controller $controller) {
 
         $this->_controller = $controller;
 
@@ -33,7 +33,7 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
 
     }
 
-    abstract public function renderPage();
+    abstract public function render_page();
 
     abstract public function renderNavigationArea();
     abstract public function renderMainArea();

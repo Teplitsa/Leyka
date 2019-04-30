@@ -23,8 +23,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		add_filter('plugin_action_links_'.LEYKA_PLUGIN_INNER_SHORT_NAME, array($this, 'add_plugins_list_links'));
 
         // Metaboxes support where it is needed:
-        add_action('leyka_pre_settings_actions', array($this, 'full_metaboxes_support'));
-        add_action('leyka_dashboard_actions', array($this, 'full_metaboxes_support'));
+        /** @todo Remove the lines if needed */
+//        add_action('leyka_pre_settings_actions', array($this, 'full_metaboxes_support'));
+//        add_action('leyka_dashboard_actions', array($this, 'full_metaboxes_support'));
 
     }
 
@@ -64,7 +65,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
                 $admin_title = get_bloginfo('name')
                     .' &#8212; '
-                    .Leyka_Settings_Factory::get_instance()->getController($screen_full_id[1])->title;
+                    .Leyka_Settings_Factory::get_instance()->get_controller($screen_full_id[1])->title;
 
             }
 
@@ -162,241 +163,132 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             wp_die(__('Sorry, but you do not have permissions to access this page.', 'leyka'));
         }
 
-		do_action('leyka_dashboard_actions'); // Collapsible
+        do_action('leyka_pre_dashboard_actions');?>
 
-		add_meta_box('leyka_guide', __('First steps', 'leyka'), array($this, 'guide_metabox_screen'), 'toplevel_page_leyka', 'normal');
-		add_meta_box('leyka_status', __('Settings', 'leyka'), array($this, 'status_metabox_screen'), 'toplevel_page_leyka', 'normal');
-		add_meta_box('leyka_history', __('Recent donations', 'leyka'), array($this, 'history_metabox_screen'), 'toplevel_page_leyka', 'normal');
-		add_meta_box('leyka_campaigns', __('Recent campaings', 'leyka'), array($this, 'campaigns_metabox_screen'), 'toplevel_page_leyka', 'normal');?>
+		<div class="wrap leyka-admin leyka-dashboard-page">
+		    <h1><?php _e('Leyka dashboard', 'leyka');?></h1>
 
-		<div class="wrap">
-            <h2><?php _e('Leyka Dashboard', 'leyka');?></h2>
-            <div class="metabox-holder" id="leyka-widgets">
-                <div class="postbox-container" id="postbox-container-1">
-                    <?php do_meta_boxes('toplevel_page_leyka', 'normal', null);?>
+            <?php if(leyka()->opt('send_plugin_stats') !== 'y') {?>
+            <div class="send-plugin-stats-invite">
+                <div class="invite-text">
+                    <?php _e('Please, turn on the option to send anonymous plugin usage data to help us diagnose', 'leyka');?>
                 </div>
-                <div class="postbox-container" id="postbox-container-2">
-                    <?php $this->dashboard_sidebar_screen();?>
+                <div class="invite-link">
+                    <button class="send-plugin-usage-stats-y"><?php _e('Allow usage statistics collection', 'leyka');?></button>
                 </div>
-		</div>
-	<?php
-	}
-
-    public function guide_metabox_screen() {
-
-		$row['step_1'] = array(
-			'txt'    => __('Fill in information about your organisation', 'leyka'),
-			'action' => leyka_are_settings_complete('beneficiary') ? false : admin_url('admin.php?page=leyka_settings&stage=beneficiary'),
-			'docs'   => 'https://leyka.te-st.ru/docs/nastrojka-lejki/'
-		);
-		$row['step_2'] = array(
-			'txt'    => __('Set up at least one payment gateway - bank order, for example', 'leyka'),
-			'action' => leyka_is_min_payment_settings_complete() ?
-                false : admin_url('admin.php?page=leyka_settings&stage=payment'),
-			'docs'   => 'https://leyka.te-st.ru/docs/nastrojka-lejki-vkladka-2-platezhnye-optsii/'
-		);
-		$row['step_3'] = array(
-			'txt'    => __('Create and publsih your first campaign', 'leyka'),
-			'action' => leyka_is_campaign_published() ?
-                false : admin_url('post-new.php?post_type='.Leyka_Campaign_Management::$post_type),
-			'docs'   => 'https://leyka.te-st.ru/docs/sozdanie-kampanii/'
-		);
-
-		if(current_theme_supports('widgets')) {
-			$row['step_4'] = array(
-				'txt'    => __('Display campaign and donation information on your site using widgets', 'leyka'),
-				'action' => leyka_is_widget_active() ? false : admin_url('widgets.php'),
-				'docs'   => 'https://leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/'
-			);
-		} elseif(current_theme_supports('menus')) {
-			$row['step_4'] = array(
-				'txt'    => __('Display campaign\'s link on your site using menus', 'leyka'),
-				'action' => leyka_is_campaign_link_in_menu() ? false : admin_url('nav-menus.php'),
-				'docs'   => 'https://leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/'
-			);
-		}?>
-
-	<table class="leyka-guide-table">		
-		<tbody>
-		<?php $count = 0;
-			foreach($row as $key => $obj) { $count++;?>
-
-			<tr class="<?php echo esc_attr($key);?>">
-				<td class="count"><?php echo $count;?>.</td>
-				<td class="step"><?php echo $obj['txt'];?></td>
-				<?php if($obj['action']) {?>
-				<td class="action"><a href="<?php echo esc_url($obj['action']);?>"><?php _e('Set up', 'leyka');?></a></td>
-				<td class="docs"><a href="<?php echo esc_url($obj['docs']);?>" title="<?php esc_attr_e('Additional information on the plugin website', 'leyka');?>" target="_blank"><span class="dashicons dashicons-editor-help"></span></a></td>
-				<?php } else {?>
-				<td class="action complete"><span><?php _e('Complete', 'leyka');?></span></td>
-				<?php }?>
-			</tr>
-		<?php }?>
-		</tbody>
-	</table>
-
-    <?php }
-
-	public function status_metabox_screen(){
-
-		$tabs = Leyka_Options_Allocator::get_instance()->getTabs();
-		if($tabs) {?>
-
-		<table class="leyka-widget-table status">
-		<thead>
-			<tr>
-			<th class="type"><?php _e('Settings type', 'leyka');?></th>			
-			<th class="status">&nbsp;</th>
-			<th class="details">&nbsp;</th>
-			</tr>
-		</thead>
-		<tbody>
-		<?php
-			foreach($tabs as $id => $label) {
-				$url = admin_url("admin.php?page=leyka_settings&stage=$id");
-				$description = apply_filters('leyka_settings_tabs_description',
-					array(
-						'beneficiary' => __('Banking and legal information about your organisation', 'leyka'),
-						'payment' => __('Payment method\' settings for all you payment forms', 'leyka'),
-						'currency' => __('Selection of currencies supported in the system', 'leyka'),
-						'email' => __('Gratification email to donor and staff notification notices', 'leyka'),
-						'view' => __('Settings for frontend elements, like donation form templates', 'leyka'),
-						'additional' => __('Various template tweaks (advanced)', 'leyka'),
-					)
-				);?>
-
-			<tr>
-				<td><?php echo $label;?></td>
-				<td><em><?php echo empty($description[$id]) ? '-' : $description[$id];?></em></td>
-				<td><a href="<?php echo $url;?>"><?php _e('Edit', 'leyka');?></a></td>
-			</tr>
-
-		<?php }?>
-		</tbody>
-		</table>		
-		<?php }
-
-	}
-
-	public function history_metabox_screen() {
-
-		$query = new WP_Query(array(
-			'post_type' => Leyka_Donation_Management::$post_type,
-			'post_status' => 'any',
-			'posts_per_page' => 5,
-		));
-
-		if($query->have_posts()) {?>
-
-		<table class="leyka-widget-table history">
-            <thead>
-                <tr>
-                    <th class="date"><?php esc_html_e('Date', 'leyka');?></th>
-                    <th class="title"><?php esc_html_e('Purpose', 'leyka');?></th>
-                    <th class="donor"><?php esc_html_e('Donor', 'leyka');?></th>
-                    <th class="amount"><?php esc_html_e('Amount', 'leyka');?></th>
-                    <th class="status"><?php esc_html_e('Status', 'leyka');?></th>
-                    <th class="details">&nbsp;</th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php foreach($query->posts as $cp) {
-
-                $donation = new Leyka_Donation($cp);
-                $url = get_edit_post_link($donation->ID);?>
-
-                <tr>
-                    <td><?php echo $donation->date;?></td>
-                    <td><?php echo $donation->title;?></td>
-                    <td>
-                        <?php echo ($donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka'))
-                            .($donation->donor_email ? ' ('.$donation->donor_email.')' : '');?>
-                    </td>
-                    <td><?php echo $donation->amount.' '.$donation->currency_label;?></td>
-                    <td><?php echo $donation->status_label;?></td>
-                    <td><a href="<?php echo esc_url($url); ?>"><?php esc_html_e('Details', 'leyka'); ?></a></td>
-                </tr>
-
+            </div>
             <?php }?>
 
-            </tbody>
-		</table>
+		    <div class="leyka-dashaboard-content">
 
-		<?php } else {?>
-			<p class="empty-notice"><?php _e('You have not received any donations yet', 'leyka');?></p>
-		<?php }
+		        <div class="main-col">
 
-	}
+                    <?php if($this->has_banners('admin-dashboard', 'main')) {
+                        $this->show_banner('admin-dashboard', 'main');
+                    }?>
 
-	public function campaigns_metabox_screen() {
-		
-		$query = new WP_Query(array(
-			'post_type' => Leyka_Campaign_Management::$post_type,
-			'post_status' => 'any',
-			'posts_per_page' => 5,
-		));
+                    <div class="plugin-data-interval">
+                        <a href="#" data-leyka-current-interval="true"><?php _e('Year', 'leyka');?></a>
+                        <a href="#"><?php _e('Half-year', 'leyka');?></a>
+                        <a href="#"><?php _e('Quarter', 'leyka');?></a>
+                        <a href="#"><?php _e('Month', 'leyka');?></a>
+                        <a href="#"><?php _e('Week', 'leyka');?></a>
+                    </div>
 
-		if($query->have_posts()) {?>
+                    <div class="leyka-dashboard-row">
+                        <?php $this->show_admin_portlet('stats-donations-main');
+                        $this->show_admin_portlet('stats-recurring');?>
+                    </div>
 
-		<table class="leyka-widget-table campaigns">
-            <thead>
-                <tr>
-                    <th class="title"><?php esc_html_e('Title', 'leyka');?></th>
-                    <th class="payment"><?php esc_html_e('Purpose', 'leyka');?></th>
-                    <th class="details">&nbsp;</th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php foreach($query->posts as $cp) {
+                    <div class="leyka-dashboard-row">
+                        <?php $this->show_admin_portlet('donations-dynamics');?>
+                    </div>
 
-                $camp = new Leyka_Campaign($cp);
-                $url = get_edit_post_link($camp->ID);?>
+                    <div class="leyka-dashboard-row">
+                        <?php $this->show_admin_portlet('donations-history-short');?>
+                    </div>
 
-            <tr>
-                <td><?php echo $camp->title;?></td>
-                <td><?php echo $camp->payment_title; ?></td>
-                <td><a href="<?php echo esc_url($url); ?>"><?php esc_html_e('Edit', 'leyka');?></a></td>
-            </tr>
+                </div>
+                <div class="sidebar-col">
+                    <?php $this->show_dashboard_sidebar();?>
+                </div>
+            </div>
 
-            <?php }?>
+            <div class="leyka-dashboard-footer">
+                Te-st logo & "made by" branding here.
+            </div>
 
-            </tbody>
-		</table>
+        </div>
 
-		<?php } else {
-
-			$url = admin_url('post-new.php?post_type=leyka_campaign');?>
-
-			<p class="empty-notice"><?php _e('You don\'t have any campaign yet.', 'leyka');?>
-			    <a href="<?php echo esc_url($url); ?>"><?php esc_html_e('Create first one', 'leyka'); ?></a>
-            </p>
-
-		<?php }
+	<?php do_action('leyka_post_dashboard_actions');
 
 	}
 
-	public function dashboard_sidebar_screen() {?>
+	public function show_admin_portlet($portlet_id) {
 
-		<div id="leyka-card">
-            <h2><i></i><?php esc_html_e('Leyka', 'leyka');?></h2>
-            <p><?php _e('Leyka is a simple donations management system', 'leyka');?></p>
-            <p>
-                <?php _e('Developed by <a href="http://te-st.ru/" target="_blank" rel="noopener noreferrer">Teplitsa of social technologies</a>', 'leyka');?>
-            </p>
-            <p class="te-st">
-                <img src="//leyka.te-st.ru/wp-content/uploads/assets/tst-logo.svg" onerror="this.onerror=null;this.src='//leyka.te-st.ru/wp-content/uploads/assets/tst-logo.png'" alt="">
-            </p>
-            <ul class="leyka-ref-links">
-                <li><a href="https://leyka.te-st.ru" target='_blank' rel="noopener noreferrer"><?php esc_html_e('Plugin website', 'leyka');?></a></li>
-                <li><a href="https://leyka.te-st.ru/instruction/" target='_blank' rel="noopener noreferrer"><?php esc_html_e('Documentation', 'leyka');?></a></li>
-                <li><a href="<?php echo admin_url('admin.php?page=leyka_feedback');?>"><?php esc_html_e('Ask a question', 'leyka');?></a></li>
-                <li><a href="https://github.com/Teplitsa/Leyka/issues/new" target='_blank' rel="noopener noreferrer"><?php _e('Create issue at GitHub', 'leyka');?></a></li>
-            </ul>
-		</div>
+	    /** @todo Require portlet template & data from /inc/portlets/{$portlet_id} */?>
 
-	<?php leyka_itv_info_widget();
+	    <div class="leyka-admin-portlet">
 
+            <div class="portlet-header">
+                <?php echo '<pre>Header for portlet: '.print_r($portlet_id, 1).'</pre>';?>
+            </div>
+
+            <div class="portlet-content">
+                <?php echo '<pre>Content for portlet: '.print_r($portlet_id, 1).'</pre>';?>
+            </div>
+
+        </div>
+
+    <?php
 	}
+
+	/** @todo Finish it */
+	public function show_dashboard_sidebar() {?>
+
+		<div class="leyka-dashboard-sidebar-part">
+
+            <div class="leyka-logo"><img src="" alt=""></div>
+
+            <div class="leyka-description">
+                Лейка - простая система для сбора и управления пожертвованиями на вашем сайте
+            </div>
+
+            <div class="leyka-official-website">
+                <a href="//leyka.te-st.ru/" target="_blank"><?php _e('Go to the plugin documentation', 'leyka');?></a>
+            </div>
+
+        </div>
+
+        <div class="leyka-dashboard-sidebar-part">
+            <h3><?php _e('My data', 'leyka');?></h3>
+            <div class="sidebar-part-content">
+
+            </div>
+        </div>
+        <div class="leyka-dashboard-sidebar-part">
+            <h3><?php  _e('Payment gateways', 'leyka');?></h3>
+            <div class="sidebar-part-content">
+
+            </div>
+        </div>
+        <div class="leyka-dashboard-sidebar-part">
+            <h3><?php  _e('Diagnostic data', 'leyka');?></h3>
+            <div class="sidebar-part-content">
+
+            </div>
+        </div>
+
+        <?php
+	}
+
+	public function has_banners($page = false, $location = false) {
+	    return false; /** @todo Only for nooooow */
+    }
+
+    public function show_banner($page = false, $location = false) {
+        return false; /** @todo Only for nooooow */
+    }
 	
 	public function is_v3_settings_page($stage) {
 		return in_array($stage, array('payment', 'email', 'beneficiary', 'technical', 'view', 'additional'));
@@ -414,6 +306,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         $current_stage = $this->get_current_settings_tab();
 		$is_separate_sections_forms = $this->is_separate_forms_stage($current_stage);
+
+        echo '<pre>'.print_r($current_stage, 1).'</pre>';
 
 		require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php'); // Basic Controller class
         require_once(LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-common.php');
@@ -523,6 +417,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	<?php
 	}
 
+	/** Settings factory-controlled display (ATM, Wizards only) */
 	public function settings_new_screen() {
 
 	    if(empty($_GET['screen']) || count(explode('-', $_GET['screen'])) < 2) {
@@ -542,9 +437,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         try {
 
-            Leyka_Settings_Factory::get_instance()->getRender($screen_full_id[0])
-                ->setController(Leyka_Settings_Factory::get_instance()->getController($screen_full_id[1]))
-                ->renderPage();
+            Leyka_Settings_Factory::get_instance()->get_render($screen_full_id[0])
+                ->set_controller(Leyka_Settings_Factory::get_instance()->get_controller($screen_full_id[1]))
+                ->render_page();
 
         } catch(Exception $ex) {
             echo '<pre>'.print_r('Settings page error (code '.$ex->getCode().'): '.$ex->getMessage(), 1).'</pre>';
@@ -766,14 +661,27 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         ));
 
 		if($leyka_admin_new) {
+
 			wp_enqueue_script('leyka-easy-modal', LEYKA_PLUGIN_BASE_URL . 'js/jquery.easyModal.min.js', array(), false, true);
-            wp_enqueue_script('leyka-settings', LEYKA_PLUGIN_BASE_URL.'assets/js/admin.js', array('jquery',), LEYKA_VERSION, true);
+            wp_enqueue_script(
+                'leyka-settings',
+                LEYKA_PLUGIN_BASE_URL.'assets/js/admin.js',
+                array('jquery',),
+                LEYKA_VERSION,
+                true
+            );
             wp_localize_script('leyka-settings', 'leyka', $js_data);
 
         } else {
 
             wp_enqueue_script('leyka-admin', LEYKA_PLUGIN_BASE_URL.'js/admin.js', $dependencies, LEYKA_VERSION, true);
-			wp_enqueue_script('leyka-admin-helpchat', LEYKA_PLUGIN_BASE_URL.'js/settings-helpchat.js', $dependencies, LEYKA_VERSION, true);
+			wp_enqueue_script(
+			    'leyka-admin-helpchat',
+			    LEYKA_PLUGIN_BASE_URL.'js/settings-helpchat.js',
+			    $dependencies,
+			    LEYKA_VERSION,
+			    true
+            );
             wp_localize_script('leyka-admin', 'leyka', $js_data);
 
         }
