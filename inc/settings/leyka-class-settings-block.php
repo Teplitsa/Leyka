@@ -348,7 +348,7 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
             case 'field_data':
                 return $this->_field_data;
             case 'is_standard_field_type':
-                return leyka_options()->isStandardFieldType($this->_field_type);
+                return leyka_options()->is_standard_field_type($this->_field_type);
             default: return parent::__get($name);
         }
 

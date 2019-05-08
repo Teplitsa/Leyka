@@ -22,6 +22,7 @@ function leyka_get_gateways() {
  * @param mixed $activity True to select only active PMs, false for only non-active ones,
  * NULL for both types altogether.
  * @param $currency mixed
+ * @param $sorted boolean
  * @return array
  */
 function leyka_get_pm_list($activity = null, $currency = false, $sorted = true) {
@@ -46,7 +47,6 @@ function leyka_get_pm_list($activity = null, $currency = false, $sorted = true) 
         }
 
     } else {
-
         foreach(leyka()->get_gateways() as $gateway) { /** @var Leyka_Gateway $gateway */
             $pm_list = array_merge($pm_list, $gateway->get_payment_methods($activity, $currency));
         }
@@ -266,12 +266,12 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             case 'description': return $this->_description;
             case 'icon':
             case 'icon_url':
-                $icon = false; /** "@todo Make all the gateways icons SVGs! */
+                $icon = false;
                 if($this->_icon) {
                     $icon = $this->_icon;
-                } elseif(file_exists(LEYKA_PLUGIN_DIR."gateways/{$this->_id}/icons/{$this->_id}.svg")) {
+                } else if(file_exists(LEYKA_PLUGIN_DIR."gateways/{$this->_id}/icons/{$this->_id}.svg")) {
                     $icon = LEYKA_PLUGIN_BASE_URL."gateways/{$this->_id}/icons/{$this->_id}.svg";
-                } elseif(file_exists(LEYKA_PLUGIN_DIR."gateways/{$this->_id}/icons/{$this->_id}.png")) {
+                } else if(file_exists(LEYKA_PLUGIN_DIR."gateways/{$this->_id}/icons/{$this->_id}.png")) {
                     $icon = LEYKA_PLUGIN_BASE_URL."gateways/{$this->_id}/icons/{$this->_id}.png";
                 }
                 return $icon;
@@ -525,6 +525,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
      * @param mixed $activity True to select only active PMs, false for only non-active ones,
      * NULL for both types altogether.
      * @param mixed $currency
+     * @param boolean $by_categories
      * @return array Of Leyka_Payment_Method objects.
      */
     public function get_payment_methods($activity = null, $currency = false, $by_categories = false) {
@@ -572,7 +573,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     /**
      * @param string $pm_id
-     * @return Leyka_Payment_Method Object, or false if it's not found.
+     * @return Leyka_Payment_Method Object|boolean.
      */
     public function get_payment_method_by_id($pm_id) {
         return empty($this->_payment_methods[$pm_id]) ? false : $this->_payment_methods[$pm_id];

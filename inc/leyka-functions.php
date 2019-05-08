@@ -939,7 +939,7 @@ function leyka_get_actual_currency_rates() {
 function leyka_are_settings_complete($settings_tab) {
 
     $settings_complete = true;
-    $tab_options = leyka_opt_alloc()->getTabOptions($settings_tab); // Specially to support PHP strict standards
+    $tab_options = leyka_opt_alloc()->get_tab_options($settings_tab); // Specially to support PHP strict standards
     
     $receiver_legal_type = leyka_options()->opt_safe('receiver_legal_type');
     
@@ -1837,6 +1837,54 @@ function leyka_get_all_options() {
     }
 
     return $res;
+
+}
+
+function leyka_is_tab_valid($tab_id) {
+
+    $tab_options = Leyka_Options_Allocator::get_instance()->get_tab_options($tab_id);
+
+    if( !$tab_options ) {
+        return false;
+    }
+
+    foreach($tab_options as $key => $option_params) {
+
+        if($key === 'section') {
+
+            if( !empty($option_params['options']) ) { // Noramal section - validate all options
+                foreach($option_params['options'] as $option_id) {
+                    if( !leyka_options()->is_valid($option_id) ) {
+                        return false;
+                    }
+                }
+            } else if( !empty($option_params['tabs']) ) {
+
+                foreach($option_params['tabs'] as $sub_tab_id => $sub_tab_content) {
+
+                    if( !empty($sub_tab_content['sections']) ) {
+                        foreach($sub_tab_content['sections'] as $sub_section) {
+                            if( !empty($sub_section['options']) ) {
+                                foreach($sub_section['options'] as $sub_section_option_id) {
+                                    if( !leyka_options()->is_valid($sub_section_option_id) ) {
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+            }
+
+        } else if( !leyka_options()->is_valid($key) ) { // Validate single option
+            return false;
+        }
+
+    }
+
+    return true;
 
 }
 

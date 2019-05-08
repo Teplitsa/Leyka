@@ -28,7 +28,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         $this->add_template_options();
     }
 
-    public function isStandardFieldType($type) {
+    public function is_standard_field_type($type) {
         return in_array($type, self::$_field_types);
     }
 

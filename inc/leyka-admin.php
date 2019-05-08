@@ -251,7 +251,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             <div class="leyka-logo"><img src="" alt=""></div>
 
             <div class="leyka-description">
-                Лейка - простая система для сбора и управления пожертвованиями на вашем сайте
+                <?php _e('Leyka is a simple donations collection & management system for your website', 'leyka'); // Лейка - простая система для сбора и управления пожертвованиями на вашем сайте ?>
             </div>
 
             <div class="leyka-official-website">
@@ -261,22 +261,90 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         </div>
 
         <div class="leyka-dashboard-sidebar-part">
+
             <h3><?php _e('My data', 'leyka');?></h3>
-            <div class="sidebar-part-content">
 
+            <div class="sidebar-part-content settings-state">
+            <?php foreach(leyka_opt_alloc()->get_tabs() as $tab_id => $tab_title) {?>
+
+                <div class="settings-tab-set">
+                    <div class="tab-setup-status <?php echo leyka_is_tab_valid($tab_id) ? 'tab-ok' : '';?>"></div>
+                    <div class="tab-title"><?php echo $tab_title;?></div>
+                </div>
+
+            <?php }?>
             </div>
+
+            <a href="<?php echo admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init');?>" class="init-wizard-link"><?php _e('To the step-by-step setup', 'leyka'); // Перейти к пошаговой установке ?></a>
+
         </div>
+
         <div class="leyka-dashboard-sidebar-part">
+
             <h3><?php  _e('Payment gateways', 'leyka');?></h3>
-            <div class="sidebar-part-content">
+
+            <div class="sidebar-part-content gateways">
+
+                <?php foreach(leyka()->get_gateways('activating') as $gateway) {?>
+                <div class="gateway status-activating">
+                    <div class="gateway-logo"><img src="<?php echo $gateway->icon_url;?>" alt=""></div>
+                    <div class="gateway-data">
+                        <div class="gateway-title"><?php echo $gateway->title;?></div>
+                        <div class="gateway-activation-status"><?php _e('Activating', 'leyka');?></div>
+                    </div>
+                </div>
+                <?php }?>
+
+                <?php foreach(leyka()->get_gateways('active') as $gateway) {?>
+                    <div class="gateway status-active">
+                        <div class="gateway-logo"><img src="<?php echo $gateway->icon_url;?>" alt=""></div>
+                        <div class="gateway-data">
+                            <div class="gateway-title"><?php echo $gateway->title;?></div>
+                            <div class="gateway-activation-status"><?php _e('Activating', 'leyka');?></div>
+                        </div>
+                    </div>
+                <?php }?>
 
             </div>
+
+            <div class="add-gateway-link"><?php _e('Add gateway', 'leyka'); /** @todo Where the link should lead? */?></div>
+
         </div>
-        <div class="leyka-dashboard-sidebar-part">
-            <h3><?php  _e('Diagnostic data', 'leyka');?></h3>
-            <div class="sidebar-part-content">
 
+        <div class="leyka-dashboard-sidebar-part">
+
+            <h3><?php  _e('Diagnostic data', 'leyka');?></h3>
+
+            <div class="sidebar-part-content diagnostic-data">
+                <div class="data-line"><?php echo __('Leyka:', 'leyka').' '.LEYKA_VERSION;?></div>
+                <div class="data-line">
+                    <?php $template = leyka()->get_template(leyka()->opt('donation_form_template'));
+                    echo __('Default template:', 'leyka').' '.__($template['name'], 'leyka');?>
+                </div>
+                <div class="data-line php-actuality-status">
+
+                    <?php if(version_compare(phpversion(), '5.6') == -1) {
+                        $php_version_actuality = 'bad';
+                    } else if(version_compare(phpversion(), '5.6') >= 0 && version_compare(phpversion(), '7.1') == -1) {
+                        $php_version_actuality = 'average';
+                    } else if(version_compare(phpversion(), '7.1') >= 0 && version_compare(phpversion(), '7.2') == -1) {
+                        $php_version_actuality = 'good';
+                    } else {
+                        $php_version_actuality = 'excellent';
+                    }?>
+
+                    <div class="php-version <?php echo $php_version_actuality;?>"><?php echo 'PHP: '.phpversion();?></div>
+
+                </div>
+                <div class="data-line"><?php echo 'WordPress: '.get_bloginfo('version');?></div>
+                <div class="data-line cron-state">Cron: <span class="cron-connected"><?php _e('connected', 'leyka');?></span></div>
+                <div class="data-line"></div>
+                <div class="data-line"></div>
+                <div class="data-line"></div>
+                <div class="data-line"></div>
+                <div class="data-line"></div>
             </div>
+
         </div>
 
         <?php
@@ -320,7 +388,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 !empty($_POST["leyka_settings_{$current_stage}_submit"])
                 || !empty($_POST["leyka_settings_stage-{$current_stage}_submit"])
             )
-	        /** @todo Find what's wrong with the nonce check below: */
+	        /** @todo Find what's wrong with the nonce check. */
 //	        && wp_verify_nonce('_leyka_nonce', "leyka_settings_{$current_stage}")
         ) {
 
@@ -361,14 +429,14 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
                     do_action("leyka_settings_pre_{$current_stage}_fields");
 
-                    foreach(leyka_opt_alloc()->getTabOptions($current_stage) as $option) { // Render each option/section
+                    foreach(leyka_opt_alloc()->get_tab_options($current_stage) as $option) { // Render each option/section
 
 						if($is_separate_sections_forms) {?>
 
                         <form method="post" action="<?php echo admin_url($admin_page);?>" id="leyka-settings-form">
 
 							<?php if(isset($option['section']['name'])) {?>
-							<input type="hidden" name="leyka_options_section" value="<?php echo $option['section']['name'];?>" />
+							<input type="hidden" name="leyka_options_section" value="<?php echo $option['section']['name'];?>">
 							<?php }?>
 
 						<?php wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
@@ -405,9 +473,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
                 }?>
 
-				<?php if(!$is_separate_sections_forms) {?>
+				<?php if( !$is_separate_sections_forms ) {?>
                 </form>
 				<?php }?>
+
             </div>
 
 			<?php include(LEYKA_PLUGIN_DIR.'inc/settings-fields-templates/leyka-helpchat.php');?>
@@ -460,7 +529,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		$base_url = 'admin.php?page=leyka_settings';
 
 		$out = '';
-		foreach(Leyka_Options_Allocator::get_instance()->getTabs() as $tab_id => $tab_label) {
+		foreach(Leyka_Options_Allocator::get_instance()->get_tabs() as $tab_id => $tab_label) {
 			$out .= '<a href="'
 			    .($this->get_default_settings_tab() === $tab_id ? $base_url : add_query_arg('stage', $tab_id, $base_url))
 			    .'" class="'.($this->get_current_settings_tab() === $tab_id ? 'nav-tab nav-tab-active' : 'nav-tab').'">'
