@@ -363,9 +363,9 @@ function leyka_get_success_page_url() {
         $url = home_url();
     }
     
-    $leyla_template_data = leyka_get_current_template_data();
-    if(!empty($leyla_template_data['id'])) {
-        $url = leyka_template_to_query_arg( $leyla_template_data['id'], $url );
+    $leyka_template_data = leyka_get_current_template_data();
+    if(!empty($leyka_template_data['id'])) {
+        leyka_remembered_data('template_id', $leyka_template_data['id']);
     }
     
     return $url;
@@ -380,10 +380,9 @@ function leyka_get_campaign_success_page_url($campaign_id) {
         $url = home_url();
     }
     
-    $leyla_template_data = leyka_get_current_template_data($campaign_id);
-    if(!empty($leyla_template_data['id'])) {
-        $url = leyka_template_to_query_arg( $leyla_template_data['id'], $url );
-        $url = add_query_arg('leyka_cid', $campaign_id, $url);
+    $leyka_template_data = leyka_get_current_template_data($campaign_id);
+    if(!empty($leyka_template_data['id'])) {
+        leyka_remembered_data('template_id', $leyka_template_data['id']);
     }
     
     return $url;
@@ -443,9 +442,9 @@ function leyka_get_failure_page_url() {
         $url = home_url();
     }
 
-    $leyla_template_data = leyka_get_current_template_data();
-    if(!empty($leyla_template_data['id'])) {
-        $url = leyka_template_to_query_arg( $leyla_template_data['id'], $url );
+    $leyka_template_data = leyka_get_current_template_data();
+    if(!empty($leyka_template_data['id'])) {
+        leyka_remembered_data('template_id', $leyka_template_data['id']);
     }
     
     return $url;
@@ -460,10 +459,9 @@ function leyka_get_campaign_failure_page_url($campaign_id) {
         $url = home_url();
     }
 
-    $leyla_template_data = leyka_get_current_template_data($campaign_id);
-    if(!empty($leyla_template_data['id'])) {
-        $url = leyka_template_to_query_arg( $leyla_template_data['id'], $url );
-        $url = add_query_arg('leyka_cid', $campaign_id, $url);
+    $leyka_template_data = leyka_get_current_template_data($campaign_id);
+    if(!empty($leyka_template_data['id'])) {
+        leyka_remembered_data('template_id', $leyka_template_data['id']);
     }
     
     return $url;
@@ -2047,18 +2045,6 @@ if( !function_exists('leyka_localize_rich_html_text_tags') ) {
     }
 }
 
-function leyka_template_to_query_arg($template_id, $url) {
-    return add_query_arg('leyka_ctpl', $template_id, $url);
-}
-
-function leyka_template_from_query_arg() {
-    return empty($_GET['leyka_ctpl']) ? null : trim($_GET['leyka_ctpl']);
-}
-
-function leyka_campaign_id_from_query_arg() {
-    return empty($_GET['leyka_cid']) ? null : trim($_GET['leyka_cid']);
-}
-
 function leyka_is_donor_account() {
 
     if( !leyka()->opt('donor_accounts_available') ) {
@@ -2087,7 +2073,9 @@ function leyka_use_leyka_campaign_template($template) {
     if( is_singular(Leyka_Campaign_Management::$post_type) ) {
         $campaign_id = get_post()->ID;
     } else if(is_page(leyka_options()->opt('success_page')) || is_page(leyka_options()->opt('failure_page'))) {
-        $campaign_id = leyka_campaign_id_from_query_arg();
+        $donation_id = leyka_remembered_data('donation_id');
+        $donation = $donation_id ? new Leyka_Donation($donation_id) : null;
+        $campaign_id = $donation ? $donation->campaign_id : null;
     }
 
     if($campaign_id) {

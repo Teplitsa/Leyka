@@ -84,7 +84,9 @@ function leyka_star_body_classes($classes) {
         $campaign_id = get_post()->ID;
     }
     elseif(is_page(leyka_options()->opt('success_page')) || is_page(leyka_options()->opt('failure_page'))) {
-        $campaign_id = leyka_campaign_id_from_query_arg();
+        $donation_id = leyka_remembered_data('donation_id');
+        $donation = $donation_id ? new Leyka_Donation($donation_id) : null;
+        $campaign_id = $donation ? $donation->campaign_id : null;
     }
     
     if($campaign_id) {

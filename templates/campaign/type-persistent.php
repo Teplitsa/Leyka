@@ -12,7 +12,9 @@ $campaign_id = null;
 if(is_singular(Leyka_Campaign_Management::$post_type)) {
     $campaign_id = get_the_ID();
 } else if(is_page(leyka()->opt('success_page')) || is_page(leyka()->opt('failure_page'))) {
-    $campaign_id = leyka_campaign_id_from_query_arg();
+    $donation_id = leyka_remembered_data('donation_id');
+    $donation = $donation_id ? new Leyka_Donation($donation_id) : null;
+    $campaign_id = $donation ? $donation->campaign_id : null;
 }
  
 $cover_url = null;
@@ -50,7 +52,12 @@ $custom_css = get_post_meta($campaign_id, 'campaign_css', true);?>
 
 		<header id="masthead" class="leyka-campaign-header" style="<?php if($cover_url):?>background-image:url('<?php echo $cover_url;?>');<?php endif;?>">
             <div class="header-tint">
-                <a href="#" class="leyka-campaign-logo" style="<?php if($logo_url):?>background-image:url('<?php echo $logo_url;?>');<?php endif;?>"></a>
+            	<?php if($logo_url) {?>
+                <a href="<?php echo home_url();?>" class="leyka-campaign-logo">
+                	<img src="<?php echo $logo_url;?>" />
+                </a>
+                <?php }?>
+                
                 <h1><?php echo get_the_title();?></h1>
             </div>
         </header>

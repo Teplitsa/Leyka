@@ -253,7 +253,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         $val = false;
         if(leyka_options()->is_template_option($option_id)) {
 
-            $template_id = $template_id ? $template_id : leyka_template_from_query_arg();
+            $template_id = $template_id ? $template_id : leyka_remembered_data('template_id');
             
             if( !$template_id ) {
 

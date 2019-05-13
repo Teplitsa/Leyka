@@ -192,7 +192,7 @@ class Leyka extends Leyka_Singleton {
                     && is_main_query()
                 ) {
 
-                    $form_template = leyka_template_from_query_arg();
+                    $form_template = leyka_remembered_data('template_id');
                     $form_template_suffix = $form_template === 'star' ? '-' . $form_template : '';
 
                     ob_start();

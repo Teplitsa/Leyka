@@ -43,12 +43,8 @@
     .leyka-campaign-logo {
         @include star-clean-a();
         display: block;
-        //background-image: url(../../img/persistent_campaign_header_logo.png);
-        background-image: none;
-        background-repeat: no-repeat;
-        background-position: center;
-        width: 280px;
-        height: 50px;
+        width: auto;
+        height: auto;
     }
     
     h1 {
