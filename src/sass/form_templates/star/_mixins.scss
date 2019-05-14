@@ -108,10 +108,10 @@
             width: 45px;
             height: 100%;
             position: absolute;
-            top: 0px;
+            top: 0;
             z-index: 12;
             pointer-events: none;
-            background: linear-gradient(270deg, #FFFFFF 30%, rgba(255, 255, 255, 0) 100%);
+            background: linear-gradient(270deg, $leyka-star-color-gradient 30%, rgba(255, 255, 255, 0) 100%);
     
             &.right {
                 right: 46px;
