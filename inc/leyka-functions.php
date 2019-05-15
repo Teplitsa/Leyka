@@ -2170,30 +2170,75 @@ function get_donor_init_recurring_donation_for_campaign($donor_user, $campaign_i
 }
 
 function leyka_get_dm_list_or_alternatives() {
+
     $dm_list = array();
     
     foreach(explode(',', leyka_options()->opt('leyka_donations_managers_emails')) as $email) {
-        if(!$email) {
-            continue;
+        if($email) {
+            $dm_list[] = $email;
         }
-        
-        $dm_list[] = $email;
     }
     
-    if(empty($dm_list)) {
-        $alt_emails = array(
-            leyka()->opt('tech_support_email'),
-            get_bloginfo('admin_email'),
-        );
-        
+    if( !$dm_list ) {
+
+        $alt_emails = array(leyka()->opt('tech_support_email'), get_bloginfo('admin_email'),);
+
         foreach($alt_emails as $alt_email) {
+
             $alt_email = trim($alt_email);
             if($alt_email) {
                 $dm_list[] = $alt_email;
                 break;
             }
+
         }
+
     }
     
     return $dm_list;
+
+}
+
+function leyka_cronjob_exists($command) {
+
+    exec('crontab -l', $crontab);
+
+    if(isset($crontab) && is_array($crontab)) {
+        return in_array($command, $crontab);
+    }
+
+    return false;
+
+}
+
+function leyka_get_cronjobs_status() {
+
+    $status = 'no-need';
+    foreach(leyka_get_pm_list(true) as $pm) {
+        if($pm->full_id === 'yandex-yandex_card' && leyka()->opt('yandex-yandex_card_rebilling_available')) {
+            if( leyka_cronjob_exists(home_url('/leyka/service/do_recurring/')) ) { /** @todo */
+                $status = 'ok';
+            } else {
+                $status = 'not-set';
+            }
+        }
+    }
+
+    if($status == 'no-need' && leyka()->opt('send_donor_emails_on_campaign_target_reaching')) {
+        if(
+            leyka_cronjob_exists(home_url('/leyka/service/do_campaigns_targets_reaching_mailout/'))
+            || leyka_cronjob_exists(home_url('/leyka/service/procedure/campaigns-targets-reaching-mailout/'))
+        ) {
+            $status = 'ok';
+        }
+    }
+
+    switch($status) {
+        case 'ok': return array('status' => $status, 'title' => __('Connected', 'leyka'));
+        case 'not-set': return array('status' => $status, 'title' => __('Setup needed', 'leyka'));
+        case 'no-need':
+        default:
+            return array('status' => $status, 'title' => __('No need', 'leyka'));
+    }
+
 }

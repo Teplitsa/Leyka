@@ -238,6 +238,9 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             case 'history':
                 return empty($this->_activity['history']) ? array() : $this->_activity['history'];
 
+            case 'navigation_data':
+                return $this->_navigation_data;
+
             default:
                 return parent::__get($name);
         }

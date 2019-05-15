@@ -32,10 +32,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
     }
 
     protected function _loadCssJs() {
-
-        // ...
         parent::_loadCssJs();
-
     }
 
     protected function _setSections() {

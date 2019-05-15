@@ -243,8 +243,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
     <?php
 	}
 
-	/** @todo Finish it */
-	public function show_dashboard_sidebar() {?>
+	public function show_dashboard_sidebar() {
+
+        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php');?>
 
 		<div class="leyka-dashboard-sidebar-part">
 
@@ -260,24 +261,30 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         </div>
 
+        <?php $init_wizard_controller = Leyka_Settings_Factory::get_instance()->get_controller('init');
+        $main_settings_steps = $init_wizard_controller->navigation_data[0]['section_id'] === 'rd' ?
+            $init_wizard_controller->navigation_data[0]['steps'] : array();
+
+        if($main_settings_steps) {?>
         <div class="leyka-dashboard-sidebar-part">
 
             <h3><?php _e('My data', 'leyka');?></h3>
 
             <div class="sidebar-part-content settings-state">
-            <?php foreach(leyka_opt_alloc()->get_tabs() as $tab_id => $tab_title) {?>
+                <?php foreach($main_settings_steps as $step) {?>
 
-                <div class="settings-tab-set">
-                    <div class="tab-setup-status <?php echo leyka_is_tab_valid($tab_id) ? 'tab-ok' : '';?>"></div>
-                    <div class="tab-title"><?php echo $tab_title;?></div>
-                </div>
+                    <div class="settings-tab-set">
+                        <div class="tab-setup-status <?php //echo leyka_is_tab_valid($tab_id) ? 'tab-ok' : '';?>"></div>
+                        <div class="tab-title"><?php echo $step['title'];?></div>
+                    </div>
 
-            <?php }?>
+                <?php }?>
             </div>
 
             <a href="<?php echo admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init');?>" class="init-wizard-link"><?php _e('To the step-by-step setup', 'leyka'); // Перейти к пошаговой установке ?></a>
 
         </div>
+        <?php }?>
 
         <div class="leyka-dashboard-sidebar-part">
 
@@ -337,12 +344,27 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
                 </div>
                 <div class="data-line"><?php echo 'WordPress: '.get_bloginfo('version');?></div>
-                <div class="data-line cron-state">Cron: <span class="cron-connected"><?php _e('connected', 'leyka');?></span></div>
-                <div class="data-line"></div>
-                <div class="data-line"></div>
-                <div class="data-line"></div>
-                <div class="data-line"></div>
-                <div class="data-line"></div>
+
+                <?php $cronjobs_status = leyka_get_cronjobs_status();?>
+                <div class="data-line cron-state">Cron: <span class="cron-state <?php echo $cronjobs_status['status'];?>"><?php echo mb_strtolower($cronjobs_status['title']);?></span></div>
+
+                <div class="data-line">
+                    <?php $protocol = parse_url(home_url(), PHP_URL_SCHEME);
+                    echo __('Protocol:', 'leyka').' ';?>
+                    <span class="protocol <?php echo $protocol == 'https' ? 'safe' : 'not-safe';?>"><?php echo mb_strtoupper($protocol);?></span>
+                </div>
+                <div class="data-line">
+
+                    <?php $php_extensions_needed = array('curl', 'date', 'ereg', 'filter', 'ftp', 'gd', 'hash', 'iconv', 'json', 'libxml', 'mbstring', 'mysql', 'mysqli', 'openssl', 'pcre', 'simplexml', 'sockets', 'spl', 'tokenizer', 'xmlreader', 'xmlwriter', 'zlib',); // According to https://wordpress.stackexchange.com/questions/42098/what-are-php-extensions-and-libraries-wp-needs-and-or-uses
+                    $php_extensions = get_loaded_extensions();
+
+                    foreach($php_extensions_needed as &$extension_needed) {
+                        $extension_needed = '<span class="php-ext '.(in_array($extension_needed, $php_extensions) ? '' : 'php-ext-missing').'">'.mb_strtolower($extension_needed).'</span>';
+                    }
+
+                    echo __('PHP modules:', 'leyka').' '.implode(', ', $php_extensions_needed);?>
+
+                </div>
             </div>
 
         </div>
