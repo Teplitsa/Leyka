@@ -22,6 +22,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 		add_filter('plugin_action_links_'.LEYKA_PLUGIN_INNER_SHORT_NAME, array($this, 'add_plugins_list_links'));
 
+		add_action('leyka_post_admin_actions', array($this, 'show_footer'));
+
         // Metaboxes support where it is needed:
         /** @todo Remove the lines if needed */
 //        add_action('leyka_pre_settings_actions', array($this, 'full_metaboxes_support'));
@@ -95,7 +97,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         if( !get_option('leyka_admin_notice_v3_update') && (empty($_GET['page']) || $_GET['page'] !== 'leyka_settings_new') ) {
 
-            function leykaAdminNotice_v3_update() {?>
+            function leyka_admin_notice_v3_update() {?>
 
                 <div id="message" class="updated leyka-message">
                     <a class="leyka-message-close notice-dismiss" href="<?php echo esc_url(wp_nonce_url(remove_query_arg('leyka_reset_msg', add_query_arg('leyka-hide-notice', 'v3_update')), 'leyka_hide_notice_nonce', '_leyka_notice_nonce'));?>">
@@ -105,7 +107,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 </div>
             <?php
             }
-            add_action('admin_notices', 'leykaAdminNotice_v3_update');
+            add_action('admin_notices', 'leyka_admin_notice_v3_update');
 
         }
 
@@ -132,7 +134,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         add_submenu_page('leyka', __('Connect to us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedback_screen'));
 
         // Wizards pages group:
-        add_submenu_page(NULL, 'Some Leyka Wizard', 'Some Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', array($this, 'settings_new_screen'));
+        add_submenu_page(NULL, 'Leyka Wizard', 'Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', array($this, 'settings_new_screen'));
 
         do_action('leyka_admin_menu_setup');
 
@@ -214,13 +216,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 </div>
             </div>
 
-            <div class="leyka-dashboard-footer">
-                Te-st logo & "made by" branding here.
-            </div>
-
         </div>
 
 	<?php do_action('leyka_post_dashboard_actions');
+        do_action('leyka_post_admin_actions');
 
 	}
 
@@ -397,8 +396,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         $current_stage = $this->get_current_settings_tab();
 		$is_separate_sections_forms = $this->is_separate_forms_stage($current_stage);
 
-        echo '<pre>'.print_r($current_stage, 1).'</pre>';
-
 		require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php'); // Basic Controller class
         require_once(LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-common.php');
         require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-admin-template-tags.php');
@@ -505,7 +502,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 		</div>
 
-	<?php
+	<?php do_action('leyka_post_settings_actions');
+        do_action('leyka_post_admin_actions');
 	}
 
 	/** Settings factory-controlled display (ATM, Wizards only) */
@@ -535,6 +533,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         } catch(Exception $ex) {
             echo '<pre>'.print_r('Settings page error (code '.$ex->getCode().'): '.$ex->getMessage(), 1).'</pre>';
         }
+
+        do_action('leyka_post_admin_actions');
 
 	}
 
@@ -617,11 +617,14 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 					<p><?php _e("Sorry, but the message can't be sended. Please check your mail server settings.", 'leyka');?></p>
 				</div>
 			</div>
-			<div class="feedback-sidebar"><?php leyka_itv_info_widget();?></div>
+			<div class="feedback-sidebar"></div>
 		</div>
 		
 	</div>
-    <?php }
+
+    <?php do_action('leyka_post_admin_actions');
+
+    }
 
     /** Feedback page processing */
     public function ajax_send_feedback() {
@@ -688,7 +691,15 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
     }
 
-	/** CSS/JS **/
+    public function show_footer() {?>
+
+    <div class="leyka-dashboard-footer">
+        Te-st logo & "made by" branding here.
+        <a href="https://leyka.te-st.ru/sla/" target="_blank"><?php _e('SLA', 'leyka');?></a>
+    </div>
+
+    <?php }
+
 	public function load_frontend_scripts() {
 
 		wp_enqueue_style('leyka-icon', LEYKA_PLUGIN_BASE_URL.'css/admin-icon.css', array(), LEYKA_VERSION);
