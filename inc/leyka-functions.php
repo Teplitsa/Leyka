@@ -2199,12 +2199,22 @@ function leyka_get_dm_list_or_alternatives() {
 
 }
 
-function leyka_cronjob_exists($command) {
+function leyka_cronjob_exists($command, $strict = false) {
 
     exec('crontab -l', $crontab);
 
     if(isset($crontab) && is_array($crontab)) {
-        return in_array($command, $crontab);
+
+        if( !!$strict ) {
+            return in_array($command, $crontab);
+        }
+
+        foreach($crontab as $job) {
+            if(stristr($job, $command) !== false) {
+                return true;
+            }
+        }
+
     }
 
     return false;
@@ -2214,9 +2224,14 @@ function leyka_cronjob_exists($command) {
 function leyka_get_cronjobs_status() {
 
     $status = 'no-need';
+
     foreach(leyka_get_pm_list(true) as $pm) {
         if($pm->full_id === 'yandex-yandex_card' && leyka()->opt('yandex-yandex_card_rebilling_available')) {
-            if( leyka_cronjob_exists(home_url('/leyka/service/do_recurring/')) ) { /** @todo */
+            if(
+                leyka_cronjob_exists(home_url('/leyka/service/do_recurring'))
+                || leyka_cronjob_exists(home_url('/leyka/service/procedure/active-recurring'))
+                || leyka_cronjob_exists(LEYKA_PLUGIN_DIR.'procedures/leyka-active-recurring.php')
+            ) {
                 $status = 'ok';
             } else {
                 $status = 'not-set';
@@ -2226,10 +2241,13 @@ function leyka_get_cronjobs_status() {
 
     if($status == 'no-need' && leyka()->opt('send_donor_emails_on_campaign_target_reaching')) {
         if(
-            leyka_cronjob_exists(home_url('/leyka/service/do_campaigns_targets_reaching_mailout/'))
-            || leyka_cronjob_exists(home_url('/leyka/service/procedure/campaigns-targets-reaching-mailout/'))
+            leyka_cronjob_exists(home_url('/leyka/service/do_campaigns_targets_reaching_mailout'))
+            || leyka_cronjob_exists(home_url('/leyka/service/procedure/campaigns-targets-reaching-mailout'))
+            || leyka_cronjob_exists(LEYKA_PLUGIN_DIR.'procedures/leyka-campaigns-targets-reaching-mailout.php')
         ) {
             $status = 'ok';
+        } else {
+            $status = 'not-set';
         }
     }
 
