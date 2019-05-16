@@ -273,7 +273,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 <?php foreach($main_settings_steps as $step) {?>
 
                     <div class="settings-step-set">
-                        <div class="step-setup-status <?php echo leyka_is_settings_step_valid($step['step_id']) ? 'step-valid' : '';?>"></div>
+                        <div class="step-setup-status <?php echo leyka_is_settings_step_valid($step['step_id']) ? 'step-valid' : 'step-invalid';?>"></div>
                         <div class="step-title"><?php echo $step['title'];?></div>
                     </div>
 
