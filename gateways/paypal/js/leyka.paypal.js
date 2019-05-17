@@ -23,7 +23,7 @@
 		var $this = $(this);
 
 		$form = $this.closest('.leyka-pf__form'); //('.leyka-pf');
-		$errors = $form.find('.leyka-submit-errors');
+		$errors = $form.siblings('.leyka-submit-errors');
 
 		if($this.attr('value').indexOf('paypal') !== -1) {
 
@@ -235,7 +235,16 @@
 
 		/** Checkout process error (on PayPal side). */
 		onError: function(error_code) {
-			if(typeof leyka.paypal_donation_failure_reasons[error_code] !== 'undefined') {
+
+		    if( !$errors || !$errors.length ) { // Initial button loading errors
+		        // $errors = $('.leyka-submit-errors'); // To show error msg on all Revo forms of current page
+                return;
+            }
+
+			if(
+			    typeof leyka.paypal_donation_failure_reasons !== 'undefined'
+                && typeof leyka.paypal_donation_failure_reasons[error_code] !== 'undefined'
+            ) {
 				addError($errors, leyka.paypal_donation_failure_reasons[error_code]);
 			} else { // Unknown error on PayPal side
 				addError($errors, leyka.paypal_payment_process_error.replace('%s', error_code));
