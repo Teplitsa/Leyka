@@ -720,7 +720,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 			'paypal_payment_process_error' => __('Error while processing the payment on PayPal side: %s. Your money will remain intact. Please report to the website tech support.', 'leyka'),
 			'ajax_wrong_server_response' => __('Error in server response. Your money will remain intact. Please report to the website tech support.', 'leyka'),
 			'ajax_donation_not_created' => __('Error while creating donation. Your money will remain intact. Please report to the website tech support.', 'leyka'),
-//			'' => ,
+			'paypal_donation_failure_reasons' => array(
+			    'Error: Client ID not found for env: sandbox' => __("Either PayPal sandbox Client ID is wrong, or sandbox wasn't created.", 'leyka'),
+            ),
 		));
 	}
 
