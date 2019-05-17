@@ -347,7 +347,12 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                             ),
                         ),
                     ),),
-                    
+                    array('section' => array(
+                        'name' => 'misc_view_settings',
+                        'title' => __('Miscellaneous', 'leyka'),
+                        'is_default_collapsed' => true,
+                        'options' => array('widgets_total_amount_usage',)
+                    ),),
                 );
                 break;
             
