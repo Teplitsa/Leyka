@@ -198,16 +198,16 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                     </div>
 
                     <div class="leyka-dashboard-row">
-                        <?php $this->show_admin_portlet('stats-donations-main');
+                        <?php $this->show_admin_portlet('stats-donations-main', array('interval' => 'year'));
                         $this->show_admin_portlet('stats-recurring');?>
                     </div>
 
                     <div class="leyka-dashboard-row">
-                        <?php $this->show_admin_portlet('donations-dynamics');?>
+<!--                        --><?php //$this->show_admin_portlet('donations-dynamics');?>
                     </div>
 
                     <div class="leyka-dashboard-row">
-                        <?php $this->show_admin_portlet('donations-history-short');?>
+<!--                        --><?php //$this->show_admin_portlet('donations-history-short');?>
                     </div>
 
                 </div>
@@ -223,18 +223,29 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 	}
 
-	public function show_admin_portlet($portlet_id) {
+	public function show_admin_portlet($portlet_id, array $params = array()) {
 
-	    /** @todo Require portlet template & data from /inc/portlets/{$portlet_id} */?>
+	    $portlet_file = LEYKA_PLUGIN_DIR.'/inc/portlets/leyka-'.$portlet_id.'.php';
+	    if( !file_exists($portlet_file) ) {
+	        return;
+        }
+
+	    $portlet_data = get_file_data($portlet_file, array(
+            'name' => 'Leyka Portlet',
+            'description' => 'Description',
+            'title' => 'Title',
+            'thumbnail' => 'Thumbnail',
+        ));?>
 
 	    <div class="leyka-admin-portlet">
 
             <div class="portlet-header">
-                <?php echo '<pre>Header for portlet: '.print_r($portlet_id, 1).'</pre>';?>
+                <img src="<?php echo home_url($portlet_data['thumbnail']);?>" alt="">
+                <?php echo $portlet_data['title'];?>
             </div>
 
             <div class="portlet-content">
-                <?php echo '<pre>Content for portlet: '.print_r($portlet_id, 1).'</pre>';?>
+                <?php require_once($portlet_file);?>
             </div>
 
         </div>
