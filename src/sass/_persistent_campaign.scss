@@ -117,6 +117,11 @@
                 padding: 0px 2 * $leyka-star-base 4 * $leyka-star-base 2 * $leyka-star-base;
             }
             
+		   .leyka-pf-star {
+		       @include leyka-star-style-block-box();
+               @include leyka-star-style-block-position();
+		   }
+            
             p {
                 margin-bottom: $leyka-star-base;
             }
@@ -127,7 +132,7 @@
 
 .entry .entry-content {
 	.leyka-pf-star {
-        @include leyka-star-style-block();
+        @include leyka-star-style-block-box();
         max-width: 536px;
         box-sizing: border-box;
 	}
