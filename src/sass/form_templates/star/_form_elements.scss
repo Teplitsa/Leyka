@@ -35,7 +35,7 @@
             
             &.active {
                 background-color: $leyka-star-color-main;
-                color: $leyka-star-color-white;
+                color: $leyka-star-color-text-light;
                 border-color: $leyka-star-color-main;
                 z-index: 11;
             }
@@ -224,8 +224,8 @@
                             max-height: 40px;
                             
                             &[src$="pic-main-text-text_box.svg"] {
-                                max-height: 35px;
-                                margin-top: 5px;
+                                max-height: 20px;
+                                margin-top: 8px;
                             }
                         }
                     }

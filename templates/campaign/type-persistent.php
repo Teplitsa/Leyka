@@ -29,7 +29,12 @@ if($logo_att_id) {
     $logo_url = wp_get_attachment_url($logo_att_id);
 }
 
-$custom_css = get_post_meta($campaign_id, 'campaign_css', true);?>
+$custom_css = get_post_meta($campaign_id, 'campaign_css', true);
+$hide_cover_tint = get_post_meta($campaign_id, 'hide_cover_tint', true);
+$header_cover_type = get_post_meta($campaign_id, 'header_cover_type', true);
+$cover_bg_color = $header_cover_type == 'color' ? get_post_meta($campaign_id, 'cover_bg_color', true) : '';
+
+?>
 
 <!doctype html>
 <html <?php language_attributes(); ?>>
@@ -50,8 +55,8 @@ $custom_css = get_post_meta($campaign_id, 'campaign_css', true);?>
 <div id="page" class="site leyka-persistant-campaign">
 	<a class="skip-link screen-reader-text" href="#content"><?php _e('Skip to content', 'leyka');?></a>
 
-		<header id="masthead" class="leyka-campaign-header" style="<?php if($cover_url):?>background-image:url('<?php echo $cover_url;?>');<?php endif;?>">
-            <div class="header-tint">
+		<header id="masthead" class="leyka-campaign-header <?php echo $header_cover_type == 'color' ? '' : 'cover-type-image';?>" style="<?php if($cover_url && $header_cover_type != 'color'):?>background-image:url('<?php echo $cover_url;?>');<?php endif;?><?php echo $cover_bg_color ? "background-color:$cover_bg_color;" : '';?>">
+            <div class="header-tint <?php echo $hide_cover_tint ? 'hide-cover-tint' : '';?>">
             	<?php if($logo_url) {?>
                 <a href="<?php echo home_url();?>" class="leyka-campaign-logo">
                 	<img src="<?php echo $logo_url;?>" />

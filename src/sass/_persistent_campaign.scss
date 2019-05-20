@@ -20,10 +20,13 @@
 }
 
 .leyka-persistant-campaign .leyka-campaign-header {
-    background-image: url(../../img/persistent_campaign_header_bg.jpg);
     background-size: cover;
     background-repeat: no-repeat;
     width: 100%;
+    
+    &.cover-type-image {
+        background-image: url(../../img/persistent_campaign_header_bg.jpg);
+    }
     
     .header-tint {
         width: 100%;
@@ -34,6 +37,10 @@
         align-items: center;
         padding-bottom: 2 * $leyka-star-base;
         background-color: rgba(46, 16, 5, 0.75);
+        
+        &.hide-cover-tint {
+            background-color: transparent;
+        }
         
         @include for(medium-screens) {
             padding-bottom: 145px;
@@ -50,7 +57,7 @@
     h1 {
         @include leyka-pc-h1();
         display: block;
-        color: $leyka-star-color-white;
+        color: $leyka-star-color-text-light;
         max-width: 746px;
         text-align: center;
         margin-top: 2 * $leyka-star-base;
@@ -113,11 +120,13 @@
             p {
                 margin-bottom: $leyka-star-base;
             }
-            
-            .leyka-pf-star {
-                @include leyka-star-style-block();
-            }
         }
     }
     
+}
+
+.entry-content {
+	.leyka-pf-star {
+        @include leyka-star-style-block();
+	}
 }

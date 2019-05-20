@@ -30,6 +30,8 @@ $leyka-star-base:   16px;
     --leyka-font-main: unset;
 
     --leyka-star-base: 16px;
+    
+    --leyka-color-text-light: #ffffff;
 }
 
 $leyka-star-color-main:             var(--leyka-color-main);
@@ -58,6 +60,7 @@ $leyka-star-color-white:            var(--leyka-color-white); // #ffffff;
 $leyka-star-color-gradient:         var(--leyka-color-gradient); // #ffffff;
 
 $leyka-star-color-text: #666666;
+$leyka-star-color-text-light: var(--leyka-color-text-light);
 
 $leyka-star-color-tooltip-bg: #dddddd;
 $leyka-star-color-tooltip-text: #44444a;

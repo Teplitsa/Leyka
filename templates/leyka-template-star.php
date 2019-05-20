@@ -23,6 +23,12 @@ if(count($campaign->donations_types_available) > 1) {
 $another_amount_title = count($template_data['amount_variants']) > 0 ?
     esc_html__('Another amount', 'leyka') : esc_html__('Enter amount', 'leyka');?>
 
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+	<symbol width="12" height="9" viewBox="0 0 12 9" id="icon-checkbox-check">
+		<path d="M3.81353 7.10067L0.968732 4.30201L0 5.24832L3.81353 9L12 0.946309L11.0381 0L3.81353 7.10067Z"></path>
+	</symbol>
+</svg>
+
 <div id="leyka-pf-<?php echo $campaign->id;?>" class="leyka-pf leyka-pf-star" data-form-id="leyka-pf-<?php echo $campaign->id;?>-star-form">
 
 <div class="leyka-payment-form leyka-tpl-star-form" data-template="star">
@@ -190,6 +196,8 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                         <input type="checkbox" name="leyka_agree" id="<?php echo $field_id;?>" class="required" value="1" <?php echo leyka_options()->opt('terms_agreed_by_default') ? 'checked="checked"' : '';?>>
 
                         <label for="<?php echo $field_id;?>">
+                        	<svg class="svg-icon icon-checkbox-check"><use xlink:href="#icon-checkbox-check"></use></svg>
+                        	
                         <?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';
 
                         if(leyka_options()->opt('agree_to_terms_link_action') === 'popup') {?>
@@ -208,6 +216,8 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                         <input type="checkbox" name="leyka_agree_pd" id="<?php echo $field_id;?>" class="required" value="1" <?php echo leyka_options()->opt('pd_terms_agreed_by_default') ? 'checked="checked"' : '';?>>
 
                         <label for="<?php echo $field_id;?>">
+                        	<svg class="svg-icon icon-checkbox-check"><use xlink:href="#icon-checkbox-check"></use></svg>
+                        	
                         <?php echo apply_filters('agree_to_pd_terms_text_text_part', leyka_options()->opt('agree_to_pd_terms_text_text_part')).' ';?>
                             <a href="#" class="leyka-js-pd-trigger">
                                 <?php echo apply_filters('agree_to_pd_terms_text_link_part', leyka_options()->opt('agree_to_pd_terms_text_link_part'));?>

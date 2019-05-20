@@ -380,6 +380,33 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         </fieldset>
 
+        <fieldset id="campaign-cover-type" class="metabox-field campaign-field persistent-campaign-field">
+            <h3 class="field-title">
+                <?php _e('The campaign page cover type', 'leyka');?>
+            </h3>
+
+            <div class="field-wrapper">
+                <label for="hide-cover-type-image" class="field-label">
+                    <input type="radio" id="hide-cover-type-image" name="header_cover_type" value="image" <?php echo empty($campaign->header_cover_type) || $campaign->header_cover_type == '"image"' ? 'checked' : '';?>> <?php _e('Background image', 'leyka');?>
+                </label>
+                <label for="hide-cover-type-color" class="field-label">
+                    <input type="radio" id="hide-cover-type-color" name="header_cover_type" value="color" <?php echo $campaign->header_cover_type == 'color' ? 'checked' : '';?>> <?php _e('Solid color', 'leyka');?>
+                </label>
+            </div>
+        </fieldset>
+
+        <fieldset id="campaign-cover-bg-color" class="metabox-field campaign-field persistent-campaign-field">
+            <h3 class="field-title">
+                <?php _e('The campaign page cover background color', 'leyka');?>
+            </h3>
+
+            <div class="field-wrapper">
+                <span class="field-component field">
+                    <input type="color" name="cover_bg_color" value="<?php echo $campaign->cover_bg_color ? $campaign->cover_bg_color : '#000000';?>">
+                </span>
+            </div>
+        </fieldset>
+
         <fieldset id="campaign-images" class="metabox-field campaign-field persistent-campaign-field">
 
             <h3 class="field-title">
@@ -392,7 +419,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 <!--                </span>-->
             </h3>
 
-            <div class="upload-photo-field upload-attachment-field field-wrapper flex margin-top" data-upload-title="<?php _e('The campaign page cover image', 'leyka');?>" data-field-name="campaign_cover" data-campaign-id="<?php echo $campaign->id;?>" data-ajax-action="leyka_set_campaign_attachment">
+            <div class="upload-photo-field upload-attachment-field field-wrapper flex margin-top" id="upload-campaign-cover-image" data-upload-title="<?php _e('The campaign page cover image', 'leyka');?>" data-field-name="campaign_cover" data-campaign-id="<?php echo $campaign->id;?>" data-ajax-action="leyka_set_campaign_attachment">
                 <span class="field-component field">
                     <input type="file" value="">
                     <input type="button" class="button upload-photo" id="campaign_cover-upload-button" value="<?php _e('Upload the page cover', 'leyka');?>">
@@ -428,6 +455,12 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             </div>
             <div class="field-errors"></div>
 
+        </fieldset>
+
+        <fieldset id="campaign-cover-tint" class="metabox-field without-title campaign-field persistent-campaign-field">
+            <label for="hide-cover-tint">
+                <input type="checkbox" id="hide-cover-tint" name="hide_cover_tint" value="1" <?php echo $campaign->hide_cover_tint ? 'checked' : '';?>> <?php _e('Hide cover tint', 'leyka');?>
+            </label>
         </fieldset>
 
         <fieldset id="campaign-data-setup-howto" class="metabox-field campaign-field info-field">
@@ -629,11 +662,24 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         }
 
+        if( !empty($_REQUEST['cover_bg_color']) && $campaign->cover_bg_color !== $_REQUEST['cover_bg_color'] ) {
+            $meta['cover_bg_color'] = sanitize_hex_color($_REQUEST['cover_bg_color']);
+        }
+        
+        if( !empty($_REQUEST['header_cover_type']) && $campaign->header_cover_type !== $_REQUEST['header_cover_type'] ) {
+            $meta['header_cover_type'] = $_REQUEST['header_cover_type'];
+        }
+        
         $_REQUEST['is_finished'] = empty($_REQUEST['is_finished']) ? 0 : 1;
         if($_REQUEST['is_finished'] != $campaign->is_finished) {
             $meta['is_finished'] = $_REQUEST['is_finished'];
         }
 
+        $_REQUEST['hide_cover_tint'] = empty($_REQUEST['hide_cover_tint']) ? 0 : 1;
+        if($_REQUEST['hide_cover_tint'] != $campaign->hide_cover_tint) {
+            $meta['hide_cover_tint'] = $_REQUEST['hide_cover_tint'];
+        }
+        
         if(isset($_REQUEST['campaign_target']) && $_REQUEST['campaign_target'] != $campaign->target) {
 
             $_REQUEST['campaign_target'] = (float)$_REQUEST['campaign_target'];
@@ -797,6 +843,13 @@ class Leyka_Campaign {
 
             }
 
+            if( !isset($meta['hide_cover_tint']) ) {
+                
+                update_post_meta($this->_id, 'hide_cover_tint', 0);
+                $meta['hide_cover_tint'] = array(0);
+                
+            }
+            
             if( !isset($meta['total_funded']) ) { // If campaign total collected amount is not saved, save it
 
                 $sum = 0.0;
@@ -882,6 +935,9 @@ class Leyka_Campaign {
                 'count_views' => empty($meta['count_views']) ? 0 : $meta['count_views'][0],
                 'count_submits' => empty($meta['count_submits']) ? 0 : $meta['count_submits'][0],
                 'total_funded' => empty($meta['total_funded']) ? 0.0 : $meta['total_funded'][0],
+                'hide_cover_tint' => $meta['hide_cover_tint'] ? $meta['hide_cover_tint'][0] > 0 : 0,
+                'cover_bg_color' => empty($meta['cover_bg_color']) ? '' : $meta['cover_bg_color'][0],
+                'header_cover_type' => empty($meta['header_cover_type']) ? '' : $meta['header_cover_type'][0],
             );
 
         }
@@ -990,6 +1046,9 @@ class Leyka_Campaign {
             case 'total_funded':
             case 'total_collected':
             case 'total_donations_funded': return $this->_campaign_meta['total_funded'];
+            case 'hide_cover_tint': return $this->_campaign_meta['hide_cover_tint'];
+            case 'cover_bg_color': return $this->_campaign_meta['cover_bg_color'];
+            case 'header_cover_type': return $this->_campaign_meta['header_cover_type'];
             default:
                 return apply_filters('leyka_get_unknown_campaign_field', null, $field, $this);
         }

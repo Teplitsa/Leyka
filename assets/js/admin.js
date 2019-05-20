@@ -283,6 +283,20 @@ jQuery(document).ready(function($){
         var editor = wp.codeEditor.initialize($css_editor, editor_settings);
     }
 
+    // campaign cover type
+    $('#campaign-cover-type input[type=radio]').change(function(){
+    	if($(this).prop('checked')) {
+    		if($(this).val() == 'color') {
+    			$('#campaign-cover-bg-color').show();
+    			$('#upload-campaign-cover-image').hide();
+    		}
+    		else {
+    			$('#campaign-cover-bg-color').hide();
+    			$('#upload-campaign-cover-image').show();
+    		}
+    	}
+    });
+    $('#campaign-cover-type input[type=radio]:checked').change();
 });
 /** Gateways settings board */
 

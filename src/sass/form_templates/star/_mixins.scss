@@ -180,6 +180,7 @@
     
     .swiper-item {
         background-color: transparent;
+        box-sizing: border-box;
         display: none;
         width: 100%;
         height: 56px;
@@ -347,6 +348,16 @@
             left: -26px;
             cursor: pointer;
         }
+        
+		svg.icon-checkbox-check {
+        	position: absolute;
+			left: -23px;
+			top: 5px;
+			width: 12px;
+			height: 9px;
+			display: none;
+			fill: $leyka-star-color-main;
+		}
     
         a {
             @include star-text-check-label();
@@ -356,12 +367,12 @@
     
     input:checked + label {
         &:before {
-            background-color: transparent;
-            border: none;
-            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAADaSURBVHgBxdOvDsIwEAbw75Y9wB4BjcVg0PgloEiQaLAzQ2AJFgMPQDKPXbCT0wyeYCFBQukN1gD7A+tI+JJLd0v7y1WUxG41xJUWACzoJYIhXBL+ei+bBuolNlNEtGzohAKPF8vAj6IFkTdPqhaUALIEakykEHsCcOlAZUgWOobAIayMZCDyN6BZ7wVTyMAtRDjmc8Ob6XxKMOFINNjekZHEOn2UxXz/wYdoKSdxuqr/hORCCuO12f4KKYRSrEr++0TywleLZVmPV6wXgcjABWP+gG6EHIQwvQGWxVG/n7Uq8AAAAABJRU5ErkJggg==');
-            background-repeat: no-repeat;
-            background-size: 18px 18px;
-            background-position: 0 0px;
+            background: $leyka-star-color-main-third;
+            border-color: $leyka-star-color-main-second;
+        }
+        
+        svg.icon-checkbox-check {
+        	display: block;
         }
     }    
 }
@@ -374,7 +385,7 @@
     outline: none;
     background-color: $leyka-star-color-main;
     display: block;
-    color: $leyka-star-color-white;
+    color: $leyka-star-color-text-light;
     border-radius: 4px;
     width: 100%;
     padding-top: 19px;
