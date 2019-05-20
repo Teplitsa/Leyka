@@ -125,8 +125,10 @@
     
 }
 
-.entry-content {
+.entry .entry-content {
 	.leyka-pf-star {
         @include leyka-star-style-block();
+        max-width: 536px;
+        box-sizing: border-box;
 	}
 }
