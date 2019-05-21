@@ -24,15 +24,6 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
         global $wpdb;
 
         $donations_post_type = Leyka_Donation_Management::$post_type;
-        $curr_interval_donations = $wpdb->get_results(
-            "SELECT ID
-            FROM {$wpdb->prefix}posts
-            WHERE post_type='{$donations_post_type}'
-            AND post_status='funded'
-            AND post_date >= '$curr_interval_begin_date'"
-        );
-        $curr_interval_donations_count = count($curr_interval_donations);
-
         $prev_interval_donations = $wpdb->get_results(
             "SELECT ID
             FROM {$wpdb->prefix}posts
@@ -40,21 +31,74 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
             AND post_status='funded'
             AND post_date >= '$prev_interval_begin_date' AND post_date < $curr_interval_begin_date"
         );
-        $prev_interval_donations_count = count($prev_interval_donations);
+        $curr_interval_donations = $wpdb->get_results(
+            "SELECT ID
+            FROM {$wpdb->prefix}posts
+            WHERE post_type='{$donations_post_type}'
+            AND post_status='funded'
+            AND post_date >= '$curr_interval_begin_date'"
+        );
 
-        if( !$curr_interval_donations_count ) {
-            $donors_number_delta_percent = $prev_interval_donations_count ? -100.0 : 0;
-        } else {
-            $donors_number_delta_percent = round(100.0*($curr_interval_donations_count - $prev_interval_donations_count)/$curr_interval_donations_count, 2);
+        // Donations (donors) count:
+        $prev_donations_count = count($prev_interval_donations);
+        $curr_donations_count = count($curr_interval_donations);
+        $donations_count_delta = leyka_get_delta_percent($prev_donations_count, $curr_donations_count);
+
+        // Donations amount & avg:
+        $prev_amount = 0;
+        if($prev_interval_donations) {
+
+            $donations_ids = array();
+            foreach($prev_interval_donations as $donation) {
+                $donations_ids[] = $donation->ID;
+            }
+            $donations_amounts = $wpdb->get_results(
+                "SELECT meta_value AS amount
+            FROM {$wpdb->prefix}postmeta
+            WHERE post_id IN (".implode(',', $donations_ids).")
+            AND meta_key='leyka_donation_amount'"
+            );
+
+            foreach($donations_amounts as $amount) {
+                $prev_amount += $amount;
+            }
+
         }
 
+        $curr_amount = 0;
+        if($curr_interval_donations) {
+
+            $donations_ids = array();
+            foreach($curr_interval_donations as $donation) {
+                $donations_ids[] = $donation->ID;
+            }
+            $donations_amounts = $wpdb->get_results(
+                "SELECT meta_value AS amount
+            FROM {$wpdb->prefix}postmeta
+            WHERE post_id IN (".implode(',', $donations_ids).")
+            AND meta_key='leyka_donation_amount'"
+            );
+
+            foreach($donations_amounts as $amount) {
+                $curr_amount += $amount->amount;
+            }
+
+        }
+
+        $donations_amount_delta = leyka_get_delta_percent($prev_amount, $curr_amount);
+
+        // Donations avg amount:
+        $prev_amount_avg = $prev_amount ? round($prev_amount/$prev_donations_count, 2) : 0;
+        $curr_amount_avg = $curr_amount ? round($curr_amount/$curr_donations_count, 2) : 0;
+        $donations_amount_avg_delta = leyka_get_delta_percent($prev_amount_avg, $curr_amount_avg);
+
         return array(
-            'donations_amount' => 12345.67,
-            'donations_amount_delta_percent' => -0.78,
-            'donors_number' => $curr_interval_donations_count,
-            'donors_number_delta_percent' => ($donors_number_delta_percent < 0 ? '-' : '+').$donors_number_delta_percent.'%',
-            'donations_amount_avg' => 1234.5,
-            'donations_amount_avg_delta_percent' => 24.89,
+            'donations_amount' => $curr_amount,
+            'donations_amount_delta_percent' => ($donations_amount_delta < 0 ? '' : '+').$donations_amount_delta.'%',
+            'donors_number' => $curr_donations_count,
+            'donors_number_delta_percent' => ($donations_count_delta < 0 ? '' : '+').$donations_count_delta.'%',
+            'donations_amount_avg' => $curr_amount_avg,
+            'donations_amount_avg_delta_percent' => ($donations_amount_avg_delta < 0 ? '' : '+').$donations_amount_avg_delta.'%',
         );
 
     }

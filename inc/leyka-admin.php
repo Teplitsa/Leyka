@@ -184,14 +184,17 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
                     <?php if($this->has_banners('admin-dashboard', 'main')) {
                         $this->show_banner('admin-dashboard', 'main');
-                    }?>
+                    }
+
+                    $_GET['interval'] = empty($_GET['interval']) ? 'year' : $_GET['interval'];
+                    $current_url = admin_url('admin.php?page=leyka');?>
 
                     <div class="plugin-data-interval">
-                        <a href="#" data-leyka-current-interval="true"><?php _e('Year', 'leyka');?></a>
-                        <a href="#"><?php _e('Half-year', 'leyka');?></a>
-                        <a href="#"><?php _e('Quarter', 'leyka');?></a>
-                        <a href="#"><?php _e('Month', 'leyka');?></a>
-                        <a href="#"><?php _e('Week', 'leyka');?></a>
+                        <a href="<?php echo add_query_arg('interval', 'year', $current_url);?>" class="<?php echo $_GET['interval'] === 'year' ? 'current-interval' : '';?>"><?php _e('Year', 'leyka');?></a>
+                        <a href="<?php echo add_query_arg('interval', 'half-year', $current_url);?>" class="<?php echo $_GET['interval'] === 'half-year' ? 'current-interval' : '';?>"><?php _e('Half-year', 'leyka');?></a>
+                        <a href="<?php echo add_query_arg('interval', 'quarter', $current_url);?>" class="<?php echo $_GET['interval'] === 'quarter' ? 'current-interval' : '';?>"><?php _e('Quarter', 'leyka');?></a>
+                        <a href="<?php echo add_query_arg('interval', 'month', $current_url);?>" class="<?php echo $_GET['interval'] === 'month' ? 'current-interval' : '';?>"><?php _e('Month', 'leyka');?></a>
+                        <a href="<?php echo add_query_arg('interval', 'week', $current_url);?>" class="<?php echo $_GET['interval'] === 'week' ? 'current-interval' : '';?>"><?php _e('Week', 'leyka');?></a>
                     </div>
 
                     <div class="leyka-dashboard-row">

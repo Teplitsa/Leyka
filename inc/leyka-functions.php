@@ -1898,6 +1898,20 @@ if( !function_exists('array_key_last') ) {
     }
 }
 
+if( !function_exists('leyka_get_delta_percent') ) {
+    function leyka_get_delta_percent($prev_value, $new_value) {
+
+        if( !$prev_value ) {
+            $delta_percent = $new_value ? 100.0 : 0;
+        } else {
+            $delta_percent = round(100.0*($new_value - $prev_value)/$prev_value, 2);
+        }
+
+        return $delta_percent;
+
+    }
+}
+
 abstract class Leyka_Singleton {
 
     protected static $_instance = null;
