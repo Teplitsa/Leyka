@@ -7,7 +7,7 @@ class Leyka_Star_Template_Controller extends Leyka_Template_Controller {
 
     protected static $_instance;
 
-    protected function _generateTemplateData(Leyka_Campaign $campaign) {
+    protected function _generate_template_data(Leyka_Campaign $campaign) {
 
         if( !empty($this->_template_data[$campaign->id]) ) {
             return;

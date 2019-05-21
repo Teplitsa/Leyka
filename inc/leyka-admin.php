@@ -24,10 +24,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 		add_action('leyka_post_admin_actions', array($this, 'show_footer'));
 
-        // Metaboxes support where it is needed:
-        /** @todo Remove the lines if needed */
-//        add_action('leyka_pre_settings_actions', array($this, 'full_metaboxes_support'));
-//        add_action('leyka_dashboard_actions', array($this, 'full_metaboxes_support'));
+		require_once LEYKA_PLUGIN_DIR.'/inc/leyka-class-portlet-controller.php';
 
     }
 
@@ -228,6 +225,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	    $portlet_file = LEYKA_PLUGIN_DIR.'/inc/portlets/leyka-'.$portlet_id.'.php';
 	    if( !file_exists($portlet_file) ) {
 	        return;
+        }
+
+	    $controller_file = LEYKA_PLUGIN_DIR.'/inc/portlets/'.$portlet_id.'/leyka-class-'.$portlet_id.'-portlet-controller.php';
+	    if(file_exists($controller_file)) {
+            require_once $controller_file;
         }
 
 	    $portlet_data = get_file_data($portlet_file, array(

@@ -7,5 +7,6 @@
  * Thumbnail: /img/stats-donation-types.svg
  **/
 
-echo '<pre>'.print_r('Main stats - portlet content', 1).'</pre>';
+$data = Leyka_Donations_Main_Stats_Portlet_Controller::get_instance()->get_template_data($params);
 echo '<pre>'.print_r($params, 1).'</pre>';
+echo '<pre>'.print_r($data, 1).'</pre>';
