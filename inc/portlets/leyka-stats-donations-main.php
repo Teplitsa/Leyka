@@ -10,10 +10,11 @@
 $data = Leyka_Donations_Main_Stats_Portlet_Controller::get_instance()->get_template_data($params);?>
 
 <div class="portlet-row">
+
     <div class="row-label"><?php _e('Donations amount', 'leyka');?></div>
     <div class="row-data">
 
-        <?php if(empty($data['donations_amount'])) {?>
+        <?php if( !isset($data['donations_amount']) ) {?>
         <div class="no-data"><?php _e('No data available', 'leyka');?></div>
         <?php } else {?>
 
@@ -23,13 +24,15 @@ $data = Leyka_Donations_Main_Stats_Portlet_Controller::get_instance()->get_templ
         <?php }?>
 
     </div>
+
 </div>
 
 <div class="portlet-row">
+
     <div class="row-label"><?php _e('Donors total', 'leyka');?></div>
     <div class="row-data">
 
-        <?php if(empty($data['donors_number'])) {?>
+        <?php if( !isset($data['donors_number']) ) {?>
             <div class="no-data"><?php _e('No data available', 'leyka');?></div>
         <?php } else {?>
 
@@ -39,13 +42,15 @@ $data = Leyka_Donations_Main_Stats_Portlet_Controller::get_instance()->get_templ
         <?php }?>
 
     </div>
+
 </div>
 
 <div class="portlet-row">
+
     <div class="row-label"><?php _e('Donations average amount', 'leyka');?></div>
     <div class="row-data">
 
-        <?php if(empty($data['donations_amount_avg'])) {?>
+        <?php if( !isset($data['donations_amount_avg']) ) {?>
             <div class="no-data"><?php _e('No data available', 'leyka');?></div>
         <?php } else {?>
 
@@ -55,4 +60,5 @@ $data = Leyka_Donations_Main_Stats_Portlet_Controller::get_instance()->get_templ
         <?php }?>
 
     </div>
+
 </div>

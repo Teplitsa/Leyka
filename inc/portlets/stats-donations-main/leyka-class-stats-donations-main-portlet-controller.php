@@ -18,8 +18,8 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
             case 'week': $interval = '1 week'; break;
             default: $interval = '1 year';
         }
-        $curr_interval_begin_date = strtotime('-'.$interval); // $curr_interval_end_date is now
-        $prev_interval_begin_date = strtotime('-'.$interval, $curr_interval_begin_date); // $prev_interval_end_date is $curr_interval_begin_date
+        $curr_interval_begin_date = date('Y-m-d', strtotime('-'.$interval));
+        $prev_interval_begin_date = date('Y-m-d', strtotime('-'.$interval, strtotime('-'.$interval)));
 
         global $wpdb;
 
@@ -29,7 +29,7 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
             FROM {$wpdb->prefix}posts
             WHERE post_type='{$donations_post_type}'
             AND post_status='funded'
-            AND post_date >= '$prev_interval_begin_date' AND post_date < $curr_interval_begin_date"
+            AND post_date >= '$prev_interval_begin_date' AND post_date < '$curr_interval_begin_date'"
         );
         $curr_interval_donations = $wpdb->get_results(
             "SELECT ID
@@ -60,7 +60,7 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
             );
 
             foreach($donations_amounts as $amount) {
-                $prev_amount += $amount;
+                $prev_amount += $amount->amount;
             }
 
         }

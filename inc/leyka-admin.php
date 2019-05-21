@@ -198,7 +198,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                     </div>
 
                     <div class="leyka-dashboard-row">
-                        <?php $this->show_admin_portlet('stats-donations-main', array('interval' => 'year'));
+                        <?php $this->show_admin_portlet('stats-donations-main', array('interval' => $_GET['interval']));
                         $this->show_admin_portlet('stats-recurring');?>
                     </div>
 
