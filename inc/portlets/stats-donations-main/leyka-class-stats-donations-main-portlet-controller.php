@@ -7,7 +7,7 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
 
     protected static $_instance;
 
-    public function get_template_data($params = array()) {
+    public function get_template_data(array $params = array()) {
 
         $params['interval'] = empty($params['interval']) ? 'year' : $params['interval'];
         switch($params['interval']) {
@@ -24,14 +24,14 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
         global $wpdb;
 
         $donations_post_type = Leyka_Donation_Management::$post_type;
-        $prev_interval_donations = $wpdb->get_results(
+        $prev_interval_donations = $wpdb->get_col(
             "SELECT ID
             FROM {$wpdb->prefix}posts
             WHERE post_type='{$donations_post_type}'
             AND post_status='funded'
             AND post_date >= '$prev_interval_begin_date' AND post_date < '$curr_interval_begin_date'"
         );
-        $curr_interval_donations = $wpdb->get_results(
+        $curr_interval_donations = $wpdb->get_col(
             "SELECT ID
             FROM {$wpdb->prefix}posts
             WHERE post_type='{$donations_post_type}'
@@ -48,14 +48,10 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
         $prev_amount = 0;
         if($prev_interval_donations) {
 
-            $donations_ids = array();
-            foreach($prev_interval_donations as $donation) {
-                $donations_ids[] = $donation->ID;
-            }
             $donations_amounts = $wpdb->get_results(
                 "SELECT meta_value AS amount
             FROM {$wpdb->prefix}postmeta
-            WHERE post_id IN (".implode(',', $donations_ids).")
+            WHERE post_id IN (".implode(',', $prev_interval_donations).")
             AND meta_key='leyka_donation_amount'"
             );
 
@@ -68,14 +64,10 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
         $curr_amount = 0;
         if($curr_interval_donations) {
 
-            $donations_ids = array();
-            foreach($curr_interval_donations as $donation) {
-                $donations_ids[] = $donation->ID;
-            }
             $donations_amounts = $wpdb->get_results(
                 "SELECT meta_value AS amount
             FROM {$wpdb->prefix}postmeta
-            WHERE post_id IN (".implode(',', $donations_ids).")
+            WHERE post_id IN (".implode(',', $curr_interval_donations).")
             AND meta_key='leyka_donation_amount'"
             );
 
