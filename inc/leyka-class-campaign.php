@@ -175,7 +175,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
      */
     public function data_meta_box(WP_Post $campaign) {
 
-		$campaign = new Leyka_Campaign($campaign);
+        $campaign = new Leyka_Campaign($campaign);
 
 		$cur_template = $campaign->template ? $campaign->template : 'default';?>
 
@@ -215,10 +215,10 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <div class="field-wrapper">
                 <label class="field-label">
-                    <input type="checkbox" name="donations_type[]" value="recurring" <?php echo in_array('recurring', $campaign->donations_types_available) ? 'checked="checked"' : '';?>><?php echo _x('Recurring', 'In mult., like "recurring donations"', 'leyka');?>
+                    <input type="checkbox" name="donations_type[]" value="recurring" <?php echo in_array('recurring', $campaign->donations_types_available) || $campaign->status === 'auto-draft' ? 'checked="checked"' : '';?>><?php echo _x('Recurring', 'In mult., like "recurring donations"', 'leyka');?>
                 </label>
                 <label class="field-label">
-                    <input type="checkbox" name="donations_type[]" value="single" <?php echo in_array('single', $campaign->donations_types_available) ? 'checked="checked"' : '';?>><?php echo _x('Single', 'In mult., like "single donations"', 'leyka');?>
+                    <input type="checkbox" name="donations_type[]" value="single" <?php echo in_array('single', $campaign->donations_types_available) || $campaign->status === 'auto-draft' ? 'checked="checked"' : '';?>><?php echo _x('Single', 'In mult., like "single donations"', 'leyka');?>
                 </label>
             </div>
 
@@ -419,41 +419,63 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 <!--                </span>-->
             </h3>
 
-            <div class="upload-photo-field upload-attachment-field field-wrapper flex margin-top" id="upload-campaign-cover-image" data-upload-title="<?php _e('The campaign page cover image', 'leyka');?>" data-field-name="campaign_cover" data-campaign-id="<?php echo $campaign->id;?>" data-ajax-action="leyka_set_campaign_attachment">
-                <span class="field-component field">
-                    <input type="file" value="">
-                    <input type="button" class="button upload-photo" id="campaign_cover-upload-button" value="<?php _e('Upload the page cover', 'leyka');?>">
-                </span>
-                <span class="upload-field-description">
-                    <?php echo sprintf(__('.jpg or .png file, no more than %s sized, recommended width: %s', 'leyka'), leyka_get_upload_max_filesize(), '1920 px');?>
-                </span>
-
-                <?php wp_nonce_field('set-campaign-attachment', 'campaign-cover-nonce');?>
-                <input type="hidden" id="leyka-campaign_cover" name="campaign_cover" value="<?php echo $campaign->cover_id;?>">
-
-                <div class="loading-indicator-wrap" style="display: none;">
-                    <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
+            <div class="upload-photo-complex-field-wrapper margin-top" id="upload-campaign-cover-image">
+                <div class="set-page-img-control" data-mission="cover" data-campaign-id="<?php echo $campaign->id;?>">
+                	<?php $img_url = $campaign->cover_id ? wp_get_attachment_image_url($campaign->cover_id, 'thumbnail') : null;?>
+                	<?php _e('Uploaded cover:', 'leyka');?> <span class="img-value"><?php echo $img_url ? '<img src="'.$img_url.'" />' : __('Default', 'leyka');?></span>
+            		<a href="#" class="reset-to-default" <?php echo !$img_url ? 'style="display: none;"' : '';?> title="<?php _e('Reset to default');?>"></a>
+            		<?php wp_nonce_field('reset-campaign-attachment', 'reset-campaign-cover-nonce');?>
+                    <div class="loading-indicator-wrap" style="display: none;">
+                        <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
+                    </div>
                 </div>
-            </div>
-            <div class="field-errors"></div>
-
-            <div class="upload-photo-field upload-attachment-field field-wrapper flex margin-top" data-upload-title="<?php _e('Your logo on the campaign page', 'leyka');?>" data-field-name="campaign_logo" data-campaign-id="<?php echo $campaign->id;?>" data-ajax-action="leyka_set_campaign_attachment">
-                <span class="field-component field">
-                    <input type="file" value="">
-                    <input type="button" class="button upload-photo" id="campaign_logo-upload-button" value="<?php _e('Upload the logo', 'leyka');?>">
-                </span>
-                <span class="upload-field-description">
-                    <?php echo sprintf(__('.jpg or .png file, no more than %s sized', 'leyka'), leyka_get_upload_max_filesize());?>
-                </span>
-
-                <?php wp_nonce_field('set-campaign-attachment', 'campaign-logo-nonce');?>
-                <input type="hidden" id="leyka-campaign_logo" name="campaign_logo" value="<?php echo $campaign->logo_id;?>">
-
-                <div class="loading-indicator-wrap" style="display: none;">
-                    <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
+                <div class="upload-photo-field upload-attachment-field field-wrapper flex" data-upload-title="<?php _e('The campaign page cover image', 'leyka');?>" data-field-name="campaign_cover" data-campaign-id="<?php echo $campaign->id;?>" data-ajax-action="leyka_set_campaign_attachment">
+                    <span class="field-component field">
+                        <input type="file" value="">
+                        <input type="button" class="button upload-photo" id="campaign_cover-upload-button" value="<?php _e('Upload the page cover', 'leyka');?>">
+                    </span>
+                    <span class="upload-field-description">
+                        <?php echo sprintf(__('.jpg or .png file, no more than %s sized, recommended width: %s', 'leyka'), leyka_get_upload_max_filesize(), '1920 px');?>
+                    </span>
+    
+                    <?php wp_nonce_field('set-campaign-attachment', 'campaign-cover-nonce');?>
+                    <input type="hidden" id="leyka-campaign_cover" name="campaign_cover" value="<?php echo $campaign->cover_id;?>">
+    
+                    <div class="loading-indicator-wrap" style="display: none;">
+                        <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
+                    </div>
                 </div>
+                <div class="field-errors"></div>
             </div>
-            <div class="field-errors"></div>
+
+            <div class="upload-photo-complex-field-wrapper margin-top">
+                <div class="set-page-img-control" data-mission="logo" data-campaign-id="<?php echo $campaign->id;?>">
+                	<?php $img_url = $campaign->logo_id ? wp_get_attachment_image_url($campaign->logo_id, 'thumbnail') : null;?>
+                	<?php _e('Uploaded logo:', 'leyka');?> <span class="img-value"><?php echo $img_url ? '<img src="'.$img_url.'" />' : __('Default', 'leyka');?></span>
+            		<a href="#" class="reset-to-default" <?php echo !$img_url ? 'style="display: none;"' : '';?> title="<?php _e('Reset to default');?>"></a>
+            		<?php wp_nonce_field('reset-campaign-attachment', 'reset-campaign-logo-nonce');?>
+                    <div class="loading-indicator-wrap" style="display: none;">
+                        <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
+                    </div>
+                </div>
+                <div class="upload-photo-field upload-attachment-field field-wrapper flex" data-upload-title="<?php _e('Your logo on the campaign page', 'leyka');?>" data-field-name="campaign_logo" data-campaign-id="<?php echo $campaign->id;?>" data-ajax-action="leyka_set_campaign_attachment">
+                    <span class="field-component field">
+                        <input type="file" value="">
+                        <input type="button" class="button upload-photo" id="campaign_logo-upload-button" value="<?php _e('Upload the logo', 'leyka');?>">
+                    </span>
+                    <span class="upload-field-description">
+                        <?php echo sprintf(__('.jpg or .png file, no more than %s sized', 'leyka'), leyka_get_upload_max_filesize());?>
+                    </span>
+    
+                    <?php wp_nonce_field('set-campaign-attachment', 'campaign-logo-nonce');?>
+                    <input type="hidden" id="leyka-campaign_logo" name="campaign_logo" value="<?php echo $campaign->logo_id;?>">
+    
+                    <div class="loading-indicator-wrap" style="display: none;">
+                        <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
+                    </div>
+                </div>
+                <div class="field-errors"></div>
+            </div>
 
         </fieldset>
 

@@ -764,6 +764,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'email_invalid_msg' => __('You have entered an invalid email', 'leyka'),
             'common_error_message' => esc_html__('Error while saving the data', 'leyka'),
 			'error_message' => esc_html__('Error!', 'leyka'),
+            'default_image_message' => esc_html__('Default', 'leyka'),
 			'disconnect_stats' => esc_html__('Disconnect statistics', 'leyka'),
         ));
 

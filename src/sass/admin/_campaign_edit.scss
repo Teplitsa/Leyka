@@ -42,9 +42,51 @@
                     display: block;
                     margin-bottom: 8px;
                 }
+                
+                .loading-indicator-wrap {
+                    margin-left: 16px;
+                    
+                    .loader-wrap {
+                        padding-top: 0px;
+                    }
+                }
 
             }
-
+            
+            .upload-photo-complex-field-wrapper {
+                &.margin-top {
+                    margin-top: 24px;
+                }
+                
+                .set-page-img-control {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 8px;
+                    
+                    .loading-indicator-wrap {
+                        margin-left: 16px;
+                        
+                        .loader-wrap {
+                            padding-top: 0px;
+                        }
+                    }
+                    
+                    .reset-to-default {
+                        content: "";
+                        margin-left: 16px;
+                        background-image: url(../../img/icon-delete-circled.svg);
+                        background-size: cover;
+                        width: 24px;
+                        height: 24px;
+                        display: inline-block;
+                    }
+                    
+                    .img-value {
+                        margin-left: 16px;
+                    }
+                }
+                
+            }
         }
 
         .info-field {

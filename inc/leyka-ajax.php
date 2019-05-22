@@ -246,6 +246,7 @@ function leyka_set_campaign_attachment() {
     die(json_encode(array(
         'status' => 'ok',
         'post' => $_POST,
+        'img_url' => wp_get_attachment_image_url((int)$_POST['attachment_id'], 'thumbnail'),
     )));
 
 }
@@ -671,3 +672,37 @@ function leyka_unsubscribe_persistent_campaign() {
 }
 add_action('wp_ajax_leyka_unsubscribe_persistent_campaign', 'leyka_unsubscribe_persistent_campaign');
 add_action('wp_ajax_nopriv_leyka_unsubscribe_persistent_campaign', 'leyka_unsubscribe_persistent_campaign');
+
+function leyka_reset_campaign_attachment() {
+    
+    $_POST['campaign_id'] = empty((int)$_POST['campaign_id']) ? false : (int)$_POST['campaign_id'];
+    $_POST['attachment_id'] = empty((int)$_POST['attachment_id']) ? false : (int)$_POST['attachment_id'];
+    
+    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'reset-campaign-attachment')) {
+        die(json_encode(array(
+            'status' => 'error',
+            'message' => __('Wrong nonce in the submitted data', 'leyka'),
+        )));
+    } else if(empty($_POST['campaign_id'])) {
+        die(json_encode(array(
+            'status' => 'error',
+            'message' => __('Error: campaign ID is missing', 'leyka'),
+        )));
+    } else if(empty($_POST['img_mission'])) {
+        die(json_encode(array(
+            'status' => 'error',
+            'message' => __('Error: field name is missing', 'leyka'),
+        )));
+    }
+    
+    $campaign_id = (int)$_POST['campaign_id'];
+    $field_name = 'campaign_'. esc_attr(sanitize_text_field($_POST['img_mission']));
+    
+    delete_post_meta($campaign_id, $field_name);
+    
+    die(json_encode(array(
+        'status' => 'ok',
+    )));
+    
+}
+add_action('wp_ajax_leyka_reset_campaign_attachment', 'leyka_reset_campaign_attachment');
