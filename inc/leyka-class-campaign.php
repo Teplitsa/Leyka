@@ -350,6 +350,8 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 <?php $campaign_css_original = '/* :root { --leyka-color-main: #ff510d; } */ '
                     .__('/* Active buttons & switches background color */', 'leyka')."\n". // Цвет фона активных кнопок и переключателей
                     '/* :root { --leyka-color-main-second: #ffc29f; } */ '
+                    .__('/* Active buttons & switches text color */', 'leyka')."\n". // Цвет текста активных кнопок и переключателей
+                    '/* :root { --leyka-color-text-light: #ffffff; } */ '
                     .__('/* Controls borders color */', 'leyka')."\n". // Цвет рамок элементов управления
                     '/* :root { --leyka-color-main-third: #fef5f1; } */ '
                     .__('/* Selected payment method background color */', 'leyka')."\n". // Цвет фона выбранного ПМа
