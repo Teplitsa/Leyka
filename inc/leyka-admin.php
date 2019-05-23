@@ -207,7 +207,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                     </div>
 
                     <div class="leyka-dashboard-row">
-                        <?php $this->show_admin_portlet('recent-donations', array('number' => 5));?>
+                        <?php $this->show_admin_portlet('recent-donations', array(
+                            'interval' => $_GET['interval'],
+                            'number' => 5,
+                        ));?>
                     </div>
 
                 </div>
