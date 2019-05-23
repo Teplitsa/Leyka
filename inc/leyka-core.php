@@ -850,7 +850,7 @@ class Leyka extends Leyka_Singleton {
         } else {
 
             $gateways = array();
-            foreach($gateways as $gateway) { /** @var $gateway Leyka_Gateway */
+            foreach($this->_gateways as $gateway) { /** @var $gateway Leyka_Gateway */
                 if($gateway->get_activation_status() === $activation_status) {
                     $gateways[] = $gateway;
                 }

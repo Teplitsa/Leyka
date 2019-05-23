@@ -193,13 +193,14 @@ if( !function_exists('leyka_is_settings_step_valid') ) {
             }
         }
 
+        $options_invalid = array();
         foreach($options_to_validate as $option_id) {
             if( !leyka_options()->opt($option_id) || !leyka_options()->is_valid($option_id) ) {
-                return false;
+                $options_invalid[] = $option_id;
             }
         }
 
-        return true;
+        return $options_invalid ? $options_invalid : true;
 
     }
 }
