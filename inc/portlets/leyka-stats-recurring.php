@@ -12,7 +12,6 @@ $data = Leyka_Recurring_Stats_Portlet_Controller::get_instance()->get_template_d
 <div class="portlet-row">
     <div class="row-label"><?php _e('Recurring donations amount', 'leyka');?></div>
     <div class="row-data">
-        <?php echo '<pre>'.print_r($data, 1).'</pre>';?>
         <?php if( !isset($data['recurring_donations_amount']) ) {?>
             <div class="no-data"><?php _e('No data available', 'leyka');?></div>
         <?php } else {?>
