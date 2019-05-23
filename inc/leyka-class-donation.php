@@ -1746,7 +1746,7 @@ class Leyka_Donation {
      * @return mixed Leyka_Donation or false if param is wrong or nothing found.
      */
     public static function get_init_recurrent_donation($donation) {
-        self::get_init_recurring_donation($donation);
+        return self::get_init_recurring_donation($donation);
     }
 
 	public function __construct($donation) {
