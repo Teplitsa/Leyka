@@ -289,11 +289,30 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             <h3><?php _e('My data', 'leyka');?></h3>
 
             <div class="sidebar-part-content settings-state">
-                <?php foreach($main_settings_steps as $step) {?>
+                <?php foreach($main_settings_steps as $step) {
+
+                    $step_invalid_options = leyka_is_settings_step_valid($step['step_id']);?>
 
                     <div class="settings-step-set">
-                        <div class="step-setup-status <?php echo leyka_is_settings_step_valid($step['step_id']) ? 'step-valid' : 'step-invalid';?>"></div>
+                        <div class="step-setup-status <?php echo !is_array($step_invalid_options) ? 'step-valid' : 'step-invalid';?>"></div>
                         <div class="step-title"><?php echo $step['title'];?></div>
+
+                    <?php if(is_array($step_invalid_options)) {?>
+
+                        <div class="step-invalid-options">
+
+                        <?php if(count($step_invalid_options) <= 5) {
+                            foreach($step_invalid_options as $option_id) { ?>
+                                <div class="invalid-option">
+                                    <?php echo leyka_options()->get_title_of($option_id); ?>
+                                </div>
+                            <?php }
+                        } else {?>
+                            <div class="invalid-option"><?php _e('Some option fields are not filled correctly', 'leyka');?></div>
+                        <?php }?>
+
+                        </div>
+                        <?php }?>
                     </div>
 
                 <?php }?>
@@ -332,7 +351,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
             </div>
 
-            <div class="add-gateway-link"><?php _e('Add gateway', 'leyka'); /** @todo Where the link should lead? */?></div>
+            <div class="add-gateway-link">
+                <a href="<?php echo admin_url('admin.php?page=leyka_settings');?>"><?php _e('Add gateway', 'leyka');?></a>
+            </div>
 
         </div>
 

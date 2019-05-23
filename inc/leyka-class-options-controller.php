@@ -375,6 +375,16 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     }
 
+    public function get_title_of($option_id) {
+
+        $option_id = str_replace('leyka_', '', $option_id);
+
+        $this->_intialize_option($option_id, true);
+
+        return apply_filters('leyka_option_title-'.$option_id, $this->_options[$option_id]['title']);
+
+    }
+
     public function get_default_of($option_id) {
 
         $option_id = str_replace('leyka_', '', $option_id);
