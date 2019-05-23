@@ -385,7 +385,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 <div class="data-line"><?php echo 'WordPress: '.get_bloginfo('version');?></div>
 
                 <?php $cronjobs_status = leyka_get_cronjobs_status();?>
-                <div class="data-line cron-state">Cron: <span class="cron-state <?php echo $cronjobs_status['status'];?>"><?php echo mb_strtolower($cronjobs_status['title']);?></span></div>
+                <div class="data-line cron-state">
+                    Cron: <span class="cron-state <?php echo $cronjobs_status['status'];?>"><?php echo mb_strtolower($cronjobs_status['title']);?></span>
+                    <a href="#" class="cron-setup-howto"><?php _e('How to set it up?');?></a>
+                </div>
 
                 <div class="data-line">
                     <?php $protocol = parse_url(home_url(), PHP_URL_SCHEME);
