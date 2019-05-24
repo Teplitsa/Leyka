@@ -12,32 +12,32 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
         $params['interval'] = empty($params['interval']) ? 'year' : $params['interval'];
         switch($params['interval']) {
             case 'half-year':
-                $interval = '6 month';
+//                $interval = '6 month';
                 $sub_interval = 'month';
                 $interval_length = 6;
 //                $interval_date_format = 'd.m.Y';
                 break;
             case 'quarter':
-                $interval = '3 month';
+//                $interval = '3 month';
                 $sub_interval = 'week';
                 $interval_length = 12;
 //                $interval_date_format = 'd.m.Y';
                 break;
             case 'month':
-                $interval = '1 month';
+//                $interval = '1 month';
                 $sub_interval = 'week';
                 $interval_length = 4;
 //                $interval_date_format = 'd.m.Y';
                 break;
             case 'week':
-                $interval = '1 week';
+//                $interval = '1 week';
                 $sub_interval = 'day';
                 $interval_length = 7;
 //                $interval_date_format = 'd.m.Y';
                 break;
             case 'year':
             default:
-                $interval = '1 year';
+//                $interval = '1 year';
                 $sub_interval = 'month';
                 $interval_length = 12;
 //                $interval_date_format = 'd.m.Y';
