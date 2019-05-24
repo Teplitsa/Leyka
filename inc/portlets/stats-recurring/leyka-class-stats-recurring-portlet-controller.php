@@ -95,7 +95,8 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
             'recurring_donations_amount_delta_percent' => ($recurring_amount_delta < 0 ? '' : '+').$recurring_amount_delta.'%',
             'recurring_donations_number' => $curr_recurring_donations_count,
             'all_donations_number' => $curr_all_donations_count,
-            'recurring_donations_number_percent' => ($curr_recurring_donations_count*100.0/$curr_all_donations_count).'%'
+            'recurring_donations_number_percent' => $curr_all_donations_count ?
+                ($curr_recurring_donations_count*100.0/$curr_all_donations_count).'%' : '0%',
         );
 
     }

@@ -132,7 +132,6 @@ Number.isInteger = Number.isInteger || function(value) {
            isFinite(value) &&
            Math.floor(value) === value;
 };
-
 /** Donor's account frontend */
 
 var leyka; // L10n lines
