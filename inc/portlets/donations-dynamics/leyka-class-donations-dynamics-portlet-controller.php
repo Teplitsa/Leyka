@@ -43,8 +43,6 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
 //                $interval_date_format = 'd.m.Y';
         }
 
-        echo '<pre>'.print_r($interval, 1).'</pre>';
-
         global $wpdb;
 
         $donations_post_type = Leyka_Donation_Management::$post_type;
