@@ -206,9 +206,12 @@ jQuery(document).ready(function($){
 
         e.preventDefault();
 
-        let $this = $(this);
+        let $this = $(this),
+            $css_editor_field = $this.siblings('.css-editor-field'),
+            original_value = $this.siblings('.css-editor-original-value').val();
 
-        $this.siblings('.css-editor-field').val($this.siblings('.css-editor-original-value').val());
+        $css_editor_field.val(original_value);
+        editor.codemirror.getDoc().setValue(original_value);
 
     });
 
@@ -275,9 +278,10 @@ jQuery(document).ready(function($){
 
     // Custom CSS editor:
     let $css_editor = $('.css-editor-field');
+    let editor = {};
     if($css_editor.length) {
 
-        var editor_settings = wp.codeEditor.defaultSettings ? _.clone( wp.codeEditor.defaultSettings ) : {};
+        let editor_settings = wp.codeEditor.defaultSettings ? _.clone( wp.codeEditor.defaultSettings ) : {};
         editor_settings.codemirror = _.extend({
             },
             editor_settings.codemirror, {
@@ -285,7 +289,7 @@ jQuery(document).ready(function($){
             tabSize: 2,
             mode: 'css',
         });
-        var editor = wp.codeEditor.initialize($css_editor, editor_settings);
+        editor = wp.codeEditor.initialize($css_editor, editor_settings);
     }
 
     // campaign cover type
