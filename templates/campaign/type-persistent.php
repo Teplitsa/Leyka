@@ -61,6 +61,8 @@ $cover_bg_color = $header_cover_type == 'color' ? get_post_meta($campaign_id, 'c
                 <a href="<?php echo home_url();?>" class="leyka-campaign-logo">
                 	<img src="<?php echo $logo_url;?>" />
                 </a>
+                <?php } else {?>
+                	<div class="leyka-campaign-no-logo"></div>
                 <?php }?>
                 
                 <h1><?php echo get_the_title();?></h1>

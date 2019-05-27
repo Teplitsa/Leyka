@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Plugins - Leyka - Development (trunk)\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/leyka\n"
 "POT-Creation-Date: 2019-05-22T12:39:05+03:00\n"
-"PO-Revision-Date: 2019-05-22 11:40+0200\n"
+"PO-Revision-Date: 2019-05-27 06:21+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -3240,11 +3240,11 @@ msgstr "/* Цвета фона активных кнопок и переключ
 
 #: inc/leyka-class-campaign.php:353
 msgid "/* Controls borders color */"
-msgstr "/* Цвет границ элементов управления*/"
+msgstr "/* Цвет границ элементов управления */"
 
 #: inc/leyka-class-campaign.php:355
 msgid "/* Selected payment method background color */"
-msgstr "/*  Цвет фона выбранного способа оплаты */"
+msgstr "/* Цвет фона выбранного способа оплаты */"
 
 #: inc/leyka-class-campaign.php:357
 msgid "/* Inactive main submit background color */"
@@ -3268,7 +3268,7 @@ msgstr "/* Цвет названий полей */"
 
 #: inc/leyka-class-campaign.php:367
 msgid "/* Checkboxes & other fields borders color */"
-msgstr "/ * Цвет границ флажков и других полей * /"
+msgstr "/* Цвет границ флажков и других полей */"
 
 #: inc/leyka-class-campaign.php:369
 msgid "/* The main form background color */"

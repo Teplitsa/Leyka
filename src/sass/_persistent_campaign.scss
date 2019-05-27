@@ -54,6 +54,15 @@
         height: auto;
     }
     
+    .leyka-campaign-no-logo {
+        width: 280px;
+        height: 0px;
+        
+        @include for(medium-screens) {
+            height: 50px;
+        }
+    }
+    
     h1 {
         @include leyka-pc-h1();
         display: block;
@@ -61,9 +70,11 @@
         max-width: 746px;
         text-align: center;
         margin-top: 2 * $leyka-star-base;
+        margin-bottom: $leyka-star-base;
 
         @include for(medium-screens) {
             margin-top: 2.5 * $leyka-star-base;
+            margin-bottom: 2 * $leyka-star-base;
         }
         
         &:before {
