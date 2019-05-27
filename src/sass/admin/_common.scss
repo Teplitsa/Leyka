@@ -541,6 +541,17 @@
 // dashboard footer
 .leyka-dashboard-footer {
 	margin-top: 2 * $leyka-base;
+	margin-left: 12px;
+	
+	&.leyka-wizard-footer {
+	   margin-top: $leyka-base;
+	   margin-bottom: $leyka-base;
+	   margin-left: 12px;
+	}
+	
+	&.leyka-settings-footer {
+	   margin-left: 72px;
+	}
 }
 
 // admin footer

@@ -734,26 +734,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
     }
 
-    public function show_footer() {?>
-
-    <div class="leyka-dashboard-footer leyka-admin-footer">
-    	<a href="https://te-st.ru/" class="te-st-logo">
-    		<img  src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/logo-te-st-with-caption.svg" alt="<?php _e('te-st.ru', 'leyka');?>" />
-    	</a>
-    	<div class="links">
-    		<div class="te-st-link">
-    			<span><?php _e('Created by', 'leyka');?></span>
-    			<a href="https://te-st.ru/"><?php _e('Teplitsa. Technologies for Social Good', 'leyka');?></a>
-    		</div>
-    		<div class="info-links">
-                <a href="https://leyka.te-st.ru/sla/" target="_blank"><?php _e('SLA', 'leyka');?></a>
-                <a href="https://github.com/Teplitsa/leyka/wiki" target="_blank"><?php _e('Documentation', 'leyka');?></a>
-                <a href="https://t.me/joinchat/BshvgVUqHJLyCNIXd6pZXQ" target="_blank"><?php _e('Developer chat', 'leyka');?></a>
-    		</div>
-    	</div>
-    </div>
-
-    <?php }
+    public function show_footer() {
+        leyka_show_admin_footer();
+    }
 
 	public function load_frontend_scripts() {
 
@@ -773,7 +756,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 && empty($_GET['old'])
             )
             || ($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post')
-            || $_GET['page'] === 'leyka';
+            || (isset($_GET['page']) && $_GET['page'] === 'leyka');
             
         $current_screen = get_current_screen();
         $dependencies = array('jquery',);
@@ -1006,3 +989,36 @@ if( !function_exists('leyka_sync_plugin_stats_option_action') ) {
 	}
 }
 add_action('leyka_after_save_option-send_plugin_stats', 'leyka_sync_plugin_stats_option_action', 10, 2);
+
+if( !function_exists('leyka_show_admin_footer') ) {
+    function leyka_show_admin_footer() {
+        
+        $footer_class = "";
+        if(!empty($_GET['screen']) && strpos($_GET['screen'], 'wizard-') === 0) {
+            $footer_class .= 'leyka-wizard-footer';
+        }
+        elseif(!empty($_GET['page']) && $_GET['page'] === 'leyka_settings' && empty($_GET['screen'])) {
+            $footer_class .= 'leyka-settings-footer';
+        }
+        ?>
+    
+        <div class="leyka-dashboard-footer leyka-admin-footer <?php echo $footer_class;?>">
+        	<a href="https://te-st.ru/" class="te-st-logo">
+        		<img  src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/logo-te-st-with-caption.svg" alt="<?php _e('te-st.ru', 'leyka');?>" />
+        	</a>
+        	<div class="links">
+        		<div class="te-st-link">
+        			<span><?php _e('Created by', 'leyka');?></span>
+        			<a href="https://te-st.ru/"><?php _e('Teplitsa. Technologies for Social Good', 'leyka');?></a>
+        		</div>
+        		<div class="info-links">
+                    <a href="https://leyka.te-st.ru/sla/" target="_blank"><?php _e('SLA', 'leyka');?></a>
+                    <a href="https://github.com/Teplitsa/leyka/wiki" target="_blank"><?php _e('Documentation', 'leyka');?></a>
+                    <a href="https://t.me/joinchat/BshvgVUqHJLyCNIXd6pZXQ" target="_blank"><?php _e('Developer chat', 'leyka');?></a>
+        		</div>
+        	</div>
+        </div>
+    
+	<?php }
+	//add_action( 'admin_footer', 'leyka_show_admin_footer', 50 );
+}
