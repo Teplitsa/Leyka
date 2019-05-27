@@ -11,7 +11,7 @@ $cur_template = $campaign->template;
 
 if( !$cur_template || $cur_template === 'default' ) {
 
-    $cur_template = 'star';
+    $cur_template = 'revo';
     update_post_meta($campaign_id, 'campaign_template', $cur_template);
     $campaign->template = $cur_template;
 
