@@ -537,3 +537,66 @@
         }
     }
 }
+
+// dashboard footer
+.leyka-dashboard-footer {
+	margin-top: 2 * $leyka-base;
+}
+
+// admin footer
+.leyka-admin-footer {
+	display: flex;
+	align-items: center;
+	
+	.te-st-logo {
+       margin-right: 1.5 * $leyka-base;
+       
+	   img {
+	       width: auto;
+	       height: auto;
+	   }
+	}
+	
+    .links {
+        @include wizard-text();	
+        font-size: 12px;
+        line-height: 14px;
+        padding-top: $leyka-base;
+       
+        .te-st-link {
+            line-height: 14px;
+            
+            span {
+                font-weight: 500;
+                
+                display: block;
+                color: $color-wizard-text;
+	       }
+	       
+	       a {
+	           font-weight: 500;
+	           text-decoration: none;
+	       }
+        }
+	   
+        .info-links {
+           margin-top: 0.5 * $leyka-base;
+           
+	       a {
+                font-weight: 500;
+	            font-size: 90%;
+                text-decoration: none;	            
+	            
+	            margin-right: 0.25 * $leyka-base;
+	            padding-right: 0.5 * $leyka-base;
+	            border-right: 1px solid $color-border-normal;
+	            
+                &:last-of-type {
+                    border-right: none;
+	                margin-right: 0px;
+	                padding-right: 0px;
+	            }
+            }
+        }
+    }
+}

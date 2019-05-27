@@ -736,9 +736,21 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
     public function show_footer() {?>
 
-    <div class="leyka-dashboard-footer">
-        Te-st logo & "made by" branding here.
-        <a href="https://leyka.te-st.ru/sla/" target="_blank"><?php _e('SLA', 'leyka');?></a>
+    <div class="leyka-dashboard-footer leyka-admin-footer">
+    	<a href="https://te-st.ru/" class="te-st-logo">
+    		<img  src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/logo-te-st-with-caption.svg" alt="<?php _e('te-st.ru', 'leyka');?>" />
+    	</a>
+    	<div class="links">
+    		<div class="te-st-link">
+    			<span><?php _e('Created by', 'leyka');?></span>
+    			<a href="https://te-st.ru/"><?php _e('Teplitsa. Technologies for Social Good', 'leyka');?></a>
+    		</div>
+    		<div class="info-links">
+                <a href="https://leyka.te-st.ru/sla/" target="_blank"><?php _e('SLA', 'leyka');?></a>
+                <a href="https://github.com/Teplitsa/leyka/wiki" target="_blank"><?php _e('Documentation', 'leyka');?></a>
+                <a href="https://t.me/joinchat/BshvgVUqHJLyCNIXd6pZXQ" target="_blank"><?php _e('Developer chat', 'leyka');?></a>
+    		</div>
+    	</div>
     </div>
 
     <?php }
@@ -760,8 +772,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 && (empty($_GET['stage']) || $this->is_v3_settings_page($_GET['stage']))
                 && empty($_GET['old'])
             )
-            || ($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post');
-
+            || ($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post')
+            || $_GET['page'] === 'leyka';
+            
         $current_screen = get_current_screen();
         $dependencies = array('jquery',);
 
