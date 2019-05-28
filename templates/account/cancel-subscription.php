@@ -76,7 +76,10 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
                                 	<?php foreach(leyka_get_cancel_subscription_reasons() as $reason_value => $reason_text) {?>
                                     <span>
                                         <input type="checkbox" name="leyka_cancel_subscription_reason[]" id="leyka_cancel_subscription_reason_<?php echo $reason_value;?>" class="required" value="<?php echo $reason_value;?>">
-                                        <label for="leyka_cancel_subscription_reason_<?php echo $reason_value;?>"><?php echo $reason_text;?></label>
+                                        <label for="leyka_cancel_subscription_reason_<?php echo $reason_value;?>">
+                                        	<svg class="svg-icon icon-checkbox-check"><use xlink:href="#icon-checkbox-check"></use></svg>
+                                        	<?php echo $reason_text;?>
+                                        </label>
                                     </span>
                                 	<?php }?>
                                 </div>

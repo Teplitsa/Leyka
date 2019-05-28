@@ -24,6 +24,13 @@ $leyka_account_logo_url = '';?>
 </head>
 
 <body <?php body_class(); ?>>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+	<symbol width="12" height="9" viewBox="0 0 12 9" id="icon-checkbox-check">
+		<path d="M3.81353 7.10067L0.968732 4.30201L0 5.24832L3.81353 9L12 0.946309L11.0381 0L3.81353 7.10067Z"></path>
+	</symbol>
+</svg>
+
 <div id="page" class="site leyka-persistant-campaign leyka-account">
 	<a class="skip-link screen-reader-text" href="#content"><?php _e( 'Skip to content', 'twentynineteen' ); ?></a>
 
