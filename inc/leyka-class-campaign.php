@@ -370,7 +370,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                     '/* :root { --leyka-color-white: #ffffff; } */ '
                     .__('/* The main form background color */', 'leyka')."\n". // Основной цвет фона формы
                     '/* :root { --leyka-font-main: unset; } */ '
-                    .__('/* The main form color */', 'leyka')."\n".
+                    .__('/* The main form font family */', 'leyka')."\n".
                     '/* :root { --leyka-color-gradient: #ffffff; } */ '
                     .__('/* Payment methods selector gradient color */', 'leyka')."\n";?>
 
