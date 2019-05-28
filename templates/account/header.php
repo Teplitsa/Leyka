@@ -27,9 +27,9 @@ $leyka_account_logo_url = '';?>
 <div id="page" class="site leyka-persistant-campaign leyka-account">
 	<a class="skip-link screen-reader-text" href="#content"><?php _e( 'Skip to content', 'twentynineteen' ); ?></a>
 
-    <header id="masthead" class="leyka-campaign-header" style="<?php if(!empty($leyka_account_cover_url)):?>background-image:url('<?php echo $leyka_account_cover_url;?>');<?php endif;?>">
+    <header id="masthead" class="leyka-campaign-header cover-type-image">
         <div class="header-tint">
-            <a href="#" class="leyka-campaign-logo" style="<?php if(!empty($leyka_account_logo_url)):?>background-image:url('<?php echo $leyka_account_logo_url;?>');<?php endif;?>"></a>
+            <div class="leyka-campaign-no-logo"></div>
             <h1><?php echo !empty($leyka_account_page_title) ? $leyka_account_page_title : __('Leyka account', 'leyka');?></h1>
             <a href="<?php echo wp_logout_url( home_url() );?>" class="leyka-logout" title="<?php _e('Logout', 'leyka');?>">
                 <span><?php esc_html_e('Logout', 'leyka');?></span>

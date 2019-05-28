@@ -506,3 +506,14 @@
 		}
 	}	
 }
+
+// page header 
+.leyka-account {
+	&.leyka-persistant-campaign {
+	    .leyka-campaign-header {
+	        h1 {
+	           margin-bottom: 0px;
+	        }
+	    }	
+	}
+}
