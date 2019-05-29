@@ -79,7 +79,7 @@ if( !$gateway ) {?>
 
         if($gateway->has_wizard) {?>
             <a class="gateway-header-element gateway-wizard-link" href="<?php echo $gateway->wizard_url;?>" title="<?php esc_attr_e('Open the gateway setup wizard', 'leyka');?>">
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-wizard.svg" alt="">&nbsp;<?php esc_html_e('Step-by-step setup', 'leyka');?>
+                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-wizard.svg" alt=""><?php esc_html_e('Step-by-step setup', 'leyka');?>
             </a>
         <?php }?>
 
