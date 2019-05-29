@@ -89,6 +89,16 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.2.2 =
+* New: Now Revo is the default template in the Init Wizard again.
+* New: Persistent campaigns - new CSS editor default styles added.
+* New: CSS editor features for persistent campaigns CSS field added.
+* Fix: Persistent campaign template CSS bugfixes.
+* Fix: Persistent campaign CSS editor bufixes.
+* Fix: Recurring subscription checkboxes bugfix.
+* Fix: Bugfix in Leyka->get_gateways() method.
+* Fix: Bugfix for donations comments checkbox field in the plugin settings.
+
 = 3.2.1 =
 * New: now [leyka_campaign_form] and [leyka_inline_campaign] shortcodes may be used interchangeably.
 * Fix: "submitted" donations status description changed.
