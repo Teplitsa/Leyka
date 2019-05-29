@@ -70,11 +70,10 @@
         max-width: 746px;
         text-align: center;
         margin-top: 2 * $leyka-star-base;
-        margin-bottom: $leyka-star-base;
+        margin-bottom: 0px;
 
         @include for(medium-screens) {
             margin-top: 2.5 * $leyka-star-base;
-            margin-bottom: 2 * $leyka-star-base;
         }
         
         &:before {
