@@ -504,8 +504,8 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => array(
-                'caption' => esc_html__('Log in to Yandex.Kassa Dashboard', 'leyka'),
-                'value_url' => 'https://kassa.yandex.ru/joinups'
+                'caption' => __('Log in to <a href="https://kassa.yandex.ru/joinups" target="_blank">Yandex.Kassa Dashboard</a>', 'leyka'),
+                'value_url' => ''
             ),
         )))->addBlock(new Leyka_Custom_Setting_Block(array(
             'id' => 'fill-leyka-data-copy-shop-id',
