@@ -2,6 +2,9 @@
 
 div[id*="leyka-pf-"].leyka-pf-star {
     @include star-text();
+	@include leyka-star-style-block-box();
+	max-width: 600px;
+	box-sizing: border-box;
     
     .leyka-tpl-star-form,
     .leyka-account-form {
