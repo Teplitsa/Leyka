@@ -512,7 +512,7 @@ function leyka_donor_password_reset_request() {
             $email_sent = wp_mail(
                 $_POST['leyka_donor_email'],
                 apply_filters('leyka_email_donor_password_reset_title', __('Your account access resetting', 'leyka'), $donor),
-                wpautop(apply_filters('leyka_email_thanks_text', $email_text, $donor)),
+                wpautop(apply_filters('leyka_email_donor_password_reset_text', $email_text, $donor)),
                 array('From: '.apply_filters(
                         'leyka_email_from_name',
                         leyka_options()->opt_safe('email_from_name'),
