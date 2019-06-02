@@ -525,6 +525,22 @@ self::$_options_meta = array(
         'comment' => __('Check to send a special thankful email to each donor when campaign target reached', 'leyka'),
         'short_format' => true,
     ),
+    'account_notification_emails_to_old_donors_title' => array(
+        'type' => 'text',
+        'default' => __('Your personal account was created', 'leyka'),
+        'title' => __("A title of a notification email", 'leyka'),
+        'description' => __('Enter the email title.', 'leyka'),
+        'required' => true,
+        'placeholder' => __('E.g., Your personal account was created', 'leyka'),
+    ),
+    'account_notification_emails_to_old_donors_text' => array(
+        'type' => 'rich_html',
+        'default' => __('Hello, #DONOR_NAME#!<br><br>We created a personal account for you to manage your donations.<br><br>#DONOR_ACCOUNT_LOGIN_LINK#<br><br>If you do not wish to use it, just ignore this email.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
+        'title' => __("A text of a notification email", 'leyka'),
+        'description' => __("Enter the text of notification email. It may include the following special entries:", 'leyka').$email_placeholders,
+        'required' => true,
+        'field_classes' => array('type-rich_html'),
+    ),
     'email_campaign_target_reaching_title' => array(
         'type' => 'text',
         'default' => __('Thanks to you, the campaign succeeded!', 'leyka'),
