@@ -123,6 +123,7 @@ class Leyka extends Leyka_Singleton {
                 }
             }, 9);
 
+            add_action('leyka_donor_account_created', array($this, 'handle_non_init_recurring_donor_registration'), 10, 2);
             add_action('leyka_donor_account_not_created', array($this, 'handle_donor_account_creation_error'), 10, 2);
 
         }
@@ -1600,13 +1601,10 @@ class Leyka extends Leyka_Singleton {
 
         $donation = leyka_get_validated_donation($donation);
 
-        // Register a new donor's account only for init recurring donations and if it's not registered yet:
-        if(
-            $donation->type !== 'rebill'
-            || ($donation->init_recurring_donation_id && $donation->init_recurring_donation_id != $donation->id)
-        ) {
+        // Register a new donor's account only for recurring donations and if it's not registered yet:
+        if($donation->type !== 'rebill') {
             return false;
-        }
+        } // ($donation->init_recurring_donation_id && $donation->init_recurring_donation_id != $donation->id)
 
         $donor_user = get_user_by('email', $donation->donor_email);
         if($donor_user && is_a($donor_user, 'WP_User')) { // Account already exists
@@ -1615,7 +1613,7 @@ class Leyka extends Leyka_Singleton {
             $donation->donor_account = $donor_user_id;
             $donor_user->add_role('donor');
 
-        } else { // Create account anew
+        } else { // Create a new donor's account
 
             $donor_email_first_part = reset(explode('@', $donation->donor_email));
 
@@ -1642,6 +1640,114 @@ class Leyka extends Leyka_Singleton {
         }
 
         return $donor_user_id;
+
+    }
+
+    public function handle_non_init_recurring_donor_registration($donor_user_id, Leyka_Donation $donation) {
+
+        // This handler is only for non-init recurring donations:
+        if(
+            !leyka()->opt('donor_accounts_available')
+            || $donation->type !== 'rebill'
+            || !$donation->init_recurring_donation_id
+            || ($donation->init_recurring_donation_id && $donation->init_recurring_donation_id == $donation->id)) {
+            return false;
+        }
+
+        $campaign = new Leyka_Campaign($donation->campaign_id);
+        $email_placeholders = array(
+            '#SITE_NAME#',
+            '#SITE_EMAIL#',
+            '#ORG_NAME#',
+            '#DONATION_ID#',
+            '#DONATION_TYPE#',
+            '#DONOR_NAME#',
+            '#DONOR_EMAIL#',
+            '#PAYMENT_METHOD_NAME#',
+            '#CAMPAIGN_NAME#',
+            '#PURPOSE#',
+            '#CAMPAIGN_TARGET#',
+            '#SUM#',
+            '#DATE#',
+            '#RECURRING_SUBSCRIPTION_CANCELLING_LINK#',
+            '#DONOR_ACCOUNT_LOGIN_LINK#',
+        );
+        $email_placeholder_values = array(
+            get_bloginfo('name'),
+            get_bloginfo('admin_email'),
+            leyka()->opt('org_full_name'),
+            $donation->id,
+            leyka_get_payment_type_label($donation->type),
+            $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
+            $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
+            $donation->payment_method_label,
+            $campaign->title,
+            $campaign->payment_title,
+            $campaign->target,
+            $donation->amount.' '.$donation->currency_label,
+            $donation->date,
+            apply_filters(
+                'leyka_'.$donation->gateway_id.'_recurring_subscription_cancelling_link',
+                sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_get_website_tech_support_email()),
+                $donation
+            ),
+        );
+
+        // Donor account login link:
+        $donor_account_login_text = '';
+
+        if($donation->donor_account_error) { // Donor account wasn't created due to some error
+            $donor_account_login_text = sprintf(__('To control your recurring subscriptions please contact the <a href="mailto:%s">website administration</a>.', 'leyka'), leyka_get_website_tech_support_email());
+        } else if($donation->donor_account_id) {
+
+            $donor_account_activation_code = get_user_meta(
+                $donation->donor_account_id,
+                'leyka_account_activation_code',
+                true
+            );
+
+            $donor_account_login_text = $donor_account_activation_code ?
+                sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?activate='.$donor_account_activation_code)) :
+                sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?u='.$donation->donor_account_id));
+
+        }
+
+        $email_placeholder_values[] = apply_filters(
+            'leyka_email_donor_acccount_link',
+            $donor_account_login_text,
+            $donation,
+            $campaign
+        );
+
+        wp_mail(
+            $donation->donor_email,
+            apply_filters(
+                'leyka_email_non_init_recurring_donor_registration_title',
+                leyka()->opt('non_init_recurring_donor_registration_emails_title'),
+                $donation,
+                $campaign
+            ),
+            wpautop(str_replace(
+                $email_placeholders,
+                $email_placeholder_values,
+                apply_filters(
+                    'leyka_email_non_init_recurring_donor_registration_text',
+                    leyka()->opt('non_init_recurring_donor_registration_emails_text'),
+                    $donation,
+                    $campaign
+                )
+            )),
+            array('From: '.apply_filters(
+                    'leyka_email_from_name',
+                    leyka_options()->opt_safe('email_from_name'),
+                    $donation,
+                    $campaign
+                ).' <'.leyka_options()->opt_safe('email_from').'>',)
+        );
+
+        add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+
+        remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
     }
 

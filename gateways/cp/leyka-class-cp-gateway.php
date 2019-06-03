@@ -291,7 +291,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                 $donation->add_gateway_response($_POST);
 
-                if($call_type == 'complete') {
+                if($call_type === 'complete') {
 
                     Leyka_Donation_Management::send_all_emails($donation->id);
                     $donation->status = 'funded';

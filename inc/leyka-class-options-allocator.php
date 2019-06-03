@@ -159,7 +159,8 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'description' => __("Settings for the email notification sent to each donor when personal accounts feature are on, but donor's recurring donations started before that", 'leyka'),
                         'is_default_collapsed' => true,
                         'options' => array(
-                            'account_notification_emails_to_old_donors_title', 'account_notification_emails_to_old_donors_text',
+                            'non_init_recurring_donor_registration_emails_title',
+                            'non_init_recurring_donor_registration_emails_text',
                         )
                     ),),
                 );

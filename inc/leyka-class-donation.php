@@ -263,7 +263,7 @@ class Leyka_Donation_Management {
     }
 
     /**
-     * Send a donor thanking email, including the case of initializing a recurring subscription.
+     * Send a donor thanking email on single & initial recurring donation.
      *
      * @param $donation Leyka_Donation|integer|WP_Post
      * @return boolean
@@ -280,7 +280,6 @@ class Leyka_Donation_Management {
         if( !$donation || !$donor_email || $donation->donor_email_date ) {
             return false;
         }
-
 
         if(
             ($donation->type === 'single' && !leyka()->opt('send_donor_thanking_emails'))
@@ -359,7 +358,7 @@ class Leyka_Donation_Management {
                 );
 
                 $donor_account_login_text = $donor_account_activation_code ?
-                    sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?activate='.$donor_account_activation_code)) : // Вы можете управлять вашими пожертвованиями в вашем (link)личном кабинете(/link).
+                    sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?activate='.$donor_account_activation_code)) :
                     sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?u='.$donation->donor_account_id));
 
             }

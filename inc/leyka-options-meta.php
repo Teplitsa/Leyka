@@ -525,7 +525,7 @@ self::$_options_meta = array(
         'comment' => __('Check to send a special thankful email to each donor when campaign target reached', 'leyka'),
         'short_format' => true,
     ),
-    'account_notification_emails_to_old_donors_title' => array(
+    'non_init_recurring_donor_registration_emails_title' => array(
         'type' => 'text',
         'default' => __('Your personal account was created', 'leyka'),
         'title' => __("A title of a notification email", 'leyka'),
@@ -533,7 +533,7 @@ self::$_options_meta = array(
         'required' => true,
         'placeholder' => __('E.g., Your personal account was created', 'leyka'),
     ),
-    'account_notification_emails_to_old_donors_text' => array(
+    'non_init_recurring_donor_registration_emails_text' => array(
         'type' => 'rich_html',
         'default' => __('Hello, #DONOR_NAME#!<br><br>We created a personal account for you to manage your donations.<br><br>#DONOR_ACCOUNT_LOGIN_LINK#<br><br>If you do not wish to use it, just ignore this email.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
         'title' => __("A text of a notification email", 'leyka'),
