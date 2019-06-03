@@ -81,15 +81,21 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
             <?php $this->renderSubmitArea();?>
             </div>
         </form>
+        
+        <?php echo $this->renderFooter();?>
 
         <?php echo $this->renderHelpChat();?>
 
     <?php }
 
+    public function renderFooter() {
+        leyka_show_admin_footer();
+    }
+    
     public function renderHelpChat() {
         include(LEYKA_PLUGIN_DIR.'inc/settings-fields-templates/leyka-helpchat.php');
     }
-
+    
     public function renderHiddenFields() {
     }
 
@@ -194,7 +200,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         </a>
         
         <div class="leyka-logo">
-            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/nav-logo.svg" alt="">
+            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/nav-logo-right-caption.svg" alt="">
         </div>
 
     <?php }

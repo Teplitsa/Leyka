@@ -128,6 +128,32 @@ gulp.task('build-admin-css', function() {
 
 });
 
+gulp.task('build-admin-common-css', function() {
+
+    var paths = require('node-bourbon').includePaths,
+		// vendorFiles = gulp.src([]),
+        appFiles = gulp.src(basePaths.src+'sass/admin/admin-common.scss')
+        .pipe(!isProduction ? plugins.sourcemaps.init() : gutil.noop())  //process the original sources for sourcemap
+        .pipe(plugins.sass({
+                outputStyle: sassStyle, //SASS syntas
+                includePaths: paths //add bourbon + mdl
+            }).on('error', plugins.sass.logError))//sass own error log
+        .pipe(plugins.autoprefixer({ //autoprefixer
+                browsers: ['last 4 versions'],
+                cascade: false
+            }))
+        .pipe(!isProduction ? plugins.sourcemaps.write() : gutil.noop()) //add the map to modified source
+        .on('error', console.log); //log
+
+	return es.concat(appFiles /*, vendorFiles*/) //combine vendor CSS files and our files after-SASS
+        .pipe(plugins.concat('admin-common.css')) //combine into file
+        .pipe(isProduction ? plugins.cssmin() : gutil.noop()) //minification on production
+        .pipe(plugins.size()) //display size
+        .pipe(gulp.dest(basePaths.dest+'css')) //write file
+        .on('error', console.log); //log
+
+});
+
 gulp.task('build-editor-css', function() {
 
     var paths = require('node-bourbon').includePaths,
@@ -174,7 +200,7 @@ gulp.task('full-build', async function(){
 });
 
 gulp.task('full-build-css', async function(){
-    await gulp.series('build-front-css', 'build-admin-css');
+    await gulp.series('build-front-css', 'build-admin-common-css', 'build-admin-css');
 });
 
 gulp.task('full-build-js', async function(){
@@ -229,7 +255,7 @@ gulp.task('watch', function(done){
     // Backend:
     gulp.watch(
         [basePaths.src+'sass/admin/*.scss', basePaths.src+'sass/admin/**/*.scss'],
-        gulp.series('build-admin-css', 'build-editor-css')
+        gulp.series('build-admin-common-css', 'build-admin-css', 'build-editor-css')
     );
 
     gulp.watch(

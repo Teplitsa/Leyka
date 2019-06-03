@@ -270,7 +270,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             <div class="leyka-logo"><img src="" alt=""></div>
 
             <div class="leyka-description">
-                <?php _e('Leyka is a simple donations collection & management system for your website', 'leyka'); // Лейка - простая система для сбора и управления пожертвованиями на вашем сайте ?>
+                <?php _e('Leyka is a simple donations collection & management system for your website', 'leyka'); // Р›РµР№РєР° - РїСЂРѕСЃС‚Р°СЏ СЃРёСЃС‚РµРјР° РґР»СЏ СЃР±РѕСЂР° Рё СѓРїСЂР°РІР»РµРЅРёСЏ РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёСЏРјРё РЅР° РІР°С€РµРј СЃР°Р№С‚Рµ ?>
             </div>
 
             <div class="leyka-official-website">
@@ -318,7 +318,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 <?php }?>
             </div>
 
-            <a href="<?php echo admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init');?>" class="init-wizard-link"><?php _e('To the step-by-step setup', 'leyka'); // Перейти к пошаговой установке ?></a>
+            <a href="<?php echo admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init');?>" class="init-wizard-link"><?php _e('To the step-by-step setup', 'leyka'); // РџРµСЂРµР№С‚Рё Рє РїРѕС€Р°РіРѕРІРѕР№ СѓСЃС‚Р°РЅРѕРІРєРµ ?></a>
 
         </div>
         <?php }?>
@@ -699,20 +699,20 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             $res &= wp_mail(
                 $email, __('Leyka: new feedback incoming', 'leyka'),
                 sprintf(
-                    "Добрый день!<br><br>
-                Поступила новая обратная связь от пользователя Лейки.<br><br>
-                <strong>Тема:</strong> %s<br>
-                <strong>Имя пользователя:</strong> %s<br>
-                <strong>Почта пользователя:</strong> %s<br>
-                <strong>Текст сообщения:</strong><br>%s<br><br>
-                ---------------- Технические данные сайта пользователя --------------<br><br>
-                <strong>Cайт пользователя:</strong> <a href='%s'>%s</a> (IP: %s)<br>
-                <strong>Версия WP:</strong> %s<br>
-                <strong>Версия Лейки:</strong> %s<br>
-                <strong>Параметр admin_email:</strong> %s<br>
-                <strong>Язык:</strong> %s (кодировка: %s)<br>
-                <strong>ПО веб-сервера:</strong> %s<br>
-                <strong>Браузер пользователя:</strong> %s<br>
+                    "Р”РѕР±СЂС‹Р№ РґРµРЅСЊ!<br><br>
+                РџРѕСЃС‚СѓРїРёР»Р° РЅРѕРІР°СЏ РѕР±СЂР°С‚РЅР°СЏ СЃРІСЏР·СЊ РѕС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Р›РµР№РєРё.<br><br>
+                <strong>РўРµРјР°:</strong> %s<br>
+                <strong>Р�РјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ:</strong> %s<br>
+                <strong>РџРѕС‡С‚Р° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ:</strong> %s<br>
+                <strong>РўРµРєСЃС‚ СЃРѕРѕР±С‰РµРЅРёСЏ:</strong><br>%s<br><br>
+                ---------------- РўРµС…РЅРёС‡РµСЃРєРёРµ РґР°РЅРЅС‹Рµ СЃР°Р№С‚Р° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ --------------<br><br>
+                <strong>CР°Р№С‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ:</strong> <a href='%s'>%s</a> (IP: %s)<br>
+                <strong>Р’РµСЂСЃРёСЏ WP:</strong> %s<br>
+                <strong>Р’РµСЂСЃРёСЏ Р›РµР№РєРё:</strong> %s<br>
+                <strong>РџР°СЂР°РјРµС‚СЂ admin_email:</strong> %s<br>
+                <strong>РЇР·С‹Рє:</strong> %s (РєРѕРґРёСЂРѕРІРєР°: %s)<br>
+                <strong>РџРћ РІРµР±-СЃРµСЂРІРµСЂР°:</strong> %s<br>
+                <strong>Р‘СЂР°СѓР·РµСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ:</strong> %s<br>
 				---------------------------------------------------------------------<br>
 				<pre>%s</pre>
 				",
@@ -741,6 +741,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	public function load_frontend_scripts() {
 
 		wp_enqueue_style('leyka-icon', LEYKA_PLUGIN_BASE_URL.'css/admin-icon.css', array(), LEYKA_VERSION);
+		
+		wp_enqueue_style('leyka-admin-common', LEYKA_PLUGIN_BASE_URL.'assets/css/admin-common.css', array(), LEYKA_VERSION);
 
 		$screen = get_current_screen();
 		if(false === stripos($screen->base, 'leyka') && false === stripos($screen->id, 'leyka')) {
@@ -925,7 +927,7 @@ if( !function_exists('leyka_admin_get_slug_edit_field') ) {
                 <span class="base-url"><?php echo $campaign_base_url;?></span>/<span class="current-slug"><?php echo $campaign_permalink_parts[1];?></span>
             </span>
 
-            <a href="<?php echo get_edit_post_link($campaign->id);?>" class="inline-action inline-edit-slug">Редактировать</a>
+            <a href="<?php echo get_edit_post_link($campaign->id);?>" class="inline-action inline-edit-slug">Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ</a>
 
             <span class="inline-edit-slug-form" data-slug-original="<?php echo $campaign_permalink_parts[1];?>" data-campaign-id="<?php echo $campaign->id;?>" data-nonce="<?php echo wp_create_nonce('leyka-edit-campaign-slug');?>" style="display: none;">
                 <input type="text" class="leyka-slug-field inline-input" value="<?php echo $campaign_permalink_parts[1];?>">
@@ -938,7 +940,7 @@ if( !function_exists('leyka_admin_get_slug_edit_field') ) {
         <?php } else {?>
 
             <span class="base-url"><?php echo $campaign_permalink_full;?></span>
-            <a href="<?php echo admin_url('options-permalink.php');?>" class="permalink-action" target="_blank">Включить постоянные ссылки</a>
+            <a href="<?php echo admin_url('options-permalink.php');?>" class="permalink-action" target="_blank">Р’РєР»СЋС‡РёС‚СЊ РїРѕСЃС‚РѕСЏРЅРЅС‹Рµ СЃСЃС‹Р»РєРё</a>
 
         <?php }?>
 
@@ -990,18 +992,10 @@ if( !function_exists('leyka_sync_plugin_stats_option_action') ) {
 }
 add_action('leyka_after_save_option-send_plugin_stats', 'leyka_sync_plugin_stats_option_action', 10, 2);
 
-if( !function_exists('leyka_show_admin_footer') ) {
-    function leyka_show_admin_footer() {
-        
-        $footer_class = "";
-        if(!empty($_GET['screen']) && strpos($_GET['screen'], 'wizard-') === 0) {
-            $footer_class .= 'leyka-wizard-footer';
-        }
-        elseif(!empty($_GET['page']) && $_GET['page'] === 'leyka_settings' && empty($_GET['screen'])) {
-            $footer_class .= 'leyka-settings-footer';
-        }
+if( !function_exists('leyka_get_admin_footer') ) {
+    function leyka_get_admin_footer($footer_class='', $old_footer_html='') {
+        ob_start();
         ?>
-    
         <div class="leyka-dashboard-footer leyka-admin-footer <?php echo $footer_class;?>">
         	<a href="https://te-st.ru/" class="te-st-logo">
         		<img  src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/logo-te-st-with-caption.svg" alt="<?php _e('te-st.ru', 'leyka');?>" />
@@ -1018,7 +1012,58 @@ if( !function_exists('leyka_show_admin_footer') ) {
         		</div>
         	</div>
         </div>
-    
-	<?php }
-	//add_action( 'admin_footer', 'leyka_show_admin_footer', 50 );
+<?php
+        return ob_get_clean() . $old_footer_html;
+    }
+
+}
+
+if( !function_exists('leyka_show_admin_footer') ) {
+    function leyka_show_admin_footer($old_footer_html='') {
+        $footer_class = '';
+        if(!empty($_GET['screen']) && strpos($_GET['screen'], 'wizard-') === 0) {
+            $footer_class .= 'leyka-wizard-footer';
+        }
+        elseif(!empty($_GET['page']) && $_GET['page'] === 'leyka_settings' && empty($_GET['screen'])) {
+            $footer_class .= 'leyka-settings-footer';
+        }
+        
+        echo leyka_get_admin_footer($footer_class, $old_footer_html);
+    }
+}
+
+if( !function_exists('leyka_show_admin_footer_on_default_pages') ) {
+    function leyka_show_admin_footer_on_default_pages($old_footer_html='') {
+        $screen = get_current_screen();
+        if(false === stripos($screen->base, 'leyka') && false === stripos($screen->id, 'leyka')) {
+            return $old_footer_html;
+        }
+        elseif( !empty($_GET['post_type']) && in_array($_GET['post_type'], array('leyka_donation', 'leyka_campaign')) ) {
+            return leyka_get_admin_footer('', $old_footer_html);
+        }
+    }
+	add_filter( 'admin_footer_text', 'leyka_show_admin_footer_on_default_pages', 20 );
+}
+
+if( !function_exists('leyka_admin_body_class') ) {
+    function leyka_admin_body_class($classes) {
+        $leyka_page_class = '';
+        
+        if(!empty($_GET['screen']) && strpos($_GET['screen'], 'wizard-') === 0) {
+            $leyka_page_class .= 'leyka-admin-wizard';
+        }
+        elseif(!empty($_GET['page']) && $_GET['page'] === 'leyka_settings' && empty($_GET['screen'])) {
+            $leyka_page_class .= 'leyka-admin-settings';
+        }
+        elseif(!empty($_GET['page']) && $_GET['page'] === 'leyka' && empty($_GET['screen'])) {
+            $leyka_page_class .= 'leyka-admin-dashboard';
+        }
+        elseif( (!empty($_GET['post_type']) && in_array($_GET['post_type'], array('leyka_donation', 'leyka_campaign'))) 
+            || (!empty($_GET['page']) && $_GET['page'] === 'leyka_feedback' && empty($_GET['screen']))) {
+            $leyka_page_class .= 'leyka-admin-default';
+        }
+        
+        return $classes . ' ' . $leyka_page_class . ' ';
+    }
+    add_filter( 'admin_body_class', 'leyka_admin_body_class', 20 );
 }
