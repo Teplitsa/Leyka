@@ -8,6 +8,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 	protected static $_instance = null;
 
+	protected $_donors_list_table = null;
+
 	protected function __construct() {
 
 		add_action('admin_menu', array($this, 'admin_menu_setup'), 9);
@@ -126,9 +128,12 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         add_submenu_page('leyka', __('New campaign', 'leyka'), _x('Add new', 'campaign', 'leyka'), 'leyka_manage_donations', 'post-new.php?post_type='.Leyka_Campaign_Management::$post_type);
 
+        $hook = add_submenu_page('leyka', __('Donors', 'leyka'), __('Donors', 'leyka'), 'leyka_manage_donations', 'leyka_donors', array($this, 'donors_screen'));
+        add_action("load-$hook", array($this, 'donors_screen_options'));
+
         add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), 'leyka_manage_options', 'leyka_settings', array($this, 'settings_screen'));
 
-        add_submenu_page('leyka', __('Connect to us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedback_screen'));
+        add_submenu_page('leyka', __('Contact us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedback_screen'));
 
         // Wizards pages group:
         add_submenu_page(NULL, 'Some Leyka Wizard', 'Some Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', array($this, 'settings_new_screen'));
@@ -208,7 +213,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 				'action' => leyka_is_widget_active() ? false : admin_url('widgets.php'),
 				'docs'   => 'https://leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/'
 			);
-		} elseif(current_theme_supports('menus')) {
+		} else if(current_theme_supports('menus')) {
 			$row['step_4'] = array(
 				'txt'    => __('Display campaign\'s link on your site using menus', 'leyka'),
 				'action' => leyka_is_campaign_link_in_menu() ? false : admin_url('nav-menus.php'),
@@ -405,6 +410,49 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	public function is_separate_forms_stage($stage) {
 		return in_array($stage, array('email', 'beneficiary', 'technical', 'view', 'additional'));
 	}
+
+	public function donors_screen_options() {
+
+        add_screen_option('per_page', array(
+            'label' => 'Donors',
+            'default' => 5,
+            'option' => 'donors_per_page',
+        ));
+
+        require_once(LEYKA_PLUGIN_DIR.'inc/admin-lists/leyka-class-donors-list-table.php');
+
+        $this->_donors_list_table = new Leyka_Admin_Donors_List_Table();
+
+	}
+
+	public function donors_screen() {
+
+	    if( !current_user_can('leyka_manage_options') ) {
+            wp_die(__('You do not have permissions to access this page.', 'leyka'));
+        }?>
+
+	<div class="wrap">
+		<h2><?php _e('Donors', 'leyka'); ?></h2>
+
+		<div id="poststuff">
+			<div id="post-body" class="metabox-holder columns-2">
+			    <div class="donors-lilst-filters">Donors table filters here</div>
+				<div id="post-body-content">
+					<div class="meta-box-sortables ui-sortable">
+						<form method="post">
+							<?php $this->_donors_list_table->prepare_items();
+							$this->_donors_list_table->display();?>
+						</form>
+					</div>
+				</div>
+			</div>
+			<br class="clear">
+		</div>
+	</div>
+
+    <?php
+	}
+
 
 	public function settings_screen() {
 
