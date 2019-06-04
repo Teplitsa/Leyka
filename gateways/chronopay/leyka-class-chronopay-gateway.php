@@ -235,7 +235,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             $_POST['product_id']
         )) {
 
-            if($transaction_type == 'Purchase') { // Initial rebill payment
+            if($transaction_type == 'Purchase') { // Initial recurring donation (subscription)
 
                 if($donation->status != 'funded') {
 
@@ -254,7 +254,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
                 }
 
-            } else if($transaction_type == 'Rebill') { // Rebill payment
+            } else if($transaction_type == 'Rebill') { // Non-init recurring donation
 
                 // Callback is repeated (like when Chronopay didn't get an answer in prev. attempt):
                 if($this->_donation_exists($transaction_id)) {
@@ -297,7 +297,12 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 
 
                 if($donation->status !== 'funded') {
+
                     $donation->status = 'funded';
+
+                    // If it's a non-init recurring donation just completed - create donor's account, if needed:
+                    leyka()->register_donor_account($donation);
+
                 }
                 if($donation->type !== 'rebill') {
                     $donation->type = 'rebill';

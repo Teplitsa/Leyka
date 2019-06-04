@@ -40,8 +40,8 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             $this->_id.'_new_api' => array(
                 'type' => 'checkbox',
                 'default' => leyka_is_yandex_new_api_used(),
-                'title' => 'Новый API Яндекс.Кассы',
-                'description' => 'Отметьте, если ваше подключение к Яндекс.Кассе использует новый API',
+                'title' => __('Use Yandex.Kassa new API', 'leyka'), // Новый API Яндекс.Кассы
+                'description' => __('Check if your Yandex.Kassa connection uses the new API', 'check'), // Отметьте, если ваше подключение к Яндекс.Кассе использует новый API
             ),
             $this->_id.'_shop_id' => array(
                 'type' => 'text',
@@ -321,6 +321,11 @@ techMessage="'.$tech_message.'"/>');
                         $donation->status = 'funded';
                         $res = Leyka_Donation_Management::send_all_emails($donation->id);
                         /** @todo Handle the case of $res === false */
+
+                        // If it's a non-init recurring donation just completed - create donor's account, if needed:
+                        if($donation->payment_type === 'rebill') {
+                            leyka()->register_donor_account($donation);
+                        }
                         break;
                     case 'canceled':
                         $donation->status = 'failed';

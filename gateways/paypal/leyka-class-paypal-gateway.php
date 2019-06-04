@@ -362,67 +362,68 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 $campaign_post = get_post($donation->campaign_id);
 
-              if ($donation->payment_type === 'rebill') {
-                $data = apply_filters('leyka_paypal_do_ec_payment_data', array(
-                    'USER' => leyka_options()->opt('paypal_api_username'),
-                    'PWD' => leyka_options()->opt('paypal_api_password'),
-                    'SIGNATURE' => leyka_options()->opt('paypal_api_signature'),
-                    'VERSION' => '204',
-                    'METHOD' => 'CreateRecurringPaymentsProfile',
-                    'TOKEN' => $_GET['token'],
-                    'PAYERID' => $_GET['PayerID'],
-                    'AMT' => $donation->amount,
-                    'CURRENCYCODE' => 'RUB',
-                    'DESC' => $payment_description,
-                    'BILLINGPERIOD' => 'Month',
-                    'BILLINGFREQUENCY' => '1',
-                    'PROFILESTARTDATE' => Date(DateTime::ISO8601, strtotime("+1 Month")),
-                ), $donation);
+                if($donation->payment_type === 'rebill') {
 
-                $ch = curl_init();
-                curl_setopt_array($ch, array(
-                    CURLOPT_URL => $this->submission_redirect_url('', 'paypal_all'), // "paypal_all" is a PM id
-                    CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => http_build_query($data),
-                    CURLOPT_VERBOSE => true,
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_CONNECTTIMEOUT => 60,
-                ));
+                    $data = apply_filters('leyka_paypal_do_ec_payment_data', array(
+                        'USER' => leyka_options()->opt('paypal_api_username'),
+                        'PWD' => leyka_options()->opt('paypal_api_password'),
+                        'SIGNATURE' => leyka_options()->opt('paypal_api_signature'),
+                        'VERSION' => '204',
+                        'METHOD' => 'CreateRecurringPaymentsProfile',
+                        'TOKEN' => $_GET['token'],
+                        'PAYERID' => $_GET['PayerID'],
+                        'AMT' => $donation->amount,
+                        'CURRENCYCODE' => 'RUB',
+                        'DESC' => $payment_description,
+                        'BILLINGPERIOD' => 'Month',
+                        'BILLINGFREQUENCY' => '1',
+                        'PROFILESTARTDATE' => Date(DateTime::ISO8601, strtotime("+1 Month")),
+                    ), $donation);
 
-                if( !$result_str = curl_exec($ch) ) {
-                    $this->_donation_error(
-                        __('PayPal - CreateRecurringPaymentsProfile error occured', 'leyka'),
-                        sprintf(__("CreateRecurringPaymentsProfile request to PayPal system couldn't be made due to some error.\n\nThe error: %s", 'leyka'), curl_error($ch).' ('.curl_errno($ch).')'),
-                        $donation,
-                        'DoECPayment',
-                        $data
-                    );
+                    $ch = curl_init();
+                    curl_setopt_array($ch, array(
+                        CURLOPT_URL => $this->submission_redirect_url('', 'paypal_all'), // "paypal_all" is a PM id
+                        CURLOPT_CUSTOMREQUEST => 'POST',
+                        CURLOPT_POSTFIELDS => http_build_query($data),
+                        CURLOPT_VERBOSE => true,
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_CONNECTTIMEOUT => 60,
+                    ));
+
+                    if( !$result_str = curl_exec($ch) ) {
+                        $this->_donation_error(
+                            __('PayPal - CreateRecurringPaymentsProfile error occured', 'leyka'),
+                            sprintf(__("CreateRecurringPaymentsProfile request to PayPal system couldn't be made due to some error.\n\nThe error: %s", 'leyka'), curl_error($ch).' ('.curl_errno($ch).')'),
+                            $donation,
+                            'DoECPayment',
+                            $data
+                        );
+                    }
+
+                    parse_str($result_str, $result);
+                    curl_close($ch);
+
+                    if(empty($result['ACK']) || $result['ACK'] != 'Success') {
+                        $this->_donation_error(
+                            __('PayPal - CreateRecurringPaymentsProfile error occured', 'leyka'),
+                            sprintf(__("CreateRecurringPaymentsProfile request to PayPal system returned without success status.\n\nThe request result: %s", 'leyka'), print_r($result, 1)),
+                            $donation,
+                            'DoECPayment',
+                            $data
+                        );
+                    }
+
+                    if(empty($result['PROFILESTATUS']) || $result['PROFILESTATUS'] != 'ActiveProfile') {
+                        $this->_donation_error(
+                            __('PayPal - CreateRecurringPaymentsProfile error occured', 'leyka'),
+                            sprintf(__("CreateRecurringPaymentsProfile request to PayPal system reported about the error: a RecurringPaymentsProfile status is not ActiveProfile.\n\nThe request result: %s", 'leyka'), print_r($result, 1)),
+                            $donation,
+                            'DoECPayment',
+                            $data
+                        );
+                    }
+
                 }
-
-                parse_str($result_str, $result);
-                curl_close($ch);
-
-                if(empty($result['ACK']) || $result['ACK'] != 'Success') {
-                    $this->_donation_error(
-                        __('PayPal - CreateRecurringPaymentsProfile error occured', 'leyka'),
-                        sprintf(__("CreateRecurringPaymentsProfile request to PayPal system returned without success status.\n\nThe request result: %s", 'leyka'), print_r($result, 1)),
-                        $donation,
-                        'DoECPayment',
-                        $data
-                    );
-                }
-
-                if(empty($result['PROFILESTATUS']) || $result['PROFILESTATUS'] != 'ActiveProfile') {
-                    $this->_donation_error(
-                        __('PayPal - CreateRecurringPaymentsProfile error occured', 'leyka'),
-                        sprintf(__("CreateRecurringPaymentsProfile request to PayPal system reported about the error: a RecurringPaymentsProfile status is not ActiveProfile.\n\nThe request result: %s", 'leyka'), print_r($result, 1)),
-                        $donation,
-                        'DoECPayment',
-                        $data
-                    );
-                }
-              }
-
 
                 $data = apply_filters('leyka_paypal_do_ec_payment_data', array(
                     'USER' => leyka_options()->opt('paypal_api_username'),
@@ -570,8 +571,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 }
 
                 if(
-                    !$donation->donor_name &&
-                    ( !empty($_POST['first_name']) || !empty($_POST['last_name']) )
+                    !$donation->donor_name
+                    && ( !empty($_POST['first_name']) || !empty($_POST['last_name']) )
                 ) {
                     $donation->donor_name = $_POST['first_name'].' '.$_POST['last_name'];
                 }
@@ -579,20 +580,26 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 if( !empty($_POST['payment_status']) && $_POST['payment_status'] == 'Completed' ) {
 
                     if(
-                        !leyka_options()->opt('paypal_accept_verified_only') ||
-                        $_POST['payer_status'] == 'verified'
+                        !leyka_options()->opt('paypal_accept_verified_only')
+                        || $_POST['payer_status'] == 'verified'
                     ) {
 
                         $donation->status = 'funded';
                         $donation->add_gateway_response($_POST);
                         $this->_add_to_payment_log($donation, 'IPN', $_POST);
 
+                        // If it's a non-init recurring donation just completed - create donor's account, if needed:
+                        if($donation->payment_type === 'rebill') {
+                            leyka()->register_donor_account($donation);
+                        }
+
                         Leyka_Donation_Management::send_all_emails($donation->id);
 
                     }
 
-                } elseif(
-                    !empty($_POST['payment_status']) && in_array($_POST['payment_status'], array('Pending', 'In-Progress'))
+                } else if(
+                    !empty($_POST['payment_status'])
+                    && in_array($_POST['payment_status'], array('Pending', 'In-Progress'))
                 ) {
 
                     $donation->status = 'submitted';
@@ -600,7 +607,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     $this->_add_to_payment_log($donation, 'IPN', $_POST);
 
                 } else if(
-                    !empty($_POST['payment_status']) && in_array($_POST['payment_status'], array('Refunded', 'Reversed'))
+                    !empty($_POST['payment_status'])
+                    && in_array($_POST['payment_status'], array('Refunded', 'Reversed'))
                 ) {
 
                     $donation->status = 'refunded';

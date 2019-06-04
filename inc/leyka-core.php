@@ -1719,24 +1719,30 @@ class Leyka extends Leyka_Singleton {
             $campaign
         );
 
-        wp_mail(
-            $donation->donor_email,
+        $email_to = $donation->donor_email;
+        $title = apply_filters(
+            'leyka_email_non_init_recurring_donor_registration_title',
+            leyka()->opt('non_init_recurring_donor_registration_emails_title'),
+            $donation,
+            $campaign
+        );
+        $text = wpautop(str_replace(
+            $email_placeholders,
+            $email_placeholder_values,
             apply_filters(
-                'leyka_email_non_init_recurring_donor_registration_title',
-                leyka()->opt('non_init_recurring_donor_registration_emails_title'),
+                'leyka_email_non_init_recurring_donor_registration_text',
+                leyka()->opt('non_init_recurring_donor_registration_emails_text'),
                 $donation,
                 $campaign
-            ),
-            wpautop(str_replace(
-                $email_placeholders,
-                $email_placeholder_values,
-                apply_filters(
-                    'leyka_email_non_init_recurring_donor_registration_text',
-                    leyka()->opt('non_init_recurring_donor_registration_emails_text'),
-                    $donation,
-                    $campaign
-                )
-            )),
+            )
+        ));
+
+        add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+
+        $res = wp_mail(
+            $email_to,
+            $title,
+            $text,
             array('From: '.apply_filters(
                     'leyka_email_from_name',
                     leyka_options()->opt_safe('email_from_name'),
@@ -1744,8 +1750,6 @@ class Leyka extends Leyka_Singleton {
                     $campaign
                 ).' <'.leyka_options()->opt_safe('email_from').'>',)
         );
-
-        add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
         remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
