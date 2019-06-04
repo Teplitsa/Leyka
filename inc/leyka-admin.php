@@ -267,13 +267,13 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 		<div class="leyka-dashboard-sidebar-part">
 
-            <div class="leyka-logo"><img src="" alt=""></div>
+            <div class="leyka-logo"><img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/logo-leyka.svg" alt=""></div>
 
             <div class="leyka-description">
                 <?php _e('Leyka is a simple donations collection & management system for your website', 'leyka'); // Р›РµР№РєР° - РїСЂРѕСЃС‚Р°СЏ СЃРёСЃС‚РµРјР° РґР»СЏ СЃР±РѕСЂР° Рё СѓРїСЂР°РІР»РµРЅРёСЏ РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёСЏРјРё РЅР° РІР°С€РµРј СЃР°Р№С‚Рµ ?>
             </div>
 
-            <div class="leyka-official-website">
+            <div class="leyka-bottom-link leyka-official-website">
                 <a href="//leyka.te-st.ru/" target="_blank"><?php _e('Go to the plugin documentation', 'leyka');?></a>
             </div>
 
@@ -294,31 +294,36 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                     $step_invalid_options = leyka_is_settings_step_valid($step['step_id']);?>
 
                     <div class="settings-step-set">
-                        <div class="step-setup-status <?php echo !is_array($step_invalid_options) ? 'step-valid' : 'step-invalid';?>"></div>
-                        <div class="step-title"><?php echo $step['title'];?></div>
-
-                    <?php if(is_array($step_invalid_options)) {?>
-
-                        <div class="step-invalid-options">
-
-                        <?php if(count($step_invalid_options) <= 5) {
-                            foreach($step_invalid_options as $option_id) { ?>
-                                <div class="invalid-option">
-                                    <?php echo leyka_options()->get_title_of($option_id); ?>
+                            <div class="step-setup-status <?php echo !is_array($step_invalid_options) ? 'step-valid' : 'step-invalid';?>"></div>
+                        	<div class="step-title-wrapper">
+                                <div class="step-title"><?php echo $step['title'];?></div>
+            
+                            <?php if(is_array($step_invalid_options)) {?>
+            
+                                <div class="step-invalid-options">
+            
+                                <?php if(count($step_invalid_options) <= 5) {
+                                    foreach($step_invalid_options as $option_id) { ?>
+                                        <div class="invalid-option">
+                                            <?php echo leyka_options()->get_title_of($option_id); ?>
+                                        </div>
+                                    <?php }
+                                } else {?>
+                                    <div class="invalid-option"><?php _e('Some option fields are not filled correctly', 'leyka');?></div>
+                                <?php }?>
+            
                                 </div>
-                            <?php }
-                        } else {?>
-                            <div class="invalid-option"><?php _e('Some option fields are not filled correctly', 'leyka');?></div>
-                        <?php }?>
-
-                        </div>
-                        <?php }?>
+                                <?php }?>
+                                
+                            </div>
                     </div>
 
                 <?php }?>
             </div>
 
-            <a href="<?php echo admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init');?>" class="init-wizard-link"><?php _e('To the step-by-step setup', 'leyka'); // РџРµСЂРµР№С‚Рё Рє РїРѕС€Р°РіРѕРІРѕР№ СѓСЃС‚Р°РЅРѕРІРєРµ ?></a>
+            <div class="leyka-bottom-link leyka-wizard-link">
+            	<a href="<?php echo admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init');?>" class="init-wizard-link"><?php _e('To the step-by-step setup', 'leyka'); // РџРµСЂРµР№С‚Рё Рє РїРѕС€Р°РіРѕРІРѕР№ СѓСЃС‚Р°РЅРѕРІРєРµ ?></a>
+        	</div>
 
         </div>
         <?php }?>
@@ -334,7 +339,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                     <div class="gateway-logo"><img src="<?php echo $gateway->icon_url;?>" alt=""></div>
                     <div class="gateway-data">
                         <div class="gateway-title"><?php echo $gateway->title;?></div>
-                        <div class="gateway-activation-status"><?php _e('Activating', 'leyka');?></div>
+                        <div class="gateway-activation-status"><a href="<?php echo admin_url("/admin.php?page=leyka_settings&stage=payment&gateway=" . $gateway->id)?>"><?php _e('Activating', 'leyka');?></a></div>
                     </div>
                 </div>
                 <?php }?>
@@ -344,7 +349,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                         <div class="gateway-logo"><img src="<?php echo $gateway->icon_url;?>" alt=""></div>
                         <div class="gateway-data">
                             <div class="gateway-title"><?php echo $gateway->title;?></div>
-                            <div class="gateway-activation-status"><?php _e('Activating', 'leyka');?></div>
+                            <div class="gateway-activation-status"><?php _e('Active', 'leyka');?></div>
                         </div>
                     </div>
                 <?php }?>
@@ -362,7 +367,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             <h3><?php  _e('Diagnostic data', 'leyka');?></h3>
 
             <div class="sidebar-part-content diagnostic-data">
-                <div class="data-line"><?php echo __('Leyka:', 'leyka').' '.LEYKA_VERSION;?></div>
+                <div class="data-line"><?php echo __('Leyka', 'leyka').' '.LEYKA_VERSION;?></div>
                 <div class="data-line">
                     <?php $template = leyka()->get_template(leyka()->opt('donation_form_template'));
                     echo __('Default template:', 'leyka').' '.__($template['name'], 'leyka');?>
@@ -379,10 +384,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                         $php_version_actuality = 'excellent';
                     }?>
 
-                    <div class="php-version <?php echo $php_version_actuality;?>"><?php echo 'PHP: '.phpversion();?></div>
+                    <div class="php-version <?php echo $php_version_actuality;?>"><?php echo 'PHP ' . phpversion();?></div>
 
                 </div>
-                <div class="data-line"><?php echo 'WordPress: '.get_bloginfo('version');?></div>
+                <div class="data-line"><?php echo 'WordPress '.get_bloginfo('version');?></div>
 
                 <?php $cronjobs_status = leyka_get_cronjobs_status();?>
                 <div class="data-line cron-state">
@@ -404,8 +409,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                         $extension_needed = '<span class="php-ext '.(in_array($extension_needed, $php_extensions) ? '' : 'php-ext-missing').'">'.mb_strtolower($extension_needed).'</span>';
                     }
 
-                    echo __('PHP modules:', 'leyka').' '.implode(', ', $php_extensions_needed);?>
-
+                    ?>
+                    <span class="php-modules-title"><?php echo __('PHP modules', 'leyka');?></span>
+                    <?php echo implode(', ', $php_extensions_needed);?> 
                 </div>
             </div>
 

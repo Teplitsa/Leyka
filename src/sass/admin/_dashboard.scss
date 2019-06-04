@@ -1,0 +1,272 @@
+.leyka-dashboard-page {
+    margin: 41px 72px;
+    box-sizing: border-box;
+    color: $leyka-adb-color-text;
+    
+    a {
+       @include leyka-adb-a; 
+    }
+    
+    a[href='#'] {
+       @include leyka-adb-a(dashed);
+    }
+    
+    h1 {
+        @include leyka-adb-h1;
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+    
+    .leyka-dashaboard-content {
+        margin-top: 24px;
+        display: flex;
+        
+        .main-col {
+            border-right: 1px solid $leyka-adb-color-border-light1;
+            padding-right: 2 * $leyka-base;
+            margin-right: 2 * $leyka-base;
+            flex-grow: 1;
+            
+            &>div {
+                margin-bottom: 1.5 * $leyka-base;
+                &:last-of-type {
+                    margin-bottom: 0px;
+                }
+            }
+        }
+        
+        .sidebar-col {
+            width: 250px;
+        }
+    }
+}
+
+// stats invite
+.leyka-dashboard-page {
+    .send-plugin-stats-invite {
+        background-color: $leyka-adb-color-notif-bg;
+        border-radius: 6px;
+        padding: 8px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        
+        .invite-text {
+            color: $leyka-adb-color-notif-text;
+        }
+        
+        .invite-link {
+            .send-plugin-usage-stats-y {
+                @include leyka-adb-btn-primary;
+            }
+        }
+    }   
+}
+
+// data interval
+.leyka-dashboard-page .leyka-dashaboard-content .main-col {
+    .plugin-data-interval {
+        a {
+            @include leyka-adb-link-period;
+            @include leyka-adb-a(dashed);
+            
+            margin-right: 1.5 * $leyka-base;
+            
+            &:last-of-type {
+                margin-right: 0px;
+            }
+            
+            &.active {
+                color: $leyka-adb-color-link-active;
+            }
+        }
+    }
+}
+
+// sidebar part
+.leyka-dashboard-page .leyka-dashaboard-content .sidebar-col {
+    .leyka-dashboard-sidebar-part {
+        @include leyka-adb-text-bolder;
+        border-top: 1px solid $leyka-adb-color-border-light1;
+        margin-bottom: 1.5 * $leyka-base;
+        
+        & > * {
+            margin-top: $leyka-base;
+        }
+        
+        &:first-of-type {
+          border-top: none;
+        }
+        
+        h3 {
+            @include leyka-adb-h3;              
+        } 
+    }
+}
+
+// sidebar logo and docs
+.leyka-dashboard-page .leyka-dashaboard-content .sidebar-col .leyka-dashboard-sidebar-part {
+    .leyka-logo {
+        text-align: center;
+        margin-top: 0px;
+    }
+    
+    .leyka-description {
+    }
+    
+    .leyka-official-website {
+        @include leyka-adb-sidebar-part-iconed-link('../../img/dashboard/icon-docs.svg');
+    }
+}
+
+// sidebar settings state
+.leyka-dashboard-page .leyka-dashaboard-content .sidebar-col .leyka-dashboard-sidebar-part {
+    .sidebar-part-content.settings-state {
+        .settings-step-set {
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            margin-bottom: 16px;
+            
+            .step-setup-status {
+                background-image: url(../../img/dashboard/icon-bad.svg);
+                background-repeat: no-repeat;
+                background-size: 24px;
+                background-position: top left;
+                width: 24px;
+                height: 24px;
+                margin-right: 8px;
+                
+                &.step-valid {
+                    background-image: url(../../img/dashboard/icon-check.svg);
+                }
+            }
+            
+            .step-title-wrapper {
+                padding-top: 4px;
+                
+                .step-title {
+                }
+                
+                .step-invalid-options {
+                    margin-top: 4px;
+                    @include leyka-adb-text-smaller2;
+                    color: $leyka-adb-color-error-light1;
+                }
+            }
+        }
+    }
+    
+    .leyka-wizard-link {
+        @include leyka-adb-sidebar-part-iconed-link('../../img/dashboard/icon-wizard.svg');
+    }
+}
+
+// sidebar gateways
+.leyka-dashboard-page .leyka-dashaboard-content .sidebar-col .leyka-dashboard-sidebar-part {
+    .sidebar-part-content.gateways {
+        .gateway  {
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            margin-bottom: 16px;
+            
+            .gateway-logo {
+                align-items: flex-start;
+                width: 24px;
+                height: 24px;
+                margin-right: 8px;
+                
+                img {
+                    max-width: 24px;
+                    max-height: 24px;
+                }
+            }
+            
+            .gateway-data {
+                padding-top: 2px;
+                
+                .gateway-title {
+                }
+                
+                .gateway-activation-status {
+                    margin-top: 4px;
+                }
+            }
+        }
+    }
+    
+    .add-gateway-link {
+        @include leyka-adb-sidebar-part-iconed-link('../../img/dashboard/icon-plus.svg');
+    }
+}
+
+// sidebar diagnostic-data
+.leyka-dashboard-page .leyka-dashaboard-content .sidebar-col .leyka-dashboard-sidebar-part {
+    .sidebar-part-content.diagnostic-data {
+        .data-line {
+            margin-bottom: 16px;
+            
+            &.php-actuality-status {
+                .php-version {
+                    &.bad {
+                        color: $leyka-adb-color-error;
+                    }
+                }
+            }
+            
+            
+            &.cron-state {
+                .cron-state {
+                    color: $leyka-adb-color-ok;
+                    
+                    &.not-set {
+                        color: $leyka-adb-color-error;
+                    }
+                }
+                
+                a {
+                    @include leyka-adb-text-smaller2;
+                    margin-left: 0.5 * $leyka-base;
+                }
+            }
+            
+            .protocol {
+                text-transform: uppercase;
+                color: $leyka-adb-color-ok;
+                
+                &.not-safe {
+                    color: $leyka-adb-color-error;
+                }
+            }
+            
+            .php-modules-title {
+                display: block;
+            }
+            
+            .php-ext-missing {
+                color: $leyka-adb-color-error;
+            }
+        }
+    }
+}
+
+// portlet
+.leyka-admin-portlet {
+    .portlet-header {
+    }
+    
+    .portlet-content {
+    
+       .portlet-row {
+       
+           .row-label {
+           }
+           
+           .row-data {
+           }
+                  
+       }
+    
+    }
+}
