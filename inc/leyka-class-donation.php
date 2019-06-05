@@ -1750,7 +1750,7 @@ class Leyka_Donation {
 
 	public function __construct($donation) {
 
-        if((is_int($donation) || is_string($donation)) && (int)$donation > 0) {
+        if((is_int($donation) || is_string($donation)) && absint($donation > 0)) {
 
             $donation = (int)$donation;
             $this->_post_object = get_post($donation);
@@ -1761,7 +1761,7 @@ class Leyka_Donation {
 
             $this->_id = $donation;
 
-        } elseif(is_a($donation, 'WP_Post')) {
+        } else if(is_a($donation, 'WP_Post')) {
 
             /** @var $donation WP_Post */
             if($donation->post_type !== Leyka_Donation_Management::$post_type) {

@@ -8,9 +8,7 @@ if( !class_exists('WP_List_Table') ) {
 class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
     public function __construct() {
-
         parent::__construct(array('singular' => __('Donor', 'leyka'), 'plural' => __('Donors', 'leyka'), 'ajax' => true,));
-
     }
 
     /**
@@ -36,23 +34,82 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 //
 //        $sql .= ' OFFSET ' . ( $page_number - 1 ) * $per_page;
 
+        $donors = array();
+        $donors_users = get_users(array(
+            'role__in' => array('donor'),
+            'number' => absint($per_page),
+            'paged' => absint($page_number),
+            'fields' => array('ID', 'user_email', 'display_name',),
+        ));
 
-        $result = array(1, 2, 3);
+        $donor_donations_params = array(
+            'post_type' => Leyka_Donation_Management::$post_type,
+            'posts_per_page' => -1,
+            'orderby' => 'date',
+            'order' => 'desc',
+        );
 
-        return $result;
+        foreach($donors_users as $donor_user) {
+
+            $donor_data = array(
+                'id' => $donor_user->ID,
+                'donor_name' => $donor_user->display_name,
+                'donor_email' => $donor_user->user_email,
+            );
+
+            $donor_donations_params['meta_key'] = 'leyka_donor_email';
+            $donor_donations_params['meta_value'] = $donor_data['donor_email'];
+
+            $donor_donations = get_posts($donor_donations_params); // Get donations by donor, ordered by date desc
+
+            $donations_count = count($donor_donations);
+            for($i=0; $i < count($donor_donations); $i++) {
+
+                $donation = new Leyka_Donation($donor_donations[$i]);
+
+                if($i === 0) {
+                    $donor_data['first_donation'] = $donation;
+                } else if ($i === $donations_count) {
+                    $donor_data['last_donation'] = $donation;
+                }
+
+                if(empty($donor_data['campaigns']) || !in_array($donation->campaign_title, $donor_data['campaigns'])) {
+                    $donor_data['campaigns'][$donation->campaign_id] = $donation->campaign_title;
+                }
+
+                /** @todo Tmp, until donors tags will be added */
+                $donor_data = $donor_data + array(
+                    'donors_tags' => array(),
+                );
+
+                if(empty($donor_data['gateways']) || !in_array($donation->gateway, $donor_data['gateways'])) {
+                    $donor_data['gateways'][$donation->gateway] = $donation->gateway_label;
+                }
+
+                if($donation->status === 'funded') {
+                    $donor_data['amount_donated'] = empty($donor_data['amount_donated']) ?
+                        $donation->amount : $donor_data['amount_donated'] + $donation->amount;
+                }
+
+            }
+
+            $donors[] = $donor_data;
+
+        }
+
+        echo '<pre>'.print_r($donors, 1).'</pre>';
+
+        return $donors;
 
     }
 
     /**
-     * Delete a customer record.
+     * Delete a donor record.
      *
-     * @param int $donor_id customer ID
+     * @param int $donor_id Donor ID
      */
     public static function delete_donor($donor_id) {
-
-//        global $wpdb;
-//
-//        $wpdb->delete("{$wpdb->prefix}customers", array('ID' => $donor_id), array('%d'));
+        wp_delete_user(absint($donor_id));
     }
 
     /**
@@ -60,39 +117,40 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      */
     public static function record_count() {
 
-//        global $wpdb;
+        $donors = new WP_User_Query(array(
+            'role__in' => array('donor'),
+            'count_total' => true,
+            /** @todo Apply donor table filters here! */
+        ));
 
-//        $sql = "SELECT COUNT(*) FROM {$wpdb->prefix}customers";
-//        $result = $wpdb->get_var( $sql );
-
-        return 12345;
+        return $donors->get_total();
 
     }
 
-    /** Text displayed when no customer data is available */
+    /** Text displayed when no donors data is available. */
     public function no_items() {
-        _e('No customers avaliable.', 'leyka');
+        _e('No donors avaliable.', 'leyka');
     }
 
     /**
      * @param array $item An array of DB data.
      * @return string
      */
-    function column_name($item) {
-
-        $title = '<strong>'.$item['name'].'</strong>';
+    function column_donor_name($item) {
 
         $actions = array(
             'delete' => sprintf(
-                '<a href="?page=%s&action=%s&customer=%s&_wpnonce=%s">Delete</a>',
+                '<a href="?page=%s&action=%s&donor=%s&_wpnonce=%s">'.__('Delete', 'leyka').'</a>',
                 esc_attr($_REQUEST['page']),
                 'delete',
-                absint($item['ID']),
+                absint($item['id']),
                 wp_create_nonce('leyka_delete_donor')
             )
         );
 
-        return $title.$this->row_actions($actions);
+        return '<div class="donor-name">'.$item['donor_name'].'</div>'
+            .'<div class="donor-email">'.$item['donor_email'].'</div>'
+            .$this->row_actions($actions);
 
     }
 
@@ -101,15 +159,14 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      *
      * @param array $item
      * @param string $column_name
-     *
      * @return mixed
      */
-    public function column_default( $item, $column_name ) {
+    public function column_default($item, $column_name) {
         switch ($column_name) {
             case 'donor_type':
             case 'donor_name':
             case 'first_donation':
-            case 'donor_campaigns_list':
+            case 'campaigns':
             case 'last_donation':
             case 'donors_tags':
             case 'gateways':
@@ -126,8 +183,8 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      * @param array $item
      * @return string
      */
-    function column_cb($item) {
-        return sprintf('<input type="checkbox" name="bulk-delete[]" value="%s">', $item['ID']);
+    public function column_cb($item) {
+        return sprintf('<input type="checkbox" name="bulk-delete[]" value="%s">', $item['id']);
     }
 
     /**
@@ -141,7 +198,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             'donor_type' => _x('Type', "Donor's type", 'leyka'),
             'donor_name' => __("Donor's name", 'leyka'),
             'first_donation' => __('First donation', 'leyka'),
-            'donor_campaigns_list' => __('Campaigns list', 'leyka'),
+            'campaigns' => __('Campaigns list', 'leyka'),
             'last_donation' => __('Last donation', 'leyka'),
             'donors_tags' => __("Donors' tags", 'leyka'),
             'gateways' => __('Gateway', 'leyka'),
@@ -156,6 +213,8 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         return array(
             'donor_type' => array('donor_type', true),
             'donor_name' => array('donor_name', false),
+            'first_donation' => array('first_donation', true),
+            'amount_donated' => array('amount_donated', true),
         );
     }
 
@@ -175,15 +234,11 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         $this->process_bulk_action();
 
-        $per_page = $this->get_items_per_page('customers_per_page', 5);
+        $per_page = 10;
         $current_page = $this->get_pagenum();
-        $total_items = self::record_count();
+        $total_lines = self::record_count();
 
-        $this->set_pagination_args(array(
-            'total_items' => $total_items,
-            'per_page'    => $per_page,
-        ));
-
+        $this->set_pagination_args(array('total_items' => $total_lines, 'per_page' => $per_page,));
         $this->items = self::get_donors($per_page, $current_page);
 
     }
@@ -197,7 +252,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                 die(__("You don't have permissions for this operation.", 'leyka'));
             } else {
 
-                self::delete_donor(absint($_GET['donor']));
+                $this->delete_donor(absint($_GET['donor']));
 
                 wp_redirect( esc_url(add_query_arg()) );
                 exit;
@@ -213,7 +268,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         ) {
 
             foreach(esc_sql($_POST['bulk-delete']) as $id) {
-                self::delete_donor($id);
+                $this->delete_donor($id);
             }
 
             wp_redirect( esc_url(add_query_arg()) );
