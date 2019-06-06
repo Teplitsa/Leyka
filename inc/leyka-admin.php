@@ -8,6 +8,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 	protected static $_instance = null;
 
+	/** @var WP_List_Table */
 	protected $_donors_list_table = null;
 
 	protected function __construct() {
@@ -451,7 +452,66 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 		<div id="poststuff">
 			<div id="post-body" class="metabox-holder columns-2">
-			    <div class="donors-lilst-filters">Donors table filters here</div>
+
+			    <form class="donors-list-filters" action="#" method="get">
+
+                    <div class="col-1">
+
+                        <select name="filter-donors-type">
+                            <option value="" selected="selected"><?php _e('Donor type', 'leyka');?></option>
+                        <?php foreach(leyka()->get_donation_types() as $type => $type_label) {?>
+                            <option value="<?php echo $type;?>"><?php echo $type_label;?></option>
+                        <?php }?>
+                        </select>
+
+                        <input type="text" name="filter-donor-name-email" placeholder="<?php _e("Donor's name or email", 'leyka');?>">
+
+                        <input type="date" name="filter-first-donation-date" placeholder="<?php _e('First payment date', 'leyka');?>">
+
+                        <select name="filter-campaigns" multiple="multiple">
+                            <option value="" selected="selected"><?php _e('Campaigns list', 'leyka');?></option>
+                        </select>
+
+                        <input type="date" name="filter-last-donation-date" placeholder="<?php _e('Last payment date', 'leyka');?>">
+
+                        <select name="filter-donation-status">
+                            <option value="" selected="selected"><?php _e('Donation status', 'leyka');?></option>
+                        <?php foreach(leyka()->get_donation_statuses() as $status => $status_label) {?>
+                            <option value="<?php echo $status;?>"><?php echo $status_label;?></option>
+                        <?php }?>
+                        </select>
+
+                        <select name="filter-donors-tags" multiple="multiple">
+
+                            <option value=""><?php _e('Donors tags', 'leyka');?></option>
+
+                        <?php $donors_tags = get_terms(LEYKA_DONORS_TAGS_TAXONOMY_NAME, array('hide_empty' => false));
+                        foreach($donors_tags as $tag) {?>
+                            <option value="<?php echo $tag->term_id;?>"><?php echo $tag->name;?></option>
+                        <?php }?>
+
+                        </select>
+
+                        <select name="filter-gateways" multiple="multiple">
+
+                            <option value="" selected="selected"><?php _e('Payment gateway', 'leyka');?></option>
+                        <?php foreach(leyka_get_gateways() as $gateway) {?>
+                            <option value="<?php echo $gateway->id;?>"><?php echo $gateway->name;?></option>
+                        <?php }?>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-2">
+                        <input type="submit" class="button" value="<?php _e('Filter the data', 'leyka');?>">
+                        <input type="reset" class="reset-filters" value="<?php _e('Reset the filter', 'leyka');?>">
+                    </div>
+
+                </form>
+
+                <div class="donors-list-export"><button><?php _e('Export the list in CSV', 'leyka');?></button></div>
+
 				<div id="post-body-content">
 					<div class="meta-box-sortables ui-sortable">
 						<form method="post">
@@ -460,8 +520,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 						</form>
 					</div>
 				</div>
+
 			</div>
+
 			<br class="clear">
+
 		</div>
 	</div>
 
