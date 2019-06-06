@@ -42,21 +42,17 @@
 }
 
 @mixin leyka-adb-sidebar-part-iconed-link($icon_url) {
+    background-image: url($icon_url);
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    background-position: left center;
+    width: auto;
+    min-height: 24px;
+    display: flex;
+    padding-left: 32px;
+    align-items: center;
+    
 	a {
 	    @include leyka-adb-a();
-	    
-	    background-image: url($icon_url);
-	    background-size: 24px 24px;
-	    background-repeat: no-repeat;
-	    background-position: left center;
-	    width: auto;
-	    min-height: 24px;
-	    display: flex;
-	    padding-left: 32px;
-	    align-items: center;
-	    
-	    &:active, &:focus, &:hover {
-	       border-bottom-style: none;
-	    }
 	}
 }

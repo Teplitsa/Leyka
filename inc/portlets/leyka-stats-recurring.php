@@ -3,7 +3,7 @@
  * Leyka Portlet: Recurring donations stats
  * Description: A portlet to display simple statistics for the recurring donations.
  *
- * Title: Recurring
+ * Title: Recurrings
  * Thumbnail: /img/dashboard/icon-money-recurring.svg
  **/
 
@@ -36,7 +36,7 @@ $data['recurring_donations_number_percent'] = 25.0;
     	<div class="legend">
     		<div class="legend-item">
     			<span class="icon recurring"></span>
-    			<span class="label"><?php _e('Recurring', 'leyka');?></span>
+    			<span class="label"><?php _e('Recurrings', 'leyka');?></span>
     		</div>
     		<div class="legend-item">
     			<span class="icon other"></span>

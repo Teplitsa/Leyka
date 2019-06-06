@@ -158,3 +158,7 @@ __('Thank you!', 'leyka');
 __('Your donation completed. We are grateful for your help.', 'leyka');
 __('Payment failure', 'leyka');
 __('We are deeply sorry, but for some technical reason we failed to receive your donation. Your money are intact. Please try again later!', 'leyka');
+__('Main statistics', 'leyka');
+__('Recurring', 'leyka');
+__('Donations dynamics', 'leyka');
+__('Recent donations', 'leyka');

@@ -252,7 +252,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
             <div class="portlet-header">
                 <img src="<?php echo LEYKA_PLUGIN_BASE_URL . trim($portlet_data['thumbnail'], "/");?>" alt="">
-                <?php echo $portlet_data['title'];?>
+                <?php echo _e($portlet_data['title'], 'leyka');?>
             </div>
 
             <div class="portlet-content">
@@ -325,7 +325,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             </div>
 
             <div class="leyka-bottom-link leyka-wizard-link">
-            	<a href="<?php echo admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init');?>" class="init-wizard-link"><?php _e('To the step-by-step setup', 'leyka'); // РџРµСЂРµР№С‚Рё Рє РїРѕС€Р°РіРѕРІРѕР№ СѓСЃС‚Р°РЅРѕРІРєРµ ?></a>
+            	<a href="<?php echo admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init');?>" class="init-wizard-link"><?php _e('To the step-by-step setup', 'leyka');?></a>
         	</div>
 
         </div>
@@ -395,7 +395,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 <?php $cronjobs_status = leyka_get_cronjobs_status();?>
                 <div class="data-line cron-state">
                     Cron: <span class="cron-state <?php echo $cronjobs_status['status'];?>"><?php echo mb_strtolower($cronjobs_status['title']);?></span>
-                    <a href="#" class="cron-setup-howto"><?php _e('How to set it up?');?></a>
+                    <a href="#" class="cron-setup-howto"><?php _e('How to set it up?', 'leyka');?></a>
                 </div>
 
                 <div class="data-line">
