@@ -15,7 +15,7 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
     protected static $_instance = null;
 
-    public static function getController($controller_id) {
+    public static function get_controller($controller_id) {
 
         $controller_id = trim($controller_id);
 
@@ -30,15 +30,15 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
     protected function __construct() {
 
-        $this->_loadCssJs();
-        $this->_setAttributes();
-        $this->_setSections();
+        $this->_load_frontend_scripts();
+        $this->_set_attributes();
+        $this->_set_sections();
 
-        add_action('leyka_settings_submit_'.$this->_id, array($this, 'handleSubmit'));
+        add_action('leyka_settings_submit_'.$this->_id, array($this, 'handle_submit'));
 
     }
 
-    protected function _loadCssJs() {
+    protected function _load_frontend_scripts() {
 
         add_action('admin_enqueue_scripts', function(){
 
@@ -53,8 +53,8 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
     }
 
-    abstract protected function _setAttributes();
-    abstract protected function _setSections();
+    abstract protected function _set_attributes();
+    abstract protected function _set_sections();
 
     public function __get($name) {
         switch($name) {
@@ -65,25 +65,28 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
     }
 
     /** @return boolean */
-    public function hasCommonErrors() {
+    public function has_common_errors() {
         return !!$this->_common_errors;
     }
 
     /** @return array Of errors */
-    public function getCommonErrors() {
+    public function get_common_errors() {
         return $this->_common_errors;
     }
 
-    /** @return boolean */
-    public function hasComponentErrors($component_id = null) {
-        return !!$this->getComponentErrors($component_id);
+    /**
+     * @param $component_id string
+     * @return boolean
+     */
+    public function has_component_errors($component_id = null) {
+        return !!$this->get_component_errors($component_id);
     }
 
     /**
-     * @param string $component_id
+     * @param $component_id string
      * @return array An array of WP_Error objects (each with one error message)
      */
-    public function getComponentErrors($component_id = null) {
+    public function get_component_errors($component_id = null) {
 
         return empty($component_id) ?
             $this->_component_errors :
@@ -91,19 +94,19 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
     }
 
-    protected function _handleSettingsSubmit() {
+    protected function _handle_settings_submit() {
         if( !empty($_POST['leyka_settings_submit_'.$this->_id]) ) {
             do_action('leyka_settings_submit_'.$this->_id);
         }
     }
 
-    abstract protected function _processSettingsValues(array $blocks = null);
+    abstract protected function _process_settings_values(array $blocks = null);
 
-    protected function _addCommonError(WP_Error $error) {
+    protected function _add_common_error(WP_Error $error) {
         $this->_common_errors[] = $error;
     }
 
-    protected function _addComponentError($component_id, WP_Error $error) {
+    protected function _add_component_error($component_id, WP_Error $error) {
         if(empty($this->_component_errors[$component_id])) {
             $this->_component_errors[$component_id] = array($error);
         } else {
@@ -112,16 +115,16 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
     }
 
     /** @return Leyka_Settings_Step */
-    abstract public function getCurrentStep();
+    abstract public function get_current_step();
 
     /** @return Leyka_Settings_Section */
-    abstract public function getCurrentSection();
+    abstract public function get_current_section();
 
-    abstract public function getSubmitData($component = null);
+    abstract public function get_submit_data($component = null);
 
-    abstract public function getNavigationData();
+    abstract public function get_navigation_data();
 
-    abstract public function handleSubmit();
+    abstract public function handle_submit();
 
 }
 
@@ -141,7 +144,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             $this->_activity = $wizards_activities[$this->_id];
         }
 
-        add_action('leyka_settings_wizard-'.$this->_id.'-_step_init', array($this, 'stepInit'));
+        add_action('leyka_settings_wizard-'.$this->_id.'-_step_init', array($this, 'step_init'));
 
         if( !$this->_sections ) {
             return;
@@ -188,13 +191,13 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
             $init_step = $this->current_section->init_step;
             if($init_step) { /** @var $init_step Leyka_Settings_Step */
-                $this->_setCurrentStep($init_step);
+                $this->_set_current_step($init_step);
             }
 
         }
 
         if( !$this->_navigation_data ) {
-            $this->_initNavigationData();
+            $this->_init_navigation_data();
         }
 
         // Debug {
@@ -208,7 +211,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
         if( !empty($_POST['leyka_settings_prev_'.$this->_id]) ) { // Step page loading after returning from further Step
             $this->_handleSettingsGoBack();
         } else if( !empty($_POST['leyka_settings_submit_'.$this->_id]) ) { // Step page loading after previous Step submit
-            $this->_handleSettingsSubmit();
+            $this->_handle_settings_submit();
         } //else { // Normal Step page loading
         //}
 
@@ -233,10 +236,13 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
                 return empty($this->_activity['current_section']) ? null : $this->_activity['current_section']->id;
 
             case 'next_step_full_id':
-                return $this->_getNextStepId();
+                return $this->_get_next_step_id();
             
             case 'history':
                 return empty($this->_activity['history']) ? array() : $this->_activity['history'];
+
+            case 'navigation_data':
+                return $this->_navigation_data;
 
             default:
                 return parent::__get($name);
@@ -246,7 +252,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
     public function __set($name, $value) {
         switch($name) {
             case 'current_step':
-                $this->_setCurrentStep($value);
+                $this->_set_current_step($value);
                 break;
             case 'current_section':
                 $this->_setCurrentSection($value);
@@ -276,16 +282,16 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
     }
 
     /** @return Leyka_Settings_Section */
-    public function getCurrentSection() {
+    public function get_current_section() {
         return $this->current_section;
     }
 
     /** @return Leyka_Settings_Step */
-    public function getCurrentStep() {
+    public function get_current_step() {
         return $this->current_step;
     }
 
-    protected function _setCurrentStep(Leyka_Settings_Step $step) {
+    protected function _set_current_step(Leyka_Settings_Step $step) {
 
         $this->_activity['current_step'] = $step;
 
@@ -307,13 +313,13 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             return $this;
         }
 
-        $step = $this->getComponentById($step_full_id);
+        $step = $this->get_component_by_id($step_full_id);
         if( !$step ) {
             return $this;
         }
 
-        return $this->_setCurrentStep($step)
-            ->_setCurrentSection($this->getComponentById($step->section_id));
+        return $this->_set_current_step($step)
+            ->_setCurrentSection($this->get_component_by_id($step->section_id));
 
     }
 
@@ -329,7 +335,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     }
 
-    protected function _getSettingValue($setting_name = null) {
+    protected function _get_setting_value($setting_name = null) {
 
         if($setting_name) {
 
@@ -358,19 +364,19 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     }
 
-    protected function _addHistoryEntry(array $data = array(), $step_full_id = false) {
+    protected function _add_history_entry(array $data = array(), $step_full_id = false) {
 
-        $data = empty($data) ? $this->getCurrentStep()->getFieldsValues() : $data;
-        $step_full_id = !$step_full_id ? $this->getCurrentStep()->full_id : trim($step_full_id);
+        $data = empty($data) ? $this->get_current_step()->get_fields_values() : $data;
+        $step_full_id = !$step_full_id ? $this->get_current_step()->full_id : trim($step_full_id);
 
         if(empty($this->_activity['history'][$step_full_id])) {
             $this->_activity['history'][$step_full_id] = array(
-                'navigation_position' => $this->_getStepNavigationPosition($step_full_id),
+                'navigation_position' => $this->_get_step_navigation_position($step_full_id),
                 'data' => $data
             );
         } else {
             $this->_activity['history'][$step_full_id] = $this->_activity['history'][$step_full_id] + array(
-                'navigation_position' => $this->_getStepNavigationPosition($step_full_id),
+                'navigation_position' => $this->_get_step_navigation_position($step_full_id),
                 'data' => $data
             );
         }
@@ -379,17 +385,17 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     }
 
-    protected function _processSettingsValues(array $blocks = null) {
+    protected function _process_settings_values(array $blocks = null) {
 
-        $blocks = $blocks ? $blocks : $this->getCurrentStep()->getBlocks();
+        $blocks = $blocks ? $blocks : $this->get_current_step()->get_blocks();
 
         foreach($blocks as $block) { /** @var $block Leyka_Settings_Block */
-            if(is_a($block, 'Leyka_Option_Block') && $block->isValid()) {
+            if(is_a($block, 'Leyka_Option_Block') && $block->is_valid()) {
                 leyka_save_option($block->option_id);
             } else if(is_a($block, 'Leyka_Custom_Setting_Block')) {
                 do_action("leyka_save_custom_option-{$block->setting_id}");
             } else if(is_a($block, 'Leyka_Container_Block')) {
-                $this->_processSettingsValues($block->getContent());
+                $this->_process_settings_values($block->get_content());
             }
         }
 
@@ -419,7 +425,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             $this->_setCurrentStepById($step_full_id);
         } else {
             $this->_setCurrentSection(reset($this->_sections))
-                ->_setCurrentStep($this->getCurrentSection()->init_step);
+                ->_set_current_step($this->get_current_section()->init_step);
         }
 
         if( !!$delete_history ) { // Remove already passed keys from the Activity
@@ -439,7 +445,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
     }
 
     /** The default implementation: the Wizard navigation roadmap created from existing Sections & Steps */
-    protected function _initNavigationData() {
+    protected function _init_navigation_data() {
 
         if( !$this->_sections ) {
             return;
@@ -488,8 +494,8 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
     }
 
     /** By default, each Step navigation position equals to it's full ID. */
-    protected function _getStepNavigationPosition($step_full_id = false) {
-        return $step_full_id ? trim($step_full_id) : $this->getCurrentStep()->full_id;
+    protected function _get_step_navigation_position($step_full_id = false) {
+        return $step_full_id ? trim($step_full_id) : $this->get_current_step()->full_id;
     }
 
     /**
@@ -558,9 +564,9 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
      * Navigation data incapsulation method - Wizards default implementation.
      * @return array
      */
-    public function getNavigationData() {
+    public function get_navigation_data() {
 
-        $navigation_position = $this->_getStepNavigationPosition();
+        $navigation_position = $this->_get_step_navigation_position();
 
         return $navigation_position ?
             $this->_processNavigationData($navigation_position) :
@@ -573,11 +579,11 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
      * @param  $is_full_id boolean
      * @return mixed Leyka_Settings_Step, Leyka_Settings_Section or null, if given component ID wasn't found
      */
-    public function getComponentById($component_id, $is_full_id = true) {
+    public function get_component_by_id($component_id, $is_full_id = true) {
 
         if( !$is_full_id ) {
 
-            $section = $this->getCurrentSection();
+            $section = $this->get_current_section();
             $step_id = $component_id;
 
         } else {
@@ -597,21 +603,21 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         }
 
-        $step = $section->getStepById($step_id);
+        $step = $section->get_step_by_id($step_id);
 
         return $step;
 
     }
 
-    public function handleSubmit() {
+    public function handle_submit() {
 
-        $this->_processSettingsValues(); // Save all valid options on current step
+        $this->_process_settings_values(); // Save all valid options on current step
 
-        if( !$this->getCurrentStep()->isValid() ) {
+        if( !$this->get_current_step()->is_valid() ) {
 
-            foreach($this->getCurrentStep()->getErrors() as $component_id => $errors) {
+            foreach($this->get_current_step()->get_errors() as $component_id => $errors) {
                 foreach($errors as $error) {
-                    $this->_addComponentError($component_id, $error);
+                    $this->_add_component_error($component_id, $error);
                 }
             }
 
@@ -620,45 +626,45 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
         }
 
         // Whole step settings handling:
-        $settings_entered = $this->getCurrentStep()->getFieldsValues();
+        $settings_entered = $this->get_current_step()->get_fields_values();
 
-        if($this->getCurrentStep()->hasHandler()) {
+        if($this->get_current_step()->has_handler()) {
 
-            $result = call_user_func($this->getCurrentStep()->getHandler(), $settings_entered);
+            $result = call_user_func($this->get_current_step()->get_handler(), $settings_entered);
 
             if(is_array($result)) {
                 foreach($result as $error) { /** @var $error WP_Error */
                     if(is_wp_error($error)) {
-                        $this->_addCommonError($error);
+                        $this->_add_common_error($error);
                     }
                 }
             } else if(is_wp_error($result)) {
-                $this->_addCommonError($result);
+                $this->_add_common_error($result);
             }
 
         }
 
-        do_action("leyka_process_step_settings-{$this->getCurrentStep()->full_id}", $settings_entered);
+        do_action("leyka_process_step_settings-{$this->get_current_step()->full_id}", $settings_entered);
 
-        if($this->hasCommonErrors()) { // Stay on current step
+        if($this->has_common_errors()) { // Stay on current step
             return;
         }
 
-        $this->_addHistoryEntry(); // Save the step data in the storage
+        $this->_add_history_entry(); // Save the step data in the storage
 
         // Proceed to the next step:
-        $next_step_full_id = $this->_getNextStepId();
+        $next_step_full_id = $this->_get_next_step_id();
         if($next_step_full_id && $next_step_full_id !== true) {
 
-            $step = $this->getComponentById($this->_getNextStepId());
+            $step = $this->get_component_by_id($this->_get_next_step_id());
             if( !$step ) {
 
-                $this->_addCommonError(new WP_Error('next_step_not_found', esc_html__('The Wizard next step is not found', 'leyka')));
+                $this->_add_common_error(new WP_Error('next_step_not_found', esc_html__('The Wizard next step is not found', 'leyka')));
                 return;
 
             }
 
-            $this->_setCurrentStep($step);
+            $this->_set_current_step($step);
 
             do_action('leyka_settings_wizard-'.$this->_id.'-_step_init');
 
@@ -666,7 +672,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     }
 
-    public function stepInit() {
+    public function step_init() {
     }
 
     /**
@@ -676,7 +682,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
      * @param $return_full_id boolean
      * @return mixed Either next step ID, or false (if non-existent step given), or true (if last step given).
      */
-    protected function _getNextStepId(Leyka_Settings_Step $step_from = null, $return_full_id = true) {
+    protected function _get_next_step_id(Leyka_Settings_Step $step_from = null, $return_full_id = true) {
 
         $step_from = $step_from && is_a($step_from, 'Leyka_Settings_Step') ? $step_from : $this->current_step;
         $section_from = $this->_sections[$step_from->section_id];

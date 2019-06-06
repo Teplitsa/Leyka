@@ -1,0 +1,88 @@
+/** == Typography (_dashboard_typo.scss) == **/
+
+@mixin leyka-adb-text($mod: default) {
+	font-family: $body;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 12px;
+	line-height: 14px;
+	letter-spacing: -0.02em;
+
+	@if $mod == strong {
+		font-weight: 700;
+	}
+	@else if $mod == italic {
+		font-style: italic;
+	}
+}
+
+@mixin leyka-adb-text-bolder() {
+	@include leyka-adb-text;
+	font-weight: 500;
+}
+
+@mixin leyka-adb-text-bigger1($mod: default) {
+	@include leyka-adb-text($mod);
+    font-size: 13px;
+    line-height: 16px;
+}
+
+@mixin leyka-adb-text-smaller1($mod: default) {
+    @include leyka-adb-text($mod);
+    font-size: 11px;
+    line-height: 16px;
+}
+
+@mixin leyka-adb-text-smaller2($mod: default) {
+    @include leyka-adb-text($mod);
+    font-size: 10px;
+    line-height: 16px;
+}
+
+@mixin leyka-adb-h1 {
+	@include leyka-adb-text();
+    font-size: 23px;
+    line-height: 32px;
+}
+
+@mixin leyka-adb-portlet-title {
+    @include leyka-adb-text-bolder();
+    font-size: 16px;
+    line-height: 16px;
+}
+
+@mixin leyka-adb-portlet-row-label {
+    @include leyka-adb-text-smaller1();
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+@mixin leyka-adb-portlet-stats-num {
+    @include leyka-adb-text();
+    font-size: 24px;
+    line-height: 32px;
+    text-transform: uppercase;
+}
+
+@mixin leyka-adb-h3 {
+    @include leyka-adb-text();
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: 500;
+}
+
+@mixin leyka-adb-btn-caption {
+    @include leyka-adb-text-bigger1();
+}
+
+@mixin leyka-adb-link-period {
+    @include leyka-adb-text();
+    font-size: 14px;
+    line-height: 24px;
+}
+
+@mixin leyka-adb-text-table-head() {
+    @include leyka-adb-text-bolder;
+    font-size: 13px;
+    line-height: 16px;
+}

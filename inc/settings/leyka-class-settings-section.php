@@ -32,7 +32,7 @@ class Leyka_Settings_Section {
         }
     }
 
-    public function addStep(Leyka_Settings_Step $step) {
+    public function add_step(Leyka_Settings_Step $step) {
 
         $this->_steps[$step->id] = $step;
 
@@ -46,7 +46,7 @@ class Leyka_Settings_Section {
     }
 
     /** @return Leyka_Settings_Step  */
-    public function getStepById($id) {
+    public function get_step_by_id($id) {
 
         $id = trim($id);
 
@@ -57,7 +57,7 @@ class Leyka_Settings_Section {
     public function isValid() {
 
         foreach($this->_steps as $step) { /** @var $step Leyka_Settings_Block */
-            if( !$step->isValid() ) {
+            if( !$step->is_valid() ) {
                 return false;
             }
         }
@@ -71,7 +71,7 @@ class Leyka_Settings_Section {
         $errors = array();
 
         foreach($this->_steps as $step) { /** @var $step Leyka_Settings_Step */
-            $errors = array_merge($errors, $step->getErrors());
+            $errors = array_merge($errors, $step->get_errors());
         }
 
         return $errors;

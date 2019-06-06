@@ -158,14 +158,13 @@ function leyka_get_gateway_settings_url($gateway) {
  * @return mixed; string wizard suffix or false if wizard unavailable for gateway
  */
 function leyka_gateway_setup_wizard($gateway) {
-    
-    $wizard_id = false;
-    
+
     if(in_array($gateway->id, Leyka_Gateway::$gateways_with_wizard)) {
-        $wizard_id = $gateway->id;
+        return $gateway->id;
     }
-    
-    return $wizard_id;
+
+    return false;
+
 }
 
 /**
@@ -750,9 +749,9 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
 
         if( !$currency ) {
             return true;
-        } elseif(is_array($currency) && !array_diff($currency, $this->_supported_currencies)) {
+        } else if(is_array($currency) && !array_diff($currency, $this->_supported_currencies)) {
             return true;
-        } elseif(in_array($currency, $this->_supported_currencies)) {
+        } else if(in_array($currency, $this->_supported_currencies)) {
             return true;
         } else {
             return false;

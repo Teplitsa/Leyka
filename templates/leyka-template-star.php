@@ -7,7 +7,7 @@
  * 
  **/
 
-$template_data = Leyka_Star_Template_Controller::get_instance()->getTemplateData($campaign);
+$template_data = Leyka_Star_Template_Controller::get_instance()->get_template_data($campaign);
 
 $is_recurring_campaign = false;
 if(count($campaign->donations_types_available) > 1) {
