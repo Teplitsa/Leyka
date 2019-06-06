@@ -35,17 +35,36 @@ $data = Leyka_Donations_Dynamics_Portlet_Controller::get_instance()->get_templat
 	            legend: {
 	            	display: false,
 	            },
+	            backgroundColor: '#FF0000',
+	            borderColor: '#ff0000',
 	            tooltips: {
 		            mode: 'x',
 	            	backgroundColor: 'rgba(0, 103, 153, 1)',
 	            	bodyFontColor: 'rgba(255, 255, 255, 1)',
 	            },
 	            scales: {
+                    xAxes: [{ 
+                  		gridLines: {
+							color: '#F1F1F1',
+							//zeroLineColor: 'rgba(37, 160, 209, 0.8)',
+              			},
+                    	ticks: {
+                    		fontColor: "#44444A",
+                    		fontFamily: "'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
+                    	},
+                    }],		            
 	                yAxes: [{
+                        gridLines: {
+							color: '#F1F1F1',
+							//zeroLineColor: 'rgba(37, 160, 209, 0.8)',
+							zeroLineColor: '#F1F1F1',
+                        },
 	                    ticks: {
+	                    	fontColor: "#44444A",
 	                        beginAtZero: true,
 	                        stepSize: 1,
 	                        maxTicksLimit: 5,
+	                        fontFamily: "'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
 	                    }
 	                }]
 	            },	            
