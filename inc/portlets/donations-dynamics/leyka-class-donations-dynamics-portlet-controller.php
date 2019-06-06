@@ -47,6 +47,7 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
 
         $donations_post_type = Leyka_Donation_Management::$post_type;
         $result = array();
+        $labels = array();
 
         for($sub_interval_index = 0; $sub_interval_index < $interval_length; $sub_interval_index++) {
 
@@ -62,11 +63,22 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
             );
 
             $result[] = array('x' => date('d.m.Y', strtotime($sub_interval_end_date)), 'y' => $count,);
+            if($sub_interval === 'month') {
+                $labels[] = date('m.y', strtotime($sub_interval_end_date));
+            }
+            elseif($sub_interval === 'week') {
+                $labels[] = date('m.y', strtotime($sub_interval_end_date));
+            }
+            else {
+                $labels[] = date('d.m', strtotime($sub_interval_end_date));
+            }
 
         }
 
-        return array_reverse($result); // [{x:'25.11.2016', y:20}, {x:'25.12.2016', y:30}, ...]
-
+        return array(
+            'data' => array_reverse($result), // [{x:'25.11.2016', y:20}, {x:'25.12.2016', y:30}, ...]
+            'labels' => array_reverse($labels), // [{x:'25.11.2016', y:20}, {x:'25.12.2016', y:30}, ...]
+        );
     }
 
 }

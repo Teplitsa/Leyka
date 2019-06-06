@@ -245,10 +245,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'thumbnail' => 'Thumbnail',
         ));?>
 
-	    <div class="leyka-admin-portlet">
+	    <div class="leyka-admin-portlet portlet-<?php echo $portlet_id;?>">
 
             <div class="portlet-header">
-                <img src="<?php echo home_url($portlet_data['thumbnail']);?>" alt="">
+                <img src="<?php echo LEYKA_PLUGIN_BASE_URL . trim($portlet_data['thumbnail'], "/");?>" alt="">
                 <?php echo $portlet_data['title'];?>
             </div>
 
@@ -833,6 +833,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             );
             wp_localize_script('leyka-admin', 'leyka', $js_data);
 
+        }
+        
+        if(!empty($_GET['page']) && $_GET['page'] === 'leyka') {
+            wp_enqueue_script('leyka-admin', LEYKA_PLUGIN_BASE_URL.'assets/js/Chart.v2.8.0.min.js', $dependencies, LEYKA_VERSION, true);
         }
 
 		leyka_localize_rich_html_text_tags();

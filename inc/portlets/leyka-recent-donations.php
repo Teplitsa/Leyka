@@ -4,12 +4,12 @@
  * Description: A portlet to display recent donations.
  *
  * Title: Recent donations
- * Thumbnail: /img/icon-people.svg
+ * Thumbnail: /img/dashboard/icon-donors.svg
  **/
 
 $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_data($params);?>
 
-<table class="recent-donations">
+<table class="recent-donations" cellpadding=0 cellspacing=0>
     <thead>
         <tr>
             <th><?php _e('Type', 'leyka');?></th>
@@ -22,7 +22,7 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
     <?php foreach($data as $donation) {?>
         <tr>
             <td class="donation-type">
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/icon-donation-type-'.$data['type'].'.svg';?>" alt="">
+                <img src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/dashboard/icon-donation-type-'.$donation['type'].'.svg';?>" alt="">
             </td>
             <td class="donation-donor">
                 <a href="#"><?php echo $donation['donor_name'];?></a>

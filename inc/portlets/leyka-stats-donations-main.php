@@ -4,7 +4,7 @@
  * Description: A portlet to display simple statistics for main donation types (single & recurring).
  *
  * Title: Main statistics
- * Thumbnail: /img/stats-donation-types.svg
+ * Thumbnail: /img/dashboard/icon-money.svg
  **/
 
 $data = Leyka_Donations_Main_Stats_Portlet_Controller::get_instance()->get_template_data($params);?>
@@ -19,7 +19,7 @@ $data = Leyka_Donations_Main_Stats_Portlet_Controller::get_instance()->get_templ
         <?php } else {?>
 
         <div class="main-number"><?php echo $data['donations_amount'].'&nbsp;'.leyka()->opt('currency_'.leyka()->opt('main_currency').'_label');?></div>
-        <div class="percent <?php echo $data['donations_amount_delta_percent'] < 0 ? 'negative' : 'positive';?>"><?php echo $data['donations_amount_delta_percent'];?></div>
+        <div class="percent <?php echo $data['donations_amount_delta_percent'] < 0 ? 'negative' : 'positive';?>"><?php echo str_replace(array('+', '-'), '', $data['donations_amount_delta_percent']);?></div>
 
         <?php }?>
 
@@ -37,7 +37,7 @@ $data = Leyka_Donations_Main_Stats_Portlet_Controller::get_instance()->get_templ
         <?php } else {?>
 
             <div class="main-number"><?php echo $data['donors_number'];?></div>
-            <div class="percent <?php echo $data['donors_number_delta_percent'] < 0 ? 'negative' : 'positive';?>"><?php echo $data['donors_number_delta_percent'];?></div>
+            <div class="percent <?php $data['donors_number_delta_percent'] = '-20%'; echo $data['donors_number_delta_percent'] < 0 ? 'negative' : 'positive';?>"><?php echo str_replace(array('+', '-'), '', $data['donors_number_delta_percent']);?></div>
 
         <?php }?>
 
@@ -54,8 +54,8 @@ $data = Leyka_Donations_Main_Stats_Portlet_Controller::get_instance()->get_templ
             <div class="no-data"><?php _e('No data available', 'leyka');?></div>
         <?php } else {?>
 
-            <div class="main-number"><?php echo $data['donations_amount_avg'];?></div>
-            <div class="percent <?php echo $data['donations_amount_avg_delta_percent'] < 0 ? 'negative' : 'positive';?>"><?php echo $data['donations_amount_avg_delta_percent'];?></div>
+            <div class="main-number"><?php echo floor($data['donations_amount_avg']).'&nbsp;'.leyka()->opt('currency_'.leyka()->opt('main_currency').'_label');?></div>
+            <div class="percent <?php echo $data['donations_amount_avg_delta_percent'] < 0 ? 'negative' : 'positive';?>"><?php echo str_replace(array('+', '-'), '', $data['donations_amount_avg_delta_percent']);?></div>
 
         <?php }?>
 
