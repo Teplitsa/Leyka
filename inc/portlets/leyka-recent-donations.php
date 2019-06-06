@@ -25,7 +25,7 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
                 <img src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/dashboard/icon-donation-type-'.$donation['type'].'.svg';?>" alt="">
             </td>
             <td class="donation-donor">
-                <a href="#"><?php echo $donation['donor_name'];?></a>
+                <a href="<?php echo get_edit_post_link($donation['id']);?>"><?php echo $donation['donor_name'];?></a>
                 <div class="donor-contact"><?php echo $donation['donor_email'];?></div>
             </td>
             <td class="donation-campaign-date">
