@@ -705,20 +705,20 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             $res &= wp_mail(
                 $email, __('Leyka: new feedback incoming', 'leyka'),
                 sprintf(
-                    "Р”РѕР±СЂС‹Р№ РґРµРЅСЊ!<br><br>
-                РџРѕСЃС‚СѓРїРёР»Р° РЅРѕРІР°СЏ РѕР±СЂР°С‚РЅР°СЏ СЃРІСЏР·СЊ РѕС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Р›РµР№РєРё.<br><br>
-                <strong>РўРµРјР°:</strong> %s<br>
-                <strong>Р�РјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ:</strong> %s<br>
-                <strong>РџРѕС‡С‚Р° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ:</strong> %s<br>
-                <strong>РўРµРєСЃС‚ СЃРѕРѕР±С‰РµРЅРёСЏ:</strong><br>%s<br><br>
-                ---------------- РўРµС…РЅРёС‡РµСЃРєРёРµ РґР°РЅРЅС‹Рµ СЃР°Р№С‚Р° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ --------------<br><br>
-                <strong>CР°Р№С‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ:</strong> <a href='%s'>%s</a> (IP: %s)<br>
-                <strong>Р’РµСЂСЃРёСЏ WP:</strong> %s<br>
-                <strong>Р’РµСЂСЃРёСЏ Р›РµР№РєРё:</strong> %s<br>
-                <strong>РџР°СЂР°РјРµС‚СЂ admin_email:</strong> %s<br>
-                <strong>РЇР·С‹Рє:</strong> %s (РєРѕРґРёСЂРѕРІРєР°: %s)<br>
-                <strong>РџРћ РІРµР±-СЃРµСЂРІРµСЂР°:</strong> %s<br>
-                <strong>Р‘СЂР°СѓР·РµСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ:</strong> %s<br>
+                    "Добрый день!<br><br>
+                Поступила новая обратная связь от пользователя Лейки.<br><br>
+                <strong>Тема:</strong> %s<br>
+                <strong>Имя пользователя:</strong> %s<br>
+                <strong>Почта пользователя:</strong> %s<br>
+                <strong>Текст сообщения:</strong><br>%s<br><br>
+                ---------------- Технические данные сайта пользователя --------------<br><br>
+                <strong>Cайт пользователя:</strong> <a href='%s'>%s</a> (IP: %s)<br>
+                <strong>Версия WP:</strong> %s<br>
+                <strong>Версия Лейки:</strong> %s<br>
+                <strong>Параметр admin_email:</strong> %s<br>
+                <strong>Язык:</strong> %s (кодировка: %s)<br>
+                <strong>ПО веб-сервера:</strong> %s<br>
+                <strong>Браузер пользователя:</strong> %s<br>
 				---------------------------------------------------------------------<br>
 				<pre>%s</pre>
 				",
@@ -937,7 +937,7 @@ if( !function_exists('leyka_admin_get_slug_edit_field') ) {
                 <span class="base-url"><?php echo $campaign_base_url;?></span>/<span class="current-slug"><?php echo $campaign_permalink_parts[1];?></span>
             </span>
 
-            <a href="<?php echo get_edit_post_link($campaign->id);?>" class="inline-action inline-edit-slug">Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ</a>
+            <a href="<?php echo get_edit_post_link($campaign->id);?>" class="inline-action inline-edit-slug">Редактировать</a>
 
             <span class="inline-edit-slug-form" data-slug-original="<?php echo $campaign_permalink_parts[1];?>" data-campaign-id="<?php echo $campaign->id;?>" data-nonce="<?php echo wp_create_nonce('leyka-edit-campaign-slug');?>" style="display: none;">
                 <input type="text" class="leyka-slug-field inline-input" value="<?php echo $campaign_permalink_parts[1];?>">
@@ -950,7 +950,7 @@ if( !function_exists('leyka_admin_get_slug_edit_field') ) {
         <?php } else {?>
 
             <span class="base-url"><?php echo $campaign_permalink_full;?></span>
-            <a href="<?php echo admin_url('options-permalink.php');?>" class="permalink-action" target="_blank">Р’РєР»СЋС‡РёС‚СЊ РїРѕСЃС‚РѕСЏРЅРЅС‹Рµ СЃСЃС‹Р»РєРё</a>
+            <a href="<?php echo admin_url('options-permalink.php');?>" class="permalink-action" target="_blank">Включить постоянные ссылки</a>
 
         <?php }?>
 
