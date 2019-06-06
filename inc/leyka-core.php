@@ -78,8 +78,8 @@ class Leyka extends Leyka_Singleton {
         $this->load_public_cssjs();
 
         add_action('init', array($this, 'register_post_types'), 1);
-
         add_action('init', array($this, 'register_user_capabilities'), 1);
+        add_action('init', array($this, 'register_taxonomies'), 1);
 
         // Add/modify the rewrite rules:
         add_filter('rewrite_rules_array', array($this, 'insert_rewrite_rules'));
@@ -1413,6 +1413,37 @@ class Leyka extends Leyka_Singleton {
         ));
 
         do_action('leyka_cpt_registered');
+
+    }
+
+    public function register_taxonomies() {
+
+        if( !leyka()->opt('donor_accounts_available') ) {
+            return;
+        }
+
+        register_taxonomy(
+            'donors_tag',
+            'user',
+            array(
+                'public' => true,
+                'labels' => array(
+                    'name' => __('Donors tags', 'leyka'),'User Categories',
+                    'singular_name'	=> __('Donors tag', 'leyka'),
+                    'menu_name'	=> __('Donors tags', 'leyka'),
+                    'search_items' => __('Search donors tag', 'leyka'),
+                    'popular_items' => __('Popular donors tags', 'leyka'),
+                    'all_items'	=> __('All donors tags', 'leyka'),
+                    'edit_item'	=> __('Edit donors tag', 'leyka'),
+                    'update_item' => __('Update donors tag', 'leyka'),
+                    'add_new_item' => __('Add new donors tag', 'leyka'),
+                    'new_item_name'	=> __('New donors tag name', 'leyka'),
+                ),
+                'update_count_callback' => function() {
+                    return; // Important
+                }
+            )
+        );
 
     }
 

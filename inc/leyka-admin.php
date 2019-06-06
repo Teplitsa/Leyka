@@ -128,8 +128,23 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         add_submenu_page('leyka', __('New campaign', 'leyka'), _x('Add new', 'campaign', 'leyka'), 'leyka_manage_donations', 'post-new.php?post_type='.Leyka_Campaign_Management::$post_type);
 
+        // Donors list page:
         $hook = add_submenu_page('leyka', __('Donors', 'leyka'), __('Donors', 'leyka'), 'leyka_manage_donations', 'leyka_donors', array($this, 'donors_screen'));
         add_action("load-$hook", array($this, 'donors_screen_options'));
+
+        // Donors' tags taxonomy:
+        $taxonomy = get_taxonomy(LEYKA_DONORS_TAGS_TAXONOMY_NAME);
+        add_submenu_page('leyka', esc_attr($taxonomy->labels->menu_name), esc_attr($taxonomy->labels->menu_name), $taxonomy->cap->manage_terms, 'edit-tags.php?taxonomy='.$taxonomy->name);
+
+        add_filter('submenu_file', function($submenu_file) { // Fix for parent menu
+
+            global $parent_file;
+            if($submenu_file == 'edit-tags.php?taxonomy='.LEYKA_DONORS_TAGS_TAXONOMY_NAME) {
+                $parent_file = 'leyka';
+            }
+            return $submenu_file;
+
+        });
 
         add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), 'leyka_manage_options', 'leyka_settings', array($this, 'settings_screen'));
 

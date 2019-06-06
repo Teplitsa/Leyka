@@ -21,18 +21,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      */
     public static function get_donors($per_page = 10, $page_number = 1) {
 
-//        global $wpdb;
-//
-//        $sql = "SELECT * FROM {$wpdb->prefix}customers";
-//
-//        if ( ! empty( $_REQUEST['orderby'] ) ) {
-//            $sql .= ' ORDER BY ' . esc_sql( $_REQUEST['orderby'] );
-//            $sql .= ! empty( $_REQUEST['order'] ) ? ' ' . esc_sql( $_REQUEST['order'] ) : ' ASC';
-//        }
-//
-//        $sql .= " LIMIT $per_page";
-//
-//        $sql .= ' OFFSET ' . ( $page_number - 1 ) * $per_page;
+        /** @todo Use $_REQUEST to access donors filter values here */
 
         $donors = array();
         $donors_users = get_users(array(
@@ -53,6 +42,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
             $donor_data = array(
                 'id' => $donor_user->ID,
+                'donor_type' => 'single', // By default
                 'donor_name' => $donor_user->display_name,
                 'donor_email' => $donor_user->user_email,
             );
@@ -67,6 +57,10 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
                 $donation = new Leyka_Donation($donor_donations[$i]);
 
+                if($donation->type === 'rebill' && $donation->status === 'funded') {
+                    $donor_data['donor_type'] = 'recurring';
+                }
+
                 if($i === 0) {
                     $donor_data['first_donation'] = $donation;
                 } else if ($i === $donations_count) {
@@ -77,10 +71,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                     $donor_data['campaigns'][$donation->campaign_id] = $donation->campaign_title;
                 }
 
-                /** @todo Tmp, until donors tags will be added */
-                $donor_data = $donor_data + array(
-                    'donors_tags' => array(),
-                );
+                $donor_data['donors_tags'] = wp_get_object_terms($donor_user->ID, LEYKA_DONORS_TAGS_TAXONOMY_NAME);
 
                 if(empty($donor_data['gateways']) || !in_array($donation->gateway, $donor_data['gateways'])) {
                     $donor_data['gateways'][$donation->gateway] = $donation->gateway_label;
@@ -97,7 +88,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         }
 
-        echo '<pre>'.print_r($donors, 1).'</pre>';
+//        echo '<pre>'.print_r($donors, 1).'</pre>';
 
         return $donors;
 
