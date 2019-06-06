@@ -326,7 +326,10 @@
                     background-size: 12px 12px;
                     background-position: left 2px;
                     padding-left: 14px;
-                    background-image: url(../../img/dashboard/icon-arrow-down.svg);
+
+                    &.negative {
+                        background-image: url(../../img/dashboard/icon-arrow-down.svg);
+                    }
 
                     &.positive {
                         color: $leyka-adb-color-ok;

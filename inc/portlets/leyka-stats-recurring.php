@@ -19,7 +19,7 @@ $data['recurring_donations_number_percent'] = 25.0;
         <?php } else {?>
 
             <div class="main-number"><?php echo number_format($data['recurring_donations_amount'], 0, ".", " ").'&nbsp;'.leyka()->opt('currency_'.leyka()->opt('main_currency').'_label');?></div>
-            <div class="percent <?php echo $data['recurring_donations_amount_delta_percent'] < 0 ? 'negative' : 'positive';?>"><?php echo $data['recurring_donations_amount_delta_percent'];?></div>
+            <div class="percent <?php echo $data['recurring_donations_amount_delta_percent'] < 0 ? 'negative' : $data['recurring_donations_amount_delta_percent'] > 0 ? 'positive' : '';?>"><?php echo str_replace(array('+', '-'), '', $data['recurring_donations_amount_delta_percent']);?></div>
 
         <?php }?>
     </div>
