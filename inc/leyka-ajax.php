@@ -715,7 +715,6 @@ function leyka_usage_stats_y() {
             'message' => __('Wrong nonce in the submitted data', 'leyka'),
         )));
     }
-
     
     update_option('leyka_plugin_stats_option_needs_sync', time());
     $stats_option_synch_res = leyka_sync_plugin_stats_option();
