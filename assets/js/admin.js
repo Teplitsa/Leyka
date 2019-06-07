@@ -397,12 +397,13 @@ jQuery(document).ready(function($){
 // init "stats invite"
 jQuery(document).ready(function($){
     $('.send-plugin-stats-invite .send-plugin-usage-stats-y').on('click.leyka', function(e){
-
         e.preventDefault();
 
         let $button = $(this),
             $field_wrapper = $button.parents('.invite-link'),
             $loading = $field_wrapper.find('.leyka-loader');
+
+        $button.prop('disabled', true);
         
         let ajax_params = {
             action: 'leyka_usage_stats_y',
@@ -425,9 +426,11 @@ jQuery(document).ready(function($){
                     else {
                         if(json.message) {
                             alert(json.message);
+                            $button.prop('disabled', false);
                         }
                         else {
                             alert('Ошибка!');
+                            $button.prop('disabled', false);
                         }
                     }
                     return;
@@ -435,6 +438,7 @@ jQuery(document).ready(function($){
             })
             .fail(function(){
                 alert('Ошибка!');
+                $button.prop('disabled', false);
             })
             .always(function(){
                 $loading.css('display', 'none');
