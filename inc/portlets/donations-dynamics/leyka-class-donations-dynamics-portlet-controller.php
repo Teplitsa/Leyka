@@ -67,7 +67,7 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
                 $labels[] = date('m.y', strtotime($sub_interval_end_date));
             }
             elseif($sub_interval === 'week') {
-                $labels[] = date('m.y', strtotime($sub_interval_end_date));
+                $labels[] = date('d.m.y', strtotime($sub_interval_end_date));
             }
             else {
                 $labels[] = date('d.m', strtotime($sub_interval_end_date));

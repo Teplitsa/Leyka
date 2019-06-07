@@ -46,21 +46,63 @@
     .send-plugin-stats-invite {
         background-color: $leyka-adb-color-notif-bg;
         border-radius: 6px;
-        padding: 8px 24px;
+        padding: 8px 0px 8px 24px;
         display: flex;
         align-items: center;
         justify-content: space-between;
+        width: 100%;
         
         .invite-text {
             color: $leyka-adb-color-notif-text;
         }
         
         .invite-link {
+            display: flex;
+            align-items: flex-start;
+
             .send-plugin-usage-stats-y {
                 @include leyka-adb-btn-primary;
+                min-width: 190px;
+            }
+
+            .loading-indicator-wrap {
+                display: block;
+                width: 24px;
+                height: 24px;
+
+                .ok-icon {
+                    display: none;
+
+                }
+
+                .loader-wrap {
+                    .leyka-loader {
+                    }
+                }
             }
         }
     }   
+}
+
+.leyka-dashboard-page .banner-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+
+    a {
+        display: block;
+        width: auto;
+
+        &:hover {
+            border-style: none;
+        }
+
+        img {
+            width: auto;
+            display: block;
+        }
+    }
 }
 
 // **** main part ****
@@ -343,9 +385,17 @@
     }
 }
 
-.leyka-admin-portlet.portlet-donations-dynamics,
 .leyka-admin-portlet.portlet-recent-donations {
     width: 100%;
+}
+
+.leyka-admin-portlet.portlet-donations-dynamics {
+    width: 100%;
+
+    .portlet-content {
+        padding-left: $leyka-base;
+        padding-right: 3 * $leyka-base;
+    }    
 }
 
 // recurring stats
@@ -460,7 +510,7 @@
             }
 
             td.donation-campaign-date {
-                min-width: 327px;
+                min-width: 227px;
                 width: 40%;
 
                 .campaign {
@@ -479,12 +529,32 @@
                     width: 8px;
                     height: 8px;
                     border-radius: 4px;
-                    background-color: $leyka-adb-color-error;
+                    background-color: $leyka-color-donation-status-submitted;
                     margin-right: 0.5 * $leyka-base;
 
                     &.funded {
-                        background-color: $leyka-adb-color-ok;
+                        background-color: $leyka-color-donation-status-funded;
                     }
+
+                    &.refunded {
+                        background-color: $leyka-color-donation-status-refunded;
+                    }
+
+                    &.failed {
+                        background-color: $leyka-color-donation-status-failed;
+                    }
+
+                    &.field-q {
+                        @include field-q();
+
+                        .field-q-tooltip {
+                            top: 250%;
+                            padding-left: 2* $leyka-base;
+                            padding-right: 2* $leyka-base;
+                            font-weight: 500;
+                        }
+                    }
+
                 }
 
                 .donation-amount {
@@ -500,4 +570,67 @@
     display: block;
     position: relative;
     overflow: hidden;
+}
+
+// **** modal ****
+.ui-dialog.leyka-adb-modal {
+
+    .ui-dialog-titlebar {
+        height: 40px;
+        line-height: 40px;
+    }
+    
+    .ui-dialog-title {
+        @include leyka-adb-modal-dialog-title;
+    }
+    
+    .ui-dialog-content {
+        padding: $leyka-base;
+
+        p {
+            @include leyka-adb-text-bigger2;
+            color: $leyka-adb-color-text;
+            margin-top: 0px;
+        }
+
+        p.error-notif {
+            margin-bottom: $leyka-base;
+            padding: 12px 15px 12px 40px;
+            background-color: rgba(212, 60, 87, 0.2);
+            background-image: url(../../img/dashboard/icon-alert-circle.svg);
+            background-size: 24px 24px;
+            background-position: 0.5 * $leyka-base 0.5 * $leyka-base;
+            background-repeat: no-repeat;
+
+            &:last-of-type {
+                margin-bottom: 0;
+            }
+
+            a {
+                @include leyka-adb-a; 
+                color: $leyka-adb-color-error;
+            }
+        }
+    }
+
+    .ui-button.ui-dialog-titlebar-close {
+        &:before {
+            content: " ";
+            background-image: url(../../img/dashboard/icon-bad-gray.svg);
+            background-size: 24px 24px;
+            display: block;
+            background-repeat: no-repeat;
+            background-position: 0px 8px;
+        }
+    }
+}
+
+// modal items custom styles
+.leyka-adb-modal {
+    .ui-dialog-content#how-to-setup-cron {
+        @include for(medium-screens) {
+            width: 552px !important;
+            max-width: unset !important;
+        }
+    }
 }

@@ -168,6 +168,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         do_action('leyka_pre_dashboard_actions');?>
 
 		<div class="wrap leyka-admin leyka-dashboard-page">
+		
 		    <h1><?php _e('Leyka dashboard', 'leyka');?></h1>
 
             <?php if(leyka()->opt('send_plugin_stats') !== 'y') {?>
@@ -177,6 +178,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 </div>
                 <div class="invite-link">
                     <button class="send-plugin-usage-stats-y"><?php _e('Allow usage statistics collection', 'leyka');?></button>
+                    <?php wp_nonce_field('usage_stats_y', 'usage_stats_y');?>
+                    <div class="loading-indicator-wrap">
+                        <div class="loader-wrap"><span class="leyka-loader xxs"></span></div>
+                        <img class="ok-icon" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/icon-check.svg"/>
+                    </div>
                 </div>
             </div>
             <?php }?>
@@ -417,6 +423,17 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                     <?php echo implode(', ', $php_extensions_needed);?> 
                 </div>
             </div>
+            
+            <div id="how-to-setup-cron" class="leyka-adb-modal" title="<?php esc_html_e('How to setup cron?', 'leyka');?>" style="max-width:433px">
+                <p class="error-notif">
+                	<?php esc_html_e("For recurrent payments via Yandex.Cash, you need to set up a task for Cron.", 'leyka');?>
+                	<a href="https://leyka.te-st.ru/instruction/"><?php esc_html_e("Read more here", 'leyka');?></a>
+                </p>
+                <p class="error-notif">
+                	<?php esc_html_e('To send email when reaching the target amount of the campaign, you need to set up a task for Cron.', 'leyka');?>
+                	<a href="https://leyka.te-st.ru/instruction/"><?php esc_html_e("Read more here", 'leyka');?></a>
+            	</p>
+            </div>
 
         </div>
 
@@ -424,7 +441,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	}
 
 	public function has_banners($page = false, $location = false) {
-	    return false; /** @todo Only for nooooow */
+	    ?>
+	    <div class="banner-wrapper">
+	    	<a href="https://te-st.ru/"><img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/banner.png"/></a>
+	    </div>
+	    <?php 
     }
 
     public function show_banner($page = false, $location = false) {
@@ -840,6 +861,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }
         
         if(!empty($_GET['page']) && $_GET['page'] === 'leyka') {
+            wp_enqueue_script( 'jquery-ui-dialog' );
+            wp_enqueue_style( 'wp-jquery-ui-dialog' );
             wp_enqueue_script('leyka-admin', LEYKA_PLUGIN_BASE_URL.'assets/js/Chart.v2.8.0.min.js', $dependencies, LEYKA_VERSION, true);
         }
 

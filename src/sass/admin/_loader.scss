@@ -13,6 +13,11 @@
   -ms-transform: translateZ(0);
   transform: translateZ(0);
 
+  &.xxs {
+      font-size: 3px;
+      margin: 11px auto;
+  }
+
   &.xs {
       font-size: 4px;
       margin: 20px auto;

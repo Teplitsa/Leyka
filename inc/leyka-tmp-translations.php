@@ -162,3 +162,7 @@ __('Main statistics', 'leyka');
 __('Recurring', 'leyka');
 __('Donations dynamics', 'leyka');
 __('Recent donations', 'leyka');
+__('Donation funded', 'leyka');
+__('Donation refunded', 'leyka');
+__('Donation failed', 'leyka');
+__('Donation submitted', 'leyka');

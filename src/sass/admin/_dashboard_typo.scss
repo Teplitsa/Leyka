@@ -27,6 +27,12 @@
     line-height: 16px;
 }
 
+@mixin leyka-adb-text-bigger2($mod: default) {
+    @include leyka-adb-text($mod);
+    font-size: 14px;
+    line-height: 16px;
+}
+
 @mixin leyka-adb-text-smaller1($mod: default) {
     @include leyka-adb-text($mod);
     font-size: 11px;
@@ -43,6 +49,13 @@
 	@include leyka-adb-text();
     font-size: 23px;
     line-height: 32px;
+}
+
+@mixin leyka-adb-h3 {
+    @include leyka-adb-text();
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: 500;
 }
 
 @mixin leyka-adb-portlet-title {
@@ -64,13 +77,6 @@
     text-transform: uppercase;
 }
 
-@mixin leyka-adb-h3 {
-    @include leyka-adb-text();
-    font-size: 14px;
-    line-height: 24px;
-    font-weight: 500;
-}
-
 @mixin leyka-adb-btn-caption {
     @include leyka-adb-text-bigger1();
 }
@@ -86,3 +92,11 @@
     font-size: 13px;
     line-height: 16px;
 }
+
+@mixin leyka-adb-modal-dialog-title {
+    @include leyka-adb-text();
+    font-size: 15px;
+    line-height: 16px;
+    font-weight: 500;
+}
+
