@@ -716,20 +716,20 @@ function leyka_usage_stats_y() {
         )));
     }
     
-//     update_option('leyka_plugin_stats_option_needs_sync', time());
-//     $stats_option_synch_res = leyka_sync_plugin_stats_option();
+    update_option('leyka_plugin_stats_option_needs_sync', time());
+    $stats_option_synch_res = leyka_sync_plugin_stats_option();
     
-//     if(is_wp_error($stats_option_synch_res)) {
-//         die(json_encode(array(
-//             'status' => 'error',
-//             'message' => __('Connection to leyka statistics server failed!', 'leyka'),
-//         )));
+    if(is_wp_error($stats_option_synch_res)) {
+        die(json_encode(array(
+            'status' => 'error',
+            'message' => __('Connection to leyka statistics server failed!', 'leyka'),
+        )));
         
-//     } else {
-//         delete_option('leyka_plugin_stats_option_needs_sync');
-//         update_option('leyka_plugin_stats_option_sync_done', time());
-//         leyka()->opt('send_plugin_stats', 'y');
-//     }
+    } else {
+        delete_option('leyka_plugin_stats_option_needs_sync');
+        update_option('leyka_plugin_stats_option_sync_done', time());
+        leyka()->opt('send_plugin_stats', 'y');
+    }
     
     die(json_encode(array(
         'status' => 'ok',
