@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Plugins - Leyka - Development (trunk)\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/leyka\n"
 "POT-Creation-Date: 2019-06-07T21:00:12+03:00\n"
-"PO-Revision-Date: 2019-06-07 21:02+0200\n"
+"PO-Revision-Date: 2019-06-07 21:06+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -2791,7 +2791,7 @@ msgstr "Не подключен"
 
 #: inc/leyka-functions.php:2298
 msgid "No need"
-msgstr "Подключен"
+msgstr "Не требуется"
 
 #: inc/portlets/leyka-stats-recurring.php:15
 msgid "Recurring donations amount"

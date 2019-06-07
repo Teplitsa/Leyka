@@ -401,7 +401,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 <?php $cronjobs_status = leyka_get_cronjobs_status();?>
                 <div class="data-line cron-state">
                     Cron: <span class="cron-state <?php echo $cronjobs_status['status'];?>"><?php echo mb_strtolower($cronjobs_status['title']);?></span>
-                    <?php if(mb_strtolower($cronjobs_status['title']) !== 'no need') {?>
+                    <?php if($cronjobs_status['status'] === 'not-set') {?>
                     	<a href="#" class="cron-setup-howto"><?php _e('How to set it up?', 'leyka');?></a>
                 	<?php }?>
                 </div>
