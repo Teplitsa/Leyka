@@ -49,7 +49,7 @@ jQuery(document).ready(function($){
 
         let $button = $(this),
             $field_wrapper = $button.parents('.invite-link'),
-            $loading = $field_wrapper.find('.leyka-loader');
+            $loading = $field_wrapper.find('.loader-wrap');
 
         $button.prop('disabled', true);
         
@@ -59,13 +59,15 @@ jQuery(document).ready(function($){
         };
         
         $loading.css('display', 'block');
+        $loading.find('.leyka-loader').css('display', 'block');
+        
 
         $.post(leyka.ajaxurl, ajax_params, null, 'json')
             .done(function(json){
                 if(typeof json.status !== 'undefined') {
                     if(json.status === 'ok') {
                         var $indicatorWrap = $loading.closest('.loading-indicator-wrap');
-                        $loading.closest('.loader-wrap').remove();
+                        $loading.remove();
                         $indicatorWrap.find('.ok-icon').show();
                         setTimeout(function(){
                             $field_wrapper.closest('.send-plugin-stats-invite').fadeOut("slow");;
@@ -90,6 +92,7 @@ jQuery(document).ready(function($){
             })
             .always(function(){
                 $loading.css('display', 'none');
+                $loading.find('.leyka-loader').css('display', 'none');
             });
     });
 });
