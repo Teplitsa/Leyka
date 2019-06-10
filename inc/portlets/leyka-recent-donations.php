@@ -9,7 +9,7 @@
 
 $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_data($params);?>
 
-<table class="recent-donations" cellpadding=0 cellspacing=0>
+<table class="recent-donations">
     <thead>
         <tr>
             <th><?php _e('Type', 'leyka');?></th>
@@ -19,7 +19,8 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
         </tr>
     </thead>
     <tbody>
-    <?php foreach($data as $donation) {?>
+    <?php if($data) {
+        foreach($data as $donation) {?>
         <tr>
             <td class="donation-type">
                 <img src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/dashboard/icon-donation-type-'.$donation['type'].'.svg';?>" alt="">
@@ -33,11 +34,16 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
                 <div class="date"><?php echo $donation['date_time'];?></div>
             </td>
             <td class="donation-amount-status">
-                <span class="donation-status <?php echo $donation['status'];?> field-q">
-                	<span class="field-q-tooltip"><?php esc_html_e('Donation ' . $donation['status'], 'leyka');?></span>
-                </span>
+            <span class="donation-status <?php echo $donation['status'];?> field-q">
+                <span class="field-q-tooltip"><?php esc_html_e('Donation ' . $donation['status'], 'leyka');?></span>
+            </span>
                 <span class="donation-amount"><?php echo $donation['amount'].' '.$donation['currency'];?></span>
             </td>
+        </tr>
+        <?php }
+    } else {?>
+        <tr>
+            <td colspan="4" class="no-rows"><?php _e('No donations found.', 'leyka');?></td>
         </tr>
     <?php }?>
     </tbody>

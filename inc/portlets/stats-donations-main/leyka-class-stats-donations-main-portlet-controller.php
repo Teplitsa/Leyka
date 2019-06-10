@@ -86,11 +86,15 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
 
         return array(
             'donations_amount' => $curr_amount,
-            'donations_amount_delta_percent' => ($donations_amount_delta < 0 ? '' : '+').$donations_amount_delta.'%',
+            'donations_amount_delta_percent' =>
+                $donations_amount_delta === NULL ? '—' : ($donations_amount_delta < 0 ? '' : '+').$donations_amount_delta.'%',
             'donors_number' => $curr_donations_count,
-            'donors_number_delta_percent' => ($donations_count_delta < 0 ? '' : '+').$donations_count_delta.'%',
+            'donors_number_delta_percent' =>
+                $donations_count_delta === NULL ? '—' : ($donations_count_delta < 0 ? '' : '+').$donations_count_delta.'%',
             'donations_amount_avg' => $curr_amount_avg,
-            'donations_amount_avg_delta_percent' => ($donations_amount_avg_delta < 0 ? '' : '+').$donations_amount_avg_delta.'%',
+            'donations_amount_avg_delta_percent' =>
+                $donations_amount_avg_delta === NULL ?
+                    '—' : ($donations_amount_avg_delta < 0 ? '' : '+').$donations_amount_avg_delta.'%',
         );
 
     }

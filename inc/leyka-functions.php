@@ -1924,12 +1924,15 @@ if( !function_exists('array_key_last') ) {
 }
 
 if( !function_exists('leyka_get_delta_percent') ) {
-    function leyka_get_delta_percent($prev_value, $new_value) {
+    function leyka_get_delta_percent($prev_value, $new_value, $handle_incomparabe_cases = true) {
+
+        $handle_incomparabe_cases = !!$handle_incomparabe_cases;
 
         if( !$prev_value ) {
-            $delta_percent = $new_value ? 100.0 : 0;
+            $delta_percent = $handle_incomparabe_cases ? NULL : ($new_value ? 100.0 : 0);
         } else {
-            $delta_percent = round(100.0*($new_value - $prev_value)/$prev_value, 2);
+            $delta_percent = $handle_incomparabe_cases && !$new_value ?
+                NULL : round(100.0*($new_value - $prev_value)/$prev_value, 2);
         }
 
         return $delta_percent;
