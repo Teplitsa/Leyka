@@ -13,7 +13,7 @@ if( !$gateway ) {?>
     <p class="error"><?php esc_html_e('Unknown gateway.', 'leyka');?></p>
 <?php } else { // Gateway settings area ?>
 
-<div class="main-area single-gateway-settings gateway-<?php echo $_GET['gateway'];?>">
+<div class="main-area single-gateway-settings gateway-<?php echo $gateway->id;?>">
 
     <div class="gateway-settings-header">
 

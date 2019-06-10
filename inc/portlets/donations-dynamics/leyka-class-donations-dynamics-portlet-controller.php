@@ -12,35 +12,25 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
         $params['interval'] = empty($params['interval']) ? 'year' : $params['interval'];
         switch($params['interval']) {
             case 'half-year':
-//                $interval = '6 month';
                 $sub_interval = 'month';
                 $interval_length = 6;
-//                $interval_date_format = 'd.m.Y';
                 break;
             case 'quarter':
-//                $interval = '3 month';
                 $sub_interval = 'week';
                 $interval_length = 12;
-//                $interval_date_format = 'd.m.Y';
                 break;
             case 'month':
-//                $interval = '1 month';
                 $sub_interval = 'week';
                 $interval_length = 4;
-//                $interval_date_format = 'd.m.Y';
                 break;
             case 'week':
-//                $interval = '1 week';
                 $sub_interval = 'day';
                 $interval_length = 7;
-//                $interval_date_format = 'd.m.Y';
                 break;
             case 'year':
             default:
-//                $interval = '1 year';
                 $sub_interval = 'month';
                 $interval_length = 12;
-//                $interval_date_format = 'd.m.Y';
         }
 
         global $wpdb;
@@ -65,11 +55,9 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
             $result[] = array('x' => date('d.m.Y', strtotime($sub_interval_end_date)), 'y' => $count,);
             if($sub_interval === 'month') {
                 $labels[] = date('m.y', strtotime($sub_interval_end_date));
-            }
-            elseif($sub_interval === 'week') {
+            } else if($sub_interval === 'week') {
                 $labels[] = date('d.m.y', strtotime($sub_interval_end_date));
-            }
-            else {
+            } else {
                 $labels[] = date('d.m', strtotime($sub_interval_end_date));
             }
 
@@ -79,6 +67,7 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
             'data' => array_reverse($result), // [{x:'25.11.2016', y:20}, {x:'25.12.2016', y:30}, ...]
             'labels' => array_reverse($labels), // [{x:'25.11.2016', y:20}, {x:'25.12.2016', y:30}, ...]
         );
+
     }
 
 }
