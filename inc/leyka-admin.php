@@ -115,7 +115,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }
 
         add_filter('leyka_admin_portlet_title', function($portlet_title, $portlet_id){
-            return $portlet_id === 'donations-dynamics' ? $portlet_title.', '.leyka_get_currency_label() : $portlet_title;
+            return $portlet_id === 'donations-dynamics' ? $portlet_title.',&nbsp;'.leyka_get_currency_label() : $portlet_title;
         }, 10, 2);
 
     }
