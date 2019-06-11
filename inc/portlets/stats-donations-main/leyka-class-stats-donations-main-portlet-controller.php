@@ -18,8 +18,8 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
             case 'week': $interval = '1 week'; break;
             default: $interval = '1 year';
         }
-        $curr_interval_begin_date = date('Y-m-d', strtotime('-'.$interval));
-        $prev_interval_begin_date = date('Y-m-d', strtotime('-'.$interval, strtotime('-'.$interval)));
+        $curr_interval_begin_date = date('Y-m-d 23:59:59', strtotime('-'.$interval));
+        $prev_interval_begin_date = date('Y-m-d 23:59:59', strtotime('-'.$interval, strtotime('-'.$interval)));
 
         global $wpdb;
 
@@ -39,9 +39,19 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
             AND post_date >= '$curr_interval_begin_date'"
         );
 
-        // Donations (donors) count:
-        $prev_donations_count = count($prev_interval_donations);
-        $curr_donations_count = count($curr_interval_donations);
+        // Donors (unique donors' emails) count:
+        $prev_donations_count = $prev_interval_donations ? count($wpdb->get_col(
+            "SELECT DISTINCT {$wpdb->prefix}postmeta.meta_value
+            FROM {$wpdb->prefix}postmeta
+            WHERE {$wpdb->prefix}postmeta.post_id IN (".implode(',', $prev_interval_donations).")
+            AND {$wpdb->prefix}postmeta.meta_key='leyka_donor_email'"
+        )) : 0;
+        $curr_donations_count = $curr_interval_donations ? count($wpdb->get_col(
+            "SELECT DISTINCT {$wpdb->prefix}postmeta.meta_value
+            FROM {$wpdb->prefix}postmeta
+            WHERE {$wpdb->prefix}postmeta.post_id IN (".implode(',', $curr_interval_donations).")
+            AND {$wpdb->prefix}postmeta.meta_key='leyka_donor_email'"
+        )) : 0;
         $donations_count_delta = leyka_get_delta_percent($prev_donations_count, $curr_donations_count);
 
         // Donations amount & avg:
