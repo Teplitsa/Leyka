@@ -366,13 +366,14 @@
                 
                 .percent {
                     @include leyka-adb-text-bigger1();
-                    color: $leyka-adb-color-error;
+                    color: darken($leyka-adb-color-border, 25);
                     background-repeat: no-repeat;
                     background-size: 12px 12px;
                     background-position: left 2px;
                     padding-left: 14px;
 
                     &.negative {
+                        color: $leyka-adb-color-error;
                         background-image: url(../../img/dashboard/icon-arrow-down.svg);
                     }
 
