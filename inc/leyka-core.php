@@ -1424,7 +1424,7 @@ class Leyka extends Leyka_Singleton {
         }
 
         register_taxonomy(
-            'donors_tag',
+            LEYKA_DONORS_TAGS_TAXONOMY_NAME,
             'user',
             array(
                 'public' => true,

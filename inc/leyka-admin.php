@@ -8,6 +8,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 	protected static $_instance = null;
 
+	/** @var WP_List_Table */
+	protected $_donors_list_table = null;
+
 	protected function __construct() {
 
 		add_action('admin_menu', array($this, 'admin_menu_setup'), 9);
@@ -132,9 +135,33 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         add_submenu_page('leyka', __('New campaign', 'leyka'), _x('Add new', 'campaign', 'leyka'), 'leyka_manage_donations', 'post-new.php?post_type='.Leyka_Campaign_Management::$post_type);
 
+        // Donors' tags taxonomy:
+        if(leyka()->opt('donor_accounts_available')) {
+
+            // Donors list page:
+            $hook = add_submenu_page('leyka', __('Donors', 'leyka'), __('Donors', 'leyka'), 'leyka_manage_donations', 'leyka_donors', array($this, 'donors_screen'));
+            add_action("load-$hook", array($this, 'donors_screen_options'));
+
+            // Donors tags page:
+            $taxonomy = get_taxonomy(LEYKA_DONORS_TAGS_TAXONOMY_NAME);
+
+            add_submenu_page('leyka', esc_attr($taxonomy->labels->menu_name), esc_attr($taxonomy->labels->menu_name), $taxonomy->cap->manage_terms, 'edit-tags.php?taxonomy='.$taxonomy->name);
+
+            add_filter('submenu_file', function($submenu_file) { // Fix for parent menu
+
+                global $parent_file;
+                if($submenu_file == 'edit-tags.php?taxonomy='.LEYKA_DONORS_TAGS_TAXONOMY_NAME) {
+                    $parent_file = 'leyka';
+                }
+                return $submenu_file;
+
+            });
+
+        }
+
         add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), 'leyka_manage_options', 'leyka_settings', array($this, 'settings_screen'));
 
-        add_submenu_page('leyka', __('Connect to us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedback_screen'));
+        add_submenu_page('leyka', __('Contact us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedback_screen'));
 
         // Wizards pages group (a fake page):
         add_submenu_page(NULL, 'Leyka Wizard', 'Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', array($this, 'settings_new_screen'));
@@ -198,7 +225,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                         $this->show_banner('admin-dashboard', 'main');
                     }
 
-                    $_GET['interval'] = empty($_GET['interval']) ? 'year' : $_GET['interval'];
+                    $_GET['interval'] = empty($_GET['interval']) ? 'year' : esc_attr($_GET['interval']);
                     $current_url = admin_url('admin.php?page=leyka');?>
 
                     <div class="plugin-data-interval">
@@ -410,6 +437,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 </div>
 
                 <div class="data-line">
+
                     <?php $protocol = parse_url(home_url(), PHP_URL_SCHEME);
                     echo __('Protocol:', 'leyka').' ';?>
                     <span class="protocol <?php echo $protocol == 'https' ? 'safe' : 'not-safe';?>"><?php echo mb_strtoupper($protocol);?></span>
@@ -421,11 +449,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
                     foreach($php_extensions_needed as &$extension_needed) {
                         $extension_needed = '<span class="php-ext '.(in_array($extension_needed, $php_extensions) ? '' : 'php-ext-missing').'">'.mb_strtolower($extension_needed).'</span>';
-                    }
+                    }?>
 
-                    ?>
                     <span class="php-modules-title"><?php echo __('PHP modules', 'leyka');?></span>
-                    <?php echo implode(', ', $php_extensions_needed);?> 
+                    <?php echo implode(', ', $php_extensions_needed);?>
+
                 </div>
             </div>
             
@@ -468,6 +496,110 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	public function is_separate_forms_stage($stage) {
 		return in_array($stage, array('email', 'beneficiary', 'technical', 'view', 'additional'));
 	}
+
+    public function donors_screen_options() {
+
+        add_screen_option('per_page', array(
+            'label' => 'Donors',
+            'default' => 5,
+            'option' => 'donors_per_page',
+        ));
+
+        require_once(LEYKA_PLUGIN_DIR.'inc/admin-lists/leyka-class-donors-list-table.php');
+
+        $this->_donors_list_table = new Leyka_Admin_Donors_List_Table();
+
+    }
+
+    public function donors_screen() {
+
+        if( !current_user_can('leyka_manage_options') ) {
+            wp_die(__('You do not have permissions to access this page.', 'leyka'));
+        }?>
+
+        <div class="wrap">
+            <h2><?php _e('Donors', 'leyka'); ?></h2>
+
+            <div id="poststuff">
+                <div id="post-body" class="metabox-holder columns-2">
+
+                    <form class="donors-list-filters" action="#" method="get">
+
+                        <div class="col-1">
+
+                            <select name="filter-donors-type">
+                                <option value="" selected="selected"><?php _e('Donor type', 'leyka');?></option>
+                                <?php foreach(leyka()->get_donation_types() as $type => $type_label) {?>
+                                    <option value="<?php echo $type;?>"><?php echo $type_label;?></option>
+                                <?php }?>
+                            </select>
+
+                            <input type="text" name="filter-donor-name-email" placeholder="<?php _e("Donor's name or email", 'leyka');?>">
+
+                            <input type="date" name="filter-first-donation-date" placeholder="<?php _e('First payment date', 'leyka');?>">
+
+                            <select name="filter-campaigns" multiple="multiple">
+                                <option value="" selected="selected"><?php _e('Campaigns list', 'leyka');?></option>
+                            </select>
+
+                            <input type="date" name="filter-last-donation-date" placeholder="<?php _e('Last payment date', 'leyka');?>">
+
+                            <select name="filter-donation-status">
+                                <option value="" selected="selected"><?php _e('Donation status', 'leyka');?></option>
+                                <?php foreach(leyka()->get_donation_statuses() as $status => $status_label) {?>
+                                    <option value="<?php echo $status;?>"><?php echo $status_label;?></option>
+                                <?php }?>
+                            </select>
+
+                            <select name="filter-donors-tags" multiple="multiple">
+
+                                <option value=""><?php _e('Donors tags', 'leyka');?></option>
+
+                                <?php $donors_tags = get_terms(LEYKA_DONORS_TAGS_TAXONOMY_NAME, array('hide_empty' => false));
+                                foreach($donors_tags as $tag) {?>
+                                    <option value="<?php echo $tag->term_id;?>"><?php echo $tag->name;?></option>
+                                <?php }?>
+
+                            </select>
+
+                            <select name="filter-gateways" multiple="multiple">
+
+                                <option value="" selected="selected"><?php _e('Payment gateway', 'leyka');?></option>
+                                <?php foreach(leyka_get_gateways() as $gateway) {?>
+                                    <option value="<?php echo $gateway->id;?>"><?php echo $gateway->name;?></option>
+                                <?php }?>
+
+                            </select>
+
+                        </div>
+
+                        <div class="col-2">
+                            <input type="submit" class="button" value="<?php _e('Filter the data', 'leyka');?>">
+                            <input type="reset" class="reset-filters" value="<?php _e('Reset the filter', 'leyka');?>">
+                        </div>
+
+                    </form>
+
+                    <div class="donors-list-export"><button><?php _e('Export the list in CSV', 'leyka');?></button></div>
+
+                    <div id="post-body-content">
+                        <div class="meta-box-sortables ui-sortable">
+                            <form method="post">
+                                <?php $this->_donors_list_table->prepare_items();
+                                $this->_donors_list_table->display();?>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+
+                <br class="clear">
+
+            </div>
+        </div>
+
+        <?php
+    }
 
 	public function settings_screen() {
 
