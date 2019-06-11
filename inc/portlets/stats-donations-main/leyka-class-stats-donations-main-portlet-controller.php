@@ -66,9 +66,9 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
 
             $donations_amounts = $wpdb->get_results(
                 "SELECT meta_value AS amount
-            FROM {$wpdb->prefix}postmeta
-            WHERE post_id IN (".implode(',', $curr_interval_donations).")
-            AND meta_key='leyka_donation_amount'"
+                FROM {$wpdb->prefix}postmeta
+                WHERE post_id IN (".implode(',', $curr_interval_donations).")
+                AND meta_key='leyka_donation_amount'"
             );
 
             foreach($donations_amounts as $amount) {

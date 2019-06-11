@@ -44,15 +44,18 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
             $sub_interval_begin_date = date('Y-m-d H:i:s', strtotime(' -'.($sub_interval_index + 1).' '.$sub_interval));
             $sub_interval_end_date = date('Y-m-d H:i:s', strtotime(' -'.$sub_interval_index.' '.$sub_interval));
 
-            $count = $wpdb->get_var(
-                "SELECT COUNT({$wpdb->prefix}posts.ID)
-                FROM {$wpdb->prefix}posts
-                WHERE post_type='$donations_post_type'
-                AND post_status='funded'
-                AND post_date BETWEEN '$sub_interval_begin_date' AND '$sub_interval_end_date'"
+            $amount = $wpdb->get_var(
+                "SELECT SUM({$wpdb->prefix}postmeta.meta_value)
+                FROM {$wpdb->prefix}postmeta
+                WHERE {$wpdb->prefix}postmeta.meta_key='leyka_donation_amount'
+                AND {$wpdb->prefix}postmeta.post_id IN (
+                    SELECT {$wpdb->prefix}posts.ID FROM {$wpdb->posts} WHERE post_type='$donations_post_type'
+                    AND post_status='funded'
+                    AND post_date BETWEEN '$sub_interval_begin_date' AND '$sub_interval_end_date'
+                )"
             );
 
-            $result[] = array('x' => date('d.m.Y', strtotime($sub_interval_end_date)), 'y' => $count,);
+            $result[] = array('x' => date('d.m.Y', strtotime($sub_interval_end_date)), 'y' => $amount,);
             if($sub_interval === 'month') {
                 $labels[] = date('m.y', strtotime($sub_interval_end_date));
             } else if($sub_interval === 'week') {
@@ -63,10 +66,7 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
 
         }
 
-        return array(
-            'data' => array_reverse($result), // [{x:'25.11.2016', y:20}, {x:'25.12.2016', y:30}, ...]
-            'labels' => array_reverse($labels), // [{x:'25.11.2016', y:20}, {x:'25.12.2016', y:30}, ...]
-        );
+        return array('data' => array_reverse($result), 'labels' => array_reverse($labels),);
 
     }
 

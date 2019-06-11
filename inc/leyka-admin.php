@@ -111,9 +111,12 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         }
 
+        add_filter('leyka_admin_portlet_title', function($portlet_title, $portlet_id){
+            return $portlet_id === 'donations-dynamics' ? $portlet_title.', '.leyka_get_currency_label() : $portlet_title;
+        }, 10, 2);
+
     }
 
-	/** Admin Menu **/
     public function admin_menu_setup() {
 
         // Leyka menu root:
@@ -133,7 +136,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         add_submenu_page('leyka', __('Connect to us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedback_screen'));
 
-        // Wizards pages group:
+        // Wizards pages group (a fake page):
         add_submenu_page(NULL, 'Leyka Wizard', 'Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', array($this, 'settings_new_screen'));
 
         do_action('leyka_admin_menu_setup');
@@ -181,7 +184,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                     <?php wp_nonce_field('usage_stats_y', 'usage_stats_y');?>
                     <div class="loading-indicator-wrap">
                         <div class="loader-wrap"><span class="leyka-loader xxs"></span></div>
-                        <img class="ok-icon" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/icon-check.svg"/>
+                        <img class="ok-icon" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/icon-check.svg" alt="">
                     </div>
                 </div>
             </div>
@@ -254,11 +257,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'thumbnail' => 'Thumbnail',
         ));?>
 
-	    <div class="leyka-admin-portlet portlet-<?php echo $portlet_id;?>">
+	    <div class="leyka-admin-portlet portlet-<?php echo esc_attr($portlet_id);?>">
 
             <div class="portlet-header">
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL . trim($portlet_data['thumbnail'], "/");?>" alt="">
-                <?php echo _e($portlet_data['title'], 'leyka');?>
+                <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL.trim($portlet_data['thumbnail'], '/'));?>" alt="">
+                <?php echo apply_filters('leyka_admin_portlet_title', esc_attr__($portlet_data['title'], 'leyka'), $portlet_id);?>
             </div>
 
             <div class="portlet-content">
@@ -442,16 +445,20 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         <?php
 	}
 
-	public function has_banners($page = false, $location = false) {
-	    ?>
-	    <div class="banner-wrapper">
-	    	<a href="https://te-st.ru/"><img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/banner.png"/></a>
-	    </div>
-	    <?php 
+	public function has_banners($page = false, $location = false) {?>
+	    <?php return false;
     }
 
-    public function show_banner($page = false, $location = false) {
-        return false; /** @todo Only for nooooow */
+    public function show_banner($page = false, $location = false) {?>
+
+        <?php if(LEYKA_DEBUG) {?>
+
+        <div class="banner-wrapper">
+            <a href="https://te-st.ru/"><img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/banner.png" alt=""></a>
+        </div>
+
+        <?php }
+
     }
 	
 	public function is_v3_settings_page($stage) {
