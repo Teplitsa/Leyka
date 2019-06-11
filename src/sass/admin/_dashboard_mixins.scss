@@ -1,0 +1,58 @@
+/** == Mixins (_dashboard_mixins.scss) == **/
+
+@mixin leyka-adb-a($mod: default) {
+    @include leyka-admin-clean-a();
+    
+    color: $leyka-adb-color-link;
+    border-color: $leyka-adb-color-link;
+    border-bottom-width: 1px;
+
+    border-bottom-style: none;
+    &:active, &:focus, &:hover {
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+    }
+    
+    @if $mod == dashed {
+        border-bottom-style: dashed;
+        &:active, &:focus, &:hover {
+            border-bottom-style: none;
+        }
+    }
+    
+}
+
+@mixin leyka-adb-btn($mod: default) {
+	@include leyka-adb-btn-caption();
+    background-color: $leyka-adb-color-btn-bg;
+    color: $leyka-adb-color-btn-text;
+    text-shadow: 0px 0px 3px rgba(0, 0, 0, 0.25);
+    border: 1px solid $leyka-adb-color-btn-stroke;
+    box-shadow: 0px 1px 0px $leyka-adb-color-btn-stroke;
+    border-radius: 4px;
+	height: 26px;
+	width: auto;
+	display: inline-block;
+	cursor: pointer;
+	padding: 5px 10px 3px 10px;
+}
+
+@mixin leyka-adb-btn-primary($mod: default) {
+	@include leyka-adb-btn($mod);
+}
+
+@mixin leyka-adb-sidebar-part-iconed-link($icon_url) {
+    background-image: url($icon_url);
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    background-position: left center;
+    width: auto;
+    min-height: 24px;
+    display: flex;
+    padding-left: 32px;
+    align-items: center;
+    
+	a {
+	    @include leyka-adb-a();
+	}
+}

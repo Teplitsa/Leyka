@@ -20,7 +20,7 @@ abstract class Leyka_Template_Controller extends Leyka_Singleton {
     }
 
     /** A wrapper for templates to get current campaign object without direct using of global vars. */
-    public function getCurrentCampaign() {
+    public function get_current_campaign() {
 
         if($this->current_campaign) {
 
@@ -51,10 +51,10 @@ abstract class Leyka_Template_Controller extends Leyka_Singleton {
      * @param $campaign mixed
      * @return array
      */
-    public function getTemplateData($campaign = false) {
+    public function get_template_data($campaign = false) {
 
         if( !$campaign ) {
-            $campaign = $this->getCurrentCampaign();
+            $campaign = $this->get_current_campaign();
         }
 
         if( !$campaign ) {
@@ -65,7 +65,7 @@ abstract class Leyka_Template_Controller extends Leyka_Singleton {
             $this->_campaigns[$campaign->id] = $campaign;
         }
         if(empty($this->_template_data[$campaign->id])) {
-            $this->_generateTemplateData($campaign);
+            $this->_generate_template_data($campaign);
         }
 
         return empty($this->_template_data[$campaign->id]) ? array() : $this->_template_data[$campaign->id];
@@ -77,6 +77,6 @@ abstract class Leyka_Template_Controller extends Leyka_Singleton {
      * @param $campaign Leyka_Campaign
      * @return null
      */
-    abstract protected function _generateTemplateData(Leyka_Campaign $campaign);
+    abstract protected function _generate_template_data(Leyka_Campaign $campaign);
 
 }

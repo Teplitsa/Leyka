@@ -135,6 +135,7 @@ class Leyka extends Leyka_Singleton {
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-admin.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-donations-export.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-usage-stats-functions.php');
+            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-portlet-controller.php');
 
             Leyka_Admin_Setup::get_instance();
 
@@ -152,6 +153,8 @@ class Leyka extends Leyka_Singleton {
             }
 
         } else { // Public (non-admin) area only
+
+            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-template-controller.php');
 
             function leyka_get_posts(WP_Query $query) {
 
@@ -174,10 +177,8 @@ class Leyka extends Leyka_Singleton {
                         }
                         $campaign = reset($campaign);
 
-                        $query->set('meta_query', array(array(
-                            'key'     => 'leyka_campaign_id',
-                            'value'   => $campaign->ID,
-                        ),));
+                        $query->set('meta_query', array(array('key' => 'leyka_campaign_id', 'value' => $campaign->ID,),));
+
                     }
 
                 }
@@ -850,7 +851,7 @@ class Leyka extends Leyka_Singleton {
         } else {
 
             $gateways = array();
-            foreach($gateways as $gateway) { /** @var $gateway Leyka_Gateway */
+            foreach($this->_gateways as $gateway) { /** @var $gateway Leyka_Gateway */
                 if($gateway->get_activation_status() === $activation_status) {
                     $gateways[] = $gateway;
                 }

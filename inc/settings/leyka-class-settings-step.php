@@ -46,9 +46,9 @@ class Leyka_Settings_Step {
         }
     }
 
-    public function addTo(Leyka_Settings_Section $section) {
+    public function add_to(Leyka_Settings_Section $section) {
 
-        $section->addStep($this);
+        $section->add_step($this);
 
         return $this;
 
@@ -58,7 +58,7 @@ class Leyka_Settings_Step {
      * @param $handler mixed Either function name (string) of the function itself (callback)
      * @return $this
      */
-    public function addHandler($handler) {
+    public function add_handler($handler) {
 
         if(is_callable($handler)) {
             $this->_handler = $handler;
@@ -71,15 +71,15 @@ class Leyka_Settings_Step {
     }
 
     /** @return mixed */
-    public function getHandler() {
+    public function get_handler() {
         return $this->_handler === false ? null : $this->_handler;
     }
 
-    public function hasHandler() {
+    public function has_handler() {
         return !!$this->_handler;
     }
 
-    public function addBlock(Leyka_Settings_Block $block) {
+    public function add_block(Leyka_Settings_Block $block) {
 
         $this->_blocks[$block->id] = $block;
 
@@ -88,14 +88,14 @@ class Leyka_Settings_Step {
     }
 
     /** @return array */
-    public function getBlocks() {
+    public function get_blocks() {
         return $this->_blocks;
     }
 
-    public function isValid() {
+    public function is_valid() {
 
         foreach($this->_blocks as $block) { /** @var $block Leyka_Settings_Block */
-            if( !$block->isValid() ) {
+            if( !$block->is_valid() ) {
                 return false;
             }
         }
@@ -107,12 +107,12 @@ class Leyka_Settings_Step {
     /**
      * @return array An array of (block_id => an array of WP_Error objects, with one field error in each)
      */
-    public function getErrors() {
+    public function get_errors() {
 
         $errors = array();
 
         foreach($this->_blocks as $block) { /** @var $block Leyka_Settings_Block */
-            $errors = array_merge($errors, $block->getErrors());
+            $errors = array_merge($errors, $block->get_errors());
         }
 
         return $errors;
@@ -122,12 +122,12 @@ class Leyka_Settings_Step {
     /** Get all options & values set on the step
      * @return array
      */
-    public function getFieldsValues() {
+    public function get_fields_values() {
 
         $fields = array();
 
         foreach($this->_blocks as $block) { /** @var $block Leyka_Settings_Block */
-            $fields = array_merge($fields, $block->getFieldsValues());
+            $fields = array_merge($fields, $block->get_fields_values());
         }
 
         return $fields;

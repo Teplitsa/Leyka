@@ -706,3 +706,35 @@ function leyka_reset_campaign_attachment() {
     
 }
 add_action('wp_ajax_leyka_reset_campaign_attachment', 'leyka_reset_campaign_attachment');
+
+function leyka_usage_stats_y() {
+    
+    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'usage_stats_y')) {
+        die(json_encode(array(
+            'status' => 'error',
+            'message' => __('Wrong nonce in the submitted data', 'leyka'),
+        )));
+    }
+    
+    update_option('leyka_plugin_stats_option_needs_sync', time());
+    $stats_option_synch_res = leyka_sync_plugin_stats_option();
+    
+    if(is_wp_error($stats_option_synch_res)) {
+        die(json_encode(array(
+            'status' => 'error',
+            'message' => __('Connection to leyka statistics server failed!', 'leyka'),
+        )));
+        
+    } else {
+        delete_option('leyka_plugin_stats_option_needs_sync');
+        update_option('leyka_plugin_stats_option_sync_done', time());
+        leyka()->opt('send_plugin_stats', 'y');
+    }
+    
+    die(json_encode(array(
+        'status' => 'ok',
+        'message' => __('Thank you!', 'leyka'),
+    )));
+    
+}
+add_action('wp_ajax_leyka_usage_stats_y', 'leyka_usage_stats_y');

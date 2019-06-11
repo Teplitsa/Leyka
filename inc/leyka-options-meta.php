@@ -47,12 +47,12 @@ $campaign_target_reaching_email_placeholders =
 // For type='text':
 // 'length' => '',
 // 'placeholder' => '',
-// 'required' => boolean,
+// 'required' => boolean (default false),
 
 // For type='number':
 // 'length' => '',
 // 'placeholder' => '',
-// 'required' => 1 / 0
+// 'required' => boolean (default false),
 // 'min' => 0+ / false,
 // 'max' => 0+ / false,
 // 'step' => positive number,
@@ -62,7 +62,7 @@ $campaign_target_reaching_email_placeholders =
 //  'value_variant' => 'Variant title',
 //  or 'value_variant' => array('title' => 'Variant title', 'comment' => 'Variant comment')
 //),
-// 'required' => boolean / integer, // For multi_checkbox, any positive integer "N" means "at least N values"
+// 'required' => boolean / integer, // For multi_checkbox, any positive integer "N" means "at least N values selected"
 
 // For all:
 // 'default' => '',

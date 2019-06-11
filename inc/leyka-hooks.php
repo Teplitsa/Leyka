@@ -7,7 +7,7 @@ function leyka_terms_of_service_text($text) {
         array(
             '#LEGAL_NAME#',
             '#LEGAL_FACE#',
-            '#LEGAL_FACE_RP#',
+            // '#LEGAL_FACE_RP#',
             '#LEGAL_FACE_POSITION#',
             '#LEGAL_ADDRESS#',
             '#STATE_REG_NUMBER#',
@@ -21,7 +21,7 @@ function leyka_terms_of_service_text($text) {
         array(
             leyka_options()->opt('org_full_name'),
             leyka_options()->opt('org_face_fio_ip'),
-            leyka_options()->opt('org_face_fio_rp'),
+            // leyka_options()->opt('org_face_fio_rp'),
             leyka_options()->opt('org_face_position'),
             leyka_options()->opt('org_address'),
             leyka_options()->opt('org_state_reg_number'),

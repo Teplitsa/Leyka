@@ -1,539 +1,148 @@
-.leyka-admin {
-    
-    @include body-text();
-    
-    // typo
-    .step-title {
-        h1 {
-            @include wizard-h2();
-            margin-top: 41px;
-            margin-bottom: 8px;
-            
-            &.greater {
-                @include wizard-h1();
-                margin-top: 49px;
-                margin-bottom: 18px;
-            }
-        }
-    }
-            
-    p {
-        @include wizard-text();
-        margin-top: 0;
-        margin-bottom: 1rem;
-    }
-    
-    p:empty {
-        display: none;
-    }
-    
-    ul {
-        
-        margin-top: 0;
-        margin-bottom: 32px;
-        
-        li {
-            list-style-type: disc;
-            margin-left: 18px;
-            font-size: 14px;
-            line-height: 21px;
-            margin-top: 14px;
-        }
-        
-    }
-    
-    h1 {
-        @include wizard-h1();
-        margin-bottom: 18px;
-    }
-    
-    h2 {
-        @include wizard-h2();
-        margin-bottom: 8px;
-    }
-    
-    h3 {
-        @include wizard-h3();
-        margin-bottom: 8px;
-    }
-    
-    h4 {
-        @include wizard-h4();
-        margin-bottom: 8px;
-    }
-    
-    
-    // controls
-    .button-primary {
-        @include leyka-button-primary();
-    }
-    
-    .button-secondary {
-        @include leyka-button-primary();
-        background-color: $color-white;
-        border: 1px solid $color-border-secondary-button;
-        color: $color-secondary-button;
-        
-        &:hover {
-            border: 1px solid $color-border-secondary-button;
-            color: $color-secondary-button;
-            background-color: $color-white;
-        }
-        
-    }
-    
-    a {
-        color: $color-wizard-link;
-        
-        &:hover {
-            color: $color-wizard-link-hover;
-        }
-        
-        &:focus, &:active {
-            color: $color-wizard-link-active;
-        }
-    }
-    
-    a[href="#"] {
-        border-bottom: 1px dashed $color-wizard-link;
-    }
-    
-    a.inline {
-        margin-right: 1rem;
-    }
-    
-    a.link-sec {
-        @include leyka-link-sec();
-    }
-    
-    
-    // forms
-    .option-block, .leyka-options-section  {
-        margin-bottom: 16px;
-        
-        &.option-title-hidden .field-component.title {
-            display: none;
-        }
-        &.option-description-hidden .field-component.help {
-            display: none;
-        }
-        
-        &.type-rich_html {
-            
-            @include leyka-rich-html();
-            
-        }
-        
-        .field-component {
-            
-            &.title {
-                @include leyka-field-title();
-            }
-    
-            &.field {
-                @include leyka-field-control();
-            }
-            
-            &.help {
-                @include leyka-field-help();
-            }
-            
-        }
-        
-        &.has-errors {
-            
-            .field-component {
-                &.field {
-                    @include leyka-field-control-error();
-                }
-            }
-            
-        }
-            
-        .field-radio {
-            .field-component.help {
-                padding-left: 25px;
-            }
-        }
+// dashboard footer
+.leyka-dashboard-footer {
+	margin-top: 2 * $leyka-base;
+	margin-left: 12px;
+	
+	&.leyka-wizard-footer {
+	   margin-top: $leyka-base;
+	   margin-bottom: $leyka-base;
+	   margin-left: 12px;
+	}
+	
+	&.leyka-settings-footer {
+	   margin-left: 72px;
+	   margin-bottom: -20px;
+	}
+}
 
-        &.checkbox {
-            .single-control {
-                .field-component {
-                    @include leyka-field-checkbox();
-                }
-            }
-        }
-        
-        &.file {
-            @include leyka-field-file();
-            .field-errors {
-                margin-top: 2px;
-            }
-        }
-        
-        &.field-radio {
+.leyka-admin-wizard {
+
+    .leyka-wizard {
+        .leyka-admin-footer {
+            margin-left: 0px;
             
-            @include leyka-field-radio();
-    
+			position: absolute;
+			bottom: 22px;
+            
+            .links a, 
+            a.te-st-logo {
+	            text-decoration: none;
+	            border-bottom: none;
+	            
+	            &:hover, &:active, &:focus {
+	                border-bottom: none;
+	                text-decoration: underline;
+	            }
+            }
         }
-                
     }
 
-    .gateway-logo {
+    #wpbody-content > .leyka-admin-footer {
+	   display: none;
+    }
+}
 
+// admin footer
+.leyka-admin-footer {
+	display: flex;
+	align-items: flex-start;
+	
+	.te-st-logo {
+       margin-right: 1.5 * $leyka-base;
+       
+	   img {
+	       width: auto;
+	       height: auto;
+	   }
+	}
+	
+    .links {
+        @include wizard-text();	
+        font-size: 12px;
+        line-height: 14px;
+        padding-top: 9px;
         display: flex;
-        justify-content: center;
-        align-items: center;
-
-        position: relative;
-
-        width: 40px;
-        height: 40px;
-
-        .field-q {
-            @include field-q();
-            position: absolute;
-            right: 0;
-            top: -3px;
-            border-radius: 5px;
+        align-items: flex-end;
+        
+        a {
+            text-decoration: none;
+            border-bottom: none;
             
-            img {
-                background-color: $color-white;
+            &:hover, &:active, &:focus {
+	            border-bottom: none;
+	            text-decoration: underline;
             }
         }
-
-        .gateway-logo-pic {
-
-            width: 40px;
-            height: 40px;
-
-        }
-
-    }
-    
-} // end of leyka-admin
-
-.wp-core-ui .leyka-admin {
-    .button-secondary {
-        @include leyka-button-primary();
-        background-color: $color-white;
-        border: 1px solid $color-border-secondary-button;
-        color: $color-secondary-button;
-        
-        &:hover {
-            border: 1px solid $color-border-secondary-button;
-            color: $color-secondary-button;
-            background-color: $color-white;
-        }
-        
-    }
-}
-
-.wp-core-ui .leyka-admin {
-    .leyka-options-section {
-        background-color: $color-white;
-        border-radius: 6px;
-        margin-bottom: 2rem;
-        padding: 24px 24px 32px 24px;
-        width: 675px;
-        
-        &.collapsed {
-            padding-bottom: 24px;
+       
+        .te-st-link {
+            line-height: 14px;
+            margin-right: 40px;
             
-            .header {
-                h3 {
-                    margin-bottom: 0;
-                    
-                    &:before {
-                        background-image: url(../../img/icon-accord-collapsed.svg);
-                        cursor: pointer;
-                    }
-                }
-            }
-            
-            .content {
-                display: none;
-            }
-        }
-        
-        .header {
-            
-            h3 {
-                font-style: normal;
-                font-weight: normal;
-                line-height: 34px;
-                font-size: 23px;
+            span {
+                font-weight: 500;
+                
+                display: block;
                 color: $color-wizard-text;
-                margin-top: 0;
-                pointer-events: none;
-                display: flex;
-                
-                &:before {
-                    width: 22px;
-                    height: 22px;
-                    margin-right: 8px;
-                    margin-top: 5px;
+	       }
+	       
+	       a {
+	           font-weight: 500;
+	           text-decoration: none;
+	           color: $color-wizard-link-active;
+	       }
+        }
+	   
+        .info-links {
+           margin-top: 0.5 * $leyka-base;
+           
+	       a {
+                font-weight: 500;
+                text-decoration: none;	           
+                line-height: 12px;
+                color: $color-wizard-link-active; 
+	            
+	            margin-right: 0.25 * $leyka-base;
+	            
+                &:after {
                     content: " ";
-                    display: block;
-                    background-image: url(../../img/icon-accord-expanded.svg);
-                    background-position: left center;
-                    background-repeat: no-repeat;
-                    background-size: auto;
-                    cursor: pointer;
-                    pointer-events: all;
-                    flex-shrink: 0;
-                }
-            }
-        }
-
-        .content {
-
-            .section-description {
-                font-style: normal;
-                font-weight: normal;
-                line-height: 21px;
-                font-size: 14px;
-                padding-top: 0;
-                padding-bottom: 8px;
-                margin-top: 0;
-
-                ul {
-                    margin-bottom: 0;
-                    
-                    li:first-child {
-                        margin-top: 0;
-                    }
-                }
-
-                .attention {
-                    color: $color-wizard-error-message;
-                    font-weight: normal;
-                }
-            }
-
-            & > div {
-                max-width: 544px;
-                margin-top: 1rem;
-            }
-
-            .submit {
-                padding-bottom: 0;
-                margin-bottom: 0;
-                padding-top: 2rem;
-            }
-
-            .leyka-rich-html-field-wrapper {
-                //margin-bottom: 2rem;
-                max-width: unset;
-                
-                .wp-editor-tools {
-                    display: none;
-                }
-                
-                .field-component.title {
-                    font-size: 16px;
-                    margin-bottom: 1rem;
-                }
-            }
-
-            .leyka-radio-field-wrapper {
-                .field-component.title {
-                    font-size: 14px;
-                    margin-bottom: 1.5rem;
-                }
-
-                .field-component.field {
-                    & > label {
-                        margin-bottom: 1rem;
-                        
-                        &:last-child {
-                            margin-bottom: 0;
-                        }
-                    }
-                }
-            }
-
-            .field-component.help {
-                margin-top: 0;
-                
-                .placeholders-help {
-                    code {
-                        padding-top: 0;
-                    }
-                    
-                    &:before {
-                        content: " ";
-                        display: block;
-                        margin-top: 0;
-                    }
-                }
-                
-                .placeholders-help-actions {
-                    margin-top: 0;
-                    
-                    a, a:active, a:hover, a:focus {
-                        text-decoration: none;
-                    }
-                }
-            }
-
-            .field-component {
-                &.field textarea {
-                    height: 134px;
-                }
-            }
-
-            .field-success {
-                display: none;
-            }
-
-            #leyka_email_thanks_text-wrapper,
-            #leyka_email_recurring_init_thanks_text-wrapper,
-            #leyka_email_recurring_ongoing_thanks_text-wrapper,
-            #leyka_email_campaign_target_reaching_text-wrapper,
-            #leyka_email_notification_text-wrapper {
-                .field-component.help {
-                    margin-top: 0.5rem;
-                }
-            }
-
-            #leyka_email_thanks_text-field_ifr,
-            #leyka_email_recurring_init_thanks_text-field_ifr,
-            #leyka_email_recurring_ongoing_thanks_text-field_ifr,
-            #leyka_email_campaign_target_reaching_text-field_ifr,
-            #leyka_email_notification_text-field_ifr {
-                height: 250px !important;
-            }
-            
-            #leyka_notify_donations_managers-wrapper,
-            #leyka_notify_managers_on_recurrents-wrapper,
-            #leyka_send_donor_emails_on_campaign_target_reaching-wrapper,
-            #leyka_receiver_legal_type-wrapper,
-            #leyka_lang2upload-wrapper,
-            #leyka_delete_plugin_options-wrapper,
-            #leyka_delete_plugin_data-wrapper {
-                .field-component.title {
-                    display: none;
-                }
-            }
-            
-            #leyka_org_bank_bic-wrapper,
-            #leyka_org_bank_corr_account-wrapper,
-            #leyka_tech_support_email-wrapper,
-            #leyka_lang2upload-wrapper {
-                width: 248px;
-            }
-            
-            // short and floated
-            #leyka_org_state_reg_number-wrapper {
-                width: 248px;
-                margin-right: 3rem;
-                float: left;
-            }
-            
-            #leyka_org_kpp-wrapper {
-                width: 248px;
-                float: left;
-            }
-
-            #leyka_org_inn-wrapper {
-                width: 248px;
-                padding-top: 1rem;
-                margin-top: 0;
-                float: none;
-                clear: both;
-            }
-        }
-        
-        // upload l10n
-        &#upload_l10n {
-            .content {
-                .field-component.help {
-                    .field-success,
-                    .field-errors {
-                        margin-top: 8px;
-                    }
-                }
-                
-                .submit {
-                    padding-top: 1.5rem;
-                }
-                
-                .leyka-loader {
+                    border-right: 1px solid $color-wizard-link-sec-hover;
                     display: inline-block;
-                    margin-left: 2rem;
-                    vertical-align: bottom;
+                    width: 1px;
+                    height: 9px;
+                    margin-bottom: 0px;
+                    padding-left: 0.5 * $leyka-base;
                 }
-            }
-        }
-        
-        &#email_from {
-            .content {
-                .leyka-text-field-wrapper  {
-                    max-width: 248px;
-                }
-            }
-        }
-        
-    }
-}
-
-.init-wizard-tab {
-    float: right;
-    background-image: url(../../img/icon-wizard-stick-only.svg);
-    background-size: cover;
-    background-color: $color-wizard-link;
-    background-position: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    margin-top: 6px;
-    
-}
-
-// wp messages
-.update-nag {
-    margin-left: 72px;
-}    
-
-.admin_page_leyka_settings_new {
-    .update-nag {
-        margin-left: -20px;
-        margin-top: 0;
-        margin-right: 0;
-        width: calc(100% - 14px);
-    }
-}
-
-#message {
-    margin-left: 72px;
-}
-
-.leyka-admin {
-    #message {
-        margin-left: 0;
-    }
-}
-
-// connect stats option
-.wp-core-ui .leyka-admin {
-    
-    .leyka-options-section {
-        #leyka_send_plugin_stats-wrapper {
-            display: none;
-        }
-        
-        .submit {
-            .disconnect-stats {
-                color: $color-wizard-link;
-                border:none;
-                background: none;        
-                border-bottom: 1px dashed $color-wizard-link;
-                margin-right: 1rem;
-                padding-left: 0;
-                padding-right: 0;
-                cursor: pointer;
+	            
+                &:last-of-type {
+	                margin-right: 0px;
+	                
+	                &:after {
+	                   display: none;
+                    }
+	            }
             }
         }
     }
+}
+
+.post-type-leyka_campaign #wpfooter,
+.post-type-leyka_donation #wpfooter {
+	transform: translateY(60px);
+	
+	.leyka-admin-footer {
+	   margin-bottom: $leyka-base;
+	   margin-left: 0px;
+	   height: 49px;
+    }
+}
+
+.wp-admin.leyka-admin-dashboard {
+    .leyka-dashboard-footer {
+        margin-left: 72px;
+    }
+}
+
+// unneeded datepicker line in bottom fix
+#ui-datepicker-div {
+	display: none;
 }

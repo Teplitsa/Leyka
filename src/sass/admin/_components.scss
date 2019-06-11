@@ -4,7 +4,7 @@
     .step-common-errors.has-errors {
         @include common-error-message(settings-block);
     }
-
+    
     .help-chat-button {
         &[href='#'] {
             border-bottom: none;
