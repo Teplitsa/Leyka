@@ -7,9 +7,7 @@
  * Thumbnail: /img/dashboard/icon-money-recurring.svg
  **/
 
-$data = Leyka_Recurring_Stats_Portlet_Controller::get_instance()->get_template_data($params);
-$data['recurring_donations_number_percent'] = 25.0;
-?>
+$data = Leyka_Recurring_Stats_Portlet_Controller::get_instance()->get_template_data($params);?>
 
 <div class="portlet-row">
     <div class="row-label"><?php _e('Recurring donations amount', 'leyka');?></div>
