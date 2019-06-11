@@ -19,7 +19,6 @@ class Leyka_Recent_Donations_Portlet_Controller extends Leyka_Portlet_Controller
             case 'week': $interval = '1 week'; break;
             default: $interval = '1 year';
         }
-//        $curr_interval_begin_timestamp = strtotime('-'.$interval);
 
         $result = array();
         $donations = get_posts(array(
@@ -29,10 +28,6 @@ class Leyka_Recent_Donations_Portlet_Controller extends Leyka_Portlet_Controller
             'date_query' => array(
                 'after' => $interval.' ago',
                 'inclusive' => true,
-//                'year' => date('Y', $curr_interval_begin_timestamp),
-//                'month' => date('m', $curr_interval_begin_timestamp),
-//                'day' => date('d', $curr_interval_begin_timestamp),
-//                'compare' => '>=',
             ),
         ));
 

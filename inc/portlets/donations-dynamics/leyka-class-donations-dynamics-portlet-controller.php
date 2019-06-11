@@ -41,8 +41,8 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
 
         for($sub_interval_index = 0; $sub_interval_index < $interval_length; $sub_interval_index++) {
 
-            $sub_interval_begin_date = date('Y-m-d H:i:s', strtotime(' -'.($sub_interval_index + 1).' '.$sub_interval));
-            $sub_interval_end_date = date('Y-m-d H:i:s', strtotime(' -'.$sub_interval_index.' '.$sub_interval));
+            $sub_interval_begin_date = date('Y-m-d 23:59:59', strtotime(' -'.($sub_interval_index + 1).' '.$sub_interval));
+            $sub_interval_end_date = date('Y-m-d 23:59:59', strtotime(' -'.$sub_interval_index.' '.$sub_interval));
 
             $amount = $wpdb->get_var(
                 "SELECT SUM({$wpdb->prefix}postmeta.meta_value)
