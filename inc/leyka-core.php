@@ -127,10 +127,19 @@ class Leyka extends Leyka_Singleton {
             // Disable login:
             add_filter('authenticate', function($user, $username, $pass) {
 
-                if(leyka_user_has_role('donor_single', true)) {
+                if($user && is_wp_error($user)) {
+                    return $user;
+                }
 
-                    remove_filter('authenticate', 'wp_authenticate_username_password', 20);
-                    return null;
+                if( !$user ) {
+
+                    $logged_in_user = get_user_by('login', $username);
+                    if($logged_in_user && leyka_user_has_role('donor_single', true, $logged_in_user)) {
+
+                        remove_filter('authenticate', 'wp_authenticate_username_password', 20);
+                        return null;
+
+                    }
 
                 }
 
