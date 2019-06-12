@@ -114,11 +114,59 @@ class Leyka extends Leyka_Singleton {
 
         add_action('admin_bar_menu', array($this, 'add_toolbar_menu'), 999);
 
-        // Donor accounts related hooks:
+        // For Donors management:
+        if(get_option('leyka_donor_management_available')) {
+
+            // Don't show admin bar:
+            add_action('init', function() {
+                if(leyka_user_has_role('donor_single')) {
+                    add_filter('show_admin_bar', '__return_false');
+                }
+            }, 9);
+
+            // Disable login:
+            add_filter('authenticate', function($user, $username, $pass) {
+
+                if(leyka_user_has_role('donor_single', true)) {
+
+                    remove_filter('authenticate', 'wp_authenticate_username_password', 20);
+                    return null;
+
+                }
+
+                return $user;
+
+            }, 1000, 3);
+
+            add_action('wp_login', function($login, $user){
+                if($user->roles && leyka_user_has_role('donor_single', true, $user)) {
+
+                    wp_logout();
+                    wp_redirect(leyka_get_current_url());
+                    exit;
+
+                }
+            }, 1000, 2);
+
+            // Logout if needed:
+            add_action('init', function(){
+                if(is_user_logged_in() && leyka_user_has_role('donor_single', true)) {
+
+                    wp_logout();
+                    wp_redirect(leyka_get_current_url());
+                    exit;
+
+                }
+            });
+
+        }
+
+        // For Permanent Donor accounts:
         if(get_option('leyka_donor_accounts_available')) {
 
+            // Don't show admin bar:
             add_action('init', function(){
-                if(leyka_current_user_has_role('donor')) {
+                if(leyka_user_has_role('donor_regular')) {
                     add_filter('show_admin_bar', '__return_false');
                 }
             }, 9);
@@ -1290,9 +1338,15 @@ class Leyka extends Leyka_Singleton {
             );
         }
 
-        if(leyka()->opt('donor_accounts_available')) { // Donor role
-            if( !get_role('donor') ) {
-                add_role('donor', __('Donor', 'leyka'), array('access_donor_account_desktop'));
+        // Donor roles:
+        if(leyka()->opt('donor_management_available')) {
+            if( !get_role('donor_single') ) {
+                add_role('donor_single', __('Single donor', 'leyka'), array());
+            }
+        }
+        if(leyka()->opt('donor_accounts_available')) {
+            if( !get_role('donor_regular') ) {
+                add_role('donor_regular', __('Regular donor', 'leyka'), array('access_donor_account_desktop'));
             }
         }
 
@@ -1419,7 +1473,7 @@ class Leyka extends Leyka_Singleton {
 
     public function register_taxonomies() {
 
-        if( !leyka()->opt('donor_accounts_available') ) {
+        if( !leyka()->opt('donor_management_available') ) {
             return;
         }
 
@@ -1429,7 +1483,7 @@ class Leyka extends Leyka_Singleton {
             array(
                 'public' => true,
                 'labels' => array(
-                    'name' => __('Donors tags', 'leyka'),'User Categories',
+                    'name' => __('Donors tags', 'leyka'),
                     'singular_name'	=> __('Donors tag', 'leyka'),
                     'menu_name'	=> __('Donors tags', 'leyka'),
                     'search_items' => __('Search donors tag', 'leyka'),
@@ -1623,50 +1677,62 @@ class Leyka extends Leyka_Singleton {
 
     /**
      * @param $donation int|WP_Post|Leyka_Donation
+     * @param $donor_regular boolean
      * @return int|WP_Error
      */
-    public function register_donor_account($donation) {
+    public function register_donor_account($donation, $donor_regular = true) {
 
-        if( !leyka()->opt('donor_accounts_available') ) {
-            return false;
-        }
-
+        $donor_regular = !!$donor_regular;
         $donation = leyka_get_validated_donation($donation);
 
-        // Register a new donor's account only for recurring donations and if it's not registered yet:
-        if($donation->type !== 'rebill') {
-            return false;
-        } // ($donation->init_recurring_donation_id && $donation->init_recurring_donation_id != $donation->id)
+        if($donor_regular) {
 
-        $donor_user = get_user_by('email', $donation->donor_email);
-        if($donor_user && is_a($donor_user, 'WP_User')) { // Account already exists
+            if( !leyka()->opt('donor_accounts_available') ) {
+                return false;
+            }
 
-            $donor_user_id = $donor_user->ID;
-            $donation->donor_account = $donor_user_id;
-            $donor_user->add_role('donor');
+            // Register a new donor's account only for recurring donations and if it's not registered yet:
+            if($donation->type !== 'rebill') {
+                return false;
+            }
 
-        } else { // Create a new donor's account
+            $donor_user = get_user_by('email', $donation->donor_email);
+            if($donor_user && is_a($donor_user, 'WP_User')) { // Account already exists
 
-            $donor_email_first_part = reset(explode('@', $donation->donor_email));
-
-            $donor_user_id = wp_insert_user(array(
-                'user_email' => $donation->donor_email,
-                'user_login' => $donation->donor_email,
-                'user_pass' => wp_generate_password(16, true, false),
-                'display_name' => $donation->donor_name ? $donation->donor_name : $donor_email_first_part,
-                'show_admin_bar_front' => false,
-                'role' => 'donor',
-            ));
-
-            if(is_wp_error($donor_user_id)) {
-                do_action('leyka_donor_account_not_created', $donor_user_id, $donation);
-            } else {
-
-                update_user_meta($donor_user_id, 'leyka_account_activation_code', wp_generate_password(60, false, false));
+                $donor_user_id = $donor_user->ID;
                 $donation->donor_account = $donor_user_id;
+                $donor_user->add_role('donor_regular');
 
-                do_action('leyka_donor_account_created', $donor_user_id, $donation);
+            } else { // Create a new donor's account
 
+                $donor_email_first_part = reset(explode('@', $donation->donor_email));
+
+                $donor_user_id = wp_insert_user(array(
+                    'user_email' => $donation->donor_email,
+                    'user_login' => $donation->donor_email,
+                    'user_pass' => wp_generate_password(16, true, false),
+                    'display_name' => $donation->donor_name ? $donation->donor_name : $donor_email_first_part,
+                    'show_admin_bar_front' => false,
+                    'role' => 'donor_regular',
+                ));
+
+                if(is_wp_error($donor_user_id)) {
+                    do_action('leyka_donor_account_not_created', $donor_user_id, $donation);
+                } else {
+
+                    update_user_meta($donor_user_id, 'leyka_account_activation_code', wp_generate_password(60, false, false));
+                    $donation->donor_account = $donor_user_id;
+
+                    do_action('leyka_donor_account_created', $donor_user_id, $donation);
+
+                }
+
+            }
+
+        } else { // Single donor
+
+            if( !leyka()->opt('donor_management_available') ) {
+                return false;
             }
 
         }

@@ -25,7 +25,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         $donors = array();
         $donors_users = get_users(array(
-            'role__in' => array('donor'),
+            'role__in' => array('donor_single', 'donor_regular',),
             'number' => absint($per_page),
             'paged' => absint($page_number),
             'fields' => array('ID', 'user_email', 'display_name',),
@@ -115,7 +115,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
     public static function record_count() {
 
         $donors = new WP_User_Query(array(
-            'role__in' => array('donor'),
+            'role__in' => array('donor_single', 'donor_regular',),
             'count_total' => true,
             /** @todo Apply donor table filters here! */
         ));

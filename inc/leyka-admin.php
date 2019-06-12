@@ -136,7 +136,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         add_submenu_page('leyka', __('New campaign', 'leyka'), _x('Add new', 'campaign', 'leyka'), 'leyka_manage_donations', 'post-new.php?post_type='.Leyka_Campaign_Management::$post_type);
 
         // Donors' tags taxonomy:
-        if(leyka()->opt('donor_accounts_available')) {
+        if(leyka()->opt('donor_management_available')) {
 
             // Donors list page:
             $hook = add_submenu_page('leyka', __('Donors', 'leyka'), __('Donors', 'leyka'), 'leyka_manage_donations', 'leyka_donors', array($this, 'donors_screen'));

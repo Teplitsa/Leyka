@@ -76,14 +76,22 @@ if( !function_exists('leyka_set_html_content_type') ) {
     }
 }
 
-function leyka_current_user_has_role($role, $user_id = false) {
+function leyka_user_has_role($role, $is_only_role = false, $user = false) {
 
-    $user = is_numeric($user_id) ? get_userdata( $user_id ) : wp_get_current_user();
+    if($user && is_numeric($user)) {
+        $user = get_userdata($user);
+    } else if( !$user || !is_a($user, 'WP_User') ) {
+        $user = wp_get_current_user();
+    }
 
-    if( !$user )
+    if( !$user ) {
         return false;
+    }
 
-    return in_array($role, (array)$user->roles);
+    return !!$is_only_role ?
+        (array)$user->roles == array($role) :
+        in_array($role, (array)$user->roles);
+
 }
 
 /**
