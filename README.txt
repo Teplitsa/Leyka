@@ -89,6 +89,12 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.2.3 =
+* New: the plugin Dashboard design renewed.
+* New: now Donors accounts are created even on non-initial recurring donations, if needed.
+* Fix: admin vulnerability fixes.
+* Fix: small bugfixes.
+
 = 3.2.2 =
 * New: Now Revo is the default template in the Init Wizard again.
 * New: Persistent campaigns - new CSS editor default styles added.
