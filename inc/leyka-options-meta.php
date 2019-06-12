@@ -980,6 +980,13 @@ self::$_options_meta = array(
         'description' => __('Select a page for donor to redirect to when payment is failed for some reason.', 'leyka'),
         'list_entries' => 'leyka_get_pages_list',
     ),
+    'donor_management_available' => array(
+        'type' => 'checkbox',
+        'default' => false,
+        'title' => __('Donor management available', 'leyka'),
+        'comment' => __("Check to turn on the donors logging for all donations. It allows CRM functions and adds additional donors management pages to the plugin administation area.", 'leyka'),
+        'short_format' => true,
+    ),
     'donor_accounts_available' => array(
         'type' => 'checkbox',
         'default' => false,

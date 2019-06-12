@@ -1814,7 +1814,7 @@ class Leyka_Donation {
                 'donor_email' => empty($meta['leyka_donor_email']) ? '' : $meta['leyka_donor_email'][0],
                 'donor_comment' => empty($meta['leyka_donor_comment']) ? '' : $meta['leyka_donor_comment'][0],
                 'donor_subscription_email' => empty($meta['leyka_donor_subscription_email']) ?
-                    '' : $meta['leyka_donor_subscription_email'][0],
+                    '' : $meta['leyka_donor_subscription_emaileyka_donor_accountl'][0],
                 'donor_email_date' => empty($meta['_leyka_donor_email_date']) ?
                     '' : $meta['_leyka_donor_email_date'][0],
                 'managers_emails_date' => empty($meta['_leyka_managers_emails_date']) ?
@@ -2101,7 +2101,7 @@ class Leyka_Donation {
                 update_post_meta($this->_id, 'leyka_donor_comment', $value);
                 $this->_donation_meta['donor_comment'] = $value;
                 break;
-            case 'donor_account':
+            case 'donor_account': /** @todo Set donor ID value as donation post author_id instead of postmeta */
                 if(is_wp_error($value) || (int)$value > 0) {
                     $this->_donation_meta['donor_account'] = $value;
                     update_post_meta($this->_id, 'leyka_donor_account', $value);

@@ -45,6 +45,12 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                 'donor_type' => 'single', // By default
                 'donor_name' => $donor_user->display_name,
                 'donor_email' => $donor_user->user_email,
+                'first_donation' => '',
+                'last_donation' => false,
+                'campaigns' => array(),
+                'donors_tags' => array(),
+                'gateways' => array(),
+                'amount_donated' => 0.0,
             );
 
             $donor_donations_params['meta_key'] = 'leyka_donor_email';
@@ -67,7 +73,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                     $donor_data['last_donation'] = $donation;
                 }
 
-                if(empty($donor_data['campaigns']) || !in_array($donation->campaign_title, $donor_data['campaigns'])) {
+                if(empty($donor_data['campaigns']) || empty($donor_data['campaigns'][$donation->campaign_id])) {
                     $donor_data['campaigns'][$donation->campaign_id] = $donation->campaign_title;
                 }
 
@@ -124,28 +130,6 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
     }
 
     /**
-     * @param array $item An array of DB data.
-     * @return string
-     */
-    function column_donor_name($item) {
-
-        $actions = array(
-            'delete' => sprintf(
-                '<a href="?page=%s&action=%s&donor=%s&_wpnonce=%s">'.__('Delete', 'leyka').'</a>',
-                esc_attr($_REQUEST['page']),
-                'delete',
-                absint($item['id']),
-                wp_create_nonce('leyka_delete_donor')
-            )
-        );
-
-        return '<div class="donor-name">'.$item['donor_name'].'</div>'
-            .'<div class="donor-email">'.$item['donor_email'].'</div>'
-            .$this->row_actions($actions);
-
-    }
-
-    /**
      * Render a column when no column specific method exists.
      *
      * @param array $item
@@ -164,7 +148,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             case 'amount_donated':
                 return $item[$column_name];
             default:
-                return print_r($item, true); // Show the whole array for troubleshooting purposes
+                return LEYKA_DEBUG ? print_r($item, true) : ''; // Show the whole array for troubleshooting purposes
         }
     }
 
@@ -179,6 +163,101 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
     }
 
     /**
+     * @param array $item An array of DB data.
+     * @return string
+     */
+    public function column_donor_name($item) {
+
+        $actions = array(
+            'delete' => sprintf(
+                '<a href="?page=%s&action=%s&donor=%s&_wpnonce=%s">'.__('Delete', 'leyka').'</a>',
+                esc_attr($_REQUEST['page']),
+                'delete',
+                absint($item['id']),
+                wp_create_nonce('leyka_delete_donor')
+            )
+        );
+
+        return '<div class="donor-name">'.$item['donor_name'].'</div>'
+            .'<div class="donor-email">'.$item['donor_email'].'</div>'
+            .$this->row_actions($actions);
+
+    }
+
+    /**
+     * @param array $item An array of DB data.
+     * @return string
+     */
+    public function column_campaigns($item) {
+
+        if(empty($item['campaigns']) || !is_array($item['campaigns'])) {
+            return '';
+        }
+
+        $campaigns_list = array();
+        foreach($item['campaigns'] as $campaign_id => $campaign_title) {
+            $campaigns_list[] = '«'.$campaign_title.'»';
+        }
+
+        return '<div class="leyka-admin-shortened-text">'.implode(', ', $campaigns_list).'</div>';
+
+    }
+
+    /**
+     * @param array $item An array of DB data.
+     * @return string
+     */
+    public function column_donors_tags($item) {
+
+        if(empty($item['donors_tags']) || !is_array($item['donors_tags'])) {
+            return '';
+        }
+
+        $tags_list = array();
+        foreach($item['donors_tags'] as $term) {
+            $tags_list[] = '#<a href="#">'.esc_html($term->name).'</a>';
+        }
+
+        return '<div class="leyka-donors-tags-list">'.implode(', ', $tags_list).'</div>';
+
+    }
+
+    /**
+     * @param array $item An array of DB data.
+     * @return string
+     */
+    public function column_gateways($item) {
+
+        if(empty($item['gateways']) || !is_array($item['gateways'])) {
+            return '';
+        }
+
+        $gateways_list = array();
+        foreach($item['gateways'] as $gateway_id => $gateway) {
+            $gateways_list[] = esc_html($gateway->name);
+        }
+
+        return '<div class="leyka-gateways-list">'.implode(', ', $gateways_list).'</div>';
+
+    }
+
+    /**
+     * @param array $item An array of DB data.
+     * @return string
+     */
+    public function column_last_donation($item) {
+
+        if(empty($item['last_donation'])) {
+            return '';
+        }
+
+        $last_donation_html = 'Last donation data here';
+
+        return $last_donation_html;
+
+    }
+
+    /**
      *  Associative array of columns.
      *
      * @return array
@@ -190,9 +269,9 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             'donor_name' => __("Donor's name", 'leyka'),
             'first_donation' => __('First donation', 'leyka'),
             'campaigns' => __('Campaigns list', 'leyka'),
-            'last_donation' => __('Last donation', 'leyka'),
             'donors_tags' => __("Donors' tags", 'leyka'),
             'gateways' => __('Gateway', 'leyka'),
+            'last_donation' => __('Last donation', 'leyka'),
             'amount_donated' => __('Amount donated', 'leyka'),
         );
     }

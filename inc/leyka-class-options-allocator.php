@@ -427,9 +427,9 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                     ),),
                     array('section' => array(
                         'name' => 'donor_accounts',
-                        'title' => __('Donors accounts options', 'leyka'),
+                        'title' => __('Donors & accounts options', 'leyka'),
                         'is_default_collapsed' => true,
-                        'options' => array('donor_accounts_available',)
+                        'options' => array('donor_management_available', 'donor_accounts_available',)
                     ),),
                     array('section' => array(
                         'name' => 'misc',
