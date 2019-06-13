@@ -94,6 +94,36 @@ function leyka_user_has_role($role, $is_only_role = false, $user = false) {
 
 }
 
+function leyka_create_donor_user(Leyka_Donation $donation, $donor_role = false) {
+
+    $donor_role = esc_sql($donor_role);
+    $donor_user = get_user_by('email', $donation->donor_email);
+
+    if($donor_user && is_a($donor_user, 'WP_User')) { // Account already exists
+
+        $donor_user_id = $donor_user->ID;
+        $donation->donor_account = $donor_user_id;
+        $donor_user->add_role('donor_regular');
+
+    } else { // Create a new donor's account
+
+        $donor_email_first_part = reset(explode('@', $donation->donor_email));
+
+        $donor_user_id = wp_insert_user(array(
+            'user_email' => $donation->donor_email,
+            'user_login' => $donation->donor_email,
+            'user_pass' => wp_generate_password(16, true, false),
+            'display_name' => $donation->donor_name ? $donation->donor_name : $donor_email_first_part,
+            'show_admin_bar_front' => false,
+            'role' => $donor_role ? $donor_role : NULL,
+        ));
+
+    }
+
+    return $donor_user_id;
+
+}
+
 /**
  * @param $donation mixed
  * @return Leyka_Donation|false A donation object, if parameter is valid in one way or another; false otherwise.
