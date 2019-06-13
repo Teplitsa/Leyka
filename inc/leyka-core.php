@@ -211,8 +211,6 @@ class Leyka extends Leyka_Singleton {
 
         } else { // Public (non-admin) area only
 
-            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-template-controller.php');
-
             function leyka_get_posts(WP_Query $query) {
 
                 if(is_admin() || !$query->is_main_query()) {
