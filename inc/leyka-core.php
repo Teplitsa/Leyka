@@ -1158,6 +1158,27 @@ class Leyka extends Leyka_Singleton {
             }
         }
 
+        if( !$leyka_last_ver || $leyka_last_ver < '3.2.4' ) {
+
+            // Rename & reassign the "Regular Donor" role:
+            $regular_donor_users = get_users(array(
+                'role__in' => array('donor',),
+                'number' => -1,
+                'fields' => array('ID'),
+            ));
+
+            remove_role('donor');
+
+            if( !get_role('donor_regular') ) {
+                add_role('donor_regular', __('Regular donor', 'leyka'), array('access_donor_account_desktop'));
+            }
+
+            foreach($regular_donor_users as $user) {
+                wp_update_user(array('ID' => $user->ID, 'role' => 'donor_regular'));
+            }
+
+        }
+
         // Set a flag to flush permalinks (needs to be done a bit later, than this activation itself):
         update_option('leyka_permalinks_flushed', 0);
 
