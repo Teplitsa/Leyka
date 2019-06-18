@@ -8,7 +8,32 @@ if( !class_exists('WP_List_Table') ) {
 class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
     public function __construct() {
+
         parent::__construct(array('singular' => __('Donor', 'leyka'), 'plural' => __('Donors', 'leyka'), 'ajax' => true,));
+
+        add_filter('leyka_admin_donors_list_filter', array($this, 'apply_filter_donors'));
+        add_filter('leyka_admin_donors_list_donations_filter', array($this, 'apply_filter_donors_donations'));
+
+    }
+
+    public function apply_filter_donors(array $donors_params = array()) {
+
+        if(isset($_REQUEST['filter-donor-name-email'])) {
+            // ...
+        }
+
+        return $donors_params;
+
+    }
+
+    public function apply_filter_donors_donations(array $donations_params = array()) {
+
+        if(isset($_REQUEST['filter-donors-type'])) {
+            // ...
+        }
+
+        return $donations_params;
+
     }
 
     /**
@@ -21,25 +46,22 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      */
     public static function get_donors($per_page = 10, $page_number = 1) {
 
-        /** @todo Use $_REQUEST to access donors filter values here */
-
-        $donors = array();
-        $donors_users = get_users(array(
+        $donors_params = apply_filters('leyka_admin_donors_list_filter', array(
             'role__in' => array('donor_single', 'donor_regular',),
             'number' => absint($per_page),
             'paged' => absint($page_number),
             'fields' => array('ID', 'user_email', 'display_name',),
         ));
-
-        $donor_donations_params = array(
+        $donor_donations_params = apply_filters('leyka_admin_donors_list_donations_filter', array(
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => array('submitted', 'funded', 'refunded', 'failed',),
             'posts_per_page' => -1,
             'orderby' => 'date',
             'order' => 'desc',
-        );
+        ));
 
-        foreach($donors_users as $donor_user) {
+        $donors = array();
+        foreach(get_users($donors_params) as $donor_user) {
 
             $donor_data = array(
                 'id' => $donor_user->ID,
