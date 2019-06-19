@@ -99,7 +99,8 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
                 if($i === 0) {
                     $donor_data['first_donation'] = $donation;
-                } else if ($i === $donations_count - 1) {
+                }
+                if ($i === $donations_count - 1) {
                     $donor_data['last_donation'] = $donation;
                 }
 
