@@ -589,9 +589,12 @@ function leyka_get_currency_label($currency_code = false) {
 
 /**
  * Get possible leyka_donation post type's status list as an array.
- **/
-function leyka_get_donation_status_list() {
-    return leyka()->get_donation_statuses();
+ *
+ * @param $with_hidden boolean
+ * @return array
+ */
+function leyka_get_donation_status_list($with_hidden = true) {
+    return leyka()->get_donation_statuses($with_hidden);
 }
 
 function leyka_get_donation_status_description($status) {

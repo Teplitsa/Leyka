@@ -58,7 +58,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         ));
         $donor_donations_params = apply_filters('leyka_admin_donors_list_donations_filter', array(
             'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => array('submitted', 'funded', 'refunded', 'failed',),
+            'post_status' => leyka_get_donation_status_list(false),
             'posts_per_page' => -1,
             'orderby' => 'date',
             'order' => 'desc',

@@ -852,16 +852,27 @@ class Leyka extends Leyka_Singleton {
     /**
      * Retrieve all available payment/donation statuses.
      *
+     * @param $with_hidden boolean
      * @return array of status_id => status label pairs
      */
-    public function get_donation_statuses() {
-        return apply_filters('leyka_donation_statuses', array(
+    public function get_donation_statuses($with_hidden = true) {
+
+        $with_hidden = !!$with_hidden;
+
+        $statuses = apply_filters('leyka_donation_statuses', array(
             'submitted' => _x('Submitted', '«Submitted» donation status', 'leyka'),
             'funded'    => _x('Funded', '«Completed» donation status', 'leyka'),
             'refunded'  => _x('Refunded', '«Refunded» donation status', 'leyka'),
             'failed'    => _x('Failed', '«Failed» donation status', 'leyka'),
             'trash'     => _x('Trash', '«Deleted» donation status', 'leyka'),
-        ));
+        ), $with_hidden);
+
+        if( !$with_hidden && isset($statuses['trash']) ) {
+            unset($statuses['trash']);
+        }
+
+        return $statuses;
+
     }
 
     /**

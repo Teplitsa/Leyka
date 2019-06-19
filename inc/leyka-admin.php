@@ -542,41 +542,58 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                                 </option>
                             </select>
 
-                            <input type="text" name="donor-name-email" placeholder="<?php _e("Donor's name or email", 'leyka');?>">
+                            <input type="text" name="donor-name-email" value="<?php echo isset($_GET['donor-name-email']) ? esc_attr($_GET['donor-name-email']) : '';?>" placeholder="<?php _e("Donor's name or email", 'leyka');?>">
 
-                            <input type="date" name="first-donation-date" placeholder="<?php _e('First payment date', 'leyka');?>">
+                            <input type="date" name="first-donation-date" value="<?php echo isset($_GET['first-donation-date']) ? esc_attr($_GET['first-donation-date']) : '';?>" placeholder="<?php _e('First payment date', 'leyka');?>">
 
                             <select name="campaigns[]" multiple="multiple">
                                 <option value="" selected="selected"><?php _e('Campaigns list', 'leyka');?></option>
+                                <?php /** @todo Use ajax query to get values */?>
                             </select>
 
-                            <input type="date" name="last-donation-date" placeholder="<?php _e('Last payment date', 'leyka');?>">
+                            <input type="date" name="last-donation-date" value="<?php echo isset($_GET['last-donation-date']) ? esc_attr($_GET['last-donation-date']) : '';?>" placeholder="<?php _e('Last payment date', 'leyka');?>">
 
-                            <select name="donation-status" multiple="multiple">
+                            <?php $filter_value = isset($_GET['donation-status']) ? esc_attr($_GET['donation-status']) : false;?>
+                            <select name="donation-status">
 
-                                <option value="" selected="selected"><?php _e('Payment status', 'leyka');?></option>
-                                <?php foreach(leyka()->get_donation_statuses() as $status => $status_label) {?>
-                                    <option value="<?php echo $status;?>"><?php echo $status_label;?></option>
+                                <option value="" <?php echo !$filter_value ? 'selected="selected"' : '';?>>
+                                    <?php _e('Payment status', 'leyka');?>
+                                </option>
+                                <?php foreach(leyka_get_donation_status_list(false) as $status => $status_label) {?>
+                                    <option value="<?php echo $status;?>" <?php echo $filter_value == $status ? 'selected="selected"' : '';?>>
+                                        <?php echo $status_label;?>
+                                    </option>
                                 <?php }?>
 
                             </select>
 
+                            <?php $filter_value = isset($_GET['donors-tags']) ? (array)$_GET['donors-tags'] : array();?>
                             <select name="donors-tags[]" multiple="multiple">
 
-                                <option value=""><?php _e('Donors tags', 'leyka');?></option>
+                                <option value="" <?php echo !$filter_value ? 'selected="selected"' : '';?>>
+                                    <?php _e('Donors tags', 'leyka');?>
+                                </option>
 
                                 <?php $donors_tags = get_terms(LEYKA_DONORS_TAGS_TAXONOMY_NAME, array('hide_empty' => false));
                                 foreach($donors_tags as $tag) {?>
-                                    <option value="<?php echo $tag->term_id;?>"><?php echo $tag->name;?></option>
+                                    <option value="<?php echo $tag->term_id;?>" <?php echo is_array($filter_value) && in_array($tag->term_id, $filter_value) ? 'selected="selected"' : '';?>>
+                                        <?php echo $tag->name;?>
+                                    </option>
                                 <?php }?>
 
                             </select>
 
+                            <?php $filter_value = isset($_GET['gateways']) ? (array)$_GET['gateways'] : array();?>
                             <select name="gateways[]" multiple="multiple">
 
-                                <option value="" selected="selected"><?php _e('Payment gateway', 'leyka');?></option>
+                                <option value="" <?php echo !$filter_value ? 'selected="selected"' : '';?>>
+                                    <?php _e('Payment gateway', 'leyka');?>
+                                </option>
+
                                 <?php foreach(leyka_get_gateways() as $gateway) {?>
-                                    <option value="<?php echo $gateway->id;?>"><?php echo $gateway->name;?></option>
+                                    <option value="<?php echo $gateway->id;?>" <?php echo is_array($filter_value) && in_array($gateway->id, $filter_value) ? 'selected="selected"' : '';?>>
+                                        <?php echo $gateway->name;?>
+                                    </option>
                                 <?php }?>
 
                             </select>
