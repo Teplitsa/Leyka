@@ -146,7 +146,7 @@ if(leyka()->opt('donor_accounts_available')) {
 }
 
 function leyka_load_plugin_textdomain() {
-    load_plugin_textdomain('leyka', false, basename( dirname( __FILE__ ) ) . '/languages/');
+    load_plugin_textdomain('leyka', false, basename(dirname(__FILE__)).'/languages/');
 }
 add_action( 'plugins_loaded', 'leyka_load_plugin_textdomain' );
 

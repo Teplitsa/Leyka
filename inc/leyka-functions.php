@@ -94,6 +94,13 @@ function leyka_user_has_role($role, $is_only_role = false, $user = false) {
 
 }
 
+/**
+ * Create Donor account from donation, if it doesn't exist yet.
+ *
+ * @param $donation Leyka_Donation
+ * @param $donor_role string|false
+ * @return
+ */
 function leyka_create_donor_user(Leyka_Donation $donation, $donor_role = false) {
 
     $donor_role = esc_sql($donor_role);
@@ -102,7 +109,6 @@ function leyka_create_donor_user(Leyka_Donation $donation, $donor_role = false) 
     if($donor_user && is_a($donor_user, 'WP_User')) { // Account already exists
 
         $donor_user_id = $donor_user->ID;
-        $donation->donor_account = $donor_user_id;
         $donor_user->add_role('donor_regular');
 
     } else { // Create a new donor's account
@@ -118,7 +124,11 @@ function leyka_create_donor_user(Leyka_Donation $donation, $donor_role = false) 
             'role' => $donor_role ? $donor_role : NULL,
         ));
 
+        update_user_meta($donor_user_id, 'leyka_account_activation_code', wp_generate_password(60, false, false));
+
     }
+
+    $donation->donor_account = $donor_user_id;
 
     return $donor_user_id;
 

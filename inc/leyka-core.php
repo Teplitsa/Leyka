@@ -181,6 +181,7 @@ class Leyka extends Leyka_Singleton {
             }, 9);
 
             add_action('leyka_donor_account_created', array($this, 'handle_non_init_recurring_donor_registration'), 10, 2);
+            add_action('leyka_donor_account_created', array($this, 'update_donor_metadata'), 11, 2);
             add_action('leyka_donor_account_not_created', array($this, 'handle_donor_account_creation_error'), 10, 2);
 
         }
@@ -1761,15 +1762,85 @@ class Leyka extends Leyka_Singleton {
         if(is_wp_error($donor_user_id)) {
             do_action('leyka_donor_account_not_created', $donor_user_id, $donation);
         } else {
-
-            update_user_meta($donor_user_id, 'leyka_account_activation_code', wp_generate_password(60, false, false));
-            $donation->donor_account = $donor_user_id;
-
             do_action('leyka_donor_account_created', $donor_user_id, $donation);
-
         }
 
         return $donor_user_id;
+
+    }
+
+    /**
+     * Update donor's cache with the latest donation data.
+     *
+     * @param $donor_user_id int
+     * @param $donation Leyka_Donation
+     */
+    public function update_donor_metadata($donor_user_id, Leyka_Donation $donation) {
+
+        // (DONE) Donor's type: single/regular (string)
+        // (DONE) First Donation: id, date (string)
+        // (DONE) Last Donation: id, date (string)
+        // (DONE) Campaigns IDs list, int[]
+        // (DONE) Donations status: string[]
+        // (DONE) Gateways IDs list, string[]
+
+        if($donation->status === 'funded') {
+
+            // Donor type:
+            if(get_user_meta($donor_user_id, 'leyka_donor_type', true) !== 'regular') {
+                update_user_meta($donor_user_id, 'leyka_donor_type', $donation->type === 'rebill' ? 'regular' : 'single');
+            }
+
+            // First Donor's donation data:
+            $existing_donor_usermeta = get_user_meta($donor_user_id, 'leyka_donor_first_donation_id', true);
+            if( !$existing_donor_usermeta ) {
+                update_user_meta($donor_user_id, 'leyka_donor_first_donation_id', $donation->id);
+            }
+
+            $existing_donor_usermeta = get_user_meta($donor_user_id, 'leyka_donor_first_donation_date', true);
+            if( !$existing_donor_usermeta ) {
+                update_user_meta($donor_user_id, 'leyka_donor_first_donation_date', $donation->date_timestamp);
+            }
+
+        }
+
+        // Last Donor's donation data:
+        $existing_donor_usermeta = get_user_meta($donor_user_id, 'leyka_donor_last_donation_id', true);
+        if( !$existing_donor_usermeta || $existing_donor_usermeta != $donation->id ) {
+            update_user_meta($donor_user_id, 'leyka_donor_last_donation_id', $donation->id);
+        }
+
+        $existing_donor_usermeta = get_user_meta($donor_user_id, 'leyka_donor_last_donation_date', true);
+        if( !$existing_donor_usermeta || $existing_donor_usermeta != $donation->date_timestamp ) {
+            update_user_meta($donor_user_id, 'leyka_donor_last_donation_date', $donation->date_timestamp);
+        }
+
+        // Campaigns list:
+        $existing_donor_usermeta = get_user_meta($donor_user_id, 'leyka_donor_campaigns');
+        if( !$existing_donor_usermeta || !in_array($donation->campaign_id, (array)$existing_donor_usermeta)) {
+
+            $existing_donor_usermeta[] = $donation->campaign_id;
+            update_user_meta($donor_user_id, 'leyka_donor_campaigns', $existing_donor_usermeta);
+
+        }
+
+        // Donor's donations statuses:
+        $existing_donor_usermeta = get_user_meta($donor_user_id, 'leyka_donor_donation_statuses');
+        if( !$existing_donor_usermeta || !in_array($donation->status, (array)$existing_donor_usermeta)) {
+
+            $existing_donor_usermeta[] = $donation->status;
+            update_user_meta($donor_user_id, 'leyka_donor_donation_statuses', $existing_donor_usermeta);
+
+        }
+
+        // Donor's donations gateways:
+        $existing_donor_usermeta = get_user_meta($donor_user_id, 'leyka_donor_donation_gateways');
+        if( !$existing_donor_usermeta || !in_array($donation->gateway_id, (array)$existing_donor_usermeta)) {
+
+            $existing_donor_usermeta[] = $donation->gateway_id;
+            update_user_meta($donor_user_id, 'leyka_donor_donation_gateways', $existing_donor_usermeta);
+
+        }
 
     }
 
@@ -1882,6 +1953,8 @@ class Leyka extends Leyka_Singleton {
         );
 
         remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+
+        return $res;
 
     }
 
