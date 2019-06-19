@@ -11,14 +11,14 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         parent::__construct(array('singular' => __('Donor', 'leyka'), 'plural' => __('Donors', 'leyka'), 'ajax' => true,));
 
-        add_filter('leyka_admin_donors_list_filter', array($this, 'apply_filter_donors'));
-        add_filter('leyka_admin_donors_list_donations_filter', array($this, 'apply_filter_donors_donations'));
+        add_filter('leyka_admin_donors_list_filter', array($this, 'filter_donors'));
+        add_filter('leyka_admin_donors_list_donations_filter', array($this, 'filter_donors_donations'));
 
     }
 
-    public function apply_filter_donors(array $donors_params = array()) {
+    public function filter_donors(array $donors_params) {
 
-        if(isset($_REQUEST['filter-donor-name-email'])) {
+        if(isset($_REQUEST['donor-name-email'])) {
             // ...
         }
 
@@ -26,10 +26,14 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
     }
 
-    public function apply_filter_donors_donations(array $donations_params = array()) {
+    public function filter_donors_donations(array $donations_params) {
 
-        if(isset($_REQUEST['filter-donors-type'])) {
-            // ...
+        if(isset($_REQUEST['donor-type'])) {
+
+            $_REQUEST['donor-type'] = esc_attr($_REQUEST['donor-type']);
+
+
+
         }
 
         return $donations_params;
@@ -44,7 +48,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      *
      * @return mixed
      */
-    public static function get_donors($per_page = 10, $page_number = 1) {
+    public static function get_donors($per_page, $page_number = 1) {
 
         $donors_params = apply_filters('leyka_admin_donors_list_filter', array(
             'role__in' => array('donor_single', 'donor_regular',),
@@ -65,7 +69,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
             $donor_data = array(
                 'id' => $donor_user->ID,
-                'donor_type' => 'single', // By default
+                'donor_type' => 'single',
                 'donor_name' => $donor_user->display_name,
                 'donor_email' => $donor_user->user_email,
                 'first_donation' => '',
@@ -78,7 +82,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
             $donor_donations_params['meta_query'] = array(
                 'relation' => 'OR',
-                array('key' => 'leyka_donor_email', 'value' => $donor_data['donor_email'], 'compare' => '-'),
+//                array('key' => 'leyka_donor_email', 'value' => $donor_data['donor_email'], 'compare' => '-'),
                 array('key' => 'leyka_donor_account', 'value' => $donor_user->ID, 'compare' => '-'),
             );
 
@@ -90,7 +94,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                 $donation = new Leyka_Donation($donor_donations[$i]);
 
                 if($donation->type === 'rebill' && $donation->status === 'funded') {
-                    $donor_data['donor_type'] = 'recurring';
+                    $donor_data['donor_type'] = 'regular';
                 }
 
                 if($i === 0) {

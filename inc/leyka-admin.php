@@ -501,7 +501,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         add_screen_option('per_page', array(
             'label' => 'Donors',
-            'default' => 5,
+            'default' => 10,
             'option' => 'donors_per_page',
         ));
 
@@ -525,33 +525,43 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
                     <form class="donors-list-filters" action="#" method="get">
 
+                        <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']);?>">
+
                         <div class="col-1">
 
-                            <select name="filter-donors-type">
-                                <option value="" selected="selected"><?php _e('Donor type', 'leyka');?></option>
-                                <?php foreach(leyka()->get_donation_types() as $type => $type_label) {?>
-                                    <option value="<?php echo $type;?>"><?php echo $type_label;?></option>
-                                <?php }?>
+                            <?php $filter_value = isset($_GET['donor-type']) ? esc_attr($_GET['donor-type']) : false;?>
+                            <select name="donor-type">
+                                <option value="" <?php echo !$filter_value ? 'selected="selected"' : '';?>>
+                                    <?php _e('Donor type', 'leyka');?>
+                                </option>
+                                <option value="single" <?php echo $filter_value == 'single' ? 'selected="selected"' : '';?>>
+                                    <?php _ex('Single', 'Donor type name', 'leyka');?>
+                                </option>
+                                <option value="regular" <?php echo $filter_value == 'regular' ? 'selected="selected"' : '';?>>
+                                    <?php _ex('Regular', 'Donor type name', 'leyka');?>
+                                </option>
                             </select>
 
-                            <input type="text" name="filter-donor-name-email" placeholder="<?php _e("Donor's name or email", 'leyka');?>">
+                            <input type="text" name="donor-name-email" placeholder="<?php _e("Donor's name or email", 'leyka');?>">
 
-                            <input type="date" name="filter-first-donation-date" placeholder="<?php _e('First payment date', 'leyka');?>">
+                            <input type="date" name="first-donation-date" placeholder="<?php _e('First payment date', 'leyka');?>">
 
-                            <select name="filter-campaigns" multiple="multiple">
+                            <select name="campaigns[]" multiple="multiple">
                                 <option value="" selected="selected"><?php _e('Campaigns list', 'leyka');?></option>
                             </select>
 
-                            <input type="date" name="filter-last-donation-date" placeholder="<?php _e('Last payment date', 'leyka');?>">
+                            <input type="date" name="last-donation-date" placeholder="<?php _e('Last payment date', 'leyka');?>">
 
-                            <select name="filter-donation-status">
-                                <option value="" selected="selected"><?php _e('Donation status', 'leyka');?></option>
+                            <select name="donation-status" multiple="multiple">
+
+                                <option value="" selected="selected"><?php _e('Payment status', 'leyka');?></option>
                                 <?php foreach(leyka()->get_donation_statuses() as $status => $status_label) {?>
                                     <option value="<?php echo $status;?>"><?php echo $status_label;?></option>
                                 <?php }?>
+
                             </select>
 
-                            <select name="filter-donors-tags" multiple="multiple">
+                            <select name="donors-tags[]" multiple="multiple">
 
                                 <option value=""><?php _e('Donors tags', 'leyka');?></option>
 
@@ -562,7 +572,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
                             </select>
 
-                            <select name="filter-gateways" multiple="multiple">
+                            <select name="gateways[]" multiple="multiple">
 
                                 <option value="" selected="selected"><?php _e('Payment gateway', 'leyka');?></option>
                                 <?php foreach(leyka_get_gateways() as $gateway) {?>
