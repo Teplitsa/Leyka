@@ -1172,6 +1172,8 @@ class Leyka extends Leyka_Singleton {
 
         if( !$leyka_last_ver || $leyka_last_ver < '3.2.4' ) {
 
+            /** @todo donation_meta "donor_account" -> meta "donor_account_error" for errors, post_author field for authors */
+
             // Rename & reassign the "Regular Donor" role:
             $regular_donor_users = get_users(array(
                 'role__in' => array('donor',),
@@ -1821,18 +1823,6 @@ class Leyka extends Leyka_Singleton {
 
             }
 
-            // Donor's donations statuses:
-            /** @todo Check if status filter apply! */
-//            $existing_donor_usermeta = get_user_meta($donor_user_id, 'leyka_donor_donation_statuses', true);
-//            if( !$existing_donor_usermeta || !in_array($donation->status, (array)$existing_donor_usermeta) ) {
-//
-//                $existing_donor_usermeta = $existing_donor_usermeta ? (array)$existing_donor_usermeta : array();
-//
-//                $existing_donor_usermeta[] = $donation->status;
-//                update_user_meta($donor_user_id, 'leyka_donor_donation_statuses', $existing_donor_usermeta);
-//
-//            }
-
             // Donor's donations gateways:
             $existing_donor_usermeta = get_user_meta($donor_user_id, 'leyka_donor_donation_gateways', true);
             if( !$existing_donor_usermeta || !in_array($donation->gateway_id, (array)$existing_donor_usermeta)) {
@@ -1954,9 +1944,6 @@ class Leyka extends Leyka_Singleton {
                 update_user_meta($donor_user_id, 'leyka_donor_campaigns', $existing_donor_usermeta);
 
             }
-
-            // Donation statuses:
-            /** @todo Check if the status filter apply! */
 
             // Donor's donations gateways:
             $existing_donor_usermeta = get_user_meta($donor_user_id, 'leyka_donor_donation_gateways', true);

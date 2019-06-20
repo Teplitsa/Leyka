@@ -553,21 +553,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
                             <input type="date" name="last-donation-date" value="<?php echo isset($_GET['last-donation-date']) ? esc_attr($_GET['last-donation-date']) : '';?>" placeholder="<?php _e('Last payment date', 'leyka');?>">
 
-                            <?php /* $filter_value = isset($_GET['donation-status']) ? esc_attr($_GET['donation-status']) : false;?>
-                            <select name="donation-status">
-
-                                <option value="" <?php echo !$filter_value ? 'selected="selected"' : '';?>>
-                                    <?php _e('Payment status', 'leyka');?>
-                                </option>
-                                <?php foreach(leyka_get_donation_status_list(false) as $status => $status_label) {?>
-                                    <option value="<?php echo $status;?>" <?php echo $filter_value == $status ? 'selected="selected"' : '';?>>
-                                        <?php echo $status_label;?>
-                                    </option>
-                                <?php }?>
-
-                            </select>
-                            <?php */ ?>
-
                             <?php $filter_value = isset($_GET['donors-tags']) ? (array)$_GET['donors-tags'] : array();?>
                             <select name="donors-tags[]" multiple="multiple">
 
