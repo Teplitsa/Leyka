@@ -2354,3 +2354,80 @@ function leyka_get_cronjobs_status() {
     }
 
 }
+
+if( !function_exists('leyka_calculate_donor_metadata') ) {
+    function leyka_calculate_donor_metadata(WP_User $donor_user) {
+
+        if(
+            !leyka_user_has_role('donor_single', false, $donor_user)
+            && !leyka_user_has_role('donor_regular', false, $donor_user)
+        ) {
+            return;
+        }
+
+        $donor_data = array( // Not needed here
+            'id' => $donor_user->ID,
+            'donor_type' => 'single',
+            'donor_name' => $donor_user->display_name,
+            'donor_email' => $donor_user->user_email,
+            'first_donation' => '',
+            'last_donation' => false,
+            'campaigns' => array(),
+            'donors_tags' => array(),
+            'gateways' => array(),
+            'amount_donated' => 0.0,
+        );
+
+        $donor_donations_params = array(
+            'post_type' => Leyka_Donation_Management::$post_type,
+            'post_status' => 'funded', // leyka_get_donation_status_list(false),
+            'posts_per_page' => -1,
+            'author' => $donor_user->ID,
+        );
+
+//        $donor_donations_params['meta_query'] = array(
+//            'relation' => 'OR',
+////                array('key' => 'leyka_donor_email', 'value' => $donor_data['donor_email'], 'compare' => '-'),
+//            array('key' => 'leyka_donor_account', 'value' => $donor_user->ID, 'compare' => '-'),
+//        );
+
+        $donor_donations = get_posts($donor_donations_params); // Get donations by donor, ordered by date desc
+
+        $donations_count = count($donor_donations);
+        for($i = 0; $i < count($donor_donations); $i++) {
+
+            $donation = new Leyka_Donation($donor_donations[$i]);
+
+            if($donation->type === 'rebill' && $donation->status === 'funded') {
+                $donor_data['donor_type'] = 'regular';
+            }
+
+            if($i === 0) {
+                $donor_data['first_donation'] = $donation;
+            }
+            if ($i === $donations_count - 1) {
+                $donor_data['last_donation'] = $donation;
+            }
+
+            if(empty($donor_data['campaigns']) || empty($donor_data['campaigns'][$donation->campaign_id])) {
+                $donor_data['campaigns'][$donation->campaign_id] = $donation->campaign_title;
+            }
+
+            $donor_data['donors_tags'] = wp_get_object_terms($donor_user->ID, LEYKA_DONORS_TAGS_TAXONOMY_NAME);
+
+            if(empty($donor_data['gateways']) || !in_array($donation->gateway, $donor_data['gateways'])) {
+                $donor_data['gateways'][$donation->gateway] = $donation->gateway_label;
+            }
+
+            if($donation->status === 'funded') {
+                $donor_data['amount_donated'] = empty($donor_data['amount_donated']) ?
+                    $donation->amount : $donor_data['amount_donated'] + $donation->amount;
+            }
+
+        }
+
+        $donor_data['amount_donated'] = $donor_data['amount_donated'] ?
+            $donor_data['amount_donated'].' '.leyka_get_currency_label('rur') : '';
+
+    }
+}

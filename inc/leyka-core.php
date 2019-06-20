@@ -1172,7 +1172,33 @@ class Leyka extends Leyka_Singleton {
 
         if( !$leyka_last_ver || $leyka_last_ver < '3.2.4' ) {
 
-            /** @todo donation_meta "donor_account" -> meta "donor_account_error" for errors, post_author field for authors */
+            // Update "donor account" donation meta storage. "donor_account_error" meta for errors, post_author field for donors:
+            /** @todo TESTING NEEDED! */
+            $donations = get_posts(array(
+                'post_type' => Leyka_Donation_Management::$post_type,
+                'post_status' => leyka_get_donation_status_list(false),
+                'posts_per_page' => -1,
+                'meta_query' => array(array('key' => 'leyka_donor_account', 'compare' => 'EXISTS'),),
+            ));
+            foreach($donations as $donation) {
+
+                $donor_account = maybe_unserialize(get_post_meta($donation->ID, 'leyka_donor_account', true));
+
+                if(is_wp_error($donor_account)) {
+                    update_post_meta($donation->ID, 'donor_account_error', $donor_account);
+                } else if((int)$donor_account > 0) {
+
+                    $donor_user = get_user_by('id', (int)$donor_account);
+                    if($donor_user && leyka_user_has_role('donor', false, $donor_user)) {
+                        wp_update_post(array('ID' => $donation->ID, 'post_author' => $donor_user->ID,));
+                    }
+
+                }
+
+                delete_post_meta($donation->ID, 'leyka_donor_account');
+
+            }
+            /** @todo TESTING NEEDED - END */
 
             // Rename & reassign the "Regular Donor" role:
             $regular_donor_users = get_users(array(
@@ -1187,8 +1213,12 @@ class Leyka extends Leyka_Singleton {
                 add_role('donor_regular', __('Regular donor', 'leyka'), array('access_donor_account_desktop'));
             }
 
-            foreach($regular_donor_users as $user) {
-                wp_update_user(array('ID' => $user->ID, 'role' => 'donor_regular'));
+            foreach($regular_donor_users as $donor_user) {
+
+                wp_update_user(array('ID' => $donor_user->ID, 'role' => 'donor_regular'));
+
+                leyka_calculate_donor_metadata($donor_user);
+
             }
 
         }
@@ -1785,7 +1815,7 @@ class Leyka extends Leyka_Singleton {
         // Campaigns IDs list, int[]
         // Donations status: string[]
         // Gateways IDs list, string[]
-        // Funded donations total amount
+        // Funded donations total amount, float
 
         if($donation->status === 'funded') { // New funded donation added
 
