@@ -1,0 +1,13 @@
+/** == Mixins (_donors_mixins.scss) == **/
+
+@mixin leyka-donors-selector() {
+    
+}
+
+@mixin leyka-donors-a($mod: default) {
+    @include leyka-admin-a($mod);
+}
+
+@mixin leyka-donors-btn($mod: default) {
+    @include leyka-admin-btn($mod);    
+}

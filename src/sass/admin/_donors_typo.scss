@@ -1,0 +1,28 @@
+/** == Typography (_donors_typo.scss) == **/
+
+@mixin leyka-donors-text() {
+	font-family: $body;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 13px;
+	line-height: 16px;
+}
+
+@mixin leyka-donors-text-small() {
+    @include leyka-adb-text;
+    font-size: 11px;
+}
+
+@mixin leyka-donors-text-link() {
+    @include leyka-adb-text;
+    font-size: 14px;
+}
+
+@mixin leyka-donors-text-caption() {
+    @include leyka-adb-text;
+}
+
+@mixin leyka-donors-text-caption-big() {
+    @include leyka-adb-text;
+    font-size: 16px;
+}
