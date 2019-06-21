@@ -55,11 +55,8 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                 'donors_tags' => wp_get_object_terms($donor_user->ID, LEYKA_DONORS_TAGS_TAXONOMY_NAME),
             );
 
-            $donor_data['donor_type'] = get_user_meta($donor_user->ID, 'leyka_donor_type', true);
-            $donor_data['donor_type'] = $donor_data['donor_type'] ? $donor_data['donor_type'] : 'single';
-
+            $donor_data['donor_type'] = leyka_user_has_role('donor_regular', false, $donor_user) ? 'regular' : 'single';
             $donor_data['campaigns'] = get_user_meta($donor_user->ID, 'leyka_donor_campaigns', true);
-
             $donor_data['gateways'] = get_user_meta($donor_user->ID, 'leyka_donor_gateways', true);
 
             $donor_data['amount_donated'] = get_user_meta($donor_user->ID, 'leyka_amount_donated', true);
@@ -112,7 +109,6 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      */
     public function column_default($item, $column_name) {
         switch ($column_name) {
-            case 'donor_type':
             case 'donor_name':
             case 'first_donation':
             case 'campaigns':
@@ -134,6 +130,16 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      */
     public function column_cb($item) {
         return ''; // sprintf('<input type="checkbox" name="bulk-delete[]" value="%s">', $item['id']);
+    }
+
+    public function column_donor_type($item) {
+
+        if(empty($item['donor_type'])) {
+            return '';
+        }
+
+        return '<div class="'.$item['donor_type'].'">'.$item['donor_type'].'</div>';
+
     }
 
     public function column_first_donation($item) {
