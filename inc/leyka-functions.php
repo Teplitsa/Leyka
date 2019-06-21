@@ -2386,42 +2386,44 @@ if( !function_exists('leyka_calculate_donor_metadata') ) {
         ));
 
         $donations_count = count($donor_donations);
-        for($i = 0; $i < count($donor_donations); $i++) {
+        for($i = 0; $i < $donations_count; $i++) {
 
             $donation = new Leyka_Donation($donor_donations[$i]);
 
-             /** @todo Use some update_user_meta($donor_user->ID, 'leyka_donor_xxx', 'yyy') further */
+            if($donation->type === 'rebill' && $donation->status === 'funded') {
+                $donor_data['donor_type'] = 'regular';
+            }
 
-//            if($donation->type === 'rebill' && $donation->status === 'funded') {
-//                $donor_data['donor_type'] = 'regular';
-//            }
-//
-//            if($i === 0) {
-//                $donor_data['first_donation'] = $donation;
-//            }
-//            if ($i === $donations_count - 1) {
-//                $donor_data['last_donation'] = $donation;
-//            }
-//
-//            if(empty($donor_data['campaigns']) || empty($donor_data['campaigns'][$donation->campaign_id])) {
-//                $donor_data['campaigns'][$donation->campaign_id] = $donation->campaign_title;
-//            }
-//
-//            $donor_data['donors_tags'] = wp_get_object_terms($donor_user->ID, LEYKA_DONORS_TAGS_TAXONOMY_NAME);
-//
-//            if(empty($donor_data['gateways']) || !in_array($donation->gateway, $donor_data['gateways'])) {
-//                $donor_data['gateways'][$donation->gateway] = $donation->gateway_label;
-//            }
-//
-//            if($donation->status === 'funded') {
-//                $donor_data['amount_donated'] = empty($donor_data['amount_donated']) ?
-//                    $donation->amount : $donor_data['amount_donated'] + $donation->amount;
-//            }
-//
+            if($i === 0) {
+                $donor_data['first_donation'] = $donation;
+            }
+            if ($i === $donations_count - 1) {
+                $donor_data['last_donation'] = $donation;
+            }
+
+            if(empty($donor_data['campaigns']) || empty($donor_data['campaigns'][$donation->campaign_id])) {
+                $donor_data['campaigns'][$donation->campaign_id] = $donation->campaign_title;
+            }
+
+            if(empty($donor_data['gateways']) || !in_array($donation->gateway, $donor_data['gateways'])) {
+                $donor_data['gateways'][$donation->gateway] = $donation->gateway_label;
+            }
+
+            if($donation->status === 'funded') {
+                $donor_data['amount_donated'] = empty($donor_data['amount_donated']) ?
+                    $donation->amount : $donor_data['amount_donated'] + $donation->amount;
+            }
+
         }
 
-        $donor_data['amount_donated'] = $donor_data['amount_donated'] ?
-            $donor_data['amount_donated'].' '.leyka_get_currency_label('rur') : '';
+        update_user_meta($donor_user->ID, 'leyka_donor_type', $donor_data['donor_type']);
+        update_user_meta($donor_user->ID, 'leyka_donor_first_donation_id', $donor_data['first_donation']->id);
+        update_user_meta($donor_user->ID, 'leyka_donor_first_donation_date', $donor_data['first_donation']->date_timestamp);
+        update_user_meta($donor_user->ID, 'leyka_donor_last_donation_id', $donor_data['last_donation']->id);
+        update_user_meta($donor_user->ID, 'leyka_donor_first_donation_date', $donor_data['last_donation']->date_timestamp);
+        update_user_meta($donor_user->ID, 'leyka_donor_campaigns', $donor_data['campaigns']);
+        update_user_meta($donor_user->ID, 'leyka_donor_gateways', $donor_data['gateways']);
+        update_user_meta($donor_user->ID, 'leyka_amount_donated', $donor_data['amount_donated']);
 
     }
 }
