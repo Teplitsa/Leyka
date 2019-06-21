@@ -958,9 +958,10 @@ class Leyka extends Leyka_Singleton {
 
         $leyka_last_ver = get_option('leyka_last_ver');
 
-        if($leyka_last_ver && $leyka_last_ver == LEYKA_VERSION) { // Already at last version
-            return;
-        }
+        /** @todo Uncomment it after the debugging */
+//        if($leyka_last_ver && $leyka_last_ver == LEYKA_VERSION) { // Already at last version
+//            return;
+//        }
 
         if( !$leyka_last_ver || $leyka_last_ver < '2.1' ) {
 
@@ -1173,38 +1174,36 @@ class Leyka extends Leyka_Singleton {
         if( !$leyka_last_ver || $leyka_last_ver < '3.2.4' ) {
 
             // Update "donor account" donation meta storage. "donor_account_error" meta for errors, post_author field for donors:
-            /** @todo TESTING NEEDED! */
             $donations = get_posts(array(
                 'post_type' => Leyka_Donation_Management::$post_type,
                 'post_status' => leyka_get_donation_status_list(false),
                 'posts_per_page' => -1,
                 'meta_query' => array(array('key' => 'leyka_donor_account', 'compare' => 'EXISTS'),),
+                'fields' => 'ids',
             ));
-            foreach($donations as $donation) {
+            foreach($donations as $donation_id) {
 
-                $donor_account = maybe_unserialize(get_post_meta($donation->ID, 'leyka_donor_account', true));
+                $donor_account = maybe_unserialize(get_post_meta($donation_id, 'leyka_donor_account', true));
 
                 if(is_wp_error($donor_account)) {
-                    update_post_meta($donation->ID, 'donor_account_error', $donor_account);
+                    update_post_meta($donation_id, 'donor_account_error', $donor_account);
                 } else if((int)$donor_account > 0) {
 
                     $donor_user = get_user_by('id', (int)$donor_account);
                     if($donor_user && leyka_user_has_role('donor', false, $donor_user)) {
-                        wp_update_post(array('ID' => $donation->ID, 'post_author' => $donor_user->ID,));
+                        wp_update_post(array('ID' => $donation_id, 'post_author' => $donor_user->ID,));
                     }
 
                 }
 
-                delete_post_meta($donation->ID, 'leyka_donor_account');
+                delete_post_meta($donation_id, 'leyka_donor_account');
 
             }
-            /** @todo TESTING NEEDED - END */
 
             // Rename & reassign the "Regular Donor" role:
             $regular_donor_users = get_users(array(
                 'role__in' => array('donor',),
                 'number' => -1,
-                'fields' => array('ID'),
             ));
 
             remove_role('donor');

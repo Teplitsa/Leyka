@@ -2365,15 +2365,11 @@ if( !function_exists('leyka_calculate_donor_metadata') ) {
             return;
         }
 
-        $donor_data = array( // Not needed here, just for reference
-            'id' => $donor_user->ID,
+        $donor_data = array(
             'donor_type' => 'single',
-            'donor_name' => $donor_user->display_name,
-            'donor_email' => $donor_user->user_email,
-            'first_donation' => '',
+            'first_donation' => false,
             'last_donation' => false,
             'campaigns' => array(),
-            'donors_tags' => array(),
             'gateways' => array(),
             'amount_donated' => 0.0,
         );
@@ -2397,7 +2393,7 @@ if( !function_exists('leyka_calculate_donor_metadata') ) {
             if($i === 0) {
                 $donor_data['first_donation'] = $donation;
             }
-            if ($i === $donations_count - 1) {
+            if($i === $donations_count - 1) {
                 $donor_data['last_donation'] = $donation;
             }
 
@@ -2416,11 +2412,24 @@ if( !function_exists('leyka_calculate_donor_metadata') ) {
 
         }
 
+        if($donor_data['first_donation']) {
+
+            update_user_meta($donor_user->ID, 'leyka_donor_first_donation_id', $donor_data['first_donation']->id);
+            update_user_meta($donor_user->ID, 'leyka_donor_first_donation_date', $donor_data['first_donation']->date_timestamp);
+
+        }
+
+        if($donor_data['last_donation']) {
+
+            update_user_meta($donor_user->ID, 'leyka_donor_last_donation_id', $donor_data['last_donation']->id);
+            update_user_meta($donor_user->ID, 'leyka_donor_first_donation_date', $donor_data['last_donation']->date_timestamp);
+
+        }
+
+//        echo '<pre>'.print_r($donor_user->user_email, 1).'</pre>';
+//        echo '<pre>'.print_r($donor_data['campaigns'], 1).'</pre><hr>';
+
         update_user_meta($donor_user->ID, 'leyka_donor_type', $donor_data['donor_type']);
-        update_user_meta($donor_user->ID, 'leyka_donor_first_donation_id', $donor_data['first_donation']->id);
-        update_user_meta($donor_user->ID, 'leyka_donor_first_donation_date', $donor_data['first_donation']->date_timestamp);
-        update_user_meta($donor_user->ID, 'leyka_donor_last_donation_id', $donor_data['last_donation']->id);
-        update_user_meta($donor_user->ID, 'leyka_donor_first_donation_date', $donor_data['last_donation']->date_timestamp);
         update_user_meta($donor_user->ID, 'leyka_donor_campaigns', $donor_data['campaigns']);
         update_user_meta($donor_user->ID, 'leyka_donor_gateways', $donor_data['gateways']);
         update_user_meta($donor_user->ID, 'leyka_amount_donated', $donor_data['amount_donated']);

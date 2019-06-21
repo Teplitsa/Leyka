@@ -58,11 +58,11 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             $donor_data['donor_type'] = get_user_meta($donor_user->ID, 'leyka_donor_type', true);
             $donor_data['donor_type'] = $donor_data['donor_type'] ? $donor_data['donor_type'] : 'single';
 
-            $donor_data['campaigns'] = get_user_meta($donor_user->ID, 'leyka_donor_campaigns', false);
-            $donor_data['campaigns'] = $donor_data['campaigns'] ? array($donor_data['campaigns']) : array();
+            $donor_data['campaigns'] = get_user_meta($donor_user->ID, 'leyka_donor_campaigns', true);
+            $donor_data['campaigns'] = $donor_data['campaigns'] ? $donor_data['campaigns'] : array();
 
-            $donor_data['gateways'] = get_user_meta($donor_user->ID, 'leyka_donor_donation_gateways', false);
-            $donor_data['gateways'] = $donor_data['gateways'] ? array($donor_data['gateways']) : array();
+            $donor_data['gateways'] = get_user_meta($donor_user->ID, 'leyka_donor_donation_gateways', true);
+            $donor_data['gateways'] = $donor_data['gateways'] ? $donor_data['gateways'] : array();
 
             $donor_data['amount_donated'] = get_user_meta($donor_user->ID, 'leyka_amount_donated', true);
             $donor_data['amount_donated'] = $donor_data['amount_donated'] ?
@@ -135,11 +135,34 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      * @return string
      */
     public function column_cb($item) {
-        return sprintf('<input type="checkbox" name="bulk-delete[]" value="%s">', $item['id']);
+        return ''; // sprintf('<input type="checkbox" name="bulk-delete[]" value="%s">', $item['id']);
     }
 
     public function column_first_donation($item) {
-        return empty($item['first_donation']) ? '' : $item['first_donation']->date;
+
+        if(empty($item['first_donation'])) {
+            return '';
+        }
+
+        $donation = new Leyka_Donation($item['first_donation']);
+
+        return $donation && is_a($donation, 'Leyka_Donation') ? $donation->date : '';
+
+    }
+
+    public function column_last_donation($item) {
+
+        if(empty($item['last_donation'])) {
+            return '';
+        }
+
+        $donation = new Leyka_Donation($item['last_donation']);
+
+        return '<div class="leyka-donation-info-wrapper">'
+            .'<div class="first-sub-row">'.$donation->date.'</div>'
+            .'<div class="second-sub-row">'.$donation->amount.'&nbsp;'.$donation->currency_label.',&nbsp;«'.$donation->campaign_title.'»</div>'
+            .'</div>';
+
     }
 
     /**
@@ -222,25 +245,6 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
     }
 
     /**
-     * @param array $item An array of DB data.
-     * @return string
-     */
-    public function column_last_donation($item) {
-
-        if(empty($item['last_donation'])) {
-            return '';
-        }
-
-        $donation = $item['last_donation'];
-
-        return '<div class="leyka-donation-info-wrapper">'
-            .'<div class="first-sub-row">'.$donation->date.'</div>'
-            .'<div class="second-sub-row">'.$donation->amount.'&nbsp;'.$donation->currency_label.',&nbsp;«'.$donation->campaign_title.'»</div>'
-        .'</div>';
-
-    }
-
-    /**
      *  Associative array of columns.
      *
      * @return array
@@ -275,7 +279,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      * @return array
      */
     public function get_bulk_actions() {
-        return array('bulk-delete' => __('Delete'));
+        return array(); // array('bulk-delete' => __('Delete'));
     }
 
     /**
@@ -287,12 +291,10 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         $this->process_bulk_action();
 
-        $per_page = 10;
-        $current_page = $this->get_pagenum();
-        $total_lines = self::record_count();
+        $per_page = $this->get_items_per_page('donors_per_page');
 
-        $this->set_pagination_args(array('total_items' => $total_lines, 'per_page' => $per_page,));
-        $this->items = self::get_donors($per_page, $current_page);
+        $this->set_pagination_args(array('total_items' => self::record_count(), 'per_page' => $per_page,));
+        $this->items = self::get_donors($per_page, $this->get_pagenum());
 
     }
 
