@@ -2402,7 +2402,7 @@ if( !function_exists('leyka_calculate_donor_metadata') ) {
             }
 
             if(empty($donor_data['gateways']) || !in_array($donation->gateway, $donor_data['gateways'])) {
-                $donor_data['gateways'][$donation->gateway] = $donation->gateway_label;
+                $donor_data['gateways'][] = $donation->gateway;
             }
 
             if($donation->status === 'funded') {
@@ -2427,7 +2427,7 @@ if( !function_exists('leyka_calculate_donor_metadata') ) {
         }
 
 //        echo '<pre>'.print_r($donor_user->user_email, 1).'</pre>';
-//        echo '<pre>'.print_r($donor_data['campaigns'], 1).'</pre><hr>';
+//        echo '<pre>'.print_r($donor_data['gateways'], 1).'</pre><hr>';
 
         update_user_meta($donor_user->ID, 'leyka_donor_type', $donor_data['donor_type']);
         update_user_meta($donor_user->ID, 'leyka_donor_campaigns', $donor_data['campaigns']);

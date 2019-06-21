@@ -59,10 +59,8 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             $donor_data['donor_type'] = $donor_data['donor_type'] ? $donor_data['donor_type'] : 'single';
 
             $donor_data['campaigns'] = get_user_meta($donor_user->ID, 'leyka_donor_campaigns', true);
-            $donor_data['campaigns'] = $donor_data['campaigns'] ? $donor_data['campaigns'] : array();
 
-            $donor_data['gateways'] = get_user_meta($donor_user->ID, 'leyka_donor_donation_gateways', true);
-            $donor_data['gateways'] = $donor_data['gateways'] ? $donor_data['gateways'] : array();
+            $donor_data['gateways'] = get_user_meta($donor_user->ID, 'leyka_donor_gateways', true);
 
             $donor_data['amount_donated'] = get_user_meta($donor_user->ID, 'leyka_amount_donated', true);
             $donor_data['amount_donated'] = $donor_data['amount_donated'] ?
@@ -202,6 +200,8 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             $campaigns_list[] = '«'.$campaign_title.'»';
         }
 
+        sort($campaigns_list);
+
         return '<div class="leyka-admin-shortened-text">'.implode(', ', $campaigns_list).'</div>';
 
     }
@@ -236,9 +236,11 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         }
 
         $gateways_list = array();
-        foreach($item['gateways'] as $gateway_id => $gateway) {
-            $gateways_list[] = esc_html($gateway);
+        foreach($item['gateways'] as $gateway_id) {
+            $gateways_list[] = esc_html(leyka_get_gateway_by_id($gateway_id)->label);
         }
+
+        sort($gateways_list);
 
         return '<div class="leyka-gateways-list">'.implode(', ', $gateways_list).'</div>';
 
@@ -251,7 +253,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      */
     function get_columns() {
         return array(
-            'cb' => '<input type="checkbox">',
+//            'cb' => '<input type="checkbox">',
             'donor_type' => _x('Type', "Donor's type", 'leyka'),
             'donor_name' => __("Donor's name", 'leyka'),
             'first_donation' => __('First donation', 'leyka'),
