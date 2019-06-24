@@ -15,6 +15,18 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 		add_action('admin_menu', array($this, 'admin_menu_setup'), 9);
 
+		if(leyka_options()->opt('donor_management_available')) { // Save Donors pages custom options
+            add_filter('set-screen-option', function($status, $option, $value) {
+
+                if($option === 'donors_per_page' && (int)$value > 0) {
+                    update_user_option(get_current_user_id(), 'donors_per_page', $value);
+                }
+
+                return $value;
+
+            }, 10, 3);
+        }
+
 		add_action('admin_enqueue_scripts', array($this, 'load_frontend_scripts'));
 
         add_action('admin_init', array($this, 'pre_admin_actions'));
@@ -500,8 +512,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
     public function donors_screen_options() {
 
         add_screen_option('per_page', array(
-            'label' => 'Donors',
-            'default' => 10,
+            'label' => __('Donors per page', 'leyka'),
+            'default' => 20,
             'option' => 'donors_per_page',
         ));
 
@@ -518,7 +530,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }?>
 
         <div class="wrap">
-            <h2><?php _e('Donors', 'leyka'); ?></h2>
+            <h2><?php _e('Donors', 'leyka');?></h2>
 
             <div id="poststuff">
                 <div id="post-body" class="metabox-holder columns-2">
@@ -552,20 +564,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                             </select>
 
                             <input type="date" name="last-donation-date" value="<?php echo isset($_GET['last-donation-date']) ? esc_attr($_GET['last-donation-date']) : '';?>" placeholder="<?php _e('Last payment date', 'leyka');?>">
-
-                            <?php $filter_value = isset($_GET['donation-status']) ? esc_attr($_GET['donation-status']) : false;?>
-                            <select name="donation-status">
-
-                                <option value="" <?php echo !$filter_value ? 'selected="selected"' : '';?>>
-                                    <?php _e('Payment status', 'leyka');?>
-                                </option>
-                                <?php foreach(leyka_get_donation_status_list(false) as $status => $status_label) {?>
-                                    <option value="<?php echo $status;?>" <?php echo $filter_value == $status ? 'selected="selected"' : '';?>>
-                                        <?php echo $status_label;?>
-                                    </option>
-                                <?php }?>
-
-                            </select>
 
                             <?php $filter_value = isset($_GET['donors-tags']) ? (array)$_GET['donors-tags'] : array();?>
                             <select name="donors-tags[]" multiple="multiple">

@@ -1585,14 +1585,19 @@ class Leyka_Donation {
 
         remove_all_actions('save_post_'.Leyka_Donation_Management::$post_type);
 
-        $id = wp_insert_post(array(
+        $donation_params = array(
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => array_key_exists($status, leyka_get_donation_status_list()) ? $status : 'submitted',
             'post_title' => empty($params['purpose_text']) ?
                 leyka()->opt('donation_purpose_text') : $params['purpose_text'],
             'post_name' => uniqid('donation-', true), // For fast WP_Post creation when DB already has lots of donations
             'post_parent' => empty($params['init_recurring_donation']) ? 0 : (int)$params['init_recurring_donation'],
-        ));
+        );
+        if(leyka_options()->opt('donors_management_available')) {
+
+        }
+
+        $id = wp_insert_post($donation_params);
 
         add_post_meta($id, 'leyka_donation_amount', (float)$amount);
 
@@ -1822,7 +1827,7 @@ class Leyka_Donation {
                 'campaign_id' => empty($meta['leyka_campaign_id']) ? 0 : $meta['leyka_campaign_id'][0],
                 'donor_subscribed' => empty($meta['leyka_donor_subscribed']) ?
                     false : $meta['leyka_donor_subscribed'][0],
-                'donor_account' => empty($meta['leyka_donor_account']) ? '' : $meta['leyka_donor_account'][0],
+                'donor_account_error' => empty($meta['leyka_donor_account_error']) ? '' : $meta['leyka_donor_account_error'][0],
                 'status_log' => empty($meta['_status_log']) ? '' : maybe_unserialize($meta['_status_log'][0]),
                 'gateway_response' => empty($meta['leyka_gateway_response']) ? '' : $meta['leyka_gateway_response'][0],
 
@@ -1982,14 +1987,12 @@ class Leyka_Donation {
 
             case 'donor_user_id':
             case 'donor_account_id':
-                $donor_account = isset($this->_donation_meta['donor_account']) ?
-                    maybe_unserialize($this->_donation_meta['donor_account']) : false;
-                return $donor_account && !is_wp_error($donor_account) ? (int)$donor_account : false;
+                return isset($this->_post_object->post_author) ? (int)$this->_post_object->post_author : false;
 
             case 'donor_user_error':
             case 'donor_account_error':
-                $donor_account_error = isset($this->_donation_meta['donor_account']) ?
-                    maybe_unserialize($this->_donation_meta['donor_account']) : false;
+                $donor_account_error = isset($this->_donation_meta['donor_account_error']) ?
+                    maybe_unserialize($this->_donation_meta['donor_account_error']) : false;
                 return $donor_account_error && is_wp_error($donor_account_error) ? $donor_account_error : false;
 
             case 'gateway_response':
@@ -2101,10 +2104,19 @@ class Leyka_Donation {
                 update_post_meta($this->_id, 'leyka_donor_comment', $value);
                 $this->_donation_meta['donor_comment'] = $value;
                 break;
-            case 'donor_account': /** @todo Set donor ID value as donation post author_id instead of postmeta */
-                if(is_wp_error($value) || (int)$value > 0) {
-                    $this->_donation_meta['donor_account'] = $value;
+            case 'donor_account':
+                if(is_wp_error($value)) {
+
+                    $this->_donation_meta['donor_account_error'] = $value;
                     update_post_meta($this->_id, 'leyka_donor_account', $value);
+
+                } else if((int)$value > 0) {
+
+                    $value = (int)$value;
+
+                    $this->_post_object->post_author = $value;
+                    wp_update_post(array('ID' => $this->id, 'post_author' => $value));
+
                 }
                 break;
 

@@ -2354,3 +2354,98 @@ function leyka_get_cronjobs_status() {
     }
 
 }
+
+if( !function_exists('leyka_calculate_donor_metadata') ) {
+    function leyka_calculate_donor_metadata(WP_User $donor_user) {
+
+        if(
+            !leyka_user_has_role('donor_single', false, $donor_user)
+            && !leyka_user_has_role('donor_regular', false, $donor_user)
+        ) {
+            return;
+        }
+
+        $donor_data = array(
+            'donor_type' => 'single',
+            'first_donation' => false,
+            'last_donation' => false,
+            'campaigns' => array(),
+            'gateways' => array(),
+            'amount_donated' => 0.0,
+        );
+
+        $donor_donations = get_posts(array( // Get donations by donor
+            'post_type' => Leyka_Donation_Management::$post_type,
+            'post_status' => 'funded', // leyka_get_donation_status_list(false),
+            'posts_per_page' => -1,
+            'author' => $donor_user->ID,
+        ));
+
+        $donations_count = count($donor_donations);
+        for($i = 0; $i < $donations_count; $i++) {
+
+            $donation = new Leyka_Donation($donor_donations[$i]);
+
+//            if($donor_user->user_email === 'ahaenor@gmail.com' && $donation->type === 'rebill') {
+//                echo '<pre>HERE: '.print_r($donation->id.' - is init: '.(int)$donation->is_init_recurring_donation.'/ recurring on: '.(int)$donation->recurring_on.'/ is funded: '.(int)($donation->status === 'funded'), 1).'</pre>';
+//            }
+
+            if($donation->is_init_recurring_donation && $donation->recurring_on && $donation->status === 'funded') {
+                $donor_data['donor_type'] = 'regular';
+            }
+
+            if($i === 0) {
+                $donor_data['first_donation'] = $donation;
+            }
+            if($i === $donations_count - 1) {
+                $donor_data['last_donation'] = $donation;
+            }
+
+            if(empty($donor_data['campaigns']) || empty($donor_data['campaigns'][$donation->campaign_id])) {
+                $donor_data['campaigns'][$donation->campaign_id] = $donation->campaign_title;
+            }
+
+            if(empty($donor_data['gateways']) || !in_array($donation->gateway, $donor_data['gateways'])) {
+                $donor_data['gateways'][] = $donation->gateway;
+            }
+
+            if($donation->status === 'funded') {
+                $donor_data['amount_donated'] = empty($donor_data['amount_donated']) ?
+                    $donation->amount : $donor_data['amount_donated'] + $donation->amount;
+            }
+
+        }
+
+        if($donor_data['first_donation']) {
+
+            update_user_meta($donor_user->ID, 'leyka_donor_first_donation_id', $donor_data['first_donation']->id);
+            update_user_meta($donor_user->ID, 'leyka_donor_first_donation_date', $donor_data['first_donation']->date_timestamp);
+
+        }
+
+        if($donor_data['last_donation']) {
+
+            update_user_meta($donor_user->ID, 'leyka_donor_last_donation_id', $donor_data['last_donation']->id);
+            update_user_meta($donor_user->ID, 'leyka_donor_first_donation_date', $donor_data['last_donation']->date_timestamp);
+
+        }
+
+//        update_user_meta($donor_user->ID, 'leyka_donor_type', $donor_data['donor_type']);
+        if($donor_data['donor_type'] === 'regular' && !leyka_user_has_role('donor_regular', false, $donor_user)) {
+
+            $donor_user->remove_role('donor_single');
+            $donor_user->add_role('donor_regular');
+
+        } else if($donor_data['donor_type'] === 'single' && leyka_user_has_role('donor_regular', false, $donor_user)) {
+
+            $donor_user->remove_role('donor_regular');
+            $donor_user->add_role('donor_single');
+
+        }
+
+        update_user_meta($donor_user->ID, 'leyka_donor_campaigns', $donor_data['campaigns']);
+        update_user_meta($donor_user->ID, 'leyka_donor_gateways', $donor_data['gateways']);
+        update_user_meta($donor_user->ID, 'leyka_amount_donated', $donor_data['amount_donated']);
+
+    }
+}
