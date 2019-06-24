@@ -956,7 +956,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 && empty($_GET['old'])
             )
             || ($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post')
-            || (isset($_GET['page']) && $_GET['page'] === 'leyka');
+            || (isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_donors'));
             
         $current_screen = get_current_screen();
         $dependencies = array('jquery',);
@@ -1003,12 +1003,13 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         ));
 
 		if($leyka_admin_new) {
-
+		    $dependencies[] = 'jquery-ui-autocomplete';
+		    
 			wp_enqueue_script('leyka-easy-modal', LEYKA_PLUGIN_BASE_URL . 'js/jquery.easyModal.min.js', array(), false, true);
             wp_enqueue_script(
                 'leyka-settings',
                 LEYKA_PLUGIN_BASE_URL.'assets/js/admin.js',
-                array('jquery',),
+                $dependencies,
                 LEYKA_VERSION,
                 true
             );
