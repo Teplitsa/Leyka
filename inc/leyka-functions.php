@@ -99,7 +99,7 @@ function leyka_user_has_role($role, $is_only_role = false, $user = false) {
  *
  * @param $donation Leyka_Donation
  * @param $donor_role string|false
- * @return
+ * @return int|WP_Error New donor user ID or WP_Error object
  */
 function leyka_create_donor_user(Leyka_Donation $donation, $donor_role = false) {
 
@@ -109,9 +109,11 @@ function leyka_create_donor_user(Leyka_Donation $donation, $donor_role = false) 
     if($donor_user && is_a($donor_user, 'WP_User')) { // Account already exists
 
         $donor_user_id = $donor_user->ID;
-        $donor_user->add_role('donor_regular');
+        $donor_user->add_role('donor');
 
     } else { // Create a new donor's account
+
+        /** @todo Handle the case when $donor_role is a 'donor'! Instead of 'donor_account_access' */
 
         $donor_email_first_part = reset(explode('@', $donation->donor_email));
 
