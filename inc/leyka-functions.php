@@ -2358,10 +2358,7 @@ function leyka_get_cronjobs_status() {
 if( !function_exists('leyka_calculate_donor_metadata') ) {
     function leyka_calculate_donor_metadata(WP_User $donor_user) {
 
-        if(
-            !leyka_user_has_role('donor_single', false, $donor_user)
-            && !leyka_user_has_role('donor_regular', false, $donor_user)
-        ) {
+        if( !leyka_user_has_role('donor', false, $donor_user) ) {
             return;
         }
 
@@ -2376,7 +2373,7 @@ if( !function_exists('leyka_calculate_donor_metadata') ) {
 
         $donor_donations = get_posts(array( // Get donations by donor
             'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => 'funded', // leyka_get_donation_status_list(false),
+            'post_status' => 'funded',
             'posts_per_page' => -1,
             'author' => $donor_user->ID,
         ));
@@ -2385,10 +2382,6 @@ if( !function_exists('leyka_calculate_donor_metadata') ) {
         for($i = 0; $i < $donations_count; $i++) {
 
             $donation = new Leyka_Donation($donor_donations[$i]);
-
-//            if($donor_user->user_email === 'ahaenor@gmail.com' && $donation->type === 'rebill') {
-//                echo '<pre>HERE: '.print_r($donation->id.' - is init: '.(int)$donation->is_init_recurring_donation.'/ recurring on: '.(int)$donation->recurring_on.'/ is funded: '.(int)($donation->status === 'funded'), 1).'</pre>';
-//            }
 
             if($donation->is_init_recurring_donation && $donation->recurring_on && $donation->status === 'funded') {
                 $donor_data['donor_type'] = 'regular';
@@ -2421,6 +2414,11 @@ if( !function_exists('leyka_calculate_donor_metadata') ) {
             update_user_meta($donor_user->ID, 'leyka_donor_first_donation_id', $donor_data['first_donation']->id);
             update_user_meta($donor_user->ID, 'leyka_donor_first_donation_date', $donor_data['first_donation']->date_timestamp);
 
+        } else {
+
+            delete_user_meta($donor_user->ID, 'leyka_donor_first_donation_id');
+            delete_user_meta($donor_user->ID, 'leyka_donor_first_donation_date');
+
         }
 
         if($donor_data['last_donation']) {
@@ -2428,21 +2426,14 @@ if( !function_exists('leyka_calculate_donor_metadata') ) {
             update_user_meta($donor_user->ID, 'leyka_donor_last_donation_id', $donor_data['last_donation']->id);
             update_user_meta($donor_user->ID, 'leyka_donor_first_donation_date', $donor_data['last_donation']->date_timestamp);
 
-        }
+        } else {
 
-//        update_user_meta($donor_user->ID, 'leyka_donor_type', $donor_data['donor_type']);
-        if($donor_data['donor_type'] === 'regular' && !leyka_user_has_role('donor_regular', false, $donor_user)) {
-
-            $donor_user->remove_role('donor_single');
-            $donor_user->add_role('donor_regular');
-
-        } else if($donor_data['donor_type'] === 'single' && leyka_user_has_role('donor_regular', false, $donor_user)) {
-
-            $donor_user->remove_role('donor_regular');
-            $donor_user->add_role('donor_single');
+            delete_user_meta($donor_user->ID, 'leyka_donor_last_donation_id');
+            delete_user_meta($donor_user->ID, 'leyka_donor_last_donation_date');
 
         }
 
+        update_user_meta($donor_user->ID, 'leyka_donor_type', $donor_data['donor_type']);
         update_user_meta($donor_user->ID, 'leyka_donor_campaigns', $donor_data['campaigns']);
         update_user_meta($donor_user->ID, 'leyka_donor_gateways', $donor_data['gateways']);
         update_user_meta($donor_user->ID, 'leyka_amount_donated', $donor_data['amount_donated']);

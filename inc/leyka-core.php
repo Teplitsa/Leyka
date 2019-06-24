@@ -958,9 +958,11 @@ class Leyka extends Leyka_Singleton {
 
         $leyka_last_ver = get_option('leyka_last_ver');
 
-        if($leyka_last_ver && $leyka_last_ver == LEYKA_VERSION) { // Already at last version
-            return;
-        }
+        // TMP - BEGIN
+//        if($leyka_last_ver && $leyka_last_ver == LEYKA_VERSION) { // Already at last version
+//            return;
+//        }
+        // TMP - END
 
         if( !$leyka_last_ver || $leyka_last_ver < '2.1' ) {
 
@@ -1199,23 +1201,23 @@ class Leyka extends Leyka_Singleton {
 
             }
 
-            // Rename & reassign the "Regular Donor" role:
-            $regular_donor_users = get_users(array(
-                'role__in' => array('donor',),
-                'number' => -1,
-            ));
+            // Add the new "Donor's account access" role:
+            $regular_donor_users = get_users(array('role__in' => array('donor',), 'number' => -1,));
 
-            remove_role('donor');
+            $old_donor_role = get_role('donor');
+            if($old_donor_role) {
+                $old_donor_role->remove_cap('access_donor_account_desktop');
+            }
 
-            if( !get_role('donor_regular') ) {
-                add_role('donor_regular', __('Regular donor', 'leyka'), array('access_donor_account_desktop'));
+            if( !get_role('donor_account_access') ) {
+                add_role('donor_account_access', __("Access to Donor's Account", 'leyka'));
             }
 
             foreach($regular_donor_users as $donor_user) {
 
-                wp_update_user(array('ID' => $donor_user->ID, 'role' => 'donor_regular'));
+                $donor_user->add_role('donor_account_access');
 
-                leyka_calculate_donor_metadata($donor_user);
+//                leyka_calculate_donor_metadata($donor_user); // Initialize & fill the Donor Cache for all existing Donor users
 
             }
 
@@ -1409,15 +1411,16 @@ class Leyka extends Leyka_Singleton {
         }
 
         // Donor roles:
-        if(leyka()->opt('donor_management_available')) {
-            if( !get_role('donor_single') ) {
-                add_role('donor_single', __('Single donor', 'leyka'), array());
+        if(leyka()->opt('donor_management_available') || leyka()->opt('donor_accounts_available')) {
+
+            if( !get_role('donor') ) {
+                add_role('donor', __('Donor', 'leyka'));
             }
-        }
-        if(leyka()->opt('donor_accounts_available')) {
-            if( !get_role('donor_regular') ) {
-                add_role('donor_regular', __('Regular donor', 'leyka'), array('access_donor_account_desktop'));
+
+            if(leyka()->opt('donor_accounts_available') && !get_role('donor_account_access')) {
+                add_role('donor_account_access', __("Access to Donor's Account", 'leyka'));
             }
+
         }
 
     }

@@ -12,10 +12,10 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         parent::__construct(array('singular' => __('Donor', 'leyka'), 'plural' => __('Donors', 'leyka'), 'ajax' => true,));
 
         add_filter('leyka_admin_donors_list_filter', array($this, 'filter_donors'));
-        add_filter('leyka_admin_donors_list_donations_filter', array($this, 'filter_donors_donations'));
 
     }
 
+    /** @todo Implement the filtering method */
     public function filter_donors(array $donors_params) {
 
         if(isset($_REQUEST['donor-name-email'])) {
@@ -37,11 +37,11 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
     public static function get_donors($per_page, $page_number = 1) {
 
         $donors_params = apply_filters('leyka_admin_donors_list_filter', array(
-            'role__in' => array('donor_single', 'donor_regular',),
+            'role__in' => array('donor',),
             'number' => absint($per_page),
             'paged' => absint($page_number),
             'fields' => array('ID', 'user_email', 'display_name',),
-        ));
+        ), 'get_donors');
 
         $donors = array();
         foreach(get_users($donors_params) as $donor_user) {
@@ -55,7 +55,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                 'donors_tags' => wp_get_object_terms($donor_user->ID, LEYKA_DONORS_TAGS_TAXONOMY_NAME),
             );
 
-            $donor_data['donor_type'] = leyka_user_has_role('donor_regular', false, $donor_user) ? 'regular' : 'single';
+            $donor_data['donor_type'] = get_user_meta($donor_user->ID, 'leyka_donor_type', true);
             $donor_data['campaigns'] = get_user_meta($donor_user->ID, 'leyka_donor_campaigns', true);
             $donor_data['gateways'] = get_user_meta($donor_user->ID, 'leyka_donor_gateways', true);
 
@@ -85,11 +85,12 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      */
     public static function record_count() {
 
-        $donors = new WP_User_Query(array(
-            'role__in' => array('donor_single', 'donor_regular',),
+        $donors = new WP_User_Query(apply_filters('leyka_admin_donors_list_filter', array(
+            'role__in' => array('donor',),
+            'number' => -1,
             'count_total' => true,
-            /** @todo Apply donor table filters here! */
-        ));
+            'fields' => array('ID',),
+        ), 'get_donors_total_count'));
 
         return $donors->get_total();
 
@@ -129,7 +130,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      * @return string
      */
     public function column_cb($item) {
-        return ''; // sprintf('<input type="checkbox" name="bulk-delete[]" value="%s">', $item['id']);
+        return sprintf('<input type="checkbox" name="bulk-delete[]" value="%s">', $item['id']);
     }
 
     public function column_donor_type($item) {
@@ -259,7 +260,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      */
     function get_columns() {
         return array(
-//            'cb' => '<input type="checkbox">',
+            'cb' => '<input type="checkbox">',
             'donor_type' => _x('Type', "Donor's type", 'leyka'),
             'donor_name' => __("Donor's name", 'leyka'),
             'first_donation' => __('First donation', 'leyka'),

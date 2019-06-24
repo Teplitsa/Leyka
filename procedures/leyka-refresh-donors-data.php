@@ -1,6 +1,4 @@
-<?php /**
- * The default procedure of doing all active recurring donations of the currenct date.
- */
+<?php /** The default procedure of Donor Metadata Cache total refresh. */
 
 require_once 'procedures-common.php';
 
@@ -14,6 +12,6 @@ if( !leyka_options()->opt('donor_management_available') ) {
     die;
 }
 
-foreach(get_users(array('role__in' => array('donor_regular', 'donor_single'), 'number' => -1, )) as $donor_user) {
+foreach(get_users(array('role__in' => array('donor',), 'number' => -1, )) as $donor_user) {
     leyka_calculate_donor_metadata($donor_user);
 }
