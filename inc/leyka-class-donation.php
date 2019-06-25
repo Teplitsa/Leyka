@@ -1593,9 +1593,9 @@ class Leyka_Donation {
             'post_name' => uniqid('donation-', true), // For fast WP_Post creation when DB already has lots of donations
             'post_parent' => empty($params['init_recurring_donation']) ? 0 : (int)$params['init_recurring_donation'],
         );
-        if(leyka_options()->opt('donors_management_available')) {
-
-        }
+//        if(leyka_options()->opt('donors_management_available')) {
+//
+//        }
 
         $id = wp_insert_post($donation_params);
 
@@ -2035,7 +2035,7 @@ class Leyka_Donation {
             case 'recurring_on':
             case 'recurring_is_on':
             case 'rebilling_is_active':
-            case 'recurring_is_active': $tmp = $this->payment_type == 'rebill' ?
+            case 'recurring_is_active': $tmp = $this->payment_type === 'rebill' ?
                 !empty($this->_donation_meta['rebilling_is_active']) : NULL;
                 return $tmp;
             case 'recurrents_cancel_date':

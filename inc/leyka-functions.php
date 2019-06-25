@@ -98,35 +98,41 @@ function leyka_user_has_role($role, $is_only_role = false, $user = false) {
  * Create Donor account from donation, if it doesn't exist yet.
  *
  * @param $donation Leyka_Donation
- * @param $donor_role string|false
- * @return int|WP_Error New donor user ID or WP_Error object
+ * @param $donor_role string|false Either "donor" or "donor_account_access".
+ * @return int|WP_Error New donor user ID or WP_Error object.
  */
 function leyka_create_donor_user(Leyka_Donation $donation, $donor_role = false) {
 
-    $donor_role = esc_sql($donor_role);
+    if(empty($donor_role)) {
+        $donor_role = $donation->type === 'rebill' ? 'donor_account_access' : 'donor';
+    } else if( !in_array($donor_role, array('donor', 'donor_account_access',)) ) {
+        $donor_role = 'donor';
+    }
+
     $donor_user = get_user_by('email', $donation->donor_email);
 
     if($donor_user && is_a($donor_user, 'WP_User')) { // Account already exists
 
         $donor_user_id = $donor_user->ID;
-        $donor_user->add_role('donor');
+        $donor_user->add_role($donor_role);
 
     } else { // Create a new donor's account
 
-        /** @todo Handle the case when $donor_role is a 'donor'! Instead of 'donor_account_access' */
-
-        $donor_email_first_part = reset(explode('@', $donation->donor_email));
+        $donor_email_parts = explode('@', $donation->donor_email);
+        $donor_email_parts = count($donor_email_parts) > 0 ? $donor_email_parts[0] : __('Anonymous donor', 'leyka');
 
         $donor_user_id = wp_insert_user(array(
             'user_email' => $donation->donor_email,
             'user_login' => $donation->donor_email,
             'user_pass' => wp_generate_password(16, true, false),
-            'display_name' => $donation->donor_name ? $donation->donor_name : $donor_email_first_part,
+            'display_name' => $donation->donor_name ? $donation->donor_name : $donor_email_parts,
             'show_admin_bar_front' => false,
-            'role' => $donor_role ? $donor_role : NULL,
+            'role' => $donor_role,
         ));
 
-        update_user_meta($donor_user_id, 'leyka_account_activation_code', wp_generate_password(60, false, false));
+        if($donor_role === 'donor_account_access') {
+            update_user_meta($donor_user_id, 'leyka_account_activation_code', wp_generate_password(60, false, false));
+        }
 
     }
 

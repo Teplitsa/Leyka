@@ -29,13 +29,17 @@ foreach($donor_donations as $donation) {
 
     $donation = new Leyka_Donation($donation);
 
+    echo '<pre>'.print_r('Processing the donation: '.$donation->id, 1).'</pre>';
+
     $donor_user_id = leyka_create_donor_user($donation, 'donor');
     if(is_wp_error($donor_user_id)) {
         /** @todo Log the user creation error, then continue */
+        echo '<pre>Error while creating a user: '.print_r($donor_user_id, 1).'</pre>';
         continue;
+    } else {
+        leyka_calculate_donor_metadata(get_user_by('id', $donor_user_id));
+        echo '<pre>'.print_r('Account created: '.$donor_user_id.' created, metadata calculated', 1).'</pre>';
     }
-
-    leyka_calculate_donor_metadata(get_user_by('id', $donor_user_id));
 
 //    echo '<pre>'.print_r($donation_post->ID.' - '.get_post_meta($donation_post->ID, 'leyka_donation_amount', true).' - '.$donation_post->post_author, 1).'</pre>';
 }

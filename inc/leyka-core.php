@@ -1217,7 +1217,7 @@ class Leyka extends Leyka_Singleton {
 
                 $donor_user->add_role('donor_account_access');
 
-//                leyka_calculate_donor_metadata($donor_user); // Initialize & fill the Donor Cache for all existing Donor users
+                leyka_calculate_donor_metadata($donor_user); // Initialize & fill the Donor Cache for all existing Donor users
 
             }
 
@@ -1716,9 +1716,7 @@ class Leyka extends Leyka_Singleton {
             'auto', $pm['payment_method_id'], $donation_id
         );
 
-        $donation = leyka_get_validated_donation($donation_id);
-
-        $this->register_donor_account($donation);
+        $this->register_donor_account($donation_id);
 
     }
 
@@ -1752,44 +1750,26 @@ class Leyka extends Leyka_Singleton {
 
     /**
      * @param $donation int|WP_Post|Leyka_Donation
-     * @param $donor_regular string|boolean|null True if donor is regular, false for single donor, NULL to not register donor account at all, 'auto' string to decide by donation type.
      * @return int|false|WP_Error
      */
-    public function register_donor_account($donation, $donor_regular = 'auto') {
-
-        if($donor_regular === NULL || ( !is_bool($donor_regular) && $donor_regular !== 'auto' ) ) {
-            return false;
-        }
+    public function register_donor_account($donation) {
 
         $donation = leyka_get_validated_donation($donation);
 
-        if($donor_regular === 'auto') {
-            $donor_regular = $donation->type === 'rebill' ? true : ($donation->type === 'single' ? false : null);
-        } else {
-            $donor_regular = !!$donor_regular;
-        }
-
-        if($donor_regular === NULL) { // E.g., for correction-type donations
+        if(
+            $donation->type === 'correction'
+            || ( !leyka()->opt('donor_accounts_available') && !leyka()->opt('donor_management_available') )
+        ) {
             return false;
         }
 
-        if($donor_regular) {
+        // Register a new donor's account only for recurring donations and if it's not registered yet:
+        if(leyka()->opt('donor_accounts_available') && $donation->type === 'rebill') {
+            $donor_user_id = leyka_create_donor_user($donation, 'donor_account_access');
+        }
 
-            // Register a new regular donor's account only for recurring donations and if it's not registered yet:
-            if( !leyka()->opt('donor_accounts_available') || $donation->type !== 'rebill' ) {
-                return false;
-            }
-
-            $donor_user_id = leyka_create_donor_user($donation, 'donor_regular');
-
-        } else {
-
-            if( !leyka()->opt('donor_management_available') || $donation->type !== 'single' ) {
-                return false;
-            }
-
-            $donor_user_id = leyka_create_donor_user($donation, 'donor_single');
-
+        if(leyka()->opt('donor_management_available')) {
+            $donor_user_id = leyka_create_donor_user($donation, 'donor');
         }
 
         if(is_wp_error($donor_user_id)) {
@@ -1799,215 +1779,6 @@ class Leyka extends Leyka_Singleton {
         }
 
         return $donor_user_id;
-
-    }
-
-    /**
-     * Update donor's cache with the latest donation data.
-     *
-     * @param $donor_user_id int
-     * @param $donation Leyka_Donation
-     */
-    public function update_donor_metadata($donor_user_id, Leyka_Donation $donation) {
-
-        // Donor's type: single/regular (string)
-        // First Donation: id, date (string)
-        // Last Donation: id, date (string)
-        // Campaigns IDs list, int[]
-        // Donations status: string[]
-        // Gateways IDs list, string[]
-        // Funded donations total amount, float
-
-        if($donation->status === 'funded') { // New funded donation added
-
-            // Donor type:
-            if(get_user_meta($donor_user_id, 'leyka_donor_type', true) !== 'regular') {
-                update_user_meta($donor_user_id, 'leyka_donor_type', $donation->type === 'rebill' ? 'regular' : 'single');
-            }
-
-            // First Donor's donation data:
-            $existing_donor_usermeta = get_user_meta($donor_user_id, 'leyka_donor_first_donation_id', true);
-            if( !$existing_donor_usermeta ) {
-
-                update_user_meta($donor_user_id, 'leyka_donor_first_donation_id', $donation->id);
-                update_user_meta($donor_user_id, 'leyka_donor_first_donation_date', $donation->date_timestamp);
-
-            }
-
-            // Last Donor's donation data:
-            $existing_donor_usermeta = get_user_meta($donor_user_id, 'leyka_donor_last_donation_id', true);
-            if( !$existing_donor_usermeta || $existing_donor_usermeta != $donation->id ) {
-
-                update_user_meta($donor_user_id, 'leyka_donor_last_donation_id', $donation->id);
-                update_user_meta($donor_user_id, 'leyka_donor_last_donation_date', $donation->date_timestamp);
-
-            }
-
-            // Campaigns list:
-            $existing_donor_usermeta = get_user_meta($donor_user_id, 'leyka_donor_campaigns', true);
-            if( !$existing_donor_usermeta || !in_array($donation->campaign_id, (array)$existing_donor_usermeta) ) {
-
-                $existing_donor_usermeta = $existing_donor_usermeta ? (array)$existing_donor_usermeta : array();
-
-                $existing_donor_usermeta[] = $donation->campaign_id;
-                update_user_meta($donor_user_id, 'leyka_donor_campaigns', $existing_donor_usermeta);
-
-            }
-
-            // Donor's donations gateways:
-            $existing_donor_usermeta = get_user_meta($donor_user_id, 'leyka_donor_donation_gateways', true);
-            if( !$existing_donor_usermeta || !in_array($donation->gateway_id, (array)$existing_donor_usermeta)) {
-
-                $existing_donor_usermeta = $existing_donor_usermeta ? (array)$existing_donor_usermeta : array();
-
-                $existing_donor_usermeta[] = $donation->gateway_id;
-                update_user_meta($donor_user_id, 'leyka_donor_donation_gateways', $existing_donor_usermeta);
-
-            }
-
-            // Amount donated:
-            $existing_donor_usermeta = get_user_meta($donor_user_id, 'leyka_amount_donated', true);
-            $existing_donor_usermeta = $existing_donor_usermeta ? (float)$existing_donor_usermeta : 0.0;
-
-            update_user_meta($donor_user_id, 'leyka_amount_donated', $existing_donor_usermeta + $donation->amount);
-
-        } else { // Donation are removed from funded status
-
-            // Donor type:
-            $existing_donor_usermeta = get_user_meta($donor_user_id, 'leyka_donor_type', true);
-            if( !$existing_donor_usermeta ) {
-                update_user_meta($donor_user_id, 'leyka_donor_type', 'single');
-            } else if($existing_donor_usermeta == 'regular') {
-
-                if( !get_posts(array( // Recurrent donations remaining
-                    'post_type' => Leyka_Donation_Management::$post_type,
-                    'post_status' => 'funded',
-                    'author' => $donor_user_id,
-                    'meta_query' => array(array('key' => 'leyka_payment_type', 'value' => 'rebill',)),
-                    'posts_per_page' => 1,
-                )) ) {
-                    update_user_meta($donor_user_id, 'leyka_donor_type', 'single');
-                }
-
-            }
-
-            // Donor's first donation data:
-            $existing_donor_usermeta = get_user_meta($donor_user_id, 'leyka_donor_first_donation_id', true);
-            if($existing_donor_usermeta && $existing_donor_usermeta == $donation->id) {
-
-                $first_donation = get_posts(array(
-                    'post_type' => Leyka_Donation_Management::$post_type,
-                    'post_status' => 'funded',
-                    'author' => $donor_user_id,
-                    'orderby' => 'date',
-                    'order' => 'asc',
-                    'posts_per_page' => 1,
-                ));
-
-                $first_donation_id = false;
-                $first_donation_date = false;
-
-                if($first_donation) {
-
-                    $first_donation = new Leyka_Donation($first_donation);
-
-                    $first_donation_id = $first_donation->id;
-                    $first_donation_date = $first_donation->date_timestamp;
-
-                }
-
-                update_user_meta($donor_user_id, 'leyka_donor_first_donation_id', $first_donation_id);
-                update_user_meta($donor_user_id, 'leyka_donor_first_donation_date', $first_donation_date);
-
-            }
-
-            // Donor's last donation data:
-            $existing_donor_usermeta = get_user_meta($donor_user_id, 'leyka_donor_last_donation_id', true);
-            if($existing_donor_usermeta && $existing_donor_usermeta == $donation->id) {
-
-                $last_donation = get_posts(array( // Recurrent donations remaining
-                    'post_type' => Leyka_Donation_Management::$post_type,
-                    'post_status' => 'funded',
-                    'author' => $donor_user_id,
-                    'orderby' => 'date',
-                    'order' => 'desc',
-                    'posts_per_page' => 1,
-                ));
-
-                $last_donation_id = false;
-                $last_donation_date = false;
-
-                if($last_donation) {
-
-                    $last_donation = new Leyka_Donation($last_donation);
-
-                    $last_donation_id = $last_donation->id;
-                    $last_donation_date = $last_donation->date_timestamp;
-
-                }
-
-                update_user_meta($donor_user_id, 'leyka_donor_last_donation_id', $last_donation_id);
-                update_user_meta($donor_user_id, 'leyka_donor_last_donation_date', $last_donation_date);
-
-            }
-
-            // Campaigns list:
-            $existing_donor_usermeta = get_user_meta($donor_user_id, 'leyka_donor_campaigns', true);
-            if($existing_donor_usermeta && in_array($donation->campaign_id, (array)$existing_donor_usermeta) ) {
-
-                // Get all funded donations campaigns IDs, check each
-                if( !get_posts(array(
-                    'post_type' => Leyka_Donation_Management::$post_type,
-                    'post_status' => 'funded',
-                    'author' => $donor_user_id,
-                    'posts_per_page' => -1,
-                    'meta_query' => array(array('key' => 'leyka_campaign_id', 'value' => $donation->campaign_id,)),
-                )) ) {
-
-                    $index = array_search($donation->campaign_id, $existing_donor_usermeta);
-
-                    if($index !== false && !empty($existing_donor_usermeta[$index])) {
-                        unset($existing_donor_usermeta[$index]);
-                    }
-
-                }
-
-                update_user_meta($donor_user_id, 'leyka_donor_campaigns', $existing_donor_usermeta);
-
-            }
-
-            // Donor's donations gateways:
-            $existing_donor_usermeta = get_user_meta($donor_user_id, 'leyka_donor_donation_gateways', true);
-            if($existing_donor_usermeta && in_array($donation->gateway_id, (array)$existing_donor_usermeta) ) {
-
-                // Get all funded donations campaigns IDs, check each
-                if( !get_posts(array(
-                    'post_type' => Leyka_Donation_Management::$post_type,
-                    'post_status' => 'funded',
-                    'author' => $donor_user_id,
-                    'posts_per_page' => -1,
-                    'meta_query' => array(array('key' => 'leyka_gateway', 'value' => $donation->gateway_id,)),
-                )) ) {
-
-                    $index = array_search($donation->gateway_id, $existing_donor_usermeta);
-
-                    if($index !== false && !empty($existing_donor_usermeta[$index])) {
-                        unset($existing_donor_usermeta[$index]);
-                    }
-
-                }
-
-                update_user_meta($donor_user_id, 'leyka_donor_donation_gateways', $existing_donor_usermeta);
-
-            }
-
-            // Amount donated:
-            $existing_donor_usermeta = get_user_meta($donor_user_id, 'leyka_amount_donated', true);
-            if($existing_donor_usermeta) {
-                update_user_meta($donor_user_id, 'leyka_amount_donated', $existing_donor_usermeta - $donation->amount);
-            }
-
-        }
 
     }
 
