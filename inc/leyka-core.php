@@ -385,6 +385,8 @@ class Leyka extends Leyka_Singleton {
             add_action('leyka_do_procedure', array($this, '_do_procedure'), 10, 2);
         }
 
+        add_action('wp_loaded', array($this, 'refresh_donors_data'), 100);
+
         do_action('leyka_initiated');
 
     }
@@ -426,6 +428,42 @@ class Leyka extends Leyka_Singleton {
      */
     public function opt($option_id, $new_value = null) {
         return leyka_options()->opt($option_id, $new_value);
+    }
+
+    public function refresh_donors_data() {
+
+        if( !leyka()->opt('donor_management_available') ) {
+            return;
+        }
+
+        $donations_ordered = get_transient('leyka_donations2refresh_donor_data_cache');
+        echo '<pre>Donations to refresh donors data: '.print_r($donations_ordered, 1).'</pre>';
+        if(is_array($donations_ordered)) {
+
+            foreach($donations_ordered as $donation_id) {
+
+                $donation = new Leyka_Donation($donation_id);
+                if( !$donation ) {
+                    return;
+                }
+
+                // Donor's data cache refresh:
+                if($donation->status === 'funded') {
+
+                    $donor_user = get_user_by('id', $donation->donor_user_id);
+                    if($donor_user) {
+                        echo '<pre>'.print_r('Refreshing donor data for donor #'.$donation->donor_user_id, 1).'</pre>';
+//                        leyka_calculate_donor_metadata($donor_user); // TMP
+                    }
+
+                }
+
+            }
+
+            delete_transient('leyka_donations2refresh_donor_data_cache');
+
+        }
+
     }
 
     public function add_gtm_data_layer_ua_simple() {
