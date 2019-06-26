@@ -959,9 +959,9 @@ class Leyka extends Leyka_Singleton {
         $leyka_last_ver = get_option('leyka_last_ver');
 
         // TMP - BEGIN
-//        if($leyka_last_ver && $leyka_last_ver == LEYKA_VERSION) { // Already at last version
-//            return;
-//        }
+        if($leyka_last_ver && $leyka_last_ver == LEYKA_VERSION) { // Already at last version
+            return;
+        }
         // TMP - END
 
         if( !$leyka_last_ver || $leyka_last_ver < '2.1' ) {
@@ -1202,20 +1202,16 @@ class Leyka extends Leyka_Singleton {
             }
 
             // Add the new "Donor's account access" role:
-            $regular_donor_users = get_users(array('role__in' => array('donor',), 'number' => -1,));
+            $donor_account_users = get_users(array('role__in' => array('donor',), 'number' => -1,));
 
             $old_donor_role = get_role('donor');
             if($old_donor_role) {
                 $old_donor_role->remove_cap('access_donor_account_desktop');
             }
 
-            if( !get_role('donor_account_access') ) {
-                add_role('donor_account_access', __("Access to Donor's Account", 'leyka'));
-            }
+            foreach($donor_account_users as $donor_user) {
 
-            foreach($regular_donor_users as $donor_user) {
-
-                $donor_user->add_role('donor_account_access');
+                $donor_user->add_cap('donor_account_access');
 
                 leyka_calculate_donor_metadata($donor_user); // Initialize & fill the Donor Cache for all existing Donor users
 
@@ -1411,16 +1407,10 @@ class Leyka extends Leyka_Singleton {
         }
 
         // Donor roles:
-        if(leyka()->opt('donor_management_available') || leyka()->opt('donor_accounts_available')) {
-
+        if(leyka()->opt('donor_management_available')) {
             if( !get_role('donor') ) {
                 add_role('donor', __('Donor', 'leyka'));
             }
-
-            if(leyka()->opt('donor_accounts_available') && !get_role('donor_account_access')) {
-                add_role('donor_account_access', __("Access to Donor's Account", 'leyka'));
-            }
-
         }
 
     }
@@ -1756,20 +1746,18 @@ class Leyka extends Leyka_Singleton {
 
         $donation = leyka_get_validated_donation($donation);
 
-        if(
-            $donation->type === 'correction'
-            || ( !leyka()->opt('donor_accounts_available') && !leyka()->opt('donor_management_available') )
-        ) {
+        if( !$donation || $donation->type === 'correction' || !leyka()->opt('donor_management_available') ) {
             return false;
         }
 
         // Register a new donor's account only for recurring donations and if it's not registered yet:
-        if(leyka()->opt('donor_accounts_available') && $donation->type === 'rebill') {
-            $donor_user_id = leyka_create_donor_user($donation, 'donor_account_access');
-        }
+        $donor_user_id = leyka_create_donor_user(
+            $donation,
+            leyka()->opt('donor_accounts_available') && $donation->type === 'rebill'
+        );
 
-        if(leyka()->opt('donor_management_available')) {
-            $donor_user_id = leyka_create_donor_user($donation, 'donor');
+        if(empty($donor_user_id)) {
+            $donor_user_id = new WP_Error('donor_account_not_created', __("Can't create donor user from donation", 'leyka'), $donation->id);
         }
 
         if(is_wp_error($donor_user_id)) {

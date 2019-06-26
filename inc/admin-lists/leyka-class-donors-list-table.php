@@ -47,7 +47,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         foreach(get_users($donors_params) as $donor_user) {
 
             $donor_data = array(
-                'id' => $donor_user->ID,
+                'donor_id' => $donor_user->ID,
                 'donor_name' => $donor_user->display_name,
                 'donor_email' => $donor_user->user_email,
                 'first_donation' => get_user_meta($donor_user->ID, 'leyka_donor_first_donation_id', true),
@@ -110,6 +110,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      */
     public function column_default($item, $column_name) {
         switch ($column_name) {
+            case 'donor_id':
             case 'donor_name':
             case 'first_donation':
             case 'campaigns':
@@ -130,7 +131,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      * @return string
      */
     public function column_cb($item) {
-        return sprintf('<input type="checkbox" name="bulk-delete[]" value="%s">', $item['id']);
+        return sprintf('<input type="checkbox" name="bulk-delete[]" value="%s">', $item['donor_id']);
     }
 
     public function column_donor_type($item) {
@@ -181,7 +182,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                 '<a href="?page=%s&action=%s&donor=%s&_wpnonce=%s">'.__('Delete', 'leyka').'</a>',
                 esc_attr($_REQUEST['page']),
                 'delete',
-                absint($item['id']),
+                absint($item['donor_id']),
                 wp_create_nonce('leyka_delete_donor')
             )
         );
@@ -204,7 +205,9 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         $campaigns_list = array();
         foreach($item['campaigns'] as $campaign_id => $campaign_title) {
-            $campaigns_list[] = '«'.$campaign_title.'»';
+            if($campaign_title) {
+                $campaigns_list[] = '«'.$campaign_title.'»';
+            }
         }
 
         sort($campaigns_list);
@@ -244,7 +247,12 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         $gateways_list = array();
         foreach($item['gateways'] as $gateway_id) {
-            $gateways_list[] = esc_html(leyka_get_gateway_by_id($gateway_id)->label);
+
+            $gateway = leyka_get_gateway_by_id($gateway_id);
+            if($gateway) {
+                $gateways_list[] = esc_html($gateway->label);
+            }
+
         }
 
         sort($gateways_list);
@@ -261,6 +269,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
     function get_columns() {
         return array(
             'cb' => '<input type="checkbox">',
+            'donor_id' => __('ID'),
             'donor_type' => _x('Type', "Donor's type", 'leyka'),
             'donor_name' => __("Donor's name", 'leyka'),
             'first_donation' => __('First donation', 'leyka'),
@@ -277,6 +286,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      */
     public function get_sortable_columns() {
         return array(
+            'donor_id' => array('donor_id', true),
             'donor_type' => array('donor_type', true),
             'donor_name' => array('donor_name', false),
             'first_donation' => array('first_donation', true),

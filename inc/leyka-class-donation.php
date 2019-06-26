@@ -99,14 +99,25 @@ class Leyka_Donation_Management {
             return;
         }
 
+        $donation = new Leyka_Donation($donation);
+
         if($old === 'new' && $new !== 'trash') {
             $this->new_donation_added($donation);
-        } elseif($new === 'funded' || $old === 'funded') {
+        } else if($new === 'funded' || $old === 'funded') {
 
-            $donation = new Leyka_Donation($donation);
+            // Donor's data cache refresh:
+            if(leyka()->opt('donor_management_available')) {
 
+                $donor_user = get_user_by('id', $donation->donor_user_id);
+                if($donor_user) {
+                    leyka_calculate_donor_metadata($donor_user);
+                }
+
+            }
+
+            // Campaign total funded amount refresh:
             $campaign = new Leyka_Campaign($donation->campaign_id);
-            $campaign->update_total_funded_amount($donation, $old == 'funded' ? 'remove' : 'add');
+            $campaign->update_total_funded_amount($donation, $old === 'funded' ? 'remove' : 'add');
         }
 
     }
@@ -213,10 +224,18 @@ class Leyka_Donation_Management {
 
     }
 
-    public function new_donation_added(WP_Post $donation) {
-        if($donation->post_type != Leyka_Donation_Management::$post_type) {
-            return;
+    public function new_donation_added(Leyka_Donation $donation) {
+
+        // Donor's data cache refresh:
+        if(leyka()->opt('donor_management_available') && $donation->status === 'funded') {
+
+            $donor_user = get_user_by('id', $donation->donor_user_id);
+            if($donor_user) {
+                leyka_calculate_donor_metadata($donor_user);
+            }
+
         }
+
     }
 
     public static function send_all_emails($donation) {
@@ -1593,9 +1612,15 @@ class Leyka_Donation {
             'post_name' => uniqid('donation-', true), // For fast WP_Post creation when DB already has lots of donations
             'post_parent' => empty($params['init_recurring_donation']) ? 0 : (int)$params['init_recurring_donation'],
         );
-//        if(leyka_options()->opt('donors_management_available')) {
-//
-//        }
+
+        if( // Donor user ID isn't set explicitly - use the current user ID, if it has a donor role
+            (leyka_options()->opt('donors_management_available') || leyka_options()->opt('donors_accounts_available'))
+            && !isset($params['donor_user_id'])
+        ) {
+            $donation_params['post_author'] = leyka_user_has_role('donor') ? get_current_user_id() : 0;
+        } else { // Donor user ID is set
+            $donation_params['post_author'] = isset($params['donor_user_id']) ? absint($params['donor_user_id']) : 0;
+        }
 
         $id = wp_insert_post($donation_params);
 
@@ -2104,15 +2129,22 @@ class Leyka_Donation {
                 update_post_meta($this->_id, 'leyka_donor_comment', $value);
                 $this->_donation_meta['donor_comment'] = $value;
                 break;
+            case 'donor_account_id':
+
+                $value = absint($value);
+
+                $this->_post_object->post_author = $value;
+                wp_update_post(array('ID' => $this->id, 'post_author' => $value));
+
             case 'donor_account':
                 if(is_wp_error($value)) {
 
                     $this->_donation_meta['donor_account_error'] = $value;
                     update_post_meta($this->_id, 'leyka_donor_account', $value);
 
-                } else if((int)$value > 0) {
+                } else if(absint($value)) {
 
-                    $value = (int)$value;
+                    $value = absint($value);
 
                     $this->_post_object->post_author = $value;
                     wp_update_post(array('ID' => $this->id, 'post_author' => $value));
