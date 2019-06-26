@@ -1401,10 +1401,13 @@ class Leyka_Donation_Management {
         return $vars;
     }
 
-    /** Save donation data metabox */
+    /** Donation data editing.
+     * @param $donation_id int
+     * @return int|false Edited donation ID or false (if editing is failed or impossible).
+     */
     public function save_donation_data($donation_id) {
 
-        // Maybe donation is inserted trough API:
+        // Maybe donation is being inserted trough API:
         if(empty($_POST['post_type']) || $_POST['post_type'] != Leyka_Donation_Management::$post_type) {
             return false;
         }
@@ -1428,6 +1431,8 @@ class Leyka_Donation_Management {
 
         $donation = new Leyka_Donation($donation_id);
         $campaign = new Leyka_Campaign($donation->campaign_id);
+
+        $donation->donor_user_id = 0; // Or current user (admin) will become donation post_author
 
         if($donation->status != $_POST['donation_status']) {
             $donation->status = $_POST['donation_status'];
@@ -1545,6 +1550,28 @@ class Leyka_Donation_Management {
             $donation->payment_type = $_POST['payment-type'];
         }
 
+        // Add donor ID for correction-typed donation:
+        if(
+            leyka()->opt('donor_management_available')
+            && $donation->status === 'funded'
+            && !$donation->donor_user_id
+            && $donation->donor_email
+        ) {
+
+            $donor_user = get_user_by('email', $donation->donor_email);
+//            echo '<pre>HERE: '.print_r($donor_user->user_email, 1).'</pre>';
+            if($donor_user) {
+
+                $donation->donor_user_id = $donor_user->ID;
+
+//                echo '<pre>DONATION USER ID: '.print_r($donation->donor_user_id, 1).'</pre>';
+                leyka_calculate_donor_metadata($donor_user);
+
+//                die('<pre>'.print_r('Calculated', 1).'</pre>');
+            }
+
+        }
+
         do_action("leyka_{$donation->gateway_id}_save_donation_data", $donation);
 
         add_action('save_post_'.self::$post_type, array($this, 'save_donation_data'));
@@ -1624,7 +1651,7 @@ class Leyka_Donation {
             && !isset($params['donor_user_id'])
         ) {
             $donation_params['post_author'] = leyka_user_has_role('donor') ? get_current_user_id() : 0;
-        } else { // Donor user ID is set
+        } else { // Donor user ID is set explicilty
             $donation_params['post_author'] = isset($params['donor_user_id']) ? absint($params['donor_user_id']) : 0;
         }
 
@@ -2146,6 +2173,7 @@ class Leyka_Donation {
                 $this->_donation_meta['donor_comment'] = $value;
                 break;
 
+            case 'donor_user_id':
             case 'donor_account_id':
 
                 $value = absint($value);
