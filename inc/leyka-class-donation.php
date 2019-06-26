@@ -45,31 +45,31 @@ class Leyka_Donation_Management {
         add_action('wp_ajax_leyka_send_donor_email', array($this, 'ajax_send_donor_email'));
 
         // If some funded donation data are changed, order it's donor's data cache refreshing:
-        add_action('leyka_new_donation_added', array($this, 'order_donor_data_refreshing'));
-        add_action('leyka_donation_funded_status_changed', array($this, 'order_donor_data_refreshing'));
-        add_action('leyka_donation_recurring_activity_changed', array($this, 'order_donor_data_refreshing'));
-        add_action('leyka_donation_amount_changed', array($this, 'order_donor_data_refreshing'));
-        add_action('leyka_donation_total_amount_changed', array($this, 'order_donor_data_refreshing'));
-        add_action('leyka_donation_pm_changed', array($this, 'order_donor_data_refreshing'));
-        add_action('leyka_donation_campaign_changed', array($this, 'order_donor_data_refreshing'));
+        function leyka_order_donation_to_refresh($donation_id) {
+
+            $donation = new Leyka_Donation($donation_id);
+            if($donation && $donation->status === 'funded') {
+                leyka_order_donor_data_refreshing($donation_id);
+            }
+
+        }
+
+        // Existing donation status changed to/from "funded":
+        add_action('leyka_donation_funded_status_changed', function($donation_id, $old_status, $new_status){
+            if($old_status === 'funded' || $new_status === 'funded') {
+                leyka_order_donor_data_refreshing($donation_id);
+            }
+        }, 10, 3);
+
+        add_action('leyka_new_donation_added', 'leyka_order_donation_to_refresh');
+        add_action('leyka_donation_recurring_activity_changed', 'leyka_order_donation_to_refresh');
+        add_action('leyka_donation_amount_changed', 'leyka_order_donation_to_refresh');
+        add_action('leyka_donation_total_amount_changed', 'leyka_order_donation_to_refresh');
+        add_action('leyka_donation_pm_changed', 'leyka_order_donation_to_refresh');
+        add_action('leyka_donation_campaign_changed', 'leyka_order_donation_to_refresh');
+        // Donors data refresh actions - end
 
 	}
-
-	public function order_donor_data_refreshing($donation_id) {
-
-        if( !leyka()->opt('donor_management_available') ) {
-            return;
-        }
-
-        $donations_ordered = get_transient('leyka_donations2refresh_donor_data_cache');
-        if($donations_ordered && is_array($donations_ordered) && !in_array($donation_id, $donations_ordered)) {
-
-            $donations_ordered[] = $donation_id;
-            set_transient('leyka_donations2refresh_donor_data_cache', $donations_ordered);
-
-        }
-
-    }
 
     public function set_admin_messages($messages) {
 
@@ -127,7 +127,7 @@ class Leyka_Donation_Management {
         $donation = new Leyka_Donation($donation);
 
         if($old === 'new' && $new !== 'trash') {
-            do_action('leyka_new_donation_added', $donation);
+            do_action('leyka_new_donation_added', $donation->id);
         } else if($new === 'funded' || $old === 'funded') {
 
             do_action('leyka_donation_funded_status_changed', $donation->id, $old, $new);

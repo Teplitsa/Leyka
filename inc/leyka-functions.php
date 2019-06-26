@@ -2456,3 +2456,25 @@ if( !function_exists('leyka_calculate_donor_metadata') ) {
 
     }
 }
+
+if( !function_exists('leyka_order_donor_data_refreshing') ) {
+    function leyka_order_donor_data_refreshing($donation_id) {
+
+        if( !leyka()->opt('donor_management_available') ) {
+            return;
+        }
+
+        $donations_ordered = get_transient('leyka_donations2refresh_donor_data_cache');
+        if( !$donations_ordered) {
+            $donations_ordered = array();
+        }
+
+        if(is_array($donations_ordered) && !in_array($donation_id, $donations_ordered)) {
+
+            $donations_ordered[] = $donation_id;
+            set_transient('leyka_donations2refresh_donor_data_cache', $donations_ordered);
+
+        }
+
+    }
+}

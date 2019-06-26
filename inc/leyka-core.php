@@ -437,7 +437,7 @@ class Leyka extends Leyka_Singleton {
         }
 
         $donations_ordered = get_transient('leyka_donations2refresh_donor_data_cache');
-        echo '<pre>Donations to refresh donors data: '.print_r($donations_ordered, 1).'</pre>';
+
         if(is_array($donations_ordered)) {
 
             foreach($donations_ordered as $donation_id) {
@@ -448,14 +448,9 @@ class Leyka extends Leyka_Singleton {
                 }
 
                 // Donor's data cache refresh:
-                if($donation->status === 'funded') {
-
-                    $donor_user = get_user_by('id', $donation->donor_user_id);
-                    if($donor_user) {
-                        echo '<pre>'.print_r('Refreshing donor data for donor #'.$donation->donor_user_id, 1).'</pre>';
-//                        leyka_calculate_donor_metadata($donor_user); // TMP
-                    }
-
+                $donor_user = get_user_by('id', $donation->donor_user_id);
+                if($donor_user) {
+                    leyka_calculate_donor_metadata($donor_user);
                 }
 
             }
