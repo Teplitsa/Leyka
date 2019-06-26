@@ -403,7 +403,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             $donation = new Leyka_Donation(Leyka_Donation::add(array(
                 'status' => 'submitted',
                 'transaction_id' => $cp_transaction_id,
-                'force_insert' => true, // Turn off donation fields validity checks
+                'force_insert' => true, // Turn off donation fields validation checks
             )));
         }
 
