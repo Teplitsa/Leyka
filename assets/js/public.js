@@ -132,7 +132,6 @@ Number.isInteger = Number.isInteger || function(value) {
            isFinite(value) &&
            Math.floor(value) === value;
 };
-
 /** Donor's account frontend */
 
 var leyka; // L10n lines
@@ -1970,7 +1969,7 @@ jQuery(document).ready(function($){
         if($activeItem.length == 0) {
             $swiper.find('.swiper-item:not(.disabled)').first().addClass('selected');
             $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)').first();
-            $activeItem.find('input[type=radio]').prop('checked', true);
+            $activeItem.find('input[type=radio]').prop('checked', true).change();
         }
         $swiper.find('.swiper-item:not(.disabled)').css('margin-right', '16px');
         $swiper.find('.swiper-item:not(.disabled)').last().css('margin-right', '0px');
@@ -1980,12 +1979,15 @@ jQuery(document).ready(function($){
         
         toggleSwiperArrows($swiper);
         swipeList($swiper, $activeItem);
-        $activeItem.find('input[name="leyka_payment_method"]').click();
         checkFormFillCompletion($swiper.closest('form.leyka-pm-form'));
     }
 
     function bindSwiperEvents() {
-        $('.leyka-tpl-star-form .star-swiper').on('click', '.swiper-item', function(){
+        $('.leyka-tpl-star-form .star-swiper').on('click', '.swiper-item', function(e){
+        	if($(this).hasClass('selected')) {
+        		return;
+        	}
+        	
             $(this).siblings('.swiper-item.selected').removeClass('selected');
             $(this).addClass('selected');
             $(this).find('input[type=radio]').prop('checked', true).change();
@@ -2056,11 +2058,10 @@ jQuery(document).ready(function($){
     }
     
     function swipeList($swiper, $activeItem) {
-        
         var $list = $swiper.find('.swiper-list');
+        $list.stop( true, true )
         
         var dif = $list.width() - $swiper.width();
-        
         if(dif <= 0) {
             $list.width($swiper.width());
             $list.css('left', 0);

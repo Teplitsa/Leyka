@@ -175,7 +175,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
      */
     public function data_meta_box(WP_Post $campaign) {
 
-		$campaign = new Leyka_Campaign($campaign);
+        $campaign = new Leyka_Campaign($campaign);
 
 		$cur_template = $campaign->template ? $campaign->template : 'default';?>
 
@@ -215,10 +215,10 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <div class="field-wrapper">
                 <label class="field-label">
-                    <input type="checkbox" name="donations_type[]" value="recurring" <?php echo in_array('recurring', $campaign->donations_types_available) ? 'checked="checked"' : '';?>><?php echo _x('Recurring', 'In mult., like "recurring donations"', 'leyka');?>
+                    <input type="checkbox" name="donations_type[]" value="recurring" <?php echo in_array('recurring', $campaign->donations_types_available) || $campaign->status === 'auto-draft' ? 'checked="checked"' : '';?>><?php echo _x('Recurring', 'In mult., like "recurring donations"', 'leyka');?>
                 </label>
                 <label class="field-label">
-                    <input type="checkbox" name="donations_type[]" value="single" <?php echo in_array('single', $campaign->donations_types_available) ? 'checked="checked"' : '';?>><?php echo _x('Single', 'In mult., like "single donations"', 'leyka');?>
+                    <input type="checkbox" name="donations_type[]" value="single" <?php echo in_array('single', $campaign->donations_types_available) || $campaign->status === 'auto-draft' ? 'checked="checked"' : '';?>><?php echo _x('Single', 'In mult., like "single donations"', 'leyka');?>
                 </label>
             </div>
 
@@ -347,9 +347,32 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <div class="field-wrapper css-editor">
 
-                <?php $campaign_css_original = '/* Some style 1 */ '.__('/* Style 1 comment */', 'leyka')."\n".
-                    '/* Some style 2 */ '.__('/* Style 2 comment */', 'leyka')."\n".
-                    '/* Some style 3 */ '.__('/* Style 3 comment */', 'leyka');?>
+                <?php $campaign_css_original = '/* :root { --leyka-color-main: #ff510d; } */ '
+                    .__('/* Active buttons & switches background color */', 'leyka')."\n".
+                    '/* :root { --leyka-color-main-second: #ffc29f; } */ '
+                    .__('/* Controls borders color */', 'leyka')."\n".
+                    '/* :root { --leyka-color-text-light: #ffffff; } */ '
+                    .__('/* Active buttons & switches text color */', 'leyka')."\n".
+                    '/* :root { --leyka-color-main-third: #fef5f1; } */ '
+                    .__('/* Selected payment method background color */', 'leyka')."\n".
+                    '/* :root { --leyka-color-main-inactive: rgba(255,81,13, 0.5); } */ '
+                    .__('/* Inactive main submit background color */', 'leyka')."\n".
+                    '/* :root { --leyka-color-error: #d43c57; } */ '
+                    .__('/* Error messages text color */', 'leyka')."\n".
+                    '/* :root { --leyka-color-gray-dark: #474747; } */ '
+                    .__('/* The main text color (controls & content) */', 'leyka')."\n".
+                    '/* :root { --leyka-color-gray-semi-dark: #656565; } */ '
+                    .__('/* Single/recurring switch inactive variant text color */', 'leyka')."\n".
+                    '/* :root { --leyka-color-gray: #666666; } */ '
+                    .__('/* Form fields labels color */', 'leyka')."\n".
+                    '/* :root { --leyka-color-gray-superlight: #ededed; } */ '
+                    .__('/* Checkboxes & other fields borders color */', 'leyka')."\n".
+                    '/* :root { --leyka-color-white: #ffffff; } */ '
+                    .__('/* The main form background color */', 'leyka')."\n".
+                    '/* :root { --leyka-font-main: unset; } */ '
+                    .__('/* The main form font family */', 'leyka')."\n".
+                    '/* :root { --leyka-color-gradient: #ffffff; } */ '
+                    .__('/* Payment methods selector gradient color */', 'leyka')."\n";?>
 
                 <textarea id="campaign-css-field" name="campaign_css" class="css-editor-field"><?php echo $campaign->additional_css ? $campaign->additional_css : $campaign_css_original;?></textarea>
                 <div class="css-editor-reset-value"><?php _e('Return original styles', 'leyka');?></div>
@@ -357,6 +380,33 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             </div>
 
+        </fieldset>
+
+        <fieldset id="campaign-cover-type" class="metabox-field campaign-field persistent-campaign-field">
+            <h3 class="field-title">
+                <?php _e('The campaign page cover type', 'leyka');?>
+            </h3>
+
+            <div class="field-wrapper">
+                <label for="hide-cover-type-image" class="field-label">
+                    <input type="radio" id="hide-cover-type-image" name="header_cover_type" value="image" <?php echo empty($campaign->header_cover_type) || $campaign->header_cover_type == '"image"' ? 'checked' : '';?>> <?php _e('Background image', 'leyka');?>
+                </label>
+                <label for="hide-cover-type-color" class="field-label">
+                    <input type="radio" id="hide-cover-type-color" name="header_cover_type" value="color" <?php echo $campaign->header_cover_type == 'color' ? 'checked' : '';?>> <?php _e('Solid color', 'leyka');?>
+                </label>
+            </div>
+        </fieldset>
+
+        <fieldset id="campaign-cover-bg-color" class="metabox-field campaign-field persistent-campaign-field">
+            <h3 class="field-title">
+                <?php _e('The campaign page cover background color', 'leyka');?>
+            </h3>
+
+            <div class="field-wrapper">
+                <span class="field-component field">
+                    <input type="color" name="cover_bg_color" value="<?php echo $campaign->cover_bg_color ? $campaign->cover_bg_color : '#000000';?>">
+                </span>
+            </div>
         </fieldset>
 
         <fieldset id="campaign-images" class="metabox-field campaign-field persistent-campaign-field">
@@ -371,42 +421,70 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 <!--                </span>-->
             </h3>
 
-            <div class="upload-photo-field upload-attachment-field field-wrapper flex margin-top" data-upload-title="<?php _e('The campaign page cover image', 'leyka');?>" data-field-name="campaign_cover" data-campaign-id="<?php echo $campaign->id;?>" data-ajax-action="leyka_set_campaign_attachment">
-                <span class="field-component field">
-                    <input type="file" value="">
-                    <input type="button" class="button upload-photo" id="campaign_cover-upload-button" value="<?php _e('Upload the page cover', 'leyka');?>">
-                </span>
-                <span class="upload-field-description">
-                    <?php echo sprintf(__('.jpg or .png file, no more than %s sized, recommended width: %s', 'leyka'), leyka_get_upload_max_filesize(), '1920 px');?>
-                </span>
-
-                <?php wp_nonce_field('set-campaign-attachment', 'campaign-cover-nonce');?>
-                <input type="hidden" id="leyka-campaign_cover" name="campaign_cover" value="<?php echo $campaign->cover_id;?>">
-
-                <div class="loading-indicator-wrap" style="display: none;">
-                    <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
+            <div class="upload-photo-complex-field-wrapper margin-top" id="upload-campaign-cover-image">
+                <div class="set-page-img-control" data-mission="cover" data-campaign-id="<?php echo $campaign->id;?>">
+                	<?php $img_url = $campaign->cover_id ? wp_get_attachment_image_url($campaign->cover_id, 'thumbnail') : null;?>
+                	<?php _e('Uploaded cover:', 'leyka');?> <span class="img-value"><?php echo $img_url ? '<img src="'.$img_url.'" />' : __('Default', 'leyka');?></span>
+            		<a href="#" class="reset-to-default" <?php echo !$img_url ? 'style="display: none;"' : '';?> title="<?php _e('Reset to default');?>"></a>
+            		<?php wp_nonce_field('reset-campaign-attachment', 'reset-campaign-cover-nonce');?>
+                    <div class="loading-indicator-wrap" style="display: none;">
+                        <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
+                    </div>
                 </div>
-            </div>
-            <div class="field-errors"></div>
-
-            <div class="upload-photo-field upload-attachment-field field-wrapper flex margin-top" data-upload-title="<?php _e('Your logo on the campaign page', 'leyka');?>" data-field-name="campaign_logo" data-campaign-id="<?php echo $campaign->id;?>" data-ajax-action="leyka_set_campaign_attachment">
-                <span class="field-component field">
-                    <input type="file" value="">
-                    <input type="button" class="button upload-photo" id="campaign_logo-upload-button" value="<?php _e('Upload the logo', 'leyka');?>">
-                </span>
-                <span class="upload-field-description">
-                    <?php echo sprintf(__('.jpg or .png file, no more than %s sized', 'leyka'), leyka_get_upload_max_filesize());?>
-                </span>
-
-                <?php wp_nonce_field('set-campaign-attachment', 'campaign-logo-nonce');?>
-                <input type="hidden" id="leyka-campaign_logo" name="campaign_logo" value="<?php echo $campaign->logo_id;?>">
-
-                <div class="loading-indicator-wrap" style="display: none;">
-                    <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
+                <div class="upload-photo-field upload-attachment-field field-wrapper flex" data-upload-title="<?php _e('The campaign page cover image', 'leyka');?>" data-field-name="campaign_cover" data-campaign-id="<?php echo $campaign->id;?>" data-ajax-action="leyka_set_campaign_attachment">
+                    <span class="field-component field">
+                        <input type="file" value="">
+                        <input type="button" class="button upload-photo" id="campaign_cover-upload-button" value="<?php _e('Upload the page cover', 'leyka');?>">
+                    </span>
+                    <span class="upload-field-description">
+                        <?php echo sprintf(__('.jpg or .png file, no more than %s sized, recommended width: %s', 'leyka'), leyka_get_upload_max_filesize(), '1920 px');?>
+                    </span>
+    
+                    <?php wp_nonce_field('set-campaign-attachment', 'campaign-cover-nonce');?>
+                    <input type="hidden" id="leyka-campaign_cover" name="campaign_cover" value="<?php echo $campaign->cover_id;?>">
+    
+                    <div class="loading-indicator-wrap" style="display: none;">
+                        <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
+                    </div>
                 </div>
+                <div class="field-errors"></div>
             </div>
-            <div class="field-errors"></div>
 
+            <div class="upload-photo-complex-field-wrapper margin-top">
+                <div class="set-page-img-control" data-mission="logo" data-campaign-id="<?php echo $campaign->id;?>">
+                	<?php $img_url = $campaign->logo_id ? wp_get_attachment_image_url($campaign->logo_id, 'thumbnail') : null;?>
+                	<?php _e('Uploaded logo:', 'leyka');?> <span class="img-value"><?php echo $img_url ? '<img src="'.$img_url.'" />' : __('Default', 'leyka');?></span>
+            		<a href="#" class="reset-to-default" <?php echo !$img_url ? 'style="display: none;"' : '';?> title="<?php _e('Reset to default');?>"></a>
+            		<?php wp_nonce_field('reset-campaign-attachment', 'reset-campaign-logo-nonce');?>
+                    <div class="loading-indicator-wrap" style="display: none;">
+                        <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
+                    </div>
+                </div>
+                <div class="upload-photo-field upload-attachment-field field-wrapper flex" data-upload-title="<?php _e('Your logo on the campaign page', 'leyka');?>" data-field-name="campaign_logo" data-campaign-id="<?php echo $campaign->id;?>" data-ajax-action="leyka_set_campaign_attachment">
+                    <span class="field-component field">
+                        <input type="file" value="">
+                        <input type="button" class="button upload-photo" id="campaign_logo-upload-button" value="<?php _e('Upload the logo', 'leyka');?>">
+                    </span>
+                    <span class="upload-field-description">
+                        <?php echo sprintf(__('.jpg or .png file, no more than %s sized', 'leyka'), leyka_get_upload_max_filesize());?>
+                    </span>
+    
+                    <?php wp_nonce_field('set-campaign-attachment', 'campaign-logo-nonce');?>
+                    <input type="hidden" id="leyka-campaign_logo" name="campaign_logo" value="<?php echo $campaign->logo_id;?>">
+    
+                    <div class="loading-indicator-wrap" style="display: none;">
+                        <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
+                    </div>
+                </div>
+                <div class="field-errors"></div>
+            </div>
+
+        </fieldset>
+
+        <fieldset id="campaign-cover-tint" class="metabox-field without-title campaign-field persistent-campaign-field">
+            <label for="hide-cover-tint">
+                <input type="checkbox" id="hide-cover-tint" name="hide_cover_tint" value="1" <?php echo $campaign->hide_cover_tint ? 'checked' : '';?>> <?php _e('Hide cover tint', 'leyka');?>
+            </label>
         </fieldset>
 
         <fieldset id="campaign-data-setup-howto" class="metabox-field campaign-field info-field">
@@ -608,11 +686,24 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         }
 
+        if( !empty($_REQUEST['cover_bg_color']) && $campaign->cover_bg_color !== $_REQUEST['cover_bg_color'] ) {
+            $meta['cover_bg_color'] = sanitize_hex_color($_REQUEST['cover_bg_color']);
+        }
+        
+        if( !empty($_REQUEST['header_cover_type']) && $campaign->header_cover_type !== $_REQUEST['header_cover_type'] ) {
+            $meta['header_cover_type'] = $_REQUEST['header_cover_type'];
+        }
+        
         $_REQUEST['is_finished'] = empty($_REQUEST['is_finished']) ? 0 : 1;
         if($_REQUEST['is_finished'] != $campaign->is_finished) {
             $meta['is_finished'] = $_REQUEST['is_finished'];
         }
 
+        $_REQUEST['hide_cover_tint'] = empty($_REQUEST['hide_cover_tint']) ? 0 : 1;
+        if($_REQUEST['hide_cover_tint'] != $campaign->hide_cover_tint) {
+            $meta['hide_cover_tint'] = $_REQUEST['hide_cover_tint'];
+        }
+        
         if(isset($_REQUEST['campaign_target']) && $_REQUEST['campaign_target'] != $campaign->target) {
 
             $_REQUEST['campaign_target'] = (float)$_REQUEST['campaign_target'];
@@ -776,6 +867,13 @@ class Leyka_Campaign {
 
             }
 
+            if( !isset($meta['hide_cover_tint']) ) {
+                
+                update_post_meta($this->_id, 'hide_cover_tint', 0);
+                $meta['hide_cover_tint'] = array(0);
+                
+            }
+            
             if( !isset($meta['total_funded']) ) { // If campaign total collected amount is not saved, save it
 
                 $sum = 0.0;
@@ -861,6 +959,9 @@ class Leyka_Campaign {
                 'count_views' => empty($meta['count_views']) ? 0 : $meta['count_views'][0],
                 'count_submits' => empty($meta['count_submits']) ? 0 : $meta['count_submits'][0],
                 'total_funded' => empty($meta['total_funded']) ? 0.0 : $meta['total_funded'][0],
+                'hide_cover_tint' => $meta['hide_cover_tint'] ? $meta['hide_cover_tint'][0] > 0 : 0,
+                'cover_bg_color' => empty($meta['cover_bg_color']) ? '' : $meta['cover_bg_color'][0],
+                'header_cover_type' => empty($meta['header_cover_type']) ? '' : $meta['header_cover_type'][0],
             );
 
         }
@@ -969,6 +1070,9 @@ class Leyka_Campaign {
             case 'total_funded':
             case 'total_collected':
             case 'total_donations_funded': return $this->_campaign_meta['total_funded'];
+            case 'hide_cover_tint': return $this->_campaign_meta['hide_cover_tint'];
+            case 'cover_bg_color': return $this->_campaign_meta['cover_bg_color'];
+            case 'header_cover_type': return $this->_campaign_meta['header_cover_type'];
             default:
                 return apply_filters('leyka_get_unknown_campaign_field', null, $field, $this);
         }

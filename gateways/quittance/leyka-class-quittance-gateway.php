@@ -58,8 +58,8 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
         header('Content-Type: text/html; charset=utf-8');
 
         $campaign = new Leyka_Campaign($form_data['leyka_campaign_id']);
-        $leyka_success_url = leyka_template_to_query_arg($campaign->template, get_permalink(leyka_options()->opt('quittance_redirect_page')));
-        $leyka_success_url = add_query_arg('leyka_cid', $campaign->id, $leyka_success_url);
+        leyka_remembered_data('template_id', $campaign->template);
+        $leyka_success_url = get_permalink(leyka_options()->opt('quittance_redirect_page'));
         
         $quittance_html = str_replace(
             apply_filters('leyka_quittance_placeholders_list', array(

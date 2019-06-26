@@ -17,18 +17,18 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
         ));
     }
 
-    public function getTabs() {
+    public function get_tabs() {
         return $this->_tabs;
     }
 
-    public function getTabOptions($tab_name) {
+    public function get_tab_options($tab_id) {
 
-        if(empty($this->_tabs[$tab_name])) {
+        if(empty($this->_tabs[$tab_id])) {
             return false;
         }
 
         $options_allocated = array();
-        switch($tab_name) {
+        switch($tab_id) {
             case 'beneficiary':
                 $options_allocated = array(
                     array('section' => array(
@@ -169,8 +169,8 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                 'title' => __('Main template', 'leyka'),
                                 'sections' => array(
                                     array(
-                                        'options' => array('donation_form_template'),
                                         'title' => __('Which campaign template is default?', 'leyka'),
+                                        'options' => array('donation_form_template'),
                                     ),
                                 ),
                             ),
@@ -436,7 +436,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
             default:
         }
 
-        return apply_filters("leyka_{$tab_name}_options_allocation", $options_allocated);
+        return apply_filters("leyka_{$tab_id}_options_allocation", $options_allocated);
 
     }
 }

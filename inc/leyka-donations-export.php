@@ -68,13 +68,16 @@ function leyka_do_donations_export() {
         'nopaging' => true,
     );
 
-    $donations = get_posts(apply_filters('leyka_donations_export_query_args', $args));
+    $donations = apply_filters(
+        'leyka_donations_pre_export',
+        get_posts(apply_filters('leyka_donations_export_query_args', $args))
+    );
 
     function leyka_prep($text) {
         return '"'.str_replace(array(';', '"'), array('', ''), $text).'"';
     }
 
-    function leyka_prepare_donation_data_for_export($donation_data) {
+    function leyka_prepare_donation_data_for_export($donation_data, $donation) {
 
         foreach($donation_data as &$data) {
             $data = leyka_prep($data);
@@ -83,7 +86,7 @@ function leyka_do_donations_export() {
         return $donation_data;
 
     }
-    add_filter('leyka_donations_export_line', 'leyka_prepare_donation_data_for_export');
+    add_filter('leyka_donations_export_line', 'leyka_prepare_donation_data_for_export', 10, 2);
 
     ob_clean();
 
@@ -132,7 +135,7 @@ function leyka_do_donations_export() {
                     $campaign->title,
                     $donor_subscription,
                     $donation->donor_subscription_email
-                ))
+                ), $donation)
             )
         );
 

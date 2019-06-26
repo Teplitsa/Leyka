@@ -4,8 +4,8 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса, яндекс.деньги, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
-Tested up to: 5.1.1
-Stable tag: 3.2.1
+Tested up to: 5.2.1
+Stable tag: 3.2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,16 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.2.2 =
+* New: Now Revo is the default template in the Init Wizard again.
+* New: Persistent campaigns - new CSS editor default styles added.
+* New: CSS editor features for persistent campaigns CSS field added.
+* Fix: Persistent campaign template CSS bugfixes.
+* Fix: Persistent campaign CSS editor bufixes.
+* Fix: Recurring subscription checkboxes bugfix.
+* Fix: Bugfix in Leyka->get_gateways() method.
+* Fix: Bugfix for donations comments checkbox field in the plugin settings.
+
 = 3.2.1 =
 * New: now [leyka_campaign_form] and [leyka_inline_campaign] shortcodes may be used interchangeably.
 * Fix: "submitted" donations status description changed.

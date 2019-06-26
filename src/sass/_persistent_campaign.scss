@@ -20,10 +20,13 @@
 }
 
 .leyka-persistant-campaign .leyka-campaign-header {
-    background-image: url(../../img/persistent_campaign_header_bg.jpg);
     background-size: cover;
     background-repeat: no-repeat;
     width: 100%;
+    
+    &.cover-type-image {
+        background-image: url(../../img/persistent_campaign_header_bg.jpg);
+    }
     
     .header-tint {
         width: 100%;
@@ -35,6 +38,10 @@
         padding-bottom: 2 * $leyka-star-base;
         background-color: rgba(46, 16, 5, 0.75);
         
+        &.hide-cover-tint {
+            background-color: transparent;
+        }
+        
         @include for(medium-screens) {
             padding-bottom: 145px;
         }
@@ -43,21 +50,27 @@
     .leyka-campaign-logo {
         @include star-clean-a();
         display: block;
-        //background-image: url(../../img/persistent_campaign_header_logo.png);
-        background-image: none;
-        background-repeat: no-repeat;
-        background-position: center;
+        width: auto;
+        height: auto;
+    }
+    
+    .leyka-campaign-no-logo {
         width: 280px;
-        height: 50px;
+        height: 0px;
+        
+        @include for(medium-screens) {
+            height: 50px;
+        }
     }
     
     h1 {
         @include leyka-pc-h1();
         display: block;
-        color: $leyka-star-color-white;
+        color: $leyka-star-color-text-light;
         max-width: 746px;
         text-align: center;
         margin-top: 2 * $leyka-star-base;
+        margin-bottom: 0px;
 
         @include for(medium-screens) {
             margin-top: 2.5 * $leyka-star-base;
@@ -114,14 +127,23 @@
                 padding: 0px 2 * $leyka-star-base 4 * $leyka-star-base 2 * $leyka-star-base;
             }
             
+		   .leyka-pf-star {
+		       @include leyka-star-style-block-box();
+               @include leyka-star-style-block-position();
+		   }
+            
             p {
                 margin-bottom: $leyka-star-base;
-            }
-            
-            .leyka-pf-star {
-                @include leyka-star-style-block();
             }
         }
     }
     
+}
+
+.entry .entry-content {
+	.leyka-pf-star {
+        @include leyka-star-style-block-box();
+        max-width: 600px;
+        box-sizing: border-box;
+	}
 }

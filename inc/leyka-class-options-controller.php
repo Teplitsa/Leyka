@@ -28,7 +28,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         $this->add_template_options();
     }
 
-    public function isStandardFieldType($type) {
+    public function is_standard_field_type($type) {
         return in_array($type, self::$_field_types);
     }
 
@@ -253,7 +253,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         $val = false;
         if(leyka_options()->is_template_option($option_id)) {
 
-            $template_id = $template_id ? $template_id : leyka_template_from_query_arg();
+            $template_id = $template_id ? $template_id : leyka_remembered_data('template_id');
             
             if( !$template_id ) {
 

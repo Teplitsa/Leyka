@@ -42,9 +42,51 @@
                     display: block;
                     margin-bottom: 8px;
                 }
+                
+                .loading-indicator-wrap {
+                    margin-left: 16px;
+                    
+                    .loader-wrap {
+                        padding-top: 0px;
+                    }
+                }
 
             }
-
+            
+            .upload-photo-complex-field-wrapper {
+                &.margin-top {
+                    margin-top: 24px;
+                }
+                
+                .set-page-img-control {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 8px;
+                    
+                    .loading-indicator-wrap {
+                        margin-left: 16px;
+                        
+                        .loader-wrap {
+                            padding-top: 0px;
+                        }
+                    }
+                    
+                    .reset-to-default {
+                        content: "";
+                        margin-left: 16px;
+                        background-image: url(../../img/icon-delete-circled.svg);
+                        background-size: cover;
+                        width: 24px;
+                        height: 24px;
+                        display: inline-block;
+                    }
+                    
+                    .img-value {
+                        margin-left: 16px;
+                    }
+                }
+                
+            }
         }
 
         .info-field {
@@ -140,6 +182,10 @@
 
         .css-editor {
 
+            .cm-s-default.CodeMirror-wrap { // Code editor field
+                border: 1px solid #dddddd;
+            }
+
             textarea {
                 width: 100%;
                 height: 200px;
@@ -179,6 +225,10 @@
 
         .leyka-field-wide {
             width: 100%;
+        }
+        
+        label[for=hide-cover-type-image] {
+            margin-right: 32px;
         }
 
     }

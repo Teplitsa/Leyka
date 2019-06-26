@@ -192,7 +192,7 @@ class Leyka extends Leyka_Singleton {
                     && is_main_query()
                 ) {
 
-                    $form_template = leyka_template_from_query_arg();
+                    $form_template = leyka_remembered_data('template_id');
                     $form_template_suffix = $form_template === 'star' ? '-' . $form_template : '';
 
                     ob_start();
@@ -836,10 +836,29 @@ class Leyka extends Leyka_Singleton {
     }
 
     /**
+     * @param mixed $activation_status If given, get only gateways with it.
+     * NULL for both types altogether.
      * @return array Of Leyka_Gateway objects.
      */
-    public function get_gateways() {
-        return $this->_gateways;
+    public function get_gateways($activation_status = null) {
+
+        if( !$activation_status ) {
+            return $this->_gateways;
+        } else if( !in_array($activation_status, array('active', 'inactive', 'activating')) ) {
+            return array(); /** @todo Throw some Leyka_Exception */
+        } else {
+
+            $gateways = array();
+            foreach($gateways as $gateway) { /** @var $gateway Leyka_Gateway */
+                if($gateway->get_activation_status() === $activation_status) {
+                    $gateways[] = $gateway;
+                }
+            }
+
+            return $gateways;
+
+        }
+
     }
 
     /**

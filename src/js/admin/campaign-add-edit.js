@@ -88,9 +88,12 @@ jQuery(document).ready(function($){
 
         e.preventDefault();
 
-        let $this = $(this);
+        let $this = $(this),
+            $css_editor_field = $this.siblings('.css-editor-field'),
+            original_value = $this.siblings('.css-editor-original-value').val();
 
-        $this.siblings('.css-editor-field').val($this.siblings('.css-editor-original-value').val());
+        $css_editor_field.val(original_value);
+        editor.codemirror.getDoc().setValue(original_value);
 
     });
 
@@ -103,6 +106,7 @@ jQuery(document).ready(function($){
             $field_wrapper = $upload_button.parents('.upload-photo-field'),
             $field_value = $field_wrapper.find(':input[name="'+$field_wrapper.data('field-name')+'"]'),
             $loading = $field_wrapper.find('.loading-indicator-wrap'),
+            $img_wrapper = $upload_button.parents('.upload-photo-complex-field-wrapper').find('.set-page-img-control'),
             frame = wp.media({title: $field_wrapper.data('upload-title'), multiple: false});
 
         frame.on('select', function(){
@@ -130,6 +134,10 @@ jQuery(document).ready(function($){
                         alert('Ошибка!');
                         return;
                     }
+                    else {
+                    	$img_wrapper.find('.img-value').html('<img src="'+json.img_url+'" />');
+                    	$img_wrapper.find('.reset-to-default').show();
+                    }
 
                     // reloadPreviewFrame(); /** @todo */
 
@@ -148,6 +156,79 @@ jQuery(document).ready(function($){
 
         frame.open();
 
+    });
+
+    // Custom CSS editor:
+    let $css_editor = $('.css-editor-field');
+    let editor = {};
+    if($css_editor.length) {
+
+        let editor_settings = wp.codeEditor.defaultSettings ? _.clone( wp.codeEditor.defaultSettings ) : {};
+        editor_settings.codemirror = _.extend({
+            },
+            editor_settings.codemirror, {
+            indentUnit: 2,
+            tabSize: 2,
+            mode: 'css',
+        });
+        editor = wp.codeEditor.initialize($css_editor, editor_settings);
+    }
+
+    // campaign cover type
+    $('#campaign-cover-type input[type=radio]').change(function(){
+    	if($(this).prop('checked')) {
+    		if($(this).val() == 'color') {
+    			$('#campaign-cover-bg-color').show();
+    			$('#upload-campaign-cover-image').hide();
+    		}
+    		else {
+    			$('#campaign-cover-bg-color').hide();
+    			$('#upload-campaign-cover-image').show();
+    		}
+    	}
+    });
+    $('#campaign-cover-type input[type=radio]:checked').change();
+    
+    // reset uploaded image to default
+    $('.set-page-img-control .reset-to-default').on('click.leyka', function(e){
+
+        e.preventDefault();
+
+        let $upload_button = $(this),
+            $field_wrapper = $upload_button.parents('.set-page-img-control'),
+            img_mission = $field_wrapper.data('mission'),
+            $loading = $field_wrapper.find('.loading-indicator-wrap'),
+        	nonce_field_name = 'reset-campaign-' + img_mission + '-nonce';
+        
+        let ajax_params = {
+            action: 'leyka_reset_campaign_attachment',
+            'img_mission': img_mission,
+            campaign_id: $field_wrapper.data('campaign-id'),
+            nonce: $field_wrapper.find(':input[name="'+nonce_field_name+'"]').val()
+        };
+        
+        $field_wrapper.find('.reset-to-default').hide();
+        $loading.show();
+
+        console.log(ajax_params);
+        $.post(leyka.ajaxurl, ajax_params, null, 'json')
+            .done(function(json){
+                if(typeof json.status !== 'undefined' && json.status === 'error') {
+                    alert('Ошибка!');
+                    $field_wrapper.find('.reset-to-default').show();                    
+                    return;
+                }
+                else {
+                	$field_wrapper.find('.img-value').html(leyka.default_image_message);
+                }
+            })
+            .fail(function(){
+                alert('Ошибка!');
+                $field_wrapper.find('.reset-to-default').show();
+            })
+            .always(function(){
+                $loading.hide();
+            });
     });
 
 });

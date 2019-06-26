@@ -11,7 +11,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         $this->_id = 'wizard';
     }
 
-    public function renderPage() {?>
+    public function render_page() {?>
 
         <div class="leyka-admin leyka-wizard wizard-<?php echo $this->_controller->id?> step-<?php echo $this->_controller->getCurrentStep()->id?>">
             <div class="nav-area">
