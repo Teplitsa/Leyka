@@ -1577,8 +1577,10 @@ class Leyka_Donation {
 
     public static function add(array $params = array()) {
 
+        $params['force_insert'] = !empty($params['force_insert']);
+
         $amount = isset($params['amount']) ? round((float)$params['amount'], 2) : leyka_pf_get_amount_value();
-        if( !$amount && empty($params['force_insert']) ) {
+        if( !$amount && !$params['force_insert'] ) {
             return new WP_Error('incorrect_amount_given', __('Empty or incorrect amount given while trying to add a donation', 'leyka'));
         }
 
@@ -1595,6 +1597,9 @@ class Leyka_Donation {
             'post_parent' => empty($params['init_recurring_donation']) ? 0 : (int)$params['init_recurring_donation'],
         ));
 
+        if($params['force_insert'] && !$amount) {
+            $amount = 0.0;
+        }
         add_post_meta($id, 'leyka_donation_amount', (float)$amount);
 
         $value = empty($params['donor_name']) ? leyka_pf_get_donor_name_value() : $params['donor_name'];
@@ -1658,12 +1663,12 @@ class Leyka_Donation {
         }
         add_post_meta($id, 'leyka_donation_currency', $currency);
 
-        $currency_rate = $currency == 'RUR' ? 1.0 : leyka()->opt('currency_rur2'.mb_strtolower($currency));
-        if( !$currency_rate || (float)$currency_rate <= 0.0 ) {
+        $currency_rate = $currency == 'rur' ? 1.0 : (float)leyka_options()->opt('currency_rur2'.mb_strtolower($currency));
+        if( !$currency_rate || $currency_rate <= 0.0 ) {
             $currency_rate = 1.0;
         }
 
-        add_post_meta($id, 'leyka_main_curr_amount', $currency == 'RUR' ? $amount : $amount*$currency_rate);
+        add_post_meta($id, 'leyka_main_curr_amount', $amount*$currency_rate);
 
         add_post_meta(
             $id, 'leyka_campaign_id',
