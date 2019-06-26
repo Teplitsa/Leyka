@@ -38,10 +38,18 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		add_filter('plugin_action_links_'.LEYKA_PLUGIN_INNER_SHORT_NAME, array($this, 'add_plugins_list_links'));
 
         // Metaboxes support where it is needed:
-        add_action('leyka_pre_settings_actions', array($this, 'full_metaboxes_support'));
-        add_action('leyka_dashboard_actions', array($this, 'full_metaboxes_support'));
+//        add_action('leyka_pre_settings_actions', array($this, 'full_metaboxes_support'));
+//        add_action('leyka_dashboard_actions', array($this, 'full_metaboxes_support'));
 		add_action('leyka_post_admin_actions', array($this, 'show_footer'));
 
+		// Donors' tags on the user profile page:
+        add_action('show_user_profile', array($this, 'show_user_profile_donor_fields'));
+        add_action('edit_user_profile', array($this, 'show_user_profile_donor_fields'));
+
+        add_action('personal_options_update', array($this, 'save_user_profile_donor_fields'));
+        add_action('edit_user_profile_update', array($this, 'save_user_profile_donor_fields'));
+
+        // Portlet controller API:
 		require_once LEYKA_PLUGIN_DIR.'/inc/leyka-class-portlet-controller.php';
 
     }
@@ -57,15 +65,14 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
     }
 
     // A little function to support the full abilities of the metaboxes on any plugin's page:
-    public function full_metaboxes_support($current_stage = false) {?>
+    /*public function full_metaboxes_support($current_stage = false) {?>
 
-        <!-- Metaboxes reordering and folding support -->
         <form style="display:none" method="get" action="#">
             <?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false); ?>
             <?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false); ?>
         </form>
 
-    <?php }
+    <?php }*/
 
     public function pre_admin_actions() {
 
@@ -321,7 +328,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             <div class="leyka-logo"><img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/logo-leyka.svg" alt=""></div>
 
             <div class="leyka-description">
-                <?php _e('Leyka is a simple donations collection & management system for your website', 'leyka'); // Р›РµР№РєР° - РїСЂРѕСЃС‚Р°СЏ СЃРёСЃС‚РµРјР° РґР»СЏ СЃР±РѕСЂР° Рё СѓРїСЂР°РІР»РµРЅРёСЏ РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёСЏРјРё РЅР° РІР°С€РµРј СЃР°Р№С‚Рµ ?>
+                <?php _e('Leyka is a simple donations collection & management system for your website', 'leyka');?>
             </div>
 
             <div class="leyka-bottom-link leyka-official-website">
@@ -500,10 +507,104 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         <?php }
 
     }
+
+    /**
+     * Display Donor role related fields.
+     *
+     * @param $donor_user WP_User
+     */
+    public function show_user_profile_donor_fields(WP_User $donor_user) {
+
+        if( !current_user_can('administrator') ) {
+            return;
+        }?>
+
+        <table class="form-table">
+            <tr>
+                <th>
+                    <label for="leyka-donors-tags-field"><?php _e('Donor tags', 'leyka');?></label>
+                </th>
+                <td>
+                    <?php $all_donors_tags = get_terms(array(
+                        'taxonomy' => LEYKA_DONORS_TAGS_TAXONOMY_NAME,
+                        'hide_empty' => false,
+                    ));
+
+                    $donor_user_tags = wp_get_object_terms($donor_user->ID, LEYKA_DONORS_TAGS_TAXONOMY_NAME, array('fields' => 'ids')); // get_user_meta($donor_user->ID, LEYKA_DONORS_TAGS_META_KEY, true);
+//                    $donor_user_tags = is_array($donor_user_tags) ? $donor_user_tags : array();?>
+
+                    <select id="leyka-donors-tags-field" multiple="multiple" name="<?php echo LEYKA_DONORS_TAGS_META_KEY;?>[]">
+                    <?php foreach($all_donors_tags as $donor_tag) {?>
+                        <option value="<?php echo esc_attr($donor_tag->term_id);?>" <?php echo in_array($donor_tag->term_id, $donor_user_tags) ? 'selected="selected"' : '';?>>
+                            <?php echo esc_html($donor_tag->name);?>
+                        </option>
+                    <?php }?>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <?php
+
+    }
+
+    /**
+     * Handle Donor role related fields.
+     *
+     * @param $donor_user_id integer
+     * @return boolean True if fields values are saved, false otherwise.
+     */
+    public function save_user_profile_donor_fields($donor_user_id) {
+
+        $donor_user = get_user_by('id', $donor_user_id);
+
+        if( !current_user_can('administrator') || !leyka_user_has_role('donor', false, $donor_user) ) {
+            return false;
+        }
+
+//        $prev_donor_tags_ids = get_user_meta($donor_user_id, LEYKA_DONORS_TAGS_META_KEY, true);
+//        $prev_donor_tags_ids = $prev_donor_tags_ids ? (array)$prev_donor_tags_ids : array();
+
+//        update_user_meta($donor_user_id, LEYKA_DONORS_TAGS_META_KEY, $_POST[LEYKA_DONORS_TAGS_META_KEY]);
+//        $this->_update_donor_tags_count($prev_donor_tags_ids, $_POST[LEYKA_DONORS_TAGS_META_KEY]);
+
+//        $prev_donor_tags_ids = wp_get_object_terms($donor_user_id, LEYKA_DONORS_TAGS_TAXONOMY_NAME, array('fields' => 'ids'));
+
+        array_walk($_POST[LEYKA_DONORS_TAGS_META_KEY], function(&$value){
+            $value = (int)$value;
+        });
+
+        wp_set_object_terms($donor_user_id, $_POST[LEYKA_DONORS_TAGS_META_KEY], LEYKA_DONORS_TAGS_TAXONOMY_NAME);
+
+        return true;
+
+    }
+    
+//    protected function _update_donor_tags_count($prev_donor_tags_ids, $new_donor_tags_ids) {
+//
+//        global $wpdb;
+//
+//        $donors_tags_ids = array_unique(array_merge((array)$prev_donor_tags_ids, (array)$new_donor_tags_ids));
+//
+//        if( !$donors_tags_ids ) {
+//            return;
+//        }
+//
+//        foreach($donors_tags_ids as $tag_id) {
+//
+//            $count = $wpdb->get_var($wpdb->prepare(
+//                "SELECT COUNT(umeta_id) FROM $wpdb->usermeta WHERE meta_key = %s AND meta_value LIKE %s",
+//                LEYKA_DONORS_TAGS_META_KEY,
+//                '%"'.$tag_id.'"%'
+//            ));
+//            $wpdb->update($wpdb->term_taxonomy, array('count' => $count), array('term_taxonomy_id' => $tag_id));
+//
+//        }
+//
+//    }
 	
-	public function is_v3_settings_page($stage) {
-		return in_array($stage, array('payment', 'email', 'beneficiary', 'technical', 'view', 'additional'));
-	}
+//	public function is_v3_settings_page($stage) {
+//		return in_array($stage, array('payment', 'email', 'beneficiary', 'technical', 'view', 'additional'));
+//	}
 
 	public function is_separate_forms_stage($stage) {
 		return in_array($stage, array('email', 'beneficiary', 'technical', 'view', 'additional'));
@@ -947,15 +1048,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         // Base admin area js/css:
         $leyka_admin_new = (isset($_GET['screen']) && count(explode('-', $_GET['screen'])) >= 2) // New settings pages (from v3.0)
-            || (
-                isset($_GET['page'])
-                && $_GET['page'] === 'leyka_settings'
-                && (empty($_GET['stage']) || $this->is_v3_settings_page($_GET['stage']))
-                && empty($_GET['old'])
-            )
+            || (isset($_GET['page']) && $_GET['page'] === 'leyka_settings' && empty($_GET['stage']) && empty($_GET['old']))
             || ($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post')
             || (isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_donors'));
-            
+
         $current_screen = get_current_screen();
         $dependencies = array('jquery',);
 
@@ -1001,6 +1097,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         ));
 
 		if($leyka_admin_new) {
+
 		    $dependencies[] = 'jquery-ui-autocomplete';
 		    
 			wp_enqueue_script('leyka-easy-modal', LEYKA_PLUGIN_BASE_URL . 'js/jquery.easyModal.min.js', array(), false, true);

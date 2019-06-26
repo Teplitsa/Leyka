@@ -1590,9 +1590,10 @@ class Leyka extends Leyka_Singleton {
                     'add_new_item' => __('Add new donors tag', 'leyka'),
                     'new_item_name'	=> __('New donors tag name', 'leyka'),
                 ),
-                'update_count_callback' => function() {
-                    return; // Important
-                }
+                /** @todo Add a custom function for it */
+//                'update_count_callback' => function() {
+//                    return; // Important
+//                }
             )
         );
 
