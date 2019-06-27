@@ -1,6 +1,8 @@
 <?php if( !defined('WPINC') ) die;
 /** Admin Donor's info page template */
 
+/** @var $this Leyka_Admin_Setup */
+
 if(empty($_GET['donor']) || !current_user_can('leyka_manage_options')) {
 
     wp_redirect(admin_url('admin.php?page=leyka'));

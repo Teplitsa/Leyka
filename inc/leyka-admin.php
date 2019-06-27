@@ -171,8 +171,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         if(leyka()->opt('donor_management_available')) {
 
             // Donors list page:
-            $hook = add_submenu_page('leyka', __('Donors', 'leyka'), __('Donors', 'leyka'), 'leyka_manage_donations', 'leyka_donors', array($this, 'donors_screen'));
-            add_action("load-$hook", array($this, 'donors_screen_options'));
+            $hook = add_submenu_page('leyka', __('Donors', 'leyka'), __('Donors', 'leyka'), 'leyka_manage_donations', 'leyka_donors', array($this, 'donors_list_screen'));
+            add_action("load-$hook", array($this, 'donors_list_screen_options'));
 
             // Donors tags page:
             $taxonomy = get_taxonomy(LEYKA_DONORS_TAGS_TAXONOMY_NAME);
@@ -195,11 +195,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         add_submenu_page('leyka', __('Contact us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedback_screen'));
 
-        // Wizards pages group (a fake page):
+        // Fake pages:
         add_submenu_page(NULL, 'Leyka Wizard', 'Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', array($this, 'settings_new_screen'));
 
-        // Donor's info pages (a fake page):
         add_submenu_page(NULL, "Donor's info", "Donor's info", 'leyka_manage_options', 'leyka_donor_info', array($this, 'donor_info_screen'));
+        // Fake pages - END
 
         do_action('leyka_admin_menu_setup');
 
@@ -230,72 +230,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             wp_die(__('Sorry, but you do not have permissions to access this page.', 'leyka'));
         }
 
-        do_action('leyka_pre_dashboard_actions');?>
+        do_action('leyka_pre_dashboard_actions');
 
-		<div class="wrap leyka-admin leyka-dashboard-page">
-		
-		    <h1><?php _e('Leyka dashboard', 'leyka');?></h1>
+		$this->_show_admin_template('dashboard-page');
 
-            <?php if(leyka()->opt('send_plugin_stats') !== 'y') {?>
-            <div class="send-plugin-stats-invite">
-                <div class="invite-text">
-                    <?php _e('Please, turn on the option to send anonymous plugin usage data to help us diagnose', 'leyka');?>
-                </div>
-                <div class="invite-link">
-                    <button class="send-plugin-usage-stats-y"><?php _e('Allow usage statistics collection', 'leyka');?></button>
-                    <?php wp_nonce_field('usage_stats_y', 'usage_stats_y');?>
-                    <div class="loading-indicator-wrap">
-                        <div class="loader-wrap"><span class="leyka-loader xxs"></span></div>
-                        <img class="ok-icon" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/icon-check.svg" alt="">
-                    </div>
-                </div>
-            </div>
-            <?php }?>
-
-		    <div class="leyka-dashaboard-content">
-
-		        <div class="main-col">
-
-                    <?php if($this->has_banners('admin-dashboard', 'main')) {
-                        $this->show_banner('admin-dashboard', 'main');
-                    }
-
-                    $_GET['interval'] = empty($_GET['interval']) ? 'year' : esc_attr($_GET['interval']);
-                    $current_url = admin_url('admin.php?page=leyka');?>
-
-                    <div class="plugin-data-interval">
-                        <a href="<?php echo add_query_arg('interval', 'year', $current_url);?>" class="<?php echo $_GET['interval'] === 'year' ? 'current-interval' : '';?>"><?php _e('Year', 'leyka');?></a>
-                        <a href="<?php echo add_query_arg('interval', 'half-year', $current_url);?>" class="<?php echo $_GET['interval'] === 'half-year' ? 'current-interval' : '';?>"><?php _e('Half-year', 'leyka');?></a>
-                        <a href="<?php echo add_query_arg('interval', 'quarter', $current_url);?>" class="<?php echo $_GET['interval'] === 'quarter' ? 'current-interval' : '';?>"><?php _e('Quarter', 'leyka');?></a>
-                        <a href="<?php echo add_query_arg('interval', 'month', $current_url);?>" class="<?php echo $_GET['interval'] === 'month' ? 'current-interval' : '';?>"><?php _e('Month', 'leyka');?></a>
-                        <a href="<?php echo add_query_arg('interval', 'week', $current_url);?>" class="<?php echo $_GET['interval'] === 'week' ? 'current-interval' : '';?>"><?php _e('Week', 'leyka');?></a>
-                    </div>
-
-                    <div class="leyka-dashboard-row">
-                        <?php $this->show_admin_portlet('stats-donations-main', array('interval' => $_GET['interval']));
-                        $this->show_admin_portlet('stats-recurring', array('interval' => $_GET['interval']));?>
-                    </div>
-
-                    <div class="leyka-dashboard-row">
-                        <?php $this->show_admin_portlet('donations-dynamics', array('interval' => $_GET['interval']));?>
-                    </div>
-
-                    <div class="leyka-dashboard-row">
-                        <?php $this->show_admin_portlet('recent-donations', array(
-                            'interval' => $_GET['interval'],
-                            'number' => 5,
-                        ));?>
-                    </div>
-
-                </div>
-                <div class="sidebar-col">
-                    <?php $this->show_dashboard_sidebar();?>
-                </div>
-            </div>
-
-        </div>
-
-	<?php do_action('leyka_post_dashboard_actions');
+		do_action('leyka_post_dashboard_actions');
         do_action('leyka_post_admin_actions');
 
 	}
@@ -335,179 +274,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
     <?php
 	}
 
-	public function show_dashboard_sidebar() {
-
-        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php');?>
-
-		<div class="leyka-dashboard-sidebar-part">
-
-            <div class="leyka-logo"><img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/logo-leyka.svg" alt=""></div>
-
-            <div class="leyka-description">
-                <?php _e('Leyka is a simple donations collection & management system for your website', 'leyka');?>
-            </div>
-
-            <div class="leyka-bottom-link leyka-official-website">
-                <a href="//leyka.te-st.ru/" target="_blank"><?php _e('Go to the plugin documentation', 'leyka');?></a>
-            </div>
-
-        </div>
-
-        <?php $init_wizard_controller = Leyka_Settings_Factory::get_instance()->get_controller('init');
-        $main_settings_steps = $init_wizard_controller->navigation_data[0]['section_id'] === 'rd' ?
-            $init_wizard_controller->navigation_data[0]['steps'] : array();
-
-        if($main_settings_steps) {?>
-        <div class="leyka-dashboard-sidebar-part">
-
-            <h3><?php _e('My data', 'leyka');?></h3>
-
-            <div class="sidebar-part-content settings-state">
-                <?php foreach($main_settings_steps as $step) {
-
-                    $step_invalid_options = leyka_is_settings_step_valid($step['step_id']);?>
-
-                    <div class="settings-step-set">
-                            <div class="step-setup-status <?php echo !is_array($step_invalid_options) ? 'step-valid' : 'step-invalid';?>"></div>
-                        	<div class="step-title-wrapper">
-                                <div class="step-title"><?php echo $step['title'];?></div>
-            
-                            <?php if(is_array($step_invalid_options)) {?>
-            
-                                <div class="step-invalid-options">
-            
-                                <?php if(count($step_invalid_options) <= 5) {
-                                    foreach($step_invalid_options as $option_id) { ?>
-                                        <div class="invalid-option">
-                                            <?php echo leyka_options()->get_title_of($option_id); ?>
-                                        </div>
-                                    <?php }
-                                } else {?>
-                                    <div class="invalid-option"><?php _e('Some option fields are not filled correctly', 'leyka');?></div>
-                                <?php }?>
-            
-                                </div>
-                                <?php }?>
-                                
-                            </div>
-                    </div>
-
-                <?php }?>
-            </div>
-
-            <div class="leyka-bottom-link leyka-wizard-link">
-            	<a href="<?php echo admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init');?>" class="init-wizard-link"><?php _e('To the step-by-step setup', 'leyka');?></a>
-        	</div>
-
-        </div>
-        <?php }?>
-
-        <div class="leyka-dashboard-sidebar-part">
-
-            <h3><?php  _e('Payment gateways', 'leyka');?></h3>
-
-            <div class="sidebar-part-content gateways">
-
-                <?php foreach(leyka()->get_gateways('activating') as $gateway) {?>
-                <div class="gateway status-activating">
-                    <div class="gateway-logo"><img src="<?php echo $gateway->icon_url;?>" alt=""></div>
-                    <div class="gateway-data">
-                        <div class="gateway-title"><?php echo $gateway->title;?></div>
-                        <div class="gateway-activation-status"><a href="<?php echo admin_url("/admin.php?page=leyka_settings&stage=payment&gateway=" . $gateway->id)?>"><?php _e('Activating', 'leyka');?></a></div>
-                    </div>
-                </div>
-                <?php }?>
-
-                <?php foreach(leyka()->get_gateways('active') as $gateway) {?>
-                    <div class="gateway status-active">
-                        <div class="gateway-logo"><img src="<?php echo $gateway->icon_url;?>" alt=""></div>
-                        <div class="gateway-data">
-                            <div class="gateway-title"><?php echo $gateway->title;?></div>
-                            <div class="gateway-activation-status"><?php _e('Active', 'leyka');?></div>
-                        </div>
-                    </div>
-                <?php }?>
-
-            </div>
-
-            <div class="add-gateway-link">
-                <a href="<?php echo admin_url('admin.php?page=leyka_settings');?>"><?php _e('Add gateway', 'leyka');?></a>
-            </div>
-
-        </div>
-
-        <div class="leyka-dashboard-sidebar-part">
-
-            <h3><?php  _e('Diagnostic data', 'leyka');?></h3>
-
-            <div class="sidebar-part-content diagnostic-data">
-                <div class="data-line"><?php echo __('Leyka', 'leyka').' '.LEYKA_VERSION;?></div>
-                <div class="data-line">
-                    <?php $template = leyka()->get_template(leyka()->opt('donation_form_template'));
-                    echo __('Default template:', 'leyka').' '.__($template['name'], 'leyka');?>
-                </div>
-                <div class="data-line php-actuality-status">
-
-                    <?php if(version_compare(phpversion(), '5.6') == -1) {
-                        $php_version_actuality = 'bad';
-                    } else if(version_compare(phpversion(), '5.6') >= 0 && version_compare(phpversion(), '7.1') == -1) {
-                        $php_version_actuality = 'average';
-                    } else if(version_compare(phpversion(), '7.1') >= 0 && version_compare(phpversion(), '7.2') == -1) {
-                        $php_version_actuality = 'good';
-                    } else {
-                        $php_version_actuality = 'excellent';
-                    }?>
-
-                    <div class="php-version <?php echo $php_version_actuality;?>"><?php echo 'PHP ' . phpversion();?></div>
-
-                </div>
-                <div class="data-line"><?php echo 'WordPress '.get_bloginfo('version');?></div>
-
-                <?php $cronjobs_status = leyka_get_cronjobs_status();?>
-                <div class="data-line cron-state">
-                    Cron: <span class="cron-state <?php echo $cronjobs_status['status'];?>"><?php echo mb_strtolower($cronjobs_status['title']);?></span>
-                    <?php if($cronjobs_status['status'] === 'not-set') {?>
-                    	<a href="#" class="cron-setup-howto"><?php _e('How to set it up?', 'leyka');?></a>
-                	<?php }?>
-                </div>
-
-                <div class="data-line">
-
-                    <?php $protocol = parse_url(home_url(), PHP_URL_SCHEME);
-                    echo __('Protocol:', 'leyka').' ';?>
-                    <span class="protocol <?php echo $protocol == 'https' ? 'safe' : 'not-safe';?>"><?php echo mb_strtoupper($protocol);?></span>
-                </div>
-                <div class="data-line">
-
-                    <?php $php_extensions_needed = array('curl', 'date', 'ereg', 'filter', 'ftp', 'gd', 'hash', 'iconv', 'json', 'libxml', 'mbstring', 'mysql', 'mysqli', 'openssl', 'pcre', 'simplexml', 'sockets', 'spl', 'tokenizer', 'xmlreader', 'xmlwriter', 'zlib',); // According to https://wordpress.stackexchange.com/questions/42098/what-are-php-extensions-and-libraries-wp-needs-and-or-uses
-                    $php_extensions = get_loaded_extensions();
-
-                    foreach($php_extensions_needed as &$extension_needed) {
-                        $extension_needed = '<span class="php-ext '.(in_array($extension_needed, $php_extensions) ? '' : 'php-ext-missing').'">'.mb_strtolower($extension_needed).'</span>';
-                    }?>
-
-                    <span class="php-modules-title"><?php echo __('PHP modules', 'leyka');?></span>
-                    <?php echo implode(', ', $php_extensions_needed);?>
-
-                </div>
-            </div>
-            
-            <div id="how-to-setup-cron" class="leyka-adb-modal" title="<?php esc_html_e('How to setup cron?', 'leyka');?>" style="max-width:433px">
-                <p class="error-notif">
-                	<?php esc_html_e("For recurrent payments via Yandex.Cash, you need to set up a task for Cron.", 'leyka');?>
-                	<a href="https://leyka.te-st.ru/instruction/"><?php esc_html_e("Read more here", 'leyka');?></a>
-                </p>
-                <p class="error-notif">
-                	<?php esc_html_e('To send email when reaching the target amount of the campaign, you need to set up a task for Cron.', 'leyka');?>
-                	<a href="https://leyka.te-st.ru/instruction/"><?php esc_html_e("Read more here", 'leyka');?></a>
-            	</p>
-            </div>
-
-        </div>
-
-        <?php
-	}
-
 	public function has_banners($page = false, $location = false) {?>
 	    <?php return false;
     }
@@ -525,7 +291,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
     }
 
     /**
-     * Display Donor role related fields.
+     * Display Donor related fields on the User profile admin page.
      *
      * @param $donor_user WP_User
      */
@@ -546,8 +312,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                         'hide_empty' => false,
                     ));
 
-                    $donor_user_tags = wp_get_object_terms($donor_user->ID, LEYKA_DONORS_TAGS_TAXONOMY_NAME, array('fields' => 'ids')); // get_user_meta($donor_user->ID, LEYKA_DONORS_TAGS_META_KEY, true);
-//                    $donor_user_tags = is_array($donor_user_tags) ? $donor_user_tags : array();?>
+                    $donor_user_tags = wp_get_object_terms(
+                        $donor_user->ID,
+                        LEYKA_DONORS_TAGS_TAXONOMY_NAME,
+                        array('fields' => 'ids')
+                    );?>
 
                     <select id="leyka-donors-tags-field" multiple="multiple" name="<?php echo LEYKA_DONORS_TAGS_META_KEY;?>[]">
                     <?php foreach($all_donors_tags as $donor_tag) {?>
@@ -564,7 +333,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
     }
 
     /**
-     * Handle Donor role related fields.
+     * Handle Donor related fields for the User profile admin page.
      *
      * @param $donor_user_id integer
      * @return boolean True if fields values are saved, false otherwise.
@@ -617,16 +386,12 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 //        }
 //
 //    }
-	
-//	public function is_v3_settings_page($stage) {
-//		return in_array($stage, array('payment', 'email', 'beneficiary', 'technical', 'view', 'additional'));
-//	}
 
 	public function is_separate_forms_stage($stage) {
 		return in_array($stage, array('email', 'beneficiary', 'technical', 'view', 'additional'));
 	}
 
-    public function donors_screen_options() {
+    public function donors_list_screen_options() {
 
         add_screen_option('per_page', array(
             'label' => __('Donors per page', 'leyka'),
@@ -640,116 +405,19 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
     }
 
-    public function donors_screen() {
+    public function donors_list_screen() {
 
         if( !current_user_can('leyka_manage_options') ) {
             wp_die(__('You do not have permissions to access this page.', 'leyka'));
-        }?>
+        }
 
-        <div class="wrap">
-            <h2><?php _e('Donors', 'leyka');?></h2>
+        do_action('leyka_pre_donors_list_actions');
 
-            <div id="poststuff">
-                <div id="post-body" class="metabox-holder columns-2">
+        $this->_show_admin_template('donors-list-page');
 
-                    <form class="donors-list-filters" action="#" method="get">
+        do_action('leyka_post_donors_list_actions');
+        do_action('leyka_post_admin_actions');
 
-                        <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']);?>">
-
-                        <div class="col-1">
-
-                            <?php $filter_value = isset($_GET['donor-type']) ? esc_attr($_GET['donor-type']) : false;?>
-                            <select name="donor-type">
-                                <option value="" <?php echo !$filter_value ? 'selected="selected"' : '';?>>
-                                    <?php _e('Donor type', 'leyka');?>
-                                </option>
-                                <option value="single" <?php echo $filter_value == 'single' ? 'selected="selected"' : '';?>>
-                                    <?php _ex('Single', 'Donor type name', 'leyka');?>
-                                </option>
-                                <option value="regular" <?php echo $filter_value == 'regular' ? 'selected="selected"' : '';?>>
-                                    <?php _ex('Regular', 'Donor type name', 'leyka');?>
-                                </option>
-                            </select>
-
-                            <input type="text" name="donor-name-email" value="<?php echo isset($_GET['donor-name-email']) ? esc_attr($_GET['donor-name-email']) : '';?>" placeholder="<?php _e("Donor's name or email", 'leyka');?>">
-
-                            <input type="date" name="first-donation-date" value="<?php echo isset($_GET['first-donation-date']) ? esc_attr($_GET['first-donation-date']) : '';?>" placeholder="<?php _e('First payment date', 'leyka');?>">
-
-                            <select name="campaigns[]" multiple="multiple">
-                                <option value="" selected="selected"><?php _e('Campaigns list', 'leyka');?></option>
-                                <?php /** @todo Use ajax query to get values */?>
-                            </select>
-
-                            <input type="date" name="last-donation-date" value="<?php echo isset($_GET['last-donation-date']) ? esc_attr($_GET['last-donation-date']) : '';?>" placeholder="<?php _e('Last payment date', 'leyka');?>">
-
-                            <?php $filter_value = isset($_GET['donors-tags']) ? (array)$_GET['donors-tags'] : array();?>
-                            <select name="donors-tags[]" multiple="multiple">
-
-                                <option value="" <?php echo !$filter_value ? 'selected="selected"' : '';?>>
-                                    <?php _e('Donors tags', 'leyka');?>
-                                </option>
-
-                                <?php $donors_tags = get_terms(
-                                    LEYKA_DONORS_TAGS_TAXONOMY_NAME,
-                                    array('hide_empty' => false, 'orderby' => 'name', 'order' => 'ASC',)
-                                );
-
-                                foreach($donors_tags as $tag) {?>
-                                    <option value="<?php echo $tag->term_id;?>" <?php echo is_array($filter_value) && in_array($tag->term_id, $filter_value) ? 'selected="selected"' : '';?>>
-                                        <?php echo $tag->name;?>
-                                    </option>
-                                <?php }?>
-
-                            </select>
-
-                            <?php $filter_value = isset($_GET['gateways']) ? (array)$_GET['gateways'] : array();?>
-                            <select name="gateways[]" multiple="multiple">
-
-                                <option value="" <?php echo !$filter_value ? 'selected="selected"' : '';?>>
-                                    <?php _e('Payment gateway', 'leyka');?>
-                                </option>
-
-                                <?php $gateways = leyka_get_gateways();
-                                usort($gateways, function($gateway_first, $gateway_second){
-                                    return strcmp($gateway_first->name, $gateway_second->name);
-                                });
-
-                                foreach($gateways as $gateway) {?>
-                                    <option value="<?php echo $gateway->id;?>" <?php echo is_array($filter_value) && in_array($gateway->id, $filter_value) ? 'selected="selected"' : '';?>>
-                                        <?php echo $gateway->name;?>
-                                    </option>
-                                <?php }?>
-
-                            </select>
-
-                        </div>
-
-                        <div class="col-2">
-                            <input type="submit" class="button" value="<?php _e('Filter the data', 'leyka');?>">
-                            <input type="reset" class="reset-filters" value="<?php _e('Reset the filter', 'leyka');?>">
-                        </div>
-
-                    </form>
-
-                    <div class="donors-list-export"><button><?php _e('Export the list in CSV', 'leyka');?></button></div>
-
-                    <div id="post-body-content">
-                        <div class="meta-box-sortables ui-sortable">
-                            <form method="post">
-                                <?php $this->_donors_list_table->prepare_items();
-                                $this->_donors_list_table->display();?>
-                            </form>
-                        </div>
-                    </div>
-
-                </div>
-
-                <br class="clear">
-
-            </div>
-        </div>
-
-        <?php
     }
 
 	public function settings_screen() {
@@ -768,8 +436,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		do_action('leyka_pre_settings_actions', $current_stage);
 
         // Process settings change:
-	    if((
-                !empty($_POST["leyka_settings_{$current_stage}_submit"])
+	    if(
+	        (
+	            !empty($_POST["leyka_settings_{$current_stage}_submit"])
                 || !empty($_POST["leyka_settings_stage-{$current_stage}_submit"])
             )
 	        /** @todo Find what's wrong with the nonce check below: */
@@ -930,7 +599,14 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	}
 
 	public function donor_info_screen() {
+
+        do_action('leyka_pre_donor_info_actions');
+
 	    $this->_show_admin_template('donor-info-page');
+
+        do_action('leyka_post_donor_info_actions');
+        do_action('leyka_post_admin_actions');
+
     }
 
     /** Displaying feedback **/
@@ -940,58 +616,12 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             wp_die(__('You do not have permissions to access this page.', 'leyka'));
 		}
 
-        $user = wp_get_current_user();?>
+        do_action('leyka_pre_feedback_actions');
 
-	<div class="wrap">
-		<h2><?php _e('Send us a feedback', 'leyka');?></h2>
+        $this->_show_admin_template('feedback-page');
 
-		<div class="leyka-feedback-description">
-			<p><?php _e('Found a bug? Need a feature?', 'leyka'); ?></p>
-			<p><?php _e('Please, <a href="https://github.com/Teplitsa/Leyka/issues/new">create an issue on Github</a> or send us a message with the following form', 'leyka'); ?></p>
-		</div>
-
-		<div class="feedback-columns">
-			<div class="leyka-feedback-form">
-				<img id="feedback-loader" style="display: none;" src="<?php echo LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif';?>" alt="">
-				<form id="feedback" action="#" method="post">
-					<fieldset class="leyka-ff-field">
-						<label for="feedback-topic"><?php _e('Message topic:', 'leyka');?></label>
-						<input id="feedback-topic" name="topic" placeholder="<?php _e('For ex., Paypal support needed', 'leyka');?>" class="regular-text">
-						<div id="feedback-topic-error" class="leyka-ff-field-error" style="display: none;"></div>
-					</fieldset>
-					<fieldset class="leyka-ff-field">
-						<label for="feedback-name"><?php _e("Your name (we'll use it to address you only):", 'leyka');?></label>
-						<input id="feedback-name" name="name" placeholder="<?php _e('For ex., Leo', 'leyka');?>" value="<?php echo $user->display_name;?>" class="regular-text">
-						<div id="feedback-name-error" class="leyka-ff-field-error" style="display: none;"></div>
-					</fieldset>
-					<fieldset class="leyka-ff-field">
-						<label for="feedback-email"><?php _e('Your email:', 'leyka');?></label>
-						<input id="feedback-email" name="email" placeholder="<?php _e('your@mailbox.com', 'leyka');?>" value="<?php echo $user->user_email;?>" class="regular-text">
-						<div id="feedback-email-error" class="leyka-ff-field-error" style="display: none;"></div>
-					</fieldset>
-					<fieldset class="leyka-ff-field">
-						<label for="feedback-text"><?php _e('Your message:', 'leyka');?></label>
-						<textarea id="feedback-text" name="text" class="regular-text"></textarea>
-						<div id="feedback-text-error" class="leyka-ff-field-error" style="display: none;" ></div>
-					</fieldset>
-					<fieldset class="leyka-ff-field leyka-submit">
-						<input type="hidden" id="nonce" value="<?php echo wp_create_nonce('leyka_feedback_sending');?>">
-						<input type="submit" class="button-primary" value="<?php _e('Submit');?>">
-					</fieldset>
-				</form>
-				<div id="message-ok" class="leyka-ff-msg ok" style="display: none;">
-					<p><?php _e('<strong>Thank you!</strong> Your message sended successfully. We will answer it soon - please await our response on the email you entered.', 'leyka');?></p>
-				</div>
-				<div id="message-error" class="leyka-ff-msg wrong" style="display: none;">
-					<p><?php _e("Sorry, but the message can't be sended. Please check your mail server settings.", 'leyka');?></p>
-				</div>
-			</div>
-			<div class="feedback-sidebar"></div>
-		</div>
-		
-	</div>
-
-    <?php do_action('leyka_post_admin_actions');
+        do_action('leyka_post_feedback_actions');
+        do_action('leyka_post_admin_actions');
 
     }
 
