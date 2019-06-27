@@ -673,7 +673,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                                     <?php _e('Donors tags', 'leyka');?>
                                 </option>
 
-                                <?php $donors_tags = get_terms(LEYKA_DONORS_TAGS_TAXONOMY_NAME, array('hide_empty' => false));
+                                <?php $donors_tags = get_terms(
+                                    LEYKA_DONORS_TAGS_TAXONOMY_NAME,
+                                    array('hide_empty' => false, 'orderby' => 'name', 'order' => 'ASC',)
+                                );
+
                                 foreach($donors_tags as $tag) {?>
                                     <option value="<?php echo $tag->term_id;?>" <?php echo is_array($filter_value) && in_array($tag->term_id, $filter_value) ? 'selected="selected"' : '';?>>
                                         <?php echo $tag->name;?>
@@ -689,7 +693,12 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                                     <?php _e('Payment gateway', 'leyka');?>
                                 </option>
 
-                                <?php foreach(leyka_get_gateways() as $gateway) {?>
+                                <?php $gateways = leyka_get_gateways();
+                                usort($gateways, function($gateway_first, $gateway_second){
+                                    return strcmp($gateway_first->name, $gateway_second->name);
+                                });
+
+                                foreach($gateways as $gateway) {?>
                                     <option value="<?php echo $gateway->id;?>" <?php echo is_array($filter_value) && in_array($gateway->id, $filter_value) ? 'selected="selected"' : '';?>>
                                         <?php echo $gateway->name;?>
                                     </option>

@@ -15,11 +15,44 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
     }
 
-    /** @todo Implement the filtering method */
     public function filter_donors(array $donors_params) {
 
-        if(isset($_REQUEST['donor-name-email'])) {
-            // ...
+        $donors_params['meta_query'] = array();
+        if( !empty($_REQUEST['donor-type']) ) {
+            $donors_params['meta_query'][] = array('key' => 'leyka_donor_type', 'value' => esc_sql($_REQUEST['donor-type']),);
+        }
+
+        if( !empty($_REQUEST['donor-name-email']) ) {
+
+            $_REQUEST['donor-name-email'] = trim($_REQUEST['donor-name-email']);
+
+            if($_REQUEST['donor-name-email']) {
+
+                $donors_params['search'] = '*'.esc_sql($_REQUEST['donor-name-email']).'*';
+                $donors_params['search_columns'] = array('ID', 'display_name', 'user_email',);
+
+            }
+
+        }
+
+        if( !empty($_REQUEST['gateways']) ) {
+
+            $gateways_meta_query = array('relation' => 'OR',);
+
+            foreach($_REQUEST['gateways'] as $gateway_id) {
+                $gateways_meta_query[] = array(
+                    'key' => 'leyka_donor_gateways',
+                    'value' => esc_sql($gateway_id),
+                    'compare' => 'LIKE',
+                );
+            }
+
+            $donors_params['meta_query'][] = $gateways_meta_query;
+
+        }
+
+        if(count($donors_params['meta_query']) > 1) {
+            $donors_params['meta_query']['relation'] = 'AND';
         }
 
         return $donors_params;
@@ -42,6 +75,43 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             'paged' => absint($page_number),
             'fields' => array('ID', 'user_email', 'display_name',),
         ), 'get_donors');
+
+        // Donors tags filter:
+        add_action('pre_user_query', function(WP_User_Query $donor_users_query){
+
+            if( !empty($_REQUEST['donors-tags']) ) {
+
+                $_REQUEST['donors-tags'] = (array)$_REQUEST['donors-tags'];
+
+                array_walk($_REQUEST['donors-tags'], function($value, $key){ // Remove empty values from filter
+
+                    $value = absint($value);
+
+                    if( !$value ) {
+                        unset($_REQUEST['donors-tags'][$key]);
+                    }
+
+                });
+
+            }
+
+            if( !empty($_REQUEST['donors-tags']) ) {
+
+                global $wpdb;
+
+                $donor_users_query->query_where .= $wpdb->prepare(
+                    " AND {$wpdb->users}.ID IN (
+                        SELECT {$wpdb->term_relationships}.object_id
+                        FROM {$wpdb->term_relationships} INNER JOIN {$wpdb->term_taxonomy} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->term_taxonomy}.term_taxonomy_id
+                        WHERE {$wpdb->term_taxonomy}.term_id IN (".implode(',', $_REQUEST['donors-tags']).") AND {$wpdb->term_taxonomy}.taxonomy = %s
+                    )",
+                    LEYKA_DONORS_TAGS_TAXONOMY_NAME
+                );
+
+            }
+
+        });
+        // Donors tags filter - END
 
         $donors = array();
         foreach(get_users($donors_params) as $donor_user) {
