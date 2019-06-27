@@ -38,8 +38,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		add_filter('plugin_action_links_'.LEYKA_PLUGIN_INNER_SHORT_NAME, array($this, 'add_plugins_list_links'));
 
         // Metaboxes support where it is needed:
-//        add_action('leyka_pre_settings_actions', array($this, 'full_metaboxes_support'));
-//        add_action('leyka_dashboard_actions', array($this, 'full_metaboxes_support'));
+        add_action('leyka_pre_settings_actions', array($this, 'full_metaboxes_support'));
+        add_action('leyka_dashboard_actions', array($this, 'full_metaboxes_support'));
 		add_action('leyka_post_admin_actions', array($this, 'show_footer'));
 
 		// Donors' tags on the user profile page:
@@ -64,15 +64,28 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
     }
 
-    // A little function to support the full abilities of the metaboxes on any plugin's page:
-    /*public function full_metaboxes_support($current_stage = false) {?>
+    protected function _show_admin_template($template_id) {
 
-        <form style="display:none" method="get" action="#">
+	    if( !$template_id ) {
+	        return;
+        }
+
+	    $template_file = LEYKA_PLUGIN_DIR.'/inc/admin-templates/leyka-admin-'.$template_id.'.php';
+	    if(file_exists($template_file)) {
+	        require $template_file;
+        }
+
+    }
+
+    // A little function to support the full abilities of the metaboxes on any plugin's page:
+    public function full_metaboxes_support($current_stage = false) {?>
+
+        <form style="display:none;" method="get" action="#">
             <?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false); ?>
             <?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false); ?>
         </form>
 
-    <?php }*/
+    <?php }
 
     public function pre_admin_actions() {
 
@@ -184,6 +197,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         // Wizards pages group (a fake page):
         add_submenu_page(NULL, 'Leyka Wizard', 'Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', array($this, 'settings_new_screen'));
+
+        // Donor's info pages (a fake page):
+        add_submenu_page(NULL, "Donor's info", "Donor's info", 'leyka_manage_options', 'leyka_donor_info', array($this, 'donor_info_screen'));
 
         do_action('leyka_admin_menu_setup');
 
@@ -913,6 +929,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 	}
 
+	public function donor_info_screen() {
+	    $this->_show_admin_template('donor-info-page');
+    }
+
     /** Displaying feedback **/
     public function feedback_screen() {
 
@@ -1057,7 +1077,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         // Base admin area js/css:
         $leyka_admin_new = (isset($_GET['screen']) && count(explode('-', $_GET['screen'])) >= 2) // New settings pages (from v3.0)
-            || (isset($_GET['page']) && $_GET['page'] === 'leyka_settings' && empty($_GET['stage']) && empty($_GET['old']))
+            || (isset($_GET['page']) && $_GET['page'] === 'leyka_settings' /*&& empty($_GET['stage'])*/)
             || ($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post')
             || (isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_donors'));
 
@@ -1070,6 +1090,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	        wp_enqueue_style('leyka-admin', LEYKA_PLUGIN_BASE_URL.'css/admin.css', array(), LEYKA_VERSION);
 	    }
 
+        // WP admin metaboxes support:
         if( !$leyka_admin_new && $current_screen->id === 'toplevel_page_leyka' ) {
             $dependencies[] = 'postbox';
         }
@@ -1086,6 +1107,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             $dependencies[] = 'leyka-sticky';
 
         }
+        // Metaboxes support - END
 
         if($current_screen->post_type === Leyka_Donation_Management::$post_type) {
 
