@@ -31,14 +31,12 @@ function leyka_save_settings($tab_name) {
                                 }
                             }
                         }
-                        
-                    }
-                    elseif($submitted_options_section) {
+
+                    } else if($submitted_options_section) {
                         if($submitted_options_section == $option['name']) {
                             $options_names = array_merge($options_names, $option['options']);
                         }
-                    }
-                    else {
+                    } else {
                         $options_names = array_merge($options_names, $option['options']);
                     }
                     
