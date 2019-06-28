@@ -318,7 +318,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                         array('fields' => 'ids')
                     );?>
 
-                    <select id="leyka-donors-tags-field" multiple="multiple" name="<?php echo LEYKA_DONORS_TAGS_META_KEY;?>[]">
+                    <select id="leyka-donors-tags-field" multiple="multiple" name="leyka_donor_tags[]">
                     <?php foreach($all_donors_tags as $donor_tag) {?>
                         <option value="<?php echo esc_attr($donor_tag->term_id);?>" <?php echo in_array($donor_tag->term_id, $donor_user_tags) ? 'selected="selected"' : '';?>>
                             <?php echo esc_html($donor_tag->name);?>
@@ -346,46 +346,13 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             return false;
         }
 
-//        $prev_donor_tags_ids = get_user_meta($donor_user_id, LEYKA_DONORS_TAGS_META_KEY, true);
-//        $prev_donor_tags_ids = $prev_donor_tags_ids ? (array)$prev_donor_tags_ids : array();
-
-//        update_user_meta($donor_user_id, LEYKA_DONORS_TAGS_META_KEY, $_POST[LEYKA_DONORS_TAGS_META_KEY]);
-//        $this->_update_donor_tags_count($prev_donor_tags_ids, $_POST[LEYKA_DONORS_TAGS_META_KEY]);
-
-//        $prev_donor_tags_ids = wp_get_object_terms($donor_user_id, LEYKA_DONORS_TAGS_TAXONOMY_NAME, array('fields' => 'ids'));
-
-        array_walk($_POST[LEYKA_DONORS_TAGS_META_KEY], function(&$value){
+        array_walk($_POST['leyka_donor_tags'], function(&$value){
             $value = (int)$value;
         });
 
-        wp_set_object_terms($donor_user_id, $_POST[LEYKA_DONORS_TAGS_META_KEY], LEYKA_DONORS_TAGS_TAXONOMY_NAME);
-
-        return true;
+        return !is_wp_error(wp_set_object_terms($donor_user_id, $_POST['leyka_donor_tags'], LEYKA_DONORS_TAGS_TAXONOMY_NAME));
 
     }
-    
-//    protected function _update_donor_tags_count($prev_donor_tags_ids, $new_donor_tags_ids) {
-//
-//        global $wpdb;
-//
-//        $donors_tags_ids = array_unique(array_merge((array)$prev_donor_tags_ids, (array)$new_donor_tags_ids));
-//
-//        if( !$donors_tags_ids ) {
-//            return;
-//        }
-//
-//        foreach($donors_tags_ids as $tag_id) {
-//
-//            $count = $wpdb->get_var($wpdb->prepare(
-//                "SELECT COUNT(umeta_id) FROM $wpdb->usermeta WHERE meta_key = %s AND meta_value LIKE %s",
-//                LEYKA_DONORS_TAGS_META_KEY,
-//                '%"'.$tag_id.'"%'
-//            ));
-//            $wpdb->update($wpdb->term_taxonomy, array('count' => $count), array('term_taxonomy_id' => $tag_id));
-//
-//        }
-//
-//    }
 
 	public function is_separate_forms_stage($stage) {
 		return in_array($stage, array('email', 'beneficiary', 'technical', 'view', 'additional'));
@@ -427,7 +394,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }
 
         $current_stage = $this->get_current_settings_tab();
-		$is_separate_sections_forms = $this->is_separate_forms_stage($current_stage);
 
 		require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php'); // Basic Controller class
         require_once(LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-common.php');
@@ -435,8 +401,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 		do_action('leyka_pre_settings_actions', $current_stage);
 
-        // Process settings change:
-	    if(
+	    if( // Process settings change
 	        (
 	            !empty($_POST["leyka_settings_{$current_stage}_submit"])
                 || !empty($_POST["leyka_settings_stage-{$current_stage}_submit"])
@@ -448,96 +413,13 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 			do_action('leyka_settings_submit', $current_stage);
 			do_action("leyka_settings_{$current_stage}_submit");
 
-		}?>
+		}
 
-		<div class="wrap leyka-admin leyka-settings-page">
-
-		    <h1><?php esc_html_e('Leyka settings', 'leyka');?></h1>
-
-            <h2 class="nav-tab-wrapper"><?php echo $this->settings_tabs_menu();?></h2>
-
-            <div id="tab-container">
-
-                <?php $admin_page_args = array(
-                    'stage' => $current_stage,
-                    'gateway' => empty($_GET['gateway']) ? '' : $_GET['gateway']
-                );
-                $admin_page = 'admin.php?page=leyka_settings';
-                foreach($admin_page_args as $arg_name => $value) {
-                    if($value) {
-                        $admin_page = add_query_arg($arg_name, $value, $admin_page);
-                    }
-                }
-
-                if( !$is_separate_sections_forms ) {?>
-
-                <form method="post" action="<?php echo admin_url($admin_page);?>" id="leyka-settings-form">
-                <?php wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
-
-				}
-
-                if(file_exists(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-{$current_stage}.php")) {
-                    require_once(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-{$current_stage}.php");
-                } else {
-
-                    do_action("leyka_settings_pre_{$current_stage}_fields");
-
-                    foreach(leyka_opt_alloc()->get_tab_options($current_stage) as $option) { // Render each option/section
-
-						if($is_separate_sections_forms) {?>
-
-                        <form method="post" action="<?php echo admin_url($admin_page);?>" id="leyka-settings-form">
-
-							<?php if(isset($option['section']['name'])) {?>
-							<input type="hidden" name="leyka_options_section" value="<?php echo $option['section']['name'];?>">
-							<?php }?>
-
-						<?php wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
-							do_action("leyka_settings_pre_{$current_stage}_fields");
-
-						}
-
-                        if(is_array($option) && !empty($option['section'])) {
-
-							$option['section']['is_separate_sections_forms'] = $is_separate_sections_forms;
-							$option['section']['current_stage'] = $current_stage;
-                            do_action('leyka_render_section', $option['section']);
-
-                        } else { // is this case even possible?
-
-                            $option_info = leyka_options()->get_info_of($option);
-                            do_action("leyka_render_{$option_info['type']}", $option, $option_info);
-
-                        }
-
-						if($is_separate_sections_forms) {?>
-                        </form>
-						<?php }
-
-                    }
-
-                    do_action("leyka_settings_post_{$current_stage}_fields");?>
-
-                    <?php if(!$is_separate_sections_forms) {?>
-					<p class="submit">
-                        <input type="submit" name="<?php echo "leyka_settings_{$current_stage}";?>_submit" value="<?php esc_html_e('Save settings', 'leyka');?>" class="button-primary">
-                    </p>
-					<?php }
-
-                }?>
-
-				<?php if( !$is_separate_sections_forms ) {?>
-                </form>
-				<?php }?>
-
-            </div>
-
-			<?php include(LEYKA_PLUGIN_DIR.'inc/settings-fields-templates/leyka-helpchat.php');?>
-
-		</div>
+	    $this->_show_admin_template('settings-page');?>
 
 	<?php do_action('leyka_post_settings_actions');
         do_action('leyka_post_admin_actions');
+
 	}
 
 	/** Settings factory-controlled display (ATM, Wizards only) */
@@ -785,10 +667,12 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         }
         
-        if(!empty($_GET['page']) && $_GET['page'] === 'leyka') {
-            wp_enqueue_script( 'jquery-ui-dialog' );
-            wp_enqueue_style( 'wp-jquery-ui-dialog' );
+        if(isset($_GET['page']) && $_GET['page'] === 'leyka') {
+
+            wp_enqueue_script('jquery-ui-dialog');
+            wp_enqueue_style('wp-jquery-ui-dialog');
             wp_enqueue_script('leyka-admin', LEYKA_PLUGIN_BASE_URL.'assets/js/Chart.v2.8.0.min.js', $dependencies, LEYKA_VERSION, true);
+
         }
 
 		leyka_localize_rich_html_text_tags();
