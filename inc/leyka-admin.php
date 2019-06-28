@@ -40,8 +40,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		add_filter('plugin_action_links_'.LEYKA_PLUGIN_INNER_SHORT_NAME, array($this, 'add_plugins_list_links'));
 
         // Metaboxes support where it is needed:
-        add_action('leyka_pre_settings_actions', array($this, 'full_metaboxes_support'));
-        add_action('leyka_dashboard_actions', array($this, 'full_metaboxes_support'));
+        add_action('leyka_pre_donor_info_actions', array($this, 'full_metaboxes_support'));
+
 		add_action('leyka_post_admin_actions', array($this, 'show_footer'));
 
 		// Donors' tags on the user profile page:
@@ -267,9 +267,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 <?php echo apply_filters('leyka_admin_portlet_title', esc_attr__($portlet_data['title'], 'leyka'), $portlet_id);?>
             </div>
 
-            <div class="portlet-content">
-                <?php require_once($portlet_file);?>
-            </div>
+            <div class="portlet-content"><?php require_once($portlet_file);?></div>
 
         </div>
 
@@ -484,13 +482,32 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 	public function donor_info_screen() {
 
-        do_action('leyka_pre_donor_info_actions');
+        do_action('leyka_pre_donor_info_actions'); // Add collapsible to metaboxes
+
+        // Add all metaboxes:
+        add_meta_box('leyka_donor_info', __("Donor's data", 'leyka'), array($this, 'donor_data_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
+        add_meta_box('leyka_donor_admin_comments', __('Comments', 'leyka'), array($this, 'donor_comments_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
+        add_meta_box('leyka_donor_tags', __('Tags'), array($this, 'donor_tags_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
+        add_meta_box('leyka_donor_donations', __('Donations', 'leyka'), array($this, 'donor_donations_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
 
 	    $this->_show_admin_template('donor-info-page');
 
         do_action('leyka_post_donor_info_actions');
         do_action('leyka_post_admin_actions');
 
+    }
+
+    public function donor_data_metabox() {
+        $this->_show_admin_template('metabox-donor-data');
+    }
+    public function donor_comments_metabox() {
+        $this->_show_admin_template('metabox-donor-comments');
+    }
+    public function donor_tags_metabox() {
+        $this->_show_admin_template('metabox-donor-tags');
+    }
+    public function donor_donations_metabox() {
+        $this->_show_admin_template('metabox-donor-donations');
     }
 
     /** Displaying feedback **/
@@ -605,7 +622,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	    }
 
         // WP admin metaboxes support:
-        if( !$leyka_admin_new && $current_screen->id === 'toplevel_page_leyka' ) {
+        if( !$leyka_admin_new && $current_screen->id === 'dashboard_page_leyka_donor_info' ) {
             $dependencies[] = 'postbox';
         }
         if(stristr($current_screen->id, '_page_leyka_settings') !== false) {
