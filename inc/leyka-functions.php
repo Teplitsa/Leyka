@@ -2383,6 +2383,7 @@ if( !function_exists('leyka_calculate_donor_metadata') ) {
             'first_donation' => false,
             'last_donation' => false,
             'campaigns' => array(),
+            'campaigns_news_subscribed' => array(),
             'gateways' => array(),
             'amount_donated' => 0.0,
         );
@@ -2412,6 +2413,14 @@ if( !function_exists('leyka_calculate_donor_metadata') ) {
 
             if(empty($donor_data['campaigns']) || empty($donor_data['campaigns'][$donation->campaign_id])) {
                 $donor_data['campaigns'][$donation->campaign_id] = $donation->campaign_title;
+            }
+            if($donation->donor_subscribed) {
+                if(
+                    empty($donor_data['campaigns_news_subscribed'])
+                    || empty($donor_data['campaigns_news_subscribed'][$donation->campaign_id])
+                ) {
+                    $donor_data['campaigns_news_subscribed'][$donation->campaign_id] = $donation->campaign_title;
+                }
             }
 
             if(empty($donor_data['gateways']) || !in_array($donation->gateway, $donor_data['gateways'])) {
@@ -2451,6 +2460,7 @@ if( !function_exists('leyka_calculate_donor_metadata') ) {
 
         update_user_meta($donor_user->ID, 'leyka_donor_type', $donor_data['donor_type']);
         update_user_meta($donor_user->ID, 'leyka_donor_campaigns', $donor_data['campaigns']);
+        update_user_meta($donor_user->ID, 'leyka_donor_campaigns_news_subscriptions', $donor_data['campaigns_news_subscribed']);
         update_user_meta($donor_user->ID, 'leyka_donor_gateways', $donor_data['gateways']);
         update_user_meta($donor_user->ID, 'leyka_amount_donated', $donor_data['amount_donated']);
 
