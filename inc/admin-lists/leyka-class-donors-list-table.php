@@ -397,7 +397,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      * @return array
      */
     public function get_bulk_actions() {
-        return array(); // array('bulk-delete' => __('Delete'));
+        return array('bulk-delete' => __('Delete'));
     }
 
     /**
@@ -421,15 +421,10 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         // Single donor deletion:
         if('delete' === $this->current_action()) {
 
-            if ( !wp_verify_nonce(esc_attr($_REQUEST['_wpnonce']), 'leyka_delete_donor') ) {
+            if( !wp_verify_nonce(esc_attr($_REQUEST['_wpnonce']), 'leyka_delete_donor') ) {
                 die(__("You don't have permissions for this operation.", 'leyka'));
             } else {
-
-                $this->delete_donor(absint($_GET['donor']));
-
-                wp_redirect( esc_url(add_query_arg()) );
-                exit;
-
+                self::delete_donor(absint($_GET['donor']));
             }
 
         }
@@ -440,12 +435,9 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             || (isset($_POST['action2']) && $_POST['action2'] === 'bulk-delete')
         ) {
 
-            foreach(esc_sql($_POST['bulk-delete']) as $id) {
-                $this->delete_donor($id);
+            foreach(esc_sql($_POST['bulk-delete']) as $donor_id) {
+                self::delete_donor($donor_id);
             }
-
-            wp_redirect( esc_url(add_query_arg()) );
-            exit;
 
         }
 
