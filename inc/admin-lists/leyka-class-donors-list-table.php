@@ -55,6 +55,38 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             $donors_params['meta_query']['relation'] = 'AND';
         }
 
+        // Ordering:
+        if(isset($_REQUEST['orderby']) && array_key_exists($_REQUEST['orderby'], $this->get_sortable_columns())) {
+
+            switch($_REQUEST['orderby']) {
+                case 'donor_id': $donors_params['orderby'] = 'ID'; break;
+                case 'donor_type':
+                    $donors_params['meta_key'] = 'leyka_donor_type';
+                    $donors_params['orderby'] = 'meta_value';
+                    break;
+                case 'donor_name':
+                    $donors_params['orderby'] = 'display_name'; break;
+                case 'first_donation': /** @todo Testing needed (after date fields are finished) */
+                    $donors_params['meta_key'] = 'leyka_donor_first_donation_date';
+                    $donors_params['orderby'] = 'meta_value_num';
+                    break;
+                case 'last_donation': /** @todo Testing needed (after date fields are finished) */
+                    $donors_params['meta_key'] = 'leyka_donor_last_donation_date';
+                    $donors_params['orderby'] = 'meta_value_num';
+                    break;
+                case 'amount_donated':
+                    $donors_params['meta_key'] = 'leyka_amount_donated';
+                    $donors_params['orderby'] = 'meta_value_num';
+                break;
+                default:
+            }
+
+            if($donors_params['orderby']) {
+                $donors_params['order'] = isset($_REQUEST['order']) && $_REQUEST['order'] == 'asc' ? 'ASC' : 'DESC';
+            }
+
+        }
+
         return $donors_params;
 
     }
@@ -205,13 +237,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
     }
 
     public function column_donor_type($item) {
-
-        if(empty($item['donor_type'])) {
-            return '';
-        }
-
-        return '<div class="'.$item['donor_type'].'">'.$item['donor_type'].'</div>';
-
+        return isset($item['donor_type']) ? '<div class="'.$item['donor_type'].'">'.$item['donor_type'].'</div>' : '';
     }
 
     public function column_first_donation($item) {
@@ -362,6 +388,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             'donor_type' => array('donor_type', true),
             'donor_name' => array('donor_name', false),
             'first_donation' => array('first_donation', true),
+            'last_donation' => array('last_donation', true),
             'amount_donated' => array('amount_donated', true),
         );
     }

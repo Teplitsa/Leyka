@@ -2440,7 +2440,7 @@ if( !function_exists('leyka_calculate_donor_metadata') ) {
         if($donor_data['last_donation']) {
 
             update_user_meta($donor_user->ID, 'leyka_donor_last_donation_id', $donor_data['last_donation']->id);
-            update_user_meta($donor_user->ID, 'leyka_donor_first_donation_date', $donor_data['last_donation']->date_timestamp);
+            update_user_meta($donor_user->ID, 'leyka_donor_last_donation_date', $donor_data['last_donation']->date_timestamp);
 
         } else {
 
