@@ -24,11 +24,12 @@
     }
 
     .tablenav.bottom {
-    	margin-top: 1.5 * $leyka-base;
+    	margin-top: $leyka-base;
     }
 
     .tablenav.top {
-    	margin-bottom: 1.5 * $leyka-base;
+    	margin-bottom: $leyka-base;
+    	margin-top: $leyka-base;
     }
 
 	.leyka-dashboard-footer {
