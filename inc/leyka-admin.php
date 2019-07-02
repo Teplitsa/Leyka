@@ -639,6 +639,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         }
         // Metaboxes support - END
+        
+        if(isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_donors')) {
+            wp_enqueue_style('jqueryui', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css', false, null );
+            $dependencies[] = 'jquery-ui-selectmenu';
+        }
 
         if($current_screen->post_type === Leyka_Donation_Management::$post_type) {
 
@@ -737,7 +742,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }
 
         // Donation editing page:
-        if($screen->post_type === Leyka_Donation_Management::$post_type && $screen->base === 'post') {
+        if(($screen->post_type === Leyka_Donation_Management::$post_type && $screen->base === 'post')
+            || (isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_donors'))
+        ) {
 
             $locale = get_locale();
             if($locale !== 'en_US') {

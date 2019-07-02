@@ -529,6 +529,7 @@
                 min-width: 83px;
 
                 .donation-status {
+                    @include leyka-donation-status-marker;
                     display: inline-block;
                     width: 8px;
                     height: 8px;

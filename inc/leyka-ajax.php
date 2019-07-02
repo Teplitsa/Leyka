@@ -738,3 +738,24 @@ function leyka_usage_stats_y() {
     
 }
 add_action('wp_ajax_leyka_usage_stats_y', 'leyka_usage_stats_y');
+
+function leyka_donors_autocomplete() {
+    $filter = isset($_GET['term']) ? sanitize_text_field($_GET['term']) : '';
+    
+    if($filter) {
+        $res = array();
+        $donors = get_users(array(
+            'role__in' => array('donor',),
+            'number' => -1,
+            'search' => '*' . str_replace('*', '', $filter) . '*',
+            'search_columns' => array('login', 'nicename', 'email'),
+        ));
+        
+        foreach($donors as $donor) {
+            $res[] = array('label' => sprintf("%s(%s)", $donor->display_name, $donor->user_email), 'value' => $donor->user_email);
+        }
+    }
+    
+    die(json_encode($res));
+}
+add_action('wp_ajax_leyka_donors_autocomplete', 'leyka_donors_autocomplete');

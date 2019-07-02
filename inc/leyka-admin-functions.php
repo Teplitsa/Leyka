@@ -159,6 +159,9 @@ if( !function_exists('leyka_admin_body_class') ) {
         elseif(!empty($_GET['page']) && $_GET['page'] === 'leyka' && empty($_GET['screen'])) {
             $leyka_page_class .= 'leyka-admin-dashboard';
         }
+        elseif(!empty($_GET['page']) && $_GET['page'] === 'leyka_donors' && empty($_GET['screen'])) {
+            $leyka_page_class .= 'leyka-admin-donors-list';
+        }
         elseif( (!empty($_GET['post_type']) && in_array($_GET['post_type'], array('leyka_donation', 'leyka_campaign')))
             || (!empty($_GET['page']) && $_GET['page'] === 'leyka_feedback' && empty($_GET['screen']))) {
             $leyka_page_class .= 'leyka-admin-default';

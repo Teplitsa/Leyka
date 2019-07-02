@@ -13,6 +13,12 @@
     font-size: 11px;
 }
 
+@mixin leyka-donors-text-table-head() {
+    @include leyka-adb-text;
+    font-size: 14px;
+    line-height: 18px;
+}
+
 @mixin leyka-donors-text-link() {
     @include leyka-adb-text;
     font-size: 14px;
@@ -25,4 +31,10 @@
 @mixin leyka-donors-text-caption-big() {
     @include leyka-adb-text;
     font-size: 16px;
+}
+
+@mixin leyka-donors-text-link-big() {
+    @include leyka-adb-text;
+    font-size: 14px;
+    line-height: 24px;
 }
