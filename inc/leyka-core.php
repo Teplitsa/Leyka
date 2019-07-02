@@ -1793,7 +1793,7 @@ class Leyka extends Leyka_Singleton {
         }
 
         // Register a new donor's account only for recurring donations and if it's not registered yet:
-        $donor_user_id = leyka_create_donor_user(
+        $donor_user_id = leyka_create_donor_from_donation(
             $donation,
             leyka()->opt('donor_accounts_available') && $donation->type === 'rebill'
         );

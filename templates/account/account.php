@@ -1,6 +1,6 @@
 <?php
 /**
- * The template for displaying leyka persistent campaign
+ * The template for displaying Leyka persistent campaign.
  *
  * @link https://leyka.te-st.ru/campaign/demo-kampaniya/
  *
@@ -8,11 +8,15 @@
  * @since 1.0.0
  */
 
-$leyka_account_page_title = esc_html__('Personal account', 'leyka');
+$leyka_account_page_title = __('Personal account', 'leyka');
 
 include(LEYKA_PLUGIN_DIR . 'templates/account/header.php');
 
-$donor_id = get_current_user_id();?>
+try {
+	$donor = new Leyka_Donor(wp_get_current_user());
+} catch(Exception $e) {
+    wp_die(__("Error: cannot display a page for a given donor.", 'leyka'));
+}?>
 
 <div id="content" class="site-content leyka-campaign-content">
         
@@ -31,7 +35,8 @@ $donor_id = get_current_user_id();?>
 
 							<div class="list subscribed-campaigns-list">
 								<h3 class="list-title"><?php _e('Recurring donations campaigns', 'leyka');?></h3>
-                                <?php $recurring_subscriptions = leyka_get_init_recurring_donations($donor_id, true);
+
+                                <?php $recurring_subscriptions = $donor->get_init_recurring_donations(true);
 
                                 if($recurring_subscriptions) {?>
 
@@ -71,10 +76,10 @@ $donor_id = get_current_user_id();?>
 
 							<div class="list leyka-star-history">
 
-								<h3 class="list-title"><?php _e('Donations history', 'leyka') // История пожертвований?></h3>
+								<h3 class="list-title"><?php _e('Donations history', 'leyka');?></h3>
 
-                                <?php $donations = leyka_get_donor_donations($donor_id);
-                                $donor_donations_count = leyka_get_donor_donations_count($donor_id);
+                                <?php $donations = $donor->get_donations();
+                                $donor_donations_count = $donor->get_donations_count();
 
                                 $donations_list_pages_count = $donor_donations_count/LEYKA_DONOR_ACCOUNT_DONATIONS_PER_PAGE;
                                 if($donations_list_pages_count > (int)$donations_list_pages_count) {
@@ -83,7 +88,7 @@ $donor_id = get_current_user_id();?>
 
                                 if($donations) {?>
 
-                                <div class="donations-history items" data-donations-total-pages="<?php echo $donations_list_pages_count;?>" data-donations-current-page="1" data-donor-id="<?php echo $donor_id;?>">
+                                <div class="donations-history items" data-donations-total-pages="<?php echo $donations_list_pages_count;?>" data-donations-current-page="1" data-donor-id="<?php echo $donor->id;?>">
 
                                 <?php foreach($donations as $donation) {
                                     echo leyka_get_donor_account_donations_list_item_html(false, $donation)."\n";

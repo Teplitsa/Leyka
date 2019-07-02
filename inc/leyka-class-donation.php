@@ -1558,16 +1558,15 @@ class Leyka_Donation_Management {
             && $donation->donor_email
         ) {
 
-            $donor_user = get_user_by('email', $donation->donor_email);
-//            echo '<pre>HERE: '.print_r($donor_user->user_email, 1).'</pre>';
-            if($donor_user) {
+            try {
 
-                $donation->donor_user_id = $donor_user->ID;
+            	$donor = new Leyka_Donor($donation->donor_email);
 
-//                echo '<pre>DONATION USER ID: '.print_r($donation->donor_user_id, 1).'</pre>';
-                leyka_calculate_donor_metadata($donor_user);
+            	leyka_calculate_donor_metadata($donor);
+                $donation->donor_user_id = $donor->id;
 
-//                die('<pre>'.print_r('Calculated', 1).'</pre>');
+            } catch(Exception $e) {
+            	// ...
             }
 
         }

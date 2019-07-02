@@ -101,7 +101,7 @@ function leyka_user_has_role($role, $is_only_role = false, $user = false) {
  * @param $donor_has_account_access boolean|null Either true/false, or NULL to decide based on given donation type.
  * @return int|WP_Error New donor user ID or WP_Error object.
  */
-function leyka_create_donor_user(Leyka_Donation $donation, $donor_has_account_access = null) {
+function leyka_create_donor_from_donation(Leyka_Donation $donation, $donor_has_account_access = null) {
 
     if($donor_has_account_access === null) {
         $donor_has_account_access = $donation->type === 'rebill';
@@ -1497,136 +1497,6 @@ function leyka_get_campaign_donations($campaign, $limit = false) {
     }
 
     return $donations;
-
-}
-
-function leyka_get_init_recurring_donations($donor_id = false, $only_active = true, $show_cancel_requested = true) {
-
-    $donor_id = (int)$donor_id ? (int)$donor_id : get_current_user_id();
-    $donor_email = get_user_option('user_email', $donor_id);
-
-    if( !$donor_id || !$donor_email ) {
-        return array();
-    }
-    
-    $meta_params = array(
-        'relation' => 'AND',
-        array('key' => 'leyka_payment_type', 'value' => 'rebill'),
-        array(
-            'relation' => 'OR',
-            array('key' => 'leyka_donor_email', 'value' => $donor_email),
-            array('key' => 'leyka_donor_account', 'value' => $donor_id),
-        ),
-    );
-    
-    if($only_active) {
-        $meta_params[] = array(
-            'relation' => 'OR',
-            array('key' => 'leyka_recurrents_cancelled', 'value' => false),
-            array('key' => 'leyka_recurrents_cancelled', 'compare' => 'NOT EXISTS'),
-        );
-    }
-    
-    if(!$show_cancel_requested) {
-        $meta_params[] = array(
-            'relation' => 'OR',
-            array('key' => 'leyka_cancel_recurring_requested', 'value' => false),
-            array('key' => 'leyka_cancel_recurring_requested', 'compare' => 'NOT EXISTS'),
-        );
-    }
-
-    $recurring_subscriptions = get_posts(array(
-        'post_type' => Leyka_Donation_Management::$post_type,
-        'post_status' => 'funded',
-        'post_parent' => 0,
-        'meta_query' => $meta_params,
-        'posts_per_page' => -1,
-    ));
-
-    if( !$recurring_subscriptions ) {
-        return array();
-    }
-
-    foreach($recurring_subscriptions as &$init_donation) { /** @var $init_donation WP_Post */
-        $init_donation = new Leyka_Donation($init_donation);
-    }
-
-    return $recurring_subscriptions;
-
-}
-
-function leyka_get_donor_donations($donor_id = false, $page_number = false) {
-
-    $donor_id = (int)$donor_id ? (int)$donor_id : get_current_user_id();
-    $donor_email = get_user_option('user_email', $donor_id);
-
-    $page_number = (int)$page_number > 0 ? (int)$page_number : 1;
-
-    if( !$donor_id || !$donor_email ) {
-        return array();
-    }
-
-    $donations = get_posts(array(
-        'post_type' => Leyka_Donation_Management::$post_type,
-        'post_status' => array('funded', 'refunded', 'failed'),
-        'meta_query' => array(
-            'relation' => 'AND',
-            array(
-                'relation' => 'OR',
-                array('key' => 'leyka_payment_type', 'value' => 'single'),
-                array('key' => 'leyka_payment_type', 'value' => 'rebill'),
-            ),
-            array(
-                'relation' => 'OR',
-                array('key' => 'leyka_donor_email', 'value' => $donor_email),
-                array('key' => 'leyka_donor_account', 'value' => $donor_id),
-            ),
-        ),
-        'posts_per_page' => LEYKA_DONOR_ACCOUNT_DONATIONS_PER_PAGE,
-        'paged' => $page_number,
-    ));
-
-    if( !$donations ) {
-        return array();
-    }
-
-    foreach($donations as &$donation) { /** @var $donation WP_Post */
-        $donation = new Leyka_Donation($donation);
-    }
-
-    return $donations;
-
-}
-
-function leyka_get_donor_donations_count($donor_id = false) {
-
-    $donor_id = (int)$donor_id ? (int)$donor_id : get_current_user_id();
-    $donor_email = get_user_option('user_email', $donor_id);
-
-    if( !$donor_id || !$donor_email ) {
-        return array();
-    }
-
-    $donations = new WP_Query(array(
-        'post_type' => Leyka_Donation_Management::$post_type,
-        'post_status' => array('funded', 'refunded', 'failed'),
-        'meta_query' => array(
-            'relation' => 'AND',
-            array(
-                'relation' => 'OR',
-                array('key' => 'leyka_payment_type', 'value' => 'single'),
-                array('key' => 'leyka_payment_type', 'value' => 'rebill'),
-            ),
-            array(
-                'relation' => 'OR',
-                array('key' => 'leyka_donor_email', 'value' => $donor_email),
-                array('key' => 'leyka_donor_account', 'value' => $donor_id),
-            ),
-        ),
-        'posts_per_page' => -1,
-    ));
-
-    return $donations->found_posts;
 
 }
 

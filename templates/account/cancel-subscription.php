@@ -8,7 +8,13 @@
  * @since 1.0.0
  */
 
-$recurring_subscriptions = leyka_get_init_recurring_donations(null, true, false);
+try {
+    $donor = new Leyka_Donor(wp_get_current_user());
+} catch(Exception $e) {
+	wp_die(__("Error: cannot display a page for a given donor.", 'leyka'));
+}
+
+$recurring_subscriptions = $donor->get_init_recurring_donations(true, false);
 
 include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 
