@@ -13,6 +13,55 @@ class Leyka_Donor {
 
     public static $user_role = 'donor';
 
+    public static function add(array $params) {
+
+        if(empty($params['donor_email'])) {
+            return false;
+        }
+        if(empty($params['donor_name'])) {
+
+            $params['donor_name'] = explode('@', $params['donor_email']);
+            $params['donor_name'] = count($params['donor_name']) > 0 ? $params['donor_name'][0] : __('Anonymous donor', 'leyka');
+
+        }
+        $params['donor_has_account_access'] = !empty($params['donor_has_account_access']);
+
+        $donor_user = get_user_by('email', $params['donor_email']);
+
+        if($donor_user && is_a($donor_user, 'WP_User')) { // Donor user already exists
+
+            $donor_user_id = $donor_user->ID;
+            $donor_user->add_role('donor');
+
+        } else { // Create a new Donor user
+
+            $donor_user_id = wp_insert_user(array(
+                'user_email' => $params['donor_email'],
+                'user_login' => $params['donor_email'],
+                'user_pass' => wp_generate_password(16, true, false),
+                'display_name' => $params['donor_name'],
+                'show_admin_bar_front' => false,
+                'role' => 'donor',
+            ));
+
+            if($params['donor_has_account_access']) {
+                update_user_meta($donor_user_id, 'leyka_account_activation_code', wp_generate_password(60, false, false));
+            }
+
+            $donor_user = get_user_by('id', $donor_user_id);
+
+        }
+
+        if($params['donor_has_account_access']) {
+            $donor_user->add_cap('donor_account_access');
+        } else {
+            $donor_user->remove_cap('donor_account_access');
+        }
+
+        return $donor_user_id;
+
+    }
+
     protected static function _is_donor(WP_User $donor_user) {
         return in_array(static::$user_role, (array)$donor_user->roles);
     }
@@ -25,7 +74,7 @@ class Leyka_Donor {
             $this->_user = get_user_by('id', $donor_user);
 
             if( !$this->_user || !self::_is_donor($this->_user) ) {
-                return false;
+                throw new Exception(__('Incorrect Donor identification data', 'leyka'));
             }
 
             $this->_id = $this->_user->ID;
@@ -36,7 +85,7 @@ class Leyka_Donor {
             $this->_user = get_user_by('email', $donor_user);
 
             if( !$this->_user || !self::_is_donor($this->_user) ) {
-                return false;
+                throw new Exception(__('Incorrect Donor identification data', 'leyka'));
             }
 
             $this->_id = $this->_user->ID;
@@ -44,14 +93,14 @@ class Leyka_Donor {
         } else if(is_a($donor_user, 'WP_User')) { /** @var $donor_user WP_User */
 
             if( !self::_is_donor($donor_user) ) {
-                return false;
+                throw new Exception(__('Incorrect Donor identification data', 'leyka'));
             }
 
             $this->_user = $donor_user;
             $this->_id = $donor_user->ID;
 
         } else {
-            return false;
+            throw new Exception(__('Incorrect Donor identification data', 'leyka'));
         }
 
         if( !$this->_meta ) {
@@ -59,6 +108,8 @@ class Leyka_Donor {
             $meta = get_user_meta($this->_id, '', true);
 
             $this->_meta = array(
+                'account_activation_code' => empty($meta['leyka_account_activation_code']) ?
+                    '' : $meta['leyka_account_activation_code'][0],
                 'name' => $this->_user->display_name,
                 'email' => $this->_user->user_email,
                 'description' => empty($meta['leyka_donor_description']) ? '' : $meta['leyka_donor_description'][0],
@@ -77,12 +128,9 @@ class Leyka_Donor {
                     array() : $meta['leyka_donor_campaigns_news_subscriptions'][0],
                 'gateways' => empty($meta['leyka_donor_gateways']) ? array() : $meta['leyka_donor_gateways'][0],
                 'amount_donated' => empty($meta['leyka_amount_donated']) ? 0.0 : (float)$meta['leyka_amount_donated'][0],
-//                '' => empty($meta['']) ? '' : $meta[''][0],
             );
 
         }
-
-        return $this;
 
 	}
 
@@ -97,10 +145,25 @@ class Leyka_Donor {
             case 'ID':
                 return $this->_id;
 
-            case 'name': return $this->_meta['name'];
+            case 'login':
+            case 'user_login':
+            case 'donor_login':
+                return $this->_user->user_login;
+
+            case 'account_activation_code': return $this->_meta['account_activation_code'];
+
+            case 'name':
+            case 'donor_name':
+                return $this->_meta['name'];
+
+            case 'email':
+            case 'donor_email':
+                return $this->_meta['email'];
 
             case 'desc':
+            case 'donor_desc':
             case 'description':
+            case 'donor_description':
                 return $this->_meta['description'];
 
             case 'type':
@@ -152,14 +215,55 @@ class Leyka_Donor {
                     $this->first_donation_date_timestamp, $date_format, $time_format
                 );
 
-            // ...
+            case 'last_donation_date_timestamp': return $this->_meta['last_donation_date'];
+            case 'last_donation_date':
+            case 'last_donation_date_label':
+                if( !$this->last_donation_date_timestamp ) {
+                    return '';
+                }
 
-//            case 'sum':
-//            case 'amount':
-//                return empty($this->_meta['amount']) ? 0.0 : $this->_meta['amount'];
+                $date_format = get_option('date_format');
+
+                return apply_filters(
+                    'leyka_admin_donation_date',
+                    date($date_format, $this->last_donation_date_timestamp),
+                    $this->last_donation_date_timestamp, $date_format
+                );
+
+            case 'last_donation_date_time':
+            case 'last_donation_date_time_label':
+                if( !$this->last_donation_date_timestamp ) {
+                    return '';
+                }
+
+                $date_format = get_option('date_format');
+                $time_format = get_option('time_format');
+
+                return apply_filters(
+                    'leyka_admin_donation_date_time',
+                    date("$date_format, $time_format", $this->last_donation_date_timestamp),
+                    $this->last_donation_date_timestamp, $date_format, $time_format
+                );
+
+            case 'campaigns': return apply_filters('leyka_admin_donor_campaigns', $this->_meta['campaigns']);
+
+            case 'subscribed':
+            case 'campaigns_news':
+            case 'news_subscriptions':
+            case 'campaigns_news_subscriptions':
+                return apply_filters(
+                    'leyka_admin_donor_campaigns_news_subscriptions',
+                    $this->_meta['campaigns_news_subscriptions']
+                );
+
+            case 'gateways': return apply_filters('leyka_admin_donor_gateways', $this->_meta['gateways']);
+
+            case 'sum_donated':
+            case 'amount_donated':
+                return $this->_meta['amount_donated'];
 
             default:
-                return apply_filters('leyka_donor_get_unknown_donation_field', null, $field, $this);
+                return apply_filters('leyka_get_unknown_donor_field', null, $field, $this);
         }
 
     }
@@ -170,230 +274,176 @@ class Leyka_Donor {
             return false;
         }
 
-//        switch($field) {
-//            case 'title':
-//            case 'payment_title':
-//            case 'purpose_text':
-//                if($value != $this->_post_object->post_title) {
-//                    wp_update_post(array('ID' => $this->_id, 'post_title' => $value));
-//                    $this->_post_object->post_title = $value;
-//                }
-//                break;
-//
-//            case 'status':
-//                if( !array_key_exists($value, leyka_get_donation_status_list()) || $value == $this->status ) {
-//                    return false;
-//                }
-//
-//                wp_update_post(array('ID' => $this->_id, 'post_status' => $value));
-//                $this->_post_object->post_status = $value;
-//
-//                $status_log = get_post_meta($this->_id, '_status_log', true);
-//                if($status_log && is_array($status_log)) {
-//	                $status_log[] = array('date' => current_time('timestamp'), 'status' => $value);
-//                } else {
-//                    $status_log = array(array('date' => current_time('timestamp'), 'status' => $value));
-//                }
-//
-//                update_post_meta($this->_id, '_status_log', $status_log);
-//                $this->_meta['status_log'] = $status_log;
-//
-//                break;
-//
-//            case 'date':
-//                wp_update_post(array('ID' => $this->_id, 'post_date' => $value));
-//                break;
-//            case 'date_timestamp':
-//                wp_update_post(array('ID' => $this->_id, 'post_date' => date('Y-m-d H:i:s', $value)));
-//                break;
-//
-//            case 'donor_name':
-//                update_post_meta($this->_id, 'leyka_donor_name', $value);
-//                $this->_meta['donor_name'] = $value;
-//                break;
-//            case 'donor_email':
-//                update_post_meta($this->_id, 'leyka_donor_email', $value);
-//                $this->_meta['donor_email'] = $value;
-//                break;
-//            case 'donor_comment':
-//                $value = sanitize_textarea_field($value);
-//                update_post_meta($this->_id, 'leyka_donor_comment', $value);
-//                $this->_meta['donor_comment'] = $value;
-//                break;
-//
-//            case 'donor_user_id':
-//            case 'donor_account_id':
-//
-//                $value = absint($value);
-//
-//                $this->_post_object->post_author = $value;
-//                wp_update_post(array('ID' => $this->id, 'post_author' => $value));
-//                break;
-//
-//            case 'donor_account':
-//                if(is_wp_error($value)) {
-//
-//                    $this->_meta['donor_account_error'] = $value;
-//                    update_post_meta($this->_id, 'leyka_donor_account', $value);
-//
-//                } else if(absint($value)) {
-//
-//                    $value = absint($value);
-//
-//                    $this->_post_object->post_author = $value;
-//                    wp_update_post(array('ID' => $this->id, 'post_author' => $value));
-//
-//                }
-//                break;
-//
-//            case 'sum':
-//            case 'amount':
-//            case 'donation_amount':
-//
-//                $value = (float)$value;
-//
-//                update_post_meta($this->_id, 'leyka_donation_amount', $value);
-//                $this->_meta['amount'] = $value;
-//
-//                do_action('leyka_donation_amount_changed', $this->_id, $value);
-//                break;
-//
-//            case 'sum_total':
-//            case 'amount_total':
-//            case 'total_sum':
-//            case 'total_amount':
-//            case 'donation_amount_total':
-//
-//                $value = (float)$value;
-//
-//                update_post_meta($this->_id, 'leyka_donation_amount_total', $value);
-//                $this->_meta['amount_total'] = $value;
-//
-//                do_action('leyka_donation_total_amount_changed', $this->_id, $value);
-//                break;
-//
-//            case 'currency':
-//            case 'donation_currency':
-//                update_post_meta($this->_id, 'leyka_donation_currency', $value);
-//                $this->_meta['currency'] = $value;
-//                break;
-//
-//            case 'gw_id':
-//            case 'gateway_id':
-//                update_post_meta($this->_id, 'leyka_gateway', $value);
-//                $this->_meta['gateway'] = $value;
-//                break;
-//
-//            case 'pm':
-//            case 'pm_id':
-//            case 'payment_method_id':
-//
-//                update_post_meta($this->_id, 'leyka_payment_method', $value);
-//                $this->_meta['payment_method'] = $value;
-//
-//                do_action('leyka_donation_pm_changed', $this->_id, $value, $this->gateway_id);
-//                break;
-//
-//            case 'type':
-//            case 'payment_type':
-//                $value = in_array($value, array_keys(leyka_get_payment_types_list())) ? $value : 'single';
-//                update_post_meta($this->_id, 'leyka_payment_type', $value);
-//                $this->_meta['payment_type'] = $value;
-//                break;
-//
-//            case 'campaign':
-//            case 'campaign_id':
-//
-//                $value = (int)$value > 0 ? (int)$value : $this->campaign_id;
-//
-//                update_post_meta($this->_id, 'leyka_campaign_id', $value);
-//                $this->_meta['campaign_id'] = $value;
-//
-//                do_action('leyka_donation_campaign_changed', $this->_id, $value);
-//
-//                break;
-//
-//            case 'is_subscribed':
-//            case 'donor_subscribed':
-//
-//                $value = $value === true || (int)$value > 0 ? $value : false;
-//
-//                update_post_meta($this->_id, 'leyka_donor_subscribed', $value);
-//                $this->_meta['donor_subscribed'] = $value;
-//                break;
-//
-//            case 'subscription_email':
-//            case 'donor_subscription_email':
-//
-//                $value = leyka_validate_email($value) ? $value : $this->donor_email;
-//
-//                update_post_meta($this->_id, 'leyka_donor_subscription_email', $value);
-//                $this->_meta['donor_subscription_email'] = $value;
-//                break;
-//
-//            case 'init_recurring_payment':
-//            case 'init_recurring_payment_id':
-//            case 'init_recurring_donation':
-//            case 'init_recurring_donation_id':
-//                $value = (int)$value;
-//                if($value > 0 && $value != $this->_post_object->post_parent) {
-//                    wp_update_post(array('ID' => $this->_id, 'post_parent' => $value));
-//                    $this->_post_object->post_parent = $value;
-//                }
-//                break;
-//
-//            case 'rebilling_on':
-//            case 'rebilling_is_on':
-//            case 'recurring_on':
-//            case 'recurring_is_on':
-//            case 'rebilling_is_active':
-//            case 'recurring_is_active':
-//                $value = !!$value;
-//                if($this->type !== 'rebill') {
-//                    break;
-//                }
-//
-//                $init_recurring_donation = $this->init_recurring_donation;
-//                if($init_recurring_donation->recurring_is_active != $value) {
-//
-//                    update_post_meta($init_recurring_donation->id, '_rebilling_is_active', $value);
-//                    $this->_meta['rebilling_is_active'] = $value;
-//
-//                    do_action('leyka_donation_recurring_activity_changed', $this->_id, $value);
-//
-//                }
-//
-//                if($value) {
-//
-//                    $this->_meta['recurrents_cancelled'] = false;
-//                    $this->_meta['recurrents_cancel_date'] = 0;
-//                    update_post_meta($this->_id, 'leyka_recurrents_cancelled', false);
-//                    update_post_meta($this->_id, 'leyka_recurrents_cancel_date', 0);
-//
-//                } else {
-//
-//                    $this->_meta['recurrents_cancelled'] = true;
-//                    $this->_meta['recurrents_cancel_date'] = current_time('timestamp');
-//                    update_post_meta($this->_id, 'leyka_recurrents_cancelled', true);
-//                    update_post_meta($this->_id, 'leyka_recurrents_cancel_date', $this->_meta['recurrents_cancel_date']);
-//
-//                }
-//                break;
-//
-//            case 'cancel_recurring_requested':
-//                update_post_meta($this->_id, 'leyka_cancel_recurring_requested', !!$value);
-//                break;
-//
-//            default:
-//                do_action('leyka_'.$this->gateway_id.'_set_unknown_donation_field', $field, $value, $this);
-//        }
+        switch($field) {
 
-        return true;
+            case 'account_activation_code':
+                $res = update_user_meta($this->_id, 'leyka_account_activation_code', $value);
+                break;
+
+            case 'name':
+            case 'donor_name':
+                if($value === $this->name) {
+                    return true;
+                }
+                $this->_meta['name'] = esc_sql($value);
+                $res = wp_update_user(array('ID' => $this->_id, 'display_name' => $this->_meta['name']));
+                break;
+
+            case 'email':
+            case 'donor_email':
+                if($value === $this->email || !is_email($value)) {
+                    return true;
+                }
+                $this->_meta['email'] = esc_sql($value);
+                $res = wp_update_user(array('ID' => $this->_id, 'user_email' => $this->_meta['email']));
+                break;
+
+            case 'desc':
+            case 'donor_desc':
+            case 'description':
+            case 'donor_description':
+                if($value === $this->description) {
+                    return true;
+                }
+                $this->_meta['description'] = esc_sql($value);
+                $res = update_user_meta($this->_id, 'leyka_donor_description', $value);
+                break;
+
+            case 'type':
+            case 'donor_type':
+                if($value === $this->type) {
+                    return true;
+                }
+                $this->_meta['type'] = esc_sql($value);
+                $res = update_user_meta($this->_id, 'leyka_donor_type', $value);
+                break;
+
+            case 'first_donation_id':
+            case 'first_donation':
+                if($value === $this->first_donation_id) {
+                    return true;
+                }
+                $this->_meta['first_donation_id'] = absint($value);
+                $res = empty($this->_meta['first_donation_id']) ?
+                    delete_user_meta($this->_id, 'leyka_donor_first_donation_id') :
+                    update_user_meta($this->_id, 'leyka_donor_first_donation_id', $value);
+                break;
+
+            case 'first_donation_date_timestamp':
+                if($value === $this->first_donation_date) {
+                    return true;
+                }
+                $this->_meta['first_donation_date'] = absint($value);
+                $res = empty($this->_meta['first_donation_date']) ?
+                    delete_user_meta($this->_id, 'leyka_donor_first_donation_date') :    
+                    update_user_meta($this->_id, 'leyka_donor_first_donation_date', $value);
+                break;
+
+            case 'last_donation_id':
+            case 'last_donation':
+                if($value === $this->last_donation_id) {
+                    return true;
+                }
+                $this->_meta['last_donation_id'] = absint($value);
+                $res = empty($this->_meta['last_donation_id']) ?
+                    delete_user_meta($this->_id, 'leyka_donor_last_donation_id') :
+                    update_user_meta($this->_id, 'leyka_donor_last_donation_id', $value);
+                break;
+
+            case 'last_donation_date_timestamp':
+                if($value === $this->last_donation_date) {
+                    return true;
+                }
+                $this->_meta['last_donation_date'] = absint($value);
+                $res = empty($this->_meta['last_donation_date']) ?
+                    delete_user_meta($this->_id, 'leyka_donor_last_donation_date') :
+                    update_user_meta($this->_id, 'leyka_donor_last_donation_date', $value);
+                break;
+
+            case 'campaigns':
+                if( !is_array($value) || $value == $this->campaigns ) {
+                    return true;
+                }
+                $this->_meta['campaigns'] = $value;
+                $res = update_user_meta($this->_id, 'leyka_donor_campaigns', $value);
+                break;
+
+            case 'subscribed':
+            case 'campaigns_news':
+            case 'news_subscriptions':
+            case 'campaigns_news_subscriptions':
+                if( !is_array($value) || $value == $this->campaigns ) {
+                    return true;
+                }
+                $this->_meta['campaigns_news_subscriptions'] = $value;
+                $res = update_user_meta($this->_id, 'leyka_donor_campaigns_news_subscriptions', $value);
+                break;
+
+            case 'gateways':
+                if( !is_array($value) || $value == $this->campaigns ) {
+                    return true;
+                }
+                $this->_meta['gateways'] = $value;
+                $res = update_user_meta($this->_id, 'leyka_donor_gateways', $value);
+                break;
+
+            case 'sum_donated':
+            case 'amount_donated':
+                if($value == $this->amount_donated) {
+                    return true;
+                }
+                $this->_meta['amount_donated'] = (float)$value;
+                $res = update_user_meta($this->_id, 'leyka_amount_donated', $value);
+                break;
+
+            case 'pass':
+            case 'password':
+            case 'donor_password':
+            case 'account_password':
+                $value = trim($value);
+                $res = wp_update_user(array('ID' => $this->_id, 'user_pass' => esc_sql($value)));
+                break;
+
+            default:
+                do_action('leyka_set_unknown_donor_field', $field, $value, $this);
+                $res = true;
+
+        }
+
+        return !!$res && !is_wp_error($res);
 
     }
 
     public function delete() {
         wp_delete_user($this->_id);
+    }
+
+    public function login($password, $remember = true) {
+
+        if( !$this->_id || !$this->_user ) {
+            return false;
+        }
+
+        $password = trim($password);
+
+        $res = wp_signon(array(
+            'user_login' => $this->_user->user_login,
+            'user_password' => $password,
+            'remember' => !!$remember,
+        ));
+
+        return is_wp_error($res) ? $res : true;
+
+    }
+
+    public function get_password_reset_key() {
+
+        if( !$this->_user ) {
+            return false;
+        }
+
+        return get_password_reset_key($this->_user);
+
     }
 
 }

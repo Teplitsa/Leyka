@@ -117,6 +117,8 @@ class Leyka extends Leyka_Singleton {
         // For Donors management:
         if(get_option('leyka_donor_management_available')) {
 
+            require_once LEYKA_PLUGIN_DIR.'inc/leyka-class-donor.php';
+
             // Don't show admin bar:
             add_action('init', function() {
                 if(leyka_user_has_role('donor_single')) {
@@ -134,7 +136,7 @@ class Leyka extends Leyka_Singleton {
                 if( !$user ) {
 
                     $logged_in_user = get_user_by('login', $username);
-                    if($logged_in_user && leyka_user_has_role('donor_single', true, $logged_in_user)) {
+                    if($logged_in_user && !$logged_in_user->has_cap('donor_account_access')) {
 
                         remove_filter('authenticate', 'wp_authenticate_username_password', 20);
                         return null;
@@ -147,8 +149,8 @@ class Leyka extends Leyka_Singleton {
 
             }, 1000, 3);
 
-            add_action('wp_login', function($login, $user){
-                if($user->roles && leyka_user_has_role('donor_single', true, $user)) {
+            add_action('wp_login', function($login, WP_User $user){
+                if( !$user->has_cap('donor_account_access') ) {
 
                     wp_logout();
                     wp_redirect(leyka_get_current_url());
@@ -159,7 +161,7 @@ class Leyka extends Leyka_Singleton {
 
             // Logout if needed:
             add_action('init', function(){
-                if(is_user_logged_in() && leyka_user_has_role('donor_single', true)) {
+                if( !wp_get_current_user()->has_cap('donor_account_access') ) {
 
                     wp_logout();
                     wp_redirect(leyka_get_current_url());
@@ -170,12 +172,11 @@ class Leyka extends Leyka_Singleton {
 
         }
 
-        // For Permanent Donor accounts:
+        // For Donor accounts management:
         if(get_option('leyka_donor_accounts_available')) {
 
-            // Don't show admin bar:
-            add_action('init', function(){
-                if(leyka_user_has_role('donor_regular')) {
+            add_action('init', function(){ // Don't show admin bar
+                if(leyka_user_has_role('donor')) {
                     add_filter('show_admin_bar', '__return_false');
                 }
             }, 9);
@@ -448,9 +449,12 @@ class Leyka extends Leyka_Singleton {
                 }
 
                 // Donor's data cache refresh:
-                $donor_user = get_user_by('id', $donation->donor_user_id);
-                if($donor_user) {
-                    leyka_calculate_donor_metadata($donor_user);
+                if($donation->donor_user_id) {
+                    try {
+                        leyka_calculate_donor_metadata(new Leyka_Donor($donation->donor_user_id));
+                    } catch(Exception $e) {
+                        // ...
+                    }
                 }
 
             }
@@ -1246,7 +1250,11 @@ class Leyka extends Leyka_Singleton {
 
                 $donor_user->add_cap('donor_account_access');
 
-                leyka_calculate_donor_metadata($donor_user); // Initialize & fill the Donor Cache for all existing Donor users
+                try { // Initialize & fill the Donor Cache for all existing Donor users
+                    leyka_calculate_donor_metadata(new Leyka_Donor($donor_user));
+                } catch(Exception $e) {
+                    //...
+                }
 
             }
 
@@ -1861,14 +1869,19 @@ class Leyka extends Leyka_Singleton {
             $donor_account_login_text = sprintf(__('To control your recurring subscriptions please contact the <a href="mailto:%s">website administration</a>.', 'leyka'), leyka_get_website_tech_support_email());
         } else if($donation->donor_account_id) {
 
-            $donor_account_activation_code = get_user_meta(
-                $donation->donor_account_id,
-                'leyka_account_activation_code',
-                true
-            );
+            try {
+                $donor = new Leyka_Donor($donation->donor_account_id);
+            } catch(Exception $e) {
+                return false; // Don't send an email
+            }
+//            $donor_account_activation_code = get_user_meta(
+//                $donation->donor_account_id,
+//                'leyka_account_activation_code',
+//                true
+//            );
 
-            $donor_account_login_text = $donor_account_activation_code ?
-                sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?activate='.$donor_account_activation_code)) :
+            $donor_account_login_text = $donor->account_activation_code ?
+                sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?activate='.$donor->account_activation_code)) :
                 sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?u='.$donation->donor_account_id));
 
         }

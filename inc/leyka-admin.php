@@ -108,10 +108,13 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
             } else if(isset($_GET['page']) && $_GET['page'] === 'leyka_donor_info' && !empty($_GET['donor'])) {
 
-                $donor = get_user_by('id', absint($_GET['donor']));
-                if($donor) {
-                    $admin_title = sprintf(__('Leyka: Donor %s'), $donor->display_name).' &lsaquo; '.get_bloginfo('name');
+                try {
+                    $donor = new Leyka_Donor(absint($_GET['donor']));
+                } catch(Exception $e) {
+                    return $admin_title;
                 }
+
+                $admin_title = sprintf(__('Leyka: Donor %s'), $donor->name).' &lsaquo; '.get_bloginfo('name');
 
             }
 
@@ -357,13 +360,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
      */
     public function save_user_profile_donor_fields($donor_user_id) {
 
-        $donor_user = get_user_by('id', $donor_user_id);
-
-        if( !current_user_can('administrator') || !leyka_user_has_role('donor', false, $donor_user) ) {
+        if( !current_user_can('administrator') ) {
             return false;
         }
 
-        array_walk($_POST['leyka_donor_tags'], function(&$value){
+        array_walk($_POST['leyka_donor_tags'], function( &$value ){
             $value = (int)$value;
         });
 

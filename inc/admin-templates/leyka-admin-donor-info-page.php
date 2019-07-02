@@ -4,20 +4,13 @@
 /** @var $this Leyka_Admin_Setup */
 
 if(empty($_GET['donor']) || !current_user_can('leyka_manage_options')) {
-
-    wp_redirect(admin_url('admin.php?page=leyka'));
-    exit;
-
+    wp_die(__("Error: cannot display a page for a given donor.", 'leyka'));
 }
 
-/** @todo Create a Leyka_Donor class to incapsulate all donor data interactions */
-
-$donor_user = get_user_by('id', $_GET['donor']);
-if( !$donor_user) {
-
-    wp_redirect(admin_url('admin.php?page=leyka'));
-    exit;
-
+try {
+    $donor = new Leyka_Donor(absint($_GET['donor']));
+} catch(Exception $e) {
+    wp_die($e->getMessage());
 }?>
 
 <div class="wrap">

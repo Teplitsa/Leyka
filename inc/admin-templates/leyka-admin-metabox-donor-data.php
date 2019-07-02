@@ -3,12 +3,10 @@
 
 /** @var $this Leyka_Admin_Setup */
 
-$donor_user = get_user_by('id', $_GET['donor']);
-if( !$donor_user) {
-
-    wp_redirect(admin_url('admin.php?page=leyka'));
-    exit;
-
+try {
+    $donor = new Leyka_Donor(absint($_GET['donor']));
+} catch(Exception $e) {
+    wp_die($e->getMessage());
 }?>
 
 <div class="donor-col-1">
@@ -62,7 +60,7 @@ if( !$donor_user) {
             foreach(get_user_meta($donor_user->ID, 'leyka_donor_campaigns_news_subscriptions', true) as $campaign_id => $title) {
                 $campaigns[] = '«<a href="'.get_edit_post_link($campaign_id).'">'.$title.'</a>»';
             }
-            echo $campaigns ? implode(', ', $campaigns) : __('none');?>
+            echo $campaigns ? implode(', ', $campaigns) : __('none', 'leyka');?>
 
             </dd>
 
@@ -73,7 +71,7 @@ if( !$donor_user) {
             foreach(get_user_meta($donor_user->ID, 'leyka_donor_campaigns', true) as $campaign_id => $title) {
                 $campaigns[] = '«<a href="'.get_edit_post_link($campaign_id).'">'.$title.'</a>»';
             }
-            echo $campaigns ? implode(', ', $campaigns) : __('none');?>
+            echo $campaigns ? implode(', ', $campaigns) : __('none', 'leyka');?>
 
             </dd>
         </dl>

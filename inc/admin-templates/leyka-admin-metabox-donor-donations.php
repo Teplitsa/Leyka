@@ -3,12 +3,10 @@
 
 /** @var $this Leyka_Admin_Setup */
 
-$donor_user = get_user_by('id', $_GET['donor']);
-if( !$donor_user) {
-
-    wp_redirect(admin_url('admin.php?page=leyka'));
-    exit;
-
+try {
+    $donor = new Leyka_Donor(absint($_GET['donor']));
+} catch(Exception $e) {
+    wp_die($e->getMessage());
 }?>
 
 Metabox content here - donor's donations

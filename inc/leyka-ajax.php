@@ -396,31 +396,25 @@ function leyka_setup_donor_password() {
         );
     } else {
 
-        $donor_id = wp_update_user(array('ID' => (int)$_POST['donor_account_id'], 'user_pass' => $_POST['leyka_donor_pass']));
-        if(is_wp_error($donor_id)) {
-            $res = array(
-                'status' => 'error',
-                'message' => sprintf(__('The password cannot be updated. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
-            );
-        } else {
+        try {
+            $donor = new Leyka_Donor((int)$_POST['donor_account_id']);
+        } catch(Exception $e) {
+            die(json_encode(array('status' => 'error', 'message' => __('Wrong Donor ID given', 'leyka'))));
+        }
 
-            $donor_user = new WP_User($donor_id);
-            update_user_meta($donor_user->ID, 'leyka_account_activation_code', false);
+        $donor->password = $_POST['leyka_donor_pass'];
+        $donor->account_activation_code = false;
 
-            if( !empty($_POST['auto-login']) ) { // Password initial setup (account activation)
-                $donor_user = wp_signon(array(
-                    'user_login' => $donor_user->user_login,
-                    'user_password' => $_POST['leyka_donor_pass'],
-                    'remember' => true,
-                ));
-            } else { // Password resetting
-                $res = array('status' => 'ok', 'message' => sprintf(__('The password is changed. You may <a href="%s">log in</a>', 'leyka'), home_url('/donor-account/login/')));
+        if( !empty($_POST['auto-login']) ) { // Password initial setup (account activation)
+
+            $donor_logged_in = $donor->login($_POST['leyka_donor_pass'], true);
+
+            if(is_wp_error($donor_logged_in)) { /** @var $donor_logged_in WP_Error */
+                $res = array('status' => 'error', 'message' => strip_tags($donor_logged_in->get_error_message()),);
             }
 
-            if(is_wp_error($donor_user)) {
-                $res = array('status' => 'error', 'message' => strip_tags($donor_user->get_error_message()),);
-            }
-
+        } else { // Password resetting
+            $res = array('status' => 'ok', 'message' => sprintf(__('The password is changed. You may <a href="%s">log in</a>', 'leyka'), home_url('/donor-account/login/')));
         }
 
     }
@@ -451,19 +445,20 @@ function leyka_donor_login() {
         );
     } else {
 
-        $donor = get_user_by('email', $_POST['leyka_donor_email']);
+        try {
+            $donor = new Leyka_Donor($_POST['leyka_donor_email']);
+        } catch(Exception $e) {
+            $donor = false;
+        }
+
         if( !$donor ) {
             $res = array('status' => 'error', 'message' => __('Incorrect email or password.', 'leyka'),);
         } else {
 
-            $donor_user = wp_signon(array(
-                'user_login' => $donor->user_login,
-                'user_password' => esc_sql($_POST['leyka_donor_pass']),
-                'remember' => true,
-            ));
+            $donor_logged_in = $donor->login($_POST['leyka_donor_pass'], true);
 
-            if(is_wp_error($donor_user)) {
-                $res = array('status' => 'error', 'message' => strip_tags($donor_user->get_error_message()),);
+            if(is_wp_error($donor_logged_in)) {
+                $res = array('status' => 'error', 'message' => strip_tags($donor_logged_in->get_error_message()),);
             }
 
         }
@@ -492,41 +487,52 @@ function leyka_donor_password_reset_request() {
         );
     } else {
 
-        $donor = get_user_by('email', $_POST['leyka_donor_email']);
+        try {
+            $donor = new Leyka_Donor($_POST['leyka_donor_email']);
+        } catch(Exception $e) {
+            $donor = false;
+        }
+
         if( !$donor ) {
             $res = array('status' => 'error', 'message' => __('Incorrect email.', 'leyka'),);
         } else {
 
-            // get_password_reset_key(WP_User $user), check_password_reset_key( string $key, string $login )
-            $pass_reset_key = get_password_reset_key($donor);
-            $email_text = sprintf(
-                __("Hello, %s!\n\nYou received this email because someone asked to reset your email on the <a href='%s'>%s</a> website.\n\nIf it was not you, just ignore this email and nothing will happen.\n\n If you really wish to reset your password, click <a href='%s' target='_blank'>here</a>.\n\nGood day to you!", 'leyka'),
-                $donor->display_name,
-                home_url(),
-                get_bloginfo('name'),
-                home_url('/donor-account/reset-password/?code='.$pass_reset_key.'&donor='.$_POST['leyka_donor_email'])
-            );
+            $pass_reset_key = $donor->get_password_reset_key();
 
-            add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+            if($pass_reset_key && !is_wp_error($pass_reset_key)) {
 
-            $email_sent = wp_mail(
-                $_POST['leyka_donor_email'],
-                apply_filters('leyka_email_donor_password_reset_title', __('Your account access resetting', 'leyka'), $donor),
-                wpautop(apply_filters('leyka_email_donor_password_reset_text', $email_text, $donor)),
-                array('From: '.apply_filters(
-                        'leyka_email_from_name',
-                        leyka_options()->opt_safe('email_from_name'),
-                        $donor
-                    ).' <'.leyka_options()->opt_safe('email_from').'>',)
-            );
-            if( !$email_sent ) {
-                $res = array(
-                    'status' => 'error',
-                    'message' => sprintf(__('Sorry, we could not send the password resetting email to you. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
+                $email_text = sprintf(
+                    __("Hello, %s!\n\nYou received this email because someone asked to reset your email on the <a href='%s'>%s</a> website.\n\nIf it was not you, just ignore this email and nothing will happen.\n\n If you really wish to reset your password, click <a href='%s' target='_blank'>here</a>.\n\nGood day to you!", 'leyka'),
+                    $donor->display_name,
+                    home_url(),
+                    get_bloginfo('name'),
+                    home_url('/donor-account/reset-password/?code='.$pass_reset_key.'&donor='.$_POST['leyka_donor_email'])
                 );
-            }
 
-            remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+                add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+
+                $email_sent = wp_mail(
+                    $_POST['leyka_donor_email'],
+                    apply_filters('leyka_email_donor_password_reset_title', __('Your account access resetting', 'leyka'), $donor),
+                    wpautop(apply_filters('leyka_email_donor_password_reset_text', $email_text, $donor)),
+                    array('From: '.apply_filters(
+                            'leyka_email_from_name',
+                            leyka_options()->opt_safe('email_from_name'),
+                            $donor
+                        ).' <'.leyka_options()->opt_safe('email_from').'>',)
+                );
+                if( !$email_sent ) {
+                    $res = array(
+                        'status' => 'error',
+                        'message' => sprintf(__('Sorry, we could not send the password resetting email to you. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
+                    );
+                }
+
+                remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+
+            } else {
+                $res = array('status' => 'error', 'message' => __("Can't get the password reset key.", 'leyka'),);
+            }
 
         }
 
