@@ -2383,6 +2383,7 @@ if( !function_exists('leyka_calculate_donor_metadata') ) {
             'first_donation' => false,
             'last_donation' => false,
             'campaigns' => array(),
+            'campaigns_news_subscriptions' => array(),
             'gateways' => array(),
             'amount_donated' => 0.0,
         );
@@ -2413,6 +2414,14 @@ if( !function_exists('leyka_calculate_donor_metadata') ) {
             if(empty($donor_data['campaigns']) || empty($donor_data['campaigns'][$donation->campaign_id])) {
                 $donor_data['campaigns'][$donation->campaign_id] = $donation->campaign_title;
             }
+            if($donation->donor_subscribed) {
+                if(
+                    empty($donor_data['campaigns_news_subscriptions'])
+                    || empty($donor_data['campaigns_news_subscriptions'][$donation->campaign_id])
+                ) {
+                    $donor_data['campaigns_news_subscriptions'][$donation->campaign_id] = $donation->campaign_title;
+                }
+            }
 
             if(empty($donor_data['gateways']) || !in_array($donation->gateway, $donor_data['gateways'])) {
                 $donor_data['gateways'][] = $donation->gateway;
@@ -2440,7 +2449,7 @@ if( !function_exists('leyka_calculate_donor_metadata') ) {
         if($donor_data['last_donation']) {
 
             update_user_meta($donor_user->ID, 'leyka_donor_last_donation_id', $donor_data['last_donation']->id);
-            update_user_meta($donor_user->ID, 'leyka_donor_first_donation_date', $donor_data['last_donation']->date_timestamp);
+            update_user_meta($donor_user->ID, 'leyka_donor_last_donation_date', $donor_data['last_donation']->date_timestamp);
 
         } else {
 
@@ -2451,6 +2460,11 @@ if( !function_exists('leyka_calculate_donor_metadata') ) {
 
         update_user_meta($donor_user->ID, 'leyka_donor_type', $donor_data['donor_type']);
         update_user_meta($donor_user->ID, 'leyka_donor_campaigns', $donor_data['campaigns']);
+        update_user_meta(
+            $donor_user->ID,
+            'leyka_donor_campaigns_news_subscriptions',
+            $donor_data['campaigns_news_subscriptions']
+        );
         update_user_meta($donor_user->ID, 'leyka_donor_gateways', $donor_data['gateways']);
         update_user_meta($donor_user->ID, 'leyka_amount_donated', $donor_data['amount_donated']);
 

@@ -55,6 +55,38 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             $donors_params['meta_query']['relation'] = 'AND';
         }
 
+        // Ordering:
+        if(isset($_REQUEST['orderby']) && array_key_exists($_REQUEST['orderby'], $this->get_sortable_columns())) {
+
+            switch($_REQUEST['orderby']) {
+                case 'donor_id': $donors_params['orderby'] = 'ID'; break;
+                case 'donor_type':
+                    $donors_params['meta_key'] = 'leyka_donor_type';
+                    $donors_params['orderby'] = 'meta_value';
+                    break;
+                case 'donor_name':
+                    $donors_params['orderby'] = 'display_name'; break;
+                case 'first_donation': /** @todo Testing needed (after date fields are finished) */
+                    $donors_params['meta_key'] = 'leyka_donor_first_donation_date';
+                    $donors_params['orderby'] = 'meta_value_num';
+                    break;
+                case 'last_donation': /** @todo Testing needed (after date fields are finished) */
+                    $donors_params['meta_key'] = 'leyka_donor_last_donation_date';
+                    $donors_params['orderby'] = 'meta_value_num';
+                    break;
+                case 'amount_donated':
+                    $donors_params['meta_key'] = 'leyka_amount_donated';
+                    $donors_params['orderby'] = 'meta_value_num';
+                break;
+                default:
+            }
+
+            if($donors_params['orderby']) {
+                $donors_params['order'] = isset($_REQUEST['order']) && $_REQUEST['order'] == 'asc' ? 'ASC' : 'DESC';
+            }
+
+        }
+
         return $donors_params;
 
     }
@@ -205,13 +237,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
     }
 
     public function column_donor_type($item) {
-
-        if(empty($item['donor_type'])) {
-            return '';
-        }
-
-        return '<div class="'.$item['donor_type'].'"></div>';
-
+        return isset($item['donor_type']) ? '<div class="'.$item['donor_type'].'"></div>' : '';
     }
 
     public function column_first_donation($item) {
@@ -363,6 +389,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             'donor_type' => array('donor_type', true),
             'donor_name' => array('donor_name', false),
             'first_donation' => array('first_donation', true),
+            'last_donation' => array('last_donation', true),
             'amount_donated' => array('amount_donated', true),
         );
     }
@@ -371,7 +398,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      * @return array
      */
     public function get_bulk_actions() {
-        return array(); // array('bulk-delete' => __('Delete'));
+        return array('bulk-delete' => __('Delete'));
     }
 
     /**
@@ -395,15 +422,10 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         // Single donor deletion:
         if('delete' === $this->current_action()) {
 
-            if ( !wp_verify_nonce(esc_attr($_REQUEST['_wpnonce']), 'leyka_delete_donor') ) {
+            if( !wp_verify_nonce(esc_attr($_REQUEST['_wpnonce']), 'leyka_delete_donor') ) {
                 die(__("You don't have permissions for this operation.", 'leyka'));
             } else {
-
-                $this->delete_donor(absint($_GET['donor']));
-
-                wp_redirect( esc_url(add_query_arg()) );
-                exit;
-
+                self::delete_donor(absint($_GET['donor']));
             }
 
         }
@@ -414,12 +436,9 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             || (isset($_POST['action2']) && $_POST['action2'] === 'bulk-delete')
         ) {
 
-            foreach(esc_sql($_POST['bulk-delete']) as $id) {
-                $this->delete_donor($id);
+            foreach(esc_sql($_POST['bulk-delete']) as $donor_id) {
+                self::delete_donor($donor_id);
             }
-
-            wp_redirect( esc_url(add_query_arg()) );
-            exit;
 
         }
 

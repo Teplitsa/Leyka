@@ -260,7 +260,9 @@
 	}
 
 	.sorting-indicator {
-		display: none;
+		&:before {
+			top: 0px;
+		}
 	}
 
 	th {
