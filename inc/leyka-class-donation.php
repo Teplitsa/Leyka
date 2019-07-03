@@ -374,14 +374,14 @@ class Leyka_Donation_Management {
                 $donor_account_login_text = sprintf(__('To control your recurring subscriptions please contact the <a href="mailto:%s">website administration</a>.', 'leyka'), leyka_get_website_tech_support_email());
             } else if($donation->donor_account_id) {
 
-                $donor_account_activation_code = get_user_meta(
-                    $donation->donor_account_id,
-                    'leyka_account_activation_code',
-                    true
-                );
+                try {
+                	$donor = new Leyka_Donor($donation->donor_user_id);
+                } catch(Exception $e) {
+                    $donor = false;
+                }
 
-                $donor_account_login_text = $donor_account_activation_code ?
-                    sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?activate='.$donor_account_activation_code)) :
+                $donor_account_login_text = $donor && $donor->account_activation_code ?
+                    sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?activate='.$donor->account_activation_code)) :
                     sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?u='.$donation->donor_account_id));
 
             }
@@ -497,14 +497,14 @@ class Leyka_Donation_Management {
                 $donor_account_login_text = sprintf(__('To control your recurring subscriptions please contact the <a href="mailto:%s">website administration</a>.', 'leyka'), get_option('admin_email'));
             } else if($donation->donor_account_id) {
 
-                $donor_account_activation_code = get_user_meta(
-                    $donation->donor_account_id,
-                    'leyka_account_activation_code',
-                    true
-                );
+                try {
+                	$donor = new Leyka_Donor($donation->donor_account_id);
+                } catch(Exception $e) {
+                	$donor = false;
+                }
 
-                $donor_account_login_text = $donor_account_activation_code ?
-                    sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?activate='.$donor_account_activation_code)) : // Вы можете управлять вашими пожертвованиями в вашем (link)личном кабинете(/link).
+                $donor_account_login_text = $donor && $donor->account_activation_code ?
+                    sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?activate='.$donor->account_activation_code)) :
                     sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?u='.$donation->donor_account_id));
 
             }

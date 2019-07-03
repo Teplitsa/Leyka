@@ -197,14 +197,14 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             add_action("load-$hook", array($this, 'donors_list_screen_options'));
 
             // Donors tags page:
-            $taxonomy = get_taxonomy(LEYKA_DONORS_TAGS_TAXONOMY_NAME);
+            $taxonomy = get_taxonomy(Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME);
 
             add_submenu_page('leyka', esc_attr($taxonomy->labels->menu_name), esc_attr($taxonomy->labels->menu_name), $taxonomy->cap->manage_terms, 'edit-tags.php?taxonomy='.$taxonomy->name);
 
             add_filter('submenu_file', function($submenu_file) { // Fix for parent menu
 
                 global $parent_file;
-                if($submenu_file == 'edit-tags.php?taxonomy='.LEYKA_DONORS_TAGS_TAXONOMY_NAME) {
+                if($submenu_file == 'edit-tags.php?taxonomy='.Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME) {
                     $parent_file = 'leyka';
                 }
                 return $submenu_file;
@@ -328,13 +328,13 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 </th>
                 <td>
                     <?php $all_donors_tags = get_terms(array(
-                        'taxonomy' => LEYKA_DONORS_TAGS_TAXONOMY_NAME,
+                        'taxonomy' => Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
                         'hide_empty' => false,
                     ));
 
                     $donor_user_tags = wp_get_object_terms(
                         $donor_user->ID,
-                        LEYKA_DONORS_TAGS_TAXONOMY_NAME,
+                        Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
                         array('fields' => 'ids')
                     );?>
 
@@ -368,7 +368,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             $value = (int)$value;
         });
 
-        return !is_wp_error(wp_set_object_terms($donor_user_id, $_POST['leyka_donor_tags'], LEYKA_DONORS_TAGS_TAXONOMY_NAME));
+        return !is_wp_error(wp_set_object_terms($donor_user_id, $_POST['leyka_donor_tags'], Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME));
 
     }
 

@@ -83,15 +83,6 @@ if( !defined('LEYKA_USAGE_STATS_PROD_SERVER_URL') ) {
     define('LEYKA_USAGE_STATS_PROD_SERVER_URL', 'https://ls.te-st.ru/');
 }
 
-if( !defined('LEYKA_DONOR_ACCOUNT_DONATIONS_PER_PAGE') ) {
-    define('LEYKA_DONOR_ACCOUNT_DONATIONS_PER_PAGE', 6);
-}
-
-// Donors' tags taxonomy:
-if( !defined('LEYKA_DONORS_TAGS_TAXONOMY_NAME') ) {
-    define('LEYKA_DONORS_TAGS_TAXONOMY_NAME', 'donors_tag');
-}
-
 // Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
 if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.6.0', '<') ) {
 

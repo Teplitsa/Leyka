@@ -11,7 +11,9 @@ class Leyka_Donor {
 
     private $_meta = array();
 
-    public static $user_role = 'donor';
+    const DONOR_USER_ROLE = 'donor';
+    const DONORS_TAGS_TAXONOMY_NAME = 'donors_tag';
+    const DONOR_ACCOUNT_DONATIONS_PER_PAGE = 6; // For the frontend Donor's Account page
 
     public static function add(array $params) {
 
@@ -63,7 +65,7 @@ class Leyka_Donor {
     }
 
     protected static function _is_donor(WP_User $donor_user) {
-        return in_array(static::$user_role, (array)$donor_user->roles);
+        return in_array(static::DONOR_USER_ROLE, (array)$donor_user->roles);
     }
 
     public function __construct($donor_user) {
@@ -493,7 +495,7 @@ class Leyka_Donor {
                     array('key' => 'leyka_donor_account', 'value' => $this->_id),
                 ),
             ),
-            'posts_per_page' => LEYKA_DONOR_ACCOUNT_DONATIONS_PER_PAGE,
+            'posts_per_page' => static::DONOR_ACCOUNT_DONATIONS_PER_PAGE,
             'paged' => $page_number,
         ));
 
@@ -536,6 +538,10 @@ class Leyka_Donor {
 
         return $donations->found_posts;
 
+    }
+
+    public function get_tags(array $params = array()) {
+        return wp_get_object_terms($this->_id, static::DONORS_TAGS_TAXONOMY_NAME, $params);
     }
 
     public function delete() {

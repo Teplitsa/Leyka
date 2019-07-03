@@ -81,7 +81,7 @@ try {
                                 <?php $donations = $donor->get_donations();
                                 $donor_donations_count = $donor->get_donations_count();
 
-                                $donations_list_pages_count = $donor_donations_count/LEYKA_DONOR_ACCOUNT_DONATIONS_PER_PAGE;
+                                $donations_list_pages_count = $donor_donations_count/Leyka_Donor::DONOR_ACCOUNT_DONATIONS_PER_PAGE;
                                 if($donations_list_pages_count > (int)$donations_list_pages_count) {
                                     $donations_list_pages_count = (int)$donations_list_pages_count + 1;
                                 }
@@ -102,7 +102,7 @@ try {
                                     </div>
                                 <?php }
 
-                                if($donor_donations_count > LEYKA_DONOR_ACCOUNT_DONATIONS_PER_PAGE) {?>
+                                if($donor_donations_count > Leyka_Donor::DONOR_ACCOUNT_DONATIONS_PER_PAGE) {?>
                                     <div class="leyka-star-submit">
 
                                         <a href="#" class="leyka-star-single-link internal donations-history-more">

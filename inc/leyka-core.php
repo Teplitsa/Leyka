@@ -115,7 +115,7 @@ class Leyka extends Leyka_Singleton {
         add_action('admin_bar_menu', array($this, 'add_toolbar_menu'), 999);
 
         // For Donors management:
-        if(get_option('leyka_donor_management_available')) {
+        if(get_option('leyka_donor_management_available') || get_option('leyka_donor_accounts_available')) {
 
             require_once LEYKA_PLUGIN_DIR.'inc/leyka-class-donor.php';
 
@@ -1582,7 +1582,7 @@ class Leyka extends Leyka_Singleton {
         }
 
         register_taxonomy(
-            LEYKA_DONORS_TAGS_TAXONOMY_NAME,
+            Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
             'user',
             array(
                 'public' => true,
@@ -1872,15 +1872,10 @@ class Leyka extends Leyka_Singleton {
             try {
                 $donor = new Leyka_Donor($donation->donor_account_id);
             } catch(Exception $e) {
-                return false; // Don't send an email
+                $donor = false; // Don't send an email
             }
-//            $donor_account_activation_code = get_user_meta(
-//                $donation->donor_account_id,
-//                'leyka_account_activation_code',
-//                true
-//            );
 
-            $donor_account_login_text = $donor->account_activation_code ?
+            $donor_account_login_text = $donor && $donor->account_activation_code ?
                 sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?activate='.$donor->account_activation_code)) :
                 sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?u='.$donation->donor_account_id));
 
