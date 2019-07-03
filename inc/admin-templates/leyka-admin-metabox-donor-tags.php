@@ -7,6 +7,5 @@ try {
     $donor = new Leyka_Donor(absint($_GET['donor']));
 } catch(Exception $e) {
     wp_die($e->getMessage());
-}?>
+}
 
-Metabox content here - donor's tags

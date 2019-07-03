@@ -68,6 +68,7 @@ class Leyka_Donor {
         return in_array(static::DONOR_USER_ROLE, (array)$donor_user->roles);
     }
 
+    /** @throws Exception */
     public function __construct($donor_user) {
 
         if((is_int($donor_user) || is_string($donor_user)) && absint($donor_user) > 0) {
@@ -131,7 +132,21 @@ class Leyka_Donor {
                 'gateways' => empty($meta['leyka_donor_gateways']) ?
                     array() : maybe_unserialize($meta['leyka_donor_gateways'][0]),
                 'amount_donated' => empty($meta['leyka_amount_donated']) ? 0.0 : (float)$meta['leyka_amount_donated'][0],
+                //'comments' => empty($meta['leyka_donor_comments']) ? array() : maybe_unserialize($meta['leyka_donor_comments']),
             );
+
+            // Donor comments:
+            $this->_meta['comments'] = array();
+
+            if( !empty($meta['leyka_donor_comments']) ) {
+
+                $this->_meta['comments'] = maybe_unserialize($meta['leyka_donor_comments'][0]);
+
+                foreach($this->_meta['comments'] as &$comment) {
+                    $comment = maybe_unserialize($comment);
+                }
+
+            }
 
         }
 
@@ -550,6 +565,56 @@ class Leyka_Donor {
 
     public function get_tags(array $params = array()) {
         return wp_get_object_terms($this->_id, static::DONORS_TAGS_TAXONOMY_NAME, $params);
+    }
+
+    public function comments_exist() {
+        return !empty($this->_meta['comments']);
+    }
+
+    public function get_comments( /*array $params = array()*/ ) {
+
+        if( !$this->comments_exist() ) {
+            return array();
+        }
+
+        // Apply $params filters here
+
+        return $this->_meta['comments'];
+
+    }
+
+    public function add_comment($text) {
+
+        $text = empty($text) ? '' : trim($text);
+        if( !$text ) {
+            return false;
+        }
+
+        $new_comment_id = 1;
+        while(array_key_exists($new_comment_id, $this->_meta['comments'])) {
+            $new_comment_id += 1;
+        }
+
+        $this->_meta['comments'][$new_comment_id] = array(
+            'date' => time(),
+            'text' => esc_attr($text),
+            'author_id' => get_current_user_id(),
+            'author_name' => wp_get_current_user()->display_name,
+        );
+
+        return !!update_user_meta($this->_id, 'leyka_donor_comments', $this->_meta['comments']);
+
+    }
+
+    public function delete_comment($comment_id) {
+
+        if( !array_key_exists($comment_id, $this->_meta['comments']) ) {
+            return false;
+        }
+
+        unset($this->_meta['comments'][$comment_id]);
+        return !!update_user_meta($this->_id, 'leyka_donor_comments', $this->_meta['comments']);
+
     }
 
     public function delete() {
