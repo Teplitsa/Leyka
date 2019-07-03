@@ -33,7 +33,7 @@ class Leyka_Donor {
         if($donor_user && is_a($donor_user, 'WP_User')) { // Donor user already exists
 
             $donor_user_id = $donor_user->ID;
-            $donor_user->add_role('donor');
+            $donor_user->add_role(Leyka_Donor::DONOR_USER_ROLE);
 
         } else { // Create a new Donor user
 
@@ -43,7 +43,7 @@ class Leyka_Donor {
                 'user_pass' => wp_generate_password(16, true, false),
                 'display_name' => $params['donor_name'],
                 'show_admin_bar_front' => false,
-                'role' => 'donor',
+                'role' => Leyka_Donor::DONOR_USER_ROLE,
             ));
 
             if($params['donor_has_account_access']) {

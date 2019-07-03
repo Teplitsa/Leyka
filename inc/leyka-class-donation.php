@@ -1649,7 +1649,7 @@ class Leyka_Donation {
             (leyka_options()->opt('donors_management_available') || leyka_options()->opt('donors_accounts_available'))
             && !isset($params['donor_user_id'])
         ) {
-            $donation_params['post_author'] = leyka_user_has_role('donor') ? get_current_user_id() : 0;
+            $donation_params['post_author'] = leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE) ? get_current_user_id() : 0;
         } else { // Donor user ID is set explicilty
             $donation_params['post_author'] = isset($params['donor_user_id']) ? absint($params['donor_user_id']) : 0;
         }

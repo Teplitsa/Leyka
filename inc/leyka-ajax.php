@@ -743,7 +743,7 @@ function leyka_donors_autocomplete() {
     if($filter) {
         $res = array();
         $donors = get_users(array(
-            'role__in' => array('donor',),
+            'role__in' => array(Leyka_Donor::DONOR_USER_ROLE,),
             'number' => -1,
             'search' => '*' . str_replace('*', '', $filter) . '*',
             'search_columns' => array('login', 'nicename', 'email'),

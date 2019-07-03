@@ -176,7 +176,7 @@ class Leyka extends Leyka_Singleton {
         if(get_option('leyka_donor_accounts_available')) {
 
             add_action('init', function(){ // Don't show admin bar
-                if(leyka_user_has_role('donor')) {
+                if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE)) {
                     add_filter('show_admin_bar', '__return_false');
                 }
             }, 9);
@@ -1228,7 +1228,7 @@ class Leyka extends Leyka_Singleton {
                 } else if((int)$donor_account > 0) {
 
                     $donor_user = get_user_by('id', (int)$donor_account);
-                    if($donor_user && leyka_user_has_role('donor', false, $donor_user)) {
+                    if($donor_user && leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, false, $donor_user)) {
                         wp_update_post(array('ID' => $donation_id, 'post_author' => $donor_user->ID,));
                     }
 
@@ -1239,7 +1239,7 @@ class Leyka extends Leyka_Singleton {
             }
 
             // Add the new "Donor's account access" role:
-            $donor_account_users = get_users(array('role__in' => array('donor',), 'number' => -1,));
+            $donor_account_users = get_users(array('role__in' => array(Leyka_Donor::DONOR_USER_ROLE,), 'number' => -1,));
 
             $old_donor_role = get_role('donor');
             if($old_donor_role) {
@@ -1449,8 +1449,8 @@ class Leyka extends Leyka_Singleton {
 
         // Donor roles:
         if(leyka()->opt('donor_management_available')) {
-            if( !get_role('donor') ) {
-                add_role('donor', __('Donor', 'leyka'));
+            if( !get_role(Leyka_Donor::DONOR_USER_ROLE) ) {
+                add_role(Leyka_Donor::DONOR_USER_ROLE, __('Donor', 'leyka'));
             }
         }
 
