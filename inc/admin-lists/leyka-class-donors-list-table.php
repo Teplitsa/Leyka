@@ -12,9 +12,11 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         parent::__construct(array('singular' => __('Donor', 'leyka'), 'plural' => __('Donors', 'leyka'), 'ajax' => true,));
 
         add_filter('leyka_admin_donors_list_filter', array($this, 'filter_donors'));
+        add_action('pre_user_query', array($this, 'filter_donors_pre_user_query'));
 
     }
 
+    /** WP_User & user meta fields filtering */
     public function filter_donors(array $donors_params) {
 
         $donors_params['meta_query'] = array();
@@ -91,6 +93,42 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
     }
 
+    /** Donors tags filter */
+    public function filter_donors_pre_user_query(WP_User_Query $donor_users_query){
+
+        if( !empty($_REQUEST['donors-tags']) ) {
+
+            $_REQUEST['donors-tags'] = (array)$_REQUEST['donors-tags'];
+
+            array_walk($_REQUEST['donors-tags'], function($value, $key){ // Remove empty values from filter
+
+                $value = absint($value);
+
+                if( !$value ) {
+                    unset($_REQUEST['donors-tags'][$key]);
+                }
+
+            });
+
+        }
+
+        if( !empty($_REQUEST['donors-tags']) ) {
+
+            global $wpdb;
+
+            $donor_users_query->query_where .= $wpdb->prepare(
+                " AND {$wpdb->users}.ID IN (
+                        SELECT {$wpdb->term_relationships}.object_id
+                        FROM {$wpdb->term_relationships} INNER JOIN {$wpdb->term_taxonomy} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->term_taxonomy}.term_taxonomy_id
+                        WHERE {$wpdb->term_taxonomy}.term_id IN (".implode(',', $_REQUEST['donors-tags']).") AND {$wpdb->term_taxonomy}.taxonomy = %s
+                    )",
+                Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME
+            );
+
+        }
+
+    }
+
     /**
      * Retrieve donor’s data from the DB.
      *
@@ -107,43 +145,6 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             'paged' => absint($page_number),
             'fields' => 'id',
         ), 'get_donors');
-
-        // Donors tags filter:
-        add_action('pre_user_query', function(WP_User_Query $donor_users_query){
-
-            if( !empty($_REQUEST['donors-tags']) ) {
-
-                $_REQUEST['donors-tags'] = (array)$_REQUEST['donors-tags'];
-
-                array_walk($_REQUEST['donors-tags'], function($value, $key){ // Remove empty values from filter
-
-                    $value = absint($value);
-
-                    if( !$value ) {
-                        unset($_REQUEST['donors-tags'][$key]);
-                    }
-
-                });
-
-            }
-
-            if( !empty($_REQUEST['donors-tags']) ) {
-
-                global $wpdb;
-
-                $donor_users_query->query_where .= $wpdb->prepare(
-                    " AND {$wpdb->users}.ID IN (
-                        SELECT {$wpdb->term_relationships}.object_id
-                        FROM {$wpdb->term_relationships} INNER JOIN {$wpdb->term_taxonomy} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->term_taxonomy}.term_taxonomy_id
-                        WHERE {$wpdb->term_taxonomy}.term_id IN (".implode(',', $_REQUEST['donors-tags']).") AND {$wpdb->term_taxonomy}.taxonomy = %s
-                    )",
-                    Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME
-                );
-
-            }
-
-        });
-        // Donors tags filter - END
 
         $donors = array();
         foreach(get_users($donors_params) as $donor_user) {
@@ -194,7 +195,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             'role__in' => array(Leyka_Donor::DONOR_USER_ROLE,),
             'number' => -1,
             'count_total' => true,
-            'fields' => array('ID',),
+            'fields' => array('id',),
         ), 'get_donors_total_count'));
 
         return $donors->get_total();
@@ -380,7 +381,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
     function get_columns() {
         return array(
             'cb' => '<input type="checkbox">',
-            #'donor_id' => __('ID'),
+            'donor_id' => __('ID'),
             'donor_type' => _x('Type', "Donor's type", 'leyka'),
             'donor_name' => __("Donor's <br>name", 'leyka'),
             'first_donation' => __('First <br>donation', 'leyka'),
