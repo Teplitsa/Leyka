@@ -105,7 +105,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             'role__in' => array(Leyka_Donor::DONOR_USER_ROLE,),
             'number' => absint($per_page),
             'paged' => absint($page_number),
-            'fields' => array('ID', 'user_email', 'display_name',),
+            'fields' => 'id',
         ), 'get_donors');
 
         // Donors tags filter:
@@ -149,7 +149,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         foreach(get_users($donors_params) as $donor_user) {
 
             try {
-                $donor = new Leyka_Donor($donor_user);;
+                $donor = new Leyka_Donor($donor_user);
             } catch(Exception $e) {
             	continue;
             }

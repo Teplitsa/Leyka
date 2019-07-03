@@ -70,7 +70,7 @@ class Leyka_Donor {
 
     public function __construct($donor_user) {
 
-        if(is_int($donor_user) && absint($donor_user) > 0) {
+        if((is_int($donor_user) || is_string($donor_user)) && absint($donor_user) > 0) {
 
             $donor_user = (int)$donor_user;
             $this->_user = get_user_by('id', $donor_user);
@@ -125,10 +125,11 @@ class Leyka_Donor {
                 'last_donation_date' => empty($meta['leyka_donor_last_donation_date']) ?
                     0 : absint($meta['leyka_donor_last_donation_date'][0]),
                 'campaigns' => empty($meta['leyka_donor_campaigns']) ?
-                    array() : $meta['leyka_donor_campaigns'][0],
+                    array() : maybe_unserialize($meta['leyka_donor_campaigns'][0]),
                 'campaigns_news_subscriptions' => empty($meta['leyka_donor_campaigns_news_subscriptions']) ?
-                    array() : $meta['leyka_donor_campaigns_news_subscriptions'][0],
-                'gateways' => empty($meta['leyka_donor_gateways']) ? array() : $meta['leyka_donor_gateways'][0],
+                    array() : maybe_unserialize($meta['leyka_donor_campaigns_news_subscriptions'][0]),
+                'gateways' => empty($meta['leyka_donor_gateways']) ?
+                    array() : maybe_unserialize($meta['leyka_donor_gateways'][0]),
                 'amount_donated' => empty($meta['leyka_amount_donated']) ? 0.0 : (float)$meta['leyka_amount_donated'][0],
             );
 
@@ -219,6 +220,13 @@ class Leyka_Donor {
                     date("$date_format, $time_format", $this->first_donation_date_timestamp),
                     $this->first_donation_date_timestamp, $date_format, $time_format
                 );
+
+            case 'last_donation_id': return empty($this->_meta['last_donation_id']) ? false : $this->_meta['last_donation_id'];
+            case 'last_donation':
+                if( !$this->_meta['last_donation_id'] ) {
+                    return false;
+                }
+                return new Leyka_Donation($this->_meta['last_donation_id']);                
 
             case 'last_donation_date_timestamp': return $this->_meta['last_donation_date'];
             case 'last_donation_date':
