@@ -659,7 +659,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             $dependencies[] = 'leyka-sticky';
         }
 
-        
         if(isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_donors')) {
             wp_enqueue_style('jqueryui', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css', false, null );
             $dependencies[] = 'jquery-ui-selectmenu';
@@ -732,6 +731,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 false,
                 true
             );
+
             wp_enqueue_script(
                 'leyka-admin-edit-campaign',
                 LEYKA_PLUGIN_BASE_URL.'js/admin-edit-campaign.js',

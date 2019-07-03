@@ -454,7 +454,7 @@ jQuery(document).ready(function($){
     });
 });
 jQuery(document).ready(function($){
-	$('select[name=donor-type]').selectmenu();
+	// $('select[name=donor-type]').selectmenu();
 
 	$('input[name=donor-name-email]').autocomplete({
 		source: leyka.ajaxurl + '?action=leyka_donors_autocomplete',

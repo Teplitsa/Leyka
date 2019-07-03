@@ -1,7 +1,8 @@
 jQuery(document).ready(function($){
-	$('select[name=donor-type]').selectmenu();
 
-	$('input[name=donor-name-email]').autocomplete({
+	// $('select[name="donor-type"]').selectmenu();
+
+	$('input[name="donor-name-email"]').autocomplete({
 		source: leyka.ajaxurl + '?action=leyka_donors_autocomplete',
 		minLength: 2,
 		select: function( event, ui ) {

@@ -541,26 +541,30 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             <a class="button" href="<?php echo admin_url('/post-new.php?post_type=leyka_donation&campaign_id='.$campaign->id);?>"><?php _e('Add correctional donation', 'leyka');?></a>
         </div>
 
-        <table id="donations-data-table">
+        <table id="donations-data-table" class="leyka-data-table">
             <thead>
-                <td><?php _e('ID', 'leyka');?></td>
-                <td><?php _e('Amount', 'leyka');?></td>
-                <td><?php _e('Donor', 'leyka');?></td>
-                <td><?php _e('Method', 'leyka');?></td>
-                <td><?php _e('Date', 'leyka');?></td>
-                <td><?php _e('Status', 'leyka');?></td>
-                <td><?php _e('Payment type', 'leyka');?></td>
-                <td><?php _e('Actions', 'leyka');?></td>
+                <tr>
+                    <td><?php _e('ID', 'leyka');?></td>
+                    <td><?php _e('Amount', 'leyka');?></td>
+                    <td><?php _e('Donor', 'leyka');?></td>
+                    <td><?php _e('Method', 'leyka');?></td>
+                    <td><?php _e('Date', 'leyka');?></td>
+                    <td><?php _e('Status', 'leyka');?></td>
+                    <td><?php _e('Payment type', 'leyka');?></td>
+                    <td><?php _e('Actions', 'leyka');?></td>
+                </tr>
             </thead>
             <tfoot>
-                <td><?php _e('ID', 'leyka');?></td>
-                <td><?php _e('Amount', 'leyka');?></td>
-                <td><?php _e('Donor', 'leyka');?></td>
-                <td><?php _e('Method', 'leyka');?></td>
-                <td><?php _e('Date', 'leyka');?></td>
-                <td><?php _e('Status', 'leyka');?></td>
-                <td><?php _e('Payment type', 'leyka');?></td>
-                <td><?php _e('Actions', 'leyka');?></td>
+                <tr>
+                    <td><?php _e('ID', 'leyka');?></td>
+                    <td><?php _e('Amount', 'leyka');?></td>
+                    <td><?php _e('Donor', 'leyka');?></td>
+                    <td><?php _e('Method', 'leyka');?></td>
+                    <td><?php _e('Date', 'leyka');?></td>
+                    <td><?php _e('Status', 'leyka');?></td>
+                    <td><?php _e('Payment type', 'leyka');?></td>
+                    <td><?php _e('Actions', 'leyka');?></td>
+            </tr>
             </tfoot>
 
             <tbody>
@@ -586,44 +590,6 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         </table>
     <?php
     }
-
-    /**
-     * @param $campaign WP_Post
-     */
-    /*public function embedding_meta_box(WP_Post $campaign) {?>
-
-	<div class="embed-block">
-
-        <h3><?php _e('On this website content', 'leyka');?></h3>
-        <div id="embed-size-pane" class="setting-row">
-            <label for="campaign-shortcode"><?php _e("To embed a campaign donation form in any of your website materials, insert the following code in page HTML:", 'leyka');?></label>
-            <br>
-            <input type="text" class="embed-code read-only campaign-shortcode" id="campaign-shortcode" value="<?php echo esc_attr(self::get_campaign_form_shortcode($campaign->ID));?>">
-        </div>
-
-        <h3><?php _e('On the other websites pages', 'leyka');?></h3>
-		<div class="embed-code-wrap">
-
-            <div id="embed-size-pane" class="setting-row">
-                <h4><?php _e('Size settings', 'leyka');?></h4>
-				<label><?php _e('Width', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_w" value="300" size="4"></label>
-				<label><?php _e('Height', 'leyka');?>: <input type="text" name="embed_iframe_w" id="embed_iframe_h" value="400" size="4"></label>
-
-                <div id="embed-campaign_card" class="settings-field">
-                    <label for="campaign-embed-code"><?php _e("To embed a campaign card in some other web page, insert the following code in page HTML:", 'leyka');?></label>
-                    <textarea class="embed-code read-only campaign-embed-code" id="campaign-embed-code"><?php echo self::get_card_embed_code($campaign->ID, true, 300, 400); ?></textarea>
-                </div>
-			</div>
-
-		</div>
-
-		<div class="leyka-embed-preview">
-			<h4><?php _e('Preview', 'leyka');?></h4>
-			<?php echo self::get_card_embed_code($campaign->ID, false); ?>
-		</div>
-
-	</div>
-    <?php }*/
 
 	static function get_card_embed_code($campaign_id, $increase_counters = false, $width = 300, $height = 400) {
 
