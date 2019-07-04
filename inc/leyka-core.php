@@ -152,7 +152,8 @@ class Leyka extends Leyka_Singleton {
             add_action('wp_login', function($login, WP_User $user){
                 if( !$user->has_cap('donor_account_access') ) {
 
-                    wp_logout();
+                    /** @todo Fix the login/logout: 1. for non-admins, 2. for guests. */
+//                    wp_logout();
 //                    wp_redirect(home_url());
 //                    exit;
 
@@ -163,7 +164,7 @@ class Leyka extends Leyka_Singleton {
             add_action('init', function(){
                 if( !wp_get_current_user()->has_cap('donor_account_access') ) {
 
-                    wp_logout();
+//                    wp_logout();
 //                    wp_redirect(home_url());
 //                    exit;
 
