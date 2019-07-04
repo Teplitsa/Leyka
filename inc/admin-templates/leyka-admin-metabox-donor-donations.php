@@ -9,6 +9,16 @@ try {
     wp_die($e->getMessage());
 }?>
 
+<div class="donations-info">
+    <dl>
+        <dt><?php _e('Amount donated', 'leyka');?></dt>
+        <dd><?php echo $donor->amount_donated.' '.leyka_get_currency_label('rur');?></dd>
+
+        <dt><?php _e('Donations number', 'leyka');?></dt>
+        <dd><?php echo $donor->get_donations_count();?></dd>
+    </dl>
+</div>
+
 <table id="donations-data-table" class="leyka-data-table">
     <thead>
         <tr>
