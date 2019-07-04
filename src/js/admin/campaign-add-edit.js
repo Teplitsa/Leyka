@@ -1,6 +1,13 @@
 // Campaign add/edit page:
 jQuery(document).ready(function($){
 
+    var $page_type = $('#originalaction'),
+        $post_type = $('#post_type');
+
+    if( !$page_type.length || $page_type.val() !== 'editpost' || !$post_type.length || !$post_type.val() !== 'leyka_campaign' ) {
+        return;
+    }
+
     // Campaign type change:
     $(':input[name="campaign_type"]').on('change.leyka', function(e){
 
@@ -174,14 +181,13 @@ jQuery(document).ready(function($){
         editor = wp.codeEditor.initialize($css_editor, editor_settings);
     }
 
-    // campaign cover type
-    $('#campaign-cover-type input[type=radio]').change(function(){
+    // Campaign cover type:
+    $('#campaign-cover-type input[type="radio"]').change(function(){
     	if($(this).prop('checked')) {
-    		if($(this).val() == 'color') {
+    		if($(this).val() === 'color') {
     			$('#campaign-cover-bg-color').show();
     			$('#upload-campaign-cover-image').hide();
-    		}
-    		else {
+    		} else {
     			$('#campaign-cover-bg-color').hide();
     			$('#upload-campaign-cover-image').show();
     		}
@@ -189,7 +195,7 @@ jQuery(document).ready(function($){
     });
     $('#campaign-cover-type input[type=radio]:checked').change();
     
-    // reset uploaded image to default
+    // Reset uploaded image to default:
     $('.set-page-img-control .reset-to-default').on('click.leyka', function(e){
 
         e.preventDefault();
@@ -229,6 +235,71 @@ jQuery(document).ready(function($){
             .always(function(){
                 $loading.hide();
             });
+    });
+
+    // Donations list data table:
+    if(typeof $().DataTable !== 'undefined' && typeof leyka_dt !== 'undefined') {
+        $('.leyka-data-table').DataTable({
+            'lengthMenu': [[25, 50, 100, 200], [25, 50, 100, 200]],
+            language: {
+                processing:     leyka_dt.processing,
+                search:         leyka_dt.search,
+                lengthMenu:     leyka_dt.lengthMenu,
+                info:           leyka_dt.info,
+                infoEmpty:      leyka_dt.infoEmpty,
+                infoFiltered:   leyka_dt.infoFiltered,
+                infoPostFix:    leyka_dt.infoPostFix,
+                loadingRecords: leyka_dt.loadingRecords,
+                zeroRecords:    leyka_dt.zeroRecords,
+                emptyTable:     leyka_dt.emptyTable,
+                paginate: {
+                    first:    leyka_dt.paginate_first,
+                    previous: leyka_dt.paginate_previous,
+                    next:     leyka_dt.paginate_next,
+                    last:     leyka_dt.paginate_last
+                },
+                aria: {
+                    sortAscending:  leyka_dt.aria_sortAsc,
+                    sortDescending: leyka_dt.aria_sortDesc
+                }
+            }
+        });
+    }
+
+    /** @todo Check if it's still a needed feature */
+    // Recalculate total funded amount:
+    $('#recalculate_total_funded').click(function(e){
+
+        e.preventDefault();
+
+        var $link = $(this).attr('disabled', 'disabled'),
+            $indicator = $link.parent().find('#recalculate_total_funded_loader').show(),
+            $message = $link.parent().find('#recalculate_message').hide(),
+            $total_collected_field = $('#collected_target');
+
+        $.get(leyka.ajaxurl, {
+            campaign_id: $link.data('campaign-id'),
+            action: 'leyka_recalculate_total_funded_amount',
+            nonce: $link.data('nonce')
+        }, function(resp){
+
+            $link.removeAttr('disabled');
+            $indicator.hide();
+
+            if(parseFloat(resp) >= 0) {
+
+                var old_value = parseFloat($total_collected_field.val());
+                resp = parseFloat(resp);
+
+                $total_collected_field.val(resp);
+                if(old_value !== resp) { // If recalculated sum is different than saved one, refresh the campaign edition page
+                    $('#publish').click();
+                }
+
+            } else {
+                $message.html(resp).show();
+            }
+        });
     });
 
 });

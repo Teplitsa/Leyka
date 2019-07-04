@@ -13,7 +13,7 @@ try {
     wp_die($e->getMessage());
 }?>
 
-<div class="wrap">
+<div class="wrap" data-leyka-admin-page-type="donor-info-page">
 
     <a href=""><?php _e('Back to the list', 'leyka');?></a>
     <br class="clear">

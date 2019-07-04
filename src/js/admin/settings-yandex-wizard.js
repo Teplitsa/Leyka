@@ -11,7 +11,7 @@ jQuery(document).ready(function($){
     $stepSubmit.hide();
     
     $genBtn.click(function(){
-        var password = makePassword(10);
+        var password = make_password(10);
         var $block = $genBtn.closest('.enum-separated-block');
         $genBtn.hide();
         $block.find('.caption').css('display', 'unset');

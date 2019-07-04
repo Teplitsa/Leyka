@@ -124,6 +124,13 @@ this.maxHours=t.getHours(),this.maxMinutes=t.getMinutes(),this.d.lastSelectedDat
 // Campaign add/edit page:
 jQuery(document).ready(function($){
 
+    var $page_type = $('#originalaction'),
+        $post_type = $('#post_type');
+
+    if( !$page_type.length || $page_type.val() !== 'editpost' || !$post_type.length || !$post_type.val() !== 'leyka_campaign' ) {
+        return;
+    }
+
     // Campaign type change:
     $(':input[name="campaign_type"]').on('change.leyka', function(e){
 
@@ -297,14 +304,13 @@ jQuery(document).ready(function($){
         editor = wp.codeEditor.initialize($css_editor, editor_settings);
     }
 
-    // campaign cover type
-    $('#campaign-cover-type input[type=radio]').change(function(){
+    // Campaign cover type:
+    $('#campaign-cover-type input[type="radio"]').change(function(){
     	if($(this).prop('checked')) {
-    		if($(this).val() == 'color') {
+    		if($(this).val() === 'color') {
     			$('#campaign-cover-bg-color').show();
     			$('#upload-campaign-cover-image').hide();
-    		}
-    		else {
+    		} else {
     			$('#campaign-cover-bg-color').hide();
     			$('#upload-campaign-cover-image').show();
     		}
@@ -312,7 +318,7 @@ jQuery(document).ready(function($){
     });
     $('#campaign-cover-type input[type=radio]:checked').change();
     
-    // reset uploaded image to default
+    // Reset uploaded image to default:
     $('.set-page-img-control .reset-to-default').on('click.leyka', function(e){
 
         e.preventDefault();
@@ -352,6 +358,71 @@ jQuery(document).ready(function($){
             .always(function(){
                 $loading.hide();
             });
+    });
+
+    // Donations list data table:
+    if(typeof $().DataTable !== 'undefined' && typeof leyka_dt !== 'undefined') {
+        $('.leyka-data-table').DataTable({
+            'lengthMenu': [[25, 50, 100, 200], [25, 50, 100, 200]],
+            language: {
+                processing:     leyka_dt.processing,
+                search:         leyka_dt.search,
+                lengthMenu:     leyka_dt.lengthMenu,
+                info:           leyka_dt.info,
+                infoEmpty:      leyka_dt.infoEmpty,
+                infoFiltered:   leyka_dt.infoFiltered,
+                infoPostFix:    leyka_dt.infoPostFix,
+                loadingRecords: leyka_dt.loadingRecords,
+                zeroRecords:    leyka_dt.zeroRecords,
+                emptyTable:     leyka_dt.emptyTable,
+                paginate: {
+                    first:    leyka_dt.paginate_first,
+                    previous: leyka_dt.paginate_previous,
+                    next:     leyka_dt.paginate_next,
+                    last:     leyka_dt.paginate_last
+                },
+                aria: {
+                    sortAscending:  leyka_dt.aria_sortAsc,
+                    sortDescending: leyka_dt.aria_sortDesc
+                }
+            }
+        });
+    }
+
+    /** @todo Check if it's still a needed feature */
+    // Recalculate total funded amount:
+    $('#recalculate_total_funded').click(function(e){
+
+        e.preventDefault();
+
+        var $link = $(this).attr('disabled', 'disabled'),
+            $indicator = $link.parent().find('#recalculate_total_funded_loader').show(),
+            $message = $link.parent().find('#recalculate_message').hide(),
+            $total_collected_field = $('#collected_target');
+
+        $.get(leyka.ajaxurl, {
+            campaign_id: $link.data('campaign-id'),
+            action: 'leyka_recalculate_total_funded_amount',
+            nonce: $link.data('nonce')
+        }, function(resp){
+
+            $link.removeAttr('disabled');
+            $indicator.hide();
+
+            if(parseFloat(resp) >= 0) {
+
+                var old_value = parseFloat($total_collected_field.val());
+                resp = parseFloat(resp);
+
+                $total_collected_field.val(resp);
+                if(old_value !== resp) { // If recalculated sum is different than saved one, refresh the campaign edition page
+                    $('#publish').click();
+                }
+
+            } else {
+                $message.html(resp).show();
+            }
+        });
     });
 
 });
@@ -453,7 +524,54 @@ jQuery(document).ready(function($){
             });
     });
 });
+/** Donor's info page */
 jQuery(document).ready(function($){
+
+    var $page_wrapper = $('.wrap');
+    if( !$page_wrapper.length || $page_wrapper.data('leyka-admin-page-type') !== 'donor-info-page' ) {
+        return;
+    }
+
+    leyka_support_metaboxes('dashboard_page_leyka_donor_info');
+
+    // Donations list data table:
+    if(typeof $().DataTable !== 'undefined' && typeof leyka_dt !== 'undefined') {
+        $('.leyka-data-table').DataTable({
+            'lengthMenu': [[25, 50, 100, 200], [25, 50, 100, 200]],
+            language: {
+                processing:     leyka_dt.processing,
+                search:         leyka_dt.search,
+                lengthMenu:     leyka_dt.lengthMenu,
+                info:           leyka_dt.info,
+                infoEmpty:      leyka_dt.infoEmpty,
+                infoFiltered:   leyka_dt.infoFiltered,
+                infoPostFix:    leyka_dt.infoPostFix,
+                loadingRecords: leyka_dt.loadingRecords,
+                zeroRecords:    leyka_dt.zeroRecords,
+                emptyTable:     leyka_dt.emptyTable,
+                paginate: {
+                    first:    leyka_dt.paginate_first,
+                    previous: leyka_dt.paginate_previous,
+                    next:     leyka_dt.paginate_next,
+                    last:     leyka_dt.paginate_last
+                },
+                aria: {
+                    sortAscending:  leyka_dt.aria_sortAsc,
+                    sortDescending: leyka_dt.aria_sortDesc
+                }
+            }
+        });
+    }
+
+});
+
+/** Donors list page */
+jQuery(document).ready(function($){
+
+    var $page_wrapper = $('.wrap');
+    if( !$page_wrapper.length || $page_wrapper.data('leyka-admin-page-type') !== 'donors-list-page' ) {
+        return;
+    }
 
     if(typeof $().selectmenu != 'undefined') {
         $('select[name="donor-type"]').selectmenu();
@@ -464,7 +582,7 @@ jQuery(document).ready(function($){
 		minLength: 2,
 		select: function( event, ui ) {
 			console.log( "Selected: " + ui.item.value + " ID: " + ui.item.id );
-		}		
+		}
 	});
 
 	$('input[name=first-donation-date]').datepicker();
@@ -473,8 +591,110 @@ jQuery(document).ready(function($){
 	//$('select[name=donation-status]').chosen();
 	//$('select[name="donors-tags[]"]').chosen();
 	//$('select[name="gateways[]"]').chosen();
+
 });
 
+/** Feedback page */
+jQuery(document).ready(function($){
+
+    var $page_wrapper = $('.wrap');
+    if( !$page_wrapper.length || $page_wrapper.data('leyka-admin-page-type') !== 'feedback-page' ) {
+        return;
+    }
+
+    var $form = $('#feedback'),
+        $loader = $('#feedback-loader'),
+        $message_ok = $('#message-ok'),
+        $message_error = $('#message-error');
+
+    $form.submit(function(e){
+
+        e.preventDefault();
+
+        if( !validate_feedback_form($form) ) {
+            return false;
+        }
+
+        $form.hide();
+        $loader.show();
+
+        $.post(leyka.ajaxurl, {
+            action: 'leyka_send_feedback',
+            topic: $form.find('#feedback-topic').val(),
+            name: $form.find('#feedback-name').val(),
+            email: $form.find('#feedback-email').val(),
+            text: $form.find('#feedback-text').val(),
+            nonce: $form.find('#nonce').val()
+        }, function(response){
+
+            $loader.hide();
+
+            if(response && response === 0) {
+                $message_ok.fadeIn(100);
+            } else {
+                $message_error.fadeIn(100);
+            }
+
+        });
+
+        return true;
+
+    });
+
+    function validate_feedback_form($form) {
+
+        var is_valid = true,
+            $field = $form.find('#feedback-topic');
+
+        if( !$field.val() ) {
+
+            is_valid = false;
+            $form.find('#'+$field.attr('id')+'-error').html(leyka.field_required).show();
+
+        } else {
+            $form.find('#'+$field.attr('id')+'-error').html('').hide();
+        }
+
+        $field = $form.find('#feedback-name');
+        if( !$field.val() ) {
+
+            is_valid = false;
+            $form.find('#'+$field.attr('id')+'-error').html(leyka.field_required).show();
+
+        } else {
+            $form.find('#'+$field.attr('id')+'-error').html('').hide();
+        }
+
+        $field = $form.find('#feedback-email');
+        if( !$field.val() ) {
+
+            is_valid = false;
+            $form.find('#'+$field.attr('id')+'-error').html(leyka.field_required).show();
+
+        } else if( !is_email($field.val()) ) {
+
+            is_valid = false;
+            $form.find('#'+$field.attr('id')+'-error').html(leyka.email_invalid_msg).show();
+
+        } else {
+            $form.find('#'+$field.attr('id')+'-error').html('').hide();
+        }
+
+        $field = $form.find('#feedback-text');
+        if( !$field.val() ) {
+
+            is_valid = false;
+            $form.find('#'+$field.attr('id')+'-error').html(leyka.field_required).show();
+
+        } else {
+            $form.find('#'+$field.attr('id')+'-error').html('').hide();
+        }
+
+        return is_valid;
+
+    }
+
+});
 /** Gateways settings board */
 
 // Payment settings page:
@@ -882,70 +1102,64 @@ jQuery(document).ready(function($){
 });
 /** Common settings functions */
 
-// Expandable options sections:
 jQuery(document).ready(function($){
+
+    // Expandable options sections:
     $('.leyka-options-section .header h3').click(function(e){
         e.preventDefault();
         var $section = $(this).closest('.leyka-options-section');
         $section.toggleClass('collapsed');
     });
-});
 
-// delete fields comments
-jQuery(document).ready(function($){
+    // Delete fields comments:
     $('.leyka-admin .leyka-options-section .field-component.help').contents().filter(function(){
-        return (this.nodeType == 3);
+        return (this.nodeType === 3);
     }).remove();
-});
 
-// rules of the dependence of the set of fields on the legal type
-jQuery(document).ready(function($){
-    if($('#change_receiver_legal_type').length == 0) {
-        return;
-    }
-    
-    leyka_toggle_sections_dependent_on_legal_type($('input[type=radio][name=leyka_receiver_legal_type]:checked').val());
-    $('input[type=radio][name=leyka_receiver_legal_type]').change(function(){
+    // Rules of the dependence of the set of fields on the legal type:
+    if($('#change_receiver_legal_type').length) {
+
         leyka_toggle_sections_dependent_on_legal_type($('input[type=radio][name=leyka_receiver_legal_type]:checked').val());
-    });
-    
-    function leyka_toggle_sections_dependent_on_legal_type($val) {
-        if($val == 'legal') {
-            $('#person_terms_of_service').hide();
-            $('#beneficiary_person_name').hide();
-            $('#person_bank_essentials').hide();
-            
-            $('#terms_of_service').show();
-            $('#beneficiary_org_name').show();
-            $('#org_bank_essentials').show();
-        }
-        else {
-            $('#person_terms_of_service').show();
-            $('#beneficiary_person_name').show();
-            $('#person_bank_essentials').show();
-            
-            $('#terms_of_service').hide();
-            $('#beneficiary_org_name').hide();
-            $('#org_bank_essentials').hide();
-        }
-    }
-});
 
-// upload l10n
-jQuery(document).ready(function($){
+        $('input[type="radio"][name="leyka_receiver_legal_type"]').change(function(){
+            leyka_toggle_sections_dependent_on_legal_type(
+                $('input[type="radio"][name="leyka_receiver_legal_type"]:checked').val()
+            );
+        });
+
+        function leyka_toggle_sections_dependent_on_legal_type($val) {
+            if($val === 'legal') {
+                $('#person_terms_of_service').hide();
+                $('#beneficiary_person_name').hide();
+                $('#person_bank_essentials').hide();
+
+                $('#terms_of_service').show();
+                $('#beneficiary_org_name').show();
+                $('#org_bank_essentials').show();
+            } else {
+                $('#person_terms_of_service').show();
+                $('#beneficiary_person_name').show();
+                $('#person_bank_essentials').show();
+
+                $('#terms_of_service').hide();
+                $('#beneficiary_org_name').hide();
+                $('#org_bank_essentials').hide();
+            }
+        }
+
+    }
+
+    // Upload l10n:
     $('#upload-l10n-button').click(function(){
-        
-        var $btn = $(this);
-        var $loading = $('<span class="leyka-loader xs"></span>');
-        
+
+        var $btn = $(this),
+            $loading = $('<span class="leyka-loader xs"></span>'),
+            actionData = {action: 'leyka_upload_l10n'};
+
         $btn.parent().append($loading);
         $btn.prop('disabled', true);
         $btn.closest('.content').find('.field-errors').removeClass('has-errors').find('span').empty();
         $btn.closest('.content').find('.field-success').hide();
-        
-        var actionData = {
-            action: 'leyka_upload_l10n'
-        };
 
         $.post(leyka.ajaxurl, actionData, null, 'json')
             .done(function(json) {
@@ -962,78 +1176,69 @@ jQuery(document).ready(function($){
                 }
 
             }).fail(function(){
-                $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html(leyka.error_message);
-            }).always(function(){
-                $loading.remove();
-                $btn.prop('disabled', false);
-            });
-    
+            $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html(leyka.error_message);
+        }).always(function(){
+            $loading.remove();
+            $btn.prop('disabled', false);
+        });
+
     });
 
-});
-
-
-// connect to stats
-jQuery(document).ready(function($){
+    // Connect to stats:
     if($('#leyka_send_plugin_stats-y-field').prop('checked')) {
         var $sectionWrapper = $('.leyka-options-section#stats_connections');
         $sectionWrapper.find('.submit input').removeClass('button-primary').addClass('disconnect-stats').val(leyka.disconnect_stats);
     }
-    
+
     $('#connect-stats-button').click(function(){
         if($(this).hasClass('disconnect-stats')) {
             $('#leyka_send_plugin_stats-n-field').prop('checked', true);
-        }
-        else {
+        } else {
             $('#leyka_send_plugin_stats-y-field').prop('checked', true);
         }
     });
-});
 
-// section tabs
-jQuery(document).ready(function($){
+    // Section tabs:
     $('.section-tab-nav-item').click(function(e){
+
         e.preventDefault();
         var $tabs = $(this).closest('.section-tabs-wrapper');
-        
+
         $tabs.find('.section-tab-nav-item').removeClass('active');
         $tabs.find('.section-tab-content').removeClass('active');
-        
+
         $(this).addClass('active');
         $tabs.find('.section-tab-content.tab-' + $(this).data('target')).addClass('active');
-    });
-});
 
-// screenshots nav
-jQuery(document).ready(function($){
+    });
+
+    // Screenshots nav:
     $('.tab-screenshot-nav img').click(function(e){
+
         e.preventDefault();
-        var $currentScreenshots = $(this).closest('.tab-screenshots');
-        var $currentVisibleScreenshot = $currentScreenshots.find('.tab-screenshot-item.active');
-        var $nextScreenshot = null;
-        
+
+        var $currentScreenshots = $(this).closest('.tab-screenshots'),
+            $currentVisibleScreenshot = $currentScreenshots.find('.tab-screenshot-item.active'),
+            $nextScreenshot = null;
+
         if($(this).closest('.tab-screenshot-nav').hasClass('left')) {
             $nextScreenshot = $currentVisibleScreenshot.prev();
             if(!$nextScreenshot.hasClass('tab-screenshot-item')) {
                 $nextScreenshot = $currentScreenshots.find('.tab-screenshot-item').last();
             }
-        }
-        else {
+        } else {
             $nextScreenshot = $currentVisibleScreenshot.next();
             if(!$nextScreenshot.hasClass('tab-screenshot-item')) {
                 $nextScreenshot = $currentScreenshots.find('.tab-screenshot-item').first();
             }
         }
-        
+
         if($nextScreenshot) {
             $currentVisibleScreenshot.removeClass('active');
             $nextScreenshot.addClass('active');
         }
-    });
-});
 
-// screenshots nav
-jQuery(document).ready(function($){
+    });
 
     $('[name*="show_donation_comment_field"]').on('change.leyka', function(){
 
@@ -1049,30 +1254,125 @@ jQuery(document).ready(function($){
 
     }).change();
 
-});
+    // Manual emails sending:
+    $('.send-donor-thanks').click(function(e){
 
-// currence rate setup
-/*
-jQuery(document).ready(function($){
-    $('#leyka_auto_refresh_currency_rate_usd-wrapper input[type=radio]').change(leykaToggleRefreshCurrencyRateAutomatically);
-    leykaToggleRefreshCurrencyRateAutomatically();
-    leykaAppendCurrencyRateToOptionLabel();
-    
-    function leykaToggleRefreshCurrencyRateAutomatically() {
-        //alert(leyka.eurCBRate);
-        //alert(leyka.usdCBRate);
+        e.preventDefault();
+
+        var $this = $(this),
+            $wrap = $this.parent(),
+            donation_id = $wrap.data('donation-id');
+
+        $this.fadeOut(100, function(){
+            $this.html('<img src="'+leyka.ajax_loader_url+'" />').fadeIn(100);
+        });
+
+        $wrap.load(leyka.ajaxurl, {
+            action: 'leyka_send_donor_email',
+            nonce: $wrap.find('#_leyka_donor_email_nonce').val(),
+            donation_id: donation_id
+        });
+    });
+
+    // Exchange places of donations Export and Filter buttons:
+    $('.wrap a.page-title-action').after($('.donations-export-form').detach());
+
+    // Tooltips:
+    var $tooltips = $('.has-tooltip');
+    if($tooltips.length && typeof $().tooltip !== 'undefined' ) {
+        $tooltips.tooltip();
     }
-    
-    function leykaToggleRefreshCurrencyRateAutomatically() {
-        if($('#leyka_auto_refresh_currency_rate_usd-n-field').prop('checked')) {
-            $('#leyka_currency_rur2usd-wrapper').show();
-        }
-        else {
-            $('#leyka_currency_rur2usd-wrapper').hide();
-        }
+
+    // Campaign selection fields:
+    var $campaign_select = $('#campaign-select');
+    console.log('HERE:', $campaign_select.length)
+    if($campaign_select.length && typeof $().autocomplete !== 'undefined') {
+
+        $campaign_select.keyup(function(){
+            if( !$(this).val() ) {
+                $('#campaign-id').val('');
+                $('#new-donation-purpose').html('');
+            }
+        });
+
+        $campaign_select.autocomplete({
+            minLength: 1,
+            focus: function(event, ui){
+                $campaign_select.val(ui.item.label);
+                $('#new-donation-purpose').html(ui.item.payment_title);
+
+                return false;
+            },
+            change: function(event, ui){
+                if( !$campaign_select.val() ) {
+                    $('#campaign-id').val('');
+                    $('#new-donation-purpose').html('');
+                }
+            },
+            close: function(event, ui){
+                if( !$campaign_select.val() ) {
+                    $('#campaign-id').val('');
+                    $('#new-donation-purpose').html('');
+                }
+            },
+            select: function(event, ui){
+                $campaign_select.val(ui.item.label);
+                $('#campaign-id').val(ui.item.value);
+                $('#new-donation-purpose').html(ui.item.payment_title);
+                return false;
+            },
+            source: function(request, response) {
+                var term = request.term,
+                    cache = $campaign_select.data('cache') ? $campaign_select.data('cache') : [];
+
+                if(term in cache) {
+                    response(cache[term]);
+                    return;
+                }
+
+                request.action = 'leyka_get_campaigns_list';
+                request.nonce = $campaign_select.data('nonce');
+
+                $.getJSON(leyka.ajaxurl, request, function(data, status, xhr){
+
+                    var cache = $campaign_select.data('cache') ? $campaign_select.data('cache') : [];
+
+                    cache[term] = data;
+                    response(data);
+                });
+            }
+        });
+
+        $campaign_select.data('ui-autocomplete')._renderItem = function(ul, item){
+            return $('<li>')
+                .append(
+                    '<a>'+item.label+(item.label == item.payment_title ? '' : '<div>'+item.payment_title+'</div></a>')
+                )
+                .appendTo(ul);
+        };
+
     }
+
+    // Currency rate setup:
+    // $('#leyka_auto_refresh_currency_rate_usd-wrapper input[type=radio]').change(leykaToggleRefreshCurrencyRateAutomatically);
+    // leykaToggleRefreshCurrencyRateAutomatically();
+    // leykaAppendCurrencyRateToOptionLabel();
+    //
+    // function leykaToggleRefreshCurrencyRateAutomatically() {
+    //     //alert(leyka.eurCBRate);
+    //     //alert(leyka.usdCBRate);
+    // }
+    //
+    // function leykaToggleRefreshCurrencyRateAutomatically() {
+    //     if($('#leyka_auto_refresh_currency_rate_usd-n-field').prop('checked')) {
+    //         $('#leyka_currency_rur2usd-wrapper').show();
+    //     }
+    //     else {
+    //         $('#leyka_currency_rur2usd-wrapper').hide();
+    //     }
+    // }
+
 });
-*/
 /** Common wizards functions */
 
 // Expandable areas:
@@ -1931,7 +2231,7 @@ jQuery(document).ready(function($){
     $stepSubmit.hide();
     
     $genBtn.click(function(){
-        var password = makePassword(10);
+        var password = make_password(10);
         var $block = $genBtn.closest('.enum-separated-block');
         $genBtn.hide();
         $block.find('.caption').css('display', 'unset');
@@ -1986,7 +2286,9 @@ jQuery(document).ready(function($){
 
 });
 // Yandex.Kassa payment tryout - END
-function makePassword(len) {
+/** Admin utilities & tools */
+
+function make_password(len) {
 
     var text = '',
         possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#_%$-";
@@ -1996,5 +2298,13 @@ function makePassword(len) {
     }
 
     return text;
+
+}
+
+// Plugin metaboxes rendering:
+function leyka_support_metaboxes(metabox_area) {
+
+    jQuery('.if-js-closed').removeClass('if-js-closed').addClass('closed'); // Close postboxes that should be closed
+    postboxes.add_postbox_toggles(metabox_area);
 
 }

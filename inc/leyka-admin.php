@@ -613,6 +613,35 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         leyka_show_admin_footer();
     }
 
+    protected function _load_data_tables() {
+
+        wp_enqueue_style('jquery-dataTables', LEYKA_PLUGIN_BASE_URL.'css/jquery.dataTables.css');
+        wp_enqueue_script('jquery-dataTables', LEYKA_PLUGIN_BASE_URL.'js/jquery.dataTables.min.js', array('jquery'), false, true);
+
+        wp_localize_script('jquery-dataTables', 'leyka_dt', array(
+            'processing' => __('Processing...', 'leyka'),
+            'search' => __('Search:', 'leyka'),
+            'lengthMenu' => __('Show _MENU_ entries', 'leyka'),
+            'info' => __('Showing _START_ to _END_ of _TOTAL_ entries', 'leyka'),
+            'infoEmpty' => __('Showing 0 to 0 of 0 entries', 'leyka'),
+            'infoFiltered' => __('(filtered from _MAX_ total entries)', 'leyka'),
+            'infoThousands' => __(',', 'leyka'),
+            'loadingRecords' => __('Loading...', 'leyka'),
+            'infoPostFix' => '',
+            'zeroRecords' => __('No matching records found', 'leyka'),
+            'emptyTable' => __('No data available in table', 'leyka'),
+            'paginate_first' => __('First', 'leyka'),
+            'paginate_previous' => __('Previous', 'leyka'),
+            'paginate_next' => __('Next', 'leyka'),
+            'paginate_last' => __('Last', 'leyka'),
+            'aria_sortAsc' => __(': activate to sort column ascending', 'leyka'),
+            'aria_sortDesc' => __(': activate to sort column descending', 'leyka'),
+        ));
+
+        return 'jquery-dataTables';
+
+    }
+
 	public function load_frontend_scripts() {
 
 		wp_enqueue_style('leyka-icon', LEYKA_PLUGIN_BASE_URL.'css/admin-icon.css', array(), LEYKA_VERSION);
@@ -628,7 +657,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         $leyka_admin_new = (isset($_GET['screen']) && count(explode('-', $_GET['screen'])) >= 2) // New settings pages (from v3.0)
             || (isset($_GET['page']) && $_GET['page'] === 'leyka_settings' /*&& empty($_GET['stage'])*/)
             || ($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post')
-            || (isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_donors'));
+            || (isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_donors'))
+            || (isset($_GET['page']) && $_GET['page'] === 'leyka_donor_info' && !empty($_GET['donor']));
 
         $current_screen = get_current_screen();
         $dependencies = array('jquery',);
@@ -640,11 +670,13 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	    }
 
         // WP admin metaboxes support:
-        if($current_screen->id === 'dashboard_page_leyka_donor_info' && !$leyka_admin_new) {
+        if($current_screen->id === 'dashboard_page_leyka_donor_info') {
 
             $dependencies[] = 'postbox';
             $dependencies[] = 'jquery-ui-accordion';
             $dependencies[] = 'jquery-ui-sortable';
+
+            $dependencies[] = $this->_load_data_tables();
 
         }
         // Metaboxes support - END
@@ -682,34 +714,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 			'disconnect_stats' => esc_html__('Disconnect statistics', 'leyka'),
         ));
 
-		if($leyka_admin_new) {
-
-		    $dependencies[] = 'jquery-ui-autocomplete';
-		    
-			wp_enqueue_script('leyka-easy-modal', LEYKA_PLUGIN_BASE_URL . 'js/jquery.easyModal.min.js', array(), false, true);
-            wp_enqueue_script(
-                'leyka-settings',
-                LEYKA_PLUGIN_BASE_URL.'assets/js/admin.js',
-                $dependencies,
-                LEYKA_VERSION,
-                true
-            );
-            wp_localize_script('leyka-settings', 'leyka', $js_data);
-
-        } else {
-
-            wp_enqueue_script('leyka-admin', LEYKA_PLUGIN_BASE_URL.'js/admin.js', $dependencies, LEYKA_VERSION, true);
-			wp_enqueue_script(
-			    'leyka-admin-helpchat',
-			    LEYKA_PLUGIN_BASE_URL.'js/settings-helpchat.js',
-			    $dependencies,
-			    LEYKA_VERSION,
-			    true
-            );
-            wp_localize_script('leyka-admin', 'leyka', $js_data);
-
-        }
-        
         if(isset($_GET['page']) && $_GET['page'] === 'leyka') {
 
             wp_enqueue_script('jquery-ui-dialog');
@@ -723,46 +727,15 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         // Campaign editing page:
         if($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post' && !$screen->action) {
 
-            wp_enqueue_style('jquery-dataTables', LEYKA_PLUGIN_BASE_URL.'css/jquery.dataTables.css');
-            wp_enqueue_script(
-                'jquery-dataTables',
-                LEYKA_PLUGIN_BASE_URL.'js/jquery.dataTables.min.js',
-                array('jquery'),
-                false,
-                true
-            );
-
-            wp_enqueue_script(
-                'leyka-admin-edit-campaign',
-                LEYKA_PLUGIN_BASE_URL.'js/admin-edit-campaign.js',
-                array('jquery-dataTables', 'jquery'), LEYKA_VERSION, true
-            );
-            wp_localize_script('leyka-admin-edit-campaign', 'leyka_dt', $js_data + array(
-                'processing' => __('Processing...', 'leyka'),
-                'search' => __('Search:', 'leyka'),
-                'lengthMenu' => __('Show _MENU_ entries', 'leyka'),
-                'info' => __('Showing _START_ to _END_ of _TOTAL_ entries', 'leyka'),
-                'infoEmpty' => __('Showing 0 to 0 of 0 entries', 'leyka'),
-                'infoFiltered' => __('(filtered from _MAX_ total entries)', 'leyka'),
-                'infoThousands' => __(',', 'leyka'),
-                'loadingRecords' => __('Loading...', 'leyka'),
-                'infoPostFix' => '',
-                'zeroRecords' => __('No matching records found', 'leyka'),
-                'emptyTable' => __('No data available in table', 'leyka'),
-                'paginate_first' => __('First', 'leyka'),
-                'paginate_previous' => __('Previous', 'leyka'),
-                'paginate_next' => __('Next', 'leyka'),
-                'paginate_last' => __('Last', 'leyka'),
-                'aria_sortAsc' => __(': activate to sort column ascending', 'leyka'),
-                'aria_sortDesc' => __(': activate to sort column descending', 'leyka'),
-            ));
+            $dependencies[] = $this->_load_data_tables();
 
             wp_enqueue_code_editor(array('type' => 'text/css')); // Add the code editor lib
 
         }
 
         // Donation editing page:
-        if(($screen->post_type === Leyka_Donation_Management::$post_type && $screen->base === 'post')
+        if(
+            ($screen->post_type === Leyka_Donation_Management::$post_type && $screen->base === 'post')
             || (isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_donors'))
         ) {
 
@@ -790,6 +763,34 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             ));
 
         }
+
+//        if($leyka_admin_new) {
+
+        $dependencies[] = 'jquery-ui-autocomplete';
+
+        wp_enqueue_script('leyka-easy-modal', LEYKA_PLUGIN_BASE_URL . 'js/jquery.easyModal.min.js', array(), false, true);
+        wp_enqueue_script(
+            'leyka-settings',
+            LEYKA_PLUGIN_BASE_URL.'assets/js/admin.js',
+            $dependencies,
+            LEYKA_VERSION,
+            true
+        );
+        wp_localize_script('leyka-settings', 'leyka', $js_data);
+
+//        } else {
+//
+//            wp_enqueue_script('leyka-admin', LEYKA_PLUGIN_BASE_URL.'js/admin.js', $dependencies, LEYKA_VERSION, true);
+//            wp_enqueue_script(
+//                'leyka-admin-helpchat',
+//                LEYKA_PLUGIN_BASE_URL.'js/settings-helpchat.js',
+//                $dependencies,
+//                LEYKA_VERSION,
+//                true
+//            );
+//            wp_localize_script('leyka-admin', 'leyka', $js_data);
+//
+//        }
 
 	}
 

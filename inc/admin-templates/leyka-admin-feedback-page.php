@@ -5,7 +5,7 @@
 
 $user = wp_get_current_user();?>
 
-<div class="wrap">
+<div class="wrap" data-leyka-admin-page-type="feedback-page">
     <h2><?php _e('Send us a feedback', 'leyka');?></h2>
 
     <div class="leyka-feedback-description">

@@ -3,7 +3,7 @@
 
 /** @var $this Leyka_Admin_Setup */?>
 
-<div class="wrap">
+<div class="wrap" data-leyka-admin-page-type="donors-list-page">
     <h1 class="wp-heading-inline"><?php _e('Donors', 'leyka');?></h1>
 
     <div id="poststuff">

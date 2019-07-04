@@ -1,4 +1,10 @@
+/** Donors list page */
 jQuery(document).ready(function($){
+
+    var $page_wrapper = $('.wrap');
+    if( !$page_wrapper.length || $page_wrapper.data('leyka-admin-page-type') !== 'donors-list-page' ) {
+        return;
+    }
 
     if(typeof $().selectmenu != 'undefined') {
         $('select[name="donor-type"]').selectmenu();
@@ -9,7 +15,7 @@ jQuery(document).ready(function($){
 		minLength: 2,
 		select: function( event, ui ) {
 			console.log( "Selected: " + ui.item.value + " ID: " + ui.item.id );
-		}		
+		}
 	});
 
 	$('input[name=first-donation-date]').datepicker();
@@ -18,4 +24,5 @@ jQuery(document).ready(function($){
 	//$('select[name=donation-status]').chosen();
 	//$('select[name="donors-tags[]"]').chosen();
 	//$('select[name="gateways[]"]').chosen();
+
 });

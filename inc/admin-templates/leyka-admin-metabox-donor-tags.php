@@ -7,7 +7,9 @@ try {
     $donor = new Leyka_Donor(absint($_GET['donor']));
 } catch(Exception $e) {
     wp_die($e->getMessage());
-}?>
+}
+
+$donors_tags_taxonomy = get_taxonomy(Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME);?>
 
 <div class="donors-tags-wrapper">
     <div class="new-tag-form">
@@ -19,5 +21,5 @@ try {
         <span class="tag">#<?php echo $donor_tag->name;?></span>
     <?php }?>
     </div>
-    <div class="frequently-used-tags"><a href="#"><?php _e('Choose from the most used tags', 'leyka');?></a></div>
+    <div class="frequently-used-tags"><a href="#"><?php echo $donors_tags_taxonomy->labels->choose_from_most_used;?></a></div>
 </div>
