@@ -153,8 +153,8 @@ class Leyka extends Leyka_Singleton {
                 if( !$user->has_cap('donor_account_access') ) {
 
                     wp_logout();
-                    wp_redirect(leyka_get_current_url());
-                    exit;
+//                    wp_redirect(home_url());
+//                    exit;
 
                 }
             }, 1000, 2);
@@ -164,8 +164,8 @@ class Leyka extends Leyka_Singleton {
                 if( !wp_get_current_user()->has_cap('donor_account_access') ) {
 
                     wp_logout();
-                    wp_redirect(leyka_get_current_url());
-                    exit;
+//                    wp_redirect(home_url());
+//                    exit;
 
                 }
             });
