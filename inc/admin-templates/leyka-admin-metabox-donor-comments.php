@@ -17,7 +17,14 @@ try {
         <input type="text" id="donor-comment-field" name="donor-comment" value="">
 
         <input type="submit" value="<?php _e('Add the comment', 'leyka');?>">
-
+        
+        <?php wp_nonce_field('leyka_add_donor_comment', 'leyka_add_donor_comment');?>
+        
+        <div class="loading-indicator-wrap">
+            <div class="loader-wrap"><span class="leyka-loader xxs"></span></div>
+            <img class="ok-icon" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/icon-check.svg" alt="">
+        </div>
+        
     </form>
 <!--    --><?php //$donor->add_comment('Тест коммента к донору! '.rand(0, 100000));?>
 </div>
@@ -40,8 +47,12 @@ try {
         </tr>
     </thead>
     <tbody>
-    <?php foreach($donor->get_comments() as $comment_id => $comment) {?>
-        <tr>
+    <?php 
+        $comments = array(0 => array('date' => '', 'text' => '', 'author_name' => ''));
+        $comments = array_merge($comments, $donor->get_comments());
+    ?>
+    <?php foreach($comments as $comment_id => $comment) {?>
+        <tr class="comment-id-<?php echo $comment_id;?>">
             <td class="donor-comment-date"><?php echo date(get_option('date_format'), (int)$comment['date']);?></td>
             <td class="donor-comment-text"><?php echo esc_html($comment['text']);?></td>
             <td class="donor-comment-author"><?php echo $comment['author_name'];?></td>

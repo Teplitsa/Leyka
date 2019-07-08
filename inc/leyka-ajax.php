@@ -757,3 +757,48 @@ function leyka_donors_autocomplete() {
     die(json_encode($res));
 }
 add_action('wp_ajax_leyka_donors_autocomplete', 'leyka_donors_autocomplete');
+
+
+function leyka_add_donor_comment() {
+    
+    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_add_donor_comment')) {
+        die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
+    }
+    
+    try {
+        $donor = new Leyka_Donor(absint($_POST['donor']));
+    } catch(Exception $e) {
+        die(json_encode(array('status' => 'error', 'message' => __('Error: donor not found', 'leyka'),)));
+    }
+    
+    if(empty($_POST['comment'])) {
+        die(json_encode(array('status' => 'error', 'message' => __('Error: empty comment', 'leyka'),)));
+    }
+    
+    $comment_text = sanitize_text_field($_POST['comment']);
+    $donor->add_comment($comment_text);
+    
+    $comments = $donor->get_comments();
+    $comment_id = 0;
+    $comment = array();
+    
+    foreach($comments as $donor_comment_id => $donor_comment) {
+        $comment_id = $donor_comment_id;
+        $comment = $donor_comment;
+    }
+    
+    $comment_data = array(
+        'id' => $comment_id,
+        'text' => esc_html($comment['text']),
+        'date' => date(get_option('date_format'), (int)$comment['date']),
+        'author_name' => $comment['author_name'],
+    );
+    
+    die(json_encode(array('status' => 'ok', 'comment' => $comment_data)));
+}
+add_action('wp_ajax_leyka_add_donor_comment', 'leyka_add_donor_comment');
+
+function leyka_delete_donor_comment() {
+    die(json_encode(array('status' => 'ok')));
+}
+add_action('wp_ajax_leyka_delete_donor_comment', 'leyka_delete_donor_comment');
