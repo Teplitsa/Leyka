@@ -267,7 +267,6 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 $donation_id = Leyka_Donation::add(array(
                     'status' => 'funded',
                     'payment_type' => 'rebill',
-//                    '' => '',
                 ));
 
                 $donation = new Leyka_Donation($donation_id);
@@ -301,7 +300,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                     $donation->status = 'funded';
 
                     // If it's a non-init recurring donation just completed - create donor's account, if needed:
-                    leyka()->register_donor_account($donation);
+//                    leyka()->register_donor_account($donation); // Trying to do it on donation status change to "funded"
 
                 }
                 if($donation->type !== 'rebill') {

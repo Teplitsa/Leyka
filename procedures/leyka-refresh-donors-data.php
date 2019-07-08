@@ -13,5 +13,5 @@ if( !leyka_options()->opt('donor_management_available') ) {
 }
 
 foreach(get_users(array('role__in' => array(Leyka_Donor::DONOR_USER_ROLE,), 'number' => -1, )) as $donor_user) {
-    leyka_calculate_donor_metadata($donor_user);
+    Leyka_Donor::calculate_donor_metadata($donor_user);
 }

@@ -324,7 +324,7 @@ techMessage="'.$tech_message.'"/>');
 
                         // If it's a non-init recurring donation just completed - create donor's account, if needed:
                         if($donation->payment_type === 'rebill') {
-                            leyka()->register_donor_account($donation);
+                            // leyka()->register_donor_account($donation);// Trying to do it on donation status change to "funded"
                         }
                         break;
                     case 'canceled':

@@ -590,7 +590,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                         // If it's a non-init recurring donation just completed - create donor's account, if needed:
                         if($donation->payment_type === 'rebill') {
-                            leyka()->register_donor_account($donation);
+//                            leyka()->register_donor_account($donation); // Trying to do it on donation status change to "funded"
                         }
 
                         Leyka_Donation_Management::send_all_emails($donation->id);

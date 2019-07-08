@@ -452,7 +452,7 @@ class Leyka extends Leyka_Singleton {
                 // Donor's data cache refresh:
                 if($donation->donor_user_id) {
                     try {
-                        leyka_calculate_donor_metadata(new Leyka_Donor($donation->donor_user_id));
+                        Leyka_Donor::calculate_donor_metadata(new Leyka_Donor($donation->donor_user_id));
                     } catch(Exception $e) {
                         // ...
                     }
@@ -1252,7 +1252,7 @@ class Leyka extends Leyka_Singleton {
                 $donor_user->add_cap('donor_account_access');
 
                 try { // Initialize & fill the Donor Cache for all existing Donor users
-                    leyka_calculate_donor_metadata(new Leyka_Donor($donor_user));
+                    Leyka_Donor::calculate_donor_metadata(new Leyka_Donor($donor_user));
                 } catch(Exception $e) {
                     //...
                 }
@@ -1749,7 +1749,7 @@ class Leyka extends Leyka_Singleton {
             'auto', $pm['payment_method_id'], $donation_id
         );
 
-        $this->register_donor_account($donation_id);
+//        $this->register_donor_account($donation_id); // Trying to do it on donation status change to "funded"
 
     }
 
@@ -1778,38 +1778,6 @@ class Leyka extends Leyka_Singleton {
         }
 
         return $donation_id;
-
-    }
-
-    /**
-     * @param $donation int|WP_Post|Leyka_Donation
-     * @return int|false|WP_Error
-     */
-    public function register_donor_account($donation) {
-
-        $donation = leyka_get_validated_donation($donation);
-
-        if( !$donation || $donation->type === 'correction' || !leyka()->opt('donor_management_available') ) {
-            return false;
-        }
-
-        // Register a new donor's account only for recurring donations and if it's not registered yet:
-        $donor_user_id = leyka_create_donor_from_donation(
-            $donation,
-            leyka()->opt('donor_accounts_available') && $donation->type === 'rebill'
-        );
-
-        if(empty($donor_user_id)) {
-            $donor_user_id = new WP_Error('donor_account_not_created', __("Can't create donor user from donation", 'leyka'), $donation->id);
-        }
-
-        if(is_wp_error($donor_user_id)) {
-            do_action('leyka_donor_account_not_created', $donor_user_id, $donation);
-        } else {
-            do_action('leyka_donor_account_created', $donor_user_id, $donation);
-        }
-
-        return $donor_user_id;
 
     }
 

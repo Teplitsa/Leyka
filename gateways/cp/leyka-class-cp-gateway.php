@@ -297,7 +297,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     $donation->status = 'funded';
 
                     if(empty($_POST['InvoiceId']) && !empty($_POST['SubscriptionId'])) { // Non-init recurring donation, completed
-                        leyka()->register_donor_account($donation); // Create donor's account, if needed
+//                        leyka()->register_donor_account($donation); // Create donor's account, if needed // Trying to do it on donation status change to "funded"
                     }
 
                 } else {

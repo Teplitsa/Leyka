@@ -28,14 +28,14 @@ foreach($donor_donations as $donation) {
 
     $donation = new Leyka_Donation($donation);
 
-    $donor_user_id = leyka_create_donor_from_donation($donation, false);
+    $donor_user_id = Leyka_Donor::create_donor_from_donation($donation, false);
     if(is_wp_error($donor_user_id)) {
         /** @todo Log the Donor creation error, then continue */
         continue;
     } else {
 
         try {
-            leyka_calculate_donor_metadata(new Leyka_Donor($donor_user_id));
+            Leyka_Donor::calculate_donor_metadata(new Leyka_Donor($donor_user_id));
         } catch(Exception $e) {
             /** @todo Log the Donor instancing error, then continue */
         	continue;
