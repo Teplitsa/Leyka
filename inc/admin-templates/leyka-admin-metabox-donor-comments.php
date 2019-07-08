@@ -10,7 +10,7 @@ try {
 }?>
 
 <div class="add-donor-comment">
-    <a href="#"><?php _e('Add a comment', 'leyka');?></a>
+    <a href="#" class="add-donor-comment-link"><?php _e('Add a comment', 'leyka');?></a>
     <form class="new-donor-comment-form" data-nonce="<?php echo wp_create_nonce('new-donor-comment');?>" method="post">
 
         <label for="donor-comment-field"><?php _e('Comment text', 'leyka');?></label>
@@ -29,7 +29,7 @@ try {
 
 //echo '<pre>'.print_r($donor->get_comments(), 1).'</pre>';?>
 
-<table class="donor-comments">
+<table class="donor-comments donor-info-table">
     <thead>
         <tr>
             <th><?php _e('Date', 'leyka');?></th>
@@ -46,10 +46,10 @@ try {
             <td class="donor-comment-text"><?php echo esc_html($comment['text']);?></td>
             <td class="donor-comment-author"><?php echo $comment['author_name'];?></td>
             <td class="donor-comment-edit">
-                <div class="comment-icon-edit" data-comment-id="<?php echo $comment_id;?>">Edit</div>
+                <a href="#" class="comment-icon-edit" data-comment-id="<?php echo $comment_id;?>"> </a>
             </td>
             <td class="donor-comment-delete">
-                <div class="comment-icon-delete" data-comment-id="<?php echo $comment_id;?>">[X]</div>
+                <a href="#" class="comment-icon-delete" data-comment-id="<?php echo $comment_id;?>"> </a>
             </td>
         </tr>
     <?php }?>

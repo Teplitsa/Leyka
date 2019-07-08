@@ -537,7 +537,10 @@ jQuery(document).ready(function($){
     // Donations list data table:
     if(typeof $().DataTable !== 'undefined' && typeof leyka_dt !== 'undefined') {
         $('.leyka-data-table').DataTable({
-            'lengthMenu': [[25, 50, 100, 200], [25, 50, 100, 200]],
+            pageLength: 3,
+            lengthChange: false,
+            ordering:  false,
+            searching: false,
             language: {
                 processing:     leyka_dt.processing,
                 search:         leyka_dt.search,
@@ -581,17 +584,65 @@ jQuery(document).ready(function($){
 		source: leyka.ajaxurl + '?action=leyka_donors_autocomplete',
 		minLength: 2,
 		select: function( event, ui ) {
-			console.log( "Selected: " + ui.item.value + " ID: " + ui.item.id );
-		}
+			console.log( "Selected: " + ui.item.label + " ID: " + ui.item.value );
+		}		
 	});
 
 	$('input[name=first-donation-date]').datepicker();
 	$('input[name=last-donation-date]').datepicker();
+
 	//$('select[name="campaigns[]"]').chosen();
 	//$('select[name=donation-status]').chosen();
 	//$('select[name="donors-tags[]"]').chosen();
 	//$('select[name="gateways[]"]').chosen();
 
+	// $("input.leyka-campaigns-selector").autocomplete({
+	// 	source: leyka.ajaxurl + '?action=leyka_donors_autocomplete',
+	// 	search  : function(){ $(this).addClass('working'); },
+	// 	open    : function(){ 
+	// 		$(this).removeClass('working');
+	// 	},
+	// 	minLength: 2,
+	// 	multiselect: true,
+	// 	select: function( event, ui ) {
+	// 		console.log( "Selected: " + ui.item.label + " ID: " + ui.item.value );
+	// 	}		
+	// });	
+
+});
+
+jQuery(document).ready(function($){
+
+    if(typeof $().selectmenu != 'undefined') {
+        $('select[name="donor-type"]').selectmenu();
+    }
+
+	$('input[name="donor-name-email"]').autocomplete({
+		source: leyka.ajaxurl + '?action=leyka_donors_autocomplete',
+		minLength: 2,
+		select: function( event, ui ) {
+			console.log( "Selected: " + ui.item.label + " ID: " + ui.item.value );
+		}		
+	});
+
+	$('input[name=first-donation-date]').datepicker();
+	$('input[name=last-donation-date]').datepicker();
+	//$('select[name=donation-status]').chosen();
+	//$('select[name="donors-tags[]"]').chosen();
+	//$('select[name="gateways[]"]').chosen();
+	
+	// $("input.leyka-campaigns-selector").autocomplete({
+	// 	source: leyka.ajaxurl + '?action=leyka_donors_autocomplete',
+	// 	search  : function(){ $(this).addClass('working'); },
+	// 	open    : function(){ 
+	// 		$(this).removeClass('working');
+	// 	},
+	// 	minLength: 2,
+	// 	multiselect: true,
+	// 	select: function( event, ui ) {
+	// 		console.log( "Selected: " + ui.item.label + " ID: " + ui.item.value );
+	// 	}		
+	// });	
 });
 
 /** Feedback page */
@@ -1056,6 +1107,83 @@ jQuery(document).ready(function($){
     });
     
 });
+
+if(jQuery.ui.autocomplete) {
+	jQuery.widget("ui.autocomplete", jQuery.ui.autocomplete, {
+	    options : jQuery.extend({}, this.options, {
+	        multiselect: false
+	    }),
+	    _create: function(){
+	        this._super();
+
+	        var self = this,
+	            o = self.options;
+
+	        if (o.multiselect) {
+	            console.log('multiselect true');
+
+	            self.selectedItems = {};           
+	            self.multiselect = jQuery("<div></div>")
+	                .addClass("ui-autocomplete-multiselect ui-state-default ui-widget")
+	                .css("width", self.element.width())
+	                .insertBefore(self.element)
+	                .append(self.element)
+	                .bind("click.autocomplete", function(){
+	                    self.element.focus();
+	                });
+	            
+	            var fontSize = parseInt(self.element.css("fontSize"), 10);
+	            function autoSize(e){
+	                var jQuerythis = jQuery(this);
+	                jQuerythis.width(1).width(this.scrollWidth+fontSize-1);
+	            };
+
+	            var kc = jQuery.ui.keyCode;
+	            self.element.bind({
+	                "keydown.autocomplete": function(e){
+	                    if ((this.value === "") && (e.keyCode == kc.BACKSPACE)) {
+	                        var prev = self.element.prev();
+	                        delete self.selectedItems[prev.text()];
+	                        prev.remove();
+	                    }
+	                },
+	                "focus.autocomplete blur.autocomplete": function(){
+	                    self.multiselect.toggleClass("ui-state-active");
+	                },
+	                "keypress.autocomplete change.autocomplete focus.autocomplete blur.autocomplete": autoSize
+	            }).trigger("change");
+
+	            o.select = o.select || function(e, ui) {
+	                jQuery("<div></div>")
+	                    .addClass("ui-autocomplete-multiselect-item")
+	                    .text(ui.item.label)
+	                    .append(
+	                        jQuery("<span></span>")
+	                            .addClass("ui-icon ui-icon-close")
+	                            .click(function(){
+	                                var item = jQuery(this).parent();
+	                                delete self.selectedItems[item.text()];
+	                                item.remove();
+	                            })
+	                    )
+	                    .insertBefore(self.element);
+	                
+	                self.selectedItems[ui.item.label] = ui.item;
+	                self._value("");
+	                return false;
+	            }
+
+	            /*self.options.open = function(e, ui) {
+	                var pos = self.multiselect.position();
+	                pos.top += self.multiselect.height();
+	                self.menu.element.position(pos);
+	            }*/
+	        }
+
+	        return this;
+	    }
+	});	
+}
 
 /*!
  * jquery.inputmask.bundle.js

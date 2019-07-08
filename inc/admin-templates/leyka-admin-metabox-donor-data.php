@@ -16,20 +16,22 @@ try {
 <div class="donor-col-2">
     <div class="donor-info-main">
 
-        <div class="donor-name" style="border: 1px solid black;">
+        <div class="donor-name">
             <h2><?php echo $donor->name;?></h2>
-            <div class="donor-data-edit" data-donor-id="<?php echo $donor->id;?>" title="<?php _e('Edit');?>">Edit</div>
+            <a href="#" class="donor-data-edit" data-donor-id="<?php echo $donor->id;?>" title="<?php _e('Edit');?>"> </a>
         </div>
 
-        <div class="donor-description" style="border: 1px solid black;">
+        <div class="donor-description">
 
+        <?php 
+            $donor->description = "Бесконечно малая величина позиционирует интеграл от функции, обращающейся в бесконечность вдоль линии, таким образом сбылась мечта идиота - утверждение полностью доказано. Векторное поле ускоряет интеграл Пуассона.";
+            $donor->description = "";
+        ?>
         <?php if($donor->description) {?>
             <div class="description-text"><?php echo $donor->description;?></div>
-            <div class="donor-data-edit" data-donor-id="<?php echo $donor->id;?>" title="<?php _e('Edit');?>">
-                <?php _e('Edit');?>
-            </div>
+            <a href="#" class="donor-data-edit" data-donor-id="<?php echo $donor->id;?>" title="<?php _e('Edit');?>"> </a>
         <?php } else {?>
-            <div class="donor-data-add" data-donor-id="<?php echo $donor->id;?>" title="<?php _e('Add the description', 'leyka');?>"><?php _e('Add the description', 'leyka');?></div>
+            <a href="#" class="donor-data-add" data-donor-id="<?php echo $donor->id;?>" title="<?php _e('Add the description', 'leyka');?>"><?php _e('Add the description', 'leyka');?></a>
         <?php }?>
         </div>
 

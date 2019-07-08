@@ -34,7 +34,7 @@
     
                         <input type="text" name="first-donation-date" class="leyka-first-donation-date-selector leyka-selector" value="<?php echo isset($_GET['first-donation-date']) ? esc_attr($_GET['first-donation-date']) : '';?>" placeholder="<?php _e('First payment date', 'leyka');?>">
     
-                        <input type="text" name="leyka-campaigns-selector leyka-selector" value="" placeholder="<?php _e('Campaigns list', 'leyka');?>">
+                        <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector" value="" placeholder="<?php _e('Campaigns list', 'leyka');?>">
                         
                         <select name="campaigns[]" multiple="multiple">
                             <option value="" selected="selected"><?php _e('Campaigns list', 'leyka');?></option>
@@ -49,7 +49,7 @@
     					
     					<input type="text" name="leyka-payment-status-selector leyka-selector" value="" placeholder="<?php _e('Payment status', 'leyka');?>">
 
-                        <input type="text" name="leyka-donors-tags-selector leyka-selector" value="" placeholder="<?php _e('Donors tags', 'leyka');?>">
+                        <input type="text" name="donors-tags-input" class="leyka-donors-tags-selector leyka-selector" value="" placeholder="<?php _e('Donors tags', 'leyka');?>">
                         
                         <?php $filter_value = isset($_GET['donors-tags']) ? (array)$_GET['donors-tags'] : array();?>
                         <select name="donors-tags[]" multiple="multiple">

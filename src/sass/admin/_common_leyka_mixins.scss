@@ -20,16 +20,21 @@
     border-color: $leyka-adb-color-link;
     border-bottom-width: 1px;
 
-    border-bottom-style: none;
+    border-bottom-style: solid;
+    border-color: transparent;
     &:active, &:focus, &:hover {
+        border-color: $leyka-adb-color-link;
         border-bottom-style: solid;
         border-bottom-width: 1px;
     }
     
     @if $mod == dashed {
         border-bottom-style: dashed;
+        border-color: $leyka-adb-color-link;
         &:active, &:focus, &:hover {
-            border-bottom-style: none;
+            border-color: transparent;
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
         }
     }
     
@@ -48,6 +53,19 @@
 	display: inline-block;
 	cursor: pointer;
 	padding: 5px 10px 3px 10px;
+
+    @if $mod == secondary {
+        background-color: $color-white;
+        border: 1px solid $color-border-secondary-button;
+        color: $color-secondary-button;
+        box-shadow: 0px 1px 0px $color-border-secondary-button;
+        
+        &:hover {
+            border: 1px solid $color-border-secondary-button;
+            color: $color-secondary-button;
+            background-color: $color-white;
+        }
+    }
 }
 
 @mixin leyka-donation-status-marker() {
@@ -102,4 +120,13 @@
         top: 0.9em;
         position: relative;         
     }
+}
+
+@mixin leyka-admin-icon($size: 24px) {
+    background-position: center;
+    background-repeat: no-repeat;
+    display: inline-block;
+    background-size: $size;
+    width: $size;
+    height: $size;
 }

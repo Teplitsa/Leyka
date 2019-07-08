@@ -27,3 +27,17 @@
 	    @include leyka-adb-a();
 	}
 }
+
+@mixin leyka-donor-type-icon {
+    div {
+        background-image: url(../../img/dashboard/icon-donation-type-rebill.svg);
+        background-repeat: no-repeat;
+        background-size: 32px 32px;
+        width: 32px;
+        height: 32px;
+    }
+
+    .single {
+        background-image: url(../../img/dashboard/icon-donation-type-single.svg);
+    }
+}

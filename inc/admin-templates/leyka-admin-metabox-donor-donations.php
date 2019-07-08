@@ -14,15 +14,15 @@ try {
         <dt><?php _e('Amount donated', 'leyka');?></dt>
         <dd><?php echo $donor->amount_donated.' '.leyka_get_currency_label('rur');?></dd>
 
-        <dt><?php _e('Donations number', 'leyka');?></dt>
+        <dt><?php echo str_replace(":", "", __('Donations number', 'leyka'));?></dt>
         <dd><?php echo $donor->get_donations_count();?></dd>
     </dl>
 </div>
 
-<table id="donations-data-table" class="leyka-data-table">
+<table id="donations-data-table" class="leyka-data-table donor-info-table">
     <thead>
         <tr>
-            <td><?php _e('ID', 'leyka');?></td>
+            <!-- <td><?php _e('ID', 'leyka');?></td> -->
             <td><?php _e('Type', 'leyka');?></td>
             <td><?php _e('Date', 'leyka');?></td>
             <td><?php _e('Campaign', 'leyka');?></td>
@@ -32,7 +32,7 @@ try {
     </thead>
     <tfoot>
         <tr>
-            <td><?php _e('ID', 'leyka');?></td>
+            <!-- <td><?php _e('ID', 'leyka');?></td> -->
             <td><?php _e('Type', 'leyka');?></td>
             <td><?php _e('Date', 'leyka');?></td>
             <td><?php _e('Campaign', 'leyka');?></td>
@@ -48,12 +48,14 @@ try {
         $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;?>
 
         <tr <?php echo $donation->type == 'correction' ? 'class="leyka-donation-row-correction"' : '';?>>
-            <td><?php echo $donation->id;?></td>
-            <td><?php echo mb_ucfirst($donation->payment_type_label);?></td>
+            <!-- <td><?php echo $donation->id;?></td> -->
+            <td class="column-donor_type"><div class="<?php echo $donation->type;?>"></div></td>
             <td><?php echo $donation->date;?></td>
             <td class="data-campaign">
                 <div class="leyka-donation-info-wrapper">
-                    <span class="donation-status <?php echo $donation->status;?>"></span>
+                    <span class="donation-status <?php echo $donation->status;?> field-q">
+                    	<span class="field-q-tooltip"><?php esc_html_e('Donation ' . $donation->status, 'leyka');?></span>
+                    </span>
                     <div class="first-sub-row"><?php echo $donation->campaign_title;?></div>
                     <div class="second-sub-row"><?php echo $gateway_label.', '.$pm_label;?></div>
                 </div>

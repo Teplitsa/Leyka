@@ -11,7 +11,10 @@ jQuery(document).ready(function($){
     // Donations list data table:
     if(typeof $().DataTable !== 'undefined' && typeof leyka_dt !== 'undefined') {
         $('.leyka-data-table').DataTable({
-            'lengthMenu': [[25, 50, 100, 200], [25, 50, 100, 200]],
+            pageLength: 3,
+            lengthChange: false,
+            ordering:  false,
+            searching: false,
             language: {
                 processing:     leyka_dt.processing,
                 search:         leyka_dt.search,

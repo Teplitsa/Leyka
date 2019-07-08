@@ -265,7 +265,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         $donation = new Leyka_Donation($item['last_donation']);
 
         return '<div class="leyka-donation-info-wrapper">'
-            .'<span class="donation-status '.$donation->status.'"></span>'
+            .'<span class="donation-status '.$donation->status.' field-q"><span class="field-q-tooltip">'.esc_html__('Donation ' . $donation->status, 'leyka').'</span></span>'
             .'<div class="first-sub-row">'.$donation->date.'</div>'
             .'<div class="second-sub-row">'.$donation->amount.'&nbsp;'.$donation->currency_label.',&nbsp;«'.$donation->campaign_title.'»</div>'
             .'</div>';
@@ -381,7 +381,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
     function get_columns() {
         return array(
             'cb' => '<input type="checkbox">',
-            'donor_id' => __('ID'),
+            #'donor_id' => __('ID'),
             'donor_type' => _x('Type', "Donor's type", 'leyka'),
             'donor_name' => __("Donor's <br>name", 'leyka'),
             'first_donation' => __('First <br>donation', 'leyka'),

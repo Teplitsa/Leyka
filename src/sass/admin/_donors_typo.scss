@@ -9,32 +9,49 @@
 }
 
 @mixin leyka-donors-text-small() {
-    @include leyka-adb-text;
+    @include leyka-donors-text;
     font-size: 11px;
 }
 
 @mixin leyka-donors-text-table-head() {
-    @include leyka-adb-text;
+    @include leyka-donors-text;
     font-size: 14px;
     line-height: 18px;
 }
 
 @mixin leyka-donors-text-link() {
-    @include leyka-adb-text;
+    @include leyka-donors-text;
     font-size: 14px;
 }
 
 @mixin leyka-donors-text-caption() {
-    @include leyka-adb-text;
+    @include leyka-donors-text;
 }
 
 @mixin leyka-donors-text-caption-big() {
-    @include leyka-adb-text;
+    @include leyka-donors-text;
     font-size: 16px;
 }
 
 @mixin leyka-donors-text-link-big() {
-    @include leyka-adb-text;
+    @include leyka-donors-text;
     font-size: 14px;
     line-height: 24px;
+}
+
+@mixin leyka-donors-text-h2 {
+    @include leyka-donors-text;
+    font-size: 18px;
+    line-height: 24px;
+}
+
+@mixin leyka-donor-text-table-head() {
+    @include leyka-donors-text;
+    font-weight: 500;
+}
+
+@mixin leyka-donor-text-tags-explanation {
+    @include leyka-donors-text;
+    font-style: italic;
+    font-size: 12px;    
 }
