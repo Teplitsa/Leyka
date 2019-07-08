@@ -118,11 +118,7 @@ function leyka_get_gateway_redirect_data() {
             $payment_vars['status'] = 1;
 
         } else { // Donation created
-
             $payment_vars['donation_id'] = $donation_id;
-
-//            leyka()->register_donor_account($donation_id); // Trying to do it on donation status change to "funded"
-
         }
 
         $payment_vars = array_merge(

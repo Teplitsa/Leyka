@@ -149,24 +149,26 @@ class Leyka extends Leyka_Singleton {
 
             }, 1000, 3);
 
+            // Refuse the login for Donors without personal accounts:
             add_action('wp_login', function($login, WP_User $user){
-                if( !$user->has_cap('donor_account_access') ) {
+                if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, false, $user) && !$user->has_cap('donor_account_access') ) {
 
-                    /** @todo Fix the login/logout: 1. for non-admins, 2. for guests. */
-//                    wp_logout();
-//                    wp_redirect(home_url());
-//                    exit;
+                    wp_logout();
+                    wp_redirect(home_url());
+                    exit;
 
                 }
             }, 1000, 2);
 
-            // Logout if needed:
+            // Logout Donors if needed:
             add_action('init', function(){
-                if( !wp_get_current_user()->has_cap('donor_account_access') ) {
 
-//                    wp_logout();
-//                    wp_redirect(home_url());
-//                    exit;
+                $user = wp_get_current_user();
+                if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, false, $user) && !$user->has_cap('donor_account_access') ) {
+
+                    wp_logout();
+                    wp_redirect(home_url());
+                    exit;
 
                 }
             });
@@ -1748,8 +1750,6 @@ class Leyka extends Leyka_Singleton {
             'leyka_submission_redirect_type-'.$pm['gateway_id'],
             'auto', $pm['payment_method_id'], $donation_id
         );
-
-//        $this->register_donor_account($donation_id); // Trying to do it on donation status change to "funded"
 
     }
 
