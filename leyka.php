@@ -142,7 +142,7 @@ function leyka_load_plugin_textdomain() {
 add_action( 'plugins_loaded', 'leyka_load_plugin_textdomain' );
 
 register_activation_hook(__FILE__, array('Leyka', 'activate')); // Activation
-add_action('plugins_loaded', array('Leyka', 'activate')); // Any update needed
+//add_action('plugins_loaded', array('Leyka', 'activate')); // Any update needed
 register_deactivation_hook(__FILE__, array('Leyka', 'deactivate')); // Deactivate
 
 leyka(); // All systems go
