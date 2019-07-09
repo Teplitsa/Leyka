@@ -125,7 +125,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         $campaign_post = get_post($donation->campaign_id);
         $payment_description = $donation->payment_title." (№ $donation_id)";
 
-        if(leyka()->opt('paypal_rest_api')) {
+        if(leyka_options()->opt('paypal_rest_api')) {
 
             require LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
 
@@ -139,8 +139,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 //            use PayPal\Api\Transaction;
 
             $api_context = new \PayPal\Rest\ApiContext(new \PayPal\Auth\OAuthTokenCredential(
-                leyka()->opt('paypal_client_id'),
-                leyka()->opt('paypal_client_secret')
+                leyka_options()->opt('paypal_client_id'),
+                leyka_options()->opt('paypal_client_secret')
             ));
 
             $payer = new PayPal\Api\Payer(); // Create new payer and PM
