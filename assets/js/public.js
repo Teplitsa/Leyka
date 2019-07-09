@@ -2188,12 +2188,28 @@ jQuery(document).ready(function($){
         var modalTop = -32;
         return modalTop + 'px';
     }
+
+    function addError($errors_block, error_html) {
+
+        if( !$errors_block.length || !error_html.length ) {
+            return;
+        }
+
+        $errors_block.html(error_html).show();
+
+        // Center the error block in the viewport
+        $('html, body').animate({
+            scrollTop: $errors_block.offset().top - ($(window).height() - $errors_block.outerHeight()) / 2
+        }, 250);
+
+    }
     
     function bindSubmitPaymentFormEvent() {
 
         $('.leyka-tpl-star-form').on('submit.leyka', 'form.leyka-pm-form', function(e){
 
-            var $_form = $(this);
+            var $_form = $(this),
+                $errors = $_form.parents('.leyka-payment-form').siblings('.leyka-submit-errors');
 
 			e.preventDefault();
 
@@ -2235,6 +2251,8 @@ jQuery(document).ready(function($){
                         return false;
 
                     } else if(response.status !== 0 && typeof response.message !== 'undefined') {
+
+                        addError($errors, response.message);
                         return false;
 
                     } else if( !response.payment_url ) {
@@ -2343,17 +2361,17 @@ jQuery(document).ready(function($){
     }
     
     function toggleStaticPMForm($_form) {
+
         var $pmRadio = $_form.find('input[name="leyka_payment_method"]:checked');
-        var processing = $pmRadio.attr('data-processing');
-        
-        if(processing == 'static') {
+
+        if($pmRadio.data('processing') === 'static') {
             $_form.find('.section--static.' + $pmRadio.val()).show();
             $_form.find('.section--person').hide();
-        }
-        else {
+        } else {
             $_form.find('.section--static').hide();
             $_form.find('.section--person').show();
         }
+
     }
     
     function isMobileScreen() {

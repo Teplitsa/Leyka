@@ -7,6 +7,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
     protected static $_instance;
 
+    protected $_new_api_redirect_url = '';
+
     protected function _set_attributes() {
 
         $this->_id = 'paypal';
@@ -34,54 +36,74 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         }
 
         $this->_options = array(
-            'paypal_api_username' => array(
-                'type' => 'text',
-                'title' => __('PayPal API username', 'leyka'),
-                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'your.name@yourmail.com'),
+            'paypal_rest_api' => array(
+                'type' => 'checkbox',
+                'default' => true,
+                'title' => __('Use the PayPal REST API', 'leyka'),
+                'comment' => __("Check if the gateway integration should use the new REST API. If haven't used PayPal to receive payments on this website earlier, you are recommended to check the box.", 'leyka'),
+                'short_format' => true,
             ),
-            'paypal_api_password' => array(
-                'type' => 'text',
-                'title' => __('PayPal API password', 'leyka'),
-                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1^2@3#&84nDsOmE5h1T'),
-                'is_password' => true,
-            ),
-            'paypal_api_signature' => array(
-                'type' => 'text',
-                'title' => __('PayPal API signature', 'leyka'),
-                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1^2@3#&84nDsOmE5h1T'),
-                'is_password' => true,
-            ),
+//            'paypal_api_username' => array(
+//                'type' => 'text',
+//                'title' => __('PayPal API username', 'leyka'),
+//                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'your.name@yourmail.com'),
+//            ),
+//            'paypal_api_password' => array(
+//                'type' => 'text',
+//                'title' => __('PayPal API password', 'leyka'),
+//                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1^2@3#&84nDsOmE5h1T'),
+//                'is_password' => true,
+//            ),
+//            'paypal_api_signature' => array(
+//                'type' => 'text',
+//                'title' => __('PayPal API signature', 'leyka'),
+//                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1^2@3#&84nDsOmE5h1T'),
+//                'is_password' => true,
+//            ),
             'paypal_client_id' => array(
 	            'type' => 'text',
 	            'title' => __('PayPal Client ID', 'leyka'),
                 'placeholder' => sprintf(
                     __('E.g., %s', 'leyka'),
-                    'ATdEeBNHoUPIE2l1XJY16iK_JzzwUciT-_0XFY-QUIbGXy3pZw76k7A8BJ4OYy7M77Ql-idSKcqEI6we'
+                    'AYSq3RDGsmBLJE-otTkBtM-jBRd1TCQwFf9RGfwddNXWz0uFU9ztymylOhRS'
                 ),
+            ),
+            'paypal_client_secret' => array(
+                'type' => 'text',
+                'title' => __('PayPal Client Secret', 'leyka'),
+                'placeholder' => sprintf(
+                    __('E.g., %s', 'leyka'),
+                    'EGnHDxD_qRPdaLdZz8iCr8N7_MzF-YHPTkjs6NKYQvQSBngp4PTTVWkPZRbL'
+                ),
+                'is_password' => true,
             ),
             'paypal_test_mode' => array(
                 'type' => 'checkbox',
                 'default' => true,
                 'title' => __('Payments testing mode', 'leyka'),
-                'description' => __('Check if the gateway integration is in test mode.', 'leyka'),
+                'comment' => __('Check if the gateway integration is in test mode.', 'leyka'),
+                'short_format' => true,
             ),
             'paypal_enable_recurring' => array(
                 'type' => 'checkbox',
                 'default' => true,
                 'title' => __('Enable monthly recurring payments', 'leyka'),
-                'description' => __('Check if you want to enable monthly recurring payments.', 'leyka'),
+                'comment' => __('Check if you want to enable monthly recurring payments.', 'leyka'),
+                'short_format' => true,
             ),
             'paypal_accept_verified_only' => array(
                 'type' => 'checkbox',
                 'default' => false,
                 'title' => __('Accept only verified payments', 'leyka'),
-                'description' => __('Check if you want to accept payments only from verified PayPal accounts.', 'leyka'),
+                'comment' => __('Check if you want to accept payments only from verified PayPal accounts.', 'leyka'),
+                'short_format' => true,
             ),
             'paypal_keep_payment_logs' => array(
                 'type' => 'checkbox',
                 'default' => true,
                 'title' => __('Keep detailed logs of all PayPal service operations', 'leyka'),
-                'description' => __('Check if you want to keep detailed logs of all PayPal service operations for each incoming donation.', 'leyka'),
+                'comment' => __('Check if you want to keep detailed logs of all PayPal service operations for each incoming donation.', 'leyka'),
+                'short_format' => true,
             ),
         );
 
@@ -100,10 +122,84 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
         $donation = new Leyka_Donation($donation_id);
-
         $campaign_post = get_post($donation->campaign_id);
-
         $payment_description = $donation->payment_title." (№ $donation_id)";
+
+        if(leyka()->opt('paypal_rest_api')) {
+
+            require LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
+
+//            use PayPal\Api\Amount;
+//            use PayPal\Api\Details;
+//            use PayPal\Api\Item;
+//            use PayPal\Api\ItemList;
+//            use PayPal\Api\Payer;
+//            use PayPal\Api\Payment;
+//            use PayPal\Api\RedirectUrls;
+//            use PayPal\Api\Transaction;
+
+            $api_context = new \PayPal\Rest\ApiContext(new \PayPal\Auth\OAuthTokenCredential(
+                leyka()->opt('paypal_client_id'),
+                leyka()->opt('paypal_client_secret')
+            ));
+
+            $payer = new PayPal\Api\Payer(); // Create new payer and PM
+            $payer->setPaymentMethod('paypal'); // PM ID, but our $pm_id is "paypal_all"
+
+            $redirect_urls = new PayPal\Api\RedirectUrls(); // Set redirect URLs
+            $redirect_urls
+                ->setReturnUrl(home_url('/leyka/service/paypal/process-donation'))
+                ->setCancelUrl(home_url('/leyka/service/paypal/cancel-donation'));
+
+            $amount = new PayPal\Api\Amount(); // Set payment amount
+            $amount->setCurrency('RUB' /* $donation->currency */)->setTotal($donation->amount);
+
+            $transaction = new PayPal\Api\Transaction(); // Set transaction object
+            $transaction->setAmount($amount)->setDescription($payment_description);
+
+            $payment = new PayPal\Api\Payment(); // Create the full payment object
+            $payment
+                ->setIntent('sale')
+                ->setPayer($payer)
+                ->setRedirectUrls($redirect_urls)
+                ->setTransactions(array($transaction));
+
+            try { // Create payment with valid API context
+
+                $payment->create($api_context);
+                $this->_new_api_redirect_url = $payment->getApprovalLink(); // PayPal redirect URL to redirect the donor there
+
+            } catch (PayPal\Exception\PayPalConnectionException $ex) {
+
+//                echo '<pre>Ex Code:'.print_r($ex->getCode(), 1).'</pre>';
+//                echo '<pre>Ex Data:'.print_r($ex->getData(), 1).'</pre>';
+//                echo '<pre>Ex Message:'.print_r($ex->getMessage(), 1).'</pre>';
+
+                $donation->add_gateway_response($ex);
+
+                leyka()->add_payment_form_error(new WP_Error(
+                    $this->_id.'-'.$ex->getCode(),
+                    sprintf(__('Error: %s', 'leyka'), $ex->getMessage())
+                ));
+
+            } catch (Exception $ex) {
+
+//                die('<pre>Common Ex:'.print_r($ex, 1).'</pre>');
+
+                $donation->add_gateway_response($ex);
+
+                leyka()->add_payment_form_error(new WP_Error(
+                    $this->_id.'-'.$ex->getCode(),
+                    sprintf(__('Error: %s', 'leyka'), $ex->getMessage())
+                ));
+
+            }
+
+            return;
+
+        }
+
+        // (Old) Express Checkout payment:
         if(strlen($payment_description) > 127) { // 127 chars length is a restriction from PayPal
             $payment_description = sprintf(__('Donation № %d', 'leyka'), $donation_id);
         }
@@ -249,6 +345,10 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     }
 
     public function submission_redirect_url($current_url, $pm_id) {
+
+        if(leyka_options()->opt('paypal_rest_api')) {
+            return $this->_new_api_redirect_url;
+        }
 
         if(empty($current_url)) {
             $current_url = leyka_get_current_url();
@@ -679,9 +779,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     }
 
     // Override the auto-submit setting to send manual requests to PayPal:
-    public function submission_redirect_type($redirect_type, $pm_id, $donation_id) {
-        return false;
-    }
+//    public function submission_redirect_type($redirect_type, $pm_id, $donation_id) {
+//        return false;
+//    }
 
     public function enqueue_gateway_scripts() {
 
@@ -689,9 +789,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             return;
         }
 
-        wp_enqueue_script('leyka-paypal-api', 'https://www.paypalobjects.com/api/checkout.min.js');
+//        wp_enqueue_script('leyka-paypal-api', 'https://www.paypalobjects.com/api/checkout.min.js');
 
-        $dependencies = array('jquery', 'leyka-paypal-api',);
+        $dependencies = array('jquery', /*'leyka-paypal-api',*/);
 
 	    // If Revo template is in use:
 	    if(leyka_revo_template_displayed() || leyka_success_widget_displayed() || leyka_failure_widget_displayed()) {

@@ -179,7 +179,6 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 $this->_new_api_redirect_url = $payment->confirmation->confirmation_url;
 
             } catch(Exception $ex) {
-                // ...
                 $donation->add_gateway_response($ex);
             }
 
