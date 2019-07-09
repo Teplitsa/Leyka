@@ -754,7 +754,6 @@ function leyka_donors_autocomplete() {
 }
 add_action('wp_ajax_leyka_donors_autocomplete', 'leyka_donors_autocomplete');
 
-
 function leyka_add_donor_comment() {
     
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_add_donor_comment')) {
@@ -783,18 +782,73 @@ function leyka_add_donor_comment() {
         $comment = $donor_comment;
     }
     
-    $comment_data = array(
+    $comment = array(
         'id' => $comment_id,
-        'text' => esc_html($comment['text']),
+        'text' => stripslashes(esc_html($comment['text'])),
         'date' => date(get_option('date_format'), (int)$comment['date']),
         'author_name' => $comment['author_name'],
     );
     
-    die(json_encode(array('status' => 'ok', 'comment' => $comment_data)));
+    $comment_table_row_html = leyka_admin_get_donor_comment_table_row($comment_id, $comment);
+    
+    die(json_encode(array('status' => 'ok', 'comment_html' => $comment_table_row_html)));
 }
 add_action('wp_ajax_leyka_add_donor_comment', 'leyka_add_donor_comment');
 
 function leyka_delete_donor_comment() {
+    if(empty($_POST['comment_id'])) {
+        die(json_encode(array('status' => 'error', 'message' => __('Error: undefined comment id', 'leyka'),)));
+    }
+    $comment_id = (int)$_POST['comment_id'];
+    
+    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_delete_donor_comment')) {
+        die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
+    }
+    
+    try {
+        $donor = new Leyka_Donor(absint($_POST['donor']));
+    } catch(Exception $e) {
+        die(json_encode(array('status' => 'error', 'message' => __('Error: donor not found', 'leyka'),)));
+    }
+    
+    try {
+        $donor->delete_comment($_POST['comment_id']);
+    }
+    catch(Exception $ex) {
+        die(json_encode(array(
+            'status' => 'error',
+            'message' => $ex->getMessage()
+        )));
+    }
+    
     die(json_encode(array('status' => 'ok')));
 }
 add_action('wp_ajax_leyka_delete_donor_comment', 'leyka_delete_donor_comment');
+
+function leyka_save_editable_comment() {
+    
+    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_save_editable_str')) {
+        die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
+    }
+    
+    try {
+        $donor = new Leyka_Donor(absint($_POST['donor']));
+    } catch(Exception $e) {
+        die(json_encode(array('status' => 'error', 'message' => __('Error: donor not found', 'leyka'),)));
+    }
+    
+    if(empty($_POST['text_item_id'])) {
+        die(json_encode(array('status' => 'error', 'message' => __('Error: empty comment id', 'leyka'),)));
+    }
+    
+    if(empty($_POST['text'])) {
+        die(json_encode(array('status' => 'error', 'message' => __('Error: empty text', 'leyka'),)));
+    }
+    
+    $comment_id = (int)$_POST['text_item_id'];
+    $comment_text = sanitize_text_field($_POST['text']);
+    $donor->update_comment($comment_id, $comment_text);
+    
+    die(json_encode(array('status' => 'ok')));
+}
+add_action('wp_ajax_leyka_save_editable_comment', 'leyka_save_editable_comment');

@@ -9,6 +9,10 @@ try {
     wp_die($e->getMessage());
 }?>
 
+<?php wp_nonce_field('leyka_save_editable_str', 'leyka_save_editable_str_nonce');?>
+<?php wp_nonce_field('leyka_delete_donor_comment', 'leyka_delete_donor_comment_nonce');?>
+<?php wp_nonce_field('leyka_add_donor_comment', 'leyka_add_donor_comment_nonce');?>
+
 <div class="add-donor-comment">
     <a href="#" class="add-donor-comment-link"><?php _e('Add a comment', 'leyka');?></a>
     <form class="new-donor-comment-form" data-nonce="<?php echo wp_create_nonce('new-donor-comment');?>" method="post">
@@ -17,8 +21,6 @@ try {
         <input type="text" id="donor-comment-field" name="donor-comment" value="">
 
         <input type="submit" value="<?php _e('Add the comment', 'leyka');?>">
-        
-        <?php wp_nonce_field('leyka_add_donor_comment', 'leyka_add_donor_comment');?>
         
         <div class="loading-indicator-wrap">
             <div class="loader-wrap"><span class="leyka-loader xxs"></span></div>
@@ -51,18 +53,8 @@ try {
         $comments = array(0 => array('date' => '', 'text' => '', 'author_name' => ''));
         $comments = array_merge($comments, $donor->get_comments());
     ?>
-    <?php foreach($comments as $comment_id => $comment) {?>
-        <tr class="comment-id-<?php echo $comment_id;?>">
-            <td class="donor-comment-date"><?php echo date(get_option('date_format'), (int)$comment['date']);?></td>
-            <td class="donor-comment-text"><?php echo esc_html($comment['text']);?></td>
-            <td class="donor-comment-author"><?php echo $comment['author_name'];?></td>
-            <td class="donor-comment-edit">
-                <a href="#" class="comment-icon-edit" data-comment-id="<?php echo $comment_id;?>"> </a>
-            </td>
-            <td class="donor-comment-delete">
-                <a href="#" class="comment-icon-delete" data-comment-id="<?php echo $comment_id;?>"> </a>
-            </td>
-        </tr>
-    <?php }?>
+    <?php foreach($comments as $comment_id => $comment) {
+        echo leyka_admin_get_donor_comment_table_row($comment_id, $comment);
+    }?>
     </tbody>
 </table>

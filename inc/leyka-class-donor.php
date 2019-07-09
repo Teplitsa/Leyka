@@ -776,6 +776,18 @@ class Leyka_Donor {
 
     }
 
+    public function update_comment($comment_id, $comment_text) {
+        
+        if( !array_key_exists($comment_id, $this->_meta['comments']) ) {
+            return false;
+        }
+        
+        $this->_meta['comments'][$comment_id]['text'] = $comment_text;
+        
+        return !!update_user_meta($this->_id, 'leyka_donor_comments', $this->_meta['comments']);
+        
+    }
+    
     public function delete() {
         wp_delete_user($this->_id);
     }

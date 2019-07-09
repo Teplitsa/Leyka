@@ -79,7 +79,7 @@ jQuery(document).ready(function($){
                             $button.prop('disabled', false);
                         }
                         else {
-                            alert('Ошибка!');
+                            alert(leyka.error_message);
                             $button.prop('disabled', false);
                         }
                     }
@@ -87,7 +87,7 @@ jQuery(document).ready(function($){
                 }
             })
             .fail(function(){
-                alert('Ошибка!');
+                alert(leyka.error_message);
                 $button.prop('disabled', false);
             })
             .always(function(){

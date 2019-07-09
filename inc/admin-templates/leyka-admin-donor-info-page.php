@@ -23,6 +23,7 @@ try {
     <div id="poststuff">
         <div id="post-body" class="metabox-holder columns-2">
             <div id="postbox-container-2" class="postbox-container">
+            	<input type="hidden" value="<?php echo $donor->id?>" id="leyka_donor_id" />
                 <?php do_meta_boxes('dashboard_page_leyka_donor_info', 'normal', null);?>
             </div>
         </div>

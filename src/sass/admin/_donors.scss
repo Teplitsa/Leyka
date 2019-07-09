@@ -39,6 +39,26 @@
 	.leyka-dashboard-footer {
 		margin-left: 2 * $leyka-base;
 	}
+
+	.loading-indicator-wrap {
+	    display: inline-block;
+	    width: 24px;
+	    height: 24px;
+
+	    .ok-icon {
+	        display: none;
+	        padding-top: 6px;
+	    }
+
+	    .loader-wrap {
+	        display: none;
+			padding-top: 8px;
+
+	        .leyka-loader {
+	            display: none;
+	        }
+	    }
+	}
 }
 
 // filters list
@@ -560,26 +580,6 @@
 				@include leyka-admin-btn(secondary);
 				margin-left: 0px;
 			}
-
-            .loading-indicator-wrap {
-                display: inline-block;
-                width: 24px;
-                height: 24px;
-
-                .ok-icon {
-                    display: none;
-                    padding-top: 6px;
-                }
-
-                .loader-wrap {
-                    display: none;
-					padding-top: 8px;
-
-                    .leyka-loader {
-                        display: none;
-                    }
-                }
-            }
 		}
 
 		table.donor-info-table {
@@ -628,18 +628,21 @@ table.donor-info-table {
 				padding-left: 0.5 * $leyka-base;
 			}
 
+			&.donor-comment-edit {
+				padding-top: 16px;
+				padding-bottom: 8px;
+			}
+
 			.comment-icon-edit {
 				background-image: url(../../img/donors/icon-edit.svg);
 				@include leyka-admin-icon(19px);
 				@include leyka-admin-clean-a;
-				margin-top: 4px;
 			}
 
 			.comment-icon-delete {
 				background-image: url(../../img/dashboard/icon-bad.svg);
 				@include leyka-admin-icon(19px);
 				@include leyka-admin-clean-a;
-				margin-top: 4px;
 			}
 		}
 	}
@@ -892,4 +895,49 @@ table.donor-info-table {
 		}
 
 	}
+}
+
+// editable strings
+.dashboard_page_leyka_donor_info {
+	.leyka-editable-str-wrapper {
+		display: flex;
+		align-items: center;
+
+		.loading-indicator-wrap {
+			.loader-wrap {
+				//display: block;
+				padding-top: 0px;
+				margin-right: 8px;
+
+				.leyka-loader {
+					//display: block;
+				}
+			}
+
+			.ok-icon {
+				padding-top: 0px;
+			}
+		}
+	}
+
+	.donor-comment-text {
+		width: 60%;
+	}
+
+	.leyka-editable-str-result {
+		@include leyka-donors-text();
+		width: calc(100% - 46px);
+		overflow-x: hidden;
+		margin-right: 8px;
+	}
+
+	.leyka-editable-str-field {
+		@include leyka-donors-text();
+		display: block;
+		width: calc(100% - 40px);
+		margin-right: 8px;
+		margin-left: -6px;
+		margin-top: 1px;
+	}
+
 }

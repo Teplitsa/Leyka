@@ -171,3 +171,52 @@ if( !function_exists('leyka_admin_body_class') ) {
     }
     add_filter( 'admin_body_class', 'leyka_admin_body_class', 20 );
 }
+
+if( !function_exists('leyka_admin_get_donor_comment_table_row') ) {
+    function leyka_admin_get_donor_comment_table_row($comment_id, $comment) {
+        
+        ob_start();?>
+        
+        <tr class="comment-id-<?php echo $comment_id;?>">
+            <td class="donor-comment-date"><?php echo date(get_option('date_format'), (int)$comment['date']);?></td>
+            <td class="donor-comment-text">
+            	<div class="leyka-editable-str-wrapper">
+                	<div class="leyka-editable-str-result" 
+                		id="editable-comment-str-result<?php echo $comment_id;?>" 
+                		str-field="editable-comment-str-field<?php echo $comment_id;?>"
+            		><?php echo esc_html($comment['text']);?></div>
+                	<input class="leyka-editable-str-field" type="text" value="<?php echo esc_html($comment['text']);?>" style="display: none;" 
+                		id="editable-comment-str-field<?php echo $comment_id;?>" 
+                		str-btn="editable-comment-str-btn<?php echo $comment_id;?>" 
+                		str-result="editable-comment-str-result<?php echo $comment_id;?>"
+                		save-action="leyka_save_editable_comment"
+                		text-item-id="<?php echo $comment_id;?>" 
+            		/>
+                    <div class="loading-indicator-wrap">
+                        <div class="loader-wrap"><span class="leyka-loader xxs"></span></div>
+                        <img class="ok-icon" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/icon-check.svg" alt="">
+                    </div>
+                </div>
+            </td>
+            <td class="donor-comment-author"><?php echo $comment['author_name'];?></td>
+            <td class="donor-comment-edit">
+                <a href="#" class="comment-icon-edit leyka-editable-str-btn" 
+                	id="editable-comment-str-btn<?php echo $comment_id;?>" 
+                	str-field="editable-comment-str-field<?php echo $comment_id;?>" 
+                	data-comment-id="<?php echo $comment_id;?>" 
+                	data-nonce="<?php echo wp_create_nonce('leyka_update_donor_comment');?>"
+            	> </a>
+            </td>
+            <td class="donor-comment-delete">
+                <a href="#" class="comment-icon-delete" data-comment-id="<?php echo $comment_id;?>"> </a>
+                <div class="loading-indicator-wrap">
+                    <div class="loader-wrap"><span class="leyka-loader xxs"></span></div>
+                    <img class="ok-icon" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/icon-check.svg" alt="">
+                </div>
+            </td>
+        </tr>
+        
+        <?php return ob_get_clean();
+
+    }
+}

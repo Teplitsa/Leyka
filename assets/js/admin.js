@@ -507,7 +507,7 @@ jQuery(document).ready(function($){
                             $button.prop('disabled', false);
                         }
                         else {
-                            alert('Ошибка!');
+                            alert(leyka.error_message);
                             $button.prop('disabled', false);
                         }
                     }
@@ -515,7 +515,7 @@ jQuery(document).ready(function($){
                 }
             })
             .fail(function(){
-                alert('Ошибка!');
+                alert(leyka.error_message);
                 $button.prop('disabled', false);
             })
             .always(function(){
@@ -583,14 +583,20 @@ jQuery(document).ready(function($){
 
         let $button = $(this),
             $row = $(this).closest('tr'),
+            $cell = $(this).closest('td'),
             $metabox = $(this).closest('#leyka_donor_admin_comments'),
             $table = $metabox.find('.donor-info-table'),
-            $loading = $row.find('.loader-wrap');
+            $loading = $cell.find('.loader-wrap'),
+            comment_id = $button.data('comment-id'),
+            donor_id = $('#leyka_donor_id').val();
 
-        $button.prop('disabled', true);
-        
+        $button.hide();
+
         let ajax_params = {
-            action: 'leyka_delete_donor_comment'
+            action: 'leyka_delete_donor_comment',
+            nonce: $('input[name="leyka_delete_donor_comment_nonce"]').val(),
+            comment_id: comment_id,
+            donor: donor_id
         };
         
         $loading.css('display', 'block');
@@ -600,31 +606,27 @@ jQuery(document).ready(function($){
             .done(function(json){
                 if(typeof json.status !== 'undefined') {
                     if(json.status === 'ok') {
-                        var $indicatorWrap = $loading.closest('.loading-indicator-wrap');
-                        $indicatorWrap.find('.ok-icon').css('display', 'block');
                         $row.remove();
                     }
                     else {
                         if(json.message) {
                             alert(json.message);
-                            $button.prop('disabled', false);
                         }
                         else {
-                            alert('Ошибка!');
-                            $button.prop('disabled', false);
+                            alert(leyka.error_message);
                         }
+                        $button.show();
                     }
                     return;
                 }
             })
             .fail(function(){
-                alert('Ошибка!');
-                $button.prop('disabled', false);
+                alert(leyka.error_message);
+                $button.show();
             })
             .always(function(){
                 $loading.css('display', 'none');
                 $loading.find('.leyka-loader').css('display', 'none');
-                $button.prop('disabled', false);
             });
     });
 
@@ -647,9 +649,9 @@ jQuery(document).ready(function($){
         
         let ajax_params = {
             action: 'leyka_add_donor_comment',
-            nonce: $field_wrapper.find(':input[name="leyka_add_donor_comment"]').val(),
+            nonce: $('#leyka_add_donor_comment_nonce').val(),
             comment: $commentField.val(),
-            donor: $('.donor-data-edit').data('donor-id')
+            donor: $('#leyka_donor_id').val()
         };
         
         $loading.css('display', 'block');
@@ -663,19 +665,17 @@ jQuery(document).ready(function($){
                         $indicatorWrap.find('.ok-icon').css('display', 'block');
                         $commentField.val("");
                         setTimeout(function(){
-                            $form.fadeOut("slow");
+                            $indicatorWrap.find('.ok-icon').fadeOut("slow");
                         }, 1000);
 
                         var $trTemplate = $table.find('tbody tr:first'),
                             $tr = $trTemplate.clone(),
-                            comment = json.comment;
+                            comment_html = json.comment_html;
 
-                        $tr.removeClass('comment-id-0').addClass('comment-id-' + comment.id);
-                        $tr.find('.donor-comment-date').html(comment.date);
-                        $tr.find('.donor-comment-text').html(comment.text);
-                        $tr.find('.donor-comment-author').html(comment.author);
-                        $tr.find('*[data-comment-id=0]').data('data-comment-id', comment.id);
+                        $tr = $(comment_html);
                         $table.append($tr);
+
+                        leykaBindEditableStrEvents($tr);
                     }
                     else {
                         if(json.message) {
@@ -683,7 +683,7 @@ jQuery(document).ready(function($){
                             $button.prop('disabled', false);
                         }
                         else {
-                            alert('Ошибка!');
+                            alert(leyka.error_message);
                             $button.prop('disabled', false);
                         }
                     }
@@ -691,7 +691,7 @@ jQuery(document).ready(function($){
                 }
             })
             .fail(function(){
-                alert('Ошибка!');
+                alert(leyka.error_message);
                 $button.prop('disabled', false);
             })
             .always(function(){
@@ -701,6 +701,122 @@ jQuery(document).ready(function($){
             });
     });
 });
+
+
+// editable string
+function leykaBindEditableStrEvents($container) {
+    let $ = jQuery;
+
+    $container.find('.leyka-editable-str-field').on('blur', function(e){
+        leykaSaveEditableStrAndCloseForm($(this));
+    });
+
+    $container.find('.leyka-editable-str-field').keypress(function( e ) {
+        if ( e.key === "Enter" ) {
+            e.preventDefault();
+            leykaSaveEditableStrAndCloseForm($(this));
+        }    
+    });
+
+    $container.find('.leyka-editable-str-field').keydown(function( e ) {
+        var $strField = $(this),
+            $strResult = $('.leyka-editable-str-result#' + $strField.attr('str-result'));
+
+        if ( e.key === "Escape" || e.key === "Esc" ) {
+            e.preventDefault();
+            $strField.val($strResult.text());
+            leykaSaveEditableStrAndCloseForm($strField);
+        }    
+    });
+
+    $container.find('.leyka-editable-str-btn').click(function(e){
+        e.preventDefault();
+
+        var $btn = $(this),
+            $strField = $('.leyka-editable-str-field#' + $btn.attr('str-field')),
+            $strResult = $('.leyka-editable-str-result#' + $strField.attr('str-result'));
+
+        $strResult.hide();
+        $strField.show().focus();
+        $btn.hide();
+    });
+}
+
+function leykaSaveEditableStrAndCloseForm($strField) {
+    let $ = jQuery;
+
+    var $btn = $('.leyka-editable-str-btn#' + $strField.attr('str-btn')),
+        $strResult = $('.leyka-editable-str-result#' + $strField.attr('str-result'));
+
+    var endEditCallback = function(){
+        $strField.hide();
+        $strResult.show();
+        $btn.show();
+    };
+
+    if($strField.val() != $strResult.text()) {
+        leykaSaveEditableStr($strField, endEditCallback);
+    }
+    else {
+        endEditCallback();
+    }
+}
+
+function leykaSaveEditableStr($strField, saveCallback) {
+    let $ = jQuery;
+
+    var $button = $('.leyka-editable-str-link#' + $strField.attr('str-edit-link')),
+        $strResult = $('.leyka-editable-str-result#' + $strField.attr('str-result')),
+        $loading = $strField.parent().find('.loader-wrap');
+
+    let ajax_params = {
+        action: $strField.attr('save-action'),
+        nonce: $('#leyka_save_editable_str_nonce').val(),
+        text: $strField.val(),
+        text_item_id: $strField.attr('text-item-id'),
+        donor: $('#leyka_donor_id').val()
+    };
+    
+    $loading.css('display', 'block');
+    $loading.find('.leyka-loader').css('display', 'block');
+
+    $.post(leyka.ajaxurl, ajax_params, null, 'json')
+        .done(function(json){
+            if(typeof json.status !== 'undefined') {
+                if(json.status === 'ok') {
+                    var $indicatorWrap = $loading.closest('.loading-indicator-wrap');
+                    $indicatorWrap.find('.ok-icon').css('display', 'block');
+                    $strResult.text($strField.val());
+
+                    setTimeout(function(){
+                        $indicatorWrap.find('.ok-icon').fadeOut("slow", saveCallback);
+                    }, 1000);
+                }
+                else {
+                    if(json.message) {
+                        alert(json.message);
+                    }
+                    else {
+                        alert(leyka.error_message);
+                    }
+                }
+                return;
+            }
+        })
+        .fail(function(){
+            alert(leyka.error_message);
+        })
+        .always(function(){
+            $loading.css('display', 'none');
+            $loading.find('.leyka-loader').css('display', 'none');
+        });
+
+}
+
+jQuery(document).ready(function($){
+    leykaBindEditableStrEvents($(document));
+});
+
 /** Donors list page */
 jQuery(document).ready(function($){
 
