@@ -164,7 +164,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 );
                 if($pm_id !== 'yandex_all') {
                     $payment_data['payment_method_data'] = array(
-                        'type' => $this->_get_yandex_pm_id($pm_id),
+                        'type' => $this->_get_gateway_pm_id($pm_id),
                     );
                 }
 
@@ -235,7 +235,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
         $donation = new Leyka_Donation($donation_id);
 
-        $payment_type = $this->_get_yandex_pm_id($pm_id);
+        $payment_type = $this->_get_gateway_pm_id($pm_id);
         $payment_type = $payment_type ? $payment_type : apply_filters('leyka_yandex_custom_payment_type', '', $pm_id);
 
         $data = array(
@@ -415,8 +415,8 @@ techMessage="'.$tech_message.'"/>');
                     $donation->status = 'funded';
 
                     // Change PM if needed. Mostly for Smart Payments:
-                    if($_POST['paymentType'] != $this->_get_yandex_pm_id($donation->pm_id)) {
-                        $donation->pm_id = $this->_get_yandex_pm_id($_POST['paymentType']);
+                    if($_POST['paymentType'] != $this->_get_gateway_pm_id($donation->pm_id)) {
+                        $donation->pm_id = $this->_get_gateway_pm_id($_POST['paymentType']);
                     }
 
                     if($donation->type === 'rebill' && !empty($_POST['invoiceId'])) {
@@ -756,8 +756,13 @@ techMessage="'.$tech_message.'"/>');
         }
     }
 
-    /** A service method to get Yandex paymentType values by according pm_ids, and vice versa. */
-    protected function _get_yandex_pm_id($pm_id) {
+    /**
+     * A service method to get PayPal pament method ID value by according Leyka pm_ids, and vice versa.
+     *
+     * @param $pm_id string PM ID (either Leyka or the gateway system).
+     * @return string|false A PM ID in PayPal/Leyka system, or false (if PM ID is unknown).
+     */
+    protected function _get_gateway_pm_id($pm_id) {
 
         $all_pm_ids = leyka_options()->opt('yandex_new_api') ? array(
             'yandex_card' => 'bank_card',

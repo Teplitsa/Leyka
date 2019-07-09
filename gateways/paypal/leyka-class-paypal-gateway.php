@@ -116,9 +116,25 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     }
 
     /**
-     * This processing is used only for old Express Checkout payment procedure.
-     * Revo template (and, in the future, the rest of templates) uses the new checkout.js API.
+     * A service method to get PayPal pament method ID value by according Leyka pm_ids, and vice versa.
+     *
+     * @param $pm_id string PM ID (either Leyka or the gateway system).
+     * @return string|false A PM ID in PayPal/Leyka system, or false (if PM ID is unknown).
      */
+    protected function _get_gateway_pm_id($pm_id) {
+
+        $all_pm_ids = array('paypal_all' => 'paypal',);
+
+        if(array_key_exists($pm_id, $all_pm_ids)) {
+            return $all_pm_ids[$pm_id];
+        } else if(in_array($pm_id, $all_pm_ids)) {
+            return array_search($pm_id, $all_pm_ids);
+        } else {
+            return false;
+        }
+
+    }
+
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
         $donation = new Leyka_Donation($donation_id);
@@ -129,22 +145,13 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
             require LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
 
-//            use PayPal\Api\Amount;
-//            use PayPal\Api\Details;
-//            use PayPal\Api\Item;
-//            use PayPal\Api\ItemList;
-//            use PayPal\Api\Payer;
-//            use PayPal\Api\Payment;
-//            use PayPal\Api\RedirectUrls;
-//            use PayPal\Api\Transaction;
-
             $api_context = new \PayPal\Rest\ApiContext(new \PayPal\Auth\OAuthTokenCredential(
                 leyka_options()->opt('paypal_client_id'),
                 leyka_options()->opt('paypal_client_secret')
             ));
 
             $payer = new PayPal\Api\Payer(); // Create new payer and PM
-            $payer->setPaymentMethod('paypal'); // PM ID, but our $pm_id is "paypal_all"
+            $payer->setPaymentMethod($this->_get_gateway_pm_id($pm_id));
 
             $redirect_urls = new PayPal\Api\RedirectUrls(); // Set redirect URLs
             $redirect_urls
@@ -167,24 +174,11 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             try { // Create payment with valid API context
 
                 $payment->create($api_context);
+                $donation->paypal_payment_id = $payment->getId();
+
                 $this->_new_api_redirect_url = $payment->getApprovalLink(); // PayPal redirect URL to redirect the donor there
 
-            } catch (PayPal\Exception\PayPalConnectionException $ex) {
-
-//                echo '<pre>Ex Code:'.print_r($ex->getCode(), 1).'</pre>';
-//                echo '<pre>Ex Data:'.print_r($ex->getData(), 1).'</pre>';
-//                echo '<pre>Ex Message:'.print_r($ex->getMessage(), 1).'</pre>';
-
-                $donation->add_gateway_response($ex);
-
-                leyka()->add_payment_form_error(new WP_Error(
-                    $this->_id.'-'.$ex->getCode(),
-                    sprintf(__('Error: %s', 'leyka'), $ex->getMessage())
-                ));
-
-            } catch (Exception $ex) {
-
-//                die('<pre>Common Ex:'.print_r($ex, 1).'</pre>');
+            } catch(Exception $ex) {
 
                 $donation->add_gateway_response($ex);
 
@@ -200,7 +194,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         }
 
         // (Old) Express Checkout payment:
-        if(strlen($payment_description) > 127) { // 127 chars length is a restriction from PayPal
+        if(mb_strlen($payment_description) > 127) { // 127 chars length is a PayPal restriction
             $payment_description = sprintf(__('Donation № %d', 'leyka'), $donation_id);
         }
 
@@ -373,14 +367,71 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
         switch($call_type) {
 
-            // Used in classic API callbacks:
+            // (New) REST API "callbacks":
+            case 'process-donation':
+
+                echo '<pre>'.print_r('HERE!', 1).'</pre>';
+                require LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
+
+                $api_context = new \PayPal\Rest\ApiContext(new \PayPal\Auth\OAuthTokenCredential(
+                    leyka_options()->opt('paypal_client_id'),
+                    leyka_options()->opt('paypal_client_secret')
+                ));
+
+                $_GET['paymentId'] = esc_sql($_GET['paymentId']);
+                $_GET['PayerID'] = esc_sql($_GET['PayerID']);
+
+                if(empty($_GET['paymentId']) || empty($_GET['PayerID'])) {
+                    // Add the error, redirect to the form/fail page
+                    echo '<pre>'.print_r('No params!', 1).'</pre>';
+                    exit;
+                }
+
+                $donation = $this->_get_donation_by('paypal_payment_id', $_GET['paymentId']);
+                if( !$donation ) {
+                    // Add the error, redirect to the form/fail page
+                    echo '<pre>'.print_r('Donation not found!', 1).'</pre>';
+                    exit;
+                }
+
+                $payment = PayPal\Api\Payment::get($_GET['paymentId'], $api_context);
+
+                $execution = new PayPal\Api\PaymentExecution();
+                $execution->setPayerId($_GET['PayerID']);
+
+                try {
+
+                    $result = $payment->execute($execution, $api_context);
+                    echo '<pre>Result:'.print_r($result, 1).'</pre>';
+
+                } catch(PayPal\Exception\PayPalConnectionException $ex) {
+
+                    $donation->add_gateway_response($ex);
+
+                    leyka()->add_payment_form_error(new WP_Error(
+                        $this->_id.'-'.$ex->getCode(),
+                        sprintf(__('Error: %s', 'leyka'), $ex->getMessage())
+                    ));
+
+                    echo '<pre>Error:'.print_r($ex->getCode().' - '.$ex->getMessage(), 1).'</pre>';
+                    echo '<pre>'.print_r($ex->getData(), 1).'</pre>';
+
+                    // Redirect to the form/fail page
+
+                }
+                break;
+            case 'cancel-donation':
+                // ...
+                break;
+
+            // Classic (ExpressCheckout) API callbacks:
             case 'process_payment': // Do a payment itself
 
                 if(empty($_GET['token']) || empty($_GET['PayerID'])) {
                     return false;
                 }
 
-                $donation = $this->_get_donation_by_token($_GET['token']);
+                $donation = $this->_get_donation_by($_GET['token']);
 
                 if( !$donation ) {
                     $this->_donation_error(
@@ -624,7 +675,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 break;
 
-            // Used in classic & New API:
+            // Classic (ExpressCheckout) API callbacks:
             case 'ipn': // Instant payment notifications processing: confirm the payment
 
                 require_once 'leyka-paypal-tools-ipn-verificator.php';
@@ -776,6 +827,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         }
 
         exit(0);
+
     }
 
     // Override the auto-submit setting to send manual requests to PayPal:
@@ -1001,10 +1053,25 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
     }
 
-    protected function _get_donation_by_token($paypal_token) {
+    protected function _get_donation_by($paypal_field, $value) {
 
-        $paypal_token = trim($paypal_token);
-        if( !$paypal_token ) {
+        switch($paypal_field) {
+            case 'payment_id':
+            case 'pp_payment_id':
+            case 'paypal_payment_id':
+                $paypal_field = '_paypal_payment_id';
+                break;
+            case 'token':
+            case 'pp_token':
+            case 'paypal_token':
+                $paypal_field = '_paypal_token';
+                break;
+            default:
+                $paypal_field = false;
+        }
+
+        $value = esc_sql($value);
+        if( !$paypal_field || !$value ) {
             return false;
         }
 
@@ -1012,7 +1079,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => 'any',
             'nopaging' => true,
-            'meta_query' => array(array('key' => '_paypal_token', 'value' => $paypal_token,),),
+            'meta_query' => array(array('key' => $paypal_field, 'value' => $value,),),
         ));
 
         if($donation) {
