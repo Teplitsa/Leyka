@@ -998,11 +998,9 @@ class Leyka extends Leyka_Singleton {
 
         $leyka_last_ver = get_option('leyka_last_ver');
 
-        // TMP - BEGIN
         if($leyka_last_ver && $leyka_last_ver == LEYKA_VERSION) { // Already at last version
             return;
         }
-        // TMP - END
 
         if( !$leyka_last_ver || $leyka_last_ver < '2.1' ) {
 
