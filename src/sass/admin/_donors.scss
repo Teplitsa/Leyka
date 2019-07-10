@@ -483,6 +483,8 @@
 			.donor-name {
 				display: flex;
 				justify-content: flex-start;
+				align-items: flex-start;
+				min-height: 32px;
 
 				h2 {
 					@include leyka-donors-text-h2;
@@ -490,22 +492,93 @@
 					padding-right: 0;
 					padding-top: 0px;
 					padding-bottom: 0px;
+					width: auto;
+				}
+
+				.leyka-editable-str-field {
+					@include leyka-donors-text-h2;
+					margin-top: -4px;
+				}
+
+				.leyka-editable-str-btn {
+					margin-top: 1px;
 				}
 			}
 
 			.donor-description {
-				margin-top: $leyka-base;
+				margin-top: 10px;
 				border-bottom: 1px solid $leyka-donors-stroke;
 				padding-bottom: $leyka-base;
-				display: flex;
-				justify-content: flex-start;
 
-				a {
-					@include leyka-admin-a(dashed);
+				.donor-view-description-wrapper {
+					display: flex;
+					justify-content: flex-start;
+
+					&.leyka-editable-str-wrapper {
+						align-items: flex-start;
+					}
+
+					.description-text.leyka-editable-str-result {
+						flex-basis: calc(100% - 40px);
+						margin-right: 0px;
+						margin-top: 4px;
+					}
+
+					textarea.leyka-editable-str-field {
+						margin-right: 0px;
+						flex-basis: calc(100% - 40px);
+						margin-top: 1px;
+					}
+
+					.loading-indicator-wrap {
+						margin-left: $leyka-base;
+						display: none;
+
+						.loader-wrap {
+							padding-top: 0px;
+							margin-right: 0px;
+						}
+
+						.ok-icon {
+							padding-top: 0px;
+						}
+					}
 				}
+				
+				.donor-add-description-wrapper {
+					width: 100%;
 
-				.description-text {
-					flex-basis: calc(100% - 40px);
+					a {
+						@include leyka-admin-a(dashed);
+					}
+
+					form {
+						display: block;
+					}
+
+					.add-donor-description-form {
+						margin-top: $leyka-base;
+						display: none;
+
+						textarea {
+							background: #FFFFFF;
+							border: 1px solid #0085BA;
+							box-sizing: border-box;
+							box-shadow: inset 0px 0px 3px rgba(0, 0, 0, 0.4);		
+							width: 100%;
+							height: 3 * $leyka-base;
+							display: block;
+						}
+
+						input[type="submit"] {
+							@include leyka-admin-btn(secondary);
+							margin-top: $leyka-base;
+						}
+
+						.loading-indicator-wrap {
+							display: inline-block;
+						}
+					}
 				}
 
 				.donor-data-edit {
@@ -904,14 +977,11 @@ table.donor-info-table {
 		align-items: center;
 
 		.loading-indicator-wrap {
+			display: none;
+
 			.loader-wrap {
-				//display: block;
 				padding-top: 0px;
 				margin-right: 8px;
-
-				.leyka-loader {
-					//display: block;
-				}
 			}
 
 			.ok-icon {
@@ -931,13 +1001,23 @@ table.donor-info-table {
 		margin-right: 8px;
 	}
 
-	.leyka-editable-str-field {
+	input.leyka-editable-str-field {
 		@include leyka-donors-text();
 		display: block;
 		width: calc(100% - 40px);
 		margin-right: 8px;
 		margin-left: -6px;
 		margin-top: 1px;
+	}
+
+	textarea.leyka-editable-str-field {
+		@include leyka-donors-text();
+		display: block;
+		width: calc(100% - 40px);
+		margin-right: 8px;
+		margin-left: -7px;
+		margin-top: -3px;
+		height: 4 * $leyka-base;
 	}
 
 }

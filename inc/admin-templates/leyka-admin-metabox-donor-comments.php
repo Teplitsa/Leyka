@@ -15,7 +15,7 @@ try {
 
 <div class="add-donor-comment">
     <a href="#" class="add-donor-comment-link"><?php _e('Add a comment', 'leyka');?></a>
-    <form class="new-donor-comment-form" data-nonce="<?php echo wp_create_nonce('new-donor-comment');?>" method="post">
+    <form class="new-donor-comment-form" method="post">
 
         <label for="donor-comment-field"><?php _e('Comment text', 'leyka');?></label>
         <input type="text" id="donor-comment-field" name="donor-comment" value="">

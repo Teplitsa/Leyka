@@ -203,8 +203,6 @@ if( !function_exists('leyka_admin_get_donor_comment_table_row') ) {
                 <a href="#" class="comment-icon-edit leyka-editable-str-btn" 
                 	id="editable-comment-str-btn<?php echo $comment_id;?>" 
                 	str-field="editable-comment-str-field<?php echo $comment_id;?>" 
-                	data-comment-id="<?php echo $comment_id;?>" 
-                	data-nonce="<?php echo wp_create_nonce('leyka_update_donor_comment');?>"
             	> </a>
             </td>
             <td class="donor-comment-delete">

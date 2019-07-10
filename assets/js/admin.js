@@ -568,6 +568,77 @@ jQuery(document).ready(function($){
 
 });
 
+// donor info
+jQuery(document).ready(function($){
+    $('.donor-add-description-link').click(function(e){
+        e.preventDefault();
+        $('.add-donor-description-form').toggle();
+    });
+
+    $('.add-donor-description-form').submit(function(e){
+        e.preventDefault();
+
+        let $form = $(this),
+            $button = $(this).find('input[type="submit"]'),
+            $fieldWrapper = $form.closest('.donor-description'),
+            $field = $form.find('textarea[name="donor-description"]'),
+            $loading = $fieldWrapper.find('.loader-wrap');
+
+        if(!$field.val()) {
+            return;
+        }
+
+        $button.prop('disabled', true);
+        
+        let ajax_params = {
+            action: 'leyka_save_donor_description',
+            nonce: $('#leyka_save_editable_str_nonce').val(),
+            text: $field.val(),
+            donor: $('#leyka_donor_id').val()
+        };
+        
+        $loading.css('display', 'block');
+        $loading.find('.leyka-loader').css('display', 'block');
+
+        $.post(leyka.ajaxurl, ajax_params, null, 'json')
+            .done(function(json){
+                if(typeof json.status !== 'undefined') {
+                    if(json.status === 'ok') {
+                        var $indicatorWrap = $loading.closest('.loading-indicator-wrap');
+                        $indicatorWrap.find('.ok-icon').css('display', 'block');
+                        setTimeout(function(){
+                            $indicatorWrap.find('.ok-icon').fadeOut("slow");
+                            $fieldWrapper.find('.description-text').text(json.saved_text);
+                            $fieldWrapper.find('.leyka-editable-str-field').text(json.saved_text);
+                            $('.donor-add-description-wrapper').remove();
+                            $('.donor-view-description-wrapper').show();
+                        }, 1000);
+                    }
+                    else {
+                        if(json.message) {
+                            alert(json.message);
+                            $button.prop('disabled', false);
+                        }
+                        else {
+                            alert(leyka.error_message);
+                            $button.prop('disabled', false);
+                        }
+                    }
+                    return;
+                }
+            })
+            .fail(function(){
+                alert(leyka.error_message);
+                $button.prop('disabled', false);
+            })
+            .always(function(){
+                $loading.css('display', 'none');
+                $loading.find('.leyka-loader').css('display', 'none');
+                $button.prop('disabled', false);
+            });
+    });    
+});
+
 // comments
 jQuery(document).ready(function($){
     $('.add-donor-comment-link').click(function(e){
@@ -635,11 +706,11 @@ jQuery(document).ready(function($){
 
         let $form = $(this),
             $button = $(this).find('input[type="submit"]'),
-            $field_wrapper = $form,
+            $fieldWrapper = $form,
             $commentField = $form.find('input[name="donor-comment"]'),
             $metabox = $form.closest('#leyka_donor_admin_comments'),
             $table = $metabox.find('.donor-info-table'),
-            $loading = $field_wrapper.find('.loader-wrap');
+            $loading = $fieldWrapper.find('.loader-wrap');
 
         if(!$commentField.val()) {
             return;
@@ -708,10 +779,18 @@ function leykaBindEditableStrEvents($container) {
     let $ = jQuery;
 
     $container.find('.leyka-editable-str-field').on('blur', function(e){
+        if($(this).prop('readonly')) {
+            return;
+        }
+
         leykaSaveEditableStrAndCloseForm($(this));
     });
 
-    $container.find('.leyka-editable-str-field').keypress(function( e ) {
+    $container.find('input.leyka-editable-str-field').keypress(function( e ) {
+        if($(this).prop('readonly')) {
+            return;
+        }
+
         if ( e.key === "Enter" ) {
             e.preventDefault();
             leykaSaveEditableStrAndCloseForm($(this));
@@ -719,6 +798,10 @@ function leykaBindEditableStrEvents($container) {
     });
 
     $container.find('.leyka-editable-str-field').keydown(function( e ) {
+        if($(this).prop('readonly')) {
+            return;
+        }
+
         var $strField = $(this),
             $strResult = $('.leyka-editable-str-result#' + $strField.attr('str-result'));
 
@@ -739,6 +822,7 @@ function leykaBindEditableStrEvents($container) {
         $strResult.hide();
         $strField.show().focus();
         $btn.hide();
+        $strField.parent().find('.loading-indicator-wrap').show();
     });
 }
 
@@ -752,6 +836,8 @@ function leykaSaveEditableStrAndCloseForm($strField) {
         $strField.hide();
         $strResult.show();
         $btn.show();
+        $strField.parent().find('.loading-indicator-wrap').hide();
+        $strField.prop('readonly', false);
     };
 
     if($strField.val() != $strResult.text()) {
@@ -767,7 +853,8 @@ function leykaSaveEditableStr($strField, saveCallback) {
 
     var $button = $('.leyka-editable-str-link#' + $strField.attr('str-edit-link')),
         $strResult = $('.leyka-editable-str-result#' + $strField.attr('str-result')),
-        $loading = $strField.parent().find('.loader-wrap');
+        $loading = $strField.parent().find('.loader-wrap'),
+        $indicatorWrap = $loading.closest('.loading-indicator-wrap');
 
     let ajax_params = {
         action: $strField.attr('save-action'),
@@ -779,14 +866,20 @@ function leykaSaveEditableStr($strField, saveCallback) {
     
     $loading.css('display', 'block');
     $loading.find('.leyka-loader').css('display', 'block');
+    $strField.prop('readonly', true);
 
     $.post(leyka.ajaxurl, ajax_params, null, 'json')
         .done(function(json){
             if(typeof json.status !== 'undefined') {
                 if(json.status === 'ok') {
-                    var $indicatorWrap = $loading.closest('.loading-indicator-wrap');
                     $indicatorWrap.find('.ok-icon').css('display', 'block');
-                    $strResult.text($strField.val());
+
+                    if(json.saved_text) {
+                        $strResult.text(json.saved_text);
+                    }
+                    else {
+                        $strResult.text($strField.val());
+                    }
 
                     setTimeout(function(){
                         $indicatorWrap.find('.ok-icon').fadeOut("slow", saveCallback);
@@ -799,12 +892,14 @@ function leykaSaveEditableStr($strField, saveCallback) {
                     else {
                         alert(leyka.error_message);
                     }
+                    $strField.prop('readonly', false);
                 }
                 return;
             }
         })
         .fail(function(){
             alert(leyka.error_message);
+            $strField.prop('readonly', false);
         })
         .always(function(){
             $loading.css('display', 'none');

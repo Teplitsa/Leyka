@@ -849,6 +849,52 @@ function leyka_save_editable_comment() {
     $comment_text = sanitize_text_field($_POST['text']);
     $donor->update_comment($comment_id, $comment_text);
     
-    die(json_encode(array('status' => 'ok')));
+    die(json_encode(array(
+        'status' => 'ok', 
+        'saved_text' => stripcslashes(stripcslashes(htmlspecialchars_decode($comment_text))),
+    )));
 }
 add_action('wp_ajax_leyka_save_editable_comment', 'leyka_save_editable_comment');
+
+
+function leyka_save_donor_description() {
+    
+    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_save_editable_str')) {
+        die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
+    }
+    
+    try {
+        $donor = new Leyka_Donor(absint($_POST['donor']));
+    } catch(Exception $e) {
+        die(json_encode(array('status' => 'error', 'message' => __('Error: donor not found', 'leyka'),)));
+    }
+    
+    $donor->description = !empty($_POST['text']) ? sanitize_text_field($_POST['text']) : "";
+    
+    die(json_encode(array(
+        'status' => 'ok', 
+        'saved_text' => stripcslashes(stripcslashes(htmlspecialchars_decode($donor->description))),
+    )));
+}
+add_action('wp_ajax_leyka_save_donor_description', 'leyka_save_donor_description');
+
+function leyka_save_donor_name() {
+    
+    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_save_editable_str')) {
+        die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
+    }
+    
+    try {
+        $donor = new Leyka_Donor(absint($_POST['donor']));
+    } catch(Exception $e) {
+        die(json_encode(array('status' => 'error', 'message' => __('Error: donor not found', 'leyka'),)));
+    }
+    
+    $donor->name = !empty($_POST['text']) ? sanitize_text_field($_POST['text']) : "";
+    
+    die(json_encode(array(
+        'status' => 'ok', 
+        'saved_text' => stripcslashes(stripcslashes(htmlspecialchars_decode($donor->name))),
+    )));
+}
+add_action('wp_ajax_leyka_save_donor_name', 'leyka_save_donor_name');

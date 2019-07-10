@@ -4,8 +4,15 @@
     border: none;
     box-shadow: none;
     outline: none;
+
+    &:active, &:focus {
+        text-decoration: none;
+        border: none;
+        box-shadow: none;
+        outline: none;
+    }
     
-    &:active, &:focus, &:hover {
+    &:hover {
         text-decoration: none;
         border: none;
         box-shadow: none;
@@ -22,7 +29,14 @@
 
     border-bottom-style: solid;
     border-color: transparent;
-    &:active, &:focus, &:hover {
+
+    &:active, &:focus {
+        border-color: $leyka-adb-color-link;
+        border-bottom-style: solid;
+        border-color: transparent;
+    }
+
+    &:hover {
         border-color: $leyka-adb-color-link;
         border-bottom-style: solid;
         border-bottom-width: 1px;
@@ -31,7 +45,14 @@
     @if $mod == dashed {
         border-bottom-style: dashed;
         border-color: $leyka-adb-color-link;
-        &:active, &:focus, &:hover {
+
+        &:active, &:focus {
+            border-bottom-style: dashed;
+            border-color: $leyka-adb-color-link;
+            border-bottom-width: 1px;
+        }
+
+        &:hover {
             border-color: transparent;
             border-bottom-style: solid;
             border-bottom-width: 1px;
