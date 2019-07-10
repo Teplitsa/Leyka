@@ -537,7 +537,7 @@ jQuery(document).ready(function($){
     // Donations list data table:
     if(typeof $().DataTable !== 'undefined' && typeof leyka_dt !== 'undefined') {
         $('.leyka-data-table').DataTable({
-            pageLength: 3,
+            pageLength: 10,
             lengthChange: false,
             ordering:  false,
             searching: false,
@@ -651,6 +651,10 @@ jQuery(document).ready(function($){
 
     $('#leyka_donor_admin_comments table').on('click', '.comment-icon-delete', function(e){
         e.preventDefault();
+
+        if(!confirm(leyka.confirm_delete_comment)) {
+            return;
+        }
 
         let $button = $(this),
             $row = $(this).closest('tr'),
@@ -911,6 +915,61 @@ function leykaSaveEditableStr($strField, saveCallback) {
 jQuery(document).ready(function($){
     leykaBindEditableStrEvents($(document));
 });
+
+// tags
+jQuery(document).ready(function($){
+    if(!$('#leyka_donor_tags').length) {
+        return;
+    }
+
+    window.tagBox && window.tagBox.init();
+
+    var saveDonorTagsTimeoutId = null;
+
+    $("body").on('DOMSubtreeModified', ".tagchecklist", function() {
+        console.log('tags list changed');
+
+        if(saveDonorTagsTimeoutId) {
+            clearTimeout(saveDonorTagsTimeoutId);
+        }
+
+        saveDonorTagsTimeoutId = setTimeout(function() {
+            console.log('save tags list');
+
+            let ajax_params = {
+                action: 'leyka_save_donor_tags',
+                nonce: $('#leyka_save_donor_tags_nonce').val(),
+                tags: $('textarea[name="tax_input[donors_tag]"]').val(),
+                donor: $('#leyka_donor_id').val()
+            };
+            
+            $.post(leyka.ajaxurl, ajax_params, null, 'json')
+                .done(function(json){
+                    if(typeof json.status !== 'undefined') {
+                        if(json.status === 'ok') {
+                        }
+                        else {
+                            if(json.message) {
+                                alert(json.message);
+                            }
+                            else {
+                                alert(leyka.error_message);
+                            }
+                        }
+                        return;
+                    }
+                })
+                .fail(function(){
+                    alert(leyka.error_message);
+                })
+
+            saveDonorTagsTimeoutId = null;
+        }, 500);
+
+    });
+
+});
+
 
 /** Donors list page */
 jQuery(document).ready(function($){

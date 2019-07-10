@@ -111,6 +111,7 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-ajax.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-shortcodes.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-widgets.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-hooks.php');
+require_once(ABSPATH . 'wp-admin/includes/meta-boxes.php');
 
 /** Automatically include all sub-dirs of /leyka/gateways/ */
 $gateways_dir = dir(LEYKA_PLUGIN_DIR.'gateways/');

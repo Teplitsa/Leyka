@@ -898,3 +898,24 @@ function leyka_save_donor_name() {
     )));
 }
 add_action('wp_ajax_leyka_save_donor_name', 'leyka_save_donor_name');
+
+function leyka_save_donor_tags() {
+    
+    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_save_donor_tags')) {
+        die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
+    }
+    
+    try {
+        $donor = new Leyka_Donor(absint($_POST['donor']));
+    } catch(Exception $e) {
+        die(json_encode(array('status' => 'error', 'message' => __('Error: donor not found', 'leyka'),)));
+    }
+    
+    $tags = !empty($_POST['tags']) ? explode(',', sanitize_text_field($_POST['tags'])) : "";
+    wp_set_object_terms( $donor->id, $tags, Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME ); 
+    
+    die(json_encode(array(
+        'status' => 'ok',
+    )));
+}
+add_action('wp_ajax_leyka_save_donor_tags', 'leyka_save_donor_tags');

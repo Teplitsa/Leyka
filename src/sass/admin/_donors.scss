@@ -727,35 +727,44 @@ table.donor-info-table {
 		.inside {
 			padding: $leyka-base $leyka-base 1.5 * $leyka-base $leyka-base;
 			margin-top: 0;
+
+			& > p {
+				margin-top: 0px;
+			}
 		}
 
-		.new-tag-form {
-			input[name="new-tags"] {
+		.tagsdiv {
+			.ajaxtag {
+				margin-top: 0px;
+			}
+
+			.tagchecklist {
+				margin-bottom: 8px;
+			}
+
+			input.newtag {
 				background: #FFFFFF;
 				border: 1px solid #0085BA;
 				box-sizing: border-box;
 				box-shadow: inset 0px 0px 3px rgba(0, 0, 0, 0.4);			
 				margin-right: 0.5 * $leyka-base;
+				height: 24px;
 			}
 
-			input[type="submit"] {
+			input[type="button"] {
 				@include leyka-admin-btn(secondary);
 				margin-left: 0px;
 			}
 
-			.explanation-text {
+			.howto {
 				@include leyka-donor-text-tags-explanation;
 				margin-top: 0.5 * $leyka-base;
 				color: $leyka-donor-color-explanation;
 			}
 		}
 
-		.frequently-used-tags {
-			margin-top: -6px;
-
-			a {
-				@include leyka-admin-a(dashed);
-			}
+		.tagcloud-link {
+			@include leyka-admin-a(dashed);
 		}
 	}
 }
