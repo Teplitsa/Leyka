@@ -406,7 +406,19 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     $result = $payment->execute($execution, $api_context);
 
                     if($result->getState() === 'approved') {
-                        $donation->status = 'funded';
+
+                        if($donation->status !== 'funded') {
+
+                            $donation->status = 'funded';
+                            $donation->add_gateway_response($result);
+
+                            Leyka_Donation_Management::send_all_emails($donation->id);
+
+                        }
+
+                        wp_redirect(leyka_get_success_page_url());
+                        exit;
+
                     } else if($result->getState() === 'failed') {
                         $this->_donation_error(
                             __('PayPal donation finished with error', 'leyka'),
@@ -669,7 +681,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                     $donation->add_gateway_response($result);
                     $this->_add_to_payment_log($donation, 'DoECPayment', $data, $result);
-                    wp_redirect(leyka_get_campaign_success_page_url($donation->campaign_id));
+                    wp_redirect(leyka_get_success_page_url($donation->campaign_id));
 
                     // Do not fund a donation here! Wait for it's approval and IPN callback
 
@@ -688,7 +700,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     Leyka_Donation_Management::send_all_emails($donation->id);
 
                     $this->_add_to_payment_log($donation, 'DoECPayment', $data, $result);
-                    wp_redirect(leyka_get_campaign_success_page_url($donation->campaign_id));
+                    wp_redirect(leyka_get_success_page_url($donation->campaign_id));
 
                 }
 
