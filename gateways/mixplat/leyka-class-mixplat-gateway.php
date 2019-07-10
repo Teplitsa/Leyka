@@ -172,7 +172,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                 sprintf(__("This message has been sent because a create_payment call to MIXPLAT payment system returned some error. The details of the call are below. Payment error code / text: %s / %s", 'leyka'), $json['result'], $json['message'])."\n\r\n\r"
             );
 
-            wp_redirect(leyka_get_campaign_failure_page_url($donation->campaign_id));
+            wp_redirect(leyka_get_failure_page_url($donation->campaign_id));
 
         }
 

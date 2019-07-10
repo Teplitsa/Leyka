@@ -150,7 +150,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'is_default_collapsed' => false,
                         'options' => array(
                             'notify_donations_managers', 'notify_managers_on_recurrents', 'donations_managers_emails',
-                            'email_notification_title', 'email_notification_text',
+                            'email_notification_title', 'email_notification_text', 'notify_tech_support_on_failed_donations',
                         )
                     ),),
                     array('section' => array(

@@ -114,7 +114,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             'cb_url' => home_url('leyka/service/'.$this->_id.'/response/'), // URL for the gateway callbacks
             'cb_type' => 'P',
             'success_url' => leyka_get_campaign_success_page_url($donation->campaign_id),
-            'decline_url' => leyka_get_campaign_failure_page_url($donation->campaign_id),
+            'decline_url' => leyka_get_failure_page_url($donation->campaign_id),
 
             'sign' => md5($chronopay_product_id.'-'.$price
                 .(leyka_options()->opt('chronopay_use_payment_uniqueness_control') ? '-'.$donation_id : '')

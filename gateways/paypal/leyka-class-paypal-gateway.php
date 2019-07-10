@@ -1,4 +1,6 @@
-<?php if( !defined('WPINC') ) die;
+<?php use PayPal\Api\Payment;
+
+if( !defined('WPINC') ) die;
 /**
  * Leyka_Paypal_Gateway class
  */
@@ -175,6 +177,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 $payment->create($api_context);
                 $donation->paypal_payment_id = $payment->getId();
+                $donation->paypal_token = $payment->getToken();
 
                 $this->_new_api_redirect_url = $payment->getApprovalLink(); // PayPal redirect URL to redirect the donor there
 
@@ -215,7 +218,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     'leyka_paypal_process_payment_callback_url',
                     home_url('?p=leyka/service/'.$this->_id.'/process_payment/')
                 ),
-                'CANCELURL' => leyka_get_campaign_failure_page_url($donation->campaign_id),
+                'CANCELURL' => leyka_get_failure_page_url($donation->campaign_id),
                 'PAYMENTREQUEST_0_NOTIFYURL' => apply_filters(
                     'leyka_paypal_ipn_callback_url',
                     home_url('?p=leyka/service/'.$this->_id.'/ipn/')
@@ -256,7 +259,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     'leyka_paypal_recurring_process_payment_callback_url',
                     home_url('?p=leyka/service/'.$this->_id.'/process_payment/')
                 ),
-                'CANCELURL' => leyka_get_campaign_failure_page_url($donation->campaign_id),
+                'CANCELURL' => leyka_get_failure_page_url($donation->campaign_id),
                 'PAYMENTREQUEST_0_NOTIFYURL' => apply_filters(
                     'leyka_paypal_recurring_ipn_callback_url',
                     home_url('?p=leyka/service/'.$this->_id.'/ipn/')
@@ -370,7 +373,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             // (New) REST API "callbacks":
             case 'process-donation':
 
-                echo '<pre>'.print_r('HERE!', 1).'</pre>';
                 require LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
 
                 $api_context = new \PayPal\Rest\ApiContext(new \PayPal\Auth\OAuthTokenCredential(
@@ -382,16 +384,15 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 $_GET['PayerID'] = esc_sql($_GET['PayerID']);
 
                 if(empty($_GET['paymentId']) || empty($_GET['PayerID'])) {
-                    // Add the error, redirect to the form/fail page
-                    echo '<pre>'.print_r('No params!', 1).'</pre>';
-                    exit;
+                    $this->_donation_error(__("PayPal callback error: required parameters weren't given", 'leyka'));
                 }
 
                 $donation = $this->_get_donation_by('paypal_payment_id', $_GET['paymentId']);
                 if( !$donation ) {
-                    // Add the error, redirect to the form/fail page
-                    echo '<pre>'.print_r('Donation not found!', 1).'</pre>';
-                    exit;
+                    $this->_donation_error(
+                        __("PayPal callback error: donation wasn't found", 'leyka'),
+                        sprintf(__('The donation was not found by the following PayPal data: %s (value given: %s), %s (value given: %s).', 'leyka'), 'paymentId', $_GET['paymentId'], 'PayerID', $_GET['PayerID'])
+                    );
                 }
 
                 $payment = PayPal\Api\Payment::get($_GET['paymentId'], $api_context);
@@ -401,25 +402,43 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 try {
 
+                    /** @var PayPal\Api\Payment $result */
                     $result = $payment->execute($execution, $api_context);
-                    echo '<pre>Result:'.print_r($result, 1).'</pre>';
+
+                    if($result->getState() === 'approved') {
+                        $donation->status = 'funded';
+                    } else if($result->getState() === 'failed') {
+                        $this->_donation_error(
+                            __('PayPal donation finished with error', 'leyka'),
+                            '',
+                            $donation,
+                            'process-donation',
+                            array(
+                                'paymentId' => $_GET['paymentId'],
+                                'PayerID' => $_GET['PayerID']
+                            )
+                        );
+                    }
 
                 } catch(PayPal\Exception\PayPalConnectionException $ex) {
-
-                    $donation->add_gateway_response($ex);
-
-                    leyka()->add_payment_form_error(new WP_Error(
-                        $this->_id.'-'.$ex->getCode(),
-                        sprintf(__('Error: %s', 'leyka'), $ex->getMessage())
-                    ));
-
-                    echo '<pre>Error:'.print_r($ex->getCode().' - '.$ex->getMessage(), 1).'</pre>';
-                    echo '<pre>'.print_r($ex->getData(), 1).'</pre>';
-
-                    // Redirect to the form/fail page
-
+                    $this->_donation_error(
+                        __('PayPal donation execution resulted with error', 'leyka'),
+                        sprintf(__('Error %s: %s', 'leyka'), $this->_id.'-'.$ex->getCode(), $ex->getMessage()),
+                        $donation,
+                        'process-donation',
+                        $ex
+                    );
+                } catch(Exception $ex) {
+                    $this->_donation_error(
+                        __('PayPal donation execution resulted with error', 'leyka'),
+                        sprintf(__('Error %s: %s', 'leyka'), $this->_id.'-'.$ex->getCode(), $ex->getMessage()),
+                        $donation,
+                        'process-donation',
+                        $ex
+                    );
                 }
                 break;
+
             case 'cancel-donation':
                 // ...
                 break;
@@ -1093,20 +1112,32 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
     }
 
-    protected function _donation_error($title, $text, Leyka_Donation $donation = NULL, $operation_type = '', $data = array(), $new_status = 'failed', $do_redirect = true) {
+    protected function _donation_error($title, $text = '', Leyka_Donation $donation = NULL, $operation_type = '', $data = array(), $new_status = 'failed', $do_redirect = true) {
 
-        if($donation && array_key_exists($new_status, leyka_get_donation_status_list())) {
-            $donation->status = $new_status;
+        if($donation) {
+
+            if(array_key_exists($new_status, leyka_get_donation_status_list())) {
+
+                $donation->status = $new_status;
+
+                if($data) {
+                    $donation->add_gateway_response($data);
+                }
+
+            }
+
+            if($operation_type) {
+                $this->_add_to_payment_log($donation, $operation_type, (array)$data, empty($text) ? $title : $text);
+            }
+
         }
 
-        if($donation && $operation_type && leyka_options()->opt('paypal_keep_payment_logs')) {
-            $this->_add_to_payment_log($donation, $operation_type, (array)$data, $text);
+        if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
+            wp_mail(leyka_get_website_tech_support_email(), $title, $text ? $text."\n\r\n\r" : '');
         }
-
-        wp_mail(get_option('admin_email'), $title, $text."\n\r\n\r");
 
         if( !!$do_redirect ) {
-            wp_redirect($donation ? leyka_get_campaign_failure_page_url($donation->campaign_id) : leyka_get_failure_page_url());
+            wp_redirect(leyka_get_failure_page_url());
         }
 
         exit(0);
@@ -1115,8 +1146,13 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
     protected function _add_to_payment_log(Leyka_Donation $donation, $op_type, $data, $result = '') {
 
+        if( !leyka_options()->opt('paypal_keep_payment_logs') ) {
+            return;
+        }
+
         $log = (array)$donation->paypal_log;
-        array_push($log, array('date' => time(), 'operation' => $op_type, 'data' => $data, 'result' => $result,));
+        $log[] = array('date' => time(), 'operation' => $op_type, 'data' => $data, 'result' => esc_sql($result),);
+
         $donation->paypal_log = $log;
 
     }

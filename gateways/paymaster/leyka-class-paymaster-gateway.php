@@ -100,7 +100,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
             'SIGN' => md5(leyka_options()->opt('paymaster_merchant_id').':'.$amount.':'.$donation_id.':'.leyka_options()->opt('paymaster_secret_word')),
             'LMI_PAYMENT_NOTIFICATION_URL' => home_url('leyka/service/' . $this->_id . '/response/'),
             'LMI_SUCCESS_URL' => leyka_get_campaign_success_page_url($donation->campaign_id),
-            'LMI_FAILURE_URL' => leyka_get_campaign_failure_page_url($donation->campaign_id),
+            'LMI_FAILURE_URL' => leyka_get_failure_page_url($donation->campaign_id),
         );
 
     }
