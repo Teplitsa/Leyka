@@ -1,4 +1,8 @@
-<?php use PayPal\Api\Payment;
+<?php use PayPal\Api\InputFields;
+use PayPal\Api\PayerInfo;
+use PayPal\Api\Payment;
+use PayPal\Api\WebProfile;
+use PayPal\Rest\ApiContext;
 
 if( !defined('WPINC') ) die;
 /**
@@ -10,6 +14,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     protected static $_instance;
 
     protected $_new_api_redirect_url = '';
+
+    const DONATION_WEB_EXPERIENCE_PROFILE_KEY = 'leyka_paypal__default_donation_web_experience_profile_id';
 
     protected function _set_attributes() {
 
@@ -137,6 +143,68 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
     }
 
+    /**
+     * Create & configure the PayPal web experience profile for donations, or return the profile if it exists.
+     *
+     * @param $api_context PayPal\Rest\ApiContext
+     * @return string|false Donation web profile ID, or false if the profile can't be created or retreived.
+     */
+    protected function _get_donation_web_experience_profile_id(PayPal\Rest\ApiContext $api_context) {
+
+        $web_experience_profile_id = get_option(static::DONATION_WEB_EXPERIENCE_PROFILE_KEY);
+        if($web_experience_profile_id) {
+
+            try {
+                $web_experience_profile = \PayPal\Api\WebProfile::get($web_experience_profile_id, $api_context);
+            } catch( \PayPal\Exception\PayPalConnectionException $ex ) {
+                /** @todo Log the error somehow */
+                $web_experience_profile = false;
+            }
+
+            if($web_experience_profile) {
+                return $web_experience_profile_id;
+            }
+
+        }
+
+        // Create the PayPal web experience profile to setup donor fields on the gateway side:
+        $flow_config = new \PayPal\Api\FlowConfig();
+        $flow_config
+            ->setLandingPageType('Billing')
+            ->setUserAction('commit')
+            ->setReturnUriHttpMethod('GET');
+
+        $presentation = new \PayPal\Api\Presentation();
+        $presentation
+//            ->setLogoImage(leyka_options()->opt('receiver_logo')) /** @todo A receiver logo field needed. */
+            ->setBrandName(get_bloginfo('name')) // For now. There can also be a campaign title
+            ->setReturnUrlLabel(__('Return', 'leyka'))
+            ->setNoteToSellerLabel(__('Thanks!', 'leyka'));
+
+        $gateway_side_input_fields = new \PayPal\Api\InputFields();
+        $gateway_side_input_fields->setNoShipping(1)->setAddressOverride(0)->setAllowNote(false);
+
+        $web_experience_profile = new \PayPal\Api\WebProfile();
+        $web_experience_profile
+            ->setName(__('Leyka Donation', 'leyka')) // ->setId('leyka_donation') isn't gonna work here :'\
+            ->setFlowConfig($flow_config)
+            ->setPresentation($presentation)
+            ->setTemporary(false)
+            ->setInputFields($gateway_side_input_fields);
+
+        try {
+
+            $web_experience_profile_resp = $web_experience_profile->create($api_context);
+            update_option(static::DONATION_WEB_EXPERIENCE_PROFILE_KEY, $web_experience_profile_resp->getId());
+
+        } catch( \PayPal\Exception\PayPalConnectionException $ex ) {
+            return false;
+        }
+
+        return get_option(static::DONATION_WEB_EXPERIENCE_PROFILE_KEY);
+
+    }
+
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
         $donation = new Leyka_Donation($donation_id);
@@ -145,15 +213,18 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
         if(leyka_options()->opt('paypal_rest_api')) {
 
-            require LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
+            require_once LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
 
-            $api_context = new \PayPal\Rest\ApiContext(new \PayPal\Auth\OAuthTokenCredential(
+            $api_context = new PayPal\Rest\ApiContext(new \PayPal\Auth\OAuthTokenCredential(
                 leyka_options()->opt('paypal_client_id'),
                 leyka_options()->opt('paypal_client_secret')
             ));
 
+            $payer_info = new PayPal\Api\PayerInfo();
+            $payer_info->setEmail($donation->donor_email)->setFirstName($donation->donor_name); // ->setCountryCode('RU')
+
             $payer = new PayPal\Api\Payer(); // Create new payer and PM
-            $payer->setPaymentMethod($this->_get_gateway_pm_id($pm_id));
+            $payer->setPaymentMethod($this->_get_gateway_pm_id($pm_id))->setPayerInfo($payer_info);
 
             $redirect_urls = new PayPal\Api\RedirectUrls(); // Set redirect URLs
             $redirect_urls
@@ -172,6 +243,12 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 ->setPayer($payer)
                 ->setRedirectUrls($redirect_urls)
                 ->setTransactions(array($transaction));
+
+            $web_experience_profile_id = $this->_get_donation_web_experience_profile_id($api_context);
+//            echo '<pre>'.print_r($web_experience_profile_id, 1).'</pre>';
+            if($web_experience_profile_id) {
+                $payment->setExperienceProfileId($web_experience_profile_id);
+            }
 
             try { // Create payment with valid API context
 
@@ -371,7 +448,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         switch($call_type) {
 
             // (New) REST API "callbacks":
-            case 'process-donation':
+            case 'process-donation': // Complete the payment
 
                 require LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
 
@@ -395,16 +472,15 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     );
                 }
 
-                $payment = PayPal\Api\Payment::get($_GET['paymentId'], $api_context);
+                $payment = \PayPal\Api\Payment::get($_GET['paymentId'], $api_context);
 
-                $execution = new PayPal\Api\PaymentExecution();
+                $execution = new \PayPal\Api\PaymentExecution();
                 $execution->setPayerId($_GET['PayerID']);
 
                 try {
 
                     /** @var PayPal\Api\Payment $result */
                     $result = $payment->execute($execution, $api_context);
-
                     if($result->getState() === 'approved') {
 
                         if($donation->status !== 'funded') {
@@ -425,14 +501,11 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                             '',
                             $donation,
                             'process-donation',
-                            array(
-                                'paymentId' => $_GET['paymentId'],
-                                'PayerID' => $_GET['PayerID']
-                            )
+                            array('paymentId' => $_GET['paymentId'], 'PayerID' => $_GET['PayerID'],)
                         );
                     }
 
-                } catch(PayPal\Exception\PayPalConnectionException $ex) {
+                } catch( \PayPal\Exception\PayPalConnectionException $ex ) {
                     $this->_donation_error(
                         __('PayPal donation execution resulted with error', 'leyka'),
                         sprintf(__('Error %s: %s', 'leyka'), $this->_id.'-'.$ex->getCode(), $ex->getMessage()),
@@ -440,7 +513,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                         'process-donation',
                         $ex
                     );
-                } catch(Exception $ex) {
+                } /*catch(Exception $ex) {
                     $this->_donation_error(
                         __('PayPal donation execution resulted with error', 'leyka'),
                         sprintf(__('Error %s: %s', 'leyka'), $this->_id.'-'.$ex->getCode(), $ex->getMessage()),
@@ -448,12 +521,27 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                         'process-donation',
                         $ex
                     );
-                }
+                }*/
                 break;
 
-            case 'cancel-donation':
-                // ...
-                break;
+            case 'cancel-donation': // Payment was cancelled by Donor on the gateway side
+
+                $redirect_url = home_url();
+
+                if( !empty($_GET['token']) ) {
+
+                    $donation = $this->_get_donation_by('paypal_token', esc_sql($_GET['token']));
+                    if( $donation && $donation->campaign_id ) {
+
+                        $donation->add_gateway_response(__('The donation was cancelled by the donor', 'leyka'));
+                        $redirect_url = get_permalink($donation->campaign_id);
+
+                    }
+
+                }
+
+                wp_redirect($redirect_url);
+                exit;
 
             // Classic (ExpressCheckout) API callbacks:
             case 'process_payment': // Do a payment itself
@@ -462,7 +550,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     return false;
                 }
 
-                $donation = $this->_get_donation_by($_GET['token']);
+                $donation = $this->_get_donation_by('paypal_token', $_GET['token']);
 
                 if( !$donation ) {
                     $this->_donation_error(
