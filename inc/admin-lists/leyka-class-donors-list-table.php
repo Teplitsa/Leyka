@@ -61,15 +61,69 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
             $campaigns_meta_query = array('relation' => 'OR',);
 
-            foreach($_REQUEST['campaigns'] as $campaign_title) {
+            foreach($_REQUEST['campaigns'] as $campaign_id) {
                 $campaigns_meta_query[] = array(
                     'key' => 'leyka_donor_campaigns',
-                    'value' => esc_sql($campaign_title),
+                    'value' => 'i:'.absint($campaign_id).';', // A little freaky, I know, but it's the best we could think of
                     'compare' => 'LIKE',
                 );
             }
 
             $donors_params['meta_query'][] = $campaigns_meta_query;
+
+        }
+
+        if( !empty($_REQUEST['first-donation-date']) ) {
+
+            if(stripos($_REQUEST['first-donation-date'], ',') !== false) {
+                $_REQUEST['first-donation-date'] = array_slice(explode(',', $_REQUEST['first-donation-date']), 0, 2);
+            } else {
+                $_REQUEST['first-donation-date'] = trim($_REQUEST['first-donation-date']);
+            }
+
+            if(count($_REQUEST['first-donation-date']) === 2) { // The date is set as an interval
+
+                array_walk($_REQUEST['first-donation-date'], function(&$value){
+                    $value = strtotime($value);
+                });
+
+                $donors_params['meta_query'][] = array(
+                    'key' => 'leyka_donor_first_donation_date',
+                    'value' => $_REQUEST['first-donation-date'],
+                    'compare' => 'BETWEEN',
+                    'type' => 'NUMERIC',
+                );
+
+            } else { // Single date set
+                /** @todo TBD wtf should we do in this case */
+            }
+
+        }
+
+        if( !empty($_REQUEST['last-donation-date']) ) {
+
+            if(stripos($_REQUEST['last-donation-date'], ',') !== false) {
+                $_REQUEST['last-donation-date'] = array_slice(explode(',', $_REQUEST['last-donation-date']), 0, 2);
+            } else {
+                $_REQUEST['last-donation-date'] = trim($_REQUEST['last-donation-date']);
+            }
+
+            if(count($_REQUEST['last-donation-date']) === 2) { // The date is set as an interval
+
+                array_walk($_REQUEST['last-donation-date'], function(&$value){
+                    $value = strtotime($value);
+                });
+
+                $donors_params['meta_query'][] = array(
+                    'key' => 'leyka_donor_last_donation_date',
+                    'value' => $_REQUEST['last-donation-date'],
+                    'compare' => 'BETWEEN',
+                    'type' => 'NUMERIC',
+                );
+
+            } else { // Single date set
+                /** @todo TBD wtf should we do in this case */
+            }
 
         }
 
