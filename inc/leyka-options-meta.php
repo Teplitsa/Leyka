@@ -536,7 +536,7 @@ self::$_options_meta = array(
     'non_init_recurring_donor_registration_emails_text' => array(
         'type' => 'rich_html',
         'default' => __('Hello, #DONOR_NAME#!<br><br>We created a personal account for you to manage your donations.<br><br>#DONOR_ACCOUNT_LOGIN_LINK#<br><br>If you do not wish to use it, just ignore this email.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
-        'title' => __("A text of a notification email", 'leyka'),
+        'title' => __("Notification email text", 'leyka'),
         'description' => __("Enter the text of notification email. It may include the following special entries:", 'leyka').$email_placeholders,
         'required' => true,
         'field_classes' => array('type-rich_html'),
@@ -560,15 +560,15 @@ self::$_options_meta = array(
     'notify_donations_managers' => array(
         'type' => 'checkbox',
         'default' => true,
-        'title' => __('Send the emails on single donations', 'leyka'),
-        'comment' => __('Check to notify some website personnel (donations managers) of each incoming donation', 'leyka'),
+        'title' => __('Send emails on single donations', 'leyka'),
+        'comment' => __('Check to notify the website personnel (donations managers) of each incoming donation', 'leyka'),
         'short_format' => true,
     ),
     'notify_managers_on_recurrents' => array(
         'type' => 'checkbox',
         'default' => true,
-        'title' => __('Send the emails on recurring donations', 'leyka'),
-        'comment' => __('Check to notify some website personnel (donations managers) of each incoming recurrent donation', 'leyka'),
+        'title' => __('Send emails on recurring donations', 'leyka'),
+        'comment' => __('Check to notify the website personnel (donations managers) of each incoming recurrent donation', 'leyka'),
         'short_format' => true,
     ),
     'donations_managers_emails' => array(
@@ -589,6 +589,13 @@ self::$_options_meta = array(
         'title' => __('A text of after-donation notification sended to a website personnel', 'leyka'),
         'description' => __("Enter the text of the notification email that would be sended to each email stated before right after donation is made. It may include the following special entries:", 'leyka').$email_placeholders,
         'field_classes' => array('type-rich_html'),
+    ),
+    'notify_tech_support_on_failed_donations' => array(
+        'type' => 'checkbox',
+        'default' => true,
+        'title' => __('Send error reporting emails to the tech. support on failed donations', 'leyka'),
+        'comment' => __('Check to notify the website technical support (see the "website technical support email" option) of each failed donation.', 'leyka'),
+        'short_format' => true,
     ),
     'tech_support_email' => array(
         'type' => 'email',

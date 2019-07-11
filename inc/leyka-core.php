@@ -677,10 +677,15 @@ class Leyka extends Leyka_Singleton {
                         \Sodium\hex2bin(get_option('leyka_stats_sipher_public_key'))
                     ) :
                     '<pre>'.print_r($this->_get_usage_stats($_REQUEST), 1).'</pre>';
+
             } else { // Gateway callback URL
 
                 // Callback URLs are: some-website.org/leyka/service/{gateway_id}/{action_name}/
                 // E.g., some-website.org/leyka/service/yandex/check_order/
+
+                if( !empty($request[1]) && stristr($request[1], '?') !== false ) { // Remove GET params from the callback
+                    $request[1] = mb_substr($request[1], 0, stripos($request[1], '?'));
+                }
 
                 // $request[0] - Gateway ID, $request[1] - service action:
                 do_action('leyka_service_call-'.$request[0], empty($request[1]) ? '' : $request[1]);
