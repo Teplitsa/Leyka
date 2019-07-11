@@ -11,13 +11,17 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         parent::__construct(array('singular' => __('Donor', 'leyka'), 'plural' => __('Donors', 'leyka'), 'ajax' => true,));
 
-        add_filter('leyka_admin_donors_list_filter', array($this, 'filter_donors'));
+        add_filter('leyka_admin_donors_list_filter', array($this, 'filter_donors'), 10, 2);
         add_action('pre_user_query', array($this, 'filter_donors_pre_user_query'));
 
     }
 
     /** WP_User & user meta fields filtering */
-    public function filter_donors(array $donors_params) {
+    public function filter_donors(array $donors_params, $filter_type = '') {
+
+        if($filter_type !== 'get_donors') {
+            return false;
+        }
 
         $donors_params['meta_query'] = array();
         if( !empty($_REQUEST['donor-type']) ) {
@@ -41,15 +45,31 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
             $gateways_meta_query = array('relation' => 'OR',);
             
-            foreach($_REQUEST['gateways'] as $gateway_id) {
+            foreach($_REQUEST['gateways'] as $pm_full_id) {
                 $gateways_meta_query[] = array(
                     'key' => 'leyka_donor_gateways',
-                    'value' => esc_sql($gateway_id),
+                    'value' => esc_sql($pm_full_id),
                     'compare' => 'LIKE',
                 );
             }
 
             $donors_params['meta_query'][] = $gateways_meta_query;
+
+        }
+
+        if( !empty($_REQUEST['campaigns']) && !empty($_REQUEST['campaigns'][0]) ) {
+
+            $campaigns_meta_query = array('relation' => 'OR',);
+
+            foreach($_REQUEST['campaigns'] as $campaign_title) {
+                $campaigns_meta_query[] = array(
+                    'key' => 'leyka_donor_campaigns',
+                    'value' => esc_sql($campaign_title),
+                    'compare' => 'LIKE',
+                );
+            }
+
+            $donors_params['meta_query'][] = $campaigns_meta_query;
 
         }
 

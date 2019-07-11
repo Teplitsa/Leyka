@@ -559,7 +559,7 @@ class Leyka_Donor {
             case 'campaigns_news':
             case 'news_subscriptions':
             case 'campaigns_news_subscriptions':
-                if( !is_array($value) || $value == $this->campaigns ) {
+                if( !is_array($value) || $value == $this->campaigns_news_subscriptions ) {
                     return true;
                 }
                 $this->_meta['campaigns_news_subscriptions'] = $value;
@@ -567,7 +567,7 @@ class Leyka_Donor {
                 break;
 
             case 'gateways':
-                if( !is_array($value) || $value == $this->campaigns ) {
+                if( !is_array($value) || $value == $this->gateways ) {
                     return true;
                 }
                 $this->_meta['gateways'] = $value;

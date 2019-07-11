@@ -770,19 +770,18 @@ function leyka_gateways_autocomplete() {
 add_action('wp_ajax_leyka_gateways_autocomplete', 'leyka_gateways_autocomplete');
 
 function leyka_campaigns_autocomplete() {
+
     $filter = isset($_GET['term']) ? sanitize_text_field($_GET['term']) : '';
-    
     $res = array();
-    
+
     if($filter) {
-        $campaigns = leyka_get_campaigns_list(array('s' => $filter));
-        
-        foreach($campaigns as $campaign_id => $campaign_title) {
+        foreach(leyka_get_campaigns_list(array('s' => $filter)) as $campaign_id => $campaign_title) {
             $res[] = array('label' => $campaign_title, 'value' => $campaign_id);
         }
     }
     
     die(json_encode($res));
+
 }
 add_action('wp_ajax_leyka_campaigns_autocomplete', 'leyka_campaigns_autocomplete');
 
