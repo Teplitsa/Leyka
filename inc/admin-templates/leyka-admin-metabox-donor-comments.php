@@ -31,14 +31,9 @@ try {
 <!--    --><?php //$donor->add_comment('Тест коммента к донору! '.rand(0, 100000));?>
 </div>
 
-<?php if( !$donor->comments_exist() ) {?>
-<div class="no-comments"><?php _e('No comments about this donor yet', 'leyka');?></div>
-    <?php return;
-}
+<div class="no-comments" style="<?php if($donor->comments_exist()){?>display: none;<?php }?>"><?php _e('No comments about this donor yet', 'leyka');?></div>
 
-//echo '<pre>'.print_r($donor->get_comments(), 1).'</pre>';?>
-
-<table class="donor-comments donor-info-table">
+<table class="donor-comments donor-info-table" style="<?php if(!$donor->comments_exist()){?>display: none;<?php }?>">
     <thead>
         <tr>
             <th><?php _e('Date', 'leyka');?></th>

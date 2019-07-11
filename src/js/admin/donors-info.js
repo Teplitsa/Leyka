@@ -114,6 +114,19 @@ jQuery(document).ready(function($){
 });
 
 // comments
+function leykaSetCommentsListVisibilityState() {
+    let $ = jQuery;
+
+    if($('#leyka_donor_admin_comments table tbody tr').length > 1) {
+        $('table.donor-comments').show();
+        $('.no-comments').hide();
+    }
+    else {
+        $('table.donor-comments').hide();
+        $('.no-comments').show();
+    }
+}
+
 jQuery(document).ready(function($){
     $('.add-donor-comment-link').click(function(e){
         e.preventDefault();
@@ -156,6 +169,7 @@ jQuery(document).ready(function($){
                 if(typeof json.status !== 'undefined') {
                     if(json.status === 'ok') {
                         $row.remove();
+                        leykaSetCommentsListVisibilityState();
                     }
                     else {
                         if(json.message) {
@@ -225,6 +239,7 @@ jQuery(document).ready(function($){
                         $table.append($tr);
 
                         leykaBindEditableStrEvents($tr);
+                        leykaSetCommentsListVisibilityState();
                     }
                     else {
                         if(json.message) {

@@ -1,7 +1,9 @@
 if(jQuery.ui.autocomplete) {
 	jQuery.widget("ui.autocomplete", jQuery.ui.autocomplete, {
 	    options : jQuery.extend({}, this.options, {
-	        multiselect: false
+	        multiselect: false,
+	        search_on_focus: false,
+	        leyka_select_callback: false
 	    }),
 	    _create: function(){
 	        this._super();
@@ -13,12 +15,23 @@ if(jQuery.ui.autocomplete) {
 	            console.log('multiselect true');
 
 	            self.selectedItems = {};           
+
+	            self.placeholder = jQuery("<div></div>")
+	            	.addClass('placeholder')
+	            	.text(self.element.prop('placeholder'));
+
+            	self.element.prop('placeholder', '')
+
 	            self.multiselect = jQuery("<div></div>")
 	                .addClass("ui-autocomplete-multiselect ui-state-default ui-widget")
 	                .css("width", self.element.width())
 	                .insertBefore(self.element)
+	                .append(self.placeholder)
 	                .append(self.element)
 	                .bind("click.autocomplete", function(){
+	                	self.placeholder.hide();
+	                    self.element.css('display', 'block');
+	                	self.element.show();
 	                    self.element.focus();
 	                });
 	            
@@ -37,9 +50,22 @@ if(jQuery.ui.autocomplete) {
 	                        prev.remove();
 	                    }
 	                },
-	                "focus.autocomplete blur.autocomplete": function(){
-	                    self.multiselect.toggleClass("ui-state-active");
+	                "focus.autocomplete": function(){
+	                	if(o.search_on_focus && this.value === "") {
+	                		self.search("");
+	                	}
+	                	else {
+							self.multiselect.addClass("ui-state-active");
+	                	}
 	                },
+	                "blur.autocomplete": function(){
+	                	self.multiselect.removeClass("ui-state-active");
+	                	if(self.multiselect.find('.ui-autocomplete-multiselect-item').length == 0) {
+	                    	self.placeholder.show();
+	                    	self.element.hide();
+	                    }
+	                },
+
 	                "keypress.autocomplete change.autocomplete focus.autocomplete blur.autocomplete": autoSize
 	            }).trigger("change");
 
@@ -47,19 +73,25 @@ if(jQuery.ui.autocomplete) {
 	                jQuery("<div></div>")
 	                    .addClass("ui-autocomplete-multiselect-item")
 	                    .text(ui.item.label)
+	                    .data('value', ui.item.value)
 	                    .append(
 	                        jQuery("<span></span>")
 	                            .addClass("ui-icon ui-icon-close")
 	                            .click(function(){
 	                                var item = jQuery(this).parent();
-	                                delete self.selectedItems[item.text()];
+	                                //delete self.selectedItems[item.text()];
+	                                delete self.selectedItems[item.data('value')];
 	                                item.remove();
+
+	                                o.leyka_select_callback(self.selectedItems);
 	                            })
 	                    )
 	                    .insertBefore(self.element);
 	                
-	                self.selectedItems[ui.item.label] = ui.item;
+	                //self.selectedItems[ui.item.label] = ui.item;
+	                self.selectedItems[ui.item.value] = ui.item;
 	                self._value("");
+	                o.leyka_select_callback(self.selectedItems);
 	                return false;
 	            }
 

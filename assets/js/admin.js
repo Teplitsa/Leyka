@@ -640,6 +640,19 @@ jQuery(document).ready(function($){
 });
 
 // comments
+function leykaSetCommentsListVisibilityState() {
+    let $ = jQuery;
+
+    if($('#leyka_donor_admin_comments table tbody tr').length > 1) {
+        $('table.donor-comments').show();
+        $('.no-comments').hide();
+    }
+    else {
+        $('table.donor-comments').hide();
+        $('.no-comments').show();
+    }
+}
+
 jQuery(document).ready(function($){
     $('.add-donor-comment-link').click(function(e){
         e.preventDefault();
@@ -682,6 +695,7 @@ jQuery(document).ready(function($){
                 if(typeof json.status !== 'undefined') {
                     if(json.status === 'ok') {
                         $row.remove();
+                        leykaSetCommentsListVisibilityState();
                     }
                     else {
                         if(json.message) {
@@ -751,6 +765,7 @@ jQuery(document).ready(function($){
                         $table.append($tr);
 
                         leykaBindEditableStrEvents($tr);
+                        leykaSetCommentsListVisibilityState();
                     }
                     else {
                         if(json.message) {
@@ -991,27 +1006,85 @@ jQuery(document).ready(function($){
 		}		
 	});
 
-	$('input[name=first-donation-date]').datepicker();
-	$('input[name=last-donation-date]').datepicker();
+	$('input[name=first-donation-date]').datepicker({
+		range:'period'
+	});
 
-	//$('select[name="campaigns[]"]').chosen();
-	//$('select[name=donation-status]').chosen();
-	//$('select[name="donors-tags[]"]').chosen();
-	//$('select[name="gateways[]"]').chosen();
+	$('input[name=last-donation-date]').datepicker({
+		range:'period'
+	});
 
-	// $("input.leyka-campaigns-selector").autocomplete({
-	// 	source: leyka.ajaxurl + '?action=leyka_donors_autocomplete',
-	// 	search  : function(){ $(this).addClass('working'); },
-	// 	open    : function(){ 
-	// 		$(this).removeClass('working');
-	// 	},
-	// 	minLength: 2,
-	// 	multiselect: true,
-	// 	select: function( event, ui ) {
-	// 		console.log( "Selected: " + ui.item.label + " ID: " + ui.item.value );
-	// 	}		
-	// });	
+    $("input.leyka-campaigns-selector").autocomplete({
+        source: leyka.ajaxurl + '?action=leyka_campaigns_autocomplete',
+        multiselect: true,
+        minLength: 2,
+		leyka_select_callback: function( selectedItems ) {
+			var $select = $('#leyka-campaigns-select');
+			$select.html('');
+			for(var val in selectedItems) {
+				var $option = $('<option></option>')
+					.val(val)
+					.prop('selected', true);
+				$select.append($option);
+			}
+		}        
+    });
 
+    $("input.leyka-gateways-selector").autocomplete({
+        source: leyka.ajaxurl + '?action=leyka_gateways_autocomplete',
+        multiselect: true,
+        search_on_focus: true,
+        minLength: 0,
+		leyka_select_callback: function( selectedItems ) {
+			var $select = $('#leyka-gateways-select');
+			$select.html('');
+			for(var val in selectedItems) {
+				var $option = $('<option></option>')
+					.val(val)
+					.prop('selected', true);
+				$select.append($option);
+			}
+		}        
+    });
+
+    $("input.leyka-donors-tags-selector").autocomplete({
+        source: leyka.ajaxurl + '?action=leyka_donors_tags_autocomplete',
+        multiselect: true,
+        minLength: 2,
+		leyka_select_callback: function( selectedItems ) {
+			var $select = $('#leyka-donors-tags-select');
+			$select.html('');
+			for(var val in selectedItems) {
+				var $option = $('<option></option>')
+					.val(val)
+					.prop('selected', true);
+				$select.append($option);
+			}
+		}        
+    });
+
+	var selectorValues = [];
+	$('#leyka-payment-status-select').find('option').each(function(){
+		selectorValues.push({label: $.trim($(this).text()), value: $(this).val()});
+	});
+
+	$('input.leyka-payment-status-selector').autocomplete({
+        source: selectorValues,
+        multiselect: true,
+        search_on_focus: true,
+        minLength: 0,
+		leyka_select_callback: function( selectedItems ) {
+			$('#leyka-payment-status-select').find('option').each(function(){
+				$(this).prop('selected', selectedItems[$(this).val()] !== undefined);
+			});
+		}        
+    });
+
+	// $('.reset-filters').click(function(e){
+	// 	e.preventDefault();
+	// 	var $form = $(this).closest('form');
+	// 	$form[0].reset();
+	// });
 });
 
 /** Feedback page */
@@ -1480,7 +1553,9 @@ jQuery(document).ready(function($){
 if(jQuery.ui.autocomplete) {
 	jQuery.widget("ui.autocomplete", jQuery.ui.autocomplete, {
 	    options : jQuery.extend({}, this.options, {
-	        multiselect: false
+	        multiselect: false,
+	        search_on_focus: false,
+	        leyka_select_callback: false
 	    }),
 	    _create: function(){
 	        this._super();
@@ -1492,12 +1567,23 @@ if(jQuery.ui.autocomplete) {
 	            console.log('multiselect true');
 
 	            self.selectedItems = {};           
+
+	            self.placeholder = jQuery("<div></div>")
+	            	.addClass('placeholder')
+	            	.text(self.element.prop('placeholder'));
+
+            	self.element.prop('placeholder', '')
+
 	            self.multiselect = jQuery("<div></div>")
 	                .addClass("ui-autocomplete-multiselect ui-state-default ui-widget")
 	                .css("width", self.element.width())
 	                .insertBefore(self.element)
+	                .append(self.placeholder)
 	                .append(self.element)
 	                .bind("click.autocomplete", function(){
+	                	self.placeholder.hide();
+	                    self.element.css('display', 'block');
+	                	self.element.show();
 	                    self.element.focus();
 	                });
 	            
@@ -1516,9 +1602,22 @@ if(jQuery.ui.autocomplete) {
 	                        prev.remove();
 	                    }
 	                },
-	                "focus.autocomplete blur.autocomplete": function(){
-	                    self.multiselect.toggleClass("ui-state-active");
+	                "focus.autocomplete": function(){
+	                	if(o.search_on_focus && this.value === "") {
+	                		self.search("");
+	                	}
+	                	else {
+							self.multiselect.addClass("ui-state-active");
+	                	}
 	                },
+	                "blur.autocomplete": function(){
+	                	self.multiselect.removeClass("ui-state-active");
+	                	if(self.multiselect.find('.ui-autocomplete-multiselect-item').length == 0) {
+	                    	self.placeholder.show();
+	                    	self.element.hide();
+	                    }
+	                },
+
 	                "keypress.autocomplete change.autocomplete focus.autocomplete blur.autocomplete": autoSize
 	            }).trigger("change");
 
@@ -1526,19 +1625,25 @@ if(jQuery.ui.autocomplete) {
 	                jQuery("<div></div>")
 	                    .addClass("ui-autocomplete-multiselect-item")
 	                    .text(ui.item.label)
+	                    .data('value', ui.item.value)
 	                    .append(
 	                        jQuery("<span></span>")
 	                            .addClass("ui-icon ui-icon-close")
 	                            .click(function(){
 	                                var item = jQuery(this).parent();
-	                                delete self.selectedItems[item.text()];
+	                                //delete self.selectedItems[item.text()];
+	                                delete self.selectedItems[item.data('value')];
 	                                item.remove();
+
+	                                o.leyka_select_callback(self.selectedItems);
 	                            })
 	                    )
 	                    .insertBefore(self.element);
 	                
-	                self.selectedItems[ui.item.label] = ui.item;
+	                //self.selectedItems[ui.item.label] = ui.item;
+	                self.selectedItems[ui.item.value] = ui.item;
 	                self._value("");
+	                o.leyka_select_callback(self.selectedItems);
 	                return false;
 	            }
 
@@ -1554,6 +1659,53 @@ if(jQuery.ui.autocomplete) {
 	});	
 }
 
+/* jQuery ui-datepicker extension */
+
+/**
+ *
+ * https://gist.github.com/Artemeey/8bacd37964a8069a2eeee8c9b0bd2e44/
+ *
+ * Version: 1.0 (15.06.2016)
+ * Requires: jQuery v1.8+
+ * Requires: jQuery-UI v1.10+
+ *
+ * Copyright (c) 2016 Artemeey
+ * Under MIT and GPL licenses:
+ *  http://www.opensource.org/licenses/mit-license.php
+ *  http://www.gnu.org/licenses/gpl.html
+ *
+ * sample:
+ * $('.datepicker').datepicker({
+		range:'period', // 'period' or 'multiple'
+		onSelect:function(dateText, inst, extensionRange){
+			// range - new argument!
+			switch(inst.settings.range){
+				case 'period':
+					console.log(extensionRange.startDateText);
+					console.log(extensionRange.endDateText);
+					console.log(extensionRange.startDate);
+					console.log(extensionRange.endDate);
+					break;
+				case 'multiple':
+					console.log(extensionRange.dates); // object, width UTC-TIME keys
+					console.log(extensionRange.datesText); // object, width UTC-TIME keys
+					break;
+			}
+		}
+	});
+ *
+ * extension styles:
+ * .selected
+ * .selected-start
+ * .selected-end
+ * .first-of-month
+ * .last-of-month
+ *
+ */
+if(jQuery.datepicker) {
+	let $ = jQuery;
+ 	$.datepicker._get_original=$.datepicker._get,$.datepicker._get=function(t,e){var i=$.datepicker._get_original(t,e),a=t.settings.range;if(!a)return i;var s=this;switch(a){case"period":case"multiple":var n=$(this.dpDiv).data("datepickerExtensionRange");switch(n||(n=new _datepickerExtension,$(this.dpDiv).data("datepickerExtensionRange",n)),n.range=a,n.range_multiple_max=t.settings.range_multiple_max||0,e){case"onSelect":var r=i;r||(r=function(){}),i=function(t,e){n.onSelect(t,e),r(t,e,n),s._datepickerShowing=!1,setTimeout(function(){s._updateDatepicker(e),s._datepickerShowing=!0}),n.setClassActive(e)};break;case"beforeShowDay":var r=i;r||(r=function(){return[!0,""]}),i=function(t){var e=r(t);return e=n.fillDay(t,e)};break;case"beforeShow":var r=i;r||(r=function(){}),i=function(t,e){r(t,e),n.setClassActive(e)};break;case"onChangeMonthYear":var r=i;r||(r=function(){}),i=function(t,e,i){r(t,e,i),n.setClassActive(i)}}}return i},$.datepicker._setDate_original=$.datepicker._setDate,$.datepicker._setDate=function(t,e,i){var a=t.settings.range;if(!a)return $.datepicker._setDate_original(t,e,i);var s=this.dpDiv.data("datepickerExtensionRange");if(!s)return $.datepicker._setDate_original(t,e,i);switch(a){case"period":("object"!=typeof e||void 0==e.length)&&(e=[e,e]),s.step=0,$.datepicker._setDate_original(t,e[0],i),s.startDate=this._getDate(t),s.startDateText=this._formatDate(t),$.datepicker._setDate_original(t,e[1],i),s.endDate=this._getDate(t),s.endDateText=this._formatDate(t),s.setClassActive(t);break;case"multiple":("object"!=typeof e||void 0==e.length)&&(e=[e]),s.dates=[],s.datesText=[];var n=this;$.map(e,function(e){$.datepicker._setDate_original(t,e,i),s.dates.push(n._getDate(t)),s.datesText.push(n._formatDate(t))}),s.setClassActive(t)}};var _datepickerExtension=function(){this.range=!1,this.range_multiple_max=0,this.step=0,this.dates=[],this.datesText=[],this.startDate=null,this.endDate=null,this.startDateText="",this.endDateText="",this.onSelect=function(t,e){switch(this.range){case"period":return this.onSelectPeriod(t,e);case"multiple":return this.onSelectMultiple(t,e)}},this.onSelectPeriod=function(t,e){this.step++,this.step%=2,this.step?(this.startDate=this.getSelectedDate(e),this.endDate=this.startDate,this.startDateText=t,this.endDateText=this.startDateText):(this.endDate=this.getSelectedDate(e),this.endDateText=t,this.startDate.getTime()>this.endDate.getTime()&&(this.endDate=this.startDate,this.startDate=this.getSelectedDate(e),this.endDateText=this.startDateText,this.startDateText=t))},this.onSelectMultiple=function(t,e){var i=this.getSelectedDate(e),a=-1;$.map(this.dates,function(t,e){t.getTime()==i.getTime()&&(a=e)});var s=$.inArray(t,this.datesText);-1!=a?this.dates.splice(a,1):this.dates.push(i),-1!=s?this.datesText.splice(s,1):this.datesText.push(t),this.range_multiple_max&&this.dates.length>this.range_multiple_max&&(this.dates.splice(0,1),this.datesText.splice(0,1))},this.fillDay=function(t,e){var i=e[1];switch(1==t.getDate()&&(i+=" first-of-month"),t.getDate()==new Date(t.getFullYear(),t.getMonth()+1,0).getDate()&&(i+=" last-of-month"),e[1]=i.trim(),this.range){case"period":return this.fillDayPeriod(t,e);case"multiple":return this.fillDayMultiple(t,e)}},this.fillDayPeriod=function(t,e){if(!this.startDate||!this.endDate)return e;var i=e[1];return t>=this.startDate&&t<=this.endDate&&(i+=" selected"),t.getTime()==this.startDate.getTime()&&(i+=" selected-start"),t.getTime()==this.endDate.getTime()&&(i+=" selected-end"),e[1]=i.trim(),e},this.fillDayMultiple=function(t,e){var i=e[1],a=!1;return $.map(this.dates,function(e){e.getTime()==t.getTime()&&(a=!0)}),a&&(i+=" selected selected-start selected-end"),e[1]=i.trim(),e},this.getSelectedDate=function(t){return new Date(t.selectedYear,t.selectedMonth,t.selectedDay)},this.setClassActive=function(t){var e=this;setTimeout(function(){$("td.selected > *",t.dpDiv).addClass("ui-state-active"),"multiple"==e.range&&$("td:not(.selected)",t.dpDiv).removeClass("ui-datepicker-current-day").children().removeClass("ui-state-active")})}};
+}
 /*!
  * jquery.inputmask.bundle.js
  * https://github.com/RobinHerbots/Inputmask

@@ -40,7 +40,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         if( !empty($_REQUEST['gateways']) ) {
 
             $gateways_meta_query = array('relation' => 'OR',);
-
+            
             foreach($_REQUEST['gateways'] as $gateway_id) {
                 $gateways_meta_query[] = array(
                     'key' => 'leyka_donor_gateways',

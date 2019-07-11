@@ -736,8 +736,9 @@ add_action('wp_ajax_leyka_usage_stats_y', 'leyka_usage_stats_y');
 function leyka_donors_autocomplete() {
     $filter = isset($_GET['term']) ? sanitize_text_field($_GET['term']) : '';
     
+    $res = array();
+    
     if($filter) {
-        $res = array();
         $donors = get_users(array(
             'role__in' => array(Leyka_Donor::DONOR_USER_ROLE,),
             'number' => -1,
@@ -753,6 +754,57 @@ function leyka_donors_autocomplete() {
     die(json_encode($res));
 }
 add_action('wp_ajax_leyka_donors_autocomplete', 'leyka_donors_autocomplete');
+
+function leyka_gateways_autocomplete() {
+    $filter = isset($_GET['term']) ? sanitize_text_field($_GET['term']) : '';
+    
+    $res = array();
+
+    $pm_list = leyka_get_pm_list();
+    foreach($pm_list as $pm) {
+        $res[] = array('label' => sprintf("%s (%s)", $pm->title, $pm->gateway->title), 'value' => $pm->full_id);
+    }
+    
+    die(json_encode($res));
+}
+add_action('wp_ajax_leyka_gateways_autocomplete', 'leyka_gateways_autocomplete');
+
+function leyka_campaigns_autocomplete() {
+    $filter = isset($_GET['term']) ? sanitize_text_field($_GET['term']) : '';
+    
+    $res = array();
+    
+    if($filter) {
+        $campaigns = leyka_get_campaigns_list(array('s' => $filter));
+        
+        foreach($campaigns as $campaign_id => $campaign_title) {
+            $res[] = array('label' => $campaign_title, 'value' => $campaign_id);
+        }
+    }
+    
+    die(json_encode($res));
+}
+add_action('wp_ajax_leyka_campaigns_autocomplete', 'leyka_campaigns_autocomplete');
+
+function leyka_donors_tags_autocomplete() {
+    $filter = isset($_GET['term']) ? sanitize_text_field($_GET['term']) : '';
+    
+    $res = array();
+    
+    if($filter) {
+        $donors_tags = get_terms(
+            Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
+            array('hide_empty' => false, 'orderby' => 'name', 'order' => 'ASC',)
+        );
+        
+        foreach($donors_tags as $tag) {
+            $res[] = array('label' => $tag->name, 'value' => $tag->term_id);
+        }
+    }
+    
+    die(json_encode($res));
+}
+add_action('wp_ajax_leyka_donors_tags_autocomplete', 'leyka_donors_tags_autocomplete');
 
 function leyka_add_donor_comment() {
     

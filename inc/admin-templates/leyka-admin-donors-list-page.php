@@ -32,65 +32,47 @@
     
                         <input type="text" name="donor-name-email" class="leyka-donor-name-email-selector leyka-selector" value="<?php echo isset($_GET['donor-name-email']) ? esc_attr($_GET['donor-name-email']) : '';?>" placeholder="<?php _e("Donor's name or email", 'leyka');?>">
     
-                        <input type="text" name="first-donation-date" class="leyka-first-donation-date-selector leyka-selector" value="<?php echo isset($_GET['first-donation-date']) ? esc_attr($_GET['first-donation-date']) : '';?>" placeholder="<?php _e('First payment date', 'leyka');?>">
+                        <input type="text" name="first-donation-date" autocomplete="off" class="leyka-first-donation-date-selector leyka-selector" value="<?php echo isset($_GET['first-donation-date']) ? esc_attr($_GET['first-donation-date']) : '';?>" placeholder="<?php _e('First payment date', 'leyka');?>">
     
                         <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector" value="" placeholder="<?php _e('Campaigns list', 'leyka');?>">
                         
-                        <select name="campaigns[]" multiple="multiple">
+                        <select id="leyka-campaigns-select" name="campaigns[]" multiple="multiple">
                             <option value="" selected="selected"><?php _e('Campaigns list', 'leyka');?></option>
-                            <?php /** @todo Use ajax query to get values */?>
                         </select>
                     
                     </div>
                     
                     <div class="filters-row">
 
-                        <input type="text" name="last-donation-date" class="leyka-last-donation-date-selector leyka-selector" value="<?php echo isset($_GET['last-donation-date']) ? esc_attr($_GET['last-donation-date']) : '';?>" placeholder="<?php _e('Last payment date', 'leyka');?>">
+                        <input type="text" name="last-donation-date" autocomplete="off" class="leyka-last-donation-date-selector leyka-selector" value="<?php echo isset($_GET['last-donation-date']) ? esc_attr($_GET['last-donation-date']) : '';?>" placeholder="<?php _e('Last payment date', 'leyka');?>">
     					
-    					<input type="text" name="leyka-payment-status-selector leyka-selector" value="" placeholder="<?php _e('Payment status', 'leyka');?>">
-
-                        <input type="text" name="donors-tags-input" class="leyka-donors-tags-selector leyka-selector" value="" placeholder="<?php _e('Donors tags', 'leyka');?>">
+    					<input type="text" name="leyka-payment-status" class="leyka-payment-status-selector leyka-selector" value="" placeholder="<?php _e('Payment status', 'leyka');?>">  
+    					
+                        <?php $filter_value = isset($_GET['payment-status']) ? (array)$_GET['payment-status'] : array();?>
+                        <select id="leyka-payment-status-select" name="payment-status[]" multiple="multiple">
                         
-                        <?php $filter_value = isset($_GET['donors-tags']) ? (array)$_GET['donors-tags'] : array();?>
-                        <select name="donors-tags[]" multiple="multiple">
-    
-                            <option value="" <?php echo !$filter_value ? 'selected="selected"' : '';?>>
-                                <?php _e('Donors tags', 'leyka');?>
-                            </option>
-    
-                            <?php $donors_tags = get_terms(
-                                Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
-                                array('hide_empty' => false, 'orderby' => 'name', 'order' => 'ASC',)
-                            );
-    
-                            foreach($donors_tags as $tag) {?>
-                                <option value="<?php echo $tag->term_id;?>" <?php echo is_array($filter_value) && in_array($tag->term_id, $filter_value) ? 'selected="selected"' : '';?>>
-                                    <?php echo $tag->name;?>
+                            <?php $payment_status_list = leyka()->get_donation_statuses();
+                            
+                            foreach($payment_status_list as $status => $status_label) {?>
+                                <option value="<?php echo $status;?>" <?php echo is_array($filter_value) && in_array($status, $filter_value) ? 'selected="selected"' : '';?>>
+                                    <?php echo $status_label;?>
                                 </option>
                             <?php }?>
     
                         </select>
+
+                        <input type="text" name="donors-tags-input" class="leyka-donors-tags-selector leyka-selector" value="" placeholder="<?php _e('Donors tags', 'leyka');?>">
+                        
+                        <?php $filter_value = isset($_GET['donors-tags']) ? (array)$_GET['donors-tags'] : array();?>
+                        <select id="leyka-donors-tags-select" name="donors-tags[]" multiple="multiple">
+                        	<option value="" selected="selected"><?php _e('Donors tags', 'leyka');?></option>
+                        </select>
     
-                        <input type="text" name="leyka-gateways-selector leyka-selector" value="" placeholder="<?php _e('Payment gateway', 'leyka');?>">
+                        <input type="text" name="leyka-gateways" class="leyka-gateways-selector leyka-selector" value="" placeholder="<?php _e('Payment gateway', 'leyka');?>">
                         
                         <?php $filter_value = isset($_GET['gateways']) ? (array)$_GET['gateways'] : array();?>
-                        <select name="gateways[]" multiple="multiple">
-    
-                            <option value="" <?php echo !$filter_value ? 'selected="selected"' : '';?>>
-                                <?php _e('Payment gateway', 'leyka');?>
-                            </option>
-    
-                            <?php $gateways = leyka_get_gateways();
-                            usort($gateways, function($gateway_first, $gateway_second){
-                                return strcmp($gateway_first->name, $gateway_second->name);
-                            });
-    
-                            foreach($gateways as $gateway) {?>
-                                <option value="<?php echo $gateway->id;?>" <?php echo is_array($filter_value) && in_array($gateway->id, $filter_value) ? 'selected="selected"' : '';?>>
-                                    <?php echo $gateway->name;?>
-                                </option>
-                            <?php }?>
-    
+                        <select id="leyka-gateways-select" name="gateways[]" multiple="multiple">
+                        	<option value="" selected="selected"><?php _e('Payment gateway', 'leyka');?></option>    
                         </select>
                         
                     </div>
@@ -99,14 +81,17 @@
 
                 <div class="col-2">
                     <input type="submit" class="button" value="<?php _e('Filter the data', 'leyka');?>">
-                    <input type="reset" class="reset-filters" value="<?php _e('Reset the filter', 'leyka');?>">
+                    <!--
+                    <input type="reset" class="reset-filters" value="<?php _e('Reset the filter', 'leyka');?>"> 
+                     -->
+                     <a href="<?php echo admin_url('/admin.php?page=leyka_donors');?>" class="reset-filters"><?php _e('Reset the filter', 'leyka');?></a>
                 </div>
 
             </form>
 
             <div class="donors-list-export"><button><?php _e('Export the list in CSV', 'leyka');?></button></div>
 
-            <div id="post-body-content">
+            <div id="post-body-content" class="<?php if($this->_donors_list_table->record_count() === 0) {?>empty-donors-list<?php }?>">
                 <div class="meta-box-sortables ui-sortable">
                     <form method="post">
                         <?php $this->_donors_list_table->prepare_items();

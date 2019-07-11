@@ -18,25 +18,83 @@ jQuery(document).ready(function($){
 		}		
 	});
 
-	$('input[name=first-donation-date]').datepicker();
-	$('input[name=last-donation-date]').datepicker();
+	$('input[name=first-donation-date]').datepicker({
+		range:'period'
+	});
 
-	//$('select[name="campaigns[]"]').chosen();
-	//$('select[name=donation-status]').chosen();
-	//$('select[name="donors-tags[]"]').chosen();
-	//$('select[name="gateways[]"]').chosen();
+	$('input[name=last-donation-date]').datepicker({
+		range:'period'
+	});
 
-	// $("input.leyka-campaigns-selector").autocomplete({
-	// 	source: leyka.ajaxurl + '?action=leyka_donors_autocomplete',
-	// 	search  : function(){ $(this).addClass('working'); },
-	// 	open    : function(){ 
-	// 		$(this).removeClass('working');
-	// 	},
-	// 	minLength: 2,
-	// 	multiselect: true,
-	// 	select: function( event, ui ) {
-	// 		console.log( "Selected: " + ui.item.label + " ID: " + ui.item.value );
-	// 	}		
-	// });	
+    $("input.leyka-campaigns-selector").autocomplete({
+        source: leyka.ajaxurl + '?action=leyka_campaigns_autocomplete',
+        multiselect: true,
+        minLength: 2,
+		leyka_select_callback: function( selectedItems ) {
+			var $select = $('#leyka-campaigns-select');
+			$select.html('');
+			for(var val in selectedItems) {
+				var $option = $('<option></option>')
+					.val(val)
+					.prop('selected', true);
+				$select.append($option);
+			}
+		}        
+    });
 
+    $("input.leyka-gateways-selector").autocomplete({
+        source: leyka.ajaxurl + '?action=leyka_gateways_autocomplete',
+        multiselect: true,
+        search_on_focus: true,
+        minLength: 0,
+		leyka_select_callback: function( selectedItems ) {
+			var $select = $('#leyka-gateways-select');
+			$select.html('');
+			for(var val in selectedItems) {
+				var $option = $('<option></option>')
+					.val(val)
+					.prop('selected', true);
+				$select.append($option);
+			}
+		}        
+    });
+
+    $("input.leyka-donors-tags-selector").autocomplete({
+        source: leyka.ajaxurl + '?action=leyka_donors_tags_autocomplete',
+        multiselect: true,
+        minLength: 2,
+		leyka_select_callback: function( selectedItems ) {
+			var $select = $('#leyka-donors-tags-select');
+			$select.html('');
+			for(var val in selectedItems) {
+				var $option = $('<option></option>')
+					.val(val)
+					.prop('selected', true);
+				$select.append($option);
+			}
+		}        
+    });
+
+	var selectorValues = [];
+	$('#leyka-payment-status-select').find('option').each(function(){
+		selectorValues.push({label: $.trim($(this).text()), value: $(this).val()});
+	});
+
+	$('input.leyka-payment-status-selector').autocomplete({
+        source: selectorValues,
+        multiselect: true,
+        search_on_focus: true,
+        minLength: 0,
+		leyka_select_callback: function( selectedItems ) {
+			$('#leyka-payment-status-select').find('option').each(function(){
+				$(this).prop('selected', selectedItems[$(this).val()] !== undefined);
+			});
+		}        
+    });
+
+	// $('.reset-filters').click(function(e){
+	// 	e.preventDefault();
+	// 	var $form = $(this).closest('form');
+	// 	$form[0].reset();
+	// });
 });

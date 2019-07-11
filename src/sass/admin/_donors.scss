@@ -61,6 +61,16 @@
 	}
 }
 
+.leyka-admin-donors-list {
+	.empty-donors-list {
+		margin-top: $leyka-base;
+
+		.tablenav {
+			display: none;
+		}
+	}
+}
+
 // filters list
 .donors-list-filters {
     box-sizing: border-box;
@@ -69,11 +79,12 @@
     border-bottom: 1px solid $leyka-donors-color-filters-border;
 
     .filters-row {
+    	display: flex;
+    	align-items: flex-start;
     }
 
     .col-1 {
-    	width: 75%;
-    	min-width: 790px;
+    	width: 790px;
     }
 
     .col-2 {
@@ -117,7 +128,7 @@
     }
     
     // selectmenu
-    select[name=donor-type] + .ui-selectmenu-button {
+    .ui-selectmenu-button {
     	@include leyka-donors-filter-selector;
     	background-image: none;
     	border-radius: 0;
@@ -128,7 +139,6 @@
 	    height: 32px !important;
 	    margin-right: $leyka-base !important;
 	    margin-bottom: $leyka-base !important;
-	    margin-top: -16px !important;
     	display: inline-block;
     	color: $leyka-admin-color-text !important;
     	overflow: unset;
@@ -153,64 +163,81 @@
     }
 
     // autocomplete
-	.wrapper {
-	    margin: 20px auto;
-	    width: 400px;
-	}
-	#myAutocomplete {
-	    width: 100%;
-	}
+	.ui-autocomplete-multiselect {
+		@include leyka-donors-filter-selector();
+		display: inline-block;
+		width: 176px !important;
+		height: auto;
+		min-height: 32px;
 
-	.ui-autocomplete-multiselect.ui-state-default {
-	    display: block;
-	    background: #fff;
-	    border: 1px solid #ccc;
-	    padding: 3px 3px;
-	    padding-bottom: 0px;
-	    overflow: hidden;
-	    cursor: text;
-	}
+		.placeholder {
+			margin-top: 6px;
+			margin-left: 5px;
+		}
 
-	.ui-autocomplete-multiselect .ui-autocomplete-multiselect-item .ui-icon {
-	    float: right;
-	    cursor: pointer;
-	}
+		&.ui-state-default {
+		    background: $color-white;
+		    padding: 3px 3px;
+		    padding-bottom: 0px;
+		    overflow: hidden;
+		    cursor: text;
 
-	.ui-autocomplete-multiselect .ui-autocomplete-multiselect-item {
-	    display: inline-block;
-	    border: 1px solid #ccc;
-	    border-radius: 4px;
-	    padding: 1px 3px;
-	    margin-right: 2px;
-	    margin-bottom: 3px;
-	    color: #333;
-	    background-color: #f6f6f6;
-	}
+		    input.ui-autocomplete-input {
+		    	display: none;
+		    }
+		}
 
-	.ui-autocomplete-multiselect input {
-	    display: inline-block;
-	    border: none;
-	    outline: none;
-	    height: auto;
-	    margin: 2px;
-	    overflow: visible;
-	    margin-bottom: 5px;
-	    text-align: left;
-	}
+		&.ui-state-active {
+		    outline: none;
 
-	.ui-autocomplete-multiselect.ui-state-active {
-	    outline: none;
-	    border: 1px solid #7ea4c7;
-	    -moz-box-shadow: 0 0 5px rgba(50,150,255,0.5);
-	    -webkit-box-shadow: 0 0 5px rgba(50,150,255,0.5);
-	    -khtml-box-shadow: 0 0 5px rgba(50,150,255,0.5);
-	    box-shadow: 0 0 5px rgba(50,150,255,0.5);
-	}
+			input.ui-autocomplete-input {
+				display: block !important;
+			}
 
-	.ui-autocomplete {
-	    border-top: 0;
-	    border-top-left-radius: 0;
-	    border-top-right-radius: 0;
+		    .placeholder {
+		    	display: none;
+		    }
+		}		
+
+		.ui-autocomplete-multiselect-item {
+		    display: inline-block;
+		    border: 1px solid #ccc;
+		    border-radius: 4px;
+		    padding: 1px 24px 1px 3px;
+		    margin-right: 2px;
+		    margin-bottom: 3px;
+		    color: #333;
+		    background-color: #f6f6f6;
+
+			overflow: hidden;
+			max-width: 136px;
+			width: auto;
+			text-overflow: ellipsis;
+			max-height: 36px;
+			line-height: 18px;
+			position: relative;
+
+			.ui-icon {
+			    position: absolute;
+			    right: 3px;
+			    top: 2px;
+			    cursor: pointer;
+			}
+		}
+
+		input.ui-autocomplete-input {
+		    display: block;
+		    border: none;
+		    outline: none;
+		    height: auto;
+		    margin: 2px;
+		    overflow: visible;
+		    margin-bottom: 5px;
+		    text-align: left;
+		    box-shadow: none;
+		    width: 100%;
+		}
+
 	}
 
 }
@@ -233,6 +260,34 @@
 				}
 			}
 		}
+	}
+
+	// autocomplete
+	ul.ui-autocomplete {
+	    border-top: 0;
+	    border-top-left-radius: 0;
+	    border-top-right-radius: 0;
+
+		&.ui-menu {
+			li.ui-menu-item {
+				@include leyka-donors-text();
+
+				max-width: 320px;
+				max-height: 56px;
+				padding-bottom: 8px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: normal;
+
+				&:hover {
+					background-image: none;
+					background-color: $leyka-admin-color-link;
+					color: $color-white;
+					border: 1px solid $leyka-admin-color-link;
+				}
+			}
+		}
+
 	}
 
 	// datepicker
@@ -627,6 +682,10 @@
 		.inside {
 			padding: $leyka-base $leyka-base 1.5 * $leyka-base $leyka-base;
 			margin-top: 0;
+		}
+
+		.no-comments {
+			margin-top: $leyka-base;
 		}
 
 		.add-donor-comment-link {
