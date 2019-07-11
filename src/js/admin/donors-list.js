@@ -62,7 +62,7 @@ jQuery(document).ready(function($){
     $("input.leyka-donors-tags-selector").autocomplete({
         source: leyka.ajaxurl + '?action=leyka_donors_tags_autocomplete',
         multiselect: true,
-        minLength: 2,
+        minLength: 1,
 		leyka_select_callback: function( selectedItems ) {
 			var $select = $('#leyka-donors-tags-select');
 			$select.html('');

@@ -794,7 +794,7 @@ function leyka_donors_tags_autocomplete() {
     if($filter) {
         $donors_tags = get_terms(
             Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
-            array('hide_empty' => false, 'orderby' => 'name', 'order' => 'ASC',)
+            array('hide_empty' => false, 'orderby' => 'name', 'order' => 'ASC', 'search' => $filter,)
         );
         
         foreach($donors_tags as $tag) {
