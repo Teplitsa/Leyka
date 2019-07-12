@@ -6,8 +6,7 @@ if(jQuery.ui.autocomplete) {
 	        multiselect: false,
 	        search_on_focus: false,
 	        leyka_select_callback: false,
-	        pre_selected_values: [],
-	        position: { my: "left-5px top+6px", at: "left bottom", collision: "none" }
+	        pre_selected_values: []
 	    }),
 	    _create: function(){
 	        this._super();
@@ -16,6 +15,8 @@ if(jQuery.ui.autocomplete) {
 	            o = self.options;
 
 	        if (o.multiselect) {
+	        	self.options['position'] = { my: "left-5px top+6px", at: "left bottom", collision: "none" };
+
 	            self.selectedItems = {};           
 
 	            self.placeholder = $("<div></div>")
