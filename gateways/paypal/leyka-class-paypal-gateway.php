@@ -44,30 +44,30 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         }
 
         $this->_options = array(
-            'paypal_rest_api' => array(
-                'type' => 'checkbox',
-                'default' => true,
-                'title' => __('Use the PayPal REST API', 'leyka'),
-                'comment' => __("Check if the gateway integration should use the new REST API. If haven't used PayPal to receive payments on this website earlier, you are recommended to check the box.", 'leyka'),
-                'short_format' => true,
+//            'paypal_rest_api' => array(
+//                'type' => 'checkbox',
+//                'default' => true,
+//                'title' => __('Use the PayPal REST API', 'leyka'),
+//                'comment' => __("Check if the gateway integration should use the new REST API. If haven't used PayPal to receive payments on this website earlier, you are recommended to check the box.", 'leyka'),
+//                'short_format' => true,
+//            ),
+            'paypal_api_username' => array(
+                'type' => 'text',
+                'title' => __('PayPal API username', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'your.name@yourmail.com'),
             ),
-//            'paypal_api_username' => array(
-//                'type' => 'text',
-//                'title' => __('PayPal API username', 'leyka'),
-//                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'your.name@yourmail.com'),
-//            ),
-//            'paypal_api_password' => array(
-//                'type' => 'text',
-//                'title' => __('PayPal API password', 'leyka'),
-//                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1^2@3#&84nDsOmE5h1T'),
-//                'is_password' => true,
-//            ),
-//            'paypal_api_signature' => array(
-//                'type' => 'text',
-//                'title' => __('PayPal API signature', 'leyka'),
-//                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1^2@3#&84nDsOmE5h1T'),
-//                'is_password' => true,
-//            ),
+            'paypal_api_password' => array(
+                'type' => 'text',
+                'title' => __('PayPal API password', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1^2@3#&84nDsOmE5h1T'),
+                'is_password' => true,
+            ),
+            'paypal_api_signature' => array(
+                'type' => 'text',
+                'title' => __('PayPal API signature', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1^2@3#&84nDsOmE5h1T'),
+                'is_password' => true,
+            ),
             'paypal_client_id' => array(
 	            'type' => 'text',
 	            'title' => __('PayPal Client ID', 'leyka'),
@@ -209,9 +209,13 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
         $donation = new Leyka_Donation($donation_id);
         $campaign_post = get_post($donation->campaign_id);
-        $payment_description = $donation->payment_title." (№ $donation_id)";
 
-        if(leyka_options()->opt('paypal_rest_api')) {
+        $payment_description = $donation->payment_title." (№ $donation_id)";
+        if(mb_strlen($payment_description) > 127) { // 127 chars length is a PayPal restriction
+            $payment_description = sprintf(__('Donation № %d', 'leyka'), $donation_id);
+        }
+
+        if( /*leyka_options()->opt('paypal_rest_api')*/ false ) { // TMP, until the new REST API is in work
 
             require_once LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
 
@@ -274,10 +278,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         }
 
         // (Old) Express Checkout payment:
-        if(mb_strlen($payment_description) > 127) { // 127 chars length is a PayPal restriction
-            $payment_description = sprintf(__('Donation № %d', 'leyka'), $donation_id);
-        }
-
         $donation->payment_type = empty($_POST['leyka_recurring']) ? 'single' : 'rebill';
 
         if($donation->payment_type === 'rebill') {

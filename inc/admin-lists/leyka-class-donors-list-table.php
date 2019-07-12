@@ -73,13 +73,9 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         }
 
-        if( !empty($_REQUEST['first-donation-date']) ) {
+        if( !empty($_REQUEST['first-donation-date']) && stripos($_REQUEST['first-donation-date'], ',') !== false ) {
 
-            if(stripos($_REQUEST['first-donation-date'], ',') !== false) {
-                $_REQUEST['first-donation-date'] = array_slice(explode(',', $_REQUEST['first-donation-date']), 0, 2);
-            } else {
-                $_REQUEST['first-donation-date'] = trim($_REQUEST['first-donation-date']);
-            }
+            $_REQUEST['first-donation-date'] = array_slice(explode(',', $_REQUEST['first-donation-date']), 0, 2);
 
             if(count($_REQUEST['first-donation-date']) === 2) { // The date is set as an interval
 
@@ -94,19 +90,13 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                     'type' => 'NUMERIC',
                 );
 
-            } else { // Single date set
-                /** @todo TBD wtf should we do in this case */
             }
 
         }
 
-        if( !empty($_REQUEST['last-donation-date']) ) {
+        if( !empty($_REQUEST['last-donation-date']) && stripos($_REQUEST['last-donation-date'], ',') !== false ) {
 
-            if(stripos($_REQUEST['last-donation-date'], ',') !== false) {
-                $_REQUEST['last-donation-date'] = array_slice(explode(',', $_REQUEST['last-donation-date']), 0, 2);
-            } else {
-                $_REQUEST['last-donation-date'] = trim($_REQUEST['last-donation-date']);
-            }
+            $_REQUEST['last-donation-date'] = array_slice(explode(',', $_REQUEST['last-donation-date']), 0, 2);
 
             if(count($_REQUEST['last-donation-date']) === 2) { // The date is set as an interval
 
@@ -115,14 +105,12 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                 });
 
                 $donors_params['meta_query'][] = array(
-                    'key' => 'leyka_donor_last_donation_date',
+                    'key' => 'leyka_donor_first_donation_date',
                     'value' => $_REQUEST['last-donation-date'],
                     'compare' => 'BETWEEN',
                     'type' => 'NUMERIC',
                 );
 
-            } else { // Single date set
-                /** @todo TBD wtf should we do in this case */
             }
 
         }
