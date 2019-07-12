@@ -775,9 +775,14 @@ function leyka_campaigns_autocomplete() {
     $res = array();
 
     if($filter) {
-        foreach(leyka_get_campaigns_list(array('s' => $filter)) as $campaign_id => $campaign_title) {
-            $res[] = array('label' => $campaign_title, 'value' => $campaign_id);
-        }
+        $campaigns = leyka_get_campaigns_list(array('s' => $filter));
+    }
+    else {
+        $campaigns = leyka_get_campaigns_list(array());
+    }
+
+    foreach($campaigns as $campaign_id => $campaign_title) {
+        $res[] = array('label' => $campaign_title, 'value' => $campaign_id);
     }
     
     die(json_encode($res));
@@ -795,10 +800,16 @@ function leyka_donors_tags_autocomplete() {
             Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
             array('hide_empty' => false, 'orderby' => 'name', 'order' => 'ASC', 'search' => $filter,)
         );
-        
-        foreach($donors_tags as $tag) {
-            $res[] = array('label' => $tag->name, 'value' => $tag->term_id);
-        }
+    }
+    else {
+        $donors_tags = get_terms(
+            Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
+            array('hide_empty' => false, 'orderby' => 'count', 'order' => 'DESC', 'count' => 10,)
+        );
+    }
+    
+    foreach($donors_tags as $tag) {
+        $res[] = array('label' => $tag->name, 'value' => $tag->term_id);
     }
     
     die(json_encode($res));

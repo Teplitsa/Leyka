@@ -35,9 +35,15 @@
                         <input type="text" name="first-donation-date" autocomplete="off" class="leyka-first-donation-date-selector leyka-selector" value="<?php echo isset($_GET['first-donation-date']) ? esc_attr($_GET['first-donation-date']) : '';?>" placeholder="<?php _e('First payment date', 'leyka');?>">
     
                         <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector" value="" placeholder="<?php _e('Campaigns list', 'leyka');?>">
-
+                        <?php $filter_value = isset($_GET['campaigns']) ? (array)$_GET['campaigns'] : array();?>
+                        
                         <select id="leyka-campaigns-select" name="campaigns[]" multiple="multiple">
-                            <option value="" selected="selected"><?php _e('Campaigns list', 'leyka');?></option>
+                        	<?php $campaigns = $filter_value ? leyka_get_campaigns_list(array('include' => $filter_value)) : array();
+                        	foreach($campaigns as $campaign_id => $campaign_title) {?>
+                                <option value="<?php echo $campaign_id;?>" <?php echo is_array($filter_value) && in_array($campaign_id, $filter_value) ? 'selected="selected"' : '';?>>
+                                    <?php echo $campaign_title;?>
+                                </option>
+                            <?php }?>
                         </select>
 
                     </div>
@@ -65,14 +71,40 @@
 
                         <?php $filter_value = isset($_GET['donors-tags']) ? (array)$_GET['donors-tags'] : array();?>
                         <select id="leyka-donors-tags-select" name="donors-tags[]" multiple="multiple">
-                        	<option value="" selected="selected"><?php _e('Donors tags', 'leyka');?></option>
+							<?php $donors_tags = $filter_value ? get_terms(
+							    Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
+							    array(
+							        'include' => $filter_value,
+							        'hide_empty' => false,
+							        'orderby' => 'name',
+							        'order' => 'ASC',
+							    )
+						    ) : array();
+							
+							foreach($donors_tags as $tag) {?>
+                                <option value="<?php echo $tag->term_id;?>" <?php echo is_array($filter_value) && in_array($tag->term_id, $filter_value) ? 'selected="selected"' : '';?>>
+                                    <?php echo $tag->name;?>
+                                </option>
+                            <?php }?>
                         </select>
 
                         <input type="text" name="leyka-gateways" class="leyka-gateways-selector leyka-selector" value="" placeholder="<?php _e('Payment gateway', 'leyka');?>">
 
                         <?php $filter_value = isset($_GET['gateways']) ? (array)$_GET['gateways'] : array();?>
                         <select id="leyka-gateways-select" name="gateways[]" multiple="multiple">
-                        	<option value="" selected="selected"><?php _e('Payment gateway', 'leyka');?></option>    
+                            <?php $gateways = leyka_get_gateways();
+                            usort($gateways, function($gateway_first, $gateway_second){
+                                return strcmp($gateway_first->name, $gateway_second->name);
+                            });
+    
+                            foreach($gateways as $gateway) {?>
+                                <option value="<?php echo $gateway->id;?>" 
+                                    <?php echo is_array($filter_value) && in_array($gateway->id, $filter_value) ? 'selected="selected"' : '';?>
+                                    data-active-class="<?php echo $gateway->is_active ? "active-gateway" : "";?>"
+                                >
+                                    <?php echo $gateway->name;?>
+                                </option>
+                            <?php }?>
                         </select>
 
                     </div>

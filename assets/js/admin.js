@@ -989,6 +989,9 @@ jQuery(document).ready(function($){
 /** Donors list page */
 jQuery(document).ready(function($){
 
+	var selectorValues = [],
+		selectedValues = [];
+
     var $page_wrapper = $('.wrap');
     if( !$page_wrapper.length || $page_wrapper.data('leyka-admin-page-type') !== 'donors-list-page' ) {
         return;
@@ -1014,10 +1017,18 @@ jQuery(document).ready(function($){
 		range:'period'
 	});
 
+	// campaigns
+	selectedValues = [];
+	$('#leyka-campaigns-select').find('option').each(function(){
+		selectedValues.push({item: {label: $.trim($(this).text()), value: $(this).val()}});
+	});
+
     $("input.leyka-campaigns-selector").autocomplete({
         source: leyka.ajaxurl + '?action=leyka_campaigns_autocomplete',
         multiselect: true,
-        minLength: 2,
+        search_on_focus: true,
+        minLength: 0,
+        pre_selected_values: selectedValues,
 		leyka_select_callback: function( selectedItems ) {
 			var $select = $('#leyka-campaigns-select');
 			$select.html('');
@@ -1030,27 +1041,41 @@ jQuery(document).ready(function($){
 		}        
     });
 
+	// gateways
+	selectorValues = [];
+	selectedValues = [];
+	$('#leyka-gateways-select').find('option').each(function(){
+		selectorValues.push({label: $.trim($(this).text()), value: $(this).val()});
+		if($(this).prop('selected')) {
+			selectedValues.push({item: {label: $.trim($(this).text()), value: $(this).val()}});
+		}
+	});
+
     $("input.leyka-gateways-selector").autocomplete({
-        source: leyka.ajaxurl + '?action=leyka_gateways_autocomplete',
+        source: selectorValues,
         multiselect: true,
         search_on_focus: true,
         minLength: 0,
+        pre_selected_values: selectedValues,
 		leyka_select_callback: function( selectedItems ) {
-			var $select = $('#leyka-gateways-select');
-			$select.html('');
-			for(var val in selectedItems) {
-				var $option = $('<option></option>')
-					.val(val)
-					.prop('selected', true);
-				$select.append($option);
-			}
+			$('#leyka-gateways-select').find('option').each(function(){
+				$(this).prop('selected', selectedItems[$(this).val()] !== undefined);
+			});
 		}        
     });
+
+	// tags
+	selectedValues = [];
+	$('#leyka-donors-tags-select').find('option').each(function(){
+		selectedValues.push({item: {label: $.trim($(this).text()), value: $(this).val()}});
+	});
 
     $("input.leyka-donors-tags-selector").autocomplete({
         source: leyka.ajaxurl + '?action=leyka_donors_tags_autocomplete',
         multiselect: true,
-        minLength: 1,
+        search_on_focus: true,
+        minLength: 0,
+        pre_selected_values: selectedValues,
 		leyka_select_callback: function( selectedItems ) {
 			var $select = $('#leyka-donors-tags-select');
 			$select.html('');
@@ -1063,16 +1088,22 @@ jQuery(document).ready(function($){
 		}        
     });
 
-	var selectorValues = [];
+	// payment status
+	selectorValues = [];
+	selectedValues = [];
 	$('#leyka-payment-status-select').find('option').each(function(){
 		selectorValues.push({label: $.trim($(this).text()), value: $(this).val()});
+		if($(this).prop('selected')) {
+			selectedValues.push({item: {label: $.trim($(this).text()), value: $(this).val()}});
+		}
 	});
 
-	$('input.leyka-payment-status-selector').autocomplete({
+	var $leykaPaymentStatusAutocomplete = $('input.leyka-payment-status-selector').autocomplete({
         source: selectorValues,
         multiselect: true,
         search_on_focus: true,
         minLength: 0,
+        pre_selected_values: selectedValues,
 		leyka_select_callback: function( selectedItems ) {
 			$('#leyka-payment-status-select').find('option').each(function(){
 				$(this).prop('selected', selectedItems[$(this).val()] !== undefined);
@@ -1080,11 +1111,22 @@ jQuery(document).ready(function($){
 		}        
     });
 
-	// $('.reset-filters').click(function(e){
-	// 	e.preventDefault();
-	// 	var $form = $(this).closest('form');
-	// 	$form[0].reset();
-	// });
+	$('.reset-filters').click(function(e){
+		e.preventDefault();
+
+		$('input.leyka-payment-status-selector').autocomplete('reset');
+		$("input.leyka-donors-tags-selector").autocomplete('reset');
+		$("input.leyka-gateways-selector").autocomplete('reset');
+		$("input.leyka-campaigns-selector").autocomplete('reset');
+
+		$('input[name="donor-name-email"]').val('');
+		$('select[name="donor-type"]').prop('selectedIndex',0).selectmenu("refresh");
+		$('input[name=first-donation-date]').datepicker('setDate', null);
+		$('input[name=last-donation-date]').datepicker('setDate', null);
+
+		//var $form = $(this).closest('form');
+		//$form[0].reset();
+	});
 });
 
 /** Feedback page */
@@ -1551,11 +1593,15 @@ jQuery(document).ready(function($){
 });
 
 if(jQuery.ui.autocomplete) {
-	jQuery.widget("ui.autocomplete", jQuery.ui.autocomplete, {
-	    options : jQuery.extend({}, this.options, {
+	let $ = jQuery;
+
+	$.widget("ui.autocomplete", $.ui.autocomplete, {
+	    options : $.extend({}, this.options, {
 	        multiselect: false,
 	        search_on_focus: false,
-	        leyka_select_callback: false
+	        leyka_select_callback: false,
+	        pre_selected_values: [],
+	        position: { my: "left-5px top+6px", at: "left bottom", collision: "none" }
 	    }),
 	    _create: function(){
 	        this._super();
@@ -1564,17 +1610,15 @@ if(jQuery.ui.autocomplete) {
 	            o = self.options;
 
 	        if (o.multiselect) {
-	            console.log('multiselect true');
-
 	            self.selectedItems = {};           
 
-	            self.placeholder = jQuery("<div></div>")
+	            self.placeholder = $("<div></div>")
 	            	.addClass('placeholder')
 	            	.text(self.element.prop('placeholder'));
 
             	self.element.prop('placeholder', '')
 
-	            self.multiselect = jQuery("<div></div>")
+	            self.multiselect = $("<div></div>")
 	                .addClass("ui-autocomplete-multiselect ui-state-default ui-widget")
 	                .css("width", self.element.width())
 	                .insertBefore(self.element)
@@ -1586,14 +1630,14 @@ if(jQuery.ui.autocomplete) {
 	                	self.element.show();
 	                    self.element.focus();
 	                });
-	            
+
 	            var fontSize = parseInt(self.element.css("fontSize"), 10);
 	            function autoSize(e){
-	                var jQuerythis = jQuery(this);
-	                jQuerythis.width(1).width(this.scrollWidth+fontSize-1);
+	                var $this = $(this);
+	                $this.width(1).width(this.scrollWidth+fontSize-1);
 	            };
 
-	            var kc = jQuery.ui.keyCode;
+	            var kc = $.ui.keyCode;
 	            self.element.bind({
 	                "keydown.autocomplete": function(e){
 	                    if ((this.value === "") && (e.keyCode == kc.BACKSPACE)) {
@@ -1622,20 +1666,32 @@ if(jQuery.ui.autocomplete) {
 	            }).trigger("change");
 
 	            o.select = o.select || function(e, ui) {
-	                jQuery("<div></div>")
+	            	if(typeof(self.selectedItems[ui.item.value]) !== "undefined") {
+	            		return false;
+	            	}
+
+	                $("<div></div>")
 	                    .addClass("ui-autocomplete-multiselect-item")
 	                    .text(ui.item.label)
 	                    .data('value', ui.item.value)
 	                    .append(
-	                        jQuery("<span></span>")
+	                        $("<span></span>")
 	                            .addClass("ui-icon ui-icon-close")
-	                            .click(function(){
-	                                var item = jQuery(this).parent();
-	                                //delete self.selectedItems[item.text()];
+	                            .click(function(clickEvent){
+	                                var item = $(this).parent();
 	                                delete self.selectedItems[item.data('value')];
 	                                item.remove();
 
+	                                if(jQuery.isEmptyObject(self.selectedItems)) {
+				                    	self.placeholder.show();
+				                    	self.element.hide();
+				                    }
+
 	                                o.leyka_select_callback(self.selectedItems);
+
+	                                if(clickEvent) {
+	                                	clickEvent.stopPropagation();
+	                            	}
 	                            })
 	                    )
 	                    .insertBefore(self.element);
@@ -1647,6 +1703,15 @@ if(jQuery.ui.autocomplete) {
 	                return false;
 	            }
 
+                if(o.pre_selected_values.length) {
+                	$.each(o.pre_selected_values, function(index, el){
+                		o.select(null, el);
+	                });
+                	self.placeholder.hide();
+                    self.element.css('display', 'block');
+                	self.element.show();
+                }
+	            
 	            /*self.options.open = function(e, ui) {
 	                var pos = self.multiselect.position();
 	                pos.top += self.multiselect.height();
@@ -1655,6 +1720,19 @@ if(jQuery.ui.autocomplete) {
 	        }
 
 	        return this;
+	    },
+	    reset: function(){
+	        var self = this,
+	            o = self.options;
+
+	        if (o.multiselect) {
+	        	self.selectedItems = [];
+	        	self.element.parent().find('.ui-autocomplete-multiselect-item').remove();
+            	self.placeholder.show();
+            	self.element.hide();
+
+            	o.leyka_select_callback(self.selectedItems);
+	    	}
 	    }
 	});	
 }

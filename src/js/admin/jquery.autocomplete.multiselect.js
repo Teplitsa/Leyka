@@ -1,9 +1,13 @@
 if(jQuery.ui.autocomplete) {
-	jQuery.widget("ui.autocomplete", jQuery.ui.autocomplete, {
-	    options : jQuery.extend({}, this.options, {
+	let $ = jQuery;
+
+	$.widget("ui.autocomplete", $.ui.autocomplete, {
+	    options : $.extend({}, this.options, {
 	        multiselect: false,
 	        search_on_focus: false,
-	        leyka_select_callback: false
+	        leyka_select_callback: false,
+	        pre_selected_values: [],
+	        position: { my: "left-5px top+6px", at: "left bottom", collision: "none" }
 	    }),
 	    _create: function(){
 	        this._super();
@@ -12,17 +16,15 @@ if(jQuery.ui.autocomplete) {
 	            o = self.options;
 
 	        if (o.multiselect) {
-	            console.log('multiselect true');
-
 	            self.selectedItems = {};           
 
-	            self.placeholder = jQuery("<div></div>")
+	            self.placeholder = $("<div></div>")
 	            	.addClass('placeholder')
 	            	.text(self.element.prop('placeholder'));
 
             	self.element.prop('placeholder', '')
 
-	            self.multiselect = jQuery("<div></div>")
+	            self.multiselect = $("<div></div>")
 	                .addClass("ui-autocomplete-multiselect ui-state-default ui-widget")
 	                .css("width", self.element.width())
 	                .insertBefore(self.element)
@@ -34,14 +36,14 @@ if(jQuery.ui.autocomplete) {
 	                	self.element.show();
 	                    self.element.focus();
 	                });
-	            
+
 	            var fontSize = parseInt(self.element.css("fontSize"), 10);
 	            function autoSize(e){
-	                var jQuerythis = jQuery(this);
-	                jQuerythis.width(1).width(this.scrollWidth+fontSize-1);
+	                var $this = $(this);
+	                $this.width(1).width(this.scrollWidth+fontSize-1);
 	            };
 
-	            var kc = jQuery.ui.keyCode;
+	            var kc = $.ui.keyCode;
 	            self.element.bind({
 	                "keydown.autocomplete": function(e){
 	                    if ((this.value === "") && (e.keyCode == kc.BACKSPACE)) {
@@ -70,20 +72,32 @@ if(jQuery.ui.autocomplete) {
 	            }).trigger("change");
 
 	            o.select = o.select || function(e, ui) {
-	                jQuery("<div></div>")
+	            	if(typeof(self.selectedItems[ui.item.value]) !== "undefined") {
+	            		return false;
+	            	}
+
+	                $("<div></div>")
 	                    .addClass("ui-autocomplete-multiselect-item")
 	                    .text(ui.item.label)
 	                    .data('value', ui.item.value)
 	                    .append(
-	                        jQuery("<span></span>")
+	                        $("<span></span>")
 	                            .addClass("ui-icon ui-icon-close")
-	                            .click(function(){
-	                                var item = jQuery(this).parent();
-	                                //delete self.selectedItems[item.text()];
+	                            .click(function(clickEvent){
+	                                var item = $(this).parent();
 	                                delete self.selectedItems[item.data('value')];
 	                                item.remove();
 
+	                                if(jQuery.isEmptyObject(self.selectedItems)) {
+				                    	self.placeholder.show();
+				                    	self.element.hide();
+				                    }
+
 	                                o.leyka_select_callback(self.selectedItems);
+
+	                                if(clickEvent) {
+	                                	clickEvent.stopPropagation();
+	                            	}
 	                            })
 	                    )
 	                    .insertBefore(self.element);
@@ -95,6 +109,15 @@ if(jQuery.ui.autocomplete) {
 	                return false;
 	            }
 
+                if(o.pre_selected_values.length) {
+                	$.each(o.pre_selected_values, function(index, el){
+                		o.select(null, el);
+	                });
+                	self.placeholder.hide();
+                    self.element.css('display', 'block');
+                	self.element.show();
+                }
+	            
 	            /*self.options.open = function(e, ui) {
 	                var pos = self.multiselect.position();
 	                pos.top += self.multiselect.height();
@@ -103,6 +126,19 @@ if(jQuery.ui.autocomplete) {
 	        }
 
 	        return this;
+	    },
+	    reset: function(){
+	        var self = this,
+	            o = self.options;
+
+	        if (o.multiselect) {
+	        	self.selectedItems = [];
+	        	self.element.parent().find('.ui-autocomplete-multiselect-item').remove();
+            	self.placeholder.show();
+            	self.element.hide();
+
+            	o.leyka_select_callback(self.selectedItems);
+	    	}
 	    }
 	});	
 }
