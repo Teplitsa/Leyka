@@ -1,6 +1,57 @@
 /** Donors list page */
 jQuery(document).ready(function($){
 
+	function leykaInitFilterDatepicker($input, options) {
+
+		let selectedDatesStr = $input.val(),
+			selectedDatesStrList = selectedDatesStr.split(","),
+			selectedDates = [];
+		for(let i in selectedDatesStrList) {
+			if(selectedDatesStrList[i]) {
+				var parts = selectedDatesStrList[i].split(".");
+				selectedDates.push(new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10)));
+			}
+		}
+
+		let $dp = $input.datepicker({
+			range: true,
+			onSelect: function(formattedDate, date, dp) {
+				if(dp.selectedDates.length == 2) {
+					$('#leyka-filter-warning').text('');
+				}
+			},
+			onHide: function(dp, animationCompleted) {
+				if(dp.selectedDates.length == 1) {
+					$('#leyka-filter-warning').text(options.warningMessage);
+				}
+				else {
+					$('#leyka-filter-warning').text('');
+				}
+			},
+			onShow: function(dp, animationCompleted) {
+				if(animationCompleted && dp.selectedDates.length == 2) {
+					let $fristSelectedCell = $('.datepicker.active .datepicker--body .datepicker--cell.-selected-').first();
+					$fristSelectedCell.addClass('-range-from-');
+
+					let $beetweenDates = $fristSelectedCell.next();
+
+					while($beetweenDates.length > 0) {
+
+						if($beetweenDates.hasClass('-selected-')) {
+							$beetweenDates.addClass('-range-to-')
+							break;
+						}
+
+						$beetweenDates.addClass('-in-range-');
+						$beetweenDates = $beetweenDates.next('.datepicker--cell');
+					}
+				}
+			}
+		}).data('datepicker');
+		$dp.selectedDates = selectedDates;
+		$dp.update();
+	}	
+
 	var selectorValues = [],
 		selectedValues = [];
 
@@ -21,13 +72,8 @@ jQuery(document).ready(function($){
 		}		
 	});
 
-	$('input[name=first-donation-date]').datepicker({
-		range:'period'
-	});
-
-	$('input[name=last-donation-date]').datepicker({
-		range:'period'
-	});
+	leykaInitFilterDatepicker($('input[name=first-donation-date]'), {warningMessage: leyka.first_donation_date_incomplete_message});
+	leykaInitFilterDatepicker($('input[name=last-donation-date]'), {warningMessage: leyka.last_donation_date_incomplete_message});
 
 	// campaigns
 	selectedValues = [];
@@ -133,8 +179,14 @@ jQuery(document).ready(function($){
 
 		$('input[name="donor-name-email"]').val('');
 		$('select[name="donor-type"]').prop('selectedIndex',0).selectmenu("refresh");
-		$('input[name=first-donation-date]').datepicker('setDate', null);
-		$('input[name=last-donation-date]').datepicker('setDate', null);
+
+		let $dp = $('input[name=first-donation-date]').datepicker().data('datepicker');
+		$dp.selectedDates = [];
+		$dp.update();
+
+		$dp = $('input[name=last-donation-date]').datepicker().data('datepicker');
+		$dp.selectedDates = [];
+		$dp.update();
 
 		//var $form = $(this).closest('form');
 		//$form[0].reset();

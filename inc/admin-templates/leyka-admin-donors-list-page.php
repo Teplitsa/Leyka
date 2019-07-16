@@ -32,8 +32,14 @@
     
                         <input type="text" name="donor-name-email" class="leyka-donor-name-email-selector leyka-selector" value="<?php echo isset($_GET['donor-name-email']) ? esc_attr($_GET['donor-name-email']) : '';?>" placeholder="<?php _e("Donor's name or email", 'leyka');?>">
     
-                        <input type="text" name="first-donation-date" autocomplete="off" class="leyka-first-donation-date-selector leyka-selector" value="<?php echo isset($_GET['first-donation-date']) ? esc_attr($_GET['first-donation-date']) : '';?>" placeholder="<?php _e('First payment date', 'leyka');?>">
-    
+                        <input type="text" name="first-donation-date" autocomplete="off" class="leyka-first-donation-date-selector leyka-selector" value="<?php echo isset($_GET['first-donation-date']) ? esc_attr($_GET['first-donation-date']) : '';?>" placeholder="<?php _e('First payment dates', 'leyka');?>">
+
+                        <input type="text" name="last-donation-date" autocomplete="off" class="leyka-last-donation-date-selector leyka-selector" value="<?php echo isset($_GET['last-donation-date']) ? esc_attr($_GET['last-donation-date']) : '';?>" placeholder="<?php _e('Last payment dates', 'leyka');?>">
+
+                    </div>
+
+                    <div class="filters-row">
+
                         <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector" value="" placeholder="<?php _e('Campaigns list', 'leyka');?>">
                         <?php $filter_value = isset($_GET['campaigns']) ? (array)$_GET['campaigns'] : array();?>
                         
@@ -45,12 +51,6 @@
                                 </option>
                             <?php }?>
                         </select>
-
-                    </div>
-
-                    <div class="filters-row">
-
-                        <input type="text" name="last-donation-date" autocomplete="off" class="leyka-last-donation-date-selector leyka-selector" value="<?php echo isset($_GET['last-donation-date']) ? esc_attr($_GET['last-donation-date']) : '';?>" placeholder="<?php _e('Last payment date', 'leyka');?>">
 
     					<input type="text" name="leyka-payment-status" class="leyka-payment-status-selector leyka-selector" value="" placeholder="<?php _e('Payment status', 'leyka');?>">  
 
@@ -107,6 +107,10 @@
                             <?php }?>
                         </select>
 
+                    </div>
+                    
+                    <div class="filters-row">
+                    	<div class="filter-warning" id="leyka-filter-warning"></div>
                     </div>
 
                 </div>

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Plugins - Leyka - Development (trunk)\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/leyka\n"
-"POT-Creation-Date: 2019-07-12T08:37:14+03:00\n"
-"PO-Revision-Date: 2019-07-12 08:02+0200\n"
+"POT-Creation-Date: 2019-07-16T10:36:50+03:00\n"
+"PO-Revision-Date: 2019-07-16 09:38+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -2070,7 +2070,7 @@ msgid "Sorry, donations auto-submitting is prohibited"
 msgstr "Автоматическое выполнение пожертвования невозможно"
 
 #: inc/leyka-class-payment-form.php:52
-#: gateways/paypal/leyka-class-paypal-gateway.php:633
+#: gateways/paypal/leyka-class-paypal-gateway.php:903
 msgid "Wrong nonce in submitted form data"
 msgstr "Данные формы некорректны"
 
@@ -2216,10 +2216,11 @@ msgstr ""
 #: gateways/robokassa/leyka-class-robokassa-gateway.php:41
 #: gateways/robokassa/leyka-class-robokassa-gateway.php:49
 #: gateways/robokassa/leyka-class-robokassa-gateway.php:57
-#: gateways/paypal/leyka-class-paypal-gateway.php:40
-#: gateways/paypal/leyka-class-paypal-gateway.php:45
-#: gateways/paypal/leyka-class-paypal-gateway.php:51
-#: gateways/paypal/leyka-class-paypal-gateway.php:58
+#: gateways/paypal/leyka-class-paypal-gateway.php:57
+#: gateways/paypal/leyka-class-paypal-gateway.php:62
+#: gateways/paypal/leyka-class-paypal-gateway.php:68
+#: gateways/paypal/leyka-class-paypal-gateway.php:75
+#: gateways/paypal/leyka-class-paypal-gateway.php:83
 #: gateways/cp/leyka-class-cp-gateway.php:43
 #: gateways/cp/leyka-class-cp-gateway.php:49
 msgid "E.g., %s"
@@ -2845,7 +2846,7 @@ msgid "Change"
 msgstr "Изменить"
 
 #: inc/admin-templates/leyka-admin-metabox-donor-comments.php:43
-#: inc/admin-lists/leyka-class-donors-list-table.php:359
+#: inc/admin-lists/leyka-class-donors-list-table.php:347
 msgid "Delete"
 msgstr "Удалить"
 
@@ -3036,7 +3037,7 @@ msgstr "Индивидуальная информация о платеже"
 
 #: inc/admin-templates/leyka-admin-metabox-donor-donations.php:57
 #: inc/portlets/leyka-recent-donations.php:38
-#: inc/admin-lists/leyka-class-donors-list-table.php:342
+#: inc/admin-lists/leyka-class-donors-list-table.php:330
 msgid "Donation "
 msgstr "Пожертвование"
 
@@ -3070,40 +3071,40 @@ msgid "Donor's name or email"
 msgstr "Email донора"
 
 #: inc/admin-templates/leyka-admin-donors-list-page.php:35
-msgid "First payment date"
-msgstr "Дата первого платежа"
+msgid "First payment dates"
+msgstr "Даты первого платежа"
 
 #: inc/admin-templates/leyka-admin-donors-list-page.php:37
+msgid "Last payment dates"
+msgstr "Даты последнего платежа"
+
+#: inc/admin-templates/leyka-admin-donors-list-page.php:43
 msgid "Campaigns list"
 msgstr "Список кампаний"
 
-#: inc/admin-templates/leyka-admin-donors-list-page.php:53
-msgid "Last payment date"
-msgstr "Дата последнего платежа"
-
 #: inc/admin-templates/leyka-admin-donors-list-page.php:55
 msgid "Payment status"
-msgstr "Статус пожертвования"
+msgstr "Статус оплаты"
 
 #: inc/admin-templates/leyka-admin-donors-list-page.php:70
 #: inc/leyka-core.php:1596 inc/leyka-core.php:1598
 msgid "Donors tags"
-msgstr "Метки донора"
+msgstr "Метки доноров"
 
 #: inc/admin-templates/leyka-admin-donors-list-page.php:91
 msgid "Payment gateway"
 msgstr "Платёжный оператор"
 
-#: inc/admin-templates/leyka-admin-donors-list-page.php:115
+#: inc/admin-templates/leyka-admin-donors-list-page.php:119
 msgid "Filter the data"
 msgstr "Фильтровать данные"
 
-#: inc/admin-templates/leyka-admin-donors-list-page.php:117
-#: inc/admin-templates/leyka-admin-donors-list-page.php:119
+#: inc/admin-templates/leyka-admin-donors-list-page.php:121
+#: inc/admin-templates/leyka-admin-donors-list-page.php:123
 msgid "Reset the filter"
 msgstr "Очистить фильтр"
 
-#: inc/admin-templates/leyka-admin-donors-list-page.php:124
+#: inc/admin-templates/leyka-admin-donors-list-page.php:128
 msgid "Export the list in CSV"
 msgstr "Экспорт списка в CSV"
 
@@ -4560,11 +4561,11 @@ msgstr ": нажмите, чтобы сортировать по возраст�
 msgid ": activate to sort column descending"
 msgstr ": нажмите, чтобы сортировать по убыванию значений в столбце"
 
-#: inc/leyka-admin.php:710 inc/leyka-admin.php:760
+#: inc/leyka-admin.php:710 inc/leyka-admin.php:762
 msgid "This field is required to be filled"
 msgstr "Это поле обязательно должно быть заполнено."
 
-#: inc/leyka-admin.php:711 inc/leyka-admin.php:762
+#: inc/leyka-admin.php:711 inc/leyka-admin.php:764
 msgid "You have entered an invalid email"
 msgstr "Вы указали некорректный email"
 
@@ -4584,19 +4585,34 @@ msgstr "Отключить статистику"
 msgid "Delete comment?"
 msgstr "Удалить комментарий?"
 
-#: inc/leyka-admin.php:759 inc/leyka-class-donation.php:1109
+#: inc/leyka-admin.php:717
+msgid ""
+"To correctly search for \"First Payment Date\", select the range of their "
+"two dates."
+msgstr ""
+"Для корректного поиска «Даты первого платежа» выберите диапазон их двух дат"
+
+#: inc/leyka-admin.php:718
+msgid ""
+"To correctly search for \"Last Payment Date\", select the range of their two "
+"dates."
+msgstr ""
+"Для корректного поиска «Даты последнего платежа» выберите диапазон их двух "
+"дат"
+
+#: inc/leyka-admin.php:761 inc/leyka-class-donation.php:1109
 msgid "Add the donation"
 msgstr "Добавить пожертвование"
 
-#: inc/leyka-admin.php:761
+#: inc/leyka-admin.php:763
 msgid "Selecting a campaign is required"
 msgstr "Пожалуйста, укажите кампанию."
 
-#: inc/leyka-admin.php:763
+#: inc/leyka-admin.php:765
 msgid "The amount must be filled with non-zero, non-negative number"
 msgstr "Укажите сумму"
 
-#: inc/leyka-admin.php:764
+#: inc/leyka-admin.php:766
 msgid ""
 "Please, set one of a payment methods or just type a few words to describe a "
 "source for this donation"
@@ -4647,44 +4663,44 @@ msgstr "Отписка от постоянной кампании"
 msgid "Save"
 msgstr "Сохранить"
 
-#: inc/admin-lists/leyka-class-donors-list-table.php:281
+#: inc/admin-lists/leyka-class-donors-list-table.php:269
 msgid "No donors avaliable."
 msgstr "Нет доноров."
 
-#: inc/admin-lists/leyka-class-donors-list-table.php:459
+#: inc/admin-lists/leyka-class-donors-list-table.php:447
 msgctxt "Donor's type"
 msgid "Type"
 msgstr "Тип"
 
-#: inc/admin-lists/leyka-class-donors-list-table.php:460
+#: inc/admin-lists/leyka-class-donors-list-table.php:448
 msgid "Donor's <br>name"
 msgstr "Имя <br>донора:"
 
-#: inc/admin-lists/leyka-class-donors-list-table.php:461
+#: inc/admin-lists/leyka-class-donors-list-table.php:449
 msgid "First <br>donation"
 msgstr "Первое <br>пожертвование"
 
-#: inc/admin-lists/leyka-class-donors-list-table.php:462
+#: inc/admin-lists/leyka-class-donors-list-table.php:450
 msgid "Campaigns <br>list"
 msgstr "Список <br>кампаний"
 
-#: inc/admin-lists/leyka-class-donors-list-table.php:463
+#: inc/admin-lists/leyka-class-donors-list-table.php:451
 msgid "Donors' <br>tags"
 msgstr "Метки <br>донора"
 
-#: inc/admin-lists/leyka-class-donors-list-table.php:464
+#: inc/admin-lists/leyka-class-donors-list-table.php:452
 msgid "Gateway"
 msgstr "Платежный оператор"
 
-#: inc/admin-lists/leyka-class-donors-list-table.php:465
+#: inc/admin-lists/leyka-class-donors-list-table.php:453
 msgid "Last <br>donation"
 msgstr "Последнее <br>пожертвование"
 
-#: inc/admin-lists/leyka-class-donors-list-table.php:466
+#: inc/admin-lists/leyka-class-donors-list-table.php:454
 msgid "Amount <br>donated"
 msgstr "Размер <br>пожертвования"
 
-#: inc/admin-lists/leyka-class-donors-list-table.php:513
+#: inc/admin-lists/leyka-class-donors-list-table.php:501
 msgid "You don't have permissions for this operation."
 msgstr "У вас нет прав для этой операции."
 
@@ -7258,14 +7274,14 @@ msgstr "Секретный ключ для API"
 #: gateways/yandex/leyka-class-yandex-gateway.php:88
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:53
 #: gateways/robokassa/leyka-class-robokassa-gateway.php:62
-#: gateways/paypal/leyka-class-paypal-gateway.php:65
+#: gateways/paypal/leyka-class-paypal-gateway.php:91
 msgid "Payments testing mode"
 msgstr "Тестовый режим"
 
 #: gateways/yandex/leyka-class-yandex-gateway.php:89
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:54
 #: gateways/robokassa/leyka-class-robokassa-gateway.php:63
-#: gateways/paypal/leyka-class-paypal-gateway.php:66
+#: gateways/paypal/leyka-class-paypal-gateway.php:92
 msgid "Check if the gateway integration is in test mode."
 msgstr "Интеграция работает в режиме тестирования"
 
@@ -8002,14 +8018,14 @@ msgstr "Любой возможный способ платежа"
 msgid "Robokassa (any)"
 msgstr "Робокасса (любой способ платежа)"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:13
-#: gateways/paypal/leyka-class-paypal-gateway.php:978
-#: gateways/paypal/leyka-class-paypal-gateway.php:979
+#: gateways/paypal/leyka-class-paypal-gateway.php:23
+#: gateways/paypal/leyka-class-paypal-gateway.php:1281
+#: gateways/paypal/leyka-class-paypal-gateway.php:1282
 msgid "PayPal"
 msgstr "PayPal"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:17
-#: gateways/paypal/leyka-class-paypal-gateway.php:972
+#: gateways/paypal/leyka-class-paypal-gateway.php:27
+#: gateways/paypal/leyka-class-paypal-gateway.php:1275
 msgid ""
 "PayPal allows a simple and safe way to pay for goods and services with bank "
 "cards through internet. You will have to fill a payment form, you will be "
@@ -8022,46 +8038,52 @@ msgstr ""
 "\"https://www.paypal.com/\">страницу PayPal</a>, где вы сможете указать ваши "
 "банковские данные и подтвердить совершение вашего пожертвования."
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:39
+#: gateways/paypal/leyka-class-paypal-gateway.php:56
 msgid "PayPal API username"
 msgstr "Имя пользователя API PayPal"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:44
+#: gateways/paypal/leyka-class-paypal-gateway.php:61
 msgid "PayPal API password"
 msgstr "Пароль для API PayPal"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:50
+#: gateways/paypal/leyka-class-paypal-gateway.php:67
 msgid "PayPal API signature"
 msgstr "Подпись для API PayPal"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:56
+#: gateways/paypal/leyka-class-paypal-gateway.php:73
 msgid "PayPal Client ID"
 msgstr "Значение параметра Client ID в системе PayPal"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:71
+#: gateways/paypal/leyka-class-paypal-gateway.php:81
+#, fuzzy
+#| msgid "PayPal Client ID"
+msgid "PayPal Client Secret"
+msgstr "Значение параметра Client ID в системе PayPal"
+
+#: gateways/paypal/leyka-class-paypal-gateway.php:98
 msgid "Enable monthly recurring payments"
 msgstr "Доступны ежемесячные рекуррентные пожертвования"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:72
+#: gateways/paypal/leyka-class-paypal-gateway.php:99
 msgid "Check if you want to enable monthly recurring payments."
 msgstr ""
 "Поставьте отметку, чтобы сделать доступными рекуррентные ежемесячные платежи."
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:77
+#: gateways/paypal/leyka-class-paypal-gateway.php:105
 msgid "Accept only verified payments"
 msgstr "Принимать только платежи, подтверждённые PayPal"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:78
+#: gateways/paypal/leyka-class-paypal-gateway.php:106
 msgid ""
 "Check if you want to accept payments only from verified PayPal accounts."
 msgstr ""
 "Отметьте, чтобы все платежи с неподтверждённых аккаунтов PayPal отклонялись"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:83
+#: gateways/paypal/leyka-class-paypal-gateway.php:112
 msgid "Keep detailed logs of all PayPal service operations"
 msgstr "Вести детальный журнал всех сервисных операций PayPal"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:84
+#: gateways/paypal/leyka-class-paypal-gateway.php:113
 msgid ""
 "Check if you want to keep detailed logs of all PayPal service operations for "
 "each incoming donation."
@@ -8069,26 +8091,46 @@ msgstr ""
 "Отметьте, чтобы сохранять в базе данных плагина детали всех сервисных "
 "операций при проведении платежей через PayPal"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:108
-#: gateways/paypal/leyka-class-paypal-gateway.php:360
+#: gateways/paypal/leyka-class-paypal-gateway.php:181
+msgid "Return"
+msgstr ""
+
+#: gateways/paypal/leyka-class-paypal-gateway.php:182
+#, fuzzy
+#| msgid "Thank you!"
+msgid "Thanks!"
+msgstr "Спасибо!"
+
+#: gateways/paypal/leyka-class-paypal-gateway.php:189
+#, fuzzy
+#| msgid "Leyka: Donations List"
+msgid "Leyka Donation"
+msgstr "Лейка: Список пожертвований"
+
+#: gateways/paypal/leyka-class-paypal-gateway.php:215
+#: gateways/paypal/leyka-class-paypal-gateway.php:630
 msgid "Donation № %d"
 msgstr "Пожертвование № %d"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:204
-#: gateways/paypal/leyka-class-paypal-gateway.php:221
-#: gateways/paypal/leyka-class-paypal-gateway.php:229
-#: gateways/paypal/leyka-class-paypal-gateway.php:287
-#: gateways/paypal/leyka-class-paypal-gateway.php:315
-#: gateways/paypal/leyka-class-paypal-gateway.php:328
-#: gateways/paypal/leyka-class-paypal-gateway.php:343
-#: gateways/paypal/leyka-class-paypal-gateway.php:463
-#: gateways/paypal/leyka-class-paypal-gateway.php:476
-#: gateways/paypal/leyka-class-paypal-gateway.php:486
-#: gateways/paypal/leyka-class-paypal-gateway.php:508
+#: gateways/paypal/leyka-class-paypal-gateway.php:271
+msgid "Error: %s"
+msgstr "Ошибка: %s"
+
+#: gateways/paypal/leyka-class-paypal-gateway.php:374
+#: gateways/paypal/leyka-class-paypal-gateway.php:391
+#: gateways/paypal/leyka-class-paypal-gateway.php:399
+#: gateways/paypal/leyka-class-paypal-gateway.php:557
+#: gateways/paypal/leyka-class-paypal-gateway.php:585
+#: gateways/paypal/leyka-class-paypal-gateway.php:598
+#: gateways/paypal/leyka-class-paypal-gateway.php:613
+#: gateways/paypal/leyka-class-paypal-gateway.php:733
+#: gateways/paypal/leyka-class-paypal-gateway.php:746
+#: gateways/paypal/leyka-class-paypal-gateway.php:756
+#: gateways/paypal/leyka-class-paypal-gateway.php:778
 msgid "PayPal - payment error occured"
 msgstr "PayPal - ошибка при проведении платежа"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:205
+#: gateways/paypal/leyka-class-paypal-gateway.php:375
 msgid ""
 "SetExpressCheckout request to PayPal system couldn't be made due to some "
 "error.\n"
@@ -8096,7 +8138,7 @@ msgid ""
 "The error: %s"
 msgstr "Ошибка при выполнении запроса SetExpressCheckout: %s"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:222
+#: gateways/paypal/leyka-class-paypal-gateway.php:392
 msgid ""
 "SetExpressCheckout request to PayPal system returned some error. The details "
 "of the request are below.\n"
@@ -8111,7 +8153,7 @@ msgstr ""
 "Сообщение об ошибке: %s\n"
 "Описание ошибки: %s"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:230
+#: gateways/paypal/leyka-class-paypal-gateway.php:400
 msgid ""
 "SetExpressCheckout request to PayPal system returned without TOKEN param.\n"
 "\n"
@@ -8121,7 +8163,39 @@ msgstr ""
 "\n"
 "Текст ответа: %s"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:288
+#: gateways/paypal/leyka-class-paypal-gateway.php:464
+msgid "PayPal callback error: required parameters weren't given"
+msgstr ""
+
+#: gateways/paypal/leyka-class-paypal-gateway.php:470
+msgid "PayPal callback error: donation wasn't found"
+msgstr ""
+
+#: gateways/paypal/leyka-class-paypal-gateway.php:471
+msgid ""
+"The donation was not found by the following PayPal data: %s (value given: "
+"%s), %s (value given: %s)."
+msgstr ""
+
+#: gateways/paypal/leyka-class-paypal-gateway.php:500
+msgid "PayPal donation finished with error"
+msgstr ""
+
+#: gateways/paypal/leyka-class-paypal-gateway.php:510
+msgid "PayPal donation execution resulted with error"
+msgstr ""
+
+#: gateways/paypal/leyka-class-paypal-gateway.php:511
+msgid "Error %s: %s"
+msgstr "Ошибка %s: %s"
+
+#: gateways/paypal/leyka-class-paypal-gateway.php:536
+#, fuzzy
+#| msgid "The donation was not created due to error."
+msgid "The donation was cancelled by the donor"
+msgstr "Пожертвование не было создано по причине ошибки."
+
+#: gateways/paypal/leyka-class-paypal-gateway.php:558
 msgid ""
 "Process_payment callback request to Leyka system was made with an unknown "
 "token parameter.\n"
@@ -8131,7 +8205,7 @@ msgstr ""
 "Вызов callback-адреса Process_payment содержит неизвестное значение "
 "параметра \"token\": %s"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:316
+#: gateways/paypal/leyka-class-paypal-gateway.php:586
 msgid ""
 "GetExpressCheckoutDetails request to PayPal system couldn't be made due to "
 "some error.\n"
@@ -8139,7 +8213,7 @@ msgid ""
 "The error: %s"
 msgstr "Ошибка при выполнении запроса GetExpressCheckoutDetails: %s"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:329
+#: gateways/paypal/leyka-class-paypal-gateway.php:599
 msgid ""
 "GetExpressCheckoutDetails request to PayPal system returned without success "
 "status.\n"
@@ -8148,7 +8222,7 @@ msgid ""
 msgstr ""
 "Ответ на запрос GetExpressCheckoutDetails не содержит статуса \"success\": %s"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:344
+#: gateways/paypal/leyka-class-paypal-gateway.php:614
 msgid ""
 "GetExpressCheckoutDetails request to PayPal system returned without verified "
 "payer status.\n"
@@ -8158,13 +8232,13 @@ msgstr ""
 "Ответ на запрос GetExpressCheckoutDetails не содержит подтверждённого "
 "статуса плательщика: %s"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:395
-#: gateways/paypal/leyka-class-paypal-gateway.php:408
-#: gateways/paypal/leyka-class-paypal-gateway.php:418
+#: gateways/paypal/leyka-class-paypal-gateway.php:665
+#: gateways/paypal/leyka-class-paypal-gateway.php:678
+#: gateways/paypal/leyka-class-paypal-gateway.php:688
 msgid "PayPal - CreateRecurringPaymentsProfile error occured"
 msgstr "PayPal - ошибка при запросе CreateRecurringPaymentsProfile "
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:396
+#: gateways/paypal/leyka-class-paypal-gateway.php:666
 msgid ""
 "CreateRecurringPaymentsProfile request to PayPal system couldn't be made due "
 "to some error.\n"
@@ -8176,7 +8250,7 @@ msgstr ""
 "\n"
 "Ошибка: %s"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:409
+#: gateways/paypal/leyka-class-paypal-gateway.php:679
 msgid ""
 "CreateRecurringPaymentsProfile request to PayPal system returned without "
 "success status.\n"
@@ -8188,7 +8262,7 @@ msgstr ""
 "\n"
 "Результат запроса: %s"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:419
+#: gateways/paypal/leyka-class-paypal-gateway.php:689
 msgid ""
 "CreateRecurringPaymentsProfile request to PayPal system reported about the "
 "error: a RecurringPaymentsProfile status is not ActiveProfile.\n"
@@ -8200,7 +8274,7 @@ msgstr ""
 "\n"
 "Результат запроса: %s"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:464
+#: gateways/paypal/leyka-class-paypal-gateway.php:734
 msgid ""
 "DoExpressCheckoutPayment request to PayPal system couldn't be made due to "
 "some error.\n"
@@ -8208,14 +8282,14 @@ msgid ""
 "The error: %s"
 msgstr "Ошибка при выполнении запроса DoExpressCheckoutPayment: %s"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:477
+#: gateways/paypal/leyka-class-paypal-gateway.php:747
 msgid ""
 "DoECPayment request to PayPal system returned without success status.\n"
 "\n"
 "The request result: %s"
 msgstr "Ответ на запрос DoECPayment не содержит статуса \"success\": %s"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:487
+#: gateways/paypal/leyka-class-paypal-gateway.php:757
 msgid ""
 "DoECPayment request to PayPal system reported about some transaction error: "
 "a payment status is empty.\n"
@@ -8223,7 +8297,7 @@ msgid ""
 "The request result: %s"
 msgstr "Ответ на запрос DoECPayment не содержит статуса платежа: %s"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:509
+#: gateways/paypal/leyka-class-paypal-gateway.php:779
 msgid ""
 "DoECPayment request to PayPal system reported about some transaction error: "
 "a payment status isn't 'Completed'.\n"
@@ -8232,12 +8306,12 @@ msgid ""
 msgstr ""
 "Ответ на запрос DoECPayment не содержит статуса платежа \"Completed\": %s"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:540
-#: gateways/paypal/leyka-class-paypal-gateway.php:553
+#: gateways/paypal/leyka-class-paypal-gateway.php:810
+#: gateways/paypal/leyka-class-paypal-gateway.php:823
 msgid "PayPal - IPN processing error occured"
 msgstr "PayPal - ошибка при обработке IPN"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:541
+#: gateways/paypal/leyka-class-paypal-gateway.php:811
 msgid ""
 "Leyka reported about an IPN processing error. The details are below:\n"
 "\n"
@@ -8245,7 +8319,7 @@ msgstr ""
 "\"Лейка\" сообщает об ошибке при обработке запроса IPN от системы PayPal. "
 "Детали ошибки:\n"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:554
+#: gateways/paypal/leyka-class-paypal-gateway.php:824
 msgid ""
 "Leyka reported about an IPN processing error: the 'txn_id' parameter is "
 "missing.\n"
@@ -8257,19 +8331,19 @@ msgstr ""
 "\n"
 "POST запроса IPN: %s"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:642
+#: gateways/paypal/leyka-class-paypal-gateway.php:912
 msgid "No donation ID in submitted payment data"
 msgstr "В отправленных данных не указан ID пожертвования"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:651
+#: gateways/paypal/leyka-class-paypal-gateway.php:921
 msgid "Wrong donation ID in submitted payment data"
 msgstr "В отправленных данных указан некорректный ID пожертвования"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:658
+#: gateways/paypal/leyka-class-paypal-gateway.php:928
 msgid "Wrong gateway in submitted payment data"
 msgstr "В отправленных данных указан некорректный платежный оператор"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:728
+#: gateways/paypal/leyka-class-paypal-gateway.php:999
 msgid ""
 "Error while processing the payment on PayPal side: %s. Your money will "
 "remain intact. Please report to the website tech support."
@@ -8277,7 +8351,7 @@ msgstr ""
 "Ошибка PayPal при обработке платежа: %s. Ваши средства останутся на вашем "
 "счёте. Пожалуйста, сообщите о проблеме администрации сайта."
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:729
+#: gateways/paypal/leyka-class-paypal-gateway.php:1000
 msgid ""
 "Error in server response. Your money will remain intact. Please report to "
 "the website tech support."
@@ -8285,7 +8359,7 @@ msgstr ""
 "Ошибка при ответе сервера. Ваши средства останутся на вашем счёте. "
 "Пожалуйста, сообщите о проблеме администрации сайта."
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:730
+#: gateways/paypal/leyka-class-paypal-gateway.php:1001
 msgid ""
 "Error while creating donation. Your money will remain intact. Please report "
 "to the website tech support."
@@ -8293,47 +8367,47 @@ msgstr ""
 "Ошибка при добавлении пожертвования. Ваши средства останутся на вашем счёте. "
 "Пожалуйста, сообщите о проблеме администрации сайта."
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:732
+#: gateways/paypal/leyka-class-paypal-gateway.php:1003
 msgid "Either PayPal sandbox Client ID is wrong, or sandbox wasn't created."
 msgstr ""
 "Либо значение Client ID для тестового подключения PayPal некорректно, либо "
 "тестовое подключение не было создано."
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:762
-#: gateways/paypal/leyka-class-paypal-gateway.php:804
+#: gateways/paypal/leyka-class-paypal-gateway.php:1033
+#: gateways/paypal/leyka-class-paypal-gateway.php:1075
 msgid "PayPal token"
 msgstr "Токен PayPal"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:766
-#: gateways/paypal/leyka-class-paypal-gateway.php:806
+#: gateways/paypal/leyka-class-paypal-gateway.php:1037
+#: gateways/paypal/leyka-class-paypal-gateway.php:1077
 msgid "Enter PayPal token"
 msgstr "Укажите токен PayPal"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:772
-#: gateways/paypal/leyka-class-paypal-gateway.php:809
+#: gateways/paypal/leyka-class-paypal-gateway.php:1043
+#: gateways/paypal/leyka-class-paypal-gateway.php:1080
 msgid "PayPal correlation ID"
 msgstr "ID операции"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:776
-#: gateways/paypal/leyka-class-paypal-gateway.php:811
+#: gateways/paypal/leyka-class-paypal-gateway.php:1047
+#: gateways/paypal/leyka-class-paypal-gateway.php:1082
 msgid "Enter PayPal correlation ID"
 msgstr "Укажите ID операции (correlation ID)"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:782
+#: gateways/paypal/leyka-class-paypal-gateway.php:1053
 msgid "PayPal payment ID"
 msgstr "Payment ID в системе PayPal"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:786
+#: gateways/paypal/leyka-class-paypal-gateway.php:1057
 msgid "Enter PayPal payment ID"
 msgstr "Укажите payment ID в системе PayPal"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:792
-#: gateways/paypal/leyka-class-paypal-gateway.php:814
+#: gateways/paypal/leyka-class-paypal-gateway.php:1063
+#: gateways/paypal/leyka-class-paypal-gateway.php:1085
 msgid "PayPal Payer ID"
 msgstr "ID плательщика"
 
-#: gateways/paypal/leyka-class-paypal-gateway.php:796
-#: gateways/paypal/leyka-class-paypal-gateway.php:816
+#: gateways/paypal/leyka-class-paypal-gateway.php:1067
+#: gateways/paypal/leyka-class-paypal-gateway.php:1087
 msgid "Enter PayPal Payer ID"
 msgstr "Введите ID плательщика в системе PayPal"
 

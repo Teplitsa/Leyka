@@ -81,6 +81,25 @@
     .filters-row {
     	display: flex;
     	align-items: flex-start;
+
+    	.filter-warning {
+			background-image: url(../../img/donors/icon-warning.svg);
+			background-repeat: no-repeat;
+			background-size: 24px 24px;
+			background-position: 8px 8px;
+			background-color: rgba(242, 201, 76, 0.2);
+			padding: 8px 8px 8px 40px;
+			font-size: 14px;
+			line-height: 24px;
+			//width: calc(100% - 0px);
+			width: 100%;
+			max-width: 704px;
+			margin-bottom: $leyka-base;
+
+    		&:empty {
+    			display: none;
+    		}
+    	}
     }
 
     .col-1 {
@@ -333,7 +352,7 @@
 				}
 
 				.ui-icon.ui-icon-circle-triangle-w {
-					background-image: url(../../img/donors/icon-datepicker-arrow-left.svg);;
+					background-image: url(../../img/donors/icon-datepicker-arrow-left.svg);
 					background-repeat: no-repeat;
 					background-size: 32px 32px;
 					background-position: -8px -9px;

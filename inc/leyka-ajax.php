@@ -847,7 +847,7 @@ function leyka_add_donor_comment() {
     $comment = array(
         'id' => $comment_id,
         'text' => stripslashes(esc_html($comment['text'])),
-        'date' => date(get_option('date_format'), (int)$comment['date']),
+        'date' => time(),
         'author_name' => $comment['author_name'],
     );
     
