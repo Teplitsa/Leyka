@@ -538,6 +538,7 @@ add_action('leyka_save_custom_option-commission', 'leyka_save_custom_option_comm
 function leyka_save_custom_option_commission($option_value) {
 
     $all_pm_commissions = leyka_options()->opt('commission');
+    $all_pm_commissions = $all_pm_commissions ? $all_pm_commissions : array();
 
     foreach($option_value as $pm_full_id => $commission) {
 
