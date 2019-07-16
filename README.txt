@@ -4,8 +4,8 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса, яндекс.деньги, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
-Tested up to: 5.2.1
-Stable tag: 3.2.3
+Tested up to: 5.2.2
+Stable tag: 3.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,15 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.3 =
+* New: the Donors management features added.
+* New: from now on the plugin activation procedure will run only on plugin activation.
+* Fix: the bug of multiple CP recurring donations, presumably, fixed.
+* Fix: wizards markup fixes.
+* Fix: now gateways commissions are saved correctly for fresh installations.
+* Fix: small bugfixes.
+* Tweak: admin JS partly refactored, it's volume decreased.
+
 = 3.2.3 =
 * New: the plugin Dashboard design renewed.
 * New: now Donors accounts are created even on non-initial recurring donations, if needed.
