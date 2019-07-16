@@ -333,7 +333,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         </fieldset>
 	    <?php }?>
 
-        <fieldset id="campaign-css" class="metabox-field campaign-field campaign-css persistent-campaign-field">
+        <fieldset id="campaign-css" class="metabox-field campaign-field campaign-css">
 
             <h3 class="field-title">
                 <label for="campaign-css-field"><?php _e('Campaign CSS-styling', 'leyka');?></label>
