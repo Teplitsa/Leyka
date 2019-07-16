@@ -1637,6 +1637,9 @@ class Leyka_Donation {
 
         $status = empty($params['status']) ? 'submitted' : $params['status'];
 
+        $donor_email = empty($params['donor_email']) ? leyka_pf_get_donor_email_value() : $params['donor_email'];
+        $donor_email = trim($donor_email);
+
         remove_all_actions('save_post_'.Leyka_Donation_Management::$post_type);
 
         $donation_params = array(
@@ -1648,12 +1651,22 @@ class Leyka_Donation {
             'post_parent' => empty($params['init_recurring_donation']) ? 0 : (int)$params['init_recurring_donation'],
         );
 
-        if( // Donor user ID isn't set explicitly - use the current user ID, if it has a donor role
+        if( // Donor user ID doesn't set explicitly
             (leyka_options()->opt('donors_management_available') || leyka_options()->opt('donor_accounts_available'))
             && !isset($params['donor_user_id'])
         ) {
-            $donation_params['post_author'] = leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE) ? get_current_user_id() : 0;
-        } else { // Donor user ID is set explicilty
+            if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE)) { // Use the current user ID, if it has a donor role
+                $donation_params['post_author'] = get_current_user_id();
+            } else if($donor_email) { // Given email belongs to a Donor account
+
+                $donor = get_user_by('email', $donor_email);
+                $donation_params['post_author'] = $donor && leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, false, $donor) ?
+                    $donor->ID : 0;
+
+            } else {
+                $donation_params['post_author'] = 0;
+            }
+        } else { // Donor user ID is set explicitly
             $donation_params['post_author'] = isset($params['donor_user_id']) ? absint($params['donor_user_id']) : 0;
         }
 
@@ -1681,9 +1694,8 @@ class Leyka_Donation {
 
         add_post_meta($id, 'leyka_donor_name', htmlentities($value, ENT_QUOTES, 'UTF-8'));
 
-        $value = empty($params['donor_email']) ? leyka_pf_get_donor_email_value() : $params['donor_email'];
-        $value = trim($value);
-        if($value && !filter_var($value, FILTER_VALIDATE_EMAIL) && empty($params['force_insert'])) {
+        // Donor's email is set earlier:
+        if($donor_email && !filter_var($donor_email, FILTER_VALIDATE_EMAIL) && empty($params['force_insert'])) {
 
             wp_delete_post($id, true);
             return new WP_Error(
@@ -1692,7 +1704,7 @@ class Leyka_Donation {
             );
 
         }
-        add_post_meta($id, 'leyka_donor_email', $value);
+        add_post_meta($id, 'leyka_donor_email', $donor_email);
 
         $value = empty($params['donor_comment']) ? leyka_pf_get_donor_comment_value() : $params['donor_comment'];
         $value = trim($value);
