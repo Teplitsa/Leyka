@@ -1649,7 +1649,7 @@ class Leyka_Donation {
         );
 
         if( // Donor user ID isn't set explicitly - use the current user ID, if it has a donor role
-            (leyka_options()->opt('donors_management_available') || leyka_options()->opt('donors_accounts_available'))
+            (leyka_options()->opt('donors_management_available') || leyka_options()->opt('donor_accounts_available'))
             && !isset($params['donor_user_id'])
         ) {
             $donation_params['post_author'] = leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE) ? get_current_user_id() : 0;
