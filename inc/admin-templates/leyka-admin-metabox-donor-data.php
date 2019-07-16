@@ -102,8 +102,8 @@ try {
             <dt><?php _e('Email', 'leyka');?></dt>
             <dd><a href="mailto:<?php echo $donor->email;?>"><?php echo $donor->email;?></a></dd>
 
-            <dt><?php _e('GA Client ID', 'leyka');?></dt>
-            <dd><?php echo __('none'); //echo get_user_meta($donor_user->ID, 'leyka_donor_ga_client_id', true);?></dd>
+            <!--<dt><?php _e('GA Client ID', 'leyka');?></dt>
+            <dd><?php echo __('none'); //echo get_user_meta($donor_user->ID, 'leyka_donor_ga_client_id', true);?></dd>-->
 
             <dt><?php _e('First donation', 'leyka');?></dt>
             <dd><?php echo $donor->first_donation_date_label;?></dd>
