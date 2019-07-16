@@ -17,6 +17,10 @@ require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php');?
         <a href="//leyka.te-st.ru/" target="_blank"><?php _e('Go to the plugin documentation', 'leyka');?></a>
     </div>
 
+    <div class="leyka-bottom-link leyka-wizard-link">
+        <a href="<?php echo admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init');?>" class="init-wizard-link"><?php _e('To the step-by-step setup', 'leyka');?></a>
+    </div>
+
 </div>
 
 <?php $init_wizard_controller = Leyka_Settings_Factory::get_instance()->get_controller('init');
@@ -59,10 +63,6 @@ if($main_settings_steps) {?>
                 </div>
 
             <?php }?>
-        </div>
-
-        <div class="leyka-bottom-link leyka-wizard-link">
-            <a href="<?php echo admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init');?>" class="init-wizard-link"><?php _e('To the step-by-step setup', 'leyka');?></a>
         </div>
 
     </div>

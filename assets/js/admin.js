@@ -124,7 +124,7 @@ jQuery(document).ready(function($){
     var $page_type = $('#originalaction'),
         $post_type = $('#post_type');
 
-    if( !$page_type.length || $page_type.val() !== 'editpost' || !$post_type.length || !$post_type.val() !== 'leyka_campaign' ) {
+    if( !$page_type.length || $page_type.val() !== 'editpost' || !$post_type.length || $post_type.val() !== 'leyka_campaign' ) {
         return;
     }
 
@@ -166,7 +166,7 @@ jQuery(document).ready(function($){
         }
 
     }).change();
-
+    
     // Donation types field change:
     let $donations_types_fields = $(':input[name="donations_type[]"]'),
         $default_donation_type_field_block = $('#donation-type-default');
@@ -421,6 +421,21 @@ jQuery(document).ready(function($){
             }
         });
     });
+    
+    // campaign template change
+    $(':input[name="campaign_template"]').on('change.leyka', function(e){
+
+        e.preventDefault();
+
+        let $this = $(this);
+
+        if($this.val() === 'revo' || $this.val() === 'star') {
+    		$('#campaign-css').show();
+        } else {
+        	$('#campaign-css').hide();
+        }
+
+    }).change();
 
 });
 // init "how to setup crom" modal

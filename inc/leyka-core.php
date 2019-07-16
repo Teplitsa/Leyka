@@ -1322,7 +1322,24 @@ class Leyka extends Leyka_Singleton {
             array(),
             LEYKA_VERSION
         );
-
+        
+        $this->add_inline_custom_css();
+    }
+    
+    protected function add_inline_custom_css() {
+        $campaign_id = null;
+        if(is_singular(Leyka_Campaign_Management::$post_type)) {
+            $campaign_id = get_the_ID();
+        } else if(is_page(leyka()->opt('success_page')) || is_page(leyka()->opt('failure_page'))) {
+            $donation_id = leyka_remembered_data('donation_id');
+            $donation = $donation_id ? new Leyka_Donation($donation_id) : null;
+            $campaign_id = $donation ? $donation->campaign_id : null;
+        }
+        
+        if($campaign_id) {
+            $custom_css = get_post_meta($campaign_id, 'campaign_css', true);
+            wp_add_inline_style($this->_plugin_slug.'-revo-plugin-styles', $custom_css);
+        }
     }
 
     /** Register and enqueue public-facing JavaScript files. */

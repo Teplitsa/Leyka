@@ -27,7 +27,7 @@
 
         <div class="main-col">
 
-            <?php if($this->has_banners('admin-dashboard', 'main')) {
+            <?php if(True || $this->has_banners('admin-dashboard', 'main')) {
                 $this->show_banner('admin-dashboard', 'main');
             }
 

@@ -299,15 +299,12 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
     }
 
     public function show_banner($page = false, $location = false) {?>
-
-        <?php if(LEYKA_DEBUG) {?>
-
+    
         <div class="banner-wrapper">
-            <a href="https://te-st.ru/"><img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/banner.png" alt=""></a>
+            <a href="<?php echo admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init');?>"><img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/banner-run-wizard.svg" alt=""></a>
         </div>
 
-        <?php }
-
+    <?php
     }
 
     /**
