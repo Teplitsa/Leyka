@@ -50,7 +50,7 @@ gulp.task('build-front-js', async function(){
 
 gulp.task('build-admin-js', function(){
 
-    var vendorFiles = [basePaths.npm+'jquery.cookie/jquery.cookie.js', basePaths.npm+'chosen-js/chosen.jquery.min.js', basePaths.npm+'air-datepicker/dist/js/datepicker.min.js'],
+    var vendorFiles = [basePaths.npm+'jquery.cookie/jquery.cookie.js', basePaths.npm+'air-datepicker/dist/js/datepicker.min.js'],
         appFiles = [basePaths.src+'js/admin/*.js'];
 
     return gulp.src(vendorFiles.concat(appFiles))
@@ -104,7 +104,7 @@ gulp.task('build-front-css', function(){
 gulp.task('build-admin-css', function() {
 
     var paths = require('node-bourbon').includePaths,
-		vendorFiles = gulp.src([basePaths.npm + 'chosen-js/chosen.min.css', basePaths.npm + 'air-datepicker/dist/css/datepicker.min.css']),
+		vendorFiles = gulp.src([basePaths.npm + 'air-datepicker/dist/css/datepicker.min.css']),
         appFiles = gulp.src(basePaths.src+'sass/admin/admin.scss')
         .pipe(!isProduction ? plugins.sourcemaps.init() : gutil.noop())  //process the original sources for sourcemap
         .pipe(plugins.sass({

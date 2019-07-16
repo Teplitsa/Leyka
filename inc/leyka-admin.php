@@ -714,6 +714,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'default_image_message' => esc_html__('Default', 'leyka'),
 			'disconnect_stats' => esc_html__('Disconnect statistics', 'leyka'),
             'confirm_delete_comment' => esc_html__('Delete comment?', 'leyka'),
+            'first_donation_date_incomplete_message' => esc_html__('To correctly search for "First Payment Date", select the range of their two dates.', 'leyka'),
+            'last_donation_date_incomplete_message' => esc_html__('To correctly search for "Last Payment Date", select the range of their two dates.', 'leyka'),
         ));
 
         if(isset($_GET['page']) && $_GET['page'] === 'leyka') {

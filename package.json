@@ -17,7 +17,6 @@
   },
   "devDependencies": {
     "air-datepicker": "^2.2.3",
-    "chosen-js": "^1.8.7",
     "chromedriver": "^2.46.0",
     "del": "^3.0.0",
     "event-stream": "^4.0.1",
