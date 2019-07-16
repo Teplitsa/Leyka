@@ -128,6 +128,8 @@ class Leyka_Donor {
             'post_status' => 'funded',
             'posts_per_page' => -1,
             'author' => $donor->id,
+            'orderby' => 'date',
+            'order' => 'ASC',
         ));
 
         $donations_count = count($donor_donations);
@@ -135,7 +137,7 @@ class Leyka_Donor {
 
             $donation = new Leyka_Donation($donor_donations[$i]);
 
-            if($donation->is_init_recurring_donation && $donation->recurring_on && $donation->status === 'funded') {
+            if($donation->is_init_recurring_donation && $donation->recurring_on) {
                 $donor_data['donor_type'] = 'regular';
             }
 
