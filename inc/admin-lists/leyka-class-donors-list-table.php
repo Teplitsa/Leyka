@@ -16,7 +16,13 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
     }
 
-    /** WP_User & user meta fields filtering */
+    /**
+     * WP_User & user meta fields filtering.
+     *
+     * @param $donors_params array
+     * @param $filter_type string
+     * @return array|false An array of get_users() params, or false if the $filter_type is wrong
+     */
     public function filter_donors(array $donors_params, $filter_type = '') {
 
         if($filter_type !== 'get_donors') {
@@ -79,9 +85,9 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
             if(count($_REQUEST['first-donation-date']) === 2) { // The date is set as an interval
 
-                array_walk($_REQUEST['first-donation-date'], function(&$value){
-                    $value = strtotime($value);
-                });
+
+                $_REQUEST['first-donation-date'][0] = strtotime($_REQUEST['first-donation-date'][0].' 00:00:00');
+                $_REQUEST['first-donation-date'][1] = strtotime($_REQUEST['first-donation-date'][1].' 23:59:59');
 
                 $donors_params['meta_query'][] = array(
                     'key' => 'leyka_donor_first_donation_date',
@@ -100,12 +106,11 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
             if(count($_REQUEST['last-donation-date']) === 2) { // The date is set as an interval
 
-                array_walk($_REQUEST['last-donation-date'], function(&$value){
-                    $value = strtotime($value);
-                });
+                $_REQUEST['last-donation-date'][0] = strtotime($_REQUEST['last-donation-date'][0].' 00:00:00');
+                $_REQUEST['last-donation-date'][1] = strtotime($_REQUEST['last-donation-date'][1].' 23:59:59');
 
                 $donors_params['meta_query'][] = array(
-                    'key' => 'leyka_donor_first_donation_date',
+                    'key' => 'leyka_donor_last_donation_date',
                     'value' => $_REQUEST['last-donation-date'],
                     'compare' => 'BETWEEN',
                     'type' => 'NUMERIC',
@@ -130,11 +135,11 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                     break;
                 case 'donor_name':
                     $donors_params['orderby'] = 'display_name'; break;
-                case 'first_donation': /** @todo Testing needed (after date fields are finished) */
+                case 'first_donation':
                     $donors_params['meta_key'] = 'leyka_donor_first_donation_date';
                     $donors_params['orderby'] = 'meta_value_num';
                     break;
-                case 'last_donation': /** @todo Testing needed (after date fields are finished) */
+                case 'last_donation':
                     $donors_params['meta_key'] = 'leyka_donor_last_donation_date';
                     $donors_params['orderby'] = 'meta_value_num';
                     break;
