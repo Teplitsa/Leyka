@@ -452,13 +452,13 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             'cb' => '<input type="checkbox">',
             #'donor_id' => __('ID'),
             'donor_type' => _x('Type', "Donor's type", 'leyka'),
-            'donor_name' => __("Donor's name", 'leyka'),
-            'first_donation' => __('First donation', 'leyka'),
-            'campaigns' => __('Campaigns list', 'leyka'),
-            'donors_tags' => __("Donors' tags", 'leyka'),
+            'donor_name' => __("Donor's<br>name", 'leyka'),
+            'first_donation' => __('First<br>donation', 'leyka'),
+            'campaigns' => __('Campaigns<br>list', 'leyka'),
+            'donors_tags' => __("Donors'<br>tags", 'leyka'),
             'gateways' => __('Gateway', 'leyka'),
-            'last_donation' => __('Last donation', 'leyka'),
-            'amount_donated' => __('Amount donated', 'leyka'),
+            'last_donation' => __('Last<br>donation', 'leyka'),
+            'amount_donated' => __('Amount<br>donated', 'leyka'),
         );
     }
 
