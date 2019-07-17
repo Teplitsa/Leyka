@@ -693,7 +693,13 @@ div[id*="leyka-pf-"] { // Leyka namespace
 
     &.leyka-pf__final-thankyou {
 
+    	& > p {
+    		display: flex;
+    		justify-content: center;
+    	}
+
         .icon {
+        	width: 120px;
         }
 
         .thankyou-email-field {
