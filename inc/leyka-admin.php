@@ -731,7 +731,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		leyka_localize_rich_html_text_tags();
 
         // Campaign editing page:
-        if($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post' && !$screen->action) {
+		if($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post' && (!$screen->action || $screen->action === 'add')) {
 
             $dependencies[] = $this->_load_data_tables();
 
