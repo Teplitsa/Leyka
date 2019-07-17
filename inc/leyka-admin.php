@@ -734,25 +734,22 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         }
 
-        // Donation editing page:
-        if(
-            ($screen->post_type === Leyka_Donation_Management::$post_type && $screen->base === 'post')
-            || (isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_donors'))
-        ) {
+        $locale = get_locale();
+        if($locale !== 'en_US') {
+            wp_enqueue_script(
+                'jquery-ui-datepicker-locale',
+                LEYKA_PLUGIN_BASE_URL."js/jq-datepicker-locales/$locale.js",
+                array('jquery-ui-datepicker'), LEYKA_VERSION, true
+            );
+        }
 
-            $locale = get_locale();
-            if($locale !== 'en_US') {
-                wp_enqueue_script(
-                    'jquery-ui-datepicker-locale',
-                    LEYKA_PLUGIN_BASE_URL."js/jq-datepicker-locales/$locale.js",
-                    array('jquery-ui-datepicker'), LEYKA_VERSION, true
-                );
-            }
+        // Donation editing page:
+        if($screen->post_type === Leyka_Donation_Management::$post_type && $screen->base === 'post') {
 
             wp_enqueue_script(
                 'leyka-admin-add-edit-donation',
                 LEYKA_PLUGIN_BASE_URL.'js/admin-add-edit-donation.js',
-                array('jquery-ui-datepicker-locale'), LEYKA_VERSION, true
+                array('jquery-ui-datepicker-locale', 'jquery-ui-autocomplete'), LEYKA_VERSION, true
             );
             wp_localize_script('leyka-admin-add-edit-donation', 'leyka', $js_data + array(
                 'add_donation_button_text' => __('Add the donation', 'leyka'),
@@ -763,9 +760,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 'donation_source_required' => __('Please, set one of a payment methods or just type a few words to describe a source for this donation', 'leyka'),
             ));
 
+            return; /** @todo Only for now. Need to transfer the code from /js/admin-add-edit-donation.js to the separate /src/js/admin/ script. */
+
         }
 
-//        if($leyka_admin_new) {
 
         $dependencies[] = 'jquery-ui-autocomplete';
 
@@ -778,20 +776,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             true
         );
         wp_localize_script('leyka-settings', 'leyka', $js_data);
-
-//        } else {
-//
-//            wp_enqueue_script('leyka-admin', LEYKA_PLUGIN_BASE_URL.'js/admin.js', $dependencies, LEYKA_VERSION, true);
-//            wp_enqueue_script(
-//                'leyka-admin-helpchat',
-//                LEYKA_PLUGIN_BASE_URL.'js/settings-helpchat.js',
-//                $dependencies,
-//                LEYKA_VERSION,
-//                true
-//            );
-//            wp_localize_script('leyka-admin', 'leyka', $js_data);
-//
-//        }
 
 	}
 

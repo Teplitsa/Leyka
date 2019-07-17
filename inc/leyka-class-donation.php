@@ -839,7 +839,7 @@ class Leyka_Donation_Management {
 	<fieldset class="leyka-set campaign">
 		<legend><?php _e('Campaign Data', 'leyka');?></legend>
 
-        <div class="leyka-ddata-string">			
+        <div class="leyka-ddata-string">
 			<label><?php echo _x('Campaign', 'In subjective case', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
 			<?php if($campaign->id && $campaign->status == 'publish') {?>
@@ -864,12 +864,14 @@ class Leyka_Donation_Management {
 
             <div id="campaign-select-fields" style="display: none;">
                 <label for="campaign-select"></label>
+
                 <input id="campaign-select"
                        type="text"
                        data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>"
                        placeholder="<?php _e('Select a campaign', 'leyka');?>"
                        value="<?php echo htmlentities($campaign->title, ENT_QUOTES, 'UTF-8');?>">
                 <input id="campaign-id" type="hidden" name="campaign-id" value="<?php echo $campaign->id;?>">
+
                 <div id="cancel-campaign-select" class="button"><?php _e('Cancel', 'leyka');?></div>
             </div>
 		</div> <!-- .set-action -->

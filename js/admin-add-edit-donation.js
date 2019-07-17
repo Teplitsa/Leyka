@@ -14,6 +14,76 @@ jQuery(document).ready(function($){
         altFormat: 'yy-mm-dd'
     });
 
+    /** @todo Move to the /src/js/admin/common-settings.js */
+    var $campaign_select = $('#campaign-select');
+    if($campaign_select.length && typeof $().autocomplete !== 'undefined') {
+
+        $campaign_select.keyup(function(){
+            if( !$(this).val() ) {
+                $('#campaign-id').val('');
+                $('#new-donation-purpose').html('');
+            }
+        });
+
+        $campaign_select.autocomplete({
+            minLength: 1,
+            focus: function(event, ui){
+                $campaign_select.val(ui.item.label);
+                $('#new-donation-purpose').html(ui.item.payment_title);
+
+                return false;
+            },
+            change: function(event, ui){
+                if( !$campaign_select.val() ) {
+                    $('#campaign-id').val('');
+                    $('#new-donation-purpose').html('');
+                }
+            },
+            close: function(event, ui){
+                if( !$campaign_select.val() ) {
+                    $('#campaign-id').val('');
+                    $('#new-donation-purpose').html('');
+                }
+            },
+            select: function(event, ui){
+                $campaign_select.val(ui.item.label);
+                $('#campaign-id').val(ui.item.value);
+                $('#new-donation-purpose').html(ui.item.payment_title);
+                return false;
+            },
+            source: function(request, response) {
+                var term = request.term,
+                    cache = $campaign_select.data('cache') ? $campaign_select.data('cache') : [];
+
+                if(term in cache) {
+                    response(cache[term]);
+                    return;
+                }
+
+                request.action = 'leyka_get_campaigns_list';
+                request.nonce = $campaign_select.data('nonce');
+
+                $.getJSON(leyka.ajaxurl, request, function(data, status, xhr){
+
+                    var cache = $campaign_select.data('cache') ? $campaign_select.data('cache') : [];
+
+                    cache[term] = data;
+                    response(data);
+                });
+            }
+        });
+
+        $campaign_select.data('ui-autocomplete')._renderItem = function(ul, item){
+            return $('<li>')
+                .append(
+                    '<a>'+item.label+(item.label == item.payment_title ? '' : '<div>'+item.payment_title+'</div></a>')
+                )
+                .appendTo(ul);
+        };
+
+    }
+    /** Move to - END */
+
     // Validate add/edit donation form:
     $('form#post').submit(function(e){
 
@@ -54,7 +124,7 @@ jQuery(document).ready(function($){
         }
 
         $field = $('#donation-pm');
-        if($field.val() == 'custom')
+        if($field.val() === 'custom')
             $field = $('#custom-payment-info');
         if( !$field.val() ) {
 
@@ -75,7 +145,7 @@ jQuery(document).ready(function($){
 
         var $this = $(this);
 
-        if($this.val() == 'custom') {
+        if($this.val() === 'custom') {
             $('#custom-payment-info').show();
         } else {
 

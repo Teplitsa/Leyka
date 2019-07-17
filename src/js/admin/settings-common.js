@@ -162,7 +162,7 @@ jQuery(document).ready(function($){
             donation_id = $wrap.data('donation-id');
 
         $this.fadeOut(100, function(){
-            $this.html('<img src="'+leyka.ajax_loader_url+'" />').fadeIn(100);
+            $this.html('<img src="'+leyka.ajax_loader_url+'" alt="">').fadeIn(100);
         });
 
         $wrap.load(leyka.ajaxurl, {
@@ -182,8 +182,8 @@ jQuery(document).ready(function($){
     }
 
     // Campaign selection fields:
+    /** @todo Change this old campaigns select field code (pure jq-ui-autocomplete-based) to the new code (select + autocomplete, like on the Donors list page filters). */
     var $campaign_select = $('#campaign-select');
-    console.log('HERE:', $campaign_select.length)
     if($campaign_select.length && typeof $().autocomplete !== 'undefined') {
 
         $campaign_select.keyup(function(){
