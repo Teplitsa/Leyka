@@ -81,12 +81,14 @@ class Leyka_Donor {
                 __("Can't create donor user from donation", 'leyka'),
                 $donation->id
             );
+        } else {
+            $donor_user_id = $donation->donor_user_id;
         }
 
-        if(empty($donor_user_id)) {
+        if( !$donor_user_id ) {
 
             if($donor_has_account_access === null) {
-                $donor_has_account_access = $donation->type === 'rebill' && leyka()->opt('donor_accounts_available');
+                $donor_has_account_access = $donation->type === 'rebill' && leyka_options()->opt('donor_accounts_available');
             } else {
                 $donor_has_account_access = !!$donor_has_account_access;
             }

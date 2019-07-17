@@ -316,7 +316,9 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
                     $donation->status = 'funded';
                     Leyka_Donation_Management::send_all_emails($donation->id);
+
                 }
+
             }
 
         }

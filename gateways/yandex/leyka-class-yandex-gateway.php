@@ -318,13 +318,7 @@ techMessage="'.$tech_message.'"/>');
                 switch($payment->status) {
                     case 'succeeded':
                         $donation->status = 'funded';
-                        $res = Leyka_Donation_Management::send_all_emails($donation->id);
-                        /** @todo Handle the case of $res === false */
-
-                        // If it's a non-init recurring donation just completed - create donor's account, if needed:
-                        if($donation->payment_type === 'rebill') {
-                            // leyka()->register_donor_account($donation);// Trying to do it on donation status change to "funded"
-                        }
+                        Leyka_Donation_Management::send_all_emails($donation->id);
                         break;
                     case 'canceled':
                         $donation->status = 'failed';

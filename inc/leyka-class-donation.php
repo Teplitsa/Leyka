@@ -58,12 +58,20 @@ class Leyka_Donation_Management {
         add_action('leyka_donation_funded_status_changed', function($donation_id, $old_status, $new_status){
             if($old_status === 'funded' || $new_status === 'funded') {
 
-                Leyka_Donor::create_donor_from_donation($donation_id); // Testing to do it here, instead of on donations addition
+                Leyka_Donor::create_donor_from_donation($donation_id);
                 Leyka_Donor::order_donor_data_refreshing($donation_id);
 
             }
         }, 10, 3);
 
+        add_action('leyka_new_donation_added', function($donation_id){
+
+            $donation = new Leyka_Donation($donation_id);
+            if($donation && $donation->status === 'funded') {
+                Leyka_Donor::create_donor_from_donation($donation_id);
+            }
+
+        }, 9);
         add_action('leyka_new_donation_added', 'leyka_order_donation_to_refresh');
         add_action('leyka_donation_recurring_activity_changed', 'leyka_order_donation_to_refresh');
         add_action('leyka_donation_amount_changed', 'leyka_order_donation_to_refresh');
@@ -378,7 +386,7 @@ class Leyka_Donation_Management {
             } else if($donation->donor_account_id) {
 
                 try {
-                	$donor = new Leyka_Donor($donation->donor_user_id);
+                	$donor = new Leyka_Donor($donation->donor_account_id);
                 } catch(Exception $e) {
                     $donor = false;
                 }
