@@ -93,12 +93,16 @@
     justify-content: center;
     margin-bottom: 20px;
 
-    a {
+    .banner-inner {
+        position: relative;
+    }
+
+    a.banner {
+        @include leyka-admin-clean-a;
         display: block;
         width: auto;
 
         &:hover {
-            border-style: none;
         }
 
         img {
@@ -106,6 +110,20 @@
             display: block;
         }
     }
+
+    a.close {
+        background-image: url(../../img/dashboard/icon-close.svg);
+        @include leyka-admin-icon(24px);
+        @include leyka-admin-clean-a;
+        display: block;
+        position: absolute;
+        top: 0.5 * $leyka-base;
+        right: 0.5 * $leyka-base;
+
+        &:hover {
+        }
+    }
+
 }
 
 // **** main part ****

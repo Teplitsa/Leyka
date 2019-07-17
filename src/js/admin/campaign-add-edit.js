@@ -309,7 +309,7 @@ jQuery(document).ready(function($){
 
         let $this = $(this);
 
-        if($this.val() === 'revo' || $this.val() === 'star') {
+        if($this.val() === 'star') {
     		$('#campaign-css').show();
         } else {
         	$('#campaign-css').hide();

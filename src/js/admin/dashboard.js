@@ -96,3 +96,18 @@ jQuery(document).ready(function($){
             });
     });
 });
+
+// banner
+jQuery(document).ready(function($){
+    $('.banner-wrapper .close').on('click.leyka', function(e){
+        e.preventDefault();
+
+        $(this).closest('.banner-wrapper').remove();
+
+        let ajax_params = {
+            action: 'leyka_close_dashboard_banner'
+        };
+
+        $.post(leyka.ajaxurl, ajax_params, null, 'json');
+    });
+});

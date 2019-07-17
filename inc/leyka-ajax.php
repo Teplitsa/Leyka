@@ -981,3 +981,17 @@ function leyka_save_donor_tags() {
     )));
 }
 add_action('wp_ajax_leyka_save_donor_tags', 'leyka_save_donor_tags');
+
+
+function leyka_close_dashboard_banner() {
+    try {
+        update_user_meta(get_current_user_id(), 'leyka_dashboard_banner_closed', 'y');
+    } catch(Exception $e) {
+        die(json_encode(array('status' => 'error')));
+    }
+    
+    die(json_encode(array(
+        'status' => 'ok',
+    )));
+}
+add_action('wp_ajax_leyka_close_dashboard_banner', 'leyka_close_dashboard_banner');

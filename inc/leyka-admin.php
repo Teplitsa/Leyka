@@ -294,14 +294,19 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
     <?php
 	}
 
-	public function has_banners($page = false, $location = false) {?>
-	    <?php return false;
+	public function has_banners($page = false, $location = false) {
+	    return !get_user_meta(get_current_user_id(), 'leyka_dashboard_banner_closed', true);
     }
 
     public function show_banner($page = false, $location = false) {?>
     
         <div class="banner-wrapper">
-            <a href="<?php echo admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init');?>"><img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/banner-run-wizard.svg" alt=""></a>
+        	<div class="banner-inner">
+                <a href="<?php echo admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init');?>" class="banner">
+                	<img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/banner-run-wizard.svg" alt="">
+            	</a>
+            	<a class="close" href="#" title="<?php esc_html_e('Close permanently', 'leyka');?>"> </a>
+        	</div>
         </div>
 
     <?php

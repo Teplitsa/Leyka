@@ -429,7 +429,7 @@ jQuery(document).ready(function($){
 
         let $this = $(this);
 
-        if($this.val() === 'revo' || $this.val() === 'star') {
+        if($this.val() === 'star') {
     		$('#campaign-css').show();
         } else {
         	$('#campaign-css').hide();
@@ -536,6 +536,22 @@ jQuery(document).ready(function($){
             });
     });
 });
+
+// banner
+jQuery(document).ready(function($){
+    $('.banner-wrapper .close').on('click.leyka', function(e){
+        e.preventDefault();
+
+        $(this).closest('.banner-wrapper').remove();
+
+        let ajax_params = {
+            action: 'leyka_close_dashboard_banner'
+        };
+
+        $.post(leyka.ajaxurl, ajax_params, null, 'json');
+    });
+});
+
 /** Donor's info page */
 jQuery(document).ready(function($){
 
