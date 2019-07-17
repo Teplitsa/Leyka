@@ -105,6 +105,7 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-core.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-gateways-api.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-campaign.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donation.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donor.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-payment-form.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-template-controller.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-ajax.php');

@@ -117,8 +117,6 @@ class Leyka extends Leyka_Singleton {
         // For Donors management:
         if(get_option('leyka_donor_management_available') || get_option('leyka_donor_accounts_available')) {
 
-            require_once LEYKA_PLUGIN_DIR.'inc/leyka-class-donor.php';
-
             // Don't show admin bar:
             add_action('init', function() {
                 if(leyka_user_has_role('donor_single')) {
