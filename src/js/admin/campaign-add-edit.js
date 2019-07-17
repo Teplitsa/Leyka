@@ -168,7 +168,12 @@ jQuery(document).ready(function($){
     // Custom CSS editor:
     let $css_editor = $('.css-editor-field');
     let editor = {};
-    if($css_editor.length) {
+
+    if(!wp.codeEditor) {
+        console.log("no code editor");
+    }
+
+    if($css_editor.length && wp.codeEditor) {
 
         let editor_settings = wp.codeEditor.defaultSettings ? _.clone( wp.codeEditor.defaultSettings ) : {};
         editor_settings.codemirror = _.extend({
