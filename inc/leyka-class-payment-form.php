@@ -917,16 +917,19 @@ function leyka_print_donation_elements($content) {
 
 function leyka_get_current_template_data($campaign = null, $template = null, $is_service = false) {
 
-	if( !$campaign ) {
-		$campaign = get_post();
-    } elseif(is_numeric($campaign)) {
-		$campaign = get_post($campaign);
+    if(is_numeric($campaign)) {
+        $campaign = get_post($campaign);
     }
-    else {
+    elseif(!$campaign) {
         $donation_id = leyka_remembered_data('donation_id');
         $donation = $donation_id ? new Leyka_Donation($donation_id) : null;
         $campaign_id = $donation ? $donation->campaign_id : null;
         $campaign = $campaign_id ? new Leyka_Campaign($campaign_id) : null;
+    }
+    
+    // fallback if no leyka_remembered_data and campaign not specified
+    if( !$campaign ) {
+        $campaign = get_post();
     }
 
     // Get campaign-specific template, if needed:
