@@ -668,21 +668,11 @@ class Leyka_Donor {
         $donations = get_posts(array(
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => array('funded', 'refunded', 'failed'),
-            'meta_query' => array(
-                'relation' => 'AND',
-                array(
-                    'relation' => 'OR',
-                    array('key' => 'leyka_payment_type', 'value' => 'single'),
-                    array('key' => 'leyka_payment_type', 'value' => 'rebill'),
-                ),
-                array(
-                    'relation' => 'OR',
-                    array('key' => 'leyka_donor_email', 'value' => $this->email),
-                    array('key' => 'leyka_donor_account', 'value' => $this->_id),
-                ),
-            ),
+            'author' => $this->_id,
             'posts_per_page' => static::DONOR_ACCOUNT_DONATIONS_PER_PAGE,
             'paged' => $page_number,
+            'orderby' => 'date ID',
+            'order' => 'DESC',
         ));
 
         if( !$donations ) {

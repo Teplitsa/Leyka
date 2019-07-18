@@ -1510,7 +1510,7 @@ class Leyka_Donation_Management {
             $campaign->payment_title :
             ($campaign->title ? $campaign->title : sprintf(__('Donation #%s', 'leyka'), $donation_id));
 
-        if($donation->title != $donation_title) {
+        if($donation->title !== $donation_title) {
             $donation->title = $donation_title;
         }
 
@@ -1575,8 +1575,8 @@ class Leyka_Donation_Management {
 
             	$donor = new Leyka_Donor($donation->donor_email);
 
-                Leyka_Donor::calculate_donor_metadata($donor);
                 $donation->donor_user_id = $donor->id;
+                Leyka_Donor::calculate_donor_metadata($donor);
 
             } catch(Exception $e) {
             	// ...

@@ -54,7 +54,7 @@ try {
             <td class="data-campaign">
                 <div class="leyka-donation-info-wrapper">
                     <span class="donation-status <?php echo $donation->status;?> field-q">
-                    	<span class="field-q-tooltip"><?php esc_html_e('Donation ' . $donation->status, 'leyka');?></span>
+                    	<span class="field-q-tooltip"><?php _e('Donation ' . $donation->status, 'leyka');?></span>
                     </span>
                     <div class="first-sub-row"><?php echo $donation->campaign_title;?></div>
                     <div class="second-sub-row"><?php echo $gateway_label.', '.$pm_label;?></div>
