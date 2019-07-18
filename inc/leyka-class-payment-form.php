@@ -922,12 +922,12 @@ function leyka_get_current_template_data($campaign = null, $template = null, $is
     } elseif(is_numeric($campaign)) {
 		$campaign = get_post($campaign);
     }
-//     else {
-//         $donation_id = leyka_remembered_data('donation_id');
-//         $donation = $donation_id ? new Leyka_Donation($donation_id) : null;
-//         $campaign_id = $donation ? $donation->campaign_id : null;
-//         $campaign = $campaign_id ? new Leyka_Campaign($campaign_id) : null;
-//     }
+    else {
+        $donation_id = leyka_remembered_data('donation_id');
+        $donation = $donation_id ? new Leyka_Donation($donation_id) : null;
+        $campaign_id = $donation ? $donation->campaign_id : null;
+        $campaign = $campaign_id ? new Leyka_Campaign($campaign_id) : null;
+    }
 
     // Get campaign-specific template, if needed:
 	if( !$template ) {
