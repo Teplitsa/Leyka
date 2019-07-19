@@ -149,7 +149,7 @@ class Leyka extends Leyka_Singleton {
 
             // Refuse the login for Donors without personal accounts:
             add_action('wp_login', function($login, WP_User $user){
-                if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, false, $user) && !$user->has_cap('donor_account_access') ) {
+                if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, true, $user) && !$user->has_cap('donor_account_access') ) {
 
                     wp_logout();
                     wp_redirect(home_url());
@@ -162,7 +162,7 @@ class Leyka extends Leyka_Singleton {
             add_action('init', function(){
 
                 $user = wp_get_current_user();
-                if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, false, $user) && !$user->has_cap('donor_account_access') ) {
+                if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, true, $user) && !$user->has_cap('donor_account_access') ) {
 
                     wp_logout();
                     wp_redirect(home_url());
@@ -1005,6 +1005,9 @@ class Leyka extends Leyka_Singleton {
             return;
         }
 
+        /** @todo Move all version-dependent procedures to some special place */
+        /** @todo Remove all really old versions procedures. */
+
         if( !$leyka_last_ver || $leyka_last_ver < '2.1' ) {
 
             // Upgrade the options structure in the DB:
@@ -1192,10 +1195,9 @@ class Leyka extends Leyka_Singleton {
 
         if( !$leyka_last_ver || $leyka_last_ver < '3.0' ) {
 
-            if(defined('KND_VERSION') && class_exists( 'TGM_Plugin_Activation' )) {
+            if(defined('KND_VERSION') && class_exists('TGM_Plugin_Activation')) {
               update_option('leyka_init_wizard_redirect', false);
-            }
-            else {
+            } else {
                update_option('leyka_init_wizard_redirect', !$leyka_last_ver);
             }
 

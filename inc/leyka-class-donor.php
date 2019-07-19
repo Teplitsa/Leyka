@@ -54,13 +54,27 @@ class Leyka_Donor {
 
         }
 
-        if($params['donor_has_account_access']) {
+        self::update_account_access($donor_user, $params['donor_has_account_access']);
+
+        return $donor_user_id;
+
+    }
+
+
+    public static function update_account_access($donor_user, $donor_has_account_access) {
+
+        $donor_user = leyka_get_validated_user($donor_user);
+        $donor_has_account_access = !!$donor_has_account_access;
+
+        if( !self::user_is_donor($donor_user) ) {
+            $donor_user->add_role(self::DONOR_USER_ROLE);
+        }
+
+        if($donor_has_account_access) {
             $donor_user->add_cap('donor_account_access');
         } else {
             $donor_user->remove_cap('donor_account_access');
         }
-
-        return $donor_user_id;
 
     }
 
@@ -85,13 +99,13 @@ class Leyka_Donor {
             $donor_user_id = $donation->donor_user_id;
         }
 
-        if( !$donor_user_id ) {
+        if($donor_has_account_access === null) {
+            $donor_has_account_access = $donation->type === 'rebill' && leyka_options()->opt('donor_accounts_available');
+        } else {
+            $donor_has_account_access = !!$donor_has_account_access;
+        }
 
-            if($donor_has_account_access === null) {
-                $donor_has_account_access = $donation->type === 'rebill' && leyka_options()->opt('donor_accounts_available');
-            } else {
-                $donor_has_account_access = !!$donor_has_account_access;
-            }
+        if( !$donor_user_id ) {
 
             $donor_user_id = Leyka_Donor::add(array(
                 'donor_email' => $donation->donor_email,
@@ -99,8 +113,10 @@ class Leyka_Donor {
                 'donor_has_account_access' => $donor_has_account_access,
             ));
 
-            $donation->donor_account = $donor_user_id;
+            $donation->donor_account = $donor_user_id; // Donor ID or WP_Error
 
+        } else if(is_int($donor_user_id)) { // Add/remove Donor's account access capability, if needed
+            Leyka_Donor::update_account_access($donor_user_id, $donor_has_account_access);
         }
 
         do_action('leyka_donor_account'.(is_wp_error($donor_user_id) ? '_not_' : '_').'created', $donor_user_id, $donation);
@@ -227,47 +243,24 @@ class Leyka_Donor {
 
     }
 
-    protected static function _is_donor(WP_User $donor_user) {
+    public static function user_is_donor(WP_User $donor_user) {
         return in_array(static::DONOR_USER_ROLE, (array)$donor_user->roles);
     }
 
-    /** @throws Exception */
+    /**
+     * @param $donor_user int|string|WP_User Either Donor's ID, email, or WP_User object.
+     * @throws Exception
+     */
     public function __construct($donor_user) {
 
-        if((is_int($donor_user) || is_string($donor_user)) && absint($donor_user) > 0) {
+        $donor_user = leyka_get_validated_user($donor_user);
 
-            $donor_user = (int)$donor_user;
-            $this->_user = get_user_by('id', $donor_user);
-
-            if( !$this->_user || !self::_is_donor($this->_user) ) {
-                throw new Exception(__('Incorrect Donor identification data', 'leyka'));
-            }
-
-            $this->_id = $this->_user->ID;
-
-        } else if(is_string($donor_user) && $donor_user) {
-
-            $donor_user = esc_sql($donor_user);
-            $this->_user = get_user_by('email', $donor_user);
-
-            if( !$this->_user || !self::_is_donor($this->_user) ) {
-                throw new Exception(__('Incorrect Donor identification data', 'leyka'));
-            }
-
-            $this->_id = $this->_user->ID;
-
-        } else if(is_a($donor_user, 'WP_User')) { /** @var $donor_user WP_User */
-
-            if( !self::_is_donor($donor_user) ) {
-                throw new Exception(__('Incorrect Donor identification data', 'leyka'));
-            }
-
-            $this->_user = $donor_user;
-            $this->_id = $donor_user->ID;
-
-        } else {
-            throw new Exception(__('Incorrect Donor identification data', 'leyka'));
+        if(is_wp_error($donor_user)) {
+            throw new Exception($donor_user->get_error_message());
         }
+
+        $this->_id = $donor_user->id;
+        $this->_user = $donor_user;
 
         if( !$this->_meta ) {
 
