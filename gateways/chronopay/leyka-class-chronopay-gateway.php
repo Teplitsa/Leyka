@@ -54,7 +54,8 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 'type' => 'checkbox',
                 'default' => false,
                 'title' => __('Use the payments uniqueness control', 'leyka'),
-                'description' => __('Check if you use Chronopay payment uniqueness control setting.', 'leyka'),
+                'comment' => __('Check if you use Chronopay payment uniqueness control setting.', 'leyka'),
+                'short_format' => true,
             ),
         );
 

@@ -60,7 +60,8 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
                 'type' => 'checkbox',
                 'default' => true,
                 'title' => __('Payments testing mode', 'leyka'),
-                'description' => __('Check if the gateway integration is in test mode.', 'leyka'),
+                'comment' => __('Check if the gateway integration is in test mode.', 'leyka'),
+                'short_format' => true,
             ),
         );
 

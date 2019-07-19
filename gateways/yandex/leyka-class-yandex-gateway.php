@@ -40,8 +40,9 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             $this->_id.'_new_api' => array(
                 'type' => 'checkbox',
                 'default' => leyka_is_yandex_new_api_used(),
-                'title' => __('Use Yandex.Kassa new API', 'leyka'), // Новый API Яндекс.Кассы
-                'description' => __('Check if your Yandex.Kassa connection uses the new API', 'check'), // Отметьте, если ваше подключение к Яндекс.Кассе использует новый API
+                'title' => __('Use Yandex.Kassa new API', 'leyka'),
+                'comment' => __('Check if your Yandex.Kassa connection uses the new API', 'leyka'),
+                'short_format' => true,
             ),
             $this->_id.'_shop_id' => array(
                 'type' => 'text',
@@ -86,14 +87,16 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'type' => 'checkbox',
                 'default' => true,
                 'title' => __('Payments testing mode', 'leyka'),
-                'description' => __('Check if the gateway integration is in test mode.', 'leyka'),
+                'comment' => __('Check if the gateway integration is in test mode.', 'leyka'),
+                'short_format' => true,
                 'field_classes' => array('old-api'),
             ),
             $this->_id.'_outer_ip_to_inner' => array(
                 'type' => 'checkbox',
                 'default' => true,
                 'title' => __('Set outer requests IP to inner one', 'leyka'),
-                'description' => __('Check if there are systematic errors on payments using the gateway.', 'leyka'),
+                'comment' => __('Check if there are systematic errors on payments using the gateway.', 'leyka'),
+                'short_format' => true,
             ),
         );
 
@@ -872,7 +875,8 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
                 'type' => 'checkbox',
                 'default' => false,
                 'title' => __('Monthly recurring subscriptions are available', 'leyka'),
-                'description' => __('Check if Yandex.Kassa allows you to create recurrent subscriptions to do regular automatic payments.', 'leyka'),
+                'comment' => __('Check if Yandex.Kassa allows you to create recurrent subscriptions to do regular automatic payments.', 'leyka'),
+                'short_format' => true,
             ),
             $this->full_id.'_certificate_path' => array(
                 'type' => 'text',
