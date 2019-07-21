@@ -20,6 +20,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         'radios' => array(),
         'toggles' => array(),
         'revo' => array(),
+        'star' => array(),
     );
 
     protected function __construct() {
@@ -27,7 +28,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         $this->add_template_options();
     }
 
-    public function isStandardFieldType($type) {
+    public function is_standard_field_type($type) {
         return in_array($type, self::$_field_types);
     }
 
@@ -252,7 +253,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         $val = false;
         if(leyka_options()->is_template_option($option_id)) {
 
-            $template_id = $template_id ? $template_id : leyka_template_from_query_arg();
+            $template_id = $template_id ? $template_id : leyka_remembered_data('template_id');
             
             if( !$template_id ) {
 
@@ -356,7 +357,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
         $this->_intialize_option($option_id, true);
         
-        $this->_options[$option_id] = array(
+        $filtered_options = array(
             'title' => apply_filters('leyka_option_title-'.$option_id, $this->_options[$option_id]['title']),
             'type' => apply_filters('leyka_option_type-'.$option_id, $this->_options[$option_id]['type']),
             'required' => apply_filters(
@@ -367,9 +368,20 @@ class Leyka_Options_Controller extends Leyka_Singleton {
                 'leyka_option_default-'.$option_id,
                 empty($option_data['default']) ? '' : $option_data['default']
             ),
-        ) + $this->_options[$option_id];
+        );
+        $this->_options[$option_id] = array_merge($filtered_options, $this->_options[$option_id]);
 
         return apply_filters('leyka_option_info-'.$option_id, $this->_options[$option_id]);
+
+    }
+
+    public function get_title_of($option_id) {
+
+        $option_id = str_replace('leyka_', '', $option_id);
+
+        $this->_intialize_option($option_id, true);
+
+        return apply_filters('leyka_option_title-'.$option_id, $this->_options[$option_id]['title']);
 
     }
 
@@ -513,7 +525,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
  * @return Leyka_Options_Controller
  */
 function leyka_options() {
-    return Leyka_Options_Controller::getInstance();
+    return Leyka_Options_Controller::get_instance();
 }
 
 /** Special field: gateway commission options */
@@ -526,6 +538,7 @@ add_action('leyka_save_custom_option-commission', 'leyka_save_custom_option_comm
 function leyka_save_custom_option_commission($option_value) {
 
     $all_pm_commissions = leyka_options()->opt('commission');
+    $all_pm_commissions = $all_pm_commissions ? $all_pm_commissions : array();
 
     foreach($option_value as $pm_full_id => $commission) {
 
@@ -542,107 +555,3 @@ function leyka_save_custom_option_commission($option_value) {
 
 }
 /** Special field: gateway commission options - END */
-
-/** Save the basic site data in the plugin stats DB */
-function leyka_sync_plugin_stats_option() {
-
-    $stats_server_base_url = defined('LEYKA_DEBUG') && LEYKA_DEBUG ?
-        rtrim(LEYKA_USAGE_STATS_DEV_SERVER_URL, '/') : rtrim(LEYKA_USAGE_STATS_PROD_SERVER_URL, '/');
-
-    $leyka_installation_id = (int)get_option('leyka_installation_id');
-
-    if($leyka_installation_id) { // Update the installation (activate/deactivate)
-
-        require_once LEYKA_PLUGIN_DIR.'bin/sodium-compat.phar';
-
-        if( !function_exists('Sodium\hex2bin') ) {
-            return new WP_Error(
-                'plugin_stats_sync_error',
-                __('Plugin stats sync error: Sodium syphering module is not included', 'leyka')
-            );
-        }
-
-        $sipher_public_key = get_option('leyka_stats_sipher_public_key');
-        $params = array(
-            'stats_active' => (int)(leyka_options()->opt('send_plugin_stats') === 'y'),
-            'installation_url' => home_url(), // Just in case
-            'installation_id' => $leyka_installation_id,
-        );
-
-        if($sipher_public_key) {
-
-            $sipher_public_key = \Sodium\hex2bin($sipher_public_key);
-
-            foreach($params as $key => $value) {
-
-                if($key === 'installation_id') {
-                    continue;
-                }
-
-                $params[$key] = \Sodium\crypto_box_seal((string)$value, $sipher_public_key);
-
-            }
-
-        }
-
-    } else { // Add new installation
-        $params = array(
-            'stats_active' => true,
-            'installation_url' => home_url(),
-            'plugin_install_date' => get_option('leyka_plugin_install_date'),
-            'collect_stats_from_date' => time(),
-            'stats_collection_active' => true,
-        );
-    }
-
-    $response = wp_remote_post($stats_server_base_url.'/sync-installation.php', array(
-        'timeout' => 10, // Max request time in seconds
-        'redirection' => 3, // A number of max times for request redirects
-        'httpversion' => '1.1',
-        'blocking' => true, // True for sync request, false otherwise
-        'body' => $params,
-        'headers' => array('Authorization' => 'Basic '.base64_encode('leyka:kopeyka'),),
-    ));
-
-    if(is_wp_error($response)) {
-        return new WP_Error(
-            'init_plugin_stats_error',
-            sprintf(__('Error while saving the plugin usage data: %s', 'leyka'), $response->get_error_message())
-        );
-    } else if(empty($response['response']['code']) || $response['response']['code'] != 200) {
-
-        $error_message = sprintf(
-            __('Error while saving the plugin usage data: %s', 'leyka'),
-            empty($response['response']['code']) ?
-                __("the response code & status data weren't received", 'leyka') :
-                sprintf(__('code %d', 'leyka'), $response['response']['code']).(empty($response['response']['message']) ? '' : ' ('.$response['response']['message'].(empty($response['body']) ? '' : ' - '.trim($response['body'], '.')).')')
-        );
-
-        return new WP_Error('init_plugin_stats_error', $error_message);
-
-    } else {
-
-        if(empty($response['body'])) {
-            return new WP_Error(
-                'plugin_stats_not_saved',
-                sprintf(__("The plugin stats collection status wasn't saved :( Please send a message about it to the <a href='mailto:%s' target='_blank'>plugin tech support</a>", LEYKA_SUPPORT_EMAIL), 'leyka')
-            );
-        }
-
-        $response = json_decode($response['body'], true);
-        if(
-            empty($response['installation_id']) || (int)$response['installation_id'] <= 0
-            || ( !$leyka_installation_id && empty($response['public_key']) )
-        ) {
-            return new WP_Error(
-                'plugin_stats_not_saved',
-                sprintf(__("The plugin stats collection status wasn't saved :( Please send a message about it to the <a href='mailto:%s' target='_blank'>plugin tech support</a>", LEYKA_SUPPORT_EMAIL), 'leyka')
-            );
-        }
-
-        return update_option('leyka_installation_id', (int)$response['installation_id'])
-            && update_option('leyka_stats_sipher_public_key', $response['public_key']);
-
-    }
-
-}

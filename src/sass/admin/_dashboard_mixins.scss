@@ -1,0 +1,43 @@
+/** == Mixins (_dashboard_mixins.scss) == **/
+
+@mixin leyka-adb-a($mod: default) {
+    @include leyka-admin-a($mod);
+}
+
+@mixin leyka-adb-btn($mod: default) {
+    @include leyka-admin-btn($mod);    
+}
+
+@mixin leyka-adb-btn-primary($mod: default) {
+	@include leyka-adb-btn($mod);
+}
+
+@mixin leyka-adb-sidebar-part-iconed-link($icon_url) {
+    background-image: url($icon_url);
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    background-position: left center;
+    width: auto;
+    min-height: 24px;
+    display: flex;
+    padding-left: 32px;
+    align-items: center;
+    
+	a {
+	    @include leyka-adb-a();
+	}
+}
+
+@mixin leyka-donor-type-icon {
+    div {
+        background-image: url(../../img/dashboard/icon-donation-type-rebill.svg);
+        background-repeat: no-repeat;
+        background-size: 32px 32px;
+        width: 32px;
+        height: 32px;
+    }
+
+    .single {
+        background-image: url(../../img/dashboard/icon-donation-type-single.svg);
+    }
+}

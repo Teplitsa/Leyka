@@ -45,21 +45,21 @@ jQuery(document).ready(function($){
         $previewIframe.contents().find('body').addClass('wizard-init-campaign-preview');
     });
 
-    $('#campaign_photo-upload-button').click(function(){
-        
+    $('#campaign_photo-upload-button').on('click.leyka', function(){
+
         var frame = wp.media({
             title: 'Выбор фотографии кампании',
             multiple: false
         });
         
-        frame.on( 'select', function() {
+        frame.on('select', function(){
+
             var attachment = frame.state().get('selection').first().toJSON();
-            //alert( attachment.id );
-            
-            if(attachment.id == campaignAttachmentId) {
+
+            if( !attachment.id ) {
                 return;
             }
-            
+
             disableForm();
             showLoading();
             
@@ -86,12 +86,12 @@ jQuery(document).ready(function($){
                 .always(function() {
                     hideLoading();
                     enableForm();
-                });            
-            
-            
+                });
+
         });
 
-        frame.open();        
+        frame.open();
+
     });
     
     $selectTemplateControl.on('change', function(){

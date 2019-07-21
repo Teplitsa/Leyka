@@ -17,18 +17,18 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
         ));
     }
 
-    public function getTabs() {
+    public function get_tabs() {
         return $this->_tabs;
     }
 
-    public function getTabOptions($tab_name) {
+    public function get_tab_options($tab_id) {
 
-        if(empty($this->_tabs[$tab_name])) {
+        if(empty($this->_tabs[$tab_id])) {
             return false;
         }
 
         $options_allocated = array();
-        switch($tab_name) {
+        switch($tab_id) {
             case 'beneficiary':
                 $options_allocated = array(
                     array('section' => array(
@@ -37,7 +37,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'description' => __('These data we will use for reporting documents to your donors. All data can be found in documents', 'leyka'),
                         'is_default_collapsed' => false,
                         'options' => array(
-                            'org_full_name', 'org_face_fio_ip', 'org_face_fio_rp', 'org_face_position', 'org_address',
+                            'org_full_name', 'org_face_fio_ip', /*'org_face_fio_rp',*/ 'org_face_position', 'org_address',
                             'org_state_reg_number', 'org_kpp', 'org_inn', 
                         )
                     )),
@@ -150,7 +150,17 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'is_default_collapsed' => false,
                         'options' => array(
                             'notify_donations_managers', 'notify_managers_on_recurrents', 'donations_managers_emails',
-                            'email_notification_title', 'email_notification_text',
+                            'email_notification_title', 'email_notification_text', 'notify_tech_support_on_failed_donations',
+                        )
+                    ),),
+                    array('section' => array(
+                        'name' => 'notify_old_recurring_donors',
+                        'title' => __('Old recurring donors notifications options', 'leyka'),
+                        'description' => __("Settings for the email notification sent to each donor when personal accounts feature are on, but donor's recurring donations started before that", 'leyka'),
+                        'is_default_collapsed' => true,
+                        'options' => array(
+                            'non_init_recurring_donor_registration_emails_title',
+                            'non_init_recurring_donor_registration_emails_text',
                         )
                     ),),
                 );
@@ -169,8 +179,8 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                 'title' => __('Main template', 'leyka'),
                                 'sections' => array(
                                     array(
-                                        'options' => array('donation_form_template'),
                                         'title' => __('Which campaign template is default?', 'leyka'),
+                                        'options' => array('donation_form_template'),
                                     ),
                                 ),
                             ),
@@ -266,6 +276,30 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                     ),
                                 ),
                             ),
+                            'template_options_star' => array(
+                                'title' => __('Star', 'leyka'),
+                                'screenshots' => array('screen-star-001.png'),
+                                'sections' => array(
+                                    array(
+                                        'title' => __('Donation sum field type', 'leyka'),
+                                        'options' => array('donation_sum_field_type',),
+                                    ),
+                                    array(
+                                        'title' => __('Label of the button to submit a donation form', 'leyka'),
+                                        'options' => array('donation_submit_text',),
+                                    ),
+                                    array(
+                                        'title' => __('Additional settings', 'leyka'),
+                                        'options' => array(
+                                            'show_success_widget_on_success',
+                                            'show_donation_comment_field', 'donation_comment_max_length',
+                                            //'show_campaign_sharing',
+                                            'show_failure_widget_on_failure',
+                                            'do_not_display_donation_form',
+                                        ),
+                                    ),
+                                ),
+                            ),
                         ),
                     ),),
 
@@ -323,7 +357,12 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                             ),
                         ),
                     ),),
-                    
+                    array('section' => array(
+                        'name' => 'misc_view_settings',
+                        'title' => __('Miscellaneous', 'leyka'),
+                        'is_default_collapsed' => true,
+                        'options' => array('widgets_total_amount_usage',)
+                    ),),
                 );
                 break;
             
@@ -384,7 +423,13 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'name' => 'web_analytics_integrations',
                         'title' => __('Web analysis services integration options', 'leyka'),
                         'is_default_collapsed' => true,
-                        'options' => array('show_gtm_dataLayer_on_success',)
+                        'options' => array('use_gtm_ua_integration',)
+                    ),),
+                    array('section' => array(
+                        'name' => 'donor_accounts',
+                        'title' => __('Donors & accounts options', 'leyka'),
+                        'is_default_collapsed' => true,
+                        'options' => array('donor_management_available', 'donor_accounts_available',)
                     ),),
                     array('section' => array(
                         'name' => 'misc',
@@ -401,12 +446,12 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
             default:
         }
 
-        return apply_filters("leyka_{$tab_name}_options_allocation", $options_allocated);
+        return apply_filters("leyka_{$tab_id}_options_allocation", $options_allocated);
 
     }
 }
 
 /** @return Leyka_Options_Allocator */
 function leyka_opt_alloc() {
-    return Leyka_Options_Allocator::getInstance();
+    return Leyka_Options_Allocator::get_instance();
 }

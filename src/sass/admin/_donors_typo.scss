@@ -1,0 +1,63 @@
+/** == Typography (_donors_typo.scss) == **/
+
+@mixin leyka-donors-text() {
+	font-family: $body;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 13px;
+	line-height: 16px;
+}
+
+@mixin leyka-donors-text-small() {
+    @include leyka-donors-text;
+    font-size: 11px;
+}
+
+@mixin leyka-donors-text-table-head() {
+    @include leyka-donors-text;
+    font-size: 14px;
+    line-height: 18px;
+}
+
+@mixin leyka-donors-text-link() {
+    @include leyka-donors-text;
+    font-size: 14px;
+}
+
+@mixin leyka-donors-text-caption() {
+    @include leyka-donors-text;
+}
+
+@mixin leyka-donors-text-caption-big() {
+    @include leyka-donors-text;
+    font-size: 16px;
+}
+
+@mixin leyka-donors-text-link-big() {
+    @include leyka-donors-text;
+    font-size: 14px;
+    line-height: 24px;
+}
+
+@mixin leyka-donors-text-h2 {
+    @include leyka-donors-text;
+    font-size: 18px;
+    line-height: 24px;
+}
+
+@mixin leyka-donor-text-table-head() {
+    @include leyka-donors-text;
+    font-weight: 500;
+}
+
+@mixin leyka-donor-text-tags-explanation {
+    @include leyka-donors-text;
+    font-style: italic;
+    font-size: 12px;    
+}
+
+@mixin leyka-donors-text-filter-warning() {
+    @include leyka-donors-text;
+    font-size: 14px;
+    line-height: 24px;
+}

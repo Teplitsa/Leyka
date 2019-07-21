@@ -1,0 +1,141 @@
+/** == Persistent campaign page styles (_persistent_campaign.scss) == **/
+
+.leyka_campaign-template-persistent {
+    &:before {
+        display: none;
+    }
+    
+    .site-content.leyka-campaign-content {
+        margin-left: 0px;
+    }
+    
+    .site-footer {
+        margin-left: 0px;
+        width: 100%;
+    }
+}
+
+.leyka-persistant-campaign {
+    @include leyka-pc-text();
+}
+
+.leyka-persistant-campaign .leyka-campaign-header {
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    
+    &.cover-type-image {
+        background-image: url(../../img/persistent_campaign_header_bg.jpg);
+    }
+    
+    .header-tint {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding-bottom: 2 * $leyka-star-base;
+        background-color: rgba(46, 16, 5, 0.75);
+        
+        &.hide-cover-tint {
+            background-color: transparent;
+        }
+        
+        @include for(medium-screens) {
+            padding-bottom: 145px;
+        }
+    }
+    
+    .leyka-campaign-logo {
+        @include star-clean-a();
+        display: block;
+        width: auto;
+        height: auto;
+    }
+    
+    .leyka-campaign-no-logo {
+        width: 280px;
+        height: 0px;
+        
+        @include for(medium-screens) {
+            height: 50px;
+        }
+    }
+    
+    h1 {
+        @include leyka-pc-h1();
+        display: block;
+        color: $leyka-star-color-text-light;
+        max-width: 746px;
+        text-align: center;
+        margin-top: 2 * $leyka-star-base;
+        margin-bottom: 0px;
+
+        @include for(medium-screens) {
+            margin-top: 2.5 * $leyka-star-base;
+        }
+        
+        &:before {
+            display: none;
+        }
+    }
+    
+}
+
+.leyka-persistant-campaign {
+    
+    h1 {
+        &:before {
+            display: none;
+        }
+    }
+    
+    h2 {
+        &:before {
+            display: none;
+        }
+    }
+}
+
+.leyka-persistant-campaign .leyka-campaign-content {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    
+    &.site-content {
+        margin-top: 0;
+        padding-top: 0;
+        background-color: $leyka-star-color-gray-superlight;
+        overflow: visible;
+    }
+    
+    .content-area {
+        max-width: 600px;
+        width: 100%;
+        margin: 0px;
+        
+        .entry-content {
+            @include leyka-pc-text-content();
+            color: $leyka-star-color-gray-dark;
+            margin: 0px;
+            padding: 0px $leyka-star-base $leyka-star-base $leyka-star-base;
+            width: 100% !important;
+            max-width: unset;
+            
+            @include for(medium-screens) {
+                padding: 0px 2 * $leyka-star-base 4 * $leyka-star-base 2 * $leyka-star-base;
+            }
+            
+		   .leyka-pf-star {
+		       @include leyka-star-style-block-box();
+               @include leyka-star-style-block-position();
+		   }
+            
+            p {
+                margin-bottom: $leyka-star-base;
+            }
+        }
+    }
+    
+}

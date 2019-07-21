@@ -15,13 +15,15 @@ $email_placeholders =
 <span class='item'><code>#CAMPAIGN_TARGET#</code><span class='description'>Официальная цель пожертвования (см. настройки кампании, опция «заголовок для платёжной системы»)</span></span>
 <span class='item'><code>#PURPOSE#</code><span class='description'>Название кампании для платежных систем</span></span>
 <span class='item'><code>#DATE#</code><span class='description'>Дата пожертвования</span></span>
+</span><span class='item'><code>#DONOR_ACCOUNT_LOGIN_LINK#</code><span class='description'>Приглашение войти в Личный кабинет донора</span></span>
+</span><span class='item'><code>#RECURRING_SUBSCRIPTION_CANCELLING_LINK#</code><span class='description'>Отменить рекуррентную подписку донора</span></span>
+</span><span class='item'><code>#DONOR_ACCOUNT_LOGIN_LINK#</code><span class='description'>Ссылка на активацию/вход в Личный кабинет донора</span></span>
 </span>
 <div class='placeholders-help-actions'>
 <a href=\"#\" class=\"inner hide-available-tags\">Свернуть доступные теги</a>
 <a href=\"#\" class=\"inner show-available-tags\">Посмотреть доступные теги</a>
 <a href=\"#\" class=\"inner restore-original-doc\">Вернуть первоначальный текст</a>
-</div>
-";
+</div>";
 
 $campaign_target_reaching_email_placeholders =
 "<span class='placeholders-help'>
@@ -38,20 +40,19 @@ $campaign_target_reaching_email_placeholders =
 <a href=\"#\" class=\"inner hide-available-tags\">Свернуть доступные теги</a>
 <a href=\"#\" class=\"inner show-available-tags\">Посмотреть доступные теги</a>
 <a href=\"#\" class=\"inner restore-original-doc\">Вернуть первоначальный текст</a>
-</div>
-";
+</div>";
 
 /** Possible field types are: text, textarea, number, html, rich_html, select, radio, checkbox, multi_checkbox, custom_XXX */
 
 // For type='text':
 // 'length' => '',
 // 'placeholder' => '',
-// 'required' => boolean,
+// 'required' => boolean (default false),
 
 // For type='number':
 // 'length' => '',
 // 'placeholder' => '',
-// 'required' => 1 / 0
+// 'required' => boolean (default false),
 // 'min' => 0+ / false,
 // 'max' => 0+ / false,
 // 'step' => positive number,
@@ -61,7 +62,7 @@ $campaign_target_reaching_email_placeholders =
 //  'value_variant' => 'Variant title',
 //  or 'value_variant' => array('title' => 'Variant title', 'comment' => 'Variant comment')
 //),
-// 'required' => boolean / integer, // For multi_checkbox, any positive integer "N" means "at least N values"
+// 'required' => boolean / integer, // For multi_checkbox, any positive integer "N" means "at least N values selected"
 
 // For all:
 // 'default' => '',
@@ -475,7 +476,7 @@ self::$_options_meta = array(
     ),
     'email_recurring_init_thanks_text' => array(
         'type' => 'rich_html',
-        'default' => __('Hello, #DONOR_NAME#!<br><br>We just took a #SUM# from your account as a regular donation to the campaign «#CAMPAIGN_NAME#», using #PAYMENT_METHOD_NAME#.<br><br>If you, regretfully, wish to stop future regular donations to this campaign, please #RECURRING_SUBSCRIPTION_CANCELLING_LINK#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
+        'default' => __('Hello, #DONOR_NAME#!<br><br>We just took a #SUM# from your account as a regular donation to the campaign «#CAMPAIGN_NAME#», using #PAYMENT_METHOD_NAME#.<br><br>#DONOR_ACCOUNT_LOGIN_LINK#<br><br>If you, regretfully, wish to stop future regular donations to this campaign, please #RECURRING_SUBSCRIPTION_CANCELLING_LINK#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
         'title' => __('A text of a recurring subscription donation notice sent to a donor', 'leyka'),
         'description' => __('Enter the text of the notification email that would be sended to each donor on each rebill donation. It may include the following special entries:', 'leyka').$email_placeholders,
         'required' => true,
@@ -490,7 +491,7 @@ self::$_options_meta = array(
     ),
     'email_recurring_ongoing_thanks_text' => array(
         'type' => 'rich_html',
-        'default' => __('Hello, #DONOR_NAME#!<br><br>We just took a #SUM# from your account as a regular donation to the campaign «#CAMPAIGN_NAME#», using #PAYMENT_METHOD_NAME#.<br><br>If you, regretfully, wish to stop future regular donations to this campaign, please #RECURRING_SUBSCRIPTION_CANCELLING_LINK#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
+        'default' => __('Hello, #DONOR_NAME#!<br><br>We just took a #SUM# from your account as a regular donation to the campaign «#CAMPAIGN_NAME#», using #PAYMENT_METHOD_NAME#.<br><br>#DONOR_ACCOUNT_LOGIN_LINK#<br><br>If you, regretfully, wish to stop future regular donations to this campaign, please #RECURRING_SUBSCRIPTION_CANCELLING_LINK#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
         'title' => __('A text of after-rebill donation notice sent to a donor', 'leyka'),
         'description' => __('Enter the text of the notification email that would be sended to each donor on each rebill donation. It may include the following special entries:', 'leyka').$email_placeholders,
         'required' => true,
@@ -524,6 +525,22 @@ self::$_options_meta = array(
         'comment' => __('Check to send a special thankful email to each donor when campaign target reached', 'leyka'),
         'short_format' => true,
     ),
+    'non_init_recurring_donor_registration_emails_title' => array(
+        'type' => 'text',
+        'default' => __('Your personal account was created', 'leyka'),
+        'title' => __("A title of a notification email", 'leyka'),
+        'description' => __('Enter the email title.', 'leyka'),
+        'required' => true,
+        'placeholder' => __('E.g., Your personal account was created', 'leyka'),
+    ),
+    'non_init_recurring_donor_registration_emails_text' => array(
+        'type' => 'rich_html',
+        'default' => __('Hello, #DONOR_NAME#!<br><br>We created a personal account for you to manage your donations.<br><br>#DONOR_ACCOUNT_LOGIN_LINK#<br><br>If you do not wish to use it, just ignore this email.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
+        'title' => __("Notification email text", 'leyka'),
+        'description' => __("Enter the text of notification email. It may include the following special entries:", 'leyka').$email_placeholders,
+        'required' => true,
+        'field_classes' => array('type-rich_html'),
+    ),
     'email_campaign_target_reaching_title' => array(
         'type' => 'text',
         'default' => __('Thanks to you, the campaign succeeded!', 'leyka'),
@@ -543,15 +560,15 @@ self::$_options_meta = array(
     'notify_donations_managers' => array(
         'type' => 'checkbox',
         'default' => true,
-        'title' => __('Send the emails on single donations', 'leyka'),
-        'comment' => __('Check to notify some website personnel (donations managers) of each incoming donation', 'leyka'),
+        'title' => __('Send emails on single donations', 'leyka'),
+        'comment' => __('Check to notify the website personnel (donations managers) of each incoming donation', 'leyka'),
         'short_format' => true,
     ),
     'notify_managers_on_recurrents' => array(
         'type' => 'checkbox',
         'default' => true,
-        'title' => __('Send the emails on recurring donations', 'leyka'),
-        'comment' => __('Check to notify some website personnel (donations managers) of each incoming recurrent donation', 'leyka'),
+        'title' => __('Send emails on recurring donations', 'leyka'),
+        'comment' => __('Check to notify the website personnel (donations managers) of each incoming recurrent donation', 'leyka'),
         'short_format' => true,
     ),
     'donations_managers_emails' => array(
@@ -572,6 +589,13 @@ self::$_options_meta = array(
         'title' => __('A text of after-donation notification sended to a website personnel', 'leyka'),
         'description' => __("Enter the text of the notification email that would be sended to each email stated before right after donation is made. It may include the following special entries:", 'leyka').$email_placeholders,
         'field_classes' => array('type-rich_html'),
+    ),
+    'notify_tech_support_on_failed_donations' => array(
+        'type' => 'checkbox',
+        'default' => true,
+        'title' => __('Send error reporting emails to the tech. support on failed donations', 'leyka'),
+        'comment' => __('Check to notify the website technical support (see the "website technical support email" option) of each failed donation.', 'leyka'),
+        'short_format' => true,
     ),
     'tech_support_email' => array(
         'type' => 'email',
@@ -641,12 +665,17 @@ self::$_options_meta = array(
         'title' => __('Show a failure notification widget on the donation failure page', 'leyka'),
         'description' => __('Display a failure notification widget on the donation failure page', 'leyka'),
     ),
-    'show_gtm_dataLayer_on_success' => array(
-        'type' => 'checkbox',
-        'default' => 1,
+//    'show_gtm_dataLayer_on_success'
+    'use_gtm_ua_integration' => array(
+        'type' => 'radio',
         'title' => __('Show the GTM dataLayer on the successful donation page', 'leyka'),
+        'list_entries' => array(
+            '-' => __("Don't use GTM & UA e-commerce integration", 'leyka'),
+            'simple' => __('Use the GTM & simple UA e-commerce integration', 'leyka'),
+            'enchanced' => __('Use the GTM & UA enchanced e-commerce integration', 'leyka'),
+        ),
+        'default' => '-',
         // 'comment' => __('', 'leyka'),
-        'short_format' => true,
     ),
     'revo_template_slider_max_sum' => array(
         'type' => 'text',
@@ -957,6 +986,20 @@ self::$_options_meta = array(
         'title' => __('Page of failed donation', 'leyka'),
         'description' => __('Select a page for donor to redirect to when payment is failed for some reason.', 'leyka'),
         'list_entries' => 'leyka_get_pages_list',
+    ),
+    'donor_management_available' => array(
+        'type' => 'checkbox',
+        'default' => false,
+        'title' => __('Donor management available', 'leyka'),
+        'comment' => __("Check to turn on the donors logging for all donations. It allows CRM functions and adds additional donors management pages to the plugin administation area.", 'leyka'),
+        'short_format' => true,
+    ),
+    'donor_accounts_available' => array(
+        'type' => 'checkbox',
+        'default' => false,
+        'title' => __('Donor accounts available', 'leyka'),
+        'comment' => __("Check to turn on the donors accounts features. It include donor's personal desktop pages and recurring donations management functions.", 'leyka'),
+        'short_format' => true,
     ),
     'load_scripts_if_need' => array(
         'type' => 'checkbox',

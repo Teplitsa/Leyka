@@ -159,3 +159,48 @@ if( !function_exists('leyka_gateway_details_html') ) {
     
     <?php }
 }
+
+if( !function_exists('leyka_is_settings_step_valid') ) {
+    function leyka_is_settings_step_valid($step_id) {
+
+        $options_to_validate = array();
+
+        if($step_id === 'receiver_type') {
+            $options_to_validate[] = 'receiver_legal_type';
+        } else if($step_id === 'receiver_data') {
+            if(leyka()->opt('receiver_legal_type') === 'legal') {
+                array_push($options_to_validate, 'org_full_name', 'org_short_name', 'org_face_position', 'org_face_fio_ip', 'org_address', 'org_state_reg_number', 'org_kpp', 'org_inn', 'org_contact_person_name', 'tech_support_email');
+            } else {
+                array_push($options_to_validate, 'person_full_name', 'tech_support_email', 'person_address', 'person_inn');
+            }
+        } else if($step_id === 'receiver_bank_essentials') {
+            if(leyka()->opt('receiver_legal_type') === 'legal') {
+                array_push($options_to_validate, 'org_bank_name', 'org_bank_account', 'org_bank_corr_account', 'org_bank_bic');
+            } else {
+                array_push($options_to_validate, 'person_bank_name', 'person_bank_account', 'person_bank_corr_account', 'person_bank_bic');
+            }
+        } else if($step_id === 'receiver_terms_of_service') {
+            if(leyka()->opt('receiver_legal_type') === 'legal') {
+                array_push($options_to_validate, 'terms_of_service_text');
+            } else {
+                array_push($options_to_validate, 'person_terms_of_service_text');
+            }
+        } else if($step_id === 'receiver_pd_terms') {
+            if(leyka()->opt('receiver_legal_type') === 'legal') {
+                array_push($options_to_validate, 'pd_terms_text');
+            } else {
+                array_push($options_to_validate, 'person_pd_terms_text');
+            }
+        }
+
+        $options_invalid = array();
+        foreach($options_to_validate as $option_id) {
+            if( !leyka_options()->opt($option_id) || !leyka_options()->is_valid($option_id) ) {
+                $options_invalid[] = $option_id;
+            }
+        }
+
+        return $options_invalid ? $options_invalid : true;
+
+    }
+}

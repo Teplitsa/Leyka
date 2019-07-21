@@ -7,7 +7,7 @@ function leyka_save_settings($tab_name) {
     $options_names = array();
     $submitted_options_section = !empty($_POST['leyka_options_section']) ? $_POST['leyka_options_section'] : null;
     
-    foreach(leyka_opt_alloc()->getTabOptions($tab_name) as $entry) {
+    foreach(leyka_opt_alloc()->get_tab_options($tab_name) as $entry) {
 
         if(is_array($entry)) {
             
@@ -31,14 +31,12 @@ function leyka_save_settings($tab_name) {
                                 }
                             }
                         }
-                        
-                    }
-                    elseif($submitted_options_section) {
+
+                    } else if($submitted_options_section) {
                         if($submitted_options_section == $option['name']) {
                             $options_names = array_merge($options_names, $option['options']);
                         }
-                    }
-                    else {
+                    } else {
                         $options_names = array_merge($options_names, $option['options']);
                     }
                     

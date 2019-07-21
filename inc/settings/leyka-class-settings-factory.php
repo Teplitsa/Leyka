@@ -28,7 +28,7 @@ class Leyka_Settings_Factory extends Leyka_Singleton { // Each descendant is a c
      * @return Leyka_Settings_Controller
      * @throws Exception With codes 500-509
      */
-    public function getController($controller_id) {
+    public function get_controller($controller_id) {
 
         $controller_id = trim(esc_attr($controller_id));
 
@@ -49,9 +49,9 @@ class Leyka_Settings_Factory extends Leyka_Singleton { // Each descendant is a c
 
         // Require the needed Settings Controller script...
         switch($controller_id) {
-            case 'init': return Leyka_Init_Wizard_Settings_Controller::getInstance();
-            case 'cp': return Leyka_Cp_Wizard_Settings_Controller::getInstance();
-            case 'yandex': return Leyka_Yandex_Wizard_Settings_Controller::getInstance();
+            case 'init': return Leyka_Init_Wizard_Settings_Controller::get_instance();
+            case 'cp': return Leyka_Cp_Wizard_Settings_Controller::get_instance();
+            case 'yandex': return Leyka_Yandex_Wizard_Settings_Controller::get_instance();
             default: throw new Exception(
                 sprintf(__('Settings Factory error: wrong Settings Controller ID given (%s)'), $controller_id), 501
             );
@@ -64,7 +64,7 @@ class Leyka_Settings_Factory extends Leyka_Singleton { // Each descendant is a c
      * @return Leyka_Settings_Render
      * @throws Exception With codes 510-519
      */
-    public function getRender($render_id) {
+    public function get_render($render_id) {
 
         $render_id = trim(esc_attr($render_id));
 
@@ -83,7 +83,7 @@ class Leyka_Settings_Factory extends Leyka_Singleton { // Each descendant is a c
         }
 
         switch($render_id) {
-            case 'wizard': return Leyka_Wizard_Render::getInstance();
+            case 'wizard': return Leyka_Wizard_Render::get_instance();
             default: throw new Exception(
                 sprintf(__('Settings Factory error: wrong Settings Render ID given (%s)'), $render_id), 511
             );

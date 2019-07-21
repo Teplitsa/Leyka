@@ -1,7 +1,9 @@
 @import 'presets';
 @import 'typo';
 @import 'mixins';
-@import 'common';
+@import 'common_leyka_presets';
+@import 'common_leyka_mixins';
+@import 'common_leyka';
 @import 'components';
 @import 'wizard';
 @import 'wizard_init';
@@ -9,6 +11,17 @@
 @import 'wizard_yandex';
 @import 'loader';
 @import 'settings_sections';
+@import 'campaign_edit';
+
+@import 'dashboard_presets';
+@import 'dashboard_typo';
+@import 'dashboard_mixins';
+@import 'dashboard';
+
+@import 'donors_presets';
+@import 'donors_typo';
+@import 'donors_mixins';
+@import 'donors';
 
 .leyka-settings-page {
 

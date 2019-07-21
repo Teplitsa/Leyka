@@ -149,3 +149,20 @@ function leyka_tmp__($line, $locale = false) {
         $tmp_translations[$line][$locale] : __($line, 'leyka');
 
 }
+
+__('Terms of personal data usage', 'leyka');
+__('Terms of personal data usage full text. Use <br> for line-breaks.', 'leyka');
+__('Terms of donation service', 'leyka');
+__('Terms of donation service text. Use <br /> for line-breaks, please.', 'leyka');
+__('Thank you!', 'leyka');
+__('Your donation completed. We are grateful for your help.', 'leyka');
+__('Payment failure', 'leyka');
+__('We are deeply sorry, but for some technical reason we failed to receive your donation. Your money are intact. Please try again later!', 'leyka');
+__('Main statistics', 'leyka');
+__('Recurring', 'leyka');
+__('Donations dynamics', 'leyka');
+__('Recent donations', 'leyka');
+__('Donation funded', 'leyka');
+__('Donation refunded', 'leyka');
+__('Donation failed', 'leyka');
+__('Donation submitted', 'leyka');

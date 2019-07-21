@@ -40,8 +40,8 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             $this->_id.'_new_api' => array(
                 'type' => 'checkbox',
                 'default' => leyka_is_yandex_new_api_used(),
-                'title' => 'Новый API Яндекс.Кассы',
-                'description' => 'Отметьте, если ваше подключение к Яндекс.Кассе использует новый API',
+                'title' => __('Use Yandex.Kassa new API', 'leyka'), // Новый API Яндекс.Кассы
+                'description' => __('Check if your Yandex.Kassa connection uses the new API', 'check'), // Отметьте, если ваше подключение к Яндекс.Кассе использует новый API
             ),
             $this->_id.'_shop_id' => array(
                 'type' => 'text',
@@ -102,25 +102,25 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
     protected function _initialize_pm_list() {
 
         if(empty($this->_payment_methods['yandex_all'])) {
-            $this->_payment_methods['yandex_all'] = Leyka_Yandex_All::getInstance();
+            $this->_payment_methods['yandex_all'] = Leyka_Yandex_All::get_instance();
         }
         if(empty($this->_payment_methods['yandex_card'])) {
-            $this->_payment_methods['yandex_card'] = Leyka_Yandex_Card::getInstance();
+            $this->_payment_methods['yandex_card'] = Leyka_Yandex_Card::get_instance();
         }
         if(empty($this->_payment_methods['yandex_money'])) {
-            $this->_payment_methods['yandex_money'] = Leyka_Yandex_Money::getInstance();
+            $this->_payment_methods['yandex_money'] = Leyka_Yandex_Money::get_instance();
         }
         if(empty($this->_payment_methods['yandex_wm'])) {
-            $this->_payment_methods['yandex_wm'] = Leyka_Yandex_Webmoney::getInstance();
+            $this->_payment_methods['yandex_wm'] = Leyka_Yandex_Webmoney::get_instance();
         }
         if(empty($this->_payment_methods['yandex_sb'])) {
-            $this->_payment_methods['yandex_sb'] = Leyka_Yandex_Sberbank_Online::getInstance();
+            $this->_payment_methods['yandex_sb'] = Leyka_Yandex_Sberbank_Online::get_instance();
         }
         if(empty($this->_payment_methods['yandex_ab'])) {
-            $this->_payment_methods['yandex_ab'] = Leyka_Yandex_Alpha_Click::getInstance();
+            $this->_payment_methods['yandex_ab'] = Leyka_Yandex_Alpha_Click::get_instance();
         }
         if(empty($this->_payment_methods['yandex_pb'])) {
-            $this->_payment_methods['yandex_pb'] = Leyka_Yandex_Promvzyazbank::getInstance();
+            $this->_payment_methods['yandex_pb'] = Leyka_Yandex_Promvzyazbank::get_instance();
         }
 
     }
@@ -132,7 +132,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         if( !empty($form_data['leyka_recurring']) ) {
 
             $donation->payment_type = 'rebill';
-            $donation->rebilling_is_active = true; // So we could turn it on/off later
+            $donation->recurring_is_active = true; // So we could turn it on/off later
 
         }
 
@@ -153,7 +153,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                     'confirmation' => array(
                         'type' => 'redirect',
                         'return_url' => empty($form_data['leyka_success_page_url']) ?
-                            leyka_get_campaign_success_page_url($donation->campaign_id) : $form_data['leyka_success_page_url'],
+                            leyka_get_success_page_url($donation->campaign_id) : $form_data['leyka_success_page_url'],
                     ),
                     'capture' => true, // Make payment at once, don't wait for shop confirmation
                     'description' =>
@@ -164,7 +164,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 );
                 if($pm_id !== 'yandex_all') {
                     $payment_data['payment_method_data'] = array(
-                        'type' => $this->_get_yandex_pm_id($pm_id),
+                        'type' => $this->_get_gateway_pm_id($pm_id),
                     );
                 }
 
@@ -179,7 +179,6 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 $this->_new_api_redirect_url = $payment->confirmation->confirmation_url;
 
             } catch(Exception $ex) {
-                // ...
                 $donation->add_gateway_response($ex);
             }
 
@@ -192,7 +191,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             ) {
 
                 $error = new WP_Error('leyka_donation_amount_too_small', __('The amount of donations via Sberbank Online should be at least 10 RUR.', 'leyka'));
-                leyka()->addPaymentFormError($error);
+                leyka()->add_payment_form_error($error);
 
             }
 
@@ -236,7 +235,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
         $donation = new Leyka_Donation($donation_id);
 
-        $payment_type = $this->_get_yandex_pm_id($pm_id);
+        $payment_type = $this->_get_gateway_pm_id($pm_id);
         $payment_type = $payment_type ? $payment_type : apply_filters('leyka_yandex_custom_payment_type', '', $pm_id);
 
         $data = array(
@@ -247,8 +246,8 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             'orderNumber' => $donation_id,
             'orderDetails' => $donation->payment_title." (№ $donation_id)",
             'paymentType' => $payment_type,
-            'shopSuccessURL' => leyka_get_campaign_success_page_url($donation->campaign_id),
-            'shopFailURL' => leyka_get_campaign_failure_page_url($donation->campaign_id),
+            'shopSuccessURL' => leyka_get_success_page_url($donation->campaign_id),
+            'shopFailURL' => leyka_get_failure_page_url($donation->campaign_id),
             'cps_email' => $donation->donor_email,
             'cms_name' => 'wp-leyka', // Service parameter, added by Yandex request
         );
@@ -319,8 +318,7 @@ techMessage="'.$tech_message.'"/>');
                 switch($payment->status) {
                     case 'succeeded':
                         $donation->status = 'funded';
-                        $res = Leyka_Donation_Management::send_all_emails($donation->id);
-                        /** @todo Handle the case of $res === false */
+                        Leyka_Donation_Management::send_all_emails($donation->id);
                         break;
                     case 'canceled':
                         $donation->status = 'failed';
@@ -411,8 +409,8 @@ techMessage="'.$tech_message.'"/>');
                     $donation->status = 'funded';
 
                     // Change PM if needed. Mostly for Smart Payments:
-                    if($_POST['paymentType'] != $this->_get_yandex_pm_id($donation->pm_id)) {
-                        $donation->pm_id = $this->_get_yandex_pm_id($_POST['paymentType']);
+                    if($_POST['paymentType'] != $this->_get_gateway_pm_id($donation->pm_id)) {
+                        $donation->pm_id = $this->_get_gateway_pm_id($_POST['paymentType']);
                     }
 
                     if($donation->type === 'rebill' && !empty($_POST['invoiceId'])) {
@@ -498,7 +496,7 @@ techMessage="'.$tech_message.'"/>');
 
     public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation $donation) {
 
-        $init_recurrent_donation = Leyka_Donation::getInitRecurringDonation($donation);
+        $init_recurrent_donation = Leyka_Donation::get_init_recurring_donation($donation);
         $cancelling_url = (get_option('permalink_structure') ?
             home_url("leyka/service/cancel_recurring/{$donation->id}") :
             home_url("?page=leyka/service/cancel_recurring/{$donation->id}"))
@@ -512,7 +510,7 @@ techMessage="'.$tech_message.'"/>');
 
         if($donation->type == 'rebill') {
 
-            $init_recurrent_donation = Leyka_Donation::getInitRecurringDonation($donation);
+            $init_recurrent_donation = Leyka_Donation::get_init_recurring_donation($donation);
             $init_recurrent_donation->recurring_is_active = false;
 
         }
@@ -641,8 +639,6 @@ techMessage="'.$tech_message.'"/>');
                     // Recurring payment isn't funded here yet! Only its possibility is confirmed.
                     // To fund a payment, we should wait for a normal callbacks.
 
-                    $res = $new_recurring_donation;
-
                 } else { // Some error on payment test run
 
                     $error_num = empty($vals[0]['attributes']['error']) ? 'unknown' : $vals[0]['attributes']['error'];
@@ -661,7 +657,7 @@ techMessage="'.$tech_message.'"/>');
 
         }
 
-        return $res;
+        return $new_recurring_donation;
 
     }
 
@@ -687,9 +683,11 @@ techMessage="'.$tech_message.'"/>');
 
         <?php $init_recurring_donation = $donation->init_recurring_donation;?>
 
-            <label for="yandex-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka');?></label>
-            <div class="leyka-ddata-field">
-                <input type="checkbox" id="yandex-recurring-is-active" name="yandex-recurring-is-active" value="1" <?php echo $init_recurring_donation->recurring_is_active ? 'checked="checked"' : '';?>>
+            <div class="recurring-is-active-field">
+                <label for="yandex-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka');?>:</label>
+                <div class="leyka-ddata-field">
+                    <input type="checkbox" id="yandex-recurring-is-active" name="yandex-recurring-is-active" value="1" <?php echo $init_recurring_donation->recurring_is_active ? 'checked="checked"' : '';?>>
+                </div>
             </div>
 
         <?php } else { // New donation page displayed ?>
@@ -752,8 +750,13 @@ techMessage="'.$tech_message.'"/>');
         }
     }
 
-    /** A service method to get Yandex paymentType values by according pm_ids, and vice versa. */
-    protected function _get_yandex_pm_id($pm_id) {
+    /**
+     * A service method to get the gateway inner PM ID value by according Leyka pm_id, and vice versa.
+     *
+     * @param $pm_id string PM ID (either Leyka or the gateway system).
+     * @return string|false A PM ID in the gateway/Leyka system, or false (if PM ID is unknown).
+     */
+    protected function _get_gateway_pm_id($pm_id) {
 
         $all_pm_ids = leyka_options()->opt('yandex_new_api') ? array(
             'yandex_card' => 'bank_card',
@@ -1077,6 +1080,6 @@ class Leyka_Yandex_Promvzyazbank extends Leyka_Payment_Method {
 }
 
 function leyka_add_gateway_yandex() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka()->addGateway(Leyka_Yandex_Gateway::getInstance());
+    leyka()->add_gateway(Leyka_Yandex_Gateway::get_instance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_yandex');

@@ -3,6 +3,7 @@
 
 //sizes
 $base :  8px;
+$leyka-base :  16px;
 
 $one : 420px;
 $two : 640px;
@@ -71,6 +72,9 @@ $color-wizard-tooltip-bg: #006799;
 // editor special colors
 $color-editor-leyka-key: #80c2dc;
 
+// Metaboxes
+$color-metabox-title: #44444a;
+
 //SASS variables
 $color-main: 		var(--color-main);
 $color-main-dark: 	var(--color-main-dark);
@@ -78,6 +82,7 @@ $color-main-dark: 	var(--color-main-dark);
 $color-link :	#2963E8;
 $color-text:	#333333;
 $color-white:	#ffffff;
+$color-wp-link: #0073aa;
 
 $color-text-black:		#000000;
 $color-text-semi:		#666666;

@@ -1,0 +1,153 @@
+/** == Mixins (_common_leyka_mixins.scss) == **/
+@mixin leyka-admin-clean-a() {
+    text-decoration: none;
+    border: none;
+    box-shadow: none;
+    outline: none;
+
+    &:active, &:focus {
+        text-decoration: none;
+        border: none;
+        box-shadow: none;
+        outline: none;
+    }
+    
+    &:hover {
+        text-decoration: none;
+        border: none;
+        box-shadow: none;
+        outline: none;
+    }
+}
+
+@mixin leyka-admin-a($mod: default) {
+    @include leyka-admin-clean-a();
+    
+    color: $leyka-adb-color-link;
+    border-color: $leyka-adb-color-link;
+    border-bottom-width: 1px;
+
+    border-bottom-style: solid;
+    border-color: transparent;
+
+    &:active, &:focus {
+        border-color: $leyka-adb-color-link;
+        border-bottom-style: solid;
+        border-color: transparent;
+    }
+
+    &:hover {
+        border-color: $leyka-adb-color-link;
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+    }
+    
+    @if $mod == dashed {
+        border-bottom-style: dashed;
+        border-color: $leyka-adb-color-link;
+
+        &:active, &:focus {
+            border-bottom-style: dashed;
+            border-color: $leyka-adb-color-link;
+            border-bottom-width: 1px;
+        }
+
+        &:hover {
+            border-color: transparent;
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+        }
+    }
+    
+}
+
+@mixin leyka-admin-btn($mod: default) {
+	@include leyka-adb-btn-caption();
+    background-color: $leyka-adb-color-btn-bg;
+    color: $leyka-adb-color-btn-text;
+    text-shadow: 0px 0px 3px rgba(0, 0, 0, 0.25);
+    border: 1px solid $leyka-adb-color-btn-stroke;
+    box-shadow: 0px 1px 0px $leyka-adb-color-btn-stroke;
+    border-radius: 4px;
+	height: 26px;
+	width: auto;
+	display: inline-block;
+	cursor: pointer;
+	padding: 5px 10px 3px 10px;
+
+    @if $mod == secondary {
+        background-color: $color-white;
+        border: 1px solid $color-border-secondary-button;
+        color: $color-secondary-button;
+        box-shadow: 0px 1px 0px $color-border-secondary-button;
+        
+        &:hover {
+            border: 1px solid $color-border-secondary-button;
+            color: $color-secondary-button;
+            background-color: $color-white;
+        }
+    }
+}
+
+@mixin leyka-donation-status-marker() {
+    background-color: $leyka-color-donation-status-submitted;
+
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    margin-right: 0.5 * $leyka-base;
+
+    &.funded {
+        background-color: $leyka-color-donation-status-funded;
+    }
+
+    &.refunded {
+        background-color: $leyka-color-donation-status-refunded;
+    }
+
+    &.failed {
+        background-color: $leyka-color-donation-status-failed;
+    }
+
+    &.field-q {
+        @include field-q();
+
+        .field-q-tooltip {
+            top: 250%;
+            padding-left: 2* $leyka-base;
+            padding-right: 2* $leyka-base;
+            font-weight: 500;
+        }
+    }
+}
+
+@mixin leyka-admin-triangle-list-marker($color) {
+    margin-top: -6px;
+    margin-left: 12px;
+    list-style: none;
+    @include leyka-donors-text-small;
+
+    &:before {
+        content: "";
+        border-color: transparent $color;
+        opacity: 0.8;
+        border-style: solid;
+        border-width: 0.35em 0 0.35em 0.45em;
+        display: block;
+        height: 0;
+        width: 0;
+        left: -1em;
+        top: 0.9em;
+        position: relative;         
+    }
+}
+
+@mixin leyka-admin-icon($size: 24px) {
+    background-position: center;
+    background-repeat: no-repeat;
+    display: inline-block;
+    background-size: $size;
+    width: $size;
+    height: $size;
+}

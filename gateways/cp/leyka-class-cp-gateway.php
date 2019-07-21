@@ -54,7 +54,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
         if(empty($this->_payment_methods['card'])) {
-            $this->_payment_methods['card'] = Leyka_CP_Card::getInstance();
+            $this->_payment_methods['card'] = Leyka_CP_Card::get_instance();
         }
     }
 
@@ -70,12 +70,12 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     public function enqueue_gateway_scripts() {
 
-        if(Leyka_CP_Card::getInstance()->active) {
+        if(Leyka_CP_Card::get_instance()->active) {
 
             wp_enqueue_script('leyka-cp-widget', 'https://widget.cloudpayments.ru/bundles/cloudpayments', array(), false, true);
             wp_enqueue_script(
                 'leyka-cp',
-                LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_CP_Gateway::getInstance()->id.'/js/leyka.cp.js',
+                LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_CP_Gateway::get_instance()->id.'/js/leyka.cp.js',
                 array('jquery', 'leyka-cp-widget', 'leyka-public'),
                 LEYKA_VERSION . ".001",
                 true
@@ -133,8 +133,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             'currency' => $cp_currency,
             'payment_title' => $donation->payment_title,
             'donor_email' => $donation->donor_email,
-            'success_page' => leyka_get_campaign_success_page_url($donation->campaign_id),
-            'failure_page' => leyka_get_campaign_failure_page_url($donation->campaign_id),
+            'success_page' => leyka_get_success_page_url($donation->campaign_id),
+            'failure_page' => leyka_get_failure_page_url($donation->campaign_id),
         );
 
 		return $form_data_vars;
@@ -285,14 +285,16 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                     $donation->payment_type = 'rebill';
                     $donation->recurring_id = $_POST['SubscriptionId'];
+                    $donation->recurring_is_active = true;
+
                 }
 
                 $donation->add_gateway_response($_POST);
 
-                if($call_type == 'complete') {
+                if($call_type === 'complete') {
 
-                    Leyka_Donation_Management::send_all_emails($donation->id);
                     $donation->status = 'funded';
+                    Leyka_Donation_Management::send_all_emails($donation->id);
 
                 } else {
                     $donation->status = 'failed';
@@ -303,19 +305,68 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             case 'recurring_change':
             case 'recurrent_change':
 
-                /** @todo UNTESTED! The possible reason for CP recurring problems */
-//                if( !empty($_POST['Id']) ) { // Recurring subscription ID in the CP system
-//
-//	                $_POST['Id'] = trim($_POST['Id']);
-//	                $init_recurring_donation = $this->get_init_recurrent_donation($_POST['Id']);
-//
-//	                if($init_recurring_donation && $init_recurring_donation->recurring_is_active) {
-//		                $init_recurring_donation->recurring_is_active = false;
-//                    }
-//                }
+                if( !empty($_POST['Id']) ) { // Recurring subscription ID in the CP system
+
+	                $_POST['Id'] = trim($_POST['Id']);
+	                $init_recurring_donation = $this->get_init_recurrent_donation($_POST['Id']);
+
+	                if($init_recurring_donation && $init_recurring_donation->recurring_is_active) {
+		                $init_recurring_donation->recurring_is_active = false;
+                    }
+
+                }
 
             default:
         }
+
+    }
+
+    /** @todo The method is ready for testing. But it's excluded from the master code until all other recurring gateways will have it's implementation (for the universality sake). */
+//    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation $donation) {
+//
+//        $init_recurrent_donation = Leyka_Donation::get_init_recurring_donation($donation);
+//        $cancelling_url = (get_option('permalink_structure') ?
+//                home_url("leyka/service/cancel_recurring/{$donation->id}") :
+//                home_url("?page=leyka/service/cancel_recurring/{$donation->id}"))
+//            .'/'.md5($donation->id.'_'.$init_recurrent_donation->id.'_leyka_cancel_recurring_subscription');
+//
+//        return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
+//
+//    }
+
+    public function cancel_recurring_subscription(Leyka_Donation $donation) {
+
+        if($donation->type != 'rebill') {
+            die();
+        }
+
+        header('Content-type: text/html; charset=utf-8');
+
+        $recurring_manual_cancel_link = 'https://my.cloudpayments.ru/ru/unsubscribe';
+
+        if( !$donation->recurring_id ) {
+            die(sprintf(__('<strong>Error:</strong> unknown Subscription ID for donation #%d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
+        }
+
+        $response = wp_remote_post('https://api.cloudpayments.ru/subscriptions/cancel', array(
+            'timeout' => 10,
+            'redirection' => 5,
+            'body' => array('Id' => $donation->recurring_id),
+        ));
+
+        if(empty($response['body'])) {
+            die(sprintf(__('<strong>Error:</strong> the recurring subsciption cancelling request returned unexpected result. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
+        }
+
+        $response['body'] = json_decode($response['body']);
+        if(empty($response['body']['Success']) || $response['body']['Success'] != 'true') {
+            die(sprintf(__('<strong>Error:</strong> we cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
+        }
+
+        $init_recurrent_donation = Leyka_Donation::get_init_recurring_donation($donation);
+        $init_recurrent_donation->recurring_is_active = false;
+
+        die(__('Recurring subscription cancelled.', 'leyka'));
 
     }
 
@@ -348,7 +399,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             $donation = new Leyka_Donation(Leyka_Donation::add(array(
                 'status' => 'submitted',
                 'transaction_id' => $cp_transaction_id,
-                'force_insert' => true, // Turn off donation fields validity checks
+                'force_insert' => true, // Turn off donation fields validation checks
             )));
         }
 
@@ -436,9 +487,14 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         if($donation) { // Edit donation page displayed
 
-            $donation = leyka_get_validated_donation($donation);?>
+            $donation = leyka_get_validated_donation($donation);
+
+            if($donation->type !== 'rebill') {
+                return;
+            }?>
 
             <label><?php _e('CloudPayments subscription ID', 'leyka');?>:</label>
+
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type == 'correction') {?>
@@ -448,11 +504,20 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 <?php }?>
             </div>
 
+            <?php $init_recurring_donation = $donation->init_recurring_donation;?>
+
+            <div class="recurring-is-active-field">
+                <label for="yandex-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka');?>:</label>
+                <div class="leyka-ddata-field">
+                    <?php echo $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka'); ?>
+                </div>
+            </div>
+
         <?php } else { // New donation page displayed ?>
 
             <label for="cp-recurring-id"><?php _e('CloudPayments subscription ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php _e('Enter CloudPayments subscription ID', 'leyka');?>" value="" />
+                <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php _e('Enter CloudPayments subscription ID', 'leyka');?>" value="">
             </div>
         <?php
         }
@@ -556,6 +621,6 @@ class Leyka_CP_Card extends Leyka_Payment_Method {
 }
 
 function leyka_add_gateway_cp() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka_add_gateway(Leyka_CP_Gateway::getInstance());
+    leyka_add_gateway(Leyka_CP_Gateway::get_instance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_cp');

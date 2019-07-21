@@ -46,7 +46,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
         if(empty($this->_payment_methods['bank_order'])) {
-            $this->_payment_methods['bank_order'] = Leyka_Bank_Order::getInstance();
+            $this->_payment_methods['bank_order'] = Leyka_Bank_Order::get_instance();
         }
     }
 
@@ -58,6 +58,9 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
         header('Content-Type: text/html; charset=utf-8');
 
         $campaign = new Leyka_Campaign($form_data['leyka_campaign_id']);
+        leyka_remembered_data('template_id', $campaign->template);
+        $leyka_success_url = get_permalink(leyka_options()->opt('quittance_redirect_page'));
+        
         $quittance_html = str_replace(
             apply_filters('leyka_quittance_placeholders_list', array(
                 '#BACK_TO_DONATION_FORM_TEXT#',
@@ -79,7 +82,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
                 '#BACK_TO_DONATION_FORM_TEXT#' => __('Return to the donation form', 'leyka'),
                 '#PRINT_THE_QUITTANCE_TEXT#' => __('Print the quittance', 'leyka'),
                 '#QUITTANCE_RECEIVED_TEXT#' => __("OK, I've received the quittance", 'leyka'),
-                '#SUCCESS_URL#' => leyka_template_to_query_arg($campaign->template, get_permalink(leyka_options()->opt('quittance_redirect_page'))),
+                '#SUCCESS_URL#' => $leyka_success_url,
                 '#PAYMENT_COMMENT#' => $campaign->payment_title." (№ $donation_id)",
                 '#PAYER_NAME#' => $form_data['leyka_donor_name'],
                 '#RECEIVER_NAME#' => leyka_options()->opt('org_full_name'),
@@ -181,6 +184,6 @@ class Leyka_Bank_Order extends Leyka_Payment_Method {
 }
 
 function leyka_add_gateway_quittance() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka_add_gateway(Leyka_Quittance_Gateway::getInstance());
+    leyka_add_gateway(Leyka_Quittance_Gateway::get_instance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_quittance');

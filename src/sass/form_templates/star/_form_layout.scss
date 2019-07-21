@@ -1,1 +1,44 @@
 /** == Form layout and states (_form_layout.scss) == **/
+
+div[id*="leyka-pf-"].leyka-pf-star {
+    @include star-text();
+	@include leyka-star-style-block-box();
+	max-width: 600px;
+	box-sizing: border-box;
+    
+    .leyka-tpl-star-form,
+    .leyka-account-form {
+        
+        .section {
+            display: block;
+            position: relative;
+            height: auto;
+            visibility: visible;
+            opacity: unset;
+            margin-bottom: 1.5 * $leyka-star-base;
+            
+            .section__border {
+                width: 100%;
+                border-image: none;
+                border-width: unset;
+                border-style: unset;
+                padding-top: unset;
+            }
+            
+            .section__fields {
+                visibility: visible;
+                padding: 0px;
+            }
+            
+            &.section--person {
+                margin-bottom: 0px;
+            }
+        }
+        
+    }
+}
+
+.single-leyka_campaign .site-content {
+    overflow: visible;
+    margin-top: 2 * $leyka-star-base;
+}

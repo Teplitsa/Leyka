@@ -4,8 +4,8 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса, яндекс.деньги, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
-Tested up to: 5.0.3
-Stable tag: 3.0.3
+Tested up to: 5.2.2
+Stable tag: 3.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,7 +49,7 @@ The plugin manual is avaliable at [official website](//leyka.te-st.ru/instructio
 * [basic features](//leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/)
 * [extended features](//leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/)
 
-PHP at least 5.3 is required for plugin to work correctly.
+PHP at least 5.6 is required for plugin to work correctly.
 
 **Help the project**
 
@@ -89,6 +89,74 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.3 =
+* New: the Donors management features added.
+* New: from now on the plugin activation procedure will run only on plugin activation.
+* Fix: the bug of multiple CP recurring donations, presumably, fixed.
+* Fix: wizards markup fixes.
+* Fix: now gateways commissions are saved correctly for fresh installations.
+* Fix: small bugfixes.
+* Tweak: admin JS partly refactored, it's volume decreased.
+
+= 3.2.3 =
+* New: the plugin Dashboard design renewed.
+* New: now Donors accounts are created even on non-initial recurring donations, if needed.
+* Fix: admin vulnerability fixes.
+* Fix: small bugfixes.
+
+= 3.2.2 =
+* New: Now Revo is the default template in the Init Wizard again.
+* New: Persistent campaigns - new CSS editor default styles added.
+* New: CSS editor features for persistent campaigns CSS field added.
+* Fix: Persistent campaign template CSS bugfixes.
+* Fix: Persistent campaign CSS editor bufixes.
+* Fix: Recurring subscription checkboxes bugfix.
+* Fix: Bugfix in Leyka->get_gateways() method.
+* Fix: Bugfix for donations comments checkbox field in the plugin settings.
+
+= 3.2.1 =
+* New: now [leyka_campaign_form] and [leyka_inline_campaign] shortcodes may be used interchangeably.
+* Fix: "submitted" donations status description changed.
+* Fix: now Terms agreement checkboxes for Revo & Star templates are independent across different forms on same page.
+* Fix: CloudPayments recurring subscription engine is temporarily changed to the default one.
+* Fix: Star template markup fixes.
+* Fix: now CloudPayments donations work correctly on mobile screens.
+* Fix: small bugfixes.
+
+= 3.2 =
+* New: Donors personal accounts feature added.
+* New: auto-cancelling recurring subscriptions for CloudPayments is possible now.
+* New: now it's possible to call procedures as server scripts.
+* New: Google UA & GTM integration now supports Enchanced e-commerce.
+* Fix: plugin usage statistics synchronization & collection fixed.
+* Fix: now active recurring procedure may be called only once per day.
+* Fix: recurring support display on the Star template fixed.
+* Fix: small bugfixes.
+
+= 3.1 =
+* New: Star template added.
+* New: Persistent campaigns settings & page template added.
+* New: New fields added to the Donations export.
+* Fix: Short month active recurring problem fixed.
+* Fix: "Donor subscribed" filter added to the Donations list admin page.
+* Fix: Revo template markup fixed for some small screen cases.
+* Tweak: Plugin frontoffice & backoffice images optimized.
+
+= 3.0.4 =
+* New: DataLayer support added for GA e-commerce integration.
+* New: now Revo campaigns must be explicitly "finished" to disallow further donations.
+* New: the plugin options API improved.
+* Fix: the "502 error" bug fixed.
+* Fix: a bugfix for non-Revo forms output.
+* Fix: now plugin options save correctly.
+* Fix: styles for PHP version error message fixed.
+* Fix: now Yandex.Kassa Smart payment PM is removed when new YK API is in use.
+* Fix: now active recurring scheme for the last days in the short months works correctly.
+* Tweak: form templates screenshots tinified.
+* Tweak: CSS optimizations.
+* Tweak: plugin loading sequence optimizations.
+* Tweak: optimizations in the Campaign class for large databases.
+
 = 3.0.3 =
 * New: new design of Campaign View settings area added.
 * New: now plugin features debug mode switches on/off based on LEYKA_DEBUG instead of WP_DEBUG.

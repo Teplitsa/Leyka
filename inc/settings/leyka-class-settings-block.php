@@ -24,10 +24,10 @@ abstract class Leyka_Settings_Block {
         }
     }
 
-    abstract public function getContent();
-    abstract public function isValid();
-    abstract public function getErrors();
-    abstract public function getFieldsValues();
+    abstract public function get_content();
+    abstract public function is_valid();
+    abstract public function get_errors();
+    abstract public function get_fields_values();
 
 }
 
@@ -50,15 +50,15 @@ class Leyka_Text_Block extends Leyka_Settings_Block {
         
     }
     
-    public function hasCustomTemplated() {
+    public function has_custom_templated() {
         return !empty($this->_template);
     }
 
-    public function getContent() {
-        return $this->_template ? $this->getTemplatedContent() : $this->_text;
+    public function get_content() {
+        return $this->_template ? $this->get_templated_content() : $this->_text;
     }
     
-    protected function getTemplatedContent() {
+    protected function get_templated_content() {
 
         ob_start();
 
@@ -78,15 +78,15 @@ class Leyka_Text_Block extends Leyka_Settings_Block {
 
     }
 
-    public function isValid() {
+    public function is_valid() {
         return true;
     }
 
-    public function getErrors() {
+    public function get_errors() {
         return array();
     }
 
-    public function getFieldsValues() {
+    public function get_fields_values() {
         return array();
     }
 
@@ -106,19 +106,19 @@ class Leyka_Subtitle_Block extends Leyka_Settings_Block {
 
     }
 
-    public function getContent() {
+    public function get_content() {
         return $this->_subtitle_text;
     }
 
-    public function isValid() {
+    public function is_valid() {
         return true;
     }
 
-    public function getErrors() {
+    public function get_errors() {
         return array();
     }
 
-    public function getFieldsValues() {
+    public function get_fields_values() {
         return array();
     }
 
@@ -176,11 +176,11 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
 
     }
 
-    public function getContent() {
+    public function get_content() {
         return $this->_option_id;
     }
 
-    public function isValid() {
+    public function is_valid() {
 
         $value = isset($_POST['leyka_'.$this->_option_id]) ? $_POST['leyka_'.$this->_option_id] : false;
 
@@ -188,7 +188,7 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
 
     }
 
-    public function getErrors() {
+    public function get_errors() {
 
         $value = isset($_POST['leyka_'.$this->_option_id]) ? $_POST['leyka_'.$this->_option_id] : false;
         $errors = array();
@@ -204,7 +204,7 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
     /** Get all options & values set on the step
      * @return array
      */
-    public function getFieldsValues() {
+    public function get_fields_values() {
         return isset($_POST['leyka_'.$this->_option_id]) ?
             array($this->_option_id => $_POST['leyka_'.$this->_option_id]) : array();
     }
@@ -258,14 +258,14 @@ class Leyka_Container_Block extends Leyka_Settings_Block {
         $this->_blocks[] = $block;
     }
 
-    public function getContent() {
+    public function get_content() {
         return $this->_blocks;
     }
 
-    public function isValid() {
+    public function is_valid() {
 
         foreach($this->_blocks as $block) { /** @var $block Leyka_Settings_Block */
-            if( !$block->isValid() ) {
+            if( !$block->is_valid() ) {
                 return false;
             }
         }
@@ -274,12 +274,12 @@ class Leyka_Container_Block extends Leyka_Settings_Block {
 
     }
 
-    public function getErrors() {
+    public function get_errors() {
 
         $errors = array();
 
         foreach($this->_blocks as $sub_block) { /** @var $sub_block Leyka_Settings_Block */
-            $errors = array_merge($errors, $sub_block->getErrors());
+            $errors = array_merge($errors, $sub_block->get_errors());
         }
 
         return $errors;
@@ -289,12 +289,12 @@ class Leyka_Container_Block extends Leyka_Settings_Block {
     /** Get all options & values set on the step
      * @return array
      */
-    public function getFieldsValues() {
+    public function get_fields_values() {
 
         $fields_values = array();
 
         foreach($this->_blocks as $block) { /** @var $block Leyka_Settings_Block */
-            $fields_values = array_merge($fields_values, $block->getFieldsValues());
+            $fields_values = array_merge($fields_values, $block->get_fields_values());
         }
 
         return $fields_values;
@@ -348,13 +348,13 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
             case 'field_data':
                 return $this->_field_data;
             case 'is_standard_field_type':
-                return leyka_options()->isStandardFieldType($this->_field_type);
+                return leyka_options()->is_standard_field_type($this->_field_type);
             default: return parent::__get($name);
         }
 
     }
 
-    public function getContent() {
+    public function get_content() {
 
         ob_start();
 
@@ -385,7 +385,7 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
 
     }
 
-    public function isValid() {
+    public function is_valid() {
 
         $is_valid = true;
 
@@ -393,8 +393,8 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
             foreach($this->_fields_keys as $key) {
                 
                 if($this->_field_type === 'file') {
-                    $is_valid = $this->isFileFieldValid();
-                } elseif(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
+                    $is_valid = $this->is_file_field_valid();
+                } else if(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
                     $is_valid = false;
                 }
 
@@ -415,32 +415,30 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
 
     }
     
-    public function isFileFieldValid() {
+    public function is_file_field_valid() {
 
-        if( !isset($_FILES['leyka_' . $this->_setting_id ]) ) {
+        if( !isset($_FILES['leyka_'.$this->_setting_id ]) ) {
             return false;
         }
 
-        $file = $_FILES['leyka_' . $this->_setting_id];
+        $file = $_FILES['leyka_'.$this->_setting_id];
 
         return $file && empty($file['error']) && !empty($file['size']);
 
     }
 
-    public function getErrors() {
+    public function get_errors() {
 
         $errors = array();
 
         if( !empty($this->_field_data['required']) ) {
 
             $error_text = $this->_field_data['required'] === true ?
-                esc_attr__('The field value is required', 'leyka') : esc_attr__($this->_field_data['required']);
+                __('The field value is required', 'leyka') : __($this->_field_data['required']);
 
             foreach($this->_fields_keys as $key) {
-                if($this->_field_type === 'file') {
-                    if(!$this->isFileFieldValid()) {
-                        $errors[] = new WP_Error('option_invalid', $error_text);
-                    }
+                if($this->_field_type === 'file' && !$this->is_file_field_valid()) {
+                    $errors[] = new WP_Error('option_invalid', $error_text);
                 } else if(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
                     $errors[] = new WP_Error('option_invalid', $error_text);
                 }
@@ -463,7 +461,7 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
     /** Get all options & values set on the step
      * @return array
      */
-    public function getFieldsValues() {
+    public function get_fields_values() {
 
         $values = array();
 

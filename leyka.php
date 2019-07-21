@@ -4,7 +4,7 @@
  * Plugin Name: Leyka
  * Plugin URI:  https://leyka.te-st.ru/
  * Description: The donations management system for your WP site
- * Version:     3.0.3
+ * Version:     3.3
  * Author:      Teplitsa of social technologies
  * Author URI:  https://te-st.ru
  * Text Domain: leyka
@@ -38,16 +38,16 @@
 
 // Leyka plugin version:
 if( !defined('LEYKA_VERSION') ) {
-    define('LEYKA_VERSION', '3.0.3');
+    define('LEYKA_VERSION', '3.3');
 }
 
 // Plugin base file:
-if( !defined('LEYKA_PLUGIN_BASE_FILE') ) { // "leyka.php"
+if( !defined('LEYKA_PLUGIN_BASE_FILE') ) {
     define('LEYKA_PLUGIN_BASE_FILE', basename(__FILE__));
 }
 
 // Plugin base directory:
-if( !defined('LEYKA_PLUGIN_DIR_NAME') ) { // Most commonly, "leyka"
+if( !defined('LEYKA_PLUGIN_DIR_NAME') ) {
     define('LEYKA_PLUGIN_DIR_NAME', basename(dirname(__FILE__)));
 }
 
@@ -71,7 +71,6 @@ if( !defined('LEYKA_SUPPORT_EMAIL') ) {
     define('LEYKA_SUPPORT_EMAIL', 'support@te-st.ru,sidorenko.a@gmail.com');
 }
 
-// Plugin support email:
 if( !defined('LEYKA_DEBUG') ) {
     define('LEYKA_DEBUG', true);
 }
@@ -87,13 +86,13 @@ if( !defined('LEYKA_USAGE_STATS_PROD_SERVER_URL') ) {
 // Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
 if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.6.0', '<') ) {
 
-    echo '<div id="message" class="error"><p><strong>Внимание:</strong> версия PHP ниже <strong>5.6.0</strong>. Лейка нуждается в PHP хотя бы <strong>версии 5.6.0</strong>, чтобы работать корректно. Плагин будет деактивирован.<br /><br />Пожалуйста, направьте вашему хостинг-провайдеру запрос на повышение версии PHP для этого сайта.</p> <p><strong>Warning:</strong> your PHP version is below <strong>5.6.0</strong>. Leyka needs PHP <strong>v5.6.0</strong> or later to work. Plugin will be deactivated.<br /><br />Please contact your hosting provider to upgrade your PHP version.</p></div>';
+    echo '<div id="message" class="error" style="font-family: -apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Oxygen-Sans,Ubuntu,Cantarell,\'Helvetica Neue\',sans-serif;"><p><strong>Внимание:</strong> версия PHP ниже <strong>5.6.0</strong>. Лейка нуждается в PHP хотя бы <strong>версии 5.6.0</strong>, чтобы работать корректно. Плагин будет деактивирован.<br>Пожалуйста, направьте вашему хостинг-провайдеру запрос на повышение версии PHP для этого сайта.</p> <p><strong>Warning:</strong> your PHP version is below <strong>5.6.0</strong>. Leyka needs PHP <strong>v5.6.0</strong> or later to work. Plugin will be deactivated.<br>Please contact your hosting provider to upgrade your PHP version.</p></div>';
 
-    die();
+    exit();
 
 }
 
-if(get_locale() == 'ru_RU') {
+if(get_locale() === 'ru_RU') {
     load_textdomain('leyka', dirname(realpath(__FILE__)).'/languages/leyka-ru_RU.mo'); // Load the lang. pack included
 }
 load_plugin_textdomain('leyka', false, basename(dirname(__FILE__)).'/languages/'); // Load the lang. pack by priority
@@ -109,12 +108,14 @@ require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donation-base.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donation-post.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donations-management.php'); /** @todo Make this class ADMIN ONLY. */
 require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donations-factory.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donor.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-payment-form.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-template-controller.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-ajax.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-shortcodes.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-widgets.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-hooks.php');
+require_once(ABSPATH . 'wp-admin/includes/meta-boxes.php');
 
 /** Automatically include all sub-dirs of /leyka/gateways/ */
 $gateways_dir = dir(LEYKA_PLUGIN_DIR.'gateways/');
@@ -136,13 +137,17 @@ if( !$gateways_dir ) {
 
 }
 
+if(leyka_options()->opt('donor_accounts_available')) {
+    require_once(LEYKA_PLUGIN_DIR.'templates/account/template-tags.php');
+}
+
 function leyka_load_plugin_textdomain() {
-    load_plugin_textdomain('leyka', false, basename( dirname( __FILE__ ) ) . '/languages/');
+    load_plugin_textdomain('leyka', false, basename(dirname(__FILE__)).'/languages/');
 }
 add_action('plugins_loaded', 'leyka_load_plugin_textdomain');
 
 register_activation_hook(__FILE__, array('Leyka', 'activate')); // Activation
-add_action('plugins_loaded', array('Leyka', 'activate')); // Any update needed
+//add_action('plugins_loaded', array('Leyka', 'activate')); // Any update needed
 register_deactivation_hook(__FILE__, array('Leyka', 'deactivate')); // Deactivate
 
 leyka(); // All systems go

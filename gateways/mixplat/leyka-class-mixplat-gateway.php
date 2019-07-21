@@ -61,10 +61,10 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
     protected function _initialize_pm_list() {
 
         if(empty($this->_payment_methods['mobile'])) {
-            $this->_payment_methods['mobile'] = Leyka_Mixplat_Mobile::getInstance();
+            $this->_payment_methods['mobile'] = Leyka_Mixplat_Mobile::get_instance();
         }
         if(empty($this->_payment_methods['sms'])) {
-            $this->_payment_methods['sms'] = Leyka_Mixplat_Text::getInstance();
+            $this->_payment_methods['sms'] = Leyka_Mixplat_Text::get_instance();
         }
 
     }
@@ -85,11 +85,11 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
     public function enqueue_gateway_scripts() {
 
-        if(Leyka_Mixplat_Mobile::getInstance()->active) {
+        if(Leyka_Mixplat_Mobile::get_instance()->active) {
 
             wp_enqueue_script(
                 'leyka-mixplat',
-                LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Mixplat_Gateway::getInstance()->id.'/js/leyka.mixplat.js',
+                LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Mixplat_Gateway::get_instance()->id.'/js/leyka.mixplat.js',
                 array('jquery', 'leyka-public'),
                 LEYKA_VERSION,
                 true
@@ -105,7 +105,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         if(empty($form_data['leyka_donor_phone']) || !preg_match('/^[\d+ -.]+$/i', $form_data['leyka_donor_phone'])) {
 
             $error = new WP_Error('leyka_mixplat_phone_is_empty', __('Valid phone number is required.', 'leyka'));
-            leyka()->addPaymentFormError($error);
+            leyka()->add_payment_form_error($error);
 
             return;
         }
@@ -163,7 +163,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         }
 
         if($is_success) {
-            wp_redirect(leyka_get_campaign_success_page_url($donation->campaign_id));
+            wp_redirect(leyka_get_success_page_url($donation->campaign_id));
         } else {
 
             wp_mail(
@@ -172,7 +172,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                 sprintf(__("This message has been sent because a create_payment call to MIXPLAT payment system returned some error. The details of the call are below. Payment error code / text: %s / %s", 'leyka'), $json['result'], $json['message'])."\n\r\n\r"
             );
 
-            wp_redirect(leyka_get_campaign_failure_page_url($donation->campaign_id));
+            wp_redirect(leyka_get_failure_page_url($donation->campaign_id));
 
         }
 
@@ -316,7 +316,9 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
                     $donation->status = 'funded';
                     Leyka_Donation_Management::send_all_emails($donation->id);
+
                 }
+
             }
 
         }
@@ -540,6 +542,6 @@ class Leyka_Mixplat_Text extends Leyka_Payment_Method {
 }
 
 function leyka_add_gateway_mixplat() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka_add_gateway(Leyka_Mixplat_Gateway::getInstance());
+    leyka_add_gateway(Leyka_Mixplat_Gateway::get_instance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_mixplat');

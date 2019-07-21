@@ -201,15 +201,39 @@ jQuery(document).ready(function($){
 
     $yandex_new_api_used.on('change.leyka', function(){
 
-        if($(this).prop('checked')) {
+        var $smart_payment_pm_field = $('.gateway-pm-list').find(':input.pm-available[value="yandex-yandex_all"]');
+
+        if($yandex_new_api_used.prop('checked')) {
 
             $gateway_settings.find('.new-api').show();
             $gateway_settings.find('.old-api').hide();
+
+            if($smart_payment_pm_field.length) {
+
+                if($smart_payment_pm_field.prop('checked')) {
+
+                    $smart_payment_pm_field.prop('checked', false).change();
+                    $yandex_new_api_used.data('yandex-all-pm-removed', true);
+
+                }
+
+                $('.settings-block#yandex-yandex_all').hide();
+
+            }
 
         } else {
 
             $gateway_settings.find('.new-api').hide();
             $gateway_settings.find('.old-api').show();
+
+            $('.settings-block#yandex-yandex_all').show();
+
+            if($yandex_new_api_used.data('yandex-all-pm-removed')) {
+
+                $yandex_new_api_used.data('yandex-all-pm-removed', false);
+                $smart_payment_pm_field.prop('checked', true).change();
+
+            }
 
         }
 

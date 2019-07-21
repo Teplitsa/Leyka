@@ -7,11 +7,11 @@
  * Functions to register and deregister a gateway
  **/
 function leyka_add_gateway($class_name) {
-    leyka()->addGateway($class_name);
+    leyka()->add_gateway($class_name);
 }
 
 function leyka_remove_gateway($class_name) {
-    leyka()->removeGateway($class_name);
+    leyka()->remove_gateway($class_name);
 }
 
 function leyka_get_gateways() {
@@ -22,6 +22,7 @@ function leyka_get_gateways() {
  * @param mixed $activity True to select only active PMs, false for only non-active ones,
  * NULL for both types altogether.
  * @param $currency mixed
+ * @param $sorted boolean
  * @return array
  */
 function leyka_get_pm_list($activity = null, $currency = false, $sorted = true) {
@@ -46,7 +47,6 @@ function leyka_get_pm_list($activity = null, $currency = false, $sorted = true) 
         }
 
     } else {
-
         foreach(leyka()->get_gateways() as $gateway) { /** @var Leyka_Gateway $gateway */
             $pm_list = array_merge($pm_list, $gateway->get_payment_methods($activity, $currency));
         }
@@ -155,17 +155,15 @@ function leyka_get_gateway_settings_url($gateway) {
 
 /**
  * @param Leyka_Gateway $gateway
- * @return mixed; string wizard suffix or false if wizard unavailable for gateway
+ * @return string|false Gateway ID, or false if there is no Wizard for a fiven gateway.
  */
 function leyka_gateway_setup_wizard($gateway) {
-    
-    $wizard_id = false;
-    
+
     if(in_array($gateway->id, Leyka_Gateway::$gateways_with_wizard)) {
-        $wizard_id = $gateway->id;
+        return $gateway->id;
     }
 
-    return $wizard_id;
+    return false;
 
 }
 
@@ -174,8 +172,8 @@ function leyka_gateway_setup_wizard($gateway) {
  * @return bool
  */
 function leyka_wizard_started($gateway_wizard_name) {
-
-    $wizard_controller = Leyka_Settings_Factory::getInstance()->getController($gateway_wizard_name);
+    
+    $wizard_controller = Leyka_Settings_Factory::get_instance()->get_controller($gateway_wizard_name);
     return count($wizard_controller->history) > 0;
     
 }
@@ -267,12 +265,12 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             case 'description': return $this->_description;
             case 'icon':
             case 'icon_url':
-                $icon = false; /** "@todo Make all the gateways icons SVGs! */
+                $icon = false;
                 if($this->_icon) {
                     $icon = $this->_icon;
-                } elseif(file_exists(LEYKA_PLUGIN_DIR."gateways/{$this->_id}/icons/{$this->_id}.svg")) {
+                } else if(file_exists(LEYKA_PLUGIN_DIR."gateways/{$this->_id}/icons/{$this->_id}.svg")) {
                     $icon = LEYKA_PLUGIN_BASE_URL."gateways/{$this->_id}/icons/{$this->_id}.svg";
-                } elseif(file_exists(LEYKA_PLUGIN_DIR."gateways/{$this->_id}/icons/{$this->_id}.png")) {
+                } else if(file_exists(LEYKA_PLUGIN_DIR."gateways/{$this->_id}/icons/{$this->_id}.png")) {
                     $icon = LEYKA_PLUGIN_BASE_URL."gateways/{$this->_id}/icons/{$this->_id}.png";
                 }
                 return $icon;
@@ -350,7 +348,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     /** Register a gateway in the plugin */
     public function add_gateway() {
-        leyka()->addGateway(self::getInstance());
+        leyka()->add_gateway(self::get_instance());
     }
 
     /** Register a gateway's scripts in the plugin */
@@ -369,7 +367,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
      * @param $donation mixed
      * @return Leyka_Donation_Base|false
      */
-    public function getInitRecurringDonation($donation) {
+    public function get_init_recurrent_donation($donation) {
 
         if(is_a($donation, 'Leyka_Donation')) {
             return new Leyka_Donation($donation->init_recurring_donation_id);
@@ -383,14 +381,6 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             return false;
         }
 
-    }
-    /**
-     * @deprecated
-     * @param $donation mixed
-     * @return Leyka_Donation_Base|false
-     */
-    public function get_init_recurrent_donation($donation) {
-        return $this->getInitRecurringDonation($donation);
     }
 
     public function cancel_recurring_subscription(Leyka_Donation_Base $donation) {
@@ -452,7 +442,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
                 'wrong_donation_amount',
                 __('Donation amount must be specified to submit the form', 'leyka')
             );
-            leyka()->addPaymentFormError($error);
+            leyka()->add_payment_form_error($error);
 
         }
 
@@ -463,7 +453,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
                 'wrong_donation_currency',
                 __('Wrong donation currency in submitted form data', 'leyka')
             );
-            leyka()->addPaymentFormError($error);
+            leyka()->add_payment_form_error($error);
 
         }
 
@@ -476,7 +466,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
                     $form_data['top_'.$currency].' '.leyka_options()->opt("currency_{$currency}_label")
                 )
             );
-            leyka()->addPaymentFormError($error);
+            leyka()->add_payment_form_error($error);
 
         }
 
@@ -490,14 +480,14 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
                     $bottom_amount_allowed.' '.leyka_options()->opt("currency_{$currency}_label")
                 )
             );
-            leyka()->addPaymentFormError($error);
+            leyka()->add_payment_form_error($error);
 
         }
 
         if(empty($form_data['leyka_agree']) && leyka_options()->opt('agree_to_terms_needed')) {
 
             $error = new WP_Error('terms_not_agreed', __('You must agree to the terms of donation service', 'leyka'));
-            leyka()->addPaymentFormError($error);
+            leyka()->add_payment_form_error($error);
 
         }
 
@@ -538,6 +528,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
      * @param mixed $activity True to select only active PMs, false for only non-active ones,
      * NULL for both types altogether.
      * @param mixed $currency
+     * @param boolean $by_categories
      * @return array Of Leyka_Payment_Method objects.
      */
     public function get_payment_methods($activity = null, $currency = false, $by_categories = false) {
@@ -585,7 +576,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     /**
      * @param string $pm_id
-     * @return Leyka_Payment_Method Object, or false if it's not found.
+     * @return Leyka_Payment_Method Object|false.
      */
     public function get_payment_method_by_id($pm_id) {
         return empty($this->_payment_methods[$pm_id]) ? false : $this->_payment_methods[$pm_id];
@@ -762,9 +753,9 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
 
         if( !$currency ) {
             return true;
-        } elseif(is_array($currency) && !array_diff($currency, $this->_supported_currencies)) {
+        } else if(is_array($currency) && !array_diff($currency, $this->_supported_currencies)) {
             return true;
-        } elseif(in_array($currency, $this->_supported_currencies)) {
+        } else if(in_array($currency, $this->_supported_currencies)) {
             return true;
         } else {
             return false;

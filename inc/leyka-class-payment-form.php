@@ -62,19 +62,22 @@ class Leyka_Payment_Form {
             $errors[] = new WP_Error('wrong_gateway_pm_data', __('Wrong gateway or/and payment method in submitted form data', 'leyka'));
         }
 
-        $donor_name = leyka_pf_get_donor_name_value();
+        $donor_name = trim(leyka_pf_get_donor_name_value());
         if($donor_name && !leyka_validate_donor_name($donor_name)) {
             $errors[] = new WP_Error('incorrect_donor_name', __('Incorrect donor name given while trying to add a donation', 'leyka'));
         }
 
-        $donor_email = leyka_pf_get_donor_email_value();
+        $donor_email = trim(leyka_pf_get_donor_email_value());
         if($donor_email && !leyka_validate_email($donor_email)) {
             $errors[] = new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
         }
 
-        if(leyka_options()->opt_template('show_donation_comment_field') && leyka_options()->opt_template('donation_comment_max_length')) {
+        if(
+            leyka_options()->opt_template('show_donation_comment_field')
+            && leyka_options()->opt_template('donation_comment_max_length')
+        ) {
 
-            $donor_comment = leyka_pf_get_donor_comment_value();
+            $donor_comment = trim(leyka_pf_get_donor_comment_value());
             if($donor_comment && mb_strlen($donor_comment) > leyka_options()->opt_template('donation_comment_max_length')) {
                 $errors[] = new WP_Error('donor_comment_too_long', sprintf(__('Entered comment is too long (maximum %d characters allowed)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length')));
             }
@@ -832,15 +835,15 @@ function leyka_share_campaign_block($campaign_id = null) {
 /* previous submission errors */
 function leyka_pf_submission_errors() {?>
 
-    <div id="leyka-submit-errors" class="leyka-submit-errors" <?php echo leyka()->hasSessionErrors() ? '' : 'style="display:none"';?>>
-    <?php if(leyka()->hasSessionErrors()) {?>
+    <div id="leyka-submit-errors" class="leyka-submit-errors" <?php echo leyka()->has_session_errors() ? '' : 'style="display:none"';?>>
+    <?php if(leyka()->has_session_errors()) {?>
         <span><?php _e('Errors', 'leyka');?>: </span>
         <ul>
-            <?php foreach(leyka()->getSessionErrors() as $wp_error) { /** @var $wp_error WP_Error */?>
+            <?php foreach(leyka()->get_session_errors() as $wp_error) { /** @var $wp_error WP_Error */?>
                 <li><?php echo $wp_error->get_error_message();?></li>
             <?php }?>
         </ul>
-        <?php leyka()->clearSessionErrors();?>
+        <?php leyka()->clear_session_errors();?>
     <?php }?>
     </div>
 
@@ -914,10 +917,19 @@ function leyka_print_donation_elements($content) {
 
 function leyka_get_current_template_data($campaign = null, $template = null, $is_service = false) {
 
-	if( !$campaign ) {
-		$campaign = get_post();
-    } elseif(is_numeric($campaign)) {
-		$campaign = get_post($campaign);
+    if(is_numeric($campaign)) {
+        $campaign = get_post($campaign);
+    }
+    elseif(!$campaign) {
+        $donation_id = leyka_remembered_data('donation_id');
+        $donation = $donation_id ? new Leyka_Donation($donation_id) : null;
+        $campaign_id = $donation ? $donation->campaign_id : null;
+        $campaign = $campaign_id ? new Leyka_Campaign($campaign_id) : null;
+    }
+    
+    // fallback if no leyka_remembered_data and campaign not specified
+    if( !$campaign ) {
+        $campaign = get_post();
     }
 
     // Get campaign-specific template, if needed:
@@ -934,7 +946,9 @@ function leyka_get_current_template_data($campaign = null, $template = null, $is
         $template = leyka_options()->opt('donation_form_template');
     }
 
-    $template = leyka()->getTemplate($template, !!$is_service);
+    $template = leyka()->get_template($template, !!$is_service);
+//     print_r($template);
+//     exit();
    
     return $template ? $template : false;
 
@@ -993,19 +1007,21 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
             }
         }
 
-    } // Campaign finished
+    }
 
     $out = ob_get_contents();
     ob_end_clean();
 
 	return $out;
+
 }
 
 /**
- * Template tag for indirect filtering
- * 
- * should be probably marked as deprecated
- * use leyka_get_payment_form instead
+ * Template tag for indirect filtering.
+ *
+ * @param $echo boolean
+ * @return mixed Form markup code if $echo is false, true otherwise.
+ * @deprecated Use leyka_get_payment_form() instead.
  **/
 function leyka_get_donation_form($echo = true) {
 
@@ -1021,6 +1037,23 @@ function leyka_get_donation_form($echo = true) {
     } else {
         return get_leyka_payment_form_template_html();
     }
+
+}
+
+/**
+ * @param $echo boolean
+ * @param $css_classes string
+ * @return string|null Ajax indicator markup code if $echo is false, null otherwise.
+ **/
+function leyka_get_ajax_indicator($echo = false, $css_classes = '') {
+
+    $markup = '<span class="leyka-spinner-border form-ajax-indicator '.$css_classes.'" style="display: none;"></span>';
+    if( !!$echo ) {
+        return print($markup);
+    } else {
+        return $markup;
+    }
+
 }
 
 function leyka_remember_donation_data(array $additional_data = array()) {

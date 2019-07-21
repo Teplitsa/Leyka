@@ -2,10 +2,12 @@
 /**
  * Leyka Template: Revo
  * Description: A modern and lightweight step-by-step form template
+ *
+ * $campaign - current campaign
+ * 
  **/
 
-$campaign = Leyka_Revo_Template_Controller::getInstance()->getCurrentCampaign();
-$template_data = Leyka_Revo_Template_Controller::getInstance()->getTemplateData($campaign);?>
+$template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_data($campaign);?>
 
 <form id="<?php echo leyka_pf_get_form_id($campaign->id).'-revo-form';?>" class="leyka-inline-campaign-form leyka-revo-form" data-template="revo" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
 
@@ -87,7 +89,6 @@ $template_data = Leyka_Revo_Template_Controller::getInstance()->getTemplateData(
         <?php $max_pm_number = leyka_options()->opt_template('show_donation_comment_field') ? 6 : 4;
         foreach($template_data['pm_list'] as $number => $pm) { /** @var $pm Leyka_Payment_Method */
 
-
             // Max. 4 PM blocks for forms without comment field, or max. 6 PM blocks otherwise:
             if($number > $max_pm_number) {
                 break;
@@ -110,7 +111,7 @@ $template_data = Leyka_Revo_Template_Controller::getInstance()->getTemplateData(
 
     <?php foreach($template_data['pm_list'] as $pm) { /** @var $pm Leyka_Payment_Method */
 
-        if($pm->processing_type != 'static') {
+        if($pm->processing_type !== 'static') {
             continue;
         }?>
     <div class="step step--static <?php echo $pm->full_id;?>">
@@ -137,7 +138,6 @@ $template_data = Leyka_Revo_Template_Controller::getInstance()->getTemplateData(
 
     <?php }?>
 
-<!--    --><?php //if(leyka_options()->opt('revo_template_ask_donor_data') == 'during-donation') {?>
     <!-- Maybe, step 3: donor data -->
     <div class="step step--person">
 
@@ -189,25 +189,38 @@ $template_data = Leyka_Revo_Template_Controller::getInstance()->getTemplateData(
                 </div>
 
                 <?php if(leyka_options()->opt('agree_to_terms_needed') || leyka_options()->opt('agree_to_pd_terms_needed')) {?>
+
                 <div class="donor__oferta">
                     <span>
-                    <?php if(leyka_options()->opt('agree_to_terms_needed')) {?>
-                        <input type="checkbox" name="leyka_agree" id="leyka_agree" class="required" value="1" <?php echo leyka_options()->opt('terms_agreed_by_default') ? 'checked="checked"' : '';?>>
-                        <label for="leyka_agree">
+
+                    <?php if(leyka_options()->opt('agree_to_terms_needed')) {
+
+                        $field_id = 'leyka-'.wp_rand();?>
+
+                        <input type="checkbox" name="leyka_agree" id="<?php echo $field_id;?>" class="required" value="1" <?php echo leyka_options()->opt('terms_agreed_by_default') ? 'checked="checked"' : ''; ?>>
+
+                        <label for="<?php echo $field_id;?>">
                         <?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';
 
-                        if(leyka_options()->opt('agree_to_terms_link_action') === 'popup') {?>
+                        if(leyka_options()->opt('agree_to_terms_link_action') === 'popup') { ?>
                             <a href="#" class="leyka-js-oferta-trigger">
                         <?php } else {?>
-                            <a target="_blank" href="<?php echo leyka_get_terms_of_service_page_url();?>">
-                        <?php }?>
-                                <?php echo apply_filters('agree_to_terms_text_link_part', leyka_options()->opt('agree_to_terms_text_link_part'));?>
+                            <a target="_blank" href="<?php echo leyka_get_terms_of_service_page_url(); ?>">
+                        <?php }
+
+                        echo apply_filters('agree_to_terms_text_link_part', leyka_options()->opt('agree_to_terms_text_link_part'));?>
                             </a>
                         </label>
-                    <?php if(leyka_options()->opt('agree_to_pd_terms_needed')) {?>
 
-                        <input type="checkbox" name="leyka_agree_pd" id="leyka_agree_pd" class="required" value="1" <?php echo leyka_options()->opt('pd_terms_agreed_by_default') ? 'checked="checked"' : '';?>>
-                        <label for="leyka_agree_pd">
+                    <?php }
+
+                    if(leyka_options()->opt('agree_to_pd_terms_needed')) {
+
+                        $field_id = 'leyka-'.wp_rand();?>
+
+                        <input type="checkbox" name="leyka_agree_pd" id="<?php echo $field_id;?>" class="required" value="1" <?php echo leyka_options()->opt('pd_terms_agreed_by_default') ? 'checked="checked"' : '';?>>
+
+                        <label for="<?php echo $field_id;?>">
                         <?php echo apply_filters('agree_to_pd_terms_text_text_part', leyka_options()->opt('agree_to_pd_terms_text_text_part')).' ';?>
                             <a href="#" class="leyka-js-pd-trigger">
                                 <?php echo apply_filters('agree_to_pd_terms_text_link_part', leyka_options()->opt('agree_to_pd_terms_text_link_part'));?>
@@ -215,11 +228,13 @@ $template_data = Leyka_Revo_Template_Controller::getInstance()->getTemplateData(
                         </label>
 
                     <?php }?>
+
                     </span>
+
                     <div class="donor__oferta-error leyka_agree-error leyka_agree_pd-error">
-                        <?php _e('You should accept Terms of Service to donate', 'leyka');?>
+                        <?php _e('You should check out and accept the Terms to donate', 'leyka');?>
                     </div>
-                    <?php }?>
+
                 </div>
                 <?php }?>
 
@@ -231,5 +246,5 @@ $template_data = Leyka_Revo_Template_Controller::getInstance()->getTemplateData(
         </div>
 
     </div>
-<!--    --><?php //}?>
+
 </form>

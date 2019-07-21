@@ -3,7 +3,6 @@ var basePaths = {
     src: 'src/',
     dest: 'assets/',
     npm: 'node_modules/',
-    bower: 'bower_components/',
     root: ''
 };
 
@@ -33,12 +32,14 @@ if(gutil.env.prod === true) {
 }
 
 //js
-gulp.task('build-front-js', function(){
+gulp.task('build-front-js', async function(){
+
+    console.log('HERE FRONT')
 
     var vendorFiles = [basePaths.npm + 'jquery.cookie/jquery.cookie.js'],
         appFiles = [basePaths.src + 'js/*.js', basePaths.src + 'js/front/*.js'];
 
-    return gulp.src(vendorFiles.concat(appFiles))
+    return await gulp.src(vendorFiles.concat(appFiles))
         .pipe(plugins.concat('public.js'))
         .pipe(isProduction ? plugins.uglify() : gutil.noop()) // Minification
         .pipe(plugins.size()) // Print size for log
@@ -49,7 +50,7 @@ gulp.task('build-front-js', function(){
 
 gulp.task('build-admin-js', function(){
 
-    var vendorFiles = [basePaths.npm+'jquery.cookie/jquery.cookie.js'],
+    var vendorFiles = [basePaths.npm+'jquery.cookie/jquery.cookie.js', basePaths.npm+'air-datepicker/dist/js/datepicker.min.js'],
         appFiles = [basePaths.src+'js/admin/*.js'];
 
     return gulp.src(vendorFiles.concat(appFiles))
@@ -103,7 +104,7 @@ gulp.task('build-front-css', function(){
 gulp.task('build-admin-css', function() {
 
     var paths = require('node-bourbon').includePaths,
-		// vendorFiles = gulp.src([]),
+		vendorFiles = gulp.src([basePaths.npm + 'air-datepicker/dist/css/datepicker.min.css']),
         appFiles = gulp.src(basePaths.src+'sass/admin/admin.scss')
         .pipe(!isProduction ? plugins.sourcemaps.init() : gutil.noop())  //process the original sources for sourcemap
         .pipe(plugins.sass({
@@ -117,8 +118,34 @@ gulp.task('build-admin-css', function() {
         .pipe(!isProduction ? plugins.sourcemaps.write() : gutil.noop()) //add the map to modified source
         .on('error', console.log); //log
 
-	return es.concat(appFiles /*, vendorFiles*/) //combine vendor CSS files and our files after-SASS
+	return es.concat(appFiles , vendorFiles) //combine vendor CSS files and our files after-SASS
         .pipe(plugins.concat('admin.css')) //combine into file
+        .pipe(isProduction ? plugins.cssmin() : gutil.noop()) //minification on production
+        .pipe(plugins.size()) //display size
+        .pipe(gulp.dest(basePaths.dest+'css')) //write file
+        .on('error', console.log); //log
+
+});
+
+gulp.task('build-admin-common-css', function() {
+
+    var paths = require('node-bourbon').includePaths,
+		// vendorFiles = gulp.src([]),
+        appFiles = gulp.src(basePaths.src+'sass/admin/admin-common.scss')
+        .pipe(!isProduction ? plugins.sourcemaps.init() : gutil.noop())  //process the original sources for sourcemap
+        .pipe(plugins.sass({
+                outputStyle: sassStyle, //SASS syntas
+                includePaths: paths //add bourbon + mdl
+            }).on('error', plugins.sass.logError))//sass own error log
+        .pipe(plugins.autoprefixer({ //autoprefixer
+                browsers: ['last 4 versions'],
+                cascade: false
+            }))
+        .pipe(!isProduction ? plugins.sourcemaps.write() : gutil.noop()) //add the map to modified source
+        .on('error', console.log); //log
+
+	return es.concat(appFiles /*, vendorFiles*/) //combine vendor CSS files and our files after-SASS
+        .pipe(plugins.concat('admin-common.css')) //combine into file
         .pipe(isProduction ? plugins.cssmin() : gutil.noop()) //minification on production
         .pipe(plugins.size()) //display size
         .pipe(gulp.dest(basePaths.dest+'css')) //write file
@@ -167,20 +194,19 @@ gulp.task('revision', function(){
 });
 
 // Builds
-gulp.task('full-build', async function(callback) {
-    await gulp.series('build-css', 'build-js', 'svg-opt', callback);
+gulp.task('full-build', async function(){
+    await gulp.parallel('full-build-css', 'full-build-js', 'svg-opt');
 });
 
-gulp.task('full-build-css', async function(callback) {
-    await gulp.series('build-css', callback);
+gulp.task('full-build-css', async function(){
+    await gulp.series('build-front-css', 'build-admin-common-css', 'build-admin-css');
 });
 
 gulp.task('full-build-js', async function(){
-    await gulp.series('build-js');
+    await gulp.series('build-front-js', 'build-admin-js');
 });
 
-
-//svg - combine and clear svg assets
+// SVG - combine and clear svg assets
 gulp.task('svg-opt', function(){
 
     var icons = gulp.src([basePaths.src+'svg/icon-*.svg'])
@@ -219,7 +245,7 @@ gulp.task('svg-opt', function(){
 gulp.task('watch', function(done){
 
     // Frontend:
-    gulp.watch([basePaths.src + 'sass/*.scss'], gulp.series('build-front-css'));
+    gulp.watch([basePaths.src + 'sass/*.scss', basePaths.src + 'sass/form_templates/*/*.scss'], gulp.series('build-front-css'));
     gulp.watch([basePaths.src + 'js/*.js', basePaths.src + 'js/front/*.js'], gulp.series('build-front-js'));
 
     // gulp.watch([basePaths.src + 'sass/*.scss'], gulp.series('build-front-css'));
@@ -228,7 +254,7 @@ gulp.task('watch', function(done){
     // Backend:
     gulp.watch(
         [basePaths.src+'sass/admin/*.scss', basePaths.src+'sass/admin/**/*.scss'],
-        gulp.series('build-admin-css', 'build-editor-css')
+        gulp.series('build-admin-common-css', 'build-admin-css', 'build-editor-css')
     );
 
     gulp.watch(

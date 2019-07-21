@@ -62,7 +62,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
         if(empty($this->_payment_methods['chronopay_card'])) {
-            $this->_payment_methods['chronopay_card'] = Leyka_Chronopay_Card::getInstance();
+            $this->_payment_methods['chronopay_card'] = Leyka_Chronopay_Card::get_instance();
         }
     }
 
@@ -113,8 +113,8 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             'order_id' => $donation_id,
             'cb_url' => home_url('leyka/service/'.$this->_id.'/response/'), // URL for the gateway callbacks
             'cb_type' => 'P',
-            'success_url' => leyka_get_campaign_success_page_url($donation->campaign_id),
-            'decline_url' => leyka_get_campaign_failure_page_url($donation->campaign_id),
+            'success_url' => leyka_get_success_page_url($donation->campaign_id),
+            'decline_url' => leyka_get_failure_page_url($donation->campaign_id),
 
             'sign' => md5($chronopay_product_id.'-'.$price
                 .(leyka_options()->opt('chronopay_use_payment_uniqueness_control') ? '-'.$donation_id : '')
@@ -235,7 +235,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             $_POST['product_id']
         )) {
 
-            if($transaction_type == 'Purchase') { // Initial rebill payment
+            if($transaction_type == 'Purchase') { // Initial recurring donation (subscription)
 
                 if($donation->status != 'funded') {
 
@@ -254,7 +254,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
                 }
 
-            } else if($transaction_type == 'Rebill') { // Rebill payment
+            } else if($transaction_type == 'Rebill') { // Non-init recurring donation
 
                 // Callback is repeated (like when Chronopay didn't get an answer in prev. attempt):
                 if($this->_donation_exists($transaction_id)) {
@@ -267,7 +267,6 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 $donation_id = Leyka_Donation::add(array(
                     'status' => 'funded',
                     'payment_type' => 'rebill',
-//                    '' => '',
                 ));
 
                 $donation = new Leyka_Donation($donation_id);
@@ -683,6 +682,6 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
 }
 
 function leyka_add_gateway_chronopay() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka()->addGateway(Leyka_Chronopay_Gateway::getInstance());
+    leyka()->add_gateway(Leyka_Chronopay_Gateway::get_instance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_chronopay');

@@ -1,12 +1,70 @@
 /** == Seetings and variables (_presets.scss)  == **/
 
+$leyka-star-base:   16px;
+
 :root {
     --leyka-color-main: #ff510d;
-    --leyka-color-main-dark: #ff510d;
-    --leyka-color-main-light: rgba(255,81,13, 0.5); // #ff510d with 0.5 opacity
+    --leyka-color-main-second: #ffc29f;
+    --leyka-color-main-third: #fef5f1;
+    --leyka-color-main-inactive: rgba(255,81,13, 0.5); // #ff510d with 0.5 opacity
+    
+    --leyka-color-error: #d43c57;
+    --leyka-color-error-second: #fc90a4;
+    --leyka-color-error-third: #fcf2f4;
+
+    --leyka-color-ok: #1aa316;
+    --leyka-color-ok-second: #9adc98;
+    --leyka-color-ok-third: #f3fcf2;
+
+    --leyka-color-gray-dark: #474747;
+    --leyka-color-grey-semi-dark: #4656565;
+    --leyka-color-gray: #666666;
+    --leyka-color-gray-superlight: #ededed;
+
+    --leyka-color-white: #ffffff;
+
+    --leyka-color-pc-bg: #ff6347;
+
+    --leyka-color-gradient: #ffffff;
+
+    --leyka-font-main: unset;
+
+    --leyka-star-base: 16px;
+    
+    --leyka-color-text-light: #ffffff;
 }
 
-$star-color: 		    var(--leyka-color-main);
-$star-color-dark: 	var(--leyka-color-main-dark);
-$star-color-light: 	var(--leyka-color-main-light);
+$leyka-star-color-main:             var(--leyka-color-main);
+$leyka-star-color-main-second:      var(--leyka-color-main-second);
+$leyka-star-color-main-third:       var(--leyka-color-main-third);
+$leyka-star-color-main-inactive:    var(--leyka-color-main-inactive);
 
+$leyka-star-color-error:            var(--leyka-color-error);
+$leyka-star-color-error-second:     var(--leyka-color-error-second);
+$leyka-star-color-error-third:      var(--leyka-color-error-third);
+
+$leyka-star-color-ok:               var(--leyka-color-ok);
+$leyka-star-color-ok-second:        var(--leyka-color-ok-second);
+$leyka-star-color-ok-third:         var(--leyka-color-ok-third);
+
+$leyka-star-color-black:            #000000; // ATM it's used only in Accounts
+$leyka-star-color-gray-dark:        var(--leyka-color-gray-dark); // #474747
+$leyka-star-color-gray-semi-dark:   var(--leyka-color-gray-semi-dark); // #656565;
+//$leyka-star-color-gray:             #8f8f8f;
+$leyka-star-color-gray:             var(--leyka-color-gray); // #666666;
+
+$leyka-star-color-gray-light:       #c0c0c0;
+
+$leyka-star-color-gray-superlight:  var(--leyka-color-gray-superlight); // #ededed;
+$leyka-star-color-white:            var(--leyka-color-white); // #ffffff;
+$leyka-star-color-gradient:         var(--leyka-color-gradient); // #ffffff;
+
+$leyka-star-color-text: #666666;
+$leyka-star-color-text-light: var(--leyka-color-text-light);
+
+$leyka-star-color-tooltip-bg: #dddddd;
+$leyka-star-color-tooltip-text: #44444a;
+
+$leyka-pc-color-main: var(--leyka-color-pc-bg);
+
+$leyka-font-main: var(--leyka-font-main);

@@ -1,6 +1,6 @@
 jQuery(document).ready(function($){
 
-    $('body').on('submit.leyka', 'form.leyka-pm-form,form.leyka-revo-form', function(e){
+    $(document).on('submit.leyka', 'form.leyka-pm-form,form.leyka-revo-form', function(e){
 
         function addError($errors_block, error_html) {
 
@@ -77,6 +77,29 @@ jQuery(document).ready(function($){
 
                 addError($errors, leyka.cp_not_set_up);
                 return false;
+
+            }
+
+            if(leyka.gtm_ga_eec_available) {
+
+                window.dataLayer = window.dataLayer || [];
+
+                dataLayer.push({
+                    'event': 'eec.add', // eec.addToCart ?
+                    'ecommerce': {
+                        // 'currencyCode': response.currency, // For some reason it doesn't work
+                        'add': {
+                            'products': [{
+                                'name': response.payment_title,
+                                'id': response.donation_id,
+                                'price': response.amount,
+                                // 'brand': // bloginfo('name') here,
+                                // 'category': '<?php echo $donation->type_label;?>' // $donation->type_label here,
+                                'quantity': 1
+                            }]
+                        }
+                    }
+                });
 
             }
 
