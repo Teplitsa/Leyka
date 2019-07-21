@@ -11,14 +11,19 @@ abstract class Leyka_Donation_Base {
 
     abstract public function __construct($donation);
 
-    public static function add(array $params = array()) { // static method can't be abstract
+    public static function add(array $params = array()) { // Static method can't be abstract, so it's just empty
     }
 
     abstract public function add_gateway_response($resp_text);
 
     public function get_specific_data_admin_fields() {
 
-        $data_fields = leyka_get_gateway_by_id($this->gateway_id)->get_specific_data_admin_fields($this->id);
+        $data_fields = array();
+
+        $gateway = leyka_get_gateway_by_id($this->gateway_id);
+        if($gateway) { /** @var $gateway Leyka_Gateway */
+            $data_fields = $gateway->get_specific_data_admin_fields($this->id);
+        }
 
         return $data_fields ? $data_fields : array();
 
@@ -34,7 +39,7 @@ abstract class Leyka_Donation_Base {
      * @param mixed $donation
      * @return mixed Leyka_Donation or false if param is wrong or nothing foundd.
      */
-    public static function getInitRecurringDonation($donation) {
+    public static function get_init_recurring_donation($donation) {
 
         $donation = leyka_get_validated_donation($donation);
 
@@ -42,12 +47,8 @@ abstract class Leyka_Donation_Base {
             return false;
         }
 
-        return leyka_get_gateway_by_id($donation->gateway_id)->get_init_recurrent_donation($donation);
+        return leyka_get_gateway_by_id($donation->gateway_id)->get_init_recurring_donation($donation);
 
-    }
-    /** @deprecated */
-    public static function get_init_recurrent_donation($donation) {
-        return static::getInitRecurringDonation($donation);
     }
 
     abstract public function delete($force = false);

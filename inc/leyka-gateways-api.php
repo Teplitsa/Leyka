@@ -104,7 +104,7 @@ function leyka_get_pm_by_id($pm_id, $is_full_id = false) {
 
 /**
  * @param $gateway_id string
- * @return mixed Leyka_Gateway object or false if none found.
+ * @return Leyka_Gateway|false object or false if none found.
  */
 function leyka_get_gateway_by_id($gateway_id) {
 
@@ -367,7 +367,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
      * @param $donation mixed
      * @return Leyka_Donation_Base|false
      */
-    public function get_init_recurrent_donation($donation) {
+    public function get_init_recurring_donation($donation) {
 
         if(is_a($donation, 'Leyka_Donation')) {
             return new Leyka_Donation($donation->init_recurring_donation_id);

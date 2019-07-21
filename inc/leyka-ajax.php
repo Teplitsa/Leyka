@@ -595,7 +595,7 @@ function leyka_unsubscribe_persistent_campaign() {
         // $donor = get_user_by('id', get_current_user_id());
 
         $campaign = new Leyka_Campaign($campaign_id);
-        $init_recurrent_donation = new Leyka_Donation($donation_id);
+        $init_recurring_donation = new Leyka_Donation($donation_id);
 
         if(!empty($_POST['leyka_cancel_subscription_reason'])) {
             $reasons = is_array($_POST['leyka_cancel_subscription_reason']) ? $_POST['leyka_cancel_subscription_reason'] : array($_POST['leyka_cancel_subscription_reason']);
@@ -628,14 +628,14 @@ function leyka_unsubscribe_persistent_campaign() {
                 'status' => 'error',
                 'message' => sprintf(__('Campaign with ID %s not found. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), $campaign_id, leyka()->opt('tech_support_email'))
             );
-        } else if( !$init_recurrent_donation ) {
+        } else if( !$init_recurring_donation ) {
             $res = array(
                 'status' => 'error',
                 'message' => sprintf(__('Donation with ID %s not found. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), $donation_id, leyka()->opt('tech_support_email'))
             );
         } else {
 
-            $init_recurrent_donation->cancel_recurring_requested = true; // Save unsubscribe request flag
+            $init_recurring_donation->cancel_recurring_requested = true; // Save unsubscribe request flag
 
             $email_text = sprintf(
                 __("Hello!\n\nDonor %s with email %s and ID %s would like to unsubscribe from campaign <a href='%s'>%s</a> with ID %s on the <a href='%s'>%s</a> website.\n\nLink to subscription: %s\n\nThe reasons are:\n%s", 'leyka'),
@@ -647,7 +647,7 @@ function leyka_unsubscribe_persistent_campaign() {
                 $campaign->ID,
                 home_url(),
                 get_bloginfo('name'),
-                admin_url('/post.php?post='.$init_recurrent_donation->id.'&action=edit'),
+                admin_url('/post.php?post='.$init_recurring_donation->id.'&action=edit'),
                 $reason_text
             );
             add_filter('wp_mail_content_type', 'leyka_set_html_content_type');

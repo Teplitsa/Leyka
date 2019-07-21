@@ -1205,6 +1205,7 @@ class Leyka_Donation_Management {
             <?php }
             }?>
         </div>
+
     <?php }
 
     public function recurrent_cancel_metabox($donation) {
@@ -1215,13 +1216,13 @@ class Leyka_Donation_Management {
             <div id="hide-recurrent-metabox"></div>
         <?php return; } else {
 
-            $init_recurrent_donation = Leyka_Donation::get_init_recurrent_donation($donation);
-            if( !$init_recurrent_donation->recurring_is_active ) {?>
+            $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($donation);
+            if( !$init_recurring_donation->recurring_is_active ) {?>
 
             <div class="">
                 <?php print_r(
                     __('Recurrent donations subscription was cancelled at %s', 'leyka'),
-                    date(get_option('date_format').', H:i', $init_recurrent_donation->recurring_cancel_date)
+                    date(get_option('date_format').', H:i', $init_recurring_donation->recurring_cancel_date)
                 );?>
             </div>
 
@@ -1248,8 +1249,10 @@ class Leyka_Donation_Management {
 		$columns = array();
 
 		if(isset($unsort['cb'])){
+
 			$columns['cb'] = $unsort['cb'];
 			unset($unsort['cb']);
+
 		}
 
 		$columns['ID'] = 'ID';
@@ -1396,19 +1399,11 @@ class Leyka_Donation_Management {
         }
 
         if($vars['orderby'] == 'donation_date') {
-            $vars = array_merge($vars, array(
-                'orderby' => 'date',
-            ));
+            $vars = array_merge($vars, array('orderby' => 'date',));
         } elseif($vars['orderby'] == 'donor_name') {
-            $vars = array_merge($vars, array(
-                'meta_key' => 'leyka_donor_name',
-                'orderby' => 'meta_value',
-            ));
+            $vars = array_merge($vars, array('meta_key' => 'leyka_donor_name', 'orderby' => 'meta_value',));
         } elseif($vars['orderby'] == 'payment_type') {
-            $vars = array_merge($vars, array(
-                'meta_key' => 'leyka_payment_type',
-                'orderby' => 'meta_value',
-            ));
+            $vars = array_merge($vars, array('meta_key' => 'leyka_payment_type', 'orderby' => 'meta_value',));
         }
 
         return $vars;
@@ -1620,7 +1615,7 @@ class Leyka_Donation_Management {
         }
 	}
 
-} // class end
+}
 
 function leyka_donation_management() {
     return Leyka_Donation_Management::get_instance();
@@ -1833,16 +1828,8 @@ class Leyka_Donation {
             return false;
         }
 
-        return leyka_get_gateway_by_id($donation->gateway_id)->get_init_recurrent_donation($donation);
+        return leyka_get_gateway_by_id($donation->gateway_id)->get_init_recurring_donation($donation);
 
-    }
-    /**
-     * @deprecated Use self::get_init_recurring_donation($donation) instead.
-     * @param mixed $donation
-     * @return mixed Leyka_Donation or false if param is wrong or nothing found.
-     */
-    public static function get_init_recurrent_donation($donation) {
-        return self::get_init_recurring_donation($donation);
     }
 
 	public function __construct($donation) {
@@ -2311,6 +2298,7 @@ class Leyka_Donation {
             case 'init_recurring_payment_id':
             case 'init_recurring_donation':
             case 'init_recurring_donation_id':
+
                 $value = (int)$value;
                 if($value > 0 && $value != $this->_post_object->post_parent) {
                     wp_update_post(array('ID' => $this->_id, 'post_parent' => $value));
@@ -2407,18 +2395,18 @@ class Leyka_Donation {
 
 }
 
-
-function leyka_cancel_recurrents_action() {
-
-    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_recurrent_cancel') || empty($_POST['donation_id'])) {
-        die('-1');
-    }
-
-    $_POST['donation_id'] = (int)$_POST['donation_id'];
-
-    $donation = new Leyka_Donation($_POST['donation_id']);
-    do_action('leyka_cancel_recurrents-'.$donation->gateway_id, $donation);
-
-}
+/** @todo Check if this code is needed */
+//function leyka_cancel_recurrents_action() {
+//
+//    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_recurrent_cancel') || empty($_POST['donation_id'])) {
+//        die('-1');
+//    }
+//
+//    $_POST['donation_id'] = (int)$_POST['donation_id'];
+//
+//    $donation = new Leyka_Donation($_POST['donation_id']);
+//    do_action('leyka_cancel_recurrents-'.$donation->gateway_id, $donation);
+//
+//}
 //add_action('wp_ajax_leyka_cancel_recurrents', 'leyka_cancel_recurrents_action');
 //add_action('wp_ajax_nopriv_leyka_cancel_recurrents', 'leyka_cancel_recurrents_action');

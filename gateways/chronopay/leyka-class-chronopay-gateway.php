@@ -455,8 +455,8 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             if($response_ok) {
 
                 // Save the fact that recurrents has been cancelled:
-                $init_recurrent_donation = $this->getInitRecurringDonation($donation);
-                $init_recurrent_donation->recurrents_cancelled = true;
+                $init_recurring_donation = $this->getInitRecurringDonation($donation);
+                $init_recurring_donation->recurrents_cancelled = true;
 
                 die(json_encode(array('status' => 1, 'message' => __('Recurring subscription cancelled.', 'leyka'))));
 
