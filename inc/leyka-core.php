@@ -117,14 +117,7 @@ class Leyka extends Leyka_Singleton {
         // For Donors management:
         if(get_option('leyka_donor_management_available') || get_option('leyka_donor_accounts_available')) {
 
-            // Don't show admin bar:
-            add_action('init', function() {
-                if(leyka_user_has_role('donor_single')) {
-                    add_filter('show_admin_bar', '__return_false');
-                }
-            }, 9);
-
-            // Disable login:
+            // Disable logging in if Donor is the only user's role (and user doesn't have an Account access capability):
             add_filter('authenticate', function($user, $username, $pass) {
 
                 if($user && is_wp_error($user)) {
@@ -134,7 +127,11 @@ class Leyka extends Leyka_Singleton {
                 if( !$user ) {
 
                     $logged_in_user = get_user_by('login', $username);
-                    if($logged_in_user && !$logged_in_user->has_cap('donor_account_access')) {
+                    if(
+                        $logged_in_user
+                        && leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, true, $logged_in_user)
+                        && !$logged_in_user->has_cap('donor_account_access')
+                    ) {
 
                         remove_filter('authenticate', 'wp_authenticate_username_password', 20);
                         return null;
@@ -147,7 +144,7 @@ class Leyka extends Leyka_Singleton {
 
             }, 1000, 3);
 
-            // Refuse the login for Donors without personal accounts:
+            // Refuse the login for Donors without Accounts:
             add_action('wp_login', function($login, WP_User $user){
                 if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, true, $user) && !$user->has_cap('donor_account_access') ) {
 
@@ -169,6 +166,7 @@ class Leyka extends Leyka_Singleton {
                     exit;
 
                 }
+
             });
 
         }
@@ -176,8 +174,9 @@ class Leyka extends Leyka_Singleton {
         // For Donor accounts management:
         if(get_option('leyka_donor_accounts_available')) {
 
+            // Don't show admin bar if Donor is the only user's role:
             add_action('init', function(){ // Don't show admin bar
-                if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE)) {
+                if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, true)) {
                     add_filter('show_admin_bar', '__return_false');
                 }
             }, 9);
