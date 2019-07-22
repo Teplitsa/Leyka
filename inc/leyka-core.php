@@ -130,7 +130,7 @@ class Leyka extends Leyka_Singleton {
                     if(
                         $logged_in_user
                         && leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, true, $logged_in_user)
-                        && !$logged_in_user->has_cap('donor_account_access')
+                        && !$logged_in_user->has_cap(Leyka_Donor::DONOR_ACCOUNT_ACCESS_CAP)
                     ) {
 
                         remove_filter('authenticate', 'wp_authenticate_username_password', 20);
@@ -146,7 +146,10 @@ class Leyka extends Leyka_Singleton {
 
             // Refuse the login for Donors without Accounts:
             add_action('wp_login', function($login, WP_User $user){
-                if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, true, $user) && !$user->has_cap('donor_account_access') ) {
+                if(
+                    leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, true, $user)
+                    && !$user->has_cap(Leyka_Donor::DONOR_ACCOUNT_ACCESS_CAP)
+                ) {
 
                     wp_logout();
                     wp_redirect(home_url());
@@ -159,7 +162,10 @@ class Leyka extends Leyka_Singleton {
             add_action('init', function(){
 
                 $user = wp_get_current_user();
-                if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, true, $user) && !$user->has_cap('donor_account_access') ) {
+                if(
+                    leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, true, $user)
+                    && !$user->has_cap(Leyka_Donor::DONOR_ACCOUNT_ACCESS_CAP)
+                ) {
 
                     wp_logout();
                     wp_redirect(home_url());
@@ -182,7 +188,6 @@ class Leyka extends Leyka_Singleton {
             }, 9);
 
             add_action('leyka_donor_account_created', array($this, 'handle_non_init_recurring_donor_registration'), 10, 2);
-            add_action('leyka_donor_account_created', array($this, 'update_donor_metadata'), 11, 2);
             add_action('leyka_donor_account_not_created', array($this, 'handle_donor_account_creation_error'), 10, 2);
 
         }
@@ -433,7 +438,7 @@ class Leyka extends Leyka_Singleton {
 
     public function refresh_donors_data() {
 
-        if( !leyka()->opt('donor_management_available') ) {
+        if( !leyka_options()->opt('donor_management_available') ) {
             return;
         }
 
@@ -1214,7 +1219,7 @@ class Leyka extends Leyka_Singleton {
             }
         }
 
-        if( !$leyka_last_ver || $leyka_last_ver < '3.2.4' ) {
+        if( !$leyka_last_ver || $leyka_last_ver < '3.3' ) {
 
             // Update "donor account" donation meta storage. "donor_account_error" meta for errors, post_author field for donors:
             $donations = get_posts(array(

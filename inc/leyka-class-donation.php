@@ -39,8 +39,7 @@ class Leyka_Donation_Management {
         add_filter('manage_edit-'.self::$post_type.'_sortable_columns', array($this, 'manage_sortable_columns'));
         add_filter('request', array($this, 'do_column_sorting'));
 
-        /** Donation status transitions */
-        add_action('transition_post_status',  array($this, 'donation_status_changed'), 10, 3);
+        add_action('transition_post_status', array($this, 'donation_status_changed'), 10, 3);
 
         add_action('wp_ajax_leyka_send_donor_email', array($this, 'ajax_send_donor_email'));
 

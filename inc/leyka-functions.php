@@ -132,7 +132,7 @@ function leyka_get_validated_user($user) {
 
     } else if(is_a($user, 'Leyka_Donor')) {
         $user = get_user_by('id', $user->id);
-    } else {
+    } else if( !is_a($user, 'WP_User') ) {
         return new WP_Error(__('Incorrect Donor identification data', 'leyka'));
     }
 
