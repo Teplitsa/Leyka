@@ -2376,14 +2376,6 @@ class Leyka_Donation {
 
     }
 
-    public function get_specific_data_admin_fields() {
-
-        $data_fields = leyka_get_gateway_by_id($this->gateway_id)->get_specific_data_admin_fields($this->id);
-
-        return $data_fields ? $data_fields : array();
-
-    }
-
     /**
      * @return mixed Last date when status was changed to "funded" in sec, or false if donation was never funded.
      */
@@ -2392,7 +2384,7 @@ class Leyka_Donation {
         $last_date_funded = 0;
 
         foreach((array)$this->status_log as $status_change) {
-            if($status_change['status'] == 'funded' && $status_change['date'] > $last_date_funded) {
+            if($status_change['status'] === 'funded' && $status_change['date'] > $last_date_funded) {
                 $last_date_funded = $status_change['date'];
             }
         }
