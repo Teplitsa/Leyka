@@ -259,7 +259,7 @@ class Leyka_Donor {
             throw new Exception($donor_user->get_error_message());
         }
 
-        $this->_id = $donor_user->id;
+        $this->_id = $donor_user->ID;
         $this->_user = $donor_user;
 
         if( !$this->_meta ) {
