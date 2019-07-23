@@ -44,13 +44,13 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         }
 
         $this->_options = array(
-//            'paypal_rest_api' => array(
-//                'type' => 'checkbox',
-//                'default' => true,
-//                'title' => __('Use the PayPal REST API', 'leyka'),
-//                'comment' => __("Check if the gateway integration should use the new REST API. If haven't used PayPal to receive payments on this website earlier, you are recommended to check the box.", 'leyka'),
-//                'short_format' => true,
-//            ),
+            'paypal_rest_api' => array(
+                'type' => 'checkbox',
+                'default' => true,
+                'title' => __('Use the PayPal REST API', 'leyka'),
+                'comment' => __("Check if the gateway integration should use the new REST API. If haven't used PayPal to receive payments on this website earlier, you are recommended to check the box.", 'leyka'),
+                'short_format' => true,
+            ),
             'paypal_api_username' => array(
                 'type' => 'text',
                 'title' => __('PayPal API username', 'leyka'),
@@ -61,12 +61,14 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 'title' => __('PayPal API password', 'leyka'),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1^2@3#&84nDsOmE5h1T'),
                 'is_password' => true,
+                'field_classes' => array('old-api'),
             ),
             'paypal_api_signature' => array(
                 'type' => 'text',
                 'title' => __('PayPal API signature', 'leyka'),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1^2@3#&84nDsOmE5h1T'),
                 'is_password' => true,
+                'field_classes' => array('old-api'),
             ),
             'paypal_client_id' => array(
 	            'type' => 'text',
@@ -105,6 +107,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 'title' => __('Accept only verified payments', 'leyka'),
                 'comment' => __('Check if you want to accept payments only from verified PayPal accounts.', 'leyka'),
                 'short_format' => true,
+                'field_classes' => array('old-api'),
             ),
             'paypal_keep_payment_logs' => array(
                 'type' => 'checkbox',
@@ -112,6 +115,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 'title' => __('Keep detailed logs of all PayPal service operations', 'leyka'),
                 'comment' => __('Check if you want to keep detailed logs of all PayPal service operations for each incoming donation.', 'leyka'),
                 'short_format' => true,
+                'field_classes' => array('old-api'),
             ),
         );
 
@@ -215,7 +219,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             $payment_description = sprintf(__('Donation № %d', 'leyka'), $donation_id);
         }
 
-        if( /*leyka_options()->opt('paypal_rest_api')*/ false ) { // TMP, until the new REST API is in work
+        if(leyka_options()->opt('paypal_rest_api')) { // TMP, until the new REST API is in work
 
             require_once LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
 
@@ -249,7 +253,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 ->setTransactions(array($transaction));
 
             $web_experience_profile_id = $this->_get_donation_web_experience_profile_id($api_context);
-//            echo '<pre>'.print_r($web_experience_profile_id, 1).'</pre>';
             if($web_experience_profile_id) {
                 $payment->setExperienceProfileId($web_experience_profile_id);
             }
