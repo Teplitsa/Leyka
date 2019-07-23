@@ -1248,14 +1248,14 @@ class Leyka extends Leyka_Singleton {
             // Add the new "Donor's account access" role:
             $donor_account_users = get_users(array('role__in' => array(Leyka_Donor::DONOR_USER_ROLE,), 'number' => -1,));
 
-            $old_donor_role = get_role('donor');
+            $old_donor_role = get_role(Leyka_Donor::DONOR_USER_ROLE);
             if($old_donor_role) {
                 $old_donor_role->remove_cap('access_donor_account_desktop');
             }
 
             foreach($donor_account_users as $donor_user) {
 
-                $donor_user->add_cap('donor_account_access');
+                $donor_user->add_cap(Leyka_Donor::DONOR_ACCOUNT_ACCESS_CAP);
 
                 try { // Initialize & fill the Donor Cache for all existing Donor users
                     Leyka_Donor::calculate_donor_metadata(new Leyka_Donor($donor_user));
