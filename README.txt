@@ -89,6 +89,14 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.3.0.1 =
+* New: now the Donors management feature is in by default for new installations.
+* Fix: now Donors' metadata calculate correctly for all newly added Donors.
+* Fix: now Donors' metadata calculation algorithm bases on Donations emails instead of author IDs.
+* Fix: admin feedback form submitting JS error fixed.
+* Fix: small l10n fixes.
+* Removed: unneeded code removed from the plugin core.
+
 = 3.3 =
 * New: the Donors management features added.
 * New: from now on the plugin activation procedure will run only on plugin activation.
