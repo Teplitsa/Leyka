@@ -76,7 +76,7 @@ if( !defined('LEYKA_DEBUG') ) {
 }
 
 if( !defined('LEYKA_USAGE_STATS_DEV_SERVER_URL') ) {
-    define('LEYKA_USAGE_STATS_DEV_SERVER_URL', 'https://ls.te-st.ru/');
+    define('LEYKA_USAGE_STATS_DEV_SERVER_URL', 'https://ngo2.ru/leyka-usage-stats/');
 }
 
 if( !defined('LEYKA_USAGE_STATS_PROD_SERVER_URL') ) {
