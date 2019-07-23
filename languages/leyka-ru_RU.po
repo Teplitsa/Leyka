@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Leyka - Development (trunk) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2019-07-18 13:00:51+0000\n"
+"PO-Revision-Date: 2019-07-23 11:24:09+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -293,15 +293,15 @@ msgstr "Доноры"
 
 #: inc/leyka-options-meta.php:994
 msgid "Check to turn on the donors logging for all donations. It allows CRM functions and adds additional donors management pages to the plugin administation area."
-msgstr "Установите флажок, чтобы включить регистрацию доноров для всех пожертвований. Это активирует функции CRM и добавляет дополнительные страницы управления донорами в область администрирования плагина."
+msgstr "Отметьте, чтобы автоматически регистрировать доноров для всех пожертвований. Это активирует функции CRM и добавляет дополнительные страницы управления донорами в область администрирования плагина."
 
 #: inc/leyka-options-meta.php:993
 msgid "Donor management available"
-msgstr "Управление донорами активно"
+msgstr "Включить функции управления донорами"
 
 #: inc/leyka-options-meta.php:597
 msgid "Check to notify the website technical support (see the \"website technical support email\" option) of each failed donation."
-msgstr "Установите флажок, чтобы уведомлять службу технической поддержки веб-сайта (см. Параметр «электронная почта технической поддержки веб-сайта») о каждом сбое пожертвования."
+msgstr "Отметьте, чтобы уведомлять службу технической поддержки веб-сайта (см. Параметр «электронная почта технической поддержки веб-сайта») о каждом сбое пожертвования."
 
 #: inc/leyka-options-meta.php:596
 msgid "Send error reporting emails to the tech. support on failed donations"
@@ -856,11 +856,11 @@ msgstr "Для управления вашими рекуррентными по
 
 #: inc/leyka-options-meta.php:1001
 msgid "Check to turn on the donors accounts features. It include donor's personal desktop pages and recurring donations management functions."
-msgstr "Отметьте, чтобы включить функции личного кабинета доноров. С их помощью донорам будут доступны страницы информации о сделанных пожертвованиях и управление своими рекуррентными подписками."
+msgstr "Отметьте, чтобы включить функции личных кабинетов доноров. На сайте появятся специальные страницы, где доноры смогут получить информацию о сделанных ими пожертвованиях и управлять своими рекуррентными подписками."
 
 #: inc/leyka-options-meta.php:1000
 msgid "Donor accounts available"
-msgstr "Включить личный кабинет доноров"
+msgstr "Включить личные кабинеты доноров"
 
 #: inc/leyka-options-meta.php:675
 msgid "Use the GTM & UA enchanced e-commerce integration"
