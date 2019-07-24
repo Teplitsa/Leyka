@@ -128,12 +128,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         }
     }
 
-    /**
-     * A service method to get a a gateway inner system payment method ID by according Leyka pm_id, and vice versa.
-     *
-     * @param $pm_id string PM ID (either Leyka or the gateway system).
-     * @return string|false A PM ID in gateway/Leyka system, or false if PM ID is unknown.
-     */
     protected function _get_gateway_pm_id($pm_id) {
 
         $all_pm_ids = array('paypal_all' => 'paypal',);
@@ -146,6 +140,23 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             return false;
         }
 
+    }
+
+    /**
+     * A helper to create & return PayPal SDK Payer object.
+     *
+     * @param $donation Leyka_Donation
+     * @return PayPal\Api\Payer
+     */
+    protected function _get_payer(Leyka_Donation $donation) {
+        return new \PayPal\Api\Payer(array(
+            'paymentMethod' => $this->_get_gateway_pm_id($donation->pm_id),
+            'payerInfo' => new \PayPal\Api\PayerInfo(array(
+                'email' => $donation->donor_email,
+                'firstName' => $donation->donor_name,
+//                'countryCode' => 'RU',
+            ))
+        ));
     }
 
     /**
@@ -230,28 +241,53 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
             if(empty($form_data['leyka_recurring'])) { // Single donation
 
-                $payer_info = new \PayPal\Api\PayerInfo();
-                $payer_info->setEmail($donation->donor_email)->setFirstName($donation->donor_name); // ->setCountryCode('RU')
+//                $payer_info = new \PayPal\Api\PayerInfo(array(
+//                    'email' => $donation->donor_email,
+//                    'firstName' => $donation->donor_name,
+////                    'countryCode' => 'RU',
+//                ));
+//                $payer_info->setEmail($donation->donor_email)->setFirstName($donation->donor_name); // ->setCountryCode('RU')
 
-                $payer = new \PayPal\Api\Payer(); // Create new payer and PM
-                $payer->setPaymentMethod($this->_get_gateway_pm_id($pm_id))->setPayerInfo($payer_info);
+                // Create a new payer and PM:
+//                $payer = new \PayPal\Api\Payer(array(
+//                    'paymentMethod' => $this->_get_gateway_pm_id($pm_id),
+//                    'payerInfo' => new \PayPal\Api\PayerInfo(array(
+//                        'email' => $donation->donor_email,
+//                        'firstName' => $donation->donor_name,
+////                        'countryCode' => 'RU',
+//                    ))
+//                ));
 
-                $redirect_urls = new \PayPal\Api\RedirectUrls(); // Set redirect URLs
-                $redirect_urls
-                    ->setReturnUrl(home_url('/leyka/service/paypal/process-donation'))
-                    ->setCancelUrl(home_url('/leyka/service/paypal/cancel-donation'));
+//                $payer->setPaymentMethod($this->_get_gateway_pm_id($pm_id))->setPayerInfo($payer_info);
 
-                $amount = new \PayPal\Api\Amount(); // Set payment amount
-                $amount->setCurrency('RUB' /* $donation->currency */)->setTotal($donation->amount);
+                // Set redirect URLs:
+//                $redirect_urls = new \PayPal\Api\RedirectUrls(array(
+//                    'returnUrl' => home_url('/leyka/service/paypal/process-donation'),
+//                    'cancelUrl' => home_url('/leyka/service/paypal/cancel-donation'),
+//                ));
+//                $redirect_urls
+//                    ->setReturnUrl(home_url('/leyka/service/paypal/process-donation'))
+//                    ->setCancelUrl(home_url('/leyka/service/paypal/cancel-donation'));
 
-                $transaction = new \PayPal\Api\Transaction(); // Set transaction object
-                $transaction->setAmount($amount)->setDescription($payment_description);
+//                $amount = new \PayPal\Api\Amount(); // Set payment amount
+//                $amount->setCurrency('RUB' /* $donation->currency */)->setTotal($donation->amount);
 
-                $payment = new \PayPal\Api\Payment(); // Create the full payment object
+                // Set transaction object:
+                $transaction = new \PayPal\Api\Transaction(array(
+                    'amount' => new \PayPal\Api\Amount(array('total' => $donation->amount, 'currency' => 'RUB',)),
+                    'description' => $payment_description,
+                ));
+//                $transaction->setAmount($amount)->setDescription($payment_description);
+
+                // Create a full payment object:
+                $payment = new \PayPal\Api\Payment();
                 $payment
                     ->setIntent('sale')
-                    ->setPayer($payer)
-                    ->setRedirectUrls($redirect_urls)
+                    ->setPayer($this->_get_payer($donation)) // ->setPayer($payer)
+                    ->setRedirectUrls(new \PayPal\Api\RedirectUrls(array( // Set redirect URLs
+                        'returnUrl' => home_url('/leyka/service/paypal/process-donation'),
+                        'cancelUrl' => home_url('/leyka/service/paypal/cancel-donation'),
+                    )))
                     ->setTransactions(array($transaction));
 
                 $web_experience_profile_id = $this->_get_donation_web_experience_profile_id($api_context);
@@ -282,6 +318,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 $donation->payment_type = 'rebill';
 
+                // 1. Create a "billing plan" (BP) for the recurring subscription.
+                // BP defines details for subscription payments, like their amount and frequency:
+
                 $recurring_amount = new \PayPal\Api\Currency(array('value' => $donation->amount, 'currency' => 'RUB',));
 
                 // "Payment definition" - the 1st part of the recurring subscription settings:
@@ -292,12 +331,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     'frequencyInterval' => '1',
                     'amount' => $recurring_amount, // Only for recurring payments
                 ));
-//                $payment_definition
-//                    ->setName(__('Monthly recurring donations', 'leyka'))
-//                    ->setType('REGULAR')
-//                    ->setFrequency('MONTH') // DAY|WEEK|MONTH
-//                    ->setFrequencyInterval('1')
-//                    ->setAmount($recurring_amount); // Only for recurring payments
 
                 // "Merchant preferences" - the 2nd part of the recurring subscription settings:
                 $merchant_preferences = new \PayPal\Api\MerchantPreferences(array(
@@ -308,27 +341,14 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     'maxFailAttempts' => '0', // Infinite number of attempts
                     'setupFee' => $recurring_amount, // Only for initial payment
                 ));
-//                $merchant_preferences
-//                    ->setReturnUrl(home_url('/leyka/service/paypal/process-init-recurring'))
-//                    ->setCancelUrl(home_url('/leyka/service/paypal/cancel-init-recurring'))
-//                    ->setAutoBillAmount('YES')
-//                    ->setInitialFailAmountAction('CANCEL')
-//                    ->setMaxFailAttempts('0') // Infinite number of attempts
-//                    ->setSetupFee($recurring_amount); // Only for initial payment
 
-                $plan = new \PayPal\Api\Plan(array( // Create a billing plan for the subscription
+                $plan = new \PayPal\Api\Plan(array( // Create a subscription billing plan
                     'name' => __('Recurring donations', 'leyka'),
                     'description' => __('Leyka - a monthly recurring donations subscription', 'leyka'),
                     'type' => 'INFINITE',
                     'paymentDefinitions' => array($payment_definition),
                     'merchantPreferences' => $merchant_preferences,
                 ));
-//                $plan
-//                    ->setName(__('Recurring donations', 'leyka'))
-//                    ->setDescription(__('Leyka - a monthly recurring donations subscription', 'leyka'))
-//                    ->setType('INFINITE')
-//                    ->setPaymentDefinitions(array($payment_definition))
-//                    ->setMerchantPreferences($merchant_preferences);
 
                 try {
 
@@ -356,6 +376,37 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     leyka()->add_payment_form_error(new WP_Error(
                         $this->_id.'-'.$ex->getCode(),
                         sprintf(__('Error: %s', 'leyka'), $ex->getMessage().'<pre>'.print_r($ex, 1).'</pre>')
+                    ));
+
+                }
+
+                // 2. Subscription BP created - create a "billing agreement" (BA) for it.
+                // BA aggregates data on payer (donor) and subscription "runtime" params.
+                // BA also manages initial donation for subscription and activates it:
+
+                $agreement = new \PayPal\Api\Agreement(array(
+                    'name' => sprintf(__('%s - recurring donations', 'leyka'), $donation->payment_title),
+                    'description' => __('Recurring donations', 'leyka'),
+                    'startDate' => date(DATE_ISO8601),
+                    'plan' => $plan,
+                    'payer' => $this->_get_payer($donation),
+                ));
+
+                try {
+
+                    $agreement = $agreement->create($api_context);
+
+                    /** @todo Save some PayPal payment tokens in the donation here */
+
+                    $this->_new_api_redirect_url = $agreement->getApprovalLink(); // PayPal redirect URL for the donor
+
+                } catch(Exception $ex) {
+
+                    $donation->add_gateway_response($ex);
+
+                    leyka()->add_payment_form_error(new WP_Error(
+                        $this->_id.'-'.$ex->getCode(),
+                        sprintf(__('Error: %s', 'leyka'), $ex->getMessage())
                     ));
 
                 }

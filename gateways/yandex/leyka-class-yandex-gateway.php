@@ -753,12 +753,6 @@ techMessage="'.$tech_message.'"/>');
         }
     }
 
-    /**
-     * A service method to get a a gateway inner system payment method ID by according Leyka pm_id, and vice versa.
-     *
-     * @param $pm_id string PM ID (either Leyka or the gateway system).
-     * @return string|false A PM ID in gateway/Leyka system, or false if PM ID is unknown.
-     */
     protected function _get_gateway_pm_id($pm_id) {
 
         $all_pm_ids = leyka_options()->opt('yandex_new_api') ? array(

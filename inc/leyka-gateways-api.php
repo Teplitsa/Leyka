@@ -417,6 +417,16 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     }
 
+    /**
+     * A service method to get a a gateway inner system payment method ID by according Leyka pm_id, and vice versa.
+     *
+     * @param $pm_id string PM ID (either Leyka or the gateway system).
+     * @return string|false A PM ID in gateway/Leyka system, or false if PM ID is unknown.
+     */
+    protected function _get_gateway_pm_id($pm_id) {
+        return $pm_id;
+    }
+
     abstract public function process_form($gateway_id, $pm_id, $donation_id, $form_data);
 
     abstract public function submission_redirect_url($current_url, $pm_id);
@@ -674,7 +684,7 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
     protected $_ajax_without_form_submission = false;
 
     protected function __construct() {
-        //$this->_submit_label = leyka_options()->opt_template('donation_submit_text');
+
         $this->_submit_label = '';
 
         $this->_set_attributes();
