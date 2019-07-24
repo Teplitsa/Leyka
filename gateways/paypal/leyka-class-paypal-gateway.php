@@ -1,8 +1,12 @@
-<?php use PayPal\Api\InputFields;
-use PayPal\Api\PayerInfo;
-use PayPal\Api\Payment;
-use PayPal\Api\WebProfile;
-use PayPal\Rest\ApiContext;
+<?php //use PayPal\Api\Amount;
+//use PayPal\Api\InputFields;
+//use PayPal\Api\Payer;
+//use PayPal\Api\PayerInfo;
+//use PayPal\Api\Payment;
+//use PayPal\Api\RedirectUrls;
+//use PayPal\Api\Transaction;
+//use PayPal\Api\WebProfile;
+//use PayPal\Rest\ApiContext;
 
 if( !defined('WPINC') ) die;
 /**
@@ -24,7 +28,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
         $this->_description = apply_filters(
             'leyka_gateway_description',
-            __('PayPal allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://www.paypal.com/">PayPal website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
+            __('<a href="https://www.paypal.com/" target="_blank">PayPal</a> is a worldwide online payments system that supports online money transfers and serves as an electronic alternative to traditional paper methods like checks and money orders. The company operates as a payment processor for online vendors, auction sites, and many other commercial and non-government users.', 'leyka'),
             $this->_id
         );
 
@@ -212,67 +216,86 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
         $donation = new Leyka_Donation($donation_id);
-        $campaign_post = get_post($donation->campaign_id);
 
         $payment_description = $donation->payment_title." (№ $donation_id)";
         if(mb_strlen($payment_description) > 127) { // 127 chars length is a PayPal restriction
             $payment_description = sprintf(__('Donation № %d', 'leyka'), $donation_id);
         }
 
-        if(leyka_options()->opt('paypal_rest_api')) { // TMP, until the new REST API is in work
+        if(leyka_options()->opt('paypal_rest_api')) { // New REST API is in use
 
             require_once LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
 
-            $api_context = new PayPal\Rest\ApiContext(new \PayPal\Auth\OAuthTokenCredential(
-                leyka_options()->opt('paypal_client_id'),
-                leyka_options()->opt('paypal_client_secret')
-            ));
+            if(empty($form_data['leyka_recurring'])) { // Single donation
 
-            $payer_info = new PayPal\Api\PayerInfo();
-            $payer_info->setEmail($donation->donor_email)->setFirstName($donation->donor_name); // ->setCountryCode('RU')
-
-            $payer = new PayPal\Api\Payer(); // Create new payer and PM
-            $payer->setPaymentMethod($this->_get_gateway_pm_id($pm_id))->setPayerInfo($payer_info);
-
-            $redirect_urls = new PayPal\Api\RedirectUrls(); // Set redirect URLs
-            $redirect_urls
-                ->setReturnUrl(home_url('/leyka/service/paypal/process-donation'))
-                ->setCancelUrl(home_url('/leyka/service/paypal/cancel-donation'));
-
-            $amount = new PayPal\Api\Amount(); // Set payment amount
-            $amount->setCurrency('RUB' /* $donation->currency */)->setTotal($donation->amount);
-
-            $transaction = new PayPal\Api\Transaction(); // Set transaction object
-            $transaction->setAmount($amount)->setDescription($payment_description);
-
-            $payment = new PayPal\Api\Payment(); // Create the full payment object
-            $payment
-                ->setIntent('sale')
-                ->setPayer($payer)
-                ->setRedirectUrls($redirect_urls)
-                ->setTransactions(array($transaction));
-
-            $web_experience_profile_id = $this->_get_donation_web_experience_profile_id($api_context);
-            if($web_experience_profile_id) {
-                $payment->setExperienceProfileId($web_experience_profile_id);
-            }
-
-            try { // Create payment with valid API context
-
-                $payment->create($api_context);
-                $donation->paypal_payment_id = $payment->getId();
-                $donation->paypal_token = $payment->getToken();
-
-                $this->_new_api_redirect_url = $payment->getApprovalLink(); // PayPal redirect URL to redirect the donor there
-
-            } catch(Exception $ex) {
-
-                $donation->add_gateway_response($ex);
-
-                leyka()->add_payment_form_error(new WP_Error(
-                    $this->_id.'-'.$ex->getCode(),
-                    sprintf(__('Error: %s', 'leyka'), $ex->getMessage())
+                $api_context = new \PayPal\Rest\ApiContext(new \PayPal\Auth\OAuthTokenCredential(
+                    leyka_options()->opt('paypal_client_id'),
+                    leyka_options()->opt('paypal_client_secret')
                 ));
+
+                $payer_info = new \PayPal\Api\PayerInfo();
+                $payer_info->setEmail($donation->donor_email)->setFirstName($donation->donor_name); // ->setCountryCode('RU')
+
+                $payer = new \PayPal\Api\Payer(); // Create new payer and PM
+                $payer->setPaymentMethod($this->_get_gateway_pm_id($pm_id))->setPayerInfo($payer_info);
+
+                $redirect_urls = new \PayPal\Api\RedirectUrls(); // Set redirect URLs
+                $redirect_urls
+                    ->setReturnUrl(home_url('/leyka/service/paypal/process-donation'))
+                    ->setCancelUrl(home_url('/leyka/service/paypal/cancel-donation'));
+
+                $amount = new \PayPal\Api\Amount(); // Set payment amount
+                $amount->setCurrency('RUB' /* $donation->currency */)->setTotal($donation->amount);
+
+                $transaction = new \PayPal\Api\Transaction(); // Set transaction object
+                $transaction->setAmount($amount)->setDescription($payment_description);
+
+                $payment = new \PayPal\Api\Payment(); // Create the full payment object
+                $payment
+                    ->setIntent('sale')
+                    ->setPayer($payer)
+                    ->setRedirectUrls($redirect_urls)
+                    ->setTransactions(array($transaction));
+
+                $web_experience_profile_id = $this->_get_donation_web_experience_profile_id($api_context);
+                if($web_experience_profile_id) {
+                    $payment->setExperienceProfileId($web_experience_profile_id);
+                }
+
+                try { // Create payment with valid API context
+
+                    $payment->create($api_context);
+                    $donation->paypal_payment_id = $payment->getId();
+                    $donation->paypal_token = $payment->getToken();
+
+                    $this->_new_api_redirect_url = $payment->getApprovalLink(); // PayPal redirect URL for the donor
+
+                } catch(Exception $ex) {
+
+                    $donation->add_gateway_response($ex);
+
+                    leyka()->add_payment_form_error(new WP_Error(
+                        $this->_id.'-'.$ex->getCode(),
+                        sprintf(__('Error: %s', 'leyka'), $ex->getMessage())
+                    ));
+
+                }
+
+            } else { // Init recurring donation
+
+                $donation->payment_type = 'rebill';
+
+                $plan = new \PayPal\Api\Plan(); // Create a payment plan
+                $plan->setName(sprintf(__('%s - recurring donations', 'leyka'), $donation->payment_title))
+//                    ->setDescription('A short description of the plan')
+                    ->setType('INFINITE');
+
+//                $paymentDefinition = new PaymentDefinition();
+//                $paymentDefinition->setName('Regular Payments')
+//                    ->setType('REGULAR')
+//                    ->setFrequency('Month')
+//                    ->setFrequencyInterval("1")
+//                    ->setAmount(new Currency(array('value' => 100, 'currency' => 'USD')));
 
             }
 
@@ -281,6 +304,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         }
 
         // (Old) Express Checkout payment:
+
+        $campaign_post = get_post($donation->campaign_id);
         $donation->payment_type = empty($_POST['leyka_recurring']) ? 'single' : 'rebill';
 
         if($donation->payment_type === 'rebill') {
@@ -1270,7 +1295,7 @@ class Leyka_Paypal_All extends Leyka_Payment_Method {
 
         $this->_description = apply_filters(
             'leyka_pm_description',
-            __('PayPal allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="https://www.paypal.com/">PayPal website</a> to enter your bank card data and to confirm your payment.', 'leyka'),
+            __('PayPal allows a simple and safe way to pay for goods and services through internet. After filling a payment form, you will be redirected to the <a href="https://www.paypal.com/" target="_blank">PayPal website</a> to confirm your payment.', 'leyka'),
             $this->_id,
             $this->_gateway_id,
             $this->_category
