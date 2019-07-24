@@ -20,6 +20,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     protected $_new_api_redirect_url = '';
 
     const DONATION_WEB_EXPERIENCE_PROFILE_KEY = 'leyka_paypal__default_donation_web_experience_profile_id';
+//    const RECURRING_BILLING_PLAN_KEY = 'leyka_paypal__default_recurring_billing_plan_id'; /** @todo Check if the a single plan for all recurring subscriptions will work out */
 
     protected function _set_attributes() {
 
@@ -59,6 +60,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 'type' => 'text',
                 'title' => __('PayPal API username', 'leyka'),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'your.name@yourmail.com'),
+                'field_classes' => array('old-api'),
             ),
             'paypal_api_password' => array(
                 'type' => 'text',
@@ -77,18 +79,12 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             'paypal_client_id' => array(
 	            'type' => 'text',
 	            'title' => __('PayPal Client ID', 'leyka'),
-                'placeholder' => sprintf(
-                    __('E.g., %s', 'leyka'),
-                    'AYSq3RDGsmBLJE-otTkBtM-jBRd1TCQwFf9RGfwddNXWz0uFU9ztymylOhRS'
-                ),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'AYSq3RDGsmBLJE-otTkBtM-jBRd1TCQwFf9RGfwddNXWz0uFU9ztymylOhRS'),
             ),
             'paypal_client_secret' => array(
                 'type' => 'text',
                 'title' => __('PayPal Client Secret', 'leyka'),
-                'placeholder' => sprintf(
-                    __('E.g., %s', 'leyka'),
-                    'EGnHDxD_qRPdaLdZz8iCr8N7_MzF-YHPTkjs6NKYQvQSBngp4PTTVWkPZRbL'
-                ),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'EGnHDxD_qRPdaLdZz8iCr8N7_MzF-YHPTkjs6NKYQvQSBngp4PTTVWkPZRbL'),
                 'is_password' => true,
             ),
             'paypal_test_mode' => array(
@@ -97,6 +93,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 'title' => __('Payments testing mode', 'leyka'),
                 'comment' => __('Check if the gateway integration is in test mode.', 'leyka'),
                 'short_format' => true,
+                'field_classes' => array('old-api'),
             ),
             'paypal_enable_recurring' => array(
                 'type' => 'checkbox',
@@ -132,10 +129,10 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     }
 
     /**
-     * A service method to get PayPal pament method ID value by according Leyka pm_ids, and vice versa.
+     * A service method to get a a gateway inner system payment method ID by according Leyka pm_id, and vice versa.
      *
      * @param $pm_id string PM ID (either Leyka or the gateway system).
-     * @return string|false A PM ID in PayPal/Leyka system, or false (if PM ID is unknown).
+     * @return string|false A PM ID in gateway/Leyka system, or false if PM ID is unknown.
      */
     protected function _get_gateway_pm_id($pm_id) {
 
@@ -226,12 +223,12 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
             require_once LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
 
-            if(empty($form_data['leyka_recurring'])) { // Single donation
+            $api_context = new \PayPal\Rest\ApiContext(new \PayPal\Auth\OAuthTokenCredential(
+                leyka_options()->opt('paypal_client_id'),
+                leyka_options()->opt('paypal_client_secret')
+            ));
 
-                $api_context = new \PayPal\Rest\ApiContext(new \PayPal\Auth\OAuthTokenCredential(
-                    leyka_options()->opt('paypal_client_id'),
-                    leyka_options()->opt('paypal_client_secret')
-                ));
+            if(empty($form_data['leyka_recurring'])) { // Single donation
 
                 $payer_info = new \PayPal\Api\PayerInfo();
                 $payer_info->setEmail($donation->donor_email)->setFirstName($donation->donor_name); // ->setCountryCode('RU')
@@ -285,17 +282,83 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 $donation->payment_type = 'rebill';
 
-                $plan = new \PayPal\Api\Plan(); // Create a payment plan
-                $plan->setName(sprintf(__('%s - recurring donations', 'leyka'), $donation->payment_title))
-//                    ->setDescription('A short description of the plan')
-                    ->setType('INFINITE');
+                $recurring_amount = new \PayPal\Api\Currency(array('value' => $donation->amount, 'currency' => 'RUB',));
 
-//                $paymentDefinition = new PaymentDefinition();
-//                $paymentDefinition->setName('Regular Payments')
+                // "Payment definition" - the 1st part of the recurring subscription settings:
+                $payment_definition = new \PayPal\Api\PaymentDefinition(array(
+                    'name' => __('Monthly recurring donations', 'leyka'),
+                    'type' => 'REGULAR',
+                    'frequency' => 'MONTH', // DAY|WEEK|MONTH
+                    'frequencyInterval' => '1',
+                    'amount' => $recurring_amount, // Only for recurring payments
+                ));
+//                $payment_definition
+//                    ->setName(__('Monthly recurring donations', 'leyka'))
 //                    ->setType('REGULAR')
-//                    ->setFrequency('Month')
-//                    ->setFrequencyInterval("1")
-//                    ->setAmount(new Currency(array('value' => 100, 'currency' => 'USD')));
+//                    ->setFrequency('MONTH') // DAY|WEEK|MONTH
+//                    ->setFrequencyInterval('1')
+//                    ->setAmount($recurring_amount); // Only for recurring payments
+
+                // "Merchant preferences" - the 2nd part of the recurring subscription settings:
+                $merchant_preferences = new \PayPal\Api\MerchantPreferences(array(
+                    'returnUrl' => home_url('/leyka/service/paypal/process-init-recurring'),
+                    'cancelUrl' => home_url('/leyka/service/paypal/cancel-init-recurring'),
+                    'autoBillAmount' => 'YES',
+                    'initialFailAmountAction' => 'CANCEL',
+                    'maxFailAttempts' => '0', // Infinite number of attempts
+                    'setupFee' => $recurring_amount, // Only for initial payment
+                ));
+//                $merchant_preferences
+//                    ->setReturnUrl(home_url('/leyka/service/paypal/process-init-recurring'))
+//                    ->setCancelUrl(home_url('/leyka/service/paypal/cancel-init-recurring'))
+//                    ->setAutoBillAmount('YES')
+//                    ->setInitialFailAmountAction('CANCEL')
+//                    ->setMaxFailAttempts('0') // Infinite number of attempts
+//                    ->setSetupFee($recurring_amount); // Only for initial payment
+
+                $plan = new \PayPal\Api\Plan(array( // Create a billing plan for the subscription
+                    'name' => __('Recurring donations', 'leyka'),
+                    'description' => __('Leyka - a monthly recurring donations subscription', 'leyka'),
+                    'type' => 'INFINITE',
+                    'paymentDefinitions' => array($payment_definition),
+                    'merchantPreferences' => $merchant_preferences,
+                ));
+//                $plan
+//                    ->setName(__('Recurring donations', 'leyka'))
+//                    ->setDescription(__('Leyka - a monthly recurring donations subscription', 'leyka'))
+//                    ->setType('INFINITE')
+//                    ->setPaymentDefinitions(array($payment_definition))
+//                    ->setMerchantPreferences($merchant_preferences);
+
+                try {
+
+                    $plan_created = $plan->create($api_context);
+
+                    // We cannot create an active billing plan, so activate the plan manually:
+                    $patch_request = new \PayPal\Api\PatchRequest();
+                    $patch_request->addPatch(new \PayPal\Api\Patch(array(
+                        'op' => 'replace',
+                        'path' => '/',
+                        'value' => new \PayPal\Common\PayPalModel('{"state":"ACTIVE"}')
+                    )));
+
+                    $plan_created->update($patch_request, $api_context);
+                    $plan = \PayPal\Api\Plan::get($plan_created->getId(), $api_context);
+
+                    if($plan->getState() !== 'ACTIVE') {
+                        throw new Exception(sprintf(__('Cannot activate PayPal billing plan. Please contact the <a href="%s" target="_blank">website tech. support</a>', leyka_options()->opt('tech_support_email')), 'leyka'));
+                    }
+
+                } catch(Exception $ex) {
+
+                    $donation->add_gateway_response($ex);
+
+                    leyka()->add_payment_form_error(new WP_Error(
+                        $this->_id.'-'.$ex->getCode(),
+                        sprintf(__('Error: %s', 'leyka'), $ex->getMessage().'<pre>'.print_r($ex, 1).'</pre>')
+                    ));
+
+                }
 
             }
 
