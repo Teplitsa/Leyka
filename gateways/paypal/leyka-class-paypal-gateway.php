@@ -241,49 +241,17 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
             if(empty($form_data['leyka_recurring'])) { // Single donation
 
-//                $payer_info = new \PayPal\Api\PayerInfo(array(
-//                    'email' => $donation->donor_email,
-//                    'firstName' => $donation->donor_name,
-////                    'countryCode' => 'RU',
-//                ));
-//                $payer_info->setEmail($donation->donor_email)->setFirstName($donation->donor_name); // ->setCountryCode('RU')
-
-                // Create a new payer and PM:
-//                $payer = new \PayPal\Api\Payer(array(
-//                    'paymentMethod' => $this->_get_gateway_pm_id($pm_id),
-//                    'payerInfo' => new \PayPal\Api\PayerInfo(array(
-//                        'email' => $donation->donor_email,
-//                        'firstName' => $donation->donor_name,
-////                        'countryCode' => 'RU',
-//                    ))
-//                ));
-
-//                $payer->setPaymentMethod($this->_get_gateway_pm_id($pm_id))->setPayerInfo($payer_info);
-
-                // Set redirect URLs:
-//                $redirect_urls = new \PayPal\Api\RedirectUrls(array(
-//                    'returnUrl' => home_url('/leyka/service/paypal/process-donation'),
-//                    'cancelUrl' => home_url('/leyka/service/paypal/cancel-donation'),
-//                ));
-//                $redirect_urls
-//                    ->setReturnUrl(home_url('/leyka/service/paypal/process-donation'))
-//                    ->setCancelUrl(home_url('/leyka/service/paypal/cancel-donation'));
-
-//                $amount = new \PayPal\Api\Amount(); // Set payment amount
-//                $amount->setCurrency('RUB' /* $donation->currency */)->setTotal($donation->amount);
-
                 // Set transaction object:
                 $transaction = new \PayPal\Api\Transaction(array(
                     'amount' => new \PayPal\Api\Amount(array('total' => $donation->amount, 'currency' => 'RUB',)),
                     'description' => $payment_description,
                 ));
-//                $transaction->setAmount($amount)->setDescription($payment_description);
 
                 // Create a full payment object:
                 $payment = new \PayPal\Api\Payment();
                 $payment
                     ->setIntent('sale')
-                    ->setPayer($this->_get_payer($donation)) // ->setPayer($payer)
+                    ->setPayer($this->_get_payer($donation))
                     ->setRedirectUrls(new \PayPal\Api\RedirectUrls(array( // Set redirect URLs
                         'returnUrl' => home_url('/leyka/service/paypal/process-donation'),
                         'cancelUrl' => home_url('/leyka/service/paypal/cancel-donation'),
@@ -387,8 +355,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 $agreement = new \PayPal\Api\Agreement(array(
                     'name' => sprintf(__('%s - recurring donations', 'leyka'), $donation->payment_title),
                     'description' => __('Recurring donations', 'leyka'),
-                    'startDate' => date(DATE_ISO8601),
-                    'plan' => $plan,
+                    'startDate' => date(DATE_ISO8601, strtotime('+1 hour')), // Required & should be greater than current date
+                    'plan' => new \PayPal\Api\Plan(array('id' => $plan->getId())),
                     'payer' => $this->_get_payer($donation),
                 ));
 
@@ -396,7 +364,11 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                     $agreement = $agreement->create($api_context);
 
-                    /** @todo Save some PayPal payment tokens in the donation here */
+                    /** @todo Save the plan ID in the donation to identify later */
+                    echo '<pre>Agreement ID: '.print_r($agreement->getId(), 1).'</pre>';
+                    die('<pre>Agreement: '.print_r($agreement, 1).'</pre>');
+
+                    $donation->paypal_billing_agreement_id = $agreement->getId();
 
                     $this->_new_api_redirect_url = $agreement->getApprovalLink(); // PayPal redirect URL for the donor
 
@@ -614,12 +586,10 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     );
                 }
 
-                $payment = \PayPal\Api\Payment::get($_GET['paymentId'], $api_context);
-
-                $execution = new \PayPal\Api\PaymentExecution();
-                $execution->setPayerId($_GET['PayerID']);
-
                 try {
+
+                    $payment = \PayPal\Api\Payment::get($_GET['paymentId'], $api_context);
+                    $execution = new \PayPal\Api\PaymentExecution(array('payerId' => $_GET['PayerID'],));
 
                     /** @var PayPal\Api\Payment $result */
                     $result = $payment->execute($execution, $api_context);
@@ -684,6 +654,61 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 wp_redirect($redirect_url);
                 exit;
+
+            case 'process-init-recurring':
+
+                require LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
+
+                $_GET['token'] = esc_sql($_GET['token']);
+
+                if(empty($_GET['token'])) {
+                    $this->_donation_error(__("PayPal callback error: required parameters weren't given", 'leyka'));
+                }
+
+//                $donation = $this->_get_donation_by('paypal_payment_id', $_GET['token']);
+
+                $api_context = new \PayPal\Rest\ApiContext(new \PayPal\Auth\OAuthTokenCredential(
+                    leyka_options()->opt('paypal_client_id'),
+                    leyka_options()->opt('paypal_client_secret')
+                ));
+
+                try {
+
+                    $agreement = new \PayPal\Api\Agreement();
+                    $agreement->execute($_GET['token'], $api_context); // Execute the billing agreement
+                    $agreement = \PayPal\Api\Agreement::get($agreement->getId(), $api_context); // Final agreement check
+
+                    if($agreement->getId()) {
+
+                        /** @todo Save the agreement ID ($agreement->getId()) in the init recurring donation */
+//                        if($donation->status !== 'funded') {
+//
+//                            $donation->status = 'funded';
+//                            $donation->add_gateway_response($result);
+//
+//                            Leyka_Donation_Management::send_all_emails($donation->id);
+//
+//                        }
+//
+//                        wp_redirect(leyka_get_success_page_url());
+//                        exit;
+
+                    } else {
+                        $this->_donation_error(
+                            __("PayPal callback error: the recurring subscription billing agreement final check wasn't passed.", 'leyka') /*,
+                            '',
+                            $donation,
+                            'process-init-recurring',
+                            array('token' => $_GET['token'],)*/
+                        );
+                    }
+
+                } catch(Exception $ex) {
+                    $this->_donation_error(__("PayPal callback error: billing agreement for the recurring subscription wasn't executed.", 'leyka'));
+                }
+
+                break;
+
 
             // Classic (ExpressCheckout) API callbacks:
             case 'process_payment': // Do a payment itself

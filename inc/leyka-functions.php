@@ -1390,15 +1390,15 @@ if( !function_exists('leyka_get_client_ip') ) {
 
 }
 
-function leyka_get_campaign_donations($campaign, $limit = false) {
+/**
+ * @param $campaign_id int
+ * @param $limit int|false False to get all donations (unlimited number).
+ * @return array|false An array of Leyka_Donation objects, or false if wrong campaign ID given.
+ */
+function leyka_get_campaign_donations($campaign_id, $limit = false) {
 
-    $campaign = (int)$campaign;
-    if($campaign <= 0) {
-        return false;
-    }
-
-    $campaign = new Leyka_Campaign($campaign);
-    if( !$campaign->id ) {
+    $campaign_id = absint($campaign_id);
+    if($campaign_id <= 0) {
         return false;
     }
 
@@ -1406,21 +1406,16 @@ function leyka_get_campaign_donations($campaign, $limit = false) {
 
     $params = array(
         'post_type' => Leyka_Donation_Management::$post_type,
-        'nopaging' => true,
         'post_status' => 'funded',
-        'meta_query' => array(
-            array(
-                'key' => 'leyka_campaign_id',
-                'value' => $campaign->id,
-                'compare' => '=',
-            ),
-        ),
+        'meta_query' => array(array('key' => 'leyka_campaign_id', 'value' => $campaign_id, 'compare' => '=',),),
     );
 
     if($limit) {
-
-        unset($params['nopaging']);
         $params['posts_per_page'] = $limit;
+    } else {
+
+        $params['posts_per_page'] = -1;
+        $params['nopaging'] = true;
 
     }
 
