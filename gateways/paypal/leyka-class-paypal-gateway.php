@@ -230,7 +230,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             $payment_description = sprintf(__('Donation № %d', 'leyka'), $donation_id);
         }
 
-        if(leyka_options()->opt('paypal_rest_api')) { // New REST API is in use
+        if(leyka_options()->opt('paypal_rest_api')) { // Payment via REST API
 
             require_once LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
 
@@ -364,11 +364,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                     $agreement = $agreement->create($api_context);
 
-                    /** @todo Save the plan ID in the donation to identify later */
-                    echo '<pre>Agreement ID: '.print_r($agreement->getId(), 1).'</pre>';
-                    die('<pre>Agreement: '.print_r($agreement, 1).'</pre>');
-
-                    $donation->paypal_billing_agreement_id = $agreement->getId();
+                    $donation->paypal_billing_plan_id = $plan->getId(); // Save the plan ID in the donation to identify later
 
                     $this->_new_api_redirect_url = $agreement->getApprovalLink(); // PayPal redirect URL for the donor
 
@@ -382,6 +378,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     ));
 
                 }
+
+                // 2.5. BA is created, but not executed yet. ATM it doesn't even have an ID.
+                // BA will be executed on the "" callback procedure.
 
             }
 
@@ -659,13 +658,14 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 require LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
 
+                // 3. Execute the Billing Agreement (BA) using the Token sent by PayPal.
+                // When BA is executed, get it's Donation by the Billing Plan ID saved earlier, and turn it to "funded".
+
                 $_GET['token'] = esc_sql($_GET['token']);
 
                 if(empty($_GET['token'])) {
                     $this->_donation_error(__("PayPal callback error: required parameters weren't given", 'leyka'));
                 }
-
-//                $donation = $this->_get_donation_by('paypal_payment_id', $_GET['token']);
 
                 $api_context = new \PayPal\Rest\ApiContext(new \PayPal\Auth\OAuthTokenCredential(
                     leyka_options()->opt('paypal_client_id'),
@@ -675,12 +675,32 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 try {
 
                     $agreement = new \PayPal\Api\Agreement();
-                    $agreement->execute($_GET['token'], $api_context); // Execute the billing agreement
-                    $agreement = \PayPal\Api\Agreement::get($agreement->getId(), $api_context); // Final agreement check
+                    $agreement->execute($_GET['token'], $api_context); // Execute the BA
+                    $agreement = \PayPal\Api\Agreement::get($agreement->getId(), $api_context); // Final BA check
 
-                    if($agreement->getId()) {
+                    echo '<pre>Agreement: '.print_r($agreement, 1).'</pre>';
+                    $agreement_id = $agreement->getId();
+                    $agreement_plan_id = $agreement->getPlan()->getId();
 
-                        /** @todo Save the agreement ID ($agreement->getId()) in the init recurring donation */
+                    if($agreement_id) {
+
+                        $donation = $this->_get_donation_by('paypal_billing_plan_id', $agreement_plan_id);
+
+                        if( !$donation ) {
+                            $this->_donation_error(
+                                __("PayPal callback error: can't find the initial recurring donation to activate", 'leyka'),
+                                sprintf(
+                                    __("Payment token: %s\n\nBilling Agreement ID: %s\n\nBilling Plan ID: %s\n\n", 'leyka'),
+                                    $_GET['token'],
+                                    $agreement_id,
+                                    $agreement_plan_id
+                                )
+                            );
+                        }
+
+                        $donation->paypal_billing_agreement_id = $agreement_id;
+                        $donation->paypal_payment_token = $_GET['token'];
+
 //                        if($donation->status !== 'funded') {
 //
 //                            $donation->status = 'funded';
@@ -694,13 +714,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 //                        exit;
 
                     } else {
-                        $this->_donation_error(
-                            __("PayPal callback error: the recurring subscription billing agreement final check wasn't passed.", 'leyka') /*,
-                            '',
-                            $donation,
-                            'process-init-recurring',
-                            array('token' => $_GET['token'],)*/
-                        );
+                        $this->_donation_error(__("PayPal callback error: the recurring subscription billing agreement final check wasn't passed.", 'leyka'));
                     }
 
                 } catch(Exception $ex) {
@@ -1254,7 +1268,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     }
 
     public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
-
         switch($field_name) {
             case 'paypal_token':
             case 'pp_token': return get_post_meta($donation->id, '_paypal_token', true);
@@ -1271,16 +1284,21 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             case 'paypal_log':
             case 'pp_log': return get_post_meta($donation->id, '_paypal_payment_log', true);
             case 'last_ipn_transaction_id': return get_post_meta($donation->id, '_paypal_ipn_txn_id', true);
+
+            // Only for the REST API:
+            case 'paypal_billing_plan_id': return get_post_meta($donation->id, '_paypal_billing_plan_id', true); break;
+            case 'paypal_billing_agreement_id': return get_post_meta($donation->id, '_paypal_billing_agreement_id', true); break;
+
             default: return $value;
         }
-
     }
 
     public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
-
         switch($field_name) {
             case 'paypal_token':
-            case 'pp_token': update_post_meta($donation->id, '_paypal_token', $value); break;
+            case 'paypal_payment_token':
+            case 'pp_token':
+            case 'pp_payment_token': update_post_meta($donation->id, '_paypal_token', $value); break;
             case 'paypal_correlation_id':
             case 'pp_correlation_id': update_post_meta($donation->id, '_paypal_correlation_id', $value); break;
             case 'paypal_payment_id':
@@ -1294,27 +1312,39 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             case 'paypal_log':
             case 'pp_log': update_post_meta($donation->id, '_paypal_payment_log', $value); break;
             case 'last_ipn_transaction_id': update_post_meta($donation->id, '_paypal_ipn_txn_id', !!$value); break;
+
+            // Only for the REST API:
+            case 'paypal_billing_plan_id': update_post_meta($donation->id, '_paypal_billing_plan_id', $value); break;
+            case 'paypal_billing_agreement_id': update_post_meta($donation->id, '_paypal_billing_agreement_id', $value); break;
             default:
         }
-
     }
 
     public function save_donation_specific_data(Leyka_Donation $donation) {
 
-        if(isset($_POST['paypal-token']) && $donation->paypal_token != $_POST['paypal-token']) {
+        if(isset($_POST['paypal-token']) && $donation->paypal_token !== $_POST['paypal-token']) {
             $donation->paypal_token = $_POST['paypal-token'];
         }
 
-        if(isset($_POST['paypal-correlation-id']) && $donation->paypal_token != $_POST['paypal-correlation-id']) {
+        if(isset($_POST['paypal-correlation-id']) && $donation->paypal_token !== $_POST['paypal-correlation-id']) {
             $donation->paypal_correlation_id = $_POST['paypal-correlation-id'];
         }
 
-        if(isset($_POST['paypal-payment-id']) && $donation->paypal_payment_id != $_POST['paypal-payment-id']) {
+        if(isset($_POST['paypal-payment-id']) && $donation->paypal_payment_id !== $_POST['paypal-payment-id']) {
             $donation->paypal_payment_id = $_POST['paypal-payment-id'];
         }
 
-        if(isset($_POST['paypal-payer-id']) && $donation->paypal_token != $_POST['paypal-payer-id']) {
+        if(isset($_POST['paypal-payer-id']) && $donation->paypal_token !== $_POST['paypal-payer-id']) {
             $donation->paypal_payer_id = $_POST['paypal-payer-id'];
+        }
+
+        // Only for the REST API:
+        if(isset($_POST['paypal-billing-plan-id']) && $donation->paypal_billing_plan_id !== $_POST['paypal-billing-plan-id']) {
+            $donation->paypal_billing_plan_id = $_POST['paypal-billing-plan-id'];
+        }
+
+        if(isset($_POST['paypal-billing-agreement-id']) && $donation->paypal_billing_agreement_id !== $_POST['paypal-billing-agreement-id']) {
+            $donation->paypal_billing_agreement_id = $_POST['paypal-billing-agreement-id'];
         }
 
     }
@@ -1339,14 +1369,15 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         switch($paypal_field) {
             case 'payment_id':
             case 'pp_payment_id':
-            case 'paypal_payment_id':
-                $paypal_field = '_paypal_payment_id';
-                break;
+            case 'paypal_payment_id': $paypal_field = '_paypal_payment_id'; break;
             case 'token':
             case 'pp_token':
+            case 'pp_payment_token':
             case 'paypal_token':
-                $paypal_field = '_paypal_token';
-                break;
+            case 'paypal_payment_token': $paypal_field = '_paypal_token'; break;
+
+            case 'paypal_billing_plan_id': $paypal_field = '_paypal_billing_plan_id'; break;
+            case 'paypal_billing_agreement_id': $paypal_field = '_paypal_billing_agreement_id'; break;
             default:
                 $paypal_field = false;
         }
