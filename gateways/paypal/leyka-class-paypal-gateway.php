@@ -238,6 +238,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 leyka_options()->opt('paypal_client_id'),
                 leyka_options()->opt('paypal_client_secret')
             ));
+//            $api_context->setConfig(array('mode' => leyka_options()->opt('paypal_test_mode') ? 'sandbox' : 'live'));
 
             if(empty($form_data['leyka_recurring'])) { // Single donation
 
@@ -334,7 +335,10 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     $plan = \PayPal\Api\Plan::get($plan_created->getId(), $api_context);
 
                     if($plan->getState() !== 'ACTIVE') {
-                        throw new Exception(sprintf(__('Cannot activate PayPal billing plan. Please contact the <a href="%s" target="_blank">website tech. support</a>', leyka_options()->opt('tech_support_email')), 'leyka'));
+                        throw new Exception(
+                            __('Cannot activate PayPal billing plan.', 'leyka').' '.
+                            sprintf(__('Please contact the <a href="%s" target="_blank">website tech. support</a>', leyka_options()->opt('tech_support_email')), 'leyka')
+                        );
                     }
 
                 } catch(Exception $ex) {
@@ -362,11 +366,21 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 try {
 
-                    $agreement = $agreement->create($api_context);
+                    // PayPal redirect URL for the donor:
+                    $redirect_link = $agreement->create($api_context)->getApprovalLink();
+                    $payment_token = end(explode('&token=', $redirect_link));
 
-                    $donation->paypal_billing_plan_id = $plan->getId(); // Save the plan ID in the donation to identify later
+                    if( !$payment_token ) {
+                        throw new Exception(
+                            __("The needed payment parameter wasn't generated.", 'leyka').' '.
+                            sprintf(__('Please contact the <a href="%s" target="_blank">website tech. support</a>', leyka_options()->opt('tech_support_email')), 'leyka')
+                        );
+                    }
 
-                    $this->_new_api_redirect_url = $agreement->getApprovalLink(); // PayPal redirect URL for the donor
+                    $donation->paypal_billing_plan_id = $plan->getId(); // Save the donation plan ID to identify later
+                    $donation->paypal_token = $payment_token; // Save the donation plan ID to identify later
+
+                    $this->_new_api_redirect_url = $redirect_link;
 
                 } catch(Exception $ex) {
 
@@ -379,8 +393,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 }
 
-                // 2.5. BA is created, but not executed yet. ATM it doesn't even have an ID.
-                // BA will be executed on the "" callback procedure.
+                // 2.5. BA is created, but it's not executed yet. Right now it doesn't even have an ID.
+                // BA will be executed on the "process-init-recurring" callback procedure.
 
             }
 
@@ -671,6 +685,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     leyka_options()->opt('paypal_client_id'),
                     leyka_options()->opt('paypal_client_secret')
                 ));
+                // $api_context->setConfig(array('mode' => leyka_options()->opt('paypal_test_mode') ? 'sandbox' : 'live'));
 
                 try {
 
@@ -678,40 +693,42 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     $agreement->execute($_GET['token'], $api_context); // Execute the BA
                     $agreement = \PayPal\Api\Agreement::get($agreement->getId(), $api_context); // Final BA check
 
-                    echo '<pre>Agreement: '.print_r($agreement, 1).'</pre>';
                     $agreement_id = $agreement->getId();
-                    $agreement_plan_id = $agreement->getPlan()->getId();
 
                     if($agreement_id) {
 
-                        $donation = $this->_get_donation_by('paypal_billing_plan_id', $agreement_plan_id);
+                        $donation = $this->_get_donation_by('paypal_token', $_GET['token']);
 
                         if( !$donation ) {
                             $this->_donation_error(
                                 __("PayPal callback error: can't find the initial recurring donation to activate", 'leyka'),
                                 sprintf(
-                                    __("Payment token: %s\n\nBilling Agreement ID: %s\n\nBilling Plan ID: %s\n\n", 'leyka'),
+                                    __("Payment token: %s\n\nBilling Agreement ID: %s\n\n", 'leyka'),
                                     $_GET['token'],
-                                    $agreement_id,
-                                    $agreement_plan_id
+                                    $agreement_id
                                 )
                             );
                         }
 
+                        echo '<pre>Agreement ID: '.print_r($agreement_id, 1).'</pre>';
+                        echo '<pre>'.print_r('Init recurring donation found: '.$donation->id, 1).'</pre>';
+
                         $donation->paypal_billing_agreement_id = $agreement_id;
                         $donation->paypal_payment_token = $_GET['token'];
 
-//                        if($donation->status !== 'funded') {
-//
-//                            $donation->status = 'funded';
-//                            $donation->add_gateway_response($result);
-//
-//                            Leyka_Donation_Management::send_all_emails($donation->id);
-//
-//                        }
-//
+                        if(/*$agreement->getState() == 'Active' &&*/ $donation->status !== 'funded') {
+
+//                            $donation->status = 'funded'; /** @todo IT'S BETTER TO MAKE SUBSCRIPTION "FUNDED" IN THE WEBHOOK CALLBACK HANDLING */
+
+                            $donation->recurring_is_active = true;
+                            $donation->add_gateway_response($agreement);
+
+                            Leyka_Donation_Management::send_all_emails($donation->id);
+
+                        }
+
 //                        wp_redirect(leyka_get_success_page_url());
-//                        exit;
+                        exit;
 
                     } else {
                         $this->_donation_error(__("PayPal callback error: the recurring subscription billing agreement final check wasn't passed.", 'leyka'));
@@ -722,7 +739,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 }
 
                 break;
-
 
             // Classic (ExpressCheckout) API callbacks:
             case 'process_payment': // Do a payment itself
