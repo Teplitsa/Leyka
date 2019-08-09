@@ -649,26 +649,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 }*/
                 break;
 
-            case 'cancel-donation': // (Init recurring) Payment was cancelled by Donor on the gateway side
-            case 'cancel-init-recurring':
-
-                $redirect_url = home_url();
-
-                if( !empty($_GET['token']) ) {
-
-                    $donation = $this->_get_donation_by('paypal_token', esc_sql($_GET['token']));
-                    if( $donation && $donation->campaign_id ) {
-
-                        $donation->add_gateway_response(__('The donation was cancelled by the donor', 'leyka'));
-                        $redirect_url = get_permalink($donation->campaign_id);
-
-                    }
-
-                }
-
-                wp_redirect($redirect_url);
-                exit;
-
             case 'process-init-recurring':
 
                 require LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
@@ -755,6 +735,31 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     $this->_donation_error(__("PayPal callback error: billing agreement for the recurring subscription wasn't executed.", 'leyka'));
                 }
 
+                break;
+
+            // (Init recurring) Payment was cancelled by Donor on the gateway side:
+            case 'cancel-donation':
+            case 'cancel-init-recurring':
+
+                $redirect_url = home_url();
+
+                if( !empty($_GET['token']) ) {
+
+                    $donation = $this->_get_donation_by('paypal_token', esc_sql($_GET['token']));
+                    if($donation && $donation->campaign_id) {
+
+                        $donation->add_gateway_response(__('The donation was cancelled by the donor', 'leyka'));
+                        $redirect_url = get_permalink($donation->campaign_id);
+
+                    }
+
+                }
+
+                wp_redirect($redirect_url);
+                exit;
+
+            case 'process-payment':
+            case 'process-payment-rest':
                 break;
 
             // Classic (ExpressCheckout) API callbacks:
@@ -1205,9 +1210,47 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             return array();
         }
 
+        require LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
+
         $response_vars = maybe_unserialize($donation->gateway_response);
-        if( !$response_vars || !is_array($response_vars) ) {
+
+        if( !$response_vars ) {
             return array();
+        } else if(is_string($response_vars)) {
+            $response_vars = array('' => $response_vars,);
+        } else if(is_a($response_vars, 'PayPal\Api\Agreement')) {
+
+            $agreement = $response_vars; /** @var $agreement PayPal\Api\Agreement */
+            $payer = $agreement->getPayer();
+
+            $response_vars = array(
+                __('Billing agreement ID:', 'leyka') => $agreement->getId(),
+                __('Agreement state:', 'leyka') => $agreement->getState(),
+                __('Agreement start date:', 'leyka') => date(get_option('date_format'), strtotime($agreement->getStartDate())),
+                __('Payment method:', 'leyka') => $payer->getPaymentMethod(),
+                __('Payer ID:', 'leyka') => $payer->getPayerInfo()->getPayerId(),
+                __('Payer is verified:', 'leyka') => $payer->getStatus() === 'verified' ?
+                    __('yes', 'leyka') : __('no', 'leyka'),
+                __('Payer name:', 'leyka') => $payer->getPayerInfo()->getFirstName().' '.$payer->getPayerInfo()->getLastName(),
+                __('Payer email', 'leyka') => $payer->getPayerInfo()->getEmail(),
+            );
+
+        } else if(is_a($response_vars, 'PayPal\Api\Payment')) {
+
+            $payment = $response_vars; /** @var $payment PayPal\Api\Payment */
+            $payer = $payment->getPayer();
+
+            $response_vars = array(
+                __('Payment ID:', 'leyka') => $payment->getId(),
+                __('Payment state:', 'leyka') => $payment->getState(),
+                __('Payment method:', 'leyka') => $payer->getPaymentMethod(),
+                __('Payer ID:', 'leyka') => $payer->getPayerInfo()->getPayerId(),
+                __('Payer is verified:', 'leyka') => $payer->getStatus() === 'verified' ?
+                    __('yes', 'leyka') : __('no', 'leyka'),
+                __('Payer name:', 'leyka') => $payer->getPayerInfo()->getFirstName().' '.$payer->getPayerInfo()->getLastName(),
+                __('Payer email', 'leyka') => $payer->getPayerInfo()->getEmail(),
+            );
+
         }
 
         return $response_vars;
