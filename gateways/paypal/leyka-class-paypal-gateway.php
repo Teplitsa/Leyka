@@ -649,7 +649,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 }*/
                 break;
 
-            case 'cancel-donation': // Payment was cancelled by Donor on the gateway side
+            case 'cancel-donation': // (Init recurring) Payment was cancelled by Donor on the gateway side
+            case 'cancel-init-recurring':
 
                 $redirect_url = home_url();
 
@@ -695,44 +696,60 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                     $agreement_id = $agreement->getId();
 
-                    if($agreement_id) {
+                    if( !$agreement_id ) {
+                        $this->_donation_error(__("PayPal callback error: the recurring subscription billing agreement final check wasn't passed.", 'leyka'));
+                    }
 
-                        $donation = $this->_get_donation_by('paypal_token', $_GET['token']);
+                    $donation = $this->_get_donation_by('paypal_token', $_GET['token']);
 
-                        if( !$donation ) {
-                            $this->_donation_error(
-                                __("PayPal callback error: can't find the initial recurring donation to activate", 'leyka'),
-                                sprintf(
-                                    __("Payment token: %s\n\nBilling Agreement ID: %s\n\n", 'leyka'),
-                                    $_GET['token'],
-                                    $agreement_id
-                                )
-                            );
-                        }
+                    if( !$donation ) {
+                        $this->_donation_error(
+                            __("PayPal callback error: can't find the initial recurring donation to activate", 'leyka'),
+                            sprintf(
+                                __("Payment token: %s\n\nBilling Agreement ID: %s\n\n", 'leyka'),
+                                $_GET['token'],
+                                $agreement_id
+                            )
+                        );
+                    }
 
-                        echo '<pre>Agreement ID: '.print_r($agreement_id, 1).'</pre>';
-                        echo '<pre>'.print_r('Init recurring donation found: '.$donation->id, 1).'</pre>';
+                    $donation->paypal_billing_agreement_id = $agreement_id;
+                    $donation->paypal_payment_token = $_GET['token'];
+                    $donation->paypal_payer_id = $agreement->getPayer()->getPayerInfo()->getPayerId();
 
-                        $donation->paypal_billing_agreement_id = $agreement_id;
-                        $donation->paypal_payment_token = $_GET['token'];
+                    // Search for init donation transaction to check it's status & save it's ID:
+                    $transactions = \PayPal\Api\Agreement::searchTransactions(
+                        $agreement_id,
+                        array( // Alas, the params are mandatory
+                            'start_date' => date('Y-m-d', strtotime('-1 day')),
+                            'end_date' => date('Y-m-d', strtotime('+1 day'))
+                        ),
+                        $api_context
+                    )->getAgreementTransactionList();
 
-                        if(/*$agreement->getState() == 'Active' &&*/ $donation->status !== 'funded') {
+                    $is_success = false;
+                    foreach($transactions as $transaction) {
+                        if(
+                            $transaction->getTransactionId() != $agreement_id
+                            && $transaction->getStatus() == 'Completed'
+                            && $donation->status !== 'funded'
+                        ) {
 
-//                            $donation->status = 'funded'; /** @todo IT'S BETTER TO MAKE SUBSCRIPTION "FUNDED" IN THE WEBHOOK CALLBACK HANDLING */
+                            $donation->paypal_payment_id = $transaction->getTransactionId();
+                            $donation->status = 'funded';
 
                             $donation->recurring_is_active = true;
                             $donation->add_gateway_response($agreement);
 
                             Leyka_Donation_Management::send_all_emails($donation->id);
 
+                            $is_success = true;
+
                         }
-
-//                        wp_redirect(leyka_get_success_page_url());
-                        exit;
-
-                    } else {
-                        $this->_donation_error(__("PayPal callback error: the recurring subscription billing agreement final check wasn't passed.", 'leyka'));
                     }
+
+                    wp_redirect($is_success ? leyka_get_success_page_url() : leyka_get_failure_page_url());
+                    exit;
 
                 } catch(Exception $ex) {
                     $this->_donation_error(__("PayPal callback error: billing agreement for the recurring subscription wasn't executed.", 'leyka'));
@@ -1090,35 +1107,23 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             case 'donation_update':
 
                 if(empty($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'leyka_payment_form')) {
-                    die(json_encode(array(
-                        'status' => 1,
-                        'message' => __('Wrong nonce in submitted form data', 'leyka'),
-                    )));
+                    die(json_encode(array('status' => 1, 'message' => __('Wrong nonce in submitted form data', 'leyka'),)));
                 }
 
                 $_POST['donation_id'] = (int)$_POST['donation_id'];
 
                 if( !$_POST['donation_id']) {
-                    die(json_encode(array(
-                        'status' => 1,
-                        'message' => __('No donation ID in submitted payment data', 'leyka'),
-                    )));
+                    die(json_encode(array('status' => 1, 'message' => __('No donation ID found in the submitted data', 'leyka'),)));
                 }
 
                 $donation = new Leyka_Donation($_POST['donation_id']);
 
                 if( !$donation ) {
-                    die(json_encode(array(
-                        'status' => 1,
-                        'message' => __('Wrong donation ID in submitted payment data', 'leyka'),
-                    )));
+                    die(json_encode(array('status' => 1, 'message' => __('Wrong donation ID in submitted payment data', 'leyka'),)));
                 }
 
                 if($donation->gateway_id !== $this->_id) {
-                    die(json_encode(array(
-                        'status' => 1,
-                        'message' => __('Wrong gateway in submitted payment data', 'leyka'),
-                    )));
+                    die(json_encode(array('status' => 1, 'message' => __('Wrong gateway in submitted payment data', 'leyka'),)));
                 }
 
                 if( $_POST['paypal_token'] && !$donation->paypal_token ) {
@@ -1131,8 +1136,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 die(json_encode(array('status' => 0,)));
 
-                break;
-
             default:
 
         }
@@ -1140,11 +1143,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         exit(0);
 
     }
-
-    // Override the auto-submit setting to send manual requests to PayPal:
-//    public function submission_redirect_type($redirect_type, $pm_id, $donation_id) {
-//        return false;
-//    }
 
     public function enqueue_gateway_scripts() {
 
