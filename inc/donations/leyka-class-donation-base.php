@@ -16,19 +16,6 @@ abstract class Leyka_Donation_Base {
 
     abstract public function add_gateway_response($resp_text);
 
-    public function get_specific_data_admin_fields() {
-
-        $data_fields = array();
-
-        $gateway = leyka_get_gateway_by_id($this->gateway_id);
-        if($gateway) { /** @var $gateway Leyka_Gateway */
-            $data_fields = $gateway->get_specific_data_admin_fields($this->id);
-        }
-
-        return $data_fields ? $data_fields : array();
-
-    }
-
     /**
      * @return mixed Last date when status was changed to "funded" in sec, or false if donation was never funded.
      */

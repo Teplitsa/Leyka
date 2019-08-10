@@ -434,7 +434,7 @@ techMessage="'.$tech_message.'"/>');
         }
     }
 
-    public function get_gateway_response_formatted(Leyka_Donation $donation) {
+    public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
             return array();
@@ -497,7 +497,7 @@ techMessage="'.$tech_message.'"/>');
 
     }
 
-    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation $donation) {
+    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) {
 
         $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($donation);
         $cancelling_url = (get_option('permalink_structure') ?
@@ -509,11 +509,11 @@ techMessage="'.$tech_message.'"/>');
 
     }
 
-    public function cancel_recurring_subscription(Leyka_Donation $donation) {
+    public function cancel_recurring_subscription(Leyka_Donation_Base $donation) {
 
         if($donation->type == 'rebill') {
 
-            $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($donation);
+            $init_recurring_donation = Leyka_Donation_Base::get_init_recurring_donation($donation);
             $init_recurring_donation->recurring_is_active = false;
 
         }
@@ -524,7 +524,7 @@ techMessage="'.$tech_message.'"/>');
 
     }
 
-    public function do_recurring_donation(Leyka_Donation $init_recurring_donation) {
+    public function do_recurring_donation(Leyka_Donation_Base $init_recurring_donation) {
 
         if( !$init_recurring_donation->recurring_id ) {
             return false;

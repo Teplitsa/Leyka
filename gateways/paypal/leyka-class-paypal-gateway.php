@@ -1004,7 +1004,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         return $default_submit.'<div class="leyka-paypal-form-submit" style="display: none;"></div>';
     }
 
-    public function get_gateway_response_formatted(Leyka_Donation $donation) {
+    public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
             return array();

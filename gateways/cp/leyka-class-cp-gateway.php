@@ -322,7 +322,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
     }
 
     /** @todo The method is ready for testing. But it's excluded from the master code until all other recurring gateways will have it's implementation (for the universality sake). */
-//    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation $donation) {
+//    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) {
 //
 //        $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($donation);
 //        $cancelling_url = (get_option('permalink_structure') ?
@@ -334,7 +334,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 //
 //    }
 
-    public function cancel_recurring_subscription(Leyka_Donation $donation) {
+    public function cancel_recurring_subscription(Leyka_Donation_Base $donation) {
 
         if($donation->type != 'rebill') {
             die();
@@ -443,7 +443,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         return empty($arr[$key]) ? '' : ($val ? $val : $arr[$key]);
     }
 
-    public function get_gateway_response_formatted(Leyka_Donation $donation) {
+    public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
             return array();
