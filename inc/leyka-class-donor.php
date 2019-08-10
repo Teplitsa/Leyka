@@ -1,17 +1,18 @@
 <?php if( !defined('WPINC') ) die;
 
-/** * Leyka Donor Classes */
+/** Leyka Donor Class */
 
 class Leyka_Donor {
 
-	private $_id;
+	protected $_id;
 
     /** @var WP_User */
-	private $_user;
+	protected $_user;
 
-    private $_meta = array();
+    protected $_meta = array();
 
     const DONOR_USER_ROLE = 'donor';
+    const DONOR_ACCOUNT_ACCESS_CAP = 'donor_account_access';
     const DONORS_TAGS_TAXONOMY_NAME = 'donors_tag';
     const DONOR_ACCOUNT_DONATIONS_PER_PAGE = 6; // For the frontend Donor's Account page
 
@@ -54,13 +55,28 @@ class Leyka_Donor {
 
         }
 
-        if($params['donor_has_account_access']) {
-            $donor_user->add_cap('donor_account_access');
-        } else {
-            $donor_user->remove_cap('donor_account_access');
-        }
+        self::update_account_access($donor_user, $params['donor_has_account_access']);
 
         return $donor_user_id;
+
+    }
+
+    public static function update_account_access($donor_user, $donor_has_account) {
+
+        $donor_user = leyka_get_validated_user($donor_user);
+        $donor_has_account = !!$donor_has_account;
+
+        if( !self::user_is_donor($donor_user) ) {
+            $donor_user->add_role(self::DONOR_USER_ROLE);
+        }
+
+        if($donor_has_account) {
+            $donor_user->add_cap(self::DONOR_ACCOUNT_ACCESS_CAP);
+        } else {
+            $donor_user->remove_cap(self::DONOR_ACCOUNT_ACCESS_CAP);
+        }
+
+        return true;
 
     }
 
@@ -68,14 +84,14 @@ class Leyka_Donor {
      * Create Donor account from donation, if it doesn't exist yet.
      *
      * @param $donation int|WP_Post|Leyka_Donation
-     * @param $donor_has_account_access boolean|null Either true/false, or NULL to decide based on given donation type.
+     * @param $donor_has_account boolean|null Either true/false, or NULL to decide based on given donation type.
      * @return int|WP_Error New donor user ID or WP_Error object.
      */
-    public static function create_donor_from_donation($donation, $donor_has_account_access = null) {
+    public static function create_donor_from_donation($donation, $donor_has_account = null) {
 
         $donation = leyka_get_validated_donation($donation);
 
-        if( !$donation || $donation->type === 'correction' || !leyka()->opt('donor_management_available') ) {
+        if( !$donation || !leyka()->opt('donor_management_available') ) {
             $donor_user_id = new WP_Error(
                 'donor_account_not_created',
                 __("Can't create donor user from donation", 'leyka'),
@@ -85,22 +101,24 @@ class Leyka_Donor {
             $donor_user_id = $donation->donor_user_id;
         }
 
-        if( !$donor_user_id ) {
+        if($donor_has_account === null) {
+            $donor_has_account = $donation->type === 'rebill' && leyka_options()->opt('donor_accounts_available');
+        } else {
+            $donor_has_account = !!$donor_has_account;
+        }
 
-            if($donor_has_account_access === null) {
-                $donor_has_account_access = $donation->type === 'rebill' && leyka_options()->opt('donor_accounts_available');
-            } else {
-                $donor_has_account_access = !!$donor_has_account_access;
-            }
+        if( !$donor_user_id ) {
 
             $donor_user_id = Leyka_Donor::add(array(
                 'donor_email' => $donation->donor_email,
                 'donor_name' => $donation->donor_name,
-                'donor_has_account_access' => $donor_has_account_access,
+                'donor_has_account_access' => $donor_has_account,
             ));
 
-            $donation->donor_account = $donor_user_id;
+            $donation->donor_account = $donor_user_id; // Donor ID or WP_Error
 
+        } else if(is_int($donor_user_id)) { // Add/remove Donor's account access capability, if needed
+            Leyka_Donor::update_account_access($donor_user_id, $donor_has_account);
         }
 
         do_action('leyka_donor_account'.(is_wp_error($donor_user_id) ? '_not_' : '_').'created', $donor_user_id, $donation);
@@ -125,11 +143,12 @@ class Leyka_Donor {
             'amount_donated' => 0.0,
         );
 
-        $donor_donations = get_posts(array( // Get donations by donor
+        $donor_donations = get_posts(array( // Get donations by donor's email
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => 'funded',
             'posts_per_page' => -1,
-            'author' => $donor->id,
+//            'author' => $donor->id,
+            'meta_query' => array(array('key' => 'leyka_donor_email', 'value' => $donor->email),),
             'orderby' => 'date',
             'order' => 'ASC',
         ));
@@ -138,6 +157,8 @@ class Leyka_Donor {
         for($i = 0; $i < $donations_count; $i++) {
 
             $donation = new Leyka_Donation($donor_donations[$i]);
+
+            $donation->donor_user_id = $donor->id;
 
             if($donation->is_init_recurring_donation && $donation->recurring_on) {
                 $donor_data['donor_type'] = 'regular';
@@ -209,7 +230,7 @@ class Leyka_Donor {
 
         $donation_id = absint($donation_id);
 
-        if( !$donation_id || !leyka()->opt('donor_management_available') ) {
+        if( !$donation_id || !leyka_options()->opt('donor_management_available') ) {
             return;
         }
 
@@ -227,47 +248,24 @@ class Leyka_Donor {
 
     }
 
-    protected static function _is_donor(WP_User $donor_user) {
-        return in_array(static::DONOR_USER_ROLE, (array)$donor_user->roles);
+    public static function user_is_donor(WP_User $donor_user) {
+        return in_array(self::DONOR_USER_ROLE, (array)$donor_user->roles);
     }
 
-    /** @throws Exception */
+    /**
+     * @param $donor_user int|string|WP_User Either Donor's ID, email, or WP_User object.
+     * @throws Exception
+     */
     public function __construct($donor_user) {
 
-        if((is_int($donor_user) || is_string($donor_user)) && absint($donor_user) > 0) {
+        $donor_user = leyka_get_validated_user($donor_user);
 
-            $donor_user = (int)$donor_user;
-            $this->_user = get_user_by('id', $donor_user);
-
-            if( !$this->_user || !self::_is_donor($this->_user) ) {
-                throw new Exception(__('Incorrect Donor identification data', 'leyka'));
-            }
-
-            $this->_id = $this->_user->ID;
-
-        } else if(is_string($donor_user) && $donor_user) {
-
-            $donor_user = esc_sql($donor_user);
-            $this->_user = get_user_by('email', $donor_user);
-
-            if( !$this->_user || !self::_is_donor($this->_user) ) {
-                throw new Exception(__('Incorrect Donor identification data', 'leyka'));
-            }
-
-            $this->_id = $this->_user->ID;
-
-        } else if(is_a($donor_user, 'WP_User')) { /** @var $donor_user WP_User */
-
-            if( !self::_is_donor($donor_user) ) {
-                throw new Exception(__('Incorrect Donor identification data', 'leyka'));
-            }
-
-            $this->_user = $donor_user;
-            $this->_id = $donor_user->ID;
-
-        } else {
-            throw new Exception(__('Incorrect Donor identification data', 'leyka'));
+        if(is_wp_error($donor_user)) {
+            throw new Exception($donor_user->get_error_message());
         }
+
+        $this->_id = $donor_user->ID;
+        $this->_user = $donor_user;
 
         if( !$this->_meta ) {
 
@@ -342,7 +340,7 @@ class Leyka_Donor {
                 return $this->_meta['email'];
 
             case 'has_account_access':
-                return $this->_user->has_cap('donor_account_access');
+                return $this->_user->has_cap(self::DONOR_ACCOUNT_ACCESS_CAP);
 
             case 'desc':
             case 'donor_desc':
@@ -614,11 +612,7 @@ class Leyka_Donor {
         $meta_params = array(
             'relation' => 'AND',
             array('key' => 'leyka_payment_type', 'value' => 'rebill'),
-            array(
-                'relation' => 'OR',
-                array('key' => 'leyka_donor_email', 'value' => $this->email),
-                array('key' => 'leyka_donor_account', 'value' => $this->_id),
-            ),
+            array('key' => 'leyka_donor_email', 'value' => $this->email),
         );
 
         if($only_active) {
@@ -703,11 +697,7 @@ class Leyka_Donor {
                     array('key' => 'leyka_payment_type', 'value' => 'single'),
                     array('key' => 'leyka_payment_type', 'value' => 'rebill'),
                 ),
-                array(
-                    'relation' => 'OR',
-                    array('key' => 'leyka_donor_email', 'value' => $this->email),
-                    array('key' => 'leyka_donor_account', 'value' => $this->_id),
-                ),
+                array('key' => 'leyka_donor_email', 'value' => $this->email),
             ),
             'posts_per_page' => -1,
         ));
@@ -805,13 +795,7 @@ class Leyka_Donor {
     }
 
     public function get_password_reset_key() {
-
-        if( !$this->_user ) {
-            return false;
-        }
-
-        return get_password_reset_key($this->_user);
-
+        return $this->_user ? get_password_reset_key($this->_user) : false;
     }
 
 }

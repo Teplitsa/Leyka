@@ -117,14 +117,7 @@ class Leyka extends Leyka_Singleton {
         // For Donors management:
         if(get_option('leyka_donor_management_available') || get_option('leyka_donor_accounts_available')) {
 
-            // Don't show admin bar:
-            add_action('init', function() {
-                if(leyka_user_has_role('donor_single')) {
-                    add_filter('show_admin_bar', '__return_false');
-                }
-            }, 9);
-
-            // Disable login:
+            // Disable logging in if Donor is the only user's role (and user doesn't have an Account access capability):
             add_filter('authenticate', function($user, $username, $pass) {
 
                 if($user && is_wp_error($user)) {
@@ -134,7 +127,11 @@ class Leyka extends Leyka_Singleton {
                 if( !$user ) {
 
                     $logged_in_user = get_user_by('login', $username);
-                    if($logged_in_user && !$logged_in_user->has_cap('donor_account_access')) {
+                    if(
+                        $logged_in_user
+                        && leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, true, $logged_in_user)
+                        && !$logged_in_user->has_cap(Leyka_Donor::DONOR_ACCOUNT_ACCESS_CAP)
+                    ) {
 
                         remove_filter('authenticate', 'wp_authenticate_username_password', 20);
                         return null;
@@ -147,9 +144,12 @@ class Leyka extends Leyka_Singleton {
 
             }, 1000, 3);
 
-            // Refuse the login for Donors without personal accounts:
+            // Refuse the login for Donors without Accounts:
             add_action('wp_login', function($login, WP_User $user){
-                if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, false, $user) && !$user->has_cap('donor_account_access') ) {
+                if(
+                    leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, true, $user)
+                    && !$user->has_cap(Leyka_Donor::DONOR_ACCOUNT_ACCESS_CAP)
+                ) {
 
                     wp_logout();
                     wp_redirect(home_url());
@@ -162,13 +162,17 @@ class Leyka extends Leyka_Singleton {
             add_action('init', function(){
 
                 $user = wp_get_current_user();
-                if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, false, $user) && !$user->has_cap('donor_account_access') ) {
+                if(
+                    leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, true, $user)
+                    && !$user->has_cap(Leyka_Donor::DONOR_ACCOUNT_ACCESS_CAP)
+                ) {
 
                     wp_logout();
                     wp_redirect(home_url());
                     exit;
 
                 }
+
             });
 
         }
@@ -176,14 +180,14 @@ class Leyka extends Leyka_Singleton {
         // For Donor accounts management:
         if(get_option('leyka_donor_accounts_available')) {
 
+            // Don't show admin bar if Donor is the only user's role:
             add_action('init', function(){ // Don't show admin bar
-                if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE)) {
+                if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, true)) {
                     add_filter('show_admin_bar', '__return_false');
                 }
             }, 9);
 
             add_action('leyka_donor_account_created', array($this, 'handle_non_init_recurring_donor_registration'), 10, 2);
-            add_action('leyka_donor_account_created', array($this, 'update_donor_metadata'), 11, 2);
             add_action('leyka_donor_account_not_created', array($this, 'handle_donor_account_creation_error'), 10, 2);
 
         }
@@ -434,7 +438,7 @@ class Leyka extends Leyka_Singleton {
 
     public function refresh_donors_data() {
 
-        if( !leyka()->opt('donor_management_available') ) {
+        if( !leyka_options()->opt('donor_management_available') ) {
             return;
         }
 
@@ -1192,10 +1196,9 @@ class Leyka extends Leyka_Singleton {
 
         if( !$leyka_last_ver || $leyka_last_ver < '3.0' ) {
 
-            if(defined('KND_VERSION') && class_exists( 'TGM_Plugin_Activation' )) {
+            if(defined('KND_VERSION') && class_exists('TGM_Plugin_Activation')) {
               update_option('leyka_init_wizard_redirect', false);
-            }
-            else {
+            } else {
                update_option('leyka_init_wizard_redirect', !$leyka_last_ver);
             }
 
@@ -1245,14 +1248,14 @@ class Leyka extends Leyka_Singleton {
             // Add the new "Donor's account access" role:
             $donor_account_users = get_users(array('role__in' => array(Leyka_Donor::DONOR_USER_ROLE,), 'number' => -1,));
 
-            $old_donor_role = get_role('donor');
+            $old_donor_role = get_role(Leyka_Donor::DONOR_USER_ROLE);
             if($old_donor_role) {
                 $old_donor_role->remove_cap('access_donor_account_desktop');
             }
 
             foreach($donor_account_users as $donor_user) {
 
-                $donor_user->add_cap('donor_account_access');
+                $donor_user->add_cap(Leyka_Donor::DONOR_ACCOUNT_ACCESS_CAP);
 
                 try { // Initialize & fill the Donor Cache for all existing Donor users
                     Leyka_Donor::calculate_donor_metadata(new Leyka_Donor($donor_user));
@@ -1264,8 +1267,8 @@ class Leyka extends Leyka_Singleton {
 
         }
 
-        if( !$leyka_last_ver || $leyka_last_ver < '4.0' ) {
-            require_once(LEYKA_PLUGIN_DIR.'procedures/leyka-db-updates.php');
+        if( !$leyka_last_ver ) { // From v3.3.0.1 - enable Donors management by default for all new installations
+            update_option('leyka_donor_management_available', true);
         }
 
         // Set a flag to flush permalinks (needs to be done a bit later, than this activation itself):
@@ -1324,10 +1327,10 @@ class Leyka extends Leyka_Singleton {
             array(),
             LEYKA_VERSION
         );
-
+        
         $this->add_inline_custom_css();
     }
-
+    
     protected function add_inline_custom_css() {
         $campaign_id = null;
         if(is_singular(Leyka_Campaign_Management::$post_type)) {
@@ -1337,7 +1340,7 @@ class Leyka extends Leyka_Singleton {
             $donation = $donation_id ? new Leyka_Donation($donation_id) : null;
             $campaign_id = $donation ? $donation->campaign_id : null;
         }
-
+        
         if($campaign_id) {
             $custom_css = get_post_meta($campaign_id, 'campaign_css', true);
             wp_add_inline_style($this->_plugin_slug.'-revo-plugin-styles', $custom_css);

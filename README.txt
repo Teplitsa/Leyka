@@ -5,7 +5,7 @@ Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса, яндекс.деньги, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
 Tested up to: 5.2.2
-Stable tag: 3.3
+Stable tag: 3.3.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,14 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.3.0.1 =
+* New: now the Donors management feature is in by default for new installations.
+* Fix: now Donors' metadata calculate correctly for all newly added Donors.
+* Fix: now Donors' metadata calculation algorithm bases on Donations emails instead of author IDs.
+* Fix: admin feedback form submitting JS error fixed.
+* Fix: small l10n fixes.
+* Removed: unneeded code removed from the plugin core.
+
 = 3.3 =
 * New: the Donors management features added.
 * New: from now on the plugin activation procedure will run only on plugin activation.

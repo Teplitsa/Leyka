@@ -113,6 +113,34 @@ function leyka_get_validated_donation($donation) {
 }
 
 /**
+ * @param $user int|string|WP_User|Leyka_Donor
+ * @return WP_User|WP_Error
+ */
+function leyka_get_validated_user($user) {
+
+    if(is_int($user) || is_string($user)) {
+
+        if(absint($user) > 0) {
+            $user = get_user_by('id', (int)$user);
+        } else {
+            $user = get_user_by('email', esc_sql($user));
+        }
+
+        if( !$user ) {
+            return new WP_Error(__('Incorrect Donor identification data', 'leyka'));
+        }
+
+    } else if(is_a($user, 'Leyka_Donor')) {
+        $user = get_user_by('id', $user->id);
+    } else if( !is_a($user, 'WP_User') ) {
+        return new WP_Error(__('Incorrect Donor identification data', 'leyka'));
+    }
+
+    return $user;
+    
+}
+
+/**
  * @param $campaign mixed
  * @return Leyka_Campaign|false A Leyka_Campaign instance if parameter is valid in one way or another; false otherwise.
  */

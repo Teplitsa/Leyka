@@ -735,7 +735,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
             $dependencies[] = $this->_load_data_tables();
 
-            wp_enqueue_code_editor(array('type' => 'text/css')); // Add the code editor lib
+            if(function_exists('wp_enqueue_code_editor')) { // The function is available in WP v4.9.0+
+                wp_enqueue_code_editor(array('type' => 'text/css')); // Add the code editor lib
+            }
 
         }
 

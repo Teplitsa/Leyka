@@ -39,8 +39,7 @@ class Leyka_Donation_Management {
         add_filter('manage_edit-'.self::$post_type.'_sortable_columns', array($this, 'manage_sortable_columns'));
         add_filter('request', array($this, 'do_column_sorting'));
 
-        /** Donation status transitions */
-        add_action('transition_post_status',  array($this, 'donation_status_changed'), 10, 3);
+        add_action('transition_post_status', array($this, 'donation_status_changed'), 10, 3);
 
         add_action('wp_ajax_leyka_send_donor_email', array($this, 'ajax_send_donor_email'));
 
@@ -2364,14 +2363,6 @@ class Leyka_Donation {
 
     }
 
-    public function get_specific_data_admin_fields() {
-
-        $data_fields = leyka_get_gateway_by_id($this->gateway_id)->get_specific_data_admin_fields($this->id);
-
-        return $data_fields ? $data_fields : array();
-
-    }
-
     /**
      * @return mixed Last date when status was changed to "funded" in sec, or false if donation was never funded.
      */
@@ -2380,7 +2371,7 @@ class Leyka_Donation {
         $last_date_funded = 0;
 
         foreach((array)$this->status_log as $status_change) {
-            if($status_change['status'] == 'funded' && $status_change['date'] > $last_date_funded) {
+            if($status_change['status'] === 'funded' && $status_change['date'] > $last_date_funded) {
                 $last_date_funded = $status_change['date'];
             }
         }
