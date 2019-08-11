@@ -1003,7 +1003,12 @@ class Leyka extends Leyka_Singleton {
     /** Fired when the plugin is activated or when an update is needed. */
     public static function activate() {
 
+        /** @todo Remove update code for old versions. Decide, what will be considered as "old". */
+        /** @todo Create the separate class to wrap/manage the versions updates code pieces. */
+
         $leyka_last_ver = get_option('leyka_last_ver');
+
+        leyka_create_separate_donations_db_tables(); // Create plugin-specific DB tables if needed
 
         if($leyka_last_ver && $leyka_last_ver == LEYKA_VERSION) { // Already at last version
             return;
@@ -1291,7 +1296,7 @@ class Leyka extends Leyka_Singleton {
 
     }
 
-    /** Register and enqueue public-facing style sheet. */
+    /** Register and enqueue front-office styles. */
     public function enqueue_styles() {
 
         if(stristr($_SERVER['REQUEST_URI'], 'leyka-process-donation') !== FALSE) { // Leyka service URL
@@ -1332,6 +1337,7 @@ class Leyka extends Leyka_Singleton {
     }
     
     protected function add_inline_custom_css() {
+
         $campaign_id = null;
         if(is_singular(Leyka_Campaign_Management::$post_type)) {
             $campaign_id = get_the_ID();
@@ -1345,9 +1351,10 @@ class Leyka extends Leyka_Singleton {
             $custom_css = get_post_meta($campaign_id, 'campaign_css', true);
             wp_add_inline_style($this->_plugin_slug.'-revo-plugin-styles', $custom_css);
         }
+
     }
 
-    /** Register and enqueue public-facing JavaScript files. */
+    /** Register and enqueue front-office JS. */
     public function enqueue_scripts() {
 
         // Revo template or success/failure widgets JS:

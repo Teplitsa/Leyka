@@ -62,7 +62,7 @@ if( !defined('LEYKA_PLUGIN_DIR') ) {
 }
 
 // Plugin ID:
-if( !defined('LEYKA_PLUGIN_INNER_SHORT_NAME') ) { // "leyka/leyka.php"
+if( !defined('LEYKA_PLUGIN_INNER_SHORT_NAME') ) { // 'leyka/leyka.php'
     define('LEYKA_PLUGIN_INNER_SHORT_NAME', plugin_basename(__FILE__));
 }
 
@@ -100,6 +100,7 @@ load_plugin_textdomain('leyka', false, basename(dirname(__FILE__)).'/languages/'
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-tmp-translations.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-functions.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-controller.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-updates.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-polylang.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-core.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-gateways-api.php');
@@ -148,7 +149,6 @@ function leyka_load_plugin_textdomain() {
 add_action('plugins_loaded', 'leyka_load_plugin_textdomain');
 
 register_activation_hook(__FILE__, array('Leyka', 'activate')); // Activation
-//add_action('plugins_loaded', array('Leyka', 'activate')); // Any update needed
 register_deactivation_hook(__FILE__, array('Leyka', 'deactivate')); // Deactivate
 
 leyka(); // All systems go
