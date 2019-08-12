@@ -1,14 +1,4 @@
-<?php //use PayPal\Api\Amount;
-//use PayPal\Api\InputFields;
-//use PayPal\Api\Payer;
-//use PayPal\Api\PayerInfo;
-//use PayPal\Api\Payment;
-//use PayPal\Api\RedirectUrls;
-//use PayPal\Api\Transaction;
-//use PayPal\Api\WebProfile;
-//use PayPal\Rest\ApiContext;
-
-if( !defined('WPINC') ) die;
+<?php if( !defined('WPINC') ) die;
 /**
  * Leyka_Paypal_Gateway class
  */
@@ -20,7 +10,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     protected $_new_api_redirect_url = '';
 
     const DONATION_WEB_EXPERIENCE_PROFILE_KEY = 'leyka_paypal__default_donation_web_experience_profile_id';
-//    const RECURRING_BILLING_PLAN_KEY = 'leyka_paypal__default_recurring_billing_plan_id'; /** @todo Check if the a single plan for all recurring subscriptions will work out */
+    const DONATIONS_WEBHOOK_ID_KEY = 'leyka_paypal__donations_webhook_id';
+    const RECURRING_SUBSCRIPTION_WEBHOOK_ID_KEY = 'leyka_paypal__recurring_subscription_webhook_id';
 
     protected function _set_attributes() {
 
@@ -90,10 +81,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             'paypal_test_mode' => array(
                 'type' => 'checkbox',
                 'default' => true,
-                'title' => __('Payments testing mode', 'leyka'),
-                'comment' => __('Check if the gateway integration is in test mode.', 'leyka'),
+                'title' => __('"Sandbox" mode', 'leyka'),
+                'comment' => __('Check if the gateway integration is in test mode. Sometimes this mode is dubbed "sandbox".', 'leyka'),
                 'short_format' => true,
-                'field_classes' => array('old-api'),
             ),
             'paypal_enable_recurring' => array(
                 'type' => 'checkbox',
@@ -139,6 +129,28 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         } else {
             return false;
         }
+
+    }
+
+    /**
+     * A helper to create & return the API context object to use in REST API requests.
+     *
+     * @return PayPal\Rest\ApiContext
+     * @throws Exception
+     */
+    protected function _get_api_context() {
+
+        $api_context = new \PayPal\Rest\ApiContext(new \PayPal\Auth\OAuthTokenCredential(
+            leyka_options()->opt('paypal_client_id'),
+            leyka_options()->opt('paypal_client_secret')
+        ));
+        if($api_context) {
+            $api_context->setConfig(array('mode' => leyka_options()->opt('paypal_test_mode') ? 'sandbox' : 'live'));
+        } else {
+            throw new Exception(__('Cannot connect to the PayPal gateway', 'leyka'));
+        }
+
+        return $api_context;
 
     }
 
@@ -210,14 +222,68 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
         try {
 
-            $web_experience_profile_resp = $web_experience_profile->create($api_context);
-            update_option(static::DONATION_WEB_EXPERIENCE_PROFILE_KEY, $web_experience_profile_resp->getId());
+            $web_experience_profile_response = $web_experience_profile->create($api_context);
+            update_option(static::DONATION_WEB_EXPERIENCE_PROFILE_KEY, $web_experience_profile_response->getId());
 
         } catch( \PayPal\Exception\PayPalConnectionException $ex ) {
+            return false;
+        } catch(Exception $ex) {
             return false;
         }
 
         return get_option(static::DONATION_WEB_EXPERIENCE_PROFILE_KEY);
+
+    }
+
+    /**
+     * A helper to automatize the gateway callbacks (webhooks) creation.
+     *
+     * @param $api_context PayPal\Rest\ApiContext
+     * @todo Implement & test the method.
+     */
+    protected function _create_webhooks(PayPal\Rest\ApiContext $api_context) {
+
+        // Single & recurring donations handling webhook:
+//        $webhook_id = get_option(static::DONATIONS_WEBHOOK_ID_KEY);
+//        $webhook_event_types_needed = array('PAYMENT.SALE.COMPLETED', 'PAYMENT.SALE.DENIED', 'PAYMENT.SALE.PENDING', 'PAYMENT.SALE.REFUNDED', 'PAYMENT.SALE.REVERSED',);
+//        $webhook_event_types_active = array();
+//
+//        if($webhook_id) { // Webhook may be already set
+
+//            $event_types_active = \PayPal\Api\WebhookEventType::subscribedEventTypes($webhook_id, $api_context);
+
+            /** @todo Check if all webhook events are subscribed. If not, delete & re-create it with all needed events: */
+            // foreach($event_types_active as $event_type_active) { $webhook_event_types_active[] = $event_type_active; }
+            // if($webhook_event_types_needed != $webhook_event_types_active) { $webhook = \PayPal\Api\Webhook::get($webhook_id, $api_context); $webhook->delete(); $webhook_id = false; update_option(static::DONATIONS_WEBHOOK_ID_KEY, $webhook_id); }
+
+//        }
+//
+//        if( !$webhook_id ) { // Create the webhook anew
+//
+//            $webhook = new \PayPal\Api\Webhook();
+//            $webhook->setUrl(home_url('/leyka/service/paypal/update-donation'));
+//
+//            foreach($webhook_event_types_needed as &$event_type) {
+//                $event_type = new \PayPal\Api\WebhookEventType('{"name":"'.$event_type.'"}');
+//            }
+//            if($webhook_event_types_needed) { // Update the webhook to add subscriptions on $webhook_event_types_needed
+//                $webhook->setEventTypes($webhook_event_types_needed);
+//            }
+//
+//            update_option(static::DONATIONS_WEBHOOK_ID_KEY, $webhook->create($api_context)->getId());
+//
+//        }
+        // Single & recurring donations handling webhook - END
+
+        // Recurring subscriptions handling webhook:
+//        $webhook_id = get_option(static::RECURRING_SUBSCRIPTION_WEBHOOK_ID_KEY);
+//        $webhook_event_types_needed = array('BILLING.SUBSCRIPTION.CREATED', 'BILLING.SUBSCRIPTION.CANCELLED',);
+//        if($webhook_id) { // Webhook may be already set
+//        }
+
+//        $webhook = new \PayPal\Api\Webhook();
+//        $webhook->setUrl(home_url('/leyka/service/paypal/update-recurring-subscription'));
+        // Recurring subscriptions handling webhook - END
 
     }
 
@@ -234,11 +300,23 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
             require_once LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
 
-            $api_context = new \PayPal\Rest\ApiContext(new \PayPal\Auth\OAuthTokenCredential(
-                leyka_options()->opt('paypal_client_id'),
-                leyka_options()->opt('paypal_client_secret')
-            ));
-//            $api_context->setConfig(array('mode' => leyka_options()->opt('paypal_test_mode') ? 'sandbox' : 'live'));
+            try {
+                $api_context = $this->_get_api_context();
+            } catch(Exception $ex) { // Gateway connection refused
+
+                $donation->add_gateway_response($ex);
+
+                leyka()->add_payment_form_error(new WP_Error(
+                    $this->_id.'-'.$ex->getCode(),
+                    sprintf(__('Error: %s', 'leyka'), $ex->getMessage().'<pre>'.print_r($ex, 1).'</pre>')
+                ));
+
+                return;
+
+            }
+
+            // 0. Check if webhooks (gateway callbacks) are set correctly. If not, set them up:
+            $this->_create_webhooks($api_context); // WARNING: ATM the method is stub. Implement it in the future.
 
             if(empty($form_data['leyka_recurring'])) { // Single donation
 
@@ -575,14 +653,15 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         switch($call_type) {
 
             // (New) REST API "callbacks":
-            case 'process-donation': // Complete the payment
+            case 'process-donation': // Pseudo-callback to complete the payment
 
                 require LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
 
-                $api_context = new \PayPal\Rest\ApiContext(new \PayPal\Auth\OAuthTokenCredential(
-                    leyka_options()->opt('paypal_client_id'),
-                    leyka_options()->opt('paypal_client_secret')
-                ));
+                try {
+                    $api_context = $this->_get_api_context();
+                } catch(Exception $ex) { // Gateway connection refused
+                    $this->_donation_error($ex->getMessage());
+                }
 
                 $_GET['paymentId'] = esc_sql($_GET['paymentId']);
                 $_GET['PayerID'] = esc_sql($_GET['PayerID']);
@@ -649,7 +728,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 }*/
                 break;
 
-            case 'process-init-recurring':
+            case 'process-init-recurring': // Pseudo-callback to complete the initial recurring payment
 
                 require LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
 
@@ -662,11 +741,11 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     $this->_donation_error(__("PayPal callback error: required parameters weren't given", 'leyka'));
                 }
 
-                $api_context = new \PayPal\Rest\ApiContext(new \PayPal\Auth\OAuthTokenCredential(
-                    leyka_options()->opt('paypal_client_id'),
-                    leyka_options()->opt('paypal_client_secret')
-                ));
-                // $api_context->setConfig(array('mode' => leyka_options()->opt('paypal_test_mode') ? 'sandbox' : 'live'));
+                try {
+                    $api_context = $this->_get_api_context();
+                } catch(Exception $ex) {
+                    $this->_donation_error($ex->getMessage());
+                }
 
                 try {
 
@@ -696,6 +775,10 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     $donation->paypal_billing_agreement_id = $agreement_id;
                     $donation->paypal_payment_token = $_GET['token'];
                     $donation->paypal_payer_id = $agreement->getPayer()->getPayerInfo()->getPayerId();
+
+//                    if($agreement->getState() == 'Pending') { /** @todo Check with PayPal if it's a needed check */
+//
+//                    }
 
                     // Search for init donation transaction to check it's status & save it's ID:
                     $transactions = \PayPal\Api\Agreement::searchTransactions(
@@ -737,7 +820,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 break;
 
-            // (Init recurring) Payment was cancelled by Donor on the gateway side:
+            // Pseudo-callbacks for the case when (init recurring) payment was cancelled by Donor on the gateway side:
             case 'cancel-donation':
             case 'cancel-init-recurring':
 
@@ -758,9 +841,17 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 wp_redirect($redirect_url);
                 exit;
 
-            case 'process-payment':
-            case 'process-payment-rest':
+            // True callback to update the existing (init recurring) payment state, or to add new recurring auto-payment:
+            case 'update-donation':
+            case 'update-donation-rest':
+                /** @todo Add the handling for the events: PAYMENT.SALE.COMPLETED, PAYMENT.SALE.DENIED, PAYMENT.SALE.PENDING, PAYMENT.SALE.REFUNDED, PAYMENT.SALE.REVERSED */
                 break;
+
+            case 'update-recurring-subscription':
+            case 'update-recurring-subscription-rest':
+            /** @todo Add the handling for the events: BILLING.SUBSCRIPTION.CREATED, BILLING.SUBSCRIPTION.CANCELLED */
+                break;
+            // (New) REST API "callbacks" - END
 
             // Classic (ExpressCheckout) API callbacks:
             case 'process_payment': // Do a payment itself
@@ -988,7 +1079,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                     $donation->add_gateway_response($result);
                     $this->_add_to_payment_log($donation, 'DoECPayment', $data, $result);
-                    wp_redirect(leyka_get_success_page_url($donation->campaign_id));
+                    wp_redirect(leyka_get_success_page_url());
 
                     // Do not fund a donation here! Wait for it's approval and IPN callback
 
@@ -1007,7 +1098,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     Leyka_Donation_Management::send_all_emails($donation->id);
 
                     $this->_add_to_payment_log($donation, 'DoECPayment', $data, $result);
-                    wp_redirect(leyka_get_success_page_url($donation->campaign_id));
+                    wp_redirect(leyka_get_success_page_url());
 
                 }
 
@@ -1248,7 +1339,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 __('Payer is verified:', 'leyka') => $payer->getStatus() === 'verified' ?
                     __('yes', 'leyka') : __('no', 'leyka'),
                 __('Payer name:', 'leyka') => $payer->getPayerInfo()->getFirstName().' '.$payer->getPayerInfo()->getLastName(),
-                __('Payer email', 'leyka') => $payer->getPayerInfo()->getEmail(),
+                __('Payer email:', 'leyka') => $payer->getPayerInfo()->getEmail(),
             );
 
         }
