@@ -148,3 +148,13 @@ register_activation_hook(__FILE__, array('Leyka', 'activate')); // Activation
 register_deactivation_hook(__FILE__, array('Leyka', 'deactivate')); // Deactivate
 
 leyka(); // All systems go
+
+//add_action('init', function(){
+//    if(isset($_GET['tst'])) {
+//        echo '<pre>'.print_r(get_transient('leyka_tmp_dbg'), 1).'</pre>';
+//        echo '<pre>'.print_r(get_transient('leyka_tmp_dbg_1'), 1).'</pre>';
+//
+//        delete_transient('leyka_tmp_dbg');
+//        delete_transient('leyka_tmp_dbg_1');
+//    }
+//});

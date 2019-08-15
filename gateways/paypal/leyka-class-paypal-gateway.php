@@ -752,7 +752,52 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
     }
 
-    protected function _handle_webhook_subscription(array $webhook_data) {
+    protected function _handle_webhook_subscription(array $webhook_data, $webhook_event) {
+
+        if(mb_stristr($webhook_event, 'BILLING.SUBSCRIPTION')) { // Auto-payments management callbacks
+
+            $init_recurring_donation = $this->_get_donation_by('paypal_billing_agreement_id', $webhook_data['id']);
+
+            if( !$init_recurring_donation ) {
+                return false;
+            }
+
+            $webhook_event = mb_strtolower(str_replace('BILLING.SUBSCRIPTION.', '', $webhook_event));
+            switch($webhook_event) {
+                case 'activated':
+                case 're-activated':
+                case 'renewed':
+                    $init_recurring_donation->recurring_is_active = true; break;
+                case 'cancelled':
+                case 'suspended':
+                case 'expired':
+                    $init_recurring_donation->recurring_is_active = false; break;
+                case 'updated':
+                    if(isset($webhook_data['status'])) {
+                        $init_recurring_donation->recurring_is_active = $webhook_data['status'] == 'active';
+                    }
+                    break;
+                default:
+            }
+
+        } else if(mb_stristr($webhook_event, 'BILLING_AGREEMENTS.AGREEMENT')) { // User-initiated management callbacks
+
+            $init_recurring_donation = $this->_get_donation_by('paypal_billing_agreement_id', $webhook_data['id']);
+
+            if( !$init_recurring_donation ) {
+                return false;
+            }
+
+            $webhook_event = mb_strtolower(str_replace('BILLING.SUBSCRIPTION.', '', $webhook_event));
+            switch($webhook_event) {
+                case 'cancelled':
+                    $init_recurring_donation->recurring_is_active = false; break;
+                default:
+            }
+
+        }
+
+        return true;
 
     }
 
@@ -977,6 +1022,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 try {
 
                     $headers = array_change_key_case(getallheaders(), CASE_UPPER);
+                    $body = file_get_contents('php://input');
+
+//                    set_transient('leyka_tmp_dbg', array('headers' => $headers, 'body' => $body,));
 
                     $signature_verification = new \PayPal\Api\VerifyWebhookSignature(array(
                         'authAlgo' => empty($headers['PAYPAL-AUTH-ALGO']) ? '' : $headers['PAYPAL-AUTH-ALGO'],
@@ -986,41 +1034,30 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                         'transmissionSig' => empty($headers['PAYPAL-TRANSMISSION-SIG']) ? '' : $headers['PAYPAL-TRANSMISSION-SIG'],
                         'transmissionTime' => empty($headers['PAYPAL-TRANSMISSION-TIME']) ?
                             '' : $headers['PAYPAL-TRANSMISSION-TIME'],
-                        'requestBody' => file_get_contents('php://input'),
+                        'requestBody' => $body,
                     ));
 //                    $request = clone $signature_verification; // Check if it's needed
-//
-//                    $signature_verification->setAuthAlgo($headers['PAYPAL-AUTH-ALGO']);
-//                    $signature_verification->setTransmissionId($headers['PAYPAL-TRANSMISSION-ID']);
-//                    $signature_verification->setCertUrl($headers['PAYPAL-CERT-URL']);
-//                    $signature_verification->setWebhookId("9XL90610J3647323C"); // Note that the Webhook ID must be a currently valid Webhook that you created with your client ID/secret.
-//                    $signature_verification->setTransmissionSig($headers['PAYPAL-TRANSMISSION-SIG']);
-//                    $signature_verification->setTransmissionTime($headers['PAYPAL-TRANSMISSION-TIME']);
-//                    $signature_verification->setRequestBody($body);
 
                     /** @var \PayPal\Api\VerifyWebhookSignatureResponse $output */
                     $output = $signature_verification->post($api_context);
 
                 } catch (Exception $ex) {
-
-                    echo '<pre>'.print_r($ex, 1).'</pre>';
                     /** @todo Log the error somehow... */ exit(2);
                 }
 
                 if($output->getVerificationStatus() !== 'SUCCESS') {
+                    set_transient('leyka_tmp_dbg', array('verification status IS NOT success :(' => $output->getVerificationStatus(),));
                     /** @todo Log the error somehow... */ exit(3);
                 }
 
                 $response = json_decode($signature_verification->toJSON(), true); // json_decode($request->toJSON(), true)
+                $response = $response['webhook_event'];
 
                 if(empty($response['event_type']) || empty($response['resource'])) {
-                    // $response['webhook_event']['resource']['event_type']
                     /** @todo Log the error somehow... */ exit(4);
                 }
 
 //                $output = json_decode($output->toJSON(), true); // Check if it's needed
-
-//                echo '<pre>'.print_r($response, 1).'</pre>';
 
                 switch($response['event_type']) {
                     case 'PAYMENT.SALE.COMPLETED':
@@ -1036,7 +1073,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     case 'BILLING.SUBSCRIPTION.SUSPENDED':
                     case 'BILLING.SUBSCRIPTION.RE-ACTIVATED':
                     case 'BILLING.SUBSCRIPTION.UPDATED':
-                        $this->_handle_webhook_subscription($response['resource']);
+                        $this->_handle_webhook_subscription($response['resource'], $response['event_type']);
                         // subscription canceled: agreement id = $response['webhook_event']['resource']['id']
                         break;
                 }
