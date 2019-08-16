@@ -1198,7 +1198,22 @@ class Leyka_Donation_Management {
                 foreach($donation->gateway_response_formatted as $name => $value) {?>
 
                 <div class="leyka-ddata-string">
-                    <span class="label"><?php echo $name;?></span> <?php echo mb_strtolower($value);?>
+                    <span class="label"><?php echo rtrim(mb_ucfirst($name), ':');?>:</span>
+                    <?php if(is_array($value)) {?>
+                        <ul class="leyka-sub-values-list">
+                        <?php foreach($value as $key => $sub_value) {
+
+                            if(is_array($sub_value) || is_object($sub_value)) {
+                                continue;
+                            }?>
+
+                            <li><?php echo mb_ucfirst($key).': '.$sub_value;?></li>
+
+                        <?php }?>
+                        </ul>
+                    <?php } else {
+                        echo $value;
+                    }?>
                 </div>
 
             <?php }

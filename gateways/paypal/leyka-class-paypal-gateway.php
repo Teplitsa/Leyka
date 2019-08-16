@@ -247,49 +247,10 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
      * @todo Implement & test the method.
      */
     protected function _create_webhooks(PayPal\Rest\ApiContext $api_context) {
-
-        // Single & recurring donations handling webhook:
-//        $webhook_id = get_option(static::DONATIONS_WEBHOOK_ID_KEY);
-//        $webhook_event_types_needed = array('PAYMENT.SALE.COMPLETED', 'PAYMENT.SALE.DENIED', 'PAYMENT.SALE.PENDING', 'PAYMENT.SALE.REFUNDED', 'PAYMENT.SALE.REVERSED',);
-//        $webhook_event_types_active = array();
-//
-//        if($webhook_id) { // Webhook may be already set
-
-//            $event_types_active = \PayPal\Api\WebhookEventType::subscribedEventTypes($webhook_id, $api_context);
-
-            /** @todo Check if all webhook events are subscribed. If not, delete & re-create it with all needed events: */
-            // foreach($event_types_active as $event_type_active) { $webhook_event_types_active[] = $event_type_active; }
-            // if($webhook_event_types_needed != $webhook_event_types_active) { $webhook = \PayPal\Api\Webhook::get($webhook_id, $api_context); $webhook->delete(); $webhook_id = false; update_option(static::DONATIONS_WEBHOOK_ID_KEY, $webhook_id); }
-
-//        }
-//
-//        if( !$webhook_id ) { // Create the webhook anew
-//
-//            $webhook = new \PayPal\Api\Webhook();
-//            $webhook->setUrl(home_url('/leyka/service/paypal/update-donation'));
-//
-//            foreach($webhook_event_types_needed as &$event_type) {
-//                $event_type = new \PayPal\Api\WebhookEventType('{"name":"'.$event_type.'"}');
-//            }
-//            if($webhook_event_types_needed) { // Update the webhook to add subscriptions on $webhook_event_types_needed
-//                $webhook->setEventTypes($webhook_event_types_needed);
-//            }
-//
-//            update_option(static::DONATIONS_WEBHOOK_ID_KEY, $webhook->create($api_context)->getId());
-//
-//        }
-        // Single & recurring donations handling webhook - END
-
-        // Recurring subscriptions handling webhook:
-//        $webhook_id = get_option(static::RECURRING_SUBSCRIPTION_WEBHOOK_ID_KEY);
-//        $webhook_event_types_needed = array('BILLING.SUBSCRIPTION.CREATED', 'BILLING.SUBSCRIPTION.CANCELLED',);
-//        if($webhook_id) { // Webhook may be already set
-//        }
-
-//        $webhook = new \PayPal\Api\Webhook();
-//        $webhook->setUrl(home_url('/leyka/service/paypal/update-recurring-subscription'));
-        // Recurring subscriptions handling webhook - END
-
+        /**
+         * @todo Use PayPal REST API webhooks management to check for existing webhook(-s) and create them if needed.
+         * http://paypal.github.io/PayPal-PHP-SDK/sample/#notifications
+         */
     }
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
@@ -321,7 +282,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             }
 
             // 0. Check if webhooks (gateway callbacks) are set correctly. If not, set them up:
-            $this->_create_webhooks($api_context); // WARNING: ATM the method is a stub. Implement it in the future.
+            $this->_create_webhooks($api_context);
 
             if(empty($form_data['leyka_recurring'])) { // Single donation
 
@@ -680,7 +641,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
         $webhook_event = mb_strtolower(str_replace('PAYMENT.SALE.', '', $webhook_event));
 
-        if(isset($webhook_data['parent_payment'])) { // Single payment webhook
+        if(isset($webhook_data['parent_payment'])) { // Single payments webhook
 
             if(empty($webhook_data['state'])) {
                 return false;
@@ -694,7 +655,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             $this->_handle_webhook_donation($donation, $webhook_event);
             $donation->add_gateway_response($webhook_data);
 
-        } else if(isset($webhook_data['billing_agreement_id'])) { // Init or auto recurring payment webhook
+        } else if(isset($webhook_data['billing_agreement_id'])) { // Recurring (Init or auto) payments webhook
 
             $init_recurring_donation = $this->_get_donation_by(
                 'paypal_billing_agreement_id',
@@ -940,42 +901,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     $donation->paypal_payment_token = $_GET['token'];
                     $donation->paypal_payer_id = $agreement->getPayer()->getPayerInfo()->getPayerId();
 
-//                    if($agreement->getState() == 'Pending') { /** @todo Check with PayPal if it's a needed check */
-//
-//                    }
-
-                    // Search for init donation transaction to check it's status & save it's ID:
-                    $transactions = \PayPal\Api\Agreement::searchTransactions(
-                        $agreement_id,
-                        array( // Alas, the params are mandatory
-                            'start_date' => date('Y-m-d', strtotime('-1 day')),
-                            'end_date' => date('Y-m-d', strtotime('+1 day'))
-                        ),
-                        $api_context
-                    )->getAgreementTransactionList();
-
-                    $is_success = false;
-                    foreach($transactions as $transaction) {
-                        if(
-                            $transaction->getTransactionId() != $agreement_id
-                            && $transaction->getStatus() == 'Completed'
-                            && $donation->status !== 'funded'
-                        ) {
-
-                            $donation->paypal_payment_id = $transaction->getTransactionId();
-                            $donation->status = 'funded';
-
-                            $donation->recurring_is_active = true;
-                            $donation->add_gateway_response($agreement);
-
-                            Leyka_Donation_Management::send_all_emails($donation->id);
-
-                            $is_success = true;
-
-                        }
-                    }
-
-                    wp_redirect($is_success ? leyka_get_success_page_url() : leyka_get_failure_page_url());
+                    wp_redirect(leyka_get_success_page_url());
                     exit;
 
                 } catch(Exception $ex) {
@@ -1036,7 +962,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                             '' : $headers['PAYPAL-TRANSMISSION-TIME'],
                         'requestBody' => $body,
                     ));
-//                    $request = clone $signature_verification; // Check if it's needed
 
                     /** @var \PayPal\Api\VerifyWebhookSignatureResponse $output */
                     $output = $signature_verification->post($api_context);
@@ -1046,18 +971,16 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 }
 
                 if($output->getVerificationStatus() !== 'SUCCESS') {
-                    set_transient('leyka_tmp_dbg', array('verification status IS NOT success :(' => $output->getVerificationStatus(),));
+//                    set_transient('leyka_tmp_dbg', array('verification status IS NOT success :(' => $output->getVerificationStatus(),));
                     /** @todo Log the error somehow... */ exit(3);
                 }
 
-                $response = json_decode($signature_verification->toJSON(), true); // json_decode($request->toJSON(), true)
+                $response = json_decode($signature_verification->toJSON(), true);
                 $response = $response['webhook_event'];
 
                 if(empty($response['event_type']) || empty($response['resource'])) {
                     /** @todo Log the error somehow... */ exit(4);
                 }
-
-//                $output = json_decode($output->toJSON(), true); // Check if it's needed
 
                 switch($response['event_type']) {
                     case 'PAYMENT.SALE.COMPLETED':
@@ -1074,8 +997,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     case 'BILLING.SUBSCRIPTION.RE-ACTIVATED':
                     case 'BILLING.SUBSCRIPTION.UPDATED':
                         $this->_handle_webhook_subscription($response['resource'], $response['event_type']);
-                        // subscription canceled: agreement id = $response['webhook_event']['resource']['id']
                         break;
+
+                    default:
                 }
 
                 break;
@@ -1623,7 +1547,16 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 <?php }?>
             </div>
 
-            <?php if($donation->type === 'rebill') {?>
+            <?php if($donation->type === 'rebill') {
+
+                $init_recurring_donation = $donation->init_recurring_donation;?>
+
+            <div class="recurring-is-active-field">
+                <label><?php _e('Recurring subscription is active', 'leyka');?>:</label>
+                <div class="leyka-ddata-field">
+                    <?php echo $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka'); ?>
+                </div>
+            </div>
 
             <label><?php _e('PayPal Billing Plan ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">

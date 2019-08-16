@@ -507,7 +507,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             <?php $init_recurring_donation = $donation->init_recurring_donation;?>
 
             <div class="recurring-is-active-field">
-                <label for="yandex-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka');?>:</label>
+                <label><?php _e('Recurring subscription is active', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
                     <?php echo $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka'); ?>
                 </div>
