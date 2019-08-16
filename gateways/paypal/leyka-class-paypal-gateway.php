@@ -145,6 +145,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
      */
     protected function _get_api_context() {
 
+        require_once LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
+
         $api_context = new \PayPal\Rest\ApiContext(new \PayPal\Auth\OAuthTokenCredential(
             leyka_options()->opt('paypal_client_id'),
             leyka_options()->opt('paypal_client_secret')
@@ -263,8 +265,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         }
 
         if(leyka_options()->opt('paypal_rest_api')) { // Payment via REST API
-
-            require_once LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
 
             try {
                 $api_context = $this->_get_api_context();
@@ -769,8 +769,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             // (New) REST API "callbacks":
             case 'process-donation': // Pseudo-callback to complete the payment
 
-                require LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
-
                 try {
                     $api_context = $this->_get_api_context();
                 } catch(Exception $ex) { // Gateway connection refused
@@ -855,8 +853,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
             case 'process-init-recurring': // Pseudo-callback to complete the initial recurring payment
 
-                require LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
-
                 // 3. Execute the Billing Agreement (BA) using the Token sent by PayPal.
                 // When BA is executed, get it's Donation by the Billing Plan ID saved earlier, and turn it to "funded".
 
@@ -936,8 +932,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             // - To update the existing payments state (incl. init recurring payments), or to add new recurring auto-payment: PAYMENT.SALE.COMPLETED, PAYMENT.SALE.DENIED, PAYMENT.SALE.PENDING, PAYMENT.SALE.REFUNDED, PAYMENT.SALE.REVERSED
             // - To activate/deactivate recurring subscriptions: BILLING.SUBSCRIPTION.CREATED, BILLING.SUBSCRIPTION.CANCELLED
             case 'handle-webhook':
-
-                require LEYKA_PLUGIN_DIR.'gateways/paypal/lib/autoload.php';
 
                 try {
                     $api_context = $this->_get_api_context();
@@ -1393,6 +1387,59 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
     }
 
+    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation $donation) {
+
+        $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($donation);
+        $cancelling_url = (get_option('permalink_structure') ?
+                home_url("leyka/service/cancel_recurring/{$donation->id}") :
+                home_url("?page=leyka/service/cancel_recurring/{$donation->id}"))
+            .'/'.md5($donation->id.'_'.$init_recurring_donation->id.'_leyka_cancel_recurring_subscription');
+
+        return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
+
+    }
+
+    public function cancel_recurring_subscription(Leyka_Donation $donation) {
+
+        if($donation->type !== 'rebill') {
+            die();
+        }
+
+        try {
+            $api_context = $this->_get_api_context();
+        } catch(Exception $ex) { // Gateway connection refused
+            /** @todo Log the error somehow... */ exit(1);
+        }
+
+        $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($donation);
+
+        $recurring_manual_cancel_link = 'https://www.paypal.com/myaccount/autopay/';
+
+        if( !$init_recurring_donation || !$init_recurring_donation->paypal_billing_agreement_id ) {
+            die(sprintf(__('<strong>Error:</strong> cannot find recurring subscription data for donation #%d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
+        }
+
+        $agreement = new \PayPal\Api\Agreement();
+        $agreement->setId($init_recurring_donation->paypal_billing_agreement_id);
+
+        $agreement_state_descriptor = new \PayPal\Api\AgreementStateDescriptor();
+        $agreement_state_descriptor->setNote(__("Recurring donations cancelling by the Donor's decision", 'leyka'));
+
+        try {
+
+            $agreement->cancel($agreement_state_descriptor, $api_context);
+            $init_recurring_donation->recurring_is_active = false;
+
+        } catch(Exception $ex) {
+            die(sprintf(__('<strong>Error:</strong> we cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
+        }
+
+        header('Content-type: text/html; charset=utf-8');
+
+        die(__('Recurring subscription cancelled.', 'leyka'));
+
+    }
+
     public function enqueue_gateway_scripts() {
 
         if( !Leyka_Paypal_All::get_instance()->active ) {
@@ -1697,15 +1744,28 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         switch($paypal_field) {
             case 'payment_id':
             case 'pp_payment_id':
-            case 'paypal_payment_id': $paypal_field = '_paypal_payment_id'; break;
+            case 'paypal_payment_id':
+                $paypal_field = '_paypal_payment_id';
+                break;
+
             case 'token':
             case 'pp_token':
             case 'pp_payment_token':
             case 'paypal_token':
-            case 'paypal_payment_token': $paypal_field = '_paypal_token'; break;
+            case 'paypal_payment_token':
+                $paypal_field = '_paypal_token';
+                break;
 
-            case 'paypal_billing_plan_id': $paypal_field = '_paypal_billing_plan_id'; break;
-            case 'paypal_billing_agreement_id': $paypal_field = '_paypal_billing_agreement_id'; break;
+            case 'billing_plan_id':
+            case 'paypal_billing_plan_id':
+                $paypal_field = '_paypal_billing_plan_id';
+                break;
+
+            case 'billing_agreement_id':
+            case 'paypal_billing_agreement_id':
+                $paypal_field = '_paypal_billing_agreement_id';
+                break;
+
             default:
                 $paypal_field = false;
         }

@@ -321,22 +321,21 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     }
 
-    /** @todo The method is ready for testing. But it's excluded from the master code until all other recurring gateways will have it's implementation (for the universality sake). */
-//    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation $donation) {
-//
-//        $init_recurrent_donation = Leyka_Donation::get_init_recurring_donation($donation);
-//        $cancelling_url = (get_option('permalink_structure') ?
-//                home_url("leyka/service/cancel_recurring/{$donation->id}") :
-//                home_url("?page=leyka/service/cancel_recurring/{$donation->id}"))
-//            .'/'.md5($donation->id.'_'.$init_recurrent_donation->id.'_leyka_cancel_recurring_subscription');
-//
-//        return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
-//
-//    }
+    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation $donation) {
+
+        $init_recurrent_donation = Leyka_Donation::get_init_recurring_donation($donation);
+        $cancelling_url = (get_option('permalink_structure') ?
+                home_url("leyka/service/cancel_recurring/{$donation->id}") :
+                home_url("?page=leyka/service/cancel_recurring/{$donation->id}"))
+            .'/'.md5($donation->id.'_'.$init_recurrent_donation->id.'_leyka_cancel_recurring_subscription');
+
+        return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
+
+    }
 
     public function cancel_recurring_subscription(Leyka_Donation $donation) {
 
-        if($donation->type != 'rebill') {
+        if($donation->type !== 'rebill') {
             die();
         }
 
