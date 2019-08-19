@@ -92,7 +92,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             ),
             'paypal_enable_recurring' => array(
                 'type' => 'checkbox',
-                'default' => true,
+                'default' => false,
                 'title' => __('Enable monthly recurring payments', 'leyka'),
                 'comment' => __('Check if you want to enable monthly recurring payments.', 'leyka'),
                 'short_format' => true,
@@ -620,9 +620,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
      * @param $donation Leyka_Donation
      * @param $paypal_payment_event string
      */
-    protected function _handle_webhook_donation(Leyka_Donation $donation, $paypal_payment_event) {
+    protected function _handle_webhook_donation_status(Leyka_Donation $donation, $paypal_payment_event) {
 
-        if($paypal_payment_event === 'completed' && $donation->status !== 'funded') {
+        if($paypal_payment_event === 'completed') {
 
             $donation->status = 'funded';
             Leyka_Donation_Management::send_all_emails($donation->id);
@@ -631,7 +631,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             $donation->status = 'failed';
         } else if($paypal_payment_event === 'refunded') {
             $donation->status = 'refunded';
-        } else {
+        } else if($paypal_payment_event !== 'completed') {
             $donation->status = 'submitted';
         }
 
@@ -652,7 +652,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 return false;
             }
 
-            $this->_handle_webhook_donation($donation, $webhook_event);
+            $this->_handle_webhook_donation_status($donation, $webhook_event);
             $donation->add_gateway_response($webhook_data);
 
         } else if(isset($webhook_data['billing_agreement_id'])) { // Recurring (Init or auto) payments webhook
@@ -671,15 +671,15 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 return false;
             }
 
-            // If webhook came in less than 5 days from init recurring donation, it belongs to it.
+            // If webhook came in less than 3 days from init recurring donation, it belongs to it.
             // Else, webhook is about recurring auto-payment:
-            if(absint($init_recurring_donation->date_timestamp - $webhook_data['create_time']) <= 60*60*24*5) { // Init payment
+            if(absint($init_recurring_donation->date_timestamp - $webhook_data['create_time']) <= 60*60*24*3) { // Init payment
 
                 if(empty($webhook_data['state'])) {
                     return false;
                 }
 
-                $this->_handle_webhook_donation($init_recurring_donation, $webhook_event);
+                $this->_handle_webhook_donation_status($init_recurring_donation, $webhook_event);
                 $init_recurring_donation->add_gateway_response($webhook_data);
 
                 $init_recurring_donation->recurring_is_active = true;
@@ -1431,6 +1431,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             $init_recurring_donation->recurring_is_active = false;
 
         } catch(Exception $ex) {
+//            echo '<pre>'.print_r($ex, 1).'</pre>';
             die(sprintf(__('<strong>Error:</strong> we cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
         }
 
