@@ -620,7 +620,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
      * @param $donation Leyka_Donation
      * @param $paypal_payment_event string
      */
-    protected function _handle_webhook_donation_status(Leyka_Donation $donation, $paypal_payment_event) {
+    protected function _handle_webhook_donation(Leyka_Donation $donation, $paypal_payment_event) {
 
         if($paypal_payment_event === 'completed') {
 
@@ -652,7 +652,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 return false;
             }
 
-            $this->_handle_webhook_donation_status($donation, $webhook_event);
+            $this->_handle_webhook_donation($donation, $webhook_event);
             $donation->add_gateway_response($webhook_data);
 
         } else if(isset($webhook_data['billing_agreement_id'])) { // Recurring (Init or auto) payments webhook
@@ -679,32 +679,59 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     return false;
                 }
 
-                $this->_handle_webhook_donation_status($init_recurring_donation, $webhook_event);
-                $init_recurring_donation->add_gateway_response($webhook_data);
+                $this->_handle_webhook_donation($init_recurring_donation, $webhook_event);
 
+                $init_recurring_donation->add_gateway_response($webhook_data);
                 $init_recurring_donation->recurring_is_active = true;
 
-            } else if(isset($webhook_data['state']) && $webhook_data['state'] === 'completed') { // Non-init recurring payment
+                if($webhook_event === 'completed' && !empty($webhook_data['id'])) {
+                    $init_recurring_donation->paypal_payment_id = $webhook_data['id']; // Sale ID, to handle the "refund" webhooks
+                }
 
-                $donation = Leyka_Donation::add(array(
-                    'force_insert' => true, // Turn off donation fields validation checks
-                    'status' => 'funded',
-                    'payment_type' => 'rebill',
-                    'campaign_id' => $init_recurring_donation->campaign_id,
-                    'donor_name' => $init_recurring_donation->donor_name,
-                    'donor_email' => $init_recurring_donation->donor_email,
-                    'amount' => $init_recurring_donation->amount,
-                    'currency' => $init_recurring_donation->currency,
-                    'gateway_id' => $init_recurring_donation->gateway_id,
-                    'payment_method_id' => $init_recurring_donation->pm_id,
-                ));
-                $donation = new Leyka_Donation($donation);
+            } else if(isset($webhook_data['state']) && $webhook_data['state'] === 'completed') { // Non-init recurring payments
 
-                $donation->init_recurring_donation_id = $init_recurring_donation->id;
-                $donation->payment_title = $init_recurring_donation->title;
+                if($webhook_event === 'completed') { // New non-init recurring donation
 
-                $donation->add_gateway_response($webhook_data);
+                    $donation = Leyka_Donation::add(array(
+                        'force_insert' => true, // Turn off donation fields validation checks
+                        'status' => 'funded',
+                        'payment_type' => 'rebill',
+                        'campaign_id' => $init_recurring_donation->campaign_id,
+                        'donor_name' => $init_recurring_donation->donor_name,
+                        'donor_email' => $init_recurring_donation->donor_email,
+                        'amount' => $init_recurring_donation->amount,
+                        'currency' => $init_recurring_donation->currency,
+                        'gateway_id' => $init_recurring_donation->gateway_id,
+                        'payment_method_id' => $init_recurring_donation->pm_id,
+                    ));
+                    $donation = new Leyka_Donation($donation);
 
+                    $donation->init_recurring_donation_id = $init_recurring_donation->id;
+                    $donation->payment_title = $init_recurring_donation->title;
+                    $donation->paypal_payment_id = $webhook_data['id']; // Sale ID
+
+                    $donation->add_gateway_response($webhook_data);
+
+                } else if($webhook_event === 'refunded' && !empty($webhook_data['sale_id'])) { // Non-init recurring - refund
+
+                    $donation = $this->_get_donation_by('paypal_payment_id', $webhook_data['sale_id']);
+                    if($donation) {
+                        $this->_handle_webhook_donation($donation, $webhook_event);
+                    }
+
+                }
+
+            }
+
+        } else if( !empty($webhook_data['sale_id']) ) { // Init recurring payment, refund webhook
+
+            if(empty($webhook_data['state']) || $webhook_data['state'] !== 'completed') {
+                return false;
+            }
+
+            $donation = $this->_get_donation_by('paypal_payment_id', $webhook_data['sale_id']);
+            if($donation) {
+                $this->_handle_webhook_donation($donation, $webhook_event);
             }
 
         }
