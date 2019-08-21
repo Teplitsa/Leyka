@@ -655,6 +655,10 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             $this->_handle_webhook_donation($donation, $webhook_event);
             $donation->add_gateway_response($webhook_data);
 
+            if($webhook_event === 'completed' && !empty($webhook_data['id'])) {
+                $donation->paypal_sale_id = $webhook_data['id']; // Sale ID, to handle the "refund" webhooks
+            }
+
         } else if(isset($webhook_data['billing_agreement_id'])) { // Recurring (Init or auto) payments webhook
 
             $init_recurring_donation = $this->_get_donation_by(
@@ -685,7 +689,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 $init_recurring_donation->recurring_is_active = true;
 
                 if($webhook_event === 'completed' && !empty($webhook_data['id'])) {
-                    $init_recurring_donation->paypal_payment_id = $webhook_data['id']; // Sale ID, to handle the "refund" webhooks
+                    $init_recurring_donation->paypal_sale_id = $webhook_data['id']; // Sale ID, to handle the "refund" webhooks
                 }
 
             } else if(isset($webhook_data['state']) && $webhook_data['state'] === 'completed') { // Non-init recurring payments
@@ -708,13 +712,13 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                     $donation->init_recurring_donation_id = $init_recurring_donation->id;
                     $donation->payment_title = $init_recurring_donation->title;
-                    $donation->paypal_payment_id = $webhook_data['id']; // Sale ID
+                    $donation->paypal_sale_id = $webhook_data['id']; // Sale ID
 
                     $donation->add_gateway_response($webhook_data);
 
                 } else if($webhook_event === 'refunded' && !empty($webhook_data['sale_id'])) { // Non-init recurring - refund
 
-                    $donation = $this->_get_donation_by('paypal_payment_id', $webhook_data['sale_id']);
+                    $donation = $this->_get_donation_by('paypal_sale_id', $webhook_data['sale_id']);
                     if($donation) {
                         $this->_handle_webhook_donation($donation, $webhook_event);
                     }
@@ -729,7 +733,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 return false;
             }
 
-            $donation = $this->_get_donation_by('paypal_payment_id', $webhook_data['sale_id']);
+            $donation = $this->_get_donation_by('paypal_sale_id', $webhook_data['sale_id']);
             if($donation) {
                 $this->_handle_webhook_donation($donation, $webhook_event);
             }
@@ -1622,6 +1626,16 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 <?php }?>
             </div>
 
+            <label><?php _e('PayPal Sale ID', 'leyka');?>:</label>
+            <div class="leyka-ddata-field">
+
+                <?php if($donation->type === 'correction') {?>
+                    <input type="text" id="paypal-sale-id" name="paypal-token" placeholder="<?php _e('Enter PayPal Sale ID', 'leyka');?>" value="<?php echo $donation->paypal_sale_id;?>">
+                <?php } else {?>
+                    <span class="fake-input"><?php echo $donation->paypal_sale_id;?></span>
+                <?php }?>
+            </div>
+
             <?php if($donation->type === 'rebill') {
 
                 $init_recurring_donation = $donation->init_recurring_donation;?>
@@ -1685,6 +1699,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             case 'last_ipn_transaction_id': return get_post_meta($donation->id, '_paypal_ipn_txn_id', true);
 
             // Only for the REST API:
+            case 'paypal_sale_id': return get_post_meta($donation->id, '_paypal_sale_id', true); break;
             case 'paypal_billing_plan_id': return get_post_meta($donation->id, '_paypal_billing_plan_id', true); break;
             case 'paypal_billing_agreement_id': return get_post_meta($donation->id, '_paypal_billing_agreement_id', true); break;
 
@@ -1713,6 +1728,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             case 'last_ipn_transaction_id': update_post_meta($donation->id, '_paypal_ipn_txn_id', !!$value); break;
 
             // Only for the REST API:
+            case 'paypal_sale_id': update_post_meta($donation->id, '_paypal_sale_id', $value); break;
             case 'paypal_billing_plan_id': update_post_meta($donation->id, '_paypal_billing_plan_id', $value); break;
             case 'paypal_billing_agreement_id': update_post_meta($donation->id, '_paypal_billing_agreement_id', $value); break;
             default:
@@ -1738,6 +1754,10 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         }
 
         // Only for the REST API:
+        if(isset($_POST['paypal-sale-id']) && $donation->paypal_sale_id !== $_POST['paypal-sale-id']) {
+            $donation->paypal_sale_id = $_POST['paypal-sale-id'];
+        }
+
         if(isset($_POST['paypal-billing-plan-id']) && $donation->paypal_billing_plan_id !== $_POST['paypal-billing-plan-id']) {
             $donation->paypal_billing_plan_id = $_POST['paypal-billing-plan-id'];
         }
@@ -1756,6 +1776,14 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
         if( !empty($donation_params['paypal_payment_id']) ) {
             update_post_meta($donation_id, '_paypal_payment_id', $donation_params['paypal_payment_id']);
+        }
+
+        if( !empty($donation_params['paypal_sale_id']) ) {
+            update_post_meta($donation_id, '_paypal_sale_id', $donation_params['paypal_sale_id']);
+        }
+
+        if( !empty($donation_params['paypal_billing_plan_id']) ) {
+            update_post_meta($donation_id, '_paypal_billing_plan_id', $donation_params['paypal_billing_plan_id']);
         }
 
         if( !empty($donation_params['paypal_billing_agreement_id']) ) {
@@ -1782,6 +1810,12 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             case 'paypal_token':
             case 'paypal_payment_token':
                 $paypal_field = '_paypal_token';
+                break;
+
+            case 'sale_id':
+            case 'pp_sale_id':
+            case 'paypal_sale_id':
+                $paypal_field = '_paypal_sale_id';
                 break;
 
             case 'billing_plan_id':
