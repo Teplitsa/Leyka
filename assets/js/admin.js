@@ -1255,7 +1255,7 @@ jQuery(document).ready(function($){
 
             $loader.hide();
 
-            if(response && response === 0) {
+            if(response === '0') {
                 $message_ok.fadeIn(100);
             } else {
                 $message_error.fadeIn(100);
