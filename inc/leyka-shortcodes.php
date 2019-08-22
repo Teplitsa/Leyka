@@ -215,20 +215,20 @@ add_shortcode('leyka_payment_form', 'leyka_payment_form_screen');
 add_shortcode('leyka_campaign_form', 'leyka_payment_form_screen');
 function leyka_payment_form_screen($atts) {
 
+    $atts = shortcode_atts(array('id' => false, 'template' => null, 'show_finished' => 1), $atts);
+
     $campaign_id = !empty($atts['id']) ? (int)$atts['id'] : get_post()->ID;
     $campaign = leyka_get_validated_campaign($campaign_id);
 
     if( !$campaign ) {
         return is_super_admin() ? leyka_get_wrong_campaign_message($campaign) : '';
-    } else if($campaign->is_finished && !$atts['show_finished']) {
+    } else if($campaign->is_finished && empty($atts['show_finished'])) {
         return '';
     }
 
     if($campaign->template === 'revo') {
         return leyka_inline_campaign($atts);
     }
-
-    $atts = shortcode_atts(array('id' => false, 'template' => null,), $atts);
 
     $campaign = leyka_get_validated_campaign($atts['id']);
 
@@ -238,7 +238,7 @@ function leyka_payment_form_screen($atts) {
 
 function leyka_get_payment_form($campaign = null, $args = array()) {
 
-    $args = wp_parse_args($args, array('template'  => null,));
+    $args = wp_parse_args($args, array('template' => null,));
 
     if( !$campaign ) {
         $campaign = get_post();
