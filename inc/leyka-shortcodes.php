@@ -292,10 +292,10 @@ function leyka_get_donors_list_per_page() {
 function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
 
     $args = wp_parse_args($args, array(
-        'num'          => leyka_get_donors_list_per_page(),
+        'num' => leyka_get_donors_list_per_page(),
         'show_purpose' => 1,
-        'show_name'    => 1,
-        'show_date'    => 1,
+        'show_name' => 1,
+        'show_date' => 1,
         'show_donation_comments' => false, // leyka_options()->opt('show_donation_comments_in_frontend'),
     ));
 
@@ -308,23 +308,13 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
         'post_type' => Leyka_Donation_Management::$post_type,
         'post_status' => 'funded',
         'posts_per_page' => $args['num'],
-        'meta_query' => array(
-            array(
-                'key'     => 'leyka_donation_amount',
-                'value'   => 0,
-                'compare' => '!=',
-                'type'    => 'NUMERIC'
-            )
-        )
+        'meta_query' => array(array('key' => 'leyka_donation_amount', 'value' => 0, 'compare' => '!=', 'type' => 'NUMERIC'))
     );
 
-    if($campaign_id !== 'all') {
+    if($campaign_id && $campaign_id !== 'all') {
 
         $d_args['meta_query']['relation'] = 'AND';
-        $d_args['meta_query'][] = array(
-            'key'   => 'leyka_campaign_id',
-            'value' => $campaign_id
-        );
+        $d_args['meta_query'][] = array('key' => 'leyka_campaign_id', 'value' => $campaign_id,);
 
     }
 
@@ -413,9 +403,7 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
 
 }
 
-/**
- * Terms of Service shortcode
- **/
+/** Terms of Service shortcode. */
 add_shortcode('leyka_service_terms_text', 'leyka_get_terms_text');
 function leyka_get_terms_text() {
     return apply_filters('leyka_terms_of_service_text', leyka_options()->opt('terms_of_service_text'));

@@ -134,14 +134,14 @@ if( !$gateways_dir ) {
 
 }
 
-if(leyka()->opt('donor_accounts_available')) {
+if(leyka_options()->opt('donor_accounts_available')) {
     require_once(LEYKA_PLUGIN_DIR.'templates/account/template-tags.php');
 }
 
 function leyka_load_plugin_textdomain() {
     load_plugin_textdomain('leyka', false, basename(dirname(__FILE__)).'/languages/');
 }
-add_action( 'plugins_loaded', 'leyka_load_plugin_textdomain' );
+add_action('plugins_loaded', 'leyka_load_plugin_textdomain');
 
 register_activation_hook(__FILE__, array('Leyka', 'activate')); // Activation
 //add_action('plugins_loaded', array('Leyka', 'activate')); // Any update needed
