@@ -232,8 +232,9 @@ class Leyka extends Leyka_Singleton {
 
                         $campaign = get_posts(array(
                             'post_type' => Leyka_Campaign_Management::$post_type,
-                            'name' => get_query_var('leyka_campaign_filter'))
-                        );
+                            'name' => get_query_var('leyka_campaign_filter'),
+                            'posts_per_page' => 1,
+                        ));
                         if( !$campaign ) {
                             return;
                         }

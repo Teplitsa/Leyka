@@ -511,12 +511,12 @@ techMessage="'.$tech_message.'"/>');
 
     public function cancel_recurring_subscription(Leyka_Donation_Base $donation) {
 
-        if($donation->type == 'rebill') {
-
-            $init_recurring_donation = Leyka_Donation_Base::get_init_recurring_donation($donation);
-            $init_recurring_donation->recurring_is_active = false;
-
+        if($donation->type !== 'rebill') {
+            die();
         }
+
+        $init_recurring_donation = Leyka_Donation_Base::get_init_recurring_donation($donation);
+        $init_recurring_donation->recurring_is_active = false;
 
         header('Content-type: text/html; charset=utf-8');
 

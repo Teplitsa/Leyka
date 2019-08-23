@@ -199,7 +199,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                 if(empty($_POST['InvoiceId'])) { // Non-init recurring donation
 
-                    if( !$this->getInitRecurringDonation($_POST['SubscriptionId']) ) {
+                    if( !$this->get_init_recurrent_donation($_POST['SubscriptionId']) ) {
                         die(json_encode(array(
                             'code' => '11',
                             'reason' => sprintf(
@@ -251,7 +251,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                         die(json_encode(array('code' => '13')));
                     }
 
-                    $init_recurring_donation = $this->getInitRecurringDonation($_POST['SubscriptionId']);
+                    $init_recurring_donation = $this->get_init_recurrent_donation($_POST['SubscriptionId']);
 
                     if( !$init_recurring_donation || is_wp_error($init_recurring_donation) ) {
                         /** @todo Send some email to the admin */
@@ -333,10 +333,21 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 //        return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
 //
 //    }
+    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) {
+
+        $init_recurrent_donation = Leyka_Donation::get_init_recurring_donation($donation);
+        $cancelling_url = (get_option('permalink_structure') ?
+                home_url("leyka/service/cancel_recurring/{$donation->id}") :
+                home_url("?page=leyka/service/cancel_recurring/{$donation->id}"))
+            .'/'.md5($donation->id.'_'.$init_recurrent_donation->id.'_leyka_cancel_recurring_subscription');
+
+        return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
+
+    }
 
     public function cancel_recurring_subscription(Leyka_Donation_Base $donation) {
 
-        if($donation->type != 'rebill') {
+        if($donation->type !== 'rebill') {
             die();
         }
 
@@ -407,7 +418,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     }
 
-    public function getInitRecurringDonation($recurring) {
+    public function get_init_recurrent_donation($recurring) {
 
         if(is_a($recurring, 'Leyka_Donation')) {
             $recurring = $recurring->recurring_id;
@@ -507,7 +518,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             <?php $init_recurring_donation = $donation->init_recurring_donation;?>
 
             <div class="recurring-is-active-field">
-                <label for="yandex-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka');?>:</label>
+                <label><?php _e('Recurring subscription is active', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
                     <?php echo $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka'); ?>
                 </div>
