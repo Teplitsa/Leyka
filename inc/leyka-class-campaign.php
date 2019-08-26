@@ -980,9 +980,12 @@ class Leyka_Campaign {
                         ($types_available ? reset($types_available) : 'single');
 
             case 'template':
+            case 'template_id':
             case 'campaign_template':
+            case 'campaign_template_id':
                 return $this->_campaign_meta['campaign_template'] === 'default' ?
                     leyka_options()->opt('donation_form_template') : $this->_campaign_meta['campaign_template'];
+
             case 'css':
             case 'campaign_css':
             case 'additional_css':
@@ -1064,8 +1067,19 @@ class Leyka_Campaign {
                 $this->_campaign_meta['target_reaching_mailout_errors'] = !!$value;
                 update_post_meta($this->_id, '_leyka_target_reaching_mailout_errors', !!$value);
                 break;
+
+            case 'template':
+            case 'template_id':
+                if( in_array($value, array_keys(leyka_get_form_templates_list())) ) {
+
+                    $this->_campaign_meta['campaign_template'] = $value;
+                    update_post_meta($this->_id, 'campaign_template', $value);
+
+                }
+                break;
             default:
         }
+
     }
 
     /**

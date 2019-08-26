@@ -3,6 +3,10 @@
 /** Save the basic site data in the plugin stats DB */
 function leyka_sync_plugin_stats_option() {
 
+    if( !leyka()->opt('plugin_stats_sync_enabled') ) { // Don't try to sync the plugin stats at all
+        return true;
+    }
+
     $stats_server_base_url = defined('LEYKA_DEBUG') && LEYKA_DEBUG ?
         rtrim(LEYKA_USAGE_STATS_DEV_SERVER_URL, '/') : rtrim(LEYKA_USAGE_STATS_PROD_SERVER_URL, '/');
 
@@ -58,7 +62,7 @@ function leyka_sync_plugin_stats_option() {
         'httpversion' => '1.1',
         'blocking' => true, // True for sync request, false otherwise
         'body' => $params,
-        'headers' => array('Authorization' => 'Basic '.base64_encode('leyka:kopeyka'),),
+        'headers' => array('Authorization' => 'Basic '.base64_encode('leyka:kopeyka'), 'Expect' => '',),
     ));
 
     if(is_wp_error($response)) {
