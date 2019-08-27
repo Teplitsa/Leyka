@@ -605,7 +605,7 @@ self::$_options_meta = array(
     ),
     'donation_form_template' => array(
         'type' => 'radio',
-        'default' => 'revo',
+        'default' => 'star',
         'title' => __('Select a default template for all your donation forms', 'leyka'),
         'description' => __('Select one of the form templates.', 'leyka'),
         'required' => true,
@@ -665,7 +665,6 @@ self::$_options_meta = array(
         'title' => __('Show a failure notification widget on the donation failure page', 'leyka'),
         'description' => __('Display a failure notification widget on the donation failure page', 'leyka'),
     ),
-//    'show_gtm_dataLayer_on_success'
     'use_gtm_ua_integration' => array(
         'type' => 'radio',
         'title' => __('Show the GTM dataLayer on the successful donation page', 'leyka'),
@@ -675,7 +674,6 @@ self::$_options_meta = array(
             'enchanced' => __('Use the GTM & UA enchanced e-commerce integration', 'leyka'),
         ),
         'default' => '-',
-        // 'comment' => __('', 'leyka'),
     ),
     'revo_template_slider_max_sum' => array(
         'type' => 'text',
@@ -1045,6 +1043,12 @@ self::$_options_meta = array(
         'default' => false,
         'title' => __('Demo mode on', 'leyka'),
         'comment' => __('Check to turn on the plugin demonstration mode. While in it, no emails will be sent to the payment gateways.', 'leyka'),
+        'short_format' => true,
+    ),
+    'plugin_stats_sync_enabled' => array(
+        'type' => 'checkbox',
+        'default' => true,
+        'title' => __('The plugin usage statistics data synchronization is on', 'leyka'),
         'short_format' => true,
     ),
 );
