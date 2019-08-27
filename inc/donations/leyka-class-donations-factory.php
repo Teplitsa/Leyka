@@ -4,7 +4,7 @@ abstract class Leyka_Donations_Factory extends Leyka_Singleton {
 
     protected static $_instance = null;
 
-    /** @todo Factory must be a donations objects data storage (an object cache pattern). */
+    /** @todo Factory should be a donations objects data storage (an object cache pattern). */
 
     /**
      * @return static
@@ -76,6 +76,8 @@ abstract class Leyka_Donations_Factory extends Leyka_Singleton {
      * @return integer|WP_Error An ID of the new donation, WP_Error object if there was an error in the process
      */
     abstract public function add_donation(array $params = array());
+
+    abstract public function delete_donation($donation_id, $force_delete = false);
 
     protected function _get_multiple_filter_values($values, array $possible_values_list) {
 
@@ -302,6 +304,10 @@ class Leyka_Posts_Donations_Factory extends Leyka_Donations_Factory {
         return Leyka_Donation_Post::add($params);
     }
 
+    public function delete_donation($donation_id, $force_delete = false) {
+        return !empty(wp_delete_post(absint($donation_id), !!$force_delete));
+    }
+
 }
 
 class Leyka_Separated_Donations_Factory extends Leyka_Donations_Factory {
@@ -406,7 +412,7 @@ class Leyka_Separated_Donations_Factory extends Leyka_Donations_Factory {
         if( !empty($params['get_single']) ) {
             $limit = ' LIMIT 0,1';
         } else if( !empty($params['page']) && (int)$params['page'] > 0 && (int)$params['results_limit'] > 0 ) {
-            $limit = ' LIMIT '.((int)$params['page']*(int)$params['results_limit']).','.(int)$params['results_limit'];
+            $limit = ' LIMIT '.(($params['page']-1)*(int)$params['results_limit']).','.(int)$params['results_limit'];
         } else if( !empty($params['results_limit']) && (int)$params['results_limit'] > 0 ) {
             $limit = ' LIMIT 0,'.(int)$params['results_limit'];
         }
@@ -492,7 +498,7 @@ class Leyka_Separated_Donations_Factory extends Leyka_Donations_Factory {
 
         }
 
-        if( !empty($params['orderby']) && in_array($params['orderby'], array('ID', 'date', 'amount', 'status')) ) {
+        if( !empty($params['orderby']) && $this->_is_orderable_by($params['orderby']) ) {
 
             $params['orderby'] = $params['orderby'] === 'date' ? 'd.`date_created`' : 'd.`'.$params['orderby'].'`';
             $params['order'] = empty($params['order']) || !in_array($params['order'], array('asc', 'desc')) ?
@@ -510,19 +516,36 @@ class Leyka_Separated_Donations_Factory extends Leyka_Donations_Factory {
         $limit = $limit ? $limit : '';
 
         $donations = array();
-        $query = $wpdb->prepare("SELECT d.`ID` FROM {$wpdb->prefix}leyka_donations d $joins $where $orderby $limit", array());
-//        echo '<pre>'.print_r($query, 1).'</pre>';
+        $query = "SELECT d.`ID` FROM {$wpdb->prefix}leyka_donations `d` $joins $where $orderby $limit";
 
-        foreach($wpdb->get_col($query) as $donation) {
-            $donations[] = $this->get_donation($donation->ID);
+        foreach($wpdb->get_col($query) as $donation_id) {
+            $donations[] = $this->get_donation($donation_id);
         }
 
         return $donations;
 
     }
 
+    protected function _is_orderable_by($param_name) {
+        return in_array(mb_strtolower($param_name), array('id', 'campaign_id', 'status', 'date', 'date_created', 'gateway_id', 'pm_id', 'amount', 'donor_name', 'donor_email'));
+    }
+
     public function add_donation(array $params = array()) {
         return Leyka_Donation_Separated::add($params);
+    }
+    
+    public function delete_donation($donation_id, $force_delete = false) {
+
+        global $wpdb;
+
+        /** @todo Implement $force_delete == false. Keep the original donation status in meta, then update the donation status to "trash" */
+//        if( !!$force_delete ) {
+        return $wpdb->delete($wpdb->prefix.'leyka_donations', array('ID' => absint($donation_id)));
+//        } else {
+//            $wpdb->update();
+//        }
+
+
     }
 
 }

@@ -120,56 +120,63 @@ if( !function_exists('leyka_get_admin_footer') ) {
 }
 
 if( !function_exists('leyka_show_admin_footer') ) {
-    function leyka_show_admin_footer($old_footer_html='') {
+    function leyka_show_admin_footer($old_footer_html = '') {
+
         $footer_class = '';
-        if(!empty($_GET['screen']) && strpos($_GET['screen'], 'wizard-') === 0) {
+        if( !empty($_GET['screen']) && strpos($_GET['screen'], 'wizard-') === 0 ) {
             $footer_class .= 'leyka-wizard-footer';
-        }
-        elseif(!empty($_GET['page']) && $_GET['page'] === 'leyka_settings' && empty($_GET['screen'])) {
+        } else if( !empty($_GET['page']) && $_GET['page'] === 'leyka_settings' && empty($_GET['screen']) ) {
             $footer_class .= 'leyka-settings-footer';
         }
 
         echo leyka_get_admin_footer($footer_class, $old_footer_html);
+
     }
 }
 
 if( !function_exists('leyka_show_admin_footer_on_default_pages') ) {
-    function leyka_show_admin_footer_on_default_pages($old_footer_html='') {
+    function leyka_show_admin_footer_on_default_pages($old_footer_html = '') {
+
         $screen = get_current_screen();
         if(false === stripos($screen->base, 'leyka') && false === stripos($screen->id, 'leyka')) {
             return $old_footer_html;
-        }
-        elseif( !empty($_GET['post_type']) && in_array($_GET['post_type'], array('leyka_donation', 'leyka_campaign')) ) {
+        } else if( !empty($_GET['post_type']) && in_array($_GET['post_type'], array('leyka_donation', 'leyka_campaign')) ) {
+            return leyka_get_admin_footer('', $old_footer_html);
+        } else if(isset($_GET['page']) && $_GET['page'] === 'leyka_donations') {
             return leyka_get_admin_footer('', $old_footer_html);
         }
+
+        return '';
+
     }
-    add_filter( 'admin_footer_text', 'leyka_show_admin_footer_on_default_pages', 20 );
+    add_filter('admin_footer_text', 'leyka_show_admin_footer_on_default_pages', 20);
 }
 
 if( !function_exists('leyka_admin_body_class') ) {
     function leyka_admin_body_class($classes) {
+
         $leyka_page_class = '';
 
-        if(!empty($_GET['screen']) && strpos($_GET['screen'], 'wizard-') === 0) {
+        if( !empty($_GET['screen']) && strpos($_GET['screen'], 'wizard-') === 0 ) {
             $leyka_page_class .= 'leyka-admin-wizard';
-        }
-        elseif(!empty($_GET['page']) && $_GET['page'] === 'leyka_settings' && empty($_GET['screen'])) {
+        } else if( !empty($_GET['page']) && $_GET['page'] === 'leyka_settings' && empty($_GET['screen']) ) {
             $leyka_page_class .= 'leyka-admin-settings';
-        }
-        elseif(!empty($_GET['page']) && $_GET['page'] === 'leyka' && empty($_GET['screen'])) {
+        } else if( !empty($_GET['page']) && $_GET['page'] === 'leyka' && empty($_GET['screen']) ) {
             $leyka_page_class .= 'leyka-admin-dashboard';
-        }
-        elseif(!empty($_GET['page']) && $_GET['page'] === 'leyka_donors' && empty($_GET['screen'])) {
+        } else if( !empty($_GET['page']) && $_GET['page'] === 'leyka_donors' && empty($_GET['screen']) ) {
             $leyka_page_class .= 'leyka-admin-donors-list';
-        }
-        elseif( (!empty($_GET['post_type']) && in_array($_GET['post_type'], array('leyka_donation', 'leyka_campaign')))
-            || (!empty($_GET['page']) && $_GET['page'] === 'leyka_feedback' && empty($_GET['screen']))) {
+        } else if(
+            ( !empty($_GET['post_type']) && in_array($_GET['post_type'], array('leyka_donation', 'leyka_campaign')) )
+            || ( !empty($_GET['page']) && $_GET['page'] === 'leyka_feedback' && empty($_GET['screen']))
+            || ( !empty($_GET['page']) && $_GET['page'] === 'leyka_donors' && empty($_GET['screen']) )
+        ) {
             $leyka_page_class .= 'leyka-admin-default';
         }
 
         return $classes . ' ' . $leyka_page_class . ' ';
+
     }
-    add_filter( 'admin_body_class', 'leyka_admin_body_class', 20 );
+    add_filter('admin_body_class', 'leyka_admin_body_class', 20);
 }
 
 if( !function_exists('leyka_admin_get_donor_comment_table_row') ) {
@@ -216,5 +223,11 @@ if( !function_exists('leyka_admin_get_donor_comment_table_row') ) {
         
         <?php return ob_get_clean();
 
+    }
+}
+
+if( !function_exists('leyka_get_donations_storage_type') ) {
+    function leyka_get_donations_storage_type() {
+        return in_array(get_option('leyka_donations_storage_type'), array('sep', 'sep-incompleted')) ? 'sep' : 'post';
     }
 }

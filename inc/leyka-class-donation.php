@@ -4,23 +4,13 @@
  * Leyka Donation History
  **/
 
-class Leyka_Donation_Management {
+class Leyka_Donation_Management extends Leyka_Singleton {
 	
-	private static $_instance = null;
+	protected static $_instance = null;
 
 	public static $post_type = 'leyka_donation';
 
-    public static function get_instance() {
-
-        // If the single instance hasn't been set, set it now.
-        if( !self::$_instance ) {
-            self::$_instance = new self;
-        }
-
-        return self::$_instance;
-    }
-
-	private function __construct() {
+	protected function __construct() {
 
         add_filter('post_row_actions', array($this, 'row_actions'), 10, 2);
 
@@ -1219,6 +1209,7 @@ class Leyka_Donation_Management {
             <?php }
             }?>
         </div>
+
     <?php }
 
     public function recurrent_cancel_metabox($donation) {
@@ -1262,8 +1253,10 @@ class Leyka_Donation_Management {
 		$columns = array();
 
 		if(isset($unsort['cb'])){
+
 			$columns['cb'] = $unsort['cb'];
 			unset($unsort['cb']);
+
 		}
 
 		$columns['ID'] = 'ID';
@@ -1410,19 +1403,11 @@ class Leyka_Donation_Management {
         }
 
         if($vars['orderby'] == 'donation_date') {
-            $vars = array_merge($vars, array(
-                'orderby' => 'date',
-            ));
+            $vars = array_merge($vars, array('orderby' => 'date',));
         } elseif($vars['orderby'] == 'donor_name') {
-            $vars = array_merge($vars, array(
-                'meta_key' => 'leyka_donor_name',
-                'orderby' => 'meta_value',
-            ));
+            $vars = array_merge($vars, array('meta_key' => 'leyka_donor_name', 'orderby' => 'meta_value',));
         } elseif($vars['orderby'] == 'payment_type') {
-            $vars = array_merge($vars, array(
-                'meta_key' => 'leyka_payment_type',
-                'orderby' => 'meta_value',
-            ));
+            $vars = array_merge($vars, array('meta_key' => 'leyka_payment_type', 'orderby' => 'meta_value',));
         }
 
         return $vars;

@@ -899,7 +899,7 @@ class Leyka extends Leyka_Singleton {
     }
 
     /**
-     * Retrieve all available payment/donation statuses.
+     * Retrieve all available donation status names.
      *
      * @param $with_hidden boolean
      * @return array of status_id => status label pairs
@@ -925,7 +925,7 @@ class Leyka extends Leyka_Singleton {
     }
 
     /**
-     * Retrieve all available payment/donation statuses' descriptions.
+     * Retrieve all available donation status descriptions.
      *
      * @return array of status_id => status_description pairs
      */
@@ -937,6 +937,30 @@ class Leyka extends Leyka_Singleton {
             'failed' => _x("Donation payment was finished with an error. The funds weren't sent.", '«Failed» donation status description', 'leyka'),
             'trash' => _x('Donation information was deleted.', '«Trash» donation status description', 'leyka'),
         ));
+    }
+
+    /**
+     * Retreive an info about given donation status.
+     *
+     * @param $status_id string
+     * @return array|false Either an array with status info, or false if given status ID is incorrect.
+     */
+    public function get_donation_status_info($status_id) {
+
+        $status_names = $this->get_donation_statuses();
+        $status_descriptions = $this->get_donation_statuses_descriptions();
+
+        $status_info = array('id' => $status_id);
+
+        if( !empty($status_names[$status_id]) ) {
+            $status_info['label'] = $status_names[$status_id];
+        }
+        if( !empty($status_descriptions[$status_id]) ) {
+            $status_info['description'] = $status_descriptions[$status_id];
+        }
+
+        return count($status_info) > 1 ? $status_info : false;
+
     }
 
     /**

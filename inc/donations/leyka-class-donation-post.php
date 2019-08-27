@@ -303,10 +303,10 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 $campaign = new Leyka_Campaign($this->_donation_meta['campaign_id']);
                 return $campaign ? $campaign->title : $this->payment_title;
 
-            case 'status': return $this->_post_object->post_status;
+            case 'status': return $this->_main_data->post_status;
             case 'status_label':
                 $status_list = leyka_get_donation_status_list();
-                return $status_list[$this->_post_object->post_status];
+                return $status_list[$this->_main_data->post_status];
 
             case 'status_desc':
             case 'status_description':
@@ -339,7 +339,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                     $donation_timestamp, $date_format, $time_format
                 );
 
-            case 'date_timestamp': return strtotime($this->_post_object->post_date);
+            case 'date_timestamp': return strtotime($this->_main_data->post_date);
 
             case 'date_funded':
             case 'funded_date':
@@ -417,7 +417,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
             case 'donor_user_id':
             case 'donor_account_id':
-                return isset($this->_post_object->post_author) ? (int)$this->_post_object->post_author : false;
+                return isset($this->_main_data->post_author) ? (int)$this->_main_data->post_author : false;
 
             case 'donor_user_error':
             case 'donor_account_error':
@@ -540,7 +540,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
                 $value = absint($value);
 
-                $this->_post_object->post_author = $value;
+                $this->_main_data->post_author = $value;
                 wp_update_post(array('ID' => $this->id, 'post_author' => $value));
                 break;
 
@@ -554,7 +554,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
                     $value = absint($value);
 
-                    $this->_post_object->post_author = $value;
+                    $this->_main_data->post_author = $value;
                     wp_update_post(array('ID' => $this->id, 'post_author' => $value));
 
                 }
