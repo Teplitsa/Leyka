@@ -272,7 +272,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
                 $donation = new Leyka_Donation($donation_id);
 
-                $init_recurring_payment = $this->getInitRecurringDonation($customer_id);
+                $init_recurring_payment = $this->get_init_recurring_donation($customer_id);
 
                 $donation->add_gateway_response($_POST);
                 $donation->chronopay_customer_id = $customer_id;
@@ -334,7 +334,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     }
 
-    public function getInitRecurringDonation($recurring) {
+    public function get_init_recurring_donation($recurring) {
 
         if(is_a($recurring, 'Leyka_Donation')) {
             $recurring = $recurring->chronopay_customer_id;
@@ -456,7 +456,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             if($response_ok) {
 
                 // Save the fact that recurrents has been cancelled:
-                $init_recurring_donation = $this->getInitRecurringDonation($donation);
+                $init_recurring_donation = $this->get_init_recurring_donation($donation);
                 $init_recurring_donation->recurrents_cancelled = true;
 
                 die(json_encode(array('status' => 1, 'message' => __('Recurring subscription cancelled.', 'leyka'))));

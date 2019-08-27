@@ -4,12 +4,14 @@
 
 function leyka_create_separate_donations_db_tables() {
 
-//    $leyka_last_ver = get_option('leyka_last_ver');
     global $wpdb;
 
-//    if($leyka_last_ver && version_compare($leyka_last_ver, '4.0') >= 0) { // TMP
+    // TMP:
+//    $leyka_last_ver = get_option('leyka_last_ver');
+//    if($leyka_last_ver && version_compare($leyka_last_ver, '4.0') >= 0) {
 //        return;
 //    }
+    // TMP - END
 
     $charset_collate = $wpdb->get_charset_collate();
 
@@ -26,7 +28,7 @@ function leyka_create_separate_donations_db_tables() {
     // 1. Each field MUST be in separate line.
     // 2. There must be two spaces between PRIMARY KEY and its name.
     //    E.g.: PRIMARY KEY[space][space](id)
-    // Otherwise dbDelta will not work.
+    // Otherwise dbDelta won't work.
 
     $table_name = $wpdb->prefix.'leyka_donations';
     if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
@@ -44,12 +46,10 @@ function leyka_create_separate_donations_db_tables() {
   amount_total float NOT NULL,
   amount_in_main_currency float NOT NULL,
   amount_total_in_main_currency float NOT NULL,
-  donor_user_id bigint(20) UNSIGNED NOT NULL,
   donor_name varchar(100) NOT NULL,
   donor_email varchar(100) NOT NULL,
   PRIMARY KEY  (ID),
-  KEY campaign_id_index (campaign_id),
-  KEY donor_user_id_index (donor_user_id)
+  KEY campaign_id_index (campaign_id)
 ) $charset_collate $use_innodb;";
         dbDelta($sql);
 

@@ -1847,7 +1847,7 @@ class Leyka_Donation {
             return false;
         }
 
-        return leyka_get_gateway_by_id($donation->gateway_id)->get_init_recurrent_donation($donation);
+        return leyka_get_gateway_by_id($donation->gateway_id)->get_init_recurring_donation($donation);
 
     }
     /**
