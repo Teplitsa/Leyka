@@ -164,7 +164,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         }
 
         if($is_success) {
-            wp_redirect(leyka_get_success_page_url($donation->campaign_id));
+            wp_redirect(leyka_get_success_page_url());
         } else {
 
             wp_mail(
