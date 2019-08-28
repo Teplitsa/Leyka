@@ -3,7 +3,7 @@ jQuery(document).ready(function($){
 
     var $genBtn = $('#yandex-generate-shop-password');
     
-    if(!$genBtn.length) {
+    if( !$genBtn.length ) {
         return;
     }
     
@@ -11,8 +11,10 @@ jQuery(document).ready(function($){
     $stepSubmit.hide();
     
     $genBtn.click(function(){
-        var password = make_password(10);
-        var $block = $genBtn.closest('.enum-separated-block');
+
+        var password = leyka_make_password(10),
+            $block = $genBtn.closest('.enum-separated-block');
+
         $genBtn.hide();
         $block.find('.caption').css('display', 'unset');
         $block.find('.body b').css('display', 'unset').text(password);
@@ -20,6 +22,7 @@ jQuery(document).ready(function($){
         $stepSubmit.show();
         
         $(this).closest('.body').removeClass('no-password');
+
     });
 
 });

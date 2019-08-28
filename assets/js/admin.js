@@ -3061,7 +3061,7 @@ jQuery(document).ready(function($){
 
     var $genBtn = $('#yandex-generate-shop-password');
     
-    if(!$genBtn.length) {
+    if( !$genBtn.length ) {
         return;
     }
     
@@ -3069,8 +3069,10 @@ jQuery(document).ready(function($){
     $stepSubmit.hide();
     
     $genBtn.click(function(){
-        var password = make_password(10);
-        var $block = $genBtn.closest('.enum-separated-block');
+
+        var password = leyka_make_password(10),
+            $block = $genBtn.closest('.enum-separated-block');
+
         $genBtn.hide();
         $block.find('.caption').css('display', 'unset');
         $block.find('.body b').css('display', 'unset').text(password);
@@ -3078,6 +3080,7 @@ jQuery(document).ready(function($){
         $stepSubmit.show();
         
         $(this).closest('.body').removeClass('no-password');
+
     });
 
 });
@@ -3180,17 +3183,21 @@ function leyka_is_special_key(e) {
     );
 }
 
-function make_password(len) {
+function leyka_make_password(pass_length) {
 
     var text = '',
         possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-    for(var i = 0; i < len; i++) {
+    for(var i = 0; i < parseInt(pass_length); i++) {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
 
     return text;
 
+}
+
+function leyka_validate_donor_name(name_string) {
+    return !name_string.match(/[ !@#$%^&*()+=\[\]{};:"\\|,<>\/?]/);
 }
 
 // Plugin metaboxes rendering:
