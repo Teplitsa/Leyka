@@ -89,8 +89,22 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.4 =
+* New: now PayPal supports REST API integration type.
+* New: now Star is the default template.
+* New: new option added to turn off stats sync attempts.
+* New: additions to the Campaign class.
+* Fix: now Chronopay supports cyrillic site hostnames.
+* Fix: wrong symbols in front-office donation forms "Donor's name" field bug fixed.
+* Fix: wrong symbols in Yandex.Kassa shopPassword value generation bug fixed.
+* Fix: notice bug for finished campaigns fixed.
+* Fix: now finished campaigns forms are displayed by default.
+* Fix: admin feedback form error message bug fixed.
+* Fix: small bugfixes.
+* Tweak: plugin DB tables update moved from procedures to the specific function.
+
 = 3.3.0.1 =
-* New: now the Donors management feature is in by default for new installations.
+* New: now the Donors management feature is on by default for new installations.
 * Fix: now Donors' metadata calculate correctly for all newly added Donors.
 * Fix: now Donors' metadata calculation algorithm bases on Donations emails instead of author IDs.
 * Fix: admin feedback form submitting JS error fixed.

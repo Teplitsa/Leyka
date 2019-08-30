@@ -443,6 +443,14 @@ function leyka_get_campaign_supporters($campaign_id, $max_names = 5) {
 add_shortcode('leyka_inline_campaign', 'leyka_inline_campaign');
 function leyka_inline_campaign(array $atts = array()) {
 
+    $atts = shortcode_atts(array(
+        'id' => false,
+        'template' => 'revo', // ATM this shortcode is only for Revo
+        'show_thumbnail' => leyka_options()->opt('revo_template_show_thumbnail'),
+        'show_finished' => true,
+        'show_preview' => true,
+    ), $atts);
+
     $campaign_id = !empty($atts['id']) ? (int)$atts['id'] : get_post()->ID;
     $campaign = leyka_get_validated_campaign($campaign_id);
 
@@ -455,15 +463,6 @@ function leyka_inline_campaign(array $atts = array()) {
     if($campaign->template !== 'revo') {
         return leyka_payment_form_screen($atts);
     }
-
-    /** @todo Make the shortcode work not only with Revo, but with the rest of form templates */
-    $atts = shortcode_atts(array(
-        'id' => false,
-        'template' => 'revo', // leyka_options()->opt('donation_form_template'),
-        'show_thumbnail' => leyka_options()->opt('revo_template_show_thumbnail'),
-        'show_finished' => true,
-        'show_preview' => true,
-    ), $atts);
 
     $template_id = $atts['template'];
     $template_subdir = LEYKA_PLUGIN_DIR.'templates/leyka-'.$template_id;

@@ -70,6 +70,39 @@ if( !function_exists('leyka_strip_string_by_words') ) {
     }
 }
 
+if( !function_exists('leyka_string_has_rus_chars')) {
+    /**
+     * @param $text string
+     * @return boolean True if given string contains at least 1 cyrillic character, false otherwise.
+     */
+    function leyka_string_has_rus_chars($text) {
+        return preg_match('/[А-Яа-яЁё]/u', $text);
+    }
+}
+
+if( !function_exists('leyka_maybe_encode_hostname_to_punycode') ) {
+    /**
+     * @param $url string
+     * @return string
+     */
+    function leyka_maybe_encode_hostname_to_punycode($url) {
+
+        $hostname = explode('/', str_replace(array('http://', 'https://'), '', $url));
+        $hostname = reset($hostname);
+
+        if(leyka_string_has_rus_chars($hostname)) {
+
+            require_once LEYKA_PLUGIN_DIR.'/lib/class-punycode.php';
+            return str_replace($hostname, Punycode::encodeHostName($hostname), $url);
+
+        } else {
+            return $url;
+        }
+
+    }
+}
+// require_once LEYKA_PLUGIN_DIR.'/lib/class-punycode.php';
+
 if( !function_exists('leyka_set_html_content_type') ) {
     function leyka_set_html_content_type() {
         return 'text/html';

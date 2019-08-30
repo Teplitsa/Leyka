@@ -19,9 +19,10 @@ var leykaValidateForm,
 			amount = parseInt($amount_field.val().replace(/\s/g, '')),
 			$comment_filed = $_form.find(':input.leyka-donor-comment'),
 			$agree_terms = $_form.find('.donor__oferta input[name="leyka_agree"]'),
-			$agree_pd = $_form.find('.donor__oferta input[name="leyka_agree_pd"]');
+			$agree_pd = $_form.find('.donor__oferta input[name="leyka_agree_pd"]'),
+            $current_field = $_form.find('.donor__textfield--name input');
 
-		if($_form.find('.donor__textfield--name input').val().length === 0) {
+		if($current_field.val().length === 0 || !leyka_validate_donor_name($current_field.val())) {
 
             is_valid = false;
 			$_form.find('.donor__textfield--name').addClass('invalid');
