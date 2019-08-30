@@ -100,8 +100,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
         }
 
-        $sharedsec = leyka_options()->opt('chronopay_shared_sec');
-        $price = number_format((float)$donation->amount, 2,'.','');
+        $price = number_format((float)$donation->amount, 2, '.', '');
 
         $country = $donation->currency == 'rur' ? 'RUS' : '';
 
@@ -110,19 +109,23 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             'product_price' => $price,
             'product_price_currency' => $this->_get_currency_id($donation->currency),
             'cs1' => esc_attr($donation->title), // Purpose of the donation
-            'cs2' => $donation_id, // Purpose of the donation
-            'order_id' => $donation_id,
-            'cb_url' => home_url('leyka/service/'.$this->_id.'/response/'), // URL for the gateway callbacks
+            'cs2' => $donation_id,
+            'cb_url' => leyka_maybe_encode_hostname_to_punycode(home_url('leyka/service/'.$this->_id.'/response/')),
             'cb_type' => 'P',
-            'success_url' => leyka_get_success_page_url(),
-            'decline_url' => leyka_get_failure_page_url(),
-
-            'sign' => md5($chronopay_product_id.'-'.$price
+            'success_url' => leyka_maybe_encode_hostname_to_punycode(leyka_get_success_page_url()),
+            'decline_url' => leyka_maybe_encode_hostname_to_punycode(leyka_get_failure_page_url()),
+            'sign' => md5(
+                $chronopay_product_id.'-'.$price
                 .(leyka_options()->opt('chronopay_use_payment_uniqueness_control') ? '-'.$donation_id : '')
-                .'-'.$sharedsec),
+                .'-'.leyka_options()->opt('chronopay_shared_sec')
+            ),
             'language' => get_locale() == 'ru_RU' ? 'ru' : 'en',
             'email' => $donation->donor_email,
         );
+
+        if(leyka_options()->opt('chronopay_use_payment_uniqueness_control')) {
+            $form_data_vars['order_id'] = $donation_id;
+        }
 
         if($country) {
             $form_data_vars['country'] = $country;
