@@ -4,7 +4,7 @@
  * Plugin Name: Leyka
  * Plugin URI:  https://leyka.te-st.ru/
  * Description: The donations management system for your WP site
- * Version:     3.4
+ * Version:     3.3.0.1
  * Author:      Teplitsa of social technologies
  * Author URI:  https://te-st.ru
  * Text Domain: leyka
@@ -38,7 +38,7 @@
 
 // Leyka plugin version:
 if( !defined('LEYKA_VERSION') ) {
-    define('LEYKA_VERSION', '3.4');
+    define('LEYKA_VERSION', '3.3.0.1');
 }
 
 // Plugin base file:
@@ -81,15 +81,6 @@ if( !defined('LEYKA_USAGE_STATS_DEV_SERVER_URL') ) {
 
 if( !defined('LEYKA_USAGE_STATS_PROD_SERVER_URL') ) {
     define('LEYKA_USAGE_STATS_PROD_SERVER_URL', 'https://ls.te-st.ru/');
-}
-
-// Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
-if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.6.0', '<') ) {
-
-    echo '<div id="message" class="error" style="font-family: -apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Oxygen-Sans,Ubuntu,Cantarell,\'Helvetica Neue\',sans-serif;"><p><strong>Внимание:</strong> версия PHP ниже <strong>5.6.0</strong>. Лейка нуждается в PHP хотя бы <strong>версии 5.6.0</strong>, чтобы работать корректно. Плагин будет деактивирован.<br>Пожалуйста, направьте вашему хостинг-провайдеру запрос на повышение версии PHP для этого сайта.</p> <p><strong>Warning:</strong> your PHP version is below <strong>5.6.0</strong>. Leyka needs PHP <strong>v5.6.0</strong> or later to work. Plugin will be deactivated.<br>Please contact your hosting provider to upgrade your PHP version.</p></div>';
-
-    exit();
-
 }
 
 if(get_locale() === 'ru_RU') {
