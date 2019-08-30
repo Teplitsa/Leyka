@@ -72,7 +72,7 @@ if( !defined('LEYKA_SUPPORT_EMAIL') ) {
 }
 
 if( !defined('LEYKA_DEBUG') ) {
-    define('LEYKA_DEBUG', false);
+    define('LEYKA_DEBUG', true);
 }
 
 if( !defined('LEYKA_USAGE_STATS_DEV_SERVER_URL') ) {
@@ -81,15 +81,6 @@ if( !defined('LEYKA_USAGE_STATS_DEV_SERVER_URL') ) {
 
 if( !defined('LEYKA_USAGE_STATS_PROD_SERVER_URL') ) {
     define('LEYKA_USAGE_STATS_PROD_SERVER_URL', 'https://ls.te-st.ru/');
-}
-
-// Environment checks. If some failed, deactivate the plugin to save WP from possible crushes:
-if( !defined('PHP_VERSION') || version_compare(PHP_VERSION, '5.6.0', '<') ) {
-
-    echo '<div id="message" class="error" style="font-family: -apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Oxygen-Sans,Ubuntu,Cantarell,\'Helvetica Neue\',sans-serif;"><p><strong>Внимание:</strong> версия PHP ниже <strong>5.6.0</strong>. Лейка нуждается в PHP хотя бы <strong>версии 5.6.0</strong>, чтобы работать корректно. Плагин будет деактивирован.<br>Пожалуйста, направьте вашему хостинг-провайдеру запрос на повышение версии PHP для этого сайта.</p> <p><strong>Warning:</strong> your PHP version is below <strong>5.6.0</strong>. Leyka needs PHP <strong>v5.6.0</strong> or later to work. Plugin will be deactivated.<br>Please contact your hosting provider to upgrade your PHP version.</p></div>';
-
-    exit();
-
 }
 
 if(get_locale() === 'ru_RU') {
@@ -134,14 +125,14 @@ if( !$gateways_dir ) {
 
 }
 
-if(leyka()->opt('donor_accounts_available')) {
+if(leyka_options()->opt('donor_accounts_available')) {
     require_once(LEYKA_PLUGIN_DIR.'templates/account/template-tags.php');
 }
 
 function leyka_load_plugin_textdomain() {
     load_plugin_textdomain('leyka', false, basename(dirname(__FILE__)).'/languages/');
 }
-add_action( 'plugins_loaded', 'leyka_load_plugin_textdomain' );
+add_action('plugins_loaded', 'leyka_load_plugin_textdomain');
 
 register_activation_hook(__FILE__, array('Leyka', 'activate')); // Activation
 //add_action('plugins_loaded', array('Leyka', 'activate')); // Any update needed

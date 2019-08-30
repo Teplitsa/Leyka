@@ -56,3 +56,7 @@ function leyka_is_special_key(e) {
         (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
     );
 }
+
+function leyka_validate_donor_name(name_string) {
+    return !name_string.match(/[ !@#$%^&*()+=\[\]{};:"\\|,<>\/?]/);
+}

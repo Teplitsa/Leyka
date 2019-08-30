@@ -7,7 +7,7 @@
 
     <h1><?php _e('Leyka dashboard', 'leyka');?></h1>
 
-<?php if(leyka()->opt('send_plugin_stats') !== 'y') {?>
+<?php if(leyka_options()->opt('send_plugin_stats') !== 'y' && leyka_options()->opt('plugin_stats_sync_enabled')) {?>
     <div class="send-plugin-stats-invite">
         <div class="invite-text">
             <?php _e('Please, turn on the option to send anonymous plugin usage data to help us diagnose', 'leyka');?>

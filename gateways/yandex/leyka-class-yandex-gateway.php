@@ -156,7 +156,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                     'confirmation' => array(
                         'type' => 'redirect',
                         'return_url' => empty($form_data['leyka_success_page_url']) ?
-                            leyka_get_success_page_url($donation->campaign_id) : $form_data['leyka_success_page_url'],
+                            leyka_get_success_page_url() : $form_data['leyka_success_page_url'],
                     ),
                     'capture' => true, // Make payment at once, don't wait for shop confirmation
                     'description' =>
@@ -249,7 +249,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             'orderNumber' => $donation_id,
             'orderDetails' => $donation->payment_title." (№ $donation_id)",
             'paymentType' => $payment_type,
-            'shopSuccessURL' => leyka_get_success_page_url($donation->campaign_id),
+            'shopSuccessURL' => leyka_get_success_page_url(),
             'shopFailURL' => leyka_get_failure_page_url($donation->campaign_id),
             'cps_email' => $donation->donor_email,
             'cms_name' => 'wp-leyka', // Service parameter, added by Yandex request
@@ -499,11 +499,11 @@ techMessage="'.$tech_message.'"/>');
 
     public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation $donation) {
 
-        $init_recurrent_donation = Leyka_Donation::get_init_recurring_donation($donation);
+        $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($donation);
         $cancelling_url = (get_option('permalink_structure') ?
             home_url("leyka/service/cancel_recurring/{$donation->id}") :
             home_url("?page=leyka/service/cancel_recurring/{$donation->id}"))
-            .'/'.md5($donation->id.'_'.$init_recurrent_donation->id.'_leyka_cancel_recurring_subscription');
+            .'/'.md5($donation->id.'_'.$init_recurring_donation->id.'_leyka_cancel_recurring_subscription');
 
         return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
 
@@ -511,12 +511,12 @@ techMessage="'.$tech_message.'"/>');
 
     public function cancel_recurring_subscription(Leyka_Donation $donation) {
 
-        if($donation->type == 'rebill') {
-
-            $init_recurrent_donation = Leyka_Donation::get_init_recurring_donation($donation);
-            $init_recurrent_donation->recurring_is_active = false;
-
+        if($donation->type !== 'rebill') {
+            die();
         }
+
+        $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($donation);
+        $init_recurring_donation->recurring_is_active = false;
 
         header('Content-type: text/html; charset=utf-8');
 
@@ -753,12 +753,6 @@ techMessage="'.$tech_message.'"/>');
         }
     }
 
-    /**
-     * A service method to get PayPal pament method ID value by according Leyka pm_ids, and vice versa.
-     *
-     * @param $pm_id string PM ID (either Leyka or the gateway system).
-     * @return string|false A PM ID in PayPal/Leyka system, or false (if PM ID is unknown).
-     */
     protected function _get_gateway_pm_id($pm_id) {
 
         $all_pm_ids = leyka_options()->opt('yandex_new_api') ? array(

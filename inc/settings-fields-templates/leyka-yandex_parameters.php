@@ -51,11 +51,11 @@ $yandex_aviso_url = site_url('/leyka/service/yandex/payment_aviso/');?>
         <div class="block-separator"><div></div></div>
 
         <div class="caption" <?php if( !$shop_password ) {?>style="display: none;"<?php }?>>
-            <?php esc_html_e('Copy the password and paste it in the <strong>"shopPassword"</strong> field', 'leyka');?>
+            <?php _e('Copy the password and paste it in the <strong>"shopPassword"</strong> field', 'leyka');?>
         </div>
 
         <div class="body value <?php if( !$shop_password ) {?>no-password<?php }?> leyka-wizard-copy2clipboard">
-            <b <?php if( !$shop_password) {?>style="display: none;"<?php }?>><?php echo $shop_password;?></b>
+            <b <?php if( !$shop_password ) {?>style="display: none;"<?php }?>><?php echo $shop_password;?></b>
             <?php if( !$shop_password ) {?>
             <input type="button" class="button button-secondary" id="yandex-generate-shop-password" value="<?php esc_attr_e('Generate the "shopPassword"', 'leyka');?>">
             <?php }?>

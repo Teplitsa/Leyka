@@ -97,8 +97,8 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
 			'quickpay-form' => 'donate',
             'label' => $donation_id,
             'paymentType' => $payment_type,
-            'shopSuccessURL' => leyka_get_success_page_url($donation->campaign_id),
-            'shopFailURL' => leyka_get_failure_page_url($donation->campaign_id),
+            'shopSuccessURL' => leyka_get_success_page_url(),
+            'shopFailURL' => leyka_get_failure_page_url(),
             'cps_email' => $donation->donor_email,
         );
 

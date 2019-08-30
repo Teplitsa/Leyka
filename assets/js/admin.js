@@ -1255,7 +1255,7 @@ jQuery(document).ready(function($){
 
             $loader.hide();
 
-            if(response && response === 0) {
+            if(response === '0') {
                 $message_ok.fadeIn(100);
             } else {
                 $message_error.fadeIn(100);
@@ -1507,26 +1507,21 @@ jQuery(document).ready(function($){
 
 });
 
-// Yandex.Kassa settings:
+// Yandex.Kassa old/new API options:
 jQuery(document).ready(function($){
 
-    var $gateway_settings = $('.single-gateway-settings.gateway-yandex');
+    var $gateway_settings = $('.single-gateway-settings.gateway-yandex'),
+        $new_api_used = $gateway_settings.find('input[name="leyka_yandex_new_api"]');
 
-    if( !$gateway_settings.length ) {
+    if( !$gateway_settings.length || !$new_api_used.length ) {
         return;
     }
 
-    var $yandex_new_api_used = $gateway_settings.find('input[name="leyka_yandex_new_api"]');
-
-    if( !$yandex_new_api_used.length ) {
-        return;
-    }
-
-    $yandex_new_api_used.on('change.leyka', function(){
+    $new_api_used.on('change.leyka', function(){
 
         var $smart_payment_pm_field = $('.gateway-pm-list').find(':input.pm-available[value="yandex-yandex_all"]');
 
-        if($yandex_new_api_used.prop('checked')) {
+        if($new_api_used.prop('checked')) {
 
             $gateway_settings.find('.new-api').show();
             $gateway_settings.find('.old-api').hide();
@@ -1536,7 +1531,7 @@ jQuery(document).ready(function($){
                 if($smart_payment_pm_field.prop('checked')) {
 
                     $smart_payment_pm_field.prop('checked', false).change();
-                    $yandex_new_api_used.data('yandex-all-pm-removed', true);
+                    $new_api_used.data('yandex-all-pm-removed', true);
 
                 }
 
@@ -1551,9 +1546,9 @@ jQuery(document).ready(function($){
 
             $('.settings-block#yandex-yandex_all').show();
 
-            if($yandex_new_api_used.data('yandex-all-pm-removed')) {
+            if($new_api_used.data('yandex-all-pm-removed')) {
 
-                $yandex_new_api_used.data('yandex-all-pm-removed', false);
+                $new_api_used.data('yandex-all-pm-removed', false);
                 $smart_payment_pm_field.prop('checked', true).change();
 
             }
@@ -1564,20 +1559,45 @@ jQuery(document).ready(function($){
 
 });
 
-// scroll pm icons
+// PayPal old/new API options:
 jQuery(document).ready(function($){
+
+    var $gateway_settings = $('.single-gateway-settings.gateway-paypal'),
+        $new_api_used = $gateway_settings.find('input[name="leyka_paypal_rest_api"]');
+
+    if( !$gateway_settings.length || !$new_api_used.length ) {
+        return;
+    }
+
+    $new_api_used.on('change.leyka', function(){
+
+        if($new_api_used.prop('checked')) {
+
+            $gateway_settings.find('.new-api').show();
+            $gateway_settings.find('.old-api').hide();
+
+        } else {
+
+            $gateway_settings.find('.new-api').hide();
+            $gateway_settings.find('.old-api').show();
+
+        }
+
+    }).change();
+
 });
 
-// filter gateways
+// Filter gateways:
 jQuery(document).ready(function($){
-    var $filter = $('.leyka-gateways-filter');
-    var $gatewaysList = $('.gateways-cards-list');
-    var gatewaysFilter = {};
-    
+
+    var $filter = $('.leyka-gateways-filter'),
+        $gatewaysList = $('.gateways-cards-list'),
+        gatewaysFilter = {};
+
     $filter.find('.filter-toggle').click(function(){
         $(this).closest('.filter-area').toggleClass('show');
     });
-    
+
     $filter.find('.filter-category-show-filter').click(function(e){
         e.preventDefault();
         $(this).closest('.filter-area').toggleClass('show');
@@ -1593,47 +1613,47 @@ jQuery(document).ready(function($){
         toggleFilterItem($(this));
         applyFilter();
     });
-    
+
     function resetFilter() {
         gatewaysFilter = {};
         $filter.find('.filter-category-item').removeClass('active');
         applyFilter();
     }
-    
+
     function applyFilter() {
         if(Object.keys(gatewaysFilter).length) {
             $gatewaysList.find('.gateway-card').hide();
             $gatewaysList.find('.gateway-card.' + Object.keys(gatewaysFilter).join(".")).show();
-        }
-        else {
+        } else {
             $gatewaysList.find('.gateway-card').show();
         }
     }
 
     function toggleFilterItem($filterItem) {
+
         $filterItem.toggleClass('active');
         
         if($filterItem.hasClass('active')) {
             gatewaysFilter[$filterItem.data('category')] = true;
-        }
-        else {
+        } else {
             delete gatewaysFilter[$filterItem.data('category')];
         }
+
     }
-    
+
 });
 
-// PM list scroll in gateways cards
+// PM list scroll in gateways cards:
 jQuery(document).ready(function($){
-    
+
     var iconWidth = 40;
-    
+
     if( !$('.gateways-cards-list').length ) {
         return;
     }
-    
+
     function scrollPMIconsList($pmIconsList, moveStep) {
-        
+
         var $movableWrapper = $pmIconsList.find('.pm-icons-wrapper');
         var $iconsContainer = $pmIconsList.find('.pm-icons');
         var $iconsScroll = $pmIconsList.find('.pm-icons-scroll');
@@ -1644,20 +1664,19 @@ jQuery(document).ready(function($){
         if(newLeftOffset >= 0) {
             newLeftOffset = 0;
             $pmIconsList.find('.scroll-arrow.left').hide();
-        }
-        else {
+        } else {
             $pmIconsList.find('.scroll-arrow.left').show();
         }
         
         if($iconsContainer.width() + newLeftOffset <= $iconsScroll.width()) {
             newLeftOffset = -($iconsContainer.width() - $iconsScroll.width());
             $pmIconsList.find('.scroll-arrow.right').hide();
-        }
-        else {
+        } else {
             $pmIconsList.find('.scroll-arrow.right').show();
         }
         
         $movableWrapper.css('left', String(newLeftOffset) + 'px');
+
     }
 
     $('.gateway-card-supported-pm-list').each(function(){
@@ -1667,8 +1686,7 @@ jQuery(document).ready(function($){
         $(this).find('.scroll-arrow').click(function(){
             if($(this).hasClass('left')) {
                 scrollPMIconsList( $pmIconsList, -iconWidth );
-            }
-            else {
+            } else {
                 scrollPMIconsList( $pmIconsList, iconWidth );
             }
         });
@@ -1679,6 +1697,7 @@ jQuery(document).ready(function($){
         if(iconsWidth > $pmIconsList.width()) {
             $pmIconsList.find('.scroll-arrow.right').show();
         }
+
     });
     
 });
@@ -3042,7 +3061,7 @@ jQuery(document).ready(function($){
 
     var $genBtn = $('#yandex-generate-shop-password');
     
-    if(!$genBtn.length) {
+    if( !$genBtn.length ) {
         return;
     }
     
@@ -3050,8 +3069,10 @@ jQuery(document).ready(function($){
     $stepSubmit.hide();
     
     $genBtn.click(function(){
-        var password = make_password(10);
-        var $block = $genBtn.closest('.enum-separated-block');
+
+        var password = leyka_make_password(10),
+            $block = $genBtn.closest('.enum-separated-block');
+
         $genBtn.hide();
         $block.find('.caption').css('display', 'unset');
         $block.find('.body b').css('display', 'unset').text(password);
@@ -3059,6 +3080,7 @@ jQuery(document).ready(function($){
         $stepSubmit.show();
         
         $(this).closest('.body').removeClass('no-password');
+
     });
 
 });
@@ -3161,17 +3183,21 @@ function leyka_is_special_key(e) {
     );
 }
 
-function make_password(len) {
+function leyka_make_password(pass_length) {
 
     var text = '',
-        possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#_%$-";
+        possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-    for(var i = 0; i < len; i++) {
+    for(var i = 0; i < parseInt(pass_length); i++) {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
 
     return text;
 
+}
+
+function leyka_validate_donor_name(name_string) {
+    return !name_string.match(/[ !@#$%^&*()+=\[\]{};:"\\|,<>\/?]/);
 }
 
 // Plugin metaboxes rendering:
