@@ -45,7 +45,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
             'order' => 'desc',
         ), 'get_donations');
 
-        return Leyka_Donations_Factory::get_instance()->get_donations($params);
+        return Leyka_Donations::get_instance()->get($params);
 
     }
 
@@ -55,7 +55,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
      * @param int $donation_id Donation ID
      */
     public static function delete_donation($donation_id) {
-        Leyka_Donations_Factory::get_instance()->delete_donation(absint($donation_id));
+        Leyka_Donations::get_instance()->delete_donation(absint($donation_id));
     }
 
     /**

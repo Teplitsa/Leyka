@@ -600,7 +600,7 @@ function leyka_unsubscribe_persistent_campaign() {
         if(!empty($_POST['leyka_cancel_subscription_reason'])) {
             $reasons = is_array($_POST['leyka_cancel_subscription_reason']) ? $_POST['leyka_cancel_subscription_reason'] : array($_POST['leyka_cancel_subscription_reason']);
             
-            $leyka_possible_reasons = leyka_get_cancel_subscription_reasons();
+            $leyka_possible_reasons = leyka_get_recurring_cancelling_reasons();
             $reason_text_lines = array();
             
             foreach($reasons as $reason) {

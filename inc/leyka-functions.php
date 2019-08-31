@@ -561,27 +561,23 @@ function leyka_get_currencies_data($currency_id = false) {
 
 }
 
-/** @deprecated Use leyka_get_currencies_data($currency_id) instead. */
+/**
+ * @deprecated Use leyka_get_currencies_data($currency_id) instead.
+ * @param $currency_id string|false
+ * @return mixed
+ */
 function leyka_get_active_currencies($currency_id = false) {
     return leyka_get_currencies_data($currency_id);
 }
 
-function leyka_get_currency_data($currency_code) {
+function leyka_get_currency_label($currency_id = false) {
 
-    $currecies = leyka_get_currencies_data();
+    $currency_id = empty($currency_id) ? 'rur' : mb_strtolower($currency_id);
+    $currency = leyka_get_currencies_data($currency_id);
 
-    return isset($currecies[$currency_code]) ? $currecies[$currency_code] : false;
-}
-
-function leyka_get_currency_label($currency_code = false) {
-
-    $currency_code = empty($currency_code) ? 'rur' : mb_strtolower($currency_code);
-    $currencies = leyka_get_currencies_data();
-
-    return isset($currencies[$currency_code]['label']) ? $currencies[$currency_code]['label'] : false;
+    return empty($currency['label']) ? false : $currency['label'];
 
 }
-
 
 /**
  * Get possible leyka_donation post type's status list as an array.
@@ -615,12 +611,12 @@ function leyka_get_donation_type_description($type) {
 
 function leyka_get_pm_categories_list() {
     return apply_filters('leyka_pm_categories', array(
-        'bank_cards' => esc_attr__('Bank cards', 'leyka'),
-        'digital_currencies' => esc_attr__('Digital currrencies', 'leyka'),
-        'online_banking' => esc_attr__('Online banking', 'leyka'),
-        'mobile_payments' => esc_attr__('Mobile payments', 'leyka'),
-        'misc' => esc_attr__('Miscellaneous', 'leyka'),
-        'offline' => esc_attr__('Offline', 'leyka'),
+        'bank_cards' => __('Bank cards', 'leyka'),
+        'digital_currencies' => __('Digital currrencies', 'leyka'),
+        'online_banking' => __('Online banking', 'leyka'),
+        'mobile_payments' => __('Mobile payments', 'leyka'),
+        'misc' => __('Miscellaneous', 'leyka'),
+        'offline' => __('Offline', 'leyka'),
     ));
 }
 
@@ -638,13 +634,11 @@ function leyka_get_pm_category_label($category_id) {
  * @return array
  */
 function leyka_get_gateways_filter_categories_list() {
-
     return apply_filters('leyka_gateways_filter_categories', array(
         'legal' => esc_attr__('Legal persons', 'leyka'),
         'physical' => esc_attr__('Physical persons', 'leyka'),
         'recurring' => mb_ucfirst(esc_html_x('recurring', 'a "recurring donations" in one word (like "recurrings")', 'leyka')),
     ));
-
 }
 
 function leyka_get_filter_category_label($category_id) {
@@ -659,18 +653,19 @@ function leyka_get_filter_category_label($category_id) {
 
 /**
  * Gateway activation status labels
+ * @param $activation_status string
  * @return string
  */
 function leyka_get_gateway_activation_status_label($activation_status) {
 
-    $activation_status_labels = array(
-        'active' => __('Active', 'leyka'), // 'Подключен',
-        'inactive' => __('Inactive', 'leyka'), // 'Не подключен',
-        'activating' => __('Connection is in process', 'leyka'), // 'В процессе подключения',
+    $status_labels = array(
+        'active' => __('Active', 'leyka'),
+        'inactive' => __('Inactive', 'leyka'),
+        'activating' => __('Connection is in process', 'leyka'),
     );
 
-    return $activation_status && !empty($activation_status_labels[$activation_status]) ? $activation_status_labels[$activation_status] : false;
-    
+    return $activation_status && !empty($status_labels[$activation_status]) ? $status_labels[$activation_status] : false;
+
 }
 
 /**
@@ -873,9 +868,9 @@ function leyka_fake_scale_ultra($campaign) {
 /** @return array An array of possible payment types with labels */
 function leyka_get_payment_types_list() {
     return array(
-        'single'     => esc_attr__('Single', 'leyka'),
-        'rebill'     => esc_attr__('Recurrent (rebill)', 'leyka'),
-        'correction' => esc_attr__('Correction', 'leyka')
+        'single' => __('Single', 'leyka'),
+        'rebill' => __('Recurrent (rebill)', 'leyka'),
+        'correction' => __('Correction', 'leyka'),
     );
 }
 
@@ -2048,14 +2043,14 @@ function leyka_get_website_tech_support_email() {
     return leyka()->opt('tech_support_email') ? leyka()->opt('tech_support_email') : get_option('admin_email');
 }
 
-function leyka_get_cancel_subscription_reasons() {
-    return array(
-        'uncomfortable_pm' => esc_html__('Unconfortable payment method', 'leyka'),
-        'too_much' => esc_html__('Too much donation', 'leyka'),
-        'not_match' => esc_html__('Does not meet my interests', 'leyka'),
-        'better_use' => esc_html__('I have found better use of money', 'leyka'),
-        'other' => esc_html__('Other reason', 'leyka'),
-    );
+function leyka_get_recurring_cancelling_reasons() {
+    return apply_filters('leyka_recurring_cancelling_reasons', array(
+        'uncomfortable_pm' => __('Unconfortable payment method', 'leyka'),
+        'too_much' => __('Too much donation', 'leyka'),
+        'not_match' => __('Does not meet my interests', 'leyka'),
+        'better_use' => __('I have found better use of money', 'leyka'),
+        'other' => __('Other reason', 'leyka'),
+    ));
 }
 
 function get_donor_init_recurring_donation_for_campaign($donor_user, $campaign_id) {

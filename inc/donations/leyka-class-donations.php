@@ -1,6 +1,6 @@
 <?php if( !defined('WPINC') ) die;
 
-abstract class Leyka_Donations_Factory extends Leyka_Singleton {
+abstract class Leyka_Donations extends Leyka_Singleton {
 
     protected static $_instance = null;
 
@@ -16,12 +16,12 @@ abstract class Leyka_Donations_Factory extends Leyka_Singleton {
             if(in_array(get_option('leyka_donations_storage_type'), array('sep', 'sep-incompleted'))) {
 
                 require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donation-separated.php');
-                static::$_instance = new Leyka_Separated_Donations_Factory();
+                static::$_instance = new Leyka_Donations_Separated();
 
             } else {
 
                 require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donation-post.php');
-                static::$_instance = new Leyka_Posts_Donations_Factory();
+                static::$_instance = new Leyka_Donations_Posts();
 
             }
 
@@ -33,7 +33,7 @@ abstract class Leyka_Donations_Factory extends Leyka_Singleton {
 
     /**
      * @param int|WP_Post|Leyka_Donation_Base $donation
-     * @return Leyka_Donation|null
+     * @return Leyka_Donation_Base|null
      */
     abstract public function get_donation($donation);
 
@@ -51,7 +51,7 @@ abstract class Leyka_Donations_Factory extends Leyka_Singleton {
     }
 
     /**
-     * @param int|WP_Post|Leyka_Donation $donation
+     * @param int|WP_Post|Leyka_Donation_Base $donation
      * @param string $data_field
      * @param string $data_value
      * @return mixed
@@ -69,13 +69,14 @@ abstract class Leyka_Donations_Factory extends Leyka_Singleton {
      * @param $params array
      * @return array|Leyka_Donation_Base|boolean Either an array of Leyka_Donation_Base objects, or single object (if get_single param is set), or false if no donations found.
      */
-    abstract public function get_donations(array $params = array());
+    abstract public function get(array $params = array());
 
     /**
      * @param $params array
+     * @param $return_object boolean True to return a Leyka_Donation_Base object, false to return just a new donation ID.
      * @return integer|WP_Error An ID of the new donation, WP_Error object if there was an error in the process
      */
-    abstract public function add_donation(array $params = array());
+    abstract public function add(array $params = array(), $return_object = false);
 
     abstract public function delete_donation($donation_id, $force_delete = false);
 
@@ -112,7 +113,7 @@ abstract class Leyka_Donations_Factory extends Leyka_Singleton {
 
 }
 
-class Leyka_Posts_Donations_Factory extends Leyka_Donations_Factory {
+class Leyka_Donations_Posts extends Leyka_Donations {
 
     protected static $_instance = null;
 
@@ -124,7 +125,7 @@ class Leyka_Posts_Donations_Factory extends Leyka_Donations_Factory {
 
     }
 
-    public function get_donations(array $params = array()) {
+    public function get(array $params = array()) {
 
         $query = new WP_Query(array(
             'post_type' => Leyka_Donation_Management::$post_type,
@@ -300,17 +301,19 @@ class Leyka_Posts_Donations_Factory extends Leyka_Donations_Factory {
 
     }
 
-    public function add_donation(array $params = array()) {
-        return Leyka_Donation_Post::add($params);
+    public function add(array $params = array(), $return_object = false) {
+        return !!$$return_object ?
+            new Leyka_Donation_Post(Leyka_Donation_Post::add($params)) :
+            Leyka_Donation_Post::add($params);
     }
 
     public function delete_donation($donation_id, $force_delete = false) {
-        return !empty(wp_delete_post(absint($donation_id), !!$force_delete));
+        return !!wp_delete_post(absint($donation_id), !!$force_delete);
     }
 
 }
 
-class Leyka_Separated_Donations_Factory extends Leyka_Donations_Factory {
+class Leyka_Donations_Separated extends Leyka_Donations {
 
     protected static $_instance = null;
 
@@ -322,7 +325,7 @@ class Leyka_Separated_Donations_Factory extends Leyka_Donations_Factory {
 
     }
 
-    public function get_donations(array $params = array()) {
+    public function get(array $params = array()) {
 
         global $wpdb;
 
@@ -332,7 +335,7 @@ class Leyka_Separated_Donations_Factory extends Leyka_Donations_Factory {
         $joins = array();
         $join_meta = false;
 
-        /** @todo $params['search_string'] */
+        /** @todo Implement $params['search_string'] handling. */
 
         $params['strict'] = isset($params['strict']) ? !!$params['strict'] : true;
 
@@ -530,21 +533,22 @@ class Leyka_Separated_Donations_Factory extends Leyka_Donations_Factory {
         return in_array(mb_strtolower($param_name), array('id', 'campaign_id', 'status', 'date', 'date_created', 'gateway_id', 'pm_id', 'amount', 'donor_name', 'donor_email'));
     }
 
-    public function add_donation(array $params = array()) {
-        return Leyka_Donation_Separated::add($params);
+    public function add(array $params = array(), $return_object = false) {
+        return !!$return_object ?
+            new Leyka_Donation_Separated(Leyka_Donation_Separated::add($params)) :
+            Leyka_Donation_Separated::add($params);
     }
-    
+
     public function delete_donation($donation_id, $force_delete = false) {
 
         global $wpdb;
 
         /** @todo Implement $force_delete == false. Keep the original donation status in meta, then update the donation status to "trash" */
 //        if( !!$force_delete ) {
-        return $wpdb->delete($wpdb->prefix.'leyka_donations', array('ID' => absint($donation_id)));
+        return !!$wpdb->delete($wpdb->prefix.'leyka_donations', array('ID' => absint($donation_id)));
 //        } else {
 //            $wpdb->update();
 //        }
-
 
     }
 

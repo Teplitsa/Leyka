@@ -199,7 +199,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                 if(empty($_POST['InvoiceId'])) { // Non-init recurring donation
 
-                    if( !$this->get_init_recurrent_donation($_POST['SubscriptionId']) ) {
+                    if( !$this->get_init_recurring_donation($_POST['SubscriptionId']) ) {
                         die(json_encode(array(
                             'code' => '11',
                             'reason' => sprintf(
@@ -251,7 +251,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                         die(json_encode(array('code' => '13')));
                     }
 
-                    $init_recurring_donation = $this->get_init_recurrent_donation($_POST['SubscriptionId']);
+                    $init_recurring_donation = $this->get_init_recurring_donation($_POST['SubscriptionId']);
 
                     if( !$init_recurring_donation || is_wp_error($init_recurring_donation) ) {
                         /** @todo Send some email to the admin */
@@ -386,7 +386,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
      * This donation must be created only once and then updated. It can be identified with CP transaction id.
      *
      * @param $cp_transaction_id integer
-     * @return Leyka_Donation
+     * @return Leyka_Donation_Base
      */
     public function get_donation_by_transaction_id($cp_transaction_id) {
 
@@ -405,24 +405,24 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         ));
 
         if(count($donation)) {
-            $donation = new Leyka_Donation($donation[0]->ID);
+            $donation = Leyka_Donations::get_instance()->get_donation($donation[0]->ID);
         } else {
-            $donation = new Leyka_Donation(Leyka_Donation::add(array(
+            $donation = Leyka_Donations::get_instance()->add(array(
                 'status' => 'submitted',
                 'transaction_id' => $cp_transaction_id,
                 'force_insert' => true, // Turn off donation fields validation checks
-            )));
+            ), true);
         }
 
         return $donation;
 
     }
 
-    public function get_init_recurrent_donation($recurring) {
+    public function get_init_recurring_donation($recurring) {
 
-        if(is_a($recurring, 'Leyka_Donation')) {
+        if(is_a($recurring, 'Leyka_Donation_Base')) {
             $recurring = $recurring->recurring_id;
-        } elseif(empty($recurring)) {
+        } else if(empty($recurring)) {
             return false;
         }
 

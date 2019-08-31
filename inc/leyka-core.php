@@ -943,9 +943,10 @@ class Leyka extends Leyka_Singleton {
      * Retreive an info about given donation status.
      *
      * @param $status_id string
+     * @param $info_field string|false Either 'label' or 'description' string, or false to get all info as an array.
      * @return array|false Either an array with status info, or false if given status ID is incorrect.
      */
-    public function get_donation_status_info($status_id) {
+    public function get_donation_status_info($status_id, $info_field = false) {
 
         $status_names = $this->get_donation_statuses();
         $status_descriptions = $this->get_donation_statuses_descriptions();
@@ -1788,24 +1789,32 @@ class Leyka extends Leyka_Singleton {
 
         do_action(
             'leyka_payment_form_submission-'.$pm['gateway_id'],
-            $pm['gateway_id'], $pm['payment_method_id'], $donation_id, $_POST
+            $pm['gateway_id'],
+            $pm['payment_method_id'],
+            $donation_id,
+            $_POST
         );
 
         $this->_submitted_donation_id = $donation_id;
 
         $this->_payment_vars = apply_filters(
             'leyka_submission_form_data-'.$pm['gateway_id'],
-            $this->_payment_vars, $pm['payment_method_id'], $donation_id
+            $this->_payment_vars,
+            $pm['payment_method_id'],
+            $donation_id
         );
 
         $this->_payment_url = apply_filters(
             'leyka_submission_redirect_url-'.$pm['gateway_id'],
-            $this->_payment_url, $pm['payment_method_id']
+            $this->_payment_url,
+            $pm['payment_method_id']
         );
 
         $this->_submission_redirect_type = apply_filters(
             'leyka_submission_redirect_type-'.$pm['gateway_id'],
-            'auto', $pm['payment_method_id'], $donation_id
+            'auto',
+            $pm['payment_method_id'],
+            $donation_id
         );
 
     }
@@ -1820,9 +1829,10 @@ class Leyka extends Leyka_Singleton {
         $campaign = new Leyka_Campaign((int)$_POST['leyka_campaign_id']);
         $pm_data = leyka_pf_get_payment_method_value();
 
-        $donation_id = Leyka_Donation::add(apply_filters('leyka_new_donation_data', array(
+        $donation_id = Leyka_Donations::get_instance()->add(apply_filters('leyka_new_donation_data', array(
             'purpose_text' => $campaign->payment_title,
             'gateway_id' => $pm_data['gateway_id'],
+            'pm_id' => $pm_data['payment_method_id'],
         )));
 
         if( !is_wp_error($donation_id) ) {
