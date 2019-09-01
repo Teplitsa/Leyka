@@ -551,7 +551,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
                 if(empty($currency)) {
                     $pm_list[] = $pm;
-                } elseif($currency && $pm->has_currency_support($currency)) {
+                } else if($currency && $pm->has_currency_support($currency)) {
                     $pm_list[] = $pm;
                 }
 
@@ -586,7 +586,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     /**
      * @param string $pm_id
-     * @return Leyka_Payment_Method Object|false.
+     * @return Leyka_Payment_Method|false
      */
     public function get_payment_method_by_id($pm_id) {
         return empty($this->_payment_methods[$pm_id]) ? false : $this->_payment_methods[$pm_id];
@@ -606,16 +606,16 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     }
 
     /** For "leyka_get_unknown_donation_field" filter hook, to get gateway specific donation data values. */
-    public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
+    public function get_specific_data_value($value, $field_name, Leyka_Donation_Base $donation) {
         return $value;
     }
 
     /** For "leyka_set_unknown_donation_field" action hook, to set gateway specific donation data values. */
-    public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
+    public function set_specific_data_value($field_name, $value, Leyka_Donation_Base $donation) {
     }
 
     /** To save gateway specific fields when donation editing page is being saved */
-    public function save_donation_specific_data(Leyka_Donation $donation) {
+    public function save_donation_specific_data(Leyka_Donation_Base $donation) {
     }
 
     /** Action called when new donation (Leyka_Donation::add()) is being created to add gateway-specific fields. */

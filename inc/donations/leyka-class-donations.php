@@ -42,7 +42,7 @@ abstract class Leyka_Donations extends Leyka_Singleton {
      * @param string $field_name
      * @return mixed
      */
-    public function get_field($donation, $field_name) {
+    public function get_donation_field($donation, $field_name) {
 
         $donation = $this->get_donation($donation);
 
@@ -56,7 +56,7 @@ abstract class Leyka_Donations extends Leyka_Singleton {
      * @param string $field_value
      * @return mixed
      */
-    public function set_field($donation, $field_name, $field_value) {
+    public function set_donation_field($donation, $field_name, $field_value) {
 
         $field_name = trim($field_name);
         $donation = $this->get_donation($donation);

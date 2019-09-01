@@ -728,6 +728,38 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
     }
 
+    public function get_meta($meta_name) {
+
+        $meta_name = trim($meta_name);
+        if( !$meta_name ) { /** @todo Throw an Ex? */
+            return NULL;
+        }
+
+        if( !isset($this->_donation_meta[$meta_name]) ) {
+            $this->_donation_meta[$meta_name] = get_post_meta($this->_id, $meta_name, true);
+        }
+
+        return $this->_donation_meta[$meta_name];
+
+    }
+
+    public function set_meta($meta_name, $value) {
+
+        $meta_name = trim($meta_name);
+        if( !$meta_name ) { /** @todo Throw an Ex? */
+            return false;
+        }
+
+        if(update_post_meta($this->_id, $meta_name, $value)) {
+            $this->_donation_meta[$meta_name] = $value;
+        } else {
+            return false;
+        }
+
+        return true;
+
+    }
+
     public function add_gateway_response($resp_text) {
 
         $this->_donation_meta['gateway_response'] = $resp_text;
