@@ -442,7 +442,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
             case 'type_label':
             case 'payment_type_label':
-                return leyka_get_payment_type_label($this->_donation_meta['payment_type']);
+                return leyka_get_payment_types_data($this->_donation_meta['payment_type']);
 
             case 'type_desc':
             case 'payment_type_desc':
@@ -508,7 +508,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 break;
 
             case 'status':
-                if( !array_key_exists($value, leyka_get_donation_status_list()) || $value == $this->status ) {
+                if( !array_key_exists($value, leyka_get_donation_status_list()) || $value === $this->status ) {
                     return false;
                 }
 
@@ -600,7 +600,13 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 break;
 
             case 'currency':
+            case 'currency_id':
             case 'donation_currency':
+            case 'donation_currency_id':
+                if( !leyka_get_currencies_data($value) ) {
+                    return false;
+                }
+
                 update_post_meta($this->_id, 'leyka_donation_currency', $value);
                 $this->_donation_meta['currency'] = $value;
                 break;
@@ -623,7 +629,10 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
             case 'type':
             case 'payment_type':
-                $value = in_array($value, array_keys(leyka_get_payment_types_list())) ? $value : 'single';
+                if( !leyka_get_payment_types_data($value) ) {
+                    return false;
+                }
+
                 update_post_meta($this->_id, 'leyka_payment_type', $value);
                 $this->_donation_meta['payment_type'] = $value;
                 break;
@@ -643,7 +652,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'is_subscribed':
             case 'donor_subscribed':
 
-                $value = $value === true || (int)$value > 0 ? $value : false;
+                $value = !!$value;
 
                 update_post_meta($this->_id, 'leyka_donor_subscribed', $value);
                 $this->_donation_meta['donor_subscribed'] = $value;
@@ -659,8 +668,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 break;
 
             case 'init_recurring_donation_id':
-                $value = (int)$value;
-                if($value > 0 && $value != $this->_main_data->post_parent) {
+                $value = absint($value);
+                if($value && $value != $this->_main_data->post_parent) {
 
                     wp_update_post(array('ID' => $this->_id, 'post_parent' => $value));
                     $this->_main_data->post_parent = $value;
@@ -674,10 +683,11 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'recurring_is_on':
             case 'rebilling_is_active':
             case 'recurring_is_active':
-                $value = !!$value;
                 if($this->type !== 'rebill') {
                     break;
                 }
+
+                $value = !!$value;
 
                 $init_recurring_donation = $this->init_recurring_donation;
                 if($init_recurring_donation->recurring_is_active != $value) {

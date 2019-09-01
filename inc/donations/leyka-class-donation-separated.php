@@ -162,7 +162,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
         $params['campaign_id'] = empty($params['campaign_id']) ? leyka_pf_get_campaign_id_value() : (int)$params['campaign_id'];
 
         $params['payment_type'] =
-            empty($params['payment_type']) || !array_key_exists($params['payment_type'], leyka_get_payment_types_list()) ?
+            empty($params['payment_type']) || !array_key_exists($params['payment_type'], leyka_get_payment_types_data()) ?
                 'single' : $params['payment_type'];
 
         $params['date_created'] = empty($params['date_created']) ? date('Y-m-d H:i:s') : $params['date_created'];
@@ -485,7 +485,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             case 'type_label':
             case 'payment_type_label':
-                return leyka_get_payment_type_label($this->payment_type);
+                return leyka_get_payment_types_data($this->payment_type);
 
             case 'type_desc':
             case 'payment_type_desc':
@@ -536,7 +536,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'recurring_cancel_date':
                 return $this->payment_type === 'rebill' ? $this->_get_meta('recurring_cancel_date') : NULL;
 
-            default: /** @todo WARNING! All gateways methods for this action now should use D-Factory::getDonationData(). */
+            default: /** @todo WARNING! Gateways methods for this action now should use Leyka_Donations::get_donation_field(). */
                 return apply_filters('leyka_'.$this->gateway_id.'_get_unknown_donation_field', null, $field, $this);
         }
 
@@ -585,28 +585,43 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'donor_name':
             case 'donor_email':
                 return $this->_set_data($field, $value);
-
             case 'donor_comment':
                 return $this->_set_data($field, sanitize_textarea_field($value));
+
+//            case 'donor_user_id':
+//            case 'donor_account_id':
+//                return $this->_set_meta($field, absint($value));
+
+//            case 'donor_account':
+//                if(is_wp_error($value)) {
+//                    return $this->_set_meta('donor_account_error', $value);
+//                } else if(absint($value)) {
+//                    return $this->donor_user_id = absint($value);
+//                }
+//                break;
 
             case 'sum':
             case 'amount':
             case 'donation_amount':
-                return $this->_set_data('amount', (float)$value);
+                do_action('leyka_donation_amount_changed', $this->_id, $value);
+                return $this->_set_data('amount', round($value, 2));
 
             case 'sum_total':
             case 'amount_total':
             case 'total_sum':
             case 'total_amount':
             case 'donation_amount_total':
-                return $this->_set_data('amount_total', (float)$value);
+                do_action('leyka_donation_total_amount_changed', $this->_id, $value);
+                return $this->_set_data('amount_total', round($value, 2));
 
             case 'main_curr_amount':
             case 'amount_equiv':
                 return $this->_set_data('amount_in_main_currency', (float)$value);
 
             case 'currency':
+            case 'currency_id':
             case 'donation_currency':
+            case 'donation_currency_id':
                 return leyka_get_currencies_data($value) ? $this->_set_data('currency_id', $value) : false;
 
             case 'gw_id':
@@ -620,13 +635,15 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             case 'type':
             case 'payment_type':
-                return $this->_set_data(
-                    'payment_type', in_array($value, array_keys(leyka_get_payment_types_list())) ? $value : 'single'
-                );
+                if( !leyka_get_payment_types_data($value) ) {
+                    return false;
+                }
+                return $this->_set_data('payment_type', $value);
 
             case 'campaign':
             case 'campaign_id':
-                return (int)$value > 0 ? $this->_set_data('campaign_id', (int)$value) : false;
+                do_action('leyka_donation_campaign_changed', $this->_id, $value);
+                return absint($value) ? $this->_set_data('campaign_id', absint($value)) : false;
 
             case 'is_subscribed':
             case 'donor_subscribed':
@@ -636,10 +653,9 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'donor_subscription_email':
                 return $this->_set_meta('donor_subscription_email', leyka_validate_email($value) ? $value : $this->donor_email);
 
-            case 'init_recurring_donation':
             case 'init_recurring_donation_id':
-                return $this->payment_type === 'rebill' || (int)$value > 0 ?
-                    $this->_set_meta('init_recurring_donation_id', (int)$value) : false;
+                return $this->payment_type === 'rebill' || absint($value) ?
+                    $this->_set_meta('init_recurring_donation_id', absint($value)) : false;
 
             case 'rebilling_on':
             case 'rebilling_is_on':
@@ -649,6 +665,10 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'rebilling_is_active':
             case 'recurring_is_active':
             case 'recurring_subscription_is_active':
+                if($this->type !== 'rebill') {
+                    break;
+                }
+
                 $value = !!$value;
 
                 $init_recurring_donation = $this->init_recurring_donation;
@@ -666,10 +686,13 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 }
 
                 $curr_time = current_time('timestamp');
-                $init_recurring_donation->_set_meta('recurring_cancel_date', $value ? 0 : $curr_time);
-                $this->_donation_meta['recurring_cancel_date'] = $value ? 0 : $curr_time;
+                return
+                    $init_recurring_donation->_set_meta('recurring_cancel_date', $value ? 0 : $curr_time)
+                    && $this->_set_meta('recurring_cancel_date', $value ? 0 : $curr_time);
 
-                return true;
+            case 'cancel_recurring_requested':
+                $this->_set_meta('cancel_recurring_requested', !!$value);
+                break;
 
             default: /** @todo WARNING! This action methods in gateways should use the Leyka_Donations::set_donation_data(). */
                 do_action('leyka_'.$this->gateway_id.'_set_unknown_donation_field', $field, $value, $this);
@@ -694,14 +717,13 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
         }
 
         global $wpdb;
-        if(
-            !$wpdb->delete($wpdb->prefix.'leyka_donations_meta', array('donation_id' => $this->_id), array('%d')) ||
-            !$wpdb->delete($wpdb->prefix.'leyka_donations', array('ID' => $this->_id), array('%d'))
-        ) {
-            return false; /** @todo Throw an Ex? */
-        }
 
-        return true;
+//        if( !!$force ) {
+        return !(
+            $wpdb->delete($wpdb->prefix.'leyka_donations_meta', array('donation_id' => $this->_id), array('%d')) === false
+            || $wpdb->delete($wpdb->prefix.'leyka_donations', array('ID' => $this->_id), array('%d')) === false
+        );
+//        } else { } /** @todo Implement $false == false */
 
     }
 

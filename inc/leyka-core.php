@@ -307,7 +307,7 @@ class Leyka extends Leyka_Singleton {
 
                     if(in_array(get_the_ID(), array(leyka_options()->opt('failure_page'), leyka_options()->opt('success_page')))) {
                         $is_cssjs_reqiured = true;
-                    } else if(leyka_form_is_screening()) {
+                    } else if(leyka_form_is_displayed()) {
                         $is_cssjs_reqiured = true;
                     }
 
@@ -1347,7 +1347,7 @@ class Leyka extends Leyka_Singleton {
             );
         }
 
-        if( !leyka_form_is_screening() ) {
+        if( !leyka_form_is_displayed() ) {
             return;
         }
 
@@ -1394,7 +1394,7 @@ class Leyka extends Leyka_Singleton {
             );
         }
         
-        if( !leyka_form_is_screening() ) {
+        if( !leyka_form_is_displayed() ) {
             return;
         }
         
@@ -1882,7 +1882,7 @@ class Leyka extends Leyka_Singleton {
             get_bloginfo('admin_email'),
             leyka()->opt('org_full_name'),
             $donation->id,
-            leyka_get_payment_type_label($donation->type),
+            leyka_get_payment_types_data($donation->type),
             $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
             $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
             $donation->payment_method_label,

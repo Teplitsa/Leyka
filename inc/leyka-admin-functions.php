@@ -231,3 +231,51 @@ if( !function_exists('leyka_get_donations_storage_type') ) {
         return in_array(get_option('leyka_donations_storage_type'), array('sep', 'sep-incompleted')) ? 'sep' : 'post';
     }
 }
+
+function leyka_is_tab_valid($tab_id) {
+
+    $tab_options = Leyka_Options_Allocator::get_instance()->get_tab_options($tab_id);
+
+    if( !$tab_options ) {
+        return false;
+    }
+
+    foreach($tab_options as $key => $option_params) {
+
+        if($key === 'section') {
+
+            if( !empty($option_params['options']) ) { // Noramal section - validate all options
+                foreach($option_params['options'] as $option_id) {
+                    if( !leyka_options()->is_valid($option_id) ) {
+                        return false;
+                    }
+                }
+            } else if( !empty($option_params['tabs']) ) {
+
+                foreach($option_params['tabs'] as $sub_tab_id => $sub_tab_content) {
+
+                    if( !empty($sub_tab_content['sections']) ) {
+                        foreach($sub_tab_content['sections'] as $sub_section) {
+                            if( !empty($sub_section['options']) ) {
+                                foreach($sub_section['options'] as $sub_section_option_id) {
+                                    if( !leyka_options()->is_valid($sub_section_option_id) ) {
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+            }
+
+        } else if( !leyka_options()->is_valid($key) ) { // Validate a single option
+            return false;
+        }
+
+    }
+
+    return true;
+
+}

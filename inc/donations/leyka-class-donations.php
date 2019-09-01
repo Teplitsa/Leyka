@@ -39,29 +39,29 @@ abstract class Leyka_Donations extends Leyka_Singleton {
 
     /**
      * @param int|WP_Post|Leyka_Donation_Base $donation
-     * @param string $data_field
+     * @param string $field_name
      * @return mixed
      */
-    public function get_donation_field($donation, $data_field) {
+    public function get_field($donation, $field_name) {
 
         $donation = $this->get_donation($donation);
 
-        return $donation ? $donation->$data_field : null;
+        return $donation ? $donation->$field_name : null;
 
     }
 
     /**
      * @param int|WP_Post|Leyka_Donation_Base $donation
-     * @param string $data_field
-     * @param string $data_value
+     * @param string $field_name
+     * @param string $field_value
      * @return mixed
      */
-    public function set_donation_field($donation, $data_field, $data_value) {
+    public function set_field($donation, $field_name, $field_value) {
 
-        $data_field = trim($data_field);
+        $field_name = trim($field_name);
         $donation = $this->get_donation($donation);
 
-        return $donation ? ($donation->$data_field = $data_value) : false;
+        return $donation ? ($donation->$field_name = $field_value) : false;
 
     }
 
@@ -211,7 +211,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
         if( !empty($params['payment_type']) ) {
 
-            $values_list = $this->_get_multiple_filter_values($params['payment_type'], leyka_get_payment_types_list());
+            $values_list = $this->_get_multiple_filter_values($params['payment_type'], leyka_get_payment_types_data());
 
             if($values_list) {
                 $meta_query[] = array('key' => 'leyka_payment_type', 'value' => (array)$values_list, 'compare' => 'IN');
@@ -392,7 +392,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         if( !empty($params['payment_type']) ) {
 
-            $values_list = $this->_get_multiple_filter_values($params['payment_type'], leyka_get_payment_types_list());
+            $values_list = $this->_get_multiple_filter_values($params['payment_type'], leyka_get_payment_types_data());
 
             if($values_list) {
 

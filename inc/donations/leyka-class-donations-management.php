@@ -152,7 +152,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         <select id="payment-type-select" name="payment_type">
             <option value="" <?php echo empty($_GET['payment_type']) ? 'selected="selected"' : '';?>><?php _e('Select a payment type', 'leyka');?></option>
 
-            <?php foreach(leyka_get_payment_types_list() as $payment_type => $label) {?>
+            <?php foreach(leyka_get_payment_types_data() as $payment_type => $label) {?>
                 <option value="<?php echo $payment_type;?>" <?php echo !empty($_GET['payment_type']) && $_GET['payment_type'] == $payment_type ? 'selected="selected"' : '';?>><?php echo $label;?></option>
             <?php }?>
         </select>
@@ -353,7 +353,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             get_bloginfo('admin_email'),
             leyka_options()->opt('org_full_name'),
             $donation->id,
-            leyka_get_payment_type_label($donation->type),
+            leyka_get_payment_types_data($donation->type),
             $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
             $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
             $donation->payment_method_label,
@@ -476,7 +476,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             leyka_options()->opt('tech_support_email'),
             leyka_options()->opt('org_full_name'),
             $donation->id,
-            leyka_get_payment_type_label($donation->type),
+            leyka_get_payment_types_data($donation->type),
             $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
             $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
             $donation->payment_method_label,
@@ -616,7 +616,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                         get_bloginfo('name'),
                         leyka_options()->opt('org_full_name'),
                         $donation->id,
-                        leyka_get_payment_type_label($donation->type),
+                        leyka_get_payment_types_data($donation->type),
                         $donation->donor_name ? $donation->donor_name : __('anonymous', 'leyka'),
                         $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
                         $donation->payment_method_label,
@@ -1029,7 +1029,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         <div class="leyka-ddata-string">
             <label><?php _e('Payment type', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
-                <span class="fake-input"><?php echo leyka_get_payment_type_label($donation->payment_type); // "single", "rebill", "correction" ?></span>
+                <span class="fake-input"><?php echo leyka_get_payment_types_data($donation->payment_type);?></span>
             </div>
         </div>
 

@@ -63,7 +63,7 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 			return;
 		}
 		$campaign = new Leyka_Campaign($campaign_id);
-		if( !leyka_form_is_screening(false) ) { // Don't increase campaign views counter if we're on a page with this campaign's donation form
+		if( !leyka_form_is_displayed(false) ) { // Don't increase campaign views counter if we're on a page with this campaign's donation form
 			$campaign->increase_views_counter();
 		}
 
