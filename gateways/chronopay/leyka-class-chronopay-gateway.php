@@ -530,7 +530,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
+    public function get_specific_data_value($value, $field_name, Leyka_Donation_Base $donation) {
         switch($field_name) {
             case 'chronopay_customer_id': return get_post_meta($donation->id, '_chronopay_customer_id', true);
             case 'chronopay_transaction_id': return get_post_meta($donation->id, '_chronopay_transaction_id', true);
@@ -538,7 +538,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         }
     }
 
-    public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
+    public function set_specific_data_value($field_name, $value, Leyka_Donation_Base $donation) {
 
         switch($field_name) {
             case 'chronopay_customer_id':
@@ -550,7 +550,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     }
 
-    public function save_donation_specific_data(Leyka_Donation $donation) {
+    public function save_donation_specific_data(Leyka_Donation_Base $donation) {
 
         if(
             isset($_POST['chronopay-customer-id']) &&

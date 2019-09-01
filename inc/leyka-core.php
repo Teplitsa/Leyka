@@ -1728,7 +1728,11 @@ class Leyka extends Leyka_Singleton {
 
             $this->_do_payment_form_submission();
 
-            if($this->payment_form_has_errors() || !$this->_payment_url) {
+            if( !$this->_payment_url ) {
+                $this->add_payment_form_error(new WP_Error('no_payment_url_set', __("The gateway URL to redirect isn't set", 'leyka')));
+            }
+
+            if($this->payment_form_has_errors()) {
 
                 $this->_add_session_errors(); // Error handling
 
@@ -1738,6 +1742,7 @@ class Leyka extends Leyka_Singleton {
                 }
 
                 wp_redirect($referer.'#leyka-submit-errors');
+                exit();
 
             } else {
 

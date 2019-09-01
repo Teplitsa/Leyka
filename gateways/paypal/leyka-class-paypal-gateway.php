@@ -1680,7 +1680,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
+    public function get_specific_data_value($value, $field_name, Leyka_Donation_Base $donation) {
         switch($field_name) {
             case 'paypal_token':
             case 'pp_token': return get_post_meta($donation->id, '_paypal_token', true);
@@ -1707,7 +1707,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         }
     }
 
-    public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
+    public function set_specific_data_value($field_name, $value, Leyka_Donation_Base $donation) {
         switch($field_name) {
             case 'paypal_token':
             case 'paypal_payment_token':
@@ -1735,7 +1735,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         }
     }
 
-    public function save_donation_specific_data(Leyka_Donation $donation) {
+    public function save_donation_specific_data(Leyka_Donation_Base $donation) {
 
         if(isset($_POST['paypal-token']) && $donation->paypal_token !== $_POST['paypal-token']) {
             $donation->paypal_token = $_POST['paypal-token'];
