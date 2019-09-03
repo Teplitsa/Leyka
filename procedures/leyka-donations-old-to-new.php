@@ -12,6 +12,7 @@ $procedure_options = leyka_procedures_get_procedure_options(array(
     'migrate_donors' => false, /** @todo Migrate as donation_meta "donor_user_id" */
     'delete_old_donations' => false,
     'pre_clear_sep_storage' => false,
+    'limit' => false,
 ));
 
 //update_option('leyka_donations_storage_type', 'post'); // TMP, for debugging only
@@ -33,7 +34,9 @@ $query = $wpdb->prepare(
     "SELECT {$wpdb->prefix}posts.ID as ID FROM {$wpdb->prefix}posts WHERE {$wpdb->prefix}posts.post_type=%s ORDER BY ID",
     Leyka_Donation_Management::$post_type
 );
-//$query .= ' LIMIT 0,1000'; // TMP, for debugging only
+if($procedure_options['limit'] > 0) {
+    $query .= ' LIMIT 0,'.absint($procedure_options['limit']);
+}
 
 $donations_ids = $wpdb->get_col($query);
 $total_donations = count($donations_ids);
