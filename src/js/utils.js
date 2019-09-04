@@ -58,5 +58,5 @@ function leyka_is_special_key(e) {
 }
 
 function leyka_validate_donor_name(name_string) {
-    return !name_string.match(/[ !@#$%^&*()+=\[\]{};:"\\|,<>\/?]/);
+    return !name_string.match(/[!@#$%^&*()+=\[\]{};:"\\|,<>\/?]/);
 }

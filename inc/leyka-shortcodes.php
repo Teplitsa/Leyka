@@ -451,7 +451,7 @@ function leyka_inline_campaign(array $atts = array()) {
         'show_preview' => true,
     ), $atts);
 
-    $campaign_id = !empty($atts['id']) ? (int)$atts['id'] : get_post()->ID;
+    $campaign_id = $atts['id'] ? absint($atts['id']) : get_post()->ID;
     $campaign = leyka_get_validated_campaign($campaign_id);
 
     if( !$campaign ) {
@@ -464,10 +464,9 @@ function leyka_inline_campaign(array $atts = array()) {
         return leyka_payment_form_screen($atts);
     }
 
-    $template_id = $atts['template'];
+    $template_id = 'revo'; // $atts['template']; // ATM this shortcode is only for Revo. WARNING: ATM it should be set explicitly here 'cause of the default "template" attr gets overriden by an empty value given in the function arg.
     $template_subdir = LEYKA_PLUGIN_DIR.'templates/leyka-'.$template_id;
     $template_file = LEYKA_PLUGIN_DIR.'templates/leyka-template-'.$template_id.'.php';
-    $ready = 0;
 
     if($template_id && file_exists($template_subdir) && file_exists($template_file)) {
         foreach(glob($template_subdir.'/leyka-'.$template_id.'-*.php') as $file) {
@@ -481,20 +480,6 @@ function leyka_inline_campaign(array $atts = array()) {
 
     $atts['show_thumbnail'] = !!$atts['show_thumbnail'];
     $thumb_url = $atts['show_thumbnail'] ? get_the_post_thumbnail_url($campaign_id, 'post-thumbnail') : false;
-
-    /** @todo For the forms caching task */
-//    global $test; // USE A COLLECTION/FACTORY OBJECT INSTEAD OF GLOBAL!
-//    $test = array();
-//
-//    if( empty($test[$campaign_id.'-'.$template_id]) ) {
-//
-//        ob_start();
-//        require($template_file);
-//        $out = ob_get_clean();
-//
-//        $test[$campaign_id.'-'.$template_id] = $out;
-//
-//    }
 
     ob_start();?>
 
