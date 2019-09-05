@@ -5,7 +5,7 @@ Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса, яндекс.деньги, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
 Tested up to: 5.2.2
-Stable tag: 3.3.0.1
+Stable tag: 3.4.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,11 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.4.0.1 =
+* Fix: bug with spacebar character in the donor names form fields fixed.
+* Fix: now Revo forms display correctly via shortcodes.
+* Fix: "each() is deprecated" notice fixed.
+
 = 3.4 =
 * New: now PayPal supports REST API integration type.
 * New: now Star is the default template.

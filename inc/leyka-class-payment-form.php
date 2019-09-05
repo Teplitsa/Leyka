@@ -253,9 +253,11 @@ class Leyka_Payment_Form {
 
 		} else {
 
-			$obj = each($supported_curr);
-			$out = '<span>'.$obj['value']['label'].'</span>
-			        <input type="hidden" name="leyka_donation_currency" class="leyka_donation_currency" data-currency-label="'.$obj['value']['label'].'" value="'.$obj['key'].'" >';
+		    $currency_id = key($supported_curr);
+            $supported_curr = $supported_curr[$currency_id];
+
+			$out = '<span>'.$supported_curr['label'].'</span>
+			        <input type="hidden" name="leyka_donation_currency" class="leyka_donation_currency" data-currency-label="'.$supported_curr['label'].'" value="'.$currency_id.'" >';
 		}
 
 		return $out.$this->get_hidden_amount_fields();
