@@ -410,6 +410,15 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         if( !empty($params['campaign_id']) ) {
             $where['campaign_id'] = $wpdb->prepare("d.`campaign_id` = %d", (int)$params['campaign_id']);
+        } else if( !empty($params['campaigns_ids']) && is_array($params['campaigns_ids']) ) {
+
+            $params['campaigns_ids'] = array_map(
+                function($campaign_id){ return absint($campaign_id); },
+                $params['campaigns_ids']
+            );
+
+            $where['campaign_id'] = 'd.`campaign_id` IN ('.implode(',', $params['campaigns_ids']).')';
+
         }
 
         if( !empty($params['get_single']) ) {

@@ -16,13 +16,16 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             $this->_id = $donation->ID;
 
+        } else if(is_a($donation, 'Leyka_Donation_Base')) {
+            $this->_id = $donation->id;
         } else {
             return false; /** @todo Throw an Ex? */
         }
 
         global $wpdb;
-        $query = $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}leyka_donations` WHERE `ID`=%d LIMIT 0,1", $this->_id);
-        $this->_main_data = $wpdb->get_row($query);
+        $this->_main_data = $wpdb->get_row(
+            $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}leyka_donations` WHERE `ID`=%d LIMIT 0,1", $this->_id)
+        );
 
         if( !$this->_main_data ) {
             return false;
