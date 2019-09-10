@@ -406,7 +406,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'gateway':
             case 'gateway_id':
             case 'gw_id':
-                return $this->_main_data->gateway_id ? false : $this->_main_data->gateway_id;
+                return $this->_main_data->gateway_id ? $this->_main_data->gateway_id : false;
 
             case 'pm_full_id':
                 return $this->_main_data->gateway_id && $this->_main_data->pm_id ?
