@@ -19,10 +19,10 @@ jQuery(document).ready(function($){
         // Selected PM don't belong to the CP gateway:
 
         var $pm_field = $form.find('input[name="leyka_payment_method"][value*="cp-"]'),
-            cp_chosen = $pm_field.prop('type') === 'hidden' ?
+            gateway_is_chosen = $pm_field.prop('type') === 'hidden' ?
                 $pm_field.val().indexOf('cp') >= 0 : !!$pm_field.prop('checked');
 
-        if($pm_field.length <= 0 || !cp_chosen) {
+        if($pm_field.length <= 0 || !gateway_is_chosen) {
             return; /** @todo Add some error to the form! Or at least do some console.logging */
         }
 
@@ -44,7 +44,7 @@ jQuery(document).ready(function($){
             data_array = $form.serializeArray(),
             data = {action: 'leyka_ajax_get_gateway_redirect_data'};
 
-        for(var i=0; i<data_array.length; i++) {
+        for(var i = 0; i < data_array.length; i++) {
             data[data_array[i].name] = data_array[i].value;
         }
 

@@ -1,17 +1,19 @@
-<?php if( !defined('WPINC') ) { die; }
-
-require_once LEYKA_PLUGIN_DIR.'gateways/rbk/includes/Leyka_Rbk_Gateway_Web_Hook_Verification.php';
-require_once LEYKA_PLUGIN_DIR.'gateways/rbk/includes/Leyka_Rbk_Gateway_Web_Hook.php';
-require_once LEYKA_PLUGIN_DIR.'gateways/rbk/includes/Leyka_Rbk_Gateway_Helper.php';
-
+<?php  if( !defined('WPINC') ) die;
 /**
  * Leyka_Rbk_Gateway class
  */
+
+require_once LEYKA_PLUGIN_DIR.'gateways/rbk/includes/Leyka_Rbk_Gateway_Webhook_Verification.php';
+require_once LEYKA_PLUGIN_DIR.'gateways/rbk/includes/Leyka_Rbk_Gateway_Webhook.php';
+require_once LEYKA_PLUGIN_DIR.'gateways/rbk/includes/Leyka_Rbk_Gateway_Helper.php';
+
 class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
     protected static $_instance;
 
-    protected static $_rbk_api_path = '/v2/processing/invoices';
+    const RBK_API_HOST = 'https://api.rbk.money';
+    const RBK_API_PATH = '/v2/processing/invoices';
+
     protected $_rbk_response;
     protected $_rbk_log = array();
 
@@ -85,9 +87,9 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             );
 
             wp_enqueue_script(
-                'leyka-revo-rbk',
-                LEYKA_PLUGIN_BASE_URL . 'gateways/' . Leyka_Rbk_Gateway::get_instance()->id.'/js/leyka.rbk.js',
-                array('jquery', 'leyka-revo-public', 'leyka-rbk-checkout'),
+                'leyka-rbk',
+                LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Rbk_Gateway::get_instance()->id.'/js/leyka.rbk.js',
+                array('jquery', 'leyka-rbk-checkout',),
                 LEYKA_VERSION,
                 true
             );
@@ -101,25 +103,11 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         $donation = new Leyka_Donation($donation_id);
         $campaign = new Leyka_Campaign($form_data['leyka_campaign_id']);
 
-        $url = Leyka_Rbk_Gateway_Web_Hook::$rbk_host.self::$_rbk_api_path;
+        if( !empty($form_data['leyka_recurring']) ) {
+            $donation->payment_type = 'rebill';
+        }
 
-        $dueDate = date(
-            'Y-m-d\TH:i:s\Z',
-            strtotime('+2 minute', current_time('timestamp', 1))
-        );
-
-        $data = array(
-            'shopID' => leyka_options()->opt('leyka_rbk_shop_id'),
-            'amount' => (int)$donation->__get('amount') * 100,
-            'metadata' => array(
-                'order_id' => __("Donation id:", 'leyka') . " {$donation_id}"
-            ),
-            'dueDate' => $dueDate,
-            'currency' => 'RUB',
-            'product' => $form_data['leyka_ga_campaign_title'],
-            'description' => $campaign->short_description,
-        );
-
+        $url = self::RBK_API_HOST.self::RBK_API_PATH;
         $args = array(
             'timeout' => 30,
             'redirection' => 10,
@@ -129,128 +117,88 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 'X-Request-ID' => uniqid(),
                 'Authorization' => 'Bearer '.leyka_options()->opt('leyka_rbk_api_key'),
                 'Content-type' => 'application/json; charset=utf-8',
-                'Accept' => 'application/json'
+                'Accept' => 'application/json',
             ),
-            'body' => json_encode($data)
+            'body' => json_encode(array(
+                'shopID' => leyka_options()->opt('leyka_rbk_shop_id'),
+                'amount' => 100 * (int)$donation->amount, // Amount in minor currency units (like cent or kopeyka). Must be int
+                'metadata' => array('order_id' => __('Donation id:', 'leyka').' '.$donation_id,),
+                'dueDate' => date(
+                    'Y-m-d\TH:i:s\Z',
+                    strtotime('+2 minute', current_time('timestamp', 1))
+                ),
+                'currency' => 'RUB',
+                'product' => $donation->payment_title,
+                'description' => $campaign->short_description,
+            ))
         );
 
-        $this->_rbk_log["RBK_Request"] = array(
+        $this->_rbk_log['RBK_Request'] = array(
             'url' => $url,
-            'params' => $args
+            'params' => $args,
         );
 
-        $response = wp_remote_post($url, $args);
-        $this->_rbk_response = json_decode(wp_remote_retrieve_body($response));
+        $this->_rbk_response = json_decode( wp_remote_retrieve_body(wp_remote_post($url, $args)) );
 
-        return $this->_rbk_response;
+//        return $this->_rbk_response;
 
     }
 
     public function submission_redirect_url($current_url, $pm_id) {
-        return $current_url;
+        return '';
     }
 
     public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
 
+        if( !array_key_exists($pm_id, $this->_payment_methods) ) {
+            return $form_data_vars; // It's not our PM
+        }
+
+        if(is_wp_error($donation_id)) { /** @var WP_Error $donation_id */
+            return array('status' => 1, 'message' => $donation_id->get_error_message());
+        } else if( !$donation_id ) {
+            return array('status' => 1, 'message' => __('The donation was not created due to error.', 'leyka'));
+        }
+
         $donation = new Leyka_Donation($donation_id);
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-        $name = esc_attr(get_bloginfo('name').': '.__('donation', 'leyka'));
-
-        $invoice_template_id = $this->_rbk_response->invoice->id;
-        $invoice_template_access_token = $this->_rbk_response->invoiceAccessToken->payload;
-        update_post_meta($donation_id, '_leyka_donation_id_on_gateway_response', $invoice_template_id);
+        $invoice_id = $this->_rbk_response->invoice->id;
+        $invoice_access_token = $this->_rbk_response->invoiceAccessToken->payload;
+        $donation->rbk_invoice_id = $invoice_id;
 
         $this->_rbk_log['RBK_Form'] = $_POST;
         $this->_rbk_log['RBK_Response'] = $this->_rbk_response;
         $donation->add_gateway_response($this->_rbk_log);
 
-        $description = $campaign->payment_title ? esc_attr($campaign->payment_title) : $name;
-        $success_page_url = get_permalink(leyka_options()->opt('success_page'));
-
-        if('revo' !== $campaign->campaign_template) {?>
-            <script src="https://checkout.rbk.money/checkout.js"></script>
-            <script>
-                window.addEventListener('load', function () {
-                    checkout = RbkmoneyCheckout.configure({
-                        invoiceID: '<?php echo $invoice_template_id;?>',
-                        invoiceAccessToken: '<?php echo $invoice_template_access_token;?>',
-                        name: '<?php  echo $name;?>',
-                        description: '<?php echo $description?>',
-                        email: '<?php echo $donation->donor_email;?>',
-                        initialPaymentMethod: 'bankCard',
-                        paymentFlowHold: true,
-                        holdExpiration: 'capture',
-                        opened: function () {
-                            // console.log('Checkout opened');
-                        },
-                        closed: function () {
-                            // console.log('Checkout closed');
-                            return window.history.back();
-                        },
-                        finished: function () {
-                            // console.log('Payment successful finished');
-                            return window.location.href = '<?php echo $success_page_url;?>';
-                        }
-                    });
-                    checkout.open();
-                    window.addEventListener('popstate', function () {
-                        checkout.close();
-                    });
-                }, false);
-            </script><?php
-
-            die;
-
-        } else {
-
-            $script = <<<JS
-            checkout = RbkmoneyCheckout.configure( {
-			invoiceID : '{$invoice_template_id}',
-			invoiceAccessToken : '{$invoice_template_access_token}',
-			name : '{$name}',
-			description : '{$description}',
-			email : '{$donation->donor_email}',
-			initialPaymentMethod : 'bankCard',
-			paymentFlowHold : true,
-			holdExpiration : 'capture',
-    		opened : function () {
-	    		jQuery('.leyka-pf__redirect').removeClass('leyka-pf__redirect--open');
-			},
-			closed : function () {
-			    jQuery('.leyka-pf__redirect').removeClass('leyka-pf__redirect--open');
-			},
-			finished : function () {
-			return window.location.href = '{$success_page_url}';
-			}
-			} );
-			checkout.open();
-			    window.addEventListener( 'popstate', function () {
-    			checkout.close();
-			} );
-JS;
-            die( wp_json_encode(array('status' => 0, 'script' => trim($script))) );
-
-        }
+        return array(
+            'invoice_id' => $invoice_id,
+            'invoice_access_token' => $invoice_access_token,
+            'name' => sprintf(__('Donation #%s', 'leyka'), $donation_id),
+            'description' => esc_attr($campaign->payment_title),
+            'donor_email' => $donation->donor_email,
+            'default_pm' => 'bankCard',
+            'success_page' => leyka_get_success_page_url(),
+        );
 
     }
 
     public function _handle_service_calls($call_type = '') {
-        if('check_order' === $call_type) {
-            // Callback URLs are: some-website.org/leyka/service/rbk/check_order/
+        if('process' === $call_type) {
+            // Callback URLs are: some-website.org/leyka/service/rbk/process/
             //require options:
 
             //InvoiceCreated
             //InvoicePaid
             //PaymentRefunded
             //PaymentProcessed
-            do_action('leyka_rbk_gateway_web_hook');
+            do_action('Leyka_Rbk_Gateway_Webhook');
         }
     }
 
-    protected function _get_value_if_any($arr, $key, $val = false) {
-        return empty($arr[$key]) ? '' : ($val ? $val : $arr[$key]);
-    }
+//    protected function _get_value_if_any($arr, $key, $val = false) {
+//        return empty($arr[$key]) ? '' : ($val ? $val : $arr[$key]);
+//    }
 
     public function get_gateway_response_formatted(Leyka_Donation $donation) {
 
@@ -274,6 +222,37 @@ JS;
             __('Invoice ID:', 'leyka') => $vars['RBK_Response']->invoice->id,
         );
 
+    }
+
+    public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
+        switch($field_name) {
+            case 'invoice_id':
+            case 'rbk_invoice_id': // '_leyka_donation_id_on_gateway_response'
+                return get_post_meta($donation->id, '_leyka_rbk_invoice_id', true);
+            default:
+                return $value;
+        }
+    }
+
+    public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
+        switch($field_name) {
+            case 'invoice_id':
+            case 'rbk_invoice_id': // '_leyka_donation_id_on_gateway_response'
+                return update_post_meta($donation->id, '_leyka_rbk_invoice_id', $value);
+            default: return false;
+        }
+    }
+
+    public function save_donation_specific_data(Leyka_Donation $donation) {
+        if(isset($_POST['rbk-invoice-id']) && $donation->rbk_invoice_id != $_POST['rbk-invoice-id']) {
+            $donation->rbk_invoice_id = $_POST['rbk-invoice-id'];
+        }
+    }
+
+    public function add_donation_specific_data($donation_id, array $donation_params) {
+        if( !empty($donation_params['rbk_invoice_id']) ) {
+            update_post_meta($donation_id, '_leyka_rbk_invoice_id', $donation_params['rbk_invoice_id']);
+        }
     }
 
 }
@@ -309,6 +288,8 @@ class Leyka_Rbk_Card extends Leyka_Payment_Method {
 
         $this->_supported_currencies[] = 'rur';
         $this->_default_currency = 'rur';
+
+        $this->_processing_type = 'custom-process-submit-event';
 
     }
 
