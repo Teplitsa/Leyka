@@ -315,10 +315,6 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
     }
 
-    protected function _get_value_if_any($arr, $key, $val = false) {
-        return empty($arr[$key]) ? '' : ($val ? $val : $arr[$key]);
-    }
-
     public function get_gateway_response_formatted(Leyka_Donation $donation) {
 
         if( !$donation->gateway_response ) {

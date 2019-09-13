@@ -112,8 +112,10 @@ jQuery(document).ready(function($){
                     return window.location.href = response.success_page;
                 }
             });
+
             checkout.open();
-            window.addEventListener('popstate', function () {
+
+            window.addEventListener('popstate', function() {
                 checkout.close();
             });
 
