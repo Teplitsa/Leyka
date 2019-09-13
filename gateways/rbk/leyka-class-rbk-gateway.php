@@ -4,7 +4,6 @@
  */
 
 require_once LEYKA_PLUGIN_DIR.'gateways/rbk/includes/Leyka_Rbk_Gateway_Webhook_Verification.php';
-require_once LEYKA_PLUGIN_DIR.'gateways/rbk/includes/Leyka_Rbk_Gateway_Webhook.php';
 require_once LEYKA_PLUGIN_DIR.'gateways/rbk/includes/Leyka_Rbk_Gateway_Helper.php';
 
 class Leyka_Rbk_Gateway extends Leyka_Gateway {
@@ -98,6 +97,19 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
     }
 
+    public function get_donation_by_invoice_id($invoice_id) {
+
+        global $wpdb;
+        return $wpdb->get_var( // '_leyka_donation_id_on_gateway_response'
+            "SELECT `post_id` FROM 
+			{$wpdb->postmeta}
+			WHERE `meta_key` = '_leyka_rbk_invoice_id'
+			AND `meta_value`  = '$invoice_id'
+			LIMIT 1"
+        );
+
+    }
+
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
         $donation = new Leyka_Donation($donation_id);
@@ -139,8 +151,6 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         );
 
         $this->_rbk_response = json_decode( wp_remote_retrieve_body(wp_remote_post($url, $args)) );
-
-//        return $this->_rbk_response;
 
     }
 
@@ -184,16 +194,103 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
     }
 
     public function _handle_service_calls($call_type = '') {
-        if('process' === $call_type) {
-            // Callback URLs are: some-website.org/leyka/service/rbk/process/
-            //require options:
+        // Callback URLs are: some-website.org/leyka/service/rbk/process/
+        // Request content should contain "eventType" field.
+        // Possible field values: InvoicePaid, PaymentRefunded, PaymentProcessed, PaymentFailed, InvoiceCancelled, PaymentCancelled
 
-            //InvoiceCreated
-            //InvoicePaid
-            //PaymentRefunded
-            //PaymentProcessed
-            do_action('Leyka_Rbk_Gateway_Webhook');
+        $data = file_get_contents('php://input');
+        $check = Leyka_Rbk_Gateway_Webhook_Verification::verify_header_signature($data);
+        $data = json_decode($data, true);
+
+        if(is_wp_error($check)) {
+            wp_die($check->get_error_message());
+        } else if(empty($data['eventType']) || !is_string($data['eventType'])) {
+            wp_die(__("Webhook error: eventType field is not found or have incorrect value", 'leyka'));
         }
+
+        switch($data['eventType']) {
+            case 'InvoicePaid':
+            case 'PaymentRefunded':
+            case 'PaymentFailed':
+            case 'InvoiceCancelled':
+            case 'PaymentCancelled':
+                $this->_handle_webhook_donation_status_change($data);
+                break;
+            case 'PaymentProcessed':
+                $this->_handle_payment_processed($data);
+                break;
+            default:
+        }
+    }
+
+    protected function _handle_webhook_donation_status_change($data) {
+
+        if( !is_array($data) || empty($data['invoice']['id']) || empty($data['eventType']) ) {
+            return false; // Mb, return WP_Error?
+        }
+
+        $map_status = array(
+            'InvoicePaid' => 'funded',
+            'PaymentRefunded' => 'refunded',
+            'PaymentFailed' => 'failed',
+            'InvoiceCancelled' => 'failed',
+            'PaymentCancelled' => 'failed',
+        );
+        $donation_id = $this->get_donation_by_invoice_id($data['invoice']['id']);
+        $donation_status = empty($map_status[ $data['eventType'] ]) ? false : $map_status[ $data['eventType'] ];
+
+        if( !$donation_status ) {
+            return false; // Mb, return WP_Error?
+        }
+
+        $donation = new Leyka_Donation($donation_id);
+        $donation->status = $map_status[ $data['eventType'] ];
+
+        if($donation_status === 'failed') { // Log webhook error
+
+            $log = maybe_unserialize($donation->gateway_response);
+            $log['RBK_Hook_failed_data'] = $data;
+
+            $donation->add_gateway_response($log);
+
+        }
+
+        return true;
+
+    }
+
+    protected function _handle_payment_processed($data) {
+
+        // Log the webhook request content:
+        $donation_id = self::get_donation_by_invoice_id($data['invoice']['id']);
+        $donation = new Leyka_Donation($donation_id);
+
+        $log = maybe_unserialize($donation->gateway_response);
+        $log['RBK_Hook_processed_data'] = $data;
+
+        $donation->add_gateway_response($log);
+
+        // Capture invoice:
+        $invoice_id = $log['RBK_Hook_processed_data']['invoice']['id'];
+        $payment_id = $log['RBK_Hook_processed_data']['payment']['id'];
+
+        return wp_remote_post(
+            Leyka_Rbk_Gateway::RBK_API_HOST."/v2/processing/invoices/{$invoice_id}/payments/{$payment_id}/capture",
+            array(
+                'timeout' => 30,
+                'redirection' => 10,
+                'blocking' => true,
+                'httpversion' => '1.1',
+                'headers' => array(
+                    'X-Request-ID' => uniqid(),
+                    'Authorization' => 'Bearer '.leyka_options()->opt('leyka_rbk_api_key'),
+                    'Content-type' => 'application/json; charset=utf-8',
+                    'Accept' => 'application/json'
+                ),
+                'body' => json_encode(array('reason' => 'Donation auto capture',))
+            )
+        );
+
     }
 
 //    protected function _get_value_if_any($arr, $key, $val = false) {

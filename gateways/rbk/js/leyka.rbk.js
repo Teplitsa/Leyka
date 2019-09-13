@@ -74,28 +74,27 @@ jQuery(document).ready(function($){
 
             }
 
-            // if(leyka.gtm_ga_eec_available) {
-            //
-            //     window.dataLayer = window.dataLayer || [];
-            //
-            //     dataLayer.push({
-            //         'event': 'eec.add', // eec.addToCart ?
-            //         'ecommerce': {
-            //             // 'currencyCode': response.currency, // For some reason it doesn't work
-            //             'add': {
-            //                 'products': [{
-            //                     'name': response.payment_title,
-            //                     'id': response.donation_id,
-            //                     'price': response.amount,
-            //                     'quantity': 1
-            //                 }]
-            //             }
-            //         }
-            //     });
-            //
-            // }
+            if(leyka.gtm_ga_eec_available) {
 
-            // window.addEventListener('load', function () {
+                window.dataLayer = window.dataLayer || [];
+
+                dataLayer.push({
+                    'event': 'eec.add', // eec.addToCart ?
+                    'ecommerce': {
+                        // 'currencyCode': response.currency, // For some reason it doesn't work
+                        'add': {
+                            'products': [{
+                                'name': response.description,
+                                'id': response.donation_id,
+                                'price': response.amount,
+                                'quantity': 1
+                            }]
+                        }
+                    }
+                });
+
+            }
+
             var checkout = RbkmoneyCheckout.configure({
                 invoiceID: response.invoice_id,
                 invoiceAccessToken: response.invoice_access_token,
@@ -117,41 +116,6 @@ jQuery(document).ready(function($){
             window.addEventListener('popstate', function () {
                 checkout.close();
             });
-            // }, false);
-
-            // RBK FORM DISPLAYING
-            // var widget = new cp.CloudPayments(),
-            //     data = {};
-            //
-            // if(is_recurring) {
-            //     data.cloudPayments = {recurrent: {interval: 'Month', period: 1}};
-            // }
-            //
-            // if($revo_redirect_step.length) {
-            //     $revo_redirect_step.removeClass('leyka-pf__redirect--open');
-            // }
-            //
-            // widget.charge({
-            //     language: 'ru-RU',
-            //     publicId: response.public_id,
-            //     description: leyka_decode_htmlentities(response.payment_title),
-            //     amount: parseFloat(response.amount),
-            //     currency: response.currency,
-            //     invoiceId: parseInt(response.donation_id),
-            //     accountId: response.donor_email,
-            //     data: data
-            // }, function(options){ // success callback
-            //
-            //     window.location.href = response.success_page;
-            //     $errors.html('').hide();
-            //
-            // }, function(reason, options){ // fail callback
-            //     addError($errors, leyka.cp_donation_failure_reasons[reason] || reason);
-            // });
-            //
-            // if($form.hasClass('leyka-revo-form')) {
-            //     $form.closest('.leyka-pf').leykaForm('close');
-            // }
 
         });
 

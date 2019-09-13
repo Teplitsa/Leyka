@@ -3,6 +3,8 @@
  * Leyka_Rbk_Gateway_Webhook class
  */
 
+/** @TODO ATM this file is not included, all it's functions are merged in the main gateway class. REMOVE THE FILE when debugging is finished. */
+
 class Leyka_Rbk_Gateway_Webhook {
 
     public static function run() {
@@ -14,30 +16,26 @@ class Leyka_Rbk_Gateway_Webhook {
     public static function hook() {
 
         $data = file_get_contents('php://input');
-        $verification = new Leyka_Rbk_Gateway_Webhook_Verification();
-        $check = $verification->verify_header_signature($data);
+        $check = Leyka_Rbk_Gateway_Webhook_Verification::verify_header_signature($data);
 
-        if( !is_wp_error($check) ) {
-
-            $hook_data = json_decode($data, true);
-            if ('PaymentRefunded' == $hook_data['eventType']) {
-                self::change_donation_status($hook_data);
-            } else if ('InvoicePaid' == $hook_data['eventType']) {
-                self::change_donation_status($hook_data);
-            } else if ('PaymentProcessed' == $hook_data['eventType']) {
-                self::processed_log($hook_data);
-                self::invoice_capture($hook_data);
-            } else if (in_array($hook_data['eventType'], array('PaymentFailed', 'InvoiceCancelled', 'PaymentCancelled'))) {
-                self::donation_failed($hook_data);
-            }
-
+        if(is_wp_error($check)) {
+            wp_die($check->get_error_message());
         }
 
-        wp_die($check->get_error_message());
+        $hook_data = json_decode($data, true);
+        if('PaymentRefunded' == $hook_data['eventType']) {
+            self::handle_donation_status_change($hook_data);
+        } else if('InvoicePaid' == $hook_data['eventType']) {
+            self::handle_donation_status_change($hook_data);
+        } else if('PaymentProcessed' == $hook_data['eventType']) {
+            self::handle_payment_processed($hook_data);
+        } else if(in_array($hook_data['eventType'], array('PaymentFailed', 'InvoiceCancelled', 'PaymentCancelled'))) {
+            self::handle_donation_failed($hook_data);
+        }
 
     }
 
-    public static function donation_failed($data) {
+    public static function handle_donation_failed($data) {
 
         $donation_id = self::get_donation_by_invoice_id($data['invoice']['id']);
         $donation = new Leyka_Donation($donation_id);
@@ -50,20 +48,6 @@ class Leyka_Rbk_Gateway_Webhook {
         $donation->add_gateway_response($log);
 
         return wp_update_post(array('ID' => $donation_id, 'post_status' => 'failed'));
-
-    }
-
-    public static function processed_log($data) {
-
-        $donation_id = self::get_donation_by_invoice_id($data['invoice']['id']);
-        $donation = new Leyka_Donation($donation_id);
-
-        $log = $donation->gateway_response;
-        $log = maybe_unserialize($log);
-
-        $log['RBK_Hook_processed_data'] = $data;
-
-        $donation->add_gateway_response($log);
 
     }
 
@@ -80,13 +64,32 @@ class Leyka_Rbk_Gateway_Webhook {
 
     }
 
-    public static function invoice_capture($data) {
+    public static function handle_donation_status_change($data) {
 
+        $map_status = array('InvoicePaid' => 'funded', 'PaymentRefunded' => 'refunded',);
+        $donation_id = self::get_donation_by_invoice_id($data['invoice']['id']);
+
+        if(is_numeric($donation_id) && array_key_exists($data['eventType'], $map_status)) {
+
+            $donation = new Leyka_Donation($donation_id);
+            $donation->status = $map_status[$data['eventType']];
+
+        }
+
+    }
+
+    public static function handle_payment_processed($data) {
+
+        // Log the webhook request content:
         $donation_id = self::get_donation_by_invoice_id($data['invoice']['id']);
         $donation = new Leyka_Donation($donation_id);
 
         $log = maybe_unserialize($donation->gateway_response);
+        $log['RBK_Hook_processed_data'] = $data;
 
+        $donation->add_gateway_response($log);
+
+        // Capture invoice:
         $invoice_id = $log['RBK_Hook_processed_data']['invoice']['id'];
         $payment_id = $log['RBK_Hook_processed_data']['payment']['id'];
 
@@ -106,20 +109,6 @@ class Leyka_Rbk_Gateway_Webhook {
                 'body' => json_encode(array('reason' => 'Donation auto capture',))
             )
         );
-
-    }
-
-    public static function change_donation_status($data) {
-
-        $map_status = array('InvoicePaid' => 'funded', 'PaymentRefunded' => 'refunded',);
-        $donation_id = self::get_donation_by_invoice_id($data['invoice']['id']);
-
-        if(is_numeric($donation_id) && array_key_exists($data['eventType'], $map_status)) {
-
-            $donation = new Leyka_Donation($donation_id);
-            $donation->status = $map_status[$data['eventType']];
-
-        }
 
     }
 

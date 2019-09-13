@@ -10,15 +10,12 @@ class Leyka_Rbk_Gateway_Helper {
     }
 
     public function status_watcher($post) {
-        if ('leyka_donation' == $post->post_type) {
-
-            $donation = new Leyka_Donation($post->ID);
-            $this->create_refund($donation);
-
+        if($post->post_type == 'leyka_donation') {
+            $this->create_refund(new Leyka_Donation($post));
         }
     }
 
-    public function create_refund($donation) {
+    public function create_refund(Leyka_Donation $donation) {
 
         $log = maybe_unserialize($donation->gateway_response);
 

@@ -14,63 +14,49 @@ class Leyka_Rbk_Gateway_Webhook_Verification {
     const SIGNATURE_DIGEST = 'digest';
     const SIGNATURE_PATTERN = "|alg=(\S+);\sdigest=(.*)|i";
 
-    public function verify_header_signature($content) {
-
-        $params_signature = false;
+    public static function verify_header_signature($content) {
 
         if( !isset($_SERVER[self::SIGNATURE]) ) {
-            new WP_Error(
-                'Leyka_webhook_error',
-                'Webhook notification signature missing'
-            );
+            return new WP_Error('leyka_webhook_error', __('Webhook notification signature missing', 'leyka'));
         }
 
-        if(isset($_SERVER[self::SIGNATURE])) {
-            $params_signature = $this->_get_parameters_content_signature($_SERVER[self::SIGNATURE]);
-        }
+        $params_signature = self::_get_parameters_content_signature($_SERVER[self::SIGNATURE]);
 
         if(empty($params_signature[self::SIGNATURE_ALG])) {
             return new WP_Error(
-                'Leyka_webhook_error',
-                'Missing required parameter ' . self::SIGNATURE_ALG
+                'leyka_webhook_error',
+                sprintf(__('Missing required parameter: %s', 'leyka'), self::SIGNATURE_ALG)
             );
         }
 
         if(empty($params_signature[self::SIGNATURE_DIGEST])) {
             return new WP_Error(
-                'Leyka_webhook_error',
-                'Missing required parameter ' . self::SIGNATURE_DIGEST
+                'leyka_webhook_error',
+                sprintf(__('Missing required parameter: %s', 'leyka'), self::SIGNATURE_DIGEST)
             );
         }
 
-        if( !$this->_verification_signature(
+        // Cleanup the webhook public key:
+        $public_key = str_replace(
+            array('-----BEGIN PUBLIC KEY-----', '-----END PUBLIC KEY-----'),
+            '',
+            leyka_options()->opt('rbk_api_web_hook_key')
+        );
+        $public_key = '-----BEGIN PUBLIC KEY-----'.str_replace(' ', PHP_EOL, $public_key).'-----END PUBLIC KEY-----';
+
+        if( !self::_verification_signature(
             $content,
-            $this->_urlsafe_b64decode($params_signature[self::SIGNATURE_DIGEST]),
-            $this->_get_webhook_public_key()
+            self::_urlsafe_b64decode($params_signature[self::SIGNATURE_DIGEST]),
+            $public_key
         )) {
-            return new WP_Error(
-                'Leyka_webhook_error',
-                'Webhook notification signature mismatch'
-            );
+            return new WP_Error('Leyka_webhook_error', __('Webhook notification signature mismatch', 'leyka'));
         }
 
         return true;
 
     }
 
-    protected function _get_webhook_public_key() {
-
-        $public_key = str_replace(
-            array('-----BEGIN PUBLIC KEY-----', '-----END PUBLIC KEY-----'),
-            '',
-            leyka_options()->opt('rbk_api_web_hook_key')
-        );
-
-        return '-----BEGIN PUBLIC KEY-----'.str_replace(' ', PHP_EOL, $public_key).'-----END PUBLIC KEY-----';
-
-    }
-
-    protected function _verification_signature($data = '', $signature = '', $public_key = '') {
+    protected static function _verification_signature($data = '', $signature = '', $public_key = '') {
 
         if( !$data || !$signature || !$public_key ) {
             return false;
@@ -85,7 +71,7 @@ class Leyka_Rbk_Gateway_Webhook_Verification {
 
     }
 
-    protected function _urlsafe_b64decode($string) {
+    protected static function _urlsafe_b64decode($string) {
 
         $data = str_replace(array('-', '_'), array('+', '/'), $string);
         $mod4 = strlen($data) % 4;
@@ -98,14 +84,14 @@ class Leyka_Rbk_Gateway_Webhook_Verification {
 
     }
 
-    protected function _urlsafe_b64encode($string) {
+    protected static function _urlsafe_b64encode($string) {
 
         $data = base64_encode($string);
         return str_replace(array('+', '/'), array('-', '_'), $data);
 
     }
 
-    protected function _get_parameters_content_signature($content_signature) {
+    protected static function _get_parameters_content_signature($content_signature) {
 
         preg_match_all(static::SIGNATURE_PATTERN, $content_signature, $matches, PREG_PATTERN_ORDER);
         return array(
