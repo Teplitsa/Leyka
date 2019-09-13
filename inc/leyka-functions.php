@@ -30,15 +30,14 @@ if( !function_exists('mb_strtoupper') ) {
 
 if( !function_exists('array_key_first') ) {
     function array_key_first(array $array) {
-        if(count($array)) {
+        return $array ? key(array_slice($array, 1)) : null;
 
-            reset($array);
-            return key($array);
+    }
+}
 
-        }
-
-        return null;
-
+if( !function_exists('array_key_last') ) {
+    function array_key_last(array $array) {
+        return $array ? key(array_slice($array, -1)) : null;
     }
 }
 

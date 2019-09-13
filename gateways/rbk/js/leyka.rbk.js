@@ -79,7 +79,7 @@ jQuery(document).ready(function($){
                 window.dataLayer = window.dataLayer || [];
 
                 dataLayer.push({
-                    'event': 'eec.add', // eec.addToCart ?
+                    'event': 'eec.add',
                     'ecommerce': {
                         // 'currencyCode': response.currency, // For some reason it doesn't work
                         'add': {

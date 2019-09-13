@@ -2102,7 +2102,7 @@ class Leyka_Donation {
                 return $donor_account_error && is_wp_error($donor_account_error) ? $donor_account_error : false;
 
             case 'gateway_response':
-                return $this->_donation_meta['gateway_response'];
+                return maybe_unserialize($this->_donation_meta['gateway_response']);
             case 'gateway_response_formatted':
                 return $this->gateway ?
                     leyka_get_gateway_by_id($this->gateway)->get_gateway_response_formatted($this) : array();
@@ -2382,9 +2382,9 @@ class Leyka_Donation {
 
     }
 
-    public function add_gateway_response($resp_text) {
+    public function add_gateway_response($response) {
 
-        $this->_donation_meta['gateway_response'] = $resp_text;
+        $this->_donation_meta['gateway_response'] = $response;
 
         update_post_meta($this->_id, 'leyka_gateway_response', $this->_donation_meta['gateway_response']);
 

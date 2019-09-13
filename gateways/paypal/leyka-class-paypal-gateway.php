@@ -108,8 +108,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             'paypal_keep_payment_logs' => array(
                 'type' => 'checkbox',
                 'default' => true,
-                'title' => __('Keep detailed logs of all PayPal service operations', 'leyka'),
-                'comment' => __('Check if you want to keep detailed logs of all PayPal service operations for each incoming donation.', 'leyka'),
+                'title' => __('Keep detailed logs of all gateway service operations', 'leyka'),
+                'comment' => __('Check if you want to keep detailed logs of all gateway service operations for each incoming donation.', 'leyka'),
                 'short_format' => true,
                 'field_classes' => array('old-api'),
             ),

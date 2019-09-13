@@ -62,7 +62,14 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 'comment' => __('Please, enter your webhook public key value here.', 'leyka'),
                 'required' => true,
                 'placeholder' => __('-----BEGIN PUBLIC KEY----- ...', 'leyka'),
-            )
+            ),
+            'rbk_keep_payment_logs' => array(
+                'type' => 'checkbox',
+                'default' => false,
+                'title' => __('Keep detailed logs of all gateway service operations', 'leyka'),
+                'comment' => __('Check if you want to keep detailed logs of all gateway service operations for each incoming donation.', 'leyka'),
+                'short_format' => true,
+            ),
         );
 
     }
@@ -145,10 +152,12 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             ))
         );
 
-        $this->_rbk_log['RBK_Request'] = array(
-            'url' => $url,
-            'params' => $args,
-        );
+        if(leyka_options()->opt('rbk_keep_payment_logs')) {
+            $this->_rbk_log['RBK_Request'] = array(
+                'url' => $url,
+                'params' => $args,
+            );
+        }
 
         $this->_rbk_response = json_decode( wp_remote_retrieve_body(wp_remote_post($url, $args)) );
 
@@ -177,13 +186,19 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         $invoice_access_token = $this->_rbk_response->invoiceAccessToken->payload;
         $donation->rbk_invoice_id = $invoice_id;
 
-        $this->_rbk_log['RBK_Form'] = $_POST;
-        $this->_rbk_log['RBK_Response'] = $this->_rbk_response;
-        $donation->add_gateway_response($this->_rbk_log);
+        if(leyka_options()->opt('rbk_keep_payment_logs')) {
+
+            $this->_rbk_log['RBK_Response'] = (array)$this->_rbk_response;
+            $donation->add_gateway_response($this->_rbk_log);
+
+        } else {
+            $donation->add_gateway_response((array)$this->_rbk_response);
+        }
 
         return array(
             'invoice_id' => $invoice_id,
             'invoice_access_token' => $invoice_access_token,
+            'amount' => $donation->amount, // For GA EEC, "eec.add" event
             'name' => sprintf(__('Donation #%s', 'leyka'), $donation_id),
             'description' => esc_attr($campaign->payment_title),
             'donor_email' => $donation->donor_email,
@@ -205,7 +220,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         if(is_wp_error($check)) {
             wp_die($check->get_error_message());
         } else if(empty($data['eventType']) || !is_string($data['eventType'])) {
-            wp_die(__("Webhook error: eventType field is not found or have incorrect value", 'leyka'));
+            wp_die(__('Webhook error: eventType field is not found or have incorrect value', 'leyka'));
         }
 
         switch($data['eventType']) {
@@ -246,14 +261,16 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         $donation = new Leyka_Donation($donation_id);
         $donation->status = $map_status[ $data['eventType'] ];
 
-        if($donation_status === 'failed') { // Log webhook error
+        // Log webhook response:
+        $data_to_log = $data;
+        if(leyka_options()->opt('rbk_keep_payment_logs')) {
 
-            $log = maybe_unserialize($donation->gateway_response);
-            $log['RBK_Hook_failed_data'] = $data;
-
-            $donation->add_gateway_response($log);
+            $data_to_log = $donation->gateway_response;
+            $data_to_log['RBK_Hook_data'] = $data;
 
         }
+
+        $donation->add_gateway_response($data_to_log);
 
         return true;
 
@@ -265,14 +282,19 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         $donation_id = self::get_donation_by_invoice_id($data['invoice']['id']);
         $donation = new Leyka_Donation($donation_id);
 
-        $log = maybe_unserialize($donation->gateway_response);
-        $log['RBK_Hook_processed_data'] = $data;
+        $data_to_log = $data;
+        if(leyka_options()->opt('rbk_keep_payment_logs')) {
 
-        $donation->add_gateway_response($log);
+            $data_to_log = $donation->gateway_response;
+            $data_to_log['RBK_Hook_processed_data'] = $data;
+
+        }
+
+        $donation->add_gateway_response($data_to_log);
 
         // Capture invoice:
-        $invoice_id = $log['RBK_Hook_processed_data']['invoice']['id'];
-        $payment_id = $log['RBK_Hook_processed_data']['payment']['id'];
+        $invoice_id = $data['invoice']['id'];
+        $payment_id = $data['payment']['id'];
 
         return wp_remote_post(
             Leyka_Rbk_Gateway::RBK_API_HOST."/v2/processing/invoices/{$invoice_id}/payments/{$payment_id}/capture",
@@ -293,9 +315,9 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
     }
 
-//    protected function _get_value_if_any($arr, $key, $val = false) {
-//        return empty($arr[$key]) ? '' : ($val ? $val : $arr[$key]);
-//    }
+    protected function _get_value_if_any($arr, $key, $val = false) {
+        return empty($arr[$key]) ? '' : ($val ? $val : $arr[$key]);
+    }
 
     public function get_gateway_response_formatted(Leyka_Donation $donation) {
 
@@ -303,20 +325,20 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             return array();
         }
 
-        $vars = maybe_unserialize($donation->gateway_response);
+        $vars = $donation->gateway_response;
         if( !$vars || !is_array($vars) ) {
             return array();
         }
 
+        $vars = empty($vars['RBK_Response']) ? $vars : $vars[array_key_last($vars)];
+
         return array(
-            __('Operation date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($vars['RBK_Response']->invoice->createdAt)),
-            __('Shop Account:', 'leyka') => $vars['RBK_Response']->invoice->shopID,
-            __('Full donation amount:', 'leyka') => $vars['RBK_Response']->invoice->amount / 100,
-            __('Donation currency:', 'leyka') => $vars['RBK_Response']->invoice->currency,
-            __('Payment method selected:', 'leyka') => $vars['RBK_Form']['leyka_payment_method'],
-            __('Operation status:', 'leyka') => $vars['RBK_Response']->invoice->status,
-            __('Donor name:', 'leyka') => $vars['RBK_Form']['leyka_donor_name'],
-            __('Invoice ID:', 'leyka') => $vars['RBK_Response']->invoice->id,
+            __('Invoice ID:', 'leyka') => $vars['invoice']['id'],
+            __('Operation date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($vars['invoice']['createdAt'])),
+            __('Operation status:', 'leyka') => $vars['invoice']['status'],
+            __('Full donation amount:', 'leyka') => $vars['invoice']['amount'] / 100,
+            __('Donation currency:', 'leyka') => $vars['invoice']['currency'],
+            __('Shop Account:', 'leyka') => $vars['invoice']['shopID'],
         );
 
     }
