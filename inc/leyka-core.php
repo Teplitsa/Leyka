@@ -145,7 +145,7 @@ class Leyka extends Leyka_Singleton {
             }, 1000, 3);
 
             // Refuse the login for Donors without Accounts:
-            add_action('wp_login', function($login, WP_User $user){
+            add_action('wp_login', function($login, $user){
                 if(
                     leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, true, $user)
                     && !$user->has_cap(Leyka_Donor::DONOR_ACCOUNT_ACCESS_CAP)
