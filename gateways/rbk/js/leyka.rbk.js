@@ -9,11 +9,14 @@ jQuery(document).ready(function($){
                 scrollTop: $errors_block.offset().top - 35
             }, 250);
 
+            return false;
+
         }
 
         /** @var leyka object Localization strings */
 
         var $form = $(this),
+            $form_wrapper = $form.parents('.leyka-payment-form'),
             $errors = $('#leyka-submit-errors');
 
         // Selected PM don't belong to the RBK gateway:
@@ -24,11 +27,6 @@ jQuery(document).ready(function($){
 
         if($pm_field.length <= 0 || !gateway_is_chosen) {
             return; /** @todo Add some error to the form! Or at least do some console.logging */
-        }
-
-        var $revo_redirect_step = $form.closest('.leyka-pf').find('.leyka-pf__redirect');
-        if($revo_redirect_step.length) {
-            $revo_redirect_step.addClass('leyka-pf__redirect--open');
         }
 
         if($form.data('submit-in-process')) {
@@ -62,15 +60,15 @@ jQuery(document).ready(function($){
             $form.data('submit-in-process', 0);
 
             response = $.parseJSON(response);
+
             if( !response || typeof response.status === 'undefined' ) {
-
-                addError($errors, leyka.ajax_wrong_server_response);
-                return false;
-
+                return addError($errors, leyka.ajax_wrong_server_response);
             } else if(response.status !== 0 && typeof response.message !== 'undefined') {
+                return addError($errors, response.message);
+            } else if(typeof response.pre_submit_step !== 'undefined') { // Inbetween step
 
-                addError($errors, response.message);
-                return false;
+                $form.hide();
+                $form_wrapper.prepend('<div class="leyka-rbk-pre-submit-step">'+response.pre_submit_step+'</div>');
 
             }
 
@@ -95,29 +93,42 @@ jQuery(document).ready(function($){
 
             }
 
-            var checkout = RbkmoneyCheckout.configure({
-                invoiceID: response.invoice_id,
-                invoiceAccessToken: response.invoice_access_token,
-                name: response.name,
-                description: response.description,
-                email: response.donor_email,
-                initialPaymentMethod: 'bankCard',
-                paymentFlowHold: true,
-                holdExpiration: 'capture',
-                opened: function(){},
-                closed: function(){
-                    return window.history.back();
-                },
-                finished: function(){
-                    return window.location.href = response.success_page;
-                }
-            });
+            var $pre_submit_step = $form_wrapper.find('.leyka-rbk-pre-submit-step')
+                .on('click.leyka', '.rbk-final-submit-button', function(e){ // Display the RBK payment data widget
 
-            checkout.open();
+                    var checkout = RbkmoneyCheckout.configure({
+                        invoiceID: response.invoice_id,
+                        invoiceAccessToken: response.invoice_access_token,
+                        name: response.name,
+                        description: response.description,
+                        email: response.donor_email,
+                        initialPaymentMethod: 'bankCard',
+                        paymentFlowHold: true,
+                        holdExpiration: 'capture',
+                        opened: function(){},
+                        closed: function(){
 
-            window.addEventListener('popstate', function() {
-                checkout.close();
-            });
+                            $form.show();
+                            $form_wrapper.find('.leyka-rbk-pre-submit-step').hide();
+
+                        },
+                        finished: function(){
+                            window.location.href = response.success_page;
+                        }
+                    });
+
+                    checkout.open();
+
+                    window.addEventListener('popstate', function() {
+                        checkout.close();
+                    });
+
+                }).on('click.leyka', '.rbk-final-cancel-button', function(e){ // Hide the pre-submit step
+
+                    $form.show();
+                    $pre_submit_step.hide();
+
+                });
 
         });
 

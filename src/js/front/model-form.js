@@ -104,7 +104,8 @@ var leykaValidateForm,
         $('.leyka-pf__form').on('submit.leyka', 'form.leyka-revo-form', function(e){
 
             var $_form = $(this),
-                $active_step = $_form.find('.step.step--active');
+                $active_step = $_form.find('.step.step--active'),
+                $pm_selected = $_form.find('input[name="leyka_payment_method"]:checked');
 
             if( !$active_step.hasClass('step--person') ) { // Do not validate + submit if donor's data step not reached yet
 
@@ -123,96 +124,94 @@ var leykaValidateForm,
 
 			e.preventDefault();
 
-            if(leykaValidateForm($_form)) { // Form is valid
+            if( !leykaValidateForm($_form) ) { // Form errors exist
 
-				var $pm_selected = $_form.find('input[name="leyka_payment_method"]:checked');
+                e.preventDefault();
+                e.stopPropagation();
+                return;
 
-                if($pm_selected.data('processing') !== 'default') {
+            }
 
-					if($pm_selected.data('processing') !== 'custom-process-submit-event') {
-						e.stopPropagation();
-					}
-                    return;
+            if($pm_selected.data('processing') !== 'default') {
 
+                if($pm_selected.data('processing') !== 'custom-process-submit-event') {
+                    e.stopPropagation();
                 }
+                return;
 
-                // Open "waiting" form step:
-                var $redirect_step = $_form.closest('.leyka-pf').find('.leyka-pf__redirect'),
-                    data_array = $_form.serializeArray(),
-                    data = {action: 'leyka_ajax_get_gateway_redirect_data'};
+            }
 
-                for(var i=0; i<data_array.length; i++) {
-                    data[data_array[i].name] = data_array[i].value;
-                }
+            // Open "waiting" form step:
+            var $redirect_step = $_form.closest('.leyka-pf').find('.leyka-pf__redirect'),
+                data_array = $_form.serializeArray(),
+                data = {action: 'leyka_ajax_get_gateway_redirect_data'};
 
-                if($pm_selected.data('ajax-without-form-submission')) {
-                	data['without_form_submission'] = true;
-				}
+            for(var i=0; i<data_array.length; i++) {
+                data[data_array[i].name] = data_array[i].value;
+            }
 
-                $redirect_step.addClass('leyka-pf__redirect--open');
+            if($pm_selected.data('ajax-without-form-submission')) {
+                data['without_form_submission'] = true;
+            }
 
-                // Get gateway redirection form and submit it manually:
-                $.post(leyka_get_ajax_url(), data).done(function(response){
+            $redirect_step.addClass('leyka-pf__redirect--open');
 
-                    response = $.parseJSON(response);
+            // Get gateway redirection form and submit it manually:
+            $.post(leyka_get_ajax_url(), data).done(function(response){
 
-					// Wrong answer from ajax handler:
-                    if( !response || typeof response.status === 'undefined' ) {
+                response = $.parseJSON(response);
+
+                // Wrong answer from ajax handler:
+                if( !response || typeof response.status === 'undefined' ) {
 
 //                         $errors.html(leyka.ajax_wrong_server_response).show();
 //                         $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
 //                             scrollTop: $errors.offset().top - 35
 //                         }, 250);
 
-                        return false;
+                    return false;
 
-                    } else if(response.status !== 0 && typeof response.message !== 'undefined') {
+                } else if(response.status !== 0 && typeof response.message !== 'undefined') {
 
-                        // $errors.html(response.message).show();
-                        // $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
-                        //     scrollTop: $errors.offset().top - 35
-                        // }, 250);
+                    // $errors.html(response.message).show();
+                    // $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
+                    //     scrollTop: $errors.offset().top - 35
+                    // }, 250);
 
-                        return false;
+                    return false;
 
-                    } else if( !response.payment_url ) {
+                } else if( !response.payment_url ) {
 
-                        // $errors.html(leyka.cp_not_set_up).show();
-                        // $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
-                        //     scrollTop: $errors.offset().top - 35
-                        // }, 250);
+                    // $errors.html(leyka.cp_not_set_up).show();
+                    // $('html, body').animate({ // 35px is a height of the WP admin bar (just in case)
+                    //     scrollTop: $errors.offset().top - 35
+                    // }, 250);
 
-                        return false;
+                    return false;
 
+                }
+
+                var redirect_form_html = '<form class="leyka-auto-submit" action="'+response.payment_url+'" method="post">';
+
+                $.each(response, function(field_name, value){
+                    if(field_name !== 'payment_url') {
+                        redirect_form_html += '<input type="hidden" name="'+field_name+'" value="'+value+'">';
                     }
-
-                    var redirect_form_html = '<form class="leyka-auto-submit" action="'+response.payment_url+'" method="post">';
-
-                    $.each(response, function(field_name, value){
-                        if(field_name !== 'payment_url') {
-                            redirect_form_html += '<input type="hidden" name="'+field_name+'" value="'+value+'">';
-                        }
-                    });
-                    redirect_form_html += '</form>';
-
-                    $redirect_step.append(redirect_form_html);
-
-                    if(typeof response.submission_redirect_type === 'undefined' || response.submission_redirect_type === 'auto') {
-                        $redirect_step.find('.leyka-auto-submit').submit();
-                    } else if(response.submission_redirect_type === 'redirect') {
-                        window.location.href = $redirect_step.find('.leyka-auto-submit').prop('action');
-                    }
-
                 });
+                redirect_form_html += '</form>';
 
-            } else { // Errors exist
+                $redirect_step.append(redirect_form_html);
 
-                e.preventDefault();
-                e.stopPropagation();
+                if(typeof response.submission_redirect_type === 'undefined' || response.submission_redirect_type === 'auto') {
+                    $redirect_step.find('.leyka-auto-submit').submit();
+                } else if(response.submission_redirect_type === 'redirect') {
+                    window.location.href = $redirect_step.find('.leyka-auto-submit').prop('action');
+                }
 
-            }
+            });
 
         });
+
     }
 
     function bindDonorStepEvents() {

@@ -204,6 +204,10 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             'donor_email' => $donation->donor_email,
             'default_pm' => 'bankCard',
             'success_page' => leyka_get_success_page_url(),
+            'pre_submit_step' => '<div class="leyka-rbk-final-submit-buttons">
+                <button class="rbk-final-submit-button">'.sprintf(__('Donate %s', 'leyka'), $donation->amount.' '.$donation->currency_label).'</button>
+                <button class="rbk-final-cancel-button">'.__('Cancel', 'leyka').'</button>
+            </div>'
         );
 
     }
