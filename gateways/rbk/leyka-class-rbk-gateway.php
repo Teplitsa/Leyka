@@ -91,7 +91,6 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 false,
                 true
             );
-
             wp_enqueue_script(
                 'leyka-rbk',
                 LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Rbk_Gateway::get_instance()->id.'/js/leyka.rbk.js',
@@ -99,6 +98,13 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 LEYKA_VERSION,
                 true
             );
+
+//            wp_enqueue_style(
+//                'leyka-rbk-css',
+//                LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Rbk_Gateway::get_instance()->id.'/js/leyka.rbk.scss',
+//                array(),
+//                LEYKA_VERSION
+//            );
 
         }
 
