@@ -249,11 +249,8 @@ gulp.task('svg-opt', function(){
 gulp.task('watch', function(done){
 
     // Frontend:
-    gulp.watch([basePaths.src + 'sass/*.scss', basePaths.src + 'sass/form_templates/*/*.scss'], gulp.series('build-front-css'));
-    gulp.watch([basePaths.src + 'js/*.js', basePaths.src + 'js/front/*.js'], gulp.series('build-front-js'));
-
-    // gulp.watch([basePaths.src + 'sass/*.scss'], gulp.series('build-front-css'));
-    // gulp.watch([basePaths.src + 'js/*.js', basePaths.src + 'js/front/*.js'], gulp.series('build-front-js'));
+    gulp.watch([basePaths.src+'sass/*.scss', basePaths.src+'sass/form_templates/*/*.scss', basePaths.root+'gateways/*/css/*.public.scss'], gulp.series('build-front-css'));
+    gulp.watch([basePaths.src+'js/*.js', basePaths.src+'js/front/*.js'], gulp.series('build-front-js'));
 
     // Backend:
     gulp.watch(

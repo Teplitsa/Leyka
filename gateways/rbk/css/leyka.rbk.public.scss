@@ -1,16 +1,29 @@
-.leyka-rbk-final-submit-buttons {
+@import './../../../src/sass/typo';
+@import './../../../src/sass/presets';
+
+.leyka-rbk-pre-submit-step {
 
     display: flex;
     flex-flow: row wrap;
     justify-content: space-evenly;
-    align-items: center;
 
-    button {
+    height: 100%;
 
-        flex: 1 -1;
+    .leyka-rbk-final-submit-buttons {
 
-        text-align: center;
-        @include button(action);
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-evenly;
+        align-items: center;
+
+        button {
+
+            flex: 1 -1;
+
+            text-align: center;
+            @include button(action);
+
+        }
 
     }
 
