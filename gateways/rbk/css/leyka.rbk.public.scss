@@ -11,6 +11,8 @@
 
     .leyka-rbk-final-submit-buttons {
 
+        flex-grow: 1;
+
         display: flex;
         flex-flow: row wrap;
         justify-content: space-evenly;
@@ -18,7 +20,7 @@
 
         button {
 
-            flex: 1 -1;
+            flex: 1 -1 auto;
 
             text-align: center;
             @include button(action);
