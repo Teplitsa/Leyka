@@ -147,7 +147,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                     strtotime('+2 minute', current_time('timestamp', 1))
                 ),
                 'currency' => 'RUB',
-                'product' => $donation->payment_title,
+                'product' => sprintf(__('%s - recurring donation'), $donation->payment_title),
                 'description' => $campaign->short_description,
             ))
         );
