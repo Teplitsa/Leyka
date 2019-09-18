@@ -74,10 +74,10 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         return 'https://payments.chronopay.com/';
     }
 
-    public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
+    public function submission_form_data($form_data, $pm_id, $donation_id) {
 
         if(false === strpos($pm_id, 'chronopay')) {
-            return $form_data_vars; // It's not our PM
+            return $form_data; // It's not our PM
         }
 
         if(is_wp_error($donation_id)) { /** @var WP_Error $donation_id */
@@ -104,7 +104,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
         $country = $donation->currency == 'rur' ? 'RUS' : '';
 
-        $form_data_vars =  array(
+        $form_data =  array(
             'product_id' => $chronopay_product_id,
             'product_price' => $price,
             'product_price_currency' => $this->_get_currency_id($donation->currency),
@@ -124,14 +124,14 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         );
 
         if(leyka_options()->opt('chronopay_use_payment_uniqueness_control')) {
-            $form_data_vars['order_id'] = $donation_id;
+            $form_data['order_id'] = $donation_id;
         }
 
         if($country) {
-            $form_data_vars['country'] = $country;
+            $form_data['country'] = $country;
         }
 
-        return $form_data_vars;
+        return $form_data;
 
     }
 

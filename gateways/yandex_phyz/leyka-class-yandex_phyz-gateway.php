@@ -74,7 +74,7 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
 
     }
 
-    public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
+    public function submission_form_data($form_data, $pm_id, $donation_id) {
 
         $donation = new Leyka_Donation($donation_id);
         $campaign = new Leyka_Campaign($donation->campaign_id);

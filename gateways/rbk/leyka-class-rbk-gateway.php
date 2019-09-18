@@ -32,6 +32,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
         $this->_min_commission = 2.9;
         $this->_receiver_types = array('legal');
+        $this->_may_support_recurring = true;
 
     }
 
@@ -98,13 +99,6 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 LEYKA_VERSION,
                 true
             );
-
-//            wp_enqueue_style(
-//                'leyka-rbk-css',
-//                LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Rbk_Gateway::get_instance()->id.'/js/leyka.rbk.scss',
-//                array(),
-//                LEYKA_VERSION
-//            );
 
         }
 
@@ -173,10 +167,10 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         return '';
     }
 
-    public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
+    public function submission_form_data($form_data, $pm_id, $donation_id) {
 
         if( !array_key_exists($pm_id, $this->_payment_methods) ) {
-            return $form_data_vars; // It's not our PM
+            return $form_data; // It's not our PM
         }
 
         if(is_wp_error($donation_id)) { /** @var WP_Error $donation_id */
@@ -204,6 +198,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         return array(
             'invoice_id' => $invoice_id,
             'invoice_access_token' => $invoice_access_token,
+            'is_recurring' => !empty($form_data['leyka_recurring']),
             'amount' => $donation->amount, // For GA EEC, "eec.add" event
             'name' => sprintf(__('Donation #%s', 'leyka'), $donation_id),
             'description' => esc_attr($campaign->payment_title),
@@ -416,6 +411,10 @@ class Leyka_Rbk_Card extends Leyka_Payment_Method {
 
         $this->_processing_type = 'custom-process-submit-event';
 
+    }
+
+    public function has_recurring_support() {
+        return true;
     }
 
 }

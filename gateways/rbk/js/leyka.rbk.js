@@ -105,6 +105,7 @@ jQuery(document).ready(function($){
                         initialPaymentMethod: 'bankCard',
                         paymentFlowHold: true,
                         holdExpiration: 'capture',
+                        recurring: !leyka_empty(response.is_recurring),
                         opened: function(){},
                         closed: function(){
 

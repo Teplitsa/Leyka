@@ -610,7 +610,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     }
 
     // We don't need a redirection form vars on PayPal, so this filter method is empty:
-    public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
+    public function submission_form_data($form_data, $pm_id, $donation_id) {
         return array();
     }
 

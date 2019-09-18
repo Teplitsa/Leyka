@@ -103,7 +103,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
 
     }
 
-    public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
+    public function submission_form_data($form_data, $pm_id, $donation_id) {
 
         $donation = new Leyka_Donation($donation_id);
 
@@ -115,7 +115,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
 
         $donation->add_gateway_response($this->_qiwi_log);
 
-        return $form_data_vars;
+        return $form_data;
 
     }
 

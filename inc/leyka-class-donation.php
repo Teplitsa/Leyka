@@ -2286,9 +2286,17 @@ class Leyka_Donation {
 
             case 'type':
             case 'payment_type':
+
                 $value = in_array($value, array_keys(leyka_get_payment_types_list())) ? $value : 'single';
+                if($value === $this->_donation_meta['payment_type']) {
+                    break;
+                }
+
                 update_post_meta($this->_id, 'leyka_payment_type', $value);
                 $this->_donation_meta['payment_type'] = $value;
+
+                $this->recurring_is_active = true;
+
                 break;
 
             case 'campaign':

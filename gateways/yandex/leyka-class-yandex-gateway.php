@@ -229,7 +229,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
     }
 
-    public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
+    public function submission_form_data($form_data, $pm_id, $donation_id) {
 
         // New Yandex.Kassa API doesn't require the data to be sent with redirect:
         if(leyka_options()->opt('yandex_new_api')) {

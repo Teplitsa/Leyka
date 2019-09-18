@@ -40,8 +40,8 @@ class Leyka_Text_Gateway extends Leyka_Gateway {
         return $current_url;
     }
 
-    public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
-        return $form_data_vars;
+    public function submission_form_data($form_data, $pm_id, $donation_id) {
+        return $form_data;
     }
 
     public function get_gateway_response_formatted(Leyka_Donation $donation) {

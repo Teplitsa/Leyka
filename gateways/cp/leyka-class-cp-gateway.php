@@ -101,10 +101,10 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         return ''; // CP doesn't use redirection on payment
     }
 
-    public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
+    public function submission_form_data($form_data, $pm_id, $donation_id) {
 
 		if( !array_key_exists($pm_id, $this->_payment_methods) ) {
-			return $form_data_vars; // It's not our PM
+			return $form_data; // It's not our PM
         }
 
         if(is_wp_error($donation_id)) { /** @var WP_Error $donation_id */
