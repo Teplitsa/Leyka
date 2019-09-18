@@ -7,7 +7,7 @@ require_once 'procedures-common.php';
 if( !defined('WPINC') ) die;
 
 // The method should be called no more than once per day:
-if(get_transient('leyka_last_active_recurring_date') === date('d.m.Y')) {
+if(get_transient('leyka_last_active_recurring_date') === date('d.m.Y') && !LEYKA_DEBUG) {
     return;
 } else {
     set_transient('leyka_last_active_recurring_date', date('d.m.Y'), 60*60*24);
@@ -55,7 +55,7 @@ foreach(get_posts($params) as $donation) {
         $new_recurring_donation = $gateway->do_recurring_donation($donation);
         if($new_recurring_donation && is_a($new_recurring_donation, 'Leyka_Donation')) {
             Leyka_Donation_Management::send_all_recurring_emails($new_recurring_donation);
-        }
+        } // else if( !$new_recurring_donation || is_wp_error($new_recurring_donation) ) { ... } /** @todo Log & handle error */
 
     }
 

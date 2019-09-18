@@ -1834,6 +1834,53 @@ class Leyka_Donation {
     }
 
     /**
+     * Helper to add a copy of given Donation.
+     *
+     * @param $original Leyka_Donation
+     * @param $params array An array of Donation params to rewrite in the clone.
+     * @param $settings array Cloning operation settings array.
+     * @return Leyka_Donation|WP_Error A new Donation object or WP_Error object if there were some errors while adding it.
+     */
+    public static function add_clone(Leyka_Donation $original, array $params = array(), array $settings = array()) {
+
+        $settings = array_merge(array('recalculate_total_amount' => false,), $settings);
+
+        $new_donation_id = static::add(array_merge(array(
+            'date' => $original->date,
+            'status' => $original->status,
+            'payment_type' => $original->payment_type,
+            'purpose_text' => $original->title,
+            'campaign_id' => $original->campaign_id,
+            'payment_method_id' => $original->pm_id,
+            'gateway_id' => $original->gateway_id,
+            'donor_name' => $original->donor_name,
+            'donor_email' => $original->donor_email,
+            'donor_user_id' => $original->donor_user_id,
+            'amount' => $original->amount,
+            'amount_total' => $original->amount_total,
+            'currency' => $original->currency,
+        ), $params));
+
+        if(is_wp_error($new_donation_id)) {
+            return $new_donation_id;
+        }
+
+        $new = new Leyka_Donation($new_donation_id);
+
+        if( // If the original donation was made before the commission was set, apply a commission to the cloned one
+            $settings['recalculate_total_amount']
+            && $original->amount == $original->amount_total
+            && $original->amount == $original->amount_total
+            && leyka_get_pm_commission($original->pm_full_id) > 0.0
+        ) {
+            $new->amount_total = leyka_calculate_donation_total_amount($new);
+        }
+
+        return $new;
+
+    }
+
+    /**
      * A wrapper to access gateway's method to get init recurrent donation.
      *
      * @param mixed $donation
@@ -1976,9 +2023,12 @@ class Leyka_Donation {
 
             case 'campaign_id':
                 return $this->_donation_meta['campaign_id'];
-            case 'campaign_title':
+            case 'campaign_title': /** @todo Make an Object Cache singleton class for Campaigns!!! */
                 $campaign = new Leyka_Campaign($this->_donation_meta['campaign_id']);
                 return $campaign ? $campaign->title : $this->payment_title;
+            case 'campaign':
+                $campaign = new Leyka_Campaign($this->_donation_meta['campaign_id']);
+                return $campaign ? $campaign : false;
 
             case 'status': return $this->_post_object->post_status;
             case 'status_label':
@@ -2393,8 +2443,7 @@ class Leyka_Donation {
     public function add_gateway_response($response) {
 
         $this->_donation_meta['gateway_response'] = $response;
-
-        update_post_meta($this->_id, 'leyka_gateway_response', $this->_donation_meta['gateway_response']);
+        return update_post_meta($this->_id, 'leyka_gateway_response', $this->_donation_meta['gateway_response']);
 
     }
 
