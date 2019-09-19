@@ -564,8 +564,8 @@ techMessage="'.$tech_message.'"/>');
                         'capture' => true,
                         'description' =>
                             ( !empty($form_data['leyka_recurring']) ? '['.__('Recurring', 'leyka').'] ' : '' )
-                            .$new_recurring_donation->payment_title." (№ $new_recurring_donation_id)",
-                        'metadata' => array('donation_id' => $new_recurring_donation_id,),
+                            .$new_recurring_donation->payment_title." (№ {$new_recurring_donation->id})",
+                        'metadata' => array('donation_id' => $new_recurring_donation->id),
                     ),
                     uniqid('', true)
                 );
@@ -592,9 +592,9 @@ techMessage="'.$tech_message.'"/>');
                 CURLOPT_HTTPHEADER => array('Content-Type: application/x-www-form-urlencoded'),
                 CURLOPT_POST => true,
                 CURLOPT_POSTFIELDS => http_build_query(array(
-                    'clientOrderId' => $new_recurring_donation_id,
+                    'clientOrderId' => $new_recurring_donation->id,
                     'invoiceId' => $init_recurring_donation->recurring_id,
-                    'orderNumber' => 'recurring-'.$init_recurring_donation->id.'-'.$new_recurring_donation_id,
+                    'orderNumber' => 'recurring-'.$init_recurring_donation->id.'-'.$new_recurring_donation->id,
                     'amount' => $init_recurring_donation->amount,
                 )),
                 CURLOPT_VERBOSE => false,
