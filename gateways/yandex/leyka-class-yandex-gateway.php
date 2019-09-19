@@ -616,8 +616,6 @@ techMessage="'.$tech_message.'"/>');
             curl_setopt_array($ch, $params);
 
             $answer = curl_exec($ch);
-            $res = false;
-
             if($answer) {
 
                 $p = xml_parser_create();
