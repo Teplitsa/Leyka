@@ -13,7 +13,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
             'view'        => __('Campaign view', 'leyka'),
             'email'       => __('Notifications', 'leyka'),
             'technical'   => __('Tech settings', 'leyka'),
-            'additional'  => __('Misc', 'leyka'),
+            'additional'  => __('For developers', 'leyka'),
         ));
     }
 
@@ -398,7 +398,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                     ),),
                 );
                 break;
-            
+
             case 'additional':
                 $options_allocated = array(
                     array('section' => array(
