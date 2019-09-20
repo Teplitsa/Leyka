@@ -73,20 +73,7 @@ function leyka_do_donations_export() {
         get_posts(apply_filters('leyka_donations_export_query_args', $args))
     );
 
-    function leyka_prep($text) {
-        return '"'.str_replace(array(';', '"'), array('', ''), $text).'"';
-    }
-
-    function leyka_prepare_donation_data_for_export($donation_data, $donation) {
-
-        foreach($donation_data as &$data) {
-            $data = leyka_prep($data);
-        }
-
-        return $donation_data;
-
-    }
-    add_filter('leyka_donations_export_line', 'leyka_prepare_donation_data_for_export', 10, 2);
+    add_filter('leyka_donations_export_line', 'leyka_prepare_data_line_for_export', 10, 2);
 
     ob_clean();
 
@@ -94,14 +81,13 @@ function leyka_do_donations_export() {
     header('Content-Transfer-Encoding: binary');
     header('Expires: 0');
     header('Pragma: no-cache');
-
     header('Content-Disposition: attachment; filename="donations-'.date('d.m.Y-H.i.s').'.csv"');
 
     echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
         'UTF-8',
         apply_filters('leyka_donations_export_content_charset', 'windows-1251'),
         "sep=;\n".implode(';', apply_filters('leyka_donations_export_headers', array(
-            'ID', 'Имя донора', 'Email', 'Тип платежа', 'Плат. оператор', 'Способ платежа', 'Полная сумма', 'Итоговая сумма', 'Валюта', 'Дата пожертвования', 'Статус', 'Кампания', 'Подписка на рассылку', 'Email подписки'
+            'ID', 'Имя донора', 'Email', 'Тип платежа', 'Плат. оператор', 'Способ платежа', 'Полная сумма', 'Итоговая сумма', 'Валюта', 'Дата пожертвования', 'Статус', 'Кампания', 'Подписка на рассылку', 'Email подписки',
         )))
     );
 
@@ -120,7 +106,9 @@ function leyka_do_donations_export() {
         echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
             'UTF-8',
             apply_filters('leyka_donations_export_content_charset', 'windows-1251'),
-            "\r\n".implode(';', apply_filters('leyka_donations_export_line', array(
+            "\r\n".implode(';', apply_filters(
+                'leyka_donations_export_line',
+                array(
                     $donation->id,
                     $donation->donor_name,
                     $donation->donor_email,
@@ -129,19 +117,20 @@ function leyka_do_donations_export() {
                     $donation->payment_method_label,
                     $donation->sum,
                     $donation->amount_total,
-	                $donation->currency_label,
+                    $donation->currency_label,
                     $donation->date,
                     $donation->status_label,
                     $campaign->title,
                     $donor_subscription,
                     $donation->donor_subscription_email
-                ), $donation)
-            )
+                ),
+                $donation
+            ))
         );
 
     }
 
-    die(); // wp_die() is bad here
+    die();
 
 }
 add_action('admin_init', 'leyka_do_donations_export');

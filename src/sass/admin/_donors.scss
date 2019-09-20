@@ -19,9 +19,8 @@
 
     .donors-list-export {
     	margin-top: $leyka-base;
-    	display: none;
 
-    	button {
+    	input.submit {
     		@include leyka-admin-btn();
     		min-width: 228px;
     		height: 32px;
