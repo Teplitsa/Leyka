@@ -73,6 +73,12 @@ abstract class Leyka_Donations extends Leyka_Singleton {
 
     /**
      * @param $params array
+     * @return integer.
+     */
+    abstract public function get_count(array $params = array());
+
+    /**
+     * @param $params array
      * @param $return_object boolean True to return a Leyka_Donation_Base object, false to return just a new donation ID.
      * @return integer|WP_Error An ID of the new donation, WP_Error object if there was an error in the process
      */
@@ -348,6 +354,12 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
     }
 
+    public function get_count(array $params = array()) {
+
+        return 100500;
+
+    }
+
     public function add(array $params = array(), $return_object = false) {
         return !!$$return_object ?
             new Leyka_Donation_Post(Leyka_Donation_Post::add($params)) :
@@ -372,13 +384,14 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
     }
 
-    public function get(array $params = array()) {
+    protected function _get_query_parts(array $params = array()) {
 
         global $wpdb;
 
+        $query = array('fields' => '', 'from' => '', 'joins' => '', 'where' => '', 'orderby' => '', 'limit' => '',);
+
         $where = array();
         $limit = '';
-        $orderby = '';
         $joins = array();
         $join_meta = false;
 
@@ -563,25 +576,47 @@ class Leyka_Donations_Separated extends Leyka_Donations {
             $params['order'] = empty($params['order']) || !in_array($params['order'], array('asc', 'desc')) ?
                 'ASC' : mb_strtoupper($params['order']);
 
-            $orderby = " ORDER BY {$params['orderby']} {$params['order']}";
+            $query['orderby'] = " ORDER BY {$params['orderby']} {$params['order']}";
 
         }
 
         if($join_meta) {
             $joins['donations_meta'] = " JOIN `{$wpdb->prefix}leyka_donations_meta` d_meta ON d.`ID` = d_meta.`donation_id`";
         }
-        $joins = $joins ? implode(' ', $joins) : '';
-        $where = $where ? ' WHERE '.implode(' AND ', $where) : '';
-        $limit = $limit ? $limit : '';
+
+        $query['joins'] = $joins ? implode(' ', $joins) : '';
+        $query['where'] = $where ? ' WHERE '.implode(' AND ', $where) : '';
+        $query['limit'] = $limit ? $limit : '';
+
+        return $query;
+
+    }
+
+    public function get(array $params = array()) {
+
+        global $wpdb;
+
+        $query = $this->_get_query_parts($params);
 
         $donations = array();
-        $query = "SELECT d.`ID` FROM {$wpdb->prefix}leyka_donations `d` $joins $where $orderby $limit";
+        $query = "SELECT d.`ID` FROM {$wpdb->prefix}leyka_donations `d` {$query['joins']} {$query['where']} {$query['orderby']} {$query['limit']}";
 
         foreach($wpdb->get_col($query) as $donation_id) {
             $donations[] = $this->get_donation($donation_id);
         }
 
         return $donations;
+
+    }
+
+    public function get_count(array $params = array()) {
+
+        global $wpdb;
+
+        $query = $this->_get_query_parts($params);
+        $query = "SELECT COUNT(d.`ID`) FROM {$wpdb->prefix}leyka_donations `d` {$query['joins']} {$query['where']} {$query['orderby']} {$query['limit']}";
+
+        return absint($wpdb->get_var($query));
 
     }
 
