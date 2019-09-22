@@ -144,9 +144,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     public function manage_filters() {
 
-        if(get_current_screen()->id == 'edit-'.self::$post_type && current_user_can('leyka_manage_donations')) {
-
-            echo '<pre>'; debug_print_backtrace(); echo '</pre>';?>
+        if(get_current_screen()->id !== 'edit-'.self::$post_type || !current_user_can('leyka_manage_donations')) {
+            return;
+        }?>
 
         <label for="payment-type-select"></label>
         <select id="payment-type-select" name="payment_type">
@@ -196,8 +196,6 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         <label for="campaign-select"></label>
         <input id="campaign-select" type="text" data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>" placeholder="<?php _e('Select a campaign', 'leyka');?>" value="<?php echo $campaign_title;?>">
         <input id="campaign-id" type="hidden" name="campaign" value="<?php echo !empty($_GET['campaign']) ? (int)$_GET['campaign'] : '';?>">
-
-        <?php }?>
 
         <label for="donor-subscribed-select"></label>
         <select id="donor-subscribed-select" name="donor_subscribed">
@@ -1626,8 +1624,6 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 }
 
 function leyka_donation_management() {
-
-    echo '<pre>'.print_r('HERE!', 1).'</pre>';
     return Leyka_Donation_Management::get_instance();
 }
 
