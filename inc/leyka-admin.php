@@ -330,7 +330,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
      */
     public function show_user_profile_donor_fields(WP_User $donor_user) {
 
-        if( !current_user_can('administrator') ) {
+        if( !current_user_can('administrator') || !leyka_options()->opt('donor_management_available') ) {
             return;
         }?>
 
