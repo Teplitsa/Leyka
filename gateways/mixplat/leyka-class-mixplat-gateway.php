@@ -185,13 +185,13 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         return $current_url;
     }
 
-    public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
+    public function submission_form_data($form_data, $pm_id, $donation_id) {
 
 		if( !array_key_exists($pm_id, $this->_payment_methods) ) {
-			return $form_data_vars; // It's not our PM
+			return $form_data; // It's not our PM
         }
 
-		return $form_data_vars;
+		return $form_data;
 
     }
 

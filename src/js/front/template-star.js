@@ -407,7 +407,7 @@
     function addError($errors_block, error_html) {
 
         if( !$errors_block.length || !error_html.length ) {
-            return;
+            return true;
         }
 
         $errors_block.html(error_html).show();
@@ -417,6 +417,8 @@
             scrollTop: $errors_block.offset().top - ($(window).height() - $errors_block.outerHeight()) / 2
         }, 250);
 
+        return false;
+
     }
     
     function bindSubmitPaymentFormEvent() {
@@ -424,84 +426,76 @@
         $('.leyka-tpl-star-form').on('submit.leyka', 'form.leyka-pm-form', function(e){
 
             var $_form = $(this),
-                $errors = $_form.parents('.leyka-payment-form').siblings('.leyka-submit-errors');
+                $errors = $_form.parents('.leyka-payment-form').siblings('.leyka-submit-errors'),
+                $pm_selected = $_form.find('input[name="leyka_payment_method"]:checked');
 
 			e.preventDefault();
 
-            if(leykaValidateForm($_form)) { // Form is valid
-
-				var $pm_selected = $_form.find('input[name="leyka_payment_method"]:checked');
-                
-                if($pm_selected.data('processing') !== 'default') {
-
-					if($pm_selected.data('processing') !== 'custom-process-submit-event') {
-						e.stopPropagation();
-					}
-                    return;
-
-                }
-
-                // Open "waiting" form section:
-                var $redirect_section = $_form.closest('.leyka-pf').find('.leyka-pf__redirect'),
-                    data_array = $_form.serializeArray(),
-                    data = {action: 'leyka_ajax_get_gateway_redirect_data'};
-
-                for(var i=0; i<data_array.length; i++) {
-                    data[data_array[i].name] = data_array[i].value;
-                }
-
-                if($pm_selected.data('ajax-without-form-submission')) {
-                	data['without_form_submission'] = true;
-				}
-
-                $redirect_section.addClass('leyka-pf__redirect--open');
-
-                // Get gateway redirection form and submit it manually:
-                $.post(leyka_get_ajax_url(), data).done(function(response){
-
-                    response = $.parseJSON(response);
-
-					// Wrong answer from ajax handler:
-                    if( !response || typeof response.status === 'undefined' ) {
-                        return false;
-
-                    } else if(response.status !== 0 && typeof response.message !== 'undefined') {
-
-                        addError($errors, response.message);
-                        return false;
-
-                    } else if( !response.payment_url ) {
-                        return false;
-
-                    }
-
-                    var redirect_form_html = '<form class="leyka-auto-submit" action="'+response.payment_url+'" method="post">';
-
-                    $.each(response, function(field_name, value){
-                        if(field_name !== 'payment_url') {
-                            redirect_form_html += '<input type="hidden" name="'+field_name+'" value="'+value+'">';
-                        }
-                    });
-                    redirect_form_html += '</form>';
-
-                    $redirect_section.append(redirect_form_html);
-
-                    if(typeof response.submission_redirect_type === 'undefined' || response.submission_redirect_type === 'auto') {
-                        $redirect_section.find('.leyka-auto-submit').submit();
-                    } else if(response.submission_redirect_type === 'redirect') {
-                        window.location.href = $redirect_section.find('.leyka-auto-submit').prop('action');
-                    }
-
-                });
-
-            } else { // Errors exist
+            if( !leykaValidateForm($_form) ) { // Form errors exist
 
                 e.preventDefault();
                 e.stopPropagation();
+                return;
 
             }
 
+            if($pm_selected.data('processing') !== 'default') {
+
+                if($pm_selected.data('processing') !== 'custom-process-submit-event') {
+                    e.stopPropagation();
+                }
+                return;
+
+            }
+
+            // Open "waiting" form section:
+            var data_array = $_form.serializeArray(),
+                data = {action: 'leyka_ajax_get_gateway_redirect_data'};
+
+            for(var i = 0; i < data_array.length; i++) {
+                data[data_array[i].name] = data_array[i].value;
+            }
+
+            if($pm_selected.data('ajax-without-form-submission')) {
+                data['without_form_submission'] = true;
+            }
+
+            // Get gateway redirection form and submit it manually:
+            $.post(leyka_get_ajax_url(), data).done(function(response){
+
+                response = $.parseJSON(response);
+
+                // Wrong answer from ajax handler:
+                if( !response || typeof response.status === 'undefined' ) {
+                    return false;
+                } else if(response.status !== 0 && typeof response.message !== 'undefined') {
+                    return addError($errors, response.message);
+                } else if( !response.payment_url ) {
+                    return false;
+
+                }
+
+                var redirect_form_html = '<form class="leyka-auto-submit" action="'+response.payment_url+'" method="post">';
+
+                $.each(response, function(field_name, value){
+                    if(field_name !== 'payment_url') {
+                        redirect_form_html += '<input type="hidden" name="'+field_name+'" value="'+value+'">';
+                    }
+                });
+                redirect_form_html += '</form>';
+
+                $redirect_section.append(redirect_form_html);
+
+                if(typeof response.submission_redirect_type === 'undefined' || response.submission_redirect_type === 'auto') {
+                    $redirect_section.find('.leyka-auto-submit').submit();
+                } else if(response.submission_redirect_type === 'redirect') {
+                    window.location.href = $redirect_section.find('.leyka-auto-submit').prop('action');
+                }
+
+            });
+
         });
+
     }
     
     function bindDonorDataEvents() {

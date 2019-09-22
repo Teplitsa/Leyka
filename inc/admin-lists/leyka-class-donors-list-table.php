@@ -14,6 +14,10 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         add_filter('leyka_admin_donors_list_filter', array($this, 'filter_donors'), 10, 2);
         add_action('pre_user_query', array($this, 'filter_donors_pre_user_query'));
 
+        if( !empty($_REQUEST['donors-list-export']) ) {
+            $this->_export_donors();
+        }
+
     }
 
     /**
@@ -199,19 +203,22 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
     /**
      * Retrieve donor’s data from the DB.
      *
-     * @param int $per_page
-     * @param int $page_number
+     * @param int|false $per_page A number of lines per page, or false to not use pagination.
+     * @param int $page_number A page number. Will not be in use if $per_page === false.
      *
      * @return mixed
      */
-    public static function get_donors($per_page, $page_number = 1) {
+    public static function get_donors($per_page = false, $page_number = 1) {
 
-        $donors_params = apply_filters('leyka_admin_donors_list_filter', array(
-            'role__in' => array(Leyka_Donor::DONOR_USER_ROLE,),
-            'number' => absint($per_page),
-            'paged' => absint($page_number),
-            'fields' => 'id',
-        ), 'get_donors');
+        $donors_params = apply_filters(
+            'leyka_admin_donors_list_filter', array(
+                'role__in' => array(Leyka_Donor::DONOR_USER_ROLE,),
+                'number' => $per_page ? absint($per_page) : -1,
+                'paged' => $page_number ? absint($page_number) : false,
+                'fields' => 'id',
+            ),
+            'get_donors'
+        );
 
         $donors = array();
         foreach(get_users($donors_params) as $donor_user) {
@@ -523,6 +530,102 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             }
 
         }
+
+    }
+
+    protected function _export_donors() {
+
+        // Just in case that export will require some time:
+        ini_set('max_execution_time', 99999);
+        set_time_limit(99999);
+
+        ob_start();
+
+        $this->items = self::get_donors(false);
+
+        add_filter('leyka_donors_export_line', 'leyka_prepare_data_line_for_export', 10, 2);
+
+        ob_clean();
+
+        header('Content-type: application/vnd.ms-excel');
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Pragma: no-cache');
+
+        header('Content-Disposition: attachment; filename="donors-'.date('d.m.Y-H.i.s').'.csv"');
+
+        echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
+            'UTF-8',
+            apply_filters('leyka_donors_export_content_charset', 'windows-1251'),
+            "sep=;\n".implode(';', apply_filters('leyka_donors_export_headers', array(
+                'ID', 'Тип донора', 'Имя', 'Email', 'Дата первого пожертвования', 'Сумма первого пожертвования', 'Кампания первого пожертвования', 'Метки донора', 'Кампании', 'Платёжные операторы', 'Дата последнего пожертвования', 'Сумма последнего пожертвования', 'Кампания последнего пожертвования', 'Общая сумма пожертвований', 'Валюта',
+            )))
+        );
+
+        foreach($this->items as $donor_data) {
+
+            $first_donation = $donor_data['first_donation'] ? new Leyka_Donation($donor_data['first_donation']) : false;
+            $last_donation = $donor_data['last_donation'] ? new Leyka_Donation($donor_data['last_donation']) : false;
+
+            $donor_tags_list = array();
+            if( !empty($donor_data['donors_tags']) ) {
+                foreach($donor_data['donors_tags'] as $term) { /** @var $term WP_Term */
+                    $donor_tags_list[] = esc_attr($term->name);
+                }
+            }
+            $donor_tags_list = implode(', ', $donor_tags_list);
+
+            $donor_campaigns_list = array();
+            if( !empty($donor_data['campaigns']) ) {
+                foreach($donor_data['campaigns'] as $campaign_id => $campaign_title) {
+                    if($campaign_title) {
+                        $donor_campaigns_list[] = $campaign_title;
+                    }
+                }
+            }
+            sort($donor_campaigns_list);
+            $donor_campaigns_list = implode(', ', $donor_campaigns_list);
+
+            $donor_gateways_list = array();
+            if( !empty($donor_data['gateways']) ) {
+                foreach($donor_data['gateways'] as $gateway_id) {
+
+                    $gateway = leyka_get_gateway_by_id($gateway_id);
+                    if($gateway) {
+                        $donor_gateways_list[] = esc_attr($gateway->label);
+                    }
+
+                }
+            }
+            sort($donor_gateways_list);
+            $donor_gateways_list = implode(', ', $donor_gateways_list);
+
+            echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
+                'UTF-8',
+                apply_filters('leyka_donations_export_content_charset', 'windows-1251'),
+                "\r\n".implode(';', apply_filters('leyka_donations_export_line', array(
+                        $donor_data['donor_id'],
+                        _x(mb_ucfirst($donor_data['donor_type']), "Donor's type", 'leyka'),
+                        $donor_data['donor_name'],
+                        $donor_data['donor_email'],
+                        ($first_donation ? $first_donation->date : ''),
+                        ($first_donation ? $first_donation->amount : ''),
+                        ($first_donation ? $first_donation->campaign_title : ''),
+                        $donor_tags_list,
+                        $donor_campaigns_list,
+                        $donor_gateways_list,
+                        ($last_donation ? $last_donation->date : ''),
+                        ($last_donation ? $last_donation->amount : ''),
+                        ($last_donation ? $last_donation->campaign_title : ''),
+                        $donor_data['amount_donated'],
+                        leyka_get_currency_label(),
+                    ), $donor_data)
+                )
+            );
+
+        }
+
+        die();
 
     }
 

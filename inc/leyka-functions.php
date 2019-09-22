@@ -30,15 +30,14 @@ if( !function_exists('mb_strtoupper') ) {
 
 if( !function_exists('array_key_first') ) {
     function array_key_first(array $array) {
-        if(count($array)) {
+        return $array ? key(array_slice($array, 1)) : null;
 
-            reset($array);
-            return key($array);
+    }
+}
 
-        }
-
-        return null;
-
+if( !function_exists('array_key_last') ) {
+    function array_key_last(array $array) {
+        return $array ? key(array_slice($array, -1)) : null;
     }
 }
 
@@ -1950,5 +1949,21 @@ function leyka_get_cronjobs_status() {
         default:
             return array('status' => $status, 'title' => __('No need', 'leyka'));
     }
+
+}
+
+/** Service function to prepare a singular object data value for export as a CSV cell. */
+function leyka_export_data_prepare($text) {
+    return '"'.str_replace(array(';', '"'), array('', ''), $text).'"';
+}
+
+/** Service function to prepare some object data array for export as a CSV line. */
+function leyka_prepare_data_line_for_export(array $line_data, $object_to_export) {
+
+    foreach($line_data as &$data) {
+        $data = leyka_export_data_prepare($data);
+    }
+
+    return $line_data;
 
 }

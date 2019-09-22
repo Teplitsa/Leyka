@@ -13,7 +13,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
             'view'        => __('Campaign view', 'leyka'),
             'email'       => __('Notifications', 'leyka'),
             'technical'   => __('Tech settings', 'leyka'),
-            'additional'  => __('Misc', 'leyka'),
+            'additional'  => __('For developers', 'leyka'),
         ));
     }
 
@@ -37,7 +37,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'description' => __('These data we will use for reporting documents to your donors. All data can be found in documents', 'leyka'),
                         'is_default_collapsed' => false,
                         'options' => array(
-                            'org_full_name', 'org_face_fio_ip', /*'org_face_fio_rp',*/ 'org_face_position', 'org_address',
+                            'org_full_name', 'org_face_fio_ip', 'org_face_position', 'org_address',
                             'org_state_reg_number', 'org_kpp', 'org_inn', 
                         )
                     )),
@@ -398,7 +398,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                     ),),
                 );
                 break;
-            
+
             case 'additional':
                 $options_allocated = array(
                     array('section' => array(

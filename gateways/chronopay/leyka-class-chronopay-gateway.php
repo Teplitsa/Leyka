@@ -74,10 +74,10 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         return 'https://payments.chronopay.com/';
     }
 
-    public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
+    public function submission_form_data($form_data, $pm_id, $donation_id) {
 
         if(false === strpos($pm_id, 'chronopay')) {
-            return $form_data_vars; // It's not our PM
+            return $form_data; // It's not our PM
         }
 
         if(is_wp_error($donation_id)) { /** @var WP_Error $donation_id */
@@ -104,7 +104,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
         $country = $donation->currency == 'rur' ? 'RUS' : '';
 
-        $form_data_vars =  array(
+        $form_data =  array(
             'product_id' => $chronopay_product_id,
             'product_price' => $price,
             'product_price_currency' => $this->_get_currency_id($donation->currency),
@@ -124,14 +124,14 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         );
 
         if(leyka_options()->opt('chronopay_use_payment_uniqueness_control')) {
-            $form_data_vars['order_id'] = $donation_id;
+            $form_data['order_id'] = $donation_id;
         }
 
         if($country) {
-            $form_data_vars['country'] = $country;
+            $form_data['country'] = $country;
         }
 
-        return $form_data_vars;
+        return $form_data;
 
     }
 
@@ -268,45 +268,25 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
                 }
 
-                $donation_id = Leyka_Donation::add(array(
-                    'status' => 'funded',
-                    'payment_type' => 'rebill',
-                ));
+                $init_recurring_donation = $this->get_init_recurrent_donation($customer_id);
 
-                $donation = new Leyka_Donation($donation_id);
+                $new_recurring_donation = Leyka_Donation::add_clone(
+                    $init_recurring_donation,
+                    array(
+                        'status' => 'funded',
+                        'payment_type' => 'rebill',
+                        'init_recurring_donation' => $init_recurring_donation->id,
+                        'chronopay_customer_id' => $customer_id,
+                        'chronopay_transaction_id' => $transaction_id,
+                    ),
+                    array('recalculate_total_amount' => true,)
+                );
 
-                $init_recurring_payment = $this->get_init_recurring_donation($customer_id);
-
-                $donation->add_gateway_response($_POST);
-                $donation->chronopay_customer_id = $customer_id;
-                $donation->chronopay_transaction_id = $transaction_id;
-                $donation->payment_title = $init_recurring_payment->title;
-                $donation->campaign_id = $init_recurring_payment->campaign_id;
-                $donation->payment_method_id = $init_recurring_payment->pm_id;
-                $donation->gateway_id = $init_recurring_payment->gateway_id;
-                $donation->donor_name = $init_recurring_payment->donor_name;
-                $donation->donor_email = $init_recurring_payment->donor_email;
-                $donation->amount = $init_recurring_payment->amount;
-                $donation->currency = $init_recurring_payment->currency;
-
-                // If init donation was made before the commission was set, apply a commission to the recurring one:
-                if(
-                    $init_recurring_payment->amount == $init_recurring_payment->amount_total &&
-                    $donation->amount == $donation->amount_total &&
-                    leyka_get_pm_commission($donation->pm_full_id) > 0.0
-                ) {
-                    $donation->amount_total = leyka_calculate_donation_total_amount($donation);
-                }
-                
-
-                if($donation->status !== 'funded') {
-                    $donation->status = 'funded';
-                }
-                if($donation->type !== 'rebill') {
-                    $donation->type = 'rebill';
+                if(is_wp_error($new_recurring_donation)) {
+                    return false;
                 }
 
-                Leyka_Donation_Management::send_all_emails($donation_id);
+                Leyka_Donation_Management::send_all_emails($new_recurring_donation->id);
 
             }
 

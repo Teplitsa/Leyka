@@ -1,0 +1,32 @@
+@import './../../../src/sass/typo';
+@import './../../../src/sass/presets';
+
+.leyka-rbk-pre-submit-step {
+
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+
+    height: 100%;
+
+    .leyka-rbk-final-submit-buttons {
+
+        flex-grow: 1;
+
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-evenly;
+        align-items: center;
+
+        button {
+
+            flex: 1 -1 auto;
+
+            text-align: center;
+            @include button(action);
+
+        }
+
+    }
+
+}

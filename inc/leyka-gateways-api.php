@@ -435,7 +435,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     abstract public function submission_redirect_url($current_url, $pm_id);
 
-    abstract public function submission_form_data($form_data_vars, $pm_id, $donation_id);
+    abstract public function submission_form_data($form_data, $pm_id, $donation_id);
 
     /**
      * Save some gateway specific donation metadata. Default implementation is empty.

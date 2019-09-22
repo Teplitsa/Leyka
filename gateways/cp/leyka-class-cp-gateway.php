@@ -80,6 +80,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 LEYKA_VERSION . ".001",
                 true
             );
+
         }
 
         add_filter('leyka_js_localized_strings', array($this, 'localize_js_strings'));
@@ -100,10 +101,10 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         return ''; // CP doesn't use redirection on payment
     }
 
-    public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
+    public function submission_form_data($form_data, $pm_id, $donation_id) {
 
 		if( !array_key_exists($pm_id, $this->_payment_methods) ) {
-			return $form_data_vars; // It's not our PM
+			return $form_data; // It's not our PM
         }
 
         if(is_wp_error($donation_id)) { /** @var WP_Error $donation_id */
@@ -126,7 +127,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             default:
         }
 
-        $form_data_vars = array(
+        return array(
             'public_id' => trim(leyka_options()->opt('cp_public_id')),
             'donation_id' => $donation_id,
             'amount' => number_format((float)$donation->amount, 2, '.', ''),
@@ -136,8 +137,6 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             'success_page' => leyka_get_success_page_url(),
             'failure_page' => leyka_get_failure_page_url(),
         );
-
-		return $form_data_vars;
 
     }
 
@@ -409,7 +408,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         } else {
             $donation = Leyka_Donations::get_instance()->add(array(
                 'status' => 'submitted',
-                'transaction_id' => $cp_transaction_id,
+                'cp_transaction_id' => $cp_transaction_id,
                 'force_insert' => true, // Turn off donation fields validation checks
             ), true);
         }

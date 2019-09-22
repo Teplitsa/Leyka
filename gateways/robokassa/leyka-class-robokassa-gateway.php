@@ -94,10 +94,10 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
         return 'https://auth.robokassa.ru/Merchant/Index.aspx';
     }
 
-    public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
+    public function submission_form_data($form_data, $pm_id, $donation_id) {
 
 		if( !array_key_exists($pm_id, $this->_payment_methods) )
-			return $form_data_vars; // It's not our PM
+			return $form_data; // It's not our PM
 
         $donation = new Leyka_Donation($donation_id);
 	    $amount = number_format((float)$donation->amount, 2, '.', '');
@@ -111,7 +111,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
             default: $pm_curr .= 'R';
         }
 
-        $form_data_vars = array(
+        $form_data = array(
             'MrchLogin' => leyka_options()->opt('robokassa_shop_id'),
             'InvId' => $donation_id,
             'OutSum' => $amount,
@@ -123,10 +123,10 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
         );
 
         if(leyka_options()->opt('robokassa_test_mode')) {
-            $form_data_vars['isTest'] = 1;
+            $form_data['isTest'] = 1;
         }
 
-		return $form_data_vars;
+		return $form_data;
 
     }
 

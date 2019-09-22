@@ -229,7 +229,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
     }
 
-    public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
+    public function submission_form_data($form_data, $pm_id, $donation_id) {
 
         // New Yandex.Kassa API doesn't require the data to be sent with redirect:
         if(leyka_options()->opt('yandex_new_api')) {
@@ -530,30 +530,19 @@ techMessage="'.$tech_message.'"/>');
             return false;
         }
 
-        $new_recurring_donation_id = Leyka_Donation::add(array(
-            'status' => 'submitted',
-            'payment_type' => 'rebill',
-            'purpose_text' => $init_recurring_donation->title,
-            'campaign_id' => $init_recurring_donation->campaign_id,
-            'payment_method_id' => $init_recurring_donation->pm_id,
-            'gateway_id' => $init_recurring_donation->gateway_id,
-            'donor_name' => $init_recurring_donation->donor_name,
-            'donor_email' => $init_recurring_donation->donor_email,
-            'amount' => $init_recurring_donation->amount,
-            'currency' => $init_recurring_donation->currency,
-            'init_recurring_donation' => $init_recurring_donation->id,
-            'recurring_id' => $init_recurring_donation->recurring_id, // InvoiceId of the original donation in a subscription
-        ));
+        $new_recurring_donation = Leyka_Donation::add_clone(
+            $init_recurring_donation,
+            array(
+                'status' => 'submitted',
+                'payment_type' => 'rebill',
+                'init_recurring_donation' => $init_recurring_donation->id,
+                'yandex_recurring_id' => $init_recurring_donation->recurring_id,
+            ),
+            array('recalculate_total_amount' => true,)
+        );
 
-        $new_recurring_donation = new Leyka_Donation($new_recurring_donation_id);
-
-        // If init donation was made before the commission was set, apply a commission to the recurring one:
-        if(
-            $init_recurring_donation->amount == $init_recurring_donation->amount_total &&
-            $new_recurring_donation->amount == $new_recurring_donation->amount_total &&
-            leyka_get_pm_commission($new_recurring_donation->pm_full_id) > 0.0
-        ) {
-            $new_recurring_donation->amount_total = leyka_calculate_donation_total_amount($new_recurring_donation);
+        if(is_wp_error($new_recurring_donation)) {
+            return false;
         }
 
         if(leyka_options()->opt('yandex_new_api')) {
@@ -575,8 +564,8 @@ techMessage="'.$tech_message.'"/>');
                         'capture' => true,
                         'description' =>
                             ( !empty($form_data['leyka_recurring']) ? '['.__('Recurring', 'leyka').'] ' : '' )
-                            .$new_recurring_donation->payment_title." (№ $new_recurring_donation_id)",
-                        'metadata' => array('donation_id' => $new_recurring_donation_id,),
+                            .$new_recurring_donation->payment_title." (№ {$new_recurring_donation->id})",
+                        'metadata' => array('donation_id' => $new_recurring_donation->id),
                     ),
                     uniqid('', true)
                 );
@@ -603,9 +592,9 @@ techMessage="'.$tech_message.'"/>');
                 CURLOPT_HTTPHEADER => array('Content-Type: application/x-www-form-urlencoded'),
                 CURLOPT_POST => true,
                 CURLOPT_POSTFIELDS => http_build_query(array(
-                    'clientOrderId' => $new_recurring_donation_id,
+                    'clientOrderId' => $new_recurring_donation->id,
                     'invoiceId' => $init_recurring_donation->recurring_id,
-                    'orderNumber' => 'recurring-'.$init_recurring_donation->id.'-'.$new_recurring_donation_id,
+                    'orderNumber' => 'recurring-'.$init_recurring_donation->id.'-'.$new_recurring_donation->id,
                     'amount' => $init_recurring_donation->amount,
                 )),
                 CURLOPT_VERBOSE => false,
@@ -627,8 +616,6 @@ techMessage="'.$tech_message.'"/>');
             curl_setopt_array($ch, $params);
 
             $answer = curl_exec($ch);
-            $res = false;
-
             if($answer) {
 
                 $p = xml_parser_create();
@@ -740,10 +727,7 @@ techMessage="'.$tech_message.'"/>');
             $donation->recurring_id = $_POST['yandex-recurring-id'];
         }
 
-        $_POST['yandex-recurring-is-active'] = !empty($_POST['yandex-recurring-is-active']);
-
-        // Check if the value's different is inside the Leyka_Donation::__set():
-        $donation->recurring_is_active = $_POST['yandex-recurring-is-active'];
+        $donation->recurring_is_active = !empty($_POST['yandex-recurring-is-active']);
 
     }
 

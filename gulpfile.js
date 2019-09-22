@@ -1,4 +1,4 @@
-//paths for source and bundled parts of app
+// Paths for source and bundled parts of app:
 var basePaths = {
     src: 'src/',
     dest: 'assets/',
@@ -6,7 +6,7 @@ var basePaths = {
     root: ''
 };
 
-//require plugins
+// Require plugins:
 var gulp = require('gulp'),
     es = require('event-stream'),
     gutil = require('gulp-util'),
@@ -14,13 +14,13 @@ var gulp = require('gulp'),
     path = require('relative-path'),
     del = require('del');
 
-//plugins - load gulp-* plugins without direct calls
+// Plugins - load gulp-* plugins without direct calls:
 var plugins = require('gulp-load-plugins')({
     pattern: ['gulp-*', 'gulp.*'],
     replaceString: /\bgulp[\-.]/
 });
 
-//env - call gulp --prod to go into production mode
+// Env - call gulp --prod to go into production mode
 var sassStyle = 'expanded'; // SASS syntax
 var sourceMap = true; //wheter to build source maps
 var isProduction = false; //mode flag
@@ -31,7 +31,7 @@ if(gutil.env.prod === true) {
     sourceMap = false;
 }
 
-//js
+// JS:
 gulp.task('build-front-js', async function(){
 
     console.log('HERE FRONT')
@@ -75,22 +75,26 @@ gulp.task('build-editor-js', function(){
         .pipe(gulp.dest(basePaths.dest+'js')); //write results into file
 });
 
+// CSS:
 gulp.task('build-front-css', function(){
 
     var paths = require('node-bourbon').includePaths,
     // vendorFiles = gulp.src([]), //components
-        appFiles = gulp.src(basePaths.src+'sass/front-main.scss') // our main file with @import-s
-        .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.init()) // process the original sources for sourcemap
-        .pipe(plugins.sass({
-            outputStyle: sassStyle, // SASS syntax
-            includePaths: paths // Add Bourbon
-        }).on('error', plugins.sass.logError))// Sass' own error log
-        .pipe(plugins.autoprefixer({
-            browsers: ['last 4 versions'],
-            cascade: false
-        }))
-        .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.write()) //add the map to modified source
-        .on('error', console.log);
+        gatewaysFiles = [basePaths.root+'gateways/*/css/*.public.scss'],
+        appFiles = gulp.src([basePaths.src+'sass/front-main.scss'].concat(gatewaysFiles)) // our main file with @import-s
+            .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.init()) // process the original sources for sourcemap
+            .pipe(
+                plugins.sass({
+                    outputStyle: sassStyle, // SASS syntax
+                    includePaths: paths // Add Bourbon
+                }).on('error', plugins.sass.logError)
+            )
+            .pipe(plugins.autoprefixer({
+                browsers: ['last 4 versions'],
+                cascade: false
+            }))
+            .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.write()) //add the map to modified source
+            .on('error', console.log);
 
     return es.concat(appFiles /*, vendorFiles*/)
         .pipe(plugins.concat('public.css'))
@@ -179,7 +183,7 @@ gulp.task('build-editor-css', function() {
 
 });
 
-// Revision
+// Revision:
 gulp.task('revision-clean', function(){
     return del([basePaths.dest+'rev/**/*']);
 });
@@ -193,7 +197,7 @@ gulp.task('revision', function(){
         .on('error', console.log); //log
 });
 
-// Builds
+// Builds:
 gulp.task('full-build', async function(){
     await gulp.parallel('full-build-css', 'full-build-js', 'svg-opt');
 });
@@ -206,7 +210,7 @@ gulp.task('full-build-js', async function(){
     await gulp.series('build-front-js', 'build-admin-js');
 });
 
-// SVG - combine and clear svg assets
+// SVG - combine and clear svg assets:
 gulp.task('svg-opt', function(){
 
     var icons = gulp.src([basePaths.src+'svg/icon-*.svg'])
@@ -241,15 +245,12 @@ gulp.task('svg-opt', function(){
 
 });
 
-// watchers
+// Watchers
 gulp.task('watch', function(done){
 
     // Frontend:
-    gulp.watch([basePaths.src + 'sass/*.scss', basePaths.src + 'sass/form_templates/*/*.scss'], gulp.series('build-front-css'));
-    gulp.watch([basePaths.src + 'js/*.js', basePaths.src + 'js/front/*.js'], gulp.series('build-front-js'));
-
-    // gulp.watch([basePaths.src + 'sass/*.scss'], gulp.series('build-front-css'));
-    // gulp.watch([basePaths.src + 'js/*.js', basePaths.src + 'js/front/*.js'], gulp.series('build-front-js'));
+    gulp.watch([basePaths.src+'sass/*.scss', basePaths.src+'sass/form_templates/*/*.scss', basePaths.root+'gateways/*/css/*.public.scss'], gulp.series('build-front-css'));
+    gulp.watch([basePaths.src+'js/*.js', basePaths.src+'js/front/*.js'], gulp.series('build-front-js'));
 
     // Backend:
     gulp.watch(

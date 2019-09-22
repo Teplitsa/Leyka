@@ -60,3 +60,30 @@ function leyka_is_special_key(e) {
 function leyka_validate_donor_name(name_string) {
     return !name_string.match(/[!@#$%^&*()+=\[\]{};:"\\|,<>\/?]/);
 }
+
+function leyka_empty(mixed_var) {
+
+    var undefined,
+        empty_values = [undefined, null, false, 0, '', '0'];
+
+    for(var i = 0; i < empty_values.length; i++) {
+        if(mixed_var === empty_values[i]) {
+            return true;
+        }
+    }
+
+    if(typeof mixed_var === 'object') {
+
+        for(var key in mixed_var) {
+            if(mixed_var.hasOwnProperty(key)) {
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
+    return false;
+
+}

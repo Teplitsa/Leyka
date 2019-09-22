@@ -129,8 +129,8 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
     }
     
     // Quittance don't have some form data to send to the gateway site:
-    public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
-        return $form_data_vars;
+    public function submission_form_data($form_data, $pm_id, $donation_id) {
+        return $form_data;
     }
 
     public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {

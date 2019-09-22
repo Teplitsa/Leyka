@@ -108,8 +108,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             'paypal_keep_payment_logs' => array(
                 'type' => 'checkbox',
                 'default' => true,
-                'title' => __('Keep detailed logs of all PayPal service operations', 'leyka'),
-                'comment' => __('Check if you want to keep detailed logs of all PayPal service operations for each incoming donation.', 'leyka'),
+                'title' => __('Keep detailed logs of all gateway service operations', 'leyka'),
+                'comment' => __('Check if you want to keep detailed logs of all gateway service operations for each incoming donation.', 'leyka'),
                 'short_format' => true,
                 'field_classes' => array('old-api'),
             ),
@@ -610,7 +610,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     }
 
     // We don't need a redirection form vars on PayPal, so this filter method is empty:
-    public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
+    public function submission_form_data($form_data, $pm_id, $donation_id) {
         return array();
     }
 
@@ -696,25 +696,22 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 if($webhook_event === 'completed') { // New non-init recurring donation
 
-                    $donation = Leyka_Donation::add(array(
-                        'force_insert' => true, // Turn off donation fields validation checks
-                        'status' => 'funded',
-                        'payment_type' => 'rebill',
-                        'campaign_id' => $init_recurring_donation->campaign_id,
-                        'donor_name' => $init_recurring_donation->donor_name,
-                        'donor_email' => $init_recurring_donation->donor_email,
-                        'amount' => $init_recurring_donation->amount,
-                        'currency' => $init_recurring_donation->currency,
-                        'gateway_id' => $init_recurring_donation->gateway_id,
-                        'payment_method_id' => $init_recurring_donation->pm_id,
-                    ));
-                    $donation = new Leyka_Donation($donation);
+                    $new_recurring_donation = Leyka_Donation::add_clone(
+                        $init_recurring_donation,
+                        array(
+                            'status' => 'funded',
+                            'payment_type' => 'rebill',
+                            'init_recurring_donation' => $init_recurring_donation->id,
+                            'paypal_sale_id' => $webhook_data['id'],
+                        ),
+                        array('recalculate_total_amount' => true,)
+                    );
 
-                    $donation->init_recurring_donation_id = $init_recurring_donation->id;
-                    $donation->payment_title = $init_recurring_donation->title;
-                    $donation->paypal_sale_id = $webhook_data['id']; // Sale ID
+                    if(is_wp_error($new_recurring_donation)) {
+                        return false;
+                    }
 
-                    $donation->add_gateway_response($webhook_data);
+                    $new_recurring_donation->add_gateway_response($webhook_data);
 
                 } else if($webhook_event === 'refunded' && !empty($webhook_data['sale_id'])) { // Non-init recurring - refund
 
