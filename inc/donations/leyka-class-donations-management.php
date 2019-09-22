@@ -1626,6 +1626,8 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 }
 
 function leyka_donation_management() {
+
+    echo '<pre>'.print_r('HERE!', 1).'</pre>';
     return Leyka_Donation_Management::get_instance();
 }
 

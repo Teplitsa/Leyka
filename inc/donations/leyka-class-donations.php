@@ -78,6 +78,53 @@ abstract class Leyka_Donations extends Leyka_Singleton {
      */
     abstract public function add(array $params = array(), $return_object = false);
 
+    /**
+     * Helper to add a copy of given Donation.
+     *
+     * @param $original Leyka_Donation_Base
+     * @param $params array An array of Donation params to rewrite in the clone.
+     * @param $settings array Cloning operation settings array.
+     * @return Leyka_Donation_Base|WP_Error A new Donation object or WP_Error object if there were some errors while adding it.
+     */
+    public function add_clone(Leyka_Donation_Base $original, array $params = array(), array $settings = array()) {
+
+        $settings = array_merge(array('recalculate_total_amount' => false,), $settings);
+
+        $new_donation_id = $this->add(array_merge(array(
+            'date' => $original->date,
+            'status' => $original->status,
+            'payment_type' => $original->payment_type,
+            'purpose_text' => $original->title,
+            'campaign_id' => $original->campaign_id,
+            'payment_method_id' => $original->pm_id,
+            'gateway_id' => $original->gateway_id,
+            'donor_name' => $original->donor_name,
+            'donor_email' => $original->donor_email,
+            'donor_user_id' => $original->donor_user_id,
+            'amount' => $original->amount,
+            'amount_total' => $original->amount_total,
+            'currency' => $original->currency,
+        ), $params));
+
+        if(is_wp_error($new_donation_id)) {
+            return $new_donation_id;
+        }
+
+        $new = Leyka_Donations::get_instance()->get_donation($new_donation_id);
+
+        if( // If the original donation was made before the commission was set, apply a commission to the cloned one
+            $settings['recalculate_total_amount']
+            && $original->amount == $original->amount_total
+            && $original->amount == $original->amount_total
+            && leyka_get_pm_commission($original->pm_full_id) > 0.0
+        ) {
+            $new->amount_total = leyka_calculate_donation_total_amount($new);
+        }
+
+        return $new;
+
+    }
+
     abstract public function delete_donation($donation_id, $force_delete = false);
 
     protected function _get_multiple_filter_values($values, array $possible_values_list) {

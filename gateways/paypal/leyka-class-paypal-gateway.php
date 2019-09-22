@@ -696,7 +696,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 if($webhook_event === 'completed') { // New non-init recurring donation
 
-                    $new_recurring_donation = Leyka_Donation::add_clone(
+                    $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
                         $init_recurring_donation,
                         array(
                             'status' => 'funded',

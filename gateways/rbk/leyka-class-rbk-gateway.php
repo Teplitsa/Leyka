@@ -119,7 +119,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
 
         if( !empty($form_data['leyka_recurring']) ) {
             $donation->payment_type = 'rebill';
@@ -174,7 +174,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             return array('status' => 1, 'message' => __('The donation was not created due to error.', 'leyka'));
         }
 
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
         $invoice_id = $this->_rbk_response->invoice->id;
@@ -259,7 +259,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             return false; // Mb, return WP_Error?
         }
 
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
         $donation->status = $map_status[ $data['eventType'] ];
 
         // Log webhook response:
@@ -279,7 +279,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
         // Log the webhook request content:
         $donation_id = self::get_donation_by_invoice_id($data['invoice']['id']);
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
 
         $data_to_log = $data;
         if(leyka_options()->opt('rbk_keep_payment_logs')) {
@@ -338,9 +338,9 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation $donation) {
+    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) {
 
-        $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($donation);
+        $init_recurring_donation = $this->get_init_recurring_donation($donation);
         $cancelling_url = (get_option('permalink_structure') ?
                 home_url("leyka/service/cancel_recurring/{$donation->id}") :
                 home_url("?page=leyka/service/cancel_recurring/{$donation->id}"))
@@ -350,13 +350,13 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
     }
 
-    public function cancel_recurring_subscription(Leyka_Donation $donation) {
+    public function cancel_recurring_subscription(Leyka_Donation_Base $donation) {
 
         if($donation->type !== 'rebill') {
             die();
         }
 
-        $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($donation);
+        $init_recurring_donation = $this->get_init_recurring_donation($donation);
         $init_recurring_donation->recurring_is_active = false;
 
         header('Content-type: text/html; charset=utf-8');
@@ -365,13 +365,13 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
     }
 
-    public function do_recurring_donation(Leyka_Donation $init_recurring_donation) {
+    public function do_recurring_donation(Leyka_Donation_Base $init_recurring_donation) {
 
         if( !$init_recurring_donation->rbk_invoice_id || !$init_recurring_donation->rbk_payment_id ) {
             return false;
         }
 
-        $new_recurring_donation = Leyka_Donation::add_clone(
+        $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
             $init_recurring_donation,
             array(
                 'status' => 'submitted',
@@ -561,7 +561,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
+    public function get_specific_data_value($value, $field_name, Leyka_Donation_Base $donation) {
         switch($field_name) {
             case 'invoice_id':
             case 'rbk_invoice_id':
@@ -574,7 +574,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         }
     }
 
-    public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
+    public function set_specific_data_value($field_name, $value, Leyka_Donation_Base $donation) {
         switch($field_name) {
             case 'invoice_id':
             case 'rbk_invoice_id':
@@ -586,7 +586,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         }
     }
 
-    public function save_donation_specific_data(Leyka_Donation $donation) {
+    public function save_donation_specific_data(Leyka_Donation_Base $donation) {
 
         if(isset($_POST['rbk-invoice-id']) && $donation->rbk_invoice_id != $_POST['rbk-invoice-id']) {
             $donation->rbk_invoice_id = $_POST['rbk-invoice-id'];
