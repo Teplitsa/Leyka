@@ -268,7 +268,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
                 }
 
-                $init_recurring_donation = $this->get_init_recurrent_donation($customer_id);
+                $init_recurring_donation = $this->get_init_recurring_donation($customer_id);
 
                 $new_recurring_donation = Leyka_Donation::add_clone(
                     $init_recurring_donation,

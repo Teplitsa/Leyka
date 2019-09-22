@@ -65,9 +65,10 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             wp_delete_post($id, true);
             return new WP_Error('incorrect_donor_name', __('Incorrect donor name given while adding a donation', 'leyka'));
 
-        } else if(is_email($value, FILTER_VALIDATE_EMAIL)) {
+        } else if(is_email($value)) {
             $value = apply_filters('leyka_donor_name_email_given', __('Anonymous', 'leyka'));
         }
+
         add_post_meta($id, 'leyka_donor_name', htmlentities($value, ENT_QUOTES, 'UTF-8'));
 
         // Donor's email is set earlier:
@@ -178,6 +179,32 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
     }
 
+    /**
+     * A wrapper to access gateway's method to get init recurrent donation.
+     *
+     * @param mixed $donation
+     * @return mixed Leyka_Donation or false if param is wrong or nothing found.
+     */
+    public static function get_init_recurring_donation($donation) {
+
+        $donation = leyka_get_validated_donation($donation);
+
+        if($donation->type !== 'rebill') {
+            return false;
+        }
+
+        return leyka_get_gateway_by_id($donation->gateway_id)->get_init_recurring_donation($donation);
+
+    }
+    /**
+     * @deprecated Use self::get_init_recurring_donation($donation) instead.
+     * @param mixed $donation
+     * @return mixed Leyka_Donation or false if param is wrong or nothing found.
+     */
+    public static function get_init_recurrent_donation($donation) {
+        return self::get_init_recurring_donation($donation);
+    }
+
 	public function __construct($donation) {
 
         if((is_int($donation) || is_string($donation)) && absint($donation > 0)) {
@@ -283,18 +310,19 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'ID':
                 return $this->_id;
 
-            case 'title':
-            case 'name':
-                return $this->_main_data->post_title;
-
             case 'campaign_id':
                 return $this->_donation_meta['campaign_id'];
             case 'campaign':
-                return $this->_donation_meta['campaign_id'] ? new Leyka_Campaign($this->_donation_meta['campaign_id']) : false;
+                $campaign = new Leyka_Campaign($this->_donation_meta['campaign_id']);
+                return $campaign ? $campaign : false;
 
-            case 'campaign_title':
-                $campaign = $this->campaign;
+            case 'campaign_title': /** @todo Make an Object Cache singleton class for Campaigns!!! */
+                $campaign = new Leyka_Campaign($this->_donation_meta['campaign_id']);
                 return $campaign ? $campaign->title : $this->payment_title;
+
+            case 'title':
+            case 'name':
+                return $this->_main_data->post_title;
 
             case 'purpose':
             case 'purpose_text':
@@ -302,7 +330,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'campaign_payment_title':
                 return $this->_donation_meta['payment_title'];
 
-            case 'status': return $this->_main_data->post_status;
+            case 'status':
+                return $this->_post_object->post_status;
             case 'status_label':
                 $status_list = leyka_get_donation_status_list();
                 return $status_list[$this->_main_data->post_status];
@@ -414,6 +443,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'is_subscribed':
             case 'donor_subscribed':
                 return $this->_donation_meta['donor_subscribed'];
+
             case 'subscription_email':
             case 'donor_subscription_email':
                 return $this->_donation_meta['donor_subscription_email'] ?
@@ -501,18 +531,28 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'title':
             case 'payment_title':
             case 'purpose_text':
-                if($value != $this->_main_data->post_title) {
-                    wp_update_post(array('ID' => $this->_id, 'post_title' => $value));
-                    $this->_main_data->post_title = $value;
+                if($value !== $this->_main_data->post_title) {
+                    $res = wp_update_post(array('ID' => $this->_id, 'post_title' => $value));
                 }
-                break;
+                if( !is_wp_error($res) ) {
+
+                    $this->_main_data->post_title = $value;
+                    return true;
+
+                } else {
+                    return false;
+                }
 
             case 'status':
                 if( !array_key_exists($value, leyka_get_donation_status_list()) || $value === $this->status ) {
                     return false;
                 }
 
-                wp_update_post(array('ID' => $this->_id, 'post_status' => $value));
+                $res = wp_update_post(array('ID' => $this->_id, 'post_status' => $value));
+                if(is_wp_error($res)) {
+                    return false;
+                }
+
                 $this->_main_data->post_status = $value;
 
                 $status_log = get_post_meta($this->_id, '_status_log', true);
@@ -522,8 +562,15 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                     $status_log = array(array('date' => current_time('timestamp'), 'status' => $value));
                 }
 
-                update_post_meta($this->_id, '_status_log', $status_log);
-                $this->_donation_meta['status_log'] = $status_log;
+                $res = update_post_meta($this->_id, '_status_log', $status_log);
+                if( !!$res ) {
+
+                    $this->_donation_meta['status_log'] = $status_log;
+                    return true;
+
+                } else {
+                    return false;
+                }
 
                 break;
 
@@ -598,6 +645,10 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
                 do_action('leyka_donation_total_amount_changed', $this->_id, $value);
                 break;
+
+            case 'main_curr_amount':
+            case 'amount_equiv':
+                return true; //$this->set_meta('amount_in_main_currency', (float)$value);
 
             case 'currency':
             case 'currency_id':
@@ -760,11 +811,10 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
     }
 
-    public function add_gateway_response($resp_text) {
+    public function add_gateway_response($response) {
 
-        $this->_donation_meta['gateway_response'] = $resp_text;
-
-        update_post_meta($this->_id, 'leyka_gateway_response', $this->_donation_meta['gateway_response']);
+        $this->_donation_meta['gateway_response'] = $response;
+        return !!update_post_meta($this->_id, 'leyka_gateway_response', $this->_donation_meta['gateway_response']);
 
     }
 

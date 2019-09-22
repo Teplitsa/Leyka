@@ -1220,7 +1220,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <div id="hide-recurrent-metabox"></div>
         <?php return; } else {
 
-            $init_recurrent_donation = Leyka_Donation::get_init_recurrent_donation($donation);
+            $init_recurrent_donation = Leyka_Donation::get_init_recurring_donation($donation);
             if( !$init_recurrent_donation->recurring_is_active ) {?>
 
             <div class="">
@@ -1692,25 +1692,22 @@ class Leyka_Donation {
 
         $value = empty($params['donor_name']) ? leyka_pf_get_donor_name_value() : $params['donor_name'];
         $value = trim($value);
-        if($value && !leyka_validate_donor_name($value) && empty($params['force_insert'])) { // Validate donor's name
+        if($value && !leyka_validate_donor_name($value) && !$params['force_insert']) { // Validate donor's name
 
             wp_delete_post($id, true);
-            return new WP_Error('incorrect_donor_name', __('Incorrect donor name given while trying to add a donation', 'leyka'));
+            return new WP_Error('incorrect_donor_name', __('Incorrect donor name given while adding a donation', 'leyka'));
 
-        } else if(filter_var($value, FILTER_VALIDATE_EMAIL)) {
+        } else if(is_email($value)) {
             $value = apply_filters('leyka_donor_name_email_given', __('Anonymous', 'leyka'));
         }
 
         add_post_meta($id, 'leyka_donor_name', htmlentities($value, ENT_QUOTES, 'UTF-8'));
 
         // Donor's email is set earlier:
-        if($donor_email && !filter_var($donor_email, FILTER_VALIDATE_EMAIL) && empty($params['force_insert'])) {
+        if($donor_email && is_email($donor_email) && empty($params['force_insert'])) {
 
             wp_delete_post($id, true);
-            return new WP_Error(
-                'incorrect_donor_email',
-                __('Incorrect donor email given while trying to add a donation', 'leyka')
-            );
+            return new WP_Error('incorrect_donor_email', __('Incorrect donor email given while adding a donation', 'leyka'));
 
         }
         add_post_meta($id, 'leyka_donor_email', $donor_email);

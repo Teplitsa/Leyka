@@ -3,139 +3,6 @@
 /** Separately stored donation class - the donation data is kept in the separated DB tables */
 class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
-    public function __construct($donation) {
-
-        if((is_int($donation) || is_string($donation)) && (int)$donation > 0) {
-            $this->_id = (int)$donation;
-        } else if(is_a($donation, 'WP_Post')) {
-
-            /** @var $donation WP_Post */
-            if($donation->post_type !== Leyka_Donation_Management::$post_type) {
-                return false;
-            }
-
-            $this->_id = $donation->ID;
-
-        } else if(is_a($donation, 'Leyka_Donation_Base')) {
-            $this->_id = $donation->id;
-        } else {
-            return false; /** @todo Throw an Ex? */
-        }
-
-        global $wpdb;
-        $this->_main_data = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}leyka_donations` WHERE `ID`=%d LIMIT 0,1", $this->_id)
-        );
-
-        if( !$this->_main_data ) {
-            return false;
-        }
-
-        return $this;
-
-    }
-
-    public function get_meta($meta_name) {
-
-        $meta_name = trim($meta_name);
-        if( !$meta_name ) { /** @todo Throw an Ex? */
-            return NULL;
-        }
-
-        if( !isset($this->_donation_meta[$meta_name]) ) {
-
-            global $wpdb;
-            $query = $wpdb->prepare("SELECT `meta_value` FROM `{$wpdb->prefix}leyka_donations_meta` WHERE `donation_id`=%d AND `meta_key`=%s LIMIT 0,1", $this->_id, $meta_name);
-            $this->_donation_meta[$meta_name] = maybe_unserialize($wpdb->get_var($query));
-
-        }
-
-        return $this->_donation_meta[$meta_name];
-
-    }
-
-    public function set_meta($meta_name, $value) {
-
-        $meta_name = trim($meta_name);
-        if( !$meta_name ) { /** @todo Throw an Ex? */
-            return false;
-        }
-
-        $value = is_array($value) || is_object($value) ? serialize($value) : trim($value);
-
-        global $wpdb;
-
-        if( // Meta already exists, update it
-            isset($this->_donation_meta[$meta_name]) ||
-            $wpdb->get_var($wpdb->prepare("SELECT `meta_id` FROM `$wpdb->prefix`leyka_donations_meta WHERE `donation_id`=%d AND `meta_key`=%s LIMIT 0,1", $this->_id, $meta_name))
-        ) {
-
-            $res = $wpdb->update(
-                $wpdb->prefix.'leyka_donations_meta',
-                array('meta_value' => $value),
-                array('donation_id' => $this->_id, 'meta_key' => $meta_name),
-                array('%s'),
-                array('%d', '%s')
-            );
-
-        } else { // Meta is not inserted yet
-
-            $res = $wpdb->insert(
-                $wpdb->prefix.'leyka_donations_meta',
-                array('donation_id' => $this->_id, 'meta_key' => $meta_name, 'meta_value' => $value),
-                array('%d', '%s', '%s')
-            );
-
-        }
-
-        if($res) {
-            $this->_donation_meta[$meta_name] = $value;
-        } else {
-            return false;
-        }
-
-        return true;
-
-    }
-
-    protected function _set_data($data_name, $value) {
-
-        $data_name = trim($data_name);
-        if( !$data_name ) { /** @todo Throw an Ex? */
-            return false;
-        }
-
-        $value = is_array($value) || is_object($value) ? serialize($value) : trim($value);
-
-        if( !isset($this->_main_data->$data_name) ) {
-            /** @todo Throw some Ex? */
-        } else {
-
-            if($this->_main_data->$data_name != $value) {
-
-                global $wpdb;
-                $res = $wpdb->update(
-                    $wpdb->prefix.'leyka_donations',
-                    array($data_name => $value),
-                    array('ID' => $this->_id),
-                    array('%s'),
-                    array('%d')
-                );
-
-                if($res) {
-                    $this->_main_data->$data_name = $value;
-                } else {
-                    return false;
-                }
-
-            }
-
-        }
-
-        return true;
-
-    }
-
     public static function add(array $params = array()) {
 
         $params['force_insert'] = !empty($params['force_insert']);
@@ -320,6 +187,38 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
     }
 
+    public function __construct($donation) {
+
+        if((is_int($donation) || is_string($donation)) && (int)$donation > 0) {
+            $this->_id = (int)$donation;
+        } else if(is_a($donation, 'WP_Post')) {
+
+            /** @var $donation WP_Post */
+            if($donation->post_type !== Leyka_Donation_Management::$post_type) {
+                return false;
+            }
+
+            $this->_id = $donation->ID;
+
+        } else if(is_a($donation, 'Leyka_Donation_Base')) {
+            $this->_id = $donation->id;
+        } else {
+            return false; /** @todo Throw an Ex? */
+        }
+
+        global $wpdb;
+        $this->_main_data = $wpdb->get_row(
+            $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}leyka_donations` WHERE `ID`=%d LIMIT 0,1", $this->_id)
+        );
+
+        if( !$this->_main_data ) {
+            return false;
+        }
+
+        return $this;
+
+    }
+
     /**
      * @param $field string
      * @return mixed
@@ -346,6 +245,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             case 'title':
             case 'name':
+
             case 'purpose':
             case 'purpose_text':
             case 'payment_title':
@@ -356,6 +256,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 return $this->_main_data->status;
             case 'status_label':
                 return leyka()->get_donation_status_info($this->_main_data->status, 'label');
+
             case 'status_desc':
             case 'status_description':
                 return leyka()->get_donation_status_info($this->_main_data->status, 'description');
@@ -465,6 +366,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'is_subscribed':
             case 'donor_subscribed':
                 return $this->get_meta('donor_subscribed');
+
             case 'subscription_email':
             case 'donor_subscription_email':
                 return $this->get_meta('donor_subscription_email') ?
@@ -710,8 +612,109 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
     }
 
-    public function add_gateway_response($resp_text) {
-        $this->set_meta('gateway_response', $resp_text);
+    public function get_meta($meta_name) {
+
+        $meta_name = trim($meta_name);
+        if( !$meta_name ) { /** @todo Throw an Ex? */
+            return NULL;
+        }
+
+        if( !isset($this->_donation_meta[$meta_name]) ) {
+
+            global $wpdb;
+            $query = $wpdb->prepare("SELECT `meta_value` FROM `{$wpdb->prefix}leyka_donations_meta` WHERE `donation_id`=%d AND `meta_key`=%s LIMIT 0,1", $this->_id, $meta_name);
+            $this->_donation_meta[$meta_name] = maybe_unserialize($wpdb->get_var($query));
+
+        }
+
+        return $this->_donation_meta[$meta_name];
+
+    }
+
+    public function set_meta($meta_name, $value) {
+
+        $meta_name = trim($meta_name);
+        if( !$meta_name ) { /** @todo Throw an Ex? */
+            return false;
+        }
+
+        $value = is_array($value) || is_object($value) ? serialize($value) : trim($value);
+
+        global $wpdb;
+
+        if( // Meta already exists, update it
+            isset($this->_donation_meta[$meta_name]) ||
+            $wpdb->get_var($wpdb->prepare("SELECT `meta_id` FROM `$wpdb->prefix`leyka_donations_meta WHERE `donation_id`=%d AND `meta_key`=%s LIMIT 0,1", $this->_id, $meta_name))
+        ) {
+
+            $res = $wpdb->update(
+                $wpdb->prefix.'leyka_donations_meta',
+                array('meta_value' => $value),
+                array('donation_id' => $this->_id, 'meta_key' => $meta_name),
+                array('%s'),
+                array('%d', '%s')
+            );
+
+        } else { // Meta is not inserted yet
+
+            $res = $wpdb->insert(
+                $wpdb->prefix.'leyka_donations_meta',
+                array('donation_id' => $this->_id, 'meta_key' => $meta_name, 'meta_value' => $value),
+                array('%d', '%s', '%s')
+            );
+
+        }
+
+        if($res) {
+            $this->_donation_meta[$meta_name] = $value;
+        } else {
+            return false;
+        }
+
+        return true;
+
+    }
+
+    protected function _set_data($data_name, $value) {
+
+        $data_name = trim($data_name);
+        if( !$data_name ) { /** @todo Throw an Ex? */
+            return false;
+        }
+
+        $value = is_array($value) || is_object($value) ? serialize($value) : trim($value);
+
+        if( !isset($this->_main_data->$data_name) ) {
+            /** @todo Throw some Ex? */
+        } else {
+
+            if($this->_main_data->$data_name != $value) {
+
+                global $wpdb;
+                $res = $wpdb->update(
+                    $wpdb->prefix.'leyka_donations',
+                    array($data_name => $value),
+                    array('ID' => $this->_id),
+                    array('%s'),
+                    array('%d')
+                );
+
+                if($res) {
+                    $this->_main_data->$data_name = $value;
+                } else {
+                    return false;
+                }
+
+            }
+
+        }
+
+        return true;
+
+    }
+
+    public function add_gateway_response($response) {
+        return $this->set_meta('gateway_response', $response);
     }
 
     public function get_funded_date() {
