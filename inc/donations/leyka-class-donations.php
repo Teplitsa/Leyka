@@ -40,7 +40,7 @@ abstract class Leyka_Donations extends Leyka_Singleton {
 
         $donation_id = $this->_get_donation_id($donation);
         if(empty(self::$_objects[$donation_id])) {
-            self::$_objects[$donation_id] = self::_get_donation($donation);
+            self::$_objects[$donation_id] = $this->_get_donation($donation);
         }
 
         return self::$_objects[$donation_id];
@@ -83,28 +83,28 @@ abstract class Leyka_Donations extends Leyka_Singleton {
      * @param string $field_name
      * @return mixed
      */
-    public function get_donation_field($donation, $field_name) {
-
-        $donation = $this->get_donation($donation);
-
-        return $donation ? $donation->$field_name : null;
-
-    }
-
-    /**
-     * @param int|WP_Post|Leyka_Donation_Base $donation
-     * @param string $field_name
-     * @param string $field_value
-     * @return mixed
-     */
-    public function set_donation_field($donation, $field_name, $field_value) {
-
-        $field_name = trim($field_name);
-        $donation = $this->get_donation($donation);
-
-        return $donation ? ($donation->$field_name = $field_value) : false;
-
-    }
+//    public function get_donation_field($donation, $field_name) {
+//
+//        $donation = $this->get_donation($donation);
+//
+//        return $donation ? $donation->$field_name : null;
+//
+//    }
+//
+//    /**
+//     * @param int|WP_Post|Leyka_Donation_Base $donation
+//     * @param string $field_name
+//     * @param string $field_value
+//     * @return mixed
+//     */
+//    public function set_donation_field($donation, $field_name, $field_value) {
+//
+//        $field_name = trim($field_name);
+//        $donation = $this->get_donation($donation);
+//
+//        return $donation ? ($donation->$field_name = $field_value) : false;
+//
+//    }
 
     /**
      * @param $params array
@@ -219,7 +219,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
     }
 
-    public function get(array $params = array()) {
+    protected function _get_query(array $params = array()) {
 
         $query = new WP_Query(array(
             'post_type' => Leyka_Donation_Management::$post_type,
@@ -356,7 +356,9 @@ class Leyka_Donations_Posts extends Leyka_Donations {
             $query->set('meta_query', $meta_query);
         }
 
-        $status_filter = function(){ return 'post_status ASC'; }; // For status ordering
+        if( !empty($params['order']) && in_array($params['order'], array('asc', 'desc',)) ) {
+            $query->set('order', mb_strtoupper($params['order']));
+        }
 
         if( !empty($params['orderby']) ) {
             switch($params['orderby']) {
@@ -366,18 +368,29 @@ class Leyka_Donations_Posts extends Leyka_Donations {
                     $query->set('meta_key', 'leyka_donation_amount');
                     $query->set('orderby', 'meta_value_num');
                     break;
-                case 'status':
-                    add_filter('posts_orderby', $status_filter);
-                    $query->set('suppress_filters', false);
-                    break;
+                case 'status': // Post status ordering is handled manually in the get() method.
                 default:
             }
         }
-        if( !empty($params['order']) && in_array($params['order'], array('asc', 'desc',)) ) {
-            $query->set('order', mb_strtoupper($params['order']));
+
+        return $query;
+
+    }
+
+    public function get(array $params = array()) {
+
+        $donations_query = $this->_get_query($params);
+
+        $status_filter = function(){ return 'post_status ASC'; }; // For status ordering
+
+        if( !empty($params['orderby']) && $params['orderby'] === 'status' ) {
+
+            add_filter('posts_orderby', $status_filter);
+            $donations_query->set('suppress_filters', false);
+
         }
 
-        $res = $query->get_posts();
+        $res = $donations_query->get_posts();
 
         if( !empty($params['orderby']) && $params['orderby'] === 'status' ) {
             remove_filter('posts_orderby', $status_filter);
@@ -396,9 +409,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
     }
 
     public function get_count(array $params = array()) {
-
-        return 100500;
-
+        return $this->_get_query($params)->found_posts;
     }
 
     public function add(array $params = array(), $return_object = false) {
