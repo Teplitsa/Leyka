@@ -228,6 +228,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             $this->_id = $donation->ID;
             $this->_main_data = $donation;
 
+        } else if(is_a($donation, 'Leyka_Donation_Base')) {
+            $this->_id = $donation->id;
         } else {
             return false;
         }

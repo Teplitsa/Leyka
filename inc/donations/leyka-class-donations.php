@@ -4,6 +4,9 @@ abstract class Leyka_Donations extends Leyka_Singleton {
 
     protected static $_instance = null;
 
+    /** @var array Donations object cache */
+    protected static $_objects = array();
+
     /** @todo Factory should be a donations objects data storage (an object cache pattern). */
 
     /**

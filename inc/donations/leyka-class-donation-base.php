@@ -3,13 +3,15 @@
 abstract class Leyka_Donation_Base {
 
     protected $_id;
-
-    /** @var WP_Post */
     protected $_main_data;
-
     protected $_donation_meta = array();
 
     abstract public function __construct($donation);
+
+    /** @todo Add an list of possible $field values */
+    abstract public function __get($field);
+    /** @todo Add an list of possible $field & $value values */
+    abstract public function __set($field, $value);
 
     /**
      * @param $params array
