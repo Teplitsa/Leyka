@@ -4,10 +4,8 @@ abstract class Leyka_Donations extends Leyka_Singleton {
 
     protected static $_instance = null;
 
-    /** @var array Donations object cache */
+    /** @var array An array of Leyka_Donation_Base objects cache */
     protected static $_objects = array();
-
-    /** @todo Factory should be a donations objects data storage (an object cache pattern). */
 
     /**
      * @return static
@@ -38,7 +36,47 @@ abstract class Leyka_Donations extends Leyka_Singleton {
      * @param int|WP_Post|Leyka_Donation_Base $donation
      * @return Leyka_Donation_Base|null
      */
-    abstract public function get_donation($donation);
+    public function get_donation($donation) {
+
+        $donation_id = $this->_get_donation_id($donation);
+        if(empty(self::$_objects[$donation_id])) {
+            self::$_objects[$donation_id] = self::_get_donation($donation);
+        }
+
+        return self::$_objects[$donation_id];
+
+    }
+
+    /**
+     * @param int|WP_Post|Leyka_Donation_Base $donation
+     * @return int|false
+     */
+    protected static function _get_donation_id($donation) {
+
+        if((is_int($donation) || is_string($donation)) && absint($donation) > 0) {
+            return absint($donation);
+        } else if(is_a($donation, 'WP_Post')) {
+
+            /** @var $donation WP_Post */
+            if($donation->post_type !== Leyka_Donation_Management::$post_type) {
+                return false;
+            }
+
+            return $donation->ID;
+
+        } else if(is_a($donation, 'Leyka_Donation_Base')) {
+            return $donation->id;
+        } else {
+            return false;
+        }
+
+    }
+
+    /**
+     * @param int|WP_Post|Leyka_Donation_Base $donation
+     * @return Leyka_Donation_Base|null
+     */
+    abstract protected function _get_donation($donation);
 
     /**
      * @param int|WP_Post|Leyka_Donation_Base $donation
@@ -173,7 +211,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
     protected static $_instance = null;
 
-    public function get_donation($donation) {
+    protected function _get_donation($donation) {
 
         $donation = new Leyka_Donation_Post($donation);
 
@@ -379,7 +417,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
     protected static $_instance = null;
 
-    public function get_donation($donation) {
+    protected function _get_donation($donation) {
 
         $donation = new Leyka_Donation_Separated($donation);
 

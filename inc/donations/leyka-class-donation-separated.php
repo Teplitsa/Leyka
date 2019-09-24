@@ -189,8 +189,8 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
     public function __construct($donation) {
 
-        if((is_int($donation) || is_string($donation)) && (int)$donation > 0) {
-            $this->_id = (int)$donation;
+        if((is_int($donation) || is_string($donation)) && absint($donation)) {
+            $this->_id = absint($donation);
         } else if(is_a($donation, 'WP_Post')) {
 
             /** @var $donation WP_Post */

@@ -207,9 +207,9 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
 	public function __construct($donation) {
 
-        if((is_int($donation) || is_string($donation)) && absint($donation > 0)) {
+        if((is_int($donation) || is_string($donation)) && absint($donation)) {
 
-            $donation = (int)$donation;
+            $donation = absint($donation);
             $this->_main_data = get_post($donation);
 
             if( !$this->_main_data || $this->_main_data->post_type !== Leyka_Donation_Management::$post_type ) {
