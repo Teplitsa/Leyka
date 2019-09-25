@@ -16,7 +16,7 @@ if( !$current_template || $current_template === 'default' ) {
 
 }
 
-$templates = leyka()->get_templates();
+//$templates = leyka()->get_templates();
 
 wp_enqueue_media();?>
 

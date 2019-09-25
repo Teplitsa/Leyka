@@ -497,7 +497,11 @@ function leyka_get_failure_page_url($campaign_id = false) {
 
 }
 
-/** Get a list of donation form templates as an array. */
+/**
+ * Get a list of donation form templates as an array.
+ *
+ * @deprecated From v3.5, use leyka()->get_templates().
+ */
 function leyka_get_form_templates_list() {
 
     $list = array();

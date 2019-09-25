@@ -167,6 +167,132 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                 break;
 
             case 'view':
+                $templates_options = array(
+                    'template_options_revo' => array(
+                        'screenshots' => array(
+                            'screen-revo-001.png', 'screen-revo-002.png', 'screen-revo-003.png', 'screen-revo-004.png',
+                        ),
+                        'title' => __('Revo', 'leyka'),
+                        'sections' => array(
+                            array(
+                                'options' => array(
+                                    'revo_template_slider_max_sum', 'donation_submit_text',
+                                    'revo_donation_complete_button_text',
+                                ),
+                            ),
+                            array(
+                                'title' => __('Additional settings', 'leyka'),
+                                'options' => array(
+                                    'revo_template_show_donors_list', 'revo_template_show_thumbnail',
+                                    'show_donation_comment_field', 'donation_comment_max_length',
+                                    'do_not_display_donation_form',
+                                ),
+                            ),
+                        ),
+                    ),
+                    'template_options_neo' => array(
+                        'title' => __('Neo', 'leyka'),
+                        'screenshots' => array('screen-neo-001.png', 'screen-neo-002.png'),
+                        'sections' => array(
+                            array(
+                                'title' => __('Donation sum field type', 'leyka'),
+                                'options' => array('donation_sum_field_type'),
+                            ),
+                            array(
+                                'title' => __('Progress scale location', 'leyka'),
+                                'options' => array('scale_widget_place', 'donation_submit_text',),
+                            ),
+                            array(
+                                'title' => __('Additional settings', 'leyka'),
+                                'options' => array(
+                                    'donations_history_under_forms', 'show_success_widget_on_success',
+                                    'show_donation_comment_field', 'donation_comment_max_length',
+                                    'show_campaign_sharing', 'show_failure_widget_on_failure',
+                                    'do_not_display_donation_form',
+                                ),
+                            ),
+                        ),
+
+                    ),
+                    'template_options_toggles' => array(
+                        'title' => __('Toggles', 'leyka'),
+                        'screenshots' => array('screen-toggles-001.png', 'screen-toggles-002.png'),
+                        'sections' => array(
+                            array(
+                                'title' => __('Donation sum field type', 'leyka'),
+                                'options' => array('donation_sum_field_type'),
+                            ),
+                            array(
+                                'title' => __('Progress scale location', 'leyka'),
+                                'options' => array('scale_widget_place', 'donation_submit_text',),
+                            ),
+                            array(
+                                'title' => __('Additional settings', 'leyka'),
+                                'options' => array(
+                                    'donations_history_under_forms', 'show_success_widget_on_success',
+                                    'show_donation_comment_field', 'donation_comment_max_length',
+                                    'show_campaign_sharing', 'show_failure_widget_on_failure',
+                                    'do_not_display_donation_form',
+                                ),
+                            ),
+                        ),
+                    ),
+                    'template_options_radios' => array(
+                        'title' => __('Radios', 'leyka'),
+                        'screenshots' => array('screen-radios-001.png'),//, 'screen-radios-002.png'
+                        'sections' => array(
+                            array(
+                                'title' => __('Donation sum field type', 'leyka'),
+                                'options' => array('donation_sum_field_type'),
+                            ),
+                            array(
+                                'title' => __('Progress scale location', 'leyka'),
+                                'options' => array('scale_widget_place', 'donation_submit_text',),
+                            ),
+                            array(
+                                'title' => __('Additional settings', 'leyka'),
+                                'options' => array(
+                                    'donations_history_under_forms', 'show_success_widget_on_success',
+                                    'show_donation_comment_field', 'donation_comment_max_length',
+                                    'show_campaign_sharing', 'show_failure_widget_on_failure',
+                                    'do_not_display_donation_form',
+                                ),
+                            ),
+                        ),
+                    ),
+                    'template_options_star' => array(
+                        'title' => __('Star', 'leyka'),
+                        'screenshots' => array('screen-star-001.png'),
+                        'sections' => array(
+                            array(
+                                'title' => __('Donation sum field type', 'leyka'),
+                                'options' => array('donation_sum_field_type',),
+                            ),
+                            array(
+                                'title' => __('Label of the button to submit a donation form', 'leyka'),
+                                'options' => array('donation_submit_text',),
+                            ),
+                            array(
+                                'title' => __('Additional settings', 'leyka'),
+                                'options' => array(
+                                    'show_success_widget_on_success',
+                                    'show_donation_comment_field', 'donation_comment_max_length',
+                                    'show_failure_widget_on_failure',
+                                    'do_not_display_donation_form',
+                                ),
+                            ),
+                        ),
+                    ),
+                );
+
+                if( !leyka_options()->opt('allow_deprecated_form_templates') ) {
+                    foreach(leyka()->get_templates(array('include_deprecated' => true)) as $template_id => $template_data) {
+                        if( !empty($template_data['deprecated']) ) {
+                            unset($templates_options['template_options_'.$template_id]);
+                        }
+                    }
+                }
+
                 $options_allocated = array(
                     array('section' => array(
                         'name' => 'campaign_templates_options',
@@ -174,7 +300,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'title' => __('Campaign templates', 'leyka'),
                         'description' => __('Here you can change donation forms view', 'leyka'),
                         'is_default_collapsed' => false,
-                        'tabs' => array(
+                        'tabs' => array_merge(array(
                             'main_template' => array(
                                 'title' => __('Main template', 'leyka'),
                                 'sections' => array(
@@ -184,123 +310,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                     ),
                                 ),
                             ),
-                            'template_options_revo' => array(
-                                'screenshots' => array(
-                                    'screen-revo-001.png', 'screen-revo-002.png', 'screen-revo-003.png', 'screen-revo-004.png',
-                                ),
-                                'title' => __('Revo', 'leyka'),
-                                'sections' => array(
-                                    array(
-                                        'options' => array(
-                                            'revo_template_slider_max_sum', 'donation_submit_text',
-                                            'revo_donation_complete_button_text',
-                                        ),
-                                    ),
-                                    array(
-                                        'title' => __('Additional settings', 'leyka'),
-                                        'options' => array(
-                                            'revo_template_show_donors_list', 'revo_template_show_thumbnail',
-                                            'show_donation_comment_field', 'donation_comment_max_length',
-                                            'do_not_display_donation_form',
-                                        ),
-                                    ),
-                                ),
-                            ),
-                            'template_options_neo' => array(
-                                'title' => __('Neo', 'leyka'),
-                                'screenshots' => array('screen-neo-001.png', 'screen-neo-002.png'),
-                                'sections' => array(
-                                    array(
-                                        'title' => __('Donation sum field type', 'leyka'),
-                                        'options' => array('donation_sum_field_type'),
-                                    ),
-                                    array(
-                                        'title' => __('Progress scale location', 'leyka'),
-                                        'options' => array('scale_widget_place', 'donation_submit_text',),
-                                    ),
-                                    array(
-                                        'title' => __('Additional settings', 'leyka'),
-                                        'options' => array(
-                                            'donations_history_under_forms', 'show_success_widget_on_success',
-                                            'show_donation_comment_field', 'donation_comment_max_length',
-                                            'show_campaign_sharing', 'show_failure_widget_on_failure',
-                                            'do_not_display_donation_form',
-                                        ),
-                                    ),
-                                ),
-                                
-                            ),
-                            'template_options_toggles' => array(
-                                'title' => __('Toggles', 'leyka'),
-                                'screenshots' => array('screen-toggles-001.png', 'screen-toggles-002.png'),
-                                'sections' => array(
-                                    array(
-                                        'title' => __('Donation sum field type', 'leyka'),
-                                        'options' => array('donation_sum_field_type'),
-                                    ),
-                                    array(
-                                        'title' => __('Progress scale location', 'leyka'),
-                                        'options' => array('scale_widget_place', 'donation_submit_text',),
-                                    ),
-                                    array(
-                                        'title' => __('Additional settings', 'leyka'),
-                                        'options' => array(
-                                            'donations_history_under_forms', 'show_success_widget_on_success',
-                                            'show_donation_comment_field', 'donation_comment_max_length',
-                                            'show_campaign_sharing', 'show_failure_widget_on_failure',
-                                            'do_not_display_donation_form',
-                                        ),
-                                    ),
-                                ),
-                            ),
-                            'template_options_radios' => array(
-                                'title' => __('Radios', 'leyka'),
-                                'screenshots' => array('screen-radios-001.png'),//, 'screen-radios-002.png'
-                                'sections' => array(
-                                    array(
-                                        'title' => __('Donation sum field type', 'leyka'),
-                                        'options' => array('donation_sum_field_type'),
-                                    ),
-                                    array(
-                                        'title' => __('Progress scale location', 'leyka'),
-                                        'options' => array('scale_widget_place', 'donation_submit_text',),
-                                    ),
-                                    array(
-                                        'title' => __('Additional settings', 'leyka'),
-                                        'options' => array(
-                                            'donations_history_under_forms', 'show_success_widget_on_success',
-                                            'show_donation_comment_field', 'donation_comment_max_length',
-                                            'show_campaign_sharing', 'show_failure_widget_on_failure',
-                                            'do_not_display_donation_form',
-                                        ),
-                                    ),
-                                ),
-                            ),
-                            'template_options_star' => array(
-                                'title' => __('Star', 'leyka'),
-                                'screenshots' => array('screen-star-001.png'),
-                                'sections' => array(
-                                    array(
-                                        'title' => __('Donation sum field type', 'leyka'),
-                                        'options' => array('donation_sum_field_type',),
-                                    ),
-                                    array(
-                                        'title' => __('Label of the button to submit a donation form', 'leyka'),
-                                        'options' => array('donation_submit_text',),
-                                    ),
-                                    array(
-                                        'title' => __('Additional settings', 'leyka'),
-                                        'options' => array(
-                                            'show_success_widget_on_success',
-                                            'show_donation_comment_field', 'donation_comment_max_length',
-                                            //'show_campaign_sharing',
-                                            'show_failure_widget_on_failure',
-                                            'do_not_display_donation_form',
-                                        ),
-                                    ),
-                                ),
-                            ),
-                        ),
+                        ), $templates_options),
                     ),),
 
                     // Currency settings:
@@ -437,8 +447,8 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'is_default_collapsed' => true,
                         'options' => array(
                             'show_donation_comments_in_frontend', 'success_page', 'failure_page', 'load_scripts_if_need',
-                            'donors_data_editable', 'revo_thankyou_text', 'revo_thankyou_email_result_text', 'plugin_demo_mode',
-                            'plugin_stats_sync_enabled',
+                            'donors_data_editable', 'revo_thankyou_text', 'revo_thankyou_email_result_text',
+                            'allow_deprecated_form_templates', 'plugin_demo_mode', 'plugin_stats_sync_enabled',
                         )
                     ),),
                 );

@@ -181,15 +181,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         <fieldset id="campaign-type" class="metabox-field campaign-field campaign-type">
 
-            <h3 class="field-title">
-                <?php _e('Campaign type', 'leyka');?>
-<!--                <span class="field-q" style="display: none;">-->
-<!--                    <img src="--><?php //echo LEYKA_PLUGIN_BASE_URL;?><!--img/icon-q.svg" alt="">-->
-<!--                    <span class="field-q-tooltip">-->
-<!--                        --><?php //esc_html_e('Some campaign type parameter description text.', 'leyka');?>
-<!--                    </span>-->
-<!--                </span>-->
-            </h3>
+            <h3 class="field-title"><?php _e('Campaign type', 'leyka');?></h3>
 
             <div class="field-wrapper">
                 <label class="field-label">
@@ -203,15 +195,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         <fieldset id="donations-types" class="metabox-field campaign-field donaitons-types">
 
-            <h3 class="field-title">
-                <?php _e('Donations types available', 'leyka');?>
-<!--                <span class="field-q" style="display: none;">-->
-<!--                    <img src="--><?php //echo LEYKA_PLUGIN_BASE_URL;?><!--img/icon-q.svg" alt="">-->
-<!--                    <span class="field-q-tooltip">-->
-<!--                        --><?php //esc_html_e('Some donations types parameter description text.', 'leyka');?>
-<!--                    </span>-->
-<!--                </span>-->
-            </h3>
+            <h3 class="field-title"><?php _e('Donations types available', 'leyka');?></h3>
 
             <div class="field-wrapper">
                 <label class="field-label">
@@ -251,17 +235,15 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <h3 class="field-title">
                 <label for="campaign-form-template-field"><?php _e('Template for payment form', 'leyka');?></label>
-<!--                <span class="field-q" style="display: none;">-->
-<!--                    <img src="--><?php //echo LEYKA_PLUGIN_BASE_URL;?><!--img/icon-q.svg" alt="">-->
-<!--                    <span class="field-q-tooltip">-->
-<!--                        --><?php //esc_html_e('Some text here.', 'leyka');?>
-<!--                    </span>-->
-<!--                </span>-->
             </h3>
 
             <div class="field-wrapper flex">
 
                 <?php $templates = leyka()->get_templates();
+                if( leyka()->template_is_deprecated($cur_template) ) { // "toggles"
+                    $templates[] = leyka()->get_template($cur_template);
+                }
+
                 $default_template = leyka()->get_template(leyka_options()->opt('donation_form_template'));?>
 
                 <select id="campaign-form-template-field" name="campaign_template" data-default-template-id="<?php echo empty($default_template['id']) ? '' : esc_attr($default_template['id']);?>">
@@ -272,10 +254,12 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                     <?php foreach($templates as $template) {
 
-                        $template_id = esc_attr($template['id']);?>
+                        $template_id = esc_attr($template['id']);
+                        $template_deprecated = leyka()->template_is_deprecated($template_id);?>
 
-                        <option value="<?php echo $template_id;?>" <?php selected($cur_template, $template_id);?>>
-                            <?php esc_html_e($template['name'], 'leyka');?>
+                        <option value="<?php echo $template_id;?>" <?php selected($cur_template, $template_id);?> class="<?php echo $template_deprecated ? 'template-deprecated' : '';?>">
+                            <?php echo __($template['name'], 'leyka')
+                                .($template_deprecated ? ' ('.__('deprecated', 'leyka').')' : '');?>
                         </option>
 
                     <?php }?>
@@ -1093,7 +1077,7 @@ class Leyka_Campaign {
 
             case 'template':
             case 'template_id':
-                if( in_array($value, array_keys(leyka_get_form_templates_list())) ) {
+                if( array_key_exists($value, leyka()->get_templates(array('include_deprecated' => true))) ) {
 
                     $this->_campaign_meta['campaign_template'] = $value;
                     update_post_meta($this->_id, 'campaign_template', $value);
