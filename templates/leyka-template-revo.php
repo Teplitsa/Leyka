@@ -2,6 +2,7 @@
 /**
  * Leyka Template: Revo
  * Description: A modern and lightweight step-by-step form template
+ * Deprecated: true
  *
  * $campaign - current campaign
  * 

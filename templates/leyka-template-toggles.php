@@ -2,6 +2,7 @@
 /**
  * Leyka Template: Toggles
  * Description: Toggled options for each payment method
+ * Deprecated: true
  **/
 
 $active_pm = apply_filters('leyka_form_pm_order', leyka_get_pm_list(true));

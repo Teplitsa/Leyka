@@ -18,7 +18,7 @@ class Leyka extends Leyka_Singleton {
      * Templates order.
      * @var array
      */
-    protected $_templates_order = array('revo', 'neo', 'toggles', 'radios');
+    protected $_templates_order = array('star', 'revo', 'neo', 'toggles', 'radios');
 
     /**
      * Gateways list.
@@ -1985,16 +1985,21 @@ class Leyka extends Leyka_Singleton {
     /**
      * Templates manipulations.
      *
-     * @param $is_service boolean True if templates is of service group, false otherwise.
-     * @return array Template files.
+     * @param $params array.
+     * @return array An array of donations forms templates info.
      **/
-    public function get_templates($is_service = false) {
+    public function get_templates(array $params = array()) {
+
+        $params = array_merge(array(
+            'is_service' => false,
+            'include_deprecated' => leyka_options()->opt('allow_deprecated_form_templates')
+        ), $params);
 
         if( !$this->templates ) {
             $this->templates = array();
         }
 
-        if( !!$is_service ) {
+        if( !!$params['is_service'] ) {
             $this->templates = glob(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-*.php');
         } else {
 
@@ -2012,7 +2017,15 @@ class Leyka extends Leyka_Singleton {
             $this->templates = array();
         }
 
-        $this->templates = array_map(array($this, 'get_template_data'), $this->templates);
+        $this->templates = array_map(array($this, '_get_template_data'), $this->templates);
+
+        if( !$params['include_deprecated'] ) {
+            foreach($this->templates as $index => $template_data) {
+                if( !empty($template_data['deprecated']) ) {
+                    unset($this->templates[$index]);
+                }
+            }
+        }
 
         // Templates ordering:
         $ordered_templates = array();
@@ -2020,14 +2033,14 @@ class Leyka extends Leyka_Singleton {
         foreach($this->_templates_order as $ordered_template) {
             foreach($this->templates as $template_data) {
                 if($template_data['id'] == $ordered_template) {
-                    $ordered_templates[] = $template_data;
+                    $ordered_templates[ $template_data['id'] ] = $template_data;
                 }
             }
         }
 
         foreach($this->templates as $template_data) {
             if( !in_array($template_data['id'], $this->_templates_order) ) {
-                $ordered_templates[] = $template_data;
+                $ordered_templates[ $template_data['id'] ] = $template_data;
             }
         }
         $this->templates = $ordered_templates;
@@ -2036,13 +2049,13 @@ class Leyka extends Leyka_Singleton {
 
     }
 
-
-    public function get_template_data($file) {
+    protected function _get_template_data($file) {
 
         $data = get_file_data($file, array(
             'name' => 'Leyka Template',
             'description' => 'Description',
             'debug_only' => 'Debug only',
+            'deprecated' => 'Deprecated',
         ));
 
         $data['file'] = $file;
@@ -2058,28 +2071,47 @@ class Leyka extends Leyka_Singleton {
         return $data;
 
     }
+    /** @deprecated From v3.5 use only $this->get_template($template_id). */
+    public function get_template_data($file) {
+        return $this->_get_template_data($file);
+    }
 
-    public function get_template($basename, $is_service = false) {
+    public function get_template($template_id, $is_service = false) {
 
-        $templates = $this->get_templates($is_service);
+        $templates = $this->get_templates(array('is_service' => !!$is_service, 'include_deprecated' => true,));
         if( !$templates ) {
             return false;
         }
 
-        $active = '';
         foreach($templates as $template) {
 
-            $cur_basename = explode('-', str_replace('.php', '', $template['basename']));
-            $cur_basename = end($cur_basename); // Otherwise error appears in PHP 5.4.x
-            if($cur_basename == $basename) {
+            $current_template_id = explode('-', str_replace('.php', '', $template['basename']));
+            $current_template_id = end($current_template_id);
 
-                $active = $template;
-                break;
-
+            if($current_template_id == $template_id) {
+                return $template;
             }
+
         }
 
-        return $active;
+        return false;
+
+    }
+
+    public function template_is_deprecated($template_id) {
+
+        $template_data = get_file_data(LEYKA_PLUGIN_DIR."templates/leyka-template-$template_id.php", array(
+            'name' => 'Leyka Template',
+            'description' => 'Description',
+            'debug_only' => 'Debug only',
+            'deprecated' => 'Deprecated',
+        ));
+
+        if( !$template_data ) {
+            /** @todo Throw some Ex? */ return false;
+        }
+
+        return !empty($template_data['deprecated']);
 
     }
 

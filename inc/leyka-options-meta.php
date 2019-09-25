@@ -611,6 +611,12 @@ self::$_options_meta = array(
         'required' => true,
         'list_entries' => 'leyka_get_form_templates_list',
     ),
+    'allow_deprecated_form_templates' => array(
+        'type' => 'checkbox',
+        'default' => false,
+        'title' => __('Allow usage of the old donation forms templates', 'leyka'),
+        'short_format' => true,
+    ),
     'donation_sum_field_type' => array(
         'type' => 'radio',
         'default' => 'flexible',
