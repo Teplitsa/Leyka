@@ -1275,8 +1275,13 @@ class Leyka extends Leyka_Singleton {
 
         }
 
-        if( !$leyka_last_ver ) { // From v3.3.0.1 - enable Donors management by default for all new installations
+        // From v3.3.0.1 - enable Donors management by default for all new installations:
+        if( !$leyka_last_ver || $leyka_last_ver <= '3.3.0.1' ) {
             update_option('leyka_donor_management_available', true);
+        }
+
+        if($leyka_last_ver && $leyka_last_ver <= '3.5') { // Allow the deprecated form templates for old installations
+            update_option('leyka_allow_deprecated_form_templates', true);
         }
 
         // Set a flag to flush permalinks (needs to be done a bit later, than this activation itself):

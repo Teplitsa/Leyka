@@ -277,7 +277,6 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                 'options' => array(
                                     'show_success_widget_on_success',
                                     'show_donation_comment_field', 'donation_comment_max_length',
-                                    //'show_campaign_sharing',
                                     'show_failure_widget_on_failure',
                                     'do_not_display_donation_form',
                                 ),
@@ -286,9 +285,11 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                     ),
                 );
 
-                foreach(leyka()->get_templates(array('include_deprecated' => true)) as $template_id => $template_data) {
-                    if( !empty($template_data['deprecated']) ) {
-                        unset($templates_options['template_options_'.$template_id]);
+                if( !leyka_options()->opt('allow_deprecated_form_templates') ) {
+                    foreach(leyka()->get_templates(array('include_deprecated' => true)) as $template_id => $template_data) {
+                        if( !empty($template_data['deprecated']) ) {
+                            unset($templates_options['template_options_'.$template_id]);
+                        }
                     }
                 }
 
