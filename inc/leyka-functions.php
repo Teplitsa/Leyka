@@ -505,7 +505,7 @@ function leyka_get_failure_page_url($campaign_id = false) {
 function leyka_get_form_templates_list() {
 
     $list = array();
-    foreach(leyka()->get_templates(array('include_deprecated' => true)) as $template) {
+    foreach(leyka()->get_templates() as $template) {
 
         if( !LEYKA_DEBUG && !empty($template['debug_only']) ) {
             continue;

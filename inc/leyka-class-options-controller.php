@@ -7,7 +7,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     protected $_options = array();
     protected static $_field_types = array(
-        'text', 'textarea', 'number', 'html', 'rich_html', 'select', 'radio', 'checkbox', 'multi_checkbox', 'legend', 'file'
+        'text', 'textarea', 'number', 'html', 'rich_html', 'select', 'radio', 'checkbox', 'multi_checkbox', 'legend', 'file',
     );
 
     protected $_templates_common_options = array(
@@ -15,17 +15,16 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         'show_success_widget_on_success', 'show_donation_comment_field', 'donation_comment_max_length',
         'show_campaign_sharing', 'show_failure_widget_on_failure', 'do_not_display_donation_form',
     );
-    protected $_template_options = array(
-        'neo' => array(),
-        'radios' => array(),
-        'toggles' => array(),
-        'revo' => array(),
-        'star' => array(),
-    );
+
+    /** @todo Automatise it, but w/o leyka()->get_templates(). */
+    protected $_template_options = array('star' => array(), 'revo' => array(), 'neo' => array(), 'toggles' => array(), 'radio' => array(),);
 
     protected function __construct() {
+
         require_once(LEYKA_PLUGIN_DIR.'inc/leyka-options-meta.php');
+
         $this->add_template_options();
+
     }
 
     public function is_standard_field_type($type) {
@@ -473,13 +472,13 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     }
 
     public function add_template_options() {
+
         foreach($this->_template_options as $template_id => $options) {
 
-            $options = array_merge($options, $this->_templates_common_options);
-            $this->_template_options[$template_id] = $options;
+            $this->_template_options[$template_id] = array_merge($options, $this->_templates_common_options);
         
             $prefix = $this->get_template_options_prefix($template_id);
-            foreach($options as $option) {
+            foreach($this->_template_options[$template_id] as $option) {
 
                 self::$_options_meta[$this->get_tab_option_full_name($prefix, $option)] = self::$_options_meta[$option];
                 $this->_intialize_option($this->get_tab_option_full_name($prefix, $option));
@@ -487,6 +486,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
             }
 
         }
+
     }
 
     /**
@@ -498,9 +498,9 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
         $option = $this->get_tab_option_full_name($this->get_template_options_prefix($template_id), $common_option);
         
-        $val = Leyka_Options_Controller::get_option_value($option);
+        $value = Leyka_Options_Controller::get_option_value($option);
         
-        if($val === false) {
+        if($value === false) {
             foreach($this->_template_options as $template_id => $options) {
 
                 $prefix = $this->get_template_options_prefix($template_id);
@@ -508,14 +508,14 @@ class Leyka_Options_Controller extends Leyka_Singleton {
                 if(strpos($option, $prefix) === 0) {
 
                     $old_common_option_name = str_replace($prefix.'_', '', $option);
-                    $val = $this->opt_safe($old_common_option_name);
+                    $value = $this->opt_safe($old_common_option_name);
 
                 }
 
             }
         }
-        
-        return $val;
+
+        return $value;
 
     }
 
