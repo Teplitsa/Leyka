@@ -1798,12 +1798,13 @@ class Leyka extends Leyka_Singleton {
 
     }
 
+    /** Templates manipulations. */
+    /** @todo Move all templates related methods to the sep. class ("Leyka_Form_Templates", leyka_templates()). */
+
     /**
-     * Templates manipulations.
-     *
      * @param $params array.
      * @return array An array of donations forms templates info.
-     **/
+     */
     public function get_templates(array $params = array()) {
 
         $params = array_merge(array(
