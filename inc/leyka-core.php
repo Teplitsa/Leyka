@@ -426,6 +426,8 @@ class Leyka extends Leyka_Singleton {
     public function __set($name, $value) {
         switch($name) {
             case 'form_is_screening':
+            case 'form_is_displaying':
+            case 'form_displayed':
                 if( !$this->_form_is_screening && !!$value ) {
                     $this->_form_is_screening = !!$value;
                 }
@@ -519,7 +521,6 @@ class Leyka extends Leyka_Singleton {
                     'price': <?php echo $donation_amount_total;?>,
                     'quantity': 1
                 }],
-                <?php /** @todo Check if the following params can be passed from the dataLayer to GA somehow. */?>
                 'donationCampaignPaymentTitle': '<?php echo esc_attr($campaign->payment_title);?>',
                 'donationFundedDate': '<?php echo esc_attr($donation->date_funded);?>',
                 'donationGateway': '<?php echo esc_attr($donation->gateway_label);?>',
@@ -1017,204 +1018,6 @@ class Leyka extends Leyka_Singleton {
             return;
         }
 
-        if( !$leyka_last_ver || $leyka_last_ver < '2.1' ) {
-
-            // Upgrade the options structure in the DB:
-            if(get_option('leyka_modules')) {
-                delete_option('leyka_modules');
-            }
-
-            if(get_option('leyka_options_installed')) {
-                delete_option('leyka_options_installed');
-            }
-
-            foreach(leyka_options()->get_options_names() as $name) {
-
-                $option = get_option("leyka_$name");
-                if(is_array($option) && isset($option['type']) && isset($option['title'])) { // Update option data
-                    update_option("leyka_$name", $option['value']);
-                }
-
-            }
-
-            // Upgrade the gateways and PM options structure in the DB:
-            foreach(leyka_get_gateways() as $gateway) {
-
-                /** @var $gateway Leyka_Gateway */
-                delete_option("leyka_{$gateway->id}_payment_methods");
-
-                foreach($gateway->get_options_names() as $name) {
-
-                    $option = get_option("leyka_$name");
-
-                    if(is_array($option) && isset($option['type']) && isset($option['title'])) { // Update option data
-                        update_option("leyka_$name", $option['value']);
-                    }
-
-                }
-
-                foreach($gateway->get_payment_methods() as $pm) {
-
-                    /** @var $pm Leyka_Payment_Method */
-                    foreach($pm->get_pm_options_names() as $name) {
-
-                        $option = get_option("leyka_$name");
-                        if(is_array($option) && isset($option['type']) && isset($option['title'])) // Update option data
-                            update_option("leyka_$name", $option['value']);
-                    }
-
-                }
-
-            }
-
-        }
-
-        if( !$leyka_last_ver || $leyka_last_ver <= '2.2.5' ) {
-
-            // Initialize pm_order option if needed:
-            if( !get_option('leyka_pm_order') ) {
-
-                $pm_order = array();
-                foreach((array)get_option('leyka_pm_available') as $pm_full_id) {
-                    if($pm_full_id) {
-                        $pm_order[] = "pm_order[]={$pm_full_id}";
-                    }
-                }
-
-                update_option('leyka_pm_order', implode('&', $pm_order));
-
-            }
-
-            /** @todo Check if this code is needed! */
-            // Remove unneeded scripts for settings pages:
-            $settings_pages_dir = dir(LEYKA_PLUGIN_DIR.'inc/settings-pages/');
-            while(false !== ($script = $settings_pages_dir->read())) {
-
-                if(
-                    $script !== '.' && $script !== '..' &&
-                    !in_array($script, array(
-                        'leyka-settings-common.php',
-                        'leyka-settings-payment.php',
-//                        'leyka-settings-payment-old.php',
-                        'leyka-settings-payment-gateway.php',
-                        'leyka-settings-payment-gateways-list.php',
-                        'leyka-settings-payment-pm-order.php',
-                    ))
-                ) {
-                    unlink(LEYKA_PLUGIN_DIR.'inc/settings-pages/'.$script);
-                }
-            }
-            $settings_pages_dir->close();
-
-            // Remove an obsolete plugin options:
-            $options = array(
-                array('old' => 'chronopay_card_description', 'new' => 'chronopay-chronopay_card_description'),
-                array('old' => 'chronopay_card_rebill_description', 'new' => 'chronopay-chronopay_card_rebill_description'),
-                array('old' => 'bank_order_description', 'new' => 'quittance-bank_order_description'),
-                array('old' => 'bankcard_description', 'new' => 'rbk-bankcard_description'),
-                array('old' => 'rbkmoney_description', 'new' => 'rbk-rbkmoney_description'),
-                array('old' => 'rbk_all_description', 'new' => 'rbk-rbk_all_description'),
-                array('old' => 'robokassa_card_description', 'new' => 'robokassa-BANKOCEAN2_description'),
-                array('old' => 'robokassa_yandex_money_description', 'new' => 'robokassa-YandexMerchantOcean_description'),
-                array('old' => 'robokassa_webmoney_description', 'new' => 'robokassa-WMR_description'),
-                array('old' => 'robokassa_qiwi_description', 'new' => 'robokassa-Qiwi30Ocean_description'),
-                array('old' => 'robokassa_all_description', 'new' => 'robokassa-Other_description'),
-                array('old' => 'text_box_description', 'new' => 'text-text_box_description'),
-                array('old' => 'yandex_card_description', 'new' => 'yandex-yandex_card_description'),
-                array('old' => 'yandex_money_description', 'new' => 'yandex-yandex_money_description'),
-                array('old' => 'yandex_wm_description', 'new' => 'yandex-yandex_wm_description'),
-                array('old' => 'yandex_phyz_card_description', 'new' => 'yandex_phyz-yandex_phyz_card_description'),
-                array('old' => 'yandex_phyz_money_description', 'new' => 'yandex_phyz-yandex_phyz_money_description'),
-            );
-            foreach($options as $option) {
-
-                $old_value = get_option("leyka_{$option['old']}");
-                $new_value = get_option("leyka_{$option['new']}");
-
-                if($old_value && $old_value != $new_value) {
-                    update_option("leyka_{$option['new']}", $old_value);
-                }
-
-                delete_option("leyka_{$option['old']}");
-            }
-
-        }
-
-        /**
-         * Fix the bug when total_funded amount of campaign was calculated incorrectly
-         * if there were correctional donations for that campaign.
-         */
-        if($leyka_last_ver && $leyka_last_ver >= '2.2.5' && $leyka_last_ver <= '2.2.7.2') {
-
-            function leyka_update_campaigns_total_funded() {
-
-                set_time_limit(3600);
-                wp_suspend_cache_addition(true);
-
-                $campaigns = get_posts(array(
-                    'post_type' => Leyka_Campaign_Management::$post_type,
-                    'nopaging' => true,
-                    'post_status' => 'any'
-                ));
-                foreach($campaigns as $campaign) {
-
-                    $campaign = new Leyka_Campaign($campaign);
-                    $campaign->update_total_funded_amount();
-                }
-
-                wp_suspend_cache_addition(false);
-
-            }
-            add_action('init', 'leyka_update_campaigns_total_funded', 100);
-
-        }
-
-        /** Fix the typo in one option's name */
-        if($leyka_last_ver && $leyka_last_ver <= '2.2.7.2') {
-
-            update_option('leyka_agree_to_terms_needed', get_option('leyka_argee_to_terms_needed'));
-            delete_option('leyka_argee_to_terms_needed');
-
-        }
-
-        /** Fix the CloudPayments callbacks' IPs */
-        if($leyka_last_ver && $leyka_last_ver <= '2.2.10') {
-            update_option('leyka_cp_ip', '130.193.70.192,185.98.85.109');
-        }
-
-        if($leyka_last_ver && $leyka_last_ver <= '2.2.12.2') {
-            delete_option('agree_to_terms_text'); // From now on, "agree to Terms" text field is separated in two new settings
-        }
-
-        if($leyka_last_ver && $leyka_last_ver <= '2.2.14') {
-            if(in_array('chronopay-chronopay_card_rebill', (array)get_option('leyka_pm_available'))) {
-
-                $pm_order_parts = explode('&', get_option('leyka_pm_order'));
-                $key = array_search('chronopay-chronopay_card_rebill', $pm_order_parts);
-
-                if($key !== false) {
-
-                    unset($pm_order_parts[$key]);
-                    update_option('leyka_pm_order', implode('&', $pm_order_parts));
-
-                }
-
-            }
-        }
-
-        if( !$leyka_last_ver || $leyka_last_ver < '3.0' ) {
-
-            if(defined('KND_VERSION') && class_exists('TGM_Plugin_Activation')) {
-              update_option('leyka_init_wizard_redirect', false);
-            } else {
-               update_option('leyka_init_wizard_redirect', !$leyka_last_ver);
-            }
-
-            update_option('leyka_receiver_country', 'ru');
-            update_option('leyka_receiver_legal_type', 'legal');
-
-        }
-
         if( !$leyka_last_ver || $leyka_last_ver < '3.1.1' ) {
             if(get_option('leyka_show_gtm_dataLayer_on_success')) {
 
@@ -1342,9 +1145,11 @@ class Leyka extends Leyka_Singleton {
         );
         
         $this->add_inline_custom_css();
+
     }
-    
+
     protected function add_inline_custom_css() {
+
         $campaign_id = null;
         if(is_singular(Leyka_Campaign_Management::$post_type)) {
             $campaign_id = get_the_ID();
@@ -1353,11 +1158,12 @@ class Leyka extends Leyka_Singleton {
             $donation = $donation_id ? new Leyka_Donation($donation_id) : null;
             $campaign_id = $donation ? $donation->campaign_id : null;
         }
-        
+
         if($campaign_id) {
             $custom_css = get_post_meta($campaign_id, 'campaign_css', true);
             wp_add_inline_style($this->_plugin_slug.'-revo-plugin-styles', $custom_css);
         }
+
     }
 
     /** Register and enqueue public-facing JavaScript files. */
@@ -1373,11 +1179,11 @@ class Leyka extends Leyka_Singleton {
                 true
             );
         }
-        
+
         if( !leyka_form_is_screening() ) {
             return;
         }
-        
+
         // Enqueue the normal Leyka scripts just in case some other plugin elements exist on page:
         wp_enqueue_script(
             $this->_plugin_slug.'-modal',
@@ -1573,7 +1379,7 @@ class Leyka extends Leyka_Singleton {
 
         register_post_type(Leyka_Campaign_Management::$post_type, $args);
 
-        /** Campaign editing messages */
+        // Campaign editing messages:
         add_filter('post_updated_messages', array(Leyka_Campaign_Management::get_instance(), 'set_admin_messages'));
 
         register_post_status('submitted', array(
@@ -1662,7 +1468,7 @@ class Leyka extends Leyka_Singleton {
             'campaign/([^/]+)/donations/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter=$matches[1]',
             'campaign/([^/]+)/donations/page/([1-9]{1,})/?$' =>
                 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter=$matches[1]&paged=$matches[2]',
-        ) + $rules; // The rules' order is important
+        ) + $rules; // The rules order is important
     }
 
     /**
@@ -1672,8 +1478,7 @@ class Leyka extends Leyka_Singleton {
      */
     public function insert_rewrite_query_vars(array $vars) {
 
-        $vars[] = 'leyka_campaign_filter';
-        $vars[] = 'leyka-screen';
+        array_push($vars, 'leyka_campaign_filter', 'leyka-screen');
         return $vars;
 
     }
@@ -1819,6 +1624,7 @@ class Leyka extends Leyka_Singleton {
 
     }
 
+    /** @todo Move the method to the special class for the emails management / logging */
     public function handle_non_init_recurring_donor_registration($donor_user_id, Leyka_Donation $donation) {
 
         // This handler is only for non-init recurring donations:
@@ -1864,7 +1670,10 @@ class Leyka extends Leyka_Singleton {
             $donation->date,
             apply_filters(
                 'leyka_'.$donation->gateway_id.'_recurring_subscription_cancelling_link',
-                sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_get_website_tech_support_email()),
+                sprintf(
+                    __('<a href="mailto:%s">write us a letter about it</a>', 'leyka'),
+                    leyka_get_website_tech_support_email()
+                ),
                 $donation
             ),
         );
@@ -1934,6 +1743,8 @@ class Leyka extends Leyka_Singleton {
     }
 
     /**
+     * @todo Move the method to the special class for the emails management / logging
+     *
      * @param $donor_account_error WP_Error
      * @param $donation int|WP_Post|Leyka_Donation
      */
