@@ -762,27 +762,6 @@ class Leyka_Campaign {
     protected $_campaign_meta;
 
     public static $post_type = 'leyka_campaign';
-    protected static $_objects = array();
-
-    public static function get($campaign) {
-
-        if(is_int($campaign) || is_string($campaign) && absint($campaign)) {
-            $campaign_id = absint($campaign);
-        } else if(is_object($campaign) && is_a($campaign, 'WP_Post') && $campaign->post_type === self::$post_type) {
-            $campaign_id = $campaign->ID;
-        } else if(is_object($campaign) && is_a($campaign, __CLASS__)) {
-            $campaign_id = $campaign->id;
-        } else {
-            return false;
-        }
-
-        if(empty(self::$_objects[$campaign_id])) {
-            self::$_objects[$campaign_id] = new self($campaign_id);
-        }
-
-        return self::$_objects[$campaign_id];
-
-    }
 
 	public function __construct($campaign) {
 

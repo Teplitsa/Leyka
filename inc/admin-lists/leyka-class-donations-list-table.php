@@ -24,7 +24,8 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
      */
     public function filter_donations(array $donations_params, $filter_type = '') {
 
-        /** @todo Implement the filtering */
+        /** @todo Implement the filtering... */
+
         return $donations_params;
 
     }

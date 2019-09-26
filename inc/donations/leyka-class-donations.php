@@ -267,6 +267,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
         }
 
         $meta_query = array('relation' => 'AND');
+        /** @todo Handle the $params['meta'] */
 
         if(isset($params['recurring_active'])) {
 
@@ -346,11 +347,11 @@ class Leyka_Donations_Posts extends Leyka_Donations {
         }
 
         // Custom donations meta filter. E.g. 'custom_meta__cp_transaction_id' => '12345':
-        foreach($params as $param_name => $value) {
-            if(stripos($param_name, 'custom_meta_') !== false) {
-                $meta_query[] = array('key' => trim(str_replace('custom_meta_', '', $param_name)), 'value' => $value,);
-            }
-        }
+//        foreach($params as $param_name => $value) {
+//            if(stripos($param_name, 'custom_meta_') !== false) {
+//                $meta_query[] = array('key' => trim(str_replace('custom_meta_', '', $param_name)), 'value' => $value,);
+//            }
+//        }
 
         if(count($meta_query) > 1) {
             $query->set('meta_query', $meta_query);
@@ -436,6 +437,53 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
     }
 
+    protected function _get_meta_query_parts($meta_params) {
+
+        global $wpdb;
+
+        $query = array();
+        $meta_params['relation'] = empty($meta_params['relation']) || !in_array($meta_params['relation'], array('AND', 'OR')) ?
+            'AND' : mb_strtoupper($meta_params['relation']);
+
+        foreach($meta_params as $index => $param) {
+
+            if($index === 'relation' || !$param || !is_array($param)) {
+                continue;
+            } else if( !isset($param['key']) ) {
+                $query[] = $this->_get_meta_query_parts($param);
+            }
+
+            $param['compare'] = empty($param['compare']) || !in_array($param['compare'], array('=', '!=', '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE', 'IN', 'NOT IN', /*'EXISTS', 'NOT EXISTS'*/)) ? '=' : $param['compare'];
+
+            $param['type'] = empty($param['type']) || !in_array($param['type'], array('CHAR', 'NUMERIC', 'DECIMAL', /*'DATE', 'DATETIME',*/)) ? 'CHAR' : $param['type'];
+            switch($param['type']) {
+                case 'NUMERIC': $placeholder = '%d'; break;
+                case 'DECIMAL': $placeholder = '%f'; break;
+                case 'CHAR':
+                default: $placeholder = '%s';
+            }
+            /** @todo $param['value'] with '%' character WON'T WORK (due to %-char being encoded in $wpdb->prepare()) */
+
+            if(
+                ($param['compare'] === 'IN' || $param['compare'] === 'NOT IN')
+                && !empty($param['value'])
+                && wp_is_numeric_array($param['value'])
+            ) {
+
+                $query[] = $wpdb->prepare("(d_meta.`meta_key` = %s AND d_meta.meta_value {$param['compare']} (%s))", $param['key'], '"'.implode('","', $param['value']).'"');
+
+            } else if(is_numeric($param['value']) || is_string($param['value'])) {
+
+                $query[] = $wpdb->prepare("(d_meta.`meta_key` = %s AND d_meta.meta_value {$param['compare']} $placeholder)", $param['key'], $param['value']);
+
+            }
+
+        }
+
+        return $query ? '('.implode(' '.$meta_params['relation'].' ', $query).')' : '';
+
+    }
+
     protected function _get_query_parts(array $params = array()) {
 
         global $wpdb;
@@ -445,7 +493,6 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         $where = array();
         $limit = '';
         $joins = array();
-        $join_meta = false;
 
         /** @todo Implement $params['search_string'] handling. */
 
@@ -454,35 +501,45 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         if( !empty($params['recurring_only_init']) ) {
 
             $params['payment_type'] = 'rebill';
-            $join_meta = true;
-
-            $where[] = $wpdb->prepare("(d_meta.`meta_key` = %s AND d_meta.meta_value = %d)", 'init_recurring_donation_id', 0);
+//            $join_meta = true;
+//            $where[] = $wpdb->prepare("(d_meta.`meta_key` = %s AND d_meta.meta_value = %d)", 'init_recurring_donation_id', 0);
+            $params['meta'][] = array('init_recurring_donation_id' => 0,);
 
         }
 
         if( !empty($params['recurring_active']) ) {
 
             $params['payment_type'] = 'rebill';
-            $join_meta = true;
-
-            $where[] = $wpdb->prepare("(d_meta.`meta_key` = %s AND d_meta.meta_value = %d)", 'recurring_active', 1);
+//            $join_meta = true;
+//            $where[] = $wpdb->prepare("(d_meta.`meta_key` = %s AND d_meta.meta_value = %d)", 'recurring_active', 1);
+            $params['meta'][] = array('recurring_active' => 1,);
 
         }
 
-        foreach($params as $key => $value) {
-
-            if(stripos($key, 'custom_meta_') === false) {
-                continue;
+        if( !empty($params['meta']) && is_array($params['meta']) ) {
+//            $join_meta = true;
+            $meta_query = $this->_get_meta_query_parts($params['meta']);
+            if($meta_query) {
+                echo '<pre>'.print_r($meta_query, 1).'</pre>';
+                $where[] = $meta_query;
             }
 
-            $join_meta = true;
-
-            $where[] = $wpdb->prepare(
-                "(d_meta.`meta_key` = %s AND d_meta.meta_value = %s)",
-                str_replace('custom_meta_', '', $key), $value
-            );
-
         }
+
+//        foreach($params as $key => $value) {
+//
+//            if(stripos($key, 'custom_meta_') === false) {
+//                continue;
+//            }
+//
+//            $join_meta = true;
+//
+//            $where[] = $wpdb->prepare(
+//                "(d_meta.`meta_key` = %s AND d_meta.meta_value = %s)",
+//                str_replace('custom_meta_', '', $key), $value
+//            );
+//
+//        }
 
         if( !empty($params['status']) ) {
 
@@ -632,7 +689,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         }
 
-        if($join_meta) {
+        if( !empty($params['meta']) ) {
             $joins['donations_meta'] = " JOIN `{$wpdb->prefix}leyka_donations_meta` d_meta ON d.`ID` = d_meta.`donation_id`";
         }
 
@@ -652,6 +709,8 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         $donations = array();
         $query = "SELECT d.`ID` FROM {$wpdb->prefix}leyka_donations `d` {$query['joins']} {$query['where']} {$query['orderby']} {$query['limit']}";
+
+        echo '<pre>FIN QUERY: '.print_r($query, 1).'</pre>';
 
         foreach($wpdb->get_col($query) as $donation_id) {
             $donations[] = $this->get_donation($donation_id);

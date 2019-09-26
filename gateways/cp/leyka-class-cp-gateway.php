@@ -148,9 +148,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             $cp_ip = explode(',', leyka_options()->opt('cp_ip'));
             if( !in_array($_SERVER['REMOTE_ADDR'], $cp_ip) ) {
 
-                $client_ip = explode(',', leyka_get_client_ip());
-                $client_ip = reset($client_ip);
-                $client_ip = trim($client_ip);
+                $client_ip = trim(array_slice(explode(',', leyka_get_client_ip()), 0, 1));
 
                 if( !in_array($client_ip, $cp_ip) ) { // Security fail
 
@@ -389,23 +387,12 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
      */
     public function get_donation_by_transaction_id($cp_transaction_id) {
 
-        $donation = get_posts(array( // Get init recurrent payment with customer_id given
-            'posts_per_page' => 1,
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => 'any',
-            'meta_query' => array(
-                'RELATION' => 'AND',
-                array(
-                    'key'     => '_cp_transaction_id',
-                    'value'   => $cp_transaction_id,
-                    'compare' => '=',
-                ),
-            ),
+        $donation = Leyka_Donations::get_instance()->get(array(
+            'meta' => array(array('key' => '_cp_transaction_id', 'value' => $cp_transaction_id,),),
+            'get_single' => true,
         ));
 
-        if(count($donation)) {
-            $donation = Leyka_Donations::get_instance()->get_donation($donation[0]->ID);
-        } else {
+        if( !$donation ) {
             $donation = Leyka_Donations::get_instance()->add(array(
                 'status' => 'submitted',
                 'cp_transaction_id' => $cp_transaction_id,
