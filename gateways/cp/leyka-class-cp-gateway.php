@@ -412,27 +412,34 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             return false;
         }
 
-        $init_donation_post = get_posts(array( // Get init recurrent payment with customer_id given
-            'posts_per_page' => 1,
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => 'funded',
-            'post_parent' => 0,
-            'meta_query' => array(
-                'RELATION' => 'AND',
-                array(
-                    'key'     => '_cp_recurring_id',
-                    'value'   => $recurring,
-                    'compare' => '=',
-                ),
-                array(
-                    'key'     => 'leyka_payment_type',
-                    'value'   => 'rebill',
-                    'compare' => '=',
-                ),
-            ),
-        ));
+//        $init_donation_post = get_posts(array( // Get init recurrent payment with customer_id given
+//            'posts_per_page' => 1,
+//            'post_type' => Leyka_Donation_Management::$post_type,
+//            'post_status' => 'funded',
+//            'post_parent' => 0,
+//            'meta_query' => array(
+//                'RELATION' => 'AND',
+//                array(
+//                    'key'     => '_cp_recurring_id',
+//                    'value'   => $recurring,
+//                    'compare' => '=',
+//                ),
+//                array(
+//                    'key'     => 'leyka_payment_type',
+//                    'value'   => 'rebill',
+//                    'compare' => '=',
+//                ),
+//            ),
+//        ));
+//        return count($init_donation_post) ? new Leyka_Donation($init_donation_post[0]->ID) : false;
 
-        return count($init_donation_post) ? new Leyka_Donation($init_donation_post[0]->ID) : false;
+        $init_donation = Leyka_Donations::get_instance()->get(array(
+            'status' => 'funded',
+            'recurring_only_init' => true,
+            'get_single' => true,
+            'meta' => array(array('key' => '_cp_recurring_id', 'value' => $recurring,))
+        ));
+        return $init_donation ? $init_donation : false;
 
     }
 
