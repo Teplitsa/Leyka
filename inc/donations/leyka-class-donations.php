@@ -490,9 +490,10 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         $query = array('fields' => '', 'from' => '', 'joins' => '', 'where' => '', 'orderby' => '', 'limit' => '',);
 
-        $where = array();
-        $limit = '';
         $joins = array();
+        $where = array();
+        $meta_query = '';
+        $limit = '';
 
         /** @todo Implement $params['search_string'] handling. */
 
@@ -501,8 +502,6 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         if( !empty($params['recurring_only_init']) ) {
 
             $params['payment_type'] = 'rebill';
-//            $join_meta = true;
-//            $where[] = $wpdb->prepare("(d_meta.`meta_key` = %s AND d_meta.meta_value = %d)", 'init_recurring_donation_id', 0);
             $params['meta'][] = array('init_recurring_donation_id' => 0,);
 
         }
@@ -510,17 +509,14 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         if( !empty($params['recurring_active']) ) {
 
             $params['payment_type'] = 'rebill';
-//            $join_meta = true;
-//            $where[] = $wpdb->prepare("(d_meta.`meta_key` = %s AND d_meta.meta_value = %d)", 'recurring_active', 1);
             $params['meta'][] = array('recurring_active' => 1,);
 
         }
 
         if( !empty($params['meta']) && is_array($params['meta']) ) {
-//            $join_meta = true;
+
             $meta_query = $this->_get_meta_query_parts($params['meta']);
             if($meta_query) {
-                echo '<pre>'.print_r($meta_query, 1).'</pre>';
                 $where[] = $meta_query;
             }
 
@@ -689,7 +685,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         }
 
-        if( !empty($params['meta']) ) {
+        if($meta_query) {
             $joins['donations_meta'] = " JOIN `{$wpdb->prefix}leyka_donations_meta` d_meta ON d.`ID` = d_meta.`donation_id`";
         }
 
@@ -709,8 +705,6 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         $donations = array();
         $query = "SELECT d.`ID` FROM {$wpdb->prefix}leyka_donations `d` {$query['joins']} {$query['where']} {$query['orderby']} {$query['limit']}";
-
-        echo '<pre>FIN QUERY: '.print_r($query, 1).'</pre>';
 
         foreach($wpdb->get_col($query) as $donation_id) {
             $donations[] = $this->get_donation($donation_id);

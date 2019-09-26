@@ -437,7 +437,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
                 $init_recurring_donation = $this->init_recurring_donation;
 
-                return $init_recurring_donation ? $init_recurring_donation->_get_meta('recurring_active') : NULL;
+                return $init_recurring_donation ? $init_recurring_donation->get_meta('recurring_active') : NULL;
 
             case 'recurring_canceled':
                 return !$this->recurring_active;
@@ -472,7 +472,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'status':
                 if(
                     !array_key_exists($value, leyka_get_donation_status_list())
-                    || $this->status === $this->status
+                    || $this->status === $value
                     || !$this->_set_data('status', $value)
                 ) {
                     return false;
@@ -588,7 +588,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
                 if($init_recurring_donation->recurring_is_active != $value) {
 
-                    $init_recurring_donation->_set_meta('recurring_active', $value);
+                    $init_recurring_donation->set_meta('recurring_active', $value);
                     $this->_donation_meta['recurring_active'] = $value;
 
                     do_action('leyka_donation_recurring_activity_changed', $this->_id, true);
@@ -597,7 +597,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
                 $curr_time = current_time('timestamp');
                 return
-                    $init_recurring_donation->_set_meta('recurring_cancel_date', $value ? 0 : $curr_time)
+                    $init_recurring_donation->set_meta('recurring_cancel_date', $value ? 0 : $curr_time)
                     && $this->set_meta('recurring_cancel_date', $value ? 0 : $curr_time);
 
             case 'cancel_recurring_requested':
