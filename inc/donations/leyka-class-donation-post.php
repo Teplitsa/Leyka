@@ -17,6 +17,10 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         $donor_email = empty($params['donor_email']) ? leyka_pf_get_donor_email_value() : $params['donor_email'];
         $donor_email = trim($donor_email);
 
+        $params['init_recurring_donation'] = empty($params['init_recurring_donation']) ?
+            (empty($params['init_recurring_donation_id']) ? 0 : absint($params['init_recurring_donation_id'])) :
+            absint($params['init_recurring_donation']);
+
         remove_all_actions('save_post_'.Leyka_Donation_Management::$post_type);
 
         $donation_params = array(
@@ -25,7 +29,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             'post_title' => empty($params['purpose_text']) ?
                 leyka_options()->opt('donation_purpose_text') : $params['purpose_text'],
             'post_name' => uniqid('donation-', true), // For fast WP_Post creation when DB already has lots of donations
-            'post_parent' => empty($params['init_recurring_donation']) ? 0 : (int)$params['init_recurring_donation'],
+            'post_parent' => $params['init_recurring_donation'],
         );
 
         if( // Donor user ID doesn't set explicitly
@@ -810,6 +814,17 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         }
 
         return true;
+
+    }
+
+    public function delete_meta($meta_name) {
+
+        $meta_name = trim($meta_name);
+        if( !$meta_name ) { /** @todo Throw an Ex? */
+            return false;
+        }
+
+        return delete_post_meta($this->_id, $meta_name);
 
     }
 

@@ -86,21 +86,31 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
         $params['amount_total_in_main_currency'] = empty($params['amount_total_in_main_currency']) ? $params['amount_total'] : round((float)$params['amount_total_in_main_currency'], 2);
 
         global $wpdb;
-        $res = $wpdb->insert($wpdb->prefix.'leyka_donations', array(
-            'campaign_id' => $params['campaign_id'],
+
+        $new_donation_data = array(
             'status' => $params['status'],
             'payment_type' => $params['payment_type'],
             'date_created' => $params['date_created'],
-            'gateway_id' => $params['gateway_id'],
-            'pm_id' => $params['pm_id'],
+            'gateway_id' => $params['gateway_id'] ? $params['gateway_id'] : '',
+            'pm_id' => $params['pm_id'] ? $params['pm_id'] : '',
             'currency_id' => $params['currency_id'],
             'amount' => $params['amount'],
             'amount_total' => $params['amount_total'],
             'amount_in_main_currency' => $params['amount_in_main_currency'],
             'amount_total_in_main_currency' => $params['amount_total_in_main_currency'],
-            'donor_name' => $params['donor_name'],
-            'donor_email' => $params['donor_email'],
-        ), array('%d', '%s', '%s', '%s', '%s', '%s', '%s', '%f', '%f', '%f', '%f', '%s', '%s',));
+            'donor_name' => $params['donor_name'] ? $params['donor_name'] : '',
+            'donor_email' => $params['donor_email'] ? $params['donor_email'] : '',
+        );
+        $new_donation_data_placeholders = array('%s', '%s', '%s', '%s', '%s', '%s', '%f', '%f', '%f', '%f', '%s', '%s',);
+
+        if($params['campaign_id']) { // Due to campaign_id field foreign key constraint
+
+            $new_donation_data['campaign_id'] = $params['campaign_id'];
+            $new_donation_data_placeholders[] = '%d';
+
+        }
+
+        $res = $wpdb->insert($wpdb->prefix.'leyka_donations', $new_donation_data, $new_donation_data_placeholders);
 
         if( !$res ) {
             return new WP_Error('donation_addition_error', __('Error while adding a donation', 'leyka'));
@@ -130,16 +140,17 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             $donation_meta_fields['donor_comment'] = sanitize_textarea_field($params['donor_comment']);
         }
 
-        $params['init_recurring_donation_id'] = empty($params['init_recurring_donation']) ?
-            (empty($params['init_recurring_donation']) ? false : absint($params['init_recurring_donation'])) :
-            absint($params['init_recurring_donation_id']);
-        if($params['init_recurring_donation_id']) {
+        $params['init_recurring_donation'] = empty($params['init_recurring_donation']) ?
+            (empty($params['init_recurring_donation_id']) ? 0 : absint($params['init_recurring_donation_id'])) :
+            absint($params['init_recurring_donation']);
+
+        if($params['payment_type'] === 'rebill') {
             $donation_meta_fields['init_recurring_donation_id'] = $params['init_recurring_donation'];
         }
 
         $donation_meta_fields['status_log'] = array(array('date' => current_time('timestamp'), 'status' => $params['status']));
 
-        if($params['payment_type'] === 'rebill' && empty($donation_meta_fields['init_recurring_donation_id'])) {
+        if($params['payment_type'] === 'rebill' && !$donation_meta_fields['init_recurring_donation']) {
             $donation_meta_fields['recurring_active'] =
                 !empty($params['rebilling_is_active']) ||
                 !empty($params['rebilling_on']) ||
@@ -545,10 +556,15 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             case 'type':
             case 'payment_type':
-                if( !leyka_get_payment_types_data($value) ) {
+                if( !leyka_get_payment_types_data($value) || $this->payment_type === $value ) {
                     return false;
                 }
-                return $this->_set_data('payment_type', $value);
+
+                return $this->_set_data('payment_type', $value)
+                    && ($value === 'rebill' ?
+                        $this->set_meta('init_recurring_donation_id', 0) :
+                        $this->delete_meta('init_recurring_donation_id')
+                    );
 
             case 'campaign':
             case 'campaign_id':
@@ -604,7 +620,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 $this->set_meta('cancel_recurring_requested', !!$value);
                 break;
 
-            default: /** @todo WARNING! This action methods in gateways should use the Leyka_Donations::set_donation_data(). */
+            default:
                 do_action('leyka_'.$this->gateway_id.'_set_unknown_donation_field', $field, $value, $this);
         }
 
@@ -675,6 +691,22 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
     }
 
+    public function delete_meta($meta_name) {
+
+        $meta_name = trim($meta_name);
+        if( !$meta_name ) { /** @todo Throw an Ex? */
+            return false;
+        }
+
+        global $wpdb;
+        return $wpdb->delete(
+            $wpdb->prefix.'leyka_donations_meta',
+            array('donation_id' => $this->_id, 'meta_key' => $meta_name),
+            array('%d', '%s')
+        ) !== false;
+
+    }
+
     protected function _set_data($data_name, $value) {
 
         $data_name = trim($data_name);
@@ -684,7 +716,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
         $value = is_array($value) || is_object($value) ? serialize($value) : trim($value);
 
-        if( !isset($this->_main_data->$data_name) ) {
+        if( !property_exists($this->_main_data, $data_name) ) {
             /** @todo Throw some Ex? */
         } else {
 

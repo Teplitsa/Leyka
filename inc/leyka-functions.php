@@ -1971,3 +1971,33 @@ function leyka_prepare_data_line_for_export(array $line_data, $object_to_export)
     return $line_data;
 
 }
+
+class Leyka_Donations_Meta_Query extends WP_Meta_Query {
+
+    public function get_sql( $type = null, $primary_table = null, $primary_id_column = null, $context = null ) {
+
+        global $wpdb;
+
+        $this->table_aliases = array();
+
+        $this->meta_table = $wpdb->prefix.'leyka_donations_meta';
+        $this->meta_id_column = sanitize_key('donation_id');
+
+        $this->primary_table = $primary_table ? $primary_table : $wpdb->prefix.'leyka_donations';
+        $this->primary_id_column = $primary_id_column ? $primary_id_column : 'ID';
+
+        $sql = $this->get_sql_clauses();
+
+        /*
+         * If any JOINs are LEFT JOINs (as in the case of NOT EXISTS), then all JOINs should
+         * be LEFT. Otherwise posts with no metadata will be excluded from results.
+         */
+        if ( false !== strpos( $sql['join'], 'LEFT JOIN' ) ) {
+            $sql['join'] = str_replace( 'INNER JOIN', 'LEFT JOIN', $sql['join'] );
+        }
+
+        return $sql;
+
+    }
+
+}
