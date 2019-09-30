@@ -961,10 +961,14 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
 
 	if( !$campaign ) {
         $campaign = new Leyka_Campaign(get_post());
-	} else if(absint($campaign) || is_a($campaign, 'WP_Post')) {
-        $campaign = new Leyka_Campaign($campaign);
+	} else if(is_object($campaign) || absint($campaign)) {
+        $campaign = leyka_get_validated_campaign($campaign);
 	} else if( !is_a($campaign, 'Leyka_Campaign') ) {
         return false;
+    }
+
+	if( !is_a($campaign, 'Leyka_Campaign') ) {
+	    return '';
     }
 
     if($campaign->is_finished) {?>
