@@ -962,7 +962,7 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
 	if( !$campaign ) {
         $campaign = new Leyka_Campaign(get_post());
 	} else if(is_object($campaign) || absint($campaign)) {
-        $campaign = new Leyka_Campaign($campaign);
+        $campaign = leyka_get_validated_campaign($campaign);
 	} else if( !is_a($campaign, 'Leyka_Campaign') ) {
         return false;
     }

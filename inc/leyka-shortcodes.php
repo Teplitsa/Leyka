@@ -230,8 +230,6 @@ function leyka_payment_form_screen($atts) {
         return leyka_inline_campaign($atts);
     }
 
-    $campaign = leyka_get_validated_campaign($atts['id']);
-
     return leyka_get_payment_form($campaign, $atts);
 
 }
@@ -242,18 +240,8 @@ function leyka_get_payment_form($campaign = null, $args = array()) {
 
     if( !$campaign ) {
         $campaign = get_post();
-    } elseif(is_numeric($campaign)){
-        $campaign = get_post($campaign);
-    }
-
-    if( !is_a($campaign, 'Leyka_Campaign') ) {
-
-        if($campaign->post_type != Leyka_Campaign_Management::$post_type) {
-            return '';
-        }
-
-        $campaign = new Leyka_Campaign($campaign);
-
+    } else {
+        $campaign = leyka_get_validated_campaign($campaign);
     }
 
     $campaign->increase_views_counter();
