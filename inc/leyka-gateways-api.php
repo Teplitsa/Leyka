@@ -235,10 +235,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             array($this, 'get_recurring_subscription_cancelling_link'),
             10, 2
         );
-        add_action(
-            "leyka_{$this->_id}_cancel_recurring_subscription",
-            array($this, 'cancel_recurring_subscription')
-        );
+        add_action("leyka_{$this->_id}_cancel_recurring_subscription", array($this, 'cancel_recurring_subscription'));
 
         $this->_initialize_options();
 
@@ -363,23 +360,18 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     public function _handle_service_calls($call_type = '') {}
 
     /**
-     * Default behavior, may be substituted in descendants.
+     * Default behavior - search for initial recurring donation ID in the donation meta field.
+     * This behavior may be substituted in Gateway subclasses.
+     *
      * @param $donation mixed
      * @return Leyka_Donation_Base|false
      */
     public function get_init_recurring_donation($donation) {
 
-        if(is_a($donation, 'Leyka_Donation')) {
-            return new Leyka_Donation($donation->init_recurring_donation_id);
-        } elseif( !empty($donation) && (int)$donation > 0 ) {
+        $donation = Leyka_Donations::get_instance()->get_donation($donation);
 
-            $donation = new Leyka_Donation($donation);
-
-            return new Leyka_Donation($donation->init_recurring_donation_id);
-
-        } else {
-            return false;
-        }
+        return $donation->payment_type === 'rebill' && $donation->get_meta('init_recurring_donation_id') ?
+            $donation->get_meta('init_recurring_donation_id') : false;
 
     }
 

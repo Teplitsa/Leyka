@@ -53,7 +53,7 @@ abstract class Leyka_Donations extends Leyka_Singleton {
      */
     protected static function _get_donation_id($donation) {
 
-        if((is_int($donation) || is_string($donation)) && absint($donation) > 0) {
+        if((is_int($donation) || is_string($donation)) && absint($donation)) {
             return absint($donation);
         } else if(is_a($donation, 'WP_Post')) {
 
@@ -599,11 +599,16 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         }
 
-        if( !empty($params['orderby']) && $this->_is_orderable_by($params['orderby']) ) {
+        $params['order'] = empty($params['order']) || !in_array($params['order'], array('asc', 'desc', 'ASC', 'DESC',)) ?
+            'ASC' : mb_strtoupper($params['order']);
 
-            $params['orderby'] = $params['orderby'] === 'date' ? '{$wpdb->prefix}leyka_donations.date_created' : "{$wpdb->prefix}leyka_donations.".$params['orderby'];
-            $params['order'] = empty($params['order']) || !in_array($params['order'], array('asc', 'desc')) ?
-                'ASC' : mb_strtoupper($params['order']);
+        if(empty($params['orderby'])) {
+            $params['orderby'] = 'date';
+        }
+        if($this->_is_orderable_by($params['orderby'])) {
+
+            $params['orderby'] = $params['orderby'] === 'date' ?
+                "{$wpdb->prefix}leyka_donations.date_created" : "{$wpdb->prefix}leyka_donations.".$params['orderby'];
 
             $query['orderby'] = " ORDER BY {$params['orderby']} {$params['order']}";
 
@@ -666,14 +671,14 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         global $wpdb;
 
         $query = $this->_get_query_parts($params);
-        $query = "SELECT COUNT({$wpdb->prefix}leyka_donations.ID) FROM {$wpdb->prefix}leyka_donations {$query['joins']} {$query['where']} {$query['orderby']} {$query['limit']}";
+        $query = "SELECT COUNT({$wpdb->prefix}leyka_donations.ID) FROM {$wpdb->prefix}leyka_donations {$query['joins']} {$query['where']} {$query['limit']}";
 
         return absint($wpdb->get_var($query));
 
     }
 
     protected function _is_orderable_by($param_name) {
-        return in_array(mb_strtolower($param_name), array('id', 'campaign_id', 'status', 'date', 'date_created', 'gateway_id', 'pm_id', 'amount', 'donor_name', 'donor_email'));
+        return in_array(mb_strtolower($param_name), array('id', 'campaign_id', 'status', 'date', 'date_created', 'gateway_id', 'pm_id', 'amount', 'donor_name', 'donor_email',));
     }
 
     public function add(array $params = array(), $return_object = false) {

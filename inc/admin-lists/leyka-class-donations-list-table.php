@@ -13,14 +13,6 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         add_filter('leyka_admin_donations_list_filter', array($this, 'filter_donations'), 10, 2);
 
-        if(isset($_GET['tst'])) {
-
-            $donation = Leyka_Donations::get_instance()->get_donation(309308);
-            $donation->campaign_id = 299246;
-            echo '<pre>'.print_r($donation, 1).'</pre>';
-
-        }
-
     }
 
     /**
@@ -164,6 +156,10 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         $donation_edit_page = admin_url('?page=leyka_donations&donation_id='.$donation->id);
         $campaign = new Leyka_Campaign($donation->campaign_id);
+
+//        if(isset($_GET['tst'])) {
+//
+//        }
 
         $column_content = '<div class="donation-campaign"><a href="'.$donation_edit_page.'">'.$campaign->title.'</a></div>'
             .'<div class="donation-email">'.$donation->donor_email.'</div>'

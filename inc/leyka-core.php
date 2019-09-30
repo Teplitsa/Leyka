@@ -647,11 +647,10 @@ class Leyka extends Leyka_Singleton {
                 do_action('leyka_do_procedure', 'active-recurring');
             } else if($request[0] === 'cancel_recurring' && !empty($request[1]) && !empty($request[2])) {
 
-                $donation = new Leyka_Donation($request[1]);
-                $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($donation);
-                $hash = md5($donation->id.'_'.$init_recurring_donation->id.'_leyka_cancel_recurring_subscription');
+                $donation = Leyka_Donations::get_instance()->get_donation($request[1]);
+                $hash = md5($donation->id.'_'.$donation->init_recurring_donation_id.'_leyka_cancel_recurring_subscription');
 
-                if($donation && $hash == $request[2]) {
+                if($donation && $hash === $request[2]) {
                     do_action("leyka_{$donation->gateway_id}_cancel_recurring_subscription", $donation);
                 }
 

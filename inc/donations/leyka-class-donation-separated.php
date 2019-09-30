@@ -150,13 +150,19 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
         $donation_meta_fields['status_log'] = array(array('date' => current_time('timestamp'), 'status' => $params['status']));
 
-        if($params['payment_type'] === 'rebill' && !$donation_meta_fields['init_recurring_donation']) {
+        if($params['payment_type'] === 'rebill' && !$donation_meta_fields['init_recurring_donation_id']) {
+
             $donation_meta_fields['recurring_active'] =
                 !empty($params['rebilling_is_active']) ||
                 !empty($params['rebilling_on']) ||
                 !empty($params['recurring_active']) ||
                 !empty($params['recurring_is_active']) ||
                 !empty($params['recurring_on']);
+
+            if($donation_meta_fields['recurring_active']) {
+                do_action('leyka_donation_recurring_activity_changed', $donation_id, $donation_meta_fields['recurring_active']);
+            }
+
         }
 
         if( !empty($params['recurring_cancelled']) ) {
@@ -414,21 +420,24 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'payment_type_description':
                 return leyka_get_donation_type_description($this->type);
 
-            case 'init_recurring_donation_id':
-                return $this->payment_type === 'rebill' && $this->get_meta('init_recurring_donation_id') ?
-                    $this->get_meta('init_recurring_donation_id') : false;
-
             case 'init_recurring_donation':
                 if($this->payment_type !== 'rebill') {
                     return false;
-                } else if($this->init_recurring_donation_id) {
-                    return Leyka_Donations::get_instance()->get_donation($this->init_recurring_donation_id);
-                } else {
-                    return $this;
                 }
 
+                return leyka_get_gateway_by_id($this->gateway_id)->get_init_recurring_donation($this);
+
+            case 'init_recurring_donation_id':
+                if($this->payment_type !== 'rebill') {
+                    return false;
+                }
+
+                $init_recurring_donation = $this->init_recurring_donation;
+
+                return $init_recurring_donation ? $init_recurring_donation->id : false;
+
             case 'is_init_recurring_donation':
-                return $this->init_recurring_payment_id === $this->id;
+                return $this->init_recurring_donation_id === $this->id;
 
             case 'cancel_recurring_requested':
             case 'recurring_cancelling_requested':
@@ -561,7 +570,8 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 }
 
                 return $this->_set_data('payment_type', $value)
-                    && ($value === 'rebill' ?
+                    && (
+                        $value === 'rebill' ?
                         $this->set_meta('init_recurring_donation_id', 0) :
                         $this->delete_meta('init_recurring_donation_id')
                     );
@@ -607,7 +617,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                     $init_recurring_donation->set_meta('recurring_active', $value);
                     $this->_donation_meta['recurring_active'] = $value;
 
-                    do_action('leyka_donation_recurring_activity_changed', $this->_id, true);
+                    do_action('leyka_donation_recurring_activity_changed', $this->_id, $value);
 
                 }
 
@@ -659,8 +669,8 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
         global $wpdb;
 
         if( // Meta already exists, update it
-            isset($this->_donation_meta[$meta_name]) ||
-            $wpdb->get_var($wpdb->prepare("SELECT `meta_id` FROM `$wpdb->prefix`leyka_donations_meta WHERE `donation_id`=%d AND `meta_key`=%s LIMIT 0,1", $this->_id, $meta_name))
+            isset($this->_donation_meta[$meta_name])
+            || $wpdb->get_var($wpdb->prepare("SELECT `meta_id` FROM `{$wpdb->prefix}leyka_donations_meta` WHERE `donation_id`=%d AND `meta_key`=%s LIMIT 0,1", $this->_id, $meta_name))
         ) {
 
             $res = $wpdb->update(
