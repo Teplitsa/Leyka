@@ -130,7 +130,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
 
         if( !empty($form_data['leyka_recurring']) ) {
 
@@ -176,7 +176,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 $donation->add_gateway_response($payment); // On callback the response will be re-written
 
                 if( !empty($form_data['leyka_recurring']) ) {
-                    $donation->recurring_id = $payment->id;
+                    $donation->yandex_recurring_id = $payment->id;
                 }
 
                 $this->_new_api_redirect_url = $payment->confirmation->confirmation_url;
@@ -236,7 +236,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             return apply_filters('leyka_yandex_custom_submission_data', array(), $pm_id);
         }
 
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
 
         $payment_type = $this->_get_gateway_pm_id($pm_id);
         $payment_type = $payment_type ? $payment_type : apply_filters('leyka_yandex_custom_payment_type', '', $pm_id);
@@ -309,7 +309,7 @@ techMessage="'.$tech_message.'"/>');
                 }
 
                 $payment = $notification->getObject();
-                $donation = new Leyka_Donation($payment->metadata->donation_id);
+                $donation = Leyka_Donations::get_instance()->get_donation($payment->metadata->donation_id);
 
                 if( !$donation ) {
                     /** @todo Process the error somehow */
@@ -341,28 +341,13 @@ techMessage="'.$tech_message.'"/>');
                     $this->_callback_answer(1, 'co', __('Wrong service operation', 'leyka'));
                 }
 
-				if((int)$_POST['orderNumber'] <= 0) { // Recurring donation callback
-
-					$_POST['orderNumber'] = explode('-', $_POST['orderNumber']);
-                    if(
-                        count($_POST['orderNumber']) == 3 &&
-                        $_POST['orderNumber'][0] == 'recurring' &&
-                        (int)$_POST['orderNumber'][2] > 0
-                    ) {
-                        $_POST['orderNumber'] = (int)$_POST['orderNumber'][2];
-                    } else { // Order number is wrong
-                        $_POST['orderNumber'] = false;
-                    }
-
-				} else { // Single donation callback
-					$_POST['orderNumber'] = (int)$_POST['orderNumber'];
-				}
+				$_POST['orderNumber'] = $this->_validate_order_number($_POST['orderNumber']);
 
                 if( !$_POST['orderNumber'] ) {
                     $this->_callback_answer(1, 'co', __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('OrderNumber is not set', 'leyka'));
                 }
 
-                $donation = new Leyka_Donation($_POST['orderNumber']);
+                $donation = Leyka_Donations::get_instance()->get_donation($_POST['orderNumber']);
 
                 if($donation->sum != $_POST['orderSumAmount']) {
                     $this->_callback_answer(1, 'co', __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('Donation sum is unmatched', 'leyka'));
@@ -379,28 +364,13 @@ techMessage="'.$tech_message.'"/>');
                     $this->_callback_answer(1, 'pa', __('Wrong service operation', 'leyka'));
                 }
 
-                if((int)$_POST['orderNumber'] <= 0) { // Recurring donation callback
-
-					$_POST['orderNumber'] = explode('-', $_POST['orderNumber']);
-                    if(
-                        count($_POST['orderNumber']) == 3 &&
-                        $_POST['orderNumber'][0] == 'recurring' &&
-                        (int)$_POST['orderNumber'][2] > 0
-                    ) {
-                        $_POST['orderNumber'] = (int)$_POST['orderNumber'][2];
-                    } else { // Order number is wrong
-                        $_POST['orderNumber'] = false;
-                    }
-
-				} else { // Single donation callback
-					$_POST['orderNumber'] = (int)$_POST['orderNumber'];
-				}
+                $_POST['orderNumber'] = $this->_validate_order_number($_POST['orderNumber']);
 
                 if( !$_POST['orderNumber'] ) {
                     $this->_callback_answer(1, 'pa', __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('OrderNumber is not set', 'leyka'));
                 }
 
-                $donation = new Leyka_Donation($_POST['orderNumber']);
+                $donation = Leyka_Donations::get_instance()->get_donation($_POST['orderNumber']);
 
                 if($donation->sum != $_POST['orderSumAmount']) {
                     $this->_callback_answer(1, 'pa', __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('Donation sum is unmatched', 'leyka'));
@@ -417,7 +387,7 @@ techMessage="'.$tech_message.'"/>');
                     }
 
                     if($donation->type === 'rebill' && !empty($_POST['invoiceId'])) {
-                        $donation->recurring_id = $_POST['invoiceId'];
+                        $donation->yandex_recurring_id = $_POST['invoiceId'];
                     }
 
                     Leyka_Donation_Management::send_all_emails($donation->id);
@@ -497,26 +467,13 @@ techMessage="'.$tech_message.'"/>');
 
     }
 
-    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) {
-
-        $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($donation);
-        $cancelling_url = (get_option('permalink_structure') ?
-            home_url("leyka/service/cancel_recurring/{$donation->id}") :
-            home_url("?page=leyka/service/cancel_recurring/{$donation->id}"))
-            .'/'.md5($donation->id.'_'.$init_recurring_donation->id.'_leyka_cancel_recurring_subscription');
-
-        return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
-
-    }
-
     public function cancel_recurring_subscription(Leyka_Donation_Base $donation) {
 
         if($donation->type !== 'rebill') {
             die();
         }
 
-        $init_recurring_donation = Leyka_Donation_Base::get_init_recurring_donation($donation);
-        $init_recurring_donation->recurring_is_active = false;
+        $donation->recurring_is_active = false;
 
         header('Content-type: text/html; charset=utf-8');
 
@@ -526,7 +483,7 @@ techMessage="'.$tech_message.'"/>');
 
     public function do_recurring_donation(Leyka_Donation_Base $init_recurring_donation) {
 
-        if( !$init_recurring_donation->recurring_id ) {
+        if( !$init_recurring_donation->yandex_recurring_id ) {
             return false;
         }
 
@@ -536,7 +493,7 @@ techMessage="'.$tech_message.'"/>');
                 'status' => 'submitted',
                 'payment_type' => 'rebill',
                 'init_recurring_donation' => $init_recurring_donation->id,
-                'yandex_recurring_id' => $init_recurring_donation->recurring_id,
+                'yandex_recurring_id' => $init_recurring_donation->yandex_recurring_id,
             ),
             array('recalculate_total_amount' => true,)
         );
@@ -560,7 +517,7 @@ techMessage="'.$tech_message.'"/>');
                             'value' => round($new_recurring_donation->amount, 2),
                             'currency' => 'RUB', /** @todo Change to $new_recurring_donation->currency_id, but fix "rur" -> "RUB" */
                         ),
-                        'payment_method_id' => $init_recurring_donation->recurring_id,
+                        'payment_method_id' => $init_recurring_donation->yandex_recurring_id,
                         'capture' => true,
                         'description' =>
                             ( !empty($form_data['leyka_recurring']) ? '['.__('Recurring', 'leyka').'] ' : '' )
@@ -571,7 +528,7 @@ techMessage="'.$tech_message.'"/>');
                 );
 
                 $new_recurring_donation->add_gateway_response($payment); // On callback the response will be re-written
-                $new_recurring_donation->recurring_id = $payment->id;
+                $new_recurring_donation->yandex_recurring_id = $payment->id;
 
             } catch(Exception $ex) {
 
@@ -593,7 +550,7 @@ techMessage="'.$tech_message.'"/>');
                 CURLOPT_POST => true,
                 CURLOPT_POSTFIELDS => http_build_query(array(
                     'clientOrderId' => $new_recurring_donation->id,
-                    'invoiceId' => $init_recurring_donation->recurring_id,
+                    'invoiceId' => $init_recurring_donation->yandex_recurring_id,
                     'orderNumber' => 'recurring-'.$init_recurring_donation->id.'-'.$new_recurring_donation->id,
                     'amount' => $init_recurring_donation->amount,
                 )),
@@ -655,7 +612,7 @@ techMessage="'.$tech_message.'"/>');
 
         if($donation) { // Edit donation page displayed
 
-            $donation = leyka_get_validated_donation($donation);
+            $donation = Leyka_Donations::get_instance()->get_donation($donation);
 
             if($donation->type !== 'rebill') {
                 return;
@@ -665,9 +622,9 @@ techMessage="'.$tech_message.'"/>');
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type == 'correction') {?>
-                <input type="text" id="yandex-recurring-id" name="yandex-recurring-id" placeholder="<?php _e('Enter Yandex.Kassa invoice ID', 'leyka');?>" value="<?php echo $donation->recurring_id;?>">
+                <input type="text" id="yandex-recurring-id" name="yandex-recurring-id" placeholder="<?php _e('Enter Yandex.Kassa invoice ID', 'leyka');?>" value="<?php echo $donation->yandex_recurring_id;?>">
                 <?php } else {?>
-                <span class="fake-input"><?php echo $donation->recurring_id;?></span>
+                <span class="fake-input"><?php echo $donation->yandex_recurring_id;?></span>
                 <?php }?>
             </div>
 
@@ -701,8 +658,9 @@ techMessage="'.$tech_message.'"/>');
             case 'yandex_recurring_id':
             case 'yandex_invoice_id':
             case 'yandex_payment_id':
-                return get_post_meta($donation->id, '_yandex_invoice_id', true);
-            default: return $value;
+                return $donation->get_meta('_yandex_invoice_id');
+            default:
+                return $value;
         }
     }
 
@@ -716,15 +674,16 @@ techMessage="'.$tech_message.'"/>');
             case 'yandex_recurring_id':
             case 'yandex_invoice_id':
             case 'yandex_payment_id':
-                return update_post_meta($donation->id, '_yandex_invoice_id', $value);
-            default: return false;
+                return $donation->set_meta('_yandex_invoice_id', $value);
+            default:
+                return false;
         }
     }
 
     public function save_donation_specific_data(Leyka_Donation_Base $donation) {
 
-        if(isset($_POST['yandex-recurring-id']) && $donation->recurring_id != $_POST['yandex-recurring-id']) {
-            $donation->recurring_id = $_POST['yandex-recurring-id'];
+        if(isset($_POST['yandex-recurring-id']) && $donation->yandex_recurring_id != $_POST['yandex-recurring-id']) {
+            $donation->yandex_recurring_id = $_POST['yandex-recurring-id'];
         }
 
         $donation->recurring_is_active = !empty($_POST['yandex-recurring-is-active']);
@@ -733,7 +692,9 @@ techMessage="'.$tech_message.'"/>');
 
     public function add_donation_specific_data($donation_id, array $donation_params) {
         if( !empty($donation_params['recurring_id']) ) {
-            update_post_meta($donation_id, '_yandex_invoice_id', $donation_params['recurring_id']);
+            Leyka_Donations::get_instance()
+                ->get_donation($donation_id)
+                ->set_meta('_yandex_invoice_id', $donation_params['recurring_id']);
         }
     }
 
@@ -769,6 +730,25 @@ techMessage="'.$tech_message.'"/>');
         } else {
             return false;
         }
+
+    }
+
+    protected function _validate_order_number($order_number) {
+
+        if( !absint($order_number) ) { // Recurring donation callback
+
+            $order_number = explode('-', $order_number);
+            if(count($order_number) == 3 && $order_number[0] == 'recurring' && absint($order_number[2])) {
+                $order_number = absint($order_number[2]);
+            } else { // Order number is wrong
+                $order_number = false;
+            }
+
+        } else { // Single donation callback
+            $order_number = absint($order_number);
+        }
+
+        return $order_number;
 
     }
 
@@ -892,7 +872,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
     }
 
     public function has_recurring_support() {
-        return !!leyka_options()->opt($this->full_id.'_rebilling_available');
+        return !!leyka_options()->opt($this->full_id.'_rebilling_available') ? 'active' : false;
     }
 
 }

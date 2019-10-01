@@ -510,12 +510,16 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         }
 
+        $params['results_limit'] = empty($params['results_limit']) ? 20 : absint($params['results_limit']);
+
         if( !empty($params['get_single']) ) {
             $limit = ' LIMIT 0,1';
-        } else if( !empty($params['page']) && (int)$params['page'] > 0 && (int)$params['results_limit'] > 0 ) {
-            $limit = ' LIMIT '.(($params['page']-1)*(int)$params['results_limit']).','.(int)$params['results_limit'];
-        } else if( !empty($params['results_limit']) && (int)$params['results_limit'] > 0 ) {
-            $limit = ' LIMIT 0,'.(int)$params['results_limit'];
+        } else if( !empty($params['get_all']) || !empty($params['nopaging']) ) {
+            $limit = '';
+        } else if( !empty($params['page']) && absint($params['page']) ) {
+            $limit = ' LIMIT '.(($params['page']-1)*$params['results_limit']).','.$params['results_limit'];
+        } else {
+            $limit = ' LIMIT 0,'.$params['results_limit'];
         }
 
         if(isset($params['year_month']) && (int)$params['year_month'] > 0 && mb_strlen($params['year_month']) >= 6) {

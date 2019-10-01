@@ -334,18 +334,6 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) {
-
-        $init_recurring_donation = $this->get_init_recurring_donation($donation);
-        $cancelling_url = (get_option('permalink_structure') ?
-                home_url("leyka/service/cancel_recurring/{$donation->id}") :
-                home_url("?page=leyka/service/cancel_recurring/{$donation->id}"))
-            .'/'.md5($donation->id.'_'.$init_recurring_donation->id.'_leyka_cancel_recurring_subscription');
-
-        return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
-
-    }
-
     public function cancel_recurring_subscription(Leyka_Donation_Base $donation) {
 
         if($donation->type !== 'rebill') {
@@ -383,7 +371,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             die(sprintf(__('<strong>Error:</strong> we cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="mailto:%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
         }
 
-        $this->get_init_recurring_donation($donation)->recurring_is_active = false;
+        $donation->recurring_is_active = false;
 
         die(__('Recurring subscription cancelled.', 'leyka'));
 
@@ -613,7 +601,7 @@ class Leyka_CP_Card extends Leyka_Payment_Method {
     }
 
     public function has_recurring_support() {
-        return true;
+        return 'passive';
     }
 
 }

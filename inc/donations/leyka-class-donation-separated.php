@@ -645,7 +645,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             return NULL;
         }
 
-        if( !isset($this->_donation_meta[$meta_name]) ) {
+        if( !array_key_exists($meta_name, $this->_donation_meta) ) { // May be NULL, so we can't use isset() or empty() here
 
             global $wpdb;
             $query = $wpdb->prepare("SELECT `meta_value` FROM `{$wpdb->prefix}leyka_donations_meta` WHERE `donation_id`=%d AND `meta_key`=%s LIMIT 0,1", $this->_id, $meta_name);

@@ -24,6 +24,8 @@ function leyka_get_gateways() {
  * @param $currency mixed
  * @param $sorted boolean
  * @return array
+ *
+ * @todo Refactor the hell out of this method. It should accept an array of $params, and return.
  */
 function leyka_get_pm_list($activity = null, $currency = false, $sorted = true) {
 
@@ -53,6 +55,19 @@ function leyka_get_pm_list($activity = null, $currency = false, $sorted = true) 
     }
 
     return apply_filters('leyka_active_pm_list', $pm_list, $activity, $currency);
+
+}
+
+function leyka_get_active_recurring_pm_list() {
+
+    $result = array();
+    foreach(leyka_get_pm_list(true) as $pm) {
+        if($pm->has_recurring_support() === 'active') {
+            $result[$pm->full_id] = $pm;
+        }
+    }
+
+    return $result;
 
 }
 
@@ -379,7 +394,15 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     }
 
     public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) {
-        return $link_text;
+
+        $init_recurring_donation = $this->get_init_recurring_donation($donation);
+        $cancelling_url = (get_option('permalink_structure') ?
+                home_url("leyka/service/cancel_recurring/{$donation->id}") :
+                home_url("?page=leyka/service/cancel_recurring/{$donation->id}"))
+            .'/'.md5($donation->id.'_'.$init_recurring_donation->id.'_leyka_cancel_recurring_subscription');
+
+        return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
+
     }
 
     public function do_recurring_donation(Leyka_Donation_Base $init_recurring_donation) {
