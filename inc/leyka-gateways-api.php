@@ -46,6 +46,7 @@ function leyka_get_pm_list($activity = null, $currency = false, $sorted = true) 
             if( ( !$activity || $pm->active == $activity ) && ( !$currency || $pm->has_currency_support($currency) ) ) {
                 $pm_list[] = $pm;
             }
+
         }
 
     } else {
@@ -385,8 +386,14 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
         $donation = Leyka_Donations::get_instance()->get_donation($donation);
 
-        return $donation->payment_type === 'rebill' && $donation->get_meta('init_recurring_donation_id') ?
-            $donation->get_meta('init_recurring_donation_id') : false;
+        if($donation->type !== 'rebill') {
+            return false;
+        }
+
+        $init_recurring_donation_id = $donation->get_meta('init_recurring_donation_id');
+
+        return $init_recurring_donation_id ?
+            Leyka_Donations::get_instance()->get_donation($init_recurring_donation_id) : $donation;
 
     }
 

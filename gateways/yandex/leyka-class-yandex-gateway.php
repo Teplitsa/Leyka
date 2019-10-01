@@ -621,7 +621,7 @@ techMessage="'.$tech_message.'"/>');
             <label><?php _e('Yandex.Kassa recurring subscription ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
 
-                <?php if($donation->type == 'correction') {?>
+                <?php if($donation->type === 'correction') {?>
                 <input type="text" id="yandex-recurring-id" name="yandex-recurring-id" placeholder="<?php _e('Enter Yandex.Kassa invoice ID', 'leyka');?>" value="<?php echo $donation->yandex_recurring_id;?>">
                 <?php } else {?>
                 <span class="fake-input"><?php echo $donation->yandex_recurring_id;?></span>

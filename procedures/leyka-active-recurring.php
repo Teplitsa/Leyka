@@ -24,28 +24,6 @@ $current_day_param = $max_days_in_month < 31 && $max_days_in_month === $current_
     array(array('day' => $current_day, 'compare' => '>='), array('day' => 31, 'compare' => '<=')) :
     array(array('day' => (int)date('j')));
 
-//$params = array(
-//    'post_type' => Leyka_Donation_Management::$post_type,
-//    'nopaging' => true,
-//    'post_status' => 'funded',
-//    'post_parent' => 0,
-//    'meta_query' => array(
-//        'relation' => 'AND',
-//        array(
-//            'key' => 'leyka_payment_type',
-//            'value' => 'rebill',
-//            'compare' => '=',
-//        ),
-//        array(
-//            'key' => '_rebilling_is_active',
-//            'value' => '1',
-//            'compare' => '=',
-//        ),
-//    ),
-//    'date_query' => $current_day_param,
-//);
-//$donations = get_posts($params);
-
 $donations = Leyka_Donations::get_instance()->get(array(
     'status' => 'funded',
     'recurring_only_init' => true,
@@ -54,19 +32,15 @@ $donations = Leyka_Donations::get_instance()->get(array(
     'get_all' => true,
 ));
 
-foreach($donations as $donation) {
+foreach($donations as $init_recurring_donation) {
 
-    echo '<pre>'.print_r($donation, 1).'</pre>';
-
-//    $donation = new Leyka_Donation($donation);
-
-    $gateway = leyka_get_gateway_by_id($donation->gateway_id);
+    $gateway = leyka_get_gateway_by_id($init_recurring_donation->gateway_id);
     if($gateway) {
 
-//        $new_recurring_donation = $gateway->do_recurring_donation($donation);
-//        if($new_recurring_donation && is_a($new_recurring_donation, 'Leyka_Donation_Base')) {
-//            Leyka_Donation_Management::send_all_recurring_emails($new_recurring_donation);
-//        } // else if( !$new_recurring_donation || is_wp_error($new_recurring_donation) ) { ... } /** @todo Log & handle error */
+        $new_recurring_donation = $gateway->do_recurring_donation($init_recurring_donation);
+        if($new_recurring_donation && is_a($new_recurring_donation, 'Leyka_Donation_Base')) {
+            Leyka_Donation_Management::send_all_recurring_emails($new_recurring_donation);
+        } // else if( !$new_recurring_donation || is_wp_error($new_recurring_donation) ) { ... } /** @todo Log & handle error */
 
     }
 

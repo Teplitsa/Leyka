@@ -434,7 +434,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
                 $init_recurring_donation = $this->init_recurring_donation;
 
-                return $init_recurring_donation ? $init_recurring_donation->id : false;
+                return $init_recurring_donation ? $init_recurring_donation->id : $this->id;
 
             case 'is_init_recurring_donation':
                 return $this->init_recurring_donation_id === $this->id;

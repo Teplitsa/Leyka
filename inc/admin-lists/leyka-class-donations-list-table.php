@@ -158,7 +158,6 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
 //        if(isset($_GET['tst'])) {
-//
 //        }
 
         $column_content = '<div class="donation-campaign"><a href="'.$donation_edit_page.'">'.$campaign->title.'</a></div>'

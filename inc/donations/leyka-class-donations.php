@@ -497,16 +497,17 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         }
 
-        if( !empty($params['campaign_id']) ) {
-            $where['campaign_id'] = $wpdb->prepare("{$wpdb->prefix}leyka_donations.campaign_id = %d", absint($params['campaign_id']));
-        } else if( !empty($params['campaigns_ids']) && is_array($params['campaigns_ids']) ) {
+        $params['campaign_id'] = empty($params['campaigns_ids']) ?
+            (empty($params['campaign_id']) ? array() : $params['campaign_id']) : $params['campaigns_ids'];
+        if($params['campaign_id']) {
 
-            $params['campaigns_ids'] = array_map(
+            $params['campaign_id'] = is_array($params['campaign_id']) ? $params['campaign_id'] : array($params['campaign_id']);
+            $params['campaign_id'] = array_map(
                 function($campaign_id){ return absint($campaign_id); },
-                $params['campaigns_ids']
+                $params['campaign_id']
             );
 
-            $where['campaign_id'] = '{$wpdb->prefix}leyka_donations.campaign_id IN ('.implode(',', $params['campaigns_ids']).')';
+            $where['campaign_id'] = "{$wpdb->prefix}leyka_donations.campaign_id IN (".implode(',', $params['campaign_id']).")";
 
         }
 
@@ -566,25 +567,61 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         }
 
         if( !empty($params['gateway_id']) ) {
-            if( ($params['strict'] && leyka_get_gateway_by_id($params['gateway_id'])) || !$params['strict'] ) {
-                $where['gateway_id'] = $wpdb->prepare("{$wpdb->prefix}leyka_donations.gateway_id = %s", $params['gateway_id']);
+
+            $params['gateway_id'] = is_array($params['gateway_id']) ? $params['gateway_id'] : array($params['gateway_id']);
+            $query_params = array();
+
+            foreach($params['gateway_id'] as $gateway_id) {
+                if(($params['strict'] && leyka_get_gateway_by_id($gateway_id)) || !$params['strict']) {
+                    $query_params[] = $gateway_id;
+                }
             }
+
+            if(count($query_params)) {
+                $where['gateway_id'] = "{$wpdb->prefix}leyka_donations.gateway_id IN ('".implode("','", $query_params)."')";
+            }
+
         }
 
         if( !empty($params['pm_id']) ) {
-            if( ($params['strict'] && leyka_get_pm_by_id($params['pm_id'])) || !$params['strict'] ) {
-                $where['pm_id'] = $wpdb->prepare("{$wpdb->prefix}leyka_donations.pm_id = %s", $params['pm_id']);
+
+            $params['pm_id'] = is_array($params['pm_id']) ? $params['pm_id'] : array($params['pm_id']);
+            $query_params = array();
+
+            foreach($params['pm_id'] as $pm_id) {
+                if(($params['strict'] && leyka_get_pm_by_id($pm_id)) || !$params['strict']) {
+                    $query_params[] = $pm_id;
+                }
             }
+
+            if(count($query_params)) {
+                $where['pm_id'] = "{$wpdb->prefix}leyka_donations.pm_id IN ('".implode("','", $query_params)."')";
+            }
+
         }
 
-        if( !empty($params['pm_full_id']) ) {
-            if( ($params['strict'] && leyka_get_pm_by_id($params['pm_full_id'], true)) || !$params['strict'] ) {
+        if(empty($params['gateway_id']) && empty($params['pm_id']) && !empty($params['pm_full_id']) ) {
 
-                $params['pm_full_id'] = explode('-', $params['pm_full_id']);
-                $where['gateway_id'] = $wpdb->prepare("{$wpdb->prefix}leyka_donations.gateway_id = %s", $params['pm_full_id'][0]);
-                $where['pm_id'] = $wpdb->prepare("{$wpdb->prefix}leyka_donations.pm_id = %s", $params['pm_full_id'][1]);
+            $params['pm_full_id'] = is_array($params['pm_full_id']) ? $params['pm_full_id'] : array($params['pm_full_id']);
+            $query_params = array();
 
+            foreach($params['pm_full_id'] as $pm_full_id) {
+                if(($params['strict'] && leyka_get_pm_by_id($pm_full_id, true)) || !$params['strict']) {
+
+                    $pm_full_id = explode('-', $pm_full_id);
+                    if(count($pm_full_id) !== 2) {
+                        continue;
+                    }
+
+                    $query_params[] = $wpdb->prepare("({$wpdb->prefix}leyka_donations.gateway_id = %s AND {$wpdb->prefix}leyka_donations.pm_id = %s)", $pm_full_id[0], $pm_full_id[1]);
+
+                }
             }
+
+            if(count($query_params)) {
+                $where['pm_full_id'] = '('.implode(' OR ', $query_params).')';
+            }
+
         }
 
         if( !empty($params['amount_filter']) ) {
