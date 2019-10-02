@@ -434,7 +434,22 @@ class Leyka_Mixplat_Mobile extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'gateways/mixplat/icons/sms.svg',
         ));
 
-        $this->_custom_fields = array(
+        $this->_specific_fields = array(array(
+            'type' => 'phone',
+            'required' => true,
+//            'classes' => array('phone-num',),
+//            'name' => 'leyka_donor_phone',
+//            'title' => '', // Visible field title (label text)
+//            'placeholder' => '',
+//            'description' => '',
+//            'comment' => '',
+//            'errors' => array(
+//                'regexp1' => 'Error message 1',
+//                'regexp2' => 'Error message 2',
+//            ),
+        ));
+
+        $this->_custom_fields = array( /** @todo Only for old templates - Revo & Star don't use this param (mb, yet). */
             'mixplat_phone' => apply_filters('leyka_donor_phone_field_html', '<label class="input req"><input id="leyka_'.$this->full_id.'_phone" class="required phone-num mixplat-phone" type="text" value="" name="leyka_donor_phone" placeholder="'.__('Your phone number in the 7xxxxxxxxxx format', 'leyka').'" maxlength="11">
 </label>
 <p class="field-comment">'.__('We will use this phone number to make a mobile payment', 'leyka').'</p>

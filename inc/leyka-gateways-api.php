@@ -99,6 +99,7 @@ function leyka_get_pm_by_id($pm_id, $is_full_id = false) {
     }
 
     return $pm;
+
 }
 
 /**
@@ -109,6 +110,29 @@ function leyka_get_gateway_by_id($gateway_id) {
 
     $gateways = leyka()->get_gateways();
     return empty($gateways[$gateway_id]) ? false : $gateways[$gateway_id];
+
+}
+
+function leyka_get_special_fields_settings(array $params = array()) {
+
+    $params = $params + array(
+        'field_types' => array(),
+    );
+
+    $pm_fields = array();
+    foreach(leyka_get_pm_list() as $pm) {
+        foreach($pm->specific_fields as $field_settings) {
+
+            if($params['field_types'] && !in_array($field_settings['type'], $params['field_types'])) {
+                continue;
+            }
+
+            $pm_fields[$pm->full_id][] = $field_settings;
+
+        }
+    }
+
+    return $pm_fields;
 
 }
 
@@ -675,6 +699,7 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
 
     protected $_global_fields = array();
     protected $_support_global_fields = true;
+    protected $_specific_fields = array();
     protected $_custom_fields = array();
     protected $_supported_currencies = array();
     protected $_default_currency = '';
@@ -722,6 +747,7 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
             case 'desc':
             case 'description': $param = html_entity_decode($this->_description); break;
             case 'has_global_fields': $param = $this->_support_global_fields; break;
+            case 'specific_fields': $param = $this->_specific_fields ? $this->_specific_fields : array(); break;
             case 'custom_fields': $param = $this->_custom_fields ? $this->_custom_fields : array(); break;
             case 'icons': $param = $this->_icons; break;
             case 'main_icon': /** @todo Mb, add a filter here to set a custom main icon */
