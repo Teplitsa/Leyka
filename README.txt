@@ -4,7 +4,7 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса, яндекс.деньги, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
-Tested up to: 5.2.2
+Tested up to: 5.2.3
 Stable tag: 3.4.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -89,6 +89,21 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.5 =
+* New: now RBK Money gateway supports recurring donations.
+* New: now old form templates (Revo & earlier) are considered deprecated. They are hidden by default.
+* New: Yandex.Kassa new API - errors handling & frontend display improved.
+* New: now Star template supports Mixplat mobile PM.
+* New: PM special fields engine v.1 added.
+* New: Donors list CSV export feature added.
+* New: "Misc" admin tab renamed to "for developers".
+* Fix: RBK Money gateway fixes & frontend UX changes.
+* Fix: the legal face RP placeholder removed from the code.
+* Fix: small Donor logout callback fix.
+* Fix: different small bugfixes.
+* Tweak: small refactoring in the Donations export engine.
+* Tweak: different refactoring & improvements.
+
 = 3.4.0.1 =
 * Fix: bug with spacebar character in the donor names form fields fixed.
 * Fix: now Revo forms display correctly via shortcodes.
