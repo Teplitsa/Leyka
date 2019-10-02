@@ -1,6 +1,7 @@
 jQuery(document).ready(function($){
 
     /** @var leyka object Localization strings */
+    /** @todo Only for old templates - Revo & earlier. Remove this code when their support is finished. */
     $(document).on('validate-custom-form-fields.leyka', 'form.leyka-pm-form', function(e, $form){
 
         // Selected PM don't belong to the MIXPLAT gateway:
@@ -29,6 +30,6 @@ jQuery(document).ready(function($){
             }
         }
 
-        // All standard fields validation is already passed in the main script (public.js)...
+        // All standard fields validation is already passed in the main script.
     });
 });

@@ -191,7 +191,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                                     </span>
                                 </label>
 
-                                <input id="<?php echo $field_id;?>" type="text" name="<?php echo empty($field_settings['name']) ? 'leyka_donor_phone' : $field_settings['name'];?>" value="" maxlength="11" autocomplete="off">
+                                <input id="<?php echo $field_id;?>" type="text" name="<?php echo empty($field_settings['name']) ? 'leyka_donor_phone' : $field_settings['name'];?>" value="" maxlength="20" autocomplete="off" placeholder="<?php echo empty($field_settings['placeholder']) ? '' : $field_settings['placeholder'];?>">
 
                             </div>
 

@@ -41,6 +41,12 @@ if( !function_exists('array_key_last') ) {
     }
 }
 
+if( !function_exists('leyka_is_phone_number') ) {
+    function leyka_is_phone_number($value) {
+        return preg_match('/^[0-9\+\-\. ]{10,}$/i', $value);
+    }
+}
+
 if( !function_exists('leyka_strip_string_by_words') ) {
     function leyka_strip_string_by_words($string, $length = 350, $strip_tags_shortcodes = true) {
 
@@ -483,7 +489,7 @@ function leyka_get_default_failure_page() {
 
 }
 
-function leyka_get_failure_page_url($campaign_id = false) {
+function leyka_get_failure_page_url() {
 
     $url = leyka_options()->opt('failure_page') ? get_permalink(leyka_options()->opt('failure_page')) : home_url();
     $url = $url ? $url : home_url(); // The case when "last posts" is selected for homepage

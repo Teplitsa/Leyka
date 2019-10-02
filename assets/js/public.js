@@ -122,7 +122,7 @@ function is_email(value) {
 }
 
 function is_phone_number(value) {
-    return /^7[0-9]{10}$/.test(value);
+    return /^[0-9\+\-\. ]{10,}$/.test(value);
 }
 
 function leyka_get_ajax_url() {
@@ -2341,18 +2341,18 @@ jQuery(document).ready(function($){
         return false;
 
     }
-    
+
     function bindSubmitPaymentFormEvent() {
 
         $('.leyka-tpl-star-form').on('submit.leyka', 'form.leyka-pm-form', function(e){
 
-            var $_form = $(this),
-                $errors = $_form.parents('.leyka-payment-form').siblings('.leyka-submit-errors'),
-                $pm_selected = $_form.find('input[name="leyka_payment_method"]:checked');
+            var $form = $(this),
+                $errors = $form.parents('.leyka-payment-form').siblings('.leyka-submit-errors'),
+                $pm_selected = $form.find('input[name="leyka_payment_method"]:checked');
 
 			e.preventDefault();
 
-            if( !leykaValidateForm($_form) ) { // Form errors exist
+            if( !leykaValidateForm($form) ) { // Form errors exist
 
                 e.preventDefault();
                 e.stopPropagation();
@@ -2370,7 +2370,8 @@ jQuery(document).ready(function($){
             }
 
             // Open "waiting" form section:
-            var data_array = $_form.serializeArray(),
+            var $redirect_section = $form.closest('.leyka-pf').find('.leyka-pf__redirect'),
+                data_array = $form.serializeArray(),
                 data = {action: 'leyka_ajax_get_gateway_redirect_data'};
 
             for(var i = 0; i < data_array.length; i++) {
@@ -2393,7 +2394,6 @@ jQuery(document).ready(function($){
                     return addError($errors, response.message);
                 } else if( !response.payment_url ) {
                     return false;
-
                 }
 
                 var redirect_form_html = '<form class="leyka-auto-submit" action="'+response.payment_url+'" method="post">';
@@ -2410,7 +2410,7 @@ jQuery(document).ready(function($){
                 if(typeof response.submission_redirect_type === 'undefined' || response.submission_redirect_type === 'auto') {
                     $redirect_section.find('.leyka-auto-submit').submit();
                 } else if(response.submission_redirect_type === 'redirect') {
-                    window.location.href = $redirect_section.find('.leyka-auto-submit').prop('action');
+                    window.location.href = $redirect_section.find('.leyka-auto-submit').attr('action'); // Don't use prop() here
                 }
 
             });

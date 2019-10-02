@@ -4,7 +4,7 @@ function is_email(value) {
 }
 
 function is_phone_number(value) {
-    return /^7[0-9]{10}$/.test(value);
+    return /^[0-9\+\-\. ]{10,}$/.test(value);
 }
 
 function leyka_get_ajax_url() {

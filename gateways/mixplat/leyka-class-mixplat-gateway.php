@@ -7,6 +7,8 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
     protected static $_instance;
 
+    protected $_submit_result = false;
+
     protected function _set_attributes() {
 
         $this->_id = 'mixplat';
@@ -103,12 +105,19 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
-        if(empty($form_data['leyka_donor_phone']) || !preg_match('/^[\d+ -.]+$/i', $form_data['leyka_donor_phone'])) {
+        $error = false;
+        if(empty($form_data['leyka_donor_phone'])) {
+            $error = new WP_Error('leyka_mixplat_phone_is_empty', __('Phone number is required.', 'leyka'));
+        } else if( !leyka_is_phone_number($form_data['leyka_donor_phone']) ) {
+            $error = new WP_Error('leyka_mixplat_phone_is_incorrect', __('Phone number is incorrect.', 'leyka'));
+        }
 
-            $error = new WP_Error('leyka_mixplat_phone_is_empty', __('Valid phone number is required.', 'leyka'));
+        if($error) {
+
             leyka()->add_payment_form_error($error);
 
-            return;
+            return array('status' => 1, 'errors' => $error, 'message' => $error->get_error_message(),);
+
         }
 
         $phone = '7'.substr(str_replace(array('+', ' ', '-', '.'), '', trim($form_data['leyka_donor_phone'])), -10);
@@ -164,25 +173,48 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         }
 
         if($is_success) {
-            wp_redirect(leyka_get_success_page_url());
+
+            if(leyka()->template_is_deprecated($donation->campaign->template)) { // Old templates (Revo & earlier)
+
+                wp_redirect(leyka_get_success_page_url());
+                exit(0);
+
+            } else { // New templates (Star & further)
+                $this->_submit_result = 'success';
+            }
+
         } else {
 
-            wp_mail(
-                get_option('admin_email'),
-                __('MIXPLAT - payment callback error occured', 'leyka'),
-                sprintf(__("This message has been sent because a create_payment call to MIXPLAT payment system returned some error. The details of the call are below. Payment error code / text: %s / %s", 'leyka'), $json['result'], $json['message'])."\n\r\n\r"
-            );
+            if(leyka()->template_is_deprecated($donation->campaign->template)) { // Old templates (Revo & earlier)
 
-            wp_redirect(leyka_get_failure_page_url($donation->campaign_id));
+                wp_mail(
+                    get_option('admin_email'),
+                    __('MIXPLAT - payment callback error occured', 'leyka'),
+                    sprintf(__("This message has been sent because a create_payment call to MIXPLAT payment system returned some error. The details of the call are below. Payment error code / text: %s / %s", 'leyka'), $json['result'], $json['message'])."\n\r\n\r"
+                );
+
+                wp_redirect(leyka_get_failure_page_url());
+                exit(0);
+
+            } else { // New templates (Star & further)
+
+                $error = new WP_Error('mixplat_error', __('MIXPLAT - payment callback error occured', 'leyka'));
+                leyka()->add_payment_form_error($error);
+
+                return array('status' => 1, 'errors' => $error, 'message' => $error->get_error_message(),);
+
+            }
 
         }
-
-        exit(0);
 
     }
 
     public function submission_redirect_url($current_url, $pm_id) {
-        return $current_url;
+        return $pm_id === 'mobile' && $this->_submit_result === 'success' ? leyka_get_success_page_url() : $current_url;
+    }
+
+    public function submission_redirect_type($redirect_type, $pm_id, $donation_id) {
+        return $pm_id === 'mobile' && $this->_submit_result === 'success' ? 'redirect' : $redirect_type;
     }
 
     public function submission_form_data($form_data, $pm_id, $donation_id) {
@@ -244,6 +276,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                     break;
                 }
             }
+
         }
 
         if( !$is_error ) {
@@ -266,6 +299,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                 $message = sprintf(__("This message has been sent because a call to your MIXPLAT callback was made with invalid MIXPLAT signature. The details of the call are below. The callback type: %s. Signatures sent / calculated: %s / %s", 'leyka'), $response['request'], $response['signature'], $params_signature)."\n\r\n\r";
                 $is_error = true;
             }
+
         }
 
         if($is_error) {
@@ -281,6 +315,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             status_header(200);
 
             die('Payment callback error');
+
         }
 
         if($response['request'] == 'status') { // Status request
@@ -434,7 +469,7 @@ class Leyka_Mixplat_Mobile extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'gateways/mixplat/icons/sms.svg',
         ));
 
-        $this->_specific_fields = array(array(
+        $this->_specific_fields = array(array( // For the new templates - from Star & further
             'type' => 'phone',
             'required' => true,
 //            'classes' => array('phone-num',),
@@ -449,7 +484,7 @@ class Leyka_Mixplat_Mobile extends Leyka_Payment_Method {
 //            ),
         ));
 
-        $this->_custom_fields = array( /** @todo Only for old templates - Revo & Star don't use this param (mb, yet). */
+        $this->_custom_fields = array( /** @todo Only for old templates - Revo & earlier. Remove it when old templates support is finished. */
             'mixplat_phone' => apply_filters('leyka_donor_phone_field_html', '<label class="input req"><input id="leyka_'.$this->full_id.'_phone" class="required phone-num mixplat-phone" type="text" value="" name="leyka_donor_phone" placeholder="'.__('Your phone number in the 7xxxxxxxxxx format', 'leyka').'" maxlength="11">
 </label>
 <p class="field-comment">'.__('We will use this phone number to make a mobile payment', 'leyka').'</p>
@@ -466,15 +501,6 @@ class Leyka_Mixplat_Mobile extends Leyka_Payment_Method {
         if($this->_options) {
             return;
         }
-
-        $this->_options = array(
-            $this->full_id.'_details' => array(
-                'type' => 'html',
-                'title' => __('Ways to donate via mobile payments', 'leyka'),
-                'comment' => __('Please, set a text to describe a donation via mobile payments.', 'leyka'),
-                'required' => true,
-            ),
-        );
 
     }
 
