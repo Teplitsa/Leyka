@@ -182,7 +182,12 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 $this->_new_api_redirect_url = $payment->confirmation->confirmation_url;
 
             } catch(Exception $ex) {
+
                 $donation->add_gateway_response($ex);
+
+                leyka()->add_payment_form_error( new WP_Error('leyka_donation_error', sprintf(__('Error while processing the payment: %s. Your money will remain intact. Please report to the <a href="mailto:%s" target="_blank">website tech support</a>.', 'leyka'), $ex->getMessage(), leyka_get_website_tech_support_email())) );
+                return;
+
             }
 
         } else { // Old API - for backward compatibility
@@ -193,8 +198,8 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 $form_data['leyka_donation_amount'] < 10.0
             ) {
 
-                $error = new WP_Error('leyka_donation_amount_too_small', __('The amount of donations via Sberbank Online should be at least 10 RUR.', 'leyka'));
-                leyka()->add_payment_form_error($error);
+                leyka()->add_payment_form_error(new WP_Error('leyka_donation_amount_too_small', __('The amount of donations via Sberbank Online should be at least 10 RUB.', 'leyka')));
+                return;
 
             }
 
@@ -440,11 +445,15 @@ techMessage="'.$tech_message.'"/>');
             return array();
         }
 
-        if(stristr($donation->gateway_response, 'YandexCheckout')) { // New API
+        if(is_object($donation->gateway_response)) {
+            $response = serialize($donation->gateway_response);
+        }
+
+        if(stristr($response, 'YandexCheckout')) { // New API
 
             require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
 
-            $response = maybe_unserialize($donation->gateway_response);
+            $response = maybe_unserialize($response);
 
             if(
                 is_a($response, 'YandexCheckout\Request\Payments\PaymentResponse')
