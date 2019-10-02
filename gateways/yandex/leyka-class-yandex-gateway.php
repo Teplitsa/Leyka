@@ -193,9 +193,9 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         } else { // Old API - for backward compatibility
 
             if(
-                $pm_id === 'yandex_sb' &&
-                $form_data['leyka_donation_currency'] == 'rur' &&
-                $form_data['leyka_donation_amount'] < 10.0
+                $pm_id === 'yandex_sb'
+                && $form_data['leyka_donation_currency'] == 'rur'
+                && $form_data['leyka_donation_amount'] < 10.0
             ) {
 
                 leyka()->add_payment_form_error(new WP_Error('leyka_donation_amount_too_small', __('The amount of donations via Sberbank Online should be at least 10 RUB.', 'leyka')));
