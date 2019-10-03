@@ -1272,13 +1272,14 @@ function leyka_modern_template_displayed() {
     $modern_templates = array('revo', 'star');
     
     $post = get_post();
-    
+
     if(get_query_var('leyka-screen')) {
         $modern_template_displayed = true;
     } else if(is_singular(Leyka_Campaign_Management::$post_type)) {
 
         $campaign = new Leyka_Campaign(get_post());
-        if($campaign->template == 'default') {
+        if($campaign->template === 'default') {
+
             $leyka_template_data = leyka_get_current_template_data();
             $modern_template_displayed = in_array($leyka_template_data['id'], $modern_templates);
 
@@ -1287,33 +1288,47 @@ function leyka_modern_template_displayed() {
         }
 
     } else if($post) {
-        
-        if(has_shortcode($post->post_content, 'leyka_inline_campaign') || has_shortcode($post->post_content, 'knd_leyka_inline_campaign')) {
+
+        if(
+            has_shortcode($post->post_content, 'leyka_inline_campaign')
+            || has_shortcode($post->post_content, 'knd_leyka_inline_campaign')
+        ) {
             $modern_template_displayed = true;
-        } else if(has_shortcode($post->post_content, 'leyka_campaign_form')) {
+        } else if(
+            has_shortcode($post->post_content, 'leyka_campaign_form')
+            || has_shortcode($post->post_content, 'leyka_payment_form')
+        ) {
 
             if(preg_match_all( '/'.get_shortcode_regex().'/s', $post->post_content, $matches)) {
+
                 $attr_id_match = array();                
-                foreach( $matches[2] as $key => $value) {
-                    if($value == 'leyka_campaign_form') {
+                foreach($matches[2] as $key => $value) {
+                    if(in_array($value, array('leyka_campaign_form', 'leyka_payment_form'))) {
+
                         $get = str_replace(" ", "&" , $matches[3][$key] );
                         parse_str($get, $atts);
                         
                         if(array_key_exists('id', $atts)) {
+
                             $campaign_id = preg_match_all("/(\d+)/", $atts['id'], $attr_id_match);
                             $campaign_id = isset($attr_id_match[1][0]) ? (int)$attr_id_match[1][0] : 0;
-                            if(!$campaign_id) {
+
+                            if( !$campaign_id ) {
                                 continue;
                             }
                             
                             $campaign = new Leyka_Campaign($campaign_id);
                             if($campaign && in_array($campaign->template, $modern_templates)) {
+
                                 $modern_template_displayed = true;
                                 break;
+
                             }
+
                         }
                     }
                 }
+
             }
             
         }

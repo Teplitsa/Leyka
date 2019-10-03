@@ -222,7 +222,7 @@ function leyka_payment_form_screen($atts) {
 
     if( !$campaign ) {
         return is_super_admin() ? leyka_get_wrong_campaign_message($campaign) : '';
-    } else if($campaign->is_finished && empty($atts['show_finished'])) {
+    } else if($campaign->is_finished && empty($atts['show_finished']) || $campaign->status !== 'publish') {
         return '';
     }
 
