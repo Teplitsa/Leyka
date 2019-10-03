@@ -240,7 +240,8 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             <div class="field-wrapper flex">
 
                 <?php $templates = leyka()->get_templates();
-                if( leyka()->template_is_deprecated($cur_template) ) { // "toggles"
+
+                if($cur_template !== 'default' && leyka()->template_is_deprecated($cur_template)) { // "toggles"
                     $templates[] = leyka()->get_template($cur_template);
                 }
 

@@ -1917,7 +1917,12 @@ class Leyka extends Leyka_Singleton {
 
     public function template_is_deprecated($template_id) {
 
-        $template_data = get_file_data(LEYKA_PLUGIN_DIR."templates/leyka-template-$template_id.php", array(
+        $template_main_file_addr = LEYKA_PLUGIN_DIR."templates/leyka-template-$template_id.php";
+        if($template_id === 'default' || !file_exists($template_main_file_addr)) {
+            /** @todo Throw some Ex? */ return false;
+        }
+
+        $template_data = get_file_data($template_main_file_addr, array(
             'name' => 'Leyka Template',
             'description' => 'Description',
             'debug_only' => 'Debug only',
