@@ -241,7 +241,11 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                 <?php $templates = leyka()->get_templates();
 
-                if($cur_template !== 'default' && leyka()->template_is_deprecated($cur_template)) { // "toggles"
+                if(
+                    $cur_template !== 'default'
+                    && leyka()->template_is_deprecated($cur_template)
+                    && !leyka_options()->opt('allow_deprecated_form_templates')
+                ) { // "toggles"
                     $templates[] = leyka()->get_template($cur_template);
                 }
 
