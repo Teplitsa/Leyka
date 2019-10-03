@@ -142,22 +142,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         }
 
-        if( !get_option('leyka_admin_notice_v3_update') && (empty($_GET['page']) || $_GET['page'] !== 'leyka_settings_new') ) {
-
-            function leyka_admin_notice_v3_update() {?>
-
-                <div id="message" class="updated leyka-message">
-                    <a class="leyka-message-close notice-dismiss" href="<?php echo esc_url(wp_nonce_url(remove_query_arg('leyka_reset_msg', add_query_arg('leyka-hide-notice', 'v3_update')), 'leyka_hide_notice_nonce', '_leyka_notice_nonce'));?>">
-                        <?php esc_html_e('Dismiss', 'leyka');?>
-                    </a>
-                    <p><?php printf(esc_html__('Hello! Thank you for updating Leyka plugin to the 3rd version. Please read about all new features %shere%s.', 'leyka'), '<a href="//te-st.ru/2018/12/18/leyka-3-update/" target="_blank">', '</a>');?></p>
-                </div>
-            <?php
-            }
-            add_action('admin_notices', 'leyka_admin_notice_v3_update');
-
-        }
-
         add_filter('leyka_admin_portlet_title', function($portlet_title, $portlet_id){
             return $portlet_id === 'donations-dynamics' ? $portlet_title.',&nbsp;'.leyka_get_currency_label() : $portlet_title;
         }, 10, 2);
