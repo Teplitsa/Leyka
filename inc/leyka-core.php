@@ -1018,6 +1018,10 @@ class Leyka extends Leyka_Singleton {
             return;
         }
 
+        if( !$leyka_last_ver ) {
+            update_option('leyka_init_wizard_redirect', true);
+        }
+
         if( !$leyka_last_ver || $leyka_last_ver < '3.1.1' ) {
             if(get_option('leyka_show_gtm_dataLayer_on_success')) {
 
