@@ -117,8 +117,12 @@
 }));
 
 /** Common utilities & tools */
-function is_email(email) {
-    return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test(email);
+function is_email(value) {
+    return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test(value);
+}
+
+function is_phone_number(value) {
+    return /^[0-9\+\-\. ]{10,}$/.test(value);
 }
 
 function leyka_get_ajax_url() {
@@ -1197,58 +1201,105 @@ var leykaValidateForm,
 
     function bindDonorStepEvents() {
 
-        $('.donor__textfield--name').on('focus.leyka', 'input', function(){
-            $(this).parents('.donor__textfield--name').removeClass('invalid').removeClass('valid').addClass('focus');
-        }).on('blur', ':input', function(){
+        $('.donor__textfield').on('focus.leyka', ':input', function(){
+            $(this).parents('.donor__textfield').removeClass('invalid').removeClass('valid').addClass('focus');
+        }).on('blur.leyka', ':input', function(){
 
-            // validate
             var $this = $(this),
-                testVal = $this.val();
+                $field_wrapper = $this.parents('.donor__textfield'),
+                test_val = $this.val();
 
-            $this.parents('.donor__textfield--name').removeClass('focus');
-
-            if(testVal.length > 0){
-                $this.parents('.donor__textfield--name').addClass('valid');
-            } else {
-                $this.parents('.donor__textfield--name').addClass('invalid');
-            }
-
-        });
-
-        $('.donor__textfield--email').on('focus.leyka', ':input', function(){
-            $(this).parents('.donor__textfield--email').removeClass('invalid').removeClass('valid').addClass('focus');
-        }).on('blur', ':input', function(){
+            $field_wrapper.removeClass('focus');
 
             // Validate:
-            var $this = $(this),
-                test_val = $.trim($this.val());
+            if($field_wrapper.hasClass('donor__textfield--name')) {
 
-            $this.parents('.donor__textfield--email').removeClass('focus');
+                if(test_val.length > 0) {
+                    $field_wrapper.addClass('valid');
+                } else {
+                    $field_wrapper.addClass('invalid');
+                }
 
-            if(test_val.length > 0 && is_email(test_val)){
-                $this.parents('.donor__textfield--email').addClass('valid');
-            } else {
-                $this.parents('.donor__textfield--email').addClass('invalid');
+            } else if($field_wrapper.hasClass('donor__textfield--email')) {
+
+                if(test_val.length > 0 && is_email(test_val)){
+                    $field_wrapper.addClass('valid');
+                } else {
+                    $field_wrapper.addClass('invalid');
+                }
+
+            } else if($field_wrapper.hasClass('donor__textfield--phone')) {
+
+                if(test_val.length > 0 && is_phone_number(test_val)){
+                    $field_wrapper.addClass('valid');
+                } else {
+                    $field_wrapper.addClass('invalid');
+                }
+
+            } else if($field_wrapper.hasClass('donor__textfield--comment')) {
+
+                if(test_val.length && $this.data('max-length') && test_val.length > $this.data('max-length')) {
+                    $field_wrapper.addClass('invalid');
+                } else {
+                    $field_wrapper.addClass('valid');
+                }
+
             }
 
         });
 
-        $('.donor__textfield--comment').on('focus.leyka', ':input', function(){
-            $(this).parents('.donor__textfield--comment').removeClass('invalid').removeClass('valid').addClass('focus');
-        }).on('blur', ':input', function(){
-
-                // validate
-                var $this = $(this),
-                    testVal = $.trim($this.val());
-
-                $this.parents('.donor__textfield--comment').removeClass('focus');
-
-                if(testVal.length && $this.data('max-length') && testVal.length > $this.data('max-length')) {
-                    $this.parents('.donor__textfield--comment').addClass('invalid');
-                } else {
-                    $this.parents('.donor__textfield--comment').addClass('valid');
-                }
-            });
+        // $('.donor__textfield--name')/*.on('focus.leyka', ':input', function(){
+        //     $(this).parents('.donor__textfield--name').removeClass('invalid').removeClass('valid').addClass('focus');
+        // })*/.on('blur', ':input', function(){
+        //
+        //     // validate
+        //     var $this = $(this),
+        //         testVal = $this.val();
+        //
+        //     $this.parents('.donor__textfield--name').removeClass('focus');
+        //
+        //     if(testVal.length > 0){
+        //         $this.parents('.donor__textfield--name').addClass('valid');
+        //     } else {
+        //         $this.parents('.donor__textfield--name').addClass('invalid');
+        //     }
+        //
+        // });
+        //
+        // $('.donor__textfield--email')/*.on('focus.leyka', ':input', function(){
+        //     $(this).parents('.donor__textfield--email').removeClass('invalid').removeClass('valid').addClass('focus');
+        // })*/.on('blur', ':input', function(){
+        //
+        //     // Validate:
+        //     var $this = $(this),
+        //         test_val = $.trim($this.val());
+        //
+        //     $this.parents('.donor__textfield--email').removeClass('focus');
+        //
+        //     if(test_val.length > 0 && is_email(test_val)){
+        //         $this.parents('.donor__textfield--email').addClass('valid');
+        //     } else {
+        //         $this.parents('.donor__textfield--email').addClass('invalid');
+        //     }
+        //
+        // });
+        //
+        // $('.donor__textfield--comment')/*.on('focus.leyka', ':input', function(){
+        //     $(this).parents('.donor__textfield--comment').removeClass('invalid').removeClass('valid').addClass('focus');
+        // })*/.on('blur', ':input', function(){
+        //
+        //         // validate
+        //         var $this = $(this),
+        //             testVal = $.trim($this.val());
+        //
+        //         $this.parents('.donor__textfield--comment').removeClass('focus');
+        //
+        //         if(testVal.length && $this.data('max-length') && testVal.length > $this.data('max-length')) {
+        //             $this.parents('.donor__textfield--comment').addClass('invalid');
+        //         } else {
+        //             $this.parents('.donor__textfield--comment').addClass('valid');
+        //         }
+        //     });
 
     }
 
@@ -2057,50 +2108,60 @@ jQuery(document).ready(function($){
 
     function bindSwiperEvents() {
         $('.leyka-tpl-star-form .star-swiper').on('click', '.swiper-item', function(e){
-        	if($(this).hasClass('selected')) {
+
+            var $this = $(this);
+
+        	if($this.hasClass('selected')) {
         		return;
         	}
-        	
-            $(this).siblings('.swiper-item.selected').removeClass('selected');
-            $(this).addClass('selected');
-            $(this).find('input[type=radio]').prop('checked', true).change();
-            
-            var $swiper = $(this).closest('.star-swiper');
-            swipeList($swiper, $(this));
+
+            $this.siblings('.swiper-item.selected').removeClass('selected');
+            $this.addClass('selected');
+            $this.find('input[type="radio"]').prop('checked', true).change();
+
+            var $swiper = $this.closest('.star-swiper');
+            swipeList($swiper, $this);
             toggleSwiperArrows($swiper);
-            
-            if($(this).hasClass('flex-amount-item')) {
-                $(this).find('input[type=number]').focus();
-                $(this).addClass('focus').removeClass('empty');
+
+            if($this.hasClass('flex-amount-item')) {
+                $this.find('input[type="number"]').focus();
+                $this.addClass('focus').removeClass('empty');
             }
             
             if($swiper.hasClass('amount__figure')) {
-                setAmountInputValue($(this).closest('.leyka-tpl-star-form'), getAmountValueFromControl($(this)));
+                setAmountInputValue($this.closest('.leyka-tpl-star-form'), getAmountValueFromControl($this));
             }
+
             checkFormFillCompletion($swiper.closest('form.leyka-pm-form'));
+
         });
-        
-        $('.leyka-tpl-star-form .star-swiper .swiper-item.selected').find('input[type=radio]').prop('checked', true).change();
-            
+
+        $('.leyka-tpl-star-form .star-swiper .swiper-item:first').click();
+
+        $('.leyka-tpl-star-form .star-swiper .swiper-item.selected')
+            .find('input[type="radio"]')
+                .prop('checked', true)
+                .change();
+
         $('.leyka-tpl-star-form .star-swiper').on('click', 'a.swiper-arrow', function(e){
-			e.preventDefault();
-			
-			var $swiper = $(this).closest('.star-swiper');
-            var $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)');
-			
-			var $nextItem = null;
-			if($(this).hasClass('swipe-right')) {
+
+            e.preventDefault();
+
+			var $this = $(this),
+                $swiper = $this.closest('.star-swiper'),
+                $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)'),
+                $nextItem = null;
+
+			if($this.hasClass('swipe-right')) {
 				$nextItem = $activeItem.next('.swiper-item:not(.disabled)');
-			}
-			else {
+			} else {
 				$nextItem = $activeItem.prev('.swiper-item:not(.disabled)');
 			}
-			
-			if(!$nextItem.length) {
-				if($(this).hasClass('swipe-right')) {
+
+			if( !$nextItem.length ) {
+				if($this.hasClass('swipe-right')) {
 					$nextItem = $swiper.find('.swiper-item:not(.disabled)').first();
-				}
-				else {
+				} else {
 					$nextItem = $swiper.find('.swiper-item:not(.disabled)').last();
 				}
 			}
@@ -2108,21 +2169,23 @@ jQuery(document).ready(function($){
 			if($nextItem.length) {
 				$activeItem.removeClass('selected');
 				$nextItem.addClass('selected');
-                $nextItem.find('input[type=radio]').prop('checked', true).change();
+                $nextItem.find('input[type="radio"]').prop('checked', true).change();
 			}
-            
+
             swipeList($swiper, $nextItem);
             toggleSwiperArrows($swiper);
-            
+
             if($nextItem.hasClass('flex-amount-item')) {
                 $nextItem.find('input[type=number]').focus();
                 $nextItem.addClass('focus').removeClass('empty');
             }
-            
+
             if($swiper.hasClass('amount__figure')) {
                 setAmountInputValue($nextItem.closest('.leyka-tpl-star-form'), getAmountValueFromControl($nextItem));
             }
+
             checkFormFillCompletion($swiper.closest('form.leyka-pm-form'));
+
         });
         
         $('.star-swiper').each(function() {
@@ -2278,18 +2341,18 @@ jQuery(document).ready(function($){
         return false;
 
     }
-    
+
     function bindSubmitPaymentFormEvent() {
 
         $('.leyka-tpl-star-form').on('submit.leyka', 'form.leyka-pm-form', function(e){
 
-            var $_form = $(this),
-                $errors = $_form.parents('.leyka-payment-form').siblings('.leyka-submit-errors'),
-                $pm_selected = $_form.find('input[name="leyka_payment_method"]:checked');
+            var $form = $(this),
+                $errors = $form.parents('.leyka-payment-form').siblings('.leyka-submit-errors'),
+                $pm_selected = $form.find('input[name="leyka_payment_method"]:checked');
 
 			e.preventDefault();
 
-            if( !leykaValidateForm($_form) ) { // Form errors exist
+            if( !leykaValidateForm($form) ) { // Form errors exist
 
                 e.preventDefault();
                 e.stopPropagation();
@@ -2307,7 +2370,8 @@ jQuery(document).ready(function($){
             }
 
             // Open "waiting" form section:
-            var data_array = $_form.serializeArray(),
+            var $redirect_section = $form.closest('.leyka-pf').find('.leyka-pf__redirect'),
+                data_array = $form.serializeArray(),
                 data = {action: 'leyka_ajax_get_gateway_redirect_data'};
 
             for(var i = 0; i < data_array.length; i++) {
@@ -2330,7 +2394,6 @@ jQuery(document).ready(function($){
                     return addError($errors, response.message);
                 } else if( !response.payment_url ) {
                     return false;
-
                 }
 
                 var redirect_form_html = '<form class="leyka-auto-submit" action="'+response.payment_url+'" method="post">';
@@ -2347,7 +2410,7 @@ jQuery(document).ready(function($){
                 if(typeof response.submission_redirect_type === 'undefined' || response.submission_redirect_type === 'auto') {
                     $redirect_section.find('.leyka-auto-submit').submit();
                 } else if(response.submission_redirect_type === 'redirect') {
-                    window.location.href = $redirect_section.find('.leyka-auto-submit').prop('action');
+                    window.location.href = $redirect_section.find('.leyka-auto-submit').attr('action'); // Don't use prop() here
                 }
 
             });
@@ -2412,12 +2475,18 @@ jQuery(document).ready(function($){
     
     function bindPMEvents() {
         $('.leyka-tpl-star-form form.leyka-pm-form').each(function(){
+
             var $_form = $(this);
+
             toggleStaticPMForm($_form);
-            
+            togglePmSpecialFields($_form);
+
             $(this).find('input.payment-opt__radio').change(function(){
                 if($(this).prop('checked')) {
+
                     toggleStaticPMForm($_form);
+                    togglePmSpecialFields($_form);
+
                 }
             });
         });
@@ -2427,20 +2496,29 @@ jQuery(document).ready(function($){
         });
     }
     
-    function toggleStaticPMForm($_form) {
+    function toggleStaticPMForm($form) {
 
-        var $pmRadio = $_form.find('input[name="leyka_payment_method"]:checked');
+        var $pmRadio = $form.find('input[name="leyka_payment_method"]:checked');
 
         if($pmRadio.data('processing') === 'static') {
-            $_form.find('.section--static.' + $pmRadio.val()).show();
-            $_form.find('.section--person').hide();
+            $form.find('.section--static.' + $pmRadio.val()).show();
+            $form.find('.section--person').hide();
         } else {
-            $_form.find('.section--static').hide();
-            $_form.find('.section--person').show();
+            $form.find('.section--static').hide();
+            $form.find('.section--person').show();
         }
 
     }
-    
+
+    function togglePmSpecialFields($form) {
+
+        var $pm_radio = $form.find('input[name="leyka_payment_method"]:checked');
+
+        $form.find('.special-field').hide();
+        $form.find('.special-field.'+$pm_radio.val()).show();
+
+    }
+
     function isMobileScreen() {
         return $(document).width() < 640;
     }

@@ -17,7 +17,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     );
 
     /** @todo Automatise it, but w/o leyka()->get_templates(). */
-    protected $_template_options = array('star' => array(), 'revo' => array(), 'neo' => array(), 'toggles' => array(), 'radio' => array(),);
+    protected $_template_options = array('star' => array(), 'revo' => array(), 'neo' => array(), 'toggles' => array(), 'radios' => array(),);
 
     protected function __construct() {
 
@@ -65,7 +65,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
         }
 
-        if(empty($this->_options[$option_id])) {
+        if( !isset($this->_options[$option_id]) ) {
             $this->_options[$option_id] = self::$_options_meta[$option_id];
         }
 
@@ -476,12 +476,16 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         foreach($this->_template_options as $template_id => $options) {
 
             $this->_template_options[$template_id] = array_merge($options, $this->_templates_common_options);
-        
-            $prefix = $this->get_template_options_prefix($template_id);
+
             foreach($this->_template_options[$template_id] as $option) {
 
-                self::$_options_meta[$this->get_tab_option_full_name($prefix, $option)] = self::$_options_meta[$option];
-                $this->_intialize_option($this->get_tab_option_full_name($prefix, $option));
+                $tab_option_full_name = $this->get_tab_option_full_name(
+                    $this->get_template_options_prefix($template_id),
+                    $option
+                );
+
+                self::$_options_meta[$tab_option_full_name] = self::$_options_meta[$option];
+                $this->_intialize_option($tab_option_full_name);
 
             }
 

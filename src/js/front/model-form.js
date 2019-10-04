@@ -216,58 +216,105 @@ var leykaValidateForm,
 
     function bindDonorStepEvents() {
 
-        $('.donor__textfield--name').on('focus.leyka', 'input', function(){
-            $(this).parents('.donor__textfield--name').removeClass('invalid').removeClass('valid').addClass('focus');
-        }).on('blur', ':input', function(){
+        $('.donor__textfield').on('focus.leyka', ':input', function(){
+            $(this).parents('.donor__textfield').removeClass('invalid').removeClass('valid').addClass('focus');
+        }).on('blur.leyka', ':input', function(){
 
-            // validate
             var $this = $(this),
-                testVal = $this.val();
+                $field_wrapper = $this.parents('.donor__textfield'),
+                test_val = $this.val();
 
-            $this.parents('.donor__textfield--name').removeClass('focus');
-
-            if(testVal.length > 0){
-                $this.parents('.donor__textfield--name').addClass('valid');
-            } else {
-                $this.parents('.donor__textfield--name').addClass('invalid');
-            }
-
-        });
-
-        $('.donor__textfield--email').on('focus.leyka', ':input', function(){
-            $(this).parents('.donor__textfield--email').removeClass('invalid').removeClass('valid').addClass('focus');
-        }).on('blur', ':input', function(){
+            $field_wrapper.removeClass('focus');
 
             // Validate:
-            var $this = $(this),
-                test_val = $.trim($this.val());
+            if($field_wrapper.hasClass('donor__textfield--name')) {
 
-            $this.parents('.donor__textfield--email').removeClass('focus');
+                if(test_val.length > 0) {
+                    $field_wrapper.addClass('valid');
+                } else {
+                    $field_wrapper.addClass('invalid');
+                }
 
-            if(test_val.length > 0 && is_email(test_val)){
-                $this.parents('.donor__textfield--email').addClass('valid');
-            } else {
-                $this.parents('.donor__textfield--email').addClass('invalid');
+            } else if($field_wrapper.hasClass('donor__textfield--email')) {
+
+                if(test_val.length > 0 && is_email(test_val)){
+                    $field_wrapper.addClass('valid');
+                } else {
+                    $field_wrapper.addClass('invalid');
+                }
+
+            } else if($field_wrapper.hasClass('donor__textfield--phone')) {
+
+                if(test_val.length > 0 && is_phone_number(test_val)){
+                    $field_wrapper.addClass('valid');
+                } else {
+                    $field_wrapper.addClass('invalid');
+                }
+
+            } else if($field_wrapper.hasClass('donor__textfield--comment')) {
+
+                if(test_val.length && $this.data('max-length') && test_val.length > $this.data('max-length')) {
+                    $field_wrapper.addClass('invalid');
+                } else {
+                    $field_wrapper.addClass('valid');
+                }
+
             }
 
         });
 
-        $('.donor__textfield--comment').on('focus.leyka', ':input', function(){
-            $(this).parents('.donor__textfield--comment').removeClass('invalid').removeClass('valid').addClass('focus');
-        }).on('blur', ':input', function(){
-
-                // validate
-                var $this = $(this),
-                    testVal = $.trim($this.val());
-
-                $this.parents('.donor__textfield--comment').removeClass('focus');
-
-                if(testVal.length && $this.data('max-length') && testVal.length > $this.data('max-length')) {
-                    $this.parents('.donor__textfield--comment').addClass('invalid');
-                } else {
-                    $this.parents('.donor__textfield--comment').addClass('valid');
-                }
-            });
+        // $('.donor__textfield--name')/*.on('focus.leyka', ':input', function(){
+        //     $(this).parents('.donor__textfield--name').removeClass('invalid').removeClass('valid').addClass('focus');
+        // })*/.on('blur', ':input', function(){
+        //
+        //     // validate
+        //     var $this = $(this),
+        //         testVal = $this.val();
+        //
+        //     $this.parents('.donor__textfield--name').removeClass('focus');
+        //
+        //     if(testVal.length > 0){
+        //         $this.parents('.donor__textfield--name').addClass('valid');
+        //     } else {
+        //         $this.parents('.donor__textfield--name').addClass('invalid');
+        //     }
+        //
+        // });
+        //
+        // $('.donor__textfield--email')/*.on('focus.leyka', ':input', function(){
+        //     $(this).parents('.donor__textfield--email').removeClass('invalid').removeClass('valid').addClass('focus');
+        // })*/.on('blur', ':input', function(){
+        //
+        //     // Validate:
+        //     var $this = $(this),
+        //         test_val = $.trim($this.val());
+        //
+        //     $this.parents('.donor__textfield--email').removeClass('focus');
+        //
+        //     if(test_val.length > 0 && is_email(test_val)){
+        //         $this.parents('.donor__textfield--email').addClass('valid');
+        //     } else {
+        //         $this.parents('.donor__textfield--email').addClass('invalid');
+        //     }
+        //
+        // });
+        //
+        // $('.donor__textfield--comment')/*.on('focus.leyka', ':input', function(){
+        //     $(this).parents('.donor__textfield--comment').removeClass('invalid').removeClass('valid').addClass('focus');
+        // })*/.on('blur', ':input', function(){
+        //
+        //         // validate
+        //         var $this = $(this),
+        //             testVal = $.trim($this.val());
+        //
+        //         $this.parents('.donor__textfield--comment').removeClass('focus');
+        //
+        //         if(testVal.length && $this.data('max-length') && testVal.length > $this.data('max-length')) {
+        //             $this.parents('.donor__textfield--comment').addClass('invalid');
+        //         } else {
+        //             $this.parents('.donor__textfield--comment').addClass('valid');
+        //         }
+        //     });
 
     }
 

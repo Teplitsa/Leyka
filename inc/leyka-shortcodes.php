@@ -222,7 +222,7 @@ function leyka_payment_form_screen($atts) {
 
     if( !$campaign ) {
         return is_super_admin() ? leyka_get_wrong_campaign_message($campaign) : '';
-    } else if($campaign->is_finished && empty($atts['show_finished'])) {
+    } else if($campaign->is_finished && empty($atts['show_finished']) || $campaign->status !== 'publish') {
         return '';
     }
 
@@ -449,7 +449,11 @@ function leyka_inline_campaign(array $atts = array()) {
     }
 
     if($campaign->template !== 'revo') {
+
+        $atts['template'] = $campaign->template;
+
         return leyka_payment_form_screen($atts);
+
     }
 
     $template_id = 'revo'; // $atts['template']; // ATM this shortcode is only for Revo. WARNING: ATM it should be set explicitly here 'cause of the default "template" attr gets overriden by an empty value given in the function arg.
@@ -696,9 +700,13 @@ function leyka_inline_campaign(array $atts = array()) {
 }
 
 add_shortcode('leyka_inline_campaign_small', 'leyka_inline_campaign_small');
-function leyka_inline_campaign_small($campaign_id) {
+function leyka_inline_campaign_small($atts) {
 
-    $campaign = leyka_get_validated_campaign($campaign_id);
+    $atts = shortcode_atts(array('id' => false,), $atts);
+
+    $campaign_id = $atts['id'] ? absint($atts['id']) : get_post()->ID;
+    $campaign = leyka_get_validated_campaign($atts['id']);
+
     if( !$campaign ) {
         return is_super_admin() ? leyka_get_wrong_campaign_message($campaign) : '';
     } else if($campaign->is_finished) {

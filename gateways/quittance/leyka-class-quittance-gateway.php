@@ -24,7 +24,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
         );
 
     }
-    
+
     protected function _set_attributes() {
 
         $this->_id = 'quittance';
@@ -125,7 +125,9 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
 
     // Quittance don't use any specific redirects, so this method is empty:
     public function submission_redirect_url($current_url, $pm_id) {
-        return home_url('/leyka-process-donation');
+        return get_option('permalink_structure') ?
+            home_url('/leyka-process-donation') :
+            home_url('?page=leyka-process-donation');
     }
     
     // Quittance don't have some form data to send to the gateway site:

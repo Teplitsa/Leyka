@@ -21,7 +21,7 @@ if(count($campaign->donations_types_available) > 1) {
 }
 
 $another_amount_title = count($template_data['amount_variants']) > 0 ?
-    esc_html__('Another amount', 'leyka') : esc_html__('Enter amount', 'leyka');?>
+    __('Another amount', 'leyka') : esc_html__('Enter amount', 'leyka');?>
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
 	<symbol width="12" height="9" viewBox="0 0 12 9" id="icon-checkbox-check">
@@ -34,7 +34,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 <div class="leyka-payment-form leyka-tpl-star-form" data-template="star">
 
     <form id="<?php echo leyka_pf_get_form_id($campaign->id).'-star-form';?>" class="leyka-pm-form leyka-no-validation" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
-    
+
         <div class="section section--periodicity <?php if(!in_array('recurring', $campaign->donations_types_available)){?>hidden<?php }?>">
 
             <div class="section__fields periodicity">
@@ -129,8 +129,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
         </div>
     
         <?php }?>
-    
-    
+
         <!-- donor data -->
         <div class="section section--person">
     
@@ -166,7 +165,49 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                     </div>
                 </div>
 
-                <?php if(leyka_options()->opt_template('show_donation_comment_field')) {
+                <?php // For now, we get field settings only for the Mixplat Mobile PM and only for it's Phone field:
+                foreach(leyka_get_special_fields_settings() as $pm_full_id => $special_fields) {
+
+                    if($pm_full_id !== 'mixplat-mobile') {
+                        return;
+                    }
+
+                    foreach($special_fields as $field_settings) {
+
+                        if(empty($field_settings['type']) || $field_settings['type'] !== 'phone') {
+                            continue;
+                        }
+
+                        /** @todo Something like such: $star_template->render_field($field_settings['type'], $field_settings);*/
+
+                        $field_id = 'leyka-'.wp_rand();?>
+                        <div class="donor__textfield donor__textfield--phone special-field <?php echo $pm_full_id;?> <?php echo empty($field_settings['required']) ? '' : 'required';?> <?php echo empty($field_settings['classes']) ? '' : implode(' ', $field_settings['classes']);?>" style="display: none;">
+
+                            <div class="leyka-star-field-frame">
+
+                                <label for="<?php echo $field_id;?>">
+                                    <span class="donor__textfield-label leyka_donor_phone-label">
+                                        <?php echo empty($field_settings['title']) ? __('Your phone number in the 7xxxxxxxxxx format', 'leyka') : $field_settings['title'];?>
+                                    </span>
+                                </label>
+
+                                <input id="<?php echo $field_id;?>" type="text" name="<?php echo empty($field_settings['name']) ? 'leyka_donor_phone' : $field_settings['name'];?>" value="" maxlength="20" autocomplete="off" placeholder="<?php echo empty($field_settings['placeholder']) ? '' : $field_settings['placeholder'];?>">
+
+                            </div>
+
+                            <div class="leyka-star-field-error-frame">
+                                <span class="donor__textfield-error leyka_donor_phone-error">
+                                    <?php _e('Enter your phone number in the 7xxxxxxxxxx format', 'leyka');?>
+                                </span>
+                            </div>
+
+                        </div>
+
+                    <?php }
+
+                }
+
+                if(leyka_options()->opt_template('show_donation_comment_field')) {
 
                     $field_id = 'leyka-'.wp_rand();?>
 

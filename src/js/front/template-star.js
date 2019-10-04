@@ -199,50 +199,60 @@
 
     function bindSwiperEvents() {
         $('.leyka-tpl-star-form .star-swiper').on('click', '.swiper-item', function(e){
-        	if($(this).hasClass('selected')) {
+
+            var $this = $(this);
+
+        	if($this.hasClass('selected')) {
         		return;
         	}
-        	
-            $(this).siblings('.swiper-item.selected').removeClass('selected');
-            $(this).addClass('selected');
-            $(this).find('input[type=radio]').prop('checked', true).change();
-            
-            var $swiper = $(this).closest('.star-swiper');
-            swipeList($swiper, $(this));
+
+            $this.siblings('.swiper-item.selected').removeClass('selected');
+            $this.addClass('selected');
+            $this.find('input[type="radio"]').prop('checked', true).change();
+
+            var $swiper = $this.closest('.star-swiper');
+            swipeList($swiper, $this);
             toggleSwiperArrows($swiper);
-            
-            if($(this).hasClass('flex-amount-item')) {
-                $(this).find('input[type=number]').focus();
-                $(this).addClass('focus').removeClass('empty');
+
+            if($this.hasClass('flex-amount-item')) {
+                $this.find('input[type="number"]').focus();
+                $this.addClass('focus').removeClass('empty');
             }
             
             if($swiper.hasClass('amount__figure')) {
-                setAmountInputValue($(this).closest('.leyka-tpl-star-form'), getAmountValueFromControl($(this)));
+                setAmountInputValue($this.closest('.leyka-tpl-star-form'), getAmountValueFromControl($this));
             }
+
             checkFormFillCompletion($swiper.closest('form.leyka-pm-form'));
+
         });
-        
-        $('.leyka-tpl-star-form .star-swiper .swiper-item.selected').find('input[type=radio]').prop('checked', true).change();
-            
+
+        $('.leyka-tpl-star-form .star-swiper .swiper-item:first').click();
+
+        $('.leyka-tpl-star-form .star-swiper .swiper-item.selected')
+            .find('input[type="radio"]')
+                .prop('checked', true)
+                .change();
+
         $('.leyka-tpl-star-form .star-swiper').on('click', 'a.swiper-arrow', function(e){
-			e.preventDefault();
-			
-			var $swiper = $(this).closest('.star-swiper');
-            var $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)');
-			
-			var $nextItem = null;
-			if($(this).hasClass('swipe-right')) {
+
+            e.preventDefault();
+
+			var $this = $(this),
+                $swiper = $this.closest('.star-swiper'),
+                $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)'),
+                $nextItem = null;
+
+			if($this.hasClass('swipe-right')) {
 				$nextItem = $activeItem.next('.swiper-item:not(.disabled)');
-			}
-			else {
+			} else {
 				$nextItem = $activeItem.prev('.swiper-item:not(.disabled)');
 			}
-			
-			if(!$nextItem.length) {
-				if($(this).hasClass('swipe-right')) {
+
+			if( !$nextItem.length ) {
+				if($this.hasClass('swipe-right')) {
 					$nextItem = $swiper.find('.swiper-item:not(.disabled)').first();
-				}
-				else {
+				} else {
 					$nextItem = $swiper.find('.swiper-item:not(.disabled)').last();
 				}
 			}
@@ -250,21 +260,23 @@
 			if($nextItem.length) {
 				$activeItem.removeClass('selected');
 				$nextItem.addClass('selected');
-                $nextItem.find('input[type=radio]').prop('checked', true).change();
+                $nextItem.find('input[type="radio"]').prop('checked', true).change();
 			}
-            
+
             swipeList($swiper, $nextItem);
             toggleSwiperArrows($swiper);
-            
+
             if($nextItem.hasClass('flex-amount-item')) {
                 $nextItem.find('input[type=number]').focus();
                 $nextItem.addClass('focus').removeClass('empty');
             }
-            
+
             if($swiper.hasClass('amount__figure')) {
                 setAmountInputValue($nextItem.closest('.leyka-tpl-star-form'), getAmountValueFromControl($nextItem));
             }
+
             checkFormFillCompletion($swiper.closest('form.leyka-pm-form'));
+
         });
         
         $('.star-swiper').each(function() {
@@ -420,18 +432,18 @@
         return false;
 
     }
-    
+
     function bindSubmitPaymentFormEvent() {
 
         $('.leyka-tpl-star-form').on('submit.leyka', 'form.leyka-pm-form', function(e){
 
-            var $_form = $(this),
-                $errors = $_form.parents('.leyka-payment-form').siblings('.leyka-submit-errors'),
-                $pm_selected = $_form.find('input[name="leyka_payment_method"]:checked');
+            var $form = $(this),
+                $errors = $form.parents('.leyka-payment-form').siblings('.leyka-submit-errors'),
+                $pm_selected = $form.find('input[name="leyka_payment_method"]:checked');
 
 			e.preventDefault();
 
-            if( !leykaValidateForm($_form) ) { // Form errors exist
+            if( !leykaValidateForm($form) ) { // Form errors exist
 
                 e.preventDefault();
                 e.stopPropagation();
@@ -449,7 +461,8 @@
             }
 
             // Open "waiting" form section:
-            var data_array = $_form.serializeArray(),
+            var $redirect_section = $form.closest('.leyka-pf').find('.leyka-pf__redirect'),
+                data_array = $form.serializeArray(),
                 data = {action: 'leyka_ajax_get_gateway_redirect_data'};
 
             for(var i = 0; i < data_array.length; i++) {
@@ -472,7 +485,6 @@
                     return addError($errors, response.message);
                 } else if( !response.payment_url ) {
                     return false;
-
                 }
 
                 var redirect_form_html = '<form class="leyka-auto-submit" action="'+response.payment_url+'" method="post">';
@@ -489,7 +501,7 @@
                 if(typeof response.submission_redirect_type === 'undefined' || response.submission_redirect_type === 'auto') {
                     $redirect_section.find('.leyka-auto-submit').submit();
                 } else if(response.submission_redirect_type === 'redirect') {
-                    window.location.href = $redirect_section.find('.leyka-auto-submit').prop('action');
+                    window.location.href = $redirect_section.find('.leyka-auto-submit').attr('action'); // Don't use prop() here
                 }
 
             });
@@ -554,12 +566,18 @@
     
     function bindPMEvents() {
         $('.leyka-tpl-star-form form.leyka-pm-form').each(function(){
+
             var $_form = $(this);
+
             toggleStaticPMForm($_form);
-            
+            togglePmSpecialFields($_form);
+
             $(this).find('input.payment-opt__radio').change(function(){
                 if($(this).prop('checked')) {
+
                     toggleStaticPMForm($_form);
+                    togglePmSpecialFields($_form);
+
                 }
             });
         });
@@ -569,20 +587,29 @@
         });
     }
     
-    function toggleStaticPMForm($_form) {
+    function toggleStaticPMForm($form) {
 
-        var $pmRadio = $_form.find('input[name="leyka_payment_method"]:checked');
+        var $pmRadio = $form.find('input[name="leyka_payment_method"]:checked');
 
         if($pmRadio.data('processing') === 'static') {
-            $_form.find('.section--static.' + $pmRadio.val()).show();
-            $_form.find('.section--person').hide();
+            $form.find('.section--static.' + $pmRadio.val()).show();
+            $form.find('.section--person').hide();
         } else {
-            $_form.find('.section--static').hide();
-            $_form.find('.section--person').show();
+            $form.find('.section--static').hide();
+            $form.find('.section--person').show();
         }
 
     }
-    
+
+    function togglePmSpecialFields($form) {
+
+        var $pm_radio = $form.find('input[name="leyka_payment_method"]:checked');
+
+        $form.find('.special-field').hide();
+        $form.find('.special-field.'+$pm_radio.val()).show();
+
+    }
+
     function isMobileScreen() {
         return $(document).width() < 640;
     }
