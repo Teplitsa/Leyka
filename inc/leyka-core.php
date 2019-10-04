@@ -18,7 +18,7 @@ class Leyka extends Leyka_Singleton {
      * Templates order.
      * @var array
      */
-    protected $_templates_order = array('star', 'revo', 'neo', 'toggles', 'radios');
+    protected $_templates_order = array('star', 'revo', 'neo', 'toggles', 'radios',);
 
     /**
      * Gateways list.
