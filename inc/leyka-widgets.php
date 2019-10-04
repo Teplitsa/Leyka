@@ -31,21 +31,18 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 
 		$title = apply_filters('widget_title', $instance['title']);
 
-		if( !$instance['campaign_id'] ) {
+		if( !empty($instance['campaign_id']) && $instance['campaign_id'] === '-' ) { // Last campaign
 
-			$query = new WP_Query(array(
-				'post_type' => Leyka_Campaign_Management::$post_type,
-				'posts_per_page' => 1,
-			));
-			if( !$query->have_posts() ) {
+			$query = get_posts(array('post_type' => Leyka_Campaign_Management::$post_type, 'posts_per_page' => 1,));
+			if( !$query ) {
 				return;
 			}
 
-			$campaign_id = $query->posts[0]->ID;
+			$campaign_id = reset($query)->ID;
 
-		} elseif((int)$instance['campaign_id'] === 0) {
+		} else if((int)$instance['campaign_id'] === 0) { // Take campaign from context
 			$campaign_id = null;
-		} else {
+		} else { // Campaign is set explicitly
 			$campaign_id = (int)$instance['campaign_id'];
 		}
 

@@ -1176,7 +1176,9 @@ class Leyka_Campaign {
 
     public function increase_views_counter() {
 
-        $this->_campaign_meta['count_views']++;
+        $this->_campaign_meta['count_views'] = empty($this->_campaign_meta['count_views']) ?
+            1 : $this->_campaign_meta['count_views'] + 1;
+
         update_post_meta($this->_id, 'count_views', $this->_campaign_meta['count_views']);
 
         return $this;
