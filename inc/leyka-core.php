@@ -18,7 +18,7 @@ class Leyka extends Leyka_Singleton {
      * Templates order.
      * @var array
      */
-    protected $_templates_order = array('star', 'revo', 'neo', 'toggles', 'radios');
+    protected $_templates_order = array('star', 'revo', 'neo', 'toggles', 'radios',);
 
     /**
      * Gateways list.
@@ -1018,6 +1018,10 @@ class Leyka extends Leyka_Singleton {
             return;
         }
 
+        if( !$leyka_last_ver ) {
+            update_option('leyka_init_wizard_redirect', true);
+        }
+
         if( !$leyka_last_ver || $leyka_last_ver < '3.1.1' ) {
             if(get_option('leyka_show_gtm_dataLayer_on_success')) {
 
@@ -1917,7 +1921,12 @@ class Leyka extends Leyka_Singleton {
 
     public function template_is_deprecated($template_id) {
 
-        $template_data = get_file_data(LEYKA_PLUGIN_DIR."templates/leyka-template-$template_id.php", array(
+        $template_main_file_addr = LEYKA_PLUGIN_DIR."templates/leyka-template-$template_id.php";
+        if($template_id === 'default' || !file_exists($template_main_file_addr)) {
+            /** @todo Throw some Ex? */ return false;
+        }
+
+        $template_data = get_file_data($template_main_file_addr, array(
             'name' => 'Leyka Template',
             'description' => 'Description',
             'debug_only' => 'Debug only',

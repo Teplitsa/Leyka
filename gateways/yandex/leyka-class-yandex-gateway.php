@@ -39,7 +39,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         $this->_options = array(
             $this->_id.'_new_api' => array(
                 'type' => 'checkbox',
-                'default' => leyka_is_yandex_new_api_used(),
+                'default' => true,
                 'title' => __('Use Yandex.Kassa new API', 'leyka'),
                 'comment' => __('Check if your Yandex.Kassa connection uses the new API', 'leyka'),
                 'short_format' => true,

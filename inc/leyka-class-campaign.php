@@ -240,7 +240,12 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             <div class="field-wrapper flex">
 
                 <?php $templates = leyka()->get_templates();
-                if( leyka()->template_is_deprecated($cur_template) ) { // "toggles"
+
+                if(
+                    $cur_template !== 'default'
+                    && leyka()->template_is_deprecated($cur_template)
+                    && !leyka_options()->opt('allow_deprecated_form_templates')
+                ) { // "toggles"
                     $templates[] = leyka()->get_template($cur_template);
                 }
 
@@ -1171,7 +1176,9 @@ class Leyka_Campaign {
 
     public function increase_views_counter() {
 
-        $this->_campaign_meta['count_views']++;
+        $this->_campaign_meta['count_views'] = empty($this->_campaign_meta['count_views']) ?
+            1 : $this->_campaign_meta['count_views'] + 1;
+
         update_post_meta($this->_id, 'count_views', $this->_campaign_meta['count_views']);
 
         return $this;

@@ -142,22 +142,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         }
 
-        if( !get_option('leyka_admin_notice_v3_update') && (empty($_GET['page']) || $_GET['page'] !== 'leyka_settings_new') ) {
-
-            function leyka_admin_notice_v3_update() {?>
-
-                <div id="message" class="updated leyka-message">
-                    <a class="leyka-message-close notice-dismiss" href="<?php echo esc_url(wp_nonce_url(remove_query_arg('leyka_reset_msg', add_query_arg('leyka-hide-notice', 'v3_update')), 'leyka_hide_notice_nonce', '_leyka_notice_nonce'));?>">
-                        <?php esc_html_e('Dismiss', 'leyka');?>
-                    </a>
-                    <p><?php printf(esc_html__('Hello! Thank you for updating Leyka plugin to the 3rd version. Please read about all new features %shere%s.', 'leyka'), '<a href="//te-st.ru/2018/12/18/leyka-3-update/" target="_blank">', '</a>');?></p>
-                </div>
-            <?php
-            }
-            add_action('admin_notices', 'leyka_admin_notice_v3_update');
-
-        }
-
         add_filter('leyka_admin_portlet_title', function($portlet_title, $portlet_id){
             return $portlet_id === 'donations-dynamics' ? $portlet_title.',&nbsp;'.leyka_get_currency_label() : $portlet_title;
         }, 10, 2);
@@ -570,8 +554,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         foreach((array)explode(',', LEYKA_SUPPORT_EMAIL) as $email) {
 
             $email = trim($email);
-            if( !$email || !filter_var($email, FILTER_VALIDATE_EMAIL) )
+            if( !$email || !is_email($email) ) {
                 continue;
+            }
 
             $res &= wp_mail(
                 $email, __('Leyka: new feedback incoming', 'leyka'),
@@ -591,8 +576,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 <strong>ПО веб-сервера:</strong> %s<br>
                 <strong>Браузер пользователя:</strong> %s<br>
 				---------------------------------------------------------------------<br>
-				<pre>%s</pre>
-				",
+				<pre>%s</pre>",
                     $_POST['topic'], $_POST['name'], $_POST['email'], nl2br($_POST['text']),
                     home_url(), get_bloginfo('name'), $_SERVER['SERVER_ADDR'],
                     get_bloginfo('version'), LEYKA_VERSION, get_bloginfo('admin_email'),
