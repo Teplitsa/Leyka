@@ -30,7 +30,11 @@ if( !function_exists('mb_strtoupper') ) {
 
 if( !function_exists('array_key_first') ) {
     function array_key_first(array $array) {
-        return $array ? key(array_slice($array, 1)) : null;
+
+        foreach($array as $key => $unused) {
+            return $key;
+        }
+        return NULL;
 
     }
 }
@@ -1908,11 +1912,6 @@ if( !function_exists('leyka_add_editor_css') ) {
 	}
 }
 add_action( 'after_setup_theme', 'leyka_add_editor_css' );
-
-// True if Leyka should use Yandex.Kassa new API by default, false otherwise:
-function leyka_is_yandex_new_api_used() {
-    return !get_option('leyka_yandex_scid');
-}
 
 if( !function_exists('leyka_get_l18n_date') ) {
     function leyka_get_i18n_date($timestamp) {

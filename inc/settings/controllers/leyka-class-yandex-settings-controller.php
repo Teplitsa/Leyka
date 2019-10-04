@@ -561,15 +561,15 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_test_payment',
             'keys' => array('payment_completed'),
             'rendering_type' => 'template',
-            'data' => array('required' => esc_html__('To continue, you must make a donation.', 'leyka'))
+            'data' => array('required' => __('To continue, you must make a donation.', 'leyka'))
         )))->add_handler(array($this, 'handleFinalTest'))->add_to($section);
 
         $this->_sections[$section->id] = $section;
 
         // Final Section:
-        $section = new Leyka_Settings_Section('final', esc_html__('Finish', 'leyka'));
+        $section = new Leyka_Settings_Section('final', __('Finish', 'leyka'));
 
-        $step = new Leyka_Settings_Step('yandex_final', $section->id, 'Поздравляем!', array('header_classes' => 'greater',));
+        $step = new Leyka_Settings_Step('yandex_final', $section->id, __('Congratulations!', 'leyka'), array('header_classes' => 'greater',));
         $step->add_block(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => __('<p>You have successfully set up Yandex.Kassa gateway. Donations by bank cards, Yandex.Money, and other means now available.</p><p>Test the donations yourself and share your campaign with friends: ask them to make a donation to you.</p>', 'leyka'),
@@ -702,7 +702,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
         }
 
         if($step->section_id === 'yandex' && $step->id === 'init') {
-            $submit_settings['prev'] = false;   // I. e. the Wizard shouln't display the back link
+            $submit_settings['prev'] = false;   // The Wizard shouln't display the back link
         } else if($step->section_id === 'final') {
 
             $submit_settings['next_label'] = esc_html__('Go to the Dashboard', 'leyka');

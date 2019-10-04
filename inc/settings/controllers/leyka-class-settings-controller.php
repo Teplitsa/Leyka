@@ -737,6 +737,9 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             $next_section = $section_from;
         }
 
+//        echo '<pre>'.print_r($next_step, 1).'</pre>';
+//        echo '<pre>'.print_r($next_section->steps, 1).'</pre>';
+
         return $next_section->id.'-'.$next_step->id;
 
     }
