@@ -449,7 +449,11 @@ function leyka_inline_campaign(array $atts = array()) {
     }
 
     if($campaign->template !== 'revo') {
+
+        $atts['template'] = $campaign->template;
+
         return leyka_payment_form_screen($atts);
+
     }
 
     $template_id = 'revo'; // $atts['template']; // ATM this shortcode is only for Revo. WARNING: ATM it should be set explicitly here 'cause of the default "template" attr gets overriden by an empty value given in the function arg.
