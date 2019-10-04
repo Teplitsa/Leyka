@@ -696,9 +696,13 @@ function leyka_inline_campaign(array $atts = array()) {
 }
 
 add_shortcode('leyka_inline_campaign_small', 'leyka_inline_campaign_small');
-function leyka_inline_campaign_small($campaign_id) {
+function leyka_inline_campaign_small($atts) {
 
-    $campaign = leyka_get_validated_campaign($campaign_id);
+    $atts = shortcode_atts(array('id' => false,), $atts);
+
+    $campaign_id = $atts['id'] ? absint($atts['id']) : get_post()->ID;
+    $campaign = leyka_get_validated_campaign($atts['id']);
+
     if( !$campaign ) {
         return is_super_admin() ? leyka_get_wrong_campaign_message($campaign) : '';
     } else if($campaign->is_finished) {

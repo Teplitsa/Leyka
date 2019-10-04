@@ -1291,6 +1291,7 @@ function leyka_modern_template_displayed() {
 
         if(
             has_shortcode($post->post_content, 'leyka_inline_campaign')
+            || has_shortcode($post->post_content, 'leyka_inline_campaign_small')
             || has_shortcode($post->post_content, 'knd_leyka_inline_campaign')
         ) {
             $modern_template_displayed = true;
