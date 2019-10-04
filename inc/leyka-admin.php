@@ -554,8 +554,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         foreach((array)explode(',', LEYKA_SUPPORT_EMAIL) as $email) {
 
             $email = trim($email);
-            if( !$email || !filter_var($email, FILTER_VALIDATE_EMAIL) )
+            if( !$email || !is_email($email) ) {
                 continue;
+            }
 
             $res &= wp_mail(
                 $email, __('Leyka: new feedback incoming', 'leyka'),
@@ -575,8 +576,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 <strong>ПО веб-сервера:</strong> %s<br>
                 <strong>Браузер пользователя:</strong> %s<br>
 				---------------------------------------------------------------------<br>
-				<pre>%s</pre>
-				",
+				<pre>%s</pre>",
                     $_POST['topic'], $_POST['name'], $_POST['email'], nl2br($_POST['text']),
                     home_url(), get_bloginfo('name'), $_SERVER['SERVER_ADDR'],
                     get_bloginfo('version'), LEYKA_VERSION, get_bloginfo('admin_email'),
