@@ -65,7 +65,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
         }
 
-        if( !isset($this->_options[$option_id]) ) {
+        if(empty($this->_options[$option_id])) {
             $this->_options[$option_id] = self::$_options_meta[$option_id];
         }
 

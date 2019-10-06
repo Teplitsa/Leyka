@@ -15,7 +15,7 @@ function leyka_save_settings($tab_name) {
                 if($key === 'section') {
 
                     if(isset($option['tabs'])) { // Section with tabs
-                        
+
                         foreach($option['tabs'] as $option_tab_name => $tab) {
                             foreach($tab['sections'] as $tab_section) {
                                 foreach($tab_section['options'] as $tab_section_option) {
@@ -28,6 +28,7 @@ function leyka_save_settings($tab_name) {
                                     }
                                     
                                     $options_names[] = $tab_section_option;
+
                                 }
                             }
                         }
@@ -36,10 +37,12 @@ function leyka_save_settings($tab_name) {
                         if($submitted_options_section == $option['name']) {
                             $options_names = array_merge($options_names, $option['options']);
                         }
-                    } else {
+                    } else if($tab_name !== 'payment' || empty($_GET['gateway']) || $_GET['gateway'] === $option['name']) {
+                        // For "Payment" settings area - if a gateway settings are being saved, save only this gateway options;
+                        // for all other settings areas - save all the options allocated to the area.
                         $options_names = array_merge($options_names, $option['options']);
                     }
-                    
+
                 } else {
                     $options_names[] = $option;
                 }

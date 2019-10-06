@@ -2,7 +2,7 @@
 
 <div class="main-area-top">
     <a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=payment');?>" class="settings-return-link">
-        <?php esc_html_e('Return to the gateways list', 'leyka');?>
+        <?php _e('Return to the gateways list', 'leyka');?>
     </a>
 </div>
 
@@ -10,7 +10,7 @@
 $pm_available = leyka_options()->opt('pm_available');
 
 if( !$gateway ) {?>
-    <p class="error"><?php esc_html_e('Unknown gateway.', 'leyka');?></p>
+    <p class="error"><?php _e('Unknown gateway.', 'leyka');?></p>
 <?php } else { // Gateway settings area ?>
 
 <div class="main-area single-gateway-settings gateway-<?php echo $gateway->id;?>">
@@ -45,7 +45,7 @@ if( !$gateway ) {?>
 
         <div class="gateway-settings">
 
-            <h3><?php esc_html_e('Gateway settings', 'leyka');?></h3>
+            <h3><?php _e('Gateway settings', 'leyka');?></h3>
 
         <?php foreach($gateway->get_options_names() as $option_id) {
 
@@ -79,7 +79,7 @@ if( !$gateway ) {?>
 
         if($gateway->has_wizard) {?>
             <a class="gateway-header-element gateway-wizard-link" href="<?php echo $gateway->wizard_url;?>" title="<?php esc_attr_e('Open the gateway setup wizard', 'leyka');?>">
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-wizard.svg" alt=""><?php esc_html_e('Step-by-step setup', 'leyka');?>
+                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-wizard.svg" alt=""><?php _e('Step-by-step setup', 'leyka');?>
             </a>
         <?php }?>
 
@@ -87,7 +87,7 @@ if( !$gateway ) {?>
 
         <div class="gateway-pm-list">
 
-            <h3><?php esc_html_e('Payment methods', 'leyka');?></h3>
+            <h3><?php _e('Payment methods', 'leyka');?></h3>
 
             <?php $pm_list_by_categories = $gateway->get_payment_methods(null, false, true);
             $commissions = leyka_options()->opt('commission');
@@ -140,7 +140,7 @@ if( !$gateway ) {?>
 
     <div class="gateway-settings-submit">
 
-        <a href="#" class="gateway-turn-off"><?php esc_html_e('Turn off the gateway', 'leyka');?></a>
+        <a href="#" class="gateway-turn-off"><?php _e('Turn off the gateway', 'leyka');?></a>
 
         <input type="submit" name="<?php echo "leyka_settings_{$_GET['stage']}_submit";?>" value="<?php esc_attr_e('Save settings', 'leyka');?>" class="button-primary">
 
