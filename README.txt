@@ -99,6 +99,7 @@ PHP version required: 5.6+
 * New: "Misc" admin tab renamed to "for developers".
 * Fix: RBK Money gateway fixes & frontend UX changes.
 * Fix: now CloudPayments recurring cancelling works correctly.
+* Fix: now gateways checkboxes options are saved correctly.
 * Fix: muliple shortcodes bugfixes.
 * Fix: the legal face RP placeholder removed from the code.
 * Fix: small Donor logout callback fix.
