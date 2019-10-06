@@ -705,7 +705,7 @@ function leyka_inline_campaign_small($atts) {
     $atts = shortcode_atts(array('id' => false,), $atts);
 
     $campaign_id = $atts['id'] ? absint($atts['id']) : get_post()->ID;
-    $campaign = leyka_get_validated_campaign($atts['id']);
+    $campaign = leyka_get_validated_campaign($campaign_id);
 
     if( !$campaign ) {
         return is_super_admin() ? leyka_get_wrong_campaign_message($campaign) : '';
