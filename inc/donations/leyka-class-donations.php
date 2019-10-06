@@ -523,6 +523,25 @@ class Leyka_Donations_Separated extends Leyka_Donations {
             $limit = ' LIMIT 0,'.$params['results_limit'];
         }
 
+        if( !empty($params['date']) && strtotime($params['date']) ) {
+            $where['date_created'] = $wpdb->prepare(
+                "{$wpdb->prefix}leyka_donations.date_created = %s",
+                date('Y-m-d', strtotime($params['date']))
+            );
+        }
+        if( !empty($params['date_from']) && strtotime($params['date_from']) ) {
+            $where['date_created'] = $wpdb->prepare(
+                "{$wpdb->prefix}leyka_donations.date_created >= %s",
+                date('Y-m-d 00:00:00', strtotime($params['date_from']))
+            );
+        }
+        if( !empty($params['date_to']) && strtotime($params['date_to']) ) {
+            $where['date_created'] = $wpdb->prepare(
+                "{$wpdb->prefix}leyka_donations.date_created <= %s",
+                date('Y-m-d 23:59:59', strtotime($params['date_to']))
+            );
+        }
+
         if(isset($params['year_month']) && (int)$params['year_month'] > 0 && mb_strlen($params['year_month']) >= 6) {
 
             $year = mb_substr($params['year_month'], 0, 4);
@@ -531,7 +550,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
             try {
 
                 $date = new DateTime("$year-$month-01");
-                $where['date_ctreated'] = $wpdb->prepare(
+                $where['date_created'] = $wpdb->prepare(
                     "({$wpdb->prefix}leyka_donations.date_created >= %s AND {$wpdb->prefix}leyka_donations.date_created <= %s)",
                     $date->format('Y-m-01'), $date->format('Y-m-t')
                 );
@@ -562,6 +581,10 @@ class Leyka_Donations_Separated extends Leyka_Donations {
                     $where['pm_id'] = $wpdb->prepare("{$wpdb->prefix}leyka_donations.pm_id = %s", $params['gateway_pm']);
                 }
 
+            } else if(stripos($params['gateway_pm'], '-') !== false) { // PM full ID given
+                $params['pm_full_id'] = $params['gateway_pm'];
+            } else {
+                $params['gateway_id'] = $params['gateway_pm'];
             }
 
         }
@@ -719,7 +742,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
     }
 
     protected function _is_orderable_by($param_name) {
-        return in_array(mb_strtolower($param_name), array('id', 'campaign_id', 'status', 'date', 'date_created', 'gateway_id', 'pm_id', 'amount', 'donor_name', 'donor_email',));
+        return in_array(mb_strtolower($param_name), array('id', 'campaign_id', 'status', 'date', 'date_created', 'gateway_id', 'pm_id', 'amount', 'donor_name', 'donor_email', 'payment_type',));
     }
 
     public function add(array $params = array(), $return_object = false) {
