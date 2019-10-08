@@ -817,3 +817,5 @@ function leyka_inline_campaign_small($atts) {
 //    }
 //
 //}, 100);
+
+require_once LEYKA_PLUGIN_DIR.'inc/leyka-shortcodes-new.php';
