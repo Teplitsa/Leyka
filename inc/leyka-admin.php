@@ -44,6 +44,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         // Metaboxes support where it is needed:
         add_action('leyka_pre_donor_info_actions', array($this, 'full_metaboxes_support'));
+        add_action('leyka_pre_donation_info_actions', array($this, 'full_metaboxes_support'));
 
 		add_action('leyka_post_admin_actions', array($this, 'show_footer'));
 
@@ -82,12 +83,12 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
     }
 
-    // Support the full abilities of the metaboxes on any plugin's page:
+    /** Support the full abilities of the metaboxes */
     public function full_metaboxes_support($current_stage = false) {?>
 
         <form style="display:none;" method="get" action="#">
-            <?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false); ?>
-            <?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false); ?>
+            <?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false);?>
+            <?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false);?>
         </form>
 
     <?php }
@@ -149,16 +150,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             return $portlet_id === 'donations-dynamics' ? $portlet_title.',&nbsp;'.leyka_get_currency_label() : $portlet_title;
         }, 10, 2);
 
-        if(isset($_GET['page']) && $_GET['page'] === 'leyka_donor_info' && !empty($_GET['donor'])) {
-
-            // Add all metaboxes:
-            add_meta_box('leyka_donor_info', __("Donor's data", 'leyka'), array($this, 'donor_data_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
-            add_meta_box('leyka_donor_admin_comments', __('Comments', 'leyka'), array($this, 'donor_comments_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
-            add_meta_box('leyka_donor_tags', __('Tags'), array($this, 'donor_tags_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
-            add_meta_box('leyka_donor_donations', __('Donations', 'leyka'), array($this, 'donor_donations_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
-
-        }
-
     }
 
     public function admin_menu_setup() {
@@ -214,6 +205,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         // Fake pages:
         add_submenu_page(NULL, 'Leyka Wizard', 'Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', array($this, 'settings_new_screen'));
+
+        add_submenu_page(NULL, 'Donation info', 'Donation info', 'leyka_manage_donations', 'leyka_donation_info', array($this, 'donation_info_screen'));
 
         add_submenu_page(NULL, "Donor's info", "Donor's info", 'leyka_manage_options', 'leyka_donor_info', array($this, 'donor_info_screen'));
         // Fake pages - END
@@ -307,77 +300,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
     <?php
     }
 
-    /**
-     * Display Donor related fields on the User profile admin page.
-     *
-     * @param $donor_user WP_User
-     */
-    public function show_user_profile_donor_fields(WP_User $donor_user) {
-
-        if( !current_user_can('administrator') || !leyka_options()->opt('donor_management_available') ) {
-            return;
-        }?>
-
-        <table class="form-table">
-            <tr>
-                <th>
-                    <label for="leyka-donors-tags-field"><?php _e('Donor tags', 'leyka');?></label>
-                </th>
-                <td>
-                    <?php $all_donors_tags = get_terms(array(
-                        'taxonomy' => Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
-                        'hide_empty' => false,
-                    ));
-
-                    $donor_user_tags = wp_get_object_terms(
-                        $donor_user->ID,
-                        Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
-                        array('fields' => 'ids')
-                    );?>
-
-                    <select id="leyka-donors-tags-field" multiple="multiple" name="leyka_donor_tags[]">
-                    <?php foreach($all_donors_tags as $donor_tag) {?>
-                        <option value="<?php echo esc_attr($donor_tag->term_id);?>" <?php echo in_array($donor_tag->term_id, $donor_user_tags) ? 'selected="selected"' : '';?>>
-                            <?php echo esc_html($donor_tag->name);?>
-                        </option>
-                    <?php }?>
-                    </select>
-                </td>
-            </tr>
-        </table>
-        <?php
-
-    }
-
-    /**
-     * Handle Donor related fields for the User profile admin page.
-     *
-     * @param $donor_user_id integer
-     * @return boolean True if fields values are saved, false otherwise.
-     */
-    public function save_user_profile_donor_fields($donor_user_id) {
-
-        if( !current_user_can('administrator') ) {
-            return false;
-        }
-
-        array_walk($_POST['leyka_donor_tags'], function( &$value ){
-            $value = (int)$value;
-        });
-
-        return !is_wp_error(wp_set_object_terms(
-            $donor_user_id,
-            $_POST['leyka_donor_tags'],
-            Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME
-        ));
-
-    }
-
 	public function is_separate_forms_stage($stage) {
 		return in_array($stage, array('email', 'beneficiary', 'technical', 'view', 'additional'));
 	}
 
-	// (Separate stored) Donations list methods:
+	// (Separate stored) Donations related methods:
     public function donations_list_screen_options() {
 
         add_screen_option('per_page', array(
@@ -409,12 +336,28 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         $this->_show_admin_template('donations-list-page');
 
         do_action('leyka_post_donations_list_actions');
-//        do_action('leyka_post_admin_actions'); // It's a "default markup" page, so we don't need this hook
 
     }
-    // Donations list methods - END
 
-    // Donors list methods:
+    public function donation_info_screen() {
+
+        do_action('leyka_pre_donation_info_actions'); // Add collapsible to metaboxes
+
+        // Add all metaboxes:
+        add_meta_box('leyka_donation_data', __('Donation data', 'leyka'), array('Leyka_Donation_Management', 'donation_data_metabox'), 'dashboard_page_leyka_donation_info', 'normal', 'high');
+        add_meta_box('leyka_donation_status', __('Donation status', 'leyka'), array('Leyka_Donation_Management', 'donation_status_metabox'), 'dashboard_page_leyka_donation_info', 'side', 'high');
+        add_meta_box('leyka_donation_emails_status', __('Emails status', 'leyka'), array('Leyka_Donation_Management', 'emails_status_metabox'), 'dashboard_page_leyka_donation_info', 'normal', 'high');
+        add_meta_box('leyka_donation_gateway_response', __('Gateway responses text', 'leyka'), array('Leyka_Donation_Management', 'gateway_response_metabox'), 'dashboard_page_leyka_donation_info', 'normal', 'low');
+
+        $this->_show_admin_template('donation-info-page');
+
+        do_action('leyka_post_donation_info_actions');
+        do_action('leyka_post_admin_actions');
+
+    }
+    // Donations related methods - END
+
+    // Donors related methods:
     public function donors_list_screen_options() {
 
         add_screen_option('per_page', array(
@@ -442,7 +385,92 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         do_action('leyka_post_admin_actions');
 
     }
-    // Donors list methods - END
+
+    public function donor_info_screen() {
+
+        do_action('leyka_pre_donor_info_actions'); // Add collapsible to metaboxes
+
+        // Add Donor metaboxes:
+        add_meta_box('leyka_donor_info', __("Donor's data", 'leyka'), array($this, 'donor_data_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
+        add_meta_box('leyka_donor_admin_comments', __('Comments', 'leyka'), array($this, 'donor_comments_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
+        add_meta_box('leyka_donor_tags', __('Tags'), array($this, 'donor_tags_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
+        add_meta_box('leyka_donor_donations', __('Donations', 'leyka'), array($this, 'donor_donations_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
+
+        $this->_show_admin_template('donor-info-page');
+
+        do_action('leyka_post_donor_info_actions');
+        do_action('leyka_post_admin_actions');
+
+    }
+
+    /**
+     * Display Donor related fields on the User profile admin page.
+     *
+     * @param $donor_user WP_User
+     */
+    public function show_user_profile_donor_fields(WP_User $donor_user) {
+
+        if( !current_user_can('administrator') || !leyka_options()->opt('donor_management_available') ) {
+            return;
+        }?>
+
+    <table class="form-table">
+        <tr>
+            <th>
+                <label for="leyka-donors-tags-field"><?php _e('Donor tags', 'leyka');?></label>
+            </th>
+            <td>
+                <?php $all_donors_tags = get_terms(array(
+                    'taxonomy' => Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
+                    'hide_empty' => false,
+                ));
+
+                $donor_user_tags = wp_get_object_terms(
+                    $donor_user->ID,
+                    Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
+                    array('fields' => 'ids')
+                );?>
+
+                <select id="leyka-donors-tags-field" multiple="multiple" name="leyka_donor_tags[]">
+                    <?php foreach($all_donors_tags as $donor_tag) {?>
+                        <option value="<?php echo esc_attr($donor_tag->term_id);?>" <?php echo in_array($donor_tag->term_id, $donor_user_tags) ? 'selected="selected"' : '';?>>
+                            <?php echo esc_html($donor_tag->name);?>
+                        </option>
+                    <?php }?>
+                </select>
+            </td>
+        </tr>
+    </table>
+        <?php
+
+    }
+
+    /**
+     * Handle Donor related fields for the User profile admin page.
+     *
+     * @param $donor_user_id integer
+     * @return boolean True if fields values are saved, false otherwise.
+     */
+    public function save_user_profile_donor_fields($donor_user_id) {
+
+        if( !current_user_can('administrator') ) {
+            return false;
+        }
+
+        $_POST['leyka_donor_tags'] = empty($_POST['leyka_donor_tags']) ? array() : $_POST['leyka_donor_tags'];
+
+        array_walk($_POST['leyka_donor_tags'], function( &$value ){
+            $value = (int)$value;
+        });
+
+        return !is_wp_error(wp_set_object_terms(
+            $donor_user_id,
+            $_POST['leyka_donor_tags'],
+            Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME
+        ));
+
+    }
+    // Donors related methods - END
 
 	public function settings_screen() {
 
@@ -536,23 +564,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		return $out;
 
 	}
-
-	public function donor_info_screen() {
-
-        do_action('leyka_pre_donor_info_actions'); // Add collapsible to metaboxes
-
-//        // Add all metaboxes:
-//        add_meta_box('leyka_donor_info', __("Donor's data", 'leyka'), array($this, 'donor_data_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
-//        add_meta_box('leyka_donor_admin_comments', __('Comments', 'leyka'), array($this, 'donor_comments_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
-//        add_meta_box('leyka_donor_tags', __('Tags'), array($this, 'donor_tags_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
-//        add_meta_box('leyka_donor_donations', __('Donations', 'leyka'), array($this, 'donor_donations_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
-
-	    $this->_show_admin_template('donor-info-page');
-
-        do_action('leyka_post_donor_info_actions');
-        do_action('leyka_post_admin_actions');
-
-    }
 
     public function donor_data_metabox() {
         $this->_show_admin_template('metabox-donor-data');
@@ -709,7 +720,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	    }
 
         // WP admin metaboxes support:
-        if($current_screen->id === 'dashboard_page_leyka_donor_info') {
+        if(in_array($current_screen->id, array('dashboard_page_leyka_donation_info', 'dashboard_page_leyka_donor_info'))) {
 
             $dependencies[] = 'postbox';
             $dependencies[] = 'jquery-ui-accordion';

@@ -1,5 +1,7 @@
 /**
  * Admin JS - Donation adding/editing editing pages
+ *
+ * @todo Remove the script when moved to Post/Sep-donations. The script content is in the /src/js/admin/donation-add-edit.js
  **/
 
 jQuery(document).ready(function($){

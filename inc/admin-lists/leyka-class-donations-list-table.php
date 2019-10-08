@@ -189,23 +189,13 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
     public function column_campaign($donation) { /** @var $donation Leyka_Donation_Base */
 
-        $donation_edit_page = admin_url('?page=leyka_donations&donation_id='.$donation->id);
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-//        if(isset($_GET['tst'])) {
-//        }
-
-        $column_content = '<div class="donation-campaign"><a href="'.$donation_edit_page.'">'.$campaign->title.'</a></div>'
+        $column_content = '<div class="donation-campaign"><a href="'.Leyka_Donation_Management::get_donation_edit_link($donation).'">'.$campaign->title.'</a></div>'
             .'<div class="donation-email">'.$donation->donor_email.'</div>'
             .$this->row_actions(array(
-//                'donor_page' => '<a href="'.$donation_edit_page.'">'.__('Edit').'</a>', /** @todo Until Donation edit page is ready */
-                'delete' => sprintf(
-                    '<a href="?page=%s&action=%s&donation=%s&_wpnonce=%s">'.__('Delete', 'leyka').'</a>',
-                    esc_attr($_REQUEST['page']),
-                    'delete',
-                    $donation->id,
-                    wp_create_nonce('leyka_delete_donation')
-                ),
+                'donor_page' => '<a href="'.Leyka_Donation_Management::get_donation_edit_link($donation).'">'.__('Edit').'</a>',
+                'delete' => '<a href="'.Leyka_Donation_Management::get_donation_delete_link($donation).'">'.__('Delete').'</a>',
             ));
 
         return apply_filters('leyka_admin_donation_campaign_column_content', $column_content, $donation);
@@ -331,7 +321,9 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         <label for="payment-type-select"></label>
         <select id="payment-type-select" name="payment_type">
-            <option value="" <?php echo empty($_GET['payment_type']) ? 'selected="selected"' : '';?>><?php _e('Select a payment type', 'leyka');?></option>
+            <option value="" <?php echo empty($_GET['payment_type']) ? 'selected="selected"' : '';?>>
+                <?php _e('Select a payment type', 'leyka');?>
+            </option>
 
             <?php foreach(leyka_get_payment_types_data() as $payment_type => $label) {?>
                 <option value="<?php echo $payment_type;?>" <?php echo !empty($_GET['payment_type']) && $_GET['payment_type'] == $payment_type ? 'selected="selected"' : '';?>><?php echo $label;?></option>
@@ -340,7 +332,10 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         <label for="gateway-pm-select"></label>
         <select id="gateway-pm-select" name="gateway_pm">
-            <option value="" <?php echo empty($_GET['gateway_pm']) ? '' : 'selected="selected"';?>><?php _e('Select a gateway or a payment method', 'leyka');?></option>
+
+            <option value="" <?php echo empty($_GET['gateway_pm']) ? '' : 'selected="selected"';?>>
+                <?php _e('Select a gateway or a payment method', 'leyka');?>
+            </option>
 
             <?php $gw_pm_list = array();
             foreach(leyka_get_gateways() as $gateway) {
@@ -378,15 +373,6 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         <label for="campaign-select"></label>
         <input id="campaign-select" type="text" data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>" placeholder="<?php _e('Select a campaign', 'leyka');?>" value="<?php echo $campaign_title;?>">
         <input id="campaign-id" type="hidden" name="campaign" value="<?php echo !empty($_GET['campaign']) ? (int)$_GET['campaign'] : '';?>">
-
-        <?php /*?>
-        <label for="campaign-type-select"></label>
-        <select id="campaign-type-select" name="campaign_type">
-            <option value="" <?php echo empty($_GET['campaign_type']) ? '' : 'selected="selected"';?>><?php _e('Select campaign type', 'leyka');?></option>
-            <option value="temporary"><?php _e('Temporary', 'leyka');?></option>
-            <option value="persistent"><?php _e('Persistent', 'leyka');?></option>
-        </select>
-        <?php */?>
 
         <label for="donor-subscribed-select"></label>
         <select id="donor-subscribed-select" name="donor_subscribed">

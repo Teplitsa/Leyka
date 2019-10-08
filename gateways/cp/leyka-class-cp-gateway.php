@@ -467,7 +467,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         if($donation) { // Edit donation page displayed
 
-            $donation = leyka_get_validated_donation($donation);
+            $donation = Leyka_Donations::get_instance()->get_donation($donation);
 
             if($donation->type !== 'rebill') {
                 return;
@@ -477,10 +477,10 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
             <div class="leyka-ddata-field">
 
-                <?php if($donation->type == 'correction') {?>
-                    <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php _e('Enter CloudPayments subscription ID', 'leyka');?>" value="<?php echo $donation->recurring_id;?>">
+                <?php if($donation->type === 'correction') {?>
+                    <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php _e('Enter CloudPayments subscription ID', 'leyka');?>" value="<?php echo $donation->cp_recurring_id;?>">
                 <?php } else {?>
-                    <span class="fake-input"><?php echo $donation->recurring_id;?></span>
+                    <span class="fake-input"><?php echo $donation->cp_recurring_id;?></span>
                 <?php }?>
             </div>
 

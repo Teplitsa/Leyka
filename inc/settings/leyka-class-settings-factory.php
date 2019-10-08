@@ -3,6 +3,7 @@
  * Leyka settings controller - the root class.
  **/
 
+/** @todo Rename to "Leyka_Settings" after finishing the works to move all settings to the new format. */
 class Leyka_Settings_Factory extends Leyka_Singleton { // Each descendant is a concrete wizard
 
     protected static $_instance = null;
