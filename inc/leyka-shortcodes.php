@@ -259,7 +259,7 @@ function leyka_donors_list_screen($atts) {
 
     $atts = shortcode_atts(array(
         'id'           => 'all', // Could be also 0 ("obtain from context") or real campaign ID
-        'num'          => leyka_get_donors_list_per_page(),
+        'num'          => leyka_get_donations_list_per_page(),
         'show_purpose' => 1,
         'show_name'    => 1,
         'show_date'    => 1,
@@ -273,14 +273,14 @@ function leyka_donors_list_screen($atts) {
 
 }
 
-function leyka_get_donors_list_per_page() {
-    return apply_filters('leyka_donors_list_per_page', 25);
+function leyka_get_donations_list_per_page() {
+    return apply_filters('leyka_donations_list_per_page', 10);
 }
 
 function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
 
     $args = wp_parse_args($args, array(
-        'num' => leyka_get_donors_list_per_page(),
+        'num' => leyka_get_donations_list_per_page(),
         'show_purpose' => 1,
         'show_name' => 1,
         'show_date' => 1,
