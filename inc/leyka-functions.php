@@ -1847,6 +1847,16 @@ if( !function_exists('leyka_get_delta_percent') ) {
     }
 }
 
+if( !function_exists('leyka_amount_format') ) {
+    function leyka_amount_format($amount) {
+
+        // Display amount decimal part only if there is one:
+        $amount = round((float)$amount, 2);
+        return (abs($amount) - abs((int)$amount) > 0) ? number_format_i18n($amount, 2) : number_format_i18n($amount);
+
+    }
+}
+
 abstract class Leyka_Singleton {
 
     protected static $_instance = null;

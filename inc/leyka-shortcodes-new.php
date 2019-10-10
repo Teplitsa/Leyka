@@ -206,14 +206,14 @@ function leyka_shortcode_donations_list($atts) {
     }
 
     $table_columns = array();
-    if($atts['show_name']) {
-        $table_columns['donation_donor_name'] = _x('Name', "Donation donor's name, in one word", 'leyka');
-    }
     if($atts['show_date']) {
         $table_columns['donation_date'] = $atts['show_time'] ? __('Date / time', 'leyka') : __('Date', 'leyka');
     }
+    if($atts['show_name']) {
+        $table_columns['donation_donor_name'] = _x('Name', "Donation donor's name, in one word", 'leyka');
+    }
     if($atts['show_type_text']) {
-        $table_columns['donation_type'] = __('Payment type', 'leyka');
+        $table_columns['donation_type'] = __('Type', 'leyka');
     }
     if($atts['show_amount']) {
         $table_columns['donation_amount'] = __('Amount', 'leyka');
@@ -226,11 +226,11 @@ function leyka_shortcode_donations_list($atts) {
         $donation = new Leyka_Donation($donation);
 
         $line = array();
-        if($atts['show_name']) {
-            $line['donation_donor_name'] = $donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka');
-        }
         if($atts['show_date']) {
             $line['donation_date'] = $donation->date_time_label;
+        }
+        if($atts['show_name']) {
+            $line['donation_donor_name'] = $donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka');
         }
         if($atts['show_type_text']) {
             $line['donation_type'] = $donation->type_label;
@@ -244,7 +244,7 @@ function leyka_shortcode_donations_list($atts) {
                     '<span class="amount">'.$donation->amount.' '.$donation->currency_label.'</span>'
                     .' / <span class="amount-total">'.$donation->amount_total.' '.$donation->currency_label.'</span>';
             } else {
-                $line['donation_amount'] = $donation->amount.' '.$donation->currency_label;
+                $line['donation_amount'] = $donation->amount_formatted.' '.$donation->currency_label;
             }
 
             if($atts['show_type_icon']) {
@@ -271,9 +271,9 @@ function leyka_shortcode_donations_list($atts) {
         if($table_columns) {?>
 
             <thead>
-                <tr>
+                <tr class="list-row header-row">
                 <?php foreach($table_columns as $column_id => $column_title) {?>
-                    <th class="list-column column-<?php echo $column_id;?>"><?php echo $column_title;?></th>
+                    <th class="list-cell list-column <?php echo $column_id;?>"><?php echo $column_title;?></th>
                 <?php }?>
                 </tr>
             </thead>
@@ -287,10 +287,10 @@ function leyka_shortcode_donations_list($atts) {
             <tbody>
             <?php foreach($table_lines as $line) {?>
 
-                <tr>
+                <tr class="list-row">
                 <?php foreach($table_columns as $column_id => $column_title) {
                     if(isset($line[$column_id])) {?>
-                    <td class="list-line field-<?php echo $column_id;?>"><?php echo $line[$column_id];?></td>
+                    <td class="list-cell <?php echo $column_id;?>"><?php echo $line[$column_id];?></td>
                     <?php }
                 }?>
                 </tr>
