@@ -2121,6 +2121,9 @@ class Leyka_Donation {
             case 'total_amount':
             case 'amount_total':
                 return empty($this->_donation_meta['amount_total']) ? $this->amount : $this->_donation_meta['amount_total'];
+            case 'sum_total_formatted':
+            case 'amount_total_formatted':
+                return leyka_amount_format($this->amount_total);
 
             case 'main_curr_amount':
             case 'amount_equiv':

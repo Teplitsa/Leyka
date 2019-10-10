@@ -238,11 +238,11 @@ function leyka_shortcode_donations_list($atts) {
         if($atts['show_amount']) {
 
             if($atts['show_total_amount_as'] === 'display-total-only') {
-                $line['donation_amount'] = $donation->amount_total.' '.$donation->currency_label;
+                $line['donation_amount'] = $donation->amount_total_formatted.' '.$donation->currency_label;
             } else if($atts['show_total_amount_as'] === 'display-total' && $donation->amount !== $donation->amount_total) {
                 $line['donation_amount'] = $line['donation_amount'] =
-                    '<span class="amount">'.$donation->amount.' '.$donation->currency_label.'</span>'
-                    .' / <span class="amount-total">'.$donation->amount_total.' '.$donation->currency_label.'</span>';
+                    '<span class="amount">'.$donation->amount_formatted.' '.$donation->currency_label.'</span>'
+                    .' / <span class="amount-total">'.$donation->amount_total_formatted.' '.$donation->currency_label.'</span>';
             } else {
                 $line['donation_amount'] = $donation->amount_formatted.' '.$donation->currency_label;
             }

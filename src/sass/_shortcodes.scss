@@ -49,9 +49,14 @@
             }
 
             &.donation_amount {
+
                 display: flex;
                 align-items: center;
-                text-transform: none;
+
+                &:not(.list-column) {
+                    text-transform: none;
+                }
+
             }
 
             &:last-child {
