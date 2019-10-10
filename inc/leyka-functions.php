@@ -1274,7 +1274,7 @@ function leyka_modern_template_displayed() {
 
     $modern_template_displayed = false;
     $modern_templates = array('revo', 'star');
-    
+
     $post = get_post();
 
     if(get_query_var('leyka-screen')) {
@@ -1293,11 +1293,17 @@ function leyka_modern_template_displayed() {
 
     } else if($post) {
 
-        if(
-            has_shortcode($post->post_content, 'leyka_inline_campaign')
-            || has_shortcode($post->post_content, 'leyka_inline_campaign_small')
-            || has_shortcode($post->post_content, 'knd_leyka_inline_campaign')
-        ) {
+        $content_has_shortcodes = false;
+        foreach(leyka_get_shortcodes() as $shortcode_tag) {
+            if(has_shortcode(get_post()->post_content, $shortcode_tag)) {
+
+                $content_has_shortcodes = true;
+                break;
+
+            }
+        }
+
+        if($content_has_shortcodes) {
             $modern_template_displayed = true;
         } else if(
             has_shortcode($post->post_content, 'leyka_campaign_form')
