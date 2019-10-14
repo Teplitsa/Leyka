@@ -154,7 +154,9 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                 <div class="donor__textfield donor__textfield--name required">
                     <div class="leyka-star-field-frame">
                         <label for="<?php echo $field_id;?>">
-                            <span class="donor__textfield-label leyka_donor_name-label"><?php _e('First and second name', 'leyka');?></span>
+                            <span class="donor__textfield-label leyka_donor_name-label">
+                                <?php echo apply_filters('leyka_star_donor_name_field_label', __('First and second name', 'leyka'), $campaign);?>
+                            </span>
                         </label>
                         <input id="<?php echo $field_id;?>" type="text" name="leyka_donor_name" value="" autocomplete="off">
                     </div>
