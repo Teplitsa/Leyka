@@ -35,7 +35,7 @@
         // All cells:
         .list-cell {
 
-            padding: 16px 0;
+            padding: 16px 8px 16px 0;
 
             border: 0;
 
@@ -60,8 +60,12 @@
             }
 
             &:last-child {
+
+                padding-right: 0;
+
                 text-align: right;
                 justify-content: flex-end;
+
             }
 
         }
@@ -81,13 +85,13 @@
 
         // Columns width:
         .donation_date {
-            flex: 1 0 125px;
+            flex: 1 0 100px;
         }
         .donation_donor_name {
-            flex: 1 0 250px;
+            flex: 1 0 200px;
         }
         .donation_type {
-            flex: 1 0 150px;
+            flex: 1 0 100px;
         }
         .donation_amount {
             flex: 1 0 150px;

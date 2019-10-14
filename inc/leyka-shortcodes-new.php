@@ -168,13 +168,14 @@ function leyka_shortcode_donations_list($atts) {
         'campaign_id' => 'current',
         'recurring' => 0, // True/1 to count only active recurring subscriptions, false/0 otherwise
         'header_text' => apply_filters('leyka_shortcode_donations_list_header', __('Donations history', 'leyka'), $atts),
+        'show_header' => 1,
         'show_name' => 1,
         'show_date' => 1,
         'show_time' => 1,
         'show_campaign' => 0,
         'show_amount' => 1,
         // Possible values: // 0/false/'none' | 'display-total' | 'display-total-only'
-        'show_total_amount_as' => leyka_options()->opt('widgets_total_amount_usage'),
+//        'show_total_amount_as' => leyka_options()->opt('widgets_total_amount_usage'), // Decided to display only original sum
 //        'show_purpose' => 1,
 //        'show_comment' => 1,
         'show_type_text' => 1,
@@ -225,7 +226,8 @@ function leyka_shortcode_donations_list($atts) {
 
         $donation = new Leyka_Donation($donation);
 
-        $line = array();
+        $line = array('donation_id' => $donation->id);
+
         if($atts['show_date']) {
             $line['donation_date'] = $donation->date_time_label;
         }
@@ -237,15 +239,7 @@ function leyka_shortcode_donations_list($atts) {
         }
         if($atts['show_amount']) {
 
-            if($atts['show_total_amount_as'] === 'display-total-only') {
-                $line['donation_amount'] = $donation->amount_total_formatted.' '.$donation->currency_label;
-            } else if($atts['show_total_amount_as'] === 'display-total' && $donation->amount !== $donation->amount_total) {
-                $line['donation_amount'] = $line['donation_amount'] =
-                    '<span class="amount">'.$donation->amount_formatted.' '.$donation->currency_label.'</span>'
-                    .' / <span class="amount-total">'.$donation->amount_total_formatted.' '.$donation->currency_label.'</span>';
-            } else {
-                $line['donation_amount'] = $donation->amount_formatted.' '.$donation->currency_label;
-            }
+            $line['donation_amount'] = $donation->amount_formatted.' '.$donation->currency_label;
 
             if($atts['show_type_icon']) {
                 $line['donation_amount'] = '<img class="donation-type-icon" src="'.LEYKA_PLUGIN_BASE_URL.'/img/dashboard/icon-donation-type-'.$donation->type.'.svg" alt="">'
@@ -264,7 +258,7 @@ function leyka_shortcode_donations_list($atts) {
 
         <table class="donations-list-table">
 
-        <?php if($atts['header_text']) {?>
+        <?php if($atts['show_header'] && $atts['header_text']) {?>
             <caption><?php echo esc_html($atts['header_text']);?></caption>
         <?php }
 
@@ -273,7 +267,9 @@ function leyka_shortcode_donations_list($atts) {
             <thead>
                 <tr class="list-row header-row">
                 <?php foreach($table_columns as $column_id => $column_title) {?>
-                    <th class="list-cell list-column <?php echo $column_id;?>"><?php echo $column_title;?></th>
+                    <th class="list-cell list-column <?php echo $column_id;?>">
+                        <?php echo apply_filters('leyka_shortcode_donations_list_column_'.$column_id.'_label', $column_title);?>
+                    </th>
                 <?php }?>
                 </tr>
             </thead>
@@ -290,7 +286,9 @@ function leyka_shortcode_donations_list($atts) {
                 <tr class="list-row">
                 <?php foreach($table_columns as $column_id => $column_title) {
                     if(isset($line[$column_id])) {?>
-                    <td class="list-cell <?php echo $column_id;?>"><?php echo $line[$column_id];?></td>
+                    <td class="list-cell <?php echo $column_id;?>">
+                        <?php echo apply_filters('leyka_shortcode_donations_list_cell_'.$column_id, $line[$column_id], $line['donation_id']);?>
+                    </td>
                     <?php }
                 }?>
                 </tr>
@@ -304,5 +302,71 @@ function leyka_shortcode_donations_list($atts) {
     </div>
 
 <?php return apply_filters('leyka_shortcode_donations_list', ob_get_clean(), $atts, $table_columns, $table_lines);
+
+}
+
+add_shortcode('leyka_donations_comments_list', 'leyka_shortcode_donations_comments_list');
+function leyka_shortcode_donations_comments_list($atts) {
+
+    $atts = shortcode_atts(array(
+        // Possible values: 'all'/0/false to count funded donations for all campaigns,
+        // 'current' for current campaign,
+        // int for campaign with ID given:
+        'campaign_id' => 'current',
+        'header_text' => apply_filters('leyka_shortcode_donations_list_header', __("Donors' messages", 'leyka'), $atts),
+        'show_header' => 1,
+//        'show_name' => 1,
+//        'show_date' => 1,
+//        'show_time' => 1,
+//        'show_campaign' => 0,
+        // Possible values: // 0/false/'none' | 'display-total' | 'display-total-only'
+//        'show_type_text' => 1,
+//        'show_type_icon' => 1,
+        'length' => isset($atts['num']) ? absint($atts['num']) : leyka_get_donations_list_per_page(),
+        'classes' => '', // HTML classes for the shortcode wrapper
+    ), $atts);
+
+    $donations_params = array(
+        'post_type' => Leyka_Donation_Management::$post_type,
+        'post_status' => 'funded',
+        'posts_per_page' => absint($atts['length']),
+        'meta_query' => array(array('key' => 'leyka_donor_comment', 'compare' => 'EXISTS',)),
+    );
+
+    if($atts['campaign_id']) {
+
+        $atts['campaign_id'] = $atts['campaign_id'] === 'current' ?
+            (get_post() && get_post()->post_type === Leyka_Campaign_Management::$post_type ? get_the_ID() : false) :
+            ($atts['campaign_id'] === 'all' ? false : absint($atts['campaign_id']));
+
+        if($atts['campaign_id']) {
+            $donations_params['meta_query'][] = array('key' => 'leyka_campaign_id', 'value' => absint($atts['campaign_id']),);
+        }
+
+    }
+
+    $out = '';
+    $donations = get_posts($donations_params);
+    if( !$donations ) {
+        return '';
+    }
+
+    ob_start();?>
+
+    <div class="leyka-shortcode donations-comments-list '<?php echo $atts['classes'] ? esc_attr($atts['classes']) : '';?>">
+
+    <?php foreach($donations as $donation) {?>
+
+        <div class="comments-list-item">
+
+
+
+        </div>
+
+    <?php }?>
+
+    </div>
+
+    <?php return apply_filters('leyka_shortcode_donations_comments_list', ob_get_clean(), $atts, $donations);
 
 }

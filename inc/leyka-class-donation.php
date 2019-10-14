@@ -1908,7 +1908,7 @@ class Leyka_Donation {
 
 	public function __construct($donation) {
 
-        if((is_int($donation) || is_string($donation)) && absint($donation > 0)) {
+        if((is_int($donation) || is_string($donation)) && absint($donation)) {
 
             $donation = (int)$donation;
             $this->_post_object = get_post($donation);
