@@ -1463,20 +1463,15 @@ if( !function_exists('leyka_get_client_ip') ) {
  * @param $limit int|false False to get all donations (unlimited number).
  * @return array|false An array of Leyka_Donation objects, or false if wrong campaign ID given.
  */
-function leyka_get_campaign_donations($campaign_id, $limit = false) {
+function leyka_get_campaign_donations($campaign_id = false, $limit = false) {
 
-    $campaign_id = absint($campaign_id);
-    if($campaign_id <= 0) {
-        return false;
-    }
-
+    $campaign_id = $campaign_id ? absint($campaign_id) : false;
     $limit = (int)$limit > 0 ? (int)$limit : false;
 
-    $params = array(
-        'post_type' => Leyka_Donation_Management::$post_type,
-        'post_status' => 'funded',
-        'meta_query' => array(array('key' => 'leyka_campaign_id', 'value' => $campaign_id, 'compare' => '=',),),
-    );
+    $params = array('post_type' => Leyka_Donation_Management::$post_type, 'post_status' => 'funded', 'meta_query' => array(),);
+    if($campaign_id) {
+        $params['meta_query'][] = array('key' => 'leyka_campaign_id', 'value' => $campaign_id, 'compare' => '=',);
+    }
 
     if($limit) {
         $params['posts_per_page'] = $limit;

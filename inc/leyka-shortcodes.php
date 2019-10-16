@@ -401,12 +401,14 @@ function leyka_get_wrong_campaign_message($campaign) {
     return apply_filters('leyka_wrong_campaign_shortcode_message', '<div class="leyka-nopm-error leyka-form-level-error">'.__('Campaign shortcode error: wrong campaign given.', 'leyka').'</div>', $campaign);
 }
 
-function leyka_get_campaign_supporters($campaign_id, $max_names = 5) {
+function leyka_get_campaign_supporters($campaign_id = false, $max_names = 5) {
 
-    $donations = leyka_get_campaign_donations($campaign_id);
-    $donations_total = array();
+    $campaign_id = $campaign_id ? absint($campaign_id) : false;
+
+    $donations = array();
     $first_donors_names = array();
-    foreach($donations as $donation) { /** @var $donation Leyka_Donation */
+
+    foreach(leyka_get_campaign_donations($campaign_id) as $donation) { /** @var $donation Leyka_Donation */
 
         if(
             $donation->donor_name &&
@@ -414,17 +416,44 @@ function leyka_get_campaign_supporters($campaign_id, $max_names = 5) {
             !in_array($donation->donor_name, $first_donors_names)
         ) {
 
-            if(count($first_donors_names) < (int)$max_names) {
-                $first_donors_names[] = mb_ucfirst($donation->donor_name);
+            if(count($first_donors_names) < absint($max_names)) {
+                $first_donors_names[] = $donation->donor_name;
             }
 
-            $donations_total[] = $donation;
+            $donations[] = $donation;
 
         }
 
     }
 
-    return array('supporters' => $first_donors_names, 'donations' => $donations_total);
+    return array('supporters' => $first_donors_names, 'donations' => $donations);
+
+}
+
+function leyka_get_campaign_supporters_names($campaign_id = false, $max_names = 5) {
+
+    $campaign_id = $campaign_id ? absint($campaign_id) : false;
+    $max_names = absint($max_names) ? absint($max_names) : false;
+
+    global $wpdb;
+
+    $query_joins = "LEFT JOIN {$wpdb->prefix}posts p ON p.ID = meta.post_id";
+    $query_where = "meta.meta_key = 'leyka_donor_name' AND p.post_status = 'funded'";
+    if($campaign_id) {
+
+        $query_joins .= " LEFT JOIN {$wpdb->prefix}postmeta meta_1 ON p.ID = meta_1.post_id";
+        $query_where .= " AND meta_1.meta_key = 'leyka_campaign_id' AND meta_1.meta_value = $campaign_id";
+
+    }
+
+    $first_donors_names_total = $wpdb->get_var(
+        "SELECT COUNT(DISTINCT meta.meta_value) FROM {$wpdb->prefix}postmeta meta $query_joins WHERE $query_where"
+    );
+    $first_donors_names = $wpdb->get_col(
+        "SELECT DISTINCT meta.meta_value FROM {$wpdb->prefix}postmeta meta $query_joins WHERE $query_where".($max_names ? "LIMIT 0,$max_names" : '')
+    );
+
+    return array('names' => $first_donors_names, 'total' => $first_donors_names_total);
 
 }
 
@@ -555,9 +584,13 @@ function leyka_inline_campaign(array $atts = array()) {
 					<div class="supporter-and-button">
 
                         <div class="inpage-card__note supporters">
-                        <?php if(count($supporters['supporters'])) {?>
+                        <?php if(count($supporters['supporters'])) {
 
-                            <strong><?php _e('Supporters:', 'leyka');?></strong>
+                            array_walk($supporters['supporters'], function(&$value) { // Capitalize donors' names
+                                $value = mb_ucfirst($value);
+                            });?>
+
+                            <strong><?php _e('Supporters', 'leyka');?>:</strong>
 
                             <?php if(count($supporters['donations']) <= count($supporters['supporters'])) { // Only names
 

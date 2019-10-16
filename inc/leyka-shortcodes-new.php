@@ -383,3 +383,43 @@ function leyka_shortcode_donations_comments_list($atts) {
     <?php return apply_filters('leyka_shortcode_donations_comments_list', ob_get_clean(), $atts, $donations);
 
 }
+
+add_shortcode('leyka_supporters_list', 'leyka_shortcode_supporters_list');
+function leyka_shortcode_supporters_list($atts) {
+
+    $atts = shortcode_atts(array(
+        // Possible values: 'all'/0/false to count funded donations for all campaigns,
+        // 'current' for current campaign,
+        // int for campaign with ID given:
+        'campaign_id' => 'current',
+        'header_text' => apply_filters('leyka_shortcode_donors_names_list_header', __('Supporters', 'leyka'), $atts),
+        'show_header' => 1,
+        'expandable' => 1,
+        'length' => 5, // Max names in the list
+        'classes' => '', // HTML classes for the shortcode wrapper
+    ), $atts);
+
+    if($atts['campaign_id']) {
+        $atts['campaign_id'] = $atts['campaign_id'] === 'current' ?
+            (get_post() && get_post()->post_type === Leyka_Campaign_Management::$post_type ? get_the_ID() : false) :
+            ($atts['campaign_id'] === 'all' ? false : absint($atts['campaign_id']));
+    }
+
+    $supporters = leyka_get_campaign_supporters_names($atts['campaign_id'], 3);
+
+    ob_start();?>
+
+    <div class="leyka-shortcode supporters-list <?php echo $atts['classes'] ? esc_attr($atts['classes']) : '';?>">
+
+        <?php if($atts['show_header'] && $atts['header_text']) {?>
+            <div class="title"><?php echo esc_html($atts['header_text']);?></div>
+        <?php }
+
+        echo '<pre>'.print_r($supporters, 1).'</pre>';
+        ?>
+
+    </div>
+
+    <?php return apply_filters('leyka_shortcode_donations_comments_list', ob_get_clean(), $atts, $donations);
+
+}
