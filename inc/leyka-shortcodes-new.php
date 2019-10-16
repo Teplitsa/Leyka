@@ -254,12 +254,12 @@ function leyka_shortcode_donations_list($atts) {
 
     ob_start();?>
 
-    <div class="leyka-shortcode donations-list '<?php echo $atts['classes'] ? esc_attr($atts['classes']) : '';?>">
+    <div class="leyka-shortcode donations-list <?php echo $atts['classes'] ? esc_attr($atts['classes']) : '';?>">
 
         <table class="donations-list-table">
 
         <?php if($atts['show_header'] && $atts['header_text']) {?>
-            <caption><?php echo esc_html($atts['header_text']);?></caption>
+            <caption class="title"><?php echo esc_html($atts['header_text']);?></caption>
         <?php }
 
         if($table_columns) {?>
@@ -313,15 +313,12 @@ function leyka_shortcode_donations_comments_list($atts) {
         // 'current' for current campaign,
         // int for campaign with ID given:
         'campaign_id' => 'current',
-        'header_text' => apply_filters('leyka_shortcode_donations_list_header', __("Donors' messages", 'leyka'), $atts),
+        'header_text' => apply_filters('leyka_shortcode_donations_comments_list_header', __('Comments', 'leyka'), $atts),
         'show_header' => 1,
-//        'show_name' => 1,
-//        'show_date' => 1,
-//        'show_time' => 1,
-//        'show_campaign' => 0,
-        // Possible values: // 0/false/'none' | 'display-total' | 'display-total-only'
-//        'show_type_text' => 1,
-//        'show_type_icon' => 1,
+        'show_name' => 1,
+        'show_date' => 1,
+        'show_time' => 1,
+        'background_color' => 0,
         'length' => isset($atts['num']) ? absint($atts['num']) : leyka_get_donations_list_per_page(),
         'classes' => '', // HTML classes for the shortcode wrapper
     ), $atts);
@@ -345,7 +342,6 @@ function leyka_shortcode_donations_comments_list($atts) {
 
     }
 
-    $out = '';
     $donations = get_posts($donations_params);
     if( !$donations ) {
         return '';
@@ -353,13 +349,30 @@ function leyka_shortcode_donations_comments_list($atts) {
 
     ob_start();?>
 
-    <div class="leyka-shortcode donations-comments-list '<?php echo $atts['classes'] ? esc_attr($atts['classes']) : '';?>">
+    <div class="leyka-shortcode donations-comments-list <?php echo $atts['classes'] ? esc_attr($atts['classes']) : '';?>">
 
-    <?php foreach($donations as $donation) {?>
+        <?php if($atts['show_header'] && $atts['header_text']) {?>
+        <div class="title"><?php echo esc_html($atts['header_text']);?></div>
+        <?php }
 
-        <div class="comments-list-item">
+    foreach($donations as $donation) {
 
+        $donation = new Leyka_Donation($donation);?>
 
+        <div class="comments-list-item" style="<?php echo $atts['background_color'] ? 'background-color:'.esc_attr($atts['background_color']) : '';?>">
+
+            <div class="comment-text"><?php echo $donation->donor_comment;?></div>
+            <div class="comment-footer">
+
+            <?php if($atts['show_name']) {?>
+                <div class="comment-donor-name"><?php echo mb_ucfirst($donation->donor_name);?></div>
+            <?php }
+
+            if($atts['show_date']) {?>
+                <div class="comment-date"><?php echo $atts['show_time'] ? $donation->date_time_label : $donation->date_label;?></div>
+            <?php }?>
+
+            </div>
 
         </div>
 
