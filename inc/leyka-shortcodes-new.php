@@ -420,6 +420,6 @@ function leyka_shortcode_supporters_list($atts) {
 
     </div>
 
-    <?php return apply_filters('leyka_shortcode_donations_comments_list', ob_get_clean(), $atts, $donations);
+    <?php return apply_filters('leyka_shortcode_donations_comments_list', ob_get_clean(), $atts, $supporters);
 
 }
