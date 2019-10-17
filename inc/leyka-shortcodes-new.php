@@ -15,6 +15,7 @@ function leyka_shortcode_amount_collected($atts) {
         'total_funded' => 0, // True/1 to use the "amount_total" field in counting, false/0 to use the "amount" field.
         'recurring' => 0, // True/1 to count only active recurring subscriptions amount, false/0 otherwise
         'classes' => '', // HTML classes for the shortcode wrapper
+        'unstyled' => 0, // True/1 to use Leyka styling for the output, false/0 otherwise
     ), $atts);
 
     $amount_collected = 0.0;
@@ -52,7 +53,7 @@ function leyka_shortcode_amount_collected($atts) {
 
     return apply_filters(
         'leyka_shortcode_amount_collected',
-        '<span class="leyka-shortcode amount-collected '.($atts['classes'] ? esc_attr($atts['classes']) : '').'">'.$amount_collected.'</span>',
+        '<span class="'.($atts['unstyled'] ? 'leyka-shortcode-custom-styling' : 'leyka-shortcode').' amount-collected '.($atts['classes'] ? esc_attr($atts['classes']) : '').'">'.$amount_collected.'</span>',
         $atts,
         $amount_collected
     );
@@ -70,6 +71,7 @@ function leyka_shortcode_donations_count($atts) {
         'campaign_id' => 'current',
         'recurring' => 0, // True/1 to count only active recurring subscriptions, false/0 otherwise
         'classes' => '', // HTML classes for the shortcode wrapper
+        'unstyled' => 0, // True/1 to use Leyka styling for the output, false/0 otherwise
     ), $atts);
 
     $donation_params = array(
@@ -100,7 +102,7 @@ function leyka_shortcode_donations_count($atts) {
 
     return apply_filters(
         'leyka_shortcode_donations_count',
-        '<span class="leyka-shortcode donations-count '.($atts['classes'] ? esc_attr($atts['classes']) : '').'">'.$query->found_posts.'</span>',
+        '<span class="'.($atts['unstyled'] ? 'leyka-shortcode-custom-styling' : 'leyka-shortcode').' donations-count '.($atts['classes'] ? esc_attr($atts['classes']) : '').'">'.$query->found_posts.'</span>',
         $atts,
         $query->found_posts
     );
@@ -118,6 +120,7 @@ function leyka_shortcode_donors_count($atts) {
         'campaign_id' => 'current',
         'recurring' => 0, // True/1 to count only active recurring subscriptions, false/0 otherwise
         'classes' => '', // HTML classes for the shortcode wrapper
+        'unstyled' => 0, // True/1 to use Leyka styling for the output, false/0 otherwise
     ), $atts);
 
     $donors_params = array(
@@ -151,7 +154,7 @@ function leyka_shortcode_donors_count($atts) {
 
     return apply_filters(
         'leyka_shortcode_donors_count',
-        '<span class="leyka-shortcode donors-count '.($atts['classes'] ? esc_attr($atts['classes']) : '').'">'.$donors_count.'</span>',
+        '<span class="'.($atts['unstyled'] ? 'leyka-shortcode-custom-styling' : 'leyka-shortcode').' donors-count '.($atts['classes'] ? esc_attr($atts['classes']) : '').'">'.$donors_count.'</span>',
         $atts,
         $donors_count
     );
@@ -182,6 +185,7 @@ function leyka_shortcode_donations_list($atts) {
         'show_type_icon' => 1,
         'length' => isset($atts['num']) ? absint($atts['num']) : leyka_get_donations_list_per_page(),
         'classes' => '', // HTML classes for the shortcode wrapper
+        'unstyled' => 0, // True/1 to use Leyka styling for the output, false/0 otherwise
     ), $atts);
 
     $donations_params = array(
@@ -203,7 +207,10 @@ function leyka_shortcode_donations_list($atts) {
 
     }
     if($atts['recurring']) {
+
         $donations_params['post_parent'] = 0;
+        $donations_params['meta_query'][] = array('key' => 'leyka_payment_type', 'value' => 'rebill',);
+
     }
 
     $table_columns = array();
@@ -254,7 +261,7 @@ function leyka_shortcode_donations_list($atts) {
 
     ob_start();?>
 
-    <div class="leyka-shortcode donations-list <?php echo $atts['classes'] ? esc_attr($atts['classes']) : '';?>">
+    <div class="<?php echo !!$atts['unstyled'] ? 'leyka-shortcode-custom-styling' : 'leyka-shortcode';?> donations-list <?php echo $atts['classes'] ? esc_attr($atts['classes']) : '';?>">
 
         <table class="donations-list-table">
 
@@ -321,6 +328,7 @@ function leyka_shortcode_donations_comments_list($atts) {
         'background_color' => 0,
         'length' => isset($atts['num']) ? absint($atts['num']) : leyka_get_donations_list_per_page(),
         'classes' => '', // HTML classes for the shortcode wrapper
+        'unstyled' => 0, // True/1 to use Leyka styling for the output, false/0 otherwise
     ), $atts);
 
     $donations_params = array(
@@ -349,7 +357,7 @@ function leyka_shortcode_donations_comments_list($atts) {
 
     ob_start();?>
 
-    <div class="leyka-shortcode donations-comments-list <?php echo $atts['classes'] ? esc_attr($atts['classes']) : '';?>">
+    <div class="<?php echo !!$atts['unstyled'] ? 'leyka-shortcode-custom-styling' : 'leyka-shortcode';?> donations-comments-list <?php echo $atts['classes'] ? esc_attr($atts['classes']) : '';?>">
 
         <?php if($atts['show_header'] && $atts['header_text']) {?>
         <div class="title"><?php echo esc_html($atts['header_text']);?></div>
@@ -397,6 +405,7 @@ function leyka_shortcode_supporters_list($atts) {
         'expandable' => 1,
         'length' => 5, // Max names in the list
         'classes' => '', // HTML classes for the shortcode wrapper
+        'unstyled' => 0, // True/1 to use Leyka styling for the output, false/0 otherwise
     ), $atts);
 
     if($atts['campaign_id']) {
@@ -404,19 +413,46 @@ function leyka_shortcode_supporters_list($atts) {
             (get_post() && get_post()->post_type === Leyka_Campaign_Management::$post_type ? get_the_ID() : false) :
             ($atts['campaign_id'] === 'all' ? false : absint($atts['campaign_id']));
     }
+    $atts['length'] = absint($atts['length']) ? absint($atts['length']) : 5;
 
-    $supporters = leyka_get_campaign_supporters_names($atts['campaign_id'], 3);
+    $supporters = leyka_get_campaign_supporters_names($atts['campaign_id'], $atts['length']);
+    /**
+     * @var $supporters array
+     * ['names'] - donors' names list (with max length of $atts['length']),
+     * ['total'] - integer, full number of donor's names (i.e. max possible list length)
+     */
 
     ob_start();?>
 
-    <div class="leyka-shortcode supporters-list <?php echo $atts['classes'] ? esc_attr($atts['classes']) : '';?>">
+    <div class="<?php echo !!$atts['unstyled'] ? 'leyka-shortcode-custom-styling' : 'leyka-shortcode';?> supporters-list <?php echo $atts['classes'] ? esc_attr($atts['classes']) : '';?>">
 
-        <?php if($atts['show_header'] && $atts['header_text']) {?>
+    <?php if($atts['show_header'] && $atts['header_text']) {?>
             <div class="title"><?php echo esc_html($atts['header_text']);?></div>
-        <?php }
+    <?php }
 
-        echo '<pre>'.print_r($supporters, 1).'</pre>';
-        ?>
+    array_walk($supporters['names'], function(&$value){
+        $value = mb_ucfirst($value);
+    });
+
+    if(count($supporters['names']) >= $supporters['total']) { // Only names in the list
+        echo count($supporters['names']) === 1 ?
+            $supporters['names'][0] :
+            implode(', ', array_slice($supporters['names'], 0, -1)).' '.__('and', 'leyka').' '.
+            end($supporters['names']);
+    } else { // Names list and the number of the rest of donors
+
+        echo implode(', ', array_slice($supporters['names'], 0, -1)).' ';
+        $supporters_more = sprintf(__('and <span class="leyka-supporters-to-go">%d</span> more', 'leyka'), $supporters['total'] - count($supporters['names']));
+
+        if($atts['expandable']) {?>
+
+        <a href="#" class="leyka-js-supporters-list-more" data-loads-to-go="5"><?php echo $supporters_more;?></a>
+
+        <?php } else {
+            echo $supporters_more;
+        }
+
+    }?>
 
     </div>
 

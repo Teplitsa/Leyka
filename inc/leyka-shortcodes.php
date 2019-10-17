@@ -786,7 +786,7 @@ function leyka_inline_campaign_small($atts) {
                     <?php echo sprintf(__('%d more', 'leyka'), count($supporters['donations']) - count($supporters['supporters']));?>
                 </a>
 
-        <?php }?>
+            <?php }?>
 			</div>
 		<?php }?>
 
