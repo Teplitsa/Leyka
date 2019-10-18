@@ -422,7 +422,6 @@ function leyka_shortcode_supporters_list($atts) {
      * ['names'] - donors' names list (with max length of $atts['length']),
      * ['total'] - integer, full number of donor's names (i.e. max possible list length)
      */
-//    echo '<pre>'.print_r($supporters, 1).'</pre>';
 
     ob_start();?>
 
@@ -438,7 +437,9 @@ function leyka_shortcode_supporters_list($atts) {
 
         <div class="list-content">
 
-    <?php if(count($supporters['names']) >= $supporters['total']) { // Only names in the list
+    <?php if( !$supporters['names'] ) {
+        _e('No donations yet', 'leyka');
+    } else if(count($supporters['names']) >= $supporters['total']) { // Only names in the list
         echo count($supporters['names']) === 1 ?
             $supporters['names'][0] :
             implode(', ', array_slice($supporters['names'], 0, -1)).' '.__('and', 'leyka').' '.end($supporters['names']);
@@ -452,7 +453,7 @@ function leyka_shortcode_supporters_list($atts) {
 
         <span class="supporters-list-more-wrapper">
             <?php _e('and', 'leyka');?>
-            <a href="#" class="leyka-js-supporters-list-more special-element" data-names-per-load="<?php echo $atts['length'];?>" data-loads-remain="5" data-names-remain="<?php echo esc_attr(implode(';', $supporters['names_remain']));?>">
+            <a href="#" class="leyka-js-supporters-list-more special-element" style="<?php echo $atts['color_special'] ? 'color:'.esc_attr($atts['color_special']) : '';?>" data-names-per-load="<?php echo $atts['length'];?>" data-loads-remain="5" data-names-remain="<?php echo esc_attr(implode(';', $supporters['names_remain']));?>">
                 <?php echo $supporters_more;?>
             </a>
         </span>
@@ -468,5 +469,59 @@ function leyka_shortcode_supporters_list($atts) {
     </div>
 
     <?php return apply_filters('leyka_shortcode_donations_comments_list', ob_get_clean(), $atts, $supporters);
+
+}
+
+add_shortcode('leyka_bar', 'leyka_shortcode_campaign_card');
+add_shortcode('leyka_campaign_card_new', 'leyka_shortcode_campaign_card');
+function leyka_shortcode_campaign_card($atts) {
+
+    $atts = shortcode_atts(array(
+        // Possible values: 'current'/0/false for current campaign,
+        // int for campaign with ID given:
+        'campaign_id' => 'current',
+        'recurring' => 0,
+
+        'show_title' => 1,
+        'show_image' => isset($atts['show_thumb']) ? !!$atts['show_thumb'] : 1,
+        'show_progressbar' => isset($atts['show_scale']) ? !!$atts['show_scale'] : 1,
+        'show_button' => 1,
+        'button_text' => leyka_get_scale_button_label(),
+        'show_if_finished' => isset($atts['show_finished']) ? !!$atts['show_finished'] : 1,
+
+        'color_background' => false, // Card background color
+        'color_button' => false, // Submit background color
+        'color_fulfilled' => false, // Progressbar fulfilled part color
+        'color_unfulfilled' => false, // Progressbar unfulfilled part color
+        'classes' => '', // HTML classes for the shortcode wrapper
+        'unstyled' => 0, // True/1 to use Leyka styling for the output, false/0 otherwise
+    ), $atts);
+
+    $atts['campaign_id'] = $atts['campaign_id'] === 'current' || empty($atts['campaign_id']) ?
+        (get_post() && get_post()->post_type === Leyka_Campaign_Management::$post_type ? get_the_ID() : false) :
+        absint($atts['campaign_id']);
+
+    $campaign = new Leyka_Campaign($atts['campaign_id']);
+    if( !$campaign->id || !$campaign->title ) {
+        return apply_filters('leyka_shortcode_campaign_card_no_campaign_found', '', $atts);
+    } else if( !$atts['show_finished'] && $campaign->is_finished ) {
+        return apply_filters('leyka_shortcode_campaign_card_campaign_finished', '', $atts);
+    }
+
+    ob_start();?>
+
+    <div class="<?php echo !!$atts['unstyled'] ? 'leyka-shortcode-custom-styling' : 'leyka-shortcode';?> campaign-card <?php echo $atts['classes'] ? esc_attr($atts['classes']) : '';?>" style="<?php echo $atts['color_background'] ? 'color:'.esc_attr($atts['color_background']) : '';?>">
+
+    <?php if($atts['show_title']) {?>
+        <div class="campaign-title"><?php echo $campaign->title;?></div>
+    <?php }
+
+    if($atts['show_progressbar']) {
+
+    }?>
+
+    </div>
+
+    <?php return apply_filters('leyka_shortcode_campaign_card', ob_get_clean(), $atts, $campaign);
 
 }
