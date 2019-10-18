@@ -450,10 +450,14 @@ function leyka_get_campaign_supporters_names($campaign_id = false, $max_names = 
         "SELECT COUNT(DISTINCT meta.meta_value) FROM {$wpdb->prefix}postmeta meta $query_joins WHERE $query_where"
     );
     $first_donors_names = $wpdb->get_col(
-        "SELECT DISTINCT meta.meta_value FROM {$wpdb->prefix}postmeta meta $query_joins WHERE $query_where".($max_names ? "LIMIT 0,$max_names" : '')
+        "SELECT DISTINCT meta.meta_value FROM {$wpdb->prefix}postmeta meta $query_joins WHERE $query_where ORDER BY p.ID DESC ".($max_names ? 'LIMIT 0,'.(5*$max_names) : '')
     );
 
-    return array('names' => $first_donors_names, 'total' => $first_donors_names_total);
+    return array(
+        'names' => array_slice($first_donors_names, 0, $max_names), // First $max_names of donors' names
+        'names_remain' => array_slice($first_donors_names, $max_names), // The remains of the names, no more than 4*$max_names
+        'total' => $first_donors_names_total,
+    );
 
 }
 

@@ -159,4 +159,24 @@
 
     }
 
+    &.supporters-list .list-content {
+
+        font-size: 16px;
+        font-weight: normal;
+
+        .special-element {
+
+            display: inline-block;
+            padding: 0;
+            border: 0;
+            border-bottom: 1px dashed $leyka-star-color-main;
+
+            color: $leyka-star-color-main;
+            text-decoration: none;
+            line-height: initial;
+
+        }
+
+    }
+
 }

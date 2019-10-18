@@ -404,6 +404,7 @@ function leyka_shortcode_supporters_list($atts) {
         'show_header' => 1,
         'expandable' => 1,
         'length' => 5, // Max names in the list
+        'color_special' => false, // Special elements color
         'classes' => '', // HTML classes for the shortcode wrapper
         'unstyled' => 0, // True/1 to use Leyka styling for the output, false/0 otherwise
     ), $atts);
@@ -421,38 +422,48 @@ function leyka_shortcode_supporters_list($atts) {
      * ['names'] - donors' names list (with max length of $atts['length']),
      * ['total'] - integer, full number of donor's names (i.e. max possible list length)
      */
+//    echo '<pre>'.print_r($supporters, 1).'</pre>';
 
     ob_start();?>
 
     <div class="<?php echo !!$atts['unstyled'] ? 'leyka-shortcode-custom-styling' : 'leyka-shortcode';?> supporters-list <?php echo $atts['classes'] ? esc_attr($atts['classes']) : '';?>">
 
     <?php if($atts['show_header'] && $atts['header_text']) {?>
-            <div class="title"><?php echo esc_html($atts['header_text']);?></div>
+        <div class="title"><?php echo esc_html($atts['header_text']);?></div>
     <?php }
 
     array_walk($supporters['names'], function(&$value){
         $value = mb_ucfirst($value);
-    });
+    });?>
 
-    if(count($supporters['names']) >= $supporters['total']) { // Only names in the list
+        <div class="list-content">
+
+    <?php if(count($supporters['names']) >= $supporters['total']) { // Only names in the list
         echo count($supporters['names']) === 1 ?
             $supporters['names'][0] :
-            implode(', ', array_slice($supporters['names'], 0, -1)).' '.__('and', 'leyka').' '.
-            end($supporters['names']);
-    } else { // Names list and the number of the rest of donors
+            implode(', ', array_slice($supporters['names'], 0, -1)).' '.__('and', 'leyka').' '.end($supporters['names']);
+    } else { // Names list and the number of the rest of donors ?>
 
-        echo implode(', ', array_slice($supporters['names'], 0, -1)).' ';
-        $supporters_more = sprintf(__('and <span class="leyka-supporters-to-go">%d</span> more', 'leyka'), $supporters['total'] - count($supporters['names']));
+        <span class="supporters-names-wrapper"><?php echo implode(', ', $supporters['names']);?></span>
+
+        <?php $supporters_more = sprintf(__('<span class="leyka-names-remain-number">%d</span> more', 'leyka'), $supporters['total'] - count($supporters['names']));
 
         if($atts['expandable']) {?>
 
-        <a href="#" class="leyka-js-supporters-list-more" data-loads-to-go="5"><?php echo $supporters_more;?></a>
+        <span class="supporters-list-more-wrapper">
+            <?php _e('and', 'leyka');?>
+            <a href="#" class="leyka-js-supporters-list-more special-element" data-names-per-load="<?php echo $atts['length'];?>" data-loads-remain="5" data-names-remain="<?php echo esc_attr(implode(';', $supporters['names_remain']));?>">
+                <?php echo $supporters_more;?>
+            </a>
+        </span>
 
         <?php } else {
             echo $supporters_more;
         }
 
     }?>
+
+        </div>
 
     </div>
 
