@@ -79,9 +79,9 @@
         });
         
         $('.leyka-tpl-star-form .flex-amount-item').on('blur', 'input', function(){
-            $(this).parent().removeClass('focus');
+            $(this).closest('.swiper-item').removeClass('focus');
             if(!$.trim($(this).val())) {
-                $(this).parent().addClass('empty');
+                $(this).closest('.swiper-item').addClass('empty');
             }
         });
         

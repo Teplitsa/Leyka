@@ -103,12 +103,19 @@
         .swiper-item {
             
             &.flex-amount-item {
-                padding: 8px $leyka-star-base 0 56px;
-                background-image: none;
-                overflow: hidden;
-                text-transform: none;
-                width: 100%;
-                
+
+                .swiper-item-inner {
+                    padding: 8px $leyka-star-base 0 $leyka-star-base;
+                    background-image: none;
+                    overflow: hidden;
+                    text-transform: none;
+                    display: block;
+                    
+                    @include for(medium-screens) {
+                        padding: 0px;
+                    }
+                }
+
                 @include for(medium-screens) {
                     @include star-control-frame();
                     padding: 8px $leyka-star-base 0 $leyka-star-base;
@@ -165,10 +172,14 @@
                 }
     
                 &.selected {
-                    display: block;
                     // border-color: $leyka-star-color-main-second;
                     border-color: $leyka-star-color-main;
-                    background-color: $leyka-star-color-white;
+                    // background-color: $leyka-star-color-white;
+                    background-color: $leyka-star-color-main-third;
+
+                    @include for(medium-screens) {
+                        display: block;
+                    }
                     
                     &.empty {
                         // border-color: $leyka-star-color-main-second;
@@ -184,9 +195,10 @@
                 }
                 
                 &.focus {
-                    background-color: $leyka-star-color-white;
+                    // background-color: $leyka-star-color-white;
                     // border-color: $leyka-star-color-main-second;
                     border-color: $leyka-star-color-main;
+                    background-color: $leyka-star-color-main-third;
                     
                     label {
                         span.textfield-label {
@@ -212,11 +224,14 @@
 
         .full-list {       
             .swiper-item { 
-
                 &.flex-amount-item {
                     width: max-content;
                     max-width: unset;
                     display: block;
+
+                    .swiper-item-inner {
+                        padding: 0px;
+                    }
 
                     label {
                         //display: none;
@@ -230,18 +245,33 @@
     &.payments-grid {
         .star-swiper {
             .swiper-item {
-                flex-direction: column;
-                justify-content: flex-start;
+
+                .swiper-item-inner {
+                    flex-direction: column;
+                    justify-content: flex-start;
+                    width: calc(100% - 68px);
+                    margin-left: $leyka-star-base;
+                }
                 
                 &.payment-opt {
                     margin: 0px;
                     
                     @include for(medium-screens) {
                         margin: 0px $leyka-star-base 0px 0px;
+
+                        .swiper-item-inner {
+                            width: 100%;
+                            margin-left: 0px;
+                        }
                     }
                     
                     &:not(.disabled):last-of-type {
                         margin-right: 0px;
+
+                        .swiper-item-inner {
+                            margin-left: 0px;
+                            width: calc(100% - 84px);
+                        }
                     }
                 }
                 
@@ -309,6 +339,11 @@
                         margin-bottom: $leyka-star-base;
                         margin-right: 0px;
                         margin-left: $leyka-star-base;
+
+                        .swiper-item-inner {
+                            width: 100%;
+                            margin-left: 0px;
+                        }
                     }
                 }
             }

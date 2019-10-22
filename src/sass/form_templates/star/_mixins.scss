@@ -49,7 +49,10 @@
 }
 
 @mixin star-swiper {
-    @include star-control-frame();
+    height: 56px;
+    width: 100%;
+    border-bottom: none;
+
     position: relative;
     display: block;
     overflow: hidden;
@@ -60,8 +63,9 @@
     }
     
     @include for(medium-screens) {
+        @include star-control-frame();
         border: none;
-        
+
         &.show-right-arrow {
             .arrow-gradient.right {
                 display: block;
@@ -142,15 +146,16 @@
             border: 2px solid $leyka-star-color-swiper-arrow-border;
         }
 
-        height: calc(100% + 4px);
+        // height: calc(100% + 4px);
+        height: 100%;
         display: flex;
         align-items: center;
         background-position: center center;
         background-repeat: no-repeat;
         background-color: $leyka-star-color-white;
         position: absolute;
-        // top: 0px;
-        top: -2px;
+        top: 0px;
+        // top: -2px;
         z-index: 10;
 
         @include for(medium-screens) {
@@ -170,7 +175,8 @@
         &.swipe-left {
             background-image: url(../../img/icon-gallery-nav-arrow-left-002.svg);
             justify-content: flex-end;                
-            left: -2px;
+            // left: -2px;
+            left: 0px;
 
             @include for(medium-screens) {
                 left: 0px;
@@ -180,8 +186,9 @@
         &.swipe-right {
             background-image: url(../../img/icon-gallery-nav-arrow-right-002.svg);
             justify-content: flex-start;
-            right: -2px;
-            
+            // right: -2px;
+            right: 0px;
+
             @include for(medium-screens) {
                 right: 0px;
             }
@@ -215,6 +222,18 @@
         justify-content: center;
         overflow: hidden;
         white-space: nowrap;
+
+        .swiper-item-inner {
+            @include star-control-frame();
+            background-color: transparent;
+            box-sizing: border-box;
+            width: calc(100% - 84px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            white-space: nowrap;
+        }
         
         @include for(medium-screens) {
             display: flex;
@@ -227,6 +246,11 @@
             cursor: pointer;
             margin-right: $leyka-star-base;
             flex-grow: 2;
+
+            .swiper-item-inner {
+                width: 100%;
+                border: none;
+            }
         }
         
         span, input {
@@ -345,6 +369,11 @@
             margin-right: 0px;
             flex-grow: 2;
             margin-bottom: $leyka-star-base;
+
+            .swiper-item-inner {
+                width: 100%;
+                border: none;
+            }
 
             @include for(medium-screens) {
                 width: auto;

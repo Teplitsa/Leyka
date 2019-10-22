@@ -71,15 +71,17 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                     <div class="<?php if($is_swipe_amount_variants){?>swiper-list<?php }else{?>full-list<?php }?>">
 
                         <?php foreach($template_data['amount_variants'] as $i => $amount) {?>
-                            <div class="swiper-item <?php echo $i ? "" : "selected";?>" data-value="<?php echo (int)$amount;?>"><span class="amount"><?php echo (int)$amount;?></span><span class="currency"><?php echo $template_data['currency_label'];?></span></div>
+                            <div class="swiper-item <?php echo $i ? "" : "selected";?>" data-value="<?php echo (int)$amount;?>"><div class="swiper-item-inner"><span class="amount"><?php echo (int)$amount;?></span><span class="currency"><?php echo $template_data['currency_label'];?></span></div></div>
                         <?php }?>
         
                         <?php if($template_data['amount_mode'] != 'fixed') {?>
                             <div class="swiper-item flex-amount-item <?php if(!count($template_data['amount_variants'])):?>selected<?php endif;?>">
+                            	<div class="swiper-item-inner">
                                 <label for="leyka-flex-amount">
                                     <span class="textfield-label"><?php echo $another_amount_title;?>, <span class="currency"><?php echo $template_data['currency_label'];?></span></span>
                                 </label>
                                 <input type="number" title="<?php esc_html_e('Enter your amount', 'leyka');?>" placeholder="<?php esc_html_e('Enter your amount', 'leyka');?>" data-desktop-ph="<?php echo $another_amount_title;?>" data-mobile-ph="<?php esc_html_e('Enter your amount', 'leyka');?>" name="donate_amount_flex" class="donate_amount_flex" value="<?php echo esc_attr($template_data['amount_default']);?>" min="1" max="999999">
+                                </div>
                             </div>
                         <?php }?>
                     </div>
@@ -106,6 +108,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                     <?php foreach($template_data['pm_list'] as $number => $pm) { /** @var $pm Leyka_Payment_Method */?>
             
                         <div class="payment-opt swiper-item <?php echo $number ? "" : "selected";?>">
+                        <div class="swiper-item-inner">
                             <label class="payment-opt__button">
                                 <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>" data-has-recurring="<?php echo $pm->has_recurring_support() ? '1' : '0';?>" data-ajax-without-form-submission="<?php echo $pm->ajax_without_form_submission ? '1' : '0';?>">
                                 <span class="payment-opt__icon">
@@ -115,6 +118,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                                 </span>
                             </label>
                             <span class="payment-opt__label"><?php echo $pm->label;?></span>
+                        </div>
                         </div>
                     <?php }?>
             
