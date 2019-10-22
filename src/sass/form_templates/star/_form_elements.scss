@@ -274,7 +274,8 @@
                 span.payment-opt__label {
                     @include star-text-pm-label();
                     text-transform: none;
-                    color: $leyka-star-color-gray;
+                    // color: $leyka-star-color-gray;
+                    color: $leyka-start-color-gray-notsolight;
                     display: block;
                     margin-top: 5px;
                     z-index: 20;

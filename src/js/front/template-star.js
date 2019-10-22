@@ -291,6 +291,7 @@
         var dif = $list.width() - $swiper.width();
         if(dif <= 0) {
             $list.width($swiper.width());
+            // $list.width($swiper.width() - 68);
             $list.css('left', 0);
             return;
         }

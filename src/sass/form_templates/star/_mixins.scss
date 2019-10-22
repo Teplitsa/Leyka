@@ -119,58 +119,80 @@
             background: linear-gradient(270deg, $leyka-star-color-gradient 30%, rgba(255, 255, 255, 0) 100%);
     
             &.right {
-                right: 46px;
+                // right: 46px;
+                right: 34px;
             }
             
             &.left {
                 transform: matrix(-1, 0, 0, 1, 0, 0);
-                left: 46px;
+                // left: 46px;
+                left: 34px;
             }
         }
     }
     
     .swiper-arrow {
         @include star-clean-a();
-        width: 46px;
-        height: 100%;
+        // width: 46px;
+        border: 2px solid $leyka-star-color-swiper-arrow-border;
+        width: 34px;
+        border-radius: 4px;
+
+        &:active, &:focus, &:hover {
+            border: 2px solid $leyka-star-color-swiper-arrow-border;
+        }
+
+        height: calc(100% + 4px);
         display: flex;
         align-items: center;
         background-position: center center;
         background-repeat: no-repeat;
         background-color: $leyka-star-color-white;
         position: absolute;
-        top: 0px;
+        // top: 0px;
+        top: -2px;
         z-index: 10;
-        
+
         @include for(medium-screens) {
             display: none;
+            height: 100%;
+            top: 0px;
         }
 
-        &:after {
-            content: " ";
-            display: block;
-            border-left: 1px solid $leyka-star-color-gray-superlight;
-            width: 1px;
-            height: 32px;
-        }
+        // &:after {
+        //     content: " ";
+        //     display: block;
+        //     border-left: 1px solid $leyka-star-color-gray-superlight;
+        //     width: 1px;
+        //     height: 32px;
+        // }
         
         &.swipe-left {
-            background-image: url(../../img/icon-gallery-nav-arrow-left-001.svg);
+            background-image: url(../../img/icon-gallery-nav-arrow-left-002.svg);
             justify-content: flex-end;                
-            left: 0px;
+            left: -2px;
+
+            @include for(medium-screens) {
+                left: 0px;
+            }
         }
         
         &.swipe-right {
-            background-image: url(../../img/icon-gallery-nav-arrow-right-001.svg);
+            background-image: url(../../img/icon-gallery-nav-arrow-right-002.svg);
             justify-content: flex-start;
-            right: 0px;
+            right: -2px;
+            
+            @include for(medium-screens) {
+                right: 0px;
+            }
         }
     }
     
     .swiper-list, .full-list {
         display: flex;
         position: absolute;
-        width: calc(100% - 100px);
+        //width: calc(100% - 100px);
+        width: calc(100% - 76px);
         left: 50px;
         overflow: hidden;
         z-index: 8;
