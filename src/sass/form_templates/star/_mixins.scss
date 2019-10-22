@@ -209,11 +209,12 @@
         
         span, input {
             @include star-text-amount();
+            @include star-text-form-amount;
             color: $leyka-star-color-main;
             background-color: transparent;
 
             @include for(medium-screens) {
-                @include star-text-ui-caption();
+                //@include star-text-ui-caption();
                 color: $leyka-star-color-gray;
                 
                 &.amount {

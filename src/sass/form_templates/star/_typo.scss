@@ -71,6 +71,13 @@
 	font-weight: 500;
 }
 
+@mixin star-text-form-oferta() {
+	@include star-text();
+	font-size: 16px;
+	line-height: 20px;
+	font-weight: 500;
+}
+
 @mixin star-text-description() {
 	@include star-text();
 	font-size: 14px;

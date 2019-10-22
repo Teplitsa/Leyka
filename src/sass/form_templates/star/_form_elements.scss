@@ -56,7 +56,8 @@
             .swiper-item {
                 &.selected {
                     background-color: $leyka-star-color-main-third;
-                    border-color: $leyka-star-color-main-second;
+                    // border-color: $leyka-star-color-main-second;
+                    border-color: $leyka-star-color-main;
                     
                     span, input {
                         //color: $leyka-star-color-white;
@@ -67,9 +68,14 @@
 
         .swiper-item {
             &.selected {
+                span {
+                    color: $leyka-star-color-main;
+                }
+
                 @include for(medium-screens) {
                     background-color: $leyka-star-color-main-third;
-                    border-color: $leyka-star-color-main-second;
+                    //border-color: $leyka-star-color-main-second;
+                    border-color: $leyka-star-color-main;
                     
                     span, input {
                         //color: $leyka-star-color-white;
@@ -160,11 +166,13 @@
     
                 &.selected {
                     display: block;
-                    border-color: $leyka-star-color-main-second;
+                    // border-color: $leyka-star-color-main-second;
+                    border-color: $leyka-star-color-main;
                     background-color: $leyka-star-color-white;
                     
                     &.empty {
-                        border-color: $leyka-star-color-main-second;
+                        // border-color: $leyka-star-color-main-second;
+                        border-color: $leyka-star-color-main;
                     }
                     
                     label {
@@ -177,7 +185,8 @@
                 
                 &.focus {
                     background-color: $leyka-star-color-white;
-                    border-color: $leyka-star-color-main-second;
+                    // border-color: $leyka-star-color-main-second;
+                    border-color: $leyka-star-color-main;
                     
                     label {
                         span.textfield-label {
@@ -280,7 +289,8 @@
                 &.selected {
                     @include for(medium-screens) {
                         background-color: $leyka-star-color-main-third;
-                        border-color: $leyka-star-color-main-second;
+                        // border-color: $leyka-star-color-main-second;
+                        border-color: $leyka-star-color-main;
                     }
                 }
                 
@@ -402,7 +412,8 @@
                 //background-image: url(../../img/star-icon-ok.svg);
                 background-image: none;
                 background-color: $leyka-star-color-main-third;
-                border-color: $leyka-star-color-main-second;
+                // border-color: $leyka-star-color-main-second;
+                border-color: $leyka-star-color-main;
                 
                 label {
                     .donor__textfield-label {
@@ -437,7 +448,8 @@
             
             &.focus .leyka-star-field-frame {
                 background-color: $leyka-star-color-white;
-                border-color: $leyka-star-color-main-second;
+                // border-color: $leyka-star-color-main-second;
+                border-color: $leyka-star-color-main;
                 
                 label {
                     span.donor__textfield-label {
@@ -475,6 +487,19 @@
         padding-bottom: 0.5 * $leyka-star-base;
 
 		@include leyka-star-checkbox();
+
+        label {
+            @include star-text-form-oferta;
+
+            a {
+                color: $leyka-star-color-main;
+                text-decoration: none;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
 		
         .leyka-star-field-error-frame {
             min-height: 24px;
