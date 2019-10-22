@@ -1123,6 +1123,37 @@ class Leyka_Campaign {
         return $this->total_funded > 0.0 ? $this->total_funded : 0.0;
     }
 
+    /** @todo Make the result a campaign meta instead of a method & refresh the meta like "total_amount" */
+    public function get_recurring_subscriptions_amount() {
+
+        if( !$this->_id ) {
+            return false;
+        }
+
+        $recurring_subscriptions = get_posts(array(
+            'post_type' => Leyka_Donation_Management::$post_type,
+            'post_status' => 'funded',
+            'meta_query' => array(
+                array('key' => 'leyka_campaign_id', 'value' => $this->_id,),
+                array('key' => 'leyka_payment_type', 'value' => 'rebill',),
+                array('key' => '_rebilling_is_active', 'value' => 0, 'compare' => '!='),
+            ),
+            'post_parent' => 0,
+            'nopaging' => true,
+        ));
+
+        $monthly_incoming_amount = 0.0;
+        foreach($recurring_subscriptions as $subscription) {
+
+            $subscription = new Leyka_Donation($subscription);
+            $monthly_incoming_amount += $subscription->amount;
+
+        }
+
+        return $monthly_incoming_amount;
+
+    }
+
     public function refresh_target_state() {
 
         if( !$this->target ) {

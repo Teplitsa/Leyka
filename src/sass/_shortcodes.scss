@@ -182,9 +182,102 @@
     &.campaign-card {
 
         display: flex;
+        flex-direction: column;
+
+        max-width: 790px !important;
 
         margin: 0;
         padding: 16px;
+
+        border-radius: 10px;
+
+        background-color: $color-background-light1;
+
+        .sub-block {
+
+            margin-bottom: 24px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+        }
+
+        .campaign-thumb {
+
+            height: 230px;
+            border-radius: 6px;;
+
+            background-color: $color-border-tiny;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+
+        }
+
+        .campaign-title {
+            font-size: 24px;
+        }
+
+        .progressbar-unfulfilled {
+
+            height: 8px;
+            padding: 0;
+
+            border: 0;
+            border-radius: 10px;
+
+            background-color: $leyka-star-color-main-second;
+
+            .progressbar-fulfilled {
+
+                height: 8px;
+                padding: 0;
+
+                border: 0;
+                border-radius: 10px;
+
+                background-color: $leyka-star-color-main;
+
+            }
+
+        }
+
+        .bottom-line {
+
+            display: flex;
+            justify-content: space-between;
+
+            .target-info {
+
+                .funded {
+                    font-size: 32px;
+                    color: $leyka-star-color-main;
+                }
+
+                .target {
+                    font-size: 16px;
+                    color: $leyka-start-color-gray-notsolight;
+                }
+
+            }
+
+            .leyka-button-wrapper {
+
+                align-self: center;
+
+                padding: 16px 32px;
+
+                border-radius: 4px;
+                background-color: $leyka-star-color-main;
+
+                text-transform: uppercase;
+                text-decoration: none;
+                color: white;
+
+            }
+
+        }
 
     }
 
