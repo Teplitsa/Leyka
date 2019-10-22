@@ -19,6 +19,7 @@ $leyka-star-base:   16px;
     --leyka-color-gray-dark: #474747;
     --leyka-color-grey-semi-dark: #4656565;
     --leyka-color-gray: #666666;
+    --leyka-color-gray-notsolight: #aaaaaa;
     --leyka-color-gray-superlight: #ededed;
 
     --leyka-color-white: #ffffff;
@@ -55,6 +56,7 @@ $leyka-star-color-gray:             var(--leyka-color-gray); // #666666;
 
 $leyka-star-color-gray-light:       #c0c0c0;
 
+$leyka-start-color-gray-notsolight:     var(--leyka-color-gray-notsolight); // #aaaaaa;
 $leyka-star-color-gray-superlight:  var(--leyka-color-gray-superlight); // #ededed;
 $leyka-star-color-white:            var(--leyka-color-white); // #ffffff;
 $leyka-star-color-gradient:         var(--leyka-color-gradient); // #ffffff;

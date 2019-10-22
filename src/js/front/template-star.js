@@ -176,7 +176,7 @@
         }
         
         // amount swiper setup
-        $('.amount__figure.star-swiper .swiper-item').last().css('margin-right', '0px');
+        $('.amount__figure.star-swiper .swiper-list .swiper-item').last().css('margin-right', '0px');
         
         // pm swiper setup
         var $swiper = $_form.find('.payments-grid .star-swiper');
@@ -186,8 +186,8 @@
             $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)').first();
             $activeItem.find('input[type=radio]').prop('checked', true).change();
         }
-        $swiper.find('.swiper-item:not(.disabled)').css('margin-right', '16px');
-        $swiper.find('.swiper-item:not(.disabled)').last().css('margin-right', '0px');
+        $swiper.find('.swiper-list .swiper-item:not(.disabled)').css('margin-right', '16px');
+        $swiper.find('.swiper-list .swiper-item:not(.disabled)').last().css('margin-right', '0px');
         
         var $list = $swiper.find('.swiper-list');
         $list.css('width', '');

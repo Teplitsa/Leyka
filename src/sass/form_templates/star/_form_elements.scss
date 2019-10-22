@@ -52,6 +52,19 @@
     .star-swiper {
         @include star-swiper();
         
+        .full-list {       
+            .swiper-item {
+                &.selected {
+                    background-color: $leyka-star-color-main-third;
+                    border-color: $leyka-star-color-main-second;
+                    
+                    span, input {
+                        //color: $leyka-star-color-white;
+                    }
+                }
+            }
+        }
+
         .swiper-item {
             &.selected {
                 @include for(medium-screens) {
@@ -187,6 +200,21 @@
                 }
             }
         }
+
+        .full-list {       
+            .swiper-item { 
+
+                &.flex-amount-item {
+                    width: max-content;
+                    max-width: unset;
+                    display: block;
+
+                    label {
+                        //display: none;
+                    }
+                }
+            }
+        }
     }    
     
     // payment methods
@@ -262,6 +290,19 @@
                 
             }
         }
+
+        .star-swiper {
+            &.no-swipe {
+                .swiper-item {
+                    &.payment-opt {
+                        margin-bottom: $leyka-star-base;
+                        margin-right: 0px;
+                        margin-left: $leyka-star-base;
+                    }
+                }
+            }
+        }
+
     }
     
     // donor data
@@ -723,5 +764,52 @@ div[id*="leyka-pf-"].leyka-pf-star {
 .leyka-payment-form.leyka-tpl-star-form .section.section--periodicity {
     &.hidden {
         display: none;
+    }
+}
+
+// description and dividers
+div[id*="leyka-pf-"].leyka-pf-star {
+    .leyka-tpl-star-form {
+        .section.section--description {
+            @include star-text-form-campaign-description;
+            color: $leyka-star-color-tooltip-text;
+            text-align: center;
+            padding-left: $leyka-star-base;
+            padding-right: $leyka-star-base;
+            margin-top: $leyka-star-base * 2;
+
+            @include for(medium-screens) {
+                text-align: left;
+                padding-left: 0px;
+                padding-right: 0px;
+            }
+        }
+
+        .section-title-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            margin-bottom: $leyka-star-base;
+            margin-top: $leyka-star-base * 2;
+
+            .section-title-line {
+                width: 100%;
+                height: 1px;
+                position: absolute;
+                top: 50%;
+                left: 0px;
+                z-index: 1;
+                border-bottom: 1px solid $leyka-star-color-tooltip-bg;
+            }
+
+            .section-title-text {
+                @include star-text-form-section-title;
+                color: $leyka-start-color-gray-notsolight;
+                background-color: $leyka-star-color-white;
+                padding: 0px $leyka-star-base 0px $leyka-star-base;
+                z-index: 5;
+            }
+            
+        }
     }
 }

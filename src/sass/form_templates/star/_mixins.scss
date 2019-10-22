@@ -53,6 +53,11 @@
     position: relative;
     display: block;
     overflow: hidden;
+
+    &.no-swipe {
+        height: auto;
+        border: none;
+    }
     
     @include for(medium-screens) {
         border: none;
@@ -162,7 +167,7 @@
         }
     }
     
-    .swiper-list {
+    .swiper-list, .full-list {
         display: flex;
         position: absolute;
         width: calc(100% - 100px);
@@ -177,7 +182,7 @@
             overflow: auto;
         }
     }
-    
+
     .swiper-item {
         background-color: transparent;
         box-sizing: border-box;
@@ -292,6 +297,44 @@
         
         &.selected {
             display: flex;
+        }
+    }
+
+    // full list
+    .full-list {
+        width: calc(100% + 16px);
+        position: relative;
+        flex-wrap: wrap;
+        margin-bottom: -$leyka-star-base;
+        margin-left: -$leyka-star-base;
+        left: 0px;
+
+        .swiper-item {
+            display: flex;
+            border: 2px solid $leyka-star-color-gray-superlight;
+            border-radius: 4px;
+            width: auto;
+            min-width: max-content;
+            padding-left: 1.5 * $leyka-star-base;
+            padding-right: 1.5 * $leyka-star-base;
+            cursor: pointer;
+            margin-left: $leyka-star-base;
+            margin-right: 0px;
+            flex-grow: 2;
+            margin-bottom: $leyka-star-base;
+
+            @include for(medium-screens) {
+                width: auto;
+            }
+
+            span, input {
+                @include star-text-form-amount;
+                color: $leyka-star-color-gray;
+                
+                &.amount {
+                    width: auto;
+                }
+            }
         }
     }
 }

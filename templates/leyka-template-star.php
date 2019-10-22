@@ -20,6 +20,9 @@ if(count($campaign->donations_types_available) > 1) {
     }
 }
 
+$is_swipe_amount_variants = count($template_data['amount_variants']) + ((int)($template_data['amount_mode'] != 'fixed')) > 8;
+$is_swipe_pm_list = count($template_data['pm_list']) > 3;
+
 $another_amount_title = count($template_data['amount_variants']) > 0 ?
     __('Another amount', 'leyka') : esc_html__('Enter amount', 'leyka');?>
 
@@ -43,8 +46,13 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
             </div>
 
         </div>
+        
+        <div class="section section--description">
+        	<?php esc_html_e('We will be happy with a small but monthly help, this gives us confidence in the future and the ability to plan our activities.', 'leyka');?>
+        </div>
 
         <div class="section section--amount">
+        	<div class="section-title-container"><div class="section-title-line"></div><div class="section-title-text"><?php esc_html_e('Donation amount', 'leyka');?></div></div>
 
             <div class="section__fields amount">
 
@@ -56,11 +64,11 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
             $form_api = new Leyka_Payment_Form();
             echo $form_api->get_hidden_amount_fields();?>
     
-                <div class="amount__figure star-swiper">
+                <div class="amount__figure star-swiper <?php if(!$is_swipe_amount_variants){?>no-swipe<?php }?>">
                     <div class="arrow-gradient left"></div><a class="swiper-arrow swipe-left" href="#"></a>
                     <div class="arrow-gradient right"></div><a class="swiper-arrow swipe-right" href="#"></a>
                     
-                    <div class="swiper-list">
+                    <div class="<?php if($is_swipe_amount_variants){?>swiper-list<?php }else{?>full-list<?php }?>">
 
                         <?php foreach($template_data['amount_variants'] as $i => $amount) {?>
                             <div class="swiper-item <?php echo $i ? "" : "selected";?>" data-value="<?php echo (int)$amount;?>"><span class="amount"><?php echo (int)$amount;?></span><span class="currency"><?php echo $template_data['currency_label'];?></span></div>
@@ -86,12 +94,14 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
         
     
         <div class="section section--cards">
+        	<div class="section-title-container"><div class="section-title-line"></div><div class="section-title-text"><?php esc_html_e('Payment method', 'leyka');?></div></div>
     
             <div class="section__fields payments-grid">
-                <div class="star-swiper">
+                <div class="star-swiper  <?php if(!$is_swipe_pm_list){?>no-swipe<?php }?>">
                     <div class="arrow-gradient left"></div><a class="swiper-arrow swipe-left" href="#"></a>
                     <div class="arrow-gradient right"></div><a class="swiper-arrow swipe-right" href="#"></a>
-                    <div class="swiper-list">
+                    
+                	<div class="<?php if($is_swipe_pm_list){?>swiper-list<?php }else{?>full-list<?php }?>">
     
                     <?php foreach($template_data['pm_list'] as $number => $pm) { /** @var $pm Leyka_Payment_Method */?>
             
@@ -132,6 +142,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
         <!-- donor data -->
         <div class="section section--person">
+        	<div class="section-title-container"><div class="section-title-line"></div><div class="section-title-text"><?php esc_html_e('Your data', 'leyka');?></div></div>
     
             <div class="section__fields donor">
 
