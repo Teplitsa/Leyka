@@ -89,6 +89,14 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.6 =
+* New: a new group of Star-oriented (more design-flexible) shortcodes added.
+* New: amount_formatted property added for Leyka_Donation.
+* New: filters for Revo & Star fields labels added.
+* New: now plugin ver. is added to the forms templates wrappers as data attribute.
+* Fix: on-demand frontend scripts loading fixed.
+* Tweak: now Star templates more correctly display PM list in cases of many active payment methods.
+
 = 3.5 =
 * New: now RBK Money gateway supports recurring donations.
 * New: now old form templates (Revo & earlier) are considered deprecated. They are hidden by default.
