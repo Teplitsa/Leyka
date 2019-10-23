@@ -459,7 +459,7 @@ function leyka_shortcode_supporters_list($atts) {
         </span>
 
         <?php } else {
-            echo $supporters_more;
+            echo __('and', 'leyka').' '.$supporters_more;
         }
 
     }?>
