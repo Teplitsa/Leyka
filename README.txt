@@ -2,7 +2,7 @@
 Contributors: Ahaenor, foralien, denis.cherniatev
 Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
-Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса, яндекс.деньги, миксплат, mixplat, paypal, paymaster, qiwi, киви
+Tags: e-donate, donates, donations, recurring donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, visa, mastercard, yandexmoney, yandex.money, chronopay, sms, яндекс.касса, яндекс.деньги, миксплат, mixplat, paypal, paymaster, qiwi, киви, yandex.kassa, cloudpayments, paypal, mixplat
 Requires at least: 3.6.1
 Tested up to: 5.2.3
 Stable tag: 3.6
