@@ -508,7 +508,7 @@ function leyka_inline_campaign(array $atts = array()) {
 
     ob_start();?>
 
-    <div id="<?php echo leyka_pf_get_form_id($campaign_id);?>" class="leyka-pf leyka-pf-<?php echo $template_id;?> <?php echo leyka_pf_get_form_auto_open_class($campaign_id);?> <?php if($atts['show_preview']):?>show-preview<?php endif?>" data-form-id="<?php echo leyka_pf_get_form_id($campaign->id).'-revo-form';?>">
+    <div id="<?php echo leyka_pf_get_form_id($campaign_id);?>" class="leyka-pf leyka-pf-<?php echo $template_id;?> <?php echo leyka_pf_get_form_auto_open_class($campaign_id);?> <?php if($atts['show_preview']):?>show-preview<?php endif?>" data-form-id="<?php echo leyka_pf_get_form_id($campaign->id).'-revo-form';?>" data-leyka-ver="<?php Leyka_Payment_Form::get_plugin_ver_for_atts();?>">
 
         <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
         <div class="leyka-pf__overlay"></div>

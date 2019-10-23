@@ -9,7 +9,7 @@ $active_pm = apply_filters('leyka_form_pm_order', leyka_get_pm_list(true));
 
 leyka_pf_submission_errors();?>
 
-<div id="leyka-payment-form" class="leyka-tpl-toggles" data-template="toggles">
+<div id="leyka-payment-form" class="leyka-tpl-toggles" data-template="toggles" data-leyka-ver="<?php Leyka_Payment_Form::get_plugin_ver_for_atts();?>">
     <!-- <?php echo __("This donation form is created by Leyka WordPress plugin, created by Teplitsa of Social Technologies. If you are interested in some way, don't hesitate to write to us: support@te-st.ru", 'leyka');?> -->
 <?php $counter = 0;
 
@@ -68,4 +68,4 @@ leyka_pf_submission_errors();?>
 
 leyka_pf_footer();?>
 
-</div><!-- #leyka-payment-form -->
+</div>

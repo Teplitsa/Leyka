@@ -32,7 +32,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 	</symbol>
 </svg>
 
-<div id="leyka-pf-<?php echo $campaign->id;?>" class="leyka-pf leyka-pf-star" data-form-id="leyka-pf-<?php echo $campaign->id;?>-star-form">
+<div id="leyka-pf-<?php echo $campaign->id;?>" class="leyka-pf leyka-pf-star" data-form-id="leyka-pf-<?php echo $campaign->id;?>-star-form" data-leyka-ver="<?php Leyka_Payment_Form::get_plugin_ver_for_atts();?>">
 
 <div class="leyka-payment-form leyka-tpl-star-form" data-template="star">
 
