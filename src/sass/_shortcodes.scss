@@ -1,0 +1,284 @@
+.leyka-shortcode {
+
+    .title {
+
+        font-size: 24px;
+        text-align: left;
+
+        margin-bottom: 16px;
+
+    }
+
+    &.donations-list .donations-list-table {
+
+        display: flex;
+        flex-direction: column;
+
+        border: 0;
+        border-collapse: collapse;
+
+        text-align: left;
+
+        .list-row {
+
+            display: flex;
+            flex-flow: row nowrap;
+
+            border-bottom: 1px solid $color-border-light;
+
+            &:first-child:not(.header-row) {
+                border-top: 3px solid $color-border-light;
+            }
+
+        }
+
+        // All cells:
+        .list-cell {
+
+            padding: 16px 8px 16px 0;
+
+            border: 0;
+
+            font-size: 16px;
+            font-weight: 500;
+            text-transform: capitalize;
+
+            &.donation_date {
+                font-size: 14px;
+                color: lighten($color-text-light, 5.0);
+            }
+
+            &.donation_amount {
+
+                display: flex;
+                align-items: center;
+
+                &:not(.list-column) {
+                    text-transform: none;
+                }
+
+            }
+
+            &:last-child {
+
+                padding-right: 0;
+
+                text-align: right;
+                justify-content: flex-end;
+
+            }
+
+        }
+
+        // Header cells specifics:
+        .list-column {
+
+            padding-top: 0;
+
+            color: lighten($color-text-light, 5.0);
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+
+        }
+
+        // Columns width:
+        .donation_date {
+            flex: 1 0 100px;
+        }
+        .donation_donor_name {
+            flex: 1 0 200px;
+        }
+        .donation_type {
+            flex: 1 0 100px;
+        }
+        .donation_amount {
+            flex: 1 0 150px;
+        }
+
+        @include upto(medium-screens) { // Mobile screens
+
+            thead {
+                display: none;
+            }
+
+            .list-row {
+                display: block;
+            }
+
+            .list-cell {
+
+                display: block;
+                width: auto;
+
+                &:last-child {
+                    text-align: left;
+                    justify-content: flex-start;
+                }
+
+            }
+
+        }
+
+    }
+
+    &.donations-comments-list {
+
+        .comments-list-item {
+
+            border-radius: 10px;
+            background-color: $color-background-light1;
+
+            margin: 0 0 8px 0;
+            padding: 16px;
+
+            display: flex;
+            flex-flow: nowrap column;
+
+            .comment-text {
+
+                font-size: 18px;
+                line-height: 24px;
+
+                margin-bottom: 8px;
+
+            }
+
+            .comment-footer {
+
+                display: flex;
+                justify-content: space-between;
+
+                font-size: 12px;
+                color: $color-text-light3;
+
+            }
+
+        }
+
+    }
+
+    &.supporters-list .list-content {
+
+        font-size: 16px;
+        font-weight: normal;
+
+        .special-element {
+
+            display: inline-block;
+            padding: 0;
+            border: 0;
+            border-bottom: 1px dashed $leyka-star-color-main;
+
+            color: $leyka-star-color-main;
+            text-decoration: none;
+            line-height: initial;
+
+        }
+
+    }
+
+    &.campaign-card {
+
+        display: flex;
+        flex-direction: column;
+
+        max-width: 790px !important;
+
+        margin: 0;
+        padding: 16px;
+
+        border-radius: 10px;
+
+        background-color: $color-background-light1;
+
+        .sub-block {
+
+            margin-bottom: 24px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+        }
+
+        .campaign-thumb {
+
+            height: 230px;
+            border-radius: 6px;;
+
+            background-color: $color-border-tiny;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+
+        }
+
+        .campaign-title {
+            font-size: 24px;
+        }
+
+        .progressbar-unfulfilled {
+
+            height: 8px;
+            padding: 0;
+
+            border: 0;
+            border-radius: 10px;
+
+            background-color: $leyka-star-color-main-second;
+
+            .progressbar-fulfilled {
+
+                height: 8px;
+                padding: 0;
+
+                border: 0;
+                border-radius: 10px;
+
+                background-color: $leyka-star-color-main;
+
+            }
+
+        }
+
+        .bottom-line {
+
+            display: flex;
+            justify-content: space-between;
+
+            .target-info {
+
+                .funded {
+                    font-size: 32px;
+                    color: $leyka-star-color-main;
+                }
+
+                .target {
+                    font-size: 16px;
+                    color: $leyka-start-color-gray-notsolight;
+                }
+
+            }
+
+            .leyka-button-wrapper {
+
+                align-self: center;
+
+                padding: 16px 32px;
+
+                border-radius: 4px;
+                background-color: $leyka-star-color-main;
+
+                text-transform: uppercase;
+                text-decoration: none;
+                color: white;
+
+            }
+
+        }
+
+    }
+
+}

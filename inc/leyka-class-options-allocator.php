@@ -269,6 +269,10 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                 'options' => array('donation_sum_field_type',),
                             ),
                             array(
+                                'title' => __('Explanation of benefits of egular donations', 'leyka'),
+                                'options' => array('recurring_donation_benefits_text',),
+                            ),
+                            array(
                                 'title' => __('Label of the button to submit a donation form', 'leyka'),
                                 'options' => array('donation_submit_text',),
                             ),

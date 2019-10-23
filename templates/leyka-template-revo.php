@@ -156,7 +156,9 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
                 <?php $field_id = 'leyka-'.wp_rand();?>
                 <div class="donor__textfield donor__textfield--name ">
                     <label for="<?php echo $field_id;?>">
-                        <span class="donor__textfield-label leyka_donor_name-label"><?php _e('Your name', 'leyka');?></span>
+                        <span class="donor__textfield-label leyka_donor_name-label">
+                            <?php echo apply_filters('leyka_revo_donor_name_field_label', __('Your name', 'leyka'), $campaign);?>
+                        </span>
                         <span class="donor__textfield-error leyka_donor_name-error">
                             <?php _e('Enter your name', 'leyka');?>
                         </span>

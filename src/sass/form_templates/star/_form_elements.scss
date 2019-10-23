@@ -52,11 +52,30 @@
     .star-swiper {
         @include star-swiper();
         
+        .full-list {       
+            .swiper-item {
+                &.selected {
+                    background-color: $leyka-star-color-main-third;
+                    // border-color: $leyka-star-color-main-second;
+                    border-color: $leyka-star-color-main;
+                    
+                    span, input {
+                        //color: $leyka-star-color-white;
+                    }
+                }
+            }
+        }
+
         .swiper-item {
             &.selected {
+                span {
+                    color: $leyka-star-color-main;
+                }
+
                 @include for(medium-screens) {
                     background-color: $leyka-star-color-main-third;
-                    border-color: $leyka-star-color-main-second;
+                    //border-color: $leyka-star-color-main-second;
+                    border-color: $leyka-star-color-main;
                     
                     span, input {
                         //color: $leyka-star-color-white;
@@ -84,18 +103,26 @@
         .swiper-item {
             
             &.flex-amount-item {
-                padding: 8px $leyka-star-base 0 56px;
-                background-image: none;
-                overflow: hidden;
-                text-transform: none;
-                width: 100%;
-                
+
+                .swiper-item-inner {
+                    padding: 8px $leyka-star-base 0 $leyka-star-base;
+                    background-image: none;
+                    overflow: hidden;
+                    text-transform: none;
+                    display: block;
+                }
+
                 @include for(medium-screens) {
                     @include star-control-frame();
                     padding: 8px $leyka-star-base 0 $leyka-star-base;
                     display: block;
                     min-width: 248px;
                     width: unset;
+
+                    .swiper-item-inner {
+                        padding: 0px;
+                        height: 44px;
+                    }
                 }
                 
                 label {
@@ -146,12 +173,21 @@
                 }
     
                 &.selected {
-                    display: block;
-                    border-color: $leyka-star-color-main-second;
-                    background-color: $leyka-star-color-white;
+                    // border-color: $leyka-star-color-main-second;
+                    // background-color: $leyka-star-color-white;
+
+                    .swiper-item-inner {
+                    }
+
+                    @include for(medium-screens) {
+                        display: table;
+                        border-color: $leyka-star-color-main;
+                        background-color: $leyka-star-color-main-third;
+                    }
                     
                     &.empty {
-                        border-color: $leyka-star-color-main-second;
+                        // border-color: $leyka-star-color-main-second;
+                        border-color: $leyka-star-color-main;
                     }
                     
                     label {
@@ -163,8 +199,15 @@
                 }
                 
                 &.focus {
-                    background-color: $leyka-star-color-white;
-                    border-color: $leyka-star-color-main-second;
+                    // background-color: $leyka-star-color-white;
+                    // border-color: $leyka-star-color-main-second;
+                    .swiper-item-inner {
+                    }
+
+                    @include for(medium-screens) {
+                        border-color: $leyka-star-color-main;
+                        background-color: $leyka-star-color-main-third;
+                    }
                     
                     label {
                         span.textfield-label {
@@ -187,24 +230,72 @@
                 }
             }
         }
+
+        .full-list {       
+            .swiper-item { 
+                &.flex-amount-item {
+                    width: max-content;
+                    max-width: unset;
+                    display: block;
+
+                    .swiper-item-inner {
+                        padding: 0px;
+                    }
+
+                   &.selected {
+                        border-color: $leyka-star-color-main;
+                        background-color: $leyka-star-color-main-third;
+                    }
+                    
+                    &.focus {
+                        border-color: $leyka-star-color-main;
+                        background-color: $leyka-star-color-main-third;
+                    }                    
+
+                    label {
+                        //display: none;
+                    }
+                }
+            }
+        }
     }    
     
     // payment methods
     &.payments-grid {
         .star-swiper {
             .swiper-item {
-                flex-direction: column;
-                justify-content: flex-start;
+
+                .swiper-item-inner {
+                    flex-direction: column;
+                    justify-content: flex-start;
+                    width: calc(100% - 68px);
+                    margin-left: $leyka-star-base;
+                }
                 
                 &.payment-opt {
                     margin: 0px;
-                    
+
                     @include for(medium-screens) {
                         margin: 0px $leyka-star-base 0px 0px;
+                        width: auto;
+
+                        .swiper-item-inner {
+                            width: auto;
+                            margin-left: 0px;
+                        }
                     }
                     
                     &:not(.disabled):last-of-type {
                         margin-right: 0px;
+
+                        .swiper-item-inner {
+                            margin-left: 0px;
+                            width: calc(100% - 84px);
+
+                            @include for(medium-screens) {
+                                width: auto;
+                            }
+                        }
                     }
                 }
                 
@@ -237,7 +328,8 @@
                 span.payment-opt__label {
                     @include star-text-pm-label();
                     text-transform: none;
-                    color: $leyka-star-color-gray;
+                    // color: $leyka-star-color-gray;
+                    color: $leyka-start-color-gray-notsolight;
                     display: block;
                     margin-top: 5px;
                     z-index: 20;
@@ -252,7 +344,8 @@
                 &.selected {
                     @include for(medium-screens) {
                         background-color: $leyka-star-color-main-third;
-                        border-color: $leyka-star-color-main-second;
+                        // border-color: $leyka-star-color-main-second;
+                        border-color: $leyka-star-color-main;
                     }
                 }
                 
@@ -262,6 +355,24 @@
                 
             }
         }
+
+        .star-swiper {
+            &.no-swipe {
+                .swiper-item {
+                    &.payment-opt {
+                        margin-bottom: $leyka-star-base;
+                        margin-right: 0px;
+                        margin-left: $leyka-star-base;
+
+                        .swiper-item-inner {
+                            width: 100%;
+                            margin-left: 0px;
+                        }
+                    }
+                }
+            }
+        }
+
     }
     
     // donor data
@@ -361,7 +472,8 @@
                 //background-image: url(../../img/star-icon-ok.svg);
                 background-image: none;
                 background-color: $leyka-star-color-main-third;
-                border-color: $leyka-star-color-main-second;
+                // border-color: $leyka-star-color-main-second;
+                border-color: $leyka-star-color-main;
                 
                 label {
                     .donor__textfield-label {
@@ -396,7 +508,8 @@
             
             &.focus .leyka-star-field-frame {
                 background-color: $leyka-star-color-white;
-                border-color: $leyka-star-color-main-second;
+                // border-color: $leyka-star-color-main-second;
+                border-color: $leyka-star-color-main;
                 
                 label {
                     span.donor__textfield-label {
@@ -434,6 +547,19 @@
         padding-bottom: 0.5 * $leyka-star-base;
 
 		@include leyka-star-checkbox();
+
+        label {
+            @include star-text-form-oferta;
+
+            a {
+                color: $leyka-star-color-main;
+                text-decoration: none;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
 		
         .leyka-star-field-error-frame {
             min-height: 24px;
@@ -723,5 +849,56 @@ div[id*="leyka-pf-"].leyka-pf-star {
 .leyka-payment-form.leyka-tpl-star-form .section.section--periodicity {
     &.hidden {
         display: none;
+    }
+}
+
+// description and dividers
+div[id*="leyka-pf-"].leyka-pf-star {
+    .leyka-tpl-star-form {
+        .section.section--description {
+            @include star-text-form-campaign-description;
+            color: $leyka-star-color-tooltip-text;
+            text-align: center;
+            padding-left: $leyka-star-base;
+            padding-right: $leyka-star-base;
+            margin-top: $leyka-star-base * 2;
+
+            @include for(medium-screens) {
+                text-align: left;
+                padding-left: 0px;
+                padding-right: 0px;
+            }
+
+            &:empty {
+                display: none;
+            }
+        }
+
+        .section-title-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            margin-bottom: $leyka-star-base;
+            margin-top: $leyka-star-base * 2;
+
+            .section-title-line {
+                width: 100%;
+                height: 1px;
+                position: absolute;
+                top: 50%;
+                left: 0px;
+                z-index: 1;
+                border-bottom: 1px solid $leyka-star-color-tooltip-bg;
+            }
+
+            .section-title-text {
+                @include star-text-form-section-title;
+                color: $leyka-start-color-gray-notsolight;
+                background-color: $leyka-star-color-white;
+                padding: 0px $leyka-star-base 0px $leyka-star-base;
+                z-index: 5;
+            }
+            
+        }
     }
 }

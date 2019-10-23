@@ -2,10 +2,10 @@
 Contributors: Ahaenor, foralien, denis.cherniatev
 Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
-Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса, яндекс.деньги, миксплат, mixplat, paypal, paymaster, qiwi, киви
+Tags: e-donate, donates, donations, recurring donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, visa, mastercard, yandexmoney, yandex.money, chronopay, sms, яндекс.касса, яндекс.деньги, миксплат, mixplat, paypal, paymaster, qiwi, киви, yandex.kassa, cloudpayments, paypal, mixplat
 Requires at least: 3.6.1
 Tested up to: 5.2.3
-Stable tag: 3.5
+Stable tag: 3.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,14 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.6 =
+* New: a new group of Star-oriented (more design-flexible) shortcodes added.
+* New: amount_formatted property added for Leyka_Donation.
+* New: filters for Revo & Star fields labels added.
+* New: now plugin ver. is added to the forms templates wrappers as data attribute.
+* Fix: on-demand frontend scripts loading fixed.
+* Tweak: now Star templates more correctly display PM list in cases of many active payment methods.
+
 = 3.5 =
 * New: now RBK Money gateway supports recurring donations.
 * New: now old form templates (Revo & earlier) are considered deprecated. They are hidden by default.

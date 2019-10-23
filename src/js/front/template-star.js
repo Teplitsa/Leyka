@@ -79,9 +79,9 @@
         });
         
         $('.leyka-tpl-star-form .flex-amount-item').on('blur', 'input', function(){
-            $(this).parent().removeClass('focus');
+            $(this).closest('.swiper-item').removeClass('focus');
             if(!$.trim($(this).val())) {
-                $(this).parent().addClass('empty');
+                $(this).closest('.swiper-item').addClass('empty');
             }
         });
         
@@ -176,7 +176,7 @@
         }
         
         // amount swiper setup
-        $('.amount__figure.star-swiper .swiper-item').last().css('margin-right', '0px');
+        $('.amount__figure.star-swiper .swiper-list .swiper-item').last().css('margin-right', '0px');
         
         // pm swiper setup
         var $swiper = $_form.find('.payments-grid .star-swiper');
@@ -186,8 +186,8 @@
             $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)').first();
             $activeItem.find('input[type=radio]').prop('checked', true).change();
         }
-        $swiper.find('.swiper-item:not(.disabled)').css('margin-right', '16px');
-        $swiper.find('.swiper-item:not(.disabled)').last().css('margin-right', '0px');
+        $swiper.find('.swiper-list .swiper-item:not(.disabled)').css('margin-right', '16px');
+        $swiper.find('.swiper-list .swiper-item:not(.disabled)').last().css('margin-right', '0px');
         
         var $list = $swiper.find('.swiper-list');
         $list.css('width', '');
@@ -287,6 +287,9 @@
     function swipeList($swiper, $activeItem) {
         var $list = $swiper.find('.swiper-list');
         $list.stop( true, true )
+        
+        console.log("list width: " + $list.width() );
+        console.log("swiper width: " + $swiper.width() );
         
         var dif = $list.width() - $swiper.width();
         if(dif <= 0) {

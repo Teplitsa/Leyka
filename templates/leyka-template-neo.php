@@ -14,7 +14,7 @@ global $leyka_current_pm; /** @todo Make it a Leyka_Payment_Form class singleton
 
 leyka_pf_submission_errors();?>
 
-<div id="leyka-payment-form" class="leyka-tpl-neo" data-template="neo">
+<div id="leyka-payment-form" class="leyka-tpl-neo" data-template="neo" data-leyka-ver="<?php Leyka_Payment_Form::get_plugin_ver_for_atts();?>">
 
     <!-- <?php echo __("This donation form is created by Leyka WordPress plugin, created by Teplitsa of Social Technologies. If you are interested in some way, don't hesitate to write to us: support@te-st.ru", 'leyka');?> -->
 
@@ -145,7 +145,7 @@ leyka_pf_submission_errors();?>
                         }?>
                         </div>
 
-                    </div> <!-- .leyka-pm-fields -->
+                    </div>
 
                     <div class="leyka-pm-desc">
                         <?php echo apply_filters('leyka_the_content', leyka_pf_get_pm_description()); ?>
@@ -155,7 +155,7 @@ leyka_pf_submission_errors();?>
             </div>
         </div>
     <?php }?>
-</div><!-- #leyka-payment-form -->
+</div>
 
 <?php if(leyka_options()->opt_template('show_campaign_sharing')) {
     leyka_share_campaign_block(empty($campaign) ? false : $campaign->id);

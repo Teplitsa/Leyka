@@ -1274,7 +1274,7 @@ function leyka_modern_template_displayed() {
 
     $modern_template_displayed = false;
     $modern_templates = array('revo', 'star');
-    
+
     $post = get_post();
 
     if(get_query_var('leyka-screen')) {
@@ -1293,11 +1293,17 @@ function leyka_modern_template_displayed() {
 
     } else if($post) {
 
-        if(
-            has_shortcode($post->post_content, 'leyka_inline_campaign')
-            || has_shortcode($post->post_content, 'leyka_inline_campaign_small')
-            || has_shortcode($post->post_content, 'knd_leyka_inline_campaign')
-        ) {
+        $content_has_shortcodes = false;
+        foreach(leyka_get_shortcodes() as $shortcode_tag) {
+            if(has_shortcode(get_post()->post_content, $shortcode_tag)) {
+
+                $content_has_shortcodes = true;
+                break;
+
+            }
+        }
+
+        if($content_has_shortcodes) {
             $modern_template_displayed = true;
         } else if(
             has_shortcode($post->post_content, 'leyka_campaign_form')
@@ -1457,20 +1463,15 @@ if( !function_exists('leyka_get_client_ip') ) {
  * @param $limit int|false False to get all donations (unlimited number).
  * @return array|false An array of Leyka_Donation objects, or false if wrong campaign ID given.
  */
-function leyka_get_campaign_donations($campaign_id, $limit = false) {
+function leyka_get_campaign_donations($campaign_id = false, $limit = false) {
 
-    $campaign_id = absint($campaign_id);
-    if($campaign_id <= 0) {
-        return false;
-    }
-
+    $campaign_id = $campaign_id ? absint($campaign_id) : false;
     $limit = (int)$limit > 0 ? (int)$limit : false;
 
-    $params = array(
-        'post_type' => Leyka_Donation_Management::$post_type,
-        'post_status' => 'funded',
-        'meta_query' => array(array('key' => 'leyka_campaign_id', 'value' => $campaign_id, 'compare' => '=',),),
-    );
+    $params = array('post_type' => Leyka_Donation_Management::$post_type, 'post_status' => 'funded', 'meta_query' => array(),);
+    if($campaign_id) {
+        $params['meta_query'][] = array('key' => 'leyka_campaign_id', 'value' => $campaign_id, 'compare' => '=',);
+    }
 
     if($limit) {
         $params['posts_per_page'] = $limit;
@@ -1843,6 +1844,16 @@ if( !function_exists('leyka_get_delta_percent') ) {
         }
 
         return $delta_percent;
+
+    }
+}
+
+if( !function_exists('leyka_amount_format') ) {
+    function leyka_amount_format($amount) {
+
+        // Display amount decimal part only if there is one:
+        $amount = round((float)$amount, 2);
+        return (abs($amount) - abs((int)$amount) > 0) ? number_format_i18n($amount, 2) : number_format_i18n($amount);
 
     }
 }
