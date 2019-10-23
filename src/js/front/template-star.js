@@ -288,10 +288,12 @@
         var $list = $swiper.find('.swiper-list');
         $list.stop( true, true )
         
+        console.log("list width: " + $list.width() );
+        console.log("swiper width: " + $swiper.width() );
+        
         var dif = $list.width() - $swiper.width();
         if(dif <= 0) {
             $list.width($swiper.width());
-            // $list.width($swiper.width() - 68);
             $list.css('left', 0);
             return;
         }

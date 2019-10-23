@@ -110,10 +110,6 @@
                     overflow: hidden;
                     text-transform: none;
                     display: block;
-                    
-                    @include for(medium-screens) {
-                        padding: 0px;
-                    }
                 }
 
                 @include for(medium-screens) {
@@ -122,6 +118,11 @@
                     display: block;
                     min-width: 248px;
                     width: unset;
+
+                    .swiper-item-inner {
+                        padding: 0px;
+                        height: 44px;
+                    }
                 }
                 
                 label {
@@ -173,12 +174,15 @@
     
                 &.selected {
                     // border-color: $leyka-star-color-main-second;
-                    border-color: $leyka-star-color-main;
                     // background-color: $leyka-star-color-white;
-                    background-color: $leyka-star-color-main-third;
+
+                    .swiper-item-inner {
+                    }
 
                     @include for(medium-screens) {
-                        display: block;
+                        display: table;
+                        border-color: $leyka-star-color-main;
+                        background-color: $leyka-star-color-main-third;
                     }
                     
                     &.empty {
@@ -197,8 +201,13 @@
                 &.focus {
                     // background-color: $leyka-star-color-white;
                     // border-color: $leyka-star-color-main-second;
-                    border-color: $leyka-star-color-main;
-                    background-color: $leyka-star-color-main-third;
+                    .swiper-item-inner {
+                    }
+
+                    @include for(medium-screens) {
+                        border-color: $leyka-star-color-main;
+                        background-color: $leyka-star-color-main-third;
+                    }
                     
                     label {
                         span.textfield-label {
@@ -233,6 +242,16 @@
                         padding: 0px;
                     }
 
+                   &.selected {
+                        border-color: $leyka-star-color-main;
+                        background-color: $leyka-star-color-main-third;
+                    }
+                    
+                    &.focus {
+                        border-color: $leyka-star-color-main;
+                        background-color: $leyka-star-color-main-third;
+                    }                    
+
                     label {
                         //display: none;
                     }
@@ -255,12 +274,13 @@
                 
                 &.payment-opt {
                     margin: 0px;
-                    
+
                     @include for(medium-screens) {
                         margin: 0px $leyka-star-base 0px 0px;
+                        width: auto;
 
                         .swiper-item-inner {
-                            width: 100%;
+                            width: auto;
                             margin-left: 0px;
                         }
                     }
@@ -271,6 +291,10 @@
                         .swiper-item-inner {
                             margin-left: 0px;
                             width: calc(100% - 84px);
+
+                            @include for(medium-screens) {
+                                width: auto;
+                            }
                         }
                     }
                 }
@@ -843,6 +867,10 @@ div[id*="leyka-pf-"].leyka-pf-star {
                 text-align: left;
                 padding-left: 0px;
                 padding-right: 0px;
+            }
+
+            &:empty {
+                display: none;
             }
         }
 

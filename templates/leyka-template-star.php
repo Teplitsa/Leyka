@@ -47,9 +47,9 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
         </div>
         
-        <div class="section section--description">
-        	<?php esc_html_e('We will be happy with a small but monthly help, this gives us confidence in the future and the ability to plan our activities.', 'leyka');?>
-        </div>
+        <?php if(in_array('recurring', $campaign->donations_types_available)) {?>
+        <div class="section section--description"><?php echo leyka_options()->opt_template('recurring_donation_benefits_text');?></div>
+        <?php }?>
 
         <div class="section section--amount">
         	<div class="section-title-container"><div class="section-title-line"></div><div class="section-title-text"><?php esc_html_e('Donation amount', 'leyka');?></div></div>
