@@ -486,7 +486,9 @@ function leyka_shortcode_campaign_card($atts) {
         'show_image' => isset($atts['show_thumb']) ? !!$atts['show_thumb'] : 1,
         'show_progressbar' => isset($atts['show_scale']) ? !!$atts['show_scale'] : 1,
         'show_button' => 1,
-        'button_text' => leyka_get_scale_button_label(),
+        'show_target_amount' => 1,
+        'show_collected_amount' => 1,
+        'button_text' => leyka_options()->opt_template('donation_submit_text'), // leyka_get_scale_button_label(),
         'show_if_finished' => isset($atts['show_finished']) ? !!$atts['show_finished'] : 1,
 
         'color_background' => false, // Card background color
@@ -538,12 +540,14 @@ function leyka_shortcode_campaign_card($atts) {
 
             <div class="target-info">
 
+                <?php if($atts['show_collected_amount']) {?>
                 <div class="funded" style="<?php echo $atts['color_fulfilled'] ? 'color:'.$atts['color_fulfilled'] : '';?>">
                     <?php echo leyka_amount_format($funded).' '.leyka_get_currency_label()
                         .($atts['recurring'] ? ' / '._x('month', '"Month" shortened, like "mon" maybe', 'leyka') : '');?>
                 </div>
+                <?php }?>
 
-                <?php if($campaign->target) {?>
+                <?php if($atts['show_target_amount'] && $campaign->target) {?>
 
                 <div class="target">
                 <?php echo $atts['recurring'] ?
@@ -562,7 +566,7 @@ function leyka_shortcode_campaign_card($atts) {
                 ($atts['color_fulfilled'] ? 'background-color:'.$atts['color_fulfilled'] : '');?>
 
             <a class="leyka-button-wrapper" href="<?php echo get_permalink($campaign->id);?>" style="<?php echo $button_color;?>">
-                <?php echo leyka_options()->opt_template('donation_submit_text');?>
+                <?php echo esc_html($atts['button_text']);?>
             </a>
 
         <?php }?>
