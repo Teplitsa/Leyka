@@ -552,8 +552,8 @@ function leyka_shortcode_campaign_card($atts) {
 
                 <div class="target">
                 <?php echo $atts['recurring'] ?
-                    sprintf(__('We need to raise monthly: %s %s'), leyka_amount_format($campaign->target), leyka_get_currency_label()) :
-                    sprintf(__('We need to raise: %s %s'), leyka_amount_format($campaign->target), leyka_get_currency_label());?>
+                    sprintf(__('We need to raise monthly: %s %s', 'leyka'), leyka_amount_format($campaign->target), leyka_get_currency_label()) :
+                    sprintf(__('We need to raise: %s %s', 'leyka'), leyka_amount_format($campaign->target), leyka_get_currency_label());?>
                 </div>
 
                 <?php }?>
