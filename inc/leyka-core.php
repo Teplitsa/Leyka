@@ -264,7 +264,27 @@ class Leyka extends Leyka_Singleton {
                     && is_main_query()
                 ) {
 
-                    $form_template = leyka_remembered_data('template_id');
+                    $donation_id = leyka_remembered_data('donation_id');
+                    $campaign = null;
+                    $campaign_id = null;
+                    if( !$donation_id ) {
+                        return;
+                    }
+                    $donation = new Leyka_Donation($donation_id);
+                    $campaign_id = $donation ? $donation->campaign_id : null;
+                    $campaign = new Leyka_Campaign($campaign_id);
+                    
+                    if($campaign) {
+                        $form_template = $campaign->template;
+                    }
+                    else {
+                        $form_template = '';
+                    }
+                    
+                    if(!$form_template) {
+                        $form_template = leyka_remembered_data('template_id');
+                    }
+                    
                     $form_template_suffix = $form_template === 'star' ? '-' . $form_template : '';
 
                     ob_start();
