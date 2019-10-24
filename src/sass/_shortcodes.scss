@@ -247,6 +247,13 @@
 
             display: flex;
             justify-content: space-between;
+            flex-wrap: wrap;
+
+            margin-top: -24px; // So the second flex-element (button) would be margined-top when elements are wrapped
+
+            .bottom-line-item { // Again, to margin-top the button if elements are wrapped
+                margin-top: 24px;
+            }
 
             .target-info {
 

@@ -5,9 +5,9 @@
 
 $campaign = new Leyka_Campaign(get_post());
 
-if($campaign->template == 'revo') {
-	include('leyka-template-embed_campaign_card_templated_revo.php');
-}
-else {
+//if($campaign->template == 'revo') {
+//	include('leyka-template-embed_campaign_card_templated_revo.php');
+//}
+//else {
 	include('leyka-template-embed_campaign_card.php');
-}
+//}

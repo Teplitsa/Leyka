@@ -539,7 +539,7 @@ function leyka_shortcode_campaign_card($atts) {
 
         <div class="bottom-line sub-block">
 
-            <div class="target-info">
+            <div class="bottom-line-item target-info">
 
                 <?php if($atts['show_collected_amount']) {?>
                 <div class="funded" style="<?php echo $atts['color_fulfilled'] ? 'color:'.$atts['color_fulfilled'] : '';?>">
@@ -566,7 +566,7 @@ function leyka_shortcode_campaign_card($atts) {
                 'background-color:'.$atts['color_button'] :
                 ($atts['color_fulfilled'] ? 'background-color:'.$atts['color_fulfilled'] : '');?>
 
-            <a class="leyka-button-wrapper" href="<?php echo get_permalink($campaign->id);?>" style="<?php echo $button_color;?>">
+            <a class="bottom-line-item leyka-button-wrapper" href="<?php echo get_permalink($campaign->id);?>" style="<?php echo $button_color;?>">
                 <?php echo esc_html($atts['button_text']);?>
             </a>
 
