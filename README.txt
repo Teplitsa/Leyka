@@ -4,8 +4,8 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, recurring donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, visa, mastercard, yandexmoney, yandex.money, chronopay, sms, яндекс.касса, яндекс.деньги, миксплат, mixplat, paypal, paymaster, qiwi, киви, yandex.kassa, cloudpayments, paypal, mixplat
 Requires at least: 3.6.1
-Tested up to: 5.2.3
-Stable tag: 3.6
+Tested up to: 5.2.4
+Stable tag: 3.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
