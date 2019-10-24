@@ -6,14 +6,9 @@
 
 $campaign_id = get_transient( 'leyka_init_campaign_id' );
 $campaign = new Leyka_Campaign($campaign_id);
-$campaign_thumbnail_id = get_post_thumbnail_id($campaign_id);
-$current_template = $campaign->template;
 
-if( !$current_template || $current_template === 'default' ) {
-
-    $current_template = 'revo'; /** @todo Change it to the Star template when it's display on the Step is fixed. */
-    $campaign->template = $current_template;
-
+if( !$campaign->template || $campaign->template === 'default' ) {
+    $campaign->template = 'star';
 }
 
 //$templates = leyka()->get_templates();
@@ -47,13 +42,13 @@ wp_enqueue_media();?>
                         </span>
                     </label>
                     <?php wp_nonce_field('set-campaign-photo', 'set-campaign-photo-nonce');?>
-                    <input type="hidden" id="leyka-campaign_thumbnail" name="campaign_thumbnail" value="<?php echo $campaign_thumbnail_id;?>">
+                    <input type="hidden" id="leyka-campaign_thumbnail" name="campaign_thumbnail" value="<?php echo get_post_thumbnail_id($campaign_id);?>">
                 </div>
                 <div class="field-errors"></div>
                 
             </div>
 
-            <input name="campaign_template" type="hidden" style="display:none;" value="<?php echo $current_template;?>">
+            <input name="campaign_template" type="hidden" style="display:none;" value="<?php echo $campaign->template;?>">
             
             <div id="campaign-decoration-loading">
                  <div class="loader-wrap">
@@ -67,7 +62,7 @@ wp_enqueue_media();?>
 
             <div class="title"><?php esc_html_e('How it will look on the website', 'leyka');?></div>
 
-            <div class="preview-frame <?php echo $current_template;?>" id="leyka-preview-frame">
+            <div class="preview-frame <?php echo $campaign->template;?>" id="leyka-preview-frame">
             <?php $embed_code = Leyka_Campaign_Management::get_card_embed_code($campaign_id, false, 343, 700);
                 echo str_replace('embed_object=campaign_card', 'embed_object=campaign_card_templated', $embed_code);?>
             </div>
