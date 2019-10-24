@@ -491,6 +491,7 @@ function leyka_shortcode_campaign_card($atts) {
         'button_text' => leyka_options()->opt_template('donation_submit_text'), // leyka_get_scale_button_label(),
         'show_if_finished' => isset($atts['show_finished']) ? !!$atts['show_finished'] : 1,
 
+        'color_title' => false, // Card title color
         'color_background' => false, // Card background color
         'color_button' => false, // Main CTA button background color
         'color_fulfilled' => false, // Progressbar fulfilled part color
@@ -519,7 +520,7 @@ function leyka_shortcode_campaign_card($atts) {
     <?php }
 
     if($atts['show_title']) {?>
-        <div class="campaign-title sub-block"><?php echo $campaign->title;?></div>
+        <div class="campaign-title sub-block" style="<?php echo $atts['color_title'] ? 'color:'.esc_attr($atts['color_title']) : '';?>"><?php echo $campaign->title;?></div>
     <?php }
 
     $funded = $atts['recurring'] ? $campaign->get_recurring_subscriptions_amount() : $campaign->total_funded;
