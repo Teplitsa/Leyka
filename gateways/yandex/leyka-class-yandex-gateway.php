@@ -77,7 +77,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             $this->_id.'_secret_key' => array(
                 'type' => 'text',
                 'title' => __('Secret key for API', 'leyka'),
-                'comment' => __("Please, enter a shopPassword parameter value that you filled in Yandex.Kassa technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
+                'comment' => __("Please, enter a secret key parameter value that you filled in Yandex.Kassa technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity. More information  <a href='https://kassa.yandex.ru/help/merchant/keys.html' target='_blank'>here</a>.", 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'test_OkT0flRaEnS0fWqMFZuTg01hu_8SxSkxZuAVIw7CMgB'),
                 'is_password' => true,
