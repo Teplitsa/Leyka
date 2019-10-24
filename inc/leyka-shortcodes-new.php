@@ -512,7 +512,7 @@ function leyka_shortcode_campaign_card($atts) {
 
     ob_start();?>
 
-    <div class="<?php echo !!$atts['unstyled'] ? 'leyka-shortcode-custom-styling' : 'leyka-shortcode';?> campaign-card <?php echo $atts['classes'] ? esc_attr($atts['classes']) : '';?>" style="<?php echo $atts['color_background'] ? 'color:'.esc_attr($atts['color_background']) : '';?>">
+    <div class="<?php echo !!$atts['unstyled'] ? 'leyka-shortcode-custom-styling' : 'leyka-shortcode';?> campaign-card <?php echo $atts['classes'] ? esc_attr($atts['classes']) : '';?>" style="<?php echo $atts['color_background'] ? 'background-color:'.esc_attr($atts['color_background']) : '';?>">
 
     <?php if($atts['show_image']) {?>
         <div class="campaign-thumb sub-block" style="background-image:url(<?php echo get_the_post_thumbnail_url($campaign->id, 'medium_large');?>);"></div>
