@@ -147,7 +147,7 @@ class Leyka extends Leyka_Singleton {
             // Refuse the login for Donors without Accounts:
             add_action('wp_login', function($login, $user){
 
-                if( !$user || !is_a($user, 'WP_User') ) {
+                if( !$user || !is_a($user, 'WP_User') || wp_doing_ajax() ) {
                     return;
                 }
 

@@ -339,6 +339,13 @@ class Leyka_Donor {
             case 'donor_email':
                 return $this->_meta['email'];
 
+            case 'status':
+                if( !metadata_exists('user', $this->_id, 'leyka_account_activation_code') ) {
+                    return 'inactive';
+                } else {
+                    return $this->account_activation_code ? 'account_inactive' : 'account_active';
+                }
+
             case 'has_account_access':
                 return $this->_user->has_cap(self::DONOR_ACCOUNT_ACCESS_CAP);
 
@@ -782,11 +789,9 @@ class Leyka_Donor {
             return false;
         }
 
-        $password = trim($password);
-
         $res = wp_signon(array(
             'user_login' => $this->_user->user_login,
-            'user_password' => $password,
+            'user_password' => trim($password),
             'remember' => !!$remember,
         ));
 
