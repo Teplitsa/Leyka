@@ -47,10 +47,6 @@ class Leyka_Donor {
                 'role' => Leyka_Donor::DONOR_USER_ROLE,
             ));
 
-            if($params['donor_has_account_access']) {
-                update_user_meta($donor_user_id, 'leyka_account_activation_code', wp_generate_password(60, false, false));
-            }
-
             $donor_user = get_user_by('id', $donor_user_id);
 
         }
@@ -71,7 +67,12 @@ class Leyka_Donor {
         }
 
         if($donor_has_account) {
+
             $donor_user->add_cap(self::DONOR_ACCOUNT_ACCESS_CAP);
+
+            // If Donor user just acquired account access, make him set up a password:
+            update_user_meta($donor_user->id, 'leyka_account_activation_code', wp_generate_password(60, false, false));
+
         } else {
             $donor_user->remove_cap(self::DONOR_ACCOUNT_ACCESS_CAP);
         }
