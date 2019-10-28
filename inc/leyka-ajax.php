@@ -449,6 +449,8 @@ function leyka_donor_login() {
 
         if( !$donor ) {
             $res = array('status' => 'error', 'message' => __('Incorrect email or password.', 'leyka'),);
+        } else if( !$donor->has_account_access ) {
+            $res = array('status' => 'error', 'message' => __("You don't have an access for the donor account yet.", 'leyka'),);
         } else {
 
             $donor_logged_in = $donor->login($_POST['leyka_donor_pass'], true);
