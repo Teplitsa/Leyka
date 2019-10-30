@@ -194,6 +194,36 @@ class Leyka extends Leyka_Singleton {
                 }
             }, 9);
 
+            // If Donor resets his password via WordPress login page, add him an Account capability:
+            add_action('after_password_reset', function(WP_User $user){
+
+                if( !$user || !is_a($user, 'WP_User') || wp_doing_ajax() ) {
+                    return;
+                }
+
+                if(
+                    leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, true, $user)
+                    && !$user->has_cap(Leyka_Donor::DONOR_ACCOUNT_ACCESS_CAP)
+                ) {
+                    Leyka_Donor::update_account_access($user, true);
+                }
+
+            });
+
+            // If Donor is successfully logged in, redirect him/her to the Account page:
+            add_filter('login_redirect', function($redirect_to, $requested_redirect_to, $user){
+
+                if( !$user || !is_a($user, 'WP_User') || wp_doing_ajax() ) {
+                    return $redirect_to;
+                }
+
+                /** @var $user WP_User */
+                return leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, true, $user)
+                    && $user->has_cap(Leyka_Donor::DONOR_ACCOUNT_ACCESS_CAP) ?
+                    site_url('/donor-account/') : $redirect_to;
+
+            }, 1000, 3);
+
             add_action('leyka_donor_account_created', array($this, 'handle_non_init_recurring_donor_registration'), 10, 2);
             add_action('leyka_donor_account_not_created', array($this, 'handle_donor_account_creation_error'), 10, 2);
 

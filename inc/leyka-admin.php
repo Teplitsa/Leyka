@@ -156,6 +156,40 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         }
 
+        // Add donor account column to the admin Users list if needed:
+        if(get_option('leyka_donor_accounts_available')) {
+
+            add_filter('manage_users_columns', function($column){
+
+                $column['donor_account_available'] = __("Donor's info", 'leyka');
+                return $column;
+
+            });
+
+            add_filter('manage_users_custom_column', function($value, $column_name, $user_id) {
+
+                if($column_name === 'donor_account_available') {
+
+                    if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, false, $user_id)) {
+
+                        $donor_user = new Leyka_Donor($user_id);
+                        $donor_info_page_link = '<a href="'.admin_url('?page=leyka_donor_info&donor='.$user_id).'">'.__('Info', 'leyka').'</a>';
+
+                        return ($donor_user->has_account_access ? __('yes', 'leyka') : __('no', 'leyka'))
+                            .' | '.$donor_info_page_link;
+
+                    } else {
+                        return __('not a donor', 'leyka');
+                    }
+
+                } else {
+                    return $value;
+                }
+
+            }, 10, 3);
+
+        }
+
     }
 
     public function admin_menu_setup() {
