@@ -406,8 +406,8 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         }
 
         $tags_list = array();
-        foreach($item['donors_tags'] as $term) {
-            $tags_list[] = '#<a href="#">'.esc_html($term->name).'</a>';
+        foreach($item['donors_tags'] as $term) { /** @var $term WP_Term */
+            $tags_list[] = '#<a href="?page='.esc_attr($_REQUEST['page']).'&donors-tags[0]='.$term->term_id.'">'.esc_html($term->name).'</a>';
         }
 
         return '<div class="leyka-donors-tags-list">'.implode(', ', $tags_list).'</div>';
@@ -459,13 +459,13 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             'cb' => '<input type="checkbox">',
             #'donor_id' => __('ID'),
             'donor_type' => _x('Type', "Donor's type", 'leyka'),
-            'donor_name' => __("Donor's<br>name", 'leyka'),
-            'first_donation' => __('First<br>donation', 'leyka'),
-            'campaigns' => __('Campaigns<br>list', 'leyka'),
-            'donors_tags' => __("Donors'<br>tags", 'leyka'),
+            'donor_name' => __("Donor's name", 'leyka'),
+            'first_donation' => __('First donation', 'leyka'),
+            'campaigns' => __('Campaigns list', 'leyka'),
+            'donors_tags' => __("Donors' tags", 'leyka'),
             'gateways' => __('Gateway', 'leyka'),
-            'last_donation' => __('Last<br>donation', 'leyka'),
-            'amount_donated' => __('Amount<br>donated', 'leyka'),
+            'last_donation' => __('Last donation', 'leyka'),
+            'amount_donated' => __('Amount donated', 'leyka'),
         );
     }
 
