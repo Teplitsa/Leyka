@@ -95,7 +95,7 @@ self::$_options_meta = array(
                 'comment' => '',
             ),
         ),
-        'description' => __('Remember that as a physical person you have to pass the tax declaration and pay the 13% income tax.', 'leyka'),
+        'description' => __('If you plan to collect funds as a physical person, please <a href="https://te-st.ru/2019/09/03/donations-to-individuals/" target="_blank">read this</a>.', 'leyka'),
     ),
     'org_full_name' => array(
         'type' => 'text',

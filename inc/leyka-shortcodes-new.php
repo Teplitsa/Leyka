@@ -507,7 +507,7 @@ function leyka_shortcode_campaign_card($atts) {
     $campaign = new Leyka_Campaign($atts['campaign_id']);
     if( !$campaign->id || !$campaign->title ) {
         return apply_filters('leyka_shortcode_campaign_card_no_campaign_found', '', $atts);
-    } else if( !$atts['show_finished'] && $campaign->is_finished ) {
+    } else if( !$atts['show_if_finished'] && $campaign->is_finished ) {
         return apply_filters('leyka_shortcode_campaign_card_campaign_finished', '', $atts);
     }
 
