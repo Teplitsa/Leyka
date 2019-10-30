@@ -129,7 +129,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             'template' => 'cp_account_setup_instructions',
         )))->add_to($section);
 
-        $step = new Leyka_Settings_Step('copy_key',  $section->id, __('Copy your public ID and API password and set them up', 'leyka'), array('next_label' => __('Save & continue', 'leyka')));
+        $step = new Leyka_Settings_Step('copy_key',  $section->id, __('Set up your Public ID and API password', 'leyka'), array('next_label' => __('Save & continue', 'leyka')));
         $step->add_block(new Leyka_Text_Block(array(
             'id' => 'cp-settings-copy-text',
             'text' => __('Copy the public ID and the API password from your CloudPayments account, as in the screenshot below.', 'leyka'),
