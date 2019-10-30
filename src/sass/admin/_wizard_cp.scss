@@ -89,7 +89,7 @@
 
         }
         // CP payment tryout custom field - END        
-        
+
         .custom-block-payment-cards-icons {
             
             .cp-supported-cards {
@@ -178,9 +178,15 @@
         }
         
         .settings-block.text-block {
+
+            &#cp-copy-key {
+                margin-bottom: 18px;
+            }
+
             .info2copy {
                 @include info2copy();
             }
+
         }
         
     }

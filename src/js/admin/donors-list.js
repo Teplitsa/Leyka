@@ -180,14 +180,14 @@ jQuery(document).ready(function($){
 		e.preventDefault();
 
 		$('input.leyka-payment-status-selector').autocomplete('reset');
-		$("input.leyka-donors-tags-selector").autocomplete('reset');
-		$("input.leyka-gateways-selector").autocomplete('reset');
-		$("input.leyka-campaigns-selector").autocomplete('reset');
+		$('input.leyka-donors-tags-selector').autocomplete('reset');
+		$('input.leyka-gateways-selector').autocomplete('reset');
+		$('input.leyka-campaigns-selector').autocomplete('reset');
 
 		$('input[name="donor-name-email"]').val('');
-		$('select[name="donor-type"]').prop('selectedIndex',0).selectmenu("refresh");
+		$('select[name="donor-type"]').prop('selectedIndex', 0).selectmenu('refresh');
 
-		let $dp = $('input[name=first-donation-date]').datepicker().data('datepicker');
+		let $dp = $('input[name="first-donation-date"]').datepicker().data('datepicker');
 		$dp.selectedDates = [];
 		$dp.update();
 

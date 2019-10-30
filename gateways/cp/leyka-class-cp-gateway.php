@@ -44,8 +44,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             ),
             'cp_api_secret' => array(
                 'type' => 'text',
-                'title' => __('API Secret', 'leyka'),
-                'comment' => __('Please, enter your CloudPayments API secret. It can be found in your CloudPayments control panel.', 'leyka'),
+                'title' => __('API password', 'leyka'),
+                'comment' => __('Please, enter your CloudPayments API password. It can be found in your CloudPayments control panel.', 'leyka'),
                 'is_password' => true,
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '26128731fgc9fbdjc6c210dkbn5q14eu'),
