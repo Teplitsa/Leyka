@@ -115,7 +115,7 @@ class Leyka extends Leyka_Singleton {
         add_action('admin_bar_menu', array($this, 'add_toolbar_menu'), 999);
 
         // For Donors management:
-        if(get_option('leyka_donor_management_available') || get_option('leyka_donor_accounts_available')) {
+        if(get_option('leyka_donor_management_available')) {
 
             // Disable logging in if Donor is the only user's role (and user doesn't have an Account access capability):
             add_filter('authenticate', function($user, $username, $pass) {
@@ -198,6 +198,13 @@ class Leyka extends Leyka_Singleton {
             add_action('leyka_donor_account_not_created', array($this, 'handle_donor_account_creation_error'), 10, 2);
 
         }
+
+        // Donors management & Donors' accounts fields logical link:
+        add_action('leyka_set_donor_accounts_available_option_value', function($option_value){
+            if($option_value) {
+                update_option('leyka_donor_management_available', true);
+            }
+        });
 
         if(is_admin()) { // Admin area only
 
@@ -1109,6 +1116,12 @@ class Leyka extends Leyka_Singleton {
 
         if($leyka_last_ver && $leyka_last_ver <= '3.5') { // Allow the deprecated form templates for old installations
             update_option('leyka_allow_deprecated_form_templates', true);
+        }
+
+        if($leyka_last_ver && $leyka_last_ver <= '3.6') { // Donors management & Donors' accounts fields logical link
+            if(get_option('leyka_donor_accounts_available')) {
+                update_option('leyka_donor_management_available', true);
+            }
         }
 
         // Set a flag to flush permalinks (needs to be done a bit later, than this activation itself):

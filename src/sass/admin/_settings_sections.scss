@@ -5,14 +5,18 @@
     }
     
     .section-tabs-wrapper {
+
         .section-tab-nav {
+
             display: flex;
             border-bottom: 1px solid $color-section-tabs-line;
             height: 2rem;
             justify-content: flex-start;
             
             a.section-tab-nav-item {
+
                 @include wizard-text();
+
                 color: $color-section-tabs-text;
                 height: 2rem;
                 margin-right: 2rem;
@@ -31,10 +35,13 @@
                 &:first-child {
                     margin-right: 1.5rem;
                 }
+
             }
+
         }
         
         .section-tab-content {
+
             display: none;
             padding-top: .3em;
             
@@ -146,7 +153,9 @@
                     font-weight: 400;
                 }
             }
+
         }
+
     }
     
     &#currency_options {
@@ -182,4 +191,15 @@
         }
         
     }
+
+    &#donor_accounts {
+        #leyka_donor_accounts_available-wrapper {
+            margin-left: 29px;
+        }
+    }
+
+    .field-component.disabled {
+        color: $color-border-normal;
+    }
+
 }

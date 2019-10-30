@@ -223,6 +223,8 @@ class Leyka_Options_Controller extends Leyka_Singleton {
             $this->_options[$option_id]['value'] = trim($this->_options[$option_id]['value']);
         }
 
+        $option_value = apply_filters('leyka_new_option_value', $option_value, $option_id);
+
         if(
             $this->option_exists($option_id) &&
             $this->_options[$option_id]['value'] !== $option_value &&
@@ -236,6 +238,9 @@ class Leyka_Options_Controller extends Leyka_Singleton {
             if( !$updated ) {
                 $this->_options[$option_id]['value'] = $old_value;
             }
+
+            do_action('leyka_set_option_value', $option_id, $option_value);
+            do_action("leyka_set_{$option_id}_option_value", $option_value);
 
             return $updated;
 

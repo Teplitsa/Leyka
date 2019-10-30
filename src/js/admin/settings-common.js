@@ -251,23 +251,23 @@ jQuery(document).ready(function($){
 
     }
 
-    // Currency rate setup:
-    // $('#leyka_auto_refresh_currency_rate_usd-wrapper input[type=radio]').change(leykaToggleRefreshCurrencyRateAutomatically);
-    // leykaToggleRefreshCurrencyRateAutomatically();
-    // leykaAppendCurrencyRateToOptionLabel();
-    //
-    // function leykaToggleRefreshCurrencyRateAutomatically() {
-    //     //alert(leyka.eurCBRate);
-    //     //alert(leyka.usdCBRate);
-    // }
-    //
-    // function leykaToggleRefreshCurrencyRateAutomatically() {
-    //     if($('#leyka_auto_refresh_currency_rate_usd-n-field').prop('checked')) {
-    //         $('#leyka_currency_rur2usd-wrapper').show();
-    //     }
-    //     else {
-    //         $('#leyka_currency_rur2usd-wrapper').hide();
-    //     }
-    // }
+    // Donors management & Donors' accounts fields logical link:
+    $('input[name="leyka_donor_accounts_available"]').change(function(){
+
+        let $accounts_available_field = $(this),
+            $donors_management_available_field = $('input[name="leyka_donor_management_available"]');
+
+        if($accounts_available_field.prop('checked')) {
+            $donors_management_available_field
+                .prop('checked', 'checked')
+                .prop('disabled', 'disabled')
+                .parents('.field-component').addClass('disabled');
+        } else {
+            $donors_management_available_field
+                .prop('disabled', false)
+                .parents('.field-component').removeClass('disabled');
+        }
+
+    }).change();
 
 });
