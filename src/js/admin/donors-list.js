@@ -176,6 +176,7 @@ jQuery(document).ready(function($){
     });
 
 	$('.reset-filters').click(function(e){
+
 		e.preventDefault();
 
 		$('input.leyka-payment-status-selector').autocomplete('reset');
@@ -190,11 +191,11 @@ jQuery(document).ready(function($){
 		$dp.selectedDates = [];
 		$dp.update();
 
-		$dp = $('input[name=last-donation-date]').datepicker().data('datepicker');
+		$dp = $('input[name="last-donation-date"]').datepicker().data('datepicker');
 		$dp.selectedDates = [];
 		$dp.update();
 
-		//var $form = $(this).closest('form');
-		//$form[0].reset();
+        $(this).closest('form.donors-list-controls').submit();
+
 	});
 });

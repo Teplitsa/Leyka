@@ -9,7 +9,7 @@
     <div id="poststuff">
         <div>
 
-            <form class="donors-list-cotrols" action="#" method="get">
+            <form class="donors-list-controls" action="#" method="get">
 
                 <div class="donors-list-filters">
 
