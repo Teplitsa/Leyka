@@ -50,7 +50,10 @@ class Leyka extends Leyka_Singleton {
      * Template list.
      * @var array
      */
-    protected $templates = null;
+    protected $_templates = null;
+
+    /** * @var array */
+    protected $_addons = array();
 
     /** @var bool|null */
     protected $_form_is_screening = false;
@@ -93,6 +96,9 @@ class Leyka extends Leyka_Singleton {
             }
         }
         add_action('init', 'leyka_session_start', -2);
+
+//        $this->_initialize_addons_list(); // Add the addons from the files to the list & set their activity statuses
+//        $this->_run_active_addons(); // Require the main files for all active addons
 
         if(get_option('leyka_plugin_stats_option_needs_sync')) {
 
@@ -476,6 +482,7 @@ class Leyka extends Leyka_Singleton {
             case 'submission_redirect_type':
                 return $this->_submission_redirect_type;
             case 'form_is_screening': return !!$this->_form_is_screening;
+            case 'addons': return !!$this->_addons;
             default: return '';
         }
     }
@@ -501,6 +508,44 @@ class Leyka extends Leyka_Singleton {
      */
     public function opt($option_id, $new_value = null) {
         return leyka_options()->opt($option_id, $new_value);
+    }
+
+//    protected function _initialize_addons_list() {
+//
+//    }
+
+//    protected function _run_active_addons() {
+
+        // 1. Search for files of "active" addons (check the special Leyka option for that)
+
+        // 2. If some addon file is not found, auto-deactivate the addon
+
+//    }
+
+    /**
+     * @param mixed $activation_status If given, get only addons with it.
+     * NULL for both types altogether.
+     * @return array Of Leyka_Addon objects.
+     */
+    public function get_addons($activation_status = null) {
+
+        if( !$activation_status ) {
+            return $this->_addons;
+        } else if( !in_array($activation_status, array('active', 'inactive', 'activating')) ) {
+            return array(); /** @todo Throw some Leyka_Exception */
+        } else {
+
+            $addons = array();
+            foreach($this->_addons as $addon) { /** @var $addon Leyka_Addon */
+                if($addon->get_activation_status() === $activation_status) {
+                    $addons[] = $addon;
+                }
+            }
+
+            return $addons;
+
+        }
+
     }
 
     public function refresh_donors_data() {
@@ -1063,6 +1108,29 @@ class Leyka extends Leyka_Singleton {
     public function remove_gateway($gateway_id) {
         if( !empty($this->_gateways[$gateway_id]) ) {
             unset($this->_gateways[$gateway_id]);
+        }
+    }
+
+    /**
+     * @param Leyka_Addon $addon
+     * @return bool
+     */
+    public function add_addon(Leyka_Addon $addon) {
+
+        if(empty($this->_addons[$addon->id])) {
+
+            $this->_addons[$addon->id] = $addon;
+            return true;
+
+        } else {
+            return false;
+        }
+
+    }
+
+    public function remove_addon($addon_id) {
+        if( !empty($this->_addons[$addon_id]) ) {
+            unset($this->_addons[$addon_id]);
         }
     }
 
@@ -1879,34 +1947,34 @@ class Leyka extends Leyka_Singleton {
             'include_deprecated' => leyka_options()->opt('allow_deprecated_form_templates')
         ), $params);
 
-        if( !$this->templates ) {
-            $this->templates = array();
+        if( !$this->_templates ) {
+            $this->_templates = array();
         }
 
         if( !!$params['is_service'] ) {
-            $this->templates = glob(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-*.php');
+            $this->_templates = glob(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-*.php');
         } else {
 
             $custom_templates = glob(STYLESHEETPATH.'/leyka-template-*.php');
             $custom_templates = $custom_templates ? $custom_templates : array();
 
-            $this->templates = apply_filters(
+            $this->_templates = apply_filters(
                 'leyka_templates_list',
                 array_merge($custom_templates, glob(LEYKA_PLUGIN_DIR.'templates/leyka-template-*.php'))
             );
 
         }
 
-        if( !$this->templates ) {
-            $this->templates = array();
+        if( !$this->_templates ) {
+            $this->_templates = array();
         }
 
-        $this->templates = array_map(array($this, '_get_template_data'), $this->templates);
+        $this->_templates = array_map(array($this, '_get_template_data'), $this->_templates);
 
         if( !$params['include_deprecated'] ) {
-            foreach($this->templates as $index => $template_data) {
+            foreach($this->_templates as $index => $template_data) {
                 if( !empty($template_data['deprecated']) ) {
-                    unset($this->templates[$index]);
+                    unset($this->_templates[$index]);
                 }
             }
         }
@@ -1915,21 +1983,21 @@ class Leyka extends Leyka_Singleton {
         $ordered_templates = array();
 
         foreach($this->_templates_order as $ordered_template) {
-            foreach($this->templates as $template_data) {
+            foreach($this->_templates as $template_data) {
                 if($template_data['id'] == $ordered_template) {
                     $ordered_templates[ $template_data['id'] ] = $template_data;
                 }
             }
         }
 
-        foreach($this->templates as $template_data) {
+        foreach($this->_templates as $template_data) {
             if( !in_array($template_data['id'], $this->_templates_order) ) {
                 $ordered_templates[ $template_data['id'] ] = $template_data;
             }
         }
-        $this->templates = $ordered_templates;
+        $this->_templates = $ordered_templates;
 
-        return (array)$this->templates;
+        return (array)$this->_templates;
 
     }
 

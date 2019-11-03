@@ -961,7 +961,11 @@ self::$_options_meta = array(
         'type' => 'custom_gateways_commission', // Special option type
         'title' => __('Payment operators commission', 'leyka'),
     ),
-    'admin_donations_list_display' => array( /** @todo Isn't in use ATM. */
+    'addons_available' => array(
+        'type' => 'custom_addons', // Special option type
+        'title' => __('Addons available', 'leyka'),
+    ),
+    'admin_donations_list_display' => array(
         'type' => 'radio',
         'default' => 'amount-column',
         'title' => __('Total amount display on the admin donations list page', 'leyka'),

@@ -647,13 +647,11 @@ function leyka_get_pm_category_label($category_id) {
  * @return array
  */
 function leyka_get_gateways_filter_categories_list() {
-
     return apply_filters('leyka_gateways_filter_categories', array(
         'legal' => esc_attr__('Legal persons', 'leyka'),
         'physical' => esc_attr__('Physical persons', 'leyka'),
         'recurring' => mb_ucfirst(esc_html_x('recurring', 'a "recurring donations" in one word (like "recurrings")', 'leyka')),
     ));
-
 }
 
 function leyka_get_filter_category_label($category_id) {
@@ -665,7 +663,6 @@ function leyka_get_filter_category_label($category_id) {
 
 }
 
-
 /**
  * Gateway activation status labels
  * @return string
@@ -673,13 +670,14 @@ function leyka_get_filter_category_label($category_id) {
 function leyka_get_gateway_activation_status_label($activation_status) {
 
     $activation_status_labels = array(
-        'active' => __('Active', 'leyka'), // 'Подключен',
-        'inactive' => __('Inactive', 'leyka'), // 'Не подключен',
-        'activating' => __('Connection is in process', 'leyka'), // 'В процессе подключения',
+        'active' => __('Active', 'leyka'),
+        'inactive' => __('Inactive', 'leyka'),
+        'activating' => __('Connection is in process', 'leyka'),
     );
 
-    return $activation_status && !empty($activation_status_labels[$activation_status]) ? $activation_status_labels[$activation_status] : false;
-    
+    return $activation_status && !empty($activation_status_labels[$activation_status]) ?
+        $activation_status_labels[$activation_status] : false;
+
 }
 
 /**
@@ -698,7 +696,7 @@ function leyka_get_gateway_activation_button_label(Leyka_Gateway $gateway) {
         'activating' => esc_attr_x('Continue', '[the gateway step-by-step setup]', 'leyka'),
     );
 
-    if($activation_status != 'active' && !leyka_gateway_setup_wizard($gateway)) {
+    if($activation_status !== 'active' && !leyka_gateway_setup_wizard($gateway)) {
         $label = esc_attr_x('Setup', '[the gateway]', 'leyka');
     } else {
         $label = $activation_status && !empty($activation_status_labels[$activation_status]) ? $activation_status_labels[$activation_status] : false;
@@ -706,6 +704,41 @@ function leyka_get_gateway_activation_button_label(Leyka_Gateway $gateway) {
 
     return $label;
 
+}
+
+/**
+ * @param string $wizard_name
+ * @return bool
+ */
+function leyka_wizard_started($wizard_name) {
+
+    $wizard_controller = Leyka_Settings_Factory::get_instance()->get_controller($wizard_name);
+    return count($wizard_controller->history) > 0;
+
+}
+
+/**
+ * @param $addon_id string
+ * @return Leyka_Addon|false An addon object or false if none found.
+ */
+function leyka_get_addon_by_id($addon_id) {
+    return Leyka_Addon::get_by_id($addon_id);
+}
+
+/**
+ * @param Leyka_Addon $addon
+ * @return string
+ */
+function leyka_get_addon_settings_url(Leyka_Addon $addon) {
+    return $addon->get_settings_url();
+}
+
+/**
+ * @param Leyka_Addon $addon
+ * @return string|false A Wizard suffix or false if wizard unavailable for given addon.
+ */
+function leyka_addon_setup_wizard(Leyka_Addon $addon) {
+    return $addon->wizard_id;
 }
 
 /**

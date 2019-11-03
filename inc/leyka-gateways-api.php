@@ -182,31 +182,14 @@ function leyka_get_gateway_settings_url($gateway) {
  * @return mixed; string wizard suffix or false if wizard unavailable for gateway
  */
 function leyka_gateway_setup_wizard($gateway) {
-
-    if(in_array($gateway->id, Leyka_Gateway::$gateways_with_wizard)) {
-        return $gateway->id;
-    }
-
-    return false;
-
-}
-
-/**
- * @param string $gateway_wizard_name
- * @return bool
- */
-function leyka_wizard_started($gateway_wizard_name) {
-    
-    $wizard_controller = Leyka_Settings_Factory::get_instance()->get_controller($gateway_wizard_name);
-    return count($wizard_controller->history) > 0;
-    
+    return $gateway->has_wizard;
 }
 
 abstract class Leyka_Gateway extends Leyka_Singleton {
 
     protected static $_instance;
 
-	protected $_id = ''; // Must be a unique string, as "quittance", "yandex" or "chronopay"
+	protected $_id = ''; // Must be a unique string, like "quittance", "yandex" or "chronopay"
 	protected $_title = ''; // A human-readable title of a gateway, like "Bank quittances" or "Yandex.Kassa"
 	protected $_description = ''; // A human-readable description of a gateway (for backoffice)
     protected $_icon = ''; // A gateway icon URL
@@ -218,13 +201,8 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     protected $_receiver_types = array('legal'); // 'legal', 'physical'
     protected $_may_support_recurring = false; // Whether recurring payments are possible via gateway at all
 
-    protected $_admin_ui_column = 2; // 1 or 2. A number of the metaboxes columns, to which gateway belogns by default
-    protected $_admin_ui_order = 100; // Default sorting index for gateway metabox in its column. Lower number = higher
-
     protected $_payment_methods = array(); // Supported PMs array
     protected $_options = array(); // Gateway configs
-    
-    public static $gateways_with_wizard = array('yandex', 'cp');
 
     protected function __construct() {
 
@@ -318,12 +296,6 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             case 'wizard_href':
             case 'wizard_link': return admin_url('admin.php?page=leyka_settings_new&screen=wizard-'.$this->_id);
 
-            case 'admin_column':
-            case 'admin_ui_column': return in_array($this->_admin_ui_column, array(1, 2)) ? $this->_admin_ui_column : 2;
-            case 'admin_order':
-            case 'admin_priority':
-            case 'admin_ui_order':
-            case 'admin_ui_priority': return (int)$this->_admin_ui_order;
             default:
                 return false;
         }

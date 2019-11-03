@@ -618,7 +618,6 @@ class Leyka_CP_Card extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ));
-//        $this->_main_icon = '';
 
         $this->_supported_currencies[] = 'rur';
         $this->_default_currency = 'rur';

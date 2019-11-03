@@ -94,6 +94,7 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-controller.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-polylang.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-core.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-gateways-api.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-addons-api.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-campaign.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donation.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donor.php');
@@ -103,13 +104,11 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-ajax.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-shortcodes.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-widgets.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-hooks.php');
-require_once(ABSPATH . 'wp-admin/includes/meta-boxes.php');
+//require_once(ABSPATH.'wp-admin/includes/meta-boxes.php');
 
-/** Automatically include all sub-dirs of /leyka/gateways/ */
+// Automatically include all sub-dirs of /leyka/gateways/ :
 $gateways_dir = dir(LEYKA_PLUGIN_DIR.'gateways/');
-if( !$gateways_dir ) {
-    // ?..
-} else {
+if($gateways_dir) {
 
     while(false !== ($gateway_id = $gateways_dir->read())) {
 
@@ -125,6 +124,24 @@ if( !$gateways_dir ) {
 
 }
 
+// Automatically include all sub-dirs of /leyka/addons/ :
+$addons_dir = dir(LEYKA_PLUGIN_DIR.'addons/');
+if($addons_dir) {
+
+    while(false !== ($addon_id = $addons_dir->read())) {
+
+        $file_addr = LEYKA_PLUGIN_DIR."addons/$addon_id/leyka-class-$addon_id-addon.php";
+
+        if($addon_id !== '.' && $addon_id !== '..' && file_exists($file_addr)) {
+            require_once($file_addr);
+        }
+
+    }
+
+    $addons_dir->close();
+
+}
+
 if(leyka_options()->opt('donor_accounts_available')) {
     require_once(LEYKA_PLUGIN_DIR.'templates/account/template-tags.php');
 }
@@ -135,7 +152,6 @@ function leyka_load_plugin_textdomain() {
 add_action('plugins_loaded', 'leyka_load_plugin_textdomain');
 
 register_activation_hook(__FILE__, array('Leyka', 'activate')); // Activation
-//add_action('plugins_loaded', array('Leyka', 'activate')); // Any update needed
 register_deactivation_hook(__FILE__, array('Leyka', 'deactivate')); // Deactivate
 
 leyka(); // All systems go
