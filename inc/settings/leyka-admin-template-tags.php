@@ -75,7 +75,7 @@ if( !function_exists('leyka_show_addon_logo')) {
 
         <div class="<?php echo is_array($wrapper_classes) ? implode(' ', $wrapper_classes) : $wrapper_classes; ?> gateway-logo">
 
-            <img class="expansion-logo-pic addon-logo-pic" src="<?php echo $use_paceholders ? '#ADDON_LOGO_URL#' : $addon->icon_url;?>" alt="">
+            <img class="extension-logo-pic addon-logo-pic" src="<?php echo $use_paceholders ? '#ADDON_LOGO_URL#' : $addon->icon_url;?>" alt="">
 
             <?php if( !!$show_addon_info && ($use_paceholders || $addon->description) ) {?>
             <span class="field-q">

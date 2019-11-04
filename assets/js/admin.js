@@ -1591,8 +1591,8 @@ jQuery(document).ready(function($){
 // Filter gateways:
 jQuery(document).ready(function($){
 
-    var $filter = $('.leyka-gateways-filter'),
-        $gatewaysList = $('.gateways-cards-list'),
+    var $filter = $('.leyka-extensions-filter'), // $('.leyka-gateways-filter')
+        $gatewaysList = $('.extensions-cards-list'), // $('.gateways-cards-list')
         gatewaysFilter = {};
 
     $filter.find('.filter-toggle').click(function(){

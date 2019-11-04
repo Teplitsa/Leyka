@@ -789,59 +789,6 @@
 .leyka-widget-table .amount {
   width: 10%; }
 
-.feedback-columns {
-  margin-top: 60px; }
-  .feedback-columns::after {
-    clear: both;
-    content: "";
-    display: table; }
-  .feedback-columns .leyka-feedback-form {
-    width: 90%; }
-  .feedback-columns .feedback-sidebar {
-    width: 100%; }
-  @media screen and (min-width: 900px) {
-    .feedback-columns .leyka-feedback-form {
-      float: left;
-      width: -webkit-calc(100% - 315px);
-      width: calc(100% - 315px);
-      max-width: 700px; }
-    .feedback-columns .feedback-sidebar {
-      float: left;
-      width: 280px;
-      margin-left: 35px;
-      padding-top: 20px; } }
-
-.leyka-feedback-form .leyka-ff-field {
-  margin: 0 0 30px; }
-  .leyka-feedback-form .leyka-ff-field label {
-    font-family: "Open Sans",sans-serif;
-    font-size: 14px;
-    display: block;
-    font-weight: bold;
-    padding-bottom: 2px; }
-  .leyka-feedback-form .leyka-ff-field textarea {
-    height: 16em; }
-.leyka-feedback-form .regular-text {
-  width: 100%;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.07) inset;
-  color: #333;
-  outline: 0 none;
-  -webkit-transition: border-color 0.05s ease-in-out;
-  -moz-transition: border-color 0.05s ease-in-out;
-  transition: border-color 0.05s ease-in-out; }
-  .leyka-feedback-form .regular-text:focus, .leyka-feedback-form .regular-text:active {
-    border-color: #5b9dd9;
-    box-shadow: 0px 0px 2px rgba(30, 140, 190, 0.8); }
-.leyka-feedback-form .leyka-ff-field-error {
-  border: 1px solid #dd3d36;
-  color: #dd3d36;
-  background: #fff;
-  padding: 4px 8px;
-  margin-top: 3px;
-  border-radius: 3px; }
-
 .leyka-ff-msg {
   font-size: 14px;
   background: none repeat scroll 0 0 #fff;

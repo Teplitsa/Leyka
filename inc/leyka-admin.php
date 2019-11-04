@@ -692,10 +692,12 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         // Base admin area js/css:
         $leyka_admin_new = (isset($_GET['screen']) && count(explode('-', $_GET['screen'])) >= 2) // New settings pages (from v3.0)
-            || (isset($_GET['page']) && $_GET['page'] === 'leyka_settings' /*&& empty($_GET['stage'])*/)
+            || (isset($_GET['page']) && $_GET['page'] === 'leyka_settings')
             || ($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post')
             || (isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_donors'))
-            || (isset($_GET['page']) && $_GET['page'] === 'leyka_donor_info' && !empty($_GET['donor']));
+            || (isset($_GET['page']) && $_GET['page'] === 'leyka_donor_info' && !empty($_GET['donor']))
+            || (isset($_GET['page']) && $_GET['page'] === 'leyka_addons')
+            || (isset($_GET['page']) && $_GET['page'] === 'leyka_feedback');
 
         $current_screen = get_current_screen();
         $dependencies = array('jquery',);
@@ -703,6 +705,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         if($leyka_admin_new) {
             wp_enqueue_style('leyka-settings', LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css', array(), LEYKA_VERSION);
         } else { // Old admin pages (before v3.0)
+            /** @todo ATM, the old admin.css is used only for New & Edit Donation pages (/css/admin.css, lines 502-730). Move their code to the /src/ , then remove the /css/admin.css */
 	        wp_enqueue_style('leyka-admin', LEYKA_PLUGIN_BASE_URL.'css/admin.css', array(), LEYKA_VERSION);
 	    }
 
@@ -722,16 +725,23 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         // Settings pages:
         if(stristr($current_screen->id, '_page_leyka_settings') !== false) {
 
-//            $dependencies[] = 'jquery-ui-accordion';
             $dependencies[] = 'jquery-ui-sortable';
 
             wp_enqueue_script('leyka-sticky', LEYKA_PLUGIN_BASE_URL.'js/jquery.sticky.js', $dependencies, LEYKA_VERSION, true);
             $dependencies[] = 'leyka-sticky';
+
         }
 
         if(isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_donors')) {
-            wp_enqueue_style('jqueryui', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css', false, null );
+
+            wp_enqueue_style(
+                'jqueryui',
+                'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css',
+                false,
+                null
+            );
             $dependencies[] = 'jquery-ui-selectmenu';
+
         }
 
         if($current_screen->post_type === Leyka_Donation_Management::$post_type) {
@@ -766,7 +776,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		leyka_localize_rich_html_text_tags();
 
         // Campaign editing page:
-		if($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post' && (!$screen->action || $screen->action === 'add')) {
+		if(
+		    $screen->post_type === Leyka_Campaign_Management::$post_type
+            && $screen->base === 'post'
+            && ( !$screen->action || $screen->action === 'add' )
+        ) {
 
             $dependencies[] = $this->_load_data_tables();
 
@@ -785,7 +799,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             );
         }
 
-        // Donation editing page:
+        // Donation edit page:
         if($screen->post_type === Leyka_Donation_Management::$post_type && $screen->base === 'post') {
 
             wp_enqueue_script(

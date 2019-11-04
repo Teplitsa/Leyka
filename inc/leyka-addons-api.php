@@ -12,6 +12,8 @@ abstract class Leyka_Addon extends Leyka_Singleton {
     protected $_user_docs_link = ''; // Addon user manual page URL
     protected $_has_wizard = false;
 
+    protected $_is_premium = false;
+
     protected $_options = array();
 
     /**
@@ -128,7 +130,10 @@ abstract class Leyka_Addon extends Leyka_Singleton {
             case 'activation_status':
                 return $this->get_activation_status();
             case 'activation_status_label':
+                return self::get_activation_status_label($this->activation_status);
 
+            case 'is_premium':
+                return !!$this->_is_premium;
 
             default:
                 return false;
@@ -226,13 +231,26 @@ abstract class Leyka_Addon extends Leyka_Singleton {
 
         $status = 'inactive';
 
-        if(true /** @todo Get the "active" option value for the addon */) {
+        if(false /** @todo Get the "active" option value for the addon */) {
             $status = 'active';
         } else if($this->wizard_id && leyka_wizard_started($this->wizard_id)) {
             $status = 'activating';
         }
 
         return $status;
+
+    }
+
+    /** @return array A list of relevant values from the list of Leyka_Addon::_get_filter_categories_ids(). */
+    public function get_filter_categories() {
+
+        $categories = array($this->get_activation_status());
+
+        if($this->is_premium) {
+            $categories[] = 'premium';
+        }
+
+        return $categories;
 
     }
 
