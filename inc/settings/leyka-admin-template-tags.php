@@ -53,6 +53,41 @@ if( !function_exists('leyka_show_gateway_logo')) {
     <?php }
 }
 
+if( !function_exists('leyka_show_addon_logo')) {
+    function leyka_show_addon_logo($addon, $show_addon_info = true, $wrapper_classes = array(), $use_paceholders = false) {
+
+        $use_paceholders = !!$use_paceholders;
+
+        if( !$use_paceholders ) {
+            if(is_string($addon)) {
+
+                $addon = Leyka_Addon::get_by_id($addon);
+                if( !$addon) {
+                    return;
+                    /** @todo throw new Exception(esc_attr__(sprintf('Unknown gateway ID: %s', $gateway), 'leyka')); */
+                }
+
+            } else if( !is_a($addon, 'Leyka_Addon') ) {
+                return;
+                /** @todo throw new Exception(esc_attr__(sprintf('Unknown gateway', $gateway), 'leyka')); */
+            }
+        }?>
+
+        <div class="<?php echo is_array($wrapper_classes) ? implode(' ', $wrapper_classes) : $wrapper_classes; ?> gateway-logo">
+
+            <img class="expansion-logo-pic addon-logo-pic" src="<?php echo $use_paceholders ? '#ADDON_LOGO_URL#' : $addon->icon_url;?>" alt="">
+
+            <?php if( !!$show_addon_info && ($use_paceholders || $addon->description) ) {?>
+            <span class="field-q">
+                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-info.svg" alt="">
+                <span class="field-q-tooltip"><?php echo $use_paceholders ? '#ADDON_DESCRIPTION#' : $addon->description;?></span>
+            </span>
+            <?php }?>
+        </div>
+
+    <?php }
+}
+
 if( !function_exists('leyka_pm_sortable_option_html_new') ) {
     function leyka_pm_sortable_option_html_new($is_hidden = false, $pm_full_id = '#FID#', $pm_label = '#L#') {
 
@@ -158,6 +193,58 @@ if( !function_exists('leyka_gateway_details_html') ) {
         </div>
     
     <?php }
+}
+
+/**
+ * Get current activation button label from the given gateway.
+ *
+ * @param $gateway Leyka_Gateway
+ * @return string|false
+ */
+function leyka_get_gateway_activation_button_label(Leyka_Gateway $gateway) {
+
+    $activation_status = $gateway->get_activation_status();
+
+    $activation_status_labels = array(
+        'active' => esc_attr_x('Settings', '[of the gateway]', 'leyka'),
+        'inactive' => esc_attr_x('Step-by-step setup', '[of the gateway]', 'leyka'),
+        'activating' => esc_attr_x('Continue', '[the gateway step-by-step setup]', 'leyka'),
+    );
+
+    if($activation_status !== 'active' && !leyka_gateway_setup_wizard($gateway)) {
+        $label = esc_attr_x('Setup', '[the gateway]', 'leyka');
+    } else {
+        $label = $activation_status && !empty($activation_status_labels[$activation_status]) ? $activation_status_labels[$activation_status] : false;
+    }
+
+    return $label;
+
+}
+
+/**
+ * Get current activation button label from the given gateway.
+ *
+ * @param $addon Leyka_Gateway
+ * @return string|false
+ */
+function leyka_get_addon_activation_button_label(Leyka_Addon $addon) {
+
+    $activation_status = $addon->get_activation_status();
+
+    $button_labels = array(
+        'active' => esc_attr_x('Settings', '[of the gateway]', 'leyka'),
+        'inactive' => esc_attr_x('Step-by-step setup', '[of the gateway]', 'leyka'),
+        'activating' => esc_attr_x('Continue', '[the gateway step-by-step setup]', 'leyka'),
+    );
+
+    if($activation_status !== 'active' && !$addon->wizard_id) {
+        $label = esc_attr_x('Setup', '[the addon]', 'leyka');
+    } else {
+        $label = $activation_status && !empty($button_labels[$activation_status]) ? $button_labels[$activation_status] : false;
+    }
+
+    return $label;
+
 }
 
 if( !function_exists('leyka_is_settings_step_valid') ) {

@@ -6,8 +6,8 @@
 $addons = leyka()->get_addons();
 $addons_categories = Leyka_Addon::get_filter_categories_list();
 
-echo '<pre>'.print_r($addons, 1).'</pre>';
-echo '<pre>'.print_r($addons_categories, 1).'</pre>';?>
+//echo '<pre>'.print_r($addons, 1).'</pre>';
+//echo '<pre>'.print_r($addons_categories, 1).'</pre>';?>
 
 <div class="wrap" data-leyka-admin-page-type="addons-list-page">
 
@@ -41,19 +41,19 @@ echo '<pre>'.print_r($addons_categories, 1).'</pre>';?>
 
     </div>
 
-    <div class="main-area all-addons-settings">
+    <div class="main-area all-extensions-settings all-addons-settings">
 
-        <div class="addons-cards-list">
+        <div class="extensions-cards-list">
 
             <?php foreach($addons as $addon_id => $addon) { /** @var $gateway Leyka_Gateway */
 
                 $activation_status = $addon->get_activation_status(); // $gateway->get_activation_status()?>
 
-                <div class="leyka-admin-addon-card admin-card <?php echo implode(' ', $addon->get_filter_categories());?> <?php echo $activation_status;?>">
+                <div class="leyka-admin-addon-card admin-card <?php echo implode(' ', $addon->get_filter_categories_ids());?> <?php echo $activation_status;?>">
 
                     <div class="card-header">
 
-                        <div class="card-icon"><?php leyka_show_addon_logo($addon, true); // leyka_show_gateway_logo()?></div>
+                        <div class="card-icon"><?php leyka_show_addon_logo($addon, true);?></div>
 
                         <div>
                             <div class="card-title">
@@ -62,19 +62,17 @@ echo '<pre>'.print_r($addons_categories, 1).'</pre>';?>
                                 </a>
                             </div>
                             <div class="card-status <?php echo $activation_status;?>">
-                                <?php echo leyka_get_addon_activation_status_label($activation_status); // leyka_get_gateway_activation_status_label()?>
+                                <?php echo Leyka_Addon::get_activation_status_label($activation_status);?>
                             </div>
                         </div>
 
                     </div>
 
-                    <div class="card-params">
-                        <?php leyka_addon_details_html($gateway); // leyka_gateway_details_html()?>
-                    </div>
+                    <div class="card-description"><?php echo $addon->description;?></div>
 
                     <div class="card-action">
-                        <a class="button <?php echo $activation_status == 'active' ? 'button-secondary' : 'button-primary';?> activation-button <?php echo $activation_status;?>" href="<?php echo leyka_get_addon_settings_url($addon); // leyka_get_gateway_settings_url()?>">
-                            <?php echo leyka_get_addon_activation_button_label($addon); // leyka_get_gateway_activation_button_label()?>
+                        <a class="button <?php echo $activation_status == 'active' ? 'button-secondary' : 'button-primary';?> activation-button <?php echo $activation_status;?>" href="<?php echo $addon->get_settings_url();?>">
+                            <?php echo leyka_get_addon_activation_button_label($addon);?>
                         </a>
                     </div>
 

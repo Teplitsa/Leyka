@@ -681,32 +681,6 @@ function leyka_get_gateway_activation_status_label($activation_status) {
 }
 
 /**
- * Get current activation button label fro the given gateway.
- *
- * @param $gateway Leyka_Gateway
- * @return string|false
- */
-function leyka_get_gateway_activation_button_label(Leyka_Gateway $gateway) {
-
-    $activation_status = $gateway->get_activation_status();
-
-    $activation_status_labels = array(
-        'active' => esc_attr_x('Settings', '[of the gateway]', 'leyka'),
-        'inactive' => esc_attr_x('Step-by-step setup', '[of the gateway]', 'leyka'),
-        'activating' => esc_attr_x('Continue', '[the gateway step-by-step setup]', 'leyka'),
-    );
-
-    if($activation_status !== 'active' && !leyka_gateway_setup_wizard($gateway)) {
-        $label = esc_attr_x('Setup', '[the gateway]', 'leyka');
-    } else {
-        $label = $activation_status && !empty($activation_status_labels[$activation_status]) ? $activation_status_labels[$activation_status] : false;
-    }
-
-    return $label;
-
-}
-
-/**
  * @param string $wizard_name
  * @return bool
  */

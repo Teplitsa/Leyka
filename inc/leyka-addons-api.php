@@ -51,6 +51,23 @@ abstract class Leyka_Addon extends Leyka_Singleton {
 
     }
 
+    public static function get_activation_status_list() {
+        return array(
+            'active' => __('Active', 'leyka'),
+            'inactive' => __('Inactive', 'leyka'),
+            'activating' => __('Setup is in process', 'leyka'),
+        );
+    }
+
+    public static function get_activation_status_label($activation_status) {
+
+        $activation_status_list = self::get_activation_status_list();
+
+        return $activation_status && !empty($activation_status_list[$activation_status]) ?
+            $activation_status_list[$activation_status] : false;
+
+    }
+
     protected function __construct() {
 
         $this->_icon = apply_filters(
@@ -107,6 +124,11 @@ abstract class Leyka_Addon extends Leyka_Singleton {
             case 'wizard_href':
             case 'wizard_link':
                 return admin_url('admin.php?page=leyka_settings_new&screen=wizard-'.$this->_id);
+
+            case 'activation_status':
+                return $this->get_activation_status();
+            case 'activation_status_label':
+
 
             default:
                 return false;

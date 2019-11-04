@@ -15,6 +15,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         require_once(ABSPATH.'wp-admin/includes/meta-boxes.php');
 	    require_once LEYKA_PLUGIN_DIR.'/inc/leyka-admin-functions.php';
+        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-admin-template-tags.php');
 
 		add_action('admin_menu', array($this, 'admin_menu_setup'), 9);
 
@@ -438,7 +439,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 		require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php'); // Basic Controller class
         require_once(LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-common.php');
-        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-admin-template-tags.php');
 
 		do_action('leyka_pre_settings_actions', $current_stage);
 
