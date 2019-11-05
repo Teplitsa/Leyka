@@ -385,7 +385,7 @@
                     cursor: move;
                 }
 
-                .gateway-logo-wrapper {
+                .extension-logo-wrapper {
 
                     flex: 0 0 56px;
 
@@ -690,7 +690,7 @@
         flex-direction: row;
         flex-wrap: wrap;
 
-        .leyka-admin-extension-card {
+        .extension-card {
 
             background-color: $color-white;
             border-radius: 6px;
@@ -710,6 +710,7 @@
             .extension-card-header {
 
                 padding: 1rem;
+                border-bottom: 1px solid $color-border-light-001;
 
                 display: flex;
                 justify-content: flex-start;
@@ -756,7 +757,6 @@
 
             .extension-card-params {
 
-                border-top: 1px solid $color-border-light-001;
                 padding: 14px 1rem 1rem 1rem;
 
                 &:empty {
@@ -786,6 +786,10 @@
                         margin-left: 2px;
                     }
 
+                }
+
+                &.addon-description {
+                    height: 106px;
                 }
 
             }

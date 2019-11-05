@@ -37,6 +37,7 @@ abstract class Leyka_Addon extends Leyka_Singleton {
             'active' => esc_attr__('Active', 'leyka'),
             'inactive' => esc_attr__('Inactive', 'leyka'),
             'activating' => esc_attr__('Activating', 'leyka'),
+            'premium' => esc_attr__('Premium', 'leyka'),
         ));
     }
 
@@ -72,12 +73,6 @@ abstract class Leyka_Addon extends Leyka_Singleton {
 
     protected function __construct() {
 
-        $this->_icon = apply_filters(
-            'leyka_icon_'.$this->_id,
-            file_exists(LEYKA_PLUGIN_DIR."/addons/{$this->_id}/icons/{$this->_id}.svg") ?
-                LEYKA_PLUGIN_DIR."/addons/{$this->_id}/icons/{$this->_id}.svg" : ''
-        );
-
         $this->_set_attributes(); // Initialize main addon attributes
 
         $this->_set_options_defaults(); // Set configurable options in admin area
@@ -108,8 +103,10 @@ abstract class Leyka_Addon extends Leyka_Singleton {
                 $icon = false;
                 if($this->_icon) {
                     $icon = $this->_icon;
-                } else if(file_exists(LEYKA_PLUGIN_DIR."addons/{$this->_id}/icons/{$this->_id}.png")) {
-                    $icon = LEYKA_PLUGIN_BASE_URL."addons/{$this->_id}/icons/{$this->_id}.png";
+                } else if(file_exists(LEYKA_PLUGIN_DIR."addons/{$this->_id}/img/main-icon.svg")) {
+                    $icon = LEYKA_PLUGIN_BASE_URL."addons/{$this->_id}/img/main-icon.svg";
+                } else if(file_exists(LEYKA_PLUGIN_DIR."addons/{$this->_id}/img/main-icon.png")) {
+                    $icon = LEYKA_PLUGIN_BASE_URL."addons/{$this->_id}/img/main-icon.png";
                 }
                 return $icon;
 

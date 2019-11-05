@@ -39,7 +39,7 @@ $gateways_categories = leyka_get_gateways_filter_categories_list();?>
 
         $gateway_activation_status = $gateway->get_activation_status();?>
 
-        <div class="leyka-admin-extension-card gateway-card <?php echo implode(' ', $gateway->get_filter_categories());?> <?php echo $gateway_activation_status;?>">
+        <div class="extension-card gateway-card <?php echo implode(' ', $gateway->get_filter_categories());?> <?php echo $gateway_activation_status;?>">
 
             <div class="extension-card-header">
 

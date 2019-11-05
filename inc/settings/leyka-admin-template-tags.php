@@ -38,9 +38,9 @@ if( !function_exists('leyka_show_gateway_logo')) {
             }
         }?>
 
-        <div class="<?php echo is_array($wrapper_classes) ? implode(' ', $wrapper_classes) : $wrapper_classes; ?> gateway-logo">
+        <div class="<?php echo is_array($wrapper_classes) ? implode(' ', $wrapper_classes) : $wrapper_classes; ?> extension-logo gateway-logo">
 
-            <img class="gateway-logo-pic" src="<?php echo $use_paceholders ? '#GATEWAY_LOGO_URL#' : $gateway->icon_url;?>" alt="">
+            <img class="extension-logo-pic" src="<?php echo $use_paceholders ? '#GATEWAY_LOGO_URL#' : $gateway->icon_url;?>" alt="">
 
             <?php if( !!$show_gateway_info && ($use_paceholders || $gateway->description) ) {?>
             <span class="field-q">
@@ -73,7 +73,7 @@ if( !function_exists('leyka_show_addon_logo')) {
             }
         }?>
 
-        <div class="<?php echo is_array($wrapper_classes) ? implode(' ', $wrapper_classes) : $wrapper_classes; ?> gateway-logo">
+        <div class="<?php echo is_array($wrapper_classes) ? implode(' ', $wrapper_classes) : $wrapper_classes; ?> extension-logo addon-logo">
 
             <img class="extension-logo-pic addon-logo-pic" src="<?php echo $use_paceholders ? '#ADDON_LOGO_URL#' : $addon->icon_url;?>" alt="">
 
@@ -98,7 +98,7 @@ if( !function_exists('leyka_pm_sortable_option_html_new') ) {
 
         <li class="pm-order" data-pm-id="<?php echo $pm_full_id;?>" <?php echo $is_hidden ? 'style="display:none;"' : '';?>>
 
-            <div class="gateway-logo-wrapper"><?php leyka_show_gateway_logo($gateway, false);?></div>
+            <div class="extension-logo-wrapper"><?php leyka_show_gateway_logo($gateway, false);?></div>
 
             <div class="pm-info">
 
@@ -200,21 +200,23 @@ if( !function_exists('leyka_gateway_details_html') ) {
  *
  * @param $gateway Leyka_Gateway
  * @return string|false
+ * @todo If we will manage to add a common Leyka_Extension class for both Leyka_Gateway & Leyka_Addon, merge this function with leyka_get_addon_activation_button_label().
  */
 function leyka_get_gateway_activation_button_label(Leyka_Gateway $gateway) {
 
     $activation_status = $gateway->get_activation_status();
 
     $activation_status_labels = array(
-        'active' => esc_attr_x('Settings', '[of the gateway]', 'leyka'),
-        'inactive' => esc_attr_x('Step-by-step setup', '[of the gateway]', 'leyka'),
-        'activating' => esc_attr_x('Continue', '[the gateway step-by-step setup]', 'leyka'),
+        'active' => esc_attr_x('Settings', '[of the extension]', 'leyka'),
+        'inactive' => esc_attr_x('Step-by-step setup', '[of the extension]', 'leyka'),
+        'activating' => esc_attr_x('Continue', '[the extension step-by-step setup]', 'leyka'),
     );
 
     if($activation_status !== 'active' && !leyka_gateway_setup_wizard($gateway)) {
-        $label = esc_attr_x('Setup', '[the gateway]', 'leyka');
+        $label = esc_attr_x('Setup', '[the extension]', 'leyka');
     } else {
-        $label = $activation_status && !empty($activation_status_labels[$activation_status]) ? $activation_status_labels[$activation_status] : false;
+        $label = $activation_status && !empty($activation_status_labels[$activation_status]) ?
+            $activation_status_labels[$activation_status] : false;
     }
 
     return $label;
@@ -224,23 +226,25 @@ function leyka_get_gateway_activation_button_label(Leyka_Gateway $gateway) {
 /**
  * Get current activation button label from the given gateway.
  *
- * @param $addon Leyka_Gateway
+ * @param $addon Leyka_Addon
  * @return string|false
+ * @todo If we will manage to add a common Leyka_Extension class for both Leyka_Gateway & Leyka_Addon, merge this function with leyka_get_gateway_activation_button_label().
  */
 function leyka_get_addon_activation_button_label(Leyka_Addon $addon) {
 
     $activation_status = $addon->get_activation_status();
 
-    $button_labels = array(
-        'active' => esc_attr_x('Settings', '[of the gateway]', 'leyka'),
-        'inactive' => esc_attr_x('Step-by-step setup', '[of the gateway]', 'leyka'),
-        'activating' => esc_attr_x('Continue', '[the gateway step-by-step setup]', 'leyka'),
+    $activation_status_labels = array(
+        'active' => esc_attr_x('Settings', '[of the extension]', 'leyka'),
+        'inactive' => esc_attr_x('Step-by-step setup', '[of the extension]', 'leyka'),
+        'activating' => esc_attr_x('Continue', '[the extension step-by-step setup]', 'leyka'),
     );
 
     if($activation_status !== 'active' && !$addon->wizard_id) {
-        $label = esc_attr_x('Setup', '[the addon]', 'leyka');
+        $label = esc_attr_x('Setup', '[the extension]', 'leyka');
     } else {
-        $label = $activation_status && !empty($button_labels[$activation_status]) ? $button_labels[$activation_status] : false;
+        $label = $activation_status && !empty($activation_status_labels[$activation_status]) ?
+            $activation_status_labels[$activation_status] : false;
     }
 
     return $label;

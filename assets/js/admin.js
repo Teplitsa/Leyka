@@ -1221,6 +1221,77 @@ jQuery(document).ready(function($){
 	});
 });
 
+/** Extensions (Gateways & Addons) settings board common JS. */
+
+// Filter an extension cards list:
+jQuery(document).ready(function($){
+
+    let $filter = $('.leyka-extensions-filter'),
+        $extensions_list = $('.extensions-cards-list'),
+        extensions_filter = {};
+
+    $filter.find('.filter-toggle').click(function(){
+        $(this).closest('.filter-area').toggleClass('show');
+    });
+
+    $filter.find('.filter-category-show-filter').click(function(e){
+
+        e.preventDefault();
+
+        $(this).closest('.filter-area').toggleClass('show');
+
+    });
+
+    $filter.find('.filter-category-reset-filter').click(function(e){
+
+        e.preventDefault();
+
+        reset_filter();
+
+    });
+
+    $filter.find('.filter-category-item').click(function(e){
+
+        e.preventDefault();
+
+        toggle_filter_item($(this));
+        apply_filter();
+
+    });
+
+    function reset_filter() {
+
+        extensions_filter = {};
+
+        $filter.find('.filter-category-item').removeClass('active');
+        apply_filter();
+
+    }
+
+    function apply_filter() {
+        if(Object.keys(extensions_filter).length) {
+
+            $extensions_list.find('.extension-card').hide();
+            $extensions_list.find('.extension-card.' + Object.keys(extensions_filter).join('.')).show();
+
+        } else {
+            $extensions_list.find('.extension-card').show();
+        }
+    }
+
+    function toggle_filter_item($filter_item) {
+
+        $filter_item.toggleClass('active');
+
+        if($filter_item.hasClass('active')) {
+            extensions_filter[$filter_item.data('category')] = true;
+        } else {
+            delete extensions_filter[$filter_item.data('category')];
+        }
+
+    }
+
+});
 /** Feedback page */
 jQuery(document).ready(function($){
 
@@ -1331,7 +1402,7 @@ jQuery(document).ready(function($){
         return;
     }
 
-    var $pm_available_list = $('.pm-available'),
+    let $pm_available_list = $('.pm-available'),
         $pm_order = $('#pm-order-settings'),
         $pm_update_status = $('.pm-update-status'),
         $ok_message = $pm_update_status.find('.ok-message'),
@@ -1341,9 +1412,9 @@ jQuery(document).ready(function($){
 
     $pm_update_status.find('.result').hide();
 
-    function leykaUpdatePmList($pm_order) {
+    function leyka_update_pm_list($pm_order) {
 
-        var params = {
+        let params = {
             action: 'leyka_update_pm_list',
             pm_order: $pm_order.data('pm-order'),
             pm_labels: {},
@@ -1392,7 +1463,7 @@ jQuery(document).ready(function($){
                 $(this).sortable('serialize', {key: 'pm_order[]', attribute: 'data-pm-id', expression: /(.+)/})
             );
 
-            leykaUpdatePmList($pm_order);
+            leyka_update_pm_list($pm_order);
 
             if($pm_order.find('.pm-order:visible').length) {
                 $pm_list_empty_block.hide();
@@ -1415,7 +1486,7 @@ jQuery(document).ready(function($){
 
             e.preventDefault();
 
-            var $this = $(this),
+            let $this = $(this),
                 $wrapper = $this.parents('li:first');
 
             $wrapper.find('.pm-control').hide();
@@ -1426,7 +1497,7 @@ jQuery(document).ready(function($){
 
             e.preventDefault();
 
-            var $this = $(this),
+            let $this = $(this),
                 $wrapper = $this.parents('li:first'),
                 $pm_label_wrapper = $wrapper.find('.pm-label'),
                 new_pm_label = $wrapper.find('input[id*="pm_label"]').val();
@@ -1436,7 +1507,7 @@ jQuery(document).ready(function($){
                 $pm_label_wrapper.text(new_pm_label);
                 $wrapper.find('input.pm-label-field').val(new_pm_label);
 
-                leykaUpdatePmList($pm_order);
+                leyka_update_pm_list($pm_order);
 
             } else {
                 $wrapper.find('input[id*="pm_label"]').val($pm_label_wrapper.text());
@@ -1448,7 +1519,7 @@ jQuery(document).ready(function($){
 
         }).on('keydown', 'input[id*="pm_label"]', function(e){
 
-            var keycode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+            let keycode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
             if(keycode === 13) { // Enter pressed - stop settings form from being submitted, but save PM custom label
 
                 e.preventDefault();
@@ -1494,7 +1565,7 @@ jQuery(document).ready(function($){
         // Emulate a change() checkboxes event manually, to lessen the ajax requests to update the PM order:
         $pm_available_list.filter(':checked').each(function(){
 
-            var $pm_available_checkbox = $(this);
+            let $pm_available_checkbox = $(this);
 
             $pm_available_checkbox.removeAttr('checked'); // Uncheck the active PM checkbox
             $('#pm-'+$pm_available_checkbox.prop('id')).hide(); // Hide a PM settings
@@ -1563,7 +1634,7 @@ jQuery(document).ready(function($){
 // PayPal old/new API options:
 jQuery(document).ready(function($){
 
-    var $gateway_settings = $('.single-gateway-settings.gateway-paypal'),
+    let $gateway_settings = $('.single-gateway-settings.gateway-paypal'),
         $new_api_used = $gateway_settings.find('input[name="leyka_paypal_rest_api"]');
 
     if( !$gateway_settings.length || !$new_api_used.length ) {
@@ -1588,115 +1659,62 @@ jQuery(document).ready(function($){
 
 });
 
-// Filter gateways:
-jQuery(document).ready(function($){
-
-    var $filter = $('.leyka-extensions-filter'), // $('.leyka-gateways-filter')
-        $gatewaysList = $('.extensions-cards-list'), // $('.gateways-cards-list')
-        gatewaysFilter = {};
-
-    $filter.find('.filter-toggle').click(function(){
-        $(this).closest('.filter-area').toggleClass('show');
-    });
-
-    $filter.find('.filter-category-show-filter').click(function(e){
-        e.preventDefault();
-        $(this).closest('.filter-area').toggleClass('show');
-    });
-
-    $filter.find('.filter-category-reset-filter').click(function(e){
-        e.preventDefault();
-        resetFilter();
-    });
-
-    $filter.find('.filter-category-item').click(function(e){
-        e.preventDefault();
-        toggleFilterItem($(this));
-        applyFilter();
-    });
-
-    function resetFilter() {
-        gatewaysFilter = {};
-        $filter.find('.filter-category-item').removeClass('active');
-        applyFilter();
-    }
-
-    function applyFilter() {
-        if(Object.keys(gatewaysFilter).length) {
-            $gatewaysList.find('.gateway-card').hide();
-            $gatewaysList.find('.gateway-card.' + Object.keys(gatewaysFilter).join(".")).show();
-        } else {
-            $gatewaysList.find('.gateway-card').show();
-        }
-    }
-
-    function toggleFilterItem($filterItem) {
-
-        $filterItem.toggleClass('active');
-        
-        if($filterItem.hasClass('active')) {
-            gatewaysFilter[$filterItem.data('category')] = true;
-        } else {
-            delete gatewaysFilter[$filterItem.data('category')];
-        }
-
-    }
-
-});
-
 // PM list scroll in gateways cards:
 jQuery(document).ready(function($){
 
-    var iconWidth = 40;
+    let icon_width = 40;
 
     if( !$('.gateways-cards-list').length ) {
         return;
     }
 
-    function scrollPMIconsList($pmIconsList, moveStep) {
+    function scroll_pm_icons_list($pm_icons_list, move_step) {
 
-        var $movableWrapper = $pmIconsList.find('.pm-icons-wrapper');
-        var $iconsContainer = $pmIconsList.find('.pm-icons');
-        var $iconsScroll = $pmIconsList.find('.pm-icons-scroll');
+        let $movable_wrapper = $pm_icons_list.find('.pm-icons-wrapper'),
+            $icons_container = $pm_icons_list.find('.pm-icons'),
+            $icons_scroll = $pm_icons_list.find('.pm-icons-scroll'),
+            current_left_offset = parseInt($.trim($movable_wrapper.css('left').replace('px', ''))),
+            new_left_offset = current_left_offset - move_step;
         
-        var currentLeftOffset = parseInt($.trim($movableWrapper.css('left').replace('px', '')));
-        var newLeftOffset = currentLeftOffset - moveStep;
-        
-        if(newLeftOffset >= 0) {
-            newLeftOffset = 0;
-            $pmIconsList.find('.scroll-arrow.left').hide();
+        if(new_left_offset >= 0) {
+
+            new_left_offset = 0;
+            $pm_icons_list.find('.scroll-arrow.left').hide();
+
         } else {
-            $pmIconsList.find('.scroll-arrow.left').show();
+            $pm_icons_list.find('.scroll-arrow.left').show();
         }
         
-        if($iconsContainer.width() + newLeftOffset <= $iconsScroll.width()) {
-            newLeftOffset = -($iconsContainer.width() - $iconsScroll.width());
-            $pmIconsList.find('.scroll-arrow.right').hide();
+        if($icons_container.width() + new_left_offset <= $icons_scroll.width()) {
+
+            new_left_offset = -($icons_container.width() - $icons_scroll.width());
+            $pm_icons_list.find('.scroll-arrow.right').hide();
+
         } else {
-            $pmIconsList.find('.scroll-arrow.right').show();
+            $pm_icons_list.find('.scroll-arrow.right').show();
         }
         
-        $movableWrapper.css('left', String(newLeftOffset) + 'px');
+        $movable_wrapper.css('left', String(new_left_offset) + 'px');
 
     }
 
     $('.gateway-card-supported-pm-list').each(function(){
         
-        var $pmIconsList = $(this);
+        let $pm_icons_list = $(this);
         
         $(this).find('.scroll-arrow').click(function(){
             if($(this).hasClass('left')) {
-                scrollPMIconsList( $pmIconsList, -iconWidth );
+                scroll_pm_icons_list( $pm_icons_list, -icon_width );
             } else {
-                scrollPMIconsList( $pmIconsList, iconWidth );
+                scroll_pm_icons_list( $pm_icons_list, icon_width );
             }
         });
         
-        var $iconsContainer = $pmIconsList.find('.pm-icons');
-        var iconsWidth = iconWidth * $iconsContainer.find('img').length;
+        let $icons_container = $pm_icons_list.find('.pm-icons'),
+            icons_width = icon_width * $icons_container.find('img').length;
         
-        if(iconsWidth > $pmIconsList.width()) {
-            $pmIconsList.find('.scroll-arrow.right').show();
+        if(icons_width > $pm_icons_list.width()) {
+            $pm_icons_list.find('.scroll-arrow.right').show();
         }
 
     });
