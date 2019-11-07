@@ -40,7 +40,7 @@ if( !function_exists('leyka_show_gateway_logo')) {
 
         <div class="<?php echo is_array($wrapper_classes) ? implode(' ', $wrapper_classes) : $wrapper_classes; ?> module-logo gateway-logo">
 
-            <img class="module-logo-pic" src="<?php echo $use_paceholders ? '#GATEWAY_LOGO_URL#' : $gateway->icon_url;?>" alt="">
+            <img class="module-logo-pic gateway-logo-pic" src="<?php echo $use_paceholders ? '#GATEWAY_LOGO_URL#' : $gateway->icon_url;?>" alt="">
 
             <?php if( !!$show_gateway_info && ($use_paceholders || $gateway->description) ) {?>
             <span class="field-q">
@@ -77,10 +77,10 @@ if( !function_exists('leyka_show_extension_logo')) {
 
             <img class="module-logo-pic extension-logo-pic" src="<?php echo $use_paceholders ? '#EXTENSION_LOGO_URL#' : $extension->icon_url;?>" alt="">
 
-            <?php if( !!$show_info && ($use_paceholders || $extension->description) ) {?>
+            <?php if( !!$show_info && ($use_paceholders || $extension->description || $extension->full_description) ) {?>
             <span class="field-q">
                 <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-info.svg" alt="">
-                <span class="field-q-tooltip"><?php echo $use_paceholders ? '#EXTENSION_DESCRIPTION#' : $extension->description;?></span>
+                <span class="field-q-tooltip"><?php echo $use_paceholders ? '#EXTENSION_DESCRIPTION#' : $extension->full_description ? $extension->full_description : $extension->description;?></span>
             </span>
             <?php }?>
         </div>

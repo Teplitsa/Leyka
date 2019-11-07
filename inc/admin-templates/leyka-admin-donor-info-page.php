@@ -13,9 +13,11 @@ try {
     wp_die($e->getMessage());
 }?>
 
-<div class="wrap" data-leyka-admin-page-type="donor-info-page">
+<div class="leyka-admin wrap single-settings donor-settings" data-leyka-admin-page-type="donor-info-page">
 
-    <a href="<?php echo admin_url('/admin.php?page=leyka_donors');?>" class="back-to-list-link"><?php _e('Back to the list', 'leyka');?></a>
+    <a href="<?php echo admin_url('/admin.php?page=leyka_donors');?>" class="back-to-list-link">
+        <?php _e('Back to the list', 'leyka');?>
+    </a>
 
     <h1 class="wp-heading-inline"><?php _e('Donors', 'leyka');?></h1>
     <hr class="wp-header-end">

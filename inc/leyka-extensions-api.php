@@ -8,14 +8,24 @@ abstract class Leyka_Extension extends Leyka_Singleton {
 	protected $_id = ''; // Must be a unique string, like "support-packages"
 	protected $_title = ''; // A human-readable title, like "Support packages"
 
-	protected $_description = ''; // A human-readable description (for backoffice)
-	protected $_settings_description = ''; // A human-readable description (for backoffice)
+	protected $_description = '';
+	protected $_full_description = '';
+	protected $_settings_description = '';
+	protected $_connection_description = '';
 
     protected $_icon = ''; // An icon URL
     protected $_user_docs_link = ''; // Extension user manual page URL
     protected $_has_wizard = false;
 
     protected $_is_premium = false;
+
+    protected $_author_name = '';
+    protected $_author_url = '';
+    protected $_version = '';
+
+    protected $_main_file = ''; // Extension main file abs. address
+    protected $_folder = ''; // Extension folder abs. address
+
 
     protected $_options = array();
 
@@ -76,6 +86,29 @@ abstract class Leyka_Extension extends Leyka_Singleton {
 
     protected function __construct() {
 
+        try {
+
+            $descendant_class_info = new ReflectionClass($this);
+
+            $this->_main_file = $descendant_class_info->getFileName();
+            $this->_folder = dirname($this->_main_file);
+
+        } catch(Exception $e) {}
+
+        $data = get_file_data($this->_main_file, array(
+            'name' => 'Extension name',
+            'version' => 'Version',
+            'author_name' => 'Author',
+            'author_email' => 'Author email',
+            'author_url' => 'Author URI',
+            'debug_only' => 'Debug only',
+            'deprecated' => 'Deprecated',
+        ));
+        $this->_author_name = empty($data['author_name']) ? '' : $data['author_name'];
+        $this->_author_url = empty($data['author_url']) ? '' : $data['author_url'];
+//        $this->_author_email = empty($data['author_email']) ? '' : $data['author_email'];
+        $this->_version = empty($data['version']) ? '' : $data['version'];
+
         $this->_set_attributes(); // Initialize main extension attributes
 
         $this->_set_options_defaults(); // Set configurable options in admin area
@@ -99,11 +132,25 @@ abstract class Leyka_Extension extends Leyka_Singleton {
             case 'name':
             case 'label':
                 return $this->_title;
+
             case 'description': return $this->_description;
+            case 'full_description':
+            case 'description_full':
+                return $this->_full_description;
+            case 'settings_description':
+            case 'settings_page_description':
+                return $this->_settings_description;
+            case 'setup_description':
+            case 'connection_description':
+                return $this->_connection_description;
+
             case 'icon':
             case 'icon_url':
+            case 'logo_url':
 
-                $icon = false;
+                $icon = file_exists(LEYKA_PLUGIN_DIR."img/dashboard/logo-leyka.svg") ?
+                    LEYKA_PLUGIN_BASE_URL."img/dashboard/logo-leyka.svg" : '';
+
                 if($this->_icon) {
                     $icon = $this->_icon;
                 } else if(file_exists(LEYKA_PLUGIN_DIR."extensions/{$this->_id}/img/main-icon.svg")) {
@@ -135,6 +182,26 @@ abstract class Leyka_Extension extends Leyka_Singleton {
             case 'is_premium':
                 return !!$this->_is_premium;
 
+            case 'author':
+            case 'author_name':
+                return $this->_author_name;
+            case 'author_url': return $this->_author_url;
+
+            case 'version';
+            case 'current_version':
+                return $this->_version ? $this->_version : LEYKA_VERSION;
+
+            case 'file':
+            case 'file_path':
+            case 'main_file':
+            case 'main_file_path':
+                return $this->_main_file;
+            case 'folder':
+            case 'folder_path':
+            case 'home_folder':
+            case 'home_folder_path':
+                return $this->_folder;
+
             default:
                 return false;
         }
@@ -147,7 +214,7 @@ abstract class Leyka_Extension extends Leyka_Singleton {
         if($this->get_activation_status() !== 'active' && $wizard_id) {
             $url = admin_url('/admin.php?page=leyka_settings_new&screen=wizard-'.$wizard_id);
         } else {
-            $url = admin_url('/admin.php?page=leyka_extensions&extension='.$this->id);
+            $url = admin_url('/admin.php?page=leyka_extension_settings&extension='.$this->id);
         }
 
         return $url;

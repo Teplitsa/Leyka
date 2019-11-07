@@ -724,6 +724,24 @@
                 width: auto;
                 display: inline-block;
 
+                .module-logo {
+
+                    border: 1px solid $color-border-normal;
+                    border-radius: 20px;
+                    background-color: $color-white;
+
+                    .module-logo-pic {
+                        width: 40px;
+                        height: 40px;
+                    }
+
+                    .extension-logo-pic { // For now, extensions logo pics are larger, 'cause they don't include background
+                        width: 30px; // ... so we're gonna make them a little smaller.
+                        height: 30px; /** @todo To make all Modules logo styles uniform, refactor the Gateways logo pics. */
+                    }
+
+                }
+
             }
 
             .module-card-title {
@@ -788,7 +806,7 @@
 
                 }
 
-                &.module-description {
+                &.extension-description {
                     height: 106px;
                 }
 
@@ -885,6 +903,80 @@
         }
 
     } // Cards list END
+
+    // Settings page:
+    &.single-settings {
+
+        padding-left: 24px;
+        margin-top: 32px;
+        overflow: auto;
+
+        color: $leyka-admin-color-text;
+
+        .back-to-list-link {
+
+            @include leyka-admin-a;
+
+            margin-bottom: $leyka-base;
+            display: block;
+            width: max-content;
+
+        }
+
+        h1.wp-heading-inline {
+
+            @include leyka-adb-h1();
+
+            padding-top: 0;
+            padding-bottom: 0;
+
+            margin-bottom: 10px;
+
+        }
+
+        .single-settings-header {
+
+            display: flex;
+            flex-flow: row nowrap;
+
+            justify-content: space-between;
+
+            .header-left {
+
+                flex: 66.6% 0 1;
+
+                .meta-data {
+
+                    display: flex;
+                    flex-flow: row wrap;
+                    justify-content: flex-start;
+
+                    font-size: 12px;
+                    color: $color-wizard-link-sec-hover;
+
+                    .item {
+
+                        margin-right: 10px;
+
+                        &:last-child {
+                            margin-right: 0;
+                        }
+
+                    }
+
+                }
+
+            }
+
+            .header-right {
+                flex: 33.3% 0 1;
+            }
+
+        }
+
+    }
+
+
 
 }
 

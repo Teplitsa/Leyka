@@ -5,18 +5,6 @@
 		margin-bottom: -$leyka-base;
 	}
 
-	.wrap {
-		padding-left: 24px;
-		margin-top: 32px;
-		overflow: auto;
-	}
-
-	h1.wp-heading-inline {
-		@include leyka-adb-h1();
-		padding-top: 0px;
-		padding-bottom: 0px;
-	}
-
     .donors-list-export {
     	margin-top: $leyka-base;
 
@@ -524,17 +512,7 @@
 	}
 }
 
-// donor info page
-.dashboard_page_leyka_donor_info {
-	color: $leyka-admin-color-text;
-
-	.back-to-list-link {
-		@include leyka-admin-a;
-		margin-bottom: $leyka-base;
-		display: block;
-		width: max-content;
-	}
-}
+// Donor's info page:
 
 // info metabox
 .dashboard_page_leyka_donor_info {

@@ -243,6 +243,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         add_submenu_page(NULL, 'Leyka Wizard', 'Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', array($this, 'settings_new_screen'));
 
         add_submenu_page(NULL, "Donor's info", "Donor's info", 'leyka_manage_options', 'leyka_donor_info', array($this, 'donor_info_screen'));
+
+        add_submenu_page(NULL, "Extension settings", "Extension settings", 'leyka_manage_options', 'leyka_extension_settings', array($this, 'leyka_extension_settings_screen'));
         // Fake pages - END
 
         do_action('leyka_admin_menu_setup');
@@ -567,6 +569,21 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
     }
 
+    public function leyka_extension_settings_screen() {
+
+        if( !current_user_can('leyka_manage_options') && empty($_GET['extension']) ) {
+            wp_die(__('You do not have permissions to access this page.', 'leyka'));
+		}
+
+        do_action('leyka_pre_extension_settings_actions');
+
+        $this->_show_admin_template('extension-settings-page');
+
+        do_action('leyka_post_extension_settings_actions');
+        do_action('leyka_post_admin_actions');
+
+    }
+
     public function feedback_screen() {
 
         if( !current_user_can('leyka_manage_donations') ) {
@@ -697,6 +714,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             || (isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_donors'))
             || (isset($_GET['page']) && $_GET['page'] === 'leyka_donor_info' && !empty($_GET['donor']))
             || (isset($_GET['page']) && $_GET['page'] === 'leyka_extensions')
+            || (isset($_GET['page']) && $_GET['page'] === 'leyka_extension_settings' && !empty($_GET['extension']))
             || (isset($_GET['page']) && $_GET['page'] === 'leyka_feedback');
 
         $current_screen = get_current_screen();
