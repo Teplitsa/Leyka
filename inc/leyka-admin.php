@@ -235,7 +235,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), 'leyka_manage_options', 'leyka_settings', array($this, 'settings_screen'));
 
-        add_submenu_page('leyka', __('Addons', 'leyka'), __('Addons', 'leyka'), 'leyka_manage_options', 'leyka_addons', array($this, 'addons_screen'));
+        add_submenu_page('leyka', __('Extensions', 'leyka'), __('Extensions', 'leyka'), 'leyka_manage_options', 'leyka_extensions', array($this, 'extensions_screen'));
 
         add_submenu_page('leyka', __('Contact us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedback_screen'));
 
@@ -552,17 +552,17 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         $this->_show_admin_template('metabox-donor-donations');
     }
 
-    public function addons_screen() {
+    public function extensions_screen() {
 
         if( !current_user_can('leyka_manage_options') ) {
             wp_die(__('You do not have permissions to access this page.', 'leyka'));
 		}
 
-        do_action('leyka_pre_addons_actions');
+        do_action('leyka_pre_extensions_actions');
 
-        $this->_show_admin_template('addons-list-page');
+        $this->_show_admin_template('extensions-list-page');
 
-        do_action('leyka_post_addons_actions');
+        do_action('leyka_post_extensions_actions');
         do_action('leyka_post_admin_actions');
 
     }
@@ -696,7 +696,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             || ($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post')
             || (isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_donors'))
             || (isset($_GET['page']) && $_GET['page'] === 'leyka_donor_info' && !empty($_GET['donor']))
-            || (isset($_GET['page']) && $_GET['page'] === 'leyka_addons')
+            || (isset($_GET['page']) && $_GET['page'] === 'leyka_extensions')
             || (isset($_GET['page']) && $_GET['page'] === 'leyka_feedback');
 
         $current_screen = get_current_screen();

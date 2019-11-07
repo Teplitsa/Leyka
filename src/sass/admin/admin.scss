@@ -385,7 +385,7 @@
                     cursor: move;
                 }
 
-                .extension-logo-wrapper {
+                .module-logo-wrapper {
 
                     flex: 0 0 56px;
 
@@ -556,7 +556,7 @@
 
 .leyka-admin {
 
-    // Gateways & Addons cards:
+    // Modules (Gateways & Extensions) cards:
 
     .filter-area { // Cards filter
 
@@ -597,7 +597,7 @@
 
             a.filter-category-item {
 
-                @include extension-filter-item();
+                @include module-filter-item();
 
                 color: $color-wizard-link-sec;
                 background-color: $color-white;
@@ -632,7 +632,7 @@
 
         a.filter-action {
 
-            @include extension-filter-item();
+            @include module-filter-item();
 
             color: $color-wizard-link-sec;
             height: 40px;
@@ -683,14 +683,14 @@
 
     } // Cards filter END
 
-    .extensions-cards-list {
+    .modules-cards-list {
 
         display: flex;
         justify-content: flex-start;
         flex-direction: row;
         flex-wrap: wrap;
 
-        .extension-card {
+        .module-card {
 
             background-color: $color-white;
             border-radius: 6px;
@@ -707,7 +707,7 @@
                 border-color: #d5e8ee;
             }
 
-            .extension-card-header {
+            .module-card-header {
 
                 padding: 1rem;
                 border-bottom: 1px solid $color-border-light-001;
@@ -717,7 +717,7 @@
 
             }
 
-            .extension-card-icon {
+            .module-card-icon {
 
                 margin-right: 12px;
                 position: relative;
@@ -726,22 +726,22 @@
 
             }
 
-            .extension-card-title {
+            .module-card-title {
 
-                @include extension-card-title();
+                @include module-card-title();
 
                 padding-top: 3px;
 
-                .extension-settings-link {
+                .module-settings-link {
                     text-decoration: none;
                     color: inherit;
                 }
 
             }
 
-            .extension-card-status {
+            .module-card-status {
 
-                @include extension-card-status();
+                @include module-card-status();
 
                 color: $color-wizard-text;
                 padding-top: 2px;
@@ -755,7 +755,7 @@
 
             }
 
-            .extension-card-params {
+            .module-card-params {
 
                 padding: 14px 1rem 1rem 1rem;
 
@@ -788,7 +788,7 @@
 
                 }
 
-                &.addon-description {
+                &.module-description {
                     height: 106px;
                 }
 
@@ -854,7 +854,7 @@
 
             }
 
-            .extension-card-action {
+            .module-card-action {
 
                 display: flex;
                 justify-content: center;

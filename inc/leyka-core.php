@@ -53,7 +53,7 @@ class Leyka extends Leyka_Singleton {
     protected $_templates = null;
 
     /** * @var array */
-    protected $_addons = array();
+    protected $_extensions = array();
 
     /** @var bool|null */
     protected $_form_is_screening = false;
@@ -97,8 +97,8 @@ class Leyka extends Leyka_Singleton {
         }
         add_action('init', 'leyka_session_start', -2);
 
-//        $this->_initialize_addons_list(); // Add the addons from the files to the list & set their activity statuses
-//        $this->_run_active_addons(); // Require the main files for all active addons
+//        $this->_initialize_extensions_list(); // Add the extensions from the files to the list & set their activity statuses
+//        $this->_run_active_extensions(); // Require the main files for all active extensions
 
         if(get_option('leyka_plugin_stats_option_needs_sync')) {
 
@@ -482,7 +482,7 @@ class Leyka extends Leyka_Singleton {
             case 'submission_redirect_type':
                 return $this->_submission_redirect_type;
             case 'form_is_screening': return !!$this->_form_is_screening;
-            case 'addons': return !!$this->_addons;
+            case 'extensions': return !!$this->_extensions;
             default: return '';
         }
     }
@@ -510,39 +510,39 @@ class Leyka extends Leyka_Singleton {
         return leyka_options()->opt($option_id, $new_value);
     }
 
-//    protected function _initialize_addons_list() {
+//    protected function _initialize_extensions_list() {
 //
 //    }
 
-//    protected function _run_active_addons() {
+//    protected function _run_active_extensions() {
 
-        // 1. Search for files of "active" addons (check the special Leyka option for that)
+        // 1. Search for files of "active" extensions (check the special Leyka option for that)
 
-        // 2. If some addon file is not found, auto-deactivate the addon
+        // 2. If some extension file is not found, auto-deactivate the extension
 
 //    }
 
     /**
-     * @param mixed $activation_status If given, get only addons with it.
+     * @param mixed $activation_status If given, get only extensions with it.
      * NULL for both types altogether.
-     * @return array Of Leyka_Addon objects.
+     * @return array Of Leyka_Extension objects.
      */
-    public function get_addons($activation_status = null) {
+    public function get_extensions($activation_status = null) {
 
         if( !$activation_status ) {
-            return $this->_addons;
+            return $this->_extensions;
         } else if( !in_array($activation_status, array('active', 'inactive', 'activating')) ) {
             return array(); /** @todo Throw some Leyka_Exception */
         } else {
 
-            $addons = array();
-            foreach($this->_addons as $addon) { /** @var $addon Leyka_Addon */
-                if($addon->get_activation_status() === $activation_status) {
-                    $addons[] = $addon;
+            $extensions = array();
+            foreach($this->_extensions as $extension) { /** @var $extension Leyka_Extension */
+                if($extension->get_activation_status() === $activation_status) {
+                    $extensions[] = $extension;
                 }
             }
 
-            return $addons;
+            return $extensions;
 
         }
 
@@ -1112,14 +1112,14 @@ class Leyka extends Leyka_Singleton {
     }
 
     /**
-     * @param Leyka_Addon $addon
+     * @param Leyka_Extension $extension
      * @return bool
      */
-    public function add_addon(Leyka_Addon $addon) {
+    public function add_extension(Leyka_Extension $extension) {
 
-        if(empty($this->_addons[$addon->id])) {
+        if(empty($this->_extensions[$extension->id])) {
 
-            $this->_addons[$addon->id] = $addon;
+            $this->_extensions[$extension->id] = $extension;
             return true;
 
         } else {
@@ -1128,9 +1128,9 @@ class Leyka extends Leyka_Singleton {
 
     }
 
-    public function remove_addon($addon_id) {
-        if( !empty($this->_addons[$addon_id]) ) {
-            unset($this->_addons[$addon_id]);
+    public function remove_extension($extension_id) {
+        if( !empty($this->_extensions[$extension_id]) ) {
+            unset($this->_extensions[$extension_id]);
         }
     }
 

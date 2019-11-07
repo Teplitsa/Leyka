@@ -692,27 +692,27 @@ function leyka_wizard_started($wizard_name) {
 }
 
 /**
- * @param $addon_id string
- * @return Leyka_Addon|false An addon object or false if none found.
+ * @param $extension_id string
+ * @return Leyka_Extension|false An extension object or false if none found.
  */
-function leyka_get_addon_by_id($addon_id) {
-    return Leyka_Addon::get_by_id($addon_id);
+function leyka_get_extension_by_id($extension_id) {
+    return Leyka_Extension::get_by_id($extension_id);
 }
 
 /**
- * @param Leyka_Addon $addon
+ * @param Leyka_Extension $extension
  * @return string
  */
-function leyka_get_addon_settings_url(Leyka_Addon $addon) {
-    return $addon->get_settings_url();
+function leyka_get_extension_settings_url(Leyka_Extension $extension) {
+    return $extension->get_settings_url();
 }
 
 /**
- * @param Leyka_Addon $addon
- * @return string|false A Wizard suffix or false if wizard unavailable for given addon.
+ * @param Leyka_Extension $extension
+ * @return string|false A Wizard suffix or false if wizard unavailable for given extension.
  */
-function leyka_addon_setup_wizard(Leyka_Addon $addon) {
-    return $addon->wizard_id;
+function leyka_extension_setup_wizard(Leyka_Extension $extension) {
+    return $extension->wizard_id;
 }
 
 /**

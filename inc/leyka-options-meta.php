@@ -961,9 +961,9 @@ self::$_options_meta = array(
         'type' => 'custom_gateways_commission', // Special option type
         'title' => __('Payment operators commission', 'leyka'),
     ),
-    'addons_available' => array(
-        'type' => 'custom_addons', // Special option type
-        'title' => __('Addons available', 'leyka'),
+    'extensions_available' => array(
+        'type' => 'custom_extensions', // Special option type
+        'title' => __('Extensions available', 'leyka'),
     ),
     'admin_donations_list_display' => array(
         'type' => 'radio',

@@ -4,7 +4,6 @@
  * Description: A modern and lightweight form template
  * 
  * $campaign - current campaign
- * 
  **/
 
 $template_data = Leyka_Star_Template_Controller::get_instance()->get_template_data($campaign);

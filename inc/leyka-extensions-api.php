@@ -1,15 +1,18 @@
 <?php if( !defined('WPINC') ) die;
-/** Leyka Addons API */
+/** Leyka Extensions API */
 
-abstract class Leyka_Addon extends Leyka_Singleton {
+abstract class Leyka_Extension extends Leyka_Singleton {
 
     protected static $_instance;
 
 	protected $_id = ''; // Must be a unique string, like "support-packages"
 	protected $_title = ''; // A human-readable title, like "Support packages"
+
 	protected $_description = ''; // A human-readable description (for backoffice)
+	protected $_settings_description = ''; // A human-readable description (for backoffice)
+
     protected $_icon = ''; // An icon URL
-    protected $_user_docs_link = ''; // Addon user manual page URL
+    protected $_user_docs_link = ''; // Extension user manual page URL
     protected $_has_wizard = false;
 
     protected $_is_premium = false;
@@ -17,23 +20,23 @@ abstract class Leyka_Addon extends Leyka_Singleton {
     protected $_options = array();
 
     /**
-     * @param $addon_id string
-     * @return Leyka_Addon|false
+     * @param $extension_id string
+     * @return Leyka_Extension|false
      */
-    public static function get_by_id($addon_id) {
+    public static function get_by_id($extension_id) {
 
-        $addons = leyka()->get_addons();
+        $extensions = leyka()->get_extensions();
 
-        return empty($addons[$addon_id]) ? false : $addons[$addon_id];
+        return empty($extensions[$extension_id]) ? false : $extensions[$extension_id];
 
     }
 
     /**
-     * Addons filter categories main source.
+     * Extensions filter categories main source.
      * @return array
      */
     public static function get_filter_categories_list() {
-        return apply_filters('leyka_addons_filter_categories', array(
+        return apply_filters('leyka_extensions_filter_categories', array(
             'active' => esc_attr__('Active', 'leyka'),
             'inactive' => esc_attr__('Inactive', 'leyka'),
             'activating' => esc_attr__('Activating', 'leyka'),
@@ -73,13 +76,13 @@ abstract class Leyka_Addon extends Leyka_Singleton {
 
     protected function __construct() {
 
-        $this->_set_attributes(); // Initialize main addon attributes
+        $this->_set_attributes(); // Initialize main extension attributes
 
         $this->_set_options_defaults(); // Set configurable options in admin area
 
-        do_action('leyka_initialize_addon', $this, $this->_id);
+        do_action('leyka_initialize_extension', $this, $this->_id);
 
-        add_action("leyka_addon_{$this->_id}_save_settings", array($this, 'save_settings'));
+        add_action("leyka_extension_{$this->_id}_save_settings", array($this, 'save_settings'));
 
         $this->_initialize_options();
 
@@ -103,10 +106,10 @@ abstract class Leyka_Addon extends Leyka_Singleton {
                 $icon = false;
                 if($this->_icon) {
                     $icon = $this->_icon;
-                } else if(file_exists(LEYKA_PLUGIN_DIR."addons/{$this->_id}/img/main-icon.svg")) {
-                    $icon = LEYKA_PLUGIN_BASE_URL."addons/{$this->_id}/img/main-icon.svg";
-                } else if(file_exists(LEYKA_PLUGIN_DIR."addons/{$this->_id}/img/main-icon.png")) {
-                    $icon = LEYKA_PLUGIN_BASE_URL."addons/{$this->_id}/img/main-icon.png";
+                } else if(file_exists(LEYKA_PLUGIN_DIR."extensions/{$this->_id}/img/main-icon.svg")) {
+                    $icon = LEYKA_PLUGIN_BASE_URL."extensions/{$this->_id}/img/main-icon.svg";
+                } else if(file_exists(LEYKA_PLUGIN_DIR."extensions/{$this->_id}/img/main-icon.png")) {
+                    $icon = LEYKA_PLUGIN_BASE_URL."extensions/{$this->_id}/img/main-icon.png";
                 }
                 return $icon;
 
@@ -139,12 +142,12 @@ abstract class Leyka_Addon extends Leyka_Singleton {
 
     public function get_settings_url() {
 
-        $wizard_id = leyka_addon_setup_wizard($this);
+        $wizard_id = leyka_extension_setup_wizard($this);
 
         if($this->get_activation_status() !== 'active' && $wizard_id) {
             $url = admin_url('/admin.php?page=leyka_settings_new&screen=wizard-'.$wizard_id);
         } else {
-            $url = admin_url('/admin.php?page=leyka_addons&addon='.$this->id);
+            $url = admin_url('/admin.php?page=leyka_extensions&extension='.$this->id);
         }
 
         return $url;
@@ -193,12 +196,12 @@ abstract class Leyka_Addon extends Leyka_Singleton {
 
     }
 
-    /** Register an addon in the plugin manually */
-    public function add_addon() {
-        leyka()->add_addon(self::get_instance());
+    /** Register an extension in the plugin manually */
+    public function add_extension() {
+        leyka()->add_extension(self::get_instance());
     }
 
-    /** Register an addon frontend scripts in the plugin */
+    /** Register an extension frontend scripts in the plugin */
     public function enqueue_scripts() {
     }
 
@@ -213,11 +216,11 @@ abstract class Leyka_Addon extends Leyka_Singleton {
             }
         }
 
-        add_filter('leyka_addon_options_allocation', array($this, 'allocate_options'), 1, 1);
+        add_filter('leyka_extension_options_allocation', array($this, 'allocate_options'), 1, 1);
 
     }
 
-    /** @todo Use the method to save the addon settings manually - if we can't use the options allocation system */
+    /** @todo Use the method to save the extension settings manually - if we can't use the options allocation system */
     public function save_settings() {
     }
 
@@ -228,7 +231,7 @@ abstract class Leyka_Addon extends Leyka_Singleton {
 
         $status = 'inactive';
 
-        if(false /** @todo Get the "active" option value for the addon */) {
+        if(false /** @todo Get the "active" option value for the extension */) {
             $status = 'active';
         } else if($this->wizard_id && leyka_wizard_started($this->wizard_id)) {
             $status = 'activating';
@@ -238,7 +241,7 @@ abstract class Leyka_Addon extends Leyka_Singleton {
 
     }
 
-    /** @return array A list of relevant values from the list of Leyka_Addon::_get_filter_categories_ids(). */
+    /** @return array A list of relevant values from the list of Leyka_Extension::_get_filter_categories_ids(). */
     public function get_filter_categories() {
 
         $categories = array($this->get_activation_status());

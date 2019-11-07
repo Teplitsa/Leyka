@@ -1,10 +1,10 @@
-/** Extensions (Gateways & Addons) settings board common JS. */
+/** Modules (Gateways & Extensions) settings board common JS. */
 
 // Filter an extension cards list:
 jQuery(document).ready(function($){
 
-    let $filter = $('.leyka-extensions-filter'),
-        $extensions_list = $('.extensions-cards-list'),
+    let $filter = $('.leyka-modules-filter'),
+        $extensions_list = $('.modules-cards-list'),
         extensions_filter = {};
 
     $filter.find('.filter-toggle').click(function(){
@@ -48,11 +48,11 @@ jQuery(document).ready(function($){
     function apply_filter() {
         if(Object.keys(extensions_filter).length) {
 
-            $extensions_list.find('.extension-card').hide();
-            $extensions_list.find('.extension-card.' + Object.keys(extensions_filter).join('.')).show();
+            $extensions_list.find('.module-card').hide();
+            $extensions_list.find('.module-card.' + Object.keys(extensions_filter).join('.')).show();
 
         } else {
-            $extensions_list.find('.extension-card').show();
+            $extensions_list.find('.module-card').show();
         }
     }
 

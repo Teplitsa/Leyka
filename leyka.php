@@ -94,7 +94,7 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-controller.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-polylang.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-core.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-gateways-api.php');
-require_once(LEYKA_PLUGIN_DIR.'inc/leyka-addons-api.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-extensions-api.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-campaign.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donation.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donor.php');
@@ -124,21 +124,21 @@ if($gateways_dir) {
 
 }
 
-// Automatically include all sub-dirs of /leyka/addons/ :
-$addons_dir = dir(LEYKA_PLUGIN_DIR.'addons/');
-if($addons_dir) {
+// Automatically include all sub-dirs of /leyka/extensions/ :
+$extensions_dir = dir(LEYKA_PLUGIN_DIR.'extensions/');
+if($extensions_dir) {
 
-    while(false !== ($addon_id = $addons_dir->read())) {
+    while(false !== ($extension_id = $extensions_dir->read())) {
 
-        $file_addr = LEYKA_PLUGIN_DIR."addons/$addon_id/leyka-class-$addon_id-addon.php";
+        $file_addr = LEYKA_PLUGIN_DIR."extensions/$extension_id/leyka-class-{$extension_id}-extension.php";
 
-        if($addon_id !== '.' && $addon_id !== '..' && file_exists($file_addr)) {
+        if($extension_id !== '.' && $extension_id !== '..' && file_exists($file_addr)) {
             require_once($file_addr);
         }
 
     }
 
-    $addons_dir->close();
+    $extensions_dir->close();
 
 }
 

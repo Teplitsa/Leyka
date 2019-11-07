@@ -76,7 +76,7 @@ if($main_settings_steps) {?>
 
         <?php foreach(leyka()->get_gateways('activating') as $gateway) {?>
             <div class="gateway status-activating">
-                <div class="extension-logo"><img src="<?php echo $gateway->icon_url;?>" alt=""></div>
+                <div class="module-logo"><img src="<?php echo $gateway->icon_url;?>" alt=""></div>
                 <div class="gateway-data">
                     <div class="gateway-title"><?php echo $gateway->title;?></div>
                     <div class="gateway-activation-status"><a href="<?php echo admin_url("/admin.php?page=leyka_settings&stage=payment&gateway=" . $gateway->id)?>"><?php _e('Activating', 'leyka');?></a></div>
@@ -86,7 +86,7 @@ if($main_settings_steps) {?>
 
         <?php foreach(leyka()->get_gateways('active') as $gateway) {?>
             <div class="gateway status-active">
-                <div class="extension-logo"><img src="<?php echo $gateway->icon_url;?>" alt=""></div>
+                <div class="module-logo"><img src="<?php echo $gateway->icon_url;?>" alt=""></div>
                 <div class="gateway-data">
                     <div class="gateway-title"><?php echo $gateway->title;?></div>
                     <div class="gateway-activation-status"><?php _e('Active', 'leyka');?></div>
