@@ -66,7 +66,7 @@
                 background-color: #e5e5e5;
                 border-color: #dddddd;
                 color: #8f8f8f;
-                border-radius: 4px 4px 0px 0px;
+                border-radius: 4px 4px 0 0;
                 padding: 10px 12px 7px 12px;
                 
                 margin-left: 0.5em;
@@ -909,7 +909,9 @@
 
         padding-left: 24px;
         margin-top: 32px;
-        overflow: auto;
+        margin-right: 91px;
+
+        overflow: hidden;
 
         color: $leyka-admin-color-text;
 
@@ -920,6 +922,26 @@
             margin-bottom: $leyka-base;
             display: block;
             width: max-content;
+
+        }
+
+        // Small redefinitions for main CTA buttons:
+        .button-primary {
+            @include leyka-button-primary(280px);
+        }
+        .button-secondary {
+
+            @include leyka-button-primary(280px);
+
+            background-color: $color-white;
+            border: 1px solid $color-border-secondary-button;
+            color: $color-secondary-button;
+
+            &:hover {
+                border: 1px solid $color-border-secondary-button;
+                color: $color-secondary-button;
+                background-color: $color-white;
+            }
 
         }
 
@@ -939,17 +961,22 @@
             display: flex;
             flex-flow: row nowrap;
 
-            justify-content: space-between;
+            justify-content: flex-start;
+
+            padding-bottom: 32px;
+            border-bottom: 1px solid $color-section-tabs-line;
 
             .header-left {
 
-                flex: 66.6% 0 1;
+                flex: calc(100% - 280px) 0 1;
 
                 .meta-data {
 
                     display: flex;
                     flex-flow: row wrap;
                     justify-content: flex-start;
+
+                    margin-bottom: 10px;
 
                     font-size: 12px;
                     color: $color-wizard-link-sec-hover;
@@ -962,6 +989,21 @@
                             margin-right: 0;
                         }
 
+                        .item-value {
+                            color: $leyka-adb-color-text-light1;
+                            font-weight: bold;
+                        }
+
+                        .status-label {
+
+                            font-weight: normal;
+
+                            &.active {
+                                color: $leyka-admin-color-link;
+                            }
+
+                        }
+
                     }
 
                 }
@@ -969,14 +1011,125 @@
             }
 
             .header-right {
-                flex: 33.3% 0 1;
+
+                flex: 280px 0 1;
+
+                margin-left: 32px;
+
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+
+                .module-logo-wrapper {
+
+                    display: flex;
+                    flex-flow: row nowrap;
+                    justify-content: center;
+
+                    .module-logo {
+
+                        width: 104px;
+                        height: 104px;
+
+                        border: 1px solid $color-border-semidark;
+                        border-radius: 50%;
+
+                        background-color: $color-white;
+
+                        margin-bottom: 32px;
+
+                        .module-logo-pic {
+                            width: 55%;
+                            height: 55%;
+                        }
+
+                    }
+
+                }
+
+                .extension-main-cta {
+                    display: flex;
+                    flex-flow: row nowrap;
+                    justify-content: center;
+                }
+
+            }
+
+        }
+
+        .metabox-holder.columns-2 {
+
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: flex-start;
+
+            padding-top: 22px !important;
+            padding-bottom: 32px !important;
+
+            .column-main {
+
+                flex: calc(100% - 280px - 32px) 0 1;
+
+                padding-right: 32px;
+
+            }
+
+            .column-sidebar {
+
+                flex: 280px 0 1;
+
+                .setup-description {
+
+                    padding: 16px 12px;
+                    margin-bottom: 16px;
+
+                    border-radius: 6px;
+
+                    background-color: $color-inline-instructions-background;
+
+                }
+
+            }
+
+        }
+
+        .single-settings-footer {
+
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: space-between;
+            align-items: center;
+
+            border-top: 1px solid $color-section-tabs-line;
+            padding-top: 32px;
+
+            .delete-extension-link {
+                color: $leyka-adb-color-error;
+                text-decoration: none;
+                border: 0;
+            }
+
+            .button {
+
+                margin-left: 24px;
+
+                &.save-settings {
+                    width: 152px;
+                }
+
             }
 
         }
 
     }
 
+    .outer-link {
 
+        text-decoration: none;
+
+        @include leyka-admin-outer-link(0.1rem);
+
+    }
 
 }
 

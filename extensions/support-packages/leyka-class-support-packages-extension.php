@@ -22,10 +22,10 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
         // A human-readable description (for backoffice extension settings page):
         $this->_settings_description = 'Если пользователь вдруг решает поменять сколько он(а) месячно жертвует, например увеличивает размер месячной поддержки с 999 рублей до 1050 рублей (попадая, таким образом из Базовых доноров в Серебряные), то переключение между Пакетами происходит автоматически.';
 
-        $this->_connection_description = '<h3>Подключение функции «Ограничение доступа к контенту»<h3>
+        $this->_connection_description = '<p><strong>Подключение функции «Ограничение доступа к контенту»</strong></p>
 <p>Доступ можно ограничить ко всему посту или к частям текста с помощью шорткода</p>
-<code>[leyka_limited_content support_plan="Программное название вознагрождения"]</code>
-<p>Ваш текст</p>
+<code>[leyka_limited_content support_plan="Программное название вознаграждения"]</code>
+<br>Ваш текст<br>
 <code>[/leyka_limited_content]</code>';
 
         $this->_user_docs_link = '//leyka.te-st.ru'; // Extension user manual page URL

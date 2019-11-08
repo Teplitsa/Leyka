@@ -206,7 +206,7 @@
                             border-bottom-width: 1px;
                         }
                         
-                        &[target=_blank] {
+                        &[target="_blank"] {
                             &:after {
                                 content: " ";
                                 background-image: url('../../img/icon-link-out.svg');

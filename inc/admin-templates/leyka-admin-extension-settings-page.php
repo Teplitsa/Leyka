@@ -14,13 +14,12 @@ try {
     <a href="<?php echo admin_url('/admin.php?page=leyka_extensions');?>" class="back-to-list-link">
         <?php _e('Back to the list', 'leyka');?>
     </a>
-
-    <h1 class="wp-heading-inline"><?php echo $extension->title;?></h1>
-    <hr class="wp-header-end">
-
+<!--    <hr class="wp-header-end">-->
     <div class="single-settings-header">
 
         <div class="header-left">
+
+            <h1 class="wp-heading-inline"><?php echo $extension->title;?></h1>
 
             <div class="meta-data">
 
@@ -30,7 +29,6 @@ try {
                         <?php echo mb_strtolower($extension->activation_status_label);?>
                     </span>
                 </div>
-
                 <div class="item extension-version">
                     <span class="item-name"><?php _e('Extension version:', 'leyka');?></span>
                     <span class="item-value"><?php echo $extension->version;?></span>
@@ -62,42 +60,61 @@ try {
 
         <div class="header-right">
 
-            <div class="module-logo extension-logo">
-                <img src="<?php echo $extension->logo_url;?>" class="module-logo-pic extension-logo-pic" alt="">
+            <div class="module-logo-wrapper">
+                <div class="module-logo extension-logo">
+                    <img src="<?php echo $extension->logo_url;?>" class="module-logo-pic extension-logo-pic" alt="">
+                </div>
             </div>
 
-            <div class="extension-main-cta"><button class="button"><?php _e('Activate', 'leyka');?></button></div>
+            <div class="extension-main-cta">
+                <a class="button <?php echo $extension->activation_status === 'active' ? 'button-secondary' : 'button-primary';?> activation-button <?php echo $extension->activation_status;?> <?php echo $extension->has_wizard ? 'wizard-available' : '';?>" href="#"><?php echo leyka_get_extension_activation_button_label($extension);?></a>
+            </div>
 
         </div>
 
     </div>
 
     <div id="poststuff">
-        <div id="post-body" class="metabox-holder columns-2">
+        <div class="metabox-holder columns-2">
 
-            <div id="postbox-container-1" class="postbox-container extension-sidebar">
+            <div class="postbox-container column-main">
 
-            <?php if($extension->setup_description) {?>
-                <div class="setup-secription"><?php echo $extension->setup_description;?></div>
-            <?php }
+                <input type="hidden" value="<?php echo $extension->id?>" id="leyka_extension_id">
 
-            if($extension->docs_url) {?>
-                <div class="setup-user-manual-link outer-link">
-                    <a href="<?php echo $extension->docs_url;?>" target="_blank"><?php _e('Detailed manual', 'leyka');?></a>
-                </div>
-            <?php }?>
-
-            </div>
-
-            <div id="postbox-container-2" class="postbox-container">
-
-            	<input type="hidden" value="<?php echo $extension->id?>" id="leyka_extension_id">
+<!--                <div style="width: 100%; border: 1px solid grey;">123</div>-->
 
                 <?php do_meta_boxes('extension_settings_page_main_column', 'normal', null);?>
 
             </div>
 
+            <div class="postbox-container column-sidebar">
+
+            <?php if($extension->setup_description) {?>
+                <div class="setup-description"><?php echo $extension->setup_description;?></div>
+            <?php }
+
+            if($extension->docs_url) {?>
+                <div class="setup-user-manual-link">
+                    <a class="outer-link" href="<?php echo $extension->docs_url;?>" target="_blank">
+                        <?php _e('Detailed manual', 'leyka');?>
+                    </a>
+                </div>
+            <?php }?>
+
+            </div>
+
         </div>
+    </div>
+
+    <div class="single-settings-footer">
+
+        <a href="#" class="delete-extension-link"><?php _e('Delete the extension', 'leyka');?></a>
+
+        <span class="buttons">
+            <a class="button button-primary button-small save-settings" href="#"><?php _e('Save', 'leyka');?></a>
+            <a class="button <?php echo $extension->activation_status === 'active' ? 'button-secondary' : 'button-primary';?> activation-button <?php echo $extension->activation_status;?>" href="#"><?php echo leyka_get_extension_activation_button_label($extension);?></a>
+        </span>
+
     </div>
 
 </div>

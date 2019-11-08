@@ -47,10 +47,10 @@ abstract class Leyka_Extension extends Leyka_Singleton {
      */
     public static function get_filter_categories_list() {
         return apply_filters('leyka_extensions_filter_categories', array(
-            'active' => esc_attr__('Active', 'leyka'),
-            'inactive' => esc_attr__('Inactive', 'leyka'),
-            'activating' => esc_attr__('Activating', 'leyka'),
-            'premium' => esc_attr__('Premium', 'leyka'),
+            'active' => _x('Active', '[for "extension is active"]', 'leyka'),
+            'inactive' => _x('Inactive', '[for "extension is inactive"]', 'leyka'),
+            'activating' => _x('Activating', '[for "extension is activating"]', 'leyka'),
+            'premium' => _x('Premium', '[for "premium extension"]', 'leyka'),
         ));
     }
 
@@ -69,9 +69,9 @@ abstract class Leyka_Extension extends Leyka_Singleton {
 
     public static function get_activation_status_list() {
         return array(
-            'active' => __('Active', 'leyka'),
-            'inactive' => __('Inactive', 'leyka'),
-            'activating' => __('Setup is in process', 'leyka'),
+            'active' => _x('Active', '[for "extension is active"]', 'leyka'),
+            'inactive' => _x('Inactive', '[for "extension is inactive"]', 'leyka'),
+            'activating' => _x('Setup is in process', '[for extension]', 'leyka'),
         );
     }
 

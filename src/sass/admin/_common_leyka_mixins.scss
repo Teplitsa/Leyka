@@ -151,3 +151,21 @@
     width: $size;
     height: $size;
 }
+
+@mixin leyka-admin-outer-link($icon-margin-left: default) {
+
+    @if $icon-margin-left == 'default' {
+        $icon-margin-left: 0.5rem;
+    }
+
+    &:after {
+        content: ' ';
+        background-image: url('../../img/icon-link-out.svg');
+        background-size: 12px 12px;
+        width: 12px;
+        height: 12px;
+        margin-left: $icon-margin-left;
+        display: inline-block;
+    }
+
+}

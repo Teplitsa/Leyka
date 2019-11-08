@@ -89,7 +89,7 @@
             left:calc(50% - 4px);
             top:-7px;                            
         }
-        
+
         &:empty {
             display: none;
         }
@@ -238,11 +238,12 @@
     }
     
     .field-component {
+
         position: relative;
         display: inline-block;
         height: 40px;
         
-        input[type=file] {
+        input[type="file"] {
             height: 40px;
             width: 248px;
             display: inline-block;
@@ -252,8 +253,10 @@
             vertical-align: middle;
         }
         
-        input[type=button] {
+        input[type="button"] {
+
             @include wizard-button-caption();
+
             height: 40px;
             width: 248px;
             display: block;
@@ -263,10 +266,13 @@
             left: 0;
             //pointer-events: none;
             cursor: pointer;
+
         }
         
         span.chosen-file {
+
             @include wizard-button-caption();
+
             display: inline-block;
             line-height: 40px;
             vertical-align: middle;
@@ -278,7 +284,9 @@
             max-width: 254px;
             height: 40px;
             white-space: nowrap;
+
         }
+
     }
     
 }
@@ -291,23 +299,33 @@
     margin-bottom: 0;
 }
 
-@mixin leyka-button-primary {
+@mixin leyka-button-primary($width: default) {
+
     @include wizard-button-caption();
-    height: 40px;
-    line-height: 40px;
-    width: 248px;
-    color: $color-white;
+
+    @if $width == default {
+        $width: 248px;
+    }
+
     display: inline-block;
     text-align: center;
     box-shadow: none;
+
+    height: 40px;
+    line-height: 40px;
+    width: $width;
+
+    color: $color-white;
     
     &:hover {
-      color: $color-white;
-      box-shadow: none;
+        color: $color-white;
+        box-shadow: none;
     }
+
 }
 
 @mixin leyka-link-sec {
+
     color: $color-wizard-link-sec;
     text-decoration: none;
     padding-bottom: 2px;
@@ -321,9 +339,11 @@
     &:focus, &:active {
         color: $color-wizard-link-sec-active;
     }
+
 }
 
 @mixin leyka-pm-icons {
+
     flex: 0 1 50%;
     padding: 4px 16px;
   
@@ -344,6 +364,7 @@
         }
         
     }
+
 }
 
 @mixin leyka-gateway-details {
