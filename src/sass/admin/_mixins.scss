@@ -140,19 +140,23 @@
 
 @mixin leyka-field-control {
     // TODO: move colors to presets after comlete
-    input[type=text], input[type=email], input[type=password], input[type=text], input[type=number], select, textarea {
+    input[type="text"], input[type="email"], input[type="password"], input[type="number"], select, textarea {
+
         @include wizard-field-input-text();
+
         color: $color-wizard-text;
+
         @include placeholder {
             color: $color-wizard-placeholder;
-        }                    
+        }
+
         margin-left: -1px;
         padding: 1px 6px 3px 6px;
         height: 25px;
         //width: 248px;
         width: 100%;
         border: 1px solid #dddddd;
-        
+
         &:active, &:focus {
             color: $color-wizard-text;
             border: 1px solid #bfbfbf;
@@ -160,46 +164,55 @@
         }
         
     }
-    
-    input[type=file] {
+
+    input[type="file"] {
         width: 248px;
     }
-    
+
     textarea {
         height: 62px;
         width: 100%;
         line-height: 18px;
     }
-    
-    input[type=checkbox], input[type=radio] {
+
+    input[type="checkbox"], input[type="radio"] {
+
         width: 18px;
         height: 18px;
+
+        //&:checked::before {
+        //    margin: 25%;
+        //}
+        //
+        //&::before {
+        //
+        //    width: 8px;
+        //    height: 8px;
+        //    line-height: 18px;
+        //
+        //}
+
     }
-    
-    input[type=checkbox], input[type=radio] {
-        &::before {
-            width: 8px;
-            height: 8px;
-            line-height: 18px;
-        }
-    }
-    
-    input[type=checkbox] {
+
+    input[type="checkbox"] {
         padding-top: 2px !important;
         padding-left: 1px !important;
     }
-    
+
     label {
+
         @include wizard-field-label();
+
         display: block;
         margin-bottom: 8px;
-        
+
         & > input {
             margin-right: 8px;
             vertical-align: middle;
         }
         
-    }  
+    }
+
 }
 
 @mixin leyka-field-control-error {
@@ -210,6 +223,7 @@
 }
 
 @mixin leyka-field-checkbox {
+
     &.title {
         display: inline-block;
         vertical-align: bottom;
@@ -218,9 +232,11 @@
     &.field {
         float: left;
     }
+
 }
 
 @mixin leyka-field-radio {
+
     label {
         display: block;
     }
@@ -228,6 +244,7 @@
     .radio-entry-description { /** @todo Make it a popup */
         display: none;
     }
+
 }
 
 @mixin leyka-field-file {

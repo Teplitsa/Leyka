@@ -3,7 +3,7 @@
 /** Save the basic site data in the plugin stats DB */
 function leyka_sync_plugin_stats_option() {
 
-    if( !leyka()->opt('plugin_stats_sync_enabled') ) { // Don't try to sync the plugin stats at all
+    if( !leyka_options()->opt('plugin_stats_sync_enabled') ) { // Don't try to sync the plugin stats at all
         return true;
     }
 

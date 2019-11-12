@@ -182,7 +182,7 @@ function leyka_get_gateway_settings_url($gateway) {
  * @return mixed; string wizard suffix or false if wizard unavailable for gateway
  */
 function leyka_gateway_setup_wizard($gateway) {
-    return $gateway->has_wizard;
+    return $gateway->has_wizard ? $gateway->id : false;
 }
 
 abstract class Leyka_Gateway extends Leyka_Singleton {

@@ -83,7 +83,21 @@ $gateways_categories = leyka_get_gateways_filter_categories_list();?>
             </div>
 
             <div class="module-card-action">
-                <a class="button <?php echo $gateway_activation_status === 'active' ? 'button-secondary' : 'button-primary';?> activation-button <?php echo $gateway_activation_status;?> <?php echo leyka_gateway_setup_wizard($gateway) ? "wizard-available" : "";?>" href="<?php echo leyka_get_gateway_settings_url($gateway);?>"><?php echo leyka_get_gateway_activation_button_label($gateway);?></a>
+
+            <?php if($gateway->has_wizard && $gateway_activation_status === 'inactive') {?>
+                <a href="<?php echo leyka_get_gateway_settings_url($gateway);?>" class="button <?php echo $gateway_activation_status === 'active' ? 'button-secondary' : 'button-primary';?> gateway-settings"></a>
+            <?php }?>
+
+                <a class="button <?php echo $gateway_activation_status === 'active' ? 'button-secondary' : 'button-primary';?> activation-button <?php echo $gateway_activation_status;?>" href="<?php echo leyka_get_gateway_settings_url($gateway);?>">
+
+                <?php if($gateway->has_wizard && $gateway_activation_status === 'inactive') {?>
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>src/svg/icon-wizard-stick-only.svg" class="wizard-available" alt="">
+                <?php }
+
+                echo leyka_get_gateway_activation_button_label($gateway);?>
+
+                </a>
+
             </div>
 
         </div>

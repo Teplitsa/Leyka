@@ -137,7 +137,9 @@
                 }
 
                 .upload-photo {
+
                     @include wizard-button-caption();
+
                     height: 40px;
                     width: 248px;
 

@@ -862,12 +862,15 @@
                 }
 
                 .pm-icons {
+
                     @include leyka-pm-icons();
+
                     padding: 0;
                     justify-content: center;
                     align-items: center;
                     flex-basis: calc(100% - 12px);
                     height: 40px;
+
                 }
 
             }
@@ -877,25 +880,36 @@
                 display: flex;
                 justify-content: center;
 
+                padding: 0 16px;
+
                 .button-primary {
-                    width: 272px;
+
+                    width: 100%;
                     margin-right: 0;
 
                     &.activation-button {
-                        background-repeat: no-repeat;
-                        background-position: left center;
+                        display: flex;
+                        justify-content: center;
+                    }
 
-                        &.inactive.wizard-available {
-                            background-image: url(../../img/icon-wizard-stick-only.svg);
-                            background-position: 4px center;
-                        }
+                    .wizard-available {
+                        margin-left: -8px;
                     }
 
                 }
 
                 .button-secondary {
-                    width: 272px;
+                    width: 100%;
                     margin-right: 0;
+                }
+
+                .gateway-settings {
+                    width: 48px;
+                    margin-right: 4px;
+                    background-image: url(../../src/svg/icon-gear.svg);
+                    background-size: 38px;
+                    background-position: center;
+                    background-repeat: no-repeat;
                 }
 
             }

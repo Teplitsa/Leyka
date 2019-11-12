@@ -55,15 +55,24 @@
                             }
     
                             .upload-photo {
+
                                 @include wizard-button-caption();
+
                                 height: 40px;
                                 width: 248px;
+
+                                border: 1px solid $color-border-normal;
+                                box-shadow: 0 1px 0 $color-border-normal;
+
+                                color: $color-secondary-button;
                                 background-color: $color-white;
+
                                 position: absolute;
                                 top: 0;
                                 left: 0;
                                 //pointer-events: none;
                                 outline: none;
+
                             }
     
                         }
