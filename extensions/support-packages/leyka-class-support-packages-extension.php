@@ -33,6 +33,49 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
     }
 
+    protected function _set_options_defaults() {
+        $this->_options = array(
+            array('section' => array(
+                'name' => $this->_id.'-main-options',
+                'title' => __('Main options', 'leyka'),
+                'is_default_collapsed' => false,
+                'options' => array(
+                    $this->_id.'_some_name' => array(
+                        'type' => 'text',
+                        'title' => __('Some title', 'leyka'),
+                        'comment' => __('Please, enter the blah-blah here.', 'leyka'),
+                        'required' => true,
+                        'placeholder' => __('E.g., Blah-blah', 'leyka'),
+                    ),
+                )
+            )),
+            array('section' => array(
+                'name' => $this->_id.'-packages-settings',
+                'title' => __('Packages options', 'leyka'),
+                'is_default_collapsed' => false,
+                'options' => array(
+                    $this->_id.'_custom_packages_settings' => array(
+                        'type' => 'custom_support_packages_settings', // Special option type
+                    ),
+                )
+            )),
+            array('section' => array(
+                'name' => $this->_id.'-for-devs',
+                'title' => __('For developers', 'leyka'),
+                'is_default_collapsed' => true,
+                'options' => array(
+                    $this->_id.'_for_devs' => array(
+                        'type' => 'textarea',
+                        'is_code' => true,
+                        'title' => __('Styles settings', 'leyka'),
+                        'default' => '/* .some-selector-1 { color: black; } */ '.__('/* The main font color */', 'leyka')
+                            .'/* .some-selector-2 { color: orange; } */ '.__('/* The secondary font color */', 'leyka'),
+                    ),
+                )
+            )),
+        );
+    }
+
 }
 
 function leyka_add_extension_support_packages() { // Use named function to leave a possibility to remove/replace it on the hook

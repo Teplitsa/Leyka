@@ -26,7 +26,6 @@ abstract class Leyka_Extension extends Leyka_Singleton {
     protected $_main_file = ''; // Extension main file abs. address
     protected $_folder = ''; // Extension folder abs. address
 
-
     protected $_options = array();
 
     /**
@@ -244,17 +243,17 @@ abstract class Leyka_Extension extends Leyka_Singleton {
             }
         }
 
-        $gateway_options_names = $this->get_options_names();
+        $options_names = $this->get_options_names();
         if($section_index < 0) {
             $options[] = array('section' => array(
                 'name' => $this->_id,
                 'title' => $this->_title,
                 'is_default_collapsed' => false,
-                'options' => $gateway_options_names
+                'options' => $options_names
             ));
         } else {
             $options[$section_index]['section']['options'] = array_unique(array_merge(
-                $gateway_options_names,
+                $options_names,
                 $options[$section_index]['section']['options']
             ));
         }

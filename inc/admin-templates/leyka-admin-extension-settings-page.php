@@ -81,7 +81,7 @@ try {
 
                 <input type="hidden" value="<?php echo $extension->id?>" id="leyka_extension_id">
 
-<!--                <div style="width: 100%; border: 1px solid grey;">123</div>-->
+                <?php /** @todo Initialize the options controller & render here & use them to display the options sections as a common form. */?>
 
                 <?php do_meta_boxes('extension_settings_page_main_column', 'normal', null);?>
 

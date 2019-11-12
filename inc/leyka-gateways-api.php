@@ -396,6 +396,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     protected function _set_gateway_pm_list() {
 
         $this->_initialize_pm_list();
+
         do_action('leyka_init_pm_list', $this);
 
     }
@@ -403,7 +404,6 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     protected function _initialize_options() {
 
         foreach($this->_options as $option_name => $params) {
-
             if( !leyka_options()->option_exists($option_name) ) {
                 leyka_options()->add_option($option_name, $params['type'], $params);
             }
