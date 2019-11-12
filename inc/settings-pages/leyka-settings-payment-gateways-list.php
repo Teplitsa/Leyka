@@ -84,13 +84,13 @@ $gateways_categories = leyka_get_gateways_filter_categories_list();?>
 
             <div class="module-card-action">
 
-            <?php if($gateway->has_wizard && $gateway_activation_status === 'inactive') {?>
+            <?php if($gateway->has_wizard && in_array($gateway_activation_status, array('inactive', 'activating'))) {?>
                 <a href="<?php echo leyka_get_gateway_settings_url($gateway);?>" class="button <?php echo $gateway_activation_status === 'active' ? 'button-secondary' : 'button-primary';?> gateway-settings"></a>
             <?php }?>
 
                 <a class="button <?php echo $gateway_activation_status === 'active' ? 'button-secondary' : 'button-primary';?> activation-button <?php echo $gateway_activation_status;?>" href="<?php echo leyka_get_gateway_settings_url($gateway);?>">
 
-                <?php if($gateway->has_wizard && $gateway_activation_status === 'inactive') {?>
+                <?php if($gateway->has_wizard && in_array($gateway_activation_status, array('inactive', 'activating'))) {?>
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>src/svg/icon-wizard-stick-only.svg" class="wizard-available" alt="">
                 <?php }
 
